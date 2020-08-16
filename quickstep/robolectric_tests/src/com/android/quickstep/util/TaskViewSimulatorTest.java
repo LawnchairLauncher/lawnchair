@@ -27,7 +27,7 @@ import android.view.SurfaceControl;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.shadows.LShadowDisplay;
-import com.android.launcher3.util.DefaultDisplay;
+import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.LauncherActivityInterface;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
 
@@ -144,7 +144,7 @@ public class TaskViewSimulatorTest {
                     LauncherActivityInterface.INSTANCE);
             tvs.setDp(mDeviceProfile);
 
-            int launcherRotation = DefaultDisplay.INSTANCE.get(mContext).getInfo().rotation;
+            int launcherRotation = DisplayController.INSTANCE.get(mContext).getInfo().rotation;
             if (mAppRotation < 0) {
                 mAppRotation = launcherRotation;
             }

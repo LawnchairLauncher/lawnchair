@@ -22,6 +22,7 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.allapps.search.SearchSectionInfo;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LabelComparator;
 
@@ -31,7 +32,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 /**
  * The alphabetically sorted list of applications.
@@ -129,7 +129,34 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
             item.searchSectionInfo = sectionInfo;
             return item;
         }
+
+        boolean isCountedForAccessibility() {
+            return viewType == AllAppsGridAdapter.VIEW_TYPE_ICON
+                    || viewType == AllAppsGridAdapter.VIEW_TYPE_SEARCH_HERO_APP;
+        }
     }
+
+    /**
+     * Extension of AdapterItem that contains shortcut workspace items
+     */
+    public static class HeroAppAdapterItem extends AdapterItem {
+        private ArrayList<WorkspaceItemInfo> mShortcutInfos;
+
+        public HeroAppAdapterItem(AppInfo info, ArrayList<WorkspaceItemInfo> shortcutInfos) {
+            viewType = AllAppsGridAdapter.VIEW_TYPE_SEARCH_HERO_APP;
+            mShortcutInfos = shortcutInfos;
+            appInfo = info;
+        }
+
+        /**
+         * Returns list of shortcuts for appInfo
+         */
+        public ArrayList<WorkspaceItemInfo> getShortcutInfos() {
+            return mShortcutInfos;
+        }
+
+    }
+
 
     private final BaseDraggingActivity mLauncher;
 
@@ -137,8 +164,8 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
     private final List<AppInfo> mApps = new ArrayList<>();
     private final AllAppsStore mAllAppsStore;
 
-    // The set of filtered apps with the current filter
-    private final List<AppInfo> mFilteredApps = new ArrayList<>();
+    // The number of results in current adapter
+    private int mAccessibilityResultsCount = 0;
     // The current set of adapter items
     private final ArrayList<AdapterItem> mAdapterItems = new ArrayList<>();
     // The set of sections that we allow fast-scrolling to (includes non-merged sections)
@@ -197,6 +224,25 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
     }
 
     /**
+     * Returns the child adapter item with IME launch focus.
+     */
+    public AdapterItem getFocusedChild() {
+        return mAdapterItems.get(getFocusedChildIndex());
+    }
+
+    /**
+     * Returns the index of the child with IME launch focus.
+     */
+    public int getFocusedChildIndex() {
+        for (AdapterItem item : mAdapterItems) {
+            if (item.isCountedForAccessibility()) {
+                return mAdapterItems.indexOf(item);
+            }
+        }
+        return -1;
+    }
+
+    /**
      * Returns the number of rows of applications
      */
     public int getNumAppRows() {
@@ -207,7 +253,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
      * Returns the number of applications in this list.
      */
     public int getNumFilteredApps() {
-        return mFilteredApps.size();
+        return mAccessibilityResultsCount;
     }
 
     /**
@@ -221,7 +267,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
      * Returns whether there are no filtered results.
      */
     public boolean hasNoFilteredResults() {
-        return (mSearchResults != null) && mFilteredApps.isEmpty();
+        return (mSearchResults != null) && mAccessibilityResultsCount == 0;
     }
 
     /**
@@ -307,13 +353,20 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         int appIndex = 0;
 
         // Prepare to update the list of sections, filtered apps, etc.
-        mFilteredApps.clear();
+        mAccessibilityResultsCount = 0;
         mFastScrollerSections.clear();
         mAdapterItems.clear();
 
+        SearchSectionInfo appSection = new SearchSectionInfo();
+        appSection.setDecorationHandler(
+                new AllAppsSectionDecorator.SectionDecorationHandler(mLauncher, true));
+
         // Recreate the filtered and sectioned apps (for convenience for the grid layout) from the
         // ordered set of sections
+
         if (!hasFilter()) {
+            mAccessibilityResultsCount = mApps.size();
+            appSection.setPosStart(position);
             for (AppInfo info : mApps) {
                 String sectionName = info.sectionName;
 
@@ -329,15 +382,33 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
                 if (lastFastScrollerSectionInfo.fastScrollToItem == null) {
                     lastFastScrollerSectionInfo.fastScrollToItem = appItem;
                 }
+                if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
+                    appItem.searchSectionInfo = appSection;
+                }
                 mAdapterItems.add(appItem);
-                mFilteredApps.add(info);
             }
+            appSection.setPosEnd(mApps.isEmpty() ? appSection.getPosStart() : position - 1);
         } else {
-            mAdapterItems.addAll(mSearchResults);
-            List<AppInfo> appInfos = mSearchResults.stream().filter(
-                    i -> AllAppsGridAdapter.isIconViewType(i.viewType)).map(i -> i.appInfo).collect(
-                    Collectors.toList());
-            mFilteredApps.addAll(appInfos);
+            List<AppInfo> appInfos = new ArrayList<>();
+            SearchSectionInfo lastSection = null;
+            for (int i = 0; i < mSearchResults.size(); i++) {
+                AdapterItem adapterItem = mSearchResults.get(i);
+                adapterItem.position = i;
+                mAdapterItems.add(adapterItem);
+                if (adapterItem.searchSectionInfo != lastSection) {
+                    adapterItem.searchSectionInfo.setPosStart(i);
+                    if (lastSection != null) {
+                        lastSection.setPosEnd(i - 1);
+                    }
+                    lastSection = adapterItem.searchSectionInfo;
+                }
+                if (AllAppsGridAdapter.isIconViewType(adapterItem.viewType)) {
+                    appInfos.add(adapterItem.appInfo);
+                }
+                if (adapterItem.isCountedForAccessibility()) {
+                    mAccessibilityResultsCount++;
+                }
+            }
             if (!FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
                 // Append the search market item
                 if (hasNoFilteredResults()) {

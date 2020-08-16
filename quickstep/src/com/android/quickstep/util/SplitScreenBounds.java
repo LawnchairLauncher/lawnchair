@@ -32,7 +32,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
 import com.android.launcher3.R;
-import com.android.launcher3.util.DefaultDisplay;
+import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.WindowBounds;
 
 import java.util.ArrayList;
@@ -77,7 +77,7 @@ public class SplitScreenBounds {
 
         WindowBounds bounds = new WindowBounds(wm.getBounds(),
                 new Rect(insets.left, insets.top, insets.right, insets.bottom));
-        int rotation = DefaultDisplay.INSTANCE.get(context).getInfo().rotation;
+        int rotation = DisplayController.getDefaultDisplay(context).getInfo().rotation;
         int halfDividerSize = context.getResources()
                 .getDimensionPixelSize(R.dimen.multi_window_task_divider_size) / 2;
 

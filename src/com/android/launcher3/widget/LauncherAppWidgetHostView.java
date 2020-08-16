@@ -80,9 +80,7 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
         setAccessibilityDelegate(mLauncher.getAccessibilityDelegate());
         setBackgroundResource(R.drawable.widget_internal_focus_bg);
 
-        if (Utilities.ATLEAST_OREO) {
-            setExecutor(Executors.THREAD_POOL_EXECUTOR);
-        }
+        setExecutor(Executors.THREAD_POOL_EXECUTOR);
         if (Utilities.ATLEAST_Q && Themes.getAttrBoolean(mLauncher, R.attr.isWorkspaceDarkText)) {
             setOnLightBackground(true);
         }

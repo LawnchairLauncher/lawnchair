@@ -64,6 +64,7 @@ import androidx.test.uiautomator.Until;
 
 import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.testing.TestProtocol;
+import com.android.systemui.shared.system.ContextUtils;
 import com.android.systemui.shared.system.QuickStepContract;
 
 import org.junit.Assert;
@@ -175,8 +176,7 @@ public final class LauncherInstrumentation {
     private Runnable mOnLauncherCrashed;
 
     private static Pattern getTouchEventPattern(String prefix, String action) {
-        // The pattern includes sanity checks that we don't get a multi-touch events or other
-        // surprises.
+        // The pattern includes checks that we don't get a multi-touch events or other surprises.
         return Pattern.compile(
                 prefix + ": MotionEvent.*?action=" + action + ".*?id\\[0\\]=0"
                         + ".*?toolType\\[0\\]=TOOL_TYPE_FINGER.*?buttonState=0.*?pointerCount=1");
@@ -239,11 +239,12 @@ public final class LauncherInstrumentation {
 
         if (pm.getComponentEnabledSetting(cn) != COMPONENT_ENABLED_STATE_ENABLED) {
             if (TestHelpers.isInLauncherProcess()) {
-                getContext().getPackageManager().setComponentEnabledSetting(
-                        cn, COMPONENT_ENABLED_STATE_ENABLED, DONT_KILL_APP);
+                pm.setComponentEnabledSetting(cn, COMPONENT_ENABLED_STATE_ENABLED, DONT_KILL_APP);
             } else {
                 try {
-                    mDevice.executeShellCommand("pm enable " + cn.flattenToString());
+                    final int userId = ContextUtils.getUserId(getContext());
+                    mDevice.executeShellCommand(
+                            "pm enable --user " + userId + " " + cn.flattenToString());
                 } catch (IOException e) {
                     fail(e.toString());
                 }
@@ -1303,17 +1304,8 @@ public final class LauncherInstrumentation {
         if (getNavigationModel() == NavigationModel.TWO_BUTTON) {
             return true;
         }
-        // Overview actions hide all apps
-        if (overviewActionsEnabled()) {
-            return false;
-        }
-        // ...otherwise there should be all apps
-        return true;
-    }
-
-    private boolean overviewActionsEnabled() {
-        return getTestInfo(TestProtocol.REQUEST_OVERVIEW_ACTIONS_ENABLED).getBoolean(
-                TestProtocol.TEST_INFO_RESPONSE_FIELD);
+        // ...otherwise there are overview actions, which hide all apps
+        return false;
     }
 
     boolean overviewShareEnabled() {

@@ -71,7 +71,7 @@ import java.util.function.IntConsumer;
 public final class RecentsOrientedState implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String TAG = "RecentsOrientedState";
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     private ContentObserver mSystemAutoRotateObserver = new ContentObserver(new Handler()) {
         @Override

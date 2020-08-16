@@ -15,12 +15,13 @@
  */
 package com.android.quickstep.util;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_LSQ_VELOCITY_PROVIDER;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_SYSTEM_VELOCITY_PROVIDER;
 
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.VelocityTracker;
 
 import com.android.launcher3.Alarm;
 import com.android.launcher3.R;
@@ -92,8 +93,8 @@ public class MotionPauseDetector {
         mForcePauseTimeout = new Alarm();
         mForcePauseTimeout.setOnAlarmListener(alarm -> updatePaused(true /* isPaused */));
         mMakePauseHarderToTrigger = makePauseHarderToTrigger;
-        mVelocityProvider = ENABLE_LSQ_VELOCITY_PROVIDER.get()
-                ? new LSqVelocityProvider(axis) : new LinearVelocityProvider(axis);
+        mVelocityProvider = ENABLE_SYSTEM_VELOCITY_PROVIDER.get()
+                ? new SystemVelocityProvider(axis) : new LinearVelocityProvider(axis);
     }
 
     /**
@@ -264,141 +265,28 @@ public class MotionPauseDetector {
         }
     }
 
-    /**
-     * Java implementation of {@link android.view.VelocityTracker} using the Least Square (deg 2)
-     * algorithm.
-     */
-    private static class LSqVelocityProvider implements VelocityProvider {
+    private static class SystemVelocityProvider implements VelocityProvider {
 
-        // Maximum age of a motion event to be considered when calculating the velocity.
-        private static final long HORIZON_MS = 100;
-        // Number of samples to keep.
-        private static final int HISTORY_SIZE = 20;
-
-        // Position history are stored in a circular array
-        private final long[] mHistoricTimes = new long[HISTORY_SIZE];
-        private final float[] mHistoricPos = new float[HISTORY_SIZE];
-        private int mHistoryCount = 0;
-        private int mHistoryStart = 0;
-
+        private final VelocityTracker mVelocityTracker;
         private final int mAxis;
 
-        LSqVelocityProvider(int axis) {
+        SystemVelocityProvider(int axis) {
+            mVelocityTracker = VelocityTracker.obtain();
             mAxis = axis;
         }
 
         @Override
-        public void clear() {
-            mHistoryCount = mHistoryStart = 0;
-        }
-
-        private void addPositionAndTime(long eventTime, float eventPosition) {
-            mHistoricTimes[mHistoryStart] = eventTime;
-            mHistoricPos[mHistoryStart] = eventPosition;
-            mHistoryStart++;
-            if (mHistoryStart >= HISTORY_SIZE) {
-                mHistoryStart = 0;
-            }
-            mHistoryCount = Math.min(HISTORY_SIZE, mHistoryCount + 1);
+        public Float addMotionEvent(MotionEvent ev, int pointer) {
+            mVelocityTracker.addMovement(ev);
+            mVelocityTracker.computeCurrentVelocity(1); // px / ms
+            return mAxis == MotionEvent.AXIS_X
+                    ? mVelocityTracker.getXVelocity(pointer)
+                    : mVelocityTracker.getYVelocity(pointer);
         }
 
         @Override
-        public Float addMotionEvent(MotionEvent ev, int pointer) {
-            // Add all historic points
-            int historyCount = ev.getHistorySize();
-            for (int i = 0; i < historyCount; i++) {
-                addPositionAndTime(
-                        ev.getHistoricalEventTime(i), ev.getHistoricalAxisValue(mAxis, pointer, i));
-            }
-
-            // Start index for the last position (about to be added)
-            int eventStartIndex = mHistoryStart;
-            addPositionAndTime(ev.getEventTime(), ev.getAxisValue(mAxis, pointer));
-            return solveUnweightedLeastSquaresDeg2(eventStartIndex);
-        }
-
-        /**
-         * Solves the instantaneous velocity.
-         * Based on solveUnweightedLeastSquaresDeg2 in VelocityTracker.cpp
-         */
-        private Float solveUnweightedLeastSquaresDeg2(final int pointPos) {
-            final long eventTime = mHistoricTimes[pointPos];
-
-            float sxi = 0, sxiyi = 0, syi = 0, sxi2 = 0, sxi3 = 0, sxi2yi = 0, sxi4 = 0;
-            int count = 0;
-            for (int i = 0; i < mHistoryCount; i++) {
-                int index = pointPos - i;
-                if (index < 0) {
-                    index += HISTORY_SIZE;
-                }
-
-                long time = mHistoricTimes[index];
-                long age = eventTime - time;
-                if (age > HORIZON_MS) {
-                    break;
-                }
-                count++;
-                float xi = -age;
-
-                float yi = mHistoricPos[index];
-                float xi2 = xi * xi;
-                float xi3 = xi2 * xi;
-                float xi4 = xi3 * xi;
-                float xiyi = xi * yi;
-                float xi2yi = xi2 * yi;
-
-                sxi += xi;
-                sxi2 += xi2;
-                sxiyi += xiyi;
-                sxi2yi += xi2yi;
-                syi += yi;
-                sxi3 += xi3;
-                sxi4 += xi4;
-            }
-
-            if (count < 3) {
-                // Too few samples
-                switch (count) {
-                    case 2: {
-                        int endPos = pointPos - 1;
-                        if (endPos < 0) {
-                            endPos += HISTORY_SIZE;
-                        }
-                        long denominator = eventTime - mHistoricTimes[endPos];
-                        if (denominator != 0) {
-                            return (mHistoricPos[pointPos] - mHistoricPos[endPos]) / denominator;
-                        }
-                    }
-                    // fall through
-                    case 1:
-                        return 0f;
-                    default:
-                        return null;
-                }
-            }
-
-            float Sxx = sxi2 - sxi * sxi / count;
-            float Sxy = sxiyi - sxi * syi / count;
-            float Sxx2 = sxi3 - sxi * sxi2 / count;
-            float Sx2y = sxi2yi - sxi2 * syi / count;
-            float Sx2x2 = sxi4 - sxi2 * sxi2 / count;
-
-            float denominator = Sxx * Sx2x2 - Sxx2 * Sxx2;
-            if (denominator == 0) {
-                // division by 0 when computing velocity
-                return null;
-            }
-            // Compute a
-            // float numerator = Sx2y*Sxx - Sxy*Sxx2;
-
-            // Compute b
-            float numerator = Sxy * Sx2x2 - Sx2y * Sxx2;
-            float b = numerator / denominator;
-
-            // Compute c
-            // float c = syi/count - b * sxi/count - a * sxi2/count;
-
-            return b;
+        public void clear() {
+            mVelocityTracker.clear();
         }
     }
 }

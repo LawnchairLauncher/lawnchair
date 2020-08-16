@@ -108,6 +108,11 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
+    public <T> void setSecondary(T target, Float2DAction<T> action, float param) {
+        action.call(target, param, 0);
+    }
+
+    @Override
     public float getPrimaryDirection(MotionEvent event, int pointerIndex) {
         return event.getY(pointerIndex);
     }
@@ -148,8 +153,9 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public void setPrimaryAndResetSecondaryTranslate(View view, float translation) {
-        view.setTranslationX(0);
+    public void setPrimaryAndResetSecondaryTranslate(
+            View view, float translation, float defaultTranslationX, float defaultTranslationY) {
+        view.setTranslationX(defaultTranslationX);
         view.setTranslationY(translation);
     }
 
@@ -215,7 +221,11 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public int getTaskDismissDirectionFactor() {
+    public int getPrimaryTranslationDirectionFactor() {
+        return -1;
+    }
+
+    public int getSecondaryTranslationDirectionFactor() {
         return 1;
     }
 

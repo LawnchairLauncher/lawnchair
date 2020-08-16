@@ -258,12 +258,6 @@ public class ItemInfo {
     }
 
     /**
-     * Can be overridden by inherited classes to fill in {@link LauncherAtom.ItemInfo}
-     */
-    public void setItemBuilder(LauncherAtom.ItemInfo.Builder builder) {
-    }
-
-    /**
      * Creates {@link LauncherAtom.ItemInfo} with important fields and parent container info.
      */
     public LauncherAtom.ItemInfo buildProto() {

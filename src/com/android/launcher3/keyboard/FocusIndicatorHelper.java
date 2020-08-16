@@ -32,6 +32,8 @@ import android.view.View;
 import android.view.View.OnFocusChangeListener;
 
 import com.android.launcher3.R;
+import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.util.Themes;
 
 /**
  * A helper class to draw background of a focused view.
@@ -93,6 +95,7 @@ public abstract class FocusIndicatorHelper implements
 
     private ObjectAnimator mCurrentAnimation;
     private float mAlpha;
+    private float mRadius;
 
     public FocusIndicatorHelper(View container) {
         mContainer = container;
@@ -104,6 +107,9 @@ public abstract class FocusIndicatorHelper implements
 
         setAlpha(0);
         mShift = 0;
+        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
+            mRadius = Themes.getDialogCornerRadius(container.getContext());
+        }
     }
 
     protected void setAlpha(float alpha) {
@@ -129,13 +135,15 @@ public abstract class FocusIndicatorHelper implements
     }
 
     public void draw(Canvas c) {
-        if (mAlpha > 0) {
-            Rect newRect = getDrawRect();
-            if (newRect != null) {
-                mDirtyRect.set(newRect);
-                c.drawRect(mDirtyRect, mPaint);
-                mIsDirty = true;
-            }
+        if (mAlpha <= 0) return;
+
+        Rect newRect = getDrawRect();
+        if (newRect != null) {
+            mDirtyRect.set(newRect);
+            c.drawRoundRect((float) mDirtyRect.left, (float) mDirtyRect.top,
+                    (float) mDirtyRect.right, (float) mDirtyRect.bottom,
+                    mRadius, mRadius, mPaint);
+            mIsDirty = true;
         }
     }
 

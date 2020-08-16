@@ -17,20 +17,59 @@ package com.android.launcher3.allapps.search;
 
 import android.content.Context;
 
+import com.android.launcher3.allapps.AllAppsSectionDecorator.SectionDecorationHandler;
+
 /**
  * Info class for a search section
  */
 public class SearchSectionInfo {
+
     private final int mTitleResId;
+    private SectionDecorationHandler mDecorationHandler;
+
+    public int getPosStart() {
+        return mPosStart;
+    }
+
+    public void setPosStart(int posStart) {
+        mPosStart = posStart;
+    }
+
+    public int getPosEnd() {
+        return mPosEnd;
+    }
+
+    public void setPosEnd(int posEnd) {
+        mPosEnd = posEnd;
+    }
+
+    private int mPosStart;
+    private int mPosEnd;
+
+    public SearchSectionInfo() {
+        this(-1);
+    }
 
     public SearchSectionInfo(int titleResId) {
         mTitleResId = titleResId;
+    }
+
+    public void setDecorationHandler(SectionDecorationHandler sectionDecorationHandler) {
+        mDecorationHandler = sectionDecorationHandler;
+    }
+
+
+    public SectionDecorationHandler getDecorationHandler() {
+        return mDecorationHandler;
     }
 
     /**
      * Returns the section's title
      */
     public String getTitle(Context context) {
+        if (mTitleResId == -1) {
+            return "";
+        }
         return context.getString(mTitleResId);
     }
 }

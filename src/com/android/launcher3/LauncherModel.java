@@ -60,7 +60,6 @@ import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ItemInfoMatcher;
-import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Preconditions;
 
@@ -85,7 +84,6 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
 
     private final LauncherAppState mApp;
     private final Object mLock = new Object();
-    private final LooperExecutor mMainExecutor = MAIN_EXECUTOR;
 
     private LoaderTask mLoaderTask;
     private boolean mIsLoaderTaskRunning;
@@ -337,13 +335,13 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
             if (callbacksList.length > 0) {
                 // Clear any pending bind-runnables from the synchronized load process.
                 for (Callbacks cb : callbacksList) {
-                    mMainExecutor.execute(cb::clearPendingBinds);
+                    MAIN_EXECUTOR.execute(cb::clearPendingBinds);
                 }
 
                 // If there is already one running, tell it to stop.
                 stopLoader();
                 LoaderResults loaderResults = new LoaderResults(
-                        mApp, mBgDataModel, mBgAllAppsList, callbacksList, mMainExecutor);
+                        mApp, mBgDataModel, mBgAllAppsList, callbacksList);
                 if (mModelLoaded && !mIsLoaderTaskRunning) {
                     // Divide the set of loaded items into those that we are binding synchronously,
                     // and everything else that is to be bound normally (asynchronously).
@@ -530,7 +528,7 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     }
 
     public void enqueueModelUpdateTask(ModelUpdateTask task) {
-        task.init(mApp, this, mBgDataModel, mBgAllAppsList, mMainExecutor);
+        task.init(mApp, this, mBgDataModel, mBgAllAppsList, MAIN_EXECUTOR);
         MODEL_EXECUTOR.execute(task);
     }
 

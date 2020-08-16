@@ -18,7 +18,6 @@ package com.android.launcher3.settings;
 
 import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS;
 
-import static com.android.launcher3.SessionCommitReceiver.ADD_ICON_PREFERENCE_KEY;
 import static com.android.launcher3.states.RotationHelper.ALLOW_ROTATION_PREFERENCE_KEY;
 import static com.android.launcher3.states.RotationHelper.getAllowRotationDefaultValue;
 import static com.android.launcher3.util.SecureSettingsObserver.newNotificationSettingsObserver;
@@ -172,11 +171,6 @@ public class SettingsActivity extends FragmentActivity
         protected boolean initPreference(Preference preference) {
             switch (preference.getKey()) {
                 case NOTIFICATION_DOTS_PREFERENCE_KEY:
-                    if (!Utilities.ATLEAST_OREO ||
-                            !getResources().getBoolean(R.bool.notification_dots_enabled)) {
-                        return false;
-                    }
-
                     // Listen to system notification dot settings while this UI is active.
                     mNotificationDotsObserver = newNotificationSettingsObserver(
                             getActivity(), (NotificationDotsPreference) preference);
@@ -187,9 +181,6 @@ public class SettingsActivity extends FragmentActivity
                             mNotificationDotsObserver);
                     mNotificationDotsObserver.dispatchOnChange();
                     return true;
-
-                case ADD_ICON_PREFERENCE_KEY:
-                    return Utilities.ATLEAST_OREO;
 
                 case ALLOW_ROTATION_PREFERENCE_KEY:
                     if (getResources().getBoolean(R.bool.allow_rotation)) {

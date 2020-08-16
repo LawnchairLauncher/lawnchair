@@ -28,7 +28,8 @@ import com.android.launcher3.CellLayout.ContainerType;
 import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.icons.DotRenderer;
 import com.android.launcher3.icons.IconNormalizer;
-import com.android.launcher3.util.DefaultDisplay;
+import com.android.launcher3.util.DisplayController;
+import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.WindowBounds;
 
 public class DeviceProfile {
@@ -38,7 +39,7 @@ public class DeviceProfile {
 
 
     public final InvariantDeviceProfile inv;
-    private final DefaultDisplay.Info mInfo;
+    private final Info mInfo;
 
     // Device properties
     public final boolean isTablet;
@@ -140,7 +141,7 @@ public class DeviceProfile {
     public DotRenderer mDotRendererWorkSpace;
     public DotRenderer mDotRendererAllApps;
 
-    DeviceProfile(Context context, InvariantDeviceProfile inv, DefaultDisplay.Info info,
+    DeviceProfile(Context context, InvariantDeviceProfile inv, Info info,
             Point minSize, Point maxSize, int width, int height, boolean isLandscape,
             boolean isMultiWindowMode, boolean transposeLayoutWithOrientation,
             Point windowPosition) {
@@ -606,7 +607,7 @@ public class DeviceProfile {
      */
     public boolean updateIsSeascape(Context context) {
         if (isVerticalBarLayout()) {
-            boolean isSeascape = DefaultDisplay.INSTANCE.get(context).getInfo().rotation
+            boolean isSeascape = DisplayController.getDefaultDisplay(context).getInfo().rotation
                     == Surface.ROTATION_270;
             if (mIsSeascape != isSeascape) {
                 mIsSeascape = isSeascape;
@@ -638,7 +639,7 @@ public class DeviceProfile {
         }
     }
 
-    private static Context getContext(Context c, DefaultDisplay.Info info, int orientation) {
+    private static Context getContext(Context c, Info info, int orientation) {
         Configuration config = new Configuration(c.getResources().getConfiguration());
         config.orientation = orientation;
         config.densityDpi = info.metrics.densityDpi;
@@ -662,7 +663,7 @@ public class DeviceProfile {
     public static class Builder {
         private Context mContext;
         private InvariantDeviceProfile mInv;
-        private DefaultDisplay.Info mInfo;
+        private Info mInfo;
 
         private final Point mWindowPosition = new Point();
         private Point mMinSize, mMaxSize;
@@ -672,7 +673,7 @@ public class DeviceProfile {
         private boolean mIsMultiWindowMode = false;
         private boolean mTransposeLayoutWithOrientation;
 
-        public Builder(Context context, InvariantDeviceProfile inv, DefaultDisplay.Info info) {
+        public Builder(Context context, InvariantDeviceProfile inv, Info info) {
             mContext = context;
             mInv = inv;
             mInfo = info;

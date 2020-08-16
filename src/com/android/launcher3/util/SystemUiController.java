@@ -19,8 +19,6 @@ package com.android.launcher3.util;
 import android.view.View;
 import android.view.Window;
 
-import com.android.launcher3.Utilities;
-
 import java.util.Arrays;
 
 /**
@@ -78,12 +76,10 @@ public class SystemUiController {
     }
 
     private int getSysUiVisibilityFlags(int stateFlag, int currentVisibility) {
-        if (Utilities.ATLEAST_OREO) {
-            if ((stateFlag & FLAG_LIGHT_NAV) != 0) {
-                currentVisibility |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
-            } else if ((stateFlag & FLAG_DARK_NAV) != 0) {
-                currentVisibility &= ~(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
-            }
+        if ((stateFlag & FLAG_LIGHT_NAV) != 0) {
+            currentVisibility |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+        } else if ((stateFlag & FLAG_DARK_NAV) != 0) {
+            currentVisibility &= ~(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
         }
 
         if ((stateFlag & FLAG_LIGHT_STATUS) != 0) {

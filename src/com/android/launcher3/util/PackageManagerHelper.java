@@ -37,7 +37,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PatternMatcher;
-import android.os.Process;
 import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -46,7 +45,6 @@ import android.widget.Toast;
 
 import com.android.launcher3.PendingAddItemInfo;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
@@ -96,36 +94,12 @@ public class PackageManagerHelper {
      * Returns the application info for the provided package or null
      */
     public ApplicationInfo getApplicationInfo(String packageName, UserHandle user, int flags) {
-        if (Utilities.ATLEAST_OREO) {
-            try {
-                ApplicationInfo info = mLauncherApps.getApplicationInfo(packageName, flags, user);
-                return (info.flags & ApplicationInfo.FLAG_INSTALLED) == 0 || !info.enabled
-                        ? null : info;
-            } catch (PackageManager.NameNotFoundException e) {
-                return null;
-            }
-        } else {
-            final boolean isPrimaryUser = Process.myUserHandle().equals(user);
-            if (!isPrimaryUser && (flags == 0)) {
-                // We are looking for an installed app on a secondary profile. Prior to O, the only
-                // entry point for work profiles is through the LauncherActivity.
-                List<LauncherActivityInfo> activityList =
-                        mLauncherApps.getActivityList(packageName, user);
-                return activityList.size() > 0 ? activityList.get(0).getApplicationInfo() : null;
-            }
-            try {
-                ApplicationInfo info = mPm.getApplicationInfo(packageName, flags);
-                // There is no way to check if the app is installed for managed profile. But for
-                // primary profile, we can still have this check.
-                if (isPrimaryUser && ((info.flags & ApplicationInfo.FLAG_INSTALLED) == 0)
-                        || !info.enabled) {
-                    return null;
-                }
-                return info;
-            } catch (PackageManager.NameNotFoundException e) {
-                // Package not found
-                return null;
-            }
+        try {
+            ApplicationInfo info = mLauncherApps.getApplicationInfo(packageName, flags, user);
+            return (info.flags & ApplicationInfo.FLAG_INSTALLED) == 0 || !info.enabled
+                    ? null : info;
+        } catch (PackageManager.NameNotFoundException e) {
+            return null;
         }
     }
 

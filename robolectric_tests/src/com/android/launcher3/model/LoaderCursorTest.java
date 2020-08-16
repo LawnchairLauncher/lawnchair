@@ -51,7 +51,7 @@ import android.os.Process;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.Executors;
@@ -92,9 +92,9 @@ public class LoaderCursorTest {
                 SCREEN, CELLX, CELLY, RESTORED, INTENT
         });
 
-        mLoaderCursor = new LoaderCursor(mCursor, LauncherSettings.Favorites.CONTENT_URI, mApp,
-                new UserManagerState());
-        mLoaderCursor.allUsers.put(0, Process.myUserHandle());
+        UserManagerState ums = new UserManagerState();
+        mLoaderCursor = new LoaderCursor(mCursor, Favorites.CONTENT_URI, mApp, ums);
+        ums.allUsers.put(0, Process.myUserHandle());
     }
 
     private void initCursor(int itemType, String title) {
@@ -110,7 +110,7 @@ public class LoaderCursorTest {
     public void getAppShortcutInfo_dontAllowMissing_invalidComponent() {
         initCursor(ITEM_TYPE_APPLICATION, "");
         assertTrue(mLoaderCursor.moveToNext());
-        ComponentName cn = new ComponentName(mContext.getPackageName(), "dummy-do");
+        ComponentName cn = new ComponentName(mContext.getPackageName(), "placeholder-do");
         assertNull(mLoaderCursor.getAppShortcutInfo(
                 new Intent().setComponent(cn), false /* allowMissingTarget */, true));
     }
@@ -136,7 +136,7 @@ public class LoaderCursorTest {
         initCursor(ITEM_TYPE_APPLICATION, "");
         assertTrue(mLoaderCursor.moveToNext());
 
-        ComponentName cn = new ComponentName(mContext.getPackageName(), "dummy-do");
+        ComponentName cn = new ComponentName(mContext.getPackageName(), "placeholder-do");
         WorkspaceItemInfo info = Executors.MODEL_EXECUTOR.submit(() ->
                 mLoaderCursor.getAppShortcutInfo(
                         new Intent().setComponent(cn), true  /* allowMissingTarget */, true))

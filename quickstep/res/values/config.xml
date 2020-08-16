@@ -16,6 +16,8 @@
 <resources>
     <string name="task_overlay_factory_class" translatable="false"/>
 
+    <string name="overscroll_plugin_factory_class" translatable="false" />
+
     <!-- Activities which block home gesture -->
     <string-array name="gesture_blocking_activities" translatable="false">
         <item>com.android.launcher3/com.android.quickstep.interaction.GestureSandboxActivity</item>
@@ -35,4 +37,6 @@
     <integer name="assistant_gesture_corner_deg_threshold">20</integer>
 
     <string name="wellbeing_provider_pkg" translatable="false"/>
+
+    <integer name="max_depth_blur_radius">150</integer>
 </resources>

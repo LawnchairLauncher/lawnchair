@@ -18,12 +18,16 @@ package com.android.launcher3.model;
 import static com.android.launcher3.util.PackageManagerHelper.hasShortcutsPermission;
 
 import android.content.Context;
+import android.content.pm.ShortcutInfo;
 
 import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
+import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ResourceBasedOverride;
+
+import java.util.Map;
 
 /**
  * Class to extend LauncherModel functionality to provide extra data
@@ -65,11 +69,12 @@ public class ModelDelegate implements ResourceBasedOverride {
      * Load delegate items if any in the data model
      */
     @WorkerThread
-    public void loadItems() { }
+    public void loadItems(UserManagerState ums, Map<ShortcutKey, ShortcutInfo> pinnedShortcuts) { }
 
     /**
      * Called when the delegate is no loner needed
      */
     @WorkerThread
     public void destroy() { }
+
 }

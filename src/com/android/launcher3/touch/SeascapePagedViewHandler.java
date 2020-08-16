@@ -28,7 +28,7 @@ import com.android.launcher3.Utilities;
 public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
 
     @Override
-    public int getTaskDismissDirectionFactor() {
+    public int getSecondaryTranslationDirectionFactor() {
         return -1;
     }
 
@@ -72,12 +72,6 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
     @Override
     public float getTaskMenuY(float y, View thumbnailView) {
         return y + thumbnailView.getMeasuredHeight();
-    }
-
-    @Override
-    public void setPrimaryAndResetSecondaryTranslate(View view, float translation) {
-        view.setTranslationX(0);
-        view.setTranslationY(translation);
     }
 
     @Override

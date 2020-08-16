@@ -109,15 +109,11 @@ public class LauncherAppState {
         mInstallSessionTracker = InstallSessionHelper.INSTANCE.get(context)
                 .registerInstallTracker(mModel, MODEL_EXECUTOR);
 
-        if (!mContext.getResources().getBoolean(R.bool.notification_dots_enabled)) {
-            mNotificationDotsObserver = null;
-        } else {
-            // Register an observer to rebind the notification listener when dots are re-enabled.
-            mNotificationDotsObserver =
-                    newNotificationSettingsObserver(mContext, this::onNotificationSettingsChanged);
-            mNotificationDotsObserver.register();
-            mNotificationDotsObserver.dispatchOnChange();
-        }
+        // Register an observer to rebind the notification listener when dots are re-enabled.
+        mNotificationDotsObserver =
+                newNotificationSettingsObserver(mContext, this::onNotificationSettingsChanged);
+        mNotificationDotsObserver.register();
+        mNotificationDotsObserver.dispatchOnChange();
     }
 
     public LauncherAppState(Context context, @Nullable String iconCacheFileName) {
