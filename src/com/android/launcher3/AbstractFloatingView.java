@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import static android.animation.ValueAnimator.areAnimatorsEnabled;
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED;
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
 
@@ -126,7 +127,7 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     }
 
     public final void close(boolean animate) {
-        animate &= Utilities.areAnimationsEnabled(getContext());
+        animate &= areAnimatorsEnabled();
         if (mIsOpen) {
             BaseActivity.fromContext(getContext()).getUserEventDispatcher()
                     .resetElapsedContainerMillis("container closed");

@@ -147,7 +147,7 @@ public class UserEventDispatcher implements ResourceBasedOverride {
     }
 
     /**
-     * Dummy method.
+     * Placeholder method.
      */
     public void logActionTip(int actionType, int viewType) {
     }

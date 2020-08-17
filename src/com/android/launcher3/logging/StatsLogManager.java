@@ -37,7 +37,7 @@ import java.util.List;
  *
  * <pre>
  * All of the event ids are defined here.
- * Most of the methods are dummy methods for Launcher3
+ * Most of the methods are placeholder methods for Launcher3
  * Actual call happens only for Launcher variant that implements QuickStep.
  * </pre>
  */
@@ -313,7 +313,10 @@ public class StatsLogManager implements ResourceBasedOverride {
         LAUNCHER_NAVIGATION_MODE_2_BUTTON(624),
 
         @UiEvent(doc = "System navigation mode is 0 button mode/gesture navigation mode .")
-        LAUNCHER_NAVIGATION_MODE_GESTURE_BUTTON(625);
+        LAUNCHER_NAVIGATION_MODE_GESTURE_BUTTON(625),
+
+        @UiEvent(doc = "User tapped on image content in Overview Select mode.")
+        LAUNCHER_SELECT_MODE_IMAGE(627);
 
         // ADD MORE
 

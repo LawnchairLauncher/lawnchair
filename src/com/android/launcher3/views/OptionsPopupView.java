@@ -226,15 +226,15 @@ public class OptionsPopupView extends ArrowPopup
         if (!TextUtils.isEmpty(pickerPackage)) {
             intent.setPackage(pickerPackage);
         }
-        return launcher.startActivitySafely(v, intent, dummyInfo(intent));
+        return launcher.startActivitySafely(v, intent, placeholderInfo(intent));
     }
 
-    static WorkspaceItemInfo dummyInfo(Intent intent) {
-        WorkspaceItemInfo dummyInfo = new WorkspaceItemInfo();
-        dummyInfo.intent = intent;
-        dummyInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
-        dummyInfo.container = LauncherSettings.Favorites.CONTAINER_SETTINGS;
-        return dummyInfo;
+    static WorkspaceItemInfo placeholderInfo(Intent intent) {
+        WorkspaceItemInfo placeholderInfo = new WorkspaceItemInfo();
+        placeholderInfo.intent = intent;
+        placeholderInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
+        placeholderInfo.container = LauncherSettings.Favorites.CONTAINER_SETTINGS;
+        return placeholderInfo;
     }
 
     public static class OptionItem {

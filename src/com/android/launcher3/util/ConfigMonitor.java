@@ -26,14 +26,16 @@ import android.content.res.Configuration;
 import android.graphics.Point;
 import android.util.Log;
 
+import com.android.launcher3.util.DisplayController.DisplayInfoChangeListener;
+import com.android.launcher3.util.DisplayController.Info;
+
 import java.util.function.Consumer;
 
 /**
  * {@link BroadcastReceiver} which watches configuration changes and
  * notifies the callback in case changes which affect the device profile occur.
  */
-public class ConfigMonitor extends BroadcastReceiver implements
-        DefaultDisplay.DisplayInfoChangeListener {
+public class ConfigMonitor extends BroadcastReceiver implements DisplayInfoChangeListener {
 
     private static final String TAG = "ConfigMonitor";
 
@@ -57,9 +59,9 @@ public class ConfigMonitor extends BroadcastReceiver implements
         mFontScale = config.fontScale;
         mDensity = config.densityDpi;
 
-        DefaultDisplay display = DefaultDisplay.INSTANCE.get(context);
+        DisplayController.DisplayHolder display = DisplayController.getDefaultDisplay(context);
         display.addChangeListener(this);
-        DefaultDisplay.Info displayInfo = display.getInfo();
+        Info displayInfo = display.getInfo();
         mDisplayId = displayInfo.id;
 
         mRealSize = new Point(displayInfo.realSize);
@@ -82,7 +84,7 @@ public class ConfigMonitor extends BroadcastReceiver implements
     }
 
     @Override
-    public void onDisplayInfoChanged(DefaultDisplay.Info info, int flags) {
+    public void onDisplayInfoChanged(Info info, int flags) {
         if (info.id != mDisplayId) {
             return;
         }
@@ -113,8 +115,7 @@ public class ConfigMonitor extends BroadcastReceiver implements
     public void unregister() {
         try {
             mContext.unregisterReceiver(this);
-            DefaultDisplay display = DefaultDisplay.INSTANCE.get(mContext);
-            display.removeChangeListener(this);
+            DisplayController.getDefaultDisplay(mContext).removeChangeListener(this);
         } catch (Exception e) {
             Log.e(TAG, "Failed to unregister config monitor", e);
         }

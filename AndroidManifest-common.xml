@@ -29,12 +29,6 @@
     at compile time. Note that the components defined in AndroidManifest.xml are also required,
     with some minor changed based on the derivative app.
     -->
-    <permission
-        android:name="com.android.launcher.permission.INSTALL_SHORTCUT"
-        android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
-        android:protectionLevel="dangerous"
-        android:label="@string/permlab_install_shortcut"
-        android:description="@string/permdesc_install_shortcut" />
 
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
@@ -79,17 +73,6 @@
         android:restoreAnyVersion="true"
         android:supportsRtl="true" >
 
-        <!-- Intent received used to install shortcuts from other applications -->
-        <receiver
-            android:name="com.android.launcher3.InstallShortcutReceiver"
-            android:permission="com.android.launcher.permission.INSTALL_SHORTCUT"
-            android:exported="true"
-            android:enabled="@bool/enable_install_shortcut_api" >
-            <intent-filter>
-                <action android:name="com.android.launcher.action.INSTALL_SHORTCUT" />
-            </intent-filter>
-        </receiver>
-
         <!-- Intent received when a session is committed -->
         <receiver
             android:name="com.android.launcher3.SessionCommitReceiver"
@@ -116,7 +99,6 @@
         <service
             android:name="com.android.launcher3.notification.NotificationListener"
             android:label="@string/notification_dots_service_title"
-            android:enabled="@bool/notification_dots_enabled"
             android:exported="true"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
             <intent-filter>

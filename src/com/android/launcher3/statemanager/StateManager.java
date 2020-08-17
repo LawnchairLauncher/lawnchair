@@ -16,6 +16,8 @@
 
 package com.android.launcher3.statemanager;
 
+import static android.animation.ValueAnimator.areAnimatorsEnabled;
+
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_COMPONENTS;
 
 import android.animation.Animator;
@@ -26,7 +28,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
@@ -179,7 +180,7 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
 
     private void goToState(STATE_TYPE state, boolean animated, long delay,
             final Runnable onCompleteRunnable) {
-        animated &= Utilities.areAnimationsEnabled(mActivity);
+        animated &= areAnimatorsEnabled();
         if (mActivity.isInState(state)) {
             if (mConfig.currentAnimation == null) {
                 // Run any queued runnable
@@ -311,7 +312,13 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
                 handler.setStateWithAnimation(state, mConfig, builder);
             }
         }
-        builder.addListener(new AnimationSuccessListener() {
+        builder.addListener(createStateAnimationListener(state));
+        mConfig.setAnimation(builder.buildAnim(), state);
+        return builder;
+    }
+
+    private AnimatorListener createStateAnimationListener(STATE_TYPE state) {
+        return new AnimationSuccessListener() {
 
             @Override
             public void onAnimationStart(Animator animation) {
@@ -326,9 +333,7 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
                 }
                 onStateTransitionEnd(state);
             }
-        });
-        mConfig.setAnimation(builder.buildAnim(), state);
-        return builder;
+        };
     }
 
     private void onStateTransitionStart(STATE_TYPE state) {
@@ -393,6 +398,19 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
         setCurrentAnimation(controller.getTarget());
         mConfig.userControlled = true;
         mConfig.playbackController = controller;
+    }
+
+    /**
+     * @see #setCurrentAnimation(AnimatorSet, Animator...). Using this method tells the StateManager
+     * that this is a custom animation to the given state, and thus the StateManager will add an
+     * animation listener to call {@link #onStateTransitionStart} and {@link #onStateTransitionEnd}.
+     * @param anim The custom animation to the given state.
+     * @param toState The state we are animating towards.
+     */
+    public void setCurrentAnimation(AnimatorSet anim, STATE_TYPE toState) {
+        cancelAnimation();
+        setCurrentAnimation(anim);
+        anim.addListener(createStateAnimationListener(toState));
     }
 
     /**

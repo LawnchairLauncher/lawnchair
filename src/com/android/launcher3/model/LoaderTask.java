@@ -128,6 +128,8 @@ public class LoaderTask implements Runnable {
 
     private boolean mStopped;
 
+    private boolean mItemsDeleted = false;
+
     public LoaderTask(LauncherAppState app, AllAppsList bgAllAppsList, BgDataModel dataModel,
             ModelDelegate modelDelegate, LoaderResults results) {
         mApp = app;
@@ -271,6 +273,7 @@ public class LoaderTask implements Runnable {
             if (FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
                 loadFolderNames();
             }
+            sanitizeData();
 
             verifyNotStopped();
             updateHandler.finish();
@@ -357,15 +360,12 @@ public class LoaderTask implements Runnable {
                 final int optionsIndex = c.getColumnIndexOrThrow(
                         LauncherSettings.Favorites.OPTIONS);
 
-                final LongSparseArray<UserHandle> allUsers = c.allUsers;
                 final LongSparseArray<Boolean> unlockedUsers = new LongSparseArray<>();
 
                 mUserManagerState.init(mUserCache, mUserManager);
 
                 for (UserHandle user : mUserCache.getUserProfiles()) {
                     long serialNo = mUserCache.getSerialNumberForUser(user);
-                    allUsers.put(serialNo, user);
-
                     boolean userUnlocked = mUserManager.isUserUnlocked(user);
 
                     // We can only query for shortcuts when the user is unlocked.
@@ -416,16 +416,6 @@ public class LoaderTask implements Runnable {
                             ComponentName cn = intent.getComponent();
                             targetPkg = cn == null ? intent.getPackage() : cn.getPackageName();
 
-                            if (allUsers.indexOfValue(c.user) < 0) {
-                                if (c.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
-                                    c.markDeleted("Legacy shortcuts are only allowed for current users");
-                                    continue;
-                                } else if (c.restoreFlag != 0) {
-                                    // Don't restore items for other profiles.
-                                    c.markDeleted("Restore from other profiles not supported");
-                                    continue;
-                                }
-                            }
                             if (TextUtils.isEmpty(targetPkg) &&
                                     c.itemType != LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
                                 c.markDeleted("Only legacy shortcuts can have null package");
@@ -770,7 +760,7 @@ public class LoaderTask implements Runnable {
             }
 
             // Load delegate items
-            mModelDelegate.loadItems();
+            mModelDelegate.loadItems(mUserManagerState, shortcutKeyToPinnedShortcuts);
 
             // Break early if we've stopped loading
             if (mStopped) {
@@ -791,13 +781,8 @@ public class LoaderTask implements Runnable {
                     mBgDataModel.itemsIdMap.remove(folderId);
                 }
 
-                // Remove any ghost widgets
-                LauncherSettings.Settings.call(contentResolver,
-                        LauncherSettings.Settings.METHOD_REMOVE_GHOST_WIDGETS);
+                mItemsDeleted = true;
             }
-
-            // Update pinned state of model shortcuts
-            mBgDataModel.updateShortcutPinnedState(context);
 
             // Sort the folder items, update ranks, and make sure all preview items are high res.
             FolderGridOrganizer verifier =
@@ -870,6 +855,18 @@ public class LoaderTask implements Runnable {
                 mIconCache.getTitleAndIcon(info, false);
             }
         }
+    }
+
+    private void sanitizeData() {
+        Context context = mApp.getContext();
+        if (mItemsDeleted) {
+            // Remove any ghost widgets
+            LauncherSettings.Settings.call(context.getContentResolver(),
+                    LauncherSettings.Settings.METHOD_REMOVE_GHOST_WIDGETS);
+        }
+
+        // Update pinned state of model shortcuts
+        mBgDataModel.updateShortcutPinnedState(context);
     }
 
     private List<LauncherActivityInfo> loadAllApps() {

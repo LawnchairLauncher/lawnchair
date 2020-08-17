@@ -81,7 +81,7 @@ public class LauncherModelHelper {
     public static final int NO__ICON = -1;
     public static final String TEST_PACKAGE = "com.android.launcher3.validpackage";
 
-    // Authority for providing a dummy default-workspace-layout data.
+    // Authority for providing a test default-workspace-layout data.
     private static final String TEST_PROVIDER_AUTHORITY =
             LauncherModelHelper.class.getName().toLowerCase();
     private static final int DEFAULT_BITMAP_SIZE = 10;
@@ -252,7 +252,7 @@ public class LauncherModelHelper {
     }
 
     /**
-     * Adds a dummy item in the DB.
+     * Adds a mock item in the DB.
      * @param type {@link #APP_ICON} or {@link #SHORTCUT} or >= 2 for
      *             folder (where the type represents the number of items in the folder).
      */
@@ -310,7 +310,7 @@ public class LauncherModelHelper {
     }
 
     /**
-     * Initializes the DB with dummy elements to represent the provided grid structure.
+     * Initializes the DB with mock elements to represent the provided grid structure.
      * @param typeArray A 3d array of item types. {@see #addItem(int, long, long, int, int)} for
      *                  type definitions. The first dimension represents the screens and the next
      *                  two represent the workspace grid.
@@ -347,7 +347,7 @@ public class LauncherModelHelper {
     }
 
     /**
-     * Sets up a dummy provider to load the provided layout by default, next time the layout loads
+     * Sets up a mock provider to load the provided layout by default, next time the layout loads
      */
     public LauncherModelHelper setupDefaultLayoutProvider(LauncherLayoutBuilder builder)
             throws Exception {
@@ -360,7 +360,7 @@ public class LauncherModelHelper {
                 "launcher3.layout.provider", TEST_PROVIDER_AUTHORITY);
 
         shadowOf(context.getPackageManager())
-                .addProviderIfNotPresent(new ComponentName("com.test", "Dummy")).authority =
+                .addProviderIfNotPresent(new ComponentName("com.test", "Mock")).authority =
                 TEST_PROVIDER_AUTHORITY;
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();

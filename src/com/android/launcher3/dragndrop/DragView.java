@@ -187,9 +187,6 @@ public class DragView extends View implements StateListener<LauncherState> {
      */
     @TargetApi(Build.VERSION_CODES.O)
     public void setItemInfo(final ItemInfo info) {
-        if (!Utilities.ATLEAST_OREO) {
-            return;
-        }
         if (info.itemType != LauncherSettings.Favorites.ITEM_TYPE_APPLICATION &&
                 info.itemType != LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT &&
                 info.itemType != LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
