@@ -105,6 +105,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     public OverviewActionsView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr, 0);
         mMultiValueAlpha = new MultiValueAlpha(this, 4);
+        mMultiValueAlpha.setUpdateVisibility(true);
     }
 
     @Override
@@ -168,7 +169,6 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         }
         boolean isHidden = mHiddenFlags != 0;
         mMultiValueAlpha.getProperty(INDEX_HIDDEN_FLAGS_ALPHA).setValue(isHidden ? 0 : 1);
-        setVisibility(isHidden ? INVISIBLE : VISIBLE);
     }
 
     /**
