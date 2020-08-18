@@ -52,7 +52,6 @@ import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
-import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskOverlayFactory.TaskOverlay;
 import com.android.quickstep.views.TaskView.FullscreenDrawParams;
 import com.android.systemui.plugins.OverviewScreenshotActions;
@@ -85,7 +84,7 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
             };
 
     private final BaseActivity mActivity;
-    private final TaskOverlay mOverlay;
+    private TaskOverlay mOverlay;
     private final boolean mIsDarkTextTheme;
     private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint mBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -118,7 +117,6 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
 
     public TaskThumbnailView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mOverlay = TaskOverlayFactory.INSTANCE.get(context).createOverlay(this);
         mPaint.setFilterBitmap(true);
         mBackgroundPaint.setColor(Color.WHITE);
         mClearPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
@@ -134,7 +132,7 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
      * @param task
      */
     public void bind(Task task) {
-        mOverlay.reset();
+        getTaskOverlay().reset();
         mTask = task;
         int color = task == null ? Color.BLACK : task.colorBackground | 0xFF000000;
         mPaint.setColor(color);
@@ -176,7 +174,7 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
             mBitmapShader = null;
             mThumbnailData = null;
             mPaint.setShader(null);
-            mOverlay.reset();
+            getTaskOverlay().reset();
         }
         if (mOverviewScreenshotActionsPlugin != null) {
             mOverviewScreenshotActionsPlugin.setupActions(getTaskView(), getThumbnail(), mActivity);
@@ -200,6 +198,9 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
     }
 
     public TaskOverlay getTaskOverlay() {
+        if (mOverlay == null) {
+            mOverlay = getTaskView().getRecentsView().getTaskOverlayFactory().createOverlay(this);
+        }
         return mOverlay;
     }
 
@@ -357,10 +358,10 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
 
     private void updateOverlay() {
         if (mOverlayEnabled) {
-            mOverlay.initOverlay(mTask, mThumbnailData, mPreviewPositionHelper.mMatrix,
+            getTaskOverlay().initOverlay(mTask, mThumbnailData, mPreviewPositionHelper.mMatrix,
                     mPreviewPositionHelper.mIsOrientationChanged);
         } else {
-            mOverlay.reset();
+            getTaskOverlay().reset();
         }
     }
 
@@ -479,17 +480,18 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
             boolean isOrientationDifferent;
             mClipBottom = -1;
 
+            int thumbnailRotation = thumbnailData.rotation;
+            int deltaRotate = getRotationDelta(currentRotation, thumbnailRotation);
+            Rect thumbnailInsets = getBoundedInsets(
+                    dp.getInsets(), thumbnailData.insets, deltaRotate);
+
             float scale = thumbnailData.scale;
-            Rect activityInsets = dp.getInsets();
-            Rect thumbnailInsets = getBoundedInsets(activityInsets, thumbnailData.insets);
             final float thumbnailWidth = thumbnailPosition.width()
                     - (thumbnailInsets.left + thumbnailInsets.right) * scale;
             final float thumbnailHeight = thumbnailPosition.height()
                     - (thumbnailInsets.top + thumbnailInsets.bottom) * scale;
 
             final float thumbnailScale;
-            int thumbnailRotation = thumbnailData.rotation;
-            int deltaRotate = getRotationDelta(currentRotation, thumbnailRotation);
 
             // Landscape vs portrait change
             boolean windowingModeSupportsRotation = !dp.isMultiWindowMode
@@ -558,7 +560,10 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
             mIsOrientationChanged = isOrientationDifferent;
         }
 
-        private Rect getBoundedInsets(Rect activityInsets, Rect insets) {
+        private Rect getBoundedInsets(Rect activityInsets, Rect insets, int deltaRotation) {
+            if (deltaRotation != 0) {
+                return insets;
+            }
             return new Rect(Math.min(insets.left, activityInsets.left),
                     Math.min(insets.top, activityInsets.top),
                     Math.min(insets.right, activityInsets.right),
