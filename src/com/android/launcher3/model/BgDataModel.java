@@ -31,7 +31,6 @@ import android.text.TextUtils;
 import android.util.ArraySet;
 import android.util.Log;
 
-import com.android.launcher3.InstallShortcutReceiver;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Workspace;
@@ -298,7 +297,7 @@ public class BgDataModel {
                         .filter(wi -> wi.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT)
                         .map(ShortcutKey::fromItemInfo),
                     // Pending shortcuts
-                    InstallShortcutReceiver.getPendingShortcuts(context)
+                    ItemInstallQueue.INSTANCE.get(context).getPendingShortcuts()
                         .stream().filter(si -> si.user.equals(user)))
                 .collect(groupingBy(ShortcutKey::getPackageName,
                         mapping(ShortcutKey::getId, Collectors.toSet())));
