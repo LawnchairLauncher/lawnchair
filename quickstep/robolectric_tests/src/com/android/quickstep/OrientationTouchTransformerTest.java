@@ -32,7 +32,7 @@ import android.view.MotionEvent;
 import android.view.Surface;
 
 import com.android.launcher3.ResourceUtils;
-import com.android.launcher3.util.DefaultDisplay;
+import com.android.launcher3.util.DisplayController;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -50,7 +50,7 @@ public class OrientationTouchTransformerTest {
     private OrientationTouchTransformer mTouchTransformer;
 
     Resources mResources;
-    private DefaultDisplay.Info mInfo;
+    private DisplayController.Info mInfo;
 
 
     @Before
@@ -231,12 +231,12 @@ public class OrientationTouchTransformerTest {
         assertTrue(mTouchTransformer.touchInValidSwipeRegions(inRegion2.getX(), inRegion2.getY()));
     }
 
-    private DefaultDisplay.Info createDisplayInfo(int rotation) {
+    private DisplayController.Info createDisplayInfo(int rotation) {
         Point p = new Point(SIZE_WIDTH, SIZE_HEIGHT);
         if (rotation == Surface.ROTATION_90 || rotation == Surface.ROTATION_270) {
             p = new Point(SIZE_HEIGHT, SIZE_WIDTH);
         }
-        return new DefaultDisplay.Info(0, rotation, 0, p, p, p, null);
+        return new DisplayController.Info(0, rotation, 0, p, p, p, null);
     }
 
     private float generateTouchRegionHeight(int rotation) {

@@ -26,7 +26,7 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_COMPONENTS;
 import static com.android.launcher3.states.StateAnimationConfig.PLAY_ATOMIC_OVERVIEW_SCALE;
 import static com.android.launcher3.states.StateAnimationConfig.PLAY_NON_ATOMIC;
-import static com.android.launcher3.util.DefaultDisplay.getSingleFrameMs;
+import static com.android.launcher3.util.DisplayController.getSingleFrameMs;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -513,15 +513,7 @@ public abstract class AbstractStateChangeTouchController
         if (mAtomicAnim == null) {
             return 0;
         }
-        if (Utilities.ATLEAST_OREO) {
-            return mAtomicAnim.getTotalDuration() - mAtomicAnim.getCurrentPlayTime();
-        } else {
-            long remainingDuration = 0;
-            for (Animator anim : mAtomicAnim.getChildAnimations()) {
-                remainingDuration = Math.max(remainingDuration, anim.getDuration());
-            }
-            return remainingDuration;
-        }
+        return mAtomicAnim.getTotalDuration() - mAtomicAnim.getCurrentPlayTime();
     }
 
     protected void updateSwipeCompleteAnimation(ValueAnimator animator, long expectedDuration,

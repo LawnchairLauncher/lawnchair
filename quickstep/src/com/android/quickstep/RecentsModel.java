@@ -160,9 +160,9 @@ public class RecentsModel extends TaskStackChangeListener {
 
     @Override
     public void onTaskRemoved(int taskId) {
-        Task.TaskKey dummyKey = new Task.TaskKey(taskId, 0, null, null, 0, 0);
-        mThumbnailCache.remove(dummyKey);
-        mIconCache.onTaskRemoved(dummyKey);
+        Task.TaskKey stubKey = new Task.TaskKey(taskId, 0, null, null, 0, 0);
+        mThumbnailCache.remove(stubKey);
+        mIconCache.onTaskRemoved(stubKey);
     }
 
     public void onTrimMemory(int level) {

@@ -15,15 +15,25 @@
  */
 package com.android.launcher3.allapps.search;
 
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_SHORTCUTS;
+
+import android.content.Context;
+import android.content.pm.ShortcutInfo;
+
 import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.R;
+import com.android.launcher3.allapps.AllAppsSectionDecorator.SectionDecorationHandler;
 import com.android.launcher3.allapps.AlphabeticalAppsList.AdapterItem;
+import com.android.launcher3.allapps.AlphabeticalAppsList.HeroAppAdapterItem;
+import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.AllAppsList;
 import com.android.launcher3.model.BaseModelUpdateTask;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.popup.PopupPopulator;
+import com.android.launcher3.shortcuts.ShortcutRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,13 +45,23 @@ import java.util.function.Consumer;
 public class AppsSearchPipeline implements SearchPipeline {
 
     private static final int MAX_RESULTS_COUNT = 5;
+    private static final int MAX_HERO_SECTION_COUNT = 2;
+    private static final int MAX_SHORTCUTS_COUNT = 2;
 
     private final SearchSectionInfo mSearchSectionInfo;
     private final LauncherAppState mLauncherAppState;
+    private final boolean mHeroSectionSupported;
 
     public AppsSearchPipeline(LauncherAppState launcherAppState) {
+        this(launcherAppState, true);
+    }
+
+    public AppsSearchPipeline(LauncherAppState launcherAppState, boolean supportsHeroView) {
         mLauncherAppState = launcherAppState;
-        mSearchSectionInfo = new SearchSectionInfo(R.string.search_corpus_apps);
+        mSearchSectionInfo = new SearchSectionInfo();
+        mSearchSectionInfo.setDecorationHandler(
+                new SectionDecorationHandler(launcherAppState.getContext(), true));
+        mHeroSectionSupported = supportsHeroView;
     }
 
     @Override
@@ -50,9 +70,36 @@ public class AppsSearchPipeline implements SearchPipeline {
         mLauncherAppState.getModel().enqueueModelUpdateTask(new BaseModelUpdateTask() {
             @Override
             public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
-                callback.accept(getAdapterItems(getTitleMatchResult(apps.data, query)));
+                List<AppInfo> matchingResults = getTitleMatchResult(apps.data, query);
+                if (mHeroSectionSupported && matchingResults.size() <= MAX_HERO_SECTION_COUNT) {
+                    callback.accept(getHeroAdapterItems(app.getContext(), matchingResults));
+                } else {
+                    callback.accept(getAdapterItems(matchingResults));
+                }
             }
         });
+    }
+
+    /**
+     * Returns MAX_SHORTCUTS_COUNT shortcuts from local cache
+     * TODO: Shortcuts should be ranked based on relevancy 
+     */
+    private ArrayList<WorkspaceItemInfo> getShortcutInfos(Context context, AppInfo appInfo) {
+        List<ShortcutInfo> shortcuts = new ShortcutRequest(context, appInfo.user)
+                .withContainer(appInfo.getTargetComponent())
+                .query(ShortcutRequest.PUBLISHED);
+        shortcuts = PopupPopulator.sortAndFilterShortcuts(shortcuts, null);
+        IconCache cache = LauncherAppState.getInstance(context).getIconCache();
+        ArrayList<WorkspaceItemInfo> shortcutItems = new ArrayList<>();
+        for (int i = 0; i < shortcuts.size() && i < MAX_SHORTCUTS_COUNT; i++) {
+            final ShortcutInfo shortcut = shortcuts.get(i);
+            final WorkspaceItemInfo si = new WorkspaceItemInfo(shortcut, context);
+            cache.getUnbadgedShortcutIcon(si, shortcut);
+            si.rank = i;
+            si.container = CONTAINER_SHORTCUTS;
+            shortcutItems.add(si);
+        }
+        return shortcutItems;
     }
 
     /**
@@ -73,16 +120,23 @@ public class AppsSearchPipeline implements SearchPipeline {
         return result;
     }
 
+    private ArrayList<AdapterItem> getHeroAdapterItems(Context context, List<AppInfo> apps) {
+        ArrayList<AdapterItem> adapterItems = new ArrayList<>();
+        for (int i = 0; i < apps.size(); i++) {
+            //hero app
+            AppInfo appInfo = apps.get(i);
+            ArrayList<WorkspaceItemInfo> shortcuts = getShortcutInfos(context, appInfo);
+            AdapterItem adapterItem = new HeroAppAdapterItem(appInfo, shortcuts);
+            adapterItem.searchSectionInfo = mSearchSectionInfo;
+            adapterItems.add(adapterItem);
+        }
+        return adapterItems;
+    }
+
     private ArrayList<AdapterItem> getAdapterItems(List<AppInfo> matchingApps) {
         ArrayList<AdapterItem> items = new ArrayList<>();
-        if (matchingApps.isEmpty()) {
-            return items;
-        }
-        items.add(AdapterItem.asSearchTitle(mSearchSectionInfo, 0));
-        int existingItems = items.size();
-        int searchResultsCount = Math.min(matchingApps.size(), MAX_RESULTS_COUNT);
-        for (int i = 0; i < searchResultsCount; i++) {
-            AdapterItem appItem = AdapterItem.asApp(i + existingItems, "", matchingApps.get(i), i);
+        for (int i = 0; i < matchingApps.size() && i < MAX_RESULTS_COUNT; i++) {
+            AdapterItem appItem = AdapterItem.asApp(i, "", matchingApps.get(i), i);
             appItem.searchSectionInfo = mSearchSectionInfo;
             items.add(appItem);
         }

@@ -138,8 +138,7 @@ public class AppInfo extends ItemInfoWithIcon {
         info.runtimeStatusFlags |= (appInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0
                 ? FLAG_SYSTEM_NO : FLAG_SYSTEM_YES;
 
-        if (Utilities.ATLEAST_OREO
-                && appInfo.targetSdkVersion >= Build.VERSION_CODES.O
+        if (appInfo.targetSdkVersion >= Build.VERSION_CODES.O
                 && Process.myUserHandle().equals(lai.getUser())) {
             // The icon for a non-primary user is badged, hence it's not exactly an adaptive icon.
             info.runtimeStatusFlags |= FLAG_ADAPTIVE_ICON;

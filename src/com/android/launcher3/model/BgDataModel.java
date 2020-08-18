@@ -424,6 +424,14 @@ public class BgDataModel {
         public FixedContainerItems clone() {
             return new FixedContainerItems(containerId, new ArrayList<>(items));
         }
+
+        public void setItems(List<ItemInfo> newItems) {
+            items.clear();
+            newItems.forEach(item -> {
+                item.container = containerId;
+                items.add(item);
+            });
+        }
     }
 
 

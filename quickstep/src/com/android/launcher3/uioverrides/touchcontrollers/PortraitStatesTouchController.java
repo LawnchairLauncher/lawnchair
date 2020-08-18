@@ -24,7 +24,6 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
 import static com.android.launcher3.config.FeatureFlags.UNSTABLE_SPRINGS;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_FADE;
@@ -142,6 +141,10 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
                 Log.d(TestProtocol.OVERIEW_NOT_ALLAPPS,
                         "PortraitStatesTouchController.getTargetState 1");
             }
+            if (removeShelfFromOverview(mLauncher)) {
+                // Don't allow swiping down to overview.
+                return NORMAL;
+            }
             return TouchInteractionService.isConnected() ?
                     mLauncher.getStateManager().getLastState() : NORMAL;
         } else if (fromState == OVERVIEW) {
@@ -150,7 +153,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
                         "PortraitStatesTouchController.getTargetState 2");
             }
             LauncherState positiveDragTarget = ALL_APPS;
-            if (ENABLE_OVERVIEW_ACTIONS.get() && removeShelfFromOverview(mLauncher)) {
+            if (removeShelfFromOverview(mLauncher)) {
                 // Don't allow swiping up to all apps.
                 positiveDragTarget = OVERVIEW;
             }
@@ -245,7 +248,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
 
         final StateAnimationConfig config = totalShift == 0 ? new StateAnimationConfig()
                 : getConfigForStates(mFromState, mToState);
-        config.animFlags = updateAnimComponentsOnReinit(animFlags);
+        config.animFlags = animFlags;
         config.duration = maxAccuracy;
 
         cancelPendingAnim();
@@ -277,14 +280,6 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
                     * OverviewState.getDefaultSwipeHeight(mLauncher);
         }
         return 1 / totalShift;
-    }
-
-    /**
-     * Give subclasses the chance to update the animation when we re-initialize towards a new state.
-     */
-    @AnimationFlags
-    protected int updateAnimComponentsOnReinit(@AnimationFlags int animComponents) {
-        return animComponents;
     }
 
     private void cancelPendingAnim() {

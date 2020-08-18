@@ -38,10 +38,6 @@ public class OverviewState extends LauncherState {
         return new OverviewState(id);
     }
 
-    public static OverviewState newPeekState(int id) {
-        return new OverviewState(id);
-    }
-
     public static OverviewState newSwitchState(int id) {
         return new OverviewState(id);
     }

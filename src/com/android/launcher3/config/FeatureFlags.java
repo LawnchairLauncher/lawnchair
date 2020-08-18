@@ -92,7 +92,7 @@ public final class FeatureFlags {
 
     // Keep as DeviceFlag to allow remote disable in emergency.
     public static final BooleanFlag ENABLE_SUGGESTED_ACTIONS_OVERVIEW = new DeviceFlag(
-            "ENABLE_SUGGESTED_ACTIONS_OVERVIEW", false, "Show chip hints on the overview screen");
+            "ENABLE_SUGGESTED_ACTIONS_OVERVIEW", true, "Show chip hints on the overview screen");
 
 
     public static final BooleanFlag ENABLE_DEVICE_SEARCH = getDebugFlag(
@@ -142,10 +142,6 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_LAUNCHER_PREVIEW_IN_GRID_PICKER = getDebugFlag(
             "ENABLE_LAUNCHER_PREVIEW_IN_GRID_PICKER", true, "Show launcher preview in grid picker");
 
-    public static final BooleanFlag ENABLE_OVERVIEW_ACTIONS = getDebugFlag(
-            "ENABLE_OVERVIEW_ACTIONS", true, "Show app actions instead of the shelf in Overview."
-            + " As part of this decoupling, also distinguish swipe up from nav bar vs above it.");
-
     // Keep as DeviceFlag for remote disable in emergency.
     public static final BooleanFlag ENABLE_OVERVIEW_SELECTIONS = new DeviceFlag(
             "ENABLE_OVERVIEW_SELECTIONS", true, "Show Select Mode button in Overview Actions");
@@ -161,9 +157,9 @@ public final class FeatureFlags {
             "ENABLE_UNIVERSAL_SMARTSPACE", false,
             "Replace Smartspace with a version rendered by System UI.");
 
-    public static final BooleanFlag ENABLE_LSQ_VELOCITY_PROVIDER = getDebugFlag(
-            "ENABLE_LSQ_VELOCITY_PROVIDER", true,
-            "Use Least Square algorithm for motion pause detection.");
+    public static final BooleanFlag ENABLE_SYSTEM_VELOCITY_PROVIDER = getDebugFlag(
+            "ENABLE_SYSTEM_VELOCITY_PROVIDER", true,
+            "Use system VelocityTracker's algorithm for motion pause detection.");
 
     public static final BooleanFlag ALWAYS_USE_HARDWARE_OPTIMIZATION_FOR_FOLDER_ANIMATIONS =
             getDebugFlag(

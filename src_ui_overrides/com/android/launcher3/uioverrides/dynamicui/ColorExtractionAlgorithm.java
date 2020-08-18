@@ -21,15 +21,15 @@ import android.util.Log;
 import android.util.Pair;
 import android.util.Range;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.graphics.ColorUtils;
+
 import com.android.launcher3.Utilities;
 
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.graphics.ColorUtils;
 
 /**
  * Implementation of tonal color extraction
@@ -69,7 +69,7 @@ public class ColorExtractionAlgorithm {
         // palettes. The best fit is tweaked to be closer to the source color
         // and replaces the original palette
 
-        // Get the most preeminent, non-blacklisted color.
+        // Get the most preeminent, non-disallowed color.
         Integer bestColor = 0;
         final float[] hsl = new float[3];
         for (int i = 0; i < mainColorsSize; i++) {
@@ -78,7 +78,7 @@ public class ColorExtractionAlgorithm {
                     Color.blue(colorValue), hsl);
 
             // Stop when we find a color that meets our criteria
-            if (!isBlacklisted(hsl)) {
+            if (!isDisallowed(hsl)) {
                 bestColor = colorValue;
                 break;
             }
@@ -167,12 +167,12 @@ public class ColorExtractionAlgorithm {
     }
 
     /**
-     * Checks if a given color exists in the blacklist
+     * Checks if a given color exists in the disallowed_colors list.
      * @param hsl float array with 3 components (H 0..360, S 0..1 and L 0..1)
      * @return true if color should be avoided
      */
-    private boolean isBlacklisted(float[] hsl) {
-        for (ColorRange badRange: BLACKLISTED_COLORS) {
+    private boolean isDisallowed(float[] hsl) {
+        for (ColorRange badRange: DISALLOWED_COLORS) {
             if (badRange.containsColor(hsl[0], hsl[1], hsl[2])) {
                 return true;
             }
@@ -592,7 +592,7 @@ public class ColorExtractionAlgorithm {
     );
 
     @SuppressWarnings("WeakerAccess")
-    static final ColorRange[] BLACKLISTED_COLORS = new ColorRange[] {
+    static final ColorRange[] DISALLOWED_COLORS = new ColorRange[] {
 
             // Red
             new ColorRange(

@@ -57,6 +57,7 @@ public interface PagedOrientationHandler {
 
     <T> void set(T target, Int2DAction<T> action, int param);
     <T> void set(T target, Float2DAction<T> action, float param);
+    <T> void setSecondary(T target, Float2DAction<T> action, float param);
     float getPrimaryDirection(MotionEvent event, int pointerIndex);
     float getPrimaryVelocity(VelocityTracker velocityTracker, int pointerId);
     int getMeasuredSize(View view);
@@ -65,7 +66,8 @@ public interface PagedOrientationHandler {
     int getSecondaryDimension(View view);
     FloatProperty<View> getPrimaryViewTranslate();
     FloatProperty<View> getSecondaryViewTranslate();
-    void setPrimaryAndResetSecondaryTranslate(View view, float translation);
+    void setPrimaryAndResetSecondaryTranslate(
+            View view, float translation, float defaultTranslationX, float defaultTranslationY);
     int getPrimaryScroll(View view);
     float getPrimaryScale(View view);
     int getChildStart(View view);
@@ -74,7 +76,8 @@ public interface PagedOrientationHandler {
     int getScrollOffsetStart(View view, Rect insets);
     int getScrollOffsetEnd(View view, Rect insets);
     SingleAxisSwipeDetector.Direction getOppositeSwipeDirection();
-    int getTaskDismissDirectionFactor();
+    int getPrimaryTranslationDirectionFactor();
+    int getSecondaryTranslationDirectionFactor();
     int getTaskDragDisplacementFactor(boolean isRtl);
     ChildBounds getChildBounds(View child, int childStart, int pageCenter, boolean layoutChild);
     void setMaxScroll(AccessibilityEvent event, int maxScroll);

@@ -50,7 +50,6 @@ import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.util.QuickstepOnboardingPrefs;
 import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.util.RemoteFadeOutAnimationListener;
-import com.android.quickstep.util.ShelfPeekAnim;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -72,8 +71,6 @@ public abstract class BaseQuickstepLauncher extends Launcher
     public static final UiThreadHelper.AsyncCommand SET_BACK_BUTTON_ALPHA =
             (context, arg1, arg2) -> SystemUiProxy.INSTANCE.get(context).setBackButtonAlpha(
                     Float.intBitsToFloat(arg1), arg2 != 0);
-
-    private final ShelfPeekAnim mShelfPeekAnim = new ShelfPeekAnim(this);
 
     private OverviewActionsView mActionsView;
     protected HotseatPredictionController mHotseatPredictionController;
@@ -196,7 +193,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
     }
 
     private boolean isOverviewActionsEnabled() {
-        return FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get() && removeShelfFromOverview(this);
+        return removeShelfFromOverview(this);
     }
 
     public <T extends OverviewActionsView> T getActionsView() {
@@ -315,10 +312,6 @@ public abstract class BaseQuickstepLauncher extends Launcher
     public Stream<SystemShortcut.Factory> getSupportedShortcuts() {
         return Stream.concat(super.getSupportedShortcuts(),
                 Stream.of(WellbeingModel.SHORTCUT_FACTORY));
-    }
-
-    public ShelfPeekAnim getShelfPeekAnim() {
-        return mShelfPeekAnim;
     }
 
     /**

@@ -21,7 +21,6 @@ import static com.android.launcher3.testing.TestProtocol.BACKGROUND_APP_STATE_OR
 import static com.android.launcher3.testing.TestProtocol.HINT_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.NORMAL_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.OVERVIEW_MODAL_TASK_STATE_ORDINAL;
-import static com.android.launcher3.testing.TestProtocol.OVERVIEW_PEEK_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.OVERVIEW_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.QUICK_SWITCH_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.SPRING_LOADED_STATE_ORDINAL;
@@ -117,8 +116,6 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     public static final LauncherState HINT_STATE = new HintState(HINT_STATE_ORDINAL);
 
     public static final LauncherState OVERVIEW = new OverviewState(OVERVIEW_STATE_ORDINAL);
-    public static final LauncherState OVERVIEW_PEEK =
-            OverviewState.newPeekState(OVERVIEW_PEEK_STATE_ORDINAL);
     public static final LauncherState OVERVIEW_MODAL_TASK = OverviewState.newModalTaskState(
             OVERVIEW_MODAL_TASK_STATE_ORDINAL);
     public static final LauncherState QUICK_SWITCH =

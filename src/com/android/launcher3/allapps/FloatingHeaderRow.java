@@ -16,6 +16,7 @@
 package com.android.launcher3.allapps;
 
 import android.graphics.Rect;
+import android.view.View;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.DeviceProfile;
@@ -55,4 +56,9 @@ public interface FloatingHeaderRow {
     void setVerticalScroll(int scroll, boolean isScrolledOut);
 
     Class<? extends FloatingHeaderRow> getTypeClass();
+
+    /**
+     * Returns a child that has focus to be launched by the IME.
+     */
+    View getFocusedChild();
 }

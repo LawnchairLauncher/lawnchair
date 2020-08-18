@@ -48,8 +48,8 @@ import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.util.ConfigMonitor;
-import com.android.launcher3.util.DefaultDisplay;
-import com.android.launcher3.util.DefaultDisplay.Info;
+import com.android.launcher3.util.DisplayController;
+import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.Themes;
@@ -198,7 +198,7 @@ public class InvariantDeviceProfile {
 
         // Get the display info based on default display and interpolate it to existing display
         DisplayOption defaultDisplayOption = invDistWeightedInterpolate(
-                DefaultDisplay.INSTANCE.get(context).getInfo(),
+                DisplayController.getDefaultDisplay(context).getInfo(),
                 getPredefinedDeviceProfiles(context, gridName));
 
         Info myInfo = new Info(context, display);
@@ -231,7 +231,7 @@ public class InvariantDeviceProfile {
     }
 
     private String initGrid(Context context, String gridName) {
-        DefaultDisplay.Info displayInfo = DefaultDisplay.INSTANCE.get(context).getInfo();
+        Info displayInfo = DisplayController.getDefaultDisplay(context).getInfo();
         ArrayList<DisplayOption> allOptions = getPredefinedDeviceProfiles(context, gridName);
 
         DisplayOption displayOption = invDistWeightedInterpolate(displayInfo, allOptions);
@@ -240,7 +240,7 @@ public class InvariantDeviceProfile {
     }
 
     private void initGrid(
-            Context context, DefaultDisplay.Info displayInfo, DisplayOption displayOption) {
+            Context context, Info displayInfo, DisplayOption displayOption) {
         GridOption closestProfile = displayOption.grid;
         numRows = closestProfile.numRows;
         numColumns = closestProfile.numColumns;
@@ -466,7 +466,7 @@ public class InvariantDeviceProfile {
 
     @VisibleForTesting
     static DisplayOption invDistWeightedInterpolate(
-            DefaultDisplay.Info displayInfo, ArrayList<DisplayOption> points) {
+            Info displayInfo, ArrayList<DisplayOption> points) {
         Point smallestSize = new Point(displayInfo.smallestSize);
         Point largestSize = new Point(displayInfo.largestSize);
 

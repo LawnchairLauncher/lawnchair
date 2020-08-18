@@ -195,9 +195,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         mMinFlingVelocity = (int) (MIN_FLING_VELOCITY * density);
         mMinSnapVelocity = (int) (MIN_SNAP_VELOCITY * density);
 
-        if (Utilities.ATLEAST_OREO) {
-            setDefaultFocusHighlightEnabled(false);
-        }
+        setDefaultFocusHighlightEnabled(false);
     }
 
     protected void setDefaultInterpolator(Interpolator interpolator) {
