@@ -28,7 +28,7 @@ import com.android.launcher3.Utilities;
 public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
 
     @Override
-    public int getTaskDismissDirectionFactor() {
+    public int getSecondaryTranslationDirectionFactor() {
         return -1;
     }
 

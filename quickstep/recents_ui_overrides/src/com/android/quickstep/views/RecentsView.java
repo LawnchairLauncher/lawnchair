@@ -24,6 +24,7 @@ import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAG
 import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_ICON_PARAMS;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
+import static com.android.launcher3.LauncherState.OVERVIEW_MODAL_TASK;
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.Utilities.mapToRange;
 import static com.android.launcher3.Utilities.squaredHypot;
@@ -93,6 +94,7 @@ import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -115,6 +117,7 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.DynamicResource;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.OverScroller;
+import com.android.launcher3.util.ResourceBasedOverride.Overrides;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.ViewPool;
 import com.android.quickstep.BaseActivityInterface;
@@ -123,6 +126,7 @@ import com.android.quickstep.RecentsAnimationTargets;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.RecentsModel.TaskVisualsChangeListener;
 import com.android.quickstep.SystemUiProxy;
+import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.ViewUtils;
@@ -210,6 +214,19 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                 }
             };
 
+    public static final FloatProperty<RecentsView> TASK_SECONDARY_TRANSLATION =
+            new FloatProperty<RecentsView>("taskSecondaryTranslation") {
+                @Override
+                public void setValue(RecentsView recentsView, float v) {
+                    recentsView.setTaskViewsSecondaryTranslation(v);
+                }
+
+                @Override
+                public Float get(RecentsView recentsView) {
+                    return recentsView.mTaskViewsSecondaryTranslation;
+                }
+            };
+
     /** Same as normal SCALE_PROPERTY, but also updates page offsets that depend on this scale. */
     public static final FloatProperty<RecentsView> RECENTS_SCALE_PROPERTY =
             new FloatProperty<RecentsView>("recentsScale") {
@@ -219,6 +236,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                     view.setScaleY(scale);
                     view.mLastComputedTaskPushOutDistance = null;
                     view.updatePageOffsets();
+                    view.setTaskViewsSecondaryTranslation(view.mTaskViewsSecondaryTranslation);
                 }
 
                 @Override
@@ -263,12 +281,15 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
 
     private final ViewPool<TaskView> mTaskViewPool;
 
+    private final TaskOverlayFactory mTaskOverlayFactory;
+
     private boolean mDwbToastShown;
     protected boolean mDisallowScrollToClearAll;
     private boolean mOverlayEnabled;
     protected boolean mFreezeViewVisibility;
 
     private float mAdjacentPageOffset = 0;
+    private float mTaskViewsSecondaryTranslation = 0;
 
     /**
      * TODO: Call reloadIdNeeded in onTaskStackChanged.
@@ -449,6 +470,11 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         updateEmptyMessage();
         mOrientationHandler = mOrientationState.getOrientationHandler();
 
+        mTaskOverlayFactory = Overrides.getObject(
+                TaskOverlayFactory.class,
+                context.getApplicationContext(),
+                R.string.task_overlay_factory_class);
+
         // Initialize quickstep specific cache params here, as this is constructed only once
         mActivity.getViewCache().setCacheSize(R.layout.digital_wellbeing_toast, 5);
     }
@@ -542,6 +568,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                 mIPinnedStackAnimationListener);
         mOrientationState.initListeners();
         SplitScreenBounds.INSTANCE.addOnChangeListener(this);
+        mTaskOverlayFactory.initListeners();
     }
 
     @Override
@@ -558,6 +585,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         SplitScreenBounds.INSTANCE.removeOnChangeListener(this);
         mIPinnedStackAnimationListener.setActivity(null);
         mOrientationState.destroyListeners();
+        mTaskOverlayFactory.removeListeners();
     }
 
     @Override
@@ -1391,7 +1419,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         FloatProperty<View> secondaryViewTranslate =
             mOrientationHandler.getSecondaryViewTranslate();
         int secondaryTaskDimension = mOrientationHandler.getSecondaryDimension(taskView);
-        int verticalFactor = mOrientationHandler.getTaskDismissDirectionFactor();
+        int verticalFactor = mOrientationHandler.getSecondaryTranslationDirectionFactor();
 
         ResourceProvider rp = DynamicResource.provider(mActivity);
         SpringProperty sp = new SpringProperty(SpringProperty.FLAG_CAN_SPRING_ON_START)
@@ -1697,6 +1725,12 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         if (mOrientationState.setRecentsRotation(mActivity.getDisplay().getRotation())) {
             updateOrientationHandler();
         }
+        // If overview is in modal state when rotate, reset it to overview state without running
+        // animation.
+        if (mActivity.isInState(OVERVIEW_MODAL_TASK)) {
+            mActivity.getStateManager().goToState(LauncherState.OVERVIEW, false);
+            resetModalVisuals();
+        }
     }
 
     public void setLayoutRotation(int touchRotation, int displayRotation) {
@@ -1853,7 +1887,9 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                     : i < modalMidpoint
                             ? modalLeftOffsetSize
                             : modalRightOffsetSize;
-            getChildAt(i).setTranslationX(translation + modalTranslation);
+            float totalTranslation = translation + modalTranslation;
+            mOrientationHandler.getPrimaryViewTranslate().set(getChildAt(i),
+                    totalTranslation * mOrientationHandler.getPrimaryTranslationDirectionFactor());
         }
         updateCurveProperties();
     }
@@ -1904,6 +1940,14 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         }
         distanceToOffscreen -= mLastComputedTaskPushOutDistance;
         return distanceToOffscreen * offsetProgress;
+    }
+
+    private void setTaskViewsSecondaryTranslation(float translation) {
+        mTaskViewsSecondaryTranslation = translation;
+        for (int i = 0; i < getTaskViewCount(); i++) {
+            TaskView task = getTaskViewAt(i);
+            mOrientationHandler.getSecondaryViewTranslate().set(task, translation / getScaleY());
+        }
     }
 
     /**
@@ -2290,7 +2334,14 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         if (pageIndex == -1) {
             return 0;
         }
-        return getScrollForPage(pageIndex) - mOrientationHandler.getPrimaryScroll(this);
+        // Unbound the scroll (due to overscroll) if the adjacent tasks are offset away from it.
+        // This allows the page to move freely, given there's no visual indication why it shouldn't.
+        int boundedScroll = mOrientationHandler.getPrimaryScroll(this);
+        int unboundedScroll = getUnboundedScroll();
+        float unboundedProgress = mAdjacentPageOffset;
+        int scroll = Math.round(unboundedScroll * unboundedProgress
+                + boundedScroll * (1 - unboundedProgress));
+        return getScrollForPage(pageIndex) - scroll;
     }
 
     public Consumer<MotionEvent> getEventDispatcher(float navbarRotation) {
@@ -2391,6 +2442,10 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
      * @param isModalState
      */
     public void setModalStateEnabled(boolean isModalState) { }
+
+    public TaskOverlayFactory getTaskOverlayFactory() {
+        return mTaskOverlayFactory;
+    }
 
     public BaseActivityInterface getSizeStrategy() {
         return mSizeStrategy;

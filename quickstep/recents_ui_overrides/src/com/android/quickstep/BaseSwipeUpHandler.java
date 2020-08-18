@@ -365,8 +365,7 @@ public abstract class BaseSwipeUpHandler<T extends StatefulActivity<?>, Q extend
      */
     protected void applyWindowTransform() {
         if (mWindowTransitionController != null) {
-            float progress = mCurrentShift.value / mDragLengthFactor;
-            mWindowTransitionController.setPlayFraction(progress);
+            mWindowTransitionController.setProgress(mCurrentShift.value, mDragLengthFactor);
         }
         if (mRecentsAnimationTargets != null) {
             if (mRecentsViewScrollLinked) {
