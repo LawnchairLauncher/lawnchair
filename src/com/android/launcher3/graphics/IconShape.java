@@ -43,8 +43,9 @@ import android.util.Xml;
 import android.view.View;
 import android.view.ViewOutlineProvider;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.icons.IconNormalizer;
@@ -58,8 +59,6 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.annotation.Nullable;
 
 /**
  * Abstract representation of the shape of an icon shape
@@ -381,9 +380,6 @@ public abstract class IconShape {
      * Initializes the shape which is closest to the {@link AdaptiveIconDrawable}
      */
     public static void init(Context context) {
-        if (!Utilities.ATLEAST_OREO) {
-            return;
-        }
         pickBestShape(context);
     }
 

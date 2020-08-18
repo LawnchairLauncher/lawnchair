@@ -40,7 +40,7 @@ import com.android.launcher3.GestureNavContract;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.util.DefaultDisplay;
+import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.Executors;
 
 /**
@@ -97,7 +97,7 @@ public class FloatingSurfaceView extends AbstractFloatingView implements
 
         // Remove after some time, to avoid flickering
         Executors.MAIN_EXECUTOR.getHandler().postDelayed(mRemoveViewRunnable,
-                DefaultDisplay.INSTANCE.get(mLauncher).getInfo().singleFrameMs);
+                DisplayController.getDefaultDisplay(mLauncher).getInfo().singleFrameMs);
     }
 
     private void removeViewFromParent() {

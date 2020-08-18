@@ -149,7 +149,7 @@ public class PendingAnimation implements PropertySetter {
             mProgressAnimator = null;
         }
         if (mAnimHolders.isEmpty()) {
-            // Add a dummy animation to that the duration is respected
+            // Add a placeholder animation to that the duration is respected
             add(ValueAnimator.ofFloat(0, 1).setDuration(mDuration));
         }
         return mAnim;

@@ -25,7 +25,7 @@ import android.util.FloatProperty;
 import androidx.annotation.FloatRange;
 import androidx.dynamicanimation.animation.SpringForce;
 
-import com.android.launcher3.util.DefaultDisplay;
+import com.android.launcher3.util.DisplayController;
 
 /**
  * Utility class to build an object animator which follows the same path as a spring animation for
@@ -134,7 +134,7 @@ public class SpringAnimationBuilder {
     }
 
     public SpringAnimationBuilder computeParams() {
-        int singleFrameMs = DefaultDisplay.getSingleFrameMs(mContext);
+        int singleFrameMs = DisplayController.getSingleFrameMs(mContext);
         double naturalFreq = Math.sqrt(mStiffness);
         double dampedFreq = naturalFreq * Math.sqrt(1 - mDampingRatio * mDampingRatio);
 

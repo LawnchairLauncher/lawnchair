@@ -24,6 +24,7 @@ import static com.android.launcher3.icons.IconNormalizer.ICON_VISIBLE_AREA_FACTO
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.method.TextKeyListener;
@@ -47,13 +48,15 @@ import com.android.launcher3.allapps.SearchUiManager;
 import com.android.launcher3.anim.PropertySetter;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Layout to contain the All-apps search UI.
  */
 public class AppsSearchContainerLayout extends ExtendedEditText
         implements SearchUiManager, AllAppsSearchBarController.Callbacks,
-        AllAppsStore.OnUpdateListener, Insettable {
+        AllAppsStore.OnUpdateListener, Insettable, Consumer<List<Bundle>> {
 
     private final BaseDraggingActivity mLauncher;
     private final AllAppsSearchBarController mSearchBarController;
@@ -136,7 +139,7 @@ public class AppsSearchContainerLayout extends ExtendedEditText
         mAppsView = appsView;
         mSearchBarController.initialize(
                 new DefaultAppSearchAlgorithm(LauncherAppState.getInstance(mLauncher)), this,
-                mLauncher, this);
+                mLauncher, this, this);
     }
 
     @Override
@@ -219,5 +222,10 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     @Override
     public EditText getEditText() {
         return this;
+    }
+
+    @Override
+    public void accept(List<Bundle> bundles) {
+        // TODO: Render the result on mAppsView object
     }
 }

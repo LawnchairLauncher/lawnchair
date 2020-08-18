@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2016 The Android Open Source Project
+<!--
+     Copyright (C) 2017 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,10 +14,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-       android:shape="oval">
-    <solid android:color="?attr/popupColorSecondary" />
-    <size
-        android:height="32dp"
-        android:width="32dp" />
-</shape>
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="?attr/popupColorSecondary"/>
+    <foreground android:drawable="?attr/popupColorSecondary"/>
+</adaptive-icon>

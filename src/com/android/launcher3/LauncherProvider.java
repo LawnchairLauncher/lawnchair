@@ -872,7 +872,6 @@ public class LauncherProvider extends ContentProvider {
          * Removes widgets which are registered to the Launcher's host, but are not present
          * in our model.
          */
-        @TargetApi(Build.VERSION_CODES.O)
         public void removeGhostWidgets(SQLiteDatabase db) {
             // Get all existing widget ids.
             final AppWidgetHost host = newLauncherWidgetHost();

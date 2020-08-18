@@ -17,8 +17,7 @@
 package com.android.launcher3.uioverrides.dynamicui;
 
 import android.content.Context;
-
-import com.android.launcher3.Utilities;
+import android.os.Build;
 
 import androidx.annotation.Nullable;
 
@@ -32,7 +31,7 @@ public abstract class WallpaperManagerCompat {
             if (sInstance == null) {
                 context = context.getApplicationContext();
 
-                if (Utilities.ATLEAST_OREO_MR1) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
                     try {
                         sInstance = new WallpaperManagerCompatVOMR1(context);
                     } catch (Throwable e) {

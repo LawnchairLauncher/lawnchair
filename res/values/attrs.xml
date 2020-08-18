@@ -57,6 +57,7 @@
             <enum name="folder" value="2" />
             <enum name="widget_section" value="3" />
             <enum name="shortcut_popup" value="4" />
+            <enum name="hero_app" value="5" />
         </attr>
         <attr name="centerVertically" format="boolean" />
     </declare-styleable>

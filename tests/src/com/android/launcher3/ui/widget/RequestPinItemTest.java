@@ -30,7 +30,6 @@ import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.LauncherSettings.Favorites;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
@@ -126,9 +125,6 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
 
     private void runTest(String activityMethod, boolean isWidget, ItemOperator itemMatcher,
             Intent... commandIntents) throws Throwable {
-        if (!Utilities.ATLEAST_OREO) {
-            return;
-        }
         clearHomescreen();
         mDevice.pressHome();
 

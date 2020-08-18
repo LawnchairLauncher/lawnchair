@@ -19,6 +19,8 @@ package com.android.launcher3.util;
 import android.util.FloatProperty;
 import android.view.View;
 
+import com.android.launcher3.anim.AlphaUpdateListener;
+
 import java.util.Arrays;
 
 /**
@@ -44,6 +46,8 @@ public class MultiValueAlpha {
     private final AlphaProperty[] mMyProperties;
 
     private int mValidMask;
+    // Whether we should change from INVISIBLE to VISIBLE and vice versa at low alpha values.
+    private boolean mUpdateVisibility;
 
     public MultiValueAlpha(View view, int size) {
         mView = view;
@@ -64,6 +68,11 @@ public class MultiValueAlpha {
 
     public AlphaProperty getProperty(int index) {
         return mMyProperties[index];
+    }
+
+    /** Sets whether we should update between INVISIBLE and VISIBLE based on alpha. */
+    public void setUpdateVisibility(boolean updateVisibility) {
+        mUpdateVisibility = updateVisibility;
     }
 
     public class AlphaProperty {
@@ -99,6 +108,9 @@ public class MultiValueAlpha {
             mValue = value;
 
             mView.setAlpha(mOthers * mValue);
+            if (mUpdateVisibility) {
+                AlphaUpdateListener.updateVisibility(mView);
+            }
         }
 
         public float getValue() {

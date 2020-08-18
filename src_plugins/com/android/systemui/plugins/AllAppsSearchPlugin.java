@@ -16,35 +16,28 @@
 
 package com.android.systemui.plugins;
 
-import android.app.Activity;
-import android.view.ViewGroup;
-import android.widget.EditText;
+import android.os.Bundle;
 
 import com.android.systemui.plugins.annotations.ProvidesInterface;
 
+import java.util.List;
+import java.util.function.Consumer;
+
 /**
- * Implement this plugin interface to replace the all apps recycler view of the all apps drawer.
+ * Implement this plugin interface to fetch search result data from the plugin side.
  */
 @ProvidesInterface(action = AllAppsSearchPlugin.ACTION, version = AllAppsSearchPlugin.VERSION)
 public interface AllAppsSearchPlugin extends Plugin {
     String ACTION = "com.android.systemui.action.PLUGIN_ALL_APPS_SEARCH_ACTIONS";
-    int VERSION = 3;
-
-    /** Following are the order that these methods should be called. */
-    void setup(ViewGroup parent, Activity activity, float allAppsContainerHeight);
+    int VERSION = 4;
 
     /**
-     * When drag starts, pass window inset related fields and the progress to indicate
-     * whether user is swiping down or swiping up
+     * Send signal when user starts typing.
      */
-    void onDragStart(float progress);
+    void startedTyping();
 
-    /** progress is between [0, 1] 1: down, 0: up */
-    void setProgress(float progress);
-
-    /** Called when container animation stops, so that plugin can perform cleanups */
-    void onAnimationEnd(float progress);
-
-    /** pass over the search box object */
-    void setEditText(EditText editText);
+    /**
+     * Send over the query and get the search results.
+     */
+    void performSearch(String query, Consumer<List<Bundle>> results);
 }

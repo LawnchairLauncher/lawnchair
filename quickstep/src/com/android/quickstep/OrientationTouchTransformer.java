@@ -37,7 +37,7 @@ import android.view.Surface;
 import com.android.launcher3.R;
 import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.testing.TestProtocol;
-import com.android.launcher3.util.DefaultDisplay;
+import com.android.launcher3.util.DisplayController.Info;
 
 import java.io.PrintWriter;
 
@@ -85,7 +85,7 @@ class OrientationTouchTransformer {
      * QUICKSTEP_ROTATION_UNINITIALIZED, then user has not tapped on an active nav region.
      * Otherwise it will be the rotation of the display when the user first interacted with the
      * active nav bar region.
-     * The "session" ends when {@link #enableMultipleRegions(boolean, DefaultDisplay.Info)} is
+     * The "session" ends when {@link #enableMultipleRegions(boolean, Info)} is
      * called - usually from a timeout or if user starts interacting w/ the foreground app.
      *
      * This is different than {@link #mLastRectTouched} as it can get reset by the system whereas
@@ -108,7 +108,7 @@ class OrientationTouchTransformer {
         mNavBarGesturalHeight = getNavbarSize(ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE);
     }
 
-    private void refreshTouchRegion(DefaultDisplay.Info info, Resources newRes) {
+    private void refreshTouchRegion(Info info, Resources newRes) {
         // Swipe touch regions are independent of nav mode, so we have to clear them explicitly
         // here to avoid, for ex, a nav region for 2-button rotation 0 being used for 3-button mode
         // It tries to cache and reuse swipe regions whenever possible based only on rotation
@@ -117,7 +117,7 @@ class OrientationTouchTransformer {
         resetSwipeRegions(info);
     }
 
-    void setNavigationMode(SysUINavigationMode.Mode newMode, DefaultDisplay.Info info,
+    void setNavigationMode(SysUINavigationMode.Mode newMode, Info info,
             Resources newRes) {
         if (mMode == newMode) {
             return;
@@ -126,7 +126,7 @@ class OrientationTouchTransformer {
         refreshTouchRegion(info, newRes);
     }
 
-    void setGesturalHeight(int newGesturalHeight, DefaultDisplay.Info info, Resources newRes) {
+    void setGesturalHeight(int newGesturalHeight, Info info, Resources newRes) {
         if (mNavBarGesturalHeight == newGesturalHeight) {
             return;
         }
@@ -140,9 +140,9 @@ class OrientationTouchTransformer {
      * alongside other regions.
      * Ok to call multiple times
      *
-     * @see #enableMultipleRegions(boolean, DefaultDisplay.Info)
+     * @see #enableMultipleRegions(boolean, Info)
      */
-    void createOrAddTouchRegion(DefaultDisplay.Info info) {
+    void createOrAddTouchRegion(Info info) {
         mCurrentDisplayRotation = info.rotation;
         if (mQuickStepStartingRotation > QUICKSTEP_ROTATION_UNINITIALIZED
                 && mCurrentDisplayRotation == mQuickStepStartingRotation) {
@@ -170,7 +170,7 @@ class OrientationTouchTransformer {
      * @param enableMultipleRegions Set to true to start tracking multiple nav bar regions
      * @param info The current displayInfo which will be the start of the quickswitch gesture
      */
-    void enableMultipleRegions(boolean enableMultipleRegions, DefaultDisplay.Info info) {
+    void enableMultipleRegions(boolean enableMultipleRegions, Info info) {
         mEnableMultipleRegions = enableMultipleRegions &&
                 mMode != SysUINavigationMode.Mode.TWO_BUTTONS;
         if (mEnableMultipleRegions) {
@@ -191,7 +191,7 @@ class OrientationTouchTransformer {
      *
      * @param displayInfo The display whos rotation will be used as the current active rotation
      */
-    void setSingleActiveRegion(DefaultDisplay.Info displayInfo) {
+    void setSingleActiveRegion(Info displayInfo) {
         mActiveTouchRotation = displayInfo.rotation;
         resetSwipeRegions(displayInfo);
     }
@@ -202,7 +202,7 @@ class OrientationTouchTransformer {
      * To be called whenever we want to stop tracking more than one swipe region.
      * Ok to call multiple times.
      */
-    private void resetSwipeRegions(DefaultDisplay.Info region) {
+    private void resetSwipeRegions(Info region) {
         if (DEBUG) {
             Log.d(TAG, "clearing all regions except rotation: " + mCurrentDisplayRotation);
         }
@@ -226,7 +226,7 @@ class OrientationTouchTransformer {
         }
     }
 
-    private OrientationRectF createRegionForDisplay(DefaultDisplay.Info display) {
+    private OrientationRectF createRegionForDisplay(Info display) {
         if (DEBUG) {
             Log.d(TAG, "creating rotation region for: " + mCurrentDisplayRotation);
         }

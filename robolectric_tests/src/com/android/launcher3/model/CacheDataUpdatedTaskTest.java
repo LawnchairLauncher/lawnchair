@@ -53,10 +53,10 @@ public class CacheDataUpdatedTaskTest {
         mModelHelper = new LauncherModelHelper();
         mModelHelper.initializeData("/cache_data_updated_task_data.txt");
 
-        // Add dummy entries in the cache to simulate update
+        // Add placeholder entries in the cache to simulate update
         Context context = RuntimeEnvironment.application;
         IconCache iconCache = LauncherAppState.getInstance(context).getIconCache();
-        CachingLogic<ItemInfo> dummyLogic = new CachingLogic<ItemInfo>() {
+        CachingLogic<ItemInfo> placeholderLogic = new CachingLogic<ItemInfo>() {
             @Override
             public ComponentName getComponent(ItemInfo info) {
                 return info.getTargetComponent();
@@ -81,7 +81,7 @@ public class CacheDataUpdatedTaskTest {
 
         UserManager um = context.getSystemService(UserManager.class);
         for (ItemInfo info : mModelHelper.getBgDataModel().itemsIdMap) {
-            iconCache.addIconToDBAndMemCache(info, dummyLogic, new PackageInfo(),
+            iconCache.addIconToDBAndMemCache(info, placeholderLogic, new PackageInfo(),
                     um.getSerialNumberForUser(info.user), true);
         }
     }

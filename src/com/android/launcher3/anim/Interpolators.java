@@ -16,7 +16,7 @@
 
 package com.android.launcher3.anim;
 
-import static com.android.launcher3.util.DefaultDisplay.getSingleFrameMs;
+import static com.android.launcher3.util.DisplayController.getSingleFrameMs;
 
 import android.content.Context;
 import android.graphics.Path;
@@ -198,6 +198,7 @@ public class Interpolators {
         public OvershootParams(float startProgress, float overshootPastProgress,
                 float endProgress, float velocityPxPerMs, int totalDistancePx, Context context) {
             velocityPxPerMs = Math.abs(velocityPxPerMs);
+            overshootPastProgress = Math.max(overshootPastProgress, startProgress);
             start = startProgress;
             int startPx = (int) (start * totalDistancePx);
             // Overshoot by about half a frame.
