@@ -42,6 +42,7 @@ import android.view.WindowInsets;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
+import androidx.core.os.BuildCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -108,7 +109,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     private final MultiValueAlpha mMultiValueAlpha;
 
-    Rect mInsets = new Rect();
+    private Rect mInsets = new Rect();
 
     public AllAppsContainerView(Context context) {
         this(context, null);
@@ -204,6 +205,17 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         mAH[AdapterHolder.WORK].applyPadding();
     }
 
+    private void hideInput() {
+        if (!BuildCompat.isAtLeastR() || !FeatureFlags.ENABLE_DEVICE_SEARCH.get()) return;
+
+        WindowInsets insets = getRootWindowInsets();
+        if (insets == null) return;
+
+        if (insets.isVisible(WindowInsets.Type.ime())) {
+            getWindowInsetsController().hide(WindowInsets.Type.ime());
+        }
+    }
+
     /**
      * Returns whether the view itself will handle the touch event or not.
      */
@@ -219,9 +231,14 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         }
         if (rv.getScrollbar().getThumbOffsetY() >= 0 &&
                 mLauncher.getDragLayer().isEventOverView(rv.getScrollbar(), ev)) {
+            hideInput();
             return false;
         }
-        return rv.shouldContainerScroll(ev, mLauncher.getDragLayer());
+        boolean shouldScroll = rv.shouldContainerScroll(ev, mLauncher.getDragLayer());
+        if (shouldScroll) {
+            hideInput();
+        }
+        return shouldScroll;
     }
 
     @Override
