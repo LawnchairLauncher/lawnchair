@@ -276,7 +276,7 @@ public class MotionPauseDetector {
         private static final int HISTORY_SIZE = 20;
 
         // Position history are stored in a circular array
-        private final long[] mHistoricTimes = new long[HISTORY_SIZE];
+        private final float[] mHistoricTimes = new float[HISTORY_SIZE];
         private final float[] mHistoricPos = new float[HISTORY_SIZE];
         private int mHistoryCount = 0;
         private int mHistoryStart = 0;
@@ -292,7 +292,7 @@ public class MotionPauseDetector {
             mHistoryCount = mHistoryStart = 0;
         }
 
-        private void addPositionAndTime(long eventTime, float eventPosition) {
+        private void addPositionAndTime(float eventTime, float eventPosition) {
             mHistoricTimes[mHistoryStart] = eventTime;
             mHistoricPos[mHistoryStart] = eventPosition;
             mHistoryStart++;
@@ -322,7 +322,7 @@ public class MotionPauseDetector {
          * Based on solveUnweightedLeastSquaresDeg2 in VelocityTracker.cpp
          */
         private Float solveUnweightedLeastSquaresDeg2(final int pointPos) {
-            final long eventTime = mHistoricTimes[pointPos];
+            final float eventTime = mHistoricTimes[pointPos];
 
             float sxi = 0, sxiyi = 0, syi = 0, sxi2 = 0, sxi3 = 0, sxi2yi = 0, sxi4 = 0;
             int count = 0;
@@ -332,8 +332,8 @@ public class MotionPauseDetector {
                     index += HISTORY_SIZE;
                 }
 
-                long time = mHistoricTimes[index];
-                long age = eventTime - time;
+                float time = mHistoricTimes[index];
+                float age = eventTime - time;
                 if (age > HORIZON_MS) {
                     break;
                 }
@@ -364,7 +364,7 @@ public class MotionPauseDetector {
                         if (endPos < 0) {
                             endPos += HISTORY_SIZE;
                         }
-                        long denominator = eventTime - mHistoricTimes[endPos];
+                        float denominator = eventTime - mHistoricTimes[endPos];
                         if (denominator != 0) {
                             return (mHistoricPos[pointPos] - mHistoricPos[endPos]) / denominator;
                         }
