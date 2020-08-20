@@ -83,7 +83,15 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
         mDetector = new SingleAxisSwipeDetector(activity, this, dir);
     }
 
-    private boolean canInterceptTouch() {
+    private boolean canInterceptTouch(MotionEvent ev) {
+        if ((ev.getEdgeFlags() & Utilities.EDGE_NAV_BAR) != 0) {
+            // Don't intercept swipes on the nav bar, as user might be trying to go home
+            // during a task dismiss animation.
+            if (mCurrentAnimation != null) {
+                mCurrentAnimation.getAnimationPlayer().end();
+            }
+            return false;
+        }
         if (mCurrentAnimation != null) {
             mCurrentAnimation.forceFinishIfCloseToEnd();
         }
@@ -119,7 +127,7 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
             clearState();
         }
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            mNoIntercept = !canInterceptTouch();
+            mNoIntercept = !canInterceptTouch(ev);
             if (mNoIntercept) {
                 return false;
             }

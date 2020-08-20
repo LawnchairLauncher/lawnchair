@@ -22,6 +22,7 @@ import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 
 import android.graphics.Rect;
+import android.util.FloatProperty;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -33,9 +34,24 @@ import androidx.annotation.Nullable;
  */
 public class OverviewScrim extends Scrim {
 
+    public static final FloatProperty<OverviewScrim> SCRIM_MULTIPLIER =
+            new FloatProperty<OverviewScrim>("scrimMultiplier") {
+                @Override
+                public Float get(OverviewScrim scrim) {
+                    return scrim.mScrimMultiplier;
+                }
+
+                @Override
+                public void setValue(OverviewScrim scrim, float v) {
+                    scrim.setScrimMultiplier(v);
+                }
+            };
+
     private @NonNull View mStableScrimmedView;
     // Might be higher up if mStableScrimmedView is invisible.
     private @Nullable View mCurrentScrimmedView;
+
+    private float mScrimMultiplier = 1f;
 
     public OverviewScrim(View view) {
         super(view);
@@ -67,5 +83,17 @@ public class OverviewScrim extends Scrim {
      */
     public @Nullable View getScrimmedView() {
         return mCurrentScrimmedView;
+    }
+
+    private void setScrimMultiplier(float scrimMultiplier) {
+        if (Float.compare(mScrimMultiplier, scrimMultiplier) != 0) {
+            mScrimMultiplier = scrimMultiplier;
+            invalidate();
+        }
+    }
+
+    @Override
+    protected int getScrimAlpha() {
+        return Math.round(super.getScrimAlpha() * mScrimMultiplier);
     }
 }
