@@ -16,6 +16,7 @@
 package com.android.launcher3.allapps.search;
 
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_SHORTCUTS;
+import static com.android.launcher3.allapps.AllAppsGridAdapter.VIEW_TYPE_SEARCH_HERO_APP;
 
 import android.content.Context;
 import android.content.pm.ShortcutInfo;
@@ -23,9 +24,9 @@ import android.content.pm.ShortcutInfo;
 import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.allapps.AllAppsGridAdapter;
+import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItem;
 import com.android.launcher3.allapps.AllAppsSectionDecorator.SectionDecorationHandler;
-import com.android.launcher3.allapps.AlphabeticalAppsList.AdapterItem;
-import com.android.launcher3.allapps.AlphabeticalAppsList.HeroAppAdapterItem;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.AllAppsList;
 import com.android.launcher3.model.BaseModelUpdateTask;
@@ -82,7 +83,7 @@ public class AppsSearchPipeline implements SearchPipeline {
 
     /**
      * Returns MAX_SHORTCUTS_COUNT shortcuts from local cache
-     * TODO: Shortcuts should be ranked based on relevancy 
+     * TODO: Shortcuts should be ranked based on relevancy
      */
     private ArrayList<WorkspaceItemInfo> getShortcutInfos(Context context, AppInfo appInfo) {
         List<ShortcutInfo> shortcuts = new ShortcutRequest(context, appInfo.user)
@@ -126,7 +127,9 @@ public class AppsSearchPipeline implements SearchPipeline {
             //hero app
             AppInfo appInfo = apps.get(i);
             ArrayList<WorkspaceItemInfo> shortcuts = getShortcutInfos(context, appInfo);
-            AdapterItem adapterItem = new HeroAppAdapterItem(appInfo, shortcuts);
+            AdapterItem adapterItem = new AllAppsGridAdapter.AdapterItemWithPayload(shortcuts,
+                    VIEW_TYPE_SEARCH_HERO_APP);
+            adapterItem.appInfo = appInfo;
             adapterItem.searchSectionInfo = mSearchSectionInfo;
             adapterItems.add(adapterItem);
         }

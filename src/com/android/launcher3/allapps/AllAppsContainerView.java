@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.allapps;
 
+import static com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItem;
+import static com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItemWithPayload;
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_HAS_SHORTCUT_PERMISSION;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_CHANGE_PERMISSION;
@@ -525,6 +527,25 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     public View getContentView() {
         return mViewPager == null ? getActiveRecyclerView() : mViewPager;
+    }
+
+    /**
+     * Handles selection on focused view and returns success
+     */
+    public boolean selectFocusedView(View v) {
+        ItemInfo itemInfo = getHighlightedItemInfo();
+        if (itemInfo != null) {
+            return mLauncher.startActivitySafely(v, itemInfo.getIntent(), itemInfo);
+        }
+        AdapterItem focusedItem = getActiveRecyclerView().getApps().getFocusedChild();
+        if (focusedItem instanceof AdapterItemWithPayload) {
+            Runnable onSelection = ((AdapterItemWithPayload) focusedItem).getSelectionHandler();
+            if (onSelection != null) {
+                onSelection.run();
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

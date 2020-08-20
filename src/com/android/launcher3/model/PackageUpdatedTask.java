@@ -28,7 +28,6 @@ import android.os.UserHandle;
 import android.os.UserManager;
 import android.util.Log;
 
-import com.android.launcher3.InstallShortcutReceiver;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.config.FeatureFlags;
@@ -320,7 +319,8 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
             deleteAndBindComponentsRemoved(removeMatch);
 
             // Remove any queued items from the install queue
-            InstallShortcutReceiver.removeFromInstallQueue(context, removedPackages, mUser);
+            ItemInstallQueue.INSTANCE.get(context)
+                    .removeFromInstallQueue(removedPackages, mUser);
         }
 
         if (mOp == OP_ADD) {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3;
+package com.android.launcher3.model;
 
 import static android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_ID;
 
@@ -42,13 +42,19 @@ import android.util.Pair;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
+import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.shortcuts.ShortcutRequest;
+import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.Preconditions;
 
 import org.json.JSONException;
@@ -63,15 +69,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public class InstallShortcutReceiver {
+/**
+ * Class to maintain a queue of pending items to be added to the workspace.
+ */
+public class ItemInstallQueue {
 
     public static final int FLAG_ACTIVITY_PAUSED = 1;
     public static final int FLAG_LOADER_RUNNING = 2;
     public static final int FLAG_DRAG_AND_DROP = 4;
-
-    // Determines whether to defer installing shortcuts immediately until
-    // processAllPendingInstalls() is called.
-    private static int sInstallQueueDisabledFlags = 0;
 
     private static final String TAG = "InstallShortcutReceiver";
     private static final boolean DBG = false;
@@ -82,10 +87,23 @@ public class InstallShortcutReceiver {
     public static final int NEW_SHORTCUT_BOUNCE_DURATION = 450;
     public static final int NEW_SHORTCUT_STAGGER_DELAY = 85;
 
+    public static MainThreadInitializedObject<ItemInstallQueue> INSTANCE =
+            new MainThreadInitializedObject<>(ItemInstallQueue::new);
+
+    private final Context mContext;
+
+    // Determines whether to defer installing shortcuts immediately until
+    // processAllPendingInstalls() is called.
+    private int mInstallQueueDisabledFlags = 0;
+
+    private ItemInstallQueue(Context context) {
+        mContext = context;
+    }
+
     @WorkerThread
-    private static void addToQueue(Context context, PendingInstallShortcutInfo info) {
-        String encoded = info.encodeToString(context);
-        SharedPreferences prefs = Utilities.getPrefs(context);
+    private void addToQueue(PendingInstallShortcutInfo info) {
+        String encoded = info.encodeToString(mContext);
+        SharedPreferences prefs = Utilities.getPrefs(mContext);
         Set<String> strings = prefs.getStringSet(APPS_PENDING_INSTALL, null);
         strings = (strings != null) ? new HashSet<>(strings) : new HashSet<>(1);
         strings.add(encoded);
@@ -93,14 +111,15 @@ public class InstallShortcutReceiver {
     }
 
     @WorkerThread
-    private static void flushQueueInBackground(Context context) {
-        if (Launcher.ACTIVITY_TRACKER.getCreatedActivity() == null) {
+    private void flushQueueInBackground() {
+        Launcher launcher = Launcher.ACTIVITY_TRACKER.getCreatedActivity();
+        if (launcher == null) {
             // Launcher not loaded
             return;
         }
 
         ArrayList<Pair<ItemInfo, Object>> installQueue = new ArrayList<>();
-        SharedPreferences prefs = Utilities.getPrefs(context);
+        SharedPreferences prefs = Utilities.getPrefs(mContext);
         Set<String> strings = prefs.getStringSet(APPS_PENDING_INSTALL, null);
         if (DBG) Log.d(TAG, "Getting and clearing APPS_PENDING_INSTALL: " + strings);
         if (strings == null) {
@@ -108,29 +127,31 @@ public class InstallShortcutReceiver {
         }
 
         for (String encoded : strings) {
-            PendingInstallShortcutInfo info = decode(encoded, context);
+            PendingInstallShortcutInfo info = decode(encoded, mContext);
             if (info == null) {
                 continue;
             }
 
             // Generate a shortcut info to add into the model
-            installQueue.add(info.getItemInfo(context));
+            installQueue.add(info.getItemInfo(mContext));
         }
         prefs.edit().remove(APPS_PENDING_INSTALL).apply();
         if (!installQueue.isEmpty()) {
-            LauncherAppState.getInstance(context).getModel()
-                    .addAndBindAddedWorkspaceItems(installQueue);
+            launcher.getModel().addAndBindAddedWorkspaceItems(installQueue);
         }
     }
 
-    public static void removeFromInstallQueue(Context context, HashSet<String> packageNames,
-            UserHandle user) {
+    /**
+     * Removes previously added items from the queue.
+     */
+    @WorkerThread
+    public void removeFromInstallQueue(HashSet<String> packageNames, UserHandle user) {
         if (packageNames.isEmpty()) {
             return;
         }
         Preconditions.assertWorkerThread();
 
-        SharedPreferences sp = Utilities.getPrefs(context);
+        SharedPreferences sp = Utilities.getPrefs(mContext);
         Set<String> strings = sp.getStringSet(APPS_PENDING_INSTALL, null);
         if (DBG) {
             Log.d(TAG, "APPS_PENDING_INSTALL: " + strings
@@ -144,7 +165,7 @@ public class InstallShortcutReceiver {
         while (newStringsIter.hasNext()) {
             String encoded = newStringsIter.next();
             try {
-                Decoder decoder = new Decoder(encoded, context);
+                Decoder decoder = new Decoder(encoded, mContext);
                 if (packageNames.contains(getIntentPackage(decoder.intent))
                         && user.equals(decoder.user)) {
                     newStringsIter.remove();
@@ -157,30 +178,42 @@ public class InstallShortcutReceiver {
         sp.edit().putStringSet(APPS_PENDING_INSTALL, newStrings).apply();
     }
 
-    public static void queueShortcut(ShortcutInfo info, Context context) {
-        queuePendingShortcutInfo(new PendingInstallShortcutInfo(info), context);
+    /**
+     * Adds an item to the install queue
+     */
+    public void queueItem(ShortcutInfo info) {
+        queuePendingShortcutInfo(new PendingInstallShortcutInfo(info));
     }
 
-    public static void queueWidget(AppWidgetProviderInfo info, int widgetId, Context context) {
-        queuePendingShortcutInfo(new PendingInstallShortcutInfo(info, widgetId), context);
+    /**
+     * Adds an item to the install queue
+     */
+    public void queueItem(AppWidgetProviderInfo info, int widgetId) {
+        queuePendingShortcutInfo(new PendingInstallShortcutInfo(info, widgetId));
     }
 
-    public static void queueApplication(
-            String packageName, UserHandle userHandle, Context context) {
-        queuePendingShortcutInfo(new PendingInstallShortcutInfo(packageName, userHandle), context);
+    /**
+     * Adds an item to the install queue
+     */
+    public void queueItem(String packageName, UserHandle userHandle) {
+        queuePendingShortcutInfo(new PendingInstallShortcutInfo(packageName, userHandle));
     }
 
-    public static HashSet<ShortcutKey> getPendingShortcuts(Context context) {
+    /**
+     * Returns all pending shorts in the queue
+     */
+    @WorkerThread
+    public HashSet<ShortcutKey> getPendingShortcuts() {
         HashSet<ShortcutKey> result = new HashSet<>();
 
-        Set<String> strings = Utilities.getPrefs(context).getStringSet(APPS_PENDING_INSTALL, null);
+        Set<String> strings = Utilities.getPrefs(mContext).getStringSet(APPS_PENDING_INSTALL, null);
         if (strings == null || ((Collection) strings).isEmpty()) {
             return result;
         }
 
         for (String encoded : strings) {
             try {
-                Decoder decoder = new Decoder(encoded, context);
+                Decoder decoder = new Decoder(encoded, mContext);
                 if (decoder.optInt(Favorites.ITEM_TYPE, -1) == ITEM_TYPE_DEEP_SHORTCUT) {
                     result.add(ShortcutKey.fromIntent(decoder.intent, decoder.user));
                 }
@@ -191,27 +224,34 @@ public class InstallShortcutReceiver {
         return result;
     }
 
-    private static void queuePendingShortcutInfo(PendingInstallShortcutInfo info, Context context) {
+    private void queuePendingShortcutInfo(PendingInstallShortcutInfo info) {
         // Queue the item up for adding if launcher has not loaded properly yet
-        MODEL_EXECUTOR.post(() -> addToQueue(context, info));
-        flushInstallQueue(context);
+        MODEL_EXECUTOR.post(() -> addToQueue(info));
+        flushInstallQueue();
     }
 
-    public static void enableInstallQueue(int flag) {
-        sInstallQueueDisabledFlags |= flag;
-    }
-    public static void disableAndFlushInstallQueue(int flag, Context context) {
-        sInstallQueueDisabledFlags &= ~flag;
-        flushInstallQueue(context);
+    /**
+     * Pauses the push-to-model flow until unpaused. All items are held in the queue and
+     * not added to the model.
+     */
+    public void pauseModelPush(int flag) {
+        mInstallQueueDisabledFlags |= flag;
     }
 
-    static void flushInstallQueue(Context context) {
-        if (sInstallQueueDisabledFlags != 0) {
+    /**
+     * Adds all the queue items to the model if the use is completely resumed.
+     */
+    public void resumeModelPush(int flag) {
+        mInstallQueueDisabledFlags &= ~flag;
+        flushInstallQueue();
+    }
+
+    private void flushInstallQueue() {
+        if (mInstallQueueDisabledFlags != 0) {
             return;
         }
-        MODEL_EXECUTOR.post(() -> flushQueueInBackground(context));
+        MODEL_EXECUTOR.post(this::flushQueueInBackground);
     }
-
 
     private static class PendingInstallShortcutInfo extends ItemInfo {
 
