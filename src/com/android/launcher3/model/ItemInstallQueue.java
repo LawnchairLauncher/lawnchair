@@ -21,7 +21,6 @@ import static android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_ID;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
-import static com.android.launcher3.LauncherSettings.Favorites.PROFILE_ID;
 import static com.android.launcher3.model.data.AppInfo.makeLaunchIntent;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
@@ -30,11 +29,9 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
 import android.content.pm.ShortcutInfo;
-import android.os.Process;
 import android.os.UserHandle;
 import android.util.Log;
 import android.util.Pair;
@@ -47,27 +44,19 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.LauncherSettings.Favorites;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
-import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.util.MainThreadInitializedObject;
+import com.android.launcher3.util.PersistedItemArray;
 import com.android.launcher3.util.Preconditions;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONStringer;
-
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Class to maintain a queue of pending items to be added to the workspace.
@@ -79,7 +68,6 @@ public class ItemInstallQueue {
     public static final int FLAG_DRAG_AND_DROP = 4;
 
     private static final String TAG = "InstallShortcutReceiver";
-    private static final boolean DBG = false;
 
     // The set of shortcuts that are pending install
     private static final String APPS_PENDING_INSTALL = "apps_to_install";
@@ -90,24 +78,34 @@ public class ItemInstallQueue {
     public static MainThreadInitializedObject<ItemInstallQueue> INSTANCE =
             new MainThreadInitializedObject<>(ItemInstallQueue::new);
 
+    private final PersistedItemArray<PendingInstallShortcutInfo> mStorage =
+            new PersistedItemArray<>(APPS_PENDING_INSTALL);
     private final Context mContext;
 
     // Determines whether to defer installing shortcuts immediately until
     // processAllPendingInstalls() is called.
     private int mInstallQueueDisabledFlags = 0;
 
+    // Only accessed on worker thread
+    private List<PendingInstallShortcutInfo> mItems;
+
     private ItemInstallQueue(Context context) {
         mContext = context;
     }
 
     @WorkerThread
+    private void ensureQueueLoaded() {
+        Preconditions.assertWorkerThread();
+        if (mItems == null) {
+            mItems = mStorage.read(mContext, this::decode);
+        }
+    }
+
+    @WorkerThread
     private void addToQueue(PendingInstallShortcutInfo info) {
-        String encoded = info.encodeToString(mContext);
-        SharedPreferences prefs = Utilities.getPrefs(mContext);
-        Set<String> strings = prefs.getStringSet(APPS_PENDING_INSTALL, null);
-        strings = (strings != null) ? new HashSet<>(strings) : new HashSet<>(1);
-        strings.add(encoded);
-        prefs.edit().putStringSet(APPS_PENDING_INSTALL, strings).apply();
+        ensureQueueLoaded();
+        mItems.add(info);
+        mStorage.write(mContext, mItems);
     }
 
     @WorkerThread
@@ -117,28 +115,21 @@ public class ItemInstallQueue {
             // Launcher not loaded
             return;
         }
-
-        ArrayList<Pair<ItemInfo, Object>> installQueue = new ArrayList<>();
-        SharedPreferences prefs = Utilities.getPrefs(mContext);
-        Set<String> strings = prefs.getStringSet(APPS_PENDING_INSTALL, null);
-        if (DBG) Log.d(TAG, "Getting and clearing APPS_PENDING_INSTALL: " + strings);
-        if (strings == null) {
+        ensureQueueLoaded();
+        if (mItems.isEmpty()) {
             return;
         }
 
-        for (String encoded : strings) {
-            PendingInstallShortcutInfo info = decode(encoded, mContext);
-            if (info == null) {
-                continue;
-            }
+        List<Pair<ItemInfo, Object>> installQueue = mItems.stream()
+                .map(info -> info.getItemInfo(mContext))
+                .collect(Collectors.toList());
 
-            // Generate a shortcut info to add into the model
-            installQueue.add(info.getItemInfo(mContext));
-        }
-        prefs.edit().remove(APPS_PENDING_INSTALL).apply();
+        // Add the items and clear queue
         if (!installQueue.isEmpty()) {
             launcher.getModel().addAndBindAddedWorkspaceItems(installQueue);
         }
+        mItems.clear();
+        mStorage.getFile(mContext).delete();
     }
 
     /**
@@ -149,33 +140,11 @@ public class ItemInstallQueue {
         if (packageNames.isEmpty()) {
             return;
         }
-        Preconditions.assertWorkerThread();
-
-        SharedPreferences sp = Utilities.getPrefs(mContext);
-        Set<String> strings = sp.getStringSet(APPS_PENDING_INSTALL, null);
-        if (DBG) {
-            Log.d(TAG, "APPS_PENDING_INSTALL: " + strings
-                    + ", removing packages: " + packageNames);
+        ensureQueueLoaded();
+        if (mItems.removeIf(item ->
+                item.user.equals(user) && packageNames.contains(getIntentPackage(item.intent)))) {
+            mStorage.write(mContext, mItems);
         }
-        if (strings == null || ((Collection) strings).isEmpty()) {
-            return;
-        }
-        Set<String> newStrings = new HashSet<>(strings);
-        Iterator<String> newStringsIter = newStrings.iterator();
-        while (newStringsIter.hasNext()) {
-            String encoded = newStringsIter.next();
-            try {
-                Decoder decoder = new Decoder(encoded, mContext);
-                if (packageNames.contains(getIntentPackage(decoder.intent))
-                        && user.equals(decoder.user)) {
-                    newStringsIter.remove();
-                }
-            } catch (JSONException | URISyntaxException e) {
-                Log.d(TAG, "Exception reading shortcut to add: " + e);
-                newStringsIter.remove();
-            }
-        }
-        sp.edit().putStringSet(APPS_PENDING_INSTALL, newStrings).apply();
     }
 
     /**
@@ -200,28 +169,14 @@ public class ItemInstallQueue {
     }
 
     /**
-     * Returns all pending shorts in the queue
+     * Returns a stream of all pending shortcuts in the queue
      */
     @WorkerThread
-    public HashSet<ShortcutKey> getPendingShortcuts() {
-        HashSet<ShortcutKey> result = new HashSet<>();
-
-        Set<String> strings = Utilities.getPrefs(mContext).getStringSet(APPS_PENDING_INSTALL, null);
-        if (strings == null || ((Collection) strings).isEmpty()) {
-            return result;
-        }
-
-        for (String encoded : strings) {
-            try {
-                Decoder decoder = new Decoder(encoded, mContext);
-                if (decoder.optInt(Favorites.ITEM_TYPE, -1) == ITEM_TYPE_DEEP_SHORTCUT) {
-                    result.add(ShortcutKey.fromIntent(decoder.intent, decoder.user));
-                }
-            } catch (JSONException | URISyntaxException e) {
-                Log.d(TAG, "Exception reading shortcut to add: " + e);
-            }
-        }
-        return result;
+    public Stream<ShortcutKey> getPendingShortcuts(UserHandle user) {
+        ensureQueueLoaded();
+        return mItems.stream()
+                .filter(item -> item.itemType == ITEM_TYPE_DEEP_SHORTCUT && user.equals(item.user))
+                .map(item -> ShortcutKey.fromIntent(item.intent, user));
     }
 
     private void queuePendingShortcutInfo(PendingInstallShortcutInfo info) {
@@ -293,19 +248,9 @@ public class ItemInstallQueue {
             providerInfo = info;
         }
 
-        public String encodeToString(Context context) {
-            try {
-                return new JSONStringer()
-                        .object()
-                        .key(Favorites.ITEM_TYPE).value(itemType)
-                        .key(Favorites.INTENT).value(intent.toUri(0))
-                        .key(PROFILE_ID).value(
-                                UserCache.INSTANCE.get(context).getSerialNumberForUser(user))
-                        .endObject().toString();
-            } catch (JSONException e) {
-                Log.d(TAG, "Exception when adding shortcut: " + e);
-                return null;
-            }
+        @Override
+        public Intent getIntent() {
+            return intent;
         }
 
         public Pair<ItemInfo, Object> getItemInfo(Context context) {
@@ -365,55 +310,33 @@ public class ItemInstallQueue {
                 ? intent.getPackage() : intent.getComponent().getPackageName();
     }
 
-    private static PendingInstallShortcutInfo decode(String encoded, Context context) {
-        try {
-            Decoder decoder = new Decoder(encoded, context);
-            switch (decoder.optInt(Favorites.ITEM_TYPE, -1)) {
-                case Favorites.ITEM_TYPE_APPLICATION:
-                    return new PendingInstallShortcutInfo(
-                            decoder.intent.getPackage(), decoder.user);
-                case Favorites.ITEM_TYPE_DEEP_SHORTCUT: {
-                    List<ShortcutInfo> si = ShortcutKey.fromIntent(decoder.intent, decoder.user)
-                            .buildRequest(context)
-                            .query(ShortcutRequest.ALL);
-                    if (si.isEmpty()) {
-                        return null;
-                    } else {
-                        return new PendingInstallShortcutInfo(si.get(0));
-                    }
+    private PendingInstallShortcutInfo decode(int itemType, UserHandle user, Intent intent) {
+        switch (itemType) {
+            case Favorites.ITEM_TYPE_APPLICATION:
+                return new PendingInstallShortcutInfo(intent.getPackage(), user);
+            case Favorites.ITEM_TYPE_DEEP_SHORTCUT: {
+                List<ShortcutInfo> si = ShortcutKey.fromIntent(intent, user)
+                        .buildRequest(mContext)
+                        .query(ShortcutRequest.ALL);
+                if (si.isEmpty()) {
+                    return null;
+                } else {
+                    return new PendingInstallShortcutInfo(si.get(0));
                 }
-                case Favorites.ITEM_TYPE_APPWIDGET: {
-                    int widgetId = decoder.intent.getIntExtra(EXTRA_APPWIDGET_ID, 0);
-                    AppWidgetProviderInfo info =
-                            AppWidgetManager.getInstance(context).getAppWidgetInfo(widgetId);
-                    if (info == null || !info.provider.equals(decoder.intent.getComponent())
-                            || !info.getProfile().equals(decoder.user)) {
-                        return null;
-                    }
-                    return new PendingInstallShortcutInfo(info, widgetId);
-                }
-                default:
-                    Log.e(TAG, "Unknown item type");
             }
-        } catch (JSONException | URISyntaxException e) {
-            Log.d(TAG, "Exception reading shortcut to add: " + e);
+            case Favorites.ITEM_TYPE_APPWIDGET: {
+                int widgetId = intent.getIntExtra(EXTRA_APPWIDGET_ID, 0);
+                AppWidgetProviderInfo info =
+                        AppWidgetManager.getInstance(mContext).getAppWidgetInfo(widgetId);
+                if (info == null || !info.provider.equals(intent.getComponent())
+                        || !info.getProfile().equals(user)) {
+                    return null;
+                }
+                return new PendingInstallShortcutInfo(info, widgetId);
+            }
+            default:
+                Log.e(TAG, "Unknown item type");
         }
         return null;
-    }
-
-    private static class Decoder extends JSONObject {
-        public final Intent intent;
-        public final UserHandle user;
-
-        private Decoder(String encoded, Context context) throws JSONException, URISyntaxException {
-            super(encoded);
-            intent = Intent.parseUri(getString(Favorites.INTENT), 0);
-            user = has(PROFILE_ID)
-                    ? UserCache.INSTANCE.get(context).getUserForSerialNumber(getLong(PROFILE_ID))
-                    : Process.myUserHandle();
-            if (user == null || intent == null) {
-                throw new JSONException("Invalid data");
-            }
-        }
     }
 }

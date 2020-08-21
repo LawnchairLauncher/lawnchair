@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.UiThreadHelper;
 
 
@@ -130,6 +131,10 @@ public class ExtendedEditText extends EditText {
     public void reset() {
         if (!TextUtils.isEmpty(getText())) {
             setText("");
+        } else {
+            if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
+                return;
+            }
         }
         if (isFocused()) {
             View nextFocus = focusSearch(View.FOCUS_DOWN);
