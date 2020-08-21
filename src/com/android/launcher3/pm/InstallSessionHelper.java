@@ -32,11 +32,11 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
-import com.android.launcher3.InstallShortcutReceiver;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.SessionCommitReceiver;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.model.ItemInstallQueue;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.LooperExecutor;
@@ -213,8 +213,8 @@ public class InstallSessionHelper {
                 && !mPromiseIconIds.contains(sessionInfo.getSessionId())
                 && new PackageManagerHelper(mAppContext).getApplicationInfo(
                         sessionInfo.getAppPackageName(), getUserHandle(sessionInfo), 0) == null) {
-            InstallShortcutReceiver.queueApplication(
-                    sessionInfo.getAppPackageName(), getUserHandle(sessionInfo), mAppContext);
+            ItemInstallQueue.INSTANCE.get(mAppContext)
+                    .queueItem(sessionInfo.getAppPackageName(), getUserHandle(sessionInfo));
 
             mPromiseIconIds.add(sessionInfo.getSessionId());
             updatePromiseIconPrefs();

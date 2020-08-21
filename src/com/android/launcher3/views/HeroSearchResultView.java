@@ -30,7 +30,8 @@ import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.allapps.AlphabeticalAppsList;
+import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItemWithPayload;
+import com.android.launcher3.allapps.search.AllAppsSearchBarController;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.graphics.DragPreviewProvider;
@@ -47,7 +48,8 @@ import java.util.List;
 /**
  * A view representing a high confidence app search result that includes shortcuts
  */
-public class HeroSearchResultView extends LinearLayout implements DragSource {
+public class HeroSearchResultView extends LinearLayout implements DragSource,
+        AllAppsSearchBarController.PayloadResultHandler<List<WorkspaceItemInfo>> {
 
     BubbleTextView mBubbleTextView;
     View mIconView;
@@ -96,18 +98,18 @@ public class HeroSearchResultView extends LinearLayout implements DragSource {
     /**
      * Apply {@link ItemInfo} for appIcon and shortcut Icons
      */
-    public void prepareUsingAdapterItem(AlphabeticalAppsList.HeroAppAdapterItem adapterItem) {
+    @Override
+    public void applyAdapterInfo(AdapterItemWithPayload<List<WorkspaceItemInfo>> adapterItem) {
         mBubbleTextView.applyFromApplicationInfo(adapterItem.appInfo);
         mIconView.setBackground(mBubbleTextView.getIcon());
         mIconView.setTag(adapterItem.appInfo);
-        List<WorkspaceItemInfo> shorcutInfos = adapterItem.getShortcutInfos();
+        List<WorkspaceItemInfo> shorcutInfos = adapterItem.getPayload();
         for (int i = 0; i < mDeepShortcutTextViews.length; i++) {
             mDeepShortcutTextViews[i].setVisibility(shorcutInfos.size() > i ? VISIBLE : GONE);
             if (i < shorcutInfos.size()) {
                 mDeepShortcutTextViews[i].applyFromWorkspaceItem(shorcutInfos.get(i));
             }
         }
-
     }
 
     @Override
@@ -125,7 +127,6 @@ public class HeroSearchResultView extends LinearLayout implements DragSource {
     private void setWillDrawIcon(boolean willDraw) {
         mIconView.setVisibility(willDraw ? View.VISIBLE : View.INVISIBLE);
     }
-
 
     /**
      * Drag and drop handler for popup items in Launcher activity

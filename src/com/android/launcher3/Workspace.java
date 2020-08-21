@@ -22,6 +22,7 @@ import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.FLAG_MULTI_PAGE;
 import static com.android.launcher3.LauncherState.FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED;
 import static com.android.launcher3.LauncherState.FLAG_WORKSPACE_INACCESSIBLE;
+import static com.android.launcher3.LauncherState.HINT_STATE;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
@@ -943,7 +944,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         super.onScrollChanged(l, t, oldl, oldt);
 
         // Update the page indicator progress.
-        boolean isTransitioning = mIsSwitchingState
+        // Unlike from other states, we show the page indicator when transitioning from HINT_STATE.
+        boolean isSwitchingState = mIsSwitchingState
+                && mLauncher.getStateManager().getCurrentStableState() != HINT_STATE;
+        boolean isTransitioning = isSwitchingState
                 || (getLayoutTransition() != null && getLayoutTransition().isRunning());
         if (!isTransitioning) {
             showPageIndicatorAtCurrentScroll();

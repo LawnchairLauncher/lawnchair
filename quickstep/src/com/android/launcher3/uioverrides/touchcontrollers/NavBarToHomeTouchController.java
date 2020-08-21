@@ -66,8 +66,8 @@ public class NavBarToHomeTouchController implements TouchController,
         SingleAxisSwipeDetector.Listener {
 
     private static final Interpolator PULLBACK_INTERPOLATOR = DEACCEL_3;
-    // How much of the overview scrim we can remove during the transition.
-    private static final float OVERVIEW_TO_HOME_SCRIM_PROGRESS = 0.5f;
+    // The min amount of overview scrim we keep during the transition.
+    private static final float OVERVIEW_TO_HOME_SCRIM_MULTIPLIER = 0.5f;
 
     private final Launcher mLauncher;
     private final SingleAxisSwipeDetector mSwipeDetector;
@@ -163,11 +163,11 @@ public class NavBarToHomeTouchController implements TouchController,
             RecentsView recentsView = mLauncher.getOverviewPanel();
             AnimatorControllerWithResistance.createRecentsResistanceFromOverviewAnim(mLauncher,
                     builder);
-            float endScrimAlpha = Utilities.mapRange(OVERVIEW_TO_HOME_SCRIM_PROGRESS,
-                    mStartState.getOverviewScrimAlpha(mLauncher),
-                    mEndState.getOverviewScrimAlpha(mLauncher));
+
             builder.setFloat(mLauncher.getDragLayer().getOverviewScrim(),
-                    OverviewScrim.SCRIM_PROGRESS, endScrimAlpha, PULLBACK_INTERPOLATOR);
+                    OverviewScrim.SCRIM_MULTIPLIER, OVERVIEW_TO_HOME_SCRIM_MULTIPLIER,
+                    PULLBACK_INTERPOLATOR);
+
             if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
                 builder.addOnFrameCallback(recentsView::redrawLiveTile);
             }

@@ -354,14 +354,20 @@ public class LauncherSettings {
 
         public static final String METHOD_PREP_FOR_PREVIEW = "prep_for_preview";
 
+        public static final String METHOD_SWITCH_DATABASE = "switch_database";
+
         public static final String EXTRA_VALUE = "value";
 
         public static Bundle call(ContentResolver cr, String method) {
-            return call(cr, method, null);
+            return call(cr, method, null /* arg */);
         }
 
         public static Bundle call(ContentResolver cr, String method, String arg) {
-            return cr.call(CONTENT_URI, method, arg, null);
+            return call(cr, method, arg, null /* extras */);
+        }
+
+        public static Bundle call(ContentResolver cr, String method, String arg, Bundle extras) {
+            return cr.call(CONTENT_URI, method, arg, extras);
         }
     }
 }

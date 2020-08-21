@@ -19,10 +19,10 @@ package com.android.launcher3.allapps;
 import android.content.Context;
 
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItem;
 import com.android.launcher3.allapps.search.SearchSectionInfo;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.AppInfo;
-import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LabelComparator;
 
@@ -60,101 +60,6 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         public FastScrollSectionInfo(String sectionName) {
             this.sectionName = sectionName;
         }
-    }
-
-    /**
-     * Info about a particular adapter item (can be either section or app)
-     */
-    public static class AdapterItem {
-        /** Common properties */
-        // The index of this adapter item in the list
-        public int position;
-        // The type of this item
-        public int viewType;
-
-        /** App-only properties */
-        // The section name of this app.  Note that there can be multiple items with different
-        // sectionNames in the same section
-        public String sectionName = null;
-        // The row that this item shows up on
-        public int rowIndex;
-        // The index of this app in the row
-        public int rowAppIndex;
-        // The associated AppInfo for the app
-        public AppInfo appInfo = null;
-        // The index of this app not including sections
-        public int appIndex = -1;
-        // Search section associated to result
-        public SearchSectionInfo searchSectionInfo = null;
-
-        public static AdapterItem asApp(int pos, String sectionName, AppInfo appInfo,
-                int appIndex) {
-            AdapterItem item = new AdapterItem();
-            item.viewType = AllAppsGridAdapter.VIEW_TYPE_ICON;
-            item.position = pos;
-            item.sectionName = sectionName;
-            item.appInfo = appInfo;
-            item.appIndex = appIndex;
-            return item;
-        }
-
-        public static AdapterItem asEmptySearch(int pos) {
-            AdapterItem item = new AdapterItem();
-            item.viewType = AllAppsGridAdapter.VIEW_TYPE_EMPTY_SEARCH;
-            item.position = pos;
-            return item;
-        }
-
-        public static AdapterItem asAllAppsDivider(int pos) {
-            AdapterItem item = new AdapterItem();
-            item.viewType = AllAppsGridAdapter.VIEW_TYPE_ALL_APPS_DIVIDER;
-            item.position = pos;
-            return item;
-        }
-
-        public static AdapterItem asMarketSearch(int pos) {
-            AdapterItem item = new AdapterItem();
-            item.viewType = AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET;
-            item.position = pos;
-            return item;
-        }
-
-        /**
-         * Factory method for search section title AdapterItem
-         */
-        public static AdapterItem asSearchTitle(SearchSectionInfo sectionInfo, int pos) {
-            AdapterItem item = new AdapterItem();
-            item.viewType = AllAppsGridAdapter.VIEW_TYPE_SEARCH_CORPUS_TITLE;
-            item.position = pos;
-            item.searchSectionInfo = sectionInfo;
-            return item;
-        }
-
-        boolean isCountedForAccessibility() {
-            return viewType == AllAppsGridAdapter.VIEW_TYPE_ICON
-                    || viewType == AllAppsGridAdapter.VIEW_TYPE_SEARCH_HERO_APP;
-        }
-    }
-
-    /**
-     * Extension of AdapterItem that contains shortcut workspace items
-     */
-    public static class HeroAppAdapterItem extends AdapterItem {
-        private ArrayList<WorkspaceItemInfo> mShortcutInfos;
-
-        public HeroAppAdapterItem(AppInfo info, ArrayList<WorkspaceItemInfo> shortcutInfos) {
-            viewType = AllAppsGridAdapter.VIEW_TYPE_SEARCH_HERO_APP;
-            mShortcutInfos = shortcutInfos;
-            appInfo = info;
-        }
-
-        /**
-         * Returns list of shortcuts for appInfo
-         */
-        public ArrayList<WorkspaceItemInfo> getShortcutInfos() {
-            return mShortcutInfos;
-        }
-
     }
 
 
@@ -396,7 +301,9 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
                 adapterItem.position = i;
                 mAdapterItems.add(adapterItem);
                 if (adapterItem.searchSectionInfo != lastSection) {
-                    adapterItem.searchSectionInfo.setPosStart(i);
+                    if (adapterItem.searchSectionInfo != null) {
+                        adapterItem.searchSectionInfo.setPosStart(i);
+                    }
                     if (lastSection != null) {
                         lastSection.setPosEnd(i - 1);
                     }
