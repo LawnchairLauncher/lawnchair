@@ -25,6 +25,7 @@ import android.content.pm.PackageManager;
 import android.os.UserHandle;
 import android.text.TextUtils;
 
+import com.android.launcher3.model.ItemInstallQueue;
 import com.android.launcher3.pm.InstallSessionHelper;
 
 /**
@@ -59,7 +60,8 @@ public class SessionCommitReceiver extends BroadcastReceiver {
             return;
         }
 
-        InstallShortcutReceiver.queueApplication(info.getAppPackageName(), user, context);
+        ItemInstallQueue.INSTANCE.get(context)
+                .queueItem(info.getAppPackageName(), user);
     }
 
     public static boolean isEnabled(Context context) {

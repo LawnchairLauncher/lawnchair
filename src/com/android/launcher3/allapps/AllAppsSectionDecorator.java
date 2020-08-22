@@ -47,13 +47,13 @@ public class AllAppsSectionDecorator extends RecyclerView.ItemDecoration {
         // Since views in the same section will follow each other, we can skip to a last view in
         // a section to get the bounds of the section without having to iterate on every item.
         int itemCount = parent.getChildCount();
-        List<AlphabeticalAppsList.AdapterItem> adapterItems = mAppsView.getApps().getAdapterItems();
+        List<AllAppsGridAdapter.AdapterItem> adapterItems = mAppsView.getApps().getAdapterItems();
         SectionDecorationHandler lastDecorationHandler = null;
         int i = 0;
         while (i < itemCount) {
             View view = parent.getChildAt(i);
             int position = parent.getChildAdapterPosition(view);
-            AlphabeticalAppsList.AdapterItem adapterItem = adapterItems.get(position);
+            AllAppsGridAdapter.AdapterItem adapterItem = adapterItems.get(position);
             if (adapterItem.searchSectionInfo != null) {
                 SearchSectionInfo sectionInfo = adapterItem.searchSectionInfo;
                 int endIndex = Math.min(i + sectionInfo.getPosEnd() - position, itemCount - 1);

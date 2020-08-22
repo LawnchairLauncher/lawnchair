@@ -40,14 +40,13 @@ public class LiveTileOverlay extends Drawable {
     public static final LiveTileOverlay INSTANCE = new LiveTileOverlay();
 
     private final Paint mPaint = new Paint();
+    private final RectF mCurrentRect = new RectF();
     private final Rect mBoundsRect = new Rect();
 
-    private RectF mCurrentRect;
     private float mCornerRadius;
     private Drawable mIcon;
     private Animator mIconAnimator;
 
-    private boolean mDrawEnabled = true;
     private float mIconAnimationProgress = 0f;
     private boolean mIsAttached;
 
@@ -58,7 +57,7 @@ public class LiveTileOverlay extends Drawable {
     public void update(RectF currentRect, float cornerRadius) {
         invalidateSelf();
 
-        mCurrentRect = currentRect;
+        mCurrentRect.set(currentRect);
         mCornerRadius = cornerRadius;
 
         mCurrentRect.roundOut(mBoundsRect);
@@ -93,16 +92,9 @@ public class LiveTileOverlay extends Drawable {
         return mIconAnimationProgress;
     }
 
-    public void setDrawEnabled(boolean drawEnabled) {
-        if (mDrawEnabled != drawEnabled) {
-            mDrawEnabled = drawEnabled;
-            invalidateSelf();
-        }
-    }
-
     @Override
     public void draw(Canvas canvas) {
-        if (mCurrentRect != null && mDrawEnabled) {
+        if (mCurrentRect != null) {
             canvas.drawRoundRect(mCurrentRect, mCornerRadius, mCornerRadius, mPaint);
             if (mIcon != null && mIconAnimationProgress > 0f) {
                 canvas.save();
