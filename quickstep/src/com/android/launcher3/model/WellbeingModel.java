@@ -43,9 +43,13 @@ import android.util.ArrayMap;
 import android.util.Log;
 
 import androidx.annotation.MainThread;
+import androidx.annotation.NonNull;
 import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.LauncherProvider;
+import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.ItemInfo;
@@ -74,6 +78,9 @@ public final class WellbeingModel {
     private static final int MSG_PACKAGE_REMOVED = 2;
     private static final int MSG_FULL_REFRESH = 3;
 
+    private static final int UNKNOWN_MINIMAL_DEVICE_STATE = 0;
+    private static final int IN_MINIMAL_DEVICE = 2;
+
     // Welbeing contract
     private static final String PATH_ACTIONS = "actions";
     private static final String PATH_MINIMAL_DEVICE = "minimal_device";
@@ -84,6 +91,8 @@ public final class WellbeingModel {
     private static final String EXTRA_MAX_NUM_ACTIONS_SHOWN = "max_num_actions_shown";
     private static final String EXTRA_PACKAGES = "packages";
     private static final String EXTRA_SUCCESS = "success";
+    private static final String EXTRA_MINIMAL_DEVICE_STATE = "minimal_device_state";
+    private static final String DB_NAME_MINIMAL_DEVICE = "minimal.db";
 
     public static final MainThreadInitializedObject<WellbeingModel> INSTANCE =
             new MainThreadInitializedObject<>(WellbeingModel::new);
@@ -121,11 +130,12 @@ public final class WellbeingModel {
                     updateWellbeingData();
                 } else if (uri.getPath().contains(PATH_MINIMAL_DEVICE)) {
                     // Wellbeing reports that minimal device state or config is changed.
-                    updateLauncherModel();
+                    updateLauncherModel(context);
                 }
             }
         };
-        FeatureFlags.ENABLE_MINIMAL_DEVICE.addChangeListener(mContext, this::updateLauncherModel);
+        FeatureFlags.ENABLE_MINIMAL_DEVICE.addChangeListener(mContext, () ->
+                updateLauncherModel(context));
 
         if (!TextUtils.isEmpty(mWellbeingProviderPkg)) {
             context.registerReceiver(
@@ -170,7 +180,6 @@ public final class WellbeingModel {
             Log.e(TAG, "Failed to register content observer for " + actionsUri + ": " + e);
             if (mIsInTest) throw new RuntimeException(e);
         }
-
         updateWellbeingData();
     }
 
@@ -208,10 +217,34 @@ public final class WellbeingModel {
         mWorkerHandler.sendEmptyMessage(MSG_FULL_REFRESH);
     }
 
-    private void updateLauncherModel() {
-        if (!FeatureFlags.ENABLE_MINIMAL_DEVICE.get()) return;
+    private void updateLauncherModel(@NonNull final Context context) {
+        if (!FeatureFlags.ENABLE_MINIMAL_DEVICE.get()) {
+            reloadLauncherInNormalMode(context);
+            return;
+        }
+        runWithMinimalDeviceConfigs((bundle) -> {
+            if (bundle.getInt(EXTRA_MINIMAL_DEVICE_STATE, UNKNOWN_MINIMAL_DEVICE_STATE)
+                    == IN_MINIMAL_DEVICE) {
+                reloadLauncherInMinimalMode(context);
+            } else {
+                reloadLauncherInNormalMode(context);
+            }
+        });
+    }
 
-        // TODO: init Launcher in minimal device / normal mode
+    private void reloadLauncherInNormalMode(@NonNull final Context context) {
+        LauncherSettings.Settings.call(context.getContentResolver(),
+                LauncherSettings.Settings.METHOD_SWITCH_DATABASE,
+                InvariantDeviceProfile.INSTANCE.get(context).dbFile);
+    }
+
+    private void reloadLauncherInMinimalMode(@NonNull final Context context) {
+        final Bundle extras = new Bundle();
+        extras.putString(LauncherProvider.KEY_LAYOUT_PROVIDER_AUTHORITY,
+                mWellbeingProviderPkg + ".api");
+        LauncherSettings.Settings.call(context.getContentResolver(),
+                LauncherSettings.Settings.METHOD_SWITCH_DATABASE,
+                DB_NAME_MINIMAL_DEVICE, extras);
     }
 
     private Uri.Builder apiBuilder() {
@@ -225,6 +258,9 @@ public final class WellbeingModel {
      */
     @WorkerThread
     private void runWithMinimalDeviceConfigs(Consumer<Bundle> consumer) {
+        if (!FeatureFlags.ENABLE_MINIMAL_DEVICE.get()) {
+            return;
+        }
         if (DEBUG || mIsInTest) {
             Log.d(TAG, "runWithMinimalDeviceConfigs() called");
         }
