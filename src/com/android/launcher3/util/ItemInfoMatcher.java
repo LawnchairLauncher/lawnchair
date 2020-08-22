@@ -27,6 +27,7 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.shortcuts.ShortcutKey;
 
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A utility class to check for {@link ItemInfo}
@@ -99,7 +100,7 @@ public interface ItemInfoMatcher {
         return (info, cn) -> packageNames.contains(cn.getPackageName()) && info.user.equals(user);
     }
 
-    static ItemInfoMatcher ofShortcutKeys(HashSet<ShortcutKey> keys) {
+    static ItemInfoMatcher ofShortcutKeys(Set<ShortcutKey> keys) {
         return  (info, cn) -> info.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT &&
                         keys.contains(ShortcutKey.fromItemInfo(info));
     }

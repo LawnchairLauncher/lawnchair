@@ -81,7 +81,6 @@ import com.android.launcher3.shortcuts.ShortcutRequest.QueryResult;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IOUtils;
 import com.android.launcher3.util.LooperIdleLock;
-import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.TraceHelper;
@@ -90,8 +89,10 @@ import com.android.launcher3.widget.WidgetManagerHelper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CancellationException;
 
 /**
@@ -302,7 +303,7 @@ public class LoaderTask implements Runnable {
         final PackageManagerHelper pmHelper = new PackageManagerHelper(context);
         final boolean isSafeMode = pmHelper.isSafeMode();
         final boolean isSdCardReady = Utilities.isBootCompleted();
-        final MultiHashMap<UserHandle, String> pendingPackages = new MultiHashMap<>();
+        final Set<PackageUserKey> pendingPackages = new HashSet<>();
 
         boolean clearDb = false;
         try {
@@ -483,7 +484,7 @@ public class LoaderTask implements Runnable {
                                     // SdCard is not ready yet. Package might get available,
                                     // once it is ready.
                                     Log.d(TAG, "Missing pkg, will check later: " + targetPkg);
-                                    pendingPackages.addToList(c.user, targetPkg);
+                                    pendingPackages.add(new PackageUserKey(targetPkg, c.user));
                                     // Add the icon on the workspace anyway.
                                     allowMissingTarget = true;
                                 } else {
