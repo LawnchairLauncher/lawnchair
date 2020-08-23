@@ -20,6 +20,7 @@ import static com.android.launcher3.touch.ItemLongClickListener.INSTANCE_ALL_APP
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,18 +31,27 @@ import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.accessibility.AccessibilityEventCompat;
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 import androidx.core.view.accessibility.AccessibilityRecordCompat;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LifecycleRegistry;
+import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.slice.Slice;
+import androidx.slice.widget.SliceLiveData;
+import androidx.slice.widget.SliceView;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.search.AllAppsSearchBarController.PayloadResultHandler;
 import com.android.launcher3.allapps.search.SearchSectionInfo;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.util.PackageManagerHelper;
 
@@ -50,7 +60,9 @@ import java.util.List;
 /**
  * The grid view adapter of all the apps.
  */
-public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.ViewHolder> {
+public class AllAppsGridAdapter extends
+        RecyclerView.Adapter<AllAppsGridAdapter.ViewHolder> implements
+        LifecycleOwner {
 
     public static final String TAG = "AppsGridAdapter";
 
@@ -71,11 +83,17 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
     public static final int VIEW_TYPE_SEARCH_HERO_APP = 1 << 6;
 
-    public static final int DETAIL_ROW_WITH_BUTTON = 1 << 7;
+    public static final int VIEW_TYPE_SEARCH_ROW_WITH_BUTTON = 1 << 7;
+
+    public static final int VIEW_TYPE_SEARCH_ROW = 1 << 8;
+
+    public static final int VIEW_TYPE_SEARCH_SLICE = 1 << 9;
 
     // Common view type masks
     public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_ALL_APPS_DIVIDER;
     public static final int VIEW_TYPE_MASK_ICON = VIEW_TYPE_ICON;
+
+    private final LifecycleRegistry mLifecycleRegistry;
 
     /**
      * ViewHolder for each icon.
@@ -159,12 +177,15 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         boolean isCountedForAccessibility() {
             return viewType == VIEW_TYPE_ICON
                     || viewType == VIEW_TYPE_SEARCH_HERO_APP
-                    || viewType == DETAIL_ROW_WITH_BUTTON;
+                    || viewType == VIEW_TYPE_SEARCH_ROW_WITH_BUTTON
+                    || viewType == VIEW_TYPE_SEARCH_SLICE
+                    || viewType == VIEW_TYPE_SEARCH_ROW;
         }
     }
 
     /**
      * Extension of AdapterItem that contains an extra payload specific to item
+     *
      * @param <T> Play load Type
      */
     public static class AdapterItemWithPayload<T> extends AdapterItem {
@@ -310,6 +331,12 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         mOnIconClickListener = launcher.getItemOnClickListener();
 
         setAppsPerRow(mLauncher.getDeviceProfile().inv.numAllAppsColumns);
+        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
+            mLifecycleRegistry = new LifecycleRegistry(this);
+            mLifecycleRegistry.setCurrentState(Lifecycle.State.STARTED);
+        } else {
+            mLifecycleRegistry = null;
+        }
     }
 
     public void setAppsPerRow(int appsPerRow) {
@@ -390,9 +417,15 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             case VIEW_TYPE_SEARCH_HERO_APP:
                 return new ViewHolder(mLayoutInflater.inflate(
                         R.layout.search_result_hero_app, parent, false));
-            case DETAIL_ROW_WITH_BUTTON:
+            case VIEW_TYPE_SEARCH_ROW_WITH_BUTTON:
                 return new ViewHolder(mLayoutInflater.inflate(
                         R.layout.search_result_play_item, parent, false));
+            case VIEW_TYPE_SEARCH_ROW:
+                return new ViewHolder(mLayoutInflater.inflate(
+                        R.layout.search_result_settings_row, parent, false));
+            case VIEW_TYPE_SEARCH_SLICE:
+                return new ViewHolder(mLayoutInflater.inflate(
+                        R.layout.search_result_slice, parent, false));
             default:
                 throw new RuntimeException("Unexpected view type");
         }
@@ -421,9 +454,20 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                     searchView.setVisibility(View.GONE);
                 }
                 break;
+            case VIEW_TYPE_SEARCH_SLICE:
+                SliceView sliceView = (SliceView) holder.itemView;
+                Uri uri = ((AdapterItemWithPayload<Uri>) mApps.getAdapterItems().get(position))
+                        .getPayload();
+                try {
+                    LiveData<Slice> liveData = SliceLiveData.fromUri(mLauncher, uri);
+                    liveData.observe(this::getLifecycle, sliceView);
+                } catch (Exception ignored) {
+                }
+                break;
             case VIEW_TYPE_SEARCH_CORPUS_TITLE:
-            case DETAIL_ROW_WITH_BUTTON:
+            case VIEW_TYPE_SEARCH_ROW_WITH_BUTTON:
             case VIEW_TYPE_SEARCH_HERO_APP:
+            case VIEW_TYPE_SEARCH_ROW:
                 PayloadResultHandler payloadResultView = (PayloadResultHandler) holder.itemView;
                 payloadResultView.applyAdapterInfo(
                         (AdapterItemWithPayload) mApps.getAdapterItems().get(position));
@@ -451,4 +495,9 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         return item.viewType;
     }
 
+    @NonNull
+    @Override
+    public Lifecycle getLifecycle() {
+        return mLifecycleRegistry;
+    }
 }

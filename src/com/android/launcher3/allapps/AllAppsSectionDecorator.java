@@ -108,8 +108,8 @@ public class AllAppsSectionDecorator extends RecyclerView.ItemDecoration {
         private final boolean mIsFullWidth;
         private final float mRadius;
 
-        private final int mFocusColor;
-        private final int mFillcolor;
+        protected int mFocusColor;
+        protected int mFillcolor;
         private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
 
