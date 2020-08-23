@@ -911,7 +911,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     @CallSuper
     protected void onDeferredResumed() {
         logStopAndResume(Action.Command.RESUME);
-        getUserEventDispatcher().startSession();
 
         // Process any items that were added while Launcher was away.
         ItemInstallQueue.INSTANCE.get(this)

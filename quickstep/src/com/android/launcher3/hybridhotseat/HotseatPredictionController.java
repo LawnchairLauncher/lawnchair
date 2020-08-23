@@ -624,12 +624,6 @@ public class HotseatPredictionController implements DragController.DragListener,
         //Does nothing
     }
 
-    @Override
-    public void fillInLogContainerData(ItemInfo childInfo, LauncherLogProto.Target child,
-            ArrayList<LauncherLogProto.Target> parents) {
-        mHotseat.fillInLogContainerData(childInfo, child, parents);
-    }
-
     /**
      * Logs rank info based on current list of predicted items
      */

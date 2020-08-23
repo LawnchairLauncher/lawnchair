@@ -229,12 +229,12 @@ public class NavBarToHomeTouchController implements TouchController,
                         () -> onSwipeInteractionCompleted(mEndState));
             }
             if (mStartState != mEndState) {
-                logStateChange(mStartState.containerType, logAction);
+                // TODO: add to WW log
             }
             AbstractFloatingView topOpenView = AbstractFloatingView.getTopOpenView(mLauncher);
             if (topOpenView != null) {
                 AbstractFloatingView.closeAllOpenViews(mLauncher);
-                logStateChange(topOpenView.getLogContainerType(), logAction);
+                // TODO: add to WW log
             }
             ActivityManagerWrapper.getInstance()
                     .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);

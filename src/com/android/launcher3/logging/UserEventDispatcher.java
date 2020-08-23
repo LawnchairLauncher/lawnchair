@@ -19,26 +19,21 @@ package com.android.launcher3.logging;
 import static com.android.launcher3.logging.LoggerUtils.newAction;
 import static com.android.launcher3.logging.LoggerUtils.newCommandAction;
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
-import static com.android.launcher3.logging.LoggerUtils.newControlTarget;
 import static com.android.launcher3.logging.LoggerUtils.newDropTarget;
 import static com.android.launcher3.logging.LoggerUtils.newItemTarget;
 import static com.android.launcher3.logging.LoggerUtils.newLauncherEvent;
 import static com.android.launcher3.logging.LoggerUtils.newTarget;
 import static com.android.launcher3.logging.LoggerUtils.newTouchAction;
-import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.ItemType;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.TipType;
 
 import static java.util.Optional.ofNullable;
 
-import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Process;
 import android.os.SystemClock;
-import android.os.UserHandle;
 import android.util.Log;
 import android.view.View;
 
@@ -54,7 +49,6 @@ import com.android.launcher3.userevent.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.LauncherEvent;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
-import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.LogConfig;
 import com.android.launcher3.util.ResourceBasedOverride;
@@ -101,7 +95,7 @@ public class UserEventDispatcher implements ResourceBasedOverride {
      *
      * @return whether container data was added.
      */
-    public boolean fillLogContainer(@Nullable View v, Target child,
+    private boolean fillLogContainer(@Nullable View v, Target child,
             @Nullable ArrayList<Target> targets) {
         LogContainerProvider firstParent = StatsLogUtils.getLaunchProviderRecursive(v);
         if (v == null || !(v.getTag() instanceof ItemInfo) || firstParent == null) {
@@ -125,76 +119,11 @@ public class UserEventDispatcher implements ResourceBasedOverride {
     private boolean mAppOrTaskLaunch;
     private boolean mPreviousHomeGesture;
 
-    //                      APP_ICON    SHORTCUT    WIDGET
-    // --------------------------------------------------------------
-    // packageNameHash      required    optional    required
-    // componentNameHash    required                required
-    // intentHash                       required
-    // --------------------------------------------------------------
-
-    @Deprecated
-    public void logAppLaunch(View v, Intent intent, @Nullable UserHandle userHandle) {
-        Target itemTarget = newItemTarget(v, mInstantAppResolver);
-        Action action = newTouchAction(Action.Touch.TAP);
-        ArrayList<Target> targets = makeTargetsList(itemTarget);
-        if (fillLogContainer(v, itemTarget, targets)) {
-            onFillInLogContainerData((ItemInfo) v.getTag(), itemTarget, targets);
-            fillIntentInfo(itemTarget, intent, userHandle);
-        }
-        LauncherEvent event = newLauncherEvent(action,  targets);
-        dispatchUserEvent(event, intent);
-        mAppOrTaskLaunch = true;
-    }
-
-    /**
-     * Placeholder method.
-     */
-    public void logActionTip(int actionType, int viewType) {
-    }
-
-    @Deprecated
-    public void logTaskLaunchOrDismiss(int action, int direction, int taskIndex,
-            ComponentKey componentKey) {
-        LauncherEvent event = newLauncherEvent(newTouchAction(action), // TAP or SWIPE or FLING
-                newTarget(Target.Type.ITEM));
-        if (action == Action.Touch.SWIPE || action == Action.Touch.FLING) {
-            // Direction DOWN means the task was launched, UP means it was dismissed.
-            event.action.dir = direction;
-        }
-        event.srcTarget[0].itemType = ItemType.TASK;
-        event.srcTarget[0].pageIndex = taskIndex;
-        fillComponentInfo(event.srcTarget[0], componentKey.componentName);
-        dispatchUserEvent(event, null);
-        mAppOrTaskLaunch = true;
-    }
-
-    protected void fillIntentInfo(Target target, Intent intent, @Nullable UserHandle userHandle) {
-        target.intentHash = intent.hashCode();
-        target.isWorkApp = userHandle != null && !userHandle.equals(Process.myUserHandle());
-        fillComponentInfo(target, intent.getComponent());
-    }
-
     private void fillComponentInfo(Target target, ComponentName cn) {
         if (cn != null) {
             target.packageNameHash = (mUuidStr + cn.getPackageName()).hashCode();
             target.componentHash = (mUuidStr + cn.flattenToString()).hashCode();
         }
-    }
-
-    public void logNotificationLaunch(View v, PendingIntent intent) {
-        LauncherEvent event = newLauncherEvent(newTouchAction(Action.Touch.TAP),
-                newItemTarget(v, mInstantAppResolver), newTarget(Target.Type.CONTAINER));
-        Target itemTarget = newItemTarget(v, mInstantAppResolver);
-        ArrayList<Target> targets = makeTargetsList(itemTarget);
-
-        if (fillLogContainer(v, itemTarget, targets)) {
-            itemTarget.packageNameHash = (mUuidStr + intent.getCreatorPackage()).hashCode();
-        }
-        dispatchUserEvent(event, null);
-    }
-
-    public void logActionCommand(int command, Target srcTarget) {
-        logActionCommand(command, srcTarget, null);
     }
 
     public void logActionCommand(int command, int srcContainerType, int dstContainerType) {
@@ -223,25 +152,6 @@ public class UserEventDispatcher implements ResourceBasedOverride {
             event.destTarget = new Target[1];
             event.destTarget[0] = dstTarget;
             event.action.isStateChange = true;
-        }
-        dispatchUserEvent(event, null);
-    }
-
-    /**
-     * TODO: Make this function work when a container view is passed as the 2nd param.
-     */
-    public void logActionCommand(int command, View itemView, int srcContainerType) {
-        LauncherEvent event = newLauncherEvent(newCommandAction(command),
-                newItemTarget(itemView, mInstantAppResolver), newTarget(Target.Type.CONTAINER));
-
-        Target itemTarget = newItemTarget(itemView, mInstantAppResolver);
-        ArrayList<Target> targets = makeTargetsList(itemTarget);
-
-        if (fillLogContainer(itemView, itemTarget, targets)) {
-            // TODO: Remove the following two lines once fillInLogContainerData can take in a
-            // container view.
-            itemTarget.type = Target.Type.CONTAINER;
-            itemTarget.containerType = srcContainerType;
         }
         dispatchUserEvent(event, null);
     }
@@ -332,7 +242,6 @@ public class UserEventDispatcher implements ResourceBasedOverride {
         event.srcTarget[0].spanX = downX;
         event.srcTarget[0].spanY = downY;
         dispatchUserEvent(event, null);
-        resetElapsedContainerMillis("state changed");
     }
 
     public void logActionOnItem(int action, int dir, int itemType) {
@@ -386,7 +295,6 @@ public class UserEventDispatcher implements ResourceBasedOverride {
         ArrayList<Target> targets = makeTargetsList(child);
         fillLogContainer(icon, child, targets);
         dispatchUserEvent(newLauncherEvent(newTouchAction(Action.Touch.TAP), targets), null);
-        resetElapsedContainerMillis("deep shortcut open");
     }
 
     public void logDragNDrop(DropTarget.DragObject dragObj, View dropTargetAsView) {
@@ -397,7 +305,7 @@ public class UserEventDispatcher implements ResourceBasedOverride {
         Target destChild = newItemTarget(dragObj.originalDragInfo, mInstantAppResolver);
         ArrayList<Target> destTargets = makeTargetsList(destChild);
 
-        dragObj.dragSource.fillInLogContainerData(dragObj.originalDragInfo, srcChild, srcTargets);
+        //dragObj.dragSource.fillInLogContainerData(dragObj.originalDragInfo, srcChild, srcTargets);
         if (dropTargetAsView instanceof LogContainerProvider) {
             ((LogContainerProvider) dropTargetAsView).fillInLogContainerData(dragObj.dragInfo,
                     destChild, destTargets);
@@ -412,35 +320,6 @@ public class UserEventDispatcher implements ResourceBasedOverride {
 
         event.actionDurationMillis = SystemClock.uptimeMillis() - mActionDurationMillis;
         dispatchUserEvent(event, null);
-    }
-
-    public void logActionBack(boolean completed, int downX, int downY, boolean isButton,
-            boolean gestureSwipeLeft, int containerType) {
-        int actionTouch = isButton ? Action.Touch.TAP : Action.Touch.SWIPE;
-        Action action = newCommandAction(actionTouch);
-        action.command = Action.Command.BACK;
-        action.dir = isButton ? Action.Direction.NONE :
-                gestureSwipeLeft ? Action.Direction.LEFT : Action.Direction.RIGHT;
-        Target target = newControlTarget(isButton ? ControlType.BACK_BUTTON :
-                ControlType.BACK_GESTURE);
-        target.spanX = downX;
-        target.spanY = downY;
-        target.cardinality = completed ? 1 : 0;
-        LauncherEvent event = newLauncherEvent(action, target, newContainerTarget(containerType));
-
-        dispatchUserEvent(event, null);
-    }
-
-    /**
-     * Currently logs following containers: workspace, allapps, widget tray.
-     */
-    public final void resetElapsedContainerMillis(String reason) {
-        mElapsedContainerMillis = SystemClock.uptimeMillis();
-        if (!IS_VERBOSE) {
-            return;
-        }
-        Log.d(TAG, "resetElapsedContainerMillis reason=" + reason);
-
     }
 
     public final void startSession() {

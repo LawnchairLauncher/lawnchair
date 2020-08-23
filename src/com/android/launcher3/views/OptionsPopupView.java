@@ -108,11 +108,6 @@ public class OptionsPopupView extends ArrowPopup
     }
 
     @Override
-    public void logActionCommand(int command) {
-        // TODO:
-    }
-
-    @Override
     protected boolean isOfType(int type) {
         return (type & TYPE_OPTIONS_POPUP) != 0;
     }

@@ -40,9 +40,7 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
 import com.android.launcher3.touch.ItemLongClickListener;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -116,12 +114,6 @@ public class HeroSearchResultView extends LinearLayout implements DragSource,
     public void onDropCompleted(View target, DropTarget.DragObject d, boolean success) {
         mBubbleTextView.setVisibility(VISIBLE);
         mBubbleTextView.setIconVisible(true);
-    }
-
-    @Override
-    public void fillInLogContainerData(ItemInfo childInfo, LauncherLogProto.Target child,
-            ArrayList<LauncherLogProto.Target> parents) {
-
     }
 
     private void setWillDrawIcon(boolean willDraw) {
