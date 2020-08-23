@@ -278,7 +278,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
         if (mApps == null) {
             return;
         }
-        List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
+        List<AllAppsGridAdapter.AdapterItem> items = mApps.getAdapterItems();
 
         // Skip early if there are no items or we haven't been measured
         if (items.isEmpty() || mNumAppsPerRow == 0) {
@@ -352,7 +352,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
     @Override
     public int getCurrentScrollY() {
         // Return early if there are no items or we haven't been measured
-        List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
+        List<AllAppsGridAdapter.AdapterItem> items = mApps.getAdapterItems();
         if (items.isEmpty() || mNumAppsPerRow == 0 || getChildCount() == 0) {
             return -1;
         }
@@ -368,14 +368,14 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
     }
 
     public int getCurrentScrollY(int position, int offset) {
-        List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
-        AlphabeticalAppsList.AdapterItem posItem = position < items.size() ?
-                items.get(position) : null;
+        List<AllAppsGridAdapter.AdapterItem> items = mApps.getAdapterItems();
+        AllAppsGridAdapter.AdapterItem posItem = position < items.size()
+                ? items.get(position) : null;
         int y = mCachedScrollPositions.get(position, -1);
         if (y < 0) {
             y = 0;
             for (int i = 0; i < position; i++) {
-                AlphabeticalAppsList.AdapterItem item = items.get(i);
+                AllAppsGridAdapter.AdapterItem item = items.get(i);
                 if (AllAppsGridAdapter.isIconViewType(item.viewType)) {
                     // Break once we reach the desired row
                     if (posItem != null && posItem.viewType == item.viewType &&

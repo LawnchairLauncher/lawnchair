@@ -70,6 +70,8 @@
     <!--All apps Search-->
     <!-- Section title for apps [CHAR_LIMIT=50] -->
     <string name="search_corpus_apps">Apps</string>
+    <!-- try instant app action for play search result [CHAR_LIMIT=50 -->
+    <string name="search_action_try_now">Try Now</string>
 
     <!-- Popup items -->
     <!-- Text to display as the header above notifications. [CHAR_LIMIT=30] -->

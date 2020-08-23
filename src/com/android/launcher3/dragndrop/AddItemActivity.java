@@ -43,13 +43,13 @@ import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 
 import com.android.launcher3.BaseActivity;
-import com.android.launcher3.InstallShortcutReceiver;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetHost;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.R;
+import com.android.launcher3.model.ItemInstallQueue;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.pm.PinRequestHelper;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
@@ -249,7 +249,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
      */
     public void onPlaceAutomaticallyClick(View v) {
         if (mRequest.getRequestType() == PinItemRequest.REQUEST_TYPE_SHORTCUT) {
-            InstallShortcutReceiver.queueShortcut(mRequest.getShortcutInfo(), this);
+            ItemInstallQueue.INSTANCE.get(this).queueItem(mRequest.getShortcutInfo());
             logCommand(Action.Command.CONFIRM);
             mRequest.accept();
             finish();
@@ -270,7 +270,8 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
     }
 
     private void acceptWidget(int widgetId) {
-        InstallShortcutReceiver.queueWidget(mRequest.getAppWidgetProviderInfo(this), widgetId, this);
+        ItemInstallQueue.INSTANCE.get(this)
+                .queueItem(mRequest.getAppWidgetProviderInfo(this), widgetId);
         mWidgetOptions.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
         mRequest.accept(mWidgetOptions);
         logCommand(Action.Command.CONFIRM);

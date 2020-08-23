@@ -664,15 +664,15 @@ public class TouchInteractionService extends Service implements PluginListener<O
                     runningComponent != null && runningComponent.equals(homeComponent);
         }
 
-        if (gestureState.getRunningTask() == null) {
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get()
+                && gestureState.getActivityInterface().isInLiveTileMode()) {
+            return createOverviewInputConsumer(
+                    previousGestureState, gestureState, event, forceOverviewInputConsumer);
+        } else if (gestureState.getRunningTask() == null) {
             return mResetGestureInputConsumer;
         } else if (previousGestureState.isRunningAnimationToLauncher()
                 || gestureState.getActivityInterface().isResumed()
                 || forceOverviewInputConsumer) {
-            return createOverviewInputConsumer(
-                    previousGestureState, gestureState, event, forceOverviewInputConsumer);
-        } else if (ENABLE_QUICKSTEP_LIVE_TILE.get()
-                && gestureState.getActivityInterface().isInLiveTileMode()) {
             return createOverviewInputConsumer(
                     previousGestureState, gestureState, event, forceOverviewInputConsumer);
         } else if (mDeviceState.isGestureBlockedActivity(gestureState.getRunningTask())) {

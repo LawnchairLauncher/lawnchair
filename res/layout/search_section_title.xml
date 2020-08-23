@@ -13,11 +13,11 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-          android:id="@+id/section_title"
-          android:textSize="14sp"
-          android:fontFamily="@style/TextHeadline"
-          android:layout_width="wrap_content"
-          android:textColor="?android:attr/textColorPrimary"
-          android:padding="4dp"
-          android:layout_height="wrap_content"/>
+<com.android.launcher3.views.SearchSectionHeaderView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/section_title"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:fontFamily="@style/TextHeadline"
+    android:padding="4dp"
+    android:textColor="?android:attr/textColorPrimary"
+    android:textSize="14sp" />
