@@ -53,15 +53,16 @@ public class AppsSearchPipeline implements SearchPipeline {
     private final LauncherAppState mLauncherAppState;
     private final boolean mHeroSectionSupported;
 
-    public AppsSearchPipeline(LauncherAppState launcherAppState) {
-        this(launcherAppState, true);
+    public AppsSearchPipeline(Context context, LauncherAppState launcherAppState) {
+        this(context, launcherAppState, true);
     }
 
-    public AppsSearchPipeline(LauncherAppState launcherAppState, boolean supportsHeroView) {
+    public AppsSearchPipeline(Context context, LauncherAppState launcherAppState,
+            boolean supportsHeroView) {
         mLauncherAppState = launcherAppState;
         mSearchSectionInfo = new SearchSectionInfo();
         mSearchSectionInfo.setDecorationHandler(
-                new SectionDecorationHandler(launcherAppState.getContext(), true));
+                new SectionDecorationHandler(context, true));
         mHeroSectionSupported = supportsHeroView;
     }
 
