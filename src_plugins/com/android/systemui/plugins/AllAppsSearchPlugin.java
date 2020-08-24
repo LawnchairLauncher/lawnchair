@@ -16,9 +16,9 @@
 
 package com.android.systemui.plugins;
 
-import android.os.Bundle;
-
 import com.android.systemui.plugins.annotations.ProvidesInterface;
+import com.android.systemui.plugins.shared.SearchTarget;
+import com.android.systemui.plugins.shared.SearchTargetEvent;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -29,15 +29,28 @@ import java.util.function.Consumer;
 @ProvidesInterface(action = AllAppsSearchPlugin.ACTION, version = AllAppsSearchPlugin.VERSION)
 public interface AllAppsSearchPlugin extends Plugin {
     String ACTION = "com.android.systemui.action.PLUGIN_ALL_APPS_SEARCH_ACTIONS";
-    int VERSION = 4;
+    int VERSION = 5;
+
+
+    /**
+     * Send signal when user enters all apps.
+     */
+    void startAllAppsSession();
 
     /**
      * Send signal when user starts typing.
      */
-    void startedTyping();
+    void startedSearchSession();
 
     /**
      * Send over the query and get the search results.
      */
-    void performSearch(String query, Consumer<List<Bundle>> results);
+    void performSearch(String query, Consumer<List<SearchTarget>> results);
+
+    void onClick(boolean isTouch, SearchTargetEvent event);
+
+    /**
+     * Send signal when user exits all apps.
+     */
+    void endAllAppsSession();
 }

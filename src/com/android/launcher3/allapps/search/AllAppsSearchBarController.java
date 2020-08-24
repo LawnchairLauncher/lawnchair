@@ -79,7 +79,7 @@ public class AllAppsSearchBarController
     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
         if (mSearchAlgorithm instanceof PluginWrapper) {
             ((PluginWrapper) mSearchAlgorithm).runOnPluginIfConnected(
-                    AllAppsSearchPlugin::startedTyping);
+                    AllAppsSearchPlugin::startedSearchSession);
         }
     }
 
@@ -113,7 +113,13 @@ public class AllAppsSearchBarController
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                // selectFocusedView should return SearchTargetEvent that is passed onto onClick
                 if (Launcher.getLauncher(mLauncher).getAppsView().selectFocusedView(v)) {
+                    if (mSearchAlgorithm instanceof PluginWrapper) {
+                        ((PluginWrapper) mSearchAlgorithm).runOnPluginIfConnected(plugin -> {
+                            plugin.onClick(false, null);
+                        });
+                    }
                     return true;
                 }
             }
