@@ -68,8 +68,7 @@ public class PersistedItemArray<T extends ItemInfo> {
      */
     @WorkerThread
     public void write(Context context, List<T> items) {
-        AtomicFile file = new AtomicFile(context.getFileStreamPath(mFileName));
-
+        AtomicFile file = getFile(context);
         FileOutputStream fos;
         try {
             fos = file.startWrite();
@@ -124,9 +123,7 @@ public class PersistedItemArray<T extends ItemInfo> {
     @WorkerThread
     public List<T> read(Context context, ItemFactory<T> factory, LongFunction<UserHandle> userFn) {
         List<T> result = new ArrayList<>();
-        AtomicFile file = new AtomicFile(context.getFileStreamPath(mFileName));
-
-        try (FileInputStream fis = file.openRead()) {
+        try (FileInputStream fis = getFile(context).openRead()) {
             XmlPullParser parser = Xml.newPullParser();
             parser.setInput(new InputStreamReader(fis, StandardCharsets.UTF_8));
 
@@ -164,6 +161,13 @@ public class PersistedItemArray<T extends ItemInfo> {
             return Collections.emptyList();
         }
         return result;
+    }
+
+    /**
+     * Returns the underlying file used for persisting data
+     */
+    public AtomicFile getFile(Context context) {
+        return new AtomicFile(context.getFileStreamPath(mFileName));
     }
 
     /**

@@ -41,6 +41,7 @@ public class WidgetsModel {
 
     // True is the widget support is disabled.
     public static final boolean GO_DISABLE_WIDGETS = true;
+    public static final boolean GO_DISABLE_NOTIFICATION_DOTS = true;
 
     private static final ArrayList<WidgetListRowEntry> EMPTY_WIDGET_LIST = new ArrayList<>();
 
