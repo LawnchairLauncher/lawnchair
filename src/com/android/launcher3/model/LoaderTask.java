@@ -48,8 +48,6 @@ import android.util.Log;
 import android.util.LongSparseArray;
 import android.util.TimingLogger;
 
-import androidx.annotation.WorkerThread;
-
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
@@ -190,13 +188,13 @@ public class LoaderTask implements Runnable {
         try (LauncherModel.LoaderTransaction transaction = mApp.getModel().beginLoader(this)) {
             List<ShortcutInfo> allShortcuts = new ArrayList<>();
             loadWorkspace(allShortcuts);
-            loadCachedPredictions();
             logger.addSplit("loadWorkspace");
 
             verifyNotStopped();
             mResults.bindWorkspace();
             logger.addSplit("bindWorkspace");
 
+            mModelDelegate.workspaceLoadComplete();
             // Notify the installer packages of packages with active installs on the first screen.
             sendFirstScreenActiveInstallsBroadcast();
             logger.addSplit("sendFirstScreenActiveInstallsBroadcast");
@@ -839,24 +837,6 @@ public class LoaderTask implements Runnable {
         }
     }
 
-    @WorkerThread
-    private void loadCachedPredictions() {
-        synchronized (mBgDataModel) {
-            List<ComponentKey> componentKeys =
-                    mApp.getPredictionModel().getPredictionComponentKeys();
-            List<LauncherActivityInfo> l;
-            mBgDataModel.cachedPredictedItems.clear();
-            for (ComponentKey key : componentKeys) {
-                l = mLauncherApps.getActivityList(key.componentName.getPackageName(), key.user);
-                if (l.size() == 0) continue;
-                AppInfo info = new AppInfo(l.get(0), key.user,
-                        mUserManagerState.isUserQuiet(key.user));
-                mBgDataModel.cachedPredictedItems.add(info);
-                mIconCache.getTitleAndIcon(info, false);
-            }
-        }
-    }
-
     private void sanitizeData() {
         Context context = mApp.getContext();
         if (mItemsDeleted) {
@@ -898,14 +878,6 @@ public class LoaderTask implements Runnable {
                     mSessionHelper.getAllVerifiedSessions()) {
                 mBgAllAppsList.addPromiseApp(mApp.getContext(),
                         PackageInstallInfo.fromInstallingState(info));
-            }
-        }
-        for (AppInfo item : mBgDataModel.cachedPredictedItems) {
-            List<LauncherActivityInfo> l = mLauncherApps.getActivityList(
-                    item.componentName.getPackageName(), item.user);
-            for (LauncherActivityInfo info : l) {
-                boolean quietMode = mUserManagerState.isUserQuiet(item.user);
-                mBgAllAppsList.add(new AppInfo(info, item.user, quietMode), info);
             }
         }
 

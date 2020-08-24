@@ -15,23 +15,17 @@
  */
 package com.android.launcher3.hybridhotseat;
 
-import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_GRID;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.hybridhotseat.HotseatEduController.getSettingsIntent;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOTSEAT_PREDICTION_PINNED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOTSEAT_RANKED;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.app.prediction.AppPredictionContext;
-import android.app.prediction.AppPredictionManager;
-import android.app.prediction.AppPredictor;
-import android.app.prediction.AppTarget;
-import android.app.prediction.AppTargetEvent;
 import android.content.ComponentName;
 import android.os.Process;
-import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,77 +38,51 @@ import com.android.launcher3.DropTarget;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.anim.AnimationSuccessListener;
-import com.android.launcher3.appprediction.ComponentKeyMapper;
-import com.android.launcher3.appprediction.DynamicItemCache;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
-import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
 import com.android.launcher3.logger.LauncherAtom.PredictedHotseatContainer;
 import com.android.launcher3.logging.InstanceId;
-import com.android.launcher3.model.data.AppInfo;
-import com.android.launcher3.model.data.FolderInfo;
+import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
-import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.uioverrides.PredictedAppIcon;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
-import com.android.launcher3.util.ComponentKey;
-import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.views.ArrowTipView;
 import com.android.launcher3.views.Snackbar;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.OptionalInt;
-import java.util.stream.IntStream;
+import java.util.stream.Collectors;
 
 /**
  * Provides prediction ability for the hotseat. Fills gaps in hotseat with predicted items, allows
  * pinning of predicted apps and manages replacement of predicted apps with user drag.
  */
 public class HotseatPredictionController implements DragController.DragListener,
-        View.OnAttachStateChangeListener, SystemShortcut.Factory<QuickstepLauncher>,
-        InvariantDeviceProfile.OnIDPChangeListener, AllAppsStore.OnUpdateListener,
-        IconCache.ItemInfoUpdateReceiver, DragSource {
+        SystemShortcut.Factory<QuickstepLauncher>, InvariantDeviceProfile.OnIDPChangeListener,
+        DragSource {
 
-    private static final String TAG = "PredictiveHotseat";
-    private static final boolean DEBUG = false;
-
-    private static final String PREDICTION_CLIENT = "hotseat";
-    private DropTarget.DragObject mDragObject;
     private int mHotSeatItemsCount;
-    private int mPredictedSpotsCount = 0;
 
     private Launcher mLauncher;
     private final Hotseat mHotseat;
 
-    private final HotseatRestoreHelper mRestoreHelper;
+    private List<ItemInfo> mPredictedItems = Collections.emptyList();
 
-    private List<ComponentKeyMapper> mComponentKeyMappers = new ArrayList<>();
-
-    private DynamicItemCache mDynamicItemCache;
-
-    private final HotseatPredictionModel mPredictionModel;
-    private AppPredictor mAppPredictor;
-    private AllAppsStore mAllAppsStore;
     private AnimatorSet mIconRemoveAnimators;
     private boolean mUIUpdatePaused = false;
-    private boolean mIsDestroyed = false;
-
+    private boolean mDragInProgress = false;
 
     private List<PredictedAppIcon.PredictedIconOutlineDrawing> mOutlineDrawings = new ArrayList<>();
 
@@ -130,26 +98,23 @@ public class HotseatPredictionController implements DragController.DragListener,
             mLauncher.getDragLayer().performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
             return true;
         }
+
         // Start the drag
-        mLauncher.getWorkspace().beginDragShared(v, this, new DragOptions());
+        // Use a new itemInfo so that the original predicted item is stable
+        WorkspaceItemInfo dragItem = new WorkspaceItemInfo((WorkspaceItemInfo) v.getTag());
+        v.setVisibility(View.INVISIBLE);
+        mLauncher.getWorkspace().beginDragShared(
+                v, null, this, dragItem, new DragPreviewProvider(v), new DragOptions());
         return true;
     };
 
     public HotseatPredictionController(Launcher launcher) {
         mLauncher = launcher;
         mHotseat = launcher.getHotseat();
-        mAllAppsStore = mLauncher.getAppsView().getAppsStore();
-        LauncherAppState appState = LauncherAppState.getInstance(launcher);
-        mPredictionModel = (HotseatPredictionModel) appState.getPredictionModel();
-        mAllAppsStore.addUpdateListener(this);
-        mDynamicItemCache = new DynamicItemCache(mLauncher, this::fillGapsWithPrediction);
         mHotSeatItemsCount = mLauncher.getDeviceProfile().inv.numHotseatIcons;
+        mLauncher.getDragController().addDragListener(this);
+
         launcher.getDeviceProfile().inv.addOnChangeListener(this);
-        mHotseat.addOnAttachStateChangeListener(this);
-        mRestoreHelper = new HotseatRestoreHelper(mLauncher);
-        if (mHotseat.isAttachedToWindow()) {
-            onViewAttachedToWindow(mHotseat);
-        }
     }
 
     /**
@@ -157,7 +122,7 @@ public class HotseatPredictionController implements DragController.DragListener,
      */
     public void showEdu() {
         mLauncher.getStateManager().goToState(NORMAL, true, () -> {
-            if (mComponentKeyMappers.isEmpty()) {
+            if (mPredictedItems.isEmpty()) {
                 // launcher has empty predictions set
                 Snackbar.show(mLauncher, R.string.hotsaet_tip_prediction_disabled,
                         R.string.hotseat_prediction_settings, null,
@@ -165,10 +130,10 @@ public class HotseatPredictionController implements DragController.DragListener,
             } else if (getPredictedIcons().size() >= (mHotSeatItemsCount + 1) / 2) {
                 showDiscoveryTip();
             } else {
-                HotseatEduController eduController = new HotseatEduController(mLauncher,
-                        mRestoreHelper,
-                        this::createPredictor);
-                eduController.setPredictedApps(mapToWorkspaceItemInfo(mComponentKeyMappers));
+                HotseatEduController eduController = new HotseatEduController(mLauncher);
+                eduController.setPredictedApps(mPredictedItems.stream()
+                        .map(i -> (WorkspaceItemInfo) i)
+                        .collect(Collectors.toList()));
                 eduController.showEdu();
             }
         });
@@ -192,17 +157,7 @@ public class HotseatPredictionController implements DragController.DragListener,
      * Returns if hotseat client has predictions
      */
     public boolean hasPredictions() {
-        return !mComponentKeyMappers.isEmpty();
-    }
-
-    @Override
-    public void onViewAttachedToWindow(View view) {
-        mLauncher.getDragController().addDragListener(this);
-    }
-
-    @Override
-    public void onViewDetachedFromWindow(View view) {
-        mLauncher.getDragController().removeDragListener(this);
+        return !mPredictedItems.isEmpty();
     }
 
     private void fillGapsWithPrediction() {
@@ -210,15 +165,10 @@ public class HotseatPredictionController implements DragController.DragListener,
     }
 
     private void fillGapsWithPrediction(boolean animate, Runnable callback) {
-        if (mUIUpdatePaused || mDragObject != null) {
+        if (mUIUpdatePaused || mDragInProgress) {
             return;
         }
-        List<WorkspaceItemInfo> predictedApps = mapToWorkspaceItemInfo(mComponentKeyMappers);
-        if (mComponentKeyMappers.isEmpty() != predictedApps.isEmpty()) {
-            // Safely ignore update as AppsList is not ready yet. This will called again once
-            // apps are ready (HotseatPredictionController#onAppsUpdated)
-            return;
-        }
+
         int predictionIndex = 0;
         ArrayList<WorkspaceItemInfo> newItems = new ArrayList<>();
         // make sure predicted icon removal and filling predictions don't step on each other
@@ -240,14 +190,15 @@ public class HotseatPredictionController implements DragController.DragListener,
             if (child != null && !isPredictedIcon(child)) {
                 continue;
             }
-            if (predictedApps.size() <= predictionIndex) {
+            if (mPredictedItems.size() <= predictionIndex) {
                 // Remove predicted apps from the past
                 if (isPredictedIcon(child)) {
                     mHotseat.removeView(child);
                 }
                 continue;
             }
-            WorkspaceItemInfo predictedItem = predictedApps.get(predictionIndex++);
+            WorkspaceItemInfo predictedItem =
+                    (WorkspaceItemInfo) mPredictedItems.get(predictionIndex++);
             if (isPredictedIcon(child) && child.isEnabled()) {
                 PredictedAppIcon icon = (PredictedAppIcon) child;
                 icon.applyFromWorkspaceItem(predictedItem);
@@ -257,7 +208,6 @@ public class HotseatPredictionController implements DragController.DragListener,
             }
             preparePredictionInfo(predictedItem, rank);
         }
-        mPredictedSpotsCount = predictionIndex;
         bindItems(newItems, animate, callback);
     }
 
@@ -285,13 +235,7 @@ public class HotseatPredictionController implements DragController.DragListener,
      * Unregisters callbacks and frees resources
      */
     public void destroy() {
-        mIsDestroyed = true;
-        mAllAppsStore.removeUpdateListener(this);
         mLauncher.getDeviceProfile().inv.removeOnChangeListener(this);
-        mHotseat.removeOnAttachStateChangeListener(this);
-        if (mAppPredictor != null) {
-            mAppPredictor.destroy();
-        }
     }
 
     /**
@@ -305,97 +249,14 @@ public class HotseatPredictionController implements DragController.DragListener,
     }
 
     /**
-     * Creates App Predictor with all the current apps pinned on the hotseat
+     * Sets or updates the predicted items
      */
-    public void createPredictor() {
-        AppPredictionManager apm = mLauncher.getSystemService(AppPredictionManager.class);
-        if (apm == null) {
-            return;
+    public void setPredictedItems(FixedContainerItems items) {
+        mPredictedItems = items.items;
+        if (mPredictedItems.isEmpty()) {
+            HotseatRestoreHelper.restoreBackup(mLauncher);
         }
-        if (mAppPredictor != null) {
-            mAppPredictor.destroy();
-            mAppPredictor = null;
-        }
-        WeakReference<HotseatPredictionController> controllerRef = new WeakReference<>(this);
-
-
-        mPredictionModel.createBundle(bundle -> {
-            if (mIsDestroyed) return;
-            mAppPredictor = apm.createAppPredictionSession(
-                    new AppPredictionContext.Builder(mLauncher)
-                            .setUiSurface(PREDICTION_CLIENT)
-                            .setPredictedTargetCount(mHotSeatItemsCount)
-                            .setExtras(bundle)
-                            .build());
-            mAppPredictor.registerPredictionUpdates(
-                    mLauncher.getApplicationContext().getMainExecutor(),
-                    list -> {
-                        if (controllerRef.get() != null) {
-                            controllerRef.get().setPredictedApps(list);
-                        }
-                    });
-            mAppPredictor.requestPredictionUpdate();
-        });
-        setPauseUIUpdate(false);
-    }
-
-    /**
-     * Create WorkspaceItemInfo objects and binds PredictedAppIcon views for cached predicted items.
-     */
-    public void showCachedItems(List<AppInfo> apps, IntArray ranks) {
-        if (hasPredictions() && mAppPredictor != null) {
-            mAppPredictor.requestPredictionUpdate();
-            fillGapsWithPrediction();
-            return;
-        }
-        int count = Math.min(ranks.size(), apps.size());
-        List<WorkspaceItemInfo> items = new ArrayList<>(count);
-        for (int i = 0; i < count; i++) {
-            WorkspaceItemInfo item = new WorkspaceItemInfo(apps.get(i));
-            ComponentKey componentKey = new ComponentKey(item.getTargetComponent(), item.user);
-            preparePredictionInfo(item, ranks.get(i));
-            items.add(item);
-
-            mComponentKeyMappers.add(new ComponentKeyMapper(componentKey, mDynamicItemCache));
-        }
-        updateDependencies();
-        bindItems(items, false, null);
-    }
-
-    private void setPredictedApps(List<AppTarget> appTargets) {
-        mComponentKeyMappers.clear();
-        if (appTargets.isEmpty()) {
-            mRestoreHelper.restoreBackup();
-        }
-        StringBuilder predictionLog = new StringBuilder("predictedApps: [\n");
-        ArrayList<ComponentKey> componentKeys = new ArrayList<>();
-        for (AppTarget appTarget : appTargets) {
-            ComponentKey key;
-            if (appTarget.getShortcutInfo() != null) {
-                key = ShortcutKey.fromInfo(appTarget.getShortcutInfo());
-            } else {
-                key = new ComponentKey(new ComponentName(appTarget.getPackageName(),
-                        appTarget.getClassName()), appTarget.getUser());
-            }
-            componentKeys.add(key);
-            predictionLog.append(key.toString());
-            predictionLog.append(",rank:");
-            predictionLog.append(appTarget.getRank());
-            predictionLog.append("\n");
-            mComponentKeyMappers.add(new ComponentKeyMapper(key, mDynamicItemCache));
-        }
-        predictionLog.append("]");
-        if (Utilities.IS_DEBUG_DEVICE) {
-            HotseatFileLog.INSTANCE.get(mLauncher).log(TAG, predictionLog.toString());
-        }
-        updateDependencies();
         fillGapsWithPrediction();
-        mPredictionModel.cachePredictionComponentKeys(componentKeys);
-    }
-
-    private void updateDependencies() {
-        mDynamicItemCache.updateDependencies(mComponentKeyMappers, mAllAppsStore, this,
-                mHotSeatItemsCount);
     }
 
     /**
@@ -414,42 +275,9 @@ public class HotseatPredictionController implements DragController.DragListener,
                 workspaceItemInfo.cellX, workspaceItemInfo.cellY);
         ObjectAnimator.ofFloat(icon, SCALE_PROPERTY, 1, 0.8f, 1).start();
         icon.pin(workspaceItemInfo);
-        AppTarget appTarget = mPredictionModel.getAppTargetFromInfo(workspaceItemInfo);
-        if (appTarget != null) {
-            notifyItemAction(mPredictionModel.wrapAppTargetWithLocation(appTarget,
-                    AppTargetEvent.ACTION_PIN, workspaceItemInfo));
-        }
-    }
-
-    private List<WorkspaceItemInfo> mapToWorkspaceItemInfo(
-            List<ComponentKeyMapper> components) {
-        AllAppsStore allAppsStore = mLauncher.getAppsView().getAppsStore();
-        if (allAppsStore.getApps().length == 0) {
-            return Collections.emptyList();
-        }
-
-        List<WorkspaceItemInfo> predictedApps = new ArrayList<>();
-        for (ComponentKeyMapper mapper : components) {
-            ItemInfoWithIcon info = mapper.getApp(allAppsStore);
-            if (info instanceof AppInfo) {
-                WorkspaceItemInfo predictedApp = new WorkspaceItemInfo((AppInfo) info);
-                predictedApp.container = LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION;
-                predictedApps.add(predictedApp);
-            } else if (info instanceof WorkspaceItemInfo) {
-                WorkspaceItemInfo predictedApp = new WorkspaceItemInfo((WorkspaceItemInfo) info);
-                predictedApp.container = LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION;
-                predictedApps.add(predictedApp);
-            } else {
-                if (DEBUG) {
-                    Log.e(TAG, "Predicted app not found: " + mapper);
-                }
-            }
-            // Stop at the number of hotseat items
-            if (predictedApps.size() == mHotSeatItemsCount) {
-                break;
-            }
-        }
-        return predictedApps;
+        mLauncher.getStatsLogManager().logger()
+                .withItemInfo(workspaceItemInfo)
+                .log(LAUNCHER_HOTSEAT_PREDICTION_PINNED);
     }
 
     private List<PredictedAppIcon> getPredictedIcons() {
@@ -465,7 +293,7 @@ public class HotseatPredictionController implements DragController.DragListener,
     }
 
     private void removePredictedApps(List<PredictedAppIcon.PredictedIconOutlineDrawing> outlines,
-            ItemInfo draggedInfo) {
+            DropTarget.DragObject dragObject) {
         if (mIconRemoveAnimators != null) {
             mIconRemoveAnimators.end();
         }
@@ -475,7 +303,7 @@ public class HotseatPredictionController implements DragController.DragListener,
             if (!icon.isEnabled()) {
                 continue;
             }
-            if (icon.getTag().equals(draggedInfo)) {
+            if (dragObject.dragSource == this && icon.equals(dragObject.originalView)) {
                 mHotseat.removeView(icon);
                 continue;
             }
@@ -497,83 +325,22 @@ public class HotseatPredictionController implements DragController.DragListener,
         mIconRemoveAnimators.start();
     }
 
-    private void notifyItemAction(AppTargetEvent event) {
-        if (mAppPredictor != null) {
-            mAppPredictor.notifyAppTargetEvent(event);
-        }
-    }
-
     @Override
     public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
-        removePredictedApps(mOutlineDrawings, dragObject.dragInfo);
-        mDragObject = dragObject;
+        removePredictedApps(mOutlineDrawings, dragObject);
         if (mOutlineDrawings.isEmpty()) return;
         for (PredictedAppIcon.PredictedIconOutlineDrawing outlineDrawing : mOutlineDrawings) {
             mHotseat.addDelegatedCellDrawing(outlineDrawing);
         }
+        mDragInProgress = true;
         mHotseat.invalidate();
-    }
-
-    /**
-     * Unpins pinned app when it's converted into a folder
-     */
-    public void folderCreatedFromWorkspaceItem(ItemInfo itemInfo, FolderInfo folderInfo) {
-        AppTarget folderTarget = mPredictionModel.getAppTargetFromInfo(folderInfo);
-        AppTarget itemTarget = mPredictionModel.getAppTargetFromInfo(itemInfo);
-        if (folderTarget != null && HotseatPredictionModel.isTrackedForPrediction(folderInfo)) {
-            notifyItemAction(mPredictionModel.wrapAppTargetWithLocation(folderTarget,
-                    AppTargetEvent.ACTION_PIN, folderInfo));
-        }
-        // using folder info with isTrackedForPrediction as itemInfo.container is already changed
-        // to folder by this point
-        if (itemTarget != null && HotseatPredictionModel.isTrackedForPrediction(folderInfo)) {
-            notifyItemAction(mPredictionModel.wrapAppTargetWithLocation(itemTarget,
-                    AppTargetEvent.ACTION_UNPIN, folderInfo
-            ));
-        }
-    }
-
-    /**
-     * Pins workspace item created when all folder items are removed but one
-     */
-    public void folderConvertedToWorkspaceItem(ItemInfo itemInfo, FolderInfo folderInfo) {
-        AppTarget folderTarget = mPredictionModel.getAppTargetFromInfo(folderInfo);
-        AppTarget itemTarget = mPredictionModel.getAppTargetFromInfo(itemInfo);
-        if (folderTarget != null && HotseatPredictionModel.isTrackedForPrediction(folderInfo)) {
-            notifyItemAction(mPredictionModel.wrapAppTargetWithLocation(folderTarget,
-                    AppTargetEvent.ACTION_UNPIN, folderInfo));
-        }
-        if (itemTarget != null && HotseatPredictionModel.isTrackedForPrediction(itemInfo)) {
-            notifyItemAction(mPredictionModel.wrapAppTargetWithLocation(itemTarget,
-                    AppTargetEvent.ACTION_PIN, itemInfo));
-        }
     }
 
     @Override
     public void onDragEnd() {
-        if (mDragObject == null) {
-            return;
-        }
-
-        ItemInfo dragInfo = mDragObject.dragInfo;
-        if (mDragObject.isMoved()) {
-            AppTarget appTarget = mPredictionModel.getAppTargetFromInfo(dragInfo);
-            //always send pin event first to prevent AiAi from predicting an item moved within
-            // the same page
-            if (appTarget != null && HotseatPredictionModel.isTrackedForPrediction(dragInfo)) {
-                notifyItemAction(mPredictionModel.wrapAppTargetWithLocation(appTarget,
-                        AppTargetEvent.ACTION_PIN, dragInfo));
-            }
-            if (appTarget != null && HotseatPredictionModel.isTrackedForPrediction(
-                    mDragObject.originalDragInfo)) {
-                notifyItemAction(mPredictionModel.wrapAppTargetWithLocation(appTarget,
-                        AppTargetEvent.ACTION_UNPIN, mDragObject.originalDragInfo));
-            }
-        }
-        mDragObject = null;
+        mDragInProgress = false;
         fillGapsWithPrediction(true, this::removeOutlineDrawings);
     }
-
 
     @Nullable
     @Override
@@ -604,19 +371,7 @@ public class HotseatPredictionController implements DragController.DragListener,
 
     @Override
     public void onIdpChanged(int changeFlags, InvariantDeviceProfile profile) {
-        if ((changeFlags & CHANGE_FLAG_GRID) != 0) {
-            this.mHotSeatItemsCount = profile.numHotseatIcons;
-            createPredictor();
-        }
-    }
-
-    @Override
-    public void onAppsUpdated() {
-        fillGapsWithPrediction();
-    }
-
-    @Override
-    public void reapplyItemInfo(ItemInfoWithIcon info) {
+        this.mHotSeatItemsCount = profile.numHotseatIcons;
     }
 
     @Override
@@ -643,17 +398,20 @@ public class HotseatPredictionController implements DragController.DragListener,
                             + ",launchLocation:" + itemInfo.container);
         }
 
-        if (itemInfo.getTargetComponent() == null || itemInfo.user == null) {
+
+        ComponentName targetCN = itemInfo.getTargetComponent();
+        if (targetCN == null) {
             return;
         }
-
-        final ComponentKey key = new ComponentKey(itemInfo.getTargetComponent(), itemInfo.user);
-
-        final List<ComponentKeyMapper> predictedApps = new ArrayList<>(mComponentKeyMappers);
-        OptionalInt rank = IntStream.range(0, predictedApps.size())
-                .filter(index -> key.equals(predictedApps.get(index).getComponentKey()))
-                .findFirst();
-        if (!rank.isPresent()) {
+        int rank = -1;
+        for (int i = mPredictedItems.size() - 1; i >= 0; i--) {
+            ItemInfo info = mPredictedItems.get(i);
+            if (targetCN.equals(info.getTargetComponent()) && itemInfo.user.equals(info.user)) {
+                rank = i;
+                break;
+            }
+        }
+        if (rank < 0) {
             return;
         }
 
@@ -666,11 +424,11 @@ public class HotseatPredictionController implements DragController.DragListener,
         PredictedHotseatContainer.Builder containerBuilder = PredictedHotseatContainer.newBuilder();
         containerBuilder.setCardinality(cardinality);
         if (itemInfo.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION) {
-            containerBuilder.setIndex(rank.getAsInt());
+            containerBuilder.setIndex(rank);
         }
         mLauncher.getStatsLogManager().logger()
                 .withInstanceId(instanceId)
-                .withRank(rank.getAsInt())
+                .withRank(rank)
                 .withContainerInfo(ContainerInfo.newBuilder()
                         .setPredictedHotseatContainer(containerBuilder)
                         .build())
@@ -689,30 +447,6 @@ public class HotseatPredictionController implements DragController.DragListener,
             dismissTaskMenuView(mTarget);
             pinPrediction(mItemInfo);
         }
-    }
-
-    /**
-     * Fill in predicted_rank field based on app prediction.
-     * Only applicable when {@link ItemInfo#itemType} is PREDICTED_HOTSEAT
-     */
-    public static void encodeHotseatLayoutIntoPredictionRank(
-            @NonNull ItemInfo itemInfo, @NonNull LauncherLogProto.Target target) {
-        QuickstepLauncher launcher = QuickstepLauncher.ACTIVITY_TRACKER.getCreatedActivity();
-        if (launcher == null || launcher.getHotseatPredictionController() == null
-                || itemInfo.getTargetComponent() == null) {
-            return;
-        }
-        HotseatPredictionController controller = launcher.getHotseatPredictionController();
-
-        final ComponentKey k = new ComponentKey(itemInfo.getTargetComponent(), itemInfo.user);
-
-        final List<ComponentKeyMapper> predictedApps = controller.mComponentKeyMappers;
-        OptionalInt rank = IntStream.range(0, predictedApps.size())
-                .filter((i) -> k.equals(predictedApps.get(i).getComponentKey()))
-                .findFirst();
-
-        target.predictedRank = 10000 + (controller.mPredictedSpotsCount * 100)
-                + (rank.isPresent() ? rank.getAsInt() + 1 : 0);
     }
 
     private static boolean isPredictedIcon(View view) {

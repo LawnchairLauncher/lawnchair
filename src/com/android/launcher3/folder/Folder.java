@@ -24,6 +24,7 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
 import static com.android.launcher3.config.FeatureFlags.ALWAYS_USE_HARDWARE_OPTIMIZATION_FOR_FOLDER_ANIMATIONS;
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_CONVERTED_TO_ICON;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_LABEL_UPDATED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ITEM_DROP_COMPLETED;
 
@@ -1183,7 +1184,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                         newIcon.requestFocus();
                     }
                     if (finalItem != null) {
-                        mLauncher.folderConvertedToItem(mFolderIcon.getFolder(), finalItem);
+                        mStatsLogManager.logger().withItemInfo(finalItem)
+                                .log(LAUNCHER_FOLDER_CONVERTED_TO_ICON);
                     }
                 }
             }

@@ -72,6 +72,12 @@ public class ModelDelegate implements ResourceBasedOverride {
     public void loadItems(UserManagerState ums, Map<ShortcutKey, ShortcutInfo> pinnedShortcuts) { }
 
     /**
+     * Called during loader after workspace loading is complete
+     */
+    @WorkerThread
+    public void workspaceLoadComplete() { }
+
+    /**
      * Called when the delegate is no loner needed
      */
     @WorkerThread

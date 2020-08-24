@@ -103,11 +103,6 @@ public class BgDataModel {
     public final IntSparseArrayMap<FixedContainerItems> extraItems = new IntSparseArrayMap<>();
 
     /**
-     * List of all cached predicted items visible on home screen
-     */
-    public final ArrayList<AppInfo> cachedPredictedItems = new ArrayList<>();
-
-    /**
      * Maps all launcher activities to counts of their shortcuts.
      */
     public final HashMap<ComponentKey, Integer> deepShortcutMap = new HashMap<>();
@@ -470,10 +465,5 @@ public class BgDataModel {
         default void bindExtraContainerItems(FixedContainerItems item) { }
 
         void bindAllApplications(AppInfo[] apps, int flags);
-
-        /**
-         * Binds predicted appInfos at at available prediction slots.
-         */
-        void bindPredictedItems(List<AppInfo> appInfos, IntArray ranks);
     }
 }

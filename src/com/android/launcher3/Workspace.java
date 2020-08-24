@@ -1706,7 +1706,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 fi.addItem(destInfo);
                 fi.addItem(sourceInfo);
             }
-            mLauncher.folderCreatedFromItem(fi.getFolder(), destInfo);
             return true;
         }
         return false;
@@ -1723,7 +1722,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         if (dropOverView instanceof FolderIcon) {
             FolderIcon fi = (FolderIcon) dropOverView;
             if (fi.acceptDrop(d.dragInfo)) {
-                mStatsLogManager.logger().withItemInfo(fi.mInfo).withInstanceId(d.logInstanceId)
+                mStatsLogManager.logger().withItemInfo(d.dragInfo).withInstanceId(d.logInstanceId)
                         .log(LauncherEvent.LAUNCHER_ITEM_DROP_COMPLETED);
                 fi.onDrop(d, false /* itemReturnedOnFailedDrop */);
 
