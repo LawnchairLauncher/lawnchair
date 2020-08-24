@@ -79,7 +79,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     private static final int DISPLAY_FOLDER = 2;
     private static final int DISPLAY_HERO_APP = 5;
 
-    private static final int[] STATE_PRESSED = new int[] {android.R.attr.state_pressed};
+    private static final int[] STATE_PRESSED = new int[]{android.R.attr.state_pressed};
 
     private final PointF mTranslationForReorderBounce = new PointF(0, 0);
     private final PointF mTranslationForReorderPreview = new PointF(0, 0);
@@ -280,7 +280,10 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         applyDotState(info, false /* animate */);
     }
 
-    public void applyFromPackageItemInfo(PackageItemInfo info) {
+    /**
+     * Apply label and tag using a generic {@link ItemInfoWithIcon}
+     */
+    public void applyFromItemInfoWithIcon(ItemInfoWithIcon info) {
         applyIconAndLabel(info);
         // We don't need to check the info since it's not a WorkspaceItemInfo
         super.setTag(info);
@@ -407,12 +410,14 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     /**
      * Draws the notification dot in the top right corner of the icon bounds.
+     *
      * @param canvas The canvas to draw to.
      */
     protected void drawDotIfNecessary(Canvas canvas) {
         if (!mForceHideDot && (hasDot() || mDotParams.scale > 0)) {
             getIconBounds(mDotParams.iconBounds);
-            Utilities.scaleRectAboutCenter(mDotParams.iconBounds, IconShape.getNormalizationScale());
+            Utilities.scaleRectAboutCenter(mDotParams.iconBounds,
+                    IconShape.getNormalizationScale());
             final int scrollX = getScrollX();
             final int scrollY = getScrollY();
             canvas.translate(scrollX, scrollY);
@@ -507,6 +512,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     /**
      * Creates an animator to fade the text in or out.
+     *
      * @param fadeIn Whether the text should fade in or fade out.
      */
     public ObjectAnimator createTextAlphaAnimator(boolean fadeIn) {
@@ -663,7 +669,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
                 applyFromWorkspaceItem((WorkspaceItemInfo) info);
                 mActivity.invalidateParent(info);
             } else if (info instanceof PackageItemInfo) {
-                applyFromPackageItemInfo((PackageItemInfo) info);
+                applyFromItemInfoWithIcon((PackageItemInfo) info);
             }
 
             mDisableRelayout = false;
@@ -761,7 +767,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     public SafeCloseable prepareDrawDragView() {
         resetIconScale();
         setForceHideDot(true);
-        return () -> { };
+        return () -> {
+        };
     }
 
     private void resetIconScale() {

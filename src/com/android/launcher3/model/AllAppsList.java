@@ -305,7 +305,7 @@ public class AllAppsList {
      *
      * @return the corresponding AppInfo or null
      */
-    private @Nullable AppInfo findAppInfo(@NonNull ComponentName componentName,
+    public @Nullable AppInfo findAppInfo(@NonNull ComponentName componentName,
                                           @NonNull UserHandle user) {
         for (AppInfo info: data) {
             if (componentName.equals(info.componentName) && user.equals(info.user)) {
