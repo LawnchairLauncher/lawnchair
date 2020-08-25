@@ -927,6 +927,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     protected void handlePendingActivityRequest() { }
 
     private void logStopAndResume(int command) {
+        if (mPendingExecutor != null) return;
         int pageIndex = mWorkspace.isOverlayShown() ? -1 : mWorkspace.getCurrentPage();
         int containerType = mStateManager.getState().containerType;
 
