@@ -51,6 +51,7 @@ public class WidgetsModel {
 
     // True is the widget support is disabled.
     public static final boolean GO_DISABLE_WIDGETS = false;
+    public static final boolean GO_DISABLE_NOTIFICATION_DOTS = false;
 
     private static final String TAG = "WidgetsModel";
     private static final boolean DEBUG = false;

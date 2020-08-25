@@ -297,8 +297,7 @@ public class BgDataModel {
                         .filter(wi -> wi.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT)
                         .map(ShortcutKey::fromItemInfo),
                     // Pending shortcuts
-                    ItemInstallQueue.INSTANCE.get(context).getPendingShortcuts()
-                        .stream().filter(si -> si.user.equals(user)))
+                    ItemInstallQueue.INSTANCE.get(context).getPendingShortcuts(user))
                 .collect(groupingBy(ShortcutKey::getPackageName,
                         mapping(ShortcutKey::getId, Collectors.toSet())));
 
