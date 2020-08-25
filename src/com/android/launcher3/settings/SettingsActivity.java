@@ -44,6 +44,7 @@ import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.SecureSettingsObserver;
 
@@ -171,6 +172,10 @@ public class SettingsActivity extends FragmentActivity
         protected boolean initPreference(Preference preference) {
             switch (preference.getKey()) {
                 case NOTIFICATION_DOTS_PREFERENCE_KEY:
+                    if (WidgetsModel.GO_DISABLE_NOTIFICATION_DOTS) {
+                        return false;
+                    }
+
                     // Listen to system notification dot settings while this UI is active.
                     mNotificationDotsObserver = newNotificationSettingsObserver(
                             getActivity(), (NotificationDotsPreference) preference);

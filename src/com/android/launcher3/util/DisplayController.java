@@ -50,7 +50,7 @@ public class DisplayController implements DisplayListener {
     private final ArrayList<DisplayListChangeListener> mListListeners = new ArrayList<>();
 
     private DisplayController(Context context) {
-        mDefaultDisplay = new DisplayHolder(context, DEFAULT_DISPLAY);
+        mDefaultDisplay = DisplayHolder.create(context, DEFAULT_DISPLAY);
 
         DisplayManager dm = context.getSystemService(DisplayManager.class);
         dm.registerDisplayListener(this, UI_HELPER_EXECUTOR.getHandler());
@@ -58,7 +58,11 @@ public class DisplayController implements DisplayListener {
 
     @Override
     public final void onDisplayAdded(int displayId) {
-        DisplayHolder holder = new DisplayHolder(mDefaultDisplay.mDisplayContext, displayId);
+        DisplayHolder holder = DisplayHolder.create(mDefaultDisplay.mDisplayContext, displayId);
+        if (holder == null) {
+            // Display is already removed by the time we dot this.
+            return;
+        }
         synchronized (mOtherDisplays) {
             mOtherDisplays.put(displayId, holder);
         }
@@ -153,12 +157,8 @@ public class DisplayController implements DisplayListener {
         private final ArrayList<DisplayInfoChangeListener> mListeners = new ArrayList<>();
         private DisplayController.Info mInfo;
 
-        public DisplayHolder(Context context, int id) {
-            DisplayManager dm = context.getSystemService(DisplayManager.class);
-            // Use application context to create display context so that it can have its own
-            // Resources.
-            mDisplayContext = context.getApplicationContext()
-                    .createDisplayContext(dm.getDisplay(id));
+        private DisplayHolder(Context displayContext) {
+            mDisplayContext = displayContext;
             // Note that the Display object must be obtained from DisplayManager which is
             // associated to the display context, so the Display is isolated from Activity and
             // Application to provide the actual state of device that excludes the additional
@@ -207,6 +207,17 @@ public class DisplayController implements DisplayListener {
             }
         }
 
+        private static DisplayHolder create(Context context, int id) {
+            DisplayManager dm = context.getSystemService(DisplayManager.class);
+            Display display = dm.getDisplay(id);
+            if (display == null) {
+                return null;
+            }
+            // Use application context to create display context so that it can have its own
+            // Resources.
+            Context displayContext = context.getApplicationContext().createDisplayContext(display);
+            return new DisplayHolder(displayContext);
+        }
     }
 
     public static class Info {
