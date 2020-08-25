@@ -22,7 +22,6 @@ import static android.view.MotionEvent.ACTION_UP;
 
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
-import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.quickstep.GestureState.DEFAULT_STATE;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_INPUT_MONITOR;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SYSUI_PROXY;
@@ -61,7 +60,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.provider.RestoreDbTask;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.testing.TestLogging;
@@ -141,7 +139,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
         }
 
         @BinderThread
-        @Override
         public void onOverviewToggle() {
             TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "onOverviewToggle");
             mOverviewCommandHelper.onOverviewToggle();
@@ -165,7 +162,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
         @BinderThread
         @Override
         public void onTip(int actionType, int viewType) {
-            mOverviewCommandHelper.onTip(actionType, viewType);
+            // Please delete this method from the interface
         }
 
         @BinderThread
@@ -189,18 +186,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
         @BinderThread
         public void onBackAction(boolean completed, int downX, int downY, boolean isButton,
                 boolean gestureSwipeLeft) {
-            if (mOverviewComponentObserver == null) {
-                return;
-            }
-
-            final BaseActivityInterface activityInterface =
-                    mOverviewComponentObserver.getActivityInterface();
-            UserEventDispatcher.newInstance(getBaseContext()).logActionBack(completed, downX, downY,
-                    isButton, gestureSwipeLeft, activityInterface.getContainerType());
-
-            if (completed && !isButton && shouldNotifyBackGesture()) {
-                UI_HELPER_EXECUTOR.execute(TouchInteractionService.this::tryNotifyBackGesture);
-            }
+            // Remove this method from the interface
         }
 
         @BinderThread

@@ -16,7 +16,6 @@
 package com.android.launcher3.widget;
 
 import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
-import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
 
 import android.content.Context;
 import android.graphics.Point;
@@ -31,19 +30,14 @@ import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dragndrop.DragOptions;
-import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.AbstractSlideInView;
-
-import java.util.ArrayList;
 
 /**
  * Base class for various widgets popup
@@ -148,28 +142,6 @@ abstract class BaseWidgetSheet extends AbstractSlideInView
                 SystemUiController.UI_STATE_WIDGET_BOTTOM_SHEET,
                 isSheetDark ? SystemUiController.FLAG_DARK_NAV : SystemUiController.FLAG_LIGHT_NAV);
     }
-
-    @Override
-    public void fillInLogContainerData(ItemInfo childInfo, Target child,
-            ArrayList<Target> parents) {
-        Target target = newContainerTarget(ContainerType.WIDGETS);
-        target.cardinality = getElementsRowCount();
-        parents.add(target);
-    }
-
-    @Override
-    public final void logActionCommand(int command) {
-        Target target = newContainerTarget(getLogContainerType());
-        target.cardinality = getElementsRowCount();
-        mLauncher.getUserEventDispatcher().logActionCommand(command, target);
-    }
-
-    @Override
-    public int getLogContainerType() {
-        return ContainerType.WIDGETS;
-    }
-
-    protected abstract int getElementsRowCount();
 
     protected SystemUiController getSystemUiController() {
         return mLauncher.getSystemUiController();

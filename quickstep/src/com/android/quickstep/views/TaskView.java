@@ -225,10 +225,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             } else {
                 launchTask(true /* animate */);
             }
-
-            mActivity.getUserEventDispatcher().logTaskLaunchOrDismiss(
-                    Touch.TAP, Direction.NONE, getRecentsView().indexOfChild(this),
-                    TaskUtils.getLaunchComponentKeyForTask(getTask().key));
             mActivity.getStatsLogManager().logger().withItemInfo(getItemInfo())
                     .log(LAUNCHER_TASK_LAUNCH_TAP);
         });

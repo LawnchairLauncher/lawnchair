@@ -193,7 +193,6 @@ public abstract class BaseDraggingActivity extends BaseActivity
                 getSystemService(LauncherApps.class).startMainActivity(
                         intent.getComponent(), user, intent.getSourceBounds(), optsBundle);
             }
-            getUserEventDispatcher().logAppLaunch(v, intent, user);
             if (item != null) {
                 InstanceId instanceId = new InstanceIdSequence().newInstanceId();
                 logAppLaunch(item, instanceId);
