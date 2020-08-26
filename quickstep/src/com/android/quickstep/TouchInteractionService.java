@@ -249,10 +249,10 @@ public class TouchInteractionService extends Service implements PluginListener<O
         mMainChoreographer = Choreographer.getInstance();
         mAM = ActivityManagerWrapper.getInstance();
         mDeviceState = new RecentsAnimationDeviceState(this);
+        mRotationTouchHelper = mDeviceState.getRotationTouchHelper();
         mDeviceState.addNavigationModeChangedCallback(this::onNavigationModeChanged);
         mDeviceState.addOneHandedModeChangedCallback(this::onOneHandedModeOverlayChanged);
         mDeviceState.runOnUserUnlocked(this::onUserUnlocked);
-        mRotationTouchHelper = mDeviceState.getRotationTouchHelper();
         ProtoTracer.INSTANCE.get(this).add(this);
 
         sConnected = true;
