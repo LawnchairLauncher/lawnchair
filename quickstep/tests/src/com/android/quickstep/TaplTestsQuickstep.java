@@ -36,6 +36,7 @@ import com.android.launcher3.tapl.AllAppsFromOverview;
 import com.android.launcher3.tapl.Background;
 import com.android.launcher3.tapl.LauncherInstrumentation.NavigationModel;
 import com.android.launcher3.tapl.Overview;
+import com.android.launcher3.tapl.OverviewActions;
 import com.android.launcher3.tapl.OverviewTask;
 import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.ui.TaplTestsLauncher3;
@@ -68,11 +69,14 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         });
     }
 
-    private void startTestApps() throws Exception {
+    public static void startTestApps() throws Exception {
         startAppFast(getAppPackageName());
         startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
         startTestActivity(2);
+    }
 
+    private void startTestAppsWithCheck() throws Exception {
+        startTestApps();
         executeOnLauncher(launcher -> assertTrue(
                 "Launcher activity is the top activity; expecting another activity to be the top "
                         + "one",
@@ -105,7 +109,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @Test
     @PortraitLandscape
     public void testOverview() throws Exception {
-        startTestApps();
+        startTestAppsWithCheck();
         // mLauncher.pressHome() also tests an important case of pressing home while in background.
         Overview overview = mLauncher.pressHome().switchToOverview();
         assertTrue("Launcher internal state didn't switch to Overview",
@@ -187,6 +191,22 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         executeOnLauncher(
                 launcher -> assertEquals("Still have tasks after dismissing all",
                         0, getTaskCount(launcher)));
+    }
+
+    /**
+     * Smoke test for action buttons: Presses all the buttons and makes sure no crashes occur.
+     */
+    @Test
+    @NavigationModeSwitch
+    @PortraitLandscape
+    public void testOverviewActions() throws Exception {
+        if (mLauncher.getNavigationModel() != NavigationModel.TWO_BUTTON) {
+            startTestAppsWithCheck();
+            OverviewActions actionsView =
+                    mLauncher.pressHome().switchToOverview().getOverviewActions();
+            actionsView.clickAndDismissScreenshot();
+            actionsView.clickAndDismissShare();
+        }
     }
 
     private int getCurrentOverviewPage(Launcher launcher) {

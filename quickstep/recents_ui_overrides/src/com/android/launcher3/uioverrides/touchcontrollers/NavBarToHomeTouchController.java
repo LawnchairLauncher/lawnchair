@@ -19,13 +19,13 @@ import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
 import static com.android.launcher3.AbstractFloatingView.TYPE_ALL_APPS_EDU;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_ALL_APPS_EDU;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOME_GESTURE;
 import static com.android.launcher3.touch.AbstractStateChangeTouchController.SUCCESS_TRANSITION_PROGRESS;
-import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_OFFSET;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
 import android.animation.ValueAnimator;
@@ -45,6 +45,7 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.graphics.OverviewScrim;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.testing.TestProtocol;
@@ -52,7 +53,9 @@ import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.TouchController;
+import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.AssistantUtilities;
+import com.android.quickstep.util.OverviewToHomeAnim;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 
@@ -63,6 +66,8 @@ public class NavBarToHomeTouchController implements TouchController,
         SingleAxisSwipeDetector.Listener {
 
     private static final Interpolator PULLBACK_INTERPOLATOR = DEACCEL_3;
+    // The min amount of overview scrim we keep during the transition.
+    private static final float OVERVIEW_TO_HOME_SCRIM_MULTIPLIER = 0.5f;
 
     private final Launcher mLauncher;
     private final SingleAxisSwipeDetector mSwipeDetector;
@@ -156,8 +161,13 @@ public class NavBarToHomeTouchController implements TouchController,
         final PendingAnimation builder = new PendingAnimation(accuracy);
         if (mStartState.overviewUi) {
             RecentsView recentsView = mLauncher.getOverviewPanel();
-            builder.setFloat(recentsView, ADJACENT_PAGE_OFFSET,
-                    -mPullbackDistance / recentsView.getPageOffsetScale(), PULLBACK_INTERPOLATOR);
+            AnimatorControllerWithResistance.createRecentsResistanceFromOverviewAnim(mLauncher,
+                    builder);
+
+            builder.setFloat(mLauncher.getDragLayer().getOverviewScrim(),
+                    OverviewScrim.SCRIM_MULTIPLIER, OVERVIEW_TO_HOME_SCRIM_MULTIPLIER,
+                    PULLBACK_INTERPOLATOR);
+
             if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
                 builder.addOnFrameCallback(
                         () -> recentsView.redrawLiveTile(false /* mightNeedToRefill */));
@@ -212,8 +222,13 @@ public class NavBarToHomeTouchController implements TouchController,
                 recentsView.switchToScreenshot(null,
                         () -> recentsView.finishRecentsAnimation(true /* toRecents */, null));
             }
-            mLauncher.getStateManager().goToState(mEndState, true,
-                    () -> onSwipeInteractionCompleted(mEndState));
+            if (mStartState == OVERVIEW) {
+                new OverviewToHomeAnim(mLauncher, () -> onSwipeInteractionCompleted(mEndState))
+                        .animateWithVelocity(velocity);
+            } else {
+                mLauncher.getStateManager().goToState(mEndState, true,
+                        () -> onSwipeInteractionCompleted(mEndState));
+            }
             if (mStartState != mEndState) {
                 logStateChange(mStartState.containerType, logAction);
             }

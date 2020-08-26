@@ -105,6 +105,11 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
+    public <T> void setSecondary(T target, Float2DAction<T> action, float param) {
+        action.call(target, 0, param);
+    }
+
+    @Override
     public float getPrimaryDirection(MotionEvent event, int pointerIndex) {
         return event.getX(pointerIndex);
     }
@@ -212,7 +217,11 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public int getTaskDismissDirectionFactor() {
+    public int getPrimaryTranslationDirectionFactor() {
+        return 1;
+    }
+
+    public int getSecondaryTranslationDirectionFactor() {
         return -1;
     }
 
