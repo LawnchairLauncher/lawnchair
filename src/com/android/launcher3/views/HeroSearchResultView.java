@@ -37,6 +37,7 @@ import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
 import com.android.launcher3.touch.ItemLongClickListener;
@@ -47,8 +48,9 @@ import java.util.List;
  * A view representing a high confidence app search result that includes shortcuts
  */
 public class HeroSearchResultView extends LinearLayout implements DragSource,
-        AllAppsSearchBarController.PayloadResultHandler<List<WorkspaceItemInfo>> {
+        AllAppsSearchBarController.PayloadResultHandler<List<ItemInfoWithIcon>> {
 
+    public static final int MAX_SHORTCUTS_COUNT = 2;
     BubbleTextView mBubbleTextView;
     View mIconView;
     BubbleTextView[] mDeepShortcutTextViews = new BubbleTextView[2];
@@ -97,15 +99,15 @@ public class HeroSearchResultView extends LinearLayout implements DragSource,
      * Apply {@link ItemInfo} for appIcon and shortcut Icons
      */
     @Override
-    public void applyAdapterInfo(AdapterItemWithPayload<List<WorkspaceItemInfo>> adapterItem) {
+    public void applyAdapterInfo(AdapterItemWithPayload<List<ItemInfoWithIcon>> adapterItem) {
         mBubbleTextView.applyFromApplicationInfo(adapterItem.appInfo);
         mIconView.setBackground(mBubbleTextView.getIcon());
         mIconView.setTag(adapterItem.appInfo);
-        List<WorkspaceItemInfo> shorcutInfos = adapterItem.getPayload();
+        List<ItemInfoWithIcon> shorcutInfos = adapterItem.getPayload();
         for (int i = 0; i < mDeepShortcutTextViews.length; i++) {
             mDeepShortcutTextViews[i].setVisibility(shorcutInfos.size() > i ? VISIBLE : GONE);
             if (i < shorcutInfos.size()) {
-                mDeepShortcutTextViews[i].applyFromWorkspaceItem(shorcutInfos.get(i));
+                mDeepShortcutTextViews[i].applyFromItemInfoWithIcon(shorcutInfos.get(i));
             }
         }
     }
