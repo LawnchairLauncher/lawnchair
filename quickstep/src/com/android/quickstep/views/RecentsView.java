@@ -79,7 +79,6 @@ import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
-import android.view.TouchDelegate;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
@@ -706,12 +705,9 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         super.onTouchEvent(ev);
 
         TaskView taskView = getCurrentPageTaskView();
-        if (taskView != null) {
-            TouchDelegate mChildTouchDelegate = taskView.getIconTouchDelegate(ev);
-            if (mChildTouchDelegate != null && mChildTouchDelegate.onTouchEvent(ev)) {
-                // Keep consuming events to pass to delegate
-                return true;
-            }
+        if (taskView != null && taskView.offerTouchToChildren(ev)) {
+            // Keep consuming events to pass to delegate
+            return true;
         }
 
         final int x = (int) ev.getX();
