@@ -2251,7 +2251,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     public void setRecentsAnimationTargets(RecentsAnimationController recentsAnimationController,
             RecentsAnimationTargets recentsAnimationTargets) {
         mRecentsAnimationController = recentsAnimationController;
-        if (recentsAnimationTargets != null) {
+        if (recentsAnimationTargets != null && recentsAnimationTargets.apps.length > 0) {
             mLiveTileTaskViewSimulator.setPreview(
                     recentsAnimationTargets.apps[recentsAnimationTargets.apps.length - 1]);
             mLiveTileParams.setTargetSet(recentsAnimationTargets);
