@@ -89,13 +89,16 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
 
     @Override
     protected boolean canInterceptTouch(MotionEvent ev) {
+        // If we are swiping to all apps instead of overview, allow it from anywhere.
+        boolean interceptAnywhere = mLauncher.isInState(NORMAL) && !mAllowDragToOverview;
         if (mCurrentAnimation != null) {
             if (mFinishFastOnSecondTouch) {
                 mCurrentAnimation.getAnimationPlayer().end();
             }
 
             AllAppsTransitionController allAppsController = mLauncher.getAllAppsController();
-            if (ev.getY() >= allAppsController.getShiftRange() * allAppsController.getProgress()) {
+            if (ev.getY() >= allAppsController.getShiftRange() * allAppsController.getProgress()
+                    || interceptAnywhere) {
                 // If we are already animating from a previous state, we can intercept as long as
                 // the touch is below the current all apps progress (to allow for double swipe).
                 return true;
@@ -117,9 +120,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
                 return false;
             }
         } else {
-            // If we are swiping to all apps instead of overview, allow it from anywhere.
-            boolean interceptAnywhere = mLauncher.isInState(NORMAL) && !mAllowDragToOverview;
-            // For all other states, only listen if the event originated below the hotseat height
+            // For non-normal states, only listen if the event originated below the hotseat height
             if (!interceptAnywhere && !isTouchOverHotseat(mLauncher, ev)) {
                 return false;
             }
