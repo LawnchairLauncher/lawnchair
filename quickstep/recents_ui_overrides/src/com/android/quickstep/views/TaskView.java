@@ -576,7 +576,11 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                 .getInterpolation(progress);
         mIconView.setScaleX(scale);
         mIconView.setScaleY(scale);
-
+        if (mContextualChip != null && mContextualChipWrapper != null) {
+            mContextualChipWrapper.setAlpha(scale);
+            mContextualChip.setScaleX(scale);
+            mContextualChip.setScaleY(scale);
+        }
         updateFooterVerticalOffset(1.0f - scale);
     }
 
