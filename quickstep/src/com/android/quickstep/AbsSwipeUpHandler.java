@@ -89,6 +89,7 @@ import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.InputConsumerProxy;
+import com.android.quickstep.util.MotionPauseDetector;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.SurfaceTransactionApplier;
 import com.android.quickstep.util.TransformParams;
@@ -201,6 +202,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
     // Either RectFSpringAnim (if animating home) or ObjectAnimator (from mCurrentShift) otherwise
     private RunningWindowAnim mRunningWindowAnim;
     private boolean mIsMotionPaused;
+    private boolean mHasMotionEverBeenPaused;
 
     private boolean mContinuingLastGesture;
 
@@ -482,13 +484,20 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
                 .getHighResLoadingState().setVisible(true);
     }
 
-    /**
-     * Called when motion pause is detected
-     */
-    public void onMotionPauseChanged(boolean isPaused) {
-        mIsMotionPaused = isPaused;
-        maybeUpdateRecentsAttachedState();
-        performHapticFeedback();
+    public MotionPauseDetector.OnMotionPauseListener getMotionPauseListener() {
+        return new MotionPauseDetector.OnMotionPauseListener() {
+            @Override
+            public void onMotionPauseDetected() {
+                mHasMotionEverBeenPaused = true;
+                maybeUpdateRecentsAttachedState();
+                performHapticFeedback();
+            }
+
+            @Override
+            public void onMotionPauseChanged(boolean isPaused) {
+                mIsMotionPaused = isPaused;
+            }
+        };
     }
 
     public void maybeUpdateRecentsAttachedState() {
@@ -519,7 +528,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
             // The window is going away so make sure recents is always visible in this case.
             recentsAttachedToAppWindow = true;
         } else {
-            recentsAttachedToAppWindow = mIsMotionPaused || mIsLikelyToStartNewTask;
+            recentsAttachedToAppWindow = mHasMotionEverBeenPaused || mIsLikelyToStartNewTask;
         }
         mAnimationFactory.setRecentsAttachedToAppWindow(recentsAttachedToAppWindow, animate);
 

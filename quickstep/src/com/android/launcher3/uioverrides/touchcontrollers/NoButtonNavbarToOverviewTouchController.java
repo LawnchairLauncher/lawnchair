@@ -128,7 +128,7 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
         mMotionPauseDetector.clear();
 
         if (handlingOverviewAnim()) {
-            mMotionPauseDetector.setOnMotionPauseListener(this::onMotionPauseChanged);
+            mMotionPauseDetector.setOnMotionPauseListener(this::onMotionPauseDetected);
         }
 
         if (mFromState == NORMAL && mToState == HINT_STATE) {
@@ -185,7 +185,7 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
         }
     }
 
-    private void onMotionPauseChanged(boolean isPaused) {
+    private void onMotionPauseDetected() {
         if (mCurrentAnimation == null) {
             return;
         }

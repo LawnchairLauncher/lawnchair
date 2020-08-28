@@ -182,7 +182,7 @@ public class NavBarGestureHandler implements OnTouchListener,
                 mLaunchedAssistant = false;
                 mSwipeUpTouchTracker.init();
                 mMotionPauseDetector.clear();
-                mMotionPauseDetector.setOnMotionPauseListener(this::onMotionPauseChanged);
+                mMotionPauseDetector.setOnMotionPauseListener(this::onMotionPauseDetected);
                 break;
             case MotionEvent.ACTION_MOVE:
                 mLastPos.set(event.getX(), event.getY());
@@ -220,7 +220,6 @@ public class NavBarGestureHandler implements OnTouchListener,
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
                 mMotionPauseDetector.clear();
-                mMotionPauseDetector.setOnMotionPauseListener(null);
                 if (mGestureCallback != null && !intercepted && mTouchCameFromNavBar) {
                     mGestureCallback.onNavBarGestureAttempted(
                             HOME_OR_OVERVIEW_NOT_STARTED_WRONG_SWIPE_DIRECTION, new PointF());
@@ -252,10 +251,8 @@ public class NavBarGestureHandler implements OnTouchListener,
         return intercepted;
     }
 
-    protected void onMotionPauseChanged(boolean isPaused) {
-        if (isPaused) {
-            VibratorWrapper.INSTANCE.get(mContext).vibrate(OVERVIEW_HAPTIC);
-        }
+    protected void onMotionPauseDetected() {
+        VibratorWrapper.INSTANCE.get(mContext).vibrate(OVERVIEW_HAPTIC);
     }
 
     /**

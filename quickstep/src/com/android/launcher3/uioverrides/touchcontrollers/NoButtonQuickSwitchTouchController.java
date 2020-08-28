@@ -80,7 +80,7 @@ import com.android.quickstep.views.LauncherRecentsView;
  * the user as possible, also handles swipe up and hold to go to overview and swiping back home.
  */
 public class NoButtonQuickSwitchTouchController implements TouchController,
-        BothAxesSwipeDetector.Listener, MotionPauseDetector.OnMotionPauseListener {
+        BothAxesSwipeDetector.Listener {
 
     /** The minimum progress of the scale/translationY animation until drag end. */
     private static final float Y_ANIM_MIN_PROGRESS = 0.25f;
@@ -167,7 +167,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         if (start) {
             mStartState = mLauncher.getStateManager().getState();
 
-            mMotionPauseDetector.setOnMotionPauseListener(this);
+            mMotionPauseDetector.setOnMotionPauseListener(this::onMotionPauseDetected);
 
             // We have detected horizontal drag start, now allow swipe up as well.
             mSwipeDetector.setDetectableScrollConditions(DIRECTION_RIGHT | DIRECTION_UP,
@@ -177,8 +177,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         }
     }
 
-    @Override
-    public void onMotionPauseChanged(boolean isPaused) {
+    private void onMotionPauseDetected() {
         VibratorWrapper.INSTANCE.get(mLauncher).vibrate(OVERVIEW_HAPTIC);
     }
 

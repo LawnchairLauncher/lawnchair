@@ -42,18 +42,16 @@ public class ScreenPinnedInputConsumer implements InputConsumer {
         mMotionPauseMinDisplacement = context.getResources().getDimension(
                 R.dimen.motion_pause_detector_min_displacement_from_app);
         mMotionPauseDetector = new MotionPauseDetector(context, true /* makePauseHarderToTrigger*/);
-        mMotionPauseDetector.setOnMotionPauseListener(isPaused -> {
-            if (isPaused) {
-                SystemUiProxy.INSTANCE.get(context).stopScreenPinning();
-                BaseDraggingActivity launcherActivity = gestureState.getActivityInterface()
-                        .getCreatedActivity();
-                if (launcherActivity != null) {
-                    launcherActivity.getRootView().performHapticFeedback(
-                            HapticFeedbackConstants.LONG_PRESS,
-                            HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
-                }
-                mMotionPauseDetector.clear();
+        mMotionPauseDetector.setOnMotionPauseListener(() -> {
+            SystemUiProxy.INSTANCE.get(context).stopScreenPinning();
+            BaseDraggingActivity launcherActivity = gestureState.getActivityInterface()
+                    .getCreatedActivity();
+            if (launcherActivity != null) {
+                launcherActivity.getRootView().performHapticFeedback(
+                        HapticFeedbackConstants.LONG_PRESS,
+                        HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
             }
+            mMotionPauseDetector.clear();
         });
     }
 

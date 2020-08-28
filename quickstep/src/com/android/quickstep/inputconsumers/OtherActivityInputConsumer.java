@@ -52,9 +52,9 @@ import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.TraceHelper;
-import com.android.quickstep.BaseActivityInterface;
 import com.android.quickstep.AbsSwipeUpHandler;
 import com.android.quickstep.AbsSwipeUpHandler.Factory;
+import com.android.quickstep.BaseActivityInterface;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.RecentsAnimationCallbacks;
@@ -365,7 +365,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         mInteractionHandler = mHandlerFactory.newHandler(mGestureState, touchTimeMs,
                 mTaskAnimationManager.isRecentsAnimationRunning());
         mInteractionHandler.setGestureEndCallback(this::onInteractionGestureFinished);
-        mMotionPauseDetector.setOnMotionPauseListener(mInteractionHandler::onMotionPauseChanged);
+        mMotionPauseDetector.setOnMotionPauseListener(mInteractionHandler.getMotionPauseListener());
         Intent intent = new Intent(mInteractionHandler.getLaunchIntent());
         mInteractionHandler.initWhenReady(intent);
 
