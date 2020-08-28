@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderPagedView;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.FocusLogic;
 import com.android.launcher3.util.Thunk;
 
@@ -96,7 +97,7 @@ public class FocusHelper {
             }
 
             if (!(v.getParent() instanceof ShortcutAndWidgetContainer)) {
-                if (FeatureFlags.IS_DOGFOOD_BUILD) {
+                if (FeatureFlags.IS_STUDIO_BUILD) {
                     throw new IllegalStateException("Parent of the focused item is not supported.");
                 } else {
                     return false;

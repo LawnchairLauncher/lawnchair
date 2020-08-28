@@ -36,7 +36,7 @@ import com.android.launcher3.uioverrides.WallpaperColorInfo;
 public class Themes {
 
     public static int getActivityThemeRes(Context context) {
-        WallpaperColorInfo wallpaperColorInfo = WallpaperColorInfo.getInstance(context);
+        WallpaperColorInfo wallpaperColorInfo = WallpaperColorInfo.INSTANCE.get(context);
         boolean darkTheme;
         if (Utilities.ATLEAST_Q) {
             Configuration configuration = context.getResources().getConfiguration();
@@ -113,10 +113,17 @@ public class Themes {
      * Returns the alpha corresponding to the theme attribute {@param attr}, in the range [0, 255].
      */
     public static int getAlpha(Context context, int attr) {
+        return (int) (255 * getFloat(context, attr, 0) + 0.5f);
+    }
+
+    /**
+     * Returns the alpha corresponding to the theme attribute {@param attr}
+     */
+    public static float getFloat(Context context, int attr, float defValue) {
         TypedArray ta = context.obtainStyledAttributes(new int[]{attr});
-        float alpha = ta.getFloat(0, 0);
+        float value = ta.getFloat(0, defValue);
         ta.recycle();
-        return (int) (255 * alpha + 0.5f);
+        return value;
     }
 
     /**

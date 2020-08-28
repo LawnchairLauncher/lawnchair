@@ -19,13 +19,12 @@ import android.content.Context;
 import android.content.pm.ShortcutInfo;
 import android.os.UserHandle;
 
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.WorkspaceItemInfo;
-import com.android.launcher3.icons.LauncherIcons;
-import com.android.launcher3.shortcuts.DeepShortcutManager;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.shortcuts.ShortcutKey;
+import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.MultiHashMap;
 
@@ -54,8 +53,6 @@ public class ShortcutsChangedTask extends BaseModelUpdateTask {
     @Override
     public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
         final Context context = app.getContext();
-        DeepShortcutManager deepShortcutManager = DeepShortcutManager.getInstance(context);
-
         // Find WorkspaceItemInfo's that have changed on the workspace.
         HashSet<ShortcutKey> removedKeys = new HashSet<>();
         MultiHashMap<ShortcutKey, WorkspaceItemInfo> keyToShortcutInfo = new MultiHashMap<>();
@@ -74,8 +71,9 @@ public class ShortcutsChangedTask extends BaseModelUpdateTask {
         final ArrayList<WorkspaceItemInfo> updatedWorkspaceItemInfos = new ArrayList<>();
         if (!keyToShortcutInfo.isEmpty()) {
             // Update the workspace to reflect the changes to updated shortcuts residing on it.
-            List<ShortcutInfo> shortcuts = deepShortcutManager.queryForFullDetails(
-                    mPackageName, new ArrayList<>(allIds), mUser);
+            List<ShortcutInfo> shortcuts = new ShortcutRequest(context, mUser)
+                    .forPackage(mPackageName, new ArrayList<>(allIds))
+                    .query(ShortcutRequest.ALL);
             for (ShortcutInfo fullDetails : shortcuts) {
                 ShortcutKey key = ShortcutKey.fromInfo(fullDetails);
                 List<WorkspaceItemInfo> workspaceItemInfos = keyToShortcutInfo.remove(key);
@@ -90,12 +88,7 @@ public class ShortcutsChangedTask extends BaseModelUpdateTask {
                 }
                 for (final WorkspaceItemInfo workspaceItemInfo : workspaceItemInfos) {
                     workspaceItemInfo.updateFromDeepShortcutInfo(fullDetails, context);
-                    // If the shortcut is pinned but no longer has an icon in the system,
-                    // keep the current icon instead of reverting to the default icon.
-                    LauncherIcons li = LauncherIcons.obtain(context);
-                    workspaceItemInfo.applyFrom(li.createShortcutIcon(fullDetails, true,
-                            () -> workspaceItemInfo));
-                    li.recycle();
+                    app.getIconCache().getShortcutIcon(workspaceItemInfo, fullDetails);
                     updatedWorkspaceItemInfos.add(workspaceItemInfo);
                 }
             }

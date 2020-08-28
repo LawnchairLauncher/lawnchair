@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.model.WidgetsModel.GO_DISABLE_WIDGETS;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
@@ -24,30 +25,34 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.pm.LauncherApps;
 import android.content.res.Configuration;
+import android.graphics.Rect;
+import android.os.Bundle;
+import android.os.UserHandle;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 
 import androidx.annotation.IntDef;
 
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.logging.StatsLogManager;
-import com.android.launcher3.logging.StatsLogUtils;
-import com.android.launcher3.logging.StatsLogUtils.LogStateProvider;
 import com.android.launcher3.logging.UserEventDispatcher;
-import com.android.launcher3.logging.UserEventDispatcher.UserEventDelegate;
-import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.ViewCache;
 import com.android.launcher3.views.ActivityContext;
 
-import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.lang.annotation.Retention;
 import java.util.ArrayList;
 
-public abstract class BaseActivity extends Activity
-        implements UserEventDelegate, LogStateProvider, ActivityContext {
+/**
+ * Launcher BaseActivity
+ */
+public abstract class BaseActivity extends Activity implements ActivityContext {
+
+    private static final String TAG = "BaseActivity";
 
     public static final int INVISIBLE_BY_STATE_HANDLER = 1 << 0;
     public static final int INVISIBLE_BY_APP_TRANSITIONS = 1 << 1;
@@ -81,19 +86,44 @@ public abstract class BaseActivity extends Activity
     protected StatsLogManager mStatsLogManager;
     protected SystemUiController mSystemUiController;
 
-    private static final int ACTIVITY_STATE_STARTED = 1 << 0;
-    private static final int ACTIVITY_STATE_RESUMED = 1 << 1;
+
+    public static final int ACTIVITY_STATE_STARTED = 1 << 0;
+    public static final int ACTIVITY_STATE_RESUMED = 1 << 1;
+
     /**
-     * State flag indicating if the user is active or the actitvity when to background as a result
+     * State flags indicating that the activity has received one frame after resume, and was
+     * not immediately paused.
+     */
+    public static final int ACTIVITY_STATE_DEFERRED_RESUMED = 1 << 2;
+
+    public static final int ACTIVITY_STATE_WINDOW_FOCUSED = 1 << 3;
+
+    /**
+     * State flag indicating if the user is active or the activity when to background as a result
      * of user action.
      * @see #isUserActive()
      */
-    private static final int ACTIVITY_STATE_USER_ACTIVE = 1 << 2;
+    public static final int ACTIVITY_STATE_USER_ACTIVE = 1 << 4;
+
+    /**
+     * State flag indicating if the user will be active shortly.
+     */
+    public static final int ACTIVITY_STATE_USER_WILL_BE_ACTIVE = 1 << 5;
+
+    /**
+     * State flag indicating that a state transition is in progress
+     */
+    public static final int ACTIVITY_STATE_TRANSITION_ACTIVE = 1 << 6;
 
     @Retention(SOURCE)
     @IntDef(
             flag = true,
-            value = {ACTIVITY_STATE_STARTED, ACTIVITY_STATE_RESUMED, ACTIVITY_STATE_USER_ACTIVE})
+            value = {ACTIVITY_STATE_STARTED,
+                    ACTIVITY_STATE_RESUMED,
+                    ACTIVITY_STATE_DEFERRED_RESUMED,
+                    ACTIVITY_STATE_WINDOW_FOCUSED,
+                    ACTIVITY_STATE_USER_ACTIVE,
+                    ACTIVITY_STATE_TRANSITION_ACTIVE})
     public @interface ActivityFlags{}
 
     @ActivityFlags
@@ -114,20 +144,18 @@ public abstract class BaseActivity extends Activity
         return mDeviceProfile;
     }
 
-    public int getCurrentState() { return StatsLogUtils.LAUNCHER_STATE_BACKGROUND; }
-
     public void modifyUserEvent(LauncherLogProto.LauncherEvent event) {}
 
     public final StatsLogManager getStatsLogManager() {
         if (mStatsLogManager == null) {
-            mStatsLogManager = StatsLogManager.newInstance(this, this);
+            mStatsLogManager = StatsLogManager.newInstance(this);
         }
         return mStatsLogManager;
     }
 
     public final UserEventDispatcher getUserEventDispatcher() {
         if (mUserEventDispatcher == null) {
-            mUserEventDispatcher = UserEventDispatcher.newInstance(this, this);
+            mUserEventDispatcher = UserEventDispatcher.newInstance(this);
         }
         return mUserEventDispatcher;
     }
@@ -146,19 +174,20 @@ public abstract class BaseActivity extends Activity
 
     @Override
     protected void onStart() {
-        mActivityFlags |= ACTIVITY_STATE_STARTED;
+        addActivityFlags(ACTIVITY_STATE_STARTED);
         super.onStart();
     }
 
     @Override
     protected void onResume() {
-        mActivityFlags |= ACTIVITY_STATE_RESUMED | ACTIVITY_STATE_USER_ACTIVE;
+        addActivityFlags(ACTIVITY_STATE_RESUMED | ACTIVITY_STATE_USER_ACTIVE);
+        removeActivityFlags(ACTIVITY_STATE_USER_WILL_BE_ACTIVE);
         super.onResume();
     }
 
     @Override
     protected void onUserLeaveHint() {
-        mActivityFlags &= ~ACTIVITY_STATE_USER_ACTIVE;
+        removeActivityFlags(ACTIVITY_STATE_USER_ACTIVE);
         super.onUserLeaveHint();
     }
 
@@ -172,7 +201,7 @@ public abstract class BaseActivity extends Activity
 
     @Override
     protected void onStop() {
-        mActivityFlags &= ~ACTIVITY_STATE_STARTED & ~ACTIVITY_STATE_USER_ACTIVE;
+        removeActivityFlags(ACTIVITY_STATE_STARTED | ACTIVITY_STATE_USER_ACTIVE);
         mForceInvisible = 0;
         super.onStop();
 
@@ -183,7 +212,7 @@ public abstract class BaseActivity extends Activity
 
     @Override
     protected void onPause() {
-        mActivityFlags &= ~ACTIVITY_STATE_RESUMED;
+        removeActivityFlags(ACTIVITY_STATE_RESUMED | ACTIVITY_STATE_DEFERRED_RESUMED);
         super.onPause();
 
         // Reset the overridden sysui flags used for the task-swipe launch animation, we do this
@@ -191,6 +220,17 @@ public abstract class BaseActivity extends Activity
         // not happen immediately, which would cause us to reset to launcher's sysui flags and then
         // back to the new app (causing a flash)
         getSystemUiController().updateUiState(UI_STATE_OVERVIEW, 0);
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            addActivityFlags(ACTIVITY_STATE_WINDOW_FOCUSED);
+        } else {
+            removeActivityFlags(ACTIVITY_STATE_WINDOW_FOCUSED);
+        }
+
     }
 
     public boolean isStarted() {
@@ -207,6 +247,22 @@ public abstract class BaseActivity extends Activity
     public boolean isUserActive() {
         return (mActivityFlags & ACTIVITY_STATE_USER_ACTIVE) != 0;
     }
+
+    public int getActivityFlags() {
+        return mActivityFlags;
+    }
+
+    protected void addActivityFlags(int flags) {
+        mActivityFlags |= flags;
+        onActivityFlagsChanged(flags);
+    }
+
+    protected void removeActivityFlags(int flags) {
+        mActivityFlags &= ~flags;
+        onActivityFlagsChanged(flags);
+    }
+
+    protected void onActivityFlagsChanged(int changeBits) { }
 
     public void addOnDeviceProfileChangeListener(OnDeviceProfileChangeListener listener) {
         mDPChangeListeners.add(listener);
@@ -233,7 +289,7 @@ public abstract class BaseActivity extends Activity
     /**
      * Used to set the override visibility state, used only to handle the transition home with the
      * recents animation.
-     * @see QuickstepAppTransitionManagerImpl#getWallpaperOpenRunner()
+     * @see QuickstepAppTransitionManagerImpl#createWallpaperOpenRunner
      */
     public void addForceInvisibleFlag(@InvisibilityFlags int flag) {
         mForceInvisible |= flag;
@@ -258,13 +314,6 @@ public abstract class BaseActivity extends Activity
         void onMultiWindowModeChanged(boolean isInMultiWindowMode);
     }
 
-    @Override
-    public void dump(String prefix, FileDescriptor fd, PrintWriter writer, String[] args) {
-        if (!UiFactory.dumpActivity(this, writer)) {
-            super.dump(prefix, fd, writer, args);
-        }
-    }
-
     protected void dumpMisc(String prefix, PrintWriter writer) {
         writer.println(prefix + "deviceProfile isTransposed="
                 + getDeviceProfile().isVerticalBarLayout());
@@ -272,6 +321,22 @@ public abstract class BaseActivity extends Activity
         writer.println(prefix + "mSystemUiController: " + mSystemUiController);
         writer.println(prefix + "mActivityFlags: " + mActivityFlags);
         writer.println(prefix + "mForceInvisible: " + mForceInvisible);
+    }
+
+    /**
+     * A wrapper around the platform method with Launcher specific checks
+     */
+    public void startShortcut(String packageName, String id, Rect sourceBounds,
+            Bundle startActivityOptions, UserHandle user) {
+        if (GO_DISABLE_WIDGETS) {
+            return;
+        }
+        try {
+            getSystemService(LauncherApps.class).startShortcut(packageName, id, sourceBounds,
+                    startActivityOptions, user);
+        } catch (SecurityException | IllegalStateException e) {
+            Log.e(TAG, "Failed to start shortcut", e);
+        }
     }
 
     public static <T extends BaseActivity> T fromContext(Context context) {

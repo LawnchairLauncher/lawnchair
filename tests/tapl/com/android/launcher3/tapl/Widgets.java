@@ -16,6 +16,8 @@
 
 package com.android.launcher3.tapl;
 
+import static com.android.launcher3.tapl.LauncherInstrumentation.WAIT_TIME_MS;
+
 import android.graphics.Point;
 import android.graphics.Rect;
 
@@ -23,6 +25,9 @@ import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObject2;
+import androidx.test.uiautomator.Until;
+
+import com.android.launcher3.tapl.LauncherInstrumentation.GestureScope;
 
 import java.util.Collection;
 
@@ -41,15 +46,17 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
      * Flings forward (down) and waits the fling's end.
      */
     public void flingForward() {
-        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                "want to fling forward in widgets")) {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                     "want to fling forward in widgets")) {
             LauncherInstrumentation.log("Widgets.flingForward enter");
             final UiObject2 widgetsContainer = verifyActiveContainer();
             mLauncher.scroll(
                     widgetsContainer,
                     Direction.DOWN,
-                    new Rect(0, 0, 0, mLauncher.getBottomGestureMargin(widgetsContainer)),
-                    FLING_STEPS);
+                    new Rect(0, 0, 0,
+                            mLauncher.getBottomGestureMarginInContainer(widgetsContainer) + 1),
+                    FLING_STEPS, false);
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer("flung forward")) {
                 verifyActiveContainer();
             }
@@ -61,15 +68,16 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
      * Flings backward (up) and waits the fling's end.
      */
     public void flingBackward() {
-        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                "want to fling backwards in widgets")) {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                     "want to fling backwards in widgets")) {
             LauncherInstrumentation.log("Widgets.flingBackward enter");
             final UiObject2 widgetsContainer = verifyActiveContainer();
             mLauncher.scroll(
                     widgetsContainer,
                     Direction.UP,
-                    new Rect(0, 0, widgetsContainer.getVisibleBounds().width(), 0),
-                    FLING_STEPS);
+                    new Rect(0, 0, mLauncher.getVisibleBounds(widgetsContainer).width(), 0),
+                    FLING_STEPS, false);
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer("flung back")) {
                 verifyActiveContainer();
             }
@@ -83,33 +91,53 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
     }
 
     public Widget getWidget(String labelText) {
-        final UiObject2 widgetsContainer = verifyActiveContainer();
-        final Point displaySize = mLauncher.getRealDisplaySize();
-        final BySelector labelSelector = By.clazz("android.widget.TextView").text(labelText);
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                     "getting widget " + labelText + " in widgets list")) {
+            final UiObject2 widgetsContainer = verifyActiveContainer();
+            mLauncher.assertTrue("Widgets container didn't become scrollable",
+                    widgetsContainer.wait(Until.scrollable(true), WAIT_TIME_MS));
+            final Point displaySize = mLauncher.getRealDisplaySize();
+            final BySelector labelSelector = By.clazz("android.widget.TextView").text(labelText);
 
-        int i = 0;
-        for (; ; ) {
-            final Collection<UiObject2> cells = mLauncher.getObjectsInContainer(
-                    widgetsContainer, "widgets_cell_list_container");
-            mLauncher.assertTrue("Widgets doesn't have 2 rows", cells.size() >= 2);
-            for (UiObject2 cell : cells) {
-                final UiObject2 label = cell.findObject(labelSelector);
-                if (label == null) continue;
+            int i = 0;
+            for (; ; ) {
+                final Collection<UiObject2> cells = mLauncher.getObjectsInContainer(
+                        widgetsContainer, "widgets_scroll_container");
+                mLauncher.assertTrue("Widgets doesn't have 2 rows", cells.size() >= 2);
+                for (UiObject2 cell : cells) {
+                    final UiObject2 label = cell.findObject(labelSelector);
+                    if (label == null) continue;
 
-                final UiObject2 widget = label.getParent().getParent();
-                mLauncher.assertEquals(
-                        "View is not WidgetCell",
-                        "com.android.launcher3.widget.WidgetCell",
-                        widget.getClassName());
+                    final UiObject2 widget = label.getParent().getParent();
+                    mLauncher.assertEquals(
+                            "View is not WidgetCell",
+                            "com.android.launcher3.widget.WidgetCell",
+                            widget.getClassName());
 
-                if (widget.getVisibleBounds().bottom <=
-                        displaySize.y - mLauncher.getBottomGestureSize()) {
-                    return new Widget(mLauncher, widget);
+                    int maxWidth = 0;
+                    for (UiObject2 sibling : widget.getParent().getChildren()) {
+                        maxWidth = Math.max(mLauncher.getVisibleBounds(sibling).width(), maxWidth);
+                    }
+
+                    if (mLauncher.getVisibleBounds(widget).bottom
+                            <= displaySize.y - mLauncher.getBottomGestureSize()) {
+                        int visibleDelta = maxWidth - mLauncher.getVisibleBounds(widget).width();
+                        if (visibleDelta > 0) {
+                            Rect parentBounds = mLauncher.getVisibleBounds(cell);
+                            mLauncher.linearGesture(parentBounds.centerX() + visibleDelta
+                                            + mLauncher.getTouchSlop(),
+                                    parentBounds.centerY(), parentBounds.centerX(),
+                                    parentBounds.centerY(), 10, true, GestureScope.INSIDE);
+                        }
+
+                        return new Widget(mLauncher, widget);
+                    }
                 }
-            }
 
-            mLauncher.assertTrue("Too many attempts", ++i <= 40);
-            mLauncher.scrollToLastVisibleRow(widgetsContainer, cells, 0);
+                mLauncher.assertTrue("Too many attempts", ++i <= 40);
+                mLauncher.scrollToLastVisibleRow(widgetsContainer, cells, 0);
+            }
         }
     }
 }

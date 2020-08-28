@@ -17,7 +17,7 @@ package com.android.launcher3.folder;
 
 import android.graphics.drawable.Drawable;
 
-import com.android.launcher3.WorkspaceItemInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 
 /**
  * Manages the parameters used to draw a Folder preview item.

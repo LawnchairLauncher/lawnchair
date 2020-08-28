@@ -15,34 +15,36 @@
  */
 package com.android.launcher3;
 
+import android.animation.AnimatorSet;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.os.Handler;
 
-import com.android.launcher3.states.InternalStateHandler;
-import com.android.quickstep.ActivityControlHelper.ActivityInitListener;
-import com.android.quickstep.OverviewCallbacks;
+import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.RemoteAnimationProvider;
+import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.function.BiPredicate;
 
 @TargetApi(Build.VERSION_CODES.P)
-public class LauncherInitListener extends InternalStateHandler implements ActivityInitListener {
-
-    private final BiPredicate<Launcher, Boolean> mOnInitListener;
+public class LauncherInitListener extends ActivityInitListener<Launcher> {
 
     private RemoteAnimationProvider mRemoteAnimationProvider;
 
+    /**
+     * @param onInitListener a callback made when the activity is initialized. The callback should
+     *                       return true to continue receiving callbacks (ie. for if the activity is
+     *                       recreated).
+     */
     public LauncherInitListener(BiPredicate<Launcher, Boolean> onInitListener) {
-        mOnInitListener = onInitListener;
+        super(onInitListener, Launcher.ACTIVITY_TRACKER);
     }
 
     @Override
-    protected boolean init(Launcher launcher, boolean alreadyOnHome) {
+    public boolean handleInit(Launcher launcher, boolean alreadyOnHome) {
         if (mRemoteAnimationProvider != null) {
             QuickstepAppTransitionManagerImpl appTransitionManager =
                     (QuickstepAppTransitionManagerImpl) launcher.getAppTransitionManager();
@@ -50,42 +52,37 @@ public class LauncherInitListener extends InternalStateHandler implements Activi
             // Set a one-time animation provider. After the first call, this will get cleared.
             // TODO: Probably also check the intended target id.
             CancellationSignal cancellationSignal = new CancellationSignal();
-            appTransitionManager.setRemoteAnimationProvider((targets) -> {
+            appTransitionManager.setRemoteAnimationProvider(new RemoteAnimationProvider() {
+                @Override
+                public AnimatorSet createWindowAnimation(RemoteAnimationTargetCompat[] appTargets,
+                        RemoteAnimationTargetCompat[] wallpaperTargets) {
 
-                // On the first call clear the reference.
-                cancellationSignal.cancel();
-                RemoteAnimationProvider provider = mRemoteAnimationProvider;
-                mRemoteAnimationProvider = null;
+                    // On the first call clear the reference.
+                    cancellationSignal.cancel();
+                    RemoteAnimationProvider provider = mRemoteAnimationProvider;
+                    mRemoteAnimationProvider = null;
 
-                if (provider != null && launcher.getStateManager().getState().overviewUi) {
-                    return provider.createWindowAnimation(targets);
+                    if (provider != null && launcher.getStateManager().getState().overviewUi) {
+                        return provider.createWindowAnimation(appTargets, wallpaperTargets);
+                    }
+                    return null;
                 }
-                return null;
             }, cancellationSignal);
         }
-        OverviewCallbacks.get(launcher).onInitOverviewTransition();
-        return mOnInitListener.test(launcher, alreadyOnHome);
-    }
-
-    @Override
-    public void register() {
-        initWhenReady();
+        launcher.deferOverlayCallbacksUntilNextResumeOrStop();
+        return super.handleInit(launcher, alreadyOnHome);
     }
 
     @Override
     public void unregister() {
         mRemoteAnimationProvider = null;
-        clearReference();
+        super.unregister();
     }
 
     @Override
     public void registerAndStartActivity(Intent intent, RemoteAnimationProvider animProvider,
             Context context, Handler handler, long duration) {
         mRemoteAnimationProvider = animProvider;
-
-        register();
-
-        Bundle options = animProvider.toActivityOptions(handler, duration, context).toBundle();
-        context.startActivity(addToIntent(new Intent((intent))), options);
+        super.registerAndStartActivity(intent, animProvider, context, handler, duration);
     }
 }

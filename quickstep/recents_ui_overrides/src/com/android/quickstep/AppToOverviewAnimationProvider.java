@@ -15,50 +15,55 @@
  */
 package com.android.quickstep;
 
-import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
+import static com.android.launcher3.LauncherState.BACKGROUND_APP;
+import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
+import static com.android.launcher3.anim.Interpolators.clampToProgress;
+import static com.android.launcher3.statehandlers.DepthController.DEPTH;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
-import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
-import android.animation.ValueAnimator;
-import android.graphics.Rect;
 import android.util.Log;
-import android.view.View;
+import android.view.animation.Interpolator;
 
 import com.android.launcher3.AbstractFloatingView;
-import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.anim.AnimationSuccessListener;
-import com.android.quickstep.util.ClipAnimationHelper;
+import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.statehandlers.DepthController;
+import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.quickstep.util.RemoteAnimationProvider;
-import com.android.quickstep.util.RemoteAnimationTargetSet;
+import com.android.quickstep.util.SurfaceTransactionApplier;
+import com.android.quickstep.util.TaskViewSimulator;
+import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
-import com.android.systemui.shared.system.TransactionCompat;
 
 /**
- * Provider for the atomic remote window animation from the app to the overview.
+ * Provider for the atomic (for 3-button mode) remote window animation from the app to the overview.
  *
  * @param <T> activity that contains the overview
  */
-final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> implements
+final class AppToOverviewAnimationProvider<T extends StatefulActivity<?>> extends
         RemoteAnimationProvider {
 
     private static final long RECENTS_LAUNCH_DURATION = 250;
     private static final String TAG = "AppToOverviewAnimationProvider";
 
-    private final ActivityControlHelper<T> mHelper;
+    private final BaseActivityInterface<?, T> mActivityInterface;
     // The id of the currently running task that is transitioning to overview.
     private final int mTargetTaskId;
+    private final RecentsAnimationDeviceState mDeviceState;
 
     private T mActivity;
     private RecentsView mRecentsView;
 
-    AppToOverviewAnimationProvider(ActivityControlHelper<T> helper, int targetTaskId) {
-        mHelper = helper;
+    AppToOverviewAnimationProvider(
+            BaseActivityInterface<?, T> activityInterface, int targetTaskId,
+            RecentsAnimationDeviceState deviceState) {
+        mActivityInterface = activityInterface;
         mTargetTaskId = targetTaskId;
+        mDeviceState = deviceState;
     }
 
     /**
@@ -70,17 +75,13 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
     boolean onActivityReady(T activity, Boolean wasVisible) {
         activity.<RecentsView>getOverviewPanel().showCurrentTask(mTargetTaskId);
         AbstractFloatingView.closeAllOpenViews(activity, wasVisible);
-        ActivityControlHelper.AnimationFactory factory =
-                mHelper.prepareRecentsUI(activity, wasVisible,
-                false /* animate activity */, (controller) -> {
+        BaseActivityInterface.AnimationFactory factory = mActivityInterface.prepareRecentsUI(
+                mDeviceState,
+                wasVisible, (controller) -> {
                     controller.dispatchOnStart();
-                    ValueAnimator anim = controller.getAnimationPlayer()
-                            .setDuration(RECENTS_LAUNCH_DURATION);
-                    anim.setInterpolator(FAST_OUT_SLOW_IN);
-                    anim.start();
+                    controller.getAnimationPlayer().end();
                 });
-        factory.onRemoteAnimationReceived(null);
-        factory.createActivityController(RECENTS_LAUNCH_DURATION);
+        factory.createActivityInterface(RECENTS_LAUNCH_DURATION);
         factory.setRecentsAttachedToAppWindow(true, false);
         mActivity = activity;
         mRecentsView = mActivity.getOverviewPanel();
@@ -90,82 +91,75 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
     /**
      * Create remote window animation from the currently running app to the overview panel.
      *
-     * @param targetCompats the target apps
+     * @param appTargets the target apps
      * @return animation from app to overview
      */
     @Override
-    public AnimatorSet createWindowAnimation(RemoteAnimationTargetCompat[] targetCompats) {
-        if (mRecentsView != null) {
-            mRecentsView.setRunningTaskIconScaledDown(true);
-        }
-        AnimatorSet anim = new AnimatorSet();
-        anim.addListener(new AnimationSuccessListener() {
-            @Override
-            public void onAnimationSuccess(Animator animator) {
-                mHelper.onSwipeUpToRecentsComplete(mActivity);
-                if (mRecentsView != null) {
-                    mRecentsView.animateUpRunningTaskIconScale();
-                }
-            }
-        });
+    public AnimatorSet createWindowAnimation(RemoteAnimationTargetCompat[] appTargets,
+            RemoteAnimationTargetCompat[] wallpaperTargets) {
+        PendingAnimation pa = new PendingAnimation(RECENTS_LAUNCH_DURATION);
         if (mActivity == null) {
             Log.e(TAG, "Animation created, before activity");
-            anim.play(ValueAnimator.ofInt(0, 1).setDuration(RECENTS_LAUNCH_DURATION));
-            return anim;
+            return pa.buildAnim();
         }
 
-        RemoteAnimationTargetSet targetSet =
-                new RemoteAnimationTargetSet(targetCompats, MODE_CLOSING);
-
-        // Use the top closing app to determine the insets for the animation
-        RemoteAnimationTargetCompat runningTaskTarget = targetSet.findTask(mTargetTaskId);
-        if (runningTaskTarget == null) {
-            Log.e(TAG, "No closing app");
-            anim.play(ValueAnimator.ofInt(0, 1).setDuration(RECENTS_LAUNCH_DURATION));
-            return anim;
-        }
-
-        final ClipAnimationHelper clipHelper = new ClipAnimationHelper(mActivity);
-
-        // At this point, the activity is already started and laid-out. Get the home-bounds
-        // relative to the screen using the rootView of the activity.
-        int loc[] = new int[2];
-        View rootView = mActivity.getRootView();
-        rootView.getLocationOnScreen(loc);
-        Rect homeBounds = new Rect(loc[0], loc[1],
-                loc[0] + rootView.getWidth(), loc[1] + rootView.getHeight());
-        clipHelper.updateSource(homeBounds, runningTaskTarget);
-
-        Rect targetRect = new Rect();
-        mHelper.getSwipeUpDestinationAndLength(mActivity.getDeviceProfile(), mActivity, targetRect);
-        clipHelper.updateTargetRect(targetRect);
-        clipHelper.prepareAnimation(mActivity.getDeviceProfile(), false /* isOpening */);
-
-        ClipAnimationHelper.TransformParams params = new ClipAnimationHelper.TransformParams()
-                .setSyncTransactionApplier(new SyncRtSurfaceTransactionApplierCompat(rootView));
-        ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
-        valueAnimator.setDuration(RECENTS_LAUNCH_DURATION);
-        valueAnimator.setInterpolator(TOUCH_RESPONSE_INTERPOLATOR);
-        valueAnimator.addUpdateListener((v) -> {
-            params.setProgress((float) v.getAnimatedValue());
-            clipHelper.applyTransform(targetSet, params);
+        mRecentsView.setRunningTaskIconScaledDown(true);
+        pa.addListener(new AnimationSuccessListener() {
+            @Override
+            public void onAnimationSuccess(Animator animator) {
+                mActivityInterface.onSwipeUpToRecentsComplete();
+                mRecentsView.animateUpRunningTaskIconScale();
+            }
         });
 
-        if (targetSet.isAnimatingHome()) {
-            // If we are animating home, fade in the opening targets
-            RemoteAnimationTargetSet openingSet =
-                    new RemoteAnimationTargetSet(targetCompats, MODE_OPENING);
-
-            TransactionCompat transaction = new TransactionCompat();
-            valueAnimator.addUpdateListener((v) -> {
-                for (RemoteAnimationTargetCompat app : openingSet.apps) {
-                    transaction.setAlpha(app.leash, (float) v.getAnimatedValue());
-                }
-                transaction.apply();
-            });
+        DepthController depthController = mActivityInterface.getDepthController();
+        if (depthController != null) {
+            pa.addFloat(depthController, DEPTH, BACKGROUND_APP.getDepth(mActivity),
+                    OVERVIEW.getDepth(mActivity), TOUCH_RESPONSE_INTERPOLATOR);
         }
-        anim.play(valueAnimator);
-        return anim;
+
+        RemoteAnimationTargets targets = new RemoteAnimationTargets(appTargets,
+                wallpaperTargets, MODE_CLOSING);
+
+        // Use the top closing app to determine the insets for the animation
+        RemoteAnimationTargetCompat runningTaskTarget = targets.findTask(mTargetTaskId);
+        if (runningTaskTarget == null) {
+            Log.e(TAG, "No closing app");
+            return pa.buildAnim();
+        }
+
+        TaskViewSimulator tsv = new TaskViewSimulator(mActivity, mRecentsView.getSizeStrategy());
+        tsv.setDp(mActivity.getDeviceProfile());
+        tsv.setPreview(runningTaskTarget);
+        tsv.setLayoutRotation(mRecentsView.getPagedViewOrientedState().getTouchRotation(),
+                mRecentsView.getPagedViewOrientedState().getDisplayRotation());
+
+        TransformParams params = new TransformParams()
+                .setTargetSet(targets)
+                .setSyncTransactionApplier(new SurfaceTransactionApplier(mActivity.getRootView()));
+
+        AnimatedFloat recentsAlpha = new AnimatedFloat(() -> { });
+        params.setBaseBuilderProxy((builder, app, p)
+                -> builder.withAlpha(recentsAlpha.value));
+
+        Interpolator taskInterpolator;
+        if (targets.isAnimatingHome()) {
+            params.setHomeBuilderProxy((builder, app, p) -> builder.withAlpha(1 - p.getProgress()));
+
+            taskInterpolator = TOUCH_RESPONSE_INTERPOLATOR;
+            pa.addFloat(recentsAlpha, AnimatedFloat.VALUE, 0, 1, TOUCH_RESPONSE_INTERPOLATOR);
+        } else {
+            // When animation from app to recents, the recents layer is drawn on top of the app. To
+            // prevent the overlap, we animate the task first and then quickly fade in the recents.
+            taskInterpolator = clampToProgress(TOUCH_RESPONSE_INTERPOLATOR, 0, 0.8f);
+            pa.addFloat(recentsAlpha, AnimatedFloat.VALUE, 0, 1,
+                    clampToProgress(TOUCH_RESPONSE_INTERPOLATOR, 0.8f, 1));
+        }
+
+        pa.addFloat(params, TransformParams.PROGRESS, 0, 1, taskInterpolator);
+        tsv.addAppToOverviewAnim(pa, taskInterpolator);
+        pa.addOnFrameCallback(() -> tsv.apply(params));
+        return pa.buildAnim();
     }
 
     /**

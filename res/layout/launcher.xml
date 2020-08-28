@@ -45,15 +45,15 @@
 
         <include
             android:id="@+id/overview_panel"
-            layout="@layout/overview_panel"
-            android:visibility="gone" />
+            layout="@layout/overview_panel" />
+
 
         <!-- Keep these behind the workspace so that they are not visible when
          we go into AllApps -->
         <com.android.launcher3.pageindicators.WorkspacePageIndicator
             android:id="@+id/page_indicator"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/vertical_drag_handle_size"
+            android:layout_height="@dimen/workspace_page_indicator_height"
             android:layout_gravity="bottom|center_horizontal"
             android:theme="@style/HomeScreenElementTheme" />
 

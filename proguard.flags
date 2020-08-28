@@ -2,12 +2,6 @@
   *;
 }
 
-# Proguard will strip new callbacks in LauncherApps.Callback from
-# WrappedCallback if compiled against an older SDK. Don't let this happen.
--keep class com.android.launcher3.compat.** {
-  *;
-}
-
 -keep class com.android.launcher3.graphics.ShadowDrawable {
   public <init>(...);
 }
@@ -23,7 +17,10 @@
 # support jar.
 -keep class androidx.recyclerview.widget.RecyclerView { *; }
 
-# Preference fragments
+# Fragments
+-keep class ** extends androidx.fragment.app.Fragment {
+    public <init>(...);
+}
 -keep class ** extends android.app.Fragment {
     public <init>(...);
 }
@@ -51,3 +48,15 @@
 -dontwarn android.view.**
 -dontwarn android.os.**
 -dontwarn android.graphics.**
+
+# Ignore warnings for hidden utility classes referenced from the shared lib
+-dontwarn com.android.internal.util.**
+
+################ Do not optimize recents lib #############
+-keep class com.android.systemui.** {
+  *;
+}
+
+-keep class com.android.quickstep.** {
+  *;
+}

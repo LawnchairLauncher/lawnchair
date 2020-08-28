@@ -22,6 +22,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.BaseColumns;
 
+import com.android.launcher3.model.data.ItemInfo;
+
 /**
  * Settings related utilities.
  */
@@ -93,15 +95,42 @@ public class LauncherSettings {
         public static final String TABLE_NAME = "favorites";
 
         /**
-         * Backup table created when when the favorites table is modified during grid migration
+         * Backup table created when the favorites table is modified during grid migration
          */
         public static final String BACKUP_TABLE_NAME = "favorites_bakup";
 
         /**
-         * The content:// style URL for this table
+         * Backup table created when user hotseat is moved to workspace for hybrid hotseat
          */
-        public static final Uri CONTENT_URI = Uri.parse("content://" +
-                LauncherProvider.AUTHORITY + "/" + TABLE_NAME);
+        public static final String HYBRID_HOTSEAT_BACKUP_TABLE = "hotseat_restore_backup";
+
+        /**
+         * Temporary table used specifically for grid migrations during wallpaper preview
+         */
+        public static final String PREVIEW_TABLE_NAME = "favorites_preview";
+
+        /**
+         * Temporary table used specifically for multi-db grid migrations
+         */
+        public static final String TMP_TABLE = "favorites_tmp";
+
+        /**
+         * The content:// style URL for "favorites" table
+         */
+        public static final Uri CONTENT_URI = Uri.parse("content://"
+                + LauncherProvider.AUTHORITY + "/" + TABLE_NAME);
+
+        /**
+         * The content:// style URL for "favorites_preview" table
+         */
+        public static final Uri PREVIEW_CONTENT_URI = Uri.parse("content://"
+                + LauncherProvider.AUTHORITY + "/" + PREVIEW_TABLE_NAME);
+
+        /**
+         * The content:// style URL for "favorites_tmp" table
+         */
+        public static final Uri TMP_CONTENT_URI = Uri.parse("content://"
+                + LauncherProvider.AUTHORITY + "/" + TMP_TABLE);
 
         /**
          * The content:// style URL for a given row, identified by its id.
@@ -111,8 +140,8 @@ public class LauncherSettings {
          * @return The unique content URL for the specified row.
          */
         public static Uri getContentUri(int id) {
-            return Uri.parse("content://" + LauncherProvider.AUTHORITY +
-                    "/" + TABLE_NAME + "/" + id);
+            return Uri.parse("content://" + LauncherProvider.AUTHORITY
+                    + "/" + TABLE_NAME + "/" + id);
         }
 
         /**
@@ -127,17 +156,29 @@ public class LauncherSettings {
         public static final int CONTAINER_DESKTOP = -100;
         public static final int CONTAINER_HOTSEAT = -101;
         public static final int CONTAINER_PREDICTION = -102;
+        public static final int CONTAINER_HOTSEAT_PREDICTION = -103;
+        public static final int CONTAINER_ALL_APPS = -104;
+        public static final int CONTAINER_WIDGETS_TRAY = -105;
+        // Represents search results view.
+        public static final int CONTAINER_SEARCH_RESULTS = -106;
+        public static final int CONTAINER_SHORTCUTS = -107;
+        public static final int CONTAINER_SETTINGS = -108;
+        public static final int CONTAINER_TASKSWITCHER = -109;
 
-        static final String containerToString(int container) {
+        public static final String containerToString(int container) {
             switch (container) {
                 case CONTAINER_DESKTOP: return "desktop";
                 case CONTAINER_HOTSEAT: return "hotseat";
                 case CONTAINER_PREDICTION: return "prediction";
+                case CONTAINER_ALL_APPS: return "all_apps";
+                case CONTAINER_WIDGETS_TRAY: return "widgets_tray";
+                case CONTAINER_SEARCH_RESULTS: return "search_result";
+                case CONTAINER_SHORTCUTS: return "shortcuts";
                 default: return String.valueOf(container);
             }
         }
 
-        static final String itemTypeToString(int type) {
+        public static final String itemTypeToString(int type) {
             switch(type) {
                 case ITEM_TYPE_APPLICATION: return "APP";
                 case ITEM_TYPE_SHORTCUT: return "SHORTCUT";
@@ -208,6 +249,12 @@ public class LauncherSettings {
          * The gesture is an application created deep shortcut
          */
         public static final int ITEM_TYPE_DEEP_SHORTCUT = 6;
+
+        /**
+         * Type of the item is recents task.
+         * TODO(hyunyoungs): move constants not related to Favorites DB to a better location.
+         */
+        public static final int ITEM_TYPE_TASK = 7;
 
         /**
          * The appWidgetId of the widget
@@ -299,10 +346,22 @@ public class LauncherSettings {
 
         public static final String METHOD_REFRESH_BACKUP_TABLE = "refresh_backup_table";
 
+        public static final String METHOD_REFRESH_HOTSEAT_RESTORE_TABLE = "restore_hotseat_table";
+
+        public static final String METHOD_RESTORE_BACKUP_TABLE = "restore_backup_table";
+
+        public static final String METHOD_UPDATE_CURRENT_OPEN_HELPER = "update_current_open_helper";
+
+        public static final String METHOD_PREP_FOR_PREVIEW = "prep_for_preview";
+
         public static final String EXTRA_VALUE = "value";
 
         public static Bundle call(ContentResolver cr, String method) {
-            return cr.call(CONTENT_URI, method, null, null);
+            return call(cr, method, null);
+        }
+
+        public static Bundle call(ContentResolver cr, String method, String arg) {
+            return cr.call(CONTENT_URI, method, arg, null);
         }
     }
 }

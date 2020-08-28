@@ -18,25 +18,25 @@ package com.android.quickstep.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Property;
+import android.util.FloatProperty;
 import android.widget.Button;
 
-import com.android.launcher3.Utilities;
+import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.quickstep.views.RecentsView.PageCallbacks;
 import com.android.quickstep.views.RecentsView.ScrollState;
 
 public class ClearAllButton extends Button implements PageCallbacks {
 
-    public static final Property<ClearAllButton, Float> VISIBILITY_ALPHA =
-            new Property<ClearAllButton, Float>(Float.class, "visibilityAlpha") {
+    public static final FloatProperty<ClearAllButton> VISIBILITY_ALPHA =
+            new FloatProperty<ClearAllButton>("visibilityAlpha") {
                 @Override
                 public Float get(ClearAllButton view) {
                     return view.mVisibilityAlpha;
                 }
 
                 @Override
-                public void set(ClearAllButton view, Float visibilityAlpha) {
-                    view.setVisibilityAlpha(visibilityAlpha);
+                public void setValue(ClearAllButton view, float v) {
+                    view.setVisibilityAlpha(v);
                 }
             };
 
@@ -44,21 +44,30 @@ public class ClearAllButton extends Button implements PageCallbacks {
     private float mContentAlpha = 1;
     private float mVisibilityAlpha = 1;
 
-    private final boolean mIsRtl;
+    private boolean mIsRtl;
 
     private int mScrollOffset;
 
     public ClearAllButton(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mIsRtl = Utilities.isRtl(context.getResources());
+        mIsRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
     }
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
+        PagedOrientationHandler orientationHandler = getRecentsView().getPagedOrientationHandler();
+        mScrollOffset = orientationHandler.getClearAllScrollOffset(getRecentsView(), mIsRtl);
+    }
 
-        RecentsView parent = (RecentsView) getParent();
-        mScrollOffset = mIsRtl ? parent.getPaddingRight() / 2 : - parent.getPaddingLeft() / 2;
+    private RecentsView getRecentsView() {
+        return (RecentsView) getParent();
+    }
+
+    @Override
+    public void onRtlPropertiesChanged(int layoutDirection) {
+        super.onRtlPropertiesChanged(layoutDirection);
+        mIsRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
     }
 
     @Override
@@ -82,14 +91,16 @@ public class ClearAllButton extends Button implements PageCallbacks {
 
     @Override
     public void onPageScroll(ScrollState scrollState) {
-        float width = getWidth();
-        if (width == 0) {
+        PagedOrientationHandler orientationHandler = getRecentsView().getPagedOrientationHandler();
+        float orientationSize = orientationHandler.getPrimaryValue(getWidth(), getHeight());
+        if (orientationSize == 0) {
             return;
         }
 
-        float shift = Math.min(scrollState.scrollFromEdge, width);
-        setTranslationX(mIsRtl ? (mScrollOffset - shift) : (mScrollOffset + shift));
-        mScrollAlpha = 1 - shift / width;
+        float shift = Math.min(scrollState.scrollFromEdge, orientationSize);
+        float translation = mIsRtl ? (mScrollOffset - shift) : (mScrollOffset + shift);
+        orientationHandler.setPrimaryAndResetSecondaryTranslate(this, translation);
+        mScrollAlpha = 1 - shift / orientationSize;
         updateAlpha();
     }
 

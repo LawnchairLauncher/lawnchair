@@ -16,10 +16,16 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_TAP;
+import static com.android.launcher3.util.DefaultDisplay.CHANGE_ROTATION;
+
 import android.app.ActivityOptions;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.pm.LauncherApps;
 import android.content.res.Configuration;
+import android.graphics.Insets;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Process;
@@ -27,25 +33,36 @@ import android.os.StrictMode;
 import android.os.UserHandle;
 import android.util.Log;
 import android.view.ActionMode;
+import android.view.Display;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.WindowInsets.Type;
+import android.view.WindowMetrics;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherSettings.Favorites;
-import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.logging.InstanceId;
+import com.android.launcher3.logging.InstanceIdSequence;
 import com.android.launcher3.model.AppLaunchTracker;
-import com.android.launcher3.shortcuts.DeepShortcutManager;
-import com.android.launcher3.uioverrides.DisplayRotationListener;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
+import com.android.launcher3.util.DefaultDisplay;
+import com.android.launcher3.util.DefaultDisplay.DisplayInfoChangeListener;
+import com.android.launcher3.util.DefaultDisplay.Info;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Themes;
+import com.android.launcher3.util.TraceHelper;
+import com.android.launcher3.util.WindowBounds;
 
 /**
  * Extension of BaseActivity allowing support for drag-n-drop
  */
 public abstract class BaseDraggingActivity extends BaseActivity
-        implements WallpaperColorInfo.OnChangeListener {
+        implements WallpaperColorInfo.OnChangeListener, DisplayInfoChangeListener {
 
     private static final String TAG = "BaseDraggingActivity";
 
@@ -56,21 +73,21 @@ public abstract class BaseDraggingActivity extends BaseActivity
     private ActionMode mCurrentActionMode;
     protected boolean mIsSafeModeEnabled;
 
-    private OnStartCallback mOnStartCallback;
+    private Runnable mOnStartCallback;
 
     private int mThemeRes = R.style.AppTheme;
-
-    private DisplayRotationListener mRotationListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mIsSafeModeEnabled = getPackageManager().isSafeMode();
-        mRotationListener = new DisplayRotationListener(this, this::onDeviceRotationChanged);
+
+
+        mIsSafeModeEnabled = TraceHelper.whitelistIpcs("isSafeMode",
+                () -> getPackageManager().isSafeMode());
+        DefaultDisplay.INSTANCE.get(this).addChangeListener(this);
 
         // Update theme
-        WallpaperColorInfo wallpaperColorInfo = WallpaperColorInfo.getInstance(this);
-        wallpaperColorInfo.addOnChangeListener(this);
+        WallpaperColorInfo.INSTANCE.get(this).addOnChangeListener(this);
         int themeRes = Themes.getActivityThemeRes(this);
         if (themeRes != mThemeRes) {
             mThemeRes = themeRes;
@@ -166,19 +183,27 @@ public abstract class BaseDraggingActivity extends BaseActivity
                 AppLaunchTracker.INSTANCE.get(this).onStartApp(intent.getComponent(),
                         Process.myUserHandle(), sourceContainer);
             } else {
-                LauncherAppsCompat.getInstance(this).startActivityForProfile(
+                getSystemService(LauncherApps.class).startMainActivity(
                         intent.getComponent(), user, intent.getSourceBounds(), optsBundle);
                 AppLaunchTracker.INSTANCE.get(this).onStartApp(intent.getComponent(), user,
                         sourceContainer);
             }
-            getUserEventDispatcher().logAppLaunch(v, intent);
-            getStatsLogManager().logAppLaunch(v, intent);
+            getUserEventDispatcher().logAppLaunch(v, intent, user);
+            if (item != null) {
+                InstanceId instanceId = new InstanceIdSequence().newInstanceId();
+                logAppLaunch(item, instanceId);
+            }
             return true;
         } catch (NullPointerException|ActivityNotFoundException|SecurityException e) {
             Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
             Log.e(TAG, "Unable to launch. tag=" + item + " intent=" + intent, e);
         }
         return false;
+    }
+
+    protected void logAppLaunch(ItemInfo info, InstanceId instanceId) {
+        getStatsLogManager().logger().withItemInfo(info).withInstanceId(instanceId)
+                .log(LAUNCHER_APP_LAUNCH_TAP);
     }
 
     private void startShortcutIntentSafely(Intent intent, Bundle optsBundle, ItemInfo info,
@@ -195,8 +220,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
                 if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
                     String id = ((WorkspaceItemInfo) info).getDeepShortcutId();
                     String packageName = intent.getPackage();
-                    DeepShortcutManager.getInstance(this).startShortcut(
-                            packageName, id, intent.getSourceBounds(), optsBundle, info.user);
+                    startShortcut(packageName, id, intent.getSourceBounds(), optsBundle, info.user);
                     AppLaunchTracker.INSTANCE.get(this).onStartShortcut(packageName, id, info.user,
                             sourceContainer);
                 } else {
@@ -222,7 +246,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
         super.onStart();
 
         if (mOnStartCallback != null) {
-            mOnStartCallback.onActivityStart(this);
+            mOnStartCallback.run();
             mOnStartCallback = null;
         }
     }
@@ -230,36 +254,50 @@ public abstract class BaseDraggingActivity extends BaseActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        WallpaperColorInfo.getInstance(this).removeOnChangeListener(this);
-        mRotationListener.disable();
+        WallpaperColorInfo.INSTANCE.get(this).removeOnChangeListener(this);
+        DefaultDisplay.INSTANCE.get(this).removeChangeListener(this);
     }
 
-    public <T extends BaseDraggingActivity> void setOnStartCallback(OnStartCallback<T> callback) {
-        mOnStartCallback = callback;
+    public void runOnceOnStart(Runnable action) {
+        mOnStartCallback = action;
+    }
+
+    public void clearRunOnceOnStartCallback() {
+        mOnStartCallback = null;
     }
 
     protected void onDeviceProfileInitiated() {
         if (mDeviceProfile.isVerticalBarLayout()) {
-            mRotationListener.enable();
             mDeviceProfile.updateIsSeascape(this);
-        } else {
-            mRotationListener.disable();
         }
     }
 
-    private void onDeviceRotationChanged() {
-        if (mDeviceProfile.updateIsSeascape(this)) {
+    @Override
+    public void onDisplayInfoChanged(Info info, int flags) {
+        if ((flags & CHANGE_ROTATION) != 0 && mDeviceProfile.updateIsSeascape(this)) {
             reapplyUi();
         }
     }
 
+    public OnClickListener getItemOnClickListener() {
+        return ItemClickHandler.INSTANCE;
+    }
+
     protected abstract void reapplyUi();
 
-    /**
-     * Callback for listening for onStart
-     */
-    public interface OnStartCallback<T extends BaseDraggingActivity> {
+    protected WindowBounds getMultiWindowDisplaySize() {
+        if (Utilities.ATLEAST_R) {
+            WindowMetrics wm = getWindowManager().getCurrentWindowMetrics();
 
-        void onActivityStart(T activity);
+            Insets insets = wm.getWindowInsets().getInsets(Type.systemBars());
+            return new WindowBounds(wm.getBounds(),
+                    new Rect(insets.left, insets.top, insets.right, insets.bottom));
+        }
+        // Note: Calls to getSize() can't rely on our cached DefaultDisplay since it can return
+        // the app window size
+        Display display = getWindowManager().getDefaultDisplay();
+        Point mwSize = new Point();
+        display.getSize(mwSize);
+        return new WindowBounds(new Rect(0, 0, mwSize.x, mwSize.y), new Rect());
     }
 }

@@ -27,6 +27,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.systemui.shared.system.TonalCompat;
 import com.android.systemui.shared.system.TonalCompat.ExtractionInfo;
 
@@ -39,17 +40,8 @@ public class WallpaperColorInfo implements OnColorsChangedListener {
     private static final int MAIN_COLOR_DARK = 0xff202124;
     private static final int MAIN_COLOR_REGULAR = 0xff000000;
 
-    private static final Object sInstanceLock = new Object();
-    private static WallpaperColorInfo sInstance;
-
-    public static WallpaperColorInfo getInstance(Context context) {
-        synchronized (sInstanceLock) {
-            if (sInstance == null) {
-                sInstance = new WallpaperColorInfo(context.getApplicationContext());
-            }
-            return sInstance;
-        }
-    }
+    public static final MainThreadInitializedObject<WallpaperColorInfo> INSTANCE =
+            new MainThreadInitializedObject<>(WallpaperColorInfo::new);
 
     private final ArrayList<OnChangeListener> mListeners = new ArrayList<>();
     private final WallpaperManager mWallpaperManager;

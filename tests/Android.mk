@@ -36,7 +36,7 @@ else
 endif
 
 LOCAL_MODULE := ub-launcher-aosp-tapl
-LOCAL_SDK_VERSION := current
+LOCAL_SDK_VERSION := system_current
 
 include $(BUILD_STATIC_JAVA_LIBRARY)
 
@@ -50,18 +50,23 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
     androidx.test.runner \
     androidx.test.rules \
     androidx.test.uiautomator_uiautomator \
-    mockito-target-minus-junit4
+    mockito-target-minus-junit4 \
+    launcher_log_protos_lite
 
 ifneq (,$(wildcard frameworks/base))
     LOCAL_PRIVATE_PLATFORM_APIS := true
     LOCAL_STATIC_JAVA_LIBRARIES += launcher-aosp-tapl
 else
-    LOCAL_SDK_VERSION := 28
+    LOCAL_SDK_VERSION := system_28
     LOCAL_MIN_SDK_VERSION := 21
     LOCAL_STATIC_JAVA_LIBRARIES += ub-launcher-aosp-tapl
 endif
 
-LOCAL_SRC_FILES := $(call all-java-files-under, src)
+LOCAL_SRC_FILES := \
+	$(call all-java-files-under, src) \
+	$(call all-java-files-under, src_common)
+
+
 LOCAL_FULL_LIBS_MANIFEST_FILES := $(LOCAL_PATH)/AndroidManifest-common.xml
 
 LOCAL_PACKAGE_NAME := Launcher3Tests

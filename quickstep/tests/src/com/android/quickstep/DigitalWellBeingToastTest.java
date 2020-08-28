@@ -11,6 +11,7 @@ import static org.junit.Assert.assertTrue;
 import android.app.PendingIntent;
 import android.app.usage.UsageStatsManager;
 import android.content.Intent;
+import android.os.Build;
 
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
@@ -33,6 +34,9 @@ public class DigitalWellBeingToastTest extends AbstractQuickStepTest {
 
     @Test
     public void testToast() throws Exception {
+        // b/150303529
+        if (Build.MODEL.contains("Cuttlefish")) return;
+
         startAppFast(CALCULATOR_PACKAGE);
 
         final UsageStatsManager usageStatsManager =
@@ -68,7 +72,7 @@ public class DigitalWellBeingToastTest extends AbstractQuickStepTest {
 
     private DigitalWellBeingToast getToast() {
         executeOnLauncher(launcher -> launcher.getStateManager().goToState(OVERVIEW));
-        waitForState("Launcher internal state didn't switch to Overview", OVERVIEW);
+        waitForState("Launcher internal state didn't switch to Overview", () -> OVERVIEW);
         final TaskView task = getOnceNotNull("No latest task", launcher -> getLatestTask(launcher));
 
         return getFromLauncher(launcher -> {

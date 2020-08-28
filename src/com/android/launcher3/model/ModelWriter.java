@@ -27,21 +27,20 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import com.android.launcher3.FolderInfo;
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetHost;
-import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherSettings.Settings;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.FileLog;
-import com.android.launcher3.model.BgDataModel.Callbacks;
+import com.android.launcher3.model.data.FolderInfo;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.LauncherAppWidgetInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.ItemInfoMatcher;
 
@@ -116,8 +115,9 @@ public class ModelWriter {
         ItemInfo modelItem = mBgDataModel.itemsIdMap.get(itemId);
         if (modelItem != null && item != modelItem) {
             // check all the data is consistent
-            if (!Utilities.IS_DEBUG_DEVICE && !FeatureFlags.IS_DOGFOOD_BUILD &&
-                    modelItem instanceof WorkspaceItemInfo && item instanceof WorkspaceItemInfo) {
+            if (!Utilities.IS_DEBUG_DEVICE && !FeatureFlags.IS_STUDIO_BUILD
+                    && modelItem instanceof WorkspaceItemInfo
+                    && item instanceof WorkspaceItemInfo) {
                 if (modelItem.title.toString().equals(item.title.toString()) &&
                         modelItem.getIntent().filterEquals(item.getIntent()) &&
                         modelItem.id == item.id &&
@@ -321,7 +321,7 @@ public class ModelWriter {
      */
     public void prepareToUndoDelete() {
         if (!mPreparingToUndo) {
-            if (!mDeleteRunnables.isEmpty() && FeatureFlags.IS_DOGFOOD_BUILD) {
+            if (!mDeleteRunnables.isEmpty() && FeatureFlags.IS_STUDIO_BUILD) {
                 throw new IllegalStateException("There are still uncommitted delete operations!");
             }
             mDeleteRunnables.clear();
@@ -350,12 +350,15 @@ public class ModelWriter {
         mDeleteRunnables.clear();
     }
 
-    public void abortDelete(int pageToBindFirst) {
+    /**
+     * Aborts a previous delete operation pending commit
+     */
+    public void abortDelete() {
         mPreparingToUndo = false;
         mDeleteRunnables.clear();
         // We do a full reload here instead of just a rebind because Folders change their internal
         // state when dragging an item out, which clobbers the rebind unless we load from the DB.
-        mModel.forceReload(pageToBindFirst);
+        mModel.forceReload();
     }
 
     private class UpdateItemRunnable extends UpdateItemBaseRunnable {
@@ -472,7 +475,7 @@ public class ModelWriter {
         }
 
         void verifyModel() {
-            if (!mVerifyChanges || mModel.getCallback() == null) {
+            if (!mVerifyChanges || !mModel.hasCallbacks()) {
                 return;
             }
 
@@ -488,11 +491,9 @@ public class ModelWriter {
                     // Bound model has not changed during the job
                     return;
                 }
+
                 // Bound model was changed between submitting the job and executing the job
-                Callbacks callbacks = mModel.getCallback();
-                if (callbacks != null) {
-                    callbacks.rebindModel();
-                }
+                mModel.rebindCallbacks();
             });
         }
     }

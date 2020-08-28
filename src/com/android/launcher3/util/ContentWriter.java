@@ -19,14 +19,14 @@ package com.android.launcher3.util;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.UserHandle;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.GraphicsUtils;
+import com.android.launcher3.pm.UserCache;
 
 /**
  * A wrapper around {@link ContentValues} with some utility methods.
@@ -37,7 +37,7 @@ public class ContentWriter {
     private final Context mContext;
 
     private CommitParams mCommitParams;
-    private Bitmap mIcon;
+    private BitmapInfo mIcon;
     private UserHandle mUser;
 
     public ContentWriter(Context context, CommitParams commitParams) {
@@ -79,14 +79,14 @@ public class ContentWriter {
         return this;
     }
 
-    public ContentWriter putIcon(Bitmap value, UserHandle user) {
+    public ContentWriter putIcon(BitmapInfo value, UserHandle user) {
         mIcon = value;
         mUser = user;
         return this;
     }
 
     public ContentWriter put(String key, UserHandle user) {
-        return put(key, UserManagerCompat.getInstance(mContext).getSerialNumberForUser(user));
+        return put(key, UserCache.INSTANCE.get(mContext).getSerialNumberForUser(user));
     }
 
     /**
@@ -97,7 +97,7 @@ public class ContentWriter {
         Preconditions.assertNonUiThread();
         if (mIcon != null && !LauncherAppState.getInstance(context).getIconCache()
                 .isDefaultIcon(mIcon, mUser)) {
-            mValues.put(LauncherSettings.Favorites.ICON, GraphicsUtils.flattenBitmap(mIcon));
+            mValues.put(LauncherSettings.Favorites.ICON, GraphicsUtils.flattenBitmap(mIcon.icon));
             mIcon = null;
         }
         return mValues;

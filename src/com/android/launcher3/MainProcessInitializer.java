@@ -19,6 +19,7 @@ package com.android.launcher3;
 import android.content.Context;
 
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.graphics.BitmapCreationCheck;
 import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.util.ResourceBasedOverride;
@@ -39,5 +40,9 @@ public class MainProcessInitializer implements ResourceBasedOverride {
         FeatureFlags.initialize(context);
         SessionCommitReceiver.applyDefaultUserPrefs(context);
         IconShape.init(context);
+
+        if (BitmapCreationCheck.ENABLED) {
+            BitmapCreationCheck.startTracking(context);
+        }
     }
 }

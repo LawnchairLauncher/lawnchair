@@ -16,26 +16,30 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
+
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.logging.StatsLogUtils.LogContainerProvider;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
-import com.android.launcher3.views.Transposable;
 
-public class Hotseat extends CellLayout implements LogContainerProvider, Insettable, Transposable {
+import java.util.ArrayList;
+
+public class Hotseat extends CellLayout implements LogContainerProvider, Insettable {
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mHasVerticalHotseat;
+    private Workspace mWorkspace;
+    private boolean mSendTouchToWorkspace;
 
     public Hotseat(Context context) {
         this(context, null);
@@ -49,12 +53,17 @@ public class Hotseat extends CellLayout implements LogContainerProvider, Insetta
         super(context, attrs, defStyle);
     }
 
-    /* Get the orientation specific coordinates given an invariant order in the hotseat. */
-    int getCellXFromOrder(int rank) {
+    /**
+     * Returns orientation specific cell X given invariant order in the hotseat
+     */
+    public int getCellXFromOrder(int rank) {
         return mHasVerticalHotseat ? 0 : rank;
     }
 
-    int getCellYFromOrder(int rank) {
+    /**
+     * Returns orientation specific cell Y given invariant order in the hotseat
+     */
+    public int getCellYFromOrder(int rank) {
         return mHasVerticalHotseat ? (getCountY() - (rank + 1)) : 0;
     }
 
@@ -70,17 +79,18 @@ public class Hotseat extends CellLayout implements LogContainerProvider, Insetta
     }
 
     @Override
-    public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
-        target.gridX = info.cellX;
-        target.gridY = info.cellY;
-        targetParent.containerType = LauncherLogProto.ContainerType.HOTSEAT;
+    public void fillInLogContainerData(ItemInfo childInfo, Target child,
+            ArrayList<Target> parents) {
+        child.rank = childInfo.rank;
+        child.gridX = childInfo.cellX;
+        child.gridY = childInfo.cellY;
+        parents.add(newContainerTarget(LauncherLogProto.ContainerType.HOTSEAT));
     }
 
     @Override
     public void setInsets(Rect insets) {
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) getLayoutParams();
-        DeviceProfile grid = mActivity.getWallpaperDeviceProfile();
-        insets = grid.getInsets();
+        DeviceProfile grid = mActivity.getDeviceProfile();
 
         if (grid.isVerticalBarLayout()) {
             lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
@@ -103,13 +113,35 @@ public class Hotseat extends CellLayout implements LogContainerProvider, Insetta
         InsettableFrameLayout.dispatchInsets(this, insets);
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return event.getY() > getCellHeight();
+    public void setWorkspace(Workspace w) {
+        mWorkspace = w;
     }
 
     @Override
-    public RotationMode getRotationMode() {
-        return Launcher.getLauncher(getContext()).getRotationMode();
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        // We allow horizontal workspace scrolling from within the Hotseat. We do this by delegating
+        // touch intercept the Workspace, and if it intercepts, delegating touch to the Workspace
+        // for the remainder of the this input stream.
+        int yThreshold = getMeasuredHeight() - getPaddingBottom();
+        if (mWorkspace != null && ev.getY() <= yThreshold) {
+            mSendTouchToWorkspace = mWorkspace.onInterceptTouchEvent(ev);
+            return mSendTouchToWorkspace;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        // See comment in #onInterceptTouchEvent
+        if (mSendTouchToWorkspace) {
+            final int action = event.getAction();
+            switch (action & MotionEvent.ACTION_MASK) {
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    mSendTouchToWorkspace = false;
+            }
+            return mWorkspace.onTouchEvent(event);
+        }
+        return event.getY() > getCellHeight();
     }
 }
