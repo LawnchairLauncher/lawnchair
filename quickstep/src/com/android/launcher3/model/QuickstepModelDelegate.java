@@ -16,9 +16,11 @@
 package com.android.launcher3.model;
 
 import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_GRID;
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_PREDICTION;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
+import static com.android.launcher3.hybridhotseat.HotseatPredictionModel.convertDataModelToAppTargetBundle;
 
 import android.app.prediction.AppPredictionContext;
 import android.app.prediction.AppPredictionManager;
@@ -62,6 +64,8 @@ public class QuickstepModelDelegate extends ModelDelegate implements OnIDPChange
 
     private final PredictorState mAllAppsState =
             new PredictorState(CONTAINER_PREDICTION, "all_apps_predictions");
+    private final PredictorState mHotseatState =
+            new PredictorState(CONTAINER_HOTSEAT_PREDICTION, "hotseat_predictions");
 
     private final InvariantDeviceProfile mIDP;
     private final AppEventProducer mAppEventProducer;
@@ -81,13 +85,23 @@ public class QuickstepModelDelegate extends ModelDelegate implements OnIDPChange
         // TODO: Implement caching and preloading
         super.loadItems(ums, pinnedShortcuts);
 
-        WorkspaceItemFactory factory =
+        WorkspaceItemFactory allAppsFactory =
                 new WorkspaceItemFactory(mApp, ums, pinnedShortcuts, mIDP.numAllAppsColumns);
         mAllAppsState.items.setItems(
-                mAllAppsState.storage.read(mApp.getContext(), factory, ums.allUsers::get));
+                mAllAppsState.storage.read(mApp.getContext(), allAppsFactory, ums.allUsers::get));
         mDataModel.extraItems.put(CONTAINER_PREDICTION, mAllAppsState.items);
 
+        WorkspaceItemFactory hotseatFactory =
+                new WorkspaceItemFactory(mApp, ums, pinnedShortcuts, mIDP.numHotseatIcons);
+        mHotseatState.items.setItems(
+                mHotseatState.storage.read(mApp.getContext(), hotseatFactory, ums.allUsers::get));
+        mDataModel.extraItems.put(CONTAINER_HOTSEAT_PREDICTION, mHotseatState.items);
         mActive = true;
+    }
+
+    @Override
+    public void workspaceLoadComplete() {
+        super.workspaceLoadComplete();
         recreatePredictors();
     }
 
@@ -111,6 +125,7 @@ public class QuickstepModelDelegate extends ModelDelegate implements OnIDPChange
 
     private void destroyPredictors() {
         mAllAppsState.destroyPredictor();
+        mHotseatState.destroyPredictor();
     }
 
     @WorkerThread
@@ -125,18 +140,28 @@ public class QuickstepModelDelegate extends ModelDelegate implements OnIDPChange
             return;
         }
 
-        int count = mIDP.numAllAppsColumns;
-
-        mAllAppsState.predictor = apm.createAppPredictionSession(
+        registerPredictor(mAllAppsState, apm.createAppPredictionSession(
                 new AppPredictionContext.Builder(context)
                         .setUiSurface("home")
-                        .setPredictedTargetCount(count)
-                        .build());
-        mAllAppsState.predictor.registerPredictionUpdates(
-                Executors.MODEL_EXECUTOR, t -> handleUpdate(mAllAppsState, t));
-        mAllAppsState.predictor.requestPredictionUpdate();
+                        .setPredictedTargetCount(mIDP.numAllAppsColumns)
+                        .build()));
+
+        // TODO: get bundle
+        registerPredictor(mHotseatState, apm.createAppPredictionSession(
+                new AppPredictionContext.Builder(context)
+                        .setUiSurface("hotseat")
+                        .setPredictedTargetCount(mIDP.numHotseatIcons)
+                        .setExtras(convertDataModelToAppTargetBundle(context, mDataModel))
+                        .build()));
+
     }
 
+    private void registerPredictor(PredictorState state, AppPredictor predictor) {
+        state.predictor = predictor;
+        state.predictor.registerPredictionUpdates(
+                Executors.MODEL_EXECUTOR, t -> handleUpdate(state, t));
+        state.predictor.requestPredictionUpdate();
+    }
 
     private void handleUpdate(PredictorState state, List<AppTarget> targets) {
         if (state.setTargets(targets)) {
@@ -154,9 +179,10 @@ public class QuickstepModelDelegate extends ModelDelegate implements OnIDPChange
         }
     }
 
-    private void onAppTargetEvent(AppTargetEvent event) {
-        if (mAllAppsState.predictor != null) {
-            mAllAppsState.predictor.notifyAppTargetEvent(event);
+    private void onAppTargetEvent(AppTargetEvent event, int client) {
+        PredictorState state = client == CONTAINER_PREDICTION ? mAllAppsState : mHotseatState;
+        if (state.predictor != null) {
+            state.predictor.notifyAppTargetEvent(event);
         }
     }
 

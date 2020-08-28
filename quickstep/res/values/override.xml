@@ -27,8 +27,6 @@
 
   <string name="user_event_dispatcher_class" translatable="false">com.android.quickstep.logging.UserEventDispatcherExtension</string>
 
-  <string name="prediction_model_class" translatable="false">com.android.launcher3.hybridhotseat.HotseatPredictionModel</string>
-
   <string name="model_delegate_class" translatable="false">com.android.launcher3.model.QuickstepModelDelegate</string>
 
 </resources>

@@ -22,6 +22,7 @@ import android.graphics.RectF;
 import android.view.View;
 
 import androidx.annotation.Nullable;
+import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.R;
@@ -100,19 +101,23 @@ public class AllAppsSectionDecorator extends RecyclerView.ItemDecoration {
      * Handles grouping and drawing of items in the same all apps sections.
      */
     public static class SectionDecorationHandler {
+        private static final int FILL_ALPHA = (int) (.3f * 255);
+        private static final int FOCUS_ALPHA = (int) (.8f * 255);
+
         protected RectF mBounds = new RectF();
         private final boolean mIsFullWidth;
         private final float mRadius;
 
-        private final int mFocusColor;
-        private final int mFillcolor;
+        protected int mFocusColor;
+        protected int mFillcolor;
         private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
 
         public SectionDecorationHandler(Context context, boolean isFullWidth) {
             mIsFullWidth = isFullWidth;
-            mFillcolor = context.getColor(R.color.all_apps_section_fill);
-            mFocusColor = context.getColor(R.color.all_apps_section_focused_item);
+            int endScrim = Themes.getAttrColor(context, R.attr.allAppsScrimColor);
+            mFillcolor = ColorUtils.setAlphaComponent(endScrim, FILL_ALPHA);
+            mFocusColor = ColorUtils.setAlphaComponent(endScrim, FOCUS_ALPHA);
             mRadius = Themes.getDialogCornerRadius(context);
         }
 

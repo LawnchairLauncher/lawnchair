@@ -28,6 +28,7 @@ LOCAL_STATIC_ANDROID_LIBRARIES := \
     androidx.recyclerview_recyclerview \
     androidx.dynamicanimation_dynamicanimation \
     androidx.preference_preference \
+    androidx.slice_slice-view \
     iconloader_base
 
 LOCAL_STATIC_JAVA_LIBRARIES := \

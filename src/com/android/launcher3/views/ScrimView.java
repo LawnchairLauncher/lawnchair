@@ -32,6 +32,7 @@ import androidx.core.graphics.ColorUtils;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.uioverrides.WallpaperColorInfo.OnChangeListener;
 import com.android.launcher3.util.Themes;
@@ -41,6 +42,7 @@ import com.android.launcher3.util.Themes;
  */
 public class ScrimView<T extends Launcher> extends View implements Insettable, OnChangeListener {
 
+    private static final float SCRIM_ALPHA = .75f;
     protected final T mLauncher;
     private final WallpaperColorInfo mWallpaperColorInfo;
     protected final int mEndScrim;
@@ -59,7 +61,11 @@ public class ScrimView<T extends Launcher> extends View implements Insettable, O
         super(context, attrs);
         mLauncher = Launcher.cast(Launcher.getLauncher(context));
         mWallpaperColorInfo = WallpaperColorInfo.INSTANCE.get(context);
-        mEndScrim = Themes.getAttrColor(context, R.attr.allAppsScrimColor);
+        int endScrim = Themes.getAttrColor(context, R.attr.allAppsScrimColor);
+        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
+            endScrim = ColorUtils.setAlphaComponent(endScrim, (int) (255  * SCRIM_ALPHA));
+        }
+        mEndScrim = endScrim;
         mIsScrimDark = ColorUtils.calculateLuminance(mEndScrim) < 0.5f;
 
         mMaxScrimAlpha = 0.7f;

@@ -40,7 +40,6 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.uioverrides.PredictedAppIcon;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.views.AbstractSlideInView;
 
 import java.util.List;
@@ -119,16 +118,6 @@ public class HotseatEduDialog extends AbstractSlideInView implements Insettable 
         mHotseatEduController.finishOnboarding();
         mLauncher.getStatsLogManager().logger().log(LAUNCHER_HOTSEAT_EDU_DENY);
         handleClose(true);
-    }
-
-    @Override
-    public void logActionCommand(int command) {
-        // Since this is on-boarding popup, it is not a user controlled action.
-    }
-
-    @Override
-    public int getLogContainerType() {
-        return LauncherLogProto.ContainerType.TIP;
     }
 
     @Override

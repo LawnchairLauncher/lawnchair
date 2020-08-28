@@ -105,11 +105,6 @@ public class AllAppsEduView extends AbstractFloatingView {
     }
 
     @Override
-    public void logActionCommand(int command) {
-        // TODO
-    }
-
-    @Override
     protected boolean isOfType(int type) {
         return (type & TYPE_ALL_APPS_EDU) != 0;
     }

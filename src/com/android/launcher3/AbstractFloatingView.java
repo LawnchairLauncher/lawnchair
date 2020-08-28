@@ -36,8 +36,6 @@ import android.widget.LinearLayout;
 import androidx.annotation.IntDef;
 
 import com.android.launcher3.anim.PendingAnimation;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
@@ -129,8 +127,7 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     public final void close(boolean animate) {
         animate &= areAnimatorsEnabled();
         if (mIsOpen) {
-            BaseActivity.fromContext(getContext()).getUserEventDispatcher()
-                    .resetElapsedContainerMillis("container closed");
+            // Add to WW logging
         }
         handleClose(animate);
         mIsOpen = false;
@@ -145,12 +142,6 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     public void addHintCloseAnim(
             float distanceToMove, Interpolator interpolator, PendingAnimation target) { }
 
-    public abstract void logActionCommand(int command);
-
-    public int getLogContainerType() {
-        return ContainerType.DEFAULT_CONTAINERTYPE;
-    }
-
     public final boolean isOpen() {
         return mIsOpen;
     }
@@ -159,7 +150,6 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
 
     /** @return Whether the back is consumed. If false, Launcher will handle the back as well. */
     public boolean onBackPressed() {
-        logActionCommand(Action.Command.BACK);
         close(true);
         return true;
     }

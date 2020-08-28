@@ -19,6 +19,7 @@ import static android.view.View.MeasureSpec.EXACTLY;
 import static android.view.View.MeasureSpec.makeMeasureSpec;
 import static android.view.View.VISIBLE;
 
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_LAUNCHER_PREVIEW_IN_GRID_PICKER;
 import static com.android.launcher3.model.ModelUtils.filterCurrentWorkspaceItems;
 import static com.android.launcher3.model.ModelUtils.getMissingHotseatRanks;
@@ -72,12 +73,12 @@ import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.model.AllAppsList;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.BgDataModel.Callbacks;
+import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.LoaderResults;
 import com.android.launcher3.model.LoaderTask;
 import com.android.launcher3.model.ModelDelegate;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.WidgetsModel;
-import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
@@ -95,6 +96,7 @@ import com.android.launcher3.widget.custom.CustomWidgetManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -467,12 +469,14 @@ public class LauncherPreviewRenderer extends ContextThemeWrapper
             }
             IntArray ranks = getMissingHotseatRanks(currentWorkspaceItems,
                     mIdp.numHotseatIcons);
-            int count = Math.min(ranks.size(), workspaceResult.mCachedPredictedItems.size());
+            List<ItemInfo> predictions = workspaceResult.mHotseatPredictions == null
+                    ? Collections.emptyList() : workspaceResult.mHotseatPredictions.items;
+            int count = Math.min(ranks.size(), predictions.size());
             for (int i = 0; i < count; i++) {
-                AppInfo appInfo = workspaceResult.mCachedPredictedItems.get(i);
                 int rank = ranks.get(i);
-                WorkspaceItemInfo itemInfo = new WorkspaceItemInfo(appInfo);
-                itemInfo.container = Favorites.CONTAINER_HOTSEAT_PREDICTION;
+                WorkspaceItemInfo itemInfo =
+                        new WorkspaceItemInfo((WorkspaceItemInfo) predictions.get(i));
+                itemInfo.container = CONTAINER_HOTSEAT_PREDICTION;
                 itemInfo.rank = rank;
                 itemInfo.cellX = mHotseat.getCellXFromOrder(rank);
                 itemInfo.cellY = mHotseat.getCellYFromOrder(rank);
@@ -569,8 +573,7 @@ public class LauncherPreviewRenderer extends ContextThemeWrapper
                 return null;
             }
 
-            return new WorkspaceResult(mBgDataModel.workspaceItems, mBgDataModel.appWidgets,
-                    mBgDataModel.cachedPredictedItems, mBgDataModel.widgetsModel, null);
+            return new WorkspaceResult(mBgDataModel, mBgDataModel.widgetsModel, null);
         }
     }
 
@@ -594,11 +597,10 @@ public class LauncherPreviewRenderer extends ContextThemeWrapper
         }
 
         @Override
-        public WorkspaceResult call() throws Exception {
+        public WorkspaceResult call() {
             List<ShortcutInfo> allShortcuts = new ArrayList<>();
             loadWorkspace(allShortcuts, LauncherSettings.Favorites.PREVIEW_CONTENT_URI);
-            return new WorkspaceResult(mBgDataModel.workspaceItems, mBgDataModel.appWidgets,
-                    mBgDataModel.cachedPredictedItems, null, mWidgetProvidersMap);
+            return new WorkspaceResult(mBgDataModel, null, mWidgetProvidersMap);
         }
     }
 
@@ -618,17 +620,16 @@ public class LauncherPreviewRenderer extends ContextThemeWrapper
     private static class WorkspaceResult {
         private final ArrayList<ItemInfo> mWorkspaceItems;
         private final ArrayList<LauncherAppWidgetInfo> mAppWidgets;
-        private final ArrayList<AppInfo> mCachedPredictedItems;
+        private final FixedContainerItems mHotseatPredictions;
         private final WidgetsModel mWidgetsModel;
         private final Map<ComponentKey, AppWidgetProviderInfo> mWidgetProvidersMap;
 
-        private WorkspaceResult(ArrayList<ItemInfo> workspaceItems,
-                ArrayList<LauncherAppWidgetInfo> appWidgets,
-                ArrayList<AppInfo> cachedPredictedItems, WidgetsModel widgetsModel,
+        private WorkspaceResult(BgDataModel dataModel,
+                WidgetsModel widgetsModel,
                 Map<ComponentKey, AppWidgetProviderInfo> widgetProviderInfoMap) {
-            mWorkspaceItems = workspaceItems;
-            mAppWidgets = appWidgets;
-            mCachedPredictedItems = cachedPredictedItems;
+            mWorkspaceItems = dataModel.workspaceItems;
+            mAppWidgets = dataModel.appWidgets;
+            mHotseatPredictions = dataModel.extraItems.get(CONTAINER_HOTSEAT_PREDICTION);
             mWidgetsModel = widgetsModel;
             mWidgetProvidersMap = widgetProviderInfoMap;
         }
