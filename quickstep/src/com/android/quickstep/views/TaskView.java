@@ -315,6 +315,9 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
      * @param modalness [0, 1] 0 being in context with other tasks, 1 being shown on its own.
      */
     public void setModalness(float modalness) {
+        if (mModalness == modalness) {
+            return;
+        }
         mModalness = modalness;
         mIconView.setAlpha(comp(modalness));
         if (mContextualChip != null) {
@@ -324,7 +327,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         if (mContextualChipWrapper != null) {
             mContextualChipWrapper.setAlpha(comp(modalness));
         }
-
         updateFooterVerticalOffset(mFooterVerticalOffset);
     }
 
