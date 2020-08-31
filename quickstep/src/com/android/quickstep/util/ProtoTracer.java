@@ -16,24 +16,23 @@
 
 package com.android.quickstep.util;
 
-import static com.android.launcher3.tracing.nano.LauncherTraceFileProto.MagicNumber.MAGIC_NUMBER_H;
-import static com.android.launcher3.tracing.nano.LauncherTraceFileProto.MagicNumber.MAGIC_NUMBER_L;
+import static com.android.launcher3.tracing.LauncherTraceFileProto.MagicNumber.MAGIC_NUMBER_H_VALUE;
+import static com.android.launcher3.tracing.LauncherTraceFileProto.MagicNumber.MAGIC_NUMBER_L_VALUE;
 
 import android.content.Context;
 import android.os.SystemClock;
 
-import com.android.launcher3.tracing.nano.LauncherTraceProto;
-import com.android.launcher3.tracing.nano.LauncherTraceEntryProto;
-import com.android.launcher3.tracing.nano.LauncherTraceFileProto;
+import android.os.Trace;
+import com.android.launcher3.tracing.LauncherTraceProto;
+import com.android.launcher3.tracing.LauncherTraceEntryProto;
+import com.android.launcher3.tracing.LauncherTraceFileProto;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.systemui.shared.tracing.FrameProtoTracer;
 import com.android.systemui.shared.tracing.FrameProtoTracer.ProtoTraceParams;
 import com.android.systemui.shared.tracing.ProtoTraceable;
-import com.google.protobuf.nano.MessageNano;
+import com.google.protobuf.MessageLite;
 
 import java.io.File;
-import java.io.FileDescriptor;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Queue;
 
@@ -41,18 +40,20 @@ import java.util.Queue;
 /**
  * Controller for coordinating winscope proto tracing.
  */
-public class ProtoTracer implements ProtoTraceParams<MessageNano,
-        LauncherTraceFileProto, LauncherTraceEntryProto, LauncherTraceProto> {
+public class ProtoTracer implements ProtoTraceParams<MessageLite.Builder,
+        LauncherTraceFileProto.Builder, LauncherTraceEntryProto.Builder,
+                LauncherTraceProto.Builder> {
 
     public static final MainThreadInitializedObject<ProtoTracer> INSTANCE =
             new MainThreadInitializedObject<>(ProtoTracer::new);
 
     private static final String TAG = "ProtoTracer";
-    private static final long MAGIC_NUMBER_VALUE = ((long) MAGIC_NUMBER_H << 32) | MAGIC_NUMBER_L;
+    private static final long MAGIC_NUMBER_VALUE =
+            ((long) MAGIC_NUMBER_H_VALUE << 32) | MAGIC_NUMBER_L_VALUE;
 
     private final Context mContext;
-    private final FrameProtoTracer<MessageNano,
-            LauncherTraceFileProto, LauncherTraceEntryProto, LauncherTraceProto> mProtoTracer;
+    private final FrameProtoTracer<MessageLite.Builder, LauncherTraceFileProto.Builder,
+        LauncherTraceEntryProto.Builder, LauncherTraceProto.Builder> mProtoTracer;
 
     public ProtoTracer(Context context) {
         mContext = context;
@@ -65,40 +66,47 @@ public class ProtoTracer implements ProtoTraceParams<MessageNano,
     }
 
     @Override
-    public LauncherTraceFileProto getEncapsulatingTraceProto() {
-        return new LauncherTraceFileProto();
+    public LauncherTraceFileProto.Builder getEncapsulatingTraceProto() {
+        return LauncherTraceFileProto.newBuilder();
     }
 
     @Override
-    public LauncherTraceEntryProto updateBufferProto(LauncherTraceEntryProto reuseObj,
-            ArrayList<ProtoTraceable<LauncherTraceProto>> traceables) {
-        LauncherTraceEntryProto proto = reuseObj != null
-                ? reuseObj
-                : new LauncherTraceEntryProto();
-        proto.elapsedRealtimeNanos = SystemClock.elapsedRealtimeNanos();
-        proto.launcher = proto.launcher != null ? proto.launcher : new LauncherTraceProto();
+    public LauncherTraceEntryProto.Builder updateBufferProto(
+            LauncherTraceEntryProto.Builder reuseObj,
+            ArrayList<ProtoTraceable<LauncherTraceProto.Builder>> traceables) {
+        Trace.beginSection("ProtoTracer.updateBufferProto");
+        LauncherTraceEntryProto.Builder proto = LauncherTraceEntryProto.newBuilder();
+        proto.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
+        LauncherTraceProto.Builder launcherProto = LauncherTraceProto.newBuilder();
         for (ProtoTraceable t : traceables) {
-            t.writeToProto(proto.launcher);
+            t.writeToProto(launcherProto);
         }
+        proto.setLauncher(launcherProto);
+        Trace.endSection();
         return proto;
     }
 
     @Override
-    public byte[] serializeEncapsulatingProto(LauncherTraceFileProto encapsulatingProto,
-            Queue<LauncherTraceEntryProto> buffer) {
-        encapsulatingProto.magicNumber = MAGIC_NUMBER_VALUE;
-        encapsulatingProto.entry = buffer.toArray(new LauncherTraceEntryProto[0]);
-        return MessageNano.toByteArray(encapsulatingProto);
+    public byte[] serializeEncapsulatingProto(LauncherTraceFileProto.Builder encapsulatingProto,
+            Queue<LauncherTraceEntryProto.Builder> buffer) {
+        Trace.beginSection("ProtoTracer.serializeEncapsulatingProto");
+        encapsulatingProto.setMagicNumber(MAGIC_NUMBER_VALUE);
+        for (LauncherTraceEntryProto.Builder entry : buffer) {
+            encapsulatingProto.addEntry(entry);
+        }
+        byte[] bytes = encapsulatingProto.build().toByteArray();
+        Trace.endSection();
+        return bytes;
     }
 
     @Override
-    public byte[] getProtoBytes(MessageNano proto) {
-        return MessageNano.toByteArray(proto);
+    public byte[] getProtoBytes(MessageLite.Builder proto) {
+        return proto.build().toByteArray();
     }
 
     @Override
-    public int getProtoSize(MessageNano proto) {
-        return proto.getCachedSize();
+    public int getProtoSize(MessageLite.Builder proto) {
+        return proto.build().getSerializedSize();
     }
 
     public void start() {
@@ -109,11 +117,11 @@ public class ProtoTracer implements ProtoTraceParams<MessageNano,
         mProtoTracer.stop();
     }
 
-    public void add(ProtoTraceable<LauncherTraceProto> traceable) {
+    public void add(ProtoTraceable<LauncherTraceProto.Builder> traceable) {
         mProtoTracer.add(traceable);
     }
 
-    public void remove(ProtoTraceable<LauncherTraceProto> traceable) {
+    public void remove(ProtoTraceable<LauncherTraceProto.Builder> traceable) {
         mProtoTracer.remove(traceable);
     }
 

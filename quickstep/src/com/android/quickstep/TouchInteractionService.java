@@ -64,8 +64,8 @@ import com.android.launcher3.provider.RestoreDbTask;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
-import com.android.launcher3.tracing.nano.LauncherTraceProto;
-import com.android.launcher3.tracing.nano.TouchInteractionServiceProto;
+import com.android.launcher3.tracing.LauncherTraceProto;
+import com.android.launcher3.tracing.TouchInteractionServiceProto;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.TraceHelper;
@@ -105,7 +105,7 @@ import java.util.LinkedList;
  */
 @TargetApi(Build.VERSION_CODES.R)
 public class TouchInteractionService extends Service implements PluginListener<OverscrollPlugin>,
-        ProtoTraceable<LauncherTraceProto> {
+        ProtoTraceable<LauncherTraceProto.Builder> {
 
     private static final String TAG = "TouchInteractionService";
 
@@ -368,9 +368,12 @@ public class TouchInteractionService extends Service implements PluginListener<O
 
             // Update the tracing state
             if ((mDeviceState.getSystemUiStateFlags() & SYSUI_STATE_TRACING_ENABLED) != 0) {
-                ProtoTracer.INSTANCE.get(TouchInteractionService.this).start();
+                Log.d(TAG, "Starting tracing.");
+                ProtoTracer.INSTANCE.get(this).start();
             } else {
-                ProtoTracer.INSTANCE.get(TouchInteractionService.this).stop();
+                Log.d(TAG, "Stopping tracing. Dumping to file="
+                    + ProtoTracer.INSTANCE.get(this).getTraceFile());
+                ProtoTracer.INSTANCE.get(this).stop();
             }
         }
     }
@@ -394,7 +397,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
         disposeEventHandlers();
         mDeviceState.destroy();
         SystemUiProxy.INSTANCE.get(this).setProxy(null);
-        ProtoTracer.INSTANCE.get(TouchInteractionService.this).stop();
+        ProtoTracer.INSTANCE.get(this).stop();
         ProtoTracer.INSTANCE.get(this).remove(this);
 
         getSystemService(AccessibilityManager.class)
@@ -503,6 +506,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
             reset();
         }
         TraceHelper.INSTANCE.endFlagsOverride(traceToken);
+        ProtoTracer.INSTANCE.get(this).scheduleFrameUpdate();
     }
 
     private GestureState createGestureState(GestureState previousGestureState) {
@@ -821,8 +825,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
             pw.println("  mConsumer=" + mConsumer.getName());
             ActiveGestureLog.INSTANCE.dump("", pw);
             pw.println("ProtoTrace:");
-            pw.println("  file="
-                    + ProtoTracer.INSTANCE.get(TouchInteractionService.this).getTraceFile());
+            pw.println("  file=" + ProtoTracer.INSTANCE.get(this).getTraceFile());
         }
     }
 
@@ -878,11 +881,10 @@ public class TouchInteractionService extends Service implements PluginListener<O
     }
 
     @Override
-    public void writeToProto(LauncherTraceProto proto) {
-        if (proto.touchInteractionService == null) {
-            proto.touchInteractionService = new TouchInteractionServiceProto();
-        }
-        proto.touchInteractionService.serviceConnected = true;
-        proto.touchInteractionService.serviceConnected = true;
+    public void writeToProto(LauncherTraceProto.Builder proto) {
+        TouchInteractionServiceProto.Builder serviceProto =
+            TouchInteractionServiceProto.newBuilder();
+        serviceProto.setServiceConnected(true);
+        proto.setTouchInteractionService(serviceProto);
     }
 }
