@@ -751,8 +751,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
     @UiThread
     public void onGestureEnded(float endVelocity, PointF velocity, PointF downPos) {
         float flingThreshold = mContext.getResources()
-                .getDimension(R.dimen.quickstep_fling_threshold_velocity);
-        boolean isFling = mGestureStarted && Math.abs(endVelocity) > flingThreshold;
+                .getDimension(R.dimen.quickstep_fling_threshold_speed);
+        boolean isFling = mGestureStarted && !mIsMotionPaused
+                && Math.abs(endVelocity) > flingThreshold;
         mStateCallback.setStateOnUiThread(STATE_GESTURE_COMPLETED);
 
         mLogAction = isFling ? Touch.FLING : Touch.SWIPE;
@@ -867,7 +868,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
 
             if (mDeviceState.isFullyGesturalNavMode() && isSwipeUp && !willGoToNewTaskOnSwipeUp) {
                 endTarget = HOME;
-            } else if (mDeviceState.isFullyGesturalNavMode() && isSwipeUp && !mIsMotionPaused) {
+            } else if (mDeviceState.isFullyGesturalNavMode() && isSwipeUp) {
                 // If swiping at a diagonal, base end target on the faster velocity.
                 endTarget = NEW_TASK;
             } else if (isSwipeUp) {
@@ -887,7 +888,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
     @UiThread
     private void handleNormalGestureEnd(float endVelocity, boolean isFling, PointF velocity,
             boolean isCancel) {
-        PointF velocityPxPerMs = new PointF(velocity.x / 1000, velocity.y / 1000);
         long duration = MAX_SWIPE_DURATION;
         float currentShift = mCurrentShift.value;
         final GestureEndTarget endTarget = calculateEndTarget(velocity, endVelocity,
@@ -902,14 +902,12 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
             startShift = currentShift;
             interpolator = endTarget == RECENTS ? OVERSHOOT_1_2 : DEACCEL;
         } else {
-            startShift = Utilities.boundToRange(currentShift - velocityPxPerMs.y
+            startShift = Utilities.boundToRange(currentShift - velocity.y
                     * getSingleFrameMs(mContext) / mTransitionDragLength, 0, mDragLengthFactor);
-            float minFlingVelocity = mContext.getResources()
-                    .getDimension(R.dimen.quickstep_fling_min_velocity);
-            if (Math.abs(endVelocity) > minFlingVelocity && mTransitionDragLength > 0) {
+            if (mTransitionDragLength > 0) {
                 if (endTarget == RECENTS && !mDeviceState.isFullyGesturalNavMode()) {
                     Interpolators.OvershootParams overshoot = new Interpolators.OvershootParams(
-                            startShift, endShift, endShift, endVelocity / 1000,
+                            startShift, endShift, endShift, endVelocity,
                             mTransitionDragLength, mContext);
                     endShift = overshoot.end;
                     interpolator = overshoot.interpolator;
@@ -921,7 +919,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
                     // we want the page's snap velocity to approximately match the velocity at
                     // which the user flings, so we scale the duration by a value near to the
                     // derivative of the scroll interpolator at zero, ie. 2.
-                    long baseDuration = Math.round(Math.abs(distanceToTravel / velocityPxPerMs.y));
+                    long baseDuration = Math.round(Math.abs(distanceToTravel / velocity.y));
                     duration = Math.min(MAX_SWIPE_DURATION, 2 * baseDuration);
 
                     if (endTarget == RECENTS) {
@@ -961,7 +959,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
             mGestureState.setState(STATE_RECENTS_SCROLLING_FINISHED);
         }
 
-        animateToProgress(startShift, endShift, duration, interpolator, endTarget, velocityPxPerMs);
+        animateToProgress(startShift, endShift, duration, interpolator, endTarget, velocity);
     }
 
     private void doLogGesture(GestureEndTarget endTarget, @Nullable TaskView targetTask) {

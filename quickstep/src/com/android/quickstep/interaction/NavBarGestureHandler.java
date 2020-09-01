@@ -144,7 +144,6 @@ public class NavBarGestureHandler implements OnTouchListener,
         if (mGestureCallback == null || mAssistantGestureActive) {
             return;
         }
-        finalVelocity.set(finalVelocity.x / 1000, finalVelocity.y / 1000);
         if (mTouchCameFromNavBar) {
             mGestureCallback.onNavBarGestureAttempted(wasFling
                     ? HOME_GESTURE_COMPLETED : OVERVIEW_GESTURE_COMPLETED, finalVelocity);
