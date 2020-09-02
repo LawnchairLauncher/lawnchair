@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.allapps.search;
 
+import android.content.Context;
 import android.os.Handler;
 
 import com.android.launcher3.LauncherAppState;
@@ -30,9 +31,9 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
     protected final Handler mResultHandler;
     private final AppsSearchPipeline mAppsSearchPipeline;
 
-    public DefaultAppSearchAlgorithm(LauncherAppState launcherAppState) {
+    public DefaultAppSearchAlgorithm(Context context, LauncherAppState launcherAppState) {
         mResultHandler = new Handler();
-        mAppsSearchPipeline = new AppsSearchPipeline(launcherAppState, false);
+        mAppsSearchPipeline = new AppsSearchPipeline(context, launcherAppState);
     }
 
     @Override

@@ -99,7 +99,7 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
         final List<WidgetItem> widgets =
                 launcher.getPopupDataProvider().getWidgetsForPackageUser(new PackageUserKey(
                         itemInfo.getTargetComponent().getPackageName(), itemInfo.user));
-        if (widgets == null) {
+        if (widgets.isEmpty()) {
             return null;
         }
         return new Widgets(launcher, itemInfo);

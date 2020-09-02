@@ -26,13 +26,13 @@ import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 
 import android.content.SharedPreferences;
 
-import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.hybridhotseat.HotseatPredictionController;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.statemanager.StateManager.StateListener;
+import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.OnboardingPrefs;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.views.AllAppsEduView;
@@ -40,9 +40,9 @@ import com.android.quickstep.views.AllAppsEduView;
 /**
  * Extends {@link OnboardingPrefs} for quickstep-specific onboarding data.
  */
-public class QuickstepOnboardingPrefs extends OnboardingPrefs<BaseQuickstepLauncher> {
+public class QuickstepOnboardingPrefs extends OnboardingPrefs<QuickstepLauncher> {
 
-    public QuickstepOnboardingPrefs(BaseQuickstepLauncher launcher, SharedPreferences sharedPrefs) {
+    public QuickstepOnboardingPrefs(QuickstepLauncher launcher, SharedPreferences sharedPrefs) {
         super(launcher, sharedPrefs);
 
         StateManager<LauncherState> stateManager = launcher.getStateManager();

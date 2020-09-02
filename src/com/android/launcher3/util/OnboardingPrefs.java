@@ -44,7 +44,8 @@ public class OnboardingPrefs<T extends Launcher> {
      */
     @StringDef(value = {
             HOME_BOUNCE_SEEN,
-            SHELF_BOUNCE_SEEN
+            SHELF_BOUNCE_SEEN,
+            HOTSEAT_LONGPRESS_TIP_SEEN
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface EventBoolKey {}
