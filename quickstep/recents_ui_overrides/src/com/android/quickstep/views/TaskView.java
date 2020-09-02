@@ -135,6 +135,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
      * delegated bounds only to be updated.
      */
     private TransformingTouchDelegate mIconTouchDelegate;
+    private TransformingTouchDelegate mChipTouchDelegate;
 
     private static final List<Rect> SYSTEM_GESTURE_EXCLUSION_RECT =
             Collections.singletonList(new Rect());
@@ -200,6 +201,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private View mContextualChipWrapper;
     private View mContextualChip;
     private final float[] mIconCenterCoords = new float[2];
+    private final float[] mChipCenterCoords = new float[2];
 
     public TaskView(Context context) {
         this(context, null);
@@ -263,11 +265,22 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         mIconTouchDelegate = new TransformingTouchDelegate(mIconView);
     }
 
-    public TouchDelegate getIconTouchDelegate(MotionEvent event) {
+    /**
+     * Whether the taskview should take the touch event from parent. Events passed to children
+     * that might require special handling.
+     */
+    public boolean offerTouchToChildren(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             computeAndSetIconTouchDelegate();
+            computeAndSetChipTouchDelegate();
         }
-        return mIconTouchDelegate;
+        if (mIconTouchDelegate != null && mIconTouchDelegate.onTouchEvent(event)) {
+            return true;
+        }
+        if (mChipTouchDelegate != null && mChipTouchDelegate.onTouchEvent(event)) {
+            return true;
+        }
+        return false;
     }
 
     private void computeAndSetIconTouchDelegate() {
@@ -282,6 +295,23 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                 (int) (mIconCenterCoords[1] + iconHalfSize));
     }
 
+    private void computeAndSetChipTouchDelegate() {
+        if (mContextualChipWrapper != null) {
+            float chipHalfWidth = mContextualChipWrapper.getWidth() / 2f;
+            float chipHalfHeight = mContextualChipWrapper.getHeight() / 2f;
+            mChipCenterCoords[0] = chipHalfWidth;
+            mChipCenterCoords[1] = chipHalfHeight;
+            getDescendantCoordRelativeToAncestor(mContextualChipWrapper, mActivity.getDragLayer(),
+                    mChipCenterCoords,
+                    false);
+            mChipTouchDelegate.setBounds(
+                    (int) (mChipCenterCoords[0] - chipHalfWidth),
+                    (int) (mChipCenterCoords[1] - chipHalfHeight),
+                    (int) (mChipCenterCoords[0] + chipHalfWidth),
+                    (int) (mChipCenterCoords[1] + chipHalfHeight));
+        }
+    }
+
     /**
      * The modalness of this view is how it should be displayed when it is shown on its own in the
      * modal state of overview.
@@ -289,6 +319,9 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
      * @param modalness [0, 1] 0 being in context with other tasks, 1 being shown on its own.
      */
     public void setModalness(float modalness) {
+        if (mModalness == modalness) {
+            return;
+        }
         mModalness = modalness;
         mIconView.setAlpha(comp(modalness));
         if (mContextualChip != null) {
@@ -298,7 +331,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         if (mContextualChipWrapper != null) {
             mContextualChipWrapper.setAlpha(comp(modalness));
         }
-
         updateFooterVerticalOffset(mFooterVerticalOffset);
     }
 
@@ -546,7 +578,11 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                 .getInterpolation(progress);
         mIconView.setScaleX(scale);
         mIconView.setScaleY(scale);
-
+        if (mContextualChip != null && mContextualChipWrapper != null) {
+            mContextualChipWrapper.setAlpha(scale);
+            mContextualChip.setScaleX(scale);
+            mContextualChip.setScaleY(scale);
+        }
         updateFooterVerticalOffset(1.0f - scale);
     }
 
@@ -725,6 +761,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                 mContextualChip.animate().scaleX(1f).scaleY(1f).setDuration(50);
             }
             if (mContextualChipWrapper != null) {
+                mChipTouchDelegate = new TransformingTouchDelegate(mContextualChipWrapper);
                 mContextualChipWrapper.animate().alpha(1f).setDuration(50);
             }
         }
@@ -746,6 +783,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         View oldContextualChipWrapper = mContextualChipWrapper;
         mContextualChipWrapper = null;
         mContextualChip = null;
+        mChipTouchDelegate = null;
         return oldContextualChipWrapper;
     }
 
