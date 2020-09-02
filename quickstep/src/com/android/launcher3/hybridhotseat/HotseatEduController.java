@@ -47,35 +47,27 @@ import java.util.stream.IntStream;
  */
 public class HotseatEduController {
 
-    public static final String HOTSEAT_EDU_ACTION =
-            "com.android.launcher3.action.SHOW_HYBRID_HOTSEAT_EDU";
     public static final String SETTINGS_ACTION =
             "android.settings.ACTION_CONTENT_SUGGESTIONS_SETTINGS";
 
     private final Launcher mLauncher;
     private final Hotseat mHotseat;
-    private HotseatRestoreHelper mRestoreHelper;
     private List<WorkspaceItemInfo> mPredictedApps;
     private HotseatEduDialog mActiveDialog;
 
     private ArrayList<ItemInfo> mNewItems = new ArrayList<>();
     private IntArray mNewScreens = null;
-    private Runnable mOnOnboardingComplete;
 
-    HotseatEduController(Launcher launcher, HotseatRestoreHelper restoreHelper, Runnable runnable) {
+    HotseatEduController(Launcher launcher) {
         mLauncher = launcher;
         mHotseat = launcher.getHotseat();
-        mRestoreHelper = restoreHelper;
-        mOnOnboardingComplete = runnable;
     }
 
     /**
      * Checks what type of migration should be used and migrates hotseat
      */
     void migrate() {
-        if (mRestoreHelper != null) {
-            mRestoreHelper.createBackup();
-        }
+        HotseatRestoreHelper.createBackup(mLauncher);
         if (FeatureFlags.HOTSEAT_MIGRATE_TO_FOLDER.get()) {
             migrateToFolder();
         } else {
@@ -227,7 +219,7 @@ public class HotseatEduController {
     }
 
     void finishOnboarding() {
-        mOnOnboardingComplete.run();
+        mLauncher.getModel().onWorkspaceUiChanged();
     }
 
     void showDimissTip() {

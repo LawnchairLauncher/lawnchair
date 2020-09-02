@@ -122,9 +122,6 @@ public class FloatingSurfaceView extends AbstractFloatingView implements
     }
 
     @Override
-    public void logActionCommand(int command) { }
-
-    @Override
     protected boolean isOfType(int type) {
         return (type & TYPE_ICON_SURFACE) != 0;
     }

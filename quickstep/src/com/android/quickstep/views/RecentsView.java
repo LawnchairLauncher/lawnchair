@@ -110,8 +110,6 @@ import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.touch.PagedOrientationHandler.CurveProperties;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.DynamicResource;
@@ -142,7 +140,6 @@ import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskKey;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
-import com.android.systemui.shared.system.LauncherEventUtil;
 import com.android.systemui.shared.system.PackageManagerWrapper;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 
@@ -673,9 +670,6 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     public void onDigitalWellbeingToastShown() {
         if (!mDwbToastShown) {
             mDwbToastShown = true;
-            mActivity.getUserEventDispatcher().logActionTip(
-                    LauncherEventUtil.VISIBLE,
-                    LauncherLogProto.TipType.DWB_TOAST);
         }
     }
 
@@ -1461,8 +1455,6 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         if (taskView.getTask() != null) {
             ActivityManagerWrapper.getInstance().removeTask(taskView.getTask().key.id);
             ComponentKey compKey = TaskUtils.getLaunchComponentKeyForTask(taskView.getTask().key);
-            mActivity.getUserEventDispatcher().logTaskLaunchOrDismiss(
-                    endState.logAction, Direction.UP, index, compKey);
             mActivity.getStatsLogManager().logger().withItemInfo(taskView.getItemInfo())
                     .log(LAUNCHER_TASK_DISMISS_SWIPE_UP);
         }
@@ -2174,9 +2166,6 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                 tv.launchTask(false, onLaunchResult, getHandler());
                 Task task = tv.getTask();
                 if (task != null) {
-                    mActivity.getUserEventDispatcher().logTaskLaunchOrDismiss(
-                            endState.logAction, Direction.DOWN, indexOfChild(tv),
-                            TaskUtils.getLaunchComponentKeyForTask(task.key));
                     mActivity.getStatsLogManager().logger().withItemInfo(tv.getItemInfo())
                             .log(LAUNCHER_TASK_LAUNCH_SWIPE_DOWN);
                 }

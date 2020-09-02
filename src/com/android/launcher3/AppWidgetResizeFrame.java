@@ -537,11 +537,6 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     }
 
     @Override
-    public void logActionCommand(int command) {
-        // TODO: Log this case.
-    }
-
-    @Override
     protected boolean isOfType(int type) {
         return (type & TYPE_WIDGET_RESIZE_FRAME) != 0;
     }

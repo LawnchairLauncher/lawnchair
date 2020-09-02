@@ -38,7 +38,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -202,20 +201,11 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
     }
 
     public List<WidgetItem> getWidgetsForPackageUser(PackageUserKey packageUserKey) {
-        for (WidgetListRowEntry entry : mAllWidgets) {
-            if (entry.pkgItem.packageName.equals(packageUserKey.mPackageName)) {
-                ArrayList<WidgetItem> widgets = new ArrayList<>(entry.widgets);
-                // Remove widgets not associated with the correct user.
-                Iterator<WidgetItem> iterator = widgets.iterator();
-                while (iterator.hasNext()) {
-                    if (!iterator.next().user.equals(packageUserKey.mUser)) {
-                        iterator.remove();
-                    }
-                }
-                return widgets.isEmpty() ? null : widgets;
-            }
-        }
-        return null;
+        return mAllWidgets.stream()
+                .filter(row -> row.pkgItem.packageName.equals(packageUserKey.mPackageName))
+                .flatMap(row -> row.widgets.stream())
+                .filter(widget -> packageUserKey.mUser.equals(widget.user))
+                .collect(Collectors.toList());
     }
 
     /**

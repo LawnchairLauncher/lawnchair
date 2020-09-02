@@ -38,7 +38,6 @@ import com.android.launcher3.allapps.AllAppsPagedView;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.statemanager.StateManager.StateListener;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
 
 /**
  * On boarding flow for users right after setting up work profile
@@ -86,16 +85,6 @@ public class WorkEduView extends AbstractSlideInView
     protected void onCloseComplete() {
         super.onCloseComplete();
         mLauncher.getStateManager().removeStateListener(this);
-    }
-
-    @Override
-    public void logActionCommand(int command) {
-        // Since this is on-boarding popup, it is not a user controlled action.
-    }
-
-    @Override
-    public int getLogContainerType() {
-        return LauncherLogProto.ContainerType.TIP;
     }
 
     @Override

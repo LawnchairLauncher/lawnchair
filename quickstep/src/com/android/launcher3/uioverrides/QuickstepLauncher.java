@@ -33,8 +33,8 @@ import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
@@ -48,14 +48,11 @@ import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.appprediction.PredictionRowView;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.folder.Folder;
 import com.android.launcher3.hybridhotseat.HotseatPredictionController;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
-import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.statemanager.StateManager.AtomicAnimationFactory;
 import com.android.launcher3.testing.TestProtocol;
@@ -70,13 +67,14 @@ import com.android.launcher3.uioverrides.touchcontrollers.QuickSwitchTouchContro
 import com.android.launcher3.uioverrides.touchcontrollers.StatusBarTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.TaskViewTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.TransposedQuickSwitchTouchController;
-import com.android.launcher3.util.IntArray;
+import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.launcher3.util.UiThreadHelper.AsyncCommand;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SystemUiProxy;
+import com.android.quickstep.util.QuickstepOnboardingPrefs;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -84,7 +82,6 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -98,14 +95,7 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
             SystemUiProxy.INSTANCE.get(context).setShelfHeight(arg1 != 0, arg2);
 
     private FixedContainerItems mAllAppsPredictions;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (mHotseatPredictionController != null) {
-            mHotseatPredictionController.createPredictor();
-        }
-    }
+    private HotseatPredictionController mHotseatPredictionController;
 
     @Override
     protected void setupViews() {
@@ -141,6 +131,18 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
         if (mHotseatPredictionController != null) {
             mHotseatPredictionController.logLaunchedAppRankingInfo(info, instanceId);
         }
+    }
+
+    /**
+     * Returns Prediction controller for hybrid hotseat
+     */
+    public HotseatPredictionController getHotseatPredictionController() {
+        return mHotseatPredictionController;
+    }
+
+    @Override
+    protected OnboardingPrefs createOnboardingPrefs(SharedPreferences sharedPrefs) {
+        return new QuickstepOnboardingPrefs(this, sharedPrefs);
     }
 
     @Override
@@ -179,22 +181,6 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
     }
 
     @Override
-    public void folderCreatedFromItem(Folder folder, WorkspaceItemInfo itemInfo) {
-        super.folderCreatedFromItem(folder, itemInfo);
-        if (mHotseatPredictionController != null) {
-            mHotseatPredictionController.folderCreatedFromWorkspaceItem(itemInfo, folder.getInfo());
-        }
-    }
-
-    @Override
-    public void folderConvertedToItem(Folder folder, WorkspaceItemInfo itemInfo) {
-        super.folderConvertedToItem(folder, itemInfo);
-        if (mHotseatPredictionController != null) {
-            mHotseatPredictionController.folderConvertedToWorkspaceItem(itemInfo, folder.getInfo());
-        }
-    }
-
-    @Override
     public Stream<SystemShortcut.Factory> getSupportedShortcuts() {
         if (mHotseatPredictionController != null) {
             return Stream.concat(super.getSupportedShortcuts(),
@@ -223,19 +209,14 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
     }
 
     @Override
-    public void bindPredictedItems(List<AppInfo> appInfos, IntArray ranks) {
-        super.bindPredictedItems(appInfos, ranks);
-        if (mHotseatPredictionController != null) {
-            mHotseatPredictionController.showCachedItems(appInfos, ranks);
-        }
-    }
-
-    @Override
     public void bindExtraContainerItems(FixedContainerItems item) {
         if (item.containerId == Favorites.CONTAINER_PREDICTION) {
             mAllAppsPredictions = item;
             getAppsView().getFloatingHeaderView().findFixedRowByType(PredictionRowView.class)
                     .setPredictedApps(item.items);
+        } else if (item.containerId == Favorites.CONTAINER_HOTSEAT_PREDICTION
+                && mHotseatPredictionController != null) {
+            mHotseatPredictionController.setPredictedItems(item);
         }
     }
 
