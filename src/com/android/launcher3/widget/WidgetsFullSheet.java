@@ -243,11 +243,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     }
 
     @Override
-    protected int getElementsRowCount() {
-        return mAdapter.getItemCount();
-    }
-
-    @Override
     public void addHintCloseAnim(
             float distanceToMove, Interpolator interpolator, PendingAnimation target) {
         target.setFloat(mRecyclerView, VIEW_TRANSLATE_Y, -distanceToMove, interpolator);

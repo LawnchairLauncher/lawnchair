@@ -36,8 +36,8 @@ import com.android.launcher3.util.IntSet;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.IntStream;
 
 /**
@@ -56,13 +56,7 @@ public class ModelUtils {
             ArrayList<T> currentScreenItems,
             ArrayList<T> otherScreenItems) {
         // Purge any null ItemInfos
-        Iterator<T> iter = allWorkspaceItems.iterator();
-        while (iter.hasNext()) {
-            ItemInfo i = iter.next();
-            if (i == null) {
-                iter.remove();
-            }
-        }
+        allWorkspaceItems.removeIf(Objects::isNull);
         // Order the set of items by their containers first, this allows use to walk through the
         // list sequentially, build up a list of containers that are in the specified screen,
         // as well as all items in those containers.

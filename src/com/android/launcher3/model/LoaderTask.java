@@ -48,8 +48,6 @@ import android.util.Log;
 import android.util.LongSparseArray;
 import android.util.TimingLogger;
 
-import androidx.annotation.WorkerThread;
-
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
@@ -83,7 +81,6 @@ import com.android.launcher3.shortcuts.ShortcutRequest.QueryResult;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IOUtils;
 import com.android.launcher3.util.LooperIdleLock;
-import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.TraceHelper;
@@ -92,8 +89,10 @@ import com.android.launcher3.widget.WidgetManagerHelper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CancellationException;
 
 /**
@@ -190,13 +189,13 @@ public class LoaderTask implements Runnable {
         try (LauncherModel.LoaderTransaction transaction = mApp.getModel().beginLoader(this)) {
             List<ShortcutInfo> allShortcuts = new ArrayList<>();
             loadWorkspace(allShortcuts);
-            loadCachedPredictions();
             logger.addSplit("loadWorkspace");
 
             verifyNotStopped();
             mResults.bindWorkspace();
             logger.addSplit("bindWorkspace");
 
+            mModelDelegate.workspaceLoadComplete();
             // Notify the installer packages of packages with active installs on the first screen.
             sendFirstScreenActiveInstallsBroadcast();
             logger.addSplit("sendFirstScreenActiveInstallsBroadcast");
@@ -304,7 +303,7 @@ public class LoaderTask implements Runnable {
         final PackageManagerHelper pmHelper = new PackageManagerHelper(context);
         final boolean isSafeMode = pmHelper.isSafeMode();
         final boolean isSdCardReady = Utilities.isBootCompleted();
-        final MultiHashMap<UserHandle, String> pendingPackages = new MultiHashMap<>();
+        final Set<PackageUserKey> pendingPackages = new HashSet<>();
 
         boolean clearDb = false;
         try {
@@ -485,7 +484,7 @@ public class LoaderTask implements Runnable {
                                     // SdCard is not ready yet. Package might get available,
                                     // once it is ready.
                                     Log.d(TAG, "Missing pkg, will check later: " + targetPkg);
-                                    pendingPackages.addToList(c.user, targetPkg);
+                                    pendingPackages.add(new PackageUserKey(targetPkg, c.user));
                                     // Add the icon on the workspace anyway.
                                     allowMissingTarget = true;
                                 } else {
@@ -839,24 +838,6 @@ public class LoaderTask implements Runnable {
         }
     }
 
-    @WorkerThread
-    private void loadCachedPredictions() {
-        synchronized (mBgDataModel) {
-            List<ComponentKey> componentKeys =
-                    mApp.getPredictionModel().getPredictionComponentKeys();
-            List<LauncherActivityInfo> l;
-            mBgDataModel.cachedPredictedItems.clear();
-            for (ComponentKey key : componentKeys) {
-                l = mLauncherApps.getActivityList(key.componentName.getPackageName(), key.user);
-                if (l.size() == 0) continue;
-                AppInfo info = new AppInfo(l.get(0), key.user,
-                        mUserManagerState.isUserQuiet(key.user));
-                mBgDataModel.cachedPredictedItems.add(info);
-                mIconCache.getTitleAndIcon(info, false);
-            }
-        }
-    }
-
     private void sanitizeData() {
         Context context = mApp.getContext();
         if (mItemsDeleted) {
@@ -898,14 +879,6 @@ public class LoaderTask implements Runnable {
                     mSessionHelper.getAllVerifiedSessions()) {
                 mBgAllAppsList.addPromiseApp(mApp.getContext(),
                         PackageInstallInfo.fromInstallingState(info));
-            }
-        }
-        for (AppInfo item : mBgDataModel.cachedPredictedItems) {
-            List<LauncherActivityInfo> l = mLauncherApps.getActivityList(
-                    item.componentName.getPackageName(), item.user);
-            for (LauncherActivityInfo info : l) {
-                boolean quietMode = mUserManagerState.isUserQuiet(item.user);
-                mBgAllAppsList.add(new AppInfo(info, item.user, quietMode), info);
             }
         }
 

@@ -22,6 +22,7 @@ import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
 import static com.android.launcher3.anim.Interpolators.INSTANT;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_COMPONENTS;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_ACTIONS_FADE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SCALE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_X;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_Y;
@@ -106,10 +107,16 @@ public class OverviewToHomeAnim {
                 // StaggeredWorkspaceAnim doesn't animate overview, so we handle it here.
                 ? PLAY_ATOMIC_OVERVIEW_PEEK
                 : ANIM_ALL_COMPONENTS;
-        config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, DEACCEL);
+        boolean isLayoutNaturalToLauncher = recentsView.getPagedOrientationHandler()
+                .isLayoutNaturalToLauncher();
+        config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, isLayoutNaturalToLauncher
+                ? DEACCEL : FINAL_FRAME);
         config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_Y, FINAL_FRAME);
         config.setInterpolator(ANIM_OVERVIEW_SCALE, FINAL_FRAME);
         config.setInterpolator(ANIM_OVERVIEW_ACTIONS_FADE, INSTANT);
+        if (!isLayoutNaturalToLauncher) {
+            config.setInterpolator(ANIM_OVERVIEW_FADE, DEACCEL);
+        }
         AnimatorSet stateAnim = stateManager.createAtomicAnimation(
                 startState, NORMAL, config);
         stateAnim.addListener(new AnimationSuccessListener() {

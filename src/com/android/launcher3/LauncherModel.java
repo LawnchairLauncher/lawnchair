@@ -219,6 +219,13 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     }
 
     /**
+     * Called when the workspace items have drastically changed
+     */
+    public void onWorkspaceUiChanged() {
+        MODEL_EXECUTOR.execute(mModelDelegate::workspaceLoadComplete);
+    }
+
+    /**
      * Called when the model is destroyed
      */
     public void destroy() {

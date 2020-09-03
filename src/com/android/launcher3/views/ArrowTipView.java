@@ -87,10 +87,6 @@ public class ArrowTipView extends AbstractFloatingView {
     }
 
     @Override
-    public void logActionCommand(int command) {
-    }
-
-    @Override
     protected boolean isOfType(int type) {
         return (type & TYPE_ON_BOARD_POPUP) != 0;
     }
