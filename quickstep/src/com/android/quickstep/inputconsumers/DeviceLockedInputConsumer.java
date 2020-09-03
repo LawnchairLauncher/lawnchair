@@ -21,6 +21,7 @@ import static android.view.MotionEvent.ACTION_UP;
 
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.Utilities.squaredTouchSlop;
+import static com.android.launcher3.util.VelocityUtils.PX_PER_MS;
 import static com.android.quickstep.AbsSwipeUpHandler.MIN_PROGRESS_FOR_OVERVIEW;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
 import static com.android.quickstep.util.ActiveGestureLog.INTENT_EXTRA_LOG_TRACE_ID;
@@ -35,7 +36,6 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
-import android.view.ViewConfiguration;
 
 import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
@@ -180,12 +180,11 @@ public class DeviceLockedInputConsumer implements InputConsumer,
      */
     private void finishTouchTracking(MotionEvent ev) {
         if (mThresholdCrossed && ev.getAction() == ACTION_UP) {
-            mVelocityTracker.computeCurrentVelocity(1000,
-                    ViewConfiguration.get(mContext).getScaledMaximumFlingVelocity());
+            mVelocityTracker.computeCurrentVelocity(PX_PER_MS);
 
             float velocityY = mVelocityTracker.getYVelocity();
             float flingThreshold = mContext.getResources()
-                    .getDimension(R.dimen.quickstep_fling_threshold_velocity);
+                    .getDimension(R.dimen.quickstep_fling_threshold_speed);
 
             boolean dismissTask;
             if (Math.abs(velocityY) > flingThreshold) {
