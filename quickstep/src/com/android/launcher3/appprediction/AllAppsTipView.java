@@ -19,7 +19,6 @@ package com.android.launcher3.appprediction;
 import static com.android.launcher3.AbstractFloatingView.TYPE_DISCOVERY_BOUNCE;
 import static com.android.launcher3.AbstractFloatingView.TYPE_ON_BOARD_POPUP;
 import static com.android.launcher3.LauncherState.ALL_APPS;
-import static com.android.quickstep.logging.UserEventDispatcherExtension.ALL_APPS_PREDICTION_TIPS;
 
 import android.os.UserManager;
 
@@ -31,7 +30,6 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.FloatingHeaderView;
 import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.views.ArrowTipView;
-import com.android.systemui.shared.system.LauncherEventUtil;
 
 /**
  * ArrowTip helper aligned just above prediction apps, shown to users that enter all apps for the
@@ -57,8 +55,7 @@ public class AllAppsTipView {
         floatingHeaderView.findFixedRowByType(PredictionRowView.class).getLocationOnScreen(coords);
         ArrowTipView arrowTipView = new ArrowTipView(launcher).setOnClosedCallback(() -> {
             launcher.getSharedPrefs().edit().putBoolean(ALL_APPS_TIP_SEEN, true).apply();
-            launcher.getUserEventDispatcher().logActionTip(LauncherEventUtil.DISMISS,
-                    ALL_APPS_PREDICTION_TIPS);
+            // TODO: add log to WW
         });
         arrowTipView.show(launcher.getString(R.string.all_apps_prediction_tip), coords[1]);
 

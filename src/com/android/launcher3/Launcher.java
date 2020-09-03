@@ -110,7 +110,6 @@ import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
-import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderGridOrganizer;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.icons.IconCache;
@@ -911,7 +910,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     @CallSuper
     protected void onDeferredResumed() {
         logStopAndResume(Action.Command.RESUME);
-        getUserEventDispatcher().startSession();
 
         // Process any items that were added while Launcher was away.
         ItemInstallQueue.INSTANCE.get(this)
@@ -929,6 +927,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     protected void handlePendingActivityRequest() { }
 
     private void logStopAndResume(int command) {
+        if (mPendingExecutor != null) return;
         int pageIndex = mWorkspace.isOverlayShown() ? -1 : mWorkspace.getCurrentPage();
         int containerType = mStateManager.getState().containerType;
 
@@ -1747,16 +1746,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     }
 
     /**
-     * Called when a workspace item is converted into a folder
-     */
-    public void folderCreatedFromItem(Folder folder, WorkspaceItemInfo itemInfo){}
-
-    /**
-     * Called when a folder is converted into a workspace item
-     */
-    public void folderConvertedToItem(Folder folder, WorkspaceItemInfo itemInfo) {}
-
-    /**
      * Unbinds the view for the specified item, and removes the item and all its children.
      *
      * @param v the view being removed.
@@ -2192,9 +2181,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         }
         workspace.requestLayout();
     }
-
-    @Override
-    public void bindPredictedItems(List<AppInfo> appInfos, IntArray ranks) { }
 
     /**
      * Add the views for a widget to the workspace.

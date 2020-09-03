@@ -316,7 +316,13 @@ public class StatsLogManager implements ResourceBasedOverride {
         LAUNCHER_NAVIGATION_MODE_GESTURE_BUTTON(625),
 
         @UiEvent(doc = "User tapped on image content in Overview Select mode.")
-        LAUNCHER_SELECT_MODE_IMAGE(627);
+        LAUNCHER_SELECT_MODE_IMAGE(627),
+
+        @UiEvent(doc = "A folder was replaced by a single item")
+        LAUNCHER_FOLDER_CONVERTED_TO_ICON(628),
+
+        @UiEvent(doc = "A hotseat prediction item was pinned")
+        LAUNCHER_HOTSEAT_PREDICTION_PINNED(629);
 
         // ADD MORE
 

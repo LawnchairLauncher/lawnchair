@@ -19,8 +19,10 @@ import static com.android.launcher3.LauncherSettings.Favorites.HYBRID_HOTSEAT_BA
 import static com.android.launcher3.provider.LauncherDbUtils.tableExists;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
+import android.content.Context;
+
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.model.GridBackupTable;
 import com.android.launcher3.provider.LauncherDbUtils;
@@ -29,29 +31,24 @@ import com.android.launcher3.provider.LauncherDbUtils;
  * A helper class to manage migration revert restoration for hybrid hotseat
  */
 public class HotseatRestoreHelper {
-    private final Launcher mLauncher;
-
-    HotseatRestoreHelper(Launcher context) {
-        mLauncher = context;
-    }
 
     /**
      * Creates a snapshot backup of Favorite table for future restoration use.
      */
-    public void createBackup() {
+    public static void createBackup(Context context) {
         MODEL_EXECUTOR.execute(() -> {
             try (LauncherDbUtils.SQLiteTransaction transaction = (LauncherDbUtils.SQLiteTransaction)
                     LauncherSettings.Settings.call(
-                            mLauncher.getContentResolver(),
+                            context.getContentResolver(),
                             LauncherSettings.Settings.METHOD_NEW_TRANSACTION)
                             .getBinder(LauncherSettings.Settings.EXTRA_VALUE)) {
-                InvariantDeviceProfile idp = mLauncher.getDeviceProfile().inv;
-                GridBackupTable backupTable = new GridBackupTable(mLauncher,
+                InvariantDeviceProfile idp = LauncherAppState.getIDP(context);
+                GridBackupTable backupTable = new GridBackupTable(context,
                         transaction.getDb(), idp.numHotseatIcons, idp.numColumns,
                         idp.numRows);
                 backupTable.createCustomBackupTable(HYBRID_HOTSEAT_BACKUP_TABLE);
                 transaction.commit();
-                LauncherSettings.Settings.call(mLauncher.getContentResolver(),
+                LauncherSettings.Settings.call(context.getContentResolver(),
                         LauncherSettings.Settings.METHOD_REFRESH_HOTSEAT_RESTORE_TABLE);
             }
         });
@@ -60,23 +57,23 @@ public class HotseatRestoreHelper {
     /**
      * Finds and restores a previously saved snapshow of Favorites table
      */
-    public void restoreBackup() {
+    public static void restoreBackup(Context context) {
         MODEL_EXECUTOR.execute(() -> {
             try (LauncherDbUtils.SQLiteTransaction transaction = (LauncherDbUtils.SQLiteTransaction)
                     LauncherSettings.Settings.call(
-                            mLauncher.getContentResolver(),
+                            context.getContentResolver(),
                             LauncherSettings.Settings.METHOD_NEW_TRANSACTION)
                             .getBinder(LauncherSettings.Settings.EXTRA_VALUE)) {
                 if (!tableExists(transaction.getDb(), HYBRID_HOTSEAT_BACKUP_TABLE)) {
                     return;
                 }
-                InvariantDeviceProfile idp = mLauncher.getDeviceProfile().inv;
-                GridBackupTable backupTable = new GridBackupTable(mLauncher,
+                InvariantDeviceProfile idp = LauncherAppState.getIDP(context);
+                GridBackupTable backupTable = new GridBackupTable(context,
                         transaction.getDb(), idp.numHotseatIcons, idp.numColumns,
                         idp.numRows);
                 backupTable.restoreFromCustomBackupTable(HYBRID_HOTSEAT_BACKUP_TABLE, true);
                 transaction.commit();
-                mLauncher.getModel().forceReload();
+                LauncherAppState.getInstance(context).getModel().forceReload();
             }
         });
     }

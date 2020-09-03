@@ -49,7 +49,6 @@ import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Themes;
 
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 
 /**
  * Drop target which provides a secondary option for an item.
@@ -337,12 +336,6 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
         public void onDropCompleted(View target, DragObject d,
                 boolean success) {
             mDragObject = d;
-        }
-
-        @Override
-        public void fillInLogContainerData(ItemInfo childInfo, Target child,
-                ArrayList<Target> parents) {
-            mOriginal.fillInLogContainerData(childInfo, child, parents);
         }
 
         @Override

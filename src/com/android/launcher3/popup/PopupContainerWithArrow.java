@@ -20,12 +20,9 @@ import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_SHORTCU
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.Utilities.squaredTouchSlop;
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
-import static com.android.launcher3.notification.NotificationMainView.NOTIFICATION_ITEM_INFO;
 import static com.android.launcher3.popup.PopupPopulator.MAX_SHORTCUTS;
 import static com.android.launcher3.popup.PopupPopulator.MAX_SHORTCUTS_IF_NOTIFICATIONS;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
-import static com.android.launcher3.userevent.nano.LauncherLogProto.ItemType;
-import static com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.animation.AnimatorSet;
@@ -145,17 +142,6 @@ public class PopupContainerWithArrow<T extends BaseDraggingActivity> extends Arr
     @Override
     protected boolean isOfType(int type) {
         return (type & TYPE_ACTION_POPUP) != 0;
-    }
-
-    @Override
-    public void logActionCommand(int command) {
-        mLauncher.getUserEventDispatcher().logActionCommand(
-                command, mOriginalIcon, getLogContainerType());
-    }
-
-    @Override
-    public int getLogContainerType() {
-        return ContainerType.DEEPSHORTCUTS;
     }
 
     public OnClickListener getItemClickListener() {
@@ -493,18 +479,6 @@ public class PopupContainerWithArrow<T extends BaseDraggingActivity> extends Arr
                 }
             }
         }
-    }
-
-    @Override
-    public void fillInLogContainerData(ItemInfo childInfo, Target child,
-            ArrayList<Target> parents) {
-        if (childInfo == NOTIFICATION_ITEM_INFO) {
-            child.itemType = ItemType.NOTIFICATION;
-        } else {
-            child.itemType = ItemType.DEEPSHORTCUT;
-            child.rank = childInfo.rank;
-        }
-        parents.add(newContainerTarget(ContainerType.DEEPSHORTCUTS));
     }
 
     @Override

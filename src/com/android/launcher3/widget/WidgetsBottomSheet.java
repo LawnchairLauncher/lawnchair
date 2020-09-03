@@ -180,11 +180,6 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
     }
 
     @Override
-    protected int getElementsRowCount() {
-        return 1;
-    }
-
-    @Override
     protected Pair<View, String> getAccessibilityTarget() {
         return Pair.create(findViewById(R.id.title),  getContext().getString(
                 mIsOpen ? R.string.widgets_list : R.string.widgets_list_closed));
