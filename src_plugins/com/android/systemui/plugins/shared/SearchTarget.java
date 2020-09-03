@@ -31,7 +31,9 @@ public class SearchTarget implements Comparable<SearchTarget> {
         DETAIL(2),
         ROW(3),
         ROW_WITH_BUTTON(4),
-        SLICE(5);
+        SLICE(5),
+        SHORTCUT(6),
+        PEOPLE(7);
 
         private final int mId;
         ViewType(int id) {
@@ -48,7 +50,9 @@ public class SearchTarget implements Comparable<SearchTarget> {
         SETTINGS_ROW(1, "Settings", ViewType.ROW),
         SETTINGS_SLICE(2, "Settings", ViewType.SLICE),
         APP(3, "", ViewType.TOP_HIT),
-        APP_HERO(4, "", ViewType.HERO);
+        APP_HERO(4, "", ViewType.HERO),
+        SHORTCUT(5, "Shortcuts", ViewType.SHORTCUT),
+        PEOPLE(6, "People", ViewType.PEOPLE);
 
         private final int mId;
         private final String mTitle;
