@@ -91,6 +91,8 @@ public class AllAppsGridAdapter extends
 
     public static final int VIEW_TYPE_SEARCH_SHORTCUT = 1 << 10;
 
+    public static final int VIEW_TYPE_SEARCH_PEOPLE = 1 << 11;
+
     // Common view type masks
     public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_ALL_APPS_DIVIDER;
     public static final int VIEW_TYPE_MASK_ICON = VIEW_TYPE_ICON;
@@ -182,6 +184,7 @@ public class AllAppsGridAdapter extends
                     || viewType == VIEW_TYPE_SEARCH_ROW_WITH_BUTTON
                     || viewType == VIEW_TYPE_SEARCH_SLICE
                     || viewType == VIEW_TYPE_SEARCH_ROW
+                    || viewType == VIEW_TYPE_SEARCH_PEOPLE
                     || viewType == VIEW_TYPE_SEARCH_SHORTCUT;
         }
     }
@@ -432,6 +435,9 @@ public class AllAppsGridAdapter extends
             case VIEW_TYPE_SEARCH_SHORTCUT:
                 return new ViewHolder(mLayoutInflater.inflate(
                         R.layout.search_result_shortcut, parent, false));
+            case VIEW_TYPE_SEARCH_PEOPLE:
+                return new ViewHolder(mLayoutInflater.inflate(
+                        R.layout.search_result_people_item, parent, false));
             default:
                 throw new RuntimeException("Unexpected view type");
         }
@@ -475,6 +481,7 @@ public class AllAppsGridAdapter extends
             case VIEW_TYPE_SEARCH_HERO_APP:
             case VIEW_TYPE_SEARCH_ROW:
             case VIEW_TYPE_SEARCH_SHORTCUT:
+            case VIEW_TYPE_SEARCH_PEOPLE:
                 PayloadResultHandler payloadResultView = (PayloadResultHandler) holder.itemView;
                 payloadResultView.applyAdapterInfo(
                         (AdapterItemWithPayload) mApps.getAdapterItems().get(position));
