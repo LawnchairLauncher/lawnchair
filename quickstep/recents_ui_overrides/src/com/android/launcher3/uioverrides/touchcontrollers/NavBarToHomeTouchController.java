@@ -19,7 +19,6 @@ import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
 import static com.android.launcher3.AbstractFloatingView.TYPE_ALL_APPS_EDU;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_ALL_APPS_EDU;
@@ -222,7 +221,7 @@ public class NavBarToHomeTouchController implements TouchController,
                 recentsView.switchToScreenshot(null,
                         () -> recentsView.finishRecentsAnimation(true /* toRecents */, null));
             }
-            if (mStartState == OVERVIEW) {
+            if (mStartState.overviewUi) {
                 new OverviewToHomeAnim(mLauncher, () -> onSwipeInteractionCompleted(mEndState))
                         .animateWithVelocity(velocity);
             } else {
