@@ -20,10 +20,10 @@ import static android.content.Intent.ACTION_PACKAGE_ADDED;
 import static android.content.Intent.ACTION_PACKAGE_CHANGED;
 import static android.content.Intent.ACTION_PACKAGE_REMOVED;
 
+import static com.android.launcher3.config.FeatureFlags.SEPARATE_RECENTS_ACTIVITY;
 import static com.android.launcher3.util.PackageManagerHelper.getPackageFilter;
 import static com.android.systemui.shared.system.PackageManagerWrapper.ACTION_PREFERRED_ACTIVITY_CHANGED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_ASSIST_GESTURE_CONSTRAINED;
-import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_HOME_DISABLED;
 
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -35,43 +35,44 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.util.SparseIntArray;
 
+import com.android.launcher3.util.SimpleBroadcastReceiver;
 import com.android.systemui.shared.system.PackageManagerWrapper;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * Class to keep track of the current overview component based off user preferences and app updates
  * and provide callers the relevant classes.
  */
 public final class OverviewComponentObserver {
-    private final BroadcastReceiver mUserPreferenceChangeReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            updateOverviewTargets();
-        }
-    };
-    private final BroadcastReceiver mOtherHomeAppUpdateReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            updateOverviewTargets();
-        }
-    };
+    private final BroadcastReceiver mUserPreferenceChangeReceiver =
+            new SimpleBroadcastReceiver(this::updateOverviewTargets);
+    private final BroadcastReceiver mOtherHomeAppUpdateReceiver =
+            new SimpleBroadcastReceiver(this::updateOverviewTargets);
+
     private final Context mContext;
+    private final RecentsAnimationDeviceState mDeviceState;
     private final Intent mCurrentHomeIntent;
     private final Intent mMyHomeIntent;
     private final Intent mFallbackIntent;
     private final SparseIntArray mConfigChangesMap = new SparseIntArray();
+
+    private Consumer<Boolean> mOverviewChangeListener = b -> { };
+
     private String mUpdateRegisteredPackage;
-    private ActivityControlHelper mActivityControlHelper;
+    private BaseActivityInterface mActivityInterface;
     private Intent mOverviewIntent;
-    private int mSystemUiStateFlags;
     private boolean mIsHomeAndOverviewSame;
     private boolean mIsDefaultHome;
+    private boolean mIsHomeDisabled;
 
-    public OverviewComponentObserver(Context context) {
+
+    public OverviewComponentObserver(Context context, RecentsAnimationDeviceState deviceState) {
         mContext = context;
-
+        mDeviceState = deviceState;
         mCurrentHomeIntent = new Intent(Intent.ACTION_MAIN)
                 .addCategory(Intent.CATEGORY_HOME)
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -99,53 +100,65 @@ public final class OverviewComponentObserver {
         updateOverviewTargets();
     }
 
-    public void onSystemUiStateChanged(int stateFlags) {
-        boolean homeDisabledChanged = (mSystemUiStateFlags & SYSUI_STATE_HOME_DISABLED)
-                != (stateFlags & SYSUI_STATE_HOME_DISABLED);
-        mSystemUiStateFlags = stateFlags;
-        if (homeDisabledChanged) {
+    /**
+     * Sets a listener for changes in {@link #isHomeAndOverviewSame()}
+     */
+    public void setOverviewChangeListener(Consumer<Boolean> overviewChangeListener) {
+        mOverviewChangeListener = overviewChangeListener;
+    }
+
+    public void onSystemUiStateChanged() {
+        if (mDeviceState.isHomeDisabled() != mIsHomeDisabled) {
             updateOverviewTargets();
         }
     }
 
+    private void updateOverviewTargets(Intent unused) {
+        updateOverviewTargets();
+    }
+
     public boolean assistantGestureIsConstrained() {
-        return (mSystemUiStateFlags & SYSUI_STATE_ASSIST_GESTURE_CONSTRAINED) != 0;
+        return (mDeviceState.getSystemUiStateFlags() & SYSUI_STATE_ASSIST_GESTURE_CONSTRAINED) != 0;
     }
 
     /**
-     * Update overview intent and {@link ActivityControlHelper} based off the current launcher home
+     * Update overview intent and {@link BaseActivityInterface} based off the current launcher home
      * component.
      */
     private void updateOverviewTargets() {
         ComponentName defaultHome = PackageManagerWrapper.getInstance()
                 .getHomeActivities(new ArrayList<>());
 
+        mIsHomeDisabled = mDeviceState.isHomeDisabled();
         mIsDefaultHome = Objects.equals(mMyHomeIntent.getComponent(), defaultHome);
 
         // Set assistant visibility to 0 from launcher's perspective, ensures any elements that
         // launcher made invisible become visible again before the new activity control helper
         // becomes active.
-        if (mActivityControlHelper != null) {
-            mActivityControlHelper.onAssistantVisibilityChanged(0.f);
+        if (mActivityInterface != null) {
+            mActivityInterface.onAssistantVisibilityChanged(0.f);
         }
 
-        if ((mSystemUiStateFlags & SYSUI_STATE_HOME_DISABLED) == 0
-                && (defaultHome == null || mIsDefaultHome)) {
+        if (SEPARATE_RECENTS_ACTIVITY.get()) {
+            mIsDefaultHome = false;
+            if (defaultHome == null) {
+                defaultHome = mMyHomeIntent.getComponent();
+            }
+        }
+
+        if (!mDeviceState.isHomeDisabled() && (defaultHome == null || mIsDefaultHome)) {
             // User default home is same as out home app. Use Overview integrated in Launcher.
-            mActivityControlHelper = new LauncherActivityControllerHelper();
+            mActivityInterface = LauncherActivityInterface.INSTANCE;
             mIsHomeAndOverviewSame = true;
             mOverviewIntent = mMyHomeIntent;
             mCurrentHomeIntent.setComponent(mMyHomeIntent.getComponent());
 
-            if (mUpdateRegisteredPackage != null) {
-                // Remove any update listener as we don't care about other packages.
-                mContext.unregisterReceiver(mOtherHomeAppUpdateReceiver);
-                mUpdateRegisteredPackage = null;
-            }
+            // Remove any update listener as we don't care about other packages.
+            unregisterOtherHomeAppUpdateReceiver();
         } else {
             // The default home app is a different launcher. Use the fallback Overview instead.
 
-            mActivityControlHelper = new FallbackActivityControllerHelper();
+            mActivityInterface = FallbackActivityInterface.INSTANCE;
             mIsHomeAndOverviewSame = false;
             mOverviewIntent = mFallbackIntent;
             mCurrentHomeIntent.setComponent(defaultHome);
@@ -155,13 +168,9 @@ public final class OverviewComponentObserver {
             // Listen for package updates of this app (and remove any previously attached
             // package listener).
             if (defaultHome == null) {
-                if (mUpdateRegisteredPackage != null) {
-                    mContext.unregisterReceiver(mOtherHomeAppUpdateReceiver);
-                }
+                unregisterOtherHomeAppUpdateReceiver();
             } else if (!defaultHome.getPackageName().equals(mUpdateRegisteredPackage)) {
-                if (mUpdateRegisteredPackage != null) {
-                    mContext.unregisterReceiver(mOtherHomeAppUpdateReceiver);
-                }
+                unregisterOtherHomeAppUpdateReceiver();
 
                 mUpdateRegisteredPackage = defaultHome.getPackageName();
                 mContext.registerReceiver(mOtherHomeAppUpdateReceiver, getPackageFilter(
@@ -169,6 +178,7 @@ public final class OverviewComponentObserver {
                         ACTION_PACKAGE_REMOVED));
             }
         }
+        mOverviewChangeListener.accept(mIsHomeAndOverviewSame);
     }
 
     /**
@@ -176,7 +186,10 @@ public final class OverviewComponentObserver {
      */
     public void onDestroy() {
         mContext.unregisterReceiver(mUserPreferenceChangeReceiver);
+        unregisterOtherHomeAppUpdateReceiver();
+    }
 
+    private void unregisterOtherHomeAppUpdateReceiver() {
         if (mUpdateRegisteredPackage != null) {
             mContext.unregisterReceiver(mOtherHomeAppUpdateReceiver);
             mUpdateRegisteredPackage = null;
@@ -237,7 +250,16 @@ public final class OverviewComponentObserver {
      *
      * @return the current activity control helper
      */
-    public ActivityControlHelper getActivityControlHelper() {
-        return mActivityControlHelper;
+    public BaseActivityInterface getActivityInterface() {
+        return mActivityInterface;
+    }
+
+    public void dump(PrintWriter pw) {
+        pw.println("OverviewComponentObserver:");
+        pw.println("  isDefaultHome=" + mIsDefaultHome);
+        pw.println("  isHomeDisabled=" + mIsHomeDisabled);
+        pw.println("  homeAndOverviewSame=" + mIsHomeAndOverviewSame);
+        pw.println("  overviewIntent=" + mOverviewIntent);
+        pw.println("  homeIntent=" + mCurrentHomeIntent);
     }
 }

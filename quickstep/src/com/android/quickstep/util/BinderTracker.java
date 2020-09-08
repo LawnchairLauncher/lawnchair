@@ -31,7 +31,7 @@ public class BinderTracker {
     private static final String TAG = "BinderTracker";
 
     public static void start() {
-        if (!FeatureFlags.IS_DOGFOOD_BUILD) {
+        if (!FeatureFlags.IS_STUDIO_BUILD) {
             Log.wtf(TAG, "Accessing tracker in released code.", new Exception());
             return;
         }
@@ -40,7 +40,7 @@ public class BinderTracker {
     }
 
     public static void stop() {
-        if (!FeatureFlags.IS_DOGFOOD_BUILD) {
+        if (!FeatureFlags.IS_STUDIO_BUILD) {
             Log.wtf(TAG, "Accessing tracker in released code.", new Exception());
             return;
         }

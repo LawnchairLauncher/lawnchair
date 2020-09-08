@@ -18,22 +18,17 @@ package com.android.launcher3.appprediction;
 
 import static com.android.quickstep.InstantAppResolverImpl.COMPONENT_CLASS_MARKER;
 
-import android.content.Context;
-
-import com.android.launcher3.AppInfo;
-import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.allapps.AllAppsStore;
-import com.android.launcher3.shortcuts.ShortcutKey;
+import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.util.ComponentKey;
 
 public class ComponentKeyMapper {
 
     protected final ComponentKey componentKey;
-    private final Context mContext;
     private final DynamicItemCache mCache;
 
-    public ComponentKeyMapper(Context context, ComponentKey key, DynamicItemCache cache) {
-        mContext = context;
+    public ComponentKeyMapper(ComponentKey key, DynamicItemCache cache) {
         componentKey = key;
         mCache = cache;
     }
@@ -61,9 +56,8 @@ public class ComponentKeyMapper {
             return item;
         } else if (getComponentClass().equals(COMPONENT_CLASS_MARKER)) {
             return mCache.getInstantApp(componentKey.componentName.getPackageName());
-        } else if (componentKey instanceof ShortcutKey) {
-            return mCache.getShortcutInfo((ShortcutKey) componentKey);
+        } else {
+            return mCache.getShortcutInfo(componentKey);
         }
-        return null;
     }
 }

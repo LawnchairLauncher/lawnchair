@@ -115,6 +115,7 @@ public class FolderAnimationManager {
      */
     public AnimatorSet getAnimator() {
         final DragLayer.LayoutParams lp = (DragLayer.LayoutParams) mFolder.getLayoutParams();
+        mFolderIcon.getPreviewItemManager().recomputePreviewDrawingParams();
         ClippedFolderIconLayoutRule rule = mFolderIcon.getLayoutRule();
         final List<BubbleTextView> itemsInPreview = getPreviewIconsOnPage(0);
 
@@ -219,7 +220,6 @@ public class FolderAnimationManager {
         int midDuration = mDuration / 2;
         Animator z = getAnimator(mFolder, View.TRANSLATION_Z, -mFolder.getElevation(), 0);
         play(a, z, mIsOpening ? midDuration : 0, midDuration);
-
 
         // Store clip variables
         CellLayout cellLayout = mContent.getCurrentCellLayout();

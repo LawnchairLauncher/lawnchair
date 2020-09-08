@@ -1,18 +1,14 @@
 package com.android.launcher3.graphics;
 
-import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
-
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.pm.PackageManager;
 import android.content.res.XmlResourceParser;
 import android.database.Cursor;
 import android.database.MatrixCursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Binder;
 import android.os.Bundle;
-import android.os.ParcelFileDescriptor;
-import android.os.ParcelFileDescriptor.AutoCloseOutputStream;
-import android.text.TextUtils;
 import android.util.Log;
 import android.util.Xml;
 
@@ -23,12 +19,10 @@ import com.android.launcher3.R;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Future;
 
 /**
  * Exposes various launcher grid options and allows the caller to change them.
@@ -59,21 +53,7 @@ public class GridOptionsProvider extends ContentProvider {
     private static final String KEY_LIST_OPTIONS = "/list_options";
     private static final String KEY_DEFAULT_GRID = "/default_grid";
 
-    private static final String KEY_PREVIEW = "preview";
-    private static final String MIME_TYPE_PNG = "image/png";
-
-    public static final PipeDataWriter<Future<Bitmap>> BITMAP_WRITER =
-            new PipeDataWriter<Future<Bitmap>>() {
-                @Override
-                public void writeDataToPipe(ParcelFileDescriptor output, Uri uri, String s,
-                        Bundle bundle, Future<Bitmap> bitmap) {
-                    try (AutoCloseOutputStream os = new AutoCloseOutputStream(output)) {
-                        bitmap.get().compress(Bitmap.CompressFormat.PNG, 100, os);
-                    } catch (Exception e) {
-                        Log.w(TAG, "fail to write to pipe", e);
-                    }
-                }
-            };
+    private static final String METHOD_GET_PREVIEW = "get_preview";
 
     @Override
     public boolean onCreate() {
@@ -122,10 +102,6 @@ public class GridOptionsProvider extends ContentProvider {
 
     @Override
     public String getType(Uri uri) {
-        List<String> segments = uri.getPathSegments();
-        if (segments.size() > 0 && KEY_PREVIEW.equals(segments.get(0))) {
-            return MIME_TYPE_PNG;
-        }
         return "vnd.android.cursor.dir/launcher_grid";
     }
 
@@ -163,29 +139,17 @@ public class GridOptionsProvider extends ContentProvider {
     }
 
     @Override
-    public ParcelFileDescriptor openFile(Uri uri, String mode) throws FileNotFoundException {
-        List<String> segments = uri.getPathSegments();
-        if (segments.size() < 2 || !KEY_PREVIEW.equals(segments.get(0))) {
-            throw new FileNotFoundException("Invalid preview url");
-        }
-        String profileName = segments.get(1);
-        if (TextUtils.isEmpty(profileName)) {
-            throw new FileNotFoundException("Invalid preview url");
+    public Bundle call(String method, String arg, Bundle extras) {
+        if (getContext().checkPermission("android.permission.BIND_WALLPAPER",
+                Binder.getCallingPid(), Binder.getCallingUid())
+                != PackageManager.PERMISSION_GRANTED) {
+            return null;
         }
 
-        InvariantDeviceProfile idp;
-        try {
-            idp = new InvariantDeviceProfile(getContext(), profileName);
-        } catch (Exception e) {
-            throw new FileNotFoundException(e.getMessage());
+        if (!METHOD_GET_PREVIEW.equals(method)) {
+            return null;
         }
 
-        try {
-            return openPipeHelper(uri, MIME_TYPE_PNG, null,
-                    UI_HELPER_EXECUTOR.submit(new LauncherPreviewRenderer(getContext(), idp)),
-                    BITMAP_WRITER);
-        } catch (Exception e) {
-            throw new FileNotFoundException(e.getMessage());
-        }
+        return new PreviewSurfaceRenderer(getContext(), extras).render();
     }
 }

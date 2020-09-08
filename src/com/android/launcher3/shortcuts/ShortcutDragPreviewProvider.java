@@ -25,7 +25,9 @@ import android.view.View;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.DragPreviewProvider;
+import com.android.launcher3.icons.BitmapRenderer;
 
 /**
  * Extension of {@link DragPreviewProvider} which generates bitmaps scaled to the default icon size.
@@ -39,22 +41,43 @@ public class ShortcutDragPreviewProvider extends DragPreviewProvider {
         mPositionShift = shift;
     }
 
+    @Override
     public Bitmap createDragBitmap() {
+        if (FeatureFlags.ENABLE_DEEP_SHORTCUT_ICON_CACHE.get()) {
+            int size = Launcher.getLauncher(mView.getContext()).getDeviceProfile().iconSizePx;
+            return BitmapRenderer.createHardwareBitmap(
+                    size + blurSizeOutline,
+                    size + blurSizeOutline,
+                    (c) -> drawDragViewOnBackground(c, size));
+        } else {
+            return createDragBitmapLegacy();
+        }
+    }
+
+    private Bitmap createDragBitmapLegacy() {
         Drawable d = mView.getBackground();
         Rect bounds = getDrawableBounds(d);
-
         int size = Launcher.getLauncher(mView.getContext()).getDeviceProfile().iconSizePx;
         final Bitmap b = Bitmap.createBitmap(
                 size + blurSizeOutline,
                 size + blurSizeOutline,
                 Bitmap.Config.ARGB_8888);
-
         Canvas canvas = new Canvas(b);
         canvas.translate(blurSizeOutline / 2, blurSizeOutline / 2);
         canvas.scale(((float) size) / bounds.width(), ((float) size) / bounds.height(), 0, 0);
         canvas.translate(bounds.left, bounds.top);
         d.draw(canvas);
         return b;
+    }
+
+    private void drawDragViewOnBackground(Canvas canvas, float size) {
+        Drawable d = mView.getBackground();
+        Rect bounds = getDrawableBounds(d);
+
+        canvas.translate(blurSizeOutline / 2, blurSizeOutline / 2);
+        canvas.scale(size / bounds.width(), size / bounds.height(), 0, 0);
+        canvas.translate(bounds.left, bounds.top);
+        d.draw(canvas);
     }
 
     @Override

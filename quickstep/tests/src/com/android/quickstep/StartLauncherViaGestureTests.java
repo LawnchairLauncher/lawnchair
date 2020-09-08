@@ -16,8 +16,8 @@
 
 package com.android.quickstep;
 
-import static com.android.launcher3.util.RaceConditionTracker.enterEvt;
-import static com.android.launcher3.util.RaceConditionTracker.exitEvt;
+import static com.android.launcher3.util.RaceConditionReproducer.enterEvt;
+import static com.android.launcher3.util.RaceConditionReproducer.exitEvt;
 
 import android.content.Intent;
 
@@ -45,6 +45,8 @@ public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
+        // b/143488140
+        mLauncher.pressHome();
         // Start an activity where the gestures start.
         startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
     }
@@ -98,5 +100,6 @@ public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
             // The test action.
             mLauncher.getBackground().switchToOverview();
         }
+        mLauncher.pressHome();
     }
 }

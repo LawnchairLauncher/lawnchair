@@ -93,7 +93,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
     public void setupLp(View child) {
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
         if (child instanceof LauncherAppWidgetHostView) {
-            DeviceProfile profile = mActivity.getWallpaperDeviceProfile();
+            DeviceProfile profile = mActivity.getDeviceProfile();
             lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX,
                     profile.appWidgetScale.x, profile.appWidgetScale.y);
         } else {
@@ -108,12 +108,12 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
 
     public int getCellContentHeight() {
         return Math.min(getMeasuredHeight(),
-                mActivity.getWallpaperDeviceProfile().getCellHeight(mContainerType));
+                mActivity.getDeviceProfile().getCellHeight(mContainerType));
     }
 
     public void measureChild(View child) {
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
-        final DeviceProfile profile = mActivity.getWallpaperDeviceProfile();
+        final DeviceProfile profile = mActivity.getDeviceProfile();
 
         if (child instanceof LauncherAppWidgetHostView) {
             lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX,
@@ -145,37 +145,45 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
             final View child = getChildAt(i);
             if (child.getVisibility() != GONE) {
                 CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
-
-                if (child instanceof LauncherAppWidgetHostView) {
-                    LauncherAppWidgetHostView lahv = (LauncherAppWidgetHostView) child;
-
-                    // Scale and center the widget to fit within its cells.
-                    DeviceProfile profile = mActivity.getDeviceProfile();
-                    float scaleX = profile.appWidgetScale.x;
-                    float scaleY = profile.appWidgetScale.y;
-
-                    lahv.setScaleToFit(Math.min(scaleX, scaleY));
-                    lahv.setTranslationForCentering(-(lp.width - (lp.width * scaleX)) / 2.0f,
-                            -(lp.height - (lp.height * scaleY)) / 2.0f);
-                }
-
-                int childLeft = lp.x;
-                int childTop = lp.y;
-                child.layout(childLeft, childTop, childLeft + lp.width, childTop + lp.height);
-
-                if (lp.dropped) {
-                    lp.dropped = false;
-
-                    final int[] cellXY = mTmpCellXY;
-                    getLocationOnScreen(cellXY);
-                    mWallpaperManager.sendWallpaperCommand(getWindowToken(),
-                            WallpaperManager.COMMAND_DROP,
-                            cellXY[0] + childLeft + lp.width / 2,
-                            cellXY[1] + childTop + lp.height / 2, 0, null);
-                }
+                layoutChild(child);
             }
         }
     }
+
+    /**
+     * Core logic to layout a child for this ViewGroup.
+     */
+    public void layoutChild(View child) {
+        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
+        if (child instanceof LauncherAppWidgetHostView) {
+            LauncherAppWidgetHostView lahv = (LauncherAppWidgetHostView) child;
+
+            // Scale and center the widget to fit within its cells.
+            DeviceProfile profile = mActivity.getDeviceProfile();
+            float scaleX = profile.appWidgetScale.x;
+            float scaleY = profile.appWidgetScale.y;
+
+            lahv.setScaleToFit(Math.min(scaleX, scaleY));
+            lahv.setTranslationForCentering(-(lp.width - (lp.width * scaleX)) / 2.0f,
+                    -(lp.height - (lp.height * scaleY)) / 2.0f);
+        }
+
+        int childLeft = lp.x;
+        int childTop = lp.y;
+        child.layout(childLeft, childTop, childLeft + lp.width, childTop + lp.height);
+
+        if (lp.dropped) {
+            lp.dropped = false;
+
+            final int[] cellXY = mTmpCellXY;
+            getLocationOnScreen(cellXY);
+            mWallpaperManager.sendWallpaperCommand(getWindowToken(),
+                    WallpaperManager.COMMAND_DROP,
+                    cellXY[0] + childLeft + lp.width / 2,
+                    cellXY[1] + childTop + lp.height / 2, 0, null);
+        }
+    }
+
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {

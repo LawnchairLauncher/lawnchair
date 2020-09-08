@@ -22,6 +22,7 @@
     <attr name="allAppsScrimColor" format="color" />
     <attr name="allAppsInterimScrimAlpha" format="integer" />
     <attr name="allAppsNavBarScrimColor" format="color" />
+    <attr name="allAppsTheme" format="reference" />
     <attr name="popupColorPrimary" format="color" />
     <attr name="popupColorSecondary" format="color" />
     <attr name="popupColorTertiary" format="color" />
@@ -34,12 +35,17 @@
     <attr name="workspaceStatusBarScrim" format="reference" />
     <attr name="widgetsTheme" format="reference" />
     <attr name="loadingIconColor" format="color" />
+    <attr name="iconOnlyShortcutColor" format="color"/>
+    <attr name="eduHalfSheetBGColor" format="color"/>
 
     <attr name="folderDotColor" format="color" />
     <attr name="folderFillColor" format="color" />
     <attr name="folderIconRadius" format="float" />
     <attr name="folderIconBorderColor" format="color" />
     <attr name="folderTextColor" format="color" />
+    <attr name="folderHintColor" format="color" />
+    <attr name="workProfileOverlayTextColor" format="color" />
+    <attr name="disabledIconAlpha" format="float" />
 
     <!-- BubbleTextView specific attributes. -->
     <declare-styleable name="BubbleTextView">
@@ -115,6 +121,9 @@
         <attr name="numFolderColumns" format="integer" />
         <!-- numHotseatIcons defaults to numColumns, if not specified -->
         <attr name="numHotseatIcons" format="integer" />
+        <attr name="dbFile" format="string" />
+        <!-- numAllAppsColumns defaults to numColumns, if not specified -->
+        <attr name="numAllAppsColumns" format="integer" />
         <attr name="defaultLayoutId" format="reference" />
         <attr name="demoModeLayoutId" format="reference" />
     </declare-styleable>
@@ -130,6 +139,12 @@
         <attr name="iconTextSize" format="float" />
         <!-- If true, this display option is used to determine the default grid -->
         <attr name="canBeDefault" format="boolean" />
+
+        <!-- The following values are only enabled if grid is supported. -->
+        <!-- allAppsIconSize defaults to iconSize, if not specified -->
+        <attr name="allAppsIconSize" format="float" />
+        <!-- allAppsIconTextSize defaults to iconTextSize, if not specified -->
+        <attr name="allAppsIconTextSize" format="float" />
     </declare-styleable>
 
     <declare-styleable name="CellLayout">

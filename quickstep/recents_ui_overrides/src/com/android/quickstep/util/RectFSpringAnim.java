@@ -16,7 +16,7 @@
 package com.android.quickstep.util;
 
 import android.animation.Animator;
-import android.content.res.Resources;
+import android.content.Context;
 import android.graphics.PointF;
 import android.graphics.RectF;
 
@@ -28,6 +28,9 @@ import androidx.dynamicanimation.animation.SpringForce;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.FlingSpringAnim;
+import com.android.launcher3.util.DynamicResource;
+import com.android.quickstep.RemoteAnimationTargets.ReleaseCheck;
+import com.android.systemui.plugins.ResourceProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +40,7 @@ import java.util.List;
  * Applies spring forces to animate from a starting rect to a target rect,
  * while providing update callbacks to the caller.
  */
-public class RectFSpringAnim {
+public class RectFSpringAnim extends ReleaseCheck {
 
     private static final FloatPropertyCompat<RectFSpringAnim> RECT_CENTER_X =
             new FloatPropertyCompat<RectFSpringAnim>("rectCenterXSpring") {
@@ -103,7 +106,7 @@ public class RectFSpringAnim {
     private float mMinVisChange;
     private float mYOvershoot;
 
-    public RectFSpringAnim(RectF startRect, RectF targetRect, Resources resources) {
+    public RectFSpringAnim(RectF startRect, RectF targetRect, Context context) {
         mStartRect = startRect;
         mTargetRect = targetRect;
         mCurrentCenterX = mStartRect.centerX();
@@ -111,8 +114,10 @@ public class RectFSpringAnim {
         mTrackingBottomY = startRect.bottom < targetRect.bottom;
         mCurrentY = mTrackingBottomY ? mStartRect.bottom : mStartRect.top;
 
-        mMinVisChange = resources.getDimensionPixelSize(R.dimen.swipe_up_fling_min_visible_change);
-        mYOvershoot = resources.getDimensionPixelSize(R.dimen.swipe_up_y_overshoot);
+        ResourceProvider rp = DynamicResource.provider(context);
+        mMinVisChange = rp.getDimension(R.dimen.swipe_up_fling_min_visible_change);
+        mYOvershoot = rp.getDimension(R.dimen.swipe_up_y_overshoot);
+        setCanRelease(true);
     }
 
     public void onTargetPositionChanged() {
@@ -137,7 +142,12 @@ public class RectFSpringAnim {
         mAnimatorListeners.add(animatorListener);
     }
 
-    public void start(PointF velocityPxPerMs) {
+    /**
+     * Starts the fling/spring animation.
+     * @param context The activity context.
+     * @param velocityPxPerMs Velocity of swipe in px/ms.
+     */
+    public void start(Context context, PointF velocityPxPerMs) {
         // Only tell caller that we ended if both x and y animations have ended.
         OnAnimationEndListener onXEndListener = ((animation, canceled, centerX, velocityX) -> {
             mRectXAnimEnded = true;
@@ -152,7 +162,7 @@ public class RectFSpringAnim {
         float endX = mTargetRect.centerX();
         float minXValue = Math.min(startX, endX);
         float maxXValue = Math.max(startX, endX);
-        mRectXAnim = new FlingSpringAnim(this, RECT_CENTER_X, startX, endX,
+        mRectXAnim = new FlingSpringAnim(this, context, RECT_CENTER_X, startX, endX,
                 velocityPxPerMs.x * 1000, mMinVisChange, minXValue, maxXValue, 1f, onXEndListener);
 
         float startVelocityY = velocityPxPerMs.y * 1000;
@@ -162,14 +172,18 @@ public class RectFSpringAnim {
         float endY = mTrackingBottomY ? mTargetRect.bottom : mTargetRect.top;
         float minYValue = Math.min(startY, endY - mYOvershoot);
         float maxYValue = Math.max(startY, endY);
-        mRectYAnim = new FlingSpringAnim(this, RECT_Y, startY, endY, startVelocityY,
+        mRectYAnim = new FlingSpringAnim(this, context, RECT_Y, startY, endY, startVelocityY,
                 mMinVisChange, minYValue, maxYValue, springVelocityFactor, onYEndListener);
 
-        float minVisibleChange = 1f / mStartRect.height();
+        float minVisibleChange = Math.abs(1f / mStartRect.height());
+        ResourceProvider rp = DynamicResource.provider(context);
+        float damping = rp.getFloat(R.dimen.swipe_up_rect_scale_damping_ratio);
+        float stiffness = rp.getFloat(R.dimen.swipe_up_rect_scale_stiffness);
+
         mRectScaleAnim = new SpringAnimation(this, RECT_SCALE_PROGRESS)
                 .setSpring(new SpringForce(1f)
-                .setDampingRatio(SpringForce.DAMPING_RATIO_LOW_BOUNCY)
-                .setStiffness(SpringForce.STIFFNESS_LOW))
+                .setDampingRatio(damping)
+                .setStiffness(stiffness))
                 .setStartVelocity(velocityPxPerMs.y * minVisibleChange)
                 .setMaxValue(1f)
                 .setMinimumVisibleChange(minVisibleChange)
@@ -178,10 +192,12 @@ public class RectFSpringAnim {
                     maybeOnEnd();
                 });
 
+        setCanRelease(false);
+        mAnimsStarted = true;
+
         mRectXAnim.start();
         mRectYAnim.start();
         mRectScaleAnim.start();
-        mAnimsStarted = true;
         for (Animator.AnimatorListener animatorListener : mAnimatorListeners) {
             animatorListener.onAnimationStart(null);
         }
@@ -195,9 +211,23 @@ public class RectFSpringAnim {
                 mRectScaleAnim.skipToEnd();
             }
         }
+        mRectXAnimEnded = true;
+        mRectYAnimEnded = true;
+        mRectScaleAnimEnded = true;
+        maybeOnEnd();
+    }
+
+    private boolean isEnded() {
+        return mRectXAnimEnded && mRectYAnimEnded && mRectScaleAnimEnded;
     }
 
     private void onUpdate() {
+        if (isEnded()) {
+            // Prevent further updates from being called. This can happen between callbacks for
+            // ending the x/y/scale animations.
+            return;
+        }
+
         if (!mOnUpdateListeners.isEmpty()) {
             float currentWidth = Utilities.mapRange(mCurrentScaleProgress, mStartRect.width(),
                     mTargetRect.width());
@@ -217,8 +247,9 @@ public class RectFSpringAnim {
     }
 
     private void maybeOnEnd() {
-        if (mAnimsStarted && mRectXAnimEnded && mRectYAnimEnded && mRectScaleAnimEnded) {
+        if (mAnimsStarted && isEnded()) {
             mAnimsStarted = false;
+            setCanRelease(true);
             for (Animator.AnimatorListener animatorListener : mAnimatorListeners) {
                 animatorListener.onAnimationEnd(null);
             }

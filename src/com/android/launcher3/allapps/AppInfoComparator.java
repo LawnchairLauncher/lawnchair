@@ -19,8 +19,8 @@ import android.content.Context;
 import android.os.Process;
 import android.os.UserHandle;
 
-import com.android.launcher3.AppInfo;
-import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.LabelComparator;
 
 import java.util.Comparator;
@@ -30,12 +30,12 @@ import java.util.Comparator;
  */
 public class AppInfoComparator implements Comparator<AppInfo> {
 
-    private final UserManagerCompat mUserManager;
+    private final UserCache mUserManager;
     private final UserHandle mMyUser;
     private final LabelComparator mLabelComparator;
 
     public AppInfoComparator(Context context) {
-        mUserManager = UserManagerCompat.getInstance(context);
+        mUserManager = UserCache.INSTANCE.get(context);
         mMyUser = Process.myUserHandle();
         mLabelComparator = new LabelComparator();
     }

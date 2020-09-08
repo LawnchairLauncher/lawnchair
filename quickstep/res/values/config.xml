@@ -14,12 +14,12 @@
      limitations under the License.
 -->
 <resources>
-    <string name="task_overlay_factory_class" translatable="false"></string>
+    <string name="task_overlay_factory_class" translatable="false"/>
 
-    <string name="overview_callbacks_class" translatable="false"></string>
-
-    <!-- Activity which blocks home gesture -->
-    <string name="gesture_blocking_activity" translatable="false"></string>
+    <!-- Activities which block home gesture -->
+    <string-array name="gesture_blocking_activities" translatable="false">
+        <item>com.android.launcher3/com.android.quickstep.interaction.GestureSandboxActivity</item>
+    </string-array>
 
     <string name="stats_log_manager_class" translatable="false">com.android.quickstep.logging.StatsLogCompatManager</string>
 
@@ -33,4 +33,6 @@
     <!-- Assistant Gesture -->
     <integer name="assistant_gesture_min_time_threshold">200</integer>
     <integer name="assistant_gesture_corner_deg_threshold">20</integer>
+
+    <string name="wellbeing_provider_pkg" translatable="false"/>
 </resources>

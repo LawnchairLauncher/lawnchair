@@ -15,22 +15,22 @@
  */
 package com.android.quickstep.util;
 
-import static com.android.launcher3.LauncherAppTransitionManagerImpl.INDEX_SHELF_ANIM;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
+import static com.android.launcher3.uioverrides.states.QuickstepAtomicAnimationFactory.INDEX_SHELF_ANIM;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.Launcher;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.uioverrides.states.OverviewState;
 
 /**
  * Animates the shelf between states HIDE, PEEK, and OVERVIEW.
  */
-
 public class ShelfPeekAnim {
 
     public static final Interpolator INTERPOLATOR = OVERSHOOT_1_2;
@@ -49,7 +49,7 @@ public class ShelfPeekAnim {
      * Animates to the given state, canceling the previous animation if it was still running.
      */
     public void setShelfState(ShelfAnimState shelfState, Interpolator interpolator, long duration) {
-        if (mShelfState == shelfState) {
+        if (mShelfState == shelfState || FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get()) {
             return;
         }
         mLauncher.getStateManager().cancelStateElementAnimation(INDEX_SHELF_ANIM);

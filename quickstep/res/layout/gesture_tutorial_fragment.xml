@@ -1,0 +1,121 @@
+<!--
+    Copyright (C) 2020 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:attr/colorBackground">
+
+    <View
+        android:id="@+id/gesture_tutorial_ripple_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/gesture_tutorial_ripple"/>
+
+    <View
+        android:id="@+id/gesture_tutorial_fake_task_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/gesture_tutorial_fake_task_view_color"
+        android:visibility="invisible" />
+
+    <ImageView
+        android:id="@+id/gesture_tutorial_fragment_hand_coaching"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"/>
+
+    <ImageButton
+        android:id="@+id/gesture_tutorial_fragment_close_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="18dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="4dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@android:color/transparent"
+        android:accessibilityTraversalAfter="@id/gesture_tutorial_fragment_titles_container"
+        android:contentDescription="@string/gesture_tutorial_close_button_content_description"
+        android:tint="?android:attr/textColorPrimary"
+        android:src="@drawable/gesture_tutorial_close_button"/>
+
+    <LinearLayout
+        android:id="@+id/gesture_tutorial_fragment_titles_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="70dp"
+        android:layout_alignParentTop="true"
+        android:focusable="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/gesture_tutorial_fragment_title_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/gesture_tutorial_title_margin_start_end"
+            android:layout_marginEnd="@dimen/gesture_tutorial_title_margin_start_end"
+            style="@style/TextAppearance.GestureTutorial.Title"/>
+
+        <TextView
+            android:id="@+id/gesture_tutorial_fragment_subtitle_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="@dimen/gesture_tutorial_subtitle_margin_start_end"
+            android:layout_marginEnd="@dimen/gesture_tutorial_subtitle_margin_start_end"
+            style="@style/TextAppearance.GestureTutorial.Subtitle"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/gesture_tutorial_fragment_feedback_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@id/gesture_tutorial_fragment_action_button"
+        android:layout_marginStart="@dimen/gesture_tutorial_feedback_margin_start_end"
+        android:layout_marginEnd="@dimen/gesture_tutorial_feedback_margin_start_end"
+        style="@style/TextAppearance.GestureTutorial.Feedback"/>
+
+    <!-- android:stateListAnimator="@null" removes shadow and normal on click behavior (increase
+         of elevation and shadow) which is replaced by ripple effect in android:foreground -->
+    <Button
+        android:id="@+id/gesture_tutorial_fragment_action_button"
+        android:layout_width="142dp"
+        android:layout_height="49dp"
+        android:layout_marginEnd="@dimen/gesture_tutorial_button_margin_start_end"
+        android:layout_marginBottom="48dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:stateListAnimator="@null"
+        android:background="@drawable/gesture_tutorial_action_button_background"
+        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+        style="@style/TextAppearance.GestureTutorial.ButtonLabel"/>
+
+    <Button
+        android:id="@+id/gesture_tutorial_fragment_action_text_button"
+        android:layout_width="142dp"
+        android:layout_height="49dp"
+        android:layout_marginStart="@dimen/gesture_tutorial_button_margin_start_end"
+        android:layout_marginBottom="48dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:stateListAnimator="@null"
+        android:background="@null"
+        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+        style="@style/TextAppearance.GestureTutorial.TextButtonLabel"/>
+</RelativeLayout>

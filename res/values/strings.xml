@@ -102,9 +102,11 @@
     <string name="app_info_drop_target_label">App info</string>
     <!-- Label for install drop target. [CHAR_LIMIT=20] -->
     <string name="install_drop_target_label">Install</string>
-
     <!-- Label for install dismiss prediction. -->
-    <string translatable="false" name="dismiss_prediction_label">Dismiss prediction</string>
+    <string name="dismiss_prediction_label">Don\'t suggest app</string>
+    <!-- Label for pinning predicted app. -->
+    <string name="pin_prediction">Pin Prediction</string>
+
 
     <!-- Permissions: -->
     <skip />
@@ -140,7 +142,7 @@
     <string name="uninstall_system_app_text">This is a system app and can\'t be uninstalled.</string>
 
     <!-- Default folder title -->
-    <string name="folder_hint_text">Unnamed Folder</string>
+    <string name="folder_hint_text">Edit Name</string>
 
     <!-- Accessibility -->
     <!-- The format string for when an app is temporarily disabled. -->
@@ -170,8 +172,10 @@
     <string name="folder_closed">Folder closed</string>
     <!-- Folder renamed format -->
     <string name="folder_renamed">Folder renamed to <xliff:g id="name" example="Games">%1$s</xliff:g></string>
-    <!-- Folder name format -->
-    <string name="folder_name_format">Folder: <xliff:g id="name" example="Games">%1$s</xliff:g></string>
+    <!-- Folder name format when folder has less than 4 items -->
+    <string name="folder_name_format_exact">Folder: <xliff:g id="name" example="Games">%1$s</xliff:g>, <xliff:g id="size" example="2">%2$d</xliff:g> items</string>
+    <!-- Folder name format when folder has 4 or more items shown in preview-->
+    <string name="folder_name_format_overflow">Folder: <xliff:g id="name" example="Games">%1$s</xliff:g>, <xliff:g id="size" example="2">%2$d</xliff:g> or more items</string>
 
     <!-- Strings for the customization mode -->
     <!-- Text for widget add button -->
@@ -180,7 +184,7 @@
     <string name="wallpaper_button_text">Wallpapers</string>
     <!-- Text for wallpaper change button -->
     <string name="styles_wallpaper_button_text">Styles &amp; wallpapers</string>
-    <!-- Text for settings button -->
+    <!-- Text for settings button [CHAR LIMIT=20]-->
     <string name="settings_button_text">Home settings</string>
     <!-- Message shown when a feature is disabled by the administrator -->
     <string name="msg_disabled_by_admin">Disabled by your admin</string>
@@ -205,8 +209,8 @@
     <!-- Summary for Notification dots setting. Tapping this will link enable/disable notification dots feature on the home screen. [CHAR LIMIT=50] -->
     <string name="notification_dots_service_title">Show notification dots</string>
 
-    <!-- Label for the setting that allows the automatic placement of launcher shortcuts for applications and games installed on the device [CHAR LIMIT=40] -->
-    <string name="auto_add_shortcuts_label">Add icon to Home screen</string>
+    <!-- Label for the setting that allows the automatic placement of launcher shortcuts for applications and games installed on the device [CHAR LIMIT=60] -->
+    <string name="auto_add_shortcuts_label">Add app icons to Home screen</string>
     <!-- Text description of the setting that allows the automatic placement of launcher shortcuts for applications and games installed on the device [CHAR LIMIT=NONE] -->
     <string name="auto_add_shortcuts_description">For new apps</string>
 
@@ -314,6 +318,9 @@
     <!-- Accessibility action to dismiss a notification in the shortcuts menu for an icon. [CHAR_LIMIT=30] -->
     <string name="action_dismiss_notification">Dismiss</string>
 
+    <!-- Content description for arrow tip close button. [CHAR LIMIT=NONE] -->
+    <string name="accessibility_close">Close</string>
+
     <!-- Accessibility confirmation for notification being dismissed. -->
     <string name="notification_dismissed">Notification dismissed</string>
 
@@ -325,17 +332,26 @@
 
     <!-- This string is in the work profile tab when a user has All Apps open on their phone. This is a label for a toggle to turn the work profile on and off. "Work profile" means a separate profile on a user's phone that's specifically for their work apps and managed by their company. "Work" is used as an adjective.-->
     <string name="work_profile_toggle_label">Work profile</string>
-    <!-- Title of an overlay in All Apps. This overlay is letting a user know about their work profile, which is managed by their employer. "Work apps" are apps in a user's work profile.-->
-    <string name="bottom_work_tab_user_education_title">Find work apps here</string>
-    <!-- Text in an overlay in All Apps. This overlay is letting a user know about their work profile, which is managed by their employer.-->
-    <string name="bottom_work_tab_user_education_body">Each work app has a badge and is kept secure by your organization. Move apps to your Home screen for easier access.</string>
-    <!-- This string is in the work profile tab when a user has All Apps open on their phone. It describes the label of a toggle, "Work profile," as being managed by the user's employer.
-    "Organization" is used to represent a variety of businesses, non-profits, and educational institutions).-->
-    <string name="work_mode_on_label">Managed by your organization</string>
-    <!-- This string appears under a the label of a toggle in the work profile tab on a user's phone. It describes the status of the toggle, "Work profile," when it's turned off. "Work profile" means a separate profile on a user's phone that's speficially for their work apps and is managed by their company.-->
-    <string name="work_mode_off_label">Notifications and apps are off</string>
-    <string name="bottom_work_tab_user_education_close_button">Close</string>
-    <string name="bottom_work_tab_user_education_closed">Closed</string>
+    <!--- User onboarding title for personal apps -->
+    <string name="work_profile_edu_personal_apps">Personal data is separate &amp; hidden from work apps</string>
+    <!--- User onboarding title for work profile apps -->
+    <string name="work_profile_edu_work_apps">Work apps &amp; data are visible to your IT admin</string>
+    <!-- Action label to proceed to the next work profile edu section-->
+    <string name="work_profile_edu_next">Next</string>
+    <!-- Action label to finish work profile edu-->
+    <string name="work_profile_edu_accept">Got it</string>
+
+    <!--- heading shown when user opens work apps tab while work apps are paused -->
+    <string name="work_apps_paused_title">Work profile is paused</string>
+    <!--- body shown when user opens work apps tab while work apps are paused -->
+    <string name="work_apps_paused_body">Work apps can\'t send you notifications, use your battery, or access your location</string>
+    <!-- content description for paused work apps list -->
+    <string name="work_apps_paused_content_description">Work profile is paused. Work apps can\’t send you notifications, use your battery, or access your location</string>
+
+
+
+    <!-- A tip shown pointing at work toggle -->
+    <string name="work_switch_tip">Pause work apps and notifications</string>
 
     <!-- Failed action error message: e.g. Failed: Pause -->
     <string name="remote_action_failed">Failed: <xliff:g id="what" example="Pause">%1$s</xliff:g></string>

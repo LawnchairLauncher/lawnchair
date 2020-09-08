@@ -15,21 +15,20 @@
  */
 package com.android.quickstep.fallback;
 
-import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
+import static com.android.quickstep.fallback.RecentsState.DEFAULT;
+import static com.android.quickstep.fallback.RecentsState.MODAL_TASK;
 
+import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Rect;
+import android.os.Build;
 import android.util.AttributeSet;
-import android.util.FloatProperty;
-import android.view.View;
 
-import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.LauncherState.ScaleAndTranslation;
-import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.statemanager.StateManager.StateListener;
+import com.android.quickstep.FallbackActivityInterface;
 import com.android.quickstep.RecentsActivity;
-import com.android.quickstep.util.LayoutUtils;
+import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
@@ -37,36 +36,24 @@ import com.android.systemui.shared.recents.model.Task.TaskKey;
 
 import java.util.ArrayList;
 
-public class FallbackRecentsView extends RecentsView<RecentsActivity> {
+@TargetApi(Build.VERSION_CODES.R)
+public class FallbackRecentsView extends RecentsView<RecentsActivity>
+        implements StateListener<RecentsState> {
 
-    public static final FloatProperty<FallbackRecentsView> ZOOM_PROGRESS =
-            new FloatProperty<FallbackRecentsView> ("zoomInProgress") {
-
-                @Override
-                public void setValue(FallbackRecentsView view, float value) {
-                    view.setZoomProgress(value);
-                }
-
-                @Override
-                public Float get(FallbackRecentsView view) {
-                    return view.mZoomInProgress;
-                }
-            };
-
-    private float mZoomInProgress = 0;
-    private boolean mInOverviewState = true;
-
-    private float mZoomScale = 1f;
-    private float mZoomTranslationY = 0f;
-
-    private RunningTaskInfo mRunningTaskInfo;
+    private RunningTaskInfo mHomeTaskInfo;
 
     public FallbackRecentsView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
     public FallbackRecentsView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+        super(context, attrs, defStyleAttr, FallbackActivityInterface.INSTANCE);
+        mActivity.getStateManager().addStateListener(this);
+    }
+
+    @Override
+    public void init(OverviewActionsView actionsView) {
+        super.init(actionsView);
         setOverviewStateEnabled(true);
         setOverlayEnabled(true);
     }
@@ -77,99 +64,57 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity> {
     }
 
     @Override
-    public void onViewAdded(View child) {
-        super.onViewAdded(child);
-        updateEmptyMessage();
-    }
-
-    @Override
-    public void onViewRemoved(View child) {
-        super.onViewRemoved(child);
-        updateEmptyMessage();
-    }
-
-    @Override
-    public void draw(Canvas canvas) {
-        maybeDrawEmptyMessage(canvas);
-        super.draw(canvas);
-    }
-
-    @Override
-    public void reset() {
-        super.reset();
-        resetViewUI();
-    }
-
-    @Override
-    protected void getTaskSize(DeviceProfile dp, Rect outRect) {
-        LayoutUtils.calculateFallbackTaskSize(getContext(), dp, outRect);
-    }
-
-    @Override
     public boolean shouldUseMultiWindowTaskSizeStrategy() {
         // Just use the activity task size for multi-window as well.
         return false;
     }
 
-    public void resetViewUI() {
-        setZoomProgress(0);
-        resetTaskVisuals();
+    /**
+     * When starting gesture interaction from home, we add a temporary invisible tile corresponding
+     * to the home task. This allows us to handle quick-switch similarly to a quick-switching
+     * from a foreground task.
+     */
+    public void onGestureAnimationStartOnHome(RunningTaskInfo homeTaskInfo) {
+        mHomeTaskInfo = homeTaskInfo;
+        onGestureAnimationStart(homeTaskInfo == null ? -1 : homeTaskInfo.taskId);
     }
 
-    public void setInOverviewState(boolean inOverviewState) {
-        if (mInOverviewState != inOverviewState) {
-            mInOverviewState = inOverviewState;
-            if (mInOverviewState) {
-                resetTaskVisuals();
-            } else {
-                setZoomProgress(1);
+    /**
+     * When the gesture ends and recents view become interactive, we also remove the temporary
+     * invisible tile added for the home task. This also pushes the remaining tiles back
+     * to the center.
+     */
+    @Override
+    public void onGestureAnimationEnd() {
+        super.onGestureAnimationEnd();
+        if (mHomeTaskInfo != null) {
+            TaskView tv = getTaskView(mHomeTaskInfo.taskId);
+            if (tv != null) {
+                PendingAnimation pa = createTaskDismissAnimation(tv, true, false, 150);
+                pa.addEndListener(e -> setCurrentTask(-1));
+                runDismissAnimation(pa);
             }
         }
     }
 
     @Override
-    public void resetTaskVisuals() {
-        super.resetTaskVisuals();
-        setFullscreenProgress(mFullscreenProgress);
-    }
-
-    @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
-
-        if (getTaskViewCount() == 0) {
-            mZoomScale = 1f;
-            mZoomTranslationY = 0f;
-        } else {
-            TaskView dummyTask = getTaskViewAt(0);
-            ScaleAndTranslation sat = getTempClipAnimationHelper()
-                    .updateForFullscreenOverview(dummyTask)
-                    .getScaleAndTranslation();
-            mZoomScale = sat.scale;
-            mZoomTranslationY = sat.translationY;
-        }
-
-        setZoomProgress(mZoomInProgress);
-    }
-
-    public void setZoomProgress(float progress) {
-        mZoomInProgress = progress;
-        SCALE_PROPERTY.set(this, Utilities.mapRange(mZoomInProgress, 1, mZoomScale));
-        TRANSLATION_Y.set(this, Utilities.mapRange(mZoomInProgress, 0, mZoomTranslationY));
-        FULLSCREEN_PROGRESS.set(this, mZoomInProgress);
-    }
-
-    public void onGestureAnimationStart(RunningTaskInfo runningTaskInfo) {
-        mRunningTaskInfo = runningTaskInfo;
-        onGestureAnimationStart(runningTaskInfo == null ? -1 : runningTaskInfo.taskId);
-    }
-
-    @Override
     public void setCurrentTask(int runningTaskId) {
         super.setCurrentTask(runningTaskId);
-        if (mRunningTaskInfo != null && mRunningTaskInfo.taskId != runningTaskId) {
-            mRunningTaskInfo = null;
+        if (mHomeTaskInfo != null && mHomeTaskInfo.taskId != runningTaskId) {
+            mHomeTaskInfo = null;
+            setRunningTaskHidden(false);
         }
+    }
+
+    @Override
+    protected boolean shouldAddDummyTaskView(int runningTaskId) {
+        if (mHomeTaskInfo != null && mHomeTaskInfo.taskId == runningTaskId
+                && getTaskViewCount() == 0) {
+            // Do not add a dummy task if we are running over home with empty recents, so that we
+            // show the empty recents message instead of showing a dummy task and later removing it.
+            return false;
+        }
+        return super.shouldAddDummyTaskView(runningTaskId);
     }
 
     @Override
@@ -177,7 +122,7 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity> {
         // When quick-switching on 3p-launcher, we add a "dummy" tile corresponding to Launcher
         // as well. This tile is never shown as we have setCurrentTaskHidden, but allows use to
         // track the index of the next task appropriately, as if we are switching on any other app.
-        if (mRunningTaskInfo != null && mRunningTaskInfo.taskId == mRunningTaskId) {
+        if (mHomeTaskInfo != null && mHomeTaskInfo.taskId == mRunningTaskId && !tasks.isEmpty()) {
             // Check if the task list has running task
             boolean found = false;
             for (Task t : tasks) {
@@ -189,10 +134,52 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity> {
             if (!found) {
                 ArrayList<Task> newList = new ArrayList<>(tasks.size() + 1);
                 newList.addAll(tasks);
-                newList.add(Task.from(new TaskKey(mRunningTaskInfo), mRunningTaskInfo, false));
+                newList.add(Task.from(new TaskKey(mHomeTaskInfo), mHomeTaskInfo, false));
                 tasks = newList;
             }
         }
         super.applyLoadPlan(tasks);
+    }
+
+    @Override
+    public void setRunningTaskHidden(boolean isHidden) {
+        if (mHomeTaskInfo != null) {
+            // Always keep the home task hidden
+            isHidden = true;
+        }
+        super.setRunningTaskHidden(isHidden);
+    }
+
+    @Override
+    public void setModalStateEnabled(boolean isModalState) {
+        super.setModalStateEnabled(isModalState);
+        if (isModalState) {
+            mActivity.getStateManager().goToState(RecentsState.MODAL_TASK);
+        } else {
+            if (mActivity.isInState(RecentsState.MODAL_TASK)) {
+                mActivity.getStateManager().goToState(DEFAULT);
+            }
+        }
+    }
+
+    @Override
+    public void onStateTransitionStart(RecentsState toState) {
+        setOverviewStateEnabled(true);
+        setFreezeViewVisibility(true);
+    }
+
+    @Override
+    public void onStateTransitionComplete(RecentsState finalState) {
+        setOverlayEnabled(finalState == DEFAULT || finalState == MODAL_TASK);
+        setFreezeViewVisibility(false);
+    }
+
+    @Override
+    public void setOverviewStateEnabled(boolean enabled) {
+        super.setOverviewStateEnabled(enabled);
+        if (enabled) {
+            RecentsState state = mActivity.getStateManager().getState();
+            setDisallowScrollToClearAll(!state.hasButtons());
+        }
     }
 }

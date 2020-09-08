@@ -49,6 +49,7 @@ public class QuickstepProcessInitializer extends MainProcessInitializer {
         super.init(context);
 
         // Elevate GPU priority for Quickstep and Remote animations.
-        ThreadedRendererCompat.setContextPriority(ThreadedRendererCompat.EGL_CONTEXT_PRIORITY_HIGH_IMG);
+        ThreadedRendererCompat.setContextPriority(
+                ThreadedRendererCompat.EGL_CONTEXT_PRIORITY_HIGH_IMG);
     }
 }

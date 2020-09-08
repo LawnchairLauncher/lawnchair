@@ -9,12 +9,12 @@ import android.view.MotionEvent;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateManager.AnimationComponents;
+import com.android.launcher3.states.StateAnimationConfig.AnimationFlags;
 import com.android.launcher3.touch.AbstractStateChangeTouchController;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
-import com.android.quickstep.RecentsModel;
+import com.android.quickstep.SystemUiProxy;
 
 /**
  * Touch controller for handling edge swipes in landscape/seascape UI
@@ -56,7 +56,7 @@ public class LandscapeEdgeSwipeController extends AbstractStateChangeTouchContro
     }
 
     @Override
-    protected float initCurrentAnimation(@AnimationComponents int animComponent) {
+    protected float initCurrentAnimation(@AnimationFlags int animComponent) {
         float range = getShiftRange();
         long maxAccuracy = (long) (2 * range);
         mCurrentAnimation = mLauncher.getStateManager().createAnimationToNewWorkspace(mToState,
@@ -73,7 +73,7 @@ public class LandscapeEdgeSwipeController extends AbstractStateChangeTouchContro
     protected void onSwipeInteractionCompleted(LauncherState targetState, int logAction) {
         super.onSwipeInteractionCompleted(targetState, logAction);
         if (mStartState == NORMAL && targetState == OVERVIEW) {
-            RecentsModel.INSTANCE.get(mLauncher).onOverviewShown(true, TAG);
+            SystemUiProxy.INSTANCE.get(mLauncher).onOverviewShown(true, TAG);
         }
     }
 }

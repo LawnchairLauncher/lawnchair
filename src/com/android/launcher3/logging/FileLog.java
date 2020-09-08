@@ -8,6 +8,9 @@ import android.os.Message;
 import android.util.Log;
 import android.util.Pair;
 
+import androidx.annotation.VisibleForTesting;
+
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.IOUtils;
 
 import java.io.BufferedReader;
@@ -35,10 +38,12 @@ public final class FileLog {
     private static final DateFormat DATE_FORMAT =
             DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
 
-    private static final long MAX_LOG_FILE_SIZE = 4 << 20;  // 4 mb
+    private static final long MAX_LOG_FILE_SIZE = 8 << 20;  // 4 mb
 
     private static Handler sHandler = null;
     private static File sLogsDirectory = null;
+
+    public static final int LOG_DAYS = FeatureFlags.ENABLE_HYBRID_HOTSEAT.get() ? 10 : 4;
 
     public static void setDir(File logsDir) {
         if (ENABLED) {
@@ -88,7 +93,8 @@ public final class FileLog {
         Message.obtain(getHandler(), LogWriterCallback.MSG_WRITE, out).sendToTarget();
     }
 
-    private static Handler getHandler() {
+    @VisibleForTesting
+    static Handler getHandler() {
         synchronized (DATE_FORMAT) {
             if (sHandler == null) {
                 sHandler = new Handler(createAndStartNewLooper("file-logger"),
@@ -102,15 +108,16 @@ public final class FileLog {
      * Blocks until all the pending logs are written to the disk
      * @param out if not null, all the persisted logs are copied to the writer.
      */
-    public static void flushAll(PrintWriter out) throws InterruptedException {
+    public static boolean flushAll(PrintWriter out) throws InterruptedException {
         if (!ENABLED) {
-            return;
+            return false;
         }
         CountDownLatch latch = new CountDownLatch(1);
         Message.obtain(getHandler(), LogWriterCallback.MSG_FLUSH,
                 Pair.create(out, latch)).sendToTarget();
 
         latch.await(2, TimeUnit.SECONDS);
+        return latch.getCount() == 0;
     }
 
     /**
@@ -143,7 +150,7 @@ public final class FileLog {
                 case MSG_WRITE: {
                     Calendar cal = Calendar.getInstance();
                     // suffix with 0 or 1 based on the day of the year.
-                    String fileName = FILE_NAME_PREFIX + (cal.get(Calendar.DAY_OF_YEAR) & 1);
+                    String fileName = FILE_NAME_PREFIX + (cal.get(Calendar.DAY_OF_YEAR) % LOG_DAYS);
 
                     if (!fileName.equals(mCurrentFileName)) {
                         closeWriter();
@@ -191,8 +198,9 @@ public final class FileLog {
                             (Pair<PrintWriter, CountDownLatch>) msg.obj;
 
                     if (p.first != null) {
-                        dumpFile(p.first, FILE_NAME_PREFIX + 0);
-                        dumpFile(p.first, FILE_NAME_PREFIX + 1);
+                        for (int i = 0; i < LOG_DAYS; i++) {
+                            dumpFile(p.first, FILE_NAME_PREFIX + i);
+                        }
                     }
                     p.second.countDown();
                     return true;
@@ -221,5 +229,19 @@ public final class FileLog {
                 IOUtils.closeSilently(in);
             }
         }
+    }
+
+    /**
+     * Gets files used for FileLog
+     */
+    public static File[] getLogFiles() {
+        try {
+            flushAll(null);
+        } catch (InterruptedException e) { }
+        File[] files = new File[LOG_DAYS];
+        for (int i = 0; i < LOG_DAYS; i++) {
+            files[i] = new File(sLogsDirectory, FILE_NAME_PREFIX + i);
+        }
+        return files;
     }
 }

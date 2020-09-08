@@ -13,7 +13,6 @@ import com.android.launcher3.AppWidgetResizeFrame;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
-import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
@@ -103,7 +102,7 @@ public class WidgetHostViewLoader implements DragController.DragListener {
                 if (LOGD) {
                     Log.d(TAG, "Binding widget, id: " + mWidgetLoadingId);
                 }
-                if(AppWidgetManagerCompat.getInstance(mLauncher).bindAppWidgetIdIfAllowed(
+                if (new WidgetManagerHelper(mLauncher).bindAppWidgetIdIfAllowed(
                         mWidgetLoadingId, pInfo, options)) {
 
                     // Widget id bound. Inflate the widget.

@@ -20,7 +20,6 @@ import android.content.Context;
 import android.content.pm.LauncherActivityInfo;
 import android.os.UserHandle;
 
-import com.android.launcher3.IconProvider;
 import com.android.launcher3.R;
 import com.android.launcher3.icons.cache.CachingLogic;
 import com.android.launcher3.util.ResourceBasedOverride;
@@ -55,13 +54,11 @@ public class LauncherActivityCachingLogic
     }
 
     @Override
-    public void loadIcon(Context context, LauncherActivityInfo object,
-            BitmapInfo target) {
-        LauncherIcons li = LauncherIcons.obtain(context);
-        li.createBadgedIconBitmap(
-                IconProvider.INSTANCE.get(context)
-                        .getIcon(object, li.mFillResIconDpi, true /* flattenDrawable */),
-                object.getUser(), object.getApplicationInfo().targetSdkVersion).applyTo(target);
-        li.recycle();
+    public BitmapInfo loadIcon(Context context, LauncherActivityInfo object) {
+        try (LauncherIcons li = LauncherIcons.obtain(context)) {
+            return li.createBadgedIconBitmap(new IconProvider(context)
+                            .getIcon(object, li.mFillResIconDpi),
+                    object.getUser(), object.getApplicationInfo().targetSdkVersion);
+        }
     }
 }

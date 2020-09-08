@@ -19,15 +19,12 @@ import static android.view.View.MeasureSpec.EXACTLY;
 import static android.view.View.MeasureSpec.getSize;
 import static android.view.View.MeasureSpec.makeMeasureSpec;
 
-import static com.android.launcher3.LauncherState.ALL_APPS_HEADER;
 import static com.android.launcher3.Utilities.prefixTextWithIcon;
 import static com.android.launcher3.icons.IconNormalizer.ICON_VISIBLE_AREA_FACTOR;
 
 import android.content.Context;
 import android.graphics.Rect;
 import android.text.Selection;
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.method.TextKeyListener;
 import android.util.AttributeSet;
@@ -35,19 +32,18 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.view.animation.Interpolator;
+import android.widget.EditText;
 
+import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Insettable;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AlphabeticalAppsList;
 import com.android.launcher3.allapps.SearchUiManager;
 import com.android.launcher3.anim.PropertySetter;
-import com.android.launcher3.graphics.TintedDrawableSpan;
 import com.android.launcher3.util.ComponentKey;
 
 import java.util.ArrayList;
@@ -59,17 +55,15 @@ public class AppsSearchContainerLayout extends ExtendedEditText
         implements SearchUiManager, AllAppsSearchBarController.Callbacks,
         AllAppsStore.OnUpdateListener, Insettable {
 
-
-    private final Launcher mLauncher;
+    private final BaseDraggingActivity mLauncher;
     private final AllAppsSearchBarController mSearchBarController;
     private final SpannableStringBuilder mSearchQueryBuilder;
 
     private AlphabeticalAppsList mApps;
     private AllAppsContainerView mAppsView;
 
-    // This value was used to position the QSB. We store it here for translationY animations.
-    private final float mFixedTranslationY;
-    private final float mMarginTopAdjusting;
+    // The amount of pixels to shift down and overlap with the rest of the content.
+    private final int mContentOverlap;
 
     public AppsSearchContainerLayout(Context context) {
         this(context, null);
@@ -82,28 +76,27 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     public AppsSearchContainerLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        mLauncher = Launcher.getLauncher(context);
+        mLauncher = BaseDraggingActivity.fromContext(context);
         mSearchBarController = new AllAppsSearchBarController();
 
         mSearchQueryBuilder = new SpannableStringBuilder();
         Selection.setSelection(mSearchQueryBuilder, 0);
-
-        mFixedTranslationY = getTranslationY();
-        mMarginTopAdjusting = mFixedTranslationY - getPaddingTop();
-
         setHint(prefixTextWithIcon(getContext(), R.drawable.ic_allapps_search, getHint()));
+
+        mContentOverlap =
+                getResources().getDimensionPixelSize(R.dimen.all_apps_search_bar_field_height) / 2;
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        mLauncher.getAppsView().getAppsStore().addUpdateListener(this);
+        mAppsView.getAppsStore().addUpdateListener(this);
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        mLauncher.getAppsView().getAppsStore().removeUpdateListener(this);
+        mAppsView.getAppsStore().removeUpdateListener(this);
     }
 
     @Override
@@ -133,6 +126,8 @@ public class AppsSearchContainerLayout extends ExtendedEditText
         int expectedLeft = parent.getPaddingLeft() + (availableWidth - myWidth) / 2;
         int shift = expectedLeft - left;
         setTranslationX(shift);
+
+        offsetTopAndBottom(mContentOverlap);
     }
 
     @Override
@@ -201,7 +196,7 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     @Override
     public void setInsets(Rect insets) {
         MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
-        mlp.topMargin = Math.round(Math.max(-mFixedTranslationY, insets.top - mMarginTopAdjusting));
+        mlp.topMargin = insets.top;
         requestLayout();
     }
 
@@ -210,15 +205,18 @@ public class AppsSearchContainerLayout extends ExtendedEditText
         if (mLauncher.getDeviceProfile().isVerticalBarLayout()) {
             return 0;
         } else {
-            int topMargin = Math.round(Math.max(
-                    -mFixedTranslationY, insets.top - mMarginTopAdjusting));
-           return insets.bottom + topMargin + mFixedTranslationY;
+            return insets.bottom + insets.top;
         }
     }
 
     @Override
     public void setContentVisibility(int visibleElements, PropertySetter setter,
             Interpolator interpolator) {
-        setter.setViewAlpha(this, (visibleElements & ALL_APPS_HEADER) != 0 ? 1 : 0, interpolator);
+        setter.setViewAlpha(this, isQsbVisible(visibleElements) ? 1 : 0, interpolator);
+    }
+
+    @Override
+    public EditText setTextSearchEnabled(boolean isEnabled) {
+        return this;
     }
 }
