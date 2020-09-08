@@ -141,6 +141,10 @@ public final class Utilities {
     public static final String EXTRA_WALLPAPER_OFFSET = "com.android.launcher3.WALLPAPER_OFFSET";
     public static final String EXTRA_WALLPAPER_FLAVOR = "com.android.launcher3.WALLPAPER_FLAVOR";
 
+    // An intent extra to indicate the launch source by launcher.
+    public static final String EXTRA_WALLPAPER_LAUNCH_SOURCE =
+            "com.android.wallpaper.LAUNCH_SOURCE";
+
     public static boolean IS_RUNNING_IN_TEST_HARNESS =
                     ActivityManager.isRunningInTestHarness();
 
