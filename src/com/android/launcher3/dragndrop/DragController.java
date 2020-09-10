@@ -20,6 +20,7 @@ import static com.android.launcher3.AbstractFloatingView.TYPE_DISCOVERY_BOUNCE;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.Utilities.ATLEAST_Q;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.animation.ValueAnimator;
 import android.content.ComponentName;
@@ -27,8 +28,6 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.os.IBinder;
-import android.util.Log;
 import android.view.DragEvent;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
@@ -38,16 +37,13 @@ import android.view.View;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.ItemInfoMatcher;
-import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.TouchController;
-import com.android.launcher3.util.UiThreadHelper;
 
 import java.util.ArrayList;
 
@@ -63,11 +59,11 @@ public class DragController implements DragDriver.EventListener, TouchController
      */
     private static final int DEEP_PRESS_DISTANCE_FACTOR = 3;
 
-    @Thunk Launcher mLauncher;
-    private FlingToDeleteHelper mFlingToDeleteHelper;
+    private final Launcher mLauncher;
+    private final FlingToDeleteHelper mFlingToDeleteHelper;
 
     // temporaries to avoid gc thrash
-    private Rect mRectTemp = new Rect();
+    private final Rect mRectTemp = new Rect();
     private final int[] mCoordinatesTemp = new int[2];
 
     /**
@@ -79,32 +75,23 @@ public class DragController implements DragDriver.EventListener, TouchController
     /** Options controlling the drag behavior. */
     private DragOptions mOptions;
 
-    /** X coordinate of the down event. */
-    private int mMotionDownX;
+    /** Coordinate for motion down event */
+    private final Point mMotionDown = new Point();
+    /** Coordinate for last touch event **/
+    private final Point mLastTouch = new Point();
 
-    /** Y coordinate of the down event. */
-    private int mMotionDownY;
+    private final Point mTmpPoint = new Point();
 
     private DropTarget.DragObject mDragObject;
 
     /** Who can receive drop events */
-    private ArrayList<DropTarget> mDropTargets = new ArrayList<>();
-    private ArrayList<DragListener> mListeners = new ArrayList<>();
-
-    /** The window token used as the parent for the DragView. */
-    private IBinder mWindowToken;
-
-    private View mMoveTarget;
+    private final ArrayList<DropTarget> mDropTargets = new ArrayList<>();
+    private final ArrayList<DragListener> mListeners = new ArrayList<>();
 
     private DropTarget mLastDropTarget;
 
-    private final int[] mLastTouch = new int[2];
-    private long mLastTouchUpTime = -1;
     private int mLastTouchClassification;
     private int mDistanceSinceScroll = 0;
-
-    private int mTmpPoint[] = new int[2];
-    private Rect mDragLayerRect = new Rect();
 
     private boolean mIsInPreDrag;
 
@@ -142,6 +129,8 @@ public class DragController implements DragDriver.EventListener, TouchController
      *
      * @param b The bitmap to display as the drag image.  It will be re-scaled to the
      *          enlarged size.
+     * @param originalView The source view (ie. icon, widget etc.) that is being dragged
+     *          and which the DragView represents
      * @param dragLayerX The x position in the DragLayer of the left-top of the bitmap.
      * @param dragLayerY The y position in the DragLayer of the left-top of the bitmap.
      * @param source An object representing where the drag originated
@@ -149,32 +138,32 @@ public class DragController implements DragDriver.EventListener, TouchController
      * @param dragRegion Coordinates within the bitmap b for the position of item being dragged.
      *          Makes dragging feel more precise, e.g. you can clip out a transparent border
      */
-    public DragView startDrag(Bitmap b, int dragLayerX, int dragLayerY,
+    public DragView startDrag(Bitmap b, DraggableView originalView, int dragLayerX, int dragLayerY,
             DragSource source, ItemInfo dragInfo, Point dragOffset, Rect dragRegion,
             float initialDragViewScale, float dragViewScaleOnDrop, DragOptions options) {
         if (PROFILE_DRAWING_DURING_DRAG) {
             android.os.Debug.startMethodTracing("Launcher");
         }
 
-        // Hide soft keyboard, if visible
-        UiThreadHelper.hideKeyboardAsync(mLauncher, mWindowToken);
+        mLauncher.hideKeyboard();
         AbstractFloatingView.closeOpenViews(mLauncher, false, TYPE_DISCOVERY_BOUNCE);
 
         mOptions = options;
-        if (mOptions.systemDndStartPoint != null) {
-            mMotionDownX = mOptions.systemDndStartPoint.x;
-            mMotionDownY = mOptions.systemDndStartPoint.y;
+        if (mOptions.simulatedDndStartPoint != null) {
+            mLastTouch.x = mMotionDown.x = mOptions.simulatedDndStartPoint.x;
+            mLastTouch.y = mMotionDown.y = mOptions.simulatedDndStartPoint.y;
         }
 
-        final int registrationX = mMotionDownX - dragLayerX;
-        final int registrationY = mMotionDownY - dragLayerY;
+        final int registrationX = mMotionDown.x - dragLayerX;
+        final int registrationY = mMotionDown.y - dragLayerY;
 
         final int dragRegionLeft = dragRegion == null ? 0 : dragRegion.left;
         final int dragRegionTop = dragRegion == null ? 0 : dragRegion.top;
 
         mLastDropTarget = null;
 
-        mDragObject = new DropTarget.DragObject();
+        mDragObject = new DropTarget.DragObject(mLauncher.getApplicationContext());
+        mDragObject.originalView = originalView;
 
         mIsInPreDrag = mOptions.preDragCondition != null
                 && !mOptions.preDragCondition.shouldStartDrag(0);
@@ -186,23 +175,18 @@ public class DragController implements DragDriver.EventListener, TouchController
                 registrationY, initialDragViewScale, dragViewScaleOnDrop, scaleDps);
         dragView.setItemInfo(dragInfo);
         mDragObject.dragComplete = false;
-        if (mOptions.isAccessibleDrag) {
-            // For an accessible drag, we assume the view is being dragged from the center.
-            mDragObject.xOffset = b.getWidth() / 2;
-            mDragObject.yOffset = b.getHeight() / 2;
-            mDragObject.accessibleDrag = true;
-        } else {
-            mDragObject.xOffset = mMotionDownX - (dragLayerX + dragRegionLeft);
-            mDragObject.yOffset = mMotionDownY - (dragLayerY + dragRegionTop);
-            mDragObject.stateAnnouncer = DragViewStateAnnouncer.createFor(dragView);
 
-            mDragDriver = DragDriver.create(mLauncher, this, mDragObject, mOptions);
+        mDragObject.xOffset = mMotionDown.x - (dragLayerX + dragRegionLeft);
+        mDragObject.yOffset = mMotionDown.y - (dragLayerY + dragRegionTop);
+
+        mDragDriver = DragDriver.create(this, mOptions, mFlingToDeleteHelper::recordMotionEvent);
+        if (!mOptions.isAccessibleDrag) {
+            mDragObject.stateAnnouncer = DragViewStateAnnouncer.createFor(dragView);
         }
 
         mDragObject.dragSource = source;
         mDragObject.dragInfo = dragInfo;
-        mDragObject.originalDragInfo = new ItemInfo();
-        mDragObject.originalDragInfo.copyFrom(dragInfo);
+        mDragObject.originalDragInfo = mDragObject.dragInfo.makeShallowCopy();
 
         if (dragOffset != null) {
             dragView.setDragVisualizeOffset(new Point(dragOffset));
@@ -212,7 +196,7 @@ public class DragController implements DragDriver.EventListener, TouchController
         }
 
         mLauncher.getDragLayer().performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-        dragView.show(mLastTouch[0], mLastTouch[1]);
+        dragView.show(mLastTouch.x, mLastTouch.y);
         mDistanceSinceScroll = 0;
 
         if (!mIsInPreDrag) {
@@ -221,8 +205,13 @@ public class DragController implements DragDriver.EventListener, TouchController
             mOptions.preDragCondition.onPreDragStart(mDragObject);
         }
 
-        handleMoveEvent(mLastTouch[0], mLastTouch[1]);
+        handleMoveEvent(mLastTouch.x, mLastTouch.y);
         mLauncher.getUserEventDispatcher().resetActionDurationMillis();
+
+        if (!mLauncher.isTouchInProgress() && options.simulatedDndStartPoint == null) {
+            // If it is an internal drag and the touch is already complete, cancel immediately
+            MAIN_EXECUTOR.submit(this::cancelDrag);
+        }
         return dragView;
     }
 
@@ -338,7 +327,7 @@ public class DragController implements DragDriver.EventListener, TouchController
                 }
             }
         };
-        mDragObject.dragView.animateTo(mMotionDownX, mMotionDownY, onCompleteRunnable, duration);
+        mDragObject.dragView.animateTo(mMotionDown.x, mMotionDown.y, onCompleteRunnable, duration);
     }
 
     private void callOnDragEnd() {
@@ -367,30 +356,17 @@ public class DragController implements DragDriver.EventListener, TouchController
     /**
      * Clamps the position to the drag layer bounds.
      */
-    private int[] getClampedDragLayerPos(float x, float y) {
-        mLauncher.getDragLayer().getLocalVisibleRect(mDragLayerRect);
-        mTmpPoint[0] = (int) Math.max(mDragLayerRect.left, Math.min(x, mDragLayerRect.right - 1));
-        mTmpPoint[1] = (int) Math.max(mDragLayerRect.top, Math.min(y, mDragLayerRect.bottom - 1));
+    private Point getClampedDragLayerPos(float x, float y) {
+        mLauncher.getDragLayer().getLocalVisibleRect(mRectTemp);
+        mTmpPoint.x = (int) Math.max(mRectTemp.left, Math.min(x, mRectTemp.right - 1));
+        mTmpPoint.y = (int) Math.max(mRectTemp.top, Math.min(y, mRectTemp.bottom - 1));
         return mTmpPoint;
-    }
-
-    public long getLastGestureUpTime() {
-        if (mDragDriver != null) {
-            return System.currentTimeMillis();
-        } else {
-            return mLastTouchUpTime;
-        }
-    }
-
-    public void resetLastGestureUpTime() {
-        mLastTouchUpTime = -1;
     }
 
     @Override
     public void onDriverDragMove(float x, float y) {
-        final int[] dragLayerPos = getClampedDragLayerPos(x, y);
-
-        handleMoveEvent(dragLayerPos[0], dragLayerPos[1]);
+        Point dragLayerPos = getClampedDragLayerPos(x, y);
+        handleMoveEvent(dragLayerPos.x, dragLayerPos.y);
     }
 
     @Override
@@ -424,64 +400,38 @@ public class DragController implements DragDriver.EventListener, TouchController
     /**
      * Call this from a drag source view.
      */
+    @Override
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
         if (mOptions != null && mOptions.isAccessibleDrag) {
             return false;
         }
 
-        // Update the velocity tracker
-        mFlingToDeleteHelper.recordMotionEvent(ev);
+        Point dragLayerPos = getClampedDragLayerPos(ev.getX(), ev.getY());
+        mLastTouch.set(dragLayerPos.x,  dragLayerPos.y);
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            // Remember location of down touch
+            mMotionDown.set(dragLayerPos.x,  dragLayerPos.y);
+        }
 
-        final int action = ev.getAction();
-        final int[] dragLayerPos = getClampedDragLayerPos(ev.getX(), ev.getY());
-        final int dragLayerX = dragLayerPos[0];
-        final int dragLayerY = dragLayerPos[1];
-        mLastTouch[0] = dragLayerX;
-        mLastTouch[1] = dragLayerY;
         if (ATLEAST_Q) {
             mLastTouchClassification = ev.getClassification();
         }
-
-        switch (action) {
-            case MotionEvent.ACTION_DOWN:
-                // Remember location of down touch
-                mMotionDownX = dragLayerX;
-                mMotionDownY = dragLayerY;
-                break;
-            case MotionEvent.ACTION_UP:
-                mLastTouchUpTime = System.currentTimeMillis();
-                break;
-        }
-
         return mDragDriver != null && mDragDriver.onInterceptTouchEvent(ev);
     }
 
     /**
      * Call this from a drag source view.
      */
-    public boolean onDragEvent(long dragStartTime, DragEvent event) {
-        mFlingToDeleteHelper.recordDragEvent(dragStartTime, event);
+    @Override
+    public boolean onControllerTouchEvent(MotionEvent ev) {
+        return mDragDriver != null && mDragDriver.onTouchEvent(ev);
+    }
+
+    /**
+     * Call this from a drag source view.
+     */
+    public boolean onDragEvent(DragEvent event) {
         return mDragDriver != null && mDragDriver.onDragEvent(event);
-    }
-
-    /**
-     * Call this from a drag view.
-     */
-    public void onDragViewAnimationEnd() {
-        if (mDragDriver != null) {
-            mDragDriver.onDragViewAnimationEnd();
-        }
-    }
-
-    /**
-     * Sets the view that should handle move events.
-     */
-    public void setMoveTarget(View view) {
-        mMoveTarget = view;
-    }
-
-    public boolean dispatchUnhandledMove(View focused, int direction) {
-        return mMoveTarget != null && mMoveTarget.dispatchUnhandledMove(focused, direction);
     }
 
     private void handleMoveEvent(int x, int y) {
@@ -495,9 +445,8 @@ public class DragController implements DragDriver.EventListener, TouchController
         checkTouchMove(dropTarget);
 
         // Check if we are hovering over the scroll areas
-        mDistanceSinceScroll += Math.hypot(mLastTouch[0] - x, mLastTouch[1] - y);
-        mLastTouch[0] = x;
-        mLastTouch[1] = y;
+        mDistanceSinceScroll += Math.hypot(mLastTouch.x - x, mLastTouch.y - y);
+        mLastTouch.set(x, y);
 
         int distanceDragged = mDistanceSinceScroll;
         if (ATLEAST_Q && mLastTouchClassification == MotionEvent.CLASSIFICATION_DEEP_PRESS) {
@@ -515,7 +464,7 @@ public class DragController implements DragDriver.EventListener, TouchController
 
     public void forceTouchMove() {
         int[] dummyCoordinates = mCoordinatesTemp;
-        DropTarget dropTarget = findDropTarget(mLastTouch[0], mLastTouch[1], dummyCoordinates);
+        DropTarget dropTarget = findDropTarget(mLastTouch.x, mLastTouch.y, dummyCoordinates);
         mDragObject.x = dummyCoordinates[0];
         mDragObject.y = dummyCoordinates[1];
         checkTouchMove(dropTarget);
@@ -539,42 +488,6 @@ public class DragController implements DragDriver.EventListener, TouchController
     }
 
     /**
-     * Call this from a drag source view.
-     */
-    public boolean onControllerTouchEvent(MotionEvent ev) {
-        if (mDragDriver == null || mOptions == null || mOptions.isAccessibleDrag) {
-            return false;
-        }
-
-        // Update the velocity tracker
-        mFlingToDeleteHelper.recordMotionEvent(ev);
-
-        final int action = ev.getAction();
-        final int[] dragLayerPos = getClampedDragLayerPos(ev.getX(), ev.getY());
-        final int dragLayerX = dragLayerPos[0];
-        final int dragLayerY = dragLayerPos[1];
-
-        switch (action) {
-            case MotionEvent.ACTION_DOWN:
-                // Remember where the motion event started
-                mMotionDownX = dragLayerX;
-                mMotionDownY = dragLayerY;
-                break;
-        }
-
-        return mDragDriver.onTouchEvent(ev);
-    }
-
-    /**
-     * Since accessible drag and drop won't cause the same sequence of touch events, we manually
-     * inject the appropriate state.
-     */
-    public void prepareAccessibleDrag(int x, int y) {
-        mMotionDownX = x;
-        mMotionDownY = y;
-    }
-
-    /**
      * As above, since accessible drag and drop won't cause the same sequence of touch events,
      * we manually ensure appropriate drag and drop events get emulated for accessible drag.
      */
@@ -594,9 +507,6 @@ public class DragController implements DragDriver.EventListener, TouchController
     }
 
     private void drop(DropTarget dropTarget, Runnable flingAnimation) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_DRAG_TO_WORKSPACE, "DragController.drop");
-        }
         final int[] coordinates = mCoordinatesTemp;
         mDragObject.x = coordinates[0];
         mDragObject.y = coordinates[1];
@@ -665,10 +575,6 @@ public class DragController implements DragDriver.EventListener, TouchController
         mLauncher.getDragLayer().mapCoordInSelfToDescendant(mLauncher.getWorkspace(),
                 dropCoordinates);
         return mLauncher.getWorkspace();
-    }
-
-    public void setWindowToken(IBinder token) {
-        mWindowToken = token;
     }
 
     /**

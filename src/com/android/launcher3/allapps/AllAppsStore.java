@@ -15,22 +15,23 @@
  */
 package com.android.launcher3.allapps;
 
-import static com.android.launcher3.AppInfo.COMPONENT_KEY_COMPARATOR;
-import static com.android.launcher3.AppInfo.EMPTY_ARRAY;
+import static com.android.launcher3.model.data.AppInfo.COMPONENT_KEY_COMPARATOR;
+import static com.android.launcher3.model.data.AppInfo.EMPTY_ARRAY;
 
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.ItemInfo;
-import com.android.launcher3.PromiseAppInfo;
+import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.PromiseAppInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageUserKey;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -49,8 +50,9 @@ public class AllAppsStore {
 
     private AppInfo[] mApps = EMPTY_ARRAY;
 
-    private final List<OnUpdateListener> mUpdateListeners = new ArrayList<>();
+    private final List<OnUpdateListener> mUpdateListeners = new CopyOnWriteArrayList<>();
     private final ArrayList<ViewGroup> mIconContainers = new ArrayList<>();
+    private int mModelFlags;
 
     private int mDeferUpdatesFlags = 0;
     private boolean mUpdatePending = false;
@@ -62,9 +64,19 @@ public class AllAppsStore {
     /**
      * Sets the current set of apps.
      */
-    public void setApps(AppInfo[] apps) {
+    public void setApps(AppInfo[] apps, int flags) {
         mApps = apps;
+        mModelFlags = flags;
         notifyUpdate();
+    }
+
+    /**
+     * @see com.android.launcher3.model.BgDataModel.Callbacks#FLAG_QUIET_MODE_ENABLED
+     * @see com.android.launcher3.model.BgDataModel.Callbacks#FLAG_HAS_SHORTCUT_PERMISSION
+     * @see com.android.launcher3.model.BgDataModel.Callbacks#FLAG_QUIET_MODE_CHANGE_PERMISSION
+     */
+    public boolean hasModelFlag(int mask) {
+        return (mModelFlags & mask) != 0;
     }
 
     public AppInfo getApp(ComponentKey key) {
@@ -99,9 +111,8 @@ public class AllAppsStore {
             mUpdatePending = true;
             return;
         }
-        int count = mUpdateListeners.size();
-        for (int i = 0; i < count; i++) {
-            mUpdateListeners.get(i).onAppsUpdated();
+        for (OnUpdateListener listener : mUpdateListeners) {
+            listener.onAppsUpdated();
         }
     }
 

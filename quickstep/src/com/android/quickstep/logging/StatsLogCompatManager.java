@@ -16,230 +16,437 @@
 
 package com.android.quickstep.logging;
 
-import static android.stats.launcher.nano.Launcher.ALLAPPS;
-import static android.stats.launcher.nano.Launcher.HOME;
-import static android.stats.launcher.nano.Launcher.LAUNCH_APP;
-import static android.stats.launcher.nano.Launcher.LAUNCH_TASK;
-import static android.stats.launcher.nano.Launcher.DISMISS_TASK;
-import static android.stats.launcher.nano.Launcher.BACKGROUND;
-import static android.stats.launcher.nano.Launcher.OVERVIEW;
+import static com.android.launcher3.logger.LauncherAtom.ContainerInfo.ContainerCase.FOLDER;
+import static com.android.launcher3.logger.LauncherAtom.ContainerInfo.ContainerCase.SEARCH_RESULT_CONTAINER;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WORKSPACE_SNAPSHOT;
+import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGED__DST_STATE__ALLAPPS;
+import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGED__DST_STATE__BACKGROUND;
+import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGED__DST_STATE__HOME;
+import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGED__DST_STATE__OVERVIEW;
 
 import android.content.Context;
-import android.content.Intent;
-import android.stats.launcher.nano.Launcher;
-import android.stats.launcher.nano.LauncherExtension;
-import android.stats.launcher.nano.LauncherTarget;
 import android.util.Log;
-import android.view.View;
 
-import com.android.launcher3.ItemInfo;
+import androidx.annotation.Nullable;
+
+import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.Utilities;
+import com.android.launcher3.logger.LauncherAtom;
+import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
+import com.android.launcher3.logger.LauncherAtom.FolderIcon;
+import com.android.launcher3.logger.LauncherAtom.FromState;
+import com.android.launcher3.logger.LauncherAtom.ToState;
+import com.android.launcher3.logging.InstanceId;
+import com.android.launcher3.logging.InstanceIdSequence;
 import com.android.launcher3.logging.StatsLogManager;
-import com.android.launcher3.logging.StatsLogUtils;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ItemType;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
-import com.android.launcher3.util.ComponentKey;
-import com.android.systemui.shared.system.StatsLogCompat;
-import com.google.protobuf.nano.MessageNano;
+import com.android.launcher3.model.AllAppsList;
+import com.android.launcher3.model.BaseModelUpdateTask;
+import com.android.launcher3.model.BgDataModel;
+import com.android.launcher3.model.data.FolderInfo;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.LauncherAppWidgetInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.util.Executors;
+import com.android.launcher3.util.IntSparseArrayMap;
+import com.android.launcher3.util.LogConfig;
+import com.android.systemui.shared.system.SysUiStatsLog;
+
+import java.util.ArrayList;
+import java.util.Optional;
+import java.util.OptionalInt;
 
 /**
- * This method calls the StatsLog hidden method until they are made available public.
+ * This class calls StatsLog compile time generated methods.
  *
  * To see if the logs are properly sent to statsd, execute following command.
- * $ adb root && adb shell statsd
- * $ adb shell cmd stats print-logs
- * $ adb logcat | grep statsd  OR $ adb logcat -b stats
+ * $ wwdebug (to turn on the logcat printout)
+ * $ wwlogcat (see logcat with grep filter on)
+ * $ statsd_testdrive (see how ww is writing the proto to statsd buffer)
  */
 public class StatsLogCompatManager extends StatsLogManager {
 
-    private static final int SUPPORTED_TARGET_DEPTH = 2;
-    private static final String TAG = "StatsLogCompatManager";
-    private static final boolean DEBUG = false;
+    private static final String TAG = "StatsLog";
+    private static final boolean IS_VERBOSE = Utilities.isPropertyEnabled(LogConfig.STATSLOG);
 
-    public StatsLogCompatManager(Context context) { }
+    private static Context sContext;
 
-    @Override
-    public void logAppLaunch(View v, Intent intent) {
-        LauncherExtension ext = new LauncherExtension();
-        ext.srcTarget = new LauncherTarget[SUPPORTED_TARGET_DEPTH];
-        int srcState = mStateProvider.getCurrentState();
-        fillInLauncherExtension(v, ext);
-        if (ext.srcTarget[0] != null) {
-            ext.srcTarget[0].item = LauncherTarget.APP_ICON;
-        }
-        StatsLogCompat.write(LAUNCH_APP, srcState, BACKGROUND /* dstState */,
-                MessageNano.toByteArray(ext), true);
+    private static final InstanceId DEFAULT_INSTANCE_ID = InstanceId.fakeInstanceId(0);
+    // LauncherAtom.ItemInfo.getDefaultInstance() should be used but until launcher proto migrates
+    // from nano to lite, bake constant to prevent robo test failure.
+    private static final int DEFAULT_PAGE_INDEX = -2;
+    private static final int FOLDER_HIERARCHY_OFFSET = 100;
+    private static final int SEARCH_RESULT_HIERARCHY_OFFSET = 200;
+
+    public StatsLogCompatManager(Context context) {
+        sContext = context;
     }
 
     @Override
-    public void logTaskLaunch(View v, ComponentKey componentKey) {
-        LauncherExtension ext = new LauncherExtension();
-        ext.srcTarget = new LauncherTarget[SUPPORTED_TARGET_DEPTH];
-        int srcState = OVERVIEW;
-        fillInLauncherExtension(v, ext);
-        StatsLogCompat.write(LAUNCH_TASK, srcState, BACKGROUND /* dstState */,
-                MessageNano.toByteArray(ext), true);
+    public StatsLogger logger() {
+        return new StatsCompatLogger();
     }
 
+    /**
+     * Logs a ranking event and accompanying {@link InstanceId} and package name.
+     */
     @Override
-    public void logTaskDismiss(View v, ComponentKey componentKey) {
-        LauncherExtension ext = new LauncherExtension();
-        ext.srcTarget = new LauncherTarget[SUPPORTED_TARGET_DEPTH];
-        int srcState = OVERVIEW;
-        fillInLauncherExtension(v, ext);
-        StatsLogCompat.write(DISMISS_TASK, srcState, BACKGROUND /* dstState */,
-                MessageNano.toByteArray(ext), true);
+    public void log(EventEnum rankingEvent, InstanceId instanceId, @Nullable String packageName,
+            int position) {
+        SysUiStatsLog.write(SysUiStatsLog.RANKING_SELECTED,
+                rankingEvent.getId() /* event_id = 1; */,
+                packageName /* package_name = 2; */,
+                instanceId.getId() /* instance_id = 3; */,
+                position /* position_picked = 4; */);
     }
 
+    /**
+     * Logs the workspace layout information on the model thread.
+     */
     @Override
-    public void logSwipeOnContainer(boolean isSwipingToLeft, int pageId) {
-        LauncherExtension ext = new LauncherExtension();
-        ext.srcTarget = new LauncherTarget[1];
-        int srcState = mStateProvider.getCurrentState();
-        fillInLauncherExtensionWithPageId(ext, pageId);
-        int launcherAction = isSwipingToLeft ? Launcher.SWIPE_LEFT : Launcher.SWIPE_RIGHT;
-        StatsLogCompat.write(launcherAction, srcState, srcState,
-                MessageNano.toByteArray(ext), true);
+    public void logSnapshot() {
+        LauncherAppState.getInstance(sContext).getModel().enqueueModelUpdateTask(
+                new SnapshotWorker());
     }
 
-    public static boolean fillInLauncherExtension(View v, LauncherExtension extension) {
-        if (DEBUG) {
-            Log.d(TAG, "fillInLauncherExtension");
+    private class SnapshotWorker extends BaseModelUpdateTask {
+        private final InstanceId mInstanceId;
+        SnapshotWorker() {
+            mInstanceId = new InstanceIdSequence(
+                    1 << 20 /*InstanceId.INSTANCE_ID_MAX*/).newInstanceId();
         }
 
-        StatsLogUtils.LogContainerProvider provider = StatsLogUtils.getLaunchProviderRecursive(v);
-        if (v == null || !(v.getTag() instanceof ItemInfo) || provider == null) {
-            if (DEBUG) {
-                Log.d(TAG, "View or provider is null, or view doesn't have an ItemInfo tag.");
+        @Override
+        public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
+            IntSparseArrayMap<FolderInfo> folders = dataModel.folders.clone();
+            ArrayList<ItemInfo> workspaceItems = (ArrayList) dataModel.workspaceItems.clone();
+            ArrayList<LauncherAppWidgetInfo> appWidgets = (ArrayList) dataModel.appWidgets.clone();
+            for (ItemInfo info : workspaceItems) {
+                LauncherAtom.ItemInfo atomInfo = info.buildProto(null);
+                writeSnapshot(atomInfo, mInstanceId);
+            }
+            for (FolderInfo fInfo : folders) {
+                try {
+                    ArrayList<WorkspaceItemInfo> folderContents =
+                            (ArrayList) Executors.MAIN_EXECUTOR.submit(fInfo.contents::clone).get();
+                    for (ItemInfo info : folderContents) {
+                        LauncherAtom.ItemInfo atomInfo = info.buildProto(fInfo);
+                        writeSnapshot(atomInfo, mInstanceId);
+                    }
+                } catch (Exception e) { }
+            }
+            for (ItemInfo info : appWidgets) {
+                LauncherAtom.ItemInfo atomInfo = info.buildProto(null);
+                writeSnapshot(atomInfo, mInstanceId);
+            }
+        }
+    }
+
+    private static void writeSnapshot(LauncherAtom.ItemInfo info, InstanceId instanceId) {
+        if (IS_VERBOSE) {
+            Log.d(TAG, String.format("\nwriteSnapshot(%d):\n%s", instanceId.getId(), info));
+        }
+        if (!Utilities.ATLEAST_R) {
+            return;
+        }
+        SysUiStatsLog.write(SysUiStatsLog.LAUNCHER_SNAPSHOT,
+                LAUNCHER_WORKSPACE_SNAPSHOT.getId() /* event_id */,
+                info.getItemCase().getNumber() /* target_id */,
+                instanceId.getId() /* instance_id */,
+                0 /* uid */,
+                getPackageName(info) /* package_name */,
+                getComponentName(info) /* component_name */,
+                getGridX(info, false) /* grid_x */,
+                getGridY(info, false) /* grid_y */,
+                getPageId(info) /* page_id */,
+                getGridX(info, true) /* grid_x_parent */,
+                getGridY(info, true) /* grid_y_parent */,
+                getParentPageId(info) /* page_id_parent */,
+                getHierarchy(info) /* hierarchy */,
+                info.getIsWork() /* is_work_profile */,
+                info.getAttribute().getNumber() /* origin */,
+                getCardinality(info) /* cardinality */,
+                info.getWidget().getSpanX(),
+                info.getWidget().getSpanY());
+    }
+
+    /**
+     * Helps to construct and write statsd compatible log message.
+     */
+    private static class StatsCompatLogger implements StatsLogger {
+
+        private static final ItemInfo DEFAULT_ITEM_INFO = new ItemInfo();
+        private ItemInfo mItemInfo = DEFAULT_ITEM_INFO;
+        private InstanceId mInstanceId = DEFAULT_INSTANCE_ID;
+        private OptionalInt mRank = OptionalInt.empty();
+        private Optional<ContainerInfo> mContainerInfo = Optional.empty();
+        private int mSrcState = LAUNCHER_STATE_UNSPECIFIED;
+        private int mDstState = LAUNCHER_STATE_UNSPECIFIED;
+        private Optional<FromState> mFromState = Optional.empty();
+        private Optional<ToState> mToState = Optional.empty();
+        private Optional<String> mEditText = Optional.empty();
+
+        @Override
+        public StatsLogger withItemInfo(ItemInfo itemInfo) {
+            if (mContainerInfo.isPresent()) {
+                throw new IllegalArgumentException(
+                        "ItemInfo and ContainerInfo are mutual exclusive; cannot log both.");
+            }
+            this.mItemInfo = itemInfo;
+            return this;
+        }
+
+        @Override
+        public StatsLogger withInstanceId(InstanceId instanceId) {
+            this.mInstanceId = instanceId;
+            return this;
+        }
+
+        @Override
+        public StatsLogger withRank(int rank) {
+            this.mRank = OptionalInt.of(rank);
+            return this;
+        }
+
+        @Override
+        public StatsLogger withSrcState(int srcState) {
+            this.mSrcState = srcState;
+            return this;
+        }
+
+        @Override
+        public StatsLogger withDstState(int dstState) {
+            this.mDstState = dstState;
+            return this;
+        }
+
+        @Override
+        public StatsLogger withContainerInfo(ContainerInfo containerInfo) {
+            if (mItemInfo != DEFAULT_ITEM_INFO) {
+                throw new IllegalArgumentException(
+                        "ItemInfo and ContainerInfo are mutual exclusive; cannot log both.");
+            }
+            this.mContainerInfo = Optional.of(containerInfo);
+            return this;
+        }
+
+        @Override
+        public StatsLogger withFromState(FromState fromState) {
+            this.mFromState = Optional.of(fromState);
+            return this;
+        }
+
+        @Override
+        public StatsLogger withToState(ToState toState) {
+            this.mToState = Optional.of(toState);
+            return this;
+        }
+
+        @Override
+        public StatsLogger withEditText(String editText) {
+            this.mEditText = Optional.of(editText);
+            return this;
+        }
+
+        @Override
+        public void log(EventEnum event) {
+            if (!Utilities.ATLEAST_R) {
+                return;
             }
 
-            return false;
+            if (mItemInfo.container < 0) {
+                // Item is not within a folder. Write to StatsLog in same thread.
+                write(event, mInstanceId, applyOverwrites(mItemInfo.buildProto()), mSrcState,
+                        mDstState);
+            } else {
+                // Item is inside the folder, fetch folder info in a BG thread
+                // and then write to StatsLog.
+                LauncherAppState.getInstance(sContext).getModel().enqueueModelUpdateTask(
+                        new BaseModelUpdateTask() {
+                            @Override
+                            public void execute(LauncherAppState app, BgDataModel dataModel,
+                                    AllAppsList apps) {
+                                FolderInfo folderInfo = dataModel.folders.get(mItemInfo.container);
+                                write(event, mInstanceId,
+                                        applyOverwrites(mItemInfo.buildProto(folderInfo)),
+                                        mSrcState, mDstState);
+                            }
+                        });
+            }
         }
-        ItemInfo itemInfo = (ItemInfo) v.getTag();
-        Target child = new Target();
-        Target parent = new Target();
-        provider.fillInLogContainerData(v, itemInfo, child, parent);
-        extension.srcTarget[0] = new LauncherTarget();
-        extension.srcTarget[1] = new LauncherTarget();
-        copy(child, extension.srcTarget[0]);
-        copy(parent, extension.srcTarget[1]);
-        return true;
+
+        private LauncherAtom.ItemInfo applyOverwrites(LauncherAtom.ItemInfo atomInfo) {
+            LauncherAtom.ItemInfo.Builder itemInfoBuilder =
+                    (LauncherAtom.ItemInfo.Builder) atomInfo.toBuilder();
+
+            mRank.ifPresent(itemInfoBuilder::setRank);
+            mContainerInfo.ifPresent(itemInfoBuilder::setContainerInfo);
+
+            if (mFromState.isPresent() || mToState.isPresent() || mEditText.isPresent()) {
+                FolderIcon.Builder folderIconBuilder = (FolderIcon.Builder) itemInfoBuilder
+                        .getFolderIcon()
+                        .toBuilder();
+                mFromState.ifPresent(folderIconBuilder::setFromLabelState);
+                mToState.ifPresent(folderIconBuilder::setToLabelState);
+                mEditText.ifPresent(folderIconBuilder::setLabelInfo);
+                itemInfoBuilder.setFolderIcon(folderIconBuilder);
+            }
+            return itemInfoBuilder.build();
+        }
+
+        private void write(EventEnum event, InstanceId instanceId, LauncherAtom.ItemInfo atomInfo,
+                int srcState, int dstState) {
+            if (IS_VERBOSE) {
+                String name = (event instanceof Enum) ? ((Enum) event).name() :
+                        event.getId() + "";
+
+                Log.d(TAG, instanceId == DEFAULT_INSTANCE_ID
+                        ? String.format("\n%s (State:%s->%s)\n%s", name, getStateString(srcState),
+                        getStateString(dstState), atomInfo)
+                        : String.format("\n%s (State:%s->%s) (InstanceId:%s)\n%s", name,
+                                getStateString(srcState), getStateString(dstState), instanceId,
+                                atomInfo));
+            }
+
+            SysUiStatsLog.write(
+                    SysUiStatsLog.LAUNCHER_EVENT,
+                    SysUiStatsLog.LAUNCHER_UICHANGED__ACTION__DEFAULT_ACTION /* deprecated */,
+                    srcState,
+                    dstState,
+                    null /* launcher extensions, deprecated */,
+                    false /* quickstep_enabled, deprecated */,
+                    event.getId() /* event_id */,
+                    atomInfo.getItemCase().getNumber() /* target_id */,
+                    instanceId.getId() /* instance_id TODO */,
+                    0 /* uid TODO */,
+                    getPackageName(atomInfo) /* package_name */,
+                    getComponentName(atomInfo) /* component_name */,
+                    getGridX(atomInfo, false) /* grid_x */,
+                    getGridY(atomInfo, false) /* grid_y */,
+                    getPageId(atomInfo) /* page_id */,
+                    getGridX(atomInfo, true) /* grid_x_parent */,
+                    getGridY(atomInfo, true) /* grid_y_parent */,
+                    getParentPageId(atomInfo) /* page_id_parent */,
+                    getHierarchy(atomInfo) /* hierarchy */,
+                    atomInfo.getIsWork() /* is_work_profile */,
+                    atomInfo.getRank() /* rank */,
+                    atomInfo.getFolderIcon().getFromLabelState().getNumber() /* fromState */,
+                    atomInfo.getFolderIcon().getToLabelState().getNumber() /* toState */,
+                    atomInfo.getFolderIcon().getLabelInfo() /* edittext */,
+                    getCardinality(atomInfo) /* cardinality */);
+        }
     }
 
-    public static boolean fillInLauncherExtensionWithPageId(LauncherExtension ext, int pageId) {
-        if (DEBUG) {
-            Log.d(TAG, "fillInLauncherExtensionWithPageId, pageId = " + pageId);
+    private static int getCardinality(LauncherAtom.ItemInfo info) {
+        switch (info.getContainerInfo().getContainerCase()){
+            case PREDICTED_HOTSEAT_CONTAINER:
+                return info.getContainerInfo().getPredictedHotseatContainer().getCardinality();
+            case SEARCH_RESULT_CONTAINER:
+                return info.getContainerInfo().getSearchResultContainer().getQueryLength();
+            default:
+                return info.getFolderIcon().getCardinality();
         }
-
-        Target target = new Target();
-        target.pageIndex = pageId;
-        ext.srcTarget[0] = new LauncherTarget();
-        copy(target, ext.srcTarget[0]);
-        return true;
     }
 
-    private static void copy(Target src, LauncherTarget dst) {
-        if (DEBUG) {
-            Log.d(TAG, "copy target information from clearcut Target to LauncherTarget.");
-        }
-
-        // Fill in type
-        switch (src.type) {
-            case Target.Type.ITEM:
-                dst.type = LauncherTarget.ITEM_TYPE;
-                break;
-            case Target.Type.CONTROL:
-                dst.type = LauncherTarget.CONTROL_TYPE;
-                break;
-            case Target.Type.CONTAINER:
-                dst.type = LauncherTarget.CONTAINER_TYPE;
-                break;
+    private static String getPackageName(LauncherAtom.ItemInfo info) {
+        switch (info.getItemCase()) {
+            case APPLICATION:
+                return info.getApplication().getPackageName();
+            case SHORTCUT:
+                return info.getShortcut().getShortcutName();
+            case WIDGET:
+                return info.getWidget().getPackageName();
+            case TASK:
+                return info.getTask().getPackageName();
             default:
-                dst.type = LauncherTarget.NONE;
-                break;
+                return null;
         }
-
-        // Fill in item
-        switch (src.itemType) {
-            case ItemType.APP_ICON:
-                dst.item = LauncherTarget.APP_ICON;
-                break;
-            case ItemType.SHORTCUT:
-                dst.item = LauncherTarget.SHORTCUT;
-                break;
-            case ItemType.WIDGET:
-                dst.item = LauncherTarget.WIDGET;
-                break;
-            case ItemType.FOLDER_ICON:
-                dst.item = LauncherTarget.FOLDER_ICON;
-                break;
-            case ItemType.DEEPSHORTCUT:
-                dst.item = LauncherTarget.DEEPSHORTCUT;
-                break;
-            case ItemType.SEARCHBOX:
-                dst.item = LauncherTarget.SEARCHBOX;
-                break;
-            case ItemType.EDITTEXT:
-                dst.item = LauncherTarget.EDITTEXT;
-                break;
-            case ItemType.NOTIFICATION:
-                dst.item = LauncherTarget.NOTIFICATION;
-                break;
-            case ItemType.TASK:
-                dst.item = LauncherTarget.TASK;
-                break;
-            default:
-                dst.item = LauncherTarget.DEFAULT_ITEM;
-                break;
-        }
-
-        // Fill in container
-        switch (src.containerType) {
-            case ContainerType.HOTSEAT:
-                dst.container = LauncherTarget.HOTSEAT;
-                break;
-            case ContainerType.FOLDER:
-                dst.container = LauncherTarget.FOLDER;
-                break;
-            case ContainerType.PREDICTION:
-                dst.container = LauncherTarget.PREDICTION;
-                break;
-            case ContainerType.SEARCHRESULT:
-                dst.container = LauncherTarget.SEARCHRESULT;
-                break;
-            default:
-                dst.container = LauncherTarget.DEFAULT_CONTAINER;
-                break;
-        }
-
-        // Fill in control
-        switch (src.controlType) {
-            case ControlType.UNINSTALL_TARGET:
-                dst.control = LauncherTarget.UNINSTALL;
-                break;
-            case ControlType.REMOVE_TARGET:
-                dst.control = LauncherTarget.REMOVE;
-                break;
-            default:
-                dst.control = LauncherTarget.DEFAULT_CONTROL;
-                break;
-        }
-
-        // Fill in other fields
-        dst.pageId = src.pageIndex;
-        dst.gridX = src.gridX;
-        dst.gridY = src.gridY;
     }
 
-    @Override
-    public void verify() {
-        if(!(StatsLogUtils.LAUNCHER_STATE_ALLAPPS == ALLAPPS &&
-                StatsLogUtils.LAUNCHER_STATE_BACKGROUND == BACKGROUND &&
-                StatsLogUtils.LAUNCHER_STATE_OVERVIEW == OVERVIEW &&
-                StatsLogUtils.LAUNCHER_STATE_HOME == HOME)) {
-            throw new IllegalStateException(
-                    "StatsLogUtil constants doesn't match enums in launcher.proto");
+    private static String getComponentName(LauncherAtom.ItemInfo info) {
+        switch (info.getItemCase()) {
+            case APPLICATION:
+                return info.getApplication().getComponentName();
+            case SHORTCUT:
+                return info.getShortcut().getShortcutName();
+            case WIDGET:
+                return info.getWidget().getComponentName();
+            case TASK:
+                return info.getTask().getComponentName();
+            default:
+                return null;
+        }
+    }
+
+    private static int getGridX(LauncherAtom.ItemInfo info, boolean parent) {
+        if (info.getContainerInfo().getContainerCase() == FOLDER) {
+            if (parent) {
+                return info.getContainerInfo().getFolder().getWorkspace().getGridX();
+            } else {
+                return info.getContainerInfo().getFolder().getGridX();
+            }
+        } else {
+            return info.getContainerInfo().getWorkspace().getGridX();
+        }
+    }
+
+    private static int getGridY(LauncherAtom.ItemInfo info, boolean parent) {
+        if (info.getContainerInfo().getContainerCase() == FOLDER) {
+            if (parent) {
+                return info.getContainerInfo().getFolder().getWorkspace().getGridY();
+            } else {
+                return info.getContainerInfo().getFolder().getGridY();
+            }
+        } else {
+            return info.getContainerInfo().getWorkspace().getGridY();
+        }
+    }
+
+    private static int getPageId(LauncherAtom.ItemInfo info) {
+        switch (info.getContainerInfo().getContainerCase()) {
+            case FOLDER:
+                return info.getContainerInfo().getFolder().getPageIndex();
+            default:
+                return info.getContainerInfo().getWorkspace().getPageIndex();
+        }
+    }
+
+    private static int getParentPageId(LauncherAtom.ItemInfo info) {
+        switch (info.getContainerInfo().getContainerCase()) {
+            case FOLDER:
+                return info.getContainerInfo().getFolder().getWorkspace().getPageIndex();
+            case SEARCH_RESULT_CONTAINER:
+                return info.getContainerInfo().getSearchResultContainer().getWorkspace()
+                        .getPageIndex();
+            default:
+                return info.getContainerInfo().getWorkspace().getPageIndex();
+        }
+    }
+
+    private static int getHierarchy(LauncherAtom.ItemInfo info) {
+        if (info.getContainerInfo().getContainerCase() == FOLDER) {
+            return info.getContainerInfo().getFolder().getParentContainerCase().getNumber()
+                    + FOLDER_HIERARCHY_OFFSET;
+        } else if (info.getContainerInfo().getContainerCase() == SEARCH_RESULT_CONTAINER) {
+            return info.getContainerInfo().getSearchResultContainer().getParentContainerCase()
+                    .getNumber() + SEARCH_RESULT_HIERARCHY_OFFSET;
+        } else {
+            return info.getContainerInfo().getContainerCase().getNumber();
+        }
+    }
+
+    private static String getStateString(int state) {
+        switch (state) {
+            case LAUNCHER_UICHANGED__DST_STATE__BACKGROUND:
+                return "BACKGROUND";
+            case LAUNCHER_UICHANGED__DST_STATE__HOME:
+                return "HOME";
+            case LAUNCHER_UICHANGED__DST_STATE__OVERVIEW:
+                return "OVERVIEW";
+            case LAUNCHER_UICHANGED__DST_STATE__ALLAPPS:
+                return "ALLAPPS";
+            default:
+                return "INVALID";
+
         }
     }
 }

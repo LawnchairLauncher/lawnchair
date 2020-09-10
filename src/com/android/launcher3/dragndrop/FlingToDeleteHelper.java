@@ -17,8 +17,6 @@
 package com.android.launcher3.dragndrop;
 
 import android.graphics.PointF;
-import android.os.SystemClock;
-import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
@@ -53,31 +51,6 @@ public class FlingToDeleteHelper {
             mVelocityTracker = VelocityTracker.obtain();
         }
         mVelocityTracker.addMovement(ev);
-    }
-
-    /**
-     * Same as {@link #recordMotionEvent}. It creates a temporary {@link MotionEvent} object
-     * using {@param event} for tracking velocity.
-     */
-    public void recordDragEvent(long dragStartTime, DragEvent event) {
-        final int motionAction;
-        switch (event.getAction()) {
-            case DragEvent.ACTION_DRAG_STARTED:
-                motionAction = MotionEvent.ACTION_DOWN;
-                break;
-            case DragEvent.ACTION_DRAG_LOCATION:
-                motionAction = MotionEvent.ACTION_MOVE;
-                break;
-            case DragEvent.ACTION_DRAG_ENDED:
-                motionAction = MotionEvent.ACTION_UP;
-                break;
-            default:
-                return;
-        }
-        MotionEvent emulatedEvent = MotionEvent.obtain(dragStartTime, SystemClock.uptimeMillis(),
-                motionAction, event.getX(), event.getY(), 0);
-        recordMotionEvent(emulatedEvent);
-        emulatedEvent.recycle();
     }
 
     public void releaseVelocityTracker() {

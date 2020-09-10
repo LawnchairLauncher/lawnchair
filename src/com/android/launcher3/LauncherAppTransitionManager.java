@@ -13,11 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.android.launcher3;
 
-
-import android.animation.Animator;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.graphics.Rect;
@@ -58,13 +55,16 @@ public class LauncherAppTransitionManager implements ResourceBasedOverride {
     }
 
     /**
-     * Number of animations which run on state properties.
+     * Registers remote animations for certain system transitions.
      */
-    public int getStateElementAnimationsCount() {
-        return 0;
+    public void registerRemoteAnimations() {
+        // Do nothing
     }
 
-    public Animator createStateElementAnimation(int index, float... values) {
-        throw new RuntimeException("Unknown gesture animation " + index);
+    /**
+     * Unregisters all remote animations.
+     */
+    public void unregisterRemoteAnimations() {
+        // Do nothing
     }
 }

@@ -18,4 +18,5 @@ package com.android.launcher3;
 
 public final class BuildConfig {
   public static final String APPLICATION_ID = "com.android.launcher3";
+  public static final boolean DEBUG = false;
 }

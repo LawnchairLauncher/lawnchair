@@ -16,6 +16,9 @@
 
 package com.android.launcher3.folder;
 
+import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
+import static com.android.launcher3.AbstractFloatingView.TYPE_FOLDER;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -27,12 +30,12 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewDebug;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.PagedView;
@@ -40,9 +43,10 @@ import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace.ItemOperator;
-import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pageindicators.PageIndicatorDots;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.Thunk;
@@ -149,6 +153,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
             CellLayout page = (CellLayout) getChildAt(i);
             ShortcutAndWidgetContainer container = page.getShortcutsAndWidgets();
             for (int j = container.getChildCount() - 1; j >= 0; j--) {
+                container.getChildAt(j).setVisibility(View.VISIBLE);
                 mViewCache.recycleView(R.layout.folder_application, container.getChildAt(j));
             }
             page.removeAllViews();
@@ -258,7 +263,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
-        mPageIndicator.setScroll(l, mMaxScrollX);
+        if (mMaxScroll > 0) mPageIndicator.setScroll(l, mMaxScroll);
     }
 
     /**
@@ -612,6 +617,12 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
                 delayAmount *= VIEW_REORDER_DELAY_FACTOR;
             }
         }
+    }
+
+    @Override
+    protected boolean canScroll(float absVScroll, float absHScroll) {
+        return AbstractFloatingView.getTopOpenViewWithType(mFolder.mLauncher,
+                TYPE_ALL & ~TYPE_FOLDER) == null;
     }
 
     public int itemsPerPage() {

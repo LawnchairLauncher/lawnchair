@@ -29,20 +29,20 @@ import android.view.View;
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
-import com.android.launcher3.ItemInfo;
-import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace.ItemOperator;
-import com.android.launcher3.WorkspaceItemInfo;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.LauncherAppWidgetInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.tapl.AddToHomeScreenPrompt;
 import com.android.launcher3.testcomponent.AppWidgetNoConfig;
 import com.android.launcher3.testcomponent.AppWidgetWithConfig;
 import com.android.launcher3.testcomponent.RequestPinItemActivity;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
-import com.android.launcher3.util.Condition;
 import com.android.launcher3.util.Wait;
+import com.android.launcher3.util.Wait.Condition;
 import com.android.launcher3.util.rule.ShellCommandRule;
 
 import org.junit.Before;
@@ -59,7 +59,8 @@ import java.util.UUID;
 @RunWith(AndroidJUnit4.class)
 public class RequestPinItemTest extends AbstractLauncherUiTest {
 
-    @Rule public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grantWidgetBind();
+    @Rule
+    public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grantWidgetBind();
 
     private String mCallbackAction;
     private String mShortcutId;
@@ -84,10 +85,10 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
                         .equals(AppWidgetNoConfig.class.getName()));
     }
 
-        @Test
+    @Test
     public void testPinWidgetNoConfig_customPreview() throws Throwable {
         // Command to set custom preview
-        Intent command =  RequestPinItemActivity.getCommandIntent(
+        Intent command = RequestPinItemActivity.getCommandIntent(
                 RequestPinItemActivity.class, "setRemoteViewColor").putExtra(
                 RequestPinItemActivity.EXTRA_PARAM + "0", Color.RED);
 
@@ -169,7 +170,8 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
 
         // Go back to home
         mLauncher.pressHome();
-        Wait.atMost(null, new ItemSearchCondition(itemMatcher), DEFAULT_ACTIVITY_TIMEOUT);
+        Wait.atMost("", new ItemSearchCondition(itemMatcher), DEFAULT_ACTIVITY_TIMEOUT,
+                mLauncher);
     }
 
     /**

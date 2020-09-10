@@ -77,13 +77,18 @@ public class TestHelpers {
         return launchers.get(0).activityInfo;
     }
 
-    public static String getOverviewPackageName() {
+    public static ComponentName getOverviewComponentName() {
         Resources res = Resources.getSystem();
         int id = res.getIdentifier("config_recentsComponentName", "string", "android");
         if (id != 0) {
-            return ComponentName.unflattenFromString(res.getString(id)).getPackageName();
+            return ComponentName.unflattenFromString(res.getString(id));
         }
-        return "com.android.systemui";
+        return new ComponentName("com.android.systemui",
+                "com.android.systemui.recents.RecentsActivity");
+    }
+
+    public static String getOverviewPackageName() {
+        return getOverviewComponentName().getPackageName();
     }
 
     private static String truncateCrash(String text, int maxLines) {
@@ -146,8 +151,7 @@ public class TestHelpers {
                     ? "Current time: " + new Date(System.currentTimeMillis()) + "\n" + errors
                     : null;
         } catch (Exception e) {
-            return "Failed to get system health diags, maybe build your test via .bp instead of "
-                    + ".mk? " + android.util.Log.getStackTraceString(e);
+            return null;
         }
     }
 }
