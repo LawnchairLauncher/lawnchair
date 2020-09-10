@@ -56,7 +56,7 @@
             android:visibility="gone" />
 
         <Space
-            android:id="@+id/share_space"
+            android:id="@+id/oav_three_button_space"
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_weight="1"
