@@ -38,6 +38,9 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItemWithPayload;
 import com.android.launcher3.allapps.search.AllAppsSearchBarController;
+import com.android.systemui.plugins.AllAppsSearchPlugin;
+import com.android.systemui.plugins.shared.SearchTarget;
+import com.android.systemui.plugins.shared.SearchTargetEvent;
 
 import java.io.IOException;
 import java.net.URL;
@@ -54,6 +57,7 @@ public class SearchResultPlayItem extends LinearLayout implements
     private Button mPreviewButton;
     private String mPackageName;
     private boolean mIsInstantGame;
+    private AllAppsSearchPlugin mPlugin;
 
     public SearchResultPlayItem(Context context) {
         this(context, null, 0);
@@ -84,13 +88,14 @@ public class SearchResultPlayItem extends LinearLayout implements
         ViewGroup.LayoutParams iconParams = mIconView.getLayoutParams();
         iconParams.height = mDeviceProfile.allAppsIconSizePx;
         iconParams.width = mDeviceProfile.allAppsIconSizePx;
-        setOnClickListener(view -> handleSelection());
+        setOnClickListener(view -> handleSelection(SearchTargetEvent.SELECT));
 
     }
 
     @Override
     public void applyAdapterInfo(AdapterItemWithPayload<Bundle> adapterItemWithPayload) {
         Bundle bundle = adapterItemWithPayload.getPayload();
+        mPlugin = adapterItemWithPayload.getPlugin();
         adapterItemWithPayload.setSelectionHandler(this::handleSelection);
         if (bundle.getString("package", "").equals(mPackageName)) {
             return;
@@ -129,13 +134,14 @@ public class SearchResultPlayItem extends LinearLayout implements
         }
     }
 
-    private void handleSelection() {
+    private void handleSelection(int eventType) {
         if (mPackageName == null) return;
         Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(
                 "https://play.google.com/store/apps/details?id="
                         + mPackageName));
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getContext().startActivity(i);
+        logSearchEvent(eventType);
     }
 
     private void launchInstantGame() {
@@ -150,5 +156,16 @@ public class SearchResultPlayItem extends LinearLayout implements
         intent.putExtra("callerId", getContext().getPackageName());
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getContext().startActivity(intent);
+        logSearchEvent(SearchTargetEvent.CHILD_SELECT);
+    }
+
+    private void logSearchEvent(int eventType) {
+        SearchTargetEvent searchTargetEvent = new SearchTargetEvent(
+                SearchTarget.ItemType.PLAY_RESULTS, eventType);
+        searchTargetEvent.bundle = new Bundle();
+        searchTargetEvent.bundle.putString("package_name", mPackageName);
+        if (mPlugin != null) {
+            mPlugin.notifySearchTargetEvent(searchTargetEvent);
+        }
     }
 }

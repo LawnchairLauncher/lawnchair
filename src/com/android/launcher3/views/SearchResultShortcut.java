@@ -36,7 +36,9 @@ import com.android.launcher3.allapps.AllAppsGridAdapter;
 import com.android.launcher3.allapps.search.AllAppsSearchBarController;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.touch.ItemClickHandler;
+import com.android.systemui.plugins.AllAppsSearchPlugin;
 import com.android.systemui.plugins.shared.SearchTarget;
+import com.android.systemui.plugins.shared.SearchTargetEvent;
 
 /**
  * A view representing a stand alone shortcut search result
@@ -44,8 +46,10 @@ import com.android.systemui.plugins.shared.SearchTarget;
 public class SearchResultShortcut extends FrameLayout implements
         AllAppsSearchBarController.PayloadResultHandler<SearchTarget> {
 
-    BubbleTextView mBubbleTextView;
-    View mIconView;
+    private BubbleTextView mBubbleTextView;
+    private View mIconView;
+    private ShortcutInfo mShortcutInfo;
+    private AllAppsSearchPlugin mPlugin;
 
     public SearchResultShortcut(@NonNull Context context) {
         super(context);
@@ -71,28 +75,36 @@ public class SearchResultShortcut extends FrameLayout implements
         iconParams.height = grid.allAppsIconSizePx;
         iconParams.width = grid.allAppsIconSizePx;
         mBubbleTextView = findViewById(R.id.bubble_text);
-        setOnClickListener(v -> handleSelection());
+        setOnClickListener(v -> handleSelection(SearchTargetEvent.SELECT));
     }
 
     @Override
     public void applyAdapterInfo(
             AllAppsGridAdapter.AdapterItemWithPayload<SearchTarget> adapterItemWithPayload) {
         SearchTarget payload = adapterItemWithPayload.getPayload();
-        ShortcutInfo si = payload.shortcuts.get(0);
-        WorkspaceItemInfo workspaceItemInfo = new WorkspaceItemInfo(si, getContext());
+        mPlugin = adapterItemWithPayload.getPlugin();
+        mShortcutInfo = payload.shortcuts.get(0);
+        WorkspaceItemInfo workspaceItemInfo = new WorkspaceItemInfo(mShortcutInfo, getContext());
         mBubbleTextView.applyFromWorkspaceItem(workspaceItemInfo);
         mIconView.setBackground(mBubbleTextView.getIcon());
         LauncherAppState launcherAppState = LauncherAppState.getInstance(getContext());
         MODEL_EXECUTOR.execute(() -> {
-            launcherAppState.getIconCache().getShortcutIcon(workspaceItemInfo, si);
+            launcherAppState.getIconCache().getShortcutIcon(workspaceItemInfo, mShortcutInfo);
             mBubbleTextView.applyFromWorkspaceItem(workspaceItemInfo);
             mIconView.setBackground(mBubbleTextView.getIcon());
         });
         adapterItemWithPayload.setSelectionHandler(this::handleSelection);
     }
 
-    private void handleSelection() {
-        ItemClickHandler.onClickAppShortcut(this, (WorkspaceItemInfo) mBubbleTextView.getTag(),
-                Launcher.getLauncher(getContext()));
+    private void handleSelection(int eventType) {
+        WorkspaceItemInfo itemInfo = (WorkspaceItemInfo) mBubbleTextView.getTag();
+        ItemClickHandler.onClickAppShortcut(this, itemInfo, Launcher.getLauncher(getContext()));
+
+        SearchTargetEvent searchTargetEvent = new SearchTargetEvent(
+                SearchTarget.ItemType.SHORTCUT, eventType);
+        searchTargetEvent.shortcut = mShortcutInfo;
+        if (mPlugin != null) {
+            mPlugin.notifySearchTargetEvent(searchTargetEvent);
+        }
     }
 }

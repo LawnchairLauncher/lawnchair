@@ -115,11 +115,6 @@ public class AllAppsSearchBarController
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 // selectFocusedView should return SearchTargetEvent that is passed onto onClick
                 if (Launcher.getLauncher(mLauncher).getAppsView().selectFocusedView(v)) {
-                    if (mSearchAlgorithm instanceof PluginWrapper) {
-                        ((PluginWrapper) mSearchAlgorithm).runOnPluginIfConnected(plugin -> {
-                            plugin.onClick(false, null);
-                        });
-                    }
                     return true;
                 }
             }
