@@ -271,11 +271,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         mIsHomeScreenVisible = FADE_OUT_INTERPOLATOR.getInterpolation(xProgress)
                 <= 1 - ALPHA_CUTOFF_THRESHOLD;
 
-
-        // Only allow motion pause if the home screen is invisible, since some
-        // home screen elements will appear in the shelf on motion pause.
-        mMotionPauseDetector.setDisallowPause(mIsHomeScreenVisible
-                || -displacement.y < mMotionPauseMinDisplacement);
+        mMotionPauseDetector.setDisallowPause(-displacement.y < mMotionPauseMinDisplacement);
         mMotionPauseDetector.addPosition(ev);
 
         if (mXOverviewAnim != null) {
