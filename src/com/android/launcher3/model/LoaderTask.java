@@ -127,6 +127,7 @@ public class LoaderTask implements Runnable {
 
     private boolean mStopped;
 
+    private final Set<PackageUserKey> mPendingPackages = new HashSet<>();
     private boolean mItemsDeleted = false;
 
     public LoaderTask(LauncherAppState app, AllAppsList bgAllAppsList, BgDataModel dataModel,
@@ -294,16 +295,17 @@ public class LoaderTask implements Runnable {
     }
 
     private void loadWorkspace(List<ShortcutInfo> allDeepShortcuts) {
-        loadWorkspace(allDeepShortcuts, LauncherSettings.Favorites.CONTENT_URI);
+        loadWorkspace(allDeepShortcuts, LauncherSettings.Favorites.CONTENT_URI,
+                null /* selection */);
     }
 
-    protected void loadWorkspace(List<ShortcutInfo> allDeepShortcuts, Uri contentUri) {
+    protected void loadWorkspace(List<ShortcutInfo> allDeepShortcuts, Uri contentUri,
+            String selection) {
         final Context context = mApp.getContext();
         final ContentResolver contentResolver = context.getContentResolver();
         final PackageManagerHelper pmHelper = new PackageManagerHelper(context);
         final boolean isSafeMode = pmHelper.isSafeMode();
         final boolean isSdCardReady = Utilities.isBootCompleted();
-        final Set<PackageUserKey> pendingPackages = new HashSet<>();
 
         boolean clearDb = false;
         try {
@@ -332,6 +334,7 @@ public class LoaderTask implements Runnable {
 
         synchronized (mBgDataModel) {
             mBgDataModel.clear();
+            mPendingPackages.clear();
 
             final HashMap<PackageUserKey, SessionInfo> installingPkgs =
                     mSessionHelper.getActiveSessions();
@@ -342,8 +345,8 @@ public class LoaderTask implements Runnable {
 
             Map<ShortcutKey, ShortcutInfo> shortcutKeyToPinnedShortcuts = new HashMap<>();
             final LoaderCursor c = new LoaderCursor(
-                    contentResolver.query(contentUri, null, null, null, null), contentUri, mApp,
-                    mUserManagerState);
+                    contentResolver.query(contentUri, null, selection, null, null), contentUri,
+                    mApp, mUserManagerState);
 
             try {
                 final int appWidgetIdIndex = c.getColumnIndexOrThrow(
@@ -484,7 +487,7 @@ public class LoaderTask implements Runnable {
                                     // SdCard is not ready yet. Package might get available,
                                     // once it is ready.
                                     Log.d(TAG, "Missing pkg, will check later: " + targetPkg);
-                                    pendingPackages.add(new PackageUserKey(targetPkg, c.user));
+                                    mPendingPackages.add(new PackageUserKey(targetPkg, c.user));
                                     // Add the icon on the workspace anyway.
                                     allowMissingTarget = true;
                                 } else {
@@ -768,20 +771,7 @@ public class LoaderTask implements Runnable {
             }
 
             // Remove dead items
-            if (c.commitDeleted()) {
-                // Remove any empty folder
-                int[] deletedFolderIds = LauncherSettings.Settings
-                        .call(contentResolver,
-                                LauncherSettings.Settings.METHOD_DELETE_EMPTY_FOLDERS)
-                        .getIntArray(LauncherSettings.Settings.EXTRA_VALUE);
-                for (int folderId : deletedFolderIds) {
-                    mBgDataModel.workspaceItems.remove(mBgDataModel.folders.get(folderId));
-                    mBgDataModel.folders.remove(folderId);
-                    mBgDataModel.itemsIdMap.remove(folderId);
-                }
-
-                mItemsDeleted = true;
-            }
+            mItemsDeleted = c.commitDeleted();
 
             // Sort the folder items, update ranks, and make sure all preview items are high res.
             FolderGridOrganizer verifier =
@@ -807,13 +797,6 @@ public class LoaderTask implements Runnable {
             }
 
             c.commitRestoredItems();
-            if (!isSdCardReady && !pendingPackages.isEmpty()) {
-                context.registerReceiver(
-                        new SdCardAvailableReceiver(mApp, pendingPackages),
-                        new IntentFilter(Intent.ACTION_BOOT_COMPLETED),
-                        null,
-                        MODEL_EXECUTOR.getHandler());
-            }
         }
     }
 
@@ -840,14 +823,34 @@ public class LoaderTask implements Runnable {
 
     private void sanitizeData() {
         Context context = mApp.getContext();
+        ContentResolver contentResolver = context.getContentResolver();
         if (mItemsDeleted) {
+            // Remove any empty folder
+            int[] deletedFolderIds = LauncherSettings.Settings
+                    .call(contentResolver,
+                            LauncherSettings.Settings.METHOD_DELETE_EMPTY_FOLDERS)
+                    .getIntArray(LauncherSettings.Settings.EXTRA_VALUE);
+            for (int folderId : deletedFolderIds) {
+                mBgDataModel.workspaceItems.remove(mBgDataModel.folders.get(folderId));
+                mBgDataModel.folders.remove(folderId);
+                mBgDataModel.itemsIdMap.remove(folderId);
+            }
+
             // Remove any ghost widgets
-            LauncherSettings.Settings.call(context.getContentResolver(),
+            LauncherSettings.Settings.call(contentResolver,
                     LauncherSettings.Settings.METHOD_REMOVE_GHOST_WIDGETS);
         }
 
         // Update pinned state of model shortcuts
         mBgDataModel.updateShortcutPinnedState(context);
+
+        if (!Utilities.isBootCompleted() && !mPendingPackages.isEmpty()) {
+            context.registerReceiver(
+                    new SdCardAvailableReceiver(mApp, mPendingPackages),
+                    new IntentFilter(Intent.ACTION_BOOT_COMPLETED),
+                    null,
+                    MODEL_EXECUTOR.getHandler());
+        }
     }
 
     private List<LauncherActivityInfo> loadAllApps() {
