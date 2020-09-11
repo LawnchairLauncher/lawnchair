@@ -18,6 +18,7 @@ package com.android.launcher3.views;
 import static android.content.Intent.URI_ALLOW_UNSAFE;
 import static android.content.Intent.URI_ANDROID_APP_SCHEME;
 
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import android.content.Context;
@@ -129,7 +130,7 @@ public class SearchResultPeopleView extends LinearLayout implements
                             ApplicationInfo applicationInfo = mPackageManager.getApplicationInfo(
                                     pkg, 0);
                             Drawable appIcon = applicationInfo.loadIcon(mPackageManager);
-                            button.setImageDrawable(appIcon);
+                            MAIN_EXECUTOR.post(()-> button.setImageDrawable(appIcon));
                         } catch (PackageManager.NameNotFoundException ignored) {
                         }
 
