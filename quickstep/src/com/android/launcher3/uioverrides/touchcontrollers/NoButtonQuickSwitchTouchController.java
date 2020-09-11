@@ -35,7 +35,6 @@ import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_T
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_OVERVIEW;
 import static com.android.launcher3.touch.BothAxesSwipeDetector.DIRECTION_RIGHT;
 import static com.android.launcher3.touch.BothAxesSwipeDetector.DIRECTION_UP;
-import static com.android.launcher3.uioverrides.states.QuickstepAtomicAnimationFactory.INDEX_PAUSE_TO_OVERVIEW_ANIM;
 import static com.android.launcher3.util.DisplayController.getSingleFrameMs;
 import static com.android.launcher3.util.VibratorWrapper.OVERVIEW_HAPTIC;
 import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_OFFSET;
@@ -87,6 +86,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
     private static final Interpolator FADE_OUT_INTERPOLATOR = DEACCEL_5;
     private static final Interpolator TRANSLATE_OUT_INTERPOLATOR = ACCEL_0_75;
     private static final Interpolator SCALE_DOWN_INTERPOLATOR = LINEAR;
+    private static final long ATOMIC_DURATION_FROM_PAUSED_TO_OVERVIEW = 300;
 
     private final BaseQuickstepLauncher mLauncher;
     private final BothAxesSwipeDetector mSwipeDetector;
@@ -270,11 +270,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         mIsHomeScreenVisible = FADE_OUT_INTERPOLATOR.getInterpolation(xProgress)
                 <= 1 - ALPHA_CUTOFF_THRESHOLD;
 
-
-        // Only allow motion pause if the home screen is invisible, since some
-        // home screen elements will appear in the shelf on motion pause.
-        mMotionPauseDetector.setDisallowPause(mIsHomeScreenVisible
-                || -displacement.y < mMotionPauseMinDisplacement);
+        mMotionPauseDetector.setDisallowPause(-displacement.y < mMotionPauseMinDisplacement);
         mMotionPauseDetector.addPosition(ev);
 
         if (mXOverviewAnim != null) {
@@ -295,8 +291,10 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         if (mMotionPauseDetector.isPaused() && noFling) {
             cancelAnimations();
 
-            Animator overviewAnim = mLauncher.createAtomicAnimationFactory()
-                    .createStateElementAnimation(INDEX_PAUSE_TO_OVERVIEW_ANIM);
+            StateAnimationConfig config = new StateAnimationConfig();
+            config.duration = ATOMIC_DURATION_FROM_PAUSED_TO_OVERVIEW;
+            Animator overviewAnim = mLauncher.getStateManager().createAtomicAnimation(
+                    mStartState, OVERVIEW, config);
             overviewAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
