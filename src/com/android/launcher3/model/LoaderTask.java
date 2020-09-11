@@ -293,10 +293,12 @@ public class LoaderTask implements Runnable {
     }
 
     private void loadWorkspace(List<ShortcutInfo> allDeepShortcuts) {
-        loadWorkspace(allDeepShortcuts, LauncherSettings.Favorites.CONTENT_URI);
+        loadWorkspace(allDeepShortcuts, LauncherSettings.Favorites.CONTENT_URI,
+                null /* selection */);
     }
 
-    protected void loadWorkspace(List<ShortcutInfo> allDeepShortcuts, Uri contentUri) {
+    protected void loadWorkspace(List<ShortcutInfo> allDeepShortcuts, Uri contentUri,
+            String selection) {
         final Context context = mApp.getContext();
         final ContentResolver contentResolver = context.getContentResolver();
         final PackageManagerHelper pmHelper = new PackageManagerHelper(context);
@@ -341,8 +343,8 @@ public class LoaderTask implements Runnable {
 
             Map<ShortcutKey, ShortcutInfo> shortcutKeyToPinnedShortcuts = new HashMap<>();
             final LoaderCursor c = new LoaderCursor(
-                    contentResolver.query(contentUri, null, null, null, null), contentUri, mApp,
-                    mUserManagerState);
+                    contentResolver.query(contentUri, null, selection, null, null), contentUri,
+                    mApp, mUserManagerState);
 
             try {
                 final int appWidgetIdIndex = c.getColumnIndexOrThrow(
@@ -776,33 +778,35 @@ public class LoaderTask implements Runnable {
                 return;
             }
 
-            // Remove dead items
-            if (c.commitDeleted()) {
-                // Remove any empty folder
-                int[] deletedFolderIds = LauncherSettings.Settings
-                        .call(contentResolver,
-                                LauncherSettings.Settings.METHOD_DELETE_EMPTY_FOLDERS)
-                        .getIntArray(LauncherSettings.Settings.EXTRA_VALUE);
-                for (int folderId : deletedFolderIds) {
-                    mBgDataModel.workspaceItems.remove(mBgDataModel.folders.get(folderId));
-                    mBgDataModel.folders.remove(folderId);
-                    mBgDataModel.itemsIdMap.remove(folderId);
+            if (contentUri == LauncherSettings.Favorites.CONTENT_URI) {
+                // Remove dead items
+                if (c.commitDeleted()) {
+                    // Remove any empty folder
+                    int[] deletedFolderIds = LauncherSettings.Settings
+                            .call(contentResolver,
+                                    LauncherSettings.Settings.METHOD_DELETE_EMPTY_FOLDERS)
+                            .getIntArray(LauncherSettings.Settings.EXTRA_VALUE);
+                    for (int folderId : deletedFolderIds) {
+                        mBgDataModel.workspaceItems.remove(mBgDataModel.folders.get(folderId));
+                        mBgDataModel.folders.remove(folderId);
+                        mBgDataModel.itemsIdMap.remove(folderId);
+                    }
+
+                    // Remove any ghost widgets
+                    LauncherSettings.Settings.call(contentResolver,
+                            LauncherSettings.Settings.METHOD_REMOVE_GHOST_WIDGETS);
                 }
 
-                // Remove any ghost widgets
-                LauncherSettings.Settings.call(contentResolver,
-                        LauncherSettings.Settings.METHOD_REMOVE_GHOST_WIDGETS);
-            }
-
-            // Unpin shortcuts that don't exist on the workspace.
-            HashSet<ShortcutKey> pendingShortcuts =
-                    InstallShortcutReceiver.getPendingShortcuts(context);
-            for (ShortcutKey key : shortcutKeyToPinnedShortcuts.keySet()) {
-                MutableInt numTimesPinned = mBgDataModel.pinnedShortcutCounts.get(key);
-                if ((numTimesPinned == null || numTimesPinned.value == 0)
-                        && !pendingShortcuts.contains(key)) {
-                    // Shortcut is pinned but doesn't exist on the workspace; unpin it.
-                    mBgDataModel.unpinShortcut(context, key);
+                // Unpin shortcuts that don't exist on the workspace.
+                HashSet<ShortcutKey> pendingShortcuts =
+                        InstallShortcutReceiver.getPendingShortcuts(context);
+                for (ShortcutKey key : shortcutKeyToPinnedShortcuts.keySet()) {
+                    MutableInt numTimesPinned = mBgDataModel.pinnedShortcutCounts.get(key);
+                    if ((numTimesPinned == null || numTimesPinned.value == 0)
+                            && !pendingShortcuts.contains(key)) {
+                        // Shortcut is pinned but doesn't exist on the workspace; unpin it.
+                        mBgDataModel.unpinShortcut(context, key);
+                    }
                 }
             }
 
