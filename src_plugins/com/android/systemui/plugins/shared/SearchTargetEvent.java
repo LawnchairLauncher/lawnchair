@@ -22,18 +22,19 @@ import android.os.Bundle;
  * Event used for the feedback loop to the plugin. (and future aiai)
  */
 public class SearchTargetEvent {
+    public static final int SELECT = 0;
+    public static final int QUICK_SELECT = 1;
+    public static final int LONG_PRESS = 2;
+    public static final int CHILD_SELECT = 3;
+
     public SearchTarget.ItemType type;
     public ShortcutInfo shortcut;
+    public int eventType;
     public Bundle bundle;
     public float score;
 
-    public SearchTargetEvent(SearchTarget.ItemType itemType,
-            ShortcutInfo shortcut,
-            Bundle bundle,
-            float score) {
+    public SearchTargetEvent(SearchTarget.ItemType itemType, int eventType) {
         this.type = itemType;
-        this.shortcut = shortcut;
-        this.bundle = bundle;
-        this.score = score;
+        this.eventType = eventType;
     }
 }

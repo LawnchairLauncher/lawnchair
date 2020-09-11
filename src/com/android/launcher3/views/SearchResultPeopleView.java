@@ -45,6 +45,9 @@ import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsGridAdapter;
 import com.android.launcher3.allapps.search.AllAppsSearchBarController;
 import com.android.launcher3.util.Themes;
+import com.android.systemui.plugins.AllAppsSearchPlugin;
+import com.android.systemui.plugins.shared.SearchTarget;
+import com.android.systemui.plugins.shared.SearchTargetEvent;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -58,9 +61,12 @@ public class SearchResultPeopleView extends LinearLayout implements
     private final int mIconSize;
     private final int mButtonSize;
     private final PackageManager mPackageManager;
-    View mIconView;
-    TextView mTitleView;
-    ImageButton[] mProviderButtons = new ImageButton[3];
+    private View mIconView;
+    private TextView mTitleView;
+    private ImageButton[] mProviderButtons = new ImageButton[3];
+    private AllAppsSearchPlugin mPlugin;
+    private Uri mContactUri;
+
 
     public SearchResultPeopleView(Context context) {
         this(context, null, 0);
@@ -93,14 +99,14 @@ public class SearchResultPeopleView extends LinearLayout implements
             button.getLayoutParams().width = mButtonSize;
             button.getLayoutParams().height = mButtonSize;
         }
-        setOnClickListener(v -> handleSelection());
+        setOnClickListener(v -> handleSelection(SearchTargetEvent.SELECT));
     }
 
     @Override
     public void applyAdapterInfo(
             AllAppsGridAdapter.AdapterItemWithPayload<Bundle> adapterItemWithPayload) {
-        Launcher launcher = Launcher.getLauncher(getContext());
         Bundle payload = adapterItemWithPayload.getPayload();
+        mPlugin = adapterItemWithPayload.getPlugin();
         mTitleView.setText(payload.getString("title"));
         mContactUri = payload.getParcelable("contact_uri");
         Bitmap icon = payload.getParcelable("icon");
@@ -122,8 +128,8 @@ public class SearchResultPeopleView extends LinearLayout implements
                     Bundle provider = providers.get(i);
                     Intent intent = Intent.parseUri(provider.getString("intent_uri_str"),
                             URI_ANDROID_APP_SCHEME | URI_ALLOW_UNSAFE);
+                    setupProviderButton(button, provider, intent);
                     String pkg = provider.getString("package_name");
-                    button.setOnClickListener(b -> launcher.startActivitySafely(b, intent, null));
                     UI_HELPER_EXECUTOR.post(() -> {
                         try {
                             ApplicationInfo applicationInfo = mPackageManager.getApplicationInfo(
@@ -144,13 +150,35 @@ public class SearchResultPeopleView extends LinearLayout implements
         adapterItemWithPayload.setSelectionHandler(this::handleSelection);
     }
 
-    Uri mContactUri;
+    private void setupProviderButton(ImageButton button, Bundle provider, Intent intent) {
+        Launcher launcher = Launcher.getLauncher(getContext());
+        button.setOnClickListener(b -> {
+            launcher.startActivitySafely(b, intent, null);
+            SearchTargetEvent searchTargetEvent = new SearchTargetEvent(
+                    SearchTarget.ItemType.PEOPLE,
+                    SearchTargetEvent.CHILD_SELECT);
+            searchTargetEvent.bundle = new Bundle();
+            searchTargetEvent.bundle.putParcelable("contact_uri", mContactUri);
+            searchTargetEvent.bundle.putBundle("provider", provider);
+            if (mPlugin != null) {
+                mPlugin.notifySearchTargetEvent(searchTargetEvent);
+            }
+        });
+    }
 
-    private void handleSelection() {
+
+    private void handleSelection(int eventType) {
         if (mContactUri != null) {
             Launcher launcher = Launcher.getLauncher(getContext());
             launcher.startActivitySafely(this, new Intent(Intent.ACTION_VIEW, mContactUri).setFlags(
                     Intent.FLAG_ACTIVITY_NEW_TASK), null);
+            SearchTargetEvent searchTargetEvent = new SearchTargetEvent(
+                    SearchTarget.ItemType.PEOPLE, eventType);
+            searchTargetEvent.bundle = new Bundle();
+            searchTargetEvent.bundle.putParcelable("contact_uri", mContactUri);
+            if (mPlugin != null) {
+                mPlugin.notifySearchTargetEvent(searchTargetEvent);
+            }
         }
     }
 }

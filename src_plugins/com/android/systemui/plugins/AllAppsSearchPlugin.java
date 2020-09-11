@@ -47,7 +47,10 @@ public interface AllAppsSearchPlugin extends Plugin {
      */
     void performSearch(String query, Consumer<List<SearchTarget>> results);
 
-    void onClick(boolean isTouch, SearchTargetEvent event);
+    /**
+     * Send over search target interaction events to Plugin
+     */
+    void notifySearchTargetEvent(SearchTargetEvent event);
 
     /**
      * Send signal when user exits all apps.
