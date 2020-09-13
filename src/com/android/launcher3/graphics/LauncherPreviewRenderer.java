@@ -599,7 +599,10 @@ public class LauncherPreviewRenderer extends ContextThemeWrapper
         @Override
         public WorkspaceResult call() {
             List<ShortcutInfo> allShortcuts = new ArrayList<>();
-            loadWorkspace(allShortcuts, LauncherSettings.Favorites.PREVIEW_CONTENT_URI);
+            loadWorkspace(allShortcuts, LauncherSettings.Favorites.PREVIEW_CONTENT_URI,
+                    LauncherSettings.Favorites.SCREEN + " = 0 or "
+                            + LauncherSettings.Favorites.CONTAINER + " = "
+                            + LauncherSettings.Favorites.CONTAINER_HOTSEAT);
             return new WorkspaceResult(mBgDataModel, null, mWidgetProvidersMap);
         }
     }
