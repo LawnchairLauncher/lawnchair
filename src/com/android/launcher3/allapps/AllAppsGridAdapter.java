@@ -37,9 +37,6 @@ import androidx.annotation.Nullable;
 import androidx.core.view.accessibility.AccessibilityEventCompat;
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 import androidx.core.view.accessibility.AccessibilityRecordCompat;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.LifecycleRegistry;
 import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -49,6 +46,7 @@ import androidx.slice.widget.SliceView;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.search.AllAppsSearchBarController.PayloadResultHandler;
 import com.android.launcher3.allapps.search.SearchSectionInfo;
@@ -67,8 +65,7 @@ import java.util.function.IntConsumer;
  * The grid view adapter of all the apps.
  */
 public class AllAppsGridAdapter extends
-        RecyclerView.Adapter<AllAppsGridAdapter.ViewHolder> implements
-        LifecycleOwner {
+        RecyclerView.Adapter<AllAppsGridAdapter.ViewHolder> {
 
     public static final String TAG = "AppsGridAdapter";
 
@@ -102,8 +99,6 @@ public class AllAppsGridAdapter extends
     // Common view type masks
     public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_ALL_APPS_DIVIDER;
     public static final int VIEW_TYPE_MASK_ICON = VIEW_TYPE_ICON;
-
-    private final LifecycleRegistry mLifecycleRegistry;
 
     /**
      * ViewHolder for each icon.
@@ -353,12 +348,6 @@ public class AllAppsGridAdapter extends
         mOnIconClickListener = launcher.getItemOnClickListener();
 
         setAppsPerRow(mLauncher.getDeviceProfile().inv.numAllAppsColumns);
-        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
-            mLifecycleRegistry = new LifecycleRegistry(this);
-            mLifecycleRegistry.setCurrentState(Lifecycle.State.STARTED);
-        } else {
-            mLifecycleRegistry = null;
-        }
     }
 
     public void setAppsPerRow(int appsPerRow) {
@@ -525,7 +514,7 @@ public class AllAppsGridAdapter extends
                 });
                 try {
                     LiveData<Slice> liveData = SliceLiveData.fromUri(mLauncher, item.getPayload());
-                    liveData.observe(this::getLifecycle, sliceView);
+                    liveData.observe((Launcher) mLauncher, sliceView);
                     sliceView.setTag(liveData);
                 } catch (Exception ignored) {
                 }
@@ -559,7 +548,7 @@ public class AllAppsGridAdapter extends
             sliceView.setOnSliceActionListener(null);
             if (sliceView.getTag() instanceof LiveData) {
                 LiveData sliceLiveData = (LiveData) sliceView.getTag();
-                sliceLiveData.removeObservers(this::getLifecycle);
+                sliceLiveData.removeObservers((Launcher) mLauncher);
             }
         }
     }
@@ -580,11 +569,5 @@ public class AllAppsGridAdapter extends
     public int getItemViewType(int position) {
         AdapterItem item = mApps.getAdapterItems().get(position);
         return item.viewType;
-    }
-
-    @NonNull
-    @Override
-    public Lifecycle getLifecycle() {
-        return mLifecycleRegistry;
     }
 }
