@@ -22,8 +22,8 @@
     <View
         android:id="@+id/icon"
         android:layout_marginRight="8dp"
-        android:layout_width="@dimen/default_icon_bitmap_size"
-        android:layout_height="@dimen/default_icon_bitmap_size" />
+        android:layout_width="@dimen/deep_shortcut_icon_size"
+        android:layout_height="@dimen/deep_shortcut_icon_size" />
 
     <TextView
         android:layout_width="0dp"
@@ -38,8 +38,8 @@
         android:adjustViewBounds="true"
         android:layout_margin="5dp"
         android:background="?android:attr/selectableItemBackground"
-        android:layout_width="@dimen/default_icon_bitmap_size"
-        android:layout_height="@dimen/default_icon_bitmap_size" />
+        android:layout_width="@dimen/deep_shortcut_icon_size"
+        android:layout_height="@dimen/deep_shortcut_icon_size" />
 
     <ImageButton
         android:id="@+id/provider_1"
@@ -47,8 +47,8 @@
         android:scaleType="fitCenter"
         android:adjustViewBounds="true"
         android:background="?android:attr/selectableItemBackground"
-        android:layout_width="@dimen/default_icon_bitmap_size"
-        android:layout_height="@dimen/default_icon_bitmap_size" />
+        android:layout_width="@dimen/deep_shortcut_icon_size"
+        android:layout_height="@dimen/deep_shortcut_icon_size" />
 
     <ImageButton
         android:id="@+id/provider_2"
@@ -56,7 +56,7 @@
         android:scaleType="fitCenter"
         android:adjustViewBounds="true"
         android:background="?android:attr/selectableItemBackground"
-        android:layout_width="@dimen/default_icon_bitmap_size"
-        android:layout_height="@dimen/default_icon_bitmap_size" />
+        android:layout_width="@dimen/deep_shortcut_icon_size"
+        android:layout_height="@dimen/deep_shortcut_icon_size" />
 
 </com.android.launcher3.views.SearchResultPeopleView>
