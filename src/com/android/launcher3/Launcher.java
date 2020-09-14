@@ -18,6 +18,7 @@ package com.android.launcher3;
 
 import static android.content.pm.ActivityInfo.CONFIG_ORIENTATION;
 import static android.content.pm.ActivityInfo.CONFIG_SCREEN_SIZE;
+import static android.view.View.IMPORTANT_FOR_ACCESSIBILITY_NO;
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
@@ -70,6 +71,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CancellationSignal;
@@ -88,9 +90,10 @@ import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
+import android.view.WindowManager.LayoutParams;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.OvershootInterpolator;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.CallSuper;
@@ -117,6 +120,7 @@ import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.folder.FolderGridOrganizer;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.keyboard.CustomActionsPopup;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
@@ -269,6 +273,8 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     private static final int APPS_VIEW_ALPHA_CHANNEL_INDEX = 1;
     private static final int SCRIM_VIEW_ALPHA_CHANNEL_INDEX = 0;
 
+    private static final int THEME_CROSS_FADE_ANIMATION_DURATION = 375;
+
     private LauncherAppTransitionManager mAppTransitionManager;
     private Configuration mOldConfig;
 
@@ -400,6 +406,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
         inflateRootView(R.layout.launcher);
         setupViews();
+        crossFadeWithPreviousAppearance();
         mPopupDataProvider = new PopupDataProvider(this::updateNotificationDots);
 
         mAppTransitionManager = LauncherAppTransitionManager.newInstance(this);
@@ -476,7 +483,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                 () -> getStateManager().goToState(NORMAL));
 
         if (Utilities.ATLEAST_R) {
-            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
+            getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         }
 
         mLifecycleRegistry = new LifecycleRegistry(this);
@@ -1362,6 +1369,18 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         super.onDetachedFromWindow();
         mOverlayManager.onDetachedFromWindow();
         closeContextMenu();
+    }
+
+    @Override
+    public Object onRetainNonConfigurationInstance() {
+        int width = mDragLayer.getWidth();
+        int height = mDragLayer.getHeight();
+
+        if (width <= 0 || height <= 0) {
+            return null;
+        }
+
+        return BitmapRenderer.createHardwareBitmap(width, height, mDragLayer::draw);
     }
 
     public AllAppsTransitionController getAllAppsController() {
@@ -2757,5 +2776,41 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     public interface OnResumeCallback {
 
         void onLauncherResume();
+    }
+
+    /**
+     * Cross-fades the launcher's updated appearance with its previous appearance.
+     *
+     * This method is used to cross-fade UI updates on activity creation, specifically dark mode
+     * updates.
+     */
+    private void crossFadeWithPreviousAppearance() {
+        Bitmap previousAppearanceBitmap = (Bitmap) getLastNonConfigurationInstance();
+
+        if (previousAppearanceBitmap == null) {
+            return;
+        }
+
+        ImageView crossFadeHelper = new ImageView(this);
+
+        crossFadeHelper.setImageBitmap(previousAppearanceBitmap);
+        crossFadeHelper.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
+
+        InsettableFrameLayout.LayoutParams layoutParams = new InsettableFrameLayout.LayoutParams(
+                InsettableFrameLayout.LayoutParams.MATCH_PARENT,
+                InsettableFrameLayout.LayoutParams.MATCH_PARENT);
+
+        layoutParams.ignoreInsets = true;
+
+        crossFadeHelper.setLayoutParams(layoutParams);
+
+        getRootView().addView(crossFadeHelper);
+
+        crossFadeHelper
+                .animate()
+                .setDuration(THEME_CROSS_FADE_ANIMATION_DURATION)
+                .alpha(0f)
+                .withEndAction(() -> getRootView().removeView(crossFadeHelper))
+                .start();
     }
 }
