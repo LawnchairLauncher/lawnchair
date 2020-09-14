@@ -18,7 +18,9 @@ package com.android.launcher3.views;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_ALL_APPS;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Point;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +43,9 @@ import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
 import com.android.launcher3.touch.ItemLongClickListener;
+import com.android.systemui.plugins.AllAppsSearchPlugin;
+import com.android.systemui.plugins.shared.SearchTarget;
+import com.android.systemui.plugins.shared.SearchTargetEvent;
 
 import java.util.List;
 
@@ -54,6 +59,7 @@ public class HeroSearchResultView extends LinearLayout implements DragSource,
     BubbleTextView mBubbleTextView;
     View mIconView;
     BubbleTextView[] mDeepShortcutTextViews = new BubbleTextView[2];
+    AllAppsSearchPlugin mPlugin;
 
     public HeroSearchResultView(Context context) {
         super(context);
@@ -79,7 +85,10 @@ public class HeroSearchResultView extends LinearLayout implements DragSource,
 
 
         mBubbleTextView = findViewById(R.id.bubble_text);
-        mBubbleTextView.setOnClickListener(launcher.getItemOnClickListener());
+        mBubbleTextView.setOnClickListener(view -> {
+            handleSelection(SearchTargetEvent.SELECT);
+            launcher.getItemOnClickListener().onClick(view);
+        });
         mBubbleTextView.setOnLongClickListener(new HeroItemDragHandler(getContext(), this));
         setLayoutParams(
                 new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, grid.allAppsCellHeightPx));
@@ -91,7 +100,18 @@ public class HeroSearchResultView extends LinearLayout implements DragSource,
             bubbleTextView.setLayoutParams(
                     new LinearLayout.LayoutParams(grid.allAppsIconSizePx,
                             grid.allAppsIconSizePx));
-            bubbleTextView.setOnClickListener(launcher.getItemOnClickListener());
+            bubbleTextView.setOnClickListener(view -> {
+                WorkspaceItemInfo itemInfo = (WorkspaceItemInfo) bubbleTextView.getTag();
+                SearchTargetEvent event = new SearchTargetEvent(
+                        SearchTarget.ItemType.APP_HERO,
+                        SearchTargetEvent.CHILD_SELECT);
+                event.bundle = getAppBundle(itemInfo);
+                event.bundle.putString("shortcut_id", itemInfo.getDeepShortcutId());
+                if (mPlugin != null) {
+                    mPlugin.notifySearchTargetEvent(event);
+                }
+                launcher.getItemOnClickListener().onClick(view);
+            });
         }
     }
 
@@ -110,6 +130,8 @@ public class HeroSearchResultView extends LinearLayout implements DragSource,
                 mDeepShortcutTextViews[i].applyFromItemInfoWithIcon(shorcutInfos.get(i));
             }
         }
+        mPlugin = adapterItem.getPlugin();
+        adapterItem.setSelectionHandler(this::handleSelection);
     }
 
     @Override
@@ -147,7 +169,38 @@ public class HeroSearchResultView extends LinearLayout implements DragSource,
             mLauncher.getWorkspace().beginDragShared(mContainer.mBubbleTextView,
                     draggableView, mContainer, itemInfo, previewProvider, new DragOptions());
 
+            SearchTargetEvent event = new SearchTargetEvent(
+                    SearchTarget.ItemType.APP_HERO, SearchTargetEvent.LONG_PRESS);
+            event.bundle = getAppBundle(itemInfo);
+            if (mContainer.mPlugin != null) {
+                mContainer.mPlugin.notifySearchTargetEvent(event);
+            }
+
             return false;
         }
+    }
+
+    private void handleSelection(int eventType) {
+        ItemInfo itemInfo = (ItemInfo) mBubbleTextView.getTag();
+        if (itemInfo == null) return;
+        Launcher launcher = Launcher.getLauncher(getContext());
+        launcher.startActivitySafely(this, itemInfo.getIntent(), itemInfo);
+
+        SearchTargetEvent event = new SearchTargetEvent(
+                SearchTarget.ItemType.APP_HERO, eventType);
+        event.bundle = getAppBundle(itemInfo);
+        if (mPlugin != null) {
+            mPlugin.notifySearchTargetEvent(event);
+        }
+    }
+
+    /**
+     * Helper method to generate {@link SearchTargetEvent} bundle from {@link ItemInfo}
+     */
+    public static Bundle getAppBundle(ItemInfo itemInfo) {
+        Bundle b = new Bundle();
+        b.putParcelable(Intent.EXTRA_COMPONENT_NAME, itemInfo.getTargetComponent());
+        b.putParcelable(Intent.EXTRA_USER, itemInfo.user);
+        return b;
     }
 }

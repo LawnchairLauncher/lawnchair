@@ -270,11 +270,7 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
                     editText.requestFocus();
                 }
             }
-            if (Float.compare(mProgress, 1f) == 0) {
-                // Called when home gesture closes all apps container.
-                // TODO: should make the controller hide synchronously
-                mInsetController.hide();
-            }
+            // TODO: should make the controller hide synchronously
         }
     }
 }
