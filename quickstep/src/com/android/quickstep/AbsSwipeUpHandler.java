@@ -41,10 +41,14 @@ import static com.android.quickstep.GestureState.STATE_END_TARGET_ANIMATION_FINI
 import static com.android.quickstep.GestureState.STATE_END_TARGET_SET;
 import static com.android.quickstep.GestureState.STATE_RECENTS_SCROLLING_FINISHED;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
+import static com.android.quickstep.TaskUtils.taskIsATargetWithMode;
 import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME;
+import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
@@ -104,6 +108,7 @@ import com.android.systemui.shared.system.TaskInfoCompat;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.function.Consumer;
 
 /**
@@ -1370,15 +1375,62 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
     private void setupLauncherUiAfterSwipeUpToRecentsAnimation() {
         endLauncherTransitionController();
         mActivityInterface.onSwipeUpToRecentsComplete();
-        if (mRecentsAnimationController != null) {
-            mRecentsAnimationController.setDeferCancelUntilNextTransition(true /* defer */,
-                    true /* screenshot */);
-        }
         mRecentsView.onSwipeUpAnimationSuccess();
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            mTaskAnimationManager.setLaunchOtherTaskInLiveTileModeHandler(
+                    this::launchOtherTaskInLiveTileMode);
+        }
 
         SystemUiProxy.INSTANCE.get(mContext).onOverviewShown(false, TAG);
         doLogGesture(RECENTS, mRecentsView.getCurrentPageTaskView());
         reset();
+    }
+
+    private void launchOtherTaskInLiveTileMode(RemoteAnimationTargetCompat appearedTaskTarget) {
+        TaskView taskView = mRecentsView.getTaskView(appearedTaskTarget.taskId);
+        if (taskView == null) {
+            return;
+        }
+
+        RemoteAnimationTargetCompat[] apps = Arrays.copyOf(
+                mRecentsAnimationTargets.apps,
+                mRecentsAnimationTargets.apps.length + 1);
+        apps[apps.length - 1] = appearedTaskTarget;
+        boolean launcherClosing =
+                taskIsATargetWithMode(apps, mActivity.getTaskId(), MODE_CLOSING);
+
+        AnimatorSet anim = new AnimatorSet();
+        TaskViewUtils.composeRecentsLaunchAnimator(
+                anim, taskView, apps,
+                mRecentsAnimationTargets.wallpapers, launcherClosing,
+                mActivity.getStateManager(), mRecentsView,
+                mActivityInterface.getDepthController());
+        anim.addListener(new AnimatorListenerAdapter(){
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                cleanUp(false);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+                cleanUp(true);
+            }
+
+            private void cleanUp(boolean canceled) {
+                if (mRecentsAnimationController != null) {
+                    mRecentsAnimationController.finish(false /* toRecents */,
+                            null /* onFinishComplete */);
+                    if (canceled) {
+                        mRecentsAnimationController = null;
+                    } else {
+                        mActivityInterface.onLaunchTaskSuccess();
+                    }
+                    ActiveGestureLog.INSTANCE.addLog("finishRecentsAnimation", false);
+                }
+            }
+        });
+        anim.start();
     }
 
     private void addLiveTileOverlay() {
@@ -1438,39 +1490,33 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
 
     protected void startNewTask(Consumer<Boolean> resultCallback) {
         // Launch the task user scrolled to (mRecentsView.getNextPage()).
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            // We finish recents animation inside launchTask() when live tile is enabled.
-            mRecentsView.getNextPageTaskView().launchTask(false /* animate */,
-                    true /* freezeTaskList */);
-        } else {
-            if (!mCanceled) {
-                TaskView nextTask = mRecentsView.getNextPageTaskView();
-                if (nextTask != null) {
-                    int taskId = nextTask.getTask().key.id;
-                    mGestureState.updateLastStartedTaskId(taskId);
-                    boolean hasTaskPreviouslyAppeared = mGestureState.getPreviouslyAppearedTaskIds()
-                            .contains(taskId);
-                    nextTask.launchTask(false /* animate */, true /* freezeTaskList */,
-                            success -> {
-                                resultCallback.accept(success);
-                                if (success) {
-                                    if (hasTaskPreviouslyAppeared) {
-                                        onRestartPreviouslyAppearedTask();
-                                    }
-                                } else {
-                                    mActivityInterface.onLaunchTaskFailed();
-                                    nextTask.notifyTaskLaunchFailed(TAG);
-                                    mRecentsAnimationController.finish(true /* toRecents */, null);
+        if (!mCanceled) {
+            TaskView nextTask = mRecentsView.getNextPageTaskView();
+            if (nextTask != null) {
+                int taskId = nextTask.getTask().key.id;
+                mGestureState.updateLastStartedTaskId(taskId);
+                boolean hasTaskPreviouslyAppeared = mGestureState.getPreviouslyAppearedTaskIds()
+                        .contains(taskId);
+                nextTask.launchTask(false /* animate */, true /* freezeTaskList */,
+                        success -> {
+                            resultCallback.accept(success);
+                            if (success) {
+                                if (hasTaskPreviouslyAppeared) {
+                                    onRestartPreviouslyAppearedTask();
                                 }
-                            }, MAIN_EXECUTOR.getHandler());
-                } else {
-                    mActivityInterface.onLaunchTaskFailed();
-                    Toast.makeText(mContext, R.string.activity_not_available, LENGTH_SHORT).show();
-                    mRecentsAnimationController.finish(true /* toRecents */, null);
-                }
+                            } else {
+                                mActivityInterface.onLaunchTaskFailed();
+                                nextTask.notifyTaskLaunchFailed(TAG);
+                                mRecentsAnimationController.finish(true /* toRecents */, null);
+                            }
+                        }, MAIN_EXECUTOR.getHandler());
+            } else {
+                mActivityInterface.onLaunchTaskFailed();
+                Toast.makeText(mContext, R.string.activity_not_available, LENGTH_SHORT).show();
+                mRecentsAnimationController.finish(true /* toRecents */, null);
             }
-            mCanceled = false;
         }
+        mCanceled = false;
     }
 
     /**
