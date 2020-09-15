@@ -67,6 +67,9 @@ import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 import com.android.launcher3.views.SpringRelativeLayout;
+import com.android.systemui.plugins.shared.SearchTargetEvent;
+
+import java.util.function.IntConsumer;
 
 /**
  * The all apps view container.
@@ -538,34 +541,35 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
      * Handles selection on focused view and returns success
      */
     public boolean selectFocusedView(View v) {
-        ItemInfo itemInfo = getHighlightedItemInfo();
-        if (itemInfo != null) {
-            return mLauncher.startActivitySafely(v, itemInfo.getIntent(), itemInfo);
+        ItemInfo headerItem = getHighlightedItemFromHeader();
+        if (headerItem != null) {
+            return mLauncher.startActivitySafely(v, headerItem.getIntent(), headerItem);
         }
         AdapterItem focusedItem = getActiveRecyclerView().getApps().getFocusedChild();
         if (focusedItem instanceof AdapterItemWithPayload) {
-            Runnable onSelection = ((AdapterItemWithPayload) focusedItem).getSelectionHandler();
+            IntConsumer onSelection =
+                    ((AdapterItemWithPayload) focusedItem).getSelectionHandler();
             if (onSelection != null) {
-                onSelection.run();
+                onSelection.accept(SearchTargetEvent.QUICK_SELECT);
                 return true;
             }
+        }
+        if (focusedItem.appInfo != null) {
+            ItemInfo itemInfo = focusedItem.appInfo;
+            return mLauncher.startActivitySafely(v, itemInfo.getIntent(), itemInfo);
         }
         return false;
     }
 
     /**
-     * Returns the ItemInfo of a view that is in focus, ready to be launched by an IME.
+     * Returns the ItemInfo of a focused view inside {@link FloatingHeaderView}
      */
-    public ItemInfo getHighlightedItemInfo() {
+    public ItemInfo getHighlightedItemFromHeader() {
         View view = getFloatingHeaderView().getFocusedChild();
         if (view != null && view.getTag() instanceof ItemInfo) {
             return ((ItemInfo) view.getTag());
         }
-        if (getActiveRecyclerView().getApps().getFocusedChild() != null) {
-            // TODO: when new pipelines are included, getSearchResults
-            // should be supported at recycler view level and not apps list level.
-            return getActiveRecyclerView().getApps().getFocusedChild().appInfo;
-        }
+
         return null;
     }
 

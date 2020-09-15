@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
+import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,9 +37,6 @@ import androidx.annotation.Nullable;
 import androidx.core.view.accessibility.AccessibilityEventCompat;
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 import androidx.core.view.accessibility.AccessibilityRecordCompat;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.LifecycleRegistry;
 import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -48,21 +46,26 @@ import androidx.slice.widget.SliceView;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.search.AllAppsSearchBarController.PayloadResultHandler;
 import com.android.launcher3.allapps.search.SearchSectionInfo;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.util.PackageManagerHelper;
+import com.android.launcher3.views.HeroSearchResultView;
+import com.android.systemui.plugins.AllAppsSearchPlugin;
+import com.android.systemui.plugins.shared.SearchTarget;
+import com.android.systemui.plugins.shared.SearchTargetEvent;
 
 import java.util.List;
+import java.util.function.IntConsumer;
 
 /**
  * The grid view adapter of all the apps.
  */
 public class AllAppsGridAdapter extends
-        RecyclerView.Adapter<AllAppsGridAdapter.ViewHolder> implements
-        LifecycleOwner {
+        RecyclerView.Adapter<AllAppsGridAdapter.ViewHolder> {
 
     public static final String TAG = "AppsGridAdapter";
 
@@ -89,11 +92,13 @@ public class AllAppsGridAdapter extends
 
     public static final int VIEW_TYPE_SEARCH_SLICE = 1 << 9;
 
+    public static final int VIEW_TYPE_SEARCH_SHORTCUT = 1 << 10;
+
+    public static final int VIEW_TYPE_SEARCH_PEOPLE = 1 << 11;
+
     // Common view type masks
     public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_ALL_APPS_DIVIDER;
     public static final int VIEW_TYPE_MASK_ICON = VIEW_TYPE_ICON;
-
-    private final LifecycleRegistry mLifecycleRegistry;
 
     /**
      * ViewHolder for each icon.
@@ -179,7 +184,9 @@ public class AllAppsGridAdapter extends
                     || viewType == VIEW_TYPE_SEARCH_HERO_APP
                     || viewType == VIEW_TYPE_SEARCH_ROW_WITH_BUTTON
                     || viewType == VIEW_TYPE_SEARCH_SLICE
-                    || viewType == VIEW_TYPE_SEARCH_ROW;
+                    || viewType == VIEW_TYPE_SEARCH_ROW
+                    || viewType == VIEW_TYPE_SEARCH_PEOPLE
+                    || viewType == VIEW_TYPE_SEARCH_SHORTCUT;
         }
     }
 
@@ -190,18 +197,28 @@ public class AllAppsGridAdapter extends
      */
     public static class AdapterItemWithPayload<T> extends AdapterItem {
         private T mPayload;
-        private Runnable mSelectionHandler;
+        private AllAppsSearchPlugin mPlugin;
+        private IntConsumer mSelectionHandler;
 
-        public AdapterItemWithPayload(T payload, int type) {
-            mPayload = payload;
-            viewType = type;
+        public AllAppsSearchPlugin getPlugin() {
+            return mPlugin;
         }
 
-        public void setSelectionHandler(Runnable runnable) {
+        public void setPlugin(AllAppsSearchPlugin plugin) {
+            mPlugin = plugin;
+        }
+
+        public AdapterItemWithPayload(T payload, int type, AllAppsSearchPlugin plugin) {
+            mPayload = payload;
+            viewType = type;
+            mPlugin = plugin;
+        }
+
+        public void setSelectionHandler(IntConsumer runnable) {
             mSelectionHandler = runnable;
         }
 
-        public Runnable getSelectionHandler() {
+        public IntConsumer getSelectionHandler() {
             return mSelectionHandler;
         }
 
@@ -331,12 +348,6 @@ public class AllAppsGridAdapter extends
         mOnIconClickListener = launcher.getItemOnClickListener();
 
         setAppsPerRow(mLauncher.getDeviceProfile().inv.numAllAppsColumns);
-        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
-            mLifecycleRegistry = new LifecycleRegistry(this);
-            mLifecycleRegistry.setCurrentState(Lifecycle.State.STARTED);
-        } else {
-            mLifecycleRegistry = null;
-        }
     }
 
     public void setAppsPerRow(int appsPerRow) {
@@ -390,10 +401,12 @@ public class AllAppsGridAdapter extends
             case VIEW_TYPE_ICON:
                 BubbleTextView icon = (BubbleTextView) mLayoutInflater.inflate(
                         R.layout.all_apps_icon, parent, false);
-                icon.setOnClickListener(mOnIconClickListener);
-                icon.setOnLongClickListener(mOnIconLongClickListener);
                 icon.setLongPressTimeoutFactor(1f);
                 icon.setOnFocusChangeListener(mIconFocusListener);
+                if (!FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
+                    icon.setOnClickListener(mOnIconClickListener);
+                    icon.setOnLongClickListener(mOnIconLongClickListener);
+                }
 
                 // Ensure the all apps icon height matches the workspace icons in portrait mode.
                 icon.getLayoutParams().height = mLauncher.getDeviceProfile().allAppsCellHeightPx;
@@ -413,7 +426,6 @@ public class AllAppsGridAdapter extends
             case VIEW_TYPE_SEARCH_CORPUS_TITLE:
                 return new ViewHolder(
                         mLayoutInflater.inflate(R.layout.search_section_title, parent, false));
-
             case VIEW_TYPE_SEARCH_HERO_APP:
                 return new ViewHolder(mLayoutInflater.inflate(
                         R.layout.search_result_hero_app, parent, false));
@@ -426,6 +438,12 @@ public class AllAppsGridAdapter extends
             case VIEW_TYPE_SEARCH_SLICE:
                 return new ViewHolder(mLayoutInflater.inflate(
                         R.layout.search_result_slice, parent, false));
+            case VIEW_TYPE_SEARCH_SHORTCUT:
+                return new ViewHolder(mLayoutInflater.inflate(
+                        R.layout.search_result_shortcut, parent, false));
+            case VIEW_TYPE_SEARCH_PEOPLE:
+                return new ViewHolder(mLayoutInflater.inflate(
+                        R.layout.search_result_people_item, parent, false));
             default:
                 throw new RuntimeException("Unexpected view type");
         }
@@ -435,10 +453,36 @@ public class AllAppsGridAdapter extends
     public void onBindViewHolder(ViewHolder holder, int position) {
         switch (holder.getItemViewType()) {
             case VIEW_TYPE_ICON:
-                AppInfo info = mApps.getAdapterItems().get(position).appInfo;
+                AdapterItem adapterItem = mApps.getAdapterItems().get(position);
+                AppInfo info = adapterItem.appInfo;
                 BubbleTextView icon = (BubbleTextView) holder.itemView;
                 icon.reset();
                 icon.applyFromApplicationInfo(info);
+                if (!FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
+                    break;
+                }
+                //TODO: replace with custom TopHitBubbleTextView with support for both shortcut
+                // and apps
+                if (adapterItem instanceof AdapterItemWithPayload) {
+                    AdapterItemWithPayload withPayload = (AdapterItemWithPayload) adapterItem;
+                    IntConsumer selectionHandler = type -> {
+                        SearchTargetEvent e = new SearchTargetEvent(SearchTarget.ItemType.APP,
+                                type);
+                        e.bundle = HeroSearchResultView.getAppBundle(info);
+                        if (withPayload.getPlugin() != null) {
+                            withPayload.getPlugin().notifySearchTargetEvent(e);
+                        }
+                    };
+                    icon.setOnClickListener(view -> {
+                        selectionHandler.accept(SearchTargetEvent.SELECT);
+                        mOnIconClickListener.onClick(view);
+                    });
+                    icon.setOnLongClickListener(view -> {
+                        selectionHandler.accept(SearchTargetEvent.LONG_PRESS);
+                        return mOnIconLongClickListener.onLongClick(view);
+                    });
+                    withPayload.setSelectionHandler(selectionHandler);
+                }
                 break;
             case VIEW_TYPE_EMPTY_SEARCH:
                 TextView emptyViewText = (TextView) holder.itemView;
@@ -456,11 +500,22 @@ public class AllAppsGridAdapter extends
                 break;
             case VIEW_TYPE_SEARCH_SLICE:
                 SliceView sliceView = (SliceView) holder.itemView;
-                Uri uri = ((AdapterItemWithPayload<Uri>) mApps.getAdapterItems().get(position))
-                        .getPayload();
+                AdapterItemWithPayload<Uri> item =
+                        (AdapterItemWithPayload<Uri>) mApps.getAdapterItems().get(position);
+                sliceView.setOnSliceActionListener((info1, s) -> {
+                    if (item.getPlugin() != null) {
+                        SearchTargetEvent searchTargetEvent = new SearchTargetEvent(
+                                SearchTarget.ItemType.SETTINGS_SLICE,
+                                SearchTargetEvent.CHILD_SELECT);
+                        searchTargetEvent.bundle = new Bundle();
+                        searchTargetEvent.bundle.putParcelable("uri", item.getPayload());
+                        item.getPlugin().notifySearchTargetEvent(searchTargetEvent);
+                    }
+                });
                 try {
-                    LiveData<Slice> liveData = SliceLiveData.fromUri(mLauncher, uri);
-                    liveData.observe(this::getLifecycle, sliceView);
+                    LiveData<Slice> liveData = SliceLiveData.fromUri(mLauncher, item.getPayload());
+                    liveData.observe((Launcher) mLauncher, sliceView);
+                    sliceView.setTag(liveData);
                 } catch (Exception ignored) {
                 }
                 break;
@@ -468,6 +523,8 @@ public class AllAppsGridAdapter extends
             case VIEW_TYPE_SEARCH_ROW_WITH_BUTTON:
             case VIEW_TYPE_SEARCH_HERO_APP:
             case VIEW_TYPE_SEARCH_ROW:
+            case VIEW_TYPE_SEARCH_SHORTCUT:
+            case VIEW_TYPE_SEARCH_PEOPLE:
                 PayloadResultHandler payloadResultView = (PayloadResultHandler) holder.itemView;
                 payloadResultView.applyAdapterInfo(
                         (AdapterItemWithPayload) mApps.getAdapterItems().get(position));
@@ -477,6 +534,25 @@ public class AllAppsGridAdapter extends
                 break;
         }
     }
+
+    @Override
+    public void onViewRecycled(@NonNull ViewHolder holder) {
+        super.onViewRecycled(holder);
+        if (!FeatureFlags.ENABLE_DEVICE_SEARCH.get()) return;
+        if (holder.itemView instanceof BubbleTextView) {
+            BubbleTextView icon = (BubbleTextView) holder.itemView;
+            icon.setOnClickListener(mOnIconClickListener);
+            icon.setOnLongClickListener(mOnIconLongClickListener);
+        } else if (holder.itemView instanceof SliceView) {
+            SliceView sliceView = (SliceView) holder.itemView;
+            sliceView.setOnSliceActionListener(null);
+            if (sliceView.getTag() instanceof LiveData) {
+                LiveData sliceLiveData = (LiveData) sliceView.getTag();
+                sliceLiveData.removeObservers((Launcher) mLauncher);
+            }
+        }
+    }
+
 
     @Override
     public boolean onFailedToRecycleView(ViewHolder holder) {
@@ -493,11 +569,5 @@ public class AllAppsGridAdapter extends
     public int getItemViewType(int position) {
         AdapterItem item = mApps.getAdapterItems().get(position);
         return item.viewType;
-    }
-
-    @NonNull
-    @Override
-    public Lifecycle getLifecycle() {
-        return mLifecycleRegistry;
     }
 }
