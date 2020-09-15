@@ -35,12 +35,11 @@ import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_CLEAR_ALL;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_DISMISS_SWIPE_UP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_SWIPE_DOWN;
 import static com.android.launcher3.statehandlers.DepthController.DEPTH;
 import static com.android.launcher3.uioverrides.touchcontrollers.TaskViewTouchController.SUCCESS_TRANSITION_PROGRESS;
-import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.TAP;
-import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType.CLEAR_ALL_BUTTON;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
 import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
@@ -108,7 +107,6 @@ import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.touch.PagedOrientationHandler.CurveProperties;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.DynamicResource;
 import com.android.launcher3.util.MultiValueAlpha;
@@ -1463,7 +1461,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     public PendingAnimation createTaskDismissAnimation(TaskView taskView, boolean animateTaskView,
             boolean shouldRemoveTask, long duration) {
         if (mPendingAnimation != null) {
-            mPendingAnimation.finish(false, Touch.SWIPE);
+            mPendingAnimation.finish(false);
         }
         PendingAnimation anim = new PendingAnimation(duration);
 
@@ -1625,7 +1623,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     protected void runDismissAnimation(PendingAnimation pendingAnim) {
         AnimatorPlaybackController controller = pendingAnim.createPlaybackController();
         controller.dispatchOnStart();
-        controller.setEndAction(() -> pendingAnim.finish(true, Touch.SWIPE));
+        controller.setEndAction(() -> pendingAnim.finish(true));
         controller.getAnimationPlayer().setInterpolator(FAST_OUT_SLOW_IN);
         controller.start();
     }
@@ -1638,7 +1636,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     @SuppressWarnings("unused")
     private void dismissAllTasks(View view) {
         runDismissAnimation(createAllTasksDismissAnimation(DISMISS_TASK_DURATION));
-        mActivity.getUserEventDispatcher().logActionOnControl(TAP, CLEAR_ALL_BUTTON);
+        mActivity.getStatsLogManager().logger().log(LAUNCHER_TASK_CLEAR_ALL);
     }
 
     private void dismissCurrentTask() {

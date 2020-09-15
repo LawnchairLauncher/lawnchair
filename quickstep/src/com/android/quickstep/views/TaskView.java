@@ -73,15 +73,11 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PendingAnimation;
-import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.PagedOrientationHandler;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.TransformingTouchDelegate;
 import com.android.launcher3.util.ViewPool.Reusable;
@@ -368,7 +364,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                 this, RECENTS_LAUNCH_DURATION, TOUCH_RESPONSE_INTERPOLATOR);
         AnimatorPlaybackController currentAnimation = pendingAnimation.createPlaybackController();
         currentAnimation.setEndAction(() -> {
-            pendingAnimation.finish(true, Touch.SWIPE);
+            pendingAnimation.finish(true);
             launchTask(false);
         });
         return currentAnimation;
@@ -483,15 +479,13 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         }
     }
 
-    private boolean showTaskMenu(int action) {
+    private boolean showTaskMenu() {
         if (!getRecentsView().isClearAllHidden()) {
             getRecentsView().snapToPage(getRecentsView().indexOfChild(this));
         } else {
             mMenuView = TaskMenuView.showForTask(this);
             mActivity.getStatsLogManager().logger().withItemInfo(getItemInfo())
                     .log(LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS);
-            UserEventDispatcher.newInstance(getContext()).logActionOnItem(action, Direction.NONE,
-                    LauncherLogProto.ItemType.TASK_ICON);
             if (mMenuView != null) {
                 mMenuView.addOnAttachStateChangeListener(mTaskMenuStateListener);
             }
@@ -502,10 +496,10 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private void setIcon(Drawable icon) {
         if (icon != null) {
             mIconView.setDrawable(icon);
-            mIconView.setOnClickListener(v -> showTaskMenu(Touch.TAP));
+            mIconView.setOnClickListener(v -> showTaskMenu());
             mIconView.setOnLongClickListener(v -> {
                 requestDisallowInterceptTouchEvent(true);
-                return showTaskMenu(Touch.LONGPRESS);
+                return showTaskMenu();
             });
         } else {
             mIconView.setDrawable(null);

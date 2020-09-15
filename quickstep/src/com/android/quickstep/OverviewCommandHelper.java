@@ -30,7 +30,6 @@ import android.view.ViewConfiguration;
 import androidx.annotation.BinderThread;
 
 import com.android.launcher3.statemanager.StatefulActivity;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.views.RecentsView;
@@ -150,7 +149,6 @@ public class OverviewCommandHelper {
         private final AppToOverviewAnimationProvider<T> mAnimationProvider;
 
         private final long mToggleClickedTime = SystemClock.uptimeMillis();
-        private boolean mUserEventLogged;
         private ActivityInitListener mListener;
 
         public RecentsActivityCommand() {
@@ -212,13 +210,6 @@ public class OverviewCommandHelper {
 
         private boolean onActivityReady(Boolean wasVisible) {
             final T activity = mActivityInterface.getCreatedActivity();
-            if (!mUserEventLogged) {
-                activity.getUserEventDispatcher().logActionCommand(
-                        LauncherLogProto.Action.Command.RECENTS_BUTTON,
-                        mActivityInterface.getContainerType(),
-                        LauncherLogProto.ContainerType.TASKSWITCHER);
-                mUserEventLogged = true;
-            }
             return mAnimationProvider.onActivityReady(activity, wasVisible);
         }
 

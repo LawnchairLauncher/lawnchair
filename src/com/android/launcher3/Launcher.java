@@ -37,11 +37,10 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_LAUNCHER_LOAD;
-import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
+import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ONRESUME;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ONSTOP;
-import static com.android.launcher3.logging.StatsLogManager.containerTypeToAtomState;
 import static com.android.launcher3.model.ItemInstallQueue.FLAG_ACTIVITY_PAUSED;
 import static com.android.launcher3.model.ItemInstallQueue.FLAG_DRAG_AND_DROP;
 import static com.android.launcher3.model.ItemInstallQueue.FLAG_LOADER_RUNNING;
@@ -127,7 +126,6 @@ import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.logging.StatsLogManager;
-import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.ItemInstallQueue;
 import com.android.launcher3.model.ModelUtils;
@@ -155,9 +153,6 @@ import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.AllAppsSwipeController;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ActivityResultInfo;
 import com.android.launcher3.util.ActivityTracker;
 import com.android.launcher3.util.ComponentKey;
@@ -561,7 +556,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     }
 
     private void onIdpChanged(InvariantDeviceProfile idp) {
-        mUserEventDispatcher = null;
 
         initDeviceProfile(idp);
         dispatchDeviceProfileChanged();
@@ -917,7 +911,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
             mOverlayManager.onActivityStopped(this);
         }
 
-        logStopAndResume(Action.Command.STOP);
+        logStopAndResume(false /* isResume */);
         mAppWidgetHost.setListenIfResumed(false);
         NotificationListener.removeNotificationsChangedListener();
     }
@@ -939,7 +933,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     @Override
     @CallSuper
     protected void onDeferredResumed() {
-        logStopAndResume(Action.Command.RESUME);
+        logStopAndResume(true /* isResume */);
 
         // Process any items that were added while Launcher was away.
         ItemInstallQueue.INSTANCE.get(this)
@@ -956,32 +950,28 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
     protected void handlePendingActivityRequest() { }
 
-    private void logStopAndResume(int command) {
+    private void logStopAndResume(boolean isResume) {
         if (mPendingExecutor != null) return;
         int pageIndex = mWorkspace.isOverlayShown() ? -1 : mWorkspace.getCurrentPage();
-        int containerType = mStateManager.getState().containerType;
+        int statsLogOrdinal = mStateManager.getState().statsLogOrdinal;
 
         StatsLogManager.EventEnum event;
         StatsLogManager.StatsLogger logger = getStatsLogManager().logger();
-        if (command == Action.Command.RESUME) {
+        if (isResume) {
             logger.withSrcState(LAUNCHER_STATE_BACKGROUND)
-                .withDstState(containerTypeToAtomState(mStateManager.getState().containerType));
+                .withDstState(mStateManager.getState().statsLogOrdinal);
             event = LAUNCHER_ONRESUME;
         } else { /* command == Action.Command.STOP */
-            logger.withSrcState(containerTypeToAtomState(mStateManager.getState().containerType))
+            logger.withSrcState(mStateManager.getState().statsLogOrdinal)
                     .withDstState(LAUNCHER_STATE_BACKGROUND);
             event = LAUNCHER_ONSTOP;
         }
 
-        if (containerType == ContainerType.WORKSPACE && mWorkspace != null) {
-            getUserEventDispatcher().logActionCommand(command,
-                    containerType, -1, pageIndex);
+        if (statsLogOrdinal == LAUNCHER_STATE_HOME && mWorkspace != null) {
             logger.withContainerInfo(LauncherAtom.ContainerInfo.newBuilder()
                     .setWorkspace(
                             LauncherAtom.WorkspaceContainer.newBuilder()
                                     .setPageIndex(pageIndex)).build());
-        } else {
-            getUserEventDispatcher().logActionCommand(command, containerType, -1);
         }
         logger.log(event);
     }
@@ -1483,11 +1473,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
             }
 
             // Handle HOME_INTENT
-            UserEventDispatcher ued = getUserEventDispatcher();
-            Target target = newContainerTarget(mStateManager.getState().containerType);
-            target.pageIndex = mWorkspace.getCurrentPage();
-            ued.logActionCommand(Action.Command.HOME_INTENT, target,
-                    newContainerTarget(ContainerType.WORKSPACE));
             hideKeyboard();
 
             if (mLauncherCallbacks != null) {

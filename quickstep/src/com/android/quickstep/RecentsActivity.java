@@ -118,7 +118,6 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
          * etc.)
          */
     protected void onHandleConfigChanged() {
-        mUserEventDispatcher = null;
         initDeviceProfile();
 
         AbstractFloatingView.closeOpenViews(this, true,
