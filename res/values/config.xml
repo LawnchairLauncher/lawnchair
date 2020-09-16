@@ -59,7 +59,6 @@
     <bool name="hotseat_transpose_layout_with_orientation">true</bool>
 
     <!-- Various classes overriden by projects/build flavors. -->
-    <string name="app_filter_class" translatable="false"></string>
     <string name="user_event_dispatcher_class" translatable="false"></string>
     <string name="folder_name_provider_class" translatable="false"></string>
     <string name="stats_log_manager_class" translatable="false"></string>
@@ -187,4 +186,6 @@
 
     <string-array name="live_wallpapers_remove_sysui_scrims">
     </string-array>
+
+    <string-array name="filtered_components" ></string-array>
 </resources>

@@ -184,11 +184,15 @@ public class MotionPauseDetector {
         }
         if (mIsPaused != isPaused) {
             mIsPaused = isPaused;
+            boolean isFirstDetectedPause = !mHasEverBeenPaused && mIsPaused;
             if (mIsPaused) {
                 AccessibilityManagerCompat.sendPauseDetectedEventToTest(mContext);
                 mHasEverBeenPaused = true;
             }
             if (mOnMotionPauseListener != null) {
+                if (isFirstDetectedPause) {
+                    mOnMotionPauseListener.onMotionPauseDetected();
+                }
                 mOnMotionPauseListener.onMotionPauseChanged(mIsPaused);
             }
         }
@@ -211,7 +215,10 @@ public class MotionPauseDetector {
     }
 
     public interface OnMotionPauseListener {
-        void onMotionPauseChanged(boolean isPaused);
+        /** Called only the first time motion pause is detected. */
+        void onMotionPauseDetected();
+        /** Called every time motion changes from paused to not paused and vice versa. */
+        default void onMotionPauseChanged(boolean isPaused) { }
     }
 
     /**

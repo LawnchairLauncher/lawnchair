@@ -122,7 +122,7 @@ public class LauncherAppState {
         mInvariantDeviceProfile = InvariantDeviceProfile.INSTANCE.get(context);
         mIconCache = new IconCache(mContext, mInvariantDeviceProfile, iconCacheFileName);
         mWidgetCache = new WidgetPreviewLoader(mContext, mIconCache);
-        mModel = new LauncherModel(context, this, mIconCache, AppFilter.newInstance(mContext));
+        mModel = new LauncherModel(context, this, mIconCache, new AppFilter(mContext));
     }
 
     protected void onNotificationSettingsChanged(boolean areNotificationDotsEnabled) {

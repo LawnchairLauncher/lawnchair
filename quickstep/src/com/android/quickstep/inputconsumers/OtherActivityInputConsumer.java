@@ -28,6 +28,7 @@ import static com.android.launcher3.PagedView.DEBUG_FAILED_QUICKSWITCH;
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.util.TraceHelper.FLAG_CHECK_FOR_RACE_CONDITIONS;
+import static com.android.launcher3.util.VelocityUtils.PX_PER_MS;
 import static com.android.quickstep.GestureState.STATE_OVERSCROLL_WINDOW_CREATED;
 import static com.android.quickstep.util.ActiveGestureLog.INTENT_EXTRA_LOG_TRACE_ID;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
@@ -52,9 +53,9 @@ import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.TraceHelper;
-import com.android.quickstep.BaseActivityInterface;
 import com.android.quickstep.AbsSwipeUpHandler;
 import com.android.quickstep.AbsSwipeUpHandler.Factory;
+import com.android.quickstep.BaseActivityInterface;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.RecentsAnimationCallbacks;
@@ -365,7 +366,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         mInteractionHandler = mHandlerFactory.newHandler(mGestureState, touchTimeMs,
                 mTaskAnimationManager.isRecentsAnimationRunning());
         mInteractionHandler.setGestureEndCallback(this::onInteractionGestureFinished);
-        mMotionPauseDetector.setOnMotionPauseListener(mInteractionHandler::onMotionPauseChanged);
+        mMotionPauseDetector.setOnMotionPauseListener(mInteractionHandler.getMotionPauseListener());
         Intent intent = new Intent(mInteractionHandler.getLaunchIntent());
         mInteractionHandler.initWhenReady(intent);
 
@@ -393,8 +394,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
             if (ev.getActionMasked() == ACTION_CANCEL) {
                 mInteractionHandler.onGestureCancelled();
             } else {
-                mVelocityTracker.computeCurrentVelocity(1000,
-                        ViewConfiguration.get(this).getScaledMaximumFlingVelocity());
+                mVelocityTracker.computeCurrentVelocity(PX_PER_MS);
                 float velocityX = mVelocityTracker.getXVelocity(mActivePointerId);
                 float velocityY = mVelocityTracker.getYVelocity(mActivePointerId);
                 float velocity = mNavBarPosition.isRightEdge()
