@@ -149,6 +149,9 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_OVERVIEW_SHARE = getDebugFlag(
             "ENABLE_OVERVIEW_SHARE", false, "Show Share button in Overview Actions");
 
+    public static final BooleanFlag ENABLE_OVERVIEW_CONTENT_PUSH = getDebugFlag(
+            "ENABLE_OVERVIEW_CONTENT_PUSH", false, "Show Content Push button in Overview Actions");
+
     public static final BooleanFlag ENABLE_DATABASE_RESTORE = getDebugFlag(
             "ENABLE_DATABASE_RESTORE", true,
             "Enable database restore when new restore session is created");

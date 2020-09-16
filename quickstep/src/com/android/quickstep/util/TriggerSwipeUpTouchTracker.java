@@ -21,13 +21,14 @@ import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_UP;
 
 import static com.android.launcher3.Utilities.squaredHypot;
+import static com.android.launcher3.util.VelocityUtils.PX_PER_MS;
 
 import android.content.Context;
 import android.graphics.PointF;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
-import android.view.ViewConfiguration;
 
+import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 
 /**
@@ -50,7 +51,8 @@ public class TriggerSwipeUpTouchTracker {
             NavBarPosition navBarPosition, Runnable onInterceptTouch,
             OnSwipeUpListener onSwipeUp) {
         mSquaredTouchSlop = Utilities.squaredTouchSlop(context);
-        mMinFlingVelocity = ViewConfiguration.get(context).getScaledMinimumFlingVelocity();
+        mMinFlingVelocity = context.getResources().getDimension(
+                R.dimen.quickstep_fling_threshold_speed);
         mNavBarPosition = navBarPosition;
         mDisableHorizontalSwipe = disableHorizontalSwipe;
         mOnInterceptTouch = onInterceptTouch;
@@ -130,7 +132,7 @@ public class TriggerSwipeUpTouchTracker {
     }
 
     private void onGestureEnd(MotionEvent ev) {
-        mVelocityTracker.computeCurrentVelocity(1000);
+        mVelocityTracker.computeCurrentVelocity(PX_PER_MS);
         float velocityX = mVelocityTracker.getXVelocity();
         float velocityY = mVelocityTracker.getYVelocity();
         float velocity = mNavBarPosition.isRightEdge()

@@ -75,6 +75,7 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
     private final float mMotionPauseMinDisplacement;
 
     private boolean mDidTouchStartInNavBar;
+    private boolean mStartedOverview;
     private boolean mReachedOverview;
     // The last recorded displacement before we reached overview.
     private PointF mStartDisplacement = new PointF();
@@ -128,7 +129,7 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
         mMotionPauseDetector.clear();
 
         if (handlingOverviewAnim()) {
-            mMotionPauseDetector.setOnMotionPauseListener(this::onMotionPauseChanged);
+            mMotionPauseDetector.setOnMotionPauseListener(this::onMotionPauseDetected);
         }
 
         if (mFromState == NORMAL && mToState == HINT_STATE) {
@@ -138,6 +139,7 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
                     mFromState.getOverviewScrimAlpha(mLauncher),
                     mToState.getOverviewScrimAlpha(mLauncher));
         }
+        mStartedOverview = false;
         mReachedOverview = false;
         mOverviewResistYAnim = null;
     }
@@ -152,7 +154,7 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
 
     @Override
     public void onDragEnd(float velocity) {
-        if (mMotionPauseDetector.isPaused() && handlingOverviewAnim()) {
+        if (mStartedOverview) {
             goToOverviewOrHomeOnDragEnd(velocity);
         } else {
             super.onDragEnd(velocity);
@@ -185,7 +187,7 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
         }
     }
 
-    private void onMotionPauseChanged(boolean isPaused) {
+    private void onMotionPauseDetected() {
         if (mCurrentAnimation == null) {
             return;
         }
@@ -199,6 +201,7 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
                 maybeSwipeInteractionToOverviewComplete();
             });
         });
+        mStartedOverview = true;
         VibratorWrapper.INSTANCE.get(mLauncher).vibrate(OVERVIEW_HAPTIC);
     }
 
@@ -219,7 +222,7 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
         if (TestProtocol.sDebugTracing) {
             Log.d(TestProtocol.PAUSE_NOT_DETECTED, "NoButtonNavbarToOverviewTouchController");
         }
-        if (mMotionPauseDetector.isPaused()) {
+        if (mStartedOverview) {
             if (!mReachedOverview) {
                 mStartDisplacement.set(xDisplacement, yDisplacement);
                 mStartY = event.getY();
@@ -234,8 +237,6 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
                             * OVERVIEW_MOVEMENT_FACTOR);
                 }
             }
-            // Stay in Overview.
-            return true;
         }
 
         float upDisplacement = -yDisplacement;
@@ -243,13 +244,12 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
                 || upDisplacement < mMotionPauseMinDisplacement);
         mMotionPauseDetector.addPosition(event);
 
-        return super.onDrag(yDisplacement, xDisplacement, event);
+        // Stay in Overview.
+        return mStartedOverview || super.onDrag(yDisplacement, xDisplacement, event);
     }
 
     private void goToOverviewOrHomeOnDragEnd(float velocity) {
-        float velocityDp = dpiFromPx(velocity);
-        boolean isFling = Math.abs(velocityDp) > 1;
-        boolean goToHomeInsteadOfOverview = isFling;
+        boolean goToHomeInsteadOfOverview = !mMotionPauseDetector.isPaused();
         if (goToHomeInsteadOfOverview) {
             new OverviewToHomeAnim(mLauncher, ()-> onSwipeInteractionCompleted(NORMAL, Touch.FLING))
                     .animateWithVelocity(velocity);

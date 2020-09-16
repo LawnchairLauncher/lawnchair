@@ -36,13 +36,10 @@ import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_7;
 import static com.android.launcher3.anim.Interpolators.clampToProgress;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_DEPTH;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_SCALE;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_TRANSLATE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SCALE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_X;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_Y;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_VERTICAL_PROGRESS;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_SCALE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_TRANSLATE;
@@ -64,7 +61,6 @@ import com.android.launcher3.LauncherState.ScaleAndTranslation;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsTransitionController;
-import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.quickstep.SysUINavigationMode;
@@ -81,18 +77,14 @@ public class QuickstepAtomicAnimationFactory extends
     private static final float RECENTS_PREPARE_SCALE = 1.33f;
 
     public static final int INDEX_SHELF_ANIM = RecentsAtomicAnimationFactory.NEXT_INDEX + 0;
-    public static final int INDEX_PAUSE_TO_OVERVIEW_ANIM =
-            RecentsAtomicAnimationFactory.NEXT_INDEX + 1;
 
-    private static final int MY_ANIM_COUNT = 2;
+    private static final int MY_ANIM_COUNT = 1;
     protected static final int NEXT_INDEX = RecentsAtomicAnimationFactory.NEXT_INDEX
             + MY_ANIM_COUNT;
 
     // Due to use of physics, duration may differ between devices so we need to calculate and
     // cache the value.
     private int mHintToNormalDuration = -1;
-
-    public static final long ATOMIC_DURATION_FROM_PAUSED_TO_OVERVIEW = 300;
 
     public QuickstepAtomicAnimationFactory(QuickstepLauncher activity) {
         super(activity, MY_ANIM_COUNT);
@@ -131,21 +123,6 @@ public class QuickstepAtomicAnimationFactory extends
                 }
 
                 return springAnim;
-            }
-            case INDEX_PAUSE_TO_OVERVIEW_ANIM: {
-                StateAnimationConfig config = new StateAnimationConfig();
-                config.duration = ATOMIC_DURATION_FROM_PAUSED_TO_OVERVIEW;
-
-                config.setInterpolator(ANIM_VERTICAL_PROGRESS, OVERSHOOT_1_2);
-                config.setInterpolator(ANIM_ALL_APPS_FADE, DEACCEL_3);
-                if ((OVERVIEW.getVisibleElements(mActivity) & HOTSEAT_ICONS) != 0) {
-                    config.setInterpolator(ANIM_HOTSEAT_SCALE, OVERSHOOT_1_2);
-                    config.setInterpolator(ANIM_HOTSEAT_TRANSLATE, OVERSHOOT_1_2);
-                }
-
-                StateManager<LauncherState> stateManager = mActivity.getStateManager();
-                return stateManager.createAtomicAnimation(
-                        stateManager.getCurrentStableState(), OVERVIEW, config);
             }
             default:
                 return super.createStateElementAnimation(index, values);

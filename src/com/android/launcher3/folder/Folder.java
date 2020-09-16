@@ -17,6 +17,7 @@
 package com.android.launcher3.folder;
 
 import static android.text.TextUtils.isEmpty;
+import static android.view.WindowInsetsAnimation.Callback.DISPATCH_MODE_STOP;
 
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherState.NORMAL;
@@ -34,8 +35,10 @@ import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetHostView;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Insets;
 import android.graphics.Path;
 import android.graphics.Rect;
+import android.os.Build;
 import android.text.InputType;
 import android.text.Selection;
 import android.text.TextUtils;
@@ -47,10 +50,15 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
+import android.view.WindowInsets;
+import android.view.WindowInsetsAnimation;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Alarm;
@@ -252,6 +260,13 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         int measureSpec = MeasureSpec.UNSPECIFIED;
         mFooter.measure(measureSpec, measureSpec);
         mFooterHeight = mFooter.getMeasuredHeight();
+
+        if (Utilities.ATLEAST_R) {
+            WindowInsetsAnimation.Callback cb = new FolderWindowInsetsAnimationCallback(
+                    DISPATCH_MODE_STOP, this);
+
+            setWindowInsetsAnimationCallback(cb);
+        }
     }
 
     public boolean onLongClick(View v) {
@@ -371,6 +386,26 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
             return true;
         }
         return false;
+    }
+
+    @Override
+    public WindowInsets onApplyWindowInsets(WindowInsets windowInsets) {
+        if (Utilities.ATLEAST_R) {
+            this.setTranslationY(0);
+
+            if (windowInsets.isVisible(WindowInsets.Type.ime())) {
+                Insets keyboardInsets = windowInsets.getInsets(WindowInsets.Type.ime());
+                int folderHeightFromBottom = getHeightFromBottom();
+
+                if (keyboardInsets.bottom > folderHeightFromBottom) {
+                    // Translate this folder above the keyboard, then add the folder name's padding
+                    this.setTranslationY(folderHeightFromBottom - keyboardInsets.bottom
+                            - mFolderName.getPaddingBottom());
+                }
+            }
+        }
+
+        return windowInsets;
     }
 
     public FolderIcon getFolderIcon() {
@@ -1645,5 +1680,65 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     public void logFolderLabelState(FromState fromState, ToState toState) {
         mLauncher.getUserEventDispatcher()
                 .logLauncherEvent(mInfo.getFolderLabelStateLauncherEvent(fromState, toState));
+    }
+
+    /** Returns the height of the current folder's bottom edge from the bottom of the screen. */
+    private int getHeightFromBottom() {
+        DragLayer.LayoutParams layoutParams = (DragLayer.LayoutParams) getLayoutParams();
+        int folderBottomPx = layoutParams.y + layoutParams.height;
+        int windowBottomPx = mLauncher.getDeviceProfile().heightPx;
+
+        return windowBottomPx - folderBottomPx;
+    }
+
+    /** Callback that animates a folder sliding up above the ime. */
+    @RequiresApi(api = Build.VERSION_CODES.R)
+    private static class FolderWindowInsetsAnimationCallback
+            extends WindowInsetsAnimation.Callback {
+
+        private final Folder mFolder;
+        float mFolderTranslationStart;
+        float mFolderTranslationEnd;
+
+        FolderWindowInsetsAnimationCallback(int dispatchMode, Folder folder) {
+            super(dispatchMode);
+
+            mFolder = folder;
+        }
+
+        @Override
+        public void onPrepare(@NonNull WindowInsetsAnimation animation) {
+            mFolderTranslationStart = mFolder.getTranslationY();
+        }
+
+        @NonNull
+        @Override
+        public WindowInsetsAnimation.Bounds onStart(
+                @NonNull WindowInsetsAnimation animation,
+                @NonNull WindowInsetsAnimation.Bounds bounds) {
+            mFolderTranslationEnd = mFolder.getTranslationY();
+
+            mFolder.setTranslationY(mFolderTranslationStart);
+
+            return super.onStart(animation, bounds);
+        }
+
+        @NonNull
+        @Override
+        public WindowInsets onProgress(@NonNull WindowInsets windowInsets,
+                @NonNull List<WindowInsetsAnimation> list) {
+            if (list.size() == 0) {
+                mFolder.setTranslationY(0);
+
+                return windowInsets;
+            }
+            float progress = list.get(0).getInterpolatedFraction();
+
+            mFolder.setTranslationY(
+                    Utilities.mapRange(progress, mFolderTranslationStart, mFolderTranslationEnd));
+
+            return windowInsets;
+        }
+
     }
 }

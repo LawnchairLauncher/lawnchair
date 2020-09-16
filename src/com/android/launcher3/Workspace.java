@@ -93,6 +93,7 @@ import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pageindicators.WorkspacePageIndicator;
 import com.android.launcher3.popup.PopupContainerWithArrow;
+import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.touch.WorkspaceTouchListener;
@@ -436,10 +437,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             enforceDragParity("onDragEnd", 0, 0);
         }
 
-        if (!mDeferRemoveExtraEmptyScreen) {
-            removeExtraEmptyScreen(mDragSourceInternal != null);
-        }
-
         updateChildrenLayersEnabled();
         mDragInfo = null;
         mOutlineProvider = null;
@@ -657,6 +654,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         convertFinalScreenToEmptyScreenIfNecessary();
         if (hasExtraEmptyScreen()) {
             removeView(mWorkspaceScreens.get(EXTRA_EMPTY_SCREEN_ID));
+            setCurrentPage(getNextPage());
             mWorkspaceScreens.remove(EXTRA_EMPTY_SCREEN_ID);
             mScreenOrder.removeValue(EXTRA_EMPTY_SCREEN_ID);
 
@@ -1873,6 +1871,18 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                             };
                         }
                     }
+                    StateManager<LauncherState> stateManager = mLauncher.getStateManager();
+                    stateManager.addStateListener(new StateManager.StateListener<LauncherState>() {
+                        @Override
+                        public void onStateTransitionComplete(LauncherState finalState) {
+                            if (finalState == NORMAL) {
+                                if (!mDeferRemoveExtraEmptyScreen) {
+                                    removeExtraEmptyScreen(true /* stripEmptyScreens */);
+                                }
+                                stateManager.removeStateListener(this);
+                            }
+                        }
+                    });
 
                     mLauncher.getModelWriter().modifyItemInDatabase(info, container, screenId,
                             lp.cellX, lp.cellY, item.spanX, item.spanY);
@@ -2453,7 +2463,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             Runnable onAnimationCompleteRunnable = new Runnable() {
                 @Override
                 public void run() {
-                    // Normally removeExtraEmptyScreen is called in Workspace#onDragEnd, but when
+                    // Normally removeExtraEmptyScreen is called in Workspace#onDrop, but when
                     // adding an item that may not be dropped right away (due to a config activity)
                     // we defer the removal until the activity returns.
                     deferRemoveExtraEmptyScreen();
