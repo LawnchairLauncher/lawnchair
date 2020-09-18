@@ -68,8 +68,8 @@ public class DefaultAppSearchAlgorithmTest {
 
         assertTrue(DefaultAppSearchAlgorithm.matches(getInfo("电子邮件"), "电", MATCHER));
         assertTrue(DefaultAppSearchAlgorithm.matches(getInfo("电子邮件"), "电子", MATCHER));
-        assertFalse(DefaultAppSearchAlgorithm.matches(getInfo("电子邮件"), "子", MATCHER));
-        assertFalse(DefaultAppSearchAlgorithm.matches(getInfo("电子邮件"), "邮件", MATCHER));
+        assertTrue(DefaultAppSearchAlgorithm.matches(getInfo("电子邮件"), "子", MATCHER));
+        assertTrue(DefaultAppSearchAlgorithm.matches(getInfo("电子邮件"), "邮件", MATCHER));
 
         assertFalse(DefaultAppSearchAlgorithm.matches(getInfo("Bot"), "ba", MATCHER));
         assertFalse(DefaultAppSearchAlgorithm.matches(getInfo("bot"), "ba", MATCHER));
