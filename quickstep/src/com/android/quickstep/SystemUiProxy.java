@@ -114,17 +114,6 @@ public class SystemUiProxy implements ISystemUiProxy {
     }
 
     @Override
-    public void onSplitScreenInvoked() {
-        if (mSystemUiProxy != null) {
-            try {
-                mSystemUiProxy.onSplitScreenInvoked();
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed call onSplitScreenInvoked", e);
-            }
-        }
-    }
-
-    @Override
     public void onOverviewShown(boolean fromHome) {
         onOverviewShown(fromHome, TAG);
     }
