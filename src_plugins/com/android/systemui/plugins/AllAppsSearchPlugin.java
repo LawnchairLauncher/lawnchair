@@ -43,6 +43,12 @@ public interface AllAppsSearchPlugin extends Plugin {
     void onStateTransitionComplete(int state);
 
     /**
+     * Send launcher window focus and visibility changed signals.
+     */
+    void onWindowFocusChanged(boolean hasFocus);
+    void onWindowVisibilityChanged(int visibility);
+
+    /**
      * Send signal when user starts typing, perform search, when search ends
      */
     void startedSearchSession();
