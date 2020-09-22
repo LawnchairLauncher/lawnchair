@@ -96,6 +96,8 @@ public class AllAppsGridAdapter extends
 
     public static final int VIEW_TYPE_SEARCH_PEOPLE = 1 << 11;
 
+    public static final int VIEW_TYPE_SEARCH_THUMBNAIL = 1 << 12;
+
     // Common view type masks
     public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_ALL_APPS_DIVIDER;
     public static final int VIEW_TYPE_MASK_ICON = VIEW_TYPE_ICON;
@@ -186,6 +188,7 @@ public class AllAppsGridAdapter extends
                     || viewType == VIEW_TYPE_SEARCH_SLICE
                     || viewType == VIEW_TYPE_SEARCH_ROW
                     || viewType == VIEW_TYPE_SEARCH_PEOPLE
+                    || viewType == VIEW_TYPE_SEARCH_THUMBNAIL
                     || viewType == VIEW_TYPE_SEARCH_SHORTCUT;
         }
     }
@@ -307,14 +310,20 @@ public class AllAppsGridAdapter extends
 
         @Override
         public int getSpanSize(int position) {
-            if (isIconViewType(mApps.getAdapterItems().get(position).viewType)) {
-                return 1;
+            int viewType = mApps.getAdapterItems().get(position).viewType;
+            if (isIconViewType(viewType)) {
+                return 1 * SPAN_MULTIPLIER;
+            } else if (viewType == VIEW_TYPE_SEARCH_THUMBNAIL) {
+                return mAppsPerRow;
             } else {
                 // Section breaks span the full width
-                return mAppsPerRow;
+                return mAppsPerRow * SPAN_MULTIPLIER;
             }
         }
     }
+
+    // multiplier to support adapter item column count that is not mAppsPerRow.
+    private static final int SPAN_MULTIPLIER = 3;
 
     private final BaseDraggingActivity mLauncher;
     private final LayoutInflater mLayoutInflater;
@@ -352,7 +361,7 @@ public class AllAppsGridAdapter extends
 
     public void setAppsPerRow(int appsPerRow) {
         mAppsPerRow = appsPerRow;
-        mGridLayoutMgr.setSpanCount(mAppsPerRow);
+        mGridLayoutMgr.setSpanCount(mAppsPerRow * SPAN_MULTIPLIER);
     }
 
     /**
@@ -444,6 +453,9 @@ public class AllAppsGridAdapter extends
             case VIEW_TYPE_SEARCH_PEOPLE:
                 return new ViewHolder(mLayoutInflater.inflate(
                         R.layout.search_result_people_item, parent, false));
+            case VIEW_TYPE_SEARCH_THUMBNAIL:
+                return new ViewHolder(mLayoutInflater.inflate(
+                        R.layout.search_result_thumbnail, parent, false));
             default:
                 throw new RuntimeException("Unexpected view type");
         }
@@ -525,6 +537,7 @@ public class AllAppsGridAdapter extends
             case VIEW_TYPE_SEARCH_ROW:
             case VIEW_TYPE_SEARCH_SHORTCUT:
             case VIEW_TYPE_SEARCH_PEOPLE:
+            case VIEW_TYPE_SEARCH_THUMBNAIL:
                 PayloadResultHandler payloadResultView = (PayloadResultHandler) holder.itemView;
                 payloadResultView.applyAdapterInfo(
                         (AdapterItemWithPayload) mApps.getAdapterItems().get(position));
@@ -552,7 +565,6 @@ public class AllAppsGridAdapter extends
             }
         }
     }
-
 
     @Override
     public boolean onFailedToRecycleView(ViewHolder holder) {

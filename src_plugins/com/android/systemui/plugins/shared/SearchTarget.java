@@ -26,14 +26,52 @@ import java.util.List;
 public class SearchTarget implements Comparable<SearchTarget> {
 
     public enum ViewType {
+
+        /**
+         * Consists of N number of icons. (N: launcher column count)
+         */
         TOP_HIT(0),
+
+        /**
+         * Consists of 1 icon and two subsidiary icons.
+         */
         HERO(1),
+
+        /**
+         * Main/sub/breadcrumb texts are rendered.
+         */
         DETAIL(2),
+
+        /**
+         * Consists of an icon, three detail strings.
+         */
         ROW(3),
+
+        /**
+         * Consists of an icon, three detail strings and a button.
+         */
         ROW_WITH_BUTTON(4),
+
+        /**
+         * Consists of a single slice view
+         */
         SLICE(5),
+
+        /**
+         * Similar to hero section.
+         */
         SHORTCUT(6),
-        PEOPLE(7);
+
+        /**
+         * Person icon and handling app icons are rendered.
+         */
+        PEOPLE(7),
+
+        /**
+         * N number of 1x1 ratio thumbnail is rendered.
+         * (current N = 3)
+         */
+        THUMBNAIL(8);
 
         private final int mId;
         ViewType(int id) {
@@ -52,9 +90,12 @@ public class SearchTarget implements Comparable<SearchTarget> {
         APP(3, "", ViewType.TOP_HIT),
         APP_HERO(4, "", ViewType.HERO),
         SHORTCUT(5, "Shortcuts", ViewType.SHORTCUT),
-        PEOPLE(6, "People", ViewType.PEOPLE);
+        PEOPLE(6, "People", ViewType.PEOPLE),
+        SCREENSHOT(7, "Screenshots", ViewType.THUMBNAIL);
 
         private final int mId;
+
+        /** Used to render section title. */
         private final String mTitle;
         private final ViewType mViewType;
 
