@@ -118,6 +118,7 @@ import com.android.launcher3.util.ResourceBasedOverride.Overrides;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.ViewPool;
 import com.android.quickstep.BaseActivityInterface;
+import com.android.quickstep.GestureState;
 import com.android.quickstep.RecentsAnimationController;
 import com.android.quickstep.RecentsAnimationTargets;
 import com.android.quickstep.RecentsModel;
@@ -1183,7 +1184,14 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     }
 
     /**
-     * Called when a gesture from an app has finished.
+     * Called when a gesture from an app has finished, and an end target has been determined.
+     */
+    public void onGestureEndTargetCalculated(GestureState.GestureEndTarget endTarget) {
+
+    }
+
+    /**
+     * Called when a gesture from an app has finished, and the animation to the target has ended.
      */
     public void onGestureAnimationEnd() {
         if (mOrientationState.setGestureActive(false)) {

@@ -434,9 +434,13 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
                 mOnDeferredActivityLaunch);
 
         mGestureState.runOnceAtState(STATE_END_TARGET_SET,
-                () -> mDeviceState.getRotationTouchHelper().
-                        onEndTargetCalculated(mGestureState.getEndTarget(),
-                                mActivityInterface));
+                () -> {
+                    mDeviceState.getRotationTouchHelper()
+                            .onEndTargetCalculated(mGestureState.getEndTarget(),
+                                    mActivityInterface);
+
+                    mRecentsView.onGestureEndTargetCalculated(mGestureState.getEndTarget());
+                });
 
         notifyGestureStartedAsync();
     }
