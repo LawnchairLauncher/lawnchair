@@ -246,7 +246,7 @@ public class TaskMenuView extends AbstractFloatingView {
         setScaleX(taskView.getScaleX());
         setScaleY(taskView.getScaleY());
         boolean canActivityRotate = taskView.getRecentsView()
-            .mOrientationState.canRecentsActivityRotate();
+            .mOrientationState.isRecentsActivityRotationAllowed();
         mOptionLayout.setOrientation(orientationHandler
                 .getTaskMenuLayoutOrientation(canActivityRotate, mOptionLayout));
         setPosition(sTempRect.left - insets.left, sTempRect.top - insets.top,
