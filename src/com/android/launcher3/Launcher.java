@@ -77,6 +77,7 @@ import android.os.CancellationSignal;
 import android.os.Parcelable;
 import android.os.Process;
 import android.os.StrictMode;
+import android.os.SystemClock;
 import android.text.TextUtils;
 import android.text.method.TextKeyListener;
 import android.util.Log;
@@ -350,7 +351,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     private boolean mDeferOverlayCallbacks;
     private final Runnable mDeferredOverlayCallbacks = this::checkIfOverlayStillDeferred;
 
-    private long mLastTouchUpTime = -1;
+    protected long mLastTouchUpTime = -1;
     private boolean mTouchInProgress;
 
     private SafeCloseable mUserChangedCallbackCloseable;
@@ -1828,7 +1829,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                 mTouchInProgress = true;
                 break;
             case MotionEvent.ACTION_UP:
-                mLastTouchUpTime = System.currentTimeMillis();
+                mLastTouchUpTime = ev.getEventTime();
                 // Follow through
             case MotionEvent.ACTION_CANCEL:
                 mTouchInProgress = false;
@@ -2461,7 +2462,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         if (mDragController.isDragging()) {
             return false;
         } else {
-            return (System.currentTimeMillis() - mLastTouchUpTime)
+            return (SystemClock.uptimeMillis() - mLastTouchUpTime)
                     > (NEW_APPS_ANIMATION_INACTIVE_TIMEOUT_SECONDS * 1000);
         }
     }

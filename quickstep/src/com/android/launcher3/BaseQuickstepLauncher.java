@@ -26,10 +26,12 @@ import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
 import android.os.CancellationSignal;
+import android.view.View;
 
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.WellbeingModel;
@@ -51,6 +53,7 @@ import com.android.quickstep.util.RemoteFadeOutAnimationListener;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
+import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.stream.Stream;
@@ -304,6 +307,15 @@ public abstract class BaseQuickstepLauncher extends Launcher
     public Stream<SystemShortcut.Factory> getSupportedShortcuts() {
         return Stream.concat(super.getSupportedShortcuts(),
                 Stream.of(WellbeingModel.SHORTCUT_FACTORY));
+    }
+
+    @Override
+    public ActivityOptions getActivityLaunchOptions(View v) {
+        ActivityOptions activityOptions = super.getActivityLaunchOptions(v);
+        if (activityOptions != null && mLastTouchUpTime > 0) {
+            ActivityOptionsCompat.setLauncherSourceInfo(activityOptions, mLastTouchUpTime);
+        }
+        return activityOptions;
     }
 
     public void setHintUserWillBeActive() {
