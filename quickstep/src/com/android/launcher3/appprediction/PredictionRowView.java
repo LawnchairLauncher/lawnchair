@@ -108,6 +108,8 @@ public class PredictionRowView extends LinearLayout implements
 
     AllAppsSectionDecorator.SectionDecorationHandler mDecorationHandler;
 
+    @Nullable private List<ItemInfo> mPendingPredictedItems;
+
     public PredictionRowView(@NonNull Context context) {
         this(context, null);
     }
@@ -203,6 +205,16 @@ public class PredictionRowView extends LinearLayout implements
      * we can optimize by swapping them in place.
      */
     public void setPredictedApps(List<ItemInfo> items) {
+        if (isShown() && getWindowVisibility() == View.VISIBLE) {
+            mPendingPredictedItems = items;
+            return;
+        }
+
+        applyPredictedApps(items);
+    }
+
+    private void applyPredictedApps(List<ItemInfo> items) {
+        mPendingPredictedItems = null;
         mPredictedApps.clear();
         items.stream()
                 .filter(itemInfo -> itemInfo instanceof WorkspaceItemInfo)
@@ -340,5 +352,14 @@ public class PredictionRowView extends LinearLayout implements
     @Override
     public View getFocusedChild() {
         return getChildAt(0);
+    }
+
+    @Override
+    public void onVisibilityAggregated(boolean isVisible) {
+        super.onVisibilityAggregated(isVisible);
+
+        if (mPendingPredictedItems != null && !isVisible) {
+            applyPredictedApps(mPendingPredictedItems);
+        }
     }
 }
