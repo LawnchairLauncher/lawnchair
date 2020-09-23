@@ -39,8 +39,10 @@ import com.android.systemui.plugins.shared.SearchTargetEvent;
 public class ThumbnailSearchResultView extends androidx.appcompat.widget.AppCompatImageView
         implements AllAppsSearchBarController.PayloadResultHandler<Bundle> {
 
+    private final Object[] mTargetInfo = createTargetInfo();
     Intent mIntent;
     AllAppsSearchPlugin mPlugin;
+    int mPosition;
 
     public ThumbnailSearchResultView(Context context) {
         super(context);
@@ -58,7 +60,7 @@ public class ThumbnailSearchResultView extends androidx.appcompat.widget.AppComp
         Launcher launcher = Launcher.getLauncher(getContext());
         launcher.startActivitySafely(this, mIntent, null);
 
-        SearchTargetEvent event = new SearchTargetEvent(
+        SearchTargetEvent event = getSearchTargetEvent(
                 SearchTarget.ItemType.SCREENSHOT, eventType);
         if (mPlugin != null) {
             mPlugin.notifySearchTargetEvent(event);
@@ -67,6 +69,7 @@ public class ThumbnailSearchResultView extends androidx.appcompat.widget.AppComp
 
     @Override
     public void applyAdapterInfo(AdapterItemWithPayload<Bundle> adapterItem) {
+        mPosition = adapterItem.position;
         RoundedBitmapDrawable drawable = RoundedBitmapDrawableFactory.create(null,
                 (Bitmap) adapterItem.getPayload().getParcelable("bitmap"));
         drawable.setCornerRadius(Themes.getDialogCornerRadius(getContext()));
@@ -77,5 +80,10 @@ public class ThumbnailSearchResultView extends androidx.appcompat.widget.AppComp
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         mPlugin = adapterItem.getPlugin();
         adapterItem.setSelectionHandler(this::handleSelection);
+    }
+
+    @Override
+    public Object[] getTargetInfo() {
+        return mTargetInfo;
     }
 }

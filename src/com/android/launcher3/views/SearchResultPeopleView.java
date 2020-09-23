@@ -67,7 +67,7 @@ public class SearchResultPeopleView extends LinearLayout implements
     private ImageButton[] mProviderButtons = new ImageButton[3];
     private AllAppsSearchPlugin mPlugin;
     private Uri mContactUri;
-
+    private final Object[] mTargetInfo = createTargetInfo();
 
     public SearchResultPeopleView(Context context) {
         this(context, null, 0);
@@ -129,14 +129,14 @@ public class SearchResultPeopleView extends LinearLayout implements
                     Bundle provider = providers.get(i);
                     Intent intent = Intent.parseUri(provider.getString("intent_uri_str"),
                             URI_ANDROID_APP_SCHEME | URI_ALLOW_UNSAFE);
-                    setupProviderButton(button, provider, intent);
+                    setupProviderButton(button, provider, intent, adapterItemWithPayload);
                     String pkg = provider.getString("package_name");
                     UI_HELPER_EXECUTOR.post(() -> {
                         try {
                             ApplicationInfo applicationInfo = mPackageManager.getApplicationInfo(
                                     pkg, 0);
                             Drawable appIcon = applicationInfo.loadIcon(mPackageManager);
-                            MAIN_EXECUTOR.post(()-> button.setImageDrawable(appIcon));
+                            MAIN_EXECUTOR.post(() -> button.setImageDrawable(appIcon));
                         } catch (PackageManager.NameNotFoundException ignored) {
                         }
 
@@ -151,11 +151,17 @@ public class SearchResultPeopleView extends LinearLayout implements
         adapterItemWithPayload.setSelectionHandler(this::handleSelection);
     }
 
-    private void setupProviderButton(ImageButton button, Bundle provider, Intent intent) {
+    @Override
+    public Object[] getTargetInfo() {
+        return mTargetInfo;
+    }
+
+    private void setupProviderButton(ImageButton button, Bundle provider, Intent intent,
+            AllAppsGridAdapter.AdapterItem adapterItem) {
         Launcher launcher = Launcher.getLauncher(getContext());
         button.setOnClickListener(b -> {
             launcher.startActivitySafely(b, intent, null);
-            SearchTargetEvent searchTargetEvent = new SearchTargetEvent(
+            SearchTargetEvent searchTargetEvent = getSearchTargetEvent(
                     SearchTarget.ItemType.PEOPLE,
                     SearchTargetEvent.CHILD_SELECT);
             searchTargetEvent.bundle = new Bundle();
@@ -173,8 +179,8 @@ public class SearchResultPeopleView extends LinearLayout implements
             Launcher launcher = Launcher.getLauncher(getContext());
             launcher.startActivitySafely(this, new Intent(Intent.ACTION_VIEW, mContactUri).setFlags(
                     Intent.FLAG_ACTIVITY_NEW_TASK), null);
-            SearchTargetEvent searchTargetEvent = new SearchTargetEvent(
-                    SearchTarget.ItemType.PEOPLE, eventType);
+            SearchTargetEvent searchTargetEvent = getSearchTargetEvent(SearchTarget.ItemType.PEOPLE,
+                    eventType);
             searchTargetEvent.bundle = new Bundle();
             searchTargetEvent.bundle.putParcelable("contact_uri", mContactUri);
             if (mPlugin != null) {

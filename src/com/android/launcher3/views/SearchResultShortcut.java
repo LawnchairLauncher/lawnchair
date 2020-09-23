@@ -50,6 +50,8 @@ public class SearchResultShortcut extends FrameLayout implements
     private View mIconView;
     private ShortcutInfo mShortcutInfo;
     private AllAppsSearchPlugin mPlugin;
+    private final Object[] mTargetInfo = createTargetInfo();
+
 
     public SearchResultShortcut(@NonNull Context context) {
         super(context);
@@ -96,12 +98,17 @@ public class SearchResultShortcut extends FrameLayout implements
         adapterItemWithPayload.setSelectionHandler(this::handleSelection);
     }
 
+    @Override
+    public Object[] getTargetInfo() {
+        return mTargetInfo;
+    }
+
     private void handleSelection(int eventType) {
         WorkspaceItemInfo itemInfo = (WorkspaceItemInfo) mBubbleTextView.getTag();
         ItemClickHandler.onClickAppShortcut(this, itemInfo, Launcher.getLauncher(getContext()));
 
-        SearchTargetEvent searchTargetEvent = new SearchTargetEvent(
-                SearchTarget.ItemType.SHORTCUT, eventType);
+        SearchTargetEvent searchTargetEvent = getSearchTargetEvent(SearchTarget.ItemType.SHORTCUT,
+                eventType);
         searchTargetEvent.shortcut = mShortcutInfo;
         if (mPlugin != null) {
             mPlugin.notifySearchTargetEvent(searchTargetEvent);

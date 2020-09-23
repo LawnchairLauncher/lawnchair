@@ -32,7 +32,7 @@ import java.util.function.Consumer;
 @ProvidesInterface(action = AllAppsSearchPlugin.ACTION, version = AllAppsSearchPlugin.VERSION)
 public interface AllAppsSearchPlugin extends Plugin {
     String ACTION = "com.android.systemui.action.PLUGIN_ALL_APPS_SEARCH_ACTIONS";
-    int VERSION = 6;
+    int VERSION = 7;
 
     void setup(Activity activity, View view);
 

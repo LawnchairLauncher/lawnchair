@@ -122,6 +122,7 @@ public class SearchTarget implements Comparable<SearchTarget> {
     public List<ShortcutInfo> shortcuts;
     public Bundle bundle;
     public float score;
+    public String mSessionId;
 
     /**
      * Constructor to create the search target. Bundle is currently temporary to hold
@@ -130,11 +131,12 @@ public class SearchTarget implements Comparable<SearchTarget> {
      *
      */
     public SearchTarget(ItemType itemType, List<ShortcutInfo> shortcuts,
-            Bundle bundle, float score) {
+            Bundle bundle, float score, String sessionId) {
         this.type = itemType;
         this.shortcuts = shortcuts;
         this.bundle = bundle;
         this.score = score;
+        this.mSessionId = sessionId;
     }
 
     @Override

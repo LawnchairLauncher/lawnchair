@@ -31,10 +31,14 @@ public class SearchTargetEvent {
     public ShortcutInfo shortcut;
     public int eventType;
     public Bundle bundle;
-    public float score;
+    public int index;
+    public String sessionIdentifier;
 
-    public SearchTargetEvent(SearchTarget.ItemType itemType, int eventType) {
+    public SearchTargetEvent(SearchTarget.ItemType itemType, int eventType, int index,
+            String sessionId) {
         this.type = itemType;
         this.eventType = eventType;
+        this.index = index;
+        this.sessionIdentifier = sessionId;
     }
 }

@@ -61,6 +61,7 @@ public class HeroSearchResultView extends LinearLayout implements DragSource,
         PayloadResultHandler<List<Pair<ShortcutInfo, ItemInfoWithIcon>>> {
 
     public static final int MAX_SHORTCUTS_COUNT = 2;
+    private final Object[] mTargetInfo = createTargetInfo();
     BubbleTextView mBubbleTextView;
     View mIconView;
     BubbleTextView[] mDeepShortcutTextViews = new BubbleTextView[2];
@@ -107,7 +108,7 @@ public class HeroSearchResultView extends LinearLayout implements DragSource,
                             grid.allAppsIconSizePx));
             bubbleTextView.setOnClickListener(view -> {
                 WorkspaceItemInfo itemInfo = (WorkspaceItemInfo) bubbleTextView.getTag();
-                SearchTargetEvent event = new SearchTargetEvent(
+                SearchTargetEvent event = getSearchTargetEvent(
                         SearchTarget.ItemType.APP_HERO,
                         SearchTargetEvent.CHILD_SELECT);
                 event.bundle = getAppBundle(itemInfo);
@@ -150,6 +151,11 @@ public class HeroSearchResultView extends LinearLayout implements DragSource,
     }
 
     @Override
+    public Object[] getTargetInfo() {
+        return mTargetInfo;
+    }
+
+    @Override
     public void onDropCompleted(View target, DropTarget.DragObject d, boolean success) {
         mBubbleTextView.setVisibility(VISIBLE);
         mBubbleTextView.setIconVisible(true);
@@ -184,7 +190,7 @@ public class HeroSearchResultView extends LinearLayout implements DragSource,
             mLauncher.getWorkspace().beginDragShared(mContainer.mBubbleTextView,
                     draggableView, mContainer, itemInfo, previewProvider, new DragOptions());
 
-            SearchTargetEvent event = new SearchTargetEvent(
+            SearchTargetEvent event = mContainer.getSearchTargetEvent(
                     SearchTarget.ItemType.APP_HERO, SearchTargetEvent.LONG_PRESS);
             event.bundle = getAppBundle(itemInfo);
             if (mContainer.mPlugin != null) {
@@ -201,7 +207,7 @@ public class HeroSearchResultView extends LinearLayout implements DragSource,
         Launcher launcher = Launcher.getLauncher(getContext());
         launcher.startActivitySafely(this, itemInfo.getIntent(), itemInfo);
 
-        SearchTargetEvent event = new SearchTargetEvent(
+        SearchTargetEvent event = getSearchTargetEvent(
                 SearchTarget.ItemType.APP_HERO, eventType);
         event.bundle = getAppBundle(itemInfo);
         if (mPlugin != null) {

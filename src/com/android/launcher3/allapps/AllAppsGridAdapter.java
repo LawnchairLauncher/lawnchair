@@ -200,6 +200,7 @@ public class AllAppsGridAdapter extends
      */
     public static class AdapterItemWithPayload<T> extends AdapterItem {
         private T mPayload;
+        private String mSearchSessionId;
         private AllAppsSearchPlugin mPlugin;
         private IntConsumer mSelectionHandler;
 
@@ -221,6 +222,14 @@ public class AllAppsGridAdapter extends
             mSelectionHandler = runnable;
         }
 
+        public void setSearchSessionId(String searchSessionId) {
+            mSearchSessionId = searchSessionId;
+        }
+
+        public String getSearchSessionId() {
+            return mSearchSessionId;
+        }
+
         public IntConsumer getSelectionHandler() {
             return mSelectionHandler;
         }
@@ -228,6 +237,8 @@ public class AllAppsGridAdapter extends
         public T getPayload() {
             return mPayload;
         }
+
+
     }
 
     /**
@@ -476,24 +487,23 @@ public class AllAppsGridAdapter extends
                 //TODO: replace with custom TopHitBubbleTextView with support for both shortcut
                 // and apps
                 if (adapterItem instanceof AdapterItemWithPayload) {
-                    AdapterItemWithPayload withPayload = (AdapterItemWithPayload) adapterItem;
-                    IntConsumer selectionHandler = type -> {
+                    AdapterItemWithPayload item = (AdapterItemWithPayload) adapterItem;
+                    item.setSelectionHandler(type -> {
                         SearchTargetEvent e = new SearchTargetEvent(SearchTarget.ItemType.APP,
-                                type);
+                                type, item.position, item.getSearchSessionId());
                         e.bundle = HeroSearchResultView.getAppBundle(info);
-                        if (withPayload.getPlugin() != null) {
-                            withPayload.getPlugin().notifySearchTargetEvent(e);
+                        if (item.getPlugin() != null) {
+                            item.getPlugin().notifySearchTargetEvent(e);
                         }
-                    };
+                    });
                     icon.setOnClickListener(view -> {
-                        selectionHandler.accept(SearchTargetEvent.SELECT);
+                        item.getSelectionHandler().accept(SearchTargetEvent.SELECT);
                         mOnIconClickListener.onClick(view);
                     });
                     icon.setOnLongClickListener(view -> {
-                        selectionHandler.accept(SearchTargetEvent.LONG_PRESS);
+                        item.getSelectionHandler().accept(SearchTargetEvent.SELECT);
                         return mOnIconLongClickListener.onLongClick(view);
                     });
-                    withPayload.setSelectionHandler(selectionHandler);
                 }
                 else {
                     icon.setOnClickListener(mOnIconClickListener);
@@ -516,20 +526,22 @@ public class AllAppsGridAdapter extends
                 break;
             case VIEW_TYPE_SEARCH_SLICE:
                 SliceView sliceView = (SliceView) holder.itemView;
-                AdapterItemWithPayload<Uri> item =
+                AdapterItemWithPayload<Uri> slicePayload =
                         (AdapterItemWithPayload<Uri>) mApps.getAdapterItems().get(position);
                 sliceView.setOnSliceActionListener((info1, s) -> {
-                    if (item.getPlugin() != null) {
+                    if (slicePayload.getPlugin() != null) {
                         SearchTargetEvent searchTargetEvent = new SearchTargetEvent(
                                 SearchTarget.ItemType.SETTINGS_SLICE,
-                                SearchTargetEvent.CHILD_SELECT);
+                                SearchTargetEvent.CHILD_SELECT, slicePayload.position,
+                                slicePayload.getSearchSessionId());
                         searchTargetEvent.bundle = new Bundle();
-                        searchTargetEvent.bundle.putParcelable("uri", item.getPayload());
-                        item.getPlugin().notifySearchTargetEvent(searchTargetEvent);
+                        searchTargetEvent.bundle.putParcelable("uri", slicePayload.getPayload());
+                        slicePayload.getPlugin().notifySearchTargetEvent(searchTargetEvent);
                     }
                 });
                 try {
-                    LiveData<Slice> liveData = SliceLiveData.fromUri(mLauncher, item.getPayload());
+                    LiveData<Slice> liveData = SliceLiveData.fromUri(mLauncher,
+                            slicePayload.getPayload());
                     liveData.observe((Launcher) mLauncher, sliceView);
                     sliceView.setTag(liveData);
                 } catch (Exception ignored) {
@@ -542,9 +554,10 @@ public class AllAppsGridAdapter extends
             case VIEW_TYPE_SEARCH_SHORTCUT:
             case VIEW_TYPE_SEARCH_PEOPLE:
             case VIEW_TYPE_SEARCH_THUMBNAIL:
+                AdapterItemWithPayload item =
+                        (AdapterItemWithPayload) mApps.getAdapterItems().get(position);
                 PayloadResultHandler payloadResultView = (PayloadResultHandler) holder.itemView;
-                payloadResultView.applyAdapterInfo(
-                        (AdapterItemWithPayload) mApps.getAdapterItems().get(position));
+                payloadResultView.setup(item);
                 break;
             case VIEW_TYPE_ALL_APPS_DIVIDER:
                 // nothing to do
