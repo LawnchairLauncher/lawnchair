@@ -19,6 +19,7 @@ import static com.android.launcher3.Launcher.REQUEST_BIND_PENDING_APPWIDGET;
 import static com.android.launcher3.Launcher.REQUEST_RECONFIGURE_APPWIDGET;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_OPEN;
 import static com.android.launcher3.model.AppLaunchTracker.CONTAINER_ALL_APPS;
+import static com.android.launcher3.model.AppLaunchTracker.CONTAINER_HOTSEAT;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_BY_PUBLISHER;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_LOCKED_USER;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_QUIET_USER;
@@ -42,6 +43,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
+import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.folder.Folder;
@@ -240,6 +242,12 @@ public class ItemClickHandler {
             }
         }
 
+        if (sourceContainer == null && (
+                shortcut.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT
+                        || shortcut.container
+                        == LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION)) {
+            sourceContainer = CONTAINER_HOTSEAT;
+        }
         // Start activities
         startAppShortcutOrInfoActivity(v, shortcut, launcher, sourceContainer);
     }
