@@ -35,8 +35,6 @@ public class DigitalWellBeingToastTest extends AbstractQuickStepTest {
             resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR);
 
     @Test
-    // b/150303529
-    @TestStabilityRule.Stability(flavors = UNBUNDLED_POSTSUBMIT | PLATFORM_POSTSUBMIT)
     public void testToast() throws Exception {
         startAppFast(CALCULATOR_PACKAGE);
 
