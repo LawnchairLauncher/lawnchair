@@ -495,6 +495,10 @@ public class AllAppsGridAdapter extends
                     });
                     withPayload.setSelectionHandler(selectionHandler);
                 }
+                else {
+                    icon.setOnClickListener(mOnIconClickListener);
+                    icon.setOnLongClickListener(mOnIconLongClickListener);
+                }
                 break;
             case VIEW_TYPE_EMPTY_SEARCH:
                 TextView emptyViewText = (TextView) holder.itemView;
