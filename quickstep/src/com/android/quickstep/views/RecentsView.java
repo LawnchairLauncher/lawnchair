@@ -44,7 +44,6 @@ import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType.
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
 import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
-import static com.android.quickstep.views.OverviewActionsView.HIDDEN_GESTURE_RUNNING;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NON_ZERO_ROTATION;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NO_RECENTS;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NO_TASKS;
@@ -1129,7 +1128,6 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         setEnableDrawingLiveTile(false);
         setRunningTaskHidden(true);
         setRunningTaskIconScaledDown(true);
-        mActionsView.updateHiddenFlags(HIDDEN_GESTURE_RUNNING, true);
     }
 
     /**
@@ -1322,7 +1320,6 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     }
 
     private void animateActionsViewIn() {
-        mActionsView.updateHiddenFlags(HIDDEN_GESTURE_RUNNING, false);
         ObjectAnimator anim = ObjectAnimator.ofFloat(
                 mActionsView.getVisibilityAlpha(), MultiValueAlpha.VALUE, 0, 1);
         anim.setDuration(TaskView.SCALE_ICON_DURATION);
