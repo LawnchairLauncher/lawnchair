@@ -451,7 +451,10 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                             }
                         }, resultCallbackHandler);
             }
-            getRecentsView().onTaskLaunched(mTask);
+            RecentsView recentsView = getRecentsView();
+            if (recentsView != null) {
+                recentsView.onTaskLaunched(mTask);
+            }
         }
     }
 
