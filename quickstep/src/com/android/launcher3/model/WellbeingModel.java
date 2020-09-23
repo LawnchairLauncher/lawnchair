@@ -63,7 +63,6 @@ import com.android.launcher3.util.SimpleBroadcastReceiver;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
 
 /**
  * Data model for digital wellbeing status of apps.
@@ -222,9 +221,8 @@ public final class WellbeingModel {
             reloadLauncherInNormalMode(context);
             return;
         }
-        runWithMinimalDeviceConfigs((bundle) -> {
-            if (bundle.getInt(EXTRA_MINIMAL_DEVICE_STATE, UNKNOWN_MINIMAL_DEVICE_STATE)
-                    == IN_MINIMAL_DEVICE) {
+        mWorkerHandler.post(() -> {
+            if (isInMinimalDeviceMode()) {
                 reloadLauncherInMinimalMode(context);
             } else {
                 reloadLauncherInNormalMode(context);
@@ -253,31 +251,30 @@ public final class WellbeingModel {
                 .authority(mWellbeingProviderPkg + ".api");
     }
 
-    /**
-     * Fetch most up-to-date minimal device config.
-     */
     @WorkerThread
-    private void runWithMinimalDeviceConfigs(Consumer<Bundle> consumer) {
+    private boolean isInMinimalDeviceMode() {
         if (!FeatureFlags.ENABLE_MINIMAL_DEVICE.get()) {
-            return;
+            return false;
         }
         if (DEBUG || mIsInTest) {
-            Log.d(TAG, "runWithMinimalDeviceConfigs() called");
+            Log.d(TAG, "isInMinimalDeviceMode() called");
         }
         Preconditions.assertNonUiThread();
 
         final Uri contentUri = apiBuilder().build();
-        final Bundle remoteBundle;
         try (ContentProviderClient client = mContext.getContentResolver()
                 .acquireUnstableContentProviderClient(contentUri)) {
-            remoteBundle = client.call(
+            final Bundle remoteBundle = client == null ? null : client.call(
                     METHOD_GET_MINIMAL_DEVICE_CONFIG, null /* args */, null /* extras */);
-            consumer.accept(remoteBundle);
+            return remoteBundle != null
+                    && remoteBundle.getInt(EXTRA_MINIMAL_DEVICE_STATE,
+                    UNKNOWN_MINIMAL_DEVICE_STATE) == IN_MINIMAL_DEVICE;
         } catch (Exception e) {
             Log.e(TAG, "Failed to retrieve data from " + contentUri + ": " + e);
             if (mIsInTest) throw new RuntimeException(e);
         }
-        if (DEBUG || mIsInTest) Log.i(TAG, "runWithMinimalDeviceConfigs(): finished");
+        if (DEBUG || mIsInTest) Log.i(TAG, "isInMinimalDeviceMode(): finished");
+        return false;
     }
 
     private boolean updateActions(String... packageNames) {

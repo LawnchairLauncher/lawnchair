@@ -58,6 +58,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import com.android.launcher3.AbstractFloatingView;
@@ -216,6 +217,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
     private StatsLogManager mStatsLogManager;
 
+    @Nullable private FolderWindowInsetsAnimationCallback mFolderWindowInsetsAnimationCallback;
+
     /**
      * Used to inflate the Workspace from XML.
      *
@@ -262,10 +265,10 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         mFooterHeight = mFooter.getMeasuredHeight();
 
         if (Utilities.ATLEAST_R) {
-            WindowInsetsAnimation.Callback cb = new FolderWindowInsetsAnimationCallback(
-                    DISPATCH_MODE_STOP, this);
+            mFolderWindowInsetsAnimationCallback =
+                    new FolderWindowInsetsAnimationCallback(DISPATCH_MODE_STOP, this);
 
-            setWindowInsetsAnimationCallback(cb);
+            setWindowInsetsAnimationCallback(mFolderWindowInsetsAnimationCallback);
         }
     }
 
@@ -755,11 +758,17 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         a.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
+                if (Utilities.ATLEAST_R) {
+                    setWindowInsetsAnimationCallback(null);
+                }
                 mIsAnimatingClosed = true;
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
+                if (Utilities.ATLEAST_R && mFolderWindowInsetsAnimationCallback != null) {
+                    setWindowInsetsAnimationCallback(mFolderWindowInsetsAnimationCallback);
+                }
                 closeComplete(true);
                 announceAccessibilityChanges();
                 mIsAnimatingClosed = false;

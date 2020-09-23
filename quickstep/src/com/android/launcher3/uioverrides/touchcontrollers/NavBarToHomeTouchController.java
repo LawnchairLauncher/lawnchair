@@ -170,6 +170,8 @@ public class NavBarToHomeTouchController implements TouchController,
             if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
                 builder.addOnFrameCallback(recentsView::redrawLiveTile);
             }
+
+            AbstractFloatingView.closeOpenContainer(mLauncher, AbstractFloatingView.TYPE_TASK_MENU);
         } else if (mStartState == ALL_APPS) {
             AllAppsTransitionController allAppsController = mLauncher.getAllAppsController();
             builder.setFloat(allAppsController, ALL_APPS_PROGRESS,
