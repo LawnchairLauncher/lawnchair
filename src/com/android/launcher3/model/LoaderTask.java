@@ -49,6 +49,7 @@ import android.util.LongSparseArray;
 import android.util.TimingLogger;
 
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
@@ -306,6 +307,7 @@ public class LoaderTask implements Runnable {
         final PackageManagerHelper pmHelper = new PackageManagerHelper(context);
         final boolean isSafeMode = pmHelper.isSafeMode();
         final boolean isSdCardReady = Utilities.isBootCompleted();
+        final WidgetManagerHelper widgetHelper = new WidgetManagerHelper(context);
 
         boolean clearDb = false;
         try {
@@ -391,6 +393,7 @@ public class LoaderTask implements Runnable {
 
                 WorkspaceItemInfo info;
                 LauncherAppWidgetInfo appWidgetInfo;
+                LauncherAppWidgetProviderInfo widgetProviderInfo;
                 Intent intent;
                 String targetPkg;
 
@@ -718,6 +721,19 @@ public class LoaderTask implements Runnable {
                                 if (appWidgetInfo.spanX <= 0 || appWidgetInfo.spanY <= 0) {
                                     c.markDeleted("Widget has invalid size: "
                                             + appWidgetInfo.spanX + "x" + appWidgetInfo.spanY);
+                                    continue;
+                                }
+                                widgetProviderInfo =
+                                        widgetHelper.getLauncherAppWidgetInfo(appWidgetId);
+                                if (widgetProviderInfo != null
+                                        && (appWidgetInfo.spanX < widgetProviderInfo.minSpanX
+                                        || appWidgetInfo.spanY < widgetProviderInfo.minSpanY)) {
+                                    // This can happen when display size changes.
+                                    c.markDeleted("Widget removed, min sizes not met: "
+                                            + "span=" + appWidgetInfo.spanX + "x"
+                                            + appWidgetInfo.spanY + " minSpan="
+                                            + widgetProviderInfo.minSpanX + "x"
+                                            + widgetProviderInfo.minSpanY);
                                     continue;
                                 }
                                 if (!c.isOnWorkspaceOrHotseat()) {
