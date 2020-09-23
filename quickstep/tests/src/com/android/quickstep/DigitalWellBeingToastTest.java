@@ -3,6 +3,8 @@ package com.android.quickstep;
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
 import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
+import static com.android.launcher3.util.rule.TestStabilityRule.UNBUNDLED_POSTSUBMIT;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -11,12 +13,12 @@ import static org.junit.Assert.assertTrue;
 import android.app.PendingIntent;
 import android.app.usage.UsageStatsManager;
 import android.content.Intent;
-import android.os.Build;
 
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.Launcher;
+import com.android.launcher3.util.rule.TestStabilityRule;
 import com.android.quickstep.views.DigitalWellBeingToast;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
@@ -33,10 +35,9 @@ public class DigitalWellBeingToastTest extends AbstractQuickStepTest {
             resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR);
 
     @Test
+    // b/150303529
+    @TestStabilityRule.Stability(flavors = UNBUNDLED_POSTSUBMIT | PLATFORM_POSTSUBMIT)
     public void testToast() throws Exception {
-        // b/150303529
-        if (Build.MODEL.contains("Cuttlefish")) return;
-
         startAppFast(CALCULATOR_PACKAGE);
 
         final UsageStatsManager usageStatsManager =
