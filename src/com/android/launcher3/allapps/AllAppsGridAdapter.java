@@ -92,7 +92,7 @@ public class AllAppsGridAdapter extends
 
     public static final int VIEW_TYPE_SEARCH_SLICE = 1 << 9;
 
-    public static final int VIEW_TYPE_SEARCH_SHORTCUT = 1 << 10;
+    public static final int VIEW_TYPE_SEARCH_ICON_ROW = 1 << 10;
 
     public static final int VIEW_TYPE_SEARCH_PEOPLE = 1 << 11;
 
@@ -189,7 +189,7 @@ public class AllAppsGridAdapter extends
                     || viewType == VIEW_TYPE_SEARCH_ROW
                     || viewType == VIEW_TYPE_SEARCH_PEOPLE
                     || viewType == VIEW_TYPE_SEARCH_THUMBNAIL
-                    || viewType == VIEW_TYPE_SEARCH_SHORTCUT;
+                    || viewType == VIEW_TYPE_SEARCH_ICON_ROW;
         }
     }
 
@@ -458,9 +458,9 @@ public class AllAppsGridAdapter extends
             case VIEW_TYPE_SEARCH_SLICE:
                 return new ViewHolder(mLayoutInflater.inflate(
                         R.layout.search_result_slice, parent, false));
-            case VIEW_TYPE_SEARCH_SHORTCUT:
+            case VIEW_TYPE_SEARCH_ICON_ROW:
                 return new ViewHolder(mLayoutInflater.inflate(
-                        R.layout.search_result_shortcut, parent, false));
+                        R.layout.search_result_icon_row, parent, false));
             case VIEW_TYPE_SEARCH_PEOPLE:
                 return new ViewHolder(mLayoutInflater.inflate(
                         R.layout.search_result_people_item, parent, false));
@@ -551,7 +551,7 @@ public class AllAppsGridAdapter extends
             case VIEW_TYPE_SEARCH_ROW_WITH_BUTTON:
             case VIEW_TYPE_SEARCH_HERO_APP:
             case VIEW_TYPE_SEARCH_ROW:
-            case VIEW_TYPE_SEARCH_SHORTCUT:
+            case VIEW_TYPE_SEARCH_ICON_ROW:
             case VIEW_TYPE_SEARCH_PEOPLE:
             case VIEW_TYPE_SEARCH_THUMBNAIL:
                 AdapterItemWithPayload item =
@@ -571,8 +571,8 @@ public class AllAppsGridAdapter extends
         if (!FeatureFlags.ENABLE_DEVICE_SEARCH.get()) return;
         if (holder.itemView instanceof BubbleTextView) {
             BubbleTextView icon = (BubbleTextView) holder.itemView;
-            icon.setOnClickListener(mOnIconClickListener);
-            icon.setOnLongClickListener(mOnIconLongClickListener);
+            icon.setOnClickListener(null);
+            icon.setOnLongClickListener(null);
         } else if (holder.itemView instanceof SliceView) {
             SliceView sliceView = (SliceView) holder.itemView;
             sliceView.setOnSliceActionListener(null);
