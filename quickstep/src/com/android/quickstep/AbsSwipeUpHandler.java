@@ -1336,7 +1336,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
                 if (taskView != null && !mCanceled) {
                     // Defer finishing the animation until the next launcher frame with the
                     // new thumbnail
-                    finishTransitionPosted = ViewUtils.postDraw(taskView,
+                    finishTransitionPosted = ViewUtils.postFrameDrawn(taskView,
                             () -> mStateCallback.setStateOnUiThread(STATE_SCREENSHOT_CAPTURED),
                             this::isCanceled);
                 }
