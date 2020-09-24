@@ -278,7 +278,6 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
             int start = mOrientationState.getOrientationHandler()
                     .getPrimaryValue(mTaskRect.left, mTaskRect.top);
             mScrollState.screenCenter = start + mScrollState.scroll + mScrollState.halfPageSize;
-            mScrollState.pageParentScale = recentsViewScale.value;
             mScrollState.updateInterpolation(start);
             mCurveScale = TaskView.getCurveScaleForInterpolation(mScrollState.linearInterpolation);
         }
