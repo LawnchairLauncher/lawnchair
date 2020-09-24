@@ -213,7 +213,8 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         return mTutorialType == TutorialType.BACK_NAVIGATION_COMPLETE
                 || mTutorialType == TutorialType.HOME_NAVIGATION_COMPLETE
                 || mTutorialType == TutorialType.OVERVIEW_NAVIGATION_COMPLETE
-                || mTutorialType == TutorialType.ASSISTANT_COMPLETE;
+                || mTutorialType == TutorialType.ASSISTANT_COMPLETE
+                || mTutorialType == TutorialType.SANDBOX_MODE;
     }
 
     /** Denotes the type of the tutorial. */
@@ -226,6 +227,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         OVERVIEW_NAVIGATION,
         OVERVIEW_NAVIGATION_COMPLETE,
         ASSISTANT,
-        ASSISTANT_COMPLETE
+        ASSISTANT_COMPLETE,
+        SANDBOX_MODE
     }
 }

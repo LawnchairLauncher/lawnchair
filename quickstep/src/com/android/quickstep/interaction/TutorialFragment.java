@@ -76,6 +76,8 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
             case ASSISTANT:
             case ASSISTANT_COMPLETE:
                 return new AssistantGestureTutorialFragment();
+            case SANDBOX_MODE:
+                return new SandboxModeTutorialFragment();
             default:
                 Log.e(LOG_TAG, "Failed to find an appropriate fragment for " + tutorialType.name());
         }
