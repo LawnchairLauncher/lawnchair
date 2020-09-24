@@ -138,7 +138,7 @@ public class HeroSearchResultView extends LinearLayout implements DragSource,
             if (i < shortcutDetails.size()) {
                 Pair<ShortcutInfo, ItemInfoWithIcon> p = shortcutDetails.get(i);
                 //apply ItemInfo and prepare view
-                shortcutView.applyFromItemInfoWithIcon(p.second);
+                shortcutView.applyFromWorkspaceItem((WorkspaceItemInfo) p.second);
                 MODEL_EXECUTOR.execute(() -> {
                     // load unbadged shortcut in background and update view when icon ready
                     appState.getIconCache().getUnbadgedShortcutIcon(p.second, p.first);

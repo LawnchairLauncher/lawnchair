@@ -15,6 +15,7 @@
  */
 package com.android.systemui.plugins.shared;
 
+import android.app.RemoteAction;
 import android.content.pm.ShortcutInfo;
 import android.os.Bundle;
 
@@ -29,6 +30,7 @@ public class SearchTargetEvent {
 
     public SearchTarget.ItemType type;
     public ShortcutInfo shortcut;
+    public RemoteAction remoteAction;
     public int eventType;
     public Bundle bundle;
     public int index;

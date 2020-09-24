@@ -65,6 +65,7 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.model.data.PromiseAppInfo;
+import com.android.launcher3.model.data.RemoteActionItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.views.ActivityContext;
@@ -298,6 +299,14 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
         // Verify high res immediately
         verifyHighRes();
+    }
+
+    /**
+     * Apply label and tag using a {@link RemoteActionItemInfo}
+     */
+    public void applyFromRemoteActionInfo(RemoteActionItemInfo remoteActionItemInfo) {
+        applyIconAndLabel(remoteActionItemInfo);
+        setTag(remoteActionItemInfo);
     }
 
     private void applyIconAndLabel(ItemInfoWithIcon info) {
@@ -681,6 +690,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
                 mActivity.invalidateParent(info);
             } else if (info instanceof PackageItemInfo) {
                 applyFromItemInfoWithIcon((PackageItemInfo) info);
+            } else if (info instanceof RemoteActionItemInfo) {
+                applyFromRemoteActionInfo((RemoteActionItemInfo) info);
             }
 
             mDisableRelayout = false;

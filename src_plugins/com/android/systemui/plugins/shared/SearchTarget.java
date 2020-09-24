@@ -15,6 +15,7 @@
  */
 package com.android.systemui.plugins.shared;
 
+import android.app.RemoteAction;
 import android.content.pm.ShortcutInfo;
 import android.os.Bundle;
 
@@ -24,6 +25,14 @@ import java.util.List;
  * Used to return all apps search targets.
  */
 public class SearchTarget implements Comparable<SearchTarget> {
+
+
+    /**
+     * A bundle key for boolean value of whether remote action should be started in launcher or not
+     */
+    public static final String REMOTE_ACTION_SHOULD_START = "should_start_for_result";
+    public static final String REMOTE_ACTION_TOKEN = "action_token";
+
 
     public enum ViewType {
 
@@ -74,6 +83,7 @@ public class SearchTarget implements Comparable<SearchTarget> {
         THUMBNAIL(8);
 
         private final int mId;
+
         ViewType(int id) {
             mId = id;
         }
@@ -91,7 +101,8 @@ public class SearchTarget implements Comparable<SearchTarget> {
         APP_HERO(4, "", ViewType.HERO),
         SHORTCUT(5, "Shortcuts", ViewType.SHORTCUT),
         PEOPLE(6, "People", ViewType.PEOPLE),
-        SCREENSHOT(7, "Screenshots", ViewType.THUMBNAIL);
+        SCREENSHOT(7, "Screenshots", ViewType.THUMBNAIL),
+        REMOTE_ACTION(8, "Remote Actions", ViewType.SHORTCUT);
 
         private final int mId;
 
@@ -123,12 +134,12 @@ public class SearchTarget implements Comparable<SearchTarget> {
     public Bundle bundle;
     public float score;
     public String mSessionId;
+    public RemoteAction mRemoteAction;
 
     /**
      * Constructor to create the search target. Bundle is currently temporary to hold
      * search target primitives that cannot be expressed as java primitive objects
      * or AOSP native objects.
-     *
      */
     public SearchTarget(ItemType itemType, List<ShortcutInfo> shortcuts,
             Bundle bundle, float score, String sessionId) {
