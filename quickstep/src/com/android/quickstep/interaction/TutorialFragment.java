@@ -31,6 +31,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
+import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.R;
 import com.android.quickstep.interaction.TutorialController.TutorialType;
 
@@ -45,6 +46,7 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
     TutorialHandAnimation mHandCoachingAnimation;
     EdgeBackGestureHandler mEdgeBackGestureHandler;
     NavBarGestureHandler mNavBarGestureHandler;
+    private View mLauncherView;
 
     public static TutorialFragment newInstance(TutorialType tutorialType) {
         TutorialFragment fragment = getFragmentForTutorialType(tutorialType);
@@ -114,8 +116,11 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
             return insets;
         });
         mRootView.setOnTouchListener(this);
-        mHandCoachingAnimation = new TutorialHandAnimation(getContext(), mRootView,
-                getHandAnimationResId());
+        mHandCoachingAnimation =
+                new TutorialHandAnimation(getContext(), mRootView, getHandAnimationResId());
+        InvariantDeviceProfile dp = InvariantDeviceProfile.INSTANCE.get(getContext());
+        mLauncherView = new SandboxLauncherRenderer(getContext(), dp, true).getRenderedView();
+        ((ViewGroup) mRootView).addView(mLauncherView, 0);
         return mRootView;
     }
 
@@ -133,9 +138,15 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
-        // Note: Using logical or to ensure both functions get called.
+        // Note: Using logical-or to ensure both functions get called.
         return mEdgeBackGestureHandler.onTouch(view, motionEvent)
                 | mNavBarGestureHandler.onTouch(view, motionEvent);
+    }
+
+    boolean onInterceptTouch(MotionEvent motionEvent) {
+        // Note: Using logical-or to ensure both functions get called.
+        return mEdgeBackGestureHandler.onInterceptTouch(motionEvent)
+                | mNavBarGestureHandler.onInterceptTouch(motionEvent);
     }
 
     void onAttachedToWindow() {
@@ -166,6 +177,10 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
 
     View getRootView() {
         return mRootView;
+    }
+
+    View getLauncherView() {
+        return mLauncherView;
     }
 
     TutorialHandAnimation getHandAnimation() {
