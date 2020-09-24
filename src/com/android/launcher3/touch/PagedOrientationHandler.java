@@ -111,7 +111,6 @@ public interface PagedOrientationHandler {
         public int halfPageSize;
         public int screenCenter;
         public int halfScreenSize;
-        public float pageParentScale;
     }
 
     class ChildBounds {

@@ -1390,13 +1390,12 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
          * Updates linearInterpolation for the provided child position
          */
         public void updateInterpolation(float childStart) {
-            float scaledHalfPageSize = halfPageSize / pageParentScale;
-            float pageCenter = childStart + scaledHalfPageSize;
+            float pageCenter = childStart + halfPageSize;
             float distanceFromScreenCenter = screenCenter - pageCenter;
             // How far the page has to move from the center to be offscreen, taking into account
             // the EDGE_SCALE_DOWN_FACTOR that will be applied at that position.
             float distanceToReachEdge = halfScreenSize
-                    + scaledHalfPageSize * (1 - TaskView.EDGE_SCALE_DOWN_FACTOR);
+                    + halfPageSize * (1 - TaskView.EDGE_SCALE_DOWN_FACTOR);
             linearInterpolation = Math.min(1,
                     Math.abs(distanceFromScreenCenter) / distanceToReachEdge);
         }
