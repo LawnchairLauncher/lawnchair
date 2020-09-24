@@ -162,4 +162,5 @@
     <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Tutup"</string>
     <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Ditutup"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Gagal: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
+    <string name="infinite_scroll_pref_title">Infinite scroll</string>
 </resources>

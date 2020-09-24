@@ -355,4 +355,5 @@
 
     <!-- Failed action error message: e.g. Failed: Pause -->
     <string name="remote_action_failed">Failed: <xliff:g id="what" example="Pause">%1$s</xliff:g></string>
+    <string name="infinite_scroll_pref_title">Infinite scroll</string>
 </resources>

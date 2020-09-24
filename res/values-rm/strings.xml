@@ -26,6 +26,7 @@
     <!-- no translation found for uid_name (7820867637514617527) -->
     <skip />
     <string name="folder_name" msgid="7371454440695724752"></string>
+    <string name="infinite_scroll_pref_title">Infinite scroll</string>
     <!-- no translation found for activity_not_found (8071924732094499514) -->
     <skip />
     <!-- no translation found for widgets_tab_label (2921133187116603919) -->

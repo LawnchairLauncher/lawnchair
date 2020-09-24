@@ -163,4 +163,5 @@
     <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Zatvori"</string>
     <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Zatvoreno"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Nije uspjelo: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
+    <string name="infinite_scroll_pref_title">Infinite scroll</string>
 </resources>

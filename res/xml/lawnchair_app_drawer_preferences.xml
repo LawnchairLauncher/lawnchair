@@ -160,5 +160,11 @@
             android:defaultValue="false"
             android:persistent="true" />
 
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:key="pref_infiniteScroll"
+            android:title="@string/infinite_scroll_pref_title"
+            android:defaultValue="true"
+            android:persistent="true" />
+
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
 </androidx.preference.PreferenceScreen>

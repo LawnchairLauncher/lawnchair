@@ -46,6 +46,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.Interpolator;
 import android.widget.ScrollView;
 
+import ch.deletescape.lawnchair.LawnchairPreferences;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
@@ -1156,6 +1157,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
         case MotionEvent.ACTION_UP:
             if (mIsBeingDragged) {
+                LawnchairPreferences prefs = Utilities.getLawnchairPrefs(getContext());
+                boolean infiniteScroll = prefs.getInfiniteScroll();
                 final int activePointerId = mActivePointerId;
                 final int pointerIndex = ev.findPointerIndex(activePointerId);
                 final float x = ev.getX(pointerIndex);
@@ -1195,6 +1198,12 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                             (isFling && isVelocityXLeft)) &&
                             mCurrentPage < getChildCount() - 1) {
                         finalPage = returnToOriginalPage ? mCurrentPage : mCurrentPage + 1;
+                        snapToPageWithVelocity(finalPage, velocityX);
+                    } else if (mCurrentPage == getChildCount() - 1 && infiniteScroll) {
+                        finalPage = returnToOriginalPage ? mCurrentPage : 0;
+                        snapToPageWithVelocity(finalPage, velocityX);
+                    } else if (mCurrentPage == 0 && infiniteScroll) {
+                        finalPage = returnToOriginalPage ? mCurrentPage : getChildCount() - 1;
                         snapToPageWithVelocity(finalPage, velocityX);
                     } else {
                         snapToDestination();
