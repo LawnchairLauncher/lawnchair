@@ -90,6 +90,7 @@ import com.android.quickstep.TaskIconCache;
 import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.TaskUtils;
+import com.android.quickstep.util.CancellableTask;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.util.TaskCornerRadius;
 import com.android.quickstep.views.RecentsView.PageCallbacks;
@@ -189,8 +190,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private boolean mShowScreenshot;
 
     // The current background requests to load the task thumbnail and icon
-    private TaskThumbnailCache.ThumbnailLoadRequest mThumbnailLoadRequest;
-    private TaskIconCache.IconLoadRequest mIconLoadRequest;
+    private CancellableTask mThumbnailLoadRequest;
+    private CancellableTask mIconLoadRequest;
 
     // Order in which the footers appear. Lower order appear below higher order.
     public static final int INDEX_DIGITAL_WELLBEING_TOAST = 0;
