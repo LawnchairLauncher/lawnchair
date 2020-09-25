@@ -133,7 +133,7 @@ public class OptionsPopupView extends ArrowPopup
             view.setOnLongClickListener(popup);
             popup.mItemMap.put(view, item);
         }
-        popup.reorderAndShow(popup.getChildCount());
+        popup.show();
     }
 
     @VisibleForTesting
