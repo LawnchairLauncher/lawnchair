@@ -107,8 +107,9 @@ public class SearchTarget implements Comparable<SearchTarget> {
         SHORTCUT(5, "Shortcuts", ViewType.SHORTCUT),
         PEOPLE(6, "People", ViewType.PEOPLE),
         SCREENSHOT(7, "Screenshots", ViewType.THUMBNAIL),
-        REMOTE_ACTION(8, "Remote Actions", ViewType.SHORTCUT),
-        SUGGEST(9, "Fallback Search", ViewType.SUGGEST);
+        ACTION(8, "Actions", ViewType.SHORTCUT),
+        SUGGEST(9, "Fallback Search", ViewType.SUGGEST),
+        CHROME_TAB(10, "Chrome Tab", ViewType.SHORTCUT);
 
         private final int mId;
 
