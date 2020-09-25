@@ -334,7 +334,7 @@ public class AllAppsGridAdapter extends
     }
 
     // multiplier to support adapter item column count that is not mAppsPerRow.
-    private static final int SPAN_MULTIPLIER = 3;
+    public static final int SPAN_MULTIPLIER = 3;
 
     private final BaseDraggingActivity mLauncher;
     private final LayoutInflater mLayoutInflater;
