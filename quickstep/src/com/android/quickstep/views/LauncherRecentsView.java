@@ -36,7 +36,6 @@ import android.view.Surface;
 import android.widget.FrameLayout;
 
 import com.android.launcher3.BaseQuickstepLauncher;
-import com.android.launcher3.Hotseat;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.StateManager.StateListener;
@@ -177,14 +176,8 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
 
     @Override
     protected boolean shouldStealTouchFromSiblingsBelow(MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            // Allow touches to go through to the hotseat.
-            Hotseat hotseat = mActivity.getHotseat();
-            boolean touchingHotseat = hotseat.isShown()
-                    && mActivity.getDragLayer().isEventOverView(hotseat, ev, this);
-            return !touchingHotseat;
-        }
-        return super.shouldStealTouchFromSiblingsBelow(ev);
+        return mActivity.getStateManager().getState().overviewUi
+                && super.shouldStealTouchFromSiblingsBelow(ev);
     }
 
     @Override
