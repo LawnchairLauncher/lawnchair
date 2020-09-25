@@ -16,6 +16,8 @@
 
 package com.android.launcher3.views;
 
+import static android.view.HapticFeedbackConstants.CLOCK_TICK;
+
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Resources;
@@ -288,6 +290,7 @@ public class RecyclerViewFastScroller extends View {
         if (!sectionName.equals(mPopupSectionName)) {
             mPopupSectionName = sectionName;
             mPopupView.setText(sectionName);
+            performHapticFeedback(CLOCK_TICK);
         }
         animatePopupVisibility(!sectionName.isEmpty());
         mLastTouchY = boundedY;
