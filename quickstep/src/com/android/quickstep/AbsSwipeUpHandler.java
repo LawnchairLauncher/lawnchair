@@ -97,6 +97,7 @@ import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputConsumerController;
+import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.LatencyTrackerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.TaskInfoCompat;
@@ -1130,10 +1131,12 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
         anim.addOnUpdateListener((r, p) -> {
             updateSysUiFlags(Math.max(p, mCurrentShift.value));
         });
+        final int cuj = InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME;
         anim.addAnimatorListener(new AnimationSuccessListener() {
             @Override
             public void onAnimationStart(Animator animation) {
                 Trace.beginAsyncSection(TRANSITION_OPEN_LAUNCHER, 0);
+                InteractionJankMonitorWrapper.begin(cuj);
                 if (mActivity != null) {
                     removeLiveTileOverlay();
                 }
@@ -1147,6 +1150,13 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
                 // Make sure recents is in its final state
                 maybeUpdateRecentsAttachedState(false);
                 mActivityInterface.onSwipeUpToHomeComplete(mDeviceState);
+                InteractionJankMonitorWrapper.end(cuj);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                super.onAnimationCancel(animation);
+                InteractionJankMonitorWrapper.cancel(cuj);
             }
 
             @Override
