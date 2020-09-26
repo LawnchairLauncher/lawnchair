@@ -228,7 +228,6 @@ public interface TaskShortcutFactory {
 
         @Override
         protected boolean onActivityStarted(BaseDraggingActivity activity) {
-            SystemUiProxy.INSTANCE.get(activity).onSplitScreenInvoked();
             activity.getUserEventDispatcher().logActionOnControl(TAP,
                     LauncherLogProto.ControlType.SPLIT_SCREEN_TARGET);
             return true;
