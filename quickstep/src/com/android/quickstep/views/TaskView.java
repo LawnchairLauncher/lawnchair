@@ -217,6 +217,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             }
             if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
                 if (isRunningTask()) {
+                    // TODO: Replace this animation with createRecentsWindowAnimator
                     createLaunchAnimationForRunningTask().start();
                 } else {
                     launchTask(true /* animate */);
@@ -364,10 +365,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         final PendingAnimation pendingAnimation = getRecentsView().createTaskLaunchAnimation(
                 this, RECENTS_LAUNCH_DURATION, TOUCH_RESPONSE_INTERPOLATOR);
         AnimatorPlaybackController currentAnimation = pendingAnimation.createPlaybackController();
-        currentAnimation.setEndAction(() -> {
-            pendingAnimation.finish(true);
-            launchTask(false);
-        });
+        currentAnimation.setEndAction(() -> pendingAnimation.finish(true));
         return currentAnimation;
     }
 
@@ -390,20 +388,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     public void launchTask(boolean animate, boolean freezeTaskList, Consumer<Boolean> resultCallback,
             Handler resultCallbackHandler) {
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            if (isRunningTask()) {
-                getRecentsView().finishRecentsAnimation(false /* toRecents */,
-                        () -> resultCallbackHandler.post(() -> resultCallback.accept(true)));
-            } else {
-                launchTaskInternal(animate, freezeTaskList, resultCallback, resultCallbackHandler);
-            }
-        } else {
-            launchTaskInternal(animate, freezeTaskList, resultCallback, resultCallbackHandler);
-        }
-    }
-
-    private void launchTaskInternal(boolean animate, boolean freezeTaskList,
-            Consumer<Boolean> resultCallback, Handler resultCallbackHandler) {
         if (mTask != null) {
             final ActivityOptions opts;
             TestLogging.recordEvent(
