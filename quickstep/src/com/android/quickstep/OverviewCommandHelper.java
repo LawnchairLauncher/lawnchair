@@ -46,7 +46,6 @@ public class OverviewCommandHelper {
 
     private final Context mContext;
     private final RecentsAnimationDeviceState mDeviceState;
-    private final RecentsModel mRecentsModel;
     private final OverviewComponentObserver mOverviewComponentObserver;
 
     private long mLastToggleTime;
@@ -55,7 +54,6 @@ public class OverviewCommandHelper {
             OverviewComponentObserver observer) {
         mContext = context;
         mDeviceState = deviceState;
-        mRecentsModel = RecentsModel.INSTANCE.get(mContext);
         mOverviewComponentObserver = observer;
     }
 
@@ -158,7 +156,7 @@ public class OverviewCommandHelper {
                     ActivityManagerWrapper.getInstance().getRunningTask(), mDeviceState);
 
             // Preload the plan
-            mRecentsModel.getTasks(null);
+            RecentsModel.INSTANCE.get(mContext).getTasks(null);
         }
 
         @Override
