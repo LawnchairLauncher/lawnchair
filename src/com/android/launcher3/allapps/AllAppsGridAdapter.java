@@ -98,6 +98,8 @@ public class AllAppsGridAdapter extends
 
     public static final int VIEW_TYPE_SEARCH_THUMBNAIL = 1 << 12;
 
+    public static final int VIEW_TYPE_SEARCH_SUGGEST = 1 << 13;
+
     // Common view type masks
     public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_ALL_APPS_DIVIDER;
     public static final int VIEW_TYPE_MASK_ICON = VIEW_TYPE_ICON;
@@ -189,7 +191,8 @@ public class AllAppsGridAdapter extends
                     || viewType == VIEW_TYPE_SEARCH_ROW
                     || viewType == VIEW_TYPE_SEARCH_PEOPLE
                     || viewType == VIEW_TYPE_SEARCH_THUMBNAIL
-                    || viewType == VIEW_TYPE_SEARCH_ICON_ROW;
+                    || viewType == VIEW_TYPE_SEARCH_ICON_ROW
+                    || viewType == VIEW_TYPE_SEARCH_SUGGEST;
         }
     }
 
@@ -467,6 +470,9 @@ public class AllAppsGridAdapter extends
             case VIEW_TYPE_SEARCH_THUMBNAIL:
                 return new ViewHolder(mLayoutInflater.inflate(
                         R.layout.search_result_thumbnail, parent, false));
+            case VIEW_TYPE_SEARCH_SUGGEST:
+                return new ViewHolder(mLayoutInflater.inflate(
+                        R.layout.search_result_suggest, parent, false));
             default:
                 throw new RuntimeException("Unexpected view type");
         }
@@ -554,6 +560,7 @@ public class AllAppsGridAdapter extends
             case VIEW_TYPE_SEARCH_ICON_ROW:
             case VIEW_TYPE_SEARCH_PEOPLE:
             case VIEW_TYPE_SEARCH_THUMBNAIL:
+            case VIEW_TYPE_SEARCH_SUGGEST:
                 AdapterItemWithPayload item =
                         (AdapterItemWithPayload) mApps.getAdapterItems().get(position);
                 PayloadResultHandler payloadResultView = (PayloadResultHandler) holder.itemView;
