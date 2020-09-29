@@ -34,8 +34,7 @@ import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 @TargetApi(Build.VERSION_CODES.P)
-public abstract class LauncherAnimationRunner implements RemoteAnimationRunnerCompat,
-        WrappedAnimationRunnerImpl {
+public abstract class LauncherAnimationRunner implements RemoteAnimationRunnerCompat {
 
     private static final String TAG = "LauncherAnimationRunner";
 
