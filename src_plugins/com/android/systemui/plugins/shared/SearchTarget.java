@@ -80,7 +80,12 @@ public class SearchTarget implements Comparable<SearchTarget> {
          * N number of 1x1 ratio thumbnail is rendered.
          * (current N = 3)
          */
-        THUMBNAIL(8);
+        THUMBNAIL(8),
+
+        /**
+         * Fallback search icon and relevant text is rendered.
+         */
+        SUGGEST(9);
 
         private final int mId;
 
@@ -102,7 +107,8 @@ public class SearchTarget implements Comparable<SearchTarget> {
         SHORTCUT(5, "Shortcuts", ViewType.SHORTCUT),
         PEOPLE(6, "People", ViewType.PEOPLE),
         SCREENSHOT(7, "Screenshots", ViewType.THUMBNAIL),
-        REMOTE_ACTION(8, "Remote Actions", ViewType.SHORTCUT);
+        REMOTE_ACTION(8, "Remote Actions", ViewType.SHORTCUT),
+        SUGGEST(9, "Fallback Search", ViewType.SUGGEST);
 
         private final int mId;
 
