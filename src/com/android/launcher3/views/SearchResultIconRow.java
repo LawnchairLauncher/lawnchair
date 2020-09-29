@@ -42,6 +42,7 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.systemui.plugins.AllAppsSearchPlugin;
 import com.android.systemui.plugins.shared.SearchTarget;
+import com.android.systemui.plugins.shared.SearchTarget.ItemType;
 import com.android.systemui.plugins.shared.SearchTargetEvent;
 
 /**
@@ -138,7 +139,7 @@ public class SearchResultIconRow extends DoubleShadowBubbleTextView implements
         } else {
             RemoteActionItemInfo remoteItemInfo = (RemoteActionItemInfo) itemInfo;
             ItemClickHandler.onClickRemoteAction(launcher, remoteItemInfo);
-            searchTargetEvent = getSearchTargetEvent(SearchTarget.ItemType.REMOTE_ACTION,
+            searchTargetEvent = getSearchTargetEvent(ItemType.ACTION,
                     eventType);
             searchTargetEvent.bundle = new Bundle();
             searchTargetEvent.remoteAction = remoteItemInfo.getRemoteAction();
