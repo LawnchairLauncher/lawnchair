@@ -52,7 +52,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     final View mFakeTaskView;
     final View mRippleView;
     final RippleDrawable mRippleDrawable;
-    final TutorialHandAnimation mHandCoachingAnimation;
+    @Nullable final TutorialHandAnimation mHandCoachingAnimation;
     final ImageView mHandCoachingView;
     final Button mActionTextButton;
     final Button mActionButton;
@@ -145,13 +145,16 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     void onActionTextButtonClicked(View button) {}
 
     void showHandCoachingAnimation() {
-        if (isComplete()) {
+        if (isComplete() || mHandCoachingAnimation == null) {
             return;
         }
         mHandCoachingAnimation.startLoopedAnimation(mTutorialType);
     }
 
     void hideHandCoachingAnimation() {
+        if (mHandCoachingAnimation == null) {
+            return;
+        }
         mHandCoachingAnimation.stop();
         mHandCoachingView.setVisibility(View.INVISIBLE);
     }

@@ -43,7 +43,7 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
     TutorialType mTutorialType;
     @Nullable TutorialController mTutorialController = null;
     View mRootView;
-    TutorialHandAnimation mHandCoachingAnimation;
+    @Nullable TutorialHandAnimation mHandCoachingAnimation = null;
     EdgeBackGestureHandler mEdgeBackGestureHandler;
     NavBarGestureHandler mNavBarGestureHandler;
     private View mLauncherView;
@@ -82,7 +82,9 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
         return null;
     }
 
-    abstract int getHandAnimationResId();
+    @Nullable Integer getHandAnimationResId() {
+        return null;
+    }
 
     abstract TutorialController createController(TutorialType type);
 
@@ -116,8 +118,11 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
             return insets;
         });
         mRootView.setOnTouchListener(this);
-        mHandCoachingAnimation =
-                new TutorialHandAnimation(getContext(), mRootView, getHandAnimationResId());
+        Integer handAnimationResId = getHandAnimationResId();
+        if (handAnimationResId != null) {
+            mHandCoachingAnimation =
+                new TutorialHandAnimation(getContext(), mRootView, handAnimationResId);
+        }
         InvariantDeviceProfile dp = InvariantDeviceProfile.INSTANCE.get(getContext());
         mLauncherView = new SandboxLauncherRenderer(getContext(), dp, true).getRenderedView();
         ((ViewGroup) mRootView).addView(mLauncherView, 0);
@@ -133,7 +138,10 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
     @Override
     public void onPause() {
         super.onPause();
-        mHandCoachingAnimation.stop();
+
+        if (mHandCoachingAnimation != null) {
+            mHandCoachingAnimation.stop();
+        }
     }
 
     @Override
@@ -183,7 +191,7 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
         return mLauncherView;
     }
 
-    TutorialHandAnimation getHandAnimation() {
+    @Nullable TutorialHandAnimation getHandAnimation() {
         return mHandCoachingAnimation;
     }
 
