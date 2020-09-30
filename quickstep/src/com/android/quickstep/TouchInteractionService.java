@@ -683,7 +683,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
         final boolean disableHorizontalSwipe = mDeviceState.isInExclusionRegion(event);
         return new OtherActivityInputConsumer(this, mDeviceState, mTaskAnimationManager,
                 gestureState, shouldDefer, this::onConsumerInactive,
-                mInputMonitorCompat, disableHorizontalSwipe, factory);
+                mInputMonitorCompat, mInputEventReceiver, disableHorizontalSwipe, factory);
     }
 
     private InputConsumer createDeviceLockedInputConsumer(GestureState gestureState) {
@@ -732,6 +732,8 @@ public class TouchInteractionService extends Service implements PluginListener<O
     private void reset() {
         mConsumer = mUncheckedConsumer = mResetGestureInputConsumer;
         mGestureState = DEFAULT_STATE;
+        // By default, use batching of the input events
+        mInputEventReceiver.setBatchingEnabled(true);
     }
 
     private void preloadOverview(boolean fromInit) {
