@@ -890,6 +890,12 @@ public class TouchInteractionService extends Service implements PluginListener<O
         TouchInteractionServiceProto.Builder serviceProto =
             TouchInteractionServiceProto.newBuilder();
         serviceProto.setServiceConnected(true);
+
+        if (mOverviewComponentObserver != null) {
+            mOverviewComponentObserver.writeToProto(serviceProto);
+        }
+        mConsumer.writeToProto(serviceProto);
+
         proto.setTouchInteractionService(serviceProto);
     }
 }
