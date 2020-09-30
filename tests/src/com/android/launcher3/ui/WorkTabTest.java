@@ -55,7 +55,9 @@ public class WorkTabTest extends AbstractLauncherUiTest {
     private static final int WORK_PAGE = AllAppsContainerView.AdapterHolder.WORK;
 
     @Before
-    public void createWorkProfile() throws Exception {
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
         String output =
                 mDevice.executeShellCommand(
                         "pm create-user --profileOf 0 --managed TestProfile");
