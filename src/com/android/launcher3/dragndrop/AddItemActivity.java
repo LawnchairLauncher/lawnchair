@@ -16,10 +16,11 @@
 
 package com.android.launcher3.dragndrop;
 
-import static com.android.launcher3.logging.LoggerUtils.newCommandAction;
-import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
-import static com.android.launcher3.logging.LoggerUtils.newItemTarget;
-import static com.android.launcher3.logging.LoggerUtils.newLauncherEvent;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ADD_EXTERNAL_ITEM_BACK;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ADD_EXTERNAL_ITEM_CANCELLED;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ADD_EXTERNAL_ITEM_DRAGGED;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ADD_EXTERNAL_ITEM_PLACED_AUTOMATICALLY;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ADD_EXTERNAL_ITEM_START;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.annotation.TargetApi;
@@ -49,11 +50,10 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetHost;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.R;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.ItemInstallQueue;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.pm.PinRequestHelper;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
@@ -125,7 +125,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
         // savedInstanceState is null when the activity is created the first time (i.e., avoids
         // duplicate logging during rotation)
         if (savedInstanceState == null) {
-            logCommand(Action.Command.ENTRY);
+            logCommand(LAUNCHER_ADD_EXTERNAL_ITEM_START);
         }
     }
 
@@ -178,6 +178,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
         startActivity(homeIntent,
                 ActivityOptions.makeCustomAnimation(this, 0, android.R.anim.fade_out)
                         .toBundle());
+        logCommand(LAUNCHER_ADD_EXTERNAL_ITEM_DRAGGED);
         mFinishOnPause = true;
         return false;
     }
@@ -240,7 +241,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
      * Called when the cancel button is clicked.
      */
     public void onCancelClick(View v) {
-        logCommand(Action.Command.CANCEL);
+        logCommand(LAUNCHER_ADD_EXTERNAL_ITEM_CANCELLED);
         finish();
     }
 
@@ -250,7 +251,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
     public void onPlaceAutomaticallyClick(View v) {
         if (mRequest.getRequestType() == PinItemRequest.REQUEST_TYPE_SHORTCUT) {
             ItemInstallQueue.INSTANCE.get(this).queueItem(mRequest.getShortcutInfo());
-            logCommand(Action.Command.CONFIRM);
+            logCommand(LAUNCHER_ADD_EXTERNAL_ITEM_PLACED_AUTOMATICALLY);
             mRequest.accept();
             finish();
             return;
@@ -274,13 +275,13 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
                 .queueItem(mRequest.getAppWidgetProviderInfo(this), widgetId);
         mWidgetOptions.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
         mRequest.accept(mWidgetOptions);
-        logCommand(Action.Command.CONFIRM);
+        logCommand(LAUNCHER_ADD_EXTERNAL_ITEM_PLACED_AUTOMATICALLY);
         finish();
     }
 
     @Override
     public void onBackPressed() {
-        logCommand(Action.Command.BACK);
+        logCommand(LAUNCHER_ADD_EXTERNAL_ITEM_BACK);
         super.onBackPressed();
     }
 
@@ -320,10 +321,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
         throw new UnsupportedOperationException();
     }
 
-    private void logCommand(int command) {
-        getUserEventDispatcher().dispatchUserEvent(newLauncherEvent(
-                newCommandAction(command),
-                newItemTarget(mWidgetCell.getWidgetView(), mInstantAppResolver),
-                newContainerTarget(ContainerType.PINITEM)), null);
+    private void logCommand(StatsLogManager.EventEnum command) {
+        getStatsLogManager().logger().log(command);
     }
 }

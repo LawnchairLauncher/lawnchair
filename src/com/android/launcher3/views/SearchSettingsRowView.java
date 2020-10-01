@@ -48,6 +48,8 @@ public class SearchSettingsRowView extends LinearLayout implements
     private TextView mBreadcrumbsView;
     private Intent mIntent;
     private AllAppsSearchPlugin mPlugin;
+    private final Object[] mTargetInfo = createTargetInfo();
+
 
     public SearchSettingsRowView(@NonNull Context context) {
         super(context);
@@ -87,6 +89,11 @@ public class SearchSettingsRowView extends LinearLayout implements
         adapterItemWithPayload.setSelectionHandler(this::handleSelection);
     }
 
+    @Override
+    public Object[] getTargetInfo() {
+        return mTargetInfo;
+    }
+
     private void showIfAvailable(TextView view, @Nullable String string) {
         if (TextUtils.isEmpty(string)) {
             view.setVisibility(GONE);
@@ -108,7 +115,7 @@ public class SearchSettingsRowView extends LinearLayout implements
         Launcher launcher = Launcher.getLauncher(getContext());
         launcher.startActivityForResult(mIntent, 0);
 
-        SearchTargetEvent searchTargetEvent = new SearchTargetEvent(
+        SearchTargetEvent searchTargetEvent = getSearchTargetEvent(
                 SearchTarget.ItemType.SETTINGS_ROW, eventType);
         searchTargetEvent.bundle = new Bundle();
         searchTargetEvent.bundle.putParcelable("intent", mIntent);

@@ -23,7 +23,6 @@ import static android.view.Surface.ROTATION_180;
 import static android.view.Surface.ROTATION_270;
 import static android.view.Surface.ROTATION_90;
 
-import static com.android.launcher3.logging.LoggerUtils.extractObjectNameAndAddress;
 import static com.android.launcher3.states.RotationHelper.ALLOW_ROTATION_PREFERENCE_KEY;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
@@ -72,6 +71,7 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
 
     private static final String TAG = "RecentsOrientedState";
     private static final boolean DEBUG = false;
+    private static final String DELIMITER_DOT = "\\.";
 
     private ContentObserver mSystemAutoRotateObserver = new ContentObserver(new Handler()) {
         @Override
@@ -533,5 +533,14 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
                 || mRecentsActivityRotation == ROTATION_270)
                 ? idp.landscapeProfile
                 : idp.portraitProfile;
+    }
+
+    /**
+     * String conversion for only the helpful parts of {@link Object#toString()} method
+     * @param stringToExtract "foo.bar.baz.MyObject@1234"
+     * @return "MyObject@1234"
+     */
+    private static String extractObjectNameAndAddress(String stringToExtract) {
+        return stringToExtract.substring(stringToExtract.lastIndexOf(DELIMITER_DOT));
     }
 }

@@ -36,7 +36,6 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.touch.BaseSwipeDetector;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.FlingBlockCheck;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.BaseDragLayer;
@@ -203,7 +202,7 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
             mCurrentAnimation.setPlayFraction(0);
         }
         if (mPendingAnimation != null) {
-            mPendingAnimation.finish(false, Touch.SWIPE);
+            mPendingAnimation.finish(false);
             mPendingAnimation = null;
         }
 
@@ -285,7 +284,6 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
     public void onDragEnd(float velocity) {
         boolean fling = mDetector.isFling(velocity);
         final boolean goingToEnd;
-        final int logAction;
         boolean blockedFling = fling && mFlingBlockCheck.isBlocked();
         if (blockedFling) {
             fling = false;
@@ -294,11 +292,9 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
         float progress = mCurrentAnimation.getProgressFraction();
         float interpolatedProgress = mCurrentAnimation.getInterpolatedProgress();
         if (fling) {
-            logAction = Touch.FLING;
             boolean goingUp = orientationHandler.isGoingUp(velocity, mIsRtl);
             goingToEnd = goingUp == mCurrentAnimationIsGoingUp;
         } else {
-            logAction = Touch.SWIPE;
             goingToEnd = interpolatedProgress > SUCCESS_TRANSITION_PROGRESS;
         }
         long animationDuration = BaseSwipeDetector.calculateDuration(
@@ -307,14 +303,14 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
             animationDuration *= LauncherAnimUtils.blockedFlingDurationFactor(velocity);
         }
 
-        mCurrentAnimation.setEndAction(() -> onCurrentAnimationEnd(goingToEnd, logAction));
+        mCurrentAnimation.setEndAction(() -> onCurrentAnimationEnd(goingToEnd));
         mCurrentAnimation.startWithVelocity(mActivity, goingToEnd,
                 velocity, mEndDisplacement, animationDuration);
     }
 
-    private void onCurrentAnimationEnd(boolean wasSuccess, int logAction) {
+    private void onCurrentAnimationEnd(boolean wasSuccess) {
         if (mPendingAnimation != null) {
-            mPendingAnimation.finish(wasSuccess, logAction);
+            mPendingAnimation.finish(wasSuccess);
             mPendingAnimation = null;
         }
         clearState();
@@ -326,7 +322,7 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
         mTaskBeingDragged = null;
         mCurrentAnimation = null;
         if (mPendingAnimation != null) {
-            mPendingAnimation.finish(false, Touch.SWIPE);
+            mPendingAnimation.finish(false);
             mPendingAnimation = null;
         }
     }
