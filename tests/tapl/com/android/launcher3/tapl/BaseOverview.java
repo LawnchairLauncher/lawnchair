@@ -23,8 +23,6 @@ import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObject2;
 
-import com.android.launcher3.testing.TestProtocol;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -48,14 +46,19 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
      * Flings forward (left) and waits the fling's end.
      */
     public void flingForward() {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
+            flingForwardImpl();
+        }
+    }
+
+    private void flingForwardImpl() {
         try (LauncherInstrumentation.Closable c =
                      mLauncher.addContextLayer("want to fling forward in overview")) {
             LauncherInstrumentation.log("Overview.flingForward before fling");
             final UiObject2 overview = verifyActiveContainer();
-            final int leftMargin = mLauncher.getTestInfo(
-                    TestProtocol.REQUEST_OVERVIEW_LEFT_GESTURE_MARGIN).
-                    getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
-            mLauncher.scroll(overview, Direction.LEFT, new Rect(leftMargin, 0, 0, 0), 20);
+            final int leftMargin = mLauncher.getTargetInsets().left;
+            mLauncher.scroll(
+                    overview, Direction.LEFT, new Rect(leftMargin + 1, 0, 0, 0), 20, false);
             verifyActiveContainer();
         }
     }
@@ -63,22 +66,20 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
     /**
      * Dismissed all tasks by scrolling to Clear-all button and pressing it.
      */
-    public Workspace dismissAllTasks() {
-        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                "dismissing all tasks")) {
-            final BySelector clearAllSelector = mLauncher.getLauncherObjectSelector("clear_all");
+    public void dismissAllTasks() {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                     "dismissing all tasks")) {
+            final BySelector clearAllSelector = mLauncher.getOverviewObjectSelector("clear_all");
             for (int i = 0;
                     i < FLINGS_FOR_DISMISS_LIMIT
                             && !verifyActiveContainer().hasObject(clearAllSelector);
                     ++i) {
-                flingForward();
+                flingForwardImpl();
             }
 
-            mLauncher.waitForObjectInContainer(verifyActiveContainer(), clearAllSelector).click();
-            try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
-                    "dismissed all tasks")) {
-                return new Workspace(mLauncher);
-            }
+            mLauncher.clickLauncherObject(
+                    mLauncher.waitForObjectInContainer(verifyActiveContainer(), clearAllSelector));
         }
     }
 
@@ -86,14 +87,14 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
      * Flings backward (right) and waits the fling's end.
      */
     public void flingBackward() {
-        try (LauncherInstrumentation.Closable c =
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c =
                      mLauncher.addContextLayer("want to fling backward in overview")) {
             LauncherInstrumentation.log("Overview.flingBackward before fling");
             final UiObject2 overview = verifyActiveContainer();
-            final int rightMargin = mLauncher.getTestInfo(
-                    TestProtocol.REQUEST_OVERVIEW_RIGHT_GESTURE_MARGIN).
-                    getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
-            mLauncher.scroll(overview, Direction.RIGHT, new Rect(0, 0, rightMargin, 0), 20);
+            final int rightMargin = mLauncher.getTargetInsets().right;
+            mLauncher.scroll(
+                    overview, Direction.RIGHT, new Rect(0, 0, rightMargin + 1, 0), 20, false);
             verifyActiveContainer();
         }
     }
@@ -105,21 +106,33 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
      */
     @NonNull
     public OverviewTask getCurrentTask() {
+        final List<UiObject2> taskViews = getTasks();
+        mLauncher.assertNotEquals("Unable to find a task", 0, taskViews.size());
+
+        // taskViews contains up to 3 task views: the 'main' (having the widest visible part) one
+        // in the center, and parts of its right and left siblings. Find the main task view by
+        // its width.
+        final UiObject2 widestTask = Collections.max(taskViews,
+                (t1, t2) -> Integer.compare(mLauncher.getVisibleBounds(t1).width(),
+                        mLauncher.getVisibleBounds(t2).width()));
+
+        return new OverviewTask(mLauncher, widestTask, this);
+    }
+
+    @NonNull
+    private List<UiObject2> getTasks() {
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                "want to get current task")) {
+                "want to get overview tasks")) {
             verifyActiveContainer();
-            final List<UiObject2> taskViews = mLauncher.getDevice().findObjects(
-                    mLauncher.getLauncherObjectSelector("snapshot"));
-            mLauncher.assertNotEquals("Unable to find a task", 0, taskViews.size());
-
-            // taskViews contains up to 3 task views: the 'main' (having the widest visible
-            // part) one in the center, and parts of its right and left siblings. Find the
-            // main task view by its width.
-            final UiObject2 widestTask = Collections.max(taskViews,
-                    (t1, t2) -> Integer.compare(t1.getVisibleBounds().width(),
-                            t2.getVisibleBounds().width()));
-
-            return new OverviewTask(mLauncher, widestTask, this);
+            return mLauncher.getDevice().findObjects(
+                    mLauncher.getOverviewObjectSelector("snapshot"));
         }
+    }
+
+    /**
+     * Returns whether Overview has tasks.
+     */
+    public boolean hasTasks() {
+        return getTasks().size() > 0;
     }
 }

@@ -15,20 +15,19 @@
  */
 package com.android.launcher3.model;
 
-import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_LOCKED_USER;
+import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_LOCKED_USER;
 
 import android.content.Context;
 import android.content.pm.ShortcutInfo;
 import android.os.UserHandle;
 
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.WorkspaceItemInfo;
-import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.icons.LauncherIcons;
-import com.android.launcher3.shortcuts.DeepShortcutManager;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.shortcuts.ShortcutKey;
+import com.android.launcher3.shortcuts.ShortcutRequest;
+import com.android.launcher3.shortcuts.ShortcutRequest.QueryResult;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ItemInfoMatcher;
 
@@ -43,21 +42,21 @@ import java.util.Iterator;
 public class UserLockStateChangedTask extends BaseModelUpdateTask {
 
     private final UserHandle mUser;
+    private boolean mIsUserUnlocked;
 
-    public UserLockStateChangedTask(UserHandle user) {
+    public UserLockStateChangedTask(UserHandle user, boolean isUserUnlocked) {
         mUser = user;
+        mIsUserUnlocked = isUserUnlocked;
     }
 
     @Override
     public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
         Context context = app.getContext();
-        boolean isUserUnlocked = UserManagerCompat.getInstance(context).isUserUnlocked(mUser);
-        DeepShortcutManager deepShortcutManager = DeepShortcutManager.getInstance(context);
 
         HashMap<ShortcutKey, ShortcutInfo> pinnedShortcuts = new HashMap<>();
-        if (isUserUnlocked) {
-            DeepShortcutManager.QueryResult shortcuts =
-                    deepShortcutManager.queryForPinnedShortcuts(null, mUser);
+        if (mIsUserUnlocked) {
+            QueryResult shortcuts = new ShortcutRequest(context, mUser)
+                    .query(ShortcutRequest.PINNED);
             if (shortcuts.wasSuccess()) {
                 for (ShortcutInfo shortcut : shortcuts) {
                     pinnedShortcuts.put(ShortcutKey.fromInfo(shortcut), shortcut);
@@ -66,7 +65,7 @@ public class UserLockStateChangedTask extends BaseModelUpdateTask {
                 // Shortcut manager can fail due to some race condition when the lock state
                 // changes too frequently. For the purpose of the update,
                 // consider it as still locked.
-                isUserUnlocked = false;
+                mIsUserUnlocked = false;
             }
         }
 
@@ -78,7 +77,7 @@ public class UserLockStateChangedTask extends BaseModelUpdateTask {
             if (itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT
                     && mUser.equals(itemInfo.user)) {
                 WorkspaceItemInfo si = (WorkspaceItemInfo) itemInfo;
-                if (isUserUnlocked) {
+                if (mIsUserUnlocked) {
                     ShortcutKey key = ShortcutKey.fromItemInfo(si);
                     ShortcutInfo shortcut = pinnedShortcuts.get(key);
                     // We couldn't verify the shortcut during loader. If its no longer available
@@ -89,11 +88,7 @@ public class UserLockStateChangedTask extends BaseModelUpdateTask {
                     }
                     si.runtimeStatusFlags &= ~FLAG_DISABLED_LOCKED_USER;
                     si.updateFromDeepShortcutInfo(shortcut, context);
-                    // If the shortcut is pinned but no longer has an icon in the system,
-                    // keep the current icon instead of reverting to the default icon.
-                    LauncherIcons li = LauncherIcons.obtain(context);
-                    si.applyFrom(li.createShortcutIcon(shortcut, true, () -> si));
-                    li.recycle();
+                    app.getIconCache().getShortcutIcon(si, shortcut);
                 } else {
                     si.runtimeStatusFlags |= FLAG_DISABLED_LOCKED_USER;
                 }
@@ -113,9 +108,10 @@ public class UserLockStateChangedTask extends BaseModelUpdateTask {
             }
         }
 
-        if (isUserUnlocked) {
+        if (mIsUserUnlocked) {
             dataModel.updateDeepShortcutCounts(
-                    null, mUser, deepShortcutManager.queryForAllShortcuts(mUser));
+                    null, mUser,
+                    new ShortcutRequest(context, mUser).query(ShortcutRequest.ALL));
         }
         bindDeepShortcuts(dataModel);
     }

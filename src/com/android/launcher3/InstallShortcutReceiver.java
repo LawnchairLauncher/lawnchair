@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.LauncherActivityInfo;
+import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
 import android.content.pm.ShortcutInfo;
 import android.graphics.Bitmap;
@@ -42,13 +43,16 @@ import android.util.Pair;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
-import com.android.launcher3.compat.LauncherAppsCompat;
-import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.icons.LauncherIcons;
-import com.android.launcher3.shortcuts.DeepShortcutManager;
+import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.LauncherAppWidgetInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutKey;
+import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.Thunk;
@@ -59,7 +63,6 @@ import org.json.JSONStringer;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -71,7 +74,6 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
     public static final int FLAG_ACTIVITY_PAUSED = 1;
     public static final int FLAG_LOADER_RUNNING = 2;
     public static final int FLAG_DRAG_AND_DROP = 4;
-    public static final int FLAG_BULK_ADD = 4;
 
     // Determines whether to defer installing shortcuts immediately until
     // processAllPendingInstalls() is called.
@@ -112,8 +114,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
 
     @WorkerThread
     private static void flushQueueInBackground(Context context) {
-        LauncherModel model = LauncherAppState.getInstance(context).getModel();
-        if (model.getCallback() == null) {
+        if (Launcher.ACTIVITY_TRACKER.getCreatedActivity() == null) {
             // Launcher not loaded
             return;
         }
@@ -126,7 +127,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             return;
         }
 
-        LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
+        LauncherApps launcherApps = context.getSystemService(LauncherApps.class);
         for (String encoded : strings) {
             PendingInstallShortcutInfo info = decode(encoded, context);
             if (info == null) {
@@ -135,7 +136,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
 
             String pkg = getIntentPackage(info.launchIntent);
             if (!TextUtils.isEmpty(pkg)
-                    && !launcherApps.isPackageEnabledForProfile(pkg, info.user)
+                    && !launcherApps.isPackageEnabled(pkg, info.user)
                     && !info.isActivity) {
                 if (DBG) {
                     Log.d(TAG, "Ignoring shortcut for absent package: " + info.launchIntent);
@@ -148,7 +149,8 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         }
         prefs.edit().remove(APPS_PENDING_INSTALL).apply();
         if (!installQueue.isEmpty()) {
-            model.addAndBindAddedWorkspaceItems(installQueue);
+            LauncherAppState.getInstance(context).getModel()
+                    .addAndBindAddedWorkspaceItems(installQueue);
         }
     }
 
@@ -421,7 +423,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                             .object()
                             .key(LAUNCH_INTENT_KEY).value(launchIntent.toUri(0))
                             .key(DEEPSHORTCUT_TYPE_KEY).value(true)
-                            .key(USER_HANDLE_KEY).value(UserManagerCompat.getInstance(mContext)
+                            .key(USER_HANDLE_KEY).value(UserCache.INSTANCE.get(mContext)
                                     .getSerialNumberForUser(user))
                             .endObject().toString();
                 } else if (providerInfo != null) {
@@ -431,7 +433,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                             .object()
                             .key(LAUNCH_INTENT_KEY).value(launchIntent.toUri(0))
                             .key(APP_WIDGET_TYPE_KEY).value(true)
-                            .key(USER_HANDLE_KEY).value(UserManagerCompat.getInstance(mContext)
+                            .key(USER_HANDLE_KEY).value(UserCache.INSTANCE.get(mContext)
                                     .getSerialNumberForUser(user))
                             .endObject().toString();
                 }
@@ -459,7 +461,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                     .key(LAUNCH_INTENT_KEY).value(launchIntent.toUri(0))
                     .key(NAME_KEY).value(name)
                     .key(USER_HANDLE_KEY).value(
-                            UserManagerCompat.getInstance(mContext).getSerialNumberForUser(user))
+                            UserCache.INSTANCE.get(mContext).getSerialNumberForUser(user))
                     .key(APP_SHORTCUT_TYPE_KEY).value(isActivity);
                 if (icon != null) {
                     byte[] iconByteArray = GraphicsUtils.flattenBitmap(icon);
@@ -490,9 +492,8 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 return Pair.create(si, null);
             } else if (shortcutInfo != null) {
                 WorkspaceItemInfo itemInfo = new WorkspaceItemInfo(shortcutInfo, mContext);
-                LauncherIcons li = LauncherIcons.obtain(mContext);
-                itemInfo.applyFrom(li.createShortcutIcon(shortcutInfo));
-                li.recycle();
+                LauncherAppState.getInstance(mContext).getIconCache().getShortcutIcon(
+                        itemInfo, shortcutInfo);
                 return Pair.create(itemInfo, shortcutInfo);
             } else if (providerInfo != null) {
                 LauncherAppWidgetProviderInfo info = LauncherAppWidgetProviderInfo
@@ -527,18 +528,15 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         try {
             Decoder decoder = new Decoder(encoded, context);
             if (decoder.optBoolean(APP_SHORTCUT_TYPE_KEY)) {
-                LauncherActivityInfo info = LauncherAppsCompat.getInstance(context)
+                LauncherActivityInfo info = context.getSystemService(LauncherApps.class)
                         .resolveActivity(decoder.launcherIntent, decoder.user);
                 if (info != null) {
                     return new PendingInstallShortcutInfo(info, context);
                 }
             } else if (decoder.optBoolean(DEEPSHORTCUT_TYPE_KEY)) {
-                DeepShortcutManager sm = DeepShortcutManager.getInstance(context);
-                List<ShortcutInfo> si = sm.queryForFullDetails(
-                        decoder.launcherIntent.getPackage(),
-                        Arrays.asList(decoder.launcherIntent.getStringExtra(
-                                ShortcutKey.EXTRA_SHORTCUT_ID)),
-                        decoder.user);
+                List<ShortcutInfo> si = ShortcutKey.fromIntent(decoder.launcherIntent, decoder.user)
+                        .buildRequest(context)
+                        .query(ShortcutRequest.ALL);
                 if (si.isEmpty()) {
                     return null;
                 } else {
@@ -593,7 +591,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         private Decoder(String encoded, Context context) throws JSONException, URISyntaxException {
             super(encoded);
             launcherIntent = Intent.parseUri(getString(LAUNCH_INTENT_KEY), 0);
-            user = has(USER_HANDLE_KEY) ? UserManagerCompat.getInstance(context)
+            user = has(USER_HANDLE_KEY) ? UserCache.INSTANCE.get(context)
                     .getUserForSerialNumber(getLong(USER_HANDLE_KEY))
                     : Process.myUserHandle();
             if (user == null) {
@@ -617,7 +615,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             return original;
         }
 
-        LauncherActivityInfo info = LauncherAppsCompat.getInstance(original.mContext)
+        LauncherActivityInfo info = original.mContext.getSystemService(LauncherApps.class)
                 .resolveActivity(original.launchIntent, original.user);
         if (info == null) {
             return original;
@@ -662,7 +660,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         if (iconInfo == null) {
             iconInfo = app.getIconCache().getDefaultIcon(info.user);
         }
-        info.applyFrom(iconInfo);
+        info.bitmap = iconInfo;
 
         info.title = Utilities.trim(name);
         info.contentDescription = app.getContext().getPackageManager()

@@ -15,11 +15,11 @@
  */
 package com.android.launcher3.util;
 
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.WorkspaceItemInfo;
-import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.model.WidgetsModel;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.shortcuts.ShortcutKey;
 
 public class ShortcutUtil {
@@ -34,7 +34,7 @@ public class ShortcutUtil {
      * Returns true when we should show depp shortcuts in shortcut menu for the item.
      */
     public static boolean supportsDeepShortcuts(ItemInfo info) {
-        return isActive(info) && isApp(info);
+        return isActive(info) && isApp(info) && !WidgetsModel.GO_DISABLE_WIDGETS;
     }
 
     /**
@@ -64,7 +64,7 @@ public class ShortcutUtil {
     private static boolean isActive(ItemInfo info) {
         boolean isLoading = info instanceof WorkspaceItemInfo
                 && ((WorkspaceItemInfo) info).hasPromiseIconUi();
-        return !isLoading && !info.isDisabled() && !FeatureFlags.GO_DISABLE_WIDGETS;
+        return !isLoading && !info.isDisabled();
     }
 
     private static boolean isApp(ItemInfo info) {

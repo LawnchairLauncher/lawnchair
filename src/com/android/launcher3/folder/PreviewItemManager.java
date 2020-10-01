@@ -16,10 +16,12 @@
 
 package com.android.launcher3.folder;
 
+import static com.android.launcher3.FastBitmapDrawable.newIcon;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.ENTER_INDEX;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.EXIT_INDEX;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
 import static com.android.launcher3.folder.FolderIcon.DROP_IN_ANIMATION_DURATION;
+import static com.android.launcher3.graphics.PreloadIconDrawable.newPendingIcon;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -35,11 +37,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.WorkspaceItemInfo;
-import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.graphics.PreloadIconDrawable;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.views.ActivityContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +67,6 @@ public class PreviewItemManager {
 
     private final Context mContext;
     private final FolderIcon mIcon;
-    private final DrawableFactory mDrawableFactory;
     private final int mIconSize;
 
     // These variables are all associated with the drawing of the preview; they are stored
@@ -94,8 +94,8 @@ public class PreviewItemManager {
     public PreviewItemManager(FolderIcon icon) {
         mContext = icon.getContext();
         mIcon = icon;
-        mDrawableFactory = DrawableFactory.INSTANCE.get(mContext);
-        mIconSize = Launcher.getLauncher(mContext).getDeviceProfile().folderChildIconSizePx;
+        mIconSize = ActivityContext.lookupContext(
+                mContext).getDeviceProfile().folderChildIconSizePx;
     }
 
     /**
@@ -133,7 +133,7 @@ public class PreviewItemManager {
             mTotalWidth = totalSize;
             mPrevTopPadding = mIcon.getPaddingTop();
 
-            mIcon.mBackground.setup(mIcon.mLauncher, mIcon.mLauncher, mIcon, mTotalWidth,
+            mIcon.mBackground.setup(mIcon.getContext(), mIcon.mActivity, mIcon, mTotalWidth,
                     mIcon.getPaddingTop());
             mIcon.mPreviewLayoutRule.init(mIcon.mBackground.previewSize, mIntrinsicIconSize,
                     Utilities.isRtl(mIcon.getResources()));
@@ -153,7 +153,7 @@ public class PreviewItemManager {
     }
 
     private PreviewItemDrawingParams getFinalIconParams(PreviewItemDrawingParams params) {
-        float iconSize = mIcon.mLauncher.getDeviceProfile().iconSizePx;
+        float iconSize = mIcon.mActivity.getDeviceProfile().iconSizePx;
 
         final float scale = iconSize / mReferenceDrawable.getIntrinsicWidth();
         final float trans = (mIcon.mBackground.previewSize - iconSize) / 2;
@@ -395,11 +395,11 @@ public class PreviewItemManager {
 
     private void setDrawable(PreviewItemDrawingParams p, WorkspaceItemInfo item) {
         if (item.hasPromiseIconUi()) {
-            PreloadIconDrawable drawable = mDrawableFactory.newPendingIcon(mContext, item);
+            PreloadIconDrawable drawable = newPendingIcon(mContext, item);
             drawable.setLevel(item.getInstallProgress());
             p.drawable = drawable;
         } else {
-            p.drawable = mDrawableFactory.newIcon(mContext, item);
+            p.drawable = newIcon(mContext, item);
         }
         p.drawable.setBounds(0, 0, mIconSize, mIconSize);
         p.item = item;

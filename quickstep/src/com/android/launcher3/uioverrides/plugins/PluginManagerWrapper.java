@@ -14,8 +14,12 @@
 
 package com.android.launcher3.uioverrides.plugins;
 
+import static android.content.pm.PackageManager.MATCH_DISABLED_COMPONENTS;
+
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ResolveInfo;
 
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.systemui.plugins.Plugin;
@@ -24,6 +28,9 @@ import com.android.systemui.shared.plugins.PluginManager;
 import com.android.systemui.shared.plugins.PluginManagerImpl;
 import com.android.systemui.shared.plugins.PluginPrefs;
 
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class PluginManagerWrapper {
@@ -74,5 +81,28 @@ public class PluginManagerWrapper {
 
     public static boolean hasPlugins(Context context) {
         return PluginPrefs.hasPlugins(context);
+    }
+
+    public void dump(PrintWriter pw) {
+        final List<ComponentName> enabledPlugins = new ArrayList<>();
+        final List<ComponentName> disabledPlugins = new ArrayList<>();
+        for (String action : getPluginActions()) {
+            for (ResolveInfo resolveInfo : mContext.getPackageManager().queryIntentServices(
+                    new Intent(action), MATCH_DISABLED_COMPONENTS)) {
+                ComponentName installedPlugin = new ComponentName(
+                        resolveInfo.serviceInfo.packageName, resolveInfo.serviceInfo.name);
+                if (mPluginEnabler.isEnabled(installedPlugin)) {
+                    enabledPlugins.add(installedPlugin);
+                } else {
+                    disabledPlugins.add(installedPlugin);
+                }
+            }
+        }
+
+        pw.println("PluginManager:");
+        pw.println("  numEnabledPlugins=" + enabledPlugins.size());
+        pw.println("  numDisabledPlugins=" + disabledPlugins.size());
+        pw.println("  enabledPlugins=" + enabledPlugins);
+        pw.println("  disabledPlugins=" + disabledPlugins);
     }
 }

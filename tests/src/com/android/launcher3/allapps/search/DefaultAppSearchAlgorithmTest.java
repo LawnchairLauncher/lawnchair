@@ -20,13 +20,13 @@ import static org.junit.Assert.assertTrue;
 
 import android.content.ComponentName;
 
-import com.android.launcher3.AppInfo;
+import androidx.test.filters.SmallTest;
+import androidx.test.runner.AndroidJUnit4;
+
+import com.android.launcher3.model.data.AppInfo;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import androidx.test.filters.SmallTest;
-import androidx.test.runner.AndroidJUnit4;
 
 /**
  * Unit tests for {@link DefaultAppSearchAlgorithm}
@@ -68,8 +68,8 @@ public class DefaultAppSearchAlgorithmTest {
 
         assertTrue(DefaultAppSearchAlgorithm.matches(getInfo("电子邮件"), "电", MATCHER));
         assertTrue(DefaultAppSearchAlgorithm.matches(getInfo("电子邮件"), "电子", MATCHER));
-        assertFalse(DefaultAppSearchAlgorithm.matches(getInfo("电子邮件"), "子", MATCHER));
-        assertFalse(DefaultAppSearchAlgorithm.matches(getInfo("电子邮件"), "邮件", MATCHER));
+        assertTrue(DefaultAppSearchAlgorithm.matches(getInfo("电子邮件"), "子", MATCHER));
+        assertTrue(DefaultAppSearchAlgorithm.matches(getInfo("电子邮件"), "邮件", MATCHER));
 
         assertFalse(DefaultAppSearchAlgorithm.matches(getInfo("Bot"), "ba", MATCHER));
         assertFalse(DefaultAppSearchAlgorithm.matches(getInfo("bot"), "ba", MATCHER));

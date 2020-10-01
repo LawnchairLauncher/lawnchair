@@ -2,35 +2,43 @@ package com.android.launcher3.allapps;
 
 import static com.android.launcher3.LauncherState.ALL_APPS_CONTENT;
 import static com.android.launcher3.LauncherState.ALL_APPS_HEADER_EXTRA;
+import static com.android.launcher3.LauncherState.APPS_VIEW_ITEM_MASK;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.VERTICAL_SWIPE_INDICATOR;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_ALL_APPS_FADE;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_ALL_APPS_HEADER_FADE;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_SCALE;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_VERTICAL_PROGRESS;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
+import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
+import static com.android.launcher3.anim.Interpolators.INSTANT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
-import static com.android.launcher3.util.SystemUiController.UI_STATE_ALL_APPS;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_HEADER_FADE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SCALE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_VERTICAL_PROGRESS;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
+import android.content.Context;
 import android.util.FloatProperty;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Interpolator;
+import android.widget.EditText;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateManager.AnimationConfig;
-import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimationSuccessListener;
-import com.android.launcher3.anim.AnimatorSetBuilder;
+import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.PropertySetter;
-import com.android.launcher3.anim.SpringObjectAnimator;
-import com.android.launcher3.util.Themes;
+import com.android.launcher3.statemanager.StateManager.StateHandler;
+import com.android.launcher3.states.StateAnimationConfig;
+import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.views.ScrimView;
+import com.android.systemui.plugins.AllAppsSearchPlugin;
+import com.android.systemui.plugins.PluginListener;
 
 /**
  * Handles AllApps view transition.
@@ -42,10 +50,8 @@ import com.android.launcher3.views.ScrimView;
  * If release velocity < THRES1, snap according to either top or bottom depending on whether it's
  * closer to top or closer to the page indicator.
  */
-public class AllAppsTransitionController implements StateHandler, OnDeviceProfileChangeListener {
-
-    private static final float SPRING_DAMPING_RATIO = 0.9f;
-    private static final float SPRING_STIFFNESS = 600f;
+public class AllAppsTransitionController implements StateHandler<LauncherState>,
+        OnDeviceProfileChangeListener, PluginListener<AllAppsSearchPlugin> {
 
     public static final FloatProperty<AllAppsTransitionController> ALL_APPS_PROGRESS =
             new FloatProperty<AllAppsTransitionController>("allAppsProgress") {
@@ -67,7 +73,6 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     private ScrimView mScrimView;
 
     private final Launcher mLauncher;
-    private final boolean mIsDarkTheme;
     private boolean mIsVerticalLayout;
 
     // Animation in this class is controlled by a single variable {@link mProgress}.
@@ -81,12 +86,15 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
 
     private float mScrollRangeDelta = 0;
 
+    // plugin related variables
+    private AllAppsSearchPlugin mPlugin;
+    private View mPluginContent;
+
     public AllAppsTransitionController(Launcher l) {
         mLauncher = l;
         mShiftRange = mLauncher.getDeviceProfile().heightPx;
         mProgress = 1f;
 
-        mIsDarkTheme = Themes.getAttrBoolean(mLauncher, R.attr.isMainColorDark);
         mIsVerticalLayout = mLauncher.getDeviceProfile().isVerticalBarLayout();
         mLauncher.addOnDeviceProfileChangeListener(this);
     }
@@ -114,7 +122,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
      * @param progress value between 0 and 1, 0 shows all apps and 1 shows workspace
      *
      * @see #setState(LauncherState)
-     * @see #setStateWithAnimation(LauncherState, AnimatorSetBuilder, AnimationConfig)
+     * @see #setStateWithAnimation(LauncherState, StateAnimationConfig, PendingAnimation)
      */
     public void setProgress(float progress) {
         mProgress = progress;
@@ -122,15 +130,8 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         float shiftCurrent = progress * mShiftRange;
 
         mAppsView.setTranslationY(shiftCurrent);
-
-        // Use a light system UI (dark icons) if all apps is behind at least half of the
-        // status bar.
-        boolean forceChange = shiftCurrent - mScrimView.getDragHandleSize()
-                <= mLauncher.getDeviceProfile().getInsets().top / 2;
-        if (forceChange) {
-            mLauncher.getSystemUiController().updateUiState(UI_STATE_ALL_APPS, !mIsDarkTheme);
-        } else {
-            mLauncher.getSystemUiController().updateUiState(UI_STATE_ALL_APPS, 0);
+        if (mPlugin != null) {
+            mPlugin.setProgress(progress);
         }
     }
 
@@ -145,7 +146,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     @Override
     public void setState(LauncherState state) {
         setProgress(state.getVerticalProgress(mLauncher));
-        setAlphas(state, null, new AnimatorSetBuilder());
+        setAlphas(state, new StateAnimationConfig(), NO_ANIM_PROPERTY_SETTER);
         onProgressAnimationEnd();
     }
 
@@ -155,73 +156,80 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
      */
     @Override
     public void setStateWithAnimation(LauncherState toState,
-            AnimatorSetBuilder builder, AnimationConfig config) {
+            StateAnimationConfig config, PendingAnimation builder) {
         float targetProgress = toState.getVerticalProgress(mLauncher);
         if (Float.compare(mProgress, targetProgress) == 0) {
-            setAlphas(toState, config, builder);
+            if (!config.onlyPlayAtomicComponent()) {
+                setAlphas(toState, config, builder);
+            }
             // Fail fast
             onProgressAnimationEnd();
             return;
         }
 
-        if (!config.playNonAtomicComponent()) {
+        if (config.onlyPlayAtomicComponent()) {
             // There is no atomic component for the all apps transition, so just return early.
             return;
         }
 
         Interpolator interpolator = config.userControlled ? LINEAR : toState == OVERVIEW
-                ? builder.getInterpolator(ANIM_OVERVIEW_SCALE, FAST_OUT_SLOW_IN)
+                ? config.getInterpolator(ANIM_OVERVIEW_SCALE, FAST_OUT_SLOW_IN)
                 : FAST_OUT_SLOW_IN;
-        Animator anim = createSpringAnimation(mProgress, targetProgress);
-        anim.setDuration(config.duration);
-        anim.setInterpolator(builder.getInterpolator(ANIM_VERTICAL_PROGRESS, interpolator));
-        anim.addListener(getProgressAnimatorListener());
 
-        builder.play(anim);
+        Animator anim = createSpringAnimation(mProgress, targetProgress);
+        anim.setInterpolator(config.getInterpolator(ANIM_VERTICAL_PROGRESS, interpolator));
+        anim.addListener(getProgressAnimatorListener());
+        builder.add(anim);
 
         setAlphas(toState, config, builder);
     }
 
     public Animator createSpringAnimation(float... progressValues) {
-        return new SpringObjectAnimator<>(this, ALL_APPS_PROGRESS, 1f / mShiftRange,
-                SPRING_DAMPING_RATIO, SPRING_STIFFNESS, progressValues);
+        return ObjectAnimator.ofFloat(this, ALL_APPS_PROGRESS, progressValues);
     }
 
-    private void setAlphas(LauncherState toState, AnimationConfig config,
-            AnimatorSetBuilder builder) {
-        setAlphas(toState.getVisibleElements(mLauncher), config, builder);
-    }
-
-    public void setAlphas(int visibleElements, AnimationConfig config, AnimatorSetBuilder builder) {
-        PropertySetter setter = config == null ? NO_ANIM_PROPERTY_SETTER
-                : config.getPropertySetter(builder);
+    /**
+     * Updates the property for the provided state
+     */
+    public void setAlphas(LauncherState state, StateAnimationConfig config, PropertySetter setter) {
+        int visibleElements = state.getVisibleElements(mLauncher);
         boolean hasHeaderExtra = (visibleElements & ALL_APPS_HEADER_EXTRA) != 0;
         boolean hasAllAppsContent = (visibleElements & ALL_APPS_CONTENT) != 0;
 
-        Interpolator allAppsFade = builder.getInterpolator(ANIM_ALL_APPS_FADE, LINEAR);
-        Interpolator headerFade = builder.getInterpolator(ANIM_ALL_APPS_HEADER_FADE, allAppsFade);
-        setter.setViewAlpha(mAppsView.getContentView(), hasAllAppsContent ? 1 : 0, allAppsFade);
-        setter.setViewAlpha(mAppsView.getScrollBar(), hasAllAppsContent ? 1 : 0, allAppsFade);
-        mAppsView.getFloatingHeaderView().setContentVisibility(hasHeaderExtra, hasAllAppsContent,
-                setter, headerFade, allAppsFade);
+        boolean hasAnyVisibleItem = (visibleElements & APPS_VIEW_ITEM_MASK) != 0;
+
+        Interpolator allAppsFade = config.getInterpolator(ANIM_ALL_APPS_FADE, LINEAR);
+        Interpolator headerFade = config.getInterpolator(ANIM_ALL_APPS_HEADER_FADE, allAppsFade);
+
+        if (mPlugin == null) {
+            setter.setViewAlpha(mAppsView.getContentView(), hasAllAppsContent ? 1 : 0, allAppsFade);
+            setter.setViewAlpha(mAppsView.getScrollBar(), hasAllAppsContent ? 1 : 0, allAppsFade);
+            mAppsView.getFloatingHeaderView().setContentVisibility(hasHeaderExtra,
+                    hasAllAppsContent, setter, headerFade, allAppsFade);
+        } else {
+            setter.setViewAlpha(mPluginContent, hasAllAppsContent ? 1 : 0, allAppsFade);
+            setter.setViewAlpha(mAppsView.getContentView(), 0, allAppsFade);
+            setter.setViewAlpha(mAppsView.getScrollBar(), 0, allAppsFade);
+        }
         mAppsView.getSearchUiManager().setContentVisibility(visibleElements, setter, allAppsFade);
 
         setter.setInt(mScrimView, ScrimView.DRAG_HANDLE_ALPHA,
                 (visibleElements & VERTICAL_SWIPE_INDICATOR) != 0 ? 255 : 0, allAppsFade);
+
+        // Set visibility of the container at the very beginning or end of the transition.
+        setter.setViewAlpha(mAppsView, hasAnyVisibleItem ? 1 : 0,
+                hasAnyVisibleItem ? INSTANT : FINAL_FRAME);
     }
 
     public AnimatorListenerAdapter getProgressAnimatorListener() {
-        return new AnimationSuccessListener() {
-            @Override
-            public void onAnimationSuccess(Animator animator) {
-                onProgressAnimationEnd();
-            }
-        };
+        return AnimationSuccessListener.forRunnable(this::onProgressAnimationEnd);
     }
 
-    public void setupViews(AllAppsContainerView appsView) {
+    public void setupViews(AllAppsContainerView appsView, ScrimView scrimView) {
         mAppsView = appsView;
-        mScrimView = mLauncher.findViewById(R.id.scrim_view);
+        mScrimView = scrimView;
+        PluginManagerWrapper.INSTANCE.get(mLauncher)
+                .addPluginListener(this, AllAppsSearchPlugin.class, false);
     }
 
     /**
@@ -243,18 +251,48 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     private void onProgressAnimationEnd() {
         if (Float.compare(mProgress, 1f) == 0) {
             mAppsView.reset(false /* animate */);
-        } else if (isAllAppsExpanded()) {
-            mAppsView.onScrollUpEnd();
         }
+        updatePluginAnimationEnd();
     }
 
-    private boolean isAllAppsExpanded() {
-        return Float.compare(mProgress, 0f) == 0;
+    @Override
+    public void onPluginConnected(AllAppsSearchPlugin plugin, Context context) {
+        mPlugin = plugin;
+        mPluginContent = mLauncher.getLayoutInflater().inflate(
+                R.layout.all_apps_content_layout, mAppsView, false);
+        mAppsView.addView(mPluginContent);
+        mPluginContent.setAlpha(0f);
+        mPlugin.setup((ViewGroup) mPluginContent, mLauncher, mShiftRange);
     }
 
-    public void highlightWorkTabIfNecessary() {
-        if (isAllAppsExpanded()) {
-            mAppsView.highlightWorkTabIfNecessary();
+    @Override
+    public void onPluginDisconnected(AllAppsSearchPlugin plugin) {
+        mPlugin = null;
+        mAppsView.removeView(mPluginContent);
+    }
+
+    public void onActivityDestroyed() {
+        PluginManagerWrapper.INSTANCE.get(mLauncher).removePluginListener(this);
+    }
+
+    /** Used for the plugin to signal when drag starts happens
+     * @param toAllApps*/
+    public void onDragStart(boolean toAllApps) {
+        if (mPlugin == null) return;
+
+        if (toAllApps) {
+            EditText editText = mAppsView.getSearchUiManager().setTextSearchEnabled(true);
+            mPlugin.setEditText(editText);
+        }
+        mPlugin.onDragStart(toAllApps ? 1f : 0f);
+    }
+
+    private void updatePluginAnimationEnd() {
+        if (mPlugin == null) return;
+        mPlugin.onAnimationEnd(mProgress);
+        if (Float.compare(mProgress, 1f) == 0) {
+            mAppsView.getSearchUiManager().setTextSearchEnabled(false);
+            mPlugin.setEditText(null);
         }
     }
 }

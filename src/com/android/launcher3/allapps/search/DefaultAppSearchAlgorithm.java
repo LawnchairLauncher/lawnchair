@@ -17,7 +17,7 @@ package com.android.launcher3.allapps.search;
 
 import android.os.Handler;
 
-import com.android.launcher3.AppInfo;
+import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.util.ComponentKey;
 
 import java.text.Collator;
@@ -79,6 +79,10 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
 
         if (titleLength < queryLength || queryLength <= 0) {
             return false;
+        }
+
+        if (requestSimpleFuzzySearch(query)) {
+            return title.toLowerCase().contains(query);
         }
 
         int lastType;
@@ -180,5 +184,18 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
         public static StringMatcher getInstance() {
             return new StringMatcher();
         }
+    }
+
+    private static boolean requestSimpleFuzzySearch(String s) {
+        for (int i = 0; i < s.length(); ) {
+            int codepoint = s.codePointAt(i);
+            i += Character.charCount(codepoint);
+            switch (Character.UnicodeScript.of(codepoint)) {
+                case HAN:
+                    //Character.UnicodeScript.HAN: use String.contains to match
+                    return true;
+            }
+        }
+        return false;
     }
 }

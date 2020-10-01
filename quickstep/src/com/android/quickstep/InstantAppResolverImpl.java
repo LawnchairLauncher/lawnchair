@@ -21,7 +21,7 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 
-import com.android.launcher3.AppInfo;
+import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.util.InstantAppResolver;
 
 /**

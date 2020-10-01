@@ -58,9 +58,9 @@ public class RecentTasksListTest {
     }
 
     @Test
-    public void onTaskRemoved_reloadsAllTasks() {
+    public void onTaskRemoved_doesNotFetchTasks() {
         mRecentTasksList.onTaskRemoved(0);
-        verify(mockActivityManagerWrapper, times(1))
+        verify(mockActivityManagerWrapper, times(0))
                 .getRecentTasks(anyInt(), anyInt());
     }
 
@@ -77,7 +77,7 @@ public class RecentTasksListTest {
         when(mockActivityManagerWrapper.getRecentTasks(anyInt(), anyInt()))
                 .thenReturn(Collections.singletonList(recentTaskInfo));
 
-        List<Task> taskList = mRecentTasksList.loadTasksInBackground(Integer.MAX_VALUE, true);
+        List<Task> taskList = mRecentTasksList.loadTasksInBackground(Integer.MAX_VALUE, -1, true);
 
         assertEquals(1, taskList.size());
         assertNull(taskList.get(0).taskDescription.getLabel());
@@ -91,7 +91,7 @@ public class RecentTasksListTest {
         when(mockActivityManagerWrapper.getRecentTasks(anyInt(), anyInt()))
                 .thenReturn(Collections.singletonList(recentTaskInfo));
 
-        List<Task> taskList = mRecentTasksList.loadTasksInBackground(Integer.MAX_VALUE, false);
+        List<Task> taskList = mRecentTasksList.loadTasksInBackground(Integer.MAX_VALUE, -1, false);
 
         assertEquals(1, taskList.size());
         assertEquals(taskDescription, taskList.get(0).taskDescription.getLabel());

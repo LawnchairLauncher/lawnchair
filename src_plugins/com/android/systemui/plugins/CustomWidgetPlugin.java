@@ -17,7 +17,6 @@
 package com.android.systemui.plugins;
 
 import android.appwidget.AppWidgetHostView;
-import android.content.Context;
 
 import com.android.systemui.plugins.annotations.ProvidesInterface;
 
@@ -33,40 +32,40 @@ public interface CustomWidgetPlugin extends Plugin {
     /**
      * The label to display to the user in the AppWidget picker.
      */
-    String getLabel(Context context);
+    String getLabel();
 
     /**
      * The default width of the widget when added to a host, in dp. The widget will get
      * at least this width, and will often be given more, depending on the host.
      */
-    int getSpanX(Context context);
+    int getSpanX();
 
     /**
      * The default height of the widget when added to a host, in dp. The widget will get
      * at least this height, and will often be given more, depending on the host.
      */
-    int getSpanY(Context context);
+    int getSpanY();
 
     /**
      * Minimum width (in dp) which the widget can be resized to. This field has no effect if it
      * is greater than minWidth or if horizontal resizing isn't enabled.
      */
-    int getMinSpanX(Context context);
+    int getMinSpanX();
 
     /**
      * Minimum height (in dp) which the widget can be resized to. This field has no effect if it
      * is greater than minHeight or if vertical resizing isn't enabled.
      */
-    int getMinSpanY(Context context);
+    int getMinSpanY();
 
     /**
      * The rules by which a widget can be resized.
      */
-    int getResizeMode(Context context);
+    int getResizeMode();
 
     /**
      * Notify the plugin that container of the widget has been rendered, where the custom widget
      * can be attached to.
      */
-    void onViewCreated(Context context, AppWidgetHostView parent);
+    void onViewCreated(AppWidgetHostView parent);
 }

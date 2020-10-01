@@ -15,24 +15,25 @@
  */
 package com.android.launcher3.anim;
 
+import static com.android.launcher3.anim.Interpolators.LINEAR;
+
 import android.animation.Animator;
-import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.FloatProperty;
 
-import com.android.launcher3.util.DefaultDisplay;
-
 import androidx.annotation.FloatRange;
 import androidx.dynamicanimation.animation.SpringForce;
+
+import com.android.launcher3.util.DefaultDisplay;
 
 /**
  * Utility class to build an object animator which follows the same path as a spring animation for
  * an underdamped spring.
  */
-public class SpringAnimationBuilder<T> extends FloatProperty<T> {
+public class SpringAnimationBuilder {
 
-    private final T mTarget;
-    private final FloatProperty<T> mProperty;
+    private final Context mContext;
 
     private float mStartValue;
     private float mEndValue;
@@ -65,27 +66,23 @@ public class SpringAnimationBuilder<T> extends FloatProperty<T> {
     private double mValueThreshold;
     private double mVelocityThreshold;
 
-    private float mCurrentTime = 0;
+    private float mDuration = 0;
 
-    public SpringAnimationBuilder(T target, FloatProperty<T> property) {
-        super("dynamic-spring-property");
-        mTarget = target;
-        mProperty = property;
-
-        mStartValue = mProperty.get(target);
+    public SpringAnimationBuilder(Context context) {
+        mContext = context;
     }
 
-    public SpringAnimationBuilder<T> setEndValue(float value) {
+    public SpringAnimationBuilder setEndValue(float value) {
         mEndValue = value;
         return this;
     }
 
-    public SpringAnimationBuilder<T> setStartValue(float value) {
+    public SpringAnimationBuilder setStartValue(float value) {
         mStartValue = value;
         return this;
     }
 
-    public SpringAnimationBuilder<T> setValues(float... values) {
+    public SpringAnimationBuilder setValues(float... values) {
         if (values.length > 1) {
             mStartValue = values[0];
             mEndValue = values[values.length - 1];
@@ -95,7 +92,7 @@ public class SpringAnimationBuilder<T> extends FloatProperty<T> {
         return this;
     }
 
-    public SpringAnimationBuilder<T> setStiffness(
+    public SpringAnimationBuilder setStiffness(
             @FloatRange(from = 0.0, fromInclusive = false) float stiffness) {
         if (stiffness <= 0) {
             throw new IllegalArgumentException("Spring stiffness constant must be positive.");
@@ -104,7 +101,7 @@ public class SpringAnimationBuilder<T> extends FloatProperty<T> {
         return this;
     }
 
-    public SpringAnimationBuilder<T> setDampingRatio(
+    public SpringAnimationBuilder setDampingRatio(
             @FloatRange(from = 0.0, to = 1.0, fromInclusive = false, toInclusive = false)
                     float dampingRatio) {
         if (dampingRatio <= 0 || dampingRatio >= 1) {
@@ -114,7 +111,7 @@ public class SpringAnimationBuilder<T> extends FloatProperty<T> {
         return this;
     }
 
-    public SpringAnimationBuilder<T> setMinimumVisibleChange(
+    public SpringAnimationBuilder setMinimumVisibleChange(
             @FloatRange(from = 0.0, fromInclusive = false) float minimumVisibleChange) {
         if (minimumVisibleChange <= 0) {
             throw new IllegalArgumentException("Minimum visible change must be positive.");
@@ -123,25 +120,21 @@ public class SpringAnimationBuilder<T> extends FloatProperty<T> {
         return this;
     }
 
-    public SpringAnimationBuilder<T> setStartVelocity(float startVelocity) {
+    public SpringAnimationBuilder setStartVelocity(float startVelocity) {
         mVelocity = startVelocity;
         return this;
     }
 
-    @Override
-    public void setValue(T object, float time) {
-        mCurrentTime = time;
-        mProperty.setValue(
-                object, (float) (exponentialComponent(time) * cosSinX(time)) + mEndValue);
+    public float getInterpolatedValue(float fraction) {
+        return getValue(mDuration * fraction);
     }
 
-    @Override
-    public Float get(T t) {
-        return mCurrentTime;
+    private float getValue(float time) {
+        return (float) (exponentialComponent(time) * cosSinX(time)) + mEndValue;
     }
 
-    public ObjectAnimator build(Context context) {
-        int singleFrameMs = DefaultDisplay.getSingleFrameMs(context);
+    public SpringAnimationBuilder computeParams() {
+        int singleFrameMs = DefaultDisplay.getSingleFrameMs(mContext);
         double naturalFreq = Math.sqrt(mStiffness);
         double dampedFreq = naturalFreq * Math.sqrt(1 - mDampingRatio * mDampingRatio);
 
@@ -188,14 +181,25 @@ public class SpringAnimationBuilder<T> extends FloatProperty<T> {
             }
         } while (true);
 
+        mDuration = (float) duration;
+        return this;
+    }
 
-        long durationMs = (long) (1000.0 * duration);
-        ObjectAnimator animator = ObjectAnimator.ofFloat(mTarget, this, 0, (float) duration);
-        animator.setDuration(durationMs).setInterpolator(Interpolators.LINEAR);
+    public long getDuration() {
+        return (long) (1000.0 * mDuration);
+    }
+
+    public <T> ValueAnimator build(T target, FloatProperty<T> property) {
+        computeParams();
+
+        ValueAnimator animator = ValueAnimator.ofFloat(0, mDuration);
+        animator.setDuration(getDuration()).setInterpolator(LINEAR);
+        animator.addUpdateListener(anim ->
+                property.set(target, getInterpolatedValue(anim.getAnimatedFraction())));
         animator.addListener(new AnimationSuccessListener() {
             @Override
-            public void onAnimationSuccess(Animator animator) {
-                mProperty.setValue(mTarget, mEndValue);
+            public void onAnimationSuccess(Animator animation) {
+                property.set(target, mEndValue);
             }
         });
         return animator;

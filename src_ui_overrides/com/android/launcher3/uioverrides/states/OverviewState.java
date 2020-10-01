@@ -15,7 +15,7 @@
  */
 package com.android.launcher3.uioverrides.states;
 
-import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
+import android.content.Context;
 
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -26,7 +26,12 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 public class OverviewState extends LauncherState {
 
     public OverviewState(int id) {
-        super(id, ContainerType.WORKSPACE, OVERVIEW_TRANSITION_MS, FLAG_DISABLE_RESTORE);
+        super(id, ContainerType.WORKSPACE, FLAG_DISABLE_RESTORE);
+    }
+
+    @Override
+    public int getTransitionDuration(Context context) {
+        return 250;
     }
 
     public static OverviewState newBackgroundState(int id) {
@@ -38,6 +43,13 @@ public class OverviewState extends LauncherState {
     }
 
     public static OverviewState newSwitchState(int id) {
+        return new OverviewState(id);
+    }
+
+    /**
+     *  New Overview substate that represents the overview in modal mode (one task shown on its own)
+     */
+    public static OverviewState newModalTaskState(int id) {
         return new OverviewState(id);
     }
 }

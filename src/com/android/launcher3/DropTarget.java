@@ -16,11 +16,19 @@
 
 package com.android.launcher3;
 
+import android.content.Context;
 import android.graphics.Rect;
 
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
+import com.android.launcher3.dragndrop.DraggableView;
+import com.android.launcher3.folder.FolderNameProvider;
+import com.android.launcher3.logging.InstanceId;
+import com.android.launcher3.logging.InstanceIdSequence;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.util.Executors;
 
 /**
  * Interface defining an object that can receive a drag.
@@ -56,9 +64,6 @@ public interface DropTarget {
         /** Where the drag originated */
         public DragSource dragSource = null;
 
-        /** The object is part of an accessible drag operation */
-        public boolean accessibleDrag;
-
         /** Indicates that the drag operation was cancelled */
         public boolean cancelled = false;
 
@@ -67,7 +72,23 @@ public interface DropTarget {
 
         public DragViewStateAnnouncer stateAnnouncer;
 
-        public DragObject() {
+        public FolderNameProvider folderNameProvider;
+
+        /** The source view (ie. icon, widget etc.) that is being dragged and which the
+         * DragView represents. May be an actual View class or a virtual stand-in */
+        public DraggableView originalView = null;
+
+        /** Used for matching DROP event with its corresponding DRAG event on the server side. */
+        public final InstanceId logInstanceId =
+                new InstanceIdSequence(1 << 20 /*InstanceId.INSTANCE_ID_MAX*/)
+                    .newInstanceId();
+
+        public DragObject(Context context) {
+            if (FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
+                Executors.MODEL_EXECUTOR.post(() -> {
+                    folderNameProvider = FolderNameProvider.newInstance(context);
+                });
+            }
         }
 
         /**
@@ -91,6 +112,18 @@ public interface DropTarget {
             res[1] = top + dragRegion.height() / 2;
 
             return res;
+        }
+
+
+        /**
+         * This is used to determine if an object is dropped at a different location than it was
+         * dragged from
+         */
+        public boolean isMoved() {
+            return dragInfo.cellX != originalDragInfo.cellX
+                    || dragInfo.cellY != originalDragInfo.cellY
+                    || dragInfo.screenId != originalDragInfo.screenId
+                    || dragInfo.container != originalDragInfo.container;
         }
     }
 

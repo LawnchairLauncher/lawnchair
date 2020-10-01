@@ -120,36 +120,35 @@ public class ShadowDrawable extends Drawable {
     }
 
     private void regenerateBitmapCache() {
-        Bitmap bitmap = Bitmap.createBitmap(mState.mIntrinsicWidth, mState.mIntrinsicHeight,
-                Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-
         // Call mutate, so that the pixel allocation by the underlying vector drawable is cleared.
         Drawable d = mState.mChildState.newDrawable().mutate();
         d.setBounds(mState.mShadowSize, mState.mShadowSize,
                 mState.mIntrinsicWidth - mState.mShadowSize,
                 mState.mIntrinsicHeight - mState.mShadowSize);
         d.setTint(mState.mIsDark ? mState.mDarkTintColor : Color.WHITE);
-        d.draw(canvas);
 
-        // Do not draw shadow on dark theme
-        if (!mState.mIsDark) {
+        if (mState.mIsDark) {
+            // Dark text do not have any shadow, but just the bitmap
+            mState.mLastDrawnBitmap = BitmapRenderer.createHardwareBitmap(
+                    mState.mIntrinsicWidth, mState.mIntrinsicHeight, d::draw);
+        } else {
             Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
             paint.setMaskFilter(new BlurMaskFilter(mState.mShadowSize, BlurMaskFilter.Blur.NORMAL));
+
+            // Generate the shadow bitmap
             int[] offset = new int[2];
-            Bitmap shadow = bitmap.extractAlpha(paint, offset);
+            Bitmap shadow = BitmapRenderer.createSoftwareBitmap(
+                    mState.mIntrinsicWidth, mState.mIntrinsicHeight, d::draw)
+                    .extractAlpha(paint, offset);
 
             paint.setMaskFilter(null);
             paint.setColor(mState.mShadowColor);
-            bitmap.eraseColor(Color.TRANSPARENT);
-            canvas.drawBitmap(shadow, offset[0], offset[1], paint);
-            d.draw(canvas);
+            mState.mLastDrawnBitmap = BitmapRenderer.createHardwareBitmap(
+                    mState.mIntrinsicWidth, mState.mIntrinsicHeight, c -> {
+                        c.drawBitmap(shadow, offset[0], offset[1], paint);
+                        d.draw(c);
+                    });
         }
-
-        if (BitmapRenderer.USE_HARDWARE_BITMAP) {
-            bitmap = bitmap.copy(Bitmap.Config.HARDWARE, false);
-        }
-        mState.mLastDrawnBitmap = bitmap;
     }
 
     @Override

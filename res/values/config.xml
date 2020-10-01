@@ -1,8 +1,6 @@
 <resources>
-<!-- Miscellaneous -->
+    <!-- Miscellaneous -->
     <bool name="config_largeHeap">false</bool>
-    <bool name="is_tablet">false</bool>
-    <bool name="is_large_tablet">false</bool>
     <bool name="allow_rotation">false</bool>
 
     <integer name="extracted_color_gradient_alpha">153</integer>
@@ -21,10 +19,10 @@
     <!-- String representing the fragment class for settings activity.-->
     <string name="settings_fragment_name" translatable="false">com.android.launcher3.settings.SettingsActivity$LauncherSettingsFragment</string>
 
-<!-- DragController -->
+    <!-- DragController -->
     <item type="id" name="drag_event_parity" />
 
-<!-- AllApps & Launcher transitions -->
+    <!-- AllApps & Launcher transitions -->
     <!-- Out of 100, the percent to shrink the workspace during spring loaded mode. -->
     <integer name="config_workspaceSpringLoadShrinkPercentage">90</integer>
 
@@ -34,7 +32,7 @@
     <!-- View tag key used to store SpringAnimation data. -->
     <item type="id" name="spring_animation_tag" />
 
-<!-- Workspace -->
+    <!-- Workspace -->
     <!-- The duration (in ms) of the fade animation on the object outlines, used when
          we are dragging objects around on the home screen. -->
     <integer name="config_dragOutlineFadeTime">900</integer>
@@ -57,28 +55,21 @@
     <!-- The duration of the caret animation -->
     <integer name="config_caretAnimationDuration">200</integer>
 
-<!-- Hotseat -->
+    <!-- Hotseat -->
     <bool name="hotseat_transpose_layout_with_orientation">true</bool>
 
     <!-- Various classes overriden by projects/build flavors. -->
     <string name="app_filter_class" translatable="false"></string>
-    <string name="icon_provider_class" translatable="false"></string>
-    <string name="drawable_factory_class" translatable="false"></string>
     <string name="user_event_dispatcher_class" translatable="false"></string>
+    <string name="folder_name_provider_class" translatable="false"></string>
     <string name="stats_log_manager_class" translatable="false"></string>
     <string name="app_transition_manager_class" translatable="false"></string>
     <string name="instant_app_resolver_class" translatable="false"></string>
     <string name="main_process_initializer_class" translatable="false"></string>
-    <string name="system_shortcut_factory_class" translatable="false"></string>
     <string name="app_launch_tracker_class" translatable="false"></string>
     <string name="test_information_handler_class" translatable="false"></string>
     <string name="launcher_activity_logic_class" translatable="false"></string>
-
-    <!-- Package name of the default wallpaper picker. -->
-    <string name="wallpaper_picker_package" translatable="false"></string>
-
-    <!-- Whitelisted package to retrieve packagename for badge. Can be empty. -->
-    <string name="shortcutinfo_badgepkg_whitelist" translatable="false"></string>
+    <string name="prediction_model_class" translatable="false"></string>
 
     <!-- View ID to use for QSB widget -->
     <item type="id" name="qsb_widget" />
@@ -97,7 +88,12 @@
     <integer name="config_popupArrowOpenCloseDuration">40</integer>
     <integer name="config_removeNotificationViewDuration">300</integer>
 
-<!-- Accessibility actions -->
+    <!-- Default packages -->
+    <string name="wallpaper_picker_package" translatable="false"></string>
+    <string name="calendar_component_name" translatable="false"></string>
+    <string name="clock_component_name" translatable="false"></string>
+
+    <!-- Accessibility actions -->
     <item type="id" name="action_remove" />
     <item type="id" name="action_uninstall" />
     <item type="id" name="action_reconfigure" />
@@ -111,13 +107,83 @@
     <item type="id" name="action_shortcuts_and_notifications"/>
     <item type="id" name="action_dismiss_notification" />
     <item type="id" name="action_remote_action_shortcut" />
+    <item type="id" name="action_dismiss_prediction" />
+    <item type="id" name="action_pin_prediction"/>
 
-<!-- QSB IDs. DO not change -->
+    <!-- QSB IDs. DO not change -->
     <item type="id" name="search_container_workspace" />
     <item type="id" name="search_container_all_apps" />
 
-<!-- Recents -->
+    <!-- Recents -->
     <item type="id" name="overview_panel"/>
+
+    <!-- Whether to enable background preloading of task thumbnails. -->
+    <bool name="config_enableTaskSnapshotPreloading">true</bool>
+
+    <!-- Configuration resources -->
+    <item name="all_apps_spring_damping_ratio" type="dimen" format="float">0.75</item>
+    <item name="all_apps_spring_stiffness" type="dimen" format="float">600</item>
+
+    <item name="dismiss_task_trans_y_damping_ratio" type="dimen" format="float">0.73</item>
+    <item name="dismiss_task_trans_y_stiffness" type="dimen" format="float">800</item>
+
+    <item name="dismiss_task_trans_x_damping_ratio" type="dimen" format="float">0.73</item>
+    <item name="dismiss_task_trans_x_stiffness" type="dimen" format="float">800</item>
+
+    <item name="horizontal_spring_damping_ratio" type="dimen" format="float">0.8</item>
+    <item name="horizontal_spring_stiffness" type="dimen" format="float">250</item>
+
+    <item name="swipe_up_rect_scale_damping_ratio" type="dimen" format="float">0.75</item>
+    <item name="swipe_up_rect_scale_stiffness" type="dimen" format="float">200</item>
+
+    <item name="swipe_up_rect_xy_fling_friction" type="dimen" format="float">1.5</item>
+    <item name="swipe_up_rect_xy_damping_ratio" type="dimen" format="float">0.8</item>
+    <item name="swipe_up_rect_xy_stiffness" type="dimen" format="float">200</item>
+
+    <item name="staggered_damping_ratio" type="dimen" format="float">0.7</item>
+    <item name="staggered_stiffness" type="dimen" format="float">150</item>
+    <dimen name="unlock_staggered_velocity_dp_per_s">3dp</dimen>
+
+    <item name="hint_scale_damping_ratio" type="dimen" format="float">0.7</item>
+    <item name="hint_scale_stiffness" type="dimen" format="float">200</item>
+    <dimen name="hint_scale_velocity_dp_per_s">0.3dp</dimen>
+
+    <!-- Swipe up to home related -->
+    <dimen name="swipe_up_fling_min_visible_change">18dp</dimen>
+    <dimen name="swipe_up_y_overshoot">10dp</dimen>
+    <dimen name="swipe_up_max_workspace_trans_y">-60dp</dimen>
+
+    <array name="dynamic_resources">
+        <item>@dimen/all_apps_spring_damping_ratio</item>
+        <item>@dimen/all_apps_spring_stiffness</item>
+
+        <item>@dimen/dismiss_task_trans_y_damping_ratio</item>
+        <item>@dimen/dismiss_task_trans_y_stiffness</item>
+
+        <item>@dimen/dismiss_task_trans_x_damping_ratio</item>
+        <item>@dimen/dismiss_task_trans_x_stiffness</item>
+
+        <item>@dimen/horizontal_spring_damping_ratio</item>
+        <item>@dimen/horizontal_spring_stiffness</item>
+
+        <item>@dimen/swipe_up_rect_scale_damping_ratio</item>
+        <item>@dimen/swipe_up_rect_scale_stiffness</item>
+
+        <item>@dimen/swipe_up_rect_xy_fling_friction</item>
+        <item>@dimen/swipe_up_rect_xy_damping_ratio</item>
+        <item>@dimen/swipe_up_rect_xy_stiffness</item>
+
+        <item>@dimen/staggered_damping_ratio</item>
+        <item>@dimen/staggered_stiffness</item>
+        <item>@dimen/unlock_staggered_velocity_dp_per_s</item>
+
+        <item>@dimen/swipe_up_fling_min_visible_change</item>
+        <item>@dimen/swipe_up_y_overshoot</item>
+
+        <item>@dimen/hint_scale_damping_ratio</item>
+        <item>@dimen/hint_scale_stiffness</item>
+        <item>@dimen/hint_scale_velocity_dp_per_s</item>
+    </array>
 
     <string-array name="live_wallpapers_remove_sysui_scrims">
     </string-array>
