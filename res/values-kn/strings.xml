@@ -78,7 +78,8 @@
     <string name="folder_tap_to_rename" msgid="4017685068016979677">"ಮರುಹೆಸರನ್ನು ಉಳಿಸಲು ಟ್ಯಾಪ್ ಮಾಡಿ"</string>
     <string name="folder_closed" msgid="4100806530910930934">"ಫೋಲ್ಡರ್ ಮುಚ್ಚಿದೆ"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"ಫೋಲ್ಡರ್‌ ಅನ್ನು <xliff:g id="NAME">%1$s</xliff:g> ಗೆ ಮರುಹೆಸರಿಸಲಾಗಿದೆ"</string>
-    <string name="folder_name_format" msgid="6629239338071103179">"ಫೋಲ್ಡರ್: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_name_format_exact" msgid="8626242716117004803">"ಫೋಲ್ಡರ್: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> ಐಟಂಗಳು"</string>
+    <string name="folder_name_format_overflow" msgid="4270108890534995199">"ಫೋಲ್ಡರ್: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> ಅಥವಾ ಹೆಚ್ಚಿನ ಐಟಂಗಳು"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"ವಿಜೆಟ್‌ಗಳು"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"ವಾಲ್‌ಪೇಪರ್‌ಗಳು"</string>
     <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"ಶೈಲಿಗಳು &amp; ವಾಲ್‌ಪೇಪರ್‌ಗಳು"</string>
@@ -97,7 +98,7 @@
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"ಹೊಸ ಅಪ್ಲಿಕೇಶನ್‌ಗಳಿಗೆ"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"ಅಪರಿಚಿತ"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"ತೆಗೆದುಹಾಕಿ"</string>
-    <string name="abandoned_search" msgid="891119232568284442">"ಹುಡುಕಿ"</string>
+    <string name="abandoned_search" msgid="891119232568284442">"Search"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"ಈ ಅಪ್ಲಿಕೇಶನ್ ಸ್ಥಾಪನೆಗೊಂಡಿಲ್ಲ"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"ಈ ಐಕಾನ್ ಅಪ್ಲಿಕೇಶನ್ ಸ್ಥಾಪನೆಗೊಂಡಿಲ್ಲ. ನೀವು ಅದನ್ನು ತೆಗೆದುಹಾಕಬಹುದು ಅಥವಾ ಅಪ್ಲಿಕೇಶನ್ ಹುಡುಕಬಹುದು ಮತ್ತು ಹಸ್ತಚಾಲಿತವಾಗಿ ಅದನ್ನು ಸ್ಥಾಪಿಸಬಹುದು."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> ಡೌನ್‌ಲೋಡ್‌ ಮಾಡಲಾಗುತ್ತಿದೆ, <xliff:g id="PROGRESS">%2$s</xliff:g> ಪೂರ್ಣಗೊಂಡಿದೆ"</string>

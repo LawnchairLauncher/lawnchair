@@ -32,17 +32,19 @@
     <string name="title_app_suggestions" msgid="4185902664111965088">"应用建议"</string>
     <string name="all_apps_label" msgid="8542784161730910663">"所有应用"</string>
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"您的预测应用"</string>
-    <string name="hotseat_edu_prompt_title" msgid="5595771595144175752">"轻松访问您最常用的应用"</string>
-    <string name="hotseat_edu_prompt_content" msgid="5709176001504149521">"Pixel 会预测您接下来要使用的应用，并直接在主屏幕上显示这些应用。点按即可设置。"</string>
-    <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"在主屏幕的最下面一排获取应用建议"</string>
+    <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"在主屏幕底部获取应用建议"</string>
+    <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"在主屏幕的收藏行获取应用建议"</string>
     <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"直接在主屏幕上轻松访问您最常用的应用。系统会根据您的日常安排提供不同的建议。最下面一排中的应用会向上移动到主屏幕中。"</string>
+    <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"直接在主屏幕上轻松访问您最常用的应用。建议会因您的日常安排而变化，收藏行中的应用将移到主屏幕上。"</string>
     <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"直接在主屏幕上轻松访问您最常用的应用。系统会根据您的日常安排提供不同的建议。最下面一排中的应用会移到新文件夹中。"</string>
     <string name="hotseat_edu_accept" msgid="1611544083278999837">"获取应用建议"</string>
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"不用了"</string>
-    <string name="hotseat_turn_off" msgid="7808360330229368470">"设置"</string>
+    <string name="hotseat_prediction_settings" msgid="6246554993566070818">"设置"</string>
     <string name="hotseat_auto_enrolled" msgid="522100018967146807">"最常用的应用会显示在此处，显示的项目会根据日常安排而发生变化"</string>
-    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"将应用从最下面一排拖至别处，以获取应用建议"</string>
+    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"将应用拖离底部，以获取应用建议"</string>
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"应用建议已添加到空白区域"</string>
+    <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"已启用应用建议"</string>
+    <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"已停用应用建议"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"预测的应用：<xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="action_share" msgid="2648470652637092375">"分享"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"屏幕截图"</string>

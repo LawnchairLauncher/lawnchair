@@ -32,17 +32,19 @@
     <string name="title_app_suggestions" msgid="4185902664111965088">"應用程式建議"</string>
     <string name="all_apps_label" msgid="8542784161730910663">"所有應用程式"</string>
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"系統預測你會使用的應用程式"</string>
-    <string name="hotseat_edu_prompt_title" msgid="5595771595144175752">"輕鬆存取最常使用的應用程式"</string>
-    <string name="hotseat_edu_prompt_content" msgid="5709176001504149521">"Pixel 會預測你接下來要使用的應用程式，並將預測結果顯示在主畫面上。輕觸即可進行設定。"</string>
     <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"在主畫面的底部取得應用程式建議"</string>
-    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"在主畫面上輕鬆存取最常使用的應用程式。應用程式建議會根據日常安排有所不同。系統會將底部列出的應用程式上移到主畫面。"</string>
+    <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"在主畫面的收藏列取得應用程式建議"</string>
+    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"在主畫面上輕鬆存取最常使用的應用程式。應用程式建議會依據你的日常使用習慣而有所不同。系統會將底部列出的應用程式上移到主畫面。"</string>
+    <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"在主畫面上輕鬆存取最常使用的應用程式。系統會根據你的日常使用習慣提供不同的應用程式建議，並在主畫面顯示收藏列中的應用程式。"</string>
     <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"在主畫面上輕鬆存取最常使用的應用程式。應用程式建議會根據日常安排有所不同。系統會將底部列出的應用程式移到新的資料夾。"</string>
     <string name="hotseat_edu_accept" msgid="1611544083278999837">"取得應用程式建議"</string>
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"不用了，謝謝"</string>
-    <string name="hotseat_turn_off" msgid="7808360330229368470">"設定"</string>
+    <string name="hotseat_prediction_settings" msgid="6246554993566070818">"設定"</string>
     <string name="hotseat_auto_enrolled" msgid="522100018967146807">"最常使用的應用程式會顯示在這裡，顯示的項目會根據日常安排有所不同"</string>
-    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"將應用程式往底部列拖曳即可取得應用程式建議"</string>
+    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"將應用程式從底部列向外拖曳，即可取得應用程式建議"</string>
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"應用程式建議已新增到空白位置"</string>
+    <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"應用程式建議功能已啟用"</string>
+    <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"應用程式建議功能已停用"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"預測的應用程式：<xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="action_share" msgid="2648470652637092375">"分享"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"擷取螢幕畫面"</string>

@@ -78,11 +78,12 @@
     <string name="folder_tap_to_rename" msgid="4017685068016979677">"Presiona para guardar el cambio de nombre"</string>
     <string name="folder_closed" msgid="4100806530910930934">"Carpeta cerrada"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"El nombre de la carpeta se cambió a <xliff:g id="NAME">%1$s</xliff:g>."</string>
-    <string name="folder_name_format" msgid="6629239338071103179">"Carpeta: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_name_format_exact" msgid="8626242716117004803">"Carpeta: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> elementos"</string>
+    <string name="folder_name_format_overflow" msgid="4270108890534995199">"Carpeta: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> o más elementos"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Widgets"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Fondos de pantalla"</string>
     <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"Estilos y fondos de pantalla"</string>
-    <string name="settings_button_text" msgid="8873672322605444408">"Configuración de página principal"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"Configuración de pantalla principal"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"El administrador inhabilitó esta función"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Permitir la rotación de la pantalla principal"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Al girar el teléfono"</string>
@@ -93,7 +94,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Para mostrar los puntos de notificación, activa las notificaciones de la app para <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Cambiar la configuración"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Mostrar puntos de notificación"</string>
-    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"Agrega íconos de apps a pant. principal"</string>
+    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"Agrega íconos de apps a pantalla principal"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Para nuevas apps"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Desconocido"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Eliminar"</string>

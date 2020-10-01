@@ -32,17 +32,19 @@
     <string name="title_app_suggestions" msgid="4185902664111965088">"Сунушталган колдонмолор"</string>
     <string name="all_apps_label" msgid="8542784161730910663">"Бардык колдонмолор"</string>
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"Божомолдонгон колдонмолоруңуз"</string>
-    <string name="hotseat_edu_prompt_title" msgid="5595771595144175752">"Көп колдонулган колдонмолорго оңой кириңиз"</string>
-    <string name="hotseat_edu_prompt_content" msgid="5709176001504149521">"Pixel жакын арада кайсы колдонмолорду колдоно турганыңызды божомолдоп, Башкы экраныңызда сунуштап турат. Жөндөө үчүн, таптап коюңуз."</string>
-    <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"Сунушталган колдонмолорду Башкы экрандын ылдый жагында жайгашкан тилкесинде көрүңүз"</string>
-    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Көп колдонулган колдонмолорго Башкы экрандан оңой кириңиз. Сунуштар тартиптин негизинде өзгөрөт. Төмөндө жайгашкан тилкедеги колдонмолор Башкы экраныңызга көтөрүлөт."</string>
-    <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"Көп колдонулган колдонмолорго Башкы экрандан оңой кириңиз. Сунуштар тартиптин негизинде өзгөрөт. Ылдый жакта жайгашкан тилкедеги колдонмолор жаңы папкага жылдырылат."</string>
+    <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"Сунушталган колдонмолор башкы экрандын ылдый жагында көрүнөт."</string>
+    <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"Сунушталган колдонмолор башкы экрандагы тандалмалардын катарында көрүнөт."</string>
+    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Көп колдонулган колдонмолор башкы экранда жайгашып, алардын тизмеси маал-маалы менен өзгөрүп турат. Ылдый жакта жайгашкан тилкедеги колдонмолор башкы экранга жылдырылат."</string>
+    <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"Көп иштетилген колдонмолорго Башкы экрандан оңой кириңиз. Сунуштар тартиптин негизинде өзгөрөт. Тандалмалардын катарындагы колдонмолор башкы экраныңызга жылдырылат."</string>
+    <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"Көп колдонулган колдонмолор башкы экранда жайгашып, алардын тизмеси маал-маалы менен өзгөрүп турат. Ылдый жакта жайгашкан тилкедеги колдонмолор жаңы папкага жылдырылат."</string>
     <string name="hotseat_edu_accept" msgid="1611544083278999837">"Сунушталган колдонолорду алуу"</string>
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"Жок, рахмат"</string>
-    <string name="hotseat_turn_off" msgid="7808360330229368470">"Жөндөөлөр"</string>
+    <string name="hotseat_prediction_settings" msgid="6246554993566070818">"Жөндөөлөр"</string>
     <string name="hotseat_auto_enrolled" msgid="522100018967146807">"Көп иштетилген колдонмолор ушул жерде көрүнүп, тартиптин негизинде өзгөрөт"</string>
-    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Сунушталган колдонмолорду көрүү үчүн ылдый жакта жайгашкан тилкедеги колдонмолорду сүрүп салыңыз"</string>
+    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Сунуштарды алып туруу үчүн, ылдый жактагы тилкедеги колдонмолорду сүйрөп келиңиз"</string>
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"Сунушталган колдонмолор бош жерге кошулат"</string>
+    <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Сунушталган колдонмолор функциясы иштетилди"</string>
+    <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Сунушталган колдонмолор функциясы өчүрүлгөн"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Божомолдонгон колдонмо: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="action_share" msgid="2648470652637092375">"Бөлүшүү"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Скриншот"</string>
