@@ -44,7 +44,8 @@ class FolderPreviewItemAnim {
                 }
             };
 
-    private static PreviewItemDrawingParams sTmpParams = new PreviewItemDrawingParams(0, 0, 0, 0);
+    private static final PreviewItemDrawingParams sTmpParams =
+            new PreviewItemDrawingParams(0, 0, 0, 0);
     private static final float[] sTempParamsArray = new float[3];
 
     private final ObjectAnimator mAnimator;

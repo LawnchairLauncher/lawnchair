@@ -16,12 +16,14 @@
 
 package com.android.launcher3.model;
 
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.widget.WidgetListRowEntry;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -31,8 +33,13 @@ import java.util.HashMap;
 public class LoaderResults extends BaseLoaderResults {
 
     public LoaderResults(LauncherAppState app, BgDataModel dataModel,
-            AllAppsList allAppsList, int pageToBindFirst, WeakReference<Callbacks> callbacks) {
-        super(app, dataModel, allAppsList, pageToBindFirst, callbacks);
+            AllAppsList allAppsList, Callbacks[] callbacks) {
+        this(app, dataModel, allAppsList, callbacks, MAIN_EXECUTOR);
+    }
+
+    public LoaderResults(LauncherAppState app, BgDataModel dataModel,
+            AllAppsList allAppsList, Callbacks[] callbacks, LooperExecutor executor) {
+        super(app, dataModel, allAppsList, callbacks, executor);
     }
 
     @Override

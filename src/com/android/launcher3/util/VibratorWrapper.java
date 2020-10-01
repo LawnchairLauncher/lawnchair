@@ -39,7 +39,7 @@ public class VibratorWrapper {
     public static final MainThreadInitializedObject<VibratorWrapper> INSTANCE =
             new MainThreadInitializedObject<>(VibratorWrapper::new);
 
-    private static final VibrationEffect EFFECT_CLICK =
+    public static final VibrationEffect EFFECT_CLICK =
             createPredefined(VibrationEffect.EFFECT_CLICK);
 
     /**

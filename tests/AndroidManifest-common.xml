@@ -22,6 +22,7 @@
 
     <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"/>
     <uses-permission android:name="android.permission.READ_LOGS"/>
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"/>
 
     <application android:debuggable="true">
         <uses-library android:name="android.test.runner"/>
@@ -79,8 +80,12 @@
             </intent-filter>
         </activity>
 
+        <service
+            android:name="com.android.launcher3.testcomponent.ListViewService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
         <provider
-            android:name="com.android.launcher3.testcomponent.TestCommandReceiver"
+            android:name="com.android.launcher3.testcomponent.TestCommandProvider"
             android:authorities="${packageName}.commands"
             android:exported="true"/>
 

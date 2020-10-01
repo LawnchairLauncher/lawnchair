@@ -29,14 +29,8 @@
     <!-- Title for an option to enter freeform mode for a given app -->
     <string name="recent_task_option_freeform">Freeform</string>
 
-    <!-- Content description for the recent apps panel (not shown on the screen). [CHAR LIMIT=NONE] -->
-    <string name="accessibility_desc_recent_apps">Overview</string>
-
     <!-- Recents: The empty recents string. [CHAR LIMIT=NONE] -->
     <string name="recents_empty_message">No recent items</string>
-
-    <!-- Content description for the recent apps's accessibility option that closes it. [CHAR LIMIT=NONE] -->
-    <string name="accessibility_close_task">Close</string>
 
     <!-- Content description for the recent apps's accessibility option that opens its usage settings. [CHAR LIMIT=NONE] -->
     <string name="accessibility_app_usage_settings">App usage settings</string>
@@ -66,5 +60,107 @@
     <!-- Text of the tip when user lands in all apps view for the first time, indicating where the tip toast points to is the predicted apps section. [CHAR_LIMIT=50] -->
     <string name="all_apps_prediction_tip">Your predicted apps</string>
 
+    <!-- Content description for a close button. [CHAR LIMIT=NONE] -->
+    <string  name="gesture_tutorial_close_button_content_description" translatable="false">Close</string>
 
+    <!-- Hotseat educational strings for users who don't qualify for migration -->
+    <string name="hotseat_edu_title_migrate">Get app suggestions on the bottom row of your Home screen</string>
+    <string name="hotseat_edu_title_migrate_landscape">Get app suggestions on favorites row of your Home screen</string>
+
+    <string name="hotseat_edu_message_migrate">Easily access your most-used apps right on the Home screen. Suggestions will change based on your routines. Apps on the bottom row will move up to your Home screen. </string>
+    <string name="hotseat_edu_message_migrate_landscape">Easily access your most-used apps right on the Home screen. Suggestions will change based on your routines. Apps in favorites row will move to your Home screen. </string>
+    <string name="hotseat_edu_message_migrate_alt">Easily access your most-used apps, right on the Home screen. Suggestions will change based on your routines. Apps on the bottom row will move to a new folder.</string>
+
+    <!-- Button text to opt in for fully predicted hotseat -->
+    <string name="hotseat_edu_accept">Get app suggestions</string>
+    <!-- Button text to dismiss opt in for fully predicted hotseat -->
+    <string name="hotseat_edu_dismiss">No thanks</string>
+
+    <!-- action shown to toggle predictions after onboarding -->
+    <string name="hotseat_prediction_settings">Settings</string>
+
+    <!-- tip shown if user has no items in hotseat to migrate -->
+    <string name="hotseat_auto_enrolled">Most-used apps appear here, and change based on routines</string>
+    <!-- tip shown if user declines migration and has no open spots for prediction -->
+    <string name="hotseat_tip_no_empty_slots">Drag apps off the bottom row to get app suggestions</string>
+    <!-- tip shown if user declines migration and has some open spots for prediction -->
+    <string name="hotseat_tip_gaps_filled">App suggestions added to empty space</string>
+    <!-- tip shown when user migrates and predictions are enabled in hotseat -->
+    <string name="hotsaet_tip_prediction_enabled">App suggestions enabled</string>
+    <!-- tip shown when hotseat edu is requested while predictions are disabled -->
+    <string name="hotsaet_tip_prediction_disabled">App suggestions are disabled</string>
+
+    <!-- content description for hotseat items -->
+    <string name="hotseat_prediction_content_description">Predicted app: <xliff:g id="title" example="Chrome">%1$s</xliff:g></string>
+
+    <!-- Title shown during interactive part of Back gesture tutorial for right edge. [CHAR LIMIT=30] -->
+    <string name="back_gesture_tutorial_playground_title_swipe_inward_right_edge" translatable="false">Try the back gesture</string>
+    <!-- Subtitle shown during interactive parts of Back gesture tutorial for right edge. [CHAR LIMIT=60] -->
+    <string name="back_gesture_tutorial_engaged_subtitle_swipe_inward_right_edge" translatable="false">Start at the right edge and swipe toward the middle</string>
+    <!-- Feedback shown during interactive parts of Back gesture tutorial for right edge when the gesture is too far from the edge. [CHAR LIMIT=100] -->
+    <string name="back_gesture_feedback_swipe_too_far_from_right_edge" translatable="false">Make sure you swipe from the far right edge</string>
+    <!-- Feedback shown during interactive parts of Back gesture tutorial for right edge when the gesture is cancelled. [CHAR LIMIT=100] -->
+    <string name="back_gesture_feedback_cancelled_right_edge" translatable="false">Make sure you swipe straight to the left and let go</string>
+
+    <!-- Title shown during interactive part of Back gesture tutorial for left edge. [CHAR LIMIT=30] -->
+    <string name="back_gesture_tutorial_playground_title_swipe_inward_left_edge" translatable="false">Try the other side</string>
+    <!-- Subtitle shown during interactive parts of Back gesture tutorial for left edge. [CHAR LIMIT=60] -->
+    <string name="back_gesture_tutorial_engaged_subtitle_swipe_inward_left_edge" translatable="false">That\'s it! Now try swiping from the left edge.</string>
+    <!-- Feedback shown during interactive parts of Back gesture tutorial for left edge when the gesture is too far from the edge. [CHAR LIMIT=100] -->
+    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" translatable="false">Make sure you swipe from the far left edge</string>
+    <!-- Feedback shown during interactive parts of Back gesture tutorial for left edge when the gesture is cancelled. [CHAR LIMIT=100] -->
+    <string name="back_gesture_feedback_cancelled_left_edge" translatable="false">Make sure you swipe straight to the right and let go</string>
+
+    <!-- Feedback shown during interactive parts of Back gesture tutorial when the gesture is within the nav bar region. [CHAR LIMIT=100] -->
+    <string name="back_gesture_feedback_swipe_in_nav_bar" translatable="false">Make sure you don\'t swipe too close to the bottom of the screen</string>
+    <!-- Subtitle shown on the confirmation screen after successful gesture. [CHAR LIMIT=60] -->
+    <string name="back_gesture_tutorial_confirm_subtitle" translatable="false">To change the sensitivity of the back gesture, go to Settings</string>
+
+    <!-- Title shown during interactive part of Home gesture tutorial. [CHAR LIMIT=30] -->
+    <string name="home_gesture_tutorial_playground_title" translatable="false">Tutorial: Go Home</string>
+    <!-- Subtitle shown during interactive parts of Home gesture tutorial. [CHAR LIMIT=60] -->
+    <string name="home_gesture_tutorial_playground_subtitle" translatable="false">Try swiping upward from the bottom edge of the screen</string>
+    <!-- Feedback shown during interactive parts of Home gesture tutorial when the gesture is started too far from the edge. [CHAR LIMIT=100] -->
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" translatable="false">Make sure you swipe from the bottom edge of the screen</string>
+    <!-- Feedback shown during interactive parts of Home gesture tutorial when the Overview gesture is detected. [CHAR LIMIT=100] -->
+    <string name="home_gesture_feedback_overview_detected" translatable="false">Make sure you don\'t pause before letting go</string>
+    <!-- Feedback shown during interactive parts of Home gesture tutorial when the gesture is horizontal instead of vertical. [CHAR LIMIT=100] -->
+    <string name="home_gesture_feedback_wrong_swipe_direction" translatable="false">Make sure you swipe straight up</string>
+
+    <!-- Title shown during interactive part of Overview gesture tutorial. [CHAR LIMIT=30] -->
+    <string name="overview_gesture_tutorial_playground_title" translatable="false">Tutorial: Switch Apps</string>
+    <!-- Subtitle shown during interactive parts of Overview gesture tutorial. [CHAR LIMIT=60] -->
+    <string name="overview_gesture_tutorial_playground_subtitle" translatable="false">Swipe up from the bottom of the screen and hold</string>
+    <!-- Feedback shown during interactive parts of Overview gesture tutorial when the gesture is started too far from the edge. [CHAR LIMIT=100] -->
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" translatable="false">Make sure you swipe from the bottom edge of the screen</string>
+    <!-- Feedback shown during interactive parts of Overview gesture tutorial when the Home gesture is detected. [CHAR LIMIT=100] -->
+    <string name="overview_gesture_feedback_home_detected" translatable="false">Try holding the window for longer before releasing</string>
+    <!-- Feedback shown during interactive parts of Overview gesture tutorial when the gesture is horizontal instead of vertical. [CHAR LIMIT=100] -->
+    <string name="overview_gesture_feedback_wrong_swipe_direction" translatable="false">Make sure you swipe straight up and pause</string>
+
+    <!-- Title shown during interactive part of Assistant gesture tutorial. [CHAR LIMIT=30] -->
+    <string name="assistant_gesture_tutorial_playground_title" translatable="false">Tutorial: Assistant</string>
+    <!-- Subtitle shown during interactive parts of Assistant gesture tutorial. [CHAR LIMIT=60] -->
+    <string name="assistant_gesture_tutorial_playground_subtitle" translatable="false">Try swiping diagonally from a bottom corner of the screen</string>
+    <!-- Feedback shown during interactive parts of Assistant gesture tutorial when the gesture is started too far from the corner. [CHAR LIMIT=100] -->
+    <string name="assistant_gesture_feedback_swipe_too_far_from_corner" translatable="false">Make sure you swipe from a bottom corner of the screen</string>
+    <!-- Feedback shown during interactive parts of Assistant gesture tutorial when the gesture doesn't go diagonally enough. [CHAR LIMIT=100] -->
+    <string name="assistant_gesture_feedback_swipe_not_diagonal" translatable="false">Make sure you swipe diagonally</string>
+    <!-- Feedback shown during interactive parts of Assistant gesture tutorial when the gesture doesn't go far enough. [CHAR LIMIT=100] -->
+    <string name="assistant_gesture_feedback_swipe_not_long_enough" translatable="false">Try swiping further</string>
+
+    <!-- Title shown on the confirmation screen after successful gesture. [CHAR LIMIT=30] -->
+    <string name="gesture_tutorial_confirm_title" translatable="false">All set</string>
+    <!-- Button text shown on a button on the confirm screen to leave the tutorial. [CHAR LIMIT=14] -->
+    <string name="gesture_tutorial_action_button_label_done" translatable="false">Done</string>
+    <!-- Button text shown on a button to go to Settings. [CHAR LIMIT=14] -->
+    <string name="gesture_tutorial_action_button_label_settings" translatable="false">Settings</string>
+
+    <!-- ******* Overview ******* -->
+    <!-- Label for a button that causes the current overview app to be shared. [CHAR_LIMIT=40] -->
+    <string name="action_share">Share</string>
+    <!-- Label for a button that causes a screen shot of the current app to be taken. [CHAR_LIMIT=40] -->
+    <string name="action_screenshot">Screenshot</string>
+    <!-- Message shown when an action is blocked by a policy enforced by the app or the organization managing the device. [CHAR_LIMIT=NONE] -->
+    <string name="blocked_by_policy">This action isn\'t allowed by the app or your organization</string>
 </resources>

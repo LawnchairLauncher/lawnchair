@@ -16,28 +16,32 @@
 
 package com.android.launcher3.model;
 
-import static com.android.launcher3.AppInfo.COMPONENT_KEY_COMPARATOR;
-import static com.android.launcher3.AppInfo.EMPTY_ARRAY;
+import static com.android.launcher3.model.data.AppInfo.COMPONENT_KEY_COMPARATOR;
+import static com.android.launcher3.model.data.AppInfo.EMPTY_ARRAY;
 
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
+import android.content.pm.LauncherApps;
 import android.os.LocaleList;
 import android.os.Process;
 import android.os.UserHandle;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.AppFilter;
-import com.android.launcher3.AppInfo;
-import com.android.launcher3.PromiseAppInfo;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
-import com.android.launcher3.compat.LauncherAppsCompat;
-import com.android.launcher3.compat.PackageInstallerCompat;
-import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.model.BgDataModel.Callbacks;
+import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.PromiseAppInfo;
+import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.ItemInfoMatcher;
+import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.SafeCloseable;
 
 import java.util.ArrayList;
@@ -45,9 +49,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.function.Consumer;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 
 /**
@@ -73,6 +74,13 @@ public class AllAppsList {
     private AlphabeticIndexCompat mIndex;
 
     /**
+     * @see Callbacks#FLAG_HAS_SHORTCUT_PERMISSION
+     * @see Callbacks#FLAG_QUIET_MODE_ENABLED
+     * @see Callbacks#FLAG_QUIET_MODE_CHANGE_PERMISSION
+     */
+    private int mFlags;
+
+    /**
      * Boring constructor.
      */
     public AllAppsList(IconCache iconCache, AppFilter appFilter) {
@@ -89,6 +97,33 @@ public class AllAppsList {
         mDataChanged = false;
         return result;
     }
+
+    /**
+     * Helper to checking {@link Callbacks#FLAG_HAS_SHORTCUT_PERMISSION}
+     */
+    public boolean hasShortcutHostPermission() {
+        return (mFlags & Callbacks.FLAG_HAS_SHORTCUT_PERMISSION) != 0;
+    }
+
+    /**
+     * Sets or clears the provided flag
+     */
+    public void setFlags(int flagMask, boolean enabled) {
+        if (enabled) {
+            mFlags |= flagMask;
+        } else {
+            mFlags &= ~flagMask;
+        }
+        mDataChanged = true;
+    }
+
+    /**
+     * Returns the model flags
+     */
+    public int getFlags() {
+        return mFlags;
+    }
+
 
     /**
      * Add the supplied ApplicationInfo objects to the list, and enqueue it into the
@@ -110,10 +145,9 @@ public class AllAppsList {
         mDataChanged = true;
     }
 
-    public void addPromiseApp(Context context,
-                              PackageInstallerCompat.PackageInstallInfo installInfo) {
-        ApplicationInfo applicationInfo = LauncherAppsCompat.getInstance(context)
-                .getApplicationInfo(installInfo.packageName, 0, installInfo.user);
+    public void addPromiseApp(Context context, PackageInstallInfo installInfo) {
+        ApplicationInfo applicationInfo = new PackageManagerHelper(context)
+                .getApplicationInfo(installInfo.packageName, installInfo.user, 0);
         // only if not yet installed
         if (applicationInfo == null) {
             PromiseAppInfo info = new PromiseAppInfo(installInfo);
@@ -134,10 +168,10 @@ public class AllAppsList {
                     && appInfo.user.equals(user)
                     && appInfo instanceof PromiseAppInfo) {
                 final PromiseAppInfo promiseAppInfo = (PromiseAppInfo) appInfo;
-                if (installInfo.state == PackageInstallerCompat.STATUS_INSTALLING) {
+                if (installInfo.state == PackageInstallInfo.STATUS_INSTALLING) {
                     promiseAppInfo.level = installInfo.progress;
                     return promiseAppInfo;
-                } else if (installInfo.state == PackageInstallerCompat.STATUS_FAILED) {
+                } else if (installInfo.state == PackageInstallInfo.STATUS_FAILED) {
                     removeApp(i);
                 }
             }
@@ -164,11 +198,8 @@ public class AllAppsList {
      * Add the icons for the supplied apk called packageName.
      */
     public void addPackage(Context context, String packageName, UserHandle user) {
-        final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
-        final List<LauncherActivityInfo> matches = launcherApps.getActivityList(packageName,
-                user);
-
-        for (LauncherActivityInfo info : matches) {
+        for (LauncherActivityInfo info : context.getSystemService(LauncherApps.class)
+                .getActivityList(packageName, user)) {
             add(new AppInfo(context, info, user), info);
         }
     }
@@ -214,9 +245,8 @@ public class AllAppsList {
      * Add and remove icons for this package which has been updated.
      */
     public void updatePackage(Context context, String packageName, UserHandle user) {
-        final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
-        final List<LauncherActivityInfo> matches = launcherApps.getActivityList(packageName,
-                user);
+        final List<LauncherActivityInfo> matches = context.getSystemService(LauncherApps.class)
+                .getActivityList(packageName, user);
         if (matches.size() > 0) {
             // Find disabled/removed activities and remove them from data and add them
             // to the removed list.

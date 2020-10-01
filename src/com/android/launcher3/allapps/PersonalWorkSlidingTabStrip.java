@@ -16,7 +16,6 @@
 package com.android.launcher3.allapps;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
@@ -24,14 +23,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-import com.android.launcher3.Launcher;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.util.Themes;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 /**
  * Supports two indicator colors, dedicated for personal and work tabs.
@@ -40,11 +38,8 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     private static final int POSITION_PERSONAL = 0;
     private static final int POSITION_WORK = 1;
 
-    public static final String KEY_SHOWED_PEEK_WORK_TAB = "showed_peek_work_tab";
-
     private final Paint mSelectedIndicatorPaint;
     private final Paint mDividerPaint;
-    private final SharedPreferences mSharedPreferences;
 
     private int mSelectedIndicatorHeight;
     private int mIndicatorLeft = -1;
@@ -73,21 +68,23 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
         mDividerPaint.setStrokeWidth(
                 getResources().getDimensionPixelSize(R.dimen.all_apps_divider_height));
 
-        mSharedPreferences = Launcher.getLauncher(getContext()).getSharedPrefs();
         mIsRtl = Utilities.isRtl(getResources());
     }
 
-    private void updateIndicatorPosition(float scrollOffset) {
-        mScrollOffset = scrollOffset;
-        updateIndicatorPosition();
-    }
-
-    private void updateTabTextColor(int pos) {
+    /**
+     * Highlights tab with index pos
+     */
+    public void updateTabTextColor(int pos) {
         mSelectedPosition = pos;
         for (int i = 0; i < getChildCount(); i++) {
             Button tab = (Button) getChildAt(i);
             tab.setSelected(i == pos);
         }
+    }
+
+    private void updateIndicatorPosition(float scrollOffset) {
+        mScrollOffset = scrollOffset;
+        updateIndicatorPosition();
     }
 
     @Override
@@ -129,25 +126,6 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
             mIndicatorRight, getHeight(), mSelectedIndicatorPaint);
     }
 
-    public void highlightWorkTabIfNecessary() {
-        if (mSharedPreferences.getBoolean(KEY_SHOWED_PEEK_WORK_TAB, false)) {
-            return;
-        }
-        if (mLastActivePage != POSITION_PERSONAL) {
-            return;
-        }
-        highlightWorkTab();
-        mSharedPreferences.edit().putBoolean(KEY_SHOWED_PEEK_WORK_TAB, true).apply();
-    }
-
-    private void highlightWorkTab() {
-        View v = getChildAt(POSITION_WORK);
-        v.post(() -> {
-            v.setPressed(true);
-            v.setPressed(false);
-        });
-    }
-
     @Override
     public void setScroll(int currentScroll, int totalScroll) {
         float scrollOffset = ((float) currentScroll) / totalScroll;
@@ -158,6 +136,7 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     public void setActiveMarker(int activePage) {
         updateTabTextColor(activePage);
         if (mContainerView != null && mLastActivePage != activePage) {
+            updateIndicatorPosition(activePage);
             mContainerView.onTabChanged(activePage);
         }
         mLastActivePage = activePage;

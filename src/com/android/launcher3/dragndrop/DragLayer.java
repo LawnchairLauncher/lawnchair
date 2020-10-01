@@ -17,10 +17,7 @@
 
 package com.android.launcher3.dragndrop;
 
-import static android.view.View.MeasureSpec.EXACTLY;
-import static android.view.View.MeasureSpec.getMode;
-import static android.view.View.MeasureSpec.getSize;
-
+import static com.android.launcher3.anim.Interpolators.DEACCEL_1_5;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
 
 import android.animation.Animator;
@@ -33,15 +30,12 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.animation.Interpolator;
-import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.CellLayout;
@@ -50,17 +44,12 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Workspace;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.folder.Folder;
-import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.OverviewScrim;
-import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.graphics.WorkspaceAndHotseatScrim;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
-import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.views.BaseDragLayer;
-import com.android.launcher3.views.Transposable;
 
 import java.util.ArrayList;
 
@@ -77,11 +66,11 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     public static final int ANIMATION_END_DISAPPEAR = 0;
     public static final int ANIMATION_END_REMAIN_VISIBLE = 2;
 
-    @Thunk DragController mDragController;
+    private DragController mDragController;
 
     // Variables relating to animation of views after drop
     private ValueAnimator mDropAnim = null;
-    private final TimeInterpolator mCubicEaseOutInterpolator = Interpolators.DEACCEL_1_5;
+
     @Thunk DragView mDropView = null;
     @Thunk int mAnchorViewInitialScrollX = 0;
     @Thunk View mAnchorView = null;
@@ -95,6 +84,9 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     private final ViewGroupFocusHelper mFocusIndicatorHelper;
     private final WorkspaceAndHotseatScrim mWorkspaceScrim;
     private final OverviewScrim mOverviewScrim;
+
+    // View that should handle move events
+    private View mMoveTarget;
 
     /**
      * Used to create a new DragLayer from XML.
@@ -117,11 +109,13 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     public void setup(DragController dragController, Workspace workspace) {
         mDragController = dragController;
         mWorkspaceScrim.setWorkspace(workspace);
+        mMoveTarget = workspace;
         recreateControllers();
     }
 
+    @Override
     public void recreateControllers() {
-        mControllers = UiFactory.createTouchControllers(mActivity);
+        mControllers = mActivity.createTouchControllers();
     }
 
     public ViewGroupFocusHelper getFocusIndicatorHelper() {
@@ -223,7 +217,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     @Override
     public boolean dispatchUnhandledMove(View focused, int direction) {
         return super.dispatchUnhandledMove(focused, direction)
-                || mDragController.dispatchUnhandledMove(focused, direction);
+                || mMoveTarget.dispatchUnhandledMove(focused, direction);
     }
 
     @Override
@@ -254,59 +248,57 @@ public class DragLayer extends BaseDragLayer<Launcher> {
 
     public void animateViewIntoPosition(DragView dragView, final View child, int duration,
             View anchorView) {
+
         ShortcutAndWidgetContainer parentChildren = (ShortcutAndWidgetContainer) child.getParent();
         CellLayout.LayoutParams lp =  (CellLayout.LayoutParams) child.getLayoutParams();
         parentChildren.measureChild(child);
+        parentChildren.layoutChild(child);
 
-        Rect r = new Rect();
-        getViewRectRelativeToSelf(dragView, r);
+        Rect dragViewBounds = new Rect();
+        getViewRectRelativeToSelf(dragView, dragViewBounds);
+        final int fromX = dragViewBounds.left;
+        final int fromY = dragViewBounds.top;
 
         float coord[] = new float[2];
         float childScale = child.getScaleX();
+
         coord[0] = lp.x + (child.getMeasuredWidth() * (1 - childScale) / 2);
         coord[1] = lp.y + (child.getMeasuredHeight() * (1 - childScale) / 2);
 
         // Since the child hasn't necessarily been laid out, we force the lp to be updated with
         // the correct coordinates (above) and use these to determine the final location
         float scale = getDescendantCoordRelativeToSelf((View) child.getParent(), coord);
+
         // We need to account for the scale of the child itself, as the above only accounts for
         // for the scale in parents.
         scale *= childScale;
         int toX = Math.round(coord[0]);
         int toY = Math.round(coord[1]);
+
         float toScale = scale;
-        if (child instanceof TextView) {
-            TextView tv = (TextView) child;
-            // Account for the source scale of the icon (ie. from AllApps to Workspace, in which
-            // the workspace may have smaller icon bounds).
-            toScale = scale / dragView.getIntrinsicIconScaleFactor();
 
-            // The child may be scaled (always about the center of the view) so to account for it,
-            // we have to offset the position by the scaled size.  Once we do that, we can center
-            // the drag view about the scaled child view.
-            // padding will remain constant (does not scale with size)
-            toY += tv.getPaddingTop();
-            toY -= dragView.getMeasuredHeight() * (1 - toScale) / 2;
-            if (dragView.getDragVisualizeOffset() != null) {
-                toY -=  Math.round(toScale * dragView.getDragVisualizeOffset().y);
-            }
+        if (child instanceof DraggableView) {
+            // This code is fairly subtle. Please verify drag and drop is pixel-perfect in a number
+            // of scenarios before modifying (from all apps, from workspace, different grid-sizes,
+            // shortcuts from in and out of Launcher etc).
+            DraggableView d = (DraggableView) child;
+            Rect destRect = new Rect();
+            d.getWorkspaceVisualDragBounds(destRect);
 
-            toX -= (dragView.getMeasuredWidth() - Math.round(scale * child.getMeasuredWidth())) / 2;
-        } else if (child instanceof FolderIcon) {
-            // Account for holographic blur padding on the drag view
-            toY += Math.round(scale * (child.getPaddingTop() - dragView.getDragRegionTop()));
-            toY -= scale * dragView.getBlurSizeOutline() / 2;
-            toY -= (1 - scale) * dragView.getMeasuredHeight() / 2;
-            // Center in the x coordinate about the target's drawable
-            toX -= (dragView.getMeasuredWidth() - Math.round(scale * child.getMeasuredWidth())) / 2;
-        } else {
-            toY -= (Math.round(scale * (dragView.getHeight() - child.getMeasuredHeight()))) / 2;
-            toX -= (Math.round(scale * (dragView.getMeasuredWidth()
-                    - child.getMeasuredWidth()))) / 2;
+            // In most cases this additional scale factor should be a no-op (1). It mainly accounts
+            // for alternate grids where the source and destination icon sizes are different
+            toScale *= ((1f * destRect.width())
+                    / (dragView.getMeasuredWidth() - dragView.getBlurSizeOutline()));
+
+            // This accounts for the offset of the DragView created by scaling it about its
+            // center as it animates into place.
+            float scaleShiftX = dragView.getMeasuredWidth() * (1 - toScale) / 2;
+            float scaleShiftY = dragView.getMeasuredHeight() * (1 - toScale) / 2;
+
+            toX += scale * destRect.left - toScale * dragView.getBlurSizeOutline() / 2 - scaleShiftX;
+            toY += scale * destRect.top - toScale * dragView.getBlurSizeOutline() / 2 - scaleShiftY;
         }
 
-        final int fromX = r.left;
-        final int fromY = r.top;
         child.setVisibility(INVISIBLE);
         Runnable onCompleteRunnable = () -> child.setVisibility(VISIBLE);
         animateViewIntoPosition(dragView, fromX, fromY, toX, toY, 1, 1, 1, toScale, toScale,
@@ -361,7 +353,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
         if (duration < 0) {
             duration = res.getInteger(R.integer.config_dropAnimMaxDuration);
             if (dist < maxDist) {
-                duration *= mCubicEaseOutInterpolator.getInterpolation(dist / maxDist);
+                duration *= DEACCEL_1_5.getInterpolation(dist / maxDist);
             }
             duration = Math.max(duration, res.getInteger(R.integer.config_dropAnimMinDuration));
         }
@@ -369,7 +361,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
         // Fall back to cubic ease out interpolator for the animation if none is specified
         TimeInterpolator interpolator = null;
         if (alphaInterpolator == null || motionInterpolator == null) {
-            interpolator = mCubicEaseOutInterpolator;
+            interpolator = DEACCEL_1_5;
         }
 
         // Animate the view
@@ -477,14 +469,14 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     public void onViewAdded(View child) {
         super.onViewAdded(child);
         updateChildIndices();
-        UiFactory.onLauncherStateOrFocusChanged(mActivity);
+        mActivity.onDragLayerHierarchyChanged();
     }
 
     @Override
     public void onViewRemoved(View child) {
         super.onViewRemoved(child);
         updateChildIndices();
-        UiFactory.onLauncherStateOrFocusChanged(mActivity);
+        mActivity.onDragLayerHierarchyChanged();
     }
 
     @Override
@@ -537,6 +529,9 @@ public class DragLayer extends BaseDragLayer<Launcher> {
         mOverviewScrim.updateCurrentScrimmedView(this);
         mFocusIndicatorHelper.draw(canvas);
         super.dispatchDraw(canvas);
+        if (mOverviewScrim.getScrimmedView() == null) {
+            mOverviewScrim.draw(canvas);
+        }
     }
 
     @Override
@@ -566,146 +561,5 @@ public class DragLayer extends BaseDragLayer<Launcher> {
 
     public OverviewScrim getOverviewScrim() {
         return mOverviewScrim;
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        RotationMode rotation = mActivity.getRotationMode();
-        int count = getChildCount();
-
-        if (!rotation.isTransposed
-                || getMode(widthMeasureSpec) != EXACTLY
-                || getMode(heightMeasureSpec) != EXACTLY) {
-
-            for (int i = 0; i < count; i++) {
-                final View child = getChildAt(i);
-                child.setRotation(rotation.surfaceRotation);
-            }
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        } else {
-
-            for (int i = 0; i < count; i++) {
-                final View child = getChildAt(i);
-                if (child.getVisibility() == GONE) {
-                    continue;
-                }
-                if (!(child instanceof Transposable)) {
-                    measureChildWithMargins(child, widthMeasureSpec, 0, heightMeasureSpec, 0);
-                } else {
-                    measureChildWithMargins(child, heightMeasureSpec, 0, widthMeasureSpec, 0);
-
-                    child.setPivotX(child.getMeasuredWidth() / 2);
-                    child.setPivotY(child.getMeasuredHeight() / 2);
-                    child.setRotation(rotation.surfaceRotation);
-                }
-            }
-            setMeasuredDimension(getSize(widthMeasureSpec), getSize(heightMeasureSpec));
-        }
-    }
-
-    @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        RotationMode rotation = mActivity.getRotationMode();
-        if (!rotation.isTransposed) {
-            super.onLayout(changed, left, top, right, bottom);
-            return;
-        }
-
-        final int count = getChildCount();
-
-        final int parentWidth = right - left;
-        final int parentHeight = bottom - top;
-
-        for (int i = 0; i < count; i++) {
-            final View child = getChildAt(i);
-            if (child.getVisibility() == GONE) {
-                continue;
-            }
-
-            final FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) child.getLayoutParams();
-
-            if (lp instanceof LayoutParams) {
-                final LayoutParams dlp = (LayoutParams) lp;
-                if (dlp.customPosition) {
-                    child.layout(dlp.x, dlp.y, dlp.x + dlp.width, dlp.y + dlp.height);
-                    continue;
-                }
-            }
-
-            final int width = child.getMeasuredWidth();
-            final int height = child.getMeasuredHeight();
-
-            int childLeft;
-            int childTop;
-
-            int gravity = lp.gravity;
-            if (gravity == -1) {
-                gravity = Gravity.TOP | Gravity.START;
-            }
-
-            final int layoutDirection = getLayoutDirection();
-
-            int absoluteGravity = Gravity.getAbsoluteGravity(gravity, layoutDirection);
-
-            if (child instanceof Transposable) {
-                absoluteGravity = rotation.toNaturalGravity(absoluteGravity);
-
-                switch (absoluteGravity & Gravity.HORIZONTAL_GRAVITY_MASK) {
-                    case Gravity.CENTER_HORIZONTAL:
-                        childTop = (parentHeight - height) / 2 +
-                                lp.topMargin - lp.bottomMargin;
-                        break;
-                    case Gravity.RIGHT:
-                        childTop = width / 2 + lp.rightMargin - height / 2;
-                        break;
-                    case Gravity.LEFT:
-                    default:
-                        childTop = parentHeight - lp.leftMargin - width / 2 - height / 2;
-                }
-
-                switch (absoluteGravity & Gravity.VERTICAL_GRAVITY_MASK) {
-                    case Gravity.CENTER_VERTICAL:
-                        childLeft = (parentWidth - width) / 2 +
-                                lp.leftMargin - lp.rightMargin;
-                        break;
-                    case Gravity.BOTTOM:
-                        childLeft = parentWidth - width / 2 - height / 2 - lp.bottomMargin;
-                        break;
-                    case Gravity.TOP:
-                    default:
-                        childLeft = height / 2 - width / 2 + lp.topMargin;
-                }
-            } else {
-                switch (absoluteGravity & Gravity.HORIZONTAL_GRAVITY_MASK) {
-                    case Gravity.CENTER_HORIZONTAL:
-                        childLeft = (parentWidth - width) / 2 +
-                                lp.leftMargin - lp.rightMargin;
-                        break;
-                    case Gravity.RIGHT:
-                        childLeft = parentWidth - width - lp.rightMargin;
-                        break;
-                    case Gravity.LEFT:
-                    default:
-                        childLeft = lp.leftMargin;
-                }
-
-                switch (absoluteGravity & Gravity.VERTICAL_GRAVITY_MASK) {
-                    case Gravity.TOP:
-                        childTop = lp.topMargin;
-                        break;
-                    case Gravity.CENTER_VERTICAL:
-                        childTop = (parentHeight - height) / 2 +
-                                lp.topMargin - lp.bottomMargin;
-                        break;
-                    case Gravity.BOTTOM:
-                        childTop = parentHeight - height - lp.bottomMargin;
-                        break;
-                    default:
-                        childTop = lp.topMargin;
-                }
-            }
-
-            child.layout(childLeft, childTop, childLeft + width, childTop + height);
-        }
     }
 }

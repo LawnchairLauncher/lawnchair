@@ -17,9 +17,11 @@ package com.android.launcher3.util.rule;
 
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
 
+import androidx.test.InstrumentationRegistry;
 import androidx.test.uiautomator.UiDevice;
 
 import org.junit.rules.TestRule;
@@ -50,20 +52,33 @@ public class TestStabilityRule implements TestRule {
                     + "(?<postsubmit>[0-9]+)"
                     + ")$");
 
+    public static final int LOCAL = 0x1;
+    public static final int UNBUNDLED_PRESUBMIT = 0x2;
+    public static final int UNBUNDLED_POSTSUBMIT = 0x4;
+    public static final int PLATFORM_PRESUBMIT = 0x8;
+    public static final int PLATFORM_POSTSUBMIT = 0x10;
+
+    private static int sRunFlavor;
+
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
     public @interface Stability {
+        int flavors();
     }
 
     @Override
     public Statement apply(Statement base, Description description) {
-        if (description.getAnnotation(Stability.class) != null) {
+        final Stability stability = description.getAnnotation(Stability.class);
+        if (stability != null) {
             return new Statement() {
                 @Override
                 public void evaluate() throws Throwable {
-                    getRunFlavor();
-
-                    base.evaluate();
+                    if ((stability.flavors() & getRunFlavor()) != 0) {
+                        Log.d(TAG, "Running " + description.getDisplayName());
+                        base.evaluate();
+                    } else {
+                        Log.d(TAG, "Skipping " + description.getDisplayName());
+                    }
                 }
             };
         } else {
@@ -71,49 +86,77 @@ public class TestStabilityRule implements TestRule {
         }
     }
 
-    private static void getRunFlavor() throws Exception {
-        final String launcherVersion = getInstrumentation().
-                getContext().
-                getPackageManager().
-                getPackageInfo(
-                        UiDevice.getInstance(getInstrumentation()).
-                                getLauncherPackageName(),
-                        0).
-                versionName;
+    public static int getRunFlavor() {
+        if (sRunFlavor != 0) return sRunFlavor;
 
-        final Matcher launcherBuildMatcher = LAUNCHER_BUILD.matcher(launcherVersion);
+        final String flavorOverride = InstrumentationRegistry.getArguments().getString("flavor");
 
-        if (!launcherBuildMatcher.find()) {
-            Log.e(TAG, "Match not found");
+        if (flavorOverride != null) {
+            Log.d(TAG, "Flavor override: " + flavorOverride);
+            try {
+                return (int) TestStabilityRule.class.getField(flavorOverride).get(null);
+            } catch (NoSuchFieldException e) {
+                throw new AssertionError("Unrecognized run flavor override: " + flavorOverride);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        final String launcherVersion;
+        try {
+            final String launcherPackageName = UiDevice.getInstance(getInstrumentation())
+                    .getLauncherPackageName();
+            Log.d(TAG, "Launcher package: " + launcherPackageName);
+
+            launcherVersion = getInstrumentation().
+                    getContext().
+                    getPackageManager().
+                    getPackageInfo(launcherPackageName, 0)
+                    .versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            throw new RuntimeException(e);
         }
 
         final String platformVersion = Build.VERSION.INCREMENTAL;
-        final Matcher platformBuildMatcher = PLATFORM_BUILD.matcher(platformVersion);
-
-        if (!platformBuildMatcher.find()) {
-            Log.e(TAG, "Match not found");
-        }
 
         Log.d(TAG, "Launcher: " + launcherVersion + ", platform: " + platformVersion);
+
+        final Matcher launcherBuildMatcher = LAUNCHER_BUILD.matcher(launcherVersion);
+        if (!launcherBuildMatcher.find()) {
+            throw new AssertionError("Launcher build match not found");
+        }
+
+        final Matcher platformBuildMatcher = PLATFORM_BUILD.matcher(platformVersion);
+        if (!platformBuildMatcher.find()) {
+            throw new AssertionError("Platform build match not found");
+        }
 
         if (launcherBuildMatcher.group("local") != null && (
                 platformBuildMatcher.group("commandLine") != null ||
                         platformBuildMatcher.group("postsubmit") != null)) {
             Log.d(TAG, "LOCAL RUN");
+            sRunFlavor = LOCAL;
         } else if (launcherBuildMatcher.group("presubmit") != null
                 && platformBuildMatcher.group("postsubmit") != null) {
             Log.d(TAG, "UNBUNDLED PRESUBMIT");
+            sRunFlavor = UNBUNDLED_PRESUBMIT;
         } else if (launcherBuildMatcher.group("postsubmit") != null
                 && platformBuildMatcher.group("postsubmit") != null) {
             Log.d(TAG, "UNBUNDLED POSTSUBMIT");
+            sRunFlavor = UNBUNDLED_POSTSUBMIT;
         } else if (launcherBuildMatcher.group("platform") != null
                 && platformBuildMatcher.group("presubmit") != null) {
             Log.d(TAG, "PLATFORM PRESUBMIT");
+            sRunFlavor = PLATFORM_PRESUBMIT;
         } else if (launcherBuildMatcher.group("platform") != null
-                && platformBuildMatcher.group("postsubmit") != null) {
+                && (platformBuildMatcher.group("postsubmit") != null
+                || platformBuildMatcher.group("commandLine") != null)) {
             Log.d(TAG, "PLATFORM POSTSUBMIT");
+            sRunFlavor = PLATFORM_POSTSUBMIT;
         } else {
-            Log.e(TAG, "ERROR3");
+            throw new AssertionError("Unrecognized run flavor");
         }
+
+        return sRunFlavor;
     }
 }

@@ -15,23 +15,25 @@
  */
 package com.android.launcher3.uioverrides;
 
-import static com.android.launcher3.LauncherState.RECENTS_CLEAR_ALL_BUTTON;
+import static com.android.launcher3.LauncherState.OVERVIEW_BUTTONS;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.views.RecentsView.CONTENT_ALPHA;
 import static com.android.quickstep.views.RecentsView.FULLSCREEN_PROGRESS;
+import static com.android.quickstep.views.RecentsView.TASK_MODALNESS;
 
-import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.util.FloatProperty;
 
 import androidx.annotation.NonNull;
 
-import com.android.launcher3.Launcher;
+import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateManager.AnimationConfig;
-import com.android.launcher3.anim.AnimatorSetBuilder;
+import com.android.launcher3.anim.AnimationSuccessListener;
+import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.PropertySetter;
+import com.android.launcher3.states.StateAnimationConfig;
+import com.android.launcher3.util.MultiValueAlpha;
 import com.android.quickstep.views.ClearAllButton;
 import com.android.quickstep.views.LauncherRecentsView;
 import com.android.quickstep.views.RecentsView;
@@ -44,7 +46,7 @@ import com.android.quickstep.views.RecentsView;
 public final class RecentsViewStateController extends
         BaseRecentsViewStateController<LauncherRecentsView> {
 
-    public RecentsViewStateController(Launcher launcher) {
+    public RecentsViewStateController(BaseQuickstepLauncher launcher) {
         super(launcher);
     }
 
@@ -55,40 +57,40 @@ public final class RecentsViewStateController extends
             mRecentsView.updateEmptyMessage();
             mRecentsView.resetTaskVisuals();
         }
-        setAlphas(PropertySetter.NO_ANIM_PROPERTY_SETTER, state.getVisibleElements(mLauncher));
+        setAlphas(PropertySetter.NO_ANIM_PROPERTY_SETTER, state);
         mRecentsView.setFullscreenProgress(state.getOverviewFullscreenProgress());
     }
 
     @Override
-    void setStateWithAnimationInternal(@NonNull final LauncherState toState,
-            @NonNull AnimatorSetBuilder builder, @NonNull AnimationConfig config) {
-        super.setStateWithAnimationInternal(toState, builder, config);
-
-        if (!toState.overviewUi) {
-            builder.addOnFinishRunnable(mRecentsView::resetTaskVisuals);
-        }
+    void setStateWithAnimationInternal(@NonNull LauncherState toState,
+            @NonNull StateAnimationConfig config, @NonNull PendingAnimation builder) {
+        super.setStateWithAnimationInternal(toState, config, builder);
 
         if (toState.overviewUi) {
-            ValueAnimator updateAnim = ValueAnimator.ofFloat(0, 1);
-            updateAnim.addUpdateListener(valueAnimator -> {
-                // While animating into recents, update the visible task data as needed
-                mRecentsView.loadVisibleTaskData();
-            });
-            updateAnim.setDuration(config.duration);
-            builder.play(updateAnim);
+            // While animating into recents, update the visible task data as needed
+            builder.addOnFrameCallback(mRecentsView::loadVisibleTaskData);
             mRecentsView.updateEmptyMessage();
+        } else {
+            builder.addListener(
+                    AnimationSuccessListener.forRunnable(mRecentsView::resetTaskVisuals));
         }
 
-        PropertySetter propertySetter = config.getPropertySetter(builder);
-        setAlphas(propertySetter, toState.getVisibleElements(mLauncher));
-        float fullscreenProgress = toState.getOverviewFullscreenProgress();
-        propertySetter.setFloat(mRecentsView, FULLSCREEN_PROGRESS, fullscreenProgress, LINEAR);
+        setAlphas(builder, toState);
+        builder.setFloat(mRecentsView, FULLSCREEN_PROGRESS,
+                toState.getOverviewFullscreenProgress(), LINEAR);
     }
 
-    private void setAlphas(PropertySetter propertySetter, int visibleElements) {
-        boolean hasClearAllButton = (visibleElements & RECENTS_CLEAR_ALL_BUTTON) != 0;
+    private void setAlphas(PropertySetter propertySetter, LauncherState state) {
+        float buttonAlpha = (state.getVisibleElements(mLauncher) & OVERVIEW_BUTTONS) != 0 ? 1 : 0;
         propertySetter.setFloat(mRecentsView.getClearAllButton(), ClearAllButton.VISIBILITY_ALPHA,
-                hasClearAllButton ? 1f : 0f, LINEAR);
+                buttonAlpha, LINEAR);
+        propertySetter.setFloat(mLauncher.getActionsView().getVisibilityAlpha(),
+                MultiValueAlpha.VALUE, buttonAlpha, LINEAR);
+    }
+
+    @Override
+    FloatProperty<RecentsView> getTaskModalnessProperty() {
+        return TASK_MODALNESS;
     }
 
     @Override

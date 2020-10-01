@@ -17,6 +17,9 @@ package com.android.launcher3.views;
 
 import static com.android.launcher3.Utilities.EXTRA_WALLPAPER_FLAVOR;
 import static com.android.launcher3.Utilities.EXTRA_WALLPAPER_OFFSET;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.IGNORE;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SETTINGS_BUTTON_TAP_OR_LONGPRESS;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGETSTRAY_BUTTON_TAP_OR_LONGPRESS;
 
 import android.content.Context;
 import android.content.Intent;
@@ -35,18 +38,20 @@ import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.logging.StatsLogManager.EventEnum;
+import com.android.launcher3.model.WidgetsModel;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.ArrowPopup;
 import com.android.launcher3.shortcuts.DeepShortcutView;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
+import com.android.launcher3.testing.TestLogging;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.widget.WidgetsFullSheet;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 /**
  * Popup shown on long pressing an empty space in launcher
@@ -67,31 +72,27 @@ public class OptionsPopupView extends ArrowPopup
 
     @Override
     public void onClick(View view) {
-        handleViewClick(view, Action.Touch.TAP);
+        handleViewClick(view);
     }
 
     @Override
     public boolean onLongClick(View view) {
-        return handleViewClick(view, Action.Touch.LONGPRESS);
+        return handleViewClick(view);
     }
 
-    private boolean handleViewClick(View view, int action) {
+    private boolean handleViewClick(View view) {
         OptionItem item = mItemMap.get(view);
         if (item == null) {
             return false;
         }
-        if (item.mControlTypeForLog > 0) {
-            logTap(action, item.mControlTypeForLog);
+        if (item.mEventId.getId() > 0) {
+            mLauncher.getStatsLogManager().logger().log(item.mEventId);
         }
         if (item.mClickListener.onLongClick(view)) {
             close(true);
             return true;
         }
         return false;
-    }
-
-    private void logTap(int action, int controlType) {
-        mLauncher.getUserEventDispatcher().logActionOnControl(action, controlType);
     }
 
     @Override
@@ -127,7 +128,8 @@ public class OptionsPopupView extends ArrowPopup
         popup.mTargetRect = targetRect;
 
         for (OptionItem item : items) {
-            DeepShortcutView view = popup.inflateAndAdd(R.layout.system_shortcut, popup);
+            DeepShortcutView view =
+                    (DeepShortcutView) popup.inflateAndAdd(R.layout.system_shortcut, popup);
             view.getIconView().setBackgroundResource(item.mIconRes);
             view.getBubbleText().setText(item.mLabelRes);
             view.setDividerVisibility(View.INVISIBLE);
@@ -157,13 +159,16 @@ public class OptionsPopupView extends ArrowPopup
         int resDrawable = Utilities.existsStyleWallpapers(launcher) ?
                 R.drawable.ic_palette : R.drawable.ic_wallpaper;
         options.add(new OptionItem(resString, resDrawable,
-                ControlType.WALLPAPER_BUTTON, OptionsPopupView::startWallpaperPicker));
-        if (!FeatureFlags.GO_DISABLE_WIDGETS) {
+                IGNORE,
+                OptionsPopupView::startWallpaperPicker));
+        if (!WidgetsModel.GO_DISABLE_WIDGETS) {
             options.add(new OptionItem(R.string.widget_button_text, R.drawable.ic_widget,
-                    ControlType.WIDGETS_BUTTON, OptionsPopupView::onWidgetsClicked));
+                    LAUNCHER_WIDGETSTRAY_BUTTON_TAP_OR_LONGPRESS,
+                    OptionsPopupView::onWidgetsClicked));
         }
         options.add(new OptionItem(R.string.settings_button_text, R.drawable.ic_setting,
-                ControlType.SETTINGS_BUTTON, OptionsPopupView::startSettings));
+                LAUNCHER_SETTINGS_BUTTON_TAP_OR_LONGPRESS,
+                OptionsPopupView::startSettings));
 
         show(launcher, target, options);
     }
@@ -184,6 +189,7 @@ public class OptionsPopupView extends ArrowPopup
     }
 
     public static boolean startSettings(View view) {
+        TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "start: startSettings");
         Launcher launcher = Launcher.getLauncher(view.getContext());
         launcher.startActivity(new Intent(Intent.ACTION_APPLICATION_PREFERENCES)
                 .setPackage(launcher.getPackageName())
@@ -214,21 +220,29 @@ public class OptionsPopupView extends ArrowPopup
         if (!TextUtils.isEmpty(pickerPackage)) {
             intent.setPackage(pickerPackage);
         }
-        return launcher.startActivitySafely(v, intent, null, null);
+        return launcher.startActivitySafely(v, intent, dummyInfo(intent), null);
+    }
+
+    static WorkspaceItemInfo dummyInfo(Intent intent) {
+        WorkspaceItemInfo dummyInfo = new WorkspaceItemInfo();
+        dummyInfo.intent = intent;
+        dummyInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
+        dummyInfo.container = LauncherSettings.Favorites.CONTAINER_SETTINGS;
+        return dummyInfo;
     }
 
     public static class OptionItem {
 
         private final int mLabelRes;
         private final int mIconRes;
-        private final int mControlTypeForLog;
+        private final EventEnum mEventId;
         private final OnLongClickListener mClickListener;
 
-        public OptionItem(int labelRes, int iconRes, int controlTypeForLog,
+        public OptionItem(int labelRes, int iconRes, EventEnum eventId,
                 OnLongClickListener clickListener) {
             mLabelRes = labelRes;
             mIconRes = iconRes;
-            mControlTypeForLog = controlTypeForLog;
+            mEventId = eventId;
             mClickListener = clickListener;
         }
     }

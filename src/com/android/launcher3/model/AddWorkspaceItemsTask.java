@@ -17,23 +17,23 @@ package com.android.launcher3.model;
 
 import android.content.Intent;
 import android.content.pm.LauncherActivityInfo;
+import android.content.pm.LauncherApps;
 import android.content.pm.PackageInstaller.SessionInfo;
 import android.os.UserHandle;
 import android.util.LongSparseArray;
 import android.util.Pair;
 
-import com.android.launcher3.AppInfo;
-import com.android.launcher3.FolderInfo;
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherModel.CallbackTask;
-import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.WorkspaceItemInfo;
-import com.android.launcher3.compat.LauncherAppsCompat;
-import com.android.launcher3.compat.PackageInstallerCompat;
+import com.android.launcher3.model.BgDataModel.Callbacks;
+import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.FolderInfo;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.LauncherAppWidgetInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.PackageManagerHelper;
@@ -93,9 +93,9 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                 }
             }
 
-            PackageInstallerCompat packageInstaller =
-                    PackageInstallerCompat.getInstance(app.getContext());
-            LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(app.getContext());
+            InstallSessionHelper packageInstaller =
+                    InstallSessionHelper.INSTANCE.get(app.getContext());
+            LauncherApps launcherApps = app.getContext().getSystemService(LauncherApps.class);
 
             for (ItemInfo item : filteredItems) {
                 // Find appropriate space for the item.
@@ -151,7 +151,7 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
 
                         WorkspaceItemInfo wii = (WorkspaceItemInfo) itemInfo;
                         wii.title = "";
-                        wii.applyFrom(app.getIconCache().getDefaultIcon(item.user));
+                        wii.bitmap = app.getIconCache().getDefaultIcon(item.user);
                         app.getIconCache().getTitleAndIcon(wii,
                                 ((WorkspaceItemInfo) itemInfo).usingLowResIcon());
                     }

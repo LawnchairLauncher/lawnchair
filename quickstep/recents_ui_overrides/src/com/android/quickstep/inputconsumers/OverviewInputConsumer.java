@@ -16,7 +16,6 @@
 package com.android.quickstep.inputconsumers;
 
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
-import static com.android.quickstep.TouchInteractionService.TOUCH_INTERACTION_LOG;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
 import android.util.Log;
@@ -25,49 +24,43 @@ import android.view.MotionEvent;
 
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.statemanager.StatefulActivity;
+import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.views.BaseDragLayer;
-import com.android.quickstep.OverviewCallbacks;
+import com.android.quickstep.BaseActivityInterface;
+import com.android.quickstep.GestureState;
+import com.android.quickstep.InputConsumer;
+import com.android.quickstep.util.ActiveGestureLog;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputMonitorCompat;
-
-import java.util.function.Predicate;
 
 /**
  * Input consumer for handling touch on the recents/Launcher activity.
  */
-public class OverviewInputConsumer<T extends BaseDraggingActivity>
+public class OverviewInputConsumer<T extends StatefulActivity<?>>
         implements InputConsumer {
 
     private final T mActivity;
+    private final BaseActivityInterface<?, T> mActivityInterface;
     private final BaseDragLayer mTarget;
     private final InputMonitorCompat mInputMonitor;
 
     private final int[] mLocationOnScreen = new int[2];
-    private final boolean mProxyTouch;
-    private final Predicate<MotionEvent> mEventReceiver;
 
     private final boolean mStartingInActivityBounds;
     private boolean mTargetHandledTouch;
 
-    public OverviewInputConsumer(T activity, @Nullable InputMonitorCompat inputMonitor,
-            boolean startingInActivityBounds) {
+    public OverviewInputConsumer(GestureState gestureState, T activity,
+            @Nullable InputMonitorCompat inputMonitor, boolean startingInActivityBounds) {
         mActivity = activity;
         mInputMonitor = inputMonitor;
         mStartingInActivityBounds = startingInActivityBounds;
+        mActivityInterface = gestureState.getActivityInterface();
 
         mTarget = activity.getDragLayer();
-        if (startingInActivityBounds) {
-            mEventReceiver = mTarget::dispatchTouchEvent;
-            mProxyTouch = true;
-        } else {
-            // Only proxy touches to controllers if we are starting touch from nav bar.
-            mEventReceiver = mTarget::proxyTouchEvent;
-            mTarget.getLocationOnScreen(mLocationOnScreen);
-            mProxyTouch = mTarget.prepareProxyEventStarting();
-        }
+        mTarget.getLocationOnScreen(mLocationOnScreen);
     }
 
     @Override
@@ -82,28 +75,28 @@ public class OverviewInputConsumer<T extends BaseDraggingActivity>
 
     @Override
     public void onMotionEvent(MotionEvent ev) {
-        if (!mProxyTouch) {
-            return;
-        }
-
         int flags = ev.getEdgeFlags();
         if (!mStartingInActivityBounds) {
             ev.setEdgeFlags(flags | Utilities.EDGE_NAV_BAR);
         }
         ev.offsetLocation(-mLocationOnScreen[0], -mLocationOnScreen[1]);
-        boolean handled = mEventReceiver.test(ev);
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.PAUSE_NOT_DETECTED, "OverviewInputConsumer");
+        }
+        boolean handled = mTarget.proxyTouchEvent(ev, mStartingInActivityBounds);
         ev.offsetLocation(mLocationOnScreen[0], mLocationOnScreen[1]);
         ev.setEdgeFlags(flags);
 
         if (!mTargetHandledTouch && handled) {
             mTargetHandledTouch = true;
             if (!mStartingInActivityBounds) {
-                OverviewCallbacks.get(mActivity).closeAllWindows();
+                mActivityInterface.closeOverlay();
                 ActivityManagerWrapper.getInstance()
                         .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
-                TOUCH_INTERACTION_LOG.addLog("startQuickstep");
+                ActiveGestureLog.INSTANCE.addLog("startQuickstep");
             }
             if (mInputMonitor != null) {
+                TestLogging.recordEvent(TestProtocol.SEQUENCE_PILFER, "pilferPointers");
                 mInputMonitor.pilferPointers();
             }
         }

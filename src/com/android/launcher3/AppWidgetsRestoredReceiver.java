@@ -1,5 +1,7 @@
 package com.android.launcher3;
 
+import static android.os.Process.myUserHandle;
+
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -10,16 +12,15 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.util.Log;
 
-import com.android.launcher3.LauncherSettings.Favorites;
-import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.model.LoaderTask;
-import com.android.launcher3.provider.RestoreDbTask;
-import com.android.launcher3.util.ContentWriter;
-
 import androidx.annotation.WorkerThread;
 
-import static android.os.Process.myUserHandle;
+import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.model.LoaderTask;
+import com.android.launcher3.model.WidgetsModel;
+import com.android.launcher3.model.data.LauncherAppWidgetInfo;
+import com.android.launcher3.pm.UserCache;
+import com.android.launcher3.provider.RestoreDbTask;
+import com.android.launcher3.util.ContentWriter;
 
 public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
 
@@ -50,7 +51,7 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
     @WorkerThread
     public static void restoreAppWidgetIds(Context context, int[] oldWidgetIds, int[] newWidgetIds) {
         AppWidgetHost appWidgetHost = new LauncherAppWidgetHost(context);
-        if (FeatureFlags.GO_DISABLE_WIDGETS) {
+        if (WidgetsModel.GO_DISABLE_WIDGETS) {
             Log.e(TAG, "Skipping widget ID remap as widgets not supported");
             appWidgetHost.deleteHost();
             return;
@@ -82,7 +83,7 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
 
             // b/135926478: Work profile widget restore is broken in platform. This forces us to
             // recreate the widget during loading with the correct host provider.
-            long mainProfileId = UserManagerCompat.getInstance(context)
+            long mainProfileId = UserCache.INSTANCE.get(context)
                     .getSerialNumberForUser(myUserHandle());
             String oldWidgetId = Integer.toString(oldWidgetIds[i]);
             int result = new ContentWriter(context, new ContentWriter.CommitParams(
