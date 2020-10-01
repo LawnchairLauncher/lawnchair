@@ -2161,7 +2161,12 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                         tv.notifyTaskLaunchFailed(TAG);
                     }
                 };
-                tv.launchTask(false, onLaunchResult, getHandler());
+                if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+                    finishRecentsAnimation(false /* toRecents */, null);
+                    onLaunchResult.accept(true /* success */);
+                } else {
+                    tv.launchTask(false, onLaunchResult, getHandler());
+                }
                 Task task = tv.getTask();
                 if (task != null) {
                     mActivity.getStatsLogManager().logger().withItemInfo(tv.getItemInfo())
