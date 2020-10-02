@@ -18,7 +18,6 @@ package com.android.quickstep;
 import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
-import static com.android.launcher3.util.Executors.createAndStartNewLooper;
 import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
 
 import android.annotation.TargetApi;
@@ -26,11 +25,11 @@ import android.app.ActivityManager;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.os.Build;
-import android.os.Looper;
 import android.os.Process;
 import android.os.UserHandle;
 
 import com.android.launcher3.icons.IconProvider;
+import com.android.launcher3.util.Executors.SimpleThreadFactory;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -40,6 +39,8 @@ import com.android.systemui.shared.system.TaskStackChangeListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 /**
@@ -52,6 +53,9 @@ public class RecentsModel extends TaskStackChangeListener {
     public static final MainThreadInitializedObject<RecentsModel> INSTANCE =
             new MainThreadInitializedObject<>(RecentsModel::new);
 
+    private static final Executor RECENTS_MODEL_EXECUTOR = Executors.newSingleThreadExecutor(
+            new SimpleThreadFactory("TaskThumbnailIconCache-", THREAD_PRIORITY_BACKGROUND));
+
     private final List<TaskVisualsChangeListener> mThumbnailChangeListeners = new ArrayList<>();
     private final Context mContext;
 
@@ -61,12 +65,10 @@ public class RecentsModel extends TaskStackChangeListener {
 
     private RecentsModel(Context context) {
         mContext = context;
-        Looper looper =
-                createAndStartNewLooper("TaskThumbnailIconCache", THREAD_PRIORITY_BACKGROUND);
         mTaskList = new RecentTasksList(MAIN_EXECUTOR,
                 new KeyguardManagerCompat(context), ActivityManagerWrapper.getInstance());
-        mIconCache = new TaskIconCache(context, looper);
-        mThumbnailCache = new TaskThumbnailCache(context, looper);
+        mIconCache = new TaskIconCache(context, RECENTS_MODEL_EXECUTOR);
+        mThumbnailCache = new TaskThumbnailCache(context, RECENTS_MODEL_EXECUTOR);
 
         ActivityManagerWrapper.getInstance().registerTaskStackListener(this);
         IconProvider.registerIconChangeListener(context,

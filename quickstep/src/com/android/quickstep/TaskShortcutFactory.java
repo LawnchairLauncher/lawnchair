@@ -21,7 +21,6 @@ import static android.view.Display.DEFAULT_DISPLAY;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_SELECTIONS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_FREE_FORM_TAP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_SPLIT_SCREEN_TAP;
-import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.TAP;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
@@ -39,7 +38,6 @@ import com.android.launcher3.logging.StatsLogManager.LauncherEvent;
 import com.android.launcher3.model.WellbeingModel;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.popup.SystemShortcut.AppInfo;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.quickstep.views.RecentsView;
@@ -228,8 +226,6 @@ public interface TaskShortcutFactory {
 
         @Override
         protected boolean onActivityStarted(BaseDraggingActivity activity) {
-            activity.getUserEventDispatcher().logActionOnControl(TAP,
-                    LauncherLogProto.ControlType.SPLIT_SCREEN_TARGET);
             return true;
         }
     };

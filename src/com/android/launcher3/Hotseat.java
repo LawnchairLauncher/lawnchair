@@ -16,8 +16,6 @@
 
 package com.android.launcher3;
 
-import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
-
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -27,14 +25,10 @@ import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.android.launcher3.logging.StatsLogUtils.LogContainerProvider;
-import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
-
-import java.util.ArrayList;
-
-public class Hotseat extends CellLayout implements LogContainerProvider, Insettable {
+/**
+ * View class that represents the bottom row of the home screen.
+ */
+public class Hotseat extends CellLayout implements Insettable {
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mHasVerticalHotseat;
@@ -76,15 +70,6 @@ public class Hotseat extends CellLayout implements LogContainerProvider, Insetta
         } else {
             setGridSize(idp.numHotseatIcons, 1);
         }
-    }
-
-    @Override
-    public void fillInLogContainerData(ItemInfo childInfo, Target child,
-            ArrayList<Target> parents) {
-        child.rank = childInfo.rank;
-        child.gridX = childInfo.cellX;
-        child.gridY = childInfo.cellY;
-        parents.add(newContainerTarget(LauncherLogProto.ContainerType.HOTSEAT));
     }
 
     @Override

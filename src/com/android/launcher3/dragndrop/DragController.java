@@ -206,7 +206,6 @@ public class DragController implements DragDriver.EventListener, TouchController
         }
 
         handleMoveEvent(mLastTouch.x, mLastTouch.y);
-        mLauncher.getUserEventDispatcher().resetActionDurationMillis();
 
         if (!mLauncher.isTouchInProgress() && options.simulatedDndStartPoint == null) {
             // If it is an internal drag and the touch is already complete, cancel immediately
@@ -544,7 +543,6 @@ public class DragController implements DragDriver.EventListener, TouchController
             }
         }
         final View dropTargetAsView = dropTarget instanceof View ? (View) dropTarget : null;
-        mLauncher.getUserEventDispatcher().logDragNDrop(mDragObject, dropTargetAsView);
         dispatchDropComplete(dropTargetAsView, accepted);
     }
 
