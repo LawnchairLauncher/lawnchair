@@ -53,8 +53,8 @@ import com.android.launcher3.R;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.ItemInstallQueue;
 import com.android.launcher3.model.WidgetItem;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.pm.PinRequestHelper;
-import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
@@ -87,7 +87,6 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
     private Bundle mWidgetOptions;
 
     private boolean mFinishOnPause = false;
-    private InstantAppResolver mInstantAppResolver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +100,6 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
 
         mApp = LauncherAppState.getInstance(this);
         mIdp = mApp.getInvariantDeviceProfile();
-        mInstantAppResolver = InstantAppResolver.newInstance(this);
 
         // Use the application context to get the device profile, as in multiwindow-mode, the
         // confirmation activity might be rotated.
@@ -322,6 +320,8 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
     }
 
     private void logCommand(StatsLogManager.EventEnum command) {
-        getStatsLogManager().logger().log(command);
+        getStatsLogManager().logger()
+                .withItemInfo((ItemInfo) mWidgetCell.getWidgetView().getTag())
+                .log(command);
     }
 }
