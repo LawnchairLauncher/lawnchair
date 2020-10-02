@@ -34,6 +34,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItemWithPayload;
 import com.android.launcher3.allapps.search.AllAppsSearchBarController;
+import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
@@ -83,7 +84,8 @@ public class SearchResultIconRow extends DoubleShadowBubbleTextView implements
         if (payload.mRemoteAction != null) {
             prepareUsingRemoteAction(payload.mRemoteAction,
                     payload.bundle.getString(SearchTarget.REMOTE_ACTION_TOKEN),
-                    payload.bundle.getBoolean(SearchTarget.REMOTE_ACTION_SHOULD_START));
+                    payload.bundle.getBoolean(SearchTarget.REMOTE_ACTION_SHOULD_START),
+                    payload.type == ItemType.ACTION);
         } else {
             prepareUsingShortcutInfo(payload.shortcuts.get(0));
         }
@@ -102,7 +104,8 @@ public class SearchResultIconRow extends DoubleShadowBubbleTextView implements
         });
     }
 
-    private void prepareUsingRemoteAction(RemoteAction remoteAction, String token, boolean start) {
+    private void prepareUsingRemoteAction(RemoteAction remoteAction, String token, boolean start,
+            boolean useIconToBadge) {
         RemoteActionItemInfo itemInfo = new RemoteActionItemInfo(remoteAction, token, start);
 
         applyFromRemoteActionInfo(itemInfo);
@@ -110,8 +113,17 @@ public class SearchResultIconRow extends DoubleShadowBubbleTextView implements
             // If the Drawable from the remote action is not AdaptiveBitmap, styling will not work.
             try (LauncherIcons li = LauncherIcons.obtain(getContext())) {
                 Drawable d = itemInfo.getRemoteAction().getIcon().loadDrawable(getContext());
-                itemInfo.bitmap = li.createBadgedIconBitmap(d, itemInfo.user,
+                BitmapInfo bitmap = li.createBadgedIconBitmap(d, itemInfo.user,
                         Build.VERSION.SDK_INT);
+
+                if (useIconToBadge) {
+                    BitmapInfo placeholder = li.createIconBitmap(
+                            itemInfo.getRemoteAction().getTitle().toString().substring(0, 1),
+                            bitmap.color);
+                    itemInfo.bitmap = li.badgeBitmap(placeholder.icon, bitmap);
+                } else {
+                    itemInfo.bitmap = bitmap;
+                }
                 reapplyItemInfoAsync(itemInfo);
             }
         });
