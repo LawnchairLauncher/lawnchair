@@ -86,9 +86,12 @@ public class ThumbnailSearchResultView extends androidx.appcompat.widget.AppComp
             RemoteActionItemInfo itemInfo = new RemoteActionItemInfo(target.mRemoteAction,
                     target.bundle.getString(SearchTarget.REMOTE_ACTION_TOKEN),
                     target.bundle.getBoolean(SearchTarget.REMOTE_ACTION_SHOULD_START));
-            ItemClickHandler.onClickRemoteAction(launcher, itemInfo);
             bitmap = ((BitmapDrawable) target.mRemoteAction.getIcon()
-                    .loadDrawable(getContext())).getBitmap();
+                .loadDrawable(getContext())).getBitmap();
+            Bitmap crop = Bitmap.createBitmap(bitmap, 0,
+                    bitmap.getHeight() / 2 - bitmap.getWidth() / 2,
+                    bitmap.getWidth(), bitmap.getWidth());
+            bitmap = crop;
             setTag(itemInfo);
         } else {
             bitmap = (Bitmap) target.bundle.getParcelable("bitmap");
