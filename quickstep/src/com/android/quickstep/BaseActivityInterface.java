@@ -152,11 +152,6 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     public abstract void onExitOverview(RotationTouchHelper deviceState,
             Runnable exitRunnable);
 
-    /**
-     * Used for containerType in {@link com.android.launcher3.logging.UserEventDispatcher}
-     */
-    public abstract int getContainerType();
-
     public abstract boolean isInLiveTileMode();
 
     public abstract void onLaunchTaskFailed();

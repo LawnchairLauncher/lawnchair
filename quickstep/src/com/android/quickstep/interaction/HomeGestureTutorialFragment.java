@@ -21,7 +21,7 @@ import com.android.quickstep.interaction.TutorialController.TutorialType;
 /** Shows the Home gesture interactive tutorial. */
 public class HomeGestureTutorialFragment extends TutorialFragment {
     @Override
-    int getHandAnimationResId() {
+    Integer getHandAnimationResId() {
         return R.drawable.home_gesture;
     }
 

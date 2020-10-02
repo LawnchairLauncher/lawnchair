@@ -37,7 +37,6 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
 
 @TargetApi(Build.VERSION_CODES.Q)
 public class RemoteActionShortcut extends SystemShortcut<BaseDraggingActivity> {
@@ -107,9 +106,6 @@ public class RemoteActionShortcut extends SystemShortcut<BaseDraggingActivity> {
                     Toast.LENGTH_SHORT)
                     .show();
         }
-
-        mTarget.getUserEventDispatcher().logActionOnControl(LauncherLogProto.Action.Touch.TAP,
-                LauncherLogProto.ControlType.REMOTE_ACTION_SHORTCUT, view);
     }
 
     @Override

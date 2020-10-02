@@ -92,9 +92,13 @@ public class AllAppsGridAdapter extends
 
     public static final int VIEW_TYPE_SEARCH_SLICE = 1 << 9;
 
-    public static final int VIEW_TYPE_SEARCH_SHORTCUT = 1 << 10;
+    public static final int VIEW_TYPE_SEARCH_ICON_ROW = 1 << 10;
 
     public static final int VIEW_TYPE_SEARCH_PEOPLE = 1 << 11;
+
+    public static final int VIEW_TYPE_SEARCH_THUMBNAIL = 1 << 12;
+
+    public static final int VIEW_TYPE_SEARCH_SUGGEST = 1 << 13;
 
     // Common view type masks
     public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_ALL_APPS_DIVIDER;
@@ -186,7 +190,9 @@ public class AllAppsGridAdapter extends
                     || viewType == VIEW_TYPE_SEARCH_SLICE
                     || viewType == VIEW_TYPE_SEARCH_ROW
                     || viewType == VIEW_TYPE_SEARCH_PEOPLE
-                    || viewType == VIEW_TYPE_SEARCH_SHORTCUT;
+                    || viewType == VIEW_TYPE_SEARCH_THUMBNAIL
+                    || viewType == VIEW_TYPE_SEARCH_ICON_ROW
+                    || viewType == VIEW_TYPE_SEARCH_SUGGEST;
         }
     }
 
@@ -197,6 +203,7 @@ public class AllAppsGridAdapter extends
      */
     public static class AdapterItemWithPayload<T> extends AdapterItem {
         private T mPayload;
+        private String mSearchSessionId;
         private AllAppsSearchPlugin mPlugin;
         private IntConsumer mSelectionHandler;
 
@@ -218,6 +225,14 @@ public class AllAppsGridAdapter extends
             mSelectionHandler = runnable;
         }
 
+        public void setSearchSessionId(String searchSessionId) {
+            mSearchSessionId = searchSessionId;
+        }
+
+        public String getSearchSessionId() {
+            return mSearchSessionId;
+        }
+
         public IntConsumer getSelectionHandler() {
             return mSelectionHandler;
         }
@@ -225,6 +240,8 @@ public class AllAppsGridAdapter extends
         public T getPayload() {
             return mPayload;
         }
+
+
     }
 
     /**
@@ -307,14 +324,20 @@ public class AllAppsGridAdapter extends
 
         @Override
         public int getSpanSize(int position) {
-            if (isIconViewType(mApps.getAdapterItems().get(position).viewType)) {
-                return 1;
+            int viewType = mApps.getAdapterItems().get(position).viewType;
+            if (isIconViewType(viewType)) {
+                return 1 * SPAN_MULTIPLIER;
+            } else if (viewType == VIEW_TYPE_SEARCH_THUMBNAIL) {
+                return mAppsPerRow;
             } else {
                 // Section breaks span the full width
-                return mAppsPerRow;
+                return mAppsPerRow * SPAN_MULTIPLIER;
             }
         }
     }
+
+    // multiplier to support adapter item column count that is not mAppsPerRow.
+    public static final int SPAN_MULTIPLIER = 3;
 
     private final BaseDraggingActivity mLauncher;
     private final LayoutInflater mLayoutInflater;
@@ -352,7 +375,7 @@ public class AllAppsGridAdapter extends
 
     public void setAppsPerRow(int appsPerRow) {
         mAppsPerRow = appsPerRow;
-        mGridLayoutMgr.setSpanCount(mAppsPerRow);
+        mGridLayoutMgr.setSpanCount(mAppsPerRow * SPAN_MULTIPLIER);
     }
 
     /**
@@ -438,12 +461,18 @@ public class AllAppsGridAdapter extends
             case VIEW_TYPE_SEARCH_SLICE:
                 return new ViewHolder(mLayoutInflater.inflate(
                         R.layout.search_result_slice, parent, false));
-            case VIEW_TYPE_SEARCH_SHORTCUT:
+            case VIEW_TYPE_SEARCH_ICON_ROW:
                 return new ViewHolder(mLayoutInflater.inflate(
-                        R.layout.search_result_shortcut, parent, false));
+                        R.layout.search_result_icon_row, parent, false));
             case VIEW_TYPE_SEARCH_PEOPLE:
                 return new ViewHolder(mLayoutInflater.inflate(
                         R.layout.search_result_people_item, parent, false));
+            case VIEW_TYPE_SEARCH_THUMBNAIL:
+                return new ViewHolder(mLayoutInflater.inflate(
+                        R.layout.search_result_thumbnail, parent, false));
+            case VIEW_TYPE_SEARCH_SUGGEST:
+                return new ViewHolder(mLayoutInflater.inflate(
+                        R.layout.search_result_suggest, parent, false));
             default:
                 throw new RuntimeException("Unexpected view type");
         }
@@ -464,24 +493,27 @@ public class AllAppsGridAdapter extends
                 //TODO: replace with custom TopHitBubbleTextView with support for both shortcut
                 // and apps
                 if (adapterItem instanceof AdapterItemWithPayload) {
-                    AdapterItemWithPayload withPayload = (AdapterItemWithPayload) adapterItem;
-                    IntConsumer selectionHandler = type -> {
+                    AdapterItemWithPayload item = (AdapterItemWithPayload) adapterItem;
+                    item.setSelectionHandler(type -> {
                         SearchTargetEvent e = new SearchTargetEvent(SearchTarget.ItemType.APP,
-                                type);
+                                type, item.position, item.getSearchSessionId());
                         e.bundle = HeroSearchResultView.getAppBundle(info);
-                        if (withPayload.getPlugin() != null) {
-                            withPayload.getPlugin().notifySearchTargetEvent(e);
+                        if (item.getPlugin() != null) {
+                            item.getPlugin().notifySearchTargetEvent(e);
                         }
-                    };
+                    });
                     icon.setOnClickListener(view -> {
-                        selectionHandler.accept(SearchTargetEvent.SELECT);
+                        item.getSelectionHandler().accept(SearchTargetEvent.SELECT);
                         mOnIconClickListener.onClick(view);
                     });
                     icon.setOnLongClickListener(view -> {
-                        selectionHandler.accept(SearchTargetEvent.LONG_PRESS);
+                        item.getSelectionHandler().accept(SearchTargetEvent.SELECT);
                         return mOnIconLongClickListener.onLongClick(view);
                     });
-                    withPayload.setSelectionHandler(selectionHandler);
+                }
+                else {
+                    icon.setOnClickListener(mOnIconClickListener);
+                    icon.setOnLongClickListener(mOnIconLongClickListener);
                 }
                 break;
             case VIEW_TYPE_EMPTY_SEARCH:
@@ -500,20 +532,22 @@ public class AllAppsGridAdapter extends
                 break;
             case VIEW_TYPE_SEARCH_SLICE:
                 SliceView sliceView = (SliceView) holder.itemView;
-                AdapterItemWithPayload<Uri> item =
+                AdapterItemWithPayload<Uri> slicePayload =
                         (AdapterItemWithPayload<Uri>) mApps.getAdapterItems().get(position);
                 sliceView.setOnSliceActionListener((info1, s) -> {
-                    if (item.getPlugin() != null) {
+                    if (slicePayload.getPlugin() != null) {
                         SearchTargetEvent searchTargetEvent = new SearchTargetEvent(
                                 SearchTarget.ItemType.SETTINGS_SLICE,
-                                SearchTargetEvent.CHILD_SELECT);
+                                SearchTargetEvent.CHILD_SELECT, slicePayload.position,
+                                slicePayload.getSearchSessionId());
                         searchTargetEvent.bundle = new Bundle();
-                        searchTargetEvent.bundle.putParcelable("uri", item.getPayload());
-                        item.getPlugin().notifySearchTargetEvent(searchTargetEvent);
+                        searchTargetEvent.bundle.putParcelable("uri", slicePayload.getPayload());
+                        slicePayload.getPlugin().notifySearchTargetEvent(searchTargetEvent);
                     }
                 });
                 try {
-                    LiveData<Slice> liveData = SliceLiveData.fromUri(mLauncher, item.getPayload());
+                    LiveData<Slice> liveData = SliceLiveData.fromUri(mLauncher,
+                            slicePayload.getPayload());
                     liveData.observe((Launcher) mLauncher, sliceView);
                     sliceView.setTag(liveData);
                 } catch (Exception ignored) {
@@ -523,11 +557,14 @@ public class AllAppsGridAdapter extends
             case VIEW_TYPE_SEARCH_ROW_WITH_BUTTON:
             case VIEW_TYPE_SEARCH_HERO_APP:
             case VIEW_TYPE_SEARCH_ROW:
-            case VIEW_TYPE_SEARCH_SHORTCUT:
+            case VIEW_TYPE_SEARCH_ICON_ROW:
             case VIEW_TYPE_SEARCH_PEOPLE:
+            case VIEW_TYPE_SEARCH_THUMBNAIL:
+            case VIEW_TYPE_SEARCH_SUGGEST:
+                AdapterItemWithPayload item =
+                        (AdapterItemWithPayload) mApps.getAdapterItems().get(position);
                 PayloadResultHandler payloadResultView = (PayloadResultHandler) holder.itemView;
-                payloadResultView.applyAdapterInfo(
-                        (AdapterItemWithPayload) mApps.getAdapterItems().get(position));
+                payloadResultView.setup(item);
                 break;
             case VIEW_TYPE_ALL_APPS_DIVIDER:
                 // nothing to do
@@ -541,8 +578,8 @@ public class AllAppsGridAdapter extends
         if (!FeatureFlags.ENABLE_DEVICE_SEARCH.get()) return;
         if (holder.itemView instanceof BubbleTextView) {
             BubbleTextView icon = (BubbleTextView) holder.itemView;
-            icon.setOnClickListener(mOnIconClickListener);
-            icon.setOnLongClickListener(mOnIconLongClickListener);
+            icon.setOnClickListener(null);
+            icon.setOnLongClickListener(null);
         } else if (holder.itemView instanceof SliceView) {
             SliceView sliceView = (SliceView) holder.itemView;
             sliceView.setOnSliceActionListener(null);
@@ -552,7 +589,6 @@ public class AllAppsGridAdapter extends
             }
         }
     }
-
 
     @Override
     public boolean onFailedToRecycleView(ViewHolder holder) {
