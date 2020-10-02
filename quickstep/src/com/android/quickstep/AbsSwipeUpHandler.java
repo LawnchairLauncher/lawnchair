@@ -715,6 +715,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
 
     @UiThread
     public void onGestureStarted(boolean isLikelyToStartNewTask) {
+        InteractionJankMonitorWrapper.begin(
+                InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH, 2000 /* ms timeout */);
         notifyGestureStartedAsync();
         setIsLikelyToStartNewTask(isLikelyToStartNewTask, false /* animate */);
         mStateCallback.setStateOnUiThread(STATE_GESTURE_STARTED);
@@ -790,7 +792,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
     }
 
     private void onSettledOnEndTarget() {
-        switch (mGestureState.getEndTarget()) {
+        final GestureEndTarget endTarget = mGestureState.getEndTarget();
+        switch (endTarget) {
             case HOME:
                 mStateCallback.setState(STATE_SCALED_CONTROLLER_HOME | STATE_CAPTURE_SCREENSHOT);
                 // Notify swipe-to-home (recents animation) is finished
@@ -807,7 +810,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
                 mStateCallback.setState(STATE_RESUME_LAST_TASK);
                 break;
         }
-        ActiveGestureLog.INSTANCE.addLog("onSettledOnEndTarget " + mGestureState.getEndTarget());
+        ActiveGestureLog.INSTANCE.addLog("onSettledOnEndTarget " + endTarget);
+        if (endTarget != NEW_TASK) {
+            InteractionJankMonitorWrapper.cancel(InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
+        }
     }
 
     /** @return Whether this was the task we were waiting to appear, and thus handled it. */

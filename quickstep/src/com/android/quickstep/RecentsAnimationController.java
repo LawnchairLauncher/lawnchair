@@ -23,6 +23,7 @@ import androidx.annotation.UiThread;
 
 import com.android.launcher3.util.Preconditions;
 import com.android.systemui.shared.recents.model.ThumbnailData;
+import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
@@ -149,6 +150,7 @@ public class RecentsAnimationController {
         mOnFinishedListener.accept(this);
         UI_HELPER_EXECUTOR.execute(() -> {
             mController.finish(toRecents, sendUserLeaveHint);
+            InteractionJankMonitorWrapper.end(InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
             if (callback != null) {
                 MAIN_EXECUTOR.execute(callback);
             }
