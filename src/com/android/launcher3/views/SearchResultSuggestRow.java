@@ -96,7 +96,8 @@ public class SearchResultSuggestRow extends LinearLayout implements
     private void handleSelection(int eventType) {
         ItemInfo itemInfo = (ItemInfo) getTag();
         Launcher launcher = Launcher.getLauncher(getContext());
-        if (itemInfo instanceof  RemoteActionItemInfo) return;
+
+        if (!(itemInfo instanceof  RemoteActionItemInfo)) return;
 
         RemoteActionItemInfo remoteItemInfo = (RemoteActionItemInfo) itemInfo;
         ItemClickHandler.onClickRemoteAction(launcher, remoteItemInfo);
