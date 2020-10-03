@@ -47,11 +47,12 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     final TextView mTitleTextView;
     final TextView mSubtitleTextView;
     final TextView mFeedbackView;
+    final View mLauncherView;
     final ClipIconView mFakeIconView;
     final View mFakeTaskView;
     final View mRippleView;
     final RippleDrawable mRippleDrawable;
-    final TutorialHandAnimation mHandCoachingAnimation;
+    @Nullable final TutorialHandAnimation mHandCoachingAnimation;
     final ImageView mHandCoachingView;
     final Button mActionTextButton;
     final Button mActionButton;
@@ -68,6 +69,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         mTitleTextView = rootView.findViewById(R.id.gesture_tutorial_fragment_title_view);
         mSubtitleTextView = rootView.findViewById(R.id.gesture_tutorial_fragment_subtitle_view);
         mFeedbackView = rootView.findViewById(R.id.gesture_tutorial_fragment_feedback_view);
+        mLauncherView = tutorialFragment.getLauncherView();
         mFakeIconView = rootView.findViewById(R.id.gesture_tutorial_fake_icon_view);
         mFakeTaskView = rootView.findViewById(R.id.gesture_tutorial_fake_task_view);
         mRippleView = rootView.findViewById(R.id.gesture_tutorial_ripple_view);
@@ -143,13 +145,16 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     void onActionTextButtonClicked(View button) {}
 
     void showHandCoachingAnimation() {
-        if (isComplete()) {
+        if (isComplete() || mHandCoachingAnimation == null) {
             return;
         }
         mHandCoachingAnimation.startLoopedAnimation(mTutorialType);
     }
 
     void hideHandCoachingAnimation() {
+        if (mHandCoachingAnimation == null) {
+            return;
+        }
         mHandCoachingAnimation.stop();
         mHandCoachingView.setVisibility(View.INVISIBLE);
     }
@@ -162,8 +167,10 @@ abstract class TutorialController implements BackGestureAttemptCallback,
 
         if (isComplete()) {
             hideHandCoachingAnimation();
+            mLauncherView.setVisibility(View.INVISIBLE);
         } else {
             showHandCoachingAnimation();
+            mLauncherView.setVisibility(View.VISIBLE);
         }
     }
 
@@ -206,7 +213,8 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         return mTutorialType == TutorialType.BACK_NAVIGATION_COMPLETE
                 || mTutorialType == TutorialType.HOME_NAVIGATION_COMPLETE
                 || mTutorialType == TutorialType.OVERVIEW_NAVIGATION_COMPLETE
-                || mTutorialType == TutorialType.ASSISTANT_COMPLETE;
+                || mTutorialType == TutorialType.ASSISTANT_COMPLETE
+                || mTutorialType == TutorialType.SANDBOX_MODE;
     }
 
     /** Denotes the type of the tutorial. */
@@ -219,6 +227,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         OVERVIEW_NAVIGATION,
         OVERVIEW_NAVIGATION_COMPLETE,
         ASSISTANT,
-        ASSISTANT_COMPLETE
+        ASSISTANT_COMPLETE,
+        SANDBOX_MODE
     }
 }

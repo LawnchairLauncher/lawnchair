@@ -55,7 +55,9 @@ public class WorkTabTest extends AbstractLauncherUiTest {
     private static final int WORK_PAGE = AllAppsContainerView.AdapterHolder.WORK;
 
     @Before
-    public void createWorkProfile() throws Exception {
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
         String output =
                 mDevice.executeShellCommand(
                         "pm create-user --profileOf 0 --managed TestProfile");
@@ -136,7 +138,8 @@ public class WorkTabTest extends AbstractLauncherUiTest {
         });
 
         executeOnLauncher(launcher -> Log.d(TestProtocol.WORK_PROFILE_REMOVED,
-                "Work profile status: " + launcher.getAppsView().isPersonalTabVisible()));
+                "work profile status (" + mProfileUserId + ") :"
+                        + launcher.getAppsView().isWorkTabVisible()));
 
         // verify work edu is seen next
         waitForLauncherCondition("Launcher did not show the next edu screen", l ->

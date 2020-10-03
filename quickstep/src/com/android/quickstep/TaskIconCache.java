@@ -17,7 +17,6 @@ package com.android.quickstep;
 
 import static com.android.launcher3.FastBitmapDrawable.newIcon;
 import static com.android.launcher3.uioverrides.QuickstepLauncher.GO_LOW_RAM_RECENTS_ENABLED;
-import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.app.ActivityManager.TaskDescription;
 import android.content.Context;
@@ -27,8 +26,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
 import android.os.UserHandle;
 import android.util.SparseArray;
 import android.view.accessibility.AccessibilityManager;
@@ -37,12 +34,11 @@ import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.IconProvider;
 import com.android.launcher3.icons.LauncherIcons;
-import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.util.Preconditions;
+import com.android.quickstep.util.CancellableTask;
 import com.android.quickstep.util.TaskKeyLruCache;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskKey;
@@ -50,6 +46,7 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.PackageManagerWrapper;
 import com.android.systemui.shared.system.TaskDescriptionCompat;
 
+import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 
 /**
@@ -57,7 +54,7 @@ import java.util.function.Consumer;
  */
 public class TaskIconCache {
 
-    private final Handler mBackgroundHandler;
+    private final Executor mBgExecutor;
     private final AccessibilityManager mAccessibilityManager;
 
     private final Context mContext;
@@ -65,9 +62,9 @@ public class TaskIconCache {
     private final SparseArray<BitmapInfo> mDefaultIcons = new SparseArray<>();
     private final IconProvider mIconProvider;
 
-    public TaskIconCache(Context context, Looper backgroundLooper) {
+    public TaskIconCache(Context context, Executor bgExecutor) {
         mContext = context;
-        mBackgroundHandler = new Handler(backgroundLooper);
+        mBgExecutor = bgExecutor;
         mAccessibilityManager = context.getSystemService(AccessibilityManager.class);
 
         Resources res = context.getResources();
@@ -83,31 +80,27 @@ public class TaskIconCache {
      * @param callback The callback to receive the task after its data has been populated.
      * @return A cancelable handle to the request
      */
-    public IconLoadRequest updateIconInBackground(Task task, Consumer<Task> callback) {
+    public CancellableTask updateIconInBackground(Task task, Consumer<Task> callback) {
         Preconditions.assertUIThread();
         if (task.icon != null) {
             // Nothing to load, the icon is already loaded
             callback.accept(task);
             return null;
         }
-
-        IconLoadRequest request = new IconLoadRequest(mBackgroundHandler) {
+        CancellableTask<TaskCacheEntry> request = new CancellableTask<TaskCacheEntry>() {
             @Override
-            public void run() {
-                TaskCacheEntry entry = getCacheEntry(task);
-                if (isCanceled()) {
-                    // We don't call back to the provided callback in this case
-                    return;
-                }
-                MAIN_EXECUTOR.execute(() -> {
-                    task.icon = entry.icon;
-                    task.titleDescription = entry.contentDescription;
-                    callback.accept(task);
-                    onEnd();
-                });
+            public TaskCacheEntry getResultOnBg() {
+                return getCacheEntry(task);
+            }
+
+            @Override
+            public void handleResult(TaskCacheEntry result) {
+                task.icon = result.icon;
+                task.titleDescription = result.contentDescription;
+                callback.accept(task);
             }
         };
-        Utilities.postAsyncCallback(mBackgroundHandler, request);
+        mBgExecutor.execute(request);
         return request;
     }
 
@@ -120,9 +113,8 @@ public class TaskIconCache {
     }
 
     void invalidateCacheEntries(String pkg, UserHandle handle) {
-        Utilities.postAsyncCallback(mBackgroundHandler,
-                () -> mIconCache.removeAll(key ->
-                        pkg.equals(key.getPackageName()) && handle.getIdentifier() == key.userId));
+        mBgExecutor.execute(() -> mIconCache.removeAll(key ->
+                pkg.equals(key.getPackageName()) && handle.getIdentifier() == key.userId));
     }
 
     @WorkerThread
@@ -205,12 +197,6 @@ public class TaskIconCache {
             // User version code O, so that the icon is always wrapped in an adaptive icon container
             return la.createBadgedIconBitmap(drawable, UserHandle.of(userId),
                     Build.VERSION_CODES.O, isInstantApp);
-        }
-    }
-
-    public static abstract class IconLoadRequest extends HandlerRunnable {
-        IconLoadRequest(Handler handler) {
-            super(handler, null);
         }
     }
 
