@@ -35,6 +35,8 @@ import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItemWithPayload;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.systemui.plugins.AllAppsSearchPlugin;
+import com.android.systemui.plugins.shared.SearchTarget;
+import com.android.systemui.plugins.shared.SearchTargetEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -213,6 +215,44 @@ public class AllAppsSearchBarController
         /**
          * Updates View using Adapter's payload
          */
+
+        default void setup(AdapterItemWithPayload<T> adapterItemWithPayload) {
+            Object[] targetInfo = getTargetInfo();
+            if (targetInfo != null) {
+                targetInfo[0] = adapterItemWithPayload.getSearchSessionId();
+                targetInfo[1] = adapterItemWithPayload.position;
+            }
+            applyAdapterInfo(adapterItemWithPayload);
+        }
+
         void applyAdapterInfo(AdapterItemWithPayload<T> adapterItemWithPayload);
+
+        /**
+         * Gets object created by {@link PayloadResultHandler#createTargetInfo()}
+         */
+        Object[] getTargetInfo();
+
+        /**
+         * Creates a wrapper object to hold searchSessionId and item position
+         */
+        default Object[] createTargetInfo() {
+            return new Object[2];
+        }
+
+        /**
+         * Generates a SearchTargetEvent object for a PayloadHandlerView
+         */
+        default SearchTargetEvent getSearchTargetEvent(SearchTarget.ItemType itemType,
+                int eventType) {
+            Object[] targetInfo = getTargetInfo();
+            if (targetInfo == null) return null;
+
+            String searchSessionId = (String) targetInfo[0];
+            int position = (int) targetInfo[1];
+            return new SearchTargetEvent(itemType, eventType,
+                    position, searchSessionId);
+        }
     }
+
+
 }

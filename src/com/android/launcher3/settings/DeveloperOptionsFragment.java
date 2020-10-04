@@ -306,6 +306,15 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
             return true;
         });
         sandboxCategory.addPreference(launchAssistantTutorialPreference);
+        Preference launchSandboxModeTutorialPreference = new Preference(context);
+        launchSandboxModeTutorialPreference.setKey("launchSandboxMode");
+        launchSandboxModeTutorialPreference.setTitle("Launch Sandbox Mode");
+        launchSandboxModeTutorialPreference.setSummary("Practice navigation gestures");
+        launchSandboxModeTutorialPreference.setOnPreferenceClickListener(preference -> {
+            startActivity(launchSandboxIntent.putExtra("tutorial_type", "SANDBOX_MODE"));
+            return true;
+        });
+        sandboxCategory.addPreference(launchSandboxModeTutorialPreference);
     }
 
     private String toName(String action) {

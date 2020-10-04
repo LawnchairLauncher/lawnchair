@@ -15,6 +15,7 @@
  */
 package com.android.systemui.plugins.shared;
 
+import android.app.RemoteAction;
 import android.content.pm.ShortcutInfo;
 import android.os.Bundle;
 
@@ -29,12 +30,17 @@ public class SearchTargetEvent {
 
     public SearchTarget.ItemType type;
     public ShortcutInfo shortcut;
+    public RemoteAction remoteAction;
     public int eventType;
     public Bundle bundle;
-    public float score;
+    public int index;
+    public String sessionIdentifier;
 
-    public SearchTargetEvent(SearchTarget.ItemType itemType, int eventType) {
+    public SearchTargetEvent(SearchTarget.ItemType itemType, int eventType, int index,
+            String sessionId) {
         this.type = itemType;
         this.eventType = eventType;
+        this.index = index;
+        this.sessionIdentifier = sessionId;
     }
 }
