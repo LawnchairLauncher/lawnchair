@@ -153,6 +153,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
     private final float mContentTransY;
     private final float mWorkspaceTransY;
     private final float mClosingWindowTransY;
+    private final float mMaxShadowRadius;
 
     private DeviceProfile mDeviceProfile;
 
@@ -186,6 +187,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         mContentTransY = res.getDimensionPixelSize(R.dimen.content_trans_y);
         mWorkspaceTransY = res.getDimensionPixelSize(R.dimen.workspace_trans_y);
         mClosingWindowTransY = res.getDimensionPixelSize(R.dimen.closing_window_trans_y);
+        mMaxShadowRadius = res.getDimensionPixelSize(R.dimen.max_shadow_radius);
 
         mLauncher.addOnDeviceProfileChangeListener(this);
     }
@@ -538,6 +540,8 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                     EXAGGERATED_EASE);
             FloatProp mWindowRadius = new FloatProp(initialWindowRadius, windowRadius, 0,
                     RADIUS_DURATION, EXAGGERATED_EASE);
+            FloatProp mShadowRadius = new FloatProp(0, mMaxShadowRadius, 0,
+                    APP_LAUNCH_DURATION, EXAGGERATED_EASE);
 
             @Override
             public void onUpdate(float percent) {
@@ -600,7 +604,8 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                         builder.withMatrix(matrix)
                                 .withWindowCrop(crop)
                                 .withAlpha(1f - mIconAlpha.value)
-                                .withCornerRadius(mWindowRadius.value);
+                                .withCornerRadius(mWindowRadius.value)
+                                .withShadowRadius(mShadowRadius.value);
                     } else {
                         tmpPos.set(target.position.x, target.position.y);
                         if (target.localBounds != null) {
@@ -750,6 +755,8 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
             FloatProp mDy = new FloatProp(0, mClosingWindowTransY, 0, duration, DEACCEL_1_7);
             FloatProp mScale = new FloatProp(1f, 1f, 0, duration, DEACCEL_1_7);
             FloatProp mAlpha = new FloatProp(1f, 0f, 25, 125, LINEAR);
+            FloatProp mShadowRadius = new FloatProp(mMaxShadowRadius, 0, 0, duration,
+                    DEACCEL_1_7);
 
             @Override
             public void onUpdate(float percent) {
@@ -771,7 +778,8 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                         matrix.postTranslate(tmpPos.x, tmpPos.y);
                         builder.withMatrix(matrix)
                                 .withAlpha(mAlpha.value)
-                                .withCornerRadius(windowCornerRadius);
+                                .withCornerRadius(windowCornerRadius)
+                                .withShadowRadius(mShadowRadius.value);
                     } else {
                         matrix.setTranslate(tmpPos.x, tmpPos.y);
                         builder.withMatrix(matrix)
