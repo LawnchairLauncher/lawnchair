@@ -21,6 +21,8 @@ import com.android.launcher3.R;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
@@ -115,6 +117,8 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
                     (WidgetsBottomSheet) mTarget.getLayoutInflater().inflate(
                             R.layout.widgets_bottom_sheet, mTarget.getDragLayer(), false);
             widgetsBottomSheet.populateAndShow(mItemInfo);
+            mTarget.getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
+                    ControlType.WIDGETS_BUTTON, view);
             mTarget.getStatsLogManager().logger().withItemInfo(mItemInfo)
                     .log(LAUNCHER_SYSTEM_SHORTCUT_WIDGETS_TAP);
         }
@@ -135,6 +139,8 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
             Rect sourceBounds = mTarget.getViewBounds(view);
             new PackageManagerHelper(mTarget).startDetailsActivityForInfo(
                     mItemInfo, sourceBounds, ActivityOptions.makeBasic().toBundle());
+            mTarget.getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
+                    ControlType.APPINFO_TARGET, view);
             mTarget.getStatsLogManager().logger().withItemInfo(mItemInfo)
                     .log(LAUNCHER_SYSTEM_SHORTCUT_APP_INFO_TAP);
         }

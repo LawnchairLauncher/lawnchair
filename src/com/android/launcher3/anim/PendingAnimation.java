@@ -73,9 +73,9 @@ public class PendingAnimation implements PropertySetter {
         addAnimationHoldersRecur(a, mDuration, springProperty, mAnimHolders);
     }
 
-    public void finish(boolean isSuccess) {
+    public void finish(boolean isSuccess, int logAction) {
         for (Consumer<EndState> listeners : mEndListeners) {
-            listeners.accept(new EndState(isSuccess));
+            listeners.accept(new EndState(isSuccess, logAction));
         }
         mEndListeners.clear();
     }
@@ -164,7 +164,7 @@ public class PendingAnimation implements PropertySetter {
 
     /**
      * Add a listener of receiving the end state.
-     * Note that the listeners are called as a result of calling {@link #finish(boolean)}
+     * Note that the listeners are called as a result of calling {@link #finish(boolean, int)}
      * and not automatically
      */
     public void addEndListener(Consumer<EndState> listener) {
@@ -173,9 +173,11 @@ public class PendingAnimation implements PropertySetter {
 
     public static class EndState {
         public boolean isSuccess;
+        public int logAction;
 
-        public EndState(boolean isSuccess) {
+        public EndState(boolean isSuccess, int logAction) {
             this.isSuccess = isSuccess;
+            this.logAction = logAction;
         }
     }
 }

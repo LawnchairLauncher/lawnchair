@@ -52,9 +52,4 @@ public class SearchSectionHeaderView extends TextView implements
             setVisibility(INVISIBLE);
         }
     }
-
-    @Override
-    public Object[] getTargetInfo() {
-        return null;
-    }
 }

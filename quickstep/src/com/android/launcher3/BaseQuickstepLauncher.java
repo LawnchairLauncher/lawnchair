@@ -22,8 +22,6 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY;
 
-import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
-
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.content.Intent;
@@ -308,11 +306,5 @@ public abstract class BaseQuickstepLauncher extends Launcher
 
     public void setHintUserWillBeActive() {
         addActivityFlags(ACTIVITY_STATE_USER_WILL_BE_ACTIVE);
-    }
-
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        InteractionJankMonitorWrapper.init(getWindow().getDecorView());
     }
 }

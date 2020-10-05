@@ -20,7 +20,6 @@ import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
 
-import static com.android.launcher3.config.FeatureFlags.ASSISTANT_GIVES_LAUNCHER_FOCUS;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.quickstep.GestureState.DEFAULT_STATE;
@@ -688,7 +687,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
         final boolean disableHorizontalSwipe = mDeviceState.isInExclusionRegion(event);
         return new OtherActivityInputConsumer(this, mDeviceState, mTaskAnimationManager,
                 gestureState, shouldDefer, this::onConsumerInactive,
-                mInputMonitorCompat, mInputEventReceiver, disableHorizontalSwipe, factory);
+                mInputMonitorCompat, disableHorizontalSwipe, factory);
     }
 
     private InputConsumer createDeviceLockedInputConsumer(GestureState gestureState) {
@@ -710,10 +709,8 @@ public class TouchInteractionService extends Service implements PluginListener<O
 
         if (activity.getRootView().hasWindowFocus()
                 || previousGestureState.isRunningAnimationToLauncher()
-                || (ASSISTANT_GIVES_LAUNCHER_FOCUS.get()
-                    && forceOverviewInputConsumer)
-                || (ENABLE_QUICKSTEP_LIVE_TILE.get())
-                    && gestureState.getActivityInterface().isInLiveTileMode()) {
+                || (FeatureFlags.ASSISTANT_GIVES_LAUNCHER_FOCUS.get()
+                    && forceOverviewInputConsumer)) {
             return new OverviewInputConsumer(gestureState, activity, mInputMonitorCompat,
                     false /* startingInActivityBounds */);
         } else {
@@ -737,8 +734,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
     private void reset() {
         mConsumer = mUncheckedConsumer = mResetGestureInputConsumer;
         mGestureState = DEFAULT_STATE;
-        // By default, use batching of the input events
-        mInputEventReceiver.setBatchingEnabled(true);
     }
 
     private void preloadOverview(boolean fromInit) {

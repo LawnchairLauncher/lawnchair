@@ -42,6 +42,7 @@ import androidx.annotation.StringRes;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.systemui.shared.recents.model.Task;
 
 import java.time.Duration;
@@ -216,8 +217,8 @@ public final class DigitalWellBeingToast {
                     view, 0, 0,
                     view.getWidth(), view.getHeight());
             activity.startActivity(intent, options.toBundle());
-
-            // TODO: add WW logging on the app usage settings click.
+            activity.getUserEventDispatcher().logActionOnControl(LauncherLogProto.Action.Touch.TAP,
+                    LauncherLogProto.ControlType.APP_USAGE_SETTINGS, view);
         } catch (ActivityNotFoundException e) {
             Log.e(TAG, "Failed to open app usage settings for task "
                     + mTask.getTopComponent().getPackageName(), e);

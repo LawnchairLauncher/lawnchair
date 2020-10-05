@@ -66,7 +66,6 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.allapps.AllAppsTransitionController;
-import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.shortcuts.DeepShortcutView;
@@ -82,7 +81,6 @@ import com.android.quickstep.util.StaggeredWorkspaceAnim;
 import com.android.quickstep.util.SurfaceTransactionApplier;
 import com.android.systemui.shared.system.ActivityCompat;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
-import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
 import com.android.systemui.shared.system.RemoteAnimationDefinitionCompat;
@@ -797,36 +795,6 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                 == PackageManager.PERMISSION_GRANTED;
     }
 
-    private void addCujInstrumentation(Animator anim, int cuj, String transition) {
-        if (Trace.isEnabled()) {
-            anim.addListener(new AnimationSuccessListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    Trace.beginAsyncSection(transition, 0);
-                    InteractionJankMonitorWrapper.begin(cuj);
-                    super.onAnimationStart(animation);
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-                    super.onAnimationCancel(animation);
-                    InteractionJankMonitorWrapper.cancel(cuj);
-                }
-
-                @Override
-                public void onAnimationSuccess(Animator animator) {
-                    InteractionJankMonitorWrapper.end(cuj);
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    super.onAnimationEnd(animation);
-                    Trace.endAsyncSection(TRANSITION_OPEN_LAUNCHER, 0);
-                }
-            });
-        }
-    }
-
     /**
      * Remote animation runner for animation from the app to Launcher, including recents.
      */
@@ -891,9 +859,21 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                 // is initialized.
                 if (launcherIsATargetWithMode(appTargets, MODE_OPENING)
                         || mLauncher.isForceInvisible()) {
-                    addCujInstrumentation(
-                            anim, InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME,
-                            TRANSITION_OPEN_LAUNCHER);
+                    if (Trace.isEnabled()) {
+                        anim.addListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationStart(Animator animation) {
+                                Trace.beginAsyncSection(TRANSITION_OPEN_LAUNCHER, 0);
+                                super.onAnimationStart(animation);
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                super.onAnimationEnd(animation);
+                                Trace.endAsyncSection(TRANSITION_OPEN_LAUNCHER, 0);
+                            }
+                        });
+                    }
                     // Only register the content animation for cancellation when state changes
                     mLauncher.getStateManager().setCurrentAnimation(anim);
 
@@ -962,12 +942,25 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                         launcherClosing);
             }
 
-            addCujInstrumentation(anim,
-                    launchingFromRecents
-                            ? InteractionJankMonitorWrapper.CUJ_APP_LAUNCH_FROM_RECENTS
-                            : InteractionJankMonitorWrapper.CUJ_APP_LAUNCH_FROM_ICON,
-                    launchingFromRecents
-                            ? TRANSITION_LAUNCH_FROM_RECENTS : TRANSITION_LAUNCH_FROM_ICON);
+            if (Trace.isEnabled()) {
+                final String section =
+                        launchingFromRecents
+                                ? TRANSITION_LAUNCH_FROM_RECENTS : TRANSITION_LAUNCH_FROM_ICON;
+
+                anim.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        Trace.beginAsyncSection(section, 0);
+                        super.onAnimationStart(animation);
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        Trace.endAsyncSection(section, 0);
+                    }
+                });
+            }
 
             if (launcherClosing) {
                 anim.addListener(mForceInvisibleListener);

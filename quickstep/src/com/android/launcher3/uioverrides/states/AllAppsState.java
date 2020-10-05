@@ -16,7 +16,6 @@
 package com.android.launcher3.uioverrides.states;
 
 import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
-import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_ALLAPPS;
 import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 
 import android.content.Context;
@@ -24,6 +23,7 @@ import android.content.Context;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.allapps.AllAppsContainerView;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
 /**
  * Definition for AllApps state
@@ -40,7 +40,7 @@ public class AllAppsState extends LauncherState {
     };
 
     public AllAppsState(int id) {
-        super(id, LAUNCHER_STATE_ALLAPPS, STATE_FLAGS);
+        super(id, ContainerType.ALLAPPS, STATE_FLAGS);
     }
 
     @Override

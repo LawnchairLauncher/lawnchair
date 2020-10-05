@@ -15,6 +15,9 @@
  */
 package com.android.launcher3.views;
 
+import static android.content.Intent.URI_ALLOW_UNSAFE;
+import static android.content.Intent.URI_ANDROID_APP_SCHEME;
+
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
@@ -25,6 +28,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
@@ -46,6 +50,7 @@ import com.android.systemui.plugins.AllAppsSearchPlugin;
 import com.android.systemui.plugins.shared.SearchTarget;
 import com.android.systemui.plugins.shared.SearchTargetEvent;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 /**
@@ -61,8 +66,8 @@ public class SearchResultPeopleView extends LinearLayout implements
     private TextView mTitleView;
     private ImageButton[] mProviderButtons = new ImageButton[3];
     private AllAppsSearchPlugin mPlugin;
-    private Intent mIntent;
-    private final Object[] mTargetInfo = createTargetInfo();
+    private Uri mContactUri;
+
 
     public SearchResultPeopleView(Context context) {
         this(context, null, 0);
@@ -104,7 +109,7 @@ public class SearchResultPeopleView extends LinearLayout implements
         Bundle payload = adapterItemWithPayload.getPayload();
         mPlugin = adapterItemWithPayload.getPlugin();
         mTitleView.setText(payload.getString("title"));
-        mIntent = payload.getParcelable("intent");
+        mContactUri = payload.getParcelable("contact_uri");
         Bitmap icon = payload.getParcelable("icon");
         if (icon != null) {
             RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(getResources(), icon);
@@ -120,20 +125,25 @@ public class SearchResultPeopleView extends LinearLayout implements
         for (int i = 0; i < mProviderButtons.length; i++) {
             ImageButton button = mProviderButtons[i];
             if (providers != null && i < providers.size()) {
-                Bundle provider = providers.get(i);
-                Intent intent = provider.getParcelable("intent");
-                setupProviderButton(button, provider, intent, adapterItemWithPayload);
-                String pkg = provider.getString("package_name");
-                UI_HELPER_EXECUTOR.post(() -> {
-                    try {
-                        ApplicationInfo applicationInfo = mPackageManager.getApplicationInfo(
-                                pkg, 0);
-                        Drawable appIcon = applicationInfo.loadIcon(mPackageManager);
-                        MAIN_EXECUTOR.post(() -> button.setImageDrawable(appIcon));
-                    } catch (PackageManager.NameNotFoundException ignored) {
-                    }
+                try {
+                    Bundle provider = providers.get(i);
+                    Intent intent = Intent.parseUri(provider.getString("intent_uri_str"),
+                            URI_ANDROID_APP_SCHEME | URI_ALLOW_UNSAFE);
+                    setupProviderButton(button, provider, intent);
+                    String pkg = provider.getString("package_name");
+                    UI_HELPER_EXECUTOR.post(() -> {
+                        try {
+                            ApplicationInfo applicationInfo = mPackageManager.getApplicationInfo(
+                                    pkg, 0);
+                            Drawable appIcon = applicationInfo.loadIcon(mPackageManager);
+                            MAIN_EXECUTOR.post(()-> button.setImageDrawable(appIcon));
+                        } catch (PackageManager.NameNotFoundException ignored) {
+                        }
 
-                });
+                    });
+                } catch (URISyntaxException ex) {
+                    button.setVisibility(GONE);
+                }
             } else {
                 button.setVisibility(GONE);
             }
@@ -141,21 +151,15 @@ public class SearchResultPeopleView extends LinearLayout implements
         adapterItemWithPayload.setSelectionHandler(this::handleSelection);
     }
 
-    @Override
-    public Object[] getTargetInfo() {
-        return mTargetInfo;
-    }
-
-    private void setupProviderButton(ImageButton button, Bundle provider, Intent intent,
-            AllAppsGridAdapter.AdapterItem adapterItem) {
+    private void setupProviderButton(ImageButton button, Bundle provider, Intent intent) {
         Launcher launcher = Launcher.getLauncher(getContext());
         button.setOnClickListener(b -> {
             launcher.startActivitySafely(b, intent, null);
-            SearchTargetEvent searchTargetEvent = getSearchTargetEvent(
+            SearchTargetEvent searchTargetEvent = new SearchTargetEvent(
                     SearchTarget.ItemType.PEOPLE,
                     SearchTargetEvent.CHILD_SELECT);
             searchTargetEvent.bundle = new Bundle();
-            searchTargetEvent.bundle.putParcelable("intent", mIntent);
+            searchTargetEvent.bundle.putParcelable("contact_uri", mContactUri);
             searchTargetEvent.bundle.putBundle("provider", provider);
             if (mPlugin != null) {
                 mPlugin.notifySearchTargetEvent(searchTargetEvent);
@@ -165,13 +169,14 @@ public class SearchResultPeopleView extends LinearLayout implements
 
 
     private void handleSelection(int eventType) {
-        if (mIntent != null) {
+        if (mContactUri != null) {
             Launcher launcher = Launcher.getLauncher(getContext());
-            launcher.startActivitySafely(this, mIntent, null);
-            SearchTargetEvent searchTargetEvent = getSearchTargetEvent(SearchTarget.ItemType.PEOPLE,
-                    eventType);
+            launcher.startActivitySafely(this, new Intent(Intent.ACTION_VIEW, mContactUri).setFlags(
+                    Intent.FLAG_ACTIVITY_NEW_TASK), null);
+            SearchTargetEvent searchTargetEvent = new SearchTargetEvent(
+                    SearchTarget.ItemType.PEOPLE, eventType);
             searchTargetEvent.bundle = new Bundle();
-            searchTargetEvent.bundle.putParcelable("intent", mIntent);
+            searchTargetEvent.bundle.putParcelable("contact_uri", mContactUri);
             if (mPlugin != null) {
                 mPlugin.notifySearchTargetEvent(searchTargetEvent);
             }

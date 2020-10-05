@@ -57,9 +57,13 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.graphics.OverviewScrim;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.touch.BaseSwipeDetector;
 import com.android.launcher3.touch.BothAxesSwipeDetector;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.util.VibratorWrapper;
 import com.android.quickstep.AnimatedFloat;
@@ -283,6 +287,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         boolean horizontalFling = mSwipeDetector.isFling(velocity.x);
         boolean verticalFling = mSwipeDetector.isFling(velocity.y);
         boolean noFling = !horizontalFling && !verticalFling;
+        int logAction = noFling ? Touch.SWIPE : Touch.FLING;
         if (mMotionPauseDetector.isPaused() && noFling) {
             cancelAnimations();
 
@@ -293,7 +298,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
             overviewAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    onAnimationToStateCompleted(OVERVIEW);
+                    onAnimationToStateCompleted(OVERVIEW, logAction);
                 }
             });
             overviewAnim.start();
@@ -388,7 +393,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         }
 
         nonOverviewAnim.setDuration(Math.max(xDuration, yDuration));
-        mNonOverviewAnim.setEndAction(() -> onAnimationToStateCompleted(targetState));
+        mNonOverviewAnim.setEndAction(() -> onAnimationToStateCompleted(targetState, logAction));
 
         cancelAnimations();
         xOverviewAnim.start();
@@ -396,15 +401,25 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         nonOverviewAnim.start();
     }
 
-    private void onAnimationToStateCompleted(LauncherState targetState) {
+    private void onAnimationToStateCompleted(LauncherState targetState, int logAction) {
+        mLauncher.getUserEventDispatcher().logStateChangeAction(logAction,
+                getDirectionForLog(), mSwipeDetector.getDownX(), mSwipeDetector.getDownY(),
+                LauncherLogProto.ContainerType.NAVBAR,
+                mStartState.containerType,
+                targetState.containerType,
+                mLauncher.getWorkspace().getCurrentPage());
         mLauncher.getStatsLogManager().logger()
                 .withSrcState(LAUNCHER_STATE_HOME)
-                .withDstState(targetState.statsLogOrdinal)
-                .log(getLauncherAtomEvent(mStartState.statsLogOrdinal, targetState.statsLogOrdinal,
+                .withDstState(StatsLogManager.containerTypeToAtomState(targetState.containerType))
+                .log(getLauncherAtomEvent(mStartState.containerType, targetState.containerType,
                         targetState.ordinal > mStartState.ordinal
                                 ? LAUNCHER_UNKNOWN_SWIPEUP
                                 : LAUNCHER_UNKNOWN_SWIPEDOWN));
         mLauncher.getStateManager().goToState(targetState, false, this::clearState);
+    }
+
+    private int getDirectionForLog() {
+        return Utilities.isRtl(mLauncher.getResources()) ? Direction.LEFT : Direction.RIGHT;
     }
 
     private void cancelAnimations() {

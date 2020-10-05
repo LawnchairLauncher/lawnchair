@@ -48,6 +48,8 @@ import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.AbstractStateChangeTouchController;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.launcher3.uioverrides.states.OverviewState;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TouchInteractionService;
 import com.android.quickstep.util.LayoutUtils;
@@ -170,6 +172,11 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
         return fromState;
     }
 
+    @Override
+    protected int getLogContainerTypeForNormalState(MotionEvent ev) {
+        return isTouchOverHotseat(mLauncher, ev) ? ContainerType.HOTSEAT : ContainerType.WORKSPACE;
+    }
+
     private StateAnimationConfig getNormalToOverviewAnimation() {
         mAllAppsInterpolatorWrapper.baseInterpolator = LINEAR;
 
@@ -278,7 +285,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
 
     private void cancelPendingAnim() {
         if (mPendingAnimation != null) {
-            mPendingAnimation.finish(false);
+            mPendingAnimation.finish(false, Touch.SWIPE);
             mPendingAnimation = null;
         }
     }
@@ -313,8 +320,8 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     }
 
     @Override
-    protected void onSwipeInteractionCompleted(LauncherState targetState) {
-        super.onSwipeInteractionCompleted(targetState);
+    protected void onSwipeInteractionCompleted(LauncherState targetState, int logAction) {
+        super.onSwipeInteractionCompleted(targetState, logAction);
         if (mStartState == NORMAL && targetState == OVERVIEW) {
             SystemUiProxy.INSTANCE.get(mLauncher).onOverviewShown(true, TAG);
         }

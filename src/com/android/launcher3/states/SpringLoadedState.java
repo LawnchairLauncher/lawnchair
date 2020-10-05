@@ -15,8 +15,6 @@
  */
 package com.android.launcher3.states;
 
-import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
-
 import android.content.Context;
 import android.graphics.Rect;
 
@@ -24,6 +22,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
 /**
  * Definition for spring loaded state used during drag and drop.
@@ -36,7 +35,7 @@ public class SpringLoadedState extends LauncherState {
             | FLAG_HIDE_BACK_BUTTON;
 
     public SpringLoadedState(int id) {
-        super(id, LAUNCHER_STATE_HOME, STATE_FLAGS);
+        super(id, ContainerType.WORKSPACE, STATE_FLAGS);
     }
 
     @Override
