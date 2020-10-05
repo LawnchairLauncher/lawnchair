@@ -539,6 +539,7 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
      * @return "MyObject@1234"
      */
     private static String extractObjectNameAndAddress(String stringToExtract) {
-        return stringToExtract.substring(stringToExtract.lastIndexOf(DELIMITER_DOT));
+        int index = stringToExtract.lastIndexOf(DELIMITER_DOT);
+        return index >= 0 ? stringToExtract.substring(index) : "";
     }
 }
