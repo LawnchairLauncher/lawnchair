@@ -151,52 +151,32 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
      * @param viewsToFlip number of views from the top to to flip in case of reverse order
      */
     protected void reorderAndShow(int viewsToFlip) {
-        setupForDisplay();
-        boolean reverseOrder = mIsAboveIcon;
-        if (reverseOrder) {
-            reverseOrder(viewsToFlip);
-        }
-        onInflationComplete(reverseOrder);
-        addArrow();
-        animateOpen();
-    }
-
-    /**
-     * Shows the popup at the desired location.
-     */
-    protected void show() {
-        setupForDisplay();
-        onInflationComplete(false);
-        addArrow();
-        animateOpen();
-    }
-
-    private void setupForDisplay() {
         setVisibility(View.INVISIBLE);
         mIsOpen = true;
         getPopupContainer().addView(this);
         orientAboutObject();
-    }
 
-    private void reverseOrder(int viewsToFlip) {
-        int count = getChildCount();
-        ArrayList<View> allViews = new ArrayList<>(count);
-        for (int i = 0; i < count; i++) {
-            if (i == viewsToFlip) {
-                Collections.reverse(allViews);
+        boolean reverseOrder = mIsAboveIcon;
+        if (reverseOrder) {
+            int count = getChildCount();
+            ArrayList<View> allViews = new ArrayList<>(count);
+            for (int i = 0; i < count; i++) {
+                if (i == viewsToFlip) {
+                    Collections.reverse(allViews);
+                }
+                allViews.add(getChildAt(i));
             }
-            allViews.add(getChildAt(i));
-        }
-        Collections.reverse(allViews);
-        removeAllViews();
-        for (int i = 0; i < count; i++) {
-            addView(allViews.get(i));
-        }
+            Collections.reverse(allViews);
+            removeAllViews();
+            for (int i = 0; i < count; i++) {
+                addView(allViews.get(i));
+            }
 
-        orientAboutObject();
-    }
+            orientAboutObject();
+        }
+        onInflationComplete(reverseOrder);
 
-    private void addArrow() {
+        // Add the arrow.
         final Resources res = getResources();
         final int arrowCenterOffset = res.getDimensionPixelSize(isAlignedWithStart()
                 ? R.dimen.popup_arrow_horizontal_center_start
@@ -234,6 +214,8 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
 
         mArrow.setPivotX(arrowLp.width / 2);
         mArrow.setPivotY(mIsAboveIcon ? arrowLp.height : 0);
+
+        animateOpen();
     }
 
     protected boolean isAlignedWithStart() {

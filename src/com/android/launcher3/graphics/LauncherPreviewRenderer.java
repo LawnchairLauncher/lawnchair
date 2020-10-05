@@ -513,7 +513,8 @@ public class LauncherPreviewRenderer extends ContextThemeWrapper
         }
 
         // Setup search view
-        SearchUiManager searchUiManager = mRootView.findViewById(R.id.search_container_all_apps);
+        SearchUiManager searchUiManager =
+                mRootView.findViewById(R.id.search_container_all_apps);
         mRootView.findViewById(R.id.apps_view).setTranslationY(
                 mDp.heightPx - searchUiManager.getScrollRangeDelta(mInsets));
         ViewGroup searchView = (ViewGroup) searchUiManager;

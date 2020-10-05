@@ -21,7 +21,6 @@ import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
 import static com.android.launcher3.anim.Interpolators.INSTANT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SCALE;
@@ -42,6 +41,8 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.touch.AbstractStateChangeTouchController;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SystemUiProxy;
@@ -91,14 +92,14 @@ public class QuickSwitchTouchController extends AbstractStateChangeTouchControll
     @Override
     public void onDragStart(boolean start, float startDisplacement) {
         super.onDragStart(start, startDisplacement);
-        mStartContainerType = LAUNCHER_STATE_BACKGROUND;
+        mStartContainerType = LauncherLogProto.ContainerType.NAVBAR;
         ActivityManagerWrapper.getInstance()
                 .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
     }
 
     @Override
-    protected void onSwipeInteractionCompleted(LauncherState targetState) {
-        super.onSwipeInteractionCompleted(targetState);
+    protected void onSwipeInteractionCompleted(LauncherState targetState, int logAction) {
+        super.onSwipeInteractionCompleted(targetState, logAction);
     }
 
     @Override
@@ -151,5 +152,15 @@ public class QuickSwitchTouchController extends AbstractStateChangeTouchControll
     @Override
     protected float getShiftRange() {
         return mLauncher.getDeviceProfile().widthPx / 2f;
+    }
+
+    @Override
+    protected int getLogContainerTypeForNormalState(MotionEvent ev) {
+        return LauncherLogProto.ContainerType.NAVBAR;
+    }
+
+    @Override
+    protected int getDirectionForLog() {
+        return Utilities.isRtl(mLauncher.getResources()) ? Direction.LEFT : Direction.RIGHT;
     }
 }
