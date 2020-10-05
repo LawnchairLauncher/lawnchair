@@ -130,14 +130,10 @@ public interface WorkspaceLayoutManager {
         }
 
         child.setHapticFeedbackEnabled(false);
-        child.setOnLongClickListener(getWorkspaceChildOnLongClickListener());
+        child.setOnLongClickListener(ItemLongClickListener.INSTANCE_WORKSPACE);
         if (child instanceof DropTarget) {
             onAddDropTarget((DropTarget) child);
         }
-    }
-
-    default View.OnLongClickListener getWorkspaceChildOnLongClickListener() {
-        return ItemLongClickListener.INSTANCE_WORKSPACE;
     }
 
     Hotseat getHotseat();

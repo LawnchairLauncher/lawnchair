@@ -20,6 +20,7 @@ import static com.android.launcher3.util.LauncherUIHelper.doLayout;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.mockito.Mockito.mock;
 
 import android.content.Context;
 import android.os.SystemClock;
@@ -35,6 +36,8 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.folder.FolderPagedView;
+import com.android.launcher3.logging.UserEventDispatcher;
+import com.android.launcher3.shadows.ShadowOverrides;
 import com.android.launcher3.util.LauncherLayoutBuilder;
 import com.android.launcher3.util.LauncherLayoutBuilder.FolderBuilder;
 import com.android.launcher3.util.LauncherModelHelper;
@@ -67,6 +70,8 @@ public class LauncherUIScrollTest {
         mModelHelper = new LauncherModelHelper();
         mTargetContext = RuntimeEnvironment.application;
         mIdp = InvariantDeviceProfile.INSTANCE.get(mTargetContext);
+        ShadowOverrides.setProvider(UserEventDispatcher.class,
+                c -> mock(UserEventDispatcher.class));
 
         Settings.Global.putFloat(mTargetContext.getContentResolver(),
                 Settings.Global.WINDOW_ANIMATION_SCALE, 0);

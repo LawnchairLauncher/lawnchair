@@ -25,6 +25,12 @@ import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 
 import static com.android.launcher3.Utilities.squaredHypot;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction.UPLEFT;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction.UPRIGHT;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.FLING;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.SWIPE;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.SWIPE_NOOP;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType.NAVBAR;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -41,6 +47,7 @@ import android.view.ViewConfiguration;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.quickstep.BaseActivityInterface;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
@@ -73,6 +80,7 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
     private float mTimeFraction;
     private long mDragTime;
     private float mLastProgress;
+    private int mDirection;
     private BaseActivityInterface mActivityInterface;
 
     private final float mDragDistThreshold;
@@ -189,6 +197,8 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
                 if (mState != STATE_DELEGATE_ACTIVE && !mLaunchedAssistant) {
                     ValueAnimator animator = ValueAnimator.ofFloat(mLastProgress, 0)
                         .setDuration(RETRACT_ANIMATION_DURATION_MS);
+                    UserEventDispatcher.newInstance(mContext).logActionOnContainer(
+                        SWIPE_NOOP, mDirection, NAVBAR);
                     animator.addUpdateListener(valueAnimator -> {
                         float progress = (float) valueAnimator.getAnimatedValue();
                         SystemUiProxy.INSTANCE.get(mContext).onAssistantProgress(progress);
@@ -213,7 +223,7 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
             mLastProgress = Math.min(mDistance * 1f / mDragDistThreshold, 1) * mTimeFraction;
             if (mDistance >= mDragDistThreshold && mTimeFraction >= 1) {
                 SystemUiProxy.INSTANCE.get(mContext).onAssistantGestureCompletion(0);
-                startAssistantInternal();
+                startAssistantInternal(SWIPE);
 
                 Bundle args = new Bundle();
                 args.putInt(OPA_BUNDLE_TRIGGER, OPA_BUNDLE_TRIGGER_DIAG_SWIPE_GESTURE);
@@ -226,7 +236,10 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
         }
     }
 
-    private void startAssistantInternal() {
+    private void startAssistantInternal(int gestureType) {
+        UserEventDispatcher.newInstance(mContext)
+            .logActionOnContainer(gestureType, mDirection, NAVBAR);
+
         BaseDraggingActivity launcherActivity = mActivityInterface.getCreatedActivity();
         if (launcherActivity != null) {
             launcherActivity.getRootView().performHapticFeedback(
@@ -240,6 +253,7 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
      */
     private boolean isValidAssistantGestureAngle(float deltaX, float deltaY) {
         float angle = (float) Math.toDegrees(Math.atan2(deltaY, deltaX));
+        mDirection = angle > 90 ? UPLEFT : UPRIGHT;
 
         // normalize so that angle is measured clockwise from horizontal in the bottom right corner
         // and counterclockwise from horizontal in the bottom left corner
@@ -258,7 +272,7 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
                 mLastProgress = 1;
                 SystemUiProxy.INSTANCE.get(mContext).onAssistantGestureCompletion(
                     (float) Math.sqrt(velocityX * velocityX + velocityY * velocityY));
-                startAssistantInternal();
+                startAssistantInternal(FLING);
 
                 Bundle args = new Bundle();
                 args.putInt(INVOCATION_TYPE_KEY, INVOCATION_TYPE_GESTURE);

@@ -16,8 +16,11 @@
 
 package com.android.launcher3.appprediction;
 
+import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
+import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
+import static com.android.launcher3.logging.LoggerUtils.newTarget;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -40,6 +43,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsSectionDecorator;
 import com.android.launcher3.allapps.FloatingHeaderRow;
@@ -49,11 +53,13 @@ import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.keyboard.FocusIndicatorHelper;
 import com.android.launcher3.keyboard.FocusIndicatorHelper.SimpleFocusIndicatorHelper;
+import com.android.launcher3.logging.StatsLogUtils.LogContainerProvider;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.touch.ItemLongClickListener;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.Themes;
 import com.android.quickstep.AnimatedFloat;
 
@@ -62,7 +68,7 @@ import java.util.List;
 
 @TargetApi(Build.VERSION_CODES.P)
 public class PredictionRowView extends LinearLayout implements
-        OnDeviceProfileChangeListener, FloatingHeaderRow {
+        LogContainerProvider, OnDeviceProfileChangeListener, FloatingHeaderRow {
 
     private static final IntProperty<PredictionRowView> TEXT_ALPHA =
             new IntProperty<PredictionRowView>("textAlpha") {
@@ -263,6 +269,29 @@ public class PredictionRowView extends LinearLayout implements
             updateVisibility();
         }
         mParent.onHeightUpdated();
+    }
+
+    @Override
+    public void fillInLogContainerData(ItemInfo childInfo, LauncherLogProto.Target child,
+            ArrayList<LauncherLogProto.Target> parents) {
+        for (int i = 0; i < mPredictedApps.size(); i++) {
+            ItemInfoWithIcon appInfo = mPredictedApps.get(i);
+            if (appInfo == childInfo) {
+                child.predictedRank = i;
+                break;
+            }
+        }
+        parents.add(newContainerTarget(LauncherLogProto.ContainerType.PREDICTION));
+
+        // include where the prediction is coming this used to be Launcher#modifyUserEvent
+        LauncherLogProto.Target parent = newTarget(LauncherLogProto.Target.Type.CONTAINER);
+        LauncherState state = mLauncher.getStateManager().getState();
+        if (state == LauncherState.ALL_APPS) {
+            parent.containerType = LauncherLogProto.ContainerType.ALLAPPS;
+        } else if (state == OVERVIEW) {
+            parent.containerType = LauncherLogProto.ContainerType.TASKSWITCHER;
+        }
+        parents.add(parent);
     }
 
     public void setTextAlpha(int textAlpha) {

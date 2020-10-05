@@ -28,6 +28,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.touch.PagedOrientationHandler;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.quickstep.fallback.RecentsState;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
@@ -141,6 +142,15 @@ public final class FallbackActivityInterface extends
     @Override
     public void onExitOverview(RotationTouchHelper deviceState, Runnable exitRunnable) {
         // no-op, fake landscape not supported for 3P
+    }
+
+    @Override
+    public int getContainerType() {
+        RecentsActivity activity = getCreatedActivity();
+        boolean visible = activity != null && activity.isStarted() && activity.hasWindowFocus();
+        return visible
+                ? LauncherLogProto.ContainerType.OTHER_LAUNCHER_APP
+                : LauncherLogProto.ContainerType.APP;
     }
 
     @Override

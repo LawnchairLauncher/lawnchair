@@ -15,9 +15,6 @@
  */
 package com.android.quickstep;
 
-import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
-import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
-import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_OVERVIEW;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
 
 import android.annotation.TargetApi;
@@ -26,6 +23,7 @@ import android.content.Intent;
 import android.os.Build;
 
 import com.android.launcher3.statemanager.StatefulActivity;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -46,13 +44,13 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
      * Defines the end targets of a gesture and the associated state.
      */
     public enum GestureEndTarget {
-        HOME(true, LAUNCHER_STATE_HOME, false),
+        HOME(true, ContainerType.WORKSPACE, false),
 
-        RECENTS(true, LAUNCHER_STATE_OVERVIEW, true),
+        RECENTS(true, ContainerType.TASKSWITCHER, true),
 
-        NEW_TASK(false, LAUNCHER_STATE_BACKGROUND, true),
+        NEW_TASK(false, ContainerType.APP, true),
 
-        LAST_TASK(false, LAUNCHER_STATE_BACKGROUND, true);
+        LAST_TASK(false, ContainerType.APP, true);
 
         GestureEndTarget(boolean isLauncher, int containerType,
                 boolean recentsAttachedToAppWindow) {

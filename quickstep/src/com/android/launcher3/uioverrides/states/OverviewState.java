@@ -16,7 +16,6 @@
 package com.android.launcher3.uioverrides.states;
 
 import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
-import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_OVERVIEW;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 import static com.android.quickstep.SysUINavigationMode.hideShelfInTwoButtonLandscape;
 import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
@@ -30,6 +29,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
@@ -51,7 +51,7 @@ public class OverviewState extends LauncherState {
     }
 
     protected OverviewState(int id, int stateFlags) {
-        this(id, LAUNCHER_STATE_OVERVIEW, stateFlags);
+        this(id, ContainerType.TASKSWITCHER, stateFlags);
     }
 
     protected OverviewState(int id, int logContainer, int stateFlags) {

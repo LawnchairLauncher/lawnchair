@@ -13,8 +13,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<com.android.quickstep.interaction.RootSandboxLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?android:attr/colorBackground">
@@ -94,11 +93,11 @@
         style="@style/TextAppearance.GestureTutorial.Feedback"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/gesture_tutorial_fragment_titles_container"
+        android:layout_above="@id/gesture_tutorial_fragment_action_button"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="@dimen/gesture_tutorial_feedback_margin_start_end"
         android:layout_marginEnd="@dimen/gesture_tutorial_feedback_margin_start_end"
-        android:layout_marginTop="40dp"/>
+        android:layout_marginBottom="10dp"/>
 
     <!-- android:stateListAnimator="@null" removes shadow and normal on click behavior (increase
          of elevation and shadow) which is replaced by ripple effect in android:foreground -->
@@ -127,4 +126,4 @@
         android:background="@null"
         android:foreground="?android:attr/selectableItemBackgroundBorderless"
         android:stateListAnimator="@null"/>
-</com.android.quickstep.interaction.RootSandboxLayout>
+</RelativeLayout>

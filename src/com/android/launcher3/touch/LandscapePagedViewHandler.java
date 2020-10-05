@@ -72,6 +72,7 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
         out.halfPageSize = view.getNormalChildHeight() / 2;
         out.halfScreenSize = view.getMeasuredHeight() / 2;
         out.screenCenter = insets.top + view.getPaddingTop() + out.scroll + out.halfPageSize;
+        out.pageParentScale = view.getScaleY();
     }
 
     @Override

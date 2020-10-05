@@ -16,7 +16,6 @@
 package com.android.launcher3.views;
 
 import static com.android.launcher3.Utilities.EXTRA_WALLPAPER_FLAVOR;
-import static com.android.launcher3.Utilities.EXTRA_WALLPAPER_LAUNCH_SOURCE;
 import static com.android.launcher3.Utilities.EXTRA_WALLPAPER_OFFSET;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.IGNORE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SETTINGS_BUTTON_TAP_OR_LONGPRESS;
@@ -133,7 +132,7 @@ public class OptionsPopupView extends ArrowPopup
             view.setOnLongClickListener(popup);
             popup.mItemMap.put(view, item);
         }
-        popup.show();
+        popup.reorderAndShow(popup.getChildCount());
     }
 
     @VisibleForTesting
@@ -212,8 +211,7 @@ public class OptionsPopupView extends ArrowPopup
         Intent intent = new Intent(Intent.ACTION_SET_WALLPAPER)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 .putExtra(EXTRA_WALLPAPER_OFFSET,
-                        launcher.getWorkspace().getWallpaperOffsetForCenterPage())
-                .putExtra(EXTRA_WALLPAPER_LAUNCH_SOURCE, "app_launched_launcher");
+                        launcher.getWorkspace().getWallpaperOffsetForCenterPage());
         if (!Utilities.existsStyleWallpapers(launcher)) {
             intent.putExtra(EXTRA_WALLPAPER_FLAVOR, "wallpaper_only");
         } else {

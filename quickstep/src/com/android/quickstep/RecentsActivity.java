@@ -41,10 +41,7 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAnimationRunner;
-import com.android.launcher3.LauncherAnimationRunner.AnimationResult;
 import com.android.launcher3.R;
-import com.android.launcher3.WrappedAnimationRunnerImpl;
-import com.android.launcher3.WrappedLauncherAnimationRunner;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
@@ -90,9 +87,6 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
 
     private StateManager<RecentsState> mStateManager;
 
-    // Strong refs to runners which are cleared when the activity is destroyed
-    private WrappedAnimationRunnerImpl mActivityLaunchAnimationRunner;
-
     /**
      * Init drag layer and overview panel views.
      */
@@ -124,6 +118,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
          * etc.)
          */
     protected void onHandleConfigChanged() {
+        mUserEventDispatcher = null;
         initDeviceProfile();
 
         AbstractFloatingView.closeOpenViews(this, true,
@@ -175,11 +170,8 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
         }
 
         final TaskView taskView = (TaskView) v;
-        mActivityLaunchAnimationRunner = new WrappedAnimationRunnerImpl() {
-            @Override
-            public Handler getHandler() {
-                return mUiHandler;
-            }
+        RemoteAnimationRunnerCompat runner = new LauncherAnimationRunner(mUiHandler,
+                true /* startAtFrontOfQueue */) {
 
             @Override
             public void onCreateAnimation(RemoteAnimationTargetCompat[] appTargets,
@@ -190,10 +182,8 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
                 result.setAnimation(anim, RecentsActivity.this);
             }
         };
-        final LauncherAnimationRunner wrapper = new WrappedLauncherAnimationRunner<>(
-                mActivityLaunchAnimationRunner, true /* startAtFrontOfQueue */);
         return ActivityOptionsCompat.makeRemoteAnimation(new RemoteAnimationAdapterCompat(
-                wrapper, RECENTS_LAUNCH_DURATION,
+                runner, RECENTS_LAUNCH_DURATION,
                 RECENTS_LAUNCH_DURATION - STATUS_BAR_TRANSITION_DURATION
                         - STATUS_BAR_TRANSITION_PRE_DELAY));
     }
@@ -298,7 +288,6 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
     protected void onDestroy() {
         super.onDestroy();
         ACTIVITY_TRACKER.onActivityDestroyed(this);
-        mActivityLaunchAnimationRunner = null;
     }
 
     @Override

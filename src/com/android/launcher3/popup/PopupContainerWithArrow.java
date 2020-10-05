@@ -19,8 +19,10 @@ package com.android.launcher3.popup;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_SHORTCUTS;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.Utilities.squaredTouchSlop;
+import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
 import static com.android.launcher3.popup.PopupPopulator.MAX_SHORTCUTS;
 import static com.android.launcher3.popup.PopupPopulator.MAX_SHORTCUTS_IF_NOTIFICATIONS;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.animation.AnimatorSet;
@@ -158,7 +160,8 @@ public class PopupContainerWithArrow<T extends BaseDraggingActivity> extends Arr
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             BaseDragLayer dl = getPopupContainer();
             if (!dl.isEventOverView(this, ev)) {
-                // TODO: add WW log if want to log if tap closed deep shortcut container.
+                mLauncher.getUserEventDispatcher().logActionTapOutside(
+                        newContainerTarget(ContainerType.DEEPSHORTCUTS));
                 close(true);
 
                 // We let touches on the original icon go through so that users can launch
@@ -432,9 +435,7 @@ public class PopupContainerWithArrow<T extends BaseDraggingActivity> extends Arr
                     // Make sure we keep the original icon hidden while it is being dragged.
                     mOriginalIcon.setVisibility(INVISIBLE);
                 } else {
-                    // TODO: add WW logging if want to add logging for long press on popup
-                    //  container.
-                    //  mLauncher.getUserEventDispatcher().logDeepShortcutsOpen(mOriginalIcon);
+                    mLauncher.getUserEventDispatcher().logDeepShortcutsOpen(mOriginalIcon);
                     if (!mIsAboveIcon) {
                         // Show the icon but keep the text hidden.
                         mOriginalIcon.setVisibility(VISIBLE);
