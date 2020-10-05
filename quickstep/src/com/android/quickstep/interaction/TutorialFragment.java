@@ -31,7 +31,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
-import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.R;
 import com.android.quickstep.interaction.TutorialController.TutorialType;
 
@@ -43,10 +42,9 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
     TutorialType mTutorialType;
     @Nullable TutorialController mTutorialController = null;
     View mRootView;
-    @Nullable TutorialHandAnimation mHandCoachingAnimation = null;
+    TutorialHandAnimation mHandCoachingAnimation;
     EdgeBackGestureHandler mEdgeBackGestureHandler;
     NavBarGestureHandler mNavBarGestureHandler;
-    private View mLauncherView;
 
     public static TutorialFragment newInstance(TutorialType tutorialType) {
         TutorialFragment fragment = getFragmentForTutorialType(tutorialType);
@@ -76,17 +74,13 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
             case ASSISTANT:
             case ASSISTANT_COMPLETE:
                 return new AssistantGestureTutorialFragment();
-            case SANDBOX_MODE:
-                return new SandboxModeTutorialFragment();
             default:
                 Log.e(LOG_TAG, "Failed to find an appropriate fragment for " + tutorialType.name());
         }
         return null;
     }
 
-    @Nullable Integer getHandAnimationResId() {
-        return null;
-    }
+    abstract int getHandAnimationResId();
 
     abstract TutorialController createController(TutorialType type);
 
@@ -120,14 +114,8 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
             return insets;
         });
         mRootView.setOnTouchListener(this);
-        Integer handAnimationResId = getHandAnimationResId();
-        if (handAnimationResId != null) {
-            mHandCoachingAnimation =
-                new TutorialHandAnimation(getContext(), mRootView, handAnimationResId);
-        }
-        InvariantDeviceProfile dp = InvariantDeviceProfile.INSTANCE.get(getContext());
-        mLauncherView = new SandboxLauncherRenderer(getContext(), dp, true).getRenderedView();
-        ((ViewGroup) mRootView).addView(mLauncherView, 0);
+        mHandCoachingAnimation = new TutorialHandAnimation(getContext(), mRootView,
+                getHandAnimationResId());
         return mRootView;
     }
 
@@ -140,23 +128,14 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
     @Override
     public void onPause() {
         super.onPause();
-
-        if (mHandCoachingAnimation != null) {
-            mHandCoachingAnimation.stop();
-        }
+        mHandCoachingAnimation.stop();
     }
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
-        // Note: Using logical-or to ensure both functions get called.
+        // Note: Using logical or to ensure both functions get called.
         return mEdgeBackGestureHandler.onTouch(view, motionEvent)
                 | mNavBarGestureHandler.onTouch(view, motionEvent);
-    }
-
-    boolean onInterceptTouch(MotionEvent motionEvent) {
-        // Note: Using logical-or to ensure both functions get called.
-        return mEdgeBackGestureHandler.onInterceptTouch(motionEvent)
-                | mNavBarGestureHandler.onInterceptTouch(motionEvent);
     }
 
     void onAttachedToWindow() {
@@ -189,11 +168,7 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
         return mRootView;
     }
 
-    View getLauncherView() {
-        return mLauncherView;
-    }
-
-    @Nullable TutorialHandAnimation getHandAnimation() {
+    TutorialHandAnimation getHandAnimation() {
         return mHandCoachingAnimation;
     }
 

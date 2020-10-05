@@ -323,8 +323,11 @@ public class CellLayout extends ViewGroup {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        return mTouchHelper != null
-                || (mInterceptTouchListener != null && mInterceptTouchListener.onTouch(this, ev));
+        if (mTouchHelper != null
+                || (mInterceptTouchListener != null && mInterceptTouchListener.onTouch(this, ev))) {
+            return true;
+        }
+        return false;
     }
 
     public void enableHardwareLayer(boolean hasLayer) {

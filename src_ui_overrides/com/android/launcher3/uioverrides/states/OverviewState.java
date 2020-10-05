@@ -15,11 +15,10 @@
  */
 package com.android.launcher3.uioverrides.states;
 
-import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_OVERVIEW;
-
 import android.content.Context;
 
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
 /**
  * Definition for overview state
@@ -27,7 +26,7 @@ import com.android.launcher3.LauncherState;
 public class OverviewState extends LauncherState {
 
     public OverviewState(int id) {
-        super(id, LAUNCHER_STATE_OVERVIEW, FLAG_DISABLE_RESTORE);
+        super(id, ContainerType.WORKSPACE, FLAG_DISABLE_RESTORE);
     }
 
     @Override

@@ -49,6 +49,7 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.graphics.OverviewScrim;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.VibratorWrapper;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
@@ -206,7 +207,7 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
 
     private void maybeSwipeInteractionToOverviewComplete() {
         if (mReachedOverview && mDetector.isSettlingState()) {
-            onSwipeInteractionCompleted(OVERVIEW);
+            onSwipeInteractionCompleted(OVERVIEW, Touch.SWIPE);
         }
     }
 
@@ -250,7 +251,7 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
     private void goToOverviewOrHomeOnDragEnd(float velocity) {
         boolean goToHomeInsteadOfOverview = !mMotionPauseDetector.isPaused();
         if (goToHomeInsteadOfOverview) {
-            new OverviewToHomeAnim(mLauncher, ()-> onSwipeInteractionCompleted(NORMAL))
+            new OverviewToHomeAnim(mLauncher, ()-> onSwipeInteractionCompleted(NORMAL, Touch.FLING))
                     .animateWithVelocity(velocity);
         }
         if (mReachedOverview) {

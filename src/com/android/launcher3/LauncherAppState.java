@@ -105,7 +105,7 @@ public class LauncherAppState {
         new Handler().post( () -> mInvariantDeviceProfile.verifyConfigChangedInBackground(context));
 
         mInstallSessionTracker = InstallSessionHelper.INSTANCE.get(context)
-                .registerInstallTracker(mModel);
+                .registerInstallTracker(mModel, MODEL_EXECUTOR);
 
         // Register an observer to rebind the notification listener when dots are re-enabled.
         mNotificationDotsObserver =

@@ -37,6 +37,8 @@ import androidx.annotation.IntDef;
 
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.logging.StatsLogManager;
+import com.android.launcher3.logging.UserEventDispatcher;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.ViewCache;
 import com.android.launcher3.views.ActivityContext;
@@ -80,6 +82,7 @@ public abstract class BaseActivity extends Activity implements ActivityContext {
             new ArrayList<>();
 
     protected DeviceProfile mDeviceProfile;
+    protected UserEventDispatcher mUserEventDispatcher;
     protected StatsLogManager mStatsLogManager;
     protected SystemUiController mSystemUiController;
 
@@ -141,11 +144,20 @@ public abstract class BaseActivity extends Activity implements ActivityContext {
         return mDeviceProfile;
     }
 
+    public void modifyUserEvent(LauncherLogProto.LauncherEvent event) {}
+
     public final StatsLogManager getStatsLogManager() {
         if (mStatsLogManager == null) {
             mStatsLogManager = StatsLogManager.newInstance(this);
         }
         return mStatsLogManager;
+    }
+
+    public final UserEventDispatcher getUserEventDispatcher() {
+        if (mUserEventDispatcher == null) {
+            mUserEventDispatcher = UserEventDispatcher.newInstance(this);
+        }
+        return mUserEventDispatcher;
     }
 
     public SystemUiController getSystemUiController() {

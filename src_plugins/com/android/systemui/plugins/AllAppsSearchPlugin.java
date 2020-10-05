@@ -32,7 +32,7 @@ import java.util.function.Consumer;
 @ProvidesInterface(action = AllAppsSearchPlugin.ACTION, version = AllAppsSearchPlugin.VERSION)
 public interface AllAppsSearchPlugin extends Plugin {
     String ACTION = "com.android.systemui.action.PLUGIN_ALL_APPS_SEARCH_ACTIONS";
-    int VERSION = 7;
+    int VERSION = 6;
 
     void setup(Activity activity, View view);
 
@@ -41,12 +41,6 @@ public interface AllAppsSearchPlugin extends Plugin {
      */
     void onStateTransitionStart(int fromState, int toState);
     void onStateTransitionComplete(int state);
-
-    /**
-     * Send launcher window focus and visibility changed signals.
-     */
-    void onWindowFocusChanged(boolean hasFocus);
-    void onWindowVisibilityChanged(int visibility);
 
     /**
      * Send signal when user starts typing, perform search, when search ends
