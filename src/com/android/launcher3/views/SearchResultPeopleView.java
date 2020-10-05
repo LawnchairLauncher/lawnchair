@@ -23,9 +23,12 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Process;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageButton;
@@ -41,7 +44,8 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsGridAdapter;
 import com.android.launcher3.allapps.search.AllAppsSearchBarController;
-import com.android.launcher3.util.Themes;
+import com.android.launcher3.icons.BitmapInfo;
+import com.android.launcher3.icons.LauncherIcons;
 import com.android.systemui.plugins.AllAppsSearchPlugin;
 import com.android.systemui.plugins.shared.SearchTarget;
 import com.android.systemui.plugins.shared.SearchTargetEvent;
@@ -105,15 +109,14 @@ public class SearchResultPeopleView extends LinearLayout implements
         mPlugin = adapterItemWithPayload.getPlugin();
         mTitleView.setText(payload.getString("title"));
         mIntent = payload.getParcelable("intent");
-        Bitmap icon = payload.getParcelable("icon");
-        if (icon != null) {
-            RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(getResources(), icon);
-            float radius = Themes.getDialogCornerRadius(getContext());
-            d.setCornerRadius(radius);
-            d.setBounds(0, 0, mIconSize, mIconSize);
-            BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(),
-                    Bitmap.createScaledBitmap(icon, mIconSize, mIconSize, false));
-            mIconView.setBackground(d);
+        Bitmap contactIcon = payload.getParcelable("icon");
+        try (LauncherIcons li = LauncherIcons.obtain(getContext())) {
+            BitmapInfo badgeInfo = li.createBadgedIconBitmap(
+                    getAppIcon(mIntent.getPackage()), Process.myUserHandle(),
+                    Build.VERSION.SDK_INT);
+            setIcon(li.badgeBitmap(roundBitmap(contactIcon), badgeInfo).icon, false);
+        } catch (Exception e) {
+            setIcon(contactIcon, true);
         }
 
         ArrayList<Bundle> providers = payload.getParcelableArrayList("providers");
@@ -123,22 +126,58 @@ public class SearchResultPeopleView extends LinearLayout implements
                 Bundle provider = providers.get(i);
                 Intent intent = provider.getParcelable("intent");
                 setupProviderButton(button, provider, intent, adapterItemWithPayload);
-                String pkg = provider.getString("package_name");
                 UI_HELPER_EXECUTOR.post(() -> {
-                    try {
-                        ApplicationInfo applicationInfo = mPackageManager.getApplicationInfo(
-                                pkg, 0);
-                        Drawable appIcon = applicationInfo.loadIcon(mPackageManager);
+                    String pkg = provider.getString("package_name");
+                    Drawable appIcon = getAppIcon(pkg);
+                    if (appIcon != null) {
                         MAIN_EXECUTOR.post(() -> button.setImageDrawable(appIcon));
-                    } catch (PackageManager.NameNotFoundException ignored) {
                     }
-
                 });
+                button.setVisibility(VISIBLE);
             } else {
                 button.setVisibility(GONE);
             }
         }
         adapterItemWithPayload.setSelectionHandler(this::handleSelection);
+    }
+
+    /**
+     *  Normalizes the bitmap to look like rounded App Icon
+     *  TODO(b/170234747) to support styling, generate adaptive icon drawable and generate
+     *  bitmap from it.
+     */
+    private Bitmap roundBitmap(Bitmap icon) {
+        final RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(getResources(), icon);
+        d.setCornerRadius(R.attr.folderIconRadius);
+        d.setBounds(0, 0, mIconSize, mIconSize);
+        final Bitmap bitmap = Bitmap.createBitmap(d.getBounds().width(), d.getBounds().height(),
+                Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        d.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        d.draw(canvas);
+        return bitmap;
+    }
+
+    private void setIcon(Bitmap icon, Boolean round) {
+        if (round) {
+            RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(getResources(), icon);
+            d.setCornerRadius(R.attr.folderIconRadius);
+            d.setBounds(0, 0, mIconSize, mIconSize);
+            mIconView.setBackground(d);
+        } else {
+            mIconView.setBackground(new BitmapDrawable(getResources(), icon));
+        }
+    }
+
+
+    private Drawable getAppIcon(String pkg) {
+        try {
+            ApplicationInfo applicationInfo = mPackageManager.getApplicationInfo(
+                    pkg, 0);
+            return applicationInfo.loadIcon(mPackageManager);
+        } catch (PackageManager.NameNotFoundException ignored) {
+            return null;
+        }
     }
 
     @Override
@@ -155,7 +194,8 @@ public class SearchResultPeopleView extends LinearLayout implements
                     SearchTarget.ItemType.PEOPLE,
                     SearchTargetEvent.CHILD_SELECT);
             searchTargetEvent.bundle = new Bundle();
-            searchTargetEvent.bundle.putParcelable("intent", mIntent);
+            searchTargetEvent.bundle.putParcelable("intent", intent);
+            searchTargetEvent.bundle.putString("title", mTitleView.getText().toString());
             searchTargetEvent.bundle.putBundle("provider", provider);
             if (mPlugin != null) {
                 mPlugin.notifySearchTargetEvent(searchTargetEvent);
@@ -172,6 +212,7 @@ public class SearchResultPeopleView extends LinearLayout implements
                     eventType);
             searchTargetEvent.bundle = new Bundle();
             searchTargetEvent.bundle.putParcelable("intent", mIntent);
+            searchTargetEvent.bundle.putString("title", mTitleView.getText().toString());
             if (mPlugin != null) {
                 mPlugin.notifySearchTargetEvent(searchTargetEvent);
             }
