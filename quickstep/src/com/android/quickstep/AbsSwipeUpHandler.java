@@ -1418,6 +1418,11 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
         mGestureEndCallback = gestureEndCallback;
     }
 
+    @Override
+    public long getStartTouchTime() {
+        return mTouchTimeMs;
+    }
+
     protected void linkRecentsViewScroll() {
         SurfaceTransactionApplier.create(mRecentsView, applier -> {
             mTransformParams.setSyncTransactionApplier(applier);
