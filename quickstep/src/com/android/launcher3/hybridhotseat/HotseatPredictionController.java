@@ -55,6 +55,7 @@ import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.uioverrides.PredictedAppIcon;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.views.ArrowTipView;
 import com.android.launcher3.views.Snackbar;

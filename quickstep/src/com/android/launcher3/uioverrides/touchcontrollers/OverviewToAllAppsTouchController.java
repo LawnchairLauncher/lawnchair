@@ -25,6 +25,7 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.quickstep.TouchInteractionService;
 import com.android.quickstep.views.RecentsView;
 
@@ -71,5 +72,10 @@ public class OverviewToAllAppsTouchController extends PortraitStatesTouchControl
             return ALL_APPS;
         }
         return fromState;
+    }
+
+    @Override
+    protected int getLogContainerTypeForNormalState(MotionEvent ev) {
+        return LauncherLogProto.ContainerType.WORKSPACE;
     }
 }

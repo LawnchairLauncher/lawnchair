@@ -24,6 +24,7 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.states.StateAnimationConfig.AnimationFlags;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
 /**
  * TouchController to switch between NORMAL and ALL_APPS state.
@@ -66,6 +67,12 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
             return NORMAL;
         }
         return fromState;
+    }
+
+    @Override
+    protected int getLogContainerTypeForNormalState(MotionEvent ev) {
+        return mLauncher.getDragLayer().isEventOverView(mLauncher.getHotseat(), mTouchDownEvent)
+                ? ContainerType.HOTSEAT : ContainerType.WORKSPACE;
     }
 
     @Override

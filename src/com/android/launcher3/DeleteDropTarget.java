@@ -18,7 +18,8 @@ package com.android.launcher3;
 
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ITEM_DROPPED_ON_CANCEL;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ITEM_DROPPED_ON_REMOVE;
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_UNDO;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.TAP;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType.UNDO;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -27,19 +28,22 @@ import android.view.View;
 
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.dragndrop.DragOptions;
+import com.android.launcher3.logging.LoggerUtils;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.views.Snackbar;
 
 public class DeleteDropTarget extends ButtonDropTarget {
 
     private final StatsLogManager mStatsLogManager;
 
-    private StatsLogManager.LauncherEvent mLauncherEvent;
+    private int mControlType = ControlType.DEFAULT_CONTROLTYPE;
 
     public DeleteDropTarget(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -111,8 +115,8 @@ public class DeleteDropTarget extends ButtonDropTarget {
      * Set mControlType depending on the drag item.
      */
     private void setControlTypeBasedOnDragSource(ItemInfo item) {
-        mLauncherEvent = item.id != ItemInfo.NO_ID ? LAUNCHER_ITEM_DROPPED_ON_REMOVE
-                : LAUNCHER_ITEM_DROPPED_ON_CANCEL;
+        mControlType = item.id != ItemInfo.NO_ID ? ControlType.REMOVE_TARGET
+                : ControlType.CANCEL_TARGET;
     }
 
     @Override
@@ -123,7 +127,8 @@ public class DeleteDropTarget extends ButtonDropTarget {
         }
         super.onDrop(d, options);
         mStatsLogManager.logger().withInstanceId(d.logInstanceId)
-                .log(mLauncherEvent);
+                .log(mControlType == ControlType.REMOVE_TARGET ? LAUNCHER_ITEM_DROPPED_ON_REMOVE
+                        : LAUNCHER_ITEM_DROPPED_ON_CANCEL);
     }
 
     @Override
@@ -136,7 +141,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
             Runnable onUndoClicked = () -> {
                 mLauncher.setPageToBindSynchronously(itemPage);
                 modelWriter.abortDelete();
-                mLauncher.getStatsLogManager().logger().log(LAUNCHER_UNDO);
+                mLauncher.getUserEventDispatcher().logActionOnControl(TAP, UNDO);
             };
             Snackbar.show(mLauncher, R.string.item_removed, R.string.undo,
                     modelWriter::commitDelete, onUndoClicked);
@@ -155,5 +160,12 @@ public class DeleteDropTarget extends ButtonDropTarget {
         mLauncher.getWorkspace().stripEmptyScreens();
         mLauncher.getDragLayer()
                 .announceForAccessibility(getContext().getString(R.string.item_removed));
+    }
+
+    @Override
+    public Target getDropTargetForLogging() {
+        Target t = LoggerUtils.newTarget(Target.Type.CONTROL);
+        t.controlType = mControlType;
+        return t;
     }
 }

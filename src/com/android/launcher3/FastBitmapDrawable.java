@@ -33,8 +33,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.Property;
 
-import androidx.annotation.Nullable;
-
 import com.android.launcher3.graphics.PlaceHolderIconDrawable;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
@@ -55,8 +53,6 @@ public class FastBitmapDrawable extends Drawable {
     protected final Paint mPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
     protected Bitmap mBitmap;
     protected final int mIconColor;
-
-    @Nullable private ColorFilter mColorFilter;
 
     private boolean mIsPressed;
     private boolean mIsDisabled;
@@ -119,8 +115,7 @@ public class FastBitmapDrawable extends Drawable {
 
     @Override
     public void setColorFilter(ColorFilter cf) {
-        mColorFilter = cf;
-        updateFilter();
+        // No op
     }
 
     @Override
@@ -270,7 +265,7 @@ public class FastBitmapDrawable extends Drawable {
      * Updates the paint to reflect the current brightness and saturation.
      */
     protected void updateFilter() {
-        mPaint.setColorFilter(mIsDisabled ? getDisabledColorFilter() : mColorFilter);
+        mPaint.setColorFilter(mIsDisabled ? getDisabledColorFilter() : null);
         invalidateSelf();
     }
 

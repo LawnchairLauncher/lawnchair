@@ -45,9 +45,12 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.OverviewScrim;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.TouchController;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.AssistantUtilities;
@@ -208,6 +211,7 @@ public class NavBarToHomeTouchController implements TouchController,
     @Override
     public void onDragEnd(float velocity) {
         boolean fling = mSwipeDetector.isFling(velocity);
+        final int logAction = fling ? Touch.FLING : Touch.SWIPE;
         float progress = mCurrentAnimation.getProgressFraction();
         float interpolatedProgress = PULLBACK_INTERPOLATOR.getInterpolation(progress);
         boolean success = interpolatedProgress >= SUCCESS_TRANSITION_PROGRESS
@@ -226,7 +230,7 @@ public class NavBarToHomeTouchController implements TouchController,
                         () -> onSwipeInteractionCompleted(mEndState));
             }
             if (mStartState != mEndState) {
-                logHomeGesture();
+                // TODO: add to WW log
             }
             AbstractFloatingView topOpenView = AbstractFloatingView.getTopOpenView(mLauncher);
             if (topOpenView != null) {
@@ -251,10 +255,17 @@ public class NavBarToHomeTouchController implements TouchController,
         AccessibilityManagerCompat.sendStateEventToTest(mLauncher, targetState.ordinal);
     }
 
-    private void logHomeGesture() {
+    private void logStateChange(int startContainerType, int logAction) {
+        mLauncher.getUserEventDispatcher().logStateChangeAction(logAction,
+                LauncherLogProto.Action.Direction.UP,
+                mSwipeDetector.getDownX(), mSwipeDetector.getDownY(),
+                LauncherLogProto.ContainerType.NAVBAR,
+                startContainerType,
+                mEndState.containerType,
+                mLauncher.getWorkspace().getCurrentPage());
         mLauncher.getStatsLogManager().logger()
-                .withSrcState(mStartState.statsLogOrdinal)
-                .withDstState(mEndState.statsLogOrdinal)
+                .withSrcState(StatsLogManager.containerTypeToAtomState(mStartState.containerType))
+                .withDstState(StatsLogManager.containerTypeToAtomState(mEndState.containerType))
                 .log(LAUNCHER_HOME_GESTURE);
     }
 }

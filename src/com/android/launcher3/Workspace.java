@@ -85,6 +85,7 @@ import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent;
+import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
@@ -96,6 +97,8 @@ import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.touch.WorkspaceTouchListener;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSparseArrayMap;
@@ -1001,6 +1004,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     public void onOverlayScrollChanged(float scroll) {
         if (Float.compare(scroll, 1f) == 0) {
             if (!mOverlayShown) {
+                mLauncher.getUserEventDispatcher().logActionOnContainer(Action.Touch.SWIPE,
+                        Action.Direction.LEFT, ContainerType.WORKSPACE, 0);
                 mLauncher.getStatsLogManager().logger()
                         .withSrcState(LAUNCHER_STATE_HOME)
                         .withDstState(LAUNCHER_STATE_HOME)
@@ -1015,16 +1020,20 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             // Not announcing the overlay page for accessibility since it announces itself.
         } else if (Float.compare(scroll, 0f) == 0) {
             if (mOverlayShown) {
-                // TODO: this is logged unnecessarily on home gesture.
-                mLauncher.getStatsLogManager().logger()
-                        .withSrcState(LAUNCHER_STATE_HOME)
-                        .withDstState(LAUNCHER_STATE_HOME)
-                        .withContainerInfo(LauncherAtom.ContainerInfo.newBuilder()
-                                .setWorkspace(
-                                        LauncherAtom.WorkspaceContainer.newBuilder()
-                                                .setPageIndex(-1))
-                                .build())
-                        .log(LAUNCHER_SWIPERIGHT);
+                UserEventDispatcher ued = mLauncher.getUserEventDispatcher();
+                if (!ued.isPreviousHomeGesture()) {
+                    mLauncher.getUserEventDispatcher().logActionOnContainer(Action.Touch.SWIPE,
+                        Action.Direction.RIGHT, ContainerType.WORKSPACE, -1);
+                    mLauncher.getStatsLogManager().logger()
+                            .withSrcState(LAUNCHER_STATE_HOME)
+                            .withDstState(LAUNCHER_STATE_HOME)
+                            .withContainerInfo(LauncherAtom.ContainerInfo.newBuilder()
+                                    .setWorkspace(
+                                            LauncherAtom.WorkspaceContainer.newBuilder()
+                                                    .setPageIndex(-1))
+                                    .build())
+                            .log(LAUNCHER_SWIPERIGHT);
+                }
             } else if (Float.compare(mOverlayTranslation, 0f) != 0) {
                 // When arriving to 0 overscroll from non-zero overscroll, announce page for
                 // accessibility since default announcements were disabled while in overscroll
@@ -1115,8 +1124,12 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     protected void notifyPageSwitchListener(int prevPage) {
         super.notifyPageSwitchListener(prevPage);
         if (prevPage != mCurrentPage) {
+            int swipeDirection = (prevPage < mCurrentPage)
+                    ? Action.Direction.RIGHT : Action.Direction.LEFT;
             StatsLogManager.EventEnum event = (prevPage < mCurrentPage)
                     ? LAUNCHER_SWIPERIGHT : LAUNCHER_SWIPELEFT;
+            mLauncher.getUserEventDispatcher().logActionOnContainer(Action.Touch.SWIPE,
+                    swipeDirection, ContainerType.WORKSPACE, prevPage);
             mLauncher.getStatsLogManager().logger()
                     .withSrcState(LAUNCHER_STATE_HOME)
                     .withDstState(LAUNCHER_STATE_HOME)
@@ -1160,6 +1173,13 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     public void computeScrollWithoutInvalidation() {
         computeScrollHelper(false);
+    }
+
+    @Override
+    protected void determineScrollingStart(MotionEvent ev, float touchSlopScale) {
+        if (!isSwitchingState()) {
+            super.determineScrollingStart(ev, touchSlopScale);
+        }
     }
 
     @Override

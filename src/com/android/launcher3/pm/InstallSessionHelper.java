@@ -17,7 +17,6 @@
 package com.android.launcher3.pm;
 
 import static com.android.launcher3.Utilities.getPrefs;
-import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
@@ -32,7 +31,6 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.SessionCommitReceiver;
@@ -41,10 +39,10 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.ItemInstallQueue;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
+import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
-import com.android.launcher3.util.Preconditions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -67,27 +65,27 @@ public class InstallSessionHelper {
 
     private final LauncherApps mLauncherApps;
     private final Context mAppContext;
+    private final IntSet mPromiseIconIds;
 
     private final PackageInstaller mInstaller;
     private final HashMap<String, Boolean> mSessionVerifiedMap = new HashMap<>();
-
-    private IntSet mPromiseIconIds;
 
     public InstallSessionHelper(Context context) {
         mInstaller = context.getPackageManager().getPackageInstaller();
         mAppContext = context.getApplicationContext();
         mLauncherApps = context.getSystemService(LauncherApps.class);
+
+        mPromiseIconIds = IntSet.wrap(IntArray.fromConcatString(
+                getPrefs(context).getString(PROMISE_ICON_IDS, "")));
+
+        cleanUpPromiseIconIds();
     }
 
-    @WorkerThread
-    private IntSet getPromiseIconIds() {
-        Preconditions.assertWorkerThread();
-        if (mPromiseIconIds != null) {
-            return mPromiseIconIds;
-        }
-        mPromiseIconIds = IntSet.wrap(IntArray.fromConcatString(
-                getPrefs(mAppContext).getString(PROMISE_ICON_IDS, "")));
+    public static UserHandle getUserHandle(SessionInfo info) {
+        return Utilities.ATLEAST_Q ? info.getUser() : Process.myUserHandle();
+    }
 
+    protected void cleanUpPromiseIconIds() {
         IntArray existingIds = new IntArray();
         for (SessionInfo info : getActiveSessions().values()) {
             existingIds.add(info.getSessionId());
@@ -102,7 +100,6 @@ public class InstallSessionHelper {
         for (int i = idsToRemove.size() - 1; i >= 0; --i) {
             mPromiseIconIds.getArray().removeValue(idsToRemove.get(i));
         }
-        return mPromiseIconIds;
     }
 
     public HashMap<PackageUserKey, SessionInfo> getActiveSessions() {
@@ -129,7 +126,7 @@ public class InstallSessionHelper {
 
     private void updatePromiseIconPrefs() {
         getPrefs(mAppContext).edit()
-                .putString(PROMISE_ICON_IDS, getPromiseIconIds().getArray().toConcatString())
+                .putString(PROMISE_ICON_IDS, mPromiseIconIds.getArray().toConcatString())
                 .apply();
     }
 
@@ -187,15 +184,13 @@ public class InstallSessionHelper {
         return info.getInstallReason() == PackageManager.INSTALL_REASON_DEVICE_RESTORE;
     }
 
-    @WorkerThread
     public boolean promiseIconAddedForId(int sessionId) {
-        return getPromiseIconIds().contains(sessionId);
+        return mPromiseIconIds.contains(sessionId);
     }
 
-    @WorkerThread
     public void removePromiseIconId(int sessionId) {
-        if (promiseIconAddedForId(sessionId)) {
-            getPromiseIconIds().getArray().removeValue(sessionId);
+        if (mPromiseIconIds.contains(sessionId)) {
+            mPromiseIconIds.getArray().removeValue(sessionId);
             updatePromiseIconPrefs();
         }
     }
@@ -208,7 +203,6 @@ public class InstallSessionHelper {
      * - The app is not already installed
      * - A promise icon for the session has not already been created
      */
-    @WorkerThread
     void tryQueuePromiseAppIcon(PackageInstaller.SessionInfo sessionInfo) {
         if (FeatureFlags.PROMISE_APPS_NEW_INSTALLS.get()
                 && SessionCommitReceiver.isEnabled(mAppContext)
@@ -216,24 +210,25 @@ public class InstallSessionHelper {
                 && sessionInfo.getInstallReason() == PackageManager.INSTALL_REASON_USER
                 && sessionInfo.getAppIcon() != null
                 && !TextUtils.isEmpty(sessionInfo.getAppLabel())
-                && !promiseIconAddedForId(sessionInfo.getSessionId())
+                && !mPromiseIconIds.contains(sessionInfo.getSessionId())
                 && new PackageManagerHelper(mAppContext).getApplicationInfo(
                         sessionInfo.getAppPackageName(), getUserHandle(sessionInfo), 0) == null) {
             ItemInstallQueue.INSTANCE.get(mAppContext)
                     .queueItem(sessionInfo.getAppPackageName(), getUserHandle(sessionInfo));
 
-            getPromiseIconIds().add(sessionInfo.getSessionId());
+            mPromiseIconIds.add(sessionInfo.getSessionId());
             updatePromiseIconPrefs();
         }
     }
 
-    public InstallSessionTracker registerInstallTracker(InstallSessionTracker.Callback callback) {
+    public InstallSessionTracker registerInstallTracker(
+            InstallSessionTracker.Callback callback, LooperExecutor executor) {
         InstallSessionTracker tracker = new InstallSessionTracker(this, callback);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            mInstaller.registerSessionCallback(tracker, MODEL_EXECUTOR.getHandler());
+            mInstaller.registerSessionCallback(tracker, executor.getHandler());
         } else {
-            mLauncherApps.registerPackageInstallerSessionCallback(MODEL_EXECUTOR, tracker);
+            mLauncherApps.registerPackageInstallerSessionCallback(executor, tracker);
         }
         return tracker;
     }
@@ -244,9 +239,5 @@ public class InstallSessionHelper {
         } else {
             mLauncherApps.unregisterPackageInstallerSessionCallback(tracker);
         }
-    }
-
-    public static UserHandle getUserHandle(SessionInfo info) {
-        return Utilities.ATLEAST_Q ? info.getUser() : Process.myUserHandle();
     }
 }

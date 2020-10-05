@@ -12,6 +12,8 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.states.StateAnimationConfig.AnimationFlags;
 import com.android.launcher3.touch.AbstractStateChangeTouchController;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.quickstep.SystemUiProxy;
 
 /**
@@ -44,6 +46,11 @@ public class LandscapeEdgeSwipeController extends AbstractStateChangeTouchContro
     }
 
     @Override
+    protected int getLogContainerTypeForNormalState(MotionEvent ev) {
+        return LauncherLogProto.ContainerType.NAVBAR;
+    }
+
+    @Override
     protected float getShiftRange() {
         return mLauncher.getDragLayer().getWidth();
     }
@@ -58,8 +65,13 @@ public class LandscapeEdgeSwipeController extends AbstractStateChangeTouchContro
     }
 
     @Override
-    protected void onSwipeInteractionCompleted(LauncherState targetState) {
-        super.onSwipeInteractionCompleted(targetState);
+    protected int getDirectionForLog() {
+        return mLauncher.getDeviceProfile().isSeascape() ? Direction.RIGHT : Direction.LEFT;
+    }
+
+    @Override
+    protected void onSwipeInteractionCompleted(LauncherState targetState, int logAction) {
+        super.onSwipeInteractionCompleted(targetState, logAction);
         if (mStartState == NORMAL && targetState == OVERVIEW) {
             SystemUiProxy.INSTANCE.get(mLauncher).onOverviewShown(true, TAG);
         }
