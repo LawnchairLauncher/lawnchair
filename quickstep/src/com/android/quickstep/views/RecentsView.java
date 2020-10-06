@@ -35,16 +35,14 @@ import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_CLEAR_ALL;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_DISMISS_SWIPE_UP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_SWIPE_DOWN;
 import static com.android.launcher3.statehandlers.DepthController.DEPTH;
 import static com.android.launcher3.uioverrides.touchcontrollers.TaskViewTouchController.SUCCESS_TRANSITION_PROGRESS;
-import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.TAP;
-import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType.CLEAR_ALL_BUTTON;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
 import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
-import static com.android.quickstep.views.OverviewActionsView.HIDDEN_GESTURE_RUNNING;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NON_ZERO_ROTATION;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NO_RECENTS;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NO_TASKS;
@@ -109,7 +107,6 @@ import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.touch.PagedOrientationHandler.CurveProperties;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.DynamicResource;
 import com.android.launcher3.util.MultiValueAlpha;
@@ -118,6 +115,7 @@ import com.android.launcher3.util.ResourceBasedOverride.Overrides;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.ViewPool;
 import com.android.quickstep.BaseActivityInterface;
+import com.android.quickstep.GestureState;
 import com.android.quickstep.RecentsAnimationController;
 import com.android.quickstep.RecentsAnimationTargets;
 import com.android.quickstep.RecentsModel;
@@ -1129,7 +1127,6 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         setEnableDrawingLiveTile(false);
         setRunningTaskHidden(true);
         setRunningTaskIconScaledDown(true);
-        mActionsView.updateHiddenFlags(HIDDEN_GESTURE_RUNNING, true);
     }
 
     /**
@@ -1183,7 +1180,14 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     }
 
     /**
-     * Called when a gesture from an app has finished.
+     * Called when a gesture from an app has finished, and an end target has been determined.
+     */
+    public void onGestureEndTargetCalculated(GestureState.GestureEndTarget endTarget) {
+
+    }
+
+    /**
+     * Called when a gesture from an app has finished, and the animation to the target has ended.
      */
     public void onGestureAnimationEnd() {
         if (mOrientationState.setGestureActive(false)) {
@@ -1322,7 +1326,6 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     }
 
     private void animateActionsViewIn() {
-        mActionsView.updateHiddenFlags(HIDDEN_GESTURE_RUNNING, false);
         ObjectAnimator anim = ObjectAnimator.ofFloat(
                 mActionsView.getVisibilityAlpha(), MultiValueAlpha.VALUE, 0, 1);
         anim.setDuration(TaskView.SCALE_ICON_DURATION);
@@ -1407,13 +1410,12 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
          * Updates linearInterpolation for the provided child position
          */
         public void updateInterpolation(float childStart) {
-            float scaledHalfPageSize = halfPageSize / pageParentScale;
-            float pageCenter = childStart + scaledHalfPageSize;
+            float pageCenter = childStart + halfPageSize;
             float distanceFromScreenCenter = screenCenter - pageCenter;
             // How far the page has to move from the center to be offscreen, taking into account
             // the EDGE_SCALE_DOWN_FACTOR that will be applied at that position.
             float distanceToReachEdge = halfScreenSize
-                    + scaledHalfPageSize * (1 - TaskView.EDGE_SCALE_DOWN_FACTOR);
+                    + halfPageSize * (1 - TaskView.EDGE_SCALE_DOWN_FACTOR);
             linearInterpolation = Math.min(1,
                     Math.abs(distanceFromScreenCenter) / distanceToReachEdge);
         }
@@ -1459,7 +1461,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     public PendingAnimation createTaskDismissAnimation(TaskView taskView, boolean animateTaskView,
             boolean shouldRemoveTask, long duration) {
         if (mPendingAnimation != null) {
-            mPendingAnimation.finish(false, Touch.SWIPE);
+            mPendingAnimation.finish(false);
         }
         PendingAnimation anim = new PendingAnimation(duration);
 
@@ -1621,7 +1623,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     protected void runDismissAnimation(PendingAnimation pendingAnim) {
         AnimatorPlaybackController controller = pendingAnim.createPlaybackController();
         controller.dispatchOnStart();
-        controller.setEndAction(() -> pendingAnim.finish(true, Touch.SWIPE));
+        controller.setEndAction(() -> pendingAnim.finish(true));
         controller.getAnimationPlayer().setInterpolator(FAST_OUT_SLOW_IN);
         controller.start();
     }
@@ -1634,7 +1636,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     @SuppressWarnings("unused")
     private void dismissAllTasks(View view) {
         runDismissAnimation(createAllTasksDismissAnimation(DISMISS_TASK_DURATION));
-        mActivity.getUserEventDispatcher().logActionOnControl(TAP, CLEAR_ALL_BUTTON);
+        mActivity.getStatsLogManager().logger().log(LAUNCHER_TASK_CLEAR_ALL);
     }
 
     private void dismissCurrentTask() {
@@ -2159,7 +2161,12 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                         tv.notifyTaskLaunchFailed(TAG);
                     }
                 };
-                tv.launchTask(false, onLaunchResult, getHandler());
+                if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+                    finishRecentsAnimation(false /* toRecents */, null);
+                    onLaunchResult.accept(true /* success */);
+                } else {
+                    tv.launchTask(false, onLaunchResult, getHandler());
+                }
                 Task task = tv.getTask();
                 if (task != null) {
                     mActivity.getStatsLogManager().logger().withItemInfo(tv.getItemInfo())

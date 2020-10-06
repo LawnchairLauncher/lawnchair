@@ -18,8 +18,6 @@ package com.android.launcher3.allapps;
 
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType.HOTSEAT;
-import static com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType.PREDICTION;
 
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
@@ -120,10 +118,10 @@ public class DiscoveryBounce extends AbstractFloatingView {
         return (type & TYPE_DISCOVERY_BOUNCE) != 0;
     }
 
-    private void show(int containerType) {
+    private void show() {
         mIsOpen = true;
         mLauncher.getDragLayer().addView(this);
-        mLauncher.getUserEventDispatcher().logActionBounceTip(containerType);
+        // TODO: add WW log for discovery bounce tip show event.
     }
 
     public static void showForHomeIfNeeded(Launcher launcher) {
@@ -146,7 +144,7 @@ public class DiscoveryBounce extends AbstractFloatingView {
         }
         onboardingPrefs.incrementEventCount(OnboardingPrefs.HOME_BOUNCE_COUNT);
 
-        new DiscoveryBounce(launcher, 0).show(HOTSEAT);
+        new DiscoveryBounce(launcher, 0).show();
     }
 
     public static void showForOverviewIfNeeded(Launcher launcher,
@@ -179,7 +177,7 @@ public class DiscoveryBounce extends AbstractFloatingView {
         onboardingPrefs.incrementEventCount(OnboardingPrefs.SHELF_BOUNCE_COUNT);
 
         new DiscoveryBounce(launcher, (1 - OVERVIEW.getVerticalProgress(launcher)))
-                .show(PREDICTION);
+                .show();
     }
 
     /**

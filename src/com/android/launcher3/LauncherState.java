@@ -16,6 +16,7 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
+import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 import static com.android.launcher3.testing.TestProtocol.ALL_APPS_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.BACKGROUND_APP_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.HINT_STATE_ORDINAL;
@@ -35,7 +36,6 @@ import com.android.launcher3.states.SpringLoadedState;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.uioverrides.states.AllAppsState;
 import com.android.launcher3.uioverrides.states.OverviewState;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
 import java.util.Arrays;
 
@@ -97,7 +97,7 @@ public abstract class LauncherState implements BaseState<LauncherState> {
      * TODO: Create a separate class for NORMAL state.
      */
     public static final LauncherState NORMAL = new LauncherState(NORMAL_STATE_ORDINAL,
-            ContainerType.WORKSPACE,
+            LAUNCHER_STATE_HOME,
             FLAG_DISABLE_RESTORE | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED | FLAG_HIDE_BACK_BUTTON |
                     FLAG_HAS_SYS_UI_SCRIM) {
         @Override
@@ -126,9 +126,9 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     public final int ordinal;
 
     /**
-     * Used for containerType in {@link com.android.launcher3.logging.UserEventDispatcher}
+     * Used for {@link com.android.launcher3.logging.StatsLogManager}
      */
-    public final int containerType;
+    public final int statsLogOrdinal;
 
     /**
      * True if the state has overview panel visible.
@@ -137,8 +137,8 @@ public abstract class LauncherState implements BaseState<LauncherState> {
 
     private final int mFlags;
 
-    public LauncherState(int id, int containerType, int flags) {
-        this.containerType = containerType;
+    public LauncherState(int id, int statsLogOrdinal, int flags) {
+        this.statsLogOrdinal = statsLogOrdinal;
         this.mFlags = flags;
         this.overviewUi = (flags & FLAG_OVERVIEW_UI) != 0;
         this.ordinal = id;

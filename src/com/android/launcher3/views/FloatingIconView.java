@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.views;
 
-import static com.android.launcher3.LauncherAnimUtils.DRAWABLE_ALPHA;
 import static com.android.launcher3.Utilities.getBadge;
 import static com.android.launcher3.Utilities.getFullDrawable;
 import static com.android.launcher3.config.FeatureFlags.ADAPTIVE_ICON_WINDOW_ANIM;
@@ -23,9 +22,6 @@ import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import static com.android.launcher3.views.IconLabelDotView.setIconAndDotVisible;
 
 import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -74,7 +70,6 @@ public class FloatingIconView extends FrameLayout implements
     private static @Nullable IconLoadResult sIconLoadResult;
 
     public static final float SHAPE_PROGRESS_DURATION = 0.10f;
-    private static final int FADE_DURATION_MS = 200;
     private static final RectF sTmpRectF = new RectF();
     private static final Object[] sTmpObjArray = new Object[1];
 
@@ -89,6 +84,9 @@ public class FloatingIconView extends FrameLayout implements
 
     private IconLoadResult mIconLoadResult;
 
+    // Draw the drawable of the BubbleTextView behind ClipIconView to reveal the built in shadow.
+    private View mBtvDrawable;
+
     private ClipIconView mClipIconView;
     private @Nullable Drawable mBadge;
 
@@ -98,7 +96,6 @@ public class FloatingIconView extends FrameLayout implements
 
     private final Rect mFinalDrawableBounds = new Rect();
 
-    private AnimatorSet mFadeAnimatorSet;
     private ListenerView mListenerView;
     private Runnable mFastFinishRunnable;
 
@@ -116,6 +113,8 @@ public class FloatingIconView extends FrameLayout implements
         mIsRtl = Utilities.isRtl(getResources());
         mListenerView = new ListenerView(context, attrs);
         mClipIconView = new ClipIconView(context, attrs);
+        mBtvDrawable = new ImageView(context, attrs);
+        addView(mBtvDrawable);
         addView(mClipIconView);
         setWillNotDraw(false);
     }
@@ -176,6 +175,7 @@ public class FloatingIconView extends FrameLayout implements
         setLayoutParams(lp);
 
         mClipIconView.setLayoutParams(new FrameLayout.LayoutParams(lp.width, lp.height));
+        mBtvDrawable.setLayoutParams(new FrameLayout.LayoutParams(lp.width, lp.height));
     }
 
     private void updatePosition(RectF pos, InsettableFrameLayout.LayoutParams lp) {
@@ -292,6 +292,8 @@ public class FloatingIconView extends FrameLayout implements
         drawable = drawable == null ? null : drawable.getConstantState().newDrawable();
         int iconOffset = getOffsetForIconBounds(l, drawable, pos);
         synchronized (iconLoadResult) {
+            iconLoadResult.btvDrawable = btvIcon == null || drawable == btvIcon
+                    ? null : btvIcon.getConstantState().newDrawable();
             iconLoadResult.drawable = drawable;
             iconLoadResult.badge = badge;
             iconLoadResult.iconOffset = iconOffset;
@@ -311,7 +313,8 @@ public class FloatingIconView extends FrameLayout implements
      * @param iconOffset The amount of offset needed to match this view with the original view.
      */
     @UiThread
-    private void setIcon(@Nullable Drawable drawable, @Nullable Drawable badge, int iconOffset) {
+    private void setIcon(@Nullable Drawable drawable, @Nullable Drawable badge,
+            @Nullable Drawable btvIcon, int iconOffset) {
         final InsettableFrameLayout.LayoutParams lp =
                 (InsettableFrameLayout.LayoutParams) getLayoutParams();
         mBadge = badge;
@@ -342,6 +345,10 @@ public class FloatingIconView extends FrameLayout implements
                 mBadge.setBounds(0, 0, clipViewOgWidth, clipViewOgHeight);
             }
         }
+
+        if (!mIsOpening && btvIcon != null) {
+            mBtvDrawable.setBackground(btvIcon);
+        }
         invalidate();
     }
 
@@ -360,7 +367,7 @@ public class FloatingIconView extends FrameLayout implements
         synchronized (mIconLoadResult) {
             if (mIconLoadResult.isIconLoaded) {
                 setIcon(mIconLoadResult.drawable, mIconLoadResult.badge,
-                        mIconLoadResult.iconOffset);
+                        mIconLoadResult.btvDrawable, mIconLoadResult.iconOffset);
                 setIconAndDotVisible(originalView, false);
             } else {
                 mIconLoadResult.onIconLoaded = () -> {
@@ -369,7 +376,7 @@ public class FloatingIconView extends FrameLayout implements
                     }
 
                     setIcon(mIconLoadResult.drawable, mIconLoadResult.badge,
-                            mIconLoadResult.iconOffset);
+                            mIconLoadResult.btvDrawable, mIconLoadResult.iconOffset);
 
                     setVisibility(VISIBLE);
                     setIconAndDotVisible(originalView, false);
@@ -433,10 +440,6 @@ public class FloatingIconView extends FrameLayout implements
         if (mEndRunnable != null) {
             mEndRunnable.run();
             mEndRunnable = null;
-        }
-        if (mFadeAnimatorSet != null) {
-            mFadeAnimatorSet.end();
-            mFadeAnimatorSet = null;
         }
     }
 
@@ -546,8 +549,16 @@ public class FloatingIconView extends FrameLayout implements
                     setIconAndDotVisible(originalView, true);
                     view.finish(dragLayer);
                 } else {
-                    view.mFadeAnimatorSet = view.createFadeAnimation(originalView, dragLayer);
-                    view.mFadeAnimatorSet.start();
+                    originalView.setVisibility(VISIBLE);
+                    if (originalView instanceof IconLabelDotView) {
+                        setIconAndDotVisible(originalView, true);
+                    }
+                    if (originalView instanceof BubbleTextView) {
+                        BubbleTextView btv = (BubbleTextView) originalView;
+                        btv.setIconVisible(true);
+                        btv.setForceHideDot(true);
+                    }
+                    view.finish(dragLayer);
                 }
             } else {
                 view.finish(dragLayer);
@@ -562,47 +573,6 @@ public class FloatingIconView extends FrameLayout implements
         }
 
         return view;
-    }
-
-    private AnimatorSet createFadeAnimation(View originalView, DragLayer dragLayer) {
-        AnimatorSet fade = new AnimatorSet();
-        fade.setDuration(FADE_DURATION_MS);
-        fade.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                originalView.setVisibility(VISIBLE);
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                finish(dragLayer);
-            }
-        });
-
-        if (originalView instanceof IconLabelDotView) {
-            fade.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    setIconAndDotVisible(originalView, true);
-                }
-            });
-        }
-
-        if (originalView instanceof BubbleTextView) {
-            BubbleTextView btv = (BubbleTextView) originalView;
-            fade.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    btv.setIconVisible(true);
-                    btv.setForceHideDot(true);
-                }
-            });
-            fade.play(ObjectAnimator.ofInt(btv.getIcon(), DRAWABLE_ALPHA, 0, 255));
-        } else if (!(originalView instanceof FolderIcon)) {
-            fade.play(ObjectAnimator.ofFloat(originalView, ALPHA, 0f, 1f));
-        }
-
-        return fade;
     }
 
     private void finish(DragLayer dragLayer) {
@@ -628,11 +598,7 @@ public class FloatingIconView extends FrameLayout implements
         mLoadIconSignal = null;
         mEndRunnable = null;
         mFinalDrawableBounds.setEmpty();
-        if (mFadeAnimatorSet != null) {
-            mFadeAnimatorSet.cancel();
-        }
         mPositionOut = null;
-        mFadeAnimatorSet = null;
         mListenerView.setListener(null);
         mOriginalIcon = null;
         mOnTargetChangeRunnable = null;
@@ -640,11 +606,13 @@ public class FloatingIconView extends FrameLayout implements
         sTmpObjArray[0] = null;
         mIconLoadResult = null;
         mClipIconView.recycle();
+        mBtvDrawable.setBackground(null);
         mFastFinishRunnable = null;
     }
 
     private static class IconLoadResult {
         final ItemInfo itemInfo;
+        Drawable btvDrawable;
         Drawable drawable;
         Drawable badge;
         int iconOffset;

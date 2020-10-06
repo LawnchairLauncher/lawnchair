@@ -278,7 +278,6 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
             int start = mOrientationState.getOrientationHandler()
                     .getPrimaryValue(mTaskRect.left, mTaskRect.top);
             mScrollState.screenCenter = start + mScrollState.scroll + mScrollState.halfPageSize;
-            mScrollState.pageParentScale = recentsViewScale.value;
             mScrollState.updateInterpolation(start);
             mCurveScale = TaskView.getCurveScaleForInterpolation(mScrollState.linearInterpolation);
         }
@@ -297,9 +296,9 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         mMatrix.postTranslate(insets.left, insets.top);
         mMatrix.postScale(scale, scale);
 
-        // Apply TaskView matrix: translate, scale, scroll
-        mMatrix.postTranslate(mTaskRect.left, mTaskRect.top + mOffsetY);
+        // Apply TaskView matrix: scale, translate, scroll
         mMatrix.postScale(mCurveScale, mCurveScale, taskWidth / 2, taskHeight / 2);
+        mMatrix.postTranslate(mTaskRect.left, mTaskRect.top + mOffsetY);
         mOrientationState.getOrientationHandler().set(
                 mMatrix, MATRIX_POST_TRANSLATE, mScrollState.scroll);
 
