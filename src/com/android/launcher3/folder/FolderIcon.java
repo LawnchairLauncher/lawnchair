@@ -478,6 +478,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
                 // event is assumed to be folder creation on the server side.
                 .withEditText(newTitle.toString())
                 .log(LAUNCHER_FOLDER_AUTO_LABELED);
+        mFolder.logFolderLabelState(fromState, ToState.TO_SUGGESTION0);
     }
 
 

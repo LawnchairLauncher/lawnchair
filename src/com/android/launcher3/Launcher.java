@@ -18,7 +18,6 @@ package com.android.launcher3;
 
 import static android.content.pm.ActivityInfo.CONFIG_ORIENTATION;
 import static android.content.pm.ActivityInfo.CONFIG_SCREEN_SIZE;
-import static android.view.View.IMPORTANT_FOR_ACCESSIBILITY_NO;
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
@@ -37,10 +36,11 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_LAUNCHER_LOAD;
+import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
-import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ONRESUME;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ONSTOP;
+import static com.android.launcher3.logging.StatsLogManager.containerTypeToAtomState;
 import static com.android.launcher3.model.ItemInstallQueue.FLAG_ACTIVITY_PAUSED;
 import static com.android.launcher3.model.ItemInstallQueue.FLAG_DRAG_AND_DROP;
 import static com.android.launcher3.model.ItemInstallQueue.FLAG_LOADER_RUNNING;
@@ -70,7 +70,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CancellationSignal;
@@ -90,10 +89,9 @@ import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager.LayoutParams;
+import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.OvershootInterpolator;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.CallSuper;
@@ -120,13 +118,13 @@ import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.folder.FolderGridOrganizer;
 import com.android.launcher3.folder.FolderIcon;
-import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.keyboard.CustomActionsPopup;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.logging.StatsLogManager;
+import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.ItemInstallQueue;
 import com.android.launcher3.model.ModelUtils;
@@ -154,6 +152,9 @@ import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.AllAppsSwipeController;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ActivityResultInfo;
 import com.android.launcher3.util.ActivityTracker;
 import com.android.launcher3.util.ComponentKey;
@@ -268,8 +269,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
     private static final int APPS_VIEW_ALPHA_CHANNEL_INDEX = 1;
     private static final int SCRIM_VIEW_ALPHA_CHANNEL_INDEX = 0;
-
-    private static final int THEME_CROSS_FADE_ANIMATION_DURATION = 375;
 
     private LauncherAppTransitionManager mAppTransitionManager;
     private Configuration mOldConfig;
@@ -402,7 +401,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
         inflateRootView(R.layout.launcher);
         setupViews();
-        crossFadeWithPreviousAppearance();
         mPopupDataProvider = new PopupDataProvider(this::updateNotificationDots);
 
         mAppTransitionManager = LauncherAppTransitionManager.newInstance(this);
@@ -479,7 +477,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                 () -> getStateManager().goToState(NORMAL));
 
         if (Utilities.ATLEAST_R) {
-            getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         }
 
         mLifecycleRegistry = new LifecycleRegistry(this);
@@ -557,6 +555,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     }
 
     private void onIdpChanged(InvariantDeviceProfile idp) {
+        mUserEventDispatcher = null;
 
         initDeviceProfile(idp);
         dispatchDeviceProfileChanged();
@@ -912,7 +911,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
             mOverlayManager.onActivityStopped(this);
         }
 
-        logStopAndResume(false /* isResume */);
+        logStopAndResume(Action.Command.STOP);
         mAppWidgetHost.setListenIfResumed(false);
         NotificationListener.removeNotificationsChangedListener();
     }
@@ -934,7 +933,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     @Override
     @CallSuper
     protected void onDeferredResumed() {
-        logStopAndResume(true /* isResume */);
+        logStopAndResume(Action.Command.RESUME);
 
         // Process any items that were added while Launcher was away.
         ItemInstallQueue.INSTANCE.get(this)
@@ -951,28 +950,32 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
     protected void handlePendingActivityRequest() { }
 
-    private void logStopAndResume(boolean isResume) {
+    private void logStopAndResume(int command) {
         if (mPendingExecutor != null) return;
         int pageIndex = mWorkspace.isOverlayShown() ? -1 : mWorkspace.getCurrentPage();
-        int statsLogOrdinal = mStateManager.getState().statsLogOrdinal;
+        int containerType = mStateManager.getState().containerType;
 
         StatsLogManager.EventEnum event;
         StatsLogManager.StatsLogger logger = getStatsLogManager().logger();
-        if (isResume) {
+        if (command == Action.Command.RESUME) {
             logger.withSrcState(LAUNCHER_STATE_BACKGROUND)
-                .withDstState(mStateManager.getState().statsLogOrdinal);
+                .withDstState(containerTypeToAtomState(mStateManager.getState().containerType));
             event = LAUNCHER_ONRESUME;
         } else { /* command == Action.Command.STOP */
-            logger.withSrcState(mStateManager.getState().statsLogOrdinal)
+            logger.withSrcState(containerTypeToAtomState(mStateManager.getState().containerType))
                     .withDstState(LAUNCHER_STATE_BACKGROUND);
             event = LAUNCHER_ONSTOP;
         }
 
-        if (statsLogOrdinal == LAUNCHER_STATE_HOME && mWorkspace != null) {
+        if (containerType == ContainerType.WORKSPACE && mWorkspace != null) {
+            getUserEventDispatcher().logActionCommand(command,
+                    containerType, -1, pageIndex);
             logger.withContainerInfo(LauncherAtom.ContainerInfo.newBuilder()
                     .setWorkspace(
                             LauncherAtom.WorkspaceContainer.newBuilder()
                                     .setPageIndex(pageIndex)).build());
+        } else {
+            getUserEventDispatcher().logActionCommand(command, containerType, -1);
         }
         logger.log(event);
     }
@@ -1362,18 +1365,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         closeContextMenu();
     }
 
-    @Override
-    public Object onRetainNonConfigurationInstance() {
-        int width = mDragLayer.getWidth();
-        int height = mDragLayer.getHeight();
-
-        if (width <= 0 || height <= 0) {
-            return null;
-        }
-
-        return BitmapRenderer.createHardwareBitmap(width, height, mDragLayer::draw);
-    }
-
     public AllAppsTransitionController getAllAppsController() {
         return mAllAppsController;
     }
@@ -1474,6 +1465,11 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
             }
 
             // Handle HOME_INTENT
+            UserEventDispatcher ued = getUserEventDispatcher();
+            Target target = newContainerTarget(mStateManager.getState().containerType);
+            target.pageIndex = mWorkspace.getCurrentPage();
+            ued.logActionCommand(Action.Command.HOME_INTENT, target,
+                    newContainerTarget(ContainerType.WORKSPACE));
             hideKeyboard();
 
             if (mLauncherCallbacks != null) {
@@ -2762,41 +2758,5 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     public interface OnResumeCallback {
 
         void onLauncherResume();
-    }
-
-    /**
-     * Cross-fades the launcher's updated appearance with its previous appearance.
-     *
-     * This method is used to cross-fade UI updates on activity creation, specifically dark mode
-     * updates.
-     */
-    private void crossFadeWithPreviousAppearance() {
-        Bitmap previousAppearanceBitmap = (Bitmap) getLastNonConfigurationInstance();
-
-        if (previousAppearanceBitmap == null) {
-            return;
-        }
-
-        ImageView crossFadeHelper = new ImageView(this);
-
-        crossFadeHelper.setImageBitmap(previousAppearanceBitmap);
-        crossFadeHelper.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
-
-        InsettableFrameLayout.LayoutParams layoutParams = new InsettableFrameLayout.LayoutParams(
-                InsettableFrameLayout.LayoutParams.MATCH_PARENT,
-                InsettableFrameLayout.LayoutParams.MATCH_PARENT);
-
-        layoutParams.ignoreInsets = true;
-
-        crossFadeHelper.setLayoutParams(layoutParams);
-
-        getRootView().addView(crossFadeHelper);
-
-        crossFadeHelper
-                .animate()
-                .setDuration(THEME_CROSS_FADE_ANIMATION_DURATION)
-                .alpha(0f)
-                .withEndAction(() -> getRootView().removeView(crossFadeHelper))
-                .start();
     }
 }

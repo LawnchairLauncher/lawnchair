@@ -143,10 +143,6 @@ public class EdgeBackGestureHandler implements OnTouchListener {
         return false;
     }
 
-    boolean onInterceptTouch(MotionEvent motionEvent) {
-        return isWithinTouchRegion((int) motionEvent.getX(), (int) motionEvent.getY());
-    }
-
     private boolean isWithinTouchRegion(int x, int y) {
         // Disallow if too far from the edge
         if (x > mEdgeWidth + mLeftInset && x < (mDisplaySize.x - mEdgeWidth - mRightInset)) {

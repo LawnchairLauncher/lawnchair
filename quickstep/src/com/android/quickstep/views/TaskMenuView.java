@@ -16,7 +16,6 @@
 
 package com.android.quickstep.views;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.quickstep.views.TaskThumbnailView.DIM_ALPHA;
 
 import android.animation.Animator;
@@ -230,16 +229,7 @@ public class TaskMenuView extends AbstractFloatingView {
                 menuOptionView.findViewById(R.id.icon), menuOptionView.findViewById(R.id.text));
         LayoutParams lp = (LayoutParams) menuOptionView.getLayoutParams();
         mTaskView.getPagedOrientationHandler().setLayoutParamsForTaskMenuOptionItem(lp);
-        menuOptionView.setOnClickListener(view -> {
-            if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-                RecentsView recentsView = mTaskView.getRecentsView();
-                recentsView.switchToScreenshot(null,
-                        () -> recentsView.finishRecentsAnimation(true /* toRecents */,
-                                () -> menuOption.onClick(view)));
-            } else {
-                menuOption.onClick(view);
-            }
-        });
+        menuOptionView.setOnClickListener(menuOption);
         mOptionLayout.addView(menuOptionView);
     }
 

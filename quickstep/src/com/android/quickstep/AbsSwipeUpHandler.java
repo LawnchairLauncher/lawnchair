@@ -75,8 +75,12 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
+import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.util.VibratorWrapper;
 import com.android.launcher3.util.WindowBounds;
@@ -97,7 +101,6 @@ import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputConsumerController;
-import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.LatencyTrackerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.TaskInfoCompat;
@@ -216,7 +219,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
 
     private boolean mPassedOverviewThreshold;
     private boolean mGestureStarted;
-    private boolean mLogDirectionUpOrLeft = true;
+    private int mLogAction = Touch.SWIPE;
+    private int mLogDirection = Direction.UP;
     private PointF mDownPos;
     private boolean mIsLikelyToStartNewTask;
 
@@ -430,13 +434,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
                 mOnDeferredActivityLaunch);
 
         mGestureState.runOnceAtState(STATE_END_TARGET_SET,
-                () -> {
-                    mDeviceState.getRotationTouchHelper()
-                            .onEndTargetCalculated(mGestureState.getEndTarget(),
-                                    mActivityInterface);
-
-                    mRecentsView.onGestureEndTargetCalculated(mGestureState.getEndTarget());
-                });
+                () -> mDeviceState.getRotationTouchHelper().
+                        onEndTargetCalculated(mGestureState.getEndTarget(),
+                                mActivityInterface));
 
         notifyGestureStartedAsync();
     }
@@ -741,6 +741,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
     public void onGestureCancelled() {
         updateDisplacement(0);
         mStateCallback.setStateOnUiThread(STATE_GESTURE_COMPLETED);
+        mLogAction = Touch.SWIPE_NOOP;
         handleNormalGestureEnd(0, false, new PointF(), true /* isCancel */);
     }
 
@@ -756,11 +757,13 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
         boolean isFling = mGestureStarted && !mIsMotionPaused
                 && Math.abs(endVelocity) > flingThreshold;
         mStateCallback.setStateOnUiThread(STATE_GESTURE_COMPLETED);
+
+        mLogAction = isFling ? Touch.FLING : Touch.SWIPE;
         boolean isVelocityVertical = Math.abs(velocity.y) > Math.abs(velocity.x);
         if (isVelocityVertical) {
-            mLogDirectionUpOrLeft = velocity.y < 0;
+            mLogDirection = velocity.y < 0 ? Direction.UP : Direction.DOWN;
         } else {
-            mLogDirectionUpOrLeft = velocity.x < 0;
+            mLogDirection = velocity.x < 0 ? Direction.LEFT : Direction.RIGHT;
         }
         mDownPos = downPos;
         handleNormalGestureEnd(endVelocity, isFling, velocity, false /* isCancel */);
@@ -972,7 +975,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
                 break;
             case LAST_TASK:
             case NEW_TASK:
-                event = mLogDirectionUpOrLeft ? LAUNCHER_QUICKSWITCH_LEFT
+                event = (mLogDirection == Direction.LEFT)
+                        ? LAUNCHER_QUICKSWITCH_LEFT
                         : LAUNCHER_QUICKSWITCH_RIGHT;
                 break;
             default:
@@ -980,10 +984,12 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
         }
         StatsLogger logger = StatsLogManager.newInstance(mContext).logger()
                 .withSrcState(LAUNCHER_STATE_BACKGROUND)
-                .withDstState(endTarget.containerType);
+                .withDstState(StatsLogManager.containerTypeToAtomState(endTarget.containerType));
         if (targetTask != null) {
             logger.withItemInfo(targetTask.getItemInfo());
         }
+        logger.log(event);
+
 
         DeviceProfile dp = mDp;
         if (dp == null || mDownPos == null) {
@@ -993,8 +999,12 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
         int pageIndex = endTarget == LAST_TASK
                 ? LOG_NO_OP_PAGE_INDEX
                 : mRecentsView.getNextPage();
-        // TODO: set correct container using the pageIndex
-        logger.log(event);
+        UserEventDispatcher.newInstance(mContext).logStateChangeAction(
+                mLogAction, mLogDirection,
+                (int) mDownPos.x, (int) mDownPos.y,
+                ContainerType.NAVBAR, ContainerType.APP,
+                endTarget.containerType,
+                pageIndex);
     }
 
     /** Animates to the given progress, where 0 is the current app and 1 is overview. */
@@ -1131,12 +1141,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
         anim.addOnUpdateListener((r, p) -> {
             updateSysUiFlags(Math.max(p, mCurrentShift.value));
         });
-        final int cuj = InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME;
         anim.addAnimatorListener(new AnimationSuccessListener() {
             @Override
             public void onAnimationStart(Animator animation) {
                 Trace.beginAsyncSection(TRANSITION_OPEN_LAUNCHER, 0);
-                InteractionJankMonitorWrapper.begin(cuj);
                 if (mActivity != null) {
                     removeLiveTileOverlay();
                 }
@@ -1150,13 +1158,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
                 // Make sure recents is in its final state
                 maybeUpdateRecentsAttachedState(false);
                 mActivityInterface.onSwipeUpToHomeComplete(mDeviceState);
-                InteractionJankMonitorWrapper.end(cuj);
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-                super.onAnimationCancel(animation);
-                InteractionJankMonitorWrapper.cancel(cuj);
             }
 
             @Override
@@ -1416,6 +1417,11 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
 
     public void setGestureEndCallback(Runnable gestureEndCallback) {
         mGestureEndCallback = gestureEndCallback;
+    }
+
+    @Override
+    public long getStartTouchTime() {
+        return mTouchTimeMs;
     }
 
     protected void linkRecentsViewScroll() {

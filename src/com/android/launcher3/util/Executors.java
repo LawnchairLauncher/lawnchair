@@ -20,10 +20,8 @@ import android.os.Looper;
 import android.os.Process;
 
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Various different executors used in Launcher
@@ -85,29 +83,4 @@ public class Executors {
      */
     public static final LooperExecutor MODEL_EXECUTOR =
             new LooperExecutor(createAndStartNewLooper("launcher-loader"));
-
-    /**
-     * A simple ThreadFactory to set the thread name and priority when used with executors.
-     */
-    public static class SimpleThreadFactory implements ThreadFactory {
-
-        private final int mPriority;
-        private final String mNamePrefix;
-
-        private final AtomicInteger mCount = new AtomicInteger(0);
-
-        public SimpleThreadFactory(String namePrefix, int priority) {
-            mNamePrefix = namePrefix;
-            mPriority = priority;
-        }
-
-        @Override
-        public Thread newThread(Runnable runnable) {
-            Thread t = new Thread(() -> {
-                Process.setThreadPriority(mPriority);
-                runnable.run();
-            }, mNamePrefix + mCount.incrementAndGet());
-            return t;
-        }
-    }
 }

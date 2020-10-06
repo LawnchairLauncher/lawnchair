@@ -19,6 +19,8 @@ import static android.view.View.MeasureSpec.EXACTLY;
 import static android.view.View.MeasureSpec.UNSPECIFIED;
 import static android.view.View.MeasureSpec.makeMeasureSpec;
 
+import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
@@ -36,6 +38,10 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsGridAdapter.AppsGridLayoutManager;
+import com.android.launcher3.logging.StatsLogUtils.LogContainerProvider;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 
 import java.util.ArrayList;
@@ -44,7 +50,7 @@ import java.util.List;
 /**
  * A RecyclerView with custom fast scroll support for the all apps view.
  */
-public class AllAppsRecyclerView extends BaseRecyclerView {
+public class AllAppsRecyclerView extends BaseRecyclerView implements LogContainerProvider {
 
     private AlphabeticalAppsList mApps;
     private final int mNumAppsPerRow;
@@ -168,6 +174,13 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
             getOverlay().remove(v);
         }
         mAutoSizedOverlays.clear();
+    }
+
+    @Override
+    public void fillInLogContainerData(ItemInfo childInfo, Target child,
+            ArrayList<Target> parents) {
+        parents.add(newContainerTarget(
+                getApps().hasFilter() ? ContainerType.SEARCHRESULT : ContainerType.ALLAPPS));
     }
 
     public void onSearchResultsChanged() {
