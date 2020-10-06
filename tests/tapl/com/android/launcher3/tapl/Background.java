@@ -88,10 +88,6 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                                 ? LauncherInstrumentation.GestureScope.INSIDE_TO_OUTSIDE
                                 : LauncherInstrumentation.GestureScope.OUTSIDE_WITH_PILFER;
 
-                // b/156044202
-                mLauncher.log("Hierarchy before swiping up to overview:");
-                mLauncher.dumpViewHierarchy();
-
                 mLauncher.sendPointer(
                         downTime, downTime, MotionEvent.ACTION_DOWN, start, gestureScope);
                 mLauncher.executeAndWaitForLauncherEvent(
