@@ -17,6 +17,7 @@ package com.android.quickstep;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+import static com.android.quickstep.GestureState.GestureEndTarget.RECENTS;
 import static com.android.quickstep.GestureState.STATE_RECENTS_ANIMATION_INITIALIZED;
 import static com.android.quickstep.GestureState.STATE_RECENTS_ANIMATION_STARTED;
 
@@ -31,6 +32,8 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
+import java.util.function.Consumer;
+
 public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAnimationListener {
 
     private RecentsAnimationController mController;
@@ -39,6 +42,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
     // Temporary until we can hook into gesture state events
     private GestureState mLastGestureState;
     private RemoteAnimationTargetCompat mLastAppearedTaskTarget;
+    private Consumer<RemoteAnimationTargetCompat> mLaunchOtherTaskHandler;
 
     /**
      * Preloads the recents animation.
@@ -88,22 +92,21 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
 
             @Override
             public void onRecentsAnimationCanceled(ThumbnailData thumbnailData) {
-                if (thumbnailData != null) {
-                    // If a screenshot is provided, switch to the screenshot before cleaning up
-                    activityInterface.switchRunningTaskViewToScreenshot(thumbnailData,
-                            () -> cleanUpRecentsAnimation(thumbnailData));
-                } else {
-                    cleanUpRecentsAnimation(null /* canceledThumbnail */);
-                }
+                cleanUpRecentsAnimation();
             }
 
             @Override
             public void onRecentsAnimationFinished(RecentsAnimationController controller) {
-                cleanUpRecentsAnimation(null /* canceledThumbnail */);
+                cleanUpRecentsAnimation();
             }
 
             @Override
             public void onTaskAppeared(RemoteAnimationTargetCompat appearedTaskTarget) {
+                if (mLaunchOtherTaskHandler != null
+                        && mLastGestureState.getEndTarget() == RECENTS) {
+                    mLaunchOtherTaskHandler.accept(appearedTaskTarget);
+                    return;
+                }
                 if (mController != null) {
                     if (mLastAppearedTaskTarget == null
                             || appearedTaskTarget.taskId != mLastAppearedTaskTarget.taskId) {
@@ -138,6 +141,15 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
     }
 
     /**
+     * The passed-in handler is used to render side task launch animation in recents in live tile
+     * mode.
+     */
+    public void setLaunchOtherTaskInLiveTileModeHandler(
+            Consumer<RemoteAnimationTargetCompat> handler) {
+        mLaunchOtherTaskHandler = handler;
+    }
+
+    /**
      * Finishes the running recents animation.
      */
     public void finishRunningRecentsAnimation(boolean toHome) {
@@ -146,7 +158,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
             Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(), toHome
                     ? mController::finishAnimationToHome
                     : mController::finishAnimationToApp);
-            cleanUpRecentsAnimation(null /* canceledThumbnail */);
+            cleanUpRecentsAnimation();
         }
     }
 
@@ -173,12 +185,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
     /**
      * Cleans up the recents animation entirely.
      */
-    private void cleanUpRecentsAnimation(ThumbnailData canceledThumbnail) {
-        // Clean up the screenshot if necessary
-        if (mController != null && canceledThumbnail != null) {
-            mController.cleanupScreenshot();
-        }
-
+    private void cleanUpRecentsAnimation() {
         // Release all the target leashes
         if (mTargets != null) {
             mTargets.release();
@@ -194,6 +201,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
         mTargets = null;
         mLastGestureState = null;
         mLastAppearedTaskTarget = null;
+        mLaunchOtherTaskHandler = null;
     }
 
     public void dump() {

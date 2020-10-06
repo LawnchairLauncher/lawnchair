@@ -90,24 +90,6 @@ public class RecentsAnimationController {
     }
 
     /**
-     * Notifies the controller that we want to defer cancel until the next app transition starts.
-     * If {@param screenshot} is set, then we will receive a screenshot on the next
-     * {@link RecentsAnimationCallbacks#onAnimationCanceled(ThumbnailData)} and we must also call
-     * {@link #cleanupScreenshot()} when that screenshot is no longer used.
-     */
-    public void setDeferCancelUntilNextTransition(boolean defer, boolean screenshot) {
-        mController.setDeferCancelUntilNextTransition(defer, screenshot);
-    }
-
-    /**
-     * Cleans up the screenshot previously returned from
-     * {@link RecentsAnimationCallbacks#onAnimationCanceled(ThumbnailData)}.
-     */
-    public void cleanupScreenshot() {
-        UI_HELPER_EXECUTOR.execute(() -> mController.cleanupScreenshot());
-    }
-
-    /**
      * Remove task remote animation target from
      * {@link RecentsAnimationCallbacks#onTaskAppeared(RemoteAnimationTargetCompat)}}.
      */
