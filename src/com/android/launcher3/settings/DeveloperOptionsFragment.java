@@ -275,7 +275,8 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
         launchBackTutorialPreference.setSummary("Learn how to use the Back gesture");
         launchBackTutorialPreference.setOnPreferenceClickListener(preference -> {
             startActivity(launchSandboxIntent.putExtra(
-                    "tutorial_type", "RIGHT_EDGE_BACK_NAVIGATION"));
+                    "tutorial_steps",
+                    new String[] {"RIGHT_EDGE_BACK_NAVIGATION"}));
             return true;
         });
         sandboxCategory.addPreference(launchBackTutorialPreference);
@@ -284,7 +285,9 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
         launchHomeTutorialPreference.setTitle("Launch Home Tutorial");
         launchHomeTutorialPreference.setSummary("Learn how to use the Home gesture");
         launchHomeTutorialPreference.setOnPreferenceClickListener(preference -> {
-            startActivity(launchSandboxIntent.putExtra("tutorial_type", "HOME_NAVIGATION"));
+            startActivity(launchSandboxIntent.putExtra(
+                    "tutorial_steps",
+                    new String[] {"HOME_NAVIGATION"}));
             return true;
         });
         sandboxCategory.addPreference(launchHomeTutorialPreference);
@@ -293,7 +296,9 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
         launchOverviewTutorialPreference.setTitle("Launch Overview Tutorial");
         launchOverviewTutorialPreference.setSummary("Learn how to use the Overview gesture");
         launchOverviewTutorialPreference.setOnPreferenceClickListener(preference -> {
-            startActivity(launchSandboxIntent.putExtra("tutorial_type", "OVERVIEW_NAVIGATION"));
+            startActivity(launchSandboxIntent.putExtra(
+                    "tutorial_steps",
+                    new String[] {"OVERVIEW_NAVIGATION"}));
             return true;
         });
         sandboxCategory.addPreference(launchOverviewTutorialPreference);
@@ -302,7 +307,9 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
         launchAssistantTutorialPreference.setTitle("Launch Assistant Tutorial");
         launchAssistantTutorialPreference.setSummary("Learn how to use the Assistant gesture");
         launchAssistantTutorialPreference.setOnPreferenceClickListener(preference -> {
-            startActivity(launchSandboxIntent.putExtra("tutorial_type", "ASSISTANT"));
+            startActivity(launchSandboxIntent.putExtra(
+                    "tutorial_steps",
+                    new String[] {"ASSISTANT"}));
             return true;
         });
         sandboxCategory.addPreference(launchAssistantTutorialPreference);
@@ -311,7 +318,9 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
         launchSandboxModeTutorialPreference.setTitle("Launch Sandbox Mode");
         launchSandboxModeTutorialPreference.setSummary("Practice navigation gestures");
         launchSandboxModeTutorialPreference.setOnPreferenceClickListener(preference -> {
-            startActivity(launchSandboxIntent.putExtra("tutorial_type", "SANDBOX_MODE"));
+            startActivity(launchSandboxIntent.putExtra(
+                    "tutorial_steps",
+                    new String[] {"SANDBOX_MODE"}));
             return true;
         });
         sandboxCategory.addPreference(launchSandboxModeTutorialPreference);
