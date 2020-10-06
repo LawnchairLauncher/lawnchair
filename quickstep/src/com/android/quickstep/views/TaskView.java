@@ -189,6 +189,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private CancellableTask mThumbnailLoadRequest;
     private CancellableTask mIconLoadRequest;
 
+    private boolean mEndQuickswitchCuj;
+
     // Order in which the footers appear. Lower order appear below higher order.
     public static final int INDEX_DIGITAL_WELLBEING_TOAST = 0;
     private final FooterWrapper[] mFooters = new FooterWrapper[2];
@@ -805,6 +807,14 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     public boolean hasOverlappingRendering() {
         // TODO: Clip-out the icon region from the thumbnail, since they are overlapping.
         return false;
+    }
+
+    public boolean isEndQuickswitchCuj() {
+        return mEndQuickswitchCuj;
+    }
+
+    public void setEndQuickswitchCuj(boolean endQuickswitchCuj) {
+        mEndQuickswitchCuj = endQuickswitchCuj;
     }
 
     private static final class TaskOutlineProvider extends ViewOutlineProvider {
