@@ -101,8 +101,8 @@ public class AllAppsSectionDecorator extends RecyclerView.ItemDecoration {
      * Handles grouping and drawing of items in the same all apps sections.
      */
     public static class SectionDecorationHandler {
-        private static final int FILL_ALPHA = (int) (.3f * 255);
-        private static final int FOCUS_ALPHA = (int) (.8f * 255);
+        private static final int FILL_ALPHA = 0;
+        private static final int FOCUS_ALPHA = (int) (.9f * 255);
 
         protected RectF mBounds = new RectF();
         private final boolean mIsFullWidth;
