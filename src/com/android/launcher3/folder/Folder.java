@@ -23,6 +23,7 @@ import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
 import static com.android.launcher3.config.FeatureFlags.ALWAYS_USE_HARDWARE_OPTIMIZATION_FOR_FOLDER_ANIMATIONS;
+import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_CONVERTED_TO_ICON;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_LABEL_UPDATED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ITEM_DROP_COMPLETED;
@@ -94,6 +95,7 @@ import com.android.launcher3.model.data.FolderInfo.FolderListener;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pageindicators.PageIndicatorDots;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.views.ClipPathView;
@@ -597,6 +599,15 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
      * is played.
      */
     private void animateOpen(List<WorkspaceItemInfo> items, int pageNo) {
+        animateOpen(items, pageNo, false);
+    }
+
+    /**
+     * Opens the user folder described by the specified tag. The opening of the folder
+     * is animated relative to the specified View. If the View is null, no animation
+     * is played.
+     */
+    private void animateOpen(List<WorkspaceItemInfo> items, int pageNo, boolean skipUserEventLog) {
         Folder openFolder = getOpen(mLauncher);
         if (openFolder != null && openFolder != this) {
             // Close any open folder before opening a folder.
@@ -645,6 +656,14 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
             public void onAnimationEnd(Animator animation) {
                 mState = STATE_OPEN;
                 announceAccessibilityChanges();
+
+                if (!skipUserEventLog) {
+                    mLauncher.getUserEventDispatcher().logActionOnItem(
+                            LauncherLogProto.Action.Touch.TAP,
+                            LauncherLogProto.Action.Direction.NONE,
+                            LauncherLogProto.ItemType.FOLDER_ICON, mInfo.cellX, mInfo.cellY);
+                }
+
 
                 mContent.setFocusOnFirstChild();
             }
@@ -1494,6 +1513,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                 }
 
                 statsLogger.log(LAUNCHER_FOLDER_LABEL_UPDATED);
+                logFolderLabelState(mFromLabelState, toLabelState);
                 mFolderName.dispatchBackKey();
             }
         }
@@ -1624,7 +1644,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                         return true;
                     }
                 } else {
-                    // TODO: add ww log if need to gather tap outside to close folder
+                    mLauncher.getUserEventDispatcher().logActionTapOutside(
+                            newContainerTarget(LauncherLogProto.ContainerType.FOLDER));
                     close(true);
                     return true;
                 }
@@ -1657,6 +1678,17 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
     public FolderPagedView getContent() {
         return mContent;
+    }
+
+    /**
+     * Logs current folder label info.
+     *
+     * @deprecated This method is only used for log validation and soon will be removed.
+     */
+    @Deprecated
+    public void logFolderLabelState(FromState fromState, ToState toState) {
+        mLauncher.getUserEventDispatcher()
+                .logLauncherEvent(mInfo.getFolderLabelStateLauncherEvent(fromState, toState));
     }
 
     /** Returns the height of the current folder's bottom edge from the bottom of the screen. */

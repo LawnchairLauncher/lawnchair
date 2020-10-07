@@ -23,7 +23,6 @@ import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
@@ -31,8 +30,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
-import android.graphics.PorterDuff.Mode;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -46,8 +43,6 @@ import android.view.View;
 import android.view.ViewDebug;
 import android.widget.TextView;
 
-import androidx.core.graphics.ColorUtils;
-
 import com.android.launcher3.Launcher.OnResumeCallback;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.dot.DotInfo;
@@ -55,7 +50,6 @@ import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.graphics.IconShape;
-import com.android.launcher3.graphics.PlaceHolderIconDrawable;
 import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.icons.DotRenderer;
 import com.android.launcher3.icons.IconCache.IconLoadRequest;
@@ -65,7 +59,6 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.model.data.PromiseAppInfo;
-import com.android.launcher3.model.data.RemoteActionItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.views.ActivityContext;
@@ -90,8 +83,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     private final PointF mTranslationForReorderBounce = new PointF(0, 0);
     private final PointF mTranslationForReorderPreview = new PointF(0, 0);
-
-    private static final int ICON_UPDATE_ANIMATION_DURATION = 375;
 
     private float mScaleForReorderBounce = 1f;
 
@@ -299,14 +290,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
         // Verify high res immediately
         verifyHighRes();
-    }
-
-    /**
-     * Apply label and tag using a {@link RemoteActionItemInfo}
-     */
-    public void applyFromRemoteActionInfo(RemoteActionItemInfo remoteActionItemInfo) {
-        applyIconAndLabel(remoteActionItemInfo);
-        setTag(remoteActionItemInfo);
     }
 
     private void applyIconAndLabel(ItemInfoWithIcon info) {
@@ -653,14 +636,11 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         mDisableRelayout = mIcon != null;
 
         icon.setBounds(0, 0, mIconSize, mIconSize);
-
-        updateIcon(icon);
-
-        // If the current icon is a placeholder color, animate its update.
-        if (mIcon != null && mIcon instanceof PlaceHolderIconDrawable) {
-            animateIconUpdate((PlaceHolderIconDrawable) mIcon, icon);
+        if (mLayoutHorizontal) {
+            setCompoundDrawablesRelative(icon, null, null, null);
+        } else {
+            setCompoundDrawables(null, icon, null, null);
         }
-
         mDisableRelayout = false;
     }
 
@@ -690,8 +670,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
                 mActivity.invalidateParent(info);
             } else if (info instanceof PackageItemInfo) {
                 applyFromItemInfoWithIcon((PackageItemInfo) info);
-            } else if (info instanceof RemoteActionItemInfo) {
-                applyFromRemoteActionInfo((RemoteActionItemInfo) info);
             }
 
             mDisableRelayout = false;
@@ -797,34 +775,5 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         if (mIcon instanceof FastBitmapDrawable) {
             ((FastBitmapDrawable) mIcon).setScale(1f);
         }
-    }
-
-    private void updateIcon(Drawable newIcon) {
-        if (mLayoutHorizontal) {
-            setCompoundDrawablesRelative(newIcon, null, null, null);
-        } else {
-            setCompoundDrawables(null, newIcon, null, null);
-        }
-    }
-
-    private static void animateIconUpdate(PlaceHolderIconDrawable oldIcon, Drawable newIcon) {
-        int placeholderColor = oldIcon.mPaint.getColor();
-        int originalAlpha = Color.alpha(placeholderColor);
-
-        ValueAnimator iconUpdateAnimation = ValueAnimator.ofInt(originalAlpha, 0);
-        iconUpdateAnimation.setDuration(ICON_UPDATE_ANIMATION_DURATION);
-        iconUpdateAnimation.addUpdateListener(valueAnimator -> {
-            int newAlpha = (int) valueAnimator.getAnimatedValue();
-            int newColor = ColorUtils.setAlphaComponent(placeholderColor, newAlpha);
-
-            newIcon.setColorFilter(new PorterDuffColorFilter(newColor, Mode.SRC_ATOP));
-        });
-        iconUpdateAnimation.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                newIcon.setColorFilter(null);
-            }
-        });
-        iconUpdateAnimation.start();
     }
 }

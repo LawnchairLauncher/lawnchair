@@ -25,11 +25,8 @@ import android.content.pm.PackageManager;
 import android.os.UserHandle;
 import android.text.TextUtils;
 
-import androidx.annotation.WorkerThread;
-
 import com.android.launcher3.model.ItemInstallQueue;
 import com.android.launcher3.pm.InstallSessionHelper;
-import com.android.launcher3.util.Executors;
 
 /**
  * BroadcastReceiver to handle session commit intent.
@@ -41,11 +38,6 @@ public class SessionCommitReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Executors.MODEL_EXECUTOR.execute(() -> processIntent(context, intent));
-    }
-
-    @WorkerThread
-    private static void processIntent(Context context, Intent intent) {
         if (!isEnabled(context)) {
             // User has decided to not add icons on homescreen.
             return;

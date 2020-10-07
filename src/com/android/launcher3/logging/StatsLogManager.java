@@ -27,6 +27,7 @@ import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
 import com.android.launcher3.logger.LauncherAtom.FromState;
 import com.android.launcher3.logger.LauncherAtom.ToState;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.userevent.LauncherLogProto;
 import com.android.launcher3.util.ResourceBasedOverride;
 
 import java.util.List;
@@ -50,22 +51,40 @@ public class StatsLogManager implements ResourceBasedOverride {
     public static final int LAUNCHER_STATE_UNCHANGED = 5;
 
     /**
-     * Returns event enum based on the two state transition information when swipe
+     * Returns proper launcher state enum for {@link StatsLogManager}(to be removed during
+     * UserEventDispatcher cleanup)
+     */
+    public static int containerTypeToAtomState(int containerType) {
+        switch (containerType) {
+            case LauncherLogProto.ContainerType.ALLAPPS_VALUE:
+                return LAUNCHER_STATE_ALLAPPS;
+            case LauncherLogProto.ContainerType.OVERVIEW_VALUE:
+                return LAUNCHER_STATE_OVERVIEW;
+            case LauncherLogProto.ContainerType.WORKSPACE_VALUE:
+                return LAUNCHER_STATE_HOME;
+            case LauncherLogProto.ContainerType.APP_VALUE:
+                return LAUNCHER_STATE_BACKGROUND;
+        }
+        return LAUNCHER_STATE_UNSPECIFIED;
+    }
+
+    /**
+     * Returns event enum based on the two {@link ContainerType} transition information when swipe
      * gesture happens(to be removed during UserEventDispatcher cleanup).
      */
-    public static EventEnum getLauncherAtomEvent(int startState,
-            int targetState, EventEnum fallbackEvent) {
-        if (startState == LAUNCHER_STATE_HOME
-                && targetState == LAUNCHER_STATE_HOME) {
+    public static EventEnum getLauncherAtomEvent(int startContainerType,
+            int targetContainerType, EventEnum fallbackEvent) {
+        if (startContainerType == LauncherLogProto.ContainerType.WORKSPACE.getNumber()
+                && targetContainerType == LauncherLogProto.ContainerType.WORKSPACE.getNumber()) {
             return LAUNCHER_HOME_GESTURE;
-        } else if (startState != LAUNCHER_STATE_OVERVIEW
-                && targetState == LAUNCHER_STATE_OVERVIEW) {
+        } else if (startContainerType != LauncherLogProto.ContainerType.TASKSWITCHER.getNumber()
+                && targetContainerType == LauncherLogProto.ContainerType.TASKSWITCHER.getNumber()) {
             return LAUNCHER_OVERVIEW_GESTURE;
-        } else if (startState != LAUNCHER_STATE_ALLAPPS
-                && targetState == LAUNCHER_STATE_ALLAPPS) {
+        } else if (startContainerType != LauncherLogProto.ContainerType.ALLAPPS.getNumber()
+                && targetContainerType == LauncherLogProto.ContainerType.ALLAPPS.getNumber()) {
             return LAUNCHER_ALLAPPS_OPEN_UP;
-        } else if (startState == LAUNCHER_STATE_ALLAPPS
-                && targetState != LAUNCHER_STATE_ALLAPPS) {
+        } else if (startContainerType == LauncherLogProto.ContainerType.ALLAPPS.getNumber()
+                && targetContainerType != LauncherLogProto.ContainerType.ALLAPPS.getNumber()) {
             return LAUNCHER_ALLAPPS_CLOSE_DOWN;
         }
         return fallbackEvent; // TODO fix
@@ -303,38 +322,7 @@ public class StatsLogManager implements ResourceBasedOverride {
         LAUNCHER_FOLDER_CONVERTED_TO_ICON(628),
 
         @UiEvent(doc = "A hotseat prediction item was pinned")
-        LAUNCHER_HOTSEAT_PREDICTION_PINNED(629),
-
-        @UiEvent(doc = "Activity to add external item was started")
-        LAUNCHER_ADD_EXTERNAL_ITEM_START(641),
-
-        @UiEvent(doc = "Activity to add external item was cancelled")
-        LAUNCHER_ADD_EXTERNAL_ITEM_CANCELLED(642),
-
-        @UiEvent(doc = "Activity to add external item was backed out")
-        LAUNCHER_ADD_EXTERNAL_ITEM_BACK(643),
-
-        @UiEvent(doc = "Item was placed automatically in external item addition flow")
-        LAUNCHER_ADD_EXTERNAL_ITEM_PLACED_AUTOMATICALLY(644),
-
-        @UiEvent(doc = "Item was dragged in external item addition flow")
-        LAUNCHER_ADD_EXTERNAL_ITEM_DRAGGED(645),
-
-        @UiEvent(doc = "Undo event was tapped.")
-        LAUNCHER_UNDO(648),
-
-        @UiEvent(doc = "Task switcher clear all target was tapped.")
-        LAUNCHER_TASK_CLEAR_ALL(649),
-
-        @UiEvent(doc = "Task preview was long pressed.")
-        LAUNCHER_TASK_PREVIEW_LONGPRESS(650),
-
-        @UiEvent(doc = "User swiped down on workspace (triggering noti shade to open).")
-        LAUNCHER_SWIPE_DOWN_WORKSPACE_NOTISHADE_OPEN(651),
-
-        @UiEvent(doc = "Notification dismissed by swiping right.")
-        LAUNCHER_NOTIFICATION_DISMISSED(652),
-        ;
+        LAUNCHER_HOTSEAT_PREDICTION_PINNED(629);
 
         // ADD MORE
 

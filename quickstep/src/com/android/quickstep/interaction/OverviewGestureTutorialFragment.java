@@ -21,7 +21,7 @@ import com.android.quickstep.interaction.TutorialController.TutorialType;
 /** Shows the Overview gesture interactive tutorial. */
 public class OverviewGestureTutorialFragment extends TutorialFragment {
     @Override
-    Integer getHandAnimationResId() {
+    int getHandAnimationResId() {
         return R.drawable.overview_gesture;
     }
 
