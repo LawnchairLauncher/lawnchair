@@ -67,7 +67,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start|center_vertical"
-        android:background="?android:attr/selectableItemBackground"
         android:text="@string/search_action_try_now">
     </Button>
 

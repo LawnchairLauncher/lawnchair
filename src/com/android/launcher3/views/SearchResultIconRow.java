@@ -22,16 +22,19 @@ import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import android.app.RemoteAction;
 import android.content.Context;
 import android.content.pm.ShortcutInfo;
+import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItemWithPayload;
 import com.android.launcher3.allapps.search.AllAppsSearchBarController;
 import com.android.launcher3.icons.BitmapInfo;
@@ -53,24 +56,50 @@ public class SearchResultIconRow extends DoubleShadowBubbleTextView implements
         AllAppsSearchBarController.PayloadResultHandler<SearchTarget> {
 
     private final Object[] mTargetInfo = createTargetInfo();
+    private final int mCustomIconResId;
+    private final boolean mMatchesInset;
+
     private ShortcutInfo mShortcutInfo;
     private AllAppsSearchPlugin mPlugin;
     private AdapterItemWithPayload<SearchTarget> mAdapterItem;
 
 
     public SearchResultIconRow(@NonNull Context context) {
-        super(context);
+        this(context, null, 0);
     }
 
     public SearchResultIconRow(@NonNull Context context,
             @Nullable AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0);
     }
 
     public SearchResultIconRow(@NonNull Context context, @Nullable AttributeSet attrs,
             int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        TypedArray a = context.obtainStyledAttributes(attrs,
+                R.styleable.SearchResultIconRow, defStyleAttr, 0);
+        mCustomIconResId = a.getResourceId(R.styleable.SearchResultIconRow_customIcon, 0);
+        mMatchesInset = a.getBoolean(R.styleable.SearchResultIconRow_matchTextInsetWithQuery,
+                false);
+
+        a.recycle();
     }
+
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        Launcher launcher = Launcher.getLauncher(getContext());
+        if (mMatchesInset && launcher.getAppsView() != null && getParent() != null) {
+            EditText editText = launcher.getAppsView().getSearchUiManager().getEditText();
+            if (editText != null) {
+                int counterOffset = getIconSize() + getCompoundDrawablePadding() / 2;
+                setPadding(editText.getLeft() - counterOffset, getPaddingTop(),
+                        getPaddingRight(), getPaddingBottom());
+            }
+        }
+    }
+
 
     @Override
     public void applyAdapterInfo(AdapterItemWithPayload<SearchTarget> adapterItemWithPayload) {
@@ -98,10 +127,12 @@ public class SearchResultIconRow extends DoubleShadowBubbleTextView implements
         WorkspaceItemInfo workspaceItemInfo = new WorkspaceItemInfo(mShortcutInfo, getContext());
         applyFromWorkspaceItem(workspaceItemInfo);
         LauncherAppState launcherAppState = LauncherAppState.getInstance(getContext());
-        MODEL_EXECUTOR.execute(() -> {
-            launcherAppState.getIconCache().getShortcutIcon(workspaceItemInfo, mShortcutInfo);
-            reapplyItemInfoAsync(workspaceItemInfo);
-        });
+        if (!loadIconFromResource()) {
+            MODEL_EXECUTOR.execute(() -> {
+                launcherAppState.getIconCache().getShortcutIcon(workspaceItemInfo, mShortcutInfo);
+                reapplyItemInfoAsync(workspaceItemInfo);
+            });
+        }
     }
 
     private void prepareUsingRemoteAction(RemoteAction remoteAction, String token, boolean start,
@@ -109,25 +140,34 @@ public class SearchResultIconRow extends DoubleShadowBubbleTextView implements
         RemoteActionItemInfo itemInfo = new RemoteActionItemInfo(remoteAction, token, start);
 
         applyFromRemoteActionInfo(itemInfo);
-        UI_HELPER_EXECUTOR.post(() -> {
-            // If the Drawable from the remote action is not AdaptiveBitmap, styling will not work.
-            try (LauncherIcons li = LauncherIcons.obtain(getContext())) {
-                Drawable d = itemInfo.getRemoteAction().getIcon().loadDrawable(getContext());
-                BitmapInfo bitmap = li.createBadgedIconBitmap(d, itemInfo.user,
-                        Build.VERSION.SDK_INT);
+        if (!loadIconFromResource()) {
+            UI_HELPER_EXECUTOR.post(() -> {
+                // If the Drawable from the remote action is not AdaptiveBitmap, styling will not
+                // work.
+                try (LauncherIcons li = LauncherIcons.obtain(getContext())) {
+                    Drawable d = itemInfo.getRemoteAction().getIcon().loadDrawable(getContext());
+                    BitmapInfo bitmap = li.createBadgedIconBitmap(d, itemInfo.user,
+                            Build.VERSION.SDK_INT);
 
-                if (useIconToBadge) {
-                    BitmapInfo placeholder = li.createIconBitmap(
-                            itemInfo.getRemoteAction().getTitle().toString().substring(0, 1),
-                            bitmap.color);
-                    itemInfo.bitmap = li.badgeBitmap(placeholder.icon, bitmap);
-                } else {
-                    itemInfo.bitmap = bitmap;
+                    if (useIconToBadge) {
+                        BitmapInfo placeholder = li.createIconBitmap(
+                                itemInfo.getRemoteAction().getTitle().toString().substring(0, 1),
+                                bitmap.color);
+                        itemInfo.bitmap = li.badgeBitmap(placeholder.icon, bitmap);
+                    } else {
+                        itemInfo.bitmap = bitmap;
+                    }
+                    reapplyItemInfoAsync(itemInfo);
                 }
-                reapplyItemInfoAsync(itemInfo);
-            }
-        });
+            });
+        }
 
+    }
+
+    private boolean loadIconFromResource() {
+        if (mCustomIconResId == 0) return false;
+        setIcon(Launcher.getLauncher(getContext()).getDrawable(mCustomIconResId));
+        return true;
     }
 
     void reapplyItemInfoAsync(ItemInfoWithIcon itemInfoWithIcon) {
