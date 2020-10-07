@@ -119,7 +119,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
                 }
             }
         });
-        final long eventTime = listener.getStartTouchTime();
+        final long eventTime = gestureState.getSwipeUpStartTimeMs();
         mCallbacks.addListener(gestureState);
         mCallbacks.addListener(listener);
         UI_HELPER_EXECUTOR.execute(() -> ActivityManagerWrapper.getInstance()
