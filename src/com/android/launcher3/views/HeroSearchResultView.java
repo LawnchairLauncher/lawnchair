@@ -96,8 +96,6 @@ public class HeroSearchResultView extends LinearLayout implements DragSource,
             launcher.getItemOnClickListener().onClick(view);
         });
         mBubbleTextView.setOnLongClickListener(new HeroItemDragHandler(getContext(), this));
-        setLayoutParams(
-                new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, grid.allAppsCellHeightPx));
 
 
         mDeepShortcutTextViews[0] = findViewById(R.id.shortcut_0);

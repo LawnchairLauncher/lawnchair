@@ -627,7 +627,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     /**
      * Sets the icon for this view based on the layout direction.
      */
-    private void setIcon(Drawable icon) {
+    protected void setIcon(Drawable icon) {
         if (mIsIconVisible) {
             applyCompoundDrawables(icon);
         }
