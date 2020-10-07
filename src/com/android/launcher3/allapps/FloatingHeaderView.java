@@ -111,8 +111,8 @@ public class FloatingHeaderView extends LinearLayout implements
 
     public FloatingHeaderView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        mHeaderTopPadding = context.getResources()
-                .getDimensionPixelSize(R.dimen.all_apps_header_top_padding);
+        mHeaderTopPadding = FeatureFlags.ENABLE_DEVICE_SEARCH.get() ? 0 :
+                context.getResources().getDimensionPixelSize(R.dimen.all_apps_header_top_padding);
     }
 
     @Override
@@ -130,6 +130,7 @@ public class FloatingHeaderView extends LinearLayout implements
             }
         }
         mFixedRows = rows.toArray(new FloatingHeaderRow[rows.size()]);
+        setPadding(0, mHeaderTopPadding, 0, 0);
         mAllRows = mFixedRows;
     }
 
@@ -199,7 +200,7 @@ public class FloatingHeaderView extends LinearLayout implements
     public View getFocusedChild() {
         if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
             for (FloatingHeaderRow row : mAllRows) {
-                if (row.hasVisibleContent() && row.shouldDraw()) {
+                if (row.hasVisibleContent()) {
                     return row.getFocusedChild();
                 }
             }
@@ -247,7 +248,9 @@ public class FloatingHeaderView extends LinearLayout implements
 
     public int getMaxTranslation() {
         if (mMaxTranslation == 0 && mTabsHidden) {
-            return getResources().getDimensionPixelSize(R.dimen.all_apps_search_bar_bottom_padding);
+            int paddingOffset = getResources().getDimensionPixelSize(
+                    R.dimen.all_apps_search_bar_bottom_padding);
+            return FeatureFlags.ENABLE_DEVICE_SEARCH.get() ? 0 : paddingOffset;
         } else if (mMaxTranslation > 0 && mTabsHidden) {
             return mMaxTranslation + getPaddingTop();
         } else {
