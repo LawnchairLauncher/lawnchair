@@ -44,6 +44,7 @@ import androidx.annotation.NonNull;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PendingAnimation;
@@ -58,6 +59,7 @@ import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskThumbnailView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
+import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 /**
@@ -135,6 +137,8 @@ public final class TaskViewUtils {
             RemoteAnimationTargetCompat[] appTargets,
             RemoteAnimationTargetCompat[] wallpaperTargets, DepthController depthController,
             PendingAnimation out) {
+        boolean isQuickSwitch = v.isEndQuickswitchCuj();
+        v.setEndQuickswitchCuj(false);
 
         SurfaceTransactionApplier applier = new SurfaceTransactionApplier(v);
         final RemoteAnimationTargets targets =
@@ -232,10 +236,19 @@ public final class TaskViewUtils {
             });
         }
 
-        out.addListener(new AnimatorListenerAdapter() {
+        out.addListener(new AnimationSuccessListener() {
+            @Override
+            public void onAnimationSuccess(Animator animator) {
+                if (isQuickSwitch) {
+                    InteractionJankMonitorWrapper.end(
+                            InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
+                }
+            }
+
             @Override
             public void onAnimationEnd(Animator animation) {
                 targets.release();
+                super.onAnimationEnd(animation);
             }
         });
 
