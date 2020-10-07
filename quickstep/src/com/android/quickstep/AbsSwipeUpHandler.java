@@ -81,6 +81,8 @@ import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.tracing.InputConsumerProto;
+import com.android.launcher3.tracing.SwipeHandlerProto;
 import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.util.VibratorWrapper;
 import com.android.launcher3.util.WindowBounds;
@@ -92,6 +94,7 @@ import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.InputConsumerProxy;
 import com.android.quickstep.util.MotionPauseDetector;
+import com.android.quickstep.util.ProtoTracer;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.SurfaceTransactionApplier;
 import com.android.quickstep.util.TransformParams;
@@ -1608,6 +1611,27 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
             }
             mTaskViewSimulator.apply(mTransformParams);
         }
+        ProtoTracer.INSTANCE.get(mContext).scheduleFrameUpdate();
+    }
+
+    /**
+     * Used for winscope tracing, see launcher_trace.proto
+     * @see com.android.systemui.shared.tracing.ProtoTraceable#writeToProto
+     * @param inputConsumerProto The parent of this proto message.
+     */
+    public void writeToProto(InputConsumerProto.Builder inputConsumerProto) {
+        SwipeHandlerProto.Builder swipeHandlerProto = SwipeHandlerProto.newBuilder();
+
+        mGestureState.writeToProto(swipeHandlerProto);
+
+        swipeHandlerProto.setIsRecentsAttachedToAppWindow(
+                mAnimationFactory.isRecentsAttachedToAppWindow());
+        swipeHandlerProto.setScrollOffset(mRecentsView == null
+                ? 0
+                : mRecentsView.getScrollOffset());
+        swipeHandlerProto.setAppToOverviewProgress(mCurrentShift.value);
+
+        inputConsumerProto.setSwipeHandler(swipeHandlerProto);
     }
 
     public interface Factory {
