@@ -140,7 +140,7 @@ public class SearchResultIconRow extends DoubleShadowBubbleTextView implements
         RemoteActionItemInfo itemInfo = new RemoteActionItemInfo(remoteAction, token, start);
 
         applyFromRemoteActionInfo(itemInfo);
-        if (!loadIconFromResource()) {
+        if (itemInfo.isEscapeHatch() || !loadIconFromResource()) {
             UI_HELPER_EXECUTOR.post(() -> {
                 // If the Drawable from the remote action is not AdaptiveBitmap, styling will not
                 // work.
