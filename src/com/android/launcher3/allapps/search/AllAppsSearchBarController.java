@@ -114,7 +114,7 @@ public class AllAppsSearchBarController
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_GO) {
                 // selectFocusedView should return SearchTargetEvent that is passed onto onClick
                 if (Launcher.getLauncher(mLauncher).getAppsView().selectFocusedView(v)) {
                     return true;

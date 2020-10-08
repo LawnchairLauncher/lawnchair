@@ -184,7 +184,7 @@ public class PredictionRowView extends LinearLayout implements
 
     @Override
     public boolean shouldDraw() {
-        return getVisibility() == VISIBLE;
+        return getVisibility() != GONE;
     }
 
     @Override
