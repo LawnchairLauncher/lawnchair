@@ -61,4 +61,8 @@ public class RemoteActionItemInfo extends ItemInfoWithIcon {
     public boolean shouldStartInLauncher() {
         return mShouldStart;
     }
+
+    public boolean isEscapeHatch() {
+        return mToken.contains("item_type:[ESCAPE_HATCH]");
+    }
 }
