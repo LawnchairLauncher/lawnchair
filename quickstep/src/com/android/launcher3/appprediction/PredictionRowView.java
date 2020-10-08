@@ -206,7 +206,7 @@ public class PredictionRowView extends LinearLayout implements
      * we can optimize by swapping them in place.
      */
     public void setPredictedApps(List<ItemInfo> items) {
-        if (isShown() && getWindowVisibility() == View.VISIBLE) {
+        if (!mLauncher.isWorkspaceLoading() && isShown() && getWindowVisibility() == View.VISIBLE) {
             mPendingPredictedItems = items;
             return;
         }
