@@ -50,7 +50,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
     public void preloadRecentsAnimation(Intent intent) {
         // Pass null animation handler to indicate this start is for preloading
         UI_HELPER_EXECUTOR.execute(() -> ActivityManagerWrapper.getInstance()
-                .startRecentsActivity(intent, null, null, null, null));
+                .startRecentsActivity(intent, 0, null, null, null));
     }
 
     /**
@@ -119,10 +119,11 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
                 }
             }
         });
+        final long eventTime = listener.getStartTouchTime();
         mCallbacks.addListener(gestureState);
         mCallbacks.addListener(listener);
         UI_HELPER_EXECUTOR.execute(() -> ActivityManagerWrapper.getInstance()
-                .startRecentsActivity(intent, null, mCallbacks, null, null));
+                .startRecentsActivity(intent, eventTime, mCallbacks, null, null));
         gestureState.setState(STATE_RECENTS_ANIMATION_INITIALIZED);
         return mCallbacks;
     }
