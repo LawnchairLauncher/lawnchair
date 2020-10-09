@@ -17,8 +17,9 @@
     android:id="@+id/section_title"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:fontFamily="@style/TextHeadline"
-    android:textStyle="bold"
-    android:padding="4dp"
+    style="@style/TextHeadline"
+    android:paddingStart="4dp"
+    android:paddingBottom="2dp"
+    android:paddingTop="12dp"
     android:textColor="?android:attr/textColorPrimary"
-    android:textSize="14sp" />
+    android:textSize="18sp" />
