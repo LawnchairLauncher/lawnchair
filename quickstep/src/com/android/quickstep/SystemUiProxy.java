@@ -17,7 +17,10 @@ package com.android.quickstep;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
+import android.app.PictureInPictureParams;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Insets;
 import android.graphics.Rect;
@@ -377,6 +380,31 @@ public class SystemUiProxy implements ISystemUiProxy {
                 mSystemUiProxy.expandNotificationPanel();
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call expandNotificationPanel", e);
+            }
+        }
+    }
+
+    @Override
+    public Rect startSwipePipToHome(ComponentName componentName, ActivityInfo activityInfo,
+            PictureInPictureParams pictureInPictureParams, int launcherRotation, int shelfHeight) {
+        if (mSystemUiProxy != null) {
+            try {
+                return mSystemUiProxy.startSwipePipToHome(componentName, activityInfo,
+                        pictureInPictureParams, launcherRotation, shelfHeight);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call startSwipePipToHome", e);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void stopSwipePipToHome(ComponentName componentName, Rect destinationBounds) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.stopSwipePipToHome(componentName, destinationBounds);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call stopSwipePipToHome");
             }
         }
     }
