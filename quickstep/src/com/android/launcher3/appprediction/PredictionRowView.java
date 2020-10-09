@@ -148,10 +148,6 @@ public class PredictionRowView extends LinearLayout implements
 
     private void updateVisibility() {
         setVisibility(mPredictionsEnabled ? VISIBLE : GONE);
-        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get() && mLauncher.getAppsView() != null
-                && mLauncher.getAppsView().getActiveRecyclerView() != null) {
-            mLauncher.getAppsView().invalidate();
-        }
     }
 
     @Override
@@ -170,6 +166,7 @@ public class PredictionRowView extends LinearLayout implements
             }
             mDecorationHandler.onDraw(canvas);
             mDecorationHandler.onFocusDraw(canvas, getFocusedChild());
+            mLauncher.getAppsView().getActiveRecyclerView().invalidateItemDecorations();
         }
         mFocusHelper.draw(canvas);
         super.dispatchDraw(canvas);
@@ -184,7 +181,7 @@ public class PredictionRowView extends LinearLayout implements
 
     @Override
     public boolean shouldDraw() {
-        return getVisibility() != GONE;
+        return getVisibility() == VISIBLE;
     }
 
     @Override
