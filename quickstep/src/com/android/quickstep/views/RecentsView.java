@@ -2452,7 +2452,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             } else {
                 taskView.getThumbnail().refresh();
             }
-            ViewUtils.postDraw(taskView, onFinishRunnable);
+            ViewUtils.postFrameDrawn(taskView, onFinishRunnable);
         } else {
             onFinishRunnable.run();
         }
