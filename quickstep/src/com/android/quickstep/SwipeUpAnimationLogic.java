@@ -261,7 +261,7 @@ public abstract class SwipeUpAnimationLogic {
             mTransformParams
                     .setTargetAlpha(getWindowAlpha(progress))
                     .setCornerRadius(cornerRadius)
-                    .setShadowRadius(mMaxShadowRadius);
+                    .setShadowRadius(shadowRadius);
 
             mTransformParams.applySurfaceParams(mTransformParams.createSurfaceParams(this));
             mAnimationFactory.update(currentRect, progress, mMatrix.mapRadius(cornerRadius));
