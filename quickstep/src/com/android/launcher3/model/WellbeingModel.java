@@ -148,6 +148,12 @@ public final class WellbeingModel extends BgObjectWithLooper {
             if (!FeatureFlags.ENABLE_MINIMAL_DEVICE.get()) {
                 return;
             }
+
+            // Temporary bug fix for b/169771796. Wellbeing provides the layout configuration when
+            // minimal device is enabled. We always want to reload the configuration from Wellbeing
+            // since the layout configuration might have changed.
+            mContext.deleteDatabase(DB_NAME_MINIMAL_DEVICE);
+
             final Bundle extras = new Bundle();
             String dbFile;
             if (isInMinimalDeviceMode()) {
