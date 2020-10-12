@@ -21,12 +21,14 @@ import static com.android.launcher3.uioverrides.QuickstepLauncher.GO_LOW_RAM_REC
 import android.app.ActivityManager.TaskDescription;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.UserHandle;
+import android.text.TextUtils;
 import android.util.SparseArray;
 import android.view.accessibility.AccessibilityManager;
 
@@ -34,6 +36,7 @@ import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.IconProvider;
 import com.android.launcher3.icons.LauncherIcons;
@@ -42,7 +45,6 @@ import com.android.quickstep.util.CancellableTask;
 import com.android.quickstep.util.TaskKeyLruCache;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskKey;
-import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.PackageManagerWrapper;
 import com.android.systemui.shared.system.TaskDescriptionCompat;
 
@@ -163,14 +165,28 @@ public class TaskIconCache {
                         key.getComponent(), key.userId);
             }
             if (activityInfo != null) {
-                entry.contentDescription = ActivityManagerWrapper.getInstance()
-                        .getBadgedContentDescription(activityInfo, task.key.userId,
-                                task.taskDescription);
+                entry.contentDescription = getBadgedContentDescription(
+                        activityInfo, task.key.userId, task.taskDescription);
             }
         }
 
         mIconCache.put(task.key, entry);
         return entry;
+    }
+
+    private String getBadgedContentDescription(ActivityInfo info, int userId, TaskDescription td) {
+        PackageManager pm = mContext.getPackageManager();
+        String taskLabel = td == null ? null : Utilities.trim(td.getLabel());
+        if (TextUtils.isEmpty(taskLabel)) {
+            taskLabel = Utilities.trim(info.loadLabel(pm));
+        }
+
+        String applicationLabel = Utilities.trim(info.applicationInfo.loadLabel(pm));
+        String badgedApplicationLabel = userId != UserHandle.myUserId()
+                ? pm.getUserBadgedLabel(applicationLabel, UserHandle.of(userId)).toString()
+                : applicationLabel;
+        return applicationLabel.equals(taskLabel)
+                ? badgedApplicationLabel : badgedApplicationLabel + " " + taskLabel;
     }
 
     @WorkerThread
