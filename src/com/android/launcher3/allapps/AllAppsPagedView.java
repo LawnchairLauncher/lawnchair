@@ -20,6 +20,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 
 import com.android.launcher3.PagedView;
+import com.android.launcher3.R;
+import com.android.launcher3.config.FeatureFlags;
 
 public class AllAppsPagedView extends PagedView<PersonalWorkSlidingTabStrip> {
 
@@ -37,6 +39,9 @@ public class AllAppsPagedView extends PagedView<PersonalWorkSlidingTabStrip> {
 
     public AllAppsPagedView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        int topPadding = FeatureFlags.ENABLE_DEVICE_SEARCH.get() ? 0
+                : context.getResources().getDimensionPixelOffset(
+                        R.dimen.all_apps_header_top_padding);
     }
 
     @Override

@@ -26,6 +26,7 @@ import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.R;
+import com.android.launcher3.allapps.AllAppsGridAdapter.AppsGridLayoutManager;
 import com.android.launcher3.allapps.search.SearchSectionInfo;
 import com.android.launcher3.util.Themes;
 
@@ -90,7 +91,10 @@ public class AllAppsSectionDecorator extends RecyclerView.ItemDecoration {
         if (mAppsView.getFloatingHeaderView().getFocusedChild() == null
                 && mAppsView.getApps().getFocusedChild() != null) {
             int index = mAppsView.getApps().getFocusedChildIndex();
-            if (index >= 0 && index < parent.getChildCount()) {
+            AppsGridLayoutManager layoutManager = (AppsGridLayoutManager)
+                    mAppsView.getActiveRecyclerView().getLayoutManager();
+            if (layoutManager.findFirstVisibleItemPosition() == index
+                    && index < parent.getChildCount()) {
                 decorationHandler.onFocusDraw(c, parent.getChildAt(index));
             }
         }

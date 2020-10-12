@@ -44,12 +44,14 @@ import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItemWithPayload;
 import com.android.launcher3.allapps.search.AllAppsSearchBarController;
 import com.android.launcher3.icons.BitmapRenderer;
+import com.android.launcher3.util.Themes;
 import com.android.systemui.plugins.AllAppsSearchPlugin;
 import com.android.systemui.plugins.shared.SearchTarget;
 import com.android.systemui.plugins.shared.SearchTargetEvent;
 
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLConnection;
 
 /**
  * A View representing a PlayStore item.
@@ -58,7 +60,6 @@ public class SearchResultPlayItem extends LinearLayout implements
         AllAppsSearchBarController.PayloadResultHandler<Bundle> {
 
     private static final int BITMAP_CROP_MASK_COLOR = 0xff424242;
-    private static final float ICON_RADIUS_FACTOR = .5f;
 
     private final DeviceProfile mDeviceProfile;
     private View mIconView;
@@ -71,6 +72,7 @@ public class SearchResultPlayItem extends LinearLayout implements
     private final Object[] mTargetInfo = createTargetInfo();
 
     final Paint mIconPaint = new Paint();
+    final Rect mTempRect = new Rect();
 
 
     public SearchResultPlayItem(Context context) {
@@ -125,13 +127,15 @@ public class SearchResultPlayItem extends LinearLayout implements
         mIconView.setBackgroundResource(R.drawable.ic_deepshortcut_placeholder);
         UI_HELPER_EXECUTOR.execute(() -> {
             try {
-//                TODO: Handle caching
                 URL url = new URL(bundle.getString("icon_url"));
-                Bitmap bitmap = BitmapFactory.decodeStream(url.openStream());
-                BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(),
-                        Bitmap.createScaledBitmap(getRoundedBitmap(bitmap),
-                                mDeviceProfile.allAppsIconSizePx, mDeviceProfile.allAppsIconSizePx,
-                                false));
+                URLConnection con = url.openConnection();
+//                TODO: monitor memory and investigate if it's better to use glide
+                con.addRequestProperty("Cache-Control", "max-age: 0");
+                con.setUseCaches(true);
+                Bitmap bitmap = BitmapFactory.decodeStream(con.getInputStream());
+                BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(), getRoundedBitmap(
+                        Bitmap.createScaledBitmap(bitmap, mDeviceProfile.allAppsIconSizePx,
+                                mDeviceProfile.allAppsIconSizePx, false)));
                 mIconView.post(() -> mIconView.setBackground(bitmapDrawable));
             } catch (IOException e) {
                 e.printStackTrace();
@@ -141,24 +145,23 @@ public class SearchResultPlayItem extends LinearLayout implements
 
 
     private Bitmap getRoundedBitmap(Bitmap bitmap) {
-        int iconSize = bitmap.getWidth();
+        final int iconSize = bitmap.getWidth();
+        final float radius = Themes.getDialogCornerRadius(getContext());
 
         Bitmap output = BitmapRenderer.createHardwareBitmap(iconSize, iconSize, (canvas) -> {
-            final Rect rect = new Rect(0, 0, iconSize, iconSize);
-            final RectF rectF = new RectF(rect);
+            mTempRect.set(0, 0, iconSize, iconSize);
+            final RectF rectF = new RectF(mTempRect);
 
             mIconPaint.setAntiAlias(true);
+            mIconPaint.reset();
             canvas.drawARGB(0, 0, 0, 0);
             mIconPaint.setColor(BITMAP_CROP_MASK_COLOR);
-            int radius = (int) (iconSize * ICON_RADIUS_FACTOR);
             canvas.drawRoundRect(rectF, radius, radius, mIconPaint);
 
             mIconPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-            canvas.drawBitmap(bitmap, rect, rect, mIconPaint);
+            canvas.drawBitmap(bitmap, mTempRect, mTempRect, mIconPaint);
         });
-
         return output;
-
     }
 
 

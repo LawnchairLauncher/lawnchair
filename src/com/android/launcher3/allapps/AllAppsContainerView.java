@@ -585,10 +585,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         int padding = mHeader.getMaxTranslation();
         for (int i = 0; i < mAH.length; i++) {
             mAH[i].padding.top = padding;
-            if (FeatureFlags.ENABLE_DEVICE_SEARCH.get() && mUsingTabs) {
-                //add extra space between tabs and recycler view
-                mAH[i].padding.top += mLauncher.getDeviceProfile().edgeMarginPx;
-            }
             mAH[i].applyPadding();
         }
     }
