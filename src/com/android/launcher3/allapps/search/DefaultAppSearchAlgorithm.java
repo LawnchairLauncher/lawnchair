@@ -46,8 +46,10 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
     @Override
     public void doSearch(final String query,
             final AllAppsSearchBarController.Callbacks callback) {
-        mAppsSearchPipeline.performSearch(query,
-                results -> mResultHandler.post(() -> callback.onSearchResult(query, results)));
+        mAppsSearchPipeline.query(query,
+                results -> mResultHandler.post(
+                        () -> callback.onSearchResult(query, results)),
+                null);
     }
 
     public static boolean matches(AppInfo info, String query, StringMatcher matcher) {

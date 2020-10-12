@@ -178,14 +178,44 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
     /**
      * Sets results list for search
      */
-    public boolean setSearchResults(ArrayList<AdapterItem> f) {
-        if (f == null || mSearchResults != f) {
-            boolean same = mSearchResults != null && mSearchResults.equals(f);
-            mSearchResults = f;
+    public boolean setSearchResults(ArrayList<AdapterItem> results) {
+        if (results == null || mSearchResults != results) {
+            boolean same = mSearchResults != null && mSearchResults.equals(results);
+            mSearchResults = results;
             onAppsUpdated();
             return !same;
         }
         return false;
+    }
+
+    public boolean appendSearchResults(ArrayList<AdapterItem> results) {
+        if (mSearchResults != null && results != null && results.size() > 0) {
+            updateSearchAdapterItems(results, mSearchResults.size());
+            refreshRecyclerView();
+            return true;
+        }
+        return false;
+    }
+
+    void updateSearchAdapterItems(ArrayList<AdapterItem> list, int offset) {
+        SearchSectionInfo lastSection = null;
+        for (int i = 0; i < list.size(); i++) {
+            AdapterItem adapterItem = list.get(i);
+            adapterItem.position = offset + i;
+            mAdapterItems.add(adapterItem);
+            if (adapterItem.searchSectionInfo != lastSection) {
+                if (adapterItem.searchSectionInfo != null) {
+                    adapterItem.searchSectionInfo.setPosStart(adapterItem.position);
+                }
+                if (lastSection != null) {
+                    lastSection.setPosEnd(adapterItem.position - 1);
+                }
+                lastSection = adapterItem.searchSectionInfo;
+            }
+            if (adapterItem.isCountedForAccessibility()) {
+                mAccessibilityResultsCount++;
+            }
+        }
     }
 
     /**
@@ -294,28 +324,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
             }
             appSection.setPosEnd(mApps.isEmpty() ? appSection.getPosStart() : position - 1);
         } else {
-            List<AppInfo> appInfos = new ArrayList<>();
-            SearchSectionInfo lastSection = null;
-            for (int i = 0; i < mSearchResults.size(); i++) {
-                AdapterItem adapterItem = mSearchResults.get(i);
-                adapterItem.position = i;
-                mAdapterItems.add(adapterItem);
-                if (adapterItem.searchSectionInfo != lastSection) {
-                    if (adapterItem.searchSectionInfo != null) {
-                        adapterItem.searchSectionInfo.setPosStart(i);
-                    }
-                    if (lastSection != null) {
-                        lastSection.setPosEnd(i - 1);
-                    }
-                    lastSection = adapterItem.searchSectionInfo;
-                }
-                if (AllAppsGridAdapter.isIconViewType(adapterItem.viewType)) {
-                    appInfos.add(adapterItem.appInfo);
-                }
-                if (adapterItem.isCountedForAccessibility()) {
-                    mAccessibilityResultsCount++;
-                }
-            }
+            updateSearchAdapterItems(mSearchResults, 0);
             if (!FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
                 // Append the search market item
                 if (hasNoFilteredResults()) {
