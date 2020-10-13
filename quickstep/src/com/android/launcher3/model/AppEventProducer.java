@@ -250,6 +250,9 @@ public class AppEventProducer implements StatsLogConsumer {
             case PREDICTION_CONTAINER: {
                 return "predictions";
             }
+            case SHORTCUTS_CONTAINER: {
+                return "shortcuts";
+            }
             case FOLDER: {
                 FolderContainer fc = ci.getFolder();
                 switch (fc.getParentContainerCase()) {
