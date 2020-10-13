@@ -42,11 +42,10 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.allapps.AllAppsGridAdapter;
 import com.android.launcher3.allapps.search.AllAppsSearchBarController;
+import com.android.launcher3.allapps.search.SearchEventTracker;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.LauncherIcons;
-import com.android.systemui.plugins.AllAppsSearchPlugin;
 import com.android.systemui.plugins.shared.SearchTarget;
 import com.android.systemui.plugins.shared.SearchTargetEvent;
 
@@ -56,7 +55,7 @@ import java.util.ArrayList;
  * A view representing a single people search result in all apps
  */
 public class SearchResultPeopleView extends LinearLayout implements
-        AllAppsSearchBarController.PayloadResultHandler<Bundle> {
+        AllAppsSearchBarController.SearchTargetHandler {
 
     private final int mIconSize;
     private final int mButtonSize;
@@ -64,7 +63,6 @@ public class SearchResultPeopleView extends LinearLayout implements
     private View mIconView;
     private TextView mTitleView;
     private ImageButton[] mProviderButtons = new ImageButton[3];
-    private AllAppsSearchPlugin mPlugin;
     private Intent mIntent;
     private final Object[] mTargetInfo = createTargetInfo();
 
@@ -103,10 +101,8 @@ public class SearchResultPeopleView extends LinearLayout implements
     }
 
     @Override
-    public void applyAdapterInfo(
-            AllAppsGridAdapter.AdapterItemWithPayload<Bundle> adapterItemWithPayload) {
-        Bundle payload = adapterItemWithPayload.getPayload();
-        mPlugin = adapterItemWithPayload.getPlugin();
+    public void applySearchTarget(SearchTarget searchTarget) {
+        Bundle payload = searchTarget.bundle;
         mTitleView.setText(payload.getString("title"));
         mIntent = payload.getParcelable("intent");
         Bitmap contactIcon = payload.getParcelable("icon");
@@ -125,7 +121,7 @@ public class SearchResultPeopleView extends LinearLayout implements
             if (providers != null && i < providers.size()) {
                 Bundle provider = providers.get(i);
                 Intent intent = provider.getParcelable("intent");
-                setupProviderButton(button, provider, intent, adapterItemWithPayload);
+                setupProviderButton(button, provider, intent);
                 UI_HELPER_EXECUTOR.post(() -> {
                     String pkg = provider.getString("package_name");
                     Drawable appIcon = getAppIcon(pkg);
@@ -138,13 +134,13 @@ public class SearchResultPeopleView extends LinearLayout implements
                 button.setVisibility(GONE);
             }
         }
-        adapterItemWithPayload.setSelectionHandler(this::handleSelection);
+        SearchEventTracker.INSTANCE.get(getContext()).registerWeakHandler(searchTarget, this);
     }
 
     /**
-     *  Normalizes the bitmap to look like rounded App Icon
-     *  TODO(b/170234747) to support styling, generate adaptive icon drawable and generate
-     *  bitmap from it.
+     * Normalizes the bitmap to look like rounded App Icon
+     * TODO(b/170234747) to support styling, generate adaptive icon drawable and generate
+     * bitmap from it.
      */
     private Bitmap roundBitmap(Bitmap icon) {
         final RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(getResources(), icon);
@@ -185,37 +181,32 @@ public class SearchResultPeopleView extends LinearLayout implements
         return mTargetInfo;
     }
 
-    private void setupProviderButton(ImageButton button, Bundle provider, Intent intent,
-            AllAppsGridAdapter.AdapterItem adapterItem) {
+    private void setupProviderButton(ImageButton button, Bundle provider, Intent intent) {
         Launcher launcher = Launcher.getLauncher(getContext());
         button.setOnClickListener(b -> {
             launcher.startActivitySafely(b, intent, null);
-            SearchTargetEvent searchTargetEvent = getSearchTargetEvent(
+            SearchTargetEvent event = getSearchTargetEvent(
                     SearchTarget.ItemType.PEOPLE,
                     SearchTargetEvent.CHILD_SELECT);
-            searchTargetEvent.bundle = new Bundle();
-            searchTargetEvent.bundle.putParcelable("intent", intent);
-            searchTargetEvent.bundle.putString("title", mTitleView.getText().toString());
-            searchTargetEvent.bundle.putBundle("provider", provider);
-            if (mPlugin != null) {
-                mPlugin.notifySearchTargetEvent(searchTargetEvent);
-            }
+            event.bundle = new Bundle();
+            event.bundle.putParcelable("intent", intent);
+            event.bundle.putString("title", mTitleView.getText().toString());
+            event.bundle.putBundle("provider", provider);
+            SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(event);
         });
     }
 
-
-    private void handleSelection(int eventType) {
+    @Override
+    public void handleSelection(int eventType) {
         if (mIntent != null) {
             Launcher launcher = Launcher.getLauncher(getContext());
             launcher.startActivitySafely(this, mIntent, null);
-            SearchTargetEvent searchTargetEvent = getSearchTargetEvent(SearchTarget.ItemType.PEOPLE,
+            SearchTargetEvent event = getSearchTargetEvent(SearchTarget.ItemType.PEOPLE,
                     eventType);
-            searchTargetEvent.bundle = new Bundle();
-            searchTargetEvent.bundle.putParcelable("intent", mIntent);
-            searchTargetEvent.bundle.putString("title", mTitleView.getText().toString());
-            if (mPlugin != null) {
-                mPlugin.notifySearchTargetEvent(searchTargetEvent);
-            }
+            event.bundle = new Bundle();
+            event.bundle.putParcelable("intent", mIntent);
+            event.bundle.putString("title", mTitleView.getText().toString());
+            SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(event);
         }
     }
 }

@@ -29,9 +29,8 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.allapps.AllAppsGridAdapter;
 import com.android.launcher3.allapps.search.AllAppsSearchBarController;
-import com.android.systemui.plugins.AllAppsSearchPlugin;
+import com.android.launcher3.allapps.search.SearchEventTracker;
 import com.android.systemui.plugins.shared.SearchTarget;
 import com.android.systemui.plugins.shared.SearchTargetEvent;
 
@@ -41,13 +40,12 @@ import java.util.ArrayList;
  * A row of tappable TextViews with a breadcrumb for settings search.
  */
 public class SearchSettingsRowView extends LinearLayout implements
-        View.OnClickListener, AllAppsSearchBarController.PayloadResultHandler<Bundle> {
+        View.OnClickListener, AllAppsSearchBarController.SearchTargetHandler {
 
     private TextView mTitleView;
     private TextView mDescriptionView;
     private TextView mBreadcrumbsView;
     private Intent mIntent;
-    private AllAppsSearchPlugin mPlugin;
     private final Object[] mTargetInfo = createTargetInfo();
 
 
@@ -75,10 +73,8 @@ public class SearchSettingsRowView extends LinearLayout implements
     }
 
     @Override
-    public void applyAdapterInfo(
-            AllAppsGridAdapter.AdapterItemWithPayload<Bundle> adapterItemWithPayload) {
-        Bundle bundle = adapterItemWithPayload.getPayload();
-        mPlugin = adapterItemWithPayload.getPlugin();
+    public void applySearchTarget(SearchTarget searchTarget) {
+        Bundle bundle = searchTarget.bundle;
         mIntent = bundle.getParcelable("intent");
         showIfAvailable(mTitleView, bundle.getString("title"));
         showIfAvailable(mDescriptionView, bundle.getString("description"));
@@ -86,7 +82,7 @@ public class SearchSettingsRowView extends LinearLayout implements
         //TODO: implement RTL friendly breadcrumbs view
         showIfAvailable(mBreadcrumbsView, breadcrumbs != null
                 ? String.join(" > ", breadcrumbs) : null);
-        adapterItemWithPayload.setSelectionHandler(this::handleSelection);
+        SearchEventTracker.INSTANCE.get(getContext()).registerWeakHandler(searchTarget, this);
     }
 
     @Override
@@ -108,7 +104,8 @@ public class SearchSettingsRowView extends LinearLayout implements
         handleSelection(SearchTargetEvent.SELECT);
     }
 
-    private void handleSelection(int eventType) {
+    @Override
+    public void handleSelection(int eventType) {
         if (mIntent == null) return;
         // TODO: create ItemInfo object and then use it to call startActivityForResult for proper
         //  WW logging
@@ -119,8 +116,6 @@ public class SearchSettingsRowView extends LinearLayout implements
                 SearchTarget.ItemType.SETTINGS_ROW, eventType);
         searchTargetEvent.bundle = new Bundle();
         searchTargetEvent.bundle.putParcelable("intent", mIntent);
-        if (mPlugin != null) {
-            mPlugin.notifySearchTargetEvent(searchTargetEvent);
-        }
+        SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(searchTargetEvent);
     }
 }

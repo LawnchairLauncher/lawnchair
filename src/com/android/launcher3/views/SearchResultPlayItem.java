@@ -41,11 +41,10 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItemWithPayload;
 import com.android.launcher3.allapps.search.AllAppsSearchBarController;
+import com.android.launcher3.allapps.search.SearchEventTracker;
 import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.util.Themes;
-import com.android.systemui.plugins.AllAppsSearchPlugin;
 import com.android.systemui.plugins.shared.SearchTarget;
 import com.android.systemui.plugins.shared.SearchTargetEvent;
 
@@ -57,22 +56,19 @@ import java.net.URLConnection;
  * A View representing a PlayStore item.
  */
 public class SearchResultPlayItem extends LinearLayout implements
-        AllAppsSearchBarController.PayloadResultHandler<Bundle> {
+        AllAppsSearchBarController.SearchTargetHandler {
 
     private static final int BITMAP_CROP_MASK_COLOR = 0xff424242;
-
+    final Paint mIconPaint = new Paint();
+    final Rect mTempRect = new Rect();
     private final DeviceProfile mDeviceProfile;
+    private final Object[] mTargetInfo = createTargetInfo();
     private View mIconView;
     private TextView mTitleView;
     private TextView[] mDetailViews = new TextView[3];
     private Button mPreviewButton;
     private String mPackageName;
     private boolean mIsInstantGame;
-    private AllAppsSearchPlugin mPlugin;
-    private final Object[] mTargetInfo = createTargetInfo();
-
-    final Paint mIconPaint = new Paint();
-    final Rect mTempRect = new Rect();
 
 
     public SearchResultPlayItem(Context context) {
@@ -108,11 +104,32 @@ public class SearchResultPlayItem extends LinearLayout implements
 
     }
 
+
+    private Bitmap getRoundedBitmap(Bitmap bitmap) {
+        final int iconSize = bitmap.getWidth();
+        final float radius = Themes.getDialogCornerRadius(getContext());
+
+        Bitmap output = BitmapRenderer.createHardwareBitmap(iconSize, iconSize, (canvas) -> {
+            mTempRect.set(0, 0, iconSize, iconSize);
+            final RectF rectF = new RectF(mTempRect);
+
+            mIconPaint.setAntiAlias(true);
+            mIconPaint.reset();
+            canvas.drawARGB(0, 0, 0, 0);
+            mIconPaint.setColor(BITMAP_CROP_MASK_COLOR);
+            canvas.drawRoundRect(rectF, radius, radius, mIconPaint);
+
+            mIconPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+            canvas.drawBitmap(bitmap, mTempRect, mTempRect, mIconPaint);
+        });
+        return output;
+    }
+
+
     @Override
-    public void applyAdapterInfo(AdapterItemWithPayload<Bundle> adapterItemWithPayload) {
-        Bundle bundle = adapterItemWithPayload.getPayload();
-        mPlugin = adapterItemWithPayload.getPlugin();
-        adapterItemWithPayload.setSelectionHandler(this::handleSelection);
+    public void applySearchTarget(SearchTarget searchTarget) {
+        Bundle bundle = searchTarget.bundle;
+        SearchEventTracker.INSTANCE.get(getContext()).registerWeakHandler(searchTarget, this);
         if (bundle.getString("package", "").equals(mPackageName)) {
             return;
         }
@@ -143,28 +160,6 @@ public class SearchResultPlayItem extends LinearLayout implements
         });
     }
 
-
-    private Bitmap getRoundedBitmap(Bitmap bitmap) {
-        final int iconSize = bitmap.getWidth();
-        final float radius = Themes.getDialogCornerRadius(getContext());
-
-        Bitmap output = BitmapRenderer.createHardwareBitmap(iconSize, iconSize, (canvas) -> {
-            mTempRect.set(0, 0, iconSize, iconSize);
-            final RectF rectF = new RectF(mTempRect);
-
-            mIconPaint.setAntiAlias(true);
-            mIconPaint.reset();
-            canvas.drawARGB(0, 0, 0, 0);
-            mIconPaint.setColor(BITMAP_CROP_MASK_COLOR);
-            canvas.drawRoundRect(rectF, radius, radius, mIconPaint);
-
-            mIconPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-            canvas.drawBitmap(bitmap, mTempRect, mTempRect, mIconPaint);
-        });
-        return output;
-    }
-
-
     @Override
     public Object[] getTargetInfo() {
         return mTargetInfo;
@@ -179,7 +174,8 @@ public class SearchResultPlayItem extends LinearLayout implements
         }
     }
 
-    private void handleSelection(int eventType) {
+    @Override
+    public void handleSelection(int eventType) {
         if (mPackageName == null) return;
         Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(
                 "https://play.google.com/store/apps/details?id="
@@ -209,8 +205,6 @@ public class SearchResultPlayItem extends LinearLayout implements
                 SearchTarget.ItemType.PLAY_RESULTS, eventType);
         searchTargetEvent.bundle = new Bundle();
         searchTargetEvent.bundle.putString("package_name", mPackageName);
-        if (mPlugin != null) {
-            mPlugin.notifySearchTargetEvent(searchTargetEvent);
-        }
+        SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(searchTargetEvent);
     }
 }

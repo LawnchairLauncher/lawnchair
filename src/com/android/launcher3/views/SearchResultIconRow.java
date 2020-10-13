@@ -35,8 +35,8 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
-import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItemWithPayload;
 import com.android.launcher3.allapps.search.AllAppsSearchBarController;
+import com.android.launcher3.allapps.search.SearchEventTracker;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.model.data.ItemInfo;
@@ -44,7 +44,6 @@ import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.RemoteActionItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.touch.ItemClickHandler;
-import com.android.systemui.plugins.AllAppsSearchPlugin;
 import com.android.systemui.plugins.shared.SearchTarget;
 import com.android.systemui.plugins.shared.SearchTarget.ItemType;
 import com.android.systemui.plugins.shared.SearchTargetEvent;
@@ -53,15 +52,13 @@ import com.android.systemui.plugins.shared.SearchTargetEvent;
  * A view representing a stand alone shortcut search result
  */
 public class SearchResultIconRow extends DoubleShadowBubbleTextView implements
-        AllAppsSearchBarController.PayloadResultHandler<SearchTarget> {
+        AllAppsSearchBarController.SearchTargetHandler {
 
     private final Object[] mTargetInfo = createTargetInfo();
     private final int mCustomIconResId;
     private final boolean mMatchesInset;
 
     private ShortcutInfo mShortcutInfo;
-    private AllAppsSearchPlugin mPlugin;
-    private AdapterItemWithPayload<SearchTarget> mAdapterItem;
 
 
     public SearchResultIconRow(@NonNull Context context) {
@@ -100,26 +97,18 @@ public class SearchResultIconRow extends DoubleShadowBubbleTextView implements
         }
     }
 
-
     @Override
-    public void applyAdapterInfo(AdapterItemWithPayload<SearchTarget> adapterItemWithPayload) {
-        if (mAdapterItem != null) {
-            mAdapterItem.setSelectionHandler(null);
-        }
-        mAdapterItem = adapterItemWithPayload;
-        SearchTarget payload = adapterItemWithPayload.getPayload();
-        mPlugin = adapterItemWithPayload.getPlugin();
-
-        if (payload.mRemoteAction != null) {
-            prepareUsingRemoteAction(payload.mRemoteAction,
-                    payload.bundle.getString(SearchTarget.REMOTE_ACTION_TOKEN),
-                    payload.bundle.getBoolean(SearchTarget.REMOTE_ACTION_SHOULD_START),
-                    payload.type == ItemType.ACTION);
+    public void applySearchTarget(SearchTarget searchTarget) {
+        if (searchTarget.mRemoteAction != null) {
+            prepareUsingRemoteAction(searchTarget.mRemoteAction,
+                    searchTarget.bundle.getString(SearchTarget.REMOTE_ACTION_TOKEN),
+                    searchTarget.bundle.getBoolean(SearchTarget.REMOTE_ACTION_SHOULD_START),
+                    searchTarget.type == ItemType.ACTION);
         } else {
-            prepareUsingShortcutInfo(payload.shortcuts.get(0));
+            prepareUsingShortcutInfo(searchTarget.shortcuts.get(0));
         }
         setOnClickListener(v -> handleSelection(SearchTargetEvent.SELECT));
-        adapterItemWithPayload.setSelectionHandler(this::handleSelection);
+        SearchEventTracker.INSTANCE.get(getContext()).registerWeakHandler(searchTarget, this);
     }
 
     private void prepareUsingShortcutInfo(ShortcutInfo shortcutInfo) {
@@ -179,7 +168,8 @@ public class SearchResultIconRow extends DoubleShadowBubbleTextView implements
         return mTargetInfo;
     }
 
-    private void handleSelection(int eventType) {
+    @Override
+    public void handleSelection(int eventType) {
         ItemInfo itemInfo = (ItemInfo) getTag();
         Launcher launcher = Launcher.getLauncher(getContext());
         final SearchTargetEvent searchTargetEvent;
@@ -200,8 +190,6 @@ public class SearchResultIconRow extends DoubleShadowBubbleTextView implements
             searchTargetEvent.bundle.putString(SearchTarget.REMOTE_ACTION_TOKEN,
                     remoteItemInfo.getToken());
         }
-        if (mPlugin != null) {
-            mPlugin.notifySearchTargetEvent(searchTargetEvent);
-        }
+        SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(searchTargetEvent);
     }
 }

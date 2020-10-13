@@ -26,14 +26,13 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import com.android.launcher3.Launcher;
-import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItemWithPayload;
 import com.android.launcher3.allapps.search.AllAppsSearchBarController;
+import com.android.launcher3.allapps.search.SearchEventTracker;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.RemoteActionItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.Themes;
-import com.android.systemui.plugins.AllAppsSearchPlugin;
 import com.android.systemui.plugins.shared.SearchTarget;
 import com.android.systemui.plugins.shared.SearchTargetEvent;
 
@@ -41,11 +40,9 @@ import com.android.systemui.plugins.shared.SearchTargetEvent;
  * A view representing a high confidence app search result that includes shortcuts
  */
 public class ThumbnailSearchResultView extends androidx.appcompat.widget.AppCompatImageView
-        implements AllAppsSearchBarController.PayloadResultHandler<SearchTarget> {
+        implements AllAppsSearchBarController.SearchTargetHandler {
 
     private final Object[] mTargetInfo = createTargetInfo();
-    AllAppsSearchPlugin mPlugin;
-    int mPosition;
 
     public ThumbnailSearchResultView(Context context) {
         super(context);
@@ -59,7 +56,8 @@ public class ThumbnailSearchResultView extends androidx.appcompat.widget.AppComp
         super(context, attrs, defStyleAttr);
     }
 
-    private void handleSelection(int eventType) {
+    @Override
+    public void handleSelection(int eventType) {
         Launcher launcher = Launcher.getLauncher(getContext());
         ItemInfo itemInfo = (ItemInfo) getTag();
         if (itemInfo instanceof RemoteActionItemInfo) {
@@ -68,26 +66,19 @@ public class ThumbnailSearchResultView extends androidx.appcompat.widget.AppComp
         } else {
             ItemClickHandler.onClickAppShortcut(this, (WorkspaceItemInfo) itemInfo, launcher);
         }
-        if (mPlugin != null) {
-            SearchTargetEvent event = getSearchTargetEvent(
-                    SearchTarget.ItemType.SCREENSHOT, eventType);
-            mPlugin.notifySearchTargetEvent(event);
-        }
+        SearchTargetEvent e = getSearchTargetEvent(SearchTarget.ItemType.SCREENSHOT, eventType);
+        SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(e);
     }
 
     @Override
-    public void applyAdapterInfo(AdapterItemWithPayload<SearchTarget> adapterItem) {
-        Launcher launcher = Launcher.getLauncher(getContext());
-        mPosition = adapterItem.position;
-
-        SearchTarget target = adapterItem.getPayload();
+    public void applySearchTarget(SearchTarget target) {
         Bitmap bitmap;
         if (target.mRemoteAction != null) {
             RemoteActionItemInfo itemInfo = new RemoteActionItemInfo(target.mRemoteAction,
                     target.bundle.getString(SearchTarget.REMOTE_ACTION_TOKEN),
                     target.bundle.getBoolean(SearchTarget.REMOTE_ACTION_SHOULD_START));
             bitmap = ((BitmapDrawable) target.mRemoteAction.getIcon()
-                .loadDrawable(getContext())).getBitmap();
+                    .loadDrawable(getContext())).getBitmap();
             Bitmap crop = Bitmap.createBitmap(bitmap, 0,
                     bitmap.getHeight() / 2 - bitmap.getWidth() / 2,
                     bitmap.getWidth(), bitmap.getWidth());
@@ -106,8 +97,7 @@ public class ThumbnailSearchResultView extends androidx.appcompat.widget.AppComp
         drawable.setCornerRadius(Themes.getDialogCornerRadius(getContext()));
         setImageDrawable(drawable);
         setOnClickListener(v -> handleSelection(SearchTargetEvent.SELECT));
-        mPlugin = adapterItem.getPlugin();
-        adapterItem.setSelectionHandler(this::handleSelection);
+        SearchEventTracker.INSTANCE.get(getContext()).registerWeakHandler(target, this);
     }
 
     @Override
