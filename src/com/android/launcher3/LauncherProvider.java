@@ -188,6 +188,9 @@ public class LauncherProvider extends ContentProvider {
 
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         Cursor result = qb.query(db, projection, args.where, args.args, null, null, sortOrder);
+        final Bundle extra = new Bundle();
+        extra.putString(LauncherSettings.Settings.EXTRA_DB_NAME, mOpenHelper.getDatabaseName());
+        result.setExtras(extra);
         result.setNotificationUri(getContext().getContentResolver(), uri);
 
         return result;
