@@ -24,6 +24,7 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.MotionEvent;
 import android.view.View;
@@ -45,6 +46,8 @@ import java.util.List;
  * A RecyclerView with custom fast scroll support for the all apps view.
  */
 public class AllAppsRecyclerView extends BaseRecyclerView {
+    private static final String TAG = "AllAppsContainerView";
+    private static final boolean DEBUG = true;
 
     private AlphabeticalAppsList mApps;
     private final int mNumAppsPerRow;
@@ -131,7 +134,9 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         if (mEmptySearchBackground != null && mEmptySearchBackground.getAlpha() > 0) {
             mEmptySearchBackground.draw(c);
         }
-
+        if (DEBUG) {
+            Log.d(TAG, "onDraw at = " + System.currentTimeMillis());
+        }
         super.onDraw(c);
     }
 
