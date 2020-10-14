@@ -41,6 +41,7 @@ import android.os.Build;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
@@ -129,6 +130,21 @@ public final class TaskViewUtils {
         return taskView;
     }
 
+    public static void createRecentsWindowAnimator(TaskView v, boolean skipViewChanges,
+            RemoteAnimationTargetCompat[] appTargets,
+            RemoteAnimationTargetCompat[] wallpaperTargets, DepthController depthController,
+            PendingAnimation out) {
+        boolean isRunningTask = v.isRunningTask();
+        TransformParams params = null;
+        TaskViewSimulator tsv = null;
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && isRunningTask) {
+            params = v.getRecentsView().getLiveTileParams();
+            tsv = v.getRecentsView().getLiveTileTaskViewSimulator();
+        }
+        createRecentsWindowAnimator(v, skipViewChanges, appTargets, wallpaperTargets,
+                depthController, out, params, tsv);
+    }
+
     /**
      * Creates an animation that controls the window of the opening targets for the recents launch
      * animation.
@@ -136,19 +152,25 @@ public final class TaskViewUtils {
     public static void createRecentsWindowAnimator(TaskView v, boolean skipViewChanges,
             RemoteAnimationTargetCompat[] appTargets,
             RemoteAnimationTargetCompat[] wallpaperTargets, DepthController depthController,
-            PendingAnimation out) {
+            PendingAnimation out, @Nullable TransformParams params,
+            @Nullable TaskViewSimulator tsv) {
         boolean isQuickSwitch = v.isEndQuickswitchCuj();
         v.setEndQuickswitchCuj(false);
 
-        SurfaceTransactionApplier applier = new SurfaceTransactionApplier(v);
+        boolean inLiveTileMode =
+                ENABLE_QUICKSTEP_LIVE_TILE.get() && v.getRecentsView().getRunningTaskIndex() != -1;
         final RemoteAnimationTargets targets =
                 new RemoteAnimationTargets(appTargets, wallpaperTargets,
-                        ENABLE_QUICKSTEP_LIVE_TILE.get() ? MODE_CLOSING : MODE_OPENING);
-        targets.addReleaseCheck(applier);
+                        inLiveTileMode ? MODE_CLOSING : MODE_OPENING);
 
-        TransformParams params = new TransformParams()
+        if (params == null) {
+            SurfaceTransactionApplier applier = new SurfaceTransactionApplier(v);
+            targets.addReleaseCheck(applier);
+
+            params = new TransformParams()
                     .setSyncTransactionApplier(applier)
                     .setTargetSet(targets);
+        }
 
         final RecentsView recentsView = v.getRecentsView();
         int taskIndex = recentsView.indexOfChild(v);
@@ -162,8 +184,9 @@ public final class TaskViewUtils {
         int displayRotation = DisplayController.getDefaultDisplay(context).getInfo().rotation;
 
         TaskViewSimulator topMostSimulator = null;
-        if (targets.apps.length > 0) {
-            TaskViewSimulator tsv = new TaskViewSimulator(context, recentsView.getSizeStrategy());
+
+        if (tsv == null && targets.apps.length > 0) {
+            tsv = new TaskViewSimulator(context, recentsView.getSizeStrategy());
             tsv.setDp(dp);
             tsv.setLayoutRotation(displayRotation, displayRotation);
             tsv.setPreview(targets.apps[targets.apps.length - 1]);
@@ -171,18 +194,23 @@ public final class TaskViewUtils {
             tsv.recentsViewScale.value = 1;
             tsv.setScroll(startScroll);
 
+            // Fade in the task during the initial 20% of the animation
+            out.addFloat(params, TransformParams.TARGET_ALPHA, 0, 1,
+                    clampToProgress(LINEAR, 0, 0.2f));
+        }
+
+        if (tsv != null) {
             out.setFloat(tsv.fullScreenProgress,
                     AnimatedFloat.VALUE, 1, TOUCH_RESPONSE_INTERPOLATOR);
             out.setFloat(tsv.recentsViewScale,
                     AnimatedFloat.VALUE, tsv.getFullScreenScale(), TOUCH_RESPONSE_INTERPOLATOR);
             out.setInt(tsv, TaskViewSimulator.SCROLL, 0, TOUCH_RESPONSE_INTERPOLATOR);
 
-            out.addOnFrameCallback(() -> tsv.apply(params));
+            TaskViewSimulator finalTsv = tsv;
+            TransformParams finalParams = params;
+            out.addOnFrameCallback(() -> finalTsv.apply(finalParams));
             topMostSimulator = tsv;
         }
-
-        // Fade in the task during the initial 20% of the animation
-        out.addFloat(params, TransformParams.TARGET_ALPHA, 0, 1, clampToProgress(LINEAR, 0, 0.2f));
 
         if (!skipViewChanges && parallaxCenterAndAdjacentTask && topMostSimulator != null) {
             out.addFloat(v, VIEW_ALPHA, 1, 0, clampToProgress(LINEAR, 0.2f, 0.4f));
