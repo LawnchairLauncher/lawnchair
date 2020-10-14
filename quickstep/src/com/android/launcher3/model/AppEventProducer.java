@@ -251,7 +251,7 @@ public class AppEventProducer implements StatsLogConsumer {
                 return "predictions";
             }
             case SHORTCUTS_CONTAINER: {
-                return "shortcuts";
+                return "deep-shortcuts";
             }
             case FOLDER: {
                 FolderContainer fc = ci.getFolder();
