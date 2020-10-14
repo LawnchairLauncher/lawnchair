@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.allapps.search;
 
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+
 import android.content.Context;
 
 import androidx.annotation.Nullable;
@@ -61,7 +63,7 @@ public class SearchEventTracker {
      */
     public void notifySearchTargetEvent(SearchTargetEvent searchTargetEvent) {
         if (mPlugin != null) {
-            mPlugin.notifySearchTargetEvent(searchTargetEvent);
+            UI_HELPER_EXECUTOR.post(() -> mPlugin.notifySearchTargetEvent(searchTargetEvent));
         }
     }
 

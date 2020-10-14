@@ -18,6 +18,8 @@ package com.android.launcher3.allapps;
 import static com.android.launcher3.model.data.AppInfo.COMPONENT_KEY_COMPARATOR;
 import static com.android.launcher3.model.data.AppInfo.EMPTY_ARRAY;
 
+import android.content.ComponentName;
+import android.os.UserHandle;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -27,6 +29,7 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.PromiseAppInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageUserKey;
+import com.android.systemui.plugins.shared.SearchTarget;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -84,6 +87,19 @@ public class AllAppsStore {
         mTempInfo.user = key.user;
         int index = Arrays.binarySearch(mApps, mTempInfo, COMPONENT_KEY_COMPARATOR);
         return index < 0 ? null : mApps[index];
+    }
+
+    /**
+     * Gets AppInfo from {@link SearchTarget}
+     * TODO: SearchTarget should have userHandle and ComponentKey members
+     */
+    public AppInfo getAppFromSearchTarget(SearchTarget searchTarget) {
+        ComponentName cn = searchTarget.bundle.getParcelable("component_name");
+        UserHandle userHandle = searchTarget.bundle.getParcelable("user_handle");
+        if (cn == null) {
+            throw new IllegalStateException("Component name is required for AppInfo");
+        }
+        return getApp(new ComponentKey(cn, userHandle));
     }
 
     public void enableDeferUpdates(int flag) {
