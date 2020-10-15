@@ -19,13 +19,11 @@ import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_ALL_APP
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ShortcutInfo;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.os.UserHandle;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.View;
@@ -51,7 +49,6 @@ import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
 import com.android.launcher3.touch.ItemLongClickListener;
-import com.android.launcher3.util.ComponentKey;
 import com.android.systemui.plugins.shared.SearchTarget;
 import com.android.systemui.plugins.shared.SearchTargetEvent;
 
@@ -122,7 +119,8 @@ public class HeroSearchResultView extends LinearLayout implements DragSource, Se
 
     @Override
     public void applySearchTarget(SearchTarget searchTarget) {
-        AppInfo appInfo = getAppInfo(searchTarget.bundle);
+        AllAppsStore apps = Launcher.getLauncher(getContext()).getAppsView().getAppsStore();
+        AppInfo appInfo = apps.getAppFromSearchTarget(searchTarget);
 //        TODO: replace this with searchTarget.shortcuts
         ArrayList<ShortcutInfo> infos = searchTarget.bundle.getParcelableArrayList(
                 SHORTCUTS_KEY);
@@ -154,13 +152,6 @@ public class HeroSearchResultView extends LinearLayout implements DragSource, Se
             }
         }
         SearchEventTracker.INSTANCE.get(getContext()).registerWeakHandler(searchTarget, this);
-    }
-
-    private AppInfo getAppInfo(Bundle bundle) {
-        AllAppsStore apps = Launcher.getLauncher(getContext()).getAppsView().getAppsStore();
-        ComponentName cn = bundle.getParcelable("component_name");
-        UserHandle userHandle = bundle.getParcelable("user_handle");
-        return (cn != null) ? apps.getApp(new ComponentKey(cn, userHandle)) : null;
     }
 
     @Override

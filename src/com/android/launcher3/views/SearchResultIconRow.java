@@ -23,6 +23,7 @@ import android.app.RemoteAction;
 import android.content.Context;
 import android.content.pm.ShortcutInfo;
 import android.content.res.TypedArray;
+import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -44,6 +45,7 @@ import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.RemoteActionItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.touch.ItemClickHandler;
+import com.android.launcher3.util.Themes;
 import com.android.systemui.plugins.shared.SearchTarget;
 import com.android.systemui.plugins.shared.SearchTarget.ItemType;
 import com.android.systemui.plugins.shared.SearchTargetEvent;
@@ -96,6 +98,14 @@ public class SearchResultIconRow extends DoubleShadowBubbleTextView implements
             }
         }
     }
+
+    @Override
+    protected void drawFocusHighlight(Canvas canvas) {
+        mHighlightPaint.setColor(mHighlightColor);
+        float r = Themes.getDialogCornerRadius(getContext());
+        canvas.drawRoundRect(0, 0, getWidth(), getHeight(), r, r, mHighlightPaint);
+    }
+
 
     @Override
     public void applySearchTarget(SearchTarget searchTarget) {

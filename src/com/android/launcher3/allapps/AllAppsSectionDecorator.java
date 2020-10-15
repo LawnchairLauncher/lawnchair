@@ -54,6 +54,9 @@ public class AllAppsSectionDecorator extends RecyclerView.ItemDecoration {
         int i = 0;
         while (i < itemCount) {
             View view = parent.getChildAt(i);
+            if (view instanceof SelfDecoratingView) {
+                ((SelfDecoratingView) view).removeDecoration();
+            }
             int position = parent.getChildAdapterPosition(view);
             AllAppsGridAdapter.AdapterItem adapterItem = adapterItems.get(position);
             if (adapterItem.searchSectionInfo != null) {
@@ -93,7 +96,7 @@ public class AllAppsSectionDecorator extends RecyclerView.ItemDecoration {
             int index = mAppsView.getApps().getFocusedChildIndex();
             AppsGridLayoutManager layoutManager = (AppsGridLayoutManager)
                     mAppsView.getActiveRecyclerView().getLayoutManager();
-            if (layoutManager.findFirstVisibleItemPosition() == index
+            if (layoutManager.findFirstVisibleItemPosition() <= index
                     && index < parent.getChildCount()) {
                 decorationHandler.onFocusDraw(c, parent.getChildAt(index));
             }
@@ -156,6 +159,10 @@ public class AllAppsSectionDecorator extends RecyclerView.ItemDecoration {
             if (view == null) {
                 return;
             }
+            if (view instanceof SelfDecoratingView) {
+                ((SelfDecoratingView) view).decorate(mFocusColor);
+                return;
+            }
             mPaint.setColor(mFocusColor);
             canvas.drawRoundRect(view.getLeft(), view.getTop(),
                     view.getRight(), view.getBottom(), mRadius, mRadius, mPaint);
@@ -169,4 +176,18 @@ public class AllAppsSectionDecorator extends RecyclerView.ItemDecoration {
         }
     }
 
+    /**
+     * An interface for a view to draw highlight indicator
+     */
+    public interface SelfDecoratingView {
+        /**
+         * Removes decorations drawing if focus is acquired by another view
+         */
+        void removeDecoration();
+
+        /**
+         * Draws highlight indicator on view.
+         */
+        void decorate(int focusColor);
+    }
 }
