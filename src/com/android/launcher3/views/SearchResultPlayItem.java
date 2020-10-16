@@ -58,17 +58,20 @@ import java.net.URLConnection;
 public class SearchResultPlayItem extends LinearLayout implements
         AllAppsSearchBarController.SearchTargetHandler {
 
+    public static final String TARGET_TYPE_PLAY = "play";
+
     private static final int BITMAP_CROP_MASK_COLOR = 0xff424242;
     final Paint mIconPaint = new Paint();
     final Rect mTempRect = new Rect();
     private final DeviceProfile mDeviceProfile;
-    private final Object[] mTargetInfo = createTargetInfo();
     private View mIconView;
     private TextView mTitleView;
     private TextView[] mDetailViews = new TextView[3];
     private Button mPreviewButton;
     private String mPackageName;
     private boolean mIsInstantGame;
+
+    private SearchTarget mSearchTarget;
 
 
     public SearchResultPlayItem(Context context) {
@@ -128,7 +131,8 @@ public class SearchResultPlayItem extends LinearLayout implements
 
     @Override
     public void applySearchTarget(SearchTarget searchTarget) {
-        Bundle bundle = searchTarget.bundle;
+        mSearchTarget = searchTarget;
+        Bundle bundle = searchTarget.getExtras();
         SearchEventTracker.INSTANCE.get(getContext()).registerWeakHandler(searchTarget, this);
         if (bundle.getString("package", "").equals(mPackageName)) {
             return;
@@ -158,11 +162,6 @@ public class SearchResultPlayItem extends LinearLayout implements
                 e.printStackTrace();
             }
         });
-    }
-
-    @Override
-    public Object[] getTargetInfo() {
-        return mTargetInfo;
     }
 
     private void showIfNecessary(TextView textView, @Nullable String string) {
@@ -201,10 +200,7 @@ public class SearchResultPlayItem extends LinearLayout implements
     }
 
     private void logSearchEvent(int eventType) {
-        SearchTargetEvent searchTargetEvent = getSearchTargetEvent(
-                SearchTarget.ItemType.PLAY_RESULTS, eventType);
-        searchTargetEvent.bundle = new Bundle();
-        searchTargetEvent.bundle.putString("package_name", mPackageName);
-        SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(searchTargetEvent);
+        SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(
+                new SearchTargetEvent.Builder(mSearchTarget, eventType).build());
     }
 }

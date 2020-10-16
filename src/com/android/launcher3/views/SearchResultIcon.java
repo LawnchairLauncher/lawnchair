@@ -25,8 +25,8 @@ import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.search.AllAppsSearchBarController;
 import com.android.launcher3.allapps.search.SearchEventTracker;
 import com.android.launcher3.model.data.AppInfo;
-import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.touch.ItemLongClickListener;
+import com.android.launcher3.util.ComponentKey;
 import com.android.systemui.plugins.shared.SearchTarget;
 import com.android.systemui.plugins.shared.SearchTargetEvent;
 
@@ -36,7 +36,10 @@ import com.android.systemui.plugins.shared.SearchTargetEvent;
 public class SearchResultIcon extends BubbleTextView implements
         AllAppsSearchBarController.SearchTargetHandler, View.OnClickListener,
         View.OnLongClickListener {
-    private final Object[] mTargetInfo = createTargetInfo();
+
+
+    public static final String TARGET_TYPE_APP = "app";
+
     private final Launcher mLauncher;
 
     private SearchTarget mSearchTarget;
@@ -68,25 +71,17 @@ public class SearchResultIcon extends BubbleTextView implements
     public void applySearchTarget(SearchTarget searchTarget) {
         mSearchTarget = searchTarget;
         AllAppsStore appsStore = mLauncher.getAppsView().getAppsStore();
-        if (searchTarget.type == SearchTarget.ItemType.APP) {
-            AppInfo appInfo = appsStore.getAppFromSearchTarget(searchTarget);
+        if (searchTarget.getItemType().equals(TARGET_TYPE_APP)) {
+            AppInfo appInfo = appsStore.getApp(new ComponentKey(searchTarget.getComponentName(),
+                    searchTarget.getUserHandle()));
             applyFromApplicationInfo(appInfo);
         }
     }
 
     @Override
-    public Object[] getTargetInfo() {
-        return mTargetInfo;
-    }
-
-    @Override
     public void handleSelection(int eventType) {
-        SearchTargetEvent event = getSearchTargetEvent(mSearchTarget.type,
-                eventType);
-        if (mSearchTarget.type.equals(SearchTarget.ItemType.APP)) {
-            event.bundle = HeroSearchResultView.getAppBundle((ItemInfo) getTag());
-        }
-        SearchEventTracker.INSTANCE.get(mLauncher).notifySearchTargetEvent(event);
+        SearchEventTracker.INSTANCE.get(mLauncher).notifySearchTargetEvent(
+                new SearchTargetEvent.Builder(mSearchTarget, eventType).build());
     }
 
     @Override

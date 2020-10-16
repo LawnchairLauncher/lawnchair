@@ -57,6 +57,8 @@ import java.util.ArrayList;
 public class SearchResultPeopleView extends LinearLayout implements
         AllAppsSearchBarController.SearchTargetHandler {
 
+    public static final String TARGET_TYPE_PEOPLE = "people";
+
     private final int mIconSize;
     private final int mButtonSize;
     private final PackageManager mPackageManager;
@@ -64,7 +66,9 @@ public class SearchResultPeopleView extends LinearLayout implements
     private TextView mTitleView;
     private ImageButton[] mProviderButtons = new ImageButton[3];
     private Intent mIntent;
-    private final Object[] mTargetInfo = createTargetInfo();
+
+
+    private SearchTarget mSearchTarget;
 
     public SearchResultPeopleView(Context context) {
         this(context, null, 0);
@@ -102,7 +106,8 @@ public class SearchResultPeopleView extends LinearLayout implements
 
     @Override
     public void applySearchTarget(SearchTarget searchTarget) {
-        Bundle payload = searchTarget.bundle;
+        mSearchTarget = searchTarget;
+        Bundle payload = searchTarget.getExtras();
         mTitleView.setText(payload.getString("title"));
         mIntent = payload.getParcelable("intent");
         Bitmap contactIcon = payload.getParcelable("icon");
@@ -176,23 +181,15 @@ public class SearchResultPeopleView extends LinearLayout implements
         }
     }
 
-    @Override
-    public Object[] getTargetInfo() {
-        return mTargetInfo;
-    }
-
     private void setupProviderButton(ImageButton button, Bundle provider, Intent intent) {
         Launcher launcher = Launcher.getLauncher(getContext());
         button.setOnClickListener(b -> {
             launcher.startActivitySafely(b, intent, null);
-            SearchTargetEvent event = getSearchTargetEvent(
-                    SearchTarget.ItemType.PEOPLE,
-                    SearchTargetEvent.CHILD_SELECT);
-            event.bundle = new Bundle();
-            event.bundle.putParcelable("intent", intent);
-            event.bundle.putString("title", mTitleView.getText().toString());
-            event.bundle.putBundle("provider", provider);
-            SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(event);
+            Bundle bundle = new Bundle();
+            bundle.putBundle("provider", provider);
+            SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(
+                    new SearchTargetEvent.Builder(mSearchTarget,
+                            SearchTargetEvent.CHILD_SELECT).setExtras(bundle).build());
         });
     }
 
@@ -201,12 +198,8 @@ public class SearchResultPeopleView extends LinearLayout implements
         if (mIntent != null) {
             Launcher launcher = Launcher.getLauncher(getContext());
             launcher.startActivitySafely(this, mIntent, null);
-            SearchTargetEvent event = getSearchTargetEvent(SearchTarget.ItemType.PEOPLE,
-                    eventType);
-            event.bundle = new Bundle();
-            event.bundle.putParcelable("intent", mIntent);
-            event.bundle.putString("title", mTitleView.getText().toString());
-            SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(event);
+            SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(
+                    new SearchTargetEvent.Builder(mSearchTarget, eventType).build());
         }
     }
 }

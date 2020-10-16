@@ -15,6 +15,9 @@
  */
 package com.android.launcher3.views;
 
+import static com.android.launcher3.views.SearchResultIconRow.REMOTE_ACTION_SHOULD_START;
+import static com.android.launcher3.views.SearchResultIconRow.REMOTE_ACTION_TOKEN;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -42,7 +45,10 @@ import com.android.systemui.plugins.shared.SearchTargetEvent;
 public class ThumbnailSearchResultView extends androidx.appcompat.widget.AppCompatImageView
         implements AllAppsSearchBarController.SearchTargetHandler {
 
-    private final Object[] mTargetInfo = createTargetInfo();
+    public static final String TARGET_TYPE_SCREENSHOT = "screenshot";
+    public static final String TARGET_TYPE_SCREENSHOT_LEGACY = "screenshot_legacy";
+
+    private SearchTarget mSearchTarget;
 
     public ThumbnailSearchResultView(Context context) {
         super(context);
@@ -66,29 +72,29 @@ public class ThumbnailSearchResultView extends androidx.appcompat.widget.AppComp
         } else {
             ItemClickHandler.onClickAppShortcut(this, (WorkspaceItemInfo) itemInfo, launcher);
         }
-        SearchTargetEvent e = getSearchTargetEvent(SearchTarget.ItemType.SCREENSHOT, eventType);
-        SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(e);
+        SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(
+                new SearchTargetEvent.Builder(mSearchTarget, eventType).build());
     }
 
     @Override
     public void applySearchTarget(SearchTarget target) {
+        mSearchTarget = target;
         Bitmap bitmap;
-        if (target.mRemoteAction != null) {
-            RemoteActionItemInfo itemInfo = new RemoteActionItemInfo(target.mRemoteAction,
-                    target.bundle.getString(SearchTarget.REMOTE_ACTION_TOKEN),
-                    target.bundle.getBoolean(SearchTarget.REMOTE_ACTION_SHOULD_START));
-            bitmap = ((BitmapDrawable) target.mRemoteAction.getIcon()
+        if (target.getRemoteAction() != null) {
+            RemoteActionItemInfo itemInfo = new RemoteActionItemInfo(target.getRemoteAction(),
+                    target.getExtras().getString(REMOTE_ACTION_TOKEN),
+                    target.getExtras().getBoolean(REMOTE_ACTION_SHOULD_START));
+            bitmap = ((BitmapDrawable) target.getRemoteAction().getIcon()
                     .loadDrawable(getContext())).getBitmap();
-            Bitmap crop = Bitmap.createBitmap(bitmap, 0,
+            // crop
+            bitmap = Bitmap.createBitmap(bitmap, 0,
                     bitmap.getHeight() / 2 - bitmap.getWidth() / 2,
                     bitmap.getWidth(), bitmap.getWidth());
-            bitmap = crop;
-            setTag(itemInfo);
         } else {
-            bitmap = (Bitmap) target.bundle.getParcelable("bitmap");
+            bitmap = (Bitmap) target.getExtras().getParcelable("bitmap");
             WorkspaceItemInfo itemInfo = new WorkspaceItemInfo();
             itemInfo.intent = new Intent(Intent.ACTION_VIEW)
-                    .setData(Uri.parse(target.bundle.getString("uri")))
+                    .setData(Uri.parse(target.getExtras().getString("uri")))
                     .setType("image/*")
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             setTag(itemInfo);
@@ -98,10 +104,5 @@ public class ThumbnailSearchResultView extends androidx.appcompat.widget.AppComp
         setImageDrawable(drawable);
         setOnClickListener(v -> handleSelection(SearchTargetEvent.SELECT));
         SearchEventTracker.INSTANCE.get(getContext()).registerWeakHandler(target, this);
-    }
-
-    @Override
-    public Object[] getTargetInfo() {
-        return mTargetInfo;
     }
 }

@@ -31,12 +31,10 @@ import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsGridAdapter;
-import com.android.launcher3.allapps.AllAppsGridAdapter.SearchAdapterItem;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.systemui.plugins.AllAppsSearchPlugin;
 import com.android.systemui.plugins.shared.SearchTarget;
-import com.android.systemui.plugins.shared.SearchTargetEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -208,55 +206,13 @@ public class AllAppsSearchBarController
 
     /**
      * An interface for supporting dynamic search results
-     *
-     * @param <T> Type of payload
      */
     public interface SearchTargetHandler {
-        /**
-         * Updates View using Adapter's payload
-         */
-
-        default void setup(SearchAdapterItem searchAdapterItem) {
-            Object[] targetInfo = getTargetInfo();
-            if (targetInfo != null) {
-                targetInfo[0] = searchAdapterItem.getSearchSessionId();
-                targetInfo[1] = searchAdapterItem.position;
-            }
-            applySearchTarget(searchAdapterItem.getSearchTarget());
-        }
 
         /**
          * Update view using values from {@link SearchTarget}
          */
         void applySearchTarget(SearchTarget searchTarget);
-
-        /**
-         * Gets object created by {@link SearchTargetHandler#createTargetInfo()}
-         */
-        default Object[] getTargetInfo() {
-            return null;
-        }
-
-        /**
-         * Creates a wrapper object to hold searchSessionId and item position
-         */
-        default Object[] createTargetInfo() {
-            return new Object[2];
-        }
-
-        /**
-         * Generates a SearchTargetEvent object for a PayloadHandlerView
-         */
-        default SearchTargetEvent getSearchTargetEvent(SearchTarget.ItemType itemType,
-                int eventType) {
-            Object[] targetInfo = getTargetInfo();
-            if (targetInfo == null) return null;
-
-            String searchSessionId = (String) targetInfo[0];
-            int position = (int) targetInfo[1];
-            return new SearchTargetEvent(itemType, eventType,
-                    position, searchSessionId);
-        }
 
         /**
          * Handles selection of SearchTarget

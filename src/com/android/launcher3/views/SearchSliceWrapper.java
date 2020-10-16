@@ -17,7 +17,6 @@ package com.android.launcher3.views;
 
 import android.content.Context;
 import android.net.Uri;
-import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -38,6 +37,8 @@ import com.android.systemui.plugins.shared.SearchTargetEvent;
  */
 public class SearchSliceWrapper implements SliceView.OnSliceActionListener {
 
+    public static final String TARGET_TYPE_SLICE = "settings_slice";
+
     private static final String TAG = "SearchSliceController";
     private static final String URI_EXTRA_KEY = "slice_uri";
 
@@ -45,16 +46,10 @@ public class SearchSliceWrapper implements SliceView.OnSliceActionListener {
     private final Launcher mLauncher;
     private final SearchTarget mSearchTarget;
     private final SliceView mSliceView;
-    //TODO: remove these as we move to tracking search results individually with unique ID
-    private final int mPosition;
-    private final String mSessionId;
     private LiveData<Slice> mSliceLiveData;
 
-    public SearchSliceWrapper(Context context, SliceView sliceView,
-            SearchTarget searchTarget, String sessionId, int position) {
+    public SearchSliceWrapper(Context context, SliceView sliceView, SearchTarget searchTarget) {
         mLauncher = Launcher.getLauncher(context);
-        mPosition = position;
-        mSessionId = sessionId;
         mSearchTarget = searchTarget;
         mSliceView = sliceView;
         sliceView.setOnSliceActionListener(this);
@@ -76,16 +71,12 @@ public class SearchSliceWrapper implements SliceView.OnSliceActionListener {
 
     @Override
     public void onSliceAction(@NonNull EventInfo info, @NonNull SliceItem item) {
-        SearchTargetEvent searchTargetEvent = new SearchTargetEvent(
-                SearchTarget.ItemType.SETTINGS_SLICE,
-                SearchTargetEvent.CHILD_SELECT, mPosition,
-                mSessionId);
-        searchTargetEvent.bundle = new Bundle();
-        searchTargetEvent.bundle.putParcelable(URI_EXTRA_KEY, getSliceUri());
-        SearchEventTracker.INSTANCE.get(mLauncher).notifySearchTargetEvent(searchTargetEvent);
+        SearchEventTracker.INSTANCE.get(mLauncher).notifySearchTargetEvent(
+                new SearchTargetEvent.Builder(mSearchTarget,
+                        SearchTargetEvent.CHILD_SELECT).build());
     }
 
     private Uri getSliceUri() {
-        return mSearchTarget.bundle.getParcelable(URI_EXTRA_KEY);
+        return mSearchTarget.getExtras().getParcelable(URI_EXTRA_KEY);
     }
 }

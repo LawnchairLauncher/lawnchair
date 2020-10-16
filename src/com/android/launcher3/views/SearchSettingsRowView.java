@@ -42,11 +42,14 @@ import java.util.ArrayList;
 public class SearchSettingsRowView extends LinearLayout implements
         View.OnClickListener, AllAppsSearchBarController.SearchTargetHandler {
 
+    public static final String TARGET_TYPE_SETTINGS_ROW = "settings_row";
+
+
     private TextView mTitleView;
     private TextView mDescriptionView;
     private TextView mBreadcrumbsView;
     private Intent mIntent;
-    private final Object[] mTargetInfo = createTargetInfo();
+    private SearchTarget mSearchTarget;
 
 
     public SearchSettingsRowView(@NonNull Context context) {
@@ -74,7 +77,8 @@ public class SearchSettingsRowView extends LinearLayout implements
 
     @Override
     public void applySearchTarget(SearchTarget searchTarget) {
-        Bundle bundle = searchTarget.bundle;
+        mSearchTarget = searchTarget;
+        Bundle bundle = searchTarget.getExtras();
         mIntent = bundle.getParcelable("intent");
         showIfAvailable(mTitleView, bundle.getString("title"));
         showIfAvailable(mDescriptionView, bundle.getString("description"));
@@ -83,11 +87,6 @@ public class SearchSettingsRowView extends LinearLayout implements
         showIfAvailable(mBreadcrumbsView, breadcrumbs != null
                 ? String.join(" > ", breadcrumbs) : null);
         SearchEventTracker.INSTANCE.get(getContext()).registerWeakHandler(searchTarget, this);
-    }
-
-    @Override
-    public Object[] getTargetInfo() {
-        return mTargetInfo;
     }
 
     private void showIfAvailable(TextView view, @Nullable String string) {
@@ -112,10 +111,7 @@ public class SearchSettingsRowView extends LinearLayout implements
         Launcher launcher = Launcher.getLauncher(getContext());
         launcher.startActivityForResult(mIntent, 0);
 
-        SearchTargetEvent searchTargetEvent = getSearchTargetEvent(
-                SearchTarget.ItemType.SETTINGS_ROW, eventType);
-        searchTargetEvent.bundle = new Bundle();
-        searchTargetEvent.bundle.putParcelable("intent", mIntent);
-        SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(searchTargetEvent);
+        SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(
+                new SearchTargetEvent.Builder(mSearchTarget, eventType).build());
     }
 }

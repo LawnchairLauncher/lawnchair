@@ -16,8 +16,10 @@
 package com.android.systemui.plugins.shared;
 
 import android.app.RemoteAction;
+import android.content.ComponentName;
 import android.content.pm.ShortcutInfo;
 import android.os.Bundle;
+import android.os.UserHandle;
 
 import java.util.List;
 
@@ -26,139 +28,145 @@ import java.util.List;
  */
 public class SearchTarget implements Comparable<SearchTarget> {
 
+    private final String mItemId;
+    private final String mItemType;
+    private final float mScore;
 
-    /**
-     * A bundle key for boolean value of whether remote action should be started in launcher or not
-     */
-    public static final String REMOTE_ACTION_SHOULD_START = "should_start_for_result";
-    public static final String REMOTE_ACTION_TOKEN = "action_token";
+    private final ComponentName mComponentName;
+    private final UserHandle mUserHandle;
+    private final List<ShortcutInfo> mShortcutInfos;
+    //TODO: (sfufa) replace with a list of a custom type
+    private final RemoteAction mRemoteAction;
+    private final Bundle mExtras;
 
-
-    public enum ViewType {
-
-        /**
-         * Consists of N number of icons. (N: launcher column count)
-         */
-        TOP_HIT(0),
-
-        /**
-         * Consists of 1 icon and two subsidiary icons.
-         */
-        HERO(1),
-
-        /**
-         * Main/sub/breadcrumb texts are rendered.
-         */
-        DETAIL(2),
-
-        /**
-         * Consists of an icon, three detail strings.
-         */
-        ROW(3),
-
-        /**
-         * Consists of an icon, three detail strings and a button.
-         */
-        ROW_WITH_BUTTON(4),
-
-        /**
-         * Consists of a single slice view
-         */
-        SLICE(5),
-
-        /**
-         * Similar to hero section.
-         */
-        SHORTCUT(6),
-
-        /**
-         * Person icon and handling app icons are rendered.
-         */
-        PEOPLE(7),
-
-        /**
-         * N number of 1x1 ratio thumbnail is rendered.
-         * (current N = 3)
-         */
-        THUMBNAIL(8),
-
-        /**
-         * Fallback search icon and relevant text is rendered.
-         */
-        SUGGEST(9);
-
-        private final int mId;
-
-        ViewType(int id) {
-            mId = id;
-        }
-
-        public int get() {
-            return mId;
-        }
+    private SearchTarget(String itemId, String itemType, float score,
+            ComponentName componentName, UserHandle userHandle, List<ShortcutInfo> shortcutInfos,
+            RemoteAction remoteAction, Bundle extras) {
+        mItemId = itemId;
+        mItemType = itemType;
+        mScore = score;
+        mComponentName = componentName;
+        mUserHandle = userHandle;
+        mShortcutInfos = shortcutInfos;
+        mExtras = extras;
+        mRemoteAction = remoteAction;
     }
 
-    public enum ItemType {
-        PLAY_RESULTS(0, "Play Store", ViewType.DETAIL),
-        SETTINGS_ROW(1, "Settings", ViewType.ROW),
-        SETTINGS_SLICE(2, "Settings", ViewType.SLICE),
-        APP(3, "", ViewType.TOP_HIT),
-        APP_HERO(4, "", ViewType.HERO),
-        SHORTCUT(5, "Shortcuts", ViewType.SHORTCUT),
-        PEOPLE(6, "People", ViewType.PEOPLE),
-        SCREENSHOT(7, "Screenshots", ViewType.THUMBNAIL),
-        ACTION(8, "Actions", ViewType.SHORTCUT),
-        SUGGEST(9, "Fallback Search", ViewType.SUGGEST),
-        CHROME_TAB(10, "Chrome Tab", ViewType.SHORTCUT);
-
-        private final int mId;
-
-        /** Used to render section title. */
-        private final String mTitle;
-        private final ViewType mViewType;
-
-        ItemType(int id, String title, ViewType type) {
-            mId = id;
-            mTitle = title;
-            mViewType = type;
-        }
-
-        public ViewType getViewType() {
-            return mViewType;
-        }
-
-        public String getTitle() {
-            return mTitle;
-        }
-
-        public int getId() {
-            return mId;
-        }
+    public String getItemId() {
+        return mItemId;
     }
 
-    public ItemType type;
-    public List<ShortcutInfo> shortcuts;
-    public Bundle bundle;
-    public float score;
-    public String mSessionId;
-    public RemoteAction mRemoteAction;
+    public String getItemType() {
+        return mItemType;
+    }
 
-    /**
-     * Constructor to create the search target. Bundle is currently temporary to hold
-     * search target primitives that cannot be expressed as java primitive objects
-     * or AOSP native objects.
-     */
-    public SearchTarget(ItemType itemType, List<ShortcutInfo> shortcuts,
-            Bundle bundle, float score, String sessionId) {
-        this.type = itemType;
-        this.shortcuts = shortcuts;
-        this.bundle = bundle;
-        this.score = score;
-        this.mSessionId = sessionId;
+    public ComponentName getComponentName() {
+        return mComponentName;
+    }
+
+    public UserHandle getUserHandle() {
+        return mUserHandle;
+    }
+
+    public float getScore() {
+        return mScore;
+    }
+
+    public List<ShortcutInfo> getShortcutInfos() {
+        return mShortcutInfos;
+    }
+
+    public Bundle getExtras() {
+        return mExtras;
+    }
+
+    public RemoteAction getRemoteAction() {
+        return mRemoteAction;
     }
 
     @Override
     public int compareTo(SearchTarget o) {
-        return Float.compare(o.score, score);
+        return Float.compare(o.mScore, mScore);
+    }
+
+    /**
+     * A builder for {@link SearchTarget}
+     */
+    public static final class Builder {
+
+
+        private String mItemId;
+
+        private final String mItemType;
+        private final float mScore;
+
+
+        private ComponentName mComponentName;
+        private UserHandle mUserHandle;
+        private List<ShortcutInfo> mShortcutInfos;
+        private Bundle mExtras;
+        private RemoteAction mRemoteAction;
+
+        public Builder(String itemType, float score) {
+            this(itemType, score, null, null);
+        }
+
+        public Builder(String itemType, float score, ComponentName cn,
+                UserHandle user) {
+            mItemType = itemType;
+            mScore = score;
+            mComponentName = cn;
+            mUserHandle = user;
+        }
+
+        public String getItemId() {
+            return mItemId;
+        }
+
+        public float getScore() {
+            return mScore;
+        }
+
+        public Builder setItemId(String itemId) {
+            mItemId = itemId;
+            return this;
+        }
+
+        public Builder setComponentName(ComponentName componentName) {
+            mComponentName = componentName;
+            return this;
+        }
+
+        public Builder setUserHandle(UserHandle userHandle) {
+            mUserHandle = userHandle;
+            return this;
+        }
+
+        public Builder setShortcutInfos(List<ShortcutInfo> shortcutInfos) {
+            mShortcutInfos = shortcutInfos;
+            return this;
+        }
+
+        public Builder setExtras(Bundle extras) {
+            mExtras = extras;
+            return this;
+        }
+
+        public Builder setRemoteAction(RemoteAction remoteAction) {
+            mRemoteAction = remoteAction;
+            return this;
+        }
+
+        /**
+         * Builds a {@link SearchTarget}
+         */
+        public SearchTarget build() {
+            if (mItemId == null) {
+                throw new IllegalStateException("Item ID is required for building SearchTarget");
+            }
+            return new SearchTarget(mItemId, mItemType, mScore, mComponentName, mUserHandle,
+                    mShortcutInfos,
+                    mRemoteAction, mExtras);
+        }
     }
 }

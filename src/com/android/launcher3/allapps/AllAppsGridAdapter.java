@@ -192,24 +192,13 @@ public class AllAppsGridAdapter extends
 
     /**
      * Extension of AdapterItem that contains an extra payload specific to item
-     *
-     * @param <T> Play load Type
      */
     public static class SearchAdapterItem extends AdapterItem {
         private SearchTarget mSearchTarget;
-        private String mSearchSessionId;
 
         public SearchAdapterItem(SearchTarget searchTarget, int type) {
             mSearchTarget = searchTarget;
             viewType = type;
-        }
-
-        public void setSearchSessionId(String searchSessionId) {
-            mSearchSessionId = searchSessionId;
-        }
-
-        public String getSearchSessionId() {
-            return mSearchSessionId;
         }
 
         public SearchTarget getSearchTarget() {
@@ -484,8 +473,7 @@ public class AllAppsGridAdapter extends
                 SearchAdapterItem slicePayload = (SearchAdapterItem) mApps.getAdapterItems().get(
                         position);
                 SearchTarget searchTarget = slicePayload.getSearchTarget();
-                sliceView.setTag(new SearchSliceWrapper(mLauncher, sliceView, searchTarget,
-                        slicePayload.getSearchSessionId(), slicePayload.position));
+                sliceView.setTag(new SearchSliceWrapper(mLauncher, sliceView, searchTarget));
 
                 break;
             case VIEW_TYPE_SEARCH_CORPUS_TITLE:
@@ -500,7 +488,7 @@ public class AllAppsGridAdapter extends
                 SearchAdapterItem item =
                         (SearchAdapterItem) mApps.getAdapterItems().get(position);
                 SearchTargetHandler payloadResultView = (SearchTargetHandler) holder.itemView;
-                payloadResultView.setup(item);
+                payloadResultView.applySearchTarget(item.getSearchTarget());
                 break;
             case VIEW_TYPE_ALL_APPS_DIVIDER:
                 // nothing to do
