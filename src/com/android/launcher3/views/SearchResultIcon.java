@@ -71,6 +71,7 @@ public class SearchResultIcon extends BubbleTextView implements
     public void applySearchTarget(SearchTarget searchTarget) {
         mSearchTarget = searchTarget;
         AllAppsStore appsStore = mLauncher.getAppsView().getAppsStore();
+        SearchEventTracker.getInstance(getContext()).registerWeakHandler(mSearchTarget, this);
         if (searchTarget.getItemType().equals(TARGET_TYPE_APP)) {
             AppInfo appInfo = appsStore.getApp(new ComponentKey(searchTarget.getComponentName(),
                     searchTarget.getUserHandle()));
