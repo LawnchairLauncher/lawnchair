@@ -81,6 +81,7 @@ public class SearchResultIcon extends BubbleTextView implements
 
     @Override
     public void handleSelection(int eventType) {
+        mLauncher.getItemOnClickListener().onClick(this);
         SearchEventTracker.INSTANCE.get(mLauncher).notifySearchTargetEvent(
                 new SearchTargetEvent.Builder(mSearchTarget, eventType).build());
     }
@@ -88,12 +89,12 @@ public class SearchResultIcon extends BubbleTextView implements
     @Override
     public void onClick(View view) {
         handleSelection(SearchTargetEvent.SELECT);
-        mLauncher.getItemOnClickListener().onClick(view);
     }
 
     @Override
     public boolean onLongClick(View view) {
-        handleSelection(SearchTargetEvent.LONG_PRESS);
+        SearchEventTracker.INSTANCE.get(mLauncher).notifySearchTargetEvent(
+                new SearchTargetEvent.Builder(mSearchTarget, SearchTargetEvent.LONG_PRESS).build());
         return ItemLongClickListener.INSTANCE_ALL_APPS.onLongClick(view);
     }
 }

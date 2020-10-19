@@ -104,7 +104,6 @@ public class SearchResultPlayItem extends LinearLayout implements
         iconParams.height = mDeviceProfile.allAppsIconSizePx;
         iconParams.width = mDeviceProfile.allAppsIconSizePx;
         setOnClickListener(view -> handleSelection(SearchTargetEvent.SELECT));
-
     }
 
 
