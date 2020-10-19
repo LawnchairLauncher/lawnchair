@@ -802,33 +802,31 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
     }
 
     private void addCujInstrumentation(Animator anim, int cuj, String transition) {
-        if (Trace.isEnabled()) {
-            anim.addListener(new AnimationSuccessListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    Trace.beginAsyncSection(transition, 0);
-                    InteractionJankMonitorWrapper.begin(cuj);
-                    super.onAnimationStart(animation);
-                }
+        anim.addListener(new AnimationSuccessListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                Trace.beginAsyncSection(transition, 0);
+                InteractionJankMonitorWrapper.begin(cuj);
+                super.onAnimationStart(animation);
+            }
 
-                @Override
-                public void onAnimationCancel(Animator animation) {
-                    super.onAnimationCancel(animation);
-                    InteractionJankMonitorWrapper.cancel(cuj);
-                }
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                super.onAnimationCancel(animation);
+                InteractionJankMonitorWrapper.cancel(cuj);
+            }
 
-                @Override
-                public void onAnimationSuccess(Animator animator) {
-                    InteractionJankMonitorWrapper.end(cuj);
-                }
+            @Override
+            public void onAnimationSuccess(Animator animator) {
+                InteractionJankMonitorWrapper.end(cuj);
+            }
 
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    super.onAnimationEnd(animation);
-                    Trace.endAsyncSection(TRANSITION_OPEN_LAUNCHER, 0);
-                }
-            });
-        }
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                Trace.endAsyncSection(TRANSITION_OPEN_LAUNCHER, 0);
+            }
+        });
     }
 
     /**
