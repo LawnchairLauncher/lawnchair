@@ -52,7 +52,6 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
     private static final float MIN_SATUNATION = 0.7f;
 
     private final Rect mRect = new Rect();
-    private View mDefaultView;
     private OnClickListener mClickListener;
     private final LauncherAppWidgetInfo mInfo;
     private final int mStartState;
@@ -111,12 +110,11 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
 
     @Override
     protected View getDefaultView() {
-        if (mDefaultView == null) {
-            mDefaultView = mInflater.inflate(R.layout.appwidget_not_ready, this, false);
-            mDefaultView.setOnClickListener(this);
-            applyState();
-        }
-        return mDefaultView;
+        View defaultView = mInflater.inflate(R.layout.appwidget_not_ready, this, false);
+        defaultView.setOnClickListener(this);
+        applyState();
+        invalidate();
+        return defaultView;
     }
 
     @Override
