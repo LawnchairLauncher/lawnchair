@@ -30,7 +30,7 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.allapps.AllAppsGridAdapter;
+import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItem;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.systemui.plugins.AllAppsSearchPlugin;
@@ -194,9 +194,16 @@ public class AllAppsSearchBarController
         /**
          * Called when the search from primary source is complete.
          *
-         * @param items sorted list of search result adapter items.
+         * @param items sorted list of search result adapter items
          */
-        void onSearchResult(String query, ArrayList<AllAppsGridAdapter.AdapterItem> items);
+        void onSearchResult(String query, ArrayList<AdapterItem> items);
+
+        /**
+         * Called when the search from secondary source is complete.
+         *
+         * @param items sorted list of search result adapter items
+         */
+        void onAppendSearchResult(String query, ArrayList<AdapterItem> items);
 
         /**
          * Called when the search results should be cleared.
