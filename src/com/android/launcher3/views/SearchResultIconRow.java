@@ -121,7 +121,7 @@ public class SearchResultIconRow extends DoubleShadowBubbleTextView implements
             prepareUsingRemoteAction(searchTarget.getRemoteAction(),
                     searchTarget.getExtras().getString(REMOTE_ACTION_TOKEN),
                     searchTarget.getExtras().getBoolean(REMOTE_ACTION_SHOULD_START),
-                    type.equals(TARGET_TYPE_SUGGEST));
+                    type.equals(TARGET_TYPE_REMOTE_ACTION));
 
         } else if (type.equals(TARGET_TYPE_SHORTCUT)) {
             prepareUsingShortcutInfo(searchTarget.getShortcutInfos().get(0));
