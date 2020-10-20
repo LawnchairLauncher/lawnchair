@@ -94,8 +94,13 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
             case HOME_NAVIGATION:
                 switch (result) {
                     case HOME_GESTURE_COMPLETED: {
-                        animateFakeTaskViewHome(finalVelocity, () ->
-                                mTutorialFragment.changeController(HOME_NAVIGATION_COMPLETE));
+                        animateFakeTaskViewHome(finalVelocity, () -> {
+                            if (mTutorialFragment.isTutorialComplete()) {
+                                mTutorialFragment.changeController(HOME_NAVIGATION_COMPLETE);
+                            } else {
+                                mTutorialFragment.continueTutorial();
+                            }
+                        });
                         break;
                     }
                     case HOME_NOT_STARTED_TOO_FAR_FROM_EDGE:

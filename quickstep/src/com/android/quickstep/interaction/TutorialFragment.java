@@ -54,6 +54,7 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
             fragment = new BackGestureTutorialFragment();
             tutorialType = TutorialType.RIGHT_EDGE_BACK_NAVIGATION;
         }
+
         Bundle args = new Bundle();
         args.putSerializable(KEY_TUTORIAL_TYPE, tutorialType);
         fragment.setArguments(args);
@@ -197,6 +198,20 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
         return mHandCoachingAnimation;
     }
 
+    void continueTutorial() {
+        if (!(getContext() instanceof GestureSandboxActivity)) {
+            closeTutorial();
+            return;
+        }
+        GestureSandboxActivity gestureSandboxActivity = (GestureSandboxActivity) getContext();
+
+        if (gestureSandboxActivity == null) {
+            closeTutorial();
+            return;
+        }
+        gestureSandboxActivity.continueTutorial();
+    }
+
     void closeTutorial() {
         FragmentActivity activity = getActivity();
         if (activity != null) {
@@ -206,5 +221,14 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
 
     void startSystemNavigationSetting() {
         startActivity(new Intent("com.android.settings.GESTURE_NAVIGATION_SETTINGS"));
+    }
+
+    boolean isTutorialComplete() {
+        if (!(getContext() instanceof GestureSandboxActivity)) {
+            return true;
+        }
+        GestureSandboxActivity gestureSandboxActivity = (GestureSandboxActivity) getContext();
+
+        return gestureSandboxActivity == null || gestureSandboxActivity.isTutorialComplete();
     }
 }
