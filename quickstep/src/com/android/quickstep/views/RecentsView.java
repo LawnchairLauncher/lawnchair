@@ -22,6 +22,7 @@ import static android.view.View.MeasureSpec.makeMeasureSpec;
 
 import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAGS;
 import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_ICON_PARAMS;
+import static com.android.launcher3.LauncherAnimUtils.SUCCESS_TRANSITION_PROGRESS;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.OVERVIEW_MODAL_TASK;
@@ -39,7 +40,6 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_DISMISS_SWIPE_UP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_SWIPE_DOWN;
 import static com.android.launcher3.statehandlers.DepthController.DEPTH;
-import static com.android.launcher3.uioverrides.touchcontrollers.TaskViewTouchController.SUCCESS_TRANSITION_PROGRESS;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
 import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
@@ -99,7 +99,6 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
-import com.android.launcher3.anim.PendingAnimation.EndState;
 import com.android.launcher3.anim.SpringProperty;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
@@ -772,7 +771,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
 
     protected void applyLoadPlan(ArrayList<Task> tasks) {
         if (mPendingAnimation != null) {
-            mPendingAnimation.addEndListener((endState) -> applyLoadPlan(tasks));
+            mPendingAnimation.addEndListener(success -> applyLoadPlan(tasks));
             return;
         }
 
@@ -1464,19 +1463,10 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                 verticalFactor * secondaryTaskDimension).setDuration(duration), LINEAR, sp);
     }
 
-    private void removeTask(TaskView taskView, int index, EndState endState) {
-        if (taskView.getTask() != null) {
-            UI_HELPER_EXECUTOR.execute(() ->
-                    ActivityManagerWrapper.getInstance().removeTask(taskView.getTask().key.id));
-            mActivity.getStatsLogManager().logger().withItemInfo(taskView.getItemInfo())
-                    .log(LAUNCHER_TASK_DISMISS_SWIPE_UP);
-        }
-    }
-
     public PendingAnimation createTaskDismissAnimation(TaskView taskView, boolean animateTaskView,
             boolean shouldRemoveTask, long duration) {
         if (mPendingAnimation != null) {
-            mPendingAnimation.finish(false);
+            mPendingAnimation.createPlaybackController().dispatchOnCancel();
         }
         PendingAnimation anim = new PendingAnimation(duration);
 
@@ -1559,22 +1549,27 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         }
 
         mPendingAnimation = anim;
-        mPendingAnimation.addEndListener(new Consumer<EndState>() {
+        mPendingAnimation.addEndListener(new Consumer<Boolean>() {
             @Override
-            public void accept(EndState endState) {
-                if (ENABLE_QUICKSTEP_LIVE_TILE.get() &&
-                        taskView.isRunningTask() && endState.isSuccess) {
-                    finishRecentsAnimation(true /* toHome */, () -> onEnd(endState));
+            public void accept(Boolean success) {
+                if (ENABLE_QUICKSTEP_LIVE_TILE.get() && taskView.isRunningTask() && success) {
+                    finishRecentsAnimation(true /* toHome */, () -> onEnd(success));
                 } else {
-                    onEnd(endState);
+                    onEnd(success);
                 }
             }
 
             @SuppressWarnings("WrongCall")
-            private void onEnd(EndState endState) {
-                if (endState.isSuccess) {
+            private void onEnd(boolean success) {
+                if (success) {
                     if (shouldRemoveTask) {
-                        removeTask(taskView, draggedIndex, endState);
+                        if (taskView.getTask() != null) {
+                            UI_HELPER_EXECUTOR.execute(() -> ActivityManagerWrapper.getInstance()
+                                    .removeTask(taskView.getTask().key.id));
+                            mActivity.getStatsLogManager().logger()
+                                    .withItemInfo(taskView.getItemInfo())
+                                    .log(LAUNCHER_TASK_DISMISS_SWIPE_UP);
+                        }
                     }
 
                     int pageToSnapTo = mCurrentPage;
@@ -1613,8 +1608,8 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         }
 
         mPendingAnimation = anim;
-        mPendingAnimation.addEndListener((endState) -> {
-            if (endState.isSuccess) {
+        mPendingAnimation.addEndListener(isSuccess -> {
+            if (isSuccess) {
                 // Remove all the task views now
                 UI_HELPER_EXECUTOR.execute(
                         ActivityManagerWrapper.getInstance()::removeAllRecentTasks);
@@ -1642,7 +1637,6 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     protected void runDismissAnimation(PendingAnimation pendingAnim) {
         AnimatorPlaybackController controller = pendingAnim.createPlaybackController();
         controller.dispatchOnStart();
-        controller.setEndAction(() -> pendingAnim.finish(true));
         controller.getAnimationPlayer().setInterpolator(FAST_OUT_SLOW_IN);
         controller.start();
     }
@@ -2186,8 +2180,8 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             mLiveTileTaskViewSimulator.addOverviewToAppAnim(mPendingAnimation, interpolator);
             mPendingAnimation.addOnFrameCallback(this::redrawLiveTile);
         }
-        mPendingAnimation.addEndListener((endState) -> {
-            if (endState.isSuccess) {
+        mPendingAnimation.addEndListener(isSuccess -> {
+            if (isSuccess) {
                 Consumer<Boolean> onLaunchResult = (result) -> {
                     onTaskLaunchAnimationEnd(result);
                     if (!result) {

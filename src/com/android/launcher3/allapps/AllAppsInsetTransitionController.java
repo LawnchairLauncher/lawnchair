@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.allapps;
 
+import android.annotation.TargetApi;
 import android.graphics.Insets;
 import android.os.Build;
 import android.util.Log;
@@ -26,9 +27,8 @@ import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.core.os.BuildCompat;
 
+import com.android.launcher3.Utilities;
 import com.android.launcher3.util.UiThreadHelper;
 
 /**
@@ -68,7 +68,7 @@ public class AllAppsInsetTransitionController {
     }
 
     public void hide() {
-        if (!BuildCompat.isAtLeastR()) return;
+        if (!Utilities.ATLEAST_R) return;
 
         WindowInsets insets = mApps.getRootWindowInsets();
         if (insets == null) return;
@@ -89,9 +89,9 @@ public class AllAppsInsetTransitionController {
      *
      * @param progress value between 0..1
      */
-    @RequiresApi(api = Build.VERSION_CODES.R)
+    @TargetApi(Build.VERSION_CODES.R)
     public void onDragStart(float progress) {
-        if (!BuildCompat.isAtLeastR()) return;
+        if (!Utilities.ATLEAST_R) return;
 
         // Until getRootWindowInsets().isVisible(...) method returns correct value,
         // only support InsetController based IME transition during swipe up and
@@ -164,7 +164,7 @@ public class AllAppsInsetTransitionController {
      * If IME bounds after touch sequence finishes, call finish.
      */
     private boolean handleFinishOnFling(WindowInsetsAnimationController controller) {
-        if (!BuildCompat.isAtLeastR()) return false;
+        if (!Utilities.ATLEAST_R) return false;
 
         if (mState == State.FLING_END_TOP) {
             controller.finish(true);
@@ -181,9 +181,9 @@ public class AllAppsInsetTransitionController {
      *
      * @param progress value between 0..1
      */
-    @RequiresApi(api = 30)
+    @TargetApi(Build.VERSION_CODES.R)
     public void setProgress(float progress) {
-        if (!BuildCompat.isAtLeastR()) return;
+        if (!Utilities.ATLEAST_R) return;
         // progress that equals to 0 or 1 is error prone. Do not use them.
         // Instead use onDragStart and onAnimationEnd
         if (mAnimationController == null || progress <= 0f || progress >= 1f) return;
@@ -218,7 +218,7 @@ public class AllAppsInsetTransitionController {
      *
      * @param progress value between 0..1
      */
-    @RequiresApi(api = 30)
+    @TargetApi(Build.VERSION_CODES.R)
     public void onAnimationEnd(float progress) {
         if (DEBUG) {
             Log.d(TAG, "onAnimationEnd progress=" + progress
