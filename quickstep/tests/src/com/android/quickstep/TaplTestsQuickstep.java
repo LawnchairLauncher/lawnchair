@@ -310,6 +310,10 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
             assertTrue("The second app we should have quick switched to is not running",
                     isTestActivityRunning(2));
         }
+        background = getAndAssertBackground();
+        background.quickSwitchToPreviousAppSwipeLeft();
+        assertTrue("The 2nd app we should have quick switched to is not running",
+                isTestActivityRunning(3));
         getAndAssertBackground();
     }
 
