@@ -876,6 +876,10 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             mLiveTileTaskViewSimulator.fullScreenProgress.value = 0;
             mLiveTileTaskViewSimulator.recentsViewScale.value = 1;
             mLiveTileTaskViewSimulator.setOffsetY(0);
+
+            // Reset the live tile rect
+            DeviceProfile deviceProfile = mActivity.getDeviceProfile();
+            LiveTileOverlay.INSTANCE.update(0, 0, deviceProfile.widthPx, deviceProfile.heightPx);
         }
         if (mRunningTaskTileHidden) {
             setRunningTaskHidden(mRunningTaskTileHidden);
@@ -2262,6 +2266,10 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
 
     public TaskViewSimulator getLiveTileTaskViewSimulator() {
         return mLiveTileTaskViewSimulator;
+    }
+
+    public TransformParams getLiveTileParams() {
+        return mLiveTileParams;
     }
 
     // TODO: To be removed in a follow up CL
