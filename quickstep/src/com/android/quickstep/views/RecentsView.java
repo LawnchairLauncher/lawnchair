@@ -230,6 +230,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                     view.setScaleX(scale);
                     view.setScaleY(scale);
                     view.mLastComputedTaskPushOutDistance = null;
+                    view.mLiveTileTaskViewSimulator.recentsViewScale.value = scale;
                     view.updatePageOffsets();
                     view.setTaskViewsSecondaryTranslation(view.mTaskViewsSecondaryTranslation);
                 }
@@ -1990,6 +1991,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             TaskView task = getTaskViewAt(i);
             mOrientationHandler.getSecondaryViewTranslate().set(task, translation / getScaleY());
         }
+        mLiveTileTaskViewSimulator.recentsViewSecondaryTranslation.value = translation;
     }
 
     /**
