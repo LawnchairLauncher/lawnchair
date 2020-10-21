@@ -63,11 +63,11 @@ public class SearchResultIconRow extends DoubleShadowBubbleTextView implements
     public static final String REMOTE_ACTION_SHOULD_START = "should_start_for_result";
     public static final String REMOTE_ACTION_TOKEN = "action_token";
 
-    private final int mCustomIconResId;
     private final boolean mMatchesInset;
 
     private SearchTarget mSearchTarget;
 
+    @Nullable private Drawable mCustomIcon;
 
     public SearchResultIconRow(@NonNull Context context) {
         this(context, null, 0);
@@ -83,9 +83,14 @@ public class SearchResultIconRow extends DoubleShadowBubbleTextView implements
         super(context, attrs, defStyleAttr);
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.SearchResultIconRow, defStyleAttr, 0);
-        mCustomIconResId = a.getResourceId(R.styleable.SearchResultIconRow_customIcon, 0);
         mMatchesInset = a.getBoolean(R.styleable.SearchResultIconRow_matchTextInsetWithQuery,
                 false);
+
+        int customIconResId = a.getResourceId(R.styleable.SearchResultIconRow_customIcon, 0);
+
+        if (customIconResId != 0) {
+            mCustomIcon = Launcher.getLauncher(context).getDrawable(customIconResId);
+        }
 
         a.recycle();
     }
@@ -172,13 +177,16 @@ public class SearchResultIconRow extends DoubleShadowBubbleTextView implements
     }
 
     private boolean loadIconFromResource() {
-        if (mCustomIconResId == 0) return false;
-        setIcon(Launcher.getLauncher(getContext()).getDrawable(mCustomIconResId));
+        if (mCustomIcon == null) return false;
+        setIcon(mCustomIcon);
         return true;
     }
 
     void reapplyItemInfoAsync(ItemInfoWithIcon itemInfoWithIcon) {
-        MAIN_EXECUTOR.post(() -> reapplyItemInfo(itemInfoWithIcon));
+        MAIN_EXECUTOR.post(() -> {
+            reapplyItemInfo(itemInfoWithIcon);
+            mCustomIcon = getIcon();
+        });
     }
 
     @Override
