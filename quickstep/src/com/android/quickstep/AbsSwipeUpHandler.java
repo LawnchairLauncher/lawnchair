@@ -618,13 +618,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
 
         updateSysUiFlags(mCurrentShift.value);
         applyWindowTransform();
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            if (mRecentsAnimationTargets != null) {
-                LiveTileOverlay.INSTANCE.update(
-                        mTaskViewSimulator.getCurrentRect(),
-                        mTaskViewSimulator.getCurrentCornerRadius());
-            }
-        }
 
         updateLauncherTransitionProgress();
     }
@@ -1615,6 +1608,11 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
                 mTaskViewSimulator.setScroll(mRecentsView.getScrollOffset());
             }
             mTaskViewSimulator.apply(mTransformParams);
+        }
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && mRecentsAnimationTargets != null) {
+            LiveTileOverlay.INSTANCE.update(
+                    mTaskViewSimulator.getCurrentRect(),
+                    mTaskViewSimulator.getCurrentCornerRadius());
         }
         ProtoTracer.INSTANCE.get(mContext).scheduleFrameUpdate();
     }
