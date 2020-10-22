@@ -182,7 +182,7 @@ public final class FeatureFlags {
             "Uses a separate recents activity instead of using the integrated recents+Launcher UI");
 
     public static final BooleanFlag ENABLE_MINIMAL_DEVICE = getDebugFlag(
-            "ENABLE_MINIMAL_DEVICE", true,
+            "ENABLE_MINIMAL_DEVICE", false,
             "Allow user to toggle minimal device mode in launcher.");
 
     public static void initialize(Context context) {
