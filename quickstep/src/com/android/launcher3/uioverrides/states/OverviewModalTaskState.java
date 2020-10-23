@@ -15,13 +15,14 @@
  */
 package com.android.launcher3.uioverrides.states;
 
+import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_OVERVIEW;
+
 import android.content.Context;
 import android.graphics.Rect;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.quickstep.views.RecentsView;
 
 /**
@@ -34,7 +35,7 @@ public class OverviewModalTaskState extends OverviewState {
             FLAG_DISABLE_RESTORE | FLAG_OVERVIEW_UI | FLAG_WORKSPACE_INACCESSIBLE;
 
     public OverviewModalTaskState(int id) {
-        super(id, ContainerType.OVERVIEW, STATE_FLAGS);
+        super(id, LAUNCHER_STATE_OVERVIEW, STATE_FLAGS);
     }
 
     @Override

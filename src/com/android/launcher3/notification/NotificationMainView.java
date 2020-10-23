@@ -17,6 +17,7 @@
 package com.android.launcher3.notification;
 
 import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_NOTIFICATION_DISMISSED;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
@@ -41,7 +42,6 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.touch.BaseSwipeDetector;
 import com.android.launcher3.touch.OverScroll;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.Themes;
 
 /**
@@ -168,10 +168,7 @@ public class NotificationMainView extends FrameLayout implements SingleAxisSwipe
         Launcher launcher = Launcher.getLauncher(getContext());
         launcher.getPopupDataProvider().cancelNotification(
                 mNotificationInfo.notificationKey);
-        launcher.getUserEventDispatcher().logActionOnItem(
-                LauncherLogProto.Action.Touch.SWIPE,
-                LauncherLogProto.Action.Direction.RIGHT, // Assume all swipes are right for logging.
-                LauncherLogProto.ItemType.NOTIFICATION);
+        launcher.getStatsLogManager().logger().log(LAUNCHER_NOTIFICATION_DISMISSED);
     }
 
     // SingleAxisSwipeDetector.Listener's

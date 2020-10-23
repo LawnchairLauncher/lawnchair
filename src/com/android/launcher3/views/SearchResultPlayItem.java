@@ -58,6 +58,8 @@ public class SearchResultPlayItem extends LinearLayout implements
     private String mPackageName;
     private boolean mIsInstantGame;
     private AllAppsSearchPlugin mPlugin;
+    private final Object[] mTargetInfo = createTargetInfo();
+
 
     public SearchResultPlayItem(Context context) {
         this(context, null, 0);
@@ -125,6 +127,11 @@ public class SearchResultPlayItem extends LinearLayout implements
         });
     }
 
+    @Override
+    public Object[] getTargetInfo() {
+        return mTargetInfo;
+    }
+
     private void showIfNecessary(TextView textView, @Nullable String string) {
         if (string == null || string.isEmpty()) {
             textView.setVisibility(GONE);
@@ -160,7 +167,7 @@ public class SearchResultPlayItem extends LinearLayout implements
     }
 
     private void logSearchEvent(int eventType) {
-        SearchTargetEvent searchTargetEvent = new SearchTargetEvent(
+        SearchTargetEvent searchTargetEvent = getSearchTargetEvent(
                 SearchTarget.ItemType.PLAY_RESULTS, eventType);
         searchTargetEvent.bundle = new Bundle();
         searchTargetEvent.bundle.putString("package_name", mPackageName);

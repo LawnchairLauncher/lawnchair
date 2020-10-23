@@ -15,11 +15,12 @@
  */
 package com.android.launcher3.states;
 
+import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
+
 import android.content.Context;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
 /**
  * Scale down workspace/hotseat to hint at going to either overview (on pause) or first home screen.
@@ -30,7 +31,7 @@ public class HintState extends LauncherState {
             | FLAG_HAS_SYS_UI_SCRIM;
 
     public HintState(int id) {
-        super(id, ContainerType.DEFAULT_CONTAINERTYPE, STATE_FLAGS);
+        super(id, LAUNCHER_STATE_HOME, STATE_FLAGS);
     }
 
     @Override

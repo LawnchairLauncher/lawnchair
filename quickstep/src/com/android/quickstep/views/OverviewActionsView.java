@@ -54,7 +54,6 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
             HIDDEN_UNSUPPORTED_NAVIGATION,
             HIDDEN_NON_ZERO_ROTATION,
             HIDDEN_NO_TASKS,
-            HIDDEN_GESTURE_RUNNING,
             HIDDEN_NO_RECENTS})
     @Retention(RetentionPolicy.SOURCE)
     public @interface ActionsHiddenFlags { }
@@ -62,8 +61,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     public static final int HIDDEN_UNSUPPORTED_NAVIGATION = 1 << 0;
     public static final int HIDDEN_NON_ZERO_ROTATION = 1 << 1;
     public static final int HIDDEN_NO_TASKS = 1 << 2;
-    public static final int HIDDEN_GESTURE_RUNNING = 1 << 3;
-    public static final int HIDDEN_NO_RECENTS = 1 << 4;
+    public static final int HIDDEN_NO_RECENTS = 1 << 3;
 
     @IntDef(flag = true, value = {
             DISABLED_SCROLLING,
