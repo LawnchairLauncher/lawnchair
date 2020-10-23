@@ -16,7 +16,7 @@
 <com.android.launcher3.views.SearchResultPlayItem xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp"
+    android:padding="4dp"
     android:orientation="horizontal">
     <View
         android:id="@+id/icon"
@@ -31,13 +31,18 @@
         android:layout_gravity="start|center_vertical"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:padding="8dp">
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp">
 
         <TextView
             android:id="@+id/title_view"
             style="@style/TextHeadline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:textAlignment="viewStart"
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="16sp" />
