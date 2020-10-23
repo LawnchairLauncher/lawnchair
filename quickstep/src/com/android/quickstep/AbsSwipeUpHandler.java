@@ -793,6 +793,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
     }
 
     private void onSettledOnEndTarget() {
+        // Fast-finish the attaching animation if it's still running.
+        maybeUpdateRecentsAttachedState(false);
         final GestureEndTarget endTarget = mGestureState.getEndTarget();
         switch (endTarget) {
             case HOME:
