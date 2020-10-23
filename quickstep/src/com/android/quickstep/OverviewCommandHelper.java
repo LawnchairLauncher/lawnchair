@@ -224,10 +224,8 @@ public class OverviewCommandHelper {
 
         private AnimatorSet createWindowAnimation(RemoteAnimationTargetCompat[] appTargets,
                 RemoteAnimationTargetCompat[] wallpaperTargets) {
-            if (LatencyTrackerCompat.isEnabled(mContext)) {
-                LatencyTrackerCompat.logToggleRecents(
-                        (int) (SystemClock.uptimeMillis() - mToggleClickedTime));
-            }
+            LatencyTrackerCompat.logToggleRecents(
+                    mContext, (int) (SystemClock.uptimeMillis() - mToggleClickedTime));
 
             mListener.unregister();
 
