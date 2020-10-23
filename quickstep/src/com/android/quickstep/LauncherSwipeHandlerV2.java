@@ -56,6 +56,7 @@ public class LauncherSwipeHandlerV2 extends
             final TaskView runningTaskView = mRecentsView.getRunningTaskView();
             final View workspaceView;
             if (runningTaskView != null
+                    && !mIsSwipingPipToHome
                     && runningTaskView.getTask().key.getComponent() != null) {
                 workspaceView = mActivity.getWorkspace().getFirstMatchForAppClose(
                         runningTaskView.getTask().key.getComponent().getPackageName(),
@@ -139,6 +140,11 @@ public class LauncherSwipeHandlerV2 extends
         public void playAtomicAnimation(float velocity) {
             new StaggeredWorkspaceAnim(mActivity, velocity,
                     true /* animateOverviewScrim */).start();
+        }
+
+        @Override
+        public boolean supportSwipePipToHome() {
+            return true;
         }
     }
 }
