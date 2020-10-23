@@ -156,9 +156,13 @@ public final class FeatureFlags {
             "ENABLE_DATABASE_RESTORE", true,
             "Enable database restore when new restore session is created");
 
-    public static final BooleanFlag ENABLE_UNIVERSAL_SMARTSPACE = getDebugFlag(
-            "ENABLE_UNIVERSAL_SMARTSPACE", false,
+    public static final BooleanFlag ENABLE_SMARTSPACE_UNIVERSAL = getDebugFlag(
+            "ENABLE_SMARTSPACE_UNIVERSAL", false,
             "Replace Smartspace with a version rendered by System UI.");
+
+    public static final BooleanFlag ENABLE_SMARTSPACE_BLUECHIP = getDebugFlag(
+            "ENABLE_SMARTSPACE_BLUECHIP", false,
+            "Replace Smartspace with the Bluechip version. Ignored if ENABLE_SMARTSPACE_UNIVERSAL is enabled.");
 
     public static final BooleanFlag ENABLE_SYSTEM_VELOCITY_PROVIDER = getDebugFlag(
             "ENABLE_SYSTEM_VELOCITY_PROVIDER", true,
@@ -178,7 +182,7 @@ public final class FeatureFlags {
             "Uses a separate recents activity instead of using the integrated recents+Launcher UI");
 
     public static final BooleanFlag ENABLE_MINIMAL_DEVICE = getDebugFlag(
-            "ENABLE_MINIMAL_DEVICE", true,
+            "ENABLE_MINIMAL_DEVICE", false,
             "Allow user to toggle minimal device mode in launcher.");
 
     public static void initialize(Context context) {

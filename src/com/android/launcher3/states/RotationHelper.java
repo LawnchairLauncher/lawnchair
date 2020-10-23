@@ -21,14 +21,9 @@ import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
 import static android.util.DisplayMetrics.DENSITY_DEVICE_STABLE;
 
 import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
-import android.database.ContentObserver;
-import android.os.Handler;
-import android.provider.Settings;
-import android.util.Log;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -42,16 +37,6 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
     private static final String TAG = "RotationHelper";
 
     public static final String ALLOW_ROTATION_PREFERENCE_KEY = "pref_allowRotation";
-
-    private final ContentResolver mContentResolver;
-    private boolean mSystemAutoRotateEnabled;
-
-    private ContentObserver mSystemAutoRotateObserver = new ContentObserver(new Handler()) {
-        @Override
-        public void onChange(boolean selfChange) {
-            updateAutoRotateSetting();
-        }
-    };
 
     public static boolean getAllowRotationDefaultValue() {
         // If the device's pixel density was scaled (usually via settings for A11y), use the
@@ -106,20 +91,6 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
         } else {
             mSharedPrefs = null;
         }
-
-        mContentResolver = activity.getContentResolver();
-    }
-
-    private void updateAutoRotateSetting() {
-        int autoRotateEnabled = 0;
-        try {
-            autoRotateEnabled = Settings.System.getInt(mContentResolver,
-                    Settings.System.ACCELEROMETER_ROTATION);
-        } catch (Settings.SettingNotFoundException e) {
-            Log.e(TAG, "autorotate setting not found", e);
-        }
-
-        mSystemAutoRotateEnabled = autoRotateEnabled == 1;
     }
 
     @Override
@@ -129,7 +100,6 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
                 getAllowRotationDefaultValue());
         if (mHomeRotationEnabled != wasRotationEnabled) {
             notifyChange();
-            updateAutoRotateSetting();
         }
     }
 
@@ -165,11 +135,6 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
         if (!mInitialized) {
             mInitialized = true;
             notifyChange();
-
-            mContentResolver.registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.ACCELEROMETER_ROTATION),
-                    false, mSystemAutoRotateObserver);
-            updateAutoRotateSetting();
         }
     }
 
@@ -179,7 +144,6 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
             if (mSharedPrefs != null) {
                 mSharedPrefs.unregisterOnSharedPreferenceChangeListener(this);
             }
-            mContentResolver.unregisterContentObserver(mSystemAutoRotateObserver);
         }
     }
 
@@ -225,9 +189,8 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
     @Override
     public String toString() {
         return String.format("[mStateHandlerRequest=%d, mCurrentStateRequest=%d,"
-                + " mLastActivityFlags=%d, mIgnoreAutoRotateSettings=%b, mHomeRotationEnabled=%b,"
-                        + " mSystemAutoRotateEnabled=%b]",
+                + " mLastActivityFlags=%d, mIgnoreAutoRotateSettings=%b, mHomeRotationEnabled=%b]",
                 mStateHandlerRequest, mCurrentStateRequest, mLastActivityFlags,
-                mIgnoreAutoRotateSettings, mHomeRotationEnabled, mSystemAutoRotateEnabled);
+                mIgnoreAutoRotateSettings, mHomeRotationEnabled);
     }
 }

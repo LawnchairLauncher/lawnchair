@@ -230,6 +230,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                     view.setScaleX(scale);
                     view.setScaleY(scale);
                     view.mLastComputedTaskPushOutDistance = null;
+                    view.mLiveTileTaskViewSimulator.recentsViewScale.value = scale;
                     view.updatePageOffsets();
                     view.setTaskViewsSecondaryTranslation(view.mTaskViewsSecondaryTranslation);
                 }
@@ -539,6 +540,9 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     @Override
     protected void onWindowVisibilityChanged(int visibility) {
         super.onWindowVisibilityChanged(visibility);
+        if (visibility == GONE && ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            finishRecentsAnimation(true /* toRecents */, null);
+        }
         updateTaskStackListenerState();
     }
 
@@ -873,6 +877,10 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             mLiveTileTaskViewSimulator.fullScreenProgress.value = 0;
             mLiveTileTaskViewSimulator.recentsViewScale.value = 1;
             mLiveTileTaskViewSimulator.setOffsetY(0);
+
+            // Reset the live tile rect
+            DeviceProfile deviceProfile = mActivity.getDeviceProfile();
+            LiveTileOverlay.INSTANCE.update(0, 0, deviceProfile.widthPx, deviceProfile.heightPx);
         }
         if (mRunningTaskTileHidden) {
             setRunningTaskHidden(mRunningTaskTileHidden);
@@ -1292,19 +1300,26 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     }
 
     public void showNextTask() {
-        TaskView runningTaskView = getRunningTaskView();
+        final TaskView runningTaskView = getRunningTaskView();
+        final TaskView targetTask;
+
         if (runningTaskView == null) {
             // Launch the first task
             if (getTaskViewCount() > 0) {
-                getTaskViewAt(0).launchTask(true);
+                targetTask = getTaskViewAt(0);
+            } else {
+                return;
             }
         } else {
-            if (getNextTaskView() != null) {
-                getNextTaskView().launchTask(true);
+            final TaskView nextTask = getNextTaskView();
+            if (nextTask != null) {
+                targetTask = nextTask;
             } else {
-                runningTaskView.launchTask(true);
+                targetTask = runningTaskView;
             }
         }
+        targetTask.setEndQuickswitchCuj(true);
+        targetTask.launchTask(true);
     }
 
     public void setRunningTaskIconScaledDown(boolean isScaledDown) {
@@ -1976,6 +1991,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             TaskView task = getTaskViewAt(i);
             mOrientationHandler.getSecondaryViewTranslate().set(task, translation / getScaleY());
         }
+        mLiveTileTaskViewSimulator.recentsViewSecondaryTranslation.value = translation;
     }
 
     /**
@@ -2254,6 +2270,10 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         return mLiveTileTaskViewSimulator;
     }
 
+    public TransformParams getLiveTileParams() {
+        return mLiveTileParams;
+    }
+
     // TODO: To be removed in a follow up CL
     public void setRecentsAnimationTargets(RecentsAnimationController recentsAnimationController,
             RecentsAnimationTargets recentsAnimationTargets) {
@@ -2442,7 +2462,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             } else {
                 taskView.getThumbnail().refresh();
             }
-            ViewUtils.postDraw(taskView, onFinishRunnable);
+            ViewUtils.postFrameDrawn(taskView, onFinishRunnable);
         } else {
             onFinishRunnable.run();
         }

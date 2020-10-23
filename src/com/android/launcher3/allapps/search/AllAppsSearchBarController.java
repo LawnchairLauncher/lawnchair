@@ -30,13 +30,11 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.allapps.AllAppsGridAdapter;
-import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItemWithPayload;
+import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItem;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.systemui.plugins.AllAppsSearchPlugin;
 import com.android.systemui.plugins.shared.SearchTarget;
-import com.android.systemui.plugins.shared.SearchTargetEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -114,7 +112,7 @@ public class AllAppsSearchBarController
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_GO) {
                 // selectFocusedView should return SearchTargetEvent that is passed onto onClick
                 if (Launcher.getLauncher(mLauncher).getAppsView().selectFocusedView(v)) {
                     return true;
@@ -196,9 +194,16 @@ public class AllAppsSearchBarController
         /**
          * Called when the search from primary source is complete.
          *
-         * @param items sorted list of search result adapter items.
+         * @param items sorted list of search result adapter items
          */
-        void onSearchResult(String query, ArrayList<AllAppsGridAdapter.AdapterItem> items);
+        void onSearchResult(String query, ArrayList<AdapterItem> items);
+
+        /**
+         * Called when the search from secondary source is complete.
+         *
+         * @param items sorted list of search result adapter items
+         */
+        void onAppendSearchResult(String query, ArrayList<AdapterItem> items);
 
         /**
          * Called when the search results should be cleared.
@@ -208,50 +213,20 @@ public class AllAppsSearchBarController
 
     /**
      * An interface for supporting dynamic search results
-     *
-     * @param <T> Type of payload
      */
-    public interface PayloadResultHandler<T> {
-        /**
-         * Updates View using Adapter's payload
-         */
+    public interface SearchTargetHandler {
 
-        default void setup(AdapterItemWithPayload<T> adapterItemWithPayload) {
-            Object[] targetInfo = getTargetInfo();
-            if (targetInfo != null) {
-                targetInfo[0] = adapterItemWithPayload.getSearchSessionId();
-                targetInfo[1] = adapterItemWithPayload.position;
-            }
-            applyAdapterInfo(adapterItemWithPayload);
+        /**
+         * Update view using values from {@link SearchTarget}
+         */
+        void applySearchTarget(SearchTarget searchTarget);
+
+        /**
+         * Handles selection of SearchTarget
+         */
+        default void handleSelection(int eventType) {
         }
 
-        void applyAdapterInfo(AdapterItemWithPayload<T> adapterItemWithPayload);
-
-        /**
-         * Gets object created by {@link PayloadResultHandler#createTargetInfo()}
-         */
-        Object[] getTargetInfo();
-
-        /**
-         * Creates a wrapper object to hold searchSessionId and item position
-         */
-        default Object[] createTargetInfo() {
-            return new Object[2];
-        }
-
-        /**
-         * Generates a SearchTargetEvent object for a PayloadHandlerView
-         */
-        default SearchTargetEvent getSearchTargetEvent(SearchTarget.ItemType itemType,
-                int eventType) {
-            Object[] targetInfo = getTargetInfo();
-            if (targetInfo == null) return null;
-
-            String searchSessionId = (String) targetInfo[0];
-            int position = (int) targetInfo[1];
-            return new SearchTargetEvent(itemType, eventType,
-                    position, searchSessionId);
-        }
     }
 
 

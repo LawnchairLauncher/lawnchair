@@ -15,8 +15,6 @@
  */
 package com.android.quickstep.interaction;
 
-import static com.android.quickstep.interaction.TutorialFragment.KEY_TUTORIAL_TYPE;
-
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -25,11 +23,14 @@ import android.view.Display;
 import android.view.View;
 import android.view.Window;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 
 import com.android.launcher3.R;
 import com.android.quickstep.interaction.TutorialController.TutorialType;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.List;
 
 /** Shows the gesture interactive sandbox in full screen mode. */
@@ -37,6 +38,9 @@ public class GestureSandboxActivity extends FragmentActivity {
 
     private static final String LOG_TAG = "GestureSandboxActivity";
 
+    private static final String KEY_TUTORIAL_STEPS = "tutorial_steps";
+
+    private Deque<TutorialType> mTutorialSteps;
     private TutorialFragment mFragment;
 
     @Override
@@ -45,7 +49,9 @@ public class GestureSandboxActivity extends FragmentActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.gesture_tutorial_activity);
 
-        mFragment = TutorialFragment.newInstance(getTutorialType(getIntent().getExtras()));
+        Bundle args = savedInstanceState == null ? getIntent().getExtras() : savedInstanceState;
+        mTutorialSteps = getTutorialSteps(args);
+        mFragment = TutorialFragment.newInstance(mTutorialSteps.pop());
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.gesture_tutorial_fragment_container, mFragment)
                 .commit();
@@ -72,17 +78,65 @@ public class GestureSandboxActivity extends FragmentActivity {
         }
     }
 
-    private TutorialType getTutorialType(Bundle extras) {
-        TutorialType defaultType = TutorialType.RIGHT_EDGE_BACK_NAVIGATION;
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
+        savedInstanceState.putStringArray(KEY_TUTORIAL_STEPS, getTutorialStepNames());
+        super.onSaveInstanceState(savedInstanceState);
+    }
 
-        if (extras == null || !extras.containsKey(KEY_TUTORIAL_TYPE)) {
-            return defaultType;
+    /** Returns true iff there aren't anymore tutorial types to display to the user. */
+    public boolean isTutorialComplete() {
+        return mTutorialSteps.isEmpty();
+    }
+
+    /**
+     * Replaces the current TutorialFragment, continuing to the next tutorial step if there is one.
+     *
+     * If there is no following step, the tutorial is closed.
+     */
+    public void continueTutorial() {
+        if (isTutorialComplete()) {
+            mFragment.closeTutorial();
+            return;
         }
-        try {
-            return TutorialType.valueOf(extras.getString(KEY_TUTORIAL_TYPE, ""));
-        } catch (IllegalArgumentException e) {
-            return defaultType;
+        mFragment = TutorialFragment.newInstance(mTutorialSteps.pop());
+        getSupportFragmentManager().beginTransaction()
+            .replace(R.id.gesture_tutorial_fragment_container, mFragment)
+            .runOnCommit(() -> mFragment.onAttachedToWindow())
+            .commit();
+    }
+
+    private String[] getTutorialStepNames() {
+        String[] tutorialStepNames = new String[mTutorialSteps.size()];
+
+        int i = 0;
+        for (TutorialType tutorialStep : mTutorialSteps) {
+            tutorialStepNames[i++] = tutorialStep.name();
         }
+
+        return tutorialStepNames;
+    }
+
+    private Deque<TutorialType> getTutorialSteps(Bundle extras) {
+        Deque<TutorialType> defaultSteps = new ArrayDeque<>();
+        defaultSteps.push(TutorialType.RIGHT_EDGE_BACK_NAVIGATION);
+
+        if (extras == null || !extras.containsKey(KEY_TUTORIAL_STEPS)) {
+            return defaultSteps;
+        }
+
+        String[] tutorialStepNames = extras.getStringArray(KEY_TUTORIAL_STEPS);
+
+        if (tutorialStepNames == null) {
+            return defaultSteps;
+        }
+
+        Deque<TutorialType> tutorialSteps = new ArrayDeque<>();
+        for (String tutorialStepName : tutorialStepNames) {
+            tutorialSteps.addLast(TutorialType.valueOf(tutorialStepName));
+        }
+
+        return tutorialSteps;
     }
 
     private void hideSystemUI() {

@@ -104,8 +104,13 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
                         showFeedback(R.string.overview_gesture_feedback_swipe_too_far_from_edge);
                         break;
                     case OVERVIEW_GESTURE_COMPLETED:
-                        fadeOutFakeTaskView(true, () ->
-                                mTutorialFragment.changeController(OVERVIEW_NAVIGATION_COMPLETE));
+                        fadeOutFakeTaskView(true, () -> {
+                            if (mTutorialFragment.isTutorialComplete()) {
+                                mTutorialFragment.changeController(OVERVIEW_NAVIGATION_COMPLETE);
+                            } else {
+                                mTutorialFragment.continueTutorial();
+                            }
+                        });
                         break;
                     case HOME_OR_OVERVIEW_NOT_STARTED_WRONG_SWIPE_DIRECTION:
                     case HOME_OR_OVERVIEW_CANCELLED:

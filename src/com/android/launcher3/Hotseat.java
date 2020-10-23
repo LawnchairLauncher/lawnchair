@@ -25,6 +25,10 @@ import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import androidx.annotation.Nullable;
+
+import java.util.function.Consumer;
+
 /**
  * View class that represents the bottom row of the home screen.
  */
@@ -34,6 +38,7 @@ public class Hotseat extends CellLayout implements Insettable {
     private boolean mHasVerticalHotseat;
     private Workspace mWorkspace;
     private boolean mSendTouchToWorkspace;
+    @Nullable private Consumer<Boolean> mOnVisibilityAggregatedCallback;
 
     public Hotseat(Context context) {
         this(context, null);
@@ -128,5 +133,19 @@ public class Hotseat extends CellLayout implements Insettable {
             return mWorkspace.onTouchEvent(event);
         }
         return event.getY() > getCellHeight();
+    }
+
+    @Override
+    public void onVisibilityAggregated(boolean isVisible) {
+        super.onVisibilityAggregated(isVisible);
+
+        if (mOnVisibilityAggregatedCallback != null) {
+            mOnVisibilityAggregatedCallback.accept(isVisible);
+        }
+    }
+
+    /** Sets a callback to be called onVisibilityAggregated */
+    public void setOnVisibilityAggregatedCallback(@Nullable Consumer<Boolean> callback) {
+        mOnVisibilityAggregatedCallback = callback;
     }
 }

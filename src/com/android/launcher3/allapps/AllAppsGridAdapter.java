@@ -20,8 +20,6 @@ import static com.android.launcher3.touch.ItemLongClickListener.INSTANCE_ALL_APP
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.net.Uri;
-import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,29 +35,22 @@ import androidx.annotation.Nullable;
 import androidx.core.view.accessibility.AccessibilityEventCompat;
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 import androidx.core.view.accessibility.AccessibilityRecordCompat;
-import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.slice.Slice;
-import androidx.slice.widget.SliceLiveData;
 import androidx.slice.widget.SliceView;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.allapps.search.AllAppsSearchBarController.PayloadResultHandler;
+import com.android.launcher3.allapps.search.AllAppsSearchBarController.SearchTargetHandler;
 import com.android.launcher3.allapps.search.SearchSectionInfo;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.util.PackageManagerHelper;
-import com.android.launcher3.views.HeroSearchResultView;
-import com.android.systemui.plugins.AllAppsSearchPlugin;
+import com.android.launcher3.views.SearchSliceWrapper;
 import com.android.systemui.plugins.shared.SearchTarget;
-import com.android.systemui.plugins.shared.SearchTargetEvent;
 
 import java.util.List;
-import java.util.function.IntConsumer;
 
 /**
  * The grid view adapter of all the apps.
@@ -100,9 +91,11 @@ public class AllAppsGridAdapter extends
 
     public static final int VIEW_TYPE_SEARCH_SUGGEST = 1 << 13;
 
+    public static final int VIEW_TYPE_SEARCH_ICON = 1 << 14;
+
     // Common view type masks
     public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_ALL_APPS_DIVIDER;
-    public static final int VIEW_TYPE_MASK_ICON = VIEW_TYPE_ICON;
+    public static final int VIEW_TYPE_MASK_ICON = VIEW_TYPE_ICON | VIEW_TYPE_SEARCH_ICON;
 
     /**
      * ViewHolder for each icon.
@@ -192,56 +185,25 @@ public class AllAppsGridAdapter extends
                     || viewType == VIEW_TYPE_SEARCH_PEOPLE
                     || viewType == VIEW_TYPE_SEARCH_THUMBNAIL
                     || viewType == VIEW_TYPE_SEARCH_ICON_ROW
+                    || viewType == VIEW_TYPE_SEARCH_ICON
                     || viewType == VIEW_TYPE_SEARCH_SUGGEST;
         }
     }
 
     /**
      * Extension of AdapterItem that contains an extra payload specific to item
-     *
-     * @param <T> Play load Type
      */
-    public static class AdapterItemWithPayload<T> extends AdapterItem {
-        private T mPayload;
-        private String mSearchSessionId;
-        private AllAppsSearchPlugin mPlugin;
-        private IntConsumer mSelectionHandler;
+    public static class SearchAdapterItem extends AdapterItem {
+        private SearchTarget mSearchTarget;
 
-        public AllAppsSearchPlugin getPlugin() {
-            return mPlugin;
-        }
-
-        public void setPlugin(AllAppsSearchPlugin plugin) {
-            mPlugin = plugin;
-        }
-
-        public AdapterItemWithPayload(T payload, int type, AllAppsSearchPlugin plugin) {
-            mPayload = payload;
+        public SearchAdapterItem(SearchTarget searchTarget, int type) {
+            mSearchTarget = searchTarget;
             viewType = type;
-            mPlugin = plugin;
         }
 
-        public void setSelectionHandler(IntConsumer runnable) {
-            mSelectionHandler = runnable;
+        public SearchTarget getSearchTarget() {
+            return mSearchTarget;
         }
-
-        public void setSearchSessionId(String searchSessionId) {
-            mSearchSessionId = searchSessionId;
-        }
-
-        public String getSearchSessionId() {
-            return mSearchSessionId;
-        }
-
-        public IntConsumer getSelectionHandler() {
-            return mSelectionHandler;
-        }
-
-        public T getPayload() {
-            return mPayload;
-        }
-
-
     }
 
     /**
@@ -426,11 +388,8 @@ public class AllAppsGridAdapter extends
                         R.layout.all_apps_icon, parent, false);
                 icon.setLongPressTimeoutFactor(1f);
                 icon.setOnFocusChangeListener(mIconFocusListener);
-                if (!FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
-                    icon.setOnClickListener(mOnIconClickListener);
-                    icon.setOnLongClickListener(mOnIconLongClickListener);
-                }
-
+                icon.setOnClickListener(mOnIconClickListener);
+                icon.setOnLongClickListener(mOnIconLongClickListener);
                 // Ensure the all apps icon height matches the workspace icons in portrait mode.
                 icon.getLayoutParams().height = mLauncher.getDeviceProfile().allAppsCellHeightPx;
                 return new ViewHolder(icon);
@@ -446,6 +405,9 @@ public class AllAppsGridAdapter extends
             case VIEW_TYPE_ALL_APPS_DIVIDER:
                 return new ViewHolder(mLayoutInflater.inflate(
                         R.layout.all_apps_divider, parent, false));
+            case VIEW_TYPE_SEARCH_ICON:
+                return new ViewHolder(mLayoutInflater.inflate(
+                        R.layout.search_result_icon, parent, false));
             case VIEW_TYPE_SEARCH_CORPUS_TITLE:
                 return new ViewHolder(
                         mLayoutInflater.inflate(R.layout.search_section_title, parent, false));
@@ -480,6 +442,10 @@ public class AllAppsGridAdapter extends
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()
+                && holder.itemView instanceof AllAppsSectionDecorator.SelfDecoratingView) {
+            ((AllAppsSectionDecorator.SelfDecoratingView) holder.itemView).removeDecoration();
+        }
         switch (holder.getItemViewType()) {
             case VIEW_TYPE_ICON:
                 AdapterItem adapterItem = mApps.getAdapterItems().get(position);
@@ -487,34 +453,6 @@ public class AllAppsGridAdapter extends
                 BubbleTextView icon = (BubbleTextView) holder.itemView;
                 icon.reset();
                 icon.applyFromApplicationInfo(info);
-                if (!FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
-                    break;
-                }
-                //TODO: replace with custom TopHitBubbleTextView with support for both shortcut
-                // and apps
-                if (adapterItem instanceof AdapterItemWithPayload) {
-                    AdapterItemWithPayload item = (AdapterItemWithPayload) adapterItem;
-                    item.setSelectionHandler(type -> {
-                        SearchTargetEvent e = new SearchTargetEvent(SearchTarget.ItemType.APP,
-                                type, item.position, item.getSearchSessionId());
-                        e.bundle = HeroSearchResultView.getAppBundle(info);
-                        if (item.getPlugin() != null) {
-                            item.getPlugin().notifySearchTargetEvent(e);
-                        }
-                    });
-                    icon.setOnClickListener(view -> {
-                        item.getSelectionHandler().accept(SearchTargetEvent.SELECT);
-                        mOnIconClickListener.onClick(view);
-                    });
-                    icon.setOnLongClickListener(view -> {
-                        item.getSelectionHandler().accept(SearchTargetEvent.SELECT);
-                        return mOnIconLongClickListener.onLongClick(view);
-                    });
-                }
-                else {
-                    icon.setOnClickListener(mOnIconClickListener);
-                    icon.setOnLongClickListener(mOnIconLongClickListener);
-                }
                 break;
             case VIEW_TYPE_EMPTY_SEARCH:
                 TextView emptyViewText = (TextView) holder.itemView;
@@ -532,39 +470,25 @@ public class AllAppsGridAdapter extends
                 break;
             case VIEW_TYPE_SEARCH_SLICE:
                 SliceView sliceView = (SliceView) holder.itemView;
-                AdapterItemWithPayload<Uri> slicePayload =
-                        (AdapterItemWithPayload<Uri>) mApps.getAdapterItems().get(position);
-                sliceView.setOnSliceActionListener((info1, s) -> {
-                    if (slicePayload.getPlugin() != null) {
-                        SearchTargetEvent searchTargetEvent = new SearchTargetEvent(
-                                SearchTarget.ItemType.SETTINGS_SLICE,
-                                SearchTargetEvent.CHILD_SELECT, slicePayload.position,
-                                slicePayload.getSearchSessionId());
-                        searchTargetEvent.bundle = new Bundle();
-                        searchTargetEvent.bundle.putParcelable("uri", slicePayload.getPayload());
-                        slicePayload.getPlugin().notifySearchTargetEvent(searchTargetEvent);
-                    }
-                });
-                try {
-                    LiveData<Slice> liveData = SliceLiveData.fromUri(mLauncher,
-                            slicePayload.getPayload());
-                    liveData.observe((Launcher) mLauncher, sliceView);
-                    sliceView.setTag(liveData);
-                } catch (Exception ignored) {
-                }
+                SearchAdapterItem slicePayload = (SearchAdapterItem) mApps.getAdapterItems().get(
+                        position);
+                SearchTarget searchTarget = slicePayload.getSearchTarget();
+                sliceView.setTag(new SearchSliceWrapper(mLauncher, sliceView, searchTarget));
+
                 break;
             case VIEW_TYPE_SEARCH_CORPUS_TITLE:
             case VIEW_TYPE_SEARCH_ROW_WITH_BUTTON:
             case VIEW_TYPE_SEARCH_HERO_APP:
             case VIEW_TYPE_SEARCH_ROW:
+            case VIEW_TYPE_SEARCH_ICON:
             case VIEW_TYPE_SEARCH_ICON_ROW:
             case VIEW_TYPE_SEARCH_PEOPLE:
             case VIEW_TYPE_SEARCH_THUMBNAIL:
             case VIEW_TYPE_SEARCH_SUGGEST:
-                AdapterItemWithPayload item =
-                        (AdapterItemWithPayload) mApps.getAdapterItems().get(position);
-                PayloadResultHandler payloadResultView = (PayloadResultHandler) holder.itemView;
-                payloadResultView.setup(item);
+                SearchAdapterItem item =
+                        (SearchAdapterItem) mApps.getAdapterItems().get(position);
+                SearchTargetHandler payloadResultView = (SearchTargetHandler) holder.itemView;
+                payloadResultView.applySearchTarget(item.getSearchTarget());
                 break;
             case VIEW_TYPE_ALL_APPS_DIVIDER:
                 // nothing to do
@@ -576,17 +500,15 @@ public class AllAppsGridAdapter extends
     public void onViewRecycled(@NonNull ViewHolder holder) {
         super.onViewRecycled(holder);
         if (!FeatureFlags.ENABLE_DEVICE_SEARCH.get()) return;
-        if (holder.itemView instanceof BubbleTextView) {
-            BubbleTextView icon = (BubbleTextView) holder.itemView;
-            icon.setOnClickListener(null);
-            icon.setOnLongClickListener(null);
-        } else if (holder.itemView instanceof SliceView) {
+        if (holder.itemView instanceof AllAppsSectionDecorator.SelfDecoratingView) {
+            ((AllAppsSectionDecorator.SelfDecoratingView) holder.itemView).removeDecoration();
+        }
+        if (holder.itemView instanceof SliceView) {
             SliceView sliceView = (SliceView) holder.itemView;
-            sliceView.setOnSliceActionListener(null);
-            if (sliceView.getTag() instanceof LiveData) {
-                LiveData sliceLiveData = (LiveData) sliceView.getTag();
-                sliceLiveData.removeObservers((Launcher) mLauncher);
+            if (sliceView.getTag() instanceof SearchSliceWrapper) {
+                ((SearchSliceWrapper) sliceView.getTag()).destroy();
             }
+            sliceView.setTag(null);
         }
     }
 

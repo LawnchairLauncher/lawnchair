@@ -223,6 +223,16 @@
         <item name="android:lines">1</item>
     </style>
 
+    <!-- Base theme for AllApps BubbleTextViews -->
+    <style name="BaseIcon.AllApps" parent="BaseIcon">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:stateListAnimator">@animator/all_apps_fastscroll_icon_anim</item>
+        <item name="android:paddingLeft">@dimen/dynamic_grid_cell_padding_x</item>
+        <item name="android:paddingRight">@dimen/dynamic_grid_cell_padding_x</item>
+    </style>
+
+
     <!-- Icon displayed on the workspace -->
     <style name="BaseIcon.Workspace" >
         <item name="android:shadowRadius">2.0</item>

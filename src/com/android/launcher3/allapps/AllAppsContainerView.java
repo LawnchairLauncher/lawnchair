@@ -16,7 +16,7 @@
 package com.android.launcher3.allapps;
 
 import static com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItem;
-import static com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItemWithPayload;
+import static com.android.launcher3.allapps.AllAppsGridAdapter.SearchAdapterItem;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_HAS_SHORTCUT_PERMISSION;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_CHANGE_PERMISSION;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_ENABLED;
@@ -57,6 +57,7 @@ import com.android.launcher3.Insettable;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.allapps.search.SearchEventTracker;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
 import com.android.launcher3.model.data.AppInfo;
@@ -67,9 +68,7 @@ import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 import com.android.launcher3.views.SpringRelativeLayout;
-import com.android.systemui.plugins.shared.SearchTargetEvent;
-
-import java.util.function.IntConsumer;
+import com.android.systemui.plugins.shared.SearchTarget;
 
 /**
  * The all apps view container.
@@ -546,13 +545,9 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             return mLauncher.startActivitySafely(v, headerItem.getIntent(), headerItem);
         }
         AdapterItem focusedItem = getActiveRecyclerView().getApps().getFocusedChild();
-        if (focusedItem instanceof AdapterItemWithPayload) {
-            IntConsumer onSelection =
-                    ((AdapterItemWithPayload) focusedItem).getSelectionHandler();
-            if (onSelection != null) {
-                onSelection.accept(SearchTargetEvent.QUICK_SELECT);
-                return true;
-            }
+        if (focusedItem instanceof SearchAdapterItem) {
+            SearchTarget searchTarget = ((SearchAdapterItem) focusedItem).getSearchTarget();
+            SearchEventTracker.INSTANCE.get(getContext()).quickSelect(searchTarget);
         }
         if (focusedItem.appInfo != null) {
             ItemInfo itemInfo = focusedItem.appInfo;
