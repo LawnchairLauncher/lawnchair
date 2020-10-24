@@ -42,13 +42,13 @@ import com.android.launcher3.util.OverScroller;
 public class LandscapePagedViewHandler implements PagedOrientationHandler {
 
     @Override
-    public int getPrimaryValue(int x, int y) {
-        return y;
+    public <T> T getPrimaryValue(T x, T y) {
+        return x;
     }
 
     @Override
-    public int getSecondaryValue(int x, int y) {
-        return x;
+    public <T> T getSecondaryValue(T x, T y) {
+        return y;
     }
 
     @Override
