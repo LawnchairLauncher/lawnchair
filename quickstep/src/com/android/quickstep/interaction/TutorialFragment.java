@@ -31,6 +31,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
+import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.R;
 import com.android.quickstep.interaction.TutorialController.TutorialType;
 
@@ -42,9 +43,10 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
     TutorialType mTutorialType;
     @Nullable TutorialController mTutorialController = null;
     View mRootView;
-    TutorialHandAnimation mHandCoachingAnimation;
+    @Nullable TutorialHandAnimation mHandCoachingAnimation = null;
     EdgeBackGestureHandler mEdgeBackGestureHandler;
     NavBarGestureHandler mNavBarGestureHandler;
+    private View mLauncherView;
 
     public static TutorialFragment newInstance(TutorialType tutorialType) {
         TutorialFragment fragment = getFragmentForTutorialType(tutorialType);
@@ -52,6 +54,7 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
             fragment = new BackGestureTutorialFragment();
             tutorialType = TutorialType.RIGHT_EDGE_BACK_NAVIGATION;
         }
+
         Bundle args = new Bundle();
         args.putSerializable(KEY_TUTORIAL_TYPE, tutorialType);
         fragment.setArguments(args);
@@ -74,13 +77,17 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
             case ASSISTANT:
             case ASSISTANT_COMPLETE:
                 return new AssistantGestureTutorialFragment();
+            case SANDBOX_MODE:
+                return new SandboxModeTutorialFragment();
             default:
                 Log.e(LOG_TAG, "Failed to find an appropriate fragment for " + tutorialType.name());
         }
         return null;
     }
 
-    abstract int getHandAnimationResId();
+    @Nullable Integer getHandAnimationResId() {
+        return null;
+    }
 
     abstract TutorialController createController(TutorialType type);
 
@@ -114,8 +121,14 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
             return insets;
         });
         mRootView.setOnTouchListener(this);
-        mHandCoachingAnimation = new TutorialHandAnimation(getContext(), mRootView,
-                getHandAnimationResId());
+        Integer handAnimationResId = getHandAnimationResId();
+        if (handAnimationResId != null) {
+            mHandCoachingAnimation =
+                new TutorialHandAnimation(getContext(), mRootView, handAnimationResId);
+        }
+        InvariantDeviceProfile dp = InvariantDeviceProfile.INSTANCE.get(getContext());
+        mLauncherView = new SandboxLauncherRenderer(getContext(), dp, true).getRenderedView();
+        ((ViewGroup) mRootView).addView(mLauncherView, 0);
         return mRootView;
     }
 
@@ -128,14 +141,23 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
     @Override
     public void onPause() {
         super.onPause();
-        mHandCoachingAnimation.stop();
+
+        if (mHandCoachingAnimation != null) {
+            mHandCoachingAnimation.stop();
+        }
     }
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
-        // Note: Using logical or to ensure both functions get called.
+        // Note: Using logical-or to ensure both functions get called.
         return mEdgeBackGestureHandler.onTouch(view, motionEvent)
                 | mNavBarGestureHandler.onTouch(view, motionEvent);
+    }
+
+    boolean onInterceptTouch(MotionEvent motionEvent) {
+        // Note: Using logical-or to ensure both functions get called.
+        return mEdgeBackGestureHandler.onInterceptTouch(motionEvent)
+                | mNavBarGestureHandler.onInterceptTouch(motionEvent);
     }
 
     void onAttachedToWindow() {
@@ -168,8 +190,26 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
         return mRootView;
     }
 
-    TutorialHandAnimation getHandAnimation() {
+    View getLauncherView() {
+        return mLauncherView;
+    }
+
+    @Nullable TutorialHandAnimation getHandAnimation() {
         return mHandCoachingAnimation;
+    }
+
+    void continueTutorial() {
+        if (!(getContext() instanceof GestureSandboxActivity)) {
+            closeTutorial();
+            return;
+        }
+        GestureSandboxActivity gestureSandboxActivity = (GestureSandboxActivity) getContext();
+
+        if (gestureSandboxActivity == null) {
+            closeTutorial();
+            return;
+        }
+        gestureSandboxActivity.continueTutorial();
     }
 
     void closeTutorial() {
@@ -181,5 +221,14 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
 
     void startSystemNavigationSetting() {
         startActivity(new Intent("com.android.settings.GESTURE_NAVIGATION_SETTINGS"));
+    }
+
+    boolean isTutorialComplete() {
+        if (!(getContext() instanceof GestureSandboxActivity)) {
+            return true;
+        }
+        GestureSandboxActivity gestureSandboxActivity = (GestureSandboxActivity) getContext();
+
+        return gestureSandboxActivity == null || gestureSandboxActivity.isTutorialComplete();
     }
 }

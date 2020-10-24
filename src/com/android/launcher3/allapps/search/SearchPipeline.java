@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.allapps.search;
 
+import android.os.CancellationSignal;
+
 import com.android.launcher3.allapps.AllAppsGridAdapter;
 
 import java.util.ArrayList;
@@ -23,10 +25,13 @@ import java.util.function.Consumer;
 /**
  * An interface for handling search within pipeline
  */
+// Remove when System Service API is added.
 public interface SearchPipeline {
 
     /**
      * Perform query
      */
-    void performSearch(String query, Consumer<ArrayList<AllAppsGridAdapter.AdapterItem>> cb);
+    void query(String input,
+            Consumer<ArrayList<AllAppsGridAdapter.AdapterItem>> callback,
+            CancellationSignal cancellationSignal);
 }

@@ -279,6 +279,8 @@ public abstract class AbstractLauncherUiTest {
         if (userManager != null) {
             for (UserHandle userHandle : userManager.getUserProfiles()) {
                 if (!userHandle.isSystem()) {
+                    Log.d(TestProtocol.WORK_PROFILE_REMOVED,
+                            "removing user " + userHandle.getIdentifier());
                     mDevice.executeShellCommand("pm remove-user " + userHandle.getIdentifier());
                 }
             }

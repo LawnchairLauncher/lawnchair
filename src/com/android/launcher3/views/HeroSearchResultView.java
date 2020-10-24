@@ -16,12 +16,14 @@
 package com.android.launcher3.views;
 
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_ALL_APPS;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.content.Context;
-import android.content.Intent;
+import android.content.pm.ShortcutInfo;
 import android.graphics.Point;
-import android.os.Bundle;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -31,9 +33,11 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
-import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItemWithPayload;
-import com.android.launcher3.allapps.search.AllAppsSearchBarController;
+import com.android.launcher3.allapps.AllAppsStore;
+import com.android.launcher3.allapps.search.AllAppsSearchBarController.SearchTargetHandler;
+import com.android.launcher3.allapps.search.SearchEventTracker;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.graphics.DragPreviewProvider;
@@ -43,23 +47,28 @@ import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
 import com.android.launcher3.touch.ItemLongClickListener;
-import com.android.systemui.plugins.AllAppsSearchPlugin;
+import com.android.launcher3.util.ComponentKey;
 import com.android.systemui.plugins.shared.SearchTarget;
 import com.android.systemui.plugins.shared.SearchTargetEvent;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * A view representing a high confidence app search result that includes shortcuts
+ * TODO (sfufa@) consolidate this with SearchResultIconRow
  */
-public class HeroSearchResultView extends LinearLayout implements DragSource,
-        AllAppsSearchBarController.PayloadResultHandler<List<ItemInfoWithIcon>> {
+public class HeroSearchResultView extends LinearLayout implements DragSource, SearchTargetHandler {
+
+    public static final String TARGET_TYPE_HERO_APP = "hero_app";
 
     public static final int MAX_SHORTCUTS_COUNT = 2;
-    BubbleTextView mBubbleTextView;
-    View mIconView;
-    BubbleTextView[] mDeepShortcutTextViews = new BubbleTextView[2];
-    AllAppsSearchPlugin mPlugin;
+
+    private SearchTarget mSearchTarget;
+    private BubbleTextView mBubbleTextView;
+    private View mIconView;
+    private BubbleTextView[] mDeepShortcutTextViews = new BubbleTextView[2];
+
 
     public HeroSearchResultView(Context context) {
         super(context);
@@ -90,8 +99,6 @@ public class HeroSearchResultView extends LinearLayout implements DragSource,
             launcher.getItemOnClickListener().onClick(view);
         });
         mBubbleTextView.setOnLongClickListener(new HeroItemDragHandler(getContext(), this));
-        setLayoutParams(
-                new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, grid.allAppsCellHeightPx));
 
 
         mDeepShortcutTextViews[0] = findViewById(R.id.shortcut_0);
@@ -102,36 +109,49 @@ public class HeroSearchResultView extends LinearLayout implements DragSource,
                             grid.allAppsIconSizePx));
             bubbleTextView.setOnClickListener(view -> {
                 WorkspaceItemInfo itemInfo = (WorkspaceItemInfo) bubbleTextView.getTag();
-                SearchTargetEvent event = new SearchTargetEvent(
-                        SearchTarget.ItemType.APP_HERO,
-                        SearchTargetEvent.CHILD_SELECT);
-                event.bundle = getAppBundle(itemInfo);
-                event.bundle.putString("shortcut_id", itemInfo.getDeepShortcutId());
-                if (mPlugin != null) {
-                    mPlugin.notifySearchTargetEvent(event);
-                }
+                SearchTargetEvent event = new SearchTargetEvent.Builder(mSearchTarget,
+                        SearchTargetEvent.CHILD_SELECT).setShortcutPosition(itemInfo.rank).build();
+                SearchEventTracker.getInstance(getContext()).notifySearchTargetEvent(event);
                 launcher.getItemOnClickListener().onClick(view);
             });
         }
     }
 
-    /**
-     * Apply {@link ItemInfo} for appIcon and shortcut Icons
-     */
     @Override
-    public void applyAdapterInfo(AdapterItemWithPayload<List<ItemInfoWithIcon>> adapterItem) {
-        mBubbleTextView.applyFromApplicationInfo(adapterItem.appInfo);
+    public void applySearchTarget(SearchTarget searchTarget) {
+        mSearchTarget = searchTarget;
+        AllAppsStore apps = Launcher.getLauncher(getContext()).getAppsView().getAppsStore();
+        AppInfo appInfo = apps.getApp(new ComponentKey(searchTarget.getComponentName(),
+                searchTarget.getUserHandle()));
+        List<ShortcutInfo> infos = mSearchTarget.getShortcutInfos();
+
+        ArrayList<Pair<ShortcutInfo, ItemInfoWithIcon>> shortcuts = new ArrayList<>();
+        for (int i = 0; infos != null && i < infos.size() && i < MAX_SHORTCUTS_COUNT; i++) {
+            ShortcutInfo shortcutInfo = infos.get(i);
+            ItemInfoWithIcon si = new WorkspaceItemInfo(shortcutInfo, getContext());
+            si.rank = i;
+            shortcuts.add(new Pair<>(shortcutInfo, si));
+        }
+
+        mBubbleTextView.applyFromApplicationInfo(appInfo);
         mIconView.setBackground(mBubbleTextView.getIcon());
-        mIconView.setTag(adapterItem.appInfo);
-        List<ItemInfoWithIcon> shorcutInfos = adapterItem.getPayload();
+        mIconView.setTag(appInfo);
+        LauncherAppState appState = LauncherAppState.getInstance(getContext());
         for (int i = 0; i < mDeepShortcutTextViews.length; i++) {
-            mDeepShortcutTextViews[i].setVisibility(shorcutInfos.size() > i ? VISIBLE : GONE);
-            if (i < shorcutInfos.size()) {
-                mDeepShortcutTextViews[i].applyFromItemInfoWithIcon(shorcutInfos.get(i));
+            BubbleTextView shortcutView = mDeepShortcutTextViews[i];
+            mDeepShortcutTextViews[i].setVisibility(shortcuts.size() > i ? VISIBLE : GONE);
+            if (i < shortcuts.size()) {
+                Pair<ShortcutInfo, ItemInfoWithIcon> p = shortcuts.get(i);
+                //apply ItemInfo and prepare view
+                shortcutView.applyFromWorkspaceItem((WorkspaceItemInfo) p.second);
+                MODEL_EXECUTOR.execute(() -> {
+                    // load unbadged shortcut in background and update view when icon ready
+                    appState.getIconCache().getUnbadgedShortcutIcon(p.second, p.first);
+                    MAIN_EXECUTOR.post(() -> shortcutView.reapplyItemInfo(p.second));
+                });
             }
         }
-        mPlugin = adapterItem.getPlugin();
-        adapterItem.setSelectionHandler(this::handleSelection);
+        SearchEventTracker.INSTANCE.get(getContext()).registerWeakHandler(searchTarget, this);
     }
 
     @Override
@@ -169,38 +189,21 @@ public class HeroSearchResultView extends LinearLayout implements DragSource,
             mLauncher.getWorkspace().beginDragShared(mContainer.mBubbleTextView,
                     draggableView, mContainer, itemInfo, previewProvider, new DragOptions());
 
-            SearchTargetEvent event = new SearchTargetEvent(
-                    SearchTarget.ItemType.APP_HERO, SearchTargetEvent.LONG_PRESS);
-            event.bundle = getAppBundle(itemInfo);
-            if (mContainer.mPlugin != null) {
-                mContainer.mPlugin.notifySearchTargetEvent(event);
-            }
-
+            SearchTargetEvent event = new SearchTargetEvent.Builder(mContainer.mSearchTarget,
+                    SearchTargetEvent.LONG_PRESS).build();
+            SearchEventTracker.INSTANCE.get(mLauncher).notifySearchTargetEvent(event);
             return false;
         }
     }
 
-    private void handleSelection(int eventType) {
+    @Override
+    public void handleSelection(int eventType) {
         ItemInfo itemInfo = (ItemInfo) mBubbleTextView.getTag();
         if (itemInfo == null) return;
         Launcher launcher = Launcher.getLauncher(getContext());
         launcher.startActivitySafely(this, itemInfo.getIntent(), itemInfo);
 
-        SearchTargetEvent event = new SearchTargetEvent(
-                SearchTarget.ItemType.APP_HERO, eventType);
-        event.bundle = getAppBundle(itemInfo);
-        if (mPlugin != null) {
-            mPlugin.notifySearchTargetEvent(event);
-        }
-    }
-
-    /**
-     * Helper method to generate {@link SearchTargetEvent} bundle from {@link ItemInfo}
-     */
-    public static Bundle getAppBundle(ItemInfo itemInfo) {
-        Bundle b = new Bundle();
-        b.putParcelable(Intent.EXTRA_COMPONENT_NAME, itemInfo.getTargetComponent());
-        b.putParcelable(Intent.EXTRA_USER, itemInfo.user);
-        return b;
+        SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(
+                new SearchTargetEvent.Builder(mSearchTarget, eventType).build());
     }
 }

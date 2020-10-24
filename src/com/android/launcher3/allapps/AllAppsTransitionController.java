@@ -68,16 +68,16 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
     public static final FloatProperty<AllAppsTransitionController> ALL_APPS_PROGRESS =
             new FloatProperty<AllAppsTransitionController>("allAppsProgress") {
 
-        @Override
-        public Float get(AllAppsTransitionController controller) {
-            return controller.mProgress;
-        }
+                @Override
+                public Float get(AllAppsTransitionController controller) {
+                    return controller.mProgress;
+                }
 
-        @Override
-        public void setValue(AllAppsTransitionController controller, float progress) {
-            controller.setProgress(progress);
-        }
-    };
+                @Override
+                public void setValue(AllAppsTransitionController controller, float progress) {
+                    controller.setProgress(progress);
+                }
+            };
 
     private static final int APPS_VIEW_ALPHA_CHANNEL_INDEX = 0;
 
@@ -133,7 +133,6 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
      * in xml-based animations which also handle updating the appropriate UI.
      *
      * @param progress value between 0 and 1, 0 shows all apps and 1 shows workspace
-     *
      * @see #setState(LauncherState)
      * @see #setStateWithAnimation(LauncherState, StateAnimationConfig, PendingAnimation)
      */
@@ -238,7 +237,7 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
             mInsetController = new AllAppsInsetTransitionController(mShiftRange, mAppsView);
             mLauncher.getSystemUiController().updateUiState(UI_STATE_ALLAPPS,
                     View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+                            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
         }
     }
 

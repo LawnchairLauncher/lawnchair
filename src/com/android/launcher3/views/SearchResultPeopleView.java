@@ -15,9 +15,6 @@
  */
 package com.android.launcher3.views;
 
-import static android.content.Intent.URI_ALLOW_UNSAFE;
-import static android.content.Intent.URI_ANDROID_APP_SCHEME;
-
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
@@ -26,10 +23,12 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Process;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageButton;
@@ -43,21 +42,22 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.allapps.AllAppsGridAdapter;
 import com.android.launcher3.allapps.search.AllAppsSearchBarController;
-import com.android.launcher3.util.Themes;
-import com.android.systemui.plugins.AllAppsSearchPlugin;
+import com.android.launcher3.allapps.search.SearchEventTracker;
+import com.android.launcher3.icons.BitmapInfo;
+import com.android.launcher3.icons.LauncherIcons;
 import com.android.systemui.plugins.shared.SearchTarget;
 import com.android.systemui.plugins.shared.SearchTargetEvent;
 
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 /**
  * A view representing a single people search result in all apps
  */
 public class SearchResultPeopleView extends LinearLayout implements
-        AllAppsSearchBarController.PayloadResultHandler<Bundle> {
+        AllAppsSearchBarController.SearchTargetHandler {
+
+    public static final String TARGET_TYPE_PEOPLE = "people";
 
     private final int mIconSize;
     private final int mButtonSize;
@@ -65,9 +65,10 @@ public class SearchResultPeopleView extends LinearLayout implements
     private View mIconView;
     private TextView mTitleView;
     private ImageButton[] mProviderButtons = new ImageButton[3];
-    private AllAppsSearchPlugin mPlugin;
-    private Uri mContactUri;
+    private Intent mIntent;
 
+
+    private SearchTarget mSearchTarget;
 
     public SearchResultPeopleView(Context context) {
         this(context, null, 0);
@@ -104,82 +105,101 @@ public class SearchResultPeopleView extends LinearLayout implements
     }
 
     @Override
-    public void applyAdapterInfo(
-            AllAppsGridAdapter.AdapterItemWithPayload<Bundle> adapterItemWithPayload) {
-        Bundle payload = adapterItemWithPayload.getPayload();
-        mPlugin = adapterItemWithPayload.getPlugin();
+    public void applySearchTarget(SearchTarget searchTarget) {
+        mSearchTarget = searchTarget;
+        Bundle payload = searchTarget.getExtras();
         mTitleView.setText(payload.getString("title"));
-        mContactUri = payload.getParcelable("contact_uri");
-        Bitmap icon = payload.getParcelable("icon");
-        if (icon != null) {
-            RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(getResources(), icon);
-            float radius = Themes.getDialogCornerRadius(getContext());
-            d.setCornerRadius(radius);
-            d.setBounds(0, 0, mIconSize, mIconSize);
-            BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(),
-                    Bitmap.createScaledBitmap(icon, mIconSize, mIconSize, false));
-            mIconView.setBackground(d);
+        mIntent = payload.getParcelable("intent");
+        Bitmap contactIcon = payload.getParcelable("icon");
+        try (LauncherIcons li = LauncherIcons.obtain(getContext())) {
+            BitmapInfo badgeInfo = li.createBadgedIconBitmap(
+                    getAppIcon(mIntent.getPackage()), Process.myUserHandle(),
+                    Build.VERSION.SDK_INT);
+            setIcon(li.badgeBitmap(roundBitmap(contactIcon), badgeInfo).icon, false);
+        } catch (Exception e) {
+            setIcon(contactIcon, true);
         }
 
         ArrayList<Bundle> providers = payload.getParcelableArrayList("providers");
         for (int i = 0; i < mProviderButtons.length; i++) {
             ImageButton button = mProviderButtons[i];
             if (providers != null && i < providers.size()) {
-                try {
-                    Bundle provider = providers.get(i);
-                    Intent intent = Intent.parseUri(provider.getString("intent_uri_str"),
-                            URI_ANDROID_APP_SCHEME | URI_ALLOW_UNSAFE);
-                    setupProviderButton(button, provider, intent);
+                Bundle provider = providers.get(i);
+                Intent intent = provider.getParcelable("intent");
+                setupProviderButton(button, provider, intent);
+                UI_HELPER_EXECUTOR.post(() -> {
                     String pkg = provider.getString("package_name");
-                    UI_HELPER_EXECUTOR.post(() -> {
-                        try {
-                            ApplicationInfo applicationInfo = mPackageManager.getApplicationInfo(
-                                    pkg, 0);
-                            Drawable appIcon = applicationInfo.loadIcon(mPackageManager);
-                            MAIN_EXECUTOR.post(()-> button.setImageDrawable(appIcon));
-                        } catch (PackageManager.NameNotFoundException ignored) {
-                        }
-
-                    });
-                } catch (URISyntaxException ex) {
-                    button.setVisibility(GONE);
-                }
+                    Drawable appIcon = getAppIcon(pkg);
+                    if (appIcon != null) {
+                        MAIN_EXECUTOR.post(() -> button.setImageDrawable(appIcon));
+                    }
+                });
+                button.setVisibility(VISIBLE);
             } else {
                 button.setVisibility(GONE);
             }
         }
-        adapterItemWithPayload.setSelectionHandler(this::handleSelection);
+        SearchEventTracker.INSTANCE.get(getContext()).registerWeakHandler(searchTarget, this);
+    }
+
+    /**
+     * Normalizes the bitmap to look like rounded App Icon
+     * TODO(b/170234747) to support styling, generate adaptive icon drawable and generate
+     * bitmap from it.
+     */
+    private Bitmap roundBitmap(Bitmap icon) {
+        final RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(getResources(), icon);
+        d.setCornerRadius(R.attr.folderIconRadius);
+        d.setBounds(0, 0, mIconSize, mIconSize);
+        final Bitmap bitmap = Bitmap.createBitmap(d.getBounds().width(), d.getBounds().height(),
+                Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        d.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        d.draw(canvas);
+        return bitmap;
+    }
+
+    private void setIcon(Bitmap icon, Boolean round) {
+        if (round) {
+            RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(getResources(), icon);
+            d.setCornerRadius(R.attr.folderIconRadius);
+            d.setBounds(0, 0, mIconSize, mIconSize);
+            mIconView.setBackground(d);
+        } else {
+            mIconView.setBackground(new BitmapDrawable(getResources(), icon));
+        }
+    }
+
+
+    private Drawable getAppIcon(String pkg) {
+        try {
+            ApplicationInfo applicationInfo = mPackageManager.getApplicationInfo(
+                    pkg, 0);
+            return applicationInfo.loadIcon(mPackageManager);
+        } catch (PackageManager.NameNotFoundException ignored) {
+            return null;
+        }
     }
 
     private void setupProviderButton(ImageButton button, Bundle provider, Intent intent) {
         Launcher launcher = Launcher.getLauncher(getContext());
         button.setOnClickListener(b -> {
             launcher.startActivitySafely(b, intent, null);
-            SearchTargetEvent searchTargetEvent = new SearchTargetEvent(
-                    SearchTarget.ItemType.PEOPLE,
-                    SearchTargetEvent.CHILD_SELECT);
-            searchTargetEvent.bundle = new Bundle();
-            searchTargetEvent.bundle.putParcelable("contact_uri", mContactUri);
-            searchTargetEvent.bundle.putBundle("provider", provider);
-            if (mPlugin != null) {
-                mPlugin.notifySearchTargetEvent(searchTargetEvent);
-            }
+            Bundle bundle = new Bundle();
+            bundle.putBundle("provider", provider);
+            SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(
+                    new SearchTargetEvent.Builder(mSearchTarget,
+                            SearchTargetEvent.CHILD_SELECT).setExtras(bundle).build());
         });
     }
 
-
-    private void handleSelection(int eventType) {
-        if (mContactUri != null) {
+    @Override
+    public void handleSelection(int eventType) {
+        if (mIntent != null) {
             Launcher launcher = Launcher.getLauncher(getContext());
-            launcher.startActivitySafely(this, new Intent(Intent.ACTION_VIEW, mContactUri).setFlags(
-                    Intent.FLAG_ACTIVITY_NEW_TASK), null);
-            SearchTargetEvent searchTargetEvent = new SearchTargetEvent(
-                    SearchTarget.ItemType.PEOPLE, eventType);
-            searchTargetEvent.bundle = new Bundle();
-            searchTargetEvent.bundle.putParcelable("contact_uri", mContactUri);
-            if (mPlugin != null) {
-                mPlugin.notifySearchTargetEvent(searchTargetEvent);
-            }
+            launcher.startActivitySafely(this, mIntent, null);
+            SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(
+                    new SearchTargetEvent.Builder(mSearchTarget, eventType).build());
         }
     }
 }

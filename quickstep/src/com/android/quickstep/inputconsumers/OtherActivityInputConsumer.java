@@ -51,6 +51,7 @@ import androidx.annotation.UiThread;
 import com.android.launcher3.R;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.tracing.InputConsumerProto;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.AbsSwipeUpHandler;
@@ -67,6 +68,7 @@ import com.android.quickstep.util.CachedEventDispatcher;
 import com.android.quickstep.util.MotionPauseDetector;
 import com.android.quickstep.util.NavBarPosition;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
+import com.android.systemui.shared.system.InputChannelCompat.InputEventReceiver;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
 import java.util.function.Consumer;
@@ -92,6 +94,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     private RecentsAnimationCallbacks mActiveCallbacks;
     private final CachedEventDispatcher mRecentsViewDispatcher = new CachedEventDispatcher();
     private final InputMonitorCompat mInputMonitorCompat;
+    private final InputEventReceiver mInputEventReceiver;
     private final BaseActivityInterface mActivityInterface;
 
     private final AbsSwipeUpHandler.Factory mHandlerFactory;
@@ -135,8 +138,8 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     public OtherActivityInputConsumer(Context base, RecentsAnimationDeviceState deviceState,
             TaskAnimationManager taskAnimationManager, GestureState gestureState,
             boolean isDeferredDownTarget, Consumer<OtherActivityInputConsumer> onCompleteCallback,
-            InputMonitorCompat inputMonitorCompat, boolean disableHorizontalSwipe,
-            Factory handlerFactory) {
+            InputMonitorCompat inputMonitorCompat, InputEventReceiver inputEventReceiver,
+            boolean disableHorizontalSwipe, Factory handlerFactory) {
         super(base);
         mDeviceState = deviceState;
         mNavBarPosition = mDeviceState.getNavBarPosition();
@@ -154,6 +157,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         mOnCompleteCallback = onCompleteCallback;
         mVelocityTracker = VelocityTracker.obtain();
         mInputMonitorCompat = inputMonitorCompat;
+        mInputEventReceiver = inputEventReceiver;
 
         boolean continuingPreviousGesture = mTaskAnimationManager.isRecentsAnimationRunning();
         mIsDeferredDownTarget = !continuingPreviousGesture && isDeferredDownTarget;
@@ -215,6 +219,9 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
         switch (ev.getActionMasked()) {
             case ACTION_DOWN: {
+                // Until we detect the gesture, handle events as we receive them
+                mInputEventReceiver.setBatchingEnabled(false);
+
                 Object traceToken = TraceHelper.INSTANCE.beginSection(DOWN_EVT,
                         FLAG_CHECK_FOR_RACE_CONDITIONS);
                 mActivePointerId = ev.getPointerId(0);
@@ -351,6 +358,8 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         }
         TestLogging.recordEvent(TestProtocol.SEQUENCE_PILFER, "pilferPointers");
         mInputMonitorCompat.pilferPointers();
+        // Once we detect the gesture, we can enable batching to reduce further updates
+        mInputEventReceiver.setBatchingEnabled(true);
 
         mActivityInterface.closeOverlay();
         ActivityManagerWrapper.getInstance().closeSystemWindows(
@@ -469,5 +478,12 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     @Override
     public boolean allowInterceptByParent() {
         return !mPassedPilferInputSlop || mGestureState.hasState(STATE_OVERSCROLL_WINDOW_CREATED);
+    }
+
+    @Override
+    public void writeToProtoInternal(InputConsumerProto.Builder inputConsumerProto) {
+        if (mInteractionHandler != null) {
+            mInteractionHandler.writeToProto(inputConsumerProto);
+        }
     }
 }

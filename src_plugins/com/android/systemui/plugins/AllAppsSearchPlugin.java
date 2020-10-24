@@ -17,6 +17,8 @@
 package com.android.systemui.plugins;
 
 import android.app.Activity;
+import android.os.Bundle;
+import android.os.CancellationSignal;
 import android.view.View;
 
 import com.android.systemui.plugins.annotations.ProvidesInterface;
@@ -32,7 +34,7 @@ import java.util.function.Consumer;
 @ProvidesInterface(action = AllAppsSearchPlugin.ACTION, version = AllAppsSearchPlugin.VERSION)
 public interface AllAppsSearchPlugin extends Plugin {
     String ACTION = "com.android.systemui.action.PLUGIN_ALL_APPS_SEARCH_ACTIONS";
-    int VERSION = 6;
+    int VERSION = 8;
 
     void setup(Activity activity, View view);
 
@@ -43,10 +45,27 @@ public interface AllAppsSearchPlugin extends Plugin {
     void onStateTransitionComplete(int state);
 
     /**
-     * Send signal when user starts typing, perform search, when search ends
+     * Send launcher window focus and visibility changed signals.
+     */
+    void onWindowFocusChanged(boolean hasFocus);
+    void onWindowVisibilityChanged(int visibility);
+
+    /**
+     * Send signal when user starts typing, perform search, notify search target
+     * event when search ends.
      */
     void startedSearchSession();
-    void performSearch(String query, Consumer<List<SearchTarget>> results);
+
+    /**
+     * Main function that triggers search.
+     *
+     * @param input string that has been typed by a user
+     * @param inputArgs extra info that may be relevant for the input query
+     * @param results contains the result that will be rendered in all apps search surface
+     * @param cancellationSignal {@link CancellationSignal} can be used to share status of current
+     */
+    void query(String input, Bundle inputArgs, Consumer<List<SearchTarget>> results,
+            CancellationSignal cancellationSignal);
 
     /**
      * Send over search target interaction events to Plugin

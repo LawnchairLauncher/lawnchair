@@ -104,7 +104,13 @@ final class AssistantGestureTutorialController extends TutorialController {
                         hideFeedback();
                         hideHandCoachingAnimation();
                         showRippleEffect(
-                                () -> mTutorialFragment.changeController(ASSISTANT_COMPLETE));
+                                () -> {
+                                    if (mTutorialFragment.isTutorialComplete()) {
+                                        mTutorialFragment.changeController(ASSISTANT_COMPLETE);
+                                    } else {
+                                        mTutorialFragment.continueTutorial();
+                                    }
+                                });
                         break;
                     case ASSISTANT_NOT_STARTED_BAD_ANGLE:
                         showFeedback(R.string.assistant_gesture_feedback_swipe_not_diagonal);

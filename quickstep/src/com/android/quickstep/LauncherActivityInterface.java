@@ -44,7 +44,6 @@ import com.android.launcher3.statehandlers.DepthController.ClampedDepthProperty;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.PagedOrientationHandler;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
@@ -208,10 +207,6 @@ public final class LauncherActivityInterface extends
             return false;
         }
 
-        launcher.getUserEventDispatcher().logActionCommand(
-                LauncherLogProto.Action.Command.RECENTS_BUTTON,
-                getContainerType(),
-                LauncherLogProto.ContainerType.TASKSWITCHER);
         launcher.getStateManager().goToState(OVERVIEW,
                 launcher.getStateManager().shouldAnimateStateChange(), onCompleteCallback);
         return true;
@@ -250,13 +245,6 @@ public final class LauncherActivityInterface extends
     @Override
     public boolean allowMinimizeSplitScreen() {
         return true;
-    }
-
-    @Override
-    public int getContainerType() {
-        final Launcher launcher = getVisibleLauncher();
-        return launcher != null ? launcher.getStateManager().getState().containerType
-                : LauncherLogProto.ContainerType.APP;
     }
 
     @Override

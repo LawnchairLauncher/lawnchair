@@ -36,17 +36,11 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
     launcher_log_protos_lite
 
 LOCAL_SRC_FILES := \
-    $(call all-proto-files-under, protos) \
-    $(call all-proto-files-under, proto_overrides) \
     $(call all-java-files-under, src_build_config) \
 
 LOCAL_RESOURCE_DIR := $(LOCAL_PATH)/res
 
 LOCAL_PROGUARD_ENABLED := disabled
-
-LOCAL_PROTOC_OPTIMIZE_TYPE := nano
-LOCAL_PROTOC_FLAGS := --proto_path=$(LOCAL_PATH)/protos/ --proto_path=$(LOCAL_PATH)/proto_overrides/
-LOCAL_PROTO_JAVA_OUTPUT_PARAMS := enum_style=java
 
 LOCAL_SDK_VERSION := current
 LOCAL_MIN_SDK_VERSION := 26
@@ -135,7 +129,6 @@ LOCAL_MODULE_TAGS := optional
 LOCAL_STATIC_JAVA_LIBRARIES := \
     SystemUI-statsd \
     SystemUISharedLib \
-    launcherprotosnano \
     launcher_log_protos_lite
 ifneq (,$(wildcard frameworks/base))
   LOCAL_PRIVATE_PLATFORM_APIS := true
@@ -203,7 +196,6 @@ LOCAL_MODULE_TAGS := optional
 LOCAL_STATIC_JAVA_LIBRARIES := \
     SystemUI-statsd \
     SystemUISharedLib \
-    launcherprotosnano \
     launcher_log_protos_lite
 ifneq (,$(wildcard frameworks/base))
   LOCAL_PRIVATE_PLATFORM_APIS := true

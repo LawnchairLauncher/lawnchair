@@ -37,14 +37,11 @@ import com.android.launcher3.Launcher.OnResumeCallback;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.logging.FileLog;
-import com.android.launcher3.logging.LoggerUtils;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Themes;
 
@@ -132,19 +129,6 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
     @Override
     public int getAccessibilityAction() {
         return mCurrentAccessibilityAction;
-    }
-
-    @Override
-    public Target getDropTargetForLogging() {
-        Target t = LoggerUtils.newTarget(Target.Type.CONTROL);
-        if (mCurrentAccessibilityAction == UNINSTALL) {
-            t.controlType = ControlType.UNINSTALL_TARGET;
-        } else if (mCurrentAccessibilityAction == DISMISS_PREDICTION) {
-            t.controlType = ControlType.DISMISS_PREDICTION;
-        } else {
-            t.controlType = ControlType.SETTINGS_BUTTON;
-        }
-        return t;
     }
 
     @Override

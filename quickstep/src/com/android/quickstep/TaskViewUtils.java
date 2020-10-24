@@ -17,15 +17,20 @@ package com.android.quickstep;
 
 import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
+import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.QuickstepAppTransitionManagerImpl.RECENTS_LAUNCH_DURATION;
 import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncestor;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
 import static com.android.launcher3.anim.Interpolators.clampToProgress;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.statehandlers.DepthController.DEPTH;
+import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
@@ -35,12 +40,18 @@ import android.graphics.RectF;
 import android.os.Build;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.BaseActivity;
-import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.anim.AnimationSuccessListener;
+import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.statehandlers.DepthController;
+import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.util.SurfaceTransactionApplier;
 import com.android.quickstep.util.TaskViewSimulator;
@@ -49,6 +60,7 @@ import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskThumbnailView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
+import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 /**
@@ -67,8 +79,7 @@ public final class TaskViewUtils {
      * opening remote target (which we don't get until onAnimationStart) will resolve to a TaskView.
      */
     public static TaskView findTaskViewToLaunch(
-            BaseDraggingActivity activity, View v, RemoteAnimationTargetCompat[] targets) {
-        RecentsView recentsView = activity.getOverviewPanel();
+            RecentsView recentsView, View v, RemoteAnimationTargetCompat[] targets) {
         if (v instanceof TaskView) {
             TaskView taskView = (TaskView) v;
             return recentsView.isTaskViewVisible(taskView) ? taskView : null;
@@ -119,6 +130,21 @@ public final class TaskViewUtils {
         return taskView;
     }
 
+    public static void createRecentsWindowAnimator(TaskView v, boolean skipViewChanges,
+            RemoteAnimationTargetCompat[] appTargets,
+            RemoteAnimationTargetCompat[] wallpaperTargets, DepthController depthController,
+            PendingAnimation out) {
+        boolean isRunningTask = v.isRunningTask();
+        TransformParams params = null;
+        TaskViewSimulator tsv = null;
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && isRunningTask) {
+            params = v.getRecentsView().getLiveTileParams();
+            tsv = v.getRecentsView().getLiveTileTaskViewSimulator();
+        }
+        createRecentsWindowAnimator(v, skipViewChanges, appTargets, wallpaperTargets,
+                depthController, out, params, tsv);
+    }
+
     /**
      * Creates an animation that controls the window of the opening targets for the recents launch
      * animation.
@@ -126,16 +152,25 @@ public final class TaskViewUtils {
     public static void createRecentsWindowAnimator(TaskView v, boolean skipViewChanges,
             RemoteAnimationTargetCompat[] appTargets,
             RemoteAnimationTargetCompat[] wallpaperTargets, DepthController depthController,
-            PendingAnimation out) {
+            PendingAnimation out, @Nullable TransformParams params,
+            @Nullable TaskViewSimulator tsv) {
+        boolean isQuickSwitch = v.isEndQuickswitchCuj();
+        v.setEndQuickswitchCuj(false);
 
-        SurfaceTransactionApplier applier = new SurfaceTransactionApplier(v);
+        boolean inLiveTileMode =
+                ENABLE_QUICKSTEP_LIVE_TILE.get() && v.getRecentsView().getRunningTaskIndex() != -1;
         final RemoteAnimationTargets targets =
-                new RemoteAnimationTargets(appTargets, wallpaperTargets, MODE_OPENING);
-        targets.addReleaseCheck(applier);
+                new RemoteAnimationTargets(appTargets, wallpaperTargets,
+                        inLiveTileMode ? MODE_CLOSING : MODE_OPENING);
 
-        TransformParams params = new TransformParams()
+        if (params == null) {
+            SurfaceTransactionApplier applier = new SurfaceTransactionApplier(v);
+            targets.addReleaseCheck(applier);
+
+            params = new TransformParams()
                     .setSyncTransactionApplier(applier)
                     .setTargetSet(targets);
+        }
 
         final RecentsView recentsView = v.getRecentsView();
         int taskIndex = recentsView.indexOfChild(v);
@@ -149,8 +184,9 @@ public final class TaskViewUtils {
         int displayRotation = DisplayController.getDefaultDisplay(context).getInfo().rotation;
 
         TaskViewSimulator topMostSimulator = null;
-        if (targets.apps.length > 0) {
-            TaskViewSimulator tsv = new TaskViewSimulator(context, recentsView.getSizeStrategy());
+
+        if (tsv == null && targets.apps.length > 0) {
+            tsv = new TaskViewSimulator(context, recentsView.getSizeStrategy());
             tsv.setDp(dp);
             tsv.setLayoutRotation(displayRotation, displayRotation);
             tsv.setPreview(targets.apps[targets.apps.length - 1]);
@@ -158,18 +194,23 @@ public final class TaskViewUtils {
             tsv.recentsViewScale.value = 1;
             tsv.setScroll(startScroll);
 
+            // Fade in the task during the initial 20% of the animation
+            out.addFloat(params, TransformParams.TARGET_ALPHA, 0, 1,
+                    clampToProgress(LINEAR, 0, 0.2f));
+        }
+
+        if (tsv != null) {
             out.setFloat(tsv.fullScreenProgress,
                     AnimatedFloat.VALUE, 1, TOUCH_RESPONSE_INTERPOLATOR);
             out.setFloat(tsv.recentsViewScale,
                     AnimatedFloat.VALUE, tsv.getFullScreenScale(), TOUCH_RESPONSE_INTERPOLATOR);
             out.setInt(tsv, TaskViewSimulator.SCROLL, 0, TOUCH_RESPONSE_INTERPOLATOR);
 
-            out.addOnFrameCallback(() -> tsv.apply(params));
+            TaskViewSimulator finalTsv = tsv;
+            TransformParams finalParams = params;
+            out.addOnFrameCallback(() -> finalTsv.apply(finalParams));
             topMostSimulator = tsv;
         }
-
-        // Fade in the task during the initial 20% of the animation
-        out.addFloat(params, TransformParams.TARGET_ALPHA, 0, 1, clampToProgress(LINEAR, 0, 0.2f));
 
         if (!skipViewChanges && parallaxCenterAndAdjacentTask && topMostSimulator != null) {
             out.addFloat(v, VIEW_ALPHA, 1, 0, clampToProgress(LINEAR, 0.2f, 0.4f));
@@ -223,10 +264,19 @@ public final class TaskViewUtils {
             });
         }
 
-        out.addListener(new AnimatorListenerAdapter() {
+        out.addListener(new AnimationSuccessListener() {
+            @Override
+            public void onAnimationSuccess(Animator animator) {
+                if (isQuickSwitch) {
+                    InteractionJankMonitorWrapper.end(
+                            InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
+                }
+            }
+
             @Override
             public void onAnimationEnd(Animator animation) {
                 targets.release();
+                super.onAnimationEnd(animation);
             }
         });
 
@@ -234,5 +284,58 @@ public final class TaskViewUtils {
             out.setFloat(depthController, DEPTH, BACKGROUND_APP.getDepth(context),
                     TOUCH_RESPONSE_INTERPOLATOR);
         }
+    }
+
+    public static void composeRecentsLaunchAnimator(@NonNull AnimatorSet anim, @NonNull View v,
+            @NonNull RemoteAnimationTargetCompat[] appTargets,
+            @NonNull RemoteAnimationTargetCompat[] wallpaperTargets, boolean launcherClosing,
+            @NonNull StateManager stateManager, @NonNull RecentsView recentsView,
+            @NonNull DepthController depthController) {
+        boolean skipLauncherChanges = !launcherClosing;
+
+        TaskView taskView = findTaskViewToLaunch(recentsView, v, appTargets);
+        PendingAnimation pa = new PendingAnimation(RECENTS_LAUNCH_DURATION);
+        createRecentsWindowAnimator(taskView, skipLauncherChanges, appTargets, wallpaperTargets,
+                depthController, pa);
+        anim.play(pa.buildAnim());
+
+        Animator childStateAnimation = null;
+        // Found a visible recents task that matches the opening app, lets launch the app from there
+        Animator launcherAnim;
+        final AnimatorListenerAdapter windowAnimEndListener;
+        if (launcherClosing) {
+            launcherAnim = recentsView.createAdjacentPageAnimForTaskLaunch(taskView);
+            launcherAnim.setInterpolator(Interpolators.TOUCH_RESPONSE_INTERPOLATOR);
+            launcherAnim.setDuration(RECENTS_LAUNCH_DURATION);
+
+            // Make sure recents gets fixed up by resetting task alphas and scales, etc.
+            windowAnimEndListener = new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    stateManager.moveToRestState();
+                    stateManager.reapplyState();
+                }
+            };
+        } else {
+            AnimatorPlaybackController controller =
+                    stateManager.createAnimationToNewWorkspace(NORMAL,
+                            RECENTS_LAUNCH_DURATION);
+            controller.dispatchOnStart();
+            childStateAnimation = controller.getTarget();
+            launcherAnim = controller.getAnimationPlayer().setDuration(RECENTS_LAUNCH_DURATION);
+            windowAnimEndListener = new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    stateManager.goToState(NORMAL, false);
+                }
+            };
+        }
+        anim.play(launcherAnim);
+
+        // Set the current animation first, before adding windowAnimEndListener. Setting current
+        // animation adds some listeners which need to be called before windowAnimEndListener
+        // (the ordering of listeners matter in this case).
+        stateManager.setCurrentAnimation(anim, childStateAnimation);
+        anim.addListener(windowAnimEndListener);
     }
 }
