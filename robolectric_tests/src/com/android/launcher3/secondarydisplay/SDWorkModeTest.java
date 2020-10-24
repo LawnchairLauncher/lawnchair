@@ -21,7 +21,6 @@ import static com.android.launcher3.util.Preconditions.assertNotNull;
 
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
 
 import android.content.Context;
 import android.os.UserManager;
@@ -30,8 +29,6 @@ import android.provider.Settings;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.allapps.AllAppsPagedView;
 import com.android.launcher3.allapps.AllAppsRecyclerView;
-import com.android.launcher3.logging.UserEventDispatcher;
-import com.android.launcher3.shadows.ShadowOverrides;
 import com.android.launcher3.util.LauncherLayoutBuilder;
 import com.android.launcher3.util.LauncherModelHelper;
 
@@ -69,8 +66,6 @@ public class SDWorkModeTest {
         mModelHelper = new LauncherModelHelper();
         mTargetContext = RuntimeEnvironment.application;
         mIdp = InvariantDeviceProfile.INSTANCE.get(mTargetContext);
-        ShadowOverrides.setProvider(UserEventDispatcher.class,
-                c -> mock(UserEventDispatcher.class));
         Settings.Global.putFloat(mTargetContext.getContentResolver(),
                 Settings.Global.WINDOW_ANIMATION_SCALE, 0);
 

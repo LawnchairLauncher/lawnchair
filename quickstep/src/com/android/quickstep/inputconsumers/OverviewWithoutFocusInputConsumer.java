@@ -15,6 +15,7 @@
  */
 package com.android.quickstep.inputconsumers;
 
+import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOME_GESTURE;
 
@@ -27,9 +28,6 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.RecentsAnimationDeviceState;
@@ -82,17 +80,12 @@ public class OverviewWithoutFocusInputConsumer implements InputConsumer,
         mContext.startActivity(mGestureState.getHomeIntent());
         ActiveGestureLog.INSTANCE.addLog("startQuickstep");
         BaseActivity activity = BaseDraggingActivity.fromContext(mContext);
-        int pageIndex = -1; // This number doesn't reflect workspace page index.
-                            // It only indicates that launcher client screen was shown.
-        int containerType = (mGestureState != null && mGestureState.getEndTarget() != null)
+        int state = (mGestureState != null && mGestureState.getEndTarget() != null)
                 ? mGestureState.getEndTarget().containerType
-                : LauncherLogProto.ContainerType.WORKSPACE;
-        activity.getUserEventDispatcher().logActionOnContainer(
-                wasFling ? Touch.FLING : Touch.SWIPE, Direction.UP, containerType, pageIndex);
-        activity.getUserEventDispatcher().setPreviousHomeGesture(true);
+                : LAUNCHER_STATE_HOME;
         activity.getStatsLogManager().logger()
-                .withSrcState(LAUNCHER_STATE_HOME)
-                .withDstState(LAUNCHER_STATE_HOME)
+                .withSrcState(LAUNCHER_STATE_BACKGROUND)
+                .withDstState(state)
                 .withContainerInfo(LauncherAtom.ContainerInfo.newBuilder()
                         .setWorkspace(
                                 LauncherAtom.WorkspaceContainer.newBuilder()

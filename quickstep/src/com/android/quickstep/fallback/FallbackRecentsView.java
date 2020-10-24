@@ -15,6 +15,7 @@
  */
 package com.android.quickstep.fallback;
 
+import static com.android.quickstep.GestureState.GestureEndTarget.RECENTS;
 import static com.android.quickstep.fallback.RecentsState.DEFAULT;
 import static com.android.quickstep.fallback.RecentsState.MODAL_TASK;
 
@@ -27,6 +28,7 @@ import android.util.AttributeSet;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.quickstep.FallbackActivityInterface;
+import com.android.quickstep.GestureState;
 import com.android.quickstep.RecentsActivity;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
@@ -74,14 +76,14 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity>
     }
 
     /**
-     * When the gesture ends and recents view become interactive, we also remove the temporary
+     * When the gesture ends and we're going to recents view, we also remove the temporary
      * invisible tile added for the home task. This also pushes the remaining tiles back
      * to the center.
      */
     @Override
-    public void onGestureAnimationEnd() {
-        super.onGestureAnimationEnd();
-        if (mHomeTaskInfo != null) {
+    public void onGestureEndTargetCalculated(GestureState.GestureEndTarget endTarget) {
+        super.onGestureEndTargetCalculated(endTarget);
+        if (mHomeTaskInfo != null && endTarget == RECENTS) {
             TaskView tv = getTaskView(mHomeTaskInfo.taskId);
             if (tv != null) {
                 PendingAnimation pa = createTaskDismissAnimation(tv, true, false, 150);

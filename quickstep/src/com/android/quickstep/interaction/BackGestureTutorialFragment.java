@@ -24,7 +24,7 @@ import com.android.quickstep.interaction.TutorialController.TutorialType;
 /** Shows the Back gesture interactive tutorial. */
 public class BackGestureTutorialFragment extends TutorialFragment {
     @Override
-    int getHandAnimationResId() {
+    Integer getHandAnimationResId() {
         return R.drawable.back_gesture;
     }
 
