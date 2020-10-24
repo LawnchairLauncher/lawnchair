@@ -22,7 +22,7 @@ import com.android.launcher3.allapps.AllAppsSectionDecorator.SectionDecorationHa
  */
 public class SearchSectionInfo {
 
-    private String mTitle;
+    private String mSectionId;
     private SectionDecorationHandler mDecorationHandler;
 
     public int getPosStart() {
@@ -48,8 +48,8 @@ public class SearchSectionInfo {
         this(null);
     }
 
-    public SearchSectionInfo(String title) {
-        mTitle = title;
+    public SearchSectionInfo(String sectionId) {
+        mSectionId = sectionId;
     }
 
     public void setDecorationHandler(SectionDecorationHandler sectionDecorationHandler) {
@@ -62,9 +62,9 @@ public class SearchSectionInfo {
     }
 
     /**
-     * Returns the section's title
+     * Returns the section's ID
      */
-    public String getTitle() {
-        return mTitle == null ? "" : mTitle;
+    public String getSectionId() {
+        return mSectionId == null ? "" : mSectionId;
     }
 }

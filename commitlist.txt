@@ -1,1133 +1,934 @@
-[34mCOMMAND>> git log 23bb2d1a4d632c46ed42b22808c052b19365fcb4..532b962a034762b231c0fbb95e145459897e45d5(B[m
-commit 532b962a034762b231c0fbb95e145459897e45d5
-Merge: 87be28a67 107fe60f6
-Author: Tony Wickham <twickham@google.com>
-Date:   Sat Aug 15 00:20:36 2020 +0000
-
-    resolve merge conflicts of 107fe60f6ef5b3336ece35122650d9ccc1c69913 to ub-launcher3-master
-    
-    Change-Id: I9a1c52e66edd627fd54cc3cb423fa28a6175f8ac
-
-commit 87be28a67b12c5b12a89155c794c0ddd438e8750
-Merge: 4fedc4e58 d844fe758
+[34mCOMMAND>> git log f99351888c3e5a128559678304fefd647472bc7f..4c3952dc60fc78d3816012a86d7e71747ef34c74[m
+commit 4c3952dc60fc78d3816012a86d7e71747ef34c74
+Merge: cb403d9e5 70e8b1572
 Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Fri Aug 14 23:47:44 2020 +0000
+Date:   Fri Oct 23 00:27:39 2020 +0000
 
-    Merge "Remove ENABLE_OVERVIEW_ACTIONS flag, defaulting to true" into ub-launcher3-master
+    Merge "Minor stylistic changes in Workspace.java." into ub-launcher3-master
 
-commit 4fedc4e583fd5b6edcd4ea9b66d4c32991f04867
-Merge: 4fb5f74bb 6c1a88f17
-Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Fri Aug 14 23:00:09 2020 +0000
+commit cb403d9e5235c7323bc2fdffe6a264d17bb6d0a6
+Author: Pinyao Ting <pinyaoting@google.com>
+Date:   Thu Oct 22 16:07:08 2020 -0700
 
-    [automerger skipped] Merge "Track OverviewToHomeAnim with StateManager" into ub-launcher3-rvc-qpr-dev am: 6c1a88f172 -s ours
-    
-    am skip reason: Change-Id I5348565b9e705d8ffba39818dde9efe82b16bb7a with SHA-1 4fb5f74bb4 is in history
-    
-    Original change: https://googleplex-android-review.googlesource.com/c/platform/packages/apps/Launcher3/+/12352271
-    
-    Change-Id: I2a164ac97082a33bd8e859d6fb3f40d338996304
-
-commit d844fe758c880447bff8708646ecfcd92e98ba06
-Author: Tony Wickham <twickham@google.com>
-Date:   Thu Aug 13 19:33:26 2020 -0700
-
-    Remove ENABLE_OVERVIEW_ACTIONS flag, defaulting to true
-    
-    We no longer support the "peeking" model where the shelf would
-    peek on motion pause from an app and overview would peek on motion
-    pause from home. Thus, removed/inlined the following:
-    - FlingAndHoldTouchController (merged into its sole subclass
-      NoButtonNavbarToOverviewTouchController)
-    - ShelfPeekAnim
-    - OverviewPeekState
-    
-    Change-Id: I066a3ad2636fde4786089c922b896bf1e03361fd
-
-commit 107fe60f6ef5b3336ece35122650d9ccc1c69913
-Author: Tony Wickham <twickham@google.com>
-Date:   Wed Aug 12 12:30:00 2020 -0700
-
-    Ensure we clearState() when going to Overview from home
-    
-    We need to do this before potentially starting another
-    interaction during the animation, or we could end up in
-    an inconsistent state.
-    
-    Fixes: 160759508
-    Change-Id: Ia28dceddcc258679fc0b968f5a83fae5ef3f5acb
-
-commit 6c1a88f1720a102d8a3ef94073754b7cd163d6a8
-Merge: 20983ae1f 9dfcc316c
-Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Fri Aug 14 22:45:17 2020 +0000
-
-    Merge "Track OverviewToHomeAnim with StateManager" into ub-launcher3-rvc-qpr-dev
-
-commit 9dfcc316c1519978e49462707ba36156d7abb2e5
-Author: Tony Wickham <twickham@google.com>
-Date:   Mon Aug 10 18:33:01 2020 -0700
-
-    Track OverviewToHomeAnim with StateManager
-    
-    This way we mark the the current state as NORMAL at the start of
-    the animation, and cancel it as part of other state transitions.
-    This allows us to interact with launcher (e.g. to go to all apps
-    or pull down the notification shade) during the animation.
-    
-    Also use OverviewToHomeAnim from RecentsView#startHome() to
-    ensure the animation is consistent, e.g. doesn't fade out
-    RecentsView, scrolls to page 1, etc.
-    
-    Bug: 144170434
-    Change-Id: I5348565b9e705d8ffba39818dde9efe82b16bb7a
-    Merged-In: I5348565b9e705d8ffba39818dde9efe82b16bb7a
-
-commit 4fb5f74bb4884794a1a5f08f62092f7f63c2d05b
-Author: Tony Wickham <twickham@google.com>
-Date:   Mon Aug 10 18:33:01 2020 -0700
-
-    Track OverviewToHomeAnim with StateManager
-    
-    This way we mark the the current state as NORMAL at the start of
-    the animation, and cancel it as part of other state transitions.
-    This allows us to interact with launcher (e.g. to go to all apps
-    or pull down the notification shade) during the animation.
-    
-    Also use OverviewToHomeAnim from RecentsView#startHome() to
-    ensure the animation is consistent, e.g. doesn't fade out
-    RecentsView, scrolls to page 1, etc.
-    
-    Bug: 144170434
-    Change-Id: I5348565b9e705d8ffba39818dde9efe82b16bb7a
-
-commit 1ae2937f7527517eafcf79071b4547800c1daad4
-Merge: 5fb83a47f 8cac927bd
-Author: Hyunyoung Song <hyunyoungs@google.com>
-Date:   Fri Aug 14 19:34:50 2020 +0000
-
-    Merge "Hookup existing AllAppsSearchPlugin interface to SearchBarController Bug: 161801331" into ub-launcher3-master
-
-commit 5fb83a47f292df4be2f55380caac65e36048052d
-Author: Sunny Goyal <sunnygoyal@google.com>
-Date:   Mon Aug 10 10:50:36 2020 -0700
-
-    Removing icon recents version
-    
-    Change-Id: Ibdc88715e38590cedf8a7b5174061bb2c6ef9533
-
-commit 8cac927bdb1054de643db86c918bb825f0860177
-Author: Hyunyoung Song <hyunyoungs@google.com>
-Date:   Fri Aug 14 00:11:36 2020 -0700
-
-    Hookup existing AllAppsSearchPlugin interface to SearchBarController
-    Bug: 161801331
-    
-    Change-Id: Ied575f78ad2139c6818ae5a13467b7399b9ab17a
-
-commit 8ad575e1e65c8a73b37abcd89062c22a27f0ad37
-Author: Tracy Zhou <tracyzhou@google.com>
-Date:   Sat Aug 1 16:08:48 2020 -0700
-
-    Handle overview actions in Live Tile mode
-    
-    - Switch to screenshot and finish recents animation when an overview action is selected
-    
-    Fixes: 162564471
-    Test: Manual
-    Change-Id: I3db20619435d079bb39ce4cb37b46ea775416336
-
-commit 9a472fbd7dba66d756631ec98430b1da0fb9f00e
-Merge: a9f955173 81c0cac45
-Author: Tracy Zhou <tracyzhou@google.com>
-Date:   Thu Aug 13 21:29:28 2020 +0000
-
-    Merge "[Live Tile] Place the target app back above Launcher when swipe up end target is home" into ub-launcher3-master
-
-commit a9f955173239fb734da22bd56cd0c2178a72213d
-Merge: 895ece297 a310e9c03
-Author: Andy Wickham <awickham@google.com>
-Date:   Thu Aug 13 19:22:12 2020 +0000
-
-    Merge "Refactors LauncherPreviewRenderer to better support subclassing." into ub-launcher3-master
-
-commit 895ece297d748291fcd7b3b429511729e64a1bb2
-Merge: ba9415162 20983ae1f
-Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Thu Aug 13 18:57:49 2020 +0000
-
-    Merge "[Overview Actions] Reset the modal task view when rotate from select mode." into ub-launcher3-rvc-qpr-dev am: 20983ae1f8
-    
-    Original change: https://googleplex-android-review.googlesource.com/c/platform/packages/apps/Launcher3/+/12366024
-    
-    Change-Id: I3fec240a659c5a1c80bf4f78aca1af6ace270e27
-
-commit 20983ae1f8a5896f15cbee61397c554990e6bf58
-Merge: 2ddbe127f ba6fec3ea
-Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Thu Aug 13 18:42:46 2020 +0000
-
-    Merge "[Overview Actions] Reset the modal task view when rotate from select mode." into ub-launcher3-rvc-qpr-dev
-
-commit ba9415162cf2b3c0f46d4c252e50bafcd853616a
-Merge: 58a1689ce 59d04e6ea
-Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Thu Aug 13 18:17:41 2020 +0000
-
-    Merge "Use system VelocityTracker instead of forking least squares algorithm" into ub-launcher3-master
-
-commit 58a1689cef9f638467cb4dc9835bb6a92d704ce3
-Merge: 9529b95e0 2ddbe127f
-Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Thu Aug 13 18:05:50 2020 +0000
-
-    Merge "Overview Actions - enable proactive actions flag." into ub-launcher3-rvc-qpr-dev am: 2ddbe127fb
-    
-    Original change: https://googleplex-android-review.googlesource.com/c/platform/packages/apps/Launcher3/+/12286410
-    
-    Change-Id: I54898c6a1a47d271c8d18c17d24a5acb6e67fd1e
-
-commit 81c0cac4574915a6bf77955bbb74ecc1cde79c6f
-Author: Tracy Zhou <tracyzhou@google.com>
-Date:   Thu Aug 13 11:01:15 2020 -0700
-
-    [Live Tile] Place the target app back above Launcher when swipe up end target is home
+    flip default value of minimal device feature flag
     
     Test: manual
-    Bug: 160361464
-    Change-Id: Ic2b332774fe3f25f36f0bfd2b5e6cf66fb1d09dd
+    Change-Id: Iaf46dffb935bdf4b46e7c57d547bdc697250ec56
 
-commit 2ddbe127fb69bd860fc4176893015b63474c6609
-Merge: f35053ad5 1e414d500
-Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Thu Aug 13 17:50:30 2020 +0000
-
-    Merge "Overview Actions - enable proactive actions flag." into ub-launcher3-rvc-qpr-dev
-
-commit 59d04e6ea69dc0c81fceab601194d8c0a6238fa0
-Author: Tony Wickham <twickham@google.com>
-Date:   Wed Aug 12 18:05:42 2020 -0700
-
-    Use system VelocityTracker instead of forking least squares algorithm
-    
-    Change-Id: I8e03cdd0942b9037054cd1955bdb6809c89f3ea2
-
-commit a310e9c035c87c4fc5b3d23bbcc70f11ffc48561
-Author: Andy Wickham <awickham@google.com>
-Date:   Mon Aug 10 17:04:40 2020 -0700
-
-    Refactors LauncherPreviewRenderer to better support subclassing.
-    
-    Basically this removes the inner class MainThreadRenderer, which
-    was only created and used for its populate() method in the parent's
-    getRenderedView() method. All methods and members of that subclass
-    are merged into the parent LauncherPreviewRenderer class, and
-    getRenderedView() simply inlines the previous populate() code.
-    
-    Other smaller changes:
-     - Extracted out shouldShowQsb() and shouldShowRealLauncherPreview()
-     - Disables search view and its children to prevent interaction
-    
-    Change-Id: I7d0cce73efbe022c16661a0ad66eefe5cb285641
-
-commit 9529b95e06a6ab91650f373d5a335b6bc090ce77
-Merge: 72385839e f35053ad5
-Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Thu Aug 13 02:25:50 2020 +0000
-
-    Merge "Store mHistoricTimes as longs intead of floats" into ub-launcher3-rvc-qpr-dev am: f35053ad58
-    
-    Original change: https://googleplex-android-review.googlesource.com/c/platform/packages/apps/Launcher3/+/12365858
-    
-    Change-Id: I3c21d9d47a525e9c975c6acf38c99a2f1668359c
-
-commit f35053ad588974b4daf37fa19866e416b880360d
-Merge: 30fe240f9 a14567096
-Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Thu Aug 13 02:10:20 2020 +0000
-
-    Merge "Store mHistoricTimes as longs intead of floats" into ub-launcher3-rvc-qpr-dev
-
-commit 72385839ed9038607e186c198ce31a54c52778a4
-Merge: 635c08095 30fe240f9
-Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Thu Aug 13 01:01:07 2020 +0000
-
-    Merge "TaskOverlayFactory - remove static factory." into ub-launcher3-rvc-qpr-dev am: 30fe240f99
-    
-    Original change: https://googleplex-android-review.googlesource.com/c/platform/packages/apps/Launcher3/+/12353636
-    
-    Change-Id: Ic165b6184f4f36b5956493d3880a9d93ad27a0d6
-
-commit 30fe240f99f38dfb81a6075b8ab2b0ed436afb75
-Merge: cbe1fc063 cf8275438
-Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Thu Aug 13 00:47:34 2020 +0000
-
-    Merge "TaskOverlayFactory - remove static factory." into ub-launcher3-rvc-qpr-dev
-
-commit ba6fec3eaeb2087428c8e33826429d72ad0290cf
-Author: Becky Qiu <xuqiu@google.com>
-Date:   Wed Aug 12 17:17:00 2020 -0700
-
-    [Overview Actions] Reset the modal task view when rotate from select mode.
-    
-    Test: local
-    Bug: 161901771
-    Change-Id: I103e59ad68874db7fcb39556764d315983ac047c
-
-commit 635c08095a9057cce7e25952c0f5d5b12a7903d7
-Merge: 93caa9310 cbe1fc063
-Author: Zak Cohen <zakcohen@google.com>
-Date:   Thu Aug 13 00:12:20 2020 +0000
-
-    Merge "Overscroll plugin - give the plugin its own factory." into ub-launcher3-rvc-qpr-dev am: cbe1fc063d
-    
-    Original change: https://googleplex-android-review.googlesource.com/c/platform/packages/apps/Launcher3/+/12353635
-    
-    Change-Id: Ia471594443d1b744c5c34f0c9c45e7191bbf7938
-
-commit a14567096922f23d6e03c84fc930e3451e7471c2
-Author: Tony Wickham <twickham@google.com>
-Date:   Wed Aug 12 16:48:33 2020 -0700
-
-    Store mHistoricTimes as longs intead of floats
-    
-    The loss of precision was causing us to miscalculate the age of
-    events, and thus not detecting any pause due to denominator = 0.
-    
-    Test: have a device that hasn't been rebooted for a certain
-    amount of time such that SystemClock#uptimeMillis can't be
-    accurately converted to a float, then try to swipe up and hold
-    
-    Fixes: 160568387
-    Change-Id: Idef112187f34a18feea7e6a0b77258626f9d0ed4
-
-commit cbe1fc063d924b2c68a2de8929687baab06439df
-Merge: 9367f9834 fac874152
-Author: Zak Cohen <zakcohen@google.com>
-Date:   Wed Aug 12 23:58:38 2020 +0000
-
-    Merge "Overscroll plugin - give the plugin its own factory." into ub-launcher3-rvc-qpr-dev
-
-commit 93caa93102df1b84e8b8d66fe7ca63e8950e4a6f
-Merge: 74f218530 9367f9834
-Author: Becky Qiu <xuqiu@google.com>
-Date:   Wed Aug 12 23:43:10 2020 +0000
-
-    [automerger skipped] [Overview Actions] Set launcher state to Overview when rotate in recents. am: 9367f98348 -s ours
-    
-    am skip reason: Change-Id I73f498151d7cc6a9db9d352549124c9d550ae6f2 with SHA-1 cb956ff4f5 is in history
-    
-    Original change: https://googleplex-android-review.googlesource.com/c/platform/packages/apps/Launcher3/+/12354807
-    
-    Change-Id: I02f43e3ee9a7f0f1730b673be220055d72a07d81
-
-commit 74f218530e069c11b36cf4a2cfcc1b76726aea6b
-Merge: cb956ff4f fd58da6a7
-Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Wed Aug 12 23:36:27 2020 +0000
-
-    Merge "Wrapping display properties in a wrapper class" into ub-launcher3-master
-
-commit 1e414d500591e88c027bfead4c0e456444dc5407
-Author: Zak Cohen <zakcohen@google.com>
-Date:   Fri Jul 31 15:54:36 2020 -0700
-
-    Overview Actions - enable proactive actions flag.
-    
-    Bug: 162623012
-    Test: local
-    Change-Id: I343ae83601ebdab4dacc9f4611b069f87b5542eb
-
-commit cf82754384a26d2038ba1f13c0ecea57c0d3116d
-Author: Zak Cohen <zakcohen@google.com>
-Date:   Tue Aug 11 16:17:41 2020 -0700
-
-    TaskOverlayFactory - remove static factory.
-    
-    Make the overlay factory a member of the recents view.
-    Before the factory was static. The factory has references to activity
-    objects so was causing leaks.
-    
-    Bug: 162012217
-    Tested: local, factory still works
-    Change-Id: I2283134f3008b630ba2056f07e65ac042957cdbd
-
-commit fd58da6a75b55eb2ef40dd53fc6135636812ac6a
-Author: Sunny Goyal <sunnygoyal@google.com>
-Date:   Tue Aug 11 12:06:49 2020 -0700
-
-    Wrapping display properties in a wrapper class
-    
-    This would allow us to support gestures on multiple-displays
-    
-    Change-Id: I8f426bbdf04520f4189cadce2bde6aab4933c8d9
-
-commit cb956ff4f5adf0c4abb586940d9e89582a70bfd3
-Author: Becky Qiu <xuqiu@google.com>
-Date:   Mon Aug 10 12:44:48 2020 -0700
-
-    [Overview Actions] Set launcher state to Overview when rotate in recents.
-    
-    Test: local
-    Bug: 160718310
-    
-    Change-Id: I73f498151d7cc6a9db9d352549124c9d550ae6f2
-
-commit 73f0c3698fe74bb051e0e65a523a2f750b1ba40d
-Merge: 53116c6cc d6c3315a6
+commit a97557a15eb111616d868120a9f4659f1b451fa2
+Merge: f5ce80b8a 932a327eb
 Author: Tracy Zhou <tracyzhou@google.com>
-Date:   Wed Aug 12 16:53:23 2020 +0000
+Date:   Thu Oct 22 18:22:56 2020 +0000
 
-    Merge "Only draw app below launcher for TaskViewSimulator at swipe up or in Overview" into ub-launcher3-master
+    Merge "Consider overscroll adjustment of RecentsView for live tile" into ub-launcher3-master
 
-commit d6c3315a67980c90712103135bae302b86ee080e
+commit 932a327ebf0587b8324b9fea7d31328b2f6719a8
 Author: Tracy Zhou <tracyzhou@google.com>
-Date:   Tue Aug 11 22:46:22 2020 -0700
+Date:   Wed Oct 21 23:29:00 2020 -0700
 
-    Only draw app below launcher for TaskViewSimulator at swipe up or in Overview
+    Consider overscroll adjustment of RecentsView for live tile
     
-    Bug: 160361464
+    Fixes: 171450807
+    Test: manual
+    Change-Id: I83eebf1f6b61c67f289db51aabe5a971815d0df1
+
+commit f5ce80b8a0a1636fc8159475177a07b281492c88
+Author: Hilary Huo <hhuo@google.com>
+Date:   Wed Oct 14 16:35:55 2020 -0700
+
+    [pixel-search] Latency analysis, add logging statement in launcher
+    
+    Bug: b/170675311
+    Change-Id: I229ace399085bea1c3f9535eb713edd329dff8bd
+
+commit 31b03941ef3aa17edc08c1b509d4fa23766f2d2c
+Merge: e0a50c9e3 0731273d5
+Author: Tracy Zhou <tracyzhou@google.com>
+Date:   Wed Oct 21 20:03:57 2020 +0000
+
+    Merge "Track live tile better by considering resistance animation" into ub-launcher3-master
+
+commit 0731273d5409149fca32dfb2ad76eab45f6ea79a
+Author: Tracy Zhou <tracyzhou@google.com>
+Date:   Wed Oct 21 12:03:40 2020 -0700
+
+    Track live tile better by considering resistance animation
+    
+    Fixes: 170338029
     Test: Manual
-    Change-Id: Ic4d912f1656d87f445a8016640c0eb166cace0d5
+    Change-Id: I66536bae567aa94385d5e0352cec9d46d512927a
 
-commit 9367f98348f9db5b5b6840b8003dd62c037d8be8
-Author: Becky Qiu <xuqiu@google.com>
-Date:   Mon Aug 10 12:44:48 2020 -0700
+commit e0a50c9e3f1d4b9f113d6afae01ff2c4ed452fba
+Merge: d2c27a595 acfac6187
+Author: Alex Chau <alexchau@google.com>
+Date:   Wed Oct 21 17:02:57 2020 +0000
 
-    [Overview Actions] Set launcher state to Overview when rotate in recents.
+    Merge "Use Diplay.getMetrics in DisplayController" into ub-launcher3-master
+
+commit d2c27a595065d43bbea37dd2a512d37080f5233e
+Merge: ff8febabb 8b488ccc2
+Author: Tracy Zhou <tracyzhou@google.com>
+Date:   Wed Oct 21 07:19:48 2020 +0000
+
+    Merge "[Live Tile] Support launching running task animation" into ub-launcher3-master
+
+commit 8b488ccc2e433a708c8b06f0b6866f2a305e4b0a
+Author: Tracy Zhou <tracyzhou@google.com>
+Date:   Wed Oct 14 12:13:04 2020 -0700
+
+    [Live Tile] Support launching running task animation
     
-    Test: local
-    Bug: 160718310
-    
-    Change-Id: I73f498151d7cc6a9db9d352549124c9d550ae6f2
-    Merged-In: I73f498151d7cc6a9db9d352549124c9d550ae6f2
+    Fixes: 170338170
+    Test: manual
+    Change-Id: I2526b7cfbacaea7899b8e2ed233f913630071d36
 
-commit fac87415221447f8f47ef4a88d187b7e175a6296
-Author: Zak Cohen <zakcohen@google.com>
-Date:   Mon Aug 10 15:51:45 2020 -0700
+commit 70e8b157219e9090ba5e47fdfa51b2b92e98449d
+Author: Andy Wickham <awickham@google.com>
+Date:   Wed Oct 7 23:00:06 2020 -0700
 
-    Overscroll plugin - give the plugin its own factory.
+    Minor stylistic changes in Workspace.java.
     
-    Separate out the overscroll plugin from the task overlay.
-    These two classes aren't really related.
-    
-    Bug: 162012217
-    Tested: checked plugin still works
-    Change-Id: Id89eff1ad2ae9766efaaecd8cfc66d6521b9ca8c
+    Change-Id: Ib07611f27cbc427d11abccd8b74ea144485752f7
 
-commit 53116c6cc84236ac49064efa9988f92b5b558599
-Author: Sunny Goyal <sunnygoyal@google.com>
-Date:   Fri Aug 7 16:32:18 2020 -0700
+commit acfac6187dd9d13d55b566a77a5da867a1813573
+Author: Alex Chau <alexchau@google.com>
+Date:   Mon Oct 19 18:00:39 2020 +0100
 
-     Simplifying InstallShortcutReceiver
+    Use Diplay.getMetrics in DisplayController
     
-    > Removing support for legacy shortcuts (with embedded icon)
-    > Unifying pattern for storing the data in prefs
+    - This is a workaround of b/163815566, where DisplayMetrics is stale
+      when onDisplayChanged is called.
+    - Instead of relying on stale DisplayConext, get the DisplayMetrics
+      from the Display directly.
+    - Also optimized how DisplayController.Info is created by passing in
+      Display only
+    - Use mDisplayContext.getDisplay directly if availalbe
     
-    Change-Id: Ife250807c7ce5337969d25444ee23c751bc2a487
+    Bug: 163815566, 160544577
+    Test: DPI looks correct on device boot
+    Change-Id: I2a7454bb8cf2073ce592e8662781b87fc998444f
+    (cherry picked from commit 177c38243dc3bf245d1f7db3c265dfb56522f441)
 
-commit b313f71615c64c8022f587ef3c4ebd34bfdc6171
-Merge: 762d06136 2104d72b2
+commit ff8febabb039a3c27ee068f85119860a048b917c
+Merge: b03d2b416 102746823
 Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Tue Aug 11 21:44:37 2020 +0000
+Date:   Tue Oct 20 17:46:09 2020 +0000
 
-    Merge "LauncherInstrumentation enables even when non-system user" into ub-launcher3-master
+    Merge "Makes Plugin Settings gear adjust to dark mode." into ub-launcher3-master
 
-commit 762d06136cc7c91afe8cdfdac5426b58c174edd8
-Author: Sunny Goyal <sunnygoyal@google.com>
-Date:   Wed Jul 29 15:03:46 2020 -0700
-
-    Caching last predictions and loading it with model
-    
-    Adding support for persisting itemInfos on disk. This uses
-    a separate xml file. Unlike prefs, it does not keep the items
-    in memory and is just a wraper over reading/writing a file.
-    
-    Bug: 160748731
-    Change-Id: Iaccab9928ab8f30127fb3c2d630ca8ca83f0bd05
-
-commit d62e797d1834306ec394ebf64f4c84939f033d97
-Author: Sunny Goyal <sunnygoyal@google.com>
-Date:   Tue Aug 11 12:10:36 2020 -0700
-
-    Disabling debug log as the associated bug is closed
-    
-    Bug: 154951045
-    Change-Id: I2e503c6d2f0a9f694ee1f88167924114fe495c2f
-
-commit 1bdb8f0efc73419b114074375126883162f4c838
-Merge: 3003e57d1 66aead7d2
-Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Tue Aug 11 18:57:13 2020 +0000
-
-    Merge "Removing some obsolete methods and wrapper" into ub-launcher3-master
-
-commit 3003e57d1714ba7016c89e520f11aebe83b71b7d
-Merge: fe9b7e37a 5dd045bec
+commit b03d2b41616d479ba360fa4f97e57722c7f57b8e
+Merge: fb79f5541 caa1e9c39
 Author: Hyunyoung Song <hyunyoungs@google.com>
-Date:   Tue Aug 11 17:56:59 2020 +0000
+Date:   Tue Oct 20 15:25:56 2020 +0000
 
-    Merge "Handle IME selection focus for ENABLE_DEVICE_SEARCH" into ub-launcher3-master
+    Merge "Search query method should support multiple consumers" into ub-launcher3-master
 
-commit 5dd045bec67ca12a3de4b4adc88a92a0166c0f50
+commit fb79f5541dcbe587002756bb40a3c632d38cc25a
+Merge: f6b05068d cf0b275a4
+Author: Schneider Victor-tulias <victortulias@google.com>
+Date:   Tue Oct 20 13:51:06 2020 +0000
+
+    Merge "Add the ability to specify a list of tutorial steps in the gesture sandbox tutorial intent." into ub-launcher3-master
+
+commit f6b05068d901d4e989b2e107c06f9c7a6e7b113f
 Author: Hyunyoung Song <hyunyoungs@google.com>
-Date:   Tue Aug 4 22:22:49 2020 -0700
+Date:   Tue Oct 20 00:19:29 2020 -0700
 
-    Handle IME selection focus for ENABLE_DEVICE_SEARCH
+    Invert the badging
     
-    Bug: 162861289
-    Change-Id: I15e4eae09be2aa9f89a5157fd74c95e91e64bc53
+    Bug: 171171594
+    Change-Id: If84fdc03254105c843e16f39f479505b16e1cd5f
 
-commit fe9b7e37a801135f959e03ecf26ee454a24d6f8e
-Merge: b810c10bb e14b55c2a
-Author: Tony Wickham <twickham@google.com>
-Date:   Tue Aug 11 00:37:05 2020 +0000
+commit caa1e9c39978cb3b467b5ac441eb39b5e883fa2e
+Author: Hyunyoung Song <hyunyoungs@google.com>
+Date:   Mon Oct 12 13:56:02 2020 -0700
 
-    [automerger skipped] Merge "Don't reapply window transform if we are already running a window anim" into ub-launcher3-rvc-qpr-dev am: e14b55c2a9 -s ours
+    Search query method should support multiple consumers
     
-    am skip reason: Change-Id I3fa7f0b2581ca83923a42f37f52850b02c22e995 with SHA-1 c830bef923 is in history
-    
-    Original change: https://googleplex-android-review.googlesource.com/c/platform/packages/apps/Launcher3/+/12346435
-    
-    Change-Id: I35f6f3572754e49626c7a09b832aecf114413bd7
+    Bug: 170488559
+    Change-Id: I64bef9523d3c3950c4ca3a4b9ce1d506d1672200
 
-commit e14b55c2a94a255750bca8b2fa4e068fcbeba0cc
-Merge: b460ff1ef 06513f11c
-Author: Tony Wickham <twickham@google.com>
-Date:   Tue Aug 11 00:19:28 2020 +0000
-
-    Merge "Don't reapply window transform if we are already running a window anim" into ub-launcher3-rvc-qpr-dev
-
-commit b810c10bb90a2bae5adf02b7050dcb595f383707
-Merge: 9fc65cb0b b55f7591e
-Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Mon Aug 10 23:55:24 2020 +0000
-
-    Merge "Ensure that the task is always clipped to match the tile aspect ratio" into ub-launcher3-master
-
-commit 9fc65cb0b79e6d87098aa72aeaadb425619dd656
-Merge: c830bef92 b460ff1ef
-Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Mon Aug 10 23:02:20 2020 +0000
-
-    Merge "Fix TaskViewTouchController success progress to match haptic" into ub-launcher3-rvc-qpr-dev am: b460ff1ef1
-    
-    Original change: https://googleplex-android-review.googlesource.com/c/platform/packages/apps/Launcher3/+/12321076
-    
-    Change-Id: Ic4317b94cca7d760d23da0c1c115d422236586e7
-
-commit b460ff1ef1f7fac734f1d0411fd7284e6c1eea7b
-Merge: 03a4a0cd5 b8b3e957a
-Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Mon Aug 10 22:46:03 2020 +0000
-
-    Merge "Fix TaskViewTouchController success progress to match haptic" into ub-launcher3-rvc-qpr-dev
-
-commit b55f7591ed2fee28e1c2a4059d19d2f069185cf5
-Author: Sunny Goyal <sunnygoyal@google.com>
-Date:   Mon Aug 10 15:08:36 2020 -0700
-
-    Ensure that the task is always clipped to match the tile aspect ratio
-    
-    Instead of trying to estimate the insets, we clip the task such it is
-    restricted within the task insets when possible.
-    
-    Change-Id: If160115fda07dfd2e01e96d41e4b5dc43a77ac94
-
-commit 06513f11c2304a371a7c79cec371562d65393322
-Author: Tony Wickham <twickham@google.com>
-Date:   Mon Aug 10 15:06:02 2020 -0700
-
-    Don't reapply window transform if we are already running a window anim
-    
-    Bug: 149934536
-    Change-Id: I3fa7f0b2581ca83923a42f37f52850b02c22e995
-    Merged-In: I3fa7f0b2581ca83923a42f37f52850b02c22e995
-
-commit c830bef923200e97ad8d0ef9bf37d0c121d7e56d
-Author: Tony Wickham <twickham@google.com>
-Date:   Mon Aug 10 15:06:02 2020 -0700
-
-    Don't reapply window transform if we are already running a window anim
-    
-    Bug: 149934536
-    Change-Id: I3fa7f0b2581ca83923a42f37f52850b02c22e995
-
-commit cf5aea05b3888ea0adc8a53fad62987405206eeb
-Merge: 2fe0d5f71 03a4a0cd5
-Author: Tony Wickham <twickham@google.com>
-Date:   Mon Aug 10 21:29:00 2020 +0000
-
-    Update overview from home transitions am: 03a4a0cd53
-    
-    Original change: https://googleplex-android-review.googlesource.com/c/platform/packages/apps/Launcher3/+/12184426
-    
-    Change-Id: Iac33ad0742264a97e754a1cc4336ed3ab727944a
-
-commit 2fe0d5f71ded4537c42d07df1464a71daf27e047
-Merge: a2c6c9737 90751820d
-Author: Tony Wickham <twickham@google.com>
-Date:   Mon Aug 10 21:08:54 2020 +0000
-
-    Merge "Add back code missing from upstream merge" into ub-launcher3-master
-
-commit 03a4a0cd530c6d13f01882e81568ab1544030c12
-Author: Tony Wickham <twickham@google.com>
-Date:   Fri Jul 17 13:06:57 2020 -0700
-
-    Update overview from home transitions
-    
-    For both NoButtonNavbarToOverviewTouchController and
-    NavBarToHomeTouchController:
-    - Have consistent resistance applied such that RecentsView scales
-      down and translates up slightly (but not as much as from an app)
-    - Have consistent animation to home if you fling to that state
-      rather than stay in overview. This is handled by a new class,
-      OverviewToHomeAnim, which consolidates logic from NBTHTC and
-      overrides some interpolators such that RecentsView doesn't fade
-      out or translate downwards during the animation (it just slides
-      off the screen while the home animation plays).
-    
-    Also make overview actions not clickable when alpha == 0, so that
-    you can tap the hotseat/qsb during the transition from home to
-    overview.
-    
-    Bug: 144170434
-    Change-Id: Ic291f285ff2f63c477633c48d4fadb23cf70c28a
-
-commit 90751820d9ef8f09ece7aba656dfe881e3b149dd
-Author: Tony Wickham <twickham@google.com>
-Date:   Mon Aug 10 13:11:43 2020 -0700
-
-    Add back code missing from upstream merge
-    
-    Change-Id: I7c2f08ed1b9c7462feabe1ad793af4ddc55aff1b
-
-commit a2c6c973749e1a67bcdbb33cb316c0ba467e3c6d
-Merge: c0ed292cc e6f9e0eb7
-Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Mon Aug 10 20:01:06 2020 +0000
-
-    Merge "Revert "Update overview from home transitions"" into ub-launcher3-master
-
-commit e6f9e0eb7ea49b0f2feae80d7a2d57fe9db5e38e
-Author: Tony Wickham <twickham@google.com>
-Date:   Mon Aug 10 19:13:17 2020 +0000
-
-    Revert "Update overview from home transitions"
-    
-    This reverts commit f3bc79718201cf17479a46e9860ea518a900d68f.
-    
-    Reason for revert: updating upstream, need to wait to cherry-pick until that's approved
-    
-    Change-Id: I702286dba66fb4582ab682a5b0b8cd80ccebf346
-
-commit c0ed292ccbaa5b94bd3e54a85f5d7e9c1b2a1229
-Merge: cb4c4dea9 999e08f6f
-Author: Tony Wickham <twickham@google.com>
-Date:   Mon Aug 10 16:32:08 2020 +0000
-
-    Merge "Add swipe up resistance to quick switch from home" into ub-launcher3-rvc-qpr-dev am: 999e08f6ff
-    
-    Original change: https://googleplex-android-review.googlesource.com/c/platform/packages/apps/Launcher3/+/12174364
-    
-    Change-Id: I6ce2dbb31ec8ed0d340165b2fc9a9f0532081d3e
-
-commit cb4c4dea95157c8bce1561bec6cd38daa57cec9e
-Merge: e54db4fbd 6bd1882ea
-Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Mon Aug 10 16:31:55 2020 +0000
-
-    Merge "[Overview Actions] Add a logging event for tapping images in select mode." into ub-launcher3-rvc-qpr-dev am: 6bd1882eae
-    
-    Original change: https://googleplex-android-review.googlesource.com/c/platform/packages/apps/Launcher3/+/12336644
-    
-    Change-Id: I2dba3dda4d6ef8a8857e18708a96ebab9da30f20
-
-commit e54db4fbd4a293ecbe0c959aaae356472f9e8db6
-Merge: d72857950 2ace6a25d
-Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Mon Aug 10 16:31:44 2020 +0000
-
-    Merge "Fixing cutouts insets not clipped properly during swipeup for rotated activities" into ub-launcher3-rvc-qpr-dev am: 2ace6a25d2
-    
-    Original change: https://googleplex-android-review.googlesource.com/c/platform/packages/apps/Launcher3/+/12327967
-    
-    Change-Id: I6e3f28e464a8ca63840a53f1b35c86cf377c4ad4
-
-commit d72857950461c1b82ce80f85bf359c050c0f0b0c
-Merge: f3bc79718 1a965c190
-Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Mon Aug 10 16:28:35 2020 +0000
-
-    Merge "resolve merge conflicts of 3a22956f0a6214285500ac040b4ae565d882cc47 to ub-launcher3-master" into ub-launcher3-master
-
-commit f3bc79718201cf17479a46e9860ea518a900d68f
-Author: Tony Wickham <twickham@google.com>
-Date:   Fri Jul 17 13:06:57 2020 -0700
-
-    Update overview from home transitions
-    
-    For both NoButtonNavbarToOverviewTouchController and
-    NavBarToHomeTouchController:
-    - Have consistent resistance applied such that RecentsView scales
-      down and translates up slightly (but not as much as from an app)
-    - Have consistent animation to home if you fling to that state
-      rather than stay in overview. This is handled by a new class,
-      OverviewToHomeAnim, which consolidates logic from NBTHTC and
-      overrides some interpolators such that RecentsView doesn't fade
-      out or translate downwards during the animation (it just slides
-      off the screen while the home animation plays).
-    
-    Also make overview actions not clickable when alpha == 0, so that
-    you can tap the hotseat/qsb during the transition from home to
-    overview.
-    
-    Bug: 144170434
-    Change-Id: Ic291f285ff2f63c477633c48d4fadb23cf70c28a
-
-commit 1a965c190d07140690602761c497495ad1875d03
-Merge: 70a556da1 3a22956f0
-Author: Tony Wickham <twickham@google.com>
-Date:   Sat Aug 8 19:12:11 2020 +0000
-
-    resolve merge conflicts of 3a22956f0a6214285500ac040b4ae565d882cc47 to ub-launcher3-master
-    
-    Change-Id: I2bb370e63d7206d52acb912d5b55a0f0c5f59c3d
-
-commit 999e08f6ffdcf2aa4eb3697cfd2c6c1488a72710
-Merge: 6bd1882ea d6a1063f2
-Author: Tony Wickham <twickham@google.com>
-Date:   Sat Aug 8 02:18:46 2020 +0000
-
-    Merge "Add swipe up resistance to quick switch from home" into ub-launcher3-rvc-qpr-dev
-
-commit 6bd1882eaec5c0571b78e47b58c524f1fcaae207
-Merge: 2ace6a25d 14e03d1c4
-Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Sat Aug 8 00:53:33 2020 +0000
-
-    Merge "[Overview Actions] Add a logging event for tapping images in select mode." into ub-launcher3-rvc-qpr-dev
-
-commit 2ace6a25d2835eb6bfd7082456dda1a07e419930
-Merge: 3a22956f0 d00340f7a
-Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Sat Aug 8 00:00:28 2020 +0000
-
-    Merge "Fixing cutouts insets not clipped properly during swipeup for rotated activities" into ub-launcher3-rvc-qpr-dev
-
-commit 66aead7d2cf426f64d06b573470d0658c858b1b3
-Author: Sunny Goyal <sunnygoyal@google.com>
-Date:   Fri Aug 7 16:56:50 2020 -0700
-
-    Removing some obsolete methods and wrapper
-    
-    Change-Id: I9d3c8d851ad596ba0d5165ab3c0f6661575166fc
-
-commit 3a22956f0a6214285500ac040b4ae565d882cc47
-Merge: ce8b2b518 3af714f05
-Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Fri Aug 7 23:44:37 2020 +0000
-
-    Merge "Remove overscroll on running task when it's not attached to RecentsView" into ub-launcher3-rvc-qpr-dev
-
-commit 2104d72b281ef4ee9f15aef333bd65a03f8f7eb4
-Author: Adam Bookatz <bookatz@google.com>
-Date:   Wed Jul 29 15:46:16 2020 -0700
-
-    LauncherInstrumentation enables even when non-system user
-    
-    Attempting to run a tapl test while the device is in a secondary user
-    currently fails because the test app doesn't get enabled for
-    this secondary user. We fix that (at least one issue with it) in this cl.
-    
-    Test: make PlatformScenarioTests; adb root && adb install -r -g ${ANDROID_PRODUCT_OUT}/testcases/PlatformScenarioTests/$(get_build_var TARGET_ARCH)/PlatformScenarioTests.apk
-    adb shell am instrument -w -r -e class android.platform.test.scenario.chrome.OpenApp android.platform.test.scenario/androidx.test.runner.AndroidJUnitRunner
-    (Do this while the current user is SYSTEM as well as Guest)
-    
-    Bug: 162454040
-    Change-Id: If6d8e545b41eb20e3fed2935c39069ce97d8b6cd
-
-commit 14e03d1c4d6c68e84f3f4d9867e0757562a78e4a
-Author: Becky Qiu <xuqiu@google.com>
-Date:   Fri Aug 7 15:06:38 2020 -0700
-
-    [Overview Actions] Add a logging event for tapping images in select mode.
-    
-    Event IDs were generated by command line on my workstation by uieventscli.
-    Manually added to StatsLogManager.
-    
-    Test: local
-    Bug: 161273376
-    Change-Id: Iee36c450ddb207f87653a8da2355c720369caa34
-
-commit 70a556da1d02fa32218d8dfcd4f4105f090997d9
-Merge: 87805cd94 ce8b2b518
-Author: Tony Wickham <twickham@google.com>
-Date:   Fri Aug 7 20:22:52 2020 +0000
-
-    Add translation component to swipe up resistance am: ce8b2b5180
-    
-    Original change: https://googleplex-android-review.googlesource.com/c/platform/packages/apps/Launcher3/+/12174363
-    
-    Change-Id: I18d7be49bb3bfc9f846c14a9138b5daf381e1d56
-
-commit d6a1063f258452b5f34dcad22dc416cc03c16dd4
-Author: Tony Wickham <twickham@google.com>
-Date:   Mon Jul 6 17:26:39 2020 -0700
-
-    Add swipe up resistance to quick switch from home
-    
-    Bug: 149934536
-    Change-Id: I1b355a16d972f94d541231449ef323a41861a3e6
-
-commit ce8b2b51800e42fc61c14f516ec563c3561b7adb
-Author: Tony Wickham <twickham@google.com>
-Date:   Wed Jul 1 17:25:28 2020 -0700
-
-    Add translation component to swipe up resistance
-    
-    Now recents view follows your finger all the way to the top of the
-    screen. Specifically, your finger tracks the bottom of the window
-    until resistance starts (when RecentsView is at 75% scale), then
-    we add translation to compensate for the slower rate of scaling
-    down, such that your finger slips to the top of the window by the
-    time it reaches the top of the screen.
-    
-    Also reset this translation back to 0 in the state handlers.
-    
-    Bug: 149934536
-    Fixes: 158701272
-    Change-Id: Iaee58da758d422f0173c29d002f5c451ce0c1809
-
-commit 87805cd9415b7cfb968c1785bbd9845aa4b9db9e
-Merge: 4ade3fd56 4a53c70c5
-Author: Samuel Fufa <sfufa@google.com>
-Date:   Fri Aug 7 18:11:59 2020 +0000
-
-    Merge "Introduce support for Hero app Section" into ub-launcher3-master
-
-commit 4a53c70c5734f65d210c1b425549224acbe7c642
-Author: Samuel Fufa <sfufa@google.com>
-Date:   Tue Aug 4 14:06:55 2020 -0700
-
-    Introduce support for Hero app Section
-    
-    [Video attached to bug report]
-    
-    Bug: 162871508
-    Test: Manual
-    Change-Id: Ia6f5621d6220f55e6fd5e56530853c267838442c
-
-commit 4ade3fd561e357744c41da715d4dfda65f2fee9e
-Merge: 8ccd877f4 3f20e33af
-Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Fri Aug 7 00:10:05 2020 +0000
-
-    Merge "Fix adjacent page offset in landscape orientation" into ub-launcher3-rvc-qpr-dev am: 3f20e33af6
-    
-    Original change: https://googleplex-android-review.googlesource.com/c/platform/packages/apps/Launcher3/+/12327711
-    
-    Change-Id: I8f2da96439372a9f6671469c3c41e4c0a43a4067
-
-commit 3f20e33af652f8ecdd729d3f861bf6d95e3f1fa0
-Merge: 3f8d86811 3b9d5843c
-Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Thu Aug 6 23:52:04 2020 +0000
-
-    Merge "Fix adjacent page offset in landscape orientation" into ub-launcher3-rvc-qpr-dev
-
-commit 3b9d5843c94d042655d5d43a673cf2738f69c5f9
-Author: Tony Wickham <twickham@google.com>
-Date:   Thu Aug 6 15:04:51 2020 -0700
-
-    Fix adjacent page offset in landscape orientation
-    
-    Before, the adjacent tasks were coming in from the top and bottom
-    of the screen rather than the sides.
-    
-    Bug: 149934536
-    Change-Id: Id6e57dcbc1967d70869df06068d25717de116934
-
-commit d00340f7a24d11db58954298eb979e6c8ac0438f
-Author: Sunny Goyal <sunnygoyal@google.com>
-Date:   Thu Aug 6 14:28:13 2020 -0700
-
-    Fixing cutouts insets not clipped properly during swipeup
-    for rotated activities
-    
-    Bug: 161939759
-    Change-Id: Ia55f938fdc51e2813c205d7d13d5f1bf852c9bb2
-
-commit 8ccd877f424070dbf5bec170722d46cea40bf827
-Merge: 7f28b8814 17d0080cc
+commit 10274682339bb60cb24c50536b4f48f921970f3c
 Author: Andy Wickham <awickham@google.com>
-Date:   Thu Aug 6 19:37:35 2020 +0000
+Date:   Mon Oct 19 19:06:52 2020 -0700
 
-    Merge "Adjusts Clear all to be vertically centered with the tasks." into ub-launcher3-master
+    Makes Plugin Settings gear adjust to dark mode.
+    
+    It wasn't visible in dark mode before because it was
+    black on black. This makes it adjust automatically.
+    
+    Change-Id: I5176cffc01842509ddafc4f30ff5029a0c4b8050
 
-commit 17d0080cc32ed36df154f52f6cf2b5082e7e3c31
-Author: Andy Wickham <awickham@google.com>
-Date:   Tue Aug 4 19:51:26 2020 -0700
-
-    Adjusts Clear all to be vertically centered with the tasks.
-    
-    I made a sample task where the content of the app was
-    centered, and I added lines to demonstrate the center
-    while in Overview. As you can see, the center of the
-    app content is slightly different from the TaskView
-    in Recents - it seems part of the bottom of the app
-    gets removed when transitioning to Recents (for the
-    rounded corner radius or nav bar?). On Pixel 4, I
-    had to add 46dp of padding to the bottom line for it
-    to appear at the bottom of the screenshot in Recents.
-    
-    Screenshot: https://drive.google.com/file/d/1xzQNXWb0T0UGDhDS9Ov-AduM3nd-pfg8/view?usp=sharing
-    Before: https://drive.google.com/file/d/1ghN9VWP44XjcZkdmI106dy4_jB4Vs4J3/view?usp=sharing
-    
-    Rotating between landscape and portrait:
-    https://drive.google.com/file/d/1OD5aKT9LCE5w950-6AaHfWXU4sLyW3Qe/view?usp=sharing
-    
-    Fixes: 154964045
-    Change-Id: I594057e3b5df58c5a907b6ca14daa700d5011b7b
-
-commit b8b3e957a6049ba0cd3ed48623a1666bae80b25e
-Author: Tony Wickham <twickham@google.com>
-Date:   Wed Aug 5 18:43:53 2020 -0700
-
-    Fix TaskViewTouchController success progress to match haptic
-    
-    We use the interpolated progress of the animation contoller target
-    to determine success, but only the child animation had the
-    interpolator set. Updating the parent to use the same interpolator
-    ensures getInterpolatedProgress() returns the same one used to
-    play the haptic.
-    
-    Fixes: 161536946
-    Change-Id: Ibc2aef67f53efa01f2b185cf03140bad4bb5c421
-
-commit 3af714f052d183aa31f22eee3afeecb94ec552db
-Author: Tony Wickham <twickham@google.com>
-Date:   Wed Aug 5 13:32:37 2020 -0700
-
-    Remove overscroll on running task when it's not attached to RecentsView
-    
-    This allows the running task to follow the finger freely until motion
-    pause is detected (or when trying to quick switch in a direciton that
-    has no tasks, as RecentsView is still attached until you swipe up).
-    
-    Bug: 149934536
-    Change-Id: If68166e962af9f28c56017838f720e15ddb96560
-
-commit 7f28b8814bbd8c5b09068eeba44026ff3da10551
-Merge: e7c1769e3 77ca1e4c4
+commit 744a0fbeae8efaa942d21c61e25012d86f5ff81e
+Merge: 29c79947e 71f24588c
 Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Wed Aug 5 19:44:57 2020 +0000
+Date:   Mon Oct 19 22:17:26 2020 +0000
 
-    Merge "Moving data sanitization to the end, as it need not block the loading" into ub-launcher3-master
+    Merge "Call click event on IME quick select for SearchResultIcon" into ub-launcher3-master
 
-commit e7c1769e30bfed7caa33816a5cd9d61447d75745
-Merge: c226adb38 f8e9b467a
-Author: Tracy Zhou <tracyzhou@google.com>
-Date:   Wed Aug 5 17:42:43 2020 +0000
+commit 29c79947ecf82f662d02004ba9a7289017fc0783
+Merge: 13a2a010d a68ac3e5d
+Author: TreeHugger Robot <treehugger-gerrit@google.com>
+Date:   Mon Oct 19 18:42:05 2020 +0000
 
-    Merge "Revert "Finish recents animation when launching another task in Overview"" into ub-launcher3-master
+    Merge "Removing condition for CUJ tracing/metrics" into ub-launcher3-master
 
-commit c226adb384d11bf88cf60efdd54d324bd4d1f762
-Merge: b3d7ecc15 3f8d86811
-Author: Winson Chung <winsonc@google.com>
-Date:   Wed Aug 5 06:02:28 2020 +0000
+commit 71f24588c0a66449a0c68bcb360a8c671914ce75
+Author: Samuel Fufa <sfufa@google.com>
+Date:   Mon Oct 19 10:19:31 2020 -0700
 
-    Defer recreation until resumed am: 3f8d868110
+    Call click event on IME quick select for SearchResultIcon
     
-    Original change: https://googleplex-android-review.googlesource.com/c/platform/packages/apps/Launcher3/+/12309024
+    Bug: 171131394
+    Change-Id: I8a703e8d0ca10570e3f774510610d3fb4c0eaab8
+
+commit 13a2a010decd87eeaf8932430c692f587d2de165
+Author: Samuel Fufa <sfufa@google.com>
+Date:   Sun Oct 18 21:19:57 2020 -0700
+
+    Handle IME event for SearchResultIcon
     
-    Change-Id: I814a6cab9046b82d66426fbe19636087cfd3e2b6
+    Bug: 171131394
+    Test: Manual
+    Change-Id: I2ed1c61053c78aaecc3324418229d69634a72ae4
 
-commit b3d7ecc15b3be086b67d2e0b1a8360ab2d2ab74b
-Merge: 8aaafc918 dd15acea8
-Author: Winson Chung <winsonc@google.com>
-Date:   Wed Aug 5 05:49:31 2020 +0000
+commit 1f79eeda76246534697e92740defc7f73c3c8d14
+Author: Samuel Fufa <sfufa@google.com>
+Date:   Fri Oct 16 02:01:31 2020 -0700
 
-    Merge "Close system dialogs when opening all apps from system action" into ub-launcher3-master
-
-commit dd15acea87875d6d7a0d388e7ddfb283c8fd2a71
-Author: Winson Chung <winsonc@google.com>
-Date:   Tue Aug 4 15:52:01 2020 -0700
-
-    Close system dialogs when opening all apps from system action
+    Remove hardcoded itemTypes from SearchTarget
     
-    Bug: 161685099
-    Change-Id: I67313340102816828a95e8f9e7d8fa19b4ca3c55
+    - Introduces componentName and userHandle members to SearchTarget
+    - SearchTargetEvent now has searchTarget member
+    - Builder pattern for SearchTarget and SearchTargetEvent
+    - Search backend should add headers manually instead of launcher inferring sections
+    
+    Bug: 171026321
+    Test: Manual
+    Change-Id: I28e0455e82b925277a17703b9aa061c8f9f15262
 
-commit 8aaafc9186039181ad753020e8c668e7457ce453
-Merge: 60096e990 f66f2f66c
-Author: Jason Chang <jasonsfchang@google.com>
-Date:   Wed Aug 5 04:28:29 2020 +0000
+commit a68ac3e5dd23095cea7c872c0ff1c5042d1695ba
+Author: vadimt <vadimt@google.com>
+Date:   Fri Oct 16 10:48:28 2020 -0700
 
-    Merge "Refactoring One-Handed feature flag and others" into ub-launcher3-master
+    Removing condition for CUJ tracing/metrics
+    
+    Is doesn't reflect whether jank monitors is collecting metrics,
+    which will eventually be always true anyways.
+    
+    Change-Id: Iaebdc838ed2b2cebd32c8c48d7e45bdd93f76fb4
 
-commit 77ca1e4c40a98b048905e021d94eab154a637455
+commit 9228ff53c2fb26850b7bd92d86214a6aaebb11d3
 Author: Sunny Goyal <sunnygoyal@google.com>
-Date:   Tue Aug 4 17:28:46 2020 -0700
+Date:   Mon Oct 12 13:43:51 2020 -0700
 
-    Moving data sanitization to the end, as it need not block
-    the loading
+    Trimming activity and task label
     
-    Change-Id: If1a966e546127efafd0afd7e3ca771f63a1fa544
+    Bug: 170648272
+    Change-Id: Icd099acee65305e0aa0f98a2a301a0df8a27cf07
 
-commit f8e9b467ae11de1d307f5d77c36ff8002e66255d
-Author: Tracy Zhou <tracyzhou@google.com>
-Date:   Tue Aug 4 21:57:14 2020 +0000
+commit 7a09177e500a53205f9969bb6cbd4251d54e8fde
+Merge: 37ed5ead3 314761a80
+Author: TreeHugger Robot <treehugger-gerrit@google.com>
+Date:   Thu Oct 15 22:36:14 2020 +0000
 
-    Revert "Finish recents animation when launching another task in Overview"
-    
-    This reverts commit e62eaa16b360433e35b4e4655e16c312a7bfd110.
-    
-    Reason for revert: No longer necessary
-    
-    Change-Id: I9ed533147ac5546b7da6c9e3a51f5a7e6c8ef8e6
+    Merge "Setup SearchResultIcon for single cell results" into ub-launcher3-master
 
-commit 3f8d868110b426e40e09ece8b305fd84c1dde60c
+commit 37ed5ead391df5747003b2d3a345be0347362f19
+Merge: d5bbe6809 702ed2788
+Author: TreeHugger Robot <treehugger-gerrit@google.com>
+Date:   Thu Oct 15 22:06:12 2020 +0000
+
+    Merge "Fix the issue where shortcuts are removed in minimal device mode" into ub-launcher3-master
+
+commit 314761a80819a6e64a136161f51eebb0f0528c4d
+Author: Samuel Fufa <sfufa@google.com>
+Date:   Wed Oct 14 10:15:07 2020 -0700
+
+    Setup SearchResultIcon for single cell results
+    
+    SearchResultIcon will be able to render apps, shortcuts and remote actions. It can also handle its own focused state drawing.
+    
+    Screenshot: https://screenshot.googleplex.com/C3KgjJtLQTBPgaf
+    
+    Bug: 170752716
+    Test: Manual
+    Change-Id: I460a9c128ea3f5814784e342c5d5fa5b7e310882
+
+commit 702ed2788678ac744c768aad6a6302e7cf91a26b
+Author: Pinyao Ting <pinyaoting@google.com>
+Date:   Wed Oct 14 11:17:04 2020 -0700
+
+    Fix the issue where shortcuts are removed in minimal device mode
+    
+    When loading the workspace, Launcher pins/unpins shortcuts in comply
+    with the loaded workspace. Since minimal device mode creates a mostly
+    empty workspace, existing shortcuts are getting unpinned as a result.
+    
+    To mitigate the issue this CL compares the db name and only invoke
+    sanitizeData when it matches the one defined in InvariantDeviceProfile.
+    
+    Bug: 170611866
+    Test: manual
+    1. add some deep shortcut in workspace (e.g. long tap on chrome, drag
+    "incognito tab" to workspace)
+    2. opt-in to sunshine fishfood (g/sunshine-teamfood)
+    3. enable bedtime mode with minimal device in Settings -> Digital
+    Wellbeing -> Show Your Data -> Bedtime mode -> Customize -> minimal
+    device
+    4. toggle bedtime mode, wait for apps in minimal device to show, then
+    toggle off bedtime mode
+    5. verify the deep shortcut still exist
+    
+    Change-Id: Ie18216ecb288e7481aa2404c4cb3ea418aee85cb
+
+commit cf0b275a48d3c9f91a346f7fc24b9604f6dde25a
+Author: Schneider Victor-tulias <victortulias@google.com>
+Date:   Tue Oct 6 09:33:40 2020 -0400
+
+    Add the ability to specify a list of tutorial steps in the gesture sandbox tutorial intent.
+    
+    Added tutorial_steps string array in the intent to allow specifying an ordered list of tutorial steps.
+    
+    Change-Id: Ic42a65598a74a64f8441a22f58c6cd988a5762e3
+
+commit d5bbe6809dcc056fbfc307909b171651f0fb3044
+Author: Samuel Fufa <sfufa@google.com>
+Date:   Wed Oct 14 15:39:38 2020 -0700
+
+    Rename shrotcut container to deep-shrotcuts
+    
+    Change-Id: If94f0dfa447235f3b1a652f7b6c749695b42d97c
+
+commit 26c1105fa04c2bcc156051e51df90a6a253349bb
+Author: Samuel Fufa <sfufa@google.com>
+Date:   Tue Oct 13 01:12:03 2020 -0700
+
+    [search api part 1] Setup centralized SearchEventTracker
+    
+    - Rename AdapterItemWIthPayload to SearchAdapterItem, PayloadResultHandler to SearchTargetHandler
+    - Setup SliceViewWrapper for self contained slices
+    
+    Bug: 170702596
+    Change-Id: I0baf984ec8123c95011abcc17372f8d055e98ad7
+
+commit 057f2d0d7df67e3680e479ac76b48b30d8bcf884
+Merge: 4bb65ff51 9a6145efb
+Author: TreeHugger Robot <treehugger-gerrit@google.com>
+Date:   Tue Oct 13 01:57:47 2020 +0000
+
+    Merge "Introduce shortcut container for hotseat event reporting" into ub-launcher3-master
+
+commit 4bb65ff516c6d9a429971ab7e04780792d5cb751
+Merge: 69740e62b 2afcab804
+Author: TreeHugger Robot <treehugger-gerrit@google.com>
+Date:   Tue Oct 13 00:07:36 2020 +0000
+
+    Merge "Search UI clean up" into ub-launcher3-master
+
+commit 2afcab804b638ff3b9da5bad40c8f70bdcaae78d
+Author: Samuel Fufa <sfufa@google.com>
+Date:   Mon Oct 12 15:38:14 2020 -0700
+
+    Search UI clean up
+    
+    - Resolve spacing issue when work profile is installed
+    - Cache play icons and use icon shape
+    - Only draw focus indicator for the first result
+    
+    Bug: 170487752
+    Bug: 170665892
+    Change-Id: I864d2e796786637132e127ef9b418c0a76c74d6e
+
+commit 69740e62be3800fc918648009645f7a8e52cb73d
+Merge: 2d7bfc878 979da64d8
+Author: TreeHugger Robot <treehugger-gerrit@google.com>
+Date:   Mon Oct 12 20:53:29 2020 +0000
+
+    Merge "Add app start source info of apps launched from launcher" into ub-launcher3-master
+
+commit 2d7bfc8782e9ed01178672aeb09ba2a6a07f4f4c
+Author: Jon Miranda <jonmiranda@google.com>
+Date:   Mon Oct 12 12:09:22 2020 -0700
+
+    Fix shadowRadius not being used in swipe up animation.
+    
+    Bug: 168608912
+    Change-Id: I08f7bb057237e5061d5f1fc29afb488b204ee385
+
+commit a433fe1fb34715efb38ed094f39da49fce8cd51e
+Merge: 2de606fe7 0471b9836
+Author: Sunny Goyal <sunnygoyal@google.com>
+Date:   Mon Oct 12 18:08:35 2020 +0000
+
+    Merge "Using FrameCallbacks instead of windowCallbacks for surface removal" into ub-launcher3-master
+
+commit 9a6145efb85f2bbdaccc07166a55e22c15fe27db
+Author: Samuel Fufa <sfufa@google.com>
+Date:   Mon Oct 12 09:33:00 2020 -0700
+
+    Introduce shortcut container for hotseat event reporting
+    
+    Bug: 170636685
+    Test: Manual
+    Change-Id: I5abeb17976bbafdc8cc74fb8b9a586d544c682fc
+
+commit 2de606fe731573c081fd2d6ba166e21ea6aa2e9c
+Author: Yogisha Dixit <ydixit@google.com>
+Date:   Mon Oct 12 15:36:07 2020 +0100
+
+    Delete the minimal database to force refresh.
+    
+    Bug: 169771796
+    Test: manual
+    Change-Id: Ic2188bb162f295c208346861fddc137ace19ddcb
+
+commit 0471b9836c9e382dc14bdc3abdf8502fb2b9f266
+Author: Sunny Goyal <sunnygoyal@google.com>
+Date:   Wed Sep 23 13:54:37 2020 -0700
+
+    Using FrameCallbacks instead of windowCallbacks for surface removal
+    
+    WindowCallbacks is called during the draw pass, before the frame has
+    been sent to the surfaceFlinger. Frame callback will provide a closer
+    approximation for when the frame is actually rendered on screen.
+    
+    Bug: 141126144
+    Change-Id: I62aab526c2ca24b00b5e7b312b36080f26c7b439
+
+commit 2727434c44d06882925369bf4b43687a06be4a3f
+Merge: 59f532fe9 1b9e199b3
+Author: Schneider Victor-tulias <victortulias@google.com>
+Date:   Fri Oct 9 20:09:08 2020 +0000
+
+    Merge "Fix hotseat and prediction row to allow updates when empty." into ub-launcher3-master
+
+commit 59f532fe9e2b1817c094641f3c7c517f42e4faf0
+Merge: d2bfce71f b5334e3f0
+Author: TreeHugger Robot <treehugger-gerrit@google.com>
+Date:   Fri Oct 9 19:52:54 2020 +0000
+
+    Merge "Improve search section header" into ub-launcher3-master
+
+commit 979da64d8254599c332d83bf94f3f1fc3fe45fef
+Author: Riddle Hsu <riddlehsu@google.com>
+Date:   Tue Sep 22 21:52:40 2020 +0800
+
+    Add app start source info of apps launched from launcher
+    
+    Bug: 166614700
+    Test: Enable statsd log: "adb shell cmd stats print-logs"
+          adb logcat | grep statsd | grep "(48)"
+          The line may contain 0x100000->1[I] 0x110000->10[I]
+          that means 1=from launcher and 10=latency 10ms.
+    Change-Id: Iddaff7066b66e241ba58ec87129ddbe2c531dc7e
+    (cherry picked from commit 7bdf3574a3bff06a377b4364877687bfa7619d06)
+
+commit d2bfce71f776fd05633dfd915dfc664309274677
+Merge: ed4530fed 222afb970
 Author: Winson Chung <winsonc@google.com>
-Date:   Tue Aug 4 14:01:27 2020 -0700
+Date:   Fri Oct 9 16:39:06 2020 +0000
 
-    Defer recreation until resumed
-    
-    - Temporarily work around issue with activity recreation while started
-      but not resumed by deferring recreating the activity on theme
-      change until after launcher has resumed.
-    
-    Bug: 162812884
-    Test: Switch dark mode via QuickSettings, Settings
-    Test: Change system theme
-    Change-Id: Ifbc0d538907a30d6b23176cd67353a81b6f8c617
+    Merge "Comply with the ISystemUiProxy.aidl change" into ub-launcher3-master
 
-commit 60096e990aba5dd2daf88a31a78c185df19fe111
+commit ed4530fedda0bf876f91d0745fc70d0f30d42991
+Merge: 692d2109a 9d4a96ed0
+Author: Winson Chung <winsonc@google.com>
+Date:   Fri Oct 9 16:39:06 2020 +0000
+
+    Merge "Add latency metrics for recents gesture" into ub-launcher3-master
+
+commit 1b9e199b3d9c81c793758d96bb03e0c51c1b3fb1
+Author: Schneider Victor-tulias <victortulias@google.com>
+Date:   Thu Oct 8 15:50:22 2020 -0400
+
+    Fix hotseat and prediction row to allow updates when empty.
+    
+    Rotating the screen in the homescreen empties the hotseat, however it does not get populated while it is visible to the user. The user should not be able to see an empty hotseat or prediction row if predictions are available. It should therefore be possible to populate these when they are empty even if they are visible to the user.
+    
+    Change-Id: I8e5252bd29050c2cd9d443aedcb3f3e305c0e2d7
+
+commit b5334e3f07f0561808a2d6e9bba55f1e3a89191e
+Author: Hyunyoung Song <hyunyoungs@google.com>
+Date:   Fri Oct 9 00:50:48 2020 -0700
+
+    Improve search section header
+    
+    Change-Id: I47cf207f0d0ab792c0e7a47c9d1185eec087ec88
+
+commit 692d2109a6702706d24b3b819d115882f7362509
 Author: Samuel Fufa <sfufa@google.com>
-Date:   Tue Aug 4 11:19:21 2020 -0700
+Date:   Thu Oct 8 18:42:48 2020 -0700
 
-    Remove mFilteredApps
+    invalidate itemDecoration on predictedRow focus draw
     
-    Currently, we are maintaining a list of appInfos to report the number of Accessibility recycler-view items. This could be done by maintaining an int.
-    
-    Bug: 162480567
-    Test: Manual
-    Change-Id: I9de8e1d4ac6e1a674d1e19b591dedad0dd4cc536
+    Change-Id: I66c731f00ae1c1292c51ff281957f05fd2d70dfa
 
-commit e8bea3ea7a7a2370f1effc75a674e7510264b999
+commit 8d5b118060bff7f7518a9a14c0be5d265621f14c
 Author: Samuel Fufa <sfufa@google.com>
-Date:   Thu Jul 30 02:12:10 2020 -0700
+Date:   Thu Oct 8 13:11:25 2020 -0700
 
-    Allow search results decoration [part 2/3]
+    Revert PredictionRow shuoldDraw check
     
-    [Video attached to bug report]
+    + Show Rounded play result icons
     
-    Bug: 162480567
+    Bug: 168805872
     Test: Manual
-    Change-Id: Iff285abde5b2a3f3f3a63e7318020cfe7572af49
+    Change-Id: I663c7f7ca1f1ac072e5e9c441deabef7c3fbd97b
 
-commit f66f2f66cf130d48a0c8897628655fd2310a1358
-Author: Jason Chang <jasonsfchang@google.com>
-Date:   Tue Aug 4 19:56:39 2020 +0800
+commit 86f8df6cf954ac27ab092b9ef8a4db3c9979c4cb
+Merge: 4d19854b2 16045060c
+Author: Hilary Huo <hhuo@google.com>
+Date:   Thu Oct 8 18:43:51 2020 +0000
 
-    Refactoring One-Handed feature flag and others
+    Merge "[pixel-search] add escape hatch" into ub-launcher3-master
+
+commit 4d19854b25a54599fe9b0ac8be9d60cf6c21d7ba
+Merge: 0827e1e32 ab9ad20be
+Author: Samuel Fufa <sfufa@google.com>
+Date:   Thu Oct 8 18:40:56 2020 +0000
+
+    Merge "Search UI cleanup" into ub-launcher3-master
+
+commit 16045060c35639aea85afc572bea768d16e6c9f9
+Author: Hilary Huo <hhuo@google.com>
+Date:   Thu Oct 8 10:18:41 2020 -0700
+
+    [pixel-search] add escape hatch
     
-    Purify some conditions for reducing redundancy codes.
+    Change-Id: I33ffea1fc0859564955380d7d1db317293d1a2cb
+
+commit 0827e1e32a5f99fa02418dae37270c6db8c989d2
+Merge: 3463f0a87 68d7a6e5b
+Author: Andy Wickham <awickham@google.com>
+Date:   Thu Oct 8 16:53:29 2020 +0000
+
+    Merge "Adds feature flag for BC Smartspace." into ub-launcher3-master
+
+commit ab9ad20be600d1cbdc6b54a491d5fbb4c2cf9c16
+Author: Samuel Fufa <sfufa@google.com>
+Date:   Wed Oct 7 15:18:24 2020 -0700
+
+    Search UI cleanup
+    
+    - offset all apps header padding with search input margin
+    - avoid check shouldDraw check on HeaderRow. (race condition)
+    
+    Bug: 170263425
+    Change-Id: I11a1fbb448aa6afd18ec0984af9bb8b1d7600f69
+
+commit 68d7a6e5b28af8cc55bdae7efc24cc7ebee81257
+Author: Andy Wickham <awickham@google.com>
+Date:   Wed Oct 7 14:27:17 2020 -0700
+
+    Adds feature flag for BC Smartspace.
+    
+    Change-Id: Iaf9fb7507d0ccd004a4e00188c75dadd6a059246
+
+commit 3463f0a876ff486ce03e160134e0504158271a92
+Merge: 2470d812a 4b7f38b8f
+Author: TreeHugger Robot <treehugger-gerrit@google.com>
+Date:   Wed Oct 7 20:09:04 2020 +0000
+
+    Merge "Align fallback result query with result text" into ub-launcher3-master
+
+commit 2470d812a1ae989e67781e5056b534ad9a960819
+Merge: cae7d74d8 7a6e4c931
+Author: Vadim Tryshev <vadimt@google.com>
+Date:   Wed Oct 7 20:04:09 2020 +0000
+
+    Merge "Annotating Quick Switch CUJ for 3-button mode" into ub-launcher3-master
+
+commit cae7d74d898769727105850ea5473c2c0ae25fdb
+Merge: e9bf2bd14 1fddddb4f
+Author: Tony Wickham <twickham@google.com>
+Date:   Wed Oct 7 18:32:48 2020 +0000
+
+    Merge "Update launcher_trace.proto for quick switch" into ub-launcher3-master
+
+commit 7a6e4c931f13b369bfa4328196b4632d6d848a19
+Author: vadimt <vadimt@google.com>
+Date:   Tue Oct 6 14:09:16 2020 -0700
+
+    Annotating Quick Switch CUJ for 3-button mode
+    
+    Bug: 169221288
+    Change-Id: Ief62345fe6004dde699f44aa0c90329b7cd84e8b
+
+commit 4b7f38b8fa004b514244304fcc07ff514a2fa46b
+Author: Samuel Fufa <sfufa@google.com>
+Date:   Tue Oct 6 18:37:46 2020 -0700
+
+    Align fallback result query with result text
+    
+    screenshot: https://screenshot.googleplex.com/6Daj5vdmz2jmznX
+    bug: 169438169
+    test: Manual
+    Change-Id: Ie621ed3c834aec5e9467607da4f685d05d152183
+
+commit 222afb970434c7972589adfc509bd2c256ca6556
+Author: Hongwei Wang <hwwang@google.com>
+Date:   Fri Oct 2 13:51:36 2020 -0700
+
+    Comply with the ISystemUiProxy.aidl change
+    
+    Two methods are added to support communications between Launcher and
+    SysUI when user swipes an auto PiP-able Activity to home.
+    
+    Bug: 143965596
+    Test: N/A
+    Change-Id: I2c73a287a094e882bde3cd71c27f9f66ae20e64a
+    (cherry picked from commit 88ddae38db924f700082a113670ce5a719116a95)
+
+commit 9d4a96ed029fdad1e369d5eedd082938f0dc9e01
+Author: Riddle Hsu <riddlehsu@google.com>
+Date:   Wed Sep 30 00:32:04 2020 +0800
+
+    Add latency metrics for recents gesture
+    
+    Pass the touch down time to RecentsAnimation#startRecentsActivity.
+    
+    Bug: 169221287
+    Test: Enable statsd log: "adb shell cmd stats print-logs"
+          Touch gesture navigation bar.
+          adb logcat | grep statsd | grep "(48)"
+          The line may contain 0x100000->4[I] 0x110000->20[I]
+          that means 4=by recents and 20=latency 20ms.
+    Change-Id: I81ee804895b7712f4d925736f5b4694c11a12cbe
+    (cherry picked from commit 63623967b83edad56db58173ebb6687c685b9177)
+
+commit e9bf2bd14c9a7a48f8f93687932d41b1418cf4e4
+Merge: 73ae75474 d028937e7
+Author: Tracy Zhou <tracyzhou@google.com>
+Date:   Wed Oct 7 02:19:04 2020 +0000
+
+    Merge "[Live tile] Finish recents animation when the phone goes to sleep in live tile mode" into ub-launcher3-master
+
+commit 1fddddb4f30505e0fc9bb2e7c0d88b38ad900e54
+Author: Tony Wickham <twickham@google.com>
+Date:   Tue Sep 29 17:29:06 2020 -0700
+
+    Update launcher_trace.proto for quick switch
+    
+    Sample output from one entry:
+    entry {
+      elapsed_realtime_nanos: 440461382888540
+      launcher {
+        touch_interaction_service {
+          service_connected: true
+          overview_component_obvserver {
+            overview_activity_started: true
+            overview_activity_resumed: false
+          }
+          input_consumer {
+            name: "TYPE_OTHER_ACTIVITY:TYPE_ONE_HANDED"
+            swipe_handler {
+              gesture_state {
+                endTarget: NEW_TASK
+              }
+              is_recents_attached_to_app_window: true
+              scroll_offset: 846
+              app_to_overview_progress: 0
+            }
+          }
+        }
+      }
+    }
+    
+    Bug: 167259591
+    Change-Id: I7f199d88f1d736efcea6b9165b8c4b77a5d27c58
+
+commit 73ae75474ec1dd8807d814ea6c22323905d2070c
+Merge: 8a6f3e40d 0ebbc1880
+Author: TreeHugger Robot <treehugger-gerrit@google.com>
+Date:   Tue Oct 6 23:18:44 2020 +0000
+
+    Merge "Removing tracing for a gone flake" into ub-launcher3-master
+
+commit 8a6f3e40d0321217c624055db7929c397e455e0c
+Merge: e29a9f796 565ed4ff6
+Author: TreeHugger Robot <treehugger-gerrit@google.com>
+Date:   Tue Oct 6 22:49:40 2020 +0000
+
+    Merge "Update Search UI" into ub-launcher3-master
+
+commit 0ebbc18803aaf8ef2f6db7d628d7ae1ce322e842
+Author: vadimt <vadimt@google.com>
+Date:   Tue Oct 6 14:52:27 2020 -0700
+
+    Removing tracing for a gone flake
+    
+    Bug: 156044202
+    Change-Id: Ice142bb941fee7b731f46c2073fab17d83bbc871
+
+commit 565ed4ff69b534812818a2b9aa8789a1aea210eb
+Author: Samuel Fufa <sfufa@google.com>
+Date:   Wed Sep 30 10:42:07 2020 -0700
+
+    Update Search UI
+    
+    [preview attached to bug]
+    
+    Bug: 169438169
+    Test: Manual
+    Change-Id: I085f3dd38ac373c1afab82a637ec08715a6e0cc5
+
+commit e29a9f7961e6db0915bc028ef7e871dcb2c8bde0
+Merge: 2c5ed10ff be17bdcd2
+Author: Jayaprakash Sundararaj <jayaprakashs@google.com>
+Date:   Tue Oct 6 21:00:20 2020 +0000
+
+    Merge "[Search] Add logging to People and badding as to icons." into ub-launcher3-master
+
+commit be17bdcd221f501c45876abe2249c1007858d0c0
+Author: jayaprakashs <jayaprakashs@google.com>
+Date:   Mon Oct 5 09:01:52 2020 -0700
+
+    [Search] Add logging to People and badding as to icons.
+    
+    Change-Id: I65948a2faca436216a94aa46139d425b8eade827
+
+commit 2c5ed10ffa1a870de35f9b3c0c558270aff498dd
+Merge: b2b65a1ef 8ed9707cf
+Author: Tracy Zhou <tracyzhou@google.com>
+Date:   Tue Oct 6 18:40:57 2020 +0000
+
+    Merge "[Live Tile] Support launching another task (other than the current running task) in Overview" into ub-launcher3-master
+
+commit b2b65a1ef58b020923d112051535b6eb83b582df
+Merge: 3cf264f49 4c14f4b9e
+Author: Samuel Fufa <sfufa@google.com>
+Date:   Tue Oct 6 17:45:35 2020 +0000
+
+    Merge "Avoid double search item highlight" into ub-launcher3-master
+
+commit 8ed9707cf3a4300cb61942f08f0752c80eed086b
+Author: Tracy Zhou <tracyzhou@google.com>
+Date:   Mon Sep 14 23:25:37 2020 -0700
+
+    [Live Tile] Support launching another task (other than the current running task) in Overview
+    
+    - Get rid of the defer cancelation logic
+    - Render animation on the task view of the task being launched upon task view appeared callback
+    - Finish the recents animation upon the end of the recents window animation
+    
+    Fixes: 164926736
+    Test: manual
+    Change-Id: Ibffb6a9c74c235efc8615a22b0306551532c7b61
+
+commit 3cf264f498e37c482fa4c559bf48ffa791279585
+Author: Schneider Victor-tulias <victortulias@google.com>
+Date:   Tue Sep 22 12:58:38 2020 -0700
+
+    Prevent hotseat updates if it is visible to the user.
     
     Test: manual
-    Change-Id: I2f39207424f9db3fb6b12bc08bee525f3dfab0aa
+    
+    Fixes: 168653219
+    
+    Changing app icons under the user's finger could be disruptive. Added a checks for whether the hotseatand all apps predictions are visible and callbacks to update them when they become hidden.
+    
+    Change-Id: Ib9e6e904e9f662ecfaeea6a2fe21d1d81ba39b96
 
-commit ab98166c36f2955359ccdf31defe0678f66bdd99
-Author: Raman Tenneti <rtenneti@google.com>
-Date:   Mon Aug 3 12:54:21 2020 -0700
+commit b6aff1f56d55a36256446ec3970d92e9da39b98c
+Author: Hyunyoung Song <hyunyoungs@google.com>
+Date:   Mon Oct 5 16:08:35 2020 -0700
 
-    AOSP/Launcher3 - Update language to comply with Android's inclusive language guidance.
+    Fix NPE inside RecentsOrientedState
     
-    See https://source.android.com/setup/contribute/respectful-code for reference
-    
-    BUG=161896447
-    
-    Test: make and Presubmit verify.
-    
-    Change-Id: I44e903046dd4cd9c7c07872fc56a8d552eb09522
+    Bug: 169963211
+    Change-Id: I86dd337dc1b862f3fa99b91b47fa250076233f96
 
-commit 12e59e9a66882d67687739cfd5be81e9beae790e
-Merge: cb89edcbc ffc06198f
+commit eab40983b9a48b933bde5ca95a82ebd4d83b233d
+Merge: 83ce7c0b5 020e628f2
+Author: Jonathan Miranda <jonmiranda@google.com>
+Date:   Mon Oct 5 22:20:27 2020 +0000
+
+    Merge "Add shadow radius to windows during app launch / close animations." into ub-launcher3-master
+
+commit 83ce7c0b5e461386bb92883a8d6cefe8365cd9ae
+Merge: 679d920bf d6b1f3c08
 Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Mon Aug 3 23:04:08 2020 +0000
+Date:   Mon Oct 5 19:18:39 2020 +0000
 
-    [automerger skipped] Merge "Rewrite long swipe resistance ("pullback") logic" into ub-launcher3-rvc-qpr-dev am: ffc06198ff -s ours
-    
-    am skip reason: Change-Id Ib0f9da18e10cc9ddf1a2f82ed767f237c89d3a41 with SHA-1 03c38c5c66 is in history
-    
-    Original change: https://googleplex-android-review.googlesource.com/c/platform/packages/apps/Launcher3/+/12174362
-    
-    Change-Id: Ie0fc8684a14ce7ea9730e7160551adbc2bc4b97c
+    Merge "Action icon should be used as a badge instead of main icon" into ub-launcher3-master
 
-commit cb89edcbcc8fbbee1ddd074500fe26db01b06789
-Merge: 03c38c5c6 eaf7a9554
+commit 679d920bf5151cffed4e8186c12c25d8d7907af9
+Merge: e108cc609 0c943966d
 Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Mon Aug 3 22:24:14 2020 +0000
+Date:   Mon Oct 5 19:13:50 2020 +0000
 
-    Merge "Changing minimum supported Launcher version to 26" into ub-launcher3-master
+    Merge "Add null check for input receiver before updating batching" into ub-launcher3-master
 
-commit ffc06198ff041bd1496ba59b1a5c12922d630fc1
-Merge: bf8472585 354a436f4
+commit e108cc609d0a7fd58f0c7e16ce45fa79be6dd272
+Merge: 470403eb5 f622e42bf
 Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Mon Aug 3 22:11:30 2020 +0000
+Date:   Mon Oct 5 18:39:58 2020 +0000
 
-    Merge "Rewrite long swipe resistance ("pullback") logic" into ub-launcher3-rvc-qpr-dev
+    Merge "Removing unused proto extensions" into ub-launcher3-master
 
-commit 354a436f4e96d2ae12740cb1af16b97c37166321
-Author: Tony Wickham <twickham@google.com>
-Date:   Thu Jun 25 15:51:33 2020 -0700
+commit 470403eb58879380e2edac2262dc7f40327b2a15
+Merge: a5130482a 1d7ed30db
+Author: TreeHugger Robot <treehugger-gerrit@google.com>
+Date:   Mon Oct 5 18:29:54 2020 +0000
 
-    Rewrite long swipe resistance ("pullback") logic
+    Merge "Remove widgets that no longer fit the workspace in their current spans." into ub-launcher3-master
+
+commit 4c14f4b9eda8332347c81e0cf51c5de4dbc06399
+Author: Samuel Fufa <sfufa@google.com>
+Date:   Mon Oct 5 10:50:00 2020 -0700
+
+    Avoid double search item highlight
     
-    - Rename "pullback" to "resistance" to reduce confusion.
-    - Remove mDragLengthFactorStartPullback & mDragLengthFactorMaxPullback
-    - Add AnimatorControllerWithResistance, which has 2 controllers, one
-      for the normal shift to overview, then one to apply the resistance
-      when swiping beyond that.
-    - Don't hack animator interpolators/progress; insteaad, allow progress
-      to go > 1 (which will run the separate resistance animator).
-    - Don't start launcher controller separately from window controller;
-      instead, both are controlled by mCurrentShift in updateFinalShift().
-    - The resistance animation logic is shared by both the active window
-      and launcher (RecentsView).
-    
-    Bug: 149934536
-    Change-Id: Ib0f9da18e10cc9ddf1a2f82ed767f237c89d3a41
-    Merged-In: Ib0f9da18e10cc9ddf1a2f82ed767f237c89d3a41
+    Change-Id: Ic2e28b18f6d5e3ed32cd5646bc3bb4789c378e57
 
-commit 03c38c5c665b08acb8d817bedc3ff78120f879da
-Author: Tony Wickham <twickham@google.com>
-Date:   Thu Jun 25 15:51:33 2020 -0700
+commit 0c943966d373d8ae7eef2b08e88ac44bf57d8a8d
+Author: Winson Chung <winsonc@google.com>
+Date:   Mon Oct 5 10:23:27 2020 -0700
 
-    Rewrite long swipe resistance ("pullback") logic
+    Add null check for input receiver before updating batching
     
-    - Rename "pullback" to "resistance" to reduce confusion.
-    - Remove mDragLengthFactorStartPullback & mDragLengthFactorMaxPullback
-    - Add AnimatorControllerWithResistance, which has 2 controllers, one
-      for the normal shift to overview, then one to apply the resistance
-      when swiping beyond that.
-    - Don't hack animator interpolators/progress; insteaad, allow progress
-      to go > 1 (which will run the separate resistance animator).
-    - Don't start launcher controller separately from window controller;
-      instead, both are controlled by mCurrentShift in updateFinalShift().
-    - The resistance animation logic is shared by both the active window
-      and launcher (RecentsView).
+    - A change in the system (ie. sysui crash or nav mode change) could
+      cause the input monitor to be disposed before the swipe animation
+      settles
     
-    Bug: 149934536
-    Change-Id: Ib0f9da18e10cc9ddf1a2f82ed767f237c89d3a41
+    Bug: 170121063
+    Test: Kill sysui while swiping up
+    
+    Change-Id: I1417b109fecdb98fae6197c7038dbe9307470853
 
-commit eaf7a955467a5d189b982ee436a8eefaa30e3006
+commit a5130482aee1b0592661bc1c6e178a0de7a163da
+Merge: b21819e18 7fcd74abb
+Author: TreeHugger Robot <treehugger-gerrit@google.com>
+Date:   Mon Oct 5 17:14:21 2020 +0000
+
+    Merge "Suggest result should launch Bug: 169980192" into ub-launcher3-master
+
+commit d028937e74a9ea6d36e463de4c87ed37283bbdf6
+Author: Tracy Zhou <tracyzhou@google.com>
+Date:   Sat Oct 3 00:36:53 2020 -0700
+
+    [Live tile] Finish recents animation when the phone goes to sleep in live tile mode
+    
+    Fixes: 169988381
+    Test: manual
+    Change-Id: Ic71d3e6767eadb6854dbd46581bf9d3242c161a4
+
+commit 7fcd74abb399100ac8243be6ca28c09cc8adc8c8
+Author: Hyunyoung Song <hyunyoungs@google.com>
+Date:   Fri Oct 2 19:20:11 2020 -0700
+
+    Suggest result should launch
+    Bug: 169980192
+    
+    Change-Id: I762245a5cc4740d093c9cb3b44a508e9e3f2b763
+
+commit b21819e181e99504c22c6ca028261a1f2665c6f9
+Merge: 931bce369 a762b0241
+Author: TreeHugger Robot <treehugger-gerrit@google.com>
+Date:   Fri Oct 2 22:07:12 2020 +0000
+
+    Merge "Annotating Quick Switch CUJ for non-3-button modes" into ub-launcher3-master
+
+commit a762b02418695f5a1ff2f96586660de8c3610280
+Author: vadimt <vadimt@google.com>
+Date:   Fri Oct 2 13:56:28 2020 -0700
+
+    Annotating Quick Switch CUJ for non-3-button modes
+    
+    Bug: 169221288
+    Change-Id: I7145a9e28a2f0a789d19d2a0e3d15630c6e50f6a
+
+commit 931bce3697595a214023bc72923dad47a61d5711
+Merge: c935ba6b8 733e3c609
+Author: TreeHugger Robot <treehugger-gerrit@google.com>
+Date:   Fri Oct 2 19:19:50 2020 +0000
+
+    Merge "Moving some initializations to the background thread" into ub-launcher3-master
+
+commit c935ba6b8a2ec163533c0b19309dacb6199e6552
+Merge: a4111f250 58804ac52
 Author: Sunny Goyal <sunnygoyal@google.com>
-Date:   Wed Jul 29 16:54:20 2020 -0700
+Date:   Fri Oct 2 18:26:06 2020 +0000
 
-    Changing minimum supported Launcher version to 26
+    Merge "Adding stats log for add item flow" into ub-launcher3-master
+
+commit 733e3c609b7653a36e58747c881458ec00d98df8
+Author: Sunny Goyal <sunnygoyal@google.com>
+Date:   Tue Sep 29 10:32:32 2020 -0700
+
+    Moving some initializations to the background thread
     
-    Change-Id: I49fcf874430ac53c3246371e179fbd828e14e4da
+    HandlerThread.getLooper blocks until the thread is ready. Instead
+    moving all looper dependency to the new thread itself.
+    
+    Change-Id: I240e8c56b855a991433a7fe93875059e6dab146b
+
+commit 58804ac5257f45dddbf7a6db35cf8f369ee1e88e
+Author: Sunny Goyal <sunnygoyal@google.com>
+Date:   Wed Sep 16 16:27:40 2020 -0700
+
+    Adding stats log for add item flow
+    
+    Bug: 169385783
+    Bug: 168167693
+    Change-Id: I37395f1b118727f67e0f14c02f945b8213b165c8
+
+commit a4111f250003328d1aef8bbaab59512208ec46cb
+Merge: 8d14dbe04 f6b72c4ad
+Author: Hilary Huo <hhuo@google.com>
+Date:   Fri Oct 2 17:41:22 2020 +0000
+
+    Merge "[pixel-search] Bug fix: automatically launch screenshot + center&crop remoteaction icon" into ub-launcher3-master
+
+commit f622e42bf6983d3adb95386bfd6375d281f1d4f2
+Author: Sunny Goyal <sunnygoyal@google.com>
+Date:   Fri Oct 2 10:35:56 2020 -0700
+
+    Removing unused proto extensions
+    
+    Change-Id: I6d0319c99934dad5176b6f70b895a4ca772ec45f
+
+commit d6b1f3c086f9ac097cd03e1ee898b153478ec11a
+Author: Hyunyoung Song <hyunyoungs@google.com>
+Date:   Fri Oct 2 00:26:35 2020 -0700
+
+    Action icon should be used as a badge instead of main icon
+    
+    Bug: 169796517
+    Change-Id: I3f07fdc2ae6e1af463701f942c26c3ca5d836ee2
+
+commit f6b72c4ad1d2e082441a64c4d6a5a02ee8a251ca
+Author: Hilary Huo <hhuo@google.com>
+Date:   Thu Oct 1 12:26:48 2020 -0700
+
+    [pixel-search] Bug fix: automatically launch screenshot + center&crop remoteaction icon
+    
+    Bug: b/169330678
+    Change-Id: Id5f8a0ce6d68f7ed9e4d1ff258ee3772229eb63b
+
+commit 1d7ed30dba4b2c71fc7b0981532a872a13e5aedb
+Author: Jon Miranda <jonmiranda@google.com>
+Date:   Wed Sep 23 12:15:43 2020 -0700
+
+    Remove widgets that no longer fit the workspace in their current spans.
+    
+    This can happen when display size changes.
+    We compare span sizes of widget in the db to the min sizes of the widget
+    in the current display size. If the widget can no longer fit in its existing
+    spans, we remove it.
+    
+    Also update test widgets to have minWidth/minHeight of 1dp. This ensures that
+    the spanX, spanY, min* values remain consistent between different test devices.
+    
+    Bug: 168818961
+    Change-Id: I723372e4582658f78b2f23ced9073cb77977a6b8
+
+commit 020e628f22cc7975beab439c6da26af2f9ebc15b
+Author: Jon Miranda <jonmiranda@google.com>
+Date:   Mon Sep 28 17:01:42 2020 -0700
+
+    Add shadow radius to windows during app launch / close animations.
+    
+    Bug: 168608912
+    Change-Id: I2ec50b0b3711c0861659f9c641bbc05fcdeaab45

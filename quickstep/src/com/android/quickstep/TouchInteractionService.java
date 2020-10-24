@@ -737,8 +737,11 @@ public class TouchInteractionService extends Service implements PluginListener<O
     private void reset() {
         mConsumer = mUncheckedConsumer = mResetGestureInputConsumer;
         mGestureState = DEFAULT_STATE;
-        // By default, use batching of the input events
-        mInputEventReceiver.setBatchingEnabled(true);
+        // By default, use batching of the input events, but check receiver before using in the rare
+        // case that the monitor was disposed before the swipe settled
+        if (mInputEventReceiver != null) {
+            mInputEventReceiver.setBatchingEnabled(true);
+        }
     }
 
     private void preloadOverview(boolean fromInit) {
@@ -895,6 +898,12 @@ public class TouchInteractionService extends Service implements PluginListener<O
         TouchInteractionServiceProto.Builder serviceProto =
             TouchInteractionServiceProto.newBuilder();
         serviceProto.setServiceConnected(true);
+
+        if (mOverviewComponentObserver != null) {
+            mOverviewComponentObserver.writeToProto(serviceProto);
+        }
+        mConsumer.writeToProto(serviceProto);
+
         proto.setTouchInteractionService(serviceProto);
     }
 }

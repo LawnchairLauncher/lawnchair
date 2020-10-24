@@ -16,14 +16,10 @@
 
 package com.android.launcher3;
 
-import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.quickstep.TaskViewUtils.createRecentsWindowAnimator;
 import static com.android.quickstep.TaskViewUtils.findTaskViewToLaunch;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
@@ -32,11 +28,8 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.anim.AnimatorPlaybackController;
-import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.anim.PendingAnimation;
+import com.android.quickstep.TaskViewUtils;
 import com.android.quickstep.views.RecentsView;
-import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 /**
@@ -53,60 +46,16 @@ public final class LauncherAppTransitionManagerImpl extends QuickstepAppTransiti
     protected boolean isLaunchingFromRecents(@NonNull View v,
             @Nullable RemoteAnimationTargetCompat[] targets) {
         return mLauncher.getStateManager().getState().overviewUi
-                && findTaskViewToLaunch(mLauncher, v, targets) != null;
+                && findTaskViewToLaunch(mLauncher.getOverviewPanel(), v, targets) != null;
     }
 
     @Override
     protected void composeRecentsLaunchAnimator(@NonNull AnimatorSet anim, @NonNull View v,
             @NonNull RemoteAnimationTargetCompat[] appTargets,
             @NonNull RemoteAnimationTargetCompat[] wallpaperTargets, boolean launcherClosing) {
-        RecentsView recentsView = mLauncher.getOverviewPanel();
-        boolean skipLauncherChanges = !launcherClosing;
-
-        TaskView taskView = findTaskViewToLaunch(mLauncher, v, appTargets);
-        PendingAnimation pa = new PendingAnimation(RECENTS_LAUNCH_DURATION);
-        createRecentsWindowAnimator(taskView, skipLauncherChanges, appTargets, wallpaperTargets,
-                mLauncher.getDepthController(), pa);
-        anim.play(pa.buildAnim());
-
-        Animator childStateAnimation = null;
-        // Found a visible recents task that matches the opening app, lets launch the app from there
-        Animator launcherAnim;
-        final AnimatorListenerAdapter windowAnimEndListener;
-        if (launcherClosing) {
-            launcherAnim = recentsView.createAdjacentPageAnimForTaskLaunch(taskView);
-            launcherAnim.setInterpolator(Interpolators.TOUCH_RESPONSE_INTERPOLATOR);
-            launcherAnim.setDuration(RECENTS_LAUNCH_DURATION);
-
-            // Make sure recents gets fixed up by resetting task alphas and scales, etc.
-            windowAnimEndListener = new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mLauncher.getStateManager().moveToRestState();
-                    mLauncher.getStateManager().reapplyState();
-                }
-            };
-        } else {
-            AnimatorPlaybackController controller =
-                    mLauncher.getStateManager().createAnimationToNewWorkspace(NORMAL,
-                            RECENTS_LAUNCH_DURATION);
-            controller.dispatchOnStart();
-            childStateAnimation = controller.getTarget();
-            launcherAnim = controller.getAnimationPlayer().setDuration(RECENTS_LAUNCH_DURATION);
-            windowAnimEndListener = new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mLauncher.getStateManager().goToState(NORMAL, false);
-                }
-            };
-        }
-        anim.play(launcherAnim);
-
-        // Set the current animation first, before adding windowAnimEndListener. Setting current
-        // animation adds some listeners which need to be called before windowAnimEndListener
-        // (the ordering of listeners matter in this case).
-        mLauncher.getStateManager().setCurrentAnimation(anim, childStateAnimation);
-        anim.addListener(windowAnimEndListener);
+        TaskViewUtils.composeRecentsLaunchAnimator(anim, v, appTargets, wallpaperTargets,
+                launcherClosing, mLauncher.getStateManager(), mLauncher.getOverviewPanel(),
+                mLauncher.getDepthController());
     }
 
     @Override

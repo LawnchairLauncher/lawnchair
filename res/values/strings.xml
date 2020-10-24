@@ -59,7 +59,7 @@
     <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
     <string name="all_apps_search_bar_hint">Search apps</string>
     <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
-    <string name="all_apps_on_device_search_bar_hint">Search this phone and more...</string>
+    <string name="all_apps_on_device_search_bar_hint">Search this phone and more…</string>
     <!-- Loading apps text. [CHAR_LIMIT=50] -->
     <string name="all_apps_loading_message">Loading apps&#8230;</string>
     <!-- No-search-results text. [CHAR_LIMIT=50] -->

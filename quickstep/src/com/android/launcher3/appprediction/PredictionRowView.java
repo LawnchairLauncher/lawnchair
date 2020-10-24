@@ -108,6 +108,8 @@ public class PredictionRowView extends LinearLayout implements
 
     AllAppsSectionDecorator.SectionDecorationHandler mDecorationHandler;
 
+    @Nullable private List<ItemInfo> mPendingPredictedItems;
+
     public PredictionRowView(@NonNull Context context) {
         this(context, null);
     }
@@ -164,6 +166,7 @@ public class PredictionRowView extends LinearLayout implements
             }
             mDecorationHandler.onDraw(canvas);
             mDecorationHandler.onFocusDraw(canvas, getFocusedChild());
+            mLauncher.getAppsView().getActiveRecyclerView().invalidateItemDecorations();
         }
         mFocusHelper.draw(canvas);
         super.dispatchDraw(canvas);
@@ -203,6 +206,16 @@ public class PredictionRowView extends LinearLayout implements
      * we can optimize by swapping them in place.
      */
     public void setPredictedApps(List<ItemInfo> items) {
+        if (!mLauncher.isWorkspaceLoading() && isShown() && getWindowVisibility() == View.VISIBLE) {
+            mPendingPredictedItems = items;
+            return;
+        }
+
+        applyPredictedApps(items);
+    }
+
+    private void applyPredictedApps(List<ItemInfo> items) {
+        mPendingPredictedItems = null;
         mPredictedApps.clear();
         items.stream()
                 .filter(itemInfo -> itemInfo instanceof WorkspaceItemInfo)
@@ -340,5 +353,14 @@ public class PredictionRowView extends LinearLayout implements
     @Override
     public View getFocusedChild() {
         return getChildAt(0);
+    }
+
+    @Override
+    public void onVisibilityAggregated(boolean isVisible) {
+        super.onVisibilityAggregated(isVisible);
+
+        if (mPendingPredictedItems != null && !isVisible) {
+            applyPredictedApps(mPendingPredictedItems);
+        }
     }
 }

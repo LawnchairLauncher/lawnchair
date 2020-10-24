@@ -42,7 +42,7 @@ import com.android.launcher3.Insettable;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsContainerView;
-import com.android.launcher3.allapps.AllAppsGridAdapter;
+import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItem;
 import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AlphabeticalAppsList;
 import com.android.launcher3.allapps.SearchUiManager;
@@ -173,11 +173,19 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     }
 
     @Override
-    public void onSearchResult(String query, ArrayList<AllAppsGridAdapter.AdapterItem> items) {
+    public void onSearchResult(String query, ArrayList<AdapterItem> items) {
         if (items != null) {
             mApps.setSearchResults(items);
             notifyResultChanged();
             mAppsView.setLastSearchQuery(query);
+        }
+    }
+
+    @Override
+    public void onAppendSearchResult(String query, ArrayList<AdapterItem> items) {
+        if (items != null) {
+            mApps.appendSearchResults(items);
+            notifyResultChanged();
         }
     }
 

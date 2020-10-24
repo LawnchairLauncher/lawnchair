@@ -21,6 +21,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -36,20 +41,28 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItemWithPayload;
 import com.android.launcher3.allapps.search.AllAppsSearchBarController;
-import com.android.systemui.plugins.AllAppsSearchPlugin;
+import com.android.launcher3.allapps.search.SearchEventTracker;
+import com.android.launcher3.icons.BitmapRenderer;
+import com.android.launcher3.util.Themes;
 import com.android.systemui.plugins.shared.SearchTarget;
 import com.android.systemui.plugins.shared.SearchTargetEvent;
 
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLConnection;
 
 /**
  * A View representing a PlayStore item.
  */
 public class SearchResultPlayItem extends LinearLayout implements
-        AllAppsSearchBarController.PayloadResultHandler<Bundle> {
+        AllAppsSearchBarController.SearchTargetHandler {
+
+    public static final String TARGET_TYPE_PLAY = "play";
+
+    private static final int BITMAP_CROP_MASK_COLOR = 0xff424242;
+    final Paint mIconPaint = new Paint();
+    final Rect mTempRect = new Rect();
     private final DeviceProfile mDeviceProfile;
     private View mIconView;
     private TextView mTitleView;
@@ -57,8 +70,8 @@ public class SearchResultPlayItem extends LinearLayout implements
     private Button mPreviewButton;
     private String mPackageName;
     private boolean mIsInstantGame;
-    private AllAppsSearchPlugin mPlugin;
-    private final Object[] mTargetInfo = createTargetInfo();
+
+    private SearchTarget mSearchTarget;
 
 
     public SearchResultPlayItem(Context context) {
@@ -91,14 +104,35 @@ public class SearchResultPlayItem extends LinearLayout implements
         iconParams.height = mDeviceProfile.allAppsIconSizePx;
         iconParams.width = mDeviceProfile.allAppsIconSizePx;
         setOnClickListener(view -> handleSelection(SearchTargetEvent.SELECT));
-
     }
 
+
+    private Bitmap getRoundedBitmap(Bitmap bitmap) {
+        final int iconSize = bitmap.getWidth();
+        final float radius = Themes.getDialogCornerRadius(getContext());
+
+        Bitmap output = BitmapRenderer.createHardwareBitmap(iconSize, iconSize, (canvas) -> {
+            mTempRect.set(0, 0, iconSize, iconSize);
+            final RectF rectF = new RectF(mTempRect);
+
+            mIconPaint.setAntiAlias(true);
+            mIconPaint.reset();
+            canvas.drawARGB(0, 0, 0, 0);
+            mIconPaint.setColor(BITMAP_CROP_MASK_COLOR);
+            canvas.drawRoundRect(rectF, radius, radius, mIconPaint);
+
+            mIconPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+            canvas.drawBitmap(bitmap, mTempRect, mTempRect, mIconPaint);
+        });
+        return output;
+    }
+
+
     @Override
-    public void applyAdapterInfo(AdapterItemWithPayload<Bundle> adapterItemWithPayload) {
-        Bundle bundle = adapterItemWithPayload.getPayload();
-        mPlugin = adapterItemWithPayload.getPlugin();
-        adapterItemWithPayload.setSelectionHandler(this::handleSelection);
+    public void applySearchTarget(SearchTarget searchTarget) {
+        mSearchTarget = searchTarget;
+        Bundle bundle = searchTarget.getExtras();
+        SearchEventTracker.INSTANCE.get(getContext()).registerWeakHandler(searchTarget, this);
         if (bundle.getString("package", "").equals(mPackageName)) {
             return;
         }
@@ -109,27 +143,24 @@ public class SearchResultPlayItem extends LinearLayout implements
 //        TODO: Should use a generic type to get values b/165320033
         showIfNecessary(mDetailViews[0], bundle.getString("price"));
         showIfNecessary(mDetailViews[1], bundle.getString("rating"));
-        showIfNecessary(mDetailViews[2], bundle.getString("category"));
 
         mIconView.setBackgroundResource(R.drawable.ic_deepshortcut_placeholder);
         UI_HELPER_EXECUTOR.execute(() -> {
             try {
-//                TODO: Handle caching
                 URL url = new URL(bundle.getString("icon_url"));
-                Bitmap bitmap = BitmapFactory.decodeStream(url.openStream());
-                BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(),
+                URLConnection con = url.openConnection();
+//                TODO: monitor memory and investigate if it's better to use glide
+                con.addRequestProperty("Cache-Control", "max-age: 0");
+                con.setUseCaches(true);
+                Bitmap bitmap = BitmapFactory.decodeStream(con.getInputStream());
+                BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(), getRoundedBitmap(
                         Bitmap.createScaledBitmap(bitmap, mDeviceProfile.allAppsIconSizePx,
-                                mDeviceProfile.allAppsIconSizePx, false));
+                                mDeviceProfile.allAppsIconSizePx, false)));
                 mIconView.post(() -> mIconView.setBackground(bitmapDrawable));
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
-    }
-
-    @Override
-    public Object[] getTargetInfo() {
-        return mTargetInfo;
     }
 
     private void showIfNecessary(TextView textView, @Nullable String string) {
@@ -141,7 +172,8 @@ public class SearchResultPlayItem extends LinearLayout implements
         }
     }
 
-    private void handleSelection(int eventType) {
+    @Override
+    public void handleSelection(int eventType) {
         if (mPackageName == null) return;
         Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(
                 "https://play.google.com/store/apps/details?id="
@@ -167,12 +199,7 @@ public class SearchResultPlayItem extends LinearLayout implements
     }
 
     private void logSearchEvent(int eventType) {
-        SearchTargetEvent searchTargetEvent = getSearchTargetEvent(
-                SearchTarget.ItemType.PLAY_RESULTS, eventType);
-        searchTargetEvent.bundle = new Bundle();
-        searchTargetEvent.bundle.putString("package_name", mPackageName);
-        if (mPlugin != null) {
-            mPlugin.notifySearchTargetEvent(searchTargetEvent);
-        }
+        SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(
+                new SearchTargetEvent.Builder(mSearchTarget, eventType).build());
     }
 }

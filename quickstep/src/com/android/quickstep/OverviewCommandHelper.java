@@ -35,6 +35,7 @@ import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
+import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.LatencyTrackerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
@@ -173,6 +174,9 @@ public class OverviewCommandHelper {
                 // If successfully switched, then return
                 return;
             }
+
+            InteractionJankMonitorWrapper.begin(
+                    InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH, 2000 /* ms timout */);
 
             // Otherwise, start overview.
             mListener = mActivityInterface.createActivityInitListener(this::onActivityReady);
