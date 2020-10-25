@@ -17,22 +17,29 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.FastBitmapDrawable.newIcon;
+import static com.android.launcher3.graphics.IconShape.getShape;
 import static com.android.launcher3.graphics.PreloadIconDrawable.newPendingIcon;
 import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
+import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.PointF;
+import android.graphics.PorterDuff.Mode;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Process;
 import android.text.TextUtils.TruncateAt;
 import android.util.AttributeSet;
 import android.util.Property;
@@ -43,22 +50,29 @@ import android.view.View;
 import android.view.ViewDebug;
 import android.widget.TextView;
 
+import androidx.core.graphics.ColorUtils;
+
 import com.android.launcher3.Launcher.OnResumeCallback;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
+import com.android.launcher3.allapps.AllAppsSectionDecorator;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.graphics.IconShape;
+import com.android.launcher3.graphics.PlaceHolderIconDrawable;
 import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.icons.DotRenderer;
 import com.android.launcher3.icons.IconCache.IconLoadRequest;
 import com.android.launcher3.icons.IconCache.ItemInfoUpdateReceiver;
+import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.model.data.PromiseAppInfo;
+import com.android.launcher3.model.data.RemoteActionItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.views.ActivityContext;
@@ -72,7 +86,7 @@ import java.text.NumberFormat;
  * too aggressive.
  */
 public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, OnResumeCallback,
-        IconLabelDotView, DraggableView, Reorderable {
+        IconLabelDotView, DraggableView, Reorderable, AllAppsSectionDecorator.SelfDecoratingView {
 
     private static final int DISPLAY_WORKSPACE = 0;
     private static final int DISPLAY_ALL_APPS = 1;
@@ -80,11 +94,20 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     private static final int DISPLAY_HERO_APP = 5;
 
     private static final int[] STATE_PRESSED = new int[]{android.R.attr.state_pressed};
+    private static final float HIGHLIGHT_SCALE = 1.16f;
+
 
     private final PointF mTranslationForReorderBounce = new PointF(0, 0);
     private final PointF mTranslationForReorderPreview = new PointF(0, 0);
 
+    private static final int ICON_UPDATE_ANIMATION_DURATION = 375;
+
     private float mScaleForReorderBounce = 1f;
+
+    protected final Paint mHighlightPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Path mHighlightPath = new Path();
+    protected int mHighlightColor = Color.TRANSPARENT;
+    private final BlurMaskFilter mHighlightShadowFilter;
 
     private static final Property<BubbleTextView, Float> DOT_SCALE_PROPERTY
             = new Property<BubbleTextView, Float>(Float.TYPE, "dotScale") {
@@ -199,6 +222,11 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         setEllipsize(TruncateAt.END);
         setAccessibilityDelegate(mActivity.getAccessibilityDelegate());
         setTextAlpha(1f);
+
+        int shadowSize = context.getResources().getDimensionPixelSize(
+                R.dimen.blur_size_click_shadow);
+        mHighlightShadowFilter = new BlurMaskFilter(shadowSize, BlurMaskFilter.Blur.INNER);
+
     }
 
     @Override
@@ -290,6 +318,14 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
         // Verify high res immediately
         verifyHighRes();
+    }
+
+    /**
+     * Apply label and tag using a {@link RemoteActionItemInfo}
+     */
+    public void applyFromRemoteActionInfo(RemoteActionItemInfo remoteActionItemInfo) {
+        applyIconAndLabel(remoteActionItemInfo);
+        setTag(remoteActionItemInfo);
     }
 
     private void applyIconAndLabel(ItemInfoWithIcon info) {
@@ -404,8 +440,38 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     @Override
     public void onDraw(Canvas canvas) {
+        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get() && mHighlightColor != Color.TRANSPARENT) {
+            int count = canvas.save();
+            drawFocusHighlight(canvas);
+            canvas.restoreToCount(count);
+        }
         super.onDraw(canvas);
-        drawDotIfNecessary(canvas);
+    }
+
+    protected void drawFocusHighlight(Canvas canvas) {
+        boolean isBadged = getTag() instanceof ItemInfo && !Process.myUserHandle().equals(
+                ((ItemInfo) getTag()).user);
+        float insetScale = (HIGHLIGHT_SCALE - 1) / 2;
+        canvas.translate(-getIconSize() * insetScale, -insetScale * getIconSize());
+        float outlineSize = getIconSize() * HIGHLIGHT_SCALE;
+        mHighlightPath.reset();
+        mHighlightPaint.reset();
+        getIconBounds(mDotParams.iconBounds);
+        getShape().addToPath(mHighlightPath, mDotParams.iconBounds.left, mDotParams.iconBounds.top,
+                outlineSize / 2);
+        if (isBadged) {
+            float borderSize = outlineSize - getIconSize();
+            float badgeSize = LauncherIcons.getBadgeSizeForIconSize(getIconSize()) + borderSize;
+            float badgeInset = outlineSize - badgeSize;
+            getShape().addToPath(mHighlightPath, mDotParams.iconBounds.left + badgeInset,
+                    mDotParams.iconBounds.top + badgeInset, badgeSize / 2);
+        }
+        mHighlightPaint.setMaskFilter(mHighlightShadowFilter);
+        mHighlightPaint.setColor(mDotParams.color);
+        canvas.drawPath(mHighlightPath, mHighlightPaint);
+        mHighlightPaint.setMaskFilter(null);
+        mHighlightPaint.setColor(mHighlightColor);
+        canvas.drawPath(mHighlightPath, mHighlightPaint);
     }
 
     /**
@@ -610,7 +676,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     /**
      * Sets the icon for this view based on the layout direction.
      */
-    private void setIcon(Drawable icon) {
+    protected void setIcon(Drawable icon) {
         if (mIsIconVisible) {
             applyCompoundDrawables(icon);
         }
@@ -636,11 +702,14 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         mDisableRelayout = mIcon != null;
 
         icon.setBounds(0, 0, mIconSize, mIconSize);
-        if (mLayoutHorizontal) {
-            setCompoundDrawablesRelative(icon, null, null, null);
-        } else {
-            setCompoundDrawables(null, icon, null, null);
+
+        updateIcon(icon);
+
+        // If the current icon is a placeholder color, animate its update.
+        if (mIcon != null && mIcon instanceof PlaceHolderIconDrawable) {
+            animateIconUpdate((PlaceHolderIconDrawable) mIcon, icon);
         }
+
         mDisableRelayout = false;
     }
 
@@ -670,6 +739,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
                 mActivity.invalidateParent(info);
             } else if (info instanceof PackageItemInfo) {
                 applyFromItemInfoWithIcon((PackageItemInfo) info);
+            } else if (info instanceof RemoteActionItemInfo) {
+                applyFromRemoteActionInfo((RemoteActionItemInfo) info);
             }
 
             mDisableRelayout = false;
@@ -765,15 +836,58 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     @Override
     public SafeCloseable prepareDrawDragView() {
+        int highlightColor = mHighlightColor;
+        mHighlightColor = Color.TRANSPARENT;
         resetIconScale();
         setForceHideDot(true);
-        return () -> {
-        };
+        return () -> mHighlightColor = highlightColor;
     }
 
     private void resetIconScale() {
         if (mIcon instanceof FastBitmapDrawable) {
             ((FastBitmapDrawable) mIcon).setScale(1f);
         }
+    }
+
+    private void updateIcon(Drawable newIcon) {
+        if (mLayoutHorizontal) {
+            setCompoundDrawablesRelative(newIcon, null, null, null);
+        } else {
+            setCompoundDrawables(null, newIcon, null, null);
+        }
+    }
+
+    private static void animateIconUpdate(PlaceHolderIconDrawable oldIcon, Drawable newIcon) {
+        int placeholderColor = oldIcon.mPaint.getColor();
+        int originalAlpha = Color.alpha(placeholderColor);
+
+        ValueAnimator iconUpdateAnimation = ValueAnimator.ofInt(originalAlpha, 0);
+        iconUpdateAnimation.setDuration(ICON_UPDATE_ANIMATION_DURATION);
+        iconUpdateAnimation.addUpdateListener(valueAnimator -> {
+            int newAlpha = (int) valueAnimator.getAnimatedValue();
+            int newColor = ColorUtils.setAlphaComponent(placeholderColor, newAlpha);
+
+            newIcon.setColorFilter(new PorterDuffColorFilter(newColor, Mode.SRC_ATOP));
+        });
+        iconUpdateAnimation.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                newIcon.setColorFilter(null);
+            }
+        });
+        iconUpdateAnimation.start();
+    }
+
+
+    @Override
+    public void decorate(int color) {
+        mHighlightColor = color;
+        invalidate();
+    }
+
+    @Override
+    public void removeDecoration() {
+        mHighlightColor = Color.TRANSPARENT;
+        invalidate();
     }
 }

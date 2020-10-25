@@ -16,6 +16,7 @@
 package com.android.launcher3.allapps.search;
 
 import android.content.Context;
+import android.os.CancellationSignal;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItem;
@@ -47,11 +48,12 @@ public class AppsSearchPipeline implements SearchPipeline {
     }
 
     @Override
-    public void performSearch(String query, Consumer<ArrayList<AdapterItem>> callback) {
+    public void query(String input, Consumer<ArrayList<AdapterItem>> callback,
+            CancellationSignal cancellationSignal) {
         mLauncherAppState.getModel().enqueueModelUpdateTask(new BaseModelUpdateTask() {
             @Override
             public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
-                List<AppInfo> matchingResults = getTitleMatchResult(apps.data, query);
+                List<AppInfo> matchingResults = getTitleMatchResult(apps.data, input);
                 callback.accept(getAdapterItems(matchingResults));
             }
         });

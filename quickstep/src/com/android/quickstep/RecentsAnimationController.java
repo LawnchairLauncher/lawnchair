@@ -18,11 +18,14 @@ package com.android.quickstep;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
+import android.graphics.Rect;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.UiThread;
 
 import com.android.launcher3.util.Preconditions;
 import com.android.systemui.shared.recents.model.ThumbnailData;
+import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
@@ -89,24 +92,6 @@ public class RecentsAnimationController {
     }
 
     /**
-     * Notifies the controller that we want to defer cancel until the next app transition starts.
-     * If {@param screenshot} is set, then we will receive a screenshot on the next
-     * {@link RecentsAnimationCallbacks#onAnimationCanceled(ThumbnailData)} and we must also call
-     * {@link #cleanupScreenshot()} when that screenshot is no longer used.
-     */
-    public void setDeferCancelUntilNextTransition(boolean defer, boolean screenshot) {
-        mController.setDeferCancelUntilNextTransition(defer, screenshot);
-    }
-
-    /**
-     * Cleans up the screenshot previously returned from
-     * {@link RecentsAnimationCallbacks#onAnimationCanceled(ThumbnailData)}.
-     */
-    public void cleanupScreenshot() {
-        UI_HELPER_EXECUTOR.execute(() -> mController.cleanupScreenshot());
-    }
-
-    /**
      * Remove task remote animation target from
      * {@link RecentsAnimationCallbacks#onTaskAppeared(RemoteAnimationTargetCompat)}}.
      */
@@ -149,10 +134,23 @@ public class RecentsAnimationController {
         mOnFinishedListener.accept(this);
         UI_HELPER_EXECUTOR.execute(() -> {
             mController.finish(toRecents, sendUserLeaveHint);
+            InteractionJankMonitorWrapper.end(InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
             if (callback != null) {
                 MAIN_EXECUTOR.execute(callback);
             }
         });
+    }
+
+    /**
+     * Sets the final bounds on a Task. This is used by Launcher to notify the system that
+     * animating Activity to PiP has completed and the associated task surface should be updated
+     * accordingly. This should be called before `finish`
+     * @param taskId for which the leash should be updated
+     * @param destinationBounds bounds of the final PiP window
+     */
+    public void setFinishTaskBounds(int taskId, Rect destinationBounds) {
+        UI_HELPER_EXECUTOR.execute(
+                () -> mController.setFinishTaskBounds(taskId, destinationBounds));
     }
 
     /**

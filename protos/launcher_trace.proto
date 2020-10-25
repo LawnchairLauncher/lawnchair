@@ -28,4 +28,40 @@ message LauncherTraceProto {
 message TouchInteractionServiceProto {
 
     optional bool service_connected = 1;
+    optional OverviewComponentObserverProto overview_component_obvserver = 2;
+    optional InputConsumerProto input_consumer = 3;
+}
+
+message OverviewComponentObserverProto {
+
+    optional bool overview_activity_started = 1;
+    optional bool overview_activity_resumed = 2;
+}
+
+message InputConsumerProto {
+
+    optional string name = 1;
+    optional SwipeHandlerProto swipe_handler = 2;
+}
+
+message SwipeHandlerProto {
+
+    optional GestureStateProto gesture_state = 1;
+    optional bool is_recents_attached_to_app_window = 2;
+    optional int32 scroll_offset = 3;
+    // Swipe up progress from 0 (app) to 1 (overview); can be > 1 if swiping past overview.
+    optional float app_to_overview_progress = 4;
+}
+
+message GestureStateProto {
+
+    optional GestureEndTarget endTarget = 1 [default = UNSET];
+
+    enum GestureEndTarget {
+        UNSET = 0;
+        HOME = 1;
+        RECENTS = 2;
+        NEW_TASK = 3;
+        LAST_TASK = 4;
+    }
 }

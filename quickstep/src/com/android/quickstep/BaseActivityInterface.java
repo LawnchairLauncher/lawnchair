@@ -152,11 +152,6 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     public abstract void onExitOverview(RotationTouchHelper deviceState,
             Runnable exitRunnable);
 
-    /**
-     * Used for containerType in {@link com.android.launcher3.logging.UserEventDispatcher}
-     */
-    public abstract int getContainerType();
-
     public abstract boolean isInLiveTileMode();
 
     public abstract void onLaunchTaskFailed();
@@ -302,6 +297,10 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
          * @param animate Whether to animate recents to/from its new attached state.
          */
         default void setRecentsAttachedToAppWindow(boolean attached, boolean animate) { }
+
+        default boolean isRecentsAttachedToAppWindow() {
+            return false;
+        }
     }
 
     class DefaultAnimationFactory implements AnimationFactory {
@@ -391,6 +390,11 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
 
             fadeAnim.setInterpolator(attached ? INSTANT : ACCEL_2);
             fadeAnim.setDuration(animate ? RECENTS_ATTACH_DURATION : 0).start();
+        }
+
+        @Override
+        public boolean isRecentsAttachedToAppWindow() {
+            return mIsAttachedToWindow;
         }
 
         protected void createBackgroundToOverviewAnim(ACTIVITY_TYPE activity, PendingAnimation pa) {

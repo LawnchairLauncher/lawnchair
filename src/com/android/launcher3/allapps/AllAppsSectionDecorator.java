@@ -26,6 +26,7 @@ import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.R;
+import com.android.launcher3.allapps.AllAppsGridAdapter.AppsGridLayoutManager;
 import com.android.launcher3.allapps.search.SearchSectionInfo;
 import com.android.launcher3.util.Themes;
 
@@ -53,6 +54,9 @@ public class AllAppsSectionDecorator extends RecyclerView.ItemDecoration {
         int i = 0;
         while (i < itemCount) {
             View view = parent.getChildAt(i);
+            if (view instanceof SelfDecoratingView) {
+                ((SelfDecoratingView) view).removeDecoration();
+            }
             int position = parent.getChildAdapterPosition(view);
             AllAppsGridAdapter.AdapterItem adapterItem = adapterItems.get(position);
             if (adapterItem.searchSectionInfo != null) {
@@ -90,7 +94,10 @@ public class AllAppsSectionDecorator extends RecyclerView.ItemDecoration {
         if (mAppsView.getFloatingHeaderView().getFocusedChild() == null
                 && mAppsView.getApps().getFocusedChild() != null) {
             int index = mAppsView.getApps().getFocusedChildIndex();
-            if (index >= 0 && index < parent.getChildCount()) {
+            AppsGridLayoutManager layoutManager = (AppsGridLayoutManager)
+                    mAppsView.getActiveRecyclerView().getLayoutManager();
+            if (layoutManager.findFirstVisibleItemPosition() <= index
+                    && index < parent.getChildCount()) {
                 decorationHandler.onFocusDraw(c, parent.getChildAt(index));
             }
         }
@@ -101,8 +108,8 @@ public class AllAppsSectionDecorator extends RecyclerView.ItemDecoration {
      * Handles grouping and drawing of items in the same all apps sections.
      */
     public static class SectionDecorationHandler {
-        private static final int FILL_ALPHA = (int) (.3f * 255);
-        private static final int FOCUS_ALPHA = (int) (.8f * 255);
+        private static final int FILL_ALPHA = 0;
+        private static final int FOCUS_ALPHA = (int) (.9f * 255);
 
         protected RectF mBounds = new RectF();
         private final boolean mIsFullWidth;
@@ -152,6 +159,10 @@ public class AllAppsSectionDecorator extends RecyclerView.ItemDecoration {
             if (view == null) {
                 return;
             }
+            if (view instanceof SelfDecoratingView) {
+                ((SelfDecoratingView) view).decorate(mFocusColor);
+                return;
+            }
             mPaint.setColor(mFocusColor);
             canvas.drawRoundRect(view.getLeft(), view.getTop(),
                     view.getRight(), view.getBottom(), mRadius, mRadius, mPaint);
@@ -165,4 +176,18 @@ public class AllAppsSectionDecorator extends RecyclerView.ItemDecoration {
         }
     }
 
+    /**
+     * An interface for a view to draw highlight indicator
+     */
+    public interface SelfDecoratingView {
+        /**
+         * Removes decorations drawing if focus is acquired by another view
+         */
+        void removeDecoration();
+
+        /**
+         * Draws highlight indicator on view.
+         */
+        void decorate(int focusColor);
+    }
 }

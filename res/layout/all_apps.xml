@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2016 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2016 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -16,8 +15,7 @@
 <!-- The top and bottom paddings are defined in this container, but since we want
      the list view to span the full width (for touch interception purposes), we
      will bake the left/right padding into that view's background itself. -->
-<com.android.launcher3.allapps.LauncherAllAppsContainerView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.launcher3.allapps.LauncherAllAppsContainerView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/apps_view"
     android:theme="?attr/allAppsTheme"
     android:layout_width="match_parent"

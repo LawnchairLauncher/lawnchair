@@ -15,8 +15,9 @@
  */
 package com.android.launcher3.uioverrides.states;
 
+import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
+
 import com.android.launcher3.Launcher;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
 
 /**
  * State to indicate we are about to launch a recent task. Note that this state is only used when
@@ -26,7 +27,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto;
 public class QuickSwitchState extends BackgroundAppState {
 
     public QuickSwitchState(int id) {
-        super(id, LauncherLogProto.ContainerType.APP);
+        super(id, LAUNCHER_STATE_BACKGROUND);
     }
 
     @Override

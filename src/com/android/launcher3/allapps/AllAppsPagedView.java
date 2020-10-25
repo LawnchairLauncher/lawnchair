@@ -20,14 +20,16 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 
 import com.android.launcher3.PagedView;
+import com.android.launcher3.R;
+import com.android.launcher3.config.FeatureFlags;
 
 public class AllAppsPagedView extends PagedView<PersonalWorkSlidingTabStrip> {
 
-  final static float START_DAMPING_TOUCH_SLOP_ANGLE = (float) Math.PI / 6;
-  final static float MAX_SWIPE_ANGLE = (float) Math.PI / 3;
-  final static float TOUCH_SLOP_DAMPING_FACTOR = 4;
+    static final float START_DAMPING_TOUCH_SLOP_ANGLE = (float) Math.PI / 6;
+    static final float MAX_SWIPE_ANGLE = (float) Math.PI / 3;
+    static final float TOUCH_SLOP_DAMPING_FACTOR = 4;
 
-  public AllAppsPagedView(Context context) {
+    public AllAppsPagedView(Context context) {
         this(context, null);
     }
 
@@ -37,6 +39,10 @@ public class AllAppsPagedView extends PagedView<PersonalWorkSlidingTabStrip> {
 
     public AllAppsPagedView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        int topPadding = FeatureFlags.ENABLE_DEVICE_SEARCH.get() ? 0
+                : context.getResources().getDimensionPixelOffset(
+                        R.dimen.all_apps_header_top_padding);
+        setPadding(0, topPadding, 0, 0);
     }
 
     @Override

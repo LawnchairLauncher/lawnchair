@@ -130,7 +130,13 @@ final class BackGestureTutorialController extends TutorialController {
                 hideFeedback();
                 hideHandCoachingAnimation();
                 showRippleEffect(
-                        () -> mTutorialFragment.changeController(BACK_NAVIGATION_COMPLETE));
+                        () -> {
+                            if (mTutorialFragment.isTutorialComplete()) {
+                                mTutorialFragment.changeController(BACK_NAVIGATION_COMPLETE);
+                            } else {
+                                mTutorialFragment.continueTutorial();
+                            }
+                        });
                 break;
             case BACK_CANCELLED_FROM_LEFT:
                 showFeedback(R.string.back_gesture_feedback_cancelled_left_edge);

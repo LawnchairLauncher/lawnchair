@@ -39,6 +39,7 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
@@ -65,7 +66,6 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
@@ -73,23 +73,23 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PendingAnimation;
-import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
+import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.PagedOrientationHandler;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.TransformingTouchDelegate;
 import com.android.launcher3.util.ViewPool.Reusable;
 import com.android.quickstep.RecentsModel;
+import com.android.quickstep.RemoteAnimationTargets;
 import com.android.quickstep.TaskIconCache;
 import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.TaskUtils;
+import com.android.quickstep.TaskViewUtils;
+import com.android.quickstep.util.CancellableTask;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.util.TaskCornerRadius;
 import com.android.quickstep.views.RecentsView.PageCallbacks;
@@ -178,7 +178,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private float mCurveScale;
     private float mFullscreenProgress;
     private final FullscreenDrawParams mCurrentFullscreenParams;
-    private final BaseDraggingActivity mActivity;
+    private final StatefulActivity mActivity;
 
     private ObjectAnimator mIconAndDimAnimator;
     private float mIconScaleAnimStartProgress = 0;
@@ -189,8 +189,10 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private boolean mShowScreenshot;
 
     // The current background requests to load the task thumbnail and icon
-    private TaskThumbnailCache.ThumbnailLoadRequest mThumbnailLoadRequest;
-    private TaskIconCache.IconLoadRequest mIconLoadRequest;
+    private CancellableTask mThumbnailLoadRequest;
+    private CancellableTask mIconLoadRequest;
+
+    private boolean mEndQuickswitchCuj;
 
     // Order in which the footers appear. Lower order appear below higher order.
     public static final int INDEX_DIGITAL_WELLBEING_TOAST = 0;
@@ -213,17 +215,31 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     public TaskView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mActivity = BaseDraggingActivity.fromContext(context);
+        mActivity = StatefulActivity.fromContext(context);
         setOnClickListener((view) -> {
             if (getTask() == null) {
                 return;
             }
-            if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-                if (isRunningTask()) {
-                    createLaunchAnimationForRunningTask().start();
-                } else {
-                    launchTask(true /* animate */);
-                }
+            if (ENABLE_QUICKSTEP_LIVE_TILE.get() && isRunningTask()) {
+                RecentsView recentsView = getRecentsView();
+                RemoteAnimationTargets targets = recentsView.getLiveTileParams().getTargetSet();
+                recentsView.getLiveTileTaskViewSimulator().setDrawsBelowRecents(false);
+
+                AnimatorSet anim = new AnimatorSet();
+                TaskViewUtils.composeRecentsLaunchAnimator(
+                        anim, this, targets.apps,
+                        targets.wallpapers, true /* launcherClosing */,
+                        mActivity.getStateManager(), recentsView,
+                        recentsView.getDepthController());
+                anim.addListener(new AnimatorListenerAdapter() {
+
+                    @Override
+                    public void onAnimationEnd(Animator animator) {
+                        recentsView.getLiveTileTaskViewSimulator().setDrawsBelowRecents(true);
+                        recentsView.finishRecentsAnimation(false, null);
+                    }
+                });
+                anim.start();
             } else {
                 launchTask(true /* animate */);
             }
@@ -365,10 +381,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         final PendingAnimation pendingAnimation = getRecentsView().createTaskLaunchAnimation(
                 this, RECENTS_LAUNCH_DURATION, TOUCH_RESPONSE_INTERPOLATOR);
         AnimatorPlaybackController currentAnimation = pendingAnimation.createPlaybackController();
-        currentAnimation.setEndAction(() -> {
-            pendingAnimation.finish(true, Touch.SWIPE);
-            launchTask(false);
-        });
+        currentAnimation.setEndAction(() -> pendingAnimation.finish(true));
         return currentAnimation;
     }
 
@@ -391,20 +404,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     public void launchTask(boolean animate, boolean freezeTaskList, Consumer<Boolean> resultCallback,
             Handler resultCallbackHandler) {
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            if (isRunningTask()) {
-                getRecentsView().finishRecentsAnimation(false /* toRecents */,
-                        () -> resultCallbackHandler.post(() -> resultCallback.accept(true)));
-            } else {
-                launchTaskInternal(animate, freezeTaskList, resultCallback, resultCallbackHandler);
-            }
-        } else {
-            launchTaskInternal(animate, freezeTaskList, resultCallback, resultCallbackHandler);
-        }
-    }
-
-    private void launchTaskInternal(boolean animate, boolean freezeTaskList,
-            Consumer<Boolean> resultCallback, Handler resultCallbackHandler) {
         if (mTask != null) {
             final ActivityOptions opts;
             TestLogging.recordEvent(
@@ -481,15 +480,13 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         }
     }
 
-    private boolean showTaskMenu(int action) {
+    private boolean showTaskMenu() {
         if (!getRecentsView().isClearAllHidden()) {
             getRecentsView().snapToPage(getRecentsView().indexOfChild(this));
         } else {
             mMenuView = TaskMenuView.showForTask(this);
             mActivity.getStatsLogManager().logger().withItemInfo(getItemInfo())
                     .log(LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS);
-            UserEventDispatcher.newInstance(getContext()).logActionOnItem(action, Direction.NONE,
-                    LauncherLogProto.ItemType.TASK_ICON);
             if (mMenuView != null) {
                 mMenuView.addOnAttachStateChangeListener(mTaskMenuStateListener);
             }
@@ -500,10 +497,10 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private void setIcon(Drawable icon) {
         if (icon != null) {
             mIconView.setDrawable(icon);
-            mIconView.setOnClickListener(v -> showTaskMenu(Touch.TAP));
+            mIconView.setOnClickListener(v -> showTaskMenu());
             mIconView.setOnLongClickListener(v -> {
                 requestDisallowInterceptTouchEvent(true);
-                return showTaskMenu(Touch.LONGPRESS);
+                return showTaskMenu();
             });
         } else {
             mIconView.setDrawable(null);
@@ -820,6 +817,14 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     public boolean hasOverlappingRendering() {
         // TODO: Clip-out the icon region from the thumbnail, since they are overlapping.
         return false;
+    }
+
+    public boolean isEndQuickswitchCuj() {
+        return mEndQuickswitchCuj;
+    }
+
+    public void setEndQuickswitchCuj(boolean endQuickswitchCuj) {
+        mEndQuickswitchCuj = endQuickswitchCuj;
     }
 
     private static final class TaskOutlineProvider extends ViewOutlineProvider {

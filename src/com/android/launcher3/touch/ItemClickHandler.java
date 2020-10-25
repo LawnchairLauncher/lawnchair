@@ -25,7 +25,9 @@ import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_SA
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_SUSPENDED;
 
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.LauncherApps;
 import android.content.pm.PackageInstaller.SessionInfo;
 import android.os.Process;
@@ -49,6 +51,7 @@ import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.PromiseAppInfo;
+import com.android.launcher3.model.data.RemoteActionItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.testing.TestLogging;
@@ -234,6 +237,27 @@ public class ItemClickHandler {
 
         // Start activities
         startAppShortcutOrInfoActivity(v, shortcut, launcher);
+    }
+
+    /**
+     * Event handler for a {@link android.app.RemoteAction} click
+     *
+     */
+    public static void onClickRemoteAction(Launcher launcher,
+            RemoteActionItemInfo remoteActionInfo) {
+        try {
+            PendingIntent pendingIntent = remoteActionInfo.getRemoteAction().getActionIntent();
+            if (remoteActionInfo.shouldStartInLauncher()) {
+                launcher.startIntentSenderForResult(pendingIntent.getIntentSender(), 0, null, 0, 0,
+                        0);
+            } else {
+                pendingIntent.send();
+            }
+        } catch (PendingIntent.CanceledException | IntentSender.SendIntentException e) {
+            Toast.makeText(launcher,
+                    launcher.getResources().getText(R.string.shortcut_not_available),
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     private static void startAppShortcutOrInfoActivity(View v, ItemInfo item, Launcher launcher) {

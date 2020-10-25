@@ -55,7 +55,6 @@ import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.uioverrides.PredictedAppIcon;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.views.ArrowTipView;
 import com.android.launcher3.views.Snackbar;
@@ -252,6 +251,28 @@ public class HotseatPredictionController implements DragController.DragListener,
      * Sets or updates the predicted items
      */
     public void setPredictedItems(FixedContainerItems items) {
+        if (!mLauncher.isWorkspaceLoading()
+                && mHotseat.isShown()
+                && mHotseat.getWindowVisibility() == View.VISIBLE) {
+            mHotseat.setOnVisibilityAggregatedCallback((isVisible) -> {
+                if (isVisible) {
+                    return;
+                }
+                mHotseat.setOnVisibilityAggregatedCallback(null);
+
+                applyPredictedItems(items);
+            });
+        } else {
+            mHotseat.setOnVisibilityAggregatedCallback(null);
+
+            applyPredictedItems(items);
+        }
+    }
+
+    /**
+     * Sets or updates the predicted items only once the hotseat becomes hidden to the user
+     */
+    private void applyPredictedItems(FixedContainerItems items) {
         mPredictedItems = items.items;
         if (mPredictedItems.isEmpty()) {
             HotseatRestoreHelper.restoreBackup(mLauncher);

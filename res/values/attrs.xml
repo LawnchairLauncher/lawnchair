@@ -69,6 +69,13 @@
         <attr name="folderDotColor" />
     </declare-styleable>
 
+    <declare-styleable name="SearchResultIconRow">
+        <attr name="customIcon" format="reference" />
+        <attr name="matchTextInsetWithQuery" format="boolean" />
+    </declare-styleable>
+
+
+
     <declare-styleable name="ShadowInfo">
         <attr name="ambientShadowColor" format="color" />
         <attr name="ambientShadowBlur" format="dimension" />

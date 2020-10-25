@@ -15,12 +15,13 @@
  */
 package com.android.launcher3.uioverrides.states;
 
+import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
+
 import android.content.Context;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.allapps.AllAppsTransitionController;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
 
@@ -33,7 +34,7 @@ public class BackgroundAppState extends OverviewState {
             | FLAG_WORKSPACE_INACCESSIBLE | FLAG_NON_INTERACTIVE | FLAG_CLOSE_POPUPS;
 
     public BackgroundAppState(int id) {
-        this(id, LauncherLogProto.ContainerType.TASKSWITCHER);
+        this(id, LAUNCHER_STATE_BACKGROUND);
     }
 
     protected BackgroundAppState(int id, int logContainer) {

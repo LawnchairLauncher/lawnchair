@@ -65,6 +65,10 @@ public class LiveTileOverlay extends Drawable {
         invalidateSelf();
     }
 
+    public void update(float left, float top, float right, float bottom) {
+        mCurrentRect.set(left, top, right, bottom);
+    }
+
     public void setIcon(Drawable icon) {
         mIcon = icon;
     }
@@ -94,18 +98,16 @@ public class LiveTileOverlay extends Drawable {
 
     @Override
     public void draw(Canvas canvas) {
-        if (mCurrentRect != null) {
-            canvas.drawRoundRect(mCurrentRect, mCornerRadius, mCornerRadius, mPaint);
-            if (mIcon != null && mIconAnimationProgress > 0f) {
-                canvas.save();
-                float scale = Interpolators.clampToProgress(FAST_OUT_SLOW_IN, 0f,
-                        1f).getInterpolation(mIconAnimationProgress);
-                canvas.translate(mCurrentRect.centerX() - mIcon.getBounds().width() / 2 * scale,
-                        mCurrentRect.top - mIcon.getBounds().height() / 2 * scale);
-                canvas.scale(scale, scale);
-                mIcon.draw(canvas);
-                canvas.restore();
-            }
+        canvas.drawRoundRect(mCurrentRect, mCornerRadius, mCornerRadius, mPaint);
+        if (mIcon != null && mIconAnimationProgress > 0f) {
+            canvas.save();
+            float scale = Interpolators.clampToProgress(FAST_OUT_SLOW_IN, 0f,
+                    1f).getInterpolation(mIconAnimationProgress);
+            canvas.translate(mCurrentRect.centerX() - mIcon.getBounds().width() / 2 * scale,
+                    mCurrentRect.top - mIcon.getBounds().height() / 2 * scale);
+            canvas.scale(scale, scale);
+            mIcon.draw(canvas);
+            canvas.restore();
         }
     }
 

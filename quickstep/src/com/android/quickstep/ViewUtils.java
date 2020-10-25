@@ -15,21 +15,23 @@
  */
 package com.android.quickstep;
 
-import android.graphics.Canvas;
+import android.os.Handler;
 import android.view.View;
 
-import com.android.systemui.shared.system.WindowCallbacksCompat;
+import com.android.launcher3.Utilities;
+import com.android.systemui.shared.system.ViewRootImplCompat;
 
 import java.util.function.BooleanSupplier;
+import java.util.function.LongConsumer;
 
 /**
  * Utility class for helpful methods related to {@link View} objects.
  */
 public class ViewUtils {
 
-    /** See {@link #postDraw(View, Runnable, BooleanSupplier)}} */
-    public static boolean postDraw(View view, Runnable onFinishRunnable) {
-        return postDraw(view, onFinishRunnable, () -> false);
+    /** See {@link #postFrameDrawn(View, Runnable, BooleanSupplier)}} */
+    public static boolean postFrameDrawn(View view, Runnable onFinishRunnable) {
+        return postFrameDrawn(view, onFinishRunnable, () -> false);
     }
 
     /**
@@ -38,37 +40,55 @@ public class ViewUtils {
      *
      * @param onFinishRunnable runnable to be run right after the view finishes drawing.
      */
-    public static boolean postDraw(View view, Runnable onFinishRunnable, BooleanSupplier canceled) {
-        // Defer finishing the animation until the next launcher frame with the
-        // new thumbnail
-        return new WindowCallbacksCompat(view) {
-            // The number of frames to defer until we actually finish the animation
-            private int mDeferFrameCount = 2;
+    public static boolean postFrameDrawn(
+            View view, Runnable onFinishRunnable, BooleanSupplier canceled) {
+        return new FrameHandler(view, onFinishRunnable, canceled).schedule();
+    }
 
-            @Override
-            public void onPostDraw(Canvas canvas) {
-                // If we were cancelled after this was attached, do not update
-                // the state.
-                if (canceled.getAsBoolean()) {
-                    detach();
-                    return;
-                }
+    private static class FrameHandler implements LongConsumer {
 
-                if (mDeferFrameCount > 0) {
-                    mDeferFrameCount--;
-                    // Workaround, detach and reattach to invalidate the root node for
-                    // another draw
-                    detach();
-                    attach();
-                    view.invalidate();
-                    return;
-                }
+        final ViewRootImplCompat mViewRoot;
+        final Runnable mFinishCallback;
+        final BooleanSupplier mCancelled;
+        final Handler mHandler;
 
-                if (onFinishRunnable != null) {
-                    onFinishRunnable.run();
-                }
-                detach();
+        int mDeferFrameCount = 1;
+
+        FrameHandler(View view, Runnable finishCallback, BooleanSupplier cancelled) {
+            mViewRoot = new ViewRootImplCompat(view);
+            mFinishCallback = finishCallback;
+            mCancelled = cancelled;
+            mHandler = new Handler();
+        }
+
+        @Override
+        public void accept(long l) {
+            Utilities.postAsyncCallback(mHandler, this::onFrame);
+        }
+
+        private void onFrame() {
+            if (mCancelled.getAsBoolean()) {
+                return;
             }
-        }.attach();
+
+            if (mDeferFrameCount > 0) {
+                mDeferFrameCount--;
+                schedule();
+                return;
+            }
+
+            if (mFinishCallback != null) {
+                mFinishCallback.run();
+            }
+        }
+
+        private boolean schedule() {
+            if (mViewRoot.isValid()) {
+                mViewRoot.registerRtFrameCallback(this);
+                mViewRoot.getView().invalidate();
+                return true;
+            }
+            return false;
+        }
     }
 }

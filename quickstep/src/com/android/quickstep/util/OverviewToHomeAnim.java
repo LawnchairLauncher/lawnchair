@@ -18,8 +18,10 @@ package com.android.quickstep.util;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
+import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
 import static com.android.launcher3.anim.Interpolators.INSTANT;
+import static com.android.launcher3.anim.Interpolators.clampToProgress;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_COMPONENTS;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_ACTIONS_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_FADE;
@@ -110,7 +112,7 @@ public class OverviewToHomeAnim {
         boolean isLayoutNaturalToLauncher = recentsView.getPagedOrientationHandler()
                 .isLayoutNaturalToLauncher();
         config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, isLayoutNaturalToLauncher
-                ? DEACCEL : FINAL_FRAME);
+                ? clampToProgress(FAST_OUT_SLOW_IN, 0, 0.75f) : FINAL_FRAME);
         config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_Y, FINAL_FRAME);
         config.setInterpolator(ANIM_OVERVIEW_SCALE, FINAL_FRAME);
         config.setInterpolator(ANIM_OVERVIEW_ACTIONS_FADE, INSTANT);
