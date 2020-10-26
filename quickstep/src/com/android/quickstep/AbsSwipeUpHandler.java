@@ -1062,8 +1062,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
             mIsSwipingPipToHome = homeAnimFactory.supportSwipePipToHome()
                     && runningTaskTarget != null
                     && runningTaskTarget.pictureInPictureParams != null
-                    && runningTaskTarget.pictureInPictureParams.isAutoEnterEnabled()
-                    && runningTaskTarget.pictureInPictureParams.getSourceRectHint() != null;
+                    && TaskInfoCompat.isAutoEnterPipEnabled(
+                            runningTaskTarget.pictureInPictureParams)
+                    && TaskInfoCompat.getPipSourceRectHint(
+                            runningTaskTarget.pictureInPictureParams) != null;
             if (mIsSwipingPipToHome) {
                 mSwipePipToHomeAnimator = getSwipePipToHomeAnimator(
                         homeAnimFactory, runningTaskTarget);
@@ -1141,7 +1143,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
         final ActivityManager.RunningTaskInfo taskInfo = mGestureState.getRunningTask();
         final RecentsOrientedState orientationState = mTaskViewSimulator.getOrientationState();
         final Rect destinationBounds = SystemUiProxy.INSTANCE.get(mContext)
-                .startSwipePipToHome(taskInfo.topActivity, taskInfo.topActivityInfo,
+                .startSwipePipToHome(taskInfo.topActivity,
+                        TaskInfoCompat.getTopActivityInfo(taskInfo),
                         runningTaskTarget.pictureInPictureParams,
                         orientationState.getRecentsActivityRotation(),
                         mDp.hotseatBarSizePx);
@@ -1149,8 +1152,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
                 runningTaskTarget.taskId,
                 taskInfo.topActivity,
                 runningTaskTarget.leash.getSurfaceControl(),
-                runningTaskTarget.pictureInPictureParams.getSourceRectHint(),
-                taskInfo.configuration.windowConfiguration.getBounds(),
+                TaskInfoCompat.getPipSourceRectHint(runningTaskTarget.pictureInPictureParams),
+                TaskInfoCompat.getWindowConfigurationBounds(taskInfo),
                 destinationBounds);
         swipePipToHomeAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
