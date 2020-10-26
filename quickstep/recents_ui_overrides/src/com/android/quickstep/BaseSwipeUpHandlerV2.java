@@ -720,6 +720,8 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
     }
 
     private void onSettledOnEndTarget() {
+        // Fast-finish the attaching animation if it's still running.
+        maybeUpdateRecentsAttachedState(false);
         switch (mGestureState.getEndTarget()) {
             case HOME:
                 mStateCallback.setState(STATE_SCALED_CONTROLLER_HOME | STATE_CAPTURE_SCREENSHOT);
