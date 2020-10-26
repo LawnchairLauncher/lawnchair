@@ -165,6 +165,14 @@ public abstract class SwipeUpAnimationLogic {
         public void update(RectF currentRect, float progress, float radius) { }
 
         public void onCancel() { }
+
+        /**
+         * @return {@code true} if this factory supports animating an Activity to PiP window on
+         * swiping up to home.
+         */
+        public boolean supportSwipePipToHome() {
+            return false;
+        }
     }
 
     /**
