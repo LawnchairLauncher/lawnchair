@@ -15,11 +15,15 @@
  */
 package com.android.launcher3.model;
 
+import static android.text.format.DateUtils.DAY_IN_MILLIS;
+import static android.text.format.DateUtils.formatElapsedTime;
+
 import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_GRID;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_PREDICTION;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
+import static com.android.launcher3.Utilities.getDevicePrefs;
 import static com.android.launcher3.hybridhotseat.HotseatPredictionModel.convertDataModelToAppTargetBundle;
 
 import android.app.prediction.AppPredictionContext;
@@ -29,10 +33,12 @@ import android.app.prediction.AppTarget;
 import android.app.prediction.AppTargetEvent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
 import android.content.pm.ShortcutInfo;
 import android.os.UserHandle;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
@@ -40,12 +46,16 @@ import androidx.annotation.WorkerThread;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile.OnIDPChangeListener;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.logging.InstanceId;
+import com.android.launcher3.logging.InstanceIdSequence;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.Executors;
+import com.android.launcher3.util.IntSparseArrayMap;
 import com.android.launcher3.util.PersistedItemArray;
 import com.android.quickstep.logging.StatsLogCompatManager;
 
@@ -61,6 +71,10 @@ import java.util.stream.IntStream;
 public class QuickstepModelDelegate extends ModelDelegate implements OnIDPChangeListener {
 
     public static final String LAST_PREDICTION_ENABLED_STATE = "last_prediction_enabled_state";
+    private static final String LAST_SNAPSHOT_TIME_MILLIS = "LAST_SNAPSHOT_TIME_MILLIS";
+
+    private static final boolean IS_DEBUG = false;
+    private static final String TAG = "QuickstepModelDelegate";
 
     private final PredictorState mAllAppsState =
             new PredictorState(CONTAINER_PREDICTION, "all_apps_predictions");
@@ -81,6 +95,7 @@ public class QuickstepModelDelegate extends ModelDelegate implements OnIDPChange
     }
 
     @Override
+    @WorkerThread
     public void loadItems(UserManagerState ums, Map<ShortcutKey, ShortcutInfo> pinnedShortcuts) {
         // TODO: Implement caching and preloading
         super.loadItems(ums, pinnedShortcuts);
@@ -103,6 +118,38 @@ public class QuickstepModelDelegate extends ModelDelegate implements OnIDPChange
     public void workspaceLoadComplete() {
         super.workspaceLoadComplete();
         recreatePredictors();
+    }
+
+    @Override
+    @WorkerThread
+    public void modelLoadComplete() {
+        super.modelLoadComplete();
+
+        // Log snapshot of the model
+        SharedPreferences prefs = getDevicePrefs(mApp.getContext());
+        long lastSnapshotTimeMillis = prefs.getLong(LAST_SNAPSHOT_TIME_MILLIS, 0);
+        // Log snapshot only if previous snapshot was older than a day
+        long now = System.currentTimeMillis();
+        if (now - lastSnapshotTimeMillis < DAY_IN_MILLIS) {
+            if (IS_DEBUG) {
+                String elapsedTime = formatElapsedTime((now - lastSnapshotTimeMillis) / 1000);
+                Log.d(TAG, String.format(
+                        "Skipped snapshot logging since previous snapshot was %s old.",
+                        elapsedTime));
+            }
+        } else {
+            IntSparseArrayMap<ItemInfo> itemsIdMap;
+            synchronized (mDataModel) {
+                itemsIdMap = mDataModel.itemsIdMap.clone();
+            }
+            InstanceId instanceId = new InstanceIdSequence().newInstanceId();
+            for (ItemInfo info : itemsIdMap) {
+                FolderInfo parent = info.container > 0
+                        ? (FolderInfo) itemsIdMap.get(info.container) : null;
+                StatsLogCompatManager.writeSnapshot(info.buildProto(parent), instanceId);
+            }
+            prefs.edit().putLong(LAST_SNAPSHOT_TIME_MILLIS, now).apply();
+        }
     }
 
     @Override
