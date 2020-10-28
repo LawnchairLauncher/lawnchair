@@ -193,7 +193,10 @@ public class MotionPauseDetector {
                 if (isFirstDetectedPause) {
                     mOnMotionPauseListener.onMotionPauseDetected();
                 }
-                mOnMotionPauseListener.onMotionPauseChanged(mIsPaused);
+                // Null check again as onMotionPauseDetected() maybe have called clear().
+                if (mOnMotionPauseListener != null) {
+                    mOnMotionPauseListener.onMotionPauseChanged(mIsPaused);
+                }
             }
         }
     }

@@ -29,8 +29,6 @@ import com.android.launcher3.logger.LauncherAtom.ToState;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.ResourceBasedOverride;
 
-import java.util.List;
-
 /**
  * Handles the user event logging in R+.
  *
@@ -462,11 +460,5 @@ public class StatsLogManager implements ResourceBasedOverride {
         StatsLogManager mgr = Overrides.getObject(StatsLogManager.class,
                 context.getApplicationContext(), R.string.stats_log_manager_class);
         return mgr;
-    }
-
-    /**
-     * Logs impression of the current workspace with additional launcher events.
-     */
-    public void logSnapshot(List<EventEnum> additionalEvents) {
     }
 }

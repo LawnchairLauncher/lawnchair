@@ -90,6 +90,7 @@ public class ThumbnailSearchResultView extends androidx.appcompat.widget.AppComp
             bitmap = Bitmap.createBitmap(bitmap, 0,
                     bitmap.getHeight() / 2 - bitmap.getWidth() / 2,
                     bitmap.getWidth(), bitmap.getWidth());
+            setTag(itemInfo);
         } else {
             bitmap = (Bitmap) target.getExtras().getParcelable("bitmap");
             WorkspaceItemInfo itemInfo = new WorkspaceItemInfo();

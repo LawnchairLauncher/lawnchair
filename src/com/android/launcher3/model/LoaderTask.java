@@ -289,6 +289,7 @@ public class LoaderTask implements Runnable {
             updateHandler.finish();
             logger.addSplit("finish icon update");
 
+            mModelDelegate.modelLoadComplete();
             transaction.commit();
         } catch (CancellationException e) {
             // Loader stopped, ignore
