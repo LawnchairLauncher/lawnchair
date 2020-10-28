@@ -29,13 +29,15 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.os.BuildCompat;
 
+import com.android.launcher3.util.UiThreadHelper;
+
 /**
  * Handles IME over all apps to be synchronously transitioning along with the passed in
  * root inset.
  */
 public class AllAppsInsetTransitionController {
 
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
     private static final String TAG = "AllAppsInsetTransitionController";
     private static final Interpolator LINEAR = new LinearInterpolator();
 
@@ -53,6 +55,13 @@ public class AllAppsInsetTransitionController {
     private float mDown, mCurrent;
     private View mApps;
 
+    // Only purpose of these states is to keep track of fast fling transition
+    enum State {
+        RESET, DRAG_START_BOTTOM, FLING_END_TOP,
+        DRAG_START_TOP, FLING_END_BOTTOM
+    }
+    private State mState;
+
     public AllAppsInsetTransitionController(float allAppsHeight, View appsView) {
         mAllAppsHeight = allAppsHeight;
         mApps = appsView;
@@ -64,6 +73,11 @@ public class AllAppsInsetTransitionController {
         WindowInsets insets = mApps.getRootWindowInsets();
         if (insets == null) return;
 
+        boolean imeVisible = insets.isVisible(WindowInsets.Type.ime());
+
+        if (DEBUG) {
+            Log.d(TAG, "\nhide imeVisible=" +  imeVisible);
+        }
         if (insets.isVisible(WindowInsets.Type.ime())) {
             mApps.getWindowInsetsController().hide(WindowInsets.Type.ime());
         }
@@ -78,20 +92,23 @@ public class AllAppsInsetTransitionController {
     @RequiresApi(api = Build.VERSION_CODES.R)
     public void onDragStart(float progress) {
         if (!BuildCompat.isAtLeastR()) return;
-        onAnimationEnd(progress);
 
+        // Until getRootWindowInsets().isVisible(...) method returns correct value,
+        // only support InsetController based IME transition during swipe up and
+        // NOT swipe down
+        if (Float.compare(progress, 0f) == 0) return;
+
+        setState(true, false, progress);
         mDown = progress * mAllAppsHeight;
 
         // Below two values are sometimes incorrect. Possibly a platform bug
-        mDownInsetBottom = mApps.getRootWindowInsets().getInsets(WindowInsets.Type.ime()).bottom;
-        mShownAtDown = mApps.getRootWindowInsets().isVisible(WindowInsets.Type.ime());
+        // mDownInsetBottom = mApps.getRootWindowInsets().getInsets(WindowInsets.Type.ime()).bottom;
+        // mShownAtDown = mApps.getRootWindowInsets().isVisible(WindowInsets.Type.ime());
 
-        // override this value based on what it should actually be.
-        mShownAtDown = Float.compare(progress, 1f) == 0 ? false : true;
-        mDownInsetBottom = mShownAtDown ? mShownInsetBottom : mHiddenInsetBottom;
         if (DEBUG) {
-            Log.d(TAG, "\nonDragStart mDownInsets=" + mDownInsetBottom
-                    + " mShownAtDown =" + mShownAtDown);
+            Log.d(TAG, "\nonDragStart progress=" +  progress
+                    + " mDownInsets=" + mDownInsetBottom
+                    + " mShownAtDown=" + mShownAtDown);
         }
 
         mApps.getWindowInsetsController().controlWindowInsetsAnimation(
@@ -103,34 +120,60 @@ public class AllAppsInsetTransitionController {
                         if (DEBUG) {
                             Log.d(TAG, "Listener.onReady " + (mCurrentRequest == this));
                         }
-                        if (mCurrentRequest == this) {
-                            mAnimationController = controller;
-                        } else {
-                            controller.finish(mShownAtDown);
+                        if (controller != null) {
+                            if (mCurrentRequest == this && !handleFinishOnFling(controller)) {
+                                    mAnimationController = controller;
+                            } else {
+                                controller.finish(false /* just don't show */);
+                            }
                         }
                     }
 
                     @Override
                     public void onFinished(WindowInsetsAnimationController controller) {
                         // when screen lock happens, then this method get called
-                        mAnimationController.finish(false);
-                        mAnimationController = null;
                         if (DEBUG) {
-                            Log.d(TAG, "Listener.onFinished ctrl=" + controller);
+                            Log.d(TAG, "Listener.onFinished ctrl=" + controller
+                                    + " mAnimationController=" + mAnimationController);
+                        }
+                        if (mAnimationController != null) {
+                            mAnimationController.finish(true);
+                            mAnimationController = null;
                         }
                     }
 
                     @Override
                     public void onCancelled(@Nullable WindowInsetsAnimationController controller) {
+                        if (DEBUG) {
+                            Log.d(TAG, "Listener.onCancelled ctrl=" + controller
+                                    + " mAnimationController=" + mAnimationController);
+                        }
+                        if (mState == State.DRAG_START_BOTTOM) {
+                            mApps.getWindowInsetsController().show(WindowInsets.Type.ime());
+                        }
                         mAnimationController = null;
                         if (controller != null) {
-                            controller.finish(mShownAtDown);
+                            controller.finish(true);
                         }
-                        if (DEBUG) {
-                            Log.d(TAG, "Listener.onCancelled ctrl=" + controller);
-                        }
+
                     }
                 });
+    }
+
+    /**
+     * If IME bounds after touch sequence finishes, call finish.
+     */
+    private boolean handleFinishOnFling(WindowInsetsAnimationController controller) {
+        if (!BuildCompat.isAtLeastR()) return false;
+
+        if (mState == State.FLING_END_TOP) {
+            controller.finish(true);
+            return true;
+        } else if (mState == State.FLING_END_BOTTOM) {
+            controller.finish(false);
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -153,18 +196,17 @@ public class AllAppsInsetTransitionController {
 
         int inset = (int) (mDownInsetBottom + (mDown - mCurrent) - shift);
 
-        if (DEBUG) {
-            Log.d(TAG, "updateInset mCurrent=" + mCurrent + " mDown="
-                    + mDown + " hidden=" + mHiddenInsetBottom
-                    + " shown=" + mShownInsetBottom
-                    + " mDownInsets.bottom=" + mDownInsetBottom + " inset:" + inset
-                    + " shift: " + shift);
-        }
         final int start = mShownAtDown ? mShownInsetBottom : mHiddenInsetBottom;
         final int end = mShownAtDown ? mHiddenInsetBottom : mShownInsetBottom;
         inset = Math.max(inset, mHiddenInsetBottom);
         inset = Math.min(inset, mShownInsetBottom);
-        Log.d(TAG, "updateInset inset:" + inset);
+        if (DEBUG || false) {
+            Log.d(TAG, "updateInset mCurrent=" + mCurrent + " mDown="
+                    + mDown + " hidden=" + mHiddenInsetBottom
+                    + " shown=" + mShownInsetBottom
+                    + " mDownInsets.bottom=" + mDownInsetBottom + " inset=" + inset
+                    + " shift= " + shift);
+        }
 
         mAnimationController.setInsetsAndAlpha(
                 Insets.of(0, 0, 0, inset),
@@ -179,19 +221,60 @@ public class AllAppsInsetTransitionController {
     @RequiresApi(api = 30)
     public void onAnimationEnd(float progress) {
         if (DEBUG) {
+            Log.d(TAG, "onAnimationEnd progress=" + progress
+                    + " mAnimationController=" + mAnimationController);
+        }
+        if (mState == null) {
+            // only called when launcher restarting.
+            UiThreadHelper.hideKeyboardAsync(mApps.getContext(), mApps.getWindowToken());
+        }
+        setState(false, true, progress);
+        if (mAnimationController == null) {
+            return;
+        }
+
+        /* handle finish */
+        if (mState == State.FLING_END_TOP) {
+            mAnimationController.finish(true /* show */);
+        } else {
+            if (Float.compare(progress, 1f) == 0 /* bottom */) {
+                mAnimationController.finish(false /* gone */);
+            } else {
+                mAnimationController.finish(mShownAtDown);
+            }
+        }
+        /* handle finish */
+
+        if (DEBUG) {
             Log.d(TAG, "endTranslation progress=" + progress
                     + " mAnimationController=" + mAnimationController);
         }
-
-        if (mAnimationController == null) return;
-
-        if (Float.compare(progress, 1f) == 0 /* bottom */) {
-            mAnimationController.finish(false /* gone */);
-        }
-        if (Float.compare(progress, 0f) == 0 /* top */) {
-            mAnimationController.finish(true /* show */);
-        }
         mAnimationController = null;
         mCurrentRequest = null;
+        setState(false, false, progress);
+    }
+
+    private void setState(boolean start, boolean end, float progress) {
+        State state = State.RESET;
+        if (start && end) {
+            throw new IllegalStateException("drag start and end cannot happen in same call");
+        }
+        if (start) {
+            if (Float.compare(progress, 1f) == 0) {
+                state = State.DRAG_START_BOTTOM;
+            } else if (Float.compare(progress, 0f) == 0) {
+                state = State.DRAG_START_TOP;
+            }
+        } else if (end) {
+            if (Float.compare(progress, 1f) == 0 && mState == State.DRAG_START_TOP) {
+                state = State.FLING_END_BOTTOM;
+            } else if (Float.compare(progress, 0f) == 0 && mState == State.DRAG_START_BOTTOM) {
+                state = State.FLING_END_TOP;
+            }
+        }
+        if (DEBUG) {
+            Log.d(TAG, "setState " + mState + " -> " + state);
+        }
+        mState = state;
     }
 }

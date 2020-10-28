@@ -266,7 +266,7 @@ public abstract class AbstractStateChangeTouchController
         if (FeatureFlags.ENABLE_DEVICE_SEARCH.get() && BuildCompat.isAtLeastR()
                 && (mToState == ALL_APPS || mToState == NORMAL)) {
             mLauncher.getAllAppsController().getInsetController().onDragStart(
-                    mToState == ALL_APPS ? 0 : 1);
+                    mFromState == NORMAL ? 1f : 0f);
         }
     }
 
