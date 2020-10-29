@@ -705,8 +705,13 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
         updateIcon(icon);
 
+        ItemInfo itemInfo = (ItemInfo) getTag();
+
         // If the current icon is a placeholder color, animate its update.
-        if (mIcon != null && mIcon instanceof PlaceHolderIconDrawable) {
+        if (mIcon != null
+                && mIcon instanceof PlaceHolderIconDrawable
+                && (itemInfo == null
+                    || itemInfo.itemType != LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT)) {
             animateIconUpdate((PlaceHolderIconDrawable) mIcon, icon);
         }
 
