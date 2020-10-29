@@ -43,12 +43,12 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
 
     @Override
     public <T> T getPrimaryValue(T x, T y) {
-        return x;
+        return y;
     }
 
     @Override
     public <T> T getSecondaryValue(T x, T y) {
-        return y;
+        return x;
     }
 
     @Override
