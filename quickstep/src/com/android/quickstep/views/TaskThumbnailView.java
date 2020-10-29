@@ -16,6 +16,9 @@
 
 package com.android.quickstep.views;
 
+import static android.view.WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS;
+import static android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS;
+
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.systemui.shared.system.WindowManagerWrapper.WINDOWING_MODE_FULLSCREEN;
 
@@ -250,10 +253,10 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
     public int getSysUiStatusNavFlags() {
         if (mThumbnailData != null) {
             int flags = 0;
-            flags |= (mThumbnailData.systemUiVisibility & SYSTEM_UI_FLAG_LIGHT_STATUS_BAR) != 0
+            flags |= (mThumbnailData.appearance & APPEARANCE_LIGHT_STATUS_BARS) != 0
                     ? SystemUiController.FLAG_LIGHT_STATUS
                     : SystemUiController.FLAG_DARK_STATUS;
-            flags |= (mThumbnailData.systemUiVisibility & SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR) != 0
+            flags |= (mThumbnailData.appearance & APPEARANCE_LIGHT_NAVIGATION_BARS) != 0
                     ? SystemUiController.FLAG_LIGHT_NAV
                     : SystemUiController.FLAG_DARK_NAV;
             return flags;
