@@ -79,9 +79,7 @@ public interface DropTarget {
         public DraggableView originalView = null;
 
         /** Used for matching DROP event with its corresponding DRAG event on the server side. */
-        public final InstanceId logInstanceId =
-                new InstanceIdSequence(1 << 20 /*InstanceId.INSTANCE_ID_MAX*/)
-                    .newInstanceId();
+        public final InstanceId logInstanceId = new InstanceIdSequence().newInstanceId();
 
         public DragObject(Context context) {
             if (FeatureFlags.FOLDER_NAME_SUGGEST.get()) {

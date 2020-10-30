@@ -78,6 +78,12 @@ public class ModelDelegate implements ResourceBasedOverride {
     public void workspaceLoadComplete() { }
 
     /**
+     * Called at the end of model load task
+     */
+    @WorkerThread
+    public void modelLoadComplete() { }
+
+    /**
      * Called when the delegate is no loner needed
      */
     @WorkerThread
