@@ -850,11 +850,9 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
             }
         }
 
-        if (endTarget.isLauncher && mRecentsAnimationController != null) {
-            mRecentsAnimationController.enableInputProxy(mInputConsumer,
-                    this::createNewInputProxyHandler);
+        if (endTarget.isLauncher) {
+            mInputConsumerProxy.enable();
         }
-
         if (endTarget == HOME) {
             setShelfState(ShelfAnimState.CANCEL, LINEAR, 0);
             duration = Math.max(MIN_OVERSHOOT_DURATION, duration);
@@ -1181,6 +1179,7 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
     }
 
     private void invalidateHandler() {
+        mInputConsumerProxy.destroy();
         endRunningWindowAnim(false /* cancel */);
 
         if (mGestureEndCallback != null) {
