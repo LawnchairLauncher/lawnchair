@@ -46,6 +46,7 @@ import com.android.launcher3.allapps.search.SearchSectionInfo;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.util.PackageManagerHelper;
+import com.android.launcher3.views.SearchResultWidget;
 import com.android.systemui.plugins.shared.SearchTarget;
 
 import java.util.List;
@@ -88,6 +89,8 @@ public class AllAppsGridAdapter extends
     public static final int VIEW_TYPE_SEARCH_SUGGEST = 1 << 13;
 
     public static final int VIEW_TYPE_SEARCH_ICON = 1 << 14;
+
+    public static final int VIEW_TYPE_SEARCH_WIDGET_LIVE = 1 << 15;
 
     // Common view type masks
     public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_ALL_APPS_DIVIDER;
@@ -181,7 +184,8 @@ public class AllAppsGridAdapter extends
                     || viewType == VIEW_TYPE_SEARCH_THUMBNAIL
                     || viewType == VIEW_TYPE_SEARCH_ICON_ROW
                     || viewType == VIEW_TYPE_SEARCH_ICON
-                    || viewType == VIEW_TYPE_SEARCH_SUGGEST;
+                    || viewType == VIEW_TYPE_SEARCH_SUGGEST
+                    || viewType == VIEW_TYPE_SEARCH_WIDGET_LIVE;
         }
     }
 
@@ -427,6 +431,9 @@ public class AllAppsGridAdapter extends
             case VIEW_TYPE_SEARCH_SUGGEST:
                 return new ViewHolder(mLayoutInflater.inflate(
                         R.layout.search_result_suggest, parent, false));
+            case VIEW_TYPE_SEARCH_WIDGET_LIVE:
+                return new ViewHolder(mLayoutInflater.inflate(
+                        R.layout.search_result_widget_live, parent, false));
             default:
                 throw new RuntimeException("Unexpected view type");
         }
@@ -469,6 +476,7 @@ public class AllAppsGridAdapter extends
             case VIEW_TYPE_SEARCH_PEOPLE:
             case VIEW_TYPE_SEARCH_THUMBNAIL:
             case VIEW_TYPE_SEARCH_SUGGEST:
+            case VIEW_TYPE_SEARCH_WIDGET_LIVE:
                 SearchAdapterItem item =
                         (SearchAdapterItem) mApps.getAdapterItems().get(position);
                 SearchTargetHandler payloadResultView = (SearchTargetHandler) holder.itemView;
@@ -486,6 +494,9 @@ public class AllAppsGridAdapter extends
         if (!FeatureFlags.ENABLE_DEVICE_SEARCH.get()) return;
         if (holder.itemView instanceof AllAppsSectionDecorator.SelfDecoratingView) {
             ((AllAppsSectionDecorator.SelfDecoratingView) holder.itemView).removeDecoration();
+        }
+        if (holder.itemView instanceof SearchResultWidget) {
+            ((SearchResultWidget) holder.itemView).removeListener();
         }
     }
 
