@@ -37,7 +37,6 @@ import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 import androidx.core.view.accessibility.AccessibilityRecordCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.slice.widget.SliceView;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.BubbleTextView;
@@ -47,7 +46,6 @@ import com.android.launcher3.allapps.search.SearchSectionInfo;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.util.PackageManagerHelper;
-import com.android.launcher3.views.SearchSliceWrapper;
 import com.android.systemui.plugins.shared.SearchTarget;
 
 import java.util.List;
@@ -462,16 +460,9 @@ public class AllAppsGridAdapter extends
                     searchView.setVisibility(View.GONE);
                 }
                 break;
-            case VIEW_TYPE_SEARCH_SLICE:
-                SliceView sliceView = (SliceView) holder.itemView;
-                SearchAdapterItem slicePayload = (SearchAdapterItem) mApps.getAdapterItems().get(
-                        position);
-                SearchTarget searchTarget = slicePayload.getSearchTarget();
-                sliceView.setTag(new SearchSliceWrapper(mLauncher, sliceView, searchTarget));
-
-                break;
             case VIEW_TYPE_SEARCH_CORPUS_TITLE:
             case VIEW_TYPE_SEARCH_ROW_WITH_BUTTON:
+            case VIEW_TYPE_SEARCH_SLICE:
             case VIEW_TYPE_SEARCH_ROW:
             case VIEW_TYPE_SEARCH_ICON:
             case VIEW_TYPE_SEARCH_ICON_ROW:
@@ -495,13 +486,6 @@ public class AllAppsGridAdapter extends
         if (!FeatureFlags.ENABLE_DEVICE_SEARCH.get()) return;
         if (holder.itemView instanceof AllAppsSectionDecorator.SelfDecoratingView) {
             ((AllAppsSectionDecorator.SelfDecoratingView) holder.itemView).removeDecoration();
-        }
-        if (holder.itemView instanceof SliceView) {
-            SliceView sliceView = (SliceView) holder.itemView;
-            if (sliceView.getTag() instanceof SearchSliceWrapper) {
-                ((SearchSliceWrapper) sliceView.getTag()).destroy();
-            }
-            sliceView.setTag(null);
         }
     }
 

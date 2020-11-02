@@ -18,40 +18,42 @@
     android:background="?android:attr/selectableItemBackground"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:padding="4dp"
-    android:minHeight="48dp"
-    android:textColor="?android:attr/textColorPrimary"
-    android:textSize="14sp">
+    android:padding="@dimen/dynamic_grid_cell_padding_x"
+    android:textColor="?android:attr/textColorPrimary">
 
-    <TextView
-        android:id="@+id/title"
-        style="@style/TextTitle"
-        android:layout_width="wrap_content"
+    <View
+        android:layout_width="@dimen/search_settings_icon_size"
+        android:src="@drawable/ic_setting"
+        android:id="@+id/icon"
+        android:layout_height="@dimen/search_settings_icon_size" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:orientation="vertical"
+        android:paddingRight="@dimen/dynamic_grid_cell_padding_x"
+        android:paddingLeft="@dimen/dynamic_grid_cell_padding_x"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:textColor="?android:attr/textColorPrimary"
-        android:textSize="16sp" />
-
-    <TextView
-        android:id="@+id/description"
-        style="@style/TextTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:textColor="?android:attr/textColorPrimary"
-        android:textSize="14sp" />
-
-    <TextView
-        android:id="@+id/breadcrumbs"
-        style="@style/TextTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:alpha=".7"
-        android:textColor="?android:attr/textColorSecondary"
-        android:textSize="14sp" />
+        android:layout_weight="1">
 
 
+        <TextView
+            android:id="@+id/title"
+            style="@style/TextTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/search_line_spacing"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="@dimen/search_hero_title_size" />
+
+        <TextView
+            android:id="@+id/breadcrumbs"
+            style="@style/TextTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:textColor="?android:attr/textColorSecondary"
+            android:textSize="@dimen/search_hero_subtitle_size" />
+    </LinearLayout>
 </com.android.launcher3.views.SearchSettingsRowView>

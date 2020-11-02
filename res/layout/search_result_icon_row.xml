@@ -40,13 +40,13 @@
             android:gravity="start|center_vertical"
             android:textAlignment="viewStart"
             android:textColor="?android:attr/textColorPrimary"
-            android:textSize="@dimen/settings_hero_title_size" />
+            android:textSize="@dimen/search_hero_title_size" />
 
         <TextView
             android:layout_width="wrap_content"
             android:id="@+id/desc"
             android:textColor="?android:attr/textColorTertiary"
-            android:textSize="@dimen/settings_hero_subtitle_size"
+            android:textSize="@dimen/search_hero_subtitle_size"
             android:layout_height="wrap_content" />
     </LinearLayout>
 
@@ -57,7 +57,7 @@
         android:layout_height="match_parent"
         android:gravity="start|center_vertical"
         launcher:iconDisplay="shortcut_popup"
-        android:textSize="@dimen/settings_hero_subtitle_size"
+        android:textSize="@dimen/search_hero_subtitle_size"
         launcher:iconSizeOverride="@dimen/deep_shortcut_icon_size"
         launcher:layoutHorizontal="false" />
 
@@ -67,7 +67,7 @@
         android:layout_width="@dimen/deep_shortcut_icon_size"
         android:layout_height="match_parent"
         launcher:iconDisplay="shortcut_popup"
-        android:textSize="@dimen/settings_hero_inline_button_size"
+        android:textSize="@dimen/search_hero_inline_button_size"
         launcher:iconSizeOverride="@dimen/deep_shortcut_icon_size"
         launcher:layoutHorizontal="false" />
 
