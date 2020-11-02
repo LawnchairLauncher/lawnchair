@@ -96,6 +96,8 @@ public class ItemClickHandler {
             if (v instanceof PendingAppWidgetHostView) {
                 onClickPendingWidget((PendingAppWidgetHostView) v, launcher);
             }
+        } else if (tag instanceof RemoteActionItemInfo) {
+            onClickRemoteAction(launcher, (RemoteActionItemInfo) tag);
         }
     }
 
