@@ -52,7 +52,7 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Удалить"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"О приложении"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Установить"</string>
-    <string name="dismiss_prediction_label" msgid="3357562989568808658">"Скрыть рекомендацию"</string>
+    <string name="dismiss_prediction_label" msgid="3357562989568808658">"Не рекомендовать"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"Закрепить рекомендацию"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"Создание ярлыков"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Приложение сможет самостоятельно добавлять ярлыки."</string>
@@ -80,14 +80,15 @@
     <string name="folder_tap_to_rename" msgid="4017685068016979677">"Нажмите, чтобы подтвердить переименование"</string>
     <string name="folder_closed" msgid="4100806530910930934">"Папка закрыта"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"Папка переименована в \"<xliff:g id="NAME">%1$s</xliff:g>\""</string>
-    <string name="folder_name_format" msgid="6629239338071103179">"Папка: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_name_format_exact" msgid="8626242716117004803">"Папка \"<xliff:g id="NAME">%1$s</xliff:g>\" (объектов: <xliff:g id="SIZE">%2$d</xliff:g>)"</string>
+    <string name="folder_name_format_overflow" msgid="4270108890534995199">"Папка \"<xliff:g id="NAME">%1$s</xliff:g>\" (объектов: <xliff:g id="SIZE">%2$d</xliff:g> или больше)"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Виджеты"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Обои"</string>
     <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"Стили и обои"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Главный экран"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Функция отключена администратором"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Разрешить поворачивать главный экран"</string>
-    <string name="allow_rotation_desc" msgid="8662546029078692509">"Когда телефон повернут"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"При повороте телефона"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"Значки уведомлений"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"Включены"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"Отключены"</string>
@@ -141,7 +142,7 @@
     <string name="work_profile_edu_work_apps" msgid="237051938268703058">"Рабочие приложения и данные видны системному администратору."</string>
     <string name="work_profile_edu_next" msgid="8783418929296503629">"Далее"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"ОК"</string>
-    <string name="work_apps_paused_title" msgid="2389865654362803723">"Рабочий профиль приостановлен"</string>
+    <string name="work_apps_paused_title" msgid="2389865654362803723">"Действие рабочего профиля приостановлено."</string>
     <string name="work_apps_paused_body" msgid="2197210494568696054">"Рабочие приложения не могут отправлять уведомления, расходовать заряд батареи и получать доступ к вашему местоположению."</string>
     <string name="work_apps_paused_content_description" msgid="7553586952985486433">"Рабочий профиль приостановлен. Рабочие приложения не могут отправлять уведомления, расходовать заряд батареи и получать доступ к данным о вашем местоположении."</string>
     <string name="work_switch_tip" msgid="808075064383839144">"Приостановить рабочие приложения и уведомления"</string>

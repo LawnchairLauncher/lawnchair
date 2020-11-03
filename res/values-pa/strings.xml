@@ -53,7 +53,7 @@
     <string name="app_info_drop_target_label" msgid="692894985365717661">"ਐਪ ਜਾਣਕਾਰੀ"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"ਸਥਾਪਤ ਕਰੋ"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"ਐਪ ਦਾ ਸੁਝਾਅ ਨਾ ਦਿਓ"</string>
-    <string name="pin_prediction" msgid="4196423321649756498">"ਪਿੰਨ ਦਾ ਪੂਰਵ-ਅਨੁਮਾਨ"</string>
+    <string name="pin_prediction" msgid="4196423321649756498">"ਪੂਰਵ-ਅਨੁਮਾਨ ਪਿੰਨ ਕਰੋ"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"ਸ਼ਾਰਟਕੱਟ ਸਥਾਪਤ ਕਰੋ"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"ਇੱਕ ਐਪ ਨੂੰ ਵਰਤੋਂਕਾਰ ਦੇ ਦਖ਼ਲ ਤੋਂ ਬਿਨਾਂ ਸ਼ਾਰਟਕੱਟ ਸ਼ਾਮਲ ਕਰਨ ਦੀ ਆਗਿਆ ਦਿੰਦਾ ਹੈ।"</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"ਹੋਮ ਸੈਟਿੰਗਾਂ ਅਤੇ ਸ਼ਾਰਟਕੱਟ ਪੜ੍ਹੋ"</string>
@@ -78,14 +78,15 @@
     <string name="folder_tap_to_rename" msgid="4017685068016979677">"ਬਦਲੇ ਗਏ ਨਾਮ ਨੂੰ ਰੱਖਿਅਤ ਕਰਨ ਲਈ ਟੈਪ ਕਰੋ"</string>
     <string name="folder_closed" msgid="4100806530910930934">"ਫੋਲਡਰ ਬੰਦ ਕੀਤਾ"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"ਫੋਲਡਰ ਨੂੰ <xliff:g id="NAME">%1$s</xliff:g> ਮੁੜ ਨਾਮ ਦਿੱਤਾ ਗਿਆ"</string>
-    <string name="folder_name_format" msgid="6629239338071103179">"ਫੋਲਡਰ: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_name_format_exact" msgid="8626242716117004803">"ਫੋਲਡਰ: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> ਆਈਟਮਾਂ"</string>
+    <string name="folder_name_format_overflow" msgid="4270108890534995199">"ਫੋਲਡਰ: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> ਜਾਂ ਹੋਰ ਆਈਟਮਾਂ"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"ਵਿਜੇਟ"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"ਵਾਲਪੇਪਰ"</string>
     <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"ਸ਼ੈਲੀਆਂ ਅਤੇ ਵਾਲਪੇਪਰ"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"ਹੋਮ ਸੈਟਿੰਗਾਂ"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"ਤੁਹਾਡੇ ਪ੍ਰਸ਼ਾਸਕ ਦੁਆਰਾ ਅਯੋਗ ਬਣਾਈ ਗਈ"</string>
-    <string name="allow_rotation_title" msgid="7728578836261442095">"ਹੋਮ ਸਕ੍ਰੀਨ ਨੂੰ ਘੁੰਮਾਉਣ ਦੀ ਆਗਿਆ ਦਿਓ"</string>
-    <string name="allow_rotation_desc" msgid="8662546029078692509">"ਜਦੋਂ ਫ਼ੋਨ ਘੁੰਮਾਇਆ ਜਾਂਦਾ ਹੈ"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"ਹੋਮ ਸਕ੍ਰੀਨ ਨੂੰ ਘੁਮਾਉਣ ਦੀ ਆਗਿਆ ਦਿਓ"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"ਜਦੋਂ ਫ਼ੋਨ ਘੁਮਾਇਆ ਜਾਂਦਾ ਹੈ"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"ਸੂਚਨਾ ਬਿੰਦੂ"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"ਚਾਲੂ"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"ਬੰਦ"</string>

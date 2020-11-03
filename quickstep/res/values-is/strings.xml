@@ -32,17 +32,19 @@
     <string name="title_app_suggestions" msgid="4185902664111965088">"Tillögur að forritum"</string>
     <string name="all_apps_label" msgid="8542784161730910663">"Öll forrit"</string>
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"Spáð forrit"</string>
-    <string name="hotseat_edu_prompt_title" msgid="5595771595144175752">"Hafðu greiðan aðgang að forritunum sem þú notar mest"</string>
-    <string name="hotseat_edu_prompt_content" msgid="5709176001504149521">"Pixel leggur til hvaða forrit þú þarft næst á heimaskjánum sjálfum. Ýttu til að setja upp."</string>
     <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"Fáðu tillögur að forritum í neðstu röð heimaskjásins"</string>
-    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Nálgastu forritin sem þú notar mest auðveldlega á heimaskjánum. Tillögurnar breytast í samræmi við rútínurnar þínar. Forrit í neðstu röð færast upp á heimaskjáinn."</string>
-    <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"Nálgastu forritin sem þú notar mest auðveldlega á heimaskjánum. Tillögurnar breytast í samræmi við rútínurnar þínar. Forrit í neðstu röð færast í nýja möppu."</string>
+    <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"Fáðu tillögur að forritum á eftirlætissvæði heimaskjásins"</string>
+    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Nálgastu forritin sem þú notar mest auðveldlega á heimaskjánum. Tillögurnar breytast í samræmi við notkun þína. Forrit í neðstu röð færast upp á heimaskjáinn."</string>
+    <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"Nálgastu forritin sem þú notar mest á einfaldan hátt á heimaskjánum. Tillögurnar breytast í samræmi við notkun þína. Forrit á eftirlætissvæði færast á heimaskjáinn."</string>
+    <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"Nálgastu forritin sem þú notar mest auðveldlega á heimaskjánum. Tillögurnar breytast í samræmi við notkun þína. Forrit í neðstu röð færast í nýja möppu."</string>
     <string name="hotseat_edu_accept" msgid="1611544083278999837">"Fá tillögur að forritum"</string>
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"Nei, takk"</string>
-    <string name="hotseat_turn_off" msgid="7808360330229368470">"Áfram"</string>
+    <string name="hotseat_prediction_settings" msgid="6246554993566070818">"Stillingar"</string>
     <string name="hotseat_auto_enrolled" msgid="522100018967146807">"Mest notuðu forritin birtast hér og breytast í samræmi við rútínur"</string>
     <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Dragðu forrit af neðstu röð til að fá tillögð forrit"</string>
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"Tillögðum forritum bætt við autt svæði"</string>
+    <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Kveikt á tillögum að forritum"</string>
+    <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Slökkt er á tillögðum forritum"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Tillaga að forriti: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="action_share" msgid="2648470652637092375">"Deila"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Skjámynd"</string>

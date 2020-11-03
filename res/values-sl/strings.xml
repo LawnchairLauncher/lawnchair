@@ -52,7 +52,7 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Odmesti"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Podatki o aplikaciji"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Namesti"</string>
-    <string name="dismiss_prediction_label" msgid="3357562989568808658">"Ne predlagaj aplikacije"</string>
+    <string name="dismiss_prediction_label" msgid="3357562989568808658">"Ne predlagaj aplikacij"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"Predvidevanje pripenjanja"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"namestitev bližnjic"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Aplikaciji dovoli dodajanje bližnjic brez posredovanja uporabnika."</string>
@@ -80,7 +80,8 @@
     <string name="folder_tap_to_rename" msgid="4017685068016979677">"Dotaknite se, da shranite preimenovanje"</string>
     <string name="folder_closed" msgid="4100806530910930934">"Mapa je zaprta"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"Mapa je preimenovana v <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="folder_name_format" msgid="6629239338071103179">"Mapa: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_name_format_exact" msgid="8626242716117004803">"Mapa: <xliff:g id="NAME">%1$s</xliff:g>, št. elementov: <xliff:g id="SIZE">%2$d</xliff:g>"</string>
+    <string name="folder_name_format_overflow" msgid="4270108890534995199">"Mapa: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> ali več elementov"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Pripomočki"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Ozadja"</string>
     <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"Slogi in ozadja"</string>

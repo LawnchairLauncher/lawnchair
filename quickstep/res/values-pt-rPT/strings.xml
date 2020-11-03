@@ -25,24 +25,26 @@
     <string name="recents_empty_message" msgid="7040467240571714191">"Nenhum item recente"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Definições de utilização de aplicações"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Limpar tudo"</string>
-    <string name="accessibility_recent_apps" msgid="4058661986695117371">"Aplicações recentes"</string>
+    <string name="accessibility_recent_apps" msgid="4058661986695117371">"Apps recentes"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; 1 minuto"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"Resta(m) <xliff:g id="TIME">%1$s</xliff:g> hoje."</string>
     <string name="title_app_suggestions" msgid="4185902664111965088">"Sugestões de apps"</string>
     <string name="all_apps_label" msgid="8542784161730910663">"Todas as aplicações"</string>
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"As suas aplicações previstas"</string>
-    <string name="hotseat_edu_prompt_title" msgid="5595771595144175752">"Aceda facilmente às suas apps mais utilizadas"</string>
-    <string name="hotseat_edu_prompt_content" msgid="5709176001504149521">"O Pixel prevê as apps de que necessitará a seguir, diretamente no ecrã principal. Toque para configurar."</string>
-    <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"Obtenha sugestões de apps na última fila do ecrã principal."</string>
+    <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"Obtenha sugestões de apps na última fila do ecrã principal"</string>
+    <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"Obtenha sugestões de apps na fila dos favoritos do ecrã principal"</string>
     <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Aceda facilmente às suas apps mais utilizadas, diretamente no ecrã principal. As sugestões mudam em função das suas rotinas. As apps na última fila passam para o ecrã principal."</string>
+    <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"Aceda facilmente às suas apps mais utilizadas no ecrã principal. As sugestões mudam em função das suas rotinas. As apps na fila dos favoritos passam para o ecrã principal."</string>
     <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"Aceda facilmente às suas apps mais utilizadas, diretamente no ecrã principal. As sugestões mudam em função das suas rotinas. As apps na última fila passam para uma nova pasta."</string>
     <string name="hotseat_edu_accept" msgid="1611544083278999837">"Obter sugestões de apps"</string>
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"Não, obrigado"</string>
-    <string name="hotseat_turn_off" msgid="7808360330229368470">"Definições"</string>
+    <string name="hotseat_prediction_settings" msgid="6246554993566070818">"Definições"</string>
     <string name="hotseat_auto_enrolled" msgid="522100018967146807">"As apps mais utilizadas aparecem aqui e mudam em função das rotinas."</string>
     <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Arraste as apps para fora da última fila para obter sugestões de apps."</string>
-    <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"Sugestões de apps adicionadas ao espaço vazio."</string>
+    <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"Sugestões de apps adicionadas a um espaço vazio."</string>
+    <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Sugestões de apps ativadas"</string>
+    <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"As sugestões de apps estão desativadas"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"App prevista: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="action_share" msgid="2648470652637092375">"Partilhar"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Tirar captura de ecrã"</string>

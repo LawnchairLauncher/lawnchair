@@ -53,7 +53,7 @@
     <string name="app_info_drop_target_label" msgid="692894985365717661">"యాప్ సమాచారం"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"ఇన్‌స్టాల్ చేయండి"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"యాప్‌ను సూచించవద్దు"</string>
-    <string name="pin_prediction" msgid="4196423321649756498">"పిన్ సూచన"</string>
+    <string name="pin_prediction" msgid="4196423321649756498">"సూచనను పిన్ చేయండి"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"షార్ట్‌కట్‌లను ఇన్‌స్టాల్ చేయడం"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"వినియోగదారు ప్రమేయం లేకుండా సత్వరమార్గాలను జోడించడానికి అనువర్తనాన్ని అనుమతిస్తుంది."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"హోమ్ సెట్టింగ్‌లు మరియు సత్వరమార్గాలను చదవడం"</string>
@@ -78,7 +78,8 @@
     <string name="folder_tap_to_rename" msgid="4017685068016979677">"పేరు మార్పును సేవ్ చేయడానికి నొక్కండి"</string>
     <string name="folder_closed" msgid="4100806530910930934">"ఫోల్డర్ మూసివేయబడింది"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"ఫోల్డర్ పేరు <xliff:g id="NAME">%1$s</xliff:g>గా మార్చబడింది"</string>
-    <string name="folder_name_format" msgid="6629239338071103179">"ఫోల్డర్: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_name_format_exact" msgid="8626242716117004803">"ఫోల్డర్: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> ఐటెమ్‌లు"</string>
+    <string name="folder_name_format_overflow" msgid="4270108890534995199">"ఫోల్డర్: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> లేదా అంతకంటే ఎక్కువ ఐటెమ్‌లు"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"విడ్జెట్‌లు"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"వాల్‌పేపర్‌లు"</string>
     <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"స్ట‌యిల్స్‌ &amp; వాల్‌పేపర్‌లు"</string>
@@ -97,7 +98,7 @@
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"కొత్త యాప్‌ల కోసం"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"తెలియదు"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"తీసివేయి"</string>
-    <string name="abandoned_search" msgid="891119232568284442">"వెతుకు"</string>
+    <string name="abandoned_search" msgid="891119232568284442">"సెర్చ్"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"ఈ యాప్ ఇన్‌స్టాల్ చేయబడలేదు"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"ఈ చిహ్నం యొక్క యాప్ ఇన్‌స్టాల్ చేయబడలేదు. మీరు దీన్ని తీసివేయవచ్చు లేదా ఆ యాప్ కోసం శోధించి దాన్ని మాన్యువల్‌గా ఇన్‌స్టాల్ చేయవచ్చు."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> డౌన్‌లోడ్ అవుతోంది, <xliff:g id="PROGRESS">%2$s</xliff:g> పూర్తయింది"</string>

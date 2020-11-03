@@ -22,16 +22,19 @@ import static android.view.Gravity.CENTER_VERTICAL;
 import static android.view.Gravity.END;
 import static android.view.Gravity.START;
 import static android.view.Gravity.TOP;
+import static android.view.Surface.ROTATION_180;
+import static android.view.Surface.ROTATION_270;
+import static android.view.Surface.ROTATION_90;
 import static android.widget.Toast.LENGTH_SHORT;
 
 import static com.android.launcher3.QuickstepAppTransitionManagerImpl.RECENTS_LAUNCH_DURATION;
 import static com.android.launcher3.Utilities.comp;
+import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncestor;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent
-        .LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_TAP;
 
 import android.animation.Animator;
@@ -53,7 +56,9 @@ import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.Surface;
+import android.view.TouchDelegate;
 import android.view.View;
 import android.view.ViewOutlineProvider;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -78,6 +83,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.TransformingTouchDelegate;
 import com.android.launcher3.util.ViewPool.Reusable;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.TaskIconCache;
@@ -122,6 +128,14 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     public static final long SCALE_ICON_DURATION = 120;
     private static final long DIM_ANIM_DURATION = 700;
+    /**
+     * This technically can be a vanilla {@link TouchDelegate} class, however that class requires
+     * setting the touch bounds at construction, so we'd repeatedly be created many instances
+     * unnecessarily as scrolling occurs, whereas {@link TransformingTouchDelegate} allows touch
+     * delegated bounds only to be updated.
+     */
+    private TransformingTouchDelegate mIconTouchDelegate;
+    private TransformingTouchDelegate mChipTouchDelegate;
 
     private static final List<Rect> SYSTEM_GESTURE_EXCLUSION_RECT =
             Collections.singletonList(new Rect());
@@ -186,6 +200,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private int mStackHeight;
     private View mContextualChipWrapper;
     private View mContextualChip;
+    private final float[] mIconCenterCoords = new float[2];
+    private final float[] mChipCenterCoords = new float[2];
 
     public TaskView(Context context) {
         this(context, null);
@@ -246,6 +262,54 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         super.onFinishInflate();
         mSnapshotView = findViewById(R.id.snapshot);
         mIconView = findViewById(R.id.icon);
+        mIconTouchDelegate = new TransformingTouchDelegate(mIconView);
+    }
+
+    /**
+     * Whether the taskview should take the touch event from parent. Events passed to children
+     * that might require special handling.
+     */
+    public boolean offerTouchToChildren(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            computeAndSetIconTouchDelegate();
+            computeAndSetChipTouchDelegate();
+        }
+        if (mIconTouchDelegate != null && mIconTouchDelegate.onTouchEvent(event)) {
+            return true;
+        }
+        if (mChipTouchDelegate != null && mChipTouchDelegate.onTouchEvent(event)) {
+            return true;
+        }
+        return false;
+    }
+
+    private void computeAndSetIconTouchDelegate() {
+        float iconHalfSize = mIconView.getWidth() / 2f;
+        mIconCenterCoords[0] = mIconCenterCoords[1] = iconHalfSize;
+        getDescendantCoordRelativeToAncestor(mIconView, mActivity.getDragLayer(), mIconCenterCoords,
+                false);
+        mIconTouchDelegate.setBounds(
+                (int) (mIconCenterCoords[0] - iconHalfSize),
+                (int) (mIconCenterCoords[1] - iconHalfSize),
+                (int) (mIconCenterCoords[0] + iconHalfSize),
+                (int) (mIconCenterCoords[1] + iconHalfSize));
+    }
+
+    private void computeAndSetChipTouchDelegate() {
+        if (mContextualChipWrapper != null) {
+            float chipHalfWidth = mContextualChipWrapper.getWidth() / 2f;
+            float chipHalfHeight = mContextualChipWrapper.getHeight() / 2f;
+            mChipCenterCoords[0] = chipHalfWidth;
+            mChipCenterCoords[1] = chipHalfHeight;
+            getDescendantCoordRelativeToAncestor(mContextualChipWrapper, mActivity.getDragLayer(),
+                    mChipCenterCoords,
+                    false);
+            mChipTouchDelegate.setBounds(
+                    (int) (mChipCenterCoords[0] - chipHalfWidth),
+                    (int) (mChipCenterCoords[1] - chipHalfHeight),
+                    (int) (mChipCenterCoords[0] + chipHalfWidth),
+                    (int) (mChipCenterCoords[1] + chipHalfHeight));
+        }
     }
 
     /**
@@ -255,6 +319,9 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
      * @param modalness [0, 1] 0 being in context with other tasks, 1 being shown on its own.
      */
     public void setModalness(float modalness) {
+        if (mModalness == modalness) {
+            return;
+        }
         mModalness = modalness;
         mIconView.setAlpha(comp(modalness));
         if (mContextualChip != null) {
@@ -264,7 +331,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         if (mContextualChipWrapper != null) {
             mContextualChipWrapper.setAlpha(comp(modalness));
         }
-
         updateFooterVerticalOffset(mFooterVerticalOffset);
     }
 
@@ -468,18 +534,18 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         int thumbnailPadding = (int) getResources().getDimension(R.dimen.task_thumbnail_top_margin);
         LayoutParams iconParams = (LayoutParams) mIconView.getLayoutParams();
         switch (orientationHandler.getRotation()) {
-            case Surface.ROTATION_90:
+            case ROTATION_90:
                 iconParams.gravity = (isRtl ? START : END) | CENTER_VERTICAL;
                 iconParams.rightMargin = -thumbnailPadding;
                 iconParams.leftMargin = 0;
                 iconParams.topMargin = snapshotParams.topMargin / 2;
                 break;
-            case Surface.ROTATION_180:
+            case ROTATION_180:
                 iconParams.gravity = BOTTOM | CENTER_HORIZONTAL;
                 iconParams.bottomMargin = -thumbnailPadding;
                 iconParams.leftMargin = iconParams.topMargin = iconParams.rightMargin = 0;
                 break;
-            case Surface.ROTATION_270:
+            case ROTATION_270:
                 iconParams.gravity = (isRtl ? END : START) | CENTER_VERTICAL;
                 iconParams.leftMargin = -thumbnailPadding;
                 iconParams.rightMargin = 0;
@@ -512,7 +578,11 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                 .getInterpolation(progress);
         mIconView.setScaleX(scale);
         mIconView.setScaleY(scale);
-
+        if (mContextualChip != null && mContextualChipWrapper != null) {
+            mContextualChipWrapper.setAlpha(scale);
+            mContextualChip.setScaleX(scale);
+            mContextualChip.setScaleY(scale);
+        }
         updateFooterVerticalOffset(1.0f - scale);
     }
 
@@ -691,6 +761,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                 mContextualChip.animate().scaleX(1f).scaleY(1f).setDuration(50);
             }
             if (mContextualChipWrapper != null) {
+                mChipTouchDelegate = new TransformingTouchDelegate(mContextualChipWrapper);
                 mContextualChipWrapper.animate().alpha(1f).setDuration(50);
             }
         }
@@ -712,6 +783,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         View oldContextualChipWrapper = mContextualChipWrapper;
         mContextualChipWrapper = null;
         mContextualChip = null;
+        mChipTouchDelegate = null;
         return oldContextualChipWrapper;
     }
 

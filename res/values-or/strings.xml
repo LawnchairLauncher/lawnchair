@@ -52,7 +52,7 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"ଅନଇନଷ୍ଟଲ୍‌ କରନ୍ତୁ"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"ଆପ୍‌ ସୂଚନା"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"ଇନଷ୍ଟଲ୍‌ କରନ୍ତୁ"</string>
-    <string name="dismiss_prediction_label" msgid="3357562989568808658">"ଆପ୍ ସୁପାରିଶ କରନ୍ତୁ ନାହିଁ"</string>
+    <string name="dismiss_prediction_label" msgid="3357562989568808658">"ଆପ୍ ପରାମର୍ଶ ଦିଅନ୍ତୁ ନାହିଁ"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"ପୂର୍ବାନୁମାନକୁ ପିନ୍ କରନ୍ତୁ"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"ଶର୍ଟକଟ୍‍ ଇନଷ୍ଟଲ୍‌ କରନ୍ତୁ"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"ୟୁଜରଙ୍କ ବିନା ହସ୍ତକ୍ଷେପରେ ଶର୍ଟକଟ୍‌ ଯୋଡ଼ିବାକୁ ଆପକୁ ଅନୁମତି ଦିଏ।"</string>
@@ -78,13 +78,14 @@
     <string name="folder_tap_to_rename" msgid="4017685068016979677">"ନାମ ବଦଳାଇବା ସେଭ୍ କରିବାକୁ ଟାପ୍‌ କରନ୍ତୁ"</string>
     <string name="folder_closed" msgid="4100806530910930934">"ଫୋଲ୍ଡର ବନ୍ଦ କରାଗଲା"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"ଫୋଲ୍ଡରର ନାମ <xliff:g id="NAME">%1$s</xliff:g>କୁ ବଦଳାଗଲା"</string>
-    <string name="folder_name_format" msgid="6629239338071103179">"ଫୋଲ୍ଡର: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_name_format_exact" msgid="8626242716117004803">"ଫୋଲ୍ଡର୍: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> ଆଇଟମଗୁଡ଼ିକ"</string>
+    <string name="folder_name_format_overflow" msgid="4270108890534995199">"ଫୋଲ୍ଡର୍: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> କିମ୍ବା ଅଧିକ ଆଇଟମ୍"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"ୱିଜେଟ୍‌"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"ୱାଲପେପର୍‌"</string>
     <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"ଷ୍ଟାଇଲ୍ ଏବଂ ୱାଲ୍‍‍ପେପର୍"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"ହୋମ୍‌ ସେଟିଂସ୍"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"ଆପଣଙ୍କ ଆଡମିନଙ୍କ ଦ୍ୱାରା ଅକ୍ଷମ କରାଯାଇଛି"</string>
-    <string name="allow_rotation_title" msgid="7728578836261442095">"ହୋମ୍‌ ସ୍କ୍ରୀନ୍ ବୁଲାଇବା ଅନୁମତି ଦିଅନ୍ତୁ"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"ହୋମ୍‌ ସ୍କ୍ରିନ୍ ବୁଲାଇବାକୁ ଅନୁମତି ଦିଅନ୍ତୁ"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"ଯେତେବେଳେ ଫୋନକୁ ବୁଲାଯାଇଥାଏ"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"ବିଜ୍ଞପ୍ତି ଡଟ୍ସ"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"ଚାଲୁ"</string>
@@ -93,11 +94,11 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"ବିଜ୍ଞପ୍ତି ବିନ୍ଦୁ ଦେଖାଇବାକୁ, <xliff:g id="NAME">%1$s</xliff:g> ପାଇଁ ଆପ୍‌ ବିଜ୍ଞପ୍ତି ଅନ୍‌ କରନ୍ତୁ"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"ସେଟିଂସ୍ ପରିବର୍ତ୍ତନ କରନ୍ତୁ"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"ବିଜ୍ଞପ୍ତି ଡଟ୍‌ଗୁଡ଼ିକୁ ଦେଖାନ୍ତୁ"</string>
-    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"ମୂଳ ସ୍କ୍ରିନରେ ଆପ୍ ଆଇକନଗୁଡ଼ିକୁ ଯୋଗ କରନ୍ତୁ"</string>
+    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"ହୋମ୍ ସ୍କ୍ରିନରେ ଆପ୍ ଆଇକନଗୁଡ଼ିକୁ ଯୋଗ କରନ୍ତୁ"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"ନୂଆ ଆପ୍‌ ପାଇଁ"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"ଅଜଣା"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"ବାହାର କରନ୍ତୁ"</string>
-    <string name="abandoned_search" msgid="891119232568284442">"ସର୍ଚ୍ଚ କରନ୍ତୁ"</string>
+    <string name="abandoned_search" msgid="891119232568284442">"Search"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"ଏହି ଆପ୍‌ ଇନଷ୍ଟଲ୍‌ ହୋଇନାହିଁ"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"ଏହି ଆଇକନ୍‌ ପାଇଁ ଆପ୍‌ ଇନଷ୍ଟଲ୍‌ ହୋଇନାହିଁ। ଏହାକୁ ଆପଣ ଆପ୍‌ ପାଇଁ ବାହାର କରିପାରିବେ କିମ୍ୱା ସର୍ଚ୍ଚ କରି ପାରିବେ ଏବଂ ଏହାକୁ ମାନୁଆଲ୍‌ ଭାବରେ ଇନଷ୍ଟଲ୍‌ କରିପାରିବେ।"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> ଡାଉନଲୋଡ୍‌ ହେଉଛି, <xliff:g id="PROGRESS">%2$s</xliff:g> ସମ୍ପୂର୍ଣ୍ଣ"</string>

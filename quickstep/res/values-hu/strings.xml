@@ -20,7 +20,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="recent_task_option_split_screen" msgid="5353188922202653570">"Osztott képernyő"</string>
-    <string name="recent_task_option_pin" msgid="7929860679018978258">"Rögzítés"</string>
+    <string name="recent_task_option_pin" msgid="7929860679018978258">"Kitűzés"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Szabad forma"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Nincsenek mostanában használt elemek"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Alkalmazáshasználati beállítások"</string>
@@ -32,17 +32,19 @@
     <string name="title_app_suggestions" msgid="4185902664111965088">"Alkalmazásjavaslatok"</string>
     <string name="all_apps_label" msgid="8542784161730910663">"Az összes alkalmazás"</string>
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"Várható alkalmazások"</string>
-    <string name="hotseat_edu_prompt_title" msgid="5595771595144175752">"Könnyedén hozzáférhet a leggyakrabban használt alkalmazásokhoz"</string>
-    <string name="hotseat_edu_prompt_content" msgid="5709176001504149521">"A Pixel telefon kitalálja, melyik alkalmazásra lesz következőleg szüksége – egyenesen a kezdőképernyőn. Koppintson a beállításhoz."</string>
     <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"Alkalmazásjavaslatokat kaphat a kezdőképernyő alsó sorában"</string>
+    <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"Alkalmazásjavaslatokat kaphat a kezdőképernyőn megjelenő kedvencek sorában"</string>
     <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"A kezdőképernyőről könnyedén hozzáférhet a leggyakrabban használt alkalmazásokhoz. A javaslatok a rutinjai alapján változni fognak. Az alsó sorban lévő alkalmazások felkerülnek a kezdőképernyőre."</string>
+    <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"A kezdőképernyőről könnyedén hozzáférhet a leggyakrabban használt alkalmazásokhoz. A javaslatok a rutinjai alapján változnak majd. A kedvencek sorában lévő alkalmazások a kezdőképernyőre kerülnek."</string>
     <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"A kezdőképernyőről könnyedén hozzáférhet a leggyakrabban használt alkalmazásokhoz. A javaslatok a rutinjai alapján változni fognak. Az alsó sorban lévő alkalmazások egy új mappába kerülnek."</string>
-    <string name="hotseat_edu_accept" msgid="1611544083278999837">"Alkalmazásjavaslatok kérése"</string>
+    <string name="hotseat_edu_accept" msgid="1611544083278999837">"Kérek javaslatokat"</string>
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"Köszönöm, nem"</string>
-    <string name="hotseat_turn_off" msgid="7808360330229368470">"Beállítások"</string>
+    <string name="hotseat_prediction_settings" msgid="6246554993566070818">"Beállítások"</string>
     <string name="hotseat_auto_enrolled" msgid="522100018967146807">"A leggyakrabban használt alkalmazások jelennek meg itt; a lista a rutinok alapján változhat"</string>
     <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Alkalmazásjavaslatok kéréséhez húzzon ki alkalmazásokat az alsó sorból"</string>
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"Alkalmazásjavaslatok hozzáadva az üres területhez"</string>
+    <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Alkalmazásjavaslatok engedélyezve"</string>
+    <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Alkalmazásjavaslatok letiltva"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Várható alkalmazás: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="action_share" msgid="2648470652637092375">"Megosztás"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Képernyőkép"</string>

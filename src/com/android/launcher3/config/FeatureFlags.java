@@ -92,7 +92,7 @@ public final class FeatureFlags {
 
     // Keep as DeviceFlag to allow remote disable in emergency.
     public static final BooleanFlag ENABLE_SUGGESTED_ACTIONS_OVERVIEW = new DeviceFlag(
-            "ENABLE_SUGGESTED_ACTIONS_OVERVIEW", false, "Show chip hints on the overview screen");
+            "ENABLE_SUGGESTED_ACTIONS_OVERVIEW", true, "Show chip hints on the overview screen");
 
     public static final BooleanFlag FOLDER_NAME_SUGGEST = new DeviceFlag(
             "FOLDER_NAME_SUGGEST", true,
@@ -176,6 +176,10 @@ public final class FeatureFlags {
 
     public static final BooleanFlag USER_EVENT_DISPATCHER = new DeviceFlag(
             "USER_EVENT_DISPATCHER", true, "User event dispatcher collects logs.");
+
+    public static final BooleanFlag ENABLE_MINIMAL_DEVICE = new DeviceFlag(
+            "ENABLE_MINIMAL_DEVICE", false,
+            "Allow user to toggle minimal device mode in launcher.");
 
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
