@@ -17,7 +17,7 @@
 <favorites xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3">
 
     <!-- Hotseat (We use the screen as the position of the item in the hotseat) -->
-    <!-- Dialer, Messaging, [Maps/Music], Browser, Camera -->
+    <!-- Dialer, Messaging, [Maps/Music/Settings], Browser, Camera -->
     <resolve
         launcher:container="-101"
         launcher:screen="0"
@@ -47,6 +47,7 @@
         launcher:y="0" >
         <favorite launcher:uri="#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_MAPS;end" />
         <favorite launcher:uri="#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_MUSIC;end" />
+        <favorite launcher:uri="#Intent;action=android.settings.SETTINGS;end" />
     </resolve>
 
     <resolve
