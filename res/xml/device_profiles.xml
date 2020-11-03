@@ -18,6 +18,34 @@
 <profiles xmlns:launcher="http://schemas.android.com/apk/res-auto" >
 
     <grid-option
+        launcher:name="2_by_2"
+        launcher:numRows="2"
+        launcher:numColumns="2"
+        launcher:numFolderRows="2"
+        launcher:numFolderColumns="2"
+        launcher:numHotseatIcons="2"
+        launcher:dbFile="launcher_2_by_2.db"
+        launcher:defaultLayoutId="@xml/default_workspace_2x2" >
+
+        <display-option
+            launcher:name="Super Short Stubby"
+            launcher:minWidthDps="200"
+            launcher:minHeightDps="200"
+            launcher:iconImageSize="48"
+            launcher:iconTextSize="13.0"
+            launcher:canBeDefault="true" />
+
+        <display-option
+            launcher:name="Shorter Stubby"
+            launcher:minWidthDps="200"
+            launcher:minHeightDps="300"
+            launcher:iconImageSize="48"
+            launcher:iconTextSize="13.0"
+            launcher:canBeDefault="true" />
+
+    </grid-option>
+
+    <grid-option
         launcher:name="3_by_3"
         launcher:numRows="3"
         launcher:numColumns="3"
