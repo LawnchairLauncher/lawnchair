@@ -63,7 +63,6 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.R;
 import com.android.launcher3.WorkspaceLayoutManager;
-import com.android.launcher3.allapps.SearchUiManager;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.icons.BaseIconFactory;
@@ -510,12 +509,6 @@ public class LauncherPreviewRenderer {
                 lp.canReorder = false;
                 mWorkspace.addViewToCellLayout(qsb, 0, R.id.search_container_workspace, lp, true);
             }
-
-            // Setup search view
-            SearchUiManager searchUiManager =
-                    mRootView.findViewById(R.id.search_container_all_apps);
-            mRootView.findViewById(R.id.apps_view).setTranslationY(
-                    mDp.heightPx - searchUiManager.getScrollRangeDelta(mInsets));
 
             measureView(mRootView, mDp.widthPx, mDp.heightPx);
             dispatchVisibilityAggregated(mRootView, true);
