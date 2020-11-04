@@ -297,7 +297,6 @@ public final class TaskViewUtils {
         PendingAnimation pa = new PendingAnimation(RECENTS_LAUNCH_DURATION);
         createRecentsWindowAnimator(taskView, skipLauncherChanges, appTargets, wallpaperTargets,
                 depthController, pa);
-        anim.play(pa.buildAnim());
 
         Animator childStateAnimation = null;
         // Found a visible recents task that matches the opening app, lets launch the app from there
@@ -330,7 +329,11 @@ public final class TaskViewUtils {
                 }
             };
         }
-        anim.play(launcherAnim);
+        pa.add(launcherAnim);
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && recentsView.getRunningTaskIndex() != -1) {
+            pa.addOnFrameCallback(recentsView::redrawLiveTile);
+        }
+        anim.play(pa.buildAnim());
 
         // Set the current animation first, before adding windowAnimEndListener. Setting current
         // animation adds some listeners which need to be called before windowAnimEndListener

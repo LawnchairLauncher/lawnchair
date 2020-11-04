@@ -446,6 +446,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             canvas.restoreToCount(count);
         }
         super.onDraw(canvas);
+        drawDotIfNecessary(canvas);
     }
 
     protected void drawFocusHighlight(Canvas canvas) {
