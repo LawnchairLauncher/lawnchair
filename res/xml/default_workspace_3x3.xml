@@ -16,6 +16,16 @@
 
 <favorites xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3">
 
+    <!-- Smartspace Widget -->
+    <appwidget
+        launcher:screen="0"
+        launcher:x="0"
+        launcher:y="0"
+        launcher:spanX="3"
+        launcher:spanY="1"
+        launcher:packageName="com.google.android.googlequicksearchbox"
+        launcher:className="com.google.android.apps.gsa.staticplugins.smartspace.widget.SmartspaceWidgetProvider" />
+
     <!-- Hotseat (We use the screen as the position of the item in the hotseat) -->
     <!-- Messaging, [All Apps], Dialer -->
 
