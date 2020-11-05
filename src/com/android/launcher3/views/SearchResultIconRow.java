@@ -17,188 +17,173 @@ package com.android.launcher3.views;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
-import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
-import android.app.RemoteAction;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.ShortcutInfo;
-import android.content.res.TypedArray;
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
+import android.os.UserHandle;
 import android.util.AttributeSet;
-import android.widget.EditText;
+import android.util.Pair;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.search.AllAppsSearchBarController;
 import com.android.launcher3.allapps.search.SearchEventTracker;
-import com.android.launcher3.icons.BitmapInfo;
-import com.android.launcher3.icons.LauncherIcons;
-import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
-import com.android.launcher3.model.data.RemoteActionItemInfo;
+import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
-import com.android.launcher3.touch.ItemClickHandler;
-import com.android.launcher3.util.Themes;
 import com.android.systemui.plugins.shared.SearchTarget;
 import com.android.systemui.plugins.shared.SearchTargetEvent;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * A view representing a stand alone shortcut search result
+ * A full width representation of {@link SearchResultIcon} with a secondary label and inline
+ * shortcuts
  */
-public class SearchResultIconRow extends DoubleShadowBubbleTextView implements
-        AllAppsSearchBarController.SearchTargetHandler {
+public class SearchResultIconRow extends LinearLayout implements
+        AllAppsSearchBarController.SearchTargetHandler, View.OnClickListener,
+        View.OnLongClickListener {
+    public static final int MAX_SHORTCUTS_COUNT = 2;
 
 
-    public static final String TARGET_TYPE_REMOTE_ACTION = "remote_action";
-    public static final String TARGET_TYPE_SUGGEST = "suggest";
-    public static final String TARGET_TYPE_SHORTCUT = "shortcut";
-
-
-    public static final String REMOTE_ACTION_SHOULD_START = "should_start_for_result";
-    public static final String REMOTE_ACTION_TOKEN = "action_token";
-
-    private final boolean mMatchesInset;
+    private final Launcher mLauncher;
+    private final LauncherAppState mLauncherAppState;
+    private SearchResultIcon mResultIcon;
+    private TextView mTitleView;
+    private TextView mDescriptionView;
+    private BubbleTextView[] mShortcutViews = new BubbleTextView[2];
 
     private SearchTarget mSearchTarget;
+    private PackageItemInfo mProviderInfo;
 
-    @Nullable private Drawable mCustomIcon;
 
-    public SearchResultIconRow(@NonNull Context context) {
+    public SearchResultIconRow(Context context) {
         this(context, null, 0);
     }
 
-    public SearchResultIconRow(@NonNull Context context,
+    public SearchResultIconRow(Context context,
             @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public SearchResultIconRow(@NonNull Context context, @Nullable AttributeSet attrs,
-            int defStyleAttr) {
+    public SearchResultIconRow(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        TypedArray a = context.obtainStyledAttributes(attrs,
-                R.styleable.SearchResultIconRow, defStyleAttr, 0);
-        mMatchesInset = a.getBoolean(R.styleable.SearchResultIconRow_matchTextInsetWithQuery,
-                false);
-
-        int customIconResId = a.getResourceId(R.styleable.SearchResultIconRow_customIcon, 0);
-
-        if (customIconResId != 0) {
-            mCustomIcon = Launcher.getLauncher(context).getDrawable(customIconResId);
-        }
-
-        a.recycle();
-    }
-
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        Launcher launcher = Launcher.getLauncher(getContext());
-        if (mMatchesInset && launcher.getAppsView() != null && getParent() != null) {
-            EditText editText = launcher.getAppsView().getSearchUiManager().getEditText();
-            if (editText != null) {
-                int counterOffset = getIconSize() + getCompoundDrawablePadding() / 2;
-                setPadding(editText.getLeft() - counterOffset, getPaddingTop(),
-                        getPaddingRight(), getPaddingBottom());
-            }
-        }
+        mLauncher = Launcher.getLauncher(getContext());
+        mLauncherAppState = LauncherAppState.getInstance(getContext());
     }
 
     @Override
-    protected void drawFocusHighlight(Canvas canvas) {
-        mHighlightPaint.setColor(mHighlightColor);
-        float r = Themes.getDialogCornerRadius(getContext());
-        canvas.drawRoundRect(0, 0, getWidth(), getHeight(), r, r, mHighlightPaint);
-    }
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        int iconSize = mLauncher.getDeviceProfile().allAppsIconSizePx;
 
+        mResultIcon = findViewById(R.id.icon);
+        mTitleView = findViewById(R.id.title);
+        mDescriptionView = findViewById(R.id.desc);
+        mShortcutViews[0] = findViewById(R.id.shortcut_0);
+        mShortcutViews[1] = findViewById(R.id.shortcut_1);
+        mResultIcon.getLayoutParams().height = iconSize;
+        mResultIcon.getLayoutParams().width = iconSize;
+        for (BubbleTextView bubbleTextView : mShortcutViews) {
+            ViewGroup.LayoutParams lp = bubbleTextView.getLayoutParams();
+            lp.width = iconSize;
+            bubbleTextView.setOnClickListener(view -> {
+                WorkspaceItemInfo itemInfo = (WorkspaceItemInfo) bubbleTextView.getTag();
+                SearchTargetEvent event = new SearchTargetEvent.Builder(mSearchTarget,
+                        SearchTargetEvent.CHILD_SELECT).setShortcutPosition(itemInfo.rank).build();
+                SearchEventTracker.getInstance(getContext()).notifySearchTargetEvent(event);
+                mLauncher.getItemOnClickListener().onClick(view);
+            });
+        }
+        setOnClickListener(this);
+        setOnLongClickListener(this);
+    }
 
     @Override
     public void applySearchTarget(SearchTarget searchTarget) {
         mSearchTarget = searchTarget;
-        String type = searchTarget.getItemType();
-        if (type.equals(TARGET_TYPE_REMOTE_ACTION) || type.equals(TARGET_TYPE_SUGGEST)) {
-            prepareUsingRemoteAction(searchTarget.getRemoteAction(),
-                    searchTarget.getExtras().getString(REMOTE_ACTION_TOKEN),
-                    searchTarget.getExtras().getBoolean(REMOTE_ACTION_SHOULD_START),
-                    type.equals(TARGET_TYPE_REMOTE_ACTION));
+        mResultIcon.applySearchTarget(searchTarget);
+        mResultIcon.setTextVisibility(false);
+        mTitleView.setText(mResultIcon.getText());
+        String itemType = searchTarget.getItemType();
+        boolean showDesc = itemType.equals(SearchResultIcon.TARGET_TYPE_SHORTCUT);
+        mDescriptionView.setVisibility(showDesc ? VISIBLE : GONE);
 
-        } else if (type.equals(TARGET_TYPE_SHORTCUT)) {
-            prepareUsingShortcutInfo(searchTarget.getShortcutInfos().get(0));
+        if (itemType.equals(SearchResultIcon.TARGET_TYPE_SHORTCUT)) {
+            ShortcutInfo shortcutInfo = searchTarget.getShortcutInfos().get(0);
+            setProviderDetails(new ComponentName(shortcutInfo.getPackage(), ""),
+                    shortcutInfo.getUserHandle());
+        } else if (itemType.equals(SearchResultIcon.TARGET_TYPE_HERO_APP)) {
+            showInlineShortcuts(mSearchTarget.getShortcutInfos());
         }
-        setOnClickListener(v -> handleSelection(SearchTargetEvent.SELECT));
-        SearchEventTracker.INSTANCE.get(getContext()).registerWeakHandler(searchTarget, this);
+        if (!itemType.equals(SearchResultIcon.TARGET_TYPE_HERO_APP)) {
+            showInlineShortcuts(new ArrayList<>());
+        }
     }
 
-    private void prepareUsingShortcutInfo(ShortcutInfo shortcutInfo) {
-        WorkspaceItemInfo workspaceItemInfo = new WorkspaceItemInfo(shortcutInfo, getContext());
-        applyFromWorkspaceItem(workspaceItemInfo);
-        LauncherAppState launcherAppState = LauncherAppState.getInstance(getContext());
-        if (!loadIconFromResource()) {
-            MODEL_EXECUTOR.execute(() -> {
-                launcherAppState.getIconCache().getShortcutIcon(workspaceItemInfo, shortcutInfo);
-                reapplyItemInfoAsync(workspaceItemInfo);
+    private void showInlineShortcuts(List<ShortcutInfo> infos) {
+        if (infos == null) return;
+        ArrayList<Pair<ShortcutInfo, ItemInfoWithIcon>> shortcuts = new ArrayList<>();
+        for (int i = 0; infos != null && i < infos.size() && i < MAX_SHORTCUTS_COUNT; i++) {
+            ShortcutInfo shortcutInfo = infos.get(i);
+            ItemInfoWithIcon si = new WorkspaceItemInfo(shortcutInfo, getContext());
+            si.rank = i;
+            shortcuts.add(new Pair<>(shortcutInfo, si));
+        }
+
+        for (int i = 0; i < mShortcutViews.length; i++) {
+            BubbleTextView shortcutView = mShortcutViews[i];
+            mShortcutViews[i].setVisibility(shortcuts.size() > i ? VISIBLE : GONE);
+            if (i < shortcuts.size()) {
+                Pair<ShortcutInfo, ItemInfoWithIcon> p = shortcuts.get(i);
+                //apply ItemInfo and prepare view
+                shortcutView.applyFromWorkspaceItem((WorkspaceItemInfo) p.second);
+                MODEL_EXECUTOR.execute(() -> {
+                    // load unbadged shortcut in background and update view when icon ready
+                    mLauncherAppState.getIconCache().getUnbadgedShortcutIcon(p.second, p.first);
+                    MAIN_EXECUTOR.post(() -> shortcutView.reapplyItemInfo(p.second));
+                });
+            }
+        }
+    }
+
+
+    private void setProviderDetails(ComponentName componentName, UserHandle userHandle) {
+        PackageItemInfo packageItemInfo = new PackageItemInfo(componentName.getPackageName());
+        if (mProviderInfo == packageItemInfo) return;
+        MODEL_EXECUTOR.post(() -> {
+            packageItemInfo.user = userHandle;
+            mLauncherAppState.getIconCache().getTitleAndIconForApp(packageItemInfo, true);
+            MAIN_EXECUTOR.post(() -> {
+                mDescriptionView.setText(packageItemInfo.title);
+                mProviderInfo = packageItemInfo;
             });
-        }
-    }
-
-    private void prepareUsingRemoteAction(RemoteAction remoteAction, String token, boolean start,
-            boolean useIconToBadge) {
-        RemoteActionItemInfo itemInfo = new RemoteActionItemInfo(remoteAction, token, start);
-
-        applyFromRemoteActionInfo(itemInfo);
-        if (itemInfo.isEscapeHatch() || !loadIconFromResource()) {
-            UI_HELPER_EXECUTOR.post(() -> {
-                // If the Drawable from the remote action is not AdaptiveBitmap, styling will not
-                // work.
-                try (LauncherIcons li = LauncherIcons.obtain(getContext())) {
-                    Drawable d = itemInfo.getRemoteAction().getIcon().loadDrawable(getContext());
-                    BitmapInfo bitmap = li.createBadgedIconBitmap(d, itemInfo.user,
-                            Build.VERSION.SDK_INT);
-
-                    if (useIconToBadge) {
-                        BitmapInfo placeholder = li.createIconBitmap(
-                                itemInfo.getRemoteAction().getTitle().toString().substring(0, 1),
-                                bitmap.color);
-                        itemInfo.bitmap = li.badgeBitmap(placeholder.icon, bitmap);
-                    } else {
-                        itemInfo.bitmap = bitmap;
-                    }
-                    reapplyItemInfoAsync(itemInfo);
-                }
-            });
-        }
-
-    }
-
-    private boolean loadIconFromResource() {
-        if (mCustomIcon == null) return false;
-        setIcon(mCustomIcon);
-        return true;
-    }
-
-    void reapplyItemInfoAsync(ItemInfoWithIcon itemInfoWithIcon) {
-        MAIN_EXECUTOR.post(() -> {
-            reapplyItemInfo(itemInfoWithIcon);
-            mCustomIcon = getIcon();
         });
     }
 
     @Override
     public void handleSelection(int eventType) {
-        ItemInfo itemInfo = (ItemInfo) getTag();
-        Launcher launcher = Launcher.getLauncher(getContext());
-        if (itemInfo instanceof WorkspaceItemInfo) {
-            ItemClickHandler.onClickAppShortcut(this, (WorkspaceItemInfo) itemInfo, launcher);
-        } else {
-            ItemClickHandler.onClickRemoteAction(launcher, (RemoteActionItemInfo) itemInfo);
-        }
-        SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(
-                new SearchTargetEvent.Builder(mSearchTarget, eventType).build());
+        mResultIcon.handleSelection(eventType);
+    }
+
+    @Override
+    public void onClick(View view) {
+        mResultIcon.performClick();
+    }
+
+    @Override
+    public boolean onLongClick(View view) {
+        mResultIcon.performLongClick();
+        return false;
     }
 }

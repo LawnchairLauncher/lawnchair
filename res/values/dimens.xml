@@ -248,4 +248,9 @@
     <!-- Onboarding bottomsheet related -->
     <dimen name="bottom_sheet_edu_padding">24dp</dimen>
 
+    <!-- Search related -->
+    <dimen name="settings_hero_title_size">16sp</dimen>
+    <dimen name="settings_hero_subtitle_size">15sp</dimen>
+    <dimen name="settings_hero_inline_button_size">12sp</dimen>
+
 </resources>

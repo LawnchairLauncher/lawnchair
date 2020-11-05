@@ -75,8 +75,6 @@ public class AllAppsGridAdapter extends
 
     public static final int VIEW_TYPE_SEARCH_CORPUS_TITLE = 1 << 5;
 
-    public static final int VIEW_TYPE_SEARCH_HERO_APP = 1 << 6;
-
     public static final int VIEW_TYPE_SEARCH_ROW_WITH_BUTTON = 1 << 7;
 
     public static final int VIEW_TYPE_SEARCH_ROW = 1 << 8;
@@ -178,7 +176,6 @@ public class AllAppsGridAdapter extends
 
         boolean isCountedForAccessibility() {
             return viewType == VIEW_TYPE_ICON
-                    || viewType == VIEW_TYPE_SEARCH_HERO_APP
                     || viewType == VIEW_TYPE_SEARCH_ROW_WITH_BUTTON
                     || viewType == VIEW_TYPE_SEARCH_SLICE
                     || viewType == VIEW_TYPE_SEARCH_ROW
@@ -411,9 +408,6 @@ public class AllAppsGridAdapter extends
             case VIEW_TYPE_SEARCH_CORPUS_TITLE:
                 return new ViewHolder(
                         mLayoutInflater.inflate(R.layout.search_section_title, parent, false));
-            case VIEW_TYPE_SEARCH_HERO_APP:
-                return new ViewHolder(mLayoutInflater.inflate(
-                        R.layout.search_result_hero_app, parent, false));
             case VIEW_TYPE_SEARCH_ROW_WITH_BUTTON:
                 return new ViewHolder(mLayoutInflater.inflate(
                         R.layout.search_result_play_item, parent, false));
@@ -478,7 +472,6 @@ public class AllAppsGridAdapter extends
                 break;
             case VIEW_TYPE_SEARCH_CORPUS_TITLE:
             case VIEW_TYPE_SEARCH_ROW_WITH_BUTTON:
-            case VIEW_TYPE_SEARCH_HERO_APP:
             case VIEW_TYPE_SEARCH_ROW:
             case VIEW_TYPE_SEARCH_ICON:
             case VIEW_TYPE_SEARCH_ICON_ROW:
