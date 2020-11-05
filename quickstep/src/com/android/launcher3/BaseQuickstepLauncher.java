@@ -19,10 +19,9 @@ import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
 import static com.android.launcher3.AbstractFloatingView.TYPE_HIDE_BACK_BUTTON;
 import static com.android.launcher3.LauncherState.FLAG_HIDE_BACK_BUTTON;
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY;
-
-import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
@@ -48,12 +47,14 @@ import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
 import com.android.quickstep.SystemUiProxy;
+import com.android.quickstep.TaskUtils;
 import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.util.RemoteFadeOutAnimationListener;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
+import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.stream.Stream;
@@ -123,7 +124,8 @@ public abstract class BaseQuickstepLauncher extends Launcher
     @Override
     protected void onUiChangedWhileSleeping() {
         // Remove the snapshot because the content view may have obvious changes.
-        ActivityManagerWrapper.getInstance().invalidateHomeTaskSnapshot(this);
+        UI_HELPER_EXECUTOR.execute(
+                () -> ActivityManagerWrapper.getInstance().invalidateHomeTaskSnapshot(this));
     }
 
     @Override
@@ -203,8 +205,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
     @Override
     protected void closeOpenViews(boolean animate) {
         super.closeOpenViews(animate);
-        ActivityManagerWrapper.getInstance()
-                .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY);
+        TaskUtils.closeSystemWindowsAsync(CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY);
     }
 
     @Override
