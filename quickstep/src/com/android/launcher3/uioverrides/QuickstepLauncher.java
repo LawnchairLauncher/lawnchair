@@ -74,10 +74,10 @@ import com.android.launcher3.util.UiThreadHelper.AsyncCommand;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SystemUiProxy;
+import com.android.quickstep.TaskUtils;
 import com.android.quickstep.util.QuickstepOnboardingPrefs;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
-import com.android.systemui.shared.system.ActivityManagerWrapper;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -175,8 +175,7 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
 
     @Override
     protected void showAllAppsFromIntent(boolean alreadyOnHome) {
-        ActivityManagerWrapper.getInstance().closeSystemWindows(
-            CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY);
+        TaskUtils.closeSystemWindowsAsync(CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY);
         super.showAllAppsFromIntent(alreadyOnHome);
     }
 
