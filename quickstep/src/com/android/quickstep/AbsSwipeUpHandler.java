@@ -378,7 +378,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
         if (mStateCallback.hasStates(STATE_HANDLER_INVALIDATED)) {
             return;
         }
-        mTaskViewSimulator.setRecentsRotation(mActivity.getDisplay().getRotation());
+        mTaskViewSimulator.setOrientationState(mRecentsView.getPagedViewOrientedState());
 
         // If we've already ended the gesture and are going home, don't prepare recents UI,
         // as that will set the state as BACKGROUND_APP, overriding the animation to NORMAL.
@@ -686,6 +686,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
             dp.updateInsets(targets.homeContentInsets);
             dp.updateIsSeascape(mContext);
             initTransitionEndpoints(dp);
+            mTaskViewSimulator.getOrientationState().setMultiWindowMode(dp.isMultiWindowMode);
         }
 
         // Notify when the animation starts
