@@ -142,6 +142,9 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     private Set<Integer> mPreviouslyAppearedTaskIds = new HashSet<>();
     private int mLastStartedTaskId = -1;
 
+    /** The time when the swipe up gesture is triggered. */
+    private long mSwipeUpStartTimeMs;
+
     public GestureState(OverviewComponentObserver componentObserver, int gestureId) {
         mHomeIntent = componentObserver.getHomeIntent();
         mOverviewIntent = componentObserver.getOverviewIntent();
@@ -341,6 +344,14 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     public void onRecentsAnimationFinished(RecentsAnimationController controller) {
         mStateCallback.setState(STATE_RECENTS_ANIMATION_FINISHED);
         mStateCallback.setState(STATE_RECENTS_ANIMATION_ENDED);
+    }
+
+    void setSwipeUpStartTimeMs(long uptimeMs) {
+        mSwipeUpStartTimeMs = uptimeMs;
+    }
+
+    long getSwipeUpStartTimeMs() {
+        return mSwipeUpStartTimeMs;
     }
 
     public void dump(PrintWriter pw) {

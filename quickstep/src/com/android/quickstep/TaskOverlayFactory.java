@@ -31,6 +31,7 @@ import android.os.Build;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import com.android.launcher3.BaseActivity;
@@ -157,9 +158,8 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
                 getActionsView().setCallbacks(new OverlayUICallbacks() {
                     @Override
                     public void onShare() {
-                        endLiveTileMode(isAllowedByPolicy);
                         if (isAllowedByPolicy) {
-                            mImageApi.startShareActivity();
+                            endLiveTileMode(mImageApi::startShareActivity);
                         } else {
                             showBlockedByPolicyMessage();
                         }
@@ -168,8 +168,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
                     @SuppressLint("NewApi")
                     @Override
                     public void onScreenshot() {
-                        endLiveTileMode(isAllowedByPolicy);
-                        saveScreenshot(task);
+                        endLiveTileMode(() -> saveScreenshot(task));
                     }
                 });
             }
@@ -178,17 +177,15 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         /**
          * End rendering live tile in Overview.
          *
-         * @param showScreenshot if it's true, we take a screenshot and switch to it.
+         * @param callback callback to run, after switching to screenshot
          */
-        public void endLiveTileMode(boolean showScreenshot) {
+        public void endLiveTileMode(@NonNull Runnable callback) {
             if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
                 RecentsView recentsView = mThumbnailView.getTaskView().getRecentsView();
-                if (showScreenshot) {
-                    recentsView.switchToScreenshot(
-                            () -> recentsView.finishRecentsAnimation(true /* toRecents */, null));
-                } else {
-                    recentsView.finishRecentsAnimation(true /* toRecents */, null);
-                }
+                recentsView.switchToScreenshot(
+                        () -> recentsView.finishRecentsAnimation(true /* toRecents */, callback));
+            } else {
+                callback.run();
             }
         }
 

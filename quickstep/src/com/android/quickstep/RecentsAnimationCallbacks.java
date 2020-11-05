@@ -160,12 +160,5 @@ public class RecentsAnimationCallbacks implements
          * Callback made when a task started from the recents is ready for an app transition.
          */
         default void onTaskAppeared(RemoteAnimationTargetCompat appearedTaskTarget) {}
-
-        /**
-         * The time in milliseconds of the touch event that starts the recents animation.
-         */
-        default long getStartTouchTime() {
-            return 0;
-        }
     }
 }

@@ -41,10 +41,8 @@ import static com.android.quickstep.GestureState.STATE_END_TARGET_ANIMATION_FINI
 import static com.android.quickstep.GestureState.STATE_END_TARGET_SET;
 import static com.android.quickstep.GestureState.STATE_RECENTS_SCROLLING_FINISHED;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
-import static com.android.quickstep.TaskUtils.taskIsATargetWithMode;
 import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME;
-import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -1483,13 +1481,11 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
                 mRecentsAnimationTargets.apps,
                 mRecentsAnimationTargets.apps.length + 1);
         apps[apps.length - 1] = appearedTaskTarget;
-        boolean launcherClosing =
-                taskIsATargetWithMode(apps, mActivity.getTaskId(), MODE_CLOSING);
 
         AnimatorSet anim = new AnimatorSet();
         TaskViewUtils.composeRecentsLaunchAnimator(
                 anim, taskView, apps,
-                mRecentsAnimationTargets.wallpapers, launcherClosing,
+                mRecentsAnimationTargets.wallpapers, true /* launcherClosing */,
                 mActivity.getStateManager(), mRecentsView,
                 mActivityInterface.getDepthController());
         anim.addListener(new AnimatorListenerAdapter(){
@@ -1555,11 +1551,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
 
     public void setGestureEndCallback(Runnable gestureEndCallback) {
         mGestureEndCallback = gestureEndCallback;
-    }
-
-    @Override
-    public long getStartTouchTime() {
-        return mTouchTimeMs;
     }
 
     protected void linkRecentsViewScroll() {
