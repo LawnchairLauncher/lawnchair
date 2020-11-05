@@ -1829,7 +1829,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                 mTouchInProgress = true;
                 break;
             case MotionEvent.ACTION_UP:
-                mLastTouchUpTime = ev.getEventTime();
+                mLastTouchUpTime = SystemClock.uptimeMillis();
                 // Follow through
             case MotionEvent.ACTION_CANCEL:
                 mTouchInProgress = false;

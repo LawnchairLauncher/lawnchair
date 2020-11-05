@@ -121,6 +121,12 @@ public class LauncherSettings {
                 + LauncherProvider.AUTHORITY + "/" + TABLE_NAME);
 
         /**
+         * The content:// style URL for "favorites_bakup" table
+         */
+        public static final Uri BACKUP_CONTENT_URI = Uri.parse("content://"
+                + LauncherProvider.AUTHORITY + "/" + BACKUP_TABLE_NAME);
+
+        /**
          * The content:// style URL for "favorites_preview" table
          */
         public static final Uri PREVIEW_CONTENT_URI = Uri.parse("content://"
