@@ -72,7 +72,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.statemanager.StatefulActivity;
@@ -380,11 +379,9 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     }
 
     public AnimatorPlaybackController createLaunchAnimationForRunningTask() {
-        final PendingAnimation pendingAnimation = getRecentsView().createTaskLaunchAnimation(
-                this, RECENTS_LAUNCH_DURATION, TOUCH_RESPONSE_INTERPOLATOR);
-        AnimatorPlaybackController currentAnimation = pendingAnimation.createPlaybackController();
-        currentAnimation.setEndAction(() -> pendingAnimation.finish(true));
-        return currentAnimation;
+        return getRecentsView().createTaskLaunchAnimation(
+                this, RECENTS_LAUNCH_DURATION, TOUCH_RESPONSE_INTERPOLATOR)
+                .createPlaybackController();
     }
 
     public void launchTask(boolean animate) {
