@@ -1020,7 +1020,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
 
     protected abstract HomeAnimationFactory createHomeAnimationFactory(long duration);
 
-    private TaskStackChangeListener mActivityRestartListener = new TaskStackChangeListener() {
+    private final TaskStackChangeListener mActivityRestartListener = new TaskStackChangeListener() {
         @Override
         public void onActivityRestartAttempt(ActivityManager.RunningTaskInfo task,
                 boolean homeTaskVisible, boolean clearedTask, boolean wasVisible) {
@@ -1459,13 +1459,33 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
 
     protected abstract void finishRecentsControllerToHome(Runnable callback);
 
+    private final TaskStackChangeListener mLiveTileRestartListener = new TaskStackChangeListener() {
+        @Override
+        public void onActivityRestartAttempt(ActivityManager.RunningTaskInfo task,
+                boolean homeTaskVisible, boolean clearedTask, boolean wasVisible) {
+            if (mRecentsAnimationTargets.hasTask(task.taskId)) {
+                launchOtherTaskInLiveTileMode(task.taskId, mRecentsAnimationTargets.apps);
+            }
+            ActivityManagerWrapper.getInstance().unregisterTaskStackListener(
+                    mLiveTileRestartListener);
+        }
+    };
+
     private void setupLauncherUiAfterSwipeUpToRecentsAnimation() {
         endLauncherTransitionController();
         mActivityInterface.onSwipeUpToRecentsComplete();
         mRecentsView.onSwipeUpAnimationSuccess();
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             mTaskAnimationManager.setLaunchOtherTaskInLiveTileModeHandler(
-                    this::launchOtherTaskInLiveTileMode);
+                    appearedTaskTarget -> {
+                        RemoteAnimationTargetCompat[] apps = Arrays.copyOf(
+                                mRecentsAnimationTargets.apps,
+                                mRecentsAnimationTargets.apps.length + 1);
+                        apps[apps.length - 1] = appearedTaskTarget;
+                        launchOtherTaskInLiveTileMode(appearedTaskTarget.taskId, apps);
+                    });
+            ActivityManagerWrapper.getInstance().registerTaskStackListener(
+                    mLiveTileRestartListener);
         }
 
         SystemUiProxy.INSTANCE.get(mContext).onOverviewShown(false, TAG);
@@ -1473,16 +1493,11 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
         reset();
     }
 
-    private void launchOtherTaskInLiveTileMode(RemoteAnimationTargetCompat appearedTaskTarget) {
-        TaskView taskView = mRecentsView.getTaskView(appearedTaskTarget.taskId);
+    private void launchOtherTaskInLiveTileMode(int taskId, RemoteAnimationTargetCompat[] apps) {
+        TaskView taskView = mRecentsView.getTaskView(taskId);
         if (taskView == null) {
             return;
         }
-
-        RemoteAnimationTargetCompat[] apps = Arrays.copyOf(
-                mRecentsAnimationTargets.apps,
-                mRecentsAnimationTargets.apps.length + 1);
-        apps[apps.length - 1] = appearedTaskTarget;
 
         AnimatorSet anim = new AnimatorSet();
         TaskViewUtils.composeRecentsLaunchAnimator(
