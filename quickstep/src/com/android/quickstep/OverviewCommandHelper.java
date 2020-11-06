@@ -65,16 +65,14 @@ public class OverviewCommandHelper {
             return;
         }
 
-        ActivityManagerWrapper.getInstance()
-                .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
+        TaskUtils.closeSystemWindowsAsync(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
         MAIN_EXECUTOR.execute(new RecentsActivityCommand<>());
     }
 
     @BinderThread
     public void onOverviewShown(boolean triggeredFromAltTab) {
         if (triggeredFromAltTab) {
-            ActivityManagerWrapper.getInstance()
-                    .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
+            TaskUtils.closeSystemWindowsAsync(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
         }
         MAIN_EXECUTOR.execute(new ShowRecentsCommand(triggeredFromAltTab));
     }

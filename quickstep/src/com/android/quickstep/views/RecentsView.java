@@ -107,7 +107,6 @@ import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.touch.PagedOrientationHandler.CurveProperties;
-import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.DynamicResource;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.OverScroller;
@@ -124,7 +123,6 @@ import com.android.quickstep.RecentsModel.TaskVisualsChangeListener;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskThumbnailCache;
-import com.android.quickstep.TaskUtils;
 import com.android.quickstep.ViewUtils;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.RecentsOrientedState;
@@ -1468,8 +1466,8 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
 
     private void removeTask(TaskView taskView, int index, EndState endState) {
         if (taskView.getTask() != null) {
-            ActivityManagerWrapper.getInstance().removeTask(taskView.getTask().key.id);
-            ComponentKey compKey = TaskUtils.getLaunchComponentKeyForTask(taskView.getTask().key);
+            UI_HELPER_EXECUTOR.execute(() ->
+                    ActivityManagerWrapper.getInstance().removeTask(taskView.getTask().key.id));
             mActivity.getStatsLogManager().logger().withItemInfo(taskView.getItemInfo())
                     .log(LAUNCHER_TASK_DISMISS_SWIPE_UP);
         }
@@ -1618,7 +1616,8 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         mPendingAnimation.addEndListener((endState) -> {
             if (endState.isSuccess) {
                 // Remove all the task views now
-                ActivityManagerWrapper.getInstance().removeAllRecentTasks();
+                UI_HELPER_EXECUTOR.execute(
+                        ActivityManagerWrapper.getInstance()::removeAllRecentTasks);
                 removeTasksViewsAndClearAllButton();
                 startHome();
             }
