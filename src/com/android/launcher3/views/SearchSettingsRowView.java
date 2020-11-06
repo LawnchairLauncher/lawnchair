@@ -81,7 +81,6 @@ public class SearchSettingsRowView extends LinearLayout implements
         Bundle bundle = searchTarget.getExtras();
         mIntent = bundle.getParcelable("intent");
         showIfAvailable(mTitleView, bundle.getString("title"));
-        showIfAvailable(mDescriptionView, bundle.getString("description"));
         ArrayList<String> breadcrumbs = bundle.getStringArrayList("breadcrumbs");
         //TODO: implement RTL friendly breadcrumbs view
         showIfAvailable(mBreadcrumbsView, breadcrumbs != null

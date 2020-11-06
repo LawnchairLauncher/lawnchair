@@ -51,6 +51,7 @@ import android.animation.AnimatorSet;
 import android.animation.LayoutTransition;
 import android.animation.LayoutTransition.TransitionListener;
 import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
@@ -99,7 +100,6 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.PendingAnimation.EndState;
-import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.anim.SpringProperty;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
@@ -114,6 +114,7 @@ import com.android.launcher3.util.OverScroller;
 import com.android.launcher3.util.ResourceBasedOverride.Overrides;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.ViewPool;
+import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.BaseActivityInterface;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.RecentsAnimationController;
@@ -874,9 +875,10 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             // Since we reuse the same mLiveTileTaskViewSimulator in the RecentsView, we need
             // to reset the params after it settles in Overview from swipe up so that we don't
             // render with obsolete param values.
+            mLiveTileTaskViewSimulator.taskPrimaryTranslation.value = 0;
+            mLiveTileTaskViewSimulator.taskSecondaryTranslation.value = 0;
             mLiveTileTaskViewSimulator.fullScreenProgress.value = 0;
             mLiveTileTaskViewSimulator.recentsViewScale.value = 1;
-            mLiveTileTaskViewSimulator.setOffsetY(0);
 
             // Reset the live tile rect
             DeviceProfile deviceProfile = mActivity.getDeviceProfile();
@@ -1545,7 +1547,10 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
 
         if (ENABLE_QUICKSTEP_LIVE_TILE.get() && getRunningTaskView() == taskView) {
             anim.addOnFrameCallback(() -> {
-                mLiveTileTaskViewSimulator.setOffsetY(taskView.getTranslationY());
+                mLiveTileTaskViewSimulator.taskSecondaryTranslation.value =
+                        mOrientationHandler.getSecondaryValue(
+                                taskView.getTranslationX(),
+                                taskView.getTranslationY());
                 redrawLiveTile();
             });
         }
@@ -2090,22 +2095,35 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         boolean launchingCenterTask = taskIndex == centerTaskIndex;
 
         float toScale = getMaxScaleForFullScreen();
+        RecentsView recentsView = tv.getRecentsView();
         if (launchingCenterTask) {
-            RecentsView recentsView = tv.getRecentsView();
             anim.play(ObjectAnimator.ofFloat(recentsView, RECENTS_SCALE_PROPERTY, toScale));
             anim.play(ObjectAnimator.ofFloat(recentsView, FULLSCREEN_PROGRESS, 1));
         } else {
             // We are launching an adjacent task, so parallax the center and other adjacent task.
             float displacementX = tv.getWidth() * (toScale - tv.getCurveScale());
-            anim.play(ObjectAnimator.ofFloat(getPageAt(centerTaskIndex), TRANSLATION_X,
-                    mIsRtl ? -displacementX : displacementX));
+            float primaryTranslation = mIsRtl ? -displacementX : displacementX;
+            anim.play(ObjectAnimator.ofFloat(getPageAt(centerTaskIndex),
+                    mOrientationHandler.getPrimaryViewTranslate(), primaryTranslation));
+            int runningTaskIndex = recentsView.getRunningTaskIndex();
+            if (ENABLE_QUICKSTEP_LIVE_TILE.get() && runningTaskIndex != -1
+                    && runningTaskIndex != taskIndex) {
+                anim.play(ObjectAnimator.ofFloat(
+                        recentsView.getLiveTileTaskViewSimulator().taskPrimaryTranslation,
+                        AnimatedFloat.VALUE,
+                        primaryTranslation));
+            }
 
             int otherAdjacentTaskIndex = centerTaskIndex + (centerTaskIndex - taskIndex);
             if (otherAdjacentTaskIndex >= 0 && otherAdjacentTaskIndex < getPageCount()) {
-                anim.play(new PropertyListBuilder()
-                        .translationX(mIsRtl ? -displacementX : displacementX)
-                        .scale(1)
-                        .build(getPageAt(otherAdjacentTaskIndex)));
+                PropertyValuesHolder[] properties = new PropertyValuesHolder[3];
+                properties[0] = PropertyValuesHolder.ofFloat(
+                        mOrientationHandler.getPrimaryViewTranslate(), primaryTranslation);
+                properties[1] = PropertyValuesHolder.ofFloat(View.SCALE_X, 1);
+                properties[2] = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1);
+
+                anim.play(ObjectAnimator.ofPropertyValuesHolder(getPageAt(otherAdjacentTaskIndex),
+                        properties));
             }
         }
         return anim;

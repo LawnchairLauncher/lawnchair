@@ -52,16 +52,16 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
 
     public static final IntProperty<TaskViewSimulator> SCROLL =
             new IntProperty<TaskViewSimulator>("scroll") {
-        @Override
-        public void setValue(TaskViewSimulator simulator, int i) {
-            simulator.setScroll(i);
-        }
+                @Override
+                public void setValue(TaskViewSimulator simulator, int scroll) {
+                    simulator.setScroll(scroll);
+                }
 
-        @Override
-        public Integer get(TaskViewSimulator simulator) {
-            return simulator.mScrollState.scroll;
-        }
-    };
+                @Override
+                public Integer get(TaskViewSimulator simulator) {
+                    return simulator.mScrollState.scroll;
+                }
+            };
 
     private final Rect mTmpCropRect = new Rect();
     private final RectF mTempRectF = new RectF();
@@ -72,7 +72,6 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     private final BaseActivityInterface mSizeStrategy;
 
     private final Rect mTaskRect = new Rect();
-    private float mOffsetY;
     private boolean mDrawsBelowRecents;
     private final PointF mPivot = new PointF();
     private DeviceProfile mDp;
@@ -89,6 +88,8 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     // TaskView properties
     private final FullscreenDrawParams mCurrentFullscreenParams;
     private float mCurveScale = 1;
+    public final AnimatedFloat taskPrimaryTranslation = new AnimatedFloat();
+    public final AnimatedFloat taskSecondaryTranslation = new AnimatedFloat();
 
     // RecentsView properties
     public final AnimatedFloat recentsViewScale = new AnimatedFloat();
@@ -176,10 +177,6 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
             mScrollState.scroll = scroll;
             mScrollValid = false;
         }
-    }
-
-    public void setOffsetY(float offsetY) {
-        mOffsetY = offsetY;
     }
 
     public void setDrawsBelowRecents(boolean drawsBelowRecents) {
@@ -298,7 +295,11 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
 
         // Apply TaskView matrix: scale, translate, scroll
         mMatrix.postScale(mCurveScale, mCurveScale, taskWidth / 2, taskHeight / 2);
-        mMatrix.postTranslate(mTaskRect.left, mTaskRect.top + mOffsetY);
+        mMatrix.postTranslate(mTaskRect.left, mTaskRect.top);
+        mOrientationState.getOrientationHandler().set(mMatrix, MATRIX_POST_TRANSLATE,
+                taskPrimaryTranslation.value);
+        mOrientationState.getOrientationHandler().setSecondary(mMatrix, MATRIX_POST_TRANSLATE,
+                taskSecondaryTranslation.value);
         mOrientationState.getOrientationHandler().set(
                 mMatrix, MATRIX_POST_TRANSLATE, mScrollState.scroll);
 
