@@ -48,10 +48,12 @@ import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.pm.UserCache;
+import com.android.launcher3.shadows.ShadowLooperExecutor;
 
 import org.mockito.ArgumentCaptor;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.shadow.api.Shadow;
 import org.robolectric.shadows.ShadowContentResolver;
 import org.robolectric.shadows.ShadowPackageManager;
 import org.robolectric.util.ReflectionHelpers;
@@ -403,14 +405,16 @@ public class LauncherModelHelper {
     public void loadModelSync() throws ExecutionException, InterruptedException {
         // Since robolectric tests run on main thread, we run the loader-UI calls on a temp thread,
         // so that we can wait appropriately for the loader to complete.
-        ReflectionHelpers.setField(getModel(), "mMainExecutor", Executors.UI_HELPER_EXECUTOR);
+        ShadowLooperExecutor sle = Shadow.extract(Executors.MAIN_EXECUTOR);
+        sle.setHandler(Executors.UI_HELPER_EXECUTOR.getHandler());
 
         Callbacks mockCb = mock(Callbacks.class);
         getModel().addCallbacksAndLoad(mockCb);
 
         Executors.MODEL_EXECUTOR.submit(() -> { }).get();
         Executors.UI_HELPER_EXECUTOR.submit(() -> { }).get();
-        ReflectionHelpers.setField(getModel(), "mMainExecutor", Executors.MAIN_EXECUTOR);
+
+        sle.setHandler(null);
         getModel().removeCallbacks(mockCb);
     }
 
