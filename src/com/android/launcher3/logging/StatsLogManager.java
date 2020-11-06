@@ -319,8 +319,10 @@ public class StatsLogManager implements ResourceBasedOverride {
         LAUNCHER_NAVIGATION_MODE_GESTURE_BUTTON(625),
 
         @UiEvent(doc = "User tapped on image content in Overview Select mode.")
-        LAUNCHER_SELECT_MODE_IMAGE(627);
+        LAUNCHER_SELECT_MODE_IMAGE(627),
 
+        @UiEvent(doc = "User swiped down on workspace (triggering noti shade to open).")
+        LAUNCHER_SWIPE_DOWN_WORKSPACE_NOTISHADE_OPEN(651);
         // ADD MORE
 
         private final int mId;
