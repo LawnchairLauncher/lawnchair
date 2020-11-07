@@ -63,6 +63,7 @@ import com.android.quickstep.RecentsAnimationCallbacks;
 import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.quickstep.RotationTouchHelper;
 import com.android.quickstep.TaskAnimationManager;
+import com.android.quickstep.TaskUtils;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.CachedEventDispatcher;
 import com.android.quickstep.util.MotionPauseDetector;
@@ -362,8 +363,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         mInputEventReceiver.setBatchingEnabled(true);
 
         mActivityInterface.closeOverlay();
-        ActivityManagerWrapper.getInstance().closeSystemWindows(
-                CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
+        TaskUtils.closeSystemWindowsAsync(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
 
         // Notify the handler that the gesture has actually started
         mInteractionHandler.onGestureStarted(isLikelyToStartNewTask);

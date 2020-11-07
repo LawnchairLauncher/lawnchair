@@ -32,8 +32,8 @@ import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.BaseActivityInterface;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
+import com.android.quickstep.TaskUtils;
 import com.android.quickstep.util.ActiveGestureLog;
-import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
 /**
@@ -91,8 +91,7 @@ public class OverviewInputConsumer<T extends StatefulActivity<?>>
             mTargetHandledTouch = true;
             if (!mStartingInActivityBounds) {
                 mActivityInterface.closeOverlay();
-                ActivityManagerWrapper.getInstance()
-                        .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
+                TaskUtils.closeSystemWindowsAsync(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
                 ActiveGestureLog.INSTANCE.addLog("startQuickstep");
             }
             if (mInputMonitor != null) {

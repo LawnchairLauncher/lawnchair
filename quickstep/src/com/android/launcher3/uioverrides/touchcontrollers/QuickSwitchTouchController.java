@@ -45,9 +45,9 @@ import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SystemUiProxy;
+import com.android.quickstep.TaskUtils;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
-import com.android.systemui.shared.system.ActivityManagerWrapper;
 
 /**
  * Handles quick switching to a recent task from the home screen.
@@ -92,8 +92,7 @@ public class QuickSwitchTouchController extends AbstractStateChangeTouchControll
     public void onDragStart(boolean start, float startDisplacement) {
         super.onDragStart(start, startDisplacement);
         mStartContainerType = LAUNCHER_STATE_BACKGROUND;
-        ActivityManagerWrapper.getInstance()
-                .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
+        TaskUtils.closeSystemWindowsAsync(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
     }
 
     @Override
