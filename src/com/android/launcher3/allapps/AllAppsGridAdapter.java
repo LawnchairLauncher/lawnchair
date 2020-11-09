@@ -184,8 +184,7 @@ public class AllAppsGridAdapter extends
                     || viewType == VIEW_TYPE_SEARCH_THUMBNAIL
                     || viewType == VIEW_TYPE_SEARCH_ICON_ROW
                     || viewType == VIEW_TYPE_SEARCH_ICON
-                    || viewType == VIEW_TYPE_SEARCH_SUGGEST
-                    || viewType == VIEW_TYPE_SEARCH_WIDGET_LIVE;
+                    || viewType == VIEW_TYPE_SEARCH_SUGGEST;
         }
     }
 
