@@ -18,18 +18,25 @@ package com.android.launcher3.views;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
+import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.AppWidgetResizeFrame;
+import com.android.launcher3.CheckLongPressHelper;
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.allapps.search.AllAppsSearchBarController;
 import com.android.launcher3.allapps.search.SearchEventTracker;
 import com.android.launcher3.allapps.search.SearchWidgetInfoContainer;
+import com.android.launcher3.dragndrop.DraggableView;
+import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.systemui.plugins.shared.SearchTarget;
 import com.android.systemui.plugins.shared.SearchTargetEvent;
@@ -39,14 +46,19 @@ import com.android.systemui.plugins.shared.SearchTargetEvent;
  * provider
  */
 public class SearchResultWidget extends RelativeLayout implements
-        AllAppsSearchBarController.SearchTargetHandler {
+        AllAppsSearchBarController.SearchTargetHandler, DraggableView, View.OnLongClickListener {
 
     private static final String TAG = "SearchResultWidget";
 
     public static final String TARGET_TYPE_WIDGET_LIVE = "widget";
 
+    private final Rect mWidgetOffset = new Rect();
+
     private final Launcher mLauncher;
+    private final CheckLongPressHelper mLongPressHelper;
+    private final GestureDetector mClickDetector;
     private final AppWidgetHostView mHostView;
+    private final float mScaleToFit;
 
     private SearchTarget mSearchTarget;
     private AppWidgetProviderInfo mProviderInfo;
@@ -65,8 +77,18 @@ public class SearchResultWidget extends RelativeLayout implements
     public SearchResultWidget(@NonNull Context context, @Nullable AttributeSet attrs,
             int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mHostView = new AppWidgetHostView(context);
         mLauncher = Launcher.getLauncher(context);
+        mHostView = new AppWidgetHostView(context);
+        DeviceProfile grid = mLauncher.getDeviceProfile();
+        mScaleToFit = Math.min(grid.appWidgetScale.x, grid.appWidgetScale.y);
+
+        // detect tap event on widget container for search target event reporting
+        mClickDetector = new GestureDetector(context,
+                new ClickListener(() -> handleSelection(SearchTargetEvent.CHILD_SELECT)));
+
+        mLongPressHelper = new CheckLongPressHelper(this);
+        mLongPressHelper.setLongPressTimeoutFactor(1);
+        setOnLongClickListener(this);
     }
 
     @Override
@@ -106,8 +128,7 @@ public class SearchResultWidget extends RelativeLayout implements
         AppWidgetResizeFrame.updateWidgetSizeRanges(mHostView, mLauncher, info.spanX,
                 info.spanY);
         mHostView.requestLayout();
-
-
+        setTag(info);
     }
 
     /**
@@ -127,9 +148,55 @@ public class SearchResultWidget extends RelativeLayout implements
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+        mLongPressHelper.onTouchEvent(ev);
+        mClickDetector.onTouchEvent(ev);
+        if (ev.getAction() == MotionEvent.ACTION_UP && !mLongPressHelper.hasPerformedLongPress()) {
             handleSelection(SearchTargetEvent.CHILD_SELECT);
         }
         return super.onInterceptTouchEvent(ev);
+    }
+
+
+    @Override
+    public void cancelLongPress() {
+        super.cancelLongPress();
+        mLongPressHelper.cancelLongPress();
+    }
+
+    @Override
+    public int getViewType() {
+        return DraggableView.DRAGGABLE_WIDGET;
+    }
+
+    @Override
+    public void getSourceVisualDragBounds(Rect bounds) {
+        mHostView.getHitRect(mWidgetOffset);
+        int width = (int) (mHostView.getMeasuredWidth() * mScaleToFit);
+        int height = (int) (mHostView.getMeasuredHeight() * mScaleToFit);
+        bounds.set(mWidgetOffset.left,
+                mWidgetOffset.top,
+                width + mWidgetOffset.left,
+                height + mWidgetOffset.top);
+    }
+
+    @Override
+    public boolean onLongClick(View view) {
+        ItemLongClickListener.INSTANCE_ALL_APPS.onLongClick(view);
+        handleSelection(SearchTargetEvent.LONG_PRESS);
+        return false;
+    }
+
+    static class ClickListener extends GestureDetector.SimpleOnGestureListener {
+        private final Runnable mCb;
+
+        ClickListener(Runnable cb) {
+            mCb = cb;
+        }
+
+        @Override
+        public boolean onSingleTapConfirmed(MotionEvent e) {
+            mCb.run();
+            return super.onSingleTapConfirmed(e);
+        }
     }
 }
