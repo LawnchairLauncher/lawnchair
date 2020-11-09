@@ -44,6 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/search_line_spacing"
+            android:maxLines="1"
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="@dimen/search_hero_title_size" />
 
