@@ -2497,6 +2497,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     @Override
     public void bindAllApplications(AppInfo[] apps, int flags) {
         mAppsView.getAppsStore().setApps(apps, flags);
+        PopupContainerWithArrow.dismissInvalidPopup(this);
     }
 
     /**
@@ -2528,6 +2529,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     public void bindWorkspaceItemsChanged(List<WorkspaceItemInfo> updated) {
         if (!updated.isEmpty()) {
             mWorkspace.updateShortcuts(updated);
+            PopupContainerWithArrow.dismissInvalidPopup(this);
         }
     }
 
@@ -2552,6 +2554,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     public void bindWorkspaceComponentsRemoved(final ItemInfoMatcher matcher) {
         mWorkspace.removeItemsByMatcher(matcher);
         mDragController.onAppsRemoved(matcher);
+        PopupContainerWithArrow.dismissInvalidPopup(this);
     }
 
     @Override
