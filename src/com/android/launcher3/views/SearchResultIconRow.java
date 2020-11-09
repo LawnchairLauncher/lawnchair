@@ -22,6 +22,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.ShortcutInfo;
 import android.os.UserHandle;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.View;
@@ -125,6 +126,12 @@ public class SearchResultIconRow extends LinearLayout implements
                     shortcutInfo.getUserHandle());
         } else if (itemType.equals(SearchResultIcon.TARGET_TYPE_HERO_APP)) {
             showInlineShortcuts(mSearchTarget.getShortcutInfos());
+        } else if (itemType.equals(SearchResultIcon.TARGET_TYPE_REMOTE_ACTION)) {
+            CharSequence desc = mSearchTarget.getRemoteAction().getContentDescription();
+            if (!TextUtils.isEmpty(desc)) {
+                mDescriptionView.setVisibility(VISIBLE);
+                mDescriptionView.setText(desc);
+            }
         }
         if (!itemType.equals(SearchResultIcon.TARGET_TYPE_HERO_APP)) {
             showInlineShortcuts(new ArrayList<>());
