@@ -28,6 +28,7 @@ import com.android.launcher3.R;
  */
 public class SearchResultSuggestion extends SearchResultIcon {
 
+    public static final String TARGET_TYPE_SUGGEST = "suggest";
     private final Drawable mCustomIcon;
 
     public SearchResultSuggestion(Context context) {
@@ -55,8 +56,7 @@ public class SearchResultSuggestion extends SearchResultIcon {
     }
 
     @Override
-    protected boolean loadIconFromResource() {
-        setIcon(mCustomIcon);
-        return true;
+    protected void setIcon(Drawable icon) {
+        super.setIcon(mCustomIcon);
     }
 }

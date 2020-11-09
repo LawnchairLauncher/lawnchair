@@ -46,6 +46,7 @@ import com.android.systemui.plugins.shared.SearchTargetEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * A full width representation of {@link SearchResultIcon} with a secondary label and inline
@@ -53,7 +54,7 @@ import java.util.List;
  */
 public class SearchResultIconRow extends LinearLayout implements
         AllAppsSearchBarController.SearchTargetHandler, View.OnClickListener,
-        View.OnLongClickListener {
+        View.OnLongClickListener, Consumer<ItemInfoWithIcon> {
     public static final int MAX_SHORTCUTS_COUNT = 2;
 
 
@@ -95,6 +96,7 @@ public class SearchResultIconRow extends LinearLayout implements
         mShortcutViews[1] = findViewById(R.id.shortcut_1);
         mResultIcon.getLayoutParams().height = iconSize;
         mResultIcon.getLayoutParams().width = iconSize;
+        mResultIcon.setTextVisibility(false);
         for (BubbleTextView bubbleTextView : mShortcutViews) {
             ViewGroup.LayoutParams lp = bubbleTextView.getLayoutParams();
             lp.width = iconSize;
@@ -113,9 +115,7 @@ public class SearchResultIconRow extends LinearLayout implements
     @Override
     public void applySearchTarget(SearchTarget searchTarget) {
         mSearchTarget = searchTarget;
-        mResultIcon.applySearchTarget(searchTarget);
-        mResultIcon.setTextVisibility(false);
-        mTitleView.setText(mResultIcon.getText());
+        mResultIcon.applySearchTarget(searchTarget, this);
         String itemType = searchTarget.getItemType();
         boolean showDesc = itemType.equals(SearchResultIcon.TARGET_TYPE_SHORTCUT);
         mDescriptionView.setVisibility(showDesc ? VISIBLE : GONE);
@@ -136,6 +136,11 @@ public class SearchResultIconRow extends LinearLayout implements
         if (!itemType.equals(SearchResultIcon.TARGET_TYPE_HERO_APP)) {
             showInlineShortcuts(new ArrayList<>());
         }
+    }
+
+    @Override
+    public void accept(ItemInfoWithIcon itemInfoWithIcon) {
+        mTitleView.setText(itemInfoWithIcon.title);
     }
 
     private void showInlineShortcuts(List<ShortcutInfo> infos) {
