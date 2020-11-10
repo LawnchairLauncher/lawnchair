@@ -57,7 +57,8 @@ public class AllAppsInsetTransitionController {
 
     // Only purpose of these states is to keep track of fast fling transition
     enum State {
-        RESET, DRAG_START_BOTTOM, FLING_END_TOP,
+        RESET, DRAG_START_BOTTOM, DRAG_START_BOTTOM_IME_CANCELLED,
+        FLING_END_TOP, FLING_END_TOP_IME_CANCELLED,
         DRAG_START_TOP, FLING_END_BOTTOM
     }
     private State mState;
@@ -149,13 +150,12 @@ public class AllAppsInsetTransitionController {
                                     + " mAnimationController=" + mAnimationController);
                         }
                         if (mState == State.DRAG_START_BOTTOM) {
-                            mApps.getWindowInsetsController().show(WindowInsets.Type.ime());
+                            mState = State.DRAG_START_BOTTOM_IME_CANCELLED;
                         }
                         mAnimationController = null;
                         if (controller != null) {
                             controller.finish(true);
                         }
-
                     }
                 });
     }
@@ -200,7 +200,7 @@ public class AllAppsInsetTransitionController {
         final int end = mShownAtDown ? mHiddenInsetBottom : mShownInsetBottom;
         inset = Math.max(inset, mHiddenInsetBottom);
         inset = Math.min(inset, mShownInsetBottom);
-        if (DEBUG || false) {
+        if (DEBUG && false) {
             Log.d(TAG, "updateInset mCurrent=" + mCurrent + " mDown="
                     + mDown + " hidden=" + mHiddenInsetBottom
                     + " shown=" + mShownInsetBottom
@@ -228,8 +228,14 @@ public class AllAppsInsetTransitionController {
             // only called when launcher restarting.
             UiThreadHelper.hideKeyboardAsync(mApps.getContext(), mApps.getWindowToken());
         }
+
         setState(false, true, progress);
+
+
         if (mAnimationController == null) {
+            if (mState == State.FLING_END_TOP_IME_CANCELLED) {
+                mApps.getWindowInsetsController().show(WindowInsets.Type.ime());
+            }
             return;
         }
 
@@ -268,8 +274,12 @@ public class AllAppsInsetTransitionController {
         } else if (end) {
             if (Float.compare(progress, 1f) == 0 && mState == State.DRAG_START_TOP) {
                 state = State.FLING_END_BOTTOM;
-            } else if (Float.compare(progress, 0f) == 0 && mState == State.DRAG_START_BOTTOM) {
-                state = State.FLING_END_TOP;
+            } else if (Float.compare(progress, 0f) == 0) {
+                if (mState == State.DRAG_START_BOTTOM) {
+                    state = State.FLING_END_TOP;
+                } else if (mState == State.DRAG_START_BOTTOM_IME_CANCELLED) {
+                    state = State.FLING_END_TOP_IME_CANCELLED;
+                }
             }
         }
         if (DEBUG) {
