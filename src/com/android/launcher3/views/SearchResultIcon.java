@@ -30,8 +30,6 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.UiThread;
-
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
@@ -49,6 +47,8 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.systemui.plugins.shared.SearchTarget;
 import com.android.systemui.plugins.shared.SearchTargetEvent;
 
+import java.util.function.Consumer;
+
 /**
  * A {@link BubbleTextView} representing a single cell result in AllApps
  */
@@ -61,7 +61,6 @@ public class SearchResultIcon extends BubbleTextView implements
     public static final String TARGET_TYPE_HERO_APP = "hero_app";
     public static final String TARGET_TYPE_SHORTCUT = "shortcut";
     public static final String TARGET_TYPE_REMOTE_ACTION = "remote_action";
-    public static final String TARGET_TYPE_SUGGEST = "suggest";
 
     public static final String REMOTE_ACTION_SHOULD_START = "should_start_for_result";
     public static final String REMOTE_ACTION_TOKEN = "action_token";
@@ -73,6 +72,7 @@ public class SearchResultIcon extends BubbleTextView implements
     private final Launcher mLauncher;
 
     private SearchTarget mSearchTarget;
+    private Consumer<ItemInfoWithIcon> mOnItemInfoChanged;
 
     public SearchResultIcon(Context context) {
         this(context, null, 0);
@@ -98,6 +98,15 @@ public class SearchResultIcon extends BubbleTextView implements
                 mLauncher.getDeviceProfile().allAppsCellHeightPx));
     }
 
+    /**
+     * Applies search target with a ItemInfoWithIcon consumer to be called after itemInfo is
+     * constructed
+     */
+    public void applySearchTarget(SearchTarget searchTarget, Consumer<ItemInfoWithIcon> cb) {
+        mOnItemInfoChanged = cb;
+        applySearchTarget(searchTarget);
+    }
+
     @Override
     public void applySearchTarget(SearchTarget searchTarget) {
         mSearchTarget = searchTarget;
@@ -111,7 +120,6 @@ public class SearchResultIcon extends BubbleTextView implements
                 prepareUsingShortcutInfo(searchTarget.getShortcutInfos().get(0));
                 break;
             case TARGET_TYPE_REMOTE_ACTION:
-            case TARGET_TYPE_SUGGEST:
                 prepareUsingRemoteAction(searchTarget.getRemoteAction(),
                         searchTarget.getExtras().getString(REMOTE_ACTION_TOKEN),
                         searchTarget.getExtras().getBoolean(REMOTE_ACTION_SHOULD_START),
@@ -124,52 +132,44 @@ public class SearchResultIcon extends BubbleTextView implements
         AllAppsStore appsStore = mLauncher.getAppsView().getAppsStore();
         AppInfo appInfo = appsStore.getApp(new ComponentKey(componentName, userHandle));
         applyFromApplicationInfo(appInfo);
+        notifyItemInfoChanged(appInfo);
     }
 
 
     private void prepareUsingShortcutInfo(ShortcutInfo shortcutInfo) {
         WorkspaceItemInfo workspaceItemInfo = new WorkspaceItemInfo(shortcutInfo, getContext());
-        applyFromWorkspaceItem(workspaceItemInfo);
+        notifyItemInfoChanged(workspaceItemInfo);
         LauncherAppState launcherAppState = LauncherAppState.getInstance(getContext());
         MODEL_EXECUTOR.execute(() -> {
             launcherAppState.getIconCache().getShortcutIcon(workspaceItemInfo, shortcutInfo);
-            reapplyItemInfoAsync(workspaceItemInfo);
+            MAIN_EXECUTOR.post(() -> applyFromWorkspaceItem(workspaceItemInfo));
         });
     }
 
     private void prepareUsingRemoteAction(RemoteAction remoteAction, String token, boolean start,
             boolean useIconToBadge) {
         RemoteActionItemInfo itemInfo = new RemoteActionItemInfo(remoteAction, token, start);
+        notifyItemInfoChanged(itemInfo);
+        UI_HELPER_EXECUTOR.post(() -> {
+            // If the Drawable from the remote action is not AdaptiveBitmap, styling will not
+            // work.
+            try (LauncherIcons li = LauncherIcons.obtain(getContext())) {
+                Drawable d = itemInfo.getRemoteAction().getIcon().loadDrawable(getContext());
+                BitmapInfo bitmap = li.createBadgedIconBitmap(d, itemInfo.user,
+                        Build.VERSION.SDK_INT);
 
-        applyFromRemoteActionInfo(itemInfo);
-        if (!loadIconFromResource()) {
-            UI_HELPER_EXECUTOR.post(() -> {
-                // If the Drawable from the remote action is not AdaptiveBitmap, styling will not
-                // work.
-                try (LauncherIcons li = LauncherIcons.obtain(getContext())) {
-                    Drawable d = itemInfo.getRemoteAction().getIcon().loadDrawable(getContext());
-                    BitmapInfo bitmap = li.createBadgedIconBitmap(d, itemInfo.user,
-                            Build.VERSION.SDK_INT);
-
-                    if (useIconToBadge) {
-                        BitmapInfo placeholder = li.createIconBitmap(
-                                itemInfo.getRemoteAction().getTitle().toString().substring(0, 1),
-                                bitmap.color);
-                        itemInfo.bitmap = li.badgeBitmap(placeholder.icon, bitmap);
-                    } else {
-                        itemInfo.bitmap = bitmap;
-                    }
-                    reapplyItemInfoAsync(itemInfo);
+                if (useIconToBadge) {
+                    BitmapInfo placeholder = li.createIconBitmap(
+                            itemInfo.getRemoteAction().getTitle().toString().substring(0, 1),
+                            bitmap.color);
+                    itemInfo.bitmap = li.badgeBitmap(placeholder.icon, bitmap);
+                } else {
+                    itemInfo.bitmap = bitmap;
                 }
-            });
-        }
+            }
+            MAIN_EXECUTOR.post(() -> applyFromRemoteActionInfo(itemInfo));
+        });
     }
-
-    @UiThread
-    void reapplyItemInfoAsync(ItemInfoWithIcon itemInfoWithIcon) {
-        MAIN_EXECUTOR.post(() -> reapplyItemInfo(itemInfoWithIcon));
-    }
-
 
     @Override
     public void handleSelection(int eventType) {
@@ -208,7 +208,10 @@ public class SearchResultIcon extends BubbleTextView implements
         return false;
     }
 
-    protected boolean loadIconFromResource() {
-        return false;
+    private void notifyItemInfoChanged(ItemInfoWithIcon itemInfoWithIcon) {
+        if (mOnItemInfoChanged != null) {
+            mOnItemInfoChanged.accept(itemInfoWithIcon);
+            mOnItemInfoChanged = null;
+        }
     }
 }
