@@ -132,6 +132,9 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
      * Returns the child adapter item with IME launch focus.
      */
     public AdapterItem getFocusedChild() {
+        if (mAdapterItems.size() == 0) {
+            return null;
+        }
         return mAdapterItems.get(getFocusedChildIndex());
     }
 
