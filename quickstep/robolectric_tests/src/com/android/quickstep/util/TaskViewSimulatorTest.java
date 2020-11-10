@@ -148,7 +148,7 @@ public class TaskViewSimulatorTest {
             if (mAppRotation < 0) {
                 mAppRotation = launcherRotation;
             }
-            tvs.setLayoutRotation(launcherRotation, mAppRotation);
+            tvs.getOrientationState().update(launcherRotation, mAppRotation);
             if (mAppInsets == null) {
                 mAppInsets = new Rect(mLauncherInsets);
             }

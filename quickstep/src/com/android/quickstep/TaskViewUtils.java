@@ -179,16 +179,17 @@ public final class TaskViewUtils {
 
         Context context = v.getContext();
         DeviceProfile dp = BaseActivity.fromContext(context).getDeviceProfile();
-        // RecentsView never updates the display rotation until swipe-up so the value may be stale.
-        // Use the display value instead.
-        int displayRotation = DisplayController.getDefaultDisplay(context).getInfo().rotation;
-
         TaskViewSimulator topMostSimulator = null;
 
         if (tsv == null && targets.apps.length > 0) {
             tsv = new TaskViewSimulator(context, recentsView.getSizeStrategy());
             tsv.setDp(dp);
-            tsv.setLayoutRotation(displayRotation, displayRotation);
+
+            // RecentsView never updates the display rotation until swipe-up so the value may
+            // be stale. Use the display value instead.
+            int displayRotation = DisplayController.getDefaultDisplay(context).getInfo().rotation;
+            tsv.getOrientationState().update(displayRotation, displayRotation);
+
             tsv.setPreview(targets.apps[targets.apps.length - 1]);
             tsv.fullScreenProgress.value = 0;
             tsv.recentsViewScale.value = 1;

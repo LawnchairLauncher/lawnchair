@@ -89,6 +89,7 @@ import android.widget.ListView;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.BaseActivity;
+import com.android.launcher3.BaseActivity.MultiWindowModeChangedListener;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.InvariantDeviceProfile;
@@ -239,7 +240,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                 }
             };
 
-    protected RecentsOrientedState mOrientationState;
+    protected final RecentsOrientedState mOrientationState;
     protected final BaseActivityInterface mSizeStrategy;
     protected RecentsAnimationController mRecentsAnimationController;
     protected SurfaceTransactionApplier mSyncTransactionApplier;
@@ -408,17 +409,18 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     private int mTaskViewStartIndex = 0;
     private OverviewActionsView mActionsView;
 
-    private BaseActivity.MultiWindowModeChangedListener mMultiWindowModeChangedListener =
-            (inMultiWindowMode) -> {
-                if (mOrientationState != null) {
+    private MultiWindowModeChangedListener mMultiWindowModeChangedListener =
+            new MultiWindowModeChangedListener() {
+                @Override
+                public void onMultiWindowModeChanged(boolean inMultiWindowMode) {
                     mOrientationState.setMultiWindowMode(inMultiWindowMode);
                     setLayoutRotation(mOrientationState.getTouchRotation(),
                             mOrientationState.getDisplayRotation());
                     updateChildTaskOrientations();
-                }
-                if (!inMultiWindowMode && mOverviewStateEnabled) {
-                    // TODO: Re-enable layout transitions for addition of the unpinned task
-                    reloadIfNeeded();
+                    if (!inMultiWindowMode && mOverviewStateEnabled) {
+                        // TODO: Re-enable layout transitions for addition of the unpinned task
+                        reloadIfNeeded();
+                    }
                 }
             };
 
@@ -476,9 +478,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
 
         mLiveTileTaskViewSimulator = new TaskViewSimulator(getContext(), getSizeStrategy());
         mLiveTileTaskViewSimulator.recentsViewScale.value = 1;
-        mLiveTileTaskViewSimulator.setLayoutRotation(getPagedViewOrientedState().getTouchRotation(),
-                getPagedViewOrientedState().getDisplayRotation());
-        mLiveTileTaskViewSimulator.setRecentsRotation(rotation);
+        mLiveTileTaskViewSimulator.setOrientationState(mOrientationState);
         mLiveTileTaskViewSimulator.setDrawsBelowRecents(true);
     }
 
@@ -1763,7 +1763,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         if (mOrientationState.setRecentsRotation(rotation)) {
             updateOrientationHandler();
         }
-        mLiveTileTaskViewSimulator.setRecentsRotation(rotation);
+
         // If overview is in modal state when rotate, reset it to overview state without running
         // animation.
         if (mActivity.isInState(OVERVIEW_MODAL_TASK)) {
@@ -1798,8 +1798,6 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         requestLayout();
         // Reapply the current page to update page scrolls.
         setCurrentPage(mCurrentPage);
-        mLiveTileTaskViewSimulator.setLayoutRotation(getPagedViewOrientedState().getTouchRotation(),
-                getPagedViewOrientedState().getDisplayRotation());
     }
 
     public RecentsOrientedState getPagedViewOrientedState() {

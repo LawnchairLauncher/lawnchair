@@ -132,9 +132,8 @@ final class AppToOverviewAnimationProvider<T extends StatefulActivity<?>> extend
 
         TaskViewSimulator tsv = new TaskViewSimulator(mActivity, mRecentsView.getSizeStrategy());
         tsv.setDp(mActivity.getDeviceProfile());
+        tsv.setOrientationState(mRecentsView.getPagedViewOrientedState());
         tsv.setPreview(runningTaskTarget);
-        tsv.setLayoutRotation(mRecentsView.getPagedViewOrientedState().getTouchRotation(),
-                mRecentsView.getPagedViewOrientedState().getDisplayRotation());
 
         TransformParams params = new TransformParams()
                 .setTargetSet(targets)
