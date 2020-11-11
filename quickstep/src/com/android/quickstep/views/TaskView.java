@@ -42,7 +42,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
-import android.animation.ValueAnimator;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
@@ -193,12 +192,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     private boolean mEndQuickswitchCuj;
 
-    // Order in which the footers appear. Lower order appear below higher order.
-    public static final int INDEX_DIGITAL_WELLBEING_TOAST = 0;
-    private final FooterWrapper[] mFooters = new FooterWrapper[2];
-    private float mFooterVerticalOffset = 0;
-    private float mFooterAlpha = 1;
-    private int mStackHeight;
     private View mContextualChipWrapper;
     private View mContextualChip;
     private final float[] mIconCenterCoords = new float[2];
@@ -342,7 +335,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         if (mContextualChipWrapper != null) {
             mContextualChipWrapper.setAlpha(comp(modalness));
         }
-        updateFooterVerticalOffset(mFooterVerticalOffset);
+        mDigitalWellBeingToast.updateBannerOffset(modalness);
     }
 
     public TaskMenuView getMenuView() {
@@ -564,7 +557,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             mContextualChip.setScaleX(scale);
             mContextualChip.setScaleY(scale);
         }
-        updateFooterVerticalOffset(1.0f - scale);
+        mDigitalWellBeingToast.updateBannerOffset(1f - scale);
     }
 
     public void setIconScaleAnimStartProgress(float startProgress) {
@@ -636,12 +629,9 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         mSnapshotView.setDimAlpha(curveInterpolation * MAX_PAGE_SCRIM_ALPHA);
         setCurveScale(curveScaleForCurveInterpolation);
 
-        mFooterAlpha = Utilities.boundToRange(1.0f - 2 * scrollState.linearInterpolation, 0f, 1f);
-        for (FooterWrapper footer : mFooters) {
-            if (footer != null) {
-                footer.mView.setAlpha(mFooterAlpha);
-            }
-        }
+        float dwbBannerAlpha = Utilities.boundToRange(1.0f - 2 * scrollState.linearInterpolation,
+                0f, 1f);
+        mDigitalWellBeingToast.updateBannerAlpha(dwbBannerAlpha);
 
         if (mMenuView != null) {
             PagedOrientationHandler pagedOrientationHandler = getPagedOrientationHandler();
@@ -651,57 +641,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             mMenuView.setScaleX(getScaleX());
             mMenuView.setScaleY(getScaleY());
         }
-    }
-
-    /**
-     * Sets the footer at the specific index and returns the previously set footer.
-     */
-    public View setFooter(int index, View view) {
-        View oldFooter = null;
-
-        // If the footer are is already collapsed, do not animate entry
-        boolean shouldAnimateEntry = mFooterVerticalOffset <= 0;
-
-        if (mFooters[index] != null) {
-            oldFooter = mFooters[index].mView;
-            mFooters[index].release();
-            removeView(oldFooter);
-
-            // If we are replacing an existing footer, do not animate entry
-            shouldAnimateEntry = false;
-        }
-        if (view != null) {
-            int indexToAdd = getChildCount();
-            for (int i = index - 1; i >= 0; i--) {
-                if (mFooters[i] != null) {
-                    indexToAdd = indexOfChild(mFooters[i].mView);
-                    break;
-                }
-            }
-
-            addView(view, indexToAdd);
-            LayoutParams layoutParams = (LayoutParams) view.getLayoutParams();
-            layoutParams.gravity = BOTTOM | CENTER_HORIZONTAL;
-            layoutParams.bottomMargin =
-                    ((MarginLayoutParams) mSnapshotView.getLayoutParams()).bottomMargin;
-            view.setAlpha(mFooterAlpha);
-            mFooters[index] = new FooterWrapper(view);
-            if (shouldAnimateEntry) {
-                mFooters[index].animateEntry();
-            }
-        } else {
-            mFooters[index] = null;
-        }
-
-        mStackHeight = 0;
-        for (FooterWrapper footer : mFooters) {
-            if (footer != null) {
-                footer.setVerticalShift(mStackHeight);
-                mStackHeight += footer.mExpectedHeight;
-            }
-        }
-
-        return oldFooter;
     }
 
     /**
@@ -777,24 +716,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             SYSTEM_GESTURE_EXCLUSION_RECT.get(0).set(0, 0, getWidth(), getHeight());
             setSystemGestureExclusionRects(SYSTEM_GESTURE_EXCLUSION_RECT);
         }
-
-        mStackHeight = 0;
-        for (FooterWrapper footer : mFooters) {
-            if (footer != null) {
-                mStackHeight += footer.mView.getHeight();
-            }
-        }
-        updateFooterVerticalOffset(0);
-    }
-
-    private void updateFooterVerticalOffset(float offset) {
-        mFooterVerticalOffset = offset;
-
-        for (FooterWrapper footer : mFooters) {
-            if (footer != null) {
-                footer.updateFooterOffset();
-            }
-        }
     }
 
     public static float getCurveScaleForInterpolation(float linearInterpolation) {
@@ -854,71 +775,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                     (int) ((insets.left + view.getWidth() + insets.right) * scale),
                     (int) ((insets.top + view.getHeight() + insets.bottom) * scale),
                     mFullscreenParams.mCurrentDrawnCornerRadius);
-        }
-    }
-
-    private class FooterWrapper extends ViewOutlineProvider {
-
-        final View mView;
-        final ViewOutlineProvider mOldOutlineProvider;
-        final ViewOutlineProvider mDelegate;
-
-        final int mExpectedHeight;
-        final int mOldPaddingBottom;
-
-        int mAnimationOffset = 0;
-        int mEntryAnimationOffset = 0;
-
-        public FooterWrapper(View view) {
-            mView = view;
-            mOldOutlineProvider = view.getOutlineProvider();
-            mDelegate = mOldOutlineProvider == null
-                    ? ViewOutlineProvider.BACKGROUND : mOldOutlineProvider;
-
-            mExpectedHeight = getExpectedViewHeight(view);
-            mOldPaddingBottom = view.getPaddingBottom();
-
-            if (mOldOutlineProvider != null) {
-                view.setOutlineProvider(this);
-                view.setClipToOutline(true);
-            }
-        }
-
-        public void setVerticalShift(int shift) {
-            mView.setPadding(mView.getPaddingLeft(), mView.getPaddingTop(),
-                    mView.getPaddingRight(), mOldPaddingBottom + shift);
-        }
-
-        @Override
-        public void getOutline(View view, Outline outline) {
-            mDelegate.getOutline(view, outline);
-            outline.offset(0, -mAnimationOffset - mEntryAnimationOffset);
-        }
-
-        void updateFooterOffset() {
-            float offset = Utilities.or(mFooterVerticalOffset, mModalness);
-            mAnimationOffset = Math.round(mStackHeight * offset);
-            mView.setTranslationY(mAnimationOffset + mEntryAnimationOffset
-                    + mCurrentFullscreenParams.mCurrentDrawnInsets.bottom
-                    + mCurrentFullscreenParams.mCurrentDrawnInsets.top);
-            mView.invalidateOutline();
-        }
-
-        void release() {
-            mView.setOutlineProvider(mOldOutlineProvider);
-            setVerticalShift(0);
-        }
-
-        void animateEntry() {
-            ValueAnimator animator = ValueAnimator.ofFloat(0, 1);
-            animator.addUpdateListener(anim -> {
-               float factor = 1 - anim.getAnimatedFraction();
-               int totalShift = mExpectedHeight + mView.getPaddingBottom() - mOldPaddingBottom;
-                mEntryAnimationOffset = Math.round(factor * totalShift);
-                updateFooterOffset();
-            });
-            animator.setDuration(100);
-            animator.start();
         }
     }
 
