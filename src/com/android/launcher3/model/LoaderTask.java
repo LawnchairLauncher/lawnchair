@@ -745,7 +745,11 @@ public class LoaderTask implements Runnable {
                                             + "span=" + appWidgetInfo.spanX + "x"
                                             + appWidgetInfo.spanY + " minSpan="
                                             + widgetProviderInfo.minSpanX + "x"
-                                            + widgetProviderInfo.minSpanY);
+                                            + widgetProviderInfo.minSpanY
+                                            + ", appWidgetInfo.provider="
+                                            + appWidgetInfo.providerName.toShortString()
+                                            + ", widgetProviderInfo.provider="
+                                            + widgetProviderInfo.provider.toShortString());
                                     continue;
                                 }
                                 if (!c.isOnWorkspaceOrHotseat()) {
