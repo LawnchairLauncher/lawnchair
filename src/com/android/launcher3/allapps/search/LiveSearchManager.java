@@ -23,8 +23,13 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.UserHandle;
+
+import androidx.lifecycle.LiveData;
+import androidx.slice.Slice;
+import androidx.slice.widget.SliceLiveData;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
@@ -42,7 +47,9 @@ public class LiveSearchManager {
 
     private final Launcher mLauncher;
     private final AppWidgetManager mAppWidgetManger;
-    private HashMap<ComponentKey, SearchWidgetInfoContainer> mWidgetPlaceholders = new HashMap<>();
+    private final HashMap<ComponentKey, SearchWidgetInfoContainer> mWidgetPlaceholders =
+            new HashMap<>();
+    private final HashMap<Uri, LiveData<Slice>> mUriSliceMap = new HashMap<>();
     private SearchWidgetHost mSearchWidgetHost;
 
     public LiveSearchManager(Launcher launcher) {
@@ -88,6 +95,20 @@ public class LiveSearchManager {
     }
 
     /**
+     * Creates {@link LiveData<Slice>} from Slice Uri. Caches created live data to be reused
+     * within the same search session. Removes previous observers when new SliceView request a
+     * live data for observation.
+     */
+    public LiveData<Slice> getSliceForUri(Uri sliceUri) {
+        LiveData<Slice> sliceLiveData = mUriSliceMap.getOrDefault(sliceUri, null);
+        if (sliceLiveData == null) {
+            sliceLiveData = SliceLiveData.fromUri(mLauncher, sliceUri);
+            mUriSliceMap.put(sliceUri, sliceLiveData);
+        }
+        return sliceLiveData;
+    }
+
+    /**
      * Start search session
      */
     public void start() {
@@ -109,6 +130,10 @@ public class LiveSearchManager {
             mWidgetPlaceholders.clear();
             mSearchWidgetHost = null;
         }
+        for (LiveData<Slice> liveData : mUriSliceMap.values()) {
+            liveData.removeObservers(mLauncher);
+        }
+        mUriSliceMap.clear();
     }
 
     static class SearchWidgetHost extends AppWidgetHost {

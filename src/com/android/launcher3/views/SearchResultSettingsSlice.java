@@ -28,7 +28,6 @@ import androidx.lifecycle.LiveData;
 import androidx.slice.Slice;
 import androidx.slice.SliceItem;
 import androidx.slice.widget.EventInfo;
-import androidx.slice.widget.SliceLiveData;
 import androidx.slice.widget.SliceView;
 
 import com.android.launcher3.Launcher;
@@ -54,7 +53,7 @@ public class SearchResultSettingsSlice extends LinearLayout implements
     private View mIcon;
     private LiveData<Slice> mSliceLiveData;
     private SearchTarget mSearchTarget;
-    private Launcher mLauncher;
+    private final Launcher mLauncher;
 
     public SearchResultSettingsSlice(Context context) {
         this(context, null, 0);
@@ -84,7 +83,7 @@ public class SearchResultSettingsSlice extends LinearLayout implements
         reset();
         mSearchTarget = searchTarget;
         try {
-            mSliceLiveData = SliceLiveData.fromUri(mLauncher, getSliceUri());
+            mSliceLiveData = mLauncher.getLiveSearchManager().getSliceForUri(getSliceUri());
             mSliceLiveData.observe(mLauncher, mSliceView);
         } catch (Exception ex) {
             Log.e(TAG, "unable to bind slice", ex);
