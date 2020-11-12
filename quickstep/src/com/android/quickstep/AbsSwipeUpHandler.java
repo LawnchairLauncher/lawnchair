@@ -123,7 +123,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
         RecentsAnimationCallbacks.RecentsAnimationListener {
     private static final String TAG = "AbsSwipeUpHandler";
 
-    private static final String[] STATE_NAMES = DEBUG_STATES ? new String[16] : null;
+    private static final String[] STATE_NAMES = DEBUG_STATES ? new String[17] : null;
 
     protected final BaseActivityInterface<?, T> mActivityInterface;
     protected final InputConsumerProxy mInputConsumerProxy;
@@ -185,6 +185,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
             getFlagForIndex(14, "STATE_START_NEW_TASK");
     private static final int STATE_CURRENT_TASK_FINISHED =
             getFlagForIndex(15, "STATE_CURRENT_TASK_FINISHED");
+    private static final int STATE_FINISH_WITH_NO_END =
+            getFlagForIndex(16, "STATE_FINISH_WITH_NO_END");
 
     private static final int LAUNCHER_UI_STATES =
             STATE_LAUNCHER_PRESENT | STATE_LAUNCHER_DRAWN | STATE_LAUNCHER_STARTED;
@@ -305,6 +307,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
         mStateCallback.runOnceAtState(STATE_LAUNCHER_PRESENT | STATE_HANDLER_INVALIDATED,
                 this::invalidateHandlerWithLauncher);
         mStateCallback.runOnceAtState(STATE_HANDLER_INVALIDATED | STATE_RESUME_LAST_TASK,
+                this::notifyTransitionCancelled);
+        mStateCallback.runOnceAtState(STATE_HANDLER_INVALIDATED | STATE_FINISH_WITH_NO_END,
                 this::notifyTransitionCancelled);
 
         if (!ENABLE_QUICKSTEP_LIVE_TILE.get()) {
@@ -1257,6 +1261,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
         if (mGestureState.getEndTarget() != null && !mGestureState.isRunningAnimationToLauncher()) {
             cancelCurrentAnimation();
         } else {
+            mStateCallback.setStateOnUiThread(STATE_FINISH_WITH_NO_END);
             reset();
         }
     }
