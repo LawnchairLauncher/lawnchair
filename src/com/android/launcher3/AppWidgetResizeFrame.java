@@ -36,7 +36,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     private static final Rect sTmpRect = new Rect();
 
     // Represents the cell size on the grid in the two orientations.
-    private static final MainThreadInitializedObject<Point[]> CELL_SIZE =
+    public static final MainThreadInitializedObject<Point[]> CELL_SIZE =
             new MainThreadInitializedObject<>(c -> {
                 InvariantDeviceProfile inv = LauncherAppState.getIDP(c);
                 return new Point[] {inv.landscapeProfile.getCellSize(),

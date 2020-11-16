@@ -171,6 +171,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     private IconLoadRequest mIconLoadRequest;
 
+    private boolean mEnableIconUpdateAnimation = false;
+
     public BubbleTextView(Context context) {
         this(context, null, 0);
     }
@@ -697,6 +699,10 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         applyCompoundDrawables(icon);
     }
 
+    protected boolean iconUpdateAnimationEnabled() {
+        return mEnableIconUpdateAnimation;
+    }
+
     protected void applyCompoundDrawables(Drawable icon) {
         // If we had already set an icon before, disable relayout as the icon size is the
         // same as before.
@@ -706,13 +712,10 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
         updateIcon(icon);
 
-        ItemInfo itemInfo = (ItemInfo) getTag();
-
         // If the current icon is a placeholder color, animate its update.
         if (mIcon != null
                 && mIcon instanceof PlaceHolderIconDrawable
-                && (itemInfo == null
-                    || itemInfo.itemType != LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT)) {
+                && iconUpdateAnimationEnabled()) {
             animateIconUpdate((PlaceHolderIconDrawable) mIcon, icon);
         }
 
@@ -734,6 +737,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         if (getTag() == info) {
             mIconLoadRequest = null;
             mDisableRelayout = true;
+            mEnableIconUpdateAnimation = true;
 
             // Optimization: Starting in N, pre-uploads the bitmap to RenderThread.
             info.bitmap.icon.prepareToDraw();
@@ -750,6 +754,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             }
 
             mDisableRelayout = false;
+            mEnableIconUpdateAnimation = false;
         }
     }
 

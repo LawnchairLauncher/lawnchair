@@ -264,10 +264,14 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
         if (FeatureFlags.ENABLE_DEVICE_SEARCH.get() && BuildCompat.isAtLeastR()) {
             mInsetController.onAnimationEnd(mProgress);
             if (Float.compare(mProgress, 0f) == 0) {
+                mLauncher.getLiveSearchManager().start();
                 EditText editText = mAppsView.getSearchUiManager().getEditText();
                 if (editText != null) {
                     editText.requestFocus();
                 }
+            }
+            else {
+                mLauncher.getLiveSearchManager().stop();
             }
             // TODO: should make the controller hide synchronously
         }

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2020 The Android Open Source Projectza
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2020 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,18 +14,63 @@
 -->
 <com.android.launcher3.views.SearchResultIconRow xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
-    style="@style/BaseIcon"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:drawablePadding="@dimen/dynamic_grid_icon_drawable_padding"
-    android:gravity="start|center_vertical"
-    android:textAlignment="viewStart"
-    android:textColor="?android:attr/textColorPrimary"
-    android:textSize="16sp"
-    android:padding="@dimen/dynamic_grid_edge_margin"
-    launcher:iconDisplay="hero_app"
-    launcher:layoutHorizontal="true"
-    >
+    android:padding="@dimen/dynamic_grid_edge_margin">
+
+    <com.android.launcher3.views.SearchResultIcon
+        android:layout_width="wrap_content"
+        android:id="@+id/icon"
+        launcher:iconDisplay="hero_app"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dynamic_grid_edge_margin"
+        android:orientation="vertical"
+        android:layout_gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:id="@id/title"
+            android:layout_height="wrap_content"
+            android:gravity="start|center_vertical"
+            android:maxLines="1"
+            android:textAlignment="viewStart"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="@dimen/search_hero_title_size" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:id="@+id/desc"
+            android:maxLines="1"
+            android:textColor="?android:attr/textColorTertiary"
+            android:textSize="@dimen/search_hero_subtitle_size"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <com.android.launcher3.BubbleTextView
+        android:id="@+id/shortcut_0"
+        style="@style/BaseIcon"
+        android:layout_width="@dimen/deep_shortcut_icon_size"
+        android:layout_height="match_parent"
+        android:gravity="start|center_vertical"
+        launcher:iconDisplay="shortcut_popup"
+        android:textSize="@dimen/search_hero_subtitle_size"
+        launcher:iconSizeOverride="@dimen/deep_shortcut_icon_size"
+        launcher:layoutHorizontal="false" />
+
+    <com.android.launcher3.BubbleTextView
+        android:id="@+id/shortcut_1"
+        style="@style/BaseIcon"
+        android:layout_width="@dimen/deep_shortcut_icon_size"
+        android:layout_height="match_parent"
+        launcher:iconDisplay="shortcut_popup"
+        android:textSize="@dimen/search_hero_inline_button_size"
+        launcher:iconSizeOverride="@dimen/deep_shortcut_icon_size"
+        launcher:layoutHorizontal="false" />
 
 </com.android.launcher3.views.SearchResultIconRow>

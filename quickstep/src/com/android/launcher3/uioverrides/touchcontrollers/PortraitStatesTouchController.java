@@ -245,42 +245,35 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
         config.animFlags = animFlags;
         config.duration = maxAccuracy;
 
-        cancelPendingAnim();
+        if (mCurrentAnimation != null) {
+            mCurrentAnimation.getTarget().removeListener(mClearStateOnCancelListener);
+            mCurrentAnimation.dispatchOnCancel();
+        }
 
+        mGoingBetweenStates = true;
         if (mFromState == OVERVIEW && mToState == NORMAL
                 && mOverviewPortraitStateTouchHelper.shouldSwipeDownReturnToApp()) {
             // Reset the state manager, when changing the interaction mode
             mLauncher.getStateManager().goToState(OVERVIEW, false /* animate */);
-            mPendingAnimation = mOverviewPortraitStateTouchHelper
-                    .createSwipeDownToTaskAppAnimation(maxAccuracy, Interpolators.LINEAR);
-            Runnable onCancelRunnable = () -> {
-                cancelPendingAnim();
-                clearState();
-            };
-            mCurrentAnimation = mPendingAnimation.createPlaybackController()
-                    .setOnCancelRunnable(onCancelRunnable);
+            mGoingBetweenStates = false;
+            mCurrentAnimation = mOverviewPortraitStateTouchHelper
+                    .createSwipeDownToTaskAppAnimation(maxAccuracy, Interpolators.LINEAR)
+                    .createPlaybackController();
             mLauncher.getStateManager().setCurrentUserControlledAnimation(mCurrentAnimation);
             RecentsView recentsView = mLauncher.getOverviewPanel();
             totalShift = LayoutUtils.getShelfTrackingDistance(mLauncher,
                     mLauncher.getDeviceProfile(), recentsView.getPagedOrientationHandler());
         } else {
             mCurrentAnimation = mLauncher.getStateManager()
-                    .createAnimationToNewWorkspace(mToState, config)
-                    .setOnCancelRunnable(this::clearState);
+                    .createAnimationToNewWorkspace(mToState, config);
         }
+        mCurrentAnimation.getTarget().addListener(mClearStateOnCancelListener);
 
         if (totalShift == 0) {
             totalShift = Math.signum(mFromState.ordinal - mToState.ordinal)
                     * OverviewState.getDefaultSwipeHeight(mLauncher);
         }
         return 1 / totalShift;
-    }
-
-    private void cancelPendingAnim() {
-        if (mPendingAnimation != null) {
-            mPendingAnimation.finish(false);
-            mPendingAnimation = null;
-        }
     }
 
     @Override

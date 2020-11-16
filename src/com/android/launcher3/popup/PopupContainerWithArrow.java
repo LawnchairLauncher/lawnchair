@@ -600,6 +600,17 @@ public class PopupContainerWithArrow<T extends BaseDraggingActivity> extends Arr
     }
 
     /**
+     * Dismisses the popup if it is no longer valid
+     */
+    public static void dismissInvalidPopup(BaseDraggingActivity activity) {
+        PopupContainerWithArrow popup = getOpen(activity);
+        if (popup != null && (!popup.mOriginalIcon.isAttachedToWindow()
+                || !canShow(popup.mOriginalIcon, (ItemInfo) popup.mOriginalIcon.getTag()))) {
+            popup.animateClose();
+        }
+    }
+
+    /**
      * Handler to control drag-and-drop for popup items
      */
     public interface PopupItemDragHandler extends OnLongClickListener, OnTouchListener { }

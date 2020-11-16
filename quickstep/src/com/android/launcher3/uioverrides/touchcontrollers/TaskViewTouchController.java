@@ -16,6 +16,7 @@
 package com.android.launcher3.uioverrides.touchcontrollers;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_ACCESSIBLE;
+import static com.android.launcher3.LauncherAnimUtils.SUCCESS_TRANSITION_PROGRESS;
 import static com.android.launcher3.touch.SingleAxisSwipeDetector.DIRECTION_BOTH;
 import static com.android.launcher3.touch.SingleAxisSwipeDetector.DIRECTION_NEGATIVE;
 import static com.android.launcher3.touch.SingleAxisSwipeDetector.DIRECTION_POSITIVE;
@@ -50,16 +51,12 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
         extends AnimatorListenerAdapter implements TouchController,
         SingleAxisSwipeDetector.Listener {
 
-    // Progress after which the transition is assumed to be a success in case user does not fling
-    public static final float SUCCESS_TRANSITION_PROGRESS = 0.5f;
-
     protected final T mActivity;
     private final SingleAxisSwipeDetector mDetector;
     private final RecentsView mRecentsView;
     private final int[] mTempCords = new int[2];
     private final boolean mIsRtl;
 
-    private PendingAnimation mPendingAnimation;
     private AnimatorPlaybackController mCurrentAnimation;
     private boolean mCurrentAnimationIsGoingUp;
 
@@ -200,10 +197,8 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
         }
         if (mCurrentAnimation != null) {
             mCurrentAnimation.setPlayFraction(0);
-        }
-        if (mPendingAnimation != null) {
-            mPendingAnimation.finish(false);
-            mPendingAnimation = null;
+            mCurrentAnimation.getTarget().removeListener(this);
+            mCurrentAnimation.dispatchOnCancel();
         }
 
         PagedOrientationHandler orientationHandler = mRecentsView.getPagedOrientationHandler();
@@ -216,15 +211,16 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
         // The interpolator controlling the most prominent visual movement. We use this to determine
         // whether we passed SUCCESS_TRANSITION_PROGRESS.
         final Interpolator currentInterpolator;
+        PendingAnimation pa;
         if (goingUp) {
             currentInterpolator = Interpolators.LINEAR;
-            mPendingAnimation = mRecentsView.createTaskDismissAnimation(mTaskBeingDragged,
+            pa = mRecentsView.createTaskDismissAnimation(mTaskBeingDragged,
                     true /* animateTaskView */, true /* removeTask */, maxDuration);
 
             mEndDisplacement = -secondaryTaskDimension;
         } else {
             currentInterpolator = Interpolators.ZOOM_IN;
-            mPendingAnimation = mRecentsView.createTaskLaunchAnimation(
+            pa = mRecentsView.createTaskLaunchAnimation(
                     mTaskBeingDragged, maxDuration, currentInterpolator);
 
             // Since the thumbnail is what is filling the screen, based the end displacement on it.
@@ -234,12 +230,8 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
             mEndDisplacement = secondaryLayerDimension - mTempCords[1];
         }
         mEndDisplacement *= verticalFactor;
+        mCurrentAnimation = pa.createPlaybackController();
 
-        if (mCurrentAnimation != null) {
-            mCurrentAnimation.setOnCancelRunnable(null);
-        }
-        mCurrentAnimation = mPendingAnimation.createPlaybackController()
-                .setOnCancelRunnable(this::clearState);
         // Setting this interpolator doesn't affect the visual motion, but is used to determine
         // whether we successfully reached the target state in onDragEnd().
         mCurrentAnimation.getTarget().setInterpolator(currentInterpolator);
@@ -303,17 +295,9 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
             animationDuration *= LauncherAnimUtils.blockedFlingDurationFactor(velocity);
         }
 
-        mCurrentAnimation.setEndAction(() -> onCurrentAnimationEnd(goingToEnd));
+        mCurrentAnimation.setEndAction(this::clearState);
         mCurrentAnimation.startWithVelocity(mActivity, goingToEnd,
                 velocity, mEndDisplacement, animationDuration);
-    }
-
-    private void onCurrentAnimationEnd(boolean wasSuccess) {
-        if (mPendingAnimation != null) {
-            mPendingAnimation.finish(wasSuccess);
-            mPendingAnimation = null;
-        }
-        clearState();
     }
 
     private void clearState() {
@@ -321,9 +305,5 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
         mDetector.setDetectableScrollConditions(0, false);
         mTaskBeingDragged = null;
         mCurrentAnimation = null;
-        if (mPendingAnimation != null) {
-            mPendingAnimation.finish(false);
-            mPendingAnimation = null;
-        }
     }
 }

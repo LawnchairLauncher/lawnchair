@@ -12,7 +12,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher3.views.SearchResultIconRow xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.launcher3.views.SearchResultSuggestion xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
     style="@style/BaseIcon"
     android:layout_width="match_parent"
@@ -26,10 +26,9 @@
     launcher:iconDisplay="hero_app"
     android:drawableTint="?android:attr/textColorPrimary"
     launcher:customIcon="@drawable/ic_allapps_search"
-    launcher:iconSizeOverride="48dp"
+    launcher:iconSizeOverride="24dp"
     launcher:matchTextInsetWithQuery="true"
     launcher:layoutHorizontal="true"
-    android:drawablePadding="@dimen/dynamic_grid_icon_drawable_padding"
-    >
+    android:drawablePadding="@dimen/dynamic_grid_icon_drawable_padding">
 
-</com.android.launcher3.views.SearchResultIconRow>
+</com.android.launcher3.views.SearchResultSuggestion>

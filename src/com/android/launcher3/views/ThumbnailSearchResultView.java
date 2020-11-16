@@ -15,8 +15,9 @@
  */
 package com.android.launcher3.views;
 
-import static com.android.launcher3.views.SearchResultIconRow.REMOTE_ACTION_SHOULD_START;
-import static com.android.launcher3.views.SearchResultIconRow.REMOTE_ACTION_TOKEN;
+
+import static com.android.launcher3.views.SearchResultIcon.REMOTE_ACTION_SHOULD_START;
+import static com.android.launcher3.views.SearchResultIcon.REMOTE_ACTION_TOKEN;
 
 import android.content.Context;
 import android.content.Intent;

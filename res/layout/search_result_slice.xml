@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2020 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2020 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,7 +12,29 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<androidx.slice.widget.SliceView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.launcher3.views.SearchResultSettingsSlice xmlns:android="http://schemas.android.com/apk/res/android"
+    android:paddingHorizontal="@dimen/dynamic_grid_cell_padding_x"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingHorizontal="4dp" />
+    android:layout_height="wrap_content">
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:paddingTop="@dimen/search_settings_icon_vertical_offset"
+        android:layout_height="wrap_content">
+
+        <View
+            android:layout_width="@dimen/search_settings_icon_size"
+            android:src="@drawable/ic_setting"
+            android:id="@+id/icon"
+            android:layout_height="@dimen/search_settings_icon_size" />
+    </FrameLayout>
+
+    <androidx.slice.widget.SliceView
+        android:id="@+id/slice"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="@dimen/dynamic_grid_cell_padding_x"
+        android:layout_width="0dp" />
+
+</com.android.launcher3.views.SearchResultSettingsSlice>
+

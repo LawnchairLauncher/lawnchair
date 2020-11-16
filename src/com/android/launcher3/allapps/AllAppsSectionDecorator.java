@@ -98,7 +98,8 @@ public class AllAppsSectionDecorator extends RecyclerView.ItemDecoration {
                     mAppsView.getActiveRecyclerView().getLayoutManager();
             if (layoutManager.findFirstVisibleItemPosition() <= index
                     && index < parent.getChildCount()) {
-                decorationHandler.onFocusDraw(c, parent.getChildAt(index));
+                RecyclerView.ViewHolder vh = parent.findViewHolderForAdapterPosition(index);
+                if (vh != null) decorationHandler.onFocusDraw(c, vh.itemView);
             }
         }
         decorationHandler.reset();

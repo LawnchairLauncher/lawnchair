@@ -15,10 +15,12 @@
  */
 package com.android.launcher3.anim;
 
+import static com.android.launcher3.LauncherAnimUtils.SUCCESS_TRANSITION_PROGRESS;
 import static com.android.launcher3.anim.AnimatorPlaybackController.addAnimationHoldersRecur;
 
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
@@ -42,8 +44,6 @@ import java.util.function.Consumer;
  * TODO: Find a better name
  */
 public class PendingAnimation implements PropertySetter {
-
-    private final ArrayList<Consumer<EndState>> mEndListeners = new ArrayList<>();
 
     private final ArrayList<Holder> mAnimHolders = new ArrayList<>();
     private final AnimatorSet mAnim;
@@ -71,13 +71,6 @@ public class PendingAnimation implements PropertySetter {
     public void add(Animator a, SpringProperty springProperty) {
         mAnim.play(a.setDuration(mDuration));
         addAnimationHoldersRecur(a, mDuration, springProperty, mAnimHolders);
-    }
-
-    public void finish(boolean isSuccess) {
-        for (Consumer<EndState> listeners : mEndListeners) {
-            listeners.accept(new EndState(isSuccess));
-        }
-        mEndListeners.clear();
     }
 
     @Override
@@ -163,19 +156,38 @@ public class PendingAnimation implements PropertySetter {
     }
 
     /**
-     * Add a listener of receiving the end state.
-     * Note that the listeners are called as a result of calling {@link #finish(boolean)}
-     * and not automatically
+     * Add a listener of receiving the success/failure callback in the end.
      */
-    public void addEndListener(Consumer<EndState> listener) {
-        mEndListeners.add(listener);
+    public void addEndListener(Consumer<Boolean> listener) {
+        if (mProgressAnimator == null) {
+            mProgressAnimator = ValueAnimator.ofFloat(0, 1);
+        }
+        mProgressAnimator.addListener(new EndStateCallbackWrapper(listener));
     }
 
-    public static class EndState {
-        public boolean isSuccess;
+    private static class EndStateCallbackWrapper extends AnimatorListenerAdapter {
 
-        public EndState(boolean isSuccess) {
-            this.isSuccess = isSuccess;
+        private final Consumer<Boolean> mListener;
+        private boolean mCalled = false;
+
+        EndStateCallbackWrapper(Consumer<Boolean> listener) {
+            mListener = listener;
+        }
+
+        @Override
+        public void onAnimationCancel(Animator animation) {
+            if (!mCalled) {
+                mCalled = true;
+                mListener.accept(false);
+            }
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            if (!mCalled) {
+                ValueAnimator anim = (ValueAnimator) animation;
+                mListener.accept(anim.getAnimatedFraction() > SUCCESS_TRANSITION_PROGRESS);
+            }
         }
     }
 }

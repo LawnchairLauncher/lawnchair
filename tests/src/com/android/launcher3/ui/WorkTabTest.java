@@ -65,12 +65,13 @@ public class WorkTabTest extends AbstractLauncherUiTest {
 
         String[] tokens = output.split("\\s+");
         mProfileUserId = Integer.parseInt(tokens[tokens.length - 1]);
-
+        Log.d(TestProtocol.WORK_PROFILE_REMOVED, "Created new user uid" + mProfileUserId);
         mDevice.executeShellCommand("am start-user " + mProfileUserId);
     }
 
     @After
     public void removeWorkProfile() throws Exception {
+        Log.d(TestProtocol.WORK_PROFILE_REMOVED, "(teardown) removing uid" + mProfileUserId);
         mDevice.executeShellCommand("pm remove-user " + mProfileUserId);
     }
 

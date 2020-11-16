@@ -106,8 +106,8 @@ public class QuickSwitchTouchController extends AbstractStateChangeTouchControll
         setupInterpolators(config);
         config.duration = (long) (getShiftRange() * 2);
         mCurrentAnimation = mLauncher.getStateManager()
-                .createAnimationToNewWorkspace(mToState, config)
-                .setOnCancelRunnable(this::clearState);
+                .createAnimationToNewWorkspace(mToState, config);
+        mCurrentAnimation.getTarget().addListener(mClearStateOnCancelListener);
         mCurrentAnimation.getAnimationPlayer().addUpdateListener(valueAnimator ->
                 updateFullscreenProgress((Float) valueAnimator.getAnimatedValue()));
         return 1 / getShiftRange();

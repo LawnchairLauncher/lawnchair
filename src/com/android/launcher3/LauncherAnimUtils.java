@@ -16,6 +16,9 @@
 
 package com.android.launcher3;
 
+import android.animation.Animator;
+import android.animation.Animator.AnimatorListener;
+import android.animation.AnimatorListenerAdapter;
 import android.graphics.drawable.Drawable;
 import android.util.FloatProperty;
 import android.util.IntProperty;
@@ -29,8 +32,8 @@ public class LauncherAnimUtils {
      */
     public static final int SPRING_LOADED_EXIT_DELAY = 500;
 
-    // The progress of an animation to all apps must be at least this far along to snap to all apps.
-    public static final float MIN_PROGRESS_TO_ALL_APPS = 0.5f;
+    // Progress after which the transition is assumed to be a success
+    public static final float SUCCESS_TRANSITION_PROGRESS = 0.5f;
 
     public static final IntProperty<Drawable> DRAWABLE_ALPHA =
             new IntProperty<Drawable>("drawableAlpha") {
@@ -131,4 +134,23 @@ public class LauncherAnimUtils {
                             return view.getAlpha();
                         }
                     };
+
+    /**
+     * Utility method to create an {@link AnimatorListener} which executes a callback on animation
+     * cancel.
+     */
+    public static AnimatorListener newCancelListener(Runnable callback) {
+        return new AnimatorListenerAdapter() {
+
+            boolean mDispatched = false;
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                if (!mDispatched) {
+                    mDispatched = true;
+                    callback.run();
+                }
+            }
+        };
+    }
 }

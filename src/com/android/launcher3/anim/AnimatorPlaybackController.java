@@ -29,8 +29,6 @@ import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 
-import androidx.annotation.Nullable;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -72,7 +70,6 @@ public class AnimatorPlaybackController implements ValueAnimator.AnimatorUpdateL
     private Runnable mEndAction;
 
     protected boolean mTargetCancelled = false;
-    protected Runnable mOnCancelRunnable;
 
     /** package private */
     AnimatorPlaybackController(AnimatorSet anim, long duration, ArrayList<Holder> childAnims) {
@@ -88,16 +85,11 @@ public class AnimatorPlaybackController implements ValueAnimator.AnimatorUpdateL
             @Override
             public void onAnimationCancel(Animator animation) {
                 mTargetCancelled = true;
-                if (mOnCancelRunnable != null) {
-                    mOnCancelRunnable.run();
-                    mOnCancelRunnable = null;
-                }
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
                 mTargetCancelled = false;
-                mOnCancelRunnable = null;
             }
 
             @Override
@@ -267,33 +259,6 @@ public class AnimatorPlaybackController implements ValueAnimator.AnimatorUpdateL
         } else {
             return Math.min((long) playPos, mDuration);
         }
-    }
-
-    /** @see #dispatchOnCancelWithoutCancelRunnable(Runnable) */
-    public void dispatchOnCancelWithoutCancelRunnable() {
-        dispatchOnCancelWithoutCancelRunnable(null);
-    }
-
-    /**
-     * Sets mOnCancelRunnable = null before dispatching the cancel and restoring the runnable. This
-     * is intended to be used only if you need to cancel but want to defer cleaning up yourself.
-     * @param callback An optional callback to run after dispatching the cancel but before resetting
-     *                 the onCancelRunnable.
-     */
-    public void dispatchOnCancelWithoutCancelRunnable(@Nullable Runnable callback) {
-        Runnable onCancel = mOnCancelRunnable;
-        setOnCancelRunnable(null);
-        dispatchOnCancel();
-        if (callback != null) {
-            callback.run();
-        }
-        setOnCancelRunnable(onCancel);
-    }
-
-
-    public AnimatorPlaybackController setOnCancelRunnable(Runnable runnable) {
-        mOnCancelRunnable = runnable;
-        return this;
     }
 
     public void dispatchOnStart() {

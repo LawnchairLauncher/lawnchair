@@ -72,7 +72,6 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
 
     private static final String TAG = "RecentsOrientedState";
     private static final boolean DEBUG = false;
-    private static final String DELIMITER_DOT = "\\.";
 
     private ContentObserver mSystemAutoRotateObserver =
             newContentObserver(new Handler(), t -> updateAutoRotateSetting());
@@ -129,6 +128,9 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
     private int mFlags;
     private int mPreviousRotation = ROTATION_0;
 
+    // Combined int which encodes the full state.
+    private int mStateId = 0;
+
     /**
      * @param rotationChangeListener Callback for receiving rotation events when rotation watcher
      *                              is enabled
@@ -169,7 +171,7 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
      */
     public boolean setRecentsRotation(@SurfaceRotation int recentsRotation) {
         mRecentsRotation = recentsRotation;
-        return update(mTouchRotation, mDisplayRotation);
+        return updateHandler();
     }
 
     /**
@@ -183,8 +185,7 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
      * Sets if the swipe up gesture is currently running or not
      */
     public boolean setGestureActive(boolean isGestureActive) {
-        setFlag(FLAG_SWIPE_UP_NOT_RUNNING, !isGestureActive);
-        return update(mTouchRotation, mDisplayRotation);
+        return setFlag(FLAG_SWIPE_UP_NOT_RUNNING, !isGestureActive);
     }
 
     /**
@@ -201,14 +202,13 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
         mDisplayRotation = displayRotation;
         mTouchRotation = touchRotation;
         mPreviousRotation = touchRotation;
+        return updateHandler();
+    }
 
-        PagedOrientationHandler oldHandler = mOrientationHandler;
+    private boolean updateHandler() {
         if (mRecentsActivityRotation == mTouchRotation
                 || (canRecentsActivityRotate() && (mFlags & FLAG_SWIPE_UP_NOT_RUNNING) != 0)) {
             mOrientationHandler = PagedOrientationHandler.PORTRAIT;
-            if (DEBUG) {
-                Log.d(TAG, "current RecentsOrientedState: " + this);
-            }
         } else if (mTouchRotation == ROTATION_90) {
             mOrientationHandler = PagedOrientationHandler.LANDSCAPE;
         } else if (mTouchRotation == ROTATION_270) {
@@ -219,19 +219,26 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
         if (DEBUG) {
             Log.d(TAG, "current RecentsOrientedState: " + this);
         }
-        return oldHandler != mOrientationHandler;
+
+        int oldStateId = mStateId;
+        // Each SurfaceRotation value takes two bits
+        mStateId = (((((mFlags << 2)
+                | mDisplayRotation) << 2)
+                | mTouchRotation) << 3)
+                | (mRecentsRotation < 0 ? 7 : mRecentsRotation);
+        return mStateId != oldStateId;
     }
 
     @SurfaceRotation
     private int inferRecentsActivityRotation(@SurfaceRotation int displayRotation) {
         if (isRecentsActivityRotationAllowed()) {
-            return mRecentsRotation < ROTATION_0 ? displayRotation : mRecentsRotation;
+            return mRecentsRotation < 0 ? displayRotation : mRecentsRotation;
         } else {
             return ROTATION_0;
         }
     }
 
-    private void setFlag(int mask, boolean enabled) {
+    private boolean setFlag(int mask, boolean enabled) {
         boolean wasRotationEnabled = !TestProtocol.sDisableSensorRotation
                 && (mFlags & VALUE_ROTATION_WATCHER_ENABLED) == VALUE_ROTATION_WATCHER_ENABLED
                 && !canRecentsActivityRotate();
@@ -253,6 +260,7 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
                 }
             });
         }
+        return updateHandler();
     }
 
     @Override
@@ -325,6 +333,13 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
     @SurfaceRotation
     public int getRecentsActivityRotation() {
         return mRecentsActivityRotation;
+    }
+
+    /**
+     * Returns an id that can be used to tracking internal changes
+     */
+    public int getStateId() {
+        return mStateId;
     }
 
     public boolean isMultipleOrientationSupportedByDevice() {
@@ -509,14 +524,15 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
     public String toString() {
         boolean systemRotationOn = (mFlags & FLAG_SYSTEM_ROTATION_ALLOWED) != 0;
         return "["
-                + "this=" + extractObjectNameAndAddress(super.toString())
-                + " mOrientationHandler=" +
-                    extractObjectNameAndAddress(mOrientationHandler.toString())
+                + "this=" + nameAndAddress(this)
+                + " mOrientationHandler=" + nameAndAddress(mOrientationHandler)
                 + " mDisplayRotation=" + mDisplayRotation
                 + " mTouchRotation=" + mTouchRotation
                 + " mRecentsActivityRotation=" + mRecentsActivityRotation
+                + " mRecentsRotation=" + mRecentsRotation
                 + " isRecentsActivityRotationAllowed=" + isRecentsActivityRotationAllowed()
                 + " mSystemRotation=" + systemRotationOn
+                + " mStateId=" + mStateId
                 + " mFlags=" + mFlags
                 + "]";
     }
@@ -533,13 +549,7 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
                 : idp.portraitProfile;
     }
 
-    /**
-     * String conversion for only the helpful parts of {@link Object#toString()} method
-     * @param stringToExtract "foo.bar.baz.MyObject@1234"
-     * @return "MyObject@1234"
-     */
-    private static String extractObjectNameAndAddress(String stringToExtract) {
-        int index = stringToExtract.lastIndexOf(DELIMITER_DOT);
-        return index >= 0 ? stringToExtract.substring(index) : "";
+    private static String nameAndAddress(Object obj) {
+        return obj.getClass().getSimpleName() + "@" + obj.hashCode();
     }
 }

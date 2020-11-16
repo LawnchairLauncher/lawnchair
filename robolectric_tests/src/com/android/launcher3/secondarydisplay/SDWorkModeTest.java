@@ -59,8 +59,6 @@ public class SDWorkModeTest {
     private InvariantDeviceProfile mIdp;
     private LauncherModelHelper mModelHelper;
 
-    private LauncherLayoutBuilder mLayoutBuilder;
-
     @Before
     public void setup() throws Exception {
         mModelHelper = new LauncherModelHelper();
@@ -70,7 +68,6 @@ public class SDWorkModeTest {
                 Settings.Global.WINDOW_ANIMATION_SCALE, 0);
 
         mModelHelper.installApp(TEST_PACKAGE);
-        mLayoutBuilder = new LauncherLayoutBuilder();
     }
 
     @Test
@@ -86,7 +83,7 @@ public class SDWorkModeTest {
     public void testAllAppsList_workProfile() throws Exception {
         ShadowUserManager sum = Shadow.extract(mTargetContext.getSystemService(UserManager.class));
         sum.addUser(SYSTEM_USER, "me", FLAG_SYSTEM);
-        sum.addUser(WORK_PROFILE_ID, "work", FLAG_PROFILE);
+        sum.addProfile(SYSTEM_USER, WORK_PROFILE_ID, "work", FLAG_PROFILE);
 
         SecondaryDisplayLauncher launcher = loadLauncher();
         launcher.showAppDrawer(true);

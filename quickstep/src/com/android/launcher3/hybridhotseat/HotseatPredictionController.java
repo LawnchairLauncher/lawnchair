@@ -251,7 +251,10 @@ public class HotseatPredictionController implements DragController.DragListener,
      * Sets or updates the predicted items
      */
     public void setPredictedItems(FixedContainerItems items) {
-        if (!mLauncher.isWorkspaceLoading()
+        boolean shouldIgnoreVisibility = mLauncher.isWorkspaceLoading()
+                || mPredictedItems.equals(items.items)
+                || mHotseat.getShortcutsAndWidgets().getChildCount() < mHotSeatItemsCount;
+        if (!shouldIgnoreVisibility
                 && mHotseat.isShown()
                 && mHotseat.getWindowVisibility() == View.VISIBLE) {
             mHotseat.setOnVisibilityAggregatedCallback((isVisible) -> {
