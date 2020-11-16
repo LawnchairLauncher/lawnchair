@@ -31,7 +31,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
-import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.R;
 import com.android.quickstep.interaction.TutorialController.TutorialType;
 
@@ -42,11 +41,10 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
 
     TutorialType mTutorialType;
     @Nullable TutorialController mTutorialController = null;
-    View mRootView;
+    RootSandboxLayout mRootView;
     @Nullable TutorialHandAnimation mHandCoachingAnimation = null;
     EdgeBackGestureHandler mEdgeBackGestureHandler;
     NavBarGestureHandler mNavBarGestureHandler;
-    private View mLauncherView;
 
     public static TutorialFragment newInstance(TutorialType tutorialType) {
         TutorialFragment fragment = getFragmentForTutorialType(tutorialType);
@@ -114,7 +112,8 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
             @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        mRootView = inflater.inflate(R.layout.gesture_tutorial_fragment, container, false);
+        mRootView = (RootSandboxLayout) inflater.inflate(
+                R.layout.gesture_tutorial_fragment, container, false);
         mRootView.setOnApplyWindowInsetsListener((view, insets) -> {
             Insets systemInsets = insets.getInsets(WindowInsets.Type.systemBars());
             mEdgeBackGestureHandler.setInsets(systemInsets.left, systemInsets.right);
@@ -126,9 +125,6 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
             mHandCoachingAnimation =
                 new TutorialHandAnimation(getContext(), mRootView, handAnimationResId);
         }
-        InvariantDeviceProfile dp = InvariantDeviceProfile.INSTANCE.get(getContext());
-        mLauncherView = new SandboxLauncherRenderer(getContext(), dp, true).getRenderedView();
-        ((ViewGroup) mRootView).addView(mLauncherView, 0);
         return mRootView;
     }
 
@@ -161,7 +157,7 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
     }
 
     void onAttachedToWindow() {
-        mEdgeBackGestureHandler.setViewGroupParent((ViewGroup) getRootView());
+        mEdgeBackGestureHandler.setViewGroupParent(getRootView());
     }
 
     void onDetachedFromWindow() {
@@ -186,12 +182,8 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
         super.onSaveInstanceState(savedInstanceState);
     }
 
-    View getRootView() {
+    RootSandboxLayout getRootView() {
         return mRootView;
-    }
-
-    View getLauncherView() {
-        return mLauncherView;
     }
 
     @Nullable TutorialHandAnimation getHandAnimation() {

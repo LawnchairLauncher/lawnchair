@@ -25,8 +25,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.CallSuper;
+import androidx.annotation.DrawableRes;
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.views.ClipIconView;
 import com.android.quickstep.interaction.EdgeBackGestureHandler.BackGestureAttemptCallback;
@@ -63,13 +65,13 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         mTutorialType = tutorialType;
         mContext = mTutorialFragment.getContext();
 
-        View rootView = tutorialFragment.getRootView();
+        RootSandboxLayout rootView = tutorialFragment.getRootView();
         mCloseButton = rootView.findViewById(R.id.gesture_tutorial_fragment_close_button);
         mCloseButton.setOnClickListener(button -> mTutorialFragment.closeTutorial());
         mTitleTextView = rootView.findViewById(R.id.gesture_tutorial_fragment_title_view);
         mSubtitleTextView = rootView.findViewById(R.id.gesture_tutorial_fragment_subtitle_view);
         mFeedbackView = rootView.findViewById(R.id.gesture_tutorial_fragment_feedback_view);
-        mLauncherView = tutorialFragment.getLauncherView();
+        mLauncherView = getMockLauncherView();
         mFakeIconView = rootView.findViewById(R.id.gesture_tutorial_fake_icon_view);
         mFakeTaskView = rootView.findViewById(R.id.gesture_tutorial_fake_task_view);
         mRippleView = rootView.findViewById(R.id.gesture_tutorial_ripple_view);
@@ -84,6 +86,15 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         mHideFeedbackRunnable =
                 () -> mFeedbackView.animate().alpha(0).setDuration(FEEDBACK_ANIMATION_MS)
                         .withEndAction(this::showHandCoachingAnimation).start();
+
+        if (mLauncherView != null) {
+            rootView.addView(mLauncherView, 0);
+        }
+        if (mContext != null) {
+            rootView.setBackground(mContext.getDrawable(getMockWallpaperResId()));
+            mFakeTaskView.setBackground(mContext.getDrawable(getMockAppTaskThumbnailResId()));
+            mFakeIconView.setBackground(mContext.getDrawable(getMockAppIconResId()));
+        }
     }
 
     void setTutorialType(TutorialType tutorialType) {
@@ -108,6 +119,28 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     @Nullable
     Integer getActionTextButtonStringId() {
         return null;
+    }
+
+    @DrawableRes
+    protected int getMockAppTaskThumbnailResId() {
+        return R.drawable.default_sandbox_app_task_thumbnail;
+    }
+
+    @Nullable
+    public View getMockLauncherView() {
+        InvariantDeviceProfile dp = InvariantDeviceProfile.INSTANCE.get(mContext);
+
+        return new SandboxLauncherRenderer(mContext, dp, true).getRenderedView();
+    }
+
+    @DrawableRes
+    public int getMockAppIconResId() {
+        return R.drawable.default_sandbox_app_icon;
+    }
+
+    @DrawableRes
+    public int getMockWallpaperResId() {
+        return R.drawable.default_sandbox_wallpaper;
     }
 
     void showFeedback(int resId) {
@@ -167,10 +200,11 @@ abstract class TutorialController implements BackGestureAttemptCallback,
 
         if (isComplete()) {
             hideHandCoachingAnimation();
-            mLauncherView.setVisibility(View.INVISIBLE);
         } else {
             showHandCoachingAnimation();
-            mLauncherView.setVisibility(View.VISIBLE);
+        }
+        if (mLauncherView != null) {
+            mLauncherView.setVisibility(isComplete() ? View.INVISIBLE : View.VISIBLE);
         }
     }
 
@@ -213,8 +247,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         return mTutorialType == TutorialType.BACK_NAVIGATION_COMPLETE
                 || mTutorialType == TutorialType.HOME_NAVIGATION_COMPLETE
                 || mTutorialType == TutorialType.OVERVIEW_NAVIGATION_COMPLETE
-                || mTutorialType == TutorialType.ASSISTANT_COMPLETE
-                || mTutorialType == TutorialType.SANDBOX_MODE;
+                || mTutorialType == TutorialType.ASSISTANT_COMPLETE;
     }
 
     /** Denotes the type of the tutorial. */

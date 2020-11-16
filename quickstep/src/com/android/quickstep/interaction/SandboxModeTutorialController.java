@@ -46,7 +46,7 @@ public class SandboxModeTutorialController extends SwipeUpGestureTutorialControl
     @Nullable
     @Override
     Integer getActionButtonStringId() {
-        return R.string.gesture_tutorial_action_button_label_done;
+        return null;
     }
 
     @Override
