@@ -175,6 +175,24 @@ public abstract class SwipeUpAnimationLogic {
     }
 
     /**
+     * Update with start progress for window animation to home.
+     * @param outMatrix {@link Matrix} to map a rect in Launcher space to window space.
+     * @param startProgress The progress of {@link #mCurrentShift} to start thw window from.
+     * @return {@link RectF} represents the bounds as starting point in window space.
+     */
+    protected RectF updateProgressForStartRect(Matrix outMatrix, float startProgress) {
+        mCurrentShift.updateValue(startProgress);
+        mTaskViewSimulator.apply(mTransformParams.setProgress(startProgress));
+        RectF cropRectF = new RectF(mTaskViewSimulator.getCurrentCropRect());
+
+        mTaskViewSimulator.applyWindowToHomeRotation(outMatrix);
+
+        final RectF startRect = new RectF(cropRectF);
+        mTaskViewSimulator.getCurrentMatrix().mapRect(startRect);
+        return startRect;
+    }
+
+    /**
      * Creates an animation that transforms the current app window into the home app.
      * @param startProgress The progress of {@link #mCurrentShift} to start the window from.
      * @param homeAnimationFactory The home animation factory.
@@ -183,16 +201,11 @@ public abstract class SwipeUpAnimationLogic {
             HomeAnimationFactory homeAnimationFactory) {
         final RectF targetRect = homeAnimationFactory.getWindowTargetRect();
 
-        mCurrentShift.updateValue(startProgress);
-        mTaskViewSimulator.apply(mTransformParams.setProgress(startProgress));
+        Matrix homeToWindowPositionMap = new Matrix();
+        final RectF startRect = updateProgressForStartRect(
+                homeToWindowPositionMap, startProgress);
         RectF cropRectF = new RectF(mTaskViewSimulator.getCurrentCropRect());
 
-        // Matrix to map a rect in Launcher space to window space
-        Matrix homeToWindowPositionMap = new Matrix();
-        mTaskViewSimulator.applyWindowToHomeRotation(homeToWindowPositionMap);
-
-        final RectF startRect = new RectF(cropRectF);
-        mTaskViewSimulator.getCurrentMatrix().mapRect(startRect);
         // Move the startRect to Launcher space as floatingIconView runs in Launcher
         Matrix windowToHomePositionMap = new Matrix();
         homeToWindowPositionMap.invert(windowToHomePositionMap);

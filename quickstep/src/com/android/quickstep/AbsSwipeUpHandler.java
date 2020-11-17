@@ -15,6 +15,9 @@
  */
 package com.android.quickstep;
 
+import static android.view.Surface.ROTATION_0;
+import static android.view.Surface.ROTATION_270;
+import static android.view.Surface.ROTATION_90;
 import static android.widget.Toast.LENGTH_SHORT;
 
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_STATE_HANDLER;
@@ -1065,7 +1068,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
                             runningTaskTarget.pictureInPictureParams) != null;
             if (mIsSwipingPipToHome) {
                 mSwipePipToHomeAnimator = getSwipePipToHomeAnimator(
-                        homeAnimFactory, runningTaskTarget);
+                        homeAnimFactory, runningTaskTarget, start);
                 mSwipePipToHomeAnimator.setDuration(SWIPE_PIP_TO_HOME_DURATION);
                 mSwipePipToHomeAnimator.setInterpolator(interpolator);
                 mSwipePipToHomeAnimator.setFloatValues(0f, 1f);
@@ -1135,23 +1138,34 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
     }
 
     private SwipePipToHomeAnimator getSwipePipToHomeAnimator(HomeAnimationFactory homeAnimFactory,
-            RemoteAnimationTargetCompat runningTaskTarget) {
+            RemoteAnimationTargetCompat runningTaskTarget, float startProgress) {
         // Directly animate the app to PiP (picture-in-picture) mode
         final ActivityManager.RunningTaskInfo taskInfo = mGestureState.getRunningTask();
         final RecentsOrientedState orientationState = mTaskViewSimulator.getOrientationState();
+        final int windowRotation = orientationState.getDisplayRotation();
+        final int homeRotation = orientationState.getRecentsActivityRotation();
         final Rect destinationBounds = SystemUiProxy.INSTANCE.get(mContext)
                 .startSwipePipToHome(taskInfo.topActivity,
                         TaskInfoCompat.getTopActivityInfo(taskInfo),
                         runningTaskTarget.pictureInPictureParams,
-                        orientationState.getRecentsActivityRotation(),
+                        homeRotation,
                         mDp.hotseatBarSizePx);
+        final Rect startBounds = new Rect();
+        updateProgressForStartRect(new Matrix(), startProgress).round(startBounds);
         final SwipePipToHomeAnimator swipePipToHomeAnimator = new SwipePipToHomeAnimator(
                 runningTaskTarget.taskId,
                 taskInfo.topActivity,
                 runningTaskTarget.leash.getSurfaceControl(),
                 TaskInfoCompat.getPipSourceRectHint(runningTaskTarget.pictureInPictureParams),
                 TaskInfoCompat.getWindowConfigurationBounds(taskInfo),
+                startBounds,
                 destinationBounds);
+        // We would assume home and app window always in the same rotation While homeRotation
+        // is not ROTATION_0 (which implies the rotation is turned on in launcher settings).
+        if (homeRotation == ROTATION_0
+                && (windowRotation == ROTATION_90 || windowRotation == ROTATION_270)) {
+            swipePipToHomeAnimator.setFromRotation(mTaskViewSimulator, windowRotation);
+        }
         swipePipToHomeAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
