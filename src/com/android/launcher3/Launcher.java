@@ -111,6 +111,7 @@ import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
+import com.android.launcher3.allapps.search.LiveSearchManager;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
@@ -276,6 +277,8 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
     private LifecycleRegistry mLifecycleRegistry;
 
+    private LiveSearchManager mLiveSearchManager;
+
     @Thunk
     Workspace mWorkspace;
     @Thunk
@@ -389,6 +392,8 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         mIconCache = app.getIconCache();
         mAccessibilityDelegate = new LauncherAccessibilityDelegate(this);
 
+        mLiveSearchManager = new LiveSearchManager(this);
+
         mDragController = new DragController(this);
         mAllAppsController = new AllAppsTransitionController(this);
         mStateManager = new StateManager<>(this, NORMAL);
@@ -490,6 +495,10 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     @Override
     public Lifecycle getLifecycle() {
         return mLifecycleRegistry;
+    }
+
+    public LiveSearchManager getLiveSearchManager() {
+        return mLiveSearchManager;
     }
 
     protected LauncherOverlayManager getDefaultOverlay() {
@@ -1583,6 +1592,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         mAppTransitionManager.unregisterRemoteAnimations();
         mUserChangedCallbackCloseable.close();
         mLifecycleRegistry.setCurrentState(Lifecycle.State.DESTROYED);
+        mLiveSearchManager.stop();
     }
 
     public LauncherAccessibilityDelegate getAccessibilityDelegate() {
@@ -2489,6 +2499,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     @Override
     public void bindAllApplications(AppInfo[] apps, int flags) {
         mAppsView.getAppsStore().setApps(apps, flags);
+        PopupContainerWithArrow.dismissInvalidPopup(this);
     }
 
     /**
@@ -2520,6 +2531,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     public void bindWorkspaceItemsChanged(List<WorkspaceItemInfo> updated) {
         if (!updated.isEmpty()) {
             mWorkspace.updateShortcuts(updated);
+            PopupContainerWithArrow.dismissInvalidPopup(this);
         }
     }
 
@@ -2544,6 +2556,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     public void bindWorkspaceComponentsRemoved(final ItemInfoMatcher matcher) {
         mWorkspace.removeItemsByMatcher(matcher);
         mDragController.onAppsRemoved(matcher);
+        PopupContainerWithArrow.dismissInvalidPopup(this);
     }
 
     @Override

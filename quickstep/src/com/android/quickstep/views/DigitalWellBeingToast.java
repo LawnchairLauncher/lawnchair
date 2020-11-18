@@ -17,6 +17,8 @@
 package com.android.quickstep.views;
 
 import static android.provider.Settings.ACTION_APP_USAGE_SETTINGS;
+import static android.view.Gravity.BOTTOM;
+import static android.view.Gravity.CENTER_HORIZONTAL;
 
 import static com.android.launcher3.Utilities.prefixTextWithIcon;
 import static com.android.launcher3.util.Executors.THREAD_POOL_EXECUTOR;
@@ -27,6 +29,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.LauncherApps;
 import android.content.pm.LauncherApps.AppUsageLimit;
+import android.graphics.Outline;
 import android.icu.text.MeasureFormat;
 import android.icu.text.MeasureFormat.FormatWidth;
 import android.icu.util.Measure;
@@ -35,6 +38,9 @@ import android.os.Build;
 import android.os.UserHandle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewOutlineProvider;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.annotation.StringRes;
@@ -61,6 +67,10 @@ public final class DigitalWellBeingToast {
     private Task mTask;
     private boolean mHasLimit;
     private long mAppRemainingTimeMs;
+    private View mBanner;
+    private ViewOutlineProvider mOldBannerOutlineProvider;
+    private float mBannerOffsetPercentage;
+    private float mBannerAlpha = 1f;
 
     public DigitalWellBeingToast(BaseDraggingActivity activity, TaskView taskView) {
         mActivity = activity;
@@ -68,18 +78,10 @@ public final class DigitalWellBeingToast {
         mLauncherApps = activity.getSystemService(LauncherApps.class);
     }
 
-    private void setTaskFooter(View view) {
-        View oldFooter = mTaskView.setFooter(TaskView.INDEX_DIGITAL_WELLBEING_TOAST, view);
-        if (oldFooter != null) {
-            oldFooter.setOnClickListener(null);
-            mActivity.getViewCache().recycleView(R.layout.digital_wellbeing_toast, oldFooter);
-        }
-    }
-
     private void setNoLimit() {
         mHasLimit = false;
         mTaskView.setContentDescription(mTask.titleDescription);
-        setTaskFooter(null);
+        replaceBanner(null);
         mAppRemainingTimeMs = 0;
     }
 
@@ -90,7 +92,7 @@ public final class DigitalWellBeingToast {
                 mActivity, mTaskView);
         toast.setText(prefixTextWithIcon(mActivity, R.drawable.ic_hourglass_top, getText()));
         toast.setOnClickListener(this::openAppUsageSettings);
-        setTaskFooter(toast);
+        replaceBanner(toast);
 
         mTaskView.setContentDescription(
                 getContentDescriptionForTask(mTask, appUsageLimitTimeMs, appRemainingTimeMs));
@@ -232,5 +234,65 @@ public final class DigitalWellBeingToast {
                         task.titleDescription,
                         getText(appRemainingTimeMs)) :
                 task.titleDescription;
+    }
+
+    private void replaceBanner(View view) {
+        resetOldBanner();
+        setBanner(view);
+    }
+
+    private void resetOldBanner() {
+        if (mBanner != null) {
+            mBanner.setOutlineProvider(mOldBannerOutlineProvider);
+            mTaskView.removeView(mBanner);
+            mBanner.setOnClickListener(null);
+            mActivity.getViewCache().recycleView(R.layout.digital_wellbeing_toast, mBanner);
+        }
+    }
+
+    private void setBanner(View view) {
+        mBanner = view;
+        if (view != null) {
+            setupAndAddBanner();
+            setBannerOutline();
+        }
+    }
+
+    private void setupAndAddBanner() {
+        FrameLayout.LayoutParams layoutParams =
+                (FrameLayout.LayoutParams) mBanner.getLayoutParams();
+        layoutParams.gravity = BOTTOM | CENTER_HORIZONTAL;
+        layoutParams.bottomMargin = ((ViewGroup.MarginLayoutParams)
+                mTaskView.getThumbnail().getLayoutParams()).bottomMargin;
+        mBanner.setTranslationY(mBannerOffsetPercentage * mBanner.getHeight());
+        mBanner.setAlpha(mBannerAlpha);
+        mTaskView.addView(mBanner);
+    }
+
+    private void setBannerOutline() {
+        mOldBannerOutlineProvider = mBanner.getOutlineProvider();
+        mBanner.setOutlineProvider(new ViewOutlineProvider() {
+            @Override
+            public void getOutline(View view, Outline outline) {
+                mOldBannerOutlineProvider.getOutline(view, outline);
+                outline.offset(0, -Math.round(view.getTranslationY()));
+            }
+        });
+        mBanner.setClipToOutline(true);
+    }
+
+    void updateBannerOffset(float offsetPercentage) {
+        if (mBanner != null && mBannerOffsetPercentage != offsetPercentage) {
+            mBannerOffsetPercentage = offsetPercentage;
+            mBanner.setTranslationY(offsetPercentage * mBanner.getHeight());
+            mBanner.invalidateOutline();
+        }
+    }
+
+    void updateBannerAlpha(float alpha) {
+        if (mBanner != null && mBannerAlpha != alpha) {
+            mBannerAlpha = alpha;
+            mBanner.setAlpha(alpha);
+        }
     }
 }

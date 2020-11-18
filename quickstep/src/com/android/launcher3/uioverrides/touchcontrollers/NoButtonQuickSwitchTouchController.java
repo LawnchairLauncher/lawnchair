@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.uioverrides.touchcontrollers;
 
+import static com.android.launcher3.LauncherAnimUtils.newCancelListener;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_BUTTONS;
@@ -44,6 +45,7 @@ import static com.android.quickstep.views.RecentsView.TASK_SECONDARY_TRANSLATION
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 
 import android.animation.Animator;
+import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.graphics.PointF;
@@ -92,6 +94,8 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
     private final MotionPauseDetector mMotionPauseDetector;
     private final float mMotionPauseMinDisplacement;
     private final LauncherRecentsView mRecentsView;
+    protected final AnimatorListener mClearStateOnCancelListener =
+            newCancelListener(this::clearState);
 
     private boolean mNoIntercept;
     private LauncherState mStartState;
@@ -204,8 +208,8 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         config.duration = (long) (Math.max(mXRange, mYRange) * 2);
         config.animFlags = config.animFlags | SKIP_OVERVIEW;
         mNonOverviewAnim = mLauncher.getStateManager()
-                .createAnimationToNewWorkspace(toState, config)
-                .setOnCancelRunnable(this::clearState);
+                .createAnimationToNewWorkspace(toState, config);
+        mNonOverviewAnim.getTarget().addListener(mClearStateOnCancelListener);
     }
 
     private void setupOverviewAnimators() {
@@ -379,7 +383,8 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
             if (canceled) {
                 // Let the state manager know that the animation didn't go to the target state,
                 // but don't clean up yet (we already clean up when the animation completes).
-                mNonOverviewAnim.dispatchOnCancelWithoutCancelRunnable();
+                mNonOverviewAnim.getTarget().removeListener(mClearStateOnCancelListener);
+                mNonOverviewAnim.dispatchOnCancel();
             }
             float startProgress = mNonOverviewAnim.getProgressFraction();
             float endProgress = canceled ? 0 : 1;

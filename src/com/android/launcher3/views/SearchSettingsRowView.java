@@ -15,8 +15,14 @@
  */
 package com.android.launcher3.views;
 
+import static com.android.launcher3.FastBitmapDrawable.newIcon;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
+
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -27,38 +33,41 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.search.AllAppsSearchBarController;
 import com.android.launcher3.allapps.search.SearchEventTracker;
+import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.systemui.plugins.shared.SearchTarget;
 import com.android.systemui.plugins.shared.SearchTargetEvent;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
- * A row of tappable TextViews with a breadcrumb for settings search.
+ * A row of clickable TextViews with a breadcrumb for settings search.
  */
 public class SearchSettingsRowView extends LinearLayout implements
         View.OnClickListener, AllAppsSearchBarController.SearchTargetHandler {
 
     public static final String TARGET_TYPE_SETTINGS_ROW = "settings_row";
 
-
+    private View mIconView;
     private TextView mTitleView;
-    private TextView mDescriptionView;
     private TextView mBreadcrumbsView;
     private Intent mIntent;
     private SearchTarget mSearchTarget;
 
 
     public SearchSettingsRowView(@NonNull Context context) {
-        super(context);
+        this(context, null, 0);
     }
 
     public SearchSettingsRowView(@NonNull Context context,
             @Nullable AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0);
     }
 
     public SearchSettingsRowView(@NonNull Context context, @Nullable AttributeSet attrs,
@@ -69,10 +78,11 @@ public class SearchSettingsRowView extends LinearLayout implements
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        mIconView = findViewById(R.id.icon);
         mTitleView = findViewById(R.id.title);
-        mDescriptionView = findViewById(R.id.description);
         mBreadcrumbsView = findViewById(R.id.breadcrumbs);
         setOnClickListener(this);
+        applySettingsIcon(Launcher.getLauncher(getContext()), mIconView);
     }
 
     @Override
@@ -81,6 +91,7 @@ public class SearchSettingsRowView extends LinearLayout implements
         Bundle bundle = searchTarget.getExtras();
         mIntent = bundle.getParcelable("intent");
         showIfAvailable(mTitleView, bundle.getString("title"));
+        mIconView.setContentDescription(bundle.getString("title"));
         ArrayList<String> breadcrumbs = bundle.getStringArrayList("breadcrumbs");
         //TODO: implement RTL friendly breadcrumbs view
         showIfAvailable(mBreadcrumbsView, breadcrumbs != null
@@ -112,5 +123,31 @@ public class SearchSettingsRowView extends LinearLayout implements
 
         SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(
                 new SearchTargetEvent.Builder(mSearchTarget, eventType).build());
+    }
+
+    /**
+     * Requests settings app icon from {@link com.android.launcher3.icons.IconCache} and applies
+     * to to view
+     */
+    public static void applySettingsIcon(Launcher launcher, View view) {
+        LauncherAppState appState = LauncherAppState.getInstance(launcher);
+        MODEL_EXECUTOR.post(() -> {
+            PackageItemInfo packageItemInfo = new PackageItemInfo(getSettingsPackageName(launcher));
+            appState.getIconCache().getTitleAndIconForApp(packageItemInfo, false);
+            MAIN_EXECUTOR.post(() -> {
+                FastBitmapDrawable iconDrawable = newIcon(appState.getContext(), packageItemInfo);
+                view.setBackground(iconDrawable);
+            });
+        });
+    }
+
+    private static String getSettingsPackageName(Launcher launcher) {
+        Intent intent = new Intent(android.provider.Settings.ACTION_SETTINGS);
+        List<ResolveInfo> resolveInfos = launcher.getPackageManager().queryIntentActivities(intent,
+                PackageManager.MATCH_DEFAULT_ONLY);
+        if (resolveInfos.size() == 0) {
+            return "";
+        }
+        return resolveInfos.get(0).activityInfo.packageName;
     }
 }

@@ -326,6 +326,8 @@ public abstract class BaseQuickstepLauncher extends Launcher
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
-        InteractionJankMonitorWrapper.init(getWindow().getDecorView());
+        if (Utilities.ATLEAST_R) {
+            InteractionJankMonitorWrapper.init(getWindow().getDecorView());
+        }
     }
 }

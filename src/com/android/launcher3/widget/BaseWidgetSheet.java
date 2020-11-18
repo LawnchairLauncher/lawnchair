@@ -42,7 +42,7 @@ import com.android.launcher3.views.AbstractSlideInView;
 /**
  * Base class for various widgets popup
  */
-abstract class BaseWidgetSheet extends AbstractSlideInView
+public abstract class BaseWidgetSheet extends AbstractSlideInView
         implements OnClickListener, OnLongClickListener, DragSource,
         PopupDataProvider.PopupDataChangeListener {
 
@@ -74,16 +74,7 @@ abstract class BaseWidgetSheet extends AbstractSlideInView
 
     @Override
     public final void onClick(View v) {
-        // Let the user know that they have to long press to add a widget
-        if (mWidgetInstructionToast != null) {
-            mWidgetInstructionToast.cancel();
-        }
-
-        CharSequence msg = Utilities.wrapForTts(
-                getContext().getText(R.string.long_press_widget_to_add),
-                getContext().getString(R.string.long_accessible_way_to_add));
-        mWidgetInstructionToast = Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT);
-        mWidgetInstructionToast.show();
+        mWidgetInstructionToast = showWidgetToast(getContext(), mWidgetInstructionToast);
     }
 
     @Override
@@ -145,5 +136,22 @@ abstract class BaseWidgetSheet extends AbstractSlideInView
 
     protected SystemUiController getSystemUiController() {
         return mLauncher.getSystemUiController();
+    }
+
+    /**
+     * Show Widget tap toast prompting user to drag instead
+     */
+    public static Toast showWidgetToast(Context context, Toast toast) {
+        // Let the user know that they have to long press to add a widget
+        if (toast != null) {
+            toast.cancel();
+        }
+
+        CharSequence msg = Utilities.wrapForTts(
+                context.getText(R.string.long_press_widget_to_add),
+                context.getString(R.string.long_accessible_way_to_add));
+        toast = Toast.makeText(context, msg, Toast.LENGTH_SHORT);
+        toast.show();
+        return toast;
     }
 }
