@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.allapps;
 
+import android.annotation.TargetApi;
 import android.graphics.Insets;
 import android.os.Build;
 import android.util.Log;
@@ -26,9 +27,8 @@ import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.core.os.BuildCompat;
 
+import com.android.launcher3.Utilities;
 import com.android.launcher3.util.UiThreadHelper;
 
 /**
@@ -57,7 +57,8 @@ public class AllAppsInsetTransitionController {
 
     // Only purpose of these states is to keep track of fast fling transition
     enum State {
-        RESET, DRAG_START_BOTTOM, FLING_END_TOP,
+        RESET, DRAG_START_BOTTOM, DRAG_START_BOTTOM_IME_CANCELLED,
+        FLING_END_TOP, FLING_END_TOP_IME_CANCELLED,
         DRAG_START_TOP, FLING_END_BOTTOM
     }
     private State mState;
@@ -68,7 +69,7 @@ public class AllAppsInsetTransitionController {
     }
 
     public void hide() {
-        if (!BuildCompat.isAtLeastR()) return;
+        if (!Utilities.ATLEAST_R) return;
 
         WindowInsets insets = mApps.getRootWindowInsets();
         if (insets == null) return;
@@ -89,9 +90,9 @@ public class AllAppsInsetTransitionController {
      *
      * @param progress value between 0..1
      */
-    @RequiresApi(api = Build.VERSION_CODES.R)
+    @TargetApi(Build.VERSION_CODES.R)
     public void onDragStart(float progress) {
-        if (!BuildCompat.isAtLeastR()) return;
+        if (!Utilities.ATLEAST_R) return;
 
         // Until getRootWindowInsets().isVisible(...) method returns correct value,
         // only support InsetController based IME transition during swipe up and
@@ -149,13 +150,12 @@ public class AllAppsInsetTransitionController {
                                     + " mAnimationController=" + mAnimationController);
                         }
                         if (mState == State.DRAG_START_BOTTOM) {
-                            mApps.getWindowInsetsController().show(WindowInsets.Type.ime());
+                            mState = State.DRAG_START_BOTTOM_IME_CANCELLED;
                         }
                         mAnimationController = null;
                         if (controller != null) {
                             controller.finish(true);
                         }
-
                     }
                 });
     }
@@ -164,7 +164,7 @@ public class AllAppsInsetTransitionController {
      * If IME bounds after touch sequence finishes, call finish.
      */
     private boolean handleFinishOnFling(WindowInsetsAnimationController controller) {
-        if (!BuildCompat.isAtLeastR()) return false;
+        if (!Utilities.ATLEAST_R) return false;
 
         if (mState == State.FLING_END_TOP) {
             controller.finish(true);
@@ -181,9 +181,9 @@ public class AllAppsInsetTransitionController {
      *
      * @param progress value between 0..1
      */
-    @RequiresApi(api = 30)
+    @TargetApi(Build.VERSION_CODES.R)
     public void setProgress(float progress) {
-        if (!BuildCompat.isAtLeastR()) return;
+        if (!Utilities.ATLEAST_R) return;
         // progress that equals to 0 or 1 is error prone. Do not use them.
         // Instead use onDragStart and onAnimationEnd
         if (mAnimationController == null || progress <= 0f || progress >= 1f) return;
@@ -200,7 +200,7 @@ public class AllAppsInsetTransitionController {
         final int end = mShownAtDown ? mHiddenInsetBottom : mShownInsetBottom;
         inset = Math.max(inset, mHiddenInsetBottom);
         inset = Math.min(inset, mShownInsetBottom);
-        if (DEBUG || false) {
+        if (DEBUG && false) {
             Log.d(TAG, "updateInset mCurrent=" + mCurrent + " mDown="
                     + mDown + " hidden=" + mHiddenInsetBottom
                     + " shown=" + mShownInsetBottom
@@ -218,7 +218,7 @@ public class AllAppsInsetTransitionController {
      *
      * @param progress value between 0..1
      */
-    @RequiresApi(api = 30)
+    @TargetApi(Build.VERSION_CODES.R)
     public void onAnimationEnd(float progress) {
         if (DEBUG) {
             Log.d(TAG, "onAnimationEnd progress=" + progress
@@ -228,8 +228,14 @@ public class AllAppsInsetTransitionController {
             // only called when launcher restarting.
             UiThreadHelper.hideKeyboardAsync(mApps.getContext(), mApps.getWindowToken());
         }
+
         setState(false, true, progress);
+
+
         if (mAnimationController == null) {
+            if (mState == State.FLING_END_TOP_IME_CANCELLED) {
+                mApps.getWindowInsetsController().show(WindowInsets.Type.ime());
+            }
             return;
         }
 
@@ -268,8 +274,12 @@ public class AllAppsInsetTransitionController {
         } else if (end) {
             if (Float.compare(progress, 1f) == 0 && mState == State.DRAG_START_TOP) {
                 state = State.FLING_END_BOTTOM;
-            } else if (Float.compare(progress, 0f) == 0 && mState == State.DRAG_START_BOTTOM) {
-                state = State.FLING_END_TOP;
+            } else if (Float.compare(progress, 0f) == 0) {
+                if (mState == State.DRAG_START_BOTTOM) {
+                    state = State.FLING_END_TOP;
+                } else if (mState == State.DRAG_START_BOTTOM_IME_CANCELLED) {
+                    state = State.FLING_END_TOP_IME_CANCELLED;
+                }
             }
         }
         if (DEBUG) {

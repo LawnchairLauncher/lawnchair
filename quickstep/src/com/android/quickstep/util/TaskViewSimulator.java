@@ -23,13 +23,14 @@ import static com.android.systemui.shared.system.WindowManagerWrapper.WINDOWING_
 
 import android.animation.TimeInterpolator;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.IntProperty;
+
+import androidx.annotation.NonNull;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Utilities;
@@ -67,9 +68,11 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     private final RectF mTempRectF = new RectF();
     private final float[] mTempPoint = new float[2];
 
-    private final RecentsOrientedState mOrientationState;
     private final Context mContext;
     private final BaseActivityInterface mSizeStrategy;
+
+    @NonNull
+    private RecentsOrientedState mOrientationState;
 
     private final Rect mTaskRect = new Rect();
     private boolean mDrawsBelowRecents;
@@ -100,6 +103,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     // Cached calculations
     private boolean mLayoutValid = false;
     private boolean mScrollValid = false;
+    private int mOrientationStateId;
 
     public TaskViewSimulator(Context context, BaseActivityInterface sizeStrategy) {
         mContext = context;
@@ -107,8 +111,8 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
 
         mOrientationState = new RecentsOrientedState(context, sizeStrategy, i -> { });
         mOrientationState.setGestureActive(true);
-
         mCurrentFullscreenParams = new FullscreenDrawParams(context);
+        mOrientationStateId = mOrientationState.getStateId();
     }
 
     /**
@@ -116,23 +120,14 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
      */
     public void setDp(DeviceProfile dp) {
         mDp = dp;
-        mOrientationState.setMultiWindowMode(mDp.isMultiWindowMode);
         mLayoutValid = false;
     }
 
     /**
-     * @see com.android.quickstep.views.RecentsView#setLayoutRotation(int, int)
+     * Sets the orientation state used for this animation
      */
-    public void setLayoutRotation(int touchRotation, int displayRotation) {
-        mOrientationState.update(touchRotation, displayRotation);
-        mLayoutValid = false;
-    }
-
-    /**
-     * @see com.android.quickstep.views.RecentsView#onConfigurationChanged(Configuration)
-     */
-    public void setRecentsRotation(int recentsRotation) {
-        mOrientationState.setRecentsRotation(recentsRotation);
+    public void setOrientationState(@NonNull RecentsOrientedState orientationState) {
+        mOrientationState = orientationState;
         mLayoutValid = false;
     }
 
@@ -251,8 +246,9 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         if (mDp == null || mThumbnailPosition.isEmpty()) {
             return;
         }
-        if (!mLayoutValid) {
+        if (!mLayoutValid || mOrientationStateId != mOrientationState.getStateId()) {
             mLayoutValid = true;
+            mOrientationStateId = mOrientationState.getStateId();
 
             getFullScreenScale();
             mThumbnailData.rotation = mOrientationState.getDisplayRotation();

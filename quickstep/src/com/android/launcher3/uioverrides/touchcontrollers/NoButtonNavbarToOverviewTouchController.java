@@ -16,6 +16,7 @@
 
 package com.android.launcher3.uioverrides.touchcontrollers;
 
+import static com.android.launcher3.LauncherAnimUtils.newCancelListener;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.HINT_STATE;
 import static com.android.launcher3.LauncherState.NORMAL;
@@ -191,15 +192,17 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
             return;
         }
         mNormalToHintOverviewScrimAnimator = null;
-        mCurrentAnimation.dispatchOnCancelWithoutCancelRunnable(() -> {
+        mCurrentAnimation.getTarget().addListener(newCancelListener(() ->
             mLauncher.getStateManager().goToState(OVERVIEW, true, () -> {
                 mOverviewResistYAnim = AnimatorControllerWithResistance
                         .createRecentsResistanceFromOverviewAnim(mLauncher, null)
                         .createPlaybackController();
                 mReachedOverview = true;
                 maybeSwipeInteractionToOverviewComplete();
-            });
-        });
+            })));
+
+        mCurrentAnimation.getTarget().removeListener(mClearStateOnCancelListener);
+        mCurrentAnimation.dispatchOnCancel();
         mStartedOverview = true;
         VibratorWrapper.INSTANCE.get(mLauncher).vibrate(OVERVIEW_HAPTIC);
     }

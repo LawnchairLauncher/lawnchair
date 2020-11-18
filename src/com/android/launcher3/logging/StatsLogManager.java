@@ -297,12 +297,6 @@ public class StatsLogManager implements ResourceBasedOverride {
         @UiEvent(doc = "User tapped on image content in Overview Select mode.")
         LAUNCHER_SELECT_MODE_IMAGE(627),
 
-        @UiEvent(doc = "A folder was replaced by a single item")
-        LAUNCHER_FOLDER_CONVERTED_TO_ICON(628),
-
-        @UiEvent(doc = "A hotseat prediction item was pinned")
-        LAUNCHER_HOTSEAT_PREDICTION_PINNED(629),
-
         @UiEvent(doc = "Activity to add external item was started")
         LAUNCHER_ADD_EXTERNAL_ITEM_START(641),
 
@@ -317,6 +311,12 @@ public class StatsLogManager implements ResourceBasedOverride {
 
         @UiEvent(doc = "Item was dragged in external item addition flow")
         LAUNCHER_ADD_EXTERNAL_ITEM_DRAGGED(645),
+
+        @UiEvent(doc = "A folder was replaced by a single item")
+        LAUNCHER_FOLDER_CONVERTED_TO_ICON(646),
+
+        @UiEvent(doc = "A hotseat prediction item was pinned")
+        LAUNCHER_HOTSEAT_PREDICTION_PINNED(647),
 
         @UiEvent(doc = "Undo event was tapped.")
         LAUNCHER_UNDO(648),

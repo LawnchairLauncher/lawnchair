@@ -124,7 +124,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
         RecentsAnimationCallbacks.RecentsAnimationListener {
     private static final String TAG = "AbsSwipeUpHandler";
 
-    private static final String[] STATE_NAMES = DEBUG_STATES ? new String[16] : null;
+    private static final String[] STATE_NAMES = DEBUG_STATES ? new String[17] : null;
 
     protected final BaseActivityInterface<?, T> mActivityInterface;
     protected final InputConsumerProxy mInputConsumerProxy;
@@ -186,6 +186,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
             getFlagForIndex(14, "STATE_START_NEW_TASK");
     private static final int STATE_CURRENT_TASK_FINISHED =
             getFlagForIndex(15, "STATE_CURRENT_TASK_FINISHED");
+    private static final int STATE_FINISH_WITH_NO_END =
+            getFlagForIndex(16, "STATE_FINISH_WITH_NO_END");
 
     private static final int LAUNCHER_UI_STATES =
             STATE_LAUNCHER_PRESENT | STATE_LAUNCHER_DRAWN | STATE_LAUNCHER_STARTED;
@@ -307,6 +309,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
                 this::invalidateHandlerWithLauncher);
         mStateCallback.runOnceAtState(STATE_HANDLER_INVALIDATED | STATE_RESUME_LAST_TASK,
                 this::notifyTransitionCancelled);
+        mStateCallback.runOnceAtState(STATE_HANDLER_INVALIDATED | STATE_FINISH_WITH_NO_END,
+                this::notifyTransitionCancelled);
 
         if (!ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             mStateCallback.addChangeListener(STATE_APP_CONTROLLER_RECEIVED | STATE_LAUNCHER_PRESENT
@@ -379,7 +383,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
         if (mStateCallback.hasStates(STATE_HANDLER_INVALIDATED)) {
             return;
         }
-        mTaskViewSimulator.setRecentsRotation(mActivity.getDisplay().getRotation());
+        mTaskViewSimulator.setOrientationState(mRecentsView.getPagedViewOrientedState());
 
         // If we've already ended the gesture and are going home, don't prepare recents UI,
         // as that will set the state as BACKGROUND_APP, overriding the animation to NORMAL.
@@ -684,6 +688,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
             dp.updateInsets(targets.homeContentInsets);
             dp.updateIsSeascape(mContext);
             initTransitionEndpoints(dp);
+            mTaskViewSimulator.getOrientationState().setMultiWindowMode(dp.isMultiWindowMode);
         }
 
         // Notify when the animation starts
@@ -1018,7 +1023,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
 
     protected abstract HomeAnimationFactory createHomeAnimationFactory(long duration);
 
-    private TaskStackChangeListener mActivityRestartListener = new TaskStackChangeListener() {
+    private final TaskStackChangeListener mActivityRestartListener = new TaskStackChangeListener() {
         @Override
         public void onActivityRestartAttempt(ActivityManager.RunningTaskInfo task,
                 boolean homeTaskVisible, boolean clearedTask, boolean wasVisible) {
@@ -1254,6 +1259,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
         if (mGestureState.getEndTarget() != null && !mGestureState.isRunningAnimationToLauncher()) {
             cancelCurrentAnimation();
         } else {
+            mStateCallback.setStateOnUiThread(STATE_FINISH_WITH_NO_END);
             reset();
         }
     }
@@ -1457,13 +1463,33 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
 
     protected abstract void finishRecentsControllerToHome(Runnable callback);
 
+    private final TaskStackChangeListener mLiveTileRestartListener = new TaskStackChangeListener() {
+        @Override
+        public void onActivityRestartAttempt(ActivityManager.RunningTaskInfo task,
+                boolean homeTaskVisible, boolean clearedTask, boolean wasVisible) {
+            if (mRecentsAnimationTargets.hasTask(task.taskId)) {
+                launchOtherTaskInLiveTileMode(task.taskId, mRecentsAnimationTargets.apps);
+            }
+            ActivityManagerWrapper.getInstance().unregisterTaskStackListener(
+                    mLiveTileRestartListener);
+        }
+    };
+
     private void setupLauncherUiAfterSwipeUpToRecentsAnimation() {
         endLauncherTransitionController();
         mActivityInterface.onSwipeUpToRecentsComplete();
         mRecentsView.onSwipeUpAnimationSuccess();
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             mTaskAnimationManager.setLaunchOtherTaskInLiveTileModeHandler(
-                    this::launchOtherTaskInLiveTileMode);
+                    appearedTaskTarget -> {
+                        RemoteAnimationTargetCompat[] apps = Arrays.copyOf(
+                                mRecentsAnimationTargets.apps,
+                                mRecentsAnimationTargets.apps.length + 1);
+                        apps[apps.length - 1] = appearedTaskTarget;
+                        launchOtherTaskInLiveTileMode(appearedTaskTarget.taskId, apps);
+                    });
+            ActivityManagerWrapper.getInstance().registerTaskStackListener(
+                    mLiveTileRestartListener);
         }
 
         SystemUiProxy.INSTANCE.get(mContext).onOverviewShown(false, TAG);
@@ -1471,16 +1497,11 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
         reset();
     }
 
-    private void launchOtherTaskInLiveTileMode(RemoteAnimationTargetCompat appearedTaskTarget) {
-        TaskView taskView = mRecentsView.getTaskView(appearedTaskTarget.taskId);
+    private void launchOtherTaskInLiveTileMode(int taskId, RemoteAnimationTargetCompat[] apps) {
+        TaskView taskView = mRecentsView.getTaskView(taskId);
         if (taskView == null) {
             return;
         }
-
-        RemoteAnimationTargetCompat[] apps = Arrays.copyOf(
-                mRecentsAnimationTargets.apps,
-                mRecentsAnimationTargets.apps.length + 1);
-        apps[apps.length - 1] = appearedTaskTarget;
 
         AnimatorSet anim = new AnimatorSet();
         TaskViewUtils.composeRecentsLaunchAnimator(
