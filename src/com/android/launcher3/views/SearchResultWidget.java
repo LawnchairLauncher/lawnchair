@@ -150,12 +150,14 @@ public class SearchResultWidget extends RelativeLayout implements
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         mLongPressHelper.onTouchEvent(ev);
         mClickDetector.onTouchEvent(ev);
-        if (ev.getAction() == MotionEvent.ACTION_UP && !mLongPressHelper.hasPerformedLongPress()) {
-            handleSelection(SearchTargetEvent.CHILD_SELECT);
-        }
-        return super.onInterceptTouchEvent(ev);
+        return mLongPressHelper.hasPerformedLongPress();
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        mLongPressHelper.onTouchEvent(ev);
+        return true;
+    }
 
     @Override
     public void cancelLongPress() {
