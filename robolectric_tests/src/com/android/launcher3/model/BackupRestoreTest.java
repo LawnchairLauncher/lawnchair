@@ -41,7 +41,6 @@ import android.os.UserManager;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.provider.RestoreDbTask;
 import com.android.launcher3.shadows.LShadowBackupManager;
-import com.android.launcher3.shadows.LShadowUserManager;
 import com.android.launcher3.util.LauncherModelHelper;
 
 import org.junit.Before;
@@ -51,6 +50,7 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.LooperMode;
 import org.robolectric.shadow.api.Shadow;
+import org.robolectric.shadows.ShadowUserManager;
 
 /**
  * Tests to verify backup and restore flow.
@@ -68,7 +68,7 @@ public class BackupRestoreTest {
     private static final int FLAG_SYSTEM = 0x00000800;
     private static final int FLAG_PROFILE = 0x00001000;
 
-    private LShadowUserManager mUserManager;
+    private ShadowUserManager mUserManager;
     private BackupManager mBackupManager;
     private LauncherModelHelper mModelHelper;
     private SQLiteDatabase mDb;
