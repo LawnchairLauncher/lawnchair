@@ -36,6 +36,7 @@ import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLAT
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_TAP;
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -418,15 +419,21 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                 if (freezeTaskList) {
                     ActivityOptionsCompat.setFreezeRecentTasksList(opts);
                 }
-                ActivityManagerWrapper.getInstance().startActivityFromRecentsAsync(mTask.key,
-                        opts, (success) -> {
-                            if (resultCallback != null && !success) {
-                                // If the call to start activity failed, then post the result
-                                // immediately, otherwise, wait for the animation start callback
-                                // from the activity options above
-                                resultCallbackHandler.post(() -> resultCallback.accept(false));
-                            }
-                        }, resultCallbackHandler);
+                UI_HELPER_EXECUTOR.execute(
+                        () -> ActivityManagerWrapper.getInstance().startActivityFromRecentsAsync(
+                                mTask.key,
+                                opts,
+                                (success) -> {
+                                    if (resultCallback != null && !success) {
+                                        // If the call to start activity failed, then post the
+                                        // result
+                                        // immediately, otherwise, wait for the animation start
+                                        // callback
+                                        // from the activity options above
+                                        resultCallbackHandler.post(
+                                                () -> resultCallback.accept(false));
+                                    }
+                                }, resultCallbackHandler));
             }
         }
     }
