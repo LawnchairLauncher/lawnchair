@@ -45,6 +45,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
@@ -71,7 +72,8 @@ public class WorkTabTest extends AbstractLauncherUiTest {
 
     @After
     public void removeWorkProfile() throws Exception {
-        Log.d(TestProtocol.WORK_PROFILE_REMOVED, "(teardown) removing uid" + mProfileUserId);
+        Log.d(TestProtocol.WORK_PROFILE_REMOVED, "(teardown) removing uid" + mProfileUserId,
+                new Exception());
         mDevice.executeShellCommand("pm remove-user " + mProfileUserId);
     }
 
@@ -142,12 +144,16 @@ public class WorkTabTest extends AbstractLauncherUiTest {
                 "work profile status (" + mProfileUserId + ") :"
                         + launcher.getAppsView().isWorkTabVisible()));
 
+        AtomicInteger attempt = new AtomicInteger(0);
         // verify work edu is seen next
-        waitForLauncherCondition("Launcher did not show the next edu screen", l ->
-                ((AllAppsPagedView) l.getAppsView().getContentView()).getCurrentPage() == WORK_PAGE
-                        && ((TextView) workEduView.findViewById(
-                        R.id.content_text)).getText().equals(
-                        l.getResources().getString(R.string.work_profile_edu_work_apps)));
+        waitForLauncherCondition("Launcher did not show the next edu screen", l -> {
+            Log.d(TestProtocol.WORK_PROFILE_REMOVED,
+                    "running test attempt" + attempt.getAndIncrement());
+            return ((AllAppsPagedView) l.getAppsView().getContentView()).getCurrentPage()
+                    == WORK_PAGE && ((TextView) workEduView.findViewById(
+                    R.id.content_text)).getText().equals(
+                    l.getResources().getString(R.string.work_profile_edu_work_apps));
+        });
     }
 
     @Test

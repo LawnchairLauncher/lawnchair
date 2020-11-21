@@ -111,6 +111,7 @@ public class SearchResultIcon extends BubbleTextView implements
     public void applySearchTarget(SearchTarget searchTarget) {
         mSearchTarget = searchTarget;
         SearchEventTracker.getInstance(getContext()).registerWeakHandler(mSearchTarget, this);
+        setVisibility(VISIBLE);
         switch (searchTarget.getItemType()) {
             case TARGET_TYPE_APP:
             case TARGET_TYPE_HERO_APP:
@@ -131,6 +132,10 @@ public class SearchResultIcon extends BubbleTextView implements
     private void prepareUsingApp(ComponentName componentName, UserHandle userHandle) {
         AllAppsStore appsStore = mLauncher.getAppsView().getAppsStore();
         AppInfo appInfo = appsStore.getApp(new ComponentKey(componentName, userHandle));
+        if (appInfo == null) {
+            setVisibility(GONE);
+            return;
+        }
         applyFromApplicationInfo(appInfo);
         notifyItemInfoChanged(appInfo);
     }
