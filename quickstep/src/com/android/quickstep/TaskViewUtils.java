@@ -312,8 +312,10 @@ public final class TaskViewUtils {
             windowAnimEndListener = new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    stateManager.moveToRestState();
-                    stateManager.reapplyState();
+                    recentsView.post(() -> {
+                        stateManager.moveToRestState();
+                        stateManager.reapplyState();
+                    });
                 }
             };
         } else {
