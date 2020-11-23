@@ -20,7 +20,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Display;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewAnimationUtils;
@@ -170,9 +169,7 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
 
     @Override
     public ActivityOptions getActivityLaunchOptions(View v) {
-        final Display display = getWindow().getDecorView().getDisplay();
-        return display != null ? ActivityOptions.makeBasic().setLaunchDisplayId(
-                       display.getDisplayId()) : null;
+        return null;
     }
 
     @Override
