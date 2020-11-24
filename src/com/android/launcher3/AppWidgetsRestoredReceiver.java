@@ -106,7 +106,8 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
                 }
             }
             // attempt to update widget id in backup table as well
-            new ContentWriter(context, ContentWriter.CommitParams.backupCommitParams(where, args))
+            new ContentWriter(context, ContentWriter.CommitParams.backupCommitParams(
+                    "appWidgetId=? and profileId=?", args))
                     .put(LauncherSettings.Favorites.APPWIDGET_ID, newWidgetIds[i])
                     .put(LauncherSettings.Favorites.RESTORED, state)
                     .commit();
