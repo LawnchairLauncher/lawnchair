@@ -27,11 +27,11 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
-import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.quickstep.fallback.RecentsState;
 import com.android.quickstep.util.ActivityInitListener;
+import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
@@ -84,7 +84,7 @@ public final class FallbackActivityInterface extends
     /** 6 */
     @Override
     public AnimationFactory prepareRecentsUI(RecentsAnimationDeviceState deviceState,
-            boolean activityVisible, Consumer<AnimatorPlaybackController> callback) {
+            boolean activityVisible, Consumer<AnimatorControllerWithResistance> callback) {
         DefaultAnimationFactory factory = new DefaultAnimationFactory(callback);
         factory.initUI();
         return factory;
@@ -140,7 +140,7 @@ public final class FallbackActivityInterface extends
     }
 
     @Override
-    public void onExitOverview(RecentsAnimationDeviceState deviceState, Runnable exitRunnable) {
+    public void onExitOverview(RotationTouchHelper deviceState, Runnable exitRunnable) {
         // no-op, fake landscape not supported for 3P
     }
 

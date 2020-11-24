@@ -21,11 +21,8 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
-import static com.android.launcher3.states.StateAnimationConfig.PLAY_ATOMIC_OVERVIEW_PEEK;
 import static com.android.launcher3.util.VibratorWrapper.OVERVIEW_HAPTIC;
 
-import android.animation.Animator;
-import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.graphics.PointF;
@@ -35,14 +32,15 @@ import android.view.MotionEvent;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.anim.AnimationSuccessListener;
+import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.graphics.OverviewScrim;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.VibratorWrapper;
-import com.android.quickstep.util.StaggeredWorkspaceAnim;
+import com.android.quickstep.util.AnimatorControllerWithResistance;
+import com.android.quickstep.util.OverviewToHomeAnim;
 import com.android.quickstep.views.RecentsView;
 
 /**
@@ -62,10 +60,10 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
 
     private boolean mDidTouchStartInNavBar;
     private boolean mReachedOverview;
-    private boolean mIsOverviewRehidden;
-    private boolean mIsHomeStaggeredAnimFinished;
     // The last recorded displacement before we reached overview.
     private PointF mStartDisplacement = new PointF();
+    private float mStartY;
+    private AnimatorPlaybackController mOverviewResistYAnim;
 
     // Normal to Hint animation has flag SKIP_OVERVIEW, so we update this scrim with this animator.
     private ObjectAnimator mNormalToHintOverviewScrimAnimator;
@@ -123,6 +121,7 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
                     mToState.getOverviewScrimAlpha(mLauncher));
         }
         mReachedOverview = false;
+        mOverviewResistYAnim = null;
     }
 
     @Override
@@ -137,6 +136,11 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
     public void onDragEnd(float velocity) {
         super.onDragEnd(velocity);
         mNormalToHintOverviewScrimAnimator = null;
+        if (mLauncher.isInState(OVERVIEW)) {
+            // Normally we would cleanup the state based on mCurrentAnimation, but since we stop
+            // using that when we pause to go to Overview, we need to clean up ourselves.
+            clearState();
+        }
     }
 
     @Override
@@ -160,6 +164,9 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
         mNormalToHintOverviewScrimAnimator = null;
         mCurrentAnimation.dispatchOnCancelWithoutCancelRunnable(() -> {
             mLauncher.getStateManager().goToState(OVERVIEW, true, () -> {
+                mOverviewResistYAnim = AnimatorControllerWithResistance
+                        .createRecentsResistanceFromOverviewAnim(mLauncher, null)
+                        .createPlaybackController();
                 mReachedOverview = true;
                 maybeSwipeInteractionToOverviewComplete();
             });
@@ -170,13 +177,6 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
     private void maybeSwipeInteractionToOverviewComplete() {
         if (mReachedOverview && mDetector.isSettlingState()) {
             onSwipeInteractionCompleted(OVERVIEW, Touch.SWIPE);
-        }
-    }
-
-    // Used if flinging back to home after reaching overview
-    private void maybeSwipeInteractionToHomeComplete() {
-        if (mIsHomeStaggeredAnimFinished && mIsOverviewRehidden) {
-            onSwipeInteractionCompleted(NORMAL, Touch.FLING);
         }
     }
 
@@ -193,11 +193,17 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
         if (mMotionPauseDetector.isPaused()) {
             if (!mReachedOverview) {
                 mStartDisplacement.set(xDisplacement, yDisplacement);
+                mStartY = event.getY();
             } else {
                 mRecentsView.setTranslationX((xDisplacement - mStartDisplacement.x)
                         * OVERVIEW_MOVEMENT_FACTOR);
-                mRecentsView.setTranslationY((yDisplacement - mStartDisplacement.y)
-                        * OVERVIEW_MOVEMENT_FACTOR);
+                float yProgress = (mStartDisplacement.y - yDisplacement) / mStartY;
+                if (yProgress > 0 && mOverviewResistYAnim != null) {
+                    mOverviewResistYAnim.setPlayFraction(yProgress);
+                } else {
+                    mRecentsView.setTranslationY((yDisplacement - mStartDisplacement.y)
+                            * OVERVIEW_MOVEMENT_FACTOR);
+                }
             }
             // Stay in Overview.
             return true;
@@ -212,35 +218,8 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
         StateManager<LauncherState> stateManager = mLauncher.getStateManager();
         boolean goToHomeInsteadOfOverview = isFling;
         if (goToHomeInsteadOfOverview) {
-            if (velocity > 0) {
-                stateManager.goToState(NORMAL, true,
-                        () -> onSwipeInteractionCompleted(NORMAL, Touch.FLING));
-            } else {
-                mIsHomeStaggeredAnimFinished = mIsOverviewRehidden = false;
-
-                StaggeredWorkspaceAnim staggeredWorkspaceAnim = new StaggeredWorkspaceAnim(
-                        mLauncher, velocity, false /* animateOverviewScrim */);
-                staggeredWorkspaceAnim.addAnimatorListener(new AnimationSuccessListener() {
-                    @Override
-                    public void onAnimationSuccess(Animator animator) {
-                        mIsHomeStaggeredAnimFinished = true;
-                        maybeSwipeInteractionToHomeComplete();
-                    }
-                }).start();
-
-                // StaggeredWorkspaceAnim doesn't animate overview, so we handle it here.
-                stateManager.cancelAnimation();
-                StateAnimationConfig config = new StateAnimationConfig();
-                config.duration = OVERVIEW.getTransitionDuration(mLauncher);
-                config.animFlags = PLAY_ATOMIC_OVERVIEW_PEEK;
-                AnimatorSet anim = stateManager.createAtomicAnimation(
-                        stateManager.getState(), NORMAL, config);
-                anim.addListener(AnimationSuccessListener.forRunnable(() -> {
-                    mIsOverviewRehidden = true;
-                    maybeSwipeInteractionToHomeComplete();
-                }));
-                anim.start();
-            }
+            new OverviewToHomeAnim(mLauncher, ()-> onSwipeInteractionCompleted(NORMAL, Touch.FLING))
+                    .animateWithVelocity(velocity);
         }
         if (mReachedOverview) {
             float distanceDp = dpiFromPx(Math.max(
@@ -256,6 +235,13 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
                     .withEndAction(goToHomeInsteadOfOverview
                             ? null
                             : this::maybeSwipeInteractionToOverviewComplete);
+            if (!goToHomeInsteadOfOverview) {
+                // Return to normal properties for the overview state.
+                StateAnimationConfig config = new StateAnimationConfig();
+                config.duration = duration;
+                LauncherState state = mLauncher.getStateManager().getState();
+                mLauncher.getStateManager().createAtomicAnimation(state, state, config).start();
+            }
         }
     }
 

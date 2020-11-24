@@ -15,17 +15,19 @@
  */
 package com.android.quickstep.fallback;
 
-import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_MODAL;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SCALE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_X;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_Y;
 import static com.android.launcher3.states.StateAnimationConfig.PLAY_ATOMIC_OVERVIEW_PEEK;
 import static com.android.launcher3.states.StateAnimationConfig.PLAY_ATOMIC_OVERVIEW_SCALE;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_OVERVIEW;
 import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_OFFSET;
 import static com.android.quickstep.views.RecentsView.FULLSCREEN_PROGRESS;
+import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
 import static com.android.quickstep.views.RecentsView.TASK_MODALNESS;
+import static com.android.quickstep.views.RecentsView.TASK_SECONDARY_TRANSLATION;
 
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.PropertySetter;
@@ -82,10 +84,12 @@ public class FallbackRecentsStateController implements StateHandler<RecentsState
                 MultiValueAlpha.VALUE, buttonAlpha, LINEAR);
 
         float[] scaleAndOffset = state.getOverviewScaleAndOffset(mActivity);
-        setter.setFloat(mRecentsView, SCALE_PROPERTY, scaleAndOffset[0],
+        setter.setFloat(mRecentsView, RECENTS_SCALE_PROPERTY, scaleAndOffset[0],
                 config.getInterpolator(ANIM_OVERVIEW_SCALE, LINEAR));
         setter.setFloat(mRecentsView, ADJACENT_PAGE_OFFSET, scaleAndOffset[1],
                 config.getInterpolator(ANIM_OVERVIEW_TRANSLATE_X, LINEAR));
+        setter.setFloat(mRecentsView, TASK_SECONDARY_TRANSLATION, 0f,
+                config.getInterpolator(ANIM_OVERVIEW_TRANSLATE_Y, LINEAR));
 
         setter.setFloat(mRecentsView, TASK_MODALNESS, state.getOverviewModalness(),
                 config.getInterpolator(ANIM_OVERVIEW_MODAL, LINEAR));

@@ -18,15 +18,17 @@ package com.android.launcher3.touch;
 
 import android.content.res.Resources;
 import android.graphics.PointF;
+import android.graphics.Rect;
 import android.view.Surface;
 import android.view.View;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Utilities;
 
 public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
 
     @Override
-    public int getTaskDismissDirectionFactor() {
+    public int getSecondaryTranslationDirectionFactor() {
         return -1;
     }
 
@@ -76,5 +78,10 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
     public void setPrimaryAndResetSecondaryTranslate(View view, float translation) {
         view.setTranslationX(0);
         view.setTranslationY(translation);
+    }
+
+    @Override
+    public int getDistanceToBottomOfRect(DeviceProfile dp, Rect rect) {
+        return dp.widthPx - rect.right;
     }
 }

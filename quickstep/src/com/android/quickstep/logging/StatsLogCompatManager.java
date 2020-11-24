@@ -16,6 +16,10 @@
 
 package com.android.quickstep.logging;
 
+import static android.text.format.DateUtils.DAY_IN_MILLIS;
+import static android.text.format.DateUtils.formatElapsedTime;
+
+import static com.android.launcher3.Utilities.getDevicePrefs;
 import static com.android.launcher3.logger.LauncherAtom.ContainerInfo.ContainerCase.FOLDER;
 import static com.android.launcher3.logger.LauncherAtom.ContainerInfo.ContainerCase.SEARCH_RESULT_CONTAINER;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WORKSPACE_SNAPSHOT;
@@ -23,6 +27,8 @@ import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGE
 import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGED__DST_STATE__BACKGROUND;
 import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGED__DST_STATE__HOME;
 import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGED__DST_STATE__OVERVIEW;
+
+import static java.lang.System.currentTimeMillis;
 
 import android.content.Context;
 import android.util.Log;
@@ -33,6 +39,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
+import com.android.launcher3.logger.LauncherAtom.FolderContainer.ParentContainerCase;
 import com.android.launcher3.logger.LauncherAtom.FolderIcon;
 import com.android.launcher3.logger.LauncherAtom.FromState;
 import com.android.launcher3.logger.LauncherAtom.ToState;
@@ -52,6 +59,7 @@ import com.android.launcher3.util.LogConfig;
 import com.android.systemui.shared.system.SysUiStatsLog;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
 
@@ -59,17 +67,18 @@ import java.util.OptionalInt;
  * This class calls StatsLog compile time generated methods.
  *
  * To see if the logs are properly sent to statsd, execute following command.
+ * <ul>
  * $ wwdebug (to turn on the logcat printout)
  * $ wwlogcat (see logcat with grep filter on)
  * $ statsd_testdrive (see how ww is writing the proto to statsd buffer)
+ * </ul>
  */
 public class StatsLogCompatManager extends StatsLogManager {
 
     private static final String TAG = "StatsLog";
     private static final boolean IS_VERBOSE = Utilities.isPropertyEnabled(LogConfig.STATSLOG);
 
-    private static Context sContext;
-
+    private static final String LAST_SNAPSHOT_TIME_MILLIS = "LAST_SNAPSHOT_TIME_MILLIS";
     private static final InstanceId DEFAULT_INSTANCE_ID = InstanceId.fakeInstanceId(0);
     // LauncherAtom.ItemInfo.getDefaultInstance() should be used but until launcher proto migrates
     // from nano to lite, bake constant to prevent robo test failure.
@@ -77,8 +86,10 @@ public class StatsLogCompatManager extends StatsLogManager {
     private static final int FOLDER_HIERARCHY_OFFSET = 100;
     private static final int SEARCH_RESULT_HIERARCHY_OFFSET = 200;
 
+    private final Context mContext;
+
     public StatsLogCompatManager(Context context) {
-        sContext = context;
+        mContext = context;
     }
 
     @Override
@@ -100,23 +111,40 @@ public class StatsLogCompatManager extends StatsLogManager {
     }
 
     /**
-     * Logs the workspace layout information on the model thread.
+     * Logs impression of the current workspace with additional launcher events.
      */
     @Override
-    public void logSnapshot() {
-        LauncherAppState.getInstance(sContext).getModel().enqueueModelUpdateTask(
-                new SnapshotWorker());
+    public void logSnapshot(List<EventEnum> extraEvents) {
+        LauncherAppState.getInstance(mContext).getModel().enqueueModelUpdateTask(
+                new SnapshotWorker(extraEvents));
     }
 
     private class SnapshotWorker extends BaseModelUpdateTask {
         private final InstanceId mInstanceId;
-        SnapshotWorker() {
-            mInstanceId = new InstanceIdSequence(
-                    1 << 20 /*InstanceId.INSTANCE_ID_MAX*/).newInstanceId();
+        private final List<EventEnum> mExtraEvents;
+
+        SnapshotWorker(List<EventEnum> extraEvents) {
+            mInstanceId = new InstanceIdSequence(1 << 20 /*InstanceId.INSTANCE_ID_MAX*/)
+                    .newInstanceId();
+            this.mExtraEvents = extraEvents;
         }
 
         @Override
         public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
+            long lastSnapshotTimeMillis = getDevicePrefs(mContext)
+                    .getLong(LAST_SNAPSHOT_TIME_MILLIS, 0);
+            // Log snapshot only if previous snapshot was older than a day
+            if (currentTimeMillis() - lastSnapshotTimeMillis < DAY_IN_MILLIS) {
+                if (IS_VERBOSE) {
+                    String elapsedTime = formatElapsedTime(
+                            (currentTimeMillis() - lastSnapshotTimeMillis) / 1000);
+                    Log.d(TAG, String.format(
+                            "Skipped snapshot logging since previous snapshot was %s old.",
+                            elapsedTime));
+                }
+                return;
+            }
+
             IntSparseArrayMap<FolderInfo> folders = dataModel.folders.clone();
             ArrayList<ItemInfo> workspaceItems = (ArrayList) dataModel.workspaceItems.clone();
             ArrayList<LauncherAppWidgetInfo> appWidgets = (ArrayList) dataModel.appWidgets.clone();
@@ -132,16 +160,22 @@ public class StatsLogCompatManager extends StatsLogManager {
                         LauncherAtom.ItemInfo atomInfo = info.buildProto(fInfo);
                         writeSnapshot(atomInfo, mInstanceId);
                     }
-                } catch (Exception e) { }
+                } catch (Exception e) {
+                }
             }
             for (ItemInfo info : appWidgets) {
                 LauncherAtom.ItemInfo atomInfo = info.buildProto(null);
                 writeSnapshot(atomInfo, mInstanceId);
             }
+            mExtraEvents
+                    .forEach(eventName -> logger().withInstanceId(mInstanceId).log(eventName));
+
+            getDevicePrefs(mContext).edit()
+                    .putLong(LAST_SNAPSHOT_TIME_MILLIS, currentTimeMillis()).apply();
         }
     }
 
-    private static void writeSnapshot(LauncherAtom.ItemInfo info, InstanceId instanceId) {
+    private void writeSnapshot(LauncherAtom.ItemInfo info, InstanceId instanceId) {
         if (IS_VERBOSE) {
             Log.d(TAG, String.format("\nwriteSnapshot(%d):\n%s", instanceId.getId(), info));
         }
@@ -260,7 +294,7 @@ public class StatsLogCompatManager extends StatsLogManager {
             } else {
                 // Item is inside the folder, fetch folder info in a BG thread
                 // and then write to StatsLog.
-                LauncherAppState.getInstance(sContext).getModel().enqueueModelUpdateTask(
+                LauncherAppState.getInstanceNoCreate().getModel().enqueueModelUpdateTask(
                         new BaseModelUpdateTask() {
                             @Override
                             public void execute(LauncherAppState app, BgDataModel dataModel,
@@ -337,7 +371,7 @@ public class StatsLogCompatManager extends StatsLogManager {
     }
 
     private static int getCardinality(LauncherAtom.ItemInfo info) {
-        switch (info.getContainerInfo().getContainerCase()){
+        switch (info.getContainerInfo().getContainerCase()) {
             case PREDICTED_HOTSEAT_CONTAINER:
                 return info.getContainerInfo().getPredictedHotseatContainer().getCardinality();
             case SEARCH_RESULT_CONTAINER:
@@ -402,9 +436,16 @@ public class StatsLogCompatManager extends StatsLogManager {
     }
 
     private static int getPageId(LauncherAtom.ItemInfo info) {
+        if (info.hasTask()) {
+            return info.getTask().getIndex();
+        }
         switch (info.getContainerInfo().getContainerCase()) {
             case FOLDER:
                 return info.getContainerInfo().getFolder().getPageIndex();
+            case HOTSEAT:
+                return info.getContainerInfo().getHotseat().getIndex();
+            case PREDICTED_HOTSEAT_CONTAINER:
+                return info.getContainerInfo().getPredictedHotseatContainer().getIndex();
             default:
                 return info.getContainerInfo().getWorkspace().getPageIndex();
         }
@@ -413,6 +454,10 @@ public class StatsLogCompatManager extends StatsLogManager {
     private static int getParentPageId(LauncherAtom.ItemInfo info) {
         switch (info.getContainerInfo().getContainerCase()) {
             case FOLDER:
+                if (info.getContainerInfo().getFolder().getParentContainerCase()
+                        == ParentContainerCase.HOTSEAT) {
+                    return info.getContainerInfo().getFolder().getHotseat().getIndex();
+                }
                 return info.getContainerInfo().getFolder().getWorkspace().getPageIndex();
             case SEARCH_RESULT_CONTAINER:
                 return info.getContainerInfo().getSearchResultContainer().getWorkspace()
