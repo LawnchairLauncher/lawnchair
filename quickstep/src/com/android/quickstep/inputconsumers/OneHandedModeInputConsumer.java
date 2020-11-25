@@ -54,6 +54,7 @@ public class OneHandedModeInputConsumer extends DelegateInputConsumer {
     private final PointF mLastPos = new PointF();
 
     private boolean mPassedSlop;
+    private boolean mIsStopGesture;
 
     public OneHandedModeInputConsumer(Context context, RecentsAnimationDeviceState deviceState,
             InputConsumer delegate, InputMonitorCompat inputMonitor) {
@@ -105,7 +106,7 @@ public class OneHandedModeInputConsumer extends DelegateInputConsumer {
                     float distance = (float) Math.hypot(mLastPos.x - mDownPos.x,
                             mLastPos.y - mDownPos.y);
                     if (distance > mDragDistThreshold && mPassedSlop) {
-                        onStopGestureDetected();
+                        mIsStopGesture = true;
                     }
                 }
                 break;
@@ -113,21 +114,26 @@ public class OneHandedModeInputConsumer extends DelegateInputConsumer {
             case ACTION_UP: {
                 if (mLastPos.y >= mDownPos.y && mPassedSlop) {
                     onStartGestureDetected();
+                } else if (mIsStopGesture) {
+                    onStopGestureDetected();
                 }
-
-                mPassedSlop = false;
-                mState = STATE_INACTIVE;
+                clearState();
                 break;
             }
             case ACTION_CANCEL:
-                mPassedSlop = false;
-                mState = STATE_INACTIVE;
+                clearState();
                 break;
         }
 
         if (mState != STATE_ACTIVE) {
             mDelegate.onMotionEvent(ev);
         }
+    }
+
+    private void clearState() {
+        mPassedSlop = false;
+        mState = STATE_INACTIVE;
+        mIsStopGesture = false;
     }
 
     private void onStartGestureDetected() {
