@@ -67,4 +67,18 @@ public class LauncherAppTransitionManager implements ResourceBasedOverride {
     public void unregisterRemoteAnimations() {
         // Do nothing
     }
+
+    /**
+     * Registers remote transitions for certain system transitions.
+     */
+    public void registerRemoteTransitions() {
+        // Do nothing
+    }
+
+    /**
+     * Unregisters all remote transitions.
+     */
+    public void unregisterRemoteTransitions() {
+        // Do nothing
+    }
 }

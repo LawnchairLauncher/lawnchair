@@ -270,4 +270,11 @@ public final class LauncherActivityInterface extends
                 + res.getDimensionPixelSize(R.dimen.overview_actions_height);
         return actionsHeight;
     }
+
+    @Override
+    void onOverviewServiceBound() {
+        final BaseQuickstepLauncher activity = getCreatedActivity();
+        if (activity == null) return;
+        activity.getAppTransitionManager().registerRemoteTransitions();
+    }
 }
