@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Label for app share drop target. [CHAR_LIMIT=20] -->
+    <string name="app_share_drop_target_label">Share App</string>
+</resources>
