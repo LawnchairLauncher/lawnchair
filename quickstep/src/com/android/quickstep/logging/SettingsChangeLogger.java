@@ -16,7 +16,13 @@
 
 package com.android.quickstep.logging;
 
+import static com.android.launcher3.InvariantDeviceProfile.KEY_MIGRATION_SRC_HOTSEAT_COUNT;
 import static com.android.launcher3.Utilities.getDevicePrefs;
+import static com.android.launcher3.Utilities.getPrefs;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_GRID_SIZE_2;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_GRID_SIZE_3;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_GRID_SIZE_4;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_GRID_SIZE_5;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOME_SCREEN_SUGGESTIONS_DISABLED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOME_SCREEN_SUGGESTIONS_ENABLED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_NOTIFICATION_DOT_DISABLED;
@@ -34,7 +40,6 @@ import android.util.Xml;
 
 import com.android.launcher3.AutoInstallsLayout;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.InstanceIdSequence;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
@@ -69,7 +74,7 @@ public class SettingsChangeLogger implements
         mLoggablePrefs = loadPrefKeys(context);
         mNavMode = SysUINavigationMode.INSTANCE.get(context).addModeChangeListener(this);
 
-        Utilities.getPrefs(context).registerOnSharedPreferenceChangeListener(this);
+        getPrefs(context).registerOnSharedPreferenceChangeListener(this);
         getDevicePrefs(context).registerOnSharedPreferenceChangeListener(this);
 
         SecureSettingsObserver dotsObserver =
@@ -125,7 +130,8 @@ public class SettingsChangeLogger implements
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-        if (LAST_PREDICTION_ENABLED_STATE.equals(key) || mLoggablePrefs.containsKey(key)) {
+        if (LAST_PREDICTION_ENABLED_STATE.equals(key) || KEY_MIGRATION_SRC_HOTSEAT_COUNT.equals(key)
+                || mLoggablePrefs.containsKey(key)) {
             dispatchUserEvent();
         }
     }
@@ -142,7 +148,28 @@ public class SettingsChangeLogger implements
                 ? LAUNCHER_HOME_SCREEN_SUGGESTIONS_ENABLED
                 : LAUNCHER_HOME_SCREEN_SUGGESTIONS_DISABLED);
 
-        SharedPreferences prefs = Utilities.getPrefs(mContext);
+        SharedPreferences prefs = getPrefs(mContext);
+        StatsLogManager.LauncherEvent gridSizeChangedEvent = null;
+        switch (prefs.getInt(KEY_MIGRATION_SRC_HOTSEAT_COUNT, -1)) {
+            case 5:
+                gridSizeChangedEvent = LAUNCHER_GRID_SIZE_5;
+                break;
+            case 4:
+                gridSizeChangedEvent = LAUNCHER_GRID_SIZE_4;
+                break;
+            case 3:
+                gridSizeChangedEvent = LAUNCHER_GRID_SIZE_3;
+                break;
+            case 2:
+                gridSizeChangedEvent = LAUNCHER_GRID_SIZE_2;
+                break;
+            default:
+                // Ignore illegal input.
+                break;
+        }
+        if (gridSizeChangedEvent != null) {
+            logger.log(gridSizeChangedEvent);
+        }
         mLoggablePrefs.forEach((key, lp) -> logger.log(() ->
                 prefs.getBoolean(key, lp.defaultValue) ? lp.eventIdOn : lp.eventIdOff));
     }
