@@ -221,6 +221,8 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
     static final boolean DEBUG_STRICT_MODE = false;
 
+    private static final boolean ENABLE_ACTIVITY_CROSSFADE = false;
+
     private static final int REQUEST_CREATE_SHORTCUT = 1;
     private static final int REQUEST_CREATE_APPWIDGET = 5;
 
@@ -1376,7 +1378,8 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         int width = mDragLayer.getWidth();
         int height = mDragLayer.getHeight();
 
-        if (width <= 0 || height <= 0) {
+        // TODO: b/172467144 Remove hardcoded ENABLE_ACTIVITY_CROSSFADE.
+        if (!ENABLE_ACTIVITY_CROSSFADE || width <= 0 || height <= 0) {
             return null;
         }
 
