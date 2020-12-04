@@ -208,11 +208,13 @@ LOCAL_STATIC_ANDROID_LIBRARIES := Launcher3CommonDepsLib
 LOCAL_SRC_FILES := \
     $(call all-java-files-under, src) \
     $(call all-java-files-under, quickstep/src) \
-    $(call all-java-files-under, go/src)
+    $(call all-java-files-under, go/src) \
+    $(call all-java-files-under, go/quickstep/src)
 
 LOCAL_RESOURCE_DIR := \
     $(LOCAL_PATH)/quickstep/res \
-    $(LOCAL_PATH)/go/res
+    $(LOCAL_PATH)/go/res \
+    $(LOCAL_PATH)/go/quickstep/res
 
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 LOCAL_PROGUARD_ENABLED := full
@@ -225,7 +227,7 @@ LOCAL_REQUIRED_MODULES := privapp_whitelist_com.android.launcher3
 
 LOCAL_FULL_LIBS_MANIFEST_FILES := \
     $(LOCAL_PATH)/go/AndroidManifest.xml \
-    $(LOCAL_PATH)/quickstep/AndroidManifest-launcher.xml \
+    $(LOCAL_PATH)/go/AndroidManifest-launcher.xml \
     $(LOCAL_PATH)/AndroidManifest-common.xml
 
 LOCAL_MANIFEST_FILE := quickstep/AndroidManifest.xml
