@@ -721,9 +721,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
 
     @UiThread
     public void onGestureStarted(boolean isLikelyToStartNewTask) {
-        InteractionJankMonitorWrapper.begin(
+        InteractionJankMonitorWrapper.begin(mRecentsView,
                 InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH, 2000 /* ms timeout */);
-        InteractionJankMonitorWrapper.begin(
+        InteractionJankMonitorWrapper.begin(mRecentsView,
                 InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME);
         notifyGestureStartedAsync();
         setIsLikelyToStartNewTask(isLikelyToStartNewTask, false /* animate */);
@@ -805,7 +805,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
         maybeUpdateRecentsAttachedState(false);
         final GestureEndTarget endTarget = mGestureState.getEndTarget();
         if (endTarget != NEW_TASK) {
-            InteractionJankMonitorWrapper.cancel(InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
+            InteractionJankMonitorWrapper.cancel(
+                    InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
         }
         if (endTarget != HOME) {
             InteractionJankMonitorWrapper.cancel(
@@ -1165,7 +1166,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
                 TaskInfoCompat.getPipSourceRectHint(runningTaskTarget.pictureInPictureParams),
                 TaskInfoCompat.getWindowConfigurationBounds(taskInfo),
                 startBounds,
-                destinationBounds);
+                destinationBounds,
+                mRecentsView);
         // We would assume home and app window always in the same rotation While homeRotation
         // is not ROTATION_0 (which implies the rotation is turned on in launcher settings).
         if (homeRotation == ROTATION_0

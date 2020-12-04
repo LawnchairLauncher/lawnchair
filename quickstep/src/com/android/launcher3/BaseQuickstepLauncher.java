@@ -316,12 +316,4 @@ public abstract class BaseQuickstepLauncher extends Launcher
     public void setHintUserWillBeActive() {
         addActivityFlags(ACTIVITY_STATE_USER_WILL_BE_ACTIVE);
     }
-
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        if (Utilities.ATLEAST_R) {
-            InteractionJankMonitorWrapper.init(getWindow().getDecorView());
-        }
-    }
 }
