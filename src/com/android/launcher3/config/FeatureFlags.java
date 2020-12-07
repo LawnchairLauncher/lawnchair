@@ -153,7 +153,7 @@ public final class FeatureFlags {
             "ENABLE_OVERVIEW_CONTENT_PUSH", false, "Show Content Push button in Overview Actions");
 
     public static final BooleanFlag ENABLE_DATABASE_RESTORE = getDebugFlag(
-            "ENABLE_DATABASE_RESTORE", true,
+            "ENABLE_DATABASE_RESTORE", false,
             "Enable database restore when new restore session is created");
 
     public static final BooleanFlag ENABLE_SMARTSPACE_UNIVERSAL = getDebugFlag(
