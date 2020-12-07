@@ -16,8 +16,7 @@
 <com.android.quickstep.interaction.RootSandboxLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?android:attr/colorBackground">
+    android:layout_height="match_parent">
 
     <View
         android:id="@+id/gesture_tutorial_ripple_view"
@@ -29,15 +28,12 @@
         android:id="@+id/gesture_tutorial_fake_icon_view"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:background="@drawable/bg_circle"
-        android:backgroundTint="@color/gesture_tutorial_fake_task_view_color"
         android:visibility="invisible" />
 
     <View
         android:id="@+id/gesture_tutorial_fake_task_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/gesture_tutorial_fake_task_view_color"
         android:visibility="invisible" />
 
     <ImageView
