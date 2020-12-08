@@ -33,6 +33,7 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_QUICKSWITCH_RIGHT;
 import static com.android.launcher3.util.DisplayController.getSingleFrameMs;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
 import static com.android.launcher3.util.VibratorWrapper.OVERVIEW_HAPTIC;
 import static com.android.quickstep.GestureState.GestureEndTarget.HOME;
@@ -1395,32 +1396,53 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
             if (mRecentsAnimationController != null) {
                 // Update the screenshot of the task
                 if (mTaskSnapshot == null) {
-                    mTaskSnapshot = mRecentsAnimationController.screenshotTask(runningTaskId);
+                    UI_HELPER_EXECUTOR.execute(() -> {
+                        final ThumbnailData taskSnapshot =
+                                mRecentsAnimationController.screenshotTask(runningTaskId);
+                        MAIN_EXECUTOR.execute(() -> {
+                            mTaskSnapshot = taskSnapshot;
+                            if (!updateThumbnail(runningTaskId)) {
+                                setScreenshotCapturedState();
+                            }
+                        });
+                    });
+                    return;
                 }
-                final TaskView taskView;
-                if (mGestureState.getEndTarget() == HOME) {
-                    // Capture the screenshot before finishing the transition to home to ensure it's
-                    // taken in the correct orientation, but no need to update the thumbnail.
-                    taskView = null;
-                } else {
-                    taskView = mRecentsView.updateThumbnail(runningTaskId, mTaskSnapshot);
-                }
-                if (taskView != null && !mCanceled) {
-                    // Defer finishing the animation until the next launcher frame with the
-                    // new thumbnail
-                    finishTransitionPosted = ViewUtils.postFrameDrawn(taskView,
-                            () -> mStateCallback.setStateOnUiThread(STATE_SCREENSHOT_CAPTURED),
-                            this::isCanceled);
-                }
+                finishTransitionPosted = updateThumbnail(runningTaskId);
             }
             if (!finishTransitionPosted) {
-                // If we haven't posted a draw callback, set the state immediately.
-                Object traceToken = TraceHelper.INSTANCE.beginSection(SCREENSHOT_CAPTURED_EVT,
-                        TraceHelper.FLAG_CHECK_FOR_RACE_CONDITIONS);
-                mStateCallback.setStateOnUiThread(STATE_SCREENSHOT_CAPTURED);
-                TraceHelper.INSTANCE.endSection(traceToken);
+                setScreenshotCapturedState();
             }
         }
+    }
+
+    // Returns whether finish transition was posted.
+    private boolean updateThumbnail(int runningTaskId) {
+        boolean finishTransitionPosted = false;
+        final TaskView taskView;
+        if (mGestureState.getEndTarget() == HOME) {
+            // Capture the screenshot before finishing the transition to home to ensure it's
+            // taken in the correct orientation, but no need to update the thumbnail.
+            taskView = null;
+        } else {
+            taskView = mRecentsView.updateThumbnail(runningTaskId, mTaskSnapshot);
+        }
+        if (taskView != null && !mCanceled) {
+            // Defer finishing the animation until the next launcher frame with the
+            // new thumbnail
+            finishTransitionPosted = ViewUtils.postFrameDrawn(taskView,
+                    () -> mStateCallback.setStateOnUiThread(STATE_SCREENSHOT_CAPTURED),
+                    this::isCanceled);
+        }
+        return finishTransitionPosted;
+    }
+
+    private void setScreenshotCapturedState() {
+        // If we haven't posted a draw callback, set the state immediately.
+        Object traceToken = TraceHelper.INSTANCE.beginSection(SCREENSHOT_CAPTURED_EVT,
+                TraceHelper.FLAG_CHECK_FOR_RACE_CONDITIONS);
+        mStateCallback.setStateOnUiThread(STATE_SCREENSHOT_CAPTURED);
+        TraceHelper.INSTANCE.endSection(traceToken);
     }
 
     private void finishCurrentTransitionToRecents() {
