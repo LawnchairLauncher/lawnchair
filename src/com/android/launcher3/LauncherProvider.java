@@ -85,7 +85,6 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 public class LauncherProvider extends ContentProvider {
     private static final String TAG = "LauncherProvider";
@@ -932,11 +931,6 @@ public class LauncherProvider extends ContentProvider {
             final IntSet validWidgets = IntSet.wrap(LauncherDbUtils.queryIntArray(db,
                     Favorites.TABLE_NAME, Favorites.APPWIDGET_ID,
                     "itemType=" + Favorites.ITEM_TYPE_APPWIDGET, null, null));
-            final String allWidgetIds = Arrays.stream(allWidgets).mapToObj(String::valueOf)
-                    .collect(Collectors.joining(","));
-            final String validWidgetIds = validWidgets.getArray().toConcatString();
-            FileLog.d(TAG, "All widget ids: " + allWidgetIds);
-            FileLog.d(TAG, "Valid widget ids: " + validWidgetIds);
             for (int widgetId : allWidgets) {
                 if (!validWidgets.contains(widgetId)) {
                     try {

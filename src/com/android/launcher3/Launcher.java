@@ -2343,9 +2343,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
             if (item.restoreStatus == LauncherAppWidgetInfo.RESTORE_COMPLETED) {
                 // Verify that we own the widget
                 if (appWidgetInfo == null) {
-                    FileLog.e(TAG, "Removing invalid widget: id=" + item.appWidgetId
-                            + ",title=" + item.title
-                            + ",providerName=" + item.providerName.toShortString());
+                    FileLog.e(TAG, "Removing invalid widget: id=" + item.appWidgetId);
                     getModelWriter().deleteWidgetInfo(item, getAppWidgetHost());
                     return null;
                 }
