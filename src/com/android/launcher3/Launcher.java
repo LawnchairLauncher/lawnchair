@@ -18,6 +18,7 @@ package com.android.launcher3;
 
 import static android.content.pm.ActivityInfo.CONFIG_ORIENTATION;
 import static android.content.pm.ActivityInfo.CONFIG_SCREEN_SIZE;
+import static android.content.pm.ActivityInfo.CONFIG_UI_MODE;
 import static android.view.View.IMPORTANT_FOR_ACCESSIBILITY_NO;
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
 
@@ -1136,7 +1137,11 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         int stateOrdinal = savedState.getInt(RUNTIME_STATE, NORMAL.ordinal);
         LauncherState[] stateValues = LauncherState.values();
         LauncherState state = stateValues[stateOrdinal];
-        if (!state.shouldDisableRestore()) {
+
+        NonConfigInstance lastInstance = (NonConfigInstance) getLastNonConfigurationInstance();
+        boolean forceRestore = lastInstance != null
+                && (lastInstance.config.diff(mOldConfig) & CONFIG_UI_MODE) != 0;
+        if (forceRestore || !state.shouldDisableRestore()) {
             mStateManager.goToState(state, false /* animated */);
         }
 
@@ -1375,15 +1380,18 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
     @Override
     public Object onRetainNonConfigurationInstance() {
+        NonConfigInstance instance = new NonConfigInstance();
+        instance.config = new Configuration(mOldConfig);
+
         int width = mDragLayer.getWidth();
         int height = mDragLayer.getHeight();
 
         // TODO: b/172467144 Remove hardcoded ENABLE_ACTIVITY_CROSSFADE.
-        if (!ENABLE_ACTIVITY_CROSSFADE || width <= 0 || height <= 0) {
-            return null;
+        if (ENABLE_ACTIVITY_CROSSFADE && width > 0 && height > 0) {
+            instance.snapshot =
+                    BitmapRenderer.createHardwareBitmap(width, height, mDragLayer::draw);
         }
-
-        return BitmapRenderer.createHardwareBitmap(width, height, mDragLayer::draw);
+        return instance;
     }
 
     public AllAppsTransitionController getAllAppsController() {
@@ -2787,15 +2795,14 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
      * updates.
      */
     private void crossFadeWithPreviousAppearance() {
-        Bitmap previousAppearanceBitmap = (Bitmap) getLastNonConfigurationInstance();
+        NonConfigInstance lastInstance = (NonConfigInstance) getLastNonConfigurationInstance();
 
-        if (previousAppearanceBitmap == null) {
+        if (lastInstance == null || lastInstance.snapshot == null) {
             return;
         }
 
         ImageView crossFadeHelper = new ImageView(this);
-
-        crossFadeHelper.setImageBitmap(previousAppearanceBitmap);
+        crossFadeHelper.setImageBitmap(lastInstance.snapshot);
         crossFadeHelper.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
 
         InsettableFrameLayout.LayoutParams layoutParams = new InsettableFrameLayout.LayoutParams(
@@ -2814,5 +2821,10 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                 .alpha(0f)
                 .withEndAction(() -> getRootView().removeView(crossFadeHelper))
                 .start();
+    }
+
+    private static class NonConfigInstance {
+        public Configuration config;
+        public Bitmap snapshot;
     }
 }
