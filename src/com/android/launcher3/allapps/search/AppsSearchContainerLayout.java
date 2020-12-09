@@ -47,6 +47,7 @@ import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AlphabeticalAppsList;
 import com.android.launcher3.allapps.SearchUiManager;
 import com.android.launcher3.anim.PropertySetter;
+import com.android.launcher3.config.FeatureFlags;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -215,7 +216,8 @@ public class AppsSearchContainerLayout extends ExtendedEditText
 
     @Override
     public float getScrollRangeDelta(Rect insets) {
-        if (mLauncher.getDeviceProfile().isVerticalBarLayout()) {
+        if (mLauncher.getDeviceProfile().isVerticalBarLayout()
+                || FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
             return 0;
         } else {
             return insets.bottom + insets.top;

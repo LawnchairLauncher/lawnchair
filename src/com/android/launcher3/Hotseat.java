@@ -27,6 +27,8 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.config.FeatureFlags;
+
 import java.util.function.Consumer;
 
 /**
@@ -38,7 +40,8 @@ public class Hotseat extends CellLayout implements Insettable {
     private boolean mHasVerticalHotseat;
     private Workspace mWorkspace;
     private boolean mSendTouchToWorkspace;
-    @Nullable private Consumer<Boolean> mOnVisibilityAggregatedCallback;
+    @Nullable
+    private Consumer<Boolean> mOnVisibilityAggregatedCallback;
 
     public Hotseat(Context context) {
         this(context, null);
@@ -73,8 +76,9 @@ public class Hotseat extends CellLayout implements Insettable {
         if (hasVerticalHotseat) {
             setGridSize(1, idp.numHotseatIcons);
         } else {
-            setGridSize(idp.numHotseatIcons, 1);
+            setGridSize(idp.numHotseatIcons, FeatureFlags.ENABLE_DEVICE_SEARCH.get() ? 2 : 1);
         }
+        showInlineQsb();
     }
 
     @Override
@@ -97,7 +101,11 @@ public class Hotseat extends CellLayout implements Insettable {
             lp.height = grid.hotseatBarSizePx + insets.bottom;
         }
         Rect padding = grid.getHotseatLayoutPadding();
-        setPadding(padding.left, padding.top, padding.right, padding.bottom);
+        int paddingBottom = padding.bottom;
+        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get() && !grid.isVerticalBarLayout()) {
+            paddingBottom -= grid.hotseatBarBottomPaddingPx;
+        }
+        setPadding(padding.left, padding.top, padding.right, paddingBottom);
 
         setLayoutParams(lp);
         InsettableFrameLayout.dispatchInsets(this, insets);
@@ -147,5 +155,9 @@ public class Hotseat extends CellLayout implements Insettable {
     /** Sets a callback to be called onVisibilityAggregated */
     public void setOnVisibilityAggregatedCallback(@Nullable Consumer<Boolean> callback) {
         mOnVisibilityAggregatedCallback = callback;
+    }
+
+    protected void showInlineQsb() {
+        //Does nothing
     }
 }
