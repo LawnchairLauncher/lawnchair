@@ -126,7 +126,7 @@ public class LauncherPreviewRenderer {
      */
     public static class PreviewContext extends ContextWrapper {
 
-        private static final Set<MainThreadInitializedObject> WHITELIST = new HashSet<>(
+        private final Set<MainThreadInitializedObject> mAllowedObjects = new HashSet<>(
                 Arrays.asList(UserCache.INSTANCE, InstallSessionHelper.INSTANCE,
                         LauncherAppState.INSTANCE, InvariantDeviceProfile.INSTANCE,
                         CustomWidgetManager.INSTANCE, PluginManagerWrapper.INSTANCE));
@@ -160,7 +160,7 @@ public class LauncherPreviewRenderer {
          */
         public <T> T getObject(MainThreadInitializedObject<T> mainThreadInitializedObject,
                 MainThreadInitializedObject.ObjectProvider<T> provider) {
-            if (!WHITELIST.contains(mainThreadInitializedObject)) {
+            if (!mAllowedObjects.contains(mainThreadInitializedObject)) {
                 throw new IllegalStateException("Leaking unknown objects");
             }
             if (mainThreadInitializedObject == LauncherAppState.INSTANCE) {
@@ -595,7 +595,10 @@ public class LauncherPreviewRenderer {
         @Override
         public WorkspaceResult call() throws Exception {
             List<ShortcutInfo> allShortcuts = new ArrayList<>();
-            loadWorkspace(allShortcuts, LauncherSettings.Favorites.PREVIEW_CONTENT_URI);
+            loadWorkspace(allShortcuts, LauncherSettings.Favorites.PREVIEW_CONTENT_URI,
+                    LauncherSettings.Favorites.SCREEN + " = 0 or "
+                    + LauncherSettings.Favorites.CONTAINER + " = "
+                    + LauncherSettings.Favorites.CONTAINER_HOTSEAT);
             return new WorkspaceResult(mBgDataModel.workspaceItems, mBgDataModel.appWidgets,
                     mBgDataModel.cachedPredictedItems, null, mWidgetProvidersMap);
         }
