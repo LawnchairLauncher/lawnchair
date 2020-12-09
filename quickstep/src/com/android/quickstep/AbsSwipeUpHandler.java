@@ -20,7 +20,6 @@ import static android.widget.Toast.LENGTH_SHORT;
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_STATE_HANDLER;
 import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAGS;
 import static com.android.launcher3.QuickstepAppTransitionManagerImpl.RECENTS_LAUNCH_DURATION;
-import static com.android.launcher3.QuickstepAppTransitionManagerImpl.TRANSITION_OPEN_LAUNCHER;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
@@ -59,7 +58,6 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.SystemClock;
-import android.os.Trace;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -1217,7 +1215,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
         anim.addAnimatorListener(new AnimationSuccessListener() {
             @Override
             public void onAnimationStart(Animator animation) {
-                Trace.beginAsyncSection(TRANSITION_OPEN_LAUNCHER, 0);
                 InteractionJankMonitorWrapper.begin(cuj);
                 if (mActivity != null) {
                     removeLiveTileOverlay();
@@ -1239,12 +1236,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
             public void onAnimationCancel(Animator animation) {
                 super.onAnimationCancel(animation);
                 InteractionJankMonitorWrapper.cancel(cuj);
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                Trace.endAsyncSection(TRANSITION_OPEN_LAUNCHER, 0);
             }
         });
         if (mRecentsAnimationTargets != null) {
