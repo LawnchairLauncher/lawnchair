@@ -21,8 +21,10 @@ import android.content.Intent;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.util.ArrayMap;
+import android.util.Log;
 import android.util.LongSparseArray;
 
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.SimpleBroadcastReceiver;
@@ -101,6 +103,9 @@ public class UserCache {
 
                 mUsers = null;
                 mUserToSerialMap = null;
+            }
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.WORK_PROFILE_REMOVED, "Work profile removed", new Exception());
             }
         }
     }

@@ -85,7 +85,7 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                 final LauncherInstrumentation.GestureScope gestureScope =
                         zeroButtonToOverviewGestureStartsInLauncher()
                                 ? LauncherInstrumentation.GestureScope.INSIDE_TO_OUTSIDE
-                                : LauncherInstrumentation.GestureScope.OUTSIDE;
+                                : LauncherInstrumentation.GestureScope.OUTSIDE_WITH_PILFER;
 
                 // b/156044202
                 mLauncher.log("Hierarchy before swiping up to overview:");
@@ -130,7 +130,7 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                 }
 
                 mLauncher.swipeToState(startX, startY, endX, endY, 10, OVERVIEW_STATE_ORDINAL,
-                        LauncherInstrumentation.GestureScope.OUTSIDE);
+                        LauncherInstrumentation.GestureScope.OUTSIDE_WITH_PILFER);
                 break;
             }
 
@@ -194,7 +194,7 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                 mLauncher.swipeToState(startX, startY, endX, endY, 20, expectedState,
                         launcherWasVisible && isZeroButton
                                 ? LauncherInstrumentation.GestureScope.INSIDE_TO_OUTSIDE
-                                : LauncherInstrumentation.GestureScope.OUTSIDE);
+                                : LauncherInstrumentation.GestureScope.OUTSIDE_WITH_PILFER);
                 break;
             }
 

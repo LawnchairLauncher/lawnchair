@@ -16,6 +16,7 @@
 package com.android.quickstep;
 
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATION;
 
 import android.animation.AnimatorSet;
 import android.content.Context;
@@ -28,6 +29,7 @@ import androidx.annotation.NonNull;
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.views.FloatingIconView;
+import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.StaggeredWorkspaceAnim;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
@@ -72,36 +74,39 @@ public class LauncherSwipeHandlerV2 extends
             mActivity.getRootView().setForceHideBackArrow(true);
             mActivity.setHintUserWillBeActive();
 
-            homeAnimFactory = new HomeAnimationFactory(floatingIconView) {
-
-                @Override
-                public RectF getWindowTargetRect() {
-                    if (canUseWorkspaceView) {
+            if (canUseWorkspaceView) {
+                // We want the window alpha to be 0 once this threshold is met, so that the
+                // FolderIconView can be seen morphing into the icon shape.
+                float windowAlphaThreshold = 1f - SHAPE_PROGRESS_DURATION;
+                homeAnimFactory = new LauncherHomeAnimationFactory() {
+                    @Override
+                    public RectF getWindowTargetRect() {
                         return iconLocation;
-                    } else {
-                        return super.getWindowTargetRect();
                     }
-                }
 
-                @NonNull
-                @Override
-                public AnimatorPlaybackController createActivityAnimationToHome() {
-                    // Return an empty APC here since we have an non-user controlled animation
-                    // to home.
-                    long accuracy = 2 * Math.max(mDp.widthPx, mDp.heightPx);
-                    return mActivity.getStateManager().createAnimationToNewWorkspace(
-                            NORMAL, accuracy, 0 /* animComponents */);
-                }
+                    @Override
+                    public void setAnimation(RectFSpringAnim anim) {
+                        anim.addAnimatorListener(floatingIconView);
+                        floatingIconView.setOnTargetChangeListener(anim::onTargetPositionChanged);
+                        floatingIconView.setFastFinishRunnable(anim::end);
+                    }
 
-                @Override
-                public void playAtomicAnimation(float velocity) {
-                    new StaggeredWorkspaceAnim(mActivity, velocity,
-                            true /* animateOverviewScrim */).start();
-                }
-            };
+                    @Override
+                    public void update(RectF currentRect, float progress, float radius) {
+                        floatingIconView.update(currentRect, 1f, progress, windowAlphaThreshold,
+                                radius, false);
+                    }
 
+                    @Override
+                    public void onCancel() {
+                        floatingIconView.fastFinish();
+                    }
+                };
+            } else {
+                homeAnimFactory = new LauncherHomeAnimationFactory();
+            }
         } else {
-            homeAnimFactory = new HomeAnimationFactory(null) {
+            homeAnimFactory = new HomeAnimationFactory() {
                 @Override
                 public AnimatorPlaybackController createActivityAnimationToHome() {
                     return AnimatorPlaybackController.wrap(new AnimatorSet(), duration);
@@ -117,5 +122,23 @@ public class LauncherSwipeHandlerV2 extends
     protected void finishRecentsControllerToHome(Runnable callback) {
         mRecentsAnimationController.finish(
                 true /* toRecents */, callback, true /* sendUserLeaveHint */);
+    }
+
+    private class LauncherHomeAnimationFactory extends HomeAnimationFactory {
+        @NonNull
+        @Override
+        public AnimatorPlaybackController createActivityAnimationToHome() {
+            // Return an empty APC here since we have an non-user controlled animation
+            // to home.
+            long accuracy = 2 * Math.max(mDp.widthPx, mDp.heightPx);
+            return mActivity.getStateManager().createAnimationToNewWorkspace(
+                    NORMAL, accuracy, 0 /* animComponents */);
+        }
+
+        @Override
+        public void playAtomicAnimation(float velocity) {
+            new StaggeredWorkspaceAnim(mActivity, velocity,
+                    true /* animateOverviewScrim */).start();
+        }
     }
 }

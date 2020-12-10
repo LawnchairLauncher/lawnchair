@@ -100,10 +100,12 @@ public class LauncherProvider extends ContentProvider {
     public static final int SCHEMA_VERSION = 28;
 
     public static final String AUTHORITY = BuildConfig.APPLICATION_ID + ".settings";
+    public static final String KEY_LAYOUT_PROVIDER_AUTHORITY = "KEY_LAYOUT_PROVIDER_AUTHORITY";
 
     static final String EMPTY_DATABASE_CREATED = "EMPTY_DATABASE_CREATED";
 
     protected DatabaseHelper mOpenHelper;
+    protected String mProviderAuthority;
 
     private long mLastRestoreTimestamp = 0L;
 
@@ -367,7 +369,8 @@ public class LauncherProvider extends ContentProvider {
             case LauncherSettings.Settings.METHOD_WAS_EMPTY_DB_CREATED : {
                 Bundle result = new Bundle();
                 result.putBoolean(LauncherSettings.Settings.EXTRA_VALUE,
-                        Utilities.getPrefs(getContext()).getBoolean(EMPTY_DATABASE_CREATED, false));
+                        Utilities.getPrefs(getContext()).getBoolean(
+                                mOpenHelper.getKey(EMPTY_DATABASE_CREATED), false));
                 return result;
             }
             case LauncherSettings.Settings.METHOD_DELETE_EMPTY_FOLDERS: {
@@ -437,6 +440,7 @@ public class LauncherProvider extends ContentProvider {
                                             getContext(), true /* forMigration */)));
                     return result;
                 }
+                return null;
             }
             case LauncherSettings.Settings.METHOD_PREP_FOR_PREVIEW: {
                 if (MULTI_DB_GRID_MIRATION_ALGO.get()) {
@@ -450,6 +454,23 @@ public class LauncherProvider extends ContentProvider {
                                     () -> mOpenHelper));
                     return result;
                 }
+                return null;
+            }
+            case LauncherSettings.Settings.METHOD_SWITCH_DATABASE: {
+                if (TextUtils.equals(arg, mOpenHelper.getDatabaseName())) return null;
+                final DatabaseHelper helper = mOpenHelper;
+                if (extras == null || !extras.containsKey(KEY_LAYOUT_PROVIDER_AUTHORITY)) {
+                    mProviderAuthority = null;
+                } else {
+                    mProviderAuthority = extras.getString(KEY_LAYOUT_PROVIDER_AUTHORITY);
+                }
+                mOpenHelper = DatabaseHelper.createDatabaseHelper(
+                        getContext(), arg, false /* forMigration */);
+                helper.close();
+                LauncherAppState app = LauncherAppState.getInstanceNoCreate();
+                if (app == null) return null;
+                app.getModel().forceReload();
+                return null;
             }
         }
         return null;
@@ -492,7 +513,8 @@ public class LauncherProvider extends ContentProvider {
     }
 
     private void clearFlagEmptyDbCreated() {
-        Utilities.getPrefs(getContext()).edit().remove(EMPTY_DATABASE_CREATED).commit();
+        Utilities.getPrefs(getContext()).edit()
+                .remove(mOpenHelper.getKey(EMPTY_DATABASE_CREATED)).commit();
     }
 
     /**
@@ -505,7 +527,7 @@ public class LauncherProvider extends ContentProvider {
     synchronized private void loadDefaultFavoritesIfNecessary() {
         SharedPreferences sp = Utilities.getPrefs(getContext());
 
-        if (sp.getBoolean(EMPTY_DATABASE_CREATED, false)) {
+        if (sp.getBoolean(mOpenHelper.getKey(EMPTY_DATABASE_CREATED), false)) {
             Log.d(TAG, "loading default workspace");
 
             AppWidgetHost widgetHost = mOpenHelper.newLauncherWidgetHost();
@@ -553,8 +575,13 @@ public class LauncherProvider extends ContentProvider {
      */
     private AutoInstallsLayout createWorkspaceLoaderFromAppRestriction(AppWidgetHost widgetHost) {
         Context ctx = getContext();
-        String authority = Settings.Secure.getString(ctx.getContentResolver(),
-                "launcher3.layout.provider");
+        final String authority;
+        if (!TextUtils.isEmpty(mProviderAuthority)) {
+            authority = mProviderAuthority;
+        } else {
+            authority = Settings.Secure.getString(ctx.getContentResolver(),
+                    "launcher3.layout.provider");
+        }
         if (TextUtils.isEmpty(authority)) {
             return null;
         }
@@ -694,11 +721,25 @@ public class LauncherProvider extends ContentProvider {
         }
 
         /**
+         * Re-composite given key in respect to database. If the current db is
+         * {@link LauncherFiles#LAUNCHER_DB}, return the key as-is. Otherwise append the db name to
+         * given key. e.g. consider key="EMPTY_DATABASE_CREATED", dbName="minimal.db", the returning
+         * string will be "EMPTY_DATABASE_CREATED@minimal.db".
+         */
+        String getKey(final String key) {
+            if (TextUtils.equals(getDatabaseName(), LauncherFiles.LAUNCHER_DB)) {
+                return key;
+            }
+            return key + "@" + getDatabaseName();
+        }
+
+        /**
          * Overriden in tests.
          */
         protected void onEmptyDbCreated() {
             // Set the flag for empty DB
-            Utilities.getPrefs(mContext).edit().putBoolean(EMPTY_DATABASE_CREATED, true).commit();
+            Utilities.getPrefs(mContext).edit().putBoolean(getKey(EMPTY_DATABASE_CREATED), true)
+                    .commit();
         }
 
         public long getSerialNumberForUser(UserHandle user) {

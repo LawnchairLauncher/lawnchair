@@ -42,6 +42,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.Launcher.OnResumeCallback;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.InstanceIdSequence;
@@ -82,7 +83,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
         super.onCreate(savedInstanceState);
 
 
-        mIsSafeModeEnabled = TraceHelper.whitelistIpcs("isSafeMode",
+        mIsSafeModeEnabled = TraceHelper.allowIpcs("isSafeMode",
                 () -> getPackageManager().isSafeMode());
         DefaultDisplay.INSTANCE.get(this).addChangeListener(this);
 
@@ -108,8 +109,18 @@ public abstract class BaseDraggingActivity extends BaseActivity
 
     private void updateTheme() {
         if (mThemeRes != Themes.getActivityThemeRes(this)) {
-            recreate();
+            // Workaround (b/162812884): The system currently doesn't allow recreating an activity
+            // when it is not resumed, in such a case defer recreation until it is possible
+            if (hasBeenResumed()) {
+                recreate();
+            } else {
+                addOnResumeCallback(this::recreate);
+            }
         }
+    }
+
+    protected void addOnResumeCallback(OnResumeCallback callback) {
+        // To be overridden
     }
 
     @Override
