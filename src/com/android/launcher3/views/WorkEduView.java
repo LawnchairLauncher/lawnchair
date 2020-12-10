@@ -60,7 +60,6 @@ public class WorkEduView extends AbstractSlideInView
     private View mViewWrapper;
     private Button mProceedButton;
     private TextView mContentText;
-    private AllAppsPagedView mAllAppsPagedView;
 
     private int mNextWorkEduStep = WORK_EDU_PERSONAL_APPS;
 
@@ -101,13 +100,10 @@ public class WorkEduView extends AbstractSlideInView
 
         // make sure layout does not shrink when we change the text
         mContentText.post(() -> mContentText.setMinLines(mContentText.getLineCount()));
-        if (mLauncher.getAppsView().getContentView() instanceof AllAppsPagedView) {
-            mAllAppsPagedView = (AllAppsPagedView) mLauncher.getAppsView().getContentView();
-        }
 
         mProceedButton.setOnClickListener(view -> {
-            if (mAllAppsPagedView != null) {
-                mAllAppsPagedView.snapToPage(AllAppsContainerView.AdapterHolder.WORK);
+            if (getAllAppsPagedView() != null) {
+                getAllAppsPagedView().snapToPage(AllAppsContainerView.AdapterHolder.WORK);
             }
             goToWorkTab(true);
         });
@@ -155,8 +151,8 @@ public class WorkEduView extends AbstractSlideInView
     }
 
     private void goToFirstPage() {
-        if (mAllAppsPagedView != null) {
-            mAllAppsPagedView.snapToPageImmediately(AllAppsContainerView.AdapterHolder.MAIN);
+        if (getAllAppsPagedView() != null) {
+            getAllAppsPagedView().snapToPageImmediately(AllAppsContainerView.AdapterHolder.MAIN);
         }
     }
 
@@ -169,6 +165,11 @@ public class WorkEduView extends AbstractSlideInView
                 PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
         mOpenCloseAnimator.setInterpolator(Interpolators.FAST_OUT_SLOW_IN);
         mOpenCloseAnimator.start();
+    }
+
+    private AllAppsPagedView getAllAppsPagedView() {
+        View v =  mLauncher.getAppsView().getContentView();
+        return  (v instanceof AllAppsPagedView)  ? (AllAppsPagedView) v : null;
     }
 
     /**

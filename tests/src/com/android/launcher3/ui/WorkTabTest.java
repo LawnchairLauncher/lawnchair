@@ -82,6 +82,7 @@ public class WorkTabTest extends AbstractLauncherUiTest {
         mDevice.pressHome();
         waitForLauncherCondition("Launcher didn't start", Objects::nonNull);
         executeOnLauncher(launcher -> launcher.getStateManager().goToState(ALL_APPS));
+        waitForState("Launcher internal state didn't switch to All Apps", () -> ALL_APPS);
         waitForLauncherCondition("Personal tab is missing",
                 launcher -> launcher.getAppsView().isPersonalTabVisible(), 60000);
         waitForLauncherCondition("Work tab is missing",
@@ -180,6 +181,10 @@ public class WorkTabTest extends AbstractLauncherUiTest {
         // open work tab
         executeOnLauncher(launcher -> launcher.getStateManager().goToState(ALL_APPS));
         waitForState("Launcher did not switch to all apps", () -> ALL_APPS);
+        waitForLauncherCondition("Work tab not setup",
+                launcher -> launcher.getAppsView().getContentView() instanceof AllAppsPagedView,
+                60000);
+
         executeOnLauncher(launcher -> {
             AllAppsPagedView pagedView = (AllAppsPagedView) launcher.getAppsView().getContentView();
             pagedView.setCurrentPage(WORK_PAGE);
@@ -199,7 +204,7 @@ public class WorkTabTest extends AbstractLauncherUiTest {
             DragLayer dragLayer = l.getDragLayer();
             return dragLayer.getChildCount() > 0 && dragLayer.getChildAt(
                     dragLayer.getChildCount() - 1) instanceof WorkEduView;
-        });
+        }, 6000);
         return getFromLauncher(launcher -> (WorkEduView) launcher.getDragLayer().getChildAt(
                 launcher.getDragLayer().getChildCount() - 1));
     }
