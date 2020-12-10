@@ -29,6 +29,7 @@ import static com.android.launcher3.testing.TestProtocol.SPRING_LOADED_STATE_ORD
 import android.content.Context;
 import android.view.animation.Interpolator;
 
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.states.HintState;
@@ -168,9 +169,9 @@ public abstract class LauncherState implements BaseState<LauncherState> {
 
     /**
      * Returns an array of two elements.
-     *   The first specifies the scale for the overview
-     *   The second is the factor ([0, 1], 0 => center-screen; 1 => offscreen) by which overview
-     *   should be shifted horizontally.
+     * The first specifies the scale for the overview
+     * The second is the factor ([0, 1], 0 => center-screen; 1 => offscreen) by which overview
+     * should be shifted horizontally.
      */
     public float[] getOverviewScaleAndOffset(Launcher launcher) {
         return launcher.getNormalOverviewScaleAndOffset();
@@ -185,10 +186,12 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     }
 
     public int getVisibleElements(Launcher launcher) {
-        if (launcher.getDeviceProfile().isVerticalBarLayout()) {
-            return HOTSEAT_ICONS | VERTICAL_SWIPE_INDICATOR;
+        int flags = HOTSEAT_ICONS | VERTICAL_SWIPE_INDICATOR;
+        if (!FeatureFlags.ENABLE_DEVICE_SEARCH.get()
+                && !launcher.getDeviceProfile().isVerticalBarLayout()) {
+            flags |= HOTSEAT_SEARCH_BOX;
         }
-        return HOTSEAT_ICONS | HOTSEAT_SEARCH_BOX | VERTICAL_SWIPE_INDICATOR;
+        return flags;
     }
 
     /**
@@ -229,6 +232,7 @@ public abstract class LauncherState implements BaseState<LauncherState> {
 
     /**
      * Returns the amount of blur and wallpaper zoom for this state with {@param isMultiWindowMode}.
+     *
      * @see #getDepth(Context).
      */
     public final float getDepth(Context context, boolean isMultiWindowMode) {
@@ -255,7 +259,7 @@ public abstract class LauncherState implements BaseState<LauncherState> {
         return new PageAlphaProvider(ACCEL_2) {
             @Override
             public float getPageAlpha(int pageIndex) {
-                return  pageIndex != centerPage ? 0 : 1f;
+                return pageIndex != centerPage ? 0 : 1f;
             }
         };
     }

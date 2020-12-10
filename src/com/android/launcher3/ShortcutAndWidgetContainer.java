@@ -36,7 +36,8 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
     // return an (x, y) value from helper functions. Do NOT use them to maintain other state.
     private final int[] mTmpCellXY = new int[2];
 
-    @ContainerType private final int mContainerType;
+    @ContainerType
+    private final int mContainerType;
     private final WallpaperManager mWallpaperManager;
 
     private int mCellWidth;
@@ -44,7 +45,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
 
     private int mCountX;
 
-    private ActivityContext mActivity;
+    private final ActivityContext mActivity;
     private boolean mInvertIfRtl = false;
 
     public ShortcutAndWidgetContainer(Context context, @ContainerType int containerType) {
@@ -79,7 +80,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
         int count = getChildCount();
 
         int widthSpecSize = MeasureSpec.getSize(widthMeasureSpec);
-        int heightSpecSize =  MeasureSpec.getSize(heightMeasureSpec);
+        int heightSpecSize = MeasureSpec.getSize(heightMeasureSpec);
         setMeasuredDimension(widthSpecSize, heightSpecSize);
 
         for (int i = 0; i < count; i++) {
