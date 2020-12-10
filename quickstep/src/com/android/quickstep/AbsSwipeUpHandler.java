@@ -19,7 +19,9 @@ import static android.widget.Toast.LENGTH_SHORT;
 
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_STATE_HANDLER;
 import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAGS;
+import static com.android.launcher3.QuickstepAppTransitionManagerImpl.RECENTS_LAUNCH_DURATION;
 import static com.android.launcher3.QuickstepAppTransitionManagerImpl.TRANSITION_OPEN_LAUNCHER;
+import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
@@ -52,6 +54,7 @@ import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Build;
@@ -92,7 +95,7 @@ import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.InputConsumerProxy;
 import com.android.quickstep.util.MotionPauseDetector;
-import com.android.quickstep.util.RecentsOrientedState;
+import com.android.quickstep.util.MultiValueUpdateListener;
 import com.android.quickstep.util.ProtoTracer;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.util.RectFSpringAnim;
@@ -108,6 +111,7 @@ import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.LatencyTrackerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
+import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
 import com.android.systemui.shared.system.TaskInfoCompat;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 
@@ -1498,17 +1502,36 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
     }
 
     private void launchOtherTaskInLiveTileMode(int taskId, RemoteAnimationTargetCompat[] apps) {
-        TaskView taskView = mRecentsView.getTaskView(taskId);
-        if (taskView == null) {
-            return;
-        }
-
         AnimatorSet anim = new AnimatorSet();
-        TaskViewUtils.composeRecentsLaunchAnimator(
-                anim, taskView, apps,
-                mRecentsAnimationTargets.wallpapers, true /* launcherClosing */,
-                mActivity.getStateManager(), mRecentsView,
-                mActivityInterface.getDepthController());
+        TaskView taskView = mRecentsView.getTaskView(taskId);
+        if (taskView == null || !mRecentsView.isTaskViewVisible(taskView)) {
+            // TODO: Refine this animation.
+            SurfaceTransactionApplier surfaceApplier =
+                    new SurfaceTransactionApplier(mActivity.getDragLayer());
+            ValueAnimator appAnimator = ValueAnimator.ofFloat(0, 1);
+            appAnimator.setDuration(RECENTS_LAUNCH_DURATION);
+            appAnimator.setInterpolator(ACCEL_DEACCEL);
+            appAnimator.addUpdateListener(new MultiValueUpdateListener() {
+                @Override
+                public void onUpdate(float percent) {
+                    SurfaceParams.Builder builder = new SurfaceParams.Builder(
+                            apps[apps.length - 1].leash);
+                    Matrix matrix = new Matrix();
+                    matrix.postScale(percent, percent);
+                    matrix.postTranslate(mDp.widthPx * (1 - percent) / 2,
+                            mDp.heightPx * (1 - percent) / 2);
+                    builder.withAlpha(percent).withMatrix(matrix);
+                    surfaceApplier.scheduleApply(builder.build());
+                }
+            });
+            anim.play(appAnimator);
+        } else {
+            TaskViewUtils.composeRecentsLaunchAnimator(
+                    anim, taskView, apps,
+                    mRecentsAnimationTargets.wallpapers, true /* launcherClosing */,
+                    mActivity.getStateManager(), mRecentsView,
+                    mActivityInterface.getDepthController());
+        }
         anim.addListener(new AnimatorListenerAdapter(){
 
             @Override

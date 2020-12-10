@@ -548,6 +548,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         if (focusedItem instanceof SearchAdapterItem) {
             SearchTarget searchTarget = ((SearchAdapterItem) focusedItem).getSearchTarget();
             SearchEventTracker.INSTANCE.get(getContext()).quickSelect(searchTarget);
+            return true;
         }
         if (focusedItem.appInfo != null) {
             ItemInfo itemInfo = focusedItem.appInfo;
