@@ -50,10 +50,10 @@
     <string name="all_apps_home_button_label" msgid="252062713717058851">"ഹോം"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"നീക്കംചെയ്യുക"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"അൺഇൻസ്റ്റാളുചെയ്യുക"</string>
-    <string name="app_info_drop_target_label" msgid="692894985365717661">"ആപ്പ് വിവരം"</string>
+    <string name="app_info_drop_target_label" msgid="692894985365717661">"ആപ്പ് വിവരങ്ങൾ"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"ഇൻസ്‌റ്റാൾ ചെയ്യുക"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"ആപ്പ് നിർദ്ദേശിക്കരുത്"</string>
-    <string name="pin_prediction" msgid="4196423321649756498">"പിൻ പ്രവചനം"</string>
+    <string name="pin_prediction" msgid="4196423321649756498">"പ്രവചനം പിൻ ചെയ്യുക"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"കുറുക്കുവഴികൾ ഇൻസ്റ്റാളുചെയ്യുക"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"ഉപയോക്തൃ ഇടപെടൽ ഇല്ലാതെ കുറുക്കുവഴികൾ ചേർക്കാൻ അപ്ലിക്കേഷനെ അനുവദിക്കുന്നു."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"ഹോം ക്രമീകരണങ്ങളും കുറുക്കുവഴികളും റീഡുചെയ്യുക"</string>
@@ -78,7 +78,8 @@
     <string name="folder_tap_to_rename" msgid="4017685068016979677">"പേരുമാറ്റം സംരക്ഷിക്കുന്നതിന് ടാപ്പുചെയ്യുക"</string>
     <string name="folder_closed" msgid="4100806530910930934">"ഫോൾഡർ അടച്ചു"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"ഫോൾഡറിന്റെ പേര് <xliff:g id="NAME">%1$s</xliff:g> എന്നായി മാറ്റി"</string>
-    <string name="folder_name_format" msgid="6629239338071103179">"ഫോൾഡർ: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_name_format_exact" msgid="8626242716117004803">"ഫോൾഡർ: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> ഇനങ്ങൾ"</string>
+    <string name="folder_name_format_overflow" msgid="4270108890534995199">"ഫോൾഡർ: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> അല്ലെങ്കിൽ അതിലധികം ഇനങ്ങൾ"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"വിഡ്ജെറ്റുകൾ"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"വാൾപേപ്പർ"</string>
     <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"സ്‌റ്റൈലുകളും വാൾപേപ്പറുകളും"</string>
@@ -97,7 +98,7 @@
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"പുതിയ ആപ്പുകൾക്ക്"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"അജ്ഞാതം"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"നീക്കംചെയ്യുക"</string>
-    <string name="abandoned_search" msgid="891119232568284442">"തിരയുക"</string>
+    <string name="abandoned_search" msgid="891119232568284442">"Search"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"ഈ അപ്ലിക്കേഷൻ ഇൻസ്റ്റാളുചെയ്‌തിട്ടില്ല"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"ഈ ഐക്കണുവേണ്ടി അപ്ലിക്കേഷൻ ഇൻസ്റ്റാളുചെയ്‌തിട്ടില്ല. നിങ്ങൾക്കത് നീക്കംചെയ്യാനാകും അല്ലെങ്കിൽ അപ്ലിക്കേഷനുവേണ്ടി തിരഞ്ഞുകൊണ്ട് അത് സ്വമേധയാ ഇൻസ്റ്റാളുചെയ്യുക."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> ഡൗൺലോഡ് ചെയ്യുന്നു, <xliff:g id="PROGRESS">%2$s</xliff:g> പൂർത്തിയായി"</string>

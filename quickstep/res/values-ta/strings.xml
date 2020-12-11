@@ -32,17 +32,19 @@
     <string name="title_app_suggestions" msgid="4185902664111965088">"ஆப்ஸ் பரிந்துரைகள்"</string>
     <string name="all_apps_label" msgid="8542784161730910663">"அனைத்து ஆப்ஸும்"</string>
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"நீங்கள் கணித்த ஆப்ஸ்"</string>
-    <string name="hotseat_edu_prompt_title" msgid="5595771595144175752">"அதிகமாகப் பயன்படுத்திய ஆப்ஸை எளிதாக அணுகலாம்"</string>
-    <string name="hotseat_edu_prompt_content" msgid="5709176001504149521">"அடுத்ததாகத் தேவைப்படும் ஆப்ஸ் எது என்பதை Pixel கணித்து உங்கள் முகப்புத் திரையில் அதைக் காட்டும். அமைக்க, தட்டவும்."</string>
     <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"முகப்புத் திரையின் கடைசி வரிசையில் ஆப்ஸ் பரிந்துரைகளைப் பெறலாம்"</string>
+    <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"உங்கள் முகப்புத் திரையின் \'பிடித்தவை\' வரிசையில் ஆப்ஸ் பரிந்துரைகளைப் பெறலாம்"</string>
     <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"அதிகமாகப் பயன்படுத்திய ஆப்ஸை முகப்புத் திரையிலேயே அணுகலாம். உங்கள் வழக்கங்களின் அடிப்படையில் பரிந்துரைகள் மாறும். கடைசி வரிசையிலுள்ள ஆப்ஸ் உங்கள் முகப்புத் திரைக்கு நகர்த்தப்படும்."</string>
+    <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"அதிகமாகப் பயன்படுத்திய ஆப்ஸை முகப்புத் திரையிலேயே எளிதாக அணுகலாம். உங்கள் வழக்கங்களின் அடிப்படையில் பரிந்துரைகள் மாறும். பிடித்தவை வரிசையில் உள்ள ஆப்ஸ் உங்கள் முகப்புத் திரைக்கு நகர்த்தப்படும்."</string>
     <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"அதிகமாகப் பயன்படுத்திய ஆப்ஸை முகப்புத் திரையிலேயே அணுகலாம். உங்கள் வழக்கங்களின் அடிப்படையில் பரிந்துரைகள் மாறும். கடைசி வரிசையிலுள்ள ஆப்ஸ் புதிய கோப்புறைக்கு நகர்த்தப்படும்."</string>
     <string name="hotseat_edu_accept" msgid="1611544083278999837">"ஆப்ஸ் பரிந்துரைகளைப் பெறுக"</string>
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"வேண்டாம்"</string>
-    <string name="hotseat_turn_off" msgid="7808360330229368470">"அமைப்புகள்"</string>
+    <string name="hotseat_prediction_settings" msgid="6246554993566070818">"அமைப்புகள்"</string>
     <string name="hotseat_auto_enrolled" msgid="522100018967146807">"அதிகமாகப் பயன்படுத்திய ஆப்ஸ் இங்கே தோன்றும், வழக்கங்களின் அடிப்படையில் அவை மாறும்"</string>
     <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"ஆப்ஸ் பரிந்துரைகளைப் பெற கடைசி வரிசையிலிருந்து ஆப்ஸை இழுக்கவும்"</string>
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"ஆப்ஸ் பரிந்துரைகள் காலி இடத்தில் சேர்க்கப்பட்டன"</string>
+    <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"ஆப்ஸ் பரிந்துரைகள் இயக்கப்பட்டுள்ளன"</string>
+    <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"ஆப்ஸ் பரிந்துரைகள் முடக்கப்பட்டுள்ளன"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"கணித்த ஆப்ஸ்: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="action_share" msgid="2648470652637092375">"பகிர்"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"ஸ்கிரீன்ஷாட்"</string>

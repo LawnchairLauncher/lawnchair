@@ -78,7 +78,8 @@
     <string name="folder_tap_to_rename" msgid="4017685068016979677">"Puudutage ümbernimetamise salvestamiseks"</string>
     <string name="folder_closed" msgid="4100806530910930934">"Kaust on suletud"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"Kausta uus nimi: <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="folder_name_format" msgid="6629239338071103179">"Kaust: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_name_format_exact" msgid="8626242716117004803">"Kaust: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> üksust"</string>
+    <string name="folder_name_format_overflow" msgid="4270108890534995199">"Kaust: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> või rohkem üksust"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Vidinad"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Taustapildid"</string>
     <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"Stiilid ja taustapildid"</string>

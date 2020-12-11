@@ -50,7 +50,7 @@
     <string name="all_apps_home_button_label" msgid="252062713717058851">"હોમ"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"દૂર કરો"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"અનઇન્સ્ટોલ કરો"</string>
-    <string name="app_info_drop_target_label" msgid="692894985365717661">"ઍપ્લિકેશન માહિતી"</string>
+    <string name="app_info_drop_target_label" msgid="692894985365717661">"ઍપની માહિતી"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"ઇન્સ્ટૉલ કરો"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"ઍપ સૂચવશો નહીં"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"પૂર્વાનુમાનને પિન કરો"</string>
@@ -78,7 +78,8 @@
     <string name="folder_tap_to_rename" msgid="4017685068016979677">"નામ બદલવાનું સાચવવા માટે ટૅપ કરો"</string>
     <string name="folder_closed" msgid="4100806530910930934">"ફોલ્ડર બંધ કર્યું"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"ફોલ્ડરનું નામ બદલીને <xliff:g id="NAME">%1$s</xliff:g> કર્યું"</string>
-    <string name="folder_name_format" msgid="6629239338071103179">"ફોલ્ડર: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_name_format_exact" msgid="8626242716117004803">"ફોલ્ડર: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> આઇટમ"</string>
+    <string name="folder_name_format_overflow" msgid="4270108890534995199">"ફોલ્ડર: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> કે વધુ આઇટમ"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"વિજેટ્સ"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"વૉલપેપર્સ"</string>
     <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"શૈલીઓ અને વૉલપેપર"</string>

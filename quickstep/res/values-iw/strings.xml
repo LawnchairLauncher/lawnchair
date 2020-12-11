@@ -32,17 +32,19 @@
     <string name="title_app_suggestions" msgid="4185902664111965088">"הצעות לאפליקציות"</string>
     <string name="all_apps_label" msgid="8542784161730910663">"כל האפליקציות"</string>
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"האפליקציות החזויות שלך"</string>
-    <string name="hotseat_edu_prompt_title" msgid="5595771595144175752">"גישה נוחה לאפליקציות הכי נפוצות ממסך הבית."</string>
-    <string name="hotseat_edu_prompt_content" msgid="5709176001504149521">"‏ה-Pixel מפעיל חיזוי כדי לדעת מהן האפליקציות הבאות הנדרשות לך ומציג אותן במסך הבית. יש להקיש כדי להגדיר."</string>
-    <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"קבלת הצעות לאפליקציות בשורה התחתונה של מסך הבית."</string>
+    <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"קבלת הצעות לאפליקציות בשורה התחתונה של מסך הבית"</string>
+    <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"קבלת הצעות לאפליקציות בשורת המועדפות של מסך הבית"</string>
     <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"גישה נוחה לאפליקציות הכי נפוצות ישירות ממסך הבית. ההצעות ישתנו בהתאם להרגלי השימוש שלך. אפליקציות שמופיעות בשורה התחתונה יעברו למעלה למסך הבית."</string>
+    <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"גישה נוחה לאפליקציות שהשתמשת בהן הכי הרבה, ישירות ממסך הבית. ההצעות ישתנו בהתאם להרגלי השימוש שלך. אפליקציות בשורת המועדפות יועברו למסך הבית."</string>
     <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"גישה נוחה לאפליקציות הכי נפוצות ישירות ממסך הבית. ההצעות ישתנו בהתאם להרגלי השימוש שלך. אפליקציות שמופיעות בשורה התחתונה יעברו למעלה למסך הבית."</string>
     <string name="hotseat_edu_accept" msgid="1611544083278999837">"קבלת הצעות לאפליקציות"</string>
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"לא, תודה"</string>
-    <string name="hotseat_turn_off" msgid="7808360330229368470">"הגדרות"</string>
+    <string name="hotseat_prediction_settings" msgid="6246554993566070818">"הגדרות"</string>
     <string name="hotseat_auto_enrolled" msgid="522100018967146807">"רוב האפליקציות הכי נפוצות מופיעות כאן ומשתנות בהתאם להרגלי השימוש שלך"</string>
     <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"יש לגרור אפליקציות מהשורה התחתונה כדי לקבל הצעות לאפליקציות"</string>
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"הצעות לאפליקציות נוספו לאזור ריק"</string>
+    <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"ההצעות לאפליקציות מופעלות"</string>
+    <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"ההצעות לאפליקציות מושבתות"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"האפליקציות החזויות: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="action_share" msgid="2648470652637092375">"שיתוף"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"צילום מסך"</string>

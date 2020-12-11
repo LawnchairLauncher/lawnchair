@@ -50,7 +50,7 @@
     <string name="all_apps_home_button_label" msgid="252062713717058851">"ပင်မစာမျက်နှာ"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"ဖယ်ရှားမည်"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"ဖြုတ်ရန်"</string>
-    <string name="app_info_drop_target_label" msgid="692894985365717661">"အက်ပ်အချက်အလက်များ"</string>
+    <string name="app_info_drop_target_label" msgid="692894985365717661">"အက်ပ်အချက်အလက်"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"ထည့်သွင်းရန်"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"အက်ပ်ကို အကြံမပြုပါနှင့်"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"ခန့်မှန်းချက်ကို ပင်ထိုးရန်"</string>
@@ -78,7 +78,8 @@
     <string name="folder_tap_to_rename" msgid="4017685068016979677">"အမည်ပြောင်းခြင်းကို သိမ်းရန် တို့ပါ"</string>
     <string name="folder_closed" msgid="4100806530910930934">"ပိတ်ထားသောအကန့်"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"ပြောင်းလဲလိုက်သော အကန့်အမည် <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="folder_name_format" msgid="6629239338071103179">"အကန့်အမည်: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_name_format_exact" msgid="8626242716117004803">"ဖိုင်တွဲ - <xliff:g id="NAME">%1$s</xliff:g>၊ <xliff:g id="SIZE">%2$d</xliff:g> ဖိုင်များ"</string>
+    <string name="folder_name_format_overflow" msgid="4270108890534995199">"ဖိုင်တွဲ - <xliff:g id="NAME">%1$s</xliff:g>၊ <xliff:g id="SIZE">%2$d</xliff:g> သို့မဟုတ် နောက်ထပ်ဖိုင်များ"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"ဝိဂျက်များ"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"နောက်ခံများ"</string>
     <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"ပုံစံနှင့် နောက်ခံပုံများ"</string>

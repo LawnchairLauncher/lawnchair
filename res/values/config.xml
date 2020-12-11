@@ -142,7 +142,7 @@
 
     <item name="staggered_damping_ratio" type="dimen" format="float">0.7</item>
     <item name="staggered_stiffness" type="dimen" format="float">150</item>
-    <dimen name="unlock_staggered_velocity_dp_per_s">3dp</dimen>
+    <dimen name="unlock_staggered_velocity_dp_per_s">4dp</dimen>
 
     <item name="hint_scale_damping_ratio" type="dimen" format="float">0.7</item>
     <item name="hint_scale_stiffness" type="dimen" format="float">200</item>

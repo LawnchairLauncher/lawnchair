@@ -53,7 +53,7 @@
     <string name="app_info_drop_target_label" msgid="692894985365717661">"O aplikacji"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Zainstaluj"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"Nie proponuj aplikacji"</string>
-    <string name="pin_prediction" msgid="4196423321649756498">"Podpowiadanie kodu PIN"</string>
+    <string name="pin_prediction" msgid="4196423321649756498">"Przypnij podpowiedź"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"instalowanie skrótów"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Pozwala aplikacji dodawać skróty bez interwencji użytkownika."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"odczytywanie ustawień i skrótów na ekranie głównym"</string>
@@ -80,11 +80,12 @@
     <string name="folder_tap_to_rename" msgid="4017685068016979677">"Kliknij, by zapisać nową nazwę"</string>
     <string name="folder_closed" msgid="4100806530910930934">"Folder zamknięty"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"Nazwa folderu zmieniona na <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="folder_name_format" msgid="6629239338071103179">"Folder: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_name_format_exact" msgid="8626242716117004803">"Folder: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> elementy"</string>
+    <string name="folder_name_format_overflow" msgid="4270108890534995199">"Folder: <xliff:g id="NAME">%1$s</xliff:g>, liczba elementów: <xliff:g id="SIZE">%2$d</xliff:g> lub więcej"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Widżety"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Tapety"</string>
     <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"Style i tapety"</string>
-    <string name="settings_button_text" msgid="8873672322605444408">"Ustawienia strony głównej"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"Ustawienia ekranu głównego"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Funkcja wyłączona przez administratora"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Zezwalaj na obrót ekranu głównego"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Po obróceniu telefonu"</string>
@@ -141,7 +142,7 @@
     <string name="work_profile_edu_work_apps" msgid="237051938268703058">"Dane i aplikacje z profilu do pracy są widoczne dla Twojego administratora IT"</string>
     <string name="work_profile_edu_next" msgid="8783418929296503629">"Dalej"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
-    <string name="work_apps_paused_title" msgid="2389865654362803723">"Wstrzymano profil do pracy"</string>
+    <string name="work_apps_paused_title" msgid="2389865654362803723">"Wstrzymano profil służbowy"</string>
     <string name="work_apps_paused_body" msgid="2197210494568696054">"Aplikacje do pracy nie mogą wysyłać powiadomień, używać baterii ani mieć dostępu do Twojej lokalizacji"</string>
     <string name="work_apps_paused_content_description" msgid="7553586952985486433">"Wstrzymano profil do pracy. Aplikacje do pracy nie mogą wysyłać powiadomień, używać baterii ani uzyskiwać dostępu do Twojej lokalizacji"</string>
     <string name="work_switch_tip" msgid="808075064383839144">"Wstrzymaj aplikacje do pracy i powiadomienia"</string>

@@ -28,6 +28,7 @@ import androidx.annotation.CallSuper;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.R;
+import com.android.launcher3.views.ClipIconView;
 import com.android.quickstep.interaction.EdgeBackGestureHandler.BackGestureAttemptCallback;
 import com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestureAttemptCallback;
 
@@ -46,6 +47,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     final TextView mTitleTextView;
     final TextView mSubtitleTextView;
     final TextView mFeedbackView;
+    final ClipIconView mFakeIconView;
     final View mFakeTaskView;
     final View mRippleView;
     final RippleDrawable mRippleDrawable;
@@ -66,6 +68,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         mTitleTextView = rootView.findViewById(R.id.gesture_tutorial_fragment_title_view);
         mSubtitleTextView = rootView.findViewById(R.id.gesture_tutorial_fragment_subtitle_view);
         mFeedbackView = rootView.findViewById(R.id.gesture_tutorial_fragment_feedback_view);
+        mFakeIconView = rootView.findViewById(R.id.gesture_tutorial_fake_icon_view);
         mFakeTaskView = rootView.findViewById(R.id.gesture_tutorial_fake_task_view);
         mRippleView = rootView.findViewById(R.id.gesture_tutorial_ripple_view);
         mRippleDrawable = (RippleDrawable) mRippleView.getBackground();

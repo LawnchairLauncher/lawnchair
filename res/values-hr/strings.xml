@@ -53,7 +53,7 @@
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Info o aplikaciji"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Instaliraj"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"Ne predlaži aplikaciju"</string>
-    <string name="pin_prediction" msgid="4196423321649756498">"Prikvači predviđenu aplikaciju"</string>
+    <string name="pin_prediction" msgid="4196423321649756498">"Prikvači predviđenu apl."</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"instaliranje prečaca"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Aplikaciji omogućuje dodavanje prečaca bez intervencije korisnika."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"čitanje postavki početnog zaslona i prečaca"</string>
@@ -79,7 +79,8 @@
     <string name="folder_tap_to_rename" msgid="4017685068016979677">"Dodirnite da biste spremili promijenjeni naziv"</string>
     <string name="folder_closed" msgid="4100806530910930934">"Mapa je zatvorena"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"Mapa je preimenovana u <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="folder_name_format" msgid="6629239338071103179">"Mapa: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_name_format_exact" msgid="8626242716117004803">"Mapa: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> stavke"</string>
+    <string name="folder_name_format_overflow" msgid="4270108890534995199">"Mapa: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> ili više stavki"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Widgeti"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Pozadine"</string>
     <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"Stilovi i pozadine"</string>
@@ -94,7 +95,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Za prikaz točaka obavijesti uključite obavijesti aplikacije <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Promjena postavki"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Prikaži točke obavijesti"</string>
-    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"Dodajte ikone aplikacija na poč. zaslon"</string>
+    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"Dodajte ikone aplikacija na početni zaslon"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Za nove aplikacije"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Nepoznato"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Ukloni"</string>
