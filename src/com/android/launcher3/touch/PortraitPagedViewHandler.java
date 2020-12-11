@@ -73,12 +73,6 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public boolean isGoingUp(float displacement, boolean isRtl) {
-        // Ignore rtl since it only affects X value displacement, Y displacement doesn't change
-        return displacement < 0;
-    }
-
-    @Override
     public boolean isLayoutNaturalToLauncher() {
         return true;
     }
@@ -212,23 +206,12 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public SingleAxisSwipeDetector.Direction getOppositeSwipeDirection() {
-        return VERTICAL;
-    }
-
-    @Override
     public int getPrimaryTranslationDirectionFactor() {
         return 1;
     }
 
     public int getSecondaryTranslationDirectionFactor() {
         return -1;
-    }
-
-    @Override
-    public int getTaskDragDisplacementFactor(boolean isRtl) {
-        // Ignore rtl since it only affects X value displacement, Y displacement doesn't change
-        return 1;
     }
 
     @Override
@@ -256,6 +239,33 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     public void setLayoutParamsForTaskMenuOptionItem(LinearLayout.LayoutParams lp) {
         // no-op, defaults are fine
     }
+
+    /* ---------- The following are only used by TaskViewTouchHandler. ---------- */
+
+    @Override
+    public SingleAxisSwipeDetector.Direction getUpDownSwipeDirection() {
+        return VERTICAL;
+    }
+
+    @Override
+    public int getUpDirection(boolean isRtl) {
+        // Ignore rtl since it only affects X value displacement, Y displacement doesn't change
+        return SingleAxisSwipeDetector.DIRECTION_POSITIVE;
+    }
+
+    @Override
+    public boolean isGoingUp(float displacement, boolean isRtl) {
+        // Ignore rtl since it only affects X value displacement, Y displacement doesn't change
+        return displacement < 0;
+    }
+
+    @Override
+    public int getTaskDragDisplacementFactor(boolean isRtl) {
+        // Ignore rtl since it only affects X value displacement, Y displacement doesn't change
+        return 1;
+    }
+
+    /* -------------------- */
 
     @Override
     public ChildBounds getChildBounds(View child, int childStart, int pageCenter,
