@@ -16,6 +16,7 @@
 package com.android.quickstep;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.Executors.THREAD_POOL_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import android.graphics.Rect;
@@ -96,8 +97,8 @@ public class RecentsAnimationController {
      * {@link RecentsAnimationCallbacks#onTaskAppeared(RemoteAnimationTargetCompat)}}.
      */
     @UiThread
-    public boolean removeTaskTarget(@NonNull RemoteAnimationTargetCompat target) {
-        return mController.removeTask(target.taskId);
+    public void removeTaskTarget(@NonNull RemoteAnimationTargetCompat target) {
+        THREAD_POOL_EXECUTOR.execute(() -> mController.removeTask(target.taskId));
     }
 
     @UiThread

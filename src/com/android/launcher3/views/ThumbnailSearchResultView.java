@@ -88,9 +88,15 @@ public class ThumbnailSearchResultView extends androidx.appcompat.widget.AppComp
             bitmap = ((BitmapDrawable) target.getRemoteAction().getIcon()
                     .loadDrawable(getContext())).getBitmap();
             // crop
-            bitmap = Bitmap.createBitmap(bitmap, 0,
-                    bitmap.getHeight() / 2 - bitmap.getWidth() / 2,
-                    bitmap.getWidth(), bitmap.getWidth());
+            if (bitmap.getWidth() < bitmap.getHeight()) {
+                bitmap = Bitmap.createBitmap(bitmap, 0,
+                        bitmap.getHeight() / 2 - bitmap.getWidth() / 2,
+                        bitmap.getWidth(), bitmap.getWidth());
+            } else {
+                bitmap = Bitmap.createBitmap(bitmap, bitmap.getWidth() / 2 - bitmap.getHeight() / 2,
+                        0,
+                        bitmap.getHeight(), bitmap.getHeight());
+            }
             setTag(itemInfo);
         } else {
             bitmap = (Bitmap) target.getExtras().getParcelable("bitmap");
