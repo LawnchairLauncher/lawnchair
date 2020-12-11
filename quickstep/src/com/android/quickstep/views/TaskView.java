@@ -251,13 +251,14 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
      * Builds proto for logging
      */
     public WorkspaceItemInfo getItemInfo() {
-        ComponentKey componentKey = TaskUtils.getLaunchComponentKeyForTask(getTask().key);
+        final Task task = getTask();
+        ComponentKey componentKey = TaskUtils.getLaunchComponentKeyForTask(task.key);
         WorkspaceItemInfo stubInfo = new WorkspaceItemInfo();
         stubInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_TASK;
         stubInfo.container = LauncherSettings.Favorites.CONTAINER_TASKSWITCHER;
         stubInfo.user = componentKey.user;
         stubInfo.intent = new Intent().setComponent(componentKey.componentName);
-        stubInfo.title = TaskUtils.getTitle(getContext(), getTask());
+        stubInfo.title = task.title;
         stubInfo.screenId = getRecentsView().indexOfChild(this);
         return stubInfo;
     }
