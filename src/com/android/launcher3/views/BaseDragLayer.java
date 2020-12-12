@@ -33,7 +33,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.Property;
 import android.view.MotionEvent;
 import android.view.View;
@@ -49,7 +48,6 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.util.SimpleBroadcastReceiver;
@@ -191,12 +189,6 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
     }
 
     private TouchController findControllerToHandleTouch(MotionEvent ev) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.PAUSE_NOT_DETECTED, "findControllerToHandleTouch ev=" + ev
-                    + ", isEventInLauncher=" + isEventInLauncher(ev)
-                    + ", topOpenView=" + AbstractFloatingView.getTopOpenView(mActivity));
-        }
-
         AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mActivity);
         if (topView != null
                 && (isEventInLauncher(ev) || topView.canInterceptEventsInSystemGestureRegion())
