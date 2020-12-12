@@ -57,7 +57,6 @@ import android.graphics.drawable.Drawable;
 import android.os.CancellationSignal;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Trace;
 import android.util.Pair;
 import android.view.View;
 
@@ -140,7 +139,6 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
 
     // Progress = 0: All apps is fully pulled up, Progress = 1: All apps is fully pulled down.
     public static final float ALL_APPS_PROGRESS_OFF_SCREEN = 1.3059858f;
-    public static final String TRANSITION_OPEN_LAUNCHER = "transition:OpenLauncher";
 
     protected final BaseQuickstepLauncher mLauncher;
 
@@ -805,11 +803,10 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                 == PackageManager.PERMISSION_GRANTED;
     }
 
-    private void addCujInstrumentation(Animator anim, int cuj, String transition) {
+    private void addCujInstrumentation(Animator anim, int cuj) {
         anim.addListener(new AnimationSuccessListener() {
             @Override
             public void onAnimationStart(Animator animation) {
-                Trace.beginAsyncSection(transition, 0);
                 InteractionJankMonitorWrapper.begin(cuj);
                 super.onAnimationStart(animation);
             }
@@ -823,12 +820,6 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
             @Override
             public void onAnimationSuccess(Animator animator) {
                 InteractionJankMonitorWrapper.end(cuj);
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                Trace.endAsyncSection(TRANSITION_OPEN_LAUNCHER, 0);
             }
         });
     }
@@ -898,8 +889,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                 if (launcherIsATargetWithMode(appTargets, MODE_OPENING)
                         || mLauncher.isForceInvisible()) {
                     addCujInstrumentation(
-                            anim, InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME,
-                            TRANSITION_OPEN_LAUNCHER);
+                            anim, InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME);
                     // Only register the content animation for cancellation when state changes
                     mLauncher.getStateManager().setCurrentAnimation(anim);
 
@@ -971,9 +961,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
             addCujInstrumentation(anim,
                     launchingFromRecents
                             ? InteractionJankMonitorWrapper.CUJ_APP_LAUNCH_FROM_RECENTS
-                            : InteractionJankMonitorWrapper.CUJ_APP_LAUNCH_FROM_ICON,
-                    launchingFromRecents
-                            ? TRANSITION_LAUNCH_FROM_RECENTS : TRANSITION_LAUNCH_FROM_ICON);
+                            : InteractionJankMonitorWrapper.CUJ_APP_LAUNCH_FROM_ICON);
 
             if (launcherClosing) {
                 anim.addListener(mForceInvisibleListener);

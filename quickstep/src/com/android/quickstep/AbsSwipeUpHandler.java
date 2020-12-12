@@ -20,7 +20,6 @@ import static android.widget.Toast.LENGTH_SHORT;
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_STATE_HANDLER;
 import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAGS;
 import static com.android.launcher3.QuickstepAppTransitionManagerImpl.RECENTS_LAUNCH_DURATION;
-import static com.android.launcher3.QuickstepAppTransitionManagerImpl.TRANSITION_OPEN_LAUNCHER;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
@@ -33,6 +32,7 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_QUICKSWITCH_RIGHT;
 import static com.android.launcher3.util.DisplayController.getSingleFrameMs;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
 import static com.android.launcher3.util.VibratorWrapper.OVERVIEW_HAPTIC;
 import static com.android.quickstep.GestureState.GestureEndTarget.HOME;
@@ -59,7 +59,6 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.SystemClock;
-import android.os.Trace;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -1217,7 +1216,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
         anim.addAnimatorListener(new AnimationSuccessListener() {
             @Override
             public void onAnimationStart(Animator animation) {
-                Trace.beginAsyncSection(TRANSITION_OPEN_LAUNCHER, 0);
                 InteractionJankMonitorWrapper.begin(cuj);
                 if (mActivity != null) {
                     removeLiveTileOverlay();
@@ -1239,12 +1237,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
             public void onAnimationCancel(Animator animation) {
                 super.onAnimationCancel(animation);
                 InteractionJankMonitorWrapper.cancel(cuj);
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                Trace.endAsyncSection(TRANSITION_OPEN_LAUNCHER, 0);
             }
         });
         if (mRecentsAnimationTargets != null) {
@@ -1395,32 +1387,53 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
             if (mRecentsAnimationController != null) {
                 // Update the screenshot of the task
                 if (mTaskSnapshot == null) {
-                    mTaskSnapshot = mRecentsAnimationController.screenshotTask(runningTaskId);
+                    UI_HELPER_EXECUTOR.execute(() -> {
+                        final ThumbnailData taskSnapshot =
+                                mRecentsAnimationController.screenshotTask(runningTaskId);
+                        MAIN_EXECUTOR.execute(() -> {
+                            mTaskSnapshot = taskSnapshot;
+                            if (!updateThumbnail(runningTaskId)) {
+                                setScreenshotCapturedState();
+                            }
+                        });
+                    });
+                    return;
                 }
-                final TaskView taskView;
-                if (mGestureState.getEndTarget() == HOME) {
-                    // Capture the screenshot before finishing the transition to home to ensure it's
-                    // taken in the correct orientation, but no need to update the thumbnail.
-                    taskView = null;
-                } else {
-                    taskView = mRecentsView.updateThumbnail(runningTaskId, mTaskSnapshot);
-                }
-                if (taskView != null && !mCanceled) {
-                    // Defer finishing the animation until the next launcher frame with the
-                    // new thumbnail
-                    finishTransitionPosted = ViewUtils.postFrameDrawn(taskView,
-                            () -> mStateCallback.setStateOnUiThread(STATE_SCREENSHOT_CAPTURED),
-                            this::isCanceled);
-                }
+                finishTransitionPosted = updateThumbnail(runningTaskId);
             }
             if (!finishTransitionPosted) {
-                // If we haven't posted a draw callback, set the state immediately.
-                Object traceToken = TraceHelper.INSTANCE.beginSection(SCREENSHOT_CAPTURED_EVT,
-                        TraceHelper.FLAG_CHECK_FOR_RACE_CONDITIONS);
-                mStateCallback.setStateOnUiThread(STATE_SCREENSHOT_CAPTURED);
-                TraceHelper.INSTANCE.endSection(traceToken);
+                setScreenshotCapturedState();
             }
         }
+    }
+
+    // Returns whether finish transition was posted.
+    private boolean updateThumbnail(int runningTaskId) {
+        boolean finishTransitionPosted = false;
+        final TaskView taskView;
+        if (mGestureState.getEndTarget() == HOME) {
+            // Capture the screenshot before finishing the transition to home to ensure it's
+            // taken in the correct orientation, but no need to update the thumbnail.
+            taskView = null;
+        } else {
+            taskView = mRecentsView.updateThumbnail(runningTaskId, mTaskSnapshot);
+        }
+        if (taskView != null && !mCanceled) {
+            // Defer finishing the animation until the next launcher frame with the
+            // new thumbnail
+            finishTransitionPosted = ViewUtils.postFrameDrawn(taskView,
+                    () -> mStateCallback.setStateOnUiThread(STATE_SCREENSHOT_CAPTURED),
+                    this::isCanceled);
+        }
+        return finishTransitionPosted;
+    }
+
+    private void setScreenshotCapturedState() {
+        // If we haven't posted a draw callback, set the state immediately.
+        Object traceToken = TraceHelper.INSTANCE.beginSection(SCREENSHOT_CAPTURED_EVT,
+                TraceHelper.FLAG_CHECK_FOR_RACE_CONDITIONS);
+        mStateCallback.setStateOnUiThread(STATE_SCREENSHOT_CAPTURED);
+        TraceHelper.INSTANCE.endSection(traceToken);
     }
 
     private void finishCurrentTransitionToRecents() {

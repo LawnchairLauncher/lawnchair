@@ -396,6 +396,12 @@ public abstract class AbstractStateChangeTouchController
 
     @Override
     public void onDragEnd(float velocity) {
+        if (mCurrentAnimation == null) {
+            // Unlikely, but we may have been canceled just before onDragEnd(). We assume whoever
+            // canceled us will handle a new state transition to clean up.
+            return;
+        }
+
         boolean fling = mDetector.isFling(velocity);
 
         boolean blockedFling = fling && mFlingBlockCheck.isBlocked();
