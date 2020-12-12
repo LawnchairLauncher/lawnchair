@@ -190,6 +190,10 @@ public final class FeatureFlags {
             "EXPANDED_SMARTSPACE", false, "Expands smartspace height to two rows. "
               + "Any apps occupying the first row will be removed from workspace.");
 
+    public static final BooleanFlag ENABLE_FOUR_COLUMNS = new DeviceFlag(
+            "ENABLE_FOUR_COLUMNS", false, "Uses 4 columns in launcher grid."
+            + "Warning: This will permanently alter your home screen items and is not reversible.");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
