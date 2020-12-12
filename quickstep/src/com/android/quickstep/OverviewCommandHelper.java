@@ -25,6 +25,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.os.SystemClock;
+import android.os.Trace;
 import android.view.ViewConfiguration;
 
 import androidx.annotation.BinderThread;
@@ -141,6 +142,7 @@ public class OverviewCommandHelper {
 
     private class RecentsActivityCommand<T extends StatefulActivity<?>> implements Runnable {
 
+        private static final String TRANSITION_NAME = "Transition:toOverview";
         protected final BaseActivityInterface<?, T> mActivityInterface;
         private final long mCreateTime;
         private final AppToOverviewAnimationProvider<T> mAnimationProvider;
@@ -224,8 +226,15 @@ public class OverviewCommandHelper {
                     wallpaperTargets);
             animatorSet.addListener(new AnimatorListenerAdapter() {
                 @Override
+                public void onAnimationStart(Animator animation) {
+                    Trace.beginAsyncSection(TRANSITION_NAME, 0);
+                    super.onAnimationStart(animation);
+                }
+
+                @Override
                 public void onAnimationEnd(Animator animation) {
                     onTransitionComplete();
+                    Trace.endAsyncSection(TRANSITION_NAME, 0);
                 }
             });
             return animatorSet;
