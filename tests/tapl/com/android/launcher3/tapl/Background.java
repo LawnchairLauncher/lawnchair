@@ -144,14 +144,25 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
     private void expectSwitchToOverviewEvents() {
     }
 
-    /**
-     * Swipes right or double presses the square button to switch to the previous app.
-     */
     @NonNull
     public Background quickSwitchToPreviousApp() {
+        boolean toRight = true;
+        quickSwitch(toRight);
+        return new Background(mLauncher);
+    }
+
+    @NonNull
+    public Background quickSwitchToPreviousAppSwipeLeft() {
+        boolean toRight = false;
+        quickSwitch(toRight);
+        return new Background(mLauncher);
+    }
+
+    @NonNull
+    private void quickSwitch(boolean toRight) {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
-             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                     "want to quick switch to the previous app")) {
+            LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                    "want to quick switch to the previous app")) {
             verifyActiveContainer();
             final boolean launcherWasVisible = mLauncher.isLauncherVisible();
             boolean transposeInLandscape = false;
@@ -164,19 +175,36 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                     final int startY;
                     final int endX;
                     final int endY;
-                    if (mLauncher.getDevice().isNaturalOrientation() || !transposeInLandscape) {
-                        // Swipe from the bottom left to the bottom right of the screen.
-                        startX = 0;
-                        startY = getSwipeStartY();
-                        endX = mLauncher.getDevice().getDisplayWidth();
-                        endY = startY;
+                    if (toRight) {
+                        if (mLauncher.getDevice().isNaturalOrientation() || !transposeInLandscape) {
+                            // Swipe from the bottom left to the bottom right of the screen.
+                            startX = 0;
+                            startY = getSwipeStartY();
+                            endX = mLauncher.getDevice().getDisplayWidth();
+                            endY = startY;
+                        } else {
+                            // Swipe from the bottom right to the top right of the screen.
+                            startX = getSwipeStartX();
+                            startY = mLauncher.getRealDisplaySize().y - 1;
+                            endX = startX;
+                            endY = 0;
+                        }
                     } else {
-                        // Swipe from the bottom right to the top right of the screen.
-                        startX = getSwipeStartX();
-                        startY = mLauncher.getRealDisplaySize().y - 1;
-                        endX = startX;
-                        endY = 0;
+                        if (mLauncher.getDevice().isNaturalOrientation() || !transposeInLandscape) {
+                            // Swipe from the bottom right to the bottom left of the screen.
+                            startX = mLauncher.getDevice().getDisplayWidth();
+                            startY = getSwipeStartY();
+                            endX = 0;
+                            endY = startY;
+                        } else {
+                            // Swipe from the bottom left to the top left of the screen.
+                            startX = getSwipeStartX();
+                            startY = 0;
+                            endX = startX;
+                            endY = mLauncher.getRealDisplaySize().y - 1;
+                        }
                     }
+
                     final boolean isZeroButton = mLauncher.getNavigationModel()
                             == LauncherInstrumentation.NavigationModel.ZERO_BUTTON;
                     LauncherInstrumentation.GestureScope gestureScope =
@@ -205,7 +233,7 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                     break;
             }
             mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, TASK_START_EVENT);
-            return new Background(mLauncher);
+            return;
         }
     }
 
