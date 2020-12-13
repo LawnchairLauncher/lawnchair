@@ -32,7 +32,7 @@
             launcher:minWidthDps="200"
             launcher:minHeightDps="200"
             launcher:iconImageSize="48"
-            launcher:iconTextSize="13.0"
+            launcher:iconTextSize="12.0"
             launcher:canBeDefault="true" />
 
         <display-option
@@ -40,7 +40,7 @@
             launcher:minWidthDps="200"
             launcher:minHeightDps="300"
             launcher:iconImageSize="48"
-            launcher:iconTextSize="13.0"
+            launcher:iconTextSize="12.0"
             launcher:canBeDefault="true" />
 
     </grid-option>
@@ -60,7 +60,7 @@
             launcher:minWidthDps="255"
             launcher:minHeightDps="300"
             launcher:iconImageSize="48"
-            launcher:iconTextSize="13.0"
+            launcher:iconTextSize="12.0"
             launcher:canBeDefault="true" />
 
         <display-option
@@ -68,7 +68,7 @@
             launcher:minWidthDps="255"
             launcher:minHeightDps="400"
             launcher:iconImageSize="48"
-            launcher:iconTextSize="13.0"
+            launcher:iconTextSize="12.0"
             launcher:canBeDefault="true" />
 
     </grid-option>
@@ -88,7 +88,7 @@
             launcher:minWidthDps="275"
             launcher:minHeightDps="420"
             launcher:iconImageSize="48"
-            launcher:iconTextSize="13.0"
+            launcher:iconTextSize="12.0"
             launcher:canBeDefault="true" />
 
         <display-option
@@ -96,7 +96,7 @@
             launcher:minWidthDps="255"
             launcher:minHeightDps="450"
             launcher:iconImageSize="48"
-            launcher:iconTextSize="13.0"
+            launcher:iconTextSize="12.0"
             launcher:canBeDefault="true" />
 
         <display-option
@@ -104,7 +104,7 @@
             launcher:minWidthDps="296"
             launcher:minHeightDps="491.33"
             launcher:iconImageSize="48"
-            launcher:iconTextSize="13.0"
+            launcher:iconTextSize="12.0"
             launcher:canBeDefault="true" />
 
         <display-option
@@ -112,7 +112,7 @@
             launcher:minWidthDps="359"
             launcher:minHeightDps="567"
             launcher:iconImageSize="54"
-            launcher:iconTextSize="13.0"
+            launcher:iconTextSize="12.0"
             launcher:canBeDefault="true" />
 
         <display-option
@@ -120,7 +120,7 @@
             launcher:minWidthDps="335"
             launcher:minHeightDps="567"
             launcher:iconImageSize="54"
-            launcher:iconTextSize="13.0"
+            launcher:iconTextSize="12.0"
             launcher:canBeDefault="true" />
 
     </grid-option>
@@ -140,7 +140,7 @@
             launcher:minWidthDps="406"
             launcher:minHeightDps="694"
             launcher:iconImageSize="56"
-            launcher:iconTextSize="14.4"
+            launcher:iconTextSize="12.0"
             launcher:canBeDefault="true" />
 
         <display-option
@@ -148,7 +148,7 @@
             launcher:minWidthDps="406"
             launcher:minHeightDps="694"
             launcher:iconImageSize="56"
-            launcher:iconTextSize="14.4"
+            launcher:iconTextSize="12.0"
             launcher:canBeDefault="split_display" />
 
         <display-option
@@ -156,7 +156,7 @@
             launcher:minWidthDps="255"
             launcher:minHeightDps="400"
             launcher:iconImageSize="48"
-            launcher:iconTextSize="13.0"
+            launcher:iconTextSize="12.0"
             launcher:canBeDefault="true" />
 
     </grid-option>
