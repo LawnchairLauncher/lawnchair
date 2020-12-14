@@ -1738,6 +1738,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
             LiveTileOverlay.INSTANCE.update(
                     mTaskViewSimulator.getCurrentRect(),
                     mTaskViewSimulator.getCurrentCornerRadius());
+            LiveTileOverlay.INSTANCE.setRotation(
+                    mRecentsView.getPagedViewOrientedState().getDisplayRotation());
         }
         ProtoTracer.INSTANCE.get(mContext).scheduleFrameUpdate();
     }

@@ -19,6 +19,7 @@ import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TI
 import static com.android.launcher3.states.RotationHelper.deltaRotation;
 import static com.android.launcher3.touch.PagedOrientationHandler.MATRIX_POST_TRANSLATE;
 import static com.android.quickstep.util.RecentsOrientedState.postDisplayRotation;
+import static com.android.quickstep.util.RecentsOrientedState.preDisplayRotation;
 import static com.android.systemui.shared.system.WindowManagerWrapper.WINDOWING_MODE_FULLSCREEN;
 
 import android.animation.TimeInterpolator;
@@ -80,6 +81,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     private DeviceProfile mDp;
 
     private final Matrix mMatrix = new Matrix();
+    private final Matrix mMatrixTmp = new Matrix();
     private final Point mRunningTargetWindowPosition = new Point();
 
     // Thumbnail view properties
@@ -211,7 +213,10 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
      */
     public RectF getCurrentRect() {
         RectF result = getCurrentCropRect();
-        mMatrix.mapRect(result);
+        mMatrixTmp.set(mMatrix);
+        preDisplayRotation(mOrientationState.getDisplayRotation(), mDp.widthPx, mDp.heightPx,
+                mMatrixTmp);
+        mMatrixTmp.mapRect(result);
         return result;
     }
 
