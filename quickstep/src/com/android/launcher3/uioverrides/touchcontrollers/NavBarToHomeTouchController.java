@@ -29,7 +29,6 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
 import android.animation.ValueAnimator;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.animation.Interpolator;
 
@@ -47,7 +46,6 @@ import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.OverviewScrim;
 import com.android.launcher3.states.StateAnimationConfig;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.launcher3.util.TouchController;
 import com.android.quickstep.TaskUtils;
@@ -103,37 +101,19 @@ public class NavBarToHomeTouchController implements TouchController,
     }
 
     private boolean canInterceptTouch(MotionEvent ev) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.PAUSE_NOT_DETECTED, "NavBarToHomeTouchController.canInterceptTouch "
-                    + ev);
-        }
         boolean cameFromNavBar = (ev.getEdgeFlags() & Utilities.EDGE_NAV_BAR) != 0;
         if (!cameFromNavBar) {
             return false;
         }
         if (mStartState.overviewUi || mStartState == ALL_APPS) {
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.PAUSE_NOT_DETECTED,
-                        "NavBarToHomeTouchController.canInterceptTouch true 1 "
-                                + mStartState.overviewUi + " " + (mStartState == ALL_APPS));
-            }
             return true;
         }
         int typeToClose = ENABLE_ALL_APPS_EDU.get() ? TYPE_ALL & ~TYPE_ALL_APPS_EDU : TYPE_ALL;
         if (AbstractFloatingView.getTopOpenViewWithType(mLauncher, typeToClose) != null) {
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.PAUSE_NOT_DETECTED,
-                        "NavBarToHomeTouchController.canInterceptTouch true 2 "
-                                + AbstractFloatingView.getTopOpenView(mLauncher), new Exception());
-            }
             return true;
         }
         if (FeatureFlags.ASSISTANT_GIVES_LAUNCHER_FOCUS.get()
                 && AssistantUtilities.isExcludedAssistantRunning()) {
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.PAUSE_NOT_DETECTED,
-                        "NavBarToHomeTouchController.canInterceptTouch true 3");
-            }
             return true;
         }
         return false;

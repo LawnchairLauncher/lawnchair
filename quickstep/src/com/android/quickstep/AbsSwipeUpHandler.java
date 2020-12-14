@@ -59,7 +59,6 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.SystemClock;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnApplyWindowInsetsListener;
@@ -80,7 +79,6 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
 import com.android.launcher3.statemanager.StatefulActivity;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.tracing.InputConsumerProto;
 import com.android.launcher3.tracing.SwipeHandlerProto;
 import com.android.launcher3.util.TraceHelper;
@@ -324,13 +322,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
 
     protected boolean onActivityInit(Boolean alreadyOnHome) {
         T createdActivity = mActivityInterface.getCreatedActivity();
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.PAUSE_NOT_DETECTED, "BaseSwipeUpHandler.1");
-        }
         if (createdActivity != null) {
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.PAUSE_NOT_DETECTED, "BaseSwipeUpHandler.2");
-            }
             initTransitionEndpoints(createdActivity.getDeviceProfile());
         }
         final T activity = mActivityInterface.getCreatedActivity();

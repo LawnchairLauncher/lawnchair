@@ -37,7 +37,6 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_O
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.graphics.PointF;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -49,7 +48,6 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.graphics.OverviewScrim;
 import com.android.launcher3.states.StateAnimationConfig;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.VibratorWrapper;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
@@ -90,9 +88,6 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
         mRecentsView = l.getOverviewPanel();
         mMotionPauseDetector = new MotionPauseDetector(l);
         mMotionPauseMinDisplacement = ViewConfiguration.get(l).getScaledTouchSlop();
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.PAUSE_NOT_DETECTED, "NoButtonNavbarToOverviewTouchController.ctor");
-        }
     }
 
     @Override
@@ -221,9 +216,6 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
 
     @Override
     public boolean onDrag(float yDisplacement, float xDisplacement, MotionEvent event) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.PAUSE_NOT_DETECTED, "NoButtonNavbarToOverviewTouchController");
-        }
         if (mStartedOverview) {
             if (!mReachedOverview) {
                 mStartDisplacement.set(xDisplacement, yDisplacement);
