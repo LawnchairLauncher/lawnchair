@@ -1,5 +1,10 @@
 package com.android.quickstep.views;
 
+import static android.view.Surface.ROTATION_0;
+import static android.view.Surface.ROTATION_180;
+import static android.view.Surface.ROTATION_270;
+import static android.view.Surface.ROTATION_90;
+
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 
@@ -19,6 +24,7 @@ import android.util.FloatProperty;
 import android.view.ViewOverlay;
 
 import com.android.launcher3.anim.Interpolators;
+import com.android.quickstep.util.RecentsOrientedState.SurfaceRotation;
 
 public class LiveTileOverlay extends Drawable {
 
@@ -42,6 +48,8 @@ public class LiveTileOverlay extends Drawable {
     private final Paint mPaint = new Paint();
     private final RectF mCurrentRect = new RectF();
     private final Rect mBoundsRect = new Rect();
+
+    private @SurfaceRotation int mRotation = ROTATION_0;
 
     private float mCornerRadius;
     private Drawable mIcon;
@@ -67,6 +75,10 @@ public class LiveTileOverlay extends Drawable {
 
     public void update(float left, float top, float right, float bottom) {
         mCurrentRect.set(left, top, right, bottom);
+    }
+
+    public void setRotation(@SurfaceRotation int rotation) {
+        mRotation = rotation;
     }
 
     public void setIcon(Drawable icon) {
@@ -103,8 +115,35 @@ public class LiveTileOverlay extends Drawable {
             canvas.save();
             float scale = Interpolators.clampToProgress(FAST_OUT_SLOW_IN, 0f,
                     1f).getInterpolation(mIconAnimationProgress);
-            canvas.translate(mCurrentRect.centerX() - mIcon.getBounds().width() / 2 * scale,
-                    mCurrentRect.top - mIcon.getBounds().height() / 2 * scale);
+
+            int iconRadius = mIcon.getBounds().width() / 2;
+            float dx = 0;
+            float dy = 0;
+
+            switch (mRotation) {
+                case ROTATION_0:
+                    dx = mCurrentRect.centerX() - iconRadius * scale;
+                    dy = mCurrentRect.top - iconRadius * scale;
+                    break;
+                case ROTATION_90:
+                    dx = mCurrentRect.right - iconRadius * scale;
+                    dy = mCurrentRect.centerY() - iconRadius * scale;
+                    break;
+                case ROTATION_270:
+                    dx = mCurrentRect.left - iconRadius * scale;
+                    dy = mCurrentRect.centerY() - iconRadius * scale;
+                    break;
+                case ROTATION_180:
+                    dx = mCurrentRect.centerX() - iconRadius * scale;
+                    dy = mCurrentRect.bottom - iconRadius * scale;
+                    break;
+            }
+
+            int rotationDegrees = mRotation * 90;
+            if (mRotation == ROTATION_90 || mRotation == ROTATION_270) {
+                canvas.rotate(rotationDegrees, dx + iconRadius, dy + iconRadius);
+            }
+            canvas.translate(dx, dy);
             canvas.scale(scale, scale);
             mIcon.draw(canvas);
             canvas.restore();

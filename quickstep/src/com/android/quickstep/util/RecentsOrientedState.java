@@ -519,6 +519,29 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
         }
     }
 
+    /**
+     * Contrary to {@link #postDisplayRotation}.
+     */
+    public static void preDisplayRotation(@SurfaceRotation int displayRotation,
+            float screenWidth, float screenHeight, Matrix out) {
+        switch (displayRotation) {
+            case ROTATION_0:
+                return;
+            case ROTATION_90:
+                out.postRotate(90);
+                out.postTranslate(screenWidth, 0);
+                break;
+            case ROTATION_180:
+                out.postRotate(180);
+                out.postTranslate(screenHeight, screenWidth);
+                break;
+            case ROTATION_270:
+                out.postRotate(270);
+                out.postTranslate(0, screenHeight);
+                break;
+        }
+    }
+
     @NonNull
     @Override
     public String toString() {

@@ -55,7 +55,6 @@ import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.shortcuts.DeepShortcutView;
-import com.android.launcher3.testing.TestProtocol;
 
 /**
  * A view that is created to look like another view with the purpose of creating fluid animations.
@@ -534,11 +533,6 @@ public class FloatingIconView extends FrameLayout implements
         view.setVisibility(INVISIBLE);
         parent.addView(view);
         dragLayer.addView(view.mListenerView);
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.PAUSE_NOT_DETECTED, "getFloatingIconView. listenerView "
-                    + "added to dragLayer. listenerView=" + view.mListenerView + ", fiv=" + view,
-                    new Exception());
-        }
         view.mListenerView.setListener(view::fastFinish);
 
         view.mEndRunnable = () -> {
@@ -578,10 +572,6 @@ public class FloatingIconView extends FrameLayout implements
     private void finish(DragLayer dragLayer) {
         ((ViewGroup) dragLayer.getParent()).removeView(this);
         dragLayer.removeView(mListenerView);
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.PAUSE_NOT_DETECTED, "listenerView removed from dragLayer. "
-                    + "listenerView=" + mListenerView + ", fiv=" + this, new Exception());
-        }
         recycle();
         mLauncher.getViewCache().recycleView(R.layout.floating_icon_view, this);
     }
