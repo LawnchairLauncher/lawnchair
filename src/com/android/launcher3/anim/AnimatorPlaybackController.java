@@ -29,6 +29,8 @@ import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 
+import com.android.launcher3.Utilities;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -133,15 +135,20 @@ public class AnimatorPlaybackController implements ValueAnimator.AnimatorUpdateL
 
     /**
      * Starts playing the animation with the provided velocity optionally playing any
-     * physics based animations
+     * physics based animations.
+     * @param goingToEnd Whether we are going to the end (progress = 1) or not (progress = 0).
+     * @param velocityPxPerMs The velocity at which to start the animation, in pixels / millisecond.
+     * @param endDistance The distance (pixels) that the animation will travel from progress 0 to 1.
+     * @param animationDuration The duration of the non-physics based animation.
      */
     public void startWithVelocity(Context context, boolean goingToEnd,
-            float velocity, float scale, long animationDuration) {
-        float scaleInverse = 1 / Math.abs(scale);
-        float scaledVelocity = velocity * scaleInverse;
+            float velocityPxPerMs, float endDistance, long animationDuration) {
+        float distanceInverse = 1 / Math.abs(endDistance);
+        float velocityProgressPerMs = velocityPxPerMs * distanceInverse;
 
+        float oneFrameProgress = velocityProgressPerMs * getSingleFrameMs(context);
         float nextFrameProgress = boundToRange(getProgressFraction()
-                + scaledVelocity * getSingleFrameMs(context), 0f, 1f);
+                + oneFrameProgress, 0f, 1f);
 
         // Update setters for spring
         int springFlag = goingToEnd
@@ -154,8 +161,8 @@ public class AnimatorPlaybackController implements ValueAnimator.AnimatorUpdateL
                 SpringAnimationBuilder s = new SpringAnimationBuilder(context)
                         .setStartValue(mCurrentFraction)
                         .setEndValue(goingToEnd ? 1 : 0)
-                        .setStartVelocity(scaledVelocity)
-                        .setMinimumVisibleChange(scaleInverse)
+                        .setStartVelocity(velocityProgressPerMs)
+                        .setMinimumVisibleChange(distanceInverse)
                         .setDampingRatio(h.springProperty.mDampingRatio)
                         .setStiffness(h.springProperty.mStiffness)
                         .computeParams();
@@ -164,8 +171,18 @@ public class AnimatorPlaybackController implements ValueAnimator.AnimatorUpdateL
                 springDuration = Math.max(expectedDurationL, springDuration);
 
                 float expectedDuration = expectedDurationL;
-                h.mapper = (progress, globalEndProgress) ->
-                        mAnimationPlayer.getCurrentPlayTime() / expectedDuration;
+                h.mapper = (progress, globalEndProgress) -> {
+                    if (expectedDuration <= 0 || oneFrameProgress >= 1) {
+                        return 1;
+                    } else {
+                        // Start from one frame ahead of the current position.
+                        return Utilities.mapToRange(
+                                mAnimationPlayer.getCurrentPlayTime() / expectedDuration,
+                                0, 1,
+                                Math.abs(oneFrameProgress), 1,
+                                LINEAR);
+                    }
+                };
                 h.anim.setInterpolator(s::getInterpolatedValue);
             }
         }
@@ -174,7 +191,7 @@ public class AnimatorPlaybackController implements ValueAnimator.AnimatorUpdateL
 
         if (springDuration <= animationDuration) {
             mAnimationPlayer.setDuration(animationDuration);
-            mAnimationPlayer.setInterpolator(scrollInterpolatorForVelocity(velocity));
+            mAnimationPlayer.setInterpolator(scrollInterpolatorForVelocity(velocityPxPerMs));
         } else {
             // Since spring requires more time to run, we let the other animations play with
             // current time and interpolation and by clamping the duration.
@@ -182,7 +199,7 @@ public class AnimatorPlaybackController implements ValueAnimator.AnimatorUpdateL
 
             float cutOff = animationDuration / (float) springDuration;
             mAnimationPlayer.setInterpolator(
-                    clampToProgress(scrollInterpolatorForVelocity(velocity), 0, cutOff));
+                    clampToProgress(scrollInterpolatorForVelocity(velocityPxPerMs), 0, cutOff));
         }
         mAnimationPlayer.start();
     }

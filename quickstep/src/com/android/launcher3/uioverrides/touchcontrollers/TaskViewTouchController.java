@@ -297,7 +297,8 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
 
         mCurrentAnimation.setEndAction(this::clearState);
         mCurrentAnimation.startWithVelocity(mActivity, goingToEnd,
-                velocity, mEndDisplacement, animationDuration);
+                velocity * orientationHandler.getSecondaryTranslationDirectionFactor(),
+                mEndDisplacement, animationDuration);
     }
 
     private void clearState() {
