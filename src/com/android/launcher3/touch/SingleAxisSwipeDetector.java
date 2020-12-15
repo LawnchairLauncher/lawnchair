@@ -58,6 +58,11 @@ public class SingleAxisSwipeDetector extends BaseSwipeDetector {
             return direction.x;
         }
 
+        @NonNull
+        @Override
+        public String toString() {
+            return "VERTICAL";
+        }
     };
 
     public static final Direction HORIZONTAL = new Direction() {
@@ -84,6 +89,11 @@ public class SingleAxisSwipeDetector extends BaseSwipeDetector {
             return direction.y;
         }
 
+        @NonNull
+        @Override
+        public String toString() {
+            return "HORIZONTAL";
+        }
     };
 
     private final Direction mDir;
@@ -108,10 +118,6 @@ public class SingleAxisSwipeDetector extends BaseSwipeDetector {
     public void setDetectableScrollConditions(int scrollDirectionFlags, boolean ignoreSlop) {
         mScrollDirections = scrollDirectionFlags;
         mIgnoreSlopWhenSettling = ignoreSlop;
-    }
-
-    public int getScrollDirections() {
-        return mScrollDirections;
     }
 
     /**

@@ -75,11 +75,6 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public boolean isGoingUp(float displacement, boolean isRtl) {
-        return isRtl ? displacement < 0 : displacement > 0;
-    }
-
-    @Override
     public boolean isLayoutNaturalToLauncher() {
         return false;
     }
@@ -215,22 +210,12 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public SingleAxisSwipeDetector.Direction getOppositeSwipeDirection() {
-        return HORIZONTAL;
-    }
-
-    @Override
     public int getPrimaryTranslationDirectionFactor() {
         return -1;
     }
 
     public int getSecondaryTranslationDirectionFactor() {
         return 1;
-    }
-
-    @Override
-    public int getTaskDragDisplacementFactor(boolean isRtl) {
-        return isRtl ? 1 : -1;
     }
 
     @Override
@@ -260,6 +245,31 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
         lp.height = WRAP_CONTENT;
         lp.weight = 1;
     }
+
+    /* ---------- The following are only used by TaskViewTouchHandler. ---------- */
+
+    @Override
+    public SingleAxisSwipeDetector.Direction getUpDownSwipeDirection() {
+        return HORIZONTAL;
+    }
+
+    @Override
+    public int getUpDirection(boolean isRtl) {
+        return isRtl ? SingleAxisSwipeDetector.DIRECTION_NEGATIVE
+                : SingleAxisSwipeDetector.DIRECTION_POSITIVE;
+    }
+
+    @Override
+    public boolean isGoingUp(float displacement, boolean isRtl) {
+        return isRtl ? displacement < 0 : displacement > 0;
+    }
+
+    @Override
+    public int getTaskDragDisplacementFactor(boolean isRtl) {
+        return isRtl ? 1 : -1;
+    }
+
+    /* -------------------- */
 
     @Override
     public ChildBounds getChildBounds(View child, int childStart, int pageCenter,

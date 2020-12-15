@@ -18,8 +18,6 @@ package com.android.launcher3.uioverrides.touchcontrollers;
 import static com.android.launcher3.AbstractFloatingView.TYPE_ACCESSIBLE;
 import static com.android.launcher3.LauncherAnimUtils.SUCCESS_TRANSITION_PROGRESS;
 import static com.android.launcher3.touch.SingleAxisSwipeDetector.DIRECTION_BOTH;
-import static com.android.launcher3.touch.SingleAxisSwipeDetector.DIRECTION_NEGATIVE;
-import static com.android.launcher3.touch.SingleAxisSwipeDetector.DIRECTION_POSITIVE;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -59,6 +57,8 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
 
     private AnimatorPlaybackController mCurrentAnimation;
     private boolean mCurrentAnimationIsGoingUp;
+    private boolean mAllowGoingUp;
+    private boolean mAllowGoingDown;
 
     private boolean mNoIntercept;
 
@@ -74,7 +74,7 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
         mRecentsView = activity.getOverviewPanel();
         mIsRtl = Utilities.isRtl(activity.getResources());
         SingleAxisSwipeDetector.Direction dir =
-            mRecentsView.getPagedOrientationHandler().getOppositeSwipeDirection();
+                mRecentsView.getPagedOrientationHandler().getUpDownSwipeDirection();
         mDetector = new SingleAxisSwipeDetector(activity, this, dir);
     }
 
@@ -148,15 +148,24 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
                             break;
                         }
                         mTaskBeingDragged = view;
+                        int upDirection = mRecentsView.getPagedOrientationHandler()
+                                .getUpDirection(mIsRtl);
                         if (!SysUINavigationMode.getMode(mActivity).hasGestures) {
                             // Don't allow swipe down to open if we don't support swipe up
                             // to enter overview.
-                            directionsToDetectScroll = DIRECTION_POSITIVE;
+                            directionsToDetectScroll = upDirection;
+                            mAllowGoingUp = true;
+                            mAllowGoingDown = false;
                         } else {
                             // The task can be dragged up to dismiss it,
                             // and down to open if it's the current page.
-                            directionsToDetectScroll = i == mRecentsView.getCurrentPage()
-                                    ? DIRECTION_BOTH : DIRECTION_POSITIVE;
+                            mAllowGoingUp = true;
+                            if (i == mRecentsView.getCurrentPage()) {
+                                mAllowGoingDown = true;
+                                directionsToDetectScroll = DIRECTION_BOTH;
+                            } else {
+                                directionsToDetectScroll = upDirection;
+                            }
                         }
                         break;
                     }
@@ -189,9 +198,7 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
             // No need to init
             return;
         }
-        int scrollDirections = mDetector.getScrollDirections();
-        if (goingUp && ((scrollDirections & DIRECTION_POSITIVE) == 0)
-                || !goingUp && ((scrollDirections & DIRECTION_NEGATIVE) == 0)) {
+        if ((goingUp && !mAllowGoingUp) || (!goingUp && !mAllowGoingDown)) {
             // Trying to re-init in an unsupported direction.
             return;
         }
