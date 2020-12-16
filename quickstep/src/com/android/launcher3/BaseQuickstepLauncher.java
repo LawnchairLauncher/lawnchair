@@ -167,9 +167,14 @@ public abstract class BaseQuickstepLauncher extends Launcher
     }
 
     @Override
-    protected void handlePendingActivityRequest() {
-        super.handlePendingActivityRequest();
-        if (mPendingActivityRequestCode != -1 && isInState(NORMAL)) {
+    public void onStateSetEnd(LauncherState state) {
+        super.onStateSetEnd(state);
+        handlePendingActivityRequest();
+    }
+
+    private void handlePendingActivityRequest() {
+        if (mPendingActivityRequestCode != -1 && isInState(NORMAL)
+                && ((getActivityFlags() & ACTIVITY_STATE_DEFERRED_RESUMED) != 0)) {
             // Remove any active ProxyActivityStarter task and send RESULT_CANCELED to Launcher.
             onActivityResult(mPendingActivityRequestCode, RESULT_CANCELED, null);
             // ProxyActivityStarter is started with clear task to reset the task after which it

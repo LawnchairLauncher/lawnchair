@@ -16,6 +16,8 @@
 
 package com.android.launcher3.touch;
 
+import static com.android.launcher3.touch.SingleAxisSwipeDetector.HORIZONTAL;
+
 import android.content.res.Resources;
 import android.graphics.PointF;
 import android.graphics.Rect;
@@ -33,11 +35,6 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
     }
 
     @Override
-    public int getTaskDragDisplacementFactor(boolean isRtl) {
-        return isRtl ? -1 : 1;
-    }
-
-    @Override
     public boolean getRecentsRtlSetting(Resources resources) {
         return Utilities.isRtl(resources);
     }
@@ -50,11 +47,6 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
     @Override
     public int getRotation() {
         return Surface.ROTATION_270;
-    }
-
-    @Override
-    public boolean isGoingUp(float displacement, boolean isRtl) {
-        return isRtl ? displacement > 0 : displacement < 0;
     }
 
     @Override
@@ -78,4 +70,29 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
     public int getDistanceToBottomOfRect(DeviceProfile dp, Rect rect) {
         return dp.widthPx - rect.right;
     }
+
+    /* ---------- The following are only used by TaskViewTouchHandler. ---------- */
+
+    @Override
+    public SingleAxisSwipeDetector.Direction getUpDownSwipeDirection() {
+        return HORIZONTAL;
+    }
+
+    @Override
+    public int getUpDirection(boolean isRtl) {
+        return isRtl ? SingleAxisSwipeDetector.DIRECTION_POSITIVE
+                : SingleAxisSwipeDetector.DIRECTION_NEGATIVE;
+    }
+
+    @Override
+    public boolean isGoingUp(float displacement, boolean isRtl) {
+        return isRtl ? displacement > 0 : displacement < 0;
+    }
+
+    @Override
+    public int getTaskDragDisplacementFactor(boolean isRtl) {
+        return isRtl ? -1 : 1;
+    }
+
+    /* -------------------- */
 }

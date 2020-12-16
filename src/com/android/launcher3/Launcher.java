@@ -961,8 +961,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         DiscoveryBounce.showForHomeIfNeeded(this);
     }
 
-    protected void handlePendingActivityRequest() { }
-
     private void logStopAndResume(boolean isResume) {
         if (mPendingExecutor != null) return;
         int pageIndex = mWorkspace.isOverlayShown() ? -1 : mWorkspace.getCurrentPage();
@@ -1053,7 +1051,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
     @Override
     public void onStateSetEnd(LauncherState state) {
-        super.onStateSetStart(state);
+        super.onStateSetEnd(state);
         getAppWidgetHost().setResumed(state == LauncherState.NORMAL);
         getWorkspace().setClipChildren(!state.hasFlag(FLAG_MULTI_PAGE));
 
@@ -1479,8 +1477,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                 if (!isInState(NORMAL)) {
                     // Only change state, if not already the same. This prevents cancelling any
                     // animations running as part of resume
-                    mStateManager.goToState(NORMAL, mStateManager.shouldAnimateStateChange(),
-                            this::handlePendingActivityRequest);
+                    mStateManager.goToState(NORMAL, mStateManager.shouldAnimateStateChange());
                 }
 
                 // Reset the apps view

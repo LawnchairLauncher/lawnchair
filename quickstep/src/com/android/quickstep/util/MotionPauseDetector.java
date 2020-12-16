@@ -19,14 +19,12 @@ import static com.android.launcher3.config.FeatureFlags.ENABLE_SYSTEM_VELOCITY_P
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 
 import com.android.launcher3.Alarm;
 import com.android.launcher3.R;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
-import com.android.launcher3.testing.TestProtocol;
 
 /**
  * Given positions along x- or y-axis, tracks velocity and acceleration and determines when there is
@@ -87,9 +85,6 @@ public class MotionPauseDetector {
         mSpeedSlow = res.getDimension(R.dimen.motion_pause_detector_speed_slow);
         mSpeedSomewhatFast = res.getDimension(R.dimen.motion_pause_detector_speed_somewhat_fast);
         mSpeedFast = res.getDimension(R.dimen.motion_pause_detector_speed_fast);
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.PAUSE_NOT_DETECTED, "creating alarm");
-        }
         mForcePauseTimeout = new Alarm();
         mForcePauseTimeout.setOnAlarmListener(alarm -> updatePaused(true /* isPaused */));
         mMakePauseHarderToTrigger = makePauseHarderToTrigger;
@@ -126,9 +121,6 @@ public class MotionPauseDetector {
      * @param pointerIndex Index for the pointer being tracked in the motion event
      */
     public void addPosition(MotionEvent ev, int pointerIndex) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.PAUSE_NOT_DETECTED, "setting alarm");
-        }
         mForcePauseTimeout.setAlarm(mMakePauseHarderToTrigger
                 ? HARDER_TRIGGER_TIMEOUT
                 : FORCE_PAUSE_TIMEOUT);
@@ -176,9 +168,6 @@ public class MotionPauseDetector {
     }
 
     private void updatePaused(boolean isPaused) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.PAUSE_NOT_DETECTED, "updatePaused: " + isPaused);
-        }
         if (mDisallowPause) {
             isPaused = false;
         }
@@ -207,9 +196,6 @@ public class MotionPauseDetector {
         setOnMotionPauseListener(null);
         mIsPaused = mHasEverBeenPaused = false;
         mSlowStartTime = 0;
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.PAUSE_NOT_DETECTED, "canceling alarm");
-        }
         mForcePauseTimeout.cancelAlarm();
     }
 

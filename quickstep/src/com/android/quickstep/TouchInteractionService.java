@@ -627,10 +627,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
     }
 
     private void handleOrientationSetup(InputConsumer baseInputConsumer) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.PAUSE_NOT_DETECTED, "handleOrientationSetup.1");
-        }
-
         baseInputConsumer.notifyOrientationSetup();
     }
 
