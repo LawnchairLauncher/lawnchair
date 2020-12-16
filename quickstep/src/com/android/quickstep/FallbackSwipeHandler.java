@@ -294,8 +294,12 @@ public class FallbackSwipeHandler extends
             if (mSurfaceControl != null) {
                 currentRect.roundOut(mTempRect);
                 Transaction t = new Transaction();
-                t.setGeometry(mSurfaceControl, null, mTempRect, Surface.ROTATION_0);
-                t.apply();
+                try {
+                    t.setGeometry(mSurfaceControl, null, mTempRect, Surface.ROTATION_0);
+                    t.apply();
+                } catch (RuntimeException e) {
+                    // Ignore
+                }
             }
         }
 
