@@ -75,10 +75,8 @@ public interface PagedOrientationHandler {
     int getCenterForPage(View view, Rect insets);
     int getScrollOffsetStart(View view, Rect insets);
     int getScrollOffsetEnd(View view, Rect insets);
-    SingleAxisSwipeDetector.Direction getOppositeSwipeDirection();
     int getPrimaryTranslationDirectionFactor();
     int getSecondaryTranslationDirectionFactor();
-    int getTaskDragDisplacementFactor(boolean isRtl);
     ChildBounds getChildBounds(View child, int childStart, int pageCenter, boolean layoutChild);
     void setMaxScroll(AccessibilityEvent event, int maxScroll);
     boolean getRecentsRtlSetting(Resources resources);
@@ -92,7 +90,6 @@ public interface PagedOrientationHandler {
     void delegateScrollBy(PagedView pagedView, int unboundedScroll, int x, int y);
     void scrollerStartScroll(OverScroller scroller, int newPosition);
     void getCurveProperties(PagedView view, Rect insets, CurveProperties out);
-    boolean isGoingUp(float displacement, boolean isRtl);
     boolean isLayoutNaturalToLauncher();
     float getTaskMenuX(float x, View thumbnailView);
     float getTaskMenuY(float y, View thumbnailView);
@@ -100,6 +97,16 @@ public interface PagedOrientationHandler {
     int getTaskMenuLayoutOrientation(boolean canRecentsActivityRotate, LinearLayout taskMenuLayout);
     void setLayoutParamsForTaskMenuOptionItem(LinearLayout.LayoutParams lp);
     int getDistanceToBottomOfRect(DeviceProfile dp, Rect rect);
+
+    // The following are only used by TaskViewTouchHandler.
+    /** @return Either VERTICAL or HORIZONTAL. */
+    SingleAxisSwipeDetector.Direction getUpDownSwipeDirection();
+    /** @return Given {@link #getUpDownSwipeDirection()}, whether POSITIVE or NEGATIVE is up. */
+    int getUpDirection(boolean isRtl);
+    /** @return Whether the displacement is going towards the top of the screen. */
+    boolean isGoingUp(float displacement, boolean isRtl);
+    /** @return Either 1 or -1, a factor to multiply by so the animation goes the correct way. */
+    int getTaskDragDisplacementFactor(boolean isRtl);
 
     /**
      * Maps the velocity from the coordinate plane of the foreground app to that
