@@ -629,11 +629,13 @@ public class LauncherPreviewRenderer extends ContextThemeWrapper
         private WorkspaceResult(BgDataModel dataModel,
                 WidgetsModel widgetsModel,
                 Map<ComponentKey, AppWidgetProviderInfo> widgetProviderInfoMap) {
-            mWorkspaceItems = dataModel.workspaceItems;
-            mAppWidgets = dataModel.appWidgets;
-            mHotseatPredictions = dataModel.extraItems.get(CONTAINER_HOTSEAT_PREDICTION);
-            mWidgetsModel = widgetsModel;
-            mWidgetProvidersMap = widgetProviderInfoMap;
+            synchronized (dataModel) {
+                mWorkspaceItems = dataModel.workspaceItems;
+                mAppWidgets = dataModel.appWidgets;
+                mHotseatPredictions = dataModel.extraItems.get(CONTAINER_HOTSEAT_PREDICTION);
+                mWidgetsModel = widgetsModel;
+                mWidgetProvidersMap = widgetProviderInfoMap;
+            }
         }
     }
 }
