@@ -724,6 +724,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
         setIsLikelyToStartNewTask(isLikelyToStartNewTask, false /* animate */);
         mStateCallback.setStateOnUiThread(STATE_GESTURE_STARTED);
         mGestureStarted = true;
+        mTaskViewSimulator.setDrawsBelowRecents(true);
     }
 
     /**
