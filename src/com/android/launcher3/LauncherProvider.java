@@ -1099,11 +1099,20 @@ public class LauncherProvider extends ContentProvider {
      * @return the max _id in the provided table.
      */
     @Thunk static int getMaxId(SQLiteDatabase db, String query, Object... args) {
-        int max = (int) DatabaseUtils.longForQuery(db,
-                String.format(Locale.ENGLISH, query, args),
-                null);
-        if (max < 0) {
-            throw new RuntimeException("Error: could not query max id");
+        int max = 0;
+        try (SQLiteStatement prog = db.compileStatement(
+                String.format(Locale.ENGLISH, query, args))) {
+            max = (int) DatabaseUtils.longForQuery(prog, null);
+            if (max < 0) {
+                throw new RuntimeException("Error: could not query max id");
+            }
+        } catch (IllegalArgumentException exception) {
+            String message = exception.getMessage();
+            if (message.contains("re-open") && message.contains("already-closed")) {
+                // Don't crash trying to end a transaction an an already closed DB. See b/173162852.
+            } else {
+                throw exception;
+            }
         }
         return max;
     }
