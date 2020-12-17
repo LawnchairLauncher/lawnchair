@@ -299,7 +299,9 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
                     launcher -> assertTrue("Launcher internal state didn't switch to Showing Menu",
                             isOptionsPopupVisible(launcher)));
 
-            menu.getMenuItem(1).launch(getAppPackageName());
+            final AppIconMenuItem menuItem = menu.getMenuItem(1);
+            assertEquals("Wrong menu item", "Shortcut 2", menuItem.getText());
+            menuItem.launch(getAppPackageName());
         } finally {
             allApps.unfreeze();
         }
@@ -342,6 +344,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
                     openMenu().
                     getMenuItem(0);
             final String shortcutName = menuItem.getText();
+            assertEquals("Wrong menu item", "Shortcut 3", shortcutName);
 
             menuItem.dragToWorkspace(false, false);
             mLauncher.getWorkspace().getWorkspaceAppIcon(shortcutName).launch(getAppPackageName());
