@@ -52,8 +52,7 @@ public class HotseatPredictionModel {
     public static Bundle convertDataModelToAppTargetBundle(Context context, BgDataModel dataModel) {
         Bundle bundle = new Bundle();
         ArrayList<AppTargetEvent> events = new ArrayList<>();
-        ArrayList<ItemInfo> workspaceItems = new ArrayList<>(dataModel.workspaceItems);
-        workspaceItems.addAll(dataModel.appWidgets);
+        ArrayList<ItemInfo> workspaceItems = dataModel.getAllWorkspaceItems();
         for (ItemInfo item : workspaceItems) {
             AppTarget target = getAppTargetFromInfo(context, item);
             if (target != null && !isTrackedForPrediction(item)) continue;

@@ -166,12 +166,7 @@ public class LoaderTask implements Runnable {
 
     private void sendFirstScreenActiveInstallsBroadcast() {
         ArrayList<ItemInfo> firstScreenItems = new ArrayList<>();
-
-        ArrayList<ItemInfo> allItems = new ArrayList<>();
-        synchronized (mBgDataModel) {
-            allItems.addAll(mBgDataModel.workspaceItems);
-            allItems.addAll(mBgDataModel.appWidgets);
-        }
+        ArrayList<ItemInfo> allItems = mBgDataModel.getAllWorkspaceItems();
         // Screen set is never empty
         final int firstScreen = mBgDataModel.collectWorkspaceScreens().get(0);
 
@@ -858,10 +853,12 @@ public class LoaderTask implements Runnable {
                     .call(contentResolver,
                             LauncherSettings.Settings.METHOD_DELETE_EMPTY_FOLDERS)
                     .getIntArray(LauncherSettings.Settings.EXTRA_VALUE);
-            for (int folderId : deletedFolderIds) {
-                mBgDataModel.workspaceItems.remove(mBgDataModel.folders.get(folderId));
-                mBgDataModel.folders.remove(folderId);
-                mBgDataModel.itemsIdMap.remove(folderId);
+            synchronized (mBgDataModel) {
+                for (int folderId : deletedFolderIds) {
+                    mBgDataModel.workspaceItems.remove(mBgDataModel.folders.get(folderId));
+                    mBgDataModel.folders.remove(folderId);
+                    mBgDataModel.itemsIdMap.remove(folderId);
+                }
             }
 
             // Remove any ghost widgets

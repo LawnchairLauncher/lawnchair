@@ -376,6 +376,16 @@ public class BgDataModel {
     }
 
     /**
+     * Returns a list containing all workspace items including widgets.
+     */
+    public synchronized ArrayList<ItemInfo> getAllWorkspaceItems() {
+        ArrayList<ItemInfo> items = new ArrayList<>(workspaceItems.size() + appWidgets.size());
+        items.addAll(workspaceItems);
+        items.addAll(appWidgets);
+        return items;
+    }
+
+    /**
      * Calls the provided {@code op} for all workspaceItems in the in-memory model (both persisted
      * items and dynamic/predicted items for the provided {@code userHandle}.
      * Note the call is not synchronized over the model, that should be handled by the called.
