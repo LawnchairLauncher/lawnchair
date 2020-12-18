@@ -16,8 +16,9 @@
 
 package com.android.quickstep.util;
 
+import static com.android.systemui.shared.system.InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_PIP;
+
 import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.RectEvaluator;
 import android.animation.ValueAnimator;
 import android.content.ComponentName;
@@ -26,7 +27,9 @@ import android.view.SurfaceControl;
 
 import androidx.annotation.NonNull;
 
+import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.systemui.shared.pip.PipSurfaceTransactionHelper;
+import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 
 /**
  * An {@link Animator} that animates an Activity to PiP (picture-in-picture) window when
@@ -76,9 +79,27 @@ public class SwipePipToHomeAnimator extends ValueAnimator implements
                 startBounds.right - sourceRectHint.right,
                 startBounds.bottom - sourceRectHint.bottom);
 
-        addListener(new AnimatorListenerAdapter() {
+        addListener(new AnimationSuccessListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                InteractionJankMonitorWrapper.begin(CUJ_APP_CLOSE_TO_PIP);
+                super.onAnimationStart(animation);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                super.onAnimationCancel(animation);
+                InteractionJankMonitorWrapper.cancel(CUJ_APP_CLOSE_TO_PIP);
+            }
+
+            @Override
+            public void onAnimationSuccess(Animator animator) {
+                InteractionJankMonitorWrapper.end(CUJ_APP_CLOSE_TO_PIP);
+            }
+
             @Override
             public void onAnimationEnd(Animator animation) {
+                if (!mHasAnimationEnded) super.onAnimationEnd(animation);
                 SwipePipToHomeAnimator.this.onAnimationEnd();
             }
         });

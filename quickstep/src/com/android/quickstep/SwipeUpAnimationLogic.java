@@ -82,7 +82,6 @@ public abstract class SwipeUpAnimationLogic {
         mTaskViewSimulator.getOrientationState().update(
                 mDeviceState.getRotationTouchHelper().getCurrentActiveRotation(),
                 mDeviceState.getRotationTouchHelper().getDisplayRotation());
-        mTaskViewSimulator.setDrawsBelowRecents(true);
 
         mMaxShadowRadius = context.getResources().getDimensionPixelSize(R.dimen.max_shadow_radius);
         mTransformParams.setShadowRadius(mMaxShadowRadius);
