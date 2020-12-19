@@ -88,7 +88,7 @@ public class SecureSettingsObserver extends ContentObserver {
     public static SecureSettingsObserver newOneHandedSettingsObserver(Context context,
             OnChangeListener listener) {
         return new SecureSettingsObserver(
-                context.getContentResolver(), listener, ONE_HANDED_ENABLED, 1);
+                context.getContentResolver(), listener, ONE_HANDED_ENABLED, 0);
     }
 
     /**
