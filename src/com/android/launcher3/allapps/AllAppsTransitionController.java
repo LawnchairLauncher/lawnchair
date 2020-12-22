@@ -142,7 +142,8 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
         float shiftCurrent = progress * mShiftRange;
 
         mAppsView.setTranslationY(shiftCurrent);
-        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
+        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()
+                && !FeatureFlags.DISABLE_INITIAL_IME_IN_ALLAPPS.get()) {
             mInsetController.setProgress(progress);
         }
     }
@@ -233,7 +234,9 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
     public void setupViews(AllAppsContainerView appsView, ScrimView scrimView) {
         mAppsView = appsView;
         mScrimView = scrimView;
-        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get() && BuildCompat.isAtLeastR()) {
+        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()
+                && !FeatureFlags.DISABLE_INITIAL_IME_IN_ALLAPPS.get()
+                && BuildCompat.isAtLeastR()) {
             mInsetController = new AllAppsInsetTransitionController(mShiftRange, mAppsView);
             mLauncher.getSystemUiController().updateUiState(UI_STATE_ALLAPPS,
                     View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -261,7 +264,8 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
         if (Float.compare(mProgress, 1f) == 0) {
             mAppsView.reset(false /* animate */);
         }
-        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get() && BuildCompat.isAtLeastR()) {
+        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()
+                && !FeatureFlags.DISABLE_INITIAL_IME_IN_ALLAPPS.get() && BuildCompat.isAtLeastR()) {
             mInsetController.onAnimationEnd(mProgress);
             if (Float.compare(mProgress, 0f) == 0) {
                 mLauncher.getLiveSearchManager().start();
