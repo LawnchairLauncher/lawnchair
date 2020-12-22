@@ -119,4 +119,7 @@
 
     <!-- Minimum distance to swipe to trigger accessibility gesture -->
     <dimen name="accessibility_gesture_min_swipe_distance">80dp</dimen>
+
+    <!-- Taskbar -->
+    <dimen name="taskbar_size">48dp</dimen>
 </resources>
