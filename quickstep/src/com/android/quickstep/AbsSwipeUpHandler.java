@@ -1062,6 +1062,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
         if (mGestureState.getEndTarget().isLauncher) {
             ActivityManagerWrapper.getInstance().registerTaskStackListener(
                     mActivityRestartListener);
+
+            mActivityInterface.onAnimateToLauncher(mGestureState.getEndTarget(), duration);
         }
 
         if (mGestureState.getEndTarget() == HOME) {
