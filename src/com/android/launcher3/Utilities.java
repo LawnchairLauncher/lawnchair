@@ -404,6 +404,11 @@ public final class Utilities {
         return (size / densityRatio);
     }
 
+    /** Converts a dp value to pixels for the current device. */
+    public static int dpToPx(float dp) {
+        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
+    }
+
     public static int pxFromSp(float size, DisplayMetrics metrics) {
         return (int) Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
                 size, metrics));

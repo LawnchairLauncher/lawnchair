@@ -56,7 +56,7 @@ import com.android.systemui.shared.system.QuickStepContract;
 
 /** Utility class to handle Home and Assistant gestures. */
 public class NavBarGestureHandler implements OnTouchListener,
-        TriggerSwipeUpTouchTracker.OnSwipeUpListener {
+        TriggerSwipeUpTouchTracker.OnSwipeUpListener, MotionPauseDetector.OnMotionPauseListener {
 
     private static final String LOG_TAG = "NavBarGestureHandler";
     private static final long RETRACT_GESTURE_ANIMATION_DURATION_MS = 300;
@@ -181,7 +181,7 @@ public class NavBarGestureHandler implements OnTouchListener,
                 mLaunchedAssistant = false;
                 mSwipeUpTouchTracker.init();
                 mMotionPauseDetector.clear();
-                mMotionPauseDetector.setOnMotionPauseListener(this::onMotionPauseDetected);
+                mMotionPauseDetector.setOnMotionPauseListener(this);
                 break;
             case MotionEvent.ACTION_MOVE:
                 mLastPos.set(event.getX(), event.getY());
@@ -256,7 +256,13 @@ public class NavBarGestureHandler implements OnTouchListener,
                 || event.getY() >= mDisplaySize.y - mBottomGestureHeight;
     }
 
-    protected void onMotionPauseDetected() {
+    @Override
+    public void onMotionPauseChanged(boolean isPaused) {
+        mGestureCallback.onMotionPaused(isPaused);
+    }
+
+    @Override
+    public void onMotionPauseDetected() {
         VibratorWrapper.INSTANCE.get(mContext).vibrate(OVERVIEW_HAPTIC);
     }
 
@@ -310,6 +316,9 @@ public class NavBarGestureHandler implements OnTouchListener,
     interface NavBarGestureAttemptCallback {
         /** Called whenever any touch is completed. */
         void onNavBarGestureAttempted(NavBarGestureResult result, PointF finalVelocity);
+
+        /** Called when a motion stops or resumes */
+        default void onMotionPaused(boolean isPaused) {}
 
         /** Indicates how far a touch originating in the nav bar has moved from the nav bar. */
         default void setNavBarGestureProgress(@Nullable Float displacement) {}
