@@ -74,6 +74,7 @@ public class SysUINavigationMode {
     private Mode mMode;
 
     private int mNavBarGesturalHeight;
+    private int mNavBarLargerGesturalHeight;
 
     private final List<NavigationModeChangeListener> mChangeListeners = new ArrayList<>();
     private final List<OneHandedModeChangeListener> mOneHandedOverlayChangeListeners =
@@ -113,6 +114,17 @@ public class SysUINavigationMode {
 
         if (mNavBarGesturalHeight != newGesturalHeight) {
             mNavBarGesturalHeight = newGesturalHeight;
+        }
+
+        int newLargerGesturalHeight = ResourceUtils.getDimenByName(
+                ResourceUtils.NAVBAR_BOTTOM_GESTURE_LARGER_SIZE, mContext.getResources(),
+                INVALID_RESOURCE_HANDLE);
+        if (newLargerGesturalHeight == INVALID_RESOURCE_HANDLE) {
+            Log.e(TAG, "Failed to get system resource ID. Incompatible framework version?");
+            return;
+        }
+        if (mNavBarLargerGesturalHeight != newLargerGesturalHeight) {
+            mNavBarLargerGesturalHeight = newLargerGesturalHeight;
             dispatchOneHandedOverlayChange();
         }
     }
@@ -123,6 +135,9 @@ public class SysUINavigationMode {
         mNavBarGesturalHeight = ResourceUtils.getDimenByName(
                 ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE, mContext.getResources(),
                 INVALID_RESOURCE_HANDLE);
+        mNavBarLargerGesturalHeight = ResourceUtils.getDimenByName(
+                ResourceUtils.NAVBAR_BOTTOM_GESTURE_LARGER_SIZE, mContext.getResources(),
+                mNavBarGesturalHeight);
 
         if (modeInt == INVALID_RESOURCE_HANDLE) {
             Log.e(TAG, "Failed to get system resource ID. Incompatible framework version?");
@@ -144,7 +159,7 @@ public class SysUINavigationMode {
 
     private void dispatchOneHandedOverlayChange() {
         for (OneHandedModeChangeListener listener : mOneHandedOverlayChangeListeners) {
-            listener.onOneHandedModeChanged(mNavBarGesturalHeight);
+            listener.onOneHandedModeChanged(mNavBarLargerGesturalHeight);
         }
     }
 
@@ -159,7 +174,7 @@ public class SysUINavigationMode {
 
     public int addOneHandedOverlayChangeListener(OneHandedModeChangeListener listener) {
         mOneHandedOverlayChangeListeners.add(listener);
-        return mNavBarGesturalHeight;
+        return mNavBarLargerGesturalHeight;
     }
 
     public void removeOneHandedOverlayChangeListener(OneHandedModeChangeListener listener) {
