@@ -31,6 +31,14 @@
         android:visibility="invisible" />
 
     <View
+        android:id="@+id/gesture_tutorial_fake_previous_task_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleX="0.98"
+        android:scaleY="0.98"
+        android:visibility="invisible" />
+
+    <View
         android:id="@+id/gesture_tutorial_fake_task_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
