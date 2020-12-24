@@ -52,6 +52,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     final View mLauncherView;
     final ClipIconView mFakeIconView;
     final View mFakeTaskView;
+    final View mFakePreviousTaskView;
     final View mRippleView;
     final RippleDrawable mRippleDrawable;
     @Nullable final TutorialHandAnimation mHandCoachingAnimation;
@@ -74,6 +75,8 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         mLauncherView = getMockLauncherView();
         mFakeIconView = rootView.findViewById(R.id.gesture_tutorial_fake_icon_view);
         mFakeTaskView = rootView.findViewById(R.id.gesture_tutorial_fake_task_view);
+        mFakePreviousTaskView =
+                rootView.findViewById(R.id.gesture_tutorial_fake_previous_task_view);
         mRippleView = rootView.findViewById(R.id.gesture_tutorial_ripple_view);
         mRippleDrawable = (RippleDrawable) mRippleView.getBackground();
         mHandCoachingAnimation = tutorialFragment.getHandAnimation();
@@ -93,6 +96,8 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         if (mContext != null) {
             rootView.setBackground(mContext.getDrawable(getMockWallpaperResId()));
             mFakeTaskView.setBackground(mContext.getDrawable(getMockAppTaskThumbnailResId()));
+            mFakePreviousTaskView.setBackground(
+                    mContext.getDrawable(getMockPreviousAppTaskThumbnailResId()));
             mFakeIconView.setBackground(mContext.getDrawable(getMockAppIconResId()));
         }
     }
@@ -124,6 +129,11 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     @DrawableRes
     protected int getMockAppTaskThumbnailResId() {
         return R.drawable.default_sandbox_app_task_thumbnail;
+    }
+
+    @DrawableRes
+    protected int getMockPreviousAppTaskThumbnailResId() {
+        return R.drawable.default_sandbox_app_previous_task_thumbnail;
     }
 
     @Nullable

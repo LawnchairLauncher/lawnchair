@@ -61,16 +61,21 @@ import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.
 
 @TargetApi(Build.VERSION_CODES.R)
 abstract class SwipeUpGestureTutorialController extends TutorialController {
-    private final ViewSwipeUpAnimation mViewSwipeUpAnimation;
+
+    private static final int FAKE_PREVIOUS_TASK_MARGIN = Utilities.dpToPx(12);
+
+    private final ViewSwipeUpAnimation mTaskViewSwipeUpAnimation;
     private float mFakeTaskViewRadius;
     private Rect mFakeTaskViewRect = new Rect();
     private RunningWindowAnim mRunningWindowAnim;
+    private boolean mShowTasks = false;
+    private boolean mShowPreviousTasks = false;
 
     SwipeUpGestureTutorialController(TutorialFragment tutorialFragment, TutorialType tutorialType) {
         super(tutorialFragment, tutorialType);
         RecentsAnimationDeviceState deviceState = new RecentsAnimationDeviceState(mContext);
         OverviewComponentObserver observer = new OverviewComponentObserver(mContext, deviceState);
-        mViewSwipeUpAnimation = new ViewSwipeUpAnimation(mContext, deviceState,
+        mTaskViewSwipeUpAnimation = new ViewSwipeUpAnimation(mContext, deviceState,
                 new GestureState(observer, -1));
         observer.onDestroy();
         deviceState.destroy();
@@ -83,16 +88,22 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
                 .getWindowInsets()
                 .getInsets(WindowInsets.Type.systemBars());
         dp.updateInsets(new Rect(insets.left, insets.top, insets.right, insets.bottom));
-        mViewSwipeUpAnimation.initDp(dp);
+        mTaskViewSwipeUpAnimation.initDp(dp);
 
         mFakeTaskViewRadius = QuickStepContract.getWindowCornerRadius(mContext.getResources());
-        mFakeTaskView.setClipToOutline(true);
-        mFakeTaskView.setOutlineProvider(new ViewOutlineProvider() {
+
+        ViewOutlineProvider outlineProvider = new ViewOutlineProvider() {
             @Override
             public void getOutline(View view, Outline outline) {
                 outline.setRoundRect(mFakeTaskViewRect, mFakeTaskViewRadius);
             }
-        });
+        };
+
+        mFakeTaskView.setClipToOutline(true);
+        mFakeTaskView.setOutlineProvider(outlineProvider);
+
+        mFakePreviousTaskView.setClipToOutline(true);
+        mFakePreviousTaskView.setOutlineProvider(outlineProvider);
     }
 
     private void cancelRunningAnimation() {
@@ -114,16 +125,22 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
                 mFakeIconView.setVisibility(View.INVISIBLE);
                 mFakeTaskView.setVisibility(View.INVISIBLE);
                 mFakeTaskView.setAlpha(1);
+                mFakePreviousTaskView.setVisibility(View.INVISIBLE);
+                mFakePreviousTaskView.setAlpha(1);
+                mShowTasks = false;
+                mShowPreviousTasks = false;
                 mRunningWindowAnim = null;
             }
         };
         if (toOverviewFirst) {
-            anim.setFloat(mViewSwipeUpAnimation.getCurrentShift(), AnimatedFloat.VALUE, 1, ACCEL);
+            anim.setFloat(mTaskViewSwipeUpAnimation
+                    .getCurrentShift(), AnimatedFloat.VALUE, 1, ACCEL);
             anim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation, boolean isReverse) {
                     PendingAnimation fadeAnim = new PendingAnimation(300);
                     fadeAnim.setViewAlpha(mFakeTaskView, 0, ACCEL);
+                    fadeAnim.setViewAlpha(mFakePreviousTaskView, 0, ACCEL);
                     fadeAnim.addListener(resetTaskView);
                     AnimatorSet animset = fadeAnim.buildAnim();
                     animset.setStartDelay(100);
@@ -133,6 +150,7 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
             });
         } else {
             anim.setViewAlpha(mFakeTaskView, 0, ACCEL);
+            anim.setViewAlpha(mFakePreviousTaskView, 0, ACCEL);
             anim.setViewAlpha(mFakeIconView, 0, ACCEL);
             anim.addListener(resetTaskView);
         }
@@ -148,8 +166,10 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
         hideFeedback();
         hideHandCoachingAnimation();
         cancelRunningAnimation();
+        mFakePreviousTaskView.setVisibility(View.INVISIBLE);
+        mShowPreviousTasks = false;
         RectFSpringAnim rectAnim =
-                mViewSwipeUpAnimation.handleSwipeUpToHome(finalVelocity);
+                mTaskViewSwipeUpAnimation.handleSwipeUpToHome(finalVelocity);
         // After home animation finishes, fade out and run onEndRunnable.
         rectAnim.addAnimatorListener(AnimationSuccessListener.forRunnable(
                 () -> fadeOutFakeTaskView(false, onEndRunnable)));
@@ -161,11 +181,31 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
         if (displacement == null || mTutorialType == HOME_NAVIGATION_COMPLETE
                 || mTutorialType == OVERVIEW_NAVIGATION_COMPLETE) {
             mFakeTaskView.setVisibility(View.INVISIBLE);
+            mFakePreviousTaskView.setVisibility(View.INVISIBLE);
         } else {
+            mShowTasks = true;
             mFakeTaskView.setVisibility(View.VISIBLE);
-            if (mRunningWindowAnim == null) {
-                mViewSwipeUpAnimation.updateDisplacement(displacement);
+            if (mShowPreviousTasks) {
+                mFakePreviousTaskView.setVisibility(View.VISIBLE);
             }
+            if (mRunningWindowAnim == null) {
+                mTaskViewSwipeUpAnimation.updateDisplacement(displacement);
+            }
+        }
+    }
+
+    @Override
+    public void onMotionPaused(boolean unused) {
+        if (mShowTasks) {
+            if (!mShowPreviousTasks) {
+                mFakePreviousTaskView.setTranslationX(
+                        -(2 * mFakePreviousTaskView.getWidth() + FAKE_PREVIOUS_TASK_MARGIN));
+                mFakePreviousTaskView.animate()
+                    .setDuration(300)
+                    .translationX(-(mFakePreviousTaskView.getWidth() + FAKE_PREVIOUS_TASK_MARGIN))
+                    .start();
+            }
+            mShowPreviousTasks = true;
         }
     }
 
@@ -232,6 +272,7 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
                             false /* isVerticalBarLayout */);
                     mFakeIconView.setAlpha(1);
                     mFakeTaskView.setAlpha(getWindowAlpha(progress));
+                    mFakePreviousTaskView.setAlpha(getWindowAlpha(progress));
                 }
 
                 @Override
@@ -258,9 +299,11 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
         public void applySurfaceParams(SurfaceParams[] params) {
             SurfaceParams p = params[0];
             mFakeTaskView.setAnimationMatrix(p.matrix);
+            mFakePreviousTaskView.setAnimationMatrix(p.matrix);
             mFakeTaskViewRect.set(p.windowCrop);
             mFakeTaskViewRadius = p.cornerRadius;
             mFakeTaskView.invalidateOutline();
+            mFakePreviousTaskView.invalidateOutline();
         }
     }
 }
