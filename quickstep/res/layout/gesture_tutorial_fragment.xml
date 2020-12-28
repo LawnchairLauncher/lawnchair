@@ -16,13 +16,16 @@
 <com.android.quickstep.interaction.RootSandboxLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:clipChildren="false">
 
-    <View
-        android:id="@+id/gesture_tutorial_ripple_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/gesture_tutorial_ripple"/>
+    <ImageView
+        android:id="@+id/gesture_tutorial_fake_launcher_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="70dp" />
 
     <com.android.launcher3.views.ClipIconView
         android:id="@+id/gesture_tutorial_fake_icon_view"
@@ -42,13 +45,22 @@
         android:id="@+id/gesture_tutorial_fake_task_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="invisible" />
+        android:visibility="visible" />
 
-    <ImageView
-        android:id="@+id/gesture_tutorial_fragment_hand_coaching"
+    <View
+        android:id="@+id/gesture_tutorial_ripple_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop"/>
+        android:background="@drawable/gesture_tutorial_ripple"/>
+
+    <VideoView
+        android:id="@+id/gesture_tutorial_feedback_video"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"/>
 
     <ImageButton
         android:id="@+id/gesture_tutorial_fragment_close_button"
@@ -63,7 +75,8 @@
         android:contentDescription="@string/gesture_tutorial_close_button_content_description"
         android:padding="18dp"
         android:src="@drawable/gesture_tutorial_close_button"
-        android:tint="?android:attr/textColorPrimary"/>
+        android:tint="?android:attr/textColorPrimary"
+        android:visibility="gone"/>
 
     <LinearLayout
         android:id="@+id/gesture_tutorial_fragment_titles_container"
@@ -93,16 +106,33 @@
             android:layout_marginEnd="@dimen/gesture_tutorial_subtitle_margin_start_end"/>
     </LinearLayout>
 
-    <TextView
+    <LinearLayout
         android:id="@+id/gesture_tutorial_fragment_feedback_view"
-        style="@style/TextAppearance.GestureTutorial.Feedback"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/gesture_tutorial_fragment_titles_container"
+        android:orientation="vertical"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="@dimen/gesture_tutorial_feedback_margin_start_end"
         android:layout_marginEnd="@dimen/gesture_tutorial_feedback_margin_start_end"
-        android:layout_marginTop="40dp"/>
+        android:layout_marginTop="24dp"
+        android:padding="24dp"
+        android:gravity="center_vertical"
+        android:background="@drawable/bg_sandbox_feedback">
+
+        <TextView
+            android:id="@+id/gesture_tutorial_fragment_feedback_title"
+            style="@style/TextAppearance.GestureTutorial.Feedback.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"/>
+
+        <TextView
+            android:id="@+id/gesture_tutorial_fragment_feedback_subtitle"
+            style="@style/TextAppearance.GestureTutorial.Feedback.Subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
 
     <!-- android:stateListAnimator="@null" removes shadow and normal on click behavior (increase
          of elevation and shadow) which is replaced by ripple effect in android:foreground -->
