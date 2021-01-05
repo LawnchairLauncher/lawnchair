@@ -3154,7 +3154,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         ItemOperator op = (info, v) -> {
             if (info instanceof WorkspaceItemInfo && v instanceof BubbleTextView
                     && updates.contains(info)) {
-                ((BubbleTextView) v).applyPromiseState(false /* promiseStateChanged */);
+                ((BubbleTextView) v).applyLoadingState(false /* promiseStateChanged */);
             } else if (v instanceof PendingAppWidgetHostView
                     && info instanceof LauncherAppWidgetInfo
                     && updates.contains(info)) {
