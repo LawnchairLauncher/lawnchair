@@ -65,7 +65,6 @@ import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
-import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.io.FileDescriptor;
@@ -332,7 +331,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
 
     @Override
     public AtomicAnimationFactory<RecentsState> createAtomicAnimationFactory() {
-        return new RecentsAtomicAnimationFactory<>(this, 0);
+        return new RecentsAtomicAnimationFactory<>(this);
     }
 
     private AnimatorListenerAdapter resetStateListener() {

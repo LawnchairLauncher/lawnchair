@@ -15,7 +15,6 @@
  */
 package com.android.quickstep.views;
 
-import static com.android.launcher3.LauncherState.ALL_APPS_HEADER_EXTRA;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
@@ -30,7 +29,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Path.Direction;
 import android.graphics.Path.Op;
-import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.animation.Interpolator;
 
@@ -45,7 +43,6 @@ import com.android.launcher3.views.ScrimView;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
-import com.android.quickstep.util.LayoutUtils;
 
 /**
  * Scrim used for all-apps and shelf in Overview
@@ -149,25 +146,11 @@ public class ShelfScrimView extends ScrimView<BaseQuickstepLauncher>
             mRemainingScreenPathValid = false;
             mShiftRange = mLauncher.getAllAppsController().getShiftRange();
 
-            Context context = getContext();
-            if ((OVERVIEW.getVisibleElements(mLauncher) & ALL_APPS_HEADER_EXTRA) == 0) {
-                if (SysUINavigationMode.removeShelfFromOverview(context)) {
-                    // Fade in all apps background quickly to distinguish from swiping from nav bar.
-                    mMidAlpha = Themes.getAttrInteger(context, R.attr.allAppsInterimScrimAlpha);
-                    mMidProgress = OverviewState.getDefaultVerticalProgress(mLauncher);
-                } else {
-                    mMidAlpha = 0;
-                    mMidProgress = 1;
-                }
-            } else {
-                mMidAlpha = Themes.getAttrInteger(context, R.attr.allAppsInterimScrimAlpha);
-                mMidProgress =  OVERVIEW.getVerticalProgress(mLauncher);
-                Rect hotseatPadding = dp.getHotseatLayoutPadding();
-                int hotseatSize = dp.hotseatBarSizePx + dp.getInsets().bottom
-                        + hotseatPadding.bottom + hotseatPadding.top;
-                float dragHandleTop =
-                        Math.min(hotseatSize, LayoutUtils.getDefaultSwipeHeight(context, dp));
-            }
+            // Fade in all apps background quickly to distinguish from swiping from nav bar.
+            mMidAlpha = Themes.getAttrInteger(getContext(), R.attr.allAppsInterimScrimAlpha);
+            mMidProgress = 1 - (OverviewState.getDefaultSwipeHeight(mLauncher)
+                    / mLauncher.getAllAppsController().getShiftRange());
+
             mTopOffset = dp.getInsets().top;
             mShelfTopAtThreshold = mShiftRange * SCRIM_CATCHUP_THRESHOLD + mTopOffset;
         }

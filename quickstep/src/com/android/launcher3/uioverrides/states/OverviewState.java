@@ -18,8 +18,6 @@ package com.android.launcher3.uioverrides.states;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_OVERVIEW;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
-import static com.android.quickstep.SysUINavigationMode.hideShelfInTwoButtonLandscape;
-import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 
 import android.content.Context;
 import android.graphics.Rect;
@@ -105,7 +103,7 @@ public class OverviewState extends LauncherState {
 
     @Override
     public ScaleAndTranslation getQsbScaleAndTranslation(Launcher launcher) {
-        if (this == OVERVIEW && removeShelfFromOverview(launcher)) {
+        if (this == OVERVIEW) {
             // Treat the QSB as part of the hotseat so they move together.
             return getHotseatScaleAndTranslation(launcher);
         }
@@ -124,37 +122,12 @@ public class OverviewState extends LauncherState {
 
     @Override
     public int getVisibleElements(Launcher launcher) {
-        RecentsView recentsView = launcher.getOverviewPanel();
-        if (removeShelfFromOverview(launcher) ||
-                hideShelfInTwoButtonLandscape(launcher, recentsView.getPagedOrientationHandler())) {
-            return OVERVIEW_BUTTONS;
-        } else if (launcher.getDeviceProfile().isVerticalBarLayout()) {
-            return VERTICAL_SWIPE_INDICATOR | OVERVIEW_BUTTONS;
-        } else {
-            boolean hasAllAppsHeaderExtra = launcher.getAppsView() != null
-                    && launcher.getAppsView().getFloatingHeaderView().hasVisibleContent();
-            return HOTSEAT_SEARCH_BOX | VERTICAL_SWIPE_INDICATOR | OVERVIEW_BUTTONS
-                    | (hasAllAppsHeaderExtra ? ALL_APPS_HEADER_EXTRA : HOTSEAT_ICONS);
-        }
+        return OVERVIEW_BUTTONS;
     }
 
     @Override
     public float getOverviewScrimAlpha(Launcher launcher) {
         return 0.5f;
-    }
-
-    @Override
-    public float getVerticalProgress(Launcher launcher) {
-        if ((getVisibleElements(launcher) & ALL_APPS_HEADER_EXTRA) == 0) {
-            // We have no all apps content, so we're still at the fully down progress.
-            return super.getVerticalProgress(launcher);
-        }
-        return getDefaultVerticalProgress(launcher);
-    }
-
-    public static float getDefaultVerticalProgress(Launcher launcher) {
-        return 1 - (getDefaultSwipeHeight(launcher)
-                / launcher.getAllAppsController().getShiftRange());
     }
 
     @Override
