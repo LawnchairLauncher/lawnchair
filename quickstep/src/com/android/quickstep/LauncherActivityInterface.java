@@ -18,10 +18,7 @@ package com.android.quickstep;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.uioverrides.states.QuickstepAtomicAnimationFactory.INDEX_SHELF_ANIM;
 import static com.android.quickstep.SysUINavigationMode.getMode;
-import static com.android.quickstep.SysUINavigationMode.hideShelfInTwoButtonLandscape;
-import static com.android.quickstep.util.LayoutUtils.getDefaultSwipeHeight;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -37,7 +34,6 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherInitListener;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
-import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statehandlers.DepthController.ClampedDepthProperty;
@@ -72,22 +68,9 @@ public final class LauncherActivityInterface extends
             PagedOrientationHandler orientationHandler) {
         calculateTaskSize(context, dp, outRect, orientationHandler);
         if (dp.isVerticalBarLayout() && SysUINavigationMode.getMode(context) != Mode.NO_BUTTON) {
-            Rect targetInsets = dp.getInsets();
-            int hotseatInset = dp.isSeascape() ? targetInsets.left : targetInsets.right;
-            return dp.hotseatBarSizePx + hotseatInset;
+            return dp.isSeascape() ? outRect.left : (dp.widthPx - outRect.right);
         } else {
             return LayoutUtils.getShelfTrackingDistance(context, dp, orientationHandler);
-        }
-    }
-
-    @Override
-    public void onSwipeUpToRecentsComplete() {
-        super.onSwipeUpToRecentsComplete();
-        Launcher launcher = getCreatedActivity();
-        if (launcher != null) {
-            RecentsView recentsView = launcher.getOverviewPanel();
-            DiscoveryBounce.showForOverviewIfNeeded(launcher,
-                    recentsView.getPagedOrientationHandler());
         }
     }
 
@@ -122,16 +105,6 @@ public final class LauncherActivityInterface extends
             protected void createBackgroundToOverviewAnim(BaseQuickstepLauncher activity,
                     PendingAnimation pa) {
                 super.createBackgroundToOverviewAnim(activity, pa);
-
-                if (!activity.getDeviceProfile().isVerticalBarLayout()
-                        && SysUINavigationMode.getMode(activity) != Mode.NO_BUTTON) {
-                    // Don't animate the shelf when the mode is NO_BUTTON, because we
-                    // update it atomically.
-                    pa.add(activity.getStateManager().createStateElementAnimation(
-                            INDEX_SHELF_ANIM,
-                            BACKGROUND_APP.getVerticalProgress(activity),
-                            OVERVIEW.getVerticalProgress(activity)));
-                }
 
                 // Animate the blur and wallpaper zoom
                 float fromDepthRatio = BACKGROUND_APP.getDepth(activity);
@@ -280,35 +253,21 @@ public final class LauncherActivityInterface extends
     @Override
     protected float getExtraSpace(Context context, DeviceProfile dp,
             PagedOrientationHandler orientationHandler) {
-        if ((dp.isVerticalBarLayout() && !showOverviewActions(context))
-                || hideShelfInTwoButtonLandscape(context, orientationHandler)) {
-            return 0;
-        } else {
-            Resources res = context.getResources();
-            if (showOverviewActions(context)) {
-                //TODO: this needs to account for the swipe gesture height and accessibility
-                // UI when shown.
-                float actionsBottomMargin = 0;
-                if (!dp.isVerticalBarLayout()) {
-                    if (getMode(context) == Mode.THREE_BUTTONS) {
-                        actionsBottomMargin = res.getDimensionPixelSize(
-                            R.dimen.overview_actions_bottom_margin_three_button);
-                    } else {
-                        actionsBottomMargin = res.getDimensionPixelSize(
-                            R.dimen.overview_actions_bottom_margin_gesture);
-                    }
-                }
-                float actionsHeight = actionsBottomMargin
-                        + res.getDimensionPixelSize(R.dimen.overview_actions_height);
-                return actionsHeight;
+        Resources res = context.getResources();
+        //TODO: this needs to account for the swipe gesture height and accessibility
+        // UI when shown.
+        float actionsBottomMargin = 0;
+        if (!dp.isVerticalBarLayout()) {
+            if (getMode(context) == Mode.THREE_BUTTONS) {
+                actionsBottomMargin = res.getDimensionPixelSize(
+                    R.dimen.overview_actions_bottom_margin_three_button);
             } else {
-                return getDefaultSwipeHeight(context, dp) + dp.workspacePageIndicatorHeight
-                        + res.getDimensionPixelSize(
-                        R.dimen.dynamic_grid_hotseat_extra_vertical_size)
-                        + res.getDimensionPixelSize(
-                        R.dimen.dynamic_grid_hotseat_bottom_padding);
+                actionsBottomMargin = res.getDimensionPixelSize(
+                    R.dimen.overview_actions_bottom_margin_gesture);
             }
         }
+        float actionsHeight = actionsBottomMargin
+                + res.getDimensionPixelSize(R.dimen.overview_actions_height);
+        return actionsHeight;
     }
-
 }

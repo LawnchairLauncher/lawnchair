@@ -17,7 +17,6 @@ package com.android.launcher3.uioverrides.states;
 
 import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_ALLAPPS;
-import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 
 import android.content.Context;
 
@@ -84,8 +83,7 @@ public class AllAppsState extends LauncherState {
 
     @Override
     public float[] getOverviewScaleAndOffset(Launcher launcher) {
-        float offset = removeShelfFromOverview(launcher) ? 1 : 0;
-        return new float[] {0.9f, offset};
+        return new float[] {0.9f, 1};
     }
 
     @Override

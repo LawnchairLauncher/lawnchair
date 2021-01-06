@@ -32,16 +32,11 @@ public class RecentsAtomicAnimationFactory<ACTIVITY_TYPE extends StatefulActivit
     public static final int INDEX_RECENTS_TRANSLATE_X_ANIM = AtomicAnimationFactory.NEXT_INDEX + 1;
 
     private static final int MY_ANIM_COUNT = 2;
-    protected static final int NEXT_INDEX = AtomicAnimationFactory.NEXT_INDEX + MY_ANIM_COUNT;
 
     protected final ACTIVITY_TYPE mActivity;
 
-    /**
-     * @param extraAnims number of animations supported by the subclass. This should not include
-     *                  the 2 animations supported by this class.
-     */
-    public RecentsAtomicAnimationFactory(ACTIVITY_TYPE activity, int extraAnims) {
-        super(MY_ANIM_COUNT + extraAnims);
+    public RecentsAtomicAnimationFactory(ACTIVITY_TYPE activity) {
+        super(MY_ANIM_COUNT);
         mActivity = activity;
     }
 

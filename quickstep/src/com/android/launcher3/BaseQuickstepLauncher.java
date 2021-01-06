@@ -20,7 +20,6 @@ import static com.android.launcher3.AbstractFloatingView.TYPE_HIDE_BACK_BUTTON;
 import static com.android.launcher3.LauncherState.FLAG_HIDE_BACK_BUTTON;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
-import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY;
 
 import android.animation.AnimatorSet;
@@ -93,7 +92,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
     @Override
     public void onNavigationModeChanged(Mode newMode) {
         getDragLayer().recreateControllers();
-        if (mActionsView != null && isOverviewActionsEnabled()) {
+        if (mActionsView != null) {
             mActionsView.updateVerticalMargin(newMode);
         }
     }
@@ -190,17 +189,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
         SysUINavigationMode.INSTANCE.get(this).updateMode();
         mActionsView = findViewById(R.id.overview_actions_view);
         ((RecentsView) getOverviewPanel()).init(mActionsView);
-
-        if (isOverviewActionsEnabled()) {
-            // Overview is above all other launcher elements, including qsb, so move it to the top.
-            getOverviewPanel().bringToFront();
-            mActionsView.bringToFront();
-            mActionsView.updateVerticalMargin(SysUINavigationMode.getMode(this));
-        }
-    }
-
-    private boolean isOverviewActionsEnabled() {
-        return removeShelfFromOverview(this);
+        mActionsView.updateVerticalMargin(SysUINavigationMode.getMode(this));
     }
 
     public <T extends OverviewActionsView> T getActionsView() {
@@ -251,7 +240,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
 
     @Override
     public float[] getNormalOverviewScaleAndOffset() {
-        return SysUINavigationMode.getMode(this) == Mode.NO_BUTTON
+        return SysUINavigationMode.getMode(this).hasGestures
                 ? new float[] {1, 1} : new float[] {1.1f, 0};
     }
 

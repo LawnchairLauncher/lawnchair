@@ -17,7 +17,6 @@
 package com.android.quickstep.views;
 
 import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_SHARE;
-import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 
 import android.content.Context;
 import android.content.res.Configuration;
@@ -51,17 +50,15 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     private final Rect mInsets = new Rect();
 
     @IntDef(flag = true, value = {
-            HIDDEN_UNSUPPORTED_NAVIGATION,
             HIDDEN_NON_ZERO_ROTATION,
             HIDDEN_NO_TASKS,
             HIDDEN_NO_RECENTS})
     @Retention(RetentionPolicy.SOURCE)
     public @interface ActionsHiddenFlags { }
 
-    public static final int HIDDEN_UNSUPPORTED_NAVIGATION = 1 << 0;
-    public static final int HIDDEN_NON_ZERO_ROTATION = 1 << 1;
-    public static final int HIDDEN_NO_TASKS = 1 << 2;
-    public static final int HIDDEN_NO_RECENTS = 1 << 3;
+    public static final int HIDDEN_NON_ZERO_ROTATION = 1 << 0;
+    public static final int HIDDEN_NO_TASKS = 1 << 1;
+    public static final int HIDDEN_NO_RECENTS = 1 << 2;
 
     @IntDef(flag = true, value = {
             DISABLED_SCROLLING,
@@ -135,12 +132,6 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         } else if (id == R.id.action_screenshot) {
             mCallbacks.onScreenshot();
         }
-    }
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        updateHiddenFlags(HIDDEN_UNSUPPORTED_NAVIGATION, !removeShelfFromOverview(getContext()));
     }
 
     @Override
