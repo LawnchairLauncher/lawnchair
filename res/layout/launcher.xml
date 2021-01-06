@@ -49,11 +49,6 @@
             android:id="@+id/hotseat"
             layout="@layout/hotseat" />
 
-        <include
-            android:id="@+id/overview_panel"
-            layout="@layout/overview_panel" />
-
-
         <!-- Keep these behind the workspace so that they are not visible when
          we go into AllApps -->
         <com.android.launcher3.pageindicators.WorkspacePageIndicator
@@ -76,6 +71,10 @@
             layout="@layout/all_apps"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
+        <include
+            android:id="@+id/overview_panel"
+            layout="@layout/overview_panel" />
 
     </com.android.launcher3.dragndrop.DragLayer>
 

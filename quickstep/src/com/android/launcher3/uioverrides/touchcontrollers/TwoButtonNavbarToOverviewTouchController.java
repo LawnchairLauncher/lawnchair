@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) 2020 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.android.launcher3.uioverrides.touchcontrollers;
 
 import static com.android.launcher3.LauncherState.NORMAL;
@@ -15,14 +30,15 @@ import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.quickstep.SystemUiProxy;
 
 /**
- * Touch controller for handling edge swipes in landscape/seascape UI
+ * Touch controller for handling edge swipes in 2-button mode
  */
-public class LandscapeEdgeSwipeController extends AbstractStateChangeTouchController {
+public class TwoButtonNavbarToOverviewTouchController extends AbstractStateChangeTouchController {
 
-    private static final String TAG = "LandscapeEdgeSwipeCtrl";
+    private static final String TAG = "2BtnNavbarTouchCtrl";
 
-    public LandscapeEdgeSwipeController(Launcher l) {
-        super(l, SingleAxisSwipeDetector.HORIZONTAL);
+    public TwoButtonNavbarToOverviewTouchController(Launcher l) {
+        super(l, l.getDeviceProfile().isVerticalBarLayout()
+                ? SingleAxisSwipeDetector.HORIZONTAL : SingleAxisSwipeDetector.VERTICAL);
     }
 
     @Override
@@ -39,13 +55,19 @@ public class LandscapeEdgeSwipeController extends AbstractStateChangeTouchContro
 
     @Override
     protected LauncherState getTargetState(LauncherState fromState, boolean isDragTowardPositive) {
-        boolean draggingFromNav = mLauncher.getDeviceProfile().isSeascape() == isDragTowardPositive;
-        return draggingFromNav ? OVERVIEW : NORMAL;
+        if (mLauncher.getDeviceProfile().isVerticalBarLayout()) {
+            boolean draggingFromNav =
+                    mLauncher.getDeviceProfile().isSeascape() == isDragTowardPositive;
+            return draggingFromNav ? OVERVIEW : NORMAL;
+        } else {
+            return isDragTowardPositive ? OVERVIEW : NORMAL;
+        }
     }
 
     @Override
     protected float getShiftRange() {
-        return mLauncher.getDragLayer().getWidth();
+        return mLauncher.getDeviceProfile().isVerticalBarLayout()
+                ? mLauncher.getDragLayer().getWidth() : super.getShiftRange();
     }
 
     @Override

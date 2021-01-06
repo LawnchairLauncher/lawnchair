@@ -20,8 +20,6 @@ import static com.android.launcher3.anim.Interpolators.INSTANT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.AbsSwipeUpHandler.RECENTS_ATTACH_DURATION;
 import static com.android.quickstep.SysUINavigationMode.getMode;
-import static com.android.quickstep.SysUINavigationMode.hideShelfInTwoButtonLandscape;
-import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 import static com.android.quickstep.util.RecentsAtomicAnimationFactory.INDEX_RECENTS_FADE_ANIM;
 import static com.android.quickstep.util.RecentsAtomicAnimationFactory.INDEX_RECENTS_TRANSLATE_X_ANIM;
 import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_OFFSET;
@@ -186,33 +184,26 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
      */
     public final void calculateTaskSize(Context context, DeviceProfile dp, Rect outRect,
             PagedOrientationHandler orientedState) {
-        calculateTaskSize(context, dp, getExtraSpace(context, dp, orientedState),
-                outRect, orientedState);
+        calculateTaskSize(context, dp, getExtraSpace(context, dp, orientedState), outRect);
     }
 
     protected abstract float getExtraSpace(Context context, DeviceProfile dp,
             PagedOrientationHandler orientedState);
 
-    private void calculateTaskSize(
-            Context context, DeviceProfile dp, float extraVerticalSpace, Rect outRect,
-            PagedOrientationHandler orientationHandler) {
+    private void calculateTaskSize(Context context, DeviceProfile dp, float extraVerticalSpace,
+            Rect outRect) {
         Resources res = context.getResources();
-        final boolean showLargeTaskSize = showOverviewActions(context) ||
-                hideShelfInTwoButtonLandscape(context, orientationHandler);
 
         final int paddingResId;
         if (dp.isMultiWindowMode) {
             paddingResId = R.dimen.multi_window_task_card_horz_space;
         } else if (dp.isVerticalBarLayout()) {
             paddingResId = R.dimen.landscape_task_card_horz_space;
-        } else if (showLargeTaskSize) {
-            paddingResId = R.dimen.portrait_task_card_horz_space_big_overview;
         } else {
-            paddingResId = R.dimen.portrait_task_card_horz_space;
+            paddingResId = R.dimen.portrait_task_card_horz_space_big_overview;
         }
         float paddingHorz = res.getDimension(paddingResId);
-        float paddingVert = showLargeTaskSize
-                ? 0 : res.getDimension(R.dimen.task_card_vert_space);
+        float paddingVert = 0;
 
         calculateTaskSizeInternal(context, dp, extraVerticalSpace, paddingHorz, paddingVert,
                 res.getDimension(R.dimen.task_thumbnail_top_margin), outRect);
@@ -404,9 +395,5 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
                     recentsView.getMaxScaleForFullScreen(), 1, LINEAR);
             pa.addFloat(recentsView, FULLSCREEN_PROGRESS, 1, 0, LINEAR);
         }
-    }
-
-    protected static boolean showOverviewActions(Context context) {
-        return removeShelfFromOverview(context);
     }
 }

@@ -21,7 +21,6 @@ import static com.android.launcher3.util.DisplayController.DisplayHolder.CHANGE_
 import static com.android.launcher3.util.DisplayController.DisplayHolder.CHANGE_FRAME_DELAY;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 import static com.android.quickstep.SysUINavigationMode.Mode.THREE_BUTTONS;
-import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_CLICKABLE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_LONG_CLICKABLE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_BUBBLES_EXPANDED;
@@ -296,7 +295,7 @@ public class RecentsAnimationDeviceState implements
      * @return whether the current nav mode has some gestures (either 2 or 0 button mode).
      */
     public boolean isGesturalNavMode() {
-        return mMode == TWO_BUTTONS || mMode == NO_BUTTON;
+        return mMode.hasGestures;
     }
 
     /**

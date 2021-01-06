@@ -17,9 +17,7 @@ package com.android.launcher3.uioverrides.states;
 
 import static android.view.View.VISIBLE;
 
-import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.HINT_STATE;
-import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.WorkspaceStateTransitionAnimation.getSpringScaleAnimator;
@@ -30,9 +28,7 @@ import static com.android.launcher3.anim.Interpolators.DEACCEL_1_7;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
 import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
 import static com.android.launcher3.anim.Interpolators.INSTANT;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
-import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_7;
 import static com.android.launcher3.anim.Interpolators.clampToProgress;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_DEPTH;
@@ -44,23 +40,17 @@ import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_F
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_SCALE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_TRANSLATE;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
-import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
 
-import android.animation.Animator;
-import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.view.View;
-import android.view.animation.Interpolator;
 
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherState.ScaleAndTranslation;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.allapps.AllAppsContainerView;
-import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.quickstep.SysUINavigationMode;
@@ -76,57 +66,12 @@ public class QuickstepAtomicAnimationFactory extends
     // Scale recents takes before animating in
     private static final float RECENTS_PREPARE_SCALE = 1.33f;
 
-    public static final int INDEX_SHELF_ANIM = RecentsAtomicAnimationFactory.NEXT_INDEX + 0;
-
-    private static final int MY_ANIM_COUNT = 1;
-    protected static final int NEXT_INDEX = RecentsAtomicAnimationFactory.NEXT_INDEX
-            + MY_ANIM_COUNT;
-
     // Due to use of physics, duration may differ between devices so we need to calculate and
     // cache the value.
     private int mHintToNormalDuration = -1;
 
     public QuickstepAtomicAnimationFactory(QuickstepLauncher activity) {
-        super(activity, MY_ANIM_COUNT);
-    }
-
-    @Override
-    public Animator createStateElementAnimation(int index, float... values) {
-        switch (index) {
-            case INDEX_SHELF_ANIM: {
-                AllAppsTransitionController aatc = mActivity.getAllAppsController();
-                Animator springAnim = aatc.createSpringAnimation(values);
-
-                if ((OVERVIEW.getVisibleElements(mActivity) & HOTSEAT_ICONS) != 0) {
-                    // Translate hotseat with the shelf until reaching overview.
-                    float overviewProgress = OVERVIEW.getVerticalProgress(mActivity);
-                    ScaleAndTranslation sat = OVERVIEW.getHotseatScaleAndTranslation(mActivity);
-                    float shiftRange = aatc.getShiftRange();
-                    if (values.length == 1) {
-                        values = new float[] {aatc.getProgress(), values[0]};
-                    }
-                    ValueAnimator hotseatAnim = ValueAnimator.ofFloat(values);
-                    hotseatAnim.addUpdateListener(anim -> {
-                        float progress = (Float) anim.getAnimatedValue();
-                        if (progress >= overviewProgress || mActivity.isInState(BACKGROUND_APP)) {
-                            float hotseatShift = (progress - overviewProgress) * shiftRange;
-                            mActivity.getHotseat().setTranslationY(hotseatShift + sat.translationY);
-                        }
-                    });
-                    hotseatAnim.setInterpolator(LINEAR);
-                    hotseatAnim.setDuration(springAnim.getDuration());
-
-                    AnimatorSet anim = new AnimatorSet();
-                    anim.play(hotseatAnim);
-                    anim.play(springAnim);
-                    return anim;
-                }
-
-                return springAnim;
-            }
-            default:
-                return super.createStateElementAnimation(index, values);
-        }
+        super(activity);
     }
 
     @Override
@@ -191,11 +136,8 @@ public class QuickstepAtomicAnimationFactory extends
             config.setInterpolator(ANIM_ALL_APPS_FADE, OVERSHOOT_1_2);
             config.setInterpolator(ANIM_OVERVIEW_SCALE, OVERSHOOT_1_2);
             config.setInterpolator(ANIM_DEPTH, OVERSHOOT_1_2);
-            Interpolator translationInterpolator = removeShelfFromOverview(mActivity)
-                    ? OVERSHOOT_1_2
-                    : OVERSHOOT_1_7;
-            config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, translationInterpolator);
-            config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_Y, translationInterpolator);
+            config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, OVERSHOOT_1_2);
+            config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_Y, OVERSHOOT_1_2);
         } else if (fromState == HINT_STATE && toState == NORMAL) {
             config.setInterpolator(ANIM_DEPTH, DEACCEL_3);
             if (mHintToNormalDuration == -1) {
