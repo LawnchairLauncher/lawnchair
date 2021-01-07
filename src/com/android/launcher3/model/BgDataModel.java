@@ -39,6 +39,7 @@ import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
+import com.android.launcher3.model.data.PromiseAppInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutKey;
@@ -458,11 +459,7 @@ public class BgDataModel {
         void preAddApps();
         void bindAppsAdded(IntArray newScreens,
                 ArrayList<ItemInfo> addNotAnimated, ArrayList<ItemInfo> addAnimated);
-
-        /**
-         * Binds updated incremental download progress
-         */
-        void bindIncrementalDownloadProgressUpdated(AppInfo app);
+        void bindPromiseAppProgressUpdated(PromiseAppInfo app);
         void bindWorkspaceItemsChanged(List<WorkspaceItemInfo> updated);
         void bindWidgetsRestored(ArrayList<LauncherAppWidgetInfo> widgets);
         void bindRestoreItemsChange(HashSet<ItemInfo> updates);
