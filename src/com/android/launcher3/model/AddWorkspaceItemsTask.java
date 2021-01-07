@@ -34,7 +34,6 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.InstallSessionHelper;
-import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.PackageManagerHelper;
@@ -133,9 +132,7 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                             continue;
                         }
                     } else {
-                        workspaceInfo.setProgressLevel(
-                                (int) (sessionInfo.getProgress() * 100),
-                                PackageInstallInfo.STATUS_INSTALLING);
+                        workspaceInfo.setInstallProgress((int) sessionInfo.getProgress());
                     }
 
                     if (hasActivity) {
