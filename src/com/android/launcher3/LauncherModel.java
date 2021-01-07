@@ -48,6 +48,7 @@ import com.android.launcher3.model.LoaderResults;
 import com.android.launcher3.model.LoaderTask;
 import com.android.launcher3.model.ModelDelegate;
 import com.android.launcher3.model.ModelWriter;
+import com.android.launcher3.model.PackageIncrementalDownloadUpdatedTask;
 import com.android.launcher3.model.PackageInstallStateChangedTask;
 import com.android.launcher3.model.PackageUpdatedTask;
 import com.android.launcher3.model.ShortcutsChangedTask;
@@ -193,6 +194,15 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     public void onPackagesUnsuspended(String[] packageNames, UserHandle user) {
         enqueueModelUpdateTask(new PackageUpdatedTask(
                 PackageUpdatedTask.OP_UNSUSPEND, user, packageNames));
+    }
+
+    @Override
+    public void onPackageLoadingProgressChanged(
+                String packageName, UserHandle user, float progress) {
+        if (Utilities.ATLEAST_S) {
+            enqueueModelUpdateTask(new PackageIncrementalDownloadUpdatedTask(
+                    packageName, user, progress));
+        }
     }
 
     @Override

@@ -21,11 +21,11 @@ import static com.android.launcher3.model.data.AppInfo.EMPTY_ARRAY;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
 import android.os.LocaleList;
-import android.os.Process;
 import android.os.UserHandle;
 import android.util.Log;
 
@@ -37,7 +37,6 @@ import com.android.launcher3.compat.AlphabeticIndexCompat;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.data.AppInfo;
-import com.android.launcher3.model.data.PromiseAppInfo;
 import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -150,7 +149,7 @@ public class AllAppsList {
                 .getApplicationInfo(installInfo.packageName, installInfo.user, 0);
         // only if not yet installed
         if (applicationInfo == null) {
-            PromiseAppInfo info = new PromiseAppInfo(installInfo);
+            AppInfo info = new AppInfo(installInfo);
             mIconCache.getTitleAndIcon(info, info.usingLowResIcon());
             info.sectionName = mIndex.computeSectionName(info.title);
 
@@ -159,24 +158,26 @@ public class AllAppsList {
         }
     }
 
-    public PromiseAppInfo updatePromiseInstallInfo(PackageInstallInfo installInfo) {
-        UserHandle user = Process.myUserHandle();
-        for (int i=0; i < data.size(); i++) {
+    /** Updates the given PackageInstallInfo's associated AppInfo's installation info. */
+    public List<AppInfo> updatePromiseInstallInfo(PackageInstallInfo installInfo) {
+        List<AppInfo> updatedAppInfos = new ArrayList<>();
+        UserHandle user = installInfo.user;
+        for (int i = data.size() - 1; i >= 0; i--) {
             final AppInfo appInfo = data.get(i);
             final ComponentName tgtComp = appInfo.getTargetComponent();
             if (tgtComp != null && tgtComp.getPackageName().equals(installInfo.packageName)
-                    && appInfo.user.equals(user)
-                    && appInfo instanceof PromiseAppInfo) {
-                final PromiseAppInfo promiseAppInfo = (PromiseAppInfo) appInfo;
-                if (installInfo.state == PackageInstallInfo.STATUS_INSTALLING) {
-                    promiseAppInfo.level = installInfo.progress;
-                    return promiseAppInfo;
+                    && appInfo.user.equals(user)) {
+                if (installInfo.state == PackageInstallInfo.STATUS_INSTALLED_DOWNLOADING
+                            || installInfo.state == PackageInstallInfo.STATUS_INSTALLING) {
+                    appInfo.setProgressLevel(installInfo);
+
+                    updatedAppInfos.add(appInfo);
                 } else if (installInfo.state == PackageInstallInfo.STATUS_FAILED) {
                     removeApp(i);
                 }
             }
         }
-        return null;
+        return updatedAppInfos;
     }
 
     private void removeApp(int index) {
@@ -268,8 +269,14 @@ public class AllAppsList {
                 if (applicationInfo == null) {
                     add(new AppInfo(context, info, user), info);
                 } else {
+                    Intent launchIntent = AppInfo.makeLaunchIntent(info);
+
                     mIconCache.getTitleAndIcon(applicationInfo, info, true /* useLowResIcon */);
                     applicationInfo.sectionName = mIndex.computeSectionName(applicationInfo.title);
+                    applicationInfo.setProgressLevel(
+                            PackageManagerHelper.getLoadingProgress(info),
+                            PackageInstallInfo.STATUS_INSTALLED_DOWNLOADING);
+                    applicationInfo.intent = launchIntent;
 
                     mDataChanged = true;
                 }

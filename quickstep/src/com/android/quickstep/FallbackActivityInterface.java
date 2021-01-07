@@ -58,9 +58,7 @@ public final class FallbackActivityInterface extends
         calculateTaskSize(context, dp, outRect, orientationHandler);
         if (dp.isVerticalBarLayout()
                 && SysUINavigationMode.INSTANCE.get(context).getMode() != NO_BUTTON) {
-            Rect targetInsets = dp.getInsets();
-            int hotseatInset = dp.isSeascape() ? targetInsets.left : targetInsets.right;
-            return dp.hotseatBarSizePx + hotseatInset;
+            return dp.isSeascape() ? outRect.left : (dp.widthPx - outRect.right);
         } else {
             return dp.heightPx - outRect.bottom;
         }
@@ -161,8 +159,6 @@ public final class FallbackActivityInterface extends
     @Override
     protected float getExtraSpace(Context context, DeviceProfile dp,
             PagedOrientationHandler orientationHandler) {
-        return showOverviewActions(context)
-                ? context.getResources().getDimensionPixelSize(R.dimen.overview_actions_height)
-                : 0;
+        return context.getResources().getDimensionPixelSize(R.dimen.overview_actions_height);
     }
 }

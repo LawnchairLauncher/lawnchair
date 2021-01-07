@@ -35,11 +35,13 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.LongSparseArray;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.config.FeatureFlags;
@@ -92,6 +94,9 @@ public class LoaderCursor extends CursorWrapper {
     private final int restoredIndex;
     private final int intentIndex;
 
+    @Nullable
+    private LauncherActivityInfo mActivityInfo;
+
     // Properties loaded per iteration
     public long serialNumber;
     public UserHandle user;
@@ -132,6 +137,8 @@ public class LoaderCursor extends CursorWrapper {
     public boolean moveToNext() {
         boolean result = super.moveToNext();
         if (result) {
+            mActivityInfo = null;
+
             // Load common properties.
             itemType = getInt(itemTypeIndex);
             container = getInt(containerIndex);
@@ -245,6 +252,10 @@ public class LoaderCursor extends CursorWrapper {
         return info;
     }
 
+    public LauncherActivityInfo getLauncherActivityInfo() {
+        return mActivityInfo;
+    }
+
     /**
      * Make an WorkspaceItemInfo object for a shortcut that is an application.
      */
@@ -264,25 +275,25 @@ public class LoaderCursor extends CursorWrapper {
         Intent newIntent = new Intent(Intent.ACTION_MAIN, null);
         newIntent.addCategory(Intent.CATEGORY_LAUNCHER);
         newIntent.setComponent(componentName);
-        LauncherActivityInfo lai = mContext.getSystemService(LauncherApps.class)
+        mActivityInfo = mContext.getSystemService(LauncherApps.class)
                 .resolveActivity(newIntent, user);
-        if ((lai == null) && !allowMissingTarget) {
+        if ((mActivityInfo == null) && !allowMissingTarget) {
             Log.d(TAG, "Missing activity found in getShortcutInfo: " + componentName);
             return null;
         }
 
         final WorkspaceItemInfo info = new WorkspaceItemInfo();
-        info.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
+        info.itemType = Favorites.ITEM_TYPE_APPLICATION;
         info.user = user;
         info.intent = newIntent;
 
-        mIconCache.getTitleAndIcon(info, lai, useLowResIcon);
+        mIconCache.getTitleAndIcon(info, mActivityInfo, useLowResIcon);
         if (mIconCache.isDefaultIcon(info.bitmap, user)) {
             loadIcon(info);
         }
 
-        if (lai != null) {
-            AppInfo.updateRuntimeFlagsForActivityTarget(info, lai);
+        if (mActivityInfo != null) {
+            AppInfo.updateRuntimeFlagsForActivityTarget(info, mActivityInfo);
         }
 
         // from the db

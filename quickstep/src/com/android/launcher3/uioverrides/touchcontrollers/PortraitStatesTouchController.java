@@ -28,8 +28,6 @@ import static com.android.launcher3.config.FeatureFlags.UNSTABLE_SPRINGS;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_VERTICAL_PROGRESS;
-import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
-import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
@@ -49,7 +47,6 @@ import com.android.launcher3.touch.AbstractStateChangeTouchController;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.launcher3.uioverrides.states.OverviewState;
 import com.android.quickstep.SystemUiProxy;
-import com.android.quickstep.TouchInteractionService;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
 
@@ -74,21 +71,18 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
 
     private final InterpolatorWrapper mAllAppsInterpolatorWrapper = new InterpolatorWrapper();
 
-    private final boolean mAllowDragToOverview;
-
     // If true, we will finish the current animation instantly on second touch.
     private boolean mFinishFastOnSecondTouch;
 
-    public PortraitStatesTouchController(Launcher l, boolean allowDragToOverview) {
+    public PortraitStatesTouchController(Launcher l) {
         super(l, SingleAxisSwipeDetector.VERTICAL);
         mOverviewPortraitStateTouchHelper = new PortraitOverviewStateTouchHelper(l);
-        mAllowDragToOverview = allowDragToOverview;
     }
 
     @Override
     protected boolean canInterceptTouch(MotionEvent ev) {
         // If we are swiping to all apps instead of overview, allow it from anywhere.
-        boolean interceptAnywhere = mLauncher.isInState(NORMAL) && !mAllowDragToOverview;
+        boolean interceptAnywhere = mLauncher.isInState(NORMAL);
         if (mCurrentAnimation != null) {
             if (mFinishFastOnSecondTouch) {
                 mCurrentAnimation.getAnimationPlayer().end();
@@ -135,37 +129,23 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
             Log.d(TestProtocol.OVERIEW_NOT_ALLAPPS, "PortraitStatesTouchController.getTargetState");
         }
         if (fromState == ALL_APPS && !isDragTowardPositive) {
-            // Should swipe down go to OVERVIEW instead?
             if (TestProtocol.sDebugTracing) {
                 Log.d(TestProtocol.OVERIEW_NOT_ALLAPPS,
                         "PortraitStatesTouchController.getTargetState 1");
             }
-            if (removeShelfFromOverview(mLauncher)) {
-                // Don't allow swiping down to overview.
-                return NORMAL;
-            }
-            return TouchInteractionService.isConnected() ?
-                    mLauncher.getStateManager().getLastState() : NORMAL;
+            return NORMAL;
         } else if (fromState == OVERVIEW) {
             if (TestProtocol.sDebugTracing) {
                 Log.d(TestProtocol.OVERIEW_NOT_ALLAPPS,
                         "PortraitStatesTouchController.getTargetState 2");
             }
-            LauncherState positiveDragTarget = ALL_APPS;
-            if (removeShelfFromOverview(mLauncher)) {
-                // Don't allow swiping up to all apps.
-                positiveDragTarget = OVERVIEW;
-            }
-            return isDragTowardPositive ? positiveDragTarget : NORMAL;
+            return isDragTowardPositive ? OVERVIEW : NORMAL;
         } else if (fromState == NORMAL && isDragTowardPositive) {
             if (TestProtocol.sDebugTracing) {
                 Log.d(TestProtocol.OVERIEW_NOT_ALLAPPS,
                         "PortraitStatesTouchController.getTargetState 3");
             }
-            int stateFlags = SystemUiProxy.INSTANCE.get(mLauncher).getLastSystemUiStateFlags();
-            return mAllowDragToOverview && TouchInteractionService.isConnected()
-                    && (stateFlags & SYSUI_STATE_OVERVIEW_DISABLED) == 0
-                    ? OVERVIEW : ALL_APPS;
+            return ALL_APPS;
         }
         return fromState;
     }

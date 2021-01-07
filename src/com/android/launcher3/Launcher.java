@@ -137,7 +137,6 @@ import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
-import com.android.launcher3.model.data.PromiseAppInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.pm.PinRequestHelper;
@@ -221,8 +220,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     static final boolean LOGD = false;
 
     static final boolean DEBUG_STRICT_MODE = false;
-
-    private static final boolean ENABLE_ACTIVITY_CROSSFADE = false;
 
     private static final int REQUEST_CREATE_SHORTCUT = 1;
     private static final int REQUEST_CREATE_APPWIDGET = 5;
@@ -1384,8 +1381,9 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         int width = mDragLayer.getWidth();
         int height = mDragLayer.getHeight();
 
-        // TODO: b/172467144 Remove hardcoded ENABLE_ACTIVITY_CROSSFADE.
-        if (ENABLE_ACTIVITY_CROSSFADE && width > 0 && height > 0) {
+        if (FeatureFlags.ENABLE_LAUNCHER_ACTIVITY_THEME_CROSSFADE.get()
+                && width > 0
+                && height > 0) {
             instance.snapshot =
                     BitmapRenderer.createHardwareBitmap(width, height, mDragLayer::draw);
         }
@@ -2517,8 +2515,8 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     }
 
     @Override
-    public void bindPromiseAppProgressUpdated(PromiseAppInfo app) {
-        mAppsView.getAppsStore().updatePromiseAppProgress(app);
+    public void bindIncrementalDownloadProgressUpdated(AppInfo app) {
+        mAppsView.getAppsStore().updateProgressBar(app);
     }
 
     @Override

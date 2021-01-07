@@ -42,6 +42,7 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.graphics.DragPreviewProvider;
@@ -251,7 +252,8 @@ public class HotseatPredictionController implements DragController.DragListener,
      * Sets or updates the predicted items
      */
     public void setPredictedItems(FixedContainerItems items) {
-        boolean shouldIgnoreVisibility = mLauncher.isWorkspaceLoading()
+        boolean shouldIgnoreVisibility = FeatureFlags.ENABLE_APP_PREDICTIONS_WHILE_VISIBLE.get()
+                || mLauncher.isWorkspaceLoading()
                 || mPredictedItems.equals(items.items)
                 || mHotseat.getShortcutsAndWidgets().getChildCount() < mHotSeatItemsCount;
         if (!shouldIgnoreVisibility

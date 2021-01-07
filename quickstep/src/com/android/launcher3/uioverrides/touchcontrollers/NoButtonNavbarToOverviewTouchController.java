@@ -84,7 +84,7 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
     private ObjectAnimator mNormalToHintOverviewScrimAnimator;
 
     public NoButtonNavbarToOverviewTouchController(Launcher l) {
-        super(l, false /* allowDragToOverview */);
+        super(l);
         mRecentsView = l.getOverviewPanel();
         mMotionPauseDetector = new MotionPauseDetector(l);
         mMotionPauseMinDisplacement = ViewConfiguration.get(l).getScaledTouchSlop();
