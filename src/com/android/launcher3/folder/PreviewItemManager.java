@@ -39,7 +39,6 @@ import androidx.annotation.NonNull;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.graphics.PreloadIconDrawable;
-import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.views.ActivityContext;
 
@@ -395,10 +394,9 @@ public class PreviewItemManager {
     }
 
     private void setDrawable(PreviewItemDrawingParams p, WorkspaceItemInfo item) {
-        if (item.hasPromiseIconUi() || (item.runtimeStatusFlags
-                    & ItemInfoWithIcon.FLAG_SHOW_DOWNLOAD_PROGRESS_MASK) != 0) {
+        if (item.hasPromiseIconUi()) {
             PreloadIconDrawable drawable = newPendingIcon(mContext, item);
-            drawable.setLevel(item.getProgressLevel());
+            drawable.setLevel(item.getInstallProgress());
             p.drawable = drawable;
         } else {
             p.drawable = newIcon(mContext, item);

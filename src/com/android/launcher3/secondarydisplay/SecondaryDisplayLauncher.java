@@ -35,8 +35,8 @@ import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
+import com.android.launcher3.model.data.PromiseAppInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.PopupDataProvider;
@@ -215,8 +215,8 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
             ArrayList<ItemInfo> addAnimated) { }
 
     @Override
-    public void bindIncrementalDownloadProgressUpdated(AppInfo app) {
-        mAppsView.getAppsStore().updateProgressBar(app);
+    public void bindPromiseAppProgressUpdated(PromiseAppInfo app) {
+        mAppsView.getAppsStore().updatePromiseAppProgress(app);
     }
 
     @Override
@@ -315,11 +315,9 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
         if (tag instanceof ItemInfo) {
             ItemInfo item = (ItemInfo) tag;
             Intent intent;
-            if (item instanceof ItemInfoWithIcon
-                    && (((ItemInfoWithIcon) item).runtimeStatusFlags
-                        & ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE) != 0) {
-                ItemInfoWithIcon appInfo = (ItemInfoWithIcon) item;
-                intent = appInfo.getMarketIntent(this);
+            if (item instanceof PromiseAppInfo) {
+                PromiseAppInfo promiseAppInfo = (PromiseAppInfo) item;
+                intent = promiseAppInfo.getMarketIntent(this);
             } else {
                 intent = item.getIntent();
             }
