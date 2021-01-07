@@ -149,6 +149,10 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_OVERVIEW_SHARE = getDebugFlag(
             "ENABLE_OVERVIEW_SHARE", false, "Show Share button in Overview Actions");
 
+    public static final BooleanFlag ENABLE_OVERVIEW_SHARING_TO_PEOPLE = getDebugFlag(
+            "ENABLE_OVERVIEW_SHARING_TO_PEOPLE", false,
+            "Show indicators for content on Overview to share with top people. ");
+
     public static final BooleanFlag ENABLE_OVERVIEW_CONTENT_PUSH = getDebugFlag(
             "ENABLE_OVERVIEW_CONTENT_PUSH", false, "Show Content Push button in Overview Actions");
 
@@ -193,6 +197,16 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_FOUR_COLUMNS = new DeviceFlag(
             "ENABLE_FOUR_COLUMNS", false, "Uses 4 columns in launcher grid."
             + "Warning: This will permanently alter your home screen items and is not reversible.");
+
+    // TODO: b/172467144 Remove ENABLE_LAUNCHER_ACTIVITY_THEME_CROSSFADE feature flag.
+    public static final BooleanFlag ENABLE_LAUNCHER_ACTIVITY_THEME_CROSSFADE = new DeviceFlag(
+            "ENABLE_LAUNCHER_ACTIVITY_THEME_CROSSFADE", false, "Enables a "
+            + "crossfade animation when the system these changes.");
+
+    // TODO: b/174174514 Remove ENABLE_APP_PREDICTIONS_WHILE_VISIBLE feature flag.
+    public static final BooleanFlag ENABLE_APP_PREDICTIONS_WHILE_VISIBLE = new DeviceFlag(
+            "ENABLE_APP_PREDICTIONS_WHILE_VISIBLE", true, "Allows app "
+            + "predictions to be updated while they are visible to the user.");
 
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
