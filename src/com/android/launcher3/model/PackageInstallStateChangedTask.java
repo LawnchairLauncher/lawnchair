@@ -20,14 +20,15 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
-import com.android.launcher3.model.data.PromiseAppInfo;
-import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.util.InstantAppResolver;
 
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * Handles changes due to a sessions updates for a currently installing app.
@@ -59,9 +60,11 @@ public class PackageInstallStateChangedTask extends BaseModelUpdateTask {
         }
 
         synchronized (apps) {
-            PromiseAppInfo updated = apps.updatePromiseInstallInfo(mInstallInfo);
-            if (updated != null) {
-                scheduleCallbackTask(c -> c.bindPromiseAppProgressUpdated(updated));
+            List<AppInfo> updatedAppInfos = apps.updatePromiseInstallInfo(mInstallInfo);
+            if (!updatedAppInfos.isEmpty()) {
+                for (AppInfo appInfo : updatedAppInfos) {
+                    scheduleCallbackTask(c -> c.bindIncrementalDownloadProgressUpdated(appInfo));
+                }
             }
             bindApplicationsIfNeeded();
         }
@@ -71,11 +74,13 @@ public class PackageInstallStateChangedTask extends BaseModelUpdateTask {
             dataModel.forAllWorkspaceItemInfos(mInstallInfo.user, si -> {
                 ComponentName cn = si.getTargetComponent();
                 if (si.hasPromiseIconUi() && (cn != null)
-                        && mInstallInfo.packageName.equals(cn.getPackageName())) {
-                    si.setInstallProgress(mInstallInfo.progress);
+                        && cn.getPackageName().equals(mInstallInfo.packageName)) {
+                    int installProgress = mInstallInfo.progress;
+
+                    si.setProgressLevel(installProgress, PackageInstallInfo.STATUS_INSTALLING);
                     if (mInstallInfo.state == PackageInstallInfo.STATUS_FAILED) {
                         // Mark this info as broken.
-                        si.status &= ~WorkspaceItemInfo.FLAG_INSTALL_SESSION_ACTIVE;
+                        si.runtimeStatusFlags &= ~ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE;
                     }
                     updates.add(si);
                 }
