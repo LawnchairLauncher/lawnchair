@@ -45,11 +45,10 @@ import android.widget.Toast;
 
 import com.android.launcher3.PendingAddItemInfo;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
+import com.android.launcher3.model.data.PromiseAppInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 
 import java.net.URISyntaxException;
@@ -201,12 +200,9 @@ public class PackageManagerHelper {
      * Starts the details activity for {@code info}
      */
     public void startDetailsActivityForInfo(ItemInfo info, Rect sourceBounds, Bundle opts) {
-        if (info instanceof ItemInfoWithIcon
-                && (((ItemInfoWithIcon) info).runtimeStatusFlags
-                    & ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE) != 0) {
-            ItemInfoWithIcon appInfo = (ItemInfoWithIcon) info;
-            mContext.startActivity(new PackageManagerHelper(mContext)
-                    .getMarketIntent(appInfo.getTargetComponent().getPackageName()));
+        if (info instanceof PromiseAppInfo) {
+            PromiseAppInfo promiseAppInfo = (PromiseAppInfo) info;
+            mContext.startActivity(promiseAppInfo.getMarketIntent(mContext));
             return;
         }
         ComponentName componentName = null;
@@ -322,13 +318,5 @@ public class PackageManagerHelper {
             Log.e(TAG, "Failed to make shortcut manager call", e);
         }
         return false;
-    }
-
-    /** Returns the incremental download progress for the given shortcut's app. */
-    public static int getLoadingProgress(LauncherActivityInfo info) {
-        if (Utilities.ATLEAST_S) {
-            return (int) (100 * info.getLoadingProgress());
-        }
-        return 100;
     }
 }

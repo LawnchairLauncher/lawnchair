@@ -117,8 +117,6 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
         mIndicatorColor = IconPalette.getPreloadProgressColor(context, mIconColor);
 
         setInternalProgress(0);
-
-        setIsDisabled(!info.isAppStartable());
     }
 
     @Override
@@ -268,12 +266,14 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
             mIconScale = SMALL_SCALE;
             mScaledTrackPath.reset();
             mTrackAlpha = MAX_PAINT_ALPHA;
+            setIsDisabled(true);
         }
 
         if (progress < 1 && progress > 0) {
             mPathMeasure.getSegment(0, progress * mTrackLength, mScaledProgressPath, true);
             mIconScale = SMALL_SCALE;
             mTrackAlpha = MAX_PAINT_ALPHA;
+            setIsDisabled(true);
         } else if (progress >= 1) {
             setIsDisabled(mItem.isDisabled());
             mScaledTrackPath.set(mScaledProgressPath);
