@@ -50,7 +50,6 @@ import android.view.View;
 import android.view.ViewDebug;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.core.graphics.ColorUtils;
 
 import com.android.launcher3.Launcher.OnResumeCallback;
@@ -72,6 +71,7 @@ import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.PackageItemInfo;
+import com.android.launcher3.model.data.PromiseAppInfo;
 import com.android.launcher3.model.data.RemoteActionItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.SafeCloseable;
@@ -287,7 +287,10 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     public void applyFromWorkspaceItem(WorkspaceItemInfo info, boolean promiseStateChanged) {
         applyIconAndLabel(info);
         setTag(info);
-        applyLoadingState(promiseStateChanged);
+        if (promiseStateChanged || (info.hasPromiseIconUi())) {
+            applyPromiseState(promiseStateChanged);
+        }
+
         applyDotState(info, false /* animate */);
     }
 
@@ -300,8 +303,9 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         // Verify high res immediately
         verifyHighRes();
 
-        if ((info.runtimeStatusFlags & ItemInfoWithIcon.FLAG_SHOW_DOWNLOAD_PROGRESS_MASK) != 0) {
-            applyProgressLevel(info.getProgressLevel());
+        if (info instanceof PromiseAppInfo) {
+            PromiseAppInfo promiseAppInfo = (PromiseAppInfo) info;
+            applyProgressLevel(promiseAppInfo.level);
         }
         applyDotState(info, false /* animate */);
     }
@@ -331,10 +335,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         mDotParams.color = IconPalette.getMutedColor(info.bitmap.color, 0.54f);
 
         setIcon(iconDrawable);
-        applyLabel(info);
-    }
-
-    private void applyLabel(ItemInfoWithIcon info) {
         setText(info.title);
         if (info.contentDescription != null) {
             setContentDescription(info.isDisabled()
@@ -595,35 +595,21 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         mLongPressHelper.cancelLongPress();
     }
 
-    /** Applies the loading progress value to the progress bar.
-     *
-     * If this app is installing, the progress bar will be updated with the installation progress.
-     * If this app is installed and downloading incrementally, the progress bar will be updated
-     * with the total download progress.
-     */
-    public void applyLoadingState(boolean promiseStateChanged) {
+    public void applyPromiseState(boolean promiseStateChanged) {
         if (getTag() instanceof WorkspaceItemInfo) {
             WorkspaceItemInfo info = (WorkspaceItemInfo) getTag();
-            int progressLevel = info.getProgressLevel();
-            if ((info.runtimeStatusFlags & ItemInfoWithIcon.FLAG_INCREMENTAL_DOWNLOAD_ACTIVE)
-                    != 0) {
-                updateProgressBarUi(progressLevel, progressLevel == 100);
-            } else if (info.hasPromiseIconUi() || (info.runtimeStatusFlags
-                        & ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE) != 0) {
-                updateProgressBarUi(progressLevel, promiseStateChanged);
+            final boolean isPromise = info.hasPromiseIconUi();
+            final int progressLevel = isPromise ?
+                    ((info.hasStatusFlag(WorkspaceItemInfo.FLAG_INSTALL_SESSION_ACTIVE) ?
+                            info.getInstallProgress() : 0)) : 100;
+
+            PreloadIconDrawable preloadDrawable = applyProgressLevel(progressLevel);
+            if (preloadDrawable != null && promiseStateChanged) {
+                preloadDrawable.maybePerformFinishedAnimation();
             }
         }
     }
 
-    private void updateProgressBarUi(int progressLevel, boolean maybePerformFinishedAnimation) {
-        PreloadIconDrawable preloadDrawable = applyProgressLevel(progressLevel);
-        if (preloadDrawable != null && maybePerformFinishedAnimation) {
-            preloadDrawable.maybePerformFinishedAnimation();
-        }
-    }
-
-    /** Applies the given progress level to the this icon's progress bar. */
-    @Nullable
     public PreloadIconDrawable applyProgressLevel(int progressLevel) {
         if (getTag() instanceof ItemInfoWithIcon) {
             ItemInfoWithIcon info = (ItemInfoWithIcon) getTag();
@@ -643,11 +629,9 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
                 if (mIcon instanceof PreloadIconDrawable) {
                     preloadDrawable = (PreloadIconDrawable) mIcon;
                     preloadDrawable.setLevel(progressLevel);
-                    preloadDrawable.setIsDisabled(!info.isAppStartable());
                 } else {
                     preloadDrawable = newPendingIcon(getContext(), info);
                     preloadDrawable.setLevel(progressLevel);
-                    preloadDrawable.setIsDisabled(!info.isAppStartable());
                     setIcon(preloadDrawable);
                 }
                 return preloadDrawable;
