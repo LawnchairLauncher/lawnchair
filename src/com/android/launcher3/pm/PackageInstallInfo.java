@@ -25,8 +25,7 @@ public final class PackageInstallInfo {
 
     public static final int STATUS_INSTALLED = 0;
     public static final int STATUS_INSTALLING = 1;
-    public static final int STATUS_INSTALLED_DOWNLOADING = 2;
-    public static final int STATUS_FAILED = 3;
+    public static final int STATUS_FAILED = 2;
 
     public final ComponentName componentName;
     public final String packageName;
@@ -57,4 +56,5 @@ public final class PackageInstallInfo {
     public static PackageInstallInfo fromState(int state, String packageName, UserHandle user) {
         return new PackageInstallInfo(packageName, state, 0 /* progress */, user);
     }
+
 }
