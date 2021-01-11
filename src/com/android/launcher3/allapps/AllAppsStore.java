@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.PromiseAppInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageUserKey;
 
@@ -144,17 +145,10 @@ public class AllAppsStore {
         });
     }
 
-    /**
-     * Sets the AppInfo's associated icon's progress bar.
-     *
-     * If this app is installed and supports incremental downloads, the progress bar will be updated
-     * the app's total download progress. Otherwise, the progress bar will be updated to the app's
-     * installation progress.
-     */
-    public void updateProgressBar(AppInfo app) {
+    public void updatePromiseAppProgress(PromiseAppInfo app) {
         updateAllIcons((child) -> {
             if (child.getTag() == app) {
-                child.applyProgressLevel(app.getProgressLevel());
+                child.applyProgressLevel(app.level);
             }
         });
     }
