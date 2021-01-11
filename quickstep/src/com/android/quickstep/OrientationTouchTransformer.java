@@ -66,6 +66,7 @@ class OrientationTouchTransformer {
     private final RectF mOneHandedModeRegion = new RectF();
     private int mCurrentDisplayRotation;
     private int mNavBarGesturalHeight;
+    private int mNavBarLargerGesturalHeight;
     private boolean mEnableMultipleRegions;
     private Resources mResources;
     private OrientationRectF mLastRectTouched;
@@ -106,6 +107,9 @@ class OrientationTouchTransformer {
         mMode = mode;
         mContractInfo = contractInfo;
         mNavBarGesturalHeight = getNavbarSize(ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE);
+        mNavBarLargerGesturalHeight = ResourceUtils.getDimenByName(
+                ResourceUtils.NAVBAR_BOTTOM_GESTURE_LARGER_SIZE, resources,
+                mNavBarGesturalHeight);
     }
 
     private void refreshTouchRegion(Info info, Resources newRes) {
@@ -234,6 +238,7 @@ class OrientationTouchTransformer {
         Point size = display.realSize;
         int rotation = display.rotation;
         int touchHeight = mNavBarGesturalHeight;
+        int largerGesturalHeight = mNavBarLargerGesturalHeight;
         OrientationRectF orientationRectF =
                 new OrientationRectF(0, 0, size.x, size.y, rotation);
         if (mMode == SysUINavigationMode.Mode.NO_BUTTON) {
@@ -256,7 +261,8 @@ class OrientationTouchTransformer {
             }
         }
         // One handed gestural only active on portrait mode
-        mOneHandedModeRegion.set(0, orientationRectF.bottom - touchHeight, size.x, size.y);
+        mOneHandedModeRegion.set(0, orientationRectF.bottom - mNavBarLargerGesturalHeight,
+                size.x, size.y);
 
         return orientationRectF;
     }
@@ -378,6 +384,7 @@ class OrientationTouchTransformer {
         }
         pw.println(regions.toString());
         pw.println("  mNavBarGesturalHeight=" + mNavBarGesturalHeight);
+        pw.println("  mNavBarLargerGesturalHeight=" + mNavBarLargerGesturalHeight);
         pw.println("  mOneHandedModeRegion=" + mOneHandedModeRegion);
     }
 
