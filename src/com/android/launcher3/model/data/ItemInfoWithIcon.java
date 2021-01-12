@@ -129,7 +129,9 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
     protected ItemInfoWithIcon(ItemInfoWithIcon info) {
         super(info);
         bitmap = info.bitmap;
+        mProgressLevel = info.mProgressLevel;
         runtimeStatusFlags = info.runtimeStatusFlags;
+        user = info.user;
     }
 
     @Override
@@ -195,8 +197,8 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
                     : runtimeStatusFlags & ~FLAG_INCREMENTAL_DOWNLOAD_ACTIVE;
         } else {
             mProgressLevel = status == PackageInstallInfo.STATUS_INSTALLED ? 100 : 0;
-            runtimeStatusFlags = runtimeStatusFlags & ~FLAG_INSTALL_SESSION_ACTIVE;
-            runtimeStatusFlags = runtimeStatusFlags & ~FLAG_INCREMENTAL_DOWNLOAD_ACTIVE;
+            runtimeStatusFlags &= ~FLAG_INSTALL_SESSION_ACTIVE;
+            runtimeStatusFlags &= ~FLAG_INCREMENTAL_DOWNLOAD_ACTIVE;
         }
     }
 

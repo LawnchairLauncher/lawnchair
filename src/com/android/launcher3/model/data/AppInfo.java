@@ -94,8 +94,6 @@ public class AppInfo extends ItemInfoWithIcon {
         componentName = info.componentName;
         title = Utilities.trim(info.title);
         intent = new Intent(info.intent);
-        user = info.user;
-        runtimeStatusFlags = info.runtimeStatusFlags;
     }
 
     @VisibleForTesting
@@ -114,6 +112,7 @@ public class AppInfo extends ItemInfoWithIcon {
             .setComponent(componentName)
             .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+        setProgressLevel(installInfo);
         user = installInfo.user;
     }
 
