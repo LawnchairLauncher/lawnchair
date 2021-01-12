@@ -44,8 +44,11 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.quickstep.BaseActivityInterface;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
+import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.quickstep.SystemUiProxy;
 import com.android.systemui.shared.system.InputMonitorCompat;
+
+import java.util.function.Consumer;
 
 /**
  * Touch consumer for handling events to launch assistant from launcher
@@ -81,19 +84,18 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
     private final int mAngleThreshold;
     private final float mSquaredSlop;
     private final Context mContext;
-    private final GestureDetector mGestureDetector;
-    private final boolean mIsAssistGestureConstrained;
+    private final Consumer<MotionEvent> mGestureDetector;
 
     public AssistantInputConsumer(
             Context context,
             GestureState gestureState,
             InputConsumer delegate,
             InputMonitorCompat inputMonitor,
-            boolean isAssistGestureConstrained) {
+            RecentsAnimationDeviceState deviceState,
+            MotionEvent startEvent) {
         super(delegate, inputMonitor);
         final Resources res = context.getResources();
         mContext = context;
-        mIsAssistGestureConstrained = isAssistGestureConstrained;
         mDragDistThreshold = res.getDimension(R.dimen.gestures_assistant_drag_threshold);
         mFlingDistThreshold = res.getDimension(R.dimen.gestures_assistant_fling_threshold);
         mTimeThreshold = res.getInteger(R.integer.assistant_gesture_min_time_threshold);
@@ -104,7 +106,11 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
         mSquaredSlop = slop * slop;
         mActivityInterface = gestureState.getActivityInterface();
 
-        mGestureDetector = new GestureDetector(context, new AssistantGestureListener());
+        boolean flingDisabled = deviceState.isAssistantGestureIsConstrained()
+                || deviceState.isInDeferredGestureRegion(startEvent);
+        mGestureDetector = flingDisabled
+                ? ev -> { }
+                : new GestureDetector(context, new AssistantGestureListener())::onTouchEvent;
     }
 
     @Override
@@ -201,7 +207,7 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
                 break;
         }
 
-        mGestureDetector.onTouchEvent(ev);
+        mGestureDetector.accept(ev);
 
         if (mState != STATE_ACTIVE) {
             mDelegate.onMotionEvent(ev);
@@ -214,12 +220,6 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
             if (mDistance >= mDragDistThreshold && mTimeFraction >= 1) {
                 SystemUiProxy.INSTANCE.get(mContext).onAssistantGestureCompletion(0);
                 startAssistantInternal();
-
-                Bundle args = new Bundle();
-                args.putInt(OPA_BUNDLE_TRIGGER, OPA_BUNDLE_TRIGGER_DIAG_SWIPE_GESTURE);
-                args.putInt(INVOCATION_TYPE_KEY, INVOCATION_TYPE_GESTURE);
-                SystemUiProxy.INSTANCE.get(mContext).startAssistant(args);
-                mLaunchedAssistant = true;
             } else {
                 SystemUiProxy.INSTANCE.get(mContext).onAssistantProgress(mLastProgress);
             }
@@ -233,6 +233,12 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
                 13, // HapticFeedbackConstants.GESTURE_END
                 HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
         }
+
+        Bundle args = new Bundle();
+        args.putInt(OPA_BUNDLE_TRIGGER, OPA_BUNDLE_TRIGGER_DIAG_SWIPE_GESTURE);
+        args.putInt(INVOCATION_TYPE_KEY, INVOCATION_TYPE_GESTURE);
+        SystemUiProxy.INSTANCE.get(mContext).startAssistant(args);
+        mLaunchedAssistant = true;
     }
 
     /**
@@ -250,8 +256,7 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
     private class AssistantGestureListener extends SimpleOnGestureListener {
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            if (!mIsAssistGestureConstrained
-                && isValidAssistantGestureAngle(velocityX, -velocityY)
+            if (isValidAssistantGestureAngle(velocityX, -velocityY)
                     && mDistance >= mFlingDistThreshold
                     && !mLaunchedAssistant
                     && mState != STATE_DELEGATE_ACTIVE) {
@@ -259,11 +264,6 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
                 SystemUiProxy.INSTANCE.get(mContext).onAssistantGestureCompletion(
                     (float) Math.sqrt(velocityX * velocityX + velocityY * velocityY));
                 startAssistantInternal();
-
-                Bundle args = new Bundle();
-                args.putInt(INVOCATION_TYPE_KEY, INVOCATION_TYPE_GESTURE);
-                SystemUiProxy.INSTANCE.get(mContext).startAssistant(args);
-                mLaunchedAssistant = true;
             }
             return true;
         }
