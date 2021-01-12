@@ -49,8 +49,8 @@ import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
-import com.android.launcher3.model.data.PromiseAppInfo;
 import com.android.launcher3.model.data.RemoteActionItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.InstallSessionHelper;
@@ -231,8 +231,12 @@ public class ItemClickHandler {
                     ? shortcut.getIntent().getComponent().getPackageName()
                     : shortcut.getIntent().getPackage();
             if (!TextUtils.isEmpty(packageName)) {
-                onClickPendingAppItem(v, launcher, packageName,
-                        shortcut.hasStatusFlag(WorkspaceItemInfo.FLAG_INSTALL_SESSION_ACTIVE));
+                onClickPendingAppItem(
+                        v,
+                        launcher,
+                        packageName,
+                        (shortcut.runtimeStatusFlags
+                                & ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE) != 0);
                 return;
             }
         }
@@ -266,9 +270,12 @@ public class ItemClickHandler {
         TestLogging.recordEvent(
                 TestProtocol.SEQUENCE_MAIN, "start: startAppShortcutOrInfoActivity");
         Intent intent;
-        if (item instanceof PromiseAppInfo) {
-            PromiseAppInfo promiseAppInfo = (PromiseAppInfo) item;
-            intent = promiseAppInfo.getMarketIntent(launcher);
+        if (item instanceof ItemInfoWithIcon
+                && (((ItemInfoWithIcon) item).runtimeStatusFlags
+                    & ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE) != 0) {
+            ItemInfoWithIcon appInfo = (ItemInfoWithIcon) item;
+            intent = new PackageManagerHelper(launcher)
+                    .getMarketIntent(appInfo.getTargetComponent().getPackageName());
         } else {
             intent = item.getIntent();
         }
