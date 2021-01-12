@@ -122,12 +122,11 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
      */
     public static class TaskOverlay<T extends OverviewActionsView> {
 
-        private final Context mApplicationContext;
+        protected final Context mApplicationContext;
         protected final TaskThumbnailView mThumbnailView;
 
         private T mActionsView;
-        private ImageActionsApi mImageApi;
-        private boolean mIsAllowedByPolicy;
+        protected ImageActionsApi mImageApi;
 
         protected TaskOverlay(TaskThumbnailView taskThumbnailView) {
             mApplicationContext = taskThumbnailView.getContext().getApplicationContext();
@@ -153,24 +152,8 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
 
             if (thumbnail != null) {
                 getActionsView().updateDisabledFlags(DISABLED_ROTATED, rotated);
-                final boolean isAllowedByPolicy = thumbnail.isRealSnapshot;
-
-                getActionsView().setCallbacks(new OverlayUICallbacks() {
-                    @Override
-                    public void onShare() {
-                        if (isAllowedByPolicy) {
-                            endLiveTileMode(() -> mImageApi.startShareActivity(null));
-                        } else {
-                            showBlockedByPolicyMessage();
-                        }
-                    }
-
-                    @SuppressLint("NewApi")
-                    @Override
-                    public void onScreenshot() {
-                        endLiveTileMode(() -> saveScreenshot(task));
-                    }
-                });
+                boolean isAllowedByPolicy = thumbnail.isRealSnapshot;
+                getActionsView().setCallbacks(new OverlayUICallbacksImpl(isAllowedByPolicy, task));
             }
         }
 
@@ -193,7 +176,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
          * Called to save screenshot of the task thumbnail.
          */
         @SuppressLint("NewApi")
-        private void saveScreenshot(Task task) {
+        protected void saveScreenshot(Task task) {
             if (mThumbnailView.isRealSnapshot()) {
                 mImageApi.saveScreenshot(mThumbnailView.getThumbnail(),
                         getTaskSnapshotBounds(), getTaskSnapshotInsets(), task.key);
@@ -251,7 +234,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
             return mThumbnailView.getScaledInsets();
         }
 
-        private void showBlockedByPolicyMessage() {
+        protected void showBlockedByPolicyMessage() {
             Toast.makeText(
                     mThumbnailView.getContext(),
                     R.string.blocked_by_policy,
@@ -271,6 +254,29 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
             public void onClick(View view) {
                 saveScreenshot(mThumbnailView.getTaskView().getTask());
                 dismissTaskMenuView(mActivity);
+            }
+        }
+
+        protected class OverlayUICallbacksImpl implements OverlayUICallbacks {
+            protected final boolean mIsAllowedByPolicy;
+            protected final Task mTask;
+
+            public OverlayUICallbacksImpl(boolean isAllowedByPolicy, Task task) {
+                mIsAllowedByPolicy = isAllowedByPolicy;
+                mTask = task;
+            }
+
+            public void onShare() {
+                if (mIsAllowedByPolicy) {
+                    endLiveTileMode(() -> mImageApi.startShareActivity(null));
+                } else {
+                    showBlockedByPolicyMessage();
+                }
+            }
+
+            @SuppressLint("NewApi")
+            public void onScreenshot() {
+                endLiveTileMode(() -> saveScreenshot(mTask));
             }
         }
     }
