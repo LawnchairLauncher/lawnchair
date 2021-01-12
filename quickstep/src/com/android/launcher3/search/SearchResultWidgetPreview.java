@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.views;
+package com.android.launcher3.search;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
@@ -32,8 +32,6 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.R;
-import com.android.launcher3.allapps.search.AllAppsSearchBarController;
-import com.android.launcher3.allapps.search.SearchEventTracker;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.touch.ItemLongClickListener;
@@ -48,7 +46,7 @@ import com.android.systemui.plugins.shared.SearchTargetEvent;
  * displays preview of a widget upon receiving {@link AppWidgetProviderInfo} from Search provider
  */
 public class SearchResultWidgetPreview extends LinearLayout implements
-        AllAppsSearchBarController.SearchTargetHandler, View.OnLongClickListener,
+        SearchTargetHandler, View.OnLongClickListener,
         View.OnClickListener {
 
     public static final String TARGET_TYPE_WIDGET_PREVIEW = "widget_preview";

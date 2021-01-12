@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.views;
+package com.android.launcher3.search;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
@@ -36,8 +36,6 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
-import com.android.launcher3.allapps.search.AllAppsSearchBarController;
-import com.android.launcher3.allapps.search.SearchEventTracker;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -53,7 +51,7 @@ import java.util.function.Consumer;
  * shortcuts
  */
 public class SearchResultIconRow extends LinearLayout implements
-        AllAppsSearchBarController.SearchTargetHandler, View.OnClickListener,
+        SearchTargetHandler, View.OnClickListener,
         View.OnLongClickListener, Consumer<ItemInfoWithIcon> {
     public static final int MAX_SHORTCUTS_COUNT = 2;
 

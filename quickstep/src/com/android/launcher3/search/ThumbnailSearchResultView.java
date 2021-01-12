@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.views;
+package com.android.launcher3.search;
 
 
-import static com.android.launcher3.views.SearchResultIcon.REMOTE_ACTION_SHOULD_START;
-import static com.android.launcher3.views.SearchResultIcon.REMOTE_ACTION_TOKEN;
+import static com.android.launcher3.search.SearchResultIcon.REMOTE_ACTION_SHOULD_START;
+import static com.android.launcher3.search.SearchResultIcon.REMOTE_ACTION_TOKEN;
 
 import android.content.Context;
 import android.content.Intent;
@@ -30,8 +30,6 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import com.android.launcher3.Launcher;
-import com.android.launcher3.allapps.search.AllAppsSearchBarController;
-import com.android.launcher3.allapps.search.SearchEventTracker;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.RemoteActionItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -44,7 +42,7 @@ import com.android.systemui.plugins.shared.SearchTargetEvent;
  * A view representing a high confidence app search result that includes shortcuts
  */
 public class ThumbnailSearchResultView extends androidx.appcompat.widget.AppCompatImageView
-        implements AllAppsSearchBarController.SearchTargetHandler {
+        implements SearchTargetHandler {
 
     public static final String TARGET_TYPE_SCREENSHOT = "screenshot";
     public static final String TARGET_TYPE_SCREENSHOT_LEGACY = "screenshot_legacy";

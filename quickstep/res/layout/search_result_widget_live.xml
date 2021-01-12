@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.android.launcher3.views.SearchResultWidget android:layout_height="wrap_content"
+<com.android.launcher3.search.SearchResultWidget android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:gravity="center"
     android:layout_width="match_parent" />
