@@ -723,6 +723,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
     public void onGestureStarted(boolean isLikelyToStartNewTask) {
         InteractionJankMonitorWrapper.begin(
                 InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH, 2000 /* ms timeout */);
+        InteractionJankMonitorWrapper.begin(
+                InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME);
         notifyGestureStartedAsync();
         setIsLikelyToStartNewTask(isLikelyToStartNewTask, false /* animate */);
         mStateCallback.setStateOnUiThread(STATE_GESTURE_STARTED);
@@ -802,6 +804,13 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
         // Fast-finish the attaching animation if it's still running.
         maybeUpdateRecentsAttachedState(false);
         final GestureEndTarget endTarget = mGestureState.getEndTarget();
+        if (endTarget != NEW_TASK) {
+            InteractionJankMonitorWrapper.cancel(InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
+        }
+        if (endTarget != HOME) {
+            InteractionJankMonitorWrapper.cancel(
+                    InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME);
+        }
         switch (endTarget) {
             case HOME:
                 mStateCallback.setState(STATE_SCALED_CONTROLLER_HOME | STATE_CAPTURE_SCREENSHOT);
@@ -820,9 +829,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
                 break;
         }
         ActiveGestureLog.INSTANCE.addLog("onSettledOnEndTarget " + endTarget);
-        if (endTarget != NEW_TASK) {
-            InteractionJankMonitorWrapper.cancel(InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
-        }
     }
 
     /** @return Whether this was the task we were waiting to appear, and thus handled it. */
@@ -1219,11 +1225,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
         anim.addOnUpdateListener((r, p) -> {
             updateSysUiFlags(Math.max(p, mCurrentShift.value));
         });
-        final int cuj = InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME;
         anim.addAnimatorListener(new AnimationSuccessListener() {
             @Override
             public void onAnimationStart(Animator animation) {
-                InteractionJankMonitorWrapper.begin(cuj);
                 if (mActivity != null) {
                     removeLiveTileOverlay();
                 }
@@ -1237,13 +1241,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
                 // Make sure recents is in its final state
                 maybeUpdateRecentsAttachedState(false);
                 mActivityInterface.onSwipeUpToHomeComplete(mDeviceState);
-                InteractionJankMonitorWrapper.end(cuj);
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-                super.onAnimationCancel(animation);
-                InteractionJankMonitorWrapper.cancel(cuj);
             }
         });
         if (mRecentsAnimationTargets != null) {
