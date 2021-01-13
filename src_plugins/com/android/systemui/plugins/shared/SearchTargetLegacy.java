@@ -25,8 +25,11 @@ import java.util.List;
 
 /**
  * Used to return all apps search targets.
+ *
+ * @deprecated Use SearchTarget
  */
-public class SearchTarget implements Comparable<SearchTarget> {
+@Deprecated
+public class SearchTargetLegacy implements Comparable<SearchTargetLegacy> {
 
     private final String mItemId;
     private final String mItemType;
@@ -39,7 +42,7 @@ public class SearchTarget implements Comparable<SearchTarget> {
     private final RemoteAction mRemoteAction;
     private final Bundle mExtras;
 
-    private SearchTarget(String itemId, String itemType, float score,
+    private SearchTargetLegacy(String itemId, String itemType, float score,
             ComponentName componentName, UserHandle userHandle, List<ShortcutInfo> shortcutInfos,
             RemoteAction remoteAction, Bundle extras) {
         mItemId = itemId;
@@ -85,12 +88,12 @@ public class SearchTarget implements Comparable<SearchTarget> {
     }
 
     @Override
-    public int compareTo(SearchTarget o) {
+    public int compareTo(SearchTargetLegacy o) {
         return Float.compare(o.mScore, mScore);
     }
 
     /**
-     * A builder for {@link SearchTarget}
+     * A builder for {@link SearchTargetLegacy}
      */
     public static final class Builder {
 
@@ -158,13 +161,13 @@ public class SearchTarget implements Comparable<SearchTarget> {
         }
 
         /**
-         * Builds a {@link SearchTarget}
+         * Builds a {@link SearchTargetLegacy}
          */
-        public SearchTarget build() {
+        public SearchTargetLegacy build() {
             if (mItemId == null) {
                 throw new IllegalStateException("Item ID is required for building SearchTarget");
             }
-            return new SearchTarget(mItemId, mItemType, mScore, mComponentName, mUserHandle,
+            return new SearchTargetLegacy(mItemId, mItemType, mScore, mComponentName, mUserHandle,
                     mShortcutInfos,
                     mRemoteAction, mExtras);
         }

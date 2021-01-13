@@ -43,8 +43,8 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.util.Themes;
-import com.android.systemui.plugins.shared.SearchTarget;
-import com.android.systemui.plugins.shared.SearchTargetEvent;
+import com.android.systemui.plugins.shared.SearchTargetEventLegacy;
+import com.android.systemui.plugins.shared.SearchTargetLegacy;
 
 import java.io.IOException;
 import java.net.URL;
@@ -69,7 +69,7 @@ public class SearchResultPlayItem extends LinearLayout implements
     private String mPackageName;
     private boolean mIsInstantGame;
 
-    private SearchTarget mSearchTarget;
+    private SearchTargetLegacy mSearchTarget;
 
 
     public SearchResultPlayItem(Context context) {
@@ -101,7 +101,7 @@ public class SearchResultPlayItem extends LinearLayout implements
         ViewGroup.LayoutParams iconParams = mIconView.getLayoutParams();
         iconParams.height = mDeviceProfile.allAppsIconSizePx;
         iconParams.width = mDeviceProfile.allAppsIconSizePx;
-        setOnClickListener(view -> handleSelection(SearchTargetEvent.SELECT));
+        setOnClickListener(view -> handleSelection(SearchTargetEventLegacy.SELECT));
     }
 
 
@@ -127,7 +127,7 @@ public class SearchResultPlayItem extends LinearLayout implements
 
 
     @Override
-    public void applySearchTarget(SearchTarget searchTarget) {
+    public void applySearchTarget(SearchTargetLegacy searchTarget) {
         mSearchTarget = searchTarget;
         Bundle bundle = searchTarget.getExtras();
         SearchEventTracker.INSTANCE.get(getContext()).registerWeakHandler(searchTarget, this);
@@ -193,11 +193,11 @@ public class SearchResultPlayItem extends LinearLayout implements
         intent.putExtra("callerId", getContext().getPackageName());
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getContext().startActivity(intent);
-        logSearchEvent(SearchTargetEvent.CHILD_SELECT);
+        logSearchEvent(SearchTargetEventLegacy.CHILD_SELECT);
     }
 
     private void logSearchEvent(int eventType) {
         SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(
-                new SearchTargetEvent.Builder(mSearchTarget, eventType).build());
+                new SearchTargetEventLegacy.Builder(mSearchTarget, eventType).build());
     }
 }

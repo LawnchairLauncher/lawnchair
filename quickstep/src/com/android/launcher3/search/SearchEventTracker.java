@@ -23,8 +23,8 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.systemui.plugins.AllAppsSearchPlugin;
-import com.android.systemui.plugins.shared.SearchTarget;
-import com.android.systemui.plugins.shared.SearchTargetEvent;
+import com.android.systemui.plugins.shared.SearchTargetEventLegacy;
+import com.android.systemui.plugins.shared.SearchTargetLegacy;
 
 import java.util.WeakHashMap;
 
@@ -34,7 +34,7 @@ import java.util.WeakHashMap;
 public class SearchEventTracker {
     @Nullable
     private AllAppsSearchPlugin mPlugin;
-    private final WeakHashMap<SearchTarget, SearchTargetHandler>
+    private final WeakHashMap<SearchTargetLegacy, SearchTargetHandler>
             mCallbacks = new WeakHashMap<>();
 
     public static final MainThreadInitializedObject<SearchEventTracker> INSTANCE =
@@ -60,26 +60,27 @@ public class SearchEventTracker {
     /**
      * Sends SearchTargetEvent to search provider
      */
-    public void notifySearchTargetEvent(SearchTargetEvent searchTargetEvent) {
+    public void notifySearchTargetEvent(SearchTargetEventLegacy searchTargetEvent) {
         if (mPlugin != null) {
-            UI_HELPER_EXECUTOR.post(() -> mPlugin.notifySearchTargetEvent(searchTargetEvent));
+            UI_HELPER_EXECUTOR.post(() -> mPlugin.notifySearchTargetEventLegacy(searchTargetEvent));
         }
     }
 
     /**
      * Registers a {@link SearchTargetHandler} to handle quick launch for specified SearchTarget.
      */
-    public void registerWeakHandler(SearchTarget searchTarget, SearchTargetHandler targetHandler) {
+    public void registerWeakHandler(SearchTargetLegacy searchTarget,
+            SearchTargetHandler targetHandler) {
         mCallbacks.put(searchTarget, targetHandler);
     }
 
     /**
      * Handles quick select for SearchTarget
      */
-    public void quickSelect(SearchTarget searchTarget) {
+    public void quickSelect(SearchTargetLegacy searchTarget) {
         SearchTargetHandler searchTargetHandler = mCallbacks.get(searchTarget);
         if (searchTargetHandler != null) {
-            searchTargetHandler.handleSelection(SearchTargetEvent.QUICK_SELECT);
+            searchTargetHandler.handleSelection(SearchTargetEventLegacy.QUICK_SELECT);
         }
     }
 

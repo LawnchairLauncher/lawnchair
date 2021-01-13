@@ -42,6 +42,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.appprediction.PredictionRowView;
@@ -266,8 +267,8 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
     }
 
     @Override
-    public SearchAdapterProvider createSearchAdapterProvider() {
-        return new DeviceSearchAdapterProvider(this);
+    public SearchAdapterProvider createSearchAdapterProvider(AllAppsContainerView appsView) {
+        return new DeviceSearchAdapterProvider(this, appsView);
     }
 
     @Override

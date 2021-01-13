@@ -39,8 +39,8 @@ import com.android.launcher3.R;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
-import com.android.systemui.plugins.shared.SearchTarget;
-import com.android.systemui.plugins.shared.SearchTargetEvent;
+import com.android.systemui.plugins.shared.SearchTargetEventLegacy;
+import com.android.systemui.plugins.shared.SearchTargetLegacy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +63,7 @@ public class SearchResultIconRow extends LinearLayout implements
     private TextView mDescriptionView;
     private BubbleTextView[] mShortcutViews = new BubbleTextView[2];
 
-    private SearchTarget mSearchTarget;
+    private SearchTargetLegacy mSearchTarget;
     private PackageItemInfo mProviderInfo;
 
 
@@ -100,8 +100,9 @@ public class SearchResultIconRow extends LinearLayout implements
             lp.width = iconSize;
             bubbleTextView.setOnClickListener(view -> {
                 WorkspaceItemInfo itemInfo = (WorkspaceItemInfo) bubbleTextView.getTag();
-                SearchTargetEvent event = new SearchTargetEvent.Builder(mSearchTarget,
-                        SearchTargetEvent.CHILD_SELECT).setShortcutPosition(itemInfo.rank).build();
+                SearchTargetEventLegacy event = new SearchTargetEventLegacy.Builder(mSearchTarget,
+                        SearchTargetEventLegacy.CHILD_SELECT).setShortcutPosition(
+                        itemInfo.rank).build();
                 SearchEventTracker.getInstance(getContext()).notifySearchTargetEvent(event);
                 mLauncher.getItemOnClickListener().onClick(view);
             });
@@ -111,7 +112,7 @@ public class SearchResultIconRow extends LinearLayout implements
     }
 
     @Override
-    public void applySearchTarget(SearchTarget searchTarget) {
+    public void applySearchTarget(SearchTargetLegacy searchTarget) {
         mSearchTarget = searchTarget;
         mResultIcon.applySearchTarget(searchTarget, this);
         String itemType = searchTarget.getItemType();

@@ -35,8 +35,8 @@ import com.android.launcher3.model.data.RemoteActionItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.Themes;
-import com.android.systemui.plugins.shared.SearchTarget;
-import com.android.systemui.plugins.shared.SearchTargetEvent;
+import com.android.systemui.plugins.shared.SearchTargetEventLegacy;
+import com.android.systemui.plugins.shared.SearchTargetLegacy;
 
 /**
  * A view representing a high confidence app search result that includes shortcuts
@@ -47,7 +47,7 @@ public class ThumbnailSearchResultView extends androidx.appcompat.widget.AppComp
     public static final String TARGET_TYPE_SCREENSHOT = "screenshot";
     public static final String TARGET_TYPE_SCREENSHOT_LEGACY = "screenshot_legacy";
 
-    private SearchTarget mSearchTarget;
+    private SearchTargetLegacy mSearchTarget;
 
     public ThumbnailSearchResultView(Context context) {
         super(context);
@@ -72,11 +72,11 @@ public class ThumbnailSearchResultView extends androidx.appcompat.widget.AppComp
             ItemClickHandler.onClickAppShortcut(this, (WorkspaceItemInfo) itemInfo, launcher);
         }
         SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(
-                new SearchTargetEvent.Builder(mSearchTarget, eventType).build());
+                new SearchTargetEventLegacy.Builder(mSearchTarget, eventType).build());
     }
 
     @Override
-    public void applySearchTarget(SearchTarget target) {
+    public void applySearchTarget(SearchTargetLegacy target) {
         mSearchTarget = target;
         Bitmap bitmap;
         if (target.getRemoteAction() != null) {
@@ -108,7 +108,7 @@ public class ThumbnailSearchResultView extends androidx.appcompat.widget.AppComp
         RoundedBitmapDrawable drawable = RoundedBitmapDrawableFactory.create(null, bitmap);
         drawable.setCornerRadius(Themes.getDialogCornerRadius(getContext()));
         setImageDrawable(drawable);
-        setOnClickListener(v -> handleSelection(SearchTargetEvent.SELECT));
+        setOnClickListener(v -> handleSelection(SearchTargetEventLegacy.SELECT));
         SearchEventTracker.INSTANCE.get(getContext()).registerWeakHandler(target, this);
     }
 }

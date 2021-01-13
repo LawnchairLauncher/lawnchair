@@ -32,8 +32,8 @@ import androidx.slice.widget.SliceView;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.systemui.plugins.shared.SearchTarget;
-import com.android.systemui.plugins.shared.SearchTargetEvent;
+import com.android.systemui.plugins.shared.SearchTargetEventLegacy;
+import com.android.systemui.plugins.shared.SearchTargetLegacy;
 
 /**
  * A slice view wrapper with settings app icon at start
@@ -50,7 +50,7 @@ public class SearchResultSettingsSlice extends LinearLayout implements
     private SliceView mSliceView;
     private View mIcon;
     private LiveData<Slice> mSliceLiveData;
-    private SearchTarget mSearchTarget;
+    private SearchTargetLegacy mSearchTarget;
     private final Launcher mLauncher;
 
     public SearchResultSettingsSlice(Context context) {
@@ -77,7 +77,7 @@ public class SearchResultSettingsSlice extends LinearLayout implements
     }
 
     @Override
-    public void applySearchTarget(SearchTarget searchTarget) {
+    public void applySearchTarget(SearchTargetLegacy searchTarget) {
         reset();
         mSearchTarget = searchTarget;
         try {
@@ -103,8 +103,8 @@ public class SearchResultSettingsSlice extends LinearLayout implements
     @Override
     public void handleSelection(int eventType) {
         SearchEventTracker.INSTANCE.get(mLauncher).notifySearchTargetEvent(
-                new SearchTargetEvent.Builder(mSearchTarget,
-                        SearchTargetEvent.CHILD_SELECT).build());
+                new SearchTargetEventLegacy.Builder(mSearchTarget,
+                        SearchTargetEventLegacy.CHILD_SELECT).build());
     }
 
     private void reset() {
@@ -116,7 +116,7 @@ public class SearchResultSettingsSlice extends LinearLayout implements
 
     @Override
     public void onSliceAction(@NonNull EventInfo eventInfo, @NonNull SliceItem sliceItem) {
-        handleSelection(SearchTargetEvent.CHILD_SELECT);
+        handleSelection(SearchTargetEventLegacy.CHILD_SELECT);
     }
 
     private Uri getSliceUri() {
