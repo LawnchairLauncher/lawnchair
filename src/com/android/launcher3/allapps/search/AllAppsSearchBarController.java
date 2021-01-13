@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.allapps.search;
 
-import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -36,7 +35,6 @@ import com.android.launcher3.util.PackageManagerHelper;
 import com.android.systemui.plugins.AllAppsSearchPlugin;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -62,7 +60,7 @@ public class AllAppsSearchBarController
      */
     public final void initialize(
             SearchAlgorithm searchAlgorithm, ExtendedEditText input,
-            BaseDraggingActivity launcher, Callbacks cb, Consumer<List<Bundle>> secondaryCb) {
+            BaseDraggingActivity launcher, Callbacks cb) {
         mCb = cb;
         mLauncher = launcher;
 
