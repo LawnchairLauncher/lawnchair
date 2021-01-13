@@ -41,13 +41,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.R;
-import com.android.launcher3.allapps.search.AllAppsSearchBarController.SearchTargetHandler;
+import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.allapps.search.SearchSectionInfo;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.util.PackageManagerHelper;
-import com.android.launcher3.views.SearchResultWidget;
-import com.android.systemui.plugins.shared.SearchTarget;
 
 import java.util.List;
 
@@ -72,31 +70,11 @@ public class AllAppsGridAdapter extends
     // A divider that separates the apps list and the search market button
     public static final int VIEW_TYPE_ALL_APPS_DIVIDER = 1 << 4;
 
-    public static final int VIEW_TYPE_SEARCH_CORPUS_TITLE = 1 << 5;
-
-    public static final int VIEW_TYPE_SEARCH_ROW_WITH_BUTTON = 1 << 7;
-
-    public static final int VIEW_TYPE_SEARCH_ROW = 1 << 8;
-
-    public static final int VIEW_TYPE_SEARCH_SLICE = 1 << 9;
-
-    public static final int VIEW_TYPE_SEARCH_ICON_ROW = 1 << 10;
-
-    public static final int VIEW_TYPE_SEARCH_PEOPLE = 1 << 11;
-
-    public static final int VIEW_TYPE_SEARCH_THUMBNAIL = 1 << 12;
-
-    public static final int VIEW_TYPE_SEARCH_SUGGEST = 1 << 13;
-
-    public static final int VIEW_TYPE_SEARCH_ICON = 1 << 14;
-
-    public static final int VIEW_TYPE_SEARCH_WIDGET_LIVE = 1 << 15;
-
-    public static final int VIEW_TYPE_SEARCH_WIDGET_PREVIEW = 1 << 16;
-
     // Common view type masks
     public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_ALL_APPS_DIVIDER;
-    public static final int VIEW_TYPE_MASK_ICON = VIEW_TYPE_ICON | VIEW_TYPE_SEARCH_ICON;
+    public static final int VIEW_TYPE_MASK_ICON = VIEW_TYPE_ICON;
+
+    private final SearchAdapterProvider mSearchAdapterProvider;
 
     /**
      * ViewHolder for each icon.
@@ -177,32 +155,8 @@ public class AllAppsGridAdapter extends
             return item;
         }
 
-        boolean isCountedForAccessibility() {
-            return viewType == VIEW_TYPE_ICON
-                    || viewType == VIEW_TYPE_SEARCH_ROW_WITH_BUTTON
-                    || viewType == VIEW_TYPE_SEARCH_SLICE
-                    || viewType == VIEW_TYPE_SEARCH_ROW
-                    || viewType == VIEW_TYPE_SEARCH_PEOPLE
-                    || viewType == VIEW_TYPE_SEARCH_THUMBNAIL
-                    || viewType == VIEW_TYPE_SEARCH_ICON_ROW
-                    || viewType == VIEW_TYPE_SEARCH_ICON
-                    || viewType == VIEW_TYPE_SEARCH_SUGGEST;
-        }
-    }
-
-    /**
-     * Extension of AdapterItem that contains an extra payload specific to item
-     */
-    public static class SearchAdapterItem extends AdapterItem {
-        private SearchTarget mSearchTarget;
-
-        public SearchAdapterItem(SearchTarget searchTarget, int type) {
-            mSearchTarget = searchTarget;
-            viewType = type;
-        }
-
-        public SearchTarget getSearchTarget() {
-            return mSearchTarget;
+        protected boolean isCountedForAccessibility() {
+            return viewType == VIEW_TYPE_ICON || viewType == VIEW_TYPE_SEARCH_MARKET;
         }
     }
 
@@ -289,9 +243,8 @@ public class AllAppsGridAdapter extends
             int viewType = mApps.getAdapterItems().get(position).viewType;
             if (isIconViewType(viewType)) {
                 return 1 * SPAN_MULTIPLIER;
-            } else if (viewType == VIEW_TYPE_SEARCH_THUMBNAIL
-                    || viewType == VIEW_TYPE_SEARCH_WIDGET_PREVIEW) {
-                return mAppsPerRow;
+            } else if (mSearchAdapterProvider.isSearchView(viewType)) {
+                return mSearchAdapterProvider.getGridSpanSize(viewType, mAppsPerRow);
             } else {
                 // Section breaks span the full width
                 return mAppsPerRow * SPAN_MULTIPLIER;
@@ -321,7 +274,7 @@ public class AllAppsGridAdapter extends
     private Intent mMarketSearchIntent;
 
     public AllAppsGridAdapter(BaseDraggingActivity launcher, LayoutInflater inflater,
-            AlphabeticalAppsList apps) {
+            AlphabeticalAppsList apps, SearchAdapterProvider searchAdapterProvider) {
         Resources res = launcher.getResources();
         mLauncher = launcher;
         mApps = apps;
@@ -334,6 +287,8 @@ public class AllAppsGridAdapter extends
         mOnIconClickListener = launcher.getItemOnClickListener();
 
         setAppsPerRow(mLauncher.getDeviceProfile().inv.numAllAppsColumns);
+
+        mSearchAdapterProvider = searchAdapterProvider;
     }
 
     public void setAppsPerRow(int appsPerRow) {
@@ -406,40 +361,11 @@ public class AllAppsGridAdapter extends
             case VIEW_TYPE_ALL_APPS_DIVIDER:
                 return new ViewHolder(mLayoutInflater.inflate(
                         R.layout.all_apps_divider, parent, false));
-            case VIEW_TYPE_SEARCH_ICON:
-                return new ViewHolder(mLayoutInflater.inflate(
-                        R.layout.search_result_icon, parent, false));
-            case VIEW_TYPE_SEARCH_CORPUS_TITLE:
-                return new ViewHolder(
-                        mLayoutInflater.inflate(R.layout.search_section_title, parent, false));
-            case VIEW_TYPE_SEARCH_ROW_WITH_BUTTON:
-                return new ViewHolder(mLayoutInflater.inflate(
-                        R.layout.search_result_play_item, parent, false));
-            case VIEW_TYPE_SEARCH_ROW:
-                return new ViewHolder(mLayoutInflater.inflate(
-                        R.layout.search_result_settings_row, parent, false));
-            case VIEW_TYPE_SEARCH_SLICE:
-                return new ViewHolder(mLayoutInflater.inflate(
-                        R.layout.search_result_slice, parent, false));
-            case VIEW_TYPE_SEARCH_ICON_ROW:
-                return new ViewHolder(mLayoutInflater.inflate(
-                        R.layout.search_result_icon_row, parent, false));
-            case VIEW_TYPE_SEARCH_PEOPLE:
-                return new ViewHolder(mLayoutInflater.inflate(
-                        R.layout.search_result_people_item, parent, false));
-            case VIEW_TYPE_SEARCH_THUMBNAIL:
-                return new ViewHolder(mLayoutInflater.inflate(
-                        R.layout.search_result_thumbnail, parent, false));
-            case VIEW_TYPE_SEARCH_SUGGEST:
-                return new ViewHolder(mLayoutInflater.inflate(
-                        R.layout.search_result_suggest, parent, false));
-            case VIEW_TYPE_SEARCH_WIDGET_LIVE:
-                return new ViewHolder(mLayoutInflater.inflate(
-                        R.layout.search_result_widget_live, parent, false));
-            case VIEW_TYPE_SEARCH_WIDGET_PREVIEW:
-                return new ViewHolder(mLayoutInflater.inflate(
-                        R.layout.search_result_widget_preview, parent, false));
             default:
+                if (mSearchAdapterProvider.isSearchView(viewType)) {
+                    return mSearchAdapterProvider.onCreateViewHolder(mLayoutInflater, parent,
+                            viewType);
+                }
                 throw new RuntimeException("Unexpected view type");
         }
     }
@@ -472,25 +398,11 @@ public class AllAppsGridAdapter extends
                     searchView.setVisibility(View.GONE);
                 }
                 break;
-            case VIEW_TYPE_SEARCH_CORPUS_TITLE:
-            case VIEW_TYPE_SEARCH_ROW_WITH_BUTTON:
-            case VIEW_TYPE_SEARCH_SLICE:
-            case VIEW_TYPE_SEARCH_ROW:
-            case VIEW_TYPE_SEARCH_ICON:
-            case VIEW_TYPE_SEARCH_ICON_ROW:
-            case VIEW_TYPE_SEARCH_PEOPLE:
-            case VIEW_TYPE_SEARCH_THUMBNAIL:
-            case VIEW_TYPE_SEARCH_SUGGEST:
-            case VIEW_TYPE_SEARCH_WIDGET_LIVE:
-            case VIEW_TYPE_SEARCH_WIDGET_PREVIEW:
-                SearchAdapterItem item =
-                        (SearchAdapterItem) mApps.getAdapterItems().get(position);
-                SearchTargetHandler payloadResultView = (SearchTargetHandler) holder.itemView;
-                payloadResultView.applySearchTarget(item.getSearchTarget());
-                break;
             case VIEW_TYPE_ALL_APPS_DIVIDER:
                 // nothing to do
                 break;
+            default:
+                mSearchAdapterProvider.onBindView(holder, position);
         }
     }
 
@@ -500,9 +412,6 @@ public class AllAppsGridAdapter extends
         if (!FeatureFlags.ENABLE_DEVICE_SEARCH.get()) return;
         if (holder.itemView instanceof AllAppsSectionDecorator.SelfDecoratingView) {
             ((AllAppsSectionDecorator.SelfDecoratingView) holder.itemView).removeDecoration();
-        }
-        if (holder.itemView instanceof SearchResultWidget) {
-            ((SearchResultWidget) holder.itemView).removeListener();
         }
     }
 

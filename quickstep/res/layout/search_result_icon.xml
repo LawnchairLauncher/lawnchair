@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2020 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2008 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,13 +12,9 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher3.views.SearchSectionHeaderView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/section_title"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    style="@style/TextHeadline"
-    android:paddingStart="4dp"
-    android:paddingBottom="2dp"
-    android:paddingTop="12dp"
-    android:textColor="?android:attr/textColorPrimary"
-    android:textSize="18sp" />
+
+<com.android.launcher3.search.SearchResultIcon xmlns:launcher="http://schemas.android.com/apk/res-auto"
+    style="@style/BaseIcon.AllApps"
+    launcher:iconDisplay="all_apps"
+    launcher:centerVertically="true" />
+

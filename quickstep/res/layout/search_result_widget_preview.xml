@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.android.launcher3.views.SearchResultWidgetPreview xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.launcher3.search.SearchResultWidgetPreview xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:padding="@dimen/dynamic_grid_cell_padding_x"
     android:layout_height="wrap_content">
     <include layout="@layout/widget_cell" android:id="@+id/widget_cell"/>
 <!--    <include layout="@layout/widget_cell_content" />-->
-</com.android.launcher3.views.SearchResultWidgetPreview>
+</com.android.launcher3.search.SearchResultWidgetPreview>

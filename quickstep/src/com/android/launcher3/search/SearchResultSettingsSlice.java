@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.views;
+package com.android.launcher3.search;
 
 import android.content.Context;
 import android.net.Uri;
@@ -32,8 +32,6 @@ import androidx.slice.widget.SliceView;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.allapps.search.AllAppsSearchBarController;
-import com.android.launcher3.allapps.search.SearchEventTracker;
 import com.android.systemui.plugins.shared.SearchTarget;
 import com.android.systemui.plugins.shared.SearchTargetEvent;
 
@@ -41,7 +39,7 @@ import com.android.systemui.plugins.shared.SearchTargetEvent;
  * A slice view wrapper with settings app icon at start
  */
 public class SearchResultSettingsSlice extends LinearLayout implements
-        AllAppsSearchBarController.SearchTargetHandler, SliceView.OnSliceActionListener {
+        SearchTargetHandler, SliceView.OnSliceActionListener {
 
 
     public static final String TARGET_TYPE_SLICE = "settings_slice";

@@ -13,7 +13,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher3.views.SearchResultPlayItem xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.launcher3.search.SearchResultPlayItem xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="4dp"
@@ -76,4 +76,4 @@
     </Button>
 
 
-</com.android.launcher3.views.SearchResultPlayItem>
+</com.android.launcher3.search.SearchResultPlayItem>

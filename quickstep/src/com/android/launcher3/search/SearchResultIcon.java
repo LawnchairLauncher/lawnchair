@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.views;
+package com.android.launcher3.search;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
@@ -34,8 +34,6 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.allapps.AllAppsStore;
-import com.android.launcher3.allapps.search.AllAppsSearchBarController;
-import com.android.launcher3.allapps.search.SearchEventTracker;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.model.data.AppInfo;
@@ -53,7 +51,7 @@ import java.util.function.Consumer;
  * A {@link BubbleTextView} representing a single cell result in AllApps
  */
 public class SearchResultIcon extends BubbleTextView implements
-        AllAppsSearchBarController.SearchTargetHandler, View.OnClickListener,
+        SearchTargetHandler, View.OnClickListener,
         View.OnLongClickListener {
 
 

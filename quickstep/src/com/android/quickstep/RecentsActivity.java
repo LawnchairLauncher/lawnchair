@@ -45,6 +45,7 @@ import com.android.launcher3.LauncherAnimationRunner.AnimationResult;
 import com.android.launcher3.R;
 import com.android.launcher3.WrappedAnimationRunnerImpl;
 import com.android.launcher3.WrappedLauncherAnimationRunner;
+import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
@@ -91,6 +92,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
 
     // Strong refs to runners which are cleared when the activity is destroyed
     private WrappedAnimationRunnerImpl mActivityLaunchAnimationRunner;
+    private SearchAdapterProvider mSearchAdapterProvider;
 
     /**
      * Init drag layer and overview panel views.
