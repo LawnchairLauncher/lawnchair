@@ -17,6 +17,8 @@ package com.android.launcher3.search;
 
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
+import android.app.search.SearchAction;
+import android.app.search.SearchTarget;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -27,8 +29,6 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
-import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,12 +43,11 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.util.Themes;
-import com.android.systemui.plugins.shared.SearchTargetEventLegacy;
-import com.android.systemui.plugins.shared.SearchTargetLegacy;
 
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.List;
 
 /**
  * A View representing a PlayStore item.
@@ -67,9 +66,8 @@ public class SearchResultPlayItem extends LinearLayout implements
     private TextView[] mDetailViews = new TextView[3];
     private Button mPreviewButton;
     private String mPackageName;
-    private boolean mIsInstantGame;
-
-    private SearchTargetLegacy mSearchTarget;
+    private Intent mIntent;
+    private Intent mSecondaryIntent;
 
 
     public SearchResultPlayItem(Context context) {
@@ -93,7 +91,7 @@ public class SearchResultPlayItem extends LinearLayout implements
         mIconView = findViewById(R.id.icon);
         mTitleView = findViewById(R.id.title_view);
         mPreviewButton = findViewById(R.id.try_button);
-        mPreviewButton.setOnClickListener(view -> launchInstantGame());
+        mPreviewButton.setOnClickListener(view -> launchIntent(mSecondaryIntent));
         mDetailViews[0] = findViewById(R.id.detail_0);
         mDetailViews[1] = findViewById(R.id.detail_1);
         mDetailViews[2] = findViewById(R.id.detail_2);
@@ -101,9 +99,59 @@ public class SearchResultPlayItem extends LinearLayout implements
         ViewGroup.LayoutParams iconParams = mIconView.getLayoutParams();
         iconParams.height = mDeviceProfile.allAppsIconSizePx;
         iconParams.width = mDeviceProfile.allAppsIconSizePx;
-        setOnClickListener(view -> handleSelection(SearchTargetEventLegacy.SELECT));
+        setOnClickListener(view -> launchIntent(mIntent));
     }
 
+    private void showIfNecessary(TextView textView, @Nullable String string) {
+        if (string == null || string.isEmpty()) {
+            textView.setVisibility(GONE);
+        } else {
+            textView.setText(string);
+            textView.setVisibility(VISIBLE);
+        }
+    }
+
+    private void launchIntent(Intent intent) {
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getContext().startActivity(intent);
+    }
+
+    @Override
+    public void applySearchTarget(SearchTarget parentTarget, List<SearchTarget> children) {
+        if (parentTarget.getPackageName().equals(mPackageName)) {
+            return;
+        }
+        mPackageName = parentTarget.getPackageName();
+        SearchAction action = parentTarget.getSearchAction();
+        mTitleView.setText(action.getTitle());
+        showIfNecessary(mDetailViews[0], action.getSubtitle().toString());
+        mIntent = action.getIntent();
+
+        mIconView.setBackgroundResource(R.drawable.ic_deepshortcut_placeholder);
+        loadIcon(action.getIcon().getUri().toString());
+
+        mSecondaryIntent = children.size() == 1 ? children.get(0).getSearchAction().getIntent()
+                : null;
+        mPreviewButton.setVisibility(mSecondaryIntent == null ? GONE : VISIBLE);
+    }
+
+    private void loadIcon(String iconUrl) {
+        UI_HELPER_EXECUTOR.execute(() -> {
+            try {
+                URL url = new URL(iconUrl);
+                URLConnection con = url.openConnection();
+                con.addRequestProperty("Cache-Control", "max-age: 0");
+                con.setUseCaches(true);
+                Bitmap bitmap = BitmapFactory.decodeStream(con.getInputStream());
+                BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(), getRoundedBitmap(
+                        Bitmap.createScaledBitmap(bitmap, mDeviceProfile.allAppsIconSizePx,
+                                mDeviceProfile.allAppsIconSizePx, false)));
+                mIconView.post(() -> mIconView.setBackground(bitmapDrawable));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
 
     private Bitmap getRoundedBitmap(Bitmap bitmap) {
         final int iconSize = bitmap.getWidth();
@@ -123,81 +171,5 @@ public class SearchResultPlayItem extends LinearLayout implements
             canvas.drawBitmap(bitmap, mTempRect, mTempRect, mIconPaint);
         });
         return output;
-    }
-
-
-    @Override
-    public void applySearchTarget(SearchTargetLegacy searchTarget) {
-        mSearchTarget = searchTarget;
-        Bundle bundle = searchTarget.getExtras();
-        SearchEventTracker.INSTANCE.get(getContext()).registerWeakHandler(searchTarget, this);
-        if (bundle.getString("package", "").equals(mPackageName)) {
-            return;
-        }
-        mIsInstantGame = bundle.getBoolean("instant_game", false);
-        mPackageName = bundle.getString("package");
-        mPreviewButton.setVisibility(mIsInstantGame ? VISIBLE : GONE);
-        mTitleView.setText(bundle.getString("title"));
-//        TODO: Should use a generic type to get values b/165320033
-        showIfNecessary(mDetailViews[0], bundle.getString("price"));
-        showIfNecessary(mDetailViews[1], bundle.getString("rating"));
-
-        mIconView.setBackgroundResource(R.drawable.ic_deepshortcut_placeholder);
-        UI_HELPER_EXECUTOR.execute(() -> {
-            try {
-                URL url = new URL(bundle.getString("icon_url"));
-                URLConnection con = url.openConnection();
-//                TODO: monitor memory and investigate if it's better to use glide
-                con.addRequestProperty("Cache-Control", "max-age: 0");
-                con.setUseCaches(true);
-                Bitmap bitmap = BitmapFactory.decodeStream(con.getInputStream());
-                BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(), getRoundedBitmap(
-                        Bitmap.createScaledBitmap(bitmap, mDeviceProfile.allAppsIconSizePx,
-                                mDeviceProfile.allAppsIconSizePx, false)));
-                mIconView.post(() -> mIconView.setBackground(bitmapDrawable));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
-    private void showIfNecessary(TextView textView, @Nullable String string) {
-        if (string == null || string.isEmpty()) {
-            textView.setVisibility(GONE);
-        } else {
-            textView.setText(string);
-            textView.setVisibility(VISIBLE);
-        }
-    }
-
-    @Override
-    public void handleSelection(int eventType) {
-        if (mPackageName == null) return;
-        Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(
-                "https://play.google.com/store/apps/details?id="
-                        + mPackageName));
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        getContext().startActivity(i);
-        logSearchEvent(eventType);
-    }
-
-    private void launchInstantGame() {
-        if (!mIsInstantGame) return;
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        String referrer = "Pixel_Launcher";
-        String id = mPackageName;
-        String deepLinkUrl = "market://details?id=" + id + "&launch=true&referrer=" + referrer;
-        intent.setPackage("com.android.vending");
-        intent.setData(Uri.parse(deepLinkUrl));
-        intent.putExtra("overlay", true);
-        intent.putExtra("callerId", getContext().getPackageName());
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        getContext().startActivity(intent);
-        logSearchEvent(SearchTargetEventLegacy.CHILD_SELECT);
-    }
-
-    private void logSearchEvent(int eventType) {
-        SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(
-                new SearchTargetEventLegacy.Builder(mSearchTarget, eventType).build());
     }
 }

@@ -32,12 +32,16 @@ import android.app.search.SearchTarget;
 import com.android.launcher3.allapps.AllAppsGridAdapter;
 import com.android.systemui.plugins.shared.SearchTargetLegacy;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Extension of AdapterItem that contains an extra payload specific to item
  */
 public class SearchAdapterItem extends AllAppsGridAdapter.AdapterItem {
     private SearchTargetLegacy mSearchTargetLegacy;
     private SearchTarget mSearchTarget;
+    private List<SearchTarget> mInlineItems = new ArrayList<>();
 
 
     private static final int AVAILABLE_FOR_ACCESSIBILITY = VIEW_TYPE_SEARCH_ROW_WITH_BUTTON
@@ -65,6 +69,9 @@ public class SearchAdapterItem extends AllAppsGridAdapter.AdapterItem {
         return mSearchTarget;
     }
 
+    public List<SearchTarget> getInlineItems() {
+        return mInlineItems;
+    }
     @Override
     protected boolean isCountedForAccessibility() {
         return (AVAILABLE_FOR_ACCESSIBILITY & viewType) == viewType;
