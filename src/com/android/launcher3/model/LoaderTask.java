@@ -69,6 +69,7 @@ import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -591,11 +592,24 @@ public class LoaderTask implements Runnable {
                                 if (c.restoreFlag != 0 && !TextUtils.isEmpty(targetPkg)) {
                                     tempPackageKey.update(targetPkg, c.user);
                                     SessionInfo si = installingPkgs.get(tempPackageKey);
-                                    if (si == null) {
-                                        info.status &= ~WorkspaceItemInfo.FLAG_INSTALL_SESSION_ACTIVE;
-                                    } else {
-                                        info.setInstallProgress((int) (si.getProgress() * 100));
-                                    }
+                                        LauncherActivityInfo activityInfo =
+                                                c.getLauncherActivityInfo();
+                                        if (si == null) {
+                                            info.runtimeStatusFlags &=
+                                                    ~ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE;
+                                        } else if (activityInfo == null) {
+                                            int installProgress = (int) (si.getProgress() * 100);
+
+                                            info.setProgressLevel(
+                                                    installProgress,
+                                                    PackageInstallInfo.STATUS_INSTALLING);
+                                        } else {
+                                            info.setProgressLevel(
+                                                    PackageManagerHelper
+                                                            .getLoadingProgress(activityInfo),
+                                                    PackageInstallInfo
+                                                            .STATUS_INSTALLED_DOWNLOADING);
+                                        }
                                 }
 
                                 c.checkAndAddItem(info, mBgDataModel);
