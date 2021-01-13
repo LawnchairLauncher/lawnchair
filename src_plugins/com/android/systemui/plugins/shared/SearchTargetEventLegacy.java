@@ -19,8 +19,11 @@ import android.os.Bundle;
 
 /**
  * Event used for the feedback loop to the plugin. (and future aiai)
+ *
+ * @deprecated Use SearchTargetEvent
  */
-public class SearchTargetEvent {
+@Deprecated
+public class SearchTargetEventLegacy {
     public static final int POSITION_NONE = -1;
 
     public static final int SELECT = 0;
@@ -28,12 +31,13 @@ public class SearchTargetEvent {
     public static final int LONG_PRESS = 2;
     public static final int CHILD_SELECT = 3;
 
-    private final SearchTarget mSearchTarget;
+    private final SearchTargetLegacy mSearchTarget;
     private final int mEventType;
     private final int mShortcutPosition;
     private final Bundle mExtras;
 
-    public SearchTargetEvent(SearchTarget searchTarget, int eventType, int shortcutPosition,
+    public SearchTargetEventLegacy(SearchTargetLegacy searchTarget, int eventType,
+            int shortcutPosition,
             Bundle extras) {
         mSearchTarget = searchTarget;
         mEventType = eventType;
@@ -42,7 +46,7 @@ public class SearchTargetEvent {
     }
 
 
-    public SearchTarget getSearchTarget() {
+    public SearchTargetLegacy getSearchTarget() {
         return mSearchTarget;
     }
 
@@ -59,15 +63,15 @@ public class SearchTargetEvent {
     }
 
     /**
-     * A builder for {@link SearchTarget}
+     * A builder for {@link SearchTargetLegacy}
      */
     public static final class Builder {
-        private final SearchTarget mSearchTarget;
+        private final SearchTargetLegacy mSearchTarget;
         private final int mEventType;
         private int mShortcutPosition = POSITION_NONE;
         private Bundle mExtras;
 
-        public Builder(SearchTarget searchTarget, int eventType) {
+        public Builder(SearchTargetLegacy searchTarget, int eventType) {
             mSearchTarget = searchTarget;
             mEventType = eventType;
         }
@@ -82,8 +86,9 @@ public class SearchTargetEvent {
             return this;
         }
 
-        public SearchTargetEvent build() {
-            return new SearchTargetEvent(mSearchTarget, mEventType, mShortcutPosition, mExtras);
+        public SearchTargetEventLegacy build() {
+            return new SearchTargetEventLegacy(mSearchTarget, mEventType, mShortcutPosition,
+                    mExtras);
         }
     }
 

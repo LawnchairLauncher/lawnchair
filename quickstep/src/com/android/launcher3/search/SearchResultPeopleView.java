@@ -44,8 +44,8 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.LauncherIcons;
-import com.android.systemui.plugins.shared.SearchTarget;
-import com.android.systemui.plugins.shared.SearchTargetEvent;
+import com.android.systemui.plugins.shared.SearchTargetEventLegacy;
+import com.android.systemui.plugins.shared.SearchTargetLegacy;
 
 import java.util.ArrayList;
 
@@ -66,7 +66,7 @@ public class SearchResultPeopleView extends LinearLayout implements
     private Intent mIntent;
 
 
-    private SearchTarget mSearchTarget;
+    private SearchTargetLegacy mSearchTarget;
 
     public SearchResultPeopleView(Context context) {
         this(context, null, 0);
@@ -99,11 +99,11 @@ public class SearchResultPeopleView extends LinearLayout implements
             button.getLayoutParams().width = mButtonSize;
             button.getLayoutParams().height = mButtonSize;
         }
-        setOnClickListener(v -> handleSelection(SearchTargetEvent.SELECT));
+        setOnClickListener(v -> handleSelection(SearchTargetEventLegacy.SELECT));
     }
 
     @Override
-    public void applySearchTarget(SearchTarget searchTarget) {
+    public void applySearchTarget(SearchTargetLegacy searchTarget) {
         mSearchTarget = searchTarget;
         Bundle payload = searchTarget.getExtras();
         mTitleView.setText(payload.getString("title"));
@@ -186,8 +186,8 @@ public class SearchResultPeopleView extends LinearLayout implements
             Bundle bundle = new Bundle();
             bundle.putBundle("provider", provider);
             SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(
-                    new SearchTargetEvent.Builder(mSearchTarget,
-                            SearchTargetEvent.CHILD_SELECT).setExtras(bundle).build());
+                    new SearchTargetEventLegacy.Builder(mSearchTarget,
+                            SearchTargetEventLegacy.CHILD_SELECT).setExtras(bundle).build());
         });
     }
 
@@ -197,7 +197,7 @@ public class SearchResultPeopleView extends LinearLayout implements
             Launcher launcher = Launcher.getLauncher(getContext());
             launcher.startActivitySafely(this, mIntent, null);
             SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(
-                    new SearchTargetEvent.Builder(mSearchTarget, eventType).build());
+                    new SearchTargetEventLegacy.Builder(mSearchTarget, eventType).build());
         }
     }
 }
