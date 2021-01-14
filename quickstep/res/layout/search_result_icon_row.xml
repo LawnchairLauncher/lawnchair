@@ -12,14 +12,14 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher3.views.SearchResultIconRow xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.launcher3.search.SearchResultIconRow xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="@dimen/dynamic_grid_edge_margin">
 
-    <com.android.launcher3.views.SearchResultIcon
+    <com.android.launcher3.search.SearchResultIcon
         android:layout_width="wrap_content"
         android:id="@+id/icon"
         launcher:iconDisplay="hero_app"
@@ -73,4 +73,4 @@
         launcher:iconSizeOverride="@dimen/deep_shortcut_icon_size"
         launcher:layoutHorizontal="false" />
 
-</com.android.launcher3.views.SearchResultIconRow>
+</com.android.launcher3.search.SearchResultIconRow>

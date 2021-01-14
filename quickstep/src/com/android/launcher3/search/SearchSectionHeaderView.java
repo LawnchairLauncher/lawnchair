@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.views;
+package com.android.launcher3.search;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -21,14 +21,13 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.allapps.search.AllAppsSearchBarController;
-import com.android.systemui.plugins.shared.SearchTarget;
+import com.android.systemui.plugins.shared.SearchTargetLegacy;
 
 /**
  * Header text view that shows a title for a given section in All apps search
  */
 public class SearchSectionHeaderView extends TextView implements
-        AllAppsSearchBarController.SearchTargetHandler {
+        SearchTargetHandler {
     public static final String TARGET_TYPE_SECTION_HEADER = "section_header";
 
     public SearchSectionHeaderView(Context context) {
@@ -45,7 +44,7 @@ public class SearchSectionHeaderView extends TextView implements
     }
 
     @Override
-    public void applySearchTarget(SearchTarget searchTarget) {
+    public void applySearchTarget(SearchTargetLegacy searchTarget) {
         String title = searchTarget.getExtras().getString("title");
         if (title == null || !title.isEmpty()) {
             setText(title);

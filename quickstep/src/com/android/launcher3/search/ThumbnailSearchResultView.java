@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.views;
+package com.android.launcher3.search;
 
 
-import static com.android.launcher3.views.SearchResultIcon.REMOTE_ACTION_SHOULD_START;
-import static com.android.launcher3.views.SearchResultIcon.REMOTE_ACTION_TOKEN;
+import static com.android.launcher3.search.SearchResultIcon.REMOTE_ACTION_SHOULD_START;
+import static com.android.launcher3.search.SearchResultIcon.REMOTE_ACTION_TOKEN;
 
 import android.content.Context;
 import android.content.Intent;
@@ -30,26 +30,24 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import com.android.launcher3.Launcher;
-import com.android.launcher3.allapps.search.AllAppsSearchBarController;
-import com.android.launcher3.allapps.search.SearchEventTracker;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.RemoteActionItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.Themes;
-import com.android.systemui.plugins.shared.SearchTarget;
-import com.android.systemui.plugins.shared.SearchTargetEvent;
+import com.android.systemui.plugins.shared.SearchTargetEventLegacy;
+import com.android.systemui.plugins.shared.SearchTargetLegacy;
 
 /**
  * A view representing a high confidence app search result that includes shortcuts
  */
 public class ThumbnailSearchResultView extends androidx.appcompat.widget.AppCompatImageView
-        implements AllAppsSearchBarController.SearchTargetHandler {
+        implements SearchTargetHandler {
 
     public static final String TARGET_TYPE_SCREENSHOT = "screenshot";
     public static final String TARGET_TYPE_SCREENSHOT_LEGACY = "screenshot_legacy";
 
-    private SearchTarget mSearchTarget;
+    private SearchTargetLegacy mSearchTarget;
 
     public ThumbnailSearchResultView(Context context) {
         super(context);
@@ -74,11 +72,11 @@ public class ThumbnailSearchResultView extends androidx.appcompat.widget.AppComp
             ItemClickHandler.onClickAppShortcut(this, (WorkspaceItemInfo) itemInfo, launcher);
         }
         SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(
-                new SearchTargetEvent.Builder(mSearchTarget, eventType).build());
+                new SearchTargetEventLegacy.Builder(mSearchTarget, eventType).build());
     }
 
     @Override
-    public void applySearchTarget(SearchTarget target) {
+    public void applySearchTarget(SearchTargetLegacy target) {
         mSearchTarget = target;
         Bitmap bitmap;
         if (target.getRemoteAction() != null) {
@@ -110,7 +108,7 @@ public class ThumbnailSearchResultView extends androidx.appcompat.widget.AppComp
         RoundedBitmapDrawable drawable = RoundedBitmapDrawableFactory.create(null, bitmap);
         drawable.setCornerRadius(Themes.getDialogCornerRadius(getContext()));
         setImageDrawable(drawable);
-        setOnClickListener(v -> handleSelection(SearchTargetEvent.SELECT));
+        setOnClickListener(v -> handleSelection(SearchTargetEventLegacy.SELECT));
         SearchEventTracker.INSTANCE.get(getContext()).registerWeakHandler(target, this);
     }
 }

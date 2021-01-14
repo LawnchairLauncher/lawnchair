@@ -13,7 +13,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher3.views.ThumbnailSearchResultView
+<com.android.launcher3.search.ThumbnailSearchResultView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="125dp"
     android:layout_height="125dp"/>

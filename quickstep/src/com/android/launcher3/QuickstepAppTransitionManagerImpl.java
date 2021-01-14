@@ -763,7 +763,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         anim.addListener(new AnimationSuccessListener() {
             @Override
             public void onAnimationStart(Animator animation) {
-                InteractionJankMonitorWrapper.begin(cuj);
+                InteractionJankMonitorWrapper.begin(mDragLayer, cuj);
                 super.onAnimationStart(animation);
             }
 
