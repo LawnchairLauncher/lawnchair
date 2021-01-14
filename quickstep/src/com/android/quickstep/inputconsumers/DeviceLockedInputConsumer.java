@@ -19,6 +19,7 @@ import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
 
+import static com.android.launcher3.Utilities.createHomeIntent;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.Utilities.squaredTouchSlop;
 import static com.android.launcher3.util.VelocityUtils.PX_PER_MS;
@@ -203,9 +204,7 @@ public class DeviceLockedInputConsumer implements InputConsumer,
                 public void onAnimationEnd(Animator animation) {
                     if (dismissTask) {
                         // For now, just start the home intent so user is prompted to unlock the device.
-                        mContext.startActivity(new Intent(Intent.ACTION_MAIN)
-                                .addCategory(Intent.CATEGORY_HOME)
-                                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                        mContext.startActivity(createHomeIntent());
                         mHomeLaunched = true;
                     }
                     mStateCallback.setState(STATE_HANDLER_INVALIDATED);
