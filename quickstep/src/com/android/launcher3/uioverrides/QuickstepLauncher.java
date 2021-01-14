@@ -64,7 +64,7 @@ import com.android.launcher3.uioverrides.touchcontrollers.QuickSwitchTouchContro
 import com.android.launcher3.uioverrides.touchcontrollers.StatusBarTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.TaskViewTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.TransposedQuickSwitchTouchController;
-import com.android.launcher3.uioverrides.touchcontrollers.TwoButtonNavbarToOverviewTouchController;
+import com.android.launcher3.uioverrides.touchcontrollers.TwoButtonNavbarTouchController;
 import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.util.UiThreadHelper;
@@ -284,7 +284,7 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
                 list.add(new NoButtonNavbarToOverviewTouchController(this));
                 break;
             case TWO_BUTTONS:
-                list.add(new TwoButtonNavbarToOverviewTouchController(this));
+                list.add(new TwoButtonNavbarTouchController(this));
                 list.add(getDeviceProfile().isVerticalBarLayout()
                         ? new TransposedQuickSwitchTouchController(this)
                         : new QuickSwitchTouchController(this));
