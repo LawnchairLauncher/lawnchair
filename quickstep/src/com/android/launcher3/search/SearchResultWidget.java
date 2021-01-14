@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.views;
+package com.android.launcher3.search;
 
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
@@ -32,8 +32,6 @@ import com.android.launcher3.AppWidgetResizeFrame;
 import com.android.launcher3.CheckLongPressHelper;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.allapps.search.AllAppsSearchBarController;
-import com.android.launcher3.allapps.search.SearchEventTracker;
 import com.android.launcher3.allapps.search.SearchWidgetInfoContainer;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.touch.ItemLongClickListener;
@@ -46,7 +44,7 @@ import com.android.systemui.plugins.shared.SearchTargetEvent;
  * provider
  */
 public class SearchResultWidget extends RelativeLayout implements
-        AllAppsSearchBarController.SearchTargetHandler, DraggableView, View.OnLongClickListener {
+        SearchTargetHandler, DraggableView, View.OnLongClickListener {
 
     private static final String TAG = "SearchResultWidget";
 

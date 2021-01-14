@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.views;
+package com.android.launcher3.search;
 
 import static com.android.launcher3.FastBitmapDrawable.newIcon;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
@@ -37,8 +37,6 @@ import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
-import com.android.launcher3.allapps.search.AllAppsSearchBarController;
-import com.android.launcher3.allapps.search.SearchEventTracker;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.systemui.plugins.shared.SearchTarget;
 import com.android.systemui.plugins.shared.SearchTargetEvent;
@@ -50,7 +48,7 @@ import java.util.List;
  * A row of clickable TextViews with a breadcrumb for settings search.
  */
 public class SearchSettingsRowView extends LinearLayout implements
-        View.OnClickListener, AllAppsSearchBarController.SearchTargetHandler {
+        View.OnClickListener, SearchTargetHandler {
 
     public static final String TARGET_TYPE_SETTINGS_ROW = "settings_row";
 

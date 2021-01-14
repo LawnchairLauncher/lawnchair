@@ -16,7 +16,6 @@
 package com.android.launcher3.allapps;
 
 import static com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItem;
-import static com.android.launcher3.allapps.AllAppsGridAdapter.SearchAdapterItem;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_HAS_SHORTCUT_PERMISSION;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_CHANGE_PERMISSION;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_ENABLED;
@@ -57,7 +56,7 @@ import com.android.launcher3.Insettable;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.allapps.search.SearchEventTracker;
+import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
 import com.android.launcher3.model.data.AppInfo;
@@ -68,7 +67,6 @@ import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 import com.android.launcher3.views.SpringRelativeLayout;
-import com.android.systemui.plugins.shared.SearchTarget;
 
 /**
  * The all apps view container.
@@ -110,6 +108,8 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     private Rect mInsets = new Rect();
 
+    SearchAdapterProvider mSearchAdapterProvider;
+
     public AllAppsContainerView(Context context) {
         this(context, null);
     }
@@ -124,6 +124,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         mLauncher = BaseDraggingActivity.fromContext(context);
         mLauncher.addOnDeviceProfileChangeListener(this);
 
+        mSearchAdapterProvider = mLauncher.createSearchAdapterProvider();
         mSearchQueryBuilder = new SpannableStringBuilder();
         Selection.setSelection(mSearchQueryBuilder, 0);
 
@@ -141,6 +142,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         addSpringView(R.id.all_apps_tabs_view_pager);
 
         mMultiValueAlpha = new MultiValueAlpha(this, ALPHA_CHANNEL_COUNT);
+
     }
 
     /**
@@ -545,9 +547,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             return mLauncher.startActivitySafely(v, headerItem.getIntent(), headerItem);
         }
         AdapterItem focusedItem = getActiveRecyclerView().getApps().getFocusedChild();
-        if (focusedItem instanceof SearchAdapterItem) {
-            SearchTarget searchTarget = ((SearchAdapterItem) focusedItem).getSearchTarget();
-            SearchEventTracker.INSTANCE.get(getContext()).quickSelect(searchTarget);
+        if (mSearchAdapterProvider.onAdapterItemSelected(focusedItem)) {
             return true;
         }
         if (focusedItem.appInfo != null) {
@@ -677,7 +677,8 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         AdapterHolder(boolean isWork) {
             mIsWork = isWork;
             appsList = new AlphabeticalAppsList(mLauncher, mAllAppsStore, isWork);
-            adapter = new AllAppsGridAdapter(mLauncher, getLayoutInflater(), appsList);
+            adapter = new AllAppsGridAdapter(mLauncher, getLayoutInflater(), appsList,
+                    mSearchAdapterProvider);
             appsList.setAdapter(adapter);
             layoutManager = adapter.getLayoutManager();
         }

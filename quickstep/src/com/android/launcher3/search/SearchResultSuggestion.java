@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.views;
+package com.android.launcher3.search;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -22,6 +22,7 @@ import android.util.AttributeSet;
 import android.view.ViewGroup;
 
 import com.android.launcher3.R;
+import com.android.launcher3.views.BaseDragLayer;
 
 /**
  * {@link SearchResultIconRow} with custom drawable resource

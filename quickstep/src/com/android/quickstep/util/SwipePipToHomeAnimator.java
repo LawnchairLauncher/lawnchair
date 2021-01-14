@@ -28,6 +28,7 @@ import android.graphics.RectF;
 import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceControl;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 
@@ -91,7 +92,8 @@ public class SwipePipToHomeAnimator extends ValueAnimator implements
             @NonNull Rect sourceRectHint,
             @NonNull Rect appBounds,
             @NonNull Rect startBounds,
-            @NonNull Rect destinationBounds) {
+            @NonNull Rect destinationBounds,
+            @NonNull View view) {
         mTaskId = taskId;
         mComponentName = componentName;
         mLeash = leash;
@@ -110,7 +112,7 @@ public class SwipePipToHomeAnimator extends ValueAnimator implements
         addListener(new AnimationSuccessListener() {
             @Override
             public void onAnimationStart(Animator animation) {
-                InteractionJankMonitorWrapper.begin(CUJ_APP_CLOSE_TO_PIP);
+                InteractionJankMonitorWrapper.begin(view, CUJ_APP_CLOSE_TO_PIP);
                 super.onAnimationStart(animation);
             }
 

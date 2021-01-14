@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.allapps.search;
+package com.android.launcher3.search;
 
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
@@ -21,7 +21,6 @@ import android.content.Context;
 
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.allapps.search.AllAppsSearchBarController.SearchTargetHandler;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.systemui.plugins.AllAppsSearchPlugin;
 import com.android.systemui.plugins.shared.SearchTarget;

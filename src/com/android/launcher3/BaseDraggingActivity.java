@@ -43,6 +43,8 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.allapps.search.DefaultSearchAdapterProvider;
+import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.InstanceIdSequence;
 import com.android.launcher3.model.data.ItemInfo;
@@ -187,7 +189,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
                 logAppLaunch(item, instanceId);
             }
             return true;
-        } catch (NullPointerException|ActivityNotFoundException|SecurityException e) {
+        } catch (NullPointerException | ActivityNotFoundException | SecurityException e) {
             Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
             Log.e(TAG, "Unable to launch. tag=" + item + " intent=" + intent, e);
         }
@@ -289,5 +291,13 @@ public abstract class BaseDraggingActivity extends BaseActivity
         Point mwSize = new Point();
         display.getSize(mwSize);
         return new WindowBounds(new Rect(0, 0, mwSize.x, mwSize.y), new Rect());
+    }
+
+    /**
+     * Creates and returns {@link SearchAdapterProvider} for build variant specific search result
+     * views
+     */
+    public SearchAdapterProvider createSearchAdapterProvider() {
+        return new DefaultSearchAdapterProvider(this);
     }
 }

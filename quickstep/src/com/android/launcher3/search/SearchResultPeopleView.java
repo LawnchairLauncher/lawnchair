@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.views;
+package com.android.launcher3.search;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
@@ -42,8 +42,6 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.allapps.search.AllAppsSearchBarController;
-import com.android.launcher3.allapps.search.SearchEventTracker;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.systemui.plugins.shared.SearchTarget;
@@ -55,7 +53,7 @@ import java.util.ArrayList;
  * A view representing a single people search result in all apps
  */
 public class SearchResultPeopleView extends LinearLayout implements
-        AllAppsSearchBarController.SearchTargetHandler {
+        SearchTargetHandler {
 
     public static final String TARGET_TYPE_PEOPLE = "people";
 

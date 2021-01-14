@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.allapps.search;
 
-import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -34,10 +33,8 @@ import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItem;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.systemui.plugins.AllAppsSearchPlugin;
-import com.android.systemui.plugins.shared.SearchTarget;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -63,7 +60,7 @@ public class AllAppsSearchBarController
      */
     public final void initialize(
             SearchAlgorithm searchAlgorithm, ExtendedEditText input,
-            BaseDraggingActivity launcher, Callbacks cb, Consumer<List<Bundle>> secondaryCb) {
+            BaseDraggingActivity launcher, Callbacks cb) {
         mCb = cb;
         mLauncher = launcher;
 
@@ -209,24 +206,6 @@ public class AllAppsSearchBarController
          * Called when the search results should be cleared.
          */
         void clearSearchResult();
-    }
-
-    /**
-     * An interface for supporting dynamic search results
-     */
-    public interface SearchTargetHandler {
-
-        /**
-         * Update view using values from {@link SearchTarget}
-         */
-        void applySearchTarget(SearchTarget searchTarget);
-
-        /**
-         * Handles selection of SearchTarget
-         */
-        default void handleSelection(int eventType) {
-        }
-
     }
 
 

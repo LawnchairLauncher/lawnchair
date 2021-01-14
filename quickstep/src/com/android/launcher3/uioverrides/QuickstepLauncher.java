@@ -42,6 +42,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.appprediction.PredictionRowView;
 import com.android.launcher3.config.FeatureFlags;
@@ -51,6 +52,7 @@ import com.android.launcher3.logging.StatsLogManager.StatsLogger;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
+import com.android.launcher3.search.DeviceSearchAdapterProvider;
 import com.android.launcher3.statemanager.StateManager.AtomicAnimationFactory;
 import com.android.launcher3.uioverrides.states.QuickstepAtomicAnimationFactory;
 import com.android.launcher3.uioverrides.touchcontrollers.NavBarToHomeTouchController;
@@ -261,6 +263,11 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
             }
 
         }
+    }
+
+    @Override
+    public SearchAdapterProvider createSearchAdapterProvider() {
+        return new DeviceSearchAdapterProvider(this);
     }
 
     @Override

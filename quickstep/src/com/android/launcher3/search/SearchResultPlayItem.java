@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.views;
+package com.android.launcher3.search;
 
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
@@ -41,8 +41,6 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.allapps.search.AllAppsSearchBarController;
-import com.android.launcher3.allapps.search.SearchEventTracker;
 import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.util.Themes;
 import com.android.systemui.plugins.shared.SearchTarget;
@@ -56,7 +54,7 @@ import java.net.URLConnection;
  * A View representing a PlayStore item.
  */
 public class SearchResultPlayItem extends LinearLayout implements
-        AllAppsSearchBarController.SearchTargetHandler {
+        SearchTargetHandler {
 
     public static final String TARGET_TYPE_PLAY = "play";
 
