@@ -237,7 +237,7 @@ public abstract class AbstractLauncherUiTest {
     @Before
     public void setUp() throws Exception {
         Assert.assertTrue("Keyguard is visible",
-                mDevice.wait(
+                TestHelpers.wait(
                         Until.gone(By.res(SYSTEMUI_PACKAGE, "keyguard_status_view")), 60000));
 
         final String launcherPackageName = mDevice.getLauncherPackageName();
@@ -470,8 +470,7 @@ public abstract class AbstractLauncherUiTest {
         }
         getInstrumentation().getTargetContext().startActivity(intent);
         assertTrue("App didn't start: " + selector,
-                UiDevice.getInstance(getInstrumentation())
-                        .wait(Until.hasObject(selector), DEFAULT_UI_TIMEOUT));
+                TestHelpers.wait(Until.hasObject(selector), DEFAULT_UI_TIMEOUT));
     }
 
     public static ActivityInfo resolveSystemAppInfo(String category) {

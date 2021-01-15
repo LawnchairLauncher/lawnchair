@@ -213,7 +213,7 @@ public class FallbackRecentsTest {
         OverviewTask task = overview.getCurrentTask();
         assertNotNull("overview.getCurrentTask() returned null (1)", task);
         assertNotNull("OverviewTask.open returned null", task.open());
-        assertTrue("Test activity didn't open from Overview", mDevice.wait(Until.hasObject(
+        assertTrue("Test activity didn't open from Overview", TestHelpers.wait(Until.hasObject(
                 By.pkg(getAppPackageName()).text("TestActivity2")),
                 DEFAULT_UI_TIMEOUT));
 
@@ -230,7 +230,7 @@ public class FallbackRecentsTest {
 
         // Test dismissing all tasks.
         pressHomeAndGoToOverview().dismissAllTasks();
-        assertTrue("Fallback Launcher not visible", mDevice.wait(Until.hasObject(By.pkg(
+        assertTrue("Fallback Launcher not visible", TestHelpers.wait(Until.hasObject(By.pkg(
                 mOtherLauncherActivity.packageName)), WAIT_TIME_MS));
     }
 
