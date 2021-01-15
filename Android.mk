@@ -33,7 +33,8 @@ LOCAL_STATIC_ANDROID_LIBRARIES := \
 
 LOCAL_STATIC_JAVA_LIBRARIES := \
     LauncherPluginLib \
-    launcher_log_protos_lite
+    launcher_log_protos_lite \
+    search_ui
 
 LOCAL_SRC_FILES := \
     $(call all-java-files-under, src_build_config) \
