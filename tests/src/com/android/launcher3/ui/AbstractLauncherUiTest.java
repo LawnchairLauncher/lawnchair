@@ -150,7 +150,7 @@ public abstract class AbstractLauncherUiTest {
         return "Activity leak detector has found leaked activities, " + dumpHprofData() + ".";
     }
 
-    private static String dumpHprofData() {
+    public static String dumpHprofData() {
         try {
             final String fileName = getInstrumentation().getTargetContext().getFilesDir().getPath()
                     + "/ActivityLeakHeapDump.hprof";
