@@ -19,11 +19,12 @@ package com.android.systemui.plugins;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.CancellationSignal;
+import android.os.Parcelable;
 import android.view.View;
 
 import com.android.systemui.plugins.annotations.ProvidesInterface;
-import com.android.systemui.plugins.shared.SearchTarget;
-import com.android.systemui.plugins.shared.SearchTargetEvent;
+import com.android.systemui.plugins.shared.SearchTargetEventLegacy;
+import com.android.systemui.plugins.shared.SearchTargetLegacy;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -34,20 +35,25 @@ import java.util.function.Consumer;
 @ProvidesInterface(action = AllAppsSearchPlugin.ACTION, version = AllAppsSearchPlugin.VERSION)
 public interface AllAppsSearchPlugin extends Plugin {
     String ACTION = "com.android.systemui.action.PLUGIN_ALL_APPS_SEARCH_ACTIONS";
-    int VERSION = 8;
+    int VERSION = 9;
 
-    void setup(Activity activity, View view);
+    /**
+     * init plugin
+     */
+    void setup(Activity activity, View view, boolean useLegacy);
 
     /**
      * Send launcher state related signals.
      */
     void onStateTransitionStart(int fromState, int toState);
+
     void onStateTransitionComplete(int state);
 
     /**
      * Send launcher window focus and visibility changed signals.
      */
     void onWindowFocusChanged(boolean hasFocus);
+
     void onWindowVisibilityChanged(int visibility);
 
     /**
@@ -59,22 +65,41 @@ public interface AllAppsSearchPlugin extends Plugin {
     /**
      * Main function that triggers search.
      *
-     * @param input string that has been typed by a user
-     * @param inputArgs extra info that may be relevant for the input query
-     * @param results contains the result that will be rendered in all apps search surface
+     * @param input              string that has been typed by a user
+     * @param inputArgs          extra info that may be relevant for the input query
+     * @param results            contains the result that will be rendered in all apps search
+     *                           surface
      * @param cancellationSignal {@link CancellationSignal} can be used to share status of current
      */
-    void query(String input, Bundle inputArgs, Consumer<List<SearchTarget>> results,
+    void queryLegacy(String input, Bundle inputArgs, Consumer<List<SearchTargetLegacy>> results,
+            CancellationSignal cancellationSignal);
+
+    /**
+     * Main function that triggers search.
+     *
+     * @param input              string that has been typed by a user
+     * @param inputArgs          extra info that may be relevant for the input query
+     * @param results            contains the result that will be rendered in all apps search
+     *                           surface
+     * @param cancellationSignal {@link CancellationSignal} can be used to share status of current
+     */
+    void query(String input, Bundle inputArgs, Consumer<List<Parcelable>> results,
             CancellationSignal cancellationSignal);
 
     /**
      * Send over search target interaction events to Plugin
      */
-    void notifySearchTargetEvent(SearchTargetEvent event);
+    void notifySearchTargetEventLegacy(SearchTargetEventLegacy event);
+
+    /**
+     * Send over search target interaction events to Plugin
+     */
+    void notifySearchTargetEvent(Parcelable event);
 
     /**
      * Launcher activity lifecycle callbacks
      */
     void onResume(int state);
+
     void onStop(int state);
 }

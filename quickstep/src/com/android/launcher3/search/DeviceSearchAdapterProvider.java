@@ -18,15 +18,18 @@ package com.android.launcher3.search;
 
 import static com.android.launcher3.allapps.AllAppsGridAdapter.VIEW_TYPE_ICON;
 
+import android.app.search.SearchTarget;
 import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsGridAdapter;
 import com.android.launcher3.allapps.search.SearchAdapterProvider;
-import com.android.systemui.plugins.shared.SearchTarget;
+import com.android.launcher3.config.FeatureFlags;
+import com.android.systemui.plugins.shared.SearchTargetLegacy;
 
 /**
  * Provides views for on-device search results
@@ -45,11 +48,13 @@ public class DeviceSearchAdapterProvider extends SearchAdapterProvider {
     public static final int VIEW_TYPE_SEARCH_WIDGET_LIVE = 1 << 15;
     public static final int VIEW_TYPE_SEARCH_WIDGET_PREVIEW = 1 << 16;
 
+    private final AllAppsContainerView mAppsView;
 
     private final SparseIntArray mViewTypeToLayoutMap = new SparseIntArray();
 
-    public DeviceSearchAdapterProvider(Launcher launcher) {
+    public DeviceSearchAdapterProvider(Launcher launcher, AllAppsContainerView appsView) {
         super(launcher);
+        mAppsView = appsView;
 
         mViewTypeToLayoutMap.put(VIEW_TYPE_SEARCH_ICON, R.layout.search_result_icon);
         mViewTypeToLayoutMap.put(VIEW_TYPE_SEARCH_CORPUS_TITLE, R.layout.search_section_title);
@@ -68,12 +73,16 @@ public class DeviceSearchAdapterProvider extends SearchAdapterProvider {
 
     @Override
     public void onBindView(AllAppsGridAdapter.ViewHolder holder, int position) {
-        SearchAdapterItem item = (SearchAdapterItem) Launcher.getLauncher(mLauncher)
-                .getAppsView().getApps().getAdapterItems().get(position);
+        SearchAdapterItem item = (SearchAdapterItem) mAppsView.getApps().getAdapterItems().get(
+                position);
         SearchTargetHandler
                 payloadResultView =
                 (SearchTargetHandler) holder.itemView;
-        payloadResultView.applySearchTarget(item.getSearchTarget());
+        if (FeatureFlags.SEARCH_TARGET_LEGACY.get()) {
+            payloadResultView.applySearchTarget(item.getSearchTargetLegacy());
+        } else {
+            payloadResultView.applySearchTarget(item.getSearchTarget());
+        }
     }
 
     @Override
@@ -101,10 +110,23 @@ public class DeviceSearchAdapterProvider extends SearchAdapterProvider {
     @Override
     public boolean onAdapterItemSelected(AllAppsGridAdapter.AdapterItem focusedItem) {
         if (focusedItem instanceof SearchTargetHandler) {
-            SearchTarget searchTarget = ((SearchAdapterItem) focusedItem).getSearchTarget();
+            SearchTargetLegacy searchTarget = ((SearchAdapterItem) focusedItem)
+                    .getSearchTargetLegacy();
             SearchEventTracker.INSTANCE.get(mLauncher).quickSelect(searchTarget);
             return true;
         }
         return false;
+    }
+
+    /**
+     * Determines what view type should be used to present search target.
+     * Returns -1 if viewType is not found
+     */
+    public int getViewTypeForSearchTarget(SearchTarget t) {
+        //TODO: Replace with values from :SearchUi
+        if (t.getResultType() == 1 && t.getLayoutType().equals("icon")) {
+            return VIEW_TYPE_SEARCH_ICON;
+        }
+        return -1;
     }
 }

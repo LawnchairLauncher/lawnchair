@@ -27,13 +27,16 @@ import static com.android.launcher3.search.DeviceSearchAdapterProvider.VIEW_TYPE
 import static com.android.launcher3.search.DeviceSearchAdapterProvider.VIEW_TYPE_SEARCH_WIDGET_LIVE;
 import static com.android.launcher3.search.DeviceSearchAdapterProvider.VIEW_TYPE_SEARCH_WIDGET_PREVIEW;
 
+import android.app.search.SearchTarget;
+
 import com.android.launcher3.allapps.AllAppsGridAdapter;
-import com.android.systemui.plugins.shared.SearchTarget;
+import com.android.systemui.plugins.shared.SearchTargetLegacy;
 
 /**
  * Extension of AdapterItem that contains an extra payload specific to item
  */
 public class SearchAdapterItem extends AllAppsGridAdapter.AdapterItem {
+    private SearchTargetLegacy mSearchTargetLegacy;
     private SearchTarget mSearchTarget;
 
 
@@ -43,9 +46,19 @@ public class SearchAdapterItem extends AllAppsGridAdapter.AdapterItem {
             | VIEW_TYPE_SEARCH_WIDGET_PREVIEW | VIEW_TYPE_SEARCH_WIDGET_LIVE
             | VIEW_TYPE_SEARCH_SUGGEST;
 
+    public SearchAdapterItem(SearchTargetLegacy searchTargetLegacy, int type) {
+        mSearchTargetLegacy = searchTargetLegacy;
+        viewType = type;
+    }
+
+
     public SearchAdapterItem(SearchTarget searchTarget, int type) {
         mSearchTarget = searchTarget;
         viewType = type;
+    }
+
+    public SearchTargetLegacy getSearchTargetLegacy() {
+        return mSearchTargetLegacy;
     }
 
     public SearchTarget getSearchTarget() {

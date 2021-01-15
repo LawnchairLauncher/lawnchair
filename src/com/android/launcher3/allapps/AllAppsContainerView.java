@@ -124,7 +124,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         mLauncher = BaseDraggingActivity.fromContext(context);
         mLauncher.addOnDeviceProfileChangeListener(this);
 
-        mSearchAdapterProvider = mLauncher.createSearchAdapterProvider();
+        mSearchAdapterProvider = mLauncher.createSearchAdapterProvider(this);
         mSearchQueryBuilder = new SpannableStringBuilder();
         Selection.setSelection(mSearchQueryBuilder, 0);
 
@@ -567,6 +567,10 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         }
 
         return null;
+    }
+
+    public SearchAdapterProvider getSearchAdapterProvider() {
+        return mSearchAdapterProvider;
     }
 
     public RecyclerViewFastScroller getScrollBar() {

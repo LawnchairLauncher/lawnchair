@@ -16,7 +16,9 @@
 
 package com.android.launcher3.search;
 
-import com.android.systemui.plugins.shared.SearchTarget;
+import android.app.search.SearchTarget;
+
+import com.android.systemui.plugins.shared.SearchTargetLegacy;
 
 /**
  * An interface for supporting dynamic search results
@@ -24,9 +26,16 @@ import com.android.systemui.plugins.shared.SearchTarget;
 public interface SearchTargetHandler {
 
     /**
-     * Update view using values from {@link SearchTarget}
+     * Update view using values from {@link SearchTargetLegacy}
      */
-    void applySearchTarget(SearchTarget searchTarget);
+    void applySearchTarget(SearchTargetLegacy searchTarget);
+
+    /**
+     * Update view using values from {@link SearchTargetLegacy}
+     */
+    default void applySearchTarget(SearchTarget searchTarget){
+
+    }
 
     /**
      * Handles selection of SearchTarget

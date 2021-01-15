@@ -22,15 +22,19 @@ import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static com.android.launcher3.util.Executors.THREAD_POOL_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
+import android.app.prediction.AppTarget;
 import android.content.ClipData;
 import android.content.ClipDescription;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ShortcutInfo;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Insets;
 import android.graphics.Picture;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.net.Uri;
 import android.util.Log;
 
@@ -68,6 +72,34 @@ public class ImageActionUtils {
             Insets visibleInsets, Task.TaskKey task) {
         systemUiProxy.handleImageBundleAsScreenshot(BitmapUtil.hardwareBitmapToBundle(screenshot),
                 screenshotBounds, visibleInsets, task);
+    }
+
+    /**
+     * Launch the activity to share image for overview sharing. This is to share cropped bitmap
+     * with specific share targets (with shortcutInfo and appTarget) rendered in overview.
+     */
+    @UiThread
+    public static void shareImage(Context context, Supplier<Bitmap> bitmapSupplier, RectF rectF,
+            ShortcutInfo shortcutInfo, AppTarget appTarget, String tag) {
+        if (bitmapSupplier.get() == null) {
+            return;
+        }
+        Rect crop = new Rect();
+        rectF.round(crop);
+        Intent intent = new Intent();
+        Uri uri =  getImageUri(bitmapSupplier.get(), crop, context, tag);
+        ClipData clipdata = new ClipData(new ClipDescription("content",
+                new String[]{"image/png"}),
+                new ClipData.Item(uri));
+        intent.setAction(Intent.ACTION_SEND)
+            .setComponent(new ComponentName(appTarget.getPackageName(), appTarget.getClassName()))
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            .addFlags(FLAG_GRANT_READ_URI_PERMISSION)
+            .setType("image/png")
+            .putExtra(Intent.EXTRA_STREAM, uri)
+            .putExtra(Intent.EXTRA_SHORTCUT_ID, shortcutInfo.getId())
+            .setClipData(clipdata);
+        context.startActivity(intent);
     }
 
     /**

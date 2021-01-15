@@ -20,6 +20,7 @@ import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import android.app.RemoteAction;
+import android.app.search.SearchTarget;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.ShortcutInfo;
@@ -42,8 +43,8 @@ import com.android.launcher3.model.data.RemoteActionItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.util.ComponentKey;
-import com.android.systemui.plugins.shared.SearchTarget;
-import com.android.systemui.plugins.shared.SearchTargetEvent;
+import com.android.systemui.plugins.shared.SearchTargetEventLegacy;
+import com.android.systemui.plugins.shared.SearchTargetLegacy;
 
 import java.util.function.Consumer;
 
@@ -69,7 +70,7 @@ public class SearchResultIcon extends BubbleTextView implements
 
     private final Launcher mLauncher;
 
-    private SearchTarget mSearchTarget;
+    private SearchTargetLegacy mSearchTarget;
     private Consumer<ItemInfoWithIcon> mOnItemInfoChanged;
 
     public SearchResultIcon(Context context) {
@@ -100,13 +101,13 @@ public class SearchResultIcon extends BubbleTextView implements
      * Applies search target with a ItemInfoWithIcon consumer to be called after itemInfo is
      * constructed
      */
-    public void applySearchTarget(SearchTarget searchTarget, Consumer<ItemInfoWithIcon> cb) {
+    public void applySearchTarget(SearchTargetLegacy searchTarget, Consumer<ItemInfoWithIcon> cb) {
         mOnItemInfoChanged = cb;
         applySearchTarget(searchTarget);
     }
 
     @Override
-    public void applySearchTarget(SearchTarget searchTarget) {
+    public void applySearchTarget(SearchTargetLegacy searchTarget) {
         mSearchTarget = searchTarget;
         SearchEventTracker.getInstance(getContext()).registerWeakHandler(mSearchTarget, this);
         setVisibility(VISIBLE);
@@ -127,9 +128,16 @@ public class SearchResultIcon extends BubbleTextView implements
         }
     }
 
+    @Override
+    public void applySearchTarget(SearchTarget searchTarget) {
+        prepareUsingApp(new ComponentName(searchTarget.getPackageName(),
+                searchTarget.getExtras().getString("class")), searchTarget.getUserHandle());
+    }
+
     private void prepareUsingApp(ComponentName componentName, UserHandle userHandle) {
         AllAppsStore appsStore = mLauncher.getAppsView().getAppsStore();
         AppInfo appInfo = appsStore.getApp(new ComponentKey(componentName, userHandle));
+
         if (appInfo == null) {
             setVisibility(GONE);
             return;
@@ -181,7 +189,8 @@ public class SearchResultIcon extends BubbleTextView implements
     }
 
     private void reportEvent(int eventType) {
-        SearchTargetEvent.Builder b = new SearchTargetEvent.Builder(mSearchTarget, eventType);
+        SearchTargetEventLegacy.Builder b = new SearchTargetEventLegacy.Builder(mSearchTarget,
+                eventType);
         if (mSearchTarget.getItemType().equals(TARGET_TYPE_SHORTCUT)) {
             b.setShortcutPosition(0);
         }
@@ -191,7 +200,7 @@ public class SearchResultIcon extends BubbleTextView implements
 
     @Override
     public void onClick(View view) {
-        handleSelection(SearchTargetEvent.SELECT);
+        handleSelection(SearchTargetEventLegacy.SELECT);
     }
 
     @Override
@@ -199,7 +208,7 @@ public class SearchResultIcon extends BubbleTextView implements
         if (!supportsLongPress(mSearchTarget.getItemType())) {
             return false;
         }
-        reportEvent(SearchTargetEvent.LONG_PRESS);
+        reportEvent(SearchTargetEventLegacy.LONG_PRESS);
         return ItemLongClickListener.INSTANCE_ALL_APPS.onLongClick(view);
 
     }

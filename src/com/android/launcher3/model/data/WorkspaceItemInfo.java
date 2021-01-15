@@ -58,20 +58,14 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
     public static final int FLAG_AUTOINSTALL_ICON = 1 << 1;
 
     /**
-     * The icon is being installed. If {@link #FLAG_RESTORED_ICON} or {@link #FLAG_AUTOINSTALL_ICON}
-     * is set, then the icon is either being installed or is in a broken state.
-     */
-    public static final int FLAG_INSTALL_SESSION_ACTIVE = 1 << 2;
-
-    /**
      * Indicates that the widget restore has started.
      */
-    public static final int FLAG_RESTORE_STARTED = 1 << 3;
+    public static final int FLAG_RESTORE_STARTED = 1 << 2;
 
     /**
      * Web UI supported.
      */
-    public static final int FLAG_SUPPORTS_WEB_UI = 1 << 4;
+    public static final int FLAG_SUPPORTS_WEB_UI = 1 << 3;
 
     /**
      * The intent used to start the application.
@@ -98,11 +92,6 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
      */
     @NonNull private String[] personKeys = Utilities.EMPTY_STRING_ARRAY;
 
-    /**
-     * The installation progress [0-100] of the package that this shortcut represents.
-     */
-    private int mInstallProgress;
-
 
     public WorkspaceItemInfo() {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
@@ -114,7 +103,6 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
         intent = new Intent(info.intent);
         iconResource = info.iconResource;
         status = info.status;
-        mInstallProgress = info.mInstallProgress;
         personKeys = info.personKeys.clone();
     }
 
@@ -166,15 +154,6 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
 
     public boolean hasPromiseIconUi() {
         return isPromise() && !hasStatusFlag(FLAG_SUPPORTS_WEB_UI);
-    }
-
-    public int getInstallProgress() {
-        return mInstallProgress;
-    }
-
-    public void setInstallProgress(int progress) {
-        mInstallProgress = progress;
-        status |= FLAG_INSTALL_SESSION_ACTIVE;
     }
 
     public void updateFromDeepShortcutInfo(ShortcutInfo shortcutInfo, Context context) {

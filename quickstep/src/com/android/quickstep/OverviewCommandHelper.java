@@ -175,9 +175,12 @@ public class OverviewCommandHelper {
                 return;
             }
 
-            InteractionJankMonitorWrapper.begin(
-                    mActivityInterface.getCreatedActivity().getRootView(),
-                    InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
+            final T activity = mActivityInterface.getCreatedActivity();
+            if (activity != null) {
+                InteractionJankMonitorWrapper.begin(
+                        activity.getRootView(),
+                        InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
+            }
 
             // Otherwise, start overview.
             mListener = mActivityInterface.createActivityInitListener(this::onActivityReady);

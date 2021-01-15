@@ -21,7 +21,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.android.systemui.plugins.shared.SearchTarget;
+import com.android.systemui.plugins.shared.SearchTargetLegacy;
 
 /**
  * Header text view that shows a title for a given section in All apps search
@@ -44,7 +44,7 @@ public class SearchSectionHeaderView extends TextView implements
     }
 
     @Override
-    public void applySearchTarget(SearchTarget searchTarget) {
+    public void applySearchTarget(SearchTargetLegacy searchTarget) {
         String title = searchTarget.getExtras().getString("title");
         if (title == null || !title.isEmpty()) {
             setText(title);

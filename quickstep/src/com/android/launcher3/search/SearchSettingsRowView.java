@@ -38,8 +38,8 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.model.data.PackageItemInfo;
-import com.android.systemui.plugins.shared.SearchTarget;
-import com.android.systemui.plugins.shared.SearchTargetEvent;
+import com.android.systemui.plugins.shared.SearchTargetEventLegacy;
+import com.android.systemui.plugins.shared.SearchTargetLegacy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +56,7 @@ public class SearchSettingsRowView extends LinearLayout implements
     private TextView mTitleView;
     private TextView mBreadcrumbsView;
     private Intent mIntent;
-    private SearchTarget mSearchTarget;
+    private SearchTargetLegacy mSearchTarget;
 
 
     public SearchSettingsRowView(@NonNull Context context) {
@@ -84,7 +84,7 @@ public class SearchSettingsRowView extends LinearLayout implements
     }
 
     @Override
-    public void applySearchTarget(SearchTarget searchTarget) {
+    public void applySearchTarget(SearchTargetLegacy searchTarget) {
         mSearchTarget = searchTarget;
         Bundle bundle = searchTarget.getExtras();
         mIntent = bundle.getParcelable("intent");
@@ -108,7 +108,7 @@ public class SearchSettingsRowView extends LinearLayout implements
 
     @Override
     public void onClick(View view) {
-        handleSelection(SearchTargetEvent.SELECT);
+        handleSelection(SearchTargetEventLegacy.SELECT);
     }
 
     @Override
@@ -120,7 +120,7 @@ public class SearchSettingsRowView extends LinearLayout implements
         launcher.startActivityForResult(mIntent, 0);
 
         SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(
-                new SearchTargetEvent.Builder(mSearchTarget, eventType).build());
+                new SearchTargetEventLegacy.Builder(mSearchTarget, eventType).build());
     }
 
     /**
