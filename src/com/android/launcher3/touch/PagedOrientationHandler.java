@@ -83,8 +83,8 @@ public interface PagedOrientationHandler {
     boolean getRecentsRtlSetting(Resources resources);
     float getDegreesRotated();
     int getRotation();
-    int getPrimaryValue(int x, int y);
-    int getSecondaryValue(int x, int y);
+    <T> T getPrimaryValue(T x, T y);
+    <T> T getSecondaryValue(T x, T y);
     void delegateScrollTo(PagedView pagedView, int secondaryScroll, int primaryScroll);
     /** Uses {@params pagedView}.getScroll[X|Y]() method for the secondary amount*/
     void delegateScrollTo(PagedView pagedView, int primaryScroll);
