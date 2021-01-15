@@ -721,11 +721,12 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
 
     @UiThread
     public void onGestureStarted(boolean isLikelyToStartNewTask) {
-        // Temporarily disable this until we have a view that we can use
-        // InteractionJankMonitorWrapper.begin(mRecentsView,
-        //         InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH, 2000 /* ms timeout */);
-        // InteractionJankMonitorWrapper.begin(mRecentsView,
-        //         InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME);
+        if (mRecentsView != null) {
+            InteractionJankMonitorWrapper.begin(mRecentsView,
+                    InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH, 2000 /* ms timeout */);
+            InteractionJankMonitorWrapper.begin(mRecentsView,
+                    InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME);
+        }
         notifyGestureStartedAsync();
         setIsLikelyToStartNewTask(isLikelyToStartNewTask, false /* animate */);
         mStateCallback.setStateOnUiThread(STATE_GESTURE_STARTED);
