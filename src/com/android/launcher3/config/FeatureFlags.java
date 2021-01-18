@@ -98,6 +98,13 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_DEVICE_SEARCH = getDebugFlag(
             "ENABLE_DEVICE_SEARCH", false, "Allows on device search in all apps");
 
+    public static final BooleanFlag SEARCH_TARGET_LEGACY = getDebugFlag(
+            "SEARCH_TARGET_LEGACY", true,
+            "Use SearchTarget provided by plugin lib (only during migration)");
+
+    public static final BooleanFlag DISABLE_INITIAL_IME_IN_ALLAPPS = getDebugFlag(
+            "DISABLE_INITIAL_IME_IN_ALLAPPS", false, "Disable default IME state in all apps");
+
     public static final BooleanFlag FOLDER_NAME_SUGGEST = new DeviceFlag(
             "FOLDER_NAME_SUGGEST", true,
             "Suggests folder names instead of blank text.");

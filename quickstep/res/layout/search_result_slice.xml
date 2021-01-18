@@ -12,7 +12,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher3.views.SearchResultSettingsSlice xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.launcher3.search.SearchResultSettingsSlice xmlns:android="http://schemas.android.com/apk/res/android"
     android:paddingHorizontal="@dimen/dynamic_grid_cell_padding_x"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -36,5 +36,5 @@
         android:layout_marginStart="@dimen/dynamic_grid_cell_padding_x"
         android:layout_width="0dp" />
 
-</com.android.launcher3.views.SearchResultSettingsSlice>
+</com.android.launcher3.search.SearchResultSettingsSlice>
 
