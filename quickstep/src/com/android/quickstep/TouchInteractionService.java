@@ -136,6 +136,12 @@ public class TouchInteractionService extends Service implements PluginListener<O
                 SystemUiProxy.INSTANCE.get(TouchInteractionService.this).setProxy(proxy);
                 TouchInteractionService.this.initInputMonitor();
                 preloadOverview(true /* fromInit */);
+                mDeviceState.runOnUserUnlocked(() -> {
+                    final BaseActivityInterface ai =
+                            mOverviewComponentObserver.getActivityInterface();
+                    if (ai == null) return;
+                    ai.onOverviewServiceBound();
+                });
             });
             sIsInitialized = true;
         }
