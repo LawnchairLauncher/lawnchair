@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.search;
 
+import android.app.search.SearchTarget;
 import android.content.Context;
 import android.net.Uri;
 import android.util.AttributeSet;
@@ -34,6 +35,8 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.systemui.plugins.shared.SearchTargetEventLegacy;
 import com.android.systemui.plugins.shared.SearchTargetLegacy;
+
+import java.util.List;
 
 /**
  * A slice view wrapper with settings app icon at start
@@ -82,6 +85,18 @@ public class SearchResultSettingsSlice extends LinearLayout implements
         mSearchTarget = searchTarget;
         try {
             mSliceLiveData = mLauncher.getLiveSearchManager().getSliceForUri(getSliceUri());
+            mSliceLiveData.observe(mLauncher, mSliceView);
+        } catch (Exception ex) {
+            Log.e(TAG, "unable to bind slice", ex);
+        }
+    }
+
+    @Override
+    public void applySearchTarget(SearchTarget parentTarget, List<SearchTarget> children) {
+        reset();
+        try {
+            mSliceLiveData = mLauncher.getLiveSearchManager().getSliceForUri(
+                    parentTarget.getSliceUri());
             mSliceLiveData.observe(mLauncher, mSliceView);
         } catch (Exception ex) {
             Log.e(TAG, "unable to bind slice", ex);
