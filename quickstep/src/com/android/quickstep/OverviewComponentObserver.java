@@ -20,6 +20,7 @@ import static android.content.Intent.ACTION_PACKAGE_ADDED;
 import static android.content.Intent.ACTION_PACKAGE_CHANGED;
 import static android.content.Intent.ACTION_PACKAGE_REMOVED;
 
+import static com.android.launcher3.Utilities.createHomeIntent;
 import static com.android.launcher3.config.FeatureFlags.SEPARATE_RECENTS_ACTIVITY;
 import static com.android.launcher3.util.PackageManagerHelper.getPackageFilter;
 import static com.android.systemui.shared.system.PackageManagerWrapper.ACTION_PREFERRED_ACTIVITY_CHANGED;
@@ -74,9 +75,7 @@ public final class OverviewComponentObserver {
     public OverviewComponentObserver(Context context, RecentsAnimationDeviceState deviceState) {
         mContext = context;
         mDeviceState = deviceState;
-        mCurrentHomeIntent = new Intent(Intent.ACTION_MAIN)
-                .addCategory(Intent.CATEGORY_HOME)
-                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        mCurrentHomeIntent = createHomeIntent();
         mMyHomeIntent = new Intent(mCurrentHomeIntent).setPackage(mContext.getPackageName());
         ResolveInfo info = context.getPackageManager().resolveActivity(mMyHomeIntent, 0);
         ComponentName myHomeComponent =
