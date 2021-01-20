@@ -59,6 +59,11 @@ public interface SearchUiManager {
             Interpolator interpolator);
 
     /**
+     * Called when activity is destroyed. Used to close search system services
+     */
+    default void destroy(){}
+
+    /**
      * Returns true if the QSB should be visible for the given set of visible elements
      */
     default boolean isQsbVisible(int visibleElements) {

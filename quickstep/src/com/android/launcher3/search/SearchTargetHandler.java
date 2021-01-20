@@ -20,6 +20,8 @@ import android.app.search.SearchTarget;
 
 import com.android.systemui.plugins.shared.SearchTargetLegacy;
 
+import java.util.List;
+
 /**
  * An interface for supporting dynamic search results
  */
@@ -28,13 +30,14 @@ public interface SearchTargetHandler {
     /**
      * Update view using values from {@link SearchTargetLegacy}
      */
-    void applySearchTarget(SearchTargetLegacy searchTarget);
+    default void applySearchTarget(SearchTargetLegacy searchTarget) {
+    }
+
 
     /**
      * Update view using values from {@link SearchTargetLegacy}
      */
-    default void applySearchTarget(SearchTarget searchTarget){
-
+    default void applySearchTarget(SearchTarget parentTarget, List<SearchTarget> children) {
     }
 
     /**

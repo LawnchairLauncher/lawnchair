@@ -98,9 +98,8 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_DEVICE_SEARCH = getDebugFlag(
             "ENABLE_DEVICE_SEARCH", false, "Allows on device search in all apps");
 
-    public static final BooleanFlag SEARCH_TARGET_LEGACY = getDebugFlag(
-            "SEARCH_TARGET_LEGACY", true,
-            "Use SearchTarget provided by plugin lib (only during migration)");
+    public static final BooleanFlag USE_SEARCH_API = getDebugFlag(
+            "USE_SEARCH_API", true, "Use SearchUIManager api for device search");
 
     public static final BooleanFlag DISABLE_INITIAL_IME_IN_ALLAPPS = getDebugFlag(
             "DISABLE_INITIAL_IME_IN_ALLAPPS", false, "Disable default IME state in all apps");
