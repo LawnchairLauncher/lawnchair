@@ -293,7 +293,7 @@ public abstract class SwipeUpAnimationLogic {
             builder.withMatrix(mMatrix)
                     .withWindowCrop(mCropRect)
                     .withCornerRadius(params.getCornerRadius())
-                    .withShadowRadius(params.getShadowRadius());
+                    .withShadowRadius(app.isTranslucent ? 0 : params.getShadowRadius());
         }
 
         @Override
