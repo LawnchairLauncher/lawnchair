@@ -258,6 +258,18 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
             @NonNull RemoteAnimationTargetCompat[] appTargets,
             @NonNull RemoteAnimationTargetCompat[] wallpaperTargets, boolean launcherClosing);
 
+    private boolean areAllTargetsTranslucent(@NonNull RemoteAnimationTargetCompat[] targets) {
+        boolean isAllOpeningTargetTrs = true;
+        for (int i = 0; i < targets.length; i++) {
+            RemoteAnimationTargetCompat target = targets[i];
+            if (target.mode == MODE_OPENING) {
+                isAllOpeningTargetTrs &= target.isTranslucent;
+            }
+            if (!isAllOpeningTargetTrs) break;
+        }
+        return isAllOpeningTargetTrs;
+    }
+
     /**
      * Compose the animations for a launch from the app icon.
      *
@@ -275,16 +287,8 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         mLauncher.getStateManager().setCurrentAnimation(anim);
 
         Rect windowTargetBounds = getWindowTargetBounds(appTargets);
-        boolean isAllOpeningTargetTrs = true;
-        for (int i = 0; i < appTargets.length; i++) {
-            RemoteAnimationTargetCompat target = appTargets[i];
-            if (target.mode == MODE_OPENING) {
-                isAllOpeningTargetTrs &= target.isTranslucent;
-            }
-            if (!isAllOpeningTargetTrs) break;
-        }
         anim.play(getOpeningWindowAnimators(v, appTargets, wallpaperTargets, windowTargetBounds,
-                !isAllOpeningTargetTrs));
+                areAllTargetsTranslucent(appTargets)));
         if (launcherClosing) {
             Pair<AnimatorSet, Runnable> launcherContentAnimator =
                     getLauncherContentAnimator(true /* isAppOpening */,
@@ -450,10 +454,10 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
     private Animator getOpeningWindowAnimators(View v,
             RemoteAnimationTargetCompat[] appTargets,
             RemoteAnimationTargetCompat[] wallpaperTargets,
-            Rect windowTargetBounds, boolean toggleVisibility) {
+            Rect windowTargetBounds, boolean appTargetsAreTranslucent) {
         RectF launcherIconBounds = new RectF();
         FloatingIconView floatingView = FloatingIconView.getFloatingIconView(mLauncher, v,
-                toggleVisibility, launcherIconBounds, true /* isOpening */);
+                !appTargetsAreTranslucent, launcherIconBounds, true /* isOpening */);
         Rect crop = new Rect();
         Matrix matrix = new Matrix();
 
@@ -500,6 +504,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                 : 0f;
         final float finalWindowRadius = mDeviceProfile.isMultiWindowMode
                 ? 0 : getWindowCornerRadius(mLauncher.getResources());
+        final float finalShadowRadius = appTargetsAreTranslucent ? 0 : mMaxShadowRadius;
 
         appAnimator.addUpdateListener(new MultiValueUpdateListener() {
             FloatProp mDx = new FloatProp(0, prop.dX, 0, prop.xDuration, AGGRESSIVE_EASE);
@@ -512,7 +517,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
 
             FloatProp mWindowRadius = new FloatProp(initialWindowRadius, finalWindowRadius, 0,
                     RADIUS_DURATION, EXAGGERATED_EASE);
-            FloatProp mShadowRadius = new FloatProp(0, mMaxShadowRadius, 0,
+            FloatProp mShadowRadius = new FloatProp(0, finalShadowRadius, 0,
                     APP_LAUNCH_DURATION, EXAGGERATED_EASE);
 
             FloatProp mCropRectCenterX = new FloatProp(prop.cropCenterXStart, prop.cropCenterXEnd,
@@ -765,12 +770,13 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         int duration = CLOSING_TRANSITION_DURATION_MS;
         float windowCornerRadius = mDeviceProfile.isMultiWindowMode
                 ? 0 : getWindowCornerRadius(mLauncher.getResources());
+        float startShadowRadius = areAllTargetsTranslucent(appTargets) ? 0 : mMaxShadowRadius;
         closingAnimator.setDuration(duration);
         closingAnimator.addUpdateListener(new MultiValueUpdateListener() {
             FloatProp mDy = new FloatProp(0, mClosingWindowTransY, 0, duration, DEACCEL_1_7);
             FloatProp mScale = new FloatProp(1f, 1f, 0, duration, DEACCEL_1_7);
             FloatProp mAlpha = new FloatProp(1f, 0f, 25, 125, LINEAR);
-            FloatProp mShadowRadius = new FloatProp(mMaxShadowRadius, 0, 0, duration,
+            FloatProp mShadowRadius = new FloatProp(startShadowRadius, 0, 0, duration,
                     DEACCEL_1_7);
 
             @Override
