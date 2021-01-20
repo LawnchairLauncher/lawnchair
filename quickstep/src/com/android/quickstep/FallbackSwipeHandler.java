@@ -22,12 +22,14 @@ import static com.android.launcher3.GestureNavContract.EXTRA_GESTURE_CONTRACT;
 import static com.android.launcher3.GestureNavContract.EXTRA_ICON_POSITION;
 import static com.android.launcher3.GestureNavContract.EXTRA_ICON_SURFACE;
 import static com.android.launcher3.GestureNavContract.EXTRA_REMOTE_CALLBACK;
+import static com.android.launcher3.Utilities.createHomeIntent;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME;
 
 import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.app.ActivityOptions;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Matrix;
@@ -126,7 +128,11 @@ public class FallbackSwipeHandler extends
         ActivityOptions options = ActivityOptions.makeCustomAnimation(mContext, 0, 0);
         Intent intent = new Intent(mGestureState.getHomeIntent());
         mActiveAnimationFactory.addGestureContract(intent);
-        mContext.startActivity(intent, options.toBundle());
+        try {
+            mContext.startActivity(intent, options.toBundle());
+        } catch (NullPointerException | ActivityNotFoundException | SecurityException e) {
+            mContext.startActivity(createHomeIntent());
+        }
         return mActiveAnimationFactory;
     }
 

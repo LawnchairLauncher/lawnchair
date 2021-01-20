@@ -18,6 +18,7 @@ package com.android.launcher3.search;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
+import android.app.search.SearchTarget;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.ShortcutInfo;
@@ -32,6 +33,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import com.android.app.search.ResultType;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
@@ -109,6 +111,16 @@ public class SearchResultIconRow extends LinearLayout implements
         }
         setOnClickListener(this);
         setOnLongClickListener(this);
+    }
+
+    @Override
+    public void applySearchTarget(SearchTarget parentTarget, List<SearchTarget> children) {
+        mResultIcon.applySearchTarget(parentTarget, children, this);
+        if (parentTarget.getResultType() == ResultType.SHORTCUT) {
+            ShortcutInfo shortcutInfo = parentTarget.getShortcutInfo();
+            setProviderDetails(new ComponentName(shortcutInfo.getPackage(), ""),
+                    shortcutInfo.getUserHandle());
+        }
     }
 
     @Override

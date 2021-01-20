@@ -21,6 +21,7 @@ import static android.content.pm.ActivityInfo.CONFIG_SCREEN_SIZE;
 import static com.android.launcher3.QuickstepAppTransitionManagerImpl.RECENTS_LAUNCH_DURATION;
 import static com.android.launcher3.QuickstepAppTransitionManagerImpl.STATUS_BAR_TRANSITION_DURATION;
 import static com.android.launcher3.QuickstepAppTransitionManagerImpl.STATUS_BAR_TRANSITION_PRE_DELAY;
+import static com.android.launcher3.Utilities.createHomeIntent;
 import static com.android.launcher3.testing.TestProtocol.OVERVIEW_STATE_ORDINAL;
 import static com.android.quickstep.TaskUtils.taskIsATargetWithMode;
 import static com.android.quickstep.TaskViewUtils.createRecentsWindowAnimator;
@@ -309,9 +310,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
     }
 
     public void startHome() {
-        startActivity(new Intent(Intent.ACTION_MAIN)
-                .addCategory(Intent.CATEGORY_HOME)
-                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        startActivity(createHomeIntent());
     }
 
     @Override

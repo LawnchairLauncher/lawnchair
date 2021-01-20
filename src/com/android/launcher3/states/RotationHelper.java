@@ -51,7 +51,7 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
     public static final int REQUEST_ROTATE = 1;
     public static final int REQUEST_LOCK = 2;
 
-    private final Activity mActivity;
+    private Activity mActivity;
     private final SharedPreferences mSharedPrefs;
 
     private boolean mIgnoreAutoRotateSettings;
@@ -95,6 +95,7 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+        if (mDestroyed) return;
         boolean wasRotationEnabled = mHomeRotationEnabled;
         mHomeRotationEnabled = mSharedPrefs.getBoolean(ALLOW_ROTATION_PREFERENCE_KEY,
                 getAllowRotationDefaultValue());
@@ -141,6 +142,7 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
     public void destroy() {
         if (!mDestroyed) {
             mDestroyed = true;
+            mActivity = null;
             if (mSharedPrefs != null) {
                 mSharedPrefs.unregisterOnSharedPreferenceChangeListener(this);
             }
