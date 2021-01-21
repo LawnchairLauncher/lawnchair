@@ -68,8 +68,7 @@ abstract class Launchable {
 
         mLauncher.assertTrue(
                 "App didn't start: " + label,
-                mLauncher.getDevice().wait(Until.hasObject(selector),
-                        LauncherInstrumentation.WAIT_TIME_MS));
+                TestHelpers.wait(Until.hasObject(selector), LauncherInstrumentation.WAIT_TIME_MS));
         return new Background(mLauncher);
     }
 

@@ -38,6 +38,7 @@ import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.util.FlagOp;
@@ -246,6 +247,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
 
                         if (isNewApkAvailable
                                 && si.itemType == Favorites.ITEM_TYPE_APPLICATION) {
+                            si.setProgressLevel(100, PackageInstallInfo.STATUS_INSTALLED);
                             iconCache.getTitleAndIcon(si, si.usingLowResIcon());
                             infoUpdated = true;
                         }

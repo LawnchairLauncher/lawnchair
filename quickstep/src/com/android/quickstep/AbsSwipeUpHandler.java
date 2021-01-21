@@ -1395,6 +1395,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
                 // Update the screenshot of the task
                 if (mTaskSnapshot == null) {
                     UI_HELPER_EXECUTOR.execute(() -> {
+                        if (mRecentsAnimationController == null) return;
                         final ThumbnailData taskSnapshot =
                                 mRecentsAnimationController.screenshotTask(runningTaskId);
                         MAIN_EXECUTOR.execute(() -> {

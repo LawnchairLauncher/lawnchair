@@ -76,7 +76,8 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
     private boolean mInitialized;
     private boolean mDestroyed;
 
-    private int mLastActivityFlags = -1;
+    // Initialize mLastActivityFlags to a value not used by SCREEN_ORIENTATION flags
+    private int mLastActivityFlags = -999;
 
     public RotationHelper(Activity activity) {
         mActivity = activity;
