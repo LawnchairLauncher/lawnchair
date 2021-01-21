@@ -51,8 +51,10 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.FolderAdaptiveIcon;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 
@@ -252,12 +254,26 @@ public class FloatingIconView extends FrameLayout implements
     @SuppressWarnings("WrongThread")
     private static void getIconResult(Launcher l, View originalView, ItemInfo info, RectF pos,
             IconLoadResult iconLoadResult) {
-        Drawable drawable = null;
+        Drawable drawable;
+        Drawable btvIcon;
         Drawable badge = null;
         boolean supportsAdaptiveIcons = ADAPTIVE_ICON_WINDOW_ANIM.get()
                 && !info.isDisabled(); // Use original icon for disabled icons.
-        Drawable btvIcon = originalView instanceof BubbleTextView
-                ? ((BubbleTextView) originalView).getIcon() : null;
+
+        if (originalView instanceof BubbleTextView) {
+            BubbleTextView btv = (BubbleTextView) originalView;
+
+            if (info instanceof ItemInfoWithIcon
+                    && (((ItemInfoWithIcon) info).runtimeStatusFlags
+                        & ItemInfoWithIcon.FLAG_SHOW_DOWNLOAD_PROGRESS_MASK) != 0) {
+                btvIcon = btv.makePreloadIcon();
+            } else {
+                btvIcon = btv.getIcon();
+            }
+        } else {
+            btvIcon = null;
+        }
+
         if (info instanceof SystemShortcut) {
             if (originalView instanceof ImageView) {
                 drawable = ((ImageView) originalView).getDrawable();
@@ -266,6 +282,9 @@ public class FloatingIconView extends FrameLayout implements
             } else {
                 drawable = originalView.getBackground();
             }
+        } else if (btvIcon instanceof PreloadIconDrawable) {
+            // Force the progress bar to display.
+            drawable = btvIcon;
         } else {
             int width = (int) pos.width();
             int height = (int) pos.height();
