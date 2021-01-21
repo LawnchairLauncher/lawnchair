@@ -168,11 +168,16 @@ public class AllAppsList {
             if (tgtComp != null && tgtComp.getPackageName().equals(installInfo.packageName)
                     && appInfo.user.equals(user)) {
                 if (installInfo.state == PackageInstallInfo.STATUS_INSTALLED_DOWNLOADING
-                            || installInfo.state == PackageInstallInfo.STATUS_INSTALLING) {
+                        || installInfo.state == PackageInstallInfo.STATUS_INSTALLING) {
+                    if (appInfo.isAppStartable()
+                            && installInfo.state == PackageInstallInfo.STATUS_INSTALLING) {
+                        continue;
+                    }
                     appInfo.setProgressLevel(installInfo);
 
                     updatedAppInfos.add(appInfo);
-                } else if (installInfo.state == PackageInstallInfo.STATUS_FAILED) {
+                } else if (installInfo.state == PackageInstallInfo.STATUS_FAILED
+                        && !appInfo.isAppStartable()) {
                     removeApp(i);
                 }
             }
