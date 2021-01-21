@@ -198,7 +198,6 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
      */
     public boolean update(
             @SurfaceRotation int touchRotation, @SurfaceRotation int displayRotation) {
-        mRecentsActivityRotation = inferRecentsActivityRotation(displayRotation);
         mDisplayRotation = displayRotation;
         mTouchRotation = touchRotation;
         mPreviousRotation = touchRotation;
@@ -206,6 +205,7 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
     }
 
     private boolean updateHandler() {
+        mRecentsActivityRotation = inferRecentsActivityRotation(mDisplayRotation);
         if (mRecentsActivityRotation == mTouchRotation
                 || (canRecentsActivityRotate() && (mFlags & FLAG_SWIPE_UP_NOT_RUNNING) != 0)) {
             mOrientationHandler = PagedOrientationHandler.PORTRAIT;

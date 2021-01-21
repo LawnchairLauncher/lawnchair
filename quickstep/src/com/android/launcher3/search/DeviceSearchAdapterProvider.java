@@ -23,6 +23,8 @@ import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import com.android.app.search.LayoutType;
+import com.android.app.search.ResultType;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsContainerView;
@@ -78,10 +80,10 @@ public class DeviceSearchAdapterProvider extends SearchAdapterProvider {
         SearchTargetHandler
                 payloadResultView =
                 (SearchTargetHandler) holder.itemView;
-        if (FeatureFlags.SEARCH_TARGET_LEGACY.get()) {
+        if (!FeatureFlags.USE_SEARCH_API.get()) {
             payloadResultView.applySearchTarget(item.getSearchTargetLegacy());
         } else {
-            payloadResultView.applySearchTarget(item.getSearchTarget());
+            payloadResultView.applySearchTarget(item.getSearchTarget(), item.getInlineItems());
         }
     }
 
@@ -123,9 +125,24 @@ public class DeviceSearchAdapterProvider extends SearchAdapterProvider {
      * Returns -1 if viewType is not found
      */
     public int getViewTypeForSearchTarget(SearchTarget t) {
-        //TODO: Replace with values from :SearchUi
-        if (t.getResultType() == 1 && t.getLayoutType().equals("icon")) {
-            return VIEW_TYPE_SEARCH_ICON;
+        if (t.getLayoutType().equals(LayoutType.TEXT_HEADER)) {
+            return VIEW_TYPE_SEARCH_CORPUS_TITLE;
+        }
+        switch (t.getResultType()) {
+            case ResultType.APPLICATION:
+                if (t.getLayoutType().equals(LayoutType.ICON_SINGLE_VERTICAL_TEXT)) {
+                    return VIEW_TYPE_SEARCH_ICON;
+                }
+                break;
+            case ResultType.SETTING:
+                if (t.getLayoutType().equals(LayoutType.ICON_SLICE)) {
+                    return VIEW_TYPE_SEARCH_SLICE;
+                }
+                return VIEW_TYPE_SEARCH_ROW;
+            case ResultType.SHORTCUT:
+                return VIEW_TYPE_SEARCH_ICON_ROW;
+            case ResultType.PLAY:
+                return VIEW_TYPE_SEARCH_ROW_WITH_BUTTON;
         }
         return -1;
     }

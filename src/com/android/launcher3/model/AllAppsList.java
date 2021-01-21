@@ -26,7 +26,6 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
 import android.os.LocaleList;
-import android.os.Process;
 import android.os.UserHandle;
 import android.util.Log;
 
@@ -162,7 +161,7 @@ public class AllAppsList {
     /** Updates the given PackageInstallInfo's associated AppInfo's installation info. */
     public List<AppInfo> updatePromiseInstallInfo(PackageInstallInfo installInfo) {
         List<AppInfo> updatedAppInfos = new ArrayList<>();
-        UserHandle user = Process.myUserHandle();
+        UserHandle user = installInfo.user;
         for (int i = data.size() - 1; i >= 0; i--) {
             final AppInfo appInfo = data.get(i);
             final ComponentName tgtComp = appInfo.getTargetComponent();
@@ -177,7 +176,8 @@ public class AllAppsList {
                     appInfo.setProgressLevel(installInfo);
 
                     updatedAppInfos.add(appInfo);
-                } else if (installInfo.state == PackageInstallInfo.STATUS_FAILED) {
+                } else if (installInfo.state == PackageInstallInfo.STATUS_FAILED
+                        && !appInfo.isAppStartable()) {
                     removeApp(i);
                 }
             }

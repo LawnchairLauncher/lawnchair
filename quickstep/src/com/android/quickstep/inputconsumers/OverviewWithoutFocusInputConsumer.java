@@ -15,10 +15,12 @@
  */
 package com.android.quickstep.inputconsumers;
 
+import static com.android.launcher3.Utilities.createHomeIntent;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOME_GESTURE;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.graphics.PointF;
 import android.view.MotionEvent;
@@ -77,7 +79,11 @@ public class OverviewWithoutFocusInputConsumer implements InputConsumer,
 
     @Override
     public void onSwipeUp(boolean wasFling, PointF finalVelocity) {
-        mContext.startActivity(mGestureState.getHomeIntent());
+        try {
+            mContext.startActivity(mGestureState.getHomeIntent());
+        } catch (NullPointerException | ActivityNotFoundException | SecurityException e) {
+            mContext.startActivity(createHomeIntent());
+        }
         ActiveGestureLog.INSTANCE.addLog("startQuickstep");
         BaseActivity activity = BaseDraggingActivity.fromContext(mContext);
         int state = (mGestureState != null && mGestureState.getEndTarget() != null)

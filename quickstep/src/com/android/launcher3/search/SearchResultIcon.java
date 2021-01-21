@@ -31,10 +31,12 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.app.search.ResultType;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.allapps.AllAppsStore;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.model.data.AppInfo;
@@ -46,6 +48,7 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.systemui.plugins.shared.SearchTargetEventLegacy;
 import com.android.systemui.plugins.shared.SearchTargetLegacy;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -128,10 +131,27 @@ public class SearchResultIcon extends BubbleTextView implements
         }
     }
 
+    /**
+     * Applies {@link SearchTarget} to view. registers a consumer after a corresponding
+     * {@link ItemInfoWithIcon} is created
+     */
+    public void applySearchTarget(SearchTarget searchTarget, List<SearchTarget> inlineItems,
+            Consumer<ItemInfoWithIcon> cb) {
+        mOnItemInfoChanged = cb;
+        applySearchTarget(searchTarget, inlineItems);
+    }
+
     @Override
-    public void applySearchTarget(SearchTarget searchTarget) {
-        prepareUsingApp(new ComponentName(searchTarget.getPackageName(),
-                searchTarget.getExtras().getString("class")), searchTarget.getUserHandle());
+    public void applySearchTarget(SearchTarget parentTarget, List<SearchTarget> children) {
+        switch (parentTarget.getResultType()) {
+            case ResultType.APPLICATION:
+                prepareUsingApp(new ComponentName(parentTarget.getPackageName(),
+                        parentTarget.getExtras().getString("class")), parentTarget.getUserHandle());
+                break;
+            case ResultType.SHORTCUT:
+                prepareUsingShortcutInfo(parentTarget.getShortcutInfo());
+                break;
+        }
     }
 
     private void prepareUsingApp(ComponentName componentName, UserHandle userHandle) {
@@ -185,7 +205,9 @@ public class SearchResultIcon extends BubbleTextView implements
     @Override
     public void handleSelection(int eventType) {
         mLauncher.getItemOnClickListener().onClick(this);
-        reportEvent(eventType);
+        if (!FeatureFlags.USE_SEARCH_API.get()) {
+            reportEvent(eventType);
+        }
     }
 
     private void reportEvent(int eventType) {

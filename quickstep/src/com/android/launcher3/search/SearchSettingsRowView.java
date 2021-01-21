@@ -19,6 +19,8 @@ import static com.android.launcher3.FastBitmapDrawable.newIcon;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
+import android.app.search.SearchAction;
+import android.app.search.SearchTarget;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -95,6 +97,14 @@ public class SearchSettingsRowView extends LinearLayout implements
         showIfAvailable(mBreadcrumbsView, breadcrumbs != null
                 ? String.join(" > ", breadcrumbs) : null);
         SearchEventTracker.INSTANCE.get(getContext()).registerWeakHandler(searchTarget, this);
+    }
+
+    @Override
+    public void applySearchTarget(SearchTarget parentTarget, List<SearchTarget> children) {
+        SearchAction action = parentTarget.getSearchAction();
+        mIconView.setContentDescription(action.getTitle());
+        showIfAvailable(mTitleView, action.getTitle().toString());
+        showIfAvailable(mBreadcrumbsView, action.getSubtitle().toString());
     }
 
     private void showIfAvailable(TextView view, @Nullable String string) {

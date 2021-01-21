@@ -56,7 +56,6 @@ import com.android.launcher3.tapl.OverviewTask;
 import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.testcomponent.TestCommandReceiver;
 import com.android.launcher3.util.Wait;
-import com.android.launcher3.util.rule.FailureRewriterRule;
 import com.android.launcher3.util.rule.FailureWatcher;
 import com.android.quickstep.views.RecentsView;
 
@@ -103,8 +102,7 @@ public class FallbackRecentsTest {
         }
 
         mOrderSensitiveRules = RuleChain
-                .outerRule(new FailureRewriterRule())
-                .around(new NavigationModeSwitchRule(mLauncher))
+                .outerRule(new NavigationModeSwitchRule(mLauncher))
                 .around(new FailureWatcher(mDevice));
 
         mOtherLauncherActivity = context.getPackageManager().queryIntentActivities(
@@ -221,7 +219,7 @@ public class FallbackRecentsTest {
         OverviewTask task = overview.getCurrentTask();
         assertNotNull("overview.getCurrentTask() returned null (1)", task);
         assertNotNull("OverviewTask.open returned null", task.open());
-        assertTrue("Test activity didn't open from Overview", mDevice.wait(Until.hasObject(
+        assertTrue("Test activity didn't open from Overview", TestHelpers.wait(Until.hasObject(
                 By.pkg(getAppPackageName()).text("TestActivity2")),
                 DEFAULT_UI_TIMEOUT));
 
@@ -238,7 +236,7 @@ public class FallbackRecentsTest {
 
         // Test dismissing all tasks.
         pressHomeAndGoToOverview().dismissAllTasks();
-        assertTrue("Fallback Launcher not visible", mDevice.wait(Until.hasObject(By.pkg(
+        assertTrue("Fallback Launcher not visible", TestHelpers.wait(Until.hasObject(By.pkg(
                 mOtherLauncherActivity.packageName)), WAIT_TIME_MS));
     }
 
