@@ -83,8 +83,8 @@ public class ImageActionsApi {
      * Share the image this api was constructed with.
      */
     @UiThread
-    public void startShareActivity() {
-        ImageActionUtils.startShareActivity(mContext, mBitmapSupplier, null, null, TAG);
+    public void startShareActivity(Rect crop) {
+        ImageActionUtils.startShareActivity(mContext, mBitmapSupplier, crop, null, TAG);
     }
 
     /**
