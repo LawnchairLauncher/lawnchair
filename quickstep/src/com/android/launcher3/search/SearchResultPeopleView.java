@@ -44,7 +44,6 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.LauncherIcons;
-import com.android.systemui.plugins.shared.SearchTargetEventLegacy;
 import com.android.systemui.plugins.shared.SearchTargetLegacy;
 
 import java.util.ArrayList;
@@ -99,7 +98,6 @@ public class SearchResultPeopleView extends LinearLayout implements
             button.getLayoutParams().width = mButtonSize;
             button.getLayoutParams().height = mButtonSize;
         }
-        setOnClickListener(v -> handleSelection(SearchTargetEventLegacy.SELECT));
     }
 
     @Override
@@ -137,7 +135,6 @@ public class SearchResultPeopleView extends LinearLayout implements
                 button.setVisibility(GONE);
             }
         }
-        SearchEventTracker.INSTANCE.get(getContext()).registerWeakHandler(searchTarget, this);
     }
 
     /**
@@ -185,19 +182,6 @@ public class SearchResultPeopleView extends LinearLayout implements
             launcher.startActivitySafely(b, intent, null);
             Bundle bundle = new Bundle();
             bundle.putBundle("provider", provider);
-            SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(
-                    new SearchTargetEventLegacy.Builder(mSearchTarget,
-                            SearchTargetEventLegacy.CHILD_SELECT).setExtras(bundle).build());
         });
-    }
-
-    @Override
-    public void handleSelection(int eventType) {
-        if (mIntent != null) {
-            Launcher launcher = Launcher.getLauncher(getContext());
-            launcher.startActivitySafely(this, mIntent, null);
-            SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(
-                    new SearchTargetEventLegacy.Builder(mSearchTarget, eventType).build());
-        }
     }
 }

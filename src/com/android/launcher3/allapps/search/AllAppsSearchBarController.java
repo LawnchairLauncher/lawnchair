@@ -32,10 +32,8 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItem;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.PackageManagerHelper;
-import com.android.systemui.plugins.AllAppsSearchPlugin;
 
 import java.util.ArrayList;
-import java.util.function.Consumer;
 
 /**
  * An interface to a search box that AllApps can command.
@@ -74,10 +72,7 @@ public class AllAppsSearchBarController
 
     @Override
     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        if (mSearchAlgorithm instanceof PluginWrapper) {
-            ((PluginWrapper) mSearchAlgorithm).runOnPluginIfConnected(
-                    AllAppsSearchPlugin::startedSearchSession);
-        }
+        // Do nothing
     }
 
     @Override
@@ -171,16 +166,6 @@ public class AllAppsSearchBarController
      */
     public boolean isSearchFieldFocused() {
         return mInput.isFocused();
-    }
-
-    /**
-     * A wrapper setup for running essential calls to plugin from search controller
-     */
-    public interface PluginWrapper {
-        /**
-         * executes call if plugin is connected
-         */
-        void runOnPluginIfConnected(Consumer<AllAppsSearchPlugin> plugin);
     }
 
     /**

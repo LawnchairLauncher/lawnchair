@@ -45,14 +45,14 @@
 
         <TextView
             android:layout_width="wrap_content"
-            android:id="@+id/desc"
+            android:id="@+id/subtitle"
             android:maxLines="1"
             android:textColor="?android:attr/textColorTertiary"
             android:textSize="@dimen/search_hero_subtitle_size"
             android:layout_height="wrap_content" />
     </LinearLayout>
 
-    <com.android.launcher3.BubbleTextView
+    <com.android.launcher3.search.SearchResultIcon
         android:id="@+id/shortcut_0"
         style="@style/BaseIcon"
         android:layout_width="@dimen/deep_shortcut_icon_size"
@@ -63,7 +63,7 @@
         launcher:iconSizeOverride="@dimen/deep_shortcut_icon_size"
         launcher:layoutHorizontal="false" />
 
-    <com.android.launcher3.BubbleTextView
+    <com.android.launcher3.search.SearchResultIcon
         android:id="@+id/shortcut_1"
         style="@style/BaseIcon"
         android:layout_width="@dimen/deep_shortcut_icon_size"
@@ -72,5 +72,4 @@
         android:textSize="@dimen/search_hero_inline_button_size"
         launcher:iconSizeOverride="@dimen/deep_shortcut_icon_size"
         launcher:layoutHorizontal="false" />
-
 </com.android.launcher3.search.SearchResultIconRow>

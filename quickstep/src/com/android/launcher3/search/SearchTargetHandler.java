@@ -29,7 +29,10 @@ public interface SearchTargetHandler {
 
     /**
      * Update view using values from {@link SearchTargetLegacy}
+     *
+     * @deprecated Use {@link SearchTargetHandler#applySearchTarget(SearchTarget, List)} instead
      */
+    @Deprecated
     default void applySearchTarget(SearchTargetLegacy searchTarget) {
     }
 
@@ -41,9 +44,10 @@ public interface SearchTargetHandler {
     }
 
     /**
-     * Handles selection of SearchTarget
+     * Handle IME quick select event. returns whether event was handled.
      */
-    default void handleSelection(int eventType) {
+    default boolean quickSelect() {
+        return false;
     }
 
 }

@@ -51,7 +51,7 @@ import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
-import com.android.launcher3.model.data.RemoteActionItemInfo;
+import com.android.launcher3.model.data.SearchActionItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.testing.TestLogging;
@@ -96,8 +96,8 @@ public class ItemClickHandler {
             if (v instanceof PendingAppWidgetHostView) {
                 onClickPendingWidget((PendingAppWidgetHostView) v, launcher);
             }
-        } else if (tag instanceof RemoteActionItemInfo) {
-            onClickRemoteAction(launcher, (RemoteActionItemInfo) tag);
+        } else if (tag instanceof SearchActionItemInfo) {
+            onClickSearchAction(launcher, (SearchActionItemInfo) tag);
         }
     }
 
@@ -246,23 +246,31 @@ public class ItemClickHandler {
     }
 
     /**
-     * Event handler for a {@link android.app.RemoteAction} click
-     *
+     * Event handler for a {@link SearchActionItemInfo} click
      */
-    public static void onClickRemoteAction(Launcher launcher,
-            RemoteActionItemInfo remoteActionInfo) {
-        try {
-            PendingIntent pendingIntent = remoteActionInfo.getRemoteAction().getActionIntent();
-            if (remoteActionInfo.shouldStartInLauncher()) {
-                launcher.startIntentSenderForResult(pendingIntent.getIntentSender(), 0, null, 0, 0,
-                        0);
+    public static void onClickSearchAction(Launcher launcher, SearchActionItemInfo itemInfo) {
+        if (itemInfo.getIntent() != null) {
+            if (itemInfo.hasFlag(SearchActionItemInfo.FLAG_SHOULD_START_FOR_RESULT)) {
+                launcher.startActivityForResult(itemInfo.getIntent(), 0);
             } else {
-                pendingIntent.send();
+                launcher.startActivity(itemInfo.getIntent());
             }
-        } catch (PendingIntent.CanceledException | IntentSender.SendIntentException e) {
-            Toast.makeText(launcher,
-                    launcher.getResources().getText(R.string.shortcut_not_available),
-                    Toast.LENGTH_SHORT).show();
+        } else if (itemInfo.getPendingIntent() != null) {
+            try {
+                PendingIntent pendingIntent = itemInfo.getPendingIntent();
+                if (!itemInfo.hasFlag(SearchActionItemInfo.FLAG_SHOULD_START)) {
+                    pendingIntent.send();
+                } else if (itemInfo.hasFlag(SearchActionItemInfo.FLAG_SHOULD_START_FOR_RESULT)) {
+                    launcher.startIntentSenderForResult(pendingIntent.getIntentSender(), 0, null, 0,
+                            0, 0);
+                } else {
+                    launcher.startIntentSender(pendingIntent.getIntentSender(), null, 0, 0, 0);
+                }
+            } catch (PendingIntent.CanceledException | IntentSender.SendIntentException e) {
+                Toast.makeText(launcher,
+                        launcher.getResources().getText(R.string.shortcut_not_available),
+                        Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -272,7 +280,7 @@ public class ItemClickHandler {
         Intent intent;
         if (item instanceof ItemInfoWithIcon
                 && (((ItemInfoWithIcon) item).runtimeStatusFlags
-                    & ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE) != 0) {
+                & ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE) != 0) {
             ItemInfoWithIcon appInfo = (ItemInfoWithIcon) item;
             intent = new PackageManagerHelper(launcher)
                     .getMarketIntent(appInfo.getTargetComponent().getPackageName());
