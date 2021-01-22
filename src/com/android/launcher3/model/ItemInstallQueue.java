@@ -104,8 +104,10 @@ public class ItemInstallQueue {
     @WorkerThread
     private void addToQueue(PendingInstallShortcutInfo info) {
         ensureQueueLoaded();
-        mItems.add(info);
-        mStorage.write(mContext, mItems);
+        if (!mItems.contains(info)) {
+            mItems.add(info);
+            mStorage.write(mContext, mItems);
+        }
     }
 
     @WorkerThread
@@ -302,6 +304,33 @@ public class ItemInstallQueue {
                 }
             }
             return null;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof PendingInstallShortcutInfo) {
+                PendingInstallShortcutInfo other = (PendingInstallShortcutInfo) obj;
+
+                boolean userMatches = user.equals(other.user);
+                boolean itemTypeMatches = itemType == other.itemType;
+                boolean intentMatches = intent.toUri(0).equals(other.intent.toUri(0));
+                boolean shortcutInfoMatches = shortcutInfo == null
+                        ? other.shortcutInfo == null
+                        : other.shortcutInfo != null
+                            && shortcutInfo.getId().equals(other.shortcutInfo.getId())
+                            && shortcutInfo.getPackage().equals(other.shortcutInfo.getPackage());
+                boolean providerInfoMatches = providerInfo == null
+                        ? other.providerInfo == null
+                        : other.providerInfo != null
+                            && providerInfo.provider.equals(other.providerInfo.provider);
+
+                return userMatches
+                        && itemTypeMatches
+                        && intentMatches
+                        && shortcutInfoMatches
+                        && providerInfoMatches;
+            }
+            return false;
         }
     }
 
