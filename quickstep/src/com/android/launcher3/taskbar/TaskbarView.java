@@ -17,10 +17,13 @@ package com.android.launcher3.taskbar;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.widget.LinearLayout;
 
 import androidx.annotation.LayoutRes;
@@ -39,12 +42,20 @@ public class TaskbarView extends LinearLayout {
 
     private final ColorDrawable mBackgroundDrawable;
     private final int mItemMarginLeftRight;
+    private final int mIconTouchSize;
+    private final int mTouchSlop;
+    private final RectF mTempDelegateBounds = new RectF();
+    private final RectF mDelegateSlopBounds = new RectF();
 
     // Initialized in init().
     private int mHotseatStartIndex;
     private int mHotseatEndIndex;
 
     private TaskbarController.TaskbarViewCallbacks mControllerCallbacks;
+
+    // Delegate touches to the closest view if within mIconTouchSize.
+    private boolean mDelegateTargeted;
+    private View mDelegateView;
 
     public TaskbarView(@NonNull Context context) {
         this(context, null);
@@ -66,6 +77,8 @@ public class TaskbarView extends LinearLayout {
         Resources resources = getResources();
         mBackgroundDrawable = (ColorDrawable) getBackground();
         mItemMarginLeftRight = resources.getDimensionPixelSize(R.dimen.taskbar_icon_spacing);
+        mIconTouchSize = resources.getDimensionPixelSize(R.dimen.taskbar_icon_touch_size);
+        mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
     }
 
     protected void setCallbacks(TaskbarController.TaskbarViewCallbacks taskbarViewCallbacks) {
@@ -127,6 +140,74 @@ public class TaskbarView extends LinearLayout {
                 hotseatView.setOnClickListener(null);
             }
         }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        boolean handled = delegateTouchIfNecessary(event);
+        return super.onTouchEvent(event) || handled;
+    }
+
+    /**
+     * User touched the Taskbar background. Determine whether the touch is close enough to a view
+     * that we should forward the touches to it.
+     * @return Whether a delegate view was chosen and it handled the touch event.
+     */
+    private boolean delegateTouchIfNecessary(MotionEvent event) {
+        final float x = event.getX();
+        final float y = event.getY();
+        if (mDelegateView == null && event.getAction() == MotionEvent.ACTION_DOWN) {
+            for (int i = 0; i < getChildCount(); i++) {
+                View child = getChildAt(i);
+                if (!child.isShown() || !child.isClickable()) {
+                    continue;
+                }
+                int childCenterX = child.getLeft() + child.getWidth() / 2;
+                int childCenterY = child.getTop() + child.getHeight() / 2;
+                mTempDelegateBounds.set(
+                        childCenterX - mIconTouchSize / 2f,
+                        childCenterY - mIconTouchSize / 2f,
+                        childCenterX + mIconTouchSize / 2f,
+                        childCenterY + mIconTouchSize / 2f);
+                mDelegateTargeted = mTempDelegateBounds.contains(x, y);
+                if (mDelegateTargeted) {
+                    mDelegateView = child;
+                    mDelegateSlopBounds.set(mTempDelegateBounds);
+                    mDelegateSlopBounds.inset(-mTouchSlop, -mTouchSlop);
+                    break;
+                }
+            }
+        }
+
+        boolean sendToDelegate = mDelegateTargeted;
+        boolean inBounds = true;
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_MOVE:
+                inBounds = mDelegateSlopBounds.contains(x, y);
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                mDelegateTargeted = false;
+                break;
+        }
+
+        boolean handled = false;
+        if (sendToDelegate) {
+            if (inBounds) {
+                // Offset event coordinates to be inside the target view
+                event.setLocation(mDelegateView.getWidth() / 2f, mDelegateView.getHeight() / 2f);
+            } else {
+                // Offset event coordinates to be outside the target view (in case it does
+                // something like tracking pressed state)
+                event.setLocation(-mTouchSlop * 2, -mTouchSlop * 2);
+            }
+            handled = mDelegateView.dispatchTouchEvent(event);
+            // Cleanup if this was the last event to send to the delegate.
+            if (!mDelegateTargeted) {
+                mDelegateView = null;
+            }
+        }
+        return handled;
     }
 
     private View inflate(@LayoutRes int layoutResId) {
