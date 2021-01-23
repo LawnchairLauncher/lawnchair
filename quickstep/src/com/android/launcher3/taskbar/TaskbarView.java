@@ -20,6 +20,7 @@ import android.content.res.Resources;
 import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -46,6 +47,7 @@ public class TaskbarView extends LinearLayout {
     private final int mTouchSlop;
     private final RectF mTempDelegateBounds = new RectF();
     private final RectF mDelegateSlopBounds = new RectF();
+    private final int[] mTempOutLocation = new int[2];
 
     // Initialized in init().
     private int mHotseatStartIndex;
@@ -56,6 +58,8 @@ public class TaskbarView extends LinearLayout {
     // Delegate touches to the closest view if within mIconTouchSize.
     private boolean mDelegateTargeted;
     private View mDelegateView;
+
+    private boolean mIsDraggingItem;
 
     public TaskbarView(@NonNull Context context) {
         this(context, null);
@@ -135,9 +139,12 @@ public class TaskbarView extends LinearLayout {
                         (WorkspaceItemInfo) hotseatItemInfo);
                 hotseatView.setVisibility(VISIBLE);
                 hotseatView.setOnClickListener(mControllerCallbacks.getItemOnClickListener());
+                hotseatView.setOnLongClickListener(
+                        mControllerCallbacks.getItemOnLongClickListener());
             } else {
                 hotseatView.setVisibility(GONE);
                 hotseatView.setOnClickListener(null);
+                hotseatView.setOnLongClickListener(null);
             }
         }
     }
@@ -157,25 +164,12 @@ public class TaskbarView extends LinearLayout {
         final float x = event.getX();
         final float y = event.getY();
         if (mDelegateView == null && event.getAction() == MotionEvent.ACTION_DOWN) {
-            for (int i = 0; i < getChildCount(); i++) {
-                View child = getChildAt(i);
-                if (!child.isShown() || !child.isClickable()) {
-                    continue;
-                }
-                int childCenterX = child.getLeft() + child.getWidth() / 2;
-                int childCenterY = child.getTop() + child.getHeight() / 2;
-                mTempDelegateBounds.set(
-                        childCenterX - mIconTouchSize / 2f,
-                        childCenterY - mIconTouchSize / 2f,
-                        childCenterX + mIconTouchSize / 2f,
-                        childCenterY + mIconTouchSize / 2f);
-                mDelegateTargeted = mTempDelegateBounds.contains(x, y);
-                if (mDelegateTargeted) {
-                    mDelegateView = child;
-                    mDelegateSlopBounds.set(mTempDelegateBounds);
-                    mDelegateSlopBounds.inset(-mTouchSlop, -mTouchSlop);
-                    break;
-                }
+            View delegateView = findDelegateView(x, y);
+            if (delegateView != null) {
+                mDelegateTargeted = true;
+                mDelegateView = delegateView;
+                mDelegateSlopBounds.set(mTempDelegateBounds);
+                mDelegateSlopBounds.inset(-mTouchSlop, -mTouchSlop);
             }
         }
 
@@ -208,6 +202,60 @@ public class TaskbarView extends LinearLayout {
             }
         }
         return handled;
+    }
+
+    /**
+     * Return an item whose touch bounds contain the given coordinates,
+     * or null if no such item exists.
+     *
+     * Also sets {@link #mTempDelegateBounds} to be the touch bounds of the chosen delegate view.
+     */
+    private @Nullable View findDelegateView(float x, float y) {
+        for (int i = 0; i < getChildCount(); i++) {
+            View child = getChildAt(i);
+            if (!child.isShown() || !child.isClickable()) {
+                continue;
+            }
+            int childCenterX = child.getLeft() + child.getWidth() / 2;
+            int childCenterY = child.getTop() + child.getHeight() / 2;
+            mTempDelegateBounds.set(
+                    childCenterX - mIconTouchSize / 2f,
+                    childCenterY - mIconTouchSize / 2f,
+                    childCenterX + mIconTouchSize / 2f,
+                    childCenterY + mIconTouchSize / 2f);
+            if (mTempDelegateBounds.contains(x, y)) {
+                return child;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns whether the given MotionEvent, *in screen coorindates*, is within any Taskbar item's
+     * touch bounds.
+     */
+    public boolean isEventOverAnyItem(MotionEvent ev) {
+        getLocationOnScreen(mTempOutLocation);
+        float xInOurCoordinates = ev.getX() - mTempOutLocation[0];
+        float yInOurCoorindates = ev.getY() - mTempOutLocation[1];
+        return findDelegateView(xInOurCoordinates, yInOurCoorindates) != null;
+    }
+
+    @Override
+    public boolean onDragEvent(DragEvent event) {
+        switch (event.getAction()) {
+            case DragEvent.ACTION_DRAG_STARTED:
+                mIsDraggingItem = true;
+                return true;
+            case DragEvent.ACTION_DRAG_ENDED:
+                mIsDraggingItem = false;
+                break;
+        }
+        return super.onDragEvent(event);
+    }
+
+    public boolean isDraggingItem() {
+        return mIsDraggingItem;
     }
 
     private View inflate(@LayoutRes int layoutResId) {

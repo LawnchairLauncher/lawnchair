@@ -26,6 +26,7 @@ import android.animation.Animator;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -59,6 +60,7 @@ public class TaskbarController {
     private final TaskbarStateHandler mTaskbarStateHandler;
     private final TaskbarVisibilityController mTaskbarVisibilityController;
     private final TaskbarHotseatController mHotseatController;
+    private final TaskbarDragController mDragController;
 
     // Initialized in init().
     private WindowManager.LayoutParams mWindowLayoutParams;
@@ -77,6 +79,7 @@ public class TaskbarController {
                 createTaskbarVisibilityControllerCallbacks());
         mHotseatController = new TaskbarHotseatController(mLauncher,
                 createTaskbarHotseatControllerCallbacks());
+        mDragController = new TaskbarDragController(mLauncher);
     }
 
     private TaskbarVisibilityControllerCallbacks createTaskbarVisibilityControllerCallbacks() {
@@ -99,6 +102,11 @@ public class TaskbarController {
             @Override
             public View.OnClickListener getItemOnClickListener() {
                 return ItemClickHandler.INSTANCE;
+            }
+
+            @Override
+            public View.OnLongClickListener getItemOnLongClickListener() {
+                return mDragController::startDragOnLongClick;
             }
         };
     }
@@ -227,6 +235,18 @@ public class TaskbarController {
     }
 
     /**
+     * @param ev MotionEvent in screen coordinates.
+     * @return Whether any Taskbar item could handle the given MotionEvent if given the chance.
+     */
+    public boolean isEventOverAnyTaskbarItem(MotionEvent ev) {
+        return mTaskbarView.isEventOverAnyItem(ev);
+    }
+
+    public boolean isDraggingItem() {
+        return mTaskbarView.isDraggingItem();
+    }
+
+    /**
      * @return Whether the given View is in the same window as Taskbar.
      */
     public boolean isViewInTaskbar(View v) {
@@ -254,6 +274,7 @@ public class TaskbarController {
      */
     protected interface TaskbarViewCallbacks {
         View.OnClickListener getItemOnClickListener();
+        View.OnLongClickListener getItemOnLongClickListener();
     }
 
     /**
