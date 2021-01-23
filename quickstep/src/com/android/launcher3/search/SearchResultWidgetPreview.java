@@ -18,6 +18,8 @@ package com.android.launcher3.search;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
+import android.app.search.SearchTarget;
+import android.app.search.SearchTargetEvent;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.graphics.Point;
@@ -39,22 +41,20 @@ import com.android.launcher3.widget.BaseWidgetSheet;
 import com.android.launcher3.widget.PendingItemDragHelper;
 import com.android.launcher3.widget.WidgetCell;
 import com.android.launcher3.widget.WidgetImageView;
-import com.android.systemui.plugins.shared.SearchTargetLegacy;
+
+import java.util.List;
 
 /**
  * displays preview of a widget upon receiving {@link AppWidgetProviderInfo} from Search provider
  */
-public class SearchResultWidgetPreview extends LinearLayout implements
-        SearchTargetHandler, View.OnLongClickListener,
-        View.OnClickListener {
+public class SearchResultWidgetPreview extends LinearLayout implements SearchTargetHandler {
 
-    public static final String TARGET_TYPE_WIDGET_PREVIEW = "widget_preview";
     private final Launcher mLauncher;
     private final LauncherAppState mAppState;
     private WidgetCell mWidgetCell;
     private Toast mWidgetToast;
 
-    private SearchTargetLegacy mSearchTarget;
+    private SearchTarget mSearchTarget;
 
 
     public SearchResultWidgetPreview(Context context) {
@@ -82,14 +82,9 @@ public class SearchResultWidgetPreview extends LinearLayout implements
     }
 
     @Override
-    public void applySearchTarget(SearchTargetLegacy searchTarget) {
-        if (searchTarget.getExtras() == null
-                || searchTarget.getExtras().getParcelable("provider") == null) {
-            setVisibility(GONE);
-            return;
-        }
-        mSearchTarget = searchTarget;
-        AppWidgetProviderInfo providerInfo = searchTarget.getExtras().getParcelable("provider");
+    public void apply(SearchTarget parentTarget, List<SearchTarget> children) {
+        mSearchTarget = parentTarget;
+        AppWidgetProviderInfo providerInfo = parentTarget.getAppWidgetProviderInfo();
         LauncherAppWidgetProviderInfo pInfo = LauncherAppWidgetProviderInfo.fromProviderInfo(
                 getContext(), providerInfo);
         MODEL_EXECUTOR.post(() -> {
@@ -100,7 +95,6 @@ public class SearchResultWidgetPreview extends LinearLayout implements
                 mWidgetCell.ensurePreview();
             });
         });
-
     }
 
     @Override
@@ -120,11 +114,18 @@ public class SearchResultWidgetPreview extends LinearLayout implements
         new PendingItemDragHelper(mWidgetCell).startDrag(
                 imageView.getBitmapBounds(), imageView.getBitmap().getWidth(), imageView.getWidth(),
                 new Point(loc[0], loc[1]), mLauncher.getAppsView(), new DragOptions());
+        handleSelection(SearchTargetEvent.ACTION_LONGPRESS);
         return true;
     }
 
     @Override
     public void onClick(View view) {
         mWidgetToast = BaseWidgetSheet.showWidgetToast(getContext(), mWidgetToast);
+        handleSelection(SearchTargetEvent.ACTION_LAUNCH_TOUCH);
+    }
+
+    public void handleSelection(int eventType) {
+        SearchSessionTracker.INSTANCE.get(getContext()).notifyEvent(
+                new SearchTargetEvent.Builder(mSearchTarget.getId(), eventType).build());
     }
 }
