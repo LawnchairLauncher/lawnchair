@@ -360,7 +360,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
                     getString(R.string.all_apps_label),
                     getString(R.string.all_apps_label),
                     PendingIntent.getActivity(this, SYSTEM_ACTION_ID_ALL_APPS, intent,
-                            PendingIntent.FLAG_UPDATE_CURRENT));
+                            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
             am.registerSystemAction(allAppsAction, SYSTEM_ACTION_ID_ALL_APPS);
         } else {
             am.unregisterSystemAction(SYSTEM_ACTION_ID_ALL_APPS);
