@@ -12,21 +12,21 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher3.search.SearchResultSettingsSlice xmlns:android="http://schemas.android.com/apk/res/android"
-    android:paddingHorizontal="@dimen/dynamic_grid_cell_padding_x"
+<com.android.launcher3.search.SearchResultIconSlice xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto"
+    android:padding="@dimen/dynamic_grid_edge_margin"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <FrameLayout
         android:layout_width="wrap_content"
-        android:paddingTop="@dimen/search_settings_icon_vertical_offset"
         android:layout_height="wrap_content">
 
-        <View
-            android:layout_width="@dimen/search_settings_icon_size"
-            android:src="@drawable/ic_setting"
+        <com.android.launcher3.search.SearchResultIcon
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/icon"
-            android:layout_height="@dimen/search_settings_icon_size" />
+            launcher:iconDisplay="hero_app" />
     </FrameLayout>
 
     <androidx.slice.widget.SliceView
@@ -36,5 +36,5 @@
         android:layout_marginStart="@dimen/dynamic_grid_cell_padding_x"
         android:layout_width="0dp" />
 
-</com.android.launcher3.search.SearchResultSettingsSlice>
+</com.android.launcher3.search.SearchResultIconSlice>
 

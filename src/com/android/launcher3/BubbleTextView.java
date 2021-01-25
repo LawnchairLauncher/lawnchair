@@ -72,7 +72,7 @@ import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.PackageItemInfo;
-import com.android.launcher3.model.data.RemoteActionItemInfo;
+import com.android.launcher3.model.data.SearchActionItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.views.ActivityContext;
@@ -319,14 +319,14 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     }
 
     /**
-     * Apply label and tag using a {@link RemoteActionItemInfo}
+     * Apply label and tag using a {@link SearchActionItemInfo}
      */
-    public void applyFromRemoteActionInfo(RemoteActionItemInfo remoteActionItemInfo) {
-        applyIconAndLabel(remoteActionItemInfo);
-        setTag(remoteActionItemInfo);
+    public void applyFromSearchActionItemInfo(SearchActionItemInfo searchActionItemInfo) {
+        applyIconAndLabel(searchActionItemInfo);
+        setTag(searchActionItemInfo);
     }
 
-    private void applyIconAndLabel(ItemInfoWithIcon info) {
+    protected void applyIconAndLabel(ItemInfoWithIcon info) {
         FastBitmapDrawable iconDrawable = newIcon(getContext(), info);
         mDotParams.color = IconPalette.getMutedColor(info.bitmap.color, 0.54f);
 
@@ -595,7 +595,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         mLongPressHelper.cancelLongPress();
     }
 
-    /** Applies the loading progress value to the progress bar.
+    /**
+     * Applies the loading progress value to the progress bar.
      *
      * If this app is installing, the progress bar will be updated with the installation progress.
      * If this app is installed and downloading incrementally, the progress bar will be updated
@@ -609,7 +610,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
                     != 0) {
                 updateProgressBarUi(progressLevel, progressLevel == 100);
             } else if (info.hasPromiseIconUi() || (info.runtimeStatusFlags
-                        & ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE) != 0) {
+                    & ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE) != 0) {
                 updateProgressBarUi(progressLevel, promiseStateChanged);
             }
         }
@@ -765,8 +766,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
                 mActivity.invalidateParent(info);
             } else if (info instanceof PackageItemInfo) {
                 applyFromItemInfoWithIcon((PackageItemInfo) info);
-            } else if (info instanceof RemoteActionItemInfo) {
-                applyFromRemoteActionInfo((RemoteActionItemInfo) info);
+            } else if (info instanceof SearchActionItemInfo) {
+                applyFromSearchActionItemInfo((SearchActionItemInfo) info);
             }
 
             mDisableRelayout = false;

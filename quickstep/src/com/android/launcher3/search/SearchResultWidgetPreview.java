@@ -39,7 +39,6 @@ import com.android.launcher3.widget.BaseWidgetSheet;
 import com.android.launcher3.widget.PendingItemDragHelper;
 import com.android.launcher3.widget.WidgetCell;
 import com.android.launcher3.widget.WidgetImageView;
-import com.android.systemui.plugins.shared.SearchTargetEventLegacy;
 import com.android.systemui.plugins.shared.SearchTargetLegacy;
 
 /**
@@ -121,19 +120,11 @@ public class SearchResultWidgetPreview extends LinearLayout implements
         new PendingItemDragHelper(mWidgetCell).startDrag(
                 imageView.getBitmapBounds(), imageView.getBitmap().getWidth(), imageView.getWidth(),
                 new Point(loc[0], loc[1]), mLauncher.getAppsView(), new DragOptions());
-        handleSelection(SearchTargetEventLegacy.LONG_PRESS);
         return true;
     }
 
     @Override
     public void onClick(View view) {
         mWidgetToast = BaseWidgetSheet.showWidgetToast(getContext(), mWidgetToast);
-        handleSelection(SearchTargetEventLegacy.SELECT);
-    }
-
-    @Override
-    public void handleSelection(int eventType) {
-        SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(
-                new SearchTargetEventLegacy.Builder(mSearchTarget, eventType).build());
     }
 }
