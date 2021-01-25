@@ -22,11 +22,14 @@ import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.quickstep.util.ImageActionUtils.persistBitmapAndStartActivity;
 
+import android.app.prediction.AppTarget;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ShortcutInfo;
 import android.graphics.Bitmap;
 import android.graphics.Insets;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -95,5 +98,13 @@ public class ImageActionsApi {
             Insets visibleInsets, Task.TaskKey task) {
         ImageActionUtils.saveScreenshot(mSystemUiProxy, screenshot, screenshotBounds, visibleInsets,
                 task);
+    }
+
+    /**
+     * Share the image when user taps on overview share targets.
+     */
+    @UiThread
+    public void shareImage(RectF rectF, ShortcutInfo shortcutInfo, AppTarget appTarget) {
+        ImageActionUtils.shareImage(mContext, mBitmapSupplier, rectF, shortcutInfo, appTarget, TAG);
     }
 }

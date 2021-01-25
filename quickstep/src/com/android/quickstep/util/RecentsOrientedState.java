@@ -49,6 +49,7 @@ import androidx.annotation.NonNull;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.PagedOrientationHandler;
@@ -156,7 +157,8 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
         Resources res = context.getResources();
         int originalSmallestWidth = res.getConfiguration().smallestScreenWidthDp
                 * res.getDisplayMetrics().densityDpi / DENSITY_DEVICE_STABLE;
-        if (originalSmallestWidth < 600) {
+        if (originalSmallestWidth < 600 && !mContext.getResources().getBoolean(
+                R.bool.allow_rotation)) {
             mFlags |= FLAG_MULTIPLE_ORIENTATION_SUPPORTED_BY_DENSITY;
         }
         mFlags |= FLAG_SWIPE_UP_NOT_RUNNING;
@@ -196,7 +198,6 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
      */
     public boolean update(
             @SurfaceRotation int touchRotation, @SurfaceRotation int displayRotation) {
-        mRecentsActivityRotation = inferRecentsActivityRotation(displayRotation);
         mDisplayRotation = displayRotation;
         mTouchRotation = touchRotation;
         mPreviousRotation = touchRotation;
@@ -204,6 +205,7 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
     }
 
     private boolean updateHandler() {
+        mRecentsActivityRotation = inferRecentsActivityRotation(mDisplayRotation);
         if (mRecentsActivityRotation == mTouchRotation
                 || (canRecentsActivityRotate() && (mFlags & FLAG_SWIPE_UP_NOT_RUNNING) != 0)) {
             mOrientationHandler = PagedOrientationHandler.PORTRAIT;

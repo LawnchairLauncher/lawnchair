@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.views;
+package com.android.launcher3.search;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
@@ -32,8 +32,6 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.R;
-import com.android.launcher3.allapps.search.AllAppsSearchBarController;
-import com.android.launcher3.allapps.search.SearchEventTracker;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.touch.ItemLongClickListener;
@@ -41,14 +39,14 @@ import com.android.launcher3.widget.BaseWidgetSheet;
 import com.android.launcher3.widget.PendingItemDragHelper;
 import com.android.launcher3.widget.WidgetCell;
 import com.android.launcher3.widget.WidgetImageView;
-import com.android.systemui.plugins.shared.SearchTarget;
-import com.android.systemui.plugins.shared.SearchTargetEvent;
+import com.android.systemui.plugins.shared.SearchTargetEventLegacy;
+import com.android.systemui.plugins.shared.SearchTargetLegacy;
 
 /**
  * displays preview of a widget upon receiving {@link AppWidgetProviderInfo} from Search provider
  */
 public class SearchResultWidgetPreview extends LinearLayout implements
-        AllAppsSearchBarController.SearchTargetHandler, View.OnLongClickListener,
+        SearchTargetHandler, View.OnLongClickListener,
         View.OnClickListener {
 
     public static final String TARGET_TYPE_WIDGET_PREVIEW = "widget_preview";
@@ -57,7 +55,7 @@ public class SearchResultWidgetPreview extends LinearLayout implements
     private WidgetCell mWidgetCell;
     private Toast mWidgetToast;
 
-    private SearchTarget mSearchTarget;
+    private SearchTargetLegacy mSearchTarget;
 
 
     public SearchResultWidgetPreview(Context context) {
@@ -85,7 +83,7 @@ public class SearchResultWidgetPreview extends LinearLayout implements
     }
 
     @Override
-    public void applySearchTarget(SearchTarget searchTarget) {
+    public void applySearchTarget(SearchTargetLegacy searchTarget) {
         if (searchTarget.getExtras() == null
                 || searchTarget.getExtras().getParcelable("provider") == null) {
             setVisibility(GONE);
@@ -123,19 +121,19 @@ public class SearchResultWidgetPreview extends LinearLayout implements
         new PendingItemDragHelper(mWidgetCell).startDrag(
                 imageView.getBitmapBounds(), imageView.getBitmap().getWidth(), imageView.getWidth(),
                 new Point(loc[0], loc[1]), mLauncher.getAppsView(), new DragOptions());
-        handleSelection(SearchTargetEvent.LONG_PRESS);
+        handleSelection(SearchTargetEventLegacy.LONG_PRESS);
         return true;
     }
 
     @Override
     public void onClick(View view) {
         mWidgetToast = BaseWidgetSheet.showWidgetToast(getContext(), mWidgetToast);
-        handleSelection(SearchTargetEvent.SELECT);
+        handleSelection(SearchTargetEventLegacy.SELECT);
     }
 
     @Override
     public void handleSelection(int eventType) {
         SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(
-                new SearchTargetEvent.Builder(mSearchTarget, eventType).build());
+                new SearchTargetEventLegacy.Builder(mSearchTarget, eventType).build());
     }
 }

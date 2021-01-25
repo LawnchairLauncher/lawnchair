@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.views;
+package com.android.launcher3.search;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
+import android.app.search.SearchTarget;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.ShortcutInfo;
@@ -32,17 +33,16 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import com.android.app.search.ResultType;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
-import com.android.launcher3.allapps.search.AllAppsSearchBarController;
-import com.android.launcher3.allapps.search.SearchEventTracker;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
-import com.android.systemui.plugins.shared.SearchTarget;
-import com.android.systemui.plugins.shared.SearchTargetEvent;
+import com.android.systemui.plugins.shared.SearchTargetEventLegacy;
+import com.android.systemui.plugins.shared.SearchTargetLegacy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +53,7 @@ import java.util.function.Consumer;
  * shortcuts
  */
 public class SearchResultIconRow extends LinearLayout implements
-        AllAppsSearchBarController.SearchTargetHandler, View.OnClickListener,
+        SearchTargetHandler, View.OnClickListener,
         View.OnLongClickListener, Consumer<ItemInfoWithIcon> {
     public static final int MAX_SHORTCUTS_COUNT = 2;
 
@@ -65,7 +65,7 @@ public class SearchResultIconRow extends LinearLayout implements
     private TextView mDescriptionView;
     private BubbleTextView[] mShortcutViews = new BubbleTextView[2];
 
-    private SearchTarget mSearchTarget;
+    private SearchTargetLegacy mSearchTarget;
     private PackageItemInfo mProviderInfo;
 
 
@@ -102,8 +102,9 @@ public class SearchResultIconRow extends LinearLayout implements
             lp.width = iconSize;
             bubbleTextView.setOnClickListener(view -> {
                 WorkspaceItemInfo itemInfo = (WorkspaceItemInfo) bubbleTextView.getTag();
-                SearchTargetEvent event = new SearchTargetEvent.Builder(mSearchTarget,
-                        SearchTargetEvent.CHILD_SELECT).setShortcutPosition(itemInfo.rank).build();
+                SearchTargetEventLegacy event = new SearchTargetEventLegacy.Builder(mSearchTarget,
+                        SearchTargetEventLegacy.CHILD_SELECT).setShortcutPosition(
+                        itemInfo.rank).build();
                 SearchEventTracker.getInstance(getContext()).notifySearchTargetEvent(event);
                 mLauncher.getItemOnClickListener().onClick(view);
             });
@@ -113,7 +114,17 @@ public class SearchResultIconRow extends LinearLayout implements
     }
 
     @Override
-    public void applySearchTarget(SearchTarget searchTarget) {
+    public void applySearchTarget(SearchTarget parentTarget, List<SearchTarget> children) {
+        mResultIcon.applySearchTarget(parentTarget, children, this);
+        if (parentTarget.getResultType() == ResultType.SHORTCUT) {
+            ShortcutInfo shortcutInfo = parentTarget.getShortcutInfo();
+            setProviderDetails(new ComponentName(shortcutInfo.getPackage(), ""),
+                    shortcutInfo.getUserHandle());
+        }
+    }
+
+    @Override
+    public void applySearchTarget(SearchTargetLegacy searchTarget) {
         mSearchTarget = searchTarget;
         mResultIcon.applySearchTarget(searchTarget, this);
         String itemType = searchTarget.getItemType();

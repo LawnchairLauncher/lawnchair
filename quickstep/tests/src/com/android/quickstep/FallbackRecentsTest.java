@@ -23,6 +23,7 @@ import static com.android.launcher3.tapl.LauncherInstrumentation.WAIT_TIME_MS;
 import static com.android.launcher3.tapl.TestHelpers.getHomeIntentInPackage;
 import static com.android.launcher3.tapl.TestHelpers.getLauncherInMyProcess;
 import static com.android.launcher3.ui.AbstractLauncherUiTest.DEFAULT_ACTIVITY_TIMEOUT;
+import static com.android.launcher3.ui.AbstractLauncherUiTest.DEFAULT_BROADCAST_TIMEOUT_SECS;
 import static com.android.launcher3.ui.AbstractLauncherUiTest.DEFAULT_UI_TIMEOUT;
 import static com.android.launcher3.ui.AbstractLauncherUiTest.resolveSystemApp;
 import static com.android.launcher3.ui.AbstractLauncherUiTest.startAppFast;
@@ -55,7 +56,6 @@ import com.android.launcher3.tapl.OverviewTask;
 import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.testcomponent.TestCommandReceiver;
 import com.android.launcher3.util.Wait;
-import com.android.launcher3.util.rule.FailureRewriterRule;
 import com.android.launcher3.util.rule.FailureWatcher;
 import com.android.quickstep.views.RecentsView;
 
@@ -66,6 +66,8 @@ import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.model.Statement;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -100,8 +102,7 @@ public class FallbackRecentsTest {
         }
 
         mOrderSensitiveRules = RuleChain
-                .outerRule(new FailureRewriterRule())
-                .around(new NavigationModeSwitchRule(mLauncher))
+                .outerRule(new NavigationModeSwitchRule(mLauncher))
                 .around(new FailureWatcher(mDevice));
 
         mOtherLauncherActivity = context.getPackageManager().queryIntentActivities(
@@ -112,11 +113,16 @@ public class FallbackRecentsTest {
             @Override
             public void evaluate() throws Throwable {
                 TestCommandReceiver.callCommand(TestCommandReceiver.ENABLE_TEST_LAUNCHER);
+                OverviewUpdateHandler updateHandler =
+                        MAIN_EXECUTOR.submit(OverviewUpdateHandler::new).get();
                 UiDevice.getInstance(getInstrumentation()).executeShellCommand(
                         getLauncherCommand(mOtherLauncherActivity));
+                updateHandler.mChangeCounter
+                        .await(DEFAULT_BROADCAST_TIMEOUT_SECS, TimeUnit.SECONDS);
                 try {
                     base.evaluate();
                 } finally {
+                    MAIN_EXECUTOR.submit(updateHandler::destroy).get();
                     TestCommandReceiver.callCommand(TestCommandReceiver.DISABLE_TEST_LAUNCHER);
                     UiDevice.getInstance(getInstrumentation()).executeShellCommand(
                             getLauncherCommand(getLauncherInMyProcess()));
@@ -213,7 +219,7 @@ public class FallbackRecentsTest {
         OverviewTask task = overview.getCurrentTask();
         assertNotNull("overview.getCurrentTask() returned null (1)", task);
         assertNotNull("OverviewTask.open returned null", task.open());
-        assertTrue("Test activity didn't open from Overview", mDevice.wait(Until.hasObject(
+        assertTrue("Test activity didn't open from Overview", TestHelpers.wait(Until.hasObject(
                 By.pkg(getAppPackageName()).text("TestActivity2")),
                 DEFAULT_UI_TIMEOUT));
 
@@ -230,7 +236,7 @@ public class FallbackRecentsTest {
 
         // Test dismissing all tasks.
         pressHomeAndGoToOverview().dismissAllTasks();
-        assertTrue("Fallback Launcher not visible", mDevice.wait(Until.hasObject(By.pkg(
+        assertTrue("Fallback Launcher not visible", TestHelpers.wait(Until.hasObject(By.pkg(
                 mOtherLauncherActivity.packageName)), WAIT_TIME_MS));
     }
 
@@ -240,5 +246,31 @@ public class FallbackRecentsTest {
 
     private int getTaskCount(RecentsActivity recents) {
         return recents.<RecentsView>getOverviewPanel().getTaskViewCount();
+    }
+
+    private class OverviewUpdateHandler {
+
+        final RecentsAnimationDeviceState mRads;
+        final OverviewComponentObserver mObserver;
+        final CountDownLatch mChangeCounter;
+
+        OverviewUpdateHandler() {
+            Context ctx = getInstrumentation().getTargetContext();
+            mRads = new RecentsAnimationDeviceState(ctx);
+            mObserver = new OverviewComponentObserver(ctx, mRads);
+            mChangeCounter = new CountDownLatch(1);
+            if (mObserver.getHomeIntent().getComponent()
+                    .getPackageName().equals(mOtherLauncherActivity.packageName)) {
+                // Home already same
+                mChangeCounter.countDown();
+            } else {
+                mObserver.setOverviewChangeListener(b -> mChangeCounter.countDown());
+            }
+        }
+
+        void destroy() {
+            mObserver.onDestroy();
+            mRads.destroy();
+        }
     }
 }

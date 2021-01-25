@@ -107,12 +107,13 @@ public final class Utilities {
     public static final String[] EMPTY_STRING_ARRAY = new String[0];
     public static final Person[] EMPTY_PERSON_ARRAY = new Person[0];
 
-    public static final boolean ATLEAST_R = BuildCompat.isAtLeastR();
+    public static final boolean ATLEAST_P = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P;
 
     public static final boolean ATLEAST_Q = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
 
-    public static final boolean ATLEAST_P =
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.P;
+    public static final boolean ATLEAST_R = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R;
+
+    public static final boolean ATLEAST_S = BuildCompat.isAtLeastS();
 
     /**
      * Set on a motion event dispatched from the nav bar. See {@link MotionEvent#setEdgeFlags(int)}.
@@ -457,6 +458,15 @@ public final class Utilities {
      */
     public static long boundToRange(long value, long lowerBound, long upperBound) {
         return Math.max(lowerBound, Math.min(value, upperBound));
+    }
+
+    /**
+     * Returns an intent for starting the default home activity
+     */
+    public static Intent createHomeIntent() {
+        return new Intent(Intent.ACTION_MAIN)
+                .addCategory(Intent.CATEGORY_HOME)
+                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     }
 
     /**

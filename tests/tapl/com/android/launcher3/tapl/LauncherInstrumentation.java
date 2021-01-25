@@ -933,7 +933,7 @@ public final class LauncherInstrumentation {
 
     @NonNull
     UiObject2 waitForAndroidObject(String resId) {
-        final UiObject2 object = mDevice.wait(
+        final UiObject2 object = TestHelpers.wait(
                 Until.findObject(By.res(ANDROID_PACKAGE, resId)), WAIT_TIME_MS);
         assertNotNull("Can't find a android object with id: " + resId, object);
         return object;

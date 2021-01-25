@@ -137,7 +137,6 @@ import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
-import com.android.launcher3.model.data.PromiseAppInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.pm.PinRequestHelper;
@@ -1597,6 +1596,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
         mOverlayManager.onActivityDestroyed(this);
         mAppTransitionManager.unregisterRemoteAnimations();
+        mAppTransitionManager.unregisterRemoteTransitions();
         mUserChangedCallbackCloseable.close();
         mLifecycleRegistry.setCurrentState(Lifecycle.State.DESTROYED);
         mLiveSearchManager.stop();
@@ -2516,8 +2516,8 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     }
 
     @Override
-    public void bindPromiseAppProgressUpdated(PromiseAppInfo app) {
-        mAppsView.getAppsStore().updatePromiseAppProgress(app);
+    public void bindIncrementalDownloadProgressUpdated(AppInfo app) {
+        mAppsView.getAppsStore().updateProgressBar(app);
     }
 
     @Override

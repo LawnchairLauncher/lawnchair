@@ -23,6 +23,8 @@ import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 import static com.android.quickstep.SysUINavigationMode.Mode.THREE_BUTTONS;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_CLICKABLE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_LONG_CLICKABLE;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_ASSIST_GESTURE_CONSTRAINED;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_ALLOW_GESTURE_IGNORING_BAR_VISIBILITY;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_BUBBLES_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_GLOBAL_ACTIONS_SHOWING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_HOME_DISABLED;
@@ -373,7 +375,7 @@ public class RecentsAnimationDeviceState implements
      * @return the system ui state flags.
      */
     // TODO(141886704): See if we can remove this
-    public @SystemUiStateFlags int getSystemUiStateFlags() {
+    public int getSystemUiStateFlags() {
         return mSystemUiStateFlags;
     }
 
@@ -382,6 +384,7 @@ public class RecentsAnimationDeviceState implements
      */
     public boolean canStartSystemGesture() {
         boolean canStartWithNavHidden = (mSystemUiStateFlags & SYSUI_STATE_NAV_BAR_HIDDEN) == 0
+                || (mSystemUiStateFlags & SYSUI_STATE_ALLOW_GESTURE_IGNORING_BAR_VISIBILITY) != 0
                 || mRotationTouchHelper.isTaskListFrozen();
         return canStartWithNavHidden
                 && (mSystemUiStateFlags & SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED) == 0
@@ -403,6 +406,13 @@ public class RecentsAnimationDeviceState implements
      */
     public boolean isScreenPinningActive() {
         return (mSystemUiStateFlags & SYSUI_STATE_SCREEN_PINNING) != 0;
+    }
+
+    /**
+     * @return whether assistant gesture is constraint
+     */
+    public boolean isAssistantGestureIsConstrained() {
+        return (mSystemUiStateFlags & SYSUI_STATE_ASSIST_GESTURE_CONSTRAINED) != 0;
     }
 
     /**

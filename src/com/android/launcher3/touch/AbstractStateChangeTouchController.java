@@ -261,7 +261,9 @@ public abstract class AbstractStateChangeTouchController
         mCanBlockFling = mFromState == NORMAL;
         mFlingBlockCheck.unblockFling();
         // Must be called after all the animation controllers have been paused
-        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get() && BuildCompat.isAtLeastR()
+        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()
+                && !FeatureFlags.DISABLE_INITIAL_IME_IN_ALLAPPS.get()
+                && BuildCompat.isAtLeastR()
                 && (mToState == ALL_APPS || mToState == NORMAL)) {
             mLauncher.getAllAppsController().getInsetController().onDragStart(
                     mFromState == NORMAL ? 1f : 0f);

@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.views;
+package com.android.launcher3.search;
 
 import static com.android.launcher3.FastBitmapDrawable.newIcon;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
+import android.app.search.SearchAction;
+import android.app.search.SearchTarget;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -37,11 +39,9 @@ import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
-import com.android.launcher3.allapps.search.AllAppsSearchBarController;
-import com.android.launcher3.allapps.search.SearchEventTracker;
 import com.android.launcher3.model.data.PackageItemInfo;
-import com.android.systemui.plugins.shared.SearchTarget;
-import com.android.systemui.plugins.shared.SearchTargetEvent;
+import com.android.systemui.plugins.shared.SearchTargetEventLegacy;
+import com.android.systemui.plugins.shared.SearchTargetLegacy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +50,7 @@ import java.util.List;
  * A row of clickable TextViews with a breadcrumb for settings search.
  */
 public class SearchSettingsRowView extends LinearLayout implements
-        View.OnClickListener, AllAppsSearchBarController.SearchTargetHandler {
+        View.OnClickListener, SearchTargetHandler {
 
     public static final String TARGET_TYPE_SETTINGS_ROW = "settings_row";
 
@@ -58,7 +58,7 @@ public class SearchSettingsRowView extends LinearLayout implements
     private TextView mTitleView;
     private TextView mBreadcrumbsView;
     private Intent mIntent;
-    private SearchTarget mSearchTarget;
+    private SearchTargetLegacy mSearchTarget;
 
 
     public SearchSettingsRowView(@NonNull Context context) {
@@ -86,7 +86,7 @@ public class SearchSettingsRowView extends LinearLayout implements
     }
 
     @Override
-    public void applySearchTarget(SearchTarget searchTarget) {
+    public void applySearchTarget(SearchTargetLegacy searchTarget) {
         mSearchTarget = searchTarget;
         Bundle bundle = searchTarget.getExtras();
         mIntent = bundle.getParcelable("intent");
@@ -97,6 +97,14 @@ public class SearchSettingsRowView extends LinearLayout implements
         showIfAvailable(mBreadcrumbsView, breadcrumbs != null
                 ? String.join(" > ", breadcrumbs) : null);
         SearchEventTracker.INSTANCE.get(getContext()).registerWeakHandler(searchTarget, this);
+    }
+
+    @Override
+    public void applySearchTarget(SearchTarget parentTarget, List<SearchTarget> children) {
+        SearchAction action = parentTarget.getSearchAction();
+        mIconView.setContentDescription(action.getTitle());
+        showIfAvailable(mTitleView, action.getTitle().toString());
+        showIfAvailable(mBreadcrumbsView, action.getSubtitle().toString());
     }
 
     private void showIfAvailable(TextView view, @Nullable String string) {
@@ -110,7 +118,7 @@ public class SearchSettingsRowView extends LinearLayout implements
 
     @Override
     public void onClick(View view) {
-        handleSelection(SearchTargetEvent.SELECT);
+        handleSelection(SearchTargetEventLegacy.SELECT);
     }
 
     @Override
@@ -122,7 +130,7 @@ public class SearchSettingsRowView extends LinearLayout implements
         launcher.startActivityForResult(mIntent, 0);
 
         SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(
-                new SearchTargetEvent.Builder(mSearchTarget, eventType).build());
+                new SearchTargetEventLegacy.Builder(mSearchTarget, eventType).build());
     }
 
     /**

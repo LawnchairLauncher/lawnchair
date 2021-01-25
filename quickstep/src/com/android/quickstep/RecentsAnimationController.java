@@ -136,6 +136,7 @@ public class RecentsAnimationController {
         UI_HELPER_EXECUTOR.execute(() -> {
             mController.finish(toRecents, sendUserLeaveHint);
             InteractionJankMonitorWrapper.end(InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
+            InteractionJankMonitorWrapper.end(InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME);
             if (callback != null) {
                 MAIN_EXECUTOR.execute(callback);
             }

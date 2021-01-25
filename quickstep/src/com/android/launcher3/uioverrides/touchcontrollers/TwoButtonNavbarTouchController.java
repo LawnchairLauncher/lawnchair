@@ -15,10 +15,13 @@
  */
 package com.android.launcher3.uioverrides.touchcontrollers;
 
+import static com.android.launcher3.AbstractFloatingView.TYPE_ALL_APPS_EDU;
+import static com.android.launcher3.AbstractFloatingView.getOpenView;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 
+import android.animation.ValueAnimator;
 import android.view.MotionEvent;
 
 import com.android.launcher3.AbstractFloatingView;
@@ -28,40 +31,77 @@ import com.android.launcher3.states.StateAnimationConfig.AnimationFlags;
 import com.android.launcher3.touch.AbstractStateChangeTouchController;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.quickstep.SystemUiProxy;
+import com.android.quickstep.views.AllAppsEduView;
 
 /**
  * Touch controller for handling edge swipes in 2-button mode
  */
-public class TwoButtonNavbarToOverviewTouchController extends AbstractStateChangeTouchController {
+public class TwoButtonNavbarTouchController extends AbstractStateChangeTouchController {
+
+    private static final int MAX_NUM_SWIPES_TO_TRIGGER_EDU = 3;
 
     private static final String TAG = "2BtnNavbarTouchCtrl";
 
-    public TwoButtonNavbarToOverviewTouchController(Launcher l) {
+    private final boolean mIsTransposed;
+
+    // If true, we will finish the current animation instantly on second touch.
+    private boolean mFinishFastOnSecondTouch;
+
+    private int mContinuousTouchCount = 0;
+
+    public TwoButtonNavbarTouchController(Launcher l) {
         super(l, l.getDeviceProfile().isVerticalBarLayout()
                 ? SingleAxisSwipeDetector.HORIZONTAL : SingleAxisSwipeDetector.VERTICAL);
+        mIsTransposed = l.getDeviceProfile().isVerticalBarLayout();
     }
 
     @Override
     protected boolean canInterceptTouch(MotionEvent ev) {
+        boolean canIntercept = canInterceptTouchInternal(ev);
+        if (!canIntercept) {
+            mContinuousTouchCount = 0;
+        }
+        return canIntercept;
+    }
+
+    private boolean canInterceptTouchInternal(MotionEvent ev) {
         if (mCurrentAnimation != null) {
+            if (mFinishFastOnSecondTouch) {
+                mCurrentAnimation.getAnimationPlayer().end();
+            }
+
             // If we are already animating from a previous state, we can intercept.
             return true;
         }
         if (AbstractFloatingView.getTopOpenView(mLauncher) != null) {
             return false;
         }
-        return mLauncher.isInState(NORMAL) && (ev.getEdgeFlags() & EDGE_NAV_BAR) != 0;
+        if ((ev.getEdgeFlags() & EDGE_NAV_BAR) == 0) {
+            return false;
+        }
+        if (!mIsTransposed && mLauncher.isInState(OVERVIEW)) {
+            return true;
+        }
+        return mLauncher.isInState(NORMAL);
     }
 
     @Override
     protected LauncherState getTargetState(LauncherState fromState, boolean isDragTowardPositive) {
-        if (mLauncher.getDeviceProfile().isVerticalBarLayout()) {
+        if (mIsTransposed) {
             boolean draggingFromNav =
                     mLauncher.getDeviceProfile().isSeascape() == isDragTowardPositive;
             return draggingFromNav ? OVERVIEW : NORMAL;
         } else {
-            return isDragTowardPositive ? OVERVIEW : NORMAL;
+            return isDragTowardPositive ^ (fromState == OVERVIEW) ? OVERVIEW : NORMAL;
         }
+    }
+
+    @Override
+    protected void updateSwipeCompleteAnimation(ValueAnimator animator, long expectedDuration,
+            LauncherState targetState, float velocity, boolean isFling) {
+        super.updateSwipeCompleteAnimation(animator, expectedDuration, targetState,
+                velocity, isFling);
+        mFinishFastOnSecondTouch = !mIsTransposed && mFromState == NORMAL;
     }
 
     @Override
@@ -82,8 +122,17 @@ public class TwoButtonNavbarToOverviewTouchController extends AbstractStateChang
     @Override
     protected void onSwipeInteractionCompleted(LauncherState targetState) {
         super.onSwipeInteractionCompleted(targetState);
+        if (!mIsTransposed) {
+            mContinuousTouchCount++;
+        }
         if (mStartState == NORMAL && targetState == OVERVIEW) {
             SystemUiProxy.INSTANCE.get(mLauncher).onOverviewShown(true, TAG);
+        } else if (targetState == NORMAL
+                && mContinuousTouchCount >= MAX_NUM_SWIPES_TO_TRIGGER_EDU) {
+            mContinuousTouchCount = 0;
+            if (getOpenView(mLauncher, TYPE_ALL_APPS_EDU) == null) {
+                AllAppsEduView.show(mLauncher);
+            }
         }
     }
 }

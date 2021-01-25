@@ -35,6 +35,7 @@ import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.systemui.shared.recents.IPinnedStackAnimationListener;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.Task;
+import com.android.systemui.shared.system.RemoteTransitionCompat;
 
 /**
  * Holds the reference to SystemUI.
@@ -405,6 +406,28 @@ public class SystemUiProxy implements ISystemUiProxy {
                 mSystemUiProxy.stopSwipePipToHome(componentName, destinationBounds);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call stopSwipePipToHome");
+            }
+        }
+    }
+
+    @Override
+    public void registerRemoteTransition(RemoteTransitionCompat remoteTransition) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.registerRemoteTransition(remoteTransition);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call registerRemoteTransition");
+            }
+        }
+    }
+
+    @Override
+    public void unregisterRemoteTransition(RemoteTransitionCompat remoteTransition) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.unregisterRemoteTransition(remoteTransition);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call registerRemoteTransition");
             }
         }
     }

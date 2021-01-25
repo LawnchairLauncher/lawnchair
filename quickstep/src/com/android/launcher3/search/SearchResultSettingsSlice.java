@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.views;
+package com.android.launcher3.search;
 
+import android.app.search.SearchTarget;
 import android.content.Context;
 import android.net.Uri;
 import android.util.AttributeSet;
@@ -32,16 +33,16 @@ import androidx.slice.widget.SliceView;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.allapps.search.AllAppsSearchBarController;
-import com.android.launcher3.allapps.search.SearchEventTracker;
-import com.android.systemui.plugins.shared.SearchTarget;
-import com.android.systemui.plugins.shared.SearchTargetEvent;
+import com.android.systemui.plugins.shared.SearchTargetEventLegacy;
+import com.android.systemui.plugins.shared.SearchTargetLegacy;
+
+import java.util.List;
 
 /**
  * A slice view wrapper with settings app icon at start
  */
 public class SearchResultSettingsSlice extends LinearLayout implements
-        AllAppsSearchBarController.SearchTargetHandler, SliceView.OnSliceActionListener {
+        SearchTargetHandler, SliceView.OnSliceActionListener {
 
 
     public static final String TARGET_TYPE_SLICE = "settings_slice";
@@ -52,7 +53,7 @@ public class SearchResultSettingsSlice extends LinearLayout implements
     private SliceView mSliceView;
     private View mIcon;
     private LiveData<Slice> mSliceLiveData;
-    private SearchTarget mSearchTarget;
+    private SearchTargetLegacy mSearchTarget;
     private final Launcher mLauncher;
 
     public SearchResultSettingsSlice(Context context) {
@@ -79,11 +80,23 @@ public class SearchResultSettingsSlice extends LinearLayout implements
     }
 
     @Override
-    public void applySearchTarget(SearchTarget searchTarget) {
+    public void applySearchTarget(SearchTargetLegacy searchTarget) {
         reset();
         mSearchTarget = searchTarget;
         try {
             mSliceLiveData = mLauncher.getLiveSearchManager().getSliceForUri(getSliceUri());
+            mSliceLiveData.observe(mLauncher, mSliceView);
+        } catch (Exception ex) {
+            Log.e(TAG, "unable to bind slice", ex);
+        }
+    }
+
+    @Override
+    public void applySearchTarget(SearchTarget parentTarget, List<SearchTarget> children) {
+        reset();
+        try {
+            mSliceLiveData = mLauncher.getLiveSearchManager().getSliceForUri(
+                    parentTarget.getSliceUri());
             mSliceLiveData.observe(mLauncher, mSliceView);
         } catch (Exception ex) {
             Log.e(TAG, "unable to bind slice", ex);
@@ -105,8 +118,8 @@ public class SearchResultSettingsSlice extends LinearLayout implements
     @Override
     public void handleSelection(int eventType) {
         SearchEventTracker.INSTANCE.get(mLauncher).notifySearchTargetEvent(
-                new SearchTargetEvent.Builder(mSearchTarget,
-                        SearchTargetEvent.CHILD_SELECT).build());
+                new SearchTargetEventLegacy.Builder(mSearchTarget,
+                        SearchTargetEventLegacy.CHILD_SELECT).build());
     }
 
     private void reset() {
@@ -118,7 +131,7 @@ public class SearchResultSettingsSlice extends LinearLayout implements
 
     @Override
     public void onSliceAction(@NonNull EventInfo eventInfo, @NonNull SliceItem sliceItem) {
-        handleSelection(SearchTargetEvent.CHILD_SELECT);
+        handleSelection(SearchTargetEventLegacy.CHILD_SELECT);
     }
 
     private Uri getSliceUri() {

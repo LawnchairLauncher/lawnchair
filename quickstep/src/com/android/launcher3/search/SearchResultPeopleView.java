@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.views;
+package com.android.launcher3.search;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
@@ -42,12 +42,10 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.allapps.search.AllAppsSearchBarController;
-import com.android.launcher3.allapps.search.SearchEventTracker;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.LauncherIcons;
-import com.android.systemui.plugins.shared.SearchTarget;
-import com.android.systemui.plugins.shared.SearchTargetEvent;
+import com.android.systemui.plugins.shared.SearchTargetEventLegacy;
+import com.android.systemui.plugins.shared.SearchTargetLegacy;
 
 import java.util.ArrayList;
 
@@ -55,7 +53,7 @@ import java.util.ArrayList;
  * A view representing a single people search result in all apps
  */
 public class SearchResultPeopleView extends LinearLayout implements
-        AllAppsSearchBarController.SearchTargetHandler {
+        SearchTargetHandler {
 
     public static final String TARGET_TYPE_PEOPLE = "people";
 
@@ -68,7 +66,7 @@ public class SearchResultPeopleView extends LinearLayout implements
     private Intent mIntent;
 
 
-    private SearchTarget mSearchTarget;
+    private SearchTargetLegacy mSearchTarget;
 
     public SearchResultPeopleView(Context context) {
         this(context, null, 0);
@@ -101,11 +99,11 @@ public class SearchResultPeopleView extends LinearLayout implements
             button.getLayoutParams().width = mButtonSize;
             button.getLayoutParams().height = mButtonSize;
         }
-        setOnClickListener(v -> handleSelection(SearchTargetEvent.SELECT));
+        setOnClickListener(v -> handleSelection(SearchTargetEventLegacy.SELECT));
     }
 
     @Override
-    public void applySearchTarget(SearchTarget searchTarget) {
+    public void applySearchTarget(SearchTargetLegacy searchTarget) {
         mSearchTarget = searchTarget;
         Bundle payload = searchTarget.getExtras();
         mTitleView.setText(payload.getString("title"));
@@ -188,8 +186,8 @@ public class SearchResultPeopleView extends LinearLayout implements
             Bundle bundle = new Bundle();
             bundle.putBundle("provider", provider);
             SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(
-                    new SearchTargetEvent.Builder(mSearchTarget,
-                            SearchTargetEvent.CHILD_SELECT).setExtras(bundle).build());
+                    new SearchTargetEventLegacy.Builder(mSearchTarget,
+                            SearchTargetEventLegacy.CHILD_SELECT).setExtras(bundle).build());
         });
     }
 
@@ -199,7 +197,7 @@ public class SearchResultPeopleView extends LinearLayout implements
             Launcher launcher = Launcher.getLauncher(getContext());
             launcher.startActivitySafely(this, mIntent, null);
             SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(
-                    new SearchTargetEvent.Builder(mSearchTarget, eventType).build());
+                    new SearchTargetEventLegacy.Builder(mSearchTarget, eventType).build());
         }
     }
 }

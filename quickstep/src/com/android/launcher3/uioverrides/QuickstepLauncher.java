@@ -42,6 +42,8 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.allapps.AllAppsContainerView;
+import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.appprediction.PredictionRowView;
 import com.android.launcher3.config.FeatureFlags;
@@ -51,6 +53,7 @@ import com.android.launcher3.logging.StatsLogManager.StatsLogger;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
+import com.android.launcher3.search.DeviceSearchAdapterProvider;
 import com.android.launcher3.statemanager.StateManager.AtomicAnimationFactory;
 import com.android.launcher3.uioverrides.states.QuickstepAtomicAnimationFactory;
 import com.android.launcher3.uioverrides.touchcontrollers.NavBarToHomeTouchController;
@@ -61,7 +64,7 @@ import com.android.launcher3.uioverrides.touchcontrollers.QuickSwitchTouchContro
 import com.android.launcher3.uioverrides.touchcontrollers.StatusBarTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.TaskViewTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.TransposedQuickSwitchTouchController;
-import com.android.launcher3.uioverrides.touchcontrollers.TwoButtonNavbarToOverviewTouchController;
+import com.android.launcher3.uioverrides.touchcontrollers.TwoButtonNavbarTouchController;
 import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.util.UiThreadHelper;
@@ -217,6 +220,7 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        getAppsView().getSearchUiManager().destroy();
         if (mHotseatPredictionController != null) {
             mHotseatPredictionController.destroy();
             mHotseatPredictionController = null;
@@ -264,6 +268,11 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
     }
 
     @Override
+    public SearchAdapterProvider createSearchAdapterProvider(AllAppsContainerView appsView) {
+        return new DeviceSearchAdapterProvider(this, appsView);
+    }
+
+    @Override
     public TouchController[] createTouchControllers() {
         Mode mode = SysUINavigationMode.getMode(this);
 
@@ -276,7 +285,7 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
                 list.add(new NoButtonNavbarToOverviewTouchController(this));
                 break;
             case TWO_BUTTONS:
-                list.add(new TwoButtonNavbarToOverviewTouchController(this));
+                list.add(new TwoButtonNavbarTouchController(this));
                 list.add(getDeviceProfile().isVerticalBarLayout()
                         ? new TransposedQuickSwitchTouchController(this)
                         : new QuickSwitchTouchController(this));
