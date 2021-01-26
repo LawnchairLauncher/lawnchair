@@ -36,7 +36,6 @@ import com.android.launcher3.allapps.search.SearchWidgetInfoContainer;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
-import com.android.systemui.plugins.shared.SearchTargetEventLegacy;
 import com.android.systemui.plugins.shared.SearchTargetLegacy;
 
 /**
@@ -82,7 +81,8 @@ public class SearchResultWidget extends RelativeLayout implements
 
         // detect tap event on widget container for search target event reporting
         mClickDetector = new GestureDetector(context,
-                new ClickListener(() -> handleSelection(SearchTargetEventLegacy.CHILD_SELECT)));
+                new ClickListener(() -> {
+                }));
 
         mLongPressHelper = new CheckLongPressHelper(this);
         mLongPressHelper.setLongPressTimeoutFactor(1);
@@ -139,12 +139,6 @@ public class SearchResultWidget extends RelativeLayout implements
     }
 
     @Override
-    public void handleSelection(int eventType) {
-        SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(
-                new SearchTargetEventLegacy.Builder(mSearchTarget, eventType).build());
-    }
-
-    @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         mLongPressHelper.onTouchEvent(ev);
         mClickDetector.onTouchEvent(ev);
@@ -182,7 +176,6 @@ public class SearchResultWidget extends RelativeLayout implements
     @Override
     public boolean onLongClick(View view) {
         ItemLongClickListener.INSTANCE_ALL_APPS.onLongClick(view);
-        handleSelection(SearchTargetEventLegacy.LONG_PRESS);
         return false;
     }
 

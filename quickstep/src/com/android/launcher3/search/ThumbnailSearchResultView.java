@@ -16,38 +16,17 @@
 package com.android.launcher3.search;
 
 
-import static com.android.launcher3.search.SearchResultIcon.REMOTE_ACTION_SHOULD_START;
-import static com.android.launcher3.search.SearchResultIcon.REMOTE_ACTION_TOKEN;
-
+import android.app.search.SearchTarget;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
 import android.util.AttributeSet;
 
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
-
-import com.android.launcher3.Launcher;
-import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.model.data.RemoteActionItemInfo;
-import com.android.launcher3.model.data.WorkspaceItemInfo;
-import com.android.launcher3.touch.ItemClickHandler;
-import com.android.launcher3.util.Themes;
-import com.android.systemui.plugins.shared.SearchTargetEventLegacy;
-import com.android.systemui.plugins.shared.SearchTargetLegacy;
+import java.util.List;
 
 /**
  * A view representing a high confidence app search result that includes shortcuts
  */
 public class ThumbnailSearchResultView extends androidx.appcompat.widget.AppCompatImageView
         implements SearchTargetHandler {
-
-    public static final String TARGET_TYPE_SCREENSHOT = "screenshot";
-    public static final String TARGET_TYPE_SCREENSHOT_LEGACY = "screenshot_legacy";
-
-    private SearchTargetLegacy mSearchTarget;
 
     public ThumbnailSearchResultView(Context context) {
         super(context);
@@ -62,53 +41,7 @@ public class ThumbnailSearchResultView extends androidx.appcompat.widget.AppComp
     }
 
     @Override
-    public void handleSelection(int eventType) {
-        Launcher launcher = Launcher.getLauncher(getContext());
-        ItemInfo itemInfo = (ItemInfo) getTag();
-        if (itemInfo instanceof RemoteActionItemInfo) {
-            RemoteActionItemInfo remoteItemInfo = (RemoteActionItemInfo) itemInfo;
-            ItemClickHandler.onClickRemoteAction(launcher, remoteItemInfo);
-        } else {
-            ItemClickHandler.onClickAppShortcut(this, (WorkspaceItemInfo) itemInfo, launcher);
-        }
-        SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(
-                new SearchTargetEventLegacy.Builder(mSearchTarget, eventType).build());
-    }
+    public void applySearchTarget(SearchTarget parentTarget, List<SearchTarget> children) {
 
-    @Override
-    public void applySearchTarget(SearchTargetLegacy target) {
-        mSearchTarget = target;
-        Bitmap bitmap;
-        if (target.getRemoteAction() != null) {
-            RemoteActionItemInfo itemInfo = new RemoteActionItemInfo(target.getRemoteAction(),
-                    target.getExtras().getString(REMOTE_ACTION_TOKEN),
-                    target.getExtras().getBoolean(REMOTE_ACTION_SHOULD_START));
-            bitmap = ((BitmapDrawable) target.getRemoteAction().getIcon()
-                    .loadDrawable(getContext())).getBitmap();
-            // crop
-            if (bitmap.getWidth() < bitmap.getHeight()) {
-                bitmap = Bitmap.createBitmap(bitmap, 0,
-                        bitmap.getHeight() / 2 - bitmap.getWidth() / 2,
-                        bitmap.getWidth(), bitmap.getWidth());
-            } else {
-                bitmap = Bitmap.createBitmap(bitmap, bitmap.getWidth() / 2 - bitmap.getHeight() / 2,
-                        0,
-                        bitmap.getHeight(), bitmap.getHeight());
-            }
-            setTag(itemInfo);
-        } else {
-            bitmap = (Bitmap) target.getExtras().getParcelable("bitmap");
-            WorkspaceItemInfo itemInfo = new WorkspaceItemInfo();
-            itemInfo.intent = new Intent(Intent.ACTION_VIEW)
-                    .setData(Uri.parse(target.getExtras().getString("uri")))
-                    .setType("image/*")
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            setTag(itemInfo);
-        }
-        RoundedBitmapDrawable drawable = RoundedBitmapDrawableFactory.create(null, bitmap);
-        drawable.setCornerRadius(Themes.getDialogCornerRadius(getContext()));
-        setImageDrawable(drawable);
-        setOnClickListener(v -> handleSelection(SearchTargetEventLegacy.SELECT));
-        SearchEventTracker.INSTANCE.get(getContext()).registerWeakHandler(target, this);
     }
 }

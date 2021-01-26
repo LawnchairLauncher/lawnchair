@@ -547,10 +547,15 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             return mLauncher.startActivitySafely(v, headerItem.getIntent(), headerItem);
         }
         AdapterItem focusedItem = getActiveRecyclerView().getApps().getFocusedChild();
-        if (mSearchAdapterProvider.onAdapterItemSelected(focusedItem)) {
-            return true;
+        if (focusedItem != null) {
+            View focusedView = getActiveRecyclerView().getLayoutManager()
+                    .findViewByPosition(focusedItem.position);
+            if (focusedView != null && mSearchAdapterProvider.onAdapterItemSelected(focusedItem,
+                    focusedView)) {
+                return true;
+            }
         }
-        if (focusedItem.appInfo != null) {
+        if (focusedItem != null && focusedItem.appInfo != null) {
             ItemInfo itemInfo = focusedItem.appInfo;
             return mLauncher.startActivitySafely(v, itemInfo.getIntent(), itemInfo);
         }
