@@ -22,8 +22,6 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.android.systemui.plugins.shared.SearchTargetLegacy;
-
 import java.util.List;
 
 /**
@@ -31,7 +29,6 @@ import java.util.List;
  */
 public class SearchSectionHeaderView extends TextView implements
         SearchTargetHandler {
-    public static final String TARGET_TYPE_SECTION_HEADER = "section_header";
 
     public SearchSectionHeaderView(Context context) {
         super(context);
@@ -44,17 +41,6 @@ public class SearchSectionHeaderView extends TextView implements
 
     public SearchSectionHeaderView(Context context, @Nullable AttributeSet attrs, int styleAttr) {
         super(context, attrs, styleAttr);
-    }
-
-    @Override
-    public void applySearchTarget(SearchTargetLegacy searchTarget) {
-        String title = searchTarget.getExtras().getString("title");
-        if (title == null || !title.isEmpty()) {
-            setText(title);
-            setVisibility(VISIBLE);
-        } else {
-            setVisibility(INVISIBLE);
-        }
     }
 
     @Override
