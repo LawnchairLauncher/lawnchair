@@ -95,7 +95,7 @@ public final class FeatureFlags {
             "ENABLE_SUGGESTED_ACTIONS_OVERVIEW", true, "Show chip hints on the overview screen");
 
 
-    public static final BooleanFlag ENABLE_DEVICE_SEARCH = getDebugFlag(
+    public static final BooleanFlag ENABLE_DEVICE_SEARCH = new DeviceFlag(
             "ENABLE_DEVICE_SEARCH", false, "Allows on device search in all apps");
 
     public static final BooleanFlag USE_SEARCH_API = getDebugFlag(
