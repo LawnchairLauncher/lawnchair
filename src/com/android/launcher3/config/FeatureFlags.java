@@ -214,6 +214,9 @@ public final class FeatureFlags {
             "ENABLE_APP_PREDICTIONS_WHILE_VISIBLE", true, "Allows app "
             + "predictions to be updated while they are visible to the user.");
 
+    public static final BooleanFlag ENABLE_TASKBAR = new DeviceFlag(
+            "ENABLE_TASKBAR", false, "Allows a system Taskbar to be shown on larger devices.");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {

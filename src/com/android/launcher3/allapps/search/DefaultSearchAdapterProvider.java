@@ -16,6 +16,7 @@
 package com.android.launcher3.allapps.search;
 
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.launcher3.BaseDraggingActivity;
@@ -47,7 +48,7 @@ public class DefaultSearchAdapterProvider extends SearchAdapterProvider {
     }
 
     @Override
-    public boolean onAdapterItemSelected(AllAppsGridAdapter.AdapterItem focusedItem) {
+    public boolean onAdapterItemSelected(AllAppsGridAdapter.AdapterItem adapterItem, View view) {
         return false;
     }
 }

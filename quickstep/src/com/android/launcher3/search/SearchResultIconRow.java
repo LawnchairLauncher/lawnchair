@@ -19,55 +19,41 @@ import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.app.search.SearchTarget;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.ShortcutInfo;
-import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Pair;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.android.app.search.ResultType;
-import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.PackageItemInfo;
-import com.android.launcher3.model.data.WorkspaceItemInfo;
-import com.android.systemui.plugins.shared.SearchTargetEventLegacy;
-import com.android.systemui.plugins.shared.SearchTargetLegacy;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 /**
  * A full width representation of {@link SearchResultIcon} with a secondary label and inline
- * shortcuts
+ * SearchTargets
  */
-public class SearchResultIconRow extends LinearLayout implements
-        SearchTargetHandler, View.OnClickListener,
-        View.OnLongClickListener, Consumer<ItemInfoWithIcon> {
-    public static final int MAX_SHORTCUTS_COUNT = 2;
+public class SearchResultIconRow extends LinearLayout implements SearchTargetHandler {
 
+    public static final int MAX_INLINE_ITEMS = 2;
 
-    private final Launcher mLauncher;
+    protected final Launcher mLauncher;
     private final LauncherAppState mLauncherAppState;
     private SearchResultIcon mResultIcon;
+
     private TextView mTitleView;
-    private TextView mDescriptionView;
-    private BubbleTextView[] mShortcutViews = new BubbleTextView[2];
+    private TextView mSubTitleView;
+    private final SearchResultIcon[] mInlineIcons = new SearchResultIcon[MAX_INLINE_ITEMS];
 
-    private SearchTargetLegacy mSearchTarget;
     private PackageItemInfo mProviderInfo;
-
 
     public SearchResultIconRow(Context context) {
         this(context, null, 0);
@@ -84,129 +70,87 @@ public class SearchResultIconRow extends LinearLayout implements
         mLauncherAppState = LauncherAppState.getInstance(getContext());
     }
 
+    protected int getIconSize() {
+        return mLauncher.getDeviceProfile().allAppsIconSizePx;
+    }
+
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        int iconSize = mLauncher.getDeviceProfile().allAppsIconSizePx;
+
+        int iconSize = getIconSize();
 
         mResultIcon = findViewById(R.id.icon);
         mTitleView = findViewById(R.id.title);
-        mDescriptionView = findViewById(R.id.desc);
-        mShortcutViews[0] = findViewById(R.id.shortcut_0);
-        mShortcutViews[1] = findViewById(R.id.shortcut_1);
+        mSubTitleView = findViewById(R.id.subtitle);
+        mSubTitleView.setVisibility(GONE);
         mResultIcon.getLayoutParams().height = iconSize;
         mResultIcon.getLayoutParams().width = iconSize;
         mResultIcon.setTextVisibility(false);
-        for (BubbleTextView bubbleTextView : mShortcutViews) {
-            ViewGroup.LayoutParams lp = bubbleTextView.getLayoutParams();
-            lp.width = iconSize;
-            bubbleTextView.setOnClickListener(view -> {
-                WorkspaceItemInfo itemInfo = (WorkspaceItemInfo) bubbleTextView.getTag();
-                SearchTargetEventLegacy event = new SearchTargetEventLegacy.Builder(mSearchTarget,
-                        SearchTargetEventLegacy.CHILD_SELECT).setShortcutPosition(
-                        itemInfo.rank).build();
-                SearchEventTracker.getInstance(getContext()).notifySearchTargetEvent(event);
-                mLauncher.getItemOnClickListener().onClick(view);
-            });
+
+        mInlineIcons[0] = findViewById(R.id.shortcut_0);
+        mInlineIcons[1] = findViewById(R.id.shortcut_1);
+        for (SearchResultIcon inlineIcon : mInlineIcons) {
+            inlineIcon.getLayoutParams().width = getIconSize();
         }
-        setOnClickListener(this);
-        setOnLongClickListener(this);
+
+        setOnClickListener(mResultIcon);
+        setOnLongClickListener(mResultIcon);
     }
 
     @Override
     public void applySearchTarget(SearchTarget parentTarget, List<SearchTarget> children) {
-        mResultIcon.applySearchTarget(parentTarget, children, this);
-        if (parentTarget.getResultType() == ResultType.SHORTCUT) {
-            ShortcutInfo shortcutInfo = parentTarget.getShortcutInfo();
-            setProviderDetails(new ComponentName(shortcutInfo.getPackage(), ""),
-                    shortcutInfo.getUserHandle());
+        mResultIcon.applySearchTarget(parentTarget, children, this::onItemInfoCreated);
+        if (parentTarget.getShortcutInfo() != null) {
+            updateWithShortcutInfo(parentTarget.getShortcutInfo());
+        } else if (parentTarget.getSearchAction() != null) {
+            showSubtitleIfNeeded(parentTarget.getSearchAction().getSubtitle());
         }
+        showInlineItems(children);
     }
 
     @Override
-    public void applySearchTarget(SearchTargetLegacy searchTarget) {
-        mSearchTarget = searchTarget;
-        mResultIcon.applySearchTarget(searchTarget, this);
-        String itemType = searchTarget.getItemType();
-        boolean showDesc = itemType.equals(SearchResultIcon.TARGET_TYPE_SHORTCUT);
-        mDescriptionView.setVisibility(showDesc ? VISIBLE : GONE);
-
-        if (itemType.equals(SearchResultIcon.TARGET_TYPE_SHORTCUT)) {
-            ShortcutInfo shortcutInfo = searchTarget.getShortcutInfos().get(0);
-            setProviderDetails(new ComponentName(shortcutInfo.getPackage(), ""),
-                    shortcutInfo.getUserHandle());
-        } else if (itemType.equals(SearchResultIcon.TARGET_TYPE_HERO_APP)) {
-            showInlineShortcuts(mSearchTarget.getShortcutInfos());
-        } else if (itemType.equals(SearchResultIcon.TARGET_TYPE_REMOTE_ACTION)) {
-            CharSequence desc = mSearchTarget.getRemoteAction().getContentDescription();
-            if (!TextUtils.isEmpty(desc)) {
-                mDescriptionView.setVisibility(VISIBLE);
-                mDescriptionView.setText(desc);
-            }
-        }
-        if (!itemType.equals(SearchResultIcon.TARGET_TYPE_HERO_APP)) {
-            showInlineShortcuts(new ArrayList<>());
-        }
+    public boolean quickSelect() {
+        this.performClick();
+        return true;
     }
 
-    @Override
-    public void accept(ItemInfoWithIcon itemInfoWithIcon) {
-        mTitleView.setText(itemInfoWithIcon.title);
-    }
-
-    private void showInlineShortcuts(List<ShortcutInfo> infos) {
-        if (infos == null) return;
-        ArrayList<Pair<ShortcutInfo, ItemInfoWithIcon>> shortcuts = new ArrayList<>();
-        for (int i = 0; infos != null && i < infos.size() && i < MAX_SHORTCUTS_COUNT; i++) {
-            ShortcutInfo shortcutInfo = infos.get(i);
-            ItemInfoWithIcon si = new WorkspaceItemInfo(shortcutInfo, getContext());
-            si.rank = i;
-            shortcuts.add(new Pair<>(shortcutInfo, si));
-        }
-
-        for (int i = 0; i < mShortcutViews.length; i++) {
-            BubbleTextView shortcutView = mShortcutViews[i];
-            mShortcutViews[i].setVisibility(shortcuts.size() > i ? VISIBLE : GONE);
-            if (i < shortcuts.size()) {
-                Pair<ShortcutInfo, ItemInfoWithIcon> p = shortcuts.get(i);
-                //apply ItemInfo and prepare view
-                shortcutView.applyFromWorkspaceItem((WorkspaceItemInfo) p.second);
-                MODEL_EXECUTOR.execute(() -> {
-                    // load unbadged shortcut in background and update view when icon ready
-                    mLauncherAppState.getIconCache().getUnbadgedShortcutIcon(p.second, p.first);
-                    MAIN_EXECUTOR.post(() -> shortcutView.reapplyItemInfo(p.second));
-                });
-            }
-        }
-    }
-
-
-    private void setProviderDetails(ComponentName componentName, UserHandle userHandle) {
-        PackageItemInfo packageItemInfo = new PackageItemInfo(componentName.getPackageName());
-        if (mProviderInfo == packageItemInfo) return;
+    private void updateWithShortcutInfo(ShortcutInfo shortcutInfo) {
+        PackageItemInfo packageItemInfo = new PackageItemInfo(shortcutInfo.getPackage());
+        if (packageItemInfo.equals(mProviderInfo)) return;
         MODEL_EXECUTOR.post(() -> {
-            packageItemInfo.user = userHandle;
             mLauncherAppState.getIconCache().getTitleAndIconForApp(packageItemInfo, true);
             MAIN_EXECUTOR.post(() -> {
-                mDescriptionView.setText(packageItemInfo.title);
+                showSubtitleIfNeeded(packageItemInfo.title);
                 mProviderInfo = packageItemInfo;
             });
         });
     }
 
-    @Override
-    public void handleSelection(int eventType) {
-        mResultIcon.handleSelection(eventType);
+
+    protected void showSubtitleIfNeeded(CharSequence subTitle) {
+        if (!TextUtils.isEmpty(subTitle)) {
+            mSubTitleView.setText(subTitle);
+            mSubTitleView.setVisibility(VISIBLE);
+        } else {
+            mSubTitleView.setVisibility(GONE);
+        }
     }
 
-    @Override
-    public void onClick(View view) {
-        mResultIcon.performClick();
+
+    protected void showInlineItems(List<SearchTarget> children) {
+        for (int i = 0; i < MAX_INLINE_ITEMS; i++) {
+            if (i < children.size()) {
+                mInlineIcons[i].applySearchTarget(children.get(0), new ArrayList<>());
+                mInlineIcons[i].setVisibility(VISIBLE);
+            } else {
+                mInlineIcons[i].setVisibility(GONE);
+            }
+        }
     }
 
-    @Override
-    public boolean onLongClick(View view) {
-        mResultIcon.performLongClick();
-        return false;
+    protected void onItemInfoCreated(ItemInfoWithIcon info) {
+        setTag(info);
+        mTitleView.setText(info.title);
     }
 }
