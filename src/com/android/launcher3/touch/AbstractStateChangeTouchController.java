@@ -67,8 +67,9 @@ public abstract class AbstractStateChangeTouchController
 
     /**
      * Play an atomic recents animation when the progress from NORMAL to OVERVIEW reaches this.
+     * TODO: Remove the atomic animation altogether and just go to OVERVIEW directly (b/175137718).
      */
-    public static final float ATOMIC_OVERVIEW_ANIM_THRESHOLD = 0.5f;
+    public static final float ATOMIC_OVERVIEW_ANIM_THRESHOLD = 1f;
     protected final long ATOMIC_DURATION = getAtomicDuration();
 
     protected final Launcher mLauncher;
@@ -335,9 +336,7 @@ public abstract class AbstractStateChangeTouchController
         if (!goingBetweenNormalAndOverview(fromState, toState)) {
             return;
         }
-        float threshold = toState == OVERVIEW ? ATOMIC_OVERVIEW_ANIM_THRESHOLD
-                : 1f - ATOMIC_OVERVIEW_ANIM_THRESHOLD;
-        boolean passedThreshold = progress >= threshold;
+        boolean passedThreshold = progress >= ATOMIC_OVERVIEW_ANIM_THRESHOLD;
         if (passedThreshold != mPassedOverviewAtomicThreshold) {
             LauncherState atomicFromState = passedThreshold ? fromState: toState;
             LauncherState atomicToState = passedThreshold ? toState : fromState;
