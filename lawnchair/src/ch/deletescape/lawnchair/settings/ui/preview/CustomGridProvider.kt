@@ -25,8 +25,8 @@ import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.util.LawnchairSingletonHolder
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.graphics.LauncherPreviewRenderer
+import com.android.launcher3.util.Executors
 import com.android.launcher3.util.LooperExecutor
-import com.android.launcher3.util.UiThreadHelper
 import java.util.concurrent.Future
 
 class CustomGridProvider(private val context: Context) : InvariantDeviceProfile.GridCustomizer {
@@ -84,8 +84,9 @@ class CustomGridProvider(private val context: Context) : InvariantDeviceProfile.
             customizeGrid(grid)
             customizer?.customizeGrid(grid)
         }
-        val executor = LooperExecutor(UiThreadHelper.getBackgroundLooper())
-        return executor.submit(LauncherPreviewRenderer(context, idp))
+
+        val executor = Executors.UI_HELPER_EXECUTOR
+        return executor.submit(LauncherPreviewRenderer(context, idp, false))
     }
 
     companion object : LawnchairSingletonHolder<CustomGridProvider>(::CustomGridProvider) {

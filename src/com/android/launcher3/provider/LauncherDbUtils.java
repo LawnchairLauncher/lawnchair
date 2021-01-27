@@ -22,10 +22,12 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Binder;
+import android.os.Process;
 import android.util.Log;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.IntArray;
 
 import java.util.Locale;
@@ -114,6 +116,23 @@ public class LauncherDbUtils {
 
     public static void dropTable(SQLiteDatabase db, String tableName) {
         db.execSQL("DROP TABLE IF EXISTS " + tableName);
+    }
+
+    /** Copy fromTable in fromDb to toTable in toDb. */
+    public static void copyTable(SQLiteDatabase fromDb, String fromTable, SQLiteDatabase toDb,
+            String toTable, Context context) {
+        long userSerial = UserCache.INSTANCE.get(context).getSerialNumberForUser(
+                Process.myUserHandle());
+        dropTable(toDb, toTable);
+        Favorites.addTableToDb(toDb, userSerial, false, toTable);
+        if (fromDb != toDb) {
+            toDb.execSQL("ATTACH DATABASE '" + fromDb.getPath() + "' AS from_db");
+            toDb.execSQL(
+                    "INSERT INTO " + toTable + " SELECT * FROM from_db." + fromTable);
+            toDb.execSQL("DETACH DATABASE 'from_db'");
+        } else {
+            toDb.execSQL("INSERT INTO " + toTable + " SELECT * FROM " + fromTable);
+        }
     }
 
     /**

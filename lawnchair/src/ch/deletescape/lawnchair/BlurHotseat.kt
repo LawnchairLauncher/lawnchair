@@ -19,6 +19,8 @@
 
 package ch.deletescape.lawnchair
 
+import com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound
+
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -32,7 +34,6 @@ import ch.deletescape.lawnchair.util.extensions.d
 import com.android.launcher3.Launcher
 import com.android.launcher3.R
 import com.android.launcher3.graphics.NinePatchDrawHelper
-import com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound
 import com.android.launcher3.icons.ShadowGenerator
 import com.android.launcher3.util.Themes
 import kotlin.math.max

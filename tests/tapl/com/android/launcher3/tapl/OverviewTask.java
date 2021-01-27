@@ -16,18 +16,22 @@
 
 package com.android.launcher3.tapl;
 
+import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
+
 import android.graphics.Rect;
 
 import androidx.test.uiautomator.UiObject2;
-import androidx.test.uiautomator.Until;
 
 import com.android.launcher3.testing.TestProtocol;
+
+import java.util.regex.Pattern;
 
 /**
  * A recent task in the overview panel carousel.
  */
 public final class OverviewTask {
-    private static final long WAIT_TIME_MS = 60000;
+    static final Pattern TASK_START_EVENT =
+            Pattern.compile("startActivityFromRecentsAsync");
     private final LauncherInstrumentation mLauncher;
     private final UiObject2 mTask;
     private final BaseOverview mOverview;
@@ -47,14 +51,16 @@ public final class OverviewTask {
      * Swipes the task up.
      */
     public void dismiss() {
-        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                "want to dismiss a task")) {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                     "want to dismiss a task")) {
             verifyActiveContainer();
             // Dismiss the task via flinging it up.
-            final Rect taskBounds = mTask.getVisibleBounds();
+            final Rect taskBounds = mLauncher.getVisibleBounds(mTask);
             final int centerX = taskBounds.centerX();
             final int centerY = taskBounds.centerY();
-            mLauncher.linearGesture(centerX, centerY, centerX, 0, 10);
+            mLauncher.linearGesture(centerX, centerY, centerX, 0, 10, false,
+                    LauncherInstrumentation.GestureScope.INSIDE);
             mLauncher.waitForIdle();
         }
     }
@@ -63,13 +69,18 @@ public final class OverviewTask {
      * Clicks at the task.
      */
     public Background open() {
-        verifyActiveContainer();
-        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                "clicking an overview task")) {
-            mLauncher.assertTrue("Launching task didn't open a new window: " +
-                            mTask.getParent().getContentDescription(),
-                    mTask.clickAndWait(Until.newWindow(), WAIT_TIME_MS));
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
+            verifyActiveContainer();
+            try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                    "clicking an overview task")) {
+                mLauncher.executeAndWaitForEvent(
+                        () -> mLauncher.clickLauncherObject(mTask),
+                        event -> event.getEventType() == TYPE_WINDOW_STATE_CHANGED,
+                        () -> "Launching task didn't open a new window: "
+                                + mTask.getParent().getContentDescription());
+                mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, TASK_START_EVENT);
+            }
+            return new Background(mLauncher);
         }
-        return new Background(mLauncher);
     }
 }

@@ -15,7 +15,11 @@
  */
 package com.android.launcher3.allapps;
 
+
 import android.content.Context;
+
+import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.model.data.AppInfo;
 import android.content.pm.LauncherActivityInfo;
 
 import android.graphics.Color;
@@ -41,7 +45,6 @@ import com.android.launcher3.util.LabelComparator;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -147,13 +150,6 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
             return item;
         }
 
-        public static AdapterItem asWorkTabFooter(int pos) {
-            AdapterItem item = new AdapterItem();
-            item.viewType = AllAppsGridAdapter.VIEW_TYPE_WORK_TAB_FOOTER;
-            item.position = pos;
-            return item;
-        }
-
         public static AdapterItem asFolder(int pos, String sectionName,
                 DrawerFolderInfo folderInfo, int folderIndex) {
             AdapterItem item = new AdapterItem();
@@ -173,7 +169,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         }
     }
 
-    private final Launcher mLauncher;
+    private final BaseDraggingActivity mLauncher;
 
     // The set of apps from the system
     private final List<AppInfo> mApps = new ArrayList<>();
@@ -192,7 +188,6 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
     private ArrayList<ComponentKey> mSearchResults;
     private HashMap<AppInfo, String> mCachedSectionNames = new HashMap<>();
     private AllAppsGridAdapter mAdapter;
-    private AlphabeticIndexCompat mIndexer;
     private AppInfoComparator mAppNameComparator;
     private AppColorComparator mAppColorComparator;
     private final int mNumAppsPerRow;
@@ -204,8 +199,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
 
     public AlphabeticalAppsList(Context context, AllAppsStore appsStore, boolean isWork) {
         mAllAppsStore = appsStore;
-        mLauncher = Launcher.getLauncher(context);
-        mIndexer = new AlphabeticIndexCompat(context);
+        mLauncher = BaseDraggingActivity.fromContext(context);
         mAppNameComparator = new AppInfoComparator(context);
         mAppColorComparator = new AppColorComparator(context);
         mIsWork = isWork;
@@ -341,7 +335,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
             TreeMap<String, ArrayList<AppInfo>> sectionMap = new TreeMap<>(new LabelComparator());
             for (AppInfo info : mApps) {
                 // Add the section to the cache
-                String sectionName = getAndUpdateCachedSectionName(info);
+                String sectionName = info.sectionName;
 
                 // Add it to the mapping
                 ArrayList<AppInfo> sectionApps = sectionMap.get(sectionName);
@@ -356,12 +350,6 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
             mApps.clear();
             for (Map.Entry<String, ArrayList<AppInfo>> entry : sectionMap.entrySet()) {
                 mApps.addAll(entry.getValue());
-            }
-        } else {
-            // Just compute the section headers for use below
-            for (AppInfo info : mApps) {
-                // Add the section to the cache
-                getAndUpdateCachedSectionName(info);
             }
         }
 
@@ -434,10 +422,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         // Recreate the filtered and sectioned apps (for convenience for the grid layout) from the
         // ordered set of sections
         for (AppInfo info : getFiltersAppInfos()) {
-            if (!hasFilter() && folderFilters.contains(info.toComponentKey())) {
-                continue;
-            }
-            String sectionName = getAndUpdateCachedSectionName(info);
+            String sectionName = info.sectionName;
 
             // Create a new section if the section names do not match
             if (!sectionName.equals(lastSectionName)) {
@@ -522,18 +507,6 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
                     break;
             }
         }
-
-        // Add the work profile footer if required.
-        if (shouldShowWorkFooter()) {
-            mAdapterItems.add(AdapterItem.asWorkTabFooter(position++));
-        }
-    }
-
-    private boolean shouldShowWorkFooter() {
-        return mIsWork && Utilities.ATLEAST_P &&
-                (DeepShortcutManager.getInstance(mLauncher).hasHostPermission()
-                        || Utilities
-                        .hasPermission(mLauncher, "android.permission.MODIFY_QUIET_MODE"));
     }
 
     private List<AppInfo> getFiltersAppInfos() {
@@ -563,25 +536,6 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
             }
         }
         return result;
-    }
-
-    /**
-     * Returns the cached section name for the given title, recomputing and updating the cache if
-     * the title has no cached section name.
-     */
-    private String getAndUpdateCachedSectionName(AppInfo info) {
-        String sectionName = mCachedSectionNames.get(info);
-        if (sectionName == null) {
-            if (prefs.getSortDrawerByColors()) {
-                float[] hsl = new float[3];
-                ColorUtils.colorToHSL(info.iconColor, hsl);
-                sectionName = String.format("%d:%d:%d", AppColorComparator.remapHue(hsl[0]), AppColorComparator.remap(hsl[2]), AppColorComparator.remap(hsl[1]));
-            } else {
-                sectionName = mIndexer.computeSectionName(info.title);
-            }
-            mCachedSectionNames.put(info, sectionName);
-        }
-        return sectionName;
     }
 
     public void setIsWork(boolean isWork) {

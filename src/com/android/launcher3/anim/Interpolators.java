@@ -41,6 +41,7 @@ public class Interpolators {
     public static final Interpolator LINEAR = new LinearInterpolator();
 
     public static final Interpolator ACCEL = new AccelerateInterpolator();
+    public static final Interpolator ACCEL_0_75 = new AccelerateInterpolator(0.75f);
     public static final Interpolator ACCEL_1_5 = new AccelerateInterpolator(1.5f);
     public static final Interpolator ACCEL_2 = new AccelerateInterpolator(2);
 
@@ -50,6 +51,7 @@ public class Interpolators {
     public static final Interpolator DEACCEL_2 = new DecelerateInterpolator(2);
     public static final Interpolator DEACCEL_2_5 = new DecelerateInterpolator(2.5f);
     public static final Interpolator DEACCEL_3 = new DecelerateInterpolator(3f);
+    public static final Interpolator DEACCEL_5 = new DecelerateInterpolator(5f);
 
     public static final Interpolator ACCEL_DEACCEL = new AccelerateDecelerateInterpolator();
 
@@ -64,6 +66,11 @@ public class Interpolators {
     public static final Interpolator EXAGGERATED_EASE_REVERSED;
 
     public static final Interpolator INSTANT = t -> 1;
+    /**
+     * All values of t map to 0 until t == 1. This is primarily useful for setting view visibility,
+     * which should only happen at the very end of the animation (when it's already hidden).
+     */
+    public static final Interpolator FINAL_FRAME = t -> t < 1 ? 0 : 1;
 
     private static final int MIN_SETTLE_DURATION = 200;
     private static final float OVERSHOOT_FACTOR = 0.9f;
@@ -201,6 +208,7 @@ public class Interpolators {
         public OvershootParams(float startProgress, float overshootPastProgress,
                 float endProgress, float velocityPxPerMs, int totalDistancePx, Context context) {
             velocityPxPerMs = Math.abs(velocityPxPerMs);
+            overshootPastProgress = Math.max(overshootPastProgress, startProgress);
             start = startProgress;
             int startPx = (int) (start * totalDistancePx);
             // Overshoot by about half a frame.

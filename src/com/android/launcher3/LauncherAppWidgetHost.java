@@ -27,13 +27,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.util.SparseArray;
-import android.view.LayoutInflater;
 import android.widget.Toast;
+
+import com.android.launcher3.model.WidgetsModel;
+import com.android.launcher3.testing.TestLogging;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.widget.DeferredAppWidgetHostView;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
+import com.android.launcher3.widget.PendingAppWidgetHostView;
+import com.android.launcher3.widget.custom.CustomWidgetManager;
 
 import java.util.ArrayList;
+import java.util.function.IntConsumer;
 
 
 /**
@@ -51,26 +57,42 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
 
     private final ArrayList<ProviderChangedListener> mProviderChangeListeners = new ArrayList<>();
     private final SparseArray<LauncherAppWidgetHostView> mViews = new SparseArray<>();
+    private final SparseArray<PendingAppWidgetHostView> mPendingViews = new SparseArray<>();
 
     private final Context mContext;
     private int mFlags = FLAG_RESUMED;
 
+    private IntConsumer mAppWidgetRemovedCallback = null;
+
+
     public LauncherAppWidgetHost(Context context) {
+        this(context, null);
+    }
+
+    public LauncherAppWidgetHost(Context context,
+            IntConsumer appWidgetRemovedCallback) {
         super(context, APPWIDGET_HOST_ID);
         mContext = context;
+        mAppWidgetRemovedCallback = appWidgetRemovedCallback;
     }
 
     @Override
     protected LauncherAppWidgetHostView onCreateView(Context context, int appWidgetId,
             AppWidgetProviderInfo appWidget) {
-        LauncherAppWidgetHostView view = new LauncherAppWidgetHostView(context);
+        final LauncherAppWidgetHostView view;
+        if (mPendingViews.get(appWidgetId) != null) {
+            view = mPendingViews.get(appWidgetId);
+            mPendingViews.remove(appWidgetId);
+        } else {
+            view = new LauncherAppWidgetHostView(context);
+        }
         mViews.put(appWidgetId, view);
         return view;
     }
 
     @Override
     public void startListening() {
-        if (FeatureFlags.GO_DISABLE_WIDGETS) {
+        if (WidgetsModel.GO_DISABLE_WIDGETS) {
             return;
         }
         mFlags |= FLAG_LISTENING;
@@ -97,11 +119,15 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
 
     @Override
     public void stopListening() {
-        if (FeatureFlags.GO_DISABLE_WIDGETS) {
+        if (WidgetsModel.GO_DISABLE_WIDGETS) {
             return;
         }
         mFlags &= ~FLAG_LISTENING;
         super.stopListening();
+    }
+
+    public boolean isListening() {
+        return (mFlags & FLAG_LISTENING) != 0;
     }
 
     /**
@@ -152,7 +178,7 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
 
     @Override
     public int allocateAppWidgetId() {
-        if (FeatureFlags.GO_DISABLE_WIDGETS) {
+        if (WidgetsModel.GO_DISABLE_WIDGETS) {
             return AppWidgetManager.INVALID_APPWIDGET_ID;
         }
 
@@ -175,14 +201,16 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
         }
     }
 
+    void addPendingView(int appWidgetId, PendingAppWidgetHostView view) {
+        mPendingViews.put(appWidgetId, view);
+    }
+
     public AppWidgetHostView createView(Context context, int appWidgetId,
             LauncherAppWidgetProviderInfo appWidget) {
         if (appWidget.isCustomWidget()) {
             LauncherAppWidgetHostView lahv = new LauncherAppWidgetHostView(context);
-            LayoutInflater inflater = (LayoutInflater)
-                    context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            inflater.inflate(appWidget.initialLayout, lahv);
             lahv.setAppWidget(0, appWidget);
+            CustomWidgetManager.INSTANCE.get(context).onViewCreated(lahv);
             return lahv;
         } else if ((mFlags & FLAG_LISTENING) == 0) {
             DeferredAppWidgetHostView view = new DeferredAppWidgetHostView(context);
@@ -206,7 +234,7 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
                 }
                 view.setAppWidget(appWidgetId, appWidget);
                 view.switchToErrorView();
-                return  view;
+                return view;
             }
         }
     }
@@ -224,6 +252,18 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
         info.initSpans(mContext);
     }
 
+    /**
+     * Called on an appWidget is removed for a widgetId
+     *
+     * @param appWidgetId TODO: make this override when SDK is updated
+     */
+    public void onAppWidgetRemoved(int appWidgetId) {
+        if (mAppWidgetRemovedCallback == null) {
+            return;
+        }
+        mAppWidgetRemovedCallback.accept(appWidgetId);
+    }
+
     @Override
     public void deleteAppWidgetId(int appWidgetId) {
         super.deleteAppWidgetId(appWidgetId);
@@ -239,7 +279,7 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
     public void startBindFlow(BaseActivity activity,
             int appWidgetId, AppWidgetProviderInfo info, int requestCode) {
 
-        if (FeatureFlags.GO_DISABLE_WIDGETS) {
+        if (WidgetsModel.GO_DISABLE_WIDGETS) {
             sendActionCancelled(activity, requestCode);
             return;
         }
@@ -255,12 +295,13 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
 
 
     public void startConfigActivity(BaseActivity activity, int widgetId, int requestCode) {
-        if (FeatureFlags.GO_DISABLE_WIDGETS) {
+        if (WidgetsModel.GO_DISABLE_WIDGETS) {
             sendActionCancelled(activity, requestCode);
             return;
         }
 
         try {
+            TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "start: startConfigActivity");
             startAppWidgetConfigureActivityForResult(activity, widgetId, 0, requestCode, null);
         } catch (ActivityNotFoundException | SecurityException e) {
             Toast.makeText(activity, R.string.activity_not_found, Toast.LENGTH_SHORT).show();

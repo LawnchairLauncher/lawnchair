@@ -2,6 +2,9 @@ package com.android.quickstep.inputconsumers;
 
 import android.view.MotionEvent;
 
+import com.android.launcher3.testing.TestLogging;
+import com.android.launcher3.testing.TestProtocol;
+import com.android.quickstep.InputConsumer;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
 public abstract class DelegateInputConsumer implements InputConsumer {
@@ -22,8 +25,11 @@ public abstract class DelegateInputConsumer implements InputConsumer {
     }
 
     @Override
-    public boolean useSharedSwipeState() {
-        return mDelegate.useSharedSwipeState();
+    public InputConsumer getActiveConsumerInHierarchy() {
+        if (mState == STATE_ACTIVE) {
+            return this;
+        }
+        return mDelegate.getActiveConsumerInHierarchy();
     }
 
     @Override
@@ -38,6 +44,7 @@ public abstract class DelegateInputConsumer implements InputConsumer {
 
     protected void setActive(MotionEvent ev) {
         mState = STATE_ACTIVE;
+        TestLogging.recordEvent(TestProtocol.SEQUENCE_PILFER, "pilferPointers");
         mInputMonitor.pilferPointers();
 
         // Send cancel event

@@ -28,4 +28,9 @@ public class RecentsTaskController extends TaskViewTouchController<RecentsActivi
     protected boolean isRecentsInteractive() {
         return mActivity.hasWindowFocus();
     }
+
+    @Override
+    protected boolean isRecentsModal() {
+        return false;
+    }
 }

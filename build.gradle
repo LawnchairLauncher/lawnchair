@@ -1,7 +1,7 @@
 import org.gradle.api.tasks.wrapper.Wrapper.DistributionType
 
 buildscript {
-    ext.kotlin_version = '1.3.11'
+    ext.kotlin_version = '1.3.72'
     repositories {
         google()
         jcenter()
@@ -41,6 +41,7 @@ tasks {
     }
 }
 
+//noinspection GroovyUnusedAssignment
 final String SUPPORT_LIBS_VERSION = '28.0.0-alpha1'
 
 Properties localProps = new Properties()
@@ -52,6 +53,7 @@ if (localPropsFile.exists()) {
 def publicBranches = ["alpha", "beta", "q-pre-alpha"]
 def ciBuild = localProps.getProperty("ciBuild") == "true" || System.getenv("CI_BUILD") == "true"
 def signed = ciBuild || localProps.getProperty("storePass") != null
+//noinspection GroovyUnusedAssignment
 def isPublicBuild = localProps.getProperty("public") == "true" || (ciBuild && publicBranches.contains(System.getenv("DRONE_BRANCH")))
 
 final String FRAMEWORK_PREBUILTS_DIR = "prebuilts/"
@@ -61,7 +63,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'com.google.protobuf'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion COMPILE_SDK
     buildToolsVersion BUILD_TOOLS_VERSION
 
     signingConfigs {
@@ -74,7 +76,7 @@ android {
     }
     defaultConfig {
         minSdkVersion 25
-        targetSdkVersion 28
+        targetSdkVersion 30
 
         def majorMinor = "2.1"
         if (ciBuild) {
@@ -166,12 +168,12 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    // The flavor dimensions for build variants (e.g. aospWithQuickstep, aospWithoutQuickstep)
+    // The flavor dimensions for build variants (e.g. lawnchairWithQuickstep, lawnchairWithoutQuickstep)
     // See: https://developer.android.com/studio/build/build-variants#flavor-dimensions
-    flavorDimensions "app", "recents", "custom", "dist"
+    flavorDimensions "app", "recents"/*, "dist"*/
 
     productFlavors {
-        aosp {
+        lawnchair {
             dimension "app"
             applicationId 'ch.deletescape.lawnchair'
             testApplicationId 'com.android.launcher3.tests'
@@ -187,56 +189,41 @@ android {
             dimension "recents"
         }
 
-        withQuickstepIconRecents {
-            dimension "recents"
-
-            minSdkVersion 28
-        }
-
         withoutQuickstep {
             dimension "recents"
         }
 
-        lawnchair {
-            dimension "custom"
-        }
-
-        dev {
-            dimension "dist"
-            // Use v1 dev package name for compatibility testing
-            if (localProps.getProperty("v1compat") != "true") {
-                applicationIdSuffix ".dev"
-            }
-            versionNameSuffix "-dev"
-        }
-
-        ci {
-            dimension "dist"
-            applicationIdSuffix ".ci"
-            versionNameSuffix "-ci-" + (localProps.getProperty("branch") ?: System.getenv("DRONE_BRANCH"))
-
-            buildConfigField "boolean", "SIGNATURE_VERIFICATION", "true"
-        }
-
-        plah {
-            dimension "dist"
-            applicationIdSuffix ".plah"
-
-            buildConfigField "boolean", "SIGNATURE_VERIFICATION", "true"
-            buildConfigField "boolean", "FEATURE_BUG_REPORTER", "false"
-        }
+//        dev {
+//            dimension "dist"
+//            // Use v1 dev package name for compatibility testing
+//            if (localProps.getProperty("v1compat") != "true") {
+//                applicationIdSuffix ".dev"
+//            }
+//            versionNameSuffix "-dev"
+//        }
+//
+//        ci {
+//            dimension "dist"
+//            applicationIdSuffix ".ci"
+//            versionNameSuffix "-ci-" + (localProps.getProperty("branch") ?: System.getenv("DRONE_BRANCH"))
+//
+//            buildConfigField "boolean", "SIGNATURE_VERIFICATION", "true"
+//        }
+//
+//        plah {
+//            dimension "dist"
+//            applicationIdSuffix ".plah"
+//
+//            buildConfigField "boolean", "SIGNATURE_VERIFICATION", "true"
+//            buildConfigField "boolean", "FEATURE_BUG_REPORTER", "false"
+//        }
     }
 
     android.variantFilter { variant ->
-        // Hide all non "aospWithQuickstep" tasks to make this a little more bearable
-        if (!name.startsWith("aospWithQuickstep")) {
-            variant.setIgnore(true)
-        }
-
-        // Icon recents is Go only
-        if (name.contains("WithQuickstepIconRecents") && !name.contains("l3go")) {
-            variant.setIgnore(true)
-        }
+        // Hide all non "lawnchairWithQuickstep" tasks to make this a little more bearable
+//        if (!name.startsWith("lawnchairWithQuickstep")) {
+//            variant.setIgnore(true)
+//        }
     }
 
     sourceSets {
@@ -275,9 +262,19 @@ android {
             manifest.srcFile "tests/AndroidManifest.xml"
         }
 
-        aosp {
-            java.srcDirs = ['src_flags', 'src_shortcuts_overrides']
+        lawnchair {
+            res.srcDirs = ['lawnchair/res']
+            java.srcDirs = ['src_flags', 'src_shortcuts_overrides', 'lawnchair/src']
+            manifest.srcFile "lawnchair/AndroidManifest.xml"
+//            aidl.srcDirs = ['lawnchair/aidl']
+        }
+
+        lawnchairWithoutQuickstep {
             manifest.srcFile "AndroidManifest.xml"
+        }
+
+        lawnchairWithQuickstep {
+            manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
         }
 
         l3go {
@@ -285,6 +282,14 @@ android {
             java.srcDirs = ['go/src']
             manifest.srcFile "go/AndroidManifest.xml"
         }
+
+//        l3goWithoutQuickstepDebug {
+//            manifest.srcFile "AndroidManifest.xml"
+//        }
+//
+//        l3goWithQuickstepDebug {
+//            manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
+//        }
 
         withoutQuickstep {
             java.srcDirs = ['src_ui_overrides']
@@ -296,20 +301,24 @@ android {
             manifest.srcFile "quickstep/AndroidManifest.xml"
         }
 
-        withQuickstepIconRecents {
-            res.srcDirs = ['quickstep/res', 'go/quickstep/res']
-            java.srcDirs = ['quickstep/src', 'go/quickstep/src']
-            manifest.srcFile "quickstep/AndroidManifest.xml"
-        }
-
-        lawnchair {
-            res.srcDirs = ['lawnchair/res']
-            java.srcDirs = ['lawnchair/src']
-            manifest.srcFile "lawnchair/AndroidManifest.xml"
-        }
+//        withQuickstepIconRecents {
+//            res.srcDirs = ['quickstep/res', 'go/quickstep/res']
+//            java.srcDirs = ['quickstep/src', 'go/quickstep/src']
+//            manifest.srcFile "quickstep/AndroidManifest.xml"
+//        }
     }
 
     addFrameworkJar('framework.jar')
+}
+
+allprojects {
+    repositories {
+        maven { url "../../../prebuilts/sdk/current/androidx/m2repository" }
+        maven { url "../../../prebuilts/fullsdk-darwin/extras/android/m2repository" }
+        maven { url "../../../prebuilts/fullsdk-linux/extras/android/m2repository" }
+        mavenCentral()
+        google()
+    }
 }
 
 afterEvaluate {
@@ -322,20 +331,19 @@ dependencies {
     implementation "androidx.dynamicanimation:dynamicanimation:${ANDROID_X_VERSION}"
     implementation "androidx.cardview:cardview:${ANDROID_X_VERSION}"
     implementation "androidx.recyclerview:recyclerview:${ANDROID_X_VERSION}"
-    implementation "androidx.preference:preference:${ANDROID_X_VERSION}"
-    implementation "androidx.palette:palette:${ANDROID_X_VERSION}"
-    implementation "androidx.constraintlayout:constraintlayout:1.1.3"
+    implementation "androidx.preference:preference-ktx:${ANDROID_X_VERSION}"
+    implementation "androidx.palette:palette-ktx:${ANDROID_X_VERSION}"
+    implementation "androidx.constraintlayout:constraintlayout:2.0.4"
+    //noinspection GradleDependency
     implementation "com.google.android.material:material:1.0.0"
     implementation project(':IconLoader')
+    withQuickstepImplementation project(':SharedLibWrapper')
     implementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'launcher_protos.jar')
 
     // Recents lib dependency
-    withQuickstepImplementation project(':SystemUISharedLib')
+//    withQuickstepImplementation project(':SystemUISharedLib')
 
-    // Recents lib dependency for Go
-    withQuickstepIconRecentsImplementation project(':SystemUISharedLib')
-
-    // Required for AOSP to compile. This is already included in the sysui_shared.jar
+    // Required for lawnchair to compile. This is already included in the sysui_shared.jar
     implementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'plugin_core.jar')
 
     implementation 'com.github.florent37:fiftyshadesof:1.0.0'
@@ -359,20 +367,20 @@ dependencies {
 
     lawnchairImplementation files('lawnchair/libs/sesame-lib.aar')
 
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13.1'
     androidTestImplementation "org.mockito:mockito-core:1.9.5"
     androidTestImplementation 'com.google.dexmaker:dexmaker:1.2'
     androidTestImplementation 'com.google.dexmaker:dexmaker-mockito:1.2'
-    androidTestImplementation 'com.android.support.test:runner:1.0.0'
-    androidTestImplementation 'com.android.support.test:rules:1.0.0'
-    androidTestImplementation 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test:rules:1.0.2'
+    androidTestImplementation 'com.android.support.test.uiautomator:uiautomator-v18:2.1.3'
     androidTestImplementation "androidx.annotation:annotation:${ANDROID_X_VERSION}"
 }
 
 protobuf {
     // Configure the protoc executable
     protoc {
-        artifact = 'com.google.protobuf:protoc:3.0.0-alpha-3'
+        artifact = 'com.google.protobuf:protoc:3.0.0'
 
         generateProtoTasks {
             all().each { task ->

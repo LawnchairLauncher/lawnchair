@@ -22,8 +22,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.android.launcher3" >
 
+    <permission
+        android:name="${packageName}.permission.HOTSEAT_EDU"
+        android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
+        android:protectionLevel="signatureOrSystem" />
+
     <uses-permission android:name="android.permission.CONTROL_REMOTE_APP_TRANSITION_ANIMATIONS" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+    <uses-permission android:name="${packageName}.permission.HOTSEAT_EDU" />
 
     <application
         android:backupAgent="com.android.launcher3.LauncherBackupAgent"
@@ -40,23 +47,20 @@
         <service
             android:name="com.android.quickstep.TouchInteractionService"
             android:permission="android.permission.STATUS_BAR_SERVICE"
-            android:directBootAware="@bool/quickstep_direct_boot_aware" >
+            android:directBootAware="true" >
             <intent-filter>
                 <action android:name="android.intent.action.QUICKSTEP_SERVICE" />
             </intent-filter>
         </service>
 
-        <!-- STOPSHIP: Change exported to false once all the integration is complete.
-        It is set to true so that the activity can be started from command line -->
         <activity android:name="com.android.quickstep.RecentsActivity"
-            android:exported="true"
             android:excludeFromRecents="true"
             android:launchMode="singleTask"
             android:clearTaskOnLaunch="true"
             android:stateNotNeeded="true"
             android:theme="@style/LauncherTheme"
             android:screenOrientation="unspecified"
-            android:configChanges="keyboard|keyboardHidden|mcc|mnc|navigation|orientation|screenSize|screenLayout|smallestScreenSize"
+            android:configChanges="keyboard|keyboardHidden|mcc|mnc|navigation|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:resizeableActivity="true"
             android:resumeWhilePausing="true"
             android:taskAffinity="" />
@@ -74,6 +78,17 @@
             </intent-filter>
         </provider>
 
+        <!-- FileProvider used for sharing images. -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${packageName}.overview.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/overview_file_provider_paths" />
+        </provider>
+
         <service
             android:name="com.android.launcher3.uioverrides.dynamicui.WallpaperManagerCompatVL$ColorExtractionService"
             tools:node="remove" />
@@ -85,18 +100,28 @@
             android:clearTaskOnLaunch="true"
             android:exported="false" />
 
-        <activity android:name="com.android.quickstep.LockScreenRecentsActivity"
-                  android:theme="@android:style/Theme.NoDisplay"
-                  android:showOnLockScreen="true"
-                  android:directBootAware="true" />
-
-        <meta-data
-            android:name="xyz.paphonb.quickstepswitcher.minSdk"
-            android:value="28" />
-
-        <meta-data
-            android:name="xyz.paphonb.quickstepswitcher.maxSdk"
-            android:value="29" />
+        <activity
+            android:name="com.android.quickstep.interaction.GestureSandboxActivity"
+            android:autoRemoveFromRecents="true"
+            android:excludeFromRecents="true"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.android.quickstep.action.GESTURE_SANDBOX" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".hybridhotseat.HotseatEduActivity"
+            android:theme="@android:style/Theme.NoDisplay"
+            android:noHistory="true"
+            android:launchMode="singleTask"
+            android:clearTaskOnLaunch="true"
+            android:permission="${packageName}.permission.HOTSEAT_EDU">
+            <intent-filter>
+                <action android:name="com.android.launcher3.action.SHOW_HYBRID_HOTSEAT_EDU"/>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
     </application>
 

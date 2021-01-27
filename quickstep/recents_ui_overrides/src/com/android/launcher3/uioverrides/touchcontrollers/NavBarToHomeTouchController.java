@@ -15,49 +15,61 @@
  */
 package com.android.launcher3.uioverrides.touchcontrollers;
 
-import static android.view.View.TRANSLATION_X;
-
+import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
+import static com.android.launcher3.AbstractFloatingView.TYPE_ALL_APPS_EDU;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_ALL_APPS_EDU;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOME_GESTURE;
 import static com.android.launcher3.touch.AbstractStateChangeTouchController.SUCCESS_TRANSITION_PROGRESS;
+import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
-import android.animation.Animator;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
-import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
-import com.android.launcher3.touch.SwipeDetector;
+import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.graphics.OverviewScrim;
+import com.android.launcher3.logging.StatsLogManager;
+import com.android.launcher3.states.StateAnimationConfig;
+import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.TouchController;
+import com.android.quickstep.util.AnimatorControllerWithResistance;
+import com.android.quickstep.util.AssistantUtilities;
+import com.android.quickstep.util.OverviewToHomeAnim;
 import com.android.quickstep.views.RecentsView;
+import com.android.systemui.shared.system.ActivityManagerWrapper;
 
 /**
  * Handles swiping up on the nav bar to go home from launcher, e.g. overview or all apps.
  */
-public class NavBarToHomeTouchController implements TouchController, SwipeDetector.Listener {
+public class NavBarToHomeTouchController implements TouchController,
+        SingleAxisSwipeDetector.Listener {
 
     private static final Interpolator PULLBACK_INTERPOLATOR = DEACCEL_3;
+    // The min amount of overview scrim we keep during the transition.
+    private static final float OVERVIEW_TO_HOME_SCRIM_MULTIPLIER = 0.5f;
 
     private final Launcher mLauncher;
-    private final SwipeDetector mSwipeDetector;
+    private final SingleAxisSwipeDetector mSwipeDetector;
     private final float mPullbackDistance;
 
     private boolean mNoIntercept;
@@ -67,7 +79,8 @@ public class NavBarToHomeTouchController implements TouchController, SwipeDetect
 
     public NavBarToHomeTouchController(Launcher launcher) {
         mLauncher = launcher;
-        mSwipeDetector = new SwipeDetector(mLauncher, this, SwipeDetector.VERTICAL);
+        mSwipeDetector = new SingleAxisSwipeDetector(mLauncher, this,
+                SingleAxisSwipeDetector.VERTICAL);
         mPullbackDistance = mLauncher.getResources().getDimension(R.dimen.home_pullback_distance);
     }
 
@@ -79,7 +92,8 @@ public class NavBarToHomeTouchController implements TouchController, SwipeDetect
             if (mNoIntercept) {
                 return false;
             }
-            mSwipeDetector.setDetectableScrollConditions(SwipeDetector.DIRECTION_POSITIVE, false);
+            mSwipeDetector.setDetectableScrollConditions(SingleAxisSwipeDetector.DIRECTION_POSITIVE,
+                    false /* ignoreSlop */);
         }
 
         if (mNoIntercept) {
@@ -91,14 +105,37 @@ public class NavBarToHomeTouchController implements TouchController, SwipeDetect
     }
 
     private boolean canInterceptTouch(MotionEvent ev) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.PAUSE_NOT_DETECTED, "NavBarToHomeTouchController.canInterceptTouch "
+                    + ev);
+        }
         boolean cameFromNavBar = (ev.getEdgeFlags() & Utilities.EDGE_NAV_BAR) != 0;
         if (!cameFromNavBar) {
             return false;
         }
-        if (mStartState == OVERVIEW || mStartState == ALL_APPS) {
+        if (mStartState.overviewUi || mStartState == ALL_APPS) {
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.PAUSE_NOT_DETECTED,
+                        "NavBarToHomeTouchController.canInterceptTouch true 1 "
+                                + mStartState.overviewUi + " " + (mStartState == ALL_APPS));
+            }
             return true;
         }
-        if (AbstractFloatingView.getTopOpenView(mLauncher) != null) {
+        int typeToClose = ENABLE_ALL_APPS_EDU.get() ? TYPE_ALL & ~TYPE_ALL_APPS_EDU : TYPE_ALL;
+        if (AbstractFloatingView.getTopOpenViewWithType(mLauncher, typeToClose) != null) {
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.PAUSE_NOT_DETECTED,
+                        "NavBarToHomeTouchController.canInterceptTouch true 2 "
+                                + AbstractFloatingView.getTopOpenView(mLauncher), new Exception());
+            }
+            return true;
+        }
+        if (FeatureFlags.ASSISTANT_GIVES_LAUNCHER_FOCUS.get()
+                && AssistantUtilities.isExcludedAssistantRunning()) {
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.PAUSE_NOT_DETECTED,
+                        "NavBarToHomeTouchController.canInterceptTouch true 3");
+            }
             return true;
         }
         return false;
@@ -114,47 +151,45 @@ public class NavBarToHomeTouchController implements TouchController, SwipeDetect
     }
 
     @Override
-    public void onDragStart(boolean start) {
+    public void onDragStart(boolean start, float startDisplacement) {
         initCurrentAnimation();
     }
 
     private void initCurrentAnimation() {
         long accuracy = (long) (getShiftRange() * 2);
-        final AnimatorSet anim = new AnimatorSet();
-        if (mStartState == OVERVIEW) {
+        final PendingAnimation builder = new PendingAnimation(accuracy);
+        if (mStartState.overviewUi) {
             RecentsView recentsView = mLauncher.getOverviewPanel();
-            float pullbackDist = mPullbackDistance;
-            if (!recentsView.isRtl()) {
-                pullbackDist = -pullbackDist;
+            AnimatorControllerWithResistance.createRecentsResistanceFromOverviewAnim(mLauncher,
+                    builder);
+
+            builder.setFloat(mLauncher.getDragLayer().getOverviewScrim(),
+                    OverviewScrim.SCRIM_MULTIPLIER, OVERVIEW_TO_HOME_SCRIM_MULTIPLIER,
+                    PULLBACK_INTERPOLATOR);
+
+            if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+                builder.addOnFrameCallback(
+                        () -> recentsView.redrawLiveTile(false /* mightNeedToRefill */));
             }
-            Animator pullback = ObjectAnimator.ofFloat(recentsView, TRANSLATION_X, pullbackDist);
-            pullback.setInterpolator(PULLBACK_INTERPOLATOR);
-            anim.play(pullback);
         } else if (mStartState == ALL_APPS) {
-            AnimatorSetBuilder builder = new AnimatorSetBuilder();
             AllAppsTransitionController allAppsController = mLauncher.getAllAppsController();
-            Animator allAppsProgress = ObjectAnimator.ofFloat(allAppsController, ALL_APPS_PROGRESS,
-                    -mPullbackDistance / allAppsController.getShiftRange());
-            allAppsProgress.setInterpolator(PULLBACK_INTERPOLATOR);
-            builder.play(allAppsProgress);
+            builder.setFloat(allAppsController, ALL_APPS_PROGRESS,
+                    -mPullbackDistance / allAppsController.getShiftRange(), PULLBACK_INTERPOLATOR);
+
             // Slightly fade out all apps content to further distinguish from scrolling.
-            builder.setInterpolator(AnimatorSetBuilder.ANIM_ALL_APPS_FADE, Interpolators
-                    .mapToProgress(PULLBACK_INTERPOLATOR, 0, 0.5f));
-            AnimationConfig config = new AnimationConfig();
+            StateAnimationConfig config = new StateAnimationConfig();
             config.duration = accuracy;
-            allAppsController.setAlphas(mEndState.getVisibleElements(mLauncher), config, builder);
-            anim.play(builder.build());
+            config.setInterpolator(StateAnimationConfig.ANIM_ALL_APPS_FADE, Interpolators
+                    .mapToProgress(PULLBACK_INTERPOLATOR, 0, 0.5f));
+
+            allAppsController.setAlphas(mEndState, config, builder);
         }
         AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mLauncher);
         if (topView != null) {
-            Animator hintCloseAnim = topView.createHintCloseAnim(mPullbackDistance);
-            if (hintCloseAnim != null) {
-                hintCloseAnim.setInterpolator(PULLBACK_INTERPOLATOR);
-                anim.play(hintCloseAnim);
-            }
+            topView.addHintCloseAnim(mPullbackDistance, PULLBACK_INTERPOLATOR, builder);
         }
-        anim.setDuration(accuracy);
-        mCurrentAnimation = AnimatorPlaybackController.wrap(anim, accuracy, this::clearState);
+        mCurrentAnimation = builder.createPlaybackController()
+                .setOnCancelRunnable(this::clearState);
     }
 
     private void clearState() {
@@ -173,15 +208,26 @@ public class NavBarToHomeTouchController implements TouchController, SwipeDetect
     }
 
     @Override
-    public void onDragEnd(float velocity, boolean fling) {
+    public void onDragEnd(float velocity) {
+        boolean fling = mSwipeDetector.isFling(velocity);
         final int logAction = fling ? Touch.FLING : Touch.SWIPE;
         float progress = mCurrentAnimation.getProgressFraction();
         float interpolatedProgress = PULLBACK_INTERPOLATOR.getInterpolation(progress);
         boolean success = interpolatedProgress >= SUCCESS_TRANSITION_PROGRESS
                 || (velocity < 0 && fling);
         if (success) {
-            mLauncher.getStateManager().goToState(mEndState, true,
-                    () -> onSwipeInteractionCompleted(mEndState));
+            if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+                RecentsView recentsView = mLauncher.getOverviewPanel();
+                recentsView.switchToScreenshot(null,
+                        () -> recentsView.finishRecentsAnimation(true /* toRecents */, null));
+            }
+            if (mStartState.overviewUi) {
+                new OverviewToHomeAnim(mLauncher, () -> onSwipeInteractionCompleted(mEndState))
+                        .animateWithVelocity(velocity);
+            } else {
+                mLauncher.getStateManager().goToState(mEndState, true,
+                        () -> onSwipeInteractionCompleted(mEndState));
+            }
             if (mStartState != mEndState) {
                 logStateChange(mStartState.containerType, logAction);
             }
@@ -190,16 +236,14 @@ public class NavBarToHomeTouchController implements TouchController, SwipeDetect
                 AbstractFloatingView.closeAllOpenViews(mLauncher);
                 logStateChange(topOpenView.getLogContainerType(), logAction);
             }
+            ActivityManagerWrapper.getInstance()
+                    .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
         } else {
             // Quickly return to the state we came from (we didn't move far).
             ValueAnimator anim = mCurrentAnimation.getAnimationPlayer();
             anim.setFloatValues(progress, 0);
-            anim.addListener(new AnimationSuccessListener() {
-                @Override
-                public void onAnimationSuccess(Animator animator) {
-                    onSwipeInteractionCompleted(mStartState);
-                }
-            });
+            anim.addListener(AnimationSuccessListener.forRunnable(
+                    () -> onSwipeInteractionCompleted(mStartState)));
             anim.setDuration(80).start();
         }
     }
@@ -218,5 +262,9 @@ public class NavBarToHomeTouchController implements TouchController, SwipeDetect
                 startContainerType,
                 mEndState.containerType,
                 mLauncher.getWorkspace().getCurrentPage());
+        mLauncher.getStatsLogManager().logger()
+                .withSrcState(StatsLogManager.containerTypeToAtomState(mStartState.containerType))
+                .withDstState(StatsLogManager.containerTypeToAtomState(mEndState.containerType))
+                .log(LAUNCHER_HOME_GESTURE);
     }
 }

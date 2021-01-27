@@ -20,13 +20,13 @@ import static org.junit.Assert.assertTrue;
 
 import android.content.ComponentName;
 
-import com.android.launcher3.AppInfo;
+import androidx.test.filters.SmallTest;
+import androidx.test.runner.AndroidJUnit4;
+
+import com.android.launcher3.model.data.AppInfo;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import androidx.test.filters.SmallTest;
-import androidx.test.runner.AndroidJUnit4;
 
 /**
  * Unit tests for {@link DefaultAppSearchAlgorithm}

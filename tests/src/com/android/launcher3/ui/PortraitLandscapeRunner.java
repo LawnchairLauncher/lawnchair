@@ -38,14 +38,17 @@ class PortraitLandscapeRunner implements TestRule {
 
                     evaluateInPortrait();
                     evaluateInLandscape();
-                } catch (Exception e) {
-                    Log.e(TAG, "Exception", e);
+                } catch (Throwable e) {
+                    Log.e(TAG, "Error", e);
                     throw e;
                 } finally {
                     mTest.mDevice.setOrientationNatural();
                     mTest.executeOnLauncher(launcher ->
-                            launcher.getRotationHelper().forceAllowRotationForTesting(
-                                    false));
+                    {
+                        if (launcher != null) {
+                            launcher.getRotationHelper().forceAllowRotationForTesting(false);
+                        }
+                    });
                     mTest.mLauncher.setExpectedRotation(Surface.ROTATION_0);
                 }
             }
@@ -53,6 +56,7 @@ class PortraitLandscapeRunner implements TestRule {
             private void evaluateInPortrait() throws Throwable {
                 mTest.mDevice.setOrientationNatural();
                 mTest.mLauncher.setExpectedRotation(Surface.ROTATION_0);
+                AbstractLauncherUiTest.checkDetectedLeaks(mTest.mLauncher);
                 base.evaluate();
                 mTest.getDevice().pressHome();
             }
@@ -60,6 +64,7 @@ class PortraitLandscapeRunner implements TestRule {
             private void evaluateInLandscape() throws Throwable {
                 mTest.mDevice.setOrientationLeft();
                 mTest.mLauncher.setExpectedRotation(Surface.ROTATION_90);
+                AbstractLauncherUiTest.checkDetectedLeaks(mTest.mLauncher);
                 base.evaluate();
                 mTest.getDevice().pressHome();
             }

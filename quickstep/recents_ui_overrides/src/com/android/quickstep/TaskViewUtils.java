@@ -15,33 +15,46 @@
  */
 package com.android.quickstep;
 
+import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
+import static com.android.launcher3.LauncherState.BACKGROUND_APP;
+import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncestor;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
+import static com.android.launcher3.anim.Interpolators.clampToProgress;
+import static com.android.launcher3.statehandlers.DepthController.DEPTH;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
 import android.content.ComponentName;
+import android.content.Context;
+import android.graphics.Matrix;
+import android.graphics.Matrix.ScaleToFit;
 import android.graphics.RectF;
+import android.os.Build;
 import android.view.View;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
-import com.android.launcher3.ItemInfo;
-import com.android.launcher3.Utilities;
-import com.android.quickstep.util.ClipAnimationHelper;
-import com.android.quickstep.util.MultiValueUpdateListener;
-import com.android.quickstep.util.RemoteAnimationTargetSet;
+import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.statehandlers.DepthController;
+import com.android.launcher3.util.DefaultDisplay;
+import com.android.quickstep.util.SurfaceTransactionApplier;
+import com.android.quickstep.util.TaskViewSimulator;
+import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.views.RecentsView;
+import com.android.quickstep.views.TaskThumbnailView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
 
 /**
  * Utility class for helpful methods related to {@link TaskView} objects and their tasks.
  */
+@TargetApi(Build.VERSION_CODES.R)
 public final class TaskViewUtils {
 
     private TaskViewUtils() {}
@@ -107,70 +120,119 @@ public final class TaskViewUtils {
     }
 
     /**
-     * @return Animator that controls the window of the opening targets for the recents launch
+     * Creates an animation that controls the window of the opening targets for the recents launch
      * animation.
      */
-    public static ValueAnimator getRecentsWindowAnimator(TaskView v, boolean skipViewChanges,
-            RemoteAnimationTargetCompat[] targets, final ClipAnimationHelper inOutHelper) {
-        SyncRtSurfaceTransactionApplierCompat applier =
-                new SyncRtSurfaceTransactionApplierCompat(v);
-        ClipAnimationHelper.TransformParams params = new ClipAnimationHelper.TransformParams()
-                .setSyncTransactionApplier(applier);
+    public static void createRecentsWindowAnimator(TaskView v, boolean skipViewChanges,
+            RemoteAnimationTargetCompat[] appTargets,
+            RemoteAnimationTargetCompat[] wallpaperTargets, DepthController depthController,
+            PendingAnimation out) {
 
-        final RemoteAnimationTargetSet targetSet =
-                new RemoteAnimationTargetSet(targets, MODE_OPENING);
-        targetSet.addDependentTransactionApplier(applier);
+        SurfaceTransactionApplier applier = new SurfaceTransactionApplier(v);
+        final RemoteAnimationTargets targets =
+                new RemoteAnimationTargets(appTargets, wallpaperTargets, MODE_OPENING);
+        targets.addReleaseCheck(applier);
+
+        TransformParams params = new TransformParams()
+                    .setSyncTransactionApplier(applier)
+                    .setTargetSet(targets);
 
         final RecentsView recentsView = v.getRecentsView();
-        final ValueAnimator appAnimator = ValueAnimator.ofFloat(0, 1);
-        appAnimator.setInterpolator(TOUCH_RESPONSE_INTERPOLATOR);
-        appAnimator.addUpdateListener(new MultiValueUpdateListener() {
+        int taskIndex = recentsView.indexOfChild(v);
+        boolean parallaxCenterAndAdjacentTask = taskIndex != recentsView.getCurrentPage();
+        int startScroll = recentsView.getScrollOffset(taskIndex);
 
-            // Defer fading out the view until after the app window gets faded in
-            final FloatProp mViewAlpha = new FloatProp(1f, 0f, 75, 75, LINEAR);
-            final FloatProp mTaskAlpha = new FloatProp(0f, 1f, 0, 75, LINEAR);
+        Context context = v.getContext();
+        DeviceProfile dp = BaseActivity.fromContext(context).getDeviceProfile();
+        // RecentsView never updates the display rotation until swipe-up so the value may be stale.
+        // Use the display value instead.
+        int displayRotation = DefaultDisplay.INSTANCE.get(context).getInfo().rotation;
 
+        TaskViewSimulator topMostSimulator = null;
+        if (targets.apps.length > 0) {
+            TaskViewSimulator tsv = new TaskViewSimulator(context, recentsView.getSizeStrategy());
+            tsv.setDp(dp);
+            tsv.setLayoutRotation(displayRotation, displayRotation);
+            tsv.setPreview(targets.apps[targets.apps.length - 1]);
+            tsv.fullScreenProgress.value = 0;
+            tsv.recentsViewScale.value = 1;
+            tsv.setScroll(startScroll);
 
-            final RectF mThumbnailRect;
+            out.setFloat(tsv.fullScreenProgress,
+                    AnimatedFloat.VALUE, 1, TOUCH_RESPONSE_INTERPOLATOR);
+            out.setFloat(tsv.recentsViewScale,
+                    AnimatedFloat.VALUE, tsv.getFullScreenScale(), TOUCH_RESPONSE_INTERPOLATOR);
+            out.setInt(tsv, TaskViewSimulator.SCROLL, 0, TOUCH_RESPONSE_INTERPOLATOR);
 
-            {
-                inOutHelper.setTaskAlphaCallback((t, alpha) -> mTaskAlpha.value);
+            out.addOnFrameCallback(() -> tsv.apply(params));
+            topMostSimulator = tsv;
+        }
 
-                inOutHelper.prepareAnimation(
-                        BaseActivity.fromContext(v.getContext()).getDeviceProfile(),
-                        true /* isOpening */);
-                inOutHelper.fromTaskThumbnailView(v.getThumbnail(), (RecentsView) v.getParent(),
-                        targetSet.apps.length == 0 ? null : targetSet.apps[0]);
+        // Fade in the task during the initial 20% of the animation
+        out.addFloat(params, TransformParams.TARGET_ALPHA, 0, 1, clampToProgress(LINEAR, 0, 0.2f));
 
-                mThumbnailRect = new RectF(inOutHelper.getTargetRect());
-                mThumbnailRect.offset(-v.getTranslationX(), -v.getTranslationY());
-                Utilities.scaleRectFAboutCenter(mThumbnailRect, 1 / v.getScaleX());
-            }
+        if (!skipViewChanges && parallaxCenterAndAdjacentTask && topMostSimulator != null) {
+            out.addFloat(v, VIEW_ALPHA, 1, 0, clampToProgress(LINEAR, 0.2f, 0.4f));
 
-            @Override
-            public void onUpdate(float percent) {
-                // TODO: Take into account the current fullscreen progress for animating the insets
-                params.setProgress(1 - percent);
-                RectF taskBounds = inOutHelper.applyTransform(targetSet, params);
-                int taskIndex = recentsView.indexOfChild(v);
-                int centerTaskIndex = recentsView.getCurrentPage();
-                boolean parallaxCenterAndAdjacentTask = taskIndex != centerTaskIndex;
-                if (!skipViewChanges && parallaxCenterAndAdjacentTask) {
-                    float scale = taskBounds.width() / mThumbnailRect.width();
-                    v.setScaleX(scale);
-                    v.setScaleY(scale);
-                    v.setTranslationX(taskBounds.centerX() - mThumbnailRect.centerX());
-                    v.setTranslationY(taskBounds.centerY() - mThumbnailRect.centerY());
-                    v.setAlpha(mViewAlpha.value);
+            TaskViewSimulator simulatorToCopy = topMostSimulator;
+            simulatorToCopy.apply(params);
+
+            // Mt represents the overall transformation on the thumbnailView relative to the
+            // Launcher's rootView
+            // K(t) represents transformation on the running window by the taskViewSimulator at
+            // any time t.
+            // at t = 0, we know that the simulator matches the thumbnailView. So if we apply K(0)`
+            // on the Launcher's rootView, the thumbnailView would match the full running task
+            // window. If we apply "K(0)` K(t)" thumbnailView will match the final transformed
+            // window at any time t. This gives the overall matrix on thumbnailView to be:
+            //    Mt K(0)` K(t)
+            // During animation we apply transformation on the thumbnailView (and not the rootView)
+            // to follow the TaskViewSimulator. So the final matrix applied on the thumbnailView is:
+            //    Mt K(0)` K(t) Mt`
+            TaskThumbnailView ttv = v.getThumbnail();
+            RectF tvBounds = new RectF(0, 0,  ttv.getWidth(), ttv.getHeight());
+            float[] tvBoundsMapped = new float[]{0, 0,  ttv.getWidth(), ttv.getHeight()};
+            getDescendantCoordRelativeToAncestor(ttv, ttv.getRootView(), tvBoundsMapped, false);
+            RectF tvBoundsInRoot = new RectF(
+                    tvBoundsMapped[0], tvBoundsMapped[1],
+                    tvBoundsMapped[2], tvBoundsMapped[3]);
+
+            Matrix mt = new Matrix();
+            mt.setRectToRect(tvBounds, tvBoundsInRoot, ScaleToFit.FILL);
+
+            Matrix mti = new Matrix();
+            mt.invert(mti);
+
+            Matrix k0i = new Matrix();
+            simulatorToCopy.getCurrentMatrix().invert(k0i);
+
+            Matrix animationMatrix = new Matrix();
+            out.addOnFrameCallback(() -> {
+                animationMatrix.set(mt);
+                animationMatrix.postConcat(k0i);
+                animationMatrix.postConcat(simulatorToCopy.getCurrentMatrix());
+                animationMatrix.postConcat(mti);
+                ttv.setAnimationMatrix(animationMatrix);
+            });
+
+            out.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    ttv.setAnimationMatrix(null);
                 }
-            }
-        });
-        appAnimator.addListener(new AnimatorListenerAdapter() {
+            });
+        }
+
+        out.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                targetSet.release();
+                targets.release();
             }
         });
-        return appAnimator;
+
+        if (depthController != null) {
+            out.setFloat(depthController, DEPTH, BACKGROUND_APP.getDepth(context),
+                    TOUCH_RESPONSE_INTERPOLATOR);
+        }
     }
 }

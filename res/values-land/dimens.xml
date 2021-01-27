@@ -15,9 +15,6 @@
 -->
 
 <resources>
-    <!-- Container -->
-    <item name="container_margin" format="fraction" type="fraction">12%</item>
-
     <!-- Fast scroll -->
     <dimen name="fastscroll_popup_width">58dp</dimen>
     <dimen name="fastscroll_popup_height">48dp</dimen>

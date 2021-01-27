@@ -31,34 +31,39 @@ public interface ComponentWithLabel {
     CharSequence getLabel(PackageManager pm);
 
 
-    class ComponentCachingLogic implements CachingLogic<ComponentWithLabel> {
+    class ComponentCachingLogic<T extends ComponentWithLabel> implements CachingLogic<T> {
 
         private final PackageManager mPackageManager;
+        private final boolean mAddToMemCache;
 
-        public ComponentCachingLogic(Context context) {
+        public ComponentCachingLogic(Context context, boolean addToMemCache) {
             mPackageManager = context.getPackageManager();
+            mAddToMemCache = addToMemCache;
         }
 
         @Override
-        public ComponentName getComponent(ComponentWithLabel object) {
+        public ComponentName getComponent(T object) {
             return object.getComponent();
         }
 
         @Override
-        public UserHandle getUser(ComponentWithLabel object) {
+        public UserHandle getUser(T object) {
             return object.getUser();
         }
 
         @Override
-        public CharSequence getLabel(ComponentWithLabel object) {
+        public CharSequence getLabel(T object) {
             return object.getLabel(mPackageManager);
         }
 
         @Override
-        public void loadIcon(Context context,
-                ComponentWithLabel object, BitmapInfo target) {
-            // Do not load icon.
-            target.icon = BitmapInfo.LOW_RES_ICON;
+        public BitmapInfo loadIcon(Context context, T object) {
+            return BitmapInfo.LOW_RES_INFO;
+        }
+
+        @Override
+        public boolean addToMemCache() {
+            return mAddToMemCache;
         }
     }
 }

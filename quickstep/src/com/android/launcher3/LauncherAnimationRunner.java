@@ -17,8 +17,7 @@ package com.android.launcher3;
 
 import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.util.DefaultDisplay.getSingleFrameMs;
-import static com.android.systemui.shared.recents.utilities.Utilities
-        .postAtFrontOfQueueAsynchronously;
+import static com.android.systemui.shared.recents.utilities.Utilities.postAtFrontOfQueueAsynchronously;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -28,14 +27,17 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
 
-import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-
 import androidx.annotation.BinderThread;
 import androidx.annotation.UiThread;
 
+import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
+import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
+
 @TargetApi(Build.VERSION_CODES.P)
-public abstract class LauncherAnimationRunner implements RemoteAnimationRunnerCompat {
+public abstract class LauncherAnimationRunner implements RemoteAnimationRunnerCompat,
+        WrappedAnimationRunnerImpl {
+
+    private static final String TAG = "LauncherAnimationRunner";
 
     private final Handler mHandler;
     private final boolean mStartAtFrontOfQueue;
@@ -50,13 +52,21 @@ public abstract class LauncherAnimationRunner implements RemoteAnimationRunnerCo
         mStartAtFrontOfQueue = startAtFrontOfQueue;
     }
 
+    public Handler getHandler() {
+        return mHandler;
+    }
+
+    // Called only in R+ platform
     @BinderThread
-    @Override
-    public void onAnimationStart(RemoteAnimationTargetCompat[] targetCompats, Runnable runnable) {
+    public void onAnimationStart(RemoteAnimationTargetCompat[] appTargets,
+            RemoteAnimationTargetCompat[] wallpaperTargets, Runnable runnable) {
         Runnable r = () -> {
             finishExistingAnimation();
-            mAnimationResult = new AnimationResult(runnable);
-            onCreateAnimation(targetCompats, mAnimationResult);
+            mAnimationResult = new AnimationResult(() -> {
+                runnable.run();
+                mAnimationResult = null;
+            });
+            onCreateAnimation(appTargets, wallpaperTargets, mAnimationResult);
         };
         if (mStartAtFrontOfQueue) {
             postAtFrontOfQueueAsynchronously(mHandler, r);
@@ -65,13 +75,21 @@ public abstract class LauncherAnimationRunner implements RemoteAnimationRunnerCo
         }
     }
 
+    // Called only in Q platform
+    @BinderThread
+    @Deprecated
+    public void onAnimationStart(RemoteAnimationTargetCompat[] appTargets, Runnable runnable) {
+        onAnimationStart(appTargets, new RemoteAnimationTargetCompat[0], runnable);
+    }
+
     /**
      * Called on the UI thread when the animation targets are received. The implementation must
      * call {@link AnimationResult#setAnimation} with the target animation to be run.
      */
     @UiThread
     public abstract void onCreateAnimation(
-            RemoteAnimationTargetCompat[] targetCompats, AnimationResult result);
+            RemoteAnimationTargetCompat[] appTargets,
+            RemoteAnimationTargetCompat[] wallpaperTargets, AnimationResult result);
 
     @UiThread
     private void finishExistingAnimation() {
@@ -135,7 +153,8 @@ public abstract class LauncherAnimationRunner implements RemoteAnimationRunnerCo
 
                 // Because t=0 has the app icon in its original spot, we can skip the
                 // first frame and have the same movement one frame earlier.
-                mAnimator.setCurrentPlayTime(getSingleFrameMs(context));
+                mAnimator.setCurrentPlayTime(
+                        Math.min(getSingleFrameMs(context), mAnimator.getTotalDuration()));
             }
         }
     }

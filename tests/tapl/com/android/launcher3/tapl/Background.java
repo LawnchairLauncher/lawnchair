@@ -16,15 +16,20 @@
 
 package com.android.launcher3.tapl;
 
+import static com.android.launcher3.tapl.OverviewTask.TASK_START_EVENT;
 import static com.android.launcher3.testing.TestProtocol.BACKGROUND_APP_STATE_ORDINAL;
+import static com.android.launcher3.testing.TestProtocol.OVERVIEW_STATE_ORDINAL;
 
 import android.graphics.Point;
 import android.os.SystemClock;
 import android.view.MotionEvent;
 
 import androidx.annotation.NonNull;
+import androidx.test.uiautomator.UiObject2;
 
 import com.android.launcher3.testing.TestProtocol;
+
+import java.util.regex.Pattern;
 
 /**
  * Indicates the base state with a UI other than Overview running as foreground. It can also
@@ -32,6 +37,7 @@ import com.android.launcher3.testing.TestProtocol;
  */
 public class Background extends LauncherInstrumentation.VisibleContainer {
     private static final int ZERO_BUTTON_SWIPE_UP_GESTURE_DURATION = 500;
+    private static final Pattern SQUARE_BUTTON_EVENT = Pattern.compile("onOverviewToggle");
 
     Background(LauncherInstrumentation launcher) {
         super(launcher);
@@ -50,16 +56,21 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
      */
     @NonNull
     public BaseOverview switchToOverview() {
-        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                "want to switch from background to overview")) {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                     "want to switch from background to overview")) {
             verifyActiveContainer();
-            goToOverviewUnchecked(BACKGROUND_APP_STATE_ORDINAL);
+            goToOverviewUnchecked();
             return mLauncher.isFallbackOverview() ?
                     new BaseOverview(mLauncher) : new Overview(mLauncher);
         }
     }
 
-    protected void goToOverviewUnchecked(int expectedState) {
+    protected boolean zeroButtonToOverviewGestureStartsInLauncher() {
+        return false;
+    }
+
+    protected void goToOverviewUnchecked() {
         switch (mLauncher.getNavigationModel()) {
             case ZERO_BUTTON: {
                 final int centerX = mLauncher.getDevice().getDisplayWidth() / 2;
@@ -71,18 +82,32 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                         new Point(centerX, startY - swipeHeight - mLauncher.getTouchSlop());
 
                 final long downTime = SystemClock.uptimeMillis();
-                mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, start);
+                final LauncherInstrumentation.GestureScope gestureScope =
+                        zeroButtonToOverviewGestureStartsInLauncher()
+                                ? LauncherInstrumentation.GestureScope.INSIDE_TO_OUTSIDE
+                                : LauncherInstrumentation.GestureScope.OUTSIDE_WITH_PILFER;
+
+                // b/156044202
+                mLauncher.log("Hierarchy before swiping up to overview:");
+                mLauncher.dumpViewHierarchy();
+
+                mLauncher.sendPointer(
+                        downTime, downTime, MotionEvent.ACTION_DOWN, start, gestureScope);
                 mLauncher.executeAndWaitForEvent(
                         () -> mLauncher.movePointer(
                                 downTime,
                                 downTime,
                                 ZERO_BUTTON_SWIPE_UP_GESTURE_DURATION,
                                 start,
-                                end),
+                                end,
+                                gestureScope),
                         event -> TestProtocol.PAUSE_DETECTED_MESSAGE.equals(event.getClassName()),
-                        "Pause wasn't detected");
-                mLauncher.sendPointer(
-                        downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, end);
+                        () -> "Pause wasn't detected");
+                mLauncher.runToState(
+                        () -> mLauncher.sendPointer(
+                                downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, end,
+                                gestureScope),
+                        OVERVIEW_STATE_ORDINAL);
                 break;
             }
 
@@ -104,14 +129,86 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                     startY = endY = mLauncher.getDevice().getDisplayHeight() / 2;
                 }
 
-                mLauncher.swipeToState(startX, startY, endX, endY, 10, expectedState);
+                mLauncher.swipeToState(startX, startY, endX, endY, 10, OVERVIEW_STATE_ORDINAL,
+                        LauncherInstrumentation.GestureScope.OUTSIDE_WITH_PILFER);
                 break;
             }
 
             case THREE_BUTTON:
-                mLauncher.waitForSystemUiObject("recent_apps").click();
+                mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, SQUARE_BUTTON_EVENT);
+                mLauncher.runToState(
+                        () -> mLauncher.waitForSystemUiObject("recent_apps").click(),
+                        OVERVIEW_STATE_ORDINAL);
                 break;
         }
+        expectSwitchToOverviewEvents();
+    }
+
+    private void expectSwitchToOverviewEvents() {
+    }
+
+    /**
+     * Swipes right or double presses the square button to switch to the previous app.
+     */
+    public Background quickSwitchToPreviousApp() {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                     "want to quick switch to the previous app")) {
+            verifyActiveContainer();
+            quickSwitchToPreviousApp(getExpectedStateForQuickSwitch());
+            return new Background(mLauncher);
+        }
+    }
+
+    protected int getExpectedStateForQuickSwitch() {
+        return BACKGROUND_APP_STATE_ORDINAL;
+    }
+
+    protected void quickSwitchToPreviousApp(int expectedState) {
+        final boolean launcherWasVisible = mLauncher.isLauncherVisible();
+        boolean transposeInLandscape = false;
+        switch (mLauncher.getNavigationModel()) {
+            case TWO_BUTTON:
+                transposeInLandscape = true;
+                // Fall through, zero button and two button modes behave the same.
+            case ZERO_BUTTON: {
+                final int startX;
+                final int startY;
+                final int endX;
+                final int endY;
+                if (mLauncher.getDevice().isNaturalOrientation() || !transposeInLandscape) {
+                    // Swipe from the bottom left to the bottom right of the screen.
+                    startX = 0;
+                    startY = getSwipeStartY();
+                    endX = mLauncher.getDevice().getDisplayWidth();
+                    endY = startY;
+                } else {
+                    // Swipe from the bottom right to the top right of the screen.
+                    startX = getSwipeStartX();
+                    startY = mLauncher.getRealDisplaySize().y - 1;
+                    endX = startX;
+                    endY = 0;
+                }
+                final boolean isZeroButton = mLauncher.getNavigationModel()
+                        == LauncherInstrumentation.NavigationModel.ZERO_BUTTON;
+                mLauncher.swipeToState(startX, startY, endX, endY, 20, expectedState,
+                        launcherWasVisible && isZeroButton
+                                ? LauncherInstrumentation.GestureScope.INSIDE_TO_OUTSIDE
+                                : LauncherInstrumentation.GestureScope.OUTSIDE_WITH_PILFER);
+                break;
+            }
+
+            case THREE_BUTTON:
+                // Double press the recents button.
+                UiObject2 recentsButton = mLauncher.waitForSystemUiObject("recent_apps");
+                mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, SQUARE_BUTTON_EVENT);
+                mLauncher.runToState(() -> recentsButton.click(), OVERVIEW_STATE_ORDINAL);
+                mLauncher.getOverview();
+                mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, SQUARE_BUTTON_EVENT);
+                recentsButton.click();
+                break;
+        }
+        mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, TASK_START_EVENT);
     }
 
     protected String getSwipeHeightRequestName() {

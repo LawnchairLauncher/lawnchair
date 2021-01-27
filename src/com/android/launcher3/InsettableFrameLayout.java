@@ -91,6 +91,9 @@ public class InsettableFrameLayout extends FrameLayout implements Insettable {
     @Override
     public void onViewAdded(View child) {
         super.onViewAdded(child);
+        if (!isAttachedToWindow()) {
+            return;
+        }
         setFrameLayoutChildInsets(child, mInsets, new Rect());
     }
 

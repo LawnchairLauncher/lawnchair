@@ -15,44 +15,50 @@
  */
 package com.android.launcher3.model;
 
+import static com.android.launcher3.model.WidgetsModel.GO_DISABLE_WIDGETS;
+import static com.android.launcher3.shortcuts.ShortcutRequest.PINNED;
+
 import android.content.Context;
+import android.content.pm.LauncherApps;
 import android.content.pm.ShortcutInfo;
 import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.MutableInt;
 
-import com.android.launcher3.FolderInfo;
 import com.android.launcher3.InstallShortcutReceiver;
-import com.android.launcher3.ItemInfo;
-import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.logging.DumpTargetWrapper;
-import com.android.launcher3.model.nano.LauncherDumpProto;
-import com.android.launcher3.model.nano.LauncherDumpProto.ContainerType;
-import com.android.launcher3.model.nano.LauncherDumpProto.DumpTarget;
-import com.android.launcher3.shortcuts.DeepShortcutManager;
+import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.FolderInfo;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.LauncherAppWidgetInfo;
+import com.android.launcher3.model.data.PromiseAppInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.shortcuts.ShortcutKey;
+import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.IntSparseArrayMap;
-import com.google.protobuf.nano.MessageNano;
+import com.android.launcher3.util.ItemInfoMatcher;
+import com.android.launcher3.util.ViewOnDrawExecutor;
+import com.android.launcher3.widget.WidgetListRowEntry;
 
 import java.io.FileDescriptor;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
 /**
  * All the data stored in-memory and managed by the LauncherModel
@@ -89,9 +95,16 @@ public class BgDataModel {
     public final Map<ShortcutKey, MutableInt> pinnedShortcutCounts = new HashMap<>();
 
     /**
-     * True if the launcher has permission to access deep shortcuts.
+     * List of all cached predicted items visible on home screen
      */
-    public boolean hasShortcutHostPermission;
+    public final ArrayList<AppInfo> cachedPredictedItems = new ArrayList<>();
+
+    /**
+     * @see Callbacks#FLAG_HAS_SHORTCUT_PERMISSION
+     * @see Callbacks#FLAG_QUIET_MODE_ENABLED
+     * @see Callbacks#FLAG_QUIET_MODE_CHANGE_PERMISSION
+     */
+    public int flags;
 
     /**
      * Maps all launcher activities to counts of their shortcuts.
@@ -138,10 +151,6 @@ public class BgDataModel {
 
     public synchronized void dump(String prefix, FileDescriptor fd, PrintWriter writer,
             String[] args) {
-        if (Arrays.asList(args).contains("--proto")) {
-            dumpProto(prefix, fd, writer, args);
-            return;
-        }
         writer.println(prefix + "Data Model:");
         writer.println(prefix + " ---- workspace items ");
         for (int i = 0; i < workspaceItems.size(); i++) {
@@ -169,89 +178,6 @@ public class BgDataModel {
         }
     }
 
-    private synchronized void dumpProto(String prefix, FileDescriptor fd, PrintWriter writer,
-            String[] args) {
-
-        // Add top parent nodes. (L1)
-        DumpTargetWrapper hotseat = new DumpTargetWrapper(ContainerType.HOTSEAT, 0);
-        IntSparseArrayMap<DumpTargetWrapper> workspaces = new IntSparseArrayMap<>();
-        IntArray workspaceScreens = collectWorkspaceScreens();
-        for (int i = 0; i < workspaceScreens.size(); i++) {
-            workspaces.put(workspaceScreens.get(i),
-                    new DumpTargetWrapper(ContainerType.WORKSPACE, i));
-        }
-        DumpTargetWrapper dtw;
-        // Add non leaf / non top nodes (L2)
-        for (int i = 0; i < folders.size(); i++) {
-            FolderInfo fInfo = folders.valueAt(i);
-            dtw = new DumpTargetWrapper(ContainerType.FOLDER, folders.size());
-            dtw.writeToDumpTarget(fInfo);
-            for(WorkspaceItemInfo sInfo: fInfo.contents) {
-                DumpTargetWrapper child = new DumpTargetWrapper(sInfo);
-                child.writeToDumpTarget(sInfo);
-                dtw.add(child);
-            }
-            if (fInfo.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-                hotseat.add(dtw);
-            } else if (fInfo.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                workspaces.get(fInfo.screenId).add(dtw);
-            }
-        }
-        // Add leaf nodes (L3): *Info
-        for (int i = 0; i < workspaceItems.size(); i++) {
-            ItemInfo info = workspaceItems.get(i);
-            if (info instanceof FolderInfo) {
-                continue;
-            }
-            dtw = new DumpTargetWrapper(info);
-            dtw.writeToDumpTarget(info);
-            if (info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-                hotseat.add(dtw);
-            } else if (info.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                workspaces.get(info.screenId).add(dtw);
-            }
-        }
-        for (int i = 0; i < appWidgets.size(); i++) {
-            ItemInfo info = appWidgets.get(i);
-            dtw = new DumpTargetWrapper(info);
-            dtw.writeToDumpTarget(info);
-            if (info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-                hotseat.add(dtw);
-            } else if (info.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                workspaces.get(info.screenId).add(dtw);
-            }
-        }
-
-
-        // Traverse target wrapper
-        ArrayList<DumpTarget> targetList = new ArrayList<>();
-        targetList.addAll(hotseat.getFlattenedList());
-        for (int i = 0; i < workspaces.size(); i++) {
-            targetList.addAll(workspaces.valueAt(i).getFlattenedList());
-        }
-
-        if (Arrays.asList(args).contains("--debug")) {
-            for (int i = 0; i < targetList.size(); i++) {
-                writer.println(prefix + DumpTargetWrapper.getDumpTargetStr(targetList.get(i)));
-            }
-            return;
-        } else {
-            LauncherDumpProto.LauncherImpression proto = new LauncherDumpProto.LauncherImpression();
-            proto.targets = new DumpTarget[targetList.size()];
-            for (int i = 0; i < targetList.size(); i++) {
-                proto.targets[i] = targetList.get(i);
-            }
-            FileOutputStream fos = new FileOutputStream(fd);
-            try {
-
-                fos.write(MessageNano.toByteArray(proto));
-                Log.d(TAG, MessageNano.toByteArray(proto).length + "Bytes");
-            } catch (IOException e) {
-                Log.e(TAG, "Exception writing dumpsys --proto", e);
-            }
-        }
-    }
-
     public synchronized void removeItem(Context context, ItemInfo... items) {
         removeItem(context, Arrays.asList(items));
     }
@@ -261,7 +187,7 @@ public class BgDataModel {
             switch (item.itemType) {
                 case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
                     folders.remove(item.id);
-                    if (FeatureFlags.IS_DOGFOOD_BUILD) {
+                    if (FeatureFlags.IS_STUDIO_BUILD) {
                         for (ItemInfo info : itemsIdMap) {
                             if (info.container == item.id) {
                                 // We are deleting a folder which still contains items that
@@ -280,8 +206,8 @@ public class BgDataModel {
                     MutableInt count = pinnedShortcutCounts.get(pinnedShortcut);
                     if ((count == null || --count.value == 0)
                             && !InstallShortcutReceiver.getPendingShortcuts(context)
-                            .contains(pinnedShortcut)) {
-                        DeepShortcutManager.getInstance(context).unpinShortcut(pinnedShortcut);
+                                .contains(pinnedShortcut)) {
+                        unpinShortcut(context, pinnedShortcut);
                     }
                     // Fall through.
                 }
@@ -318,7 +244,7 @@ public class BgDataModel {
 
                 // Since this is a new item, pin the shortcut in the system server.
                 if (newItem && count.value == 1) {
-                    DeepShortcutManager.getInstance(context).pinShortcut(pinnedShortcut);
+                    updatePinnedShortcuts(context, pinnedShortcut, List::add);
                 }
                 // Fall through
             }
@@ -345,6 +271,36 @@ public class BgDataModel {
             case LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET:
                 appWidgets.add((LauncherAppWidgetInfo) item);
                 break;
+        }
+    }
+
+    /**
+     * Removes the given shortcut from the current list of pinned shortcuts.
+     * (Runs on background thread)
+     */
+    public void unpinShortcut(Context context, ShortcutKey key) {
+        updatePinnedShortcuts(context, key, List::remove);
+    }
+
+    private void updatePinnedShortcuts(Context context, ShortcutKey key,
+            BiConsumer<List<String>, String> idOp) {
+        if (GO_DISABLE_WIDGETS) {
+            return;
+        }
+        String packageName = key.componentName.getPackageName();
+        String id = key.getId();
+        UserHandle user = key.user;
+        List<String> pinnedIds = new ShortcutRequest(context, user)
+                .forPackage(packageName)
+                .query(PINNED)
+                .stream()
+                .map(ShortcutInfo::getId)
+                .collect(Collectors.toCollection(ArrayList::new));
+        idOp.accept(pinnedIds, id);
+        try {
+            context.getSystemService(LauncherApps.class).pinShortcuts(packageName, pinnedIds, user);
+        } catch (SecurityException | IllegalStateException e) {
+            Log.w(TAG, "Failed to pin shortcut", e);
         }
     }
 
@@ -382,7 +338,8 @@ public class BgDataModel {
         // Now add the new shortcuts to the map.
         for (ShortcutInfo shortcut : shortcuts) {
             boolean shouldShowInContainer = shortcut.isEnabled()
-                    && (shortcut.isDeclaredInManifest() || shortcut.isDynamic());
+                    && (shortcut.isDeclaredInManifest() || shortcut.isDynamic())
+                    && shortcut.getActivity() != null;
             if (shouldShowInContainer) {
                 ComponentKey targetComponent
                         = new ComponentKey(shortcut.getActivity(), shortcut.getUserHandle());
@@ -391,5 +348,44 @@ public class BgDataModel {
                 deepShortcutMap.put(targetComponent, previousCount == null ? 1 : previousCount + 1);
             }
         }
+    }
+
+    public interface Callbacks {
+        // If the launcher has permission to access deep shortcuts.
+        int FLAG_HAS_SHORTCUT_PERMISSION = 1 << 0;
+        // If quiet mode is enabled for any user
+        int FLAG_QUIET_MODE_ENABLED = 1 << 1;
+        // If launcher can change quiet mode
+        int FLAG_QUIET_MODE_CHANGE_PERMISSION = 1 << 2;
+
+        /**
+         * Returns the page number to bind first, synchronously if possible or -1
+         */
+        int getPageToBindSynchronously();
+        void clearPendingBinds();
+        void startBinding();
+        void bindItems(List<ItemInfo> shortcuts, boolean forceAnimateIcons);
+        void bindScreens(IntArray orderedScreenIds);
+        void finishFirstPageBind(ViewOnDrawExecutor executor);
+        void finishBindingItems(int pageBoundFirst);
+        void preAddApps();
+        void bindAppsAdded(IntArray newScreens,
+                ArrayList<ItemInfo> addNotAnimated, ArrayList<ItemInfo> addAnimated);
+        void bindPromiseAppProgressUpdated(PromiseAppInfo app);
+        void bindWorkspaceItemsChanged(ArrayList<WorkspaceItemInfo> updated);
+        void bindWidgetsRestored(ArrayList<LauncherAppWidgetInfo> widgets);
+        void bindRestoreItemsChange(HashSet<ItemInfo> updates);
+        void bindWorkspaceComponentsRemoved(ItemInfoMatcher matcher);
+        void bindAllWidgets(ArrayList<WidgetListRowEntry> widgets);
+        void onPageBoundSynchronously(int page);
+        void executeOnNextDraw(ViewOnDrawExecutor executor);
+        void bindDeepShortcutMap(HashMap<ComponentKey, Integer> deepShortcutMap);
+
+        void bindAllApplications(AppInfo[] apps, int flags);
+
+        /**
+         * Binds predicted appInfos at at available prediction slots.
+         */
+        void bindPredictedItems(List<AppInfo> appInfos, IntArray ranks);
     }
 }

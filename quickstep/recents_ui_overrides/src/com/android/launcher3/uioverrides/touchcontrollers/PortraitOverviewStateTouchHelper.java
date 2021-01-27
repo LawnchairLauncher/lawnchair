@@ -19,9 +19,10 @@ package com.android.launcher3.uioverrides.touchcontrollers;
 import static com.android.launcher3.uioverrides.touchcontrollers.PortraitStatesTouchController.isTouchOverHotseat;
 
 import android.view.MotionEvent;
+import android.view.animation.Interpolator;
 
 import com.android.launcher3.Launcher;
-import com.android.launcher3.util.PendingAnimation;
+import com.android.launcher3.anim.PendingAnimation;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 
@@ -47,9 +48,9 @@ public final class PortraitOverviewStateTouchHelper {
      * @return true if we should intercept the motion event
      */
     boolean canInterceptTouch(MotionEvent ev) {
-        if (mRecentsView.getChildCount() > 0) {
+        if (mRecentsView.getTaskViewCount() > 0) {
             // Allow swiping up in the gap between the hotseat and overview.
-            return ev.getY() >= mRecentsView.getChildAt(0).getBottom();
+            return ev.getY() >= mRecentsView.getTaskViewAt(0).getBottom();
         } else {
             // If there are no tasks, we only intercept if we're below the hotseat height.
             return isTouchOverHotseat(mLauncher, ev);
@@ -63,7 +64,7 @@ public final class PortraitOverviewStateTouchHelper {
      * @return true if going back should take the user to the currently running task
      */
     boolean shouldSwipeDownReturnToApp() {
-        TaskView taskView = mRecentsView.getTaskViewAt(mRecentsView.getNextPage());
+        TaskView taskView = mRecentsView.getNextPageTaskView();
         return taskView != null && mRecentsView.shouldSwipeDownLaunchApp();
     }
 
@@ -74,12 +75,12 @@ public final class PortraitOverviewStateTouchHelper {
      * @param duration how long the animation should be
      * @return the animation
      */
-    PendingAnimation createSwipeDownToTaskAppAnimation(long duration) {
+    PendingAnimation createSwipeDownToTaskAppAnimation(long duration, Interpolator interpolator) {
         mRecentsView.setCurrentPage(mRecentsView.getPageNearestToCenterOfScreen());
-        TaskView taskView = mRecentsView.getTaskViewAt(mRecentsView.getCurrentPage());
+        TaskView taskView = mRecentsView.getCurrentPageTaskView();
         if (taskView == null) {
             throw new IllegalStateException("There is no task view to animate to.");
         }
-        return mRecentsView.createTaskLauncherAnimation(taskView, duration);
+        return mRecentsView.createTaskLaunchAnimation(taskView, duration, interpolator);
     }
 }

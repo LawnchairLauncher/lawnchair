@@ -17,12 +17,12 @@ package com.android.launcher3.uioverrides.touchcontrollers;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.touch.SwipeDetector;
+import com.android.launcher3.touch.SingleAxisSwipeDetector;
 
 public class TransposedQuickSwitchTouchController extends QuickSwitchTouchController {
 
     public TransposedQuickSwitchTouchController(Launcher launcher) {
-        super(launcher, SwipeDetector.VERTICAL);
+        super(launcher, SingleAxisSwipeDetector.VERTICAL);
     }
 
     @Override

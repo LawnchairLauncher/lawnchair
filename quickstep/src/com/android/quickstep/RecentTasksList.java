@@ -16,20 +16,22 @@
 
 package com.android.quickstep;
 
-import static com.android.quickstep.TouchInteractionService.BACKGROUND_EXECUTOR;
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
-import android.content.Context;
 import android.os.Build;
 import android.os.Process;
 import android.util.SparseBooleanArray;
-import com.android.launcher3.MainThreadExecutor;
-import com.android.launcher3.Utilities;
+
+import androidx.annotation.VisibleForTesting;
+
+import com.android.launcher3.util.LooperExecutor;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.KeyguardManagerCompat;
 import com.android.systemui.shared.system.TaskStackChangeListener;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -38,29 +40,28 @@ import java.util.function.Consumer;
 /**
  * Manages the recent task list from the system, caching it as necessary.
  */
-@TargetApi(Build.VERSION_CODES.P)
+@TargetApi(Build.VERSION_CODES.R)
 public class RecentTasksList extends TaskStackChangeListener {
 
+    private static final TaskLoadResult INVALID_RESULT = new TaskLoadResult(-1, false, 0);
+
     private final KeyguardManagerCompat mKeyguardManager;
-    private final MainThreadExecutor mMainThreadExecutor;
-    private TaskListStabilizer mStabilizer;
+    private final LooperExecutor mMainThreadExecutor;
+    private final ActivityManagerWrapper mActivityManagerWrapper;
 
     // The list change id, increments as the task list changes in the system
     private int mChangeId;
-    // The last change id when the list was last loaded completely, must be <= the list change id
-    private int mLastLoadedId;
-    // The last change id was loaded with keysOnly  = true
-    private boolean mLastLoadHadKeysOnly;
 
-    ArrayList<Task> mTasks = new ArrayList<>();
+    private TaskLoadResult mResultsBg = INVALID_RESULT;
+    private TaskLoadResult mResultsUi = INVALID_RESULT;
 
-    public RecentTasksList(Context context) {
-        mMainThreadExecutor = new MainThreadExecutor();
-        mKeyguardManager = new KeyguardManagerCompat(context);
+    public RecentTasksList(LooperExecutor mainThreadExecutor,
+            KeyguardManagerCompat keyguardManager, ActivityManagerWrapper activityManagerWrapper) {
+        mMainThreadExecutor = mainThreadExecutor;
+        mKeyguardManager = keyguardManager;
         mChangeId = 1;
-        if (Utilities.isRecentsEnabled()) {
-            ActivityManagerWrapper.getInstance().registerTaskStackListener(this);
-        }
+        mActivityManagerWrapper = activityManagerWrapper;
+        mActivityManagerWrapper.registerTaskStackListener(this);
     }
 
     /**
@@ -68,18 +69,10 @@ public class RecentTasksList extends TaskStackChangeListener {
      */
     public void getTaskKeys(int numTasks, Consumer<ArrayList<Task>> callback) {
         // Kick off task loading in the background
-        BACKGROUND_EXECUTOR.execute(() -> {
-            ArrayList<Task> tasks = loadTasksInBackground(numTasks, true /* loadKeysOnly */);
+        UI_HELPER_EXECUTOR.execute(() -> {
+            ArrayList<Task> tasks = loadTasksInBackground(numTasks, -1, true /* loadKeysOnly */);
             mMainThreadExecutor.execute(() -> callback.accept(tasks));
         });
-    }
-
-    public void startStabilizationSession() {
-        getStabilizer().startStabilizationSession();
-    }
-
-    public void endStabilizationSession() {
-        getStabilizer().endStabilizationSession();
     }
 
     /**
@@ -91,26 +84,30 @@ public class RecentTasksList extends TaskStackChangeListener {
      */
     public synchronized int getTasks(boolean loadKeysOnly, Consumer<ArrayList<Task>> callback) {
         final int requestLoadId = mChangeId;
-        Runnable resultCallback = callback == null
-                ? () -> { }
-                : () -> callback.accept(copyOf(stabilizeIfNecessary(mTasks)));
-
-        if (mLastLoadedId == mChangeId && (!mLastLoadHadKeysOnly || loadKeysOnly)) {
+        if (mResultsUi.isValidForRequest(requestLoadId, loadKeysOnly)) {
             // The list is up to date, send the callback on the next frame,
             // so that requestID can be returned first.
-            mMainThreadExecutor.getHandler().post(resultCallback);
+            if (callback != null) {
+                // Copy synchronously as the changeId might change by next frame
+                ArrayList<Task> result = copyOf(mResultsUi);
+                mMainThreadExecutor.post(() -> callback.accept(result));
+            }
+
             return requestLoadId;
         }
 
         // Kick off task loading in the background
-        BACKGROUND_EXECUTOR.execute(() -> {
-            ArrayList<Task> tasks = loadTasksInBackground(Integer.MAX_VALUE, loadKeysOnly);
-
+        UI_HELPER_EXECUTOR.execute(() -> {
+            if (!mResultsBg.isValidForRequest(requestLoadId, loadKeysOnly)) {
+                mResultsBg = loadTasksInBackground(Integer.MAX_VALUE, requestLoadId, loadKeysOnly);
+            }
+            TaskLoadResult loadResult = mResultsBg;
             mMainThreadExecutor.execute(() -> {
-                mTasks = tasks;
-                mLastLoadedId = requestLoadId;
-                mLastLoadHadKeysOnly = loadKeysOnly;
-                resultCallback.run();
+                mResultsUi = loadResult;
+                if (callback != null) {
+                    ArrayList<Task> result = copyOf(mResultsUi);
+                    callback.accept(result);
+                }
             });
         });
 
@@ -125,35 +122,51 @@ public class RecentTasksList extends TaskStackChangeListener {
     }
 
     @Override
-    public synchronized void onTaskStackChanged() {
-        mChangeId++;
+    public void onTaskStackChanged() {
+        invalidateLoadedTasks();
+    }
+
+    @Override
+    public void onRecentTaskListUpdated() {
+        // In some cases immediately after booting, the tasks in the system recent task list may be
+        // loaded, but not in the active task hierarchy in the system.  These tasks are displayed in 
+        // overview, but removing them don't result in a onTaskStackChanged() nor a onTaskRemoved()
+        // callback (those are for changes to the active tasks), but the task list is still updated,
+        // so we should also invalidate the change id to ensure we load a new list instead of 
+        // reusing a stale list.
+        invalidateLoadedTasks();
     }
 
     @Override
     public void onTaskRemoved(int taskId) {
-        mTasks = loadTasksInBackground(Integer.MAX_VALUE, false);
+        invalidateLoadedTasks();
     }
 
+
     @Override
-    public synchronized void onActivityPinned(String packageName, int userId, int taskId,
-            int stackId) {
-        mChangeId++;
+    public void onActivityPinned(String packageName, int userId, int taskId, int stackId) {
+        invalidateLoadedTasks();
     }
 
     @Override
     public synchronized void onActivityUnpinned() {
+        invalidateLoadedTasks();
+    }
+
+    private synchronized void invalidateLoadedTasks() {
+        UI_HELPER_EXECUTOR.execute(() -> mResultsBg = INVALID_RESULT);
+        mResultsUi = INVALID_RESULT;
         mChangeId++;
     }
 
     /**
      * Loads and creates a list of all the recent tasks.
      */
-    private ArrayList<Task> loadTasksInBackground(int numTasks,
-            boolean loadKeysOnly) {
+    @VisibleForTesting
+    TaskLoadResult loadTasksInBackground(int numTasks, int requestId, boolean loadKeysOnly) {
         int currentUserId = Process.myUserHandle().getIdentifier();
-        ArrayList<Task> allTasks = new ArrayList<>();
         List<ActivityManager.RecentTaskInfo> rawTasks =
-                ActivityManagerWrapper.getInstance().getRecentTasks(numTasks, currentUserId);
+                mActivityManagerWrapper.getRecentTasks(numTasks, currentUserId);
         // The raw tasks are given in most-recent to least-recent order, we need to reverse it
         Collections.reverse(rawTasks);
 
@@ -168,9 +181,8 @@ public class RecentTasksList extends TaskStackChangeListener {
             }
         };
 
-        int taskCount = rawTasks.size();
-        for (int i = 0; i < taskCount; i++) {
-            ActivityManager.RecentTaskInfo rawTask = rawTasks.get(i);
+        TaskLoadResult allTasks = new TaskLoadResult(requestId, loadKeysOnly, rawTasks.size());
+        for (ActivityManager.RecentTaskInfo rawTask : rawTasks) {
             Task.TaskKey taskKey = new Task.TaskKey(rawTask);
             Task task;
             if (!loadKeysOnly) {
@@ -195,18 +207,21 @@ public class RecentTasksList extends TaskStackChangeListener {
         return newTasks;
     }
 
-    private ArrayList<Task> stabilizeIfNecessary(ArrayList<Task> tasks) {
-        if (!Utilities.ATLEAST_Q) {
-            return getStabilizer().reorder(tasks);
-        } else {
-            return tasks;
-        }
-    }
+    private static class TaskLoadResult extends ArrayList<Task> {
 
-    private TaskListStabilizer getStabilizer() {
-        if (mStabilizer == null) {
-            mStabilizer = new TaskListStabilizer();
+        final int mId;
+
+        // If the result was loaded with keysOnly  = true
+        final boolean mKeysOnly;
+
+        TaskLoadResult(int id, boolean keysOnly, int size) {
+            super(size);
+            mId = id;
+            mKeysOnly = keysOnly;
         }
-        return mStabilizer;
+
+        boolean isValidForRequest(int requestId, boolean loadKeysOnly) {
+            return mId == requestId && (!mKeysOnly || loadKeysOnly);
+        }
     }
 }

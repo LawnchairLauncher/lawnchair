@@ -20,10 +20,10 @@ import android.util.Log;
 
 import static com.android.launcher3.logging.LoggerUtils.newLauncherEvent;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType.CANCEL_TARGET;
-import static com.android.systemui.shared.system.LauncherEventUtil.VISIBLE;
 import static com.android.systemui.shared.system.LauncherEventUtil.DISMISS;
 import static com.android.systemui.shared.system.LauncherEventUtil.RECENTS_QUICK_SCRUB_ONBOARDING_TIP;
 import static com.android.systemui.shared.system.LauncherEventUtil.RECENTS_SWIPE_UP_ONBOARDING_TIP;
+import static com.android.systemui.shared.system.LauncherEventUtil.VISIBLE;
 
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto;

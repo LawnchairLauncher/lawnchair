@@ -15,14 +15,17 @@
  */
 package com.android.launcher3.util;
 
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+
 import android.content.Context;
 import android.os.Looper;
 
-import com.android.launcher3.MainThreadExecutor;
+import androidx.annotation.VisibleForTesting;
+
+import com.android.launcher3.graphics.LauncherPreviewRenderer.PreviewContext;
+import com.android.launcher3.util.ResourceBasedOverride.Overrides;
 
 import java.util.concurrent.ExecutionException;
-
-import androidx.annotation.VisibleForTesting;
 
 /**
  * Utility class for defining singletons which are initiated on main thread.
@@ -37,13 +40,18 @@ public class MainThreadInitializedObject<T> {
     }
 
     public T get(Context context) {
+        if (context instanceof PreviewContext) {
+            return ((PreviewContext) context).getObject(this, mProvider);
+        }
+
         if (mValue == null) {
             if (Looper.myLooper() == Looper.getMainLooper()) {
-                mValue = mProvider.get(context.getApplicationContext());
+                mValue = TraceHelper.allowIpcs("main.thread.object",
+                        () -> mProvider.get(context.getApplicationContext()));
                 onPostInit(context);
             } else {
                 try {
-                    return new MainThreadExecutor().submit(() -> get(context)).get();
+                    return MAIN_EXECUTOR.submit(() -> get(context)).get();
                 } catch (InterruptedException|ExecutionException e) {
                     throw new RuntimeException(e);
                 }
@@ -61,6 +69,14 @@ public class MainThreadInitializedObject<T> {
     @VisibleForTesting
     public void initializeForTesting(T value) {
         mValue = value;
+    }
+
+    /**
+     * Initializes a provider based on resource overrides
+     */
+    public static <T extends ResourceBasedOverride> MainThreadInitializedObject<T> forOverride(
+            Class<T> clazz, int resourceId) {
+        return new MainThreadInitializedObject<>(c -> Overrides.getObject(clazz, c, resourceId));
     }
 
     public interface ObjectProvider<T> {

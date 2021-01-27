@@ -15,10 +15,11 @@
  */
 package com.android.launcher3.widget;
 
+import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
+import static com.android.launcher3.testing.TestProtocol.NORMAL_STATE_ORDINAL;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.graphics.Rect;
@@ -28,8 +29,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AnimationUtils;
+import android.view.animation.Interpolator;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.Insettable;
@@ -37,6 +38,8 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetHost.ProviderChangedListener;
 import com.android.launcher3.R;
+import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 import com.android.launcher3.views.TopRoundedCornerView;
 
@@ -84,6 +87,11 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         onWidgetsBound();
     }
 
+    @VisibleForTesting
+    public WidgetsRecyclerView getRecyclerView() {
+        return mRecyclerView;
+    }
+
     @Override
     protected Pair<View, String> getAccessibilityTarget() {
         return Pair.create(mRecyclerView, getContext().getString(
@@ -124,7 +132,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int widthUsed;
         if (mInsets.bottom > 0) {
-            widthUsed = 0;
+            widthUsed = mInsets.left + mInsets.right;
         } else {
             Rect padding = mLauncher.getDeviceProfile().workspacePadding;
             widthUsed = Math.max(padding.left + padding.right,
@@ -145,7 +153,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
         // Content is laid out as center bottom aligned
         int contentWidth = mContent.getMeasuredWidth();
-        int contentLeft = (width - contentWidth) / 2;
+        int contentLeft = (width - contentWidth - mInsets.left - mInsets.right) / 2 + mInsets.left;
         mContent.layout(contentLeft, height - mContent.getMeasuredHeight(),
                 contentLeft + contentWidth, height);
 
@@ -174,6 +182,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                     .setDuration(DEFAULT_OPEN_DURATION)
                     .setInterpolator(AnimationUtils.loadInterpolator(
                             getContext(), android.R.interpolator.linear_out_slow_in));
+            mRecyclerView.setLayoutFrozen(true);
             mOpenCloseAnimator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -183,7 +192,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 }
             });
             post(() -> {
-                mRecyclerView.setLayoutFrozen(true);
                 mOpenCloseAnimator.start();
                 mContent.animate().alpha(1).setDuration(FADE_IN_DURATION);
             });
@@ -239,12 +247,16 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         return mAdapter.getItemCount();
     }
 
-    @Nullable
     @Override
-    public Animator createHintCloseAnim(float distanceToMove) {
-        AnimatorSet anim = new AnimatorSet();
-        anim.play(ObjectAnimator.ofFloat(mRecyclerView, TRANSLATION_Y, -distanceToMove));
-        anim.play(ObjectAnimator.ofFloat(mRecyclerView, ALPHA, 0.5f));
-        return anim;
+    public void addHintCloseAnim(
+            float distanceToMove, Interpolator interpolator, PendingAnimation target) {
+        target.setFloat(mRecyclerView, VIEW_TRANSLATE_Y, -distanceToMove, interpolator);
+        target.setViewAlpha(mRecyclerView, 0.5f, interpolator);
+    }
+
+    @Override
+    protected void onCloseComplete() {
+        super.onCloseComplete();
+        AccessibilityManagerCompat.sendStateEventToTest(getContext(), NORMAL_STATE_ORDINAL);
     }
 }

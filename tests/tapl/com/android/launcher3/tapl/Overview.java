@@ -45,8 +45,9 @@ public final class Overview extends BaseOverview {
      */
     @NonNull
     public AllAppsFromOverview switchToAllApps() {
-        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                "want to switch from overview to all apps")) {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                     "want to switch from overview to all apps")) {
             verifyActiveContainer();
 
             // Swipe from an app icon to the top.
@@ -58,13 +59,23 @@ public final class Overview extends BaseOverview {
                             getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD),
                     mLauncher.getDevice().getDisplayWidth() / 2,
                     0,
-                    50,
-                    ALL_APPS_STATE_ORDINAL);
+                    12,
+                    ALL_APPS_STATE_ORDINAL,
+                    LauncherInstrumentation.GestureScope.INSIDE);
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                     "swiped all way up from overview")) {
                 return new AllAppsFromOverview(mLauncher);
             }
+        }
+    }
+
+    @Override
+    public void dismissAllTasks() {
+        super.dismissAllTasks();
+        try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
+                "dismissed all tasks")) {
+            new Workspace(mLauncher);
         }
     }
 }

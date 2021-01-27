@@ -42,8 +42,9 @@ public final class AllAppsFromOverview extends AllApps {
      */
     @NonNull
     public Overview switchBackToOverview() {
-        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                "want to switch back from all apps to overview")) {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                     "want to switch back from all apps to overview")) {
             final UiObject2 allAppsContainer = verifyActiveContainer();
             // Swipe from the search box to the bottom.
             final UiObject2 qsb = mLauncher.waitForObjectInContainer(
@@ -55,7 +56,8 @@ public final class AllAppsFromOverview extends AllApps {
 
             final int endY = start.y + swipeHeight;
             LauncherInstrumentation.log("AllAppsFromOverview.switchBackToOverview before swipe");
-            mLauncher.swipeToState(start.x, start.y, start.x, endY, 60, OVERVIEW_STATE_ORDINAL);
+            mLauncher.swipeToState(start.x, start.y, start.x, endY, 60, OVERVIEW_STATE_ORDINAL,
+                    LauncherInstrumentation.GestureScope.INSIDE);
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer("swiped down")) {
                 return new Overview(mLauncher);

@@ -30,3 +30,31 @@ android_library {
     manifest: "tests/tapl/AndroidManifest.xml",
     platform_apis: true,
 }
+
+java_library_static {
+    name: "launcher_log_protos_lite",
+    srcs: [
+        "protos/*.proto",
+        "proto_overrides/*.proto",
+    ],
+    sdk_version: "current",
+    proto: {
+        type: "lite",
+        local_include_dirs:[
+            "protos",
+            "proto_overrides",
+        ],
+    },
+    static_libs: ["libprotobuf-java-lite"],
+}
+
+java_library {
+    name: "LauncherPluginLib",
+
+    static_libs: ["PluginCoreLib"],
+
+    srcs: ["src_plugins/**/*.java"],
+
+    sdk_version: "current",
+    min_sdk_version: "28",
+}

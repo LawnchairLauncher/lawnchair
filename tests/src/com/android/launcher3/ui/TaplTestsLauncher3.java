@@ -34,7 +34,6 @@ import com.android.launcher3.tapl.AllApps;
 import com.android.launcher3.tapl.AppIcon;
 import com.android.launcher3.tapl.AppIconMenu;
 import com.android.launcher3.tapl.AppIconMenuItem;
-import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.tapl.Widgets;
 import com.android.launcher3.tapl.Workspace;
 import com.android.launcher3.views.OptionsPopupView;
@@ -42,7 +41,6 @@ import com.android.launcher3.widget.WidgetsFullSheet;
 import com.android.launcher3.widget.WidgetsRecyclerView;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -61,10 +59,12 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         test.clearLauncherData();
         test.mDevice.pressHome();
         test.waitForLauncherCondition("Launcher didn't start", launcher -> launcher != null);
-        test.waitForState("Launcher internal state didn't switch to Home", LauncherState.NORMAL);
+        test.waitForState("Launcher internal state didn't switch to Home",
+                () -> LauncherState.NORMAL);
         test.waitForResumed("Launcher internal state is still Background");
         // Check that we switched to home.
         test.mLauncher.getWorkspace();
+        AbstractLauncherUiTest.checkDetectedLeaks(test.mLauncher);
     }
 
     // Please don't add negative test cases for methods that fail only after a long wait.
@@ -102,7 +102,14 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     }
 
     @Test
-    @Ignore
+    public void testOpenHomeSettingsFromWorkspace() {
+        mDevice.pressMenu();
+        mDevice.waitForIdle();
+        mLauncher.getOptionsPopupMenu().getMenuItem("Home settings")
+                .launch(mDevice.getLauncherPackageName());
+    }
+
+    @Test
     public void testPressHomeOnAllAppsContextMenu() throws Exception {
         final AllApps allApps = mLauncher.getWorkspace().switchToAllApps();
         allApps.freeze();
@@ -121,7 +128,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
 
             assertTrue(
                     "Launcher internal state is not All Apps",
-                    test.isInState(LauncherState.ALL_APPS));
+                    test.isInState(() -> LauncherState.ALL_APPS));
 
             // Test flinging forward and backward.
             test.executeOnLauncher(launcher -> assertEquals(
@@ -130,7 +137,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
 
             allApps.flingForward();
             assertTrue("Launcher internal state is not All Apps",
-                    test.isInState(LauncherState.ALL_APPS));
+                    test.isInState(() -> LauncherState.ALL_APPS));
             final Integer flingForwardY = test.getFromLauncher(
                     launcher -> test.getAllAppsScroll(launcher));
             test.executeOnLauncher(
@@ -140,7 +147,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
             allApps.flingBackward();
             assertTrue(
                     "Launcher internal state is not All Apps",
-                    test.isInState(LauncherState.ALL_APPS));
+                    test.isInState(() -> LauncherState.ALL_APPS));
             final Integer flingBackwardY = test.getFromLauncher(
                     launcher -> test.getAllAppsScroll(launcher));
             test.executeOnLauncher(launcher -> assertTrue("flingBackward() didn't scroll App Apps",
@@ -157,7 +164,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
 
             assertTrue(
                     "Launcher internal state is not All Apps",
-                    test.isInState(LauncherState.ALL_APPS));
+                    test.isInState(() -> LauncherState.ALL_APPS));
         } finally {
             allApps.unfreeze();
         }
@@ -168,7 +175,8 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     public void testWorkspaceSwitchToAllApps() {
         assertNotNull("switchToAllApps() returned null",
                 mLauncher.getWorkspace().switchToAllApps());
-        assertTrue("Launcher internal state is not All Apps", isInState(LauncherState.ALL_APPS));
+        assertTrue("Launcher internal state is not All Apps",
+                isInState(() -> LauncherState.ALL_APPS));
     }
 
     @Test
@@ -190,11 +198,11 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
                 launcher -> assertTrue("ensureScrollable didn't make workspace scrollable",
                         isWorkspaceScrollable(launcher)));
         assertNotNull("ensureScrollable didn't add Chrome app",
-                workspace.tryGetWorkspaceAppIcon("Chrome"));
+                workspace.getWorkspaceAppIcon("Chrome"));
 
         // Test flinging workspace.
         workspace.flingBackward();
-        assertTrue("Launcher internal state is not Home", isInState(LauncherState.NORMAL));
+        assertTrue("Launcher internal state is not Home", isInState(() -> LauncherState.NORMAL));
         executeOnLauncher(
                 launcher -> assertEquals("Flinging back didn't switch workspace to page #0",
                         0, getCurrentWorkspacePage(launcher)));
@@ -203,10 +211,10 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         executeOnLauncher(
                 launcher -> assertEquals("Flinging forward didn't switch workspace to page #1",
                         1, getCurrentWorkspacePage(launcher)));
-        assertTrue("Launcher internal state is not Home", isInState(LauncherState.NORMAL));
+        assertTrue("Launcher internal state is not Home", isInState(() -> LauncherState.NORMAL));
 
         // Test starting a workspace app.
-        final AppIcon app = workspace.tryGetWorkspaceAppIcon("Chrome");
+        final AppIcon app = workspace.getWorkspaceAppIcon("Chrome");
         assertNotNull("No Chrome app in workspace", app);
     }
 
@@ -229,7 +237,8 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     @PortraitLandscape
     public void testAppIconLaunchFromAllAppsFromHome() throws Exception {
         final AllApps allApps = mLauncher.getWorkspace().switchToAllApps();
-        assertTrue("Launcher internal state is not All Apps", isInState(LauncherState.ALL_APPS));
+        assertTrue("Launcher internal state is not All Apps",
+                isInState(() -> LauncherState.ALL_APPS));
 
         runIconLaunchFromAllAppsTest(this, allApps);
     }
@@ -305,7 +314,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
                 switchToAllApps();
         allApps.freeze();
         try {
-            allApps.getAppIcon(APP_NAME).dragToWorkspace();
+            allApps.getAppIcon(APP_NAME).dragToWorkspace(false, false);
             mLauncher.getWorkspace().getWorkspaceAppIcon(APP_NAME).launch(getAppPackageName());
         } finally {
             allApps.unfreeze();
@@ -333,7 +342,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
                     getMenuItem(0);
             final String shortcutName = menuItem.getText();
 
-            menuItem.dragToWorkspace();
+            menuItem.dragToWorkspace(false, false);
             mLauncher.getWorkspace().getWorkspaceAppIcon(shortcutName).launch(getAppPackageName());
         } finally {
             allApps.unfreeze();

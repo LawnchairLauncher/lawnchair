@@ -15,18 +15,22 @@
  */
 package com.android.launcher3.allapps;
 
+import static com.android.launcher3.model.data.AppInfo.COMPONENT_KEY_COMPARATOR;
+import static com.android.launcher3.model.data.AppInfo.EMPTY_ARRAY;
+
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.ItemInfo;
-import com.android.launcher3.PromiseAppInfo;
+import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.PromiseAppInfo;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageUserKey;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -34,6 +38,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import org.jetbrains.annotations.Nullable;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -45,34 +50,49 @@ public class AllAppsStore {
 
     // Defer updates flag used to defer all apps updates to the next draw.
     public static final int DEFER_UPDATES_NEXT_DRAW = 1 << 0;
-    // Defer updates flag used to defer all apps updates while the user interacts with all apps.
-    public static final int DEFER_UPDATES_USER_INTERACTION = 1 << 1;
     // Defer updates flag used to defer all apps updates by a test's request.
-    public static final int DEFER_UPDATES_TEST = 1 << 2;
+    public static final int DEFER_UPDATES_TEST = 1 << 1;
 
     private PackageUserKey mTempKey = new PackageUserKey(null, null);
-    private final HashMap<ComponentKey, AppInfo> mComponentToAppMap = new HashMap<>();
-    private final List<OnUpdateListener> mUpdateListeners = new ArrayList<>();
+    private AppInfo mTempInfo = new AppInfo();
+
+    private AppInfo[] mApps = EMPTY_ARRAY;
+
+    private final List<OnUpdateListener> mUpdateListeners = new CopyOnWriteArrayList<>();
     private final ArrayList<ViewGroup> mIconContainers = new ArrayList<>();
+    private int mModelFlags;
     private final Set<FolderIcon> mFolderIcons = Collections.newSetFromMap(new WeakHashMap<>());
 
     private int mDeferUpdatesFlags = 0;
     private boolean mUpdatePending = false;
 
-    public Collection<AppInfo> getApps() {
-        return mComponentToAppMap.values();
+    public AppInfo[] getApps() {
+        return mApps;
     }
 
     /**
      * Sets the current set of apps.
      */
-    public void setApps(List<AppInfo> apps) {
-        mComponentToAppMap.clear();
-        addOrUpdateApps(apps);
+    public void setApps(AppInfo[] apps, int flags) {
+        mApps = apps;
+        mModelFlags = flags;
+        notifyUpdate();
+    }
+
+    /**
+     * @see com.android.launcher3.model.BgDataModel.Callbacks#FLAG_QUIET_MODE_ENABLED
+     * @see com.android.launcher3.model.BgDataModel.Callbacks#FLAG_HAS_SHORTCUT_PERMISSION
+     * @see com.android.launcher3.model.BgDataModel.Callbacks#FLAG_QUIET_MODE_CHANGE_PERMISSION
+     */
+    public boolean hasModelFlag(int mask) {
+        return (mModelFlags & mask) != 0;
     }
 
     public AppInfo getApp(ComponentKey key) {
-        return mComponentToAppMap.get(key);
+        mTempInfo.componentName = key.componentName;
+        mTempInfo.user = key.user;
+        int index = Arrays.binarySearch(mApps, mTempInfo, COMPONENT_KEY_COMPARATOR);
+        return index < 0 ? null : mApps[index];
     }
 
     @Nullable
@@ -105,34 +125,12 @@ public class AllAppsStore {
         return mDeferUpdatesFlags;
     }
 
-    /**
-     * Adds or updates existing apps in the list
-     */
-    public void addOrUpdateApps(List<AppInfo> apps) {
-        for (AppInfo app : apps) {
-            mComponentToAppMap.put(app.toComponentKey(), app);
-        }
-        notifyUpdate();
-    }
-
-    /**
-     * Removes some apps from the list.
-     */
-    public void removeApps(List<AppInfo> apps) {
-        for (AppInfo app : apps) {
-            mComponentToAppMap.remove(app.toComponentKey());
-        }
-        notifyUpdate();
-    }
-
-
     private void notifyUpdate() {
         if (mDeferUpdatesFlags != 0) {
             mUpdatePending = true;
             return;
         }
-        List<OnUpdateListener> listeners = new ArrayList<>(mUpdateListeners);
-        for (OnUpdateListener listener : listeners) {
+        for (OnUpdateListener listener : mUpdateListeners) {
             listener.onAppsUpdated();
         }
     }

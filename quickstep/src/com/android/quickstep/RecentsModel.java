@@ -15,28 +15,27 @@
  */
 package com.android.quickstep;
 
+import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
+
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.Executors.createAndStartNewLooper;
 import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
-import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SUPPORTS_WINDOW_CORNERS;
-import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_WINDOW_CORNER_RADIUS;
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.os.Build;
-import android.os.Bundle;
-import android.os.HandlerThread;
+import android.os.Looper;
 import android.os.Process;
-import android.os.RemoteException;
-import android.util.Log;
+import android.os.UserHandle;
 
-import com.android.launcher3.Utilities;
+import com.android.launcher3.icons.IconProvider;
 import com.android.launcher3.util.MainThreadInitializedObject;
-import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
-import com.android.systemui.shared.system.QuickStepContract;
+import com.android.systemui.shared.system.KeyguardManagerCompat;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 
 import java.util.ArrayList;
@@ -49,16 +48,12 @@ import java.util.function.Consumer;
 @TargetApi(Build.VERSION_CODES.O)
 public class RecentsModel extends TaskStackChangeListener {
 
-    private static final String TAG = "RecentsModel";
-
     // We do not need any synchronization for this variable as its only written on UI thread.
     public static final MainThreadInitializedObject<RecentsModel> INSTANCE =
-            new MainThreadInitializedObject<>(c -> new RecentsModel(c));
+            new MainThreadInitializedObject<>(RecentsModel::new);
 
-    private final List<TaskThumbnailChangeListener> mThumbnailChangeListeners = new ArrayList<>();
+    private final List<TaskVisualsChangeListener> mThumbnailChangeListeners = new ArrayList<>();
     private final Context mContext;
-
-    private ISystemUiProxy mSystemUiProxy;
 
     private final RecentTasksList mTaskList;
     private final TaskIconCache mIconCache;
@@ -66,15 +61,16 @@ public class RecentsModel extends TaskStackChangeListener {
 
     private RecentsModel(Context context) {
         mContext = context;
-        HandlerThread loaderThread = new HandlerThread("TaskThumbnailIconCache",
-                Process.THREAD_PRIORITY_BACKGROUND);
-        loaderThread.start();
-        mTaskList = new RecentTasksList(context);
-        mIconCache = new TaskIconCache(context, loaderThread.getLooper());
-        mThumbnailCache = new TaskThumbnailCache(context, loaderThread.getLooper());
-        if (Utilities.isRecentsEnabled()) {
-            ActivityManagerWrapper.getInstance().registerTaskStackListener(this);
-        }
+        Looper looper =
+                createAndStartNewLooper("TaskThumbnailIconCache", THREAD_PRIORITY_BACKGROUND);
+        mTaskList = new RecentTasksList(MAIN_EXECUTOR,
+                new KeyguardManagerCompat(context), ActivityManagerWrapper.getInstance());
+        mIconCache = new TaskIconCache(context, looper);
+        mThumbnailCache = new TaskThumbnailCache(context, looper);
+
+        ActivityManagerWrapper.getInstance().registerTaskStackListener(this);
+        IconProvider.registerIconChangeListener(context,
+                this::onPackageIconChanged, MAIN_EXECUTOR.getHandler());
     }
 
     public TaskIconCache getIconCache() {
@@ -83,14 +79,6 @@ public class RecentsModel extends TaskStackChangeListener {
 
     public TaskThumbnailCache getThumbnailCache() {
         return mThumbnailCache;
-    }
-
-    public void startStabilizationSession() {
-        mTaskList.startStabilizationSession();
-    }
-
-    public void endStabilizationSession() {
-        mTaskList.endStabilizationSession();
     }
 
     /**
@@ -102,15 +90,6 @@ public class RecentsModel extends TaskStackChangeListener {
      */
     public int getTasks(Consumer<ArrayList<Task>> callback) {
         return mTaskList.getTasks(false /* loadKeysOnly */, callback);
-    }
-
-    /**
-     * @return The task id of the running task, or -1 if there is no current running task.
-     */
-    public static int getRunningTaskId() {
-        ActivityManager.RunningTaskInfo runningTask =
-                ActivityManagerWrapper.getInstance().getRunningTask();
-        return runningTask != null ? runningTask.id : -1;
     }
 
     /**
@@ -152,7 +131,9 @@ public class RecentsModel extends TaskStackChangeListener {
         }
 
         // Keep the cache up to date with the latest thumbnails
-        int runningTaskId = RecentsModel.getRunningTaskId();
+        ActivityManager.RunningTaskInfo runningTask =
+                ActivityManagerWrapper.getInstance().getRunningTask();
+        int runningTaskId = runningTask != null ? runningTask.id : -1;
         mTaskList.getTaskKeys(mThumbnailCache.getCacheSize(), tasks -> {
             for (Task task : tasks) {
                 if (task.key.id == runningTaskId) {
@@ -181,14 +162,7 @@ public class RecentsModel extends TaskStackChangeListener {
     public void onTaskRemoved(int taskId) {
         Task.TaskKey dummyKey = new Task.TaskKey(taskId, 0, null, null, 0, 0);
         mThumbnailCache.remove(dummyKey);
-    }
-
-    public void setSystemUiProxy(ISystemUiProxy systemUiProxy) {
-        mSystemUiProxy = systemUiProxy;
-    }
-
-    public ISystemUiProxy getSystemUiProxy() {
-        return mSystemUiProxy;
+        mIconCache.onTaskRemoved(dummyKey);
     }
 
     public void onTrimMemory(int level) {
@@ -202,29 +176,40 @@ public class RecentsModel extends TaskStackChangeListener {
         }
     }
 
-    public void onOverviewShown(boolean fromHome, String tag) {
-        if (mSystemUiProxy == null) {
-            return;
-        }
-        try {
-            mSystemUiProxy.onOverviewShown(fromHome);
-        } catch (RemoteException e) {
-            Log.w(tag,
-                    "Failed to notify SysUI of overview shown from " + (fromHome ? "home" : "app")
-                            + ": ", e);
+    private void onPackageIconChanged(String pkg, UserHandle user) {
+        mIconCache.invalidateCacheEntries(pkg, user);
+        for (int i = mThumbnailChangeListeners.size() - 1; i >= 0; i--) {
+            mThumbnailChangeListeners.get(i).onTaskIconChanged(pkg, user);
         }
     }
 
-    public void addThumbnailChangeListener(TaskThumbnailChangeListener listener) {
+    /**
+     * Adds a listener for visuals changes
+     */
+    public void addThumbnailChangeListener(TaskVisualsChangeListener listener) {
         mThumbnailChangeListeners.add(listener);
     }
 
-    public void removeThumbnailChangeListener(TaskThumbnailChangeListener listener) {
+    /**
+     * Removes a previously added listener
+     */
+    public void removeThumbnailChangeListener(TaskVisualsChangeListener listener) {
         mThumbnailChangeListeners.remove(listener);
     }
 
-    public interface TaskThumbnailChangeListener {
+    /**
+     * Listener for receiving various task properties changes
+     */
+    public interface TaskVisualsChangeListener {
 
+        /**
+         * Called whn the task thumbnail changes
+         */
         Task onTaskThumbnailChanged(int taskId, ThumbnailData thumbnailData);
+
+        /**
+         * Called when the icon for a task changes
+         */
+        void onTaskIconChanged(String pkg, UserHandle user);
     }
 }

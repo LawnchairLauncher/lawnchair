@@ -16,24 +16,27 @@
 package com.android.launcher3.model;
 
 import android.content.Intent;
+import android.content.pm.LauncherActivityInfo;
+import android.content.pm.LauncherApps;
+import android.content.pm.PackageInstaller.SessionInfo;
 import android.os.UserHandle;
 import android.util.LongSparseArray;
 import android.util.Pair;
 
-import com.android.launcher3.AllAppsList;
-import com.android.launcher3.AppInfo;
-import com.android.launcher3.FolderInfo;
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherModel.CallbackTask;
-import com.android.launcher3.LauncherModel.Callbacks;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.WorkspaceItemInfo;
-import com.android.launcher3.Utilities;
+import com.android.launcher3.model.BgDataModel.Callbacks;
+import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.FolderInfo;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.LauncherAppWidgetInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.IntArray;
+import com.android.launcher3.util.PackageManagerHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +76,11 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                     if (shortcutExists(dataModel, item.getIntent(), item.user)) {
                         continue;
                     }
+
+                    // b/139663018 Short-circuit this logic if the icon is a system app
+                    if (PackageManagerHelper.isSystemApp(app.getContext(), item.getIntent())) {
+                        continue;
+                    }
                 }
 
                 if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
@@ -84,6 +92,10 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                     filteredItems.add(item);
                 }
             }
+
+            InstallSessionHelper packageInstaller =
+                    InstallSessionHelper.INSTANCE.get(app.getContext());
+            LauncherApps launcherApps = app.getContext().getSystemService(LauncherApps.class);
 
             for (ItemInfo item : filteredItems) {
                 // Find appropriate space for the item.
@@ -99,6 +111,50 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                     itemInfo = ((AppInfo) item).makeWorkspaceItem();
                 } else {
                     throw new RuntimeException("Unexpected info type");
+                }
+
+                if (item instanceof WorkspaceItemInfo && ((WorkspaceItemInfo) item).isPromise()) {
+                    WorkspaceItemInfo workspaceInfo = (WorkspaceItemInfo) item;
+                    String packageName = item.getTargetComponent() != null
+                            ? item.getTargetComponent().getPackageName() : null;
+                    if (packageName == null) {
+                        continue;
+                    }
+                    SessionInfo sessionInfo = packageInstaller.getActiveSessionInfo(item.user,
+                            packageName);
+                    List<LauncherActivityInfo> activities = launcherApps
+                            .getActivityList(packageName, item.user);
+                    boolean hasActivity = activities != null && !activities.isEmpty();
+
+                    if (sessionInfo == null) {
+                        if (!hasActivity) {
+                            // Session was cancelled, do not add.
+                            continue;
+                        }
+                    } else {
+                        workspaceInfo.setInstallProgress((int) sessionInfo.getProgress());
+                    }
+
+                    if (hasActivity) {
+                        // App was installed while launcher was in the background,
+                        // or app was already installed for another user.
+                        itemInfo = new AppInfo(app.getContext(), activities.get(0), item.user)
+                                .makeWorkspaceItem();
+
+                        if (shortcutExists(dataModel, itemInfo.getIntent(), itemInfo.user)) {
+                            // We need this additional check here since we treat all auto added
+                            // workspace items as promise icons. At this point we now have the
+                            // correct intent to compare against existing workspace icons.
+                            // Icon already exists on the workspace and should not be auto-added.
+                            continue;
+                        }
+
+                        WorkspaceItemInfo wii = (WorkspaceItemInfo) itemInfo;
+                        wii.title = "";
+                        wii.bitmap = app.getIconCache().getDefaultIcon(item.user);
+                        app.getIconCache().getTitleAndIcon(wii,
+                                ((WorkspaceItemInfo) itemInfo).usingLowResIcon());
+                    }
                 }
 
                 // Add the shortcut to the db
@@ -162,7 +218,7 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
             intentWithoutPkg = intent.toUri(0);
         }
 
-        boolean isLauncherAppTarget = Utilities.isLauncherAppTarget(intent);
+        boolean isLauncherAppTarget = PackageManagerHelper.isLauncherAppTarget(intent);
         synchronized (dataModel) {
             for (ItemInfo item : dataModel.itemsIdMap) {
                 if (item instanceof WorkspaceItemInfo) {

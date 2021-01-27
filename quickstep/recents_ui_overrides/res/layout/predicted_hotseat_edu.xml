@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2020 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<com.android.launcher3.hybridhotseat.HotseatEduDialog xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_gravity="bottom"
+    android:layout_height="wrap_content"
+    android:gravity="bottom"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:backgroundTint="?attr/eduHalfSheetBGColor"
+        android:background="@drawable/bottom_sheet_top_border" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/eduHalfSheetBGColor"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/TextHeadline"
+            android:id="@+id/hotseat_edu_heading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:paddingLeft="@dimen/bottom_sheet_edu_padding"
+            android:paddingRight="@dimen/bottom_sheet_edu_padding"
+            android:text="@string/hotseat_edu_title_migrate"
+            android:textAlignment="center"
+            android:textColor="@android:color/white"
+            android:textSize="20sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:id="@+id/hotseat_edu_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:layout_marginBottom="18dp"
+            android:fontFamily="roboto-medium"
+            android:paddingLeft="@dimen/bottom_sheet_edu_padding"
+            android:paddingRight="@dimen/bottom_sheet_edu_padding"
+            android:text="@string/hotseat_edu_message_migrate"
+            android:textAlignment="center"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/hotseat_wrapper"
+            android:orientation="vertical">
+
+            <com.android.launcher3.CellLayout
+                android:id="@+id/sample_prediction"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                launcher:containerType="hotseat" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/bottom_sheet_edu_padding"
+                android:paddingTop="8dp"
+                android:paddingRight="@dimen/bottom_sheet_edu_padding">
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight=".4">
+                    <Button
+                        android:id="@+id/no_thanks"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:text="@string/hotseat_edu_dismiss"
+                        android:layout_gravity="start|center_vertical"
+                        android:textColor="@android:color/white"/>
+                </FrameLayout>
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight=".6">
+                    <Button
+                        android:id="@+id/turn_predictions_on"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:layout_gravity="end|center_vertical"
+                        android:text="@string/hotseat_edu_accept"
+                        android:textColor="@android:color/white"/>
+                </FrameLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</com.android.launcher3.hybridhotseat.HotseatEduDialog>

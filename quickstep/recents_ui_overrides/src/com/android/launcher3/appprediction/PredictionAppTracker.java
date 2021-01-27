@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2019 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,11 +16,17 @@
 package com.android.launcher3.appprediction;
 
 import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_GRID;
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import android.annotation.TargetApi;
+import android.app.prediction.AppPredictionContext;
+import android.app.prediction.AppPredictionManager;
+import android.app.prediction.AppPredictor;
+import android.app.prediction.AppTarget;
+import android.app.prediction.AppTargetEvent;
+import android.app.prediction.AppTargetId;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,28 +35,25 @@ import android.os.UserHandle;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
-import ch.deletescape.lawnchair.LawnchairPreferences;
-import ch.deletescape.lawnchair.LawnchairPreferences.OnPreferenceChangeListener;
-import ch.deletescape.lawnchair.predictions.AppPredictorCompat;
-import ch.deletescape.lawnchair.predictions.AppTargetCompat;
-import ch.deletescape.lawnchair.predictions.AppTargetEventCompat;
-import ch.deletescape.lawnchair.predictions.AppTargetIdCompat;
-import ch.deletescape.lawnchair.predictions.LawnchairPredictionManager;
-import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.Utilities;
-import com.android.launcher3.appprediction.PredictionUiStateManager.Client;
-import com.android.launcher3.model.AppLaunchTracker;
-import com.android.launcher3.util.UiThreadHelper;
-
 import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
-import org.jetbrains.annotations.NotNull;
+
+import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.appprediction.PredictionUiStateManager.Client;
+import com.android.launcher3.model.AppLaunchTracker;
+import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
+import com.android.systemui.plugins.AppLaunchEventsPlugin;
+import com.android.systemui.plugins.PluginListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Subclass of app tracker which publishes the data to the prediction engine and gets back results.
  */
 @TargetApi(Build.VERSION_CODES.Q)
-public class PredictionAppTracker extends AppLaunchTracker implements OnPreferenceChangeListener {
+public class PredictionAppTracker extends AppLaunchTracker
+        implements PluginListener<AppLaunchEventsPlugin> {
 
     private static final String TAG = "PredictionAppTracker";
     private static final boolean DBG = false;
@@ -62,25 +65,22 @@ public class PredictionAppTracker extends AppLaunchTracker implements OnPreferen
 
     protected final Context mContext;
     private final Handler mMessageHandler;
+    private final List<AppLaunchEventsPlugin> mAppLaunchEventsPluginsList;
 
     // Accessed only on worker thread
-    private AppPredictorCompat mHomeAppPredictor;
-    private AppPredictorCompat mRecentsOverviewPredictor;
+    private AppPredictor mHomeAppPredictor;
+    private AppPredictor mRecentsOverviewPredictor;
 
     public PredictionAppTracker(Context context) {
         mContext = context;
-        mMessageHandler = new Handler(UiThreadHelper.getBackgroundLooper(), this::handleMessage);
+        mMessageHandler = new Handler(UI_HELPER_EXECUTOR.getLooper(), this::handleMessage);
         InvariantDeviceProfile.INSTANCE.get(mContext).addOnChangeListener(this::onIdpChanged);
-        Utilities.getLawnchairPrefs(mContext).addOnPreferenceChangeListener("pref_show_predictions", this);
 
         mMessageHandler.sendEmptyMessage(MSG_INIT);
-    }
 
-    @Override
-    public void onValueChanged(@NotNull String key, @NotNull LawnchairPreferences prefs,
-            boolean force) {
-        if (force) return;
-        mMessageHandler.sendEmptyMessage(MSG_INIT);
+        mAppLaunchEventsPluginsList = new ArrayList<>();
+        PluginManagerWrapper.INSTANCE.get(context)
+                .addPluginListener(this, AppLaunchEventsPlugin.class, true);
     }
 
     @UiThread
@@ -104,9 +104,23 @@ public class PredictionAppTracker extends AppLaunchTracker implements OnPreferen
     }
 
     @WorkerThread
-    private AppPredictorCompat createPredictor(Client client, int count) {
-        return LawnchairPredictionManager.Companion.getInstance(mContext)
-                .createPredictor(client, count, getAppPredictionContextExtras(client));
+    private AppPredictor createPredictor(Client client, int count) {
+        AppPredictionManager apm = mContext.getSystemService(AppPredictionManager.class);
+
+        if (apm == null) {
+            return null;
+        }
+
+        AppPredictor predictor = apm.createAppPredictionSession(
+                new AppPredictionContext.Builder(mContext)
+                        .setUiSurface(client.id)
+                        .setPredictedTargetCount(count)
+                        .setExtras(getAppPredictionContextExtras(client))
+                        .build());
+        predictor.registerPredictionUpdates(mContext.getMainExecutor(),
+                PredictionUiStateManager.INSTANCE.get(mContext).appPredictorCallback(client));
+        predictor.requestPredictionUpdate();
+        return predictor;
     }
 
     /**
@@ -114,7 +128,7 @@ public class PredictionAppTracker extends AppLaunchTracker implements OnPreferen
      */
     @WorkerThread
     @Nullable
-    public Bundle getAppPredictionContextExtras(Client client){
+    public Bundle getAppPredictionContextExtras(Client client) {
         return null;
     }
 
@@ -126,7 +140,7 @@ public class PredictionAppTracker extends AppLaunchTracker implements OnPreferen
                 destroy();
 
                 // Initialize the clients
-                int count = InvariantDeviceProfile.INSTANCE.get(mContext).numColumns;
+                int count = InvariantDeviceProfile.INSTANCE.get(mContext).numAllAppsColumns;
                 mHomeAppPredictor = createPredictor(Client.HOME, count);
                 mRecentsOverviewPredictor = createPredictor(Client.OVERVIEW, count);
                 return true;
@@ -137,7 +151,7 @@ public class PredictionAppTracker extends AppLaunchTracker implements OnPreferen
             }
             case MSG_LAUNCH: {
                 if (mHomeAppPredictor != null) {
-                    mHomeAppPredictor.notifyAppTargetEvent((AppTargetEventCompat) msg.obj);
+                    mHomeAppPredictor.notifyAppTargetEvent((AppTargetEvent) msg.obj);
                 }
                 return true;
             }
@@ -165,37 +179,98 @@ public class PredictionAppTracker extends AppLaunchTracker implements OnPreferen
         if (DBG) {
             Log.d(TAG, String.format("Sent immediate message to update %s", client));
         }
+
+        // Relay onReturnedToHome to every plugin.
+        mAppLaunchEventsPluginsList.forEach(AppLaunchEventsPlugin::onReturnedToHome);
     }
 
     @Override
     @UiThread
     public void onStartShortcut(String packageName, String shortcutId, UserHandle user,
-            String container) {
+                                String container) {
         // TODO: Use the full shortcut info
-        AppTargetCompat target = new AppTargetCompat
-                .Builder(new AppTargetIdCompat("shortcut:" + shortcutId), packageName, user)
-                    .setClassName(shortcutId)
-                    .build();
+        AppTarget target = new AppTarget.Builder(
+                new AppTargetId("shortcut:" + shortcutId), packageName, user)
+                .setClassName(shortcutId)
+                .build();
+
         sendLaunch(target, container);
+
+        // Relay onStartShortcut info to every connected plugin.
+        mAppLaunchEventsPluginsList
+                .forEach(plugin -> plugin.onStartShortcut(
+                        packageName,
+                        shortcutId,
+                        user,
+                        container != null ? container : CONTAINER_DEFAULT)
+        );
+
     }
 
     @Override
     @UiThread
     public void onStartApp(ComponentName cn, UserHandle user, String container) {
         if (cn != null) {
-            AppTargetCompat target = new AppTargetCompat
-                    .Builder(new AppTargetIdCompat("app:" + cn), cn.getPackageName(), user)
-                        .setClassName(cn.getClassName())
-                        .build();
+            AppTarget target = new AppTarget.Builder(
+                    new AppTargetId("app:" + cn), cn.getPackageName(), user)
+                    .setClassName(cn.getClassName())
+                    .build();
             sendLaunch(target, container);
+
+            // Relay onStartApp to every connected plugin.
+            mAppLaunchEventsPluginsList
+                    .forEach(plugin -> plugin.onStartApp(
+                            cn,
+                            user,
+                            container != null ? container : CONTAINER_DEFAULT)
+            );
         }
     }
 
+    @Override
     @UiThread
-    private void sendLaunch(AppTargetCompat target, String container) {
-        AppTargetEventCompat event = new AppTargetEventCompat.Builder(target, AppTargetEventCompat.ACTION_LAUNCH)
+    public void onDismissApp(ComponentName cn, UserHandle user, String container) {
+        if (cn == null) return;
+        AppTarget target = new AppTarget.Builder(
+                new AppTargetId("app: " + cn), cn.getPackageName(), user)
+                .setClassName(cn.getClassName())
+                .build();
+        sendDismiss(target, container);
+
+        // Relay onDismissApp to every connected plugin.
+        mAppLaunchEventsPluginsList
+                .forEach(plugin -> plugin.onDismissApp(
+                        cn,
+                        user,
+                        container != null ? container : CONTAINER_DEFAULT)
+        );
+    }
+
+    @UiThread
+    private void sendEvent(AppTarget target, String container, int eventId) {
+        AppTargetEvent event = new AppTargetEvent.Builder(target, eventId)
                 .setLaunchLocation(container == null ? CONTAINER_DEFAULT : container)
                 .build();
         Message.obtain(mMessageHandler, MSG_LAUNCH, event).sendToTarget();
+    }
+
+    @UiThread
+    private void sendLaunch(AppTarget target, String container) {
+        sendEvent(target, container, AppTargetEvent.ACTION_LAUNCH);
+    }
+
+    @UiThread
+    private void sendDismiss(AppTarget target, String container) {
+        sendEvent(target, container, AppTargetEvent.ACTION_DISMISS);
+    }
+
+    @Override
+    public void onPluginConnected(AppLaunchEventsPlugin appLaunchEventsPlugin, Context context) {
+        mAppLaunchEventsPluginsList.add(appLaunchEventsPlugin);
+    }
+
+    @Override
+    public void onPluginDisconnected(AppLaunchEventsPlugin appLaunchEventsPlugin) {
+        mAppLaunchEventsPluginsList.remove(appLaunchEventsPlugin);
     }
 }

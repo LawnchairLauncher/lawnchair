@@ -16,6 +16,8 @@
 
 package com.android.launcher3.notification;
 
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_NOTIFICATION_LAUNCH_TAP;
+
 import android.app.ActivityOptions;
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -34,6 +36,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.graphics.IconPalette;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.PackageUserKey;
 
 /**
@@ -53,6 +56,7 @@ public class NotificationInfo implements View.OnClickListener {
     public final boolean autoCancel;
     public final boolean dismissable;
 
+    private final ItemInfo mItemInfo;
     private Drawable mIconDrawable;
     private int mIconColor;
     private boolean mIsIconLarge;
@@ -60,7 +64,8 @@ public class NotificationInfo implements View.OnClickListener {
     /**
      * Extracts the data that we need from the StatusBarNotification.
      */
-    public NotificationInfo(Context context, StatusBarNotification statusBarNotification) {
+    public NotificationInfo(Context context, StatusBarNotification statusBarNotification,
+            ItemInfo itemInfo) {
         packageUserKey = PackageUserKey.fromNotification(statusBarNotification);
         notificationKey = statusBarNotification.getKey();
         Notification notification = statusBarNotification.getNotification();
@@ -90,6 +95,7 @@ public class NotificationInfo implements View.OnClickListener {
         intent = notification.contentIntent;
         autoCancel = (notification.flags & Notification.FLAG_AUTO_CANCEL) != 0;
         dismissable = (notification.flags & Notification.FLAG_ONGOING_EVENT) == 0;
+        this.mItemInfo = itemInfo;
     }
 
     @Override
@@ -103,6 +109,8 @@ public class NotificationInfo implements View.OnClickListener {
                     view, 0, 0, view.getWidth(), view.getHeight()).toBundle();
             intent.send(null, 0, null, null, null, null, activityOptions);
             launcher.getUserEventDispatcher().logNotificationLaunch(view, intent);
+            launcher.getStatsLogManager().logger().withItemInfo(mItemInfo)
+                    .log(LAUNCHER_NOTIFICATION_LAUNCH_TAP);
         } catch (PendingIntent.CanceledException e) {
             e.printStackTrace();
         }

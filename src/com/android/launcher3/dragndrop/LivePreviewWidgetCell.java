@@ -2,7 +2,6 @@ package com.android.launcher3.dragndrop;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -11,6 +10,7 @@ import android.widget.RemoteViews;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
+import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.widget.WidgetCell;
 
 /**
@@ -88,11 +88,9 @@ public class LivePreviewWidgetCell extends WidgetCell {
             bitmapHeight = viewHeight;
         }
 
-        Bitmap preview = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(preview);
-        c.scale(scale, scale);
-        v.draw(c);
-        c.setBitmap(null);
-        return preview;
+        return BitmapRenderer.createSoftwareBitmap(bitmapWidth, bitmapHeight, c -> {
+            c.scale(scale, scale);
+            v.draw(c);
+        });
     }
 }

@@ -15,8 +15,6 @@
  */
 package com.android.launcher3.widget;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-
 import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
 
@@ -30,11 +28,13 @@ import android.widget.Toast;
 
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget.DragObject;
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dragndrop.DragOptions;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.popup.PopupDataProvider;
+import com.android.launcher3.testing.TestLogging;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -42,7 +42,8 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.AbstractSlideInView;
-import com.android.launcher3.views.BaseDragLayer;
+
+import java.util.ArrayList;
 
 /**
  * Base class for various widgets popup
@@ -55,11 +56,14 @@ abstract class BaseWidgetSheet extends AbstractSlideInView
     /* Touch handling related member variables. */
     private Toast mWidgetInstructionToast;
 
-    protected final View mColorScrim;
-
     public BaseWidgetSheet(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mColorScrim = createColorScrim(context);
+    }
+
+    protected int getScrimColor(Context context) {
+        WallpaperColorInfo colors = WallpaperColorInfo.INSTANCE.get(context);
+        int alpha = context.getResources().getInteger(R.integer.extracted_color_gradient_alpha);
+        return setColorAlphaBound(colors.getSecondaryColor(), alpha);
     }
 
     @Override
@@ -90,22 +94,14 @@ abstract class BaseWidgetSheet extends AbstractSlideInView
 
     @Override
     public boolean onLongClick(View v) {
+        TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "Widgets.onLongClick");
+        v.cancelLongPress();
         if (!ItemLongClickListener.canStartDrag(mLauncher)) return false;
 
         if (v instanceof WidgetCell) {
             return beginDraggingWidget((WidgetCell) v);
         }
         return true;
-    }
-
-    protected void attachToContainer() {
-        getPopupContainer().addView(mColorScrim);
-        getPopupContainer().addView(this);
-    }
-
-    protected void setTranslationShift(float translationShift) {
-        super.setTranslationShift(translationShift);
-        mColorScrim.setAlpha(1 - mTranslationShift);
     }
 
     private boolean beginDraggingWidget(WidgetCell v) {
@@ -138,7 +134,6 @@ abstract class BaseWidgetSheet extends AbstractSlideInView
 
     protected void onCloseComplete() {
         super.onCloseComplete();
-        getPopupContainer().removeView(mColorScrim);
         clearNavBarColor();
     }
 
@@ -155,9 +150,11 @@ abstract class BaseWidgetSheet extends AbstractSlideInView
     }
 
     @Override
-    public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
-        targetParent.containerType = ContainerType.WIDGETS;
-        targetParent.cardinality = getElementsRowCount();
+    public void fillInLogContainerData(ItemInfo childInfo, Target child,
+            ArrayList<Target> parents) {
+        Target target = newContainerTarget(ContainerType.WIDGETS);
+        target.cardinality = getElementsRowCount();
+        parents.add(target);
     }
 
     @Override
@@ -176,20 +173,5 @@ abstract class BaseWidgetSheet extends AbstractSlideInView
 
     protected SystemUiController getSystemUiController() {
         return mLauncher.getSystemUiController();
-    }
-
-    private static View createColorScrim(Context context) {
-        View view = new View(context);
-        view.forceHasOverlappingRendering(false);
-
-        WallpaperColorInfo colors = WallpaperColorInfo.getInstance(context);
-        int alpha = context.getResources().getInteger(R.integer.extracted_color_gradient_alpha);
-        view.setBackgroundColor(setColorAlphaBound(colors.getSecondaryColor(), alpha));
-
-        BaseDragLayer.LayoutParams lp = new BaseDragLayer.LayoutParams(MATCH_PARENT, MATCH_PARENT);
-        lp.ignoreInsets = true;
-        view.setLayoutParams(lp);
-
-        return view;
     }
 }

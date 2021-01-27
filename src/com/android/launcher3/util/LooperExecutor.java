@@ -16,7 +16,9 @@
 package com.android.launcher3.util;
 
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Looper;
+import android.os.Process;
 
 import java.util.List;
 import java.util.concurrent.AbstractExecutorService;
@@ -39,11 +41,18 @@ public class LooperExecutor extends AbstractExecutorService {
 
     @Override
     public void execute(Runnable runnable) {
-        if (mHandler.getLooper() == Looper.myLooper()) {
+        if (getHandler().getLooper() == Looper.myLooper()) {
             runnable.run();
         } else {
-            mHandler.post(runnable);
+            getHandler().post(runnable);
         }
+    }
+
+    /**
+     * Same as execute, but never runs the action inline.
+     */
+    public void post(Runnable runnable) {
+        getHandler().post(runnable);
     }
 
     /**
@@ -79,7 +88,31 @@ public class LooperExecutor extends AbstractExecutorService {
      */
     @Override
     @Deprecated
-    public boolean awaitTermination(long l, TimeUnit timeUnit) throws InterruptedException {
+    public boolean awaitTermination(long l, TimeUnit timeUnit) {
         throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Returns the thread for this executor
+     */
+    public Thread getThread() {
+        return getHandler().getLooper().getThread();
+    }
+
+    /**
+     * Returns the looper for this executor
+     */
+    public Looper getLooper() {
+        return getHandler().getLooper();
+    }
+
+    /**
+     * Set the priority of a thread, based on Linux priorities.
+     * @param priority Linux priority level, from -20 for highest scheduling priority
+     *                to 19 for lowest scheduling priority.
+     * @see Process#setThreadPriority(int, int)
+     */
+    public void setThreadPriority(int priority) {
+        Process.setThreadPriority(((HandlerThread) getThread()).getThreadId(), priority);
     }
 }

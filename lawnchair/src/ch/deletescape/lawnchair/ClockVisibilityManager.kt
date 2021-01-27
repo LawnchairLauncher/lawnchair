@@ -29,7 +29,8 @@ import com.android.launcher3.*
 import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET
 import com.android.launcher3.LauncherState.NORMAL
 import com.android.launcher3.LauncherState.SPRING_LOADED
-import com.android.launcher3.anim.AnimatorSetBuilder
+import com.android.launcher3.model.data.LauncherAppWidgetInfo
+import com.android.launcher3.statemanager.StateManager
 
 class ClockVisibilityManager(private val context: Context) {
 
@@ -122,7 +123,7 @@ class ClockVisibilityManager(private val context: Context) {
         }
     }
 
-    class ClockStateHandler(private val launcher: Launcher) : LauncherStateManager.StateHandler {
+    class ClockStateHandler(private val launcher: Launcher) : StateManager.StateHandler {
 
         private val manager = getInstance(launcher)
 
@@ -131,7 +132,7 @@ class ClockVisibilityManager(private val context: Context) {
         }
 
         override fun setStateWithAnimation(toState: LauncherState, builder: AnimatorSetBuilder,
-                                           config: LauncherStateManager.AnimationConfig) {
+                                           config: StateManager.AnimationConfig) {
             if (!config.playNonAtomicComponent()) return
 
             val fromState = launcher.stateManager.state

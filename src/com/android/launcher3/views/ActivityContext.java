@@ -21,9 +21,8 @@ import android.view.ContextThemeWrapper;
 import android.view.View.AccessibilityDelegate;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.ItemInfo;
-import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.dot.DotInfo;
+import com.android.launcher3.model.data.ItemInfo;
 
 /**
  * An interface to be used along with a context for various activities in Launcher. This allows a
@@ -56,19 +55,6 @@ public interface ActivityContext {
     BaseDragLayer getDragLayer();
 
     DeviceProfile getDeviceProfile();
-
-    /**
-     * Device profile to be used by UI elements which are shown directly on top of the wallpaper
-     * and whose presentation is tied to the wallpaper (and physical device) and not the activity
-     * configuration.
-     */
-    default DeviceProfile getWallpaperDeviceProfile() {
-        return getDeviceProfile();
-    }
-
-    default RotationMode getRotationMode() {
-        return RotationMode.NORMAL;
-    }
 
     static ActivityContext lookupContext(Context context) {
         if (context instanceof ActivityContext) {

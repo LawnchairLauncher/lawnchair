@@ -3,30 +3,35 @@ package com.android.launcher3.model;
 
 import static android.appwidget.AppWidgetProviderInfo.WIDGET_FEATURE_HIDE_FROM_PICKER;
 
+import static com.android.launcher3.pm.ShortcutConfigActivityInfo.queryList;
+
 import android.appwidget.AppWidgetProviderInfo;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Process;
 import android.os.UserHandle;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.AppFilter;
-import com.android.launcher3.icons.ComponentWithLabel;
-import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
-import com.android.launcher3.compat.AppWidgetManagerCompat;
-import com.android.launcher3.compat.LauncherAppsCompat;
-import com.android.launcher3.compat.ShortcutConfigActivityInfo;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.icons.ComponentWithLabelAndIcon;
+import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.model.data.PackageItemInfo;
+import com.android.launcher3.pm.ShortcutConfigActivityInfo;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.widget.WidgetItemComparator;
 import com.android.launcher3.widget.WidgetListRowEntry;
+import com.android.launcher3.widget.WidgetManagerHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,14 +42,15 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import androidx.annotation.Nullable;
-
 /**
  * Widgets data model that is used by the adapters of the widget views and controllers.
  *
  * <p> The widgets and shortcuts are organized using package name as its index.
  */
 public class WidgetsModel {
+
+    // True is the widget support is disabled.
+    public static final boolean GO_DISABLE_WIDGETS = false;
 
     private static final String TAG = "WidgetsModel";
     private static final boolean DEBUG = false;
@@ -81,18 +87,19 @@ public class WidgetsModel {
      * @param packageUser If null, all widgets and shortcuts are updated and returned, otherwise
      *                    only widgets and shortcuts associated with the package/user are.
      */
-    public List<ComponentWithLabel> update(LauncherAppState app, @Nullable PackageUserKey packageUser) {
+    public List<ComponentWithLabelAndIcon> update(
+            LauncherAppState app, @Nullable PackageUserKey packageUser) {
         Preconditions.assertWorkerThread();
 
         Context context = app.getContext();
         final ArrayList<WidgetItem> widgetsAndShortcuts = new ArrayList<>();
-        List<ComponentWithLabel> updatedItems = new ArrayList<>();
+        List<ComponentWithLabelAndIcon> updatedItems = new ArrayList<>();
         try {
             InvariantDeviceProfile idp = app.getInvariantDeviceProfile();
             PackageManager pm = app.getContext().getPackageManager();
 
             // Widgets
-            AppWidgetManagerCompat widgetManager = AppWidgetManagerCompat.getInstance(context);
+            WidgetManagerHelper widgetManager = new WidgetManagerHelper(context);
             for (AppWidgetProviderInfo widgetInfo : widgetManager.getAllProviders(packageUser)) {
                 LauncherAppWidgetProviderInfo launcherWidgetInfo =
                         LauncherAppWidgetProviderInfo.fromProviderInfo(context, widgetInfo);
@@ -103,14 +110,14 @@ public class WidgetsModel {
             }
 
             // Shortcuts
-            for (ShortcutConfigActivityInfo info : LauncherAppsCompat.getInstance(context)
-                    .getCustomShortcutActivityList(packageUser)) {
+            for (ShortcutConfigActivityInfo info :
+                    queryList(context, packageUser)) {
                 widgetsAndShortcuts.add(new WidgetItem(info, app.getIconCache(), pm));
                 updatedItems.add(info);
             }
             setWidgetsAndShortcuts(widgetsAndShortcuts, app, packageUser);
         } catch (Exception e) {
-            if (!FeatureFlags.IS_DOGFOOD_BUILD && Utilities.isBinderSizeError(e)) {
+            if (!FeatureFlags.IS_STUDIO_BUILD && Utilities.isBinderSizeError(e)) {
                 // the returned value may be incomplete and will not be refreshed until the next
                 // time Launcher starts.
                 // TODO: after figuring out a repro step, introduce a dirty bit to check when
@@ -237,5 +244,21 @@ public class WidgetsModel {
                 }
             }
         }
+    }
+
+    public WidgetItem getWidgetProviderInfoByProviderName(
+            ComponentName providerName) {
+        ArrayList<WidgetItem> widgetsList = mWidgetsList.get(
+                new PackageItemInfo(providerName.getPackageName()));
+        if (widgetsList == null) {
+            return null;
+        }
+
+        for (WidgetItem item : widgetsList) {
+            if (item.componentName.equals(providerName)) {
+                return item;
+            }
+        }
+        return null;
     }
 }

@@ -16,6 +16,9 @@
 package com.android.launcher3.views;
 
 import static com.android.launcher3.Utilities.EXTRA_WALLPAPER_OFFSET;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.IGNORE;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SETTINGS_BUTTON_TAP_OR_LONGPRESS;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGETSTRAY_BUTTON_TAP_OR_LONGPRESS;
 
 import android.content.Context;
 import android.content.Intent;
@@ -28,17 +31,24 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
+
+import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherSettings;
 import ch.deletescape.lawnchair.util.WallpaperActivityInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.logging.StatsLogManager.EventEnum;
+import com.android.launcher3.model.WidgetsModel;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.ArrowPopup;
 import com.android.launcher3.shortcuts.DeepShortcutView;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
+import com.android.launcher3.testing.TestLogging;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.widget.WidgetsFullSheet;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,31 +72,27 @@ public class OptionsPopupView extends ArrowPopup
 
     @Override
     public void onClick(View view) {
-        handleViewClick(view, Action.Touch.TAP);
+        handleViewClick(view);
     }
 
     @Override
     public boolean onLongClick(View view) {
-        return handleViewClick(view, Action.Touch.LONGPRESS);
+        return handleViewClick(view);
     }
 
-    private boolean handleViewClick(View view, int action) {
+    private boolean handleViewClick(View view) {
         OptionItem item = mItemMap.get(view);
         if (item == null) {
             return false;
         }
-        if (item.mControlTypeForLog > 0) {
-            logTap(action, item.mControlTypeForLog);
+        if (item.mEventId.getId() > 0) {
+            mLauncher.getStatsLogManager().logger().log(item.mEventId);
         }
         if (item.mClickListener.onLongClick(view)) {
             close(true);
             return true;
         }
         return false;
-    }
-
-    private void logTap(int action, int controlType) {
-        mLauncher.getUserEventDispatcher().logActionOnControl(action, controlType);
     }
 
     @Override
@@ -122,7 +128,8 @@ public class OptionsPopupView extends ArrowPopup
         popup.mTargetRect = targetRect;
 
         for (OptionItem item : items) {
-            DeepShortcutView view = popup.inflateAndAdd(R.layout.system_shortcut, popup);
+            DeepShortcutView view =
+                    (DeepShortcutView) popup.inflateAndAdd(R.layout.system_shortcut, popup);
             view.getIconView().setBackgroundResource(item.mIconRes);
             view.getBubbleText().setText(item.mLabelRes);
             view.setDividerVisibility(View.INVISIBLE);
@@ -164,34 +171,39 @@ public class OptionsPopupView extends ArrowPopup
         int resDrawable = isStylesWallpapers ?
                 R.drawable.ic_palette : R.drawable.ic_wallpaper;
         options.add(new OptionItem(resString, resDrawable,
-                ControlType.WALLPAPER_BUTTON, OptionsPopupView::startWallpaperPicker));
+                IGNORE,
+                OptionsPopupView::startWallpaperPicker));
         options.add(new OptionItem(R.string.button_organize_screens, R.drawable.ic_pages, -1,
                 OptionsPopupView::startOrganizer));
-        if (!FeatureFlags.GO_DISABLE_WIDGETS && !Utilities.getLawnchairPrefs(launcher).getLockDesktop()) {
+        if (!WidgetsModel.GO_DISABLE_WIDGETS && !Utilities.getLawnchairPrefs(launcher).getLockDesktop()) {
             options.add(new OptionItem(R.string.widget_button_text, R.drawable.ic_widget,
-                    ControlType.WIDGETS_BUTTON, OptionsPopupView::onWidgetsClicked));
+                    LAUNCHER_WIDGETSTRAY_BUTTON_TAP_OR_LONGPRESS,
+                    OptionsPopupView::onWidgetsClicked));
         }
         options.add(new OptionItem(R.string.settings_button_text, R.drawable.ic_setting,
-                ControlType.SETTINGS_BUTTON, OptionsPopupView::startSettings));
+                LAUNCHER_SETTINGS_BUTTON_TAP_OR_LONGPRESS,
+                OptionsPopupView::startSettings));
 
         show(launcher, target, options);
     }
 
     public static boolean onWidgetsClicked(View view) {
-        return openWidgets(Launcher.getLauncher(view.getContext()));
+        return openWidgets(Launcher.getLauncher(view.getContext())) != null;
     }
 
-    public static boolean openWidgets(Launcher launcher) {
+    /** Returns WidgetsFullSheet that was opened, or null if nothing was opened. */
+    @Nullable
+    public static WidgetsFullSheet openWidgets(Launcher launcher) {
         if (launcher.getPackageManager().isSafeMode()) {
             Toast.makeText(launcher, R.string.safemode_widget_error, Toast.LENGTH_SHORT).show();
-            return false;
+            return null;
         } else {
-            WidgetsFullSheet.show(launcher, true /* animated */);
-            return true;
+            return WidgetsFullSheet.show(launcher, true /* animated */);
         }
     }
 
     public static boolean startSettings(View view) {
+        TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "start: startSettings");
         Launcher launcher = Launcher.getLauncher(view.getContext());
         launcher.startActivitySafely(view, new Intent(Intent.ACTION_APPLICATION_PREFERENCES)
                 .setPackage(launcher.getPackageName())
@@ -223,21 +235,29 @@ public class OptionsPopupView extends ArrowPopup
         if (info != null) {
             info.addToIntent(intent);
         }
-        return launcher.startActivitySafely(v, intent, null, null);
+        return launcher.startActivitySafely(v, intent, dummyInfo(intent), null);
+    }
+
+    static WorkspaceItemInfo dummyInfo(Intent intent) {
+        WorkspaceItemInfo dummyInfo = new WorkspaceItemInfo();
+        dummyInfo.intent = intent;
+        dummyInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
+        dummyInfo.container = LauncherSettings.Favorites.CONTAINER_SETTINGS;
+        return dummyInfo;
     }
 
     public static class OptionItem {
 
         private final int mLabelRes;
         private final int mIconRes;
-        private final int mControlTypeForLog;
+        private final EventEnum mEventId;
         private final OnLongClickListener mClickListener;
 
-        public OptionItem(int labelRes, int iconRes, int controlTypeForLog,
+        public OptionItem(int labelRes, int iconRes, EventEnum eventId,
                 OnLongClickListener clickListener) {
             mLabelRes = labelRes;
             mIconRes = iconRes;
-            mControlTypeForLog = controlTypeForLog;
+            mEventId = eventId;
             mClickListener = clickListener;
         }
     }

@@ -54,6 +54,16 @@ $(call add-clean-step, rm -rf $(OUT_DIR)/target/common/obj/APPS/Launcher2_interm
 $(call add-clean-step, rm -rf $(PRODUCT_OUT)/system/app/Launcher2.apk)
 $(call add-clean-step, rm -rf $(PRODUCT_OUT)/system/priv-app/Launcher3QuickStep)
 
+$(call add-clean-step, rm -rf $(PRODUCT_OUT)/product/priv-app/Launcher3)
+$(call add-clean-step, rm -rf $(PRODUCT_OUT)/product/priv-app/Launcher3Go)
+$(call add-clean-step, rm -rf $(PRODUCT_OUT)/product/priv-app/Launcher3QuickStep)
+$(call add-clean-step, rm -rf $(PRODUCT_OUT)/product/priv-app/Launcher3QuickStepGo)
+$(call add-clean-step, rm -rf $(PRODUCT_OUT)/product/priv-app/Launcher3GoIconRecents)
+$(call add-clean-step, rm -rf $(PRODUCT_OUT)/system/product/priv-app/Launcher3)
+$(call add-clean-step, rm -rf $(PRODUCT_OUT)/system/product/priv-app/Launcher3Go)
+$(call add-clean-step, rm -rf $(PRODUCT_OUT)/system/product/priv-app/Launcher3QuickStep)
+$(call add-clean-step, rm -rf $(PRODUCT_OUT)/system/product/priv-app/Launcher3QuickStepGo)
+$(call add-clean-step, rm -rf $(PRODUCT_OUT)/system/product/priv-app/Launcher3GoIconRecents)
 # ************************************************
 # NEWER CLEAN STEPS MUST BE AT THE END OF THE LIST
 # ************************************************

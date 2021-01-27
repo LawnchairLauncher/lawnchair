@@ -26,10 +26,12 @@ import android.view.ViewConfiguration;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 
-import androidx.dynamicanimation.animation.DynamicAnimation;
 import androidx.dynamicanimation.animation.FloatPropertyCompat;
 import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
+
+import com.android.launcher3.R;
+import com.android.systemui.plugins.ResourceProvider;
 
 /**
  * Based on {@link android.widget.OverScroller} supporting only 1-d scrolling and with more
@@ -162,6 +164,9 @@ public class OverScroller {
 
     /**
      * Returns how long the scroll event will take, in milliseconds.
+     *
+     * Note that if mScroller.mState == SPRING, this duration is ignored, so can only
+     * serve as an estimate for how long the spring-controlled scroll will take.
      *
      * @return The duration of the scroll in milliseconds.
      */
@@ -425,6 +430,7 @@ public class OverScroller {
         // Current state of the animation.
         private int mState = SPLINE;
 
+        private Context mContext;
         private SpringAnimation mSpring;
 
         // Constant gravity value, used in the deceleration phase.
@@ -500,6 +506,7 @@ public class OverScroller {
         }
 
         SplineOverScroller(Context context) {
+            mContext = context;
             mFinished = true;
             final float ppi = context.getResources().getDisplayMetrics().density * 160.0f;
             mPhysicalCoeff = SensorManager.GRAVITY_EARTH // g (m/s^2)
@@ -554,21 +561,25 @@ public class OverScroller {
             mStartTime = AnimationUtils.currentAnimationTimeMillis();
             mDuration = duration;
 
+            if (mSpring != null) {
+                mSpring.cancel();
+            }
+
             if (mState == SPRING) {
-                if (mSpring != null) {
-                    mSpring.cancel();
-                }
                 mSpring = new SpringAnimation(this, SPRING_PROPERTY);
 
+                ResourceProvider rp = DynamicResource.provider(mContext);
+                float stiffness = rp.getFloat(R.dimen.horizontal_spring_stiffness);
+                float damping = rp.getFloat(R.dimen.horizontal_spring_damping_ratio);
                 mSpring.setSpring(new SpringForce(mFinal)
-                        .setStiffness(SpringForce.STIFFNESS_LOW)
-                        .setDampingRatio(SpringForce.DAMPING_RATIO_LOW_BOUNCY));
+                        .setStiffness(stiffness)
+                        .setDampingRatio(damping));
                 mSpring.setStartVelocity(velocity);
                 mSpring.animateToFinalPosition(mFinal);
                 mSpring.addEndListener((animation, canceled, value, velocity1) -> {
+                    mSpring = null;
                     finish();
                     mState = SPLINE;
-                    mSpring = null;
                 });
             }
             // Unused

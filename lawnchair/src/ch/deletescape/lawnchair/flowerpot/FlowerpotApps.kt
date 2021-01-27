@@ -23,12 +23,10 @@ import android.content.pm.ShortcutInfo
 import android.os.UserHandle
 import ch.deletescape.lawnchair.flowerpot.rules.CodeRule
 import ch.deletescape.lawnchair.flowerpot.rules.Rule
-import com.android.launcher3.compat.LauncherAppsCompat
-import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.PackageUserKey
 
-class FlowerpotApps(private val context: Context, private val pot: Flowerpot) : LauncherAppsCompat.OnAppsChangedCallbackCompat {
+class FlowerpotApps(private val context: Context, private val pot: Flowerpot) : OnAppsChangedCallbackCompat {
 
     private val launcherApps = LauncherAppsCompat.getInstance(context)
     private val intentMatches = mutableSetOf<String>()

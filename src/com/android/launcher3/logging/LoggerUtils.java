@@ -15,28 +15,24 @@
  */
 package com.android.launcher3.logging;
 
-import static com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType.NAVBAR;
-
 import android.util.ArrayMap;
 import android.util.SparseArray;
 import android.view.View;
 
-import com.android.launcher3.AppInfo;
 import com.android.launcher3.ButtonDropTarget;
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.userevent.nano.LauncherLogExtensions.TargetExtension;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ItemType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.LauncherEvent;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
-import com.android.launcher3.userevent.nano.LauncherLogProto.TipType;
 import com.android.launcher3.util.InstantAppResolver;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 
 /**
  * Helper methods for logging.
@@ -44,6 +40,8 @@ import java.lang.reflect.Modifier;
 public class LoggerUtils {
     private static final ArrayMap<Class, SparseArray<String>> sNameCache = new ArrayMap<>();
     private static final String UNKNOWN = "UNKNOWN";
+    private static final int DEFAULT_PREDICTED_RANK = 10000;
+    private static final String DELIMITER_DOT = "\\.";
 
     public static String getFieldName(int value, Class c) {
         SparseArray<String> cache;
@@ -68,92 +66,6 @@ public class LoggerUtils {
         return result != null ? result : UNKNOWN;
     }
 
-    public static String getActionStr(Action action) {
-        String str = "";
-        switch (action.type) {
-            case Action.Type.TOUCH:
-                str += getFieldName(action.touch, Action.Touch.class);
-                if (action.touch == Action.Touch.SWIPE || action.touch == Action.Touch.FLING) {
-                    str += " direction=" + getFieldName(action.dir, Action.Direction.class);
-                }
-                break;
-            case Action.Type.COMMAND:
-                str += getFieldName(action.command, Action.Command.class);
-                break;
-            default: return getFieldName(action.type, Action.Type.class);
-        }
-        if (action.touch == Action.Touch.SWIPE || action.touch == Action.Touch.FLING ||
-                (action.command == Action.Command.BACK && action.dir != Action.Direction.NONE)) {
-            str += " direction=" + getFieldName(action.dir, Action.Direction.class);
-        }
-        return str;
-    }
-
-    public static String getTargetStr(Target t) {
-        if (t == null){
-            return "";
-        }
-        String str = "";
-        switch (t.type) {
-            case Target.Type.ITEM:
-                str = getItemStr(t);
-                break;
-            case Target.Type.CONTROL:
-                str = getFieldName(t.controlType, ControlType.class);
-                break;
-            case Target.Type.CONTAINER:
-                str = getFieldName(t.containerType, ContainerType.class);
-                if (t.containerType == ContainerType.WORKSPACE ||
-                        t.containerType == ContainerType.HOTSEAT ||
-                        t.containerType == NAVBAR) {
-                    str += " id=" + t.pageIndex;
-                } else if (t.containerType == ContainerType.FOLDER) {
-                    str += " grid(" + t.gridX + "," + t.gridY + ")";
-                }
-                break;
-            default:
-                str += "UNKNOWN TARGET TYPE";
-        }
-
-        if (t.spanX != 1 || t.spanY != 1) {
-            str += " span(" + t.spanX + "," + t.spanY + ")";
-        }
-
-        if (t.tipType != TipType.DEFAULT_NONE) {
-            str += " " + getFieldName(t.tipType, TipType.class);
-        }
-
-        return str;
-    }
-
-    private static String getItemStr(Target t) {
-        String typeStr = getFieldName(t.itemType, ItemType.class);
-        if (t.packageNameHash != 0) {
-            typeStr += ", packageHash=" + t.packageNameHash;
-        }
-        if (t.componentHash != 0) {
-            typeStr += ", componentHash=" + t.componentHash;
-        }
-        if (t.intentHash != 0) {
-            typeStr += ", intentHash=" + t.intentHash;
-        }
-        if ((t.packageNameHash != 0 || t.componentHash != 0 || t.intentHash != 0) &&
-                t.itemType != ItemType.TASK) {
-            typeStr += ", predictiveRank=" + t.predictedRank + ", grid(" + t.gridX + "," + t.gridY
-                    + "), span(" + t.spanX + "," + t.spanY
-                    + "), pageIdx=" + t.pageIndex;
-
-        }
-        if (t.searchQueryLength != 0) {
-            typeStr += ", searchQueryLength=" + t.searchQueryLength;
-        }
-
-        if (t.itemType == ItemType.TASK) {
-            typeStr += ", pageIdx=" + t.pageIndex;
-        }
-        return typeStr;
-    }
-
     public static Target newItemTarget(int itemType) {
         Target t = newTarget(Target.Type.ITEM);
         t.itemType = itemType;
@@ -168,17 +80,17 @@ public class LoggerUtils {
 
     public static Target newItemTarget(ItemInfo info, InstantAppResolver instantAppResolver) {
         Target t = newTarget(Target.Type.ITEM);
-
         switch (info.itemType) {
             case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                 t.itemType = (instantAppResolver != null && info instanceof AppInfo
-                        && instantAppResolver.isInstantApp(((AppInfo) info)) )
+                        && instantAppResolver.isInstantApp(((AppInfo) info)))
                         ? ItemType.WEB_APP
                         : ItemType.APP_ICON;
-                t.predictedRank = -100; // Never assigned
+                t.predictedRank = DEFAULT_PREDICTED_RANK;
                 break;
             case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                 t.itemType = ItemType.SHORTCUT;
+                t.predictedRank = DEFAULT_PREDICTED_RANK;
                 break;
             case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
                 t.itemType = ItemType.FOLDER_ICON;
@@ -188,6 +100,7 @@ public class LoggerUtils {
                 break;
             case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
                 t.itemType = ItemType.DEEPSHORTCUT;
+                t.predictedRank = DEFAULT_PREDICTED_RANK;
                 break;
         }
         return t;
@@ -251,5 +164,27 @@ public class LoggerUtils {
         event.srcTarget = srcTargets;
         event.action = action;
         return event;
+    }
+
+    /**
+     * Creates LauncherEvent using Action and ArrayList of Targets
+     */
+    public static LauncherEvent newLauncherEvent(Action action, ArrayList<Target> targets) {
+        Target[] targetsArray = new Target[targets.size()];
+        targets.toArray(targetsArray);
+        return newLauncherEvent(action, targetsArray);
+    }
+
+    /**
+     * String conversion for only the helpful parts of {@link Object#toString()} method
+     * @param stringToExtract "foo.bar.baz.MyObject@1234"
+     * @return "MyObject@1234"
+     */
+    public static String extractObjectNameAndAddress(String stringToExtract) {
+        String[] superStringParts = stringToExtract.split(DELIMITER_DOT);
+        if (superStringParts.length == 0) {
+            return "";
+        }
+        return superStringParts[superStringParts.length - 1];
     }
 }

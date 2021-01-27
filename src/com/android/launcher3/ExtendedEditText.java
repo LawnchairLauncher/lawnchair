@@ -30,6 +30,7 @@ import com.android.launcher3.util.UiThreadHelper;
 
 /**
  * The edit text that reports back when the back key has been pressed.
+ * Note: AppCompatEditText doesn't fully support #displayCompletions and #onCommitCompletion
  */
 public class ExtendedEditText extends EditText {
 
@@ -40,7 +41,7 @@ public class ExtendedEditText extends EditText {
      * Implemented by listeners of the back key.
      */
     public interface OnBackKeyListener {
-        public boolean onBackKey();
+        boolean onBackKey();
     }
 
     private OnBackKeyListener mBackKeyListener;
@@ -88,12 +89,9 @@ public class ExtendedEditText extends EditText {
         super.onLayout(changed, left, top, right, bottom);
         if (mShowImeAfterFirstLayout) {
             // soft input only shows one frame after the layout of the EditText happens,
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    showSoftInput();
-                    mShowImeAfterFirstLayout = false;
-                }
+            post(() -> {
+                showSoftInput();
+                mShowImeAfterFirstLayout = false;
             });
         }
     }
@@ -108,7 +106,7 @@ public class ExtendedEditText extends EditText {
 
     private boolean showSoftInput() {
         return requestFocus() &&
-                ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE))
+                getContext().getSystemService(InputMethodManager.class)
                     .showSoftInput(this, InputMethodManager.SHOW_IMPLICIT);
     }
 

@@ -50,7 +50,7 @@ public class AllAppsPagedView extends PagedView<PersonalWorkSlidingTabStrip> {
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
-        mPageIndicator.setScroll(l, mMaxScrollX);
+        mPageIndicator.setScroll(l, mMaxScroll);
     }
 
     @Override
@@ -82,6 +82,11 @@ public class AllAppsPagedView extends PagedView<PersonalWorkSlidingTabStrip> {
     @Override
     public boolean hasOverlappingRendering() {
         return false;
+    }
+
+    @Override
+    protected boolean canScroll(float absVScroll, float absHScroll) {
+        return (absHScroll > absVScroll) && super.canScroll(absVScroll, absHScroll);
     }
 
     public void addTabs(int count) {

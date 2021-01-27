@@ -16,11 +16,15 @@
 
 package com.android.launcher3;
 
+import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED;
+
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.accessibility.AccessibilityNodeInfo;
 
 import ch.deletescape.lawnchair.colors.ColorEngine;
 import ch.deletescape.lawnchair.colors.ColorEngine.OnColorChangeListener;
@@ -29,6 +33,11 @@ import com.android.launcher3.views.RecyclerViewFastScroller;
 import org.jetbrains.annotations.NotNull;
 
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.android.launcher3.compat.AccessibilityManagerCompat;
+import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.views.ActivityContext;
+import com.android.launcher3.views.RecyclerViewFastScroller;
 
 
 /**
@@ -158,7 +167,7 @@ public abstract class BaseRecyclerView extends RecyclerView implements OnColorCh
         if (getCurrentScrollY() == 0) {
             return true;
         }
-        return false;
+        return getAdapter() == null || getAdapter().getItemCount() == 0;
     }
 
     /**
@@ -192,6 +201,31 @@ public abstract class BaseRecyclerView extends RecyclerView implements OnColorCh
      * <p>Override in each subclass of this base class.
      */
     public void onFastScrollCompleted() {}
+
+    @Override
+    public void onScrollStateChanged(int state) {
+        super.onScrollStateChanged(state);
+
+        if (state == SCROLL_STATE_IDLE) {
+            AccessibilityManagerCompat.sendScrollFinishedEventToTest(getContext());
+        }
+    }
+
+    @Override
+    public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
+        super.onInitializeAccessibilityNodeInfo(info);
+        if (isLayoutSuppressed()) info.setScrollable(false);
+    }
+
+    @Override
+    public void setLayoutFrozen(boolean frozen) {
+        final boolean changing = frozen != isLayoutSuppressed();
+        super.setLayoutFrozen(frozen);
+        if (changing) {
+            ActivityContext.lookupContext(getContext()).getDragLayer()
+                    .sendAccessibilityEvent(TYPE_WINDOW_CONTENT_CHANGED);
+        }
+    }
 
     public class PositionThumbInfo {
         public String name;

@@ -16,6 +16,8 @@
 
 package com.android.launcher3.graphics;
 
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BlurMaskFilter;
@@ -25,7 +27,6 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.os.Handler;
 import android.view.View;
 
 import com.android.launcher3.BubbleTextView;
@@ -33,11 +34,10 @@ import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.icons.BitmapRenderer;
-import com.android.launcher3.util.UiThreadHelper;
+import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
-import com.android.launcher3.widget.PendingAppWidgetHostView;
 
 import java.nio.ByteBuffer;
 
@@ -53,7 +53,7 @@ public class DragPreviewProvider {
     // The padding added to the drag view during the preview generation.
     public final int previewPadding;
 
-    protected final int blurSizeOutline;
+    public final int blurSizeOutline;
 
     private OutlineGeneratorCallback mOutlineGeneratorCallback;
     public Bitmap generatedDragOutline;
@@ -66,56 +66,26 @@ public class DragPreviewProvider {
         mView = view;
         blurSizeOutline =
                 context.getResources().getDimensionPixelSize(R.dimen.blur_size_medium_outline);
-
-        if (mView instanceof BubbleTextView) {
-            Drawable d = ((BubbleTextView) mView).getIcon();
-            Rect bounds = getDrawableBounds(d);
-            previewPadding = blurSizeOutline - bounds.left - bounds.top;
-        } else {
-            previewPadding = blurSizeOutline;
-        }
+        previewPadding = blurSizeOutline;
     }
 
     /**
      * Draws the {@link #mView} into the given {@param destCanvas}.
      */
     protected void drawDragView(Canvas destCanvas, float scale) {
-        destCanvas.save();
+        int saveCount = destCanvas.save();
         destCanvas.scale(scale, scale);
 
-        if (mView instanceof BubbleTextView) {
-            Drawable d = ((BubbleTextView) mView).getIcon();
-            Rect bounds = getDrawableBounds(d);
-            destCanvas.translate(blurSizeOutline / 2 - bounds.left,
-                    blurSizeOutline / 2 - bounds.top);
-            if (d instanceof FastBitmapDrawable) {
-                ((FastBitmapDrawable) d).setScale(1);
-            }
-            d.draw(destCanvas);
-        } else {
-            final Rect clipRect = mTempRect;
-            mView.getDrawingRect(clipRect);
-
-            boolean textVisible = false;
-            if (mView instanceof FolderIcon) {
-                // For FolderIcons the text can bleed into the icon area, and so we need to
-                // hide the text completely (which can't be achieved by clipping).
-                if (((FolderIcon) mView).getTextVisible()) {
-                    ((FolderIcon) mView).setTextVisible(false);
-                    textVisible = true;
-                }
-            }
-            destCanvas.translate(-mView.getScrollX() + blurSizeOutline / 2,
-                    -mView.getScrollY() + blurSizeOutline / 2);
-            destCanvas.clipRect(clipRect);
-            mView.draw(destCanvas);
-
-            // Restore text visibility of FolderIcon if necessary
-            if (textVisible) {
-                ((FolderIcon) mView).setTextVisible(true);
+        if (mView instanceof DraggableView) {
+            DraggableView dv = (DraggableView) mView;
+            try (SafeCloseable t = dv.prepareDrawDragView()) {
+                dv.getSourceVisualDragBounds(mTempRect);
+                destCanvas.translate(blurSizeOutline / 2 - mTempRect.left,
+                        blurSizeOutline / 2 - mTempRect.top);
+                mView.draw(destCanvas);
             }
         }
-        destCanvas.restore();
+        destCanvas.restoreToCount(saveCount);
     }
 
     /**
@@ -123,41 +93,30 @@ public class DragPreviewProvider {
      * Responsibility for the bitmap is transferred to the caller.
      */
     public Bitmap createDragBitmap() {
-        int width = mView.getWidth();
-        int height = mView.getHeight();
-
-        if (mView instanceof BubbleTextView) {
-            Drawable d = ((BubbleTextView) mView).getIcon();
-            Rect bounds = getDrawableBounds(d);
-            width = bounds.width();
-            height = bounds.height();
-        } else if (mView instanceof LauncherAppWidgetHostView) {
-            float scale = ((LauncherAppWidgetHostView) mView).getScaleToFit();
-            width = (int) (mView.getWidth() * scale);
-            height = (int) (mView.getHeight() * scale);
-
-            if (mView instanceof PendingAppWidgetHostView) {
-                // Use hardware renderer as the icon for the pending app widget may be a hw bitmap
-                return BitmapRenderer.createHardwareBitmap(width + blurSizeOutline,
-                        height + blurSizeOutline, (c) -> drawDragView(c, scale));
-            } else {
-                // Use software renderer for widgets as we know that they already work
-                return BitmapRenderer.createSoftwareBitmap(width + blurSizeOutline,
-                        height + blurSizeOutline, (c) -> drawDragView(c, scale));
-            }
+        int width = 0;
+        int height = 0;
+        // Assume scaleX == scaleY, which is always the case for workspace items.
+        float scale = mView.getScaleX();
+        if (mView instanceof DraggableView) {
+            ((DraggableView) mView).getSourceVisualDragBounds(mTempRect);
+            width = mTempRect.width();
+            height = mTempRect.height();
+        } else {
+            width = mView.getWidth();
+            height = mView.getHeight();
         }
 
         return BitmapRenderer.createHardwareBitmap(width + blurSizeOutline,
-                height + blurSizeOutline, (c) -> drawDragView(c, 1));
+                height + blurSizeOutline, (c) -> drawDragView(c, scale));
     }
 
     public final void generateDragOutline(Bitmap preview) {
-        if (FeatureFlags.IS_DOGFOOD_BUILD && mOutlineGeneratorCallback != null) {
+        if (FeatureFlags.IS_STUDIO_BUILD && mOutlineGeneratorCallback != null) {
             throw new RuntimeException("Drag outline generated twice");
         }
 
         mOutlineGeneratorCallback = new OutlineGeneratorCallback(preview);
-        new Handler(UiThreadHelper.getBackgroundLooper()).post(mOutlineGeneratorCallback);
+        UI_HELPER_EXECUTOR.post(mOutlineGeneratorCallback);
     }
 
     protected static Rect getDrawableBounds(Drawable d) {
@@ -195,15 +154,22 @@ public class DragPreviewProvider {
 
         private final Bitmap mPreviewSnapshot;
         private final Context mContext;
+        private final boolean mIsIcon;
 
         OutlineGeneratorCallback(Bitmap preview) {
             mPreviewSnapshot = preview;
             mContext = mView.getContext();
+            mIsIcon = mView instanceof BubbleTextView;
         }
 
         @Override
         public void run() {
             Bitmap preview = convertPreviewToAlphaBitmap(mPreviewSnapshot);
+            if (mIsIcon) {
+                int size = Launcher.getLauncher(mContext).getDeviceProfile().iconSizePx;
+                preview = Bitmap.createScaledBitmap(preview, size, size, false);
+            }
+            //else case covers AppWidgetHost (doesn't drag/drop across different device profiles)
 
             // We start by removing most of the alpha channel so as to ignore shadows, and
             // other types of partial transparency when defining the shape of the object

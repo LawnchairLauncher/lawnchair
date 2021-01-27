@@ -19,20 +19,28 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := LauncherRoboTests
-LOCAL_SDK_VERSION := current
-LOCAL_SRC_FILES := $(call all-java-files-under, src)
+LOCAL_MODULE_CLASS := JAVA_LIBRARIES
+
+LOCAL_SDK_VERSION := system_current
+LOCAL_SRC_FILES := \
+	$(call all-java-files-under, src) \
+	$(call all-java-files-under, ../tests/src_common)
+
 LOCAL_STATIC_JAVA_LIBRARIES := \
     androidx.test.runner \
     androidx.test.rules \
     mockito-robolectric-prebuilt \
     truth-prebuilt
 LOCAL_JAVA_LIBRARIES := \
-    platform-robolectric-3.6.1-prebuilt
+    platform-robolectric-4.3.1-prebuilt
 
 LOCAL_JAVA_RESOURCE_DIRS := resources config
 
 LOCAL_INSTRUMENTATION_FOR := Launcher3
 LOCAL_MODULE_TAGS := optional
+
+# Generate test_config.properties
+include external/robolectric-shadows/gen_test_config.mk
 
 include $(BUILD_STATIC_JAVA_LIBRARY)
 
@@ -42,16 +50,13 @@ include $(BUILD_STATIC_JAVA_LIBRARY)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := RunLauncherRoboTests
-LOCAL_SDK_VERSION := current
-LOCAL_JAVA_LIBRARIES := \
-    LauncherRoboTests
+LOCAL_SDK_VERSION := system_current
+LOCAL_JAVA_LIBRARIES := LauncherRoboTests
 
 LOCAL_RESOURCE_DIR := $(LOCAL_PATH)/res
-
 LOCAL_TEST_PACKAGE := Launcher3
-
-LOCAL_INSTRUMENT_SOURCE_DIRS := $(dir $(LOCAL_PATH))../src \
+LOCAL_INSTRUMENT_SOURCE_DIRS := packages/apps/Launcher3/src
 
 LOCAL_ROBOTEST_TIMEOUT := 36000
 
-include prebuilts/misc/common/robolectric/3.6.1/run_robotests.mk
+include prebuilts/misc/common/robolectric/4.3.1/run_robotests.mk

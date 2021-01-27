@@ -3,8 +3,10 @@ package com.android.launcher3.util;
 import android.os.UserHandle;
 import android.service.notification.StatusBarNotification;
 
-import com.android.launcher3.ItemInfo;
-import com.android.launcher3.shortcuts.DeepShortcutManager;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.android.launcher3.model.data.ItemInfo;
 
 import java.util.Arrays;
 
@@ -15,7 +17,9 @@ public class PackageUserKey {
     public UserHandle mUser;
     private int mHashCode;
 
+    @Nullable
     public static PackageUserKey fromItemInfo(ItemInfo info) {
+        if (info.getTargetComponent() == null) return null;
         return new PackageUserKey(info.getTargetComponent().getPackageName(), info.user);
     }
 
@@ -27,7 +31,7 @@ public class PackageUserKey {
         update(packageName, user);
     }
 
-    private void update(String packageName, UserHandle user) {
+    public void update(String packageName, UserHandle user) {
         mPackageName = packageName;
         mUser = user;
         mHashCode = Arrays.hashCode(new Object[] {packageName, user});
@@ -38,7 +42,8 @@ public class PackageUserKey {
      * @return Whether this PackageUserKey was successfully updated - it shouldn't be used if not.
      */
     public boolean updateFromItemInfo(ItemInfo info) {
-        if (DeepShortcutManager.supportsShortcuts(info)) {
+        if (info.getTargetComponent() == null) return false;
+        if (ShortcutUtil.supportsShortcuts(info)) {
             update(info.getTargetComponent().getPackageName(), info.user);
             return true;
         }
@@ -60,5 +65,11 @@ public class PackageUserKey {
         if (!(obj instanceof PackageUserKey)) return false;
         PackageUserKey otherKey = (PackageUserKey) obj;
         return mPackageName.equals(otherKey.mPackageName) && mUser.equals(otherKey.mUser);
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return mPackageName + "#" + mUser;
     }
 }

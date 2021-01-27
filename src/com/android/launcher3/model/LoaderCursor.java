@@ -16,15 +16,19 @@
 
 package com.android.launcher3.model;
 
+import static android.graphics.BitmapFactory.decodeByteArray;
+
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Intent.ShortcutIconResource;
 import android.content.pm.LauncherActivityInfo;
+import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.CursorWrapper;
+import android.net.Uri;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.UserHandle;
@@ -33,21 +37,22 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.LongSparseArray;
 
+import androidx.annotation.VisibleForTesting;
+
 import ch.deletescape.lawnchair.LawnchairPreferences;
-import com.android.launcher3.AppInfo;
-import com.android.launcher3.WorkspaceItemInfo;
-import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
-import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.BitmapInfo;
+import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.logging.FileLog;
+import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.IntArray;
@@ -63,8 +68,9 @@ public class LoaderCursor extends CursorWrapper {
 
     private static final String TAG = "LoaderCursor";
 
-    public final LongSparseArray<UserHandle> allUsers = new LongSparseArray<>();
+    public final LongSparseArray<UserHandle> allUsers;
 
+    private final Uri mContentUri;
     private final Context mContext;
     private final PackageManager mPM;
     private final IconCache mIconCache;
@@ -100,8 +106,12 @@ public class LoaderCursor extends CursorWrapper {
 
     private final LawnchairPreferences prefs;
 
-    public LoaderCursor(Cursor c, LauncherAppState app) {
-        super(c);
+    public LoaderCursor(Cursor cursor, Uri contentUri, LauncherAppState app,
+            UserManagerState userManagerState) {
+        super(cursor);
+
+        allUsers = userManagerState.allUsers;
+        mContentUri = contentUri;
         mContext = app.getContext();
         mIconCache = app.getIconCache();
         mIDP = app.getInvariantDeviceProfile();
@@ -153,15 +163,17 @@ public class LoaderCursor extends CursorWrapper {
         }
     }
 
+    @VisibleForTesting
     public WorkspaceItemInfo loadSimpleWorkspaceItem() {
         final WorkspaceItemInfo info = new WorkspaceItemInfo();
+        info.intent = new Intent();
         // Non-app shortcuts are only supported for current user.
         info.user = user;
         info.itemType = itemType;
         info.title = getTitle();
         // the fallback icon
         if (!loadIcon(info)) {
-            info.applyFrom(mIconCache.getDefaultIcon(info.user));
+            info.bitmap = mIconCache.getDefaultIcon(info.user);
         }
 
         // TODO: If there's an explicit component and we can't install that, delete it.
@@ -174,37 +186,30 @@ public class LoaderCursor extends CursorWrapper {
      */
     protected boolean loadIcon(WorkspaceItemInfo info) {
         try (LauncherIcons li = LauncherIcons.obtain(mContext)) {
-            return loadIcon(info, li);
-        }
-    }
-
-    /**
-     * Loads the icon from the cursor and updates the {@param info} if the icon is an app resource.
-     */
-    protected boolean loadIcon(WorkspaceItemInfo info, LauncherIcons li) {
-        if (itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
-            String packageName = getString(iconPackageIndex);
-            String resourceName = getString(iconResourceIndex);
-            if (!TextUtils.isEmpty(packageName) || !TextUtils.isEmpty(resourceName)) {
-                info.iconResource = new ShortcutIconResource();
-                info.iconResource.packageName = packageName;
-                info.iconResource.resourceName = resourceName;
-                BitmapInfo iconInfo = li.createIconBitmap(info.iconResource);
-                if (iconInfo != null) {
-                    info.applyFrom(iconInfo);
-                    return true;
+            if (itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
+                String packageName = getString(iconPackageIndex);
+                String resourceName = getString(iconResourceIndex);
+                if (!TextUtils.isEmpty(packageName) || !TextUtils.isEmpty(resourceName)) {
+                    info.iconResource = new ShortcutIconResource();
+                    info.iconResource.packageName = packageName;
+                    info.iconResource.resourceName = resourceName;
+                    BitmapInfo iconInfo = li.createIconBitmap(info.iconResource);
+                    if (iconInfo != null) {
+                        info.bitmap = iconInfo;
+                        return true;
+                    }
                 }
             }
-        }
 
-        // Failed to load from resource, try loading from DB.
-        byte[] data = getBlob(iconIndex);
-        try {
-            info.applyFrom(li.createIconBitmap(BitmapFactory.decodeByteArray(data, 0, data.length)));
-            return true;
-        } catch (Exception e) {
-            Log.e(TAG, "Failed to decode byte array for info " + info, e);
-            return false;
+            // Failed to load from resource, try loading from DB.
+            byte[] data = getBlob(iconIndex);
+            try {
+                info.bitmap = li.createIconBitmap(decodeByteArray(data, 0, data.length));
+                return true;
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to decode byte array for info " + info, e);
+                return false;
+            }
         }
     }
 
@@ -250,7 +255,7 @@ public class LoaderCursor extends CursorWrapper {
             if (!TextUtils.isEmpty(title)) {
                 info.title = Utilities.trim(title);
             }
-        } else if  (hasRestoreFlag(WorkspaceItemInfo.FLAG_AUTOINSTALL_ICON)) {
+        } else if (hasRestoreFlag(WorkspaceItemInfo.FLAG_AUTOINSTALL_ICON)) {
             if (TextUtils.isEmpty(info.title)) {
                 info.title = getTitle();
             }
@@ -283,7 +288,7 @@ public class LoaderCursor extends CursorWrapper {
         Intent newIntent = new Intent(Intent.ACTION_MAIN, null);
         newIntent.addCategory(Intent.CATEGORY_LAUNCHER);
         newIntent.setComponent(componentName);
-        LauncherActivityInfo lai = LauncherAppsCompat.getInstance(mContext)
+        LauncherActivityInfo lai = mContext.getSystemService(LauncherApps.class)
                 .resolveActivity(newIntent, user);
         if ((lai == null) && !allowMissingTarget) {
             Log.d(TAG, "Missing activity found in getShortcutInfo: " + componentName);
@@ -296,7 +301,7 @@ public class LoaderCursor extends CursorWrapper {
         info.intent = newIntent;
 
         mIconCache.getTitleAndIcon(info, lai, useLowResIcon);
-        if (mIconCache.isDefaultIcon(info.iconBitmap, user)) {
+        if (mIconCache.isDefaultIcon(info.bitmap, user)) {
             loadIcon(info);
         }
 
@@ -341,9 +346,8 @@ public class LoaderCursor extends CursorWrapper {
     public boolean commitDeleted() {
         if (itemsToRemove.size() > 0) {
             // Remove dead items
-            mContext.getContentResolver().delete(LauncherSettings.Favorites.CONTENT_URI,
-                    Utilities.createDbSelectionQuery(
-                            LauncherSettings.Favorites._ID, itemsToRemove), null);
+            mContext.getContentResolver().delete(mContentUri, Utilities.createDbSelectionQuery(
+                    LauncherSettings.Favorites._ID, itemsToRemove), null);
             return true;
         }
         return false;
@@ -368,7 +372,7 @@ public class LoaderCursor extends CursorWrapper {
             // Update restored items that no longer require special handling
             ContentValues values = new ContentValues();
             values.put(LauncherSettings.Favorites.RESTORED, 0);
-            mContext.getContentResolver().update(LauncherSettings.Favorites.CONTENT_URI, values,
+            mContext.getContentResolver().update(mContentUri, values,
                     Utilities.createDbSelectionQuery(
                             LauncherSettings.Favorites._ID, restoredRows), null);
         }

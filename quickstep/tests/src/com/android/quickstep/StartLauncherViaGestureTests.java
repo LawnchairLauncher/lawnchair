@@ -16,8 +16,8 @@
 
 package com.android.quickstep;
 
-import static com.android.launcher3.util.RaceConditionTracker.enterEvt;
-import static com.android.launcher3.util.RaceConditionTracker.exitEvt;
+import static com.android.launcher3.util.RaceConditionReproducer.enterEvt;
+import static com.android.launcher3.util.RaceConditionReproducer.exitEvt;
 
 import android.content.Intent;
 
@@ -25,7 +25,6 @@ import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.Launcher;
-import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.util.RaceConditionReproducer;
 import com.android.quickstep.NavigationModeSwitchRule.Mode;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
@@ -46,6 +45,8 @@ public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
+        // b/143488140
+        mLauncher.pressHome();
         // Start an activity where the gestures start.
         startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
     }
@@ -80,8 +81,6 @@ public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
     @Test
     @NavigationModeSwitch
     public void testStressPressHome() {
-        if (LauncherInstrumentation.isAvd()) return; // b/136278866
-
         for (int i = 0; i < STRESS_REPEAT_COUNT; ++i) {
             // Destroy Launcher activity.
             closeLauncherActivity();
@@ -94,8 +93,6 @@ public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
     @Test
     @NavigationModeSwitch
     public void testStressSwipeToOverview() {
-        if (LauncherInstrumentation.isAvd()) return; // b/136278866
-
         for (int i = 0; i < STRESS_REPEAT_COUNT; ++i) {
             // Destroy Launcher activity.
             closeLauncherActivity();
@@ -103,5 +100,6 @@ public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
             // The test action.
             mLauncher.getBackground().switchToOverview();
         }
+        mLauncher.pressHome();
     }
 }

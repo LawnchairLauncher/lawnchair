@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.views;
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+
 import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
 
 import android.animation.Animator;
@@ -32,15 +34,16 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.touch.SwipeDetector;
+import com.android.launcher3.touch.BaseSwipeDetector;
+import com.android.launcher3.touch.SingleAxisSwipeDetector;
 
 /**
  * Extension of AbstractFloatingView with common methods for sliding in from bottom
  */
 public abstract class AbstractSlideInView extends AbstractFloatingView
-        implements SwipeDetector.Listener {
+        implements SingleAxisSwipeDetector.Listener {
 
-    protected static Property<AbstractSlideInView, Float> TRANSLATION_SHIFT =
+    protected static final Property<AbstractSlideInView, Float> TRANSLATION_SHIFT =
             new Property<AbstractSlideInView, Float>(Float.class, "translationShift") {
 
                 @Override
@@ -57,10 +60,11 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
     protected static final float TRANSLATION_SHIFT_OPENED = 0f;
 
     protected final Launcher mLauncher;
-    protected final SwipeDetector mSwipeDetector;
+    protected final SingleAxisSwipeDetector mSwipeDetector;
     protected final ObjectAnimator mOpenCloseAnimator;
 
     protected View mContent;
+    private final View mColorScrim;
     protected Interpolator mScrollInterpolator;
 
     // range [0, 1], 0=> completely open, 1=> completely closed
@@ -73,7 +77,8 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
         mLauncher = Launcher.getLauncher(context);
 
         mScrollInterpolator = Interpolators.SCROLL_CUBIC;
-        mSwipeDetector = new SwipeDetector(context, this, SwipeDetector.VERTICAL);
+        mSwipeDetector = new SingleAxisSwipeDetector(context, this,
+                SingleAxisSwipeDetector.VERTICAL);
 
         mOpenCloseAnimator = ObjectAnimator.ofPropertyValuesHolder(this);
         mOpenCloseAnimator.addListener(new AnimatorListenerAdapter() {
@@ -83,11 +88,30 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
                 announceAccessibilityChanges();
             }
         });
+        int scrimColor = getScrimColor(mLauncher);
+        mColorScrim = scrimColor != -1 ? createColorScrim(mLauncher, scrimColor) : null;
+    }
+
+    protected void attachToContainer() {
+        if (mColorScrim != null) {
+            getPopupContainer().addView(mColorScrim);
+        }
+        getPopupContainer().addView(this);
+    }
+
+    /**
+     * Returns a scrim color for a sliding view. if returned value is -1, no scrim is added.
+     */
+    protected int getScrimColor(Context context) {
+        return -1;
     }
 
     protected void setTranslationShift(float translationShift) {
         mTranslationShift = translationShift;
         mContent.setTranslationY(mTranslationShift * mContent.getHeight());
+        if (mColorScrim != null) {
+            mColorScrim.setAlpha(1 - mTranslationShift);
+        }
     }
 
     @Override
@@ -97,7 +121,7 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
         }
 
         int directionsToDetectScroll = mSwipeDetector.isIdleState() ?
-                SwipeDetector.DIRECTION_NEGATIVE : 0;
+                SingleAxisSwipeDetector.DIRECTION_NEGATIVE : 0;
         mSwipeDetector.setDetectableScrollConditions(
                 directionsToDetectScroll, false);
         mSwipeDetector.onTouchEvent(ev);
@@ -122,10 +146,10 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
         return mIsOpen && mOpenCloseAnimator.isRunning();
     }
 
-    /* SwipeDetector.Listener */
+    /* SingleAxisSwipeDetector.Listener */
 
     @Override
-    public void onDragStart(boolean start) { }
+    public void onDragStart(boolean start, float startDisplacement) { }
 
     @Override
     public boolean onDrag(float displacement) {
@@ -136,30 +160,30 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
     }
 
     @Override
-    public void onDragEnd(float velocity, boolean fling) {
-        if ((fling && velocity > 0) || mTranslationShift > 0.5f) {
+    public void onDragEnd(float velocity) {
+        if ((mSwipeDetector.isFling(velocity) && velocity > 0) || mTranslationShift > 0.5f) {
             mScrollInterpolator = scrollInterpolatorForVelocity(velocity);
-            mOpenCloseAnimator.setDuration(SwipeDetector.calculateDuration(
+            mOpenCloseAnimator.setDuration(BaseSwipeDetector.calculateDuration(
                     velocity, TRANSLATION_SHIFT_CLOSED - mTranslationShift));
             close(true);
         } else {
             mOpenCloseAnimator.setValues(PropertyValuesHolder.ofFloat(
                     TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
             mOpenCloseAnimator.setDuration(
-                    SwipeDetector.calculateDuration(velocity, mTranslationShift))
+                    BaseSwipeDetector.calculateDuration(velocity, mTranslationShift))
                     .setInterpolator(Interpolators.DEACCEL);
             mOpenCloseAnimator.start();
         }
     }
 
     protected void handleClose(boolean animate, long defaultDuration) {
-        if (mIsOpen && !animate) {
+        if (!mIsOpen) {
+            return;
+        }
+        if (!animate) {
             mOpenCloseAnimator.cancel();
             setTranslationShift(TRANSLATION_SHIFT_CLOSED);
             onCloseComplete();
-            return;
-        }
-        if (!mIsOpen) {
             return;
         }
         mOpenCloseAnimator.setValues(
@@ -183,9 +207,25 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
     protected void onCloseComplete() {
         mIsOpen = false;
         getPopupContainer().removeView(this);
+        if (mColorScrim != null) {
+            getPopupContainer().removeView(mColorScrim);
+        }
     }
 
     protected BaseDragLayer getPopupContainer() {
         return mLauncher.getDragLayer();
+    }
+
+
+    protected static View createColorScrim(Context context, int bgColor) {
+        View view = new View(context);
+        view.forceHasOverlappingRendering(false);
+        view.setBackgroundColor(bgColor);
+
+        BaseDragLayer.LayoutParams lp = new BaseDragLayer.LayoutParams(MATCH_PARENT, MATCH_PARENT);
+        lp.ignoreInsets = true;
+        view.setLayoutParams(lp);
+
+        return view;
     }
 }

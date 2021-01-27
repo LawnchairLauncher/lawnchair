@@ -16,11 +16,14 @@
 
 package com.android.launcher3.model;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.os.UserHandle;
 
-import com.android.launcher3.icons.ComponentWithLabel;
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.icons.ComponentWithLabelAndIcon;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.widget.WidgetListRowEntry;
 
@@ -29,14 +32,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import androidx.annotation.Nullable;
-
 /**
  * Widgets data model that is used by the adapters of the widget views and controllers.
  *
  * <p> The widgets and shortcuts are organized using package name as its index.
  */
 public class WidgetsModel {
+
+    // True is the widget support is disabled.
+    public static final boolean GO_DISABLE_WIDGETS = true;
+
     private static final ArrayList<WidgetListRowEntry> EMPTY_WIDGET_LIST = new ArrayList<>();
 
     /**
@@ -55,7 +60,7 @@ public class WidgetsModel {
      * @param packageUser If null, all widgets and shortcuts are updated and returned, otherwise
      *                    only widgets and shortcuts associated with the package/user are.
      */
-    public List<ComponentWithLabel> update(LauncherAppState app,
+    public List<ComponentWithLabelAndIcon> update(LauncherAppState app,
             @Nullable PackageUserKey packageUser) {
         return Collections.emptyList();
     }
@@ -63,5 +68,10 @@ public class WidgetsModel {
 
     public void onPackageIconsUpdated(Set<String> packageNames, UserHandle user,
             LauncherAppState app) {
+    }
+
+    public WidgetItem getWidgetProviderInfoByProviderName(
+            ComponentName providerName) {
+        return null;
     }
 }

@@ -8,7 +8,7 @@ import android.view.View;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherRootView.WindowStateListener;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateManager.StateListener;
+import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.anim.Interpolators;
 
 public class QsbAnimationController implements WindowStateListener, StateListener {

@@ -21,15 +21,15 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 
 public class ResourceUtils {
+    public static final int DEFAULT_NAVBAR_VALUE = 48;
     public static final String NAVBAR_LANDSCAPE_LEFT_RIGHT_SIZE = "navigation_bar_width";
     public static final String NAVBAR_BOTTOM_GESTURE_SIZE = "navigation_bar_gesture_height";
 
-
     public static int getNavbarSize(String resName, Resources res) {
-        return getDimenByName(resName, res, 48);
+        return getDimenByName(resName, res, DEFAULT_NAVBAR_VALUE);
     }
 
-    private static int getDimenByName(String resName, Resources res, int defaultValue) {
+    public static int getDimenByName(String resName, Resources res, int defaultValue) {
         final int frameSize;
         final int frameSizeResID = res.getIdentifier(resName, "dimen", "android");
         if (frameSizeResID != 0) {
@@ -38,6 +38,17 @@ public class ResourceUtils {
             frameSize = pxFromDp(defaultValue, res.getDisplayMetrics());
         }
         return frameSize;
+    }
+
+    public static boolean getBoolByName(String resName, Resources res, boolean defaultValue) {
+        final boolean val;
+        final int resId = res.getIdentifier(resName, "bool", "android");
+        if (resId != 0) {
+            val = res.getBoolean(resId);
+        } else {
+            val = defaultValue;
+        }
+        return val;
     }
 
     public static int pxFromDp(float size, DisplayMetrics metrics) {

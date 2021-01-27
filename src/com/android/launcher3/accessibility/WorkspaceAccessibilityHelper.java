@@ -21,17 +21,17 @@ import android.graphics.Rect;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.android.launcher3.AppInfo;
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
+
 import com.android.launcher3.CellLayout;
-import com.android.launcher3.FolderInfo;
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate.DragType;
 import com.android.launcher3.dragndrop.DragLayer;
-
-import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
+import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.FolderInfo;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 
 /**
  * Implementation of {@link DragAndDropAccessibilityDelegate} to support DnD on workspace.

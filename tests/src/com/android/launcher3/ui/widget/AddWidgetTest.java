@@ -15,18 +15,21 @@
  */
 package com.android.launcher3.ui.widget;
 
+import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
+
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
-import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
+import com.android.launcher3.model.data.LauncherAppWidgetInfo;
+import com.android.launcher3.tapl.Widget;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.TestViewHelpers;
 import com.android.launcher3.util.rule.ShellCommandRule;
 
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,22 +41,12 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 public class AddWidgetTest extends AbstractLauncherUiTest {
 
-    @Rule public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grantWidgetBind();
+    @Rule
+    public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grantWidgetBind();
 
     @Test
-    public void testDragIcon_portrait() throws Throwable {
-        lockRotation(true);
-        performTest();
-    }
-
-    @Test
-    @Ignore // b/121280703
-    public void testDragIcon_landscape() throws Throwable {
-        lockRotation(false);
-        performTest();
-    }
-
-    private void performTest() throws Throwable {
+    @PortraitLandscape
+    public void testDragIcon() throws Throwable {
         clearHomescreen();
         mDevice.pressHome();
 
@@ -64,11 +57,34 @@ public class AddWidgetTest extends AbstractLauncherUiTest {
                 getWorkspace().
                 openAllWidgets().
                 getWidget(widgetInfo.getLabel(mTargetContext.getPackageManager())).
-                dragToWorkspace();
+                dragToWorkspace(false, false);
 
         assertTrue(mActivityMonitor.itemExists(
                 (info, view) -> info instanceof LauncherAppWidgetInfo &&
                         ((LauncherAppWidgetInfo) info).providerName.getClassName().equals(
                                 widgetInfo.provider.getClassName())).call());
+
+        final Widget widget = mLauncher.getWorkspace().tryGetWidget(widgetInfo.label,
+                DEFAULT_UI_TIMEOUT);
+        assertNotNull("Widget not found on the workspace", widget);
+        widget.launch(getAppPackageName());
+    }
+
+    /**
+     * Test dragging a custom shortcut to the workspace and launch it.
+     *
+     * A custom shortcut is a 1x1 widget that launches a specific intent when user tap on it.
+     * Custom shortcuts are replaced by deep shortcuts after api 25.
+     */
+    @Test
+    @PortraitLandscape
+    public void testDragCustomShortcut() throws Throwable {
+        clearHomescreen();
+        mDevice.pressHome();
+        mLauncher.getWorkspace().openAllWidgets()
+                .getWidget("com.android.launcher3.testcomponent.CustomShortcutConfigActivity")
+                .dragToWorkspace(false, true);
+        mLauncher.getWorkspace().getWorkspaceAppIcon("Shortcut")
+                .launch(getAppPackageName());
     }
 }

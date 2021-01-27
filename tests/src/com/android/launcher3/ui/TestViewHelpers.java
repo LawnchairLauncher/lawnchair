@@ -24,12 +24,10 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.test.uiautomator.UiDevice;
-
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
-import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.testcomponent.AppWidgetNoConfig;
 import com.android.launcher3.testcomponent.AppWidgetWithConfig;
+import com.android.launcher3.widget.WidgetManagerHelper;
 
 import java.util.concurrent.Callable;
 import java.util.function.Function;
@@ -53,7 +51,7 @@ public class TestViewHelpers {
                                 hasConfigureScreen ? AppWidgetWithConfig.class
                                         : AppWidgetNoConfig.class);
                         Log.d(TAG, "findWidgetProvider componentName=" + cn.flattenToString());
-                        return AppWidgetManagerCompat.getInstance(getTargetContext())
+                        return new WidgetManagerHelper(getTargetContext())
                                 .findProvider(cn, Process.myUserHandle());
                     }
                 });

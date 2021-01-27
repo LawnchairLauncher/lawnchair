@@ -27,8 +27,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
+import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.ExtendedEditText;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.util.ComponentKey;
@@ -44,7 +44,7 @@ public class AllAppsSearchBarController
         implements TextWatcher, OnEditorActionListener, ExtendedEditText.OnBackKeyListener,
         OnFocusChangeListener {
 
-    protected Launcher mLauncher;
+    protected BaseDraggingActivity mLauncher;
     protected Callbacks mCb;
     protected ExtendedEditText mInput;
     protected String mQuery;
@@ -59,7 +59,7 @@ public class AllAppsSearchBarController
      */
     public final void initialize(
             SearchAlgorithm searchAlgorithm, ExtendedEditText input,
-            Launcher launcher, Callbacks cb) {
+            BaseDraggingActivity launcher, Callbacks cb) {
         mCb = cb;
         mLauncher = launcher;
 

@@ -32,6 +32,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.PendingAddItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.dragndrop.DragOptions;
+import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.dragndrop.LivePreviewWidgetCell;
 import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.icons.LauncherIcons;
@@ -79,6 +80,8 @@ public class PendingItemDragHelper extends DragPreviewProvider {
 
         mEstimatedCellSize = launcher.getWorkspace().estimateItemSize(mAddInfo);
 
+        DraggableView draggableView;
+
         if (mAddInfo instanceof PendingAddWidgetInfo) {
             PendingAddWidgetInfo createWidgetInfo = (PendingAddWidgetInfo) mAddInfo;
 
@@ -91,8 +94,8 @@ public class PendingItemDragHelper extends DragPreviewProvider {
                         createWidgetInfo.info, maxWidth, previewSizeBeforeScale);
             }
             if (preview == null) {
-                preview = app.getWidgetCache().generateWidgetPreview(
-                        launcher, createWidgetInfo.info, maxWidth, null, previewSizeBeforeScale);
+                preview = app.getWidgetCache().generateWidgetPreview(launcher,
+                        createWidgetInfo.info, maxWidth, null, previewSizeBeforeScale).first;
             }
 
             if (previewSizeBeforeScale[0] < previewBitmapWidth) {
@@ -110,6 +113,7 @@ public class PendingItemDragHelper extends DragPreviewProvider {
 
             dragOffset = null;
             dragRegion = null;
+            draggableView = DraggableView.ofType(DraggableView.DRAGGABLE_WIDGET);
         } else {
             PendingAddShortcutInfo createShortcutInfo = (PendingAddShortcutInfo) mAddInfo;
             Drawable icon = createShortcutInfo.activityInfo.getFullResIcon(app.getIconCache());
@@ -136,6 +140,7 @@ public class PendingItemDragHelper extends DragPreviewProvider {
             dragRegion.top = (mEstimatedCellSize[1]
                     - iconSize - dp.iconTextSizePx - dp.iconDrawablePaddingPx) / 2;
             dragRegion.bottom = dragRegion.top + iconSize;
+            draggableView = DraggableView.ofType(DraggableView.DRAGGABLE_ICON);
         }
 
         // Since we are not going through the workspace for starting the drag, set drag related
@@ -148,8 +153,8 @@ public class PendingItemDragHelper extends DragPreviewProvider {
                 + (int) ((scale * preview.getHeight() - preview.getHeight()) / 2);
 
         // Start the drag
-        launcher.getDragController().startDrag(preview, dragLayerX, dragLayerY, source, mAddInfo,
-                dragOffset, dragRegion, scale, scale, options);
+        launcher.getDragController().startDrag(preview, draggableView, dragLayerX, dragLayerY,
+                source, mAddInfo, dragOffset, dragRegion, scale, scale, options);
     }
 
     @Override

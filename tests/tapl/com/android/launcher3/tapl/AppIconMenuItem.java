@@ -18,10 +18,15 @@ package com.android.launcher3.tapl;
 
 import androidx.test.uiautomator.UiObject2;
 
+import com.android.launcher3.testing.TestProtocol;
+
+import java.util.regex.Pattern;
+
 /**
  * Menu item in an app icon menu.
  */
 public class AppIconMenuItem extends Launchable {
+
     AppIconMenuItem(LauncherInstrumentation launcher, UiObject2 shortcut) {
         super(launcher, shortcut);
     }
@@ -34,7 +39,16 @@ public class AppIconMenuItem extends Launchable {
     }
 
     @Override
+    protected void addExpectedEventsForLongClick() {
+    }
+
+    @Override
     protected String getLongPressIndicator() {
         return "drop_target_bar";
+    }
+
+    @Override
+    protected void expectActivityStartEvents() {
+        mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, LauncherInstrumentation.EVENT_START);
     }
 }

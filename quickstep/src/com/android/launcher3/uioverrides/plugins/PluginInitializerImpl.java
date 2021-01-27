@@ -14,16 +14,17 @@
 
 package com.android.launcher3.uioverrides.plugins;
 
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
+
 import android.content.Context;
 import android.os.Looper;
 
-import com.android.launcher3.LauncherModel;
 import com.android.systemui.shared.plugins.PluginInitializer;
 
 public class PluginInitializerImpl implements PluginInitializer {
     @Override
     public Looper getBgLooper() {
-        return LauncherModel.getWorkerLooper();
+        return MODEL_EXECUTOR.getLooper();
     }
 
     @Override

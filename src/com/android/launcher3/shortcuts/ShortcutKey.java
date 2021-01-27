@@ -1,11 +1,12 @@
 package com.android.launcher3.shortcuts;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ShortcutInfo;
 import android.os.UserHandle;
 
-import com.android.launcher3.ItemInfo;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.ComponentKey;
 
 /**
@@ -27,6 +28,14 @@ public class ShortcutKey extends ComponentKey {
 
     public String getId() {
         return componentName.getClassName();
+    }
+
+    /**
+     * Creates a {@link ShortcutRequest} for this key
+     */
+    public ShortcutRequest buildRequest(Context context) {
+        return new ShortcutRequest(context, user)
+                .forPackage(componentName.getPackageName(), getId());
     }
 
     public static ShortcutKey fromInfo(ShortcutInfo shortcutInfo) {

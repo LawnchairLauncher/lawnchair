@@ -16,7 +16,6 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/TaskMenu.Option"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
@@ -43,9 +42,9 @@
         android:paddingBottom="@dimen/popup_padding_end"
         android:textSize="12sp"
         android:textColor="?android:attr/textColorPrimary"
+        android:fontFamily="sans-serif"
         android:gravity="center_horizontal"
         android:layout_gravity="center_horizontal"
-        android:focusable="false"
-        app:customFontType="taskOption" />
+        android:focusable="false" />
 
 </LinearLayout>

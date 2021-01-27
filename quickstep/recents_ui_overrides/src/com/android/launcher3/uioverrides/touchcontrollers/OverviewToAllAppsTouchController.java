@@ -75,7 +75,7 @@ public class OverviewToAllAppsTouchController extends PortraitStatesTouchControl
     }
 
     @Override
-    protected int getLogContainerTypeForNormalState() {
+    protected int getLogContainerTypeForNormalState(MotionEvent ev) {
         return LauncherLogProto.ContainerType.WORKSPACE;
     }
 }

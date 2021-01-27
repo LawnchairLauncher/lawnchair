@@ -18,7 +18,6 @@ package com.android.launcher3.provider;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
 
@@ -43,7 +42,7 @@ public class LossyScreenMigrationTask extends GridSizeMigrationTask {
     protected LossyScreenMigrationTask(
             Context context, InvariantDeviceProfile idp, SQLiteDatabase db) {
         // Decrease the rows count by 1
-        super(context, db, getValidPackages(context),
+        super(context, db, getValidPackages(context), false /* usePreviewTable */,
                 new Point(idp.numColumns, idp.numRows + 1),
                 new Point(idp.numColumns, idp.numRows));
 

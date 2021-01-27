@@ -28,20 +28,19 @@ import android.view.View;
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
-import com.android.launcher3.ItemInfo;
-import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.tapl.Widgets;
 import com.android.launcher3.testcomponent.WidgetConfigActivity;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.TestViewHelpers;
-import com.android.launcher3.util.Condition;
 import com.android.launcher3.util.Wait;
+import com.android.launcher3.util.Wait.Condition;
 import com.android.launcher3.util.rule.ShellCommandRule;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,7 +52,8 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 public class AddConfigWidgetTest extends AbstractLauncherUiTest {
 
-    @Rule public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grantWidgetBind();
+    @Rule
+    public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grantWidgetBind();
 
     private LauncherAppWidgetProviderInfo mWidgetInfo;
     private AppWidgetManager mAppWidgetManager;
@@ -69,34 +69,22 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
     }
 
     @Test
+    @PortraitLandscape
     public void testWidgetConfig() throws Throwable {
-        runTest(false, true);
+        runTest(true);
     }
 
     @Test
-    @Ignore // b/121280703
-    public void testWidgetConfig_rotate() throws Throwable {
-        runTest(true, true);
-    }
-
-    @Test
+    @PortraitLandscape
     public void testConfigCancelled() throws Throwable {
-        runTest(false, false);
+        runTest(false);
     }
 
-    @Test
-    @Ignore // b/121280703
-    public void testConfigCancelled_rotate() throws Throwable {
-        runTest(true, false);
-    }
 
     /**
-     * @param rotateConfig should the config screen be rotated
      * @param acceptConfig accept the config activity
      */
-    private void runTest(boolean rotateConfig, boolean acceptConfig) throws Throwable {
-        lockRotation(true);
-
+    private void runTest(boolean acceptConfig) throws Throwable {
         clearHomescreen();
         mDevice.pressHome();
 
@@ -106,28 +94,21 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
         WidgetConfigStartupMonitor monitor = new WidgetConfigStartupMonitor();
         widgets.
                 getWidget(mWidgetInfo.getLabel(mTargetContext.getPackageManager())).
-                dragToWorkspace();
+                dragToWorkspace(true, false);
         // Widget id for which the config activity was opened
         mWidgetId = monitor.getWidgetId();
-
-        if (rotateConfig) {
-            // Rotate the screen and verify that the config activity is recreated
-            monitor = new WidgetConfigStartupMonitor();
-            lockRotation(false);
-            assertEquals(mWidgetId, monitor.getWidgetId());
-        }
 
         // Verify that the widget id is valid and bound
         assertNotNull(mAppWidgetManager.getAppWidgetInfo(mWidgetId));
 
         setResult(acceptConfig);
         if (acceptConfig) {
-            Wait.atMost(null, new WidgetSearchCondition(), DEFAULT_ACTIVITY_TIMEOUT);
+            Wait.atMost("", new WidgetSearchCondition(), DEFAULT_ACTIVITY_TIMEOUT, mLauncher);
             assertNotNull(mAppWidgetManager.getAppWidgetInfo(mWidgetId));
         } else {
             // Verify that the widget id is deleted.
-            Wait.atMost(null, () -> mAppWidgetManager.getAppWidgetInfo(mWidgetId) == null,
-                    DEFAULT_ACTIVITY_TIMEOUT);
+            Wait.atMost("", () -> mAppWidgetManager.getAppWidgetInfo(mWidgetId) == null,
+                    DEFAULT_ACTIVITY_TIMEOUT, mLauncher);
         }
     }
 

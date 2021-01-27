@@ -16,77 +16,43 @@
 
 package com.android.launcher3.anim;
 
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
-import android.util.Property;
+import android.util.FloatProperty;
+import android.util.IntProperty;
 import android.view.View;
 
 /**
  * Utility class for setting a property with or without animation
  */
-public class PropertySetter {
+public interface PropertySetter {
 
-    public static final PropertySetter NO_ANIM_PROPERTY_SETTER = new PropertySetter();
+    PropertySetter NO_ANIM_PROPERTY_SETTER = new PropertySetter() { };
 
-    public void setViewAlpha(View view, float alpha, TimeInterpolator interpolator) {
+    /**
+     * Sets the view alpha using the provided interpolator.
+     * Unlike {@link #setFloat}, this also updates the visibility of the view as alpha changes
+     * between zero and non-zero.
+     */
+    default void setViewAlpha(View view, float alpha, TimeInterpolator interpolator) {
         if (view != null) {
             view.setAlpha(alpha);
             AlphaUpdateListener.updateVisibility(view);
         }
     }
 
-    public <T> void setFloat(T target, Property<T, Float> property, float value,
+    /**
+     * Updates the float property of the target using the provided interpolator
+     */
+    default <T> void setFloat(T target, FloatProperty<T> property, float value,
             TimeInterpolator interpolator) {
-        property.set(target, value);
+        property.setValue(target, value);
     }
 
-    public <T> void setInt(T target, Property<T, Integer> property, int value,
+    /**
+     * Updates the int property of the target using the provided interpolator
+     */
+    default <T> void setInt(T target, IntProperty<T> property, int value,
             TimeInterpolator interpolator) {
-        property.set(target, value);
-    }
-
-    public static class AnimatedPropertySetter extends PropertySetter {
-
-        private final long mDuration;
-        private final AnimatorSetBuilder mStateAnimator;
-
-        public AnimatedPropertySetter(long duration, AnimatorSetBuilder builder) {
-            mDuration = duration;
-            mStateAnimator = builder;
-        }
-
-        @Override
-        public void setViewAlpha(View view, float alpha, TimeInterpolator interpolator) {
-            if (view == null || view.getAlpha() == alpha) {
-                return;
-            }
-            ObjectAnimator anim = ObjectAnimator.ofFloat(view, View.ALPHA, alpha);
-            anim.addListener(new AlphaUpdateListener(view));
-            anim.setDuration(mDuration).setInterpolator(interpolator);
-            mStateAnimator.play(anim);
-        }
-
-        @Override
-        public <T> void setFloat(T target, Property<T, Float> property, float value,
-                TimeInterpolator interpolator) {
-            if (property.get(target) == value) {
-                return;
-            }
-            Animator anim = ObjectAnimator.ofFloat(target, property, value);
-            anim.setDuration(mDuration).setInterpolator(interpolator);
-            mStateAnimator.play(anim);
-        }
-
-        @Override
-        public <T> void setInt(T target, Property<T, Integer> property, int value,
-                TimeInterpolator interpolator) {
-            if (property.get(target) == value) {
-                return;
-            }
-            Animator anim = ObjectAnimator.ofInt(target, property, value);
-            anim.setDuration(mDuration).setInterpolator(interpolator);
-            mStateAnimator.play(anim);
-        }
+        property.setValue(target, value);
     }
 }

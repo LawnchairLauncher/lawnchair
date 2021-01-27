@@ -16,10 +16,17 @@
 
 package com.android.launcher3.model;
 
-import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_LOCKED_USER;
-import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SAFEMODE;
-import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SUSPENDED;
-import static com.android.launcher3.model.LoaderResults.filterCurrentWorkspaceItems;
+import static com.android.launcher3.config.FeatureFlags.MULTI_DB_GRID_MIRATION_ALGO;
+import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_HAS_SHORTCUT_PERMISSION;
+import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_CHANGE_PERMISSION;
+import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_ENABLED;
+import static com.android.launcher3.model.ModelUtils.filterCurrentWorkspaceItems;
+import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_LOCKED_USER;
+import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_SAFEMODE;
+import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_SUSPENDED;
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
+import static com.android.launcher3.util.PackageManagerHelper.hasShortcutsPermission;
+import static com.android.launcher3.util.PackageManagerHelper.isSystemApp;
 
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
@@ -28,54 +35,64 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.LauncherActivityInfo;
+import android.content.pm.LauncherApps;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.ShortcutInfo;
-import android.os.Handler;
-import android.os.Process;
+import android.net.Uri;
 import android.os.UserHandle;
+import android.os.UserManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.LongSparseArray;
 import android.util.MutableInt;
+import android.util.TimingLogger;
+
+import androidx.annotation.WorkerThread;
 
 import ch.deletescape.lawnchair.iconpack.IconPackManager;
 import ch.deletescape.lawnchair.model.HomeWidgetMigrationTask;
 import ch.deletescape.lawnchair.sesame.Sesame;
-import com.android.launcher3.AllAppsList;
-import com.android.launcher3.AppInfo;
-import com.android.launcher3.FolderInfo;
 import com.android.launcher3.InstallShortcutReceiver;
-import com.android.launcher3.ItemInfo;
-import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.compat.AppWidgetManagerCompat;
-import com.android.launcher3.compat.LauncherAppsCompat;
-import com.android.launcher3.compat.PackageInstallerCompat;
-import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
-import com.android.launcher3.folder.FolderIconPreviewVerifier;
-import com.android.launcher3.icons.ComponentWithLabel;
-import com.android.launcher3.icons.ComponentWithLabel.ComponentCachingLogic;
+import com.android.launcher3.folder.FolderGridOrganizer;
+import com.android.launcher3.folder.FolderNameInfos;
+import com.android.launcher3.folder.FolderNameProvider;
+import com.android.launcher3.icons.ComponentWithLabelAndIcon;
+import com.android.launcher3.icons.ComponentWithLabelAndIcon.ComponentWithIconCachingLogic;
 import com.android.launcher3.icons.IconCache;
-import com.android.launcher3.icons.LauncherActivtiyCachingLogic;
-import com.android.launcher3.icons.LauncherIcons;
+import com.android.launcher3.icons.LauncherActivityCachingLogic;
+import com.android.launcher3.icons.ShortcutCachingLogic;
 import com.android.launcher3.icons.cache.IconCacheUpdateHandler;
 import com.android.launcher3.logging.FileLog;
+import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.FolderInfo;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.LauncherAppWidgetInfo;
+import com.android.launcher3.model.data.PackageItemInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.pm.InstallSessionHelper;
+import com.android.launcher3.pm.PackageInstallInfo;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.provider.ImportDataTask;
-import com.android.launcher3.shortcuts.DeepShortcutManager;
+import com.android.launcher3.qsb.QsbContainerView;
 import com.android.launcher3.shortcuts.ShortcutKey;
+import com.android.launcher3.shortcuts.ShortcutRequest;
+import com.android.launcher3.shortcuts.ShortcutRequest.QueryResult;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.IOUtils;
 import com.android.launcher3.util.LooperIdleLock;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
+import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.TraceHelper;
+import com.android.launcher3.widget.WidgetManagerHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -84,7 +101,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
-import java.util.function.Supplier;
 
 /**
  * Runnable for the thread that loads the contents of the launcher:
@@ -96,20 +112,24 @@ import java.util.function.Supplier;
 public class LoaderTask implements Runnable {
     private static final String TAG = "LoaderTask";
 
-    private final LauncherAppState mApp;
+    protected final LauncherAppState mApp;
     private final AllAppsList mBgAllAppsList;
-    private final BgDataModel mBgDataModel;
+    protected final BgDataModel mBgDataModel;
 
     private FirstScreenBroadcast mFirstScreenBroadcast;
 
     private final LoaderResults mResults;
 
-    private final LauncherAppsCompat mLauncherApps;
-    private final UserManagerCompat mUserManager;
-    private final DeepShortcutManager mShortcutManager;
-    private final PackageInstallerCompat mPackageInstaller;
-    private final AppWidgetManagerCompat mAppWidgetManager;
+    private final LauncherApps mLauncherApps;
+    private final UserManager mUserManager;
+    private final UserCache mUserCache;
+
+    private final InstallSessionHelper mSessionHelper;
     private final IconCache mIconCache;
+
+    private final UserManagerState mUserManagerState = new UserManagerState();
+
+    protected Map<ComponentKey, AppWidgetProviderInfo> mWidgetProvidersMap;
 
     private boolean mStopped;
 
@@ -120,11 +140,10 @@ public class LoaderTask implements Runnable {
         mBgDataModel = dataModel;
         mResults = results;
 
-        mLauncherApps = LauncherAppsCompat.getInstance(mApp.getContext());
-        mUserManager = UserManagerCompat.getInstance(mApp.getContext());
-        mShortcutManager = DeepShortcutManager.getInstance(mApp.getContext());
-        mPackageInstaller = PackageInstallerCompat.getInstance(mApp.getContext());
-        mAppWidgetManager = AppWidgetManagerCompat.getInstance(mApp.getContext());
+        mLauncherApps = mApp.getContext().getSystemService(LauncherApps.class);
+        mUserManager = mApp.getContext().getSystemService(UserManager.class);
+        mUserCache = UserCache.INSTANCE.get(mApp.getContext());
+        mSessionHelper = InstallSessionHelper.INSTANCE.get(mApp.getContext());
         mIconCache = mApp.getIconCache();
     }
 
@@ -168,81 +187,107 @@ public class LoaderTask implements Runnable {
             }
         }
 
-        TraceHelper.beginSection(TAG);
+        Object traceToken = TraceHelper.INSTANCE.beginSection(TAG);
+        TimingLogger logger = new TimingLogger(TAG, "run");
         try (LauncherModel.LoaderTransaction transaction = mApp.getModel().beginLoader(this)) {
-            TraceHelper.partitionSection(TAG, "step 1.1: loading workspace");
-            loadWorkspace();
+            List<ShortcutInfo> allShortcuts = new ArrayList<>();
+            loadWorkspace(allShortcuts);
+            loadCachedPredictions();
+            logger.addSplit("loadWorkspace");
 
             verifyNotStopped();
-            TraceHelper.partitionSection(TAG, "step 1.2: bind workspace workspace");
             mResults.bindWorkspace();
+            logger.addSplit("bindWorkspace");
 
             // Notify the installer packages of packages with active installs on the first screen.
-            TraceHelper.partitionSection(TAG, "step 1.3: send first screen broadcast");
             sendFirstScreenActiveInstallsBroadcast();
+            logger.addSplit("sendFirstScreenActiveInstallsBroadcast");
 
             // Take a break
-            TraceHelper.partitionSection(TAG, "step 1 completed, wait for idle");
             waitForIdle();
+            logger.addSplit("step 1 complete");
             verifyNotStopped();
 
             // second step
-            TraceHelper.partitionSection(TAG, "step 2.1: loading all apps");
             List<LauncherActivityInfo> allActivityList = loadAllApps();
+            logger.addSplit("loadAllApps");
 
-            TraceHelper.partitionSection(TAG, "step 2.2: Binding all apps");
             verifyNotStopped();
             mResults.bindAllApps();
+            logger.addSplit("bindAllApps");
 
             verifyNotStopped();
-            TraceHelper.partitionSection(TAG, "step 2.3: Update icon cache");
             IconCacheUpdateHandler updateHandler = mIconCache.getUpdateHandler();
             setIgnorePackages(updateHandler);
             updateHandler.updateIcons(allActivityList,
-                    new LauncherActivtiyCachingLogic(mApp.getIconCache()),
+                    LauncherActivityCachingLogic.newInstance(mApp.getContext()),
                     mApp.getModel()::onPackageIconsUpdated);
+            logger.addSplit("update icon cache");
+
+            if (FeatureFlags.ENABLE_DEEP_SHORTCUT_ICON_CACHE.get()) {
+                verifyNotStopped();
+                logger.addSplit("save shortcuts in icon cache");
+                updateHandler.updateIcons(allShortcuts, new ShortcutCachingLogic(),
+                        mApp.getModel()::onPackageIconsUpdated);
+            }
 
             // Take a break
-            TraceHelper.partitionSection(TAG, "step 2 completed, wait for idle");
             waitForIdle();
+            logger.addSplit("step 2 complete");
             verifyNotStopped();
 
             // third step
-            TraceHelper.partitionSection(TAG, "step 3.1: loading deep shortcuts");
-            loadDeepShortcuts();
+            List<ShortcutInfo> allDeepShortcuts = loadDeepShortcuts();
+            logger.addSplit("loadDeepShortcuts");
 
             verifyNotStopped();
-            TraceHelper.partitionSection(TAG, "step 3.2: bind deep shortcuts");
             mResults.bindDeepShortcuts();
+            logger.addSplit("bindDeepShortcuts");
+
+            if (FeatureFlags.ENABLE_DEEP_SHORTCUT_ICON_CACHE.get()) {
+                verifyNotStopped();
+                logger.addSplit("save deep shortcuts in icon cache");
+                updateHandler.updateIcons(allDeepShortcuts,
+                        new ShortcutCachingLogic(), (pkgs, user) -> { });
+            }
 
             // Take a break
-            TraceHelper.partitionSection(TAG, "step 3 completed, wait for idle");
             waitForIdle();
+            logger.addSplit("step 3 complete");
             verifyNotStopped();
 
             // fourth step
-            TraceHelper.partitionSection(TAG, "step 4.1: loading widgets");
-            List<ComponentWithLabel> allWidgetsList = mBgDataModel.widgetsModel.update(mApp, null);
+            List<ComponentWithLabelAndIcon> allWidgetsList =
+                    mBgDataModel.widgetsModel.update(mApp, null);
+            logger.addSplit("load widgets");
 
             verifyNotStopped();
-            TraceHelper.partitionSection(TAG, "step 4.2: Binding widgets");
             mResults.bindWidgets();
-
+            logger.addSplit("bindWidgets");
             verifyNotStopped();
-            TraceHelper.partitionSection(TAG, "step 4.3: Update icon cache");
-            updateHandler.updateIcons(allWidgetsList, new ComponentCachingLogic(mApp.getContext()),
+
+            updateHandler.updateIcons(allWidgetsList,
+                    new ComponentWithIconCachingLogic(mApp.getContext(), true),
                     mApp.getModel()::onWidgetLabelsUpdated);
+            logger.addSplit("save widgets in icon cache");
+
+            // fifth step
+            if (FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
+                loadFolderNames();
+            }
 
             verifyNotStopped();
-            TraceHelper.partitionSection(TAG, "step 5: Finish icon cache update");
             updateHandler.finish();
+            logger.addSplit("finish icon update");
 
             transaction.commit();
         } catch (CancellationException e) {
             // Loader stopped, ignore
-            TraceHelper.partitionSection(TAG, "Cancelled");
+            logger.addSplit("Cancelled");
+        } finally {
+            logger.dumpToLog();
         }
-        TraceHelper.endSection(TAG);
+        TraceHelper.INSTANCE.endSection(traceToken);
     }
 
     public synchronized void stopLocked() {
@@ -250,7 +295,13 @@ public class LoaderTask implements Runnable {
         this.notify();
     }
 
-    private void loadWorkspace() {
+    private void loadWorkspace(List<ShortcutInfo> allDeepShortcuts) {
+        loadWorkspace(allDeepShortcuts, LauncherSettings.Favorites.CONTENT_URI,
+                null /* selection */);
+    }
+
+    protected void loadWorkspace(List<ShortcutInfo> allDeepShortcuts, Uri contentUri,
+            String selection) {
         final Context context = mApp.getContext();
         final ContentResolver contentResolver = context.getContentResolver();
         final PackageManagerHelper pmHelper = new PackageManagerHelper(context);
@@ -270,7 +321,9 @@ public class LoaderTask implements Runnable {
             HomeWidgetMigrationTask.migrateIfNeeded(context);
         }
 
-        if (!clearDb && !GridSizeMigrationTask.migrateGridIfNeeded(context)) {
+        if (!clearDb && (MULTI_DB_GRID_MIRATION_ALGO.get()
+                ? !GridSizeMigrationTaskV2.migrateGridIfNeeded(context)
+                : !GridSizeMigrationTask.migrateGridIfNeeded(context))) {
             // Migration failed. Clear workspace.
             clearDb = true;
         }
@@ -288,15 +341,17 @@ public class LoaderTask implements Runnable {
         synchronized (mBgDataModel) {
             mBgDataModel.clear();
 
-            final HashMap<String, SessionInfo> installingPkgs =
-                    mPackageInstaller.updateAndGetActiveSessionCache();
+            final HashMap<PackageUserKey, SessionInfo> installingPkgs =
+                    mSessionHelper.getActiveSessions();
+            installingPkgs.forEach(mApp.getIconCache()::updateSessionCache);
+
+            final PackageUserKey tempPackageKey = new PackageUserKey(null, null);
             mFirstScreenBroadcast = new FirstScreenBroadcast(installingPkgs);
 
             Map<ShortcutKey, ShortcutInfo> shortcutKeyToPinnedShortcuts = new HashMap<>();
-            final LoaderCursor c = new LoaderCursor(contentResolver.query(
-                    LauncherSettings.Favorites.CONTENT_URI, null, null, null, null), mApp);
-
-            HashMap<ComponentKey, AppWidgetProviderInfo> widgetProvidersMap = null;
+            final LoaderCursor c = new LoaderCursor(
+                    contentResolver.query(contentUri, null, selection, null, null), contentUri,
+                    mApp, mUserManagerState);
 
             try {
                 final int appWidgetIdIndex = c.getColumnIndexOrThrow(
@@ -319,20 +374,21 @@ public class LoaderTask implements Runnable {
                         LauncherSettings.Favorites.SWIPE_UP_ACTION);
 
                 final LongSparseArray<UserHandle> allUsers = c.allUsers;
-                final LongSparseArray<Boolean> quietMode = new LongSparseArray<>();
                 final LongSparseArray<Boolean> unlockedUsers = new LongSparseArray<>();
-                for (UserHandle user : mUserManager.getUserProfiles()) {
-                    long serialNo = mUserManager.getSerialNumberForUser(user);
+
+                mUserManagerState.init(mUserCache, mUserManager);
+
+                for (UserHandle user : mUserCache.getUserProfiles()) {
+                    long serialNo = mUserCache.getSerialNumberForUser(user);
                     allUsers.put(serialNo, user);
-                    quietMode.put(serialNo, mUserManager.isQuietModeEnabled(user));
 
                     boolean userUnlocked = mUserManager.isUserUnlocked(user);
 
                     // We can only query for shortcuts when the user is unlocked.
                     if (userUnlocked) {
-                        List<ShortcutInfo> pinnedShortcuts =
-                                mShortcutManager.queryForPinnedShortcuts(null, user);
-                        if (mShortcutManager.wasLastCallSuccess()) {
+                        QueryResult pinnedShortcuts = new ShortcutRequest(context, user)
+                                .query(ShortcutRequest.PINNED);
+                        if (pinnedShortcuts.wasSuccess()) {
                             for (ShortcutInfo shortcut : pinnedShortcuts) {
                                 shortcutKeyToPinnedShortcuts.put(ShortcutKey.fromInfo(shortcut),
                                         shortcut);
@@ -374,8 +430,8 @@ public class LoaderTask implements Runnable {
                                 continue;
                             }
 
-                            int disabledState = quietMode.get(c.serialNumber) ?
-                                    WorkspaceItemInfo.FLAG_DISABLED_QUIET_USER : 0;
+                            int disabledState = mUserManagerState.isUserQuiet(c.serialNumber)
+                                    ? WorkspaceItemInfo.FLAG_DISABLED_QUIET_USER : 0;
                             ComponentName cn = intent.getComponent();
                             targetPkg = cn == null ? intent.getPackage() : cn.getPackageName();
                             titleAlias = c.getString(titleAliasIndex);
@@ -401,14 +457,16 @@ public class LoaderTask implements Runnable {
                             // If there is no target package, its an implicit intent
                             // (legacy shortcut) which is always valid
                             boolean validTarget = TextUtils.isEmpty(targetPkg) ||
-                                    mLauncherApps.isPackageEnabledForProfile(targetPkg, c.user);
+                                    mLauncherApps.isPackageEnabled(targetPkg, c.user);
 
-                            if (cn != null && validTarget) {
+                            // If it's a deep shortcut, we'll use pinned shortcuts to restore it
+                            if (cn != null && validTarget && c.itemType
+                                    != LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
                                 // If the apk is present and the shortcut points to a specific
                                 // component.
 
                                 // If the component is already present
-                                if (mLauncherApps.isActivityEnabledForProfile(cn, c.user)) {
+                                if (mLauncherApps.isActivityEnabled(cn, c.user)) {
                                     // no special handling necessary for this item
                                     c.markRestored();
                                 } else {
@@ -438,9 +496,10 @@ public class LoaderTask implements Runnable {
                                     // installed later.
                                     FileLog.d(TAG, "package not yet restored: " + targetPkg);
 
+                                    tempPackageKey.update(targetPkg, c.user);
                                     if (c.hasRestoreFlag(WorkspaceItemInfo.FLAG_RESTORE_STARTED)) {
                                         // Restore has started once.
-                                    } else if (installingPkgs.containsKey(targetPkg)) {
+                                    } else if (installingPkgs.containsKey(tempPackageKey)) {
                                         // App restore has started. Update the flag
                                         c.restoreFlag |= WorkspaceItemInfo.FLAG_RESTORE_STARTED;
                                         c.updater().put(LauncherSettings.Favorites.RESTORED,
@@ -500,21 +559,16 @@ public class LoaderTask implements Runnable {
                                         continue;
                                     }
                                     info = new WorkspaceItemInfo(pinnedShortcut, context);
-                                    final WorkspaceItemInfo finalInfo = info;
-
-                                    LauncherIcons li = LauncherIcons.obtain(context);
                                     // If the pinned deep shortcut is no longer published,
                                     // use the last saved icon instead of the default.
-                                    Supplier<ItemInfoWithIcon> fallbackIconProvider = () ->
-                                            c.loadIcon(finalInfo, li) ? finalInfo : null;
-                                    info.applyFrom(li.createShortcutIcon(pinnedShortcut,
-                                            true /* badged */, fallbackIconProvider));
-                                    li.recycle();
+                                    mIconCache.getShortcutIcon(info, pinnedShortcut, c::loadIcon);
+
                                     if (pmHelper.isAppSuspended(
                                             pinnedShortcut.getPackage(), info.user)) {
                                         info.runtimeStatusFlags |= FLAG_DISABLED_SUSPENDED;
                                     }
-                                    intent = info.intent;
+                                    intent = info.getIntent();
+                                    allDeepShortcuts.add(pinnedShortcut);
                                 } else {
                                     // Create a shortcut info in disabled mode for now.
                                     info = c.loadSimpleWorkspaceItem();
@@ -557,12 +611,13 @@ public class LoaderTask implements Runnable {
                                 info.spanX = 1;
                                 info.spanY = 1;
                                 info.runtimeStatusFlags |= disabledState;
-                                if (isSafeMode && !Utilities.isSystemApp(context, intent)) {
+                                if (isSafeMode && !isSystemApp(context, intent)) {
                                     info.runtimeStatusFlags |= FLAG_DISABLED_SAFEMODE;
                                 }
 
                                 if (c.restoreFlag != 0 && !TextUtils.isEmpty(targetPkg)) {
-                                    SessionInfo si = installingPkgs.get(targetPkg);
+                                    tempPackageKey.update(targetPkg, c.user);
+                                    SessionInfo si = installingPkgs.get(tempPackageKey);
                                     if (si == null) {
                                         info.status &= ~WorkspaceItemInfo.FLAG_INSTALL_SESSION_ACTIVE;
                                     } else {
@@ -595,7 +650,7 @@ public class LoaderTask implements Runnable {
                             break;
 
                         case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
-                            if (FeatureFlags.GO_DISABLE_WIDGETS) {
+                            if (WidgetsModel.GO_DISABLE_WIDGETS) {
                                 c.markDeleted("Only legacy shortcuts can have null package");
                                 continue;
                             }
@@ -607,22 +662,30 @@ public class LoaderTask implements Runnable {
 
                             int appWidgetId = c.getInt(appWidgetIdIndex);
                             String savedProvider = c.getString(appWidgetProviderIndex);
+                            final ComponentName component;
 
-                            final ComponentName component =
-                                    ComponentName.unflattenFromString(savedProvider);
-
+                            boolean isSearchWidget = (c.getInt(optionsIndex)
+                                    & LauncherAppWidgetInfo.OPTION_SEARCH_WIDGET) != 0;
+                            if (isSearchWidget) {
+                                component  = QsbContainerView.getSearchComponentName(context);
+                                if (component == null) {
+                                    c.markDeleted("Discarding SearchWidget without packagename ");
+                                    continue;
+                                }
+                            } else {
+                                component = ComponentName.unflattenFromString(savedProvider);
+                            }
                             final boolean isIdValid = !c.hasRestoreFlag(
                                     LauncherAppWidgetInfo.FLAG_ID_NOT_VALID);
                             final boolean wasProviderReady = !c.hasRestoreFlag(
                                     LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY);
 
-                            if (widgetProvidersMap == null) {
-                                widgetProvidersMap = mAppWidgetManager.getAllProvidersMap();
+                            if (mWidgetProvidersMap == null) {
+                                mWidgetProvidersMap = WidgetManagerHelper.getAllProvidersMap(
+                                        context);
                             }
-                            final AppWidgetProviderInfo provider = widgetProvidersMap.get(
-                                    new ComponentKey(
-                                            ComponentName.unflattenFromString(savedProvider),
-                                            c.user));
+                            final AppWidgetProviderInfo provider = mWidgetProvidersMap.get(
+                                    new ComponentKey(component, c.user));
 
                             final boolean isProviderReady = isValidProvider(provider);
                             if (!isSafeMode && !customWidget &&
@@ -658,8 +721,10 @@ public class LoaderTask implements Runnable {
                                     appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId,
                                             component);
                                     appWidgetInfo.restoreStatus = c.restoreFlag;
+
+                                    tempPackageKey.update(component.getPackageName(), c.user);
                                     SessionInfo si =
-                                            installingPkgs.get(component.getPackageName());
+                                            installingPkgs.get(tempPackageKey);
                                     Integer installProgress = si == null
                                             ? null
                                             : (int) (si.getProgress() * 100);
@@ -686,6 +751,7 @@ public class LoaderTask implements Runnable {
                                 c.applyCommonProperties(appWidgetInfo);
                                 appWidgetInfo.spanX = c.getInt(spanXIndex);
                                 appWidgetInfo.spanY = c.getInt(spanYIndex);
+                                appWidgetInfo.options = c.getInt(optionsIndex);
                                 appWidgetInfo.user = c.user;
 
                                 if (appWidgetInfo.spanX <= 0 || appWidgetInfo.spanY <= 0) {
@@ -731,7 +797,7 @@ public class LoaderTask implements Runnable {
                     }
                 }
             } finally {
-                Utilities.closeSilently(c);
+                IOUtils.closeSilently(c);
             }
 
             // Break early if we've stopped loading
@@ -740,39 +806,41 @@ public class LoaderTask implements Runnable {
                 return;
             }
 
-            // Remove dead items
-            if (c.commitDeleted()) {
-                // Remove any empty folder
-                int[] deletedFolderIds = LauncherSettings.Settings
-                        .call(contentResolver,
-                                LauncherSettings.Settings.METHOD_DELETE_EMPTY_FOLDERS)
-                        .getIntArray(LauncherSettings.Settings.EXTRA_VALUE);
-                for (int folderId : deletedFolderIds) {
-                    mBgDataModel.workspaceItems.remove(mBgDataModel.folders.get(folderId));
-                    mBgDataModel.folders.remove(folderId);
-                    mBgDataModel.itemsIdMap.remove(folderId);
+            if (contentUri == LauncherSettings.Favorites.CONTENT_URI) {
+                // Remove dead items
+                if (c.commitDeleted()) {
+                    // Remove any empty folder
+                    int[] deletedFolderIds = LauncherSettings.Settings
+                            .call(contentResolver,
+                                    LauncherSettings.Settings.METHOD_DELETE_EMPTY_FOLDERS)
+                            .getIntArray(LauncherSettings.Settings.EXTRA_VALUE);
+                    for (int folderId : deletedFolderIds) {
+                        mBgDataModel.workspaceItems.remove(mBgDataModel.folders.get(folderId));
+                        mBgDataModel.folders.remove(folderId);
+                        mBgDataModel.itemsIdMap.remove(folderId);
+                    }
+
+                    // Remove any ghost widgets
+                    LauncherSettings.Settings.call(contentResolver,
+                            LauncherSettings.Settings.METHOD_REMOVE_GHOST_WIDGETS);
                 }
 
-                // Remove any ghost widgets
-                LauncherSettings.Settings.call(contentResolver,
-                        LauncherSettings.Settings.METHOD_REMOVE_GHOST_WIDGETS);
-            }
-
-            // Unpin shortcuts that don't exist on the workspace.
-            HashSet<ShortcutKey> pendingShortcuts =
-                    InstallShortcutReceiver.getPendingShortcuts(context);
-            for (ShortcutKey key : shortcutKeyToPinnedShortcuts.keySet()) {
-                MutableInt numTimesPinned = mBgDataModel.pinnedShortcutCounts.get(key);
-                if ((numTimesPinned == null || numTimesPinned.value == 0)
-                        && !pendingShortcuts.contains(key)) {
-                    // Shortcut is pinned but doesn't exist on the workspace; unpin it.
-                    mShortcutManager.unpinShortcut(key);
+                // Unpin shortcuts that don't exist on the workspace.
+                HashSet<ShortcutKey> pendingShortcuts =
+                        InstallShortcutReceiver.getPendingShortcuts(context);
+                for (ShortcutKey key : shortcutKeyToPinnedShortcuts.keySet()) {
+                    MutableInt numTimesPinned = mBgDataModel.pinnedShortcutCounts.get(key);
+                    if ((numTimesPinned == null || numTimesPinned.value == 0)
+                            && !pendingShortcuts.contains(key)) {
+                        // Shortcut is pinned but doesn't exist on the workspace; unpin it.
+                        mBgDataModel.unpinShortcut(context, key);
+                    }
                 }
             }
 
             // Sort the folder items, update ranks, and make sure all preview items are high res.
-            FolderIconPreviewVerifier verifier =
-                    new FolderIconPreviewVerifier(mApp.getInvariantDeviceProfile());
+            FolderGridOrganizer verifier =
+                    new FolderGridOrganizer(mApp.getInvariantDeviceProfile());
             for (FolderInfo folder : mBgDataModel.folders) {
                 Collections.sort(folder.contents, Folder.ITEM_POS_COMPARATOR);
                 verifier.setFolderInfo(folder);
@@ -799,34 +867,52 @@ public class LoaderTask implements Runnable {
                         new SdCardAvailableReceiver(mApp, pendingPackages),
                         new IntentFilter(Intent.ACTION_BOOT_COMPLETED),
                         null,
-                        new Handler(LauncherModel.getWorkerLooper()));
+                        MODEL_EXECUTOR.getHandler());
             }
         }
     }
 
     private void setIgnorePackages(IconCacheUpdateHandler updateHandler) {
         // Ignore packages which have a promise icon.
-        HashSet<String> packagesToIgnore = new HashSet<>();
         synchronized (mBgDataModel) {
             for (ItemInfo info : mBgDataModel.itemsIdMap) {
                 if (info instanceof WorkspaceItemInfo) {
                     WorkspaceItemInfo si = (WorkspaceItemInfo) info;
                     if (si.isPromise() && si.getTargetComponent() != null) {
-                        packagesToIgnore.add(si.getTargetComponent().getPackageName());
+                        updateHandler.addPackagesToIgnore(
+                                si.user, si.getTargetComponent().getPackageName());
                     }
                 } else if (info instanceof LauncherAppWidgetInfo) {
                     LauncherAppWidgetInfo lawi = (LauncherAppWidgetInfo) info;
                     if (lawi.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY)) {
-                        packagesToIgnore.add(lawi.providerName.getPackageName());
+                        updateHandler.addPackagesToIgnore(
+                                lawi.user, lawi.providerName.getPackageName());
                     }
                 }
             }
         }
-        updateHandler.setPackagesToIgnore(Process.myUserHandle(), packagesToIgnore);
+    }
+
+    @WorkerThread
+    private void loadCachedPredictions() {
+        synchronized (mBgDataModel) {
+            List<ComponentKey> componentKeys =
+                    mApp.getPredictionModel().getPredictionComponentKeys();
+            List<LauncherActivityInfo> l;
+            mBgDataModel.cachedPredictedItems.clear();
+            for (ComponentKey key : componentKeys) {
+                l = mLauncherApps.getActivityList(key.componentName.getPackageName(), key.user);
+                if (l.size() == 0) continue;
+                AppInfo info = new AppInfo(l.get(0), key.user,
+                        mUserManagerState.isUserQuiet(key.user));
+                mBgDataModel.cachedPredictedItems.add(info);
+                mIconCache.getTitleAndIcon(info, false);
+            }
+        }
     }
 
     private List<LauncherActivityInfo> loadAllApps() {
-        final List<UserHandle> profiles = mUserManager.getUserProfiles();
+        final List<UserHandle> profiles = mUserCache.getUserProfiles();
         List<LauncherActivityInfo> allActivityList = new ArrayList<>();
         // Clear the list of apps
         mBgAllAppsList.clear();
@@ -837,7 +923,7 @@ public class LoaderTask implements Runnable {
             if (apps == null || apps.isEmpty()) {
                 return allActivityList;
             }
-            boolean quietMode = mUserManager.isQuietModeEnabled(user);
+            boolean quietMode = mUserManagerState.isUserQuiet(user);
             // Create the ApplicationInfos
             for (int i = 0; i < apps.size(); i++) {
                 LauncherActivityInfo app = apps.get(i);
@@ -847,28 +933,64 @@ public class LoaderTask implements Runnable {
             allActivityList.addAll(apps);
         }
 
-        if (FeatureFlags.LAUNCHER3_PROMISE_APPS_IN_ALL_APPS) {
+        if (FeatureFlags.PROMISE_APPS_IN_ALL_APPS.get()) {
             // get all active sessions and add them to the all apps list
             for (PackageInstaller.SessionInfo info :
-                    mPackageInstaller.getAllVerifiedSessions()) {
+                    mSessionHelper.getAllVerifiedSessions()) {
                 mBgAllAppsList.addPromiseApp(mApp.getContext(),
-                        PackageInstallerCompat.PackageInstallInfo.fromInstallingState(info));
+                        PackageInstallInfo.fromInstallingState(info));
+            }
+        }
+        for (AppInfo item : mBgDataModel.cachedPredictedItems) {
+            List<LauncherActivityInfo> l = mLauncherApps.getActivityList(
+                    item.componentName.getPackageName(), item.user);
+            for (LauncherActivityInfo info : l) {
+                boolean quietMode = mUserManagerState.isUserQuiet(item.user);
+                mBgAllAppsList.add(new AppInfo(info, item.user, quietMode), info);
             }
         }
 
-        mBgAllAppsList.added = new ArrayList<>();
+        mBgAllAppsList.setFlags(FLAG_QUIET_MODE_ENABLED,
+                mUserManagerState.isAnyProfileQuietModeEnabled());
+        mBgAllAppsList.setFlags(FLAG_HAS_SHORTCUT_PERMISSION,
+                hasShortcutsPermission(mApp.getContext()));
+        mBgAllAppsList.setFlags(FLAG_QUIET_MODE_CHANGE_PERMISSION,
+                mApp.getContext().checkSelfPermission("android.permission.MODIFY_QUIET_MODE")
+                        == PackageManager.PERMISSION_GRANTED);
+
+        mBgAllAppsList.getAndResetChangeFlag();
         return allActivityList;
     }
 
-    private void loadDeepShortcuts() {
+    private List<ShortcutInfo> loadDeepShortcuts() {
+        List<ShortcutInfo> allShortcuts = new ArrayList<>();
         mBgDataModel.deepShortcutMap.clear();
-        mBgDataModel.hasShortcutHostPermission = mShortcutManager.hasHostPermission();
-        if (mBgDataModel.hasShortcutHostPermission) {
-            for (UserHandle user : mUserManager.getUserProfiles()) {
+
+        if (mBgAllAppsList.hasShortcutHostPermission()) {
+            for (UserHandle user : mUserCache.getUserProfiles()) {
                 if (mUserManager.isUserUnlocked(user)) {
-                    List<ShortcutInfo> shortcuts =
-                            mShortcutManager.queryForAllShortcuts(user);
+                    List<ShortcutInfo> shortcuts = new ShortcutRequest(mApp.getContext(), user)
+                            .query(ShortcutRequest.ALL);
+                    allShortcuts.addAll(shortcuts);
                     mBgDataModel.updateDeepShortcutCounts(null, user, shortcuts);
+                }
+            }
+        }
+        return allShortcuts;
+    }
+
+    private void loadFolderNames() {
+        FolderNameProvider provider = FolderNameProvider.newInstance(mApp.getContext(),
+                mBgAllAppsList.data, mBgDataModel.folders);
+
+        synchronized (mBgDataModel) {
+            for (int i = 0; i < mBgDataModel.folders.size(); i++) {
+                FolderNameInfos suggestionInfos = new FolderNameInfos();
+                FolderInfo info = mBgDataModel.folders.valueAt(i);
+                if (info.suggestedFolderNames == null) {
+                    provider.getSuggestedFolderName(mApp.getContext(), info.contents,
+                            suggestionInfos);
+                    info.suggestedFolderNames = suggestionInfos;
                 }
             }
         }
