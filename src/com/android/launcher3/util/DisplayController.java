@@ -31,8 +31,6 @@ import android.view.Display;
 
 import androidx.annotation.VisibleForTesting;
 
-import com.android.launcher3.Utilities;
-
 import java.util.ArrayList;
 
 /**
@@ -159,13 +157,13 @@ public class DisplayController implements DisplayListener {
         private final ArrayList<DisplayInfoChangeListener> mListeners = new ArrayList<>();
         private DisplayController.Info mInfo;
 
-        private DisplayHolder(Context displayContext, Display display) {
+        private DisplayHolder(Context displayContext) {
             mDisplayContext = displayContext;
             // Note that the Display object must be obtained from DisplayManager which is
             // associated to the display context, so the Display is isolated from Activity and
             // Application to provide the actual state of device that excludes the additional
             // adjustment and override.
-            mInfo = new DisplayController.Info(display);
+            mInfo = new DisplayController.Info(mDisplayContext);
             mId = mInfo.id;
         }
 
@@ -182,31 +180,22 @@ public class DisplayController implements DisplayListener {
         }
 
         protected void handleOnChange() {
-            Display display = Utilities.ATLEAST_R
-                    ? mDisplayContext.getDisplay()
-                    : mDisplayContext
-                        .getSystemService(DisplayManager.class)
-                        .getDisplay(mId);
-            if (display == null) {
-                return;
-            }
-
             Info oldInfo = mInfo;
-            Info newInfo = new Info(display);
+            Info info = new Info(mDisplayContext);
 
             int change = 0;
-            if (newInfo.hasDifferentSize(oldInfo)) {
+            if (info.hasDifferentSize(oldInfo)) {
                 change |= CHANGE_SIZE;
             }
-            if (newInfo.rotation != oldInfo.rotation) {
+            if (oldInfo.rotation != info.rotation) {
                 change |= CHANGE_ROTATION;
             }
-            if (newInfo.singleFrameMs != oldInfo.singleFrameMs) {
+            if (info.singleFrameMs != oldInfo.singleFrameMs) {
                 change |= CHANGE_FRAME_DELAY;
             }
 
             if (change != 0) {
-                mInfo = newInfo;
+                mInfo = info;
                 final int flags = change;
                 MAIN_EXECUTOR.execute(() -> notifyChange(flags));
             }
@@ -227,7 +216,7 @@ public class DisplayController implements DisplayListener {
             // Use application context to create display context so that it can have its own
             // Resources.
             Context displayContext = context.getApplicationContext().createDisplayContext(display);
-            return new DisplayHolder(displayContext, display);
+            return new DisplayHolder(displayContext);
         }
     }
 
@@ -255,7 +244,12 @@ public class DisplayController implements DisplayListener {
             this.metrics = metrics;
         }
 
-        public Info(Display display) {
+        private Info(Context context) {
+            this(context, context.getSystemService(DisplayManager.class)
+                    .getDisplay(DEFAULT_DISPLAY));
+        }
+
+        public Info(Context context, Display display) {
             id = display.getDisplayId();
             rotation = display.getRotation();
 
@@ -268,8 +262,7 @@ public class DisplayController implements DisplayListener {
             display.getRealSize(realSize);
             display.getCurrentSizeRange(smallestSize, largestSize);
 
-            metrics = new DisplayMetrics();
-            display.getMetrics(metrics);
+            metrics = context.getResources().getDisplayMetrics();
         }
 
         private boolean hasDifferentSize(Info info) {

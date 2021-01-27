@@ -202,7 +202,7 @@ public class InvariantDeviceProfile {
                 DisplayController.getDefaultDisplay(context).getInfo(),
                 getPredefinedDeviceProfiles(context, gridName));
 
-        Info myInfo = new Info(display);
+        Info myInfo = new Info(context, display);
         DisplayOption myDisplayOption = invDistWeightedInterpolate(
                 myInfo, getPredefinedDeviceProfiles(context, gridName));
 
