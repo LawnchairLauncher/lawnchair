@@ -17,31 +17,22 @@
 package com.android.launcher3.search;
 
 import android.app.search.SearchTarget;
-
-import com.android.systemui.plugins.shared.SearchTargetLegacy;
+import android.app.search.SearchTargetEvent;
+import android.content.Context;
+import android.view.View;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * An interface for supporting dynamic search results
  */
-public interface SearchTargetHandler {
+public interface SearchTargetHandler extends View.OnClickListener, View.OnLongClickListener {
 
     /**
-     * Update view using values from {@link SearchTargetLegacy}
-     *
-     * @deprecated Use {@link SearchTargetHandler#applySearchTarget(SearchTarget, List)} instead
+     * Update view using values from {@link SearchTarget}
      */
-    @Deprecated
-    default void applySearchTarget(SearchTargetLegacy searchTarget) {
-    }
-
-
-    /**
-     * Update view using values from {@link SearchTargetLegacy}
-     */
-    default void applySearchTarget(SearchTarget parentTarget, List<SearchTarget> children) {
-    }
+    default void apply(SearchTarget parentTarget, List<SearchTarget> children) { }
 
     /**
      * Handle IME quick select event. returns whether event was handled.
@@ -50,4 +41,8 @@ public interface SearchTargetHandler {
         return false;
     }
 
+    default void notifyEvent(Context context, String id, int eventType) {
+        SearchTargetEvent.Builder builder = new SearchTargetEvent.Builder(id, eventType);
+        SearchSessionTracker.getInstance(context).notifyEvent(builder.build());
+    }
 }

@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.search;
 
+import android.app.search.SearchTarget;
+import android.app.search.SearchTargetEvent;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
@@ -28,22 +30,19 @@ import android.widget.RelativeLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.AppWidgetResizeFrame;
 import com.android.launcher3.CheckLongPressHelper;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.allapps.search.SearchWidgetInfoContainer;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.touch.ItemLongClickListener;
-import com.android.launcher3.widget.PendingAddWidgetInfo;
-import com.android.systemui.plugins.shared.SearchTargetLegacy;
 
 /**
  * displays live version of a widget upon receiving {@link AppWidgetProviderInfo} from Search
  * provider
  */
 public class SearchResultWidget extends RelativeLayout implements
-        SearchTargetHandler, DraggableView, View.OnLongClickListener {
+        SearchTargetHandler, DraggableView {
 
     private static final String TAG = "SearchResultWidget";
 
@@ -57,7 +56,7 @@ public class SearchResultWidget extends RelativeLayout implements
     private final AppWidgetHostView mHostView;
     private final float mScaleToFit;
 
-    private SearchTargetLegacy mSearchTarget;
+    private SearchTarget mSearchTarget;
     private AppWidgetProviderInfo mProviderInfo;
 
     private SearchWidgetInfoContainer mInfoContainer;
@@ -81,9 +80,7 @@ public class SearchResultWidget extends RelativeLayout implements
 
         // detect tap event on widget container for search target event reporting
         mClickDetector = new GestureDetector(context,
-                new ClickListener(() -> {
-                }));
-
+                new ClickListener(() -> handleSelection(SearchTargetEvent.ACTION_LAUNCH_TOUCH)));
         mLongPressHelper = new CheckLongPressHelper(this);
         mLongPressHelper.setLongPressTimeoutFactor(1);
         setOnLongClickListener(this);
@@ -95,40 +92,6 @@ public class SearchResultWidget extends RelativeLayout implements
         addView(mHostView);
     }
 
-    @Override
-    public void applySearchTarget(SearchTargetLegacy searchTarget) {
-        if (searchTarget.getExtras() == null
-                || searchTarget.getExtras().getParcelable("provider") == null) {
-            setVisibility(GONE);
-            return;
-        }
-        AppWidgetProviderInfo providerInfo = searchTarget.getExtras().getParcelable("provider");
-        if (mProviderInfo != null && providerInfo.provider.equals(mProviderInfo.provider)
-                && providerInfo.getProfile().equals(mProviderInfo.getProfile())) {
-            return;
-        }
-        removeListener();
-
-        mSearchTarget = searchTarget;
-        mProviderInfo = providerInfo;
-
-        mInfoContainer = mLauncher.getLiveSearchManager().getPlaceHolderWidget(providerInfo);
-        if (mInfoContainer == null) {
-            setVisibility(GONE);
-            return;
-        }
-        setVisibility(VISIBLE);
-        mInfoContainer.attachWidget(mHostView);
-        PendingAddWidgetInfo info = (PendingAddWidgetInfo) mHostView.getTag();
-        int[] size = mLauncher.getWorkspace().estimateItemSize(info);
-        mHostView.getLayoutParams().width = size[0];
-        mHostView.getLayoutParams().height = size[1];
-        AppWidgetResizeFrame.updateWidgetSizeRanges(mHostView, mLauncher, info.spanX,
-                info.spanY);
-        mHostView.requestLayout();
-        setTag(info);
-    }
-
     /**
      * Stops hostView from getting updates on a widget provider
      */
@@ -136,6 +99,11 @@ public class SearchResultWidget extends RelativeLayout implements
         if (mInfoContainer != null) {
             mInfoContainer.detachWidget(mHostView);
         }
+    }
+
+    public void handleSelection(int eventType) {
+        SearchSessionTracker.INSTANCE.get(getContext()).notifyEvent(
+                new SearchTargetEvent.Builder("search target id", eventType).build());
     }
 
     @Override
@@ -177,6 +145,11 @@ public class SearchResultWidget extends RelativeLayout implements
     public boolean onLongClick(View view) {
         ItemLongClickListener.INSTANCE_ALL_APPS.onLongClick(view);
         return false;
+    }
+
+    @Override
+    public void onClick(View view) {
+        // do nothing.
     }
 
     static class ClickListener extends GestureDetector.SimpleOnGestureListener {

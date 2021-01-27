@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.pm.ShortcutInfo;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -92,6 +93,7 @@ public class SearchResultIconRow extends LinearLayout implements SearchTargetHan
         mInlineIcons[1] = findViewById(R.id.shortcut_1);
         for (SearchResultIcon inlineIcon : mInlineIcons) {
             inlineIcon.getLayoutParams().width = getIconSize();
+            // TODO: inlineIcon.setOnClickListener();
         }
 
         setOnClickListener(mResultIcon);
@@ -99,7 +101,7 @@ public class SearchResultIconRow extends LinearLayout implements SearchTargetHan
     }
 
     @Override
-    public void applySearchTarget(SearchTarget parentTarget, List<SearchTarget> children) {
+    public void apply(SearchTarget parentTarget, List<SearchTarget> children) {
         mResultIcon.applySearchTarget(parentTarget, children, this::onItemInfoCreated);
         if (parentTarget.getShortcutInfo() != null) {
             updateWithShortcutInfo(parentTarget.getShortcutInfo());
@@ -127,7 +129,6 @@ public class SearchResultIconRow extends LinearLayout implements SearchTargetHan
         });
     }
 
-
     protected void showSubtitleIfNeeded(CharSequence subTitle) {
         if (!TextUtils.isEmpty(subTitle)) {
             mSubTitleView.setText(subTitle);
@@ -137,11 +138,10 @@ public class SearchResultIconRow extends LinearLayout implements SearchTargetHan
         }
     }
 
-
     protected void showInlineItems(List<SearchTarget> children) {
         for (int i = 0; i < MAX_INLINE_ITEMS; i++) {
             if (i < children.size()) {
-                mInlineIcons[i].applySearchTarget(children.get(0), new ArrayList<>());
+                mInlineIcons[i].apply(children.get(0), new ArrayList<>());
                 mInlineIcons[i].setVisibility(VISIBLE);
             } else {
                 mInlineIcons[i].setVisibility(GONE);
@@ -152,5 +152,16 @@ public class SearchResultIconRow extends LinearLayout implements SearchTargetHan
     protected void onItemInfoCreated(ItemInfoWithIcon info) {
         setTag(info);
         mTitleView.setText(info.title);
+    }
+
+    @Override
+    public void onClick(View view) {
+        // do nothing.
+    }
+
+    @Override
+    public boolean onLongClick(View view) {
+        // do nothing.
+        return false;
     }
 }
