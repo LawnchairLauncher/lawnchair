@@ -113,11 +113,6 @@ public final class DigitalWellBeingToast {
     public void initialize(Task task) {
         mTask = task;
 
-        if (task.key.userId != UserHandle.myUserId()) {
-            setNoLimit();
-            return;
-        }
-
         THREAD_POOL_EXECUTOR.execute(() -> {
             final AppUsageLimit usageLimit = mLauncherApps.getAppUsageLimit(
                     task.getTopComponent().getPackageName(),
