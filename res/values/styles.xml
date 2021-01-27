@@ -31,7 +31,7 @@
 
     <style name="LauncherTheme" parent="@style/BaseLauncherTheme">
         <item name="android:textColorSecondary">#DE000000</item>
-        <item name="allAppsScrimColor">#FFFFFFFF</item>
+        <item name="allAppsScrimColor">?android:attr/colorBackgroundFloating</item>
         <item name="allAppsInterimScrimAlpha">46</item>
         <item name="allAppsNavBarScrimColor">#66FFFFFF</item>
         <item name="allAppsTheme">@style/AllAppsTheme</item>
@@ -47,9 +47,9 @@
         <item name="workspaceStatusBarScrim">@drawable/workspace_bg</item>
         <item name="widgetsTheme">@style/WidgetContainerTheme</item>
         <item name="folderDotColor">?android:attr/colorPrimary</item>
-        <item name="folderFillColor">#CDFFFFFF</item>
+        <item name="folderFillColor">?android:attr/colorBackground</item>
         <item name="folderIconBorderColor">?android:attr/colorPrimary</item>
-        <item name="folderTextColor">#FF212121</item>
+        <item name="folderTextColor">?android:attr/textColorPrimary</item>
         <item name="folderHintColor">#89616161</item>
         <item name="loadingIconColor">#CCFFFFFF</item>
         <item name="iconOnlyShortcutColor">?android:attr/textColorSecondary</item>
@@ -94,7 +94,7 @@
         <item name="android:textColorHint">#A0FFFFFF</item>
         <item name="android:colorControlHighlight">#A0FFFFFF</item>
         <item name="android:colorPrimary">#FF212121</item>
-        <item name="allAppsScrimColor">#FF000000</item>
+        <item name="allAppsScrimColor">?android:attr/colorBackgroundFloating</item>
         <item name="allAppsInterimScrimAlpha">102</item>
         <item name="allAppsNavBarScrimColor">#80000000</item>
         <item name="allAppsTheme">@style/AllAppsTheme.Dark</item>
@@ -102,10 +102,10 @@
         <item name="popupColorSecondary">#202124</item>
         <item name="popupColorTertiary">#757575</item> <!-- Gray 600 -->
         <item name="widgetsTheme">@style/WidgetContainerTheme.Dark</item>
-        <item name="folderDotColor">#FF464646</item>
-        <item name="folderFillColor">#DD3C4043</item> <!-- 87% GM2 800 -->
-        <item name="folderIconBorderColor">#FF80868B</item>
-        <item name="folderTextColor">@android:color/white</item>
+        <item name="folderDotColor">?android:attr/colorPrimary</item>
+        <item name="folderFillColor">?android:attr/colorBackground</item>
+        <item name="folderIconBorderColor">?android:attr/colorPrimary</item>
+        <item name="folderTextColor">?android:attr/textColorPrimary</item>
         <item name="folderHintColor">#89CCCCCC</item>
         <item name="isMainColorDark">true</item>
         <item name="loadingIconColor">#99FFFFFF</item>
