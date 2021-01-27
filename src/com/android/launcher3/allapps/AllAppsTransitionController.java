@@ -270,11 +270,10 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
             if (Float.compare(mProgress, 0f) == 0) {
                 mLauncher.getLiveSearchManager().start();
                 EditText editText = mAppsView.getSearchUiManager().getEditText();
-                if (editText != null) {
+                if (editText != null && !mInsetController.showSearchEduIfNecessary()) {
                     editText.requestFocus();
                 }
-            }
-            else {
+            } else {
                 mLauncher.getLiveSearchManager().stop();
             }
             // TODO: should make the controller hide synchronously

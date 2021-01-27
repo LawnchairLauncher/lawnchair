@@ -64,7 +64,7 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
     protected final ObjectAnimator mOpenCloseAnimator;
 
     protected View mContent;
-    private final View mColorScrim;
+    protected final View mColorScrim;
     protected Interpolator mScrollInterpolator;
 
     // range [0, 1], 0=> completely open, 1=> completely closed
@@ -215,7 +215,6 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
     protected BaseDragLayer getPopupContainer() {
         return mLauncher.getDragLayer();
     }
-
 
     protected static View createColorScrim(Context context, int bgColor) {
         View view = new View(context);
