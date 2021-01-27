@@ -67,7 +67,7 @@ import androidx.core.os.BuildCompat;
 
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.FolderAdaptiveIcon;
-import com.android.launcher3.graphics.GridOptionsProvider;
+import com.android.launcher3.graphics.GridCustomizationsProvider;
 import com.android.launcher3.graphics.TintedDrawableSpan;
 import com.android.launcher3.icons.IconProvider;
 import com.android.launcher3.icons.LauncherIcons;
@@ -521,7 +521,7 @@ public final class Utilities {
     public static boolean isGridOptionsEnabled(Context context) {
         return isComponentEnabled(context.getPackageManager(),
                 context.getPackageName(),
-                GridOptionsProvider.class.getName());
+                GridCustomizationsProvider.class.getName());
     }
 
     private static boolean isComponentEnabled(PackageManager pm, String pkgName, String clsName) {
