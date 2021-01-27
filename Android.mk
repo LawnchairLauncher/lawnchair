@@ -33,7 +33,7 @@ LOCAL_STATIC_ANDROID_LIBRARIES := \
 
 LOCAL_STATIC_JAVA_LIBRARIES := \
     LauncherPluginLib \
-    launcher_log_protos_lite \
+    launcher_quickstep_log_protos_lite \
     search_ui
 
 LOCAL_SRC_FILES := \
@@ -65,7 +65,7 @@ LOCAL_SRC_FILES := \
     $(call all-java-files-under, src_shortcuts_overrides) \
     $(call all-java-files-under, src_ui_overrides) \
     $(call all-java-files-under, ext_tests/src)
-    
+
 LOCAL_RESOURCE_DIR := $(LOCAL_PATH)/ext_tests/res
 
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
@@ -129,8 +129,7 @@ LOCAL_MODULE_TAGS := optional
 
 LOCAL_STATIC_JAVA_LIBRARIES := \
     SystemUI-statsd \
-    SystemUISharedLib \
-    launcher_log_protos_lite
+    SystemUISharedLib
 ifneq (,$(wildcard frameworks/base))
   LOCAL_PRIVATE_PLATFORM_APIS := true
 else
@@ -196,8 +195,7 @@ LOCAL_MODULE_TAGS := optional
 
 LOCAL_STATIC_JAVA_LIBRARIES := \
     SystemUI-statsd \
-    SystemUISharedLib \
-    launcher_log_protos_lite
+    SystemUISharedLib
 ifneq (,$(wildcard frameworks/base))
   LOCAL_PRIVATE_PLATFORM_APIS := true
 else

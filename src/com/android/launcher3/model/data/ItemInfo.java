@@ -225,7 +225,7 @@ public class ItemInfo {
     protected String dumpProperties() {
         return "id=" + id
                 + " type=" + LauncherSettings.Favorites.itemTypeToString(itemType)
-                + " container=" + LauncherSettings.Favorites.containerToString(container)
+                + " container=" + getContainerInfo()
                 + " targetComponent=" + getTargetComponent()
                 + " screen=" + screenId
                 + " cell(" + cellX + "," + cellY + ")"
