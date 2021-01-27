@@ -21,6 +21,8 @@ import android.graphics.drawable.Icon;
 import android.os.Process;
 import android.os.UserHandle;
 
+import androidx.annotation.Nullable;
+
 /**
  * Represents a SearchAction with in launcher
  */
@@ -28,9 +30,10 @@ public class SearchActionItemInfo extends ItemInfoWithIcon {
 
     public static final int FLAG_SHOULD_START = 1 << 1;
     public static final int FLAG_SHOULD_START_FOR_RESULT = FLAG_SHOULD_START | 1 << 2;
+    public static final int FLAG_BADGE_FROM_ICON = 1 << 3;
+    public static final int FLAG_PRIMARY_ICON_FROM_TITLE = 1 << 4;
 
     private final String mFallbackPackageName;
-
     private int mFlags = 0;
     private final Icon mIcon;
 
@@ -54,12 +57,15 @@ public class SearchActionItemInfo extends ItemInfoWithIcon {
         title = info.title;
     }
 
-    public void setFlags(int flags) {
-        mFlags = flags;
+    /**
+     * Returns if multiple flags are all available.
+     */
+    public boolean hasFlags(int flags) {
+        return (mFlags & flags) != 0;
     }
 
-    public int getFlags() {
-        return mFlags;
+    public void setFlags(int flags) {
+        mFlags |= flags ;
     }
 
     @Override
@@ -93,20 +99,13 @@ public class SearchActionItemInfo extends ItemInfoWithIcon {
         mPendingIntent = pendingIntent;
     }
 
-
-    /**
-     * Returns if a flag is set on instance
-     */
-    public boolean hasFlag(int flag) {
-        return (mFlags & flag) == flag;
+    @Nullable
+    public Icon getIcon() {
+        return mIcon;
     }
 
     @Override
     public ItemInfoWithIcon clone() {
         return new SearchActionItemInfo(this);
-    }
-
-    public Icon getIcon() {
-        return mIcon;
     }
 }

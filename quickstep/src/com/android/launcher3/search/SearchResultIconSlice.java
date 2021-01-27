@@ -18,10 +18,11 @@ package com.android.launcher3.search;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.app.search.SearchTarget;
+import android.app.search.SearchTargetEvent;
 import android.content.Context;
-import android.net.Uri;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.View;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
@@ -36,7 +37,6 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.model.data.PackageItemInfo;
-import com.android.systemui.plugins.shared.SearchTargetLegacy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,17 +44,17 @@ import java.util.List;
 /**
  * A slice view wrapper with settings app icon at start
  */
-public class SearchResultIconSlice extends LinearLayout implements
-        SearchTargetHandler, SliceView.OnSliceActionListener {
+public class SearchResultIconSlice extends LinearLayout implements SearchTargetHandler,
+        SliceView.OnSliceActionListener {
 
     private static final String TAG = "SearchSliceController";
-    private static final String URI_EXTRA_KEY = "slice_uri";
+
+    private final Launcher mLauncher;
 
     private SliceView mSliceView;
     private SearchResultIcon mIcon;
     private LiveData<Slice> mSliceLiveData;
-    private SearchTargetLegacy mSearchTarget;
-    private final Launcher mLauncher;
+    private String mTargetId;
 
     public SearchResultIconSlice(Context context) {
         this(context, null, 0);
@@ -83,7 +83,8 @@ public class SearchResultIconSlice extends LinearLayout implements
     }
 
     @Override
-    public void applySearchTarget(SearchTarget parentTarget, List<SearchTarget> children) {
+    public void apply(SearchTarget parentTarget, List<SearchTarget> children) {
+        mTargetId = parentTarget.getId();
         reset();
         updateIcon(parentTarget, children);
         try {
@@ -97,7 +98,7 @@ public class SearchResultIconSlice extends LinearLayout implements
 
     private void updateIcon(SearchTarget parentTarget, List<SearchTarget> children) {
         if (children.size() == 1) {
-            mIcon.applySearchTarget(children.get(0), new ArrayList<>());
+            mIcon.apply(children.get(0), new ArrayList<>());
         } else {
             LauncherAppState appState = LauncherAppState.getInstance(getContext());
             MODEL_EXECUTOR.post(() -> {
@@ -121,7 +122,6 @@ public class SearchResultIconSlice extends LinearLayout implements
         reset();
     }
 
-
     private void reset() {
         mSliceView.setOnSliceActionListener(null);
         if (mSliceLiveData != null) {
@@ -131,11 +131,17 @@ public class SearchResultIconSlice extends LinearLayout implements
 
     @Override
     public void onSliceAction(@NonNull EventInfo eventInfo, @NonNull SliceItem sliceItem) {
-        //TODO: event reporting
+        notifyEvent(mLauncher, mTargetId, SearchTargetEvent.ACTION_TAP);
     }
 
-    private Uri getSliceUri() {
-        return mSearchTarget.getExtras().getParcelable(URI_EXTRA_KEY);
+    @Override
+    public void onClick(View view) {
+        notifyEvent(mLauncher, mTargetId, SearchTargetEvent.ACTION_LONGPRESS);
     }
 
+    @Override
+    public boolean onLongClick(View view) {
+        // do nothing
+        return false;
+    }
 }
