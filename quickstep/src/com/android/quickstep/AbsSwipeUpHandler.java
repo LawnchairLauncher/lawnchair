@@ -970,6 +970,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
                 }
                 duration = Math.max(duration, mRecentsView.getScroller().getDuration());
             }
+            if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+                mRecentsView.getRunningTaskView().setIsClickableAsLiveTile(false);
+            }
         }
 
         // Let RecentsView handle the scrolling to the task, which we launch in startNewTask()
@@ -1447,6 +1450,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
     private void finishCurrentTransitionToRecents() {
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED);
+            mRecentsView.getRunningTaskView().setIsClickableAsLiveTile(true);
         } else if (!hasTargets() || mRecentsAnimationController == null) {
             // If there are no targets or the animation not started, then there is nothing to finish
             mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED);
