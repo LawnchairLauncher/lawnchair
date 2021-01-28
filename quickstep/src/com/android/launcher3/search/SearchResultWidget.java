@@ -25,28 +25,34 @@ import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.AppWidgetResizeFrame;
+import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CheckLongPressHelper;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.R;
 import com.android.launcher3.allapps.search.SearchWidgetInfoContainer;
 import com.android.launcher3.dragndrop.DraggableView;
+import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.touch.ItemLongClickListener;
+import com.android.launcher3.widget.PendingAddWidgetInfo;
+
+import java.util.List;
+
 
 /**
  * displays live version of a widget upon receiving {@link AppWidgetProviderInfo} from Search
  * provider
  */
-public class SearchResultWidget extends RelativeLayout implements
-        SearchTargetHandler, DraggableView {
+public class SearchResultWidget extends LinearLayout implements SearchTargetHandler, DraggableView,
+        View.OnLongClickListener {
 
-    private static final String TAG = "SearchResultWidget";
-
-    public static final String TARGET_TYPE_WIDGET_LIVE = "widget";
 
     private final Rect mWidgetOffset = new Rect();
 
@@ -56,10 +62,9 @@ public class SearchResultWidget extends RelativeLayout implements
     private final AppWidgetHostView mHostView;
     private final float mScaleToFit;
 
-    private SearchTarget mSearchTarget;
-    private AppWidgetProviderInfo mProviderInfo;
-
     private SearchWidgetInfoContainer mInfoContainer;
+    private BubbleTextView mWidgetProvider;
+    private TextView mWidgetLabel;
 
     public SearchResultWidget(@NonNull Context context) {
         this(context, null, 0);
@@ -80,7 +85,8 @@ public class SearchResultWidget extends RelativeLayout implements
 
         // detect tap event on widget container for search target event reporting
         mClickDetector = new GestureDetector(context,
-                new ClickListener(() -> handleSelection(SearchTargetEvent.ACTION_LAUNCH_TOUCH)));
+                new ClickListener(
+                        () -> reportEvent(SearchTargetEvent.ACTION_LAUNCH_TOUCH)));
         mLongPressHelper = new CheckLongPressHelper(this);
         mLongPressHelper.setLongPressTimeoutFactor(1);
         setOnLongClickListener(this);
@@ -89,7 +95,40 @@ public class SearchResultWidget extends RelativeLayout implements
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        mWidgetProvider = findViewById(R.id.widget_provider);
+        mWidgetLabel = findViewById(R.id.widget_label);
         addView(mHostView);
+    }
+
+    @Override
+    public void apply(SearchTarget parentTarget, List<SearchTarget> children) {
+        AppWidgetProviderInfo providerInfo = parentTarget.getAppWidgetProviderInfo();
+        removeListener();
+
+        showWidgetInfo(providerInfo);
+        mInfoContainer = mLauncher.getLiveSearchManager().getPlaceHolderWidget(providerInfo);
+        if (mInfoContainer == null) {
+            setVisibility(GONE);
+            return;
+        }
+        setVisibility(VISIBLE);
+        mInfoContainer.attachWidget(mHostView);
+        PendingAddWidgetInfo info = (PendingAddWidgetInfo) mHostView.getTag();
+        int[] size = mLauncher.getWorkspace().estimateItemSize(info);
+        mHostView.getLayoutParams().width = size[0];
+        mHostView.getLayoutParams().height = size[1];
+        AppWidgetResizeFrame.updateWidgetSizeRanges(mHostView, mLauncher, info.spanX,
+                info.spanY);
+        mHostView.requestLayout();
+        setTag(info);
+    }
+
+    private void showWidgetInfo(AppWidgetProviderInfo providerInfo) {
+        String title = providerInfo.loadLabel(mLauncher.getPackageManager());
+        PackageItemInfo pinfo = new PackageItemInfo(providerInfo.provider.getPackageName());
+        pinfo.user = providerInfo.getProfile();
+        mWidgetProvider.applyFromItemInfoWithIcon(pinfo);
+        mWidgetLabel.setText(title);
     }
 
     /**
@@ -101,7 +140,7 @@ public class SearchResultWidget extends RelativeLayout implements
         }
     }
 
-    public void handleSelection(int eventType) {
+    private void reportEvent(int eventType) {
         SearchSessionTracker.INSTANCE.get(getContext()).notifyEvent(
                 new SearchTargetEvent.Builder("search target id", eventType).build());
     }

@@ -1,5 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.android.launcher3.search.SearchResultWidget android:layout_height="wrap_content"
+<com.android.launcher3.search.SearchResultWidget
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingVertical="@dimen/widget_section_vertical_padding"
+    android:layout_marginBottom="@dimen/widget_section_vertical_padding"
     android:gravity="center"
-    android:layout_width="match_parent" />
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+
+        <com.android.launcher3.BubbleTextView
+            android:id="@+id/widget_provider"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/widget_section_height"
+            android:drawablePadding="@dimen/widget_section_horizontal_padding"
+            android:focusable="true"
+            android:gravity="start|center_vertical"
+            android:paddingHorizontal="@dimen/widget_section_horizontal_padding"
+            android:paddingVertical="@dimen/widget_section_horizontal_padding"
+            android:singleLine="true"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="16sp"
+            android:textAlignment="viewStart"
+            launcher:iconDisplay="widget_section"
+            launcher:layoutHorizontal="true"
+            launcher:iconSizeOverride="@dimen/widget_section_icon_size" />
+
+        <TextView
+            android:id="@+id/widget_label"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/widget_section_height"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+</com.android.launcher3.search.SearchResultWidget>
