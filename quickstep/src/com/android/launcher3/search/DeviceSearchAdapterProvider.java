@@ -18,10 +18,7 @@ package com.android.launcher3.search;
 
 import static com.android.launcher3.allapps.AllAppsGridAdapter.VIEW_TYPE_ICON;
 
-import android.app.search.Query;
-import android.app.search.SearchSession;
 import android.app.search.SearchTarget;
-import android.app.search.SearchTargetEvent;
 import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.LayoutInflater;
@@ -125,6 +122,7 @@ public class DeviceSearchAdapterProvider extends SearchAdapterProvider {
                     return VIEW_TYPE_SEARCH_SLICE;
                 }
                 Log.w(TAG, "Dropping as LayoutType.ICON_SLICE target doesn't contain sliceUri.");
+                break;
             case LayoutType.ICON_DOUBLE_HORIZONTAL_TEXT:
             case LayoutType.ICON_SINGLE_HORIZONTAL_TEXT:
                 return VIEW_TYPE_SEARCH_ICON_ROW;
@@ -133,6 +131,11 @@ public class DeviceSearchAdapterProvider extends SearchAdapterProvider {
                     return VIEW_TYPE_SEARCH_THUMBNAIL;
                 }
                 Log.w(TAG, "Dropping as LayoutType.THUMBNAIL target doesn't contain searchAction.");
+                break;
+            case LayoutType.WIDGET_PREVIEW:
+                return VIEW_TYPE_SEARCH_WIDGET_PREVIEW;
+            case LayoutType.WIDGET_LIVE:
+                return VIEW_TYPE_SEARCH_WIDGET_LIVE;
         }
 
         return -1;

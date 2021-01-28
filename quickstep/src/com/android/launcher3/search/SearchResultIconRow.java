@@ -102,6 +102,7 @@ public class SearchResultIconRow extends LinearLayout implements SearchTargetHan
 
     @Override
     public void apply(SearchTarget parentTarget, List<SearchTarget> children) {
+        showSubtitleIfNeeded(null);
         mResultIcon.applySearchTarget(parentTarget, children, this::onItemInfoCreated);
         if (parentTarget.getShortcutInfo() != null) {
             updateWithShortcutInfo(parentTarget.getShortcutInfo());
