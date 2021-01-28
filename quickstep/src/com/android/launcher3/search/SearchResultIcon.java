@@ -149,7 +149,7 @@ public class SearchResultIcon extends BubbleTextView implements
             // Workaround to log ItemInfo with DeviceSearchResultContainer without
             // updating ItemInfo.container field.
             @Override
-            protected ContainerInfo getContainerInfo() {
+            public ContainerInfo getContainerInfo() {
                 return buildDeviceSearchResultContainer();
             }
         };
@@ -257,7 +257,7 @@ public class SearchResultIcon extends BubbleTextView implements
             // Workaround to log ItemInfo with DeviceSearchResultContainer without
             // updating ItemInfo.container field.
             @Override
-            protected ContainerInfo getContainerInfo() {
+            public ContainerInfo getContainerInfo() {
                 return buildDeviceSearchResultContainer();
             }
         };
@@ -275,7 +275,7 @@ public class SearchResultIcon extends BubbleTextView implements
             // Workaround to log ItemInfo with DeviceSearchResultContainer without
             // updating ItemInfo.container field.
             @Override
-            protected ContainerInfo getContainerInfo() {
+            public ContainerInfo getContainerInfo() {
                 return buildDeviceSearchResultContainer();
             }
         };
