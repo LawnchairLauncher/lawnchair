@@ -18,7 +18,11 @@ package com.android.launcher3.search;
 
 import static com.android.launcher3.allapps.AllAppsGridAdapter.VIEW_TYPE_ICON;
 
+import android.app.search.Query;
+import android.app.search.SearchSession;
 import android.app.search.SearchTarget;
+import android.app.search.SearchTargetEvent;
+import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +34,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsGridAdapter;
 import com.android.launcher3.allapps.search.SearchAdapterProvider;
-import com.android.launcher3.config.FeatureFlags;
 
 /**
  * Provides views for on-device search results
@@ -43,12 +46,12 @@ public class DeviceSearchAdapterProvider extends SearchAdapterProvider {
     public static final int VIEW_TYPE_SEARCH_ICON_ROW = (1 << 9);
     public static final int VIEW_TYPE_SEARCH_PEOPLE = 1 << 11;
     public static final int VIEW_TYPE_SEARCH_THUMBNAIL = 1 << 12;
-    public static final int VIEW_TYPE_SEARCH_SUGGEST = 1 << 13;
     public static final int VIEW_TYPE_SEARCH_WIDGET_LIVE = 1 << 15;
     public static final int VIEW_TYPE_SEARCH_WIDGET_PREVIEW = 1 << 16;
 
-    private final AllAppsContainerView mAppsView;
+    private static final String TAG = "SearchServiceAdapterProvider";
 
+    private final AllAppsContainerView mAppsView;
     private final SparseIntArray mViewTypeToLayoutMap = new SparseIntArray();
 
     public DeviceSearchAdapterProvider(Launcher launcher, AllAppsContainerView appsView) {
@@ -61,7 +64,6 @@ public class DeviceSearchAdapterProvider extends SearchAdapterProvider {
         mViewTypeToLayoutMap.put(VIEW_TYPE_SEARCH_SLICE, R.layout.search_result_slice);
         mViewTypeToLayoutMap.put(VIEW_TYPE_SEARCH_PEOPLE, R.layout.search_result_people_item);
         mViewTypeToLayoutMap.put(VIEW_TYPE_SEARCH_THUMBNAIL, R.layout.search_result_thumbnail);
-        mViewTypeToLayoutMap.put(VIEW_TYPE_SEARCH_SUGGEST, R.layout.search_result_suggest);
         mViewTypeToLayoutMap.put(VIEW_TYPE_SEARCH_WIDGET_LIVE, R.layout.search_result_widget_live);
         mViewTypeToLayoutMap.put(VIEW_TYPE_SEARCH_WIDGET_PREVIEW,
                 R.layout.search_result_widget_preview);
@@ -74,11 +76,7 @@ public class DeviceSearchAdapterProvider extends SearchAdapterProvider {
         SearchTargetHandler
                 payloadResultView =
                 (SearchTargetHandler) holder.itemView;
-        if (!FeatureFlags.USE_SEARCH_API.get()) {
-            payloadResultView.applySearchTarget(item.getSearchTargetLegacy());
-        } else {
-            payloadResultView.applySearchTarget(item.getSearchTarget(), item.getInlineItems());
-        }
+        payloadResultView.apply(item.getSearchTarget(), item.getInlineItems());
     }
 
     @Override
@@ -113,7 +111,8 @@ public class DeviceSearchAdapterProvider extends SearchAdapterProvider {
 
     /**
      * Determines what view type should be used to present search target.
-     * Returns -1 if viewType is not found
+     * Returns -1 if viewType is not found or if required field is not present
+     * to render the viewType.
      */
     public int getViewTypeForSearchTarget(SearchTarget t) {
         switch (t.getLayoutType()) {
@@ -122,14 +121,20 @@ public class DeviceSearchAdapterProvider extends SearchAdapterProvider {
             case LayoutType.ICON_SINGLE_VERTICAL_TEXT:
                 return VIEW_TYPE_SEARCH_ICON;
             case LayoutType.ICON_SLICE:
-                return VIEW_TYPE_SEARCH_SLICE;
-            case LayoutType.ICON_DOUBLE_HORIZONTAL_TEXT_BUTTON:
+                if (t.getSliceUri() != null) {
+                    return VIEW_TYPE_SEARCH_SLICE;
+                }
+                Log.w(TAG, "Dropping as LayoutType.ICON_SLICE target doesn't contain sliceUri.");
             case LayoutType.ICON_DOUBLE_HORIZONTAL_TEXT:
             case LayoutType.ICON_SINGLE_HORIZONTAL_TEXT:
                 return VIEW_TYPE_SEARCH_ICON_ROW;
-            default:
-                return -1;
-
+            case LayoutType.THUMBNAIL:
+                if (t.getSearchAction() != null) {
+                    return VIEW_TYPE_SEARCH_THUMBNAIL;
+                }
+                Log.w(TAG, "Dropping as LayoutType.THUMBNAIL target doesn't contain searchAction.");
         }
+
+        return -1;
     }
 }
