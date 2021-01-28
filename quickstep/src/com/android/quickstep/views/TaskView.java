@@ -257,6 +257,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private final float[] mIconCenterCoords = new float[2];
     private final float[] mChipCenterCoords = new float[2];
 
+    private boolean mIsClickableAsLiveTile = true;
+
     public TaskView(Context context) {
         this(context, null);
     }
@@ -273,6 +275,11 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                 return;
             }
             if (ENABLE_QUICKSTEP_LIVE_TILE.get() && isRunningTask()) {
+                if (!mIsClickableAsLiveTile) {
+                    return;
+                }
+
+                mIsClickableAsLiveTile = false;
                 RecentsView recentsView = getRecentsView();
                 RemoteAnimationTargets targets = recentsView.getLiveTileParams().getTargetSet();
                 recentsView.getLiveTileTaskViewSimulator().setDrawsBelowRecents(false);
@@ -289,6 +296,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                     public void onAnimationEnd(Animator animator) {
                         recentsView.getLiveTileTaskViewSimulator().setDrawsBelowRecents(true);
                         recentsView.finishRecentsAnimation(false, null);
+                        mIsClickableAsLiveTile = true;
                     }
                 });
                 anim.start();
@@ -346,6 +354,10 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             return true;
         }
         return false;
+    }
+
+    public void setIsClickableAsLiveTile(boolean isClickableAsLiveTile) {
+        mIsClickableAsLiveTile = isClickableAsLiveTile;
     }
 
     private void computeAndSetIconTouchDelegate() {
