@@ -695,9 +695,9 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     }
 
     @Override
-    public void onRemove(WorkspaceItemInfo item) {
+    public void onRemove(List<WorkspaceItemInfo> items) {
         boolean wasDotted = mDotInfo.hasDot();
-        mDotInfo.subtractDotInfo(mActivity.getDotInfoForItem(item));
+        items.stream().map(mActivity::getDotInfoForItem).forEach(mDotInfo::subtractDotInfo);
         boolean isDotted = mDotInfo.hasDot();
         updateDotScale(wasDotted, isDotted);
         setContentDescription(getAccessiblityTitle(mInfo.title));
