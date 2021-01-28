@@ -26,6 +26,7 @@ import com.android.launcher3.BuildConfig;
 import com.android.launcher3.MainProcessInitializer;
 import com.android.launcher3.util.Executors;
 import com.android.quickstep.logging.SettingsChangeLogger;
+import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.ThreadedRendererCompat;
 
 @SuppressWarnings("unused")
@@ -35,7 +36,11 @@ public class QuickstepProcessInitializer extends MainProcessInitializer {
     private static final String TAG = "QuickstepProcessInitializer";
     private static final int SETUP_DELAY_MILLIS = 5000;
 
-    public QuickstepProcessInitializer(Context context) { }
+    public QuickstepProcessInitializer(Context context) {
+        // Fake call to create an instance of InteractionJankMonitor to avoid binder calls during
+        // its initialization during transitions.
+        InteractionJankMonitorWrapper.cancel(-1);
+    }
 
     @Override
     protected void init(Context context) {
