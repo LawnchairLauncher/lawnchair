@@ -112,6 +112,7 @@ public class SearchTargetUtil {
         Intent intent = new Intent(Intent.ACTION_VIEW)
                 .setData(Uri.parse("uri blah blah"))
                 .setType("image/*")
+                .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         Bitmap bitmap = Bitmap.createBitmap(1000, 500, Bitmap.Config.ARGB_8888);
