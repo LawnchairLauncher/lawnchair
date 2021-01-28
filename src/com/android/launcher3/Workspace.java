@@ -111,9 +111,11 @@ import com.android.launcher3.widget.WidgetManagerHelper;
 import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverlay;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * The workspace is a wide area with a wallpaper and a finite number of pages.
@@ -3002,38 +3004,27 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
      * shortcuts are not removed.
      */
     public void removeItemsByMatcher(final ItemInfoMatcher matcher) {
-        for (final CellLayout layoutParent: getWorkspaceAndHotseatCellLayouts()) {
-            final ViewGroup layout = layoutParent.getShortcutsAndWidgets();
+        for (CellLayout layout : getWorkspaceAndHotseatCellLayouts()) {
+            ShortcutAndWidgetContainer container = layout.getShortcutsAndWidgets();
+            // Iterate in reverse order as we are removing items
+            for (int i = container.getChildCount() - 1; i >= 0; i--) {
+                View child = container.getChildAt(i);
+                ItemInfo info = (ItemInfo) child.getTag();
 
-            IntSparseArrayMap<View> idToViewMap = new IntSparseArrayMap<>();
-            ArrayList<ItemInfo> items = new ArrayList<>();
-            for (int j = 0; j < layout.getChildCount(); j++) {
-                final View view = layout.getChildAt(j);
-                if (view.getTag() instanceof ItemInfo) {
-                    ItemInfo item = (ItemInfo) view.getTag();
-                    items.add(item);
-                    idToViewMap.put(item.id, view);
-                }
-            }
-
-            for (ItemInfo itemToRemove : matcher.filterItemInfos(items)) {
-                View child = idToViewMap.get(itemToRemove.id);
-
-                if (child != null) {
-                    // Note: We can not remove the view directly from CellLayoutChildren as this
-                    // does not re-mark the spaces as unoccupied.
-                    layoutParent.removeViewInLayout(child);
+                if (matcher.matchesInfo(info)) {
+                    layout.removeViewInLayout(child);
                     if (child instanceof DropTarget) {
                         mDragController.removeDropTarget((DropTarget) child);
                     }
-                } else if (itemToRemove.container >= 0) {
-                    // The item may belong to a folder.
-                    View parent = idToViewMap.get(itemToRemove.container);
-                    if (parent instanceof FolderIcon) {
-                        FolderInfo folderInfo = (FolderInfo) parent.getTag();
-                        folderInfo.remove((WorkspaceItemInfo) itemToRemove, false);
-                        if (((FolderIcon) parent).getFolder().isOpen()) {
-                            ((FolderIcon) parent).getFolder().close(false /* animate */);
+                } else if (child instanceof FolderIcon) {
+                    FolderInfo folderInfo = (FolderInfo) info;
+                    List<WorkspaceItemInfo> matches = folderInfo.contents.stream()
+                            .filter(matcher::matchesInfo)
+                            .collect(Collectors.toList());
+                    if (!matches.isEmpty()) {
+                        folderInfo.removeAll(matches, false);
+                        if (((FolderIcon) child).getFolder().isOpen()) {
+                            ((FolderIcon) child).getFolder().close(false /* animate */);
                         }
                     }
                 }
@@ -3143,9 +3134,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     public void removeAbandonedPromise(String packageName, UserHandle user) {
-        HashSet<String> packages = new HashSet<>(1);
-        packages.add(packageName);
-        ItemInfoMatcher matcher = ItemInfoMatcher.ofPackages(packages, user);
+        ItemInfoMatcher matcher = ItemInfoMatcher.ofPackages(
+                Collections.singleton(packageName), user);
         mLauncher.getModelWriter().deleteItemsFromDatabase(matcher);
         removeItemsByMatcher(matcher);
     }

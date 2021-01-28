@@ -51,6 +51,7 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * Class for handling model updates.
@@ -259,7 +260,9 @@ public class ModelWriter {
      * Removes all the items from the database matching {@param matcher}.
      */
     public void deleteItemsFromDatabase(ItemInfoMatcher matcher) {
-        deleteItemsFromDatabase(matcher.filterItemInfos(mBgDataModel.itemsIdMap));
+        deleteItemsFromDatabase(StreamSupport.stream(mBgDataModel.itemsIdMap.spliterator(), false)
+                        .filter(matcher::matchesInfo)
+                        .collect(Collectors.toList()));
     }
 
     /**
