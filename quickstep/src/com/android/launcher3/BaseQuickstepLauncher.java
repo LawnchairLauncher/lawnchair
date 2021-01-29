@@ -45,6 +45,7 @@ import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.taskbar.TaskbarContainerView;
 import com.android.launcher3.taskbar.TaskbarController;
+import com.android.launcher3.taskbar.TaskbarStateHandler;
 import com.android.launcher3.uioverrides.RecentsViewStateController;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.UiThreadHelper;
@@ -82,6 +83,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
     private OverviewActionsView mActionsView;
 
     private @Nullable TaskbarController mTaskbarController;
+    private final TaskbarStateHandler mTaskbarStateHandler = new TaskbarStateHandler(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -245,11 +247,21 @@ public abstract class BaseQuickstepLauncher extends Launcher
                 getWorkspace(),
                 getDepthController(),
                 new RecentsViewStateController(this),
-                new BackButtonAlphaHandler(this)};
+                new BackButtonAlphaHandler(this),
+                getTaskbarStateHandler(),
+        };
     }
 
     public DepthController getDepthController() {
         return mDepthController;
+    }
+
+    public @Nullable TaskbarController getTaskbarController() {
+        return mTaskbarController;
+    }
+
+    public TaskbarStateHandler getTaskbarStateHandler() {
+        return mTaskbarStateHandler;
     }
 
     @Override
@@ -294,6 +306,12 @@ public abstract class BaseQuickstepLauncher extends Launcher
 
         if ((changeBits & ACTIVITY_STATE_STARTED) != 0) {
             mDepthController.setActivityStarted(isStarted());
+        }
+
+        if ((changeBits & ACTIVITY_STATE_RESUMED) != 0) {
+            if (mTaskbarController != null) {
+                mTaskbarController.onLauncherResumedOrPaused(hasBeenResumed());
+            }
         }
 
         super.onActivityFlagsChanged(changeBits);

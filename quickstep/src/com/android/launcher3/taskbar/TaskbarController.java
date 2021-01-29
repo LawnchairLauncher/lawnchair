@@ -22,13 +22,22 @@ import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
 import static com.android.systemui.shared.system.WindowManagerWrapper.ITYPE_BOTTOM_TAPPABLE_ELEMENT;
 import static com.android.systemui.shared.system.WindowManagerWrapper.ITYPE_EXTRA_NAVIGATION_BAR;
 
+import android.animation.Animator;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.view.Gravity;
 import android.view.WindowManager;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.BaseQuickstepLauncher;
+import com.android.launcher3.LauncherState;
+import com.android.launcher3.QuickstepAppTransitionManagerImpl;
 import com.android.launcher3.R;
+import com.android.launcher3.anim.AlphaUpdateListener;
+import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.states.StateAnimationConfig;
+import com.android.quickstep.AnimatedFloat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
 /**
@@ -44,7 +53,10 @@ public class TaskbarController {
     private final WindowManager mWindowManager;
     // Layout width and height of the Taskbar in the default state.
     private final Point mTaskbarSize;
+    private final TaskbarStateHandler mTaskbarStateHandler;
+    private final TaskbarVisibilityController mTaskbarVisibilityController;
 
+    // Initialized in init().
     private WindowManager.LayoutParams mWindowLayoutParams;
 
     public TaskbarController(BaseQuickstepLauncher launcher,
@@ -55,6 +67,24 @@ public class TaskbarController {
         mWindowManager = mLauncher.getWindowManager();
         mTaskbarSize = new Point(MATCH_PARENT,
                 mLauncher.getResources().getDimensionPixelSize(R.dimen.taskbar_size));
+        mTaskbarStateHandler = mLauncher.getTaskbarStateHandler();
+        mTaskbarVisibilityController = new TaskbarVisibilityController(mLauncher,
+                createTaskbarVisibilityControllerCallbacks());
+    }
+
+    private TaskbarVisibilityControllerCallbacks createTaskbarVisibilityControllerCallbacks() {
+        return new TaskbarVisibilityControllerCallbacks() {
+            @Override
+            public void updateTaskbarBackgroundAlpha(float alpha) {
+                mTaskbarView.setBackgroundAlpha(alpha);
+            }
+
+            @Override
+            public void updateTaskbarVisibilityAlpha(float alpha) {
+                mTaskbarContainerView.setAlpha(alpha);
+                AlphaUpdateListener.updateVisibility(mTaskbarContainerView);
+            }
+        };
     }
 
     /**
@@ -62,6 +92,17 @@ public class TaskbarController {
      */
     public void init() {
         addToWindowManager();
+        mTaskbarStateHandler.setTaskbarCallbacks(createTaskbarStateHandlerCallbacks());
+        mTaskbarVisibilityController.init();
+    }
+
+    private TaskbarStateHandlerCallbacks createTaskbarStateHandlerCallbacks() {
+        return new TaskbarStateHandlerCallbacks() {
+            @Override
+            public AnimatedFloat getAlphaTarget() {
+                return mTaskbarVisibilityController.getTaskbarVisibilityForLauncherState();
+            }
+        };
     }
 
     /**
@@ -69,6 +110,8 @@ public class TaskbarController {
      */
     public void cleanup() {
         removeFromWindowManager();
+        mTaskbarStateHandler.setTaskbarCallbacks(null);
+        mTaskbarVisibilityController.cleanup();
     }
 
     private void removeFromWindowManager() {
@@ -107,5 +150,59 @@ public class TaskbarController {
         mTaskbarView.setLayoutParams(taskbarLayoutParams);
 
         mWindowManager.addView(mTaskbarContainerView, mWindowLayoutParams);
+    }
+
+    /**
+     * Should be called from onResume() and onPause(), and animates the Taskbar accordingly.
+     */
+    public void onLauncherResumedOrPaused(boolean isResumed) {
+        long duration = QuickstepAppTransitionManagerImpl.CONTENT_ALPHA_DURATION;
+        final Animator anim;
+        if (isResumed) {
+            anim = createAnimToLauncher(null, duration);
+        } else {
+            anim = createAnimToApp(duration);
+        }
+        anim.start();
+    }
+
+    /**
+     * Create Taskbar animation when going from an app to Launcher.
+     * @param toState If known, the state we will end up in when reaching Launcher.
+     */
+    public Animator createAnimToLauncher(@Nullable LauncherState toState, long duration) {
+        PendingAnimation anim = new PendingAnimation(duration);
+        anim.add(mTaskbarVisibilityController.createAnimToBackgroundAlpha(0, duration));
+        if (toState != null) {
+            mTaskbarStateHandler.setStateWithAnimation(toState, new StateAnimationConfig(), anim);
+        }
+        return anim.buildAnim();
+    }
+
+    private Animator createAnimToApp(long duration) {
+        return mTaskbarVisibilityController.createAnimToBackgroundAlpha(1, duration);
+    }
+
+    /**
+     * Should be called when the IME visibility changes, so we can hide/show Taskbar accordingly.
+     */
+    public void setIsImeVisible(boolean isImeVisible) {
+        mTaskbarVisibilityController.animateToVisibilityForIme(isImeVisible ? 0 : 1);
+    }
+
+    /**
+     * Contains methods that TaskbarStateHandler can call to interface with TaskbarController.
+     */
+    protected interface TaskbarStateHandlerCallbacks {
+        AnimatedFloat getAlphaTarget();
+    }
+
+    /**
+     * Contains methods that TaskbarVisibilityController can call to interface with
+     * TaskbarController.
+     */
+    protected interface TaskbarVisibilityControllerCallbacks {
+        void updateTaskbarBackgroundAlpha(float alpha);
+        void updateTaskbarVisibilityAlpha(float alpha);
     }
 }

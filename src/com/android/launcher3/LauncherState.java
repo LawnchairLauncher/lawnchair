@@ -57,6 +57,7 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     public static final int ALL_APPS_CONTENT = 1 << 4;
     public static final int VERTICAL_SWIPE_INDICATOR = 1 << 5;
     public static final int OVERVIEW_BUTTONS = 1 << 6;
+    public static final int TASKBAR = 1 << 7;
 
     /** Mask of all the items that are contained in the apps view. */
     public static final int APPS_VIEW_ITEM_MASK =
@@ -186,7 +187,7 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     }
 
     public int getVisibleElements(Launcher launcher) {
-        int flags = HOTSEAT_ICONS | VERTICAL_SWIPE_INDICATOR;
+        int flags = HOTSEAT_ICONS | VERTICAL_SWIPE_INDICATOR | TASKBAR;
         if (!FeatureFlags.ENABLE_DEVICE_SEARCH.get()
                 && !launcher.getDeviceProfile().isVerticalBarLayout()) {
             flags |= HOTSEAT_SEARCH_BOX;

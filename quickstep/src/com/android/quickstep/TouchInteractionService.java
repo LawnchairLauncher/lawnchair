@@ -370,12 +370,14 @@ public class TouchInteractionService extends Service implements PluginListener<O
     @UiThread
     private void onSystemUiFlagsChanged() {
         if (mDeviceState.isUserUnlocked()) {
-            SystemUiProxy.INSTANCE.get(this).setLastSystemUiStateFlags(
-                    mDeviceState.getSystemUiStateFlags());
+            int systemUiStateFlags = mDeviceState.getSystemUiStateFlags();
+            SystemUiProxy.INSTANCE.get(this).setLastSystemUiStateFlags(systemUiStateFlags);
             mOverviewComponentObserver.onSystemUiStateChanged();
+            mOverviewComponentObserver.getActivityInterface().onSystemUiFlagsChanged(
+                    systemUiStateFlags);
 
             // Update the tracing state
-            if ((mDeviceState.getSystemUiStateFlags() & SYSUI_STATE_TRACING_ENABLED) != 0) {
+            if ((systemUiStateFlags & SYSUI_STATE_TRACING_ENABLED) != 0) {
                 Log.d(TAG, "Starting tracing.");
                 ProtoTracer.INSTANCE.get(this).start();
             } else {

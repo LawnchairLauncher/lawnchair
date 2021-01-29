@@ -139,7 +139,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
     private static final int LAUNCHER_RESUME_START_DELAY = 100;
     private static final int CLOSING_TRANSITION_DURATION_MS = 250;
 
-    protected static final int CONTENT_ALPHA_DURATION = 217;
+    public static final int CONTENT_ALPHA_DURATION = 217;
     protected static final int CONTENT_TRANSLATION_DURATION = 350;
 
     // Progress = 0: All apps is fully pulled up, Progress = 1: All apps is fully pulled down.
