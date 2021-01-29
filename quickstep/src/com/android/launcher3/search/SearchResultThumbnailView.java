@@ -39,9 +39,10 @@ import java.util.List;
  * A view representing a high confidence app search result that includes shortcuts
  */
 public class SearchResultThumbnailView extends androidx.appcompat.widget.AppCompatImageView
-        implements SearchTargetHandler, View.OnClickListener {
+        implements SearchTargetHandler {
 
     private SearchTarget mSearchTarget;
+    private SearchResultIcon mResultIcon;
 
     public SearchResultThumbnailView(Context context) {
         super(context);
@@ -100,5 +101,11 @@ public class SearchResultThumbnailView extends androidx.appcompat.widget.AppComp
         ItemClickHandler.onClickSearchAction(Launcher.getLauncher(getContext()),
                 (SearchActionItemInfo) view.getTag());
         notifyEvent(getContext(), mSearchTarget.getId(), SearchTargetEvent.ACTION_LAUNCH_TOUCH);
+    }
+
+    @Override
+    public boolean onLongClick(View view) {
+        // do nothing.
+        return false;
     }
 }
