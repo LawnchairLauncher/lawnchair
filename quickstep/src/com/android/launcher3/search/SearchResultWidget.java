@@ -186,6 +186,10 @@ public class SearchResultWidget extends LinearLayout implements SearchTargetHand
         return false;
     }
 
+    @Override
+    public void onClick(View view) {
+        // do nothing.
+    }
 
     static class ClickListener extends GestureDetector.SimpleOnGestureListener {
         private final Runnable mCb;

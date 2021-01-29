@@ -57,10 +57,9 @@
         style="@style/BaseIcon"
         android:layout_width="@dimen/deep_shortcut_icon_size"
         android:layout_height="match_parent"
-        android:layout_marginStart="4dp"
-        android:gravity="center"
+        android:gravity="start|center_vertical"
         launcher:iconDisplay="shortcut_popup"
-        android:textSize="@dimen/search_hero_inline_button_size"
+        android:textSize="@dimen/search_hero_subtitle_size"
         launcher:iconSizeOverride="@dimen/deep_shortcut_icon_size"
         launcher:layoutHorizontal="false" />
 
@@ -69,20 +68,6 @@
         style="@style/BaseIcon"
         android:layout_width="@dimen/deep_shortcut_icon_size"
         android:layout_height="match_parent"
-        android:layout_marginStart="4dp"
-        android:gravity="center"
-        launcher:iconDisplay="shortcut_popup"
-        android:textSize="@dimen/search_hero_inline_button_size"
-        launcher:iconSizeOverride="@dimen/deep_shortcut_icon_size"
-        launcher:layoutHorizontal="false" />
-
-    <com.android.launcher3.search.SearchResultIcon
-        android:id="@+id/shortcut_2"
-        style="@style/BaseIcon"
-        android:layout_width="@dimen/deep_shortcut_icon_size"
-        android:layout_height="match_parent"
-        android:layout_marginStart="4dp"
-        android:gravity="center"
         launcher:iconDisplay="shortcut_popup"
         android:textSize="@dimen/search_hero_inline_button_size"
         launcher:iconSizeOverride="@dimen/deep_shortcut_icon_size"
