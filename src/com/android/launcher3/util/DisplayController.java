@@ -31,6 +31,8 @@ import android.view.Display;
 
 import androidx.annotation.VisibleForTesting;
 
+import com.android.launcher3.Utilities;
+
 import java.util.ArrayList;
 
 /**
@@ -179,23 +181,35 @@ public class DisplayController implements DisplayListener {
             return mInfo;
         }
 
+        /** Creates and up-to-date DisplayController.Info for the given context. */
+        public Info createInfoForContext(Context context) {
+            Display display = Utilities.ATLEAST_R
+                    ? context.getDisplay()
+                    : context
+                        .getSystemService(DisplayManager.class)
+                        .getDisplay(mId);
+            return display == null
+                    ? new Info(context)
+                    : new Info(context, display);
+        }
+
         protected void handleOnChange() {
             Info oldInfo = mInfo;
-            Info info = new Info(mDisplayContext);
+            Info newInfo = createInfoForContext(mDisplayContext);
 
             int change = 0;
-            if (info.hasDifferentSize(oldInfo)) {
+            if (newInfo.hasDifferentSize(oldInfo)) {
                 change |= CHANGE_SIZE;
             }
-            if (oldInfo.rotation != info.rotation) {
+            if (newInfo.rotation != oldInfo.rotation) {
                 change |= CHANGE_ROTATION;
             }
-            if (info.singleFrameMs != oldInfo.singleFrameMs) {
+            if (newInfo.singleFrameMs != oldInfo.singleFrameMs) {
                 change |= CHANGE_FRAME_DELAY;
             }
 
             if (change != 0) {
-                mInfo = info;
+                mInfo = newInfo;
                 final int flags = change;
                 MAIN_EXECUTOR.execute(() -> notifyChange(flags));
             }
