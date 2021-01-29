@@ -308,7 +308,7 @@ public class ClockDrawableWrapper extends AdaptiveIconDrawable implements Bitmap
             return new ClockConstantState(mInfo, isDisabled());
         }
 
-        private static class ClockConstantState extends MyConstantState {
+        private static class ClockConstantState extends FastBitmapConstantState {
 
             private final ClockBitmapInfo mInfo;
 
