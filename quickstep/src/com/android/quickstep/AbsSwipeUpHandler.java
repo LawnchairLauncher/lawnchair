@@ -1451,7 +1451,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
     private void finishCurrentTransitionToRecents() {
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED);
-            mRecentsView.getRunningTaskView().setIsClickableAsLiveTile(true);
+            final TaskView runningTaskView = mRecentsView.getRunningTaskView();
+            if (runningTaskView != null) {
+                runningTaskView.setIsClickableAsLiveTile(true);
+            }
         } else if (!hasTargets() || mRecentsAnimationController == null) {
             // If there are no targets or the animation not started, then there is nothing to finish
             mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED);
