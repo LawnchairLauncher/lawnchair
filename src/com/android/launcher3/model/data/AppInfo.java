@@ -179,7 +179,7 @@ public class AppInfo extends ItemInfoWithIcon {
         // Sets the progress level, installation and incremental download flags.
         info.setProgressLevel(
                 PackageManagerHelper.getLoadingProgress(lai),
-                PackageInstallInfo.STATUS_INSTALLED);
+                PackageInstallInfo.STATUS_INSTALLED_DOWNLOADING);
     }
 
     @Override
