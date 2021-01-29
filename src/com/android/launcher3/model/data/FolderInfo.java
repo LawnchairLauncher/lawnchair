@@ -40,6 +40,8 @@ import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.util.ContentWriter;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.OptionalInt;
 import java.util.stream.IntStream;
 
@@ -137,9 +139,16 @@ public class FolderInfo extends ItemInfo {
      * @param item
      */
     public void remove(WorkspaceItemInfo item, boolean animate) {
-        contents.remove(item);
+        removeAll(Collections.singletonList(item), animate);
+    }
+
+    /**
+     * Remove all matching app or shortcut. Does not change the DB.
+     */
+    public void removeAll(List<WorkspaceItemInfo> items, boolean animate) {
+        contents.removeAll(items);
         for (int i = 0; i < mListeners.size(); i++) {
-            mListeners.get(i).onRemove(item);
+            mListeners.get(i).onRemove(items);
         }
         itemsChanged(animate);
     }
@@ -166,9 +175,9 @@ public class FolderInfo extends ItemInfo {
     }
 
     public interface FolderListener {
-        public void onAdd(WorkspaceItemInfo item, int rank);
-        public void onRemove(WorkspaceItemInfo item);
-        public void onItemsChanged(boolean animate);
+        void onAdd(WorkspaceItemInfo item, int rank);
+        void onRemove(List<WorkspaceItemInfo> item);
+        void onItemsChanged(boolean animate);
     }
 
     public boolean hasOption(int optionFlag) {

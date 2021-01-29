@@ -27,6 +27,7 @@ import android.content.SharedPreferences;
 
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.allapps.AllAppsInsetTransitionController;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.hybridhotseat.HotseatPredictionController;
 import com.android.launcher3.search.DeviceSearchEdu;
@@ -139,8 +140,12 @@ public class QuickstepOnboardingPrefs extends OnboardingPrefs<QuickstepLauncher>
                 @Override
                 public void onStateTransitionStart(LauncherState toState) {
                     if (toState == ALL_APPS) {
-                        mLauncher.getAllAppsController().getInsetController().setSearchEduRunnable(
-                                () -> DeviceSearchEdu.show(launcher));
+                        AllAppsInsetTransitionController insetTransitionController =
+                                mLauncher.getAllAppsController().getInsetController();
+                        insetTransitionController.setSearchEduRunnable(() -> {
+                            DeviceSearchEdu.show(launcher);
+                            insetTransitionController.setSearchEduRunnable(null);
+                        });
                         stateManager.removeStateListener(this);
                     }
                 }
