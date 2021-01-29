@@ -18,7 +18,6 @@ package com.android.launcher3.search;
 
 import static com.android.launcher3.search.DeviceSearchAdapterProvider.VIEW_TYPE_SEARCH_ICON;
 import static com.android.launcher3.search.DeviceSearchAdapterProvider.VIEW_TYPE_SEARCH_ICON_ROW;
-import static com.android.launcher3.search.DeviceSearchAdapterProvider.VIEW_TYPE_SEARCH_PEOPLE;
 import static com.android.launcher3.search.DeviceSearchAdapterProvider.VIEW_TYPE_SEARCH_SLICE;
 import static com.android.launcher3.search.DeviceSearchAdapterProvider.VIEW_TYPE_SEARCH_THUMBNAIL;
 import static com.android.launcher3.search.DeviceSearchAdapterProvider.VIEW_TYPE_SEARCH_WIDGET_LIVE;
@@ -42,9 +41,10 @@ public class SearchAdapterItem extends AllAppsGridAdapter.AdapterItem {
 
 
     private static final int AVAILABLE_FOR_ACCESSIBILITY =
-            VIEW_TYPE_SEARCH_SLICE | VIEW_TYPE_SEARCH_PEOPLE | VIEW_TYPE_SEARCH_THUMBNAIL
-                    | VIEW_TYPE_SEARCH_ICON_ROW | VIEW_TYPE_SEARCH_ICON
-                    | VIEW_TYPE_SEARCH_WIDGET_PREVIEW | VIEW_TYPE_SEARCH_WIDGET_LIVE;
+            VIEW_TYPE_SEARCH_SLICE | VIEW_TYPE_SEARCH_THUMBNAIL | VIEW_TYPE_SEARCH_ICON_ROW
+                    | VIEW_TYPE_SEARCH_ICON | VIEW_TYPE_SEARCH_WIDGET_PREVIEW
+                    | VIEW_TYPE_SEARCH_WIDGET_LIVE;
+
 
     public SearchAdapterItem(SearchTargetLegacy searchTargetLegacy, int type) {
         mSearchTargetLegacy = searchTargetLegacy;

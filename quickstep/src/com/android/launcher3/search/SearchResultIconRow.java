@@ -23,7 +23,6 @@ import android.content.Context;
 import android.content.pm.ShortcutInfo;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -44,15 +43,15 @@ import java.util.List;
  */
 public class SearchResultIconRow extends LinearLayout implements SearchTargetHandler {
 
-    public static final int MAX_INLINE_ITEMS = 2;
+    public static final int MAX_INLINE_ITEMS = 3;
 
     protected final Launcher mLauncher;
     private final LauncherAppState mLauncherAppState;
-    private SearchResultIcon mResultIcon;
+    protected SearchResultIcon mResultIcon;
 
     private TextView mTitleView;
     private TextView mSubTitleView;
-    private final SearchResultIcon[] mInlineIcons = new SearchResultIcon[MAX_INLINE_ITEMS];
+    protected final SearchResultIcon[] mInlineIcons = new SearchResultIcon[MAX_INLINE_ITEMS];
 
     private PackageItemInfo mProviderInfo;
 
@@ -91,9 +90,9 @@ public class SearchResultIconRow extends LinearLayout implements SearchTargetHan
 
         mInlineIcons[0] = findViewById(R.id.shortcut_0);
         mInlineIcons[1] = findViewById(R.id.shortcut_1);
+        mInlineIcons[2] = findViewById(R.id.shortcut_2);
         for (SearchResultIcon inlineIcon : mInlineIcons) {
             inlineIcon.getLayoutParams().width = getIconSize();
-            // TODO: inlineIcon.setOnClickListener();
         }
 
         setOnClickListener(mResultIcon);
@@ -103,7 +102,7 @@ public class SearchResultIconRow extends LinearLayout implements SearchTargetHan
     @Override
     public void apply(SearchTarget parentTarget, List<SearchTarget> children) {
         showSubtitleIfNeeded(null);
-        mResultIcon.applySearchTarget(parentTarget, children, this::onItemInfoCreated);
+        mResultIcon.apply(parentTarget, children, this::onItemInfoCreated);
         if (parentTarget.getShortcutInfo() != null) {
             updateWithShortcutInfo(parentTarget.getShortcutInfo());
         } else if (parentTarget.getSearchAction() != null) {
@@ -142,7 +141,7 @@ public class SearchResultIconRow extends LinearLayout implements SearchTargetHan
     protected void showInlineItems(List<SearchTarget> children) {
         for (int i = 0; i < MAX_INLINE_ITEMS; i++) {
             if (i < children.size()) {
-                mInlineIcons[i].apply(children.get(0), new ArrayList<>());
+                mInlineIcons[i].apply(children.get(i), new ArrayList<>());
                 mInlineIcons[i].setVisibility(VISIBLE);
             } else {
                 mInlineIcons[i].setVisibility(GONE);
@@ -153,16 +152,5 @@ public class SearchResultIconRow extends LinearLayout implements SearchTargetHan
     protected void onItemInfoCreated(ItemInfoWithIcon info) {
         setTag(info);
         mTitleView.setText(info.title);
-    }
-
-    @Override
-    public void onClick(View view) {
-        // do nothing.
-    }
-
-    @Override
-    public boolean onLongClick(View view) {
-        // do nothing.
-        return false;
     }
 }
