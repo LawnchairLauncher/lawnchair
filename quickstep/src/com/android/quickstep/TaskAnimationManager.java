@@ -21,7 +21,10 @@ import static com.android.quickstep.GestureState.GestureEndTarget.RECENTS;
 import static com.android.quickstep.GestureState.STATE_RECENTS_ANIMATION_INITIALIZED;
 import static com.android.quickstep.GestureState.STATE_RECENTS_ANIMATION_STARTED;
 
+import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
+import android.os.SystemProperties;
 import android.util.Log;
 
 import androidx.annotation.UiThread;
@@ -30,11 +33,15 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
+import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
+import com.android.systemui.shared.system.RemoteTransitionCompat;
 
 import java.util.function.Consumer;
 
 public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAnimationListener {
+    public static final boolean ENABLE_SHELL_TRANSITIONS =
+            SystemProperties.getBoolean("persist.debug.shell_transit", false);
 
     private RecentsAnimationController mController;
     private RecentsAnimationCallbacks mCallbacks;
@@ -43,7 +50,11 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
     private GestureState mLastGestureState;
     private RemoteAnimationTargetCompat mLastAppearedTaskTarget;
     private Consumer<RemoteAnimationTargetCompat> mLaunchOtherTaskHandler;
+    private Context mCtx;
 
+    TaskAnimationManager(Context ctx) {
+        mCtx = ctx;
+    }
     /**
      * Preloads the recents animation.
      */
@@ -122,8 +133,16 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
         final long eventTime = gestureState.getSwipeUpStartTimeMs();
         mCallbacks.addListener(gestureState);
         mCallbacks.addListener(listener);
-        UI_HELPER_EXECUTOR.execute(() -> ActivityManagerWrapper.getInstance()
-                .startRecentsActivity(intent, eventTime, mCallbacks, null, null));
+
+        if (ENABLE_SHELL_TRANSITIONS) {
+            RemoteTransitionCompat transition = new RemoteTransitionCompat(mCallbacks,
+                    mController != null ? mController.getController() : null);
+            Bundle options = ActivityOptionsCompat.makeRemoteTransition(transition).toBundle();
+            mCtx.startActivity(intent, options);
+        } else {
+            UI_HELPER_EXECUTOR.execute(() -> ActivityManagerWrapper.getInstance()
+                    .startRecentsActivity(intent, eventTime, mCallbacks, null, null));
+        }
         gestureState.setState(STATE_RECENTS_ANIMATION_INITIALIZED);
         return mCallbacks;
     }
