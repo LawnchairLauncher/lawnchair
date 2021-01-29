@@ -23,6 +23,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
@@ -56,6 +57,14 @@ public class SearchResultThumbnailView extends androidx.appcompat.widget.AppComp
     }
 
     @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        setOnFocusChangeListener(Launcher.getLauncher(getContext()).getFocusHandler());
+        setOnClickListener(this);
+        setOnLongClickListener(this);
+    }
+
+    @Override
     public void apply(SearchTarget parentTarget, List<SearchTarget> children) {
         mSearchTarget = parentTarget;
         Bitmap bitmap;
@@ -65,6 +74,9 @@ public class SearchResultThumbnailView extends androidx.appcompat.widget.AppComp
                 parentTarget.getPackageName(),
                 parentTarget.getUserHandle(),
                 parentTarget.getSearchAction().getTitle());
+        itemInfo.setIntent(parentTarget.getSearchAction().getIntent());
+        itemInfo.setPendingIntent(parentTarget.getSearchAction().getPendingIntent());
+
         bitmap = ((BitmapDrawable) itemInfo.getIcon()
                 .loadDrawable(getContext())).getBitmap();
         // crop
