@@ -54,9 +54,7 @@ public class SearchResultWidgetPreview extends LinearLayout implements SearchTar
     private WidgetCell mWidgetCell;
     private Toast mWidgetToast;
 
-    private SearchTarget mSearchTarget;
-
-
+    private String mTargetId;
     public SearchResultWidgetPreview(Context context) {
         this(context, null, 0);
     }
@@ -83,7 +81,7 @@ public class SearchResultWidgetPreview extends LinearLayout implements SearchTar
 
     @Override
     public void apply(SearchTarget parentTarget, List<SearchTarget> children) {
-        mSearchTarget = parentTarget;
+        mTargetId = parentTarget.getId();
         AppWidgetProviderInfo providerInfo = parentTarget.getAppWidgetProviderInfo();
         LauncherAppWidgetProviderInfo pInfo = LauncherAppWidgetProviderInfo.fromProviderInfo(
                 getContext(), providerInfo);
@@ -114,18 +112,18 @@ public class SearchResultWidgetPreview extends LinearLayout implements SearchTar
         new PendingItemDragHelper(mWidgetCell).startDrag(
                 imageView.getBitmapBounds(), imageView.getBitmap().getWidth(), imageView.getWidth(),
                 new Point(loc[0], loc[1]), mLauncher.getAppsView(), new DragOptions());
-        handleSelection(SearchTargetEvent.ACTION_LONGPRESS);
+        reportEvent(SearchTargetEvent.ACTION_LONGPRESS);
         return true;
     }
 
     @Override
     public void onClick(View view) {
         mWidgetToast = BaseWidgetSheet.showWidgetToast(getContext(), mWidgetToast);
-        handleSelection(SearchTargetEvent.ACTION_LAUNCH_TOUCH);
+        reportEvent(SearchTargetEvent.ACTION_LAUNCH_TOUCH);
     }
 
-    public void handleSelection(int eventType) {
+    private void reportEvent(int eventType) {
         SearchSessionTracker.INSTANCE.get(getContext()).notifyEvent(
-                new SearchTargetEvent.Builder(mSearchTarget.getId(), eventType).build());
+                new SearchTargetEvent.Builder(mTargetId, eventType).build());
     }
 }
