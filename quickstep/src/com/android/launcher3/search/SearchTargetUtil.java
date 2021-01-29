@@ -15,13 +15,6 @@
  */
 package com.android.launcher3.search;
 
-import static com.android.app.search.LayoutType.ICON_DOUBLE_HORIZONTAL_TEXT;
-import static com.android.app.search.LayoutType.ICON_SINGLE_HORIZONTAL_TEXT;
-import static com.android.app.search.LayoutType.THUMBNAIL;
-import static com.android.app.search.ResultType.ACTION;
-import static com.android.app.search.ResultType.SCREENSHOT;
-import static com.android.app.search.ResultType.SUGGEST;
-
 import android.app.PendingIntent;
 import android.app.search.SearchAction;
 import android.app.search.SearchTarget;
@@ -38,11 +31,18 @@ import android.os.UserHandle;
 
 import com.android.app.search.ResultType;
 
+import static com.android.app.search.LayoutType.ICON_DOUBLE_HORIZONTAL_TEXT;
+import static com.android.app.search.LayoutType.ICON_SINGLE_HORIZONTAL_TEXT;
+import static com.android.app.search.LayoutType.THUMBNAIL;
+import static com.android.app.search.ResultType.ACTION;
+import static com.android.app.search.ResultType.SCREENSHOT;
+import static com.android.app.search.ResultType.SUGGEST;
+
 public class SearchTargetUtil {
 
     public static final String BUNDLE_EXTRA_SHOULD_START = "should_start";
     public static final String BUNDLE_EXTRA_SHOULD_START_FOR_RESULT = "should_start_for_result";
-    public static final String BUNDLE_EXTRA_BADGE_WITH_PACKAGE = "badge_with_package";
+    public static final String BUNDLE_EXTRA_BADGE_FROM_ICON = "badge_from_icon";
     public static final String BUNDLE_EXTRA_PRIMARY_ICON_FROM_TITLE = "primary_icon_from_title";
 
     public static final String EXTRA_CLASS = "class";
@@ -56,10 +56,10 @@ public class SearchTargetUtil {
     /**
      * Generate SearchTargetUtil for ICON_DOUBLE_HORIZONTAL_TEXT layout type.
      *
-     * targets.add(SearchTargetUtil.generateIconDoubleHorizontalText_SearchAction(
-     * mContext, "red", Color.RED));
-     * targets.add(SearchTargetUtil.generateIconDoubleHorizontalText_SearchAction(
-     * mContext, "yellow", Color.YELLOW));
+       targets.add(SearchTargetUtil.generateIconDoubleHorizontalText_SearchAction(
+           mContext, "red", Color.RED));
+       targets.add(SearchTargetUtil.generateIconDoubleHorizontalText_SearchAction(
+           mContext, "yellow", Color.YELLOW));
      */
     public static SearchTarget generateIconDoubleHorizontalText_SearchAction(
             Context context, String id, int color) {
@@ -83,7 +83,7 @@ public class SearchTargetUtil {
 
         Bundle b = new Bundle();
         b.putBoolean(BUNDLE_EXTRA_SHOULD_START_FOR_RESULT, true);
-        b.putBoolean(BUNDLE_EXTRA_BADGE_WITH_PACKAGE, true);
+        b.putBoolean(BUNDLE_EXTRA_BADGE_FROM_ICON, true);
         b.putBoolean(BUNDLE_EXTRA_PRIMARY_ICON_FROM_TITLE, true);
 
         builder.setSearchAction(new SearchAction.Builder(id, id + TITLE)
@@ -96,7 +96,7 @@ public class SearchTargetUtil {
     }
 
     /**
-     * Inside SearchServicePipeline, add following samples to test the search target.
+     *  Inside SearchServicePipeline, add following samples to test the search target.
      *
      * targets.add(SearchTargetUtil.generateThumbnail_SearchAction("blue", Color.BLUE));
      * targets.add(SearchTargetUtil.generateThumbnail_SearchAction("red", Color.RED));
@@ -129,10 +129,11 @@ public class SearchTargetUtil {
     }
 
     /**
+     *
      * targets.add(SearchTargetUtil.generateIconHorizontalText_SearchAction(
-     * mContext, "red", Color.RED));
+     *     mContext, "red", Color.RED));
      * targets.add(SearchTargetUtil.generateIconHorizontalText_SearchAction(
-     * mContext, "yellow", Color.YELLOW));
+     *     mContext, "yellow", Color.YELLOW));
      */
     public static SearchTarget generateIconHorizontalText_SearchAction(
             Context context, String id, int color) {

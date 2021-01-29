@@ -18,6 +18,7 @@ package com.android.launcher3.search;
 import android.app.search.SearchTarget;
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -46,5 +47,16 @@ public class SearchSectionHeaderView extends TextView implements SearchTargetHan
     public void apply(SearchTarget parentTarget, List<SearchTarget> children) {
         setText(parentTarget.getSearchAction().getTitle());
         setVisibility(VISIBLE);
+    }
+
+    @Override
+    public void onClick(View view) {
+        // do nothing.
+    }
+
+    @Override
+    public boolean onLongClick(View view) {
+        // do nothing.
+        return false;
     }
 }

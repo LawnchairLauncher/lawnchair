@@ -20,7 +20,7 @@ import android.os.Bundle;
 /**
  * Event used for the feedback loop to the plugin. (and future aiai)
  *
- * @deprecated Use {@link android.app.search.SearchTargetEvent}
+ * @deprecated Use SearchTargetEvent
  */
 @Deprecated
 public class SearchTargetEventLegacy {
