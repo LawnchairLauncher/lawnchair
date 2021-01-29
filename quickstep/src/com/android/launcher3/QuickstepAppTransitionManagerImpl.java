@@ -16,8 +16,6 @@
 
 package com.android.launcher3;
 
-import static android.util.TypedValue.COMPLEX_UNIT_DIP;
-
 import static com.android.launcher3.BaseActivity.INVISIBLE_ALL;
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_APP_TRANSITIONS;
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_PENDING_FLAGS;
@@ -62,7 +60,6 @@ import android.os.CancellationSignal;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Pair;
-import android.util.TypedValue;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -879,10 +876,8 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                             }
                         });
                     } else {
-                        float velocityDpPerS = DynamicResource.provider(mLauncher)
+                        float velocityPxPerS = DynamicResource.provider(mLauncher)
                                 .getDimension(R.dimen.unlock_staggered_velocity_dp_per_s);
-                        float velocityPxPerS = TypedValue.applyDimension(COMPLEX_UNIT_DIP,
-                                velocityDpPerS, mLauncher.getResources().getDisplayMetrics());
                         anim.play(new StaggeredWorkspaceAnim(mLauncher, velocityPxPerS, false)
                                 .getAnimators());
                     }

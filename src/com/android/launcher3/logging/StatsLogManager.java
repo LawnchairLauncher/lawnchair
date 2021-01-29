@@ -33,11 +33,16 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.userevent.LauncherLogProto;
 import com.android.launcher3.util.ResourceBasedOverride;
 
+import java.util.List;
+
 /**
  * Handles the user event logging in R+.
+ *
+ * <pre>
  * All of the event ids are defined here.
  * Most of the methods are dummy methods for Launcher3
  * Actual call happens only for Launcher variant that implements QuickStep.
+ * </pre>
  */
 public class StatsLogManager implements ResourceBasedOverride {
 
@@ -49,8 +54,8 @@ public class StatsLogManager implements ResourceBasedOverride {
     public static final int LAUNCHER_STATE_UNCHANGED = 5;
 
     /**
-     * Returns proper launcher state enum for {@link StatsLogManager}
-     * (to be removed during UserEventDispatcher cleanup)
+     * Returns proper launcher state enum for {@link StatsLogManager}(to be removed during
+     * UserEventDispatcher cleanup)
      */
     public static int containerTypeToAtomState(int containerType) {
         switch (containerType) {
@@ -67,9 +72,8 @@ public class StatsLogManager implements ResourceBasedOverride {
     }
 
     /**
-     * Returns event enum based on the two {@link ContainerType} transition information when
-     * swipe gesture happens.
-     * (to be removed during UserEventDispatcher cleanup)
+     * Returns event enum based on the two {@link ContainerType} transition information when swipe
+     * gesture happens(to be removed during UserEventDispatcher cleanup).
      */
     public static EventEnum getLauncherAtomEvent(int startContainerType,
             int targetContainerType, EventEnum fallbackEvent) {
@@ -273,7 +277,49 @@ public class StatsLogManager implements ResourceBasedOverride {
         LAUNCHER_SELECT_MODE_CLOSE(583),
 
         @UiEvent(doc = "User tapped on the highlight items in select mode")
-        LAUNCHER_SELECT_MODE_ITEM(584);
+        LAUNCHER_SELECT_MODE_ITEM(584),
+
+        @UiEvent(doc = "Notification dot on app icon enabled.")
+        LAUNCHER_NOTIFICATION_DOT_ENABLED(611),
+
+        @UiEvent(doc = "Notification dot on app icon disabled.")
+        LAUNCHER_NOTIFICATION_DOT_DISABLED(612),
+
+        @UiEvent(doc = "For new apps, add app icons to home screen enabled.")
+        LAUNCHER_ADD_NEW_APPS_TO_HOME_SCREEN_ENABLED(613),
+
+        @UiEvent(doc = "For new apps, add app icons to home screen disabled.")
+        LAUNCHER_ADD_NEW_APPS_TO_HOME_SCREEN_DISABLED(614),
+
+        @UiEvent(doc = "Home screen rotation is enabled when phone is rotated.")
+        LAUNCHER_HOME_SCREEN_ROTATION_ENABLED(615),
+
+        @UiEvent(doc = "Home screen rotation is disabled when phone is rotated.")
+        LAUNCHER_HOME_SCREEN_ROTATION_DISABLED(616),
+
+        @UiEvent(doc = "Suggestions in all apps list enabled.")
+        LAUNCHER_ALL_APPS_SUGGESTIONS_ENABLED(619),
+
+        @UiEvent(doc = "Suggestions in all apps list disabled.")
+        LAUNCHER_ALL_APPS_SUGGESTIONS_DISABLED(620),
+
+        @UiEvent(doc = "Suggestions on home screen is enabled.")
+        LAUNCHER_HOME_SCREEN_SUGGESTIONS_ENABLED(621),
+
+        @UiEvent(doc = "Suggestions on home screen is disabled.")
+        LAUNCHER_HOME_SCREEN_SUGGESTIONS_DISABLED(622),
+
+        @UiEvent(doc = "System navigation is 3 button mode.")
+        LAUNCHER_NAVIGATION_MODE_3_BUTTON(623),
+
+        @UiEvent(doc = "System navigation mode is 2 button mode.")
+        LAUNCHER_NAVIGATION_MODE_2_BUTTON(624),
+
+        @UiEvent(doc = "System navigation mode is 0 button mode/gesture navigation mode .")
+        LAUNCHER_NAVIGATION_MODE_GESTURE_BUTTON(625),
+
+        @UiEvent(doc = "User tapped on image content in Overview Select mode.")
+        LAUNCHER_SELECT_MODE_IMAGE(627);
 
         // ADD MORE
 
@@ -417,8 +463,8 @@ public class StatsLogManager implements ResourceBasedOverride {
     }
 
     /**
-     * Logs snapshot, or impression of the current workspace.
+     * Logs impression of the current workspace with additional launcher events.
      */
-    public void logSnapshot() {
+    public void logSnapshot(List<EventEnum> additionalEvents) {
     }
 }

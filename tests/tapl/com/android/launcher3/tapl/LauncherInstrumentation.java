@@ -112,9 +112,10 @@ public final class LauncherInstrumentation {
 
     public enum NavigationModel {ZERO_BUTTON, TWO_BUTTON, THREE_BUTTON}
 
-    // Where the gesture happens: outside of Launcher, inside or from inside to outside.
+    // Where the gesture happens: outside of Launcher, inside or from inside to outside and
+    // whether the gesture recognition triggers pilfer.
     public enum GestureScope {
-        OUTSIDE, INSIDE, INSIDE_TO_OUTSIDE
+        OUTSIDE_WITHOUT_PILFER, OUTSIDE_WITH_PILFER, INSIDE, INSIDE_TO_OUTSIDE
     }
 
     ;
@@ -153,6 +154,7 @@ public final class LauncherInstrumentation {
     private static final String CONTEXT_MENU_RES_ID = "deep_shortcuts_container";
     public static final int WAIT_TIME_MS = 10000;
     private static final String SYSTEMUI_PACKAGE = "com.android.systemui";
+    private static final String ANDROID_PACKAGE = "android";
 
     private static WeakReference<VisibleContainer> sActiveContainer = new WeakReference<>(null);
 
@@ -693,7 +695,7 @@ public final class LauncherInstrumentation {
                                 ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME, NORMAL_STATE_ORDINAL,
                                 launcherWasVisible
                                         ? GestureScope.INSIDE_TO_OUTSIDE
-                                        : GestureScope.OUTSIDE);
+                                        : GestureScope.OUTSIDE_WITH_PILFER);
                     }
                 }
             } else {
@@ -923,6 +925,14 @@ public final class LauncherInstrumentation {
     @NonNull
     UiObject2 waitForFallbackLauncherObject(String resName) {
         return waitForObjectBySelector(getOverviewObjectSelector(resName));
+    }
+
+    @NonNull
+    UiObject2 waitForAndroidObject(String resId) {
+        final UiObject2 object = mDevice.wait(
+                Until.findObject(By.res(ANDROID_PACKAGE, resId)), WAIT_TIME_MS);
+        assertNotNull("Can't find a android object with id: " + resId, object);
+        return object;
     }
 
     private UiObject2 waitForObjectBySelector(BySelector selector) {
@@ -1159,7 +1169,8 @@ public final class LauncherInstrumentation {
         final boolean notLauncher3 = !isLauncher3();
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                if (gestureScope != GestureScope.OUTSIDE) {
+                if (gestureScope != GestureScope.OUTSIDE_WITH_PILFER
+                        && gestureScope != GestureScope.OUTSIDE_WITHOUT_PILFER) {
                     expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_DOWN);
                 }
                 if (notLauncher3 && getNavigationModel() != NavigationModel.THREE_BUTTON) {
@@ -1167,12 +1178,17 @@ public final class LauncherInstrumentation {
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                if (notLauncher3 && gestureScope != GestureScope.INSIDE) {
+                if (notLauncher3 && gestureScope != GestureScope.INSIDE
+                        && (gestureScope == GestureScope.OUTSIDE_WITH_PILFER
+                        || gestureScope == GestureScope.INSIDE_TO_OUTSIDE)) {
                     expectEvent(TestProtocol.SEQUENCE_PILFER, EVENT_PILFER_POINTERS);
                 }
-                if (gestureScope != GestureScope.OUTSIDE) {
-                    expectEvent(TestProtocol.SEQUENCE_MAIN, gestureScope == GestureScope.INSIDE
-                            ? EVENT_TOUCH_UP : EVENT_TOUCH_CANCEL);
+                if (gestureScope != GestureScope.OUTSIDE_WITH_PILFER
+                        && gestureScope != GestureScope.OUTSIDE_WITHOUT_PILFER) {
+                    expectEvent(TestProtocol.SEQUENCE_MAIN,
+                            gestureScope == GestureScope.INSIDE
+                                    || gestureScope == GestureScope.OUTSIDE_WITHOUT_PILFER
+                                    ? EVENT_TOUCH_UP : EVENT_TOUCH_CANCEL);
                 }
                 if (notLauncher3 && getNavigationModel() != NavigationModel.THREE_BUTTON) {
                     expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_UP_TIS);
@@ -1292,6 +1308,11 @@ public final class LauncherInstrumentation {
 
     private boolean overviewActionsEnabled() {
         return getTestInfo(TestProtocol.REQUEST_OVERVIEW_ACTIONS_ENABLED).getBoolean(
+                TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
+
+    boolean overviewShareEnabled() {
+        return getTestInfo(TestProtocol.REQUEST_OVERVIEW_SHARE_ENABLED).getBoolean(
                 TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 

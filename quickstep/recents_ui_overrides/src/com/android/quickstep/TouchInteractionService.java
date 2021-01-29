@@ -258,6 +258,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
 
     private static boolean sConnected = false;
     private static boolean sIsInitialized = false;
+    private RotationTouchHelper mRotationTouchHelper;
 
     public static boolean isConnected() {
         return sConnected;
@@ -298,6 +299,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
         mDeviceState = new RecentsAnimationDeviceState(this);
         mDeviceState.addNavigationModeChangedCallback(this::onNavigationModeChanged);
         mDeviceState.runOnUserUnlocked(this::onUserUnlocked);
+        mRotationTouchHelper = mDeviceState.getRotationTouchHelper();
         ProtoTracer.INSTANCE.get(this).add(this);
 
         sConnected = true;
@@ -326,7 +328,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
         mInputEventReceiver = mInputMonitorCompat.getInputReceiver(Looper.getMainLooper(),
                 mMainChoreographer, this::onInputEvent);
 
-        mDeviceState.updateGestureTouchRegions();
+        mRotationTouchHelper.updateGestureTouchRegions();
     }
 
     /**
@@ -470,9 +472,9 @@ public class TouchInteractionService extends Service implements PluginListener<O
             if (TestProtocol.sDebugTracing) {
                 Log.d(TestProtocol.NO_SWIPE_TO_HOME, "TouchInteractionService.onInputEvent:DOWN");
             }
-            mDeviceState.setOrientationTransformIfNeeded(event);
+            mRotationTouchHelper.setOrientationTransformIfNeeded(event);
 
-            if (mDeviceState.isInSwipeUpTouchRegion(event)) {
+            if (mRotationTouchHelper.isInSwipeUpTouchRegion(event)) {
                 if (TestProtocol.sDebugTracing) {
                     Log.d(TestProtocol.NO_SWIPE_TO_HOME,
                             "TouchInteractionService.onInputEvent:isInSwipeUpTouchRegion");
@@ -509,7 +511,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
             // Other events
             if (mUncheckedConsumer != InputConsumer.NO_OP) {
                 // Only transform the event if we are handling it in a proper consumer
-                mDeviceState.setOrientationTransformIfNeeded(event);
+                mRotationTouchHelper.setOrientationTransformIfNeeded(event);
             }
         }
 
@@ -547,7 +549,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
             gestureState.updatePreviouslyAppearedTaskIds(
                     previousGestureState.getPreviouslyAppearedTaskIds());
         } else {
-            gestureState.updateRunningTask(TraceHelper.whitelistIpcs("getRunningTask.0",
+            gestureState.updateRunningTask(TraceHelper.allowIpcs("getRunningTask.0",
                     () -> mAM.getRunningTask(false /* filterOnlyVisibleRecents */)));
         }
         return gestureState;
@@ -595,9 +597,8 @@ public class TouchInteractionService extends Service implements PluginListener<O
             if (FeatureFlags.ENABLE_QUICK_CAPTURE_GESTURE.get()) {
                 OverscrollPlugin plugin = null;
                 if (FeatureFlags.FORCE_LOCAL_OVERSCROLL_PLUGIN.get()) {
-                    TaskOverlayFactory factory =
-                            TaskOverlayFactory.INSTANCE.get(getApplicationContext());
-                    plugin = factory.getLocalOverscrollPlugin();  // may be null
+                    plugin = OverscrollPluginFactory.INSTANCE.get(
+                            getApplicationContext()).getLocalOverscrollPlugin();
                 }
 
                 // If not local plugin was forced, use the actual overscroll plugin if available.
@@ -660,7 +661,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
         if (AssistantUtilities.isExcludedAssistant(gestureState.getRunningTask())) {
             // In the case where we are in the excluded assistant state, ignore it and treat the
             // running activity as the task behind the assistant
-            gestureState.updateRunningTask(TraceHelper.whitelistIpcs("getRunningTask.assistant",
+            gestureState.updateRunningTask(TraceHelper.allowIpcs("getRunningTask.assistant",
                     () -> mAM.getRunningTask(true /* filterOnlyVisibleRecents */)));
             ComponentName homeComponent = mOverviewComponentObserver.getHomeIntent().getComponent();
             ComponentName runningComponent =

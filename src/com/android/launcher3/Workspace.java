@@ -309,7 +309,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             // In portrait, we want the pages spaced such that there is no
             // overhang of the previous / next page into the current page viewport.
             // We assume symmetrical padding in portrait mode.
-            setPageSpacing(Math.max(grid.edgeMarginPx, padding.left + 1));
+            int maxInsets = Math.max(insets.left, insets.right);
+            int maxPadding = Math.max(grid.edgeMarginPx, padding.left + 1);
+            setPageSpacing(Math.max(maxInsets, maxPadding));
         }
 
 

@@ -142,6 +142,10 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
                 Log.d(TestProtocol.OVERIEW_NOT_ALLAPPS,
                         "PortraitStatesTouchController.getTargetState 1");
             }
+            if (ENABLE_OVERVIEW_ACTIONS.get() && removeShelfFromOverview(mLauncher)) {
+                // Don't allow swiping down to overview.
+                return NORMAL;
+            }
             return TouchInteractionService.isConnected() ?
                     mLauncher.getStateManager().getLastState() : NORMAL;
         } else if (fromState == OVERVIEW) {

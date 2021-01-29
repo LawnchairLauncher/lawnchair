@@ -15,14 +15,35 @@
  */
 package com.android.quickstep;
 
+import static android.content.Intent.EXTRA_COMPONENT_NAME;
+import static android.content.Intent.EXTRA_USER;
+
+import static com.android.launcher3.GestureNavContract.EXTRA_GESTURE_CONTRACT;
+import static com.android.launcher3.GestureNavContract.EXTRA_ICON_POSITION;
+import static com.android.launcher3.GestureNavContract.EXTRA_ICON_SURFACE;
+import static com.android.launcher3.GestureNavContract.EXTRA_REMOTE_CALLBACK;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME;
 
 import android.animation.ObjectAnimator;
+import android.annotation.TargetApi;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Matrix;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+import android.os.Messenger;
+import android.os.ParcelUuid;
+import android.os.UserHandle;
+import android.view.Surface;
+import android.view.SurfaceControl;
+import android.view.SurfaceControl.Transaction;
 
 import androidx.annotation.NonNull;
 
@@ -32,18 +53,32 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.SpringAnimationBuilder;
 import com.android.quickstep.fallback.FallbackRecentsView;
+import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.util.TransformParams.BuilderProxy;
+import com.android.systemui.shared.recents.model.Task.TaskKey;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
 
+import java.lang.ref.WeakReference;
+import java.util.UUID;
+import java.util.function.Consumer;
+
 /**
  * Handles the navigation gestures when a 3rd party launcher is the default home activity.
  */
+@TargetApi(Build.VERSION_CODES.R)
 public class FallbackSwipeHandler extends
         BaseSwipeUpHandlerV2<RecentsActivity, FallbackRecentsView> {
+
+    /**
+     * Message used for receiving gesture nav contract information. We use a static messenger to
+     * avoid leaking too make binders in case the receiving launcher does not handle the contract
+     * properly.
+     */
+    private static StaticMessageReceiver sMessageReceiver = null;
 
     private FallbackHomeAnimationFactory mActiveAnimationFactory;
     private final boolean mRunningOverHome;
@@ -89,7 +124,9 @@ public class FallbackSwipeHandler extends
     protected HomeAnimationFactory createHomeAnimationFactory(long duration) {
         mActiveAnimationFactory = new FallbackHomeAnimationFactory(duration);
         ActivityOptions options = ActivityOptions.makeCustomAnimation(mContext, 0, 0);
-        mContext.startActivity(new Intent(mGestureState.getHomeIntent()), options.toBundle());
+        Intent intent = new Intent(mGestureState.getHomeIntent());
+        mActiveAnimationFactory.addGestureContract(intent);
+        mContext.startActivity(intent, options.toBundle());
         return mActiveAnimationFactory;
     }
 
@@ -130,17 +167,20 @@ public class FallbackSwipeHandler extends
     }
 
     private class FallbackHomeAnimationFactory extends HomeAnimationFactory {
-
+        private final Rect mTempRect = new Rect();
         private final TransformParams mHomeAlphaParams = new TransformParams();
         private final AnimatedFloat mHomeAlpha;
 
         private final AnimatedFloat mVerticalShiftForScale = new AnimatedFloat();
-
         private final AnimatedFloat mRecentsAlpha = new AnimatedFloat();
 
+        private final RectF mTargetRect = new RectF();
+        private SurfaceControl mSurfaceControl;
+
         private final long mDuration;
+
+        private RectFSpringAnim mSpringAnim;
         FallbackHomeAnimationFactory(long duration) {
-            super(null);
             mDuration = duration;
 
             if (mRunningOverHome) {
@@ -160,6 +200,15 @@ public class FallbackSwipeHandler extends
             mRecentsAlpha.value = 1;
             mTransformParams.setBaseBuilderProxy(
                     this::updateRecentsActivityTransformDuringHomeAnim);
+        }
+
+        @NonNull
+        @Override
+        public RectF getWindowTargetRect() {
+            if (mTargetRect.isEmpty()) {
+                mTargetRect.set(super.getWindowTargetRect());
+            }
+            return mTargetRect;
         }
 
         private void updateRecentsActivityTransformDuringHomeAnim(SurfaceParams.Builder builder,
@@ -217,6 +266,88 @@ public class FallbackSwipeHandler extends
                         .build(mVerticalShiftForScale, AnimatedFloat.VALUE)
                         .start();
             }
+        }
+
+        @Override
+        public void setAnimation(RectFSpringAnim anim) {
+            mSpringAnim = anim;
+        }
+
+        private void onMessageReceived(Message msg) {
+            try {
+                Bundle data = msg.getData();
+                RectF position = data.getParcelable(EXTRA_ICON_POSITION);
+                if (!position.isEmpty()) {
+                    mSurfaceControl = data.getParcelable(EXTRA_ICON_SURFACE);
+                    mTargetRect.set(position);
+                    if (mSpringAnim != null) {
+                        mSpringAnim.onTargetPositionChanged();
+                    }
+                }
+            } catch (Exception e) {
+                // Ignore
+            }
+        }
+
+        @Override
+        public void update(RectF currentRect, float progress, float radius) {
+            if (mSurfaceControl != null) {
+                currentRect.roundOut(mTempRect);
+                Transaction t = new Transaction();
+                t.setGeometry(mSurfaceControl, null, mTempRect, Surface.ROTATION_0);
+                t.apply();
+            }
+        }
+
+        private void addGestureContract(Intent intent) {
+            if (mRunningOverHome || mGestureState.getRunningTask() == null) {
+                return;
+            }
+
+            TaskKey key = new TaskKey(mGestureState.getRunningTask());
+            if (key.getComponent() != null) {
+                if (sMessageReceiver == null) {
+                    sMessageReceiver = new StaticMessageReceiver();
+                }
+
+                Bundle gestureNavContract = new Bundle();
+                gestureNavContract.putParcelable(EXTRA_COMPONENT_NAME, key.getComponent());
+                gestureNavContract.putParcelable(EXTRA_USER, UserHandle.of(key.userId));
+                gestureNavContract.putParcelable(EXTRA_REMOTE_CALLBACK,
+                        sMessageReceiver.newCallback(this::onMessageReceived));
+                intent.putExtra(EXTRA_GESTURE_CONTRACT, gestureNavContract);
+            }
+        }
+    }
+
+    private static class StaticMessageReceiver implements Handler.Callback {
+
+        private final Messenger mMessenger =
+                new Messenger(new Handler(Looper.getMainLooper(), this));
+
+        private ParcelUuid mCurrentUID = new ParcelUuid(UUID.randomUUID());
+        private WeakReference<Consumer<Message>> mCurrentCallback = new WeakReference<>(null);
+
+        public Message newCallback(Consumer<Message> callback) {
+            mCurrentUID = new ParcelUuid(UUID.randomUUID());
+            mCurrentCallback = new WeakReference<>(callback);
+
+            Message msg = Message.obtain();
+            msg.replyTo = mMessenger;
+            msg.obj = mCurrentUID;
+            return msg;
+        }
+
+        @Override
+        public boolean handleMessage(@NonNull Message message) {
+            if (mCurrentUID.equals(message.obj)) {
+                Consumer<Message> consumer = mCurrentCallback.get();
+                if (consumer != null) {
+                    consumer.accept(message);
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

@@ -78,7 +78,7 @@ public class TraceHelper {
      * Temporarily ignore blocking binder calls for the duration of this {@link Supplier}.
      */
     @MainThread
-    public static <T> T whitelistIpcs(String rpcName, Supplier<T> supplier) {
+    public static <T> T allowIpcs(String rpcName, Supplier<T> supplier) {
         Object traceToken = INSTANCE.beginSection(rpcName, FLAG_IGNORE_BINDERS);
         try {
             return supplier.get();

@@ -92,7 +92,7 @@
         <activity
             android:name="com.android.launcher3.testcomponent.TestLauncherActivity"
             android:clearTaskOnLaunch="true"
-            android:configChanges="keyboard|keyboardHidden|mcc|mnc|navigation|orientation|screenSize|screenLayout|smallestScreenSize"
+            android:configChanges="keyboard|keyboardHidden|mcc|mnc|navigation|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:enabled="false"
             android:label="Test launcher"
             android:launchMode="singleTask"

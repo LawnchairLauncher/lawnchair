@@ -205,13 +205,15 @@ public class StaggeredWorkspaceAnim {
         ResourceProvider rp = DynamicResource.provider(v.getContext());
         float stiffness = rp.getFloat(R.dimen.staggered_stiffness);
         float damping = rp.getFloat(R.dimen.staggered_damping_ratio);
+        float endTransY = 0;
+        float springVelocity = Math.abs(mVelocity) * Math.signum(endTransY - mSpringTransY);
         ValueAnimator springTransY = new SpringAnimationBuilder(v.getContext())
                 .setStiffness(stiffness)
                 .setDampingRatio(damping)
                 .setMinimumVisibleChange(1f)
                 .setStartValue(mSpringTransY)
-                .setEndValue(0)
-                .setStartVelocity(mVelocity)
+                .setEndValue(endTransY)
+                .setStartVelocity(springVelocity)
                 .build(v, VIEW_TRANSLATE_Y);
         springTransY.setStartDelay(startDelay);
         springTransY.addListener(new AnimatorListenerAdapter() {

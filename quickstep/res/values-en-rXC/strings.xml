@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+* Copyright (C) 2017 The Android Open Source Project
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="recent_task_option_split_screen" msgid="5353188922202653570">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‎‏‏‎‏‏‏‏‏‏‏‏‏‎‎‏‎‏‎‎‏‎‎‏‎‏‎‎‏‎‏‏‎‎‎‏‏‏‏‎‏‏‎‎‏‎‏‏‎‏‏‎‏‏‏‎‎‏‎‎‎‎‎‎‎‏‏‏‎‎‎‎‎‏‎‎Split screen‎‏‎‎‏‎"</string>
+    <string name="recent_task_option_pin" msgid="7929860679018978258">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‎‏‏‎‏‏‏‏‏‏‏‏‏‏‎‏‏‏‎‎‎‎‎‏‏‎‎‏‎‎‎‎‏‏‎‎‏‎‎‎‏‎‏‏‏‏‏‏‎‏‏‎‏‎‎‎‎‏‏‏‎‎‏‏‎‏‏‏‏‎‏‎‎‏‎‎Pin‎‏‎‎‏‎"</string>
+    <string name="recent_task_option_freeform" msgid="48863056265284071">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‎‏‏‎‏‏‏‏‏‎‎‎‏‎‏‎‏‏‎‏‏‎‎‏‏‎‎‎‏‎‏‏‎‎‎‎‏‏‎‏‎‏‏‏‎‏‎‏‎‏‎‏‎‎‎‎‏‎‎‏‏‏‏‎‎‏‏‏‎Freeform‎‏‎‎‏‎"</string>
+    <string name="recents_empty_message" msgid="7040467240571714191">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‎‏‏‎‏‏‏‏‏‏‏‏‏‏‎‎‎‎‏‏‎‏‏‎‏‎‎‏‏‎‎‎‎‏‏‏‎‏‎‎‏‏‏‎‎‏‏‏‏‏‏‎‎‎‎‏‏‎‏‎‎‏‏‏‎‏‎‏‎‎‎‏‏‏‏‎No recent items‎‏‎‎‏‎"</string>
+    <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‎‏‏‎‏‏‏‏‏‏‏‏‏‎‏‎‏‏‏‏‎‎‏‏‎‏‏‏‏‎‎‏‏‎‎‏‎‎‏‎‎‏‎‏‏‎‏‎‎‏‏‎‏‏‎‎‎‎‏‎‏‎‏‎‎‎‏‏‏‎‏‎‏‎‏‎App usage settings‎‏‎‎‏‎"</string>
+    <string name="recents_clear_all" msgid="5328176793634888831">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‎‏‏‎‏‏‏‏‏‏‏‏‏‎‎‏‎‎‏‏‏‏‏‎‎‎‏‎‏‏‏‏‏‎‎‏‎‎‏‎‎‎‎‎‏‎‏‏‏‎‏‎‎‎‏‎‏‏‎‎‏‎‏‏‏‎‎‎‏‏‏‏‏‏‏‎Clear all‎‏‎‎‏‎"</string>
+    <string name="accessibility_recent_apps" msgid="4058661986695117371">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‎‏‏‎‏‏‏‏‏‏‏‎‏‏‏‎‎‎‎‏‎‏‎‎‏‏‎‏‎‎‎‎‏‏‏‎‎‏‎‎‏‎‏‎‏‏‏‏‎‎‎‏‎‏‎‏‏‏‏‏‏‏‏‎‏‎‎‎‏‏‏‎‏‏‎Recent apps‎‏‎‎‏‎"</string>
+    <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‎‏‏‎‏‏‏‏‏‏‏‎‏‏‏‏‏‎‎‎‏‎‏‎‏‏‎‎‎‎‏‏‎‏‎‎‏‎‏‏‏‎‎‎‏‏‏‎‏‏‏‏‏‎‎‏‎‏‏‏‏‏‎‎‏‏‎‎‏‎‏‏‎‏‎‎‏‎‎‏‏‎<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>‎‏‎‎‏‏‏‎, ‎‏‎‎‏‏‎<xliff:g id="REMAINING_TIME">%2$s</xliff:g>‎‏‎‎‏‏‏‎‎‏‎‎‏‎"</string>
+    <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‎‏‏‎‏‏‏‏‏‏‏‏‏‎‎‎‎‎‏‏‎‎‎‎‏‏‏‏‏‏‏‏‎‎‎‎‎‏‏‏‎‏‎‏‏‏‎‏‏‏‏‏‎‏‏‏‎‏‎‎‏‏‎‎‎‎‏‏‎‏‎‏‎‎‎‎&lt; 1 minute‎‏‎‎‏‎"</string>
+    <string name="time_left_for_app" msgid="3111996412933644358">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‎‏‏‎‏‏‏‏‏‏‏‎‏‎‏‎‏‏‎‎‏‏‎‎‎‎‎‎‎‎‏‎‎‎‎‎‏‏‏‏‏‏‏‏‎‏‏‏‏‏‎‎‏‏‎‎‏‏‎‎‏‎‎‎‎‎‎‏‎‎‎‏‏‎‎‎‏‎‎‏‏‎<xliff:g id="TIME">%1$s</xliff:g>‎‏‎‎‏‏‏‎ left today‎‏‎‎‏‎"</string>
+    <string name="title_app_suggestions" msgid="4185902664111965088">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‎‏‏‎‏‏‏‏‏‏‏‎‏‏‏‎‏‎‎‎‎‏‎‏‏‏‎‏‎‏‎‎‎‎‎‏‎‎‏‎‏‏‏‎‎‎‏‏‏‎‏‏‎‎‎‎‎‏‎‏‎‎‎‎‏‏‏‎‏‎‎‎‎‎‎App suggestions‎‏‎‎‏‎"</string>
+    <string name="all_apps_label" msgid="8542784161730910663">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‎‏‏‎‏‏‏‏‏‏‏‏‏‏‏‎‏‏‎‏‎‎‎‏‏‏‎‎‎‎‏‎‎‎‎‏‏‏‎‏‏‏‎‏‏‏‏‏‎‎‎‏‏‎‎‏‏‎‏‏‏‎‏‏‎‎‏‏‏‎‎‎‏‏‏‎All apps‎‏‎‎‏‎"</string>
+    <string name="all_apps_prediction_tip" msgid="2672336544844936186">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‎‏‏‎‏‏‏‏‏‏‏‎‏‎‎‏‎‏‎‎‎‏‎‏‏‎‎‎‎‎‏‎‏‏‏‏‏‎‏‏‎‏‏‏‎‎‏‎‏‏‏‏‎‎‎‏‏‎‏‏‏‏‎‎‏‏‏‏‏‏‏‎‏‎‎Your predicted apps‎‏‎‎‏‎"</string>
+    <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‎‏‏‎‏‏‏‏‏‎‏‏‏‎‎‎‏‎‎‎‎‎‏‎‎‏‎‏‏‏‏‎‎‏‏‎‎‏‎‏‎‏‏‎‎‏‎‎‏‎‏‎‎‎‏‏‏‏‏‎‎‏‏‏‏‏‏‏‏‎‎‎Get app suggestions on the bottom row of your Home screen‎‏‎‎‏‎"</string>
+    <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‎‏‏‎‏‏‏‏‏‏‏‎‏‏‎‎‏‎‎‏‏‎‏‏‏‎‎‏‎‏‏‎‏‏‏‏‎‏‏‏‎‎‏‏‏‏‏‎‏‏‎‎‎‏‎‎‏‏‎‏‎‎‎‎‏‎‏‏‏‏‏‎‏‏‎Get app suggestions on favorites row of your Home screen‎‏‎‎‏‎"</string>
+    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‎‏‏‎‏‏‏‏‏‏‏‏‏‏‏‏‎‏‏‏‏‏‎‎‎‏‏‏‎‏‏‎‏‏‎‎‎‏‏‏‏‎‏‎‎‏‏‏‏‏‎‎‏‎‏‏‎‎‏‏‎‎‏‏‎‏‏‏‏‎‏‏‎‎‎‎Easily access your most-used apps right on the Home screen. Suggestions will change based on your routines. Apps on the bottom row will move up to your Home screen.‎‏‎‎‏‎"</string>
+    <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‎‏‏‎‏‏‏‏‏‏‏‎‏‏‏‎‏‎‏‏‏‏‎‏‏‏‎‏‎‎‎‏‏‏‎‏‏‏‏‏‏‎‎‎‎‏‏‏‏‎‎‎‎‏‎‎‏‏‎‏‎‏‎‏‏‏‎‎‏‏‎‎‎‏‎Easily access your most-used apps right on the Home screen. Suggestions will change based on your routines. Apps in favorites row will move to your Home screen.‎‏‎‎‏‎"</string>
+    <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‎‏‏‎‏‏‏‏‏‏‏‎‏‎‏‎‏‎‎‎‏‏‏‎‎‎‏‎‏‎‎‎‏‎‎‏‏‎‏‎‎‎‏‎‏‏‏‏‏‎‎‎‏‎‏‏‎‎‎‏‎‏‏‎‏‎‏‎‎‏‎‏‎‎‎Easily access your most-used apps, right on the Home screen. Suggestions will change based on your routines. Apps on the bottom row will move to a new folder.‎‏‎‎‏‎"</string>
+    <string name="hotseat_edu_accept" msgid="1611544083278999837">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‎‏‏‎‏‏‏‏‏‏‎‏‏‎‏‏‎‎‏‎‏‏‏‎‏‎‏‎‏‏‎‏‎‏‏‎‎‏‏‏‎‎‎‏‎‏‏‏‏‏‎‏‏‏‎‏‎‎‎‏‏‎‎‎‏‎‎‎‏‏‏‎‏‎Get app suggestions‎‏‎‎‏‎"</string>
+    <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‎‏‏‎‏‏‏‏‏‏‏‎‏‎‎‏‏‎‏‎‎‏‏‎‎‎‏‎‏‎‏‎‏‏‏‏‏‏‎‎‎‏‎‏‎‎‏‏‎‏‏‎‏‏‎‎‎‏‎‎‎‏‏‎‏‎‏‏‎‏‏‎‎‏‎No thanks‎‏‎‎‏‎"</string>
+    <string name="hotseat_prediction_settings" msgid="6246554993566070818">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‎‏‏‎‏‏‏‏‏‏‏‏‏‎‏‎‏‏‎‏‎‏‏‎‎‎‎‎‎‏‏‏‎‎‎‏‎‏‎‏‎‏‏‏‏‎‎‎‏‎‏‎‏‏‏‎‎‏‎‏‎‏‏‏‎‎‎‎‎‏‎‎‎‏‎‎Settings‎‏‎‎‏‎"</string>
+    <string name="hotseat_auto_enrolled" msgid="522100018967146807">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‎‏‏‎‏‏‏‏‏‎‏‏‏‏‏‎‎‏‏‏‏‏‎‏‏‎‏‏‏‏‏‎‎‏‏‎‎‏‏‎‏‏‏‎‏‏‏‏‏‎‎‎‎‏‎‏‏‏‏‎‎‎‏‎‎‏‏‎‏‏‏‎Most-used apps appear here, and change based on routines‎‏‎‎‏‎"</string>
+    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‎‏‏‎‏‏‏‏‏‏‎‏‏‎‎‏‎‎‏‏‎‎‏‎‎‎‎‎‏‏‎‎‏‏‏‏‎‏‎‎‎‏‎‏‏‏‏‎‎‎‏‏‎‏‏‎‏‏‎‏‎‏‎‏‎‎‏‏‏‎‎‎‏‎Drag apps off the bottom row to get app suggestions‎‏‎‎‏‎"</string>
+    <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‎‏‏‎‏‏‏‏‏‏‏‎‏‎‏‎‏‎‎‎‏‎‎‎‎‎‏‏‏‎‎‎‎‎‏‎‎‎‎‏‎‎‏‏‏‎‎‏‏‏‏‎‏‎‎‎‏‎‏‏‎‎‎‏‎‏‏‎‏‏‎‎‏‎‎App suggestions added to empty space‎‏‎‎‏‎"</string>
+    <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‎‏‏‎‏‏‏‏‏‏‎‏‏‏‏‏‎‏‏‏‏‏‏‏‏‎‎‏‎‏‏‎‏‏‏‎‏‏‏‏‏‎‏‎‏‏‎‎‏‎‏‏‏‏‏‎‎‏‎‎‎‏‏‏‏‎‏‎‎‎‎‏‎‎App suggestions enabled‎‏‎‎‏‎"</string>
+    <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‎‏‏‎‏‏‏‏‏‏‎‏‏‎‏‎‎‏‏‏‎‎‏‏‏‏‏‏‎‎‏‏‎‏‎‏‏‏‏‎‎‏‏‎‎‏‎‎‏‎‏‎‏‎‎‏‏‏‎‎‏‎‏‎‏‎‎‏‏‏‎‏‏‎App suggestions are disabled‎‏‎‎‏‎"</string>
+    <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‎‏‏‎‏‏‏‏‏‏‏‎‏‏‏‏‏‏‏‎‎‏‎‏‏‎‏‎‏‎‎‎‏‎‎‏‏‏‎‏‎‏‏‎‎‏‏‏‎‏‏‏‎‎‏‎‎‎‎‏‎‎‎‎‎‎‏‏‎‏‎‎‏‏‎Predicted app: ‎‏‎‎‏‏‎<xliff:g id="TITLE">%1$s</xliff:g>‎‏‎‎‏‏‏‎‎‏‎‎‏‎"</string>
+    <string name="action_share" msgid="2648470652637092375">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‎‏‏‎‏‏‏‏‏‏‏‎‏‎‎‏‎‎‏‏‎‎‎‎‎‏‎‏‎‎‎‎‏‎‎‎‎‎‎‏‏‎‏‏‎‎‎‎‎‎‎‏‏‏‏‎‏‏‎‎‎‏‏‎‏‎‎‎‎‏‎‏‏‏‎Share‎‏‎‎‏‎"</string>
+    <string name="action_screenshot" msgid="8171125848358142917">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‎‏‏‎‏‏‏‏‏‏‏‏‏‏‏‎‎‎‏‎‏‏‎‎‏‎‏‏‎‏‎‏‎‏‏‏‎‏‎‏‎‏‎‏‎‏‎‎‏‏‎‎‏‏‎‎‏‏‎‎‏‎‎‎‎‏‏‏‏‎‎‎‏‎‏‎Screenshot‎‏‎‎‏‎"</string>
+    <string name="blocked_by_policy" msgid="2071401072261365546">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‎‏‏‎‏‏‏‏‏‏‎‏‏‏‏‎‎‏‎‏‏‏‏‏‏‎‎‎‏‏‎‎‎‎‏‎‎‏‏‎‎‏‏‏‎‏‎‏‏‏‎‎‎‎‎‎‎‎‏‏‏‏‏‏‏‎‎‏‎‏‎‏‎‎This action isn\'t allowed by the app or your organization‎‏‎‎‏‎"</string>
+</resources>

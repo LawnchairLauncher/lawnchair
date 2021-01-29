@@ -17,7 +17,6 @@ package com.android.launcher3.uioverrides.states;
 
 import static android.view.View.VISIBLE;
 
-import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.HINT_STATE;
 import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
@@ -26,6 +25,7 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_PEEK;
 import static com.android.launcher3.WorkspaceStateTransitionAnimation.getSpringScaleAnimator;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
+import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_1_7;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
@@ -52,6 +52,7 @@ import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_S
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_TRANSLATE;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
+import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -163,10 +164,15 @@ public class QuickstepAtomicAnimationFactory extends
             config.setInterpolator(ANIM_WORKSPACE_FADE, ACCEL);
             config.setInterpolator(ANIM_ALL_APPS_FADE, ACCEL);
             config.setInterpolator(ANIM_OVERVIEW_SCALE, clampToProgress(ACCEL, 0, 0.9f));
-            config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, ACCEL);
-            config.setInterpolator(ANIM_OVERVIEW_FADE, DEACCEL_1_7);
-            Workspace workspace = mActivity.getWorkspace();
+            config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, ACCEL_DEACCEL);
 
+            if (SysUINavigationMode.getMode(mActivity) == NO_BUTTON) {
+                config.setInterpolator(ANIM_OVERVIEW_FADE, FINAL_FRAME);
+            } else {
+                config.setInterpolator(ANIM_OVERVIEW_FADE, DEACCEL_1_7);
+            }
+
+            Workspace workspace = mActivity.getWorkspace();
             // Start from a higher workspace scale, but only if we're invisible so we don't jump.
             boolean isWorkspaceVisible = workspace.getVisibility() == VISIBLE;
             if (isWorkspaceVisible) {
@@ -206,13 +212,15 @@ public class QuickstepAtomicAnimationFactory extends
                 config.setInterpolator(ANIM_WORKSPACE_SCALE,
                         fromState == NORMAL ? ACCEL : OVERSHOOT_1_2);
                 config.setInterpolator(ANIM_WORKSPACE_TRANSLATE, ACCEL);
+                config.setInterpolator(ANIM_OVERVIEW_FADE, INSTANT);
             } else {
                 config.setInterpolator(ANIM_WORKSPACE_SCALE, OVERSHOOT_1_2);
+                config.setInterpolator(ANIM_OVERVIEW_FADE, OVERSHOOT_1_2);
 
                 // Scale up the recents, if it is not coming from the side
                 RecentsView overview = mActivity.getOverviewPanel();
                 if (overview.getVisibility() != VISIBLE || overview.getContentAlpha() == 0) {
-                    SCALE_PROPERTY.set(overview, RECENTS_PREPARE_SCALE);
+                    RECENTS_SCALE_PROPERTY.set(overview, RECENTS_PREPARE_SCALE);
                 }
             }
             config.setInterpolator(ANIM_WORKSPACE_FADE, OVERSHOOT_1_2);
@@ -225,7 +233,6 @@ public class QuickstepAtomicAnimationFactory extends
                     : OVERSHOOT_1_7;
             config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, translationInterpolator);
             config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_Y, translationInterpolator);
-            config.setInterpolator(ANIM_OVERVIEW_FADE, OVERSHOOT_1_2);
         } else if (fromState == HINT_STATE && toState == NORMAL) {
             config.setInterpolator(ANIM_DEPTH, DEACCEL_3);
             if (mHintToNormalDuration == -1) {

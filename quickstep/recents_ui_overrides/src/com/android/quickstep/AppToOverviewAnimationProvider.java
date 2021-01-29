@@ -24,6 +24,7 @@ import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MOD
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
+import android.app.ActivityManager.RunningTaskInfo;
 import android.util.Log;
 import android.view.animation.Interpolator;
 
@@ -52,17 +53,17 @@ final class AppToOverviewAnimationProvider<T extends StatefulActivity<?>> extend
 
     private final BaseActivityInterface<?, T> mActivityInterface;
     // The id of the currently running task that is transitioning to overview.
-    private final int mTargetTaskId;
+    private final RunningTaskInfo mTargetTask;
     private final RecentsAnimationDeviceState mDeviceState;
 
     private T mActivity;
     private RecentsView mRecentsView;
 
     AppToOverviewAnimationProvider(
-            BaseActivityInterface<?, T> activityInterface, int targetTaskId,
+            BaseActivityInterface<?, T> activityInterface, RunningTaskInfo targetTask,
             RecentsAnimationDeviceState deviceState) {
         mActivityInterface = activityInterface;
-        mTargetTaskId = targetTaskId;
+        mTargetTask = targetTask;
         mDeviceState = deviceState;
     }
 
@@ -73,13 +74,13 @@ final class AppToOverviewAnimationProvider<T extends StatefulActivity<?>> extend
      * @param wasVisible true if it was visible before
      */
     boolean onActivityReady(T activity, Boolean wasVisible) {
-        activity.<RecentsView>getOverviewPanel().showCurrentTask(mTargetTaskId);
+        activity.<RecentsView>getOverviewPanel().showCurrentTask(mTargetTask);
         AbstractFloatingView.closeAllOpenViews(activity, wasVisible);
         BaseActivityInterface.AnimationFactory factory = mActivityInterface.prepareRecentsUI(
                 mDeviceState,
                 wasVisible, (controller) -> {
-                    controller.dispatchOnStart();
-                    controller.getAnimationPlayer().end();
+                    controller.getNormalController().dispatchOnStart();
+                    controller.getNormalController().getAnimationPlayer().end();
                 });
         factory.createActivityInterface(RECENTS_LAUNCH_DURATION);
         factory.setRecentsAttachedToAppWindow(true, false);
@@ -122,7 +123,8 @@ final class AppToOverviewAnimationProvider<T extends StatefulActivity<?>> extend
                 wallpaperTargets, MODE_CLOSING);
 
         // Use the top closing app to determine the insets for the animation
-        RemoteAnimationTargetCompat runningTaskTarget = targets.findTask(mTargetTaskId);
+        RemoteAnimationTargetCompat runningTaskTarget = mTargetTask == null ? null
+                : targets.findTask(mTargetTask.taskId);
         if (runningTaskTarget == null) {
             Log.e(TAG, "No closing app");
             return pa.buildAnim();
