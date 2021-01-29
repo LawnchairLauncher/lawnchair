@@ -47,8 +47,7 @@ import java.util.List;
 /**
  * displays preview of a widget upon receiving {@link AppWidgetProviderInfo} from Search provider
  */
-public class SearchResultWidgetPreview extends LinearLayout implements SearchTargetHandler,
-        View.OnClickListener, View.OnLongClickListener {
+public class SearchResultWidgetPreview extends LinearLayout implements SearchTargetHandler {
 
     private final Launcher mLauncher;
     private final LauncherAppState mAppState;
