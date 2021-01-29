@@ -241,9 +241,9 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         mFolderName.setSelectAllOnFocus(true);
         mFolderName.setInputType(mFolderName.getInputType()
                 & ~InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
-                & ~InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+                | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
                 | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
-        mFolderName.forceDisableSuggestions(!FeatureFlags.FOLDER_NAME_SUGGEST.get());
+        mFolderName.forceDisableSuggestions(true);
 
         mFooter = findViewById(R.id.folder_footer);
 
@@ -741,7 +741,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
     @Override
     protected View getAccessibilityInitialFocusView() {
-        return mContent.getFirstItem();
+        View firstItem = mContent.getFirstItem();
+        return firstItem != null ? firstItem : super.getAccessibilityInitialFocusView();
     }
 
     private void closeComplete(boolean wasAnimated) {
@@ -1134,6 +1135,9 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
      * Rearranges the children based on their rank.
      */
     public void rearrangeChildren() {
+        if (!mContent.areViewsBound()) {
+            return;
+        }
         mContent.arrangeChildren(getIconsInReadingOrder());
         mItemsInvalidated = true;
     }

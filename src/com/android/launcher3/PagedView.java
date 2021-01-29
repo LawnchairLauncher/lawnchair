@@ -1448,17 +1448,28 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         int minDistanceFromScreenCenterIndex = -1;
         final int childCount = getChildCount();
         for (int i = 0; i < childCount; ++i) {
-            View layout = getPageAt(i);
-            int childSize = mOrientationHandler.getMeasuredSize(layout);
-            int halfChildSize = (childSize / 2);
-            int childCenter = getChildOffset(i) + halfChildSize;
-            int distanceFromScreenCenter = Math.abs(childCenter - screenCenter);
+            int distanceFromScreenCenter = Math.abs(
+                    getDisplacementFromScreenCenter(i, screenCenter));
             if (distanceFromScreenCenter < minDistanceFromScreenCenter) {
                 minDistanceFromScreenCenter = distanceFromScreenCenter;
                 minDistanceFromScreenCenterIndex = i;
             }
         }
         return minDistanceFromScreenCenterIndex;
+    }
+
+    private int getDisplacementFromScreenCenter(int childIndex, int screenCenter) {
+        View layout = getPageAt(childIndex);
+        int childSize = mOrientationHandler.getMeasuredSize(layout);
+        int halfChildSize = (childSize / 2);
+        int childCenter = getChildOffset(childIndex) + halfChildSize;
+        return childCenter - screenCenter;
+    }
+
+    protected int getDisplacementFromScreenCenter(int childIndex) {
+        int pageOrientationSize = mOrientationHandler.getMeasuredSize(this);
+        int screenCenter = mOrientationHandler.getPrimaryScroll(this) + (pageOrientationSize / 2);
+        return getDisplacementFromScreenCenter(childIndex, screenCenter);
     }
 
     protected void snapToDestination() {

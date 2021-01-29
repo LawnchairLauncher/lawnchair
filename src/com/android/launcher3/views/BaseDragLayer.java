@@ -602,13 +602,13 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
      */
     private boolean computeAllowSysuiScrims(@Nullable WallpaperInfo newWallpaperInfo) {
         if (newWallpaperInfo == null) {
-            // New wallpaper is static, not live. Thus, blacklist isn't applicable.
+            // Static wallpapers need scrim unless determined otherwise by wallpaperColors.
             return true;
         }
         ComponentName newWallpaper = newWallpaperInfo.getComponent();
         for (String wallpaperWithoutScrim : mWallpapersWithoutSysuiScrims) {
             if (newWallpaper.equals(ComponentName.unflattenFromString(wallpaperWithoutScrim))) {
-                // New wallpaper is blacklisted from showing a scrim.
+                // New wallpaper does not need a scrim.
                 return false;
             }
         }

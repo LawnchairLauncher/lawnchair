@@ -93,15 +93,6 @@ public class RecentsModel extends TaskStackChangeListener {
     }
 
     /**
-     * @return The task id of the running task, or -1 if there is no current running task.
-     */
-    public static int getRunningTaskId() {
-        ActivityManager.RunningTaskInfo runningTask =
-                ActivityManagerWrapper.getInstance().getRunningTask();
-        return runningTask != null ? runningTask.id : -1;
-    }
-
-    /**
      * @return Whether the provided {@param changeId} is the latest recent tasks list id.
      */
     public boolean isTaskListValid(int changeId) {
@@ -140,7 +131,9 @@ public class RecentsModel extends TaskStackChangeListener {
         }
 
         // Keep the cache up to date with the latest thumbnails
-        int runningTaskId = RecentsModel.getRunningTaskId();
+        ActivityManager.RunningTaskInfo runningTask =
+                ActivityManagerWrapper.getInstance().getRunningTask();
+        int runningTaskId = runningTask != null ? runningTask.id : -1;
         mTaskList.getTaskKeys(mThumbnailCache.getCacheSize(), tasks -> {
             for (Task task : tasks) {
                 if (task.key.id == runningTaskId) {

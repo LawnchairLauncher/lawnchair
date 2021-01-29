@@ -58,6 +58,12 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
                         FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get());
                 return response;
             }
+
+            case TestProtocol.REQUEST_OVERVIEW_SHARE_ENABLED: {
+                response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD,
+                        FeatureFlags.ENABLE_OVERVIEW_SHARE.get());
+                return response;
+            }
         }
 
         return super.call(method);

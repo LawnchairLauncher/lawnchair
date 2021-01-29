@@ -17,6 +17,7 @@ package com.android.quickstep.interaction;
 
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.util.DefaultDisplay.getSingleFrameMs;
+import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATION;
 import static com.android.quickstep.BaseSwipeUpHandlerV2.MAX_SWIPE_DURATION;
 import static com.android.quickstep.interaction.TutorialController.TutorialType.HOME_NAVIGATION_COMPLETE;
 import static com.android.quickstep.interaction.TutorialController.TutorialType.OVERVIEW_NAVIGATION_COMPLETE;
@@ -110,6 +111,7 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
         AnimatorListenerAdapter resetTaskView = new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation, boolean isReverse) {
+                mFakeIconView.setVisibility(View.INVISIBLE);
                 mFakeTaskView.setVisibility(View.INVISIBLE);
                 mFakeTaskView.setAlpha(1);
                 mRunningWindowAnim = null;
@@ -131,6 +133,7 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
             });
         } else {
             anim.setViewAlpha(mFakeTaskView, 0, ACCEL);
+            anim.setViewAlpha(mFakeIconView, 0, ACCEL);
             anim.addListener(resetTaskView);
         }
         if (onEndRunnable != null) {
@@ -181,8 +184,7 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
 
         @Override
         public void updateFinalShift() {
-            float progress = mCurrentShift.value / mDragLengthFactor;
-            mWindowTransitionController.setPlayFraction(progress);
+            mWindowTransitionController.setProgress(mCurrentShift.value, mDragLengthFactor);
             mTaskViewSimulator.apply(mTransformParams);
         }
 
@@ -202,7 +204,7 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
             // derivative of the scroll interpolator at zero, ie. 2.
             long baseDuration = Math.round(Math.abs(distanceToTravel / velocityPxPerMs.y));
             long duration = Math.min(MAX_SWIPE_DURATION, 2 * baseDuration);
-            HomeAnimationFactory homeAnimFactory = new HomeAnimationFactory(null) {
+            HomeAnimationFactory homeAnimFactory = new HomeAnimationFactory() {
                 @Override
                 public AnimatorPlaybackController createActivityAnimationToHome() {
                     return AnimatorPlaybackController.wrap(new AnimatorSet(), duration);
@@ -217,6 +219,24 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
                     return new RectF(fakeHomeIconLeft, fakeHomeIconTop,
                             fakeHomeIconLeft + fakeHomeIconSizePx,
                             fakeHomeIconTop + fakeHomeIconSizePx);
+                }
+
+                @Override
+                public void update(RectF rect, float progress, float radius) {
+                    mFakeIconView.setVisibility(View.VISIBLE);
+                    mFakeIconView.update(rect, progress,
+                            1f - SHAPE_PROGRESS_DURATION /* shapeProgressStart */,
+                            radius,
+                            false, /* isOpening */
+                            mFakeIconView, mDp,
+                            false /* isVerticalBarLayout */);
+                    mFakeIconView.setAlpha(1);
+                    mFakeTaskView.setAlpha(getWindowAlpha(progress));
+                }
+
+                @Override
+                public void onCancel() {
+                    mFakeIconView.setVisibility(View.INVISIBLE);
                 }
             };
             RectFSpringAnim windowAnim = createWindowAnimationToHome(startShift, homeAnimFactory);

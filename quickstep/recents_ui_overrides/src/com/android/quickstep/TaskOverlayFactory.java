@@ -18,7 +18,7 @@ package com.android.quickstep;
 
 import static android.view.Surface.ROTATION_0;
 
-import static com.android.launcher3.util.MainThreadInitializedObject.forOverride;
+import static com.android.quickstep.views.OverviewActionsView.DISABLED_NO_THUMBNAIL;
 import static com.android.quickstep.views.OverviewActionsView.DISABLED_ROTATED;
 
 import android.annotation.SuppressLint;
@@ -38,13 +38,11 @@ import com.android.launcher3.R;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
-import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.ResourceBasedOverride;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.TaskThumbnailView;
 import com.android.quickstep.views.TaskView;
-import com.android.systemui.plugins.OverscrollPlugin;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 
@@ -90,19 +88,21 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         return shortcuts;
     }
 
-    public static final MainThreadInitializedObject<TaskOverlayFactory> INSTANCE =
-            forOverride(TaskOverlayFactory.class, R.string.task_overlay_factory_class);
-
-    /**
-     * @return a launcher-provided OverscrollPlugin if available, otherwise null
-     */
-    public OverscrollPlugin getLocalOverscrollPlugin() {
-        return null;
-    }
-
     public TaskOverlay createOverlay(TaskThumbnailView thumbnailView) {
         return new TaskOverlay(thumbnailView);
     }
+
+    /**
+     * Subclasses can attach any system listeners in this method, must be paired with
+     * {@link #removeListeners()}
+     */
+    public void initListeners() { }
+
+    /**
+     * Subclasses should remove any system listeners in this method, must be paired with
+     * {@link #initListeners()}
+     */
+    public void removeListeners() { }
 
     /** Note that these will be shown in order from top to bottom, if available for the task. */
     private static final TaskShortcutFactory[] MENU_OPTIONS = new TaskShortcutFactory[]{
@@ -146,26 +146,29 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
          */
         public void initOverlay(Task task, ThumbnailData thumbnail, Matrix matrix,
                 boolean rotated) {
-            final boolean isAllowedByPolicy = thumbnail.isRealSnapshot;
+            getActionsView().updateDisabledFlags(DISABLED_NO_THUMBNAIL, thumbnail == null);
 
-            getActionsView().updateDisabledFlags(DISABLED_ROTATED, rotated);
+            if (thumbnail != null) {
+                getActionsView().updateDisabledFlags(DISABLED_ROTATED, rotated);
+                final boolean isAllowedByPolicy = thumbnail.isRealSnapshot;
 
-            getActionsView().setCallbacks(new OverlayUICallbacks() {
-                @Override
-                public void onShare() {
-                    if (isAllowedByPolicy) {
-                        mImageApi.startShareActivity();
-                    } else {
-                        showBlockedByPolicyMessage();
+                getActionsView().setCallbacks(new OverlayUICallbacks() {
+                    @Override
+                    public void onShare() {
+                        if (isAllowedByPolicy) {
+                            mImageApi.startShareActivity();
+                        } else {
+                            showBlockedByPolicyMessage();
+                        }
                     }
-                }
 
-                @SuppressLint("NewApi")
-                @Override
-                public void onScreenshot() {
-                    saveScreenshot(task);
-                }
-            });
+                    @SuppressLint("NewApi")
+                    @Override
+                    public void onScreenshot() {
+                        saveScreenshot(task);
+                    }
+                });
+            }
         }
 
         /**

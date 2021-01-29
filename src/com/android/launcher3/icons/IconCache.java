@@ -67,8 +67,8 @@ public class IconCache extends BaseIconCache {
 
     private static final String TAG = "Launcher.IconCache";
 
-    private final Predicate<ItemInfoWithIcon> mIsUsingFallbackIconCheck = w -> w.bitmap != null
-            && w.bitmap.isNullOrLowRes() && !isDefaultIcon(w.bitmap, w.user);
+    private final Predicate<ItemInfoWithIcon> mIsUsingFallbackOrNonDefaultIconCheck = w ->
+            w.bitmap != null && (w.bitmap.isNullOrLowRes() || !isDefaultIcon(w.bitmap, w.user));
 
     private final CachingLogic<ComponentWithLabel> mComponentWithLabelCachingLogic;
     private final CachingLogic<LauncherActivityInfo> mLauncherActivityInfoCachingLogic;
@@ -192,14 +192,14 @@ public class IconCache extends BaseIconCache {
      * Fill in {@param info} with the icon for {@param si}
      */
     public void getShortcutIcon(ItemInfoWithIcon info, ShortcutInfo si) {
-        getShortcutIcon(info, si, true, mIsUsingFallbackIconCheck);
+        getShortcutIcon(info, si, true, mIsUsingFallbackOrNonDefaultIconCheck);
     }
 
     /**
      * Fill in {@param info} with an unbadged icon for {@param si}
      */
     public void getUnbadgedShortcutIcon(ItemInfoWithIcon info, ShortcutInfo si) {
-        getShortcutIcon(info, si, false, mIsUsingFallbackIconCheck);
+        getShortcutIcon(info, si, false, mIsUsingFallbackOrNonDefaultIconCheck);
     }
 
     /**

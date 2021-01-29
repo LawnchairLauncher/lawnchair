@@ -311,7 +311,13 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
                 handler.setStateWithAnimation(state, mConfig, builder);
             }
         }
-        builder.addListener(new AnimationSuccessListener() {
+        builder.addListener(createStateAnimationListener(state));
+        mConfig.setAnimation(builder.buildAnim(), state);
+        return builder;
+    }
+
+    private AnimatorListener createStateAnimationListener(STATE_TYPE state) {
+        return new AnimationSuccessListener() {
 
             @Override
             public void onAnimationStart(Animator animation) {
@@ -326,9 +332,7 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
                 }
                 onStateTransitionEnd(state);
             }
-        });
-        mConfig.setAnimation(builder.buildAnim(), state);
-        return builder;
+        };
     }
 
     private void onStateTransitionStart(STATE_TYPE state) {
@@ -393,6 +397,19 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
         setCurrentAnimation(controller.getTarget());
         mConfig.userControlled = true;
         mConfig.playbackController = controller;
+    }
+
+    /**
+     * @see #setCurrentAnimation(AnimatorSet, Animator...). Using this method tells the StateManager
+     * that this is a custom animation to the given state, and thus the StateManager will add an
+     * animation listener to call {@link #onStateTransitionStart} and {@link #onStateTransitionEnd}.
+     * @param anim The custom animation to the given state.
+     * @param toState The state we are animating towards.
+     */
+    public void setCurrentAnimation(AnimatorSet anim, STATE_TYPE toState) {
+        cancelAnimation();
+        setCurrentAnimation(anim);
+        anim.addListener(createStateAnimationListener(toState));
     }
 
     /**

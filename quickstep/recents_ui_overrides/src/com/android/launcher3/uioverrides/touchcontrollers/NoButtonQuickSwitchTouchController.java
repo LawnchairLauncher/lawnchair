@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.uioverrides.touchcontrollers;
 
-import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
@@ -23,7 +22,6 @@ import static com.android.launcher3.LauncherState.OVERVIEW_BUTTONS;
 import static com.android.launcher3.LauncherState.QUICK_SWITCH;
 import static com.android.launcher3.anim.AlphaUpdateListener.ALPHA_CUTOFF_THRESHOLD;
 import static com.android.launcher3.anim.Interpolators.ACCEL_0_75;
-import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_5;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
@@ -47,6 +45,8 @@ import static com.android.quickstep.util.ShelfPeekAnim.ShelfAnimState.HIDE;
 import static com.android.quickstep.util.ShelfPeekAnim.ShelfAnimState.PEEK;
 import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_OFFSET;
 import static com.android.quickstep.views.RecentsView.FULLSCREEN_PROGRESS;
+import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
+import static com.android.quickstep.views.RecentsView.TASK_SECONDARY_TRANSLATION;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 
 import android.animation.Animator;
@@ -74,7 +74,9 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.util.VibratorWrapper;
+import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.SystemUiProxy;
+import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.MotionPauseDetector;
 import com.android.quickstep.util.ShelfPeekAnim;
@@ -90,16 +92,17 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         BothAxesSwipeDetector.Listener, MotionPauseDetector.OnMotionPauseListener {
 
     /** The minimum progress of the scale/translationY animation until drag end. */
-    private static final float Y_ANIM_MIN_PROGRESS = 0.15f;
+    private static final float Y_ANIM_MIN_PROGRESS = 0.25f;
     private static final Interpolator FADE_OUT_INTERPOLATOR = DEACCEL_5;
     private static final Interpolator TRANSLATE_OUT_INTERPOLATOR = ACCEL_0_75;
-    private static final Interpolator SCALE_DOWN_INTERPOLATOR = DEACCEL;
+    private static final Interpolator SCALE_DOWN_INTERPOLATOR = LINEAR;
 
     private final BaseQuickstepLauncher mLauncher;
     private final BothAxesSwipeDetector mSwipeDetector;
     private final ShelfPeekAnim mShelfPeekAnim;
     private final float mXRange;
     private final float mYRange;
+    private final float mMaxYProgress;
     private final MotionPauseDetector mMotionPauseDetector;
     private final float mMotionPauseMinDisplacement;
     private final LauncherRecentsView mRecentsView;
@@ -113,7 +116,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
     // and the other two to set overview properties based on x and y progress.
     private AnimatorPlaybackController mNonOverviewAnim;
     private AnimatorPlaybackController mXOverviewAnim;
-    private AnimatorPlaybackController mYOverviewAnim;
+    private AnimatedFloat mYOverviewAnim;
 
     public NoButtonQuickSwitchTouchController(BaseQuickstepLauncher launcher) {
         mLauncher = launcher;
@@ -123,6 +126,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         mXRange = mLauncher.getDeviceProfile().widthPx / 2f;
         mYRange = LayoutUtils.getShelfTrackingDistance(
             mLauncher, mLauncher.getDeviceProfile(), mRecentsView.getPagedOrientationHandler());
+        mMaxYProgress = mLauncher.getDeviceProfile().heightPx / mYRange;
         mMotionPauseDetector = new MotionPauseDetector(mLauncher);
         mMotionPauseMinDisplacement = mLauncher.getResources().getDimension(
                 R.dimen.motion_pause_detector_min_displacement_from_app);
@@ -244,7 +248,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         final LauncherState toState = OVERVIEW;
 
         // Set RecentView's initial properties.
-        SCALE_PROPERTY.set(mRecentsView, fromState.getOverviewScaleAndOffset(mLauncher)[0]);
+        RECENTS_SCALE_PROPERTY.set(mRecentsView, fromState.getOverviewScaleAndOffset(mLauncher)[0]);
         ADJACENT_PAGE_OFFSET.set(mRecentsView, 1f);
         mRecentsView.setContentAlpha(1);
         mRecentsView.setFullscreenProgress(fromState.getOverviewFullscreenProgress());
@@ -266,11 +270,22 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         //   - RecentsView scale
         //   - RecentsView fullscreenProgress
         PendingAnimation yAnim = new PendingAnimation((long) (mYRange * 2));
-        yAnim.setFloat(mRecentsView, SCALE_PROPERTY, scaleAndOffset[0], SCALE_DOWN_INTERPOLATOR);
+        yAnim.setFloat(mRecentsView, RECENTS_SCALE_PROPERTY, scaleAndOffset[0],
+                SCALE_DOWN_INTERPOLATOR);
         yAnim.setFloat(mRecentsView, FULLSCREEN_PROGRESS,
                 toState.getOverviewFullscreenProgress(), SCALE_DOWN_INTERPOLATOR);
-        mYOverviewAnim = yAnim.createPlaybackController();
-        mYOverviewAnim.dispatchOnStart();
+        AnimatorPlaybackController yNormalController = yAnim.createPlaybackController();
+        AnimatorControllerWithResistance yAnimWithResistance = AnimatorControllerWithResistance
+                .createForRecents(yNormalController, mLauncher,
+                        mRecentsView.getPagedViewOrientedState(), mLauncher.getDeviceProfile(),
+                        mRecentsView, RECENTS_SCALE_PROPERTY, mRecentsView,
+                        TASK_SECONDARY_TRANSLATION);
+        mYOverviewAnim = new AnimatedFloat(() -> {
+            if (mYOverviewAnim != null) {
+                yAnimWithResistance.setProgress(mYOverviewAnim.value, mMaxYProgress);
+            }
+        });
+        yNormalController.dispatchOnStart();
     }
 
     @Override
@@ -306,7 +321,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
             mXOverviewAnim.setPlayFraction(xProgress);
         }
         if (mYOverviewAnim != null) {
-            mYOverviewAnim.setPlayFraction(yProgress);
+            mYOverviewAnim.updateValue(yProgress);
         }
         return true;
     }
@@ -353,9 +368,11 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         } else if (verticalFling) {
             targetState = velocity.y > 0 ? QUICK_SWITCH : NORMAL;
         } else {
-            // If user isn't flinging, just snap to the closest state based on x progress.
+            // If user isn't flinging, just snap to the closest state.
             boolean passedHorizontalThreshold = mXOverviewAnim.getInterpolatedProgress() > 0.5f;
-            targetState = passedHorizontalThreshold ? QUICK_SWITCH : NORMAL;
+            boolean passedVerticalThreshold = mYOverviewAnim.value > 1f;
+            targetState = passedHorizontalThreshold && !passedVerticalThreshold
+                    ? QUICK_SWITCH : NORMAL;
         }
 
         // Animate the various components to the target state.
@@ -374,9 +391,9 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
 
         boolean flingUpToNormal = verticalFling && velocity.y < 0 && targetState == NORMAL;
 
-        float yProgress = mYOverviewAnim.getProgressFraction();
+        float yProgress = mYOverviewAnim.value;
         float startYProgress = Utilities.boundToRange(yProgress
-                - velocity.y * getSingleFrameMs(mLauncher) / mYRange, 0f, 1f);
+                - velocity.y * getSingleFrameMs(mLauncher) / mYRange, 0f, mMaxYProgress);
         final float endYProgress;
         if (flingUpToNormal) {
             endYProgress = 1;
@@ -386,12 +403,11 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         } else {
             endYProgress = 0;
         }
-        long yDuration = BaseSwipeDetector.calculateDuration(velocity.y,
-                Math.abs(endYProgress - startYProgress));
-        ValueAnimator yOverviewAnim = mYOverviewAnim.getAnimationPlayer();
-        yOverviewAnim.setFloatValues(startYProgress, endYProgress);
+        float yDistanceToCover = Math.abs(endYProgress - startYProgress) * mYRange;
+        long yDuration = (long) (yDistanceToCover / Math.max(1f, Math.abs(velocity.y)));
+        ValueAnimator yOverviewAnim = mYOverviewAnim.animateToValue(startYProgress, endYProgress);
         yOverviewAnim.setDuration(yDuration);
-        mYOverviewAnim.dispatchOnStart();
+        mYOverviewAnim.updateValue(startYProgress);
 
         ValueAnimator nonOverviewAnim = mNonOverviewAnim.getAnimationPlayer();
         if (flingUpToNormal && !mIsHomeScreenVisible) {
@@ -456,7 +472,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
             mXOverviewAnim.getAnimationPlayer().cancel();
         }
         if (mYOverviewAnim != null) {
-            mYOverviewAnim.getAnimationPlayer().cancel();
+            mYOverviewAnim.cancelAnimation();
         }
         mShelfPeekAnim.setShelfState(ShelfAnimState.CANCEL, LINEAR, 0);
         mMotionPauseDetector.clear();
