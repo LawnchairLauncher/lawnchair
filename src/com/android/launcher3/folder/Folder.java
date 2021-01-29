@@ -1394,10 +1394,10 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         mItemsInvalidated = true;
     }
 
-    public void onRemove(WorkspaceItemInfo item) {
+    @Override
+    public void onRemove(List<WorkspaceItemInfo> items) {
         mItemsInvalidated = true;
-        View v = getViewForInfo(item);
-        mContent.removeItem(v);
+        items.stream().map(this::getViewForInfo).forEach(mContent::removeItem);
         if (mState == STATE_ANIMATING) {
             mRearrangeOnClose = true;
         } else {
