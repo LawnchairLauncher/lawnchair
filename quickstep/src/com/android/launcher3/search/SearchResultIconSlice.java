@@ -15,9 +15,11 @@
  */
 package com.android.launcher3.search;
 
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
+
 import android.app.search.SearchTarget;
+import android.app.search.SearchTargetEvent;
 import android.content.Context;
-import android.net.Uri;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -32,40 +34,38 @@ import androidx.slice.widget.EventInfo;
 import androidx.slice.widget.SliceView;
 
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
-import com.android.systemui.plugins.shared.SearchTargetEventLegacy;
-import com.android.systemui.plugins.shared.SearchTargetLegacy;
+import com.android.launcher3.model.data.PackageItemInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * A slice view wrapper with settings app icon at start
  */
-public class SearchResultSettingsSlice extends LinearLayout implements
-        SearchTargetHandler, SliceView.OnSliceActionListener {
-
-
-    public static final String TARGET_TYPE_SLICE = "settings_slice";
+public class SearchResultIconSlice extends LinearLayout implements SearchTargetHandler,
+        SliceView.OnSliceActionListener {
 
     private static final String TAG = "SearchSliceController";
-    private static final String URI_EXTRA_KEY = "slice_uri";
 
-    private SliceView mSliceView;
-    private View mIcon;
-    private LiveData<Slice> mSliceLiveData;
-    private SearchTargetLegacy mSearchTarget;
     private final Launcher mLauncher;
 
-    public SearchResultSettingsSlice(Context context) {
+    private SliceView mSliceView;
+    private SearchResultIcon mIcon;
+    private LiveData<Slice> mSliceLiveData;
+    private String mTargetId;
+
+    public SearchResultIconSlice(Context context) {
         this(context, null, 0);
     }
 
-    public SearchResultSettingsSlice(Context context,
+    public SearchResultIconSlice(Context context,
             @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public SearchResultSettingsSlice(Context context, @Nullable AttributeSet attrs,
+    public SearchResultIconSlice(Context context, @Nullable AttributeSet attrs,
             int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mLauncher = Launcher.getLauncher(getContext());
@@ -76,30 +76,37 @@ public class SearchResultSettingsSlice extends LinearLayout implements
         super.onFinishInflate();
         mSliceView = findViewById(R.id.slice);
         mIcon = findViewById(R.id.icon);
-        SearchSettingsRowView.applySettingsIcon(mLauncher, mIcon);
+        mIcon.setTextVisibility(false);
+        int iconSize = mLauncher.getDeviceProfile().iconSizePx;
+        mIcon.getLayoutParams().height = iconSize;
+        mIcon.getLayoutParams().width = iconSize;
     }
 
     @Override
-    public void applySearchTarget(SearchTargetLegacy searchTarget) {
+    public void apply(SearchTarget parentTarget, List<SearchTarget> children) {
+        mTargetId = parentTarget.getId();
         reset();
-        mSearchTarget = searchTarget;
-        try {
-            mSliceLiveData = mLauncher.getLiveSearchManager().getSliceForUri(getSliceUri());
-            mSliceLiveData.observe(mLauncher, mSliceView);
-        } catch (Exception ex) {
-            Log.e(TAG, "unable to bind slice", ex);
-        }
-    }
-
-    @Override
-    public void applySearchTarget(SearchTarget parentTarget, List<SearchTarget> children) {
-        reset();
+        updateIcon(parentTarget, children);
         try {
             mSliceLiveData = mLauncher.getLiveSearchManager().getSliceForUri(
                     parentTarget.getSliceUri());
             mSliceLiveData.observe(mLauncher, mSliceView);
         } catch (Exception ex) {
             Log.e(TAG, "unable to bind slice", ex);
+        }
+    }
+
+    private void updateIcon(SearchTarget parentTarget, List<SearchTarget> children) {
+        if (children.size() == 1) {
+            mIcon.apply(children.get(0), new ArrayList<>());
+        } else {
+            LauncherAppState appState = LauncherAppState.getInstance(getContext());
+            MODEL_EXECUTOR.post(() -> {
+                PackageItemInfo pkgItem = new PackageItemInfo(parentTarget.getPackageName());
+                pkgItem.user = parentTarget.getUserHandle();
+                appState.getIconCache().getTitleAndIconForApp(pkgItem, false);
+                mIcon.applyFromItemInfoWithIcon(pkgItem);
+            });
         }
     }
 
@@ -115,13 +122,6 @@ public class SearchResultSettingsSlice extends LinearLayout implements
         reset();
     }
 
-    @Override
-    public void handleSelection(int eventType) {
-        SearchEventTracker.INSTANCE.get(mLauncher).notifySearchTargetEvent(
-                new SearchTargetEventLegacy.Builder(mSearchTarget,
-                        SearchTargetEventLegacy.CHILD_SELECT).build());
-    }
-
     private void reset() {
         mSliceView.setOnSliceActionListener(null);
         if (mSliceLiveData != null) {
@@ -131,11 +131,17 @@ public class SearchResultSettingsSlice extends LinearLayout implements
 
     @Override
     public void onSliceAction(@NonNull EventInfo eventInfo, @NonNull SliceItem sliceItem) {
-        handleSelection(SearchTargetEventLegacy.CHILD_SELECT);
+        notifyEvent(mLauncher, mTargetId, SearchTargetEvent.ACTION_TAP);
     }
 
-    private Uri getSliceUri() {
-        return mSearchTarget.getExtras().getParcelable(URI_EXTRA_KEY);
+    @Override
+    public void onClick(View view) {
+        notifyEvent(mLauncher, mTargetId, SearchTargetEvent.ACTION_LONGPRESS);
     }
 
+    @Override
+    public boolean onLongClick(View view) {
+        // do nothing
+        return false;
+    }
 }

@@ -16,8 +16,8 @@
 
 package com.android.launcher3.allapps.search;
 
-
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.launcher3.BaseDraggingActivity;
@@ -61,5 +61,6 @@ public abstract class SearchAdapterProvider {
      * handles selection event on search adapter item. Returns false if provider can not handle
      * event
      */
-    public abstract boolean onAdapterItemSelected(AllAppsGridAdapter.AdapterItem focusedItem);
+    public abstract boolean onAdapterItemSelected(AllAppsGridAdapter.AdapterItem adapterItem,
+            View view);
 }

@@ -159,7 +159,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
                     @Override
                     public void onShare() {
                         if (isAllowedByPolicy) {
-                            endLiveTileMode(mImageApi::startShareActivity);
+                            endLiveTileMode(() -> mImageApi.startShareActivity(null));
                         } else {
                             showBlockedByPolicyMessage();
                         }

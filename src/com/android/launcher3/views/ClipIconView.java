@@ -161,6 +161,11 @@ public class ClipIconView extends View implements ClipPathView {
         float scaleY = rect.height() / minSize;
         float scale = Math.max(1f, Math.min(scaleX, scaleY));
 
+        if (Float.isNaN(scale)) {
+            // Views are no longer laid out, do not update.
+            return;
+        }
+
         update(rect, progress, shapeProgressStart, cornerRadius, isOpening, scale,
                 minSize, lp, isVerticalBarLayout, dp);
 

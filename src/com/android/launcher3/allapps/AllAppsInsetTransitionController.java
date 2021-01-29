@@ -44,6 +44,8 @@ public class AllAppsInsetTransitionController {
     private WindowInsetsAnimationController mAnimationController;
     private WindowInsetsAnimationControlListener mCurrentRequest;
 
+    private Runnable mSearchEduRunnable;
+
     private float mAllAppsHeight;
 
     private int mDownInsetBottom;
@@ -55,12 +57,28 @@ public class AllAppsInsetTransitionController {
     private float mDown, mCurrent;
     private View mApps;
 
+    /**
+     *
+     */
+    public boolean showSearchEduIfNecessary() {
+        if (mSearchEduRunnable == null) {
+            return false;
+        }
+        mSearchEduRunnable.run();
+        return true;
+    }
+
+    public void setSearchEduRunnable(Runnable eduRunnable) {
+        mSearchEduRunnable = eduRunnable;
+    }
+
     // Only purpose of these states is to keep track of fast fling transition
     enum State {
         RESET, DRAG_START_BOTTOM, DRAG_START_BOTTOM_IME_CANCELLED,
         FLING_END_TOP, FLING_END_TOP_IME_CANCELLED,
         DRAG_START_TOP, FLING_END_BOTTOM
     }
+
     private State mState;
 
     public AllAppsInsetTransitionController(float allAppsHeight, View appsView) {
@@ -77,7 +95,7 @@ public class AllAppsInsetTransitionController {
         boolean imeVisible = insets.isVisible(WindowInsets.Type.ime());
 
         if (DEBUG) {
-            Log.d(TAG, "\nhide imeVisible=" +  imeVisible);
+            Log.d(TAG, "\nhide imeVisible=" + imeVisible);
         }
         if (insets.isVisible(WindowInsets.Type.ime())) {
             mApps.getWindowInsetsController().hide(WindowInsets.Type.ime());
@@ -107,7 +125,7 @@ public class AllAppsInsetTransitionController {
         // mShownAtDown = mApps.getRootWindowInsets().isVisible(WindowInsets.Type.ime());
 
         if (DEBUG) {
-            Log.d(TAG, "\nonDragStart progress=" +  progress
+            Log.d(TAG, "\nonDragStart progress=" + progress
                     + " mDownInsets=" + mDownInsetBottom
                     + " mShownAtDown=" + mShownAtDown);
         }
@@ -123,7 +141,7 @@ public class AllAppsInsetTransitionController {
                         }
                         if (controller != null) {
                             if (mCurrentRequest == this && !handleFinishOnFling(controller)) {
-                                    mAnimationController = controller;
+                                mAnimationController = controller;
                             } else {
                                 controller.finish(false /* just don't show */);
                             }

@@ -154,7 +154,7 @@ public class AllAppsStore {
     public void updateProgressBar(AppInfo app) {
         updateAllIcons((child) -> {
             if (child.getTag() == app) {
-                child.applyProgressLevel(app.getProgressLevel());
+                child.applyProgressLevel();
             }
         });
     }

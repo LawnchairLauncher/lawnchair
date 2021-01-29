@@ -18,20 +18,17 @@ package com.android.launcher3.search;
 import android.app.search.SearchTarget;
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-
-import com.android.systemui.plugins.shared.SearchTargetLegacy;
 
 import java.util.List;
 
 /**
  * Header text view that shows a title for a given section in All apps search
  */
-public class SearchSectionHeaderView extends TextView implements
-        SearchTargetHandler {
-    public static final String TARGET_TYPE_SECTION_HEADER = "section_header";
+public class SearchSectionHeaderView extends TextView implements SearchTargetHandler {
 
     public SearchSectionHeaderView(Context context) {
         super(context);
@@ -47,19 +44,19 @@ public class SearchSectionHeaderView extends TextView implements
     }
 
     @Override
-    public void applySearchTarget(SearchTargetLegacy searchTarget) {
-        String title = searchTarget.getExtras().getString("title");
-        if (title == null || !title.isEmpty()) {
-            setText(title);
-            setVisibility(VISIBLE);
-        } else {
-            setVisibility(INVISIBLE);
-        }
+    public void apply(SearchTarget parentTarget, List<SearchTarget> children) {
+        setText(parentTarget.getSearchAction().getTitle());
+        setVisibility(VISIBLE);
     }
 
     @Override
-    public void applySearchTarget(SearchTarget parentTarget, List<SearchTarget> children) {
-        setText(parentTarget.getSearchAction().getTitle());
-        setVisibility(VISIBLE);
+    public void onClick(View view) {
+        // do nothing.
+    }
+
+    @Override
+    public boolean onLongClick(View view) {
+        // do nothing.
+        return false;
     }
 }

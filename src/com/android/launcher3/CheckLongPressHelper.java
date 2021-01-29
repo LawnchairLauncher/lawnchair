@@ -115,7 +115,7 @@ public class CheckLongPressHelper {
     private void triggerLongPress() {
         if ((mView.getParent() != null)
                 && mView.hasWindowFocus()
-                && (!mView.isPressed() || mListener == null)
+                && (!mView.isPressed() || mListener != null)
                 && !mHasPerformedLongPress) {
             boolean handled;
             if (mListener != null) {

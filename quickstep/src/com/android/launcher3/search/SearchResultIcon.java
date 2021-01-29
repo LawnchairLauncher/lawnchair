@@ -15,17 +15,25 @@
  */
 package com.android.launcher3.search;
 
+import static com.android.launcher3.model.data.SearchActionItemInfo.FLAG_BADGE_FROM_ICON;
+import static com.android.launcher3.model.data.SearchActionItemInfo.FLAG_PRIMARY_ICON_FROM_TITLE;
+import static com.android.launcher3.search.SearchTargetUtil.BUNDLE_EXTRA_BADGE_FROM_ICON;
+import static com.android.launcher3.search.SearchTargetUtil.BUNDLE_EXTRA_PRIMARY_ICON_FROM_TITLE;
+import static com.android.launcher3.search.SearchTargetUtil.BUNDLE_EXTRA_SHOULD_START;
+import static com.android.launcher3.search.SearchTargetUtil.BUNDLE_EXTRA_SHOULD_START_FOR_RESULT;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
-import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
-import android.app.RemoteAction;
+import android.app.search.SearchAction;
 import android.app.search.SearchTarget;
+import android.app.search.SearchTargetEvent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.ShortcutInfo;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.Icon;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.UserHandle;
 import android.util.AttributeSet;
 import android.view.View;
@@ -36,17 +44,16 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.allapps.AllAppsStore;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
-import com.android.launcher3.model.data.RemoteActionItemInfo;
+import com.android.launcher3.model.data.PackageItemInfo;
+import com.android.launcher3.model.data.SearchActionItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.util.ComponentKey;
-import com.android.systemui.plugins.shared.SearchTargetEventLegacy;
-import com.android.systemui.plugins.shared.SearchTargetLegacy;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -54,27 +61,13 @@ import java.util.function.Consumer;
 /**
  * A {@link BubbleTextView} representing a single cell result in AllApps
  */
-public class SearchResultIcon extends BubbleTextView implements
-        SearchTargetHandler, View.OnClickListener,
-        View.OnLongClickListener {
-
-
-    public static final String TARGET_TYPE_APP = "app";
-    public static final String TARGET_TYPE_HERO_APP = "hero_app";
-    public static final String TARGET_TYPE_SHORTCUT = "shortcut";
-    public static final String TARGET_TYPE_REMOTE_ACTION = "remote_action";
-
-    public static final String REMOTE_ACTION_SHOULD_START = "should_start_for_result";
-    public static final String REMOTE_ACTION_TOKEN = "action_token";
-
-
-    private static final String[] LONG_PRESS_SUPPORTED_TYPES =
-            new String[]{TARGET_TYPE_APP, TARGET_TYPE_SHORTCUT, TARGET_TYPE_HERO_APP};
+public class SearchResultIcon extends BubbleTextView implements SearchTargetHandler {
 
     private final Launcher mLauncher;
 
-    private SearchTargetLegacy mSearchTarget;
+    private String mTargetId;
     private Consumer<ItemInfoWithIcon> mOnItemInfoChanged;
+
 
     public SearchResultIcon(Context context) {
         this(context, null, 0);
@@ -89,6 +82,8 @@ public class SearchResultIcon extends BubbleTextView implements
         mLauncher = Launcher.getLauncher(getContext());
     }
 
+    private boolean mLongPressSupported;
+
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
@@ -101,57 +96,95 @@ public class SearchResultIcon extends BubbleTextView implements
     }
 
     /**
-     * Applies search target with a ItemInfoWithIcon consumer to be called after itemInfo is
-     * constructed
-     */
-    public void applySearchTarget(SearchTargetLegacy searchTarget, Consumer<ItemInfoWithIcon> cb) {
-        mOnItemInfoChanged = cb;
-        applySearchTarget(searchTarget);
-    }
-
-    @Override
-    public void applySearchTarget(SearchTargetLegacy searchTarget) {
-        mSearchTarget = searchTarget;
-        SearchEventTracker.getInstance(getContext()).registerWeakHandler(mSearchTarget, this);
-        setVisibility(VISIBLE);
-        switch (searchTarget.getItemType()) {
-            case TARGET_TYPE_APP:
-            case TARGET_TYPE_HERO_APP:
-                prepareUsingApp(searchTarget.getComponentName(), searchTarget.getUserHandle());
-                break;
-            case TARGET_TYPE_SHORTCUT:
-                prepareUsingShortcutInfo(searchTarget.getShortcutInfos().get(0));
-                break;
-            case TARGET_TYPE_REMOTE_ACTION:
-                prepareUsingRemoteAction(searchTarget.getRemoteAction(),
-                        searchTarget.getExtras().getString(REMOTE_ACTION_TOKEN),
-                        searchTarget.getExtras().getBoolean(REMOTE_ACTION_SHOULD_START),
-                        searchTarget.getItemType().equals(TARGET_TYPE_REMOTE_ACTION));
-                break;
-        }
-    }
-
-    /**
      * Applies {@link SearchTarget} to view. registers a consumer after a corresponding
      * {@link ItemInfoWithIcon} is created
      */
     public void applySearchTarget(SearchTarget searchTarget, List<SearchTarget> inlineItems,
             Consumer<ItemInfoWithIcon> cb) {
         mOnItemInfoChanged = cb;
-        applySearchTarget(searchTarget, inlineItems);
+        apply(searchTarget, inlineItems);
     }
 
     @Override
-    public void applySearchTarget(SearchTarget parentTarget, List<SearchTarget> children) {
-        switch (parentTarget.getResultType()) {
-            case ResultType.APPLICATION:
-                prepareUsingApp(new ComponentName(parentTarget.getPackageName(),
-                        parentTarget.getExtras().getString("class")), parentTarget.getUserHandle());
-                break;
-            case ResultType.SHORTCUT:
-                prepareUsingShortcutInfo(parentTarget.getShortcutInfo());
-                break;
+    public void apply(SearchTarget parentTarget, List<SearchTarget> children) {
+        mTargetId = parentTarget.getId();
+        if (parentTarget.getShortcutInfo() != null) {
+            prepareUsingShortcutInfo(parentTarget.getShortcutInfo());
+            mLongPressSupported = true;
+        } else if (parentTarget.getSearchAction() != null) {
+            prepareUsingSearchAction(parentTarget);
+            mLongPressSupported = false;
+        } else {
+            prepareUsingApp(new ComponentName(parentTarget.getPackageName(),
+                    parentTarget.getExtras().getString(SearchTargetUtil.EXTRA_CLASS)),
+                    parentTarget.getUserHandle());
+            mLongPressSupported = true;
         }
+    }
+
+    private void prepareUsingSearchAction(SearchTarget searchTarget) {
+        SearchAction searchAction = searchTarget.getSearchAction();
+        Bundle extras = searchAction.getExtras();
+
+        SearchActionItemInfo itemInfo = new SearchActionItemInfo(searchAction.getIcon(),
+                searchTarget.getPackageName(), searchTarget.getUserHandle(),
+                searchAction.getTitle()
+        );
+        itemInfo.setIntent(searchAction.getIntent());
+        itemInfo.setPendingIntent(searchAction.getPendingIntent());
+
+        //TODO: remove this after flags are introduced in SearchAction. Settings results require
+        // startActivityForResult
+        boolean isSettingsResult = searchTarget.getResultType() == ResultType.SETTING;
+        if ((extras != null && extras.getBoolean(BUNDLE_EXTRA_SHOULD_START_FOR_RESULT))
+                || isSettingsResult) {
+            itemInfo.setFlags(SearchActionItemInfo.FLAG_SHOULD_START_FOR_RESULT);
+        } else if (extras != null && extras.getBoolean(BUNDLE_EXTRA_SHOULD_START)) {
+            itemInfo.setFlags(SearchActionItemInfo.FLAG_SHOULD_START);
+        }
+        if (extras != null && extras.getBoolean(BUNDLE_EXTRA_BADGE_FROM_ICON)) {
+            itemInfo.setFlags(FLAG_BADGE_FROM_ICON);
+        }
+        if (extras != null && extras.getBoolean(BUNDLE_EXTRA_PRIMARY_ICON_FROM_TITLE)) {
+            itemInfo.setFlags(FLAG_PRIMARY_ICON_FROM_TITLE);
+        }
+
+        notifyItemInfoChanged(itemInfo);
+        LauncherAppState appState = LauncherAppState.getInstance(mLauncher);
+        MODEL_EXECUTOR.post(() -> {
+            try (LauncherIcons li = LauncherIcons.obtain(getContext())) {
+                Icon icon = searchTarget.getSearchAction().getIcon();
+                Drawable d;
+                // This bitmapInfo can be used as main icon or as a badge
+                BitmapInfo bitmapInfo;
+                if (icon == null) {
+                    PackageItemInfo pkgInfo = new PackageItemInfo(searchTarget.getPackageName());
+                    pkgInfo.user = searchTarget.getUserHandle();
+                    appState.getIconCache().getTitleAndIconForApp(pkgInfo, false);
+                    bitmapInfo = pkgInfo.bitmap;
+                } else {
+                    d = itemInfo.getIcon().loadDrawable(getContext());
+                    bitmapInfo = li.createBadgedIconBitmap(d, itemInfo.user,
+                            Build.VERSION.SDK_INT);
+                }
+
+                BitmapInfo bitmapMainIcon;
+                if (itemInfo.hasFlags(FLAG_PRIMARY_ICON_FROM_TITLE)) {
+                    bitmapMainIcon = li.createIconBitmap(
+                            String.valueOf(itemInfo.title.charAt(0)),
+                            bitmapInfo.color);
+                } else {
+                    bitmapMainIcon = bitmapInfo;
+                }
+                if (itemInfo.hasFlags(FLAG_BADGE_FROM_ICON)) {
+                    itemInfo.bitmap = li.badgeBitmap(bitmapMainIcon.icon, bitmapInfo);
+                } else {
+                    itemInfo.bitmap = bitmapInfo;
+                }
+
+            }
+            MAIN_EXECUTOR.post(() -> applyFromSearchActionItemInfo(itemInfo));
+        });
     }
 
     private void prepareUsingApp(ComponentName componentName, UserHandle userHandle) {
@@ -177,70 +210,29 @@ public class SearchResultIcon extends BubbleTextView implements
         });
     }
 
-    private void prepareUsingRemoteAction(RemoteAction remoteAction, String token, boolean start,
-            boolean useIconToBadge) {
-        RemoteActionItemInfo itemInfo = new RemoteActionItemInfo(remoteAction, token, start);
-        notifyItemInfoChanged(itemInfo);
-        UI_HELPER_EXECUTOR.post(() -> {
-            // If the Drawable from the remote action is not AdaptiveBitmap, styling will not
-            // work.
-            try (LauncherIcons li = LauncherIcons.obtain(getContext())) {
-                Drawable d = itemInfo.getRemoteAction().getIcon().loadDrawable(getContext());
-                BitmapInfo bitmap = li.createBadgedIconBitmap(d, itemInfo.user,
-                        Build.VERSION.SDK_INT);
-
-                if (useIconToBadge) {
-                    BitmapInfo placeholder = li.createIconBitmap(
-                            itemInfo.getRemoteAction().getTitle().toString().substring(0, 1),
-                            bitmap.color);
-                    itemInfo.bitmap = li.badgeBitmap(placeholder.icon, bitmap);
-                } else {
-                    itemInfo.bitmap = bitmap;
-                }
-            }
-            MAIN_EXECUTOR.post(() -> applyFromRemoteActionInfo(itemInfo));
-        });
-    }
-
     @Override
-    public void handleSelection(int eventType) {
-        mLauncher.getItemOnClickListener().onClick(this);
-        if (!FeatureFlags.USE_SEARCH_API.get()) {
-            reportEvent(eventType);
-        }
-    }
-
-    private void reportEvent(int eventType) {
-        SearchTargetEventLegacy.Builder b = new SearchTargetEventLegacy.Builder(mSearchTarget,
-                eventType);
-        if (mSearchTarget.getItemType().equals(TARGET_TYPE_SHORTCUT)) {
-            b.setShortcutPosition(0);
-        }
-        SearchEventTracker.INSTANCE.get(mLauncher).notifySearchTargetEvent(b.build());
-
+    public boolean quickSelect() {
+        this.performClick();
+        notifyEvent(mLauncher, mTargetId, SearchTargetEvent.ACTION_LAUNCH_KEYBOARD_FOCUS);
+        return true;
     }
 
     @Override
     public void onClick(View view) {
-        handleSelection(SearchTargetEventLegacy.SELECT);
+        ItemClickHandler.INSTANCE.onClick(view);
+        notifyEvent(mLauncher, mTargetId, SearchTargetEvent.ACTION_LAUNCH_TOUCH);
     }
 
     @Override
     public boolean onLongClick(View view) {
-        if (!supportsLongPress(mSearchTarget.getItemType())) {
+        if (!mLongPressSupported) {
             return false;
         }
-        reportEvent(SearchTargetEventLegacy.LONG_PRESS);
-        return ItemLongClickListener.INSTANCE_ALL_APPS.onLongClick(view);
-
+        notifyEvent(mLauncher, mTargetId, SearchTargetEvent.ACTION_LONGPRESS);
+        return ItemLongClickListener.INSTANCE_ALL_APPS.onLongClick(this);
     }
 
-    private boolean supportsLongPress(String type) {
-        for (String t : LONG_PRESS_SUPPORTED_TYPES) {
-            if (t.equals(type)) return true;
-        }
-        return false;
-    }
+
 
     private void notifyItemInfoChanged(ItemInfoWithIcon itemInfoWithIcon) {
         if (mOnItemInfoChanged != null) {

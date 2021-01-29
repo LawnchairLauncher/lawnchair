@@ -72,7 +72,7 @@ import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.PackageItemInfo;
-import com.android.launcher3.model.data.RemoteActionItemInfo;
+import com.android.launcher3.model.data.SearchActionItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.views.ActivityContext;
@@ -301,7 +301,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         verifyHighRes();
 
         if ((info.runtimeStatusFlags & ItemInfoWithIcon.FLAG_SHOW_DOWNLOAD_PROGRESS_MASK) != 0) {
-            applyProgressLevel(info.getProgressLevel());
+            applyProgressLevel();
         }
         applyDotState(info, false /* animate */);
     }
@@ -319,14 +319,14 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     }
 
     /**
-     * Apply label and tag using a {@link RemoteActionItemInfo}
+     * Apply label and tag using a {@link SearchActionItemInfo}
      */
-    public void applyFromRemoteActionInfo(RemoteActionItemInfo remoteActionItemInfo) {
-        applyIconAndLabel(remoteActionItemInfo);
-        setTag(remoteActionItemInfo);
+    public void applyFromSearchActionItemInfo(SearchActionItemInfo searchActionItemInfo) {
+        applyIconAndLabel(searchActionItemInfo);
+        setTag(searchActionItemInfo);
     }
 
-    private void applyIconAndLabel(ItemInfoWithIcon info) {
+    protected void applyIconAndLabel(ItemInfoWithIcon info) {
         FastBitmapDrawable iconDrawable = newIcon(getContext(), info);
         mDotParams.color = IconPalette.getMutedColor(info.bitmap.color, 0.54f);
 
@@ -595,28 +595,28 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         mLongPressHelper.cancelLongPress();
     }
 
-    /** Applies the loading progress value to the progress bar.
+    /**
+     * Applies the loading progress value to the progress bar.
      *
      * If this app is installing, the progress bar will be updated with the installation progress.
      * If this app is installed and downloading incrementally, the progress bar will be updated
      * with the total download progress.
      */
     public void applyLoadingState(boolean promiseStateChanged) {
-        if (getTag() instanceof WorkspaceItemInfo) {
+        if (getTag() instanceof ItemInfoWithIcon) {
             WorkspaceItemInfo info = (WorkspaceItemInfo) getTag();
-            int progressLevel = info.getProgressLevel();
             if ((info.runtimeStatusFlags & ItemInfoWithIcon.FLAG_INCREMENTAL_DOWNLOAD_ACTIVE)
                     != 0) {
-                updateProgressBarUi(progressLevel, progressLevel == 100);
+                updateProgressBarUi(info.getProgressLevel() == 100);
             } else if (info.hasPromiseIconUi() || (info.runtimeStatusFlags
                         & ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE) != 0) {
-                updateProgressBarUi(progressLevel, promiseStateChanged);
+                updateProgressBarUi(promiseStateChanged);
             }
         }
     }
 
-    private void updateProgressBarUi(int progressLevel, boolean maybePerformFinishedAnimation) {
-        PreloadIconDrawable preloadDrawable = applyProgressLevel(progressLevel);
+    private void updateProgressBarUi(boolean maybePerformFinishedAnimation) {
+        PreloadIconDrawable preloadDrawable = applyProgressLevel();
         if (preloadDrawable != null && maybePerformFinishedAnimation) {
             preloadDrawable.maybePerformFinishedAnimation();
         }
@@ -624,36 +624,57 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     /** Applies the given progress level to the this icon's progress bar. */
     @Nullable
-    public PreloadIconDrawable applyProgressLevel(int progressLevel) {
-        if (getTag() instanceof ItemInfoWithIcon) {
-            ItemInfoWithIcon info = (ItemInfoWithIcon) getTag();
-            if (progressLevel >= 100) {
-                setContentDescription(info.contentDescription != null
-                        ? info.contentDescription : "");
-            } else if (progressLevel > 0) {
-                setContentDescription(getContext()
-                        .getString(R.string.app_downloading_title, info.title,
-                                NumberFormat.getPercentInstance().format(progressLevel * 0.01)));
+    public PreloadIconDrawable applyProgressLevel() {
+        if (!(getTag() instanceof ItemInfoWithIcon)) {
+            return null;
+        }
+
+        ItemInfoWithIcon info = (ItemInfoWithIcon) getTag();
+        int progressLevel = info.getProgressLevel();
+        if (progressLevel >= 100) {
+            setContentDescription(info.contentDescription != null
+                    ? info.contentDescription : "");
+        } else if (progressLevel > 0) {
+            setContentDescription(getContext()
+                    .getString(R.string.app_downloading_title, info.title,
+                            NumberFormat.getPercentInstance().format(progressLevel * 0.01)));
+        } else {
+            setContentDescription(getContext()
+                    .getString(R.string.app_waiting_download_title, info.title));
+        }
+        if (mIcon != null) {
+            PreloadIconDrawable preloadIconDrawable;
+            if (mIcon instanceof PreloadIconDrawable) {
+                preloadIconDrawable = (PreloadIconDrawable) mIcon;
+                preloadIconDrawable.setLevel(progressLevel);
+                preloadIconDrawable.setIsDisabled(!info.isAppStartable());
             } else {
-                setContentDescription(getContext()
-                        .getString(R.string.app_waiting_download_title, info.title));
+                preloadIconDrawable = makePreloadIcon();
+                setIcon(preloadIconDrawable);
             }
-            if (mIcon != null) {
-                final PreloadIconDrawable preloadDrawable;
-                if (mIcon instanceof PreloadIconDrawable) {
-                    preloadDrawable = (PreloadIconDrawable) mIcon;
-                    preloadDrawable.setLevel(progressLevel);
-                    preloadDrawable.setIsDisabled(!info.isAppStartable());
-                } else {
-                    preloadDrawable = newPendingIcon(getContext(), info);
-                    preloadDrawable.setLevel(progressLevel);
-                    preloadDrawable.setIsDisabled(!info.isAppStartable());
-                    setIcon(preloadDrawable);
-                }
-                return preloadDrawable;
-            }
+            return preloadIconDrawable;
         }
         return null;
+    }
+
+    /**
+     * Creates a PreloadIconDrawable with the appropriate progress level without mutating this
+     * object.
+     */
+    @Nullable
+    public PreloadIconDrawable makePreloadIcon() {
+        if (!(getTag() instanceof ItemInfoWithIcon)) {
+            return null;
+        }
+
+        ItemInfoWithIcon info = (ItemInfoWithIcon) getTag();
+        int progressLevel = info.getProgressLevel();
+        final PreloadIconDrawable preloadDrawable = newPendingIcon(getContext(), info);
+
+        preloadDrawable.setLevel(progressLevel);
+        preloadDrawable.setIsDisabled(!info.isAppStartable());
+
+        return preloadDrawable;
     }
 
     public void applyDotState(ItemInfo itemInfo, boolean animate) {
@@ -765,8 +786,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
                 mActivity.invalidateParent(info);
             } else if (info instanceof PackageItemInfo) {
                 applyFromItemInfoWithIcon((PackageItemInfo) info);
-            } else if (info instanceof RemoteActionItemInfo) {
-                applyFromRemoteActionInfo((RemoteActionItemInfo) info);
+            } else if (info instanceof SearchActionItemInfo) {
+                applyFromSearchActionItemInfo((SearchActionItemInfo) info);
             }
 
             mDisableRelayout = false;

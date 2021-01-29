@@ -18,6 +18,7 @@ package com.android.launcher3.search;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
+import android.app.search.SearchTargetEvent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -44,7 +45,6 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.LauncherIcons;
-import com.android.systemui.plugins.shared.SearchTargetEventLegacy;
 import com.android.systemui.plugins.shared.SearchTargetLegacy;
 
 import java.util.ArrayList;
@@ -52,8 +52,7 @@ import java.util.ArrayList;
 /**
  * A view representing a single people search result in all apps
  */
-public class SearchResultPeopleView extends LinearLayout implements
-        SearchTargetHandler {
+public class SearchResultPeopleView extends LinearLayout implements SearchTargetHandler {
 
     public static final String TARGET_TYPE_PEOPLE = "people";
 
@@ -64,7 +63,6 @@ public class SearchResultPeopleView extends LinearLayout implements
     private TextView mTitleView;
     private ImageButton[] mProviderButtons = new ImageButton[3];
     private Intent mIntent;
-
 
     private SearchTargetLegacy mSearchTarget;
 
@@ -99,9 +97,9 @@ public class SearchResultPeopleView extends LinearLayout implements
             button.getLayoutParams().width = mButtonSize;
             button.getLayoutParams().height = mButtonSize;
         }
-        setOnClickListener(v -> handleSelection(SearchTargetEventLegacy.SELECT));
     }
 
+    /*
     @Override
     public void applySearchTarget(SearchTargetLegacy searchTarget) {
         mSearchTarget = searchTarget;
@@ -137,8 +135,8 @@ public class SearchResultPeopleView extends LinearLayout implements
                 button.setVisibility(GONE);
             }
         }
-        SearchEventTracker.INSTANCE.get(getContext()).registerWeakHandler(searchTarget, this);
     }
+    */
 
     /**
      * Normalizes the bitmap to look like rounded App Icon
@@ -185,19 +183,17 @@ public class SearchResultPeopleView extends LinearLayout implements
             launcher.startActivitySafely(b, intent, null);
             Bundle bundle = new Bundle();
             bundle.putBundle("provider", provider);
-            SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(
-                    new SearchTargetEventLegacy.Builder(mSearchTarget,
-                            SearchTargetEventLegacy.CHILD_SELECT).setExtras(bundle).build());
         });
     }
 
     @Override
-    public void handleSelection(int eventType) {
-        if (mIntent != null) {
-            Launcher launcher = Launcher.getLauncher(getContext());
-            launcher.startActivitySafely(this, mIntent, null);
-            SearchEventTracker.INSTANCE.get(getContext()).notifySearchTargetEvent(
-                    new SearchTargetEventLegacy.Builder(mSearchTarget, eventType).build());
-        }
+    public void onClick(View view) {
+        // do nothing.
+    }
+
+    @Override
+    public boolean onLongClick(View view) {
+        // do nothing.
+        return false;
     }
 }

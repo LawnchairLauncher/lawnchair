@@ -721,11 +721,12 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
 
     @UiThread
     public void onGestureStarted(boolean isLikelyToStartNewTask) {
-        // Temporarily disable this until we have a view that we can use
-        // InteractionJankMonitorWrapper.begin(mRecentsView,
-        //         InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH, 2000 /* ms timeout */);
-        // InteractionJankMonitorWrapper.begin(mRecentsView,
-        //         InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME);
+        if (mRecentsView != null) {
+            InteractionJankMonitorWrapper.begin(mRecentsView,
+                    InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH, 2000 /* ms timeout */);
+            InteractionJankMonitorWrapper.begin(mRecentsView,
+                    InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME);
+        }
         notifyGestureStartedAsync();
         setIsLikelyToStartNewTask(isLikelyToStartNewTask, false /* animate */);
         mStateCallback.setStateOnUiThread(STATE_GESTURE_STARTED);
@@ -969,6 +970,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
                     mRecentsView.snapToPage(mRecentsView.getNextPage(), (int) MAX_SWIPE_DURATION);
                 }
                 duration = Math.max(duration, mRecentsView.getScroller().getDuration());
+            }
+            if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+                mRecentsView.getRunningTaskView().setIsClickableAsLiveTile(false);
             }
         }
 
@@ -1447,6 +1451,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
     private void finishCurrentTransitionToRecents() {
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED);
+            mRecentsView.getRunningTaskView().setIsClickableAsLiveTile(true);
         } else if (!hasTargets() || mRecentsAnimationController == null) {
             // If there are no targets or the animation not started, then there is nothing to finish
             mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED);

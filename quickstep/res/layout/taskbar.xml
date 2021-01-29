@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2020 The Android Open Source Project
+<!-- Copyright (C) 2021 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,7 +13,17 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher3.search.SearchResultThumbnailView
+
+<com.android.launcher3.taskbar.TaskbarContainerView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="125dp"
-    android:layout_height="125dp"/>
+    android:id="@+id/taskbar_container"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <com.android.launcher3.taskbar.TaskbarView
+        android:id="@+id/taskbar_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/taskbar_background"/>
+
+</com.android.launcher3.taskbar.TaskbarContainerView>
