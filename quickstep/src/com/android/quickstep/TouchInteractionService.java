@@ -309,7 +309,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
 
     @UiThread
     public void onUserUnlocked() {
-        mTaskAnimationManager = new TaskAnimationManager();
+        mTaskAnimationManager = new TaskAnimationManager(this);
         mOverviewComponentObserver = new OverviewComponentObserver(this, mDeviceState);
         mOverviewCommandHelper = new OverviewCommandHelper(this, mDeviceState,
                 mOverviewComponentObserver);
