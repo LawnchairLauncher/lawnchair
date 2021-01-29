@@ -105,6 +105,10 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
     private ObjectAnimator mCurrentAnim;
 
     public PreloadIconDrawable(ItemInfoWithIcon info, Context context) {
+        this(info, IconPalette.getPreloadProgressColor(context, info.bitmap.color));
+    }
+
+    public PreloadIconDrawable(ItemInfoWithIcon info, int indicatorColor) {
         super(info.bitmap);
         mItem = info;
         mShapePath = getShapePath();
@@ -114,7 +118,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
         mProgressPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
         mProgressPaint.setStyle(Paint.Style.STROKE);
         mProgressPaint.setStrokeCap(Paint.Cap.ROUND);
-        mIndicatorColor = IconPalette.getPreloadProgressColor(context, mIconColor);
+        mIndicatorColor = indicatorColor;
 
         setInternalProgress(0);
 
@@ -296,5 +300,43 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
      */
     public static PreloadIconDrawable newPendingIcon(Context context, ItemInfoWithIcon info) {
         return new PreloadIconDrawable(info, context);
+    }
+
+    @Override
+    public ConstantState getConstantState() {
+        return new PreloadIconConstantState(
+                mBitmap, mIconColor, !mItem.isAppStartable(), mItem, mIndicatorColor);
+    }
+
+    protected static class PreloadIconConstantState extends FastBitmapConstantState {
+
+        protected final ItemInfoWithIcon mInfo;
+        protected final int mIndicatorColor;
+        protected final int mLevel;
+
+        public PreloadIconConstantState(
+                Bitmap bitmap,
+                int iconColor,
+                boolean isDisabled,
+                ItemInfoWithIcon info,
+                int indicatorcolor) {
+            super(bitmap, iconColor, isDisabled);
+            mInfo = info;
+            mIndicatorColor = indicatorcolor;
+            mLevel = info.getProgressLevel();
+        }
+
+        @Override
+        public PreloadIconDrawable newDrawable() {
+            PreloadIconDrawable drawable = new PreloadIconDrawable(mInfo, mIndicatorColor);
+            drawable.setLevel(mLevel);
+            drawable.setIsDisabled(mIsDisabled);
+            return drawable;
+        }
+
+        @Override
+        public int getChangingConfigurations() {
+            return 0;
+        }
     }
 }
