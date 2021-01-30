@@ -21,7 +21,6 @@ import android.view.ViewGroup;
 
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
 import com.android.launcher3.dragndrop.DragLayer;
-import com.android.launcher3.util.FocusLogic;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
@@ -476,7 +475,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
         // Clear the frame and give focus to the widget host view when a directional key is pressed.
-        if (FocusLogic.shouldConsume(keyCode)) {
+        if (shouldConsume(keyCode)) {
             close(false);
             mWidgetView.requestFocus();
             return true;
@@ -598,5 +597,15 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
             }
             return moveEnd ? out.size() - size() : size() - out.size();
         }
+    }
+
+    /**
+     * Returns true only if this utility class handles the key code.
+     */
+    public static boolean shouldConsume(int keyCode) {
+        return (keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT
+                || keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN
+                || keyCode == KeyEvent.KEYCODE_MOVE_HOME || keyCode == KeyEvent.KEYCODE_MOVE_END
+                || keyCode == KeyEvent.KEYCODE_PAGE_UP || keyCode == KeyEvent.KEYCODE_PAGE_DOWN);
     }
 }
