@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.search;
 
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+
 import android.app.search.Query;
 import android.app.search.SearchContext;
 import android.app.search.SearchSession;
@@ -38,8 +40,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.function.Consumer;
-
-import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 /**
  * Search pipeline utilizing {@link android.app.search.SearchUiManager}

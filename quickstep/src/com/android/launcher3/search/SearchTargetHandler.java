@@ -19,15 +19,13 @@ package com.android.launcher3.search;
 import android.app.search.SearchTarget;
 import android.app.search.SearchTargetEvent;
 import android.content.Context;
-import android.view.View;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 /**
  * An interface for supporting dynamic search results
  */
-public interface SearchTargetHandler extends View.OnClickListener, View.OnLongClickListener {
+public interface SearchTargetHandler {
 
     /**
      * Update view using values from {@link SearchTarget}
