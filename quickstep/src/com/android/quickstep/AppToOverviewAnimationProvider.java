@@ -33,6 +33,7 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.StatefulActivity;
+import com.android.launcher3.taskbar.TaskbarController;
 import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.util.SurfaceTransactionApplier;
 import com.android.quickstep.util.TaskViewSimulator;
@@ -117,6 +118,11 @@ final class AppToOverviewAnimationProvider<T extends StatefulActivity<?>> extend
         if (depthController != null) {
             pa.addFloat(depthController, DEPTH, BACKGROUND_APP.getDepth(mActivity),
                     OVERVIEW.getDepth(mActivity), TOUCH_RESPONSE_INTERPOLATOR);
+        }
+
+        TaskbarController taskbarController = mActivityInterface.getTaskbarController();
+        if (taskbarController != null) {
+            pa.add(taskbarController.createAnimToLauncher(OVERVIEW, getRecentsLaunchDuration()));
         }
 
         RemoteAnimationTargets targets = new RemoteAnimationTargets(appTargets,

@@ -16,9 +16,11 @@
 package com.android.quickstep;
 
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
+import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.SysUINavigationMode.getMode;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IME_SHOWING;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -38,8 +40,10 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statehandlers.DepthController.ClampedDepthProperty;
 import com.android.launcher3.statemanager.StateManager;
+import com.android.launcher3.taskbar.TaskbarController;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.PagedOrientationHandler;
+import com.android.quickstep.GestureState.GestureEndTarget;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
@@ -152,6 +156,16 @@ public final class LauncherActivityInterface extends
             return null;
         }
         return launcher.getDepthController();
+    }
+
+    @Nullable
+    @Override
+    public TaskbarController getTaskbarController() {
+        BaseQuickstepLauncher launcher = getCreatedActivity();
+        if (launcher == null) {
+            return null;
+        }
+        return launcher.getTaskbarController();
     }
 
     @Nullable
@@ -276,5 +290,25 @@ public final class LauncherActivityInterface extends
         final BaseQuickstepLauncher activity = getCreatedActivity();
         if (activity == null) return;
         activity.getAppTransitionManager().registerRemoteTransitions();
+    }
+
+    @Override
+    public void onAnimateToLauncher(GestureEndTarget endTarget, long duration) {
+        TaskbarController taskbarController = getTaskbarController();
+        if (taskbarController == null) {
+            return;
+        }
+        LauncherState toState = endTarget == GestureEndTarget.RECENTS ? OVERVIEW : NORMAL;
+        taskbarController.createAnimToLauncher(toState, duration).start();
+    }
+
+    @Override
+    public void onSystemUiFlagsChanged(int systemUiStateFlags) {
+        TaskbarController taskbarController = getTaskbarController();
+        if (taskbarController == null) {
+            return;
+        }
+        boolean isImeVisible = (systemUiStateFlags & SYSUI_STATE_IME_SHOWING) != 0;
+        taskbarController.setIsImeVisible(isImeVisible);
     }
 }

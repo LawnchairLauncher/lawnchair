@@ -22,7 +22,6 @@ import android.app.search.SearchTargetEvent;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.View;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
@@ -132,16 +131,5 @@ public class SearchResultIconSlice extends LinearLayout implements SearchTargetH
     @Override
     public void onSliceAction(@NonNull EventInfo eventInfo, @NonNull SliceItem sliceItem) {
         notifyEvent(mLauncher, mTargetId, SearchTargetEvent.ACTION_TAP);
-    }
-
-    @Override
-    public void onClick(View view) {
-        notifyEvent(mLauncher, mTargetId, SearchTargetEvent.ACTION_LONGPRESS);
-    }
-
-    @Override
-    public boolean onLongClick(View view) {
-        // do nothing
-        return false;
     }
 }

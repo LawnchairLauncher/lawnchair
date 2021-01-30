@@ -276,15 +276,15 @@ public class FastBitmapDrawable extends Drawable {
 
     @Override
     public ConstantState getConstantState() {
-        return new MyConstantState(mBitmap, mIconColor, mIsDisabled);
+        return new FastBitmapConstantState(mBitmap, mIconColor, mIsDisabled);
     }
 
-    protected static class MyConstantState extends ConstantState {
+    protected static class FastBitmapConstantState extends ConstantState {
         protected final Bitmap mBitmap;
         protected final int mIconColor;
         protected final boolean mIsDisabled;
 
-        public MyConstantState(Bitmap bitmap, int color, boolean isDisabled) {
+        public FastBitmapConstantState(Bitmap bitmap, int color, boolean isDisabled) {
             mBitmap = bitmap;
             mIconColor = color;
             mIsDisabled = isDisabled;

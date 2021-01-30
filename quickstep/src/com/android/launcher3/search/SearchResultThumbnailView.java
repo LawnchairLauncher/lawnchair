@@ -38,10 +38,9 @@ import java.util.List;
  * A view representing a high confidence app search result that includes shortcuts
  */
 public class SearchResultThumbnailView extends androidx.appcompat.widget.AppCompatImageView
-        implements SearchTargetHandler {
+        implements SearchTargetHandler, View.OnClickListener {
 
     private SearchTarget mSearchTarget;
-    private SearchResultIcon mResultIcon;
 
     public SearchResultThumbnailView(Context context) {
         super(context);
@@ -56,6 +55,13 @@ public class SearchResultThumbnailView extends androidx.appcompat.widget.AppComp
     }
 
     @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        setOnFocusChangeListener(Launcher.getLauncher(getContext()).getFocusHandler());
+        setOnClickListener(this);
+    }
+
+    @Override
     public void apply(SearchTarget parentTarget, List<SearchTarget> children) {
         mSearchTarget = parentTarget;
         Bitmap bitmap;
@@ -65,6 +71,9 @@ public class SearchResultThumbnailView extends androidx.appcompat.widget.AppComp
                 parentTarget.getPackageName(),
                 parentTarget.getUserHandle(),
                 parentTarget.getSearchAction().getTitle());
+        itemInfo.setIntent(parentTarget.getSearchAction().getIntent());
+        itemInfo.setPendingIntent(parentTarget.getSearchAction().getPendingIntent());
+
         bitmap = ((BitmapDrawable) itemInfo.getIcon()
                 .loadDrawable(getContext())).getBitmap();
         // crop
@@ -89,11 +98,5 @@ public class SearchResultThumbnailView extends androidx.appcompat.widget.AppComp
         ItemClickHandler.onClickSearchAction(Launcher.getLauncher(getContext()),
                 (SearchActionItemInfo) view.getTag());
         notifyEvent(getContext(), mSearchTarget.getId(), SearchTargetEvent.ACTION_LAUNCH_TOUCH);
-    }
-
-    @Override
-    public boolean onLongClick(View view) {
-        // do nothing.
-        return false;
     }
 }
