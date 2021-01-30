@@ -23,7 +23,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
@@ -39,10 +38,9 @@ import java.util.List;
  * A view representing a high confidence app search result that includes shortcuts
  */
 public class SearchResultThumbnailView extends androidx.appcompat.widget.AppCompatImageView
-        implements SearchTargetHandler {
+        implements SearchTargetHandler, View.OnClickListener {
 
     private SearchTarget mSearchTarget;
-    private SearchResultIcon mResultIcon;
 
     public SearchResultThumbnailView(Context context) {
         super(context);
@@ -61,7 +59,6 @@ public class SearchResultThumbnailView extends androidx.appcompat.widget.AppComp
         super.onFinishInflate();
         setOnFocusChangeListener(Launcher.getLauncher(getContext()).getFocusHandler());
         setOnClickListener(this);
-        setOnLongClickListener(this);
     }
 
     @Override
@@ -101,11 +98,5 @@ public class SearchResultThumbnailView extends androidx.appcompat.widget.AppComp
         ItemClickHandler.onClickSearchAction(Launcher.getLauncher(getContext()),
                 (SearchActionItemInfo) view.getTag());
         notifyEvent(getContext(), mSearchTarget.getId(), SearchTargetEvent.ACTION_LAUNCH_TOUCH);
-    }
-
-    @Override
-    public boolean onLongClick(View view) {
-        // do nothing.
-        return false;
     }
 }
