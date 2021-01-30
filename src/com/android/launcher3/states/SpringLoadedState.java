@@ -90,4 +90,9 @@ public class SpringLoadedState extends LauncherState {
     public float getWorkspaceScrimAlpha(Launcher launcher) {
         return 0.3f;
     }
+
+    @Override
+    public int getVisibleElements(Launcher launcher) {
+        return super.getVisibleElements(launcher) & ~TASKBAR;
+    }
 }

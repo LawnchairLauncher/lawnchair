@@ -41,7 +41,6 @@ public class DeviceSearchAdapterProvider extends SearchAdapterProvider {
     public static final int VIEW_TYPE_SEARCH_SLICE = 1 << 7;
     public static final int VIEW_TYPE_SEARCH_ICON = (1 << 8) | VIEW_TYPE_ICON;
     public static final int VIEW_TYPE_SEARCH_ICON_ROW = (1 << 9);
-    public static final int VIEW_TYPE_SEARCH_PEOPLE = 1 << 11;
     public static final int VIEW_TYPE_SEARCH_THUMBNAIL = 1 << 12;
     public static final int VIEW_TYPE_SEARCH_WIDGET_LIVE = 1 << 15;
     public static final int VIEW_TYPE_SEARCH_WIDGET_PREVIEW = 1 << 16;
@@ -59,7 +58,6 @@ public class DeviceSearchAdapterProvider extends SearchAdapterProvider {
         mViewTypeToLayoutMap.put(VIEW_TYPE_SEARCH_ICON, R.layout.search_result_icon);
         mViewTypeToLayoutMap.put(VIEW_TYPE_SEARCH_ICON_ROW, R.layout.search_result_icon_row);
         mViewTypeToLayoutMap.put(VIEW_TYPE_SEARCH_SLICE, R.layout.search_result_slice);
-        mViewTypeToLayoutMap.put(VIEW_TYPE_SEARCH_PEOPLE, R.layout.search_result_people_item);
         mViewTypeToLayoutMap.put(VIEW_TYPE_SEARCH_THUMBNAIL, R.layout.search_result_thumbnail);
         mViewTypeToLayoutMap.put(VIEW_TYPE_SEARCH_WIDGET_LIVE, R.layout.search_result_widget_live);
         mViewTypeToLayoutMap.put(VIEW_TYPE_SEARCH_WIDGET_PREVIEW,
@@ -125,6 +123,7 @@ public class DeviceSearchAdapterProvider extends SearchAdapterProvider {
                 break;
             case LayoutType.ICON_DOUBLE_HORIZONTAL_TEXT:
             case LayoutType.ICON_SINGLE_HORIZONTAL_TEXT:
+            case LayoutType.ICON_DOUBLE_HORIZONTAL_TEXT_BUTTON:
                 return VIEW_TYPE_SEARCH_ICON_ROW;
             case LayoutType.THUMBNAIL:
                 if (t.getSearchAction() != null) {
