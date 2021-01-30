@@ -16,6 +16,7 @@
 package com.android.launcher3.taskbar;
 
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
@@ -26,6 +27,9 @@ import androidx.annotation.Nullable;
  * Hosts the Taskbar content such as Hotseat and Recent Apps. Drawn on top of other apps.
  */
 public class TaskbarView extends LinearLayout {
+
+    private final ColorDrawable mBackgroundDrawable;
+
     public TaskbarView(@NonNull Context context) {
         this(context, null);
     }
@@ -42,5 +46,14 @@ public class TaskbarView extends LinearLayout {
     public TaskbarView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr,
             int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+        mBackgroundDrawable = (ColorDrawable) getBackground();
+    }
+
+    /**
+     * Sets the alpha of the background color behind all the Taskbar contents.
+     * @param alpha 0 is fully transparent, 1 is fully opaque.
+     */
+    public void setBackgroundAlpha(float alpha) {
+        mBackgroundDrawable.setAlpha((int) (alpha * 255));
     }
 }
