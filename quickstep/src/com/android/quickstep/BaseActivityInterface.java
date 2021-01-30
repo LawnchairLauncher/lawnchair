@@ -45,6 +45,7 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulActivity;
+import com.android.launcher3.taskbar.TaskbarController;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.WindowBounds;
 import com.android.quickstep.SysUINavigationMode.Mode;
@@ -118,6 +119,11 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
 
     @Nullable
     public DepthController getDepthController() {
+        return null;
+    }
+
+    @Nullable
+    public TaskbarController getTaskbarController() {
         return null;
     }
 
@@ -274,6 +280,20 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         float overviewActionsHeight = actionsBottomMargin
                 + res.getDimensionPixelSize(R.dimen.overview_actions_height);
         return overviewActionsHeight;
+    }
+
+    /**
+     * Called when the gesture ends and the animation starts towards the given target. No-op by
+     * default, but subclasses can override to add an additional animation with the same duration.
+     */
+    public void onAnimateToLauncher(GestureState.GestureEndTarget endTarget, long duration) {
+    }
+
+    /**
+     * See {@link com.android.systemui.shared.system.QuickStepContract.SystemUiStateFlags}
+     * @param systemUiStateFlags The latest SystemUiStateFlags
+     */
+    public void onSystemUiFlagsChanged(int systemUiStateFlags) {
     }
 
     public interface AnimationFactory {
