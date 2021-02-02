@@ -18,6 +18,7 @@ package com.android.launcher3.search;
 
 import static com.android.launcher3.search.DeviceSearchAdapterProvider.VIEW_TYPE_SEARCH_ICON;
 import static com.android.launcher3.search.DeviceSearchAdapterProvider.VIEW_TYPE_SEARCH_ICON_ROW;
+import static com.android.launcher3.search.DeviceSearchAdapterProvider.VIEW_TYPE_SEARCH_SMALL_ICON_ROW;
 import static com.android.launcher3.search.DeviceSearchAdapterProvider.VIEW_TYPE_SEARCH_SLICE;
 import static com.android.launcher3.search.DeviceSearchAdapterProvider.VIEW_TYPE_SEARCH_THUMBNAIL;
 import static com.android.launcher3.search.DeviceSearchAdapterProvider.VIEW_TYPE_SEARCH_WIDGET_LIVE;
@@ -26,7 +27,6 @@ import static com.android.launcher3.search.DeviceSearchAdapterProvider.VIEW_TYPE
 import android.app.search.SearchTarget;
 
 import com.android.launcher3.allapps.AllAppsGridAdapter;
-import com.android.systemui.plugins.shared.SearchTargetLegacy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,29 +35,21 @@ import java.util.List;
  * Extension of AdapterItem that contains an extra payload specific to item
  */
 public class SearchAdapterItem extends AllAppsGridAdapter.AdapterItem {
-    private SearchTargetLegacy mSearchTargetLegacy;
     private SearchTarget mSearchTarget;
     private List<SearchTarget> mInlineItems = new ArrayList<>();
 
 
-    private static final int AVAILABLE_FOR_ACCESSIBILITY =
-            VIEW_TYPE_SEARCH_SLICE | VIEW_TYPE_SEARCH_THUMBNAIL | VIEW_TYPE_SEARCH_ICON_ROW
-                    | VIEW_TYPE_SEARCH_ICON | VIEW_TYPE_SEARCH_WIDGET_PREVIEW
-                    | VIEW_TYPE_SEARCH_WIDGET_LIVE;
-
-
-    public SearchAdapterItem(SearchTargetLegacy searchTargetLegacy, int type) {
-        mSearchTargetLegacy = searchTargetLegacy;
-        viewType = type;
-    }
+    private static final int AVAILABLE_FOR_ACCESSIBILITY = VIEW_TYPE_SEARCH_SLICE
+            | VIEW_TYPE_SEARCH_THUMBNAIL
+            | VIEW_TYPE_SEARCH_ICON_ROW
+            | VIEW_TYPE_SEARCH_ICON
+            | VIEW_TYPE_SEARCH_SMALL_ICON_ROW
+            | VIEW_TYPE_SEARCH_WIDGET_PREVIEW
+            | VIEW_TYPE_SEARCH_WIDGET_LIVE;
 
     public SearchAdapterItem(SearchTarget searchTarget, int type) {
         mSearchTarget = searchTarget;
         viewType = type;
-    }
-
-    public SearchTargetLegacy getSearchTargetLegacy() {
-        return mSearchTargetLegacy;
     }
 
     public SearchTarget getSearchTarget() {
