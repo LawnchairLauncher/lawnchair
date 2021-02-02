@@ -2681,7 +2681,8 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                             && focusedView.getTag() instanceof ItemInfo
                             && mAccessibilityDelegate.performAction(focusedView,
                             (ItemInfo) focusedView.getTag(),
-                            LauncherAccessibilityDelegate.DEEP_SHORTCUTS)) {
+                            LauncherAccessibilityDelegate.DEEP_SHORTCUTS,
+                            true)) {
                         PopupContainerWithArrow.getOpen(this).requestFocus();
                         return true;
                     }
