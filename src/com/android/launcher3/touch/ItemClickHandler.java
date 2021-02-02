@@ -302,7 +302,7 @@ public class ItemClickHandler {
                 intent.setPackage(null);
             }
         }
-        if (v != null && launcher.getAppTransitionManager().supportsAdaptiveIconAnimation()) {
+        if (v != null && launcher.getAppTransitionManager().supportsAdaptiveIconAnimation(v)) {
             // Preload the icon to reduce latency b/w swapping the floating view with the original.
             FloatingIconView.fetchIcon(launcher, v, item, true /* isOpening */);
         }

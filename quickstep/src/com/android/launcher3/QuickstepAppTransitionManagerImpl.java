@@ -202,9 +202,10 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
     }
 
     @Override
-    public boolean supportsAdaptiveIconAnimation() {
+    public boolean supportsAdaptiveIconAnimation(View clickedView) {
         return hasControlRemoteAppTransitionPermission()
-                && FeatureFlags.ADAPTIVE_ICON_WINDOW_ANIM.get();
+                && FeatureFlags.ADAPTIVE_ICON_WINDOW_ANIM.get()
+                && !mLauncher.isViewInTaskbar(clickedView);
     }
 
     /**
@@ -972,9 +973,12 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                     launcherIsATargetWithMode(appTargets, MODE_CLOSING);
 
             final boolean launchingFromRecents = isLaunchingFromRecents(mV, appTargets);
+            final boolean launchingFromTaskbar = mLauncher.isViewInTaskbar(mV);
             if (launchingFromRecents) {
                 composeRecentsLaunchAnimator(anim, mV, appTargets, wallpaperTargets,
                         launcherClosing);
+            } else if (launchingFromTaskbar) {
+                // TODO
             } else {
                 composeIconLaunchAnimator(anim, mV, appTargets, wallpaperTargets,
                         launcherClosing);

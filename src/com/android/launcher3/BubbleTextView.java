@@ -92,6 +92,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     private static final int DISPLAY_ALL_APPS = 1;
     private static final int DISPLAY_FOLDER = 2;
     private static final int DISPLAY_HERO_APP = 5;
+    protected static final int DISPLAY_TASKBAR = 6;
 
     private static final int[] STATE_PRESSED = new int[]{android.R.attr.state_pressed};
     private static final float HIGHLIGHT_SCALE = 1.16f;
@@ -140,7 +141,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     private Drawable mIcon;
     private boolean mCenterVertically;
 
-    private final int mDisplay;
+    protected final int mDisplay;
 
     private final CheckLongPressHelper mLongPressHelper;
 
@@ -206,6 +207,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             defaultIconSize = grid.folderChildIconSizePx;
         } else if (mDisplay == DISPLAY_HERO_APP) {
             defaultIconSize = grid.allAppsIconSizePx;
+        } else if (mDisplay == DISPLAY_TASKBAR) {
+            defaultIconSize = grid.iconSizePx;
         } else {
             // widget_selection or shortcut_popup
             defaultIconSize = grid.iconSizePx;
@@ -487,6 +490,10 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
      * @param canvas The canvas to draw to.
      */
     protected void drawDotIfNecessary(Canvas canvas) {
+        if (mDisplay == DISPLAY_TASKBAR) {
+            // TODO: support notification dots in Taskbar
+            return;
+        }
         if (!mForceHideDot && (hasDot() || mDotParams.scale > 0)) {
             getIconBounds(mDotParams.iconBounds);
             Utilities.scaleRectAboutCenter(mDotParams.iconBounds,
