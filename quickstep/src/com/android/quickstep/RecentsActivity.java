@@ -184,11 +184,8 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
             }
 
             @Override
-            public void onCreateAnimation(int transit,
-                    RemoteAnimationTargetCompat[] appTargets,
-                    RemoteAnimationTargetCompat[] wallpaperTargets,
-                    RemoteAnimationTargetCompat[] nonAppTargets,
-                    AnimationResult result) {
+            public void onCreateAnimation(RemoteAnimationTargetCompat[] appTargets,
+                    RemoteAnimationTargetCompat[] wallpaperTargets, AnimationResult result) {
                 AnimatorSet anim = composeRecentsLaunchAnimator(taskView, appTargets,
                         wallpaperTargets);
                 anim.addListener(resetStateListener());
