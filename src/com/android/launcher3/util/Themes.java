@@ -81,6 +81,11 @@ public class Themes {
         return getAttrColor(context, android.R.attr.colorAccent);
     }
 
+    /** Returns the floating background color attribute. */
+    public static int getColorBackgroundFloating(Context context) {
+        return getAttrColor(context, android.R.attr.colorBackgroundFloating);
+    }
+
     public static int getAttrColor(Context context, int attr) {
         TypedArray ta = context.obtainStyledAttributes(new int[]{attr});
         int colorAccent = ta.getColor(0, 0);
