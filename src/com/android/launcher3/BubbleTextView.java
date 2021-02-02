@@ -51,6 +51,7 @@ import android.view.ViewDebug;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
 import androidx.core.graphics.ColorUtils;
 
 import com.android.launcher3.Launcher.OnResumeCallback;
@@ -271,6 +272,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         mDotScaleAnim.start();
     }
 
+    @UiThread
     public void applyFromWorkspaceItem(WorkspaceItemInfo info) {
         applyFromWorkspaceItem(info, false);
     }
@@ -287,6 +289,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         }
     }
 
+    @UiThread
     public void applyFromWorkspaceItem(WorkspaceItemInfo info, boolean promiseStateChanged) {
         applyIconAndLabel(info);
         setTag(info);
@@ -295,6 +298,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         setDownloadStateContentDescription(info, info.getProgressLevel());
     }
 
+    @UiThread
     public void applyFromApplicationInfo(AppInfo info) {
         applyIconAndLabel(info);
 
@@ -314,6 +318,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     /**
      * Apply label and tag using a generic {@link ItemInfoWithIcon}
      */
+    @UiThread
     public void applyFromItemInfoWithIcon(ItemInfoWithIcon info) {
         applyIconAndLabel(info);
         // We don't need to check the info since it's not a WorkspaceItemInfo
@@ -328,11 +333,13 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     /**
      * Apply label and tag using a {@link SearchActionItemInfo}
      */
+    @UiThread
     public void applyFromSearchActionItemInfo(SearchActionItemInfo searchActionItemInfo) {
         applyIconAndLabel(searchActionItemInfo);
         setTag(searchActionItemInfo);
     }
 
+    @UiThread
     protected void applyIconAndLabel(ItemInfoWithIcon info) {
         FastBitmapDrawable iconDrawable = newIcon(getContext(), info);
         mDotParams.color = IconPalette.getMutedColor(info.bitmap.color, 0.54f);
@@ -341,6 +348,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         applyLabel(info);
     }
 
+    @UiThread
     private void applyLabel(ItemInfoWithIcon info) {
         setText(info.title);
         if (info.contentDescription != null) {
