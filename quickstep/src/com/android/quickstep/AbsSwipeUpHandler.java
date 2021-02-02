@@ -731,7 +731,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
         setIsLikelyToStartNewTask(isLikelyToStartNewTask, false /* animate */);
         mStateCallback.setStateOnUiThread(STATE_GESTURE_STARTED);
         mGestureStarted = true;
-        mTaskViewSimulator.setDrawsBelowRecents(true);
     }
 
     /**
@@ -958,7 +957,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
         if (endTarget == HOME) {
             duration = Math.max(MIN_OVERSHOOT_DURATION, duration);
         } else if (endTarget == RECENTS) {
-            LiveTileOverlay.INSTANCE.startIconAnimation();
             if (mRecentsView != null) {
                 int nearestPage = mRecentsView.getPageNearestToCenterOfScreen();
                 if (mRecentsView.getNextPage() != nearestPage) {
@@ -970,9 +968,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
                     mRecentsView.snapToPage(mRecentsView.getNextPage(), (int) MAX_SWIPE_DURATION);
                 }
                 duration = Math.max(duration, mRecentsView.getScroller().getDuration());
-            }
-            if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-                mRecentsView.getRunningTaskView().setIsClickableAsLiveTile(false);
             }
         }
 
@@ -1067,7 +1062,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
         }
 
         if (mGestureState.getEndTarget() == HOME) {
-            mTaskViewSimulator.setDrawsBelowRecents(false);
             getOrientationHandler().adjustFloatingIconStartVelocity(velocityPxPerMs);
             final RemoteAnimationTargetCompat runningTaskTarget = mRecentsAnimationTargets != null
                     ? mRecentsAnimationTargets.findTask(mGestureState.getRunningTaskId())
@@ -1453,10 +1447,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
     private void finishCurrentTransitionToRecents() {
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED);
-            final TaskView runningTaskView = mRecentsView.getRunningTaskView();
-            if (runningTaskView != null) {
-                runningTaskView.setIsClickableAsLiveTile(true);
-            }
         } else if (!hasTargets() || mRecentsAnimationController == null) {
             // If there are no targets or the animation not started, then there is nothing to finish
             mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED);
