@@ -289,6 +289,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         setTag(info);
         applyLoadingState(promiseStateChanged);
         applyDotState(info, false /* animate */);
+        setDownloadStateContentDescription(info, info.getProgressLevel());
     }
 
     public void applyFromApplicationInfo(AppInfo info) {
@@ -304,6 +305,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             applyProgressLevel();
         }
         applyDotState(info, false /* animate */);
+        setDownloadStateContentDescription(info, info.getProgressLevel());
     }
 
     /**
@@ -316,6 +318,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
         // Verify high res immediately
         verifyHighRes();
+
+        setDownloadStateContentDescription(info, info.getProgressLevel());
     }
 
     /**
@@ -635,9 +639,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             setContentDescription(info.contentDescription != null
                     ? info.contentDescription : "");
         } else if (progressLevel > 0) {
-            setContentDescription(getContext()
-                    .getString(R.string.app_downloading_title, info.title,
-                            NumberFormat.getPercentInstance().format(progressLevel * 0.01)));
+            setDownloadStateContentDescription(info, progressLevel);
         } else {
             setContentDescription(getContext()
                     .getString(R.string.app_waiting_download_title, info.title));
@@ -709,6 +711,24 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
                 } else {
                     setContentDescription(itemInfo.contentDescription);
                 }
+            }
+        }
+    }
+
+    private void setDownloadStateContentDescription(ItemInfoWithIcon info, int progressLevel) {
+        if ((info.runtimeStatusFlags & ItemInfoWithIcon.FLAG_SHOW_DOWNLOAD_PROGRESS_MASK)
+                != 0) {
+            String percentageString = NumberFormat.getPercentInstance()
+                    .format(progressLevel * 0.01);
+            if ((info.runtimeStatusFlags & ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE) != 0) {
+                setContentDescription(getContext()
+                        .getString(
+                            R.string.app_installing_title, info.title, percentageString));
+            } else if ((info.runtimeStatusFlags
+                    & ItemInfoWithIcon.FLAG_INCREMENTAL_DOWNLOAD_ACTIVE) != 0) {
+                setContentDescription(getContext()
+                        .getString(
+                            R.string.app_downloading_title, info.title, percentageString));
             }
         }
     }
