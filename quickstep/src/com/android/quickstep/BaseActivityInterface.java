@@ -153,6 +153,13 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         return deviceState.isInDeferredGestureRegion(ev);
     }
 
+    /**
+     * @return Whether the gesture in progress should be cancelled.
+     */
+    public boolean shouldCancelCurrentGesture() {
+        return false;
+    }
+
     public abstract void onExitOverview(RotationTouchHelper deviceState,
             Runnable exitRunnable);
 
