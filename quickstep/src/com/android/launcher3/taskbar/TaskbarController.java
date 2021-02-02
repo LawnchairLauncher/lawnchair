@@ -38,7 +38,6 @@ import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.QuickstepAppTransitionManagerImpl;
 import com.android.launcher3.R;
-import com.android.launcher3.anim.AlphaUpdateListener;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.states.StateAnimationConfig;
@@ -107,7 +106,6 @@ public class TaskbarController {
             @Override
             public void updateTaskbarVisibilityAlpha(float alpha) {
                 mTaskbarContainerView.setAlpha(alpha);
-                AlphaUpdateListener.updateVisibility(mTaskbarContainerView);
             }
         };
     }
@@ -167,6 +165,7 @@ public class TaskbarController {
     public void init() {
         mTaskbarView.init(mHotseatController.getNumHotseatIcons(),
                 mRecentsController.getNumRecentIcons());
+        mTaskbarContainerView.init(mTaskbarView);
         addToWindowManager();
         mTaskbarStateHandler.setTaskbarCallbacks(createTaskbarStateHandlerCallbacks());
         mTaskbarVisibilityController.init();
@@ -188,6 +187,7 @@ public class TaskbarController {
      */
     public void cleanup() {
         mTaskbarView.cleanup();
+        mTaskbarContainerView.cleanup();
         removeFromWindowManager();
         mTaskbarStateHandler.setTaskbarCallbacks(null);
         mTaskbarVisibilityController.cleanup();
