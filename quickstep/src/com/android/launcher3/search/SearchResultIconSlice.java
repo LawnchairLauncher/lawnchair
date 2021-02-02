@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.search;
 
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.app.search.SearchTarget;
@@ -104,7 +105,7 @@ public class SearchResultIconSlice extends LinearLayout implements SearchTargetH
                 PackageItemInfo pkgItem = new PackageItemInfo(parentTarget.getPackageName());
                 pkgItem.user = parentTarget.getUserHandle();
                 appState.getIconCache().getTitleAndIconForApp(pkgItem, false);
-                mIcon.applyFromItemInfoWithIcon(pkgItem);
+                MAIN_EXECUTOR.post(() -> mIcon.applyFromItemInfoWithIcon(pkgItem));
             });
         }
     }
