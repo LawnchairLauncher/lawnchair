@@ -26,6 +26,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.util.Log;
+import android.view.MotionEvent;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
@@ -310,5 +311,23 @@ public final class LauncherActivityInterface extends
         }
         boolean isImeVisible = (systemUiStateFlags & SYSUI_STATE_IME_SHOWING) != 0;
         taskbarController.setIsImeVisible(isImeVisible);
+    }
+
+    @Override
+    public boolean deferStartingActivity(RecentsAnimationDeviceState deviceState, MotionEvent ev) {
+        TaskbarController taskbarController = getTaskbarController();
+        if (taskbarController == null) {
+            return super.deferStartingActivity(deviceState, ev);
+        }
+        return taskbarController.isEventOverAnyTaskbarItem(ev);
+    }
+
+    @Override
+    public boolean shouldCancelCurrentGesture() {
+        TaskbarController taskbarController = getTaskbarController();
+        if (taskbarController == null) {
+            return super.shouldCancelCurrentGesture();
+        }
+        return taskbarController.isDraggingItem();
     }
 }
