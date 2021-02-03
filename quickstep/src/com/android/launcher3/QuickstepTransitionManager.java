@@ -84,7 +84,6 @@ import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.util.StaggeredWorkspaceAnim;
 import com.android.quickstep.util.SurfaceTransactionApplier;
 import com.android.quickstep.views.RecentsView;
-import com.android.systemui.shared.recents.IStartingWindowListener;
 import com.android.systemui.shared.system.ActivityCompat;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
@@ -96,6 +95,7 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.RemoteTransitionCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
 import com.android.systemui.shared.system.WindowManagerWrapper;
+import com.android.wm.shell.startingsurface.IStartingWindowListener;
 
 import java.util.LinkedHashMap;
 
