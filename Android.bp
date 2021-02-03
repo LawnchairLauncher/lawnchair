@@ -36,15 +36,35 @@ java_library_static {
     name: "launcher_log_protos_lite",
     srcs: [
         "protos/*.proto",
+        "protos_overrides/*.proto",
     ],
     sdk_version: "current",
     proto: {
         type: "lite",
         local_include_dirs:[
             "protos",
+            "protos_overrides",
         ],
     },
     static_libs: ["libprotobuf-java-lite"],
+}
+
+java_library_static {
+    name: "launcher_quickstep_log_protos_lite",
+    srcs: [
+        "quickstep/protos_overrides/*.proto",
+    ],
+    sdk_version: "current",
+    proto: {
+        type: "lite",
+        local_include_dirs:[
+            "quickstep/protos_overrides",
+        ],
+    },
+    static_libs: [
+      "libprotobuf-java-lite",
+      "launcher_log_protos_lite"
+      ],
 }
 
 java_library {
