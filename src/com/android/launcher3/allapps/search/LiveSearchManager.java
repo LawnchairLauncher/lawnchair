@@ -33,10 +33,13 @@ import androidx.slice.widget.SliceLiveData;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
+import com.android.launcher3.logging.InstanceId;
+import com.android.launcher3.logging.InstanceIdSequence;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 
 import java.util.HashMap;
+import java.util.Optional;
 
 /**
  * Manages Lifecycle for Live search results
@@ -51,6 +54,7 @@ public class LiveSearchManager {
             new HashMap<>();
     private final HashMap<Uri, LiveData<Slice>> mUriSliceMap = new HashMap<>();
     private SearchWidgetHost mSearchWidgetHost;
+    private InstanceId mLogInstanceId;
 
     public LiveSearchManager(Launcher launcher) {
         mLauncher = launcher;
@@ -113,6 +117,7 @@ public class LiveSearchManager {
      */
     public void start() {
         stop();
+        mLogInstanceId = new InstanceIdSequence().newInstanceId();
         mSearchWidgetHost = new SearchWidgetHost(mLauncher);
         mSearchWidgetHost.startListening();
     }
@@ -134,6 +139,14 @@ public class LiveSearchManager {
             liveData.removeObservers(mLauncher);
         }
         mUriSliceMap.clear();
+    }
+
+    /**
+     * Returns {@link InstanceId} that should be used for logging events within search session, if
+     * available.
+     */
+    public Optional<InstanceId> getLogInstanceId() {
+        return Optional.ofNullable(mLogInstanceId);
     }
 
     static class SearchWidgetHost extends AppWidgetHost {
