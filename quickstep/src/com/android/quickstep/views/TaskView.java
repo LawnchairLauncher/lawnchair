@@ -356,10 +356,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         return false;
     }
 
-    public void setIsClickableAsLiveTile(boolean isClickableAsLiveTile) {
-        mIsClickableAsLiveTile = isClickableAsLiveTile;
-    }
-
     private void computeAndSetIconTouchDelegate() {
         float iconHalfSize = mIconView.getWidth() / 2f;
         mIconCenterCoords[0] = mIconCenterCoords[1] = iconHalfSize;
