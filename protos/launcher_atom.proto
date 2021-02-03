@@ -18,6 +18,8 @@ syntax = "proto2";
 option java_package = "com.android.launcher3.logger";
 option java_outer_classname = "LauncherAtom";
 
+import "launcher_atom_extension.proto";
+
 //
 // ItemInfos
 message ItemInfo {
@@ -55,6 +57,7 @@ message ContainerInfo {
     SettingsContainer settings_container = 9;
     PredictedHotseatContainer predicted_hotseat_container = 10;
     TaskSwitcherContainer task_switcher_container = 11;
+    ExtendedContainers extended_containers = 20;
   }
 }
 
