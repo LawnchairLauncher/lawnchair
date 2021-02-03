@@ -72,10 +72,6 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 });
             }
 
-            case TestProtocol.REQUEST_IS_LAUNCHER_INITIALIZED: {
-                return getUIProperty(Bundle::putBoolean, t -> isLauncherInitialized(), () -> true);
-            }
-
             case TestProtocol.REQUEST_FREEZE_APP_LIST:
                 return getLauncherUIProperty(Bundle::putBoolean, l -> {
                     l.getAppsView().getAppsStore().enableDeferUpdates(DEFER_UPDATES_TEST);
@@ -103,7 +99,7 @@ public class TestInformationHandler implements ResourceBasedOverride {
 
             case TestProtocol.REQUEST_IS_LAUNCHER_INITIALIZED: {
                 response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD, true);
-                break;
+                return getUIProperty(Bundle::putBoolean, t -> isLauncherInitialized(), () -> true);
             }
 
 
