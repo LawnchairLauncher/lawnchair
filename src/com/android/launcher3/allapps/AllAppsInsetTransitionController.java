@@ -164,8 +164,11 @@ public class AllAppsInsetTransitionController {
                     @Override
                     public void onCancelled(@Nullable WindowInsetsAnimationController controller) {
                         if (DEBUG) {
-                            Log.d(TAG, "Listener.onCancelled ctrl=" + controller
-                                    + " mAnimationController=" + mAnimationController);
+                            // Keep the verbose logging to chase down IME not showing up issue.
+                            // b/178904132
+                            Log.e(TAG, "Listener.onCancelled ctrl=" + controller
+                                    + " mAnimationController=" + mAnimationController,
+                                    new Exception());
                         }
                         if (mState == State.DRAG_START_BOTTOM) {
                             mState = State.DRAG_START_BOTTOM_IME_CANCELLED;
