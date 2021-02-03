@@ -514,9 +514,14 @@ public class TouchInteractionService extends Service implements PluginListener<O
             }
         }
 
-        boolean cleanUpConsumer = (action == ACTION_UP || action == ACTION_CANCEL)
+        boolean cancelGesture = mGestureState.getActivityInterface() != null
+                && mGestureState.getActivityInterface().shouldCancelCurrentGesture();
+        boolean cleanUpConsumer = (action == ACTION_UP || action == ACTION_CANCEL || cancelGesture)
                 && mConsumer != null
                 && !mConsumer.getActiveConsumerInHierarchy().isConsumerDetachedFromGesture();
+        if (cancelGesture) {
+            event.setAction(ACTION_CANCEL);
+        }
         mUncheckedConsumer.onMotionEvent(event);
 
         if (cleanUpConsumer) {

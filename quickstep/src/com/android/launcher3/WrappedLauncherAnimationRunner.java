@@ -46,11 +46,15 @@ public class WrappedLauncherAnimationRunner<R extends WrappedAnimationRunnerImpl
     }
 
     @Override
-    public void onCreateAnimation(RemoteAnimationTargetCompat[] appTargets,
-            RemoteAnimationTargetCompat[] wallpaperTargets, AnimationResult result) {
+    public void onCreateAnimation(int transit,
+            RemoteAnimationTargetCompat[] appTargets,
+            RemoteAnimationTargetCompat[] wallpaperTargets,
+            RemoteAnimationTargetCompat[] nonAppTargets,
+            AnimationResult result) {
         R animationRunnerImpl = mImpl.get();
         if (animationRunnerImpl != null) {
-            animationRunnerImpl.onCreateAnimation(appTargets, wallpaperTargets, result);
+            animationRunnerImpl.onCreateAnimation(transit, appTargets, wallpaperTargets,
+                    nonAppTargets, result);
         }
     }
 }

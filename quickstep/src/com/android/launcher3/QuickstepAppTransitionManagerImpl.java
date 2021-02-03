@@ -202,9 +202,10 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
     }
 
     @Override
-    public boolean supportsAdaptiveIconAnimation() {
+    public boolean supportsAdaptiveIconAnimation(View clickedView) {
         return hasControlRemoteAppTransitionPermission()
-                && FeatureFlags.ADAPTIVE_ICON_WINDOW_ANIM.get();
+                && FeatureFlags.ADAPTIVE_ICON_WINDOW_ANIM.get()
+                && !mLauncher.isViewInTaskbar(clickedView);
     }
 
     /**
@@ -865,8 +866,10 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         }
 
         @Override
-        public void onCreateAnimation(RemoteAnimationTargetCompat[] appTargets,
+        public void onCreateAnimation(int transit,
+                RemoteAnimationTargetCompat[] appTargets,
                 RemoteAnimationTargetCompat[] wallpaperTargets,
+                RemoteAnimationTargetCompat[] nonAppTargets,
                 LauncherAnimationRunner.AnimationResult result) {
             if (mLauncher.isDestroyed()) {
                 AnimatorSet anim = new AnimatorSet();
@@ -879,7 +882,8 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                 // If launcher is not resumed, wait until new async-frame after resume
                 mLauncher.addOnResumeCallback(() ->
                         postAsyncCallback(mHandler, () ->
-                                onCreateAnimation(appTargets, wallpaperTargets, result)));
+                                onCreateAnimation(transit, appTargets, wallpaperTargets,
+                                        nonAppTargets, result)));
                 return;
             }
 
@@ -963,8 +967,10 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         }
 
         @Override
-        public void onCreateAnimation(RemoteAnimationTargetCompat[] appTargets,
+        public void onCreateAnimation(int transit,
+                RemoteAnimationTargetCompat[] appTargets,
                 RemoteAnimationTargetCompat[] wallpaperTargets,
+                RemoteAnimationTargetCompat[] nonAppTargets,
                 LauncherAnimationRunner.AnimationResult result) {
             AnimatorSet anim = new AnimatorSet();
 
@@ -972,9 +978,12 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                     launcherIsATargetWithMode(appTargets, MODE_CLOSING);
 
             final boolean launchingFromRecents = isLaunchingFromRecents(mV, appTargets);
+            final boolean launchingFromTaskbar = mLauncher.isViewInTaskbar(mV);
             if (launchingFromRecents) {
                 composeRecentsLaunchAnimator(anim, mV, appTargets, wallpaperTargets,
                         launcherClosing);
+            } else if (launchingFromTaskbar) {
+                // TODO
             } else {
                 composeIconLaunchAnimator(anim, mV, appTargets, wallpaperTargets,
                         launcherClosing);

@@ -85,6 +85,11 @@ public class LiveTileOverlay extends Drawable {
         mIcon = icon;
     }
 
+    // TODO: consider cleaning this up and drawing icon in another way. Previously we place app
+    // below launcher during the initial swipe up and render the icon in this live tile overlay.
+    // However, this resulted in a bunch of touch input issues caused by Launcher getting the input
+    // events during transition (to overview / to another app (quick switch). So now our new
+    // solution places app on top in live tile until it fully settles in Overview.
     public void startIconAnimation() {
         if (mIconAnimator != null) {
             mIconAnimator.cancel();

@@ -122,4 +122,9 @@
 
     <!-- Taskbar -->
     <dimen name="taskbar_size">48dp</dimen>
+    <dimen name="taskbar_icon_size">32dp</dimen>
+    <dimen name="taskbar_icon_touch_size">48dp</dimen>
+    <dimen name="taskbar_icon_drag_icon_size">54dp</dimen>
+    <!-- Note that this applies to both sides of all icons, so visible space is double this. -->
+    <dimen name="taskbar_icon_spacing">14dp</dimen>
 </resources>
