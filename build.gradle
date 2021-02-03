@@ -1,7 +1,7 @@
 import org.gradle.api.tasks.wrapper.Wrapper.DistributionType
 
 buildscript {
-    ext.kotlin_version = '1.3.72'
+    ext.kotlin_version = '1.4.21'
     repositories {
         google()
         jcenter()
@@ -170,7 +170,7 @@ android {
 
     // The flavor dimensions for build variants (e.g. lawnchairWithQuickstep, lawnchairWithoutQuickstep)
     // See: https://developer.android.com/studio/build/build-variants#flavor-dimensions
-    flavorDimensions "app", "recents"/*, "dist"*/
+    flavorDimensions "app", "recents", "dist"
 
     productFlavors {
         lawnchair {
@@ -193,15 +193,15 @@ android {
             dimension "recents"
         }
 
-//        dev {
-//            dimension "dist"
-//            // Use v1 dev package name for compatibility testing
-//            if (localProps.getProperty("v1compat") != "true") {
-//                applicationIdSuffix ".dev"
-//            }
-//            versionNameSuffix "-dev"
-//        }
-//
+        dev {
+            dimension "dist"
+            // Use v1 dev package name for compatibility testing
+            if (localProps.getProperty("v1compat") != "true") {
+                applicationIdSuffix ".dev"
+            }
+            versionNameSuffix "-dev"
+        }
+
 //        ci {
 //            dimension "dist"
 //            applicationIdSuffix ".ci"
@@ -269,13 +269,13 @@ android {
 //            aidl.srcDirs = ['lawnchair/aidl']
         }
 
-        lawnchairWithoutQuickstep {
-            manifest.srcFile "AndroidManifest.xml"
-        }
-
-        lawnchairWithQuickstep {
-            manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
-        }
+//        lawnchairWithoutQuickstep {
+//            manifest.srcFile "AndroidManifest.xml"
+//        }
+//
+//        lawnchairWithQuickstep {
+//            manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
+//        }
 
         l3go {
             res.srcDirs = ['go/res']
