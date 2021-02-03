@@ -26,6 +26,8 @@ import android.animation.Animator;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.view.Gravity;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
@@ -36,7 +38,9 @@ import com.android.launcher3.QuickstepAppTransitionManagerImpl;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AlphaUpdateListener;
 import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.states.StateAnimationConfig;
+import com.android.launcher3.touch.ItemClickHandler;
 import com.android.quickstep.AnimatedFloat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
@@ -55,6 +59,8 @@ public class TaskbarController {
     private final Point mTaskbarSize;
     private final TaskbarStateHandler mTaskbarStateHandler;
     private final TaskbarVisibilityController mTaskbarVisibilityController;
+    private final TaskbarHotseatController mHotseatController;
+    private final TaskbarDragController mDragController;
 
     // Initialized in init().
     private WindowManager.LayoutParams mWindowLayoutParams;
@@ -64,12 +70,16 @@ public class TaskbarController {
         mLauncher = launcher;
         mTaskbarContainerView = taskbarContainerView;
         mTaskbarView = mTaskbarContainerView.findViewById(R.id.taskbar_view);
+        mTaskbarView.setCallbacks(createTaskbarViewCallbacks());
         mWindowManager = mLauncher.getWindowManager();
         mTaskbarSize = new Point(MATCH_PARENT,
                 mLauncher.getResources().getDimensionPixelSize(R.dimen.taskbar_size));
         mTaskbarStateHandler = mLauncher.getTaskbarStateHandler();
         mTaskbarVisibilityController = new TaskbarVisibilityController(mLauncher,
                 createTaskbarVisibilityControllerCallbacks());
+        mHotseatController = new TaskbarHotseatController(mLauncher,
+                createTaskbarHotseatControllerCallbacks());
+        mDragController = new TaskbarDragController(mLauncher);
     }
 
     private TaskbarVisibilityControllerCallbacks createTaskbarVisibilityControllerCallbacks() {
@@ -87,13 +97,38 @@ public class TaskbarController {
         };
     }
 
+    private TaskbarViewCallbacks createTaskbarViewCallbacks() {
+        return new TaskbarViewCallbacks() {
+            @Override
+            public View.OnClickListener getItemOnClickListener() {
+                return ItemClickHandler.INSTANCE;
+            }
+
+            @Override
+            public View.OnLongClickListener getItemOnLongClickListener() {
+                return mDragController::startDragOnLongClick;
+            }
+        };
+    }
+
+    private TaskbarHotseatControllerCallbacks createTaskbarHotseatControllerCallbacks() {
+        return new TaskbarHotseatControllerCallbacks() {
+            @Override
+            public void updateHotseatItems(ItemInfo[] hotseatItemInfos) {
+                mTaskbarView.updateHotseatItems(hotseatItemInfos);
+            }
+        };
+    }
+
     /**
      * Initializes the Taskbar, including adding it to the screen.
      */
     public void init() {
+        mTaskbarView.init(mHotseatController.getNumHotseatIcons());
         addToWindowManager();
         mTaskbarStateHandler.setTaskbarCallbacks(createTaskbarStateHandlerCallbacks());
         mTaskbarVisibilityController.init();
+        mHotseatController.init();
     }
 
     private TaskbarStateHandlerCallbacks createTaskbarStateHandlerCallbacks() {
@@ -109,9 +144,11 @@ public class TaskbarController {
      * Removes the Taskbar from the screen, and removes any obsolete listeners etc.
      */
     public void cleanup() {
+        mTaskbarView.cleanup();
         removeFromWindowManager();
         mTaskbarStateHandler.setTaskbarCallbacks(null);
         mTaskbarVisibilityController.cleanup();
+        mHotseatController.cleanup();
     }
 
     private void removeFromWindowManager() {
@@ -191,6 +228,32 @@ public class TaskbarController {
     }
 
     /**
+     * Should be called when one or more items in the Hotseat have changed.
+     */
+    public void onHotseatUpdated() {
+        mHotseatController.onHotseatUpdated();
+    }
+
+    /**
+     * @param ev MotionEvent in screen coordinates.
+     * @return Whether any Taskbar item could handle the given MotionEvent if given the chance.
+     */
+    public boolean isEventOverAnyTaskbarItem(MotionEvent ev) {
+        return mTaskbarView.isEventOverAnyItem(ev);
+    }
+
+    public boolean isDraggingItem() {
+        return mTaskbarView.isDraggingItem();
+    }
+
+    /**
+     * @return Whether the given View is in the same window as Taskbar.
+     */
+    public boolean isViewInTaskbar(View v) {
+        return mTaskbarContainerView.getWindowId().equals(v.getWindowId());
+    }
+
+    /**
      * Contains methods that TaskbarStateHandler can call to interface with TaskbarController.
      */
     protected interface TaskbarStateHandlerCallbacks {
@@ -204,5 +267,20 @@ public class TaskbarController {
     protected interface TaskbarVisibilityControllerCallbacks {
         void updateTaskbarBackgroundAlpha(float alpha);
         void updateTaskbarVisibilityAlpha(float alpha);
+    }
+
+    /**
+     * Contains methods that TaskbarView can call to interface with TaskbarController.
+     */
+    protected interface TaskbarViewCallbacks {
+        View.OnClickListener getItemOnClickListener();
+        View.OnLongClickListener getItemOnLongClickListener();
+    }
+
+    /**
+     * Contains methods that TaskbarHotseatController can call to interface with TaskbarController.
+     */
+    protected interface TaskbarHotseatControllerCallbacks {
+        void updateHotseatItems(ItemInfo[] hotseatItemInfos);
     }
 }
