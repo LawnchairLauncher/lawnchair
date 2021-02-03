@@ -34,37 +34,35 @@ import com.android.launcher3.R;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.PackageItemInfo;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * A full width representation of {@link SearchResultIcon} with a secondary label and inline
  * SearchTargets
  */
-public class SearchResultIconRow extends LinearLayout implements SearchTargetHandler {
-
-    public static final int MAX_INLINE_ITEMS = 3;
+public class SearchResultSmallIconRow extends LinearLayout implements SearchTargetHandler {
 
     protected final Launcher mLauncher;
-    protected final SearchResultIcon[] mInlineIcons = new SearchResultIcon[MAX_INLINE_ITEMS];
-    private SearchResultIcon mResultIcon;
-
     private final LauncherAppState mLauncherAppState;
+    protected SearchResultIcon mResultIcon;
+
     private TextView mTitleView;
+    private TextView mDelimeterView;
     private TextView mSubTitleView;
 
     private PackageItemInfo mProviderInfo;
 
-    public SearchResultIconRow(Context context) {
+    public SearchResultSmallIconRow(Context context) {
         this(context, null, 0);
     }
 
-    public SearchResultIconRow(Context context,
+    public SearchResultSmallIconRow(Context context,
             @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public SearchResultIconRow(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SearchResultSmallIconRow(Context context,
+            @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mLauncher = Launcher.getLauncher(getContext());
         mLauncherAppState = LauncherAppState.getInstance(getContext());
@@ -82,6 +80,8 @@ public class SearchResultIconRow extends LinearLayout implements SearchTargetHan
         mResultIcon = findViewById(R.id.icon);
 
         mTitleView = findViewById(R.id.title);
+        mDelimeterView = findViewById(R.id.delimeter);
+        mDelimeterView.setVisibility(GONE);
         mSubTitleView = findViewById(R.id.subtitle);
         mSubTitleView.setVisibility(GONE);
 
@@ -89,12 +89,6 @@ public class SearchResultIconRow extends LinearLayout implements SearchTargetHan
         mResultIcon.getLayoutParams().width = iconSize;
         mResultIcon.setTextVisibility(false);
 
-        mInlineIcons[0] = findViewById(R.id.shortcut_0);
-        mInlineIcons[1] = findViewById(R.id.shortcut_1);
-        mInlineIcons[2] = findViewById(R.id.shortcut_2);
-        for (SearchResultIcon inlineIcon : mInlineIcons) {
-            inlineIcon.getLayoutParams().width = getIconSize();
-        }
         setOnClickListener(mResultIcon);
         setOnLongClickListener(mResultIcon);
     }
@@ -110,7 +104,6 @@ public class SearchResultIconRow extends LinearLayout implements SearchTargetHan
         } else if (parentTarget.getSearchAction() != null) {
             showSubtitleIfNeeded(parentTarget.getSearchAction().getSubtitle());
         }
-        showInlineItems(children);
     }
 
     @Override
@@ -135,19 +128,10 @@ public class SearchResultIconRow extends LinearLayout implements SearchTargetHan
         if (!TextUtils.isEmpty(subTitle)) {
             mSubTitleView.setText(subTitle);
             mSubTitleView.setVisibility(VISIBLE);
+            mDelimeterView.setVisibility(VISIBLE);
+
         } else {
             mSubTitleView.setVisibility(GONE);
-        }
-    }
-
-    protected void showInlineItems(List<SearchTarget> children) {
-        for (int i = 0; i < MAX_INLINE_ITEMS; i++) {
-            if (i < children.size()) {
-                mInlineIcons[i].apply(children.get(i), new ArrayList<>());
-                mInlineIcons[i].setVisibility(VISIBLE);
-            } else {
-                mInlineIcons[i].setVisibility(GONE);
-            }
         }
     }
 
