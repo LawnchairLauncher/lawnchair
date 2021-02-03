@@ -30,6 +30,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.util.Log
 import android.util.LruCache
+import com.android.launcher3.FastBitmapDrawable.newIcon
 import com.android.launcher3.Utilities
 import com.android.launcher3.icons.BaseIconFactory
 import com.android.quickstep.NormalizedIconLoader
@@ -82,7 +83,7 @@ class LawnchairIconLoader(private val context: Context, iconCache: TaskKeyLruCac
                                       desc: ActivityManager.TaskDescription): Drawable? {
         val bitmapInfo = getBitmapInfo(icon, userId, desc.primaryColor,
                                        HiddenApiCompat.isInstantApp(activityInfo.applicationInfo))
-        return mDrawableFactory.newIcon(context, bitmapInfo, activityInfo)
+        return newIcon(context, bitmapInfo)
     }
 
     companion object {

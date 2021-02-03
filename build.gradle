@@ -337,6 +337,7 @@ dependencies {
     //noinspection GradleDependency
     implementation "com.google.android.material:material:1.0.0"
     implementation project(':IconLoader')
+    implementation project(path: ':SystemUISharedLib')
     withQuickstepImplementation project(':SharedLibWrapper')
     implementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'launcher_protos.jar')
 

@@ -52,6 +52,7 @@ import ch.deletescape.lawnchair.theme.ThemeOverride
 import ch.deletescape.lawnchair.views.LawnchairBackgroundView
 import ch.deletescape.lawnchair.views.OptionsPanel
 import com.android.launcher3.*
+import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.SystemUiController
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity
@@ -325,10 +326,10 @@ open class LawnchairLauncher : NexusLauncherActivity(),
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
                 out.close()
                 val result = Bundle(1).apply { putString("uri", Uri.fromFile(file).toString()) }
-                intent.getParcelableExtra<ResultReceiver>("callback").send(Activity.RESULT_OK, result)
+                intent.getParcelableExtra<ResultReceiver>("callback")?.send(Activity.RESULT_OK, result)
             } catch (e: Exception) {
                 out.close()
-                intent.getParcelableExtra<ResultReceiver>("callback").send(Activity.RESULT_CANCELED, null)
+                intent.getParcelableExtra<ResultReceiver>("callback")?.send(Activity.RESULT_CANCELED, null)
                 e.printStackTrace()
             }
             finish()

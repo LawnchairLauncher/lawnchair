@@ -23,9 +23,9 @@ import android.content.pm.ShortcutInfo
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import com.android.launcher3.FastBitmapDrawable
-import com.android.launcher3.ItemInfo
 import com.android.launcher3.LauncherModel
 import com.android.launcher3.compat.AlphabeticIndexCompat
+import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.LooperExecutor
 import java.util.concurrent.Semaphore
@@ -86,9 +86,12 @@ abstract class IconPack(val context: Context, val packPackageName: String) {
                          customIconEntry: IconPackManager.CustomIconEntry?,
                          drawableFactory: LawnchairDrawableFactory): FastBitmapDrawable?
 
-    open fun getAllIcons(callback: (List<PackEntry>) -> Unit, cancel: () -> Boolean, filter: (item: String) -> Boolean = { _ -> true }) {
+    open fun getAllIcons(callback: (List<PackEntry>) -> Unit, cancel: () -> Boolean,
+                         filter: (item: String) -> Boolean = { _ -> true }) {
         ensureInitialLoadComplete()
-        callback(categorize(filterDuplicates(entries)).filter { if (it is Entry) filter(it.identifierName) else true })
+        callback(categorize(filterDuplicates(entries)).filter {
+            if (it is Entry) filter(it.identifierName) else true
+        })
     }
 
     abstract fun supportsMasking(): Boolean

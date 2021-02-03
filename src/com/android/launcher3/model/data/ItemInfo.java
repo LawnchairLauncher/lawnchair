@@ -31,7 +31,6 @@ import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPWIDG
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_TASK;
-import static com.android.launcher3.logger.LauncherAtom.ContainerInfo.ContainerCase.CONTAINER_NOT_SET;
 
 import android.content.ComponentName;
 import android.content.ContentValues;
@@ -259,7 +258,7 @@ public class ItemInfo {
     /**
      * Can be overridden by inherited classes to fill in {@link LauncherAtom.ItemInfo}
      */
-    public void setItemBuilder(LauncherAtom.ItemInfo.Builder builder) {
+    public void setItemBuilder(LauncherAtom.ItemInfo itemInfo) {
     }
 
     /**

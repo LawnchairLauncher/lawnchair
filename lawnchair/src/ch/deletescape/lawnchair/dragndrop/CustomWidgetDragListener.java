@@ -16,6 +16,7 @@
 
 package ch.deletescape.lawnchair.dragndrop;
 
+import android.content.Intent;
 import android.graphics.Rect;
 import android.os.CancellationSignal;
 import android.view.View;
@@ -25,10 +26,13 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.PendingAddItemInfo;
 import com.android.launcher3.dragndrop.BaseItemDragListener;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.PendingItemDragHelper;
+import java.util.ArrayList;
 
 /**
  * {@link DragSource} for handling drop from a different window. This object is initialized
@@ -53,6 +57,11 @@ public class CustomWidgetDragListener extends BaseItemDragListener {
             UiFactory.useFadeOutAnimationForLauncherStart(launcher, mCancelSignal);
         }
         return false;
+    }
+
+    @Override
+    public Intent addToIntent(Intent intent) {
+        return null;
     }
 
     @Override

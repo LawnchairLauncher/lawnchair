@@ -23,6 +23,7 @@ import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.View
 import android.view.animation.Interpolator
+import android.widget.EditText
 import com.android.launcher3.allapps.AllAppsContainerView
 import com.android.launcher3.allapps.SearchUiManager
 import com.android.launcher3.anim.PropertySetter
@@ -56,6 +57,10 @@ class BlankSearchLayout(context: Context, attrs: AttributeSet?) : View(context, 
     override fun setContentVisibility(visibleElements: Int, setter: PropertySetter?,
                                       interpolator: Interpolator?) {
 
+    }
+
+    override fun setTextSearchEnabled(isEnabled: Boolean): EditText? {
+        TODO("Not yet implemented")
     }
 
     override fun getScrollRangeDelta(insets: Rect): Float {

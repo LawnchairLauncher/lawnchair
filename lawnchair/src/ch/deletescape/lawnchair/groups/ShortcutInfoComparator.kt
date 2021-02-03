@@ -19,8 +19,8 @@ package ch.deletescape.lawnchair.groups
 
 import android.content.Context
 import android.os.Process
-import com.android.launcher3.WorkspaceItemInfo
-import com.android.launcher3.compat.UserManagerCompat
+import androidx.core.os.UserManagerCompat
+import com.android.launcher3.model.data.WorkspaceItemInfo
 import com.android.launcher3.util.LabelComparator
 
 class ShortcutInfoComparator(context: Context) : Comparator<WorkspaceItemInfo> {

@@ -22,13 +22,15 @@ import android.content.SharedPreferences
 import android.content.res.TypedArray
 import android.util.AttributeSet
 import androidx.preference.DialogPreference
-import ch.deletescape.lawnchair.gestures.*
+import ch.deletescape.lawnchair.gestures.BlankGestureHandler
+import ch.deletescape.lawnchair.gestures.GestureController
+import ch.deletescape.lawnchair.gestures.NavSwipeUpGesture
 import com.android.launcher3.R
 
 class GesturePreference(context: Context, attrs: AttributeSet?) : DialogPreference(context, attrs), SharedPreferences.OnSharedPreferenceChangeListener {
 
     var value = ""
-    var defaultValue = ""
+    var defaultValue : String? = ""
 
     private val blankGestureHandler = BlankGestureHandler(context, null)
     private val handler get() = GestureController.createGestureHandler(context, value, blankGestureHandler)

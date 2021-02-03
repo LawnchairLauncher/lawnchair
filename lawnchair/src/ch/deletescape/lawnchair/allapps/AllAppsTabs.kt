@@ -19,13 +19,10 @@ package ch.deletescape.lawnchair.allapps
 
 import android.content.ComponentName
 import android.content.Context
-import android.os.Process
-import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.groups.DrawerTabs
 import ch.deletescape.lawnchair.groups.FlowerpotTabs
-import ch.deletescape.lawnchair.iconpack.IconPackManager
-import ch.deletescape.lawnchair.util.extensions.e
-import com.android.launcher3.ItemInfo
+import ch.deletescape.lawnchair.lawnchairPrefs
+import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.ItemInfoMatcher
 
@@ -34,7 +31,7 @@ class AllAppsTabs(private val context: Context) : Iterable<AllAppsTabs.Tab> {
     val tabs = ArrayList<Tab>()
     val count get() = tabs.size
 
-    var hasWorkApps = false
+    private var hasWorkApps = false
         set(value) {
             if (value != field) {
                 field = value
@@ -64,19 +61,11 @@ class AllAppsTabs(private val context: Context) : Iterable<AllAppsTabs.Tab> {
                     }
                     Tab(it.getTitle(), it.getFilter(context).matcher, drawerTab = it)
                 }
-                it is FlowerpotTabs.FlowerpotTab && !it.getMatches().isEmpty() -> {
+                it is FlowerpotTabs.FlowerpotTab && it.getMatches().isNotEmpty() -> {
                     addedApps.addAll(it.getMatches())
                     Tab(it.getTitle(), it.getFilter(context).matcher, drawerTab = it)
                 }
                 else -> null
-            }
-        }
-    }
-
-    private fun createTabMatcher(components: Set<ComponentKey>): ItemInfoMatcher {
-        return object : ItemInfoMatcher {
-            override fun matches(info: ItemInfo, cn: ComponentName?): Boolean {
-                return components.contains(ComponentKey(info.targetComponent, info.user))
             }
         }
     }

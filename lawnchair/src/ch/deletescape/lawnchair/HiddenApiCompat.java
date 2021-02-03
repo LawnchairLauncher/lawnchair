@@ -21,7 +21,6 @@ import android.app.ActivityManager;
 import android.app.ActivityManager.TaskDescription;
 import android.app.ActivityOptions;
 import android.app.WindowConfiguration;
-import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Bitmap;

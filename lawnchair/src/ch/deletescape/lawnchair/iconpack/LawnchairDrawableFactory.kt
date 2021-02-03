@@ -21,6 +21,8 @@ import android.content.Context
 import com.android.launcher3.*
 import com.android.launcher3.graphics.IconShape.getShapePath
 import com.android.launcher3.graphics.PlaceHolderIconDrawable
+import com.android.launcher3.model.data.ItemInfoWithIcon
+import com.android.launcher3.model.data.WorkspaceItemInfo
 import com.google.android.apps.nexuslauncher.DynamicDrawableFactory
 import com.google.android.apps.nexuslauncher.clock.CustomClock
 
@@ -34,6 +36,6 @@ class LawnchairDrawableFactory(context: Context) : DynamicDrawableFactory(contex
             return super.newIcon(context, info)
         }
         return iconPackManager.newIcon((info as? WorkspaceItemInfo)?.customIcon ?: info.iconBitmap,
-                info, this).also { it.setIsDisabled(info.isDisabled) }
+                                       info, this).also { it.setIsDisabled(info.isDisabled) }
     }
 }

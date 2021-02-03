@@ -39,6 +39,7 @@ import ch.deletescape.lawnchair.override.CustomInfoProvider
 import ch.deletescape.lawnchair.runOnMainThread
 import ch.deletescape.lawnchair.util.extensions.d
 import com.android.launcher3.*
+import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.util.ComponentKey
 import java.util.*
 import kotlin.collections.HashMap

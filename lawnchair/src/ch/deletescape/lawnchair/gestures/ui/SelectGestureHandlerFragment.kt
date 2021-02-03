@@ -36,10 +36,10 @@ class SelectGestureHandlerFragment : PreferenceDialogFragmentCompat() {
 
     private val requestCode = "config".hashCode() and 65535
 
-    private val key by lazy { arguments!!.getString("key") }
-    private val value by lazy { arguments!!.getString("value") }
-    private val isSwipeUp by lazy { arguments!!.getBoolean("isSwipeUp") }
-    private val currentClass by lazy { GestureController.getClassName(value) }
+    private val key by lazy { requireArguments().getString("key") }
+    private val value by lazy { requireArguments().getString("value") }
+    private val isSwipeUp by lazy { requireArguments().getBoolean("isSwipeUp") }
+    private val currentClass by lazy { value?.let { GestureController.getClassName(it) } }
 
     private var selectedHandler: GestureHandler? = null
 
@@ -47,11 +47,12 @@ class SelectGestureHandlerFragment : PreferenceDialogFragmentCompat() {
         super.onBindDialogView(view)
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.list)
-        recyclerView.adapter = HandlerListAdapter(activity as Context, isSwipeUp, currentClass, ::onSelectHandler)
+        recyclerView.adapter =
+                currentClass?.let { HandlerListAdapter(activity as Context, isSwipeUp, it, ::onSelectHandler) }
         recyclerView.layoutManager = LinearLayoutManager(activity)
     }
 
-    fun onSelectHandler(handler: GestureHandler) {
+    private fun onSelectHandler(handler: GestureHandler) {
         selectedHandler = handler
         if (handler.configIntent != null) {
             startActivityForResult(handler.configIntent, requestCode)
