@@ -72,9 +72,6 @@ public final class FeatureFlags {
             "PROMISE_APPS_NEW_INSTALLS", true,
             "Adds a promise icon to the home screen for new install sessions.");
 
-    public static final BooleanFlag APPLY_CONFIG_AT_RUNTIME = getDebugFlag(
-            "APPLY_CONFIG_AT_RUNTIME", true, "Apply display changes dynamically");
-
     public static final BooleanFlag QUICKSTEP_SPRINGS = getDebugFlag(
             "QUICKSTEP_SPRINGS", true, "Enable springs for quickstep animations");
 
@@ -133,9 +130,6 @@ public final class FeatureFlags {
             "ASSISTANT_GIVES_LAUNCHER_FOCUS", false,
             "Allow Launcher to handle nav bar gestures while Assistant is running over it");
 
-    public static final BooleanFlag ENABLE_HYBRID_HOTSEAT = getDebugFlag(
-            "ENABLE_HYBRID_HOTSEAT", true, "Fill gaps in hotseat with predicted apps");
-
     public static final BooleanFlag HOTSEAT_MIGRATE_TO_FOLDER = getDebugFlag(
             "HOTSEAT_MIGRATE_TO_FOLDER", false, "Should move hotseat items into a folder");
 
@@ -174,10 +168,6 @@ public final class FeatureFlags {
             "ENABLE_SMARTSPACE_ENHANCED", false,
             "Replace Smartspace with the enhanced version. "
               + "Ignored if ENABLE_SMARTSPACE_UNIVERSAL is enabled.");
-
-    public static final BooleanFlag ENABLE_SYSTEM_VELOCITY_PROVIDER = getDebugFlag(
-            "ENABLE_SYSTEM_VELOCITY_PROVIDER", true,
-            "Use system VelocityTracker's algorithm for motion pause detection.");
 
     public static final BooleanFlag ALWAYS_USE_HARDWARE_OPTIMIZATION_FOR_FOLDER_ANIMATIONS =
             getDebugFlag(
