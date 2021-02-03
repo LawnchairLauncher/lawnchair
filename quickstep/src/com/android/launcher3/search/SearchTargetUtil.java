@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.android.launcher3.search;
 
-import static com.android.app.search.LayoutType.ICON_DOUBLE_HORIZONTAL_TEXT;
-import static com.android.app.search.LayoutType.ICON_SINGLE_HORIZONTAL_TEXT;
+import static com.android.app.search.LayoutType.DIVIDER;
+import static com.android.app.search.LayoutType.ICON_HORIZONTAL_TEXT;
+import static com.android.app.search.LayoutType.SMALL_ICON_HORIZONTAL_TEXT;
 import static com.android.app.search.LayoutType.THUMBNAIL;
 import static com.android.app.search.ResultType.ACTION;
 import static com.android.app.search.ResultType.SCREENSHOT;
@@ -54,17 +56,17 @@ public class SearchTargetUtil {
 
 
     /**
-     * Generate SearchTargetUtil for ICON_DOUBLE_HORIZONTAL_TEXT layout type.
+     * Generate SearchTargetUtil for ICON_HORIZONTAL_TEXT layout type.
      *
      * targets.add(SearchTargetUtil.generateIconDoubleHorizontalText_SearchAction(
      * mContext, "red", Color.RED));
      * targets.add(SearchTargetUtil.generateIconDoubleHorizontalText_SearchAction(
      * mContext, "yellow", Color.YELLOW));
      */
-    public static SearchTarget generateIconDoubleHorizontalText_SearchAction(
+    public static SearchTarget generateIcoHorizontalText_usingSearchAction(
             Context context, String id, int color) {
         SearchTarget.Builder builder =
-                new SearchTarget.Builder(ACTION, ICON_DOUBLE_HORIZONTAL_TEXT, id)
+                new SearchTarget.Builder(ACTION, ICON_HORIZONTAL_TEXT, id)
                         .setPackageName(PACKAGE2) /* required */
                         .setUserHandle(USERHANDLE); /* required */
 
@@ -102,7 +104,7 @@ public class SearchTargetUtil {
      * targets.add(SearchTargetUtil.generateThumbnail_SearchAction("red", Color.RED));
      * targets.add(SearchTargetUtil.generateThumbnail_SearchAction("green", Color.GREEN));
      */
-    public static SearchTarget generateThumbnail_SearchAction(String id, int color) {
+    public static SearchTarget generateThumbnail_usingSearchAction(String id, int color) {
         SearchTarget.Builder builder =
                 new SearchTarget.Builder(SCREENSHOT, THUMBNAIL, id)
                         .setPackageName(PACKAGE2) /* required */
@@ -130,16 +132,19 @@ public class SearchTargetUtil {
     }
 
     /**
+     * Generate SearchTargetUtil for SMALL_ICON_HORIZONTAL_TEXT layout type.
+     *
      * targets.add(SearchTargetUtil.generateIconHorizontalText_SearchAction(
      * mContext, "red", Color.RED));
      * targets.add(SearchTargetUtil.generateIconHorizontalText_SearchAction(
      * mContext, "yellow", Color.YELLOW));
      */
-    public static SearchTarget generateIconHorizontalText_SearchAction(
+    public static SearchTarget generateSmallIconHorizontalText_usingSearchAction(
             Context context, String id, int color) {
-        String fallbackQuery = "How to make cookie";
+        String title = "Ask the assistant";
+        String fallbackQuery = "sourdough bread";
         SearchTarget.Builder builder =
-                new SearchTarget.Builder(SUGGEST, ICON_SINGLE_HORIZONTAL_TEXT, id)
+                new SearchTarget.Builder(SUGGEST, SMALL_ICON_HORIZONTAL_TEXT, id)
                         .setPackageName(PACKAGE2) /* required */
                         .setUserHandle(USERHANDLE); /* required */
 
@@ -159,12 +164,21 @@ public class SearchTargetUtil {
         Bundle extra = new Bundle();
         extra.putBoolean(BUNDLE_EXTRA_SHOULD_START_FOR_RESULT, true);
 
-        SearchAction searchAction = new SearchAction.Builder(id, fallbackQuery)
+        SearchAction searchAction = new SearchAction.Builder(id, title)
+                .setSubtitle(fallbackQuery)
                 .setPendingIntent(pendingIntent3)
                 .setIcon(icon)
                 .setExtras(extra)
                 .build();
         return builder.setSearchAction(searchAction).build();
+    }
+
+    public static SearchTarget generateDivider() {
+        SearchTarget.Builder builder =
+                new SearchTarget.Builder(SUGGEST, DIVIDER, "divider")
+                        .setPackageName("") /* required but not used*/
+                        .setUserHandle(USERHANDLE); /* required */
+        return builder.build();
     }
 
 
@@ -174,7 +188,7 @@ public class SearchTargetUtil {
     public static SearchTarget generateIconDoubleHorizontalText_ShortcutInfo(Context context) {
         String id = "23456";
         SearchTarget.Builder builder =
-                new SearchTarget.Builder(ResultType.SHORTCUT, ICON_DOUBLE_HORIZONTAL_TEXT, id)
+                new SearchTarget.Builder(ResultType.SHORTCUT, SMALL_ICON_HORIZONTAL_TEXT, id)
                         .setPackageName("com.google.android.gm") /* required */
                         .setUserHandle(UserHandle.CURRENT); /* required */
 
