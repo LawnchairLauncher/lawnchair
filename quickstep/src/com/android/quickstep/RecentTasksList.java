@@ -127,17 +127,6 @@ public class RecentTasksList extends TaskStackChangeListener {
     }
 
     @Override
-    public void onRecentTaskListUpdated() {
-        // In some cases immediately after booting, the tasks in the system recent task list may be
-        // loaded, but not in the active task hierarchy in the system.  These tasks are displayed in 
-        // overview, but removing them don't result in a onTaskStackChanged() nor a onTaskRemoved()
-        // callback (those are for changes to the active tasks), but the task list is still updated,
-        // so we should also invalidate the change id to ensure we load a new list instead of 
-        // reusing a stale list.
-        invalidateLoadedTasks();
-    }
-
-    @Override
     public void onTaskRemoved(int taskId) {
         invalidateLoadedTasks();
     }
@@ -164,7 +153,7 @@ public class RecentTasksList extends TaskStackChangeListener {
      */
     @VisibleForTesting
     TaskLoadResult loadTasksInBackground(int numTasks, int requestId, boolean loadKeysOnly) {
-        int currentUserId = Process.myUserHandle().getIdentifier();
+        int currentUserId = Process.myUid();
         List<ActivityManager.RecentTaskInfo> rawTasks =
                 mActivityManagerWrapper.getRecentTasks(numTasks, currentUserId);
         // The raw tasks are given in most-recent to least-recent order, we need to reverse it
