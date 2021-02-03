@@ -1616,6 +1616,11 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         return false;
     }
 
+    @Override
+    public boolean canInterceptEventsInSystemGestureRegion() {
+        return true;
+    }
+
     /**
      * Alternative to using {@link #getClipToOutline()} as it only works with derivatives of
      * rounded rect.

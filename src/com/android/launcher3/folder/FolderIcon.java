@@ -754,6 +754,9 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     }
 
     public void clearLeaveBehindIfExists() {
+        if (!(getLayoutParams() instanceof CellLayout.LayoutParams)) {
+            return;
+        }
         ((CellLayout.LayoutParams) getLayoutParams()).canReorder = true;
         if (isInHotseat()) {
             CellLayout cl = (CellLayout) getParent().getParent();
@@ -762,6 +765,9 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     }
 
     public void drawLeaveBehindIfExists() {
+        if (!(getLayoutParams() instanceof CellLayout.LayoutParams)) {
+            return;
+        }
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) getLayoutParams();
         // While the folder is open, the position of the icon cannot change.
         lp.canReorder = false;

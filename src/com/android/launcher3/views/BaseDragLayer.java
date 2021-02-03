@@ -206,13 +206,17 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
 
     protected boolean findActiveController(MotionEvent ev) {
         mActiveController = null;
-        if ((mTouchDispatchState & (TOUCH_DISPATCHING_FROM_VIEW_GESTURE_REGION
-                | TOUCH_DISPATCHING_FROM_PROXY)) == 0) {
-            // Only look for controllers if we are not dispatching from gesture area and proxy is
-            // not active
+        if (canFindActiveController()) {
             mActiveController = findControllerToHandleTouch(ev);
         }
         return mActiveController != null;
+    }
+
+    protected boolean canFindActiveController() {
+        // Only look for controllers if we are not dispatching from gesture area and proxy is
+        // not active
+        return (mTouchDispatchState & (TOUCH_DISPATCHING_FROM_VIEW_GESTURE_REGION
+                | TOUCH_DISPATCHING_FROM_PROXY)) == 0;
     }
 
     @Override
