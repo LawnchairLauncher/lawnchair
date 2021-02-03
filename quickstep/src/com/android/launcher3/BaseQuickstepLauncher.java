@@ -265,6 +265,11 @@ public abstract class BaseQuickstepLauncher extends Launcher
     }
 
     @Override
+    public boolean isViewInTaskbar(View v) {
+        return mTaskbarController != null && mTaskbarController.isViewInTaskbar(v);
+    }
+
+    @Override
     public void useFadeOutAnimationForLauncherStart(CancellationSignal signal) {
         QuickstepAppTransitionManagerImpl appTransitionManager =
                 (QuickstepAppTransitionManagerImpl) getAppTransitionManager();
@@ -350,6 +355,10 @@ public abstract class BaseQuickstepLauncher extends Launcher
         // populating workspace.
         // TODO: Find a better place for this
         WellbeingModel.INSTANCE.get(this);
+
+        if (mTaskbarController != null) {
+            mTaskbarController.onHotseatUpdated();
+        }
     }
 
     @Override

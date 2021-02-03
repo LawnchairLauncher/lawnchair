@@ -14,18 +14,4 @@
      limitations under the License.
 -->
 
-<com.android.launcher3.taskbar.TaskbarContainerView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/taskbar_container"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
-
-    <com.android.launcher3.taskbar.TaskbarView
-        android:id="@+id/taskbar_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/taskbar_background"
-        android:gravity="center"
-        android:animateLayoutChanges="true"/>
-
-</com.android.launcher3.taskbar.TaskbarContainerView>
+<com.android.launcher3.views.DoubleShadowBubbleTextView style="@style/BaseIcon.Workspace.Taskbar" />

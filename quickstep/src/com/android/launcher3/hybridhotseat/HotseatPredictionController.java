@@ -37,7 +37,6 @@ import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -75,7 +74,7 @@ public class HotseatPredictionController implements DragController.DragListener,
 
     private int mHotSeatItemsCount;
 
-    private Launcher mLauncher;
+    private QuickstepLauncher mLauncher;
     private final Hotseat mHotseat;
 
     private List<ItemInfo> mPredictedItems = Collections.emptyList();
@@ -108,7 +107,7 @@ public class HotseatPredictionController implements DragController.DragListener,
         return true;
     };
 
-    public HotseatPredictionController(Launcher launcher) {
+    public HotseatPredictionController(QuickstepLauncher launcher) {
         mLauncher = launcher;
         mHotseat = launcher.getHotseat();
         mHotSeatItemsCount = mLauncher.getDeviceProfile().inv.numHotseatIcons;
@@ -229,6 +228,10 @@ public class HotseatPredictionController implements DragController.DragListener,
         } else {
             if (callback != null) callback.run();
         }
+
+        if (mLauncher.getTaskbarController() != null) {
+            mLauncher.getTaskbarController().onHotseatUpdated();
+        }
     }
 
     /**
@@ -242,6 +245,10 @@ public class HotseatPredictionController implements DragController.DragListener,
      * start and pauses predicted apps update on the hotseat
      */
     public void setPauseUIUpdate(boolean paused) {
+        if (mLauncher.getTaskbarController() != null) {
+            // Taskbar is present, always allow updates since hotseat is still visible.
+            return;
+        }
         mUIUpdatePaused = paused;
         if (!paused) {
             fillGapsWithPrediction();
