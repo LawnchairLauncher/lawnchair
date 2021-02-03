@@ -43,11 +43,8 @@ public abstract class RemoteAnimationProvider {
             }
 
             @Override
-            public void onCreateAnimation(int transit,
-                    RemoteAnimationTargetCompat[] appTargets,
-                    RemoteAnimationTargetCompat[] wallpaperTargets,
-                    RemoteAnimationTargetCompat[] nonApps,
-                    AnimationResult result) {
+            public void onCreateAnimation(RemoteAnimationTargetCompat[] appTargets,
+                    RemoteAnimationTargetCompat[] wallpaperTargets, AnimationResult result) {
                 result.setAnimation(createWindowAnimation(appTargets, wallpaperTargets), context);
             }
         };
