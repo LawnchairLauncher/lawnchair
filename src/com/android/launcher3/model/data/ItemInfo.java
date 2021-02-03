@@ -352,7 +352,10 @@ public class ItemInfo {
         return itemBuilder;
     }
 
-    protected ContainerInfo getContainerInfo() {
+    /**
+     * Returns {@link ContainerInfo} used when logging this item.
+     */
+    public ContainerInfo getContainerInfo() {
         switch (container) {
             case CONTAINER_HOTSEAT:
                 return ContainerInfo.newBuilder()
