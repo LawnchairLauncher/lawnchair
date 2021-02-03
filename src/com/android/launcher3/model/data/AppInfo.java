@@ -27,15 +27,12 @@ import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
 import android.os.UserManager;
-
+import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
-
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageManagerHelper;
-
 import java.util.Comparator;
 
 /**
@@ -150,6 +147,7 @@ public class AppInfo extends ItemInfoWithIcon {
         }
     }
 
+    @NonNull
     @Override
     public AppInfo clone() {
         return new AppInfo(this);
