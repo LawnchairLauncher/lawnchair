@@ -24,6 +24,8 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_MODAL_TASK;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
+import static com.android.launcher3.logger.LauncherAtom.ContainerInfo.ContainerCase.EXTENDED_CONTAINERS;
+import static com.android.launcher3.logger.LauncherAtomExtensions.ExtendedContainers.ContainerCase.DEVICE_SEARCH_RESULT_CONTAINER;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_TAP;
 import static com.android.launcher3.testing.TestProtocol.HINT_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.OVERVIEW_STATE_ORDINAL;
@@ -81,6 +83,7 @@ import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 public class QuickstepLauncher extends BaseQuickstepLauncher {
@@ -105,6 +108,15 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
 
     @Override
     protected void logAppLaunch(ItemInfo info, InstanceId instanceId) {
+        // If the app launch is from DeviceSearchResultContainer then add the InstanceId from
+        // LiveSearchManager to recreate the AllApps search session on the server side.
+        Optional<InstanceId> logInstanceId = this.getLiveSearchManager().getLogInstanceId();
+        if (info.getContainerInfo().getContainerCase() == EXTENDED_CONTAINERS
+                && info.getContainerInfo().getExtendedContainers().getContainerCase()
+                == DEVICE_SEARCH_RESULT_CONTAINER && logInstanceId.isPresent()) {
+            instanceId = logInstanceId.get();
+        }
+
         StatsLogger logger = getStatsLogManager()
                 .logger().withItemInfo(info).withInstanceId(instanceId);
 

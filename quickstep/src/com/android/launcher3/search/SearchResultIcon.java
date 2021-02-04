@@ -49,6 +49,9 @@ import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.icons.LauncherIcons;
+import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
+import com.android.launcher3.logger.LauncherAtomExtensions.DeviceSearchResultContainer;
+import com.android.launcher3.logger.LauncherAtomExtensions.ExtendedContainers;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.PackageItemInfo;
@@ -142,8 +145,14 @@ public class SearchResultIcon extends BubbleTextView implements
 
         SearchActionItemInfo itemInfo = new SearchActionItemInfo(searchAction.getIcon(),
                 searchTarget.getPackageName(), searchTarget.getUserHandle(),
-                searchAction.getTitle()
-        );
+                searchAction.getTitle()) {
+            // Workaround to log ItemInfo with DeviceSearchResultContainer without
+            // updating ItemInfo.container field.
+            @Override
+            public ContainerInfo getContainerInfo() {
+                return buildDeviceSearchResultContainer();
+            }
+        };
         itemInfo.setIntent(searchAction.getIntent());
         itemInfo.setPendingIntent(searchAction.getPendingIntent());
 
@@ -243,7 +252,15 @@ public class SearchResultIcon extends BubbleTextView implements
 
     private void prepareUsingApp(ComponentName componentName, UserHandle userHandle) {
         AllAppsStore appsStore = mLauncher.getAppsView().getAppsStore();
-        AppInfo appInfo = appsStore.getApp(new ComponentKey(componentName, userHandle));
+        AppInfo appInfo = new AppInfo(
+                appsStore.getApp(new ComponentKey(componentName, userHandle))) {
+            // Workaround to log ItemInfo with DeviceSearchResultContainer without
+            // updating ItemInfo.container field.
+            @Override
+            public ContainerInfo getContainerInfo() {
+                return buildDeviceSearchResultContainer();
+            }
+        };
 
         if (appInfo == null) {
             setVisibility(GONE);
@@ -253,9 +270,15 @@ public class SearchResultIcon extends BubbleTextView implements
         notifyItemInfoChanged(appInfo);
     }
 
-
     private void prepareUsingShortcutInfo(ShortcutInfo shortcutInfo) {
-        WorkspaceItemInfo workspaceItemInfo = new WorkspaceItemInfo(shortcutInfo, getContext());
+        WorkspaceItemInfo workspaceItemInfo = new WorkspaceItemInfo(shortcutInfo, getContext()) {
+            // Workaround to log ItemInfo with DeviceSearchResultContainer without
+            // updating ItemInfo.container field.
+            @Override
+            public ContainerInfo getContainerInfo() {
+                return buildDeviceSearchResultContainer();
+            }
+        };
         notifyItemInfoChanged(workspaceItemInfo);
         LauncherAppState launcherAppState = LauncherAppState.getInstance(getContext());
         MODEL_EXECUTOR.execute(() -> {
@@ -292,5 +315,15 @@ public class SearchResultIcon extends BubbleTextView implements
             mOnItemInfoChanged.accept(itemInfoWithIcon);
             mOnItemInfoChanged = null;
         }
+    }
+
+    private static ContainerInfo buildDeviceSearchResultContainer() {
+        return ContainerInfo.newBuilder().setExtendedContainers(
+                ExtendedContainers
+                        .newBuilder()
+                        .setDeviceSearchResultContainer(
+                                DeviceSearchResultContainer
+                                        .newBuilder()))
+                .build();
     }
 }

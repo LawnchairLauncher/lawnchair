@@ -16,6 +16,7 @@
 
 package com.android.quickstep.logging;
 
+import static com.android.launcher3.logger.LauncherAtom.ContainerInfo.ContainerCase.EXTENDED_CONTAINERS;
 import static com.android.launcher3.logger.LauncherAtom.ContainerInfo.ContainerCase.FOLDER;
 import static com.android.launcher3.logger.LauncherAtom.ContainerInfo.ContainerCase.SEARCH_RESULT_CONTAINER;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WORKSPACE_SNAPSHOT;
@@ -72,6 +73,7 @@ public class StatsLogCompatManager extends StatsLogManager {
     private static final int DEFAULT_PAGE_INDEX = -2;
     private static final int FOLDER_HIERARCHY_OFFSET = 100;
     private static final int SEARCH_RESULT_HIERARCHY_OFFSET = 200;
+    private static final int EXTENDED_CONTAINERS_HIERARCHY_OFFSET = 300;
 
     public static final CopyOnWriteArrayList<StatsLogConsumer> LOGS_CONSUMER =
             new CopyOnWriteArrayList<>();
@@ -397,6 +399,9 @@ public class StatsLogCompatManager extends StatsLogManager {
         } else if (info.getContainerInfo().getContainerCase() == SEARCH_RESULT_CONTAINER) {
             return info.getContainerInfo().getSearchResultContainer().getParentContainerCase()
                     .getNumber() + SEARCH_RESULT_HIERARCHY_OFFSET;
+        } else if (info.getContainerInfo().getContainerCase() == EXTENDED_CONTAINERS) {
+            return info.getContainerInfo().getExtendedContainers().getContainerCase().getNumber()
+                    + EXTENDED_CONTAINERS_HIERARCHY_OFFSET;
         } else {
             return info.getContainerInfo().getContainerCase().getNumber();
         }
