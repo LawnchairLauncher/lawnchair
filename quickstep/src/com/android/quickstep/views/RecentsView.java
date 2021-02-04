@@ -2277,7 +2277,9 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     }
 
     public void redrawLiveTile() {
-        mLiveTileTaskViewSimulator.apply(mLiveTileParams);
+        if (mLiveTileParams.getTargetSet() != null) {
+            mLiveTileTaskViewSimulator.apply(mLiveTileParams);
+        }
     }
 
     public TaskViewSimulator getLiveTileTaskViewSimulator() {
