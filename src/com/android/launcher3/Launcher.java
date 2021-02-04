@@ -98,13 +98,9 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.CallSuper;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.annotation.VisibleForTesting;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.LifecycleRegistry;
 
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
@@ -211,8 +207,7 @@ import java.util.stream.Stream;
  * Default launcher application.
  */
 public class Launcher extends StatefulActivity<LauncherState> implements LauncherExterns,
-        Callbacks, InvariantDeviceProfile.OnIDPChangeListener, PluginListener<OverlayPlugin>,
-        LifecycleOwner {
+        Callbacks, InvariantDeviceProfile.OnIDPChangeListener, PluginListener<OverlayPlugin> {
     public static final String TAG = "Launcher";
 
     public static final ActivityTracker<Launcher> ACTIVITY_TRACKER = new ActivityTracker<>();
@@ -274,8 +269,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
     private LauncherAppTransitionManager mAppTransitionManager;
     private Configuration mOldConfig;
-
-    private LifecycleRegistry mLifecycleRegistry;
 
     private LiveSearchManager mLiveSearchManager;
 
@@ -392,11 +385,11 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         mIconCache = app.getIconCache();
         mAccessibilityDelegate = new LauncherAccessibilityDelegate(this);
 
-        mLiveSearchManager = new LiveSearchManager(this);
-
         mDragController = new DragController(this);
         mAllAppsController = new AllAppsTransitionController(this);
         mStateManager = new StateManager<>(this, NORMAL);
+
+        mLiveSearchManager = new LiveSearchManager(this);
 
         mOnboardingPrefs = createOnboardingPrefs(mSharedPrefs);
 
@@ -486,15 +479,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         if (Utilities.ATLEAST_R) {
             getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         }
-
-        mLifecycleRegistry = new LifecycleRegistry(this);
-        mLifecycleRegistry.setCurrentState(Lifecycle.State.CREATED);
-    }
-
-    @NonNull
-    @Override
-    public Lifecycle getLifecycle() {
-        return mLifecycleRegistry;
     }
 
     public LiveSearchManager getLiveSearchManager() {
@@ -913,7 +897,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
     @Override
     protected void onStop() {
-        mLifecycleRegistry.setCurrentState(Lifecycle.State.CREATED);
         super.onStop();
         if (mDeferOverlayCallbacks) {
             checkIfOverlayStillDeferred();
@@ -937,7 +920,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
         mAppWidgetHost.setListenIfResumed(true);
         TraceHelper.INSTANCE.endSection(traceToken);
-        mLifecycleRegistry.setCurrentState(Lifecycle.State.STARTED);
     }
 
     @Override
@@ -1091,7 +1073,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         }
 
         TraceHelper.INSTANCE.endSection(traceToken);
-        mLifecycleRegistry.setCurrentState(Lifecycle.State.RESUMED);
     }
 
     @Override
@@ -1099,7 +1080,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         // Ensure that items added to Launcher are queued until Launcher returns
         ItemInstallQueue.INSTANCE.get(this).pauseModelPush(FLAG_ACTIVITY_PAUSED);
 
-        mLifecycleRegistry.setCurrentState(Lifecycle.State.STARTED);
         super.onPause();
         mDragController.cancelDrag();
         mLastTouchUpTime = -1;
@@ -1598,7 +1578,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         mAppTransitionManager.unregisterRemoteAnimations();
         mAppTransitionManager.unregisterRemoteTransitions();
         mUserChangedCallbackCloseable.close();
-        mLifecycleRegistry.setCurrentState(Lifecycle.State.DESTROYED);
         mLiveSearchManager.stop();
     }
 
