@@ -15,28 +15,22 @@
  */
 package com.android.launcher3.search;
 
-import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
-import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
-
 import android.app.search.SearchTarget;
 import android.app.search.SearchTargetEvent;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.LiveData;
-import androidx.slice.Slice;
 import androidx.slice.SliceItem;
 import androidx.slice.widget.EventInfo;
 import androidx.slice.widget.SliceView;
 
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.model.data.PackageItemInfo;
+import com.android.launcher3.util.SafeCloseable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,13 +41,11 @@ import java.util.List;
 public class SearchResultIconSlice extends LinearLayout implements SearchTargetHandler,
         SliceView.OnSliceActionListener {
 
-    private static final String TAG = "SearchSliceController";
-
     private final Launcher mLauncher;
 
     private SliceView mSliceView;
     private SearchResultIcon mIcon;
-    private LiveData<Slice> mSliceLiveData;
+    private SafeCloseable mSliceSession;
     private String mTargetId;
 
     public SearchResultIconSlice(Context context) {
@@ -87,26 +79,20 @@ public class SearchResultIconSlice extends LinearLayout implements SearchTargetH
         mTargetId = parentTarget.getId();
         reset();
         updateIcon(parentTarget, children);
-        try {
-            mSliceLiveData = mLauncher.getLiveSearchManager().getSliceForUri(
-                    parentTarget.getSliceUri());
-            mSliceLiveData.observe(mLauncher, mSliceView);
-        } catch (Exception ex) {
-            Log.e(TAG, "unable to bind slice", ex);
-        }
+        mSliceSession = mLauncher.getLiveSearchManager()
+                .addObserver(parentTarget.getSliceUri(), mSliceView);
     }
 
     private void updateIcon(SearchTarget parentTarget, List<SearchTarget> children) {
         if (children.size() == 1) {
             mIcon.apply(children.get(0), new ArrayList<>());
         } else {
-            LauncherAppState appState = LauncherAppState.getInstance(getContext());
-            MODEL_EXECUTOR.post(() -> {
-                PackageItemInfo pkgItem = new PackageItemInfo(parentTarget.getPackageName());
-                pkgItem.user = parentTarget.getUserHandle();
-                appState.getIconCache().getTitleAndIconForApp(pkgItem, false);
-                MAIN_EXECUTOR.post(() -> mIcon.applyFromItemInfoWithIcon(pkgItem));
-            });
+            PackageItemInfo pkgItem = new PackageItemInfo(parentTarget.getPackageName());
+            pkgItem.user = parentTarget.getUserHandle();
+            if (!pkgItem.equals(mIcon.getTag())) {
+                // The icon will load and apply high res icon automatically
+                mIcon.applyFromItemInfoWithIcon(pkgItem);
+            }
         }
     }
 
@@ -124,8 +110,8 @@ public class SearchResultIconSlice extends LinearLayout implements SearchTargetH
 
     private void reset() {
         mSliceView.setOnSliceActionListener(null);
-        if (mSliceLiveData != null) {
-            mSliceLiveData.removeObservers(mLauncher);
+        if (mSliceSession != null) {
+            mSliceSession.close();
         }
     }
 
