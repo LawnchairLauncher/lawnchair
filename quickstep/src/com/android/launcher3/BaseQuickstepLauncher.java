@@ -355,10 +355,6 @@ public abstract class BaseQuickstepLauncher extends Launcher
         // populating workspace.
         // TODO: Find a better place for this
         WellbeingModel.INSTANCE.get(this);
-
-        if (mTaskbarController != null) {
-            mTaskbarController.onHotseatUpdated();
-        }
     }
 
     @Override

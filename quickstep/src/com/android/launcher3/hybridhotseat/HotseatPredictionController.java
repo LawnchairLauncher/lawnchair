@@ -20,6 +20,7 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.hybridhotseat.HotseatEduController.getSettingsIntent;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOTSEAT_PREDICTION_PINNED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOTSEAT_RANKED;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -70,7 +71,11 @@ import java.util.stream.Collectors;
  */
 public class HotseatPredictionController implements DragController.DragListener,
         SystemShortcut.Factory<QuickstepLauncher>, InvariantDeviceProfile.OnIDPChangeListener,
-        DragSource {
+        DragSource, ViewGroup.OnHierarchyChangeListener {
+
+    private static final int FLAG_UPDATE_PAUSED = 1 << 0;
+    private static final int FLAG_DRAG_IN_PROGRESS = 1 << 1;
+    private static final int FLAG_FILL_IN_PROGRESS = 1 << 2;
 
     private int mHotSeatItemsCount;
 
@@ -80,8 +85,7 @@ public class HotseatPredictionController implements DragController.DragListener,
     private List<ItemInfo> mPredictedItems = Collections.emptyList();
 
     private AnimatorSet mIconRemoveAnimators;
-    private boolean mUIUpdatePaused = false;
-    private boolean mDragInProgress = false;
+    private int mPauseFlags = 0;
 
     private List<PredictedAppIcon.PredictedIconOutlineDrawing> mOutlineDrawings = new ArrayList<>();
 
@@ -114,6 +118,30 @@ public class HotseatPredictionController implements DragController.DragListener,
         mLauncher.getDragController().addDragListener(this);
 
         launcher.getDeviceProfile().inv.addOnChangeListener(this);
+        mHotseat.getShortcutsAndWidgets().setOnHierarchyChangeListener(this);
+    }
+
+    @Override
+    public void onChildViewAdded(View parent, View child) {
+        onHotseatHierarchyChanged();
+    }
+
+    @Override
+    public void onChildViewRemoved(View parent, View child) {
+        onHotseatHierarchyChanged();
+    }
+
+    private void onHotseatHierarchyChanged() {
+        if (mPauseFlags == 0 && !mLauncher.isWorkspaceLoading()) {
+            // Post update after a single frame to avoid layout within layout
+            MAIN_EXECUTOR.getHandler().post(this::updateFillIfNotLoading);
+        }
+    }
+
+    private void updateFillIfNotLoading() {
+        if (mPauseFlags == 0 && !mLauncher.isWorkspaceLoading()) {
+            fillGapsWithPrediction(true);
+        }
     }
 
     /**
@@ -160,11 +188,11 @@ public class HotseatPredictionController implements DragController.DragListener,
     }
 
     private void fillGapsWithPrediction() {
-        fillGapsWithPrediction(false, null);
+        fillGapsWithPrediction(false);
     }
 
-    private void fillGapsWithPrediction(boolean animate, Runnable callback) {
-        if (mUIUpdatePaused || mDragInProgress) {
+    private void fillGapsWithPrediction(boolean animate) {
+        if (mPauseFlags != 0) {
             return;
         }
 
@@ -175,12 +203,14 @@ public class HotseatPredictionController implements DragController.DragListener,
             mIconRemoveAnimators.addListener(new AnimationSuccessListener() {
                 @Override
                 public void onAnimationSuccess(Animator animator) {
-                    fillGapsWithPrediction(animate, callback);
+                    fillGapsWithPrediction(animate);
                     mIconRemoveAnimators.removeListener(this);
                 }
             });
             return;
         }
+
+        mPauseFlags |= FLAG_FILL_IN_PROGRESS;
         for (int rank = 0; rank < mHotSeatItemsCount; rank++) {
             View child = mHotseat.getChildAt(
                     mHotseat.getCellXFromOrder(rank),
@@ -207,10 +237,12 @@ public class HotseatPredictionController implements DragController.DragListener,
             }
             preparePredictionInfo(predictedItem, rank);
         }
-        bindItems(newItems, animate, callback);
+        bindItems(newItems, animate);
+
+        mPauseFlags &= ~FLAG_FILL_IN_PROGRESS;
     }
 
-    private void bindItems(List<WorkspaceItemInfo> itemsToAdd, boolean animate, Runnable callback) {
+    private void bindItems(List<WorkspaceItemInfo> itemsToAdd, boolean animate) {
         AnimatorSet animationSet = new AnimatorSet();
         for (WorkspaceItemInfo item : itemsToAdd) {
             PredictedAppIcon icon = PredictedAppIcon.createIcon(mHotseat, item);
@@ -221,18 +253,27 @@ public class HotseatPredictionController implements DragController.DragListener,
             }
         }
         if (animate) {
-            if (callback != null) {
-                animationSet.addListener(AnimationSuccessListener.forRunnable(callback));
-            }
+            animationSet.addListener(AnimationSuccessListener
+                    .forRunnable(this::removeOutlineDrawings));
             animationSet.start();
         } else {
-            if (callback != null) callback.run();
+            removeOutlineDrawings();
         }
 
         if (mLauncher.getTaskbarController() != null) {
             mLauncher.getTaskbarController().onHotseatUpdated();
         }
     }
+
+    private void removeOutlineDrawings() {
+        if (mOutlineDrawings.isEmpty()) return;
+        for (PredictedAppIcon.PredictedIconOutlineDrawing outlineDrawing : mOutlineDrawings) {
+            mHotseat.removeDelegatedCellDrawing(outlineDrawing);
+        }
+        mHotseat.invalidate();
+        mOutlineDrawings.clear();
+    }
+
 
     /**
      * Unregisters callbacks and frees resources
@@ -245,11 +286,9 @@ public class HotseatPredictionController implements DragController.DragListener,
      * start and pauses predicted apps update on the hotseat
      */
     public void setPauseUIUpdate(boolean paused) {
-        if (mLauncher.getTaskbarController() != null) {
-            // Taskbar is present, always allow updates since hotseat is still visible.
-            return;
-        }
-        mUIUpdatePaused = paused;
+        mPauseFlags = paused
+                ? (mPauseFlags | FLAG_UPDATE_PAUSED)
+                : (mPauseFlags & ~FLAG_UPDATE_PAUSED);
         if (!paused) {
             fillGapsWithPrediction();
         }
@@ -365,14 +404,14 @@ public class HotseatPredictionController implements DragController.DragListener,
         for (PredictedAppIcon.PredictedIconOutlineDrawing outlineDrawing : mOutlineDrawings) {
             mHotseat.addDelegatedCellDrawing(outlineDrawing);
         }
-        mDragInProgress = true;
+        mPauseFlags |= FLAG_DRAG_IN_PROGRESS;
         mHotseat.invalidate();
     }
 
     @Override
     public void onDragEnd() {
-        mDragInProgress = false;
-        fillGapsWithPrediction(true, this::removeOutlineDrawings);
+        mPauseFlags &= ~FLAG_DRAG_IN_PROGRESS;
+        fillGapsWithPrediction(true);
     }
 
     @Nullable
@@ -391,15 +430,6 @@ public class HotseatPredictionController implements DragController.DragListener,
         itemInfo.cellX = mHotseat.getCellXFromOrder(rank);
         itemInfo.cellY = mHotseat.getCellYFromOrder(rank);
         itemInfo.screenId = rank;
-    }
-
-    private void removeOutlineDrawings() {
-        if (mOutlineDrawings.isEmpty()) return;
-        for (PredictedAppIcon.PredictedIconOutlineDrawing outlineDrawing : mOutlineDrawings) {
-            mHotseat.removeDelegatedCellDrawing(outlineDrawing);
-        }
-        mHotseat.invalidate();
-        mOutlineDrawings.clear();
     }
 
     @Override
