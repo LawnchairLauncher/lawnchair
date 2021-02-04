@@ -6,8 +6,10 @@ import android.os.Process;
 
 import android.os.UserHandle;
 import com.android.launcher3.*;
-import com.android.launcher3.graphics.DrawableFactory;
+// TODO DrawableFactory deleted in https://android.googlesource.com/platform/packages/apps/Launcher3/+/14168431bd521f1e3ff46c0f46cc02c43a149d31
+//import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.icons.BitmapInfo;
+import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.google.android.apps.nexuslauncher.clock.DynamicClock;
 
 public class DynamicDrawableFactory extends DrawableFactory {
