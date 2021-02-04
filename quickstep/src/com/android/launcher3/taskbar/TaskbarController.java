@@ -23,6 +23,8 @@ import static com.android.systemui.shared.system.WindowManagerWrapper.ITYPE_BOTT
 import static com.android.systemui.shared.system.WindowManagerWrapper.ITYPE_EXTRA_NAVIGATION_BAR;
 
 import android.animation.Animator;
+import android.app.ActivityOptions;
+import android.content.ComponentName;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.view.Gravity;
@@ -42,7 +44,12 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.quickstep.AnimatedFloat;
+import com.android.systemui.shared.recents.model.Task;
+import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.WindowManagerWrapper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Interfaces with Launcher/WindowManager/SystemUI to determine what to show in TaskbarView.
@@ -60,10 +67,16 @@ public class TaskbarController {
     private final TaskbarStateHandler mTaskbarStateHandler;
     private final TaskbarVisibilityController mTaskbarVisibilityController;
     private final TaskbarHotseatController mHotseatController;
+    private final TaskbarRecentsController mRecentsController;
     private final TaskbarDragController mDragController;
 
     // Initialized in init().
     private WindowManager.LayoutParams mWindowLayoutParams;
+
+    // Contains all loaded Tasks, not yet deduped from Hotseat items.
+    private List<Task> mLatestLoadedRecentTasks;
+    // Contains all loaded Hotseat items.
+    private ItemInfo[] mLatestLoadedHotseatItems;
 
     public TaskbarController(BaseQuickstepLauncher launcher,
             TaskbarContainerView taskbarContainerView) {
@@ -79,6 +92,8 @@ public class TaskbarController {
                 createTaskbarVisibilityControllerCallbacks());
         mHotseatController = new TaskbarHotseatController(mLauncher,
                 createTaskbarHotseatControllerCallbacks());
+        mRecentsController = new TaskbarRecentsController(mLauncher,
+                createTaskbarRecentsControllerCallbacks());
         mDragController = new TaskbarDragController(mLauncher);
     }
 
@@ -101,7 +116,16 @@ public class TaskbarController {
         return new TaskbarViewCallbacks() {
             @Override
             public View.OnClickListener getItemOnClickListener() {
-                return ItemClickHandler.INSTANCE;
+                return view -> {
+                    Object tag = view.getTag();
+                    if (tag instanceof Task) {
+                        Task task = (Task) tag;
+                        ActivityManagerWrapper.getInstance().startActivityFromRecents(task.key,
+                                ActivityOptions.makeBasic());
+                    } else {
+                        ItemClickHandler.INSTANCE.onClick(view);
+                    }
+                };
             }
 
             @Override
@@ -116,6 +140,23 @@ public class TaskbarController {
             @Override
             public void updateHotseatItems(ItemInfo[] hotseatItemInfos) {
                 mTaskbarView.updateHotseatItems(hotseatItemInfos);
+                mLatestLoadedHotseatItems = hotseatItemInfos;
+                dedupeAndUpdateRecentItems();
+            }
+        };
+    }
+
+    private TaskbarRecentsControllerCallbacks createTaskbarRecentsControllerCallbacks() {
+        return new TaskbarRecentsControllerCallbacks() {
+            @Override
+            public void updateRecentItems(ArrayList<Task> recentTasks) {
+                mLatestLoadedRecentTasks = recentTasks;
+                dedupeAndUpdateRecentItems();
+            }
+
+            @Override
+            public void updateRecentTaskAtIndex(int taskIndex, Task task) {
+                mTaskbarView.updateRecentTaskAtIndex(taskIndex, task);
             }
         };
     }
@@ -124,11 +165,13 @@ public class TaskbarController {
      * Initializes the Taskbar, including adding it to the screen.
      */
     public void init() {
-        mTaskbarView.init(mHotseatController.getNumHotseatIcons());
+        mTaskbarView.init(mHotseatController.getNumHotseatIcons(),
+                mRecentsController.getNumRecentIcons());
         addToWindowManager();
         mTaskbarStateHandler.setTaskbarCallbacks(createTaskbarStateHandlerCallbacks());
         mTaskbarVisibilityController.init();
         mHotseatController.init();
+        mRecentsController.init();
     }
 
     private TaskbarStateHandlerCallbacks createTaskbarStateHandlerCallbacks() {
@@ -149,6 +192,7 @@ public class TaskbarController {
         mTaskbarStateHandler.setTaskbarCallbacks(null);
         mTaskbarVisibilityController.cleanup();
         mHotseatController.cleanup();
+        mRecentsController.cleanup();
     }
 
     private void removeFromWindowManager() {
@@ -246,6 +290,52 @@ public class TaskbarController {
         return mTaskbarView.isDraggingItem();
     }
 
+    private void dedupeAndUpdateRecentItems() {
+        if (mLatestLoadedRecentTasks == null || mLatestLoadedHotseatItems == null) {
+            return;
+        }
+
+        final int numRecentIcons = mRecentsController.getNumRecentIcons();
+
+        // From most recent to least recently opened.
+        List<Task> dedupedTasksInDescendingOrder = new ArrayList<>();
+        for (int i = mLatestLoadedRecentTasks.size() - 1; i >= 0; i--) {
+            Task task = mLatestLoadedRecentTasks.get(i);
+            boolean isTaskInHotseat = false;
+            for (ItemInfo hotseatItem : mLatestLoadedHotseatItems) {
+                if (hotseatItem == null) {
+                    continue;
+                }
+                ComponentName hotseatActivity = hotseatItem.getTargetComponent();
+                if (hotseatActivity != null && task.key.sourceComponent.getPackageName()
+                        .equals(hotseatActivity.getPackageName())) {
+                    isTaskInHotseat = true;
+                    break;
+                }
+            }
+            if (!isTaskInHotseat) {
+                dedupedTasksInDescendingOrder.add(task);
+                if (dedupedTasksInDescendingOrder.size() == numRecentIcons) {
+                    break;
+                }
+            }
+        }
+
+        // TaskbarView expects an array of all the recent tasks to show, in the order to show them.
+        // So we create an array of the proper size, then fill it in such that the most recent items
+        // are at the end. If there aren't enough elements to fill the array, leave them null.
+        Task[] tasksArray = new Task[numRecentIcons];
+        for (int i = 0; i < tasksArray.length; i++) {
+            Task task = i >= dedupedTasksInDescendingOrder.size()
+                    ? null
+                    : dedupedTasksInDescendingOrder.get(i);
+            tasksArray[tasksArray.length - 1 - i] = task;
+        }
+
+        mTaskbarView.updateRecentTasks(tasksArray);
+        mRecentsController.loadIconsForTasks(tasksArray);
+    }
+
     /**
      * @return Whether the given View is in the same window as Taskbar.
      */
@@ -282,5 +372,13 @@ public class TaskbarController {
      */
     protected interface TaskbarHotseatControllerCallbacks {
         void updateHotseatItems(ItemInfo[] hotseatItemInfos);
+    }
+
+    /**
+     * Contains methods that TaskbarRecentsController can call to interface with TaskbarController.
+     */
+    protected interface TaskbarRecentsControllerCallbacks {
+        void updateRecentItems(ArrayList<Task> recentTasks);
+        void updateRecentTaskAtIndex(int taskIndex, Task task);
     }
 }

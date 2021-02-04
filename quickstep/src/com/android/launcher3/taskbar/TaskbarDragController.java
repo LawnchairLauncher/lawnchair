@@ -25,6 +25,7 @@ import android.content.pm.LauncherApps;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Point;
+import android.os.UserHandle;
 import android.view.DragEvent;
 import android.view.View;
 
@@ -33,6 +34,7 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ClipDescriptionCompat;
 import com.android.systemui.shared.system.LauncherAppsCompat;
 
@@ -102,6 +104,15 @@ public class TaskbarDragController {
                                 item.getIntent().getComponent(), null, item.user));
             }
             intent.putExtra(Intent.EXTRA_USER, item.user);
+        } else if (tag instanceof Task) {
+            Task task = (Task) tag;
+            clipDescription = new ClipDescription(task.titleDescription,
+                    new String[] {
+                            ClipDescriptionCompat.MIMETYPE_APPLICATION_TASK
+                    });
+            intent = new Intent();
+            intent.putExtra(ClipDescriptionCompat.EXTRA_TASK_ID, task.key.id);
+            intent.putExtra(Intent.EXTRA_USER, UserHandle.of(task.key.userId));
         }
 
         if (clipDescription != null && intent != null) {

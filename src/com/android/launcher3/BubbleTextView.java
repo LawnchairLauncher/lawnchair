@@ -359,6 +359,16 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     }
 
     /**
+     * Directly set the icon and label.
+     */
+    @UiThread
+    public void applyIconAndLabel(Drawable icon, CharSequence label) {
+        setIcon(icon);
+        setText(label);
+        setContentDescription(label);
+    }
+
+    /**
      * Overrides the default long press timeout.
      */
     public void setLongPressTimeoutFactor(float longPressTimeoutFactor) {
