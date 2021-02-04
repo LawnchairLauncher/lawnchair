@@ -866,10 +866,8 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         }
 
         @Override
-        public void onCreateAnimation(int transit,
-                RemoteAnimationTargetCompat[] appTargets,
+        public void onCreateAnimation(RemoteAnimationTargetCompat[] appTargets,
                 RemoteAnimationTargetCompat[] wallpaperTargets,
-                RemoteAnimationTargetCompat[] nonAppTargets,
                 LauncherAnimationRunner.AnimationResult result) {
             if (mLauncher.isDestroyed()) {
                 AnimatorSet anim = new AnimatorSet();
@@ -882,8 +880,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                 // If launcher is not resumed, wait until new async-frame after resume
                 mLauncher.addOnResumeCallback(() ->
                         postAsyncCallback(mHandler, () ->
-                                onCreateAnimation(transit, appTargets, wallpaperTargets,
-                                        nonAppTargets, result)));
+                                onCreateAnimation(appTargets, wallpaperTargets, result)));
                 return;
             }
 
@@ -967,10 +964,8 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         }
 
         @Override
-        public void onCreateAnimation(int transit,
-                RemoteAnimationTargetCompat[] appTargets,
+        public void onCreateAnimation(RemoteAnimationTargetCompat[] appTargets,
                 RemoteAnimationTargetCompat[] wallpaperTargets,
-                RemoteAnimationTargetCompat[] nonAppTargets,
                 LauncherAnimationRunner.AnimationResult result) {
             AnimatorSet anim = new AnimatorSet();
 

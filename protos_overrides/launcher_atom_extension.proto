@@ -13,20 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+syntax = "proto2";
 
-package com.android.launcher3;
+option java_package = "com.android.launcher3.logger";
+option java_outer_classname = "LauncherAtomExtensions";
 
-import android.os.Handler;
 
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
+// This proto file contains placeholder messages that can be overridden by
+// other Launcher variants.
+// Variants could have its own launcher_atom_extension.proto file(should have
+// same messages declared here but with different implementation); when building
+// variant's apk launcher_atom.proto will reference variant's extension file,
+// essentially overriding this file.
 
-/**
- * Used with WrappedLauncherAnimationRunner as an interface for the runner to call back to the
- * implementation.
- */
-public interface WrappedAnimationRunnerImpl {
-    Handler getHandler();
-    void onCreateAnimation(RemoteAnimationTargetCompat[] appTargets,
-            RemoteAnimationTargetCompat[] wallpaperTargets,
-            LauncherAnimationRunner.AnimationResult result);
-}
+
+// Wrapper message for additional containers used in variants.
+message ExtendedContainers {}

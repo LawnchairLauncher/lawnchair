@@ -13,20 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+syntax = "proto2";
 
-package com.android.launcher3;
+option java_package = "com.android.launcher3.logger";
+option java_outer_classname = "LauncherAtomExtensions";
 
-import android.os.Handler;
 
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
+// Wrapper message for containers used at the quickstep level.
+// Message name should match with launcher_atom_extension.proto message at
+// the AOSP level.
+message ExtendedContainers {
 
-/**
- * Used with WrappedLauncherAnimationRunner as an interface for the runner to call back to the
- * implementation.
- */
-public interface WrappedAnimationRunnerImpl {
-    Handler getHandler();
-    void onCreateAnimation(RemoteAnimationTargetCompat[] appTargets,
-            RemoteAnimationTargetCompat[] wallpaperTargets,
-            LauncherAnimationRunner.AnimationResult result);
+  oneof Container{
+    DeviceSearchResultContainer device_search_result_container = 1;
+  }
+}
+
+// Represents on-device search result container.
+message DeviceSearchResultContainer{
 }
