@@ -81,7 +81,7 @@ android {
             java.srcDirs = ['src', 'src_plugins']
             manifest.srcFile 'AndroidManifest-common.xml'
             proto {
-                srcDir 'protos/'
+                srcDirs = ['protos/', 'protos_overrides/']
             }
         }
 

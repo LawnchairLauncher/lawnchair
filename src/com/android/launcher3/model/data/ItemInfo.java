@@ -225,7 +225,7 @@ public class ItemInfo {
     protected String dumpProperties() {
         return "id=" + id
                 + " type=" + LauncherSettings.Favorites.itemTypeToString(itemType)
-                + " container=" + LauncherSettings.Favorites.containerToString(container)
+                + " container=" + getContainerInfo()
                 + " targetComponent=" + getTargetComponent()
                 + " screen=" + screenId
                 + " cell(" + cellX + "," + cellY + ")"
@@ -352,7 +352,10 @@ public class ItemInfo {
         return itemBuilder;
     }
 
-    protected ContainerInfo getContainerInfo() {
+    /**
+     * Returns {@link ContainerInfo} used when logging this item.
+     */
+    public ContainerInfo getContainerInfo() {
         switch (container) {
             case CONTAINER_HOTSEAT:
                 return ContainerInfo.newBuilder()
