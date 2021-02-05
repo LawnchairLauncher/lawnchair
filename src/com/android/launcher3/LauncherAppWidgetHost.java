@@ -49,8 +49,11 @@ import java.util.function.IntConsumer;
 public class LauncherAppWidgetHost extends AppWidgetHost {
 
     private static final int FLAG_LISTENING = 1;
-    private static final int FLAG_RESUMED = 1 << 1;
-    private static final int FLAG_LISTEN_IF_RESUMED = 1 << 2;
+    private static final int FLAG_STATE_IS_NORMAL = 1 << 1;
+    private static final int FLAG_ACTIVITY_STARTED = 1 << 2;
+    private static final int FLAG_ACTIVITY_RESUMED = 1 << 3;
+    private static final int FLAGS_SHOULD_LISTEN =
+            FLAG_STATE_IS_NORMAL | FLAG_ACTIVITY_STARTED | FLAG_ACTIVITY_RESUMED;
 
     public static final int APPWIDGET_HOST_ID = 1024;
 
@@ -59,7 +62,7 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
     private final SparseArray<PendingAppWidgetHostView> mPendingViews = new SparseArray<>();
 
     private final Context mContext;
-    private int mFlags = FLAG_RESUMED;
+    private int mFlags = FLAG_STATE_IS_NORMAL;
 
     private IntConsumer mAppWidgetRemovedCallback = null;
 
@@ -130,49 +133,45 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
     }
 
     /**
-     * Updates the resumed state of the host.
-     * When a host is not resumed, it defers calls to startListening until host is resumed again.
-     * But if the host was already listening, it will not call stopListening.
-     *
-     * @see #setListenIfResumed(boolean)
+     * Sets or unsets a flag the can change whether the widget host should be in the listening
+     * state.
      */
-    public void setResumed(boolean isResumed) {
-        if (isResumed == ((mFlags & FLAG_RESUMED) != 0)) {
-            return;
-        }
-        if (isResumed) {
-            mFlags |= FLAG_RESUMED;
-            // Start listening if we were supposed to start listening on resume
-            if ((mFlags & FLAG_LISTEN_IF_RESUMED) != 0 && (mFlags & FLAG_LISTENING) == 0) {
-                startListening();
-            }
+    private void setShouldListenFlag(int flag, boolean on) {
+        if (on) {
+            mFlags |= flag;
         } else {
-            mFlags &= ~FLAG_RESUMED;
+            mFlags &= ~flag;
+        }
+
+        final boolean listening = isListening();
+        if (!listening && (mFlags & FLAGS_SHOULD_LISTEN) == FLAGS_SHOULD_LISTEN) {
+            // Postpone starting listening until all flags are on.
+            startListening();
+        } else if (listening && (mFlags & FLAG_ACTIVITY_STARTED) == 0) {
+            // Postpone stopping listening until the activity is stopped.
+            stopListening();
         }
     }
 
     /**
-     * Updates the listening state of the host. If the host is not resumed, startListening is
-     * deferred until next resume.
-     *
-     * @see #setResumed(boolean)
+     * Registers an "entering/leaving Normal state" event.
      */
-    public void setListenIfResumed(boolean listenIfResumed) {
-        if (listenIfResumed == ((mFlags & FLAG_LISTEN_IF_RESUMED) != 0)) {
-            return;
-        }
-        if (listenIfResumed) {
-            mFlags |= FLAG_LISTEN_IF_RESUMED;
-            if ((mFlags & FLAG_RESUMED) != 0) {
-                // If we are resumed, start listening immediately. Note we do not check for
-                // duplicate calls before calling startListening as startListening is safe to call
-                // multiple times.
-                startListening();
-            }
-        } else {
-            mFlags &= ~FLAG_LISTEN_IF_RESUMED;
-            stopListening();
-        }
+    public void setStateIsNormal(boolean isNormal) {
+        setShouldListenFlag(FLAG_STATE_IS_NORMAL, isNormal);
+    }
+
+    /**
+     * Registers an "activity started/stopped" event.
+     */
+    public void setActivityStarted(boolean isStarted) {
+        setShouldListenFlag(FLAG_ACTIVITY_STARTED, isStarted);
+    }
+
+    /**
+     * Registers an "activity paused/resumed" event.
+     */
+    public void setActivityResumed(boolean isResumed) {
+        setShouldListenFlag(FLAG_ACTIVITY_RESUMED, isResumed);
     }
 
     @Override
