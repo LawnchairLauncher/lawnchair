@@ -16,6 +16,8 @@
 package com.android.launcher3.allapps.search;
 
 import static com.android.launcher3.LauncherState.ALL_APPS;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_ENTRY;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_EXIT;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.THREAD_POOL_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
@@ -46,6 +48,8 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.logging.InstanceId;
+import com.android.launcher3.logging.InstanceIdSequence;
+import com.android.launcher3.logging.StatsLogManager.StatsLogger;
 import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.SafeCloseable;
@@ -71,6 +75,7 @@ public class LiveSearchManager implements StateListener<LauncherState> {
             new HashMap<>();
     private SearchWidgetHost mSearchWidgetHost;
     private InstanceId mLogInstanceId;
+    private LauncherState mPrevLauncherState;
 
     public LiveSearchManager(Launcher launcher) {
         mLauncher = launcher;
@@ -134,6 +139,11 @@ public class LiveSearchManager implements StateListener<LauncherState> {
     }
 
     @Override
+    public void onStateTransitionStart(LauncherState toState) {
+        mPrevLauncherState = mLauncher.getStateManager().getCurrentStableState();
+    }
+
+    @Override
     public void onStateTransitionComplete(LauncherState finalState) {
         if (finalState != ALL_APPS) {
             // Clear all search session related objects
@@ -141,6 +151,15 @@ public class LiveSearchManager implements StateListener<LauncherState> {
             mUriSliceMap.clear();
 
             clearWidgetHost();
+        }
+
+        StatsLogger logger = mLauncher.getStatsLogManager().logger();
+        if (finalState.equals(ALL_APPS)) {
+            mLogInstanceId = new InstanceIdSequence().newInstanceId();
+            logger.withInstanceId(mLogInstanceId).log(LAUNCHER_ALLAPPS_ENTRY);
+        } else if (mPrevLauncherState.equals(ALL_APPS)) {
+            logger.withInstanceId(mLogInstanceId).log(LAUNCHER_ALLAPPS_EXIT);
+            mLogInstanceId = null;
         }
     }
 
