@@ -73,11 +73,9 @@ public class DeviceSearchEdu extends AbstractSlideInView implements
     }
 
 
-    private void close(boolean animate, boolean markAsSeen) {
-        handleClose(animate);
-        if (markAsSeen) {
-            mLauncher.getOnboardingPrefs().markChecked(SEARCH_EDU_SEEN);
-        }
+    private void dismiss() {
+        handleClose(true);
+        mLauncher.getOnboardingPrefs().markChecked(SEARCH_EDU_SEEN);
     }
 
     @Override
@@ -110,7 +108,7 @@ public class DeviceSearchEdu extends AbstractSlideInView implements
 
         findViewById(R.id.dismiss_edu).setOnClickListener((view) -> {
             mSwitchFocusOnDismiss = true;
-            close(true, true);
+            dismiss();
         });
     }
 
@@ -176,7 +174,7 @@ public class DeviceSearchEdu extends AbstractSlideInView implements
 
     @Override
     public void onStateTransitionStart(LauncherState toState) {
-        close(true, false);
+        dismiss();
     }
 
     @Override
@@ -203,7 +201,7 @@ public class DeviceSearchEdu extends AbstractSlideInView implements
         if (mSearchInput != null) {
             mSearchInput.setText(charSequence.toString());
             mSwitchFocusOnDismiss = true;
-            close(true, true);
+            dismiss();
         }
     }
 
@@ -215,7 +213,7 @@ public class DeviceSearchEdu extends AbstractSlideInView implements
     @Override
     public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
         mSearchInput.onEditorAction(i);
-        close(true, true);
+        dismiss();
         return true;
     }
 }
