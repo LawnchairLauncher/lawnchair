@@ -74,11 +74,13 @@ public class HotseatPredictionController implements DragController.DragListener,
     private static final int FLAG_UPDATE_PAUSED = 1 << 0;
     private static final int FLAG_DRAG_IN_PROGRESS = 1 << 1;
     private static final int FLAG_FILL_IN_PROGRESS = 1 << 2;
+    private static final int FLAG_REMOVING_PREDICTED_ICON = 1 << 3;
 
     private int mHotSeatItemsCount;
 
     private QuickstepLauncher mLauncher;
     private final Hotseat mHotseat;
+    private final Runnable mUpdateFillIfNotLoading = this::updateFillIfNotLoading;
 
     private List<ItemInfo> mPredictedItems = Collections.emptyList();
 
@@ -132,7 +134,8 @@ public class HotseatPredictionController implements DragController.DragListener,
     private void onHotseatHierarchyChanged() {
         if (mPauseFlags == 0 && !mLauncher.isWorkspaceLoading()) {
             // Post update after a single frame to avoid layout within layout
-            MAIN_EXECUTOR.getHandler().post(this::updateFillIfNotLoading);
+            MAIN_EXECUTOR.getHandler().removeCallbacks(mUpdateFillIfNotLoading);
+            MAIN_EXECUTOR.getHandler().post(mUpdateFillIfNotLoading);
         }
     }
 
@@ -374,7 +377,7 @@ public class HotseatPredictionController implements DragController.DragListener,
                 continue;
             }
             if (dragObject.dragSource == this && icon.equals(dragObject.originalView)) {
-                mHotseat.removeView(icon);
+                removeIconWithoutNotify(icon);
                 continue;
             }
             int rank = ((WorkspaceItemInfo) icon.getTag()).rank;
@@ -386,13 +389,24 @@ public class HotseatPredictionController implements DragController.DragListener,
                 @Override
                 public void onAnimationSuccess(Animator animator) {
                     if (icon.getParent() != null) {
-                        mHotseat.removeView(icon);
+                        removeIconWithoutNotify(icon);
                     }
                 }
             });
             mIconRemoveAnimators.play(animator);
         }
         mIconRemoveAnimators.start();
+    }
+
+    /**
+     * Removes icon while suppressing any extra tasks performed on view-hierarchy changes.
+     * This avoids recursive/redundant updates as the control updates the UI anyway after
+     * it's animation.
+     */
+    private void removeIconWithoutNotify(PredictedAppIcon icon) {
+        mPauseFlags |= FLAG_REMOVING_PREDICTED_ICON;
+        mHotseat.removeView(icon);
+        mPauseFlags &= ~FLAG_REMOVING_PREDICTED_ICON;
     }
 
     @Override
