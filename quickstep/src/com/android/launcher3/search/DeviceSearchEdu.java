@@ -83,6 +83,7 @@ public class DeviceSearchEdu extends AbstractSlideInView implements
     @Override
     protected void handleClose(boolean animate) {
         handleClose(animate, ANIMATION_DURATION);
+        mLauncher.getAllAppsController().getInsetController().show();
         mLauncher.getStateManager().removeStateListener(this);
     }
 
