@@ -26,11 +26,9 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.systemui.shared.system.TonalCompat;
 import com.android.systemui.shared.system.TonalCompat.ExtractionInfo;
-
 import java.util.ArrayList;
 
 @TargetApi(Build.VERSION_CODES.P)

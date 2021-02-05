@@ -27,7 +27,6 @@ import android.content.pm.ShortcutInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Process;
-
 import ch.deletescape.lawnchair.iconpack.LawnchairIconProvider;
 import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.Launcher;
@@ -37,6 +36,7 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.icons.IconProvider;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.PinRequestHelper;
 import com.android.launcher3.pm.ShortcutConfigActivityInfo;
@@ -63,7 +63,7 @@ class PinShortcutRequestActivityInfo extends ShortcutConfigActivityInfo {
         mRequest = request;
         mInfo = request.getShortcutInfo();
         mContext = context;
-        mIconProvider = IconProvider.newInstance(context);
+        mIconProvider = new IconProvider(context);
     }
 
     @Override

@@ -17,10 +17,9 @@
 
 package ch.deletescape.lawnchair
 
+import android.content.Context.USER_SERVICE
+import android.os.UserManager
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
-import com.android.launcher3.Utilities
-import com.android.launcher3.compat.UserManagerCompat
-import com.android.launcher3.pageindicators.PageIndicator
 import com.android.launcher3.pageindicators.WorkspacePageIndicator
 
 class LawnchairPreferencesChangeCallback(val launcher: LawnchairLauncher) {
@@ -30,7 +29,10 @@ class LawnchairPreferencesChangeCallback(val launcher: LawnchairLauncher) {
     }
 
     fun reloadApps() {
-        UserManagerCompat.getInstance(launcher).userProfiles.forEach { launcher.model.onPackagesReload(it) }
+        (launcher.applicationContext.getSystemService(
+                USER_SERVICE) as UserManager).userProfiles.forEach {
+            launcher.model.onPackagesReload(it)
+        }
     }
 
     fun reloadAll() {

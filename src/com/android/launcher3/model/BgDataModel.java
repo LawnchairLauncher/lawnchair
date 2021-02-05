@@ -28,8 +28,6 @@ import android.util.MutableInt;
 
 import com.android.launcher3.InstallShortcutReceiver;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.Utilities;
-import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.AppInfo;

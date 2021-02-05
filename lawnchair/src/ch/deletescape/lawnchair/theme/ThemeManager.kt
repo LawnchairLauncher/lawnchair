@@ -54,7 +54,7 @@ class ThemeManager(val context: Context) : WallpaperColorInfo.OnChangeListener, 
         ColorEngine.OnColorChangeListener {
 
     private val app = context.lawnchairApp
-    private val wallpaperColorInfo = WallpaperColorInfo.getInstance(context)!!
+    private val wallpaperColorInfo = WallpaperColorInfo.INSTANCE
     private val listeners = HashSet<ThemeOverride>()
     private val prefs = context.lawnchairPrefs
     private var themeFlags = 0

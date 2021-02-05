@@ -2,10 +2,9 @@ package ch.deletescape.lawnchair.globalsearch.providers
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.drawable.Drawable
 import androidx.annotation.Keep
-import ch.deletescape.lawnchair.colors.ColorEngine
+import androidx.core.content.ContextCompat
 import ch.deletescape.lawnchair.globalsearch.SearchProvider
 import com.android.launcher3.R
 import com.android.launcher3.util.PackageManagerHelper
@@ -25,7 +24,7 @@ class DuckDuckGoSearchProvider(context: Context) : SearchProvider(context) {
 
     override fun startSearch(callback: (intent: Intent) -> Unit) = callback(Intent(Intent.ACTION_ASSIST).setPackage(PACKAGE))
 
-    override fun getIcon(): Drawable = context.getDrawable(R.drawable.ic_ddg)
+    override fun getIcon(): Drawable? = ContextCompat.getDrawable(context,R.drawable.ic_ddg)
 
     companion object {
     private const val PACKAGE = "com.duckduckgo.mobile.android"

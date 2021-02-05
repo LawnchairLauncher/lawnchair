@@ -8,9 +8,13 @@ import android.os.Handler;
 import android.view.View;
 import androidx.core.graphics.ColorUtils;
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity;
-import com.android.launcher3.*;
+import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherCallbacks;
+import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.util.Themes;
+import com.android.systemui.plugins.shared.LauncherExterns;
 import com.google.android.apps.nexuslauncher.qsb.QsbAnimationController;
 import com.google.android.apps.nexuslauncher.search.ItemInfoUpdateReceiver;
 import com.google.android.apps.nexuslauncher.smartspace.SmartspaceController;
@@ -19,10 +23,8 @@ import com.google.android.apps.nexuslauncher.utils.ActionIntentFilter;
 import com.google.android.libraries.gsa.launcherclient.LauncherClient;
 import com.google.android.libraries.gsa.launcherclient.LauncherClientService;
 import com.google.android.libraries.gsa.launcherclient.StaticInteger;
-
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Set;
 import java.util.WeakHashMap;
@@ -39,13 +41,12 @@ public class NexusLauncher {
     private final Bundle mUiInformation = new Bundle();
     private ItemInfoUpdateReceiver mItemInfoUpdateReceiver;
     QsbAnimationController mQsbAnimationController;
-    private Handler handler = new Handler(LauncherModel.getUiWorkerLooper());
 
     public NexusLauncher(NexusLauncherActivity activity) {
         mLauncher = activity;
         mExterns = activity;
         mCallbacks = new NexusLauncherCallbacks();
-        mExterns.setLauncherCallbacks(mCallbacks);
+        mLauncher.setLauncherCallbacks(mCallbacks);
         mLauncher.addOnDeviceProfileChangeListener(dp -> mClient.redraw());
     }
 
@@ -111,7 +112,7 @@ public class NexusLauncher {
 
             mUiInformation.putInt("system_ui_visibility", mLauncher.getWindow().getDecorView().getSystemUiVisibility());
             applyFeedTheme(false);
-            WallpaperColorInfo instance = WallpaperColorInfo.getInstance(mLauncher);
+            WallpaperColorInfo instance = WallpaperColorInfo.INSTANCE.get(mLauncher);
             instance.addOnChangeListener(this);
             onExtractedColorsChanged(instance);
 
@@ -153,7 +154,7 @@ public class NexusLauncher {
             }
 
             Utilities.getPrefs(mLauncher).unregisterOnSharedPreferenceChangeListener(this);
-            WallpaperColorInfo.getInstance(mLauncher).removeOnChangeListener(this);
+            WallpaperColorInfo.INSTANCE.get(mLauncher).removeOnChangeListener(this);
 
             getUpdateReceiver().onDestroy();
 

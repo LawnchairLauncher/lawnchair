@@ -8,10 +8,11 @@ import androidx.preference.DialogPreference
 import ch.deletescape.lawnchair.globalsearch.SearchProviderController
 import com.android.launcher3.R
 
-class SearchProviderPreference(context: Context, attrs: AttributeSet?) : DialogPreference(context, attrs), SharedPreferences.OnSharedPreferenceChangeListener {
+class SearchProviderPreference(context: Context, attrs: AttributeSet?) :
+        DialogPreference(context, attrs), SharedPreferences.OnSharedPreferenceChangeListener {
 
     var value = ""
-    var defaultValue = ""
+    var defaultValue: String? = ""
 
     override fun onAttached() {
         super.onAttached()

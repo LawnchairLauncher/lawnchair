@@ -16,8 +16,8 @@
 
 package com.android.launcher3.model.data;
 
+import androidx.annotation.NonNull;
 import com.android.launcher3.LauncherSettings;
-
 import java.util.Objects;
 
 /**
@@ -45,6 +45,7 @@ public class PackageItemInfo extends ItemInfoWithIcon {
         return super.dumpProperties() + " packageName=" + packageName;
     }
 
+    @NonNull
     @Override
     public PackageItemInfo clone() {
         return new PackageItemInfo(this);

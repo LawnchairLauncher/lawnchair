@@ -30,9 +30,6 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import ch.deletescape.lawnchair.LawnchairAppKt;
-import com.android.launcher3.compat.LauncherAppsCompat;
-import com.android.launcher3.compat.PackageInstallerCompat;
-import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.IconProvider;

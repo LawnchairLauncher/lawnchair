@@ -19,9 +19,9 @@ package ch.deletescape.lawnchair.groups
 
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.preferences.DrawerTabEditBottomSheet
-import com.android.launcher3.FolderInfo
 import com.android.launcher3.Launcher
 import com.android.launcher3.allapps.AllAppsStore
+import com.android.launcher3.model.data.FolderInfo
 
 class DrawerFolderInfo(private val drawerFolder: DrawerFolders.Folder) : FolderInfo() {
 

@@ -660,7 +660,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         if (iconInfo == null) {
             iconInfo = app.getIconCache().getDefaultIcon(info.user);
         }
-        info.bitmap = iconInfo;
+        info.bitmap = iconInfo.icon;
 
         info.title = Utilities.trim(name);
         info.contentDescription = app.getContext().getPackageManager()

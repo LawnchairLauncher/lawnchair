@@ -27,7 +27,11 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.view.View;
-
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceViewHolder;
 import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import com.android.launcher3.R;
 import com.android.launcher3.notification.NotificationListener;
@@ -108,6 +112,7 @@ public class NotificationDotsPreference extends Preference
             extends DialogFragment implements DialogInterface.OnClickListener {
 
         @Override
+        @NonNull
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             final Context context = getActivity();
             String msg = context.getString(R.string.msg_missing_notification_access,

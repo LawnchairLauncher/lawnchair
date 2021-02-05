@@ -18,7 +18,6 @@
 package ch.deletescape.lawnchair.groups
 
 import android.content.Context
-import ch.deletescape.lawnchair.iconpack.IconPackManager
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.ItemInfoMatcher
 
@@ -35,12 +34,4 @@ class CustomFilter(context: Context, override val matches: Set<ComponentKey>) : 
 
     override val matcher
         get() = ItemInfoMatcher { info, cn -> matches.contains(ComponentKey(info.targetComponent, info.user)) }
-}
-
-class IconPackFilter(context: Context) : Filter<String>(context) {
-
-    override val matches = IconPackManager.getInstance(context).getPackProviders().map { it.name }.toHashSet()
-
-    override val matcher
-        get() = ItemInfoMatcher { info, cn -> matches.contains(info.targetComponent.packageName) }
 }

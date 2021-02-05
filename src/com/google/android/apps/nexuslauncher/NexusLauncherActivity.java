@@ -1,6 +1,5 @@
 package com.google.android.apps.nexuslauncher;
 
-import android.animation.AnimatorSet;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
@@ -12,7 +11,8 @@ import com.google.android.apps.nexuslauncher.smartspace.SmartspaceView;
 import com.google.android.libraries.gsa.launcherclient.LauncherClient;
 
 public class NexusLauncherActivity extends Launcher {
-    private NexusLauncher mLauncher;
+
+    private final NexusLauncher mLauncher;
 
     public NexusLauncherActivity() {
         mLauncher = new NexusLauncher(this);
@@ -37,8 +37,8 @@ public class NexusLauncherActivity extends Launcher {
         mLauncher.mQsbAnimationController.dZ();
     }
 
-    public AnimatorSet openQsb() {
-        return mLauncher.mQsbAnimationController.openQsb();
+    public void openQsb() {
+        mLauncher.mQsbAnimationController.openQsb();
     }
 
     public void registerSmartspaceView(SmartspaceView smartspace) {

@@ -21,7 +21,7 @@ import android.graphics.Bitmap;
 
 public class TaskDescriptionCompat {
 
-    private ActivityManager.TaskDescription mTaskDescription;
+    private final ActivityManager.TaskDescription mTaskDescription;
 
     public TaskDescriptionCompat(ActivityManager.TaskDescription td) {
         mTaskDescription = td;
@@ -33,10 +33,8 @@ public class TaskDescriptionCompat {
                 : 0;
     }
 
-    public int getBackgroundColor() {
-        return mTaskDescription != null
-                ? mTaskDescription.getBackgroundColor()
-                : 0;
+    public static Bitmap getIcon(ActivityManager.TaskDescription desc) {
+        return desc.getIcon();
     }
 
     public static Bitmap getIcon(ActivityManager.TaskDescription desc, int userId) {

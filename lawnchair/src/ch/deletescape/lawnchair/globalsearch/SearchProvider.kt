@@ -31,15 +31,15 @@ abstract class SearchProvider(protected val context: Context) {
         if (supportsFeed) throw RuntimeException("Feed supported but not implemented")
     }
 
-    protected fun wrapInShadowDrawable(d: Drawable): Drawable {
+    protected fun wrapInShadowDrawable(d: Drawable?): Drawable {
         return ShadowDrawable.wrap(context, d, R.color.qsb_icon_shadow_color,
                 4f, R.color.qsb_dark_icon_tint).apply { applyTheme(context.theme) }
     }
 
     fun getIcon(colored: Boolean) = if (colored) getIcon() else getShadowIcon()
 
-    abstract fun getIcon(): Drawable
-    open fun getShadowIcon(): Drawable {
+    abstract fun getIcon(): Drawable?
+    open fun getShadowIcon(): Drawable? {
         return wrapInShadowDrawable(getIcon())
     }
 
@@ -57,5 +57,5 @@ abstract class SearchProvider(protected val context: Context) {
         else null
     open fun getShadowAssistantIcon() = getAssistantIcon()?.let { wrapInShadowDrawable(it) }
 
-    override fun toString() = this::class.java.name!!
+    override fun toString(): String = this::class.java.name
 }

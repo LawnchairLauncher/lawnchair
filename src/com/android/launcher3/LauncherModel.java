@@ -31,16 +31,9 @@ import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
-
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
-
 import com.android.launcher3.config.FeatureFlags;
-import ch.deletescape.lawnchair.LawnchairUtilsKt;
-import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
-import com.android.launcher3.compat.LauncherAppsCompat;
-import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
-import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.AddWorkspaceItemsTask;
@@ -58,6 +51,7 @@ import com.android.launcher3.model.ShortcutsChangedTask;
 import com.android.launcher3.model.UserLockStateChangedTask;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.InstallSessionTracker;
 import com.android.launcher3.pm.PackageInstallInfo;
@@ -68,7 +62,6 @@ import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Preconditions;
-
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -591,8 +584,8 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     }
 
     public List<LauncherAppWidgetInfo> getLoadedWidgets() {
-        synchronized (sBgDataModel) {
-            return new ArrayList<>(sBgDataModel.appWidgets);
+        synchronized (mBgDataModel) {
+            return new ArrayList<>(mBgDataModel.appWidgets);
         }
     }
 
@@ -622,7 +615,7 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
      */
     public Callbacks[] getCallbacks() {
         synchronized (mCallbacksList) {
-            return mCallbacksList.toArray(new Callbacks[mCallbacksList.size()]);
+            return mCallbacksList.toArray(new Callbacks[0]);
         }
     }
 }

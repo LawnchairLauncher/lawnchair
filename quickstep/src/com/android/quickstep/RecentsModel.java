@@ -124,7 +124,7 @@ public class RecentsModel extends TaskStackChangeListener {
             return;
         }
 
-        int currentUserId = Process.myUserHandle().getIdentifier();
+        int currentUserId = Process.myUid();
         if (!checkCurrentOrManagedUserId(currentUserId, mContext)) {
             // Skip if we are not the current user
             return;
@@ -177,7 +177,7 @@ public class RecentsModel extends TaskStackChangeListener {
     }
 
     private void onPackageIconChanged(String pkg, UserHandle user) {
-        mIconCache.invalidateCacheEntries(pkg, user);
+        mIconCache.invalidateCacheEntries(pkg);
         for (int i = mThumbnailChangeListeners.size() - 1; i >= 0; i--) {
             mThumbnailChangeListeners.get(i).onTaskIconChanged(pkg, user);
         }

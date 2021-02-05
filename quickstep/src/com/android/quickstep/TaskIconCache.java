@@ -32,9 +32,7 @@ import android.os.Looper;
 import android.os.UserHandle;
 import android.util.SparseArray;
 import android.view.accessibility.AccessibilityManager;
-
 import androidx.annotation.WorkerThread;
-
 import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -42,6 +40,7 @@ import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.IconProvider;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.icons.cache.HandlerRunnable;
+import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.Preconditions;
 import com.android.quickstep.util.TaskKeyLruCache;
 import com.android.systemui.shared.recents.model.Task;
@@ -49,7 +48,6 @@ import com.android.systemui.shared.recents.model.Task.TaskKey;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.PackageManagerWrapper;
 import com.android.systemui.shared.system.TaskDescriptionCompat;
-
 import java.util.function.Consumer;
 
 /**
@@ -119,10 +117,9 @@ public class TaskIconCache {
         mIconCache.remove(taskKey);
     }
 
-    void invalidateCacheEntries(String pkg, UserHandle handle) {
+    void invalidateCacheEntries(String pkg) {
         Utilities.postAsyncCallback(mBackgroundHandler,
-                () -> mIconCache.removeAll(key ->
-                        pkg.equals(key.getPackageName()) && handle.getIdentifier() == key.userId));
+                () -> mIconCache.removeAll(key -> pkg.equals(key.getPackageName())));
     }
 
     @WorkerThread
@@ -141,7 +138,7 @@ public class TaskIconCache {
 
         // Load icon
         // TODO: Load icon resource (b/143363444)
-        Bitmap icon = TaskDescriptionCompat.getIcon(desc, key.userId);
+        Bitmap icon = TaskDescriptionCompat.getIcon(desc);
         if (icon != null) {
             entry.icon = new FastBitmapDrawable(getBitmapInfo(
                     new BitmapDrawable(mContext.getResources(), icon),
@@ -153,10 +150,12 @@ public class TaskIconCache {
                     key.getComponent(), key.userId);
             if (activityInfo != null) {
                 BitmapInfo bitmapInfo = getBitmapInfo(
-                        mIconProvider.getIcon(activityInfo, UserHandle.of(key.userId)),
+                        mIconProvider
+                                .getIcon(activityInfo, UserHandle.getUserHandleForUid(key.userId)),
                         key.userId,
                         desc.getPrimaryColor(),
-                        activityInfo.applicationInfo.isInstantApp());
+                        InstantAppResolver.newInstance(mContext)
+                                .isInstantApp(activityInfo.applicationInfo));
                 entry.icon = newIcon(mContext, bitmapInfo);
             } else {
                 entry.icon = getDefaultIcon(key.userId);
@@ -187,7 +186,7 @@ public class TaskIconCache {
             BitmapInfo info = mDefaultIcons.get(userId);
             if (info == null) {
                 try (LauncherIcons la = LauncherIcons.obtain(mContext)) {
-                    info = la.makeDefaultIcon(UserHandle.of(userId));
+                    info = la.makeDefaultIcon(UserHandle.getUserHandleForUid(userId));
                 }
                 mDefaultIcons.put(userId, info);
             }
@@ -203,18 +202,20 @@ public class TaskIconCache {
             la.setWrapperBackgroundColor(primaryColor);
 
             // User version code O, so that the icon is always wrapped in an adaptive icon container
-            return la.createBadgedIconBitmap(drawable, UserHandle.of(userId),
+            return la.createBadgedIconBitmap(drawable, UserHandle.getUserHandleForUid(userId),
                     Build.VERSION_CODES.O, isInstantApp);
         }
     }
 
     public static abstract class IconLoadRequest extends HandlerRunnable {
+
         IconLoadRequest(Handler handler) {
             super(handler, null);
         }
     }
 
     private static class TaskCacheEntry {
+
         public Drawable icon;
         public String contentDescription = "";
     }

@@ -19,18 +19,18 @@
 
 package ch.deletescape.lawnchair
 
-import android.animation.ValueAnimator
 import android.content.Context
 import android.provider.Settings
 import android.text.TextUtils
 import android.view.View
 import ch.deletescape.lawnchair.util.LawnchairSingletonHolder
-import com.android.launcher3.*
+import com.android.launcher3.CellLayout
 import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET
 import com.android.launcher3.LauncherState.NORMAL
 import com.android.launcher3.LauncherState.SPRING_LOADED
+import com.android.launcher3.Utilities
+import com.android.launcher3.Workspace
 import com.android.launcher3.model.data.LauncherAppWidgetInfo
-import com.android.launcher3.statemanager.StateManager
 
 class ClockVisibilityManager(private val context: Context) {
 
@@ -112,7 +112,7 @@ class ClockVisibilityManager(private val context: Context) {
             try {
                 Settings.System.putInt(resolver, STATUS_BAR_CLOCK, 1)
             } catch (e: IllegalArgumentException) {
-                
+
             }
         }
         val blacklistString = TextUtils.join(",", iconBlacklist)
@@ -120,29 +120,6 @@ class ClockVisibilityManager(private val context: Context) {
             Settings.Secure.putString(context.contentResolver, ICON_BLACKLIST, null)
         } else {
             Settings.Secure.putString(context.contentResolver, ICON_BLACKLIST, blacklistString)
-        }
-    }
-
-    class ClockStateHandler(private val launcher: Launcher) : StateManager.StateHandler {
-
-        private val manager = getInstance(launcher)
-
-        override fun setState(state: LauncherState) {
-            manager.launcherState = state
-        }
-
-        override fun setStateWithAnimation(toState: LauncherState, builder: AnimatorSetBuilder,
-                                           config: StateManager.AnimationConfig) {
-            if (!config.playNonAtomicComponent()) return
-
-            val fromState = launcher.stateManager.state
-            builder.play(ValueAnimator.ofFloat(0f, 1f).apply {
-                duration = config.duration
-                addUpdateListener {
-                    manager.launcherState =
-                            if (animatedFraction > 0.5f) toState else fromState
-                }
-            })
         }
     }
 
@@ -155,6 +132,6 @@ class ClockVisibilityManager(private val context: Context) {
 
         private const val DEFAULT_BLACKLIST = "rotate,headset"
 
-        val isSupported = true
+        const val isSupported = true
     }
 }
