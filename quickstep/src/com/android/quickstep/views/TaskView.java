@@ -50,8 +50,6 @@ import android.graphics.Outline;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.InsetDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.AttributeSet;
@@ -401,9 +399,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             mContextualChip.setScaleX(comp(modalness));
             mContextualChip.setScaleY(comp(modalness));
         }
-        if (mContextualChipWrapper != null) {
-            mContextualChipWrapper.setAlpha(comp(modalness));
-        }
         mDigitalWellBeingToast.updateBannerOffset(modalness);
     }
 
@@ -736,30 +731,16 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             layoutParams.gravity = BOTTOM | CENTER_HORIZONTAL;
             int expectedChipHeight = getExpectedViewHeight(view);
             float chipOffset = getResources().getDimension(R.dimen.chip_hint_vertical_offset);
-            layoutParams.bottomMargin = (int)
-                    (((MarginLayoutParams) mSnapshotView.getLayoutParams()).bottomMargin
-                            - expectedChipHeight + chipOffset);
+            layoutParams.bottomMargin = -expectedChipHeight - (int) chipOffset;
             mContextualChip = ((FrameLayout) mContextualChipWrapper).getChildAt(0);
             mContextualChip.setScaleX(0f);
             mContextualChip.setScaleY(0f);
-            GradientDrawable scrimDrawable = (GradientDrawable) getResources().getDrawable(
-                    R.drawable.chip_scrim_gradient, mActivity.getTheme());
-            float cornerRadius = getTaskCornerRadius();
-            scrimDrawable.setCornerRadii(
-                    new float[]{0, 0, 0, 0, cornerRadius, cornerRadius, cornerRadius,
-                            cornerRadius});
-            InsetDrawable scrimDrawableInset = new InsetDrawable(scrimDrawable, 0, 0, 0,
-                    (int) (expectedChipHeight - chipOffset));
-            mContextualChipWrapper.setBackground(scrimDrawableInset);
-            mContextualChipWrapper.setPadding(0, 0, 0, 0);
-            mContextualChipWrapper.setAlpha(0f);
             addView(view, getChildCount(), layoutParams);
             if (mContextualChip != null) {
                 mContextualChip.animate().scaleX(1f).scaleY(1f).setDuration(50);
             }
             if (mContextualChipWrapper != null) {
                 mChipTouchDelegate = new TransformingTouchDelegate(mContextualChipWrapper);
-                mContextualChipWrapper.animate().alpha(1f).setDuration(50);
             }
         }
     }
@@ -982,10 +963,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     public void setFullscreenProgress(float progress) {
         progress = Utilities.boundToRange(progress, 0, 1);
         mFullscreenProgress = progress;
-        boolean isFullscreen = mFullscreenProgress > 0;
         mIconView.setVisibility(progress < 1 ? VISIBLE : INVISIBLE);
-        setClipChildren(!isFullscreen);
-        setClipToPadding(!isFullscreen);
 
         TaskThumbnailView thumbnail = getThumbnail();
         updateCurrentFullscreenParams(thumbnail.getPreviewPositionHelper());
