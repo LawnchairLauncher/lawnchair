@@ -24,7 +24,6 @@ import static android.app.WindowConfiguration.WINDOWING_MODE_SPLIT_SCREEN_SECOND
 
 import android.app.ActivityOptions;
 import android.content.Context;
-import android.os.Build;
 import android.os.Handler;
 
 /**
@@ -77,16 +76,14 @@ public abstract class ActivityOptionsCompat {
                             callbackHandler.post(callback);
                         }
                     }
-                });
+                }, null /* finishedListener */);
     }
 
     /**
      * Sets the flag to freeze the recents task list reordering as a part of launching the activity.
      */
     public static ActivityOptions setFreezeRecentTasksList(ActivityOptions opts) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            opts.setFreezeRecentTasksReordering();
-        }
+        opts.setFreezeRecentTasksReordering();
         return opts;
     }
 }

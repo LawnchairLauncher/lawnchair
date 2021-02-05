@@ -17,6 +17,7 @@
 package com.android.systemui.shared.system;
 
 import android.app.ActivityManager;
+import android.graphics.Bitmap;
 
 public class TaskDescriptionCompat {
 
@@ -36,5 +37,13 @@ public class TaskDescriptionCompat {
         return mTaskDescription != null
                 ? mTaskDescription.getBackgroundColor()
                 : 0;
+    }
+
+    public static Bitmap getIcon(ActivityManager.TaskDescription desc, int userId) {
+        if (desc.getInMemoryIcon() != null) {
+            return desc.getInMemoryIcon();
+        }
+        return ActivityManager.TaskDescription.loadTaskDescriptionIcon(
+                desc.getIconFilename(), userId);
     }
 }

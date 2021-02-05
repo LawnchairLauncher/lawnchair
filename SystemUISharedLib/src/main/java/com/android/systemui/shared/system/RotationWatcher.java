@@ -21,8 +21,6 @@ import android.util.Log;
 import android.view.IRotationWatcher;
 import android.view.WindowManagerGlobal;
 
-import com.android.systemui.shared.QuickstepCompat;
-
 public abstract class RotationWatcher {
 
     private static final String TAG = "RotationWatcher";
@@ -50,7 +48,7 @@ public abstract class RotationWatcher {
         if (!mIsWatching) {
             try {
                 WindowManagerGlobal.getWindowManagerService().watchRotation(mWatcher,
-                        QuickstepCompat.getActivityManager().getDisplayId(mContext));
+                        mContext.getDisplayId());
                 mIsWatching = true;
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed to set rotation watcher", e);

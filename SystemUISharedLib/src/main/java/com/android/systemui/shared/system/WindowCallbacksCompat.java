@@ -17,17 +17,14 @@ package com.android.systemui.shared.system;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.graphics.RecordingCanvas;
 import android.view.View;
 import android.view.ViewRootImpl;
 import android.view.WindowCallbacks;
 
-import com.android.systemui.shared.QuickstepCompat;
-
-import xyz.paphonb.quickstep.compat.RecentsCompat.WindowCallbacksWrapper;
-
 public class WindowCallbacksCompat {
 
-    private final WindowCallbacksWrapper mWindowCallbacksWrapper = new WindowCallbacksWrapper() {
+    private final WindowCallbacks mWindowCallbacks = new WindowCallbacks() {
         @Override
         public void onWindowSizeIsChanging(Rect newBounds, boolean fullscreen, Rect systemInsets,
                 Rect stableInsets) {
@@ -58,11 +55,10 @@ public class WindowCallbacksCompat {
         }
 
         @Override
-        public void onPostDraw(Canvas canvas) {
+        public void onPostDraw(RecordingCanvas canvas) {
             WindowCallbacksCompat.this.onPostDraw(canvas);
         }
     };
-    private final WindowCallbacks mWindowCallbacks = QuickstepCompat.getRecentsCompat().createWindowCallbacks(mWindowCallbacksWrapper);
 
     private final View mView;
 

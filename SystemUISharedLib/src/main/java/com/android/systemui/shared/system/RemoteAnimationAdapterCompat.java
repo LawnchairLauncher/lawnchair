@@ -45,9 +45,12 @@ public class RemoteAnimationAdapterCompat {
         return new IRemoteAnimationRunner.Stub() {
             @Override
             public void onAnimationStart(RemoteAnimationTarget[] apps,
+                    RemoteAnimationTarget[] wallpapers,
                     final IRemoteAnimationFinishedCallback finishedCallback) {
                 final RemoteAnimationTargetCompat[] appsCompat =
                         RemoteAnimationTargetCompat.wrap(apps);
+                final RemoteAnimationTargetCompat[] wallpapersCompat =
+                        RemoteAnimationTargetCompat.wrap(wallpapers);
                 final Runnable animationFinishedCallback = new Runnable() {
                     @Override
                     public void run() {
@@ -59,7 +62,8 @@ public class RemoteAnimationAdapterCompat {
                         }
                     }
                 };
-                remoteAnimationAdapter.onAnimationStart(appsCompat, animationFinishedCallback);
+                remoteAnimationAdapter.onAnimationStart(appsCompat, wallpapersCompat,
+                        animationFinishedCallback);
             }
 
             @Override

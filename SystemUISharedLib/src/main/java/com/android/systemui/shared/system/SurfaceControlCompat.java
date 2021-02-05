@@ -17,11 +17,31 @@
 package com.android.systemui.shared.system;
 
 import android.view.SurfaceControl;
+import android.view.View;
+import android.view.ViewRootImpl;
 
+/**
+ * TODO: Remove this class
+ */
 public class SurfaceControlCompat {
-    SurfaceControl mSurfaceControl;
+    final SurfaceControl mSurfaceControl;
 
     public SurfaceControlCompat(SurfaceControl surfaceControl) {
         mSurfaceControl = surfaceControl;
+    }
+
+    public SurfaceControlCompat(View v) {
+        ViewRootImpl viewRootImpl = v.getViewRootImpl();
+        mSurfaceControl = viewRootImpl != null
+                ? viewRootImpl.getSurfaceControl()
+                : null;
+    }
+
+    public boolean isValid() {
+        return mSurfaceControl != null && mSurfaceControl.isValid();
+    }
+
+    public SurfaceControl getSurfaceControl() {
+        return mSurfaceControl;
     }
 }

@@ -17,12 +17,10 @@
 package com.android.systemui.shared.system;
 
 import android.app.ActivityManager.RunningTaskInfo;
+import android.app.ITaskStackListener;
 import android.content.ComponentName;
 import android.os.IBinder;
-import android.os.UserHandle;
-import android.util.Log;
 
-import com.android.systemui.shared.QuickstepCompat;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 
 /**
@@ -39,9 +37,8 @@ public abstract class TaskStackChangeListener {
     public void onTaskSnapshotChanged(int taskId, ThumbnailData snapshot) { }
     public void onActivityPinned(String packageName, int userId, int taskId, int stackId) { }
     public void onActivityUnpinned() { }
-    public void onPinnedActivityRestartAttempt(boolean clearedTask) { }
-    public void onPinnedStackAnimationStarted() { }
-    public void onPinnedStackAnimationEnded() { }
+    public void onActivityRestartAttempt(RunningTaskInfo task, boolean homeTaskVisible,
+            boolean clearedTask, boolean wasVisible) { }
     public void onActivityForcedResizable(String packageName, int taskId, int reason) { }
     public void onActivityDismissingDockedStack() { }
     public void onActivityLaunchOnSecondaryDisplayFailed() { }
@@ -73,14 +70,29 @@ public abstract class TaskStackChangeListener {
      */
     public void onSingleTaskDisplayDrawn(int displayId) { }
 
+    /**
+     * Called when the last task is removed from a display which can only contain one task.
+     *
+     * @param displayId the id of the display from which the window is removed.
+     */
+    public void onSingleTaskDisplayEmpty(int displayId) {}
+
     public void onTaskProfileLocked(int taskId, int userId) { }
     public void onTaskCreated(int taskId, ComponentName componentName) { }
     public void onTaskRemoved(int taskId) { }
     public void onTaskMovedToFront(int taskId) { }
 
     public void onTaskMovedToFront(RunningTaskInfo taskInfo) {
-        onTaskMovedToFront(QuickstepCompat.getRecentsCompat().getTaskId(taskInfo));
+        onTaskMovedToFront(taskInfo.taskId);
     }
+
+    /**
+     * Called when a task’s description is changed due to an activity calling
+     * ActivityManagerService.setTaskDescription
+     *
+     * @param taskInfo info about the task which changed, with {@link TaskInfo#taskDescription}
+     */
+    public void onTaskDescriptionChanged(RunningTaskInfo taskInfo) { }
 
     public void onActivityRequestedOrientationChanged(int taskId, int requestedOrientation) { }
     public void onSizeCompatModeActivityChanged(int displayId, IBinder activityToken) { }
@@ -96,20 +108,13 @@ public abstract class TaskStackChangeListener {
     public void onTaskDisplayChanged(int taskId, int newDisplayId) { }
 
     /**
-     * Checks that the current user matches the process. Since
-     * {@link android.app.ITaskStackListener} is not multi-user aware, handlers of
-     * {@link TaskStackChangeListener} should make this call to verify that we don't act on events
-     * originating from another user's interactions.
+     * Called when any additions or deletions to the recent tasks list have been made.
      */
-    protected final boolean checkCurrentUserId(int currentUserId, boolean debug) {
-        int processUserId = UserHandle.myUserId();
-        if (processUserId != currentUserId) {
-            if (debug) {
-                Log.d("TaskStackChangeListener", "UID mismatch. Process is uid=" + processUserId
-                        + " and the current user is uid=" + currentUserId);
-            }
-            return false;
-        }
-        return true;
-    }
+    public void onRecentTaskListUpdated() { }
+
+    /** @see ITaskStackListener#onRecentTaskListFrozenChanged(boolean) */
+    public void onRecentTaskListFrozenChanged(boolean frozen) { }
+
+    /** @see ITaskStackListener#onActivityRotation(int)*/
+    public void onActivityRotation(int displayId) { }
 }

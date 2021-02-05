@@ -20,7 +20,6 @@ import android.os.RemoteException;
 import android.util.Log;
 import android.view.ISystemGestureExclusionListener;
 import android.view.WindowManagerGlobal;
-import androidx.annotation.Keep;
 
 /**
  * Utility class to listen for exclusion rect changes.
@@ -41,12 +40,6 @@ public abstract class SystemGestureExclusionListenerCompat {
                                 ? systemGestureExclusion : unrestrictedOrNull;
                         onExclusionChanged(systemGestureExclusion, unrestricted);
                     }
-                }
-
-                @Keep
-                public void onSystemGestureExclusionChanged(int displayId,
-                        Region systemGestureExclusion) {
-                    onSystemGestureExclusionChanged(displayId, systemGestureExclusion, null);
                 }
             };
     private boolean mRegistered;

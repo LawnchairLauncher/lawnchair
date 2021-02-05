@@ -19,7 +19,6 @@ package com.android.systemui.shared.system;
 import android.app.WindowConfiguration;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.os.Build;
 import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl;
 
@@ -45,7 +44,9 @@ public class RemoteAnimationTargetCompat {
     public final Rect clipRect;
     public final int prefixOrderIndex;
     public final Point position;
+    public final Rect localBounds;
     public final Rect sourceContainerBounds;
+    public final Rect screenSpaceBounds;
     public final boolean isNotInRecents;
     public final Rect contentInsets;
 
@@ -58,22 +59,20 @@ public class RemoteAnimationTargetCompat {
         isTranslucent = app.isTranslucent;
         clipRect = app.clipRect;
         position = app.position;
+        localBounds = app.localBounds;
         sourceContainerBounds = app.sourceContainerBounds;
+        screenSpaceBounds = app.screenSpaceBounds;
         prefixOrderIndex = app.prefixOrderIndex;
         isNotInRecents = app.isNotInRecents;
         contentInsets = app.contentInsets;
         activityType = app.windowConfiguration.getActivityType();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            mStartLeash = app.startLeash;
-        } else {
-            mStartLeash = null;
-        }
+        mStartLeash = app.startLeash;
     }
 
     public static RemoteAnimationTargetCompat[] wrap(RemoteAnimationTarget[] apps) {
         final RemoteAnimationTargetCompat[] appsCompat =
-                new RemoteAnimationTargetCompat[apps.length];
+                new RemoteAnimationTargetCompat[apps != null ? apps.length : 0];
         for (int i = 0; i < apps.length; i++) {
             appsCompat[i] = new RemoteAnimationTargetCompat(apps[i]);
         }

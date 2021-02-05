@@ -33,7 +33,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemProperties;
-import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.ArrayMap;
 import android.util.ArraySet;
@@ -53,8 +52,6 @@ import java.io.File;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.lang.Thread.UncaughtExceptionHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -87,7 +84,7 @@ public class PluginManagerImpl extends BroadcastReceiver implements PluginManage
 
     public PluginManagerImpl(Context context, PluginInitializer initializer) {
         this(context, new PluginInstanceManagerFactory(), Build.IS_DEBUGGABLE,
-                (UncaughtExceptionHandler) invoke(sGetUncaughtExceptionPreHandler, null), initializer);
+                Thread.getUncaughtExceptionPreHandler(), initializer);
     }
 
     @VisibleForTesting
@@ -96,7 +93,7 @@ public class PluginManagerImpl extends BroadcastReceiver implements PluginManage
         mContext = context;
         mFactory = factory;
         mLooper = initializer.getBgLooper();
-        isDebuggable = debuggable;
+        isDebuggable = true;
         mWhitelistedPlugins.addAll(Arrays.asList(initializer.getWhitelistedPlugins(mContext)));
         mPluginPrefs = new PluginPrefs(mContext);
         mPluginEnabler = initializer.getPluginEnabler(mContext);
@@ -104,7 +101,7 @@ public class PluginManagerImpl extends BroadcastReceiver implements PluginManage
 
         PluginExceptionHandler uncaughtExceptionHandler = new PluginExceptionHandler(
                 defaultHandler);
-        invoke(sSetUncaughtExceptionPreHandler, null, uncaughtExceptionHandler);
+        Thread.setUncaughtExceptionPreHandler(uncaughtExceptionHandler);
 
         new Handler(mLooper).post(new Runnable() {
             @Override
@@ -173,15 +170,21 @@ public class PluginManagerImpl extends BroadcastReceiver implements PluginManage
         PluginInstanceManager p = mFactory.createPluginInstanceManager(mContext, action, listener,
                 allowMultiple, mLooper, cls, this);
         p.loadAll();
-        mPluginMap.put(listener, p);
+        synchronized (this) {
+            mPluginMap.put(listener, p);
+        }
         startListening();
     }
 
     public void removePluginListener(PluginListener<?> listener) {
-        if (!mPluginMap.containsKey(listener)) return;
-        mPluginMap.remove(listener).destroy();
-        if (mPluginMap.size() == 0) {
-            stopListening();
+        synchronized (this) {
+            if (!mPluginMap.containsKey(listener)) {
+                return;
+            }
+            mPluginMap.remove(listener).destroy();
+            if (mPluginMap.size() == 0) {
+                stopListening();
+            }
         }
     }
 
@@ -210,8 +213,10 @@ public class PluginManagerImpl extends BroadcastReceiver implements PluginManage
     @Override
     public void onReceive(Context context, Intent intent) {
         if (Intent.ACTION_USER_UNLOCKED.equals(intent.getAction())) {
-            for (PluginInstanceManager manager : mPluginMap.values()) {
-                manager.loadAll();
+            synchronized (this) {
+                for (PluginInstanceManager manager : mPluginMap.values()) {
+                    manager.loadAll();
+                }
             }
         } else if (DISABLE_PLUGIN.equals(intent.getAction())) {
             Uri uri = intent.getData();
@@ -229,8 +234,8 @@ public class PluginManagerImpl extends BroadcastReceiver implements PluginManage
             String pkg = data.getEncodedSchemeSpecificPart();
             ComponentName componentName = ComponentName.unflattenFromString(pkg);
             if (mOneShotPackages.contains(pkg)) {
-                int icon = mContext.getResources().getIdentifier("tuner", "drawable",
-                        mContext.getPackageName());
+                int icon = Resources.getSystem().getIdentifier(
+                        "stat_sys_warning", "drawable", "android");
                 int color = Resources.getSystem().getIdentifier(
                         "system_notification_accent_color", "color", "android");
                 String label = pkg;
@@ -254,8 +259,8 @@ public class PluginManagerImpl extends BroadcastReceiver implements PluginManage
                             Uri.parse("package://" + pkg));
                 PendingIntent pi = PendingIntent.getBroadcast(mContext, 0, i, 0);
                 nb.addAction(new Action.Builder(null, "Restart SysUI", pi).build());
-                mContext.getSystemService(NotificationManager.class).notifyAsUser(pkg,
-                        SystemMessage.NOTE_PLUGIN, nb.build(), UserHandle.ALL);
+                mContext.getSystemService(NotificationManager.class)
+                        .notify(SystemMessage.NOTE_PLUGIN, nb.build());
             }
             if (clearClassLoader(pkg)) {
                 if (Build.IS_ENG) {
@@ -276,13 +281,15 @@ public class PluginManagerImpl extends BroadcastReceiver implements PluginManage
                     getPluginEnabler().setEnabled(componentName);
                 }
             }
-            if (!Intent.ACTION_PACKAGE_REMOVED.equals(intent.getAction())) {
-                for (PluginInstanceManager manager : mPluginMap.values()) {
-                    manager.onPackageChange(pkg);
-                }
-            } else {
-                for (PluginInstanceManager manager : mPluginMap.values()) {
-                    manager.onPackageRemoved(pkg);
+            synchronized (this) {
+                if (!Intent.ACTION_PACKAGE_REMOVED.equals(intent.getAction())) {
+                    for (PluginInstanceManager manager : mPluginMap.values()) {
+                        manager.onPackageChange(pkg);
+                    }
+                } else {
+                    for (PluginInstanceManager manager : mPluginMap.values()) {
+                        manager.onPackageRemoved(pkg);
+                    }
                 }
             }
         }
@@ -324,9 +331,11 @@ public class PluginManagerImpl extends BroadcastReceiver implements PluginManage
     }
 
     public <T> boolean dependsOn(Plugin p, Class<T> cls) {
-        for (int i = 0; i < mPluginMap.size(); i++) {
-            if (mPluginMap.valueAt(i).dependsOn(p, cls)) {
-                return true;
+        synchronized (this) {
+            for (int i = 0; i < mPluginMap.size(); i++) {
+                if (mPluginMap.valueAt(i).dependsOn(p, cls)) {
+                    return true;
+                }
             }
         }
         return false;
@@ -337,10 +346,12 @@ public class PluginManagerImpl extends BroadcastReceiver implements PluginManage
     }
 
     public void dump(FileDescriptor fd, PrintWriter pw, String[] args) {
-        pw.println(String.format("  plugin map (%d):", mPluginMap.size()));
-        for (PluginListener listener: mPluginMap.keySet()) {
-            pw.println(String.format("    %s -> %s",
-                    listener, mPluginMap.get(listener)));
+        synchronized (this) {
+            pw.println(String.format("  plugin map (%d):", mPluginMap.size()));
+            for (PluginListener listener : mPluginMap.keySet()) {
+                pw.println(String.format("    %s -> %s",
+                        listener, mPluginMap.get(listener)));
+            }
         }
     }
 
@@ -420,8 +431,10 @@ public class PluginManagerImpl extends BroadcastReceiver implements PluginManage
                 // We couldn't find any plugins involved in this crash, just to be safe
                 // disable all the plugins, so we can be sure that SysUI is running as
                 // best as possible.
-                for (PluginInstanceManager manager : mPluginMap.values()) {
-                    disabledAny |= manager.disableAll();
+                synchronized (this) {
+                    for (PluginInstanceManager manager : mPluginMap.values()) {
+                        disabledAny |= manager.disableAll();
+                    }
                 }
             }
             if (disabledAny) {
@@ -435,9 +448,11 @@ public class PluginManagerImpl extends BroadcastReceiver implements PluginManage
         private boolean checkStack(Throwable throwable) {
             if (throwable == null) return false;
             boolean disabledAny = false;
-            for (StackTraceElement element : throwable.getStackTrace()) {
-                for (PluginInstanceManager manager : mPluginMap.values()) {
-                    disabledAny |= manager.checkAndDisable(element.getClassName());
+            synchronized (this) {
+                for (StackTraceElement element : throwable.getStackTrace()) {
+                    for (PluginInstanceManager manager : mPluginMap.values()) {
+                        disabledAny |= manager.checkAndDisable(element.getClassName());
+                    }
                 }
             }
             return disabledAny | checkStack(throwable.getCause());
@@ -447,28 +462,6 @@ public class PluginManagerImpl extends BroadcastReceiver implements PluginManage
     public static class CrashWhilePluginActiveException extends RuntimeException {
         public CrashWhilePluginActiveException(Throwable throwable) {
             super(throwable);
-        }
-    }
-
-    private static Method sGetUncaughtExceptionPreHandler;
-    private static Method sSetUncaughtExceptionPreHandler;
-
-    static {
-        try {
-            Method getDeclaredMethod = Class.class.getDeclaredMethod("getDeclaredMethod", String.class, Class[].class);
-            sGetUncaughtExceptionPreHandler = (Method) getDeclaredMethod.invoke(Thread.class, "getUncaughtExceptionPreHandler", new Class[]{});
-            sSetUncaughtExceptionPreHandler = (Method) getDeclaredMethod.invoke(Thread.class, "setUncaughtExceptionPreHandler", new Class[]{UncaughtExceptionHandler.class});
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static Object invoke(Method method, Object obj, Object... args) {
-        try {
-            return method.invoke(obj, args);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-            return null;
         }
     }
 }

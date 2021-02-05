@@ -26,9 +26,10 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.view.ViewDebug;
 
-import com.android.systemui.shared.QuickstepCompat;
 import com.android.systemui.shared.recents.utilities.Utilities;
 
 import java.io.PrintWriter;
@@ -53,8 +54,10 @@ public class Task {
         void onTaskWindowingModeChanged();
     }
 
-    /* The Task Key represents the unique primary key for the task */
-    public static class TaskKey {
+    /**
+     * The Task Key represents the unique primary key for the task
+     */
+    public static class TaskKey implements Parcelable {
         @ViewDebug.ExportedProperty(category="recents")
         public final int id;
         @ViewDebug.ExportedProperty(category="recents")
@@ -77,23 +80,7 @@ public class Task {
 
         private int mHashCode;
 
-        public TaskKey(ActivityManager.RecentTaskInfo t) {
-            ComponentName sourceComponent = t.origActivity != null
-                    // Activity alias if there is one
-                    ? t.origActivity
-                    // The real activity if there is no alias (or the target if there is one)
-                    : t.realActivity;
-            this.id = QuickstepCompat.getRecentsCompat().getTaskId(t);
-            this.windowingMode = t.configuration.windowConfiguration.getWindowingMode();
-            this.baseIntent = t.baseIntent;
-            this.sourceComponent = sourceComponent;
-            this.userId = t.userId;
-            this.lastActiveTime = t.lastActiveTime;
-            this.displayId = QuickstepCompat.getRecentsCompat().getDisplayId(t);
-            updateHashCode();
-        }
-
-        public TaskKey(ActivityManager.RunningTaskInfo t) {
+        public TaskKey(TaskInfo t) {
             ComponentName sourceComponent = t.origActivity != null
                     // Activity alias if there is one
                     ? t.origActivity
@@ -174,6 +161,48 @@ public class Task {
         private void updateHashCode() {
             mHashCode = Objects.hash(id, windowingMode, userId);
         }
+
+        public static final Parcelable.Creator<TaskKey> CREATOR =
+                new Parcelable.Creator<TaskKey>() {
+                    @Override
+                    public TaskKey createFromParcel(Parcel source) {
+                        return TaskKey.readFromParcel(source);
+                    }
+
+                    @Override
+                    public TaskKey[] newArray(int size) {
+                        return new TaskKey[size];
+                    }
+                };
+
+        @Override
+        public final void writeToParcel(Parcel parcel, int flags) {
+            parcel.writeInt(id);
+            parcel.writeInt(windowingMode);
+            parcel.writeTypedObject(baseIntent, flags);
+            parcel.writeInt(userId);
+            parcel.writeLong(lastActiveTime);
+            parcel.writeInt(displayId);
+            parcel.writeTypedObject(sourceComponent, flags);
+        }
+
+        private static TaskKey readFromParcel(Parcel parcel) {
+            int id = parcel.readInt();
+            int windowingMode = parcel.readInt();
+            Intent baseIntent = parcel.readTypedObject(Intent.CREATOR);
+            int userId = parcel.readInt();
+            long lastActiveTime = parcel.readLong();
+            int displayId = parcel.readInt();
+            ComponentName sourceComponent = parcel.readTypedObject(ComponentName.CREATOR);
+
+            return new TaskKey(id, windowingMode, baseIntent, sourceComponent, userId,
+                    lastActiveTime, displayId);
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
     }
 
     @ViewDebug.ExportedProperty(deepExport=true, prefix="key_")
@@ -247,18 +276,7 @@ public class Task {
     /**
      * Creates a task object from the provided task info
      */
-    public static Task from(TaskKey taskKey, ActivityManager.RecentTaskInfo taskInfo, boolean isLocked) {
-        ActivityManager.TaskDescription td = taskInfo.taskDescription;
-        return new Task(taskKey,
-                td != null ? td.getPrimaryColor() : 0,
-                td != null ? td.getBackgroundColor() : 0,
-                taskInfo.supportsSplitScreenMultiWindow, isLocked, td, taskInfo.topActivity);
-    }
-
-    /**
-     * Creates a task object from the provided task info
-     */
-    public static Task from(TaskKey taskKey, ActivityManager.RunningTaskInfo taskInfo, boolean isLocked) {
+    public static Task from(TaskKey taskKey, TaskInfo taskInfo, boolean isLocked) {
         ActivityManager.TaskDescription td = taskInfo.taskDescription;
         return new Task(taskKey,
                 td != null ? td.getPrimaryColor() : 0,

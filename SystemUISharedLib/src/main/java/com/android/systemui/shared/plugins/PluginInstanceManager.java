@@ -32,7 +32,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.os.UserHandle;
 import android.util.ArraySet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -90,7 +89,8 @@ public class PluginInstanceManager<T extends Plugin> {
         mAllowMultiple = allowMultiple;
         mVersion = version;
         mWhitelistedPlugins.addAll(Arrays.asList(pluginWhitelist));
-        isDebuggable = debuggable;
+        // We now actually do want to run plugins even in production so always allow running them
+        isDebuggable = true;
     }
 
     public PluginInfo<T> getPlugin() {
@@ -136,8 +136,7 @@ public class PluginInstanceManager<T extends Plugin> {
         ArrayList<PluginInfo> plugins = new ArrayList<PluginInfo>(mPluginHandler.mPlugins);
         for (PluginInfo info : plugins) {
             if (className.startsWith(info.mPackage)) {
-                disable(info, PluginEnabler.DISABLED_FROM_EXPLICIT_CRASH);
-                disableAny = true;
+                disableAny |= disable(info, PluginEnabler.DISABLED_FROM_EXPLICIT_CRASH);
             }
         }
         return disableAny;
@@ -145,10 +144,11 @@ public class PluginInstanceManager<T extends Plugin> {
 
     public boolean disableAll() {
         ArrayList<PluginInfo> plugins = new ArrayList<PluginInfo>(mPluginHandler.mPlugins);
+        boolean disabledAny = false;
         for (int i = 0; i < plugins.size(); i++) {
-            disable(plugins.get(i), PluginEnabler.DISABLED_FROM_SYSTEM_CRASH);
+            disabledAny |= disable(plugins.get(i), PluginEnabler.DISABLED_FROM_SYSTEM_CRASH);
         }
-        return plugins.size() != 0;
+        return disabledAny;
     }
 
     private boolean isPluginWhitelisted(ComponentName pluginName) {
@@ -167,7 +167,7 @@ public class PluginInstanceManager<T extends Plugin> {
         return false;
     }
 
-    private void disable(PluginInfo info, @PluginEnabler.DisableReason int reason) {
+    private boolean disable(PluginInfo info, @PluginEnabler.DisableReason int reason) {
         // Live by the sword, die by the sword.
         // Misbehaving plugins get disabled and won't come back until uninstall/reinstall.
 
@@ -177,10 +177,12 @@ public class PluginInstanceManager<T extends Plugin> {
         // assuming one of them must be bad.
         if (isPluginWhitelisted(pluginComponent)) {
             // Don't disable whitelisted plugins as they are a part of the OS.
-            return;
+            return false;
         }
         Log.w(TAG, "Disabling plugin " + pluginComponent.flattenToShortString());
         mManager.getPluginEnabler().setDisabled(pluginComponent, reason);
+
+        return true;
     }
 
     public <T> boolean dependsOn(Plugin p, Class<T> cls) {
@@ -255,13 +257,9 @@ public class PluginInstanceManager<T extends Plugin> {
                 case QUERY_ALL:
                     if (DEBUG) Log.d(TAG, "queryAll " + mAction);
                     for (int i = mPlugins.size() - 1; i >= 0; i--) {
-                        PluginInfo<T> plugin = mPlugins.get(i);
-                        mListener.onPluginDisconnected(plugin.mPlugin);
-                        if (!(plugin.mPlugin instanceof PluginFragment)) {
-                            // Only call onDestroy for plugins that aren't fragments, as fragments
-                            // will get the onDestroy as part of the fragment lifecycle.
-                            plugin.mPlugin.onDestroy();
-                        }
+                        PluginInfo<T> pluginInfo = mPlugins.get(i);
+                        mMainHandler.obtainMessage(
+                                MainHandler.PLUGIN_DISCONNECTED, pluginInfo.mPlugin).sendToTarget();
                     }
                     mPlugins.clear();
                     handleQueryPlugins(null);
@@ -359,8 +357,8 @@ public class PluginInstanceManager<T extends Plugin> {
                     if (DEBUG) Log.d(TAG, "createPlugin");
                     return new PluginInfo(pkg, cls, plugin, pluginContext, version);
                 } catch (InvalidVersionException e) {
-                    final int icon = mContext.getResources().getIdentifier("tuner", "drawable",
-                            mContext.getPackageName());
+                    final int icon = Resources.getSystem().getIdentifier(
+                            "stat_sys_warning", "drawable", "android");
                     final int color = Resources.getSystem().getIdentifier(
                             "system_notification_accent_color", "color", "android");
                     final Notification.Builder nb = new Notification.Builder(mContext,
@@ -392,8 +390,7 @@ public class PluginInstanceManager<T extends Plugin> {
                     PendingIntent pi = PendingIntent.getBroadcast(mContext, 0, i, 0);
                     nb.addAction(new Action.Builder(null, "Disable plugin", pi).build());
                     mContext.getSystemService(NotificationManager.class)
-                            .notifyAsUser(cls, SystemMessage.NOTE_PLUGIN, nb.build(),
-                                    UserHandle.ALL);
+                            .notify(SystemMessage.NOTE_PLUGIN, nb.build());
                     // TODO: Warn user.
                     Log.w(TAG, "Plugin has invalid interface version " + plugin.getVersion()
                             + ", expected " + mVersion);

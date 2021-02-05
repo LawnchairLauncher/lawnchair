@@ -25,10 +25,6 @@ import android.view.InputEvent;
 import android.view.InputEventSender;
 import android.view.MotionEvent;
 
-import com.android.systemui.shared.QuickstepCompat;
-
-import xyz.paphonb.quickstep.compat.InputCompat;
-
 /**
  * @see android.view.InputChannel
  */
@@ -78,14 +74,14 @@ public class InputChannelCompat {
         public InputEventReceiver(InputChannel inputChannel, Looper looper,
                 Choreographer choreographer, final InputEventListener listener) {
             mInputChannel = inputChannel;
-            mReceiver = QuickstepCompat.getInputCompat().createBatchedInputEventReceiver(
-                    inputChannel, looper, choreographer, new InputCompat.InputEventListener() {
-                        @Override
-                        public boolean onInputEvent(InputEvent event) {
-                            listener.onInputEvent(event);
-                            return true;
-                        }
-                    });
+            mReceiver = new BatchedInputEventReceiver(inputChannel, looper, choreographer) {
+
+                @Override
+                public void onInputEvent(InputEvent event) {
+                    listener.onInputEvent(event);
+                    finishInputEvent(event, true /* handled */);
+                }
+            };
         }
 
         /**

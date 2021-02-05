@@ -16,9 +16,9 @@
 
 package com.android.systemui.shared.system;
 
+import android.content.ComponentName;
 import android.content.pm.ParceledListSlice;
-import android.graphics.Rect;
-import android.os.RemoteException;
+import android.view.DisplayInfo;
 import android.view.IPinnedStackController;
 import android.view.IPinnedStackListener;
 
@@ -32,62 +32,93 @@ import java.util.List;
  * previously set listener.
  */
 public class PinnedStackListenerForwarder extends IPinnedStackListener.Stub {
-    private List<IPinnedStackListener> mListeners = new ArrayList<>();
+    private List<PinnedStackListener> mListeners = new ArrayList<>();
 
     /** Adds a listener to receive updates from the WindowManagerService. */
-    public void addListener(IPinnedStackListener listener) {
+    public void addListener(PinnedStackListener listener) {
         mListeners.add(listener);
     }
 
     /** Removes a listener so it will no longer receive updates from the WindowManagerService. */
-    public void removeListener(IPinnedStackListener listener) {
+    public void removeListener(PinnedStackListener listener) {
         mListeners.remove(listener);
     }
 
     @Override
-    public void onListenerRegistered(IPinnedStackController controller) throws RemoteException {
-        for (IPinnedStackListener listener : mListeners) {
+    public void onListenerRegistered(IPinnedStackController controller) {
+        for (PinnedStackListener listener : mListeners) {
             listener.onListenerRegistered(controller);
         }
     }
 
     @Override
-    public void onMovementBoundsChanged(Rect insetBounds, Rect normalBounds, Rect animatingBounds,
-            boolean fromImeAdjustment, boolean fromShelfAdjustment, int displayRotation)
-            throws RemoteException {
-        for (IPinnedStackListener listener : mListeners) {
-            listener.onMovementBoundsChanged(
-                    insetBounds, normalBounds, animatingBounds,
-                    fromImeAdjustment, fromShelfAdjustment, displayRotation);
+    public void onMovementBoundsChanged(boolean fromImeAdjustment) {
+        for (PinnedStackListener listener : mListeners) {
+            listener.onMovementBoundsChanged(fromImeAdjustment);
         }
     }
 
     @Override
-    public void onImeVisibilityChanged(boolean imeVisible, int imeHeight) throws RemoteException {
-        for (IPinnedStackListener listener : mListeners) {
+    public void onImeVisibilityChanged(boolean imeVisible, int imeHeight) {
+        for (PinnedStackListener listener : mListeners) {
             listener.onImeVisibilityChanged(imeVisible, imeHeight);
         }
     }
 
     @Override
-    public void onShelfVisibilityChanged(boolean shelfVisible, int shelfHeight)
-            throws RemoteException {
-        for (IPinnedStackListener listener : mListeners) {
-            listener.onShelfVisibilityChanged(shelfVisible, shelfHeight);
-        }
-    }
-
-    @Override
-    public void onMinimizedStateChanged(boolean isMinimized) throws RemoteException {
-        for (IPinnedStackListener listener : mListeners) {
-            listener.onMinimizedStateChanged(isMinimized);
-        }
-    }
-
-    @Override
-    public void onActionsChanged(ParceledListSlice actions) throws RemoteException {
-        for (IPinnedStackListener listener : mListeners) {
+    public void onActionsChanged(ParceledListSlice actions) {
+        for (PinnedStackListener listener : mListeners) {
             listener.onActionsChanged(actions);
         }
+    }
+
+    @Override
+    public void onActivityHidden(ComponentName componentName) {
+        for (PinnedStackListener listener : mListeners) {
+            listener.onActivityHidden(componentName);
+        }
+    }
+
+    @Override
+    public void onDisplayInfoChanged(DisplayInfo displayInfo) {
+        for (PinnedStackListener listener : mListeners) {
+            listener.onDisplayInfoChanged(displayInfo);
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged() {
+        for (PinnedStackListener listener : mListeners) {
+            listener.onConfigurationChanged();
+        }
+    }
+
+    @Override
+    public void onAspectRatioChanged(float aspectRatio) {
+        for (PinnedStackListener listener : mListeners) {
+            listener.onAspectRatioChanged(aspectRatio);
+        }
+    }
+
+    /**
+     * A counterpart of {@link IPinnedStackListener} with empty implementations.
+     * Subclasses can ignore those methods they do not intend to take action upon.
+     */
+    public static class PinnedStackListener {
+        public void onListenerRegistered(IPinnedStackController controller) {}
+
+        public void onMovementBoundsChanged(boolean fromImeAdjustment) {}
+
+        public void onImeVisibilityChanged(boolean imeVisible, int imeHeight) {}
+
+        public void onActionsChanged(ParceledListSlice actions) {}
+
+        public void onActivityHidden(ComponentName componentName) {}
+
+        public void onDisplayInfoChanged(DisplayInfo displayInfo) {}
+
+        public void onConfigurationChanged() {}
+
+        public void onAspectRatioChanged(float aspectRatio) {}
     }
 }

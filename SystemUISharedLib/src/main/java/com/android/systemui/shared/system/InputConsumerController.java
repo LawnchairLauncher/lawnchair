@@ -32,11 +32,7 @@ import android.view.InputChannel;
 import android.view.InputEvent;
 import android.view.WindowManagerGlobal;
 
-import com.android.systemui.shared.QuickstepCompat;
-
 import java.io.PrintWriter;
-
-import xyz.paphonb.quickstep.compat.InputCompat;
 
 /**
  * Manages the input consumer that allows the SystemUI to directly receive input.
@@ -65,24 +61,31 @@ public class InputConsumerController {
      * Input handler used for the input consumer. Input events are batched and consumed with the
      * SurfaceFlinger vsync.
      */
-    private BatchedInputEventReceiver createInputEventReceiver(InputChannel inputChannel, Looper looper) {
-        return QuickstepCompat.getInputCompat().createBatchedInputEventReceiver(
-                inputChannel, looper, Choreographer.getSfInstance(), new InputCompat.InputEventListener() {
-                    @Override
-                    public boolean onInputEvent(InputEvent event) {
-                        if (mListener != null) {
-                            return mListener.onInputEvent(event);
-                        }
-                        return true;
-                    }
-                });
+    private final class InputEventReceiver extends BatchedInputEventReceiver {
+
+        InputEventReceiver(InputChannel inputChannel, Looper looper,
+                Choreographer choreographer) {
+            super(inputChannel, looper, choreographer);
+        }
+
+        @Override
+        public void onInputEvent(InputEvent event) {
+            boolean handled = true;
+            try {
+                if (mListener != null) {
+                    handled = mListener.onInputEvent(event);
+                }
+            } finally {
+                finishInputEvent(event, handled);
+            }
+        }
     }
 
     private final IWindowManager mWindowManager;
     private final IBinder mToken;
     private final String mName;
 
-    private BatchedInputEventReceiver mInputEventReceiver;
+    private InputEventReceiver mInputEventReceiver;
     private InputListener mListener;
     private RegistrationListener mRegistrationListener;
 
@@ -141,16 +144,25 @@ public class InputConsumerController {
      * Registers the input consumer.
      */
     public void registerInputConsumer() {
+        registerInputConsumer(false);
+    }
+
+    /**
+     * Registers the input consumer.
+     * @param withSfVsync the flag set using sf vsync signal or no
+     */
+    public void registerInputConsumer(boolean withSfVsync) {
         if (mInputEventReceiver == null) {
             final InputChannel inputChannel = new InputChannel();
             try {
                 // TODO(b/113087003): Support Picture-in-picture in multi-display.
-                QuickstepCompat.getInputCompat().destroyInputConsumer(mWindowManager, mName, DEFAULT_DISPLAY);
-                QuickstepCompat.getInputCompat().createInputConsumer(mWindowManager, mToken, mName, DEFAULT_DISPLAY, inputChannel);
+                mWindowManager.destroyInputConsumer(mName, DEFAULT_DISPLAY);
+                mWindowManager.createInputConsumer(mToken, mName, DEFAULT_DISPLAY, inputChannel);
             } catch (RemoteException e) {
                 Log.e(TAG, "Failed to create input consumer", e);
             }
-            mInputEventReceiver = createInputEventReceiver(inputChannel, Looper.myLooper());
+            mInputEventReceiver = new InputEventReceiver(inputChannel, Looper.myLooper(),
+                    withSfVsync ? Choreographer.getSfInstance() : Choreographer.getInstance());
             if (mRegistrationListener != null) {
                 mRegistrationListener.onRegistrationChanged(true /* isRegistered */);
             }
@@ -164,7 +176,7 @@ public class InputConsumerController {
         if (mInputEventReceiver != null) {
             try {
                 // TODO(b/113087003): Support Picture-in-picture in multi-display.
-                QuickstepCompat.getInputCompat().destroyInputConsumer(mWindowManager, mName, DEFAULT_DISPLAY);
+                mWindowManager.destroyInputConsumer(mName, DEFAULT_DISPLAY);
             } catch (RemoteException e) {
                 Log.e(TAG, "Failed to destroy input consumer", e);
             }

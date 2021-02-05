@@ -17,7 +17,6 @@
 package com.android.systemui.shared.system;
 
 import android.app.ActivityManager;
-import android.app.ActivityManager.RunningTaskInfo;
 import android.app.TaskInfo;
 import android.content.ComponentName;
 
@@ -28,10 +27,6 @@ public class TaskInfoCompat {
     }
 
     public static int getActivityType(TaskInfo info) {
-        return info.configuration.windowConfiguration.getActivityType();
-    }
-
-    public static int getActivityType(RunningTaskInfo info) {
         return info.configuration.windowConfiguration.getActivityType();
     }
 

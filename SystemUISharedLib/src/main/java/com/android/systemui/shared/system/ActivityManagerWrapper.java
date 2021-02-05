@@ -20,23 +20,22 @@ import static android.app.ActivityManager.LOCK_TASK_MODE_LOCKED;
 import static android.app.ActivityManager.LOCK_TASK_MODE_NONE;
 import static android.app.ActivityManager.LOCK_TASK_MODE_PINNED;
 import static android.app.ActivityManager.RECENT_IGNORE_UNAVAILABLE;
-import static android.app.WindowConfiguration.ACTIVITY_TYPE_RECENTS;
 import static android.app.WindowConfiguration.ACTIVITY_TYPE_UNDEFINED;
-import static android.app.WindowConfiguration.WINDOWING_MODE_PINNED;
 import static android.app.WindowConfiguration.WINDOWING_MODE_SPLIT_SCREEN_PRIMARY;
 import static android.app.WindowConfiguration.WINDOWING_MODE_SPLIT_SCREEN_SECONDARY;
 import static android.app.WindowConfiguration.WINDOWING_MODE_UNDEFINED;
 
 import android.annotation.NonNull;
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RecentTaskInfo;
 import android.app.ActivityManager.RunningTaskInfo;
+import android.app.ActivityManager.TaskSnapshot;
 import android.app.ActivityOptions;
 import android.app.ActivityTaskManager;
 import android.app.AppGlobals;
 import android.app.IAssistDataReceiver;
 import android.app.WindowConfiguration;
-import android.app.WindowConfiguration.ActivityType;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -46,13 +45,13 @@ import android.content.pm.PackageManager;
 import android.content.pm.UserInfo;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.RemoteException;
 import android.os.ServiceManager;
+import android.os.SystemClock;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.Log;
@@ -61,7 +60,6 @@ import android.view.IRecentsAnimationRunner;
 import android.view.RemoteAnimationTarget;
 
 import com.android.internal.app.IVoiceInteractionManagerService;
-import com.android.systemui.shared.QuickstepCompat;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskKey;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -71,9 +69,6 @@ import java.util.List;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
-import xyz.paphonb.quickstep.compat.ActivityManagerCompat;
-import xyz.paphonb.quickstep.compat.RecentsAnimationRunner;
-
 public class ActivityManagerWrapper {
 
     private static final String TAG = "ActivityManagerWrapper";
@@ -82,6 +77,10 @@ public class ActivityManagerWrapper {
 
     // Should match the values in PhoneWindowManager
     public static final String CLOSE_SYSTEM_WINDOWS_REASON_RECENTS = "recentapps";
+    public static final String CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY = "homekey";
+
+    // Should match the value in AssistManager
+    private static final String INVOCATION_TIME_MS_KEY = "invocation_time_ms";
 
     private final PackageManager mPackageManager;
     private final BackgroundExecutor mBackgroundExecutor;
@@ -91,11 +90,7 @@ public class ActivityManagerWrapper {
         final Context context = AppGlobals.getInitialApplication();
         mPackageManager = context.getPackageManager();
         mBackgroundExecutor = BackgroundExecutor.get();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            mTaskStackChangeListeners = new TaskStackChangeListenersVQ(Looper.getMainLooper());
-        } else {
-            mTaskStackChangeListeners = new TaskStackChangeListenersVP(Looper.getMainLooper());
-        }
+        mTaskStackChangeListeners = new TaskStackChangeListeners(Looper.getMainLooper());
     }
 
     public static ActivityManagerWrapper getInstance() {
@@ -119,15 +114,18 @@ public class ActivityManagerWrapper {
      * @return the top running task (can be {@code null}).
      */
     public ActivityManager.RunningTaskInfo getRunningTask() {
-        return getRunningTask(ACTIVITY_TYPE_RECENTS /* ignoreActivityType */);
+        return getRunningTask(false /* filterVisibleRecents */);
     }
 
-    public ActivityManager.RunningTaskInfo getRunningTask(@ActivityType int ignoreActivityType) {
+    /**
+     * @return the top running task filtering only for tasks that can be visible in the recent tasks
+     * list (can be {@code null}).
+     */
+    public ActivityManager.RunningTaskInfo getRunningTask(boolean filterOnlyVisibleRecents) {
         // Note: The set of running tasks from the system is ordered by recency
         try {
             List<ActivityManager.RunningTaskInfo> tasks =
-                    QuickstepCompat.getActivityManager().getFilteredTasks(1, ignoreActivityType,
-                            WINDOWING_MODE_PINNED /* ignoreWindowingMode */);
+                    ActivityTaskManager.getService().getFilteredTasks(1, filterOnlyVisibleRecents);
             if (tasks.isEmpty()) {
                 return null;
             }
@@ -142,8 +140,8 @@ public class ActivityManagerWrapper {
      */
     public List<RecentTaskInfo> getRecentTasks(int numTasks, int userId) {
         try {
-            return QuickstepCompat.getActivityManager().getRecentTasks(numTasks,
-                            RECENT_IGNORE_UNAVAILABLE, userId);
+            return ActivityTaskManager.getService().getRecentTasks(numTasks,
+                            RECENT_IGNORE_UNAVAILABLE, userId).getList();
         } catch (RemoteException e) {
             Log.e(TAG, "Failed to get recent tasks", e);
             return new ArrayList<>();
@@ -153,10 +151,10 @@ public class ActivityManagerWrapper {
     /**
      * @return the task snapshot for the given {@param taskId}.
      */
-    public @NonNull ThumbnailData getTaskThumbnail(int taskId, boolean reducedResolution) {
+    public @NonNull ThumbnailData getTaskThumbnail(int taskId, boolean isLowResolution) {
         ActivityManager.TaskSnapshot snapshot = null;
         try {
-            snapshot = QuickstepCompat.getActivityManager().getTaskSnapshot(taskId, reducedResolution);
+            snapshot = ActivityTaskManager.getService().getTaskSnapshot(taskId, isLowResolution);
         } catch (RemoteException e) {
             Log.w(TAG, "Failed to retrieve task snapshot", e);
         }
@@ -165,6 +163,23 @@ public class ActivityManagerWrapper {
         } else {
             return new ThumbnailData();
         }
+    }
+
+    /**
+     * Removes the outdated snapshot of home task.
+     */
+    public void invalidateHomeTaskSnapshot(final Activity homeActivity) {
+        mBackgroundExecutor.submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ActivityTaskManager.getService().invalidateHomeTaskSnapshot(
+                            homeActivity.getActivityToken());
+                } catch (RemoteException e) {
+                    Log.w(TAG, "Failed to invalidate home snapshot", e);
+                }
+            }
+        });
     }
 
     /**
@@ -228,28 +243,36 @@ public class ActivityManagerWrapper {
                     }
                 };
             }
-            RecentsAnimationRunner runner = null;
+            IRecentsAnimationRunner runner = null;
             if (animationHandler != null) {
-                runner = new RecentsAnimationRunner() {
+                runner = new IRecentsAnimationRunner.Stub() {
                     @Override
                     public void onAnimationStart(IRecentsAnimationController controller,
-                            RemoteAnimationTarget[] apps, Rect homeContentInsets,
-                            Rect minimizedHomeBounds) {
+                            RemoteAnimationTarget[] apps, RemoteAnimationTarget[] wallpapers,
+                            Rect homeContentInsets, Rect minimizedHomeBounds) {
                         final RecentsAnimationControllerCompat controllerCompat =
                                 new RecentsAnimationControllerCompat(controller);
                         final RemoteAnimationTargetCompat[] appsCompat =
                                 RemoteAnimationTargetCompat.wrap(apps);
+                        final RemoteAnimationTargetCompat[] wallpapersCompat =
+                                RemoteAnimationTargetCompat.wrap(wallpapers);
                         animationHandler.onAnimationStart(controllerCompat, appsCompat,
-                                homeContentInsets, minimizedHomeBounds);
+                                wallpapersCompat, homeContentInsets, minimizedHomeBounds);
                     }
 
                     @Override
-                    public void onAnimationCanceled(boolean deferredWithScreenshot) {
-                        animationHandler.onAnimationCanceled(deferredWithScreenshot);
+                    public void onAnimationCanceled(TaskSnapshot taskSnapshot) {
+                        animationHandler.onAnimationCanceled(
+                                taskSnapshot != null ? new ThumbnailData(taskSnapshot) : null);
+                    }
+
+                    @Override
+                    public void onTaskAppeared(RemoteAnimationTarget app) {
+                        animationHandler.onTaskAppeared(new RemoteAnimationTargetCompat(app));
                     }
                 };
             }
-            QuickstepCompat.getActivityManager().startRecentsActivity(intent, receiver, runner);
+            ActivityTaskManager.getService().startRecentsActivity(intent, receiver, runner);
             if (resultCallback != null) {
                 resultCallbackHandler.post(new Runnable() {
                     @Override
@@ -275,7 +298,7 @@ public class ActivityManagerWrapper {
      */
     public void cancelRecentsAnimation(boolean restoreHomeStackPosition) {
         try {
-            QuickstepCompat.getActivityManager().cancelRecentsAnimation(restoreHomeStackPosition);
+            ActivityTaskManager.getService().cancelRecentsAnimation(restoreHomeStackPosition);
         } catch (RemoteException e) {
             Log.e(TAG, "Failed to cancel recents animation", e);
         }
@@ -342,7 +365,7 @@ public class ActivityManagerWrapper {
     public boolean startActivityFromRecents(int taskId, ActivityOptions options) {
         try {
             Bundle optsBundle = options == null ? null : options.toBundle();
-            QuickstepCompat.getActivityManager().startActivityFromRecents(taskId, optsBundle);
+            ActivityTaskManager.getService().startActivityFromRecents(taskId, optsBundle);
             return true;
         } catch (Exception e) {
             return false;
@@ -355,9 +378,8 @@ public class ActivityManagerWrapper {
     public boolean setTaskWindowingModeSplitScreenPrimary(int taskId, int createMode,
             Rect initialBounds) {
         try {
-            return QuickstepCompat.getActivityManager().setTaskWindowingModeSplitScreenPrimary(taskId,
-                    createMode, true /* onTop */, false /* animate */, initialBounds,
-                    true /* showRecents */);
+            return ActivityTaskManager.getService().setTaskWindowingModeSplitScreenPrimary(taskId,
+                    true /* onTop */);
         } catch (RemoteException e) {
             return false;
         }
@@ -407,7 +429,7 @@ public class ActivityManagerWrapper {
             @Override
             public void run() {
                 try {
-                    QuickstepCompat.getActivityManager().removeTask(taskId);
+                    ActivityTaskManager.getService().removeTask(taskId);
                 } catch (RemoteException e) {
                     Log.w(TAG, "Failed to remove task=" + taskId, e);
                 }
@@ -423,7 +445,7 @@ public class ActivityManagerWrapper {
             @Override
             public void run() {
                 try {
-                    QuickstepCompat.getActivityManager().removeAllVisibleRecentTasks();
+                    ActivityTaskManager.getService().removeAllVisibleRecentTasks();
                 } catch (RemoteException e) {
                     Log.w(TAG, "Failed to remove all tasks", e);
                 }
@@ -436,7 +458,7 @@ public class ActivityManagerWrapper {
      */
     public void cancelWindowTransition(int taskId) {
         try {
-            QuickstepCompat.getActivityManager().cancelTaskWindowTransition(taskId);
+            ActivityTaskManager.getService().cancelTaskWindowTransition(taskId);
         } catch (RemoteException e) {
             Log.w(TAG, "Failed to cancel window transition for task=" + taskId, e);
         }
@@ -447,7 +469,7 @@ public class ActivityManagerWrapper {
      */
     public boolean isScreenPinningActive() {
         try {
-            return QuickstepCompat.getActivityManager().getLockTaskModeState() == LOCK_TASK_MODE_PINNED;
+            return ActivityTaskManager.getService().getLockTaskModeState() == LOCK_TASK_MODE_PINNED;
         } catch (RemoteException e) {
             return false;
         }
@@ -466,7 +488,7 @@ public class ActivityManagerWrapper {
      */
     public boolean isLockToAppActive() {
         try {
-            return QuickstepCompat.getActivityManager().getLockTaskModeState() != LOCK_TASK_MODE_NONE;
+            return ActivityTaskManager.getService().getLockTaskModeState() != LOCK_TASK_MODE_NONE;
         } catch (RemoteException e) {
             return false;
         }
@@ -477,7 +499,7 @@ public class ActivityManagerWrapper {
      */
     public boolean isLockTaskKioskModeActive() {
         try {
-            return QuickstepCompat.getActivityManager().getLockTaskModeState() == LOCK_TASK_MODE_LOCKED;
+            return ActivityTaskManager.getService().getLockTaskModeState() == LOCK_TASK_MODE_LOCKED;
         } catch (RemoteException e) {
             return false;
         }
@@ -493,6 +515,8 @@ public class ActivityManagerWrapper {
         if (service == null) {
             return false;
         }
+        args.putLong(INVOCATION_TIME_MS_KEY, SystemClock.elapsedRealtime());
+
         try {
             return service.showSessionFromSession(token, args, flags);
         } catch (RemoteException e) {
@@ -506,7 +530,7 @@ public class ActivityManagerWrapper {
     public boolean supportsFreeformMultiWindow(Context context) {
         final boolean freeformDevOption = Settings.Global.getInt(context.getContentResolver(),
                 Settings.Global.DEVELOPMENT_ENABLE_FREEFORM_WINDOWS_SUPPORT, 0) != 0;
-        return QuickstepCompat.getActivityManager().supportsMultiWindow(context)
+        return ActivityTaskManager.supportsMultiWindow(context)
                 && (context.getPackageManager().hasSystemFeature(
                 PackageManager.FEATURE_FREEFORM_WINDOW_MANAGEMENT)
                 || freeformDevOption);

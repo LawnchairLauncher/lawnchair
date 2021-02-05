@@ -15,7 +15,6 @@
  */
 package com.android.systemui.shared.system;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.view.Choreographer;
@@ -39,7 +38,6 @@ public class InputMonitorCompat {
      * @see InputMonitor#pilferPointers()
      */
     public void pilferPointers() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return;
         mInputMonitor.pilferPointers();
     }
 
@@ -47,7 +45,6 @@ public class InputMonitorCompat {
      * @see InputMonitor#dispose()
      */
     public void dispose() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return;
         mInputMonitor.dispose();
     }
 
@@ -56,7 +53,6 @@ public class InputMonitorCompat {
      */
     public InputEventReceiver getInputReceiver(Looper looper, Choreographer choreographer,
             InputEventListener listener) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return null;
         return new InputEventReceiver(mInputMonitor.getInputChannel(), looper, choreographer,
                 listener);
     }
@@ -65,7 +61,6 @@ public class InputMonitorCompat {
      * Gets the input monitor stored in a bundle
      */
     public static InputMonitorCompat fromBundle(Bundle bundle, String key) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return new InputMonitorCompat(null);
         return new InputMonitorCompat((InputMonitor) bundle.getParcelable(key));
     }
 }

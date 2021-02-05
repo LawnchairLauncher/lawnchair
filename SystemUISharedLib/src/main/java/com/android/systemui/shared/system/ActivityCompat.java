@@ -20,8 +20,6 @@ import android.app.Activity;
 import android.view.View;
 import android.view.ViewHierarchyEncoder;
 
-import com.android.systemui.shared.QuickstepCompat;
-
 import java.io.ByteArrayOutputStream;
 
 public class ActivityCompat {
@@ -36,6 +34,13 @@ public class ActivityCompat {
      */
     public void registerRemoteAnimations(RemoteAnimationDefinitionCompat definition) {
         mWrapped.registerRemoteAnimations(definition.getWrapped());
+    }
+
+    /**
+     * @see Activity#unregisterRemoteAnimations
+     */
+    public void unregisterRemoteAnimations() {
+        mWrapped.unregisterRemoteAnimations();
     }
 
     /**
@@ -62,6 +67,6 @@ public class ActivityCompat {
     }
 
     public int getDisplayId() {
-        return QuickstepCompat.getActivityManager().getDisplayId(mWrapped);
+        return mWrapped.getDisplayId();
     }
 }

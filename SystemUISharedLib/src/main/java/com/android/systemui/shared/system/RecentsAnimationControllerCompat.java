@@ -17,13 +17,10 @@
 package com.android.systemui.shared.system;
 
 import android.app.ActivityManager.TaskSnapshot;
-import android.os.Build;
-import android.os.Build.VERSION;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.IRecentsAnimationController;
 
-import com.android.systemui.shared.QuickstepCompat;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 
 public class RecentsAnimationControllerCompat {
@@ -64,14 +61,6 @@ public class RecentsAnimationControllerCompat {
         }
     }
 
-    public void setSplitScreenMinimized(boolean minimized) {
-        try {
-            mAnimationController.setSplitScreenMinimized(minimized);
-        } catch (RemoteException e) {
-            Log.e(TAG, "Failed to set minimize dock", e);
-        }
-    }
-
     public void hideCurrentInputMethod() {
         try {
             mAnimationController.hideCurrentInputMethod();
@@ -88,25 +77,13 @@ public class RecentsAnimationControllerCompat {
      */
     public void finish(boolean toHome, boolean sendUserLeaveHint) {
         try {
-            QuickstepCompat.getRecentsCompat().finishRecentsAnimation(
-                    mAnimationController, toHome, sendUserLeaveHint);
+            mAnimationController.finish(toHome, sendUserLeaveHint);
         } catch (RemoteException e) {
             Log.e(TAG, "Failed to finish recents animation", e);
         }
     }
 
-    @Deprecated
-    public void setCancelWithDeferredScreenshot(boolean screenshot) {
-        if (VERSION.SDK_INT < Build.VERSION_CODES.Q) return;
-        try {
-            mAnimationController.setCancelWithDeferredScreenshot(screenshot);
-        } catch (RemoteException e) {
-            Log.e(TAG, "Failed to set cancel with deferred screenshot", e);
-        }
-    }
-
     public void setDeferCancelUntilNextTransition(boolean defer, boolean screenshot) {
-        if (VERSION.SDK_INT < Build.VERSION_CODES.Q) return;
         try {
             mAnimationController.setDeferCancelUntilNextTransition(defer, screenshot);
         } catch (RemoteException e) {
@@ -115,11 +92,33 @@ public class RecentsAnimationControllerCompat {
     }
 
     public void cleanupScreenshot() {
-        if (VERSION.SDK_INT < Build.VERSION_CODES.Q) return;
         try {
             mAnimationController.cleanupScreenshot();
         } catch (RemoteException e) {
             Log.e(TAG, "Failed to clean up screenshot of recents animation", e);
+        }
+    }
+
+    /**
+     * @see {{@link IRecentsAnimationController#setWillFinishToHome(boolean)}}.
+     */
+    public void setWillFinishToHome(boolean willFinishToHome) {
+        try {
+            mAnimationController.setWillFinishToHome(willFinishToHome);
+        } catch (RemoteException e) {
+            Log.e(TAG, "Failed to set overview reached state", e);
+        }
+    }
+
+    /**
+     * @see IRecentsAnimationController#removeTask
+     */
+    public boolean removeTask(int taskId) {
+        try {
+            return mAnimationController.removeTask(taskId);
+        } catch (RemoteException e) {
+            Log.e(TAG, "Failed to remove remote animation target", e);
+            return false;
         }
     }
 }

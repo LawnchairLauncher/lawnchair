@@ -27,13 +27,13 @@ import android.graphics.Rect;
 import android.os.Handler;
 import android.os.RemoteException;
 import android.util.Log;
-import android.view.IPinnedStackListener;
+import android.view.SurfaceControl;
 import android.view.WindowManager;
 import android.view.WindowManagerGlobal;
 
-import com.android.systemui.shared.QuickstepCompat;
 import com.android.systemui.shared.recents.view.AppTransitionAnimationSpecsFuture;
 import com.android.systemui.shared.recents.view.RecentsTransition;
+import com.android.systemui.shared.system.PinnedStackListenerForwarder.PinnedStackListener;
 
 public class WindowManagerWrapper {
 
@@ -54,7 +54,6 @@ public class WindowManagerWrapper {
     public static final int TRANSIT_WALLPAPER_INTRA_CLOSE =
             WindowManager.TRANSIT_WALLPAPER_INTRA_CLOSE;
     public static final int TRANSIT_TASK_OPEN_BEHIND = WindowManager.TRANSIT_TASK_OPEN_BEHIND;
-    public static final int TRANSIT_TASK_IN_PLACE = WindowManager.TRANSIT_TASK_IN_PLACE;
     public static final int TRANSIT_ACTIVITY_RELAUNCH = WindowManager.TRANSIT_ACTIVITY_RELAUNCH;
     public static final int TRANSIT_DOCK_TASK_FROM_RECENTS =
             WindowManager.TRANSIT_DOCK_TASK_FROM_RECENTS;
@@ -74,6 +73,8 @@ public class WindowManagerWrapper {
     public static final int WINDOWING_MODE_UNDEFINED = WindowConfiguration.WINDOWING_MODE_UNDEFINED;
     public static final int WINDOWING_MODE_FULLSCREEN =
             WindowConfiguration.WINDOWING_MODE_FULLSCREEN;
+    public static final int WINDOWING_MODE_MULTI_WINDOW =
+            WindowConfiguration.WINDOWING_MODE_MULTI_WINDOW;
     public static final int WINDOWING_MODE_PINNED = WindowConfiguration.WINDOWING_MODE_PINNED;
     public static final int WINDOWING_MODE_SPLIT_SCREEN_PRIMARY =
             WindowConfiguration.WINDOWING_MODE_SPLIT_SCREEN_PRIMARY;
@@ -113,7 +114,7 @@ public class WindowManagerWrapper {
             AppTransitionAnimationSpecsFuture animationSpecFuture, Runnable animStartedCallback,
             Handler animStartedCallbackHandler, boolean scaleUp, int displayId) {
         try {
-            QuickstepCompat.getRecentsCompat()
+            WindowManagerGlobal.getWindowManagerService()
                     .overridePendingAppTransitionMultiThumbFuture(animationSpecFuture.getFuture(),
                             RecentsTransition.wrapStartedListener(animStartedCallbackHandler,
                                     animStartedCallback), scaleUp, displayId);
@@ -125,7 +126,7 @@ public class WindowManagerWrapper {
     public void overridePendingAppTransitionRemote(
             RemoteAnimationAdapterCompat remoteAnimationAdapter, int displayId) {
         try {
-            QuickstepCompat.getRecentsCompat().overridePendingAppTransitionRemote(
+            WindowManagerGlobal.getWindowManagerService().overridePendingAppTransitionRemote(
                     remoteAnimationAdapter.getWrapped(), displayId);
         } catch (RemoteException e) {
             Log.w(TAG, "Failed to override pending app transition (remote): ", e);
@@ -141,14 +142,6 @@ public class WindowManagerWrapper {
                     .setNavBarVirtualKeyHapticFeedbackEnabled(enabled);
         } catch (RemoteException e) {
             Log.w(TAG, "Failed to enable or disable navigation bar button haptics: ", e);
-        }
-    }
-
-    public void setShelfHeight(boolean visible, int shelfHeight) {
-        try {
-            WindowManagerGlobal.getWindowManagerService().setShelfHeight(visible, shelfHeight);
-        } catch (RemoteException e) {
-            Log.w(TAG, "Failed to set shelf height");
         }
     }
 
@@ -175,7 +168,7 @@ public class WindowManagerWrapper {
      */
     public boolean hasSoftNavigationBar(int displayId) {
         try {
-            return QuickstepCompat.getRecentsCompat().hasNavigationBar(displayId);
+            return WindowManagerGlobal.getWindowManagerService().hasNavigationBar(displayId);
         } catch (RemoteException e) {
             return false;
         }
@@ -190,7 +183,7 @@ public class WindowManagerWrapper {
      */
     public int getNavBarPosition(int displayId) {
         try {
-            return QuickstepCompat.getRecentsCompat().getNavBarPosition(displayId);
+            return WindowManagerGlobal.getWindowManagerService().getNavBarPosition(displayId);
         } catch (RemoteException e) {
             Log.w(TAG, "Failed to get nav bar position");
         }
@@ -198,22 +191,10 @@ public class WindowManagerWrapper {
     }
 
     /**
-     * Registers a docked stack listener with the system.
-     */
-    public void registerDockedStackListener(DockedStackListenerCompat listener) {
-        try {
-            WindowManagerGlobal.getWindowManagerService().registerDockedStackListener(
-                    listener.mListener);
-        } catch (RemoteException e) {
-            Log.w(TAG, "Failed to register docked stack listener");
-        }
-    }
-
-    /**
      * Adds a pinned stack listener, which will receive updates from the window manager service
      * along with any other pinned stack listeners that were added via this method.
      */
-    public void addPinnedStackListener(IPinnedStackListener listener) throws RemoteException {
+    public void addPinnedStackListener(PinnedStackListener listener) throws RemoteException {
         mPinnedStackListenerForwarder.addListener(listener);
         WindowManagerGlobal.getWindowManagerService().registerPinnedStackListener(
                 DEFAULT_DISPLAY, mPinnedStackListenerForwarder);
@@ -222,7 +203,26 @@ public class WindowManagerWrapper {
     /**
      * Removes a pinned stack listener.
      */
-    public void removePinnedStackListener(IPinnedStackListener listener) {
+    public void removePinnedStackListener(PinnedStackListener listener) {
         mPinnedStackListenerForwarder.removeListener(listener);
+    }
+
+    /**
+     * Mirrors a specified display. The SurfaceControl returned is the root of the mirrored
+     * hierarchy.
+     *
+     * @param displayId The id of the display to mirror
+     * @return The SurfaceControl for the root of the mirrored hierarchy.
+     */
+    public SurfaceControl mirrorDisplay(final int displayId) {
+        try {
+            SurfaceControl outSurfaceControl = new SurfaceControl();
+            WindowManagerGlobal.getWindowManagerService().mirrorDisplay(displayId,
+                    outSurfaceControl);
+            return outSurfaceControl;
+        } catch (RemoteException e) {
+            Log.e(TAG, "Unable to reach window manager", e);
+        }
+        return null;
     }
 }
