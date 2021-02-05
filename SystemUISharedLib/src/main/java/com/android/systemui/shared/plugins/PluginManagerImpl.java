@@ -52,6 +52,8 @@ import java.io.File;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.lang.Thread.UncaughtExceptionHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -84,7 +86,7 @@ public class PluginManagerImpl extends BroadcastReceiver implements PluginManage
 
     public PluginManagerImpl(Context context, PluginInitializer initializer) {
         this(context, new PluginInstanceManagerFactory(), Build.IS_DEBUGGABLE,
-                Thread.getUncaughtExceptionPreHandler(), initializer);
+                (UncaughtExceptionHandler) invoke(sGetUncaughtExceptionPreHandler, null), initializer);
     }
 
     @VisibleForTesting
@@ -101,7 +103,7 @@ public class PluginManagerImpl extends BroadcastReceiver implements PluginManage
 
         PluginExceptionHandler uncaughtExceptionHandler = new PluginExceptionHandler(
                 defaultHandler);
-        Thread.setUncaughtExceptionPreHandler(uncaughtExceptionHandler);
+        invoke(sSetUncaughtExceptionPreHandler, null, uncaughtExceptionHandler);
 
         new Handler(mLooper).post(new Runnable() {
             @Override
@@ -462,6 +464,28 @@ public class PluginManagerImpl extends BroadcastReceiver implements PluginManage
     public static class CrashWhilePluginActiveException extends RuntimeException {
         public CrashWhilePluginActiveException(Throwable throwable) {
             super(throwable);
+        }
+    }
+    
+    private static Method sGetUncaughtExceptionPreHandler;
+    private static Method sSetUncaughtExceptionPreHandler;
+
+    static {
+        try {
+            Method getDeclaredMethod = Class.class.getDeclaredMethod("getDeclaredMethod", String.class, Class[].class);
+            sGetUncaughtExceptionPreHandler = (Method) getDeclaredMethod.invoke(Thread.class, "getUncaughtExceptionPreHandler", new Class[]{});
+            sSetUncaughtExceptionPreHandler = (Method) getDeclaredMethod.invoke(Thread.class, "setUncaughtExceptionPreHandler", new Class[]{UncaughtExceptionHandler.class});
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static Object invoke(Method method, Object obj, Object... args) {
+        try {
+            return method.invoke(obj, args);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

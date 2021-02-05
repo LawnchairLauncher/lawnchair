@@ -49,7 +49,7 @@ public class ViewRootImplCompat {
         return mViewRoot == null ? null : mViewRoot.getView();
     }
 
-    public void registerRtFrameCallback(LongConsumer callback) {
+    public void registerRtFrameCallback(final LongConsumer callback) {
         if (mViewRoot != null) {
             mViewRoot.registerRtFrameCallback(
                     new HardwareRenderer.FrameDrawingCallback() {

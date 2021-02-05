@@ -49,7 +49,7 @@ public class TaskStackChangeListeners extends TaskStackListener {
     private final List<TaskStackChangeListener> mTaskStackListeners = new ArrayList<>();
     private final List<TaskStackChangeListener> mTmpListeners = new ArrayList<>();
 
-    private final Handler mHandler;
+    protected final Handler mHandler;
     private boolean mRegistered;
 
     public TaskStackChangeListeners(Looper looper) {
@@ -243,7 +243,7 @@ public class TaskStackChangeListeners extends TaskStackListener {
                 .sendToTarget();
     }
 
-    private final class H extends Handler {
+    protected final class H extends Handler {
         private static final int ON_TASK_STACK_CHANGED = 1;
         private static final int ON_TASK_SNAPSHOT_CHANGED = 2;
         private static final int ON_ACTIVITY_PINNED = 3;
@@ -252,16 +252,16 @@ public class TaskStackChangeListeners extends TaskStackListener {
         private static final int ON_ACTIVITY_DISMISSING_DOCKED_STACK = 7;
         private static final int ON_TASK_PROFILE_LOCKED = 8;
         private static final int ON_ACTIVITY_UNPINNED = 10;
-        private static final int ON_ACTIVITY_LAUNCH_ON_SECONDARY_DISPLAY_FAILED = 11;
+        protected static final int ON_ACTIVITY_LAUNCH_ON_SECONDARY_DISPLAY_FAILED = 11;
         private static final int ON_TASK_CREATED = 12;
         private static final int ON_TASK_REMOVED = 13;
-        private static final int ON_TASK_MOVED_TO_FRONT = 14;
+        protected static final int ON_TASK_MOVED_TO_FRONT = 14;
         private static final int ON_ACTIVITY_REQUESTED_ORIENTATION_CHANGE = 15;
-        private static final int ON_ACTIVITY_LAUNCH_ON_SECONDARY_DISPLAY_REROUTED = 16;
-        private static final int ON_SIZE_COMPAT_MODE_ACTIVITY_CHANGED = 17;
-        private static final int ON_BACK_PRESSED_ON_TASK_ROOT = 18;
+        protected static final int ON_ACTIVITY_LAUNCH_ON_SECONDARY_DISPLAY_REROUTED = 16;
+        protected static final int ON_SIZE_COMPAT_MODE_ACTIVITY_CHANGED = 17;
+        protected static final int ON_BACK_PRESSED_ON_TASK_ROOT = 18;
         private static final int ON_SINGLE_TASK_DISPLAY_DRAWN = 19;
-        private static final int ON_TASK_DISPLAY_CHANGED = 20;
+        protected static final int ON_TASK_DISPLAY_CHANGED = 20;
         private static final int ON_TASK_LIST_UPDATED = 21;
         private static final int ON_SINGLE_TASK_DISPLAY_EMPTY = 22;
         private static final int ON_TASK_LIST_FROZEN_UNFROZEN = 23;
