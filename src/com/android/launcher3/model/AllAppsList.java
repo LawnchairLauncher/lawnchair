@@ -203,11 +203,16 @@ public class AllAppsList {
     /**
      * Add the icons for the supplied apk called packageName.
      */
-    public void addPackage(Context context, String packageName, UserHandle user) {
-        for (LauncherActivityInfo info : context.getSystemService(LauncherApps.class)
-                .getActivityList(packageName, user)) {
+    public List<LauncherActivityInfo> addPackage(
+            Context context, String packageName, UserHandle user) {
+        List<LauncherActivityInfo> activities = context.getSystemService(LauncherApps.class)
+                .getActivityList(packageName, user);
+
+        for (LauncherActivityInfo info : activities) {
             add(new AppInfo(context, info, user), info);
         }
+
+        return activities;
     }
 
     /**
@@ -250,7 +255,8 @@ public class AllAppsList {
     /**
      * Add and remove icons for this package which has been updated.
      */
-    public void updatePackage(Context context, String packageName, UserHandle user) {
+    public List<LauncherActivityInfo> updatePackage(
+            Context context, String packageName, UserHandle user) {
         final List<LauncherActivityInfo> matches = context.getSystemService(LauncherApps.class)
                 .getActivityList(packageName, user);
         if (matches.size() > 0) {
@@ -297,6 +303,8 @@ public class AllAppsList {
                 }
             }
         }
+
+        return matches;
     }
 
     /**

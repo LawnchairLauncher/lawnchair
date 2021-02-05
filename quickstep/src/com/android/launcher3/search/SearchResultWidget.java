@@ -15,6 +15,9 @@
  */
 package com.android.launcher3.search;
 
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
+
 import android.app.search.SearchTarget;
 import android.app.search.SearchTargetEvent;
 import android.appwidget.AppWidgetHostView;
@@ -36,15 +39,18 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CheckLongPressHelper;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.search.SearchWidgetInfoContainer;
 import com.android.launcher3.dragndrop.DraggableView;
+import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 
 import java.util.List;
-
 
 /**
  * displays live version of a widget upon receiving {@link AppWidgetProviderInfo} from Search
@@ -63,6 +69,7 @@ public class SearchResultWidget extends LinearLayout implements SearchTargetHand
     private final float mScaleToFit;
 
     private SearchWidgetInfoContainer mInfoContainer;
+    private HandlerRunnable mLabelRequest;
     private BubbleTextView mWidgetProvider;
     private TextView mWidgetLabel;
 
@@ -124,11 +131,18 @@ public class SearchResultWidget extends LinearLayout implements SearchTargetHand
     }
 
     private void showWidgetInfo(AppWidgetProviderInfo providerInfo) {
-        String title = providerInfo.loadLabel(mLauncher.getPackageManager());
         PackageItemInfo pinfo = new PackageItemInfo(providerInfo.provider.getPackageName());
         pinfo.user = providerInfo.getProfile();
         mWidgetProvider.applyFromItemInfoWithIcon(pinfo);
-        mWidgetLabel.setText(title);
+
+        mLabelRequest = new HandlerRunnable<>(
+                MODEL_EXECUTOR.getHandler(),
+                () -> LauncherAppState.getInstance(mLauncher).getIconCache()
+                        .getTitleNoCache(LauncherAppWidgetProviderInfo
+                                .fromProviderInfo(mLauncher, providerInfo)),
+                MAIN_EXECUTOR,
+                mWidgetLabel::setText);
+        Utilities.postAsyncCallback(MODEL_EXECUTOR.getHandler(), mLabelRequest);
     }
 
     /**
@@ -137,7 +151,18 @@ public class SearchResultWidget extends LinearLayout implements SearchTargetHand
     public void removeListener() {
         if (mInfoContainer != null) {
             mInfoContainer.detachWidget(mHostView);
+            mInfoContainer = null;
         }
+        if (mLabelRequest != null) {
+            mLabelRequest.cancel();
+            mLabelRequest = null;
+        }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        removeListener();
     }
 
     private void reportEvent(int eventType) {

@@ -17,6 +17,7 @@ package com.android.quickstep;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
+import android.app.PendingIntent;
 import android.app.PictureInPictureParams;
 import android.content.ComponentName;
 import android.content.Context;
@@ -24,15 +25,18 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Insets;
 import android.graphics.Rect;
+import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.IBinder.DeathRecipient;
 import android.os.RemoteException;
+import android.os.UserHandle;
 import android.util.Log;
 import android.view.MotionEvent;
 
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.systemui.shared.recents.IPinnedStackAnimationListener;
+import com.android.systemui.shared.recents.ISplitScreenListener;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.RemoteTransitionCompat;
@@ -431,4 +435,84 @@ public class SystemUiProxy implements ISystemUiProxy {
             }
         }
     }
+
+    @Override
+    public void registerSplitScreenListener(ISplitScreenListener listener) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.registerSplitScreenListener(listener);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call registerSplitScreenListener");
+            }
+        }
+    }
+
+    @Override
+    public void unregisterSplitScreenListener(ISplitScreenListener listener) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.unregisterSplitScreenListener(listener);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call unregisterSplitScreenListener");
+            }
+        }
+    }
+
+    @Override
+    public void setSideStageVisibility(boolean visible) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.setSideStageVisibility(visible);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call setSideStageVisibility");
+            }
+        }
+    }
+
+    @Override
+    public void exitSplitScreen() {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.exitSplitScreen();
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call exitSplitScreen");
+            }
+        }
+    }
+
+    @Override
+    public void startTask(int taskId, int stage, int position, Bundle options) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.startTask(taskId, stage, position, options);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call startTask");
+            }
+        }
+    }
+
+    @Override
+    public void startShortcut(String packageName, String shortcutId, int stage, int position,
+            Bundle options, UserHandle user) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.startShortcut(packageName, shortcutId, stage, position, options,
+                        user);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call startShortcut");
+            }
+        }
+    }
+
+    @Override
+    public void startIntent(PendingIntent intent, int stage, int position, Bundle options) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.startIntent(intent, stage, position, options);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call startIntent");
+            }
+        }
+    }
+
 }
