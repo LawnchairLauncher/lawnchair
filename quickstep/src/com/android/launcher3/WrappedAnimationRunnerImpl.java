@@ -26,7 +26,9 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
  */
 public interface WrappedAnimationRunnerImpl {
     Handler getHandler();
-    void onCreateAnimation(RemoteAnimationTargetCompat[] appTargets,
+    void onCreateAnimation(int transit,
+            RemoteAnimationTargetCompat[] appTargets,
             RemoteAnimationTargetCompat[] wallpaperTargets,
+            RemoteAnimationTargetCompat[] nonAppTargets,
             LauncherAnimationRunner.AnimationResult result);
 }
