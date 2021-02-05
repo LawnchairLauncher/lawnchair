@@ -21,7 +21,7 @@ import android.graphics.Bitmap;
 
 public class TaskDescriptionCompat {
 
-    private ActivityManager.TaskDescription mTaskDescription;
+    private final ActivityManager.TaskDescription mTaskDescription;
 
     public TaskDescriptionCompat(ActivityManager.TaskDescription td) {
         mTaskDescription = td;
