@@ -22,6 +22,7 @@ import static com.android.launcher3.model.data.WorkspaceItemInfo.FLAG_RESTORED_I
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
 import android.content.pm.ShortcutInfo;
 import android.os.UserHandle;
@@ -51,6 +52,7 @@ import com.android.launcher3.util.SafeCloseable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -95,6 +97,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                 ? ItemInfoMatcher.ofUser(mUser) // We want to update all packages for this user
                 : ItemInfoMatcher.ofPackages(packageSet, mUser);
         final HashSet<ComponentName> removedComponents = new HashSet<>();
+        final HashMap<String, List<LauncherActivityInfo>> activitiesLists = new HashMap<>();
 
         switch (mOp) {
             case OP_ADD: {
@@ -104,7 +107,8 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                     if (FeatureFlags.PROMISE_APPS_IN_ALL_APPS.get()) {
                         appsList.removePackage(packages[i], mUser);
                     }
-                    appsList.addPackage(context, packages[i], mUser);
+                    activitiesLists.put(
+                            packages[i], appsList.addPackage(context, packages[i], mUser));
                 }
                 flagOp = FlagOp.removeFlag(WorkspaceItemInfo.FLAG_DISABLED_NOT_AVAILABLE);
                 break;
@@ -115,7 +119,8 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                     for (int i = 0; i < N; i++) {
                         if (DEBUG) Log.d(TAG, "mAllAppsList.updatePackage " + packages[i]);
                         iconCache.updateIconsForPkg(packages[i], mUser);
-                        appsList.updatePackage(context, packages[i], mUser);
+                        activitiesLists.put(
+                                packages[i], appsList.updatePackage(context, packages[i], mUser));
                         app.getWidgetCache().removePackage(packages[i], mUser);
                     }
                 }
@@ -247,7 +252,14 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
 
                         if (isNewApkAvailable
                                 && si.itemType == Favorites.ITEM_TYPE_APPLICATION) {
-                            si.setProgressLevel(100, PackageInstallInfo.STATUS_INSTALLED);
+                            List<LauncherActivityInfo> activities = activitiesLists.get(
+                                    packageName);
+                            si.setProgressLevel(
+                                    activities == null || activities.isEmpty()
+                                            ? 100
+                                            : PackageManagerHelper.getLoadingProgress(
+                                                    activities.get(0)),
+                                    PackageInstallInfo.STATUS_INSTALLED_DOWNLOADING);
                             iconCache.getTitleAndIcon(si, si.usingLowResIcon());
                             infoUpdated = true;
                         }
