@@ -121,9 +121,6 @@ public class DeviceSearchAdapterProvider extends SearchAdapterProvider {
             case LayoutType.ICON_SINGLE_VERTICAL_TEXT:
                 return VIEW_TYPE_SEARCH_ICON;
             case LayoutType.ICON_SLICE:
-                if (FeatureFlags.DISABLE_SLICE_IN_ALLAPPS.get()) {
-                    return -1;
-                }
                 if (t.getSliceUri() != null) {
                     return VIEW_TYPE_SEARCH_SLICE;
                 }
