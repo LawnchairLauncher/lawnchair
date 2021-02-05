@@ -137,7 +137,7 @@ public class TaskIconCache {
 
         // Load icon
         // TODO: Load icon resource (b/143363444)
-        Bitmap icon = desc.getIcon();
+        Bitmap icon = TaskDescriptionCompat.getIcon(desc, key.userId);
         if (icon != null) {
             entry.icon = new FastBitmapDrawable(getBitmapInfo(
                     new BitmapDrawable(mContext.getResources(), icon),
