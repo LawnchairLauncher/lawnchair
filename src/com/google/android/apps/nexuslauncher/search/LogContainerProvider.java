@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import com.android.launcher3.ItemInfo;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.logging.StatsLogUtils;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 

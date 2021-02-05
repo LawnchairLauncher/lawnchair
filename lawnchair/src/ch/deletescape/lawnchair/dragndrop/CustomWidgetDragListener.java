@@ -21,7 +21,7 @@ import android.graphics.Rect;
 import android.os.CancellationSignal;
 import android.view.View;
 import com.android.launcher3.DragSource;
-import com.android.launcher3.ItemInfo;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.PendingAddItemInfo;

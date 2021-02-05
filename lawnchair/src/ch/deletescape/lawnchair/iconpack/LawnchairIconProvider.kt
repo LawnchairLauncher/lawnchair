@@ -22,7 +22,7 @@ import android.content.pm.LauncherActivityInfo
 import android.content.pm.ShortcutInfo
 import android.graphics.drawable.AdaptiveIconDrawable
 import android.graphics.drawable.Drawable
-import com.android.launcher3.ItemInfo
+import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.google.android.apps.nexuslauncher.DynamicIconProvider

@@ -24,7 +24,7 @@ import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.useApplicationContext
 import ch.deletescape.lawnchair.util.SingletonHolder
 import com.android.launcher3.FolderInfo
-import com.android.launcher3.ItemInfo
+import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.R
 
 class FolderInfoProvider(context: Context) : CustomInfoProvider<FolderInfo>(context) {

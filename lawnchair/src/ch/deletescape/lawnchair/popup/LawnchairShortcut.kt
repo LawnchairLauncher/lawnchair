@@ -29,7 +29,7 @@ import ch.deletescape.lawnchair.sesame.Sesame
 import ch.deletescape.lawnchair.util.LawnchairSingletonHolder
 import ch.deletescape.lawnchair.util.hasFlag
 import com.android.launcher3.*
-import com.android.launcher3.ItemInfoWithIcon.FLAG_SYSTEM_YES
+import com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_SYSTEM_YES
 import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.popup.SystemShortcut

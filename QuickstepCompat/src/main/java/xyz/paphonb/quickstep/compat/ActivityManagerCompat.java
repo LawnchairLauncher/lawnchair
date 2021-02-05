@@ -15,7 +15,7 @@ import java.util.List;
 public abstract class ActivityManagerCompat {
 
     public abstract List<ActivityManager.RunningTaskInfo> getFilteredTasks(
-            int maxNum,  int ignoreActivityType, int ignoreWindowingMode) throws RemoteException;
+            int maxNum, boolean filterOnlyVisibleRecents) throws RemoteException;
 
     public abstract List<ActivityManager.RecentTaskInfo> getRecentTasks(
             int maxNum, int flags, int userId) throws RemoteException;
@@ -31,8 +31,7 @@ public abstract class ActivityManagerCompat {
     public abstract int startActivityFromRecents(int taskId, Bundle bOptions) throws RemoteException;
 
     public abstract boolean setTaskWindowingModeSplitScreenPrimary(
-            int taskId, int createMode, boolean toTop, boolean animate,
-            Rect initialBounds, boolean showRecents) throws RemoteException;
+            int taskId, boolean onTop) throws RemoteException;
 
     public abstract boolean removeTask(int taskId) throws RemoteException;
 

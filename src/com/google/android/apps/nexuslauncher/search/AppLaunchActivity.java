@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.android.launcher3.BaseActivity;
-import com.android.launcher3.ItemInfo;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;

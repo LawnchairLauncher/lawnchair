@@ -5,7 +5,7 @@ import android.view.View;
 import androidx.annotation.Keep;
 import ch.deletescape.lawnchair.override.CustomInfoProvider;
 import com.android.launcher3.AbstractFloatingView;
-import com.android.launcher3.ItemInfo;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.popup.SystemShortcut;

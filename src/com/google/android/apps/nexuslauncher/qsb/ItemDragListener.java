@@ -5,8 +5,8 @@ import android.graphics.Rect;
 import android.view.View;
 
 import com.android.launcher3.InstallShortcutReceiver;
-import com.android.launcher3.ItemInfo;
-import com.android.launcher3.WorkspaceItemInfo;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.compat.ShortcutConfigActivityInfo;
 import com.android.launcher3.dragndrop.BaseItemDragListener;
 import com.android.launcher3.userevent.nano.LauncherLogProto;

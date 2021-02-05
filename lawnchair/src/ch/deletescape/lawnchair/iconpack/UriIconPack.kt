@@ -29,7 +29,7 @@ import android.os.ParcelFileDescriptor
 import android.text.TextUtils
 import ch.deletescape.lawnchair.adaptive.AdaptiveIconGenerator
 import com.android.launcher3.FastBitmapDrawable
-import com.android.launcher3.ItemInfo
+import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.ComponentKey
 import java.io.FileDescriptor

@@ -19,7 +19,7 @@ import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController.CardDat
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController.WeatherData;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.ItemInfo;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;

@@ -18,7 +18,7 @@ package com.android.launcher3;
 
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_ICON_BADGED;
 import android.Manifest.permission;
-import static com.android.launcher3.ItemInfoWithIcon.FLAG_ICON_BADGED;
+import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_ICON_BADGED;
 
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;

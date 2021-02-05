@@ -2,7 +2,7 @@ package com.google.android.apps.nexuslauncher.search;
 
 import android.content.SharedPreferences;
 
-import com.android.launcher3.ItemInfoWithIcon;
+import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherCallbacks;
 import com.android.launcher3.icons.IconCache;

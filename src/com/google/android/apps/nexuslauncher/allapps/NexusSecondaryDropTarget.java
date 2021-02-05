@@ -4,7 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-import com.android.launcher3.ItemInfo;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.SecondaryDropTarget;
 import com.android.launcher3.logging.LoggerUtils;
