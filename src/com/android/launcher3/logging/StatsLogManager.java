@@ -353,6 +353,12 @@ public class StatsLogManager implements ResourceBasedOverride {
 
         @UiEvent(doc = "User closed the AllApps keyboard.")
         LAUNCHER_ALLAPPS_KEYBOARD_CLOSED(694),
+
+        @UiEvent(doc = "User switched to Main tab in AllApps screen.")
+        LAUNCHER_ALLAPPS_SWITCHED_TO_MAIN_TAB(695),
+
+        @UiEvent(doc = "User switched to Work tab in AllApps screen.")
+        LAUNCHER_ALLAPPS_SWITCHED_TO_WORK_TAB(696),
         ;
 
         // ADD MORE
