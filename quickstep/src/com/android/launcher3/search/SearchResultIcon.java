@@ -81,7 +81,7 @@ public class SearchResultIcon extends BubbleTextView implements
     private static final int BITMAP_CROP_MASK_COLOR = 0xff424242;
 
     private final Launcher mLauncher;
-
+    private final SearchSessionTracker mSearchSessionTracker;
     private String mTargetId;
     private Consumer<ItemInfoWithIcon> mOnItemInfoChanged;
 
@@ -97,6 +97,7 @@ public class SearchResultIcon extends BubbleTextView implements
     public SearchResultIcon(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mLauncher = Launcher.getLauncher(getContext());
+        mSearchSessionTracker = SearchSessionTracker.getInstance(getContext());
     }
 
     private boolean mLongPressSupported;
@@ -113,8 +114,8 @@ public class SearchResultIcon extends BubbleTextView implements
     }
 
     /**
-     * Applies {@link SearchTarget} to view. registers a consumer after a corresponding
-     * {@link ItemInfoWithIcon} is created
+     * Applies {@link SearchTarget} to view. registers a consumer after a corresponding {@link
+     * ItemInfoWithIcon} is created
      */
     public void apply(SearchTarget searchTarget, List<SearchTarget> inlineItems,
             Consumer<ItemInfoWithIcon> cb) {
@@ -317,13 +318,15 @@ public class SearchResultIcon extends BubbleTextView implements
         }
     }
 
-    private static ContainerInfo buildDeviceSearchResultContainer() {
+    private ContainerInfo buildDeviceSearchResultContainer() {
         return ContainerInfo.newBuilder().setExtendedContainers(
                 ExtendedContainers
                         .newBuilder()
                         .setDeviceSearchResultContainer(
-                                DeviceSearchResultContainer
-                                        .newBuilder()))
+                                mSearchSessionTracker.getQueryLength()
+                                        .map(queryLength -> DeviceSearchResultContainer.newBuilder()
+                                                .setQueryLength(queryLength))
+                                        .orElse(DeviceSearchResultContainer.newBuilder())))
                 .build();
     }
 }
