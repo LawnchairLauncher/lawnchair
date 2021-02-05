@@ -168,8 +168,10 @@ public class DeviceProfile {
         // Constants from resources
         float swDPs = Utilities.dpiFromPx(
                 Math.min(info.smallestSize.x, info.smallestSize.y), info.metrics);
-        isTablet = swDPs >= TABLET_MIN_DPS;
-        isLargeTablet = swDPs >= LARGE_TABLET_MIN_DPS;
+        boolean allowRotation = context.getResources().getBoolean(R.bool.allow_rotation);
+        // Tablet UI is built with assumption that simulated landscape is disabled.
+        isTablet = allowRotation && swDPs >= TABLET_MIN_DPS;
+        isLargeTablet = isTablet && swDPs >= LARGE_TABLET_MIN_DPS;
         isPhone = !isTablet && !isLargeTablet;
         aspectRatio = ((float) Math.max(widthPx, heightPx)) / Math.min(widthPx, heightPx);
         boolean isTallDevice = Float.compare(aspectRatio, TALL_DEVICE_ASPECT_RATIO_THRESHOLD) >= 0;

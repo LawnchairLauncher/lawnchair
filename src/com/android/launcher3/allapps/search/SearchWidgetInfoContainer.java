@@ -70,10 +70,4 @@ public class SearchWidgetInfoContainer extends AppWidgetHostView {
         mListeners.remove(hostView);
     }
 
-    /**
-     * Removes all AppWidgetHost update listeners
-     */
-    public void clearListeners() {
-        mListeners.clear();
-    }
 }

@@ -31,7 +31,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ShortcutInfo;
 import android.graphics.drawable.Drawable;
-import android.os.Handler;
 import android.os.Process;
 import android.os.UserHandle;
 import android.util.Log;
@@ -134,7 +133,7 @@ public class IconCache extends BaseIconCache {
      * Fetches high-res icon for the provided ItemInfo and updates the caller when done.
      * @return a request ID that can be used to cancel the request.
      */
-    public IconLoadRequest updateIconInBackground(final ItemInfoUpdateReceiver caller,
+    public HandlerRunnable updateIconInBackground(final ItemInfoUpdateReceiver caller,
             final ItemInfoWithIcon info) {
         Preconditions.assertUIThread();
         if (mPendingIconRequestCount <= 0) {
@@ -142,20 +141,18 @@ public class IconCache extends BaseIconCache {
         }
         mPendingIconRequestCount ++;
 
-        IconLoadRequest request = new IconLoadRequest(mWorkerHandler, this::onIconRequestEnd) {
-            @Override
-            public void run() {
-                if (info instanceof AppInfo || info instanceof WorkspaceItemInfo) {
-                    getTitleAndIcon(info, false);
-                } else if (info instanceof PackageItemInfo) {
-                    getTitleAndIconForApp((PackageItemInfo) info, false);
-                }
-                MAIN_EXECUTOR.execute(() -> {
-                    caller.reapplyItemInfo(info);
-                    onEnd();
-                });
-            }
-        };
+        HandlerRunnable<ItemInfoWithIcon> request = new HandlerRunnable<>(mWorkerHandler,
+                () -> {
+                    if (info instanceof AppInfo || info instanceof WorkspaceItemInfo) {
+                        getTitleAndIcon(info, false);
+                    } else if (info instanceof PackageItemInfo) {
+                        getTitleAndIconForApp((PackageItemInfo) info, false);
+                    }
+                    return info;
+                },
+                MAIN_EXECUTOR,
+                caller::reapplyItemInfo,
+                this::onIconRequestEnd);
         Utilities.postAsyncCallback(mWorkerHandler, request);
         return request;
     }
@@ -334,12 +331,6 @@ public class IconCache extends BaseIconCache {
             return false;
         }
         return super.getEntryFromDB(cacheKey, entry, lowRes);
-    }
-
-    public static abstract class IconLoadRequest extends HandlerRunnable {
-        IconLoadRequest(Handler handler, Runnable endRunnable) {
-            super(handler, endRunnable);
-        }
     }
 
     /**

@@ -15,8 +15,14 @@
  */
 package com.android.launcher3.allapps.search;
 
+import static com.android.launcher3.LauncherState.ALL_APPS;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.Executors.THREAD_POOL_EXECUTOR;
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.widget.WidgetHostViewLoader.getDefaultOptionsForWidget;
 
+import android.app.Activity;
+import android.app.Application.ActivityLifecycleCallbacks;
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
@@ -26,39 +32,49 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.UserHandle;
+import android.util.Log;
 
-import androidx.lifecycle.LiveData;
+import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
+import androidx.annotation.WorkerThread;
+import androidx.lifecycle.Observer;
 import androidx.slice.Slice;
-import androidx.slice.widget.SliceLiveData;
+import androidx.slice.SliceViewManager;
+import androidx.slice.SliceViewManager.SliceCallback;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.logging.InstanceId;
-import com.android.launcher3.logging.InstanceIdSequence;
+import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
 
 /**
  * Manages Lifecycle for Live search results
  */
-public class LiveSearchManager {
+public class LiveSearchManager implements StateListener<LauncherState> {
+
+    private static final String TAG = "LiveSearchManager";
 
     public static final int SEARCH_APPWIDGET_HOST_ID = 2048;
 
     private final Launcher mLauncher;
-    private final AppWidgetManager mAppWidgetManger;
+    private final HashMap<Uri, SliceLifeCycle> mUriSliceMap = new HashMap<>();
+
     private final HashMap<ComponentKey, SearchWidgetInfoContainer> mWidgetPlaceholders =
             new HashMap<>();
-    private final HashMap<Uri, LiveData<Slice>> mUriSliceMap = new HashMap<>();
     private SearchWidgetHost mSearchWidgetHost;
     private InstanceId mLogInstanceId;
 
     public LiveSearchManager(Launcher launcher) {
         mLauncher = launcher;
-        mAppWidgetManger = AppWidgetManager.getInstance(launcher);
+        mLauncher.getStateManager().addStateListener(this);
     }
 
     /**
@@ -67,78 +83,80 @@ public class LiveSearchManager {
      */
     public SearchWidgetInfoContainer getPlaceHolderWidget(AppWidgetProviderInfo providerInfo) {
         if (mSearchWidgetHost == null) {
-            throw new RuntimeException("AppWidgetHost has not been created yet");
+            mSearchWidgetHost = new SearchWidgetHost(mLauncher);
+            mSearchWidgetHost.startListening();
         }
 
         ComponentName provider = providerInfo.provider;
         UserHandle userHandle = providerInfo.getProfile();
 
         ComponentKey key = new ComponentKey(provider, userHandle);
-        SearchWidgetInfoContainer view = mWidgetPlaceholders.getOrDefault(key, null);
         if (mWidgetPlaceholders.containsKey(key)) {
             return mWidgetPlaceholders.get(key);
         }
+
         LauncherAppWidgetProviderInfo pinfo = LauncherAppWidgetProviderInfo.fromProviderInfo(
                 mLauncher, providerInfo);
         PendingAddWidgetInfo pendingAddWidgetInfo = new PendingAddWidgetInfo(pinfo);
 
         Bundle options = getDefaultOptionsForWidget(mLauncher, pendingAddWidgetInfo);
         int appWidgetId = mSearchWidgetHost.allocateAppWidgetId();
-        boolean success = mAppWidgetManger.bindAppWidgetIdIfAllowed(appWidgetId, userHandle,
-                provider, options);
+        boolean success = AppWidgetManager.getInstance(mLauncher)
+                .bindAppWidgetIdIfAllowed(appWidgetId, userHandle, provider, options);
         if (!success) {
+            mSearchWidgetHost.deleteAppWidgetId(appWidgetId);
             mWidgetPlaceholders.put(key, null);
             return null;
         }
 
-        view = (SearchWidgetInfoContainer) mSearchWidgetHost.createView(mLauncher, appWidgetId,
-                providerInfo);
+        SearchWidgetInfoContainer view = (SearchWidgetInfoContainer) mSearchWidgetHost.createView(
+                mLauncher, appWidgetId, providerInfo);
         view.setTag(pendingAddWidgetInfo);
         mWidgetPlaceholders.put(key, view);
         return view;
     }
 
     /**
-     * Creates {@link LiveData<Slice>} from Slice Uri. Caches created live data to be reused
-     * within the same search session. Removes previous observers when new SliceView request a
-     * live data for observation.
-     */
-    public LiveData<Slice> getSliceForUri(Uri sliceUri) {
-        LiveData<Slice> sliceLiveData = mUriSliceMap.getOrDefault(sliceUri, null);
-        if (sliceLiveData == null) {
-            sliceLiveData = SliceLiveData.fromUri(mLauncher, sliceUri);
-            mUriSliceMap.put(sliceUri, sliceLiveData);
-        }
-        return sliceLiveData;
-    }
-
-    /**
-     * Start search session
-     */
-    public void start() {
-        stop();
-        mLogInstanceId = new InstanceIdSequence().newInstanceId();
-        mSearchWidgetHost = new SearchWidgetHost(mLauncher);
-        mSearchWidgetHost.startListening();
-    }
-
-    /**
      * Stop search session
      */
     public void stop() {
+        clearWidgetHost();
+    }
+
+    private void clearWidgetHost() {
         if (mSearchWidgetHost != null) {
             mSearchWidgetHost.stopListening();
+            mSearchWidgetHost.clearViews();
             mSearchWidgetHost.deleteHost();
-            for (SearchWidgetInfoContainer placeholder : mWidgetPlaceholders.values()) {
-                placeholder.clearListeners();
-            }
             mWidgetPlaceholders.clear();
             mSearchWidgetHost = null;
         }
-        for (LiveData<Slice> liveData : mUriSliceMap.values()) {
-            liveData.removeObservers(mLauncher);
+    }
+
+    @Override
+    public void onStateTransitionComplete(LauncherState finalState) {
+        if (finalState != ALL_APPS) {
+            // Clear all search session related objects
+            mUriSliceMap.values().forEach(SliceLifeCycle::destroy);
+            mUriSliceMap.clear();
+
+            clearWidgetHost();
         }
-        mUriSliceMap.clear();
+    }
+
+    /**
+     * Adds a new observer for the provided uri and returns a callback to cancel this observer
+     */
+    public SafeCloseable addObserver(Uri uri, Observer<Slice> listener) {
+        SliceLifeCycle slc = mUriSliceMap.get(uri);
+        if (slc == null) {
+            slc = new SliceLifeCycle(uri, mLauncher);
+            mUriSliceMap.put(uri, slc);
+        }
+        slc.addListener(listener);
+
+        final SliceLifeCycle sliceLifeCycle = slc;
+        return () -> sliceLifeCycle.removeListener(listener);
     }
 
     /**
@@ -159,5 +177,121 @@ public class LiveSearchManager {
                 AppWidgetProviderInfo appWidget) {
             return new SearchWidgetInfoContainer(context);
         }
+
+        @Override
+        public void clearViews() {
+            super.clearViews();
+        }
+    }
+
+    private static class SliceLifeCycle
+            implements ActivityLifecycleCallbacks, SliceCallback {
+
+        private final Uri mUri;
+        private final Launcher mLauncher;
+        private final SliceViewManager mSliceViewManager;
+        private final ArrayList<Observer<Slice>> mListeners = new ArrayList<>();
+
+        private boolean mDestroyed = false;
+        private boolean mWasListening = false;
+
+        SliceLifeCycle(Uri uri, Launcher launcher) {
+            mUri = uri;
+            mLauncher = launcher;
+            mSliceViewManager = SliceViewManager.getInstance(launcher);
+            launcher.registerActivityLifecycleCallbacks(this);
+
+            if (launcher.isDestroyed()) {
+                onActivityDestroyed(launcher);
+            } else if (launcher.isStarted()) {
+                onActivityStarted(launcher);
+            }
+        }
+
+        @Override
+        public void onActivityDestroyed(Activity activity) {
+            destroy();
+        }
+
+        @Override
+        public void onActivityStarted(Activity activity) {
+            updateListening();
+        }
+
+        @Override
+        public void onActivityStopped(Activity activity) {
+            updateListening();
+        }
+
+        private void updateListening() {
+            boolean isListening = mDestroyed
+                    ? false
+                    : (mLauncher.isStarted() && !mListeners.isEmpty());
+            UI_HELPER_EXECUTOR.execute(() -> uploadListeningBg(isListening));
+        }
+
+        @WorkerThread
+        private void uploadListeningBg(boolean isListening) {
+            if (mWasListening != isListening) {
+                mWasListening = isListening;
+                if (isListening) {
+                    mSliceViewManager.registerSliceCallback(mUri, MAIN_EXECUTOR, this);
+                    // Update slice one-time on the different thread so that we can display
+                    // multiple slices in parallel
+                    THREAD_POOL_EXECUTOR.execute(this::updateSlice);
+                } else {
+                    mSliceViewManager.unregisterSliceCallback(mUri, this);
+                }
+            }
+        }
+
+        @UiThread
+        private void addListener(Observer<Slice> listener) {
+            mListeners.add(listener);
+            updateListening();
+        }
+
+        @UiThread
+        private void removeListener(Observer<Slice> listener) {
+            mListeners.remove(listener);
+            updateListening();
+        }
+
+        @WorkerThread
+        private void updateSlice() {
+            try {
+                Slice s = mSliceViewManager.bindSlice(mUri);
+                MAIN_EXECUTOR.execute(() -> onSliceUpdated(s));
+            } catch (Exception e) {
+                Log.d(TAG, "Error fetching slice", e);
+            }
+        }
+
+        @UiThread
+        @Override
+        public void onSliceUpdated(@Nullable Slice s) {
+            mListeners.forEach(l -> l.onChanged(s));
+        }
+
+        private void destroy() {
+            if (mDestroyed) {
+                return;
+            }
+            mDestroyed = true;
+            mLauncher.unregisterActivityLifecycleCallbacks(this);
+            mListeners.clear();
+        }
+
+        @Override
+        public void onActivityCreated(Activity activity, Bundle bundle) { }
+
+        @Override
+        public void onActivityPaused(Activity activity) { }
+
+        @Override
+        public void onActivityResumed(Activity activity) { }
+
+        @Override
+        public void onActivitySaveInstanceState(Activity activity, Bundle bundle) { }
     }
 }
