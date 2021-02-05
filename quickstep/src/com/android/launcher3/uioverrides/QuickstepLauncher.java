@@ -17,6 +17,7 @@ package com.android.launcher3.uioverrides;
 
 import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_FOCUSED;
 
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
@@ -54,6 +55,7 @@ import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.search.DeviceSearchAdapterProvider;
 import com.android.launcher3.statemanager.StateManager.AtomicAnimationFactory;
@@ -82,6 +84,7 @@ import com.android.quickstep.views.TaskView;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -164,7 +167,8 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
     @Override
     public boolean startActivitySafely(View v, Intent intent, ItemInfo item) {
         if (mHotseatPredictionController != null) {
-            mHotseatPredictionController.setPauseUIUpdate(true);
+            // Only pause is taskbar controller is not present
+            mHotseatPredictionController.setPauseUIUpdate(getTaskbarController() == null);
         }
         return super.startActivitySafely(v, intent, item);
     }
@@ -226,6 +230,15 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
         } else if (item.containerId == Favorites.CONTAINER_HOTSEAT_PREDICTION
                 && mHotseatPredictionController != null) {
             mHotseatPredictionController.setPredictedItems(item);
+        }
+    }
+
+    @Override
+    public void bindWorkspaceItemsChanged(List<WorkspaceItemInfo> updated) {
+        super.bindWorkspaceItemsChanged(updated);
+        if (getTaskbarController() != null && updated.stream()
+                .filter(w -> w.container == CONTAINER_HOTSEAT).findFirst().isPresent()) {
+            getTaskbarController().onHotseatUpdated();
         }
     }
 

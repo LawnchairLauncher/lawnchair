@@ -19,6 +19,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
@@ -35,6 +36,7 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.R;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.systemui.shared.recents.model.Task;
 
 /**
  * Hosts the Taskbar content such as Hotseat and Recent Apps. Drawn on top of other apps.
@@ -52,6 +54,9 @@ public class TaskbarView extends LinearLayout {
     // Initialized in init().
     private int mHotseatStartIndex;
     private int mHotseatEndIndex;
+    private View mHotseatRecentsDivider;
+    private int mRecentsStartIndex;
+    private int mRecentsEndIndex;
 
     private TaskbarController.TaskbarViewCallbacks mControllerCallbacks;
 
@@ -89,10 +94,17 @@ public class TaskbarView extends LinearLayout {
         mControllerCallbacks = taskbarViewCallbacks;
     }
 
-    protected void init(int numHotseatIcons) {
+    protected void init(int numHotseatIcons, int numRecentIcons) {
         mHotseatStartIndex = 0;
         mHotseatEndIndex = mHotseatStartIndex + numHotseatIcons - 1;
         updateHotseatItems(new ItemInfo[numHotseatIcons]);
+
+        int dividerIndex = mHotseatEndIndex + 1;
+        mHotseatRecentsDivider = addDivider(dividerIndex);
+
+        mRecentsStartIndex = dividerIndex + 1;
+        mRecentsEndIndex = mRecentsStartIndex + numRecentIcons - 1;
+        updateRecentTasks(new Task[numRecentIcons]);
     }
 
     protected void cleanup() {
@@ -147,6 +159,93 @@ public class TaskbarView extends LinearLayout {
                 hotseatView.setOnLongClickListener(null);
             }
         }
+
+        updateHotseatRecentsDividerVisibility();
+    }
+
+    private View addDivider(int dividerIndex) {
+        View divider = inflate(R.layout.taskbar_divider);
+        addView(divider, dividerIndex);
+        return divider;
+    }
+
+    /**
+     * Inflates/binds the Recents items to show in the Taskbar given their Tasks.
+     */
+    protected void updateRecentTasks(Task[] tasks) {
+        for (int i = 0; i < tasks.length; i++) {
+            Task task = tasks[i];
+            int recentsIndex = mRecentsStartIndex + i;
+            View recentsView = getChildAt(recentsIndex);
+
+            // Inflate empty icon Views.
+            if (recentsView == null) {
+                BubbleTextView btv = (BubbleTextView) inflate(R.layout.taskbar_app_icon);
+                LayoutParams lp = new LayoutParams(btv.getIconSize(), btv.getIconSize());
+                lp.setMargins(mItemMarginLeftRight, 0, mItemMarginLeftRight, 0);
+                recentsView = btv;
+                addView(recentsView, recentsIndex, lp);
+            }
+
+            // Apply the Task, or hide the view if there is none for a given index.
+            if (recentsView instanceof BubbleTextView && task != null) {
+                applyTaskToBubbleTextView((BubbleTextView) recentsView, task);
+                recentsView.setVisibility(VISIBLE);
+                recentsView.setOnClickListener(mControllerCallbacks.getItemOnClickListener());
+                recentsView.setOnLongClickListener(
+                        mControllerCallbacks.getItemOnLongClickListener());
+            } else {
+                recentsView.setVisibility(GONE);
+                recentsView.setOnClickListener(null);
+                recentsView.setOnLongClickListener(null);
+            }
+        }
+
+        updateHotseatRecentsDividerVisibility();
+    }
+
+    private void applyTaskToBubbleTextView(BubbleTextView btv, Task task) {
+        if (task.icon != null) {
+            Drawable icon = task.icon.getConstantState().newDrawable().mutate();
+            btv.applyIconAndLabel(icon, task.titleDescription);
+        }
+        btv.setTag(task);
+    }
+
+    protected void updateRecentTaskAtIndex(int taskIndex, Task task) {
+        View taskView = getChildAt(mRecentsStartIndex + taskIndex);
+        if (taskView instanceof BubbleTextView) {
+            applyTaskToBubbleTextView((BubbleTextView) taskView, task);
+        }
+    }
+
+    /**
+     * Make the divider VISIBLE between the Hotseat and Recents if there is at least one icon in
+     * each, otherwise make it GONE.
+     */
+    private void updateHotseatRecentsDividerVisibility() {
+        if (mHotseatRecentsDivider == null) {
+            return;
+        }
+
+        boolean hasAtLeastOneHotseatItem = false;
+        for (int i = mHotseatStartIndex; i <= mHotseatEndIndex; i++) {
+            if (getChildAt(i).getVisibility() != GONE) {
+                hasAtLeastOneHotseatItem = true;
+                break;
+            }
+        }
+
+        boolean hasAtLeastOneRecentItem = false;
+        for (int i = mRecentsStartIndex; i <= mRecentsEndIndex; i++) {
+            if (getChildAt(i).getVisibility() != GONE) {
+                hasAtLeastOneRecentItem = true;
+                break;
+            }
+        }
+
+        mHotseatRecentsDivider.setVisibility(hasAtLeastOneHotseatItem && hasAtLeastOneRecentItem
+                ? VISIBLE : GONE);
     }
 
     @Override
