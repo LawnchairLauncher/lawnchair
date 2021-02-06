@@ -56,23 +56,36 @@ public abstract class LauncherAnimationRunner implements RemoteAnimationRunnerCo
         return mHandler;
     }
 
-    // Called only in R+ platform
+    // Called only in S+ platform
     @BinderThread
-    public void onAnimationStart(RemoteAnimationTargetCompat[] appTargets,
-            RemoteAnimationTargetCompat[] wallpaperTargets, Runnable runnable) {
+    public void onAnimationStart(
+            int transit,
+            RemoteAnimationTargetCompat[] appTargets,
+            RemoteAnimationTargetCompat[] wallpaperTargets,
+            RemoteAnimationTargetCompat[] nonAppTargets,
+            Runnable runnable) {
         Runnable r = () -> {
             finishExistingAnimation();
             mAnimationResult = new AnimationResult(() -> {
                 UI_HELPER_EXECUTOR.execute(runnable);
                 mAnimationResult = null;
             });
-            onCreateAnimation(appTargets, wallpaperTargets, mAnimationResult);
+            onCreateAnimation(transit, appTargets, wallpaperTargets, nonAppTargets,
+                    mAnimationResult);
         };
         if (mStartAtFrontOfQueue) {
             postAtFrontOfQueueAsynchronously(mHandler, r);
         } else {
             postAsyncCallback(mHandler, r);
         }
+    }
+
+    // Called only in R platform
+    @BinderThread
+    public void onAnimationStart(RemoteAnimationTargetCompat[] appTargets,
+            RemoteAnimationTargetCompat[] wallpaperTargets, Runnable runnable) {
+        onAnimationStart(0 /* transit */, appTargets, wallpaperTargets,
+                new RemoteAnimationTargetCompat[0], runnable);
     }
 
     // Called only in Q platform
@@ -88,8 +101,11 @@ public abstract class LauncherAnimationRunner implements RemoteAnimationRunnerCo
      */
     @UiThread
     public abstract void onCreateAnimation(
+            int transit,
             RemoteAnimationTargetCompat[] appTargets,
-            RemoteAnimationTargetCompat[] wallpaperTargets, AnimationResult result);
+            RemoteAnimationTargetCompat[] wallpaperTargets,
+            RemoteAnimationTargetCompat[] nonAppTargets,
+            AnimationResult result);
 
     @UiThread
     private void finishExistingAnimation() {
