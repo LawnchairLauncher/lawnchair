@@ -240,7 +240,7 @@ public abstract class ButtonDropTarget extends TextView
 
     @Override
     public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
-        mActive = supportsDrop(dragObject.dragInfo);
+        mActive = !options.isKeyboardDrag && supportsDrop(dragObject.dragInfo);
         mDrawable.setColorFilter(null);
         if (mCurrentColorAnim != null) {
             mCurrentColorAnim.cancel();
