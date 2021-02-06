@@ -905,7 +905,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         }
 
         logStopAndResume(false /* isResume */);
-        mAppWidgetHost.setListenIfResumed(false);
+        mAppWidgetHost.setActivityStarted(false);
         NotificationListener.removeNotificationsChangedListener();
     }
 
@@ -918,7 +918,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
             mOverlayManager.onActivityStarted(this);
         }
 
-        mAppWidgetHost.setListenIfResumed(true);
+        mAppWidgetHost.setActivityStarted(true);
         TraceHelper.INSTANCE.endSection(traceToken);
     }
 
@@ -938,6 +938,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         NotificationListener.setNotificationsChangedListener(mPopupDataProvider);
 
         DiscoveryBounce.showForHomeIfNeeded(this);
+        mAppWidgetHost.setActivityResumed(true);
     }
 
     private void logStopAndResume(boolean isResume) {
@@ -1031,7 +1032,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     @Override
     public void onStateSetEnd(LauncherState state) {
         super.onStateSetEnd(state);
-        getAppWidgetHost().setResumed(state == LauncherState.NORMAL);
+        getAppWidgetHost().setStateIsNormal(state == LauncherState.NORMAL);
         getWorkspace().setClipChildren(!state.hasFlag(FLAG_MULTI_PAGE));
 
         finishAutoCancelActionMode();
@@ -1088,6 +1089,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         if (!mDeferOverlayCallbacks) {
             mOverlayManager.onActivityPaused(this);
         }
+        mAppWidgetHost.setActivityResumed(false);
     }
 
     class LauncherOverlayCallbacksImpl implements LauncherOverlayCallbacks {

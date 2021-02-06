@@ -40,4 +40,19 @@
     <color name="gesture_tutorial_fake_previous_task_view_color">#9CCC65</color> <!-- Light Green -->
     <color name="gesture_tutorial_action_button_label_color">#FFFFFFFF</color>
     <color name="gesture_tutorial_primary_color">#1A73E8</color> <!-- Blue -->
+
+    <color name="popup_color_primary_light">#FFF</color>
+    <color name="popup_color_secondary_light">#F1F3F4</color>
+    <color name="popup_color_tertiary_light">#E0E0E0</color> <!-- Gray 300 -->
+    <color name="popup_color_primary_dark">#3C4043</color> <!-- Gray 800 -->
+    <color name="popup_color_secondary_dark">#202124</color>
+    <color name="popup_color_tertiary_dark">#757575</color> <!-- Gray 600 -->
+
+    <color name="workspace_text_color_light">#FFF</color>
+    <color name="workspace_text_color_dark">#FF212121</color>
+
+    <color name="text_color_primary_dark">#FFFFFFFF</color>
+    <color name="text_color_secondary_dark">#FFFFFFFF</color>
+    <color name="text_color_tertiary_dark">#CCFFFFFF</color>
+
 </resources>

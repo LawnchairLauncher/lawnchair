@@ -35,12 +35,12 @@
         <item name="allAppsInterimScrimAlpha">46</item>
         <item name="allAppsNavBarScrimColor">#66FFFFFF</item>
         <item name="allAppsTheme">@style/AllAppsTheme</item>
-        <item name="popupColorPrimary">#FFF</item>
-        <item name="popupColorSecondary">#F1F3F4</item>
-        <item name="popupColorTertiary">#E0E0E0</item> <!-- Gray 300 -->
+        <item name="popupColorPrimary">@color/popup_color_primary_light</item>
+        <item name="popupColorSecondary">@color/popup_color_secondary_light</item>
+        <item name="popupColorTertiary">@color/popup_color_tertiary_light</item>
         <item name="isMainColorDark">false</item>
         <item name="isWorkspaceDarkText">false</item>
-        <item name="workspaceTextColor">@android:color/white</item>
+        <item name="workspaceTextColor">@color/workspace_text_color_light</item>
         <item name="workspaceShadowColor">#B0000000</item>
         <item name="workspaceAmbientShadowColor">#33000000</item>
         <item name="workspaceKeyShadowColor">#44000000</item>
@@ -74,7 +74,7 @@
     </style>
 
     <style name="LauncherTheme.DarkText" parent="@style/LauncherTheme">
-        <item name="workspaceTextColor">#FF212121</item>
+        <item name="workspaceTextColor">@color/workspace_text_color_dark</item>
         <item name="allAppsInterimScrimAlpha">128</item>
         <item name="workspaceShadowColor">@android:color/transparent</item>
         <item name="workspaceAmbientShadowColor">@android:color/transparent</item>
@@ -88,9 +88,9 @@
     </style>
 
     <style name="LauncherTheme.Dark" parent="@style/LauncherTheme">
-        <item name="android:textColorPrimary">#FFFFFFFF</item>
-        <item name="android:textColorSecondary">#FFFFFFFF</item>
-        <item name="android:textColorTertiary">#CCFFFFFF</item>
+        <item name="android:textColorPrimary">@color/text_color_primary_dark</item>
+        <item name="android:textColorSecondary">@color/text_color_secondary_dark</item>
+        <item name="android:textColorTertiary">@color/text_color_tertiary_dark</item>
         <item name="android:textColorHint">#A0FFFFFF</item>
         <item name="android:colorControlHighlight">#A0FFFFFF</item>
         <item name="android:colorPrimary">#FF212121</item>
@@ -98,9 +98,9 @@
         <item name="allAppsInterimScrimAlpha">102</item>
         <item name="allAppsNavBarScrimColor">#80000000</item>
         <item name="allAppsTheme">@style/AllAppsTheme.Dark</item>
-        <item name="popupColorPrimary">#3C4043</item> <!-- Gray 800 -->
-        <item name="popupColorSecondary">#202124</item>
-        <item name="popupColorTertiary">#757575</item> <!-- Gray 600 -->
+        <item name="popupColorPrimary">@color/popup_color_primary_dark</item>
+        <item name="popupColorSecondary">@color/popup_color_secondary_dark</item>
+        <item name="popupColorTertiary">@color/popup_color_tertiary_dark</item>
         <item name="widgetsTheme">@style/WidgetContainerTheme.Dark</item>
         <item name="folderDotColor">?android:attr/colorPrimary</item>
         <item name="folderFillColor">?android:attr/colorBackground</item>
@@ -125,7 +125,7 @@
         <item name="allAppsInterimScrimAlpha">25</item>
         <item name="folderFillColor">#CDFFFFFF</item>
         <item name="folderTextColor">?attr/workspaceTextColor</item>
-        <item name="workspaceTextColor">#FF212121</item>
+        <item name="workspaceTextColor">@color/workspace_text_color_dark</item>
         <item name="workspaceShadowColor">@android:color/transparent</item>
         <item name="workspaceAmbientShadowColor">@android:color/transparent</item>
         <item name="workspaceKeyShadowColor">@android:color/transparent</item>
