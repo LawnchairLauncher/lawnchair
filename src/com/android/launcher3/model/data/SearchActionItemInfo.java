@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.model.data;
 
+import static com.android.launcher3.LauncherSettings.Favorites.EXTENDED_CONTAINERS;
+
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.drawable.Icon;
@@ -45,6 +47,7 @@ public class SearchActionItemInfo extends ItemInfoWithIcon {
             CharSequence title) {
         this.user = user == null ? Process.myUserHandle() : user;
         this.title = title;
+        this.container = EXTENDED_CONTAINERS;
         mFallbackPackageName = packageName;
         mIcon = icon;
     }
@@ -55,6 +58,7 @@ public class SearchActionItemInfo extends ItemInfoWithIcon {
         mFallbackPackageName = info.mFallbackPackageName;
         mFlags = info.mFlags;
         title = info.title;
+        this.container = EXTENDED_CONTAINERS;
     }
 
     /**
