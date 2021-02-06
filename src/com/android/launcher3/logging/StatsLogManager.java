@@ -344,6 +344,12 @@ public class StatsLogManager implements ResourceBasedOverride {
 
         @UiEvent(doc = "Current grid size is changed to 2.")
         LAUNCHER_GRID_SIZE_2(665),
+
+        @UiEvent(doc = "Launcher entered into AllApps state.")
+        LAUNCHER_ALLAPPS_ENTRY(692),
+
+        @UiEvent(doc = "Launcher exited from AllApps state.")
+        LAUNCHER_ALLAPPS_EXIT(693),
         ;
 
         // ADD MORE
