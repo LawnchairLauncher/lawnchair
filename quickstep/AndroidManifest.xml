@@ -41,7 +41,7 @@
     <uses-permission android:name="android.permission.MANAGE_ACCESSIBILITY"/>
 
     <uses-permission android:name="${packageName}.permission.HOTSEAT_EDU" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.SYSTEM_APPLICATION_OVERLAY" />
 
     <application android:backupAgent="com.android.launcher3.LauncherBackupAgent"
          android:fullBackupOnly="true"
