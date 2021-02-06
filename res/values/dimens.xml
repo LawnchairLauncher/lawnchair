@@ -139,6 +139,7 @@
     <dimen name="drag_flingToDeleteMinVelocity">-1500dp</dimen>
 
     <dimen name="spring_loaded_panel_border">1dp</dimen>
+    <dimen name="keyboard_drag_stroke_width">4dp</dimen>
 
 <!-- Folders -->
     <dimen name="page_indicator_dot_size">8dp</dimen>
