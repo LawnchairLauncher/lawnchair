@@ -312,6 +312,13 @@ public class CellLayout extends ViewGroup {
         }
     }
 
+    /**
+     * Returns the currently set accessibility delegate
+     */
+    public DragAndDropAccessibilityDelegate getDragAndDropAccessibilityDelegate() {
+        return mTouchHelper;
+    }
+
     @Override
     public boolean dispatchHoverEvent(MotionEvent event) {
         // Always attempt to dispatch hover events to accessibility first.

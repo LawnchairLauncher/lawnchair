@@ -88,6 +88,7 @@ public class CustomActionsPopup implements OnMenuItemClickListener {
 
     @Override
     public boolean onMenuItemClick(MenuItem menuItem) {
-        return mDelegate.performAction(mIcon, (ItemInfo) mIcon.getTag(), menuItem.getItemId());
+        return mDelegate.performAction(mIcon, (ItemInfo) mIcon.getTag(), menuItem.getItemId(),
+                true);
     }
 }
