@@ -17,6 +17,7 @@
 package com.android.launcher3.proxy;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
@@ -48,19 +49,20 @@ public class ProxyActivityStarter extends Activity {
             return;
         }
 
-        if (mParams.intent != null) {
-            startActivityForResult(mParams.intent, mParams.requestCode, mParams.options);
-            return;
-        } else if (mParams.intentSender != null) {
-            try {
+        try {
+            if (mParams.intent != null) {
+                startActivityForResult(mParams.intent, mParams.requestCode, mParams.options);
+                return;
+            } else if (mParams.intentSender != null) {
                 startIntentSenderForResult(mParams.intentSender, mParams.requestCode,
                         mParams.fillInIntent, mParams.flagsMask, mParams.flagsValues,
                         mParams.extraFlags,
                         mParams.options);
                 return;
-            } catch (SendIntentException e) {
-                mParams.deliverResult(this, RESULT_CANCELED, null);
             }
+        } catch (NullPointerException | ActivityNotFoundException | SecurityException
+                | SendIntentException e) {
+            mParams.deliverResult(this, RESULT_CANCELED, null);
         }
         finishAndRemoveTask();
     }

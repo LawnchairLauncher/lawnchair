@@ -59,7 +59,7 @@ public class ShortcutMenuAccessibilityDelegate extends LauncherAccessibilityDele
     }
 
     @Override
-    public boolean performAction(View host, ItemInfo item, int action) {
+    public boolean performAction(View host, ItemInfo item, int action, boolean fromKeyboard) {
         if (action == ADD_TO_WORKSPACE) {
             if (!(host.getParent() instanceof DeepShortcutView)) {
                 return false;
