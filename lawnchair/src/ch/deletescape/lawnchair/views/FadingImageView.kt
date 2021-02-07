@@ -22,10 +22,12 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.content.res.ResourcesCompat
 
-class FadingImageView(context: Context?, attrs: AttributeSet?) : AppCompatImageView(context, attrs) {
+class FadingImageView(context: Context, attrs: AttributeSet?) : AppCompatImageView(context, attrs) {
 
-    private val transparentDrawable = resources.getDrawable(android.R.color.transparent)
+    private val transparentDrawable = ResourcesCompat.getDrawable(
+            resources, android.R.color.transparent, context.theme)
 
     var image: Drawable? = null
         set(value) {
