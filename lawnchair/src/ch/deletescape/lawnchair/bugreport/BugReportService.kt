@@ -17,6 +17,7 @@
 
 package ch.deletescape.lawnchair.bugreport
 
+import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -31,7 +32,6 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
-import com.android.launcher3.Utilities
 
 class BugReportService : Service() {
 
@@ -54,11 +54,13 @@ class BugReportService : Service() {
         val receiver = object : BroadcastReceiver() {
 
             override fun onReceive(context: Context, intent: Intent) {
-                val report = intent.getParcelableExtra<BugReport>("report")
-                when (intent.action) {
-                    COPY_ACTION -> copyReport(report)
-                    UPLOAD_ACTION -> startDogbinUpload(report)
-                    UPLOAD_COMPLETE_ACTION -> notify(report)
+                val report = intent.getParcelableExtra<BugReport>(INTENT_EXTRA_REPORT)
+                report?.let {
+                    when (intent.action) {
+                        COPY_ACTION -> copyReport(it)
+                        UPLOAD_ACTION -> startDogbinUpload(it)
+                        UPLOAD_COMPLETE_ACTION -> notify(it)
+                    }
                 }
             }
         }
@@ -66,8 +68,9 @@ class BugReportService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (intent != null && intent.hasExtra("report")) {
-            notify(intent.getParcelableExtra("report"))
+        if (intent != null && intent.hasExtra(INTENT_EXTRA_REPORT)) {
+            val extra: BugReport? = intent.getParcelableExtra(INTENT_EXTRA_REPORT)
+            extra?.let { notify(it) }
         }
         return super.onStartCommand(intent, flags, startId)
     }
@@ -80,8 +83,9 @@ class BugReportService : Service() {
         }
     }
 
+    @SuppressLint("StringFormatInvalid")
     fun notify(report: BugReport, uploading: Boolean = false) {
-        val manager = ContextCompat.getSystemService(this, NotificationManager::class.java)!!
+        val manager = ContextCompat.getSystemService(this, NotificationManager::class.java) ?: return
         val notificationId = report.notificationId
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(report.getTitle(this))
@@ -136,7 +140,7 @@ class BugReportService : Service() {
         if (report.link != null || fileUri == null) {
             val copyIntent = Intent(COPY_ACTION)
                     .setPackage(BuildConfig.APPLICATION_ID)
-                    .putExtra("report", report)
+                    .putExtra(INTENT_EXTRA_REPORT, report)
             val pendingCopyIntent = PendingIntent.getBroadcast(
                     this, notificationId, copyIntent, PendingIntent.FLAG_UPDATE_CURRENT)
             val copyText = if (report.link != null) R.string.action_copy_link else R.string.action_copy
@@ -151,7 +155,7 @@ class BugReportService : Service() {
         } else if (report.link == null) {
             val uploadIntent = Intent(UPLOAD_ACTION)
                     .setPackage(BuildConfig.APPLICATION_ID)
-                    .putExtra("report", report)
+                    .putExtra(INTENT_EXTRA_REPORT, report)
             val pendingUploadIntent = PendingIntent.getBroadcast(
                     this, notificationId, uploadIntent, PendingIntent.FLAG_UPDATE_CURRENT)
             val uploadText = if (report.uploadError) R.string.action_dogbin_upload_error else R.string.action_dogbin_upload
@@ -167,7 +171,7 @@ class BugReportService : Service() {
     private fun startDogbinUpload(report: BugReport) {
         notify(report, true)
         startService(Intent(this, DogbinUploadService::class.java)
-                .putExtra("report", report))
+                .putExtra(INTENT_EXTRA_REPORT, report))
     }
 
     private fun copyReport(report: BugReport) {
@@ -200,6 +204,7 @@ class BugReportService : Service() {
     companion object {
 
         private const val CHANNEL_ID = "bugreport"
+        private const val INTENT_EXTRA_REPORT = "report"
         const val STATUS_ID = "status"
         const val GROUP_KEY = "ch.deletescape.lawnchair.CRASHES"
         const val GROUP_ID = 0
@@ -223,7 +228,7 @@ class BugReportService : Service() {
 
         fun getBroadcastIntent(context: Context, report: BugReport): Intent {
             return Intent(context, BugReportService::class.java)
-                    .putExtra("report", report)
+                    .putExtra(INTENT_EXTRA_REPORT, report)
         }
     }
 }
