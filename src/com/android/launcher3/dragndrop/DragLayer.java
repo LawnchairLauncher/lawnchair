@@ -85,9 +85,6 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     private final WorkspaceAndHotseatScrim mWorkspaceScrim;
     private final OverviewScrim mOverviewScrim;
 
-    // View that should handle move events
-    private View mMoveTarget;
-
     /**
      * Used to create a new DragLayer from XML.
      *
@@ -109,7 +106,6 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     public void setup(DragController dragController, Workspace workspace) {
         mDragController = dragController;
         mWorkspaceScrim.setWorkspace(workspace);
-        mMoveTarget = workspace;
         recreateControllers();
     }
 
@@ -212,12 +208,6 @@ public class DragLayer extends BaseDragLayer<Launcher> {
         } else {
             super.addChildrenForAccessibility(childrenForAccessibility);
         }
-    }
-
-    @Override
-    public boolean dispatchUnhandledMove(View focused, int direction) {
-        return super.dispatchUnhandledMove(focused, direction)
-                || mMoveTarget.dispatchUnhandledMove(focused, direction);
     }
 
     @Override

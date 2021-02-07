@@ -34,6 +34,7 @@ import com.android.launcher3.dragndrop.DragController.DragListener;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.keyboard.CustomActionsPopup;
+import com.android.launcher3.keyboard.KeyboardDragAndDropView;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
@@ -107,10 +108,6 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
                 launcher.getText(R.string.shortcuts_menu_with_notifications_description)));
     }
 
-    public void addAccessibilityAction(int action, int actionLabel) {
-        mActions.put(action, new AccessibilityAction(action, mLauncher.getText(actionLabel)));
-    }
-
     @Override
     public void onInitializeAccessibilityNodeInfo(View host, AccessibilityNodeInfo info) {
         super.onInitializeAccessibilityNodeInfo(host, info);
@@ -139,7 +136,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         }
 
         // Do not add move actions for keyboard request as this uses virtual nodes.
-        if (!fromKeyboard && itemSupportsAccessibleDrag(item)) {
+        if (itemSupportsAccessibleDrag(item)) {
             info.addAction(mActions.get(MOVE));
 
             if (item.container >= 0) {
@@ -178,13 +175,17 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
     @Override
     public boolean performAccessibilityAction(View host, int action, Bundle args) {
         if ((host.getTag() instanceof ItemInfo)
-                && performAction(host, (ItemInfo) host.getTag(), action)) {
+                && performAction(host, (ItemInfo) host.getTag(), action, false)) {
             return true;
         }
         return super.performAccessibilityAction(host, action, args);
     }
 
-    public boolean performAction(final View host, final ItemInfo item, int action) {
+    /**
+     * Performs the provided action on the host
+     */
+    public boolean performAction(final View host, final ItemInfo item, int action,
+            boolean fromKeyboard) {
         if (action == ACTION_LONG_CLICK) {
             if (PopupContainerWithArrow.canShow(host, item)) {
                 // Long press should be consumed for workspace items, and it should invoke the
@@ -205,7 +206,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
             return true;
         }
         if (action == MOVE) {
-            beginAccessibleDrag(host, item);
+            return beginAccessibleDrag(host, item, fromKeyboard);
         } else if (action == ADD_TO_WORKSPACE) {
             final int[] coordinates = new int[2];
             final int screenId = findSpaceOnWorkspace(item, coordinates);
@@ -406,7 +407,11 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         }
     }
 
-    public void beginAccessibleDrag(View item, ItemInfo info) {
+    private boolean beginAccessibleDrag(View item, ItemInfo info, boolean fromKeyboard) {
+        if (!itemSupportsAccessibleDrag(info)) {
+            return false;
+        }
+
         mDragInfo = new DragInfo();
         mDragInfo.info = info;
         mDragInfo.item = item;
@@ -423,8 +428,17 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
 
         DragOptions options = new DragOptions();
         options.isAccessibleDrag = true;
+        options.isKeyboardDrag = fromKeyboard;
         options.simulatedDndStartPoint = new Point(pos.centerX(), pos.centerY());
-        ItemLongClickListener.beginDrag(item, mLauncher, info, options);
+
+        if (fromKeyboard) {
+            KeyboardDragAndDropView popup = (KeyboardDragAndDropView) mLauncher.getLayoutInflater()
+                    .inflate(R.layout.keyboard_drag_and_drop, mLauncher.getDragLayer(), false);
+            popup.showForIcon(item, info, options);
+        } else {
+            ItemLongClickListener.beginDrag(item, mLauncher, info, options);
+        }
+        return true;
     }
 
     @Override
