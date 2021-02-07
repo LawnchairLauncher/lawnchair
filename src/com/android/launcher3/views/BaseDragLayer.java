@@ -455,12 +455,6 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
     }
 
     @Override
-    public boolean dispatchUnhandledMove(View focused, int direction) {
-        // Consume the unhandled move if a container is open, to avoid switching pages underneath.
-        return AbstractFloatingView.getTopOpenView(mActivity) != null;
-    }
-
-    @Override
     protected boolean onRequestFocusInDescendants(int direction, Rect previouslyFocusedRect) {
         View topView = AbstractFloatingView.getTopOpenView(mActivity);
         if (topView != null) {

@@ -15,6 +15,9 @@
  */
 package com.android.launcher3.taskbar;
 
+import static com.android.systemui.shared.system.ViewTreeObserverWrapper.InsetsInfo.TOUCHABLE_INSETS_FRAME;
+import static com.android.systemui.shared.system.ViewTreeObserverWrapper.InsetsInfo.TOUCHABLE_INSETS_REGION;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
@@ -22,10 +25,18 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.anim.AlphaUpdateListener;
+import com.android.systemui.shared.system.ViewTreeObserverWrapper;
+
 /**
  * Top-level ViewGroup that hosts the TaskbarView as well as Views created by it such as Folder.
  */
 public class TaskbarContainerView extends FrameLayout {
+
+    // Initialized in init.
+    private TaskbarView mTaskbarView;
+    private ViewTreeObserverWrapper.OnComputeInsetsListener mTaskbarInsetsComputer;
+
     public TaskbarContainerView(@NonNull Context context) {
         this(context, null);
     }
@@ -42,5 +53,42 @@ public class TaskbarContainerView extends FrameLayout {
     public TaskbarContainerView(@NonNull Context context, @Nullable AttributeSet attrs,
             int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+    }
+
+    protected void init(TaskbarView taskbarView) {
+        mTaskbarView = taskbarView;
+        mTaskbarInsetsComputer = createTaskbarInsetsComputer();
+    }
+
+    private ViewTreeObserverWrapper.OnComputeInsetsListener createTaskbarInsetsComputer() {
+        return insetsInfo -> {
+            if (getAlpha() < AlphaUpdateListener.ALPHA_CUTOFF_THRESHOLD) {
+                // We're invisible, let touches pass through us.
+                insetsInfo.touchableRegion.setEmpty();
+                insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION);
+            } else {
+                 // We're visible again, accept touches anywhere in our bounds.
+                insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_FRAME);
+            }
+        };
+    }
+
+    protected void cleanup() {
+        ViewTreeObserverWrapper.removeOnComputeInsetsListener(mTaskbarInsetsComputer);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+
+        ViewTreeObserverWrapper.addOnComputeInsetsListener(getViewTreeObserver(),
+                mTaskbarInsetsComputer);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+
+        cleanup();
     }
 }
