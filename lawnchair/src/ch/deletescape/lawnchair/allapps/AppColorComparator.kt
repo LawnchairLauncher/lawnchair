@@ -19,8 +19,9 @@ package ch.deletescape.lawnchair.allapps
 
 import android.content.Context
 import androidx.core.graphics.ColorUtils
-import com.android.launcher3.AppInfo
+import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.allapps.AppInfoComparator
+import com.android.launcher3.icons.ColorExtractor
 
 // Reference: https://www.alanzucconi.com/2015/09/30/colour-sorting/ - Step sorting
 class AppColorComparator(context: Context) : AppInfoComparator(context) {
@@ -30,8 +31,9 @@ class AppColorComparator(context: Context) : AppInfoComparator(context) {
         val hslA = FloatArray(3)
         val hslB = FloatArray(3)
 
-        ColorUtils.colorToHSL(a.iconColor, hslA)
-        ColorUtils.colorToHSL(b.iconColor, hslB)
+        val colorExtractor = ColorExtractor()
+        ColorUtils.colorToHSL(colorExtractor.findDominantColorByHue(a.bitmap), hslA)
+        ColorUtils.colorToHSL(colorExtractor.findDominantColorByHue(b.bitmap), hslB)
 
         val h2A = remapHue(hslA[0])
         val h2B = remapHue(hslB[0])
