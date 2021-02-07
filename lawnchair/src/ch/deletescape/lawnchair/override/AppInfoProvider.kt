@@ -17,9 +17,9 @@
 
 package ch.deletescape.lawnchair.override
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
+import android.content.pm.LauncherApps
 import ch.deletescape.lawnchair.ensureOnMainThread
 import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.lawnchairPrefs
@@ -27,13 +27,12 @@ import ch.deletescape.lawnchair.useApplicationContext
 import ch.deletescape.lawnchair.util.SingletonHolder
 import com.android.launcher3.AppInfo
 import com.android.launcher3.LauncherAppState
-import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.util.ComponentKey
 
 class AppInfoProvider private constructor(context: Context) : CustomInfoProvider<AppInfo>(context) {
 
     private val prefs = context.lawnchairPrefs
-    private val launcherApps by lazy { LauncherAppsCompat.getInstance(context) }
+    private val launcherApps by lazy { context.getSystemService(LauncherApps::class.java) }
 
     override fun getTitle(info: AppInfo): String {
         return prefs.customAppName[info.toComponentKey()] ?: info.title.toString()
@@ -58,7 +57,8 @@ class AppInfoProvider private constructor(context: Context) : CustomInfoProvider
 
     fun setTitle(key: ComponentKey, title: String?) {
         prefs.customAppName[key] = title
-        LauncherAppState.getInstance(context).iconCache.updateIconsForPkg(key.componentName.packageName, key.user)
+        LauncherAppState.getInstance(context).iconCache.updateIconsForPkg(
+                key.componentName.packageName, key.user)
     }
 
     override fun setIcon(info: AppInfo, entry: IconPackManager.CustomIconEntry?) {
@@ -67,7 +67,8 @@ class AppInfoProvider private constructor(context: Context) : CustomInfoProvider
 
     fun setIcon(key: ComponentKey, entry: IconPackManager.CustomIconEntry?) {
         prefs.customAppIcon[key] = entry
-        LauncherAppState.getInstance(context).iconCache.updateIconsForPkg(key.componentName.packageName, key.user)
+        LauncherAppState.getInstance(context).iconCache.updateIconsForPkg(
+                key.componentName.packageName, key.user)
     }
 
     private fun getLauncherActivityInfo(info: AppInfo): LauncherActivityInfo? {
@@ -86,7 +87,8 @@ class AppInfoProvider private constructor(context: Context) : CustomInfoProvider
         return getCustomIconEntry(info.toComponentKey())
     }
 
-    private fun getComponentKey(app: LauncherActivityInfo) = ComponentKey(app.componentName, app.user)
+    private fun getComponentKey(app: LauncherActivityInfo) = ComponentKey(app.componentName,
+                                                                          app.user)
 
     companion object : SingletonHolder<AppInfoProvider, Context>(ensureOnMainThread(
             useApplicationContext(::AppInfoProvider)))

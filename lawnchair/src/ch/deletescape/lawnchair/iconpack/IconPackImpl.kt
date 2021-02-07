@@ -21,6 +21,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.LauncherActivityInfo
+import android.content.pm.LauncherApps
 import android.content.pm.PackageManager
 import android.content.pm.ShortcutInfo
 import android.content.res.Resources
@@ -36,8 +37,10 @@ import ch.deletescape.lawnchair.get
 import ch.deletescape.lawnchair.toTitleCase
 import ch.deletescape.lawnchair.util.extensions.d
 import ch.deletescape.lawnchair.util.extensions.e
-import com.android.launcher3.*
-import com.android.launcher3.compat.LauncherAppsCompat
+import com.android.launcher3.FastBitmapDrawable
+import com.android.launcher3.LauncherAppState
+import com.android.launcher3.LauncherSettings
+import com.android.launcher3.Utilities
 import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
@@ -72,7 +75,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
     override val packInfo = IconPackList.PackInfoImpl(context, packPackageName)
 
     override fun onDateChanged() {
-        val apps = LauncherAppsCompat.getInstance(context)
+        val apps = context.getSystemService(LauncherApps::class.java)
         val model = LauncherAppState.getInstance(context).model
         val shortcutManager = DeepShortcutManager.getInstance(context)
         for (user in UserManagerCompat.getInstance(context).userProfiles) {

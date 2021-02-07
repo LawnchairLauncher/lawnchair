@@ -21,6 +21,7 @@ package ch.deletescape.lawnchair.sesame
 
 import android.content.ComponentName
 import android.content.Context
+import android.content.pm.LauncherApps
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.VectorDrawable
@@ -33,7 +34,6 @@ import ch.deletescape.lawnchair.shortcuts.LawnchairShortcutManager
 import ch.deletescape.lawnchair.toBitmap
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
-import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.icons.FixedScaleDrawable
 import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.bumptech.glide.Glide
@@ -89,7 +89,7 @@ fun SesameShortcut.getIcon(context: Context, density: Int): Drawable {
 
 private fun SesameShortcut.getAccentColor(context: Context) = colors.getOrPut(id) {
     if (packageName != null) {
-        val activities = LauncherAppsCompat.getInstance(context).getActivityList(packageName, Process.myUserHandle())
+        val activities = context.getSystemService(LauncherApps::class.java).getActivityList(packageName, Process.myUserHandle())
         if (activities.isNotEmpty()) {
             val icon = context.launcherAppState.iconCache.getFullResIcon(activities[0]).toBitmap()
             if (icon != null) {

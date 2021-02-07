@@ -19,6 +19,7 @@ package ch.deletescape.lawnchair.flowerpot
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.LauncherApps
 import android.content.pm.ShortcutInfo
 import android.os.UserHandle
 import ch.deletescape.lawnchair.flowerpot.rules.CodeRule
@@ -28,7 +29,7 @@ import com.android.launcher3.util.PackageUserKey
 
 class FlowerpotApps(private val context: Context, private val pot: Flowerpot) : OnAppsChangedCallbackCompat {
 
-    private val launcherApps = LauncherAppsCompat.getInstance(context)
+    private val launcherApps = context.getSystemService(LauncherApps::class.java)
     private val intentMatches = mutableSetOf<String>()
     val matches = mutableSetOf<ComponentKey>()
     val packageMatches = mutableSetOf<PackageUserKey>()

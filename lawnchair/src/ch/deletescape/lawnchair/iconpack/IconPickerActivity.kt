@@ -20,6 +20,7 @@ package ch.deletescape.lawnchair.iconpack
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.LauncherApps
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
@@ -40,7 +41,6 @@ import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
 import ch.deletescape.lawnchair.views.FadingImageView
 import com.android.launcher3.LauncherModel
 import com.android.launcher3.R
-import com.android.launcher3.compat.LauncherAppsCompat
 import kotlinx.android.synthetic.main.activity_settings_search.*
 import java.text.Collator
 import java.util.*
@@ -61,7 +61,7 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
 
     private var dynamicPadding = 0
 
-    private val pickerComponent by lazy { LauncherAppsCompat.getInstance(this)
+    private val pickerComponent by lazy { this.getSystemService(LauncherApps::class.java)
             .getActivityList(iconPack.packPackageName, Process.myUserHandle()).firstOrNull()?.componentName }
 
     private var searchItems: MutableList<AdapterItem>? = null

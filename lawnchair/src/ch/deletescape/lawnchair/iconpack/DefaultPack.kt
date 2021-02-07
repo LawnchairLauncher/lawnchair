@@ -20,6 +20,7 @@ package ch.deletescape.lawnchair.iconpack
 import android.content.ComponentName
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
+import android.content.pm.LauncherApps
 import android.content.pm.PackageManager
 import android.content.pm.ShortcutInfo
 import android.content.res.Resources
@@ -37,7 +38,6 @@ import ch.deletescape.lawnchair.util.extensions.e
 import ch.deletescape.lawnchair.util.overrideSdk
 import com.android.launcher3.*
 import com.android.launcher3.Utilities.makeComponentKey
-import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
@@ -54,7 +54,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
     private val prefs = context.lawnchairPrefs
     val dynamicClockDrawer by lazy { DynamicClock(context) }
     private val appMap = HashMap<ComponentKey, Entry>().apply {
-        val launcherApps = LauncherAppsCompat.getInstance(context)
+        val launcherApps = context.getSystemService(LauncherApps::class.java)
         UserManagerCompat.getInstance(context).userProfiles.forEach { user ->
             launcherApps.getActivityList(null, user).forEach {
                 put(ComponentKey(it.componentName, user), Entry(it))

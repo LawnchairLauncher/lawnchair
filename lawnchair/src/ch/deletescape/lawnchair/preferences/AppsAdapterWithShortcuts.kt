@@ -21,6 +21,7 @@ import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
+import android.content.pm.LauncherApps
 import android.content.pm.ShortcutInfo
 import android.content.res.ColorStateList
 import android.graphics.drawable.BitmapDrawable
@@ -40,7 +41,6 @@ import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.iconpack.LawnchairIconProvider
 import ch.deletescape.lawnchair.isVisible
 import com.android.launcher3.*
-import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
@@ -145,8 +145,8 @@ open class AppsAdapterWithShortcuts(
     private fun getAppsList(context: Context): List<LauncherActivityInfo> {
         val apps = ArrayList<LauncherActivityInfo>()
         val profiles = UserManagerCompat.getInstance(context).userProfiles
-        val launcherAppsCompat = LauncherAppsCompat.getInstance(context)
-        profiles.forEach { apps += launcherAppsCompat.getActivityList(null, it) }
+        val launcherApps = context.getSystemService(LauncherApps::class.java)
+        profiles.forEach { apps += launcherApps.getActivityList(null, it) }
         return if (filter != null) {
             apps.filter { filter.shouldShowApp(it.componentName, it.user) }
         } else {

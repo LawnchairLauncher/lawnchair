@@ -18,6 +18,7 @@ package com.android.launcher3.allapps.search;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.LauncherActivityInfo;
+import android.content.pm.LauncherApps;
 import android.os.Handler;
 import android.os.UserHandle;
 
@@ -29,7 +30,6 @@ import ch.deletescape.lawnchair.globalsearch.providers.web.WebSearchProvider;
 import com.android.launcher3.AppFilter;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.util.ComponentKey;
@@ -110,7 +110,7 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
         final IconCache iconCache = LauncherAppState.getInstance(context).getIconCache();
         for (UserHandle user : UserManagerCompat.getInstance(context).getUserProfiles()) {
             final List<ComponentName> duplicatePreventionCache = new ArrayList<>();
-            for (LauncherActivityInfo info : LauncherAppsCompat.getInstance(context).getActivityList(null, user)) {
+            for (LauncherActivityInfo info : context.getSystemService(LauncherApps.class).getActivityList(null, user)) {
                 if (!filter.shouldShowApp(info.getComponentName(), user)) {
                     continue;
                 }

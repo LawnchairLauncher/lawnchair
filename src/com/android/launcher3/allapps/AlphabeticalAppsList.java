@@ -18,6 +18,7 @@ package com.android.launcher3.allapps;
 
 import android.content.Context;
 
+import android.content.pm.LauncherApps;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.model.data.AppInfo;
 import android.content.pm.LauncherActivityInfo;
@@ -35,7 +36,6 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
-import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
@@ -514,7 +514,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
             return mApps;
         }
 
-        final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(mLauncher);
+        final LauncherApps launcherApps = mLauncher.getSystemService(LauncherApps.class);
         final UserHandle user = android.os.Process.myUserHandle();
         final IconCache iconCache = LauncherAppState.getInstance(mLauncher).getIconCache();
         boolean quietMode = UserManagerCompat.getInstance(mLauncher).isQuietModeEnabled(user);

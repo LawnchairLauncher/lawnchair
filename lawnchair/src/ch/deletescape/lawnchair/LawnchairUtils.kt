@@ -21,12 +21,15 @@ import android.app.Activity
 import android.content.ContentResolver
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
+import android.content.pm.LauncherApps
 import android.content.pm.PackageInfo.REQUESTED_PERMISSION_GRANTED
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.content.res.Resources
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.RectF
 import android.graphics.drawable.*
 import android.net.Uri
 import android.os.Handler
@@ -57,7 +60,6 @@ import ch.deletescape.lawnchair.font.CustomFontManager
 import ch.deletescape.lawnchair.util.JSONMap
 import ch.deletescape.lawnchair.util.hasFlag
 import com.android.launcher3.*
-import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.model.BgDataModel
 import com.android.launcher3.shortcuts.DeepShortcutManager
@@ -70,7 +72,6 @@ import com.google.android.apps.nexuslauncher.CustomIconUtils
 import org.json.JSONArray
 import org.json.JSONObject
 import org.xmlpull.v1.XmlPullParser
-import java.lang.IllegalArgumentException
 import java.lang.reflect.Field
 import java.security.MessageDigest
 import java.util.*
@@ -134,7 +135,7 @@ fun applyAlpha(a: Float, inputColor: Int): Int {
     var alpha = a
     alpha *= Color.alpha(inputColor)
     return Color.argb(alpha.toInt(), Color.red(inputColor), Color.green(inputColor),
-            Color.blue(inputColor))
+                      Color.blue(inputColor))
 }
 
 @ColorInt
@@ -211,7 +212,7 @@ inline fun ViewGroup.forEachChildReversed(action: (View) -> Unit) {
 }
 
 fun ComponentKey.getLauncherActivityInfo(context: Context): LauncherActivityInfo? {
-    return LauncherAppsCompat.getInstance(context).getActivityList(componentName.packageName, user)
+    return context.getSystemService(LauncherApps::class.java).getActivityList(componentName.packageName, user)
             .firstOrNull { it.componentName == componentName }
 }
 
@@ -533,18 +534,18 @@ fun Switch.applyColor(color: Int) {
             intArrayOf(-android.R.attr.state_enabled),
             intArrayOf(android.R.attr.state_checked),
             intArrayOf()),
-            intArrayOf(
-                    switchThumbDisabled,
-                    color,
-                    switchThumbNormal))
+                                     intArrayOf(
+                                             switchThumbDisabled,
+                                             color,
+                                             switchThumbNormal))
     val trstateList = ColorStateList(arrayOf(
             intArrayOf(-android.R.attr.state_enabled),
             intArrayOf(android.R.attr.state_checked),
             intArrayOf()),
-            intArrayOf(
-                    ColorUtils.setAlphaComponent(colorForeground, alphaDisabled),
-                    color,
-                    colorForeground))
+                                     intArrayOf(
+                                             ColorUtils.setAlphaComponent(colorForeground, alphaDisabled),
+                                             color,
+                                             colorForeground))
     DrawableCompat.setTintList(thumbDrawable, thstateList)
     DrawableCompat.setTintList(trackDrawable, trstateList)
 }
@@ -669,9 +670,9 @@ fun getTabRipple(context: Context, accent: Int): ColorStateList {
     return ColorStateList(arrayOf(
             intArrayOf(android.R.attr.state_selected),
             intArrayOf()),
-            intArrayOf(
-                    ColorUtils.setAlphaComponent(accent, 31),
-                    context.getColorAttr(android.R.attr.colorControlHighlight)))
+                          intArrayOf(
+                                  ColorUtils.setAlphaComponent(accent, 31),
+                                  context.getColorAttr(android.R.attr.colorControlHighlight)))
 }
 
 fun JSONObject.getNullable(key: String): Any? {
@@ -695,9 +696,9 @@ fun Context.createColoredButtonBackground(color: Int): Drawable {
     shape.setTintList(ColorStateList(arrayOf(
             intArrayOf(-android.R.attr.state_enabled),
             intArrayOf()),
-            intArrayOf(
-                    getDisabled(getColorAttr(R.attr.colorButtonNormal)),
-                    color)))
+                                     intArrayOf(
+                                             getDisabled(getColorAttr(R.attr.colorButtonNormal)),
+                                             color)))
     val highlight = getColorAttr(R.attr.colorControlHighlight)
     val ripple = RippleDrawable(ColorStateList.valueOf(highlight), shape, null)
     val insetHorizontal = resources.getDimensionPixelSize(R.dimen.abc_button_inset_horizontal_material)
@@ -709,9 +710,9 @@ fun Context.createDisabledColor(color: Int): ColorStateList {
     return ColorStateList(arrayOf(
             intArrayOf(-android.R.attr.state_enabled),
             intArrayOf()),
-            intArrayOf(
-                    getDisabled(getColorAttr(android.R.attr.colorForeground)),
-                    color))
+                          intArrayOf(
+                                  getDisabled(getColorAttr(android.R.attr.colorForeground)),
+                                  color))
 }
 
 class ViewGroupChildIterator(private val viewGroup: ViewGroup, private var current: Int) : ListIterator<View> {
@@ -776,7 +777,7 @@ inline fun avg(vararg of: Double) = of.average()
 
 fun Context.checkLocationAccess(): Boolean {
     return Utilities.hasPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) ||
-            Utilities.hasPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+           Utilities.hasPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
 }
 
 val Int.foregroundColor
@@ -820,7 +821,7 @@ fun createRipplePill(context: Context, color: Int, radius: Float): Drawable {
             ContextCompat.getColorStateList(context, R.color.focused_background)!!,
             createPill(color, radius),
             createPill(color, radius)
-    )
+                         )
 }
 
 fun createPill(color: Int, radius: Float): Drawable {

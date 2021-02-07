@@ -19,6 +19,7 @@ package ch.deletescape.lawnchair.preferences
 
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
+import android.content.pm.LauncherApps
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Handler
@@ -31,7 +32,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ch.deletescape.lawnchair.comparing
 import com.android.launcher3.*
-import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.util.ComponentKey
 
@@ -99,8 +99,8 @@ open class AppsAdapter(
     private fun getAppsList(context: Context): List<LauncherActivityInfo> {
         val apps = ArrayList<LauncherActivityInfo>()
         val profiles = UserManagerCompat.getInstance(context).userProfiles
-        val launcherAppsCompat = LauncherAppsCompat.getInstance(context)
-        profiles.forEach { apps += launcherAppsCompat.getActivityList(null, it) }
+        val launcherApps = context.getSystemService(LauncherApps::class.java)
+        profiles.forEach { apps += launcherApps.getActivityList(null, it) }
         return if (filter != null) {
             apps.filter { filter.shouldShowApp(it.componentName, it.user) }
         } else {

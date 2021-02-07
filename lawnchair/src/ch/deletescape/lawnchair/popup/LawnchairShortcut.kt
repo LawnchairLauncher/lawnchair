@@ -21,6 +21,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
+import android.content.pm.LauncherApps
 import android.net.Uri
 import android.view.View
 import ch.deletescape.lawnchair.lawnchairPrefs
@@ -31,7 +32,6 @@ import ch.deletescape.lawnchair.util.hasFlag
 import com.android.launcher3.*
 import com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_SYSTEM_YES
 import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
-import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.popup.SystemShortcut
 import com.google.android.apps.nexuslauncher.CustomBottomSheet
 import ninja.sesame.lib.bridge.v1.SesameFrontend
@@ -82,7 +82,7 @@ class LawnchairShortcut(private val context: Context) {
                 val intent = item.intent
                 val user = item.user
                 if (intent != null) {
-                    val info = LauncherAppsCompat.getInstance(launcher).resolveActivity(intent, user)
+                    val info = launcher.getSystemService(LauncherApps::class.java).resolveActivity(intent, user)
                     if (info != null && !info.applicationInfo.flags.hasFlag(ApplicationInfo.FLAG_SYSTEM)) {
                         return info.componentName
                     }

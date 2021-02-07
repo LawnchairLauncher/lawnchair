@@ -20,11 +20,11 @@
 package ch.deletescape.lawnchair.settings.ui.preview
 
 import android.content.Context
+import android.content.pm.LauncherApps
 import android.content.res.Resources
 import android.os.Process
 import com.android.launcher3.AppInfo
 import com.android.launcher3.R
-import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.util.PackageManagerHelper
 import com.google.android.apps.nexuslauncher.CustomAppFilter
 
@@ -35,7 +35,7 @@ object IconPreviewUtils {
     }
 
     fun getPreviewAppInfos(context: Context): List<AppInfo> {
-        val launcherApps = LauncherAppsCompat.getInstance(context)
+        val launcherApps = context.getSystemService(LauncherApps::class.java)
         val user = Process.myUserHandle()
         val appFilter = CustomAppFilter(context)
         val predefined = getPreviewPackages(context.resources)

@@ -24,6 +24,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.LauncherApps;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -90,7 +91,6 @@ import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.settings.NotificationDotsPreference;
 import com.android.launcher3.util.ComponentKey;
@@ -798,8 +798,8 @@ public class SettingsActivity extends SettingsBaseActivity implements
                 case "appInfo":
                     ComponentName componentName = new ComponentName(getActivity(),
                             LawnchairLauncher.class);
-                    LauncherAppsCompat.getInstance(getContext())
-                            .showAppDetailsForProfile(componentName,
+                    getContext().getSystemService(LauncherApps.class)
+                            .startAppDetailsActivity(componentName,
                                     android.os.Process.myUserHandle(), null, null);
                     break;
                 case "screenshot":

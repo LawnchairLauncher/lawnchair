@@ -91,7 +91,6 @@ import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.core.graphics.drawable.IconCompat;
 import ch.deletescape.lawnchair.HiddenApiCompat;
 import ch.deletescape.lawnchair.LawnchairAppKt;
-import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.ShortcutConfigActivityInfo;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
@@ -1019,9 +1018,9 @@ public final class Utilities {
 
     public static Drawable getIconForTask(Context context, int userId, String packageName) {
         IconCache ic = LauncherAppState.getInstanceNoCreate().getIconCache();
-        LauncherAppsCompat lac = LauncherAppsCompat.getInstance(context);
+        LauncherApps launcherApps = context.getSystemService(LauncherApps.class);
         UserHandle user = UserHandle.of(userId);
-        List<LauncherActivityInfo> al = lac.getActivityList(packageName, user);
+        List<LauncherActivityInfo> al = launcherApps.getActivityList(packageName, user);
         if (!al.isEmpty()) {
             Drawable fullResIcon = ic.getFullResIcon(al.get(0));
             if (user == Process.myUserHandle()) {

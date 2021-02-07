@@ -20,6 +20,7 @@ package ch.deletescape.lawnchair.gestures.handlers
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.LauncherApps
 import android.graphics.drawable.Drawable
 import android.os.UserHandle
 import android.util.Log
@@ -36,7 +37,6 @@ import ch.deletescape.lawnchair.lawnchairPrefs
 import com.android.launcher3.LauncherState
 import com.android.launcher3.R
 import com.android.launcher3.Utilities.makeComponentKey
-import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
@@ -287,23 +287,27 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) :
             }
             return
         }
+
         val opts = view.let { controller.launcher.getActivityLaunchOptionsAsBundle(it) }
+
+        fun showErrorToast() {
+            Toast.makeText(context, R.string.failed, Toast.LENGTH_LONG).show()
+        }
+
         when (type) {
             "app" -> {
-                try {
-                    LauncherAppsCompat.getInstance(context)
-                            .startActivityForProfile(target!!.componentName, target!!.user, null, opts)
-                } catch (e: NullPointerException){
-                    // App is probably not installed anymore, show a Toast
-                    Toast.makeText(context, R.string.failed, Toast.LENGTH_LONG).show()
-                } catch (e: SecurityException) {
-                    // App is probably not installed anymore, show a Toast
-                    Toast.makeText(context, R.string.failed, Toast.LENGTH_LONG).show()
+                target?.let {
+                    try {
+                        context.getSystemService(LauncherApps::class.java).startMainActivity(it.componentName, it.user, null, opts)
+                    } catch (e: SecurityException) {
+                        showErrorToast()
+                    }
+                } ?: run {
+                    showErrorToast()
                 }
             }
             "shortcut" -> {
-                DeepShortcutManager.getInstance(context)
-                        .startShortcut(packageName, id, null, opts, user)
+                DeepShortcutManager.getInstance(context).startShortcut(packageName, id, null, opts, user)
             }
         }
     }

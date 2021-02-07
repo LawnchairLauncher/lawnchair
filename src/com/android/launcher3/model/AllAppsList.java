@@ -291,7 +291,7 @@ public class AllAppsList {
      * Add and remove icons for this package, depending on visibility.
      */
     public void reloadPackages(Context context, UserHandle user) {
-        for (final LauncherActivityInfo info : LauncherAppsCompat.getInstance(context).getActivityList(null, user)) {
+        for (final LauncherActivityInfo info : context.getSystemService(LauncherApps.class).getActivityList(null, user)) {
             AppInfo applicationInfo = findAppInfo(info.getComponentName(), user);
             if (applicationInfo == null) {
                 add(new AppInfo(context, info, user), info);

@@ -19,6 +19,7 @@ package ch.deletescape.lawnchair.override
 
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
+import android.content.pm.LauncherApps
 import android.os.Build
 import ch.deletescape.lawnchair.ensureOnMainThread
 import ch.deletescape.lawnchair.iconpack.IconPackManager
@@ -26,12 +27,11 @@ import ch.deletescape.lawnchair.useApplicationContext
 import ch.deletescape.lawnchair.util.SingletonHolder
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.model.data.WorkspaceItemInfo
-import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.icons.LauncherIcons
 
 class ShortcutInfoProvider private constructor(context: Context) : CustomInfoProvider<WorkspaceItemInfo>(context) {
 
-    private val launcherApps by lazy { LauncherAppsCompat.getInstance(context) }
+    private val launcherApps by lazy { context.getSystemService(LauncherApps::class.java) }
 
     override fun getTitle(info: WorkspaceItemInfo): String {
         return (info.customTitle ?: info.title).toString()

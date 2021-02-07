@@ -1,19 +1,16 @@
 package com.google.android.apps.nexuslauncher.search;
 
+import android.content.pm.LauncherApps;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
-
 import com.android.launcher3.BaseActivity;
-import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherModel;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.views.BaseDragLayer;
@@ -27,7 +24,7 @@ public class AppLaunchActivity extends BaseActivity {
                 if (dl.user.equals(android.os.Process.myUserHandle())) {
                     startActivity(dVar.getIntent());
                 } else {
-                    LauncherAppsCompat.getInstance(this).startActivityForProfile(dl.componentName, dl.user, getIntent().getSourceBounds(), null);
+                    this.getSystemService(LauncherApps.class).startMainActivity(dl.componentName, dl.user, getIntent().getSourceBounds(), null);
                 }
                 View view = new View(this);
                 view.setTag(dVar);

@@ -1,7 +1,12 @@
 package com.google.android.apps.nexuslauncher.smartspace;
 
 import android.animation.ValueAnimator;
-import android.content.*;
+import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
+import android.content.ContentUris;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.LauncherApps;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -34,8 +39,11 @@ import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController.CardDat
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController.Line;
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController.WeatherData;
 import ch.deletescape.lawnchair.views.SmartspacePreview;
-import com.android.launcher3.*;
-import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.Launcher;
+import com.android.launcher3.R;
+import com.android.launcher3.ResourceUtils;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.ShadowGenerator;
 import com.android.launcher3.util.Themes;
 import com.google.android.apps.nexuslauncher.DynamicIconProvider;
@@ -113,7 +121,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
             try {
                 Launcher.getLauncher(getContext()).startActivitySafely(v, addFlags, null, null);
             } catch (ActivityNotFoundException ex) {
-                LauncherAppsCompat.getInstance(getContext()).showAppDetailsForProfile(
+                context.getSystemService(LauncherApps.class).startAppDetailsActivity(
                         new ComponentName(DynamicIconProvider.GOOGLE_CALENDAR, ""), Process.myUserHandle(), null, null);
             }
         };
@@ -503,7 +511,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
                 final Context context = dZ.getContext();
                 Launcher.getLauncher(context).startActivitySafely(view, addFlags, null, null);
             } catch (ActivityNotFoundException ex) {
-                LauncherAppsCompat.getInstance(dZ.getContext()).showAppDetailsForProfile(
+                (dZ.getContext()).getSystemService(LauncherApps.class).startAppDetailsActivity(
                         new ComponentName(DynamicIconProvider.GOOGLE_CALENDAR, ""), Process.myUserHandle(), null, null);
             }
         }
