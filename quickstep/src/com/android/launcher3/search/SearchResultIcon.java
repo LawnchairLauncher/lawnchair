@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.search;
 
+import static com.android.launcher3.LauncherSettings.Favorites.EXTENDED_CONTAINERS;
 import static com.android.launcher3.model.data.SearchActionItemInfo.FLAG_BADGE_WITH_PACKAGE;
 import static com.android.launcher3.model.data.SearchActionItemInfo.FLAG_PRIMARY_ICON_FROM_TITLE;
 import static com.android.launcher3.search.SearchTargetUtil.BUNDLE_EXTRA_PRIMARY_ICON_FROM_TITLE;
@@ -49,7 +50,6 @@ import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.icons.LauncherIcons;
-import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
 import com.android.launcher3.logger.LauncherAtomExtensions.DeviceSearchResultContainer;
 import com.android.launcher3.logger.LauncherAtomExtensions.ExtendedContainers;
 import com.android.launcher3.model.data.AppInfo;
@@ -147,11 +147,10 @@ public class SearchResultIcon extends BubbleTextView implements
         SearchActionItemInfo itemInfo = new SearchActionItemInfo(searchAction.getIcon(),
                 searchTarget.getPackageName(), searchTarget.getUserHandle(),
                 searchAction.getTitle()) {
-            // Workaround to log ItemInfo with DeviceSearchResultContainer without
-            // updating ItemInfo.container field.
             @Override
-            public ContainerInfo getContainerInfo() {
-                return buildDeviceSearchResultContainer();
+            protected ExtendedContainers getExtendedContainer() {
+                return ExtendedContainers.newBuilder()
+                        .setDeviceSearchResultContainer(buildDeviceSearchResultContainer()).build();
             }
         };
         itemInfo.setIntent(searchAction.getIntent());
@@ -255,14 +254,13 @@ public class SearchResultIcon extends BubbleTextView implements
         AllAppsStore appsStore = mLauncher.getAppsView().getAppsStore();
         AppInfo appInfo = new AppInfo(
                 appsStore.getApp(new ComponentKey(componentName, userHandle))) {
-            // Workaround to log ItemInfo with DeviceSearchResultContainer without
-            // updating ItemInfo.container field.
             @Override
-            public ContainerInfo getContainerInfo() {
-                return buildDeviceSearchResultContainer();
+            protected ExtendedContainers getExtendedContainer() {
+                return ExtendedContainers.newBuilder()
+                        .setDeviceSearchResultContainer(buildDeviceSearchResultContainer()).build();
             }
         };
-
+        appInfo.container = EXTENDED_CONTAINERS;
         if (appInfo == null) {
             setVisibility(GONE);
             return;
@@ -273,13 +271,13 @@ public class SearchResultIcon extends BubbleTextView implements
 
     private void prepareUsingShortcutInfo(ShortcutInfo shortcutInfo) {
         WorkspaceItemInfo workspaceItemInfo = new WorkspaceItemInfo(shortcutInfo, getContext()) {
-            // Workaround to log ItemInfo with DeviceSearchResultContainer without
-            // updating ItemInfo.container field.
             @Override
-            public ContainerInfo getContainerInfo() {
-                return buildDeviceSearchResultContainer();
+            protected ExtendedContainers getExtendedContainer() {
+                return ExtendedContainers.newBuilder()
+                        .setDeviceSearchResultContainer(buildDeviceSearchResultContainer()).build();
             }
         };
+        workspaceItemInfo.container = EXTENDED_CONTAINERS;
         notifyItemInfoChanged(workspaceItemInfo);
         LauncherAppState launcherAppState = LauncherAppState.getInstance(getContext());
         MODEL_EXECUTOR.execute(() -> {
@@ -318,15 +316,10 @@ public class SearchResultIcon extends BubbleTextView implements
         }
     }
 
-    private ContainerInfo buildDeviceSearchResultContainer() {
-        return ContainerInfo.newBuilder().setExtendedContainers(
-                ExtendedContainers
-                        .newBuilder()
-                        .setDeviceSearchResultContainer(
-                                mSearchSessionTracker.getQueryLength()
-                                        .map(queryLength -> DeviceSearchResultContainer.newBuilder()
-                                                .setQueryLength(queryLength))
-                                        .orElse(DeviceSearchResultContainer.newBuilder())))
-                .build();
+    private DeviceSearchResultContainer buildDeviceSearchResultContainer() {
+        return mSearchSessionTracker.getQueryLength()
+                .map(queryLength -> DeviceSearchResultContainer.newBuilder()
+                        .setQueryLength(queryLength))
+                .orElse(DeviceSearchResultContainer.newBuilder()).build();
     }
 }
