@@ -21,18 +21,17 @@ import android.graphics.Rect;
 import android.os.CancellationSignal;
 import android.view.View;
 import com.android.launcher3.DragSource;
-import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.PendingAddItemInfo;
 import com.android.launcher3.dragndrop.BaseItemDragListener;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.PendingItemDragHelper;
 import java.util.ArrayList;
+import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
 
 /**
  * {@link DragSource} for handling drop from a different window. This object is initialized
@@ -54,7 +53,7 @@ public class CustomWidgetDragListener extends BaseItemDragListener {
     public boolean init(Launcher launcher, boolean alreadyOnHome) {
         super.init(launcher, alreadyOnHome);
         if (!alreadyOnHome) {
-            UiFactory.useFadeOutAnimationForLauncherStart(launcher, mCancelSignal);
+            launcher.useFadeOutAnimationForLauncherStart(mCancelSignal);
         }
         return false;
     }
@@ -74,10 +73,13 @@ public class CustomWidgetDragListener extends BaseItemDragListener {
         return new PendingItemDragHelper(view);
     }
 
+    /**
+     * R migration: adapted from https://android.googlesource.com/platform/packages/apps/Launcher3/+/a579ddc9c813f314ab3dfd4e80a9c0cf1c77ec61%5E%21/#F14
+     */
     @Override
-    public void fillInLogContainerData(View v, ItemInfo info, LauncherLogProto.Target target,
-            LauncherLogProto.Target targetParent) {
-        targetParent.containerType = LauncherLogProto.ContainerType.PINITEM;
+    public void fillInLogContainerData(ItemInfo childInfo, Target child,
+            ArrayList<Target> parents) {
+        parents.add(newContainerTarget(LauncherLogProto.ContainerType.PINITEM));
     }
 
     @Override
