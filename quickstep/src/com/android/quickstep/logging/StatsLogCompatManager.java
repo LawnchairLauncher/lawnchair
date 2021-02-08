@@ -19,6 +19,7 @@ package com.android.quickstep.logging;
 import static com.android.launcher3.logger.LauncherAtom.ContainerInfo.ContainerCase.EXTENDED_CONTAINERS;
 import static com.android.launcher3.logger.LauncherAtom.ContainerInfo.ContainerCase.FOLDER;
 import static com.android.launcher3.logger.LauncherAtom.ContainerInfo.ContainerCase.SEARCH_RESULT_CONTAINER;
+import static com.android.launcher3.logger.LauncherAtomExtensions.ExtendedContainers.ContainerCase.DEVICE_SEARCH_RESULT_CONTAINER;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WORKSPACE_SNAPSHOT;
 import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGED__DST_STATE__ALLAPPS;
 import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGED__DST_STATE__BACKGROUND;
@@ -38,6 +39,8 @@ import com.android.launcher3.logger.LauncherAtom.FolderContainer.ParentContainer
 import com.android.launcher3.logger.LauncherAtom.FolderIcon;
 import com.android.launcher3.logger.LauncherAtom.FromState;
 import com.android.launcher3.logger.LauncherAtom.ToState;
+import com.android.launcher3.logger.LauncherAtomExtensions.DeviceSearchResultContainer;
+import com.android.launcher3.logger.LauncherAtomExtensions.ExtendedContainers;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.AllAppsList;
@@ -301,6 +304,14 @@ public class StatsLogCompatManager extends StatsLogManager {
                 return info.getContainerInfo().getPredictedHotseatContainer().getCardinality();
             case SEARCH_RESULT_CONTAINER:
                 return info.getContainerInfo().getSearchResultContainer().getQueryLength();
+            case EXTENDED_CONTAINERS:
+                ExtendedContainers extendedCont = info.getContainerInfo().getExtendedContainers();
+                if (extendedCont.getContainerCase() == DEVICE_SEARCH_RESULT_CONTAINER) {
+                    DeviceSearchResultContainer deviceSearchResultCont = extendedCont
+                            .getDeviceSearchResultContainer();
+                    return deviceSearchResultCont.hasQueryLength() ? deviceSearchResultCont
+                            .getQueryLength() : -1;
+                }
             default:
                 return info.getFolderIcon().getCardinality();
         }
