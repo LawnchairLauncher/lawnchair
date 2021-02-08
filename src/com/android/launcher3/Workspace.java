@@ -1455,7 +1455,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             // TAPL can work only if UIDevice is set up as setCompressedLayoutHeirarchy(false).
             // Hiding workspace from the tests when it's
             // IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS.
-            return null;
+            return AccessibilityNodeInfo.obtain();
         }
         return super.createAccessibilityNodeInfo();
     }
