@@ -19,7 +19,10 @@ package ch.deletescape.lawnchair.override
 
 import android.content.Context
 import ch.deletescape.lawnchair.iconpack.IconPackManager
-import com.android.launcher3.*
+import com.android.launcher3.model.data.AppInfo
+import com.android.launcher3.model.data.FolderInfo
+import com.android.launcher3.model.data.ItemInfo
+import com.android.launcher3.model.data.WorkspaceItemInfo
 
 abstract class CustomInfoProvider<in T : ItemInfo>(val context: Context) {
 
@@ -61,7 +64,7 @@ abstract class CustomInfoProvider<in T : ItemInfo>(val context: Context) {
 
         fun isEditable(info: ItemInfo): Boolean {
             return info is AppInfo || (info is WorkspaceItemInfo && !info.hasPromiseIconUi())
-                    || info is FolderInfo
+                   || info is FolderInfo
         }
     }
 }
