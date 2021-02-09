@@ -481,6 +481,17 @@ public class SystemUiProxy implements ISystemUiProxy {
     }
 
     @Override
+    public void exitSplitScreenOnHide(boolean exitSplitScreenOnHide) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.exitSplitScreenOnHide(exitSplitScreenOnHide);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call exitSplitScreen");
+            }
+        }
+    }
+
+    @Override
     public void startTask(int taskId, int stage, int position, Bundle options) {
         if (mSystemUiProxy != null) {
             try {
