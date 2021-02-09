@@ -33,10 +33,8 @@ import ch.deletescape.lawnchair.globalsearch.SearchProviderController
 import ch.deletescape.lawnchair.groups.AppGroupsManager
 import ch.deletescape.lawnchair.groups.DrawerTabs
 import ch.deletescape.lawnchair.iconpack.IconPackManager
-import ch.deletescape.lawnchair.preferences.DockStyle
 import ch.deletescape.lawnchair.sesame.Sesame
 import ch.deletescape.lawnchair.settings.GridSize
-import ch.deletescape.lawnchair.settings.GridSize2D
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity
 import ch.deletescape.lawnchair.settings.ui.preview.CustomGridProvider
 import ch.deletescape.lawnchair.smartspace.*
@@ -604,7 +602,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
     open inner class StringPref(key: String, defaultValue: String = "", onChange: () -> Unit = doNothing) :
             PrefDelegate<String>(key, defaultValue, onChange) {
-        override fun onGetValue(): String = sharedPrefs.getString(getKey(), defaultValue)
+        override fun onGetValue(): String = sharedPrefs.getString(getKey(), defaultValue) ?: defaultValue
 
         override fun onSetValue(value: String) {
             edit { putString(getKey(), value) }
@@ -613,7 +611,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
     open inner class NullableStringPref(key: String, defaultValue: String? = null, onChange: () -> Unit = doNothing) :
             PrefDelegate<String?>(key, defaultValue, onChange) {
-        override fun onGetValue(): String? = sharedPrefs.getString(getKey(), defaultValue)
+        override fun onGetValue(): String? = sharedPrefs.getString(getKey(), defaultValue) ?: defaultValue
 
         override fun onSetValue(value: String?) {
             edit { putString(getKey(), value) }
@@ -622,7 +620,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
     open inner class StringSetPref(key: String, defaultValue: Set<String>, onChange: () -> Unit = doNothing) :
             PrefDelegate<Set<String>>(key, defaultValue, onChange) {
-        override fun onGetValue(): Set<String> = sharedPrefs.getStringSet(getKey(), defaultValue)
+        override fun onGetValue(): Set<String> = sharedPrefs.getStringSet(getKey(), defaultValue) ?: defaultValue
 
         override fun onSetValue(value: Set<String>) {
             edit { putStringSet(getKey(), value) }
@@ -632,7 +630,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     open inner class StringIntPref(key: String, defaultValue: Int = 0, onChange: () -> Unit = doNothing) :
             PrefDelegate<Int>(key, defaultValue, onChange) {
         override fun onGetValue(): Int = try {
-            sharedPrefs.getString(getKey(), "$defaultValue").toInt()
+            sharedPrefs.getString(getKey(), "$defaultValue")?.toInt() ?: defaultValue
         } catch (e: Exception) {
             sharedPrefs.getInt(getKey(), defaultValue)
         }
@@ -650,7 +648,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         override fun onGetValue(): Int = try {
             sharedPrefs.getInt(getKey(), defaultValue)
         } catch (e: Exception) {
-            toInt(sharedPrefs.getString(getKey(), "$defaultValue")).apply {
+            toInt(sharedPrefs.getString(getKey(), defaultValue.toString()) ?: defaultValue.toString()).apply {
                 edit { putInt(getKey(), this@apply) }
             }
         }
