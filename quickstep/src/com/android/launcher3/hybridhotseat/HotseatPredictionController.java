@@ -26,7 +26,6 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.ComponentName;
-import android.os.Process;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +39,6 @@ import com.android.launcher3.Hotseat;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragController;
@@ -446,16 +444,6 @@ public class HotseatPredictionController implements DragController.DragListener,
      * Logs rank info based on current list of predicted items
      */
     public void logLaunchedAppRankingInfo(@NonNull ItemInfo itemInfo, InstanceId instanceId) {
-        if (Utilities.IS_DEBUG_DEVICE) {
-            final String pkg = itemInfo.getTargetComponent() != null
-                    ? itemInfo.getTargetComponent().getPackageName() : "unknown";
-            HotseatFileLog.INSTANCE.get(mLauncher).log("UserEvent",
-                    "appLaunch: packageName:" + pkg + ",isWorkApp:" + (itemInfo.user != null
-                            && !Process.myUserHandle().equals(itemInfo.user))
-                            + ",launchLocation:" + itemInfo.container);
-        }
-
-
         ComponentName targetCN = itemInfo.getTargetComponent();
         if (targetCN == null) {
             return;
