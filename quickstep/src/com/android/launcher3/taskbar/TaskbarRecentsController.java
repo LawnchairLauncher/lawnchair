@@ -50,6 +50,8 @@ public class TaskbarRecentsController {
     // The current background requests to load the task icons
     private CancellableTask[] mIconLoadRequests = new CancellableTask[mNumRecentIcons];
 
+    private boolean mIsAlive;
+
     public TaskbarRecentsController(BaseQuickstepLauncher launcher,
             TaskbarController.TaskbarRecentsControllerCallbacks taskbarCallbacks) {
         mLauncher = launcher;
@@ -58,11 +60,13 @@ public class TaskbarRecentsController {
     }
 
     protected void init() {
+        mIsAlive = true;
         TaskStackChangeListeners.getInstance().registerTaskStackListener(mTaskStackChangeListener);
         reloadRecentTasksIfNeeded();
     }
 
     protected void cleanup() {
+        mIsAlive = false;
         TaskStackChangeListeners.getInstance().unregisterTaskStackListener(
                 mTaskStackChangeListener);
         cancelAllPendingIconLoadTasks();
@@ -84,7 +88,9 @@ public class TaskbarRecentsController {
     }
 
     private void onRecentTasksChanged(ArrayList<Task> tasks) {
-        mTaskbarCallbacks.updateRecentItems(tasks);
+        if (mIsAlive) {
+            mTaskbarCallbacks.updateRecentItems(tasks);
+        }
     }
 
     /**
