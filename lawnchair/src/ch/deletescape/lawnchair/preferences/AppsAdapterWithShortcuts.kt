@@ -43,6 +43,7 @@ import ch.deletescape.lawnchair.isVisible
 import ch.deletescape.lawnchair.makeBasicHandler
 import com.android.launcher3.*
 import com.android.launcher3.compat.UserManagerCompat
+import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
 

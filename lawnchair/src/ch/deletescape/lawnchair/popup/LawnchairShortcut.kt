@@ -32,6 +32,10 @@ import ch.deletescape.lawnchair.util.hasFlag
 import com.android.launcher3.*
 import com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_SYSTEM_YES
 import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
+import com.android.launcher3.model.data.FolderInfo
+import com.android.launcher3.model.data.ItemInfo
+import com.android.launcher3.model.data.LauncherAppWidgetInfo
+import com.android.launcher3.model.data.WorkspaceItemInfo
 import com.android.launcher3.popup.SystemShortcut
 import com.google.android.apps.nexuslauncher.CustomBottomSheet
 import ninja.sesame.lib.bridge.v1.SesameFrontend

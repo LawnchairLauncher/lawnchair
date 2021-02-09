@@ -29,11 +29,11 @@ import ch.deletescape.lawnchair.globalsearch.providers.web.WebSearchProvider
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.makeBasicHandler
 import com.android.launcher3.AppFilter
-import com.android.launcher3.AppInfo
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.allapps.search.AllAppsSearchBarController
 import com.android.launcher3.allapps.search.SearchAlgorithm
 import com.android.launcher3.compat.UserManagerCompat
+import com.android.launcher3.model.data.AppInfo
 import me.xdrop.fuzzywuzzy.FuzzySearch
 import me.xdrop.fuzzywuzzy.ToStringFunction
 

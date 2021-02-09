@@ -25,8 +25,8 @@ import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.useApplicationContext
 import ch.deletescape.lawnchair.util.SingletonHolder
-import com.android.launcher3.AppInfo
 import com.android.launcher3.LauncherAppState
+import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.util.ComponentKey
 
 class AppInfoProvider private constructor(context: Context) : CustomInfoProvider<AppInfo>(context) {

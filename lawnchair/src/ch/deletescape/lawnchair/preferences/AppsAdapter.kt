@@ -34,6 +34,7 @@ import ch.deletescape.lawnchair.comparing
 import ch.deletescape.lawnchair.makeBasicHandler
 import com.android.launcher3.*
 import com.android.launcher3.compat.UserManagerCompat
+import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.util.ComponentKey
 
 open class AppsAdapter(

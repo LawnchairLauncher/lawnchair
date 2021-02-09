@@ -17,7 +17,7 @@
 
 package ch.deletescape.lawnchair.folder
 
-import com.android.launcher3.FolderInfo
+import com.android.launcher3.model.data.FolderInfo
 import com.android.launcher3.model.data.WorkspaceItemInfo
 
 class FirstItemProvider(private val info: FolderInfo) : FolderInfo.FolderListener {

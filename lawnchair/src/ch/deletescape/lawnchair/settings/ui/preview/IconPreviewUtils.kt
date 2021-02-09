@@ -23,8 +23,8 @@ import android.content.Context
 import android.content.pm.LauncherApps
 import android.content.res.Resources
 import android.os.Process
-import com.android.launcher3.AppInfo
 import com.android.launcher3.R
+import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.util.PackageManagerHelper
 import com.google.android.apps.nexuslauncher.CustomAppFilter
 
