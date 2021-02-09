@@ -15,9 +15,10 @@
  */
 package com.android.launcher3.search;
 
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+
 import android.app.search.Query;
 import android.app.search.SearchSession;
-import android.app.search.SearchTarget;
 import android.app.search.SearchTargetEvent;
 import android.content.Context;
 import android.util.Log;
@@ -27,7 +28,7 @@ import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.util.MainThreadInitializedObject;
 
-import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+import java.util.Optional;
 
 /**
  * A singleton class to track and report search events back to SearchSession
@@ -61,6 +62,10 @@ public class SearchSessionTracker {
     @WorkerThread
     public void setQuery(Query query) {
         mQuery = query;
+    }
+
+    public Optional<Integer> getQueryLength() {
+        return Optional.ofNullable(mQuery).map(Query::getInput).map(String::length);
     }
 
     /**

@@ -86,6 +86,10 @@ public class AllAppsInsetTransitionController {
         mApps = appsView;
     }
 
+    public void show() {
+        mApps.getWindowInsetsController().show(WindowInsets.Type.ime());
+    }
+
     public void hide() {
         if (!Utilities.ATLEAST_R) return;
 
