@@ -18,7 +18,6 @@ package com.android.launcher3;
 
 import static com.android.launcher3.Utilities.getDevicePrefs;
 import static com.android.launcher3.Utilities.getPointString;
-import static com.android.launcher3.config.FeatureFlags.APPLY_CONFIG_AT_RUNTIME;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_FOUR_COLUMNS;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.PackageManagerHelper.getPackageFilter;
@@ -174,8 +173,7 @@ public class InvariantDeviceProfile {
                 .putString(KEY_MIGRATION_SRC_WORKSPACE_SIZE, getPointString(numColumns, numRows))
                 .apply();
 
-        mConfigMonitor = new ConfigMonitor(context,
-                APPLY_CONFIG_AT_RUNTIME.get() ? this::onConfigChanged : this::killProcess);
+        mConfigMonitor = new ConfigMonitor(context, this::onConfigChanged);
         mOverlayMonitor = new OverlayMonitor(context);
     }
 
@@ -315,11 +313,6 @@ public class InvariantDeviceProfile {
 
     public void removeOnChangeListener(OnIDPChangeListener listener) {
         mChangeListeners.remove(listener);
-    }
-
-    private void killProcess(Context context) {
-        Log.e("ConfigMonitor", "restarting launcher");
-        android.os.Process.killProcess(android.os.Process.myPid());
     }
 
     public void verifyConfigChangedInBackground(final Context context) {

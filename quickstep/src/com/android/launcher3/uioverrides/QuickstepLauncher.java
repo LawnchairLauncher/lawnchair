@@ -49,7 +49,6 @@ import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.appprediction.PredictionRowView;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.hybridhotseat.HotseatPredictionController;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
@@ -104,9 +103,7 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
     @Override
     protected void setupViews() {
         super.setupViews();
-        if (FeatureFlags.ENABLE_HYBRID_HOTSEAT.get()) {
-            mHotseatPredictionController = new HotseatPredictionController(this);
-        }
+        mHotseatPredictionController = new HotseatPredictionController(this);
     }
 
     @Override
@@ -141,9 +138,7 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
         }
         logger.log(LAUNCHER_APP_LAUNCH_TAP);
 
-        if (mHotseatPredictionController != null) {
-            mHotseatPredictionController.logLaunchedAppRankingInfo(info, instanceId);
-        }
+        mHotseatPredictionController.logLaunchedAppRankingInfo(info, instanceId);
     }
 
     /**
@@ -166,10 +161,8 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
 
     @Override
     public boolean startActivitySafely(View v, Intent intent, ItemInfo item) {
-        if (mHotseatPredictionController != null) {
-            // Only pause is taskbar controller is not present
-            mHotseatPredictionController.setPauseUIUpdate(getTaskbarController() == null);
-        }
+        // Only pause is taskbar controller is not present
+        mHotseatPredictionController.setPauseUIUpdate(getTaskbarController() == null);
         return super.startActivitySafely(v, intent, item);
     }
 
@@ -181,7 +174,7 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
             onStateOrResumeChanging((getActivityFlags() & ACTIVITY_STATE_TRANSITION_ACTIVE) == 0);
         }
 
-        if (mHotseatPredictionController != null && ((changeBits & ACTIVITY_STATE_STARTED) != 0
+        if (((changeBits & ACTIVITY_STATE_STARTED) != 0
                 || (changeBits & getActivityFlags() & ACTIVITY_STATE_DEFERRED_RESUMED) != 0)) {
             mHotseatPredictionController.setPauseUIUpdate(false);
         }
@@ -195,12 +188,8 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
 
     @Override
     public Stream<SystemShortcut.Factory> getSupportedShortcuts() {
-        if (mHotseatPredictionController != null) {
-            return Stream.concat(super.getSupportedShortcuts(),
-                    Stream.of(mHotseatPredictionController));
-        } else {
-            return super.getSupportedShortcuts();
-        }
+        return Stream.concat(
+                super.getSupportedShortcuts(), Stream.of(mHotseatPredictionController));
     }
 
     /**
@@ -227,8 +216,7 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
             mAllAppsPredictions = item;
             getAppsView().getFloatingHeaderView().findFixedRowByType(PredictionRowView.class)
                     .setPredictedApps(item.items);
-        } else if (item.containerId == Favorites.CONTAINER_HOTSEAT_PREDICTION
-                && mHotseatPredictionController != null) {
+        } else if (item.containerId == Favorites.CONTAINER_HOTSEAT_PREDICTION) {
             mHotseatPredictionController.setPredictedItems(item);
         }
     }
@@ -246,10 +234,7 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
     public void onDestroy() {
         super.onDestroy();
         getAppsView().getSearchUiManager().destroy();
-        if (mHotseatPredictionController != null) {
-            mHotseatPredictionController.destroy();
-            mHotseatPredictionController = null;
-        }
+        mHotseatPredictionController.destroy();
     }
 
     @Override
