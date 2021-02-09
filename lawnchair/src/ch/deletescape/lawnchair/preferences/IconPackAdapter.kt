@@ -19,8 +19,6 @@ package ch.deletescape.lawnchair.preferences
 
 import android.content.Context
 import android.content.Intent
-import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -34,6 +32,7 @@ import ch.deletescape.lawnchair.getColorEngineAccent
 import ch.deletescape.lawnchair.iconpack.IconPackList
 import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.isVisible
+import ch.deletescape.lawnchair.makeBasicHandler
 import com.android.launcher3.R
 import kotlin.collections.ArrayList
 
@@ -41,7 +40,7 @@ class IconPackAdapter(context: Context) : RecyclerView.Adapter<IconPackAdapter.H
 
     private val manager = IconPackManager.getInstance(context)
     private val allPacks = ArrayList<IconPackItem>()
-    private val handler = Handler()
+    private val handler = makeBasicHandler(true)
 
     private var dividerIndex = 0
 

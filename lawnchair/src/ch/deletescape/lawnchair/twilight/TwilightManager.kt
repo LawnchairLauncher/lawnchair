@@ -37,6 +37,7 @@ import android.util.Log
 import androidx.core.content.ContextCompat
 import ch.deletescape.lawnchair.checkLocationAccess
 import ch.deletescape.lawnchair.ensureOnMainThread
+import ch.deletescape.lawnchair.makeBasicHandler
 import ch.deletescape.lawnchair.useApplicationContext
 import ch.deletescape.lawnchair.util.SingletonHolder
 import ch.deletescape.lawnchair.util.extensions.d
@@ -46,7 +47,7 @@ import java.util.*
 @SuppressLint("MissingPermission")
 class TwilightManager(private val context: Context) : Handler.Callback, LocationListener {
 
-    private val handler = Handler(Looper.getMainLooper(), this)
+    private val handler = makeBasicHandler(callback = this)
 
     private val alarmManager = ContextCompat.getSystemService(context, AlarmManager::class.java)!!
     private val locationManager = ContextCompat.getSystemService(context, LocationManager::class.java)!!

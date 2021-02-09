@@ -24,12 +24,12 @@ import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
-import android.os.Handler
 import android.view.View
 import android.widget.*
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.graphics.drawable.DrawableCompat
 import ch.deletescape.lawnchair.colors.ColorEngine
+import ch.deletescape.lawnchair.makeBasicHandler
 import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
@@ -86,7 +86,7 @@ class RestoreBackupActivity : SettingsBaseActivity(), LawnchairBackup.MetaLoader
                 inProgress = true
                 showMessage(R.drawable.ic_check, R.string.restore_success)
                 Utilities.getLawnchairPrefs(this).blockingEdit { restoreSuccess = false }
-                Handler().postDelayed({ finish() }, 2000)
+                makeBasicHandler(true).postDelayed({ finish() }, 2000)
                 return
             }
             else -> {
@@ -213,7 +213,7 @@ class RestoreBackupActivity : SettingsBaseActivity(), LawnchairBackup.MetaLoader
                     RestoreDbTask.setPending(context, true)
                 }
 
-                Handler().postDelayed({
+                makeBasicHandler(true).postDelayed({
                     if (fromExternal) {
                         val intent = Intent(this@RestoreBackupActivity,
                                 RestoreBackupActivity::class.java).putExtra(EXTRA_SUCCESS, true)

@@ -17,8 +17,8 @@
 
 package ch.deletescape.lawnchair.smartspace
 
-import android.os.Handler
 import android.util.Log
+import ch.deletescape.lawnchair.makeBasicHandler
 import com.google.android.apps.nexuslauncher.smartspace.ISmartspace
 import com.google.android.apps.nexuslauncher.smartspace.SmartspaceController
 import com.google.android.apps.nexuslauncher.smartspace.SmartspaceDataContainer
@@ -27,7 +27,7 @@ class SmartspacePixelBridge(controller: LawnchairSmartspaceController) :
         LawnchairSmartspaceController.DataProvider(controller), ISmartspace, Runnable {
 
     private val smartspaceController = SmartspaceController.get(controller.context)
-    private val handler = Handler()
+    private val handler = makeBasicHandler(true)
     private var data: SmartspaceDataContainer? = null
     private var ds = false
 

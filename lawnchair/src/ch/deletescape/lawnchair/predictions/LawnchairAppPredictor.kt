@@ -23,11 +23,9 @@ import android.bluetooth.BluetoothHeadset
 import android.bluetooth.BluetoothProfile
 import android.content.*
 import android.content.pm.PackageManager
-import android.os.Bundle
-import android.os.Handler
-import android.os.Process
-import android.os.SystemClock
+import android.os.*
 import android.text.TextUtils
+import ch.deletescape.lawnchair.makeBasicHandler
 import ch.deletescape.lawnchair.predictions.AppTargetEventCompat.ACTION_LAUNCH
 import ch.deletescape.lawnchair.runOnMainThread
 import com.android.launcher3.AppFilter
@@ -50,7 +48,7 @@ open class LawnchairAppPredictor(
     private val overviewCallback = PredictionUiStateManager.INSTANCE.get(context).appPredictorCallback(OVERVIEW)
     private val maxPredictions = count
 
-    private val handler = Handler()
+    private val handler = makeBasicHandler(true)
     private val packageManager = context.packageManager
     private val appFilter = AppFilter.newInstance(context)
 

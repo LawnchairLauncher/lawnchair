@@ -18,6 +18,7 @@
 package ch.deletescape.lawnchair.settings.ui;
 
 import static com.android.launcher3.util.SecureSettingsObserver.newNotificationSettingsObserver;
+import static ch.deletescape.lawnchair.LawnchairUtilsKt.makeBasicHandler;
 
 import android.app.Dialog;
 import android.content.ComponentName;
@@ -30,6 +31,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
@@ -804,7 +806,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
                     break;
                 case "screenshot":
                     final Context context = getActivity();
-                    LawnchairLauncher.Companion.takeScreenshot(getActivity(), new Handler(),
+                    LawnchairLauncher.Companion.takeScreenshot(getActivity(), makeBasicHandler(true),
                             new Function1<Uri, Unit>() {
                                 @Override
                                 public Unit invoke(Uri uri) {

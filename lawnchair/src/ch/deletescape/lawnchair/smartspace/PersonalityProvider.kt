@@ -23,11 +23,10 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.os.Handler
-import android.os.Looper
 import androidx.annotation.Keep
 import ch.deletescape.lawnchair.dayOfYear
 import ch.deletescape.lawnchair.hourOfDay
+import ch.deletescape.lawnchair.makeBasicHandler
 import com.android.launcher3.R
 import java.util.*
 import kotlin.math.abs
@@ -56,7 +55,7 @@ class PersonalityProvider(controller: LawnchairSmartspaceController) :
     private val eveningStrings = controller.context.resources.getStringArray(R.array.greetings_evening)
     private val nightStrings = controller.context.resources.getStringArray(R.array.greetings_night)
 
-    private val handler = Handler(Looper.getMainLooper())
+    private val handler = makeBasicHandler(true)
     private val onUpdateRunnable = ::onUpdate
 
     private fun currentTime() = Calendar.getInstance()

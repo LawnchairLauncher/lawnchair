@@ -27,6 +27,7 @@ import ch.deletescape.lawnchair.LawnchairAppFilter
 import ch.deletescape.lawnchair.globalsearch.SearchProviderController
 import ch.deletescape.lawnchair.globalsearch.providers.web.WebSearchProvider
 import ch.deletescape.lawnchair.lawnchairPrefs
+import ch.deletescape.lawnchair.makeBasicHandler
 import com.android.launcher3.AppFilter
 import com.android.launcher3.AppInfo
 import com.android.launcher3.LauncherAppState
@@ -39,7 +40,7 @@ import me.xdrop.fuzzywuzzy.ToStringFunction
 class FuzzyAppSearchAlgorithm(private val context: Context, private val apps: List<AppInfo>) :
         SearchAlgorithm {
 
-    private var resultHandler: Handler = Handler()
+    private var resultHandler: Handler = makeBasicHandler(true)
     private var baseFilter: AppFilter = LawnchairAppFilter(context)
 
     override fun doSearch(query: String, callback: AllAppsSearchBarController.Callbacks) {

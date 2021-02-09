@@ -18,7 +18,6 @@
 package ch.deletescape.lawnchair.preferences
 
 import android.content.Context
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -26,10 +25,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import ch.deletescape.lawnchair.FeedBridge
-import ch.deletescape.lawnchair.getColorEngineAccent
-import ch.deletescape.lawnchair.isVisible
-import ch.deletescape.lawnchair.lawnchairPrefs
+import ch.deletescape.lawnchair.*
 import ch.deletescape.lawnchair.smartspace.*
 import ch.deletescape.lawnchair.util.extensions.d
 import com.android.launcher3.R
@@ -40,7 +36,7 @@ class SmartspaceEventProvidersAdapter(private val context: Context)
 
     private val prefs = context.lawnchairPrefs
     private val allProviders = ArrayList<ProviderItem>()
-    private val handler = Handler()
+    private val handler = makeBasicHandler(true)
 
     private var dividerIndex = 0
 

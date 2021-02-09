@@ -30,10 +30,7 @@ import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.os.Build
-import android.os.Bundle
-import android.os.Handler
-import android.os.ResultReceiver
+import android.os.*
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -381,7 +378,7 @@ open class LawnchairLauncher : NexusLauncherActivity(),
             return uri
         }
 
-        fun takeScreenshot(context: Context, handler: Handler = Handler(), callback: (Uri?) -> Unit) {
+        fun takeScreenshot(context: Context, handler: Handler = makeBasicHandler(true), callback: (Uri?) -> Unit) {
             context.startActivity(Intent(context, Screenshot::class.java).apply {
                 putExtra("screenshot", true)
                 putExtra("callback", object : ResultReceiver(handler) {

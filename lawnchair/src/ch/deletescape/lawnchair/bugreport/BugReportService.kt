@@ -25,17 +25,17 @@ import android.app.Service
 import android.content.*
 import android.net.Uri
 import android.os.Build
-import android.os.Handler
 import android.os.IBinder
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import ch.deletescape.lawnchair.makeBasicHandler
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
 
 class BugReportService : Service() {
 
-    private val handler = Handler()
+    private val handler = makeBasicHandler(true)
     private val resetThrottleRunnable = Runnable { reportCount = 0 }
     private var autoUpload = false
 

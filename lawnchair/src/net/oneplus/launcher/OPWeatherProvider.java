@@ -1,5 +1,7 @@
 package net.oneplus.launcher;
 
+import static ch.deletescape.lawnchair.LawnchairUtilsKt.makeBasicHandler;
+
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -7,6 +9,7 @@ import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Handler;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import androidx.annotation.IntRange;
@@ -142,7 +145,7 @@ public class OPWeatherProvider {
     private class WeatherObserver extends ContentObserver {
 
         public WeatherObserver() {
-            super(new Handler());
+            super(makeBasicHandler(true));
         }
 
         public void onChange(boolean z) {

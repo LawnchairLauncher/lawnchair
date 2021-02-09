@@ -1,5 +1,7 @@
 package ch.deletescape.lawnchair.smartspace;
 
+import static ch.deletescape.lawnchair.LawnchairUtilsKt.makeBasicHandler;
+
 import android.app.Notification;
 import android.content.ComponentName;
 import android.content.Context;
@@ -11,6 +13,7 @@ import android.media.session.MediaSessionManager.OnActiveSessionsChangedListener
 import android.media.session.PlaybackState;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
 import android.util.Log;
@@ -37,7 +40,7 @@ public class MediaListener extends MediaController.Callback implements OnChangeL
     private final NotificationsManager mNotificationsManager;
     private List<MediaNotificationController> mControllers = Collections.emptyList();
     private MediaNotificationController mTracking;
-    private final Handler mHandler = new Handler();
+    private final Handler mHandler = makeBasicHandler(true);
 
     MediaListener(Context context, Runnable onChange) {
         mContext = context;

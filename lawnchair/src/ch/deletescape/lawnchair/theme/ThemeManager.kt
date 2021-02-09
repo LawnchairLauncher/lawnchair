@@ -19,7 +19,6 @@ package ch.deletescape.lawnchair.theme
 
 import android.content.Context
 import android.content.res.Configuration
-import android.os.Handler
 import ch.deletescape.lawnchair.*
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.colors.ThemeAttributeColorResolver
@@ -76,7 +75,7 @@ class ThemeManager(val context: Context) : WallpaperColorInfo.OnChangeListener, 
     }
 
     private val twilightManager by lazy { TwilightManager.getInstance(context) }
-    private val handler = Handler()
+    private val handler = makeBasicHandler(true)
     private var listenToTwilight = false
         set(value) {
             if (field != value) {

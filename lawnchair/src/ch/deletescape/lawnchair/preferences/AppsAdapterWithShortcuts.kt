@@ -40,6 +40,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.iconpack.LawnchairIconProvider
 import ch.deletescape.lawnchair.isVisible
+import ch.deletescape.lawnchair.makeBasicHandler
 import com.android.launcher3.*
 import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.shortcuts.DeepShortcutManager
@@ -64,7 +65,7 @@ open class AppsAdapterWithShortcuts(
 
     var items = ArrayList<Item>().apply { add(LoadingItem()) }
     val apps = ArrayList<AppItem>()
-    val handler = Handler()
+    val handler = makeBasicHandler(true)
     val shortcutManager = DeepShortcutManager.getInstance(context)
 
     init {

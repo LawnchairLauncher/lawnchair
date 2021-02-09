@@ -46,6 +46,7 @@ import android.view.ViewGroup
 import android.view.animation.Interpolator
 import android.widget.*
 import androidx.annotation.ColorInt
+import androidx.annotation.Nullable
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
@@ -282,7 +283,7 @@ class PropertyDelegate<T>(private val property: KMutableProperty0<T>) {
     }
 }
 
-val mainHandler by lazy { Handler(Looper.getMainLooper()) }
+val mainHandler by lazy { makeBasicHandler() }
 val workerHandler by lazy { Handler(LauncherModel.getWorkerLooper()) }
 val uiWorkerHandler by lazy { Handler(LauncherModel.getUiWorkerLooper()) }
 val iconPackUiHandler by lazy { Handler(LauncherModel.getIconPackUiLooper()) }
@@ -837,6 +838,13 @@ val Long.Companion.random get() = Random.nextLong()
 fun StatusBarNotification.loadSmallIcon(context: Context): Drawable? {
     return notification.smallIcon?.loadDrawable(context)
 }
+
+@JvmOverloads
+fun makeBasicHandler(preferMyLooper: Boolean = false, callback: Handler.Callback? = null): Handler =
+        if (preferMyLooper)
+            Handler(Looper.myLooper() ?: Looper.getMainLooper(), callback)
+        else
+            Handler(Looper.getMainLooper(), callback)
 
 fun Context.checkPackagePermission(packageName: String, permissionName: String): Boolean {
     try {

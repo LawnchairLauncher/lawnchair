@@ -31,6 +31,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ch.deletescape.lawnchair.comparing
+import ch.deletescape.lawnchair.makeBasicHandler
 import com.android.launcher3.*
 import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.util.ComponentKey
@@ -47,7 +48,7 @@ open class AppsAdapter(
     var isLoaded = false
     val apps = ArrayList<App>()
 
-    val handler = Handler()
+    val handler = makeBasicHandler(true)
 
     open val comparator = defaultComparator
 
