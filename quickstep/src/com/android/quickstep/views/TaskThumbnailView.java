@@ -51,6 +51,7 @@ import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.SystemUiController;
@@ -109,6 +110,9 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
 
     private boolean mOverlayEnabled;
     private OverviewScreenshotActions mOverviewScreenshotActionsPlugin;
+
+    // TODO(b/179466077): Remove when proper API is ready.
+    private Float mThumbnailRatio = null;
 
     public TaskThumbnailView(Context context) {
         this(context, null);
@@ -450,6 +454,31 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
         return mThumbnailData.isRealSnapshot;
     }
 
+    // TODO(b/179466077): Remove when proper API is ready.
+    public float getThumbnailRatio() {
+        // API is ready.
+        if (mThumbnailRatio != null) {
+            return mThumbnailRatio;
+        }
+
+        if (mThumbnailData == null || mThumbnailData.thumbnail == null) {
+            final float[] thumbnailRatios =
+                    new float[]{0.8882452f, 1.2834098f, 0.5558415f, 2.15625f};
+            // Use key's hash code to return a deterministic thumbnail ratio.
+            mThumbnailRatio = thumbnailRatios[mTask.key.hashCode() % thumbnailRatios.length];
+            return mThumbnailRatio;
+        }
+
+        float surfaceWidth = mThumbnailData.thumbnail.getWidth() / mThumbnailData.scale;
+        float surfaceHeight = mThumbnailData.thumbnail.getHeight() / mThumbnailData.scale;
+        float availableWidth = surfaceWidth
+                - (mThumbnailData.insets.left + mThumbnailData.insets.right);
+        float availableHeight = surfaceHeight
+                - (mThumbnailData.insets.top + mThumbnailData.insets.bottom);
+        mThumbnailRatio = availableWidth / availableHeight;
+        return mThumbnailRatio;
+    }
+
     /**
      * Utility class to position the thumbnail in the TaskView
      */
@@ -480,9 +509,11 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
             float scale = thumbnailData.scale;
             final float thumbnailScale;
 
-            // Landscape vs portrait change
+            // Landscape vs portrait change.
+            // Note: Disable rotation in grid layout.
             boolean windowingModeSupportsRotation = !dp.isMultiWindowMode
-                    && thumbnailData.windowingMode == WINDOWING_MODE_FULLSCREEN;
+                    && thumbnailData.windowingMode == WINDOWING_MODE_FULLSCREEN
+                    && !(dp.isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get());
             isOrientationDifferent = isOrientationChange(deltaRotate)
                     && windowingModeSupportsRotation;
             if (canvasWidth == 0 || canvasHeight == 0 || scale == 0) {
