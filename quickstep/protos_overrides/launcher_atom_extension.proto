@@ -31,4 +31,5 @@ message ExtendedContainers {
 
 // Represents on-device search result container.
 message DeviceSearchResultContainer{
+  optional int32 query_length = 1;
 }

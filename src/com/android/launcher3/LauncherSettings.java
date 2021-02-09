@@ -171,6 +171,9 @@ public class LauncherSettings {
         public static final int CONTAINER_SETTINGS = -108;
         public static final int CONTAINER_TASKSWITCHER = -109;
 
+        // Represents any of the extended containers implemented in non-AOSP variants.
+        public static final int EXTENDED_CONTAINERS = -200;
+
         public static final String containerToString(int container) {
             switch (container) {
                 case CONTAINER_DESKTOP: return "desktop";
