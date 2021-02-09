@@ -30,7 +30,6 @@ import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.Surface;
 
@@ -40,6 +39,9 @@ import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.DisplayController.Info;
 
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Maintains state for supporting nav bars and tracking their gestures in multiple orientations.
@@ -51,6 +53,37 @@ import java.io.PrintWriter;
  */
 class OrientationTouchTransformer {
 
+    class CurrentDisplay {
+        public Point size;
+        public int rotation;
+
+        CurrentDisplay() {
+            this.size = new Point(0, 0);
+            this.rotation = 0;
+        }
+
+        CurrentDisplay(Point size, int rotation) {
+            this.size = size;
+            this.rotation = rotation;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            CurrentDisplay display = (CurrentDisplay) o;
+            if (rotation != display.rotation) return false;
+
+            return Objects.equals(size, display.size);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(size, rotation);
+        }
+    };
+
     private static final String TAG = "OrientationTouchTransformer";
     private static final boolean DEBUG = false;
     private static final int MAX_ORIENTATIONS = 4;
@@ -60,11 +93,12 @@ class OrientationTouchTransformer {
     private final Matrix mTmpMatrix = new Matrix();
     private final float[] mTmpPoint = new float[2];
 
-    private SparseArray<OrientationRectF> mSwipeTouchRegions = new SparseArray<>(MAX_ORIENTATIONS);
+    private Map<CurrentDisplay, OrientationRectF> mSwipeTouchRegions =
+            new HashMap<CurrentDisplay, OrientationRectF>();
     private final RectF mAssistantLeftRegion = new RectF();
     private final RectF mAssistantRightRegion = new RectF();
     private final RectF mOneHandedModeRegion = new RectF();
-    private int mCurrentDisplayRotation;
+    private CurrentDisplay mCurrentDisplay = new CurrentDisplay();
     private int mNavBarGesturalHeight;
     private int mNavBarLargerGesturalHeight;
     private boolean mEnableMultipleRegions;
@@ -147,21 +181,22 @@ class OrientationTouchTransformer {
      * @see #enableMultipleRegions(boolean, Info)
      */
     void createOrAddTouchRegion(Info info) {
-        mCurrentDisplayRotation = info.rotation;
+        mCurrentDisplay = new CurrentDisplay(info.realSize, info.rotation);
+
         if (mQuickStepStartingRotation > QUICKSTEP_ROTATION_UNINITIALIZED
-                && mCurrentDisplayRotation == mQuickStepStartingRotation) {
+                && mCurrentDisplay.rotation == mQuickStepStartingRotation) {
             // User already was swiping and the current screen is same rotation as the starting one
             // Remove active nav bars in other rotations except for the one we started out in
             resetSwipeRegions(info);
             return;
         }
-        OrientationRectF region = mSwipeTouchRegions.get(mCurrentDisplayRotation);
+        OrientationRectF region = mSwipeTouchRegions.get(mCurrentDisplay);
         if (region != null) {
             return;
         }
 
         if (mEnableMultipleRegions) {
-            mSwipeTouchRegions.put(mCurrentDisplayRotation, createRegionForDisplay(info));
+            mSwipeTouchRegions.put(mCurrentDisplay, createRegionForDisplay(info));
         } else {
             resetSwipeRegions(info);
         }
@@ -208,31 +243,31 @@ class OrientationTouchTransformer {
      */
     private void resetSwipeRegions(Info region) {
         if (DEBUG) {
-            Log.d(TAG, "clearing all regions except rotation: " + mCurrentDisplayRotation);
+            Log.d(TAG, "clearing all regions except rotation: " + mCurrentDisplay.rotation);
         }
 
-        mCurrentDisplayRotation = region.rotation;
-        OrientationRectF regionToKeep = mSwipeTouchRegions.get(mCurrentDisplayRotation);
+        mCurrentDisplay = new CurrentDisplay(region.realSize, region.rotation);
+        OrientationRectF regionToKeep = mSwipeTouchRegions.get(mCurrentDisplay);
         if (regionToKeep == null) {
             regionToKeep = createRegionForDisplay(region);
         }
         mSwipeTouchRegions.clear();
-        mSwipeTouchRegions.put(mCurrentDisplayRotation, regionToKeep);
+        mSwipeTouchRegions.put(mCurrentDisplay, regionToKeep);
         updateAssistantRegions(regionToKeep);
     }
 
     private void resetSwipeRegions() {
-        OrientationRectF regionToKeep = mSwipeTouchRegions.get(mCurrentDisplayRotation);
+        OrientationRectF regionToKeep = mSwipeTouchRegions.get(mCurrentDisplay);
         mSwipeTouchRegions.clear();
         if (regionToKeep != null) {
-            mSwipeTouchRegions.put(mCurrentDisplayRotation, regionToKeep);
+            mSwipeTouchRegions.put(mCurrentDisplay, regionToKeep);
             updateAssistantRegions(regionToKeep);
         }
     }
 
     private OrientationRectF createRegionForDisplay(Info display) {
         if (DEBUG) {
-            Log.d(TAG, "creating rotation region for: " + mCurrentDisplayRotation);
+            Log.d(TAG, "creating rotation region for: " + mCurrentDisplay.rotation);
         }
 
         Point size = display.realSize;
@@ -341,7 +376,9 @@ class OrientationTouchTransformer {
                 }
 
                 for (int i = 0; i < MAX_ORIENTATIONS; i++) {
-                    OrientationRectF rect = mSwipeTouchRegions.get(i);
+                    CurrentDisplay display = new CurrentDisplay(mCurrentDisplay.size, i);
+                    OrientationRectF rect = mSwipeTouchRegions.get(display);
+
                     if (TestProtocol.sDebugTracing) {
                         Log.d(TestProtocol.NO_SWIPE_TO_HOME, "transform:DOWN, rect=" + rect);
                     }
@@ -355,7 +392,7 @@ class OrientationTouchTransformer {
                         mLastRectTouched = rect;
                         mActiveTouchRotation = rect.mRotation;
                         if (mEnableMultipleRegions
-                                && mCurrentDisplayRotation == mActiveTouchRotation) {
+                                && mCurrentDisplay.rotation == mActiveTouchRotation) {
                             // TODO(b/154580671) might make this block unnecessary
                             // Start a touch session for the default nav region for the display
                             mQuickStepStartingRotation = mLastRectTouched.mRotation;
@@ -378,8 +415,8 @@ class OrientationTouchTransformer {
         pw.println("  lastTouchedRegion=" + mLastRectTouched);
         pw.println("  multipleRegionsEnabled=" + mEnableMultipleRegions);
         StringBuilder regions = new StringBuilder("  currentTouchableRotations=");
-        for(int i = 0; i < mSwipeTouchRegions.size(); i++) {
-            OrientationRectF rectF = mSwipeTouchRegions.get(mSwipeTouchRegions.keyAt(i));
+        for (CurrentDisplay key: mSwipeTouchRegions.keySet()) {
+            OrientationRectF rectF = mSwipeTouchRegions.get(key);
             regions.append(rectF).append(" ");
         }
         pw.println(regions.toString());
@@ -417,12 +454,12 @@ class OrientationTouchTransformer {
 
         boolean applyTransform(MotionEvent event, boolean forceTransform) {
             mTmpMatrix.reset();
-            postDisplayRotation(deltaRotation(mCurrentDisplayRotation, mRotation),
+            postDisplayRotation(deltaRotation(mCurrentDisplay.rotation, mRotation),
                     mHeight, mWidth, mTmpMatrix);
             if (forceTransform) {
                 if (DEBUG) {
                     Log.d(TAG, "Transforming rotation due to forceTransform, "
-                            + "mCurrentRotation: " + mCurrentDisplayRotation
+                            + "mCurrentRotation: " + mCurrentDisplay.rotation
                             + "mRotation: " + mRotation);
                 }
                 event.transform(mTmpMatrix);
