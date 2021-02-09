@@ -214,6 +214,10 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_TASKBAR = new DeviceFlag(
             "ENABLE_TASKBAR", false, "Allows a system Taskbar to be shown on larger devices.");
 
+    public static final BooleanFlag ENABLE_OVERVIEW_GRID = new DeviceFlag(
+            "ENABLE_OVERVIEW_GRID", false, "Uses grid overview layout. "
+            + "Only applicable on large screen devices.");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
