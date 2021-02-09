@@ -57,6 +57,7 @@ public class TaskbarHotseatController {
 
     protected void init() {
         mLauncher.getDragController().addDragListener(mDragListener);
+        onHotseatUpdated();
     }
 
     protected void cleanup() {
