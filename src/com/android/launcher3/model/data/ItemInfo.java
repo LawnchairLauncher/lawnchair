@@ -26,6 +26,7 @@ import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_SETTING
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_SHORTCUTS;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_TASKSWITCHER;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_TRAY;
+import static com.android.launcher3.LauncherSettings.Favorites.EXTENDED_CONTAINERS;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
@@ -54,6 +55,7 @@ import com.android.launcher3.logger.LauncherAtom.SettingsContainer;
 import com.android.launcher3.logger.LauncherAtom.Shortcut;
 import com.android.launcher3.logger.LauncherAtom.ShortcutsContainer;
 import com.android.launcher3.logger.LauncherAtom.TaskSwitcherContainer;
+import com.android.launcher3.logger.LauncherAtomExtensions.ExtendedContainers;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.util.ContentWriter;
 
@@ -403,9 +405,20 @@ public class ItemInfo {
                 return ContainerInfo.newBuilder()
                         .setTaskSwitcherContainer(TaskSwitcherContainer.getDefaultInstance())
                         .build();
-
+            case EXTENDED_CONTAINERS:
+                return ContainerInfo.newBuilder()
+                        .setExtendedContainers(getExtendedContainer())
+                        .build();
         }
         return ContainerInfo.getDefaultInstance();
+    }
+
+    /**
+     * Returns non-AOSP container wrapped by {@link ExtendedContainers} object. Should be overridden
+     * by build variants.
+     */
+    protected ExtendedContainers getExtendedContainer() {
+        return ExtendedContainers.getDefaultInstance();
     }
 
     /**

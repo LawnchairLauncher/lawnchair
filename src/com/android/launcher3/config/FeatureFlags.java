@@ -101,9 +101,6 @@ public final class FeatureFlags {
     public static final BooleanFlag DISABLE_INITIAL_IME_IN_ALLAPPS = getDebugFlag(
             "DISABLE_INITIAL_IME_IN_ALLAPPS", false, "Disable default IME state in all apps");
 
-    public static final BooleanFlag DISABLE_SLICE_IN_ALLAPPS = getDebugFlag(
-            "DISABLE_SLICE_IN_ALLAPPS", true, "Disable slice in all apps");
-
     public static final BooleanFlag FOLDER_NAME_SUGGEST = new DeviceFlag(
             "FOLDER_NAME_SUGGEST", true,
             "Suggests folder names instead of blank text.");
