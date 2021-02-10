@@ -153,11 +153,11 @@ public class LiveSearchManager implements StateListener<LauncherState> {
             clearWidgetHost();
         }
 
-        if (finalState.equals(ALL_APPS)) {
+        if (ALL_APPS.equals(finalState)) {
             // creates new instance ID since new all apps session is started.
             mLogInstanceId = new InstanceIdSequence().newInstanceId();
             allAppsLogger().log(LAUNCHER_ALLAPPS_ENTRY);
-        } else if (mPrevLauncherState.equals(ALL_APPS)
+        } else if (ALL_APPS.equals(mPrevLauncherState)
                 // Check if mLogInstanceId is not null; to avoid NPE when LAUNCHER_ALLAPPS_EXIT is
                 // triggered multiple times
                 && mLogInstanceId != null) {
