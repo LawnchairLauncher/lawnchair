@@ -39,7 +39,7 @@ class SearchIndex(private val context: Context) {
     }
 
     val entries = ArrayList<SettingsEntry>()
-    val addedKeys = HashSet<String>()
+    private val addedKeys = HashSet<String>()
 
     init {
         indexScreen(R.xml.lawnchair_preferences, null)
@@ -168,20 +168,33 @@ class SearchIndex(private val context: Context) {
         }
     }
 
-    inner class SettingsCategory(title: String, categoryTitle: String?,
-                                 parent: SettingsScreen?, contentRes: Int,
-                                 hasPreview: Boolean)
-        : SettingsScreen(title, categoryTitle, parent, contentRes, hasPreview)
+    inner class SettingsCategory(
+            title: String?,
+            categoryTitle: String?,
+            parent: SettingsScreen?,
+            contentRes: Int,
+            hasPreview: Boolean
+    ) : SettingsScreen(
+            title,
+            categoryTitle,
+            parent,
+            contentRes,
+            hasPreview)
 
-    open inner class SettingsScreen(val title: String, private val categoryTitle: String?,
-                                    val parent: SettingsScreen?,
-                                    val contentRes: Int, val hasPreview: Boolean) {
+    open inner class SettingsScreen(
+            val title: String?,
+            private val categoryTitle: String?,
+            val parent: SettingsScreen?,
+            val contentRes: Int,
+            val hasPreview: Boolean) {
 
         val breadcrumbs: String
             get() = when {
                 parent == null -> categoryTitle ?: ""
-                categoryTitle != null -> context.getString(R.string.search_breadcrumb_connector,
-                        parent.breadcrumbs, categoryTitle)
+                categoryTitle != null -> context.getString(
+                        R.string.search_breadcrumb_connector,
+                        parent.breadcrumbs,
+                        categoryTitle)
                 else -> parent.breadcrumbs
             }
     }
@@ -189,7 +202,7 @@ class SearchIndex(private val context: Context) {
     inner class SettingsEntry(
             val iconRes: Int,
             val key: String,
-            val title: String,
+            val title: String?,
             val summary: String?,
             val parent: SettingsScreen?,
             private val slice: Slice? = null) {
