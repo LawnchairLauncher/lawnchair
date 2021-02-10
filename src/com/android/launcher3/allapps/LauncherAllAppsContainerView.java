@@ -16,6 +16,8 @@
 package com.android.launcher3.allapps;
 
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_KEYBOARD_CLOSED;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_SWITCHED_TO_MAIN_TAB;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_SWITCHED_TO_WORK_TAB;
 
 import android.content.Context;
 import android.graphics.Rect;
@@ -88,6 +90,14 @@ public class LauncherAllAppsContainerView extends AllAppsContainerView {
     public void onTabChanged(int pos) {
         super.onTabChanged(pos);
         if (mUsingTabs) {
+
+            // Log tab switches only when the launcher is in AllApps state
+            if (mLauncher.getStateManager().getCurrentStableState() == LauncherState.ALL_APPS) {
+                mLauncher.getLiveSearchManager().allAppsLogger()
+                        .log(pos == AdapterHolder.WORK ? LAUNCHER_ALLAPPS_SWITCHED_TO_WORK_TAB
+                                : LAUNCHER_ALLAPPS_SWITCHED_TO_MAIN_TAB);
+            }
+
             if (pos == AdapterHolder.WORK) {
                 WorkEduView.showWorkEduIfNeeded(mLauncher);
             } else {
