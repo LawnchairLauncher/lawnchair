@@ -41,12 +41,14 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DropTargetBar;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherRootView;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.graphics.OverviewScrim;
-import com.android.launcher3.graphics.WorkspaceAndHotseatScrim;
+import com.android.launcher3.graphics.SysUiScrim;
+import com.android.launcher3.graphics.WorkspaceDragScrim;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.views.BaseDragLayer;
@@ -82,8 +84,10 @@ public class DragLayer extends BaseDragLayer<Launcher> {
 
     // Related to adjacent page hints
     private final ViewGroupFocusHelper mFocusIndicatorHelper;
-    private final WorkspaceAndHotseatScrim mWorkspaceScrim;
     private final OverviewScrim mOverviewScrim;
+    private WorkspaceDragScrim mWorkspaceDragScrim;
+    private SysUiScrim mSysUiScrim;
+    private LauncherRootView mRootView;
 
     /**
      * Used to create a new DragLayer from XML.
@@ -99,14 +103,23 @@ public class DragLayer extends BaseDragLayer<Launcher> {
         setChildrenDrawingOrderEnabled(true);
 
         mFocusIndicatorHelper = new ViewGroupFocusHelper(this);
-        mWorkspaceScrim = new WorkspaceAndHotseatScrim(this);
         mOverviewScrim = new OverviewScrim(this);
     }
 
     public void setup(DragController dragController, Workspace workspace) {
         mDragController = dragController;
-        mWorkspaceScrim.setWorkspace(workspace);
         recreateControllers();
+
+        mWorkspaceDragScrim = new WorkspaceDragScrim((this));
+        mWorkspaceDragScrim.setWorkspace(workspace);
+
+        // We delegate drawing of the workspace scrim to LauncherRootView (one level up), so as
+        // to avoid artifacts when translating the entire drag layer in the -1 transition.
+        mRootView = (LauncherRootView) getParent();
+        mSysUiScrim = new SysUiScrim(mRootView);
+        mRootView.setSysUiScrim(mSysUiScrim);
+
+
     }
 
     @Override
@@ -515,7 +528,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     @Override
     protected void dispatchDraw(Canvas canvas) {
         // Draw the background below children.
-        mWorkspaceScrim.draw(canvas);
+        mWorkspaceDragScrim.draw(canvas);
         mOverviewScrim.updateCurrentScrimmedView(this);
         mFocusIndicatorHelper.draw(canvas);
         super.dispatchDraw(canvas);
@@ -535,18 +548,22 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        mWorkspaceScrim.setSize(w, h);
+        mSysUiScrim.setSize(w, h);
     }
 
     @Override
     public void setInsets(Rect insets) {
         super.setInsets(insets);
-        mWorkspaceScrim.onInsetsChanged(insets, mAllowSysuiScrims);
+        mSysUiScrim.onInsetsChanged(insets, mAllowSysuiScrims);
         mOverviewScrim.onInsetsChanged(insets);
     }
 
-    public WorkspaceAndHotseatScrim getScrim() {
-        return mWorkspaceScrim;
+    public WorkspaceDragScrim getWorkspaceDragScrim() {
+        return mWorkspaceDragScrim;
+    }
+
+    public SysUiScrim getSysUiScrim() {
+        return mSysUiScrim;
     }
 
     public OverviewScrim getOverviewScrim() {

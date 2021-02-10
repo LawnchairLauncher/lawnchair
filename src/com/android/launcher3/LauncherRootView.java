@@ -4,12 +4,14 @@ import static com.android.launcher3.config.FeatureFlags.SEPARATE_RECENTS_ACTIVIT
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.ViewDebug;
 import android.view.WindowInsets;
 
+import com.android.launcher3.graphics.SysUiScrim;
 import com.android.launcher3.statemanager.StatefulActivity;
 
 import java.util.Collections;
@@ -30,6 +32,8 @@ public class LauncherRootView extends InsettableFrameLayout {
     private boolean mDisallowBackGesture;
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mForceHideBackArrow;
+
+    private SysUiScrim mSysUiScrim;
 
     public LauncherRootView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -87,6 +91,18 @@ public class LauncherRootView extends InsettableFrameLayout {
         if (mWindowStateListener != null) {
             mWindowStateListener.onWindowVisibilityChanged(visibility);
         }
+    }
+
+    public void setSysUiScrim(SysUiScrim scrim) {
+        mSysUiScrim = scrim;
+    }
+
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        if (mSysUiScrim != null) {
+            mSysUiScrim.draw(canvas);
+        }
+        super.dispatchDraw(canvas);
     }
 
     @Override
