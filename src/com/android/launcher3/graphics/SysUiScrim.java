@@ -34,7 +34,6 @@ import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.Region;
 import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
 import android.util.DisplayMetrics;
@@ -44,41 +43,39 @@ import android.view.WindowInsets;
 
 import androidx.core.graphics.ColorUtils;
 
-import com.android.launcher3.CellLayout;
 import com.android.launcher3.R;
 import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.Workspace;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.util.Themes;
 
 /**
  * View scrim which draws behind hotseat and workspace
  */
-public class WorkspaceAndHotseatScrim extends Scrim {
+public class SysUiScrim extends Scrim {
 
-    public static final FloatProperty<WorkspaceAndHotseatScrim> SYSUI_PROGRESS =
-            new FloatProperty<WorkspaceAndHotseatScrim>("sysUiProgress") {
+    public static final FloatProperty<SysUiScrim> SYSUI_PROGRESS =
+            new FloatProperty<SysUiScrim>("sysUiProgress") {
                 @Override
-                public Float get(WorkspaceAndHotseatScrim scrim) {
+                public Float get(SysUiScrim scrim) {
                     return scrim.mSysUiProgress;
                 }
 
                 @Override
-                public void setValue(WorkspaceAndHotseatScrim scrim, float value) {
+                public void setValue(SysUiScrim scrim, float value) {
                     scrim.setSysUiProgress(value);
                 }
             };
 
-    private static final FloatProperty<WorkspaceAndHotseatScrim> SYSUI_ANIM_MULTIPLIER =
-            new FloatProperty<WorkspaceAndHotseatScrim>("sysUiAnimMultiplier") {
+    private static final FloatProperty<SysUiScrim> SYSUI_ANIM_MULTIPLIER =
+            new FloatProperty<SysUiScrim>("sysUiAnimMultiplier") {
                 @Override
-                public Float get(WorkspaceAndHotseatScrim scrim) {
+                public Float get(SysUiScrim scrim) {
                     return scrim.mSysUiAnimMultiplier;
                 }
 
                 @Override
-                public void setValue(WorkspaceAndHotseatScrim scrim, float value) {
+                public void setValue(SysUiScrim scrim, float value) {
                     scrim.mSysUiAnimMultiplier = value;
                     scrim.reapplySysUiAlpha();
                 }
@@ -108,10 +105,6 @@ public class WorkspaceAndHotseatScrim extends Scrim {
     private static final int ALPHA_MASK_BITMAP_DP = 200;
     private static final int ALPHA_MASK_WIDTH_DP = 2;
 
-    private final Rect mHighlightRect = new Rect();
-
-    private Workspace mWorkspace;
-
     private boolean mDrawTopScrim, mDrawBottomScrim;
 
     private final RectF mFinalMaskRect = new RectF();
@@ -127,9 +120,8 @@ public class WorkspaceAndHotseatScrim extends Scrim {
     private boolean mAnimateScrimOnNextDraw = false;
     private float mSysUiAnimMultiplier = 1;
 
-    public WorkspaceAndHotseatScrim(View view) {
+    public SysUiScrim(View view) {
         super(view);
-
         mMaskHeight = ResourceUtils.pxFromDp(ALPHA_MASK_BITMAP_DP,
                 view.getResources().getDisplayMetrics());
         mTopScrim = Themes.getAttrDrawable(view.getContext(), R.attr.workspaceStatusBarScrim);
@@ -139,28 +131,10 @@ public class WorkspaceAndHotseatScrim extends Scrim {
         onExtractedColorsChanged(mWallpaperColorInfo);
     }
 
-    public void setWorkspace(Workspace workspace)  {
-        mWorkspace = workspace;
-    }
-
+    /**
+     * Draw the top and bottom scrims
+     */
     public void draw(Canvas canvas) {
-        // Draw the background below children.
-        if (mScrimAlpha > 0) {
-            // Update the scroll position first to ensure scrim cutout is in the right place.
-            mWorkspace.computeScrollWithoutInvalidation();
-            CellLayout currCellLayout = mWorkspace.getCurrentDragOverlappingLayout();
-            canvas.save();
-            if (currCellLayout != null && currCellLayout != mLauncher.getHotseat()) {
-                // Cut a hole in the darkening scrim on the page that should be highlighted, if any.
-                mLauncher.getDragLayer()
-                        .getDescendantRectRelativeToSelf(currCellLayout, mHighlightRect);
-                canvas.clipRect(mHighlightRect, Region.Op.DIFFERENCE);
-            }
-
-            super.draw(canvas);
-            canvas.restore();
-        }
-
         if (!mHideSysUiScrim) {
             if (mSysUiProgress <= 0) {
                 mAnimateScrimOnNextDraw = false;
@@ -247,6 +221,11 @@ public class WorkspaceAndHotseatScrim extends Scrim {
         super.onExtractedColorsChanged(wallpaperColorInfo);
     }
 
+    /**
+     * Set the width and height of the view being scrimmed
+     * @param w
+     * @param h
+     */
     public void setSize(int w, int h) {
         if (mTopScrim != null) {
             mTopScrim.setBounds(0, 0, w, h);
