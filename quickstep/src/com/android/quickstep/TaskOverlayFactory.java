@@ -222,6 +222,12 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         }
 
         /**
+         * Sets full screen progress to the task overlay.
+         */
+        public void setFullscreenProgress(float progress) {
+        }
+
+        /**
          * Gets the system shortcut for the screenshot that will be added to the task menu.
          */
         public SystemShortcut getScreenshotShortcut(BaseDraggingActivity activity,
