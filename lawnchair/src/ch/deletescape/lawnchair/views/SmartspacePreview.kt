@@ -27,7 +27,8 @@ import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.theme.ThemeOverride
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
-import com.android.launcher3.widget.custom.CustomWidgetParser
+import com.android.launcher3.model.data.LauncherAppWidgetInfo
+import com.android.launcher3.widget.custom.CustomWidgetManager
 import com.google.android.apps.nexuslauncher.smartspace.SmartspaceView
 
 class SmartspacePreview(context: Context, attrs: AttributeSet?) :
@@ -42,7 +43,8 @@ class SmartspacePreview(context: Context, attrs: AttributeSet?) :
     private var currentView: SmartspaceView? = null
     private val themedContext = ContextThemeWrapper(context, ThemeOverride.Launcher().getTheme(context))
 
-    override val provider = CustomWidgetParser.getCustomWidgets(context)[0]!!
+    // TODO ideally we can return a default provider value in case this code returns null
+    override val provider = CustomWidgetManager.INSTANCE.get(context).getWidgetProvider(LauncherAppWidgetInfo.CUSTOM_WIDGET_ID)!!
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()

@@ -152,8 +152,9 @@ public class CustomWidgetManager implements PluginListener<CustomWidgetPlugin> {
 
     private static CustomAppWidgetProviderInfo newInfo(int providerId, CustomWidgetPlugin plugin,
             Parcel parcel, Context context) {
+        // TODO paphonb please check the value for noPadding. This was a custom modification in CustomAppWidgetProviderInfo
         CustomAppWidgetProviderInfo info = new CustomAppWidgetProviderInfo(
-                parcel, false, providerId);
+                parcel, false, providerId, false);
         info.provider = new ComponentName(
                 context.getPackageName(), CLS_CUSTOM_WIDGET_PREFIX + providerId);
 
