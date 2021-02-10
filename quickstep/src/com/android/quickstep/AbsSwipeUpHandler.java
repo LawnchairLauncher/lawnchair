@@ -1071,9 +1071,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
                     && runningTaskTarget != null
                     && runningTaskTarget.pictureInPictureParams != null
                     && TaskInfoCompat.isAutoEnterPipEnabled(
-                            runningTaskTarget.pictureInPictureParams)
-                    && TaskInfoCompat.getPipSourceRectHint(
-                            runningTaskTarget.pictureInPictureParams) != null;
+                            runningTaskTarget.pictureInPictureParams);
             if (mIsSwipingPipToHome) {
                 mSwipePipToHomeAnimator = getSwipePipToHomeAnimator(
                         homeAnimFactory, runningTaskTarget, start);
@@ -1176,8 +1174,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
             swipePipToHomeAnimator.setFromRotation(mTaskViewSimulator, windowRotation);
         }
         swipePipToHomeAnimator.addListener(new AnimatorListenerAdapter() {
+            private boolean mHasAnimationEnded;
             @Override
             public void onAnimationStart(Animator animation) {
+                if (mHasAnimationEnded) return;
                 // Ensure Launcher ends in NORMAL state, we intentionally skip other callbacks
                 // since they are not relevant in this swipe-pip-to-home case.
                 homeAnimFactory.createActivityAnimationToHome().dispatchOnStart();
@@ -1185,6 +1185,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
 
             @Override
             public void onAnimationEnd(Animator animation) {
+                if (mHasAnimationEnded) return;
+                mHasAnimationEnded = true;
                 if (mRecentsAnimationController == null) {
                     // If the recents animation is interrupted, we still end the running
                     // animation (not canceled) so this is still called. In that case, we can
