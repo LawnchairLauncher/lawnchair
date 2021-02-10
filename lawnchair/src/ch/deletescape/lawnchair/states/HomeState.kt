@@ -18,17 +18,20 @@
 package ch.deletescape.lawnchair.states
 
 import android.content.Context
-import android.view.ViewGroup
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.util.SingletonHolder
 import com.android.launcher3.Launcher
 import com.android.launcher3.LauncherState
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
-import kotlin.math.min
 
-open class HomeState(id: Int, containerType: Int, transitionDuration: Int, flags: Int) :
-        LauncherState(id, containerType, transitionDuration, flags) {
+open class HomeState(id: Int,
+                     containerType: Int,
+                     private val transitionDuration: Int,
+                     flags: Int) :
+        LauncherState(id, containerType, flags) {
+
+    override fun getTransitionDuration(context: Context?): Int = transitionDuration
 
     override fun getScrimProgress(launcher: Launcher): Float {
         if (!launcher.lawnchairPrefs.dockGradientStyle) {
@@ -39,7 +42,7 @@ open class HomeState(id: Int, containerType: Int, transitionDuration: Int, flags
 
     companion object {
 
-        private val shelfOffset = SingletonHolder<Int, Context> { it.resources.getDimensionPixelSize(R.dimen.shelf_surface_offset) }
+        private val shelfOffset = SingletonHolder<Int, Context> { it.resources.getDimensionPixelSize(R.dimen.vertical_drag_handle_width) }
 
         fun getNormalProgress(launcher: Launcher): Float {
             return 1 - (getScrimHeight(launcher) / launcher.allAppsController.shiftRange)

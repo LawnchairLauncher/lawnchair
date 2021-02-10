@@ -16,10 +16,8 @@
 
 package com.android.systemui.shared.system;
 
-import android.view.ThreadedRenderer;
-
 /**
- * @see ThreadedRenderer
+ * @see ThreadedRendererCompat
  */
 public class ThreadedRendererCompat {
 
@@ -28,6 +26,6 @@ public class ThreadedRendererCompat {
     public static int EGL_CONTEXT_PRIORITY_LOW_IMG = 0x3103;
 
     public static void setContextPriority(int priority) {
-        ThreadedRenderer.setContextPriority(priority);
+        ThreadedRendererCompat.setContextPriority(priority);
     }
 }

@@ -11,20 +11,18 @@ import android.content.pm.ShortcutInfo;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
-import android.os.Process;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Process;
 import android.os.UserHandle;
-
+import android.os.UserManager;
 import ch.deletescape.lawnchair.iconpack.AdaptiveIconCompat;
-import com.android.launcher3.icons.IconProvider;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.icons.IconProvider;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.google.android.apps.nexuslauncher.clock.DynamicClock;
-
 import java.util.Calendar;
 import java.util.List;
 
@@ -40,7 +38,7 @@ public class DynamicIconProvider extends IconProvider {
         mDateChangeReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                for (UserHandle user : UserManagerCompat.getInstance(context).getUserProfiles()) {
+                for (UserHandle user : context.getSystemService(UserManager.class).getUserProfiles()) {
                     LauncherModel model = LauncherAppState.getInstance(context).getModel();
                     model.onPackageChanged(GOOGLE_CALENDAR, user);
                     List<ShortcutInfo> shortcuts = DeepShortcutManager.getInstance(context).queryForPinnedShortcuts(GOOGLE_CALENDAR, user);

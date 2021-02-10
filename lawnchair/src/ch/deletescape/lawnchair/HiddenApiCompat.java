@@ -20,15 +20,14 @@ package ch.deletescape.lawnchair;
 import android.app.ActivityManager;
 import android.app.ActivityManager.TaskDescription;
 import android.app.ActivityOptions;
-import android.app.WindowConfiguration;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Bitmap;
 import android.graphics.Region;
 import android.os.Build;
-import android.view.ISystemGestureExclusionListener;
-import android.view.ThreadedRenderer;
 import androidx.annotation.RequiresApi;
+import com.android.systemui.shared.system.SystemGestureExclusionListenerCompat;
+import com.android.systemui.shared.system.ThreadedRendererCompat;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -60,7 +59,7 @@ public class HiddenApiCompat {
     public static boolean isNewQ() {
         if (!checkIfAllowed()) return true;
         try {
-            sGetDeclaredMethod.invoke(ISystemGestureExclusionListener.class,
+            sGetDeclaredMethod.invoke(SystemGestureExclusionListenerCompat.class,
                     "onSystemGestureExclusionChanged", new Class[] {int.class, Region.class, Region.class});
             return true;
         } catch (IllegalAccessException | InvocationTargetException e) {
@@ -85,7 +84,7 @@ public class HiddenApiCompat {
     private static boolean tryAccess() {
         // TODO: is there a better way?
         try {
-            ThreadedRenderer.class.getMethod("setContextPriority", int.class);
+            ThreadedRendererCompat.class.getMethod("setContextPriority", int.class);
             return true;
         } catch (NoSuchMethodException e) {
             return false;

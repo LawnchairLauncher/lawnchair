@@ -20,8 +20,8 @@ import static com.android.launcher3.testing.TestProtocol.ALL_APPS_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.BACKGROUND_APP_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.HINT_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.NORMAL_STATE_ORDINAL;
-import static com.android.launcher3.testing.TestProtocol.OVERVIEW_MODAL_TASK_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.OPTIONS_STATE_ORDINAL;
+import static com.android.launcher3.testing.TestProtocol.OVERVIEW_MODAL_TASK_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.OVERVIEW_PEEK_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.OVERVIEW_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.QUICK_SWITCH_STATE_ORDINAL;
@@ -29,19 +29,16 @@ import static com.android.launcher3.testing.TestProtocol.SPRING_LOADED_STATE_ORD
 
 import android.content.Context;
 import android.view.animation.Interpolator;
-
+import ch.deletescape.lawnchair.states.HomeState;
+import ch.deletescape.lawnchair.states.OptionsState;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.states.HintState;
-import ch.deletescape.lawnchair.states.HomeState;
-import ch.deletescape.lawnchair.states.OptionsState;
-import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.states.SpringLoadedState;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.uioverrides.states.AllAppsState;
 import com.android.launcher3.uioverrides.states.OverviewState;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
-
 import java.util.Arrays;
 
 /**
@@ -103,7 +100,7 @@ public abstract class LauncherState implements BaseState<LauncherState> {
      * TODO: Create a separate class for NORMAL state.
      */
     public static final LauncherState NORMAL = new HomeState(NORMAL_STATE_ORDINAL,
-            ContainerType.WORKSPACE,
+            ContainerType.WORKSPACE, 0,
             FLAG_DISABLE_RESTORE | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED | FLAG_HIDE_BACK_BUTTON |
                     FLAG_HAS_SYS_UI_SCRIM) {
         @Override
@@ -176,10 +173,9 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     }
 
     /**
-     * Returns an array of two elements.
-     *   The first specifies the scale for the overview
-     *   The second is the factor ([0, 1], 0 => center-screen; 1 => offscreen) by which overview
-     *   should be shifted horizontally.
+     * Returns an array of two elements. The first specifies the scale for the overview The second
+     * is the factor ([0, 1], 0 => center-screen; 1 => offscreen) by which overview should be
+     * shifted horizontally.
      */
     public float[] getOverviewScaleAndOffset(Launcher launcher) {
         return launcher.getNormalOverviewScaleAndOffset();
@@ -222,16 +218,16 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     }
 
     /**
-     * For this state, how modal should over view been shown. 0 modalness means all tasks drawn,
-     * 1 modalness means the current task is show on its own.
+     * For this state, how modal should over view been shown. 0 modalness means all tasks drawn, 1
+     * modalness means the current task is show on its own.
      */
     public float getOverviewModalness() {
         return 0;
     }
 
     /**
-     * The amount of blur and wallpaper zoom to apply to the background of either the app
-     * or Launcher surface in this state. Should be a number between 0 and 1, inclusive.
+     * The amount of blur and wallpaper zoom to apply to the background of either the app or
+     * Launcher surface in this state. Should be a number between 0 and 1, inclusive.
      *
      * 0 means completely zoomed in, without blurs. 1 is zoomed out, with blurs.
      */
@@ -241,7 +237,9 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     }
 
     /**
-     * Returns the amount of blur and wallpaper zoom for this state with {@param isMultiWindowMode}.
+     * Returns the amount of blur and wallpaper zoom for this state with {@param
+     * isMultiWindowMode}.
+     *
      * @see #getDepth(Context).
      */
     public final float getDepth(Context context, boolean isMultiWindowMode) {
@@ -259,10 +257,6 @@ public abstract class LauncherState implements BaseState<LauncherState> {
         return 0;
     }
 
-    public float getOverviewScrimAlpha(Launcher launcher) {
-        return 0;
-    }
-
     public String getDescription(Launcher launcher) {
         return launcher.getWorkspace().getCurrentPageDescription();
     }
@@ -276,7 +270,7 @@ public abstract class LauncherState implements BaseState<LauncherState> {
         return new PageAlphaProvider(ACCEL_2) {
             @Override
             public float getPageAlpha(int pageIndex) {
-                return  pageIndex != centerPage ? 0 : 1f;
+                return pageIndex != centerPage ? 0 : 1f;
             }
         };
     }
@@ -312,6 +306,7 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     }
 
     public static class ScaleAndTranslation {
+
         public float scale;
         public float translationX;
         public float translationY;

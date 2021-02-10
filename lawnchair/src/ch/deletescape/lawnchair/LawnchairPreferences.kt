@@ -45,7 +45,7 @@ import com.android.launcher3.*
 import com.android.launcher3.Utilities.makeComponentKey
 import com.android.launcher3.allapps.search.DefaultAppSearchAlgorithm
 import com.android.launcher3.util.ComponentKey
-import com.android.quickstep.OverviewInteractionState
+import com.android.quickstep.SystemUiProxy
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
@@ -261,7 +261,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     var swipeUpToSwitchApps by BooleanPref("pref_swipe_up_to_switch_apps_enabled", true, doNothing)
     val recentsRadius by DimensionPref("pref_recents_radius", context.resources.getInteger(R.integer.task_corner_radius).toFloat(), doNothing)
     val swipeLeftToGoBack by BooleanPref("pref_swipe_left_to_go_back", false) {
-        OverviewInteractionState.INSTANCE.get(context).setBackButtonAlpha(1f, true)
+        SystemUiProxy.INSTANCE.get(context).setBackButtonAlpha(1f, true)
     }
     val recentsBlurredBackground by BooleanPref("pref_recents_blur_background", true) {
         onChangeCallback?.launcher?.background?.onEnabledChanged()
