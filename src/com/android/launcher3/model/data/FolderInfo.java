@@ -34,6 +34,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.FolderNameInfos;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logger.LauncherAtom.Attribute;
+import com.android.launcher3.logger.LauncherAtom.FolderIcon;
 import com.android.launcher3.logger.LauncherAtom.FromState;
 import com.android.launcher3.logger.LauncherAtom.ToState;
 import com.android.launcher3.model.ModelWriter;
@@ -208,8 +209,13 @@ public class FolderInfo extends ItemInfo {
 
     @Override
     public LauncherAtom.ItemInfo buildProto(FolderInfo fInfo) {
+        FolderIcon.Builder folderIcon = FolderIcon.newBuilder()
+                .setCardinality(contents.size());
+        if (LabelState.SUGGESTED.equals(getLabelState())) {
+            folderIcon.setLabelInfo(title.toString());
+        }
         return getDefaultItemInfoBuilder()
-                .setFolderIcon(LauncherAtom.FolderIcon.newBuilder().setCardinality(contents.size()))
+                .setFolderIcon(folderIcon)
                 .setRank(rank)
                 .setAttribute(getLabelState().mLogAttribute)
                 .setContainerInfo(getContainerInfo())
