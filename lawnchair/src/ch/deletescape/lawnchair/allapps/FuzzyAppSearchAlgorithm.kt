@@ -23,7 +23,6 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.pm.LauncherApps
 import android.os.Handler
-import android.os.UserManager
 import ch.deletescape.lawnchair.LawnchairAppFilter
 import ch.deletescape.lawnchair.globalsearch.SearchProviderController
 import ch.deletescape.lawnchair.globalsearch.providers.web.WebSearchProvider
@@ -75,7 +74,7 @@ class FuzzyAppSearchAlgorithm(private val context: Context, private val apps: Li
             }
             val iconCache = LauncherAppState.getInstance(context).iconCache
             val launcherApps = context.getSystemService(LauncherApps::class.java)
-            return context.getSystemService(UserCache::class.java).userProfiles.flatMap { user ->
+            return UserCache.INSTANCE.get(context).userProfiles.flatMap { user ->
                 val duplicatePreventionCache = mutableListOf<ComponentName>()
                 launcherApps.getActivityList(null, user).filter { info ->
                     filter.shouldShowApp(info.componentName, user) &&

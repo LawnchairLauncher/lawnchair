@@ -396,7 +396,7 @@ fun reloadIconsFromComponents(context: Context, components: Collection<Component
 
 fun reloadIcons(context: Context, packages: Collection<PackageUserKey>) {
     LooperExecutor(LauncherModel.getIconPackLooper()).execute {
-        val userManagerCompat = context.getSystemService(UserCache::class.java)
+        val userManagerCompat = UserCache.INSTANCE.get(context)
         val las = LauncherAppState.getInstance(context)
         val model = las.model
 

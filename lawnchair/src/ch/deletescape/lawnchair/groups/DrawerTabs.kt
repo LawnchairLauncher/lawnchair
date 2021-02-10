@@ -44,7 +44,7 @@ abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.Cate
 
     private val personalTabCreator = ProfileTabCreator(Profile(null))
     private val workTabCreator by lazy {
-        val workUser = context.getSystemService(UserCache::class.java).userProfiles.firstOrNull { it != Process.myUserHandle() }
+        val workUser = UserCache.INSTANCE.get(context).userProfiles.firstOrNull { it != Process.myUserHandle() }
         if (workUser != null) ProfileTabCreator(Profile(workUser)) else GroupCreator<Tab> { null }
     }
     private val allAppsTabCreator = ProfileTabCreator(Profile())
@@ -56,7 +56,7 @@ abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.Cate
     }
 
     override fun getDefaultCreators(): List<GroupCreator<Tab>> {
-        return listOf(allAppsTabCreator) + personalTabCreator + context.getSystemService(UserCache::class.java)
+        return listOf(allAppsTabCreator) + personalTabCreator + UserCache.INSTANCE.get(context)
                 .userProfiles.mapNotNull {
             if (it != Process.myUserHandle()) ProfileTabCreator(Profile(it)) else null
         }
@@ -280,7 +280,7 @@ abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.Cate
             fun fromString(context: Context, profile: String): Profile? {
                 val obj = JSONObject(profile)
                 val user = if (obj.has(KEY_ID)) {
-                    context.getSystemService(UserCache::class.java)
+                    UserCache.INSTANCE.get(context)
                             .getUserForSerialNumber(obj.getLong(KEY_ID)) ?: return null
                 } else null
                 val matchesAll = obj.getBoolean(KEY_MATCHES_ALL)

@@ -34,7 +34,7 @@ open class DrawerTabsAdapter(context: Context) : AppGroupsAdapter<DrawerTabsAdap
     override val headerText = R.string.drawer_tabs
 
     private val hasWorkApps = context.lawnchairPrefs.separateWorkApps &&
-                              context.getSystemService(UserCache::class.java).userProfiles.size > 1
+                              UserCache.INSTANCE.get(context).userProfiles.size > 1
 
     override fun createGroup(callback: (DrawerTabs.Tab, Boolean) -> Unit) {
         DrawerTabTypeSelectionBottomSheet.show(context, mapOf(

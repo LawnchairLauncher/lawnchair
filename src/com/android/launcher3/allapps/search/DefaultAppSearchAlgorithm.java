@@ -106,7 +106,7 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
         }
         final List<AppInfo> apps = new ArrayList<>();
         final IconCache iconCache = LauncherAppState.getInstance(context).getIconCache();
-        for (UserHandle user : context.getSystemService(UserCache.class).getUserProfiles()) {
+        for (UserHandle user : UserCache.INSTANCE.get(context).getUserProfiles()) {
             final List<ComponentName> duplicatePreventionCache = new ArrayList<>();
             for (LauncherActivityInfo info : context.getSystemService(LauncherApps.class).getActivityList(null, user)) {
                 if (!filter.shouldShowApp(info.getComponentName(), user)) {

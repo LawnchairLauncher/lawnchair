@@ -1062,10 +1062,10 @@ public final class Utilities {
         int userDelimiterIndex = componentKeyStr.indexOf("#");
         if (userDelimiterIndex != -1) {
             String componentStr = componentKeyStr.substring(0, userDelimiterIndex);
-            Long componentUser = Long.valueOf(componentKeyStr.substring(userDelimiterIndex + 1));
+            long componentUser = Long.parseLong(componentKeyStr.substring(userDelimiterIndex + 1));
             componentName = ComponentName.unflattenFromString(componentStr);
-            user = Utilities.notNullOrDefault(context.getSystemService(UserCache.class)
-                    .getUserForSerialNumber(componentUser.longValue()), Process.myUserHandle());
+            user = Utilities.notNullOrDefault(UserCache.INSTANCE.get(context)
+                    .getUserForSerialNumber(componentUser), Process.myUserHandle());
         } else {
             // No user provided, default to the current user
             componentName = ComponentName.unflattenFromString(componentKeyStr);

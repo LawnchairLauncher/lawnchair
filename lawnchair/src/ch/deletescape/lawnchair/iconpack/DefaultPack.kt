@@ -57,7 +57,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
     val dynamicClockDrawer by lazy { DynamicClock(context) }
     private val appMap = HashMap<ComponentKey, Entry>().apply {
         val launcherApps = context.getSystemService(LauncherApps::class.java)
-        context.getSystemService(UserCache::class.java).userProfiles.forEach { user ->
+        UserCache.INSTANCE.get(context).userProfiles.forEach { user ->
             launcherApps.getActivityList(null, user).forEach {
                 put(ComponentKey(it.componentName, user), Entry(it))
             }
@@ -73,7 +73,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
 
     override fun onDateChanged() {
         val model = LauncherAppState.getInstance(context).model
-        context.getSystemService(UserCache::class.java).userProfiles.forEach { user ->
+        UserCache.INSTANCE.get(context).userProfiles.forEach { user ->
             model.onPackageChanged(DynamicIconProvider.GOOGLE_CALENDAR, user)
             val shortcuts = DeepShortcutManager.getInstance(context).queryForPinnedShortcuts(DynamicIconProvider.GOOGLE_CALENDAR, user)
             if (!shortcuts.isEmpty()) {

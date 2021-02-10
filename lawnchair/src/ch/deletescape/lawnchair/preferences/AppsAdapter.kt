@@ -103,7 +103,7 @@ open class AppsAdapter(
 
     private fun getAppsList(context: Context): List<LauncherActivityInfo> {
         val apps = ArrayList<LauncherActivityInfo>()
-        val profiles = context.getSystemService(UserCache::class.java).userProfiles
+        val profiles = UserCache.INSTANCE.get(context)
         val launcherApps = context.getSystemService(LauncherApps::class.java)
         profiles.forEach { apps += launcherApps.getActivityList(null, it) }
         return if (filter != null) {

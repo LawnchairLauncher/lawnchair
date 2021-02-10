@@ -25,7 +25,7 @@ import com.android.launcher3.util.LabelComparator
 
 class ShortcutInfoComparator(context: Context) : Comparator<WorkspaceItemInfo> {
 
-    private val userCache = context.getSystemService(UserCache::class.java)
+    private val userCache = UserCache.INSTANCE.get(context)
     private val myUser = Process.myUserHandle()
     private val labelComparator = LabelComparator()
 

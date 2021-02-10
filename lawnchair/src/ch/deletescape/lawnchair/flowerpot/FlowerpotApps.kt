@@ -22,7 +22,6 @@ import android.content.Intent
 import android.content.pm.LauncherApps
 import android.content.pm.ShortcutInfo
 import android.os.UserHandle
-import android.os.UserManager
 import ch.deletescape.lawnchair.flowerpot.rules.CodeRule
 import ch.deletescape.lawnchair.flowerpot.rules.Rule
 import com.android.launcher3.pm.UserCache
@@ -45,7 +44,7 @@ class FlowerpotApps(private val context: Context, private val pot: Flowerpot) : 
         queryIntentMatches()
         matches.clear()
         packageMatches.clear()
-        context.getSystemService(UserCache::class.java).userProfiles.forEach {
+        UserCache.INSTANCE.get(context).userProfiles.forEach {
             addFromPackage(null, it)
         }
     }

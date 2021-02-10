@@ -79,7 +79,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
         val apps = context.getSystemService(LauncherApps::class.java)
         val model = LauncherAppState.getInstance(context).model
         val shortcutManager = DeepShortcutManager.getInstance(context)
-        for (user in context.getSystemService(UserCache::class.java).userProfiles) {
+        for (user in UserCache.INSTANCE.get(context).userProfiles) {
             packCalendars.keys.forEach {
                 val pkg = it.packageName
                 if (!apps.getActivityList(pkg, user).isEmpty()) {

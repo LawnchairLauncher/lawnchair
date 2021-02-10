@@ -38,7 +38,7 @@ public class DynamicIconProvider extends IconProvider {
         mDateChangeReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                for (UserHandle user : context.getSystemService(UserCache.class).getUserProfiles()) {
+                for (UserHandle user : UserCache.INSTANCE.get(context).getUserProfiles()) {
                     LauncherModel model = LauncherAppState.getInstance(context).getModel();
                     model.onPackageChanged(GOOGLE_CALENDAR, user);
                     List<ShortcutInfo> shortcuts = DeepShortcutManager.getInstance(context).queryForPinnedShortcuts(GOOGLE_CALENDAR, user);
@@ -49,7 +49,7 @@ public class DynamicIconProvider extends IconProvider {
             }
         };
 
-        IntentFilter intentFilter = new IntentFilter(Intent.ACTION_DATE_CHANGED);l
+        IntentFilter intentFilter = new IntentFilter(Intent.ACTION_DATE_CHANGED);
         intentFilter.addAction(Intent.ACTION_TIME_CHANGED);
         intentFilter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
         mContext.registerReceiver(mDateChangeReceiver, intentFilter, null, new Handler(LauncherModel.getWorkerLooper()));
