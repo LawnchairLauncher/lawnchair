@@ -124,7 +124,7 @@ public abstract class AbstractStateChangeTouchController
     protected abstract boolean canInterceptTouch(MotionEvent ev);
 
     @Override
-    public final boolean onControllerInterceptTouchEvent(MotionEvent ev) {
+    public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             mNoIntercept = !canInterceptTouch(ev);
             if (mNoIntercept) {
@@ -193,6 +193,8 @@ public abstract class AbstractStateChangeTouchController
                 : reachedToState ? mToState : mFromState;
         LauncherState newToState = getTargetState(newFromState, isDragTowardPositive);
 
+        onReinitToState(newToState);
+
         if (newFromState == mFromState && newToState == mToState || (newFromState == newToState)) {
             return false;
         }
@@ -229,6 +231,12 @@ public abstract class AbstractStateChangeTouchController
         mProgressMultiplier = initCurrentAnimation(animComponents);
         mCurrentAnimation.dispatchOnStart();
         return true;
+    }
+
+    protected void onReinitToState(LauncherState newToState) {
+    }
+
+    protected void onReachedFinalState(LauncherState newToState) {
     }
 
     protected boolean goingBetweenNormalAndOverview(LauncherState fromState,
@@ -527,6 +535,7 @@ public abstract class AbstractStateChangeTouchController
             mAtomicComponentsController.getAnimationPlayer().end();
             mAtomicComponentsController = null;
         }
+        onReachedFinalState(mToState);
         clearState();
         boolean shouldGoToTargetState = mGoingBetweenStates || (mToState != targetState);
         if (shouldGoToTargetState) {
