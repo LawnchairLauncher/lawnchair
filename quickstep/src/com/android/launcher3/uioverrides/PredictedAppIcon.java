@@ -160,7 +160,7 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView implements
     public boolean performAccessibilityAction(int action, ItemInfo info) {
         QuickstepLauncher launcher = Launcher.cast(Launcher.getLauncher(getContext()));
         if (action == PIN_PREDICTION) {
-            if (launcher == null || launcher.getHotseatPredictionController() == null) {
+            if (launcher == null) {
                 return false;
             }
             HotseatPredictionController controller = launcher.getHotseatPredictionController();

@@ -45,11 +45,8 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Workspace;
-import com.android.launcher3.allapps.AllAppsContainerView;
-import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.appprediction.PredictionRowView;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.hybridhotseat.HotseatPredictionController;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
@@ -57,7 +54,6 @@ import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
-import com.android.launcher3.search.DeviceSearchAdapterProvider;
 import com.android.launcher3.statemanager.StateManager.AtomicAnimationFactory;
 import com.android.launcher3.uioverrides.states.QuickstepAtomicAnimationFactory;
 import com.android.launcher3.uioverrides.touchcontrollers.NavBarToHomeTouchController;
@@ -104,9 +100,7 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
     @Override
     protected void setupViews() {
         super.setupViews();
-        if (FeatureFlags.ENABLE_HYBRID_HOTSEAT.get()) {
-            mHotseatPredictionController = new HotseatPredictionController(this);
-        }
+        mHotseatPredictionController = new HotseatPredictionController(this);
     }
 
     @Override
@@ -141,9 +135,7 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
         }
         logger.log(LAUNCHER_APP_LAUNCH_TAP);
 
-        if (mHotseatPredictionController != null) {
-            mHotseatPredictionController.logLaunchedAppRankingInfo(info, instanceId);
-        }
+        mHotseatPredictionController.logLaunchedAppRankingInfo(info, instanceId);
     }
 
     /**
@@ -166,10 +158,8 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
 
     @Override
     public boolean startActivitySafely(View v, Intent intent, ItemInfo item) {
-        if (mHotseatPredictionController != null) {
-            // Only pause is taskbar controller is not present
-            mHotseatPredictionController.setPauseUIUpdate(getTaskbarController() == null);
-        }
+        // Only pause is taskbar controller is not present
+        mHotseatPredictionController.setPauseUIUpdate(getTaskbarController() == null);
         return super.startActivitySafely(v, intent, item);
     }
 
@@ -181,7 +171,7 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
             onStateOrResumeChanging((getActivityFlags() & ACTIVITY_STATE_TRANSITION_ACTIVE) == 0);
         }
 
-        if (mHotseatPredictionController != null && ((changeBits & ACTIVITY_STATE_STARTED) != 0
+        if (((changeBits & ACTIVITY_STATE_STARTED) != 0
                 || (changeBits & getActivityFlags() & ACTIVITY_STATE_DEFERRED_RESUMED) != 0)) {
             mHotseatPredictionController.setPauseUIUpdate(false);
         }
@@ -195,12 +185,8 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
 
     @Override
     public Stream<SystemShortcut.Factory> getSupportedShortcuts() {
-        if (mHotseatPredictionController != null) {
-            return Stream.concat(super.getSupportedShortcuts(),
-                    Stream.of(mHotseatPredictionController));
-        } else {
-            return super.getSupportedShortcuts();
-        }
+        return Stream.concat(
+                super.getSupportedShortcuts(), Stream.of(mHotseatPredictionController));
     }
 
     /**
@@ -227,8 +213,7 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
             mAllAppsPredictions = item;
             getAppsView().getFloatingHeaderView().findFixedRowByType(PredictionRowView.class)
                     .setPredictedApps(item.items);
-        } else if (item.containerId == Favorites.CONTAINER_HOTSEAT_PREDICTION
-                && mHotseatPredictionController != null) {
+        } else if (item.containerId == Favorites.CONTAINER_HOTSEAT_PREDICTION) {
             mHotseatPredictionController.setPredictedItems(item);
         }
     }
@@ -246,10 +231,7 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
     public void onDestroy() {
         super.onDestroy();
         getAppsView().getSearchUiManager().destroy();
-        if (mHotseatPredictionController != null) {
-            mHotseatPredictionController.destroy();
-            mHotseatPredictionController = null;
-        }
+        mHotseatPredictionController.destroy();
     }
 
     @Override
@@ -290,11 +272,6 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
             }
 
         }
-    }
-
-    @Override
-    public SearchAdapterProvider createSearchAdapterProvider(AllAppsContainerView appsView) {
-        return new DeviceSearchAdapterProvider(this, appsView);
     }
 
     @Override
