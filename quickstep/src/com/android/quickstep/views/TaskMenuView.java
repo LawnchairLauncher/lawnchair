@@ -35,7 +35,6 @@ import android.widget.TextView;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
-import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.Interpolators;
@@ -46,7 +45,6 @@ import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskUtils;
-import com.android.quickstep.views.IconView.OnScaleUpdateListener;
 
 /**
  * Contains options for a recent task when long-pressing its icon.
@@ -55,42 +53,15 @@ public class TaskMenuView extends AbstractFloatingView {
 
     private static final Rect sTempRect = new Rect();
 
-    private final OnScaleUpdateListener mTaskViewIconScaleListener = new OnScaleUpdateListener() {
-        @Override
-        public void onScaleUpdate(float scale) {
-            final Drawable drawable = mTaskIcon.getDrawable();
-            if (drawable instanceof FastBitmapDrawable) {
-                if (scale != ((FastBitmapDrawable) drawable).getScale()) {
-                    mMenuIconDrawable.setScale(scale);
-                }
-            }
-        }
-    };
-
-    private final OnScaleUpdateListener mMenuIconScaleListener = new OnScaleUpdateListener() {
-        @Override
-        public void onScaleUpdate(float scale) {
-            final Drawable taskViewDrawable = mTaskView.getIconView().getDrawable();
-            if (taskViewDrawable instanceof FastBitmapDrawable) {
-                final float currentScale = ((FastBitmapDrawable) taskViewDrawable).getScale();
-                if (currentScale != scale) {
-                    ((FastBitmapDrawable) taskViewDrawable).setScale(scale);
-                }
-            }
-        }
-    };
-
     private static final int REVEAL_OPEN_DURATION = 150;
     private static final int REVEAL_CLOSE_DURATION = 100;
 
     private final float mThumbnailTopMargin;
     private BaseDraggingActivity mActivity;
     private TextView mTaskName;
-    private IconView mTaskIcon;
     private AnimatorSet mOpenCloseAnimator;
     private TaskView mTaskView;
     private LinearLayout mOptionLayout;
-    private FastBitmapDrawable mMenuIconDrawable;
 
     public TaskMenuView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -107,7 +78,6 @@ public class TaskMenuView extends AbstractFloatingView {
     protected void onFinishInflate() {
         super.onFinishInflate();
         mTaskName = findViewById(R.id.task_name);
-        mTaskIcon = findViewById(R.id.task_icon);
         mOptionLayout = findViewById(R.id.menu_option_layout);
     }
 
@@ -131,15 +101,6 @@ public class TaskMenuView extends AbstractFloatingView {
         } else {
             closeComplete();
         }
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-
-        // Remove all scale listeners when menu is removed
-        mTaskView.getIconView().removeUpdateScaleListener(mTaskViewIconScaleListener);
-        mTaskIcon.removeUpdateScaleListener(mMenuIconScaleListener);
     }
 
     @Override
@@ -204,21 +165,8 @@ public class TaskMenuView extends AbstractFloatingView {
 
     private void addMenuOptions(TaskView taskView) {
         Drawable icon = taskView.getTask().icon.getConstantState().newDrawable();
-        mTaskIcon.setDrawable(icon);
-        mTaskIcon.setOnClickListener(v -> close(true));
         mTaskName.setText(TaskUtils.getTitle(getContext(), taskView.getTask()));
         mTaskName.setOnClickListener(v -> close(true));
-
-        // Set the icons to match scale by listening to each other's changes
-        mMenuIconDrawable = icon instanceof FastBitmapDrawable ? (FastBitmapDrawable) icon : null;
-        taskView.getIconView().addUpdateScaleListener(mTaskViewIconScaleListener);
-        mTaskIcon.addUpdateScaleListener(mMenuIconScaleListener);
-
-        // Move the icon and text up half an icon size to lay over the TaskView
-        LinearLayout.LayoutParams params =
-                (LinearLayout.LayoutParams) mTaskIcon.getLayoutParams();
-        params.topMargin = (int) -mThumbnailTopMargin;
-        mTaskIcon.setLayoutParams(params);
 
         TaskOverlayFactory.getEnabledShortcuts(taskView).forEach(this::addMenuOption);
     }
