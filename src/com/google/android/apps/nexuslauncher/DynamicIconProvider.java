@@ -15,12 +15,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Process;
 import android.os.UserHandle;
-import android.os.UserManager;
 import ch.deletescape.lawnchair.iconpack.AdaptiveIconCompat;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.IconProvider;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.google.android.apps.nexuslauncher.clock.DynamicClock;
 import java.util.Calendar;
@@ -38,7 +38,7 @@ public class DynamicIconProvider extends IconProvider {
         mDateChangeReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                for (UserHandle user : context.getSystemService(UserManager.class).getUserProfiles()) {
+                for (UserHandle user : context.getSystemService(UserCache.class).getUserProfiles()) {
                     LauncherModel model = LauncherAppState.getInstance(context).getModel();
                     model.onPackageChanged(GOOGLE_CALENDAR, user);
                     List<ShortcutInfo> shortcuts = DeepShortcutManager.getInstance(context).queryForPinnedShortcuts(GOOGLE_CALENDAR, user);
@@ -49,7 +49,7 @@ public class DynamicIconProvider extends IconProvider {
             }
         };
 
-        IntentFilter intentFilter = new IntentFilter(Intent.ACTION_DATE_CHANGED);
+        IntentFilter intentFilter = new IntentFilter(Intent.ACTION_DATE_CHANGED);l
         intentFilter.addAction(Intent.ACTION_TIME_CHANGED);
         intentFilter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
         mContext.registerReceiver(mDateChangeReceiver, intentFilter, null, new Handler(LauncherModel.getWorkerLooper()));

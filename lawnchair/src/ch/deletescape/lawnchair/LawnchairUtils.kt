@@ -24,7 +24,6 @@ import android.content.pm.LauncherActivityInfo
 import android.content.pm.LauncherApps
 import android.content.pm.PackageInfo.REQUESTED_PERMISSION_GRANTED
 import android.content.pm.PackageManager
-import android.content.pm.ShortcutManager
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.content.res.Resources
@@ -47,7 +46,6 @@ import android.view.ViewGroup
 import android.view.animation.Interpolator
 import android.widget.*
 import androidx.annotation.ColorInt
-import androidx.annotation.Nullable
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
@@ -62,9 +60,9 @@ import ch.deletescape.lawnchair.font.CustomFontManager
 import ch.deletescape.lawnchair.util.JSONMap
 import ch.deletescape.lawnchair.util.hasFlag
 import com.android.launcher3.*
-import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.model.BgDataModel
 import com.android.launcher3.model.data.ItemInfo
+import com.android.launcher3.pm.UserCache
 import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.LooperExecutor
@@ -398,7 +396,7 @@ fun reloadIconsFromComponents(context: Context, components: Collection<Component
 
 fun reloadIcons(context: Context, packages: Collection<PackageUserKey>) {
     LooperExecutor(LauncherModel.getIconPackLooper()).execute {
-        val userManagerCompat = UserManagerCompat.getInstance(context)
+        val userManagerCompat = context.getSystemService(UserCache::class.java)
         val las = LauncherAppState.getInstance(context)
         val model = las.model
 

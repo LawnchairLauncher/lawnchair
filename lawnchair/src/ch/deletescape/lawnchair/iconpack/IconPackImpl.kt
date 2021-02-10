@@ -41,7 +41,8 @@ import com.android.launcher3.FastBitmapDrawable
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherSettings
 import com.android.launcher3.Utilities
-import com.android.launcher3.compat.UserManagerCompat
+import com.android.launcher3.model.data.ItemInfo
+import com.android.launcher3.pm.UserCache
 import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
 import com.google.android.apps.nexuslauncher.CustomIconUtils
@@ -78,7 +79,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
         val apps = context.getSystemService(LauncherApps::class.java)
         val model = LauncherAppState.getInstance(context).model
         val shortcutManager = DeepShortcutManager.getInstance(context)
-        for (user in UserManagerCompat.getInstance(context).userProfiles) {
+        for (user in context.getSystemService(UserCache::class.java).userProfiles) {
             packCalendars.keys.forEach {
                 val pkg = it.packageName
                 if (!apps.getActivityList(pkg, user).isEmpty()) {

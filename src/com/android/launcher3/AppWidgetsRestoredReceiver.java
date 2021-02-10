@@ -11,22 +11,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.util.Log;
-
 import androidx.annotation.WorkerThread;
-
 import com.android.launcher3.LauncherSettings.Favorites;
-import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.LoaderTask;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.provider.RestoreDbTask;
 import com.android.launcher3.util.ContentWriter;
-
-import androidx.annotation.WorkerThread;
-
-import static android.os.Process.myUserHandle;
 
 public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
 

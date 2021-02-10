@@ -21,8 +21,6 @@ import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
 import android.os.Handler;
 import android.os.UserHandle;
-
-import com.android.launcher3.model.data.AppInfo;
 import ch.deletescape.lawnchair.LawnchairAppFilter;
 import ch.deletescape.lawnchair.globalsearch.SearchProvider;
 import ch.deletescape.lawnchair.globalsearch.SearchProviderController;
@@ -30,10 +28,10 @@ import ch.deletescape.lawnchair.globalsearch.providers.web.WebSearchProvider;
 import com.android.launcher3.AppFilter;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.ComponentKey;
-
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -108,7 +106,7 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
         }
         final List<AppInfo> apps = new ArrayList<>();
         final IconCache iconCache = LauncherAppState.getInstance(context).getIconCache();
-        for (UserHandle user : UserManagerCompat.getInstance(context).getUserProfiles()) {
+        for (UserHandle user : context.getSystemService(UserCache.class).getUserProfiles()) {
             final List<ComponentName> duplicatePreventionCache = new ArrayList<>();
             for (LauncherActivityInfo info : context.getSystemService(LauncherApps.class).getActivityList(null, user)) {
                 if (!filter.shouldShowApp(info.getComponentName(), user)) {

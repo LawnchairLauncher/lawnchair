@@ -19,13 +19,13 @@ package ch.deletescape.lawnchair.groups
 
 import android.content.Context
 import android.os.Process
-import androidx.core.os.UserManagerCompat
 import com.android.launcher3.model.data.WorkspaceItemInfo
+import com.android.launcher3.pm.UserCache
 import com.android.launcher3.util.LabelComparator
 
 class ShortcutInfoComparator(context: Context) : Comparator<WorkspaceItemInfo> {
 
-    private val userManager = UserManagerCompat.getInstance(context)
+    private val userCache = context.getSystemService(UserCache::class.java)
     private val myUser = Process.myUserHandle()
     private val labelComparator = LabelComparator()
 
@@ -39,8 +39,8 @@ class ShortcutInfoComparator(context: Context) : Comparator<WorkspaceItemInfo> {
         return if (myUser == a.user) {
             -1
         } else {
-            val aUserSerial = userManager.getSerialNumberForUser(a.user)
-            val bUserSerial = userManager.getSerialNumberForUser(b.user)
+            val aUserSerial = userCache.getSerialNumberForUser(a.user)
+            val bUserSerial = userCache.getSerialNumberForUser(b.user)
             aUserSerial.compareTo(bUserSerial)
         }
     }

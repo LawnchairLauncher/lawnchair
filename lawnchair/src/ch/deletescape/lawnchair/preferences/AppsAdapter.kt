@@ -32,9 +32,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ch.deletescape.lawnchair.comparing
 import ch.deletescape.lawnchair.makeBasicHandler
-import com.android.launcher3.*
-import com.android.launcher3.compat.UserManagerCompat
+import com.android.launcher3.AppFilter
+import com.android.launcher3.LauncherAppState
+import com.android.launcher3.LauncherModel
+import com.android.launcher3.R
 import com.android.launcher3.model.data.AppInfo
+import com.android.launcher3.pm.UserCache
 import com.android.launcher3.util.ComponentKey
 
 open class AppsAdapter(
@@ -100,7 +103,7 @@ open class AppsAdapter(
 
     private fun getAppsList(context: Context): List<LauncherActivityInfo> {
         val apps = ArrayList<LauncherActivityInfo>()
-        val profiles = UserManagerCompat.getInstance(context).userProfiles
+        val profiles = context.getSystemService(UserCache::class.java).userProfiles
         val launcherApps = context.getSystemService(LauncherApps::class.java)
         profiles.forEach { apps += launcherApps.getActivityList(null, it) }
         return if (filter != null) {

@@ -26,15 +26,15 @@ import ch.deletescape.lawnchair.isVisible
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.preferences.DrawerTabTypeSelectionBottomSheet
 import com.android.launcher3.R
-import com.android.launcher3.compat.UserManagerCompat
+import com.android.launcher3.pm.UserCache
 
 open class DrawerTabsAdapter(context: Context) : AppGroupsAdapter<DrawerTabsAdapter.TabHolder, DrawerTabs.Tab>(context) {
 
     override val groupsModel: DrawerTabs = manager.drawerTabs
     override val headerText = R.string.drawer_tabs
 
-    private val hasWorkApps = context.lawnchairPrefs.separateWorkApps
-            && UserManagerCompat.getInstance(context).userProfiles.size > 1
+    private val hasWorkApps = context.lawnchairPrefs.separateWorkApps &&
+                              context.getSystemService(UserCache::class.java).userProfiles.size > 1
 
     override fun createGroup(callback: (DrawerTabs.Tab, Boolean) -> Unit) {
         DrawerTabTypeSelectionBottomSheet.show(context, mapOf(

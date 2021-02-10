@@ -19,6 +19,7 @@ package ch.deletescape.lawnchair.groups
 
 import android.content.Context
 import ch.deletescape.lawnchair.LawnchairPreferencesChangeCallback
+import ch.deletescape.lawnchair.random
 import com.android.launcher3.R
 import com.android.launcher3.allapps.AlphabeticalAppsList
 import com.android.launcher3.model.data.AppInfo

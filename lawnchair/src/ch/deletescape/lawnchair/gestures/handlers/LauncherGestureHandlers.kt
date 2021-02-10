@@ -23,11 +23,11 @@ import android.content.Intent
 import android.content.pm.LauncherApps
 import android.graphics.drawable.Drawable
 import android.os.UserHandle
+import android.os.UserManager
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.Keep
-import androidx.core.os.UserManagerCompat
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.gestures.GestureHandler
 import ch.deletescape.lawnchair.gestures.ui.SelectAppActivity
@@ -37,7 +37,6 @@ import ch.deletescape.lawnchair.lawnchairPrefs
 import com.android.launcher3.LauncherState
 import com.android.launcher3.R
 import com.android.launcher3.Utilities.makeComponentKey
-import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.views.OptionsPopupView
@@ -234,7 +233,7 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) :
                 target = makeComponentKey(context, config.getString("target"))
             } else {
                 intent = Intent.parseUri(config.getString("intent"), 0)
-                user = UserManagerCompat.getInstance(context)
+                user = context.getSystemService(UserManager::class.java)
                         .getUserForSerialNumber(config.getLong("user"))
                 packageName = config.getString("packageName")
                 id = config.getString("id")
@@ -253,7 +252,7 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) :
             "shortcut" -> {
                 config.put("intent", intent!!.toUri(0))
                 config.put("user",
-                           UserManagerCompat.getInstance(context).getSerialNumberForUser(user))
+                           context.getSystemService(UserManager::class.java).getSerialNumberForUser(user))
                 config.put("packageName", packageName)
                 config.put("id", id)
             }

@@ -32,10 +32,9 @@ import ch.deletescape.lawnchair.groups.FlowerpotTabs.FlowerpotTab
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.preferences.SelectableAppsActivity
 import ch.deletescape.lawnchair.tintDrawable
-import ch.deletescape.lawnchair.util.extensions.e
 import com.android.launcher3.R
 import com.android.launcher3.Utilities.makeComponentKey
-import com.android.launcher3.compat.UserManagerCompat
+import com.android.launcher3.pm.UserCache
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.ItemInfoMatcher
 import org.json.JSONObject
@@ -45,7 +44,7 @@ abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.Cate
 
     private val personalTabCreator = ProfileTabCreator(Profile(null))
     private val workTabCreator by lazy {
-        val workUser = UserManagerCompat.getInstance(context).userProfiles.firstOrNull { it != Process.myUserHandle() }
+        val workUser = context.getSystemService(UserCache::class.java).userProfiles.firstOrNull { it != Process.myUserHandle() }
         if (workUser != null) ProfileTabCreator(Profile(workUser)) else GroupCreator<Tab> { null }
     }
     private val allAppsTabCreator = ProfileTabCreator(Profile())
@@ -57,7 +56,7 @@ abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.Cate
     }
 
     override fun getDefaultCreators(): List<GroupCreator<Tab>> {
-        return listOf(allAppsTabCreator) + personalTabCreator + UserManagerCompat.getInstance(context)
+        return listOf(allAppsTabCreator) + personalTabCreator + context.getSystemService(UserCache::class.java)
                 .userProfiles.mapNotNull {
             if (it != Process.myUserHandle()) ProfileTabCreator(Profile(it)) else null
         }
@@ -281,7 +280,7 @@ abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.Cate
             fun fromString(context: Context, profile: String): Profile? {
                 val obj = JSONObject(profile)
                 val user = if (obj.has(KEY_ID)) {
-                    UserManagerCompat.getInstance(context)
+                    context.getSystemService(UserCache::class.java)
                             .getUserForSerialNumber(obj.getLong(KEY_ID)) ?: return null
                 } else null
                 val matchesAll = obj.getBoolean(KEY_MATCHES_ALL)
