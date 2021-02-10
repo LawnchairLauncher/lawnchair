@@ -32,6 +32,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.touch.BaseSwipeDetector;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;
@@ -150,9 +151,11 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
                         mTaskBeingDragged = view;
                         int upDirection = mRecentsView.getPagedOrientationHandler()
                                 .getUpDirection(mIsRtl);
-                        if (!SysUINavigationMode.getMode(mActivity).hasGestures) {
+                        if (!SysUINavigationMode.getMode(mActivity).hasGestures || (
+                                mActivity.getDeviceProfile().isTablet
+                                        && FeatureFlags.ENABLE_OVERVIEW_GRID.get())) {
                             // Don't allow swipe down to open if we don't support swipe up
-                            // to enter overview.
+                            // to enter overview, or when grid layout is enabled.
                             directionsToDetectScroll = upDirection;
                             mAllowGoingUp = true;
                             mAllowGoingDown = false;

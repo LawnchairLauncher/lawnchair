@@ -898,9 +898,14 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     public void setFullscreenProgress(float fullscreenProgress) {
         mFullscreenProgress = fullscreenProgress;
         int taskCount = getTaskViewCount();
+        float accumulatedTranslationX = 0;
         for (int i = 0; i < taskCount; i++) {
-            getTaskViewAt(i).setFullscreenProgress(mFullscreenProgress);
+            TaskView taskView = getTaskViewAt(i);
+            taskView.setFullscreenProgress(mFullscreenProgress);
+            taskView.setAccumulatedTranslationX(accumulatedTranslationX);
+            accumulatedTranslationX += taskView.getFullscreenTranslationX();
         }
+
         // Fade out the actions view quickly (0.1 range)
         mActionsView.getFullscreenAlpha().setValue(
                 mapToRange(fullscreenProgress, 0, 0.1f, 1f, 0f, LINEAR));
@@ -934,12 +939,22 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         setPadding(mTempRect.left - mInsets.left, mTempRect.top - mInsets.top,
                 dp.widthPx - mInsets.right - mTempRect.right,
                 dp.heightPx - mInsets.bottom - mTempRect.bottom);
+        // Force TaskView to update size from thumbnail
+        final int taskCount = getTaskViewCount();
+        for (int i = 0; i < taskCount; i++) {
+            getTaskViewAt(i).updateTaskSize();
+        }
     }
 
     public void getTaskSize(Rect outRect) {
         mSizeStrategy.calculateTaskSize(mActivity, mActivity.getDeviceProfile(), outRect,
                 mOrientationHandler);
         mLastComputedTaskSize.set(outRect);
+    }
+
+    /** Gets the last computed task size */
+    public Rect getLastComputedTaskSize() {
+        return mLastComputedTaskSize;
     }
 
     /** Gets the task size for modal state. */
@@ -987,7 +1002,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         final int pageCount = getPageCount();
         for (int i = 0; i < pageCount; i++) {
             View page = getPageAt(i);
-            mScrollState.updateInterpolation(
+            mScrollState.updateInterpolation(mActivity.getDeviceProfile(),
                     mOrientationHandler.getChildStartWithTranslation(page));
             ((PageCallbacks) page).onPageScroll(mScrollState);
         }
@@ -1422,13 +1437,13 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         /**
          * Updates linearInterpolation for the provided child position
          */
-        public void updateInterpolation(float childStart) {
+        public void updateInterpolation(DeviceProfile deviceProfile, float childStart) {
             float pageCenter = childStart + halfPageSize;
             float distanceFromScreenCenter = screenCenter - pageCenter;
             // How far the page has to move from the center to be offscreen, taking into account
             // the EDGE_SCALE_DOWN_FACTOR that will be applied at that position.
             float distanceToReachEdge = halfScreenSize
-                    + halfPageSize * (1 - TaskView.EDGE_SCALE_DOWN_FACTOR);
+                    + halfPageSize * (1 - TaskView.getEdgeScaleDownFactor(deviceProfile));
             linearInterpolation = Math.min(1,
                     Math.abs(distanceFromScreenCenter) / distanceToReachEdge);
         }
@@ -1444,12 +1459,13 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         }
     }
 
-    private void addDismissedTaskAnimations(View taskView, long duration, PendingAnimation anim) {
+    private void addDismissedTaskAnimations(TaskView taskView, long duration,
+            PendingAnimation anim) {
         // Use setFloat instead of setViewAlpha as we want to keep the view visible even when it's
         // alpha is set to 0 so that it can be recycled in the view pool properly
         anim.setFloat(taskView, VIEW_ALPHA, 0, ACCEL_2);
-        FloatProperty<View> secondaryViewTranslate =
-            mOrientationHandler.getSecondaryViewTranslate();
+        FloatProperty<TaskView> secondaryViewTranslate =
+                taskView.getDismissTaskTranslationProperty();
         int secondaryTaskDimension = mOrientationHandler.getSecondaryDimension(taskView);
         int verticalFactor = mOrientationHandler.getSecondaryTranslationDirectionFactor();
 
@@ -1515,7 +1531,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                 int scrollDiff = newScroll[i] - oldScroll[i] + offset;
                 if (scrollDiff != 0) {
                     FloatProperty translationProperty = child instanceof TaskView
-                            ? ((TaskView) child).getPrimaryFillDismissGapTranslationProperty()
+                            ? ((TaskView) child).getFillDismissGapTranslationProperty()
                             : mOrientationHandler.getPrimaryViewTranslate();
 
                     ResourceProvider rp = DynamicResource.provider(mActivity);
@@ -1971,7 +1987,8 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         // Find the task's scale based on its offscreen progress, then see how far it still needs to
         // move to be completely offscreen.
         Utilities.scaleRectFAboutCenter(taskPosition,
-                TaskView.getCurveScaleForInterpolation(centerToOffscreenProgress));
+                TaskView.getCurveScaleForInterpolation(mActivity.getDeviceProfile(),
+                        centerToOffscreenProgress));
         distanceToOffscreen = desiredLeft - taskPosition.left;
         // Finally, we need to account for RecentsView scale, because it moves tasks based on its
         // pivot. To do this, we move the task position to where it would be offscreen at scale = 1
@@ -1990,7 +2007,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         mTaskViewsSecondaryTranslation = translation;
         for (int i = 0; i < getTaskViewCount(); i++) {
             TaskView task = getTaskViewAt(i);
-            mOrientationHandler.getSecondaryViewTranslate().set(task, translation / getScaleY());
+            task.getTaskResistanceTranslationProperty().set(task, translation / getScaleY());
         }
         mLiveTileTaskViewSimulator.recentsViewSecondaryTranslation.value = translation;
     }
@@ -2356,6 +2373,52 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             return getScrollForPage(mTaskViewStartIndex);
         }
         return super.computeMinScroll();
+    }
+
+    @Override
+    protected boolean getPageScrolls(int[] outPageScrolls, boolean layoutChildren,
+            ComputePageScrollsLogic scrollLogic) {
+        boolean pageScrollChanged = super.getPageScrolls(outPageScrolls, layoutChildren,
+                scrollLogic);
+
+        final int taskCount = getTaskViewCount();
+        final int childCount = getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            if (childCount < mTaskViewStartIndex) {
+                continue;
+            }
+
+            final TaskView taskView = getTaskViewAt(
+                    Utilities.boundToRange(i, mTaskViewStartIndex, taskCount - 1));
+            float scrollDiff =
+                    taskView.getFullscreenTranslationX() + taskView.getAccumulatedTranslationX();
+            if (scrollDiff != 0) {
+                outPageScrolls[i] += scrollDiff;
+                pageScrollChanged = true;
+            }
+        }
+        return pageScrollChanged;
+    }
+
+    @Override
+    protected int getChildOffset(int index) {
+        if (index < mTaskViewStartIndex) {
+            return super.getChildOffset(index);
+        }
+
+        final TaskView taskView = getTaskViewAt(
+                Utilities.boundToRange(index, mTaskViewStartIndex, getTaskViewCount() - 1));
+        return super.getChildOffset(index) + (int) taskView.getFullscreenTranslationX()
+                + (int) taskView.getAccumulatedTranslationX();
+    }
+
+    @Override
+    protected int getChildVisibleSize(int index) {
+        final TaskView taskView = getTaskViewAtByAbsoluteIndex(index);
+        if (taskView == null) {
+            return super.getChildVisibleSize(index);
+        }
+        return super.getChildVisibleSize(index) - (int) taskView.getFullscreenTranslationX();
     }
 
     @Override

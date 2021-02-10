@@ -15,8 +15,6 @@
  */
 package com.android.quickstep.util;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_SYSTEM_VELOCITY_PROVIDER;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.view.MotionEvent;
@@ -51,7 +49,7 @@ public class MotionPauseDetector {
     private final Alarm mForcePauseTimeout;
     private final boolean mMakePauseHarderToTrigger;
     private final Context mContext;
-    private final VelocityProvider mVelocityProvider;
+    private final SystemVelocityProvider mVelocityProvider;
 
     private Float mPreviousVelocity = null;
 
@@ -88,8 +86,7 @@ public class MotionPauseDetector {
         mForcePauseTimeout = new Alarm();
         mForcePauseTimeout.setOnAlarmListener(alarm -> updatePaused(true /* isPaused */));
         mMakePauseHarderToTrigger = makePauseHarderToTrigger;
-        mVelocityProvider = ENABLE_SYSTEM_VELOCITY_PROVIDER.get()
-                ? new SystemVelocityProvider(axis) : new LinearVelocityProvider(axis);
+        mVelocityProvider = new SystemVelocityProvider(axis);
     }
 
     /**
@@ -124,8 +121,8 @@ public class MotionPauseDetector {
         mForcePauseTimeout.setAlarm(mMakePauseHarderToTrigger
                 ? HARDER_TRIGGER_TIMEOUT
                 : FORCE_PAUSE_TIMEOUT);
-        Float newVelocity = mVelocityProvider.addMotionEvent(ev, pointerIndex);
-        if (newVelocity != null && mPreviousVelocity != null) {
+        float newVelocity = mVelocityProvider.addMotionEvent(ev, pointerIndex);
+        if (mPreviousVelocity != null) {
             checkMotionPaused(newVelocity, mPreviousVelocity, ev.getEventTime());
         }
         mPreviousVelocity = newVelocity;
@@ -210,58 +207,7 @@ public class MotionPauseDetector {
         default void onMotionPauseChanged(boolean isPaused) { }
     }
 
-    /**
-     * Interface to abstract out velocity calculations
-     */
-    protected interface VelocityProvider {
-
-        /**
-         * Adds a new motion events, and returns the velocity at this point, or null if
-         * the velocity is not available
-         */
-        Float addMotionEvent(MotionEvent ev, int pointer);
-
-        /**
-         * Clears all stored motion event records
-         */
-        void clear();
-    }
-
-    private static class LinearVelocityProvider implements VelocityProvider {
-
-        private Long mPreviousTime = null;
-        private Float mPreviousPosition = null;
-
-        private final int mAxis;
-
-        LinearVelocityProvider(int axis) {
-            mAxis = axis;
-        }
-
-        @Override
-        public Float addMotionEvent(MotionEvent ev, int pointer) {
-            long time = ev.getEventTime();
-            float position = ev.getAxisValue(mAxis, pointer);
-            Float velocity = null;
-
-            if (mPreviousTime != null && mPreviousPosition != null) {
-                long changeInTime = Math.max(1, time - mPreviousTime);
-                float changeInPosition = position - mPreviousPosition;
-                velocity = changeInPosition / changeInTime;
-            }
-            mPreviousTime = time;
-            mPreviousPosition = position;
-            return velocity;
-        }
-
-        @Override
-        public void clear() {
-            mPreviousTime = null;
-            mPreviousPosition = null;
-        }
-    }
-
-    private static class SystemVelocityProvider implements VelocityProvider {
+    private static class SystemVelocityProvider {
 
         private final VelocityTracker mVelocityTracker;
         private final int mAxis;
@@ -271,8 +217,11 @@ public class MotionPauseDetector {
             mAxis = axis;
         }
 
-        @Override
-        public Float addMotionEvent(MotionEvent ev, int pointer) {
+        /**
+         * Adds a new motion events, and returns the velocity at this point, or null if
+         * the velocity is not available
+         */
+        public float addMotionEvent(MotionEvent ev, int pointer) {
             mVelocityTracker.addMovement(ev);
             mVelocityTracker.computeCurrentVelocity(1); // px / ms
             return mAxis == MotionEvent.AXIS_X
@@ -280,7 +229,9 @@ public class MotionPauseDetector {
                     : mVelocityTracker.getYVelocity(pointer);
         }
 
-        @Override
+        /**
+         * Clears all stored motion event records
+         */
         public void clear() {
             mVelocityTracker.clear();
         }
