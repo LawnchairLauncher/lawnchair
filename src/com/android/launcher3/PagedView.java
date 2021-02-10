@@ -745,6 +745,11 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         return mOrientationHandler.getChildStart(pageAtIndex);
     }
 
+    protected int getChildVisibleSize(int index) {
+        View layout = getPageAt(index);
+        return mOrientationHandler.getMeasuredSize(layout);
+    }
+
     @Override
     public boolean requestChildRectangleOnScreen(View child, Rect rectangle, boolean immediate) {
         int page = indexToPage(indexOfChild(child));
@@ -1457,8 +1462,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
     private int getDisplacementFromScreenCenter(int childIndex, int screenCenter) {
-        View layout = getPageAt(childIndex);
-        int childSize = mOrientationHandler.getMeasuredSize(layout);
+        int childSize = getChildVisibleSize(childIndex);
         int halfChildSize = (childSize / 2);
         int childCenter = getChildOffset(childIndex) + halfChildSize;
         return childCenter - screenCenter;

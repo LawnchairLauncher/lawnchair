@@ -29,7 +29,6 @@ import com.android.launcher3.util.ActivityTracker;
  */
 public class HotseatEduActivity extends Activity {
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +48,7 @@ public class HotseatEduActivity extends Activity {
         @Override
         public boolean init(BaseActivity activity, boolean alreadyOnHome) {
             QuickstepLauncher launcher = (QuickstepLauncher) activity;
-            if (launcher != null && launcher.getHotseatPredictionController() != null) {
+            if (launcher != null) {
                 launcher.getHotseatPredictionController().showEdu();
             }
             return false;
