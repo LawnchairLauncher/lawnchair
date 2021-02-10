@@ -40,12 +40,14 @@ import com.android.launcher3.DropTarget;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
+import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.TouchController;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 /**
  * Class for initiating a drag within a view or across multiple views.
@@ -228,6 +230,11 @@ public class DragController implements DragDriver.EventListener, TouchController
         if (mDragObject != null && mDragObject.dragView != null) {
             mDragObject.dragView.mFirstFrameAnimatorHelper.addTo(anim);
         }
+    }
+
+    public Optional<InstanceId> getLogInstanceId() {
+        return Optional.ofNullable(mDragObject)
+                .map(dragObject -> dragObject.logInstanceId);
     }
 
     /**
