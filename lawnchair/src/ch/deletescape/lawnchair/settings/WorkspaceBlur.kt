@@ -23,6 +23,7 @@ import ch.deletescape.lawnchair.lawnchairPrefs
 import com.android.launcher3.CellLayout
 import com.android.launcher3.R
 import com.android.launcher3.Workspace
+import com.android.launcher3.logging.StatsLogManager
 import com.android.launcher3.util.IntSparseArrayMap
 import com.android.launcher3.views.OptionsPopupView
 
@@ -50,14 +51,14 @@ class WorkspaceBlur(private val workspace: Workspace, private val screens: IntSp
         return if (this[id]) {
             OptionsPopupView.OptionItem(
                     R.string.blur_pref_title,
-                    R.drawable.ic_check_white, 0) {
+                    R.drawable.ic_check_white, StatsLogManager.LauncherRankingEvent.UNKNOWN) {
                 set(id, false)
                 true
             }
         } else {
             OptionsPopupView.OptionItem(
                     R.string.blur_pref_title,
-                    R.drawable.ic_remove_no_shadow, 0) {
+                    R.drawable.ic_remove_no_shadow, StatsLogManager.LauncherRankingEvent.UNKNOWN) {
                 set(id, true)
                 true
             }

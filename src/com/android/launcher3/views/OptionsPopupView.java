@@ -173,7 +173,7 @@ public class OptionsPopupView extends ArrowPopup
         options.add(new OptionItem(resString, resDrawable,
                 IGNORE,
                 OptionsPopupView::startWallpaperPicker));
-        options.add(new OptionItem(R.string.button_organize_screens, R.drawable.ic_pages, -1,
+        options.add(new OptionItem(R.string.button_organize_screens, R.drawable.ic_pages, IGNORE,
                 OptionsPopupView::startOrganizer));
         if (!WidgetsModel.GO_DISABLE_WIDGETS && !Utilities.getLawnchairPrefs(launcher).getLockDesktop()) {
             options.add(new OptionItem(R.string.widget_button_text, R.drawable.ic_widget,
