@@ -28,7 +28,7 @@ import ch.deletescape.lawnchair.setCustomFont
  * Simple dialog title class to use in externally displayed layouts where we can't programmatically change the design otherwise
  */
 @SuppressLint("RestrictedApi")
-class LCDialogTitle(context: Context?, attrs: AttributeSet?) : DialogTitle(context, attrs) {
+class LCDialogTitle(context: Context, attrs: AttributeSet?) : DialogTitle(context, attrs) {
     init {
         setCustomFont(CustomFontManager.FONT_DIALOG_TITLE)
     }
