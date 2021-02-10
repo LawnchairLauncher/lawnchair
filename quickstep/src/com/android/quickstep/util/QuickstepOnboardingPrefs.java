@@ -27,10 +27,8 @@ import android.content.SharedPreferences;
 
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Workspace;
-import com.android.launcher3.allapps.AllAppsInsetTransitionController;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.hybridhotseat.HotseatPredictionController;
-import com.android.launcher3.search.DeviceSearchEdu;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
@@ -42,7 +40,6 @@ import com.android.quickstep.views.AllAppsEduView;
  * Extends {@link OnboardingPrefs} for quickstep-specific onboarding data.
  */
 public class QuickstepOnboardingPrefs extends OnboardingPrefs<QuickstepLauncher> {
-
 
     public QuickstepOnboardingPrefs(QuickstepLauncher launcher, SharedPreferences sharedPrefs) {
         super(launcher, sharedPrefs);
@@ -66,8 +63,7 @@ public class QuickstepOnboardingPrefs extends OnboardingPrefs<QuickstepLauncher>
             });
         }
 
-        if (FeatureFlags.ENABLE_HYBRID_HOTSEAT.get() && !hasReachedMaxCount(
-                HOTSEAT_DISCOVERY_TIP_COUNT)) {
+        if (!hasReachedMaxCount(HOTSEAT_DISCOVERY_TIP_COUNT)) {
             stateManager.addStateListener(new StateListener<LauncherState>() {
                 boolean mFromAllApps = false;
 
@@ -130,23 +126,6 @@ public class QuickstepOnboardingPrefs extends OnboardingPrefs<QuickstepLauncher>
                         if (view != null) {
                             view.close(false);
                         }
-                    }
-                }
-            });
-        }
-
-        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get() && !getBoolean(SEARCH_EDU_SEEN)) {
-            stateManager.addStateListener(new StateListener<LauncherState>() {
-                @Override
-                public void onStateTransitionStart(LauncherState toState) {
-                    if (toState == ALL_APPS) {
-                        AllAppsInsetTransitionController insetTransitionController =
-                                mLauncher.getAllAppsController().getInsetController();
-                        insetTransitionController.setSearchEduRunnable(() -> {
-                            DeviceSearchEdu.show(launcher);
-                            insetTransitionController.setSearchEduRunnable(null);
-                        });
-                        stateManager.removeStateListener(this);
                     }
                 }
             });

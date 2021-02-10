@@ -49,6 +49,7 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.StateManager;
@@ -174,11 +175,13 @@ public final class TaskViewUtils {
 
         final RecentsView recentsView = v.getRecentsView();
         int taskIndex = recentsView.indexOfChild(v);
-        boolean parallaxCenterAndAdjacentTask = taskIndex != recentsView.getCurrentPage();
-        int startScroll = recentsView.getScrollOffset(taskIndex);
-
         Context context = v.getContext();
         DeviceProfile dp = BaseActivity.fromContext(context).getDeviceProfile();
+        boolean parallaxCenterAndAdjacentTask =
+                taskIndex != recentsView.getCurrentPage() && !(dp.isTablet
+                        && FeatureFlags.ENABLE_OVERVIEW_GRID.get());
+        int startScroll = recentsView.getScrollOffset(taskIndex);
+
         TaskViewSimulator topMostSimulator = null;
 
         if (tsv == null && targets.apps.length > 0) {
