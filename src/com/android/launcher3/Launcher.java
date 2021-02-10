@@ -37,6 +37,7 @@ import static com.android.launcher3.LauncherState.NO_SCALE;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.Utilities.postAsyncCallback;
+import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.getSupportedActions;
 import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_LAUNCHER_LOAD;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
@@ -104,6 +105,7 @@ import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
+import com.android.launcher3.accessibility.LauncherAccessibilityDelegate.LauncherAction;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AllAppsTransitionController;
@@ -120,7 +122,6 @@ import com.android.launcher3.folder.FolderGridOrganizer;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.icons.IconCache;
-import com.android.launcher3.keyboard.CustomActionsPopup;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logging.FileLog;
@@ -163,7 +164,6 @@ import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.PendingRequestArgs;
 import com.android.launcher3.util.SafeCloseable;
-import com.android.launcher3.util.ShortcutUtil;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
@@ -383,7 +383,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         idp.addOnChangeListener(this);
         mSharedPrefs = Utilities.getPrefs(this);
         mIconCache = app.getIconCache();
-        mAccessibilityDelegate = new LauncherAccessibilityDelegate(this);
+        mAccessibilityDelegate = createAccessibilityDelegate();
 
         mDragController = new DragController(this);
         mAllAppsController = new AllAppsTransitionController(this);
@@ -2633,19 +2633,9 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
             shortcutInfos.add(new KeyboardShortcutInfo(getString(R.string.widget_button_text),
                     KeyEvent.KEYCODE_W, KeyEvent.META_CTRL_ON));
         }
-        final View currentFocus = getCurrentFocus();
-        if (currentFocus != null) {
-            if (new CustomActionsPopup(this, currentFocus).canShow()) {
-                shortcutInfos.add(new KeyboardShortcutInfo(getString(R.string.custom_actions),
-                        KeyEvent.KEYCODE_O, KeyEvent.META_CTRL_ON));
-            }
-            if (currentFocus.getTag() instanceof ItemInfo
-                    && ShortcutUtil.supportsShortcuts((ItemInfo) currentFocus.getTag())) {
+        getSupportedActions(this,  getCurrentFocus()).forEach(la ->
                 shortcutInfos.add(new KeyboardShortcutInfo(
-                        getString(R.string.shortcuts_menu_with_notifications_description),
-                        KeyEvent.KEYCODE_S, KeyEvent.META_CTRL_ON));
-            }
-        }
+                        la.accessibilityAction.getLabel(), la.keyCode, KeyEvent.META_CTRL_ON)));
         if (!shortcutInfos.isEmpty()) {
             data.add(new KeyboardShortcutGroup(getString(R.string.home_screen), shortcutInfos));
         }
@@ -2663,30 +2653,18 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                         return true;
                     }
                     break;
-                case KeyEvent.KEYCODE_S: {
-                    View focusedView = getCurrentFocus();
-                    if (focusedView instanceof BubbleTextView
-                            && focusedView.getTag() instanceof ItemInfo
-                            && mAccessibilityDelegate.performAction(focusedView,
-                            (ItemInfo) focusedView.getTag(),
-                            LauncherAccessibilityDelegate.DEEP_SHORTCUTS,
-                            true)) {
-                        PopupContainerWithArrow.getOpen(this).requestFocus();
-                        return true;
-                    }
-                    break;
-                }
-                case KeyEvent.KEYCODE_O:
-                    if (new CustomActionsPopup(this, getCurrentFocus()).show()) {
-                        return true;
-                    }
-                    break;
                 case KeyEvent.KEYCODE_W:
                     if (isInState(NORMAL)) {
                         OptionsPopupView.openWidgets(this);
                         return true;
                     }
                     break;
+                default:
+                    for (LauncherAction la : getSupportedActions(this, getCurrentFocus())) {
+                        if (la.keyCode == keyCode) {
+                            return la.invokeFromKeyboard(getCurrentFocus());
+                        }
+                    }
             }
         }
         return super.onKeyShortcut(keyCode, event);
@@ -2744,6 +2722,9 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         return Stream.of(APP_INFO, WIDGETS, INSTALL);
     }
 
+    protected LauncherAccessibilityDelegate createAccessibilityDelegate() {
+        return new LauncherAccessibilityDelegate(this);
+    }
 
     /**
      * @see LauncherState#getOverviewScaleAndOffset(Launcher)

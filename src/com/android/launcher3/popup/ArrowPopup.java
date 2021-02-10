@@ -40,6 +40,8 @@ import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 import android.widget.FrameLayout;
 
+import androidx.annotation.NonNull;
+
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.InsettableFrameLayout;
@@ -81,6 +83,8 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
     protected boolean mDeferContainerRemoval;
     private final Rect mStartRect = new Rect();
     private final Rect mEndRect = new Rect();
+
+    private Runnable mOnCloseCallback = () -> { };
 
     public ArrowPopup(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -555,6 +559,14 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
         mDeferContainerRemoval = false;
         getPopupContainer().removeView(this);
         getPopupContainer().removeView(mArrow);
+        mOnCloseCallback.run();
+    }
+
+    /**
+     * Callback to be called when the popup is closed
+     */
+    public void setOnCloseCallback(@NonNull Runnable callback) {
+        mOnCloseCallback = callback;
     }
 
     protected BaseDragLayer getPopupContainer() {

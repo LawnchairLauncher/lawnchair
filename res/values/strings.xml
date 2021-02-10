@@ -37,8 +37,6 @@
     <string name="shortcut_not_available">Shortcut isn\'t available</string>
     <!-- User visible name for the launcher/home screen. [CHAR_LIMIT=30] -->
     <string name="home_screen">Home</string>
-    <!-- Label for showing custom action list of a shortcut or widget. [CHAR_LIMIT=30] -->
-    <string name="custom_actions">Custom actions</string>
 
     <!-- Widgets -->
     <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
