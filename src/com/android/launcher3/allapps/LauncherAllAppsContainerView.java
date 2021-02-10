@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.allapps;
 
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_KEYBOARD_CLOSED;
+
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -92,5 +94,11 @@ public class LauncherAllAppsContainerView extends AllAppsContainerView {
                 mWorkTabListener = WorkEduView.showEduFlowIfNeeded(mLauncher, mWorkTabListener);
             }
         }
+    }
+
+    @Override
+    protected void hideIme() {
+        super.hideIme();
+        mLauncher.getLiveSearchManager().allAppsLogger().log(LAUNCHER_ALLAPPS_KEYBOARD_CLOSED);
     }
 }

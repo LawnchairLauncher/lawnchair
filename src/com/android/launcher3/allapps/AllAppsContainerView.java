@@ -213,8 +213,12 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         if (insets == null) return;
 
         if (insets.isVisible(WindowInsets.Type.ime())) {
-            getWindowInsetsController().hide(WindowInsets.Type.ime());
+            hideIme();
         }
+    }
+
+    protected void hideIme() {
+        getWindowInsetsController().hide(WindowInsets.Type.ime());
     }
 
     /**
