@@ -16,25 +16,28 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import ch.deletescape.lawnchair.LawnchairAppFilter;
 import ch.deletescape.lawnchair.allapps.FuzzyAppSearchAlgorithm;
-import com.android.launcher3.AllAppsList;
 import com.android.launcher3.AppFilter;
-import com.android.launcher3.AppInfo;
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
-import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.model.AllAppsList;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.LoaderResults;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.LooperExecutor;
-
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class AppSearchProvider extends ContentProvider
 {
@@ -106,7 +109,7 @@ public class AppSearchProvider extends ContentProvider
                 public Bitmap call() {
                     final AppItemInfoWithIcon d = new AppItemInfoWithIcon(dl);
                     mApp.getIconCache().getTitleAndIcon(d, false);
-                    return d.iconBitmap;
+                    return d.bitmap;
                 }
             };
             final Bundle bundle2 = new Bundle();
@@ -149,7 +152,7 @@ public class AppSearchProvider extends ContentProvider
                 public Bitmap call() {
                     final AppItemInfoWithIcon d = new AppItemInfoWithIcon(dl);
                     mApp.getIconCache().getTitleAndIcon(d, false);
-                    return d.iconBitmap;
+                    return d.bitmap;
                 }
             };
             return openPipeHelper(uri, s2, null, mLooper.submit(g), this.mPipeDataWriter);
@@ -203,7 +206,7 @@ public class AppSearchProvider extends ContentProvider
         public List<AppInfo> call() {
             if (!this.mModel.isModelLoaded()) {
                 Log.d("AppSearchProvider", "Workspace not loaded, loading now");
-                this.mModel.startLoaderForResults(new LoaderResults(this.mApp, this.mBgDataModel, this.mAllAppsList, 0, null));
+                this.mModel.startLoaderForResults(new LoaderResults(this.mApp, this.mBgDataModel, this.mAllAppsList,null));
             }
             if (!this.mModel.isModelLoaded()) {
                 Log.d("AppSearchProvider", "Loading workspace failed");
@@ -212,6 +215,7 @@ public class AppSearchProvider extends ContentProvider
             return FuzzyAppSearchAlgorithm.query(mApp.getContext(), mQuery, mAllAppsList.data, getBaseFilter());
         }
 
+        @Override
         public void init(final LauncherAppState mApp, final LauncherModel mModel, final BgDataModel mBgDataModel, final AllAppsList mAllAppsList, final Executor executor) {
             this.mApp = mApp;
             this.mModel = mModel;
