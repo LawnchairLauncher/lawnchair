@@ -22,12 +22,16 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 
 import android.content.Context;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.R;
 import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
 import com.android.launcher3.logger.LauncherAtom.FromState;
 import com.android.launcher3.logger.LauncherAtom.ToState;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.ResourceBasedOverride;
+
+import java.util.Optional;
 
 /**
  * Handles the user event logging in R+.
@@ -47,6 +51,7 @@ public class StatsLogManager implements ResourceBasedOverride {
     public static final int LAUNCHER_STATE_ALLAPPS = 4;
     public static final int LAUNCHER_STATE_UNCHANGED = 5;
 
+    private InstanceId mInstanceId;
     /**
      * Returns event enum based on the two state transition information when swipe
      * gesture happens(to be removed during UserEventDispatcher cleanup).
@@ -480,16 +485,30 @@ public class StatsLogManager implements ResourceBasedOverride {
      * Returns new logger object.
      */
     public StatsLogger logger() {
+        StatsLogger logger = createLogger();
+        Optional.ofNullable(mInstanceId).ifPresent(logger::withInstanceId);
+        return logger;
+    }
+
+    protected StatsLogger createLogger() {
         return new StatsLogger() {
         };
+    }
+
+    /**
+     * Sets InstanceId to every new {@link StatsLogger} object returned by {@link #logger()} when
+     * not-null.
+     */
+    public StatsLogManager withDefaultInstanceId(@Nullable InstanceId instanceId) {
+        this.mInstanceId = instanceId;
+        return this;
     }
 
     /**
      * Creates a new instance of {@link StatsLogManager} based on provided context.
      */
     public static StatsLogManager newInstance(Context context) {
-        StatsLogManager mgr = Overrides.getObject(StatsLogManager.class,
+        return Overrides.getObject(StatsLogManager.class,
                 context.getApplicationContext(), R.string.stats_log_manager_class);
-        return mgr;
     }
 }
