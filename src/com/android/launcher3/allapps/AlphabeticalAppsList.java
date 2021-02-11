@@ -17,40 +17,32 @@ package com.android.launcher3.allapps;
 
 
 import android.content.Context;
-
-import android.content.pm.LauncherApps;
-import com.android.launcher3.BaseDraggingActivity;
-import com.android.launcher3.model.data.AppInfo;
 import android.content.pm.LauncherActivityInfo;
-
+import android.content.pm.LauncherApps;
 import android.graphics.Color;
 import android.os.UserHandle;
-import androidx.core.graphics.ColorUtils;
+import android.os.UserManager;
 import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import ch.deletescape.lawnchair.allapps.AppColorComparator;
 import ch.deletescape.lawnchair.groups.DrawerFolderInfo;
 import ch.deletescape.lawnchair.groups.DrawerFolderItem;
-import com.android.launcher3.AppInfo;
-import com.android.launcher3.Launcher;
+import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.compat.AlphabeticIndexCompat;
-import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.icons.IconCache;
-import com.android.launcher3.shortcuts.DeepShortcutManager;
+import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LabelComparator;
-
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import kotlin.Unit;
 
 /**
  * The alphabetically sorted list of applications.
@@ -517,7 +509,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         final LauncherApps launcherApps = mLauncher.getSystemService(LauncherApps.class);
         final UserHandle user = android.os.Process.myUserHandle();
         final IconCache iconCache = LauncherAppState.getInstance(mLauncher).getIconCache();
-        boolean quietMode = UserManagerCompat.getInstance(mLauncher).isQuietModeEnabled(user);
+        boolean quietMode = mLauncher.getSystemService(UserManager.class).isQuietModeEnabled(user);
         ArrayList<AppInfo> result = new ArrayList<>();
         for (ComponentKey key : mSearchResults) {
             AppInfo match = mAllAppsStore.getApp(key);

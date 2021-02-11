@@ -25,6 +25,8 @@ import com.android.launcher3.LauncherModel;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.LoaderResults;
+import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.LooperExecutor;
 
@@ -66,21 +68,21 @@ public class AppSearchProvider extends ContentProvider
 
     public static ComponentKey uriToComponent(final Uri uri, final Context context) {
         return new ComponentKey(ComponentName.unflattenFromString(uri.getQueryParameter("component")),
-                UserManagerCompat.getInstance(context).getUserForSerialNumber(Long.parseLong(uri.getQueryParameter("user"))));
+                UserCache.INSTANCE.get(context).getUserForSerialNumber(Long.parseLong(uri.getQueryParameter("user"))));
     }
 
-    public static Uri buildUri(final AppInfo appInfo, final UserManagerCompat userManagerCompat) {
+    public static Uri buildUri(final AppInfo appInfo, final UserCache userCache) {
         return new Uri.Builder()
                 .scheme("content")
                 .authority(BuildConfig.APPLICATION_ID + ".appssearch")
                 .appendQueryParameter("component", appInfo.componentName.flattenToShortString())
-                .appendQueryParameter("user", Long.toString(userManagerCompat.getSerialNumberForUser(appInfo.user)))
+                .appendQueryParameter("user", Long.toString(userCache.getSerialNumberForUser(appInfo.user)))
                 .build();
     }
 
     private Cursor listToCursor(final List<AppInfo> list) {
         final MatrixCursor matrixCursor = new MatrixCursor(AppSearchProvider.eK, list.size());
-        final UserManagerCompat instance = UserManagerCompat.getInstance(this.getContext());
+        final UserCache instance = UserCache.INSTANCE.get(this.getContext());
 
         int n = 0;
         for (AppInfo appInfo : list) {

@@ -42,8 +42,9 @@ import ch.deletescape.lawnchair.iconpack.LawnchairIconProvider
 import ch.deletescape.lawnchair.isVisible
 import ch.deletescape.lawnchair.makeBasicHandler
 import com.android.launcher3.*
-import com.android.launcher3.compat.UserManagerCompat
+import com.android.launcher3.icons.IconProvider
 import com.android.launcher3.model.data.AppInfo
+import com.android.launcher3.pm.UserCache
 import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
 
@@ -71,7 +72,7 @@ open class AppsAdapterWithShortcuts(
 
     init {
         if (iconProvider == null) {
-            iconProvider = IconProvider.newInstance(context)
+            iconProvider = IconProvider(context)
         }
         Handler(LauncherModel.getWorkerLooper()).postAtFrontOfQueue(::loadAppsList)
     }
@@ -146,7 +147,7 @@ open class AppsAdapterWithShortcuts(
 
     private fun getAppsList(context: Context): List<LauncherActivityInfo> {
         val apps = ArrayList<LauncherActivityInfo>()
-        val profiles = UserManagerCompat.getInstance(context).userProfiles
+        val profiles = UserCache.INSTANCE.get(context).userProfiles
         val launcherApps = context.getSystemService(LauncherApps::class.java)
         profiles.forEach { apps += launcherApps.getActivityList(null, it) }
         return if (filter != null) {
@@ -169,7 +170,7 @@ open class AppsAdapterWithShortcuts(
         init {
             val appInfo = AppInfo(context, info, info.user)
             LauncherAppState.getInstance(context).iconCache.getTitleAndIcon(appInfo, false)
-            iconDrawable = BitmapDrawable(context.resources, appInfo.iconBitmap)
+            iconDrawable = BitmapDrawable(context.resources, appInfo.bitmap)
         }
 
         private fun loadShortcuts(): List<ShortcutItem> {

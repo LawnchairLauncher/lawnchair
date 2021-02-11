@@ -27,6 +27,9 @@ import com.android.launcher3.allapps.AlphabeticalAppsList;
 import com.android.launcher3.appprediction.PredictionRowView;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.icons.BitmapRenderer;
+import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.ItemInfoWithIcon;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.util.Themes;
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity;
@@ -47,7 +50,7 @@ public class ConfigBuilder {
     private final AbstractQsbLayout mQsbLayout;
     private BubbleTextView mBubbleTextView;
     private final boolean mIsAllApps;
-    private final UserManagerCompat mUserManager;
+    private final UserCache userCache;
 
     public ConfigBuilder(AbstractQsbLayout qsbLayout, boolean isAllApps) {
         mBundle = new Bundle();
@@ -55,7 +58,7 @@ public class ConfigBuilder {
         mQsbLayout = qsbLayout;
         mActivity = qsbLayout.getLauncher();
         mIsAllApps = isAllApps;
-        mUserManager = UserManagerCompat.getInstance(mActivity);
+        userCache = new UserCache.INSTANCE.get(mActivity);
     }
 
     public static Intent getSearchIntent(Rect sourceBounds, View gIcon, View micIcon) {
@@ -102,8 +105,8 @@ public class ConfigBuilder {
         final b_search b = new b_search();
         b.label = appInfo.title.toString();
         b.ej = "icon_bitmap_" + n;
-        mBundle.putParcelable(b.ej, appInfo.iconBitmap);
-        Uri uri = AppSearchProvider.buildUri(appInfo, mUserManager);
+        mBundle.putParcelable(b.ej, appInfo.bitmap);
+        Uri uri = AppSearchProvider.buildUri(appInfo, userCache);
         b.el = uri.toString();
         b.ek = new Intent("com.google.android.apps.nexuslauncher.search.APP_LAUNCH",
                 uri.buildUpon().appendQueryParameter("predictionRank", Integer.toString(n)).build())
