@@ -13,19 +13,16 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RemoteViews;
-
 import androidx.core.graphics.ColorUtils;
+import androidx.core.os.UserManagerCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsRecyclerView;
 import com.android.launcher3.allapps.AlphabeticalAppsList;
 import com.android.launcher3.appprediction.PredictionRowView;
-import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
@@ -38,7 +35,6 @@ import com.google.android.apps.nexuslauncher.search.nano.SearchProto.a_search;
 import com.google.android.apps.nexuslauncher.search.nano.SearchProto.b_search;
 import com.google.android.apps.nexuslauncher.search.nano.SearchProto.c_search;
 import com.google.android.apps.nexuslauncher.search.nano.SearchProto.d_search;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,7 +91,7 @@ public class ConfigBuilder {
 
     private int getBackgroundColor() {
         return ColorUtils.compositeColors(Themes.getAttrColor(mActivity, R.attr.allAppsScrimColor),
-                ColorUtils.setAlphaComponent(WallpaperColorInfo.getInstance(mActivity).getMainColor(), 255));
+                ColorUtils.setAlphaComponent(WallpaperColorInfo.INSTANCE.get(mActivity).getMainColor(), 255));
     }
 
     private b_search bZ(final AppInfo appInfo, final int n) {

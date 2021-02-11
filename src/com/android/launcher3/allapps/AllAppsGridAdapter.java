@@ -31,24 +31,25 @@ import android.view.accessibility.AccessibilityEvent;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.Nullable;
 import androidx.core.view.accessibility.AccessibilityEventCompat;
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 import androidx.core.view.accessibility.AccessibilityRecordCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
+import ch.deletescape.lawnchair.colors.ColorEngine;
+import ch.deletescape.lawnchair.colors.ColorEngine.Resolvers;
+import ch.deletescape.lawnchair.globalsearch.SearchProvider;
+import ch.deletescape.lawnchair.globalsearch.SearchProviderController;
+import ch.deletescape.lawnchair.globalsearch.providers.web.WebSearchProvider;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.AlphabeticalAppsList.AdapterItem;
-import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.util.PackageManagerHelper;
-
 import java.util.List;
 
 /**
