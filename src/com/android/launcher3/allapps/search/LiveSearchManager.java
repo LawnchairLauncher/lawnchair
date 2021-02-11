@@ -153,15 +153,15 @@ public class LiveSearchManager implements StateListener<LauncherState> {
             clearWidgetHost();
         }
 
-        StatsLogger logger = mLauncher.getStatsLogManager().logger();
         if (finalState.equals(ALL_APPS)) {
+            // creates new instance ID since new all apps session is started.
             mLogInstanceId = new InstanceIdSequence().newInstanceId();
-            logger.withInstanceId(mLogInstanceId).log(LAUNCHER_ALLAPPS_ENTRY);
+            allAppsLogger().log(LAUNCHER_ALLAPPS_ENTRY);
         } else if (mPrevLauncherState.equals(ALL_APPS)
                 // Check if mLogInstanceId is not null; to avoid NPE when LAUNCHER_ALLAPPS_EXIT is
                 // triggered multiple times
                 && mLogInstanceId != null) {
-            logger.withInstanceId(mLogInstanceId).log(LAUNCHER_ALLAPPS_EXIT);
+            allAppsLogger().log(LAUNCHER_ALLAPPS_EXIT);
             mLogInstanceId = null;
         }
     }
@@ -315,5 +315,16 @@ public class LiveSearchManager implements StateListener<LauncherState> {
 
         @Override
         public void onActivitySaveInstanceState(Activity activity, Bundle bundle) { }
+    }
+
+    /**
+     * Returns new instance of {@link StatsLogger} pre-populated with details required to log
+     * AllApps specific user events.
+     */
+    public StatsLogger allAppsLogger() {
+        return getLogInstanceId()
+                .map(instanceId -> mLauncher.getStatsLogManager().logger()
+                        .withInstanceId(instanceId))
+                .orElse(mLauncher.getStatsLogManager().logger());
     }
 }
