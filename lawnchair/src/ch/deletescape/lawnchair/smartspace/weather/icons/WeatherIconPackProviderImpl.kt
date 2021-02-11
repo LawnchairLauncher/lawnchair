@@ -32,11 +32,12 @@ class WeatherIconPackProviderImpl(private val context: Context, private val pkgN
 
     override fun getIcon(which: WeatherIconManager.Icon, night: Boolean): Bitmap {
         val resId = res.getIdentifier(getResName(which, night), "drawable", pkgName)
-        return (if (resId > 0) res.getDrawable(resId) else context.getDrawable(R.drawable.weather_none_available)).apply {
+        return (if (resId > 0) res.getDrawable(resId) else context.getDrawable(R.drawable.weather_none_available))
+                ?.apply {
             if (pack.recoloringMode == WeatherIconManager.RecoloringMode.ALWAYS) {
                 setTint(tintColor)
             }
-        }.toBitmap()!!
+        }?.toBitmap()!!
     }
 
     companion object {
