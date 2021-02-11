@@ -73,36 +73,36 @@ public class ShelfScrimView extends ScrimView<BaseQuickstepLauncher>
     private boolean mDrawingFlatColor;
 
     // For shelf mode
-    private final int mEndAlpha;
-    private final float mRadius;
-    private final int mMaxScrimAlpha;
+    protected int mEndAlpha;
+    protected float mRadius;
+    protected int mMaxScrimAlpha;
     private final Paint mPaint;
     private final OnboardingPrefs mOnboardingPrefs;
 
     // Mid point where the alpha changes
-    private int mMidAlpha;
-    private float mMidProgress;
+    protected int mMidAlpha;
+    protected float mMidProgress;
 
     // The progress at which the drag handle starts moving up with the shelf.
     private float mDragHandleProgress;
 
-    private Interpolator mBeforeMidProgressColorInterpolator = ACCEL;
-    private Interpolator mAfterMidProgressColorInterpolator = ACCEL;
+    protected Interpolator mBeforeMidProgressColorInterpolator = ACCEL;
+    protected Interpolator mAfterMidProgressColorInterpolator = ACCEL;
 
     private float mShiftRange;
 
     private float mTopOffset;
-    private float mShelfTop;
+    protected float mShelfTop;
     private float mShelfTopAtThreshold;
 
-    private int mShelfColor;
+    protected int mShelfColor;
     private int mRemainingScreenColor;
 
     private final Path mTempPath = new Path();
     private final Path mRemainingScreenPath = new Path();
     private boolean mRemainingScreenPathValid = false;
 
-    private Mode mSysUINavigationMode;
+    protected Mode mSysUINavigationMode;
     private boolean mIsTwoZoneSwipeModel;
 
     public ShelfScrimView(Context context, AttributeSet attrs) {
@@ -315,5 +315,9 @@ public class ShelfScrimView extends ScrimView<BaseQuickstepLauncher>
     @Override
     public float getVisualTop() {
         return mShelfTop;
+    }
+
+    public int getMidAlpha() {
+        return mMidAlpha;
     }
 }

@@ -21,28 +21,22 @@ import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
-import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.blur.BlurDrawable
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.dpToPx
-import ch.deletescape.lawnchair.isVisible
 import ch.deletescape.lawnchair.runOnMainThread
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.LauncherState
 import com.android.launcher3.LauncherState.BACKGROUND_APP
-import com.android.launcher3.R
 import com.android.launcher3.Utilities
-import com.android.launcher3.anim.Interpolators.*
-import com.android.launcher3.graphics.NinePatchDrawHelper
-import com.android.launcher3.icons.ShadowGenerator
-import com.android.launcher3.util.Themes
+import com.android.launcher3.anim.Interpolators.ACCEL_2
+import com.android.launcher3.anim.Interpolators.LINEAR
 import com.android.quickstep.SysUINavigationMode
 import com.android.quickstep.views.ShelfScrimView
-import com.google.android.apps.nexuslauncher.qsb.AbstractQsbLayout
+import kotlin.math.roundToInt
 
 /*
  * Copyright (C) 2018 paphonb@xda
@@ -60,6 +54,7 @@ import com.google.android.apps.nexuslauncher.qsb.AbstractQsbLayout
  * limitations under the License.
  */
 
+@Suppress("PrivatePropertyName")
 class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(context, attrs),
         LawnchairPreferences.OnPreferenceChangeListener,
         BlurWallpaperProvider.Listener, ColorEngine.OnColorChangeListener {
@@ -130,6 +125,8 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         }
     }
 
+    private var prefs: LawnchairPreferences? = null
+
     override fun reInitUi() {
         blurDrawable = createBlurDrawable()
         blurDrawable?.alpha = 0
@@ -140,13 +137,14 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
 
-        prefs.addOnPreferenceChangeListener(this, *prefsToWatch)
+        prefs?.addOnPreferenceChangeListener(this, *prefsToWatch)
         ColorEngine.getInstance(context).addColorChangeListeners(this, *colorsToWatch)
         BlurWallpaperProvider.getInstance(context).addListener(this)
         blurDrawable?.startListening()
     }
 
     override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
+        this.prefs = prefs
         when (key) {
             key_radius -> {
                 mRadius = dpToPx(prefs.dockRadius)
@@ -224,13 +222,13 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
     }
 
     override fun getMidAlpha(): Int {
-        return prefs.dockOpacity.takeIf { it >= 0 } ?: super.getMidAlpha()
+        return prefs?.dockOpacity.takeIf { it!! >= 0 } ?: super.getMidAlpha()
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
 
-        prefs.removeOnPreferenceChangeListener(this, *prefsToWatch)
+        prefs?.removeOnPreferenceChangeListener(this, *prefsToWatch)
         ColorEngine.getInstance(context).removeColorChangeListeners(this, *colorsToWatch)
         BlurWallpaperProvider.getInstance(context).removeListener(this)
         blurDrawable?.stopListening()
@@ -269,20 +267,20 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         super.updateColors()
         val alpha = when {
             useFlatColor -> ((1 - mProgress) * 255).toInt()
-            mProgress >= fullBlurProgress -> Math.round(255 * ACCEL_2.getInterpolation(
-                    Math.max(0f, 1 - mProgress) / (1 - fullBlurProgress)))
+            mProgress >= fullBlurProgress -> (255 * ACCEL_2.getInterpolation(
+                    0f.coerceAtLeast(1 - mProgress) / (1 - fullBlurProgress))).roundToInt()
             else -> 255
         }
         blurDrawable?.alpha = alpha
 
-        mDragHandleOffset = Math.max(0f, mDragHandleBounds.top + mDragHandleSize - mShelfTop)
+        mDragHandleOffset = 0f.coerceAtLeast(mDragHandleBounds.top + mDragHandleSize.y - mShelfTop)
 
         if (!useFlatColor) {
-            if (mProgress >= 1 && mSysUINavigationMode == SysUINavigationMode.Mode.NO_BUTTON
-                && mLauncher.stateManager.state == BACKGROUND_APP) {
-                mShelfColor = ColorUtils.setAlphaComponent(allAppsBackground, mMidAlpha)
+            mShelfColor = if (mProgress >= 1 && mSysUINavigationMode == SysUINavigationMode.Mode.NO_BUTTON
+                              && mLauncher.stateManager.state == BACKGROUND_APP) {
+                ColorUtils.setAlphaComponent(allAppsBackground, mMidAlpha)
             } else {
-                mShelfColor = getColorForProgress(mProgress)
+                getColorForProgress(mProgress)
             }
         }
     }
@@ -312,15 +310,6 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         }
     }
 
-    override fun getMidProgress(): Float {
-        /* TODO: implement this
-        if (!prefs.dockGradientStyle) {
-            return Math.max(HomeState.getNormalProgress(mLauncher), OverviewState.getNormalVerticalProgress(mLauncher))
-        }
-         */
-        return super.getMidProgress()
-    }
-
     override fun onEnabledChanged() {
         postReInitUi()
     }
@@ -328,8 +317,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
     private fun drawDebug(canvas: Canvas) {
         listOf(
                 "version: ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})",
-                "state: ${mLauncher.stateManager.state::class.java.simpleName}",
-                "toState: ${mLauncher.stateManager.toState::class.java.simpleName}"
+                "state: ${mLauncher.stateManager.state::class.java.simpleName}"
               ).forEachIndexed { index, line ->
             canvas.drawText(line, 50f, 200f + (DEBUG_LINE_HEIGHT * index), debugTextPaint)
         }
