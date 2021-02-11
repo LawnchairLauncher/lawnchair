@@ -31,10 +31,10 @@ import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.ShortcutUtil;
-import com.android.launcher3.widget.WidgetListRowEntry;
+import com.android.launcher3.widget.model.WidgetsListBaseEntry;
+import com.android.launcher3.widget.model.WidgetsListContentEntry;
 
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -59,7 +59,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
     /** Maps packages to their DotInfo's . */
     private Map<PackageUserKey, DotInfo> mPackageUserToDotInfos = new HashMap<>();
     /** Maps packages to their Widgets */
-    private ArrayList<WidgetListRowEntry> mAllWidgets = new ArrayList<>();
+    private List<WidgetsListBaseEntry> mAllWidgets = List.of();
 
     private PopupDataChangeListener mChangeListener = PopupDataChangeListener.INSTANCE;
 
@@ -187,7 +187,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
         notificationListener.cancelNotificationFromLauncher(notificationKey);
     }
 
-    public void setAllWidgets(ArrayList<WidgetListRowEntry> allWidgets) {
+    public void setAllWidgets(List<WidgetsListBaseEntry> allWidgets) {
         mAllWidgets = allWidgets;
         mChangeListener.onWidgetsBound();
     }
@@ -196,14 +196,15 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
         mChangeListener = listener == null ? PopupDataChangeListener.INSTANCE : listener;
     }
 
-    public ArrayList<WidgetListRowEntry> getAllWidgets() {
+    public List<WidgetsListBaseEntry> getAllWidgets() {
         return mAllWidgets;
     }
 
     public List<WidgetItem> getWidgetsForPackageUser(PackageUserKey packageUserKey) {
         return mAllWidgets.stream()
-                .filter(row -> row.pkgItem.packageName.equals(packageUserKey.mPackageName))
-                .flatMap(row -> row.widgets.stream())
+                .filter(row -> row instanceof WidgetsListContentEntry
+                        && row.mPkgItem.packageName.equals(packageUserKey.mPackageName))
+                .flatMap(row -> ((WidgetsListContentEntry) row).mWidgets.stream())
                 .filter(widget -> packageUserKey.mUser.equals(widget.user))
                 .collect(Collectors.toList());
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright (C) 2021 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,36 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.widget;
 
-import com.android.launcher3.model.WidgetItem;
+package com.android.launcher3.widget.model;
+
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.PackageItemInfo;
 
-import java.util.ArrayList;
-
-/**
- * Holder class to store all the information related to a single row in the widget list
- */
-public class WidgetListRowEntry {
-
-    public final PackageItemInfo pkgItem;
-
-    public final ArrayList<WidgetItem> widgets;
+/** Holder class to store the package information of an entry shown in the widgets list. */
+public abstract class WidgetsListBaseEntry {
+    public final PackageItemInfo mPkgItem;
 
     /**
      * Character that is used as a section name for the {@link ItemInfo#title}.
      * (e.g., "G" will be stored if title is "Google")
      */
-    public String titleSectionName;
+    public final String mTitleSectionName;
 
-    public WidgetListRowEntry(PackageItemInfo pkgItem, ArrayList<WidgetItem> items) {
-        this.pkgItem = pkgItem;
-        this.widgets = items;
-    }
-
-    @Override
-    public String toString() {
-        return pkgItem.packageName + ":" + widgets.size();
+    public WidgetsListBaseEntry(PackageItemInfo pkgItem, String titleSectionName) {
+        mPkgItem = pkgItem;
+        mTitleSectionName = titleSectionName;
     }
 }

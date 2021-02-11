@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.widget;
+package com.android.launcher3.widget.picker;
 
 import android.view.ViewGroup;
+
+import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.R;
 
-import androidx.recyclerview.widget.RecyclerView.ViewHolder;
-
-public class WidgetsRowViewHolder extends ViewHolder {
+/** A {@link ViewHolder} for a row in the full widget picker. */
+public final class WidgetsRowViewHolder extends ViewHolder {
 
     public final ViewGroup cellContainer;
     public final BubbleTextView title;

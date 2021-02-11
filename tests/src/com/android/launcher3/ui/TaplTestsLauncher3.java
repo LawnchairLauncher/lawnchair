@@ -37,8 +37,8 @@ import com.android.launcher3.tapl.AppIconMenuItem;
 import com.android.launcher3.tapl.Widgets;
 import com.android.launcher3.tapl.Workspace;
 import com.android.launcher3.views.OptionsPopupView;
-import com.android.launcher3.widget.WidgetsFullSheet;
-import com.android.launcher3.widget.WidgetsRecyclerView;
+import com.android.launcher3.widget.picker.WidgetsFullSheet;
+import com.android.launcher3.widget.picker.WidgetsRecyclerView;
 
 import org.junit.Before;
 import org.junit.Ignore;
