@@ -17,8 +17,8 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_ICON_PARAMS;
+import static com.android.launcher3.util.SettingsCache.NOTIFICATION_BADGING_URI;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
-import static com.android.launcher3.util.SecureSettingsObserver.newNotificationSettingsObserver;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -37,10 +37,10 @@ import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.pm.InstallSessionTracker;
 import com.android.launcher3.pm.UserCache;
+import com.android.launcher3.util.SettingsCache;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.SafeCloseable;
-import com.android.launcher3.util.SecureSettingsObserver;
 import com.android.launcher3.util.SimpleBroadcastReceiver;
 import com.android.launcher3.widget.custom.CustomWidgetManager;
 
@@ -57,8 +57,9 @@ public class LauncherAppState {
     private final IconCache mIconCache;
     private final WidgetPreviewLoader mWidgetCache;
     private final InvariantDeviceProfile mInvariantDeviceProfile;
+    private SettingsCache.OnChangeListener mNotificationSettingsChangedListener;
 
-    private SecureSettingsObserver mNotificationDotsObserver;
+    private SettingsCache mSettingsCache;
     private InstallSessionTracker mInstallSessionTracker;
     private SimpleBroadcastReceiver mModelChangeReceiver;
     private SafeCloseable mCalendarChangeTracker;
@@ -108,10 +109,11 @@ public class LauncherAppState {
                 .registerInstallTracker(mModel);
 
         // Register an observer to rebind the notification listener when dots are re-enabled.
-        mNotificationDotsObserver =
-                newNotificationSettingsObserver(mContext, this::onNotificationSettingsChanged);
-        mNotificationDotsObserver.register();
-        mNotificationDotsObserver.dispatchOnChange();
+        mSettingsCache = SettingsCache.INSTANCE.get(mContext);
+        mNotificationSettingsChangedListener = this::onNotificationSettingsChanged;
+        mSettingsCache.register(NOTIFICATION_BADGING_URI,
+                mNotificationSettingsChangedListener);
+        mSettingsCache.dispatchOnChange(NOTIFICATION_BADGING_URI);
     }
 
     public LauncherAppState(Context context, @Nullable String iconCacheFileName) {
@@ -166,8 +168,9 @@ public class LauncherAppState {
         }
         CustomWidgetManager.INSTANCE.get(mContext).setWidgetRefreshCallback(null);
 
-        if (mNotificationDotsObserver != null) {
-            mNotificationDotsObserver.unregister();
+        if (mSettingsCache != null) {
+            mSettingsCache.unregister(NOTIFICATION_BADGING_URI,
+                    mNotificationSettingsChangedListener);
         }
     }
 
