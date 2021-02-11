@@ -45,7 +45,7 @@ import com.android.launcher3.*
 import com.android.launcher3.icons.IconProvider
 import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.pm.UserCache
-import com.android.launcher3.shortcuts.DeepShortcutManager
+import com.android.launcher3.shortcuts.ShortcutRequest
 import com.android.launcher3.util.ComponentKey
 
 open class AppsAdapterWithShortcuts(
@@ -68,7 +68,6 @@ open class AppsAdapterWithShortcuts(
     var items = ArrayList<Item>().apply { add(LoadingItem()) }
     val apps = ArrayList<AppItem>()
     val handler = makeBasicHandler(true)
-    val shortcutManager = DeepShortcutManager.getInstance(context)
 
     init {
         if (iconProvider == null) {
@@ -174,7 +173,9 @@ open class AppsAdapterWithShortcuts(
         }
 
         private fun loadShortcuts(): List<ShortcutItem> {
-            val shortcuts = shortcutManager.queryForShortcutsContainer(key.componentName, key.user) as? List<ShortcutInfo> ?: emptyList()
+            val shortcuts = ShortcutRequest(context, key.user)
+                    .withContainer(key.componentName)
+                    .query(ShortcutRequest.PUBLISHED)
             return shortcuts.map { ShortcutItem(it) }
         }
 

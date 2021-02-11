@@ -16,7 +16,9 @@
 
 package com.android.launcher3.popup;
 
+import android.app.Activity;
 import android.content.ComponentName;
+import android.content.ContextWrapper;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
 
@@ -28,6 +30,7 @@ import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.notification.NotificationKeyData;
 import com.android.launcher3.notification.NotificationListener;
+import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.ShortcutUtil;
@@ -155,11 +158,12 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
         }
 
         Integer count = mDeepShortcutMap.get(new ComponentKey(component, info.user));
-        if (count != null) {
-            return count;
-        }
-        // TODO: is there really NO more efficient way to do this
-        return DeepShortcutManager.getInstance(mLauncher).queryForShortcutsContainer(info.getTargetComponent(), info.user).size();
+        return count == null ? 0 : count;
+        // TODO: Figure out how to get context here to invoke ShortcutRequest constructor.
+//        // _TODO: is there really NO more efficient way to do this
+//        return new ShortcutRequest(info., info.user)
+//                .withContainer(info.getTargetComponent())
+//                .query(ShortcutRequest.PUBLISHED);
     }
 
     public @Nullable DotInfo getDotInfoForItem(@NonNull ItemInfo info) {

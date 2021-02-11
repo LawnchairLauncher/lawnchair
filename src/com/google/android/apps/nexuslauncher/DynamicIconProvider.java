@@ -21,7 +21,6 @@ import com.android.launcher3.LauncherModel;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.IconProvider;
 import com.android.launcher3.pm.UserCache;
-import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.google.android.apps.nexuslauncher.clock.DynamicClock;
 import java.util.Calendar;
 import java.util.List;
@@ -34,17 +33,14 @@ public class DynamicIconProvider extends IconProvider {
     private int mDateOfMonth;
 
     public DynamicIconProvider(Context context) {
+        super(context);
         mContext = context;
         mDateChangeReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 for (UserHandle user : UserCache.INSTANCE.get(context).getUserProfiles()) {
                     LauncherModel model = LauncherAppState.getInstance(context).getModel();
-                    model.onPackageChanged(GOOGLE_CALENDAR, user);
-                    List<ShortcutInfo> shortcuts = DeepShortcutManager.getInstance(context).queryForPinnedShortcuts(GOOGLE_CALENDAR, user);
-                    if (!shortcuts.isEmpty()) {
-                        model.updatePinnedShortcuts(GOOGLE_CALENDAR, shortcuts, user);
-                    }
+                    model.onAppIconChanged(GOOGLE_CALENDAR, user);
                 }
             }
         };

@@ -41,9 +41,9 @@ import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherSettings
 import com.android.launcher3.Utilities
 import com.android.launcher3.Utilities.makeComponentKey
+import com.android.launcher3.icons.ShortcutCachingLogic
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.pm.UserCache
-import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
 import com.google.android.apps.nexuslauncher.DynamicIconProvider
 import com.google.android.apps.nexuslauncher.clock.DynamicClock
@@ -74,11 +74,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
     override fun onDateChanged() {
         val model = LauncherAppState.getInstance(context).model
         UserCache.INSTANCE.get(context).userProfiles.forEach { user ->
-            model.onPackageChanged(DynamicIconProvider.GOOGLE_CALENDAR, user)
-            val shortcuts = DeepShortcutManager.getInstance(context).queryForPinnedShortcuts(DynamicIconProvider.GOOGLE_CALENDAR, user)
-            if (!shortcuts.isEmpty()) {
-                model.updatePinnedShortcuts(DynamicIconProvider.GOOGLE_CALENDAR, shortcuts, user)
-            }
+            model.onAppIconChanged(DynamicIconProvider.GOOGLE_CALENDAR, user)
         }
     }
 
@@ -148,7 +144,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
     override fun getIcon(shortcutInfo: ShortcutInfo, iconDpi: Int): Drawable? {
         ensureInitialLoadComplete()
 
-        val drawable = DeepShortcutManager.getInstance(context).getShortcutIconDrawable(shortcutInfo, iconDpi)
+        val drawable = ShortcutCachingLogic.getIcon(context, shortcutInfo, iconDpi)
         val gen = AdaptiveIconGenerator(context, drawable, null)
         return gen.result
     }

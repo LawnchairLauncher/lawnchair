@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.util;
 
+import ch.deletescape.lawnchair.override.CustomInfoProvider;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.model.WidgetsModel;
@@ -30,6 +31,9 @@ public class ShortcutUtil {
         return isActive(info) && (isApp(info) || isPinnedShortcut(info));
     }
 
+    public static boolean supportsEdit(ItemInfo info) {
+        return CustomInfoProvider.Companion.isEditable(info) || supportsShortcuts(info);
+    }
     /**
      * Returns true when we should show depp shortcuts in shortcut menu for the item.
      */

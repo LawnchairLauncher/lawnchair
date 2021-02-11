@@ -43,7 +43,6 @@ import com.android.launcher3.LauncherSettings
 import com.android.launcher3.Utilities
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.pm.UserCache
-import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
 import com.google.android.apps.nexuslauncher.CustomIconUtils
 import com.google.android.apps.nexuslauncher.clock.CustomClock
@@ -78,12 +77,11 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
     override fun onDateChanged() {
         val apps = context.getSystemService(LauncherApps::class.java)
         val model = LauncherAppState.getInstance(context).model
-        val shortcutManager = DeepShortcutManager.getInstance(context)
         for (user in UserCache.INSTANCE.get(context).userProfiles) {
             packCalendars.keys.forEach {
                 val pkg = it.packageName
-                if (!apps.getActivityList(pkg, user).isEmpty()) {
-                    CustomIconUtils.reloadIcon(shortcutManager, model, user, pkg)
+                if (apps.getActivityList(pkg, user).isNotEmpty()) {
+                    CustomIconUtils.reloadIcon(model, user, pkg)
                 }
             }
         }

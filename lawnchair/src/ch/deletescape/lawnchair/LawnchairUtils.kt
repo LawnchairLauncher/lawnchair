@@ -63,7 +63,6 @@ import com.android.launcher3.*
 import com.android.launcher3.model.BgDataModel
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.pm.UserCache
-import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.LooperExecutor
 import com.android.launcher3.util.PackageUserKey
@@ -404,9 +403,8 @@ fun reloadIcons(context: Context, packages: Collection<PackageUserKey>) {
             model.onPackagesReload(user)
         }
 
-        val shortcutManager = DeepShortcutManager.getInstance(context)
         packages.forEach {
-            CustomIconUtils.reloadIcon(shortcutManager, model, it.mUser, it.mPackageName)
+            CustomIconUtils.reloadIcon(model, it.mUser, it.mPackageName)
         }
     }
 }

@@ -30,18 +30,18 @@ import androidx.palette.graphics.Palette
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.iconpack.LawnchairIconProvider
 import ch.deletescape.lawnchair.launcherAppState
-import ch.deletescape.lawnchair.shortcuts.LawnchairShortcutManager
 import ch.deletescape.lawnchair.toBitmap
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.icons.FixedScaleDrawable
-import com.android.launcher3.shortcuts.DeepShortcutManager
+import com.android.launcher3.icons.ShortcutCachingLogic
 import com.bumptech.glide.Glide
 import ninja.sesame.lib.bridge.v1.SesameFrontend
 import ninja.sesame.lib.bridge.v1.SesameShortcut
 import java.lang.Exception
 
-fun SesameShortcut.getId() = "${LawnchairShortcutManager.QUINOA_PREFIX}$id"
+const val QUINOA_PREFIX = "sesame_"
+fun SesameShortcut.getId() = "${QUINOA_PREFIX}$id"
 
 fun SesameShortcut.getActivity() = if (componentName != null) {
     ComponentName.unflattenFromString(componentName!!)!!
@@ -50,7 +50,7 @@ fun SesameShortcut.getActivity() = if (componentName != null) {
 fun SesameShortcut.getIcon(context: Context, density: Int): Drawable {
     val shortcutInfo = SesameFrontend.getShortcutInfo(context, this)
     if (shortcutInfo != null) {
-        return DeepShortcutManager.getInstance(context).getShortcutIconDrawable(shortcutInfo, density)
+        return ShortcutCachingLogic.getIcon(context, shortcutInfo, density)
     }
     if (iconUri != null) {
         try {
@@ -72,14 +72,16 @@ fun SesameShortcut.getIcon(context: Context, density: Int): Drawable {
 
     if (componentName != null) {
         try {
-            return context.packageManager.getActivityIcon(ComponentName.unflattenFromString(componentName!!))
+            return ComponentName.unflattenFromString(componentName!!)?.let {
+                context.packageManager.getActivityIcon(it)
+            }!!
         } catch (ignored: PackageManager.NameNotFoundException) {
         }
     }
 
     if (packageName != null) {
         try {
-            return context.packageManager.getApplicationIcon(packageName)
+            return context.packageManager.getApplicationIcon(packageName!!)
         } catch (ignored: PackageManager.NameNotFoundException) {
         }
     }

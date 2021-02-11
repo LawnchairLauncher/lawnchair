@@ -34,10 +34,10 @@ import ch.deletescape.lawnchair.gestures.ui.SelectAppActivity
 import ch.deletescape.lawnchair.getIcon
 import ch.deletescape.lawnchair.globalsearch.SearchProviderController
 import ch.deletescape.lawnchair.lawnchairPrefs
+import com.android.launcher3.Launcher
 import com.android.launcher3.LauncherState
 import com.android.launcher3.R
 import com.android.launcher3.Utilities.makeComponentKey
-import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.views.OptionsPopupView
 import com.android.launcher3.widget.WidgetsFullSheet
@@ -199,7 +199,7 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) :
     override val icon: Drawable?
         get() = when {
             intent != null -> try {
-                context.packageManager.getActivityIcon(intent)
+                context.packageManager.getActivityIcon(intent!!)
             } catch (e: Exception) {
                 context.getIcon()
             }
@@ -306,7 +306,7 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) :
                 }
             }
             "shortcut" -> {
-                DeepShortcutManager.getInstance(context).startShortcut(packageName, id, null, opts, user)
+                Launcher.getLauncher(context).startShortcut(packageName, id, null, opts, user)
             }
         }
     }

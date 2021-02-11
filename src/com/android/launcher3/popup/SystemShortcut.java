@@ -27,6 +27,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
+import com.android.launcher3.util.ShortcutUtil;
 import com.android.launcher3.widget.WidgetsBottomSheet;
 
 import java.util.List;
@@ -141,7 +142,7 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
             if (Utilities.getLawnchairPrefs(launcher).getLockDesktop()) {
                 return null;
             }
-            if (!DeepShortcutManager.supportsShortcuts(itemInfo)) {
+            if (!ShortcutUtil.supportsShortcuts(itemInfo)) {
                 return null;
             }
             if (itemInfo.getTargetComponent() == null) {

@@ -207,7 +207,7 @@ public class PopupContainerWithArrow<T extends BaseDraggingActivity> extends Arr
             return null;
         }
         ItemInfo item = (ItemInfo) icon.getTag();
-        if (!DeepShortcutManager.supportsEdit(item)) {
+        if (!ShortcutUtil.supportsEdit(item)) {
             return null;
         }
 
@@ -328,7 +328,7 @@ public class PopupContainerWithArrow<T extends BaseDraggingActivity> extends Arr
         // All views are added. Animate layout from now on.
         setLayoutTransition(new LayoutTransition());
 
-        if (!DeepShortcutManager.supportsShortcuts(originalItemInfo)) {
+        if (!ShortcutUtil.supportsShortcuts(originalItemInfo)) {
             return;
         }
 
