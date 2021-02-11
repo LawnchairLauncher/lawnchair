@@ -41,6 +41,7 @@ import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
 import ch.deletescape.lawnchair.views.FadingImageView
 import com.android.launcher3.LauncherModel
 import com.android.launcher3.R
+import com.android.launcher3.util.Executors.ICON_PACK_EXECUTOR
 import kotlinx.android.synthetic.main.activity_settings_search.*
 import java.text.Collator
 import java.util.*
@@ -65,7 +66,7 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
             .getActivityList(iconPack.packPackageName, Process.myUserHandle()).firstOrNull()?.componentName }
 
     private var searchItems: MutableList<AdapterItem>? = null
-    private val searchHandler = object : Handler(LauncherModel.getIconPackUiLooper()) {
+    private val searchHandler = object : Handler(ICON_PACK_EXECUTOR.looper) {
         override fun handleMessage(msg: Message) {
             if (msg.what == R.id.message_search) {
                 processSearchQuery(msg.obj as String?)

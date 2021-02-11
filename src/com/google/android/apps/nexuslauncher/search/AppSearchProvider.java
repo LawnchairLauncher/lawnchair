@@ -1,5 +1,7 @@
 package com.google.android.apps.nexuslauncher.search;
 
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
+
 import android.content.ComponentName;
 import android.content.ContentProvider;
 import android.content.ContentValues;
@@ -135,7 +137,7 @@ public class AppSearchProvider extends ContentProvider
     }
 
     public boolean onCreate() {
-        this.mLooper = new LooperExecutor(LauncherModel.getWorkerLooper());
+        this.mLooper = MODEL_EXECUTOR;
         this.mApp = LauncherAppState.getInstance(this.getContext());
         return true;
     }

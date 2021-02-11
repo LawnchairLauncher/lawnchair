@@ -1,5 +1,7 @@
 package com.google.android.apps.nexuslauncher.clock;
 
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
+
 import android.content.*;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -37,7 +39,7 @@ public class DynamicClock extends BroadcastReceiver
         mUpdaters = Collections.newSetFromMap(new WeakHashMap<>());
         mLayers = new ClockLayers();
         mContext = context;
-        final Handler handler = new Handler(LauncherModel.getWorkerLooper());
+        final Handler handler = MODEL_EXECUTOR.getHandler();
         mContext.registerReceiver(this,
                 ActionIntentFilter.newInstance("com.google.android.deskclock",
                     Intent.ACTION_PACKAGE_ADDED,

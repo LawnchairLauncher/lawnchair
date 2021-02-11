@@ -39,6 +39,7 @@ import com.android.launcher3.R
 import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.pm.UserCache
 import com.android.launcher3.util.ComponentKey
+import com.android.launcher3.util.Executors.MODEL_EXECUTOR
 
 open class AppsAdapter(
         private val context: Context,
@@ -57,7 +58,7 @@ open class AppsAdapter(
     open val comparator = defaultComparator
 
     fun postLoadApps() {
-        Handler(LauncherModel.getWorkerLooper()).postAtFrontOfQueue(::loadAppsList)
+        MODEL_EXECUTOR.getHandler().postAtFrontOfQueue(::loadAppsList)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

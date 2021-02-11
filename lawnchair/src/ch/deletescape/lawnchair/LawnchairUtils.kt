@@ -64,6 +64,7 @@ import com.android.launcher3.model.BgDataModel
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.pm.UserCache
 import com.android.launcher3.util.ComponentKey
+import com.android.launcher3.util.Executors.*
 import com.android.launcher3.util.LooperExecutor
 import com.android.launcher3.util.PackageUserKey
 import com.android.launcher3.util.Themes
@@ -283,9 +284,9 @@ class PropertyDelegate<T>(private val property: KMutableProperty0<T>) {
 }
 
 val mainHandler by lazy { makeBasicHandler() }
-val workerHandler by lazy { Handler(LauncherModel.getWorkerLooper()) }
-val uiWorkerHandler by lazy { Handler(LauncherModel.getUiWorkerLooper()) }
-val iconPackUiHandler by lazy { Handler(LauncherModel.getIconPackUiLooper()) }
+val workerHandler by lazy { MODEL_EXECUTOR.handler }
+val uiWorkerHandler by lazy { UI_HELPER_EXECUTOR.handler }
+val iconPackUiHandler by lazy { ICON_PACK_EXECUTOR.handler }
 
 fun runOnWorkerThread(r: () -> Unit) {
     runOnThread(workerHandler, r)

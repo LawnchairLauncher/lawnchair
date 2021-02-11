@@ -83,4 +83,10 @@ public class Executors {
      */
     public static final LooperExecutor MODEL_EXECUTOR =
             new LooperExecutor(createAndStartNewLooper("launcher-loader"));
+
+    /**
+     * Executor used for executing tasks related to icon packs, allows us to offload UI executor
+     */
+    public static final LooperExecutor ICON_PACK_EXECUTOR =
+            new LooperExecutor(createAndStartNewLooper("icon-pack-loader"));
 }

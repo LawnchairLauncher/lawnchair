@@ -19,6 +19,9 @@ package com.android.launcher3.util;
 import android.content.ComponentName;
 import android.os.UserHandle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import java.util.Arrays;
 
 public class ComponentKey {
@@ -54,6 +57,28 @@ public class ComponentKey {
      */
     @Override
     public String toString() {
-        return componentName.flattenToString() + "#" + user.toString().replaceAll("\\D+","");
+        return componentName.flattenToString() + "#" + user.hashCode();
+    }
+
+    /**
+     * Parses and returns ComponentKey objected from string representation
+     * Returns null if string is not properly formatted
+     */
+    @Nullable
+    public static ComponentKey fromString(@NonNull String str) {
+        int sep = str.indexOf('#');
+        if (sep < 0 || (sep + 1) >= str.length()) {
+            return null;
+        }
+        ComponentName componentName = ComponentName.unflattenFromString(str.substring(0, sep));
+        if (componentName == null) {
+            return null;
+        }
+        try {
+            return new ComponentKey(componentName,
+                    UserHandle.getUserHandleForUid(Integer.parseInt(str.substring(sep + 1))));
+        } catch (NumberFormatException ex) {
+            return null;
+        }
     }
 }

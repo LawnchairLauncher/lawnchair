@@ -1,5 +1,7 @@
 package com.google.android.apps.nexuslauncher.smartspace;
 
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -39,7 +41,7 @@ public class SmartspaceController implements Handler.Callback {
     private final Handler mWorker;
 
     public SmartspaceController(final Context mAppContext) {
-        this.mWorker = new Handler(LauncherModel.getWorkerLooper(), this);
+        this.mWorker = new Handler(MODEL_EXECUTOR.getLooper(), this);
         this.mUiHandler = new Handler(Looper.getMainLooper(), this);
         this.mAppContext = mAppContext;
         this.dQ = new SmartspaceDataContainer();

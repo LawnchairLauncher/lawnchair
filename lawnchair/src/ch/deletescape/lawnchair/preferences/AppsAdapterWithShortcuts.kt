@@ -47,6 +47,7 @@ import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.pm.UserCache
 import com.android.launcher3.shortcuts.ShortcutRequest
 import com.android.launcher3.util.ComponentKey
+import com.android.launcher3.util.Executors.MODEL_EXECUTOR
 
 open class AppsAdapterWithShortcuts(
         private val context: Context,
@@ -73,7 +74,7 @@ open class AppsAdapterWithShortcuts(
         if (iconProvider == null) {
             iconProvider = IconProvider(context)
         }
-        Handler(LauncherModel.getWorkerLooper()).postAtFrontOfQueue(::loadAppsList)
+        MODEL_EXECUTOR.handler.postAtFrontOfQueue(::loadAppsList)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

@@ -29,6 +29,7 @@ import ch.deletescape.lawnchair.runOnMainThread
 import ch.deletescape.lawnchair.runOnThread
 import ch.deletescape.lawnchair.theme.ThemeOverride
 import com.android.launcher3.*
+import com.android.launcher3.util.Executors.MODEL_EXECUTOR
 import com.android.launcher3.views.ActivityContext
 import com.android.launcher3.views.BaseDragLayer
 import kotlinx.android.synthetic.lawnchair.desktop_icons_preview.view.*
@@ -46,7 +47,7 @@ class DesktopIconsPreview(context: Context, attrs: AttributeSet?) :
     private val homeElementInflater = LayoutInflater.from(ContextThemeWrapper(previewContext, R.style.HomeScreenElementTheme))
 
     init {
-        runOnThread(Handler(LauncherModel.getWorkerLooper())) {
+        runOnThread(MODEL_EXECUTOR.handler) {
             val iconCache = LauncherAppState.getInstance(context).iconCache
             previewApps.forEach { iconCache.getTitleAndIcon(it, false) }
             iconsLoaded = true

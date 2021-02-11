@@ -41,6 +41,7 @@ import ch.deletescape.lawnchair.util.extensions.d
 import com.android.launcher3.*
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.util.ComponentKey
+import com.android.launcher3.util.Executors.MODEL_EXECUTOR
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -72,7 +73,7 @@ class IconPackManager(private val context: Context) {
             addAction(Intent.ACTION_TIME_CHANGED)
             addAction(Intent.ACTION_TIMEZONE_CHANGED)
             addAction(Intent.ACTION_TIME_TICK)
-        }, null, Handler(LauncherModel.getWorkerLooper()))
+        }, null, MODEL_EXECUTOR.handler)
     }
 
     private fun onDateChanged() {

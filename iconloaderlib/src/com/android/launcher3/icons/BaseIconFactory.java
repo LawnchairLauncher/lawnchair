@@ -15,16 +15,15 @@ import android.graphics.Color;
 import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.DrawableWrapper;
 import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
+
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import ch.deletescape.lawnchair.iconpack.AdaptiveIconCompat;
 
 /**
  * This class will be moved to androidx library. There shouldn't be any dependency outside
@@ -37,12 +36,15 @@ public class BaseIconFactory implements AutoCloseable {
     static final boolean ATLEAST_OREO = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
     static final boolean ATLEAST_P = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P;
 
+    private static final float ICON_BADGE_SCALE = 0.444f;
+
     private final Rect mOldBounds = new Rect();
     protected final Context mContext;
     private final Canvas mCanvas;
     private final PackageManager mPm;
     private final ColorExtractor mColorExtractor;
     private boolean mDisableColorExtractor;
+    private boolean mBadgeOnLeft = false;
 
     protected final int mFillResIconDpi;
     protected final int mIconBitmapSize;
@@ -76,6 +78,7 @@ public class BaseIconFactory implements AutoCloseable {
     protected void clear() {
         mWrapperBackgroundColor = DEFAULT_WRAPPER_BACKGROUND;
         mDisableColorExtractor = false;
+        mBadgeOnLeft = false;
     }
 
     public ShadowGenerator getShadowGenerator() {
@@ -115,7 +118,7 @@ public class BaseIconFactory implements AutoCloseable {
             icon = createIconBitmap(new BitmapDrawable(mContext.getResources(), icon), 1f);
         }
 
-        return BitmapInfo.fromBitmap(icon, mDisableColorExtractor ? null : mColorExtractor);
+        return BitmapInfo.of(icon, extractColor(icon));
     }
 
     public BitmapInfo createBadgedIconBitmap(Drawable icon, UserHandle user,
@@ -164,7 +167,7 @@ public class BaseIconFactory implements AutoCloseable {
         }
         icon = normalizeAndWrapToAdaptiveIcon(icon, shrinkNonAdaptiveIcons, null, scale);
         Bitmap bitmap = createIconBitmap(icon, scale[0]);
-        if (ATLEAST_OREO && icon instanceof AdaptiveIconCompat) {
+        if (ATLEAST_OREO && icon instanceof AdaptiveIconDrawable) {
             mCanvas.setBitmap(bitmap);
             getShadowGenerator().recreateIcon(Bitmap.createBitmap(bitmap), mCanvas);
             mCanvas.setBitmap(null);
@@ -182,7 +185,10 @@ public class BaseIconFactory implements AutoCloseable {
                 bitmap = createIconBitmap(badged, 1f);
             }
         }
-        return BitmapInfo.fromBitmap(bitmap, mDisableColorExtractor ? null : mColorExtractor);
+        int color = extractColor(bitmap);
+        return icon instanceof BitmapInfo.Extender
+                ? ((BitmapInfo.Extender) icon).getExtendedInfo(bitmap, color, this)
+                : BitmapInfo.of(bitmap, color);
     }
 
     public Bitmap createScaledBitmapWithoutShadow(Drawable icon, boolean shrinkNonAdaptiveIcons) {
@@ -191,6 +197,13 @@ public class BaseIconFactory implements AutoCloseable {
         icon = normalizeAndWrapToAdaptiveIcon(icon, shrinkNonAdaptiveIcons, iconBounds, scale);
         return createIconBitmap(icon,
                 Math.min(scale[0], ShadowGenerator.getScaleForBounds(iconBounds)));
+    }
+
+    /**
+     * Switches badging to left/right
+     */
+    public void setBadgeOnLeft(boolean badgeOnLeft) {
+        mBadgeOnLeft = badgeOnLeft;
     }
 
     /**
@@ -215,15 +228,15 @@ public class BaseIconFactory implements AutoCloseable {
         float scale = 1f;
 
         if (shrinkNonAdaptiveIcons && ATLEAST_OREO) {
-            if (mWrapperIcon == null || !((AdaptiveIconCompat) mWrapperIcon).isMaskValid()) {
-                mWrapperIcon = AdaptiveIconCompat.wrap(
-                        mContext.getDrawable(R.drawable.adaptive_icon_drawable_wrapper).mutate());
+            if (mWrapperIcon == null) {
+                mWrapperIcon = mContext.getDrawable(R.drawable.adaptive_icon_drawable_wrapper)
+                        .mutate();
             }
-            AdaptiveIconCompat dr = (AdaptiveIconCompat) mWrapperIcon;
+            AdaptiveIconDrawable dr = (AdaptiveIconDrawable) mWrapperIcon;
             dr.setBounds(0, 0, 1, 1);
             boolean[] outShape = new boolean[1];
             scale = getNormalizer().getScale(icon, outIconBounds, dr.getIconMask(), outShape);
-            if (!outShape[0] && (icon instanceof NonAdaptiveIconDrawable)) {
+            if (!(icon instanceof AdaptiveIconDrawable) && !outShape[0]) {
                 FixedScaleDrawable fsd = ((FixedScaleDrawable) dr.getForeground());
                 fsd.setDrawable(icon);
                 fsd.setScale(scale);
@@ -253,13 +266,17 @@ public class BaseIconFactory implements AutoCloseable {
      * Adds the {@param badge} on top of {@param target} using the badge dimensions.
      */
     public void badgeWithDrawable(Canvas target, Drawable badge) {
-        int badgeSize = mContext.getResources().getDimensionPixelSize(R.dimen.profile_badge_size);
-        badge.setBounds(mIconBitmapSize - badgeSize, mIconBitmapSize - badgeSize,
-                mIconBitmapSize, mIconBitmapSize);
+        int badgeSize = getBadgeSizeForIconSize(mIconBitmapSize);
+        if (mBadgeOnLeft) {
+            badge.setBounds(0, mIconBitmapSize - badgeSize, badgeSize, mIconBitmapSize);
+        } else {
+            badge.setBounds(mIconBitmapSize - badgeSize, mIconBitmapSize - badgeSize,
+                    mIconBitmapSize, mIconBitmapSize);
+        }
         badge.draw(target);
     }
 
-    public Bitmap createIconBitmap(Drawable icon, float scale) {
+    private Bitmap createIconBitmap(Drawable icon, float scale) {
         return createIconBitmap(icon, scale, mIconBitmapSize);
     }
 
@@ -275,7 +292,7 @@ public class BaseIconFactory implements AutoCloseable {
         mCanvas.setBitmap(bitmap);
         mOldBounds.set(icon.getBounds());
 
-        if (ATLEAST_OREO && icon instanceof AdaptiveIconCompat) {
+        if (ATLEAST_OREO && icon instanceof AdaptiveIconDrawable) {
             int offset = Math.max((int) Math.ceil(BLUR_FACTOR * size),
                     Math.round(size * (1 - scale) / 2 ));
             icon.setBounds(offset, offset, size - offset, size - offset);
@@ -334,6 +351,28 @@ public class BaseIconFactory implements AutoCloseable {
     }
 
     /**
+     * Badges the provided source with the badge info
+     */
+    public BitmapInfo badgeBitmap(Bitmap source, BitmapInfo badgeInfo) {
+        Bitmap icon = BitmapRenderer.createHardwareBitmap(mIconBitmapSize, mIconBitmapSize, (c) -> {
+            getShadowGenerator().recreateIcon(source, c);
+            badgeWithDrawable(c, new FixedSizeBitmapDrawable(badgeInfo.icon));
+        });
+        return BitmapInfo.of(icon, badgeInfo.color);
+    }
+
+    private int extractColor(Bitmap bitmap) {
+        return mDisableColorExtractor ? 0 : mColorExtractor.findDominantColorByHue(bitmap);
+    }
+
+    /**
+     * Returns the correct badge size given an icon size
+     */
+    public static int getBadgeSizeForIconSize(int iconSize) {
+        return (int) (ICON_BADGE_SCALE * iconSize);
+    }
+
+    /**
      * An extension of {@link BitmapDrawable} which returns the bitmap pixel size as intrinsic size.
      * This allows the badging to be done based on the action bitmap size rather than
      * the scaled bitmap size.
@@ -352,13 +391,6 @@ public class BaseIconFactory implements AutoCloseable {
         @Override
         public int getIntrinsicWidth() {
             return getBitmap().getWidth();
-        }
-    }
-
-    public static class NonAdaptiveIconDrawable extends DrawableWrapper {
-
-        public NonAdaptiveIconDrawable(@Nullable Drawable dr) {
-            super(dr);
         }
     }
 }

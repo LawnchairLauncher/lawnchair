@@ -30,11 +30,11 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region;
+import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.Log;
 
-import ch.deletescape.lawnchair.iconpack.AdaptiveIconCompat;
 import java.nio.ByteBuffer;
 
 import androidx.annotation.NonNull;
@@ -129,7 +129,7 @@ public class IconNormalizer {
     }
 
     /**
-     * @param d Should be AdaptiveIconCompat
+     * @param d Should be AdaptiveIconDrawable
      * @param size Canvas size to use
      */
     @TargetApi(Build.VERSION_CODES.O)
@@ -137,7 +137,7 @@ public class IconNormalizer {
         Rect tmpBounds = new Rect(d.getBounds());
         d.setBounds(0, 0, size, size);
 
-        Path path = ((AdaptiveIconCompat) d).getIconMask();
+        Path path = ((AdaptiveIconDrawable) d).getIconMask();
         Region region = new Region();
         region.setPath(path, new Region(0, 0, size, size));
 
@@ -160,7 +160,7 @@ public class IconNormalizer {
      * Returns if the shape of the icon is same as the path.
      * For this method to work, the shape path bounds should be in [0,1]x[0,1] bounds.
      */
-    private boolean isShape(Path maskPath, int minVisibleAlpha) {
+    private boolean isShape(Path maskPath) {
         // Condition1:
         // If width and height of the path not close to a square, then the icon shape is
         // not same as the mask shape.
@@ -189,13 +189,13 @@ public class IconNormalizer {
         mCanvas.drawPath(mShapePath, mPaintMaskShapeOutline);
 
         // Check if the result is almost transparent
-        return isTransparentBitmap(minVisibleAlpha);
+        return isTransparentBitmap();
     }
 
     /**
      * Used to determine if certain the bitmap is transparent.
      */
-    private boolean isTransparentBitmap(int minVisibleAlpha) {
+    private boolean isTransparentBitmap() {
         ByteBuffer buffer = ByteBuffer.wrap(mPixels);
         buffer.rewind();
         mBitmap.copyPixelsToBuffer(buffer);
@@ -210,7 +210,7 @@ public class IconNormalizer {
         for (; y < mBounds.bottom; y++) {
             index += mBounds.left;
             for (int x = mBounds.left; x < mBounds.right; x++) {
-                if ((mPixels[index] & 0xFF) > minVisibleAlpha) {
+                if ((mPixels[index] & 0xFF) > MIN_VISIBLE_ALPHA) {
                     sum++;
                 }
                 index++;
@@ -220,11 +220,6 @@ public class IconNormalizer {
 
         float percentageDiffPixels = ((float) sum) / (mBounds.width() * mBounds.height());
         return percentageDiffPixels < PIXEL_DIFF_PERCENTAGE_THRESHOLD;
-    }
-
-    public synchronized float getScale(@NonNull Drawable d, @Nullable RectF outBounds,
-            @Nullable Path path, @Nullable boolean[] outMaskShape) {
-        return getScale(d, outBounds, path, outMaskShape, MIN_VISIBLE_ALPHA);
     }
 
     /**
@@ -242,8 +237,8 @@ public class IconNormalizer {
      * @param outBounds optional rect to receive the fraction distance from each edge.
      */
     public synchronized float getScale(@NonNull Drawable d, @Nullable RectF outBounds,
-            @Nullable Path path, @Nullable boolean[] outMaskShape, int minVisibleAlpha) {
-        if (BaseIconFactory.ATLEAST_OREO && d instanceof AdaptiveIconCompat) {
+            @Nullable Path path, @Nullable boolean[] outMaskShape) {
+        if (BaseIconFactory.ATLEAST_OREO && d instanceof AdaptiveIconDrawable) {
             if (mAdaptiveIconScale == SCALE_NOT_INITIALIZED) {
                 mAdaptiveIconScale = normalizeAdaptiveIcon(d, mMaxSize, mAdaptiveIconBounds);
             }
@@ -291,7 +286,7 @@ public class IconNormalizer {
         for (int y = 0; y < height; y++) {
             firstX = lastX = -1;
             for (int x = 0; x < width; x++) {
-                if ((mPixels[index] & 0xFF) > minVisibleAlpha) {
+                if ((mPixels[index] & 0xFF) > MIN_VISIBLE_ALPHA) {
                     if (firstX == -1) {
                         firstX = x;
                     }
@@ -345,7 +340,7 @@ public class IconNormalizer {
                     1 - ((float) mBounds.bottom) / height);
         }
         if (outMaskShape != null && mEnableShapeDetection && outMaskShape.length > 0) {
-            outMaskShape[0] = isShape(path, minVisibleAlpha);
+            outMaskShape[0] = isShape(path);
         }
         // Area of the rectangle required to fit the convex hull
         float rectArea = (bottomY + 1 - topY) * (rightX + 1 - leftX);

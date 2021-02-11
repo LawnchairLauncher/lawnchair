@@ -21,14 +21,16 @@ import android.graphics.Region;
 import android.graphics.RegionIterator;
 import android.util.Log;
 
+import androidx.annotation.ColorInt;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-
-import androidx.annotation.ColorInt;
 
 public class GraphicsUtils {
 
     private static final String TAG = "GraphicsUtils";
+
+    public static Runnable sOnNewBitmapRunnable = () -> { };
 
     /**
      * Set the alpha component of {@code color} to be {@code alpha}. Unlike the support lib version,
@@ -72,5 +74,12 @@ public class GraphicsUtils {
             area += tempRect.width() * tempRect.height();
         }
         return area;
+    }
+
+    /**
+     * Utility method to track new bitmap creation
+     */
+    public static void noteNewBitmapCreated() {
+        sOnNewBitmapRunnable.run();
     }
 }

@@ -1,5 +1,7 @@
 package com.google.android.apps.nexuslauncher;
 
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -48,7 +50,7 @@ public class DynamicIconProvider extends IconProvider {
         IntentFilter intentFilter = new IntentFilter(Intent.ACTION_DATE_CHANGED);
         intentFilter.addAction(Intent.ACTION_TIME_CHANGED);
         intentFilter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
-        mContext.registerReceiver(mDateChangeReceiver, intentFilter, null, new Handler(LauncherModel.getWorkerLooper()));
+        mContext.registerReceiver(mDateChangeReceiver, intentFilter, null, MODEL_EXECUTOR.getHandler());
         mPackageManager = mContext.getPackageManager();
     }
 
