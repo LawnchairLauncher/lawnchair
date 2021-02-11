@@ -50,7 +50,7 @@ import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.IntSparseArrayMap;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.ViewOnDrawExecutor;
-import com.android.launcher3.widget.WidgetListRowEntry;
+import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -467,7 +467,7 @@ public class BgDataModel {
         void bindWidgetsRestored(ArrayList<LauncherAppWidgetInfo> widgets);
         void bindRestoreItemsChange(HashSet<ItemInfo> updates);
         void bindWorkspaceComponentsRemoved(ItemInfoMatcher matcher);
-        void bindAllWidgets(ArrayList<WidgetListRowEntry> widgets);
+        void bindAllWidgets(List<WidgetsListBaseEntry> widgets);
         void onPageBoundSynchronously(int page);
         void executeOnNextDraw(ViewOnDrawExecutor executor);
         void bindDeepShortcutMap(HashMap<ComponentKey, Integer> deepShortcutMap);

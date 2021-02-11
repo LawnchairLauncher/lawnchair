@@ -46,7 +46,7 @@ import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.ViewOnDrawExecutor;
 import com.android.launcher3.views.BaseDragLayer;
-import com.android.launcher3.widget.WidgetListRowEntry;
+import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -232,7 +232,7 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
     public void bindWorkspaceComponentsRemoved(ItemInfoMatcher matcher) { }
 
     @Override
-    public void bindAllWidgets(ArrayList<WidgetListRowEntry> widgets) { }
+    public void bindAllWidgets(List<WidgetsListBaseEntry> widgets) { }
 
     @Override
     public void onPageBoundSynchronously(int page) { }
