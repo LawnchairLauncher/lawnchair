@@ -17,19 +17,19 @@
 
 package ch.deletescape.lawnchair.gestures
 
+import android.annotation.SuppressLint
 import android.view.MotionEvent
 import ch.deletescape.lawnchair.LawnchairLauncher
-import com.android.launcher3.Launcher
-import com.android.launcher3.util.TouchController
-import com.android.launcher3.LauncherState
-import com.android.launcher3.AbstractFloatingView
-import com.android.launcher3.touch.SwipeDetector
-import java.lang.reflect.InvocationTargetException
-import android.annotation.SuppressLint
 import ch.deletescape.lawnchair.gestures.handlers.VerticalSwipeGestureHandler
+import com.android.launcher3.AbstractFloatingView
+import com.android.launcher3.Launcher
+import com.android.launcher3.LauncherState
+import com.android.launcher3.touch.SingleAxisSwipeDetector
+import com.android.launcher3.util.TouchController
+import java.lang.reflect.InvocationTargetException
 import kotlin.math.abs
 
-class VerticalSwipeGestureController(private val launcher: Launcher) : TouchController, SwipeDetector.Listener {
+class VerticalSwipeGestureController(private val launcher: Launcher) : TouchController, SingleAxisSwipeDetector.Listener {
 
     enum class GestureState {
         Locked,
@@ -44,7 +44,7 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
 
     private val controller by lazy { LawnchairLauncher.getLauncher(launcher).gestureController }
     private val gesture by lazy { controller.verticalSwipeGesture }
-    private val detector by lazy { SwipeDetector(launcher, this, SwipeDetector.VERTICAL) }
+    private val detector by lazy { SingleAxisSwipeDetector(launcher, this, SingleAxisSwipeDetector.VERTICAL) }
     private var noIntercept = false
 
     private var swipeUpOverride: GestureHandler? = null
@@ -110,17 +110,17 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
         return when {
             controller.getSwipeUpOverride(ev.downTime) != null -> {
                 if (canInterceptTouch())
-                    SwipeDetector.DIRECTION_BOTH
+                    SingleAxisSwipeDetector.DIRECTION_BOTH
                 else
-                    SwipeDetector.DIRECTION_POSITIVE
+                    SingleAxisSwipeDetector.DIRECTION_POSITIVE
             }
-            gesture.customSwipeUp && !isOverHotseat(ev) -> SwipeDetector.DIRECTION_BOTH
-            gesture.customDockSwipeUp && isOverHotseat(ev) -> SwipeDetector.DIRECTION_BOTH
-            else -> SwipeDetector.DIRECTION_NEGATIVE
+            gesture.customSwipeUp && !isOverHotseat(ev) -> SingleAxisSwipeDetector.DIRECTION_BOTH
+            gesture.customDockSwipeUp && isOverHotseat(ev) -> SingleAxisSwipeDetector.DIRECTION_BOTH
+            else -> SingleAxisSwipeDetector.DIRECTION_NEGATIVE
         }
     }
 
-    override fun onDragStart(start: Boolean) {
+    override fun onDragStart(start: Boolean, velocity: Float) {
         state = GestureState.Free
         (swipeUpOverride as? VerticalSwipeGestureHandler)?.onDragStart(start)
         overrideDragging = true
@@ -153,7 +153,7 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
             }
 
             if (wasFree && state == GestureState.NotificationOpened) {
-                sendOnDragEnd(velocity, false)
+                sendOnDragEnd(velocity)
             } else if (velocity < -triggerVelocity && state == GestureState.Free) {
                 controller.getSwipeUpOverride(downTime)?.let {
                     state = GestureState.Triggered
@@ -199,14 +199,14 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
         return (1.0f - alpha) * from + alpha * to
     }
 
-    override fun onDragEnd(velocity: Float, fling: Boolean) {
+    override fun onDragEnd(velocity: Float) {
         launcher.workspace.postDelayed(detector::finishedScrolling, 200)
-        sendOnDragEnd(velocity, fling)
+        sendOnDragEnd(velocity)
     }
 
-    private fun sendOnDragEnd(velocity: Float, fling: Boolean) {
+    private fun sendOnDragEnd(velocity: Float) {
         if (overrideDragging) {
-            (swipeUpOverride as? VerticalSwipeGestureHandler)?.onDragEnd(velocity, fling)
+            (swipeUpOverride as? VerticalSwipeGestureHandler)?.onDragEnd(velocity)
             overrideDragging = false
         }
     }

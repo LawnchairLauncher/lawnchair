@@ -359,7 +359,7 @@ interface VerticalSwipeGestureHandler {
 
     fun onDrag(displacement: Float, velocity: Float) {}
 
-    fun onDragEnd(velocity: Float, fling: Boolean) {}
+    fun onDragEnd(velocity: Float) {}
 }
 
 interface StateChangeGestureHandler {
