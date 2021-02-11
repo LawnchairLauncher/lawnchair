@@ -350,6 +350,9 @@ public class StatsLogManager implements ResourceBasedOverride {
 
         @UiEvent(doc = "Launcher exited from AllApps state.")
         LAUNCHER_ALLAPPS_EXIT(693),
+
+        @UiEvent(doc = "User closed the AllApps keyboard.")
+        LAUNCHER_ALLAPPS_KEYBOARD_CLOSED(694),
         ;
 
         // ADD MORE
