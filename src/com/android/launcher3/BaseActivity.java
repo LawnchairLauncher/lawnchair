@@ -31,7 +31,6 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.UserHandle;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
 
 import androidx.annotation.IntDef;
 
@@ -333,7 +332,7 @@ public abstract class BaseActivity extends Activity implements ActivityContext {
     public static <T extends BaseActivity> T fromContext(Context context) {
         if (context instanceof BaseActivity) {
             return (T) context;
-        } else if (context instanceof ContextThemeWrapper) {
+        } else if (context instanceof ContextWrapper) {
             return fromContext(((ContextWrapper) context).getBaseContext());
         } else {
             throw new IllegalArgumentException("Cannot find BaseActivity in parent tree");

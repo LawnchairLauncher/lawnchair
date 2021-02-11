@@ -74,6 +74,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CancellationSignal;
@@ -1795,6 +1796,43 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         CellLayout parent = mWorkspace.getParentCellLayoutForView(newFolder);
         parent.getShortcutsAndWidgets().measureChild(newFolder);
         return newFolder;
+    }
+
+    @Override
+    public Rect getFolderBoundingBox() {
+        // We need to bound the folder to the currently visible workspace area
+        Rect folderBoundingBox = new Rect();
+        getWorkspace().getPageAreaRelativeToDragLayer(folderBoundingBox);
+        return folderBoundingBox;
+    }
+
+    @Override
+    public void updateOpenFolderPosition(int[] inOutPosition, Rect bounds, int width, int height) {
+        int left = inOutPosition[0];
+        int top = inOutPosition[1];
+        DeviceProfile grid = getDeviceProfile();
+        int distFromEdgeOfScreen = getWorkspace().getPaddingLeft();
+        if (grid.isPhone && (grid.availableWidthPx - width) < 4 * distFromEdgeOfScreen) {
+            // Center the folder if it is very close to being centered anyway, by virtue of
+            // filling the majority of the viewport. ie. remove it from the uncanny valley
+            // of centeredness.
+            left = (grid.availableWidthPx - width) / 2;
+        } else if (width >= bounds.width()) {
+            // If the folder doesn't fit within the bounds, center it about the desired bounds
+            left = bounds.left + (bounds.width() - width) / 2;
+        }
+        if (height >= bounds.height()) {
+            // Folder height is greater than page height, center on page
+            top = bounds.top + (bounds.height() - height) / 2;
+        } else {
+            // Folder height is less than page height, so bound it to the absolute open folder
+            // bounds if necessary
+            Rect folderBounds = grid.getAbsoluteOpenFolderBounds();
+            left = Math.max(folderBounds.left, Math.min(left, folderBounds.right - width));
+            top = Math.max(folderBounds.top, Math.min(top, folderBounds.bottom - height));
+        }
+        inOutPosition[0] = left;
+        inOutPosition[1] = top;
     }
 
     /**
