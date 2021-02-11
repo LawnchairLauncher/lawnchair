@@ -110,6 +110,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
                 .launch(mDevice.getLauncherPackageName());
     }
 
+    @Ignore
     @Test
     public void testPressHomeOnAllAppsContextMenu() throws Exception {
         final AllApps allApps = mLauncher.getWorkspace().switchToAllApps();
@@ -234,6 +235,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         }
     }
 
+    @Ignore
     @Test
     @PortraitLandscape
     public void testAppIconLaunchFromAllAppsFromHome() throws Exception {
@@ -244,6 +246,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         runIconLaunchFromAllAppsTest(this, allApps);
     }
 
+    @Ignore
     @Test
     @PortraitLandscape
     public void testWidgets() throws Exception {
