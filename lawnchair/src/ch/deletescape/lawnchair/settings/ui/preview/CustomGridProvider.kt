@@ -21,6 +21,7 @@ package ch.deletescape.lawnchair.settings.ui.preview
 
 import android.content.Context
 import android.graphics.Bitmap
+import androidx.core.view.drawToBitmap
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.util.LawnchairSingletonHolder
 import com.android.launcher3.InvariantDeviceProfile
@@ -78,14 +79,12 @@ class CustomGridProvider(private val context: Context) : InvariantDeviceProfile.
         grid.workspacePaddingBottomScale = workspacePaddingBottomScale
     }
 
-    fun renderPreview(customizer: InvariantDeviceProfile.GridCustomizer? = null): Future<Bitmap> {
+    fun renderPreview(customizer: InvariantDeviceProfile.GridCustomizer? = null): Bitmap {
         val idp = InvariantDeviceProfile(context) { grid ->
             customizeGrid(grid)
             customizer?.customizeGrid(grid)
         }
-
-        val executor = Executors.UI_HELPER_EXECUTOR
-        return executor.submit(LauncherPreviewRenderer(context, idp, false))
+        return LauncherPreviewRenderer(context, idp, false).renderedView.drawToBitmap()
     }
 
     companion object : LawnchairSingletonHolder<CustomGridProvider>(::CustomGridProvider) {

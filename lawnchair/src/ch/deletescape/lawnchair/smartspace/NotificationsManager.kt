@@ -30,6 +30,7 @@ object NotificationsManager : NotificationListener.NotificationsChangedListener 
     private val notificationsMap = mutableMapOf<String?, NotificationKeyData?>()
     private val listeners  = mutableListOf<OnChangeListener>()
 
+    var sbNotifications = emptyList<StatusBarNotification>()
     var notifications = emptyList<NotificationKeyData?>()
         private set
 
@@ -49,10 +50,12 @@ object NotificationsManager : NotificationListener.NotificationsChangedListener 
         val notifications = notificationsMap.values.toList()
         this.notifications = notifications
         listeners.forEach(OnChangeListener::onNotificationsChanged)
+        this.sbNotifications =
+                NotificationListener.getInstanceIfConnected()?.activeNotifications?.toList()
+                ?: emptyList()
     }
 
     interface OnChangeListener {
-
         fun onNotificationsChanged()
     }
 

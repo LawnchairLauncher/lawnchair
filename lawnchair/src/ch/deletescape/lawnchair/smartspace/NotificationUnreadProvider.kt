@@ -78,7 +78,7 @@ class NotificationUnreadProvider(controller: LawnchairSmartspaceController) :
     private fun getEventCard(): CardData? {
         if (!flowerpotLoaded) return null
 
-        val sbn = manager.notifications
+        val sbn = manager.sbNotifications
                 .asSequence()
                 .filter { !it.isOngoing }
                 .filter { it.notification.priority >= PRIORITY_DEFAULT }

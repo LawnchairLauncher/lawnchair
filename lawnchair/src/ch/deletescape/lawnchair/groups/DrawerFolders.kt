@@ -22,6 +22,7 @@ import ch.deletescape.lawnchair.LawnchairPreferencesChangeCallback
 import ch.deletescape.lawnchair.random
 import com.android.launcher3.R
 import com.android.launcher3.allapps.AlphabeticalAppsList
+import com.android.launcher3.model.ModelWriter
 import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.util.ComponentKey
 
@@ -80,9 +81,9 @@ class DrawerFolders(manager: AppGroupsManager) :
             addCustomization(id)
         }
 
-        open fun toFolderInfo(getAppInfo: (ComponentKey) -> AppInfo?) = DrawerFolderInfo(
+        open fun toFolderInfo(getAppInfo: (ComponentKey) -> AppInfo?, modelWriter: ModelWriter) = DrawerFolderInfo(
                 this).apply {
-            setTitle(this@Folder.getTitle())
+            setTitle(this@Folder.getTitle(), modelWriter)
             id = this@Folder.id.value().toInt()
             contents = ArrayList()
         }
@@ -112,8 +113,8 @@ class DrawerFolders(manager: AppGroupsManager) :
 
         fun getFilter(context: Context): Filter<*> = CustomFilter(context, contents.value())
 
-        override fun toFolderInfo(getAppInfo: (ComponentKey) -> AppInfo?) = super
-                .toFolderInfo(getAppInfo).apply {
+        override fun toFolderInfo(getAppInfo: (ComponentKey) -> AppInfo?, modelWriter: ModelWriter) = super
+                .toFolderInfo(getAppInfo, modelWriter).apply {
             // ✨
             this@CustomFolder.contents.value?.mapNotNullTo(contents) { key ->
                 getAppInfo(key)?.makeWorkspaceItem()
