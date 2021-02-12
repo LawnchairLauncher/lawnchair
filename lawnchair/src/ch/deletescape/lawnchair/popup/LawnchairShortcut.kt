@@ -29,17 +29,15 @@ import ch.deletescape.lawnchair.override.CustomInfoProvider
 import ch.deletescape.lawnchair.sesame.Sesame
 import ch.deletescape.lawnchair.util.LawnchairSingletonHolder
 import ch.deletescape.lawnchair.util.hasFlag
-import com.android.launcher3.*
-import com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_SYSTEM_YES
+import com.android.launcher3.AbstractFloatingView
+import com.android.launcher3.Launcher
 import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
-import com.android.launcher3.model.data.FolderInfo
-import com.android.launcher3.model.data.ItemInfo
-import com.android.launcher3.model.data.LauncherAppWidgetInfo
-import com.android.launcher3.model.data.WorkspaceItemInfo
+import com.android.launcher3.R
+import com.android.launcher3.model.data.*
+import com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_SYSTEM_YES
 import com.android.launcher3.popup.SystemShortcut
 import com.google.android.apps.nexuslauncher.CustomBottomSheet
 import ninja.sesame.lib.bridge.v1.SesameFrontend
-import java.net.URISyntaxException
 
 class LawnchairShortcut(private val context: Context) {
 
@@ -54,33 +52,12 @@ class LawnchairShortcut(private val context: Context) {
     )
 
     inner class ShortcutEntry(key: String, val shortcut: SystemShortcut<*>, enabled: Boolean) {
-
         val enabled by context.lawnchairPrefs.BooleanPref("pref_iconPopup_$key", enabled)
     }
 
     val enabledShortcuts get() = shortcuts.filter { it.enabled }.map { it.shortcut }
 
-    class Uninstall : SystemShortcut<Launcher>(R.drawable.ic_uninstall_no_shadow, R.string.uninstall_drop_target_label) {
-
-        override fun getOnClickListener(launcher: Launcher, itemInfo: ItemInfo): View.OnClickListener? {
-            if (itemInfo is ItemInfoWithIcon) {
-                if (itemInfo.runtimeStatusFlags.hasFlag(FLAG_SYSTEM_YES)) {
-                    return null
-                }
-            }
-
-            return getUninstallTarget(launcher, itemInfo)?.let { cn -> View.OnClickListener {
-                AbstractFloatingView.closeAllOpenViews(launcher)
-                try {
-                    val i = Intent.parseUri(launcher.getString(R.string.delete_package_intent), 0)
-                            .setData(Uri.fromParts("package", cn.packageName, cn.className))
-                            .putExtra(Intent.EXTRA_USER, itemInfo.user)
-                    launcher.startActivity(i)
-                } catch (e: URISyntaxException) {
-                }
-            } }
-        }
-
+    class Uninstall(private val target: Launcher, private val itemInfo: ItemInfo) : SystemShortcut<Launcher>(R.drawable.ic_uninstall_no_shadow, R.string.uninstall_drop_target_label, target, itemInfo) {
         private fun getUninstallTarget(launcher: Launcher, item: ItemInfo): ComponentName? {
             if (item.itemType == ITEM_TYPE_APPLICATION && item.id == ItemInfo.NO_ID) {
                 val intent = item.intent
@@ -94,49 +71,45 @@ class LawnchairShortcut(private val context: Context) {
             }
             return null
         }
-    }
 
-    class Remove : SystemShortcut<Launcher>(R.drawable.ic_remove_no_shadow, R.string.remove_drop_target_label) {
-
-        override fun getOnClickListener(launcher: Launcher, itemInfo: ItemInfo): View.OnClickListener? {
-            if (itemInfo.id == ItemInfo.NO_ID) return null
-            return if (itemInfo is WorkspaceItemInfo || itemInfo is LauncherAppWidgetInfo || itemInfo is FolderInfo) {
-                View.OnClickListener {
-                    AbstractFloatingView.closeAllOpenViews(launcher)
-
-                    val currentPage = launcher.workspace.currentPage
-
-                    launcher.removeItem(null, itemInfo, true /* deleteFromDb */)
-                    launcher.model.forceReload(currentPage)
-                    launcher.workspace.stripEmptyScreens()
-                }
-            } else null
-        }
-    }
-
-    class Edit : SystemShortcut<Launcher>(R.drawable.ic_edit_no_shadow, R.string.action_preferences) {
-
-        override fun getOnClickListener(launcher: Launcher, itemInfo: ItemInfo): View.OnClickListener? {
-            if (launcher.lawnchairPrefs.lockDesktop) return null
-            if (!CustomInfoProvider.isEditable(itemInfo)) return null
-            return View.OnClickListener {
-                AbstractFloatingView.closeAllOpenViews(launcher)
-                CustomBottomSheet.show(launcher, itemInfo)
+        override fun onClick(v: View?) {
+            if (itemInfo !is ItemInfoWithIcon || !itemInfo.runtimeStatusFlags.hasFlag(FLAG_SYSTEM_YES)) {
+                getUninstallTarget(target, itemInfo)?.let { cn -> View.OnClickListener {
+                    AbstractFloatingView.closeAllOpenViews(target)
+                    val i = Intent.parseUri(target.getString(R.string.delete_package_intent), 0).setData(Uri.fromParts("package", cn.packageName, cn.className)).putExtra(Intent.EXTRA_USER, itemInfo.user)
+                    target.startActivity(i)
+                }}
             }
         }
     }
 
-    class SesameSettings : SystemShortcut<Launcher>(R.drawable.ic_sesame, R.string.shortcut_sesame) {
+    class Remove(private val target: Launcher, private val itemInfo: ItemInfo) : SystemShortcut<Launcher>(R.drawable.ic_remove_no_shadow, R.string.remove_drop_target_label, target, itemInfo) {
+        override fun onClick(v: View?) {
+            if (itemInfo is WorkspaceItemInfo || itemInfo is LauncherAppWidgetInfo || itemInfo is FolderInfo) {
+                AbstractFloatingView.closeAllOpenViews(target)
+                target.removeItem(null, itemInfo, true)
+                target.model.forceReload()
+                target.workspace.stripEmptyScreens()
+            }
+        }
+    }
 
-        override fun getOnClickListener(launcher: Launcher, itemInfo: ItemInfo): View.OnClickListener? {
-            if (itemInfo.itemType != ITEM_TYPE_APPLICATION) return null
-            val packageName = itemInfo.targetComponent?.packageName ?: itemInfo.intent.`package`
-            ?: itemInfo.intent.component?.packageName ?: return null
-            if (!Sesame.isAvailable(launcher)) return null
-            val intent = SesameFrontend.createAppConfigIntent(packageName) ?: return null
+    class Edit(private val target: Launcher, private val itemInfo: ItemInfo) : SystemShortcut<Launcher>(R.drawable.ic_edit_no_shadow, R.string.action_preferences, target, itemInfo) {
+        override fun onClick(v: View?) {
+            if (!target.lawnchairPrefs.lockDesktop && CustomInfoProvider.isEditable(itemInfo)) {
+                AbstractFloatingView.closeAllOpenViews(target)
+                CustomBottomSheet.show(target, itemInfo)
+            }
+        }
+    }
 
-            return View.OnClickListener {
-                launcher.startActivity(intent)
+    class SesameSettings(private val target: Launcher, private val itemInfo: ItemInfo) : SystemShortcut<Launcher>(R.drawable.ic_sesame, R.string.shortcut_sesame, target, itemInfo) {
+        override fun onClick(v: View?) {
+            val packageName = itemInfo.targetComponent?.packageName ?: itemInfo.intent.`package` ?: itemInfo.intent.component?.packageName
+            val intent = packageName?.let { SesameFrontend.createAppConfigIntent(it) }
+
+            if (itemInfo.itemType == ITEM_TYPE_APPLICATION && packageName != null && Sesame.isAvailable(target)) {
+                target.startActivity(intent)
             }
         }
     }
