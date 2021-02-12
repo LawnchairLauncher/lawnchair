@@ -1208,7 +1208,9 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                         newIcon.requestFocus();
                     }
                     if (finalItem != null) {
-                        mStatsLogManager.logger().withItemInfo(finalItem)
+                        StatsLogger logger = mStatsLogManager.logger().withItemInfo(finalItem);
+                        mDragController.getLogInstanceId().map(logger::withInstanceId)
+                                .orElse(logger)
                                 .log(LAUNCHER_FOLDER_CONVERTED_TO_ICON);
                     }
                 }
