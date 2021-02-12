@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2020 The Android Open Source Project
+<!-- Copyright (C) 2021 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,11 +14,5 @@
      limitations under the License.
 -->
 <resources>
-    <!-- The component to receive app sharing Intents -->
-    <string name="app_sharing_component" translatable="false"/>
-    <!-- The package to receive Listen, Translate, and Search Intents -->
-    <string name="niu_actions_package" translatable="false"/>
-
-    <!-- Feature Flags -->
-    <bool name="enable_niu_actions">false</bool>
+    <string name="task_overlay_factory_class" translatable="false"/>
 </resources>
