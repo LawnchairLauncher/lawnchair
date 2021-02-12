@@ -29,6 +29,7 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.view.Display;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.Utilities;
@@ -182,20 +183,26 @@ public class DisplayController implements DisplayListener {
         }
 
         /** Creates and up-to-date DisplayController.Info for the given context. */
+        @Nullable
         public Info createInfoForContext(Context context) {
-            Display display = Utilities.ATLEAST_R
-                    ? context.getDisplay()
-                    : context
-                        .getSystemService(DisplayManager.class)
-                        .getDisplay(mId);
-            return display == null
-                    ? new Info(context)
-                    : new Info(context, display);
+            Display display = Utilities.ATLEAST_R ? context.getDisplay() : null;
+            if (display == null) {
+                display = context.getSystemService(DisplayManager.class).getDisplay(mId);
+            }
+            if (display == null) {
+                return null;
+            }
+            // Refresh the Context the prevent stale DisplayMetrics.
+            Context displayContext = context.getApplicationContext().createDisplayContext(display);
+            return new Info(displayContext, display);
         }
 
         protected void handleOnChange() {
             Info oldInfo = mInfo;
             Info newInfo = createInfoForContext(mDisplayContext);
+            if (newInfo == null) {
+                return;
+            }
 
             int change = 0;
             if (newInfo.hasDifferentSize(oldInfo)) {

@@ -648,8 +648,13 @@ public class DeviceProfile {
     public boolean updateIsSeascape(Context context) {
         if (isVerticalBarLayout()) {
             // Check an up-to-date info.
-            boolean isSeascape = DisplayController.getDefaultDisplay(context)
-                    .createInfoForContext(context).rotation == Surface.ROTATION_270;
+            DisplayController.Info displayInfo = DisplayController.getDefaultDisplay(context)
+                    .createInfoForContext(context);
+            if (displayInfo == null) {
+                return false;
+            }
+
+            boolean isSeascape = displayInfo.rotation == Surface.ROTATION_270;
             if (mIsSeascape != isSeascape) {
                 mIsSeascape = isSeascape;
                 return true;
