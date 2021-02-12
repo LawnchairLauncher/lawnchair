@@ -19,9 +19,9 @@ package ch.deletescape.lawnchair.iconpack
 import android.app.Activity
 import android.os.Bundle
 import android.widget.Toast
-import ch.deletescape.lawnchair.theme.ThemeManager
 import ch.deletescape.lawnchair.theme.ThemeOverride
-import com.android.launcher3.*
+import com.android.launcher3.R
+import com.android.launcher3.Utilities
 
 class ApplyIconPackActivity : Activity() {
     private val prefs by lazy { Utilities.getLawnchairPrefs(this) }
@@ -30,10 +30,10 @@ class ApplyIconPackActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ThemeOverride(themeSet, this).applyTheme(this)
-
-        val packageName = intent.getStringExtra("packageName")
-        prefs.iconPacks.remove(packageName)
-        prefs.iconPacks.add(0, packageName)
+        intent.getStringExtra("packageName")?.let{
+            prefs.iconPacks.remove(it)
+            prefs.iconPacks.add(0, it)
+        }
         val packName = IconPackManager.getInstance(this).packList.currentPack().displayName
         val message = String.format(getString(R.string.icon_pack_applied_toast), packName)
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
