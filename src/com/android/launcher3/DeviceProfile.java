@@ -25,9 +25,12 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.view.Surface;
+import android.view.WindowInsets;
+import android.view.WindowManager;
 
 import com.android.launcher3.CellLayout.ContainerType;
 import com.android.launcher3.DevicePaddings.DevicePadding;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.icons.DotRenderer;
 import com.android.launcher3.icons.IconNormalizer;
@@ -149,6 +152,10 @@ public class DeviceProfile {
     public DotRenderer mDotRendererWorkSpace;
     public DotRenderer mDotRendererAllApps;
 
+     // Taskbar
+    public boolean isTaskbarPresent;
+    public int taskbarSize;
+
     DeviceProfile(Context context, InvariantDeviceProfile inv, Info info,
             Point minSize, Point maxSize, int width, int height, boolean isLandscape,
             boolean isMultiWindowMode, boolean transposeLayoutWithOrientation,
@@ -163,12 +170,13 @@ public class DeviceProfile {
         // Determine sizes.
         widthPx = width;
         heightPx = height;
+        int nonFinalAvailableHeightPx;
         if (isLandscape) {
             availableWidthPx = maxSize.x;
-            availableHeightPx = minSize.y;
+            nonFinalAvailableHeightPx = minSize.y;
         } else {
             availableWidthPx = minSize.x;
-            availableHeightPx = maxSize.y;
+            nonFinalAvailableHeightPx = maxSize.y;
         }
 
         mInfo = info;
@@ -191,6 +199,22 @@ public class DeviceProfile {
                 ? Configuration.ORIENTATION_LANDSCAPE
                 : Configuration.ORIENTATION_PORTRAIT);
         final Resources res = context.getResources();
+
+        isTaskbarPresent = isTablet && FeatureFlags.ENABLE_TASKBAR.get();
+        if (isTaskbarPresent) {
+            // Taskbar will be added later, but provides bottom insets that we should subtract
+            // from availableHeightPx.
+            taskbarSize = res.getDimensionPixelSize(R.dimen.taskbar_size);
+            WindowInsets windowInsets = DisplayController.INSTANCE.get(context).getHolder(mInfo.id)
+                    .getDisplayContext().getSystemService(WindowManager.class)
+                    .getCurrentWindowMetrics().getWindowInsets();
+            int nonOverlappingTaskbarInset =
+                    taskbarSize - windowInsets.getSystemWindowInsetBottom();
+            if (nonOverlappingTaskbarInset > 0) {
+                nonFinalAvailableHeightPx -= nonOverlappingTaskbarInset;
+            }
+        }
+        availableHeightPx = nonFinalAvailableHeightPx;
 
         edgeMarginPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
         desiredWorkspaceLeftRightMarginPx = isVerticalBarLayout() ? 0 : edgeMarginPx;

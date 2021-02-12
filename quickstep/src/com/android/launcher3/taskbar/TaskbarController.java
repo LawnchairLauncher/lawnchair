@@ -89,8 +89,7 @@ public class TaskbarController {
         mTaskbarView = mTaskbarContainerView.findViewById(R.id.taskbar_view);
         mTaskbarView.construct(createTaskbarViewCallbacks());
         mWindowManager = mLauncher.getWindowManager();
-        mTaskbarSize = new Point(MATCH_PARENT,
-                mLauncher.getResources().getDimensionPixelSize(R.dimen.taskbar_size));
+        mTaskbarSize = new Point(MATCH_PARENT, mLauncher.getDeviceProfile().taskbarSize);
         mTaskbarStateHandler = mLauncher.getTaskbarStateHandler();
         mTaskbarVisibilityController = new TaskbarVisibilityController(mLauncher,
                 createTaskbarVisibilityControllerCallbacks());
