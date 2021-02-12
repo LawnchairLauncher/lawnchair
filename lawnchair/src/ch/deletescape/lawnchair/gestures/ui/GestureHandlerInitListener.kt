@@ -23,12 +23,23 @@ import ch.deletescape.lawnchair.LawnchairLauncher
 import ch.deletescape.lawnchair.gestures.GestureHandler
 import com.android.launcher3.Launcher
 import com.android.launcher3.LauncherState
+import com.android.launcher3.anim.PendingAnimation
 import com.android.launcher3.statemanager.StateManager
+import com.android.launcher3.states.StateAnimationConfig
 
-class GestureHandlerInitListener(private val handler: GestureHandler) : StateManager.StateHandler<LauncherState>() {
+class GestureHandlerInitListener(private val handler: GestureHandler) : StateManager.StateHandler<LauncherState> {
 
-    override fun init(launcher: Launcher, alreadyOnHome: Boolean): Boolean {
+    fun init(launcher: Launcher, alreadyOnHome: Boolean): Boolean {
         handler.onGestureTrigger((launcher as LawnchairLauncher).gestureController)
         return true
     }
+
+    override fun setState(state: LauncherState?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun setStateWithAnimation(toState: LauncherState?, config: StateAnimationConfig?, animation: PendingAnimation?) {
+        TODO("Not yet implemented")
+    }
+
 }
