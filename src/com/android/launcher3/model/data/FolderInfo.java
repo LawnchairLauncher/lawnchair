@@ -18,6 +18,7 @@ package com.android.launcher3.model.data;
 
 import static android.text.TextUtils.isEmpty;
 import static androidx.core.util.Preconditions.checkNotNull;
+import static com.android.launcher3.FastBitmapDrawable.newIcon;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
 import static com.android.launcher3.logger.LauncherAtom.Attribute.EMPTY_LABEL;
@@ -28,12 +29,33 @@ import static com.android.launcher3.userevent.LauncherLogProto.Target.FromFolder
 import static com.android.launcher3.userevent.LauncherLogProto.Target.FromFolderLabelState.FROM_FOLDER_LABEL_STATE_UNSPECIFIED;
 import static com.android.launcher3.userevent.LauncherLogProto.Target.FromFolderLabelState.FROM_SUGGESTED;
 
+import android.annotation.SuppressLint;
+import android.content.ComponentName;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Process;
+import android.text.TextUtils;
+import android.widget.FrameLayout;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import ch.deletescape.lawnchair.LawnchairLauncher;
+import ch.deletescape.lawnchair.folder.FirstItemProvider;
+import ch.deletescape.lawnchair.iconpack.IconPack;
+import ch.deletescape.lawnchair.iconpack.IconPackManager;
+import ch.deletescape.lawnchair.iconpack.IconPackManager.CustomIconEntry;
+import ch.deletescape.lawnchair.override.CustomInfoProvider;
+import com.android.launcher3.FastBitmapDrawable;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.folder.Folder;
+import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.folder.FolderNameInfos;
+import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.logger.LauncherAtom.Attribute;
 import com.android.launcher3.logger.LauncherAtom.FromState;
 import com.android.launcher3.logger.LauncherAtom.ToState;
@@ -43,6 +65,7 @@ import com.android.launcher3.userevent.LauncherLogProto;
 import com.android.launcher3.userevent.LauncherLogProto.Target;
 import com.android.launcher3.userevent.LauncherLogProto.Target.FromFolderLabelState;
 import com.android.launcher3.userevent.LauncherLogProto.Target.ToFolderLabelState;
+import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ContentWriter;
 import java.util.ArrayList;
 import java.util.OptionalInt;
@@ -72,6 +95,8 @@ public class FolderInfo extends ItemInfo {
     public static final int FLAG_MULTI_PAGE_ANIMATION = 0x00000004;
 
     public static final int FLAG_MANUAL_FOLDER_NAME = 0x00000008;
+
+    public static final int FLAG_COVER_MODE = 0x00000016;
 
     /**
      * Different states of folder label.
@@ -109,6 +134,11 @@ public class FolderInfo extends ItemInfo {
     public ArrayList<WorkspaceItemInfo> contents = new ArrayList<>();
 
     private ArrayList<FolderListener> mListeners = new ArrayList<>();
+
+    public String swipeUpAction;
+
+    private FirstItemProvider firstItemProvider = new FirstItemProvider(this);
+
 
     public FolderInfo() {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_FOLDER;
@@ -174,6 +204,9 @@ public class FolderInfo extends ItemInfo {
         public void onAdd(WorkspaceItemInfo item, int rank);
         public void onRemove(WorkspaceItemInfo item);
         public void onItemsChanged(boolean animate);
+        public default void onIconChanged() {
+            // do nothing
+        }
     }
 
     public boolean hasOption(int optionFlag) {
@@ -196,6 +229,132 @@ public class FolderInfo extends ItemInfo {
             writer.updateItemInDatabase(this);
         }
     }
+
+    public void setSwipeUpAction(@NonNull Context context, @Nullable String action) {
+        swipeUpAction = action;
+        ModelWriter.modifyItemInDatabase(context, this, null, swipeUpAction, null, null, false, true);
+    }
+
+    public ComponentKey toComponentKey() {
+        return new ComponentKey(new ComponentName("ch.deletescape.lawnchair.folder", String.valueOf(id)), Process.myUserHandle());
+    }
+
+    public Drawable getIcon(Context context) {
+        Launcher launcher = LawnchairLauncher.getLauncher(context);
+        Drawable icn = getIconInternal(launcher);
+        if (icn != null)  {
+            return icn;
+        }
+        if (isCoverMode()) {
+            return newIcon(context, getCoverInfo());
+        }
+        return getFolderIcon(launcher);
+    }
+
+    public Drawable getDefaultIcon(Launcher launcher) {
+        if (isCoverMode()) {
+            return new FastBitmapDrawable(getCoverInfo().bitmap);
+        } else {
+            return getFolderIcon(launcher);
+        }
+    }
+
+    public Drawable getFolderIcon(Launcher launcher) {
+        int iconSize = launcher.mDeviceProfile.iconSizePx;
+        FrameLayout dummy = new FrameLayout(launcher, null);
+        FolderIcon icon = FolderIcon.fromXml(R.layout.folder_icon, launcher, dummy, this);
+        icon.isCustomIcon = false;
+        icon.getFolderBackground().setStartOpacity(1f);
+        Bitmap b = BitmapRenderer.createHardwareBitmap(iconSize, iconSize, out -> {
+            out.translate(iconSize / 2f, 0);
+            // TODO: make folder icons more visible in front of the bottom sheet
+            // out.drawColor(Color.RED);
+            icon.draw(out);
+        });
+        icon.unbind();
+        return new BitmapDrawable(launcher.getResources(), b);
+    }
+
+    public boolean useIconMode(Context context) {
+        return isCoverMode() || hasCustomIcon(context);
+    }
+
+    public boolean usingCustomIcon(Context context) {
+        if (isCoverMode()) return false;
+        Launcher launcher = LawnchairLauncher.getLauncher(context);
+        return getIconInternal(launcher) != null;
+    }
+
+    private boolean hasCustomIcon(Context context) {
+        Launcher launcher = LawnchairLauncher.getLauncher(context);
+        return getIconInternal(launcher) != null;
+    }
+
+    public void clearCustomIcon(Context context) {
+        Launcher launcher = LawnchairLauncher.getLauncher(context);
+        CustomInfoProvider<FolderInfo> infoProvider = CustomInfoProvider.Companion.forItem(launcher, this);
+        if (infoProvider != null) {
+            infoProvider.setIcon(this, null);
+        }
+    }
+
+    public boolean isCoverMode() {
+        return hasOption(FLAG_COVER_MODE);
+    }
+
+    public void setCoverMode(boolean enable, ModelWriter modelWriter) {
+        setOption(FLAG_COVER_MODE, enable, modelWriter);
+    }
+
+    public WorkspaceItemInfo getCoverInfo() {
+        return firstItemProvider.getFirstItem();
+    }
+
+    public CharSequence getIconTitle() {
+        if (!TextUtils.equals(Folder.getDefaultFolderName(), title)) {
+            return title;
+        } else if (isCoverMode()) {
+            WorkspaceItemInfo info = getCoverInfo();
+            if (info.customTitle != null) {
+                return info.customTitle;
+            }
+            return info.title;
+        } else {
+            return Folder.getDefaultFolderName();
+        }
+    }
+
+    /**
+     * DO NOT USE OUTSIDE CUSTOMINFOPROVIDER
+     */
+    public void onIconChanged() {
+        for (FolderListener listener : mListeners) {
+            listener.onIconChanged();
+        }
+    }
+
+    private Drawable cached;
+    private String cachedIcon;
+
+    private Drawable getIconInternal(Launcher launcher) {
+        CustomInfoProvider<FolderInfo> infoProvider = CustomInfoProvider.Companion.forItem(launcher, this);
+        CustomIconEntry entry = infoProvider == null ? null : infoProvider.getIcon(this);
+        if (entry != null && entry.getIcon() != null) {
+            if (!entry.getIcon().equals(cachedIcon)) {
+                IconPack pack = IconPackManager.Companion.getInstance(launcher)
+                        .getIconPack(entry.getPackPackageName(), false, true);
+                if (pack != null) {
+                    cached = pack.getIcon(entry, launcher.mDeviceProfile.inv.fillResIconDpi);
+                    cachedIcon = entry.getIcon();
+                }
+            }
+            if (cached != null) {
+                return cached.mutate();
+            }
+        }
+        return null;
+    }
+
 
     @Override
     protected String dumpProperties() {
@@ -271,6 +430,7 @@ public class FolderInfo extends ItemInfo {
     /**
      * Returns index of the accepted suggestion.
      */
+    @SuppressLint("RestrictedApi")
     public OptionalInt getAcceptedSuggestionIndex() {
         String newLabel = checkNotNull(title,
                 "Expected valid folder label, but found null").toString();

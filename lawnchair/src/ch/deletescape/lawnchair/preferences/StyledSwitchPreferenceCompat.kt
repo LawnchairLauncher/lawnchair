@@ -42,7 +42,7 @@ open class StyledSwitchPreferenceCompat(context: Context, attrs: AttributeSet? =
 
     override fun onBindViewHolder(holder: PreferenceViewHolder?) {
         super.onBindViewHolder(holder)
-        checkableView = holder?.findViewById(AndroidResources.ANDROID_R_SWITCH_WIDGET)
+        checkableView = holder?.findViewById(android.R.id.switch_widget)
         ColorEngine.getInstance(context).addColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
     }
 

@@ -309,8 +309,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
     }
 
     override fun newIcon(icon: Bitmap, itemInfo: ItemInfo,
-                         customIconEntry: IconPackManager.CustomIconEntry?,
-                         drawableFactory: LawnchairDrawableFactory): FastBitmapDrawable? {
+                         customIconEntry: IconPackManager.CustomIconEntry?): FastBitmapDrawable? {
         ensureInitialLoadComplete()
 
         if (Utilities.ATLEAST_OREO && itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
@@ -323,11 +322,12 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
             if (packClocks.containsKey(drawableId)) {
                 val drawable = AdaptiveIconCompat
                         .wrap(packResources.getDrawable(drawableId))
-                return drawableFactory.customClockDrawer.drawIcon(icon, drawable, packClocks[drawableId])
+                val customClockDrawer = CustomClock(context)
+                return customClockDrawer.drawIcon(icon, drawable, packClocks[drawableId])
             } else if(packDynamicDrawables.containsKey(drawableId)) {
                 val iconDpi = LauncherAppState.getIDP(context).fillResIconDpi
                 val icn = DynamicDrawable.drawIcon(context, icon, packDynamicDrawables[drawableId]!!,
-                        drawableFactory, iconDpi)
+                                                   iconDpi)
                 if (icn != null) return icn
             }
             if (drawableId != 0) {

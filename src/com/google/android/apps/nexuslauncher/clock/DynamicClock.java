@@ -1,5 +1,6 @@
 package com.google.android.apps.nexuslauncher.clock;
 
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.content.*;
@@ -14,8 +15,6 @@ import android.os.Looper;
 import android.util.Log;
 import ch.deletescape.lawnchair.iconpack.AdaptiveIconCompat;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherModel;
-import com.android.launcher3.MainThreadExecutor;
 import com.google.android.apps.nexuslauncher.utils.ActionIntentFilter;
 
 import java.util.Collections;
@@ -119,7 +118,7 @@ public class DynamicClock extends BroadcastReceiver
     }
     
     private void updateMainThread() {
-        new MainThreadExecutor().execute(() -> updateWrapper(getClockLayers(mContext,
+        MAIN_EXECUTOR.execute(() -> updateWrapper(getClockLayers(mContext,
                 LauncherAppState.getIDP(mContext).fillResIconDpi,
                 true)));
     }

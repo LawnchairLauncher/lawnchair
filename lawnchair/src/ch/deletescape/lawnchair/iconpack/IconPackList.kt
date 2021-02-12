@@ -26,6 +26,7 @@ import android.text.TextUtils
 import com.android.launcher3.LauncherModel
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import com.android.launcher3.util.Executors.ICON_PACK_EXECUTOR
 import com.android.launcher3.util.LooperExecutor
 import com.google.android.apps.nexuslauncher.utils.ActionIntentFilter
 
@@ -43,7 +44,7 @@ class IconPackList(private val context: Context, private val manager: IconPackMa
     }
 
     private fun onPackListUpdated(packs: List<String>) {
-        LooperExecutor(LauncherModel.getIconPackLooper()).execute {
+        ICON_PACK_EXECUTOR.execute {
             loadedPacks.values.forEach {
                 if (!packs.contains(it.packageName)) {
                     it.unregister()

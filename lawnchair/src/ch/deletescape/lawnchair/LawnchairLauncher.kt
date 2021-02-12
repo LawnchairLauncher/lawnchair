@@ -228,7 +228,6 @@ open class LawnchairLauncher : NexusLauncherActivity(),
 
         if (sRestart) {
             sRestart = false
-            LauncherAppState.destroyInstance()
             LawnchairPreferences.destroyInstance()
         }
     }
@@ -242,7 +241,7 @@ open class LawnchairLauncher : NexusLauncherActivity(),
         }
         currentEditIcon = when (itemInfo) {
             is AppInfo -> IconPackManager.getInstance(this).getEntryForComponent(component!!)?.drawable
-            is WorkspaceItemInfo -> BitmapDrawable(resources, itemInfo.iconBitmap)
+            is WorkspaceItemInfo -> BitmapDrawable(resources, itemInfo.bitmap)
             is FolderInfo -> itemInfo.getDefaultIcon(this)
             else -> null
         }

@@ -28,7 +28,8 @@ class DrawerFolderItem(private val info: DrawerFolderInfo, private val index: In
 
     fun getFolderIcon(launcher: Launcher, container: ViewGroup): FolderIcon {
         if (icon == null) {
-            icon = FolderIcon.fromXml(R.layout.all_apps_folder_icon, launcher, container, info)
+            icon = FolderIcon.inflateFolderAndIcon(R.layout.all_apps_folder_icon, launcher,
+                                                   container, info)
         }
         return icon!!.apply {
             (parent as? ViewGroup)?.removeView(this)

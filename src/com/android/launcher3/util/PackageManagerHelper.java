@@ -323,6 +323,21 @@ public class PackageManagerHelper {
         }
     }
 
+    // We still want to be able to check via packageName alone
+    public static boolean isSystemApp(PackageManager pm, String packageName) {
+        if (packageName != null) {
+            try {
+                PackageInfo info = pm.getPackageInfo(packageName, 0);
+                return (info != null) && (info.applicationInfo != null) &&
+                        ((info.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0);
+            } catch (NameNotFoundException e) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
     /**
      * Finds a system apk which had a broadcast receiver listening to a particular action.
      * @param action intent action used to find the apk

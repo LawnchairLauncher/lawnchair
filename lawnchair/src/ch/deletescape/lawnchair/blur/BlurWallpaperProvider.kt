@@ -29,6 +29,7 @@ import ch.deletescape.lawnchair.*
 import ch.deletescape.lawnchair.util.SingletonHolder
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import com.android.launcher3.util.Executors
 
 class BlurWallpaperProvider(val context: Context) {
 
@@ -206,7 +207,7 @@ class BlurWallpaperProvider(val context: Context) {
 //        get() = Utilities.resolveAttributeData(context, R.attr.blurTintColor)
 
     fun updateAsync() {
-        Utilities.THREAD_POOL_EXECUTOR.execute(mUpdateRunnable)
+        Executors.THREAD_POOL_EXECUTOR.execute(mUpdateRunnable)
     }
 
     private fun applyVibrancy(wallpaper: Bitmap): Bitmap {

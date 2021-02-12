@@ -82,7 +82,6 @@
 
     <!-- Various classes overriden by projects/build flavors. -->
     <string name="app_filter_class" translatable="false">com.google.android.apps.nexuslauncher.CustomAppFilter</string>
-    <string name="drawable_factory_class" translatable="false">ch.deletescape.lawnchair.iconpack.LawnchairDrawableFactory</string>
     <string name="folder_name_provider_class" translatable="false"></string>
     <string name="icon_provider_class" translatable="false">ch.deletescape.lawnchair.iconpack.LawnchairIconProvider</string>
     <string name="user_event_dispatcher_class" translatable="false">com.google.android.apps.nexuslauncher.CustomAppPredictor</string>

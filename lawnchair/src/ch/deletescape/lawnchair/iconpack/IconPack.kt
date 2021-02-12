@@ -27,6 +27,7 @@ import com.android.launcher3.LauncherModel
 import com.android.launcher3.compat.AlphabeticIndexCompat
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.util.ComponentKey
+import com.android.launcher3.util.Executors.ICON_PACK_EXECUTOR
 import com.android.launcher3.util.LooperExecutor
 import java.util.concurrent.Semaphore
 
@@ -36,7 +37,7 @@ abstract class IconPack(val context: Context, val packPackageName: String) {
     private val loadCompleteListeners = ArrayList<(IconPack) -> Unit>()
 
     fun executeLoadPack() {
-        LooperExecutor(LauncherModel.getIconPackLooper()).execute {
+        ICON_PACK_EXECUTOR.execute {
             loadPack()
             waiter?.release()
             loadCompleteListeners.forEach { it.invoke(this) }
@@ -83,8 +84,7 @@ abstract class IconPack(val context: Context, val packPackageName: String) {
     abstract fun getIcon(shortcutInfo: ShortcutInfo, iconDpi: Int): Drawable?
 
     abstract fun newIcon(icon: Bitmap, itemInfo: ItemInfo,
-                         customIconEntry: IconPackManager.CustomIconEntry?,
-                         drawableFactory: LawnchairDrawableFactory): FastBitmapDrawable?
+                         customIconEntry: IconPackManager.CustomIconEntry?): FastBitmapDrawable?
 
     open fun getAllIcons(callback: (List<PackEntry>) -> Unit, cancel: () -> Boolean,
                          filter: (item: String) -> Boolean = { _ -> true }) {

@@ -26,7 +26,6 @@ import android.content.pm.ShortcutInfo
 import android.content.res.ColorStateList
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import android.os.Handler
 import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -41,7 +40,9 @@ import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.iconpack.LawnchairIconProvider
 import ch.deletescape.lawnchair.isVisible
 import ch.deletescape.lawnchair.makeBasicHandler
-import com.android.launcher3.*
+import com.android.launcher3.AppFilter
+import com.android.launcher3.LauncherAppState
+import com.android.launcher3.R
 import com.android.launcher3.icons.IconProvider
 import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.pm.UserCache
@@ -189,9 +190,11 @@ open class AppsAdapterWithShortcuts(
         // TODO: debug why wrong icons are loaded from the provider at times
         val iconDrawable = if (iconProvider is LawnchairIconProvider && false) {
                 (iconProvider as LawnchairIconProvider).getIcon(info, iconDpi)
-            } else {
-                shortcutManager.getShortcutIconDrawable(info, DisplayMetrics.DENSITY_XXHIGH)
-            }
+        } else {
+            context.getSystemService(
+                    LauncherApps::class.java)
+                    .getShortcutIconDrawable(info, DisplayMetrics.DENSITY_XXHIGH)
+        }
     }
 
     class LoadingItem : Item

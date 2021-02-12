@@ -2,11 +2,17 @@ package com.google.android.apps.nexuslauncher.search;
 
 import android.content.Intent;
 
+import androidx.annotation.NonNull;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.util.ComponentKey;
 
 public class AppItemInfoWithIcon extends ItemInfoWithIcon {
-    private Intent mIntent;
+    public Intent mIntent;
+
+    public AppItemInfoWithIcon(AppItemInfoWithIcon info) {
+        super(info);
+        this.mIntent = info.mIntent;
+    }
 
     public AppItemInfoWithIcon(final ComponentKey componentKey) {
         mIntent = new Intent(Intent.ACTION_MAIN)
@@ -19,5 +25,11 @@ public class AppItemInfoWithIcon extends ItemInfoWithIcon {
 
     public Intent getIntent() {
         return this.mIntent;
+    }
+
+    @NonNull
+    @Override
+    public ItemInfoWithIcon clone() {
+        return new AppItemInfoWithIcon(this);
     }
 }

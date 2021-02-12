@@ -84,8 +84,7 @@ class UriIconPack(context: Context) : IconPack(context, "lawnchairUriPack") {
     }
 
     override fun newIcon(icon: Bitmap, itemInfo: ItemInfo,
-                         customIconEntry: IconPackManager.CustomIconEntry?,
-                         drawableFactory: LawnchairDrawableFactory): FastBitmapDrawable? {
+                         customIconEntry: IconPackManager.CustomIconEntry?): FastBitmapDrawable? {
         return FastBitmapDrawable(icon)
     }
 

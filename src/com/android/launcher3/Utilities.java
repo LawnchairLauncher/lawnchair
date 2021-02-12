@@ -31,11 +31,14 @@ import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ShortcutInfo;
 import android.content.res.Resources;
@@ -54,6 +57,7 @@ import android.graphics.drawable.InsetDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Build.VERSION_CODES;
+import android.os.Bundle;
 import android.os.DeadObjectException;
 import android.os.Handler;
 import android.os.Message;
@@ -100,6 +104,7 @@ import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.IconProvider;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.icons.ShortcutCachingLogic;
+import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.pm.ShortcutConfigActivityInfo;
@@ -660,7 +665,7 @@ public final class Utilities {
             FolderInfo folderInfo = (FolderInfo) info;
             if (folderInfo.isCoverMode()) {
                 return getFullDrawable(launcher, folderInfo.getCoverInfo(),
-                        width, height, flattenDrawable, outObj);
+                        width, height, outObj);
             }
 
             FolderAdaptiveIcon icon = FolderAdaptiveIcon.createFolderAdaptiveIcon(
@@ -1010,7 +1015,7 @@ public final class Utilities {
     public static Drawable getIconForTask(Context context, int userId, String packageName) {
         IconCache ic = LauncherAppState.getInstanceNoCreate().getIconCache();
         LauncherApps launcherApps = context.getSystemService(LauncherApps.class);
-        UserHandle user = UserHandle.of(userId);
+        UserHandle user = UserHandle.getUserHandleForUid(userId);
         List<LauncherActivityInfo> al = launcherApps.getActivityList(packageName, user);
         if (!al.isEmpty()) {
             Drawable fullResIcon = ic.getFullResIcon(al.get(0));

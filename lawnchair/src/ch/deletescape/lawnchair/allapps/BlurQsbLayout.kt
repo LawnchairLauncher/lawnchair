@@ -28,6 +28,7 @@ import android.util.AttributeSet
 import android.util.FloatProperty
 import android.view.View
 import android.view.animation.Interpolator
+import android.widget.EditText
 import androidx.core.graphics.ColorUtils
 import ch.deletescape.lawnchair.*
 import ch.deletescape.lawnchair.blur.BlurDrawable
@@ -122,6 +123,10 @@ class BlurQsbLayout @JvmOverloads constructor(
         super.onDetachedFromWindow()
         context.lawnchairPrefs.removeOnPreferenceChangeListener("pref_searchbarRadius", this)
         blurDrawable?.stopListening()
+    }
+
+    override fun setTextSearchEnabled(isEnabled: Boolean): EditText? {
+        TODO("Not yet implemented")
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {

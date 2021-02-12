@@ -395,7 +395,7 @@ fun reloadIconsFromComponents(context: Context, components: Collection<Component
 }
 
 fun reloadIcons(context: Context, packages: Collection<PackageUserKey>) {
-    LooperExecutor(LauncherModel.getIconPackLooper()).execute {
+    ICON_PACK_EXECUTOR.execute {
         val userManagerCompat = UserCache.INSTANCE.get(context)
         val las = LauncherAppState.getInstance(context)
         val model = las.model
@@ -418,7 +418,7 @@ fun <T, A>ensureOnMainThread(creator: (A) -> T): (A) -> T {
             creator(it)
         } else {
             try {
-                MainThreadExecutor().submit(Callable { creator(it) }).get()
+                MAIN_EXECUTOR.submit(Callable { creator(it) }).get()
             } catch (e: InterruptedException) {
                 throw RuntimeException(e)
             } catch (e: ExecutionException) {

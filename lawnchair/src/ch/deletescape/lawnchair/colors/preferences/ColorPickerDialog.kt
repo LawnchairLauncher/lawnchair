@@ -59,17 +59,18 @@ class ColorPickerDialog : DialogFragment() {
     private lateinit var tabbedPickerView: TabbedPickerView
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val context = context!!
+        val context = requireContext()
         val key = savedInstanceState?.getString(ARG_KEY)
-                ?: arguments!!.getString(ARG_KEY, "pref_accentColorResolver")
+                ?: requireArguments().getString(ARG_KEY, "pref_accentColorResolver")
         val initialColor = savedInstanceState?.getInt(ARG_INITIAL_COLOR, ChromaView.DefaultColor)
-                ?: arguments!!.getInt(ARG_INITIAL_COLOR)
+                ?: requireArguments().getInt(ARG_INITIAL_COLOR)
         val resolvers = savedInstanceState?.getStringArray(ARG_RESOLVERS)
-                ?: arguments!!.getStringArray(ARG_RESOLVERS)
+                ?: requireArguments().getStringArray(ARG_RESOLVERS)
         val colorMode = ColorMode.fromName(savedInstanceState?.getString(ARG_COLOR_MODE)
-                ?: arguments!!.getString(ARG_COLOR_MODE, ColorMode.RGB.name))
+                ?: requireArguments().getString(ARG_COLOR_MODE, ColorMode.RGB.name))
 
-        tabbedPickerView = TabbedPickerView.fromPrefs(context, key, initialColor, colorMode, resolvers, ::dismiss)
+        tabbedPickerView = TabbedPickerView.fromPrefs(context, key, initialColor, colorMode,
+                                                      resolvers as Array<String>, ::dismiss)
         return AlertDialog.Builder(context).setView(tabbedPickerView).create().apply {
             setOnShowListener {
                 val width: Int; val height: Int

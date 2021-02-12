@@ -67,13 +67,11 @@ class CustomFontManager(private val context: Context) {
     private val drawerTab = FontPref("pref_font_drawerTab", uiMedium)
 
     private fun createFontMap(): Map<Int, FontSpec> {
-        TraceHelper.beginSection("createFontMap")
-
         val sansSerif = Typeface.SANS_SERIF
         val sansSerifMedium = Typeface.create("sans-serif-medium", Typeface.NORMAL)
         val sansSerifCondensed = Typeface.create("sans-serif-condensed", Typeface.NORMAL)
-
         val map = HashMap<Int, FontSpec>()
+
         map[FONT_TITLE] = FontSpec(uiRegular, sansSerif)
         map[FONT_PREFERENCE_TITLE] = FontSpec(uiRegular, sansSerif)
         map[FONT_BUTTON] = FontSpec(uiMedium, sansSerifMedium)
@@ -94,7 +92,6 @@ class CustomFontManager(private val context: Context) {
         map[FONT_DRAWER_TAB] = FontSpec(drawerTab, sansSerifMedium)
         map[FONT_DRAWER_FOLDER] = FontSpec(drawerFolderFont, sansSerifCondensed)
 
-        TraceHelper.endSection("createFontMap")
         return map
     }
 

@@ -150,8 +150,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
     }
 
     override fun newIcon(icon: Bitmap, itemInfo: ItemInfo,
-                         customIconEntry: IconPackManager.CustomIconEntry?,
-                         drawableFactory: LawnchairDrawableFactory): FastBitmapDrawable {
+                         customIconEntry: IconPackManager.CustomIconEntry?): FastBitmapDrawable {
         ensureInitialLoadComplete()
 
         if (Utilities.ATLEAST_OREO && itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {

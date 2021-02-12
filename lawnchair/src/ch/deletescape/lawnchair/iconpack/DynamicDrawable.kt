@@ -47,10 +47,11 @@ class DynamicDrawable {
             }
         }
 
-        fun drawIcon(context: Context, icon: Bitmap, metadata: Metadata, drawableFactory: LawnchairDrawableFactory, iconDpi: Int) : FastBitmapDrawable? {
+        fun drawIcon(context: Context, icon: Bitmap, metadata: Metadata, iconDpi: Int) : FastBitmapDrawable? {
             metadata.load(context, iconDpi)
+            val customClockDrawer = CustomClock(context)
             return when (metadata.type) {
-                Type.CLOCK -> drawableFactory.customClockDrawer.drawIcon(icon, metadata.clockMetadata!!.drawable, metadata.clockMetadata!!.metadata)
+                Type.CLOCK -> customClockDrawer.drawIcon(icon, metadata.clockMetadata!!.drawable, metadata.clockMetadata!!.metadata)
                 else -> null
             }
         }

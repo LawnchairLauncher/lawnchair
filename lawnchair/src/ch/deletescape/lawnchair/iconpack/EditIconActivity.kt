@@ -47,6 +47,7 @@ import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.icons.LauncherIcons
 import com.android.launcher3.util.ComponentKey
+import com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR
 import com.android.launcher3.util.LooperExecutor
 import java.lang.ref.WeakReference
 
@@ -76,7 +77,7 @@ class EditIconActivity : SettingsBaseActivity() {
 
         title = intent.getStringExtra(EXTRA_TITLE)
 
-        LooperExecutor(LauncherModel.getUiWorkerLooper()).execute {
+        UI_HELPER_EXECUTOR.execute {
             val packs = iconPacks.map { it.getIconPack() }
             runOnUiThread(::bindViews)
             if (isFolder) {

@@ -1,5 +1,7 @@
 package com.google.android.apps.nexuslauncher.search;
 
+import static com.android.launcher3.util.PackageManagerHelper.isSystemApp;
+
 import android.content.pm.LauncherApps;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,7 +22,7 @@ public class AppLaunchActivity extends BaseActivity {
         try {
             ComponentKey dl = AppSearchProvider.uriToComponent(uri, this);
             ItemInfo dVar = new AppItemInfoWithIcon(dl);
-            if (!getPackageManager().isSafeMode() || Utilities.isSystemApp(this, dVar.getIntent())) {
+            if (!getPackageManager().isSafeMode() || isSystemApp(this, dVar.getIntent())) {
                 if (dl.user.equals(android.os.Process.myUserHandle())) {
                     startActivity(dVar.getIntent());
                 } else {

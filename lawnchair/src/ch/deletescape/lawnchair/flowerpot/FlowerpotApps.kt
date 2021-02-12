@@ -20,7 +20,6 @@ package ch.deletescape.lawnchair.flowerpot
 import android.content.Context
 import android.content.Intent
 import android.content.pm.LauncherApps
-import android.content.pm.ShortcutInfo
 import android.os.UserHandle
 import ch.deletescape.lawnchair.flowerpot.rules.CodeRule
 import ch.deletescape.lawnchair.flowerpot.rules.Rule
@@ -28,7 +27,8 @@ import com.android.launcher3.pm.UserCache
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.PackageUserKey
 
-class FlowerpotApps(private val context: Context, private val pot: Flowerpot) : OnAppsChangedCallbackCompat {
+class FlowerpotApps(private val context: Context, private val pot: Flowerpot) :
+        LauncherApps.Callback() {
 
     private val launcherApps = context.getSystemService(LauncherApps::class.java)
     private val intentMatches = mutableSetOf<String>()
@@ -37,7 +37,8 @@ class FlowerpotApps(private val context: Context, private val pot: Flowerpot) : 
 
     init {
         filterApps()
-        launcherApps.addOnAppsChangedCallback(this)
+        context.getSystemService(
+                LauncherApps::class.java).registerCallback(this)
     }
 
     private fun filterApps() {
@@ -113,9 +114,5 @@ class FlowerpotApps(private val context: Context, private val pot: Flowerpot) : 
 
     override fun onPackagesUnsuspended(packageNames: Array<out String>, user: UserHandle) {
         packageNames.forEach { onPackageAdded(it, user) }
-    }
-
-    override fun onShortcutsChanged(packageName: String?, shortcuts: MutableList<ShortcutInfo>?, user: UserHandle?) {
-
     }
 }

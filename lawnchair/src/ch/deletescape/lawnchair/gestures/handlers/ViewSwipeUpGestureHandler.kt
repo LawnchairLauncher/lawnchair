@@ -41,9 +41,5 @@ class ViewSwipeUpGestureHandler(private val view: View, private val handler: Ges
             negativeMax else positiveMax).toFloat()
     }
 
-    override fun onDragEnd(velocity: Float, fling: Boolean) {
-        view.animate().translationY(0f).setDuration(100).setInterpolator(DecelerateInterpolator()).start()
-    }
-
     override val displayName = ""
 }

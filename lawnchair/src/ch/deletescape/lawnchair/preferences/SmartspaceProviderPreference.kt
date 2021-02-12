@@ -89,7 +89,7 @@ class SmartspaceProviderPreference(context: Context, attrs: AttributeSet?)
         prefs.removeOnPreferenceChangeListener(key, this)
     }
 
-    override fun getPersistedString(defaultReturnValue: String?): String {
+    override fun getPersistedString(defaultReturnValue: String?): String? {
         return getPersistedValue()
     }
 

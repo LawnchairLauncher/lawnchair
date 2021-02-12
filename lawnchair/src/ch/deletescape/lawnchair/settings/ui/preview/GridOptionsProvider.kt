@@ -31,8 +31,9 @@ import ch.deletescape.lawnchair.then
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.Utilities
-import com.android.launcher3.graphics.GridOptionsProvider.BITMAP_WRITER
+import com.android.launcher3.util.PackageManagerHelper.isSystemApp
 import java.io.FileNotFoundException
+import kotlin.jvm.Throws
 
 class GridOptionsProvider : ContentProvider() {
 
@@ -106,28 +107,6 @@ class GridOptionsProvider : ContentProvider() {
         return 1
     }
 
-    @Throws(FileNotFoundException::class)
-    override fun openFile(uri: Uri, mode: String): ParcelFileDescriptor? {
-        checkCallingPackage()
-
-        val segments = uri.pathSegments
-        if (segments.size < 2 || KEY_PREVIEW != segments[0]) {
-            throw FileNotFoundException("Invalid preview url")
-        }
-        val profileName = segments[1]
-        if (TextUtils.isEmpty(profileName)) {
-            throw FileNotFoundException("Invalid preview url")
-        }
-        val customGrid = createOption(profileName)
-
-        try {
-            return openPipeHelper(uri, MIME_TYPE_PNG, null,
-                                  CustomGridProvider.getInstance(context!!).renderPreview(customGrid), BITMAP_WRITER)
-        } catch (e: Exception) {
-            throw FileNotFoundException(e.message)
-        }
-    }
-
     private fun getGridOptions(): Collection<CustomGridOption> {
         val idp = LauncherAppState.getIDP(context)
         val currentGrid = CustomGridOption(idp.numRows, idp.numColumns, idp.numHotseatIcons)
@@ -152,7 +131,7 @@ class GridOptionsProvider : ContentProvider() {
     }
 
     private fun checkCallingPackage() {
-        require(Utilities.isSystemApp(context!!.packageManager, callingPackage))
+        require(isSystemApp(context!!.packageManager, callingPackage))
     }
 
     private data class CustomGridOption(val numRows: Int, val numColumns: Int, val numHotseatColumns: Int)

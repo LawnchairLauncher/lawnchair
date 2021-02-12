@@ -29,6 +29,7 @@ import ch.deletescape.lawnchair.runOnMainThread
 import ch.deletescape.lawnchair.runOnThread
 import ch.deletescape.lawnchair.theme.ThemeOverride
 import com.android.launcher3.*
+import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.util.Executors.MODEL_EXECUTOR
 import com.android.launcher3.views.ActivityContext
 import com.android.launcher3.views.BaseDragLayer

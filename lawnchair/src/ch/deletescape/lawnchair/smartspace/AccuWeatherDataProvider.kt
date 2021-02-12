@@ -17,6 +17,7 @@
 
 package ch.deletescape.lawnchair.smartspace
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.location.Criteria
@@ -56,6 +57,7 @@ class AccuWeatherDataProvider(controller: LawnchairSmartspaceController) :
         prefs.addOnPreferenceChangeListener(this, "pref_weather_city")
     }
 
+    @SuppressLint("MissingPermission")
     override fun updateData() {
         // TODO: Add support for location based info with AccuWeather
         if (false && prefs.weatherCity == "##Auto") {
@@ -64,7 +66,7 @@ class AccuWeatherDataProvider(controller: LawnchairSmartspaceController) :
                 return
             }
             val locationProvider = locationManager?.getBestProvider(Criteria(), true)
-            val location = locationManager?.getLastKnownLocation(locationProvider)
+            val location = locationProvider?.let { locationManager?.getLastKnownLocation(it) }
             if (location != null) {
             }
         } else {

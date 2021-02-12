@@ -24,6 +24,7 @@ import android.content.pm.PackageManager
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
 import android.provider.Settings
@@ -42,6 +43,7 @@ import ch.deletescape.lawnchair.util.hasFlag
 import com.android.launcher3.Launcher
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import com.android.launcher3.Utilities.openURLinBrowser
 import com.android.launcher3.notification.NotificationListener
 import com.android.launcher3.util.PackageManagerHelper
 import java.util.concurrent.TimeUnit
@@ -231,8 +233,9 @@ class LawnchairSmartspaceController(val context: Context) {
                     "com.google.android.apps.gsa.velour.DynamicActivityTrampoline")
             launcher.startActivitySafely(v, intent, null, null)
         } else {
-            Utilities.openURLinBrowser(launcher, data.forecastUrl,
-                    launcher.getViewBounds(v), launcher.getActivityLaunchOptions(v).toBundle())
+            openURLinBrowser(launcher, data.forecastUrl,
+                             launcher.getViewBounds(v),
+                             launcher.getActivityLaunchOptions(v).toBundle())
         }
     }
 

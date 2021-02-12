@@ -126,18 +126,18 @@ class IconPackManager(private val context: Context) {
         return defaultPack.getIcon(shortcutInfo, iconDpi)
     }
 
-    fun newIcon(icon: Bitmap, itemInfo: ItemInfo, drawableFactory: LawnchairDrawableFactory): FastBitmapDrawable {
+    fun newIcon(icon: Bitmap, itemInfo: ItemInfo): FastBitmapDrawable {
         val key = itemInfo.targetComponent?.let { ComponentKey(it, itemInfo.user) }
         val customEntry = CustomInfoProvider.forItem<ItemInfo>(context, itemInfo)?.getIcon(itemInfo)
                 ?: key?.let { appInfoProvider.getCustomIconEntry(it) }
         val customPack = customEntry?.run { getIconPackInternal(packPackageName) }
         if (customPack != null) {
-            customPack.newIcon(icon, itemInfo, customEntry, drawableFactory)?.let { return it }
+            customPack.newIcon(icon, itemInfo, customEntry)?.let { return it }
         }
         packList.iterator().forEach { pack ->
-            pack.newIcon(icon, itemInfo, customEntry, drawableFactory)?.let { return it }
+            pack.newIcon(icon, itemInfo, customEntry)?.let { return it }
         }
-        return defaultPack.newIcon(icon, itemInfo, customEntry, drawableFactory)
+        return defaultPack.newIcon(icon, itemInfo, customEntry)
     }
 
     fun maskSupported(): Boolean = packList.appliedPacks.any { it.supportsMasking() }

@@ -403,8 +403,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     }
 
     public void applyIcon(ItemInfoWithIcon info) {
-        FastBitmapDrawable iconDrawable = DrawableFactory.INSTANCE.get(getContext())
-                .newIcon(getContext(), info);
+        FastBitmapDrawable iconDrawable = newIcon(getContext(), info);
         mDotParams.color = IconPalette.getMutedColor(info.iconColor, 0.54f);
 
         setIcon(iconDrawable);

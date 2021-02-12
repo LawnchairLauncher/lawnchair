@@ -36,9 +36,8 @@ import com.android.launcher3.BuildConfig
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 import com.android.launcher3.Utilities.squaredHypot
-import com.android.quickstep.ActivityControlHelper
+import com.android.quickstep.InputConsumer
 import com.android.quickstep.inputconsumers.DelegateInputConsumer
-import com.android.quickstep.inputconsumers.InputConsumer
 import com.android.systemui.shared.system.InputMonitorCompat
 import com.android.systemui.shared.system.WindowManagerWrapper
 import com.android.systemui.shared.system.WindowManagerWrapper.NAV_BAR_POS_LEFT

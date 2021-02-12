@@ -50,8 +50,12 @@ import java.util.concurrent.Semaphore
 class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, SearchView.OnQueryTextListener {
     private val iconPackManager = IconPackManager.getInstance(this)
     private val iconGrid by lazy { findViewById<RecyclerView>(R.id.list_results) }
-    private val iconPack by lazy { iconPackManager.getIconPack(
-            intent.getParcelableExtra<IconPackManager.PackProvider>(EXTRA_ICON_PACK), false) }
+    private val iconPack by lazy {
+        intent.getParcelableExtra<IconPackManager.PackProvider>(EXTRA_ICON_PACK)?.let {
+            iconPackManager.getIconPack(
+                    it, false)
+        }
+    }
     private val items get() = searchItems ?: actualItems
     private var actualItems = ArrayList<AdapterItem>()
     private val adapter = IconGridAdapter()
@@ -207,7 +211,7 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
         if (requestCode == 1000 && resultCode == Activity.RESULT_OK && data != null) {
             if (data.hasExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE)) {
                 val icon = data.getParcelableExtra<Intent.ShortcutIconResource>(Intent.EXTRA_SHORTCUT_ICON_RESOURCE)
-                val entry = (iconPack as IconPackImpl).createEntry(icon)
+                val entry = icon?.let { (iconPack as IconPackImpl).createEntry(it) }
                 onSelectIcon(entry)
                 return
             }

@@ -45,6 +45,7 @@ import com.android.launcher3.*
 import com.android.launcher3.Utilities.makeComponentKey
 import com.android.launcher3.allapps.search.DefaultAppSearchAlgorithm
 import com.android.launcher3.util.ComponentKey
+import com.android.launcher3.util.Executors.MAIN_EXECUTOR
 import com.android.quickstep.SystemUiProxy
 import org.json.JSONArray
 import org.json.JSONObject
@@ -1004,7 +1005,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
                     INSTANCE = LawnchairPreferences(context.applicationContext)
                 } else {
                     try {
-                        return MainThreadExecutor().submit(Callable { LawnchairPreferences.getInstance(context) }).get()
+                        return MAIN_EXECUTOR.submit(Callable { LawnchairPreferences.getInstance(context) }).get()
                     } catch (e: InterruptedException) {
                         throw RuntimeException(e)
                     } catch (e: ExecutionException) {

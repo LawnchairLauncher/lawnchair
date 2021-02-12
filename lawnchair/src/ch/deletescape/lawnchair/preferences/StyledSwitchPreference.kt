@@ -33,7 +33,7 @@ open class StyledSwitchPreference(context: Context, attrs: AttributeSet?) : Swit
 
     override fun onBindView(view: View?) {
         super.onBindView(view)
-        checkableView = view?.findViewById(AndroidResources.ANDROID_R_SWITCH_WIDGET)
+        checkableView = view?.findViewById(android.R.id.switch_widget)
         ColorEngine.getInstance(context).addColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
     }
 

@@ -30,7 +30,7 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
     /**
      * The bitmap for the application icon
      */
-    public BitmapInfo bitmap = BitmapInfo.LOW_RES_ICON;
+    public Bitmap bitmap = BitmapInfo.LOW_RES_ICON;
 
     /**
      * Indicates that the icon is disabled due to safe mode restrictions.
