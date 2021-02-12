@@ -612,6 +612,9 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         boolean isRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
         LayoutParams snapshotParams = (LayoutParams) mSnapshotView.getLayoutParams();
         int thumbnailPadding = (int) getResources().getDimension(R.dimen.task_thumbnail_top_margin);
+        int taskIconMargin = (int) getResources().getDimension(R.dimen.task_icon_top_margin);
+        int taskIconHeight = (int) getResources().getDimension(R.dimen.task_thumbnail_icon_size);
+        int iconTopMargin = taskIconMargin - taskIconHeight + thumbnailPadding;
         LayoutParams iconParams = (LayoutParams) mIconView.getLayoutParams();
         switch (orientationHandler.getRotation()) {
             case ROTATION_90:
@@ -623,7 +626,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             case ROTATION_180:
                 iconParams.gravity = BOTTOM | CENTER_HORIZONTAL;
                 iconParams.bottomMargin = -thumbnailPadding;
-                iconParams.leftMargin = iconParams.topMargin = iconParams.rightMargin = 0;
+                iconParams.leftMargin = iconParams.rightMargin = 0;
+                iconParams.topMargin = iconTopMargin;
                 break;
             case ROTATION_270:
                 iconParams.gravity = (isRtl ? END : START) | CENTER_VERTICAL;
@@ -634,7 +638,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             case Surface.ROTATION_0:
             default:
                 iconParams.gravity = TOP | CENTER_HORIZONTAL;
-                iconParams.leftMargin = iconParams.topMargin = iconParams.rightMargin = 0;
+                iconParams.leftMargin = iconParams.rightMargin = 0;
+                iconParams.topMargin = iconTopMargin;
                 break;
         }
         mIconView.setLayoutParams(iconParams);

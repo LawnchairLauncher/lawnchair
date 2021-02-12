@@ -28,12 +28,12 @@ import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.pm.ShortcutConfigActivityInfo;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Preconditions;
-import com.android.launcher3.widget.WidgetItemComparator;
-import com.android.launcher3.widget.WidgetListRowEntry;
 import com.android.launcher3.widget.WidgetManagerHelper;
+import com.android.launcher3.widget.model.WidgetsListBaseEntry;
+import com.android.launcher3.widget.model.WidgetsListContentEntry;
+import com.android.launcher3.widget.picker.WidgetsDiffReporter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,24 +60,23 @@ public class WidgetsModel {
     private final Map<PackageItemInfo, List<WidgetItem>> mWidgetsList = new HashMap<>();
 
     /**
-     * Returns a list of {@link WidgetListRowEntry}. All {@link WidgetItem} in a single row
-     * are sorted (based on label and user), but the overall list of {@link WidgetListRowEntry}s
-     * is not sorted. This list is sorted at the UI when using
-     * {@link com.android.launcher3.widget.WidgetsDiffReporter}
+     * Returns a list of {@link WidgetsListBaseEntry}. All {@link WidgetItem} in a single row
+     * are sorted (based on label and user), but the overall list of
+     * {@link WidgetsListBaseEntry}s is not sorted. This list is sorted at the UI when using
+     * {@link WidgetsDiffReporter}
      *
-     * @see com.android.launcher3.widget.WidgetsListAdapter#setWidgets(ArrayList)
+     * @see com.android.launcher3.widget.picker.WidgetsListAdapter#setWidgets(List)
      */
-    public synchronized ArrayList<WidgetListRowEntry> getWidgetsList(Context context) {
-        ArrayList<WidgetListRowEntry> result = new ArrayList<>();
+    public synchronized ArrayList<WidgetsListBaseEntry> getWidgetsList(Context context) {
+        ArrayList<WidgetsListBaseEntry> result = new ArrayList<>();
         AlphabeticIndexCompat indexer = new AlphabeticIndexCompat(context);
 
-        WidgetItemComparator widgetComparator = new WidgetItemComparator();
         for (Map.Entry<PackageItemInfo, List<WidgetItem>> entry : mWidgetsList.entrySet()) {
-            WidgetListRowEntry row = new WidgetListRowEntry(
-                    entry.getKey(), new ArrayList<>(entry.getValue()));
-            row.titleSectionName = (row.pkgItem.title == null) ? "" :
-                    indexer.computeSectionName(row.pkgItem.title);
-            Collections.sort(row.widgets, widgetComparator);
+            PackageItemInfo pkgItem = entry.getKey();
+            String sectionName = (pkgItem.title == null) ? "" :
+                    indexer.computeSectionName(pkgItem.title);
+            WidgetsListContentEntry row =
+                    new WidgetsListContentEntry(pkgItem, sectionName, entry.getValue());
             result.add(row);
         }
         return result;

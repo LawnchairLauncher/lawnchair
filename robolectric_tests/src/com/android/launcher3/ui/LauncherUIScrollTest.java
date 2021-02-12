@@ -38,7 +38,7 @@ import com.android.launcher3.folder.FolderPagedView;
 import com.android.launcher3.util.LauncherLayoutBuilder;
 import com.android.launcher3.util.LauncherLayoutBuilder.FolderBuilder;
 import com.android.launcher3.util.LauncherModelHelper;
-import com.android.launcher3.widget.WidgetsFullSheet;
+import com.android.launcher3.widget.picker.WidgetsFullSheet;
 
 import org.junit.Before;
 import org.junit.Test;

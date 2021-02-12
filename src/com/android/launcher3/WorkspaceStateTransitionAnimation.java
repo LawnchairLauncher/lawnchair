@@ -32,7 +32,7 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.ZOOM_OUT;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
 import static com.android.launcher3.graphics.Scrim.SCRIM_PROGRESS;
-import static com.android.launcher3.graphics.WorkspaceAndHotseatScrim.SYSUI_PROGRESS;
+import static com.android.launcher3.graphics.SysUiScrim.SYSUI_PROGRESS;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_SCALE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_TRANSLATE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_FADE;
@@ -49,7 +49,8 @@ import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.anim.SpringAnimationBuilder;
-import com.android.launcher3.graphics.WorkspaceAndHotseatScrim;
+import com.android.launcher3.graphics.SysUiScrim;
+import com.android.launcher3.graphics.WorkspaceDragScrim;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.util.DynamicResource;
 import com.android.systemui.plugins.ResourceProvider;
@@ -183,10 +184,12 @@ public class WorkspaceStateTransitionAnimation {
     }
 
     public void setScrim(PropertySetter propertySetter, LauncherState state) {
-        WorkspaceAndHotseatScrim scrim = mLauncher.getDragLayer().getScrim();
-        propertySetter.setFloat(scrim, SCRIM_PROGRESS, state.getWorkspaceScrimAlpha(mLauncher),
-                LINEAR);
-        propertySetter.setFloat(scrim, SYSUI_PROGRESS,
+        WorkspaceDragScrim workspaceDragScrim = mLauncher.getDragLayer().getWorkspaceDragScrim();
+        propertySetter.setFloat(workspaceDragScrim, SCRIM_PROGRESS,
+                state.getWorkspaceScrimAlpha(mLauncher), LINEAR);
+
+        SysUiScrim sysUiScrim = mLauncher.getDragLayer().getSysUiScrim();
+        propertySetter.setFloat(sysUiScrim, SYSUI_PROGRESS,
                 state.hasFlag(FLAG_HAS_SYS_UI_SCRIM) ? 1 : 0, LINEAR);
     }
 
