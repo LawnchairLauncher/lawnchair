@@ -103,7 +103,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
     private var mEndAlpha: Int by ReflectionDelegate("mEndAlpha")
     private var mMidAlpha: Int by ReflectionDelegate("mMidAlpha")
     private val mMaxScrimAlpha: Int by ReflectionDelegate("mMaxScrimAlpha")
-    var mShelfColor: Int by ReflectionDelegate("mShelfColor")
+    private var mShelfColor: Int by ReflectionDelegate("mShelfColor")
     private var mSysUINavigationMode: SysUINavigationMode.Mode by ReflectionDelegate("mSysUINavigationMode")
     private var mMidProgress: Float by ReflectionDelegate("mMidProgress")
     private var mBeforeMidProgressColorInterpolator: Interpolator by ReflectionDelegate("mBeforeMidProgressColorInterpolator")
