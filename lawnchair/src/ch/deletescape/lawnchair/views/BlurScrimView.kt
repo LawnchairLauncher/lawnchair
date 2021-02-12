@@ -333,6 +333,10 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         blurDrawable?.viewOffsetX = scroll
     }
 
+    public fun getShelfColor() : Int {
+        return mShelfColor
+    }
+
     companion object {
         private const val DEBUG_TEXT_SIZE = 30f
         private const val DEBUG_LINE_HEIGHT = DEBUG_TEXT_SIZE + 3f

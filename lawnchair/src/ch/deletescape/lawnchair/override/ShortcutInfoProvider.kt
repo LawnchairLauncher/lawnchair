@@ -28,6 +28,7 @@ import ch.deletescape.lawnchair.util.SingletonHolder
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.model.data.WorkspaceItemInfo
 import com.android.launcher3.icons.LauncherIcons
+import com.android.launcher3.model.ModelWriter
 
 class ShortcutInfoProvider private constructor(context: Context) : CustomInfoProvider<WorkspaceItemInfo>(context) {
 
@@ -45,8 +46,8 @@ class ShortcutInfoProvider private constructor(context: Context) : CustomInfoPro
         return info.customTitle?.toString()
     }
 
-    override fun setTitle(info: WorkspaceItemInfo, title: String?) {
-        info.setTitle(context, title)
+    override fun setTitle(info: WorkspaceItemInfo, title: String?, modelWriter: ModelWriter) {
+        info.setTitle(title, modelWriter)
     }
 
     override fun setIcon(info: WorkspaceItemInfo, entry: IconPackManager.CustomIconEntry?) {

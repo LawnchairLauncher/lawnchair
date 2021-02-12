@@ -67,7 +67,7 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
     private var dynamicPadding = 0
 
     private val pickerComponent by lazy { this.getSystemService(LauncherApps::class.java)
-            .getActivityList(iconPack.packPackageName, Process.myUserHandle()).firstOrNull()?.componentName }
+            .getActivityList(iconPack?.packPackageName, Process.myUserHandle()).firstOrNull()?.componentName }
 
     private var searchItems: MutableList<AdapterItem>? = null
     private val searchHandler = object : Handler(ICON_PACK_EXECUTOR.looper) {
@@ -93,7 +93,7 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
             setDisplayHomeAsUpEnabled(true)
         }
 
-        search_view.queryHint = iconPack.displayName
+        search_view.queryHint = iconPack?.displayName
         search_view.setOnQueryTextListener(this)
 
         items.add(LoadingItem())
@@ -101,7 +101,7 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
         runOnUiWorkerThread {
             // make sure whatever running on ui worker has finished, then start parsing the pack
             runOnThread(iconPackUiHandler) {
-                iconPack.getAllIcons(::addEntries, { canceled })
+                iconPack?.getAllIcons(::addEntries, { canceled })
                 // Wait for the ui to finish processing new data
                 val waiter = Semaphore(0)
                 runOnUiThread {
@@ -212,7 +212,7 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
             if (data.hasExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE)) {
                 val icon = data.getParcelableExtra<Intent.ShortcutIconResource>(Intent.EXTRA_SHORTCUT_ICON_RESOURCE)
                 val entry = icon?.let { (iconPack as IconPackImpl).createEntry(it) }
-                onSelectIcon(entry)
+                entry?.let { onSelectIcon(it) }
                 return
             }
         }

@@ -28,6 +28,7 @@ import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController.CardDat
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController.Line
 import com.android.launcher3.R
 import com.android.launcher3.notification.NotificationInfo
+import com.android.launcher3.notification.NotificationMainView.NOTIFICATION_ITEM_INFO
 import com.android.launcher3.util.PackageUserKey
 
 @Keep
@@ -93,7 +94,7 @@ class NotificationUnreadProvider(controller: LawnchairSmartspaceController) :
         }
 
         val context = controller.context
-        val notif = NotificationInfo(context, sbn)
+        val notif = NotificationInfo(context, sbn, NOTIFICATION_ITEM_INFO)
         val app = getApp(sbn).toString()
         val title = notif.title?.toString() ?: ""
         val splitted = splitTitle(title)

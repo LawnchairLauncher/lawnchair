@@ -45,7 +45,7 @@ public class ActivityInitListener<T extends BaseActivity> implements SchedulerCa
     }
 
     @Override
-    public final boolean init(T activity, boolean alreadyOnHome) {
+    public boolean init(T activity, boolean alreadyOnHome) {
         if (!mIsRegistered) {
             return false;
         }

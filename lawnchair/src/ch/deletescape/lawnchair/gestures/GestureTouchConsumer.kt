@@ -20,7 +20,6 @@
 package ch.deletescape.lawnchair.gestures
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.PointF
 import android.graphics.RectF
 import android.os.SystemClock
@@ -30,12 +29,9 @@ import android.view.MotionEvent
 import android.view.MotionEvent.*
 import android.view.ViewConfiguration
 import ch.deletescape.lawnchair.LawnchairLauncher
-import ch.deletescape.lawnchair.gestures.ui.GestureHandlerInitListener
-import ch.deletescape.lawnchair.util.extensions.d
-import com.android.launcher3.BuildConfig
-import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 import com.android.launcher3.Utilities.squaredHypot
+import com.android.quickstep.BaseActivityInterface
 import com.android.quickstep.InputConsumer
 import com.android.quickstep.inputconsumers.DelegateInputConsumer
 import com.android.systemui.shared.system.InputMonitorCompat
@@ -49,11 +45,11 @@ class GestureTouchConsumer(
         private val context: Context,
         private val leftRegion: RectF,
         private val rightRegion: RectF,
-        private val activityControlHelper: ActivityControlHelper<*>,
+        private val activityControlHelper: BaseActivityInterface<*,*>,
         delegate: InputConsumer, inputMonitor: InputMonitorCompat)
     : DelegateInputConsumer(delegate, inputMonitor) {
 
-    private val launcher get() = activityControlHelper.createdActivity as? LawnchairLauncher
+    private val launcher get() = activityControlHelper.getCreatedActivity() as? LawnchairLauncher
     private val controller get() = launcher?.gestureController
     private var gestureHandler: GestureHandler? = null
 

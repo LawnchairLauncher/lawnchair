@@ -24,7 +24,6 @@ import ch.deletescape.lawnchair.flowerpot.rules.Rule
 import ch.deletescape.lawnchair.toTitleCase
 import ch.deletescape.lawnchair.useApplicationContext
 import ch.deletescape.lawnchair.util.SingletonHolder
-import com.android.launcher3.R
 import java.io.InputStream
 
 /**

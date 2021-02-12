@@ -28,7 +28,6 @@ import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.useApplicationContext
 import ch.deletescape.lawnchair.util.SingletonHolder
 import com.android.launcher3.R
-import com.android.launcher3.util.TraceHelper
 import java.lang.Exception
 
 class CustomFontManager(private val context: Context) {

@@ -21,6 +21,7 @@ import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.preferences.DrawerTabEditBottomSheet
 import com.android.launcher3.Launcher
 import com.android.launcher3.allapps.AllAppsStore
+import com.android.launcher3.model.ModelWriter
 import com.android.launcher3.model.data.FolderInfo
 
 class DrawerFolderInfo(private val drawerFolder: DrawerFolders.Folder) : FolderInfo() {
@@ -28,8 +29,8 @@ class DrawerFolderInfo(private val drawerFolder: DrawerFolders.Folder) : FolderI
     private var changed = false
     lateinit var appsStore: AllAppsStore
 
-    override fun setTitle(title: CharSequence?) {
-        super.setTitle(title)
+    override fun setTitle(title: CharSequence?, modelWriter: ModelWriter) {
+        super.setTitle(title, modelWriter)
         changed = true
         drawerFolder.title.value = title?.toString()
     }

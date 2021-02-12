@@ -26,6 +26,7 @@ import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.useApplicationContext
 import ch.deletescape.lawnchair.util.SingletonHolder
 import com.android.launcher3.LauncherAppState
+import com.android.launcher3.model.ModelWriter
 import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.util.ComponentKey
 
@@ -51,8 +52,8 @@ class AppInfoProvider private constructor(context: Context) : CustomInfoProvider
         return prefs.customAppName[getComponentKey(app)] ?: app.label
     }
 
-    override fun setTitle(info: AppInfo, title: String?) {
-        setTitle(info.toComponentKey(), title)
+    override fun setTitle(info: AppInfo, title: String?, modelWriter: ModelWriter) {
+        setTitle(info, title, modelWriter)
     }
 
     fun setTitle(key: ComponentKey, title: String?) {

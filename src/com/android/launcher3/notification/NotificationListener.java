@@ -37,8 +37,6 @@ import androidx.annotation.AnyThread;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
-import androidx.annotation.Keep;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.SecureSettingsObserver;
 
@@ -49,8 +47,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static ch.deletescape.lawnchair.settings.ui.SettingsActivity.NOTIFICATION_BADGING;
 
 /**
  * A {@link NotificationListenerService} that sends updates to its
@@ -109,12 +105,6 @@ public class NotificationListener extends NotificationListenerService {
             MODEL_EXECUTOR.submit(() -> MAIN_EXECUTOR.submit(() ->
                             listener.onNotificationFullRefresh(Collections.emptyList())));
         }
-    }
-
-    @Keep
-    public static void setStatusBarNotificationsChangedListener
-            (StatusBarNotificationsChangedListener listener) {
-        sStatusBarNotificationsChangedListener = listener;
     }
 
     public static void removeNotificationsChangedListener() {
@@ -212,11 +202,6 @@ public class NotificationListener extends NotificationListenerService {
         return true;
     }
 
-    @Keep
-    public static void removeStatusBarNotificationsChangedListener() {
-        sStatusBarNotificationsChangedListener = null;
-    }
-
     @Override
     public void onListenerConnected() {
         super.onListenerConnected();
@@ -238,9 +223,6 @@ public class NotificationListener extends NotificationListenerService {
 
     private void onNotificationFullRefresh() {
         mWorkerHandler.obtainMessage(MSG_NOTIFICATION_FULL_REFRESH).sendToTarget();
-        if (sStatusBarNotificationsChangedListener != null) {
-            sStatusBarNotificationsChangedListener.onNotificationFullRefresh();
-        }
     }
 
     @Override
@@ -340,14 +322,6 @@ public class NotificationListener extends NotificationListenerService {
             if ((notification.flags & Notification.FLAG_ONGOING_EVENT) != 0) {
                 return false;
             }
-            if (mTempRanking.getChannel().getId().equals(NotificationChannel.DEFAULT_CHANNEL_ID)) {
-                // Special filtering for the default, legacy "Miscellaneous" channel.
-                if ((notification.flags & Notification.FLAG_ONGOING_EVENT) != 0) {
-                    return true;
-                }
-            }
-        } else if ((notification.flags & Notification.FLAG_ONGOING_EVENT) != 0) {
-            return true;
         }
 
         CharSequence title = notification.extras.getCharSequence(Notification.EXTRA_TITLE);

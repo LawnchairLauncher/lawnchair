@@ -26,7 +26,6 @@ import ch.deletescape.lawnchair.util.LawnchairSingletonHolder
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.graphics.LauncherPreviewRenderer
 import com.android.launcher3.util.Executors
-import com.android.launcher3.util.LooperExecutor
 import java.util.concurrent.Future
 
 class CustomGridProvider(private val context: Context) : InvariantDeviceProfile.GridCustomizer {

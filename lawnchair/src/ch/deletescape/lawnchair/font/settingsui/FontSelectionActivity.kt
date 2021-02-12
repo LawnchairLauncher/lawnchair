@@ -42,7 +42,7 @@ class FontSelectionActivity : SettingsBaseActivity(), SearchView.OnQueryTextList
 
     private val adapter by lazy { FontAdapter(this) }
     private val key by lazy { intent.getStringExtra(EXTRA_KEY) }
-    private val fontPref by lazy { CustomFontManager.getInstance(this).fontPrefs.getValue(key) }
+    private val fontPref by lazy { CustomFontManager.getInstance(this).fontPrefs.getValue(key!!.toString()) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

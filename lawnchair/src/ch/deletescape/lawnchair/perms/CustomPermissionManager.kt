@@ -17,13 +17,11 @@
 
 package ch.deletescape.lawnchair.perms
 
-import android.app.Activity
 import android.content.Context
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import ch.deletescape.lawnchair.*
 import ch.deletescape.lawnchair.util.LawnchairSingletonHolder
-import ch.deletescape.lawnchair.util.SingletonHolder
 import ch.deletescape.lawnchair.util.extensions.d
 import com.android.launcher3.R
 

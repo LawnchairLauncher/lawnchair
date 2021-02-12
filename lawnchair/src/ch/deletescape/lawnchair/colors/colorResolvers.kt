@@ -122,7 +122,7 @@ class ARGBColorResolver(config: Config) : ColorEngine.ColorResolver(config) {
 abstract class WallpaperColorResolver(config: Config)
     : ColorEngine.ColorResolver(config), WallpaperColorInfo.OnChangeListener {
 
-    protected val colorInfo = WallpaperColorInfo.getInstance(engine.context) as WallpaperColorInfo
+    protected val colorInfo = WallpaperColorInfo.INSTANCE.get(engine.context) as WallpaperColorInfo
 
     override fun startListening() {
         super.startListening()

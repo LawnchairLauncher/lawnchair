@@ -122,7 +122,7 @@ open class AppsAdapter(
         init {
             val appInfo = AppInfo(context, info, info.user)
             LauncherAppState.getInstance(context).iconCache.getTitleAndIcon(appInfo, false)
-            iconDrawable = BitmapDrawable(context.resources, appInfo.iconBitmap)
+            iconDrawable = BitmapDrawable(context.resources, appInfo.bitmap)
         }
     }
 

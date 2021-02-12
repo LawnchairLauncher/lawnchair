@@ -25,6 +25,7 @@ import ch.deletescape.lawnchair.useApplicationContext
 import ch.deletescape.lawnchair.util.SingletonHolder
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.R
+import com.android.launcher3.model.ModelWriter
 import com.android.launcher3.model.data.FolderInfo
 
 class FolderInfoProvider(context: Context) : CustomInfoProvider<FolderInfo>(context) {
@@ -43,8 +44,8 @@ class FolderInfoProvider(context: Context) : CustomInfoProvider<FolderInfo>(cont
         return info.title.toString()
     }
 
-    override fun setTitle(info: FolderInfo, title: String?) {
-        info.setTitle(title ?: "")
+    override fun setTitle(info: FolderInfo, title: String?, modelWriter: ModelWriter) {
+        info.setTitle(title ?: "", modelWriter)
     }
 
     override fun setIcon(info: FolderInfo, entry: IconPackManager.CustomIconEntry?) {

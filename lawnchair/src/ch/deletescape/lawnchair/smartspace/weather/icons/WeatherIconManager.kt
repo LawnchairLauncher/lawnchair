@@ -23,10 +23,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
-import ch.deletescape.lawnchair.getIcon
 import ch.deletescape.lawnchair.lawnchairPrefs
-import ch.deletescape.lawnchair.smartspace.WeatherIconProvider
 import ch.deletescape.lawnchair.util.LawnchairSingletonHolder
 import com.android.launcher3.R
 import java.lang.RuntimeException

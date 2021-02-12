@@ -15,7 +15,7 @@ import org.xmlpull.v1.XmlPullParser;
 public class FixedScaleDrawable extends DrawableWrapper {
 
     // TODO b/33553066 use the constant defined in MaskableIconDrawable
-    private static final float LEGACY_ICON_SCALE = .7f * .6667f;
+    public static final float LEGACY_ICON_SCALE = .7f * .6667f;
     private float mScaleX, mScaleY;
 
     public FixedScaleDrawable() {

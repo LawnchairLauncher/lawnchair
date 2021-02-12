@@ -24,6 +24,7 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.LauncherApps
 import android.net.Uri
 import android.view.View
+import ch.deletescape.lawnchair.LawnchairLauncher
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.override.CustomInfoProvider
 import ch.deletescape.lawnchair.sesame.Sesame
@@ -39,16 +40,16 @@ import com.android.launcher3.popup.SystemShortcut
 import com.google.android.apps.nexuslauncher.CustomBottomSheet
 import ninja.sesame.lib.bridge.v1.SesameFrontend
 
-class LawnchairShortcut(private val context: Context) {
+class LawnchairShortcut(private val context: Context, launcher: LawnchairLauncher, itemInfo: ItemInfo) {
 
     private val shortcuts = listOf(
-            ShortcutEntry("edit", Edit(), true),
-            ShortcutEntry("sesame", SesameSettings(), true),
-            ShortcutEntry("info", SystemShortcut.AppInfo(), true),
-            ShortcutEntry("widgets", SystemShortcut.Widgets(), true),
-            ShortcutEntry("install", SystemShortcut.Install(), true),
-            ShortcutEntry("remove", Remove(), false),
-            ShortcutEntry("uninstall", Uninstall(), false)
+            ShortcutEntry("edit", Edit(launcher, itemInfo), true),
+            ShortcutEntry("sesame", SesameSettings(launcher, itemInfo), true),
+            ShortcutEntry("info", SystemShortcut.AppInfo(launcher, itemInfo), true),
+            ShortcutEntry("widgets", SystemShortcut.Widgets(launcher, itemInfo), true),
+            ShortcutEntry("install", SystemShortcut.Install(launcher, itemInfo), true),
+            ShortcutEntry("remove", Remove(launcher, itemInfo), false),
+            ShortcutEntry("uninstall", Uninstall(launcher, itemInfo), false)
     )
 
     inner class ShortcutEntry(key: String, val shortcut: SystemShortcut<*>, enabled: Boolean) {

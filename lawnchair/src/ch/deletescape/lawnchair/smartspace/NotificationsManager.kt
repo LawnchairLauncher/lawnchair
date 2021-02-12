@@ -20,18 +20,21 @@ package ch.deletescape.lawnchair.smartspace
 import android.service.notification.StatusBarNotification
 import ch.deletescape.lawnchair.runOnMainThread
 import ch.deletescape.lawnchair.runOnUiWorkerThread
+import ch.deletescape.lawnchair.util.extensions.d
+import com.android.launcher3.notification.NotificationKeyData
 import com.android.launcher3.notification.NotificationListener
+import com.android.launcher3.util.PackageUserKey
 
-object NotificationsManager : NotificationListener.StatusBarNotificationsChangedListener {
+object NotificationsManager : NotificationListener.NotificationsChangedListener {
 
-    private val notificationsMap = mutableMapOf<String, StatusBarNotification>()
+    private val notificationsMap = mutableMapOf<String?, NotificationKeyData?>()
     private val listeners  = mutableListOf<OnChangeListener>()
 
-    var notifications = emptyList<StatusBarNotification>()
+    var notifications = emptyList<NotificationKeyData?>()
         private set
 
     init {
-        NotificationListener.setStatusBarNotificationsChangedListener(this)
+        NotificationListener.setNotificationsChangedListener(this)
     }
 
     fun addListener(listener: OnChangeListener) {
@@ -40,30 +43,6 @@ object NotificationsManager : NotificationListener.StatusBarNotificationsChanged
 
     fun removeListener(listener: OnChangeListener) {
         listeners.remove(listener)
-    }
-
-    override fun onNotificationPosted(sbn: StatusBarNotification) {
-        notificationsMap[sbn.key] = sbn
-        onChange()
-    }
-
-    override fun onNotificationRemoved(sbn: StatusBarNotification) {
-        notificationsMap.remove(sbn.key)
-        onChange()
-    }
-
-    override fun onNotificationFullRefresh() {
-        runOnUiWorkerThread {
-            val tmpMap = NotificationListener.getInstanceIfConnected()
-                    ?.activeNotifications?.associateBy { it.key }
-            runOnMainThread {
-                notificationsMap.clear()
-                if (tmpMap != null) {
-                    notificationsMap.putAll(tmpMap)
-                }
-                onChange()
-            }
-        }
     }
 
     private fun onChange() {
@@ -75,5 +54,36 @@ object NotificationsManager : NotificationListener.StatusBarNotificationsChanged
     interface OnChangeListener {
 
         fun onNotificationsChanged()
+    }
+
+    override fun onNotificationRemoved(removedPackageUserKey: PackageUserKey?,
+                                       notificationKey: NotificationKeyData?) {
+        notificationsMap.remove(removedPackageUserKey?.mPackageName)
+        onChange()
+    }
+
+    override fun onNotificationFullRefresh(
+            activeNotifications: MutableList<StatusBarNotification>?) {
+        runOnUiWorkerThread {
+            val tmpMap: MutableMap<String, NotificationKeyData> =
+                    emptyMap<String, NotificationKeyData>().toMutableMap()
+            if (activeNotifications != null) {
+                for (notification: StatusBarNotification in activeNotifications) {
+                    tmpMap[PackageUserKey.fromNotification(notification).mPackageName] =
+                            NotificationKeyData.fromNotification(notification)
+                }
+                runOnMainThread {
+                    notificationsMap.clear()
+                    notificationsMap.putAll(tmpMap)
+                    onChange()
+                }
+            }
+        }
+    }
+
+    override fun onNotificationPosted(postedPackageUserKey: PackageUserKey?,
+                                      notificationKey: NotificationKeyData?) {
+        notificationsMap[postedPackageUserKey?.mPackageName] = notificationKey
+        onChange()
     }
 }
