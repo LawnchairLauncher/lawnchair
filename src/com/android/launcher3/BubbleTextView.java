@@ -200,7 +200,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             setLineCount(lines);
             colorEngine.addColorChangeListeners(this, Resolvers.ALLAPPS_ICON_LABEL);
         } else if (display == DISPLAY_FOLDER) {
-            mHideText = prefs.getHideAppLabels();
+            mHideText = prefs.getHideFolderAppLabels();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, isTextHidden() ? 0 : grid.folderChildTextSizePx);
             setCompoundDrawablePadding(grid.folderChildDrawablePaddingPx);
             defaultIconSize = grid.folderChildIconSizePx;
