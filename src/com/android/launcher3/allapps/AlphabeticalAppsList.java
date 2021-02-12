@@ -29,8 +29,10 @@ import ch.deletescape.lawnchair.groups.DrawerFolderInfo;
 import ch.deletescape.lawnchair.groups.DrawerFolderItem;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherModel;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -535,13 +537,17 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
     }
 
     private List<DrawerFolderInfo> getFolderInfos() {
+        LauncherAppState app = LauncherAppState.getInstance(mLauncher);
+        LauncherModel model = app.getModel();
+        ModelWriter modelWriter = model.getWriter(false, true);
         return Utilities.getLawnchairPrefs(mLauncher)
                 .getAppGroupsManager()
                 .getDrawerFolders()
-                .getFolderInfos(this);
+                .getFolderInfos(this, modelWriter);
     }
 
     private Set<ComponentKey> getFolderFilteredApps() {
+
         return Utilities.getLawnchairPrefs(mLauncher)
                 .getAppGroupsManager()
                 .getDrawerFolders()

@@ -49,7 +49,7 @@ class DrawerFolders(manager: AppGroupsManager) :
         changeCallback.reloadDrawer()
     }
 
-    fun getFolderInfos(apps: AlphabeticalAppsList) = getFolderInfos(buildAppsMap(apps)::get)
+    fun getFolderInfos(apps: AlphabeticalAppsList, modelWriter: ModelWriter) = getFolderInfos(buildAppsMap(apps)::get, modelWriter)
 
     private fun buildAppsMap(apps: AlphabeticalAppsList): Map<ComponentKey, AppInfo> {
         // Copy the list before accessing it to prevent concurrent list access
@@ -57,10 +57,10 @@ class DrawerFolders(manager: AppGroupsManager) :
     }
 
     private fun getFolderInfos(
-            getAppInfo: (ComponentKey) -> AppInfo?): List<DrawerFolderInfo> = getGroups()
+            getAppInfo: (ComponentKey) -> AppInfo?, modelWriter: ModelWriter): List<DrawerFolderInfo> = getGroups()
             .asSequence()
             .filter { !it.isEmpty }
-            .map { it.toFolderInfo(getAppInfo) }
+            .map { it.toFolderInfo(getAppInfo, modelWriter) }
             .toList()
 
     fun getHiddenComponents() = getGroups()

@@ -19,10 +19,12 @@
 
 package ch.deletescape.lawnchair.smartspace.weather.icons
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.util.LawnchairSingletonHolder
 import com.android.launcher3.R
@@ -35,7 +37,8 @@ class WeatherIconManager(private val context: Context) {
             object : WeatherIconPack(context, context.getString(R.string.weather_icons_default), "",
                                      RecoloringMode.NEVER) {
                 override val provider = DefaultIconProvider(context)
-                override val icon = context.getDrawable(R.drawable.weather_04)
+                @SuppressLint("UseCompatLoadingForDrawables")
+                override val icon: Drawable = context.getDrawable(R.drawable.weather_04)!!
             }
 
     fun getIconPacks(): List<WeatherIconPack> = mutableListOf<WeatherIconPack>(defaultPack).apply {

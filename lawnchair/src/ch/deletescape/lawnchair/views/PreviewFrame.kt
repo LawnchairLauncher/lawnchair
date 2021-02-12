@@ -96,7 +96,7 @@ class PreviewFrame(context: Context, attrs: AttributeSet?) :
                             .setPackage(context.packageName)
                             .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
 
-            listener.initWhenReady()
+//            listener.initWhenReady()
             context.startActivity(
                     homeIntent,
                     ActivityOptions.makeCustomAnimation(

@@ -17,6 +17,7 @@
 
 package ch.deletescape.lawnchair.smartspace
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Criteria
 import android.location.LocationManager
@@ -53,6 +54,7 @@ class OWMWeatherDataProvider(controller: LawnchairSmartspaceController) :
         prefs.addOnPreferenceChangeListener(this, "pref_weatherApiKey", "pref_weather_city", "pref_weather_units")
     }
 
+    @SuppressLint("MissingPermission")
     override fun updateData() {
         // TODO: Create a search/dropdown for cities, make Auto the default
         if (prefs.weatherCity == "##Auto") {
@@ -61,7 +63,7 @@ class OWMWeatherDataProvider(controller: LawnchairSmartspaceController) :
                 return
             }
             val locationProvider = locationManager?.getBestProvider(Criteria(), true)
-            val location = locationManager?.getLastKnownLocation(locationProvider)
+            val location = locationProvider?.let { locationManager?.getLastKnownLocation(it) }
             if (location != null) {
                 owm.getCurrentWeatherByGeoCoordinates(location.latitude, location.longitude, this)
             }
