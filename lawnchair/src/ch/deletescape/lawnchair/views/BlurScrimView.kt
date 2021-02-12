@@ -21,44 +21,25 @@ import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
-import android.view.View
-import androidx.core.content.ContextCompat
+import android.view.animation.Interpolator
 import androidx.core.graphics.ColorUtils
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.blur.BlurDrawable
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.dpToPx
-import ch.deletescape.lawnchair.isVisible
 import ch.deletescape.lawnchair.runOnMainThread
+import ch.deletescape.lawnchair.util.ReflectionDelegate
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.LauncherState
 import com.android.launcher3.LauncherState.BACKGROUND_APP
-import com.android.launcher3.R
 import com.android.launcher3.Utilities
-import com.android.launcher3.anim.Interpolators.*
-import com.android.launcher3.graphics.NinePatchDrawHelper
-import com.android.launcher3.icons.ShadowGenerator
-import com.android.launcher3.util.Themes
+import com.android.launcher3.anim.Interpolators.ACCEL_2
+import com.android.launcher3.anim.Interpolators.LINEAR
 import com.android.quickstep.SysUINavigationMode
 import com.android.quickstep.views.ShelfScrimView
-import com.google.android.apps.nexuslauncher.qsb.AbstractQsbLayout
+import kotlin.math.roundToInt
 
-/*
- * Copyright (C) 2018 paphonb@xda
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
 class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(context, attrs),
         LawnchairPreferences.OnPreferenceChangeListener,
@@ -115,6 +96,21 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
 
     private val defaultEndAlpha = Color.alpha(mEndScrim)
 
+    private val prefs = Utilities.getLawnchairPrefs(context)
+
+    // Private fields in AOSP code
+    private var mRadius: Float by ReflectionDelegate("mRadius")
+    private var mEndAlpha: Int by ReflectionDelegate("mEndAlpha")
+    private var mMidAlpha: Int by ReflectionDelegate("mMidAlpha")
+    private val mMaxScrimAlpha: Int by ReflectionDelegate("mMaxScrimAlpha")
+    private var mShelfColor: Int by ReflectionDelegate("mShelfColor")
+    private var mSysUINavigationMode: SysUINavigationMode.Mode by ReflectionDelegate("mSysUINavigationMode")
+    private var mMidProgress: Float by ReflectionDelegate("mMidProgress")
+    private var mBeforeMidProgressColorInterpolator: Interpolator by ReflectionDelegate("mBeforeMidProgressColorInterpolator")
+    private var mAfterMidProgressColorInterpolator: Interpolator by ReflectionDelegate("mAfterMidProgressColorInterpolator")
+    private var mShelfTop: Float by ReflectionDelegate("mShelfTop")
+
+
     val currentBlurAlpha get() = blurDrawable?.alpha
 
     private fun createBlurDrawable(): BlurDrawable? {
@@ -139,7 +135,6 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-
         prefs.addOnPreferenceChangeListener(this, *prefsToWatch)
         ColorEngine.getInstance(context).addColorChangeListeners(this, *colorsToWatch)
         BlurWallpaperProvider.getInstance(context).addListener(this)
@@ -187,6 +182,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
     }
 
     private fun calculateEndScrim() {
+        // TODO mEndScrim is final in the original AOSP ScrimView.java. Ideally we can work around modifying that file
         mEndScrim = ColorUtils.setAlphaComponent(allAppsBackground, mEndAlpha)
         mEndFlatColor = ColorUtils.compositeColors(mEndScrim, ColorUtils.setAlphaComponent(
                 mScrimColor, mMaxScrimAlpha))
@@ -198,7 +194,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         val hasRecents = Utilities.isRecentsEnabled() && recentsProgress < 1f
 
         val fullShelfColor = ColorUtils.setAlphaComponent(allAppsBackground, mEndAlpha)
-        val recentsShelfColor = ColorUtils.setAlphaComponent(allAppsBackground, super.getMidAlpha())
+        val recentsShelfColor = ColorUtils.setAlphaComponent(allAppsBackground, getMidAlpha())
         val nullShelfColor = ColorUtils.setAlphaComponent(allAppsBackground, 0)
 
         val colors = ArrayList<Pair<Float, Int>>()
@@ -223,8 +219,8 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         }
     }
 
-    override fun getMidAlpha(): Int {
-        return prefs.dockOpacity.takeIf { it >= 0 } ?: super.getMidAlpha()
+    private fun getMidAlpha(): Int {
+        return prefs.dockOpacity.takeIf { it >= 0 } ?: mMidAlpha
     }
 
     override fun onDetachedFromWindow() {
@@ -269,13 +265,13 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         super.updateColors()
         val alpha = when {
             useFlatColor -> ((1 - mProgress) * 255).toInt()
-            mProgress >= fullBlurProgress -> Math.round(255 * ACCEL_2.getInterpolation(
-                    Math.max(0f, 1 - mProgress) / (1 - fullBlurProgress)))
+            mProgress >= fullBlurProgress -> (255 * ACCEL_2.getInterpolation(
+                    0f.coerceAtLeast(1 - mProgress) / (1 - fullBlurProgress))).roundToInt()
             else -> 255
         }
         blurDrawable?.alpha = alpha
 
-        mDragHandleOffset = Math.max(0f, mDragHandleBounds.top + mDragHandleSize - mShelfTop)
+        mDragHandleOffset = 0f.coerceAtLeast(mDragHandleBounds.top + mDragHandleSize.y - mShelfTop)
 
         if (!useFlatColor) {
             if (mProgress >= 1 && mSysUINavigationMode == SysUINavigationMode.Mode.NO_BUTTON
@@ -312,14 +308,6 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         }
     }
 
-    override fun getMidProgress(): Float {
-        /* TODO: implement this
-        if (!prefs.dockGradientStyle) {
-            return Math.max(HomeState.getNormalProgress(mLauncher), OverviewState.getNormalVerticalProgress(mLauncher))
-        }
-         */
-        return super.getMidProgress()
-    }
 
     override fun onEnabledChanged() {
         postReInitUi()
@@ -329,7 +317,8 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         listOf(
                 "version: ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})",
                 "state: ${mLauncher.stateManager.state::class.java.simpleName}",
-                "toState: ${mLauncher.stateManager.toState::class.java.simpleName}"
+                // TODO look at StateManager.toState changes
+                //"toState: ${mLauncher.stateManager.toState::class.java.simpleName}"
               ).forEachIndexed { index, line ->
             canvas.drawText(line, 50f, 200f + (DEBUG_LINE_HEIGHT * index), debugTextPaint)
         }

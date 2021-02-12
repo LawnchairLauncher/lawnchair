@@ -116,7 +116,7 @@ public class ScrimView<T extends Launcher> extends View implements Insettable, O
     protected final T mLauncher;
     private final WallpaperColorInfo mWallpaperColorInfo;
     private final AccessibilityManager mAM;
-    protected final int mEndScrim;
+    protected int mEndScrim;
     protected final boolean mIsScrimDark;
 
     private final StateListener<LauncherState> mAccessibilityLauncherStateListener =
