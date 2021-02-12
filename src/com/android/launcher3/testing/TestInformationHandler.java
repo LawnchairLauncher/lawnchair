@@ -33,7 +33,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.util.ResourceBasedOverride;
-import com.android.launcher3.widget.WidgetsFullSheet;
+import com.android.launcher3.widget.picker.WidgetsFullSheet;
 
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;

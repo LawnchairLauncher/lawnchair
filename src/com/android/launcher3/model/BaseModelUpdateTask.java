@@ -28,7 +28,7 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ItemInfoMatcher;
-import com.android.launcher3.widget.WidgetListRowEntry;
+import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -123,7 +123,7 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
     }
 
     public void bindUpdatedWidgets(BgDataModel dataModel) {
-        final ArrayList<WidgetListRowEntry> widgets =
+        final ArrayList<WidgetsListBaseEntry> widgets =
                 dataModel.widgetsModel.getWidgetsList(mApp.getContext());
         scheduleCallbackTask(c -> c.bindAllWidgets(widgets));
     }

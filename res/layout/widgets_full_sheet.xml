@@ -13,7 +13,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher3.widget.WidgetsFullSheet
+<com.android.launcher3.widget.picker.WidgetsFullSheet
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -27,7 +27,7 @@
         android:background="?android:attr/colorPrimary"
         android:elevation="4dp">
 
-        <com.android.launcher3.widget.WidgetsRecyclerView
+        <com.android.launcher3.widget.picker.WidgetsRecyclerView
             android:id="@+id/widgets_list_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -49,4 +49,4 @@
             android:layout_alignParentTop="true"
             android:layout_marginEnd="@dimen/fastscroll_end_margin" />
     </com.android.launcher3.views.TopRoundedCornerView>
-</com.android.launcher3.widget.WidgetsFullSheet>
+</com.android.launcher3.widget.picker.WidgetsFullSheet>
