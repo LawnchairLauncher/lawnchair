@@ -154,7 +154,7 @@ class CustomGridView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
 
         fun loadPreview() {
             runOnUiWorkerThread {
-                val preview = CustomGridProvider.getInstance(context).renderPreview(gridCustomizer).get()
+                val preview = CustomGridProvider.getInstance(context).renderPreview(gridCustomizer)
                 runOnMainThread {
                     onFinishListener?.invoke(preview)
                 }
