@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.widget;
+package com.android.launcher3.widget.picker;
 
 import android.util.Log;
 
@@ -22,7 +22,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.data.PackageItemInfo;
-import com.android.launcher3.widget.WidgetsListAdapter.WidgetListRowEntryComparator;
+import com.android.launcher3.widget.model.WidgetsListBaseEntry;
+import com.android.launcher3.widget.model.WidgetsListContentEntry;
+import com.android.launcher3.widget.picker.WidgetsListAdapter.WidgetListBaseRowEntryComparator;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -43,8 +45,13 @@ public class WidgetsDiffReporter {
         mListener = listener;
     }
 
-    public void process(ArrayList<WidgetListRowEntry> currentEntries,
-            ArrayList<WidgetListRowEntry> newEntries, WidgetListRowEntryComparator comparator) {
+    /**
+     * Notifies the difference between {@code currentEntries} & {@code newEntries} by calling the
+     * relevant {@link androidx.recyclerview.widget.RecyclerView.RecyclerViewDataObserver} methods.
+     */
+    public void process(ArrayList<WidgetsListBaseEntry> currentEntries,
+            ArrayList<WidgetsListBaseEntry> newEntries,
+            WidgetListBaseRowEntryComparator comparator) {
         if (DEBUG) {
             Log.d(TAG, "process oldEntries#=" + currentEntries.size()
                     + " newEntries#=" + newEntries.size());
@@ -62,20 +69,20 @@ public class WidgetsDiffReporter {
             }
             return;
         }
-        ArrayList<WidgetListRowEntry> orgEntries =
-                (ArrayList<WidgetListRowEntry>) currentEntries.clone();
-        Iterator<WidgetListRowEntry> orgIter = orgEntries.iterator();
-        Iterator<WidgetListRowEntry> newIter = newEntries.iterator();
+        ArrayList<WidgetsListBaseEntry> orgEntries =
+                (ArrayList<WidgetsListBaseEntry>) currentEntries.clone();
+        Iterator<WidgetsListBaseEntry> orgIter = orgEntries.iterator();
+        Iterator<WidgetsListBaseEntry> newIter = newEntries.iterator();
 
-        WidgetListRowEntry orgRowEntry = orgIter.next();
-        WidgetListRowEntry newRowEntry = newIter.next();
+        WidgetsListBaseEntry orgRowEntry = orgIter.next();
+        WidgetsListBaseEntry newRowEntry = newIter.next();
 
         do {
             int diff = comparePackageName(orgRowEntry, newRowEntry, comparator);
             if (DEBUG) {
                 Log.d(TAG, String.format("diff=%d orgRowEntry (%s) newRowEntry (%s)",
-                        diff, orgRowEntry != null? orgRowEntry.toString() : null,
-                        newRowEntry != null? newRowEntry.toString() : null));
+                        diff, orgRowEntry != null ? orgRowEntry.toString() : null,
+                        newRowEntry != null ? newRowEntry.toString() : null));
             }
             int index = -1;
             if (diff < 0) {
@@ -83,17 +90,17 @@ public class WidgetsDiffReporter {
                 mListener.notifyItemRemoved(index);
                 if (DEBUG) {
                     Log.d(TAG, String.format("notifyItemRemoved called (%d)%s", index,
-                            orgRowEntry.titleSectionName));
+                            orgRowEntry.mTitleSectionName));
                 }
                 currentEntries.remove(index);
                 orgRowEntry = orgIter.hasNext() ? orgIter.next() : null;
             } else if (diff > 0) {
-                index = orgRowEntry != null? currentEntries.indexOf(orgRowEntry):
-                        currentEntries.size();
+                index = orgRowEntry != null ? currentEntries.indexOf(orgRowEntry)
+                        : currentEntries.size();
                 currentEntries.add(index, newRowEntry);
                 if (DEBUG) {
                     Log.d(TAG, String.format("notifyItemInserted called (%d)%s", index,
-                            newRowEntry.titleSectionName));
+                            newRowEntry.mTitleSectionName));
                 }
                 newRowEntry = newIter.hasNext() ? newIter.next() : null;
                 mListener.notifyItemInserted(index);
@@ -102,14 +109,14 @@ public class WidgetsDiffReporter {
                 // same package name but,
                 // did the icon, title, etc, change?
                 // or did the widget size and desc, span, etc change?
-                if (!isSamePackageItemInfo(orgRowEntry.pkgItem, newRowEntry.pkgItem) ||
-                        !orgRowEntry.widgets.equals(newRowEntry.widgets)) {
+                if (!isSamePackageItemInfo(orgRowEntry.mPkgItem, newRowEntry.mPkgItem)
+                        || !areWidgetsEqual(orgRowEntry, newRowEntry)) {
                     index = currentEntries.indexOf(orgRowEntry);
                     currentEntries.set(index, newRowEntry);
                     mListener.notifyItemChanged(index);
                     if (DEBUG) {
                         Log.d(TAG, String.format("notifyItemChanged called (%d)%s", index,
-                                newRowEntry.titleSectionName));
+                                newRowEntry.mTitleSectionName));
                     }
                 }
                 orgRowEntry = orgIter.hasNext() ? orgIter.next() : null;
@@ -122,10 +129,11 @@ public class WidgetsDiffReporter {
      * Compare package name using the same comparator as in {@link WidgetsListAdapter}.
      * Also handle null row pointers.
      */
-    private int comparePackageName(WidgetListRowEntry curRow, WidgetListRowEntry newRow,
-            WidgetListRowEntryComparator comparator) {
+    private int comparePackageName(WidgetsListBaseEntry curRow, WidgetsListBaseEntry newRow,
+            WidgetListBaseRowEntryComparator comparator) {
         if (curRow == null && newRow == null) {
-            throw new IllegalStateException("Cannot compare PackageItemInfo if both rows are null.");
+            throw new IllegalStateException(
+                    "Cannot compare PackageItemInfo if both rows are null.");
         }
 
         if (curRow == null && newRow != null) {
@@ -134,6 +142,17 @@ public class WidgetsDiffReporter {
             return -1; // old row needs to be deleted
         }
         return comparator.compare(curRow, newRow);
+    }
+
+    private boolean areWidgetsEqual(WidgetsListBaseEntry curRow,
+            WidgetsListBaseEntry newRow) {
+        if (!(curRow instanceof WidgetsListContentEntry)
+                || !(newRow instanceof WidgetsListContentEntry)) {
+            return false;
+        }
+        WidgetsListContentEntry orgRowEntry = (WidgetsListContentEntry) curRow;
+        WidgetsListContentEntry newRowEntry = (WidgetsListContentEntry) newRow;
+        return orgRowEntry.mWidgets.equals(newRowEntry.mWidgets);
     }
 
     private boolean isSamePackageItemInfo(PackageItemInfo curInfo, PackageItemInfo newInfo) {

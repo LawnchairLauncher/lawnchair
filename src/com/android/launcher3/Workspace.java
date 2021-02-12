@@ -81,6 +81,7 @@ import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.folder.PreviewBackground;
 import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.graphics.PreloadIconDrawable;
+import com.android.launcher3.graphics.WorkspaceDragScrim;
 import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logging.StatsLogManager;
@@ -199,6 +200,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     private boolean mStripScreensOnPageStopMoving = false;
 
     private DragPreviewProvider mOutlineProvider = null;
+
+    private WorkspaceDragScrim mWorkspaceDragScrim;
+
     private boolean mWorkspaceFadeInAdjacentScreens;
 
     final WallpaperOffsetInterpolator mWallpaperOffset;
@@ -1161,6 +1165,19 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
     }
 
+    public void setWorkspaceDragScrim(WorkspaceDragScrim workspaceDragScrim) {
+        mWorkspaceDragScrim = workspaceDragScrim;
+    }
+
+    @Override
+    public void invalidate() {
+        // The workspace scrim may need to be re-rendered based on the workspace scroll
+        if (mWorkspaceDragScrim != null) {
+            mWorkspaceDragScrim.invalidate();
+        }
+        super.invalidate();
+    }
+
     @Override
     public void computeScroll() {
         super.computeScroll();
@@ -1706,10 +1723,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         if (dropOverView instanceof FolderIcon) {
             FolderIcon fi = (FolderIcon) dropOverView;
             if (fi.acceptDrop(d.dragInfo)) {
-                mStatsLogManager.logger().withItemInfo(d.dragInfo).withInstanceId(d.logInstanceId)
-                        .log(LauncherEvent.LAUNCHER_ITEM_DROP_COMPLETED);
+                mStatsLogManager.logger().withItemInfo(fi.mInfo).withInstanceId(d.logInstanceId)
+                        .log(LauncherEvent.LAUNCHER_ITEM_DROP_COMPLETED_ON_FOLDER_ICON);
                 fi.onDrop(d, false /* itemReturnedOnFailedDrop */);
-
                 // if the drag started here, we need to remove it from the workspace
                 if (!external) {
                     getParentCellLayoutForView(mDragInfo.cell).removeView(mDragInfo.cell);
@@ -2028,7 +2044,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
         // Invalidating the scrim will also force this CellLayout
         // to be invalidated so that it is highlighted if necessary.
-        mLauncher.getDragLayer().getScrim().invalidate();
+        mLauncher.getDragLayer().getWorkspaceDragScrim().invalidate();
     }
 
     public CellLayout getCurrentDragOverlappingLayout() {

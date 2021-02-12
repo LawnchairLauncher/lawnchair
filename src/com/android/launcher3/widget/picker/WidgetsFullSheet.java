@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.widget;
+package com.android.launcher3.widget.picker;
 
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.testing.TestProtocol.NORMAL_STATE_ORDINAL;
@@ -42,6 +42,7 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 import com.android.launcher3.views.TopRoundedCornerView;
+import com.android.launcher3.widget.BaseWidgetSheet;
 
 /**
  * Popup for showing the full list of available widgets
@@ -218,8 +219,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             mNoIntercept = false;
             RecyclerViewFastScroller scroller = mRecyclerView.getScrollbar();
-            if (scroller.getThumbOffsetY() >= 0 &&
-                    getPopupContainer().isEventOverView(scroller, ev)) {
+            if (scroller.getThumbOffsetY() >= 0
+                    && getPopupContainer().isEventOverView(scroller, ev)) {
                 mNoIntercept = true;
             } else if (getPopupContainer().isEventOverView(mContent, ev)) {
                 mNoIntercept = !mRecyclerView.shouldContainerScroll(ev, getPopupContainer());
@@ -228,6 +229,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         return super.onControllerInterceptTouchEvent(ev);
     }
 
+    /** Shows the {@link WidgetsFullSheet} on the launcher. */
     public static WidgetsFullSheet show(Launcher launcher, boolean animate) {
         WidgetsFullSheet sheet = (WidgetsFullSheet) launcher.getLayoutInflater()
                 .inflate(R.layout.widgets_full_sheet, launcher.getDragLayer(), false);
@@ -237,6 +239,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         return sheet;
     }
 
+    /** Gets the {@link WidgetsRecyclerView} which shows all widgets in {@link WidgetsFullSheet}. */
     @VisibleForTesting
     public static WidgetsRecyclerView getWidgetsView(Launcher launcher) {
         return launcher.findViewById(R.id.widgets_list_view);

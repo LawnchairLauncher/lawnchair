@@ -37,8 +37,8 @@ import com.android.launcher3.tapl.AppIconMenuItem;
 import com.android.launcher3.tapl.Widgets;
 import com.android.launcher3.tapl.Workspace;
 import com.android.launcher3.views.OptionsPopupView;
-import com.android.launcher3.widget.WidgetsFullSheet;
-import com.android.launcher3.widget.WidgetsRecyclerView;
+import com.android.launcher3.widget.picker.WidgetsFullSheet;
+import com.android.launcher3.widget.picker.WidgetsRecyclerView;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -110,6 +110,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
                 .launch(mDevice.getLauncherPackageName());
     }
 
+    @Ignore
     @Test
     public void testPressHomeOnAllAppsContextMenu() throws Exception {
         final AllApps allApps = mLauncher.getWorkspace().switchToAllApps();
@@ -234,6 +235,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         }
     }
 
+    @Ignore
     @Test
     @PortraitLandscape
     public void testAppIconLaunchFromAllAppsFromHome() throws Exception {
@@ -244,6 +246,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         runIconLaunchFromAllAppsTest(this, allApps);
     }
 
+    @Ignore
     @Test
     @PortraitLandscape
     public void testWidgets() throws Exception {
