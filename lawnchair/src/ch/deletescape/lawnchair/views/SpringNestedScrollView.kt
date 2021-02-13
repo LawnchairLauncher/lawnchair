@@ -21,16 +21,20 @@ import android.content.Context
 import android.graphics.Canvas
 import android.util.AttributeSet
 import android.view.View
+import android.widget.EdgeEffect
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView.EdgeEffectFactory.DIRECTION_BOTTOM
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.getColorAccent
 import ch.deletescape.lawnchair.getColorAttr
-import ch.deletescape.lawnchair.util.getField
+import ch.deletescape.lawnchair.util.ReflectionDelegate
 
 open class SpringNestedScrollView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : NestedScrollView(context, attrs, defStyleAttr) {
+                                                           ) :
+        NestedScrollView(context, attrs, defStyleAttr) {
+    var edgeGlowTop: EdgeEffect? by ReflectionDelegate("mEdgeGlowTop")
+    var edgeGlowBottom: EdgeEffect? by ReflectionDelegate("mEdgeGlowBottom")
 
     private val springManager = SpringEdgeEffect.Manager(this)
     private val scrollBarColor by lazy {
@@ -44,8 +48,8 @@ open class SpringNestedScrollView @JvmOverloads constructor(
     var isTopFadingEdgeEnabled = true
 
     init {
-        getField<NestedScrollView>("mEdgeGlowTop").set(this, springManager.createEdgeEffect(DIRECTION_BOTTOM, true))
-        getField<NestedScrollView>("mEdgeGlowBottom").set(this, springManager.createEdgeEffect(DIRECTION_BOTTOM))
+        edgeGlowTop = springManager.createEdgeEffect(DIRECTION_BOTTOM, true)
+        edgeGlowBottom = springManager.createEdgeEffect(DIRECTION_BOTTOM)
         overScrollMode = View.OVER_SCROLL_ALWAYS
     }
 
