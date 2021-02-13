@@ -142,7 +142,7 @@ abstract class WallpaperColorResolver(config: Config)
 @Keep
 class WallpaperMainColorResolver(config: Config) : WallpaperColorResolver(config) {
 
-    override fun resolveColor() = colorInfo.actualMainColor
+    override fun resolveColor() = colorInfo.mainColor
 
     override fun getDisplayName() = engine.context.getString(R.string.color_wallpaper_main) as String
 }
@@ -150,17 +150,9 @@ class WallpaperMainColorResolver(config: Config) : WallpaperColorResolver(config
 @Keep
 class WallpaperSecondaryColorResolver(config: Config) : WallpaperColorResolver(config) {
 
-    override fun resolveColor() = colorInfo.actualSecondaryColor
+    override fun resolveColor() = colorInfo.secondaryColor
 
     override fun getDisplayName() = engine.context.getString(R.string.color_wallpaper_secondary) as String
-}
-
-@Keep
-class WallpaperTertiaryColorResolver(config: Config) : WallpaperColorResolver(config) {
-
-    override fun resolveColor() = colorInfo.tertiaryColor
-
-    override fun getDisplayName() = engine.context.getString(R.string.color_wallpaper_tertiary) as String
 }
 
 abstract class ThemeAttributeColorResolver(config: Config) :

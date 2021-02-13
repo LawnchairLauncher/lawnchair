@@ -40,8 +40,7 @@
     ch.deletescape.lawnchair.colors.PixelAccentResolver
     ch.deletescape.lawnchair.colors.RGBColorResolver|R|G|B
     ch.deletescape.lawnchair.colors.WallpaperMainColorResolver
-    ch.deletescape.lawnchair.colors.WallpaperSecondaryColorResolver
-    ch.deletescape.lawnchair.colors.WallpaperTertiaryColorResolver -->
+    ch.deletescape.lawnchair.colors.WallpaperSecondaryColorResolver -->
     <string name="config_default_color_resolver" translatable="false">ch.deletescape.lawnchair.colors.PixelAccentResolver</string>
     <!-- The default icon packs to use -->
     <string-array name="config_default_icon_packs">
