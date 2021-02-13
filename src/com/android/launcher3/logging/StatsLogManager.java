@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.logging;
 
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.IGNORE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_CLOSE_DOWN;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_OPEN_UP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOME_GESTURE;
@@ -26,11 +25,12 @@ import android.content.Context;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.R;
-import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
-import com.android.launcher3.logger.LauncherAtom.FromState;
-import com.android.launcher3.logger.LauncherAtom.ToState;
+import com.android.launcher3.logger.nano.LauncherAtom.ContainerInfo;
+import com.android.launcher3.logger.nano.LauncherAtom.FromState;
+import com.android.launcher3.logger.nano.LauncherAtom.ToState;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.userevent.LauncherLogProto;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.ResourceBasedOverride;
 
 import java.util.List;
@@ -59,13 +59,13 @@ public class StatsLogManager implements ResourceBasedOverride {
      */
     public static int containerTypeToAtomState(int containerType) {
         switch (containerType) {
-            case LauncherLogProto.ContainerType.ALLAPPS_VALUE:
+            case ContainerType.ALLAPPS:
                 return LAUNCHER_STATE_ALLAPPS;
-            case LauncherLogProto.ContainerType.OVERVIEW_VALUE:
+            case ContainerType.OVERVIEW:
                 return LAUNCHER_STATE_OVERVIEW;
-            case LauncherLogProto.ContainerType.WORKSPACE_VALUE:
+            case ContainerType.WORKSPACE:
                 return LAUNCHER_STATE_HOME;
-            case LauncherLogProto.ContainerType.APP_VALUE:
+            case ContainerType.APP:
                 return LAUNCHER_STATE_BACKGROUND;
         }
         return LAUNCHER_STATE_UNSPECIFIED;
@@ -77,17 +77,17 @@ public class StatsLogManager implements ResourceBasedOverride {
      */
     public static EventEnum getLauncherAtomEvent(int startContainerType,
             int targetContainerType, EventEnum fallbackEvent) {
-        if (startContainerType == LauncherLogProto.ContainerType.WORKSPACE.getNumber()
-                && targetContainerType == LauncherLogProto.ContainerType.WORKSPACE.getNumber()) {
+        if (startContainerType == LauncherLogProto.ContainerType.WORKSPACE
+                && targetContainerType == LauncherLogProto.ContainerType.WORKSPACE) {
             return LAUNCHER_HOME_GESTURE;
-        } else if (startContainerType != LauncherLogProto.ContainerType.TASKSWITCHER.getNumber()
-                && targetContainerType == LauncherLogProto.ContainerType.TASKSWITCHER.getNumber()) {
+        } else if (startContainerType != LauncherLogProto.ContainerType.TASKSWITCHER
+                && targetContainerType == LauncherLogProto.ContainerType.TASKSWITCHER) {
             return LAUNCHER_OVERVIEW_GESTURE;
-        } else if (startContainerType != LauncherLogProto.ContainerType.ALLAPPS.getNumber()
-                && targetContainerType == LauncherLogProto.ContainerType.ALLAPPS.getNumber()) {
+        } else if (startContainerType != LauncherLogProto.ContainerType.ALLAPPS
+                && targetContainerType == LauncherLogProto.ContainerType.ALLAPPS) {
             return LAUNCHER_ALLAPPS_OPEN_UP;
-        } else if (startContainerType == LauncherLogProto.ContainerType.ALLAPPS.getNumber()
-                && targetContainerType != LauncherLogProto.ContainerType.ALLAPPS.getNumber()) {
+        } else if (startContainerType == LauncherLogProto.ContainerType.ALLAPPS
+                && targetContainerType != LauncherLogProto.ContainerType.ALLAPPS) {
             return LAUNCHER_ALLAPPS_CLOSE_DOWN;
         }
         return fallbackEvent; // TODO fix

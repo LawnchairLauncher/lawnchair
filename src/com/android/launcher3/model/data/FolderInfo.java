@@ -21,13 +21,13 @@ import static androidx.core.util.Preconditions.checkNotNull;
 import static com.android.launcher3.FastBitmapDrawable.newIcon;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
-import static com.android.launcher3.logger.LauncherAtom.Attribute.EMPTY_LABEL;
-import static com.android.launcher3.logger.LauncherAtom.Attribute.MANUAL_LABEL;
-import static com.android.launcher3.logger.LauncherAtom.Attribute.SUGGESTED_LABEL;
-import static com.android.launcher3.userevent.LauncherLogProto.Target.FromFolderLabelState.FROM_CUSTOM;
-import static com.android.launcher3.userevent.LauncherLogProto.Target.FromFolderLabelState.FROM_EMPTY;
-import static com.android.launcher3.userevent.LauncherLogProto.Target.FromFolderLabelState.FROM_FOLDER_LABEL_STATE_UNSPECIFIED;
-import static com.android.launcher3.userevent.LauncherLogProto.Target.FromFolderLabelState.FROM_SUGGESTED;
+import static com.android.launcher3.logger.nano.LauncherAtom.Attribute.EMPTY_LABEL;
+import static com.android.launcher3.logger.nano.LauncherAtom.Attribute.MANUAL_LABEL;
+import static com.android.launcher3.logger.nano.LauncherAtom.Attribute.SUGGESTED_LABEL;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.Target.FromFolderLabelState.FROM_CUSTOM;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.Target.FromFolderLabelState.FROM_EMPTY;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.Target.FromFolderLabelState.FROM_FOLDER_LABEL_STATE_UNSPECIFIED;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.Target.FromFolderLabelState.FROM_SUGGESTED;
 
 import android.annotation.SuppressLint;
 import android.content.ComponentName;
@@ -56,15 +56,15 @@ import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.folder.FolderNameInfos;
 import com.android.launcher3.icons.BitmapRenderer;
-import com.android.launcher3.logger.LauncherAtom.Attribute;
-import com.android.launcher3.logger.LauncherAtom.FromState;
-import com.android.launcher3.logger.LauncherAtom.ToState;
+import com.android.launcher3.logger.nano.LauncherAtom.Attribute;
+import com.android.launcher3.logger.nano.LauncherAtom.FromState;
+import com.android.launcher3.logger.nano.LauncherAtom.ToState;
 import com.android.launcher3.logger.nano.LauncherAtom;
 import com.android.launcher3.model.ModelWriter;
-import com.android.launcher3.userevent.LauncherLogProto;
-import com.android.launcher3.userevent.LauncherLogProto.Target;
-import com.android.launcher3.userevent.LauncherLogProto.Target.FromFolderLabelState;
-import com.android.launcher3.userevent.LauncherLogProto.Target.ToFolderLabelState;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Target.FromFolderLabelState;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Target.ToFolderLabelState;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ContentWriter;
 import java.util.ArrayList;
@@ -260,7 +260,7 @@ public class FolderInfo extends ItemInfo {
     }
 
     public Drawable getFolderIcon(Launcher launcher) {
-        int iconSize = launcher.mDeviceProfile.iconSizePx;
+        int iconSize = launcher.getDeviceProfile().iconSizePx;
         FrameLayout dummy = new FrameLayout(launcher, null);
         FolderIcon icon = FolderIcon.fromXml(R.layout.folder_icon, launcher, dummy, this);
         icon.isCustomIcon = false;

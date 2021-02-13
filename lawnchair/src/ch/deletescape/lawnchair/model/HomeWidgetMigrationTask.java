@@ -21,7 +21,6 @@ import static ch.deletescape.lawnchair.settings.ui.SettingsActivity.ALLOW_OVERLA
 import static ch.deletescape.lawnchair.settings.ui.SettingsActivity.SMARTSPACE_PREF;
 
 import android.annotation.SuppressLint;
-import android.content.ContentProviderOperation;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -30,18 +29,14 @@ import android.graphics.Point;
 import android.util.Log;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
-import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherSettings.Settings;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.GridSizeMigrationTask;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
-import com.android.launcher3.provider.RestoreDbTask;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.widget.custom.CustomWidgetParser;

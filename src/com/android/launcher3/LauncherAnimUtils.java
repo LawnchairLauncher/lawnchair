@@ -19,6 +19,7 @@ package com.android.launcher3;
 import android.graphics.drawable.Drawable;
 import android.util.FloatProperty;
 import android.util.IntProperty;
+import android.util.Property;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 

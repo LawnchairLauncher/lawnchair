@@ -38,27 +38,25 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
-
 import androidx.dynamicanimation.animation.FloatPropertyCompat;
 import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
-
-import com.android.launcher3.FastBitmapDrawable;
-import com.android.launcher3.FirstFrameAnimatorHelper;
 import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.iconpack.AdaptiveIconCompat;
+import com.android.launcher3.FastBitmapDrawable;
+import com.android.launcher3.FirstFrameAnimatorHelper;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.icons.IconProvider;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
-
 import java.util.Arrays;
 
 public class DragView extends View implements StateListener<LauncherState> {

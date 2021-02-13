@@ -26,7 +26,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.AppWidgetResizeFrame;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.logger.LauncherAtom;
+import com.android.launcher3.logger.nano.LauncherAtom;
 import com.android.launcher3.util.ContentWriter;
 
 /**

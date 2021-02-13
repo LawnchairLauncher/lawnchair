@@ -20,8 +20,8 @@ import static android.text.format.DateUtils.DAY_IN_MILLIS;
 import static android.text.format.DateUtils.formatElapsedTime;
 
 import static com.android.launcher3.Utilities.getDevicePrefs;
-import static com.android.launcher3.logger.LauncherAtom.ContainerInfo.ContainerCase.FOLDER;
-import static com.android.launcher3.logger.LauncherAtom.ContainerInfo.ContainerCase.SEARCH_RESULT_CONTAINER;
+import static com.android.launcher3.logger.nano.LauncherAtom.ContainerInfo.ContainerCase.FOLDER;
+import static com.android.launcher3.logger.nano.LauncherAtom.ContainerInfo.ContainerCase.SEARCH_RESULT_CONTAINER;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WORKSPACE_SNAPSHOT;
 import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGED__DST_STATE__ALLAPPS;
 import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGED__DST_STATE__BACKGROUND;
@@ -37,12 +37,12 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.logger.LauncherAtom;
-import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
-import com.android.launcher3.logger.LauncherAtom.FolderContainer.ParentContainerCase;
-import com.android.launcher3.logger.LauncherAtom.FolderIcon;
-import com.android.launcher3.logger.LauncherAtom.FromState;
-import com.android.launcher3.logger.LauncherAtom.ToState;
+import com.android.launcher3.logger.nano.LauncherAtom;
+import com.android.launcher3.logger.nano.LauncherAtom.ContainerInfo;
+import com.android.launcher3.logger.nano.LauncherAtom.FolderContainer.ParentContainerCase;
+import com.android.launcher3.logger.nano.LauncherAtom.FolderIcon;
+import com.android.launcher3.logger.nano.LauncherAtom.FromState;
+import com.android.launcher3.logger.nano.LauncherAtom.ToState;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.InstanceIdSequence;
 import com.android.launcher3.logging.StatsLogManager;
@@ -196,11 +196,11 @@ public class StatsLogCompatManager extends StatsLogManager {
                 getGridY(info, true) /* grid_y_parent */,
                 getParentPageId(info) /* page_id_parent */,
                 getHierarchy(info) /* hierarchy */,
-                info.getIsWork() /* is_work_profile */,
+                info.isWork /* is_work_profile */,
                 info.getAttribute().getNumber() /* origin */,
                 getCardinality(info) /* cardinality */,
-                info.getWidget().getSpanX(),
-                info.getWidget().getSpanY());
+                info.getWidget().spanX,
+                info.getWidget().spanY);
     }
 
     /**
@@ -361,8 +361,8 @@ public class StatsLogCompatManager extends StatsLogManager {
                     getGridY(atomInfo, true) /* grid_y_parent */,
                     getParentPageId(atomInfo) /* page_id_parent */,
                     getHierarchy(atomInfo) /* hierarchy */,
-                    atomInfo.getIsWork() /* is_work_profile */,
-                    atomInfo.getRank() /* rank */,
+                    atomInfo.isWork /* is_work_profile */,
+                    atomInfo.rank /* rank */,
                     atomInfo.getFolderIcon().getFromLabelState().getNumber() /* fromState */,
                     atomInfo.getFolderIcon().getToLabelState().getNumber() /* toState */,
                     atomInfo.getFolderIcon().getLabelInfo() /* edittext */,

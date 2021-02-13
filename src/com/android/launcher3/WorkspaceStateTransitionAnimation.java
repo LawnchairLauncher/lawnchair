@@ -154,7 +154,7 @@ public class WorkspaceStateTransitionAnimation {
         OptionsPanel optionsPanel = LawnchairLauncher.getLauncher(mLauncher).getOptionsView();
         propertySetter.setViewAlpha(optionsPanel, (elements & OPTIONS_VIEW) != 0 ? 1 : 0, fadeInterpolator);
 
-        if (!config.playNonAtomicComponent()) {
+        if (config.onlyPlayAtomicComponent()) {
             // Only the alpha and scale, handled above, are included in the atomic animation.
             return;
         }

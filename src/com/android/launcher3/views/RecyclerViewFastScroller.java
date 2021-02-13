@@ -309,7 +309,7 @@ public class RecyclerViewFastScroller extends View {
         } else {
             animatePopupVisibility(!sectionName.isEmpty());
         }
-        updatePopupY(lastY);
+        updatePopupY(mLastY);
         mLastTouchY = boundedY;
         setThumbOffsetY((int) mLastTouchY);
     }

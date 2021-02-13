@@ -37,9 +37,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.graphics.PreloadIconDrawable;
-import com.android.launcher3.model.data.DeviceProfile;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.views.ActivityContext;
 
