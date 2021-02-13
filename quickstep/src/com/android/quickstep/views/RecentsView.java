@@ -1984,11 +1984,6 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             centerToOffscreenProgress = Utilities.mapRange(centerToOffscreenProgress,
                     distanceFromMidpoint / distanceToOffscreen, 1);
         }
-        // Find the task's scale based on its offscreen progress, then see how far it still needs to
-        // move to be completely offscreen.
-        Utilities.scaleRectFAboutCenter(taskPosition,
-                TaskView.getCurveScaleForInterpolation(mActivity.getDeviceProfile(),
-                        centerToOffscreenProgress));
         distanceToOffscreen = desiredLeft - taskPosition.left;
         // Finally, we need to account for RecentsView scale, because it moves tasks based on its
         // pivot. To do this, we move the task position to where it would be offscreen at scale = 1
@@ -2114,7 +2109,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             anim.play(ObjectAnimator.ofFloat(recentsView, FULLSCREEN_PROGRESS, 1));
         } else {
             // We are launching an adjacent task, so parallax the center and other adjacent task.
-            float displacementX = tv.getWidth() * (toScale - tv.getCurveScale());
+            float displacementX = tv.getWidth() * (toScale - 1f);
             float primaryTranslation = mIsRtl ? -displacementX : displacementX;
             anim.play(ObjectAnimator.ofFloat(getPageAt(centerTaskIndex),
                     mOrientationHandler.getPrimaryViewTranslate(), primaryTranslation));
