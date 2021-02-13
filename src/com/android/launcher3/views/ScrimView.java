@@ -42,7 +42,7 @@ import com.android.launcher3.util.Themes;
  */
 public class ScrimView<T extends Launcher> extends View implements Insettable, OnChangeListener {
 
-    private static final float SCRIM_ALPHA = .75f;
+    private static final float SCRIM_ALPHA = .95f;
     protected final T mLauncher;
     private final WallpaperColorInfo mWallpaperColorInfo;
     protected final int mEndScrim;
@@ -63,6 +63,7 @@ public class ScrimView<T extends Launcher> extends View implements Insettable, O
         mWallpaperColorInfo = WallpaperColorInfo.INSTANCE.get(context);
         int endScrim = Themes.getAttrColor(context, R.attr.allAppsScrimColor);
         if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
+            endScrim = Themes.getColorBackgroundFloating(context);
             endScrim = ColorUtils.setAlphaComponent(endScrim, (int) (255  * SCRIM_ALPHA));
         }
         mEndScrim = endScrim;
