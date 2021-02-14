@@ -19,7 +19,6 @@
     android:layout_height="match_parent"
     android:clipChildren="false"
     android:defaultFocusHighlightEnabled="false"
-    android:elevation="4dp"
     android:focusable="true">
 
     <com.android.quickstep.views.TaskThumbnailView
