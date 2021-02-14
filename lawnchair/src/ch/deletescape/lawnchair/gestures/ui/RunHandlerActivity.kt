@@ -18,7 +18,6 @@
 package ch.deletescape.lawnchair.gestures.ui
 
 import android.app.Activity
-import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
@@ -29,7 +28,7 @@ import ch.deletescape.lawnchair.gestures.GestureHandler
 import ch.deletescape.lawnchair.gestures.LawnchairShortcutActivity
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
-import com.android.launcher3.Utilities
+import com.android.launcher3.util.ActivityTracker
 
 class RunHandlerActivity : Activity() {
     private val fallback by lazy { BlankGestureHandler(this, null) }
@@ -45,13 +44,12 @@ class RunHandlerActivity : Activity() {
             if (handlerString != null) {
                 val handler = GestureController.createGestureHandler(this.applicationContext, handlerString, fallback)
                 if (handler.requiresForeground) {
-                    val listener = GestureHandlerInitListener(handler)
-                    val homeIntent = listener.addToIntent(
+                    val homeIntent =
                             Intent(Intent.ACTION_MAIN)
                                     .addCategory(Intent.CATEGORY_HOME)
                                     .setPackage(packageName)
-                                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-
+                                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    RunHandlerActivityTracker(handler).addToIntent(homeIntent)
                     startActivity(homeIntent)
                 } else {
                     triggerGesture(handler)
@@ -65,5 +63,12 @@ class RunHandlerActivity : Activity() {
         handler.onGestureTrigger(controller!!)
     } else {
         Toast.makeText(this.applicationContext, R.string.failed, Toast.LENGTH_LONG).show()
+    }
+
+    class RunHandlerActivityTracker(private val handler: GestureHandler) : ActivityTracker.SchedulerCallback<LawnchairLauncher> {
+        override fun init(activity: LawnchairLauncher, alreadyOnHome: Boolean): Boolean {
+            handler.onGestureTrigger(activity.gestureController)
+            return true
+        }
     }
 }
