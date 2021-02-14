@@ -14,8 +14,6 @@
      limitations under the License.
 -->
 <resources>
-    <string name="task_overlay_factory_class" translatable="false"/>
-
     <string name="overscroll_plugin_factory_class" translatable="false" />
 
     <!-- Activities which block home gesture -->

@@ -110,7 +110,6 @@ public class AllAppsSectionDecorator extends RecyclerView.ItemDecoration {
      */
     public static class SectionDecorationHandler {
         private static final int FILL_ALPHA = 0;
-        private static final int FOCUS_ALPHA = (int) (.9f * 255);
 
         protected RectF mBounds = new RectF();
         private final boolean mIsFullWidth;
@@ -123,9 +122,9 @@ public class AllAppsSectionDecorator extends RecyclerView.ItemDecoration {
 
         public SectionDecorationHandler(Context context, boolean isFullWidth) {
             mIsFullWidth = isFullWidth;
-            int endScrim = Themes.getAttrColor(context, R.attr.allAppsScrimColor);
+            int endScrim = Themes.getColorBackground(context);
             mFillcolor = ColorUtils.setAlphaComponent(endScrim, FILL_ALPHA);
-            mFocusColor = ColorUtils.setAlphaComponent(endScrim, FOCUS_ALPHA);
+            mFocusColor = endScrim;
             mRadius = Themes.getDialogCornerRadius(context);
         }
 

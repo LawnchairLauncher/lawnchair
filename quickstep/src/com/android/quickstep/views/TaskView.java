@@ -44,7 +44,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.animation.TimeInterpolator;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
@@ -111,10 +110,6 @@ import java.util.function.Consumer;
 public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     private static final String TAG = TaskView.class.getSimpleName();
-
-    /** A curve of x from 0 to 1, where 0 is the center of the screen and 1 is the edge. */
-    private static final TimeInterpolator CURVE_INTERPOLATOR
-            = x -> (float) -Math.cos(x * Math.PI) / 2f + .5f;
 
     /**
      * The alpha of a black scrim on a page in the carousel as it leaves the screen.
@@ -252,7 +247,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private TaskMenuView mMenuView;
     private IconView mIconView;
     private final DigitalWellBeingToast mDigitalWellBeingToast;
-    private float mCurveScale;
     private float mFullscreenProgress;
     private float mScaleAtFullscreen = 1;
     private float mFullscreenScale = 1;
@@ -655,7 +649,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             progress = 1 - progress;
         }
         mFocusTransitionProgress = progress;
-        mSnapshotView.setDimAlphaMultipler(progress);
+        mSnapshotView.setDimAlphaMultipler(0);
         float iconScalePercentage = (float) SCALE_ICON_DURATION / DIM_ANIM_DURATION;
         float lowerClamp = invert ? 1f - iconScalePercentage : 0;
         float upperClamp = invert ? 1 : iconScalePercentage;
@@ -703,7 +697,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     }
 
     protected void resetViewTransforms() {
-        setCurveScale(1);
         // fullscreenTranslation and accumulatedTranslation should not be reset, as
         // resetViewTransforms is called during Quickswitch scrolling.
         mDismissTranslationX = mTaskOffsetTranslationX = mTaskResistanceTranslationX = 0f;
@@ -737,13 +730,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         if (mModalness > 0) {
             return;
         }
-
-        float curveInterpolation =
-                CURVE_INTERPOLATOR.getInterpolation(scrollState.linearInterpolation);
-        float curveScaleForCurveInterpolation = getCurveScaleForCurveInterpolation(
-                mActivity.getDeviceProfile(), curveInterpolation);
-        mSnapshotView.setDimAlpha(curveInterpolation * MAX_PAGE_SCRIM_ALPHA);
-        setCurveScale(curveScaleForCurveInterpolation);
 
         float dwbBannerAlpha = Utilities.boundToRange(1.0f - 2 * scrollState.linearInterpolation,
                 0f, 1f);
@@ -826,20 +812,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     }
 
     /**
-     * How much to scale down pages near the edge of the screen according to linearInterpolation.
-     */
-    public static float getCurveScaleForInterpolation(DeviceProfile deviceProfile,
-            float linearInterpolation) {
-        float curveInterpolation = CURVE_INTERPOLATOR.getInterpolation(linearInterpolation);
-        return getCurveScaleForCurveInterpolation(deviceProfile, curveInterpolation);
-    }
-
-    private static float getCurveScaleForCurveInterpolation(DeviceProfile deviceProfile,
-            float curveInterpolation) {
-        return 1 - curveInterpolation * getEdgeScaleDownFactor(deviceProfile);
-    }
-
-    /**
      * How much to scale down pages near the edge of the screen.
      */
     public static float getEdgeScaleDownFactor(DeviceProfile deviceProfile) {
@@ -850,23 +822,14 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         }
     }
 
-    private void setCurveScale(float curveScale) {
-        mCurveScale = curveScale;
-        applyScale();
-    }
-
     private void setFullscreenScale(float fullscreenScale) {
         mFullscreenScale = fullscreenScale;
         applyScale();
     }
 
     private void applyScale() {
-        setScaleX(mCurveScale * mFullscreenScale);
-        setScaleY(mCurveScale * mFullscreenScale);
-    }
-
-    public float getCurveScale() {
-        return mCurveScale;
+        setScaleX(mFullscreenScale);
+        setScaleY(mFullscreenScale);
     }
 
     private void setDismissTranslationX(float x) {
