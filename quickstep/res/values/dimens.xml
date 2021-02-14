@@ -29,7 +29,7 @@
     <dimen name="overview_actions_bottom_margin_three_button">8dp</dimen>
     <dimen name="overview_actions_horizontal_margin">16dp</dimen>
 
-    <dimen name="recents_page_spacing">10dp</dimen>
+    <dimen name="recents_page_spacing">16dp</dimen>
     <dimen name="recents_clear_all_deadzone_vertical_margin">70dp</dimen>
 
     <!-- The speed in dp/s at which the user needs to be scrolling in recents such that we start
@@ -58,7 +58,7 @@
     <dimen name="task_card_menu_option_vertical_padding">8dp</dimen>
     <dimen name="task_card_menu_shadow_height">3dp</dimen>
     <dimen name="task_card_menu_horizontal_padding">0dp</dimen>
-    <dimen name="portrait_task_card_horz_space_big_overview">96dp</dimen>
+    <dimen name="portrait_task_card_horz_space_big_overview">132dp</dimen>
     <dimen name="portrait_modal_task_card_horz_space">60dp</dimen>
     <dimen name="landscape_task_card_horz_space">200dp</dimen>
     <dimen name="multi_window_task_card_horz_space">100dp</dimen>
