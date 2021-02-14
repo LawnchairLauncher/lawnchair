@@ -29,6 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
+        android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:textSize="12sp"/>
 

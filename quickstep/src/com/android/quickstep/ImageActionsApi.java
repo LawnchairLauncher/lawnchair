@@ -64,6 +64,20 @@ public class ImageActionsApi {
      */
     @UiThread
     public void shareWithExplicitIntent(@Nullable Rect crop, Intent intent) {
+        addImageAndSendIntent(crop, intent, false);
+    }
+
+    /**
+     * Share the image this api was constructed with using the provided intent. The implementation
+     * should set the intent's data field to the URI pointing to the image.
+     */
+    @UiThread
+    public void shareAsDataWithExplicitIntent(@Nullable Rect crop, Intent intent) {
+        addImageAndSendIntent(crop, intent, true);
+    }
+
+    @UiThread
+    private void addImageAndSendIntent(@Nullable Rect crop, Intent intent, boolean setData) {
         if (mBitmapSupplier.get() == null) {
             Log.e(TAG, "No snapshot available, not starting share.");
             return;
@@ -71,12 +85,14 @@ public class ImageActionsApi {
 
         UI_HELPER_EXECUTOR.execute(() -> persistBitmapAndStartActivity(mContext,
                 mBitmapSupplier.get(), crop, intent, (uri, intentForUri) -> {
-                    intentForUri
-                            .addFlags(FLAG_GRANT_READ_URI_PERMISSION)
-                            .putExtra(EXTRA_STREAM, uri);
+                    intentForUri.addFlags(FLAG_GRANT_READ_URI_PERMISSION);
+                    if (setData) {
+                        intentForUri.setData(uri);
+                    } else {
+                        intentForUri.putExtra(EXTRA_STREAM, uri);
+                    }
                     return new Intent[]{intentForUri};
                 }, TAG));
-
     }
 
     /**

@@ -82,6 +82,11 @@ public class Themes {
     }
 
     /** Returns the floating background color attribute. */
+    public static int getColorBackground(Context context) {
+        return getAttrColor(context, android.R.attr.colorBackground);
+    }
+
+    /** Returns the floating background color attribute. */
     public static int getColorBackgroundFloating(Context context) {
         return getAttrColor(context, android.R.attr.colorBackgroundFloating);
     }
