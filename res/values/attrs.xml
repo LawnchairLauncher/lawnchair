@@ -185,4 +185,8 @@
         <attr name="android:name" />
         <attr name="android:id" />
     </declare-styleable>
+
+    <declare-styleable name="WidgetsListRowHeader">
+        <attr name="appIconSize" format="dimension" />
+    </declare-styleable>
 </resources>

@@ -15,8 +15,6 @@
  */
 package com.android.launcher3.widget.picker;
 
-import static android.os.Looper.getMainLooper;
-
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -29,16 +27,15 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.R;
-import com.android.launcher3.WidgetPreviewLoader;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.ComponentWithLabel;
 import com.android.launcher3.icons.IconCache;
@@ -46,7 +43,8 @@ import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.testing.TestActivity;
 import com.android.launcher3.widget.WidgetCell;
-import com.android.launcher3.widget.model.WidgetsListContentEntry;
+import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
+import com.android.launcher3.widget.picker.WidgetsListHeaderViewHolderBinder.OnHeaderClickListener;
 
 import org.junit.After;
 import org.junit.Before;
@@ -65,26 +63,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RunWith(RobolectricTestRunner.class)
-public final class WidgetsListRowViewHolderBinderTest {
+public final class WidgetsListHeaderViewHolderBinderTest {
     private static final String TEST_PACKAGE = "com.google.test";
     private static final String APP_NAME = "Test app";
 
     private Context mContext;
-    private WidgetsListRowViewHolderBinder mViewHolderBinder;
+    private WidgetsListHeaderViewHolderBinder mViewHolderBinder;
     private InvariantDeviceProfile mTestProfile;
     // Replace ActivityController with ActivityScenario, which is the recommended way for activity
     // testing.
     private ActivityController<TestActivity> mActivityController;
     private TestActivity mTestActivity;
+    private FakeOnHeaderClickListener mFakeOnHeaderClickListener = new FakeOnHeaderClickListener();
 
     @Mock
-    private OnLongClickListener mOnLongClickListener;
-    @Mock
-    private OnClickListener mOnIconClickListener;
-    @Mock
     private IconCache mIconCache;
-    @Mock
-    private WidgetPreviewLoader mWidgetPreviewLoader;
     @Mock
     private DeviceProfile mDeviceProfile;
 
@@ -105,12 +98,9 @@ public final class WidgetsListRowViewHolderBinderTest {
             return componentWithLabel.getComponent().getShortClassName();
         }).when(mIconCache).getTitleNoCache(any());
 
-        mViewHolderBinder = new WidgetsListRowViewHolderBinder(
-                mContext,
+        mViewHolderBinder = new WidgetsListHeaderViewHolderBinder(
                 LayoutInflater.from(mTestActivity),
-                mOnIconClickListener,
-                mOnLongClickListener,
-                mWidgetPreviewLoader);
+                mFakeOnHeaderClickListener);
     }
 
     @After
@@ -119,35 +109,29 @@ public final class WidgetsListRowViewHolderBinderTest {
     }
 
     @Test
-    public void bindViewHolder_appWith3Widgets_shouldHave3Widgets() {
-        WidgetsRowViewHolder viewHolder = mViewHolderBinder.newViewHolder(
+    public void bindViewHolder_appWith3Widgets_shouldShowTheCorrectAppNameAndSubtitle() {
+        WidgetsListHeaderHolder viewHolder = mViewHolderBinder.newViewHolder(
                 new FrameLayout(mTestActivity));
-        WidgetsListContentEntry entry = generateSampleAppWithWidgets(
+        WidgetsListHeader widgetsListHeader = viewHolder.mWidgetsListHeader;
+        WidgetsListHeaderEntry entry = generateSampleAppHeader(
                 APP_NAME,
                 TEST_PACKAGE,
                 /* numOfWidgets= */ 3);
         mViewHolderBinder.bindViewHolder(viewHolder, entry);
-        shadowOf(getMainLooper()).idle();
 
-        // THEN the cell container has 5 children: 3 widgets + 2 separators
-        // Index:        0       1        2       3        4
-        // View:  .SampleWidget0 | .SampleWidget1 | .SampleWidget2
-        assertThat(viewHolder.cellContainer.getChildCount()).isEqualTo(5);
-        // Widget 0 label is .SampleWidget0.
-        assertWidgetCellWithLabel(viewHolder.cellContainer.getChildAt(0), ".SampleWidget0");
-        // Widget 1 label is .SampleWidget1.
-        assertWidgetCellWithLabel(viewHolder.cellContainer.getChildAt(2), ".SampleWidget1");
-        // Widget 2 label is .SampleWidget2.
-        assertWidgetCellWithLabel(viewHolder.cellContainer.getChildAt(4), ".SampleWidget2");
+        TextView appTitle = widgetsListHeader.findViewById(R.id.app_title);
+        TextView appSubtitle = widgetsListHeader.findViewById(R.id.app_subtitle);
+        assertThat(appTitle.getText()).isEqualTo(APP_NAME);
+        assertThat(appSubtitle.getText()).isEqualTo("3 widgets");
     }
 
-    private WidgetsListContentEntry generateSampleAppWithWidgets(String appName, String packageName,
+    private WidgetsListHeaderEntry generateSampleAppHeader(String appName, String packageName,
             int numOfWidgets) {
         PackageItemInfo appInfo = new PackageItemInfo(packageName);
         appInfo.title = appName;
         appInfo.bitmap = BitmapInfo.of(Bitmap.createBitmap(10, 10, Bitmap.Config.ALPHA_8), 0);
 
-        return new WidgetsListContentEntry(appInfo,
+        return new WidgetsListHeaderEntry(appInfo,
                 /* titleSectionName= */ "",
                 generateWidgetItems(packageName, numOfWidgets));
     }
@@ -173,5 +157,17 @@ public final class WidgetsListRowViewHolderBinderTest {
         assertThat(view).isInstanceOf(WidgetCell.class);
         TextView widgetLabel = (TextView) view.findViewById(R.id.widget_name);
         assertThat(widgetLabel.getText()).isEqualTo(label);
+    }
+
+    private final class FakeOnHeaderClickListener implements OnHeaderClickListener {
+
+        boolean mShowWidgets = false;
+        @Nullable  String mHeaderClickedPackage = null;
+
+        @Override
+        public void onHeaderClicked(boolean showWidgets, String packageName) {
+            mShowWidgets = showWidgets;
+            mHeaderClickedPackage = packageName;
+        }
     }
 }

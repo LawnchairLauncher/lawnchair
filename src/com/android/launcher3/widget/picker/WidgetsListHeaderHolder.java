@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 The Android Open Source Project
+ * Copyright (C) 2021 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,18 @@
  */
 package com.android.launcher3.widget.picker;
 
-import android.view.ViewGroup;
-
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
-import com.android.launcher3.R;
+/**
+ * A {@link ViewHolder} for {@link WidgetsListHeader} of an app, which renders the app icon, the app
+ * name, label and a button for showing / hiding widgets.
+ */
+public final class WidgetsListHeaderHolder extends ViewHolder {
+    final WidgetsListHeader mWidgetsListHeader;
 
-/** A {@link ViewHolder} for showing widgets of an app in the full widget picker. */
-public final class WidgetsRowViewHolder extends ViewHolder {
+    public WidgetsListHeaderHolder(WidgetsListHeader view) {
+        super(view);
 
-    public final ViewGroup cellContainer;
-
-    public WidgetsRowViewHolder(ViewGroup v) {
-        super(v);
-
-        cellContainer = v.findViewById(R.id.widgets_cell_list);
+        mWidgetsListHeader = view;
     }
 }

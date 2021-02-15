@@ -24,10 +24,12 @@ import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.model.WidgetsListContentEntry;
+import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
 import com.android.launcher3.widget.picker.WidgetsListAdapter.WidgetListBaseRowEntryComparator;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Do diff on widget's tray list items and call the {@link RecyclerView.Adapter}
@@ -50,7 +52,7 @@ public class WidgetsDiffReporter {
      * relevant {@link androidx.recyclerview.widget.RecyclerView.RecyclerViewDataObserver} methods.
      */
     public void process(ArrayList<WidgetsListBaseEntry> currentEntries,
-            ArrayList<WidgetsListBaseEntry> newEntries,
+            List<WidgetsListBaseEntry> newEntries,
             WidgetListBaseRowEntryComparator comparator) {
         if (DEBUG) {
             Log.d(TAG, "process oldEntries#=" + currentEntries.size()
@@ -78,7 +80,7 @@ public class WidgetsDiffReporter {
         WidgetsListBaseEntry newRowEntry = newIter.next();
 
         do {
-            int diff = comparePackageName(orgRowEntry, newRowEntry, comparator);
+            int diff = compareAppNameAndType(orgRowEntry, newRowEntry, comparator);
             if (DEBUG) {
                 Log.d(TAG, String.format("diff=%d orgRowEntry (%s) newRowEntry (%s)",
                         diff, orgRowEntry != null ? orgRowEntry.toString() : null,
@@ -106,11 +108,13 @@ public class WidgetsDiffReporter {
                 mListener.notifyItemInserted(index);
 
             } else {
-                // same package name but,
+                // same app name & type but,
                 // did the icon, title, etc, change?
+                // or did the header view changed due to user interactions?
                 // or did the widget size and desc, span, etc change?
                 if (!isSamePackageItemInfo(orgRowEntry.mPkgItem, newRowEntry.mPkgItem)
-                        || !areWidgetsEqual(orgRowEntry, newRowEntry)) {
+                        || hasHeaderUpdated(newRowEntry)
+                        || hasWidgetsListChanged(orgRowEntry, newRowEntry)) {
                     index = currentEntries.indexOf(orgRowEntry);
                     currentEntries.set(index, newRowEntry);
                     mListener.notifyItemChanged(index);
@@ -126,10 +130,13 @@ public class WidgetsDiffReporter {
     }
 
     /**
-     * Compare package name using the same comparator as in {@link WidgetsListAdapter}.
-     * Also handle null row pointers.
+     * Compares the app name and then entry type for the given {@link WidgetsListBaseEntry}s.
+     *
+     * @Return 0 if both entries' order is the same. Negative integer if {@code newRowEntry} should
+     *         order before {@code orgRowEntry}. Positive integer if {@code orgRowEntry} should
+     *         order before {@code newRowEntry}.
      */
-    private int comparePackageName(WidgetsListBaseEntry curRow, WidgetsListBaseEntry newRow,
+    private int compareAppNameAndType(WidgetsListBaseEntry curRow, WidgetsListBaseEntry newRow,
             WidgetListBaseRowEntryComparator comparator) {
         if (curRow == null && newRow == null) {
             throw new IllegalStateException(
@@ -141,10 +148,18 @@ public class WidgetsDiffReporter {
         } else if (curRow != null && newRow == null) {
             return -1; // old row needs to be deleted
         }
-        return comparator.compare(curRow, newRow);
+        int diff = comparator.compare(curRow, newRow);
+        if (diff == 0) {
+            return newRow.getRank() - curRow.getRank();
+        }
+        return diff;
     }
 
-    private boolean areWidgetsEqual(WidgetsListBaseEntry curRow,
+    /**
+     * Returns {@code true} if both {@code curRow} & {@code newRow} are
+     * {@link WidgetsListContentEntry}s with a different list of widgets.
+     */
+    private boolean hasWidgetsListChanged(WidgetsListBaseEntry curRow,
             WidgetsListBaseEntry newRow) {
         if (!(curRow instanceof WidgetsListContentEntry)
                 || !(newRow instanceof WidgetsListContentEntry)) {
@@ -152,7 +167,19 @@ public class WidgetsDiffReporter {
         }
         WidgetsListContentEntry orgRowEntry = (WidgetsListContentEntry) curRow;
         WidgetsListContentEntry newRowEntry = (WidgetsListContentEntry) newRow;
-        return orgRowEntry.mWidgets.equals(newRowEntry.mWidgets);
+        return !orgRowEntry.mWidgets.equals(newRowEntry.mWidgets);
+    }
+
+    /**
+     * Returns {@code true} if {@code newRow} is {@link WidgetsListHeaderEntry} and its content has
+     * been changed due to user interactions.
+     */
+    private boolean hasHeaderUpdated(WidgetsListBaseEntry newRow) {
+        if (!(newRow instanceof WidgetsListHeaderEntry)) {
+            return false;
+        }
+        WidgetsListHeaderEntry newRowEntry = (WidgetsListHeaderEntry) newRow;
+        return newRowEntry.hasEntryUpdated();
     }
 
     private boolean isSamePackageItemInfo(PackageItemInfo curInfo, PackageItemInfo newInfo) {
