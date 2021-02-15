@@ -41,4 +41,10 @@ public final class WidgetsListContentEntry extends WidgetsListBaseEntry {
     public String toString() {
         return mPkgItem.packageName + ":" + mWidgets.size();
     }
+
+    @Override
+    @Rank
+    public int getRank() {
+        return RANK_WIDGETS_LIST_CONTENT;
+    }
 }

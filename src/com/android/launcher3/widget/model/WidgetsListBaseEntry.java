@@ -16,8 +16,14 @@
 
 package com.android.launcher3.widget.model;
 
+import static java.lang.annotation.RetentionPolicy.SOURCE;
+
+import androidx.annotation.IntDef;
+
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.PackageItemInfo;
+
+import java.lang.annotation.Retention;
 
 /** Holder class to store the package information of an entry shown in the widgets list. */
 public abstract class WidgetsListBaseEntry {
@@ -33,4 +39,22 @@ public abstract class WidgetsListBaseEntry {
         mPkgItem = pkgItem;
         mTitleSectionName = titleSectionName;
     }
+
+    /**
+     * Returns the ranking of this entry in the
+     * {@link com.android.launcher3.widget.picker.WidgetsListAdapter}.
+     *
+     * <p>Entries with smaller value should be shown first. See
+     * {@link com.android.launcher3.widget.picker.WidgetsDiffReporter} for more details.
+     */
+    @Rank
+    public abstract int getRank();
+
+    @Retention(SOURCE)
+    @IntDef({RANK_WIDGETS_LIST_HEADER, RANK_WIDGETS_LIST_CONTENT})
+    public @interface Rank {
+    }
+
+    public static final int RANK_WIDGETS_LIST_HEADER = 1;
+    public static final int RANK_WIDGETS_LIST_CONTENT = 2;
 }

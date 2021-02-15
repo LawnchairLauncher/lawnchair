@@ -31,6 +31,7 @@ import com.android.launcher3.tapl.LauncherInstrumentation.GestureScope;
 import com.android.launcher3.testing.TestProtocol;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * All widgets container.
@@ -101,22 +102,28 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
              LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                      "getting widget " + labelText + " in widgets list")) {
-            final UiObject2 widgetsContainer = verifyActiveContainer();
+            final UiObject2 fullWidgetsPicker = verifyActiveContainer();
             mLauncher.assertTrue("Widgets container didn't become scrollable",
-                    widgetsContainer.wait(Until.scrollable(true), WAIT_TIME_MS));
+                    fullWidgetsPicker.wait(Until.scrollable(true), WAIT_TIME_MS));
             final Point displaySize = mLauncher.getRealDisplaySize();
-            final BySelector labelSelector = By.clazz("android.widget.TextView").text(labelText);
 
+            final UiObject2 widgetsContainer = findTestAppWidgetsScrollContainer();
+            mLauncher.assertTrue("Can't locate widgets list for the test app: "
+                                    + mLauncher.getLauncherPackageName(),
+                    widgetsContainer != null);
+            final BySelector labelSelector = By.clazz("android.widget.TextView").text(labelText);
             int i = 0;
             for (; ; ) {
-                final Collection<UiObject2> cells = mLauncher.getObjectsInContainer(
-                        widgetsContainer, "widgets_scroll_container");
-                mLauncher.assertTrue("Widgets doesn't have 2 rows", cells.size() >= 2);
+                final Collection<UiObject2> cells = widgetsContainer.getChildren();
+                mLauncher.assertTrue("Widgets doesn't have 2 rows: ", cells.size() >= 2);
                 for (UiObject2 cell : cells) {
                     final UiObject2 label = cell.findObject(labelSelector);
+                    // The logic below doesn't handle the case which a widget cell of the given
+                    // label is not yet visible on the horizontal scrolling container. This won't be
+                    // an issue once we get rid of the horizontal scrolling container.
                     if (label == null) continue;
 
-                    final UiObject2 widget = label.getParent().getParent();
+                    final UiObject2 widget = cell;
                     mLauncher.assertEquals(
                             "View is not WidgetCell",
                             "com.android.launcher3.widget.WidgetCell",
@@ -131,7 +138,7 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
                             <= displaySize.y - mLauncher.getBottomGestureSize()) {
                         int visibleDelta = maxWidth - mLauncher.getVisibleBounds(widget).width();
                         if (visibleDelta > 0) {
-                            Rect parentBounds = mLauncher.getVisibleBounds(cell);
+                            Rect parentBounds = mLauncher.getVisibleBounds(cell.getParent());
                             mLauncher.linearGesture(parentBounds.centerX() + visibleDelta
                                             + mLauncher.getTouchSlop(),
                                     parentBounds.centerY(), parentBounds.centerX(),
@@ -152,5 +159,54 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
                 mLauncher.assertTrue("Unable to scroll to the widget", newScroll != scroll);
             }
         }
+    }
+
+    /** Finds the widgets list of this test app from the collapsed full widgets picker. */
+    private UiObject2 findTestAppWidgetsScrollContainer() {
+        final BySelector headerSelector = By.res(mLauncher.getLauncherPackageName(),
+                "widgets_list_header");
+        final BySelector targetAppSelector = By.clazz("android.widget.TextView").text(
+                mLauncher.getContext().getPackageName());
+        final BySelector widgetsContainerSelector = By.res(mLauncher.getLauncherPackageName(),
+                "widgets_cell_list");
+
+        boolean hasHeaderExpanded = false;
+        for (int i = 0; i < 40; i++) {
+            UiObject2 fullWidgetsPicker = verifyActiveContainer();
+
+            UiObject2 header = fullWidgetsPicker.findObject(headerSelector);
+            mLauncher.assertTrue("Can't find a widget header", header != null);
+
+            // Look for a header that has the test app name.
+            UiObject2 headerTitle = fullWidgetsPicker.findObject(targetAppSelector);
+            if (headerTitle != null) {
+                // If we find the header and it has not been expanded, let's click it to see the
+                // widgets list.
+                if (!hasHeaderExpanded) {
+                    hasHeaderExpanded = true;
+                    mLauncher.clickLauncherObject(headerTitle);
+                    // After clicking the header, the recyclerview has been updated. Let's refresh
+                    // the container UIObject2.
+                    fullWidgetsPicker = verifyActiveContainer();
+                    // Refresh headerTitle because the first instance is stale after
+                    // verifyActiveContainer call.
+                    headerTitle = fullWidgetsPicker.findObject(targetAppSelector);
+                }
+
+                // Look for a widgets list.
+                UiObject2 widgetsContainer = fullWidgetsPicker.findObject(widgetsContainerSelector);
+                if (widgetsContainer != null) {
+                    // Make sure the widgets list is fully visible on the screen.
+                    mLauncher.scrollToLastVisibleRow(fullWidgetsPicker,
+                            widgetsContainer.getChildren(), 0);
+                    return widgetsContainer;
+                }
+                mLauncher.scrollToLastVisibleRow(fullWidgetsPicker, List.of(headerTitle), 0);
+            } else {
+                mLauncher.scrollToLastVisibleRow(fullWidgetsPicker, header.getChildren(), 0);
+            }
+        }
+
+        return null;
     }
 }
