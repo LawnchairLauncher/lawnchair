@@ -76,7 +76,7 @@ public class WidgetsListRowViewHolderBinder
         }
 
         ViewGroup container = (ViewGroup) mLayoutInflater.inflate(
-                R.layout.widgets_list_row_view, parent, false);
+                R.layout.widgets_scroll_container, parent, false);
 
         // if the end padding is 0, then container view (horizontal scroll view) doesn't respect
         // the end of the linear layout width + the start padding and doesn't allow scrolling.
@@ -121,9 +121,6 @@ public class WidgetsListRowViewHolderBinder
                 row.getChildAt(i).setVisibility(View.GONE);
             }
         }
-
-        // Bind the views in the application info section.
-        holder.title.applyFromItemInfoWithIcon(entry.mPkgItem);
 
         // Bind the view in the widget horizontal tray region.
         for (int i = 0; i < infoList.size(); i++) {
