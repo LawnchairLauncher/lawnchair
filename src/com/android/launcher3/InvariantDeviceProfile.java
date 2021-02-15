@@ -127,7 +127,6 @@ public class InvariantDeviceProfile {
     public int iconBitmapSize;
     public int fillResIconDpi;
     public float iconTextSize;
-    public float allAppsIconSize;
     public float allAppsIconTextSize;
 
     /**
@@ -246,7 +245,7 @@ public class InvariantDeviceProfile {
         result.landscapeIconSize = defaultDisplayOption.landscapeIconSize;
         result.allAppsIconSize = Math.min(
                 defaultDisplayOption.allAppsIconSize, myDisplayOption.allAppsIconSize);
-        initGrid(context, myInfo, result);
+        initGrid(context, myInfo, result, null);
     }
 
     public static String getCurrentGridName(Context context) {
@@ -270,65 +269,48 @@ public class InvariantDeviceProfile {
     }
 
     private String initGrid(Context context, String gridName) {
-        DefaultDisplay.Info displayInfo = DefaultDisplay.INSTANCE.get(context).getInfo();
         return initGrid(context, gridName, null);
     }
 
     private String initGrid(Context context, String gridName, @Nullable GridCustomizer customizer) {
-        LawnchairPreferences prefs = Utilities.getLawnchairPrefs(context);
+        DefaultDisplay.Info displayInfo = DefaultDisplay.INSTANCE.get(context).getInfo();
         ArrayList<DisplayOption> allOptions = getPredefinedDeviceProfiles(context, gridName);
 
         DisplayOption displayOption = invDistWeightedInterpolate(displayInfo, allOptions);
-        initGrid(context, displayInfo, displayOption);
+        initGrid(context, displayInfo, displayOption, customizer);
         return displayOption.grid.name;
     }
 
     private void initGrid(
-            Context context, DefaultDisplay.Info displayInfo, DisplayOption displayOption) {
+            Context context, DefaultDisplay.Info displayInfo, DisplayOption displayOption, @Nullable GridCustomizer customizer) {
         GridOption closestProfile = displayOption.grid;
+        // TODO: reimplement grid customizations
+
         numRows = closestProfile.numRows;
-        numRowsOriginal = originalProfile.numRows;
         numColumns = closestProfile.numColumns;
-        numColumnsOriginal = originalProfile.numColumns;
         numColsDrawer = closestProfile.numColsDrawer;
-        numColsDrawerOriginal = originalProfile.numColsDrawer;
         numPredictions = closestProfile.numPredictions;
-        numPredictionsOriginal = originalProfile.numPredictions;
         numHotseatIcons = closestProfile.numHotseatIcons;
+
+        numRowsOriginal = closestProfile.numRows;
+        numColumnsOriginal = closestProfile.numColumns;
+        numColsDrawerOriginal = closestProfile.numColsDrawer;
+        numPredictionsOriginal = closestProfile.numPredictions;
+        numHotseatIconsOriginal = closestProfile.numHotseatIcons;
         dbFile = closestProfile.dbFile;
-        numHotseatIconsOriginal = originalProfile.numHotseatIcons;
         defaultLayoutId = closestProfile.defaultLayoutId;
         demoModeLayoutId = closestProfile.demoModeLayoutId;
         numFolderRows = closestProfile.numFolderRows;
         numFolderColumns = closestProfile.numFolderColumns;
         numAllAppsColumns = closestProfile.numAllAppsColumns;
-        mExtraAttrs = closestProfile.extraAttrs;
-        workspacePaddingLeftScale = closestProfile.workspacePaddingLeftScale;
-        workspacePaddingRightScale = closestProfile.workspacePaddingRightScale;
-        workspacePaddingTopScale = closestProfile.workspacePaddingTopScale;
-        workspacePaddingBottomScale = closestProfile.workspacePaddingBottomScale;
 
         mExtraAttrs = closestProfile.extraAttrs;
 
-        iconSize = interpolatedDisplayOption.iconSize * prefs.getDesktopIconScale();
-        if (prefs.getDockIconScale() > 0) {
-            hotseatIconSize = interpolatedDisplayOption.iconSize * prefs.getDockIconScale();
-        } else {
-            hotseatIconSize = iconSize;
-        }
-        allAppsIconSize = interpolatedDisplayOption.iconSize * prefs.getDrawerIconScale();
+        iconSize = displayOption.iconSize;
         iconShapePath = getIconShapePath(context);
-        landscapeIconSize = interpolatedDisplayOption.landscapeIconSize  * prefs.getDesktopIconScale();
-        if (prefs.getDockIconScale() > 0) {
-            landscapeHotseatIconSize = interpolatedDisplayOption.landscapeIconSize * prefs.getDockIconScale();
-        } else {
-            landscapeHotseatIconSize = landscapeIconSize;
-        }
-        landscapeAllAppsIconSize = interpolatedDisplayOption.landscapeIconSize  * prefs.getDrawerIconScale();
-        iconBitmapSize = ResourceUtils.pxFromDp(max(iconSize, max(hotseatIconSize, allAppsIconSize)), dm);
-        iconTextSize = interpolatedDisplayOption.iconTextSize * prefs.getDesktopTextScale();
-        allAppsIconTextSize =  interpolatedDisplayOption.iconTextSize * prefs.getDrawerTextScale();
-
+        landscapeIconSize = displayOption.landscapeIconSize;
+        iconBitmapSize = ResourceUtils.pxFromDp(iconSize, displayInfo.metrics);
+        iconTextSize = displayOption.iconTextSize;
         fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
 
         if (Utilities.isGridOptionsEnabled(context)) {
@@ -347,7 +329,7 @@ public class InvariantDeviceProfile {
         // The real size never changes. smallSide and largeSide will remain the
         // same in any orientation.
         int smallSide = Math.min(realSize.x, realSize.y);
-        int largeSide = max(realSize.x, realSize.y);
+        int largeSide = Math.max(realSize.x, realSize.y);
 
         DeviceProfile.Builder builder = new DeviceProfile.Builder(context, this, displayInfo)
                 .setSizeRange(new Point(displayInfo.smallestSize),
@@ -363,7 +345,7 @@ public class InvariantDeviceProfile {
                     (int) (largeSide * wallpaperTravelToScreenWidthRatio(largeSide, smallSide)),
                     largeSide);
         } else {
-            defaultWallpaperSize = new Point(max(smallSide * 2, largeSide), largeSide);
+            defaultWallpaperSize = new Point(Math.max(smallSide * 2, largeSide), largeSide);
         }
 
         ComponentName cn = new ComponentName(context.getPackageName(), getClass().getName());
@@ -647,6 +629,7 @@ public class InvariantDeviceProfile {
         public final String name;
         public final int numRows;
         public final int numColumns;
+        // TODO:  migrate numColsDrawer to numAllAppsColumns
         public final int numColsDrawer;
         public final int numPredictions;
 
@@ -713,6 +696,9 @@ public class InvariantDeviceProfile {
             workspacePaddingRightScale = override.workspacePaddingRightScale;
             workspacePaddingTopScale = override.workspacePaddingTopScale;
             workspacePaddingBottomScale = override.workspacePaddingBottomScale;
+
+            dbFile = option.dbFile;
+            numAllAppsColumns = override.numColsDrawer;
 
             defaultLayoutId = option.defaultLayoutId;
             demoModeLayoutId = option.demoModeLayoutId;

@@ -106,19 +106,6 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
         return new Widgets(launcher, itemInfo);
     };
 
-    public static class Custom extends SystemShortcut<Launcher> {
-
-        public Custom() {
-            super(R.drawable.ic_edit_no_shadow, R.string.action_preferences);
-        }
-
-        @Override
-        public View.OnClickListener getOnClickListener(Launcher launcher, ItemInfo itemInfo) {
-            return null;
-        }
-    }
-
-
     public static class Widgets extends SystemShortcut<Launcher> {
         public Widgets(Launcher target, ItemInfo itemInfo) {
             super(R.drawable.ic_widget, R.string.widget_button_text, target, itemInfo);

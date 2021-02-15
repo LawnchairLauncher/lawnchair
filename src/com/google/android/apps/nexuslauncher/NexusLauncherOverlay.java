@@ -2,15 +2,17 @@ package com.google.android.apps.nexuslauncher;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
+import com.android.systemui.plugins.shared.LauncherOverlayManager;
+import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverlayCallbacks;
 import com.google.android.libraries.gsa.launcherclient.ISerializableScrollCallback;
 import com.google.android.libraries.gsa.launcherclient.LauncherClient;
 
-public class NexusLauncherOverlay implements Launcher.LauncherOverlay, ISerializableScrollCallback {
+public class NexusLauncherOverlay implements LauncherOverlayManager.LauncherOverlay, ISerializableScrollCallback {
     final static String PREF_PERSIST_FLAGS = "pref_persistent_flags";
 
     private LauncherClient mClient;
     final Launcher mLauncher;
-    private Launcher.LauncherOverlayCallbacks mOverlayCallbacks;
+    private LauncherOverlayCallbacks mOverlayCallbacks;
     boolean mFlagsChanged = false;
     private int mFlags;
     boolean mAttached = false;
@@ -65,7 +67,7 @@ public class NexusLauncherOverlay implements Launcher.LauncherOverlay, ISerializ
     }
 
     @Override
-    public void setOverlayCallbacks(Launcher.LauncherOverlayCallbacks cb) {
+    public void setOverlayCallbacks(LauncherOverlayCallbacks cb) {
         mOverlayCallbacks = cb;
     }
 }

@@ -5,12 +5,13 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import ch.deletescape.lawnchair.FeedBridge;
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.google.android.apps.nexuslauncher.smartspace.SmartspaceView;
 import com.google.android.libraries.gsa.launcherclient.LauncherClient;
 
-public class NexusLauncherActivity extends Launcher {
+// TODO: could this be replaced with plugins?
+public class NexusLauncherActivity extends QuickstepLauncher {
 
     private final NexusLauncher mLauncher;
 

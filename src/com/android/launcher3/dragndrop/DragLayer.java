@@ -547,14 +547,6 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     }
 
     @Override
-    protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
-        if (child == mOverviewScrim.getScrimmedView()) {
-            mOverviewScrim.draw(canvas);
-        }
-        return super.drawChild(canvas, child, drawingTime);
-    }
-
-    @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         mWorkspaceScrim.setSize(w, h);
