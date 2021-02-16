@@ -54,6 +54,11 @@
     <string name="add_item_request_drag_hint">Touch &amp; hold to place manually</string>
     <!-- Button label to automatically add icon on home screen [CHAR_LIMIT=50] -->
     <string name="place_automatically">Add automatically</string>
+    <!-- Label for showing the number of widgets an app has in the full widgets picker. [CHAR_LIMIT=25] -->
+    <plurals name="widgets_tray_subtitle">
+        <item quantity="one"><xliff:g id="widget_count" example="1">%1$d</xliff:g> widget</item>
+        <item quantity="other"><xliff:g id="widget_count" example="2">%1$d</xliff:g> widgets</item>
+    </plurals>
 
     <!-- All Apps -->
     <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->

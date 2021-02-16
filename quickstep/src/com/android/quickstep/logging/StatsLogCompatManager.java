@@ -88,7 +88,7 @@ public class StatsLogCompatManager extends StatsLogManager {
     }
 
     @Override
-    public StatsLogger logger() {
+    protected StatsLogger createLogger() {
         return new StatsCompatLogger();
     }
 
