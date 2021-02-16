@@ -24,6 +24,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
@@ -36,32 +37,42 @@ import com.android.launcher3.util.LabelComparator;
 import com.android.launcher3.widget.WidgetCell;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.model.WidgetsListContentEntry;
+import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
+import com.android.launcher3.widget.picker.WidgetsListHeaderViewHolderBinder.OnHeaderClickListener;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
- * List view adapter for the widget tray.
+ * Recycler view adapter for the widget tray.
  *
- * <p>Memory vs. Performance:
- * The less number of types of views are inserted into a {@link RecyclerView}, the more recycling
- * happens and less memory is consumed.
+ * <p>This adapter supports view binding of subclasses of {@link WidgetsListBaseEntry}. There are 2
+ * subclasses: {@link WidgetsListHeader} & {@link WidgetsListContentEntry}.
+ * {@link WidgetsListHeader} entries are always visible in the recycler view. At most one
+ * {@link WidgetsListContentEntry} is shown in the recycler view at any time. Clicking a
+ * {@link WidgetsListHeader} will result in expanding / collapsing a corresponding
+ * {@link WidgetsListContentEntry} of the same app.
  */
-public class WidgetsListAdapter extends Adapter<ViewHolder> {
+public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderClickListener {
 
     private static final String TAG = "WidgetsListAdapter";
     private static final boolean DEBUG = false;
 
     /** Uniquely identifies widgets list view type within the app. */
     private static final int VIEW_TYPE_WIDGETS_LIST = R.layout.widgets_list_row_view;
+    private static final int VIEW_TYPE_WIDGETS_HEADER = R.layout.widgets_list_row_header;
 
     private final WidgetsDiffReporter mDiffReporter;
     private final SparseArray<ViewHolderBinder> mViewHolderBinders = new SparseArray<>();
     private final WidgetsListRowViewHolderBinder mWidgetsListRowViewHolderBinder;
+    private final WidgetListBaseRowEntryComparator mRowComparator =
+            new WidgetListBaseRowEntryComparator();
 
-    private ArrayList<WidgetsListBaseEntry> mEntries = new ArrayList<>();
+    private List<WidgetsListBaseEntry> mAllEntries = new ArrayList<>();
+    private ArrayList<WidgetsListBaseEntry> mVisibleEntries = new ArrayList<>();
+    @Nullable private String mWidgetsContentVisiblePackage = null;
 
     public WidgetsListAdapter(Context context, LayoutInflater layoutInflater,
             WidgetPreviewLoader widgetPreviewLoader, IconCache iconCache,
@@ -70,6 +81,8 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> {
         mWidgetsListRowViewHolderBinder = new WidgetsListRowViewHolderBinder(context,
                 layoutInflater, iconClickListener, iconLongClickListener, widgetPreviewLoader);
         mViewHolderBinders.put(VIEW_TYPE_WIDGETS_LIST, mWidgetsListRowViewHolderBinder);
+        mViewHolderBinders.put(VIEW_TYPE_WIDGETS_HEADER,
+                new WidgetsListHeaderViewHolderBinder(layoutInflater, this::onHeaderClicked));
     }
 
     /**
@@ -96,26 +109,39 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return mEntries.size();
+        return mVisibleEntries.size();
     }
 
     /** Gets the section name for {@link com.android.launcher3.views.RecyclerViewFastScroller}. */
     public String getSectionName(int pos) {
-        return mEntries.get(pos).mTitleSectionName;
+        return mVisibleEntries.get(pos).mTitleSectionName;
     }
 
     /** Updates the widget list. */
     public void setWidgets(List<WidgetsListBaseEntry> tempEntries) {
-        ArrayList<WidgetsListBaseEntry> newEntries = new ArrayList<>(tempEntries);
-        WidgetListBaseRowEntryComparator rowComparator = new WidgetListBaseRowEntryComparator();
-        Collections.sort(newEntries, rowComparator);
-        mDiffReporter.process(mEntries, newEntries, rowComparator);
+        mAllEntries = tempEntries.stream().sorted(mRowComparator)
+                .collect(Collectors.toList());
+        updateVisibleEntries();
+    }
+
+    private void updateVisibleEntries() {
+        mAllEntries.forEach(entry -> {
+            if (entry instanceof WidgetsListHeaderEntry) {
+                ((WidgetsListHeaderEntry) entry).setIsWidgetListShown(
+                        entry.mPkgItem.packageName.equals(mWidgetsContentVisiblePackage));
+            }
+        });
+        List<WidgetsListBaseEntry> newVisibleEntries = mAllEntries.stream()
+                .filter(entry -> entry instanceof WidgetsListHeaderEntry
+                        || entry.mPkgItem.packageName.equals(mWidgetsContentVisiblePackage))
+                .collect(Collectors.toList());
+        mDiffReporter.process(mVisibleEntries, newVisibleEntries, mRowComparator);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int pos) {
         ViewHolderBinder viewHolderBinder = mViewHolderBinders.get(getItemViewType(pos));
-        viewHolderBinder.bindViewHolder(holder, mEntries.get(pos));
+        viewHolderBinder.bindViewHolder(holder, mVisibleEntries.get(pos));
     }
 
     @Override
@@ -148,11 +174,24 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> {
 
     @Override
     public int getItemViewType(int pos) {
-        WidgetsListBaseEntry entry = mEntries.get(pos);
+        WidgetsListBaseEntry entry = mVisibleEntries.get(pos);
         if (entry instanceof WidgetsListContentEntry) {
             return VIEW_TYPE_WIDGETS_LIST;
+        } else if (entry instanceof WidgetsListHeaderEntry) {
+            return VIEW_TYPE_WIDGETS_HEADER;
         }
         throw new UnsupportedOperationException("ViewHolderBinder not found for " + entry);
+    }
+
+    @Override
+    public void onHeaderClicked(boolean showWidgets, String expandedPackage) {
+        if (showWidgets) {
+            mWidgetsContentVisiblePackage = expandedPackage;
+            updateVisibleEntries();
+        } else if (expandedPackage.equals(mWidgetsContentVisiblePackage)) {
+            mWidgetsContentVisiblePackage = null;
+            updateVisibleEntries();
+        }
     }
 
     /** Comparator for sorting WidgetListRowEntry based on package title. */

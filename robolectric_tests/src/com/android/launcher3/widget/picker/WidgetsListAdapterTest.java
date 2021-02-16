@@ -40,11 +40,13 @@ import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.model.WidgetsListContentEntry;
+import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
@@ -56,9 +58,7 @@ import java.util.List;
 
 @RunWith(RobolectricTestRunner.class)
 public final class WidgetsListAdapterTest {
-
-    private static final String TEST_PACKAGE_1 = "com.google.test.1";
-    private static final String TEST_PACKAGE_2 = "com.google.test.2";
+    private static final String TEST_PACKAGE_PLACEHOLDER = "com.google.test";
 
     @Mock private LayoutInflater mMockLayoutInflater;
     @Mock private WidgetPreviewLoader mMockWidgetCache;
@@ -117,37 +117,76 @@ public final class WidgetsListAdapterTest {
     }
 
     @Test
-    public void setWidgets_sameApp_moreWidgets_shouldNotifyItemChangedWithWidgetItemInfoDiff() {
-        // GIVEN the adapter was first populated with test package 1 & test package 2.
-        WidgetsListBaseEntry testPackage1With2WidgetsListEntry =
-                generateSampleAppWithWidgets(TEST_PACKAGE_1, /* numOfWidgets= */ 2);
-        WidgetsListBaseEntry testPackage2With2WidgetsListEntry =
-                generateSampleAppWithWidgets(TEST_PACKAGE_2, /* numOfWidgets= */ 2);
-        mAdapter.setWidgets(
-                List.of(testPackage1With2WidgetsListEntry, testPackage2With2WidgetsListEntry));
+    public void headerClick_expanded_shouldNotifyItemChange() {
+        // GIVEN a list of widgets entries:
+        // [com.google.test0, com.google.test0 content,
+        //  com.google.test1, com.google.test1 content,
+        //  com.google.test2, com.google.test2 content]
+        // The visible widgets entries: [com.google.test0, com.google.test1, com.google.test2].
+        mAdapter.setWidgets(generateSampleMap(3));
 
-        // WHEN the adapter is updated with the same list of apps but test package 2 has 3 widgets
+        // WHEN com.google.test.1 header is expanded.
+        mAdapter.onHeaderClicked(/* isExpanded= */ true, TEST_PACKAGE_PLACEHOLDER + 1);
+
+        // THEN the visible entries list becomes:
+        // [com.google.test0, com.google.test1, com.google.test1 content, com.google.test2]
+        // com.google.test.1 content is inserted into position 2.
+        verify(mListener).onItemRangeInserted(eq(2), eq(1));
+    }
+
+    @Test
+    public void setWidgets_expandedApp_moreWidgets_shouldNotifyItemChangedWithWidgetItemInfoDiff() {
+        // GIVEN the adapter was first populated with com.google.test0 & com.google.test1. Each app
+        // has one widget.
+        ArrayList<WidgetsListBaseEntry> allEntries = generateSampleMap(2);
+        mAdapter.setWidgets(allEntries);
+        // GIVEN test com.google.test1 is expanded.
+        // Visible entries in the adapter are:
+        // [com.google.test0, com.google.test1, com.google.test1 content]
+        mAdapter.onHeaderClicked(/* isExpanded= */ true, TEST_PACKAGE_PLACEHOLDER + 1);
+        Mockito.reset(mListener);
+
+        // WHEN the adapter is updated with the same list of apps but com.google.test1 has 2 widgets
         // now.
-        WidgetsListBaseEntry testPackage1With3WidgetsListEntry =
-                generateSampleAppWithWidgets(TEST_PACKAGE_2, /* numOfWidgets= */ 2);
-        mAdapter.setWidgets(
-                List.of(testPackage1With2WidgetsListEntry, testPackage1With3WidgetsListEntry));
+        WidgetsListContentEntry testPackage1ContentEntry =
+                (WidgetsListContentEntry) allEntries.get(3);
+        WidgetItem widgetItem = testPackage1ContentEntry.mWidgets.get(0);
+        WidgetsListContentEntry newTestPackage1ContentEntry = new WidgetsListContentEntry(
+                testPackage1ContentEntry.mPkgItem,
+                testPackage1ContentEntry.mTitleSectionName, List.of(widgetItem, widgetItem));
+        allEntries.set(3, newTestPackage1ContentEntry);
+        mAdapter.setWidgets(allEntries);
 
-        // THEN the onItemRangeChanged is invoked.
-        verify(mListener).onItemRangeChanged(eq(1), eq(1), isNull());
+        // THEN the onItemRangeChanged is invoked for "com.google.test1 content" at index 2.
+        verify(mListener).onItemRangeChanged(eq(2), eq(1), isNull());
     }
 
     @Test
     public void setWidgets_hodgepodge_shouldInvokeExpectedDataObserverCallbacks() {
+        // GIVEN a widgets entry list:
+        // Index:  0|   1      | 2|      3   | 4|     5    | 6|     7    | 8|     9    |
+        //        [A, A content, B, B content, C, C content, D, D content, E, E content]
         List<WidgetsListBaseEntry> allAppsWithWidgets = generateSampleMap(5);
-        // GIVEN the current widgets list consist of [A, B, E].
+        // GIVEN the current widgets list consist of [A, A content, B, B content, E, E content].
+        // GIVEN the visible widgets list consist of [A, B, E]
         List<WidgetsListBaseEntry> currentList = List.of(
-                allAppsWithWidgets.get(0), allAppsWithWidgets.get(1), allAppsWithWidgets.get(4));
+                // A & A content
+                allAppsWithWidgets.get(0), allAppsWithWidgets.get(1),
+                // B & B content
+                allAppsWithWidgets.get(2), allAppsWithWidgets.get(3),
+                // E & E content
+                allAppsWithWidgets.get(8), allAppsWithWidgets.get(9));
         mAdapter.setWidgets(currentList);
 
-        // WHEN the widgets list is updated to [A, C, D].
+        // WHEN the widgets list is updated to [A, A content, C, C content, D, D content].
+        // WHEN the visible widgets list is updated to [A, C, D].
         List<WidgetsListBaseEntry> newList = List.of(
-                allAppsWithWidgets.get(0), allAppsWithWidgets.get(2), allAppsWithWidgets.get(3));
+                // A & A content
+                allAppsWithWidgets.get(0), allAppsWithWidgets.get(1),
+                // C & C content
+                allAppsWithWidgets.get(4), allAppsWithWidgets.get(5),
+                // D & D content
+                allAppsWithWidgets.get(6), allAppsWithWidgets.get(7));
         mAdapter.setWidgets(newList);
 
         // Computation logic                           | [Intermediate list during computation]
@@ -162,15 +201,23 @@ public final class WidgetsListAdapterTest {
     }
 
     /**
-     * Helper method to generate the sample widget model map that can be used for the tests
-     * @param num the number of WidgetItem the map should contain
+     * Generates a list of sample widget entries.
+     *
+     * <p>Each sample app has 1 widget only. An app is represented by 2 entries,
+     * {@link WidgetsListHeaderEntry} & {@link WidgetsListContentEntry}. Only
+     * {@link WidgetsListHeaderEntry} is always visible in the {@link WidgetsListAdapter}.
+     * {@link WidgetsListContentEntry} is only shown upon clicking the corresponding app's
+     * {@link WidgetsListHeaderEntry}. Only at most one {@link WidgetsListContentEntry} is shown at
+     * a time.
+     *
+     * @param num the number of apps that have widgets.
      */
     private ArrayList<WidgetsListBaseEntry> generateSampleMap(int num) {
         ArrayList<WidgetsListBaseEntry> result = new ArrayList<>();
         if (num <= 0) return result;
 
         for (int i = 0; i < num; i++) {
-            String packageName = "com.placeholder.apk" + i;
+            String packageName = TEST_PACKAGE_PLACEHOLDER + i;
 
             List<WidgetItem> widgetItems = generateWidgetItems(packageName, /* numOfWidgets= */ 1);
 
@@ -179,21 +226,11 @@ public final class WidgetsListAdapterTest {
             pInfo.user = widgetItems.get(0).user;
             pInfo.bitmap = BitmapInfo.of(Bitmap.createBitmap(10, 10, Bitmap.Config.ALPHA_8), 0);
 
+            result.add(new WidgetsListHeaderEntry(pInfo, /* titleSectionName= */ "", widgetItems));
             result.add(new WidgetsListContentEntry(pInfo, /* titleSectionName= */ "", widgetItems));
         }
 
         return result;
-    }
-
-    private WidgetsListBaseEntry generateSampleAppWithWidgets(String packageName,
-            int numOfWidgets) {
-        PackageItemInfo appInfo = new PackageItemInfo(packageName);
-        appInfo.title = appInfo.packageName;
-        appInfo.bitmap = BitmapInfo.of(Bitmap.createBitmap(10, 10, Bitmap.Config.ALPHA_8), 0);
-
-        return new WidgetsListContentEntry(appInfo,
-                /* titleSectionName= */ "",
-                generateWidgetItems(packageName, numOfWidgets));
     }
 
     private List<WidgetItem> generateWidgetItems(String packageName, int numOfWidgets) {
