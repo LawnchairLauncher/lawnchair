@@ -177,6 +177,8 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         icon.setFolder(folder);
 
         icon.setOnFocusChangeListener(launcher.getFocusHandler());
+        icon.mBackground.paddingY = icon.isInHotseat()
+                ? 0 : launcher.getDeviceProfile().cellYPaddingPx;
         return icon;
     }
 
@@ -199,7 +201,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         icon.mFolderName.setText(folderInfo.title);
         icon.mFolderName.setCompoundDrawablePadding(0);
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) icon.mFolderName.getLayoutParams();
-        lp.topMargin = grid.iconSizePx + grid.iconDrawablePaddingPx;
+        lp.topMargin = grid.cellYPaddingPx + grid.iconSizePx + grid.iconDrawablePaddingPx;
 
         icon.setTag(folderInfo);
         icon.setOnClickListener(ItemClickHandler.INSTANCE);
@@ -218,6 +220,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
 
         icon.setAccessibilityDelegate(activity.getAccessibilityDelegate());
 
+        icon.mBackground.paddingY = icon.isInHotseat() ? 0 : grid.cellYPaddingPx;
         icon.mPreviewVerifier = new FolderGridOrganizer(activity.getDeviceProfile().inv);
         icon.mPreviewVerifier.setFolderInfo(folderInfo);
         icon.updatePreviewItems(false);
@@ -579,6 +582,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     public void setFolderBackground(PreviewBackground bg) {
         mBackground = bg;
         mBackground.setInvalidateDelegate(this);
+        mBackground.paddingY = isInHotseat() ? 0 : mActivity.getDeviceProfile().cellYPaddingPx;
     }
 
     @Override
@@ -745,9 +749,13 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         mInfo.removeListener(mFolder);
     }
 
+    private boolean isInHotseat() {
+        return mInfo.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT;
+    }
+
     public void clearLeaveBehindIfExists() {
         ((CellLayout.LayoutParams) getLayoutParams()).canReorder = true;
-        if (mInfo.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+        if (isInHotseat()) {
             CellLayout cl = (CellLayout) getParent().getParent();
             cl.clearFolderLeaveBehind();
         }
@@ -757,7 +765,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) getLayoutParams();
         // While the folder is open, the position of the icon cannot change.
         lp.canReorder = false;
-        if (mInfo.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+        if (isInHotseat()) {
             CellLayout cl = (CellLayout) getParent().getParent();
             cl.setFolderLeaveBehindCell(lp.cellX, lp.cellY);
         }
