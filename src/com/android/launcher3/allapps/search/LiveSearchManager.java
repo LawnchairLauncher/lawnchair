@@ -16,8 +16,6 @@
 package com.android.launcher3.allapps.search;
 
 import static com.android.launcher3.LauncherState.ALL_APPS;
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_ENTRY;
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_EXIT;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.THREAD_POOL_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
@@ -47,9 +45,6 @@ import androidx.slice.SliceViewManager.SliceCallback;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.logging.InstanceId;
-import com.android.launcher3.logging.InstanceIdSequence;
-import com.android.launcher3.logging.StatsLogManager.StatsLogger;
 import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.SafeCloseable;
@@ -57,7 +52,6 @@ import com.android.launcher3.widget.PendingAddWidgetInfo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Optional;
 
 /**
  * Manages Lifecycle for Live search results
@@ -74,8 +68,6 @@ public class LiveSearchManager implements StateListener<LauncherState> {
     private final HashMap<ComponentKey, SearchWidgetInfoContainer> mWidgetPlaceholders =
             new HashMap<>();
     private SearchWidgetHost mSearchWidgetHost;
-    private InstanceId mLogInstanceId;
-    private LauncherState mPrevLauncherState;
 
     public LiveSearchManager(Launcher launcher) {
         mLauncher = launcher;
@@ -139,11 +131,6 @@ public class LiveSearchManager implements StateListener<LauncherState> {
     }
 
     @Override
-    public void onStateTransitionStart(LauncherState toState) {
-        mPrevLauncherState = mLauncher.getStateManager().getCurrentStableState();
-    }
-
-    @Override
     public void onStateTransitionComplete(LauncherState finalState) {
         if (finalState != ALL_APPS) {
             // Clear all search session related objects
@@ -151,18 +138,6 @@ public class LiveSearchManager implements StateListener<LauncherState> {
             mUriSliceMap.clear();
 
             clearWidgetHost();
-        }
-
-        if (ALL_APPS.equals(finalState)) {
-            // creates new instance ID since new all apps session is started.
-            mLogInstanceId = new InstanceIdSequence().newInstanceId();
-            allAppsLogger().log(LAUNCHER_ALLAPPS_ENTRY);
-        } else if (ALL_APPS.equals(mPrevLauncherState)
-                // Check if mLogInstanceId is not null; to avoid NPE when LAUNCHER_ALLAPPS_EXIT is
-                // triggered multiple times
-                && mLogInstanceId != null) {
-            allAppsLogger().log(LAUNCHER_ALLAPPS_EXIT);
-            mLogInstanceId = null;
         }
     }
 
@@ -179,14 +154,6 @@ public class LiveSearchManager implements StateListener<LauncherState> {
 
         final SliceLifeCycle sliceLifeCycle = slc;
         return () -> sliceLifeCycle.removeListener(listener);
-    }
-
-    /**
-     * Returns {@link InstanceId} that should be used for logging events within search session, if
-     * available.
-     */
-    public Optional<InstanceId> getLogInstanceId() {
-        return Optional.ofNullable(mLogInstanceId);
     }
 
     static class SearchWidgetHost extends AppWidgetHost {
@@ -315,16 +282,5 @@ public class LiveSearchManager implements StateListener<LauncherState> {
 
         @Override
         public void onActivitySaveInstanceState(Activity activity, Bundle bundle) { }
-    }
-
-    /**
-     * Returns new instance of {@link StatsLogger} pre-populated with details required to log
-     * AllApps specific user events.
-     */
-    public StatsLogger allAppsLogger() {
-        return getLogInstanceId()
-                .map(instanceId -> mLauncher.getStatsLogManager().logger()
-                        .withInstanceId(instanceId))
-                .orElse(mLauncher.getStatsLogManager().logger());
     }
 }

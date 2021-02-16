@@ -141,7 +141,10 @@ public abstract class BaseActivity extends Activity implements ActivityContext {
         return mDeviceProfile;
     }
 
-    public final StatsLogManager getStatsLogManager() {
+    /**
+     * Returns {@link StatsLogManager} for user event logging.
+     */
+    public StatsLogManager getStatsLogManager() {
         if (mStatsLogManager == null) {
             mStatsLogManager = StatsLogManager.newInstance(this);
         }
