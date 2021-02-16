@@ -19,14 +19,17 @@ import android.content.Context;
 import android.os.Handler;
 
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItem;
 import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.search.SearchAlgorithm;
+import com.android.launcher3.search.SearchCallback;
 
 import java.text.Collator;
 
 /**
  * The default search implementation.
  */
-public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
+public class DefaultAppSearchAlgorithm implements SearchAlgorithm<AdapterItem> {
 
     protected final Handler mResultHandler;
     private final AppsSearchPipeline mAppsSearchPipeline;
@@ -45,7 +48,7 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
 
     @Override
     public void doSearch(final String query,
-            final AllAppsSearchBarController.Callbacks callback) {
+            final SearchCallback<AdapterItem> callback) {
         mAppsSearchPipeline.query(query,
                 results -> mResultHandler.post(
                         () -> callback.onSearchResult(query, results)),
