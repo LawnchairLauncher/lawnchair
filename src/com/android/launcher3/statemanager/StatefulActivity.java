@@ -150,8 +150,8 @@ public abstract class StatefulActivity<STATE_TYPE extends BaseState<STATE_TYPE>>
 
     private void handleDeferredResume() {
         if (hasBeenResumed() && !getStateManager().getState().hasFlag(FLAG_NON_INTERACTIVE)) {
-            onDeferredResumed();
             addActivityFlags(ACTIVITY_STATE_DEFERRED_RESUMED);
+            onDeferredResumed();
 
             mDeferredResumePending = false;
         } else {
