@@ -130,6 +130,8 @@ public class InvariantDeviceProfile {
     public DeviceProfile landscapeProfile;
     public DeviceProfile portraitProfile;
 
+    public DevicePaddings devicePaddings;
+
     public Point defaultWallpaperSize;
     public Rect defaultWidgetPadding;
 
@@ -159,6 +161,7 @@ public class InvariantDeviceProfile {
         demoModeLayoutId = p.demoModeLayoutId;
         mExtraAttrs = p.mExtraAttrs;
         mOverlayMonitor = p.mOverlayMonitor;
+        devicePaddings = p.devicePaddings;
     }
 
     @TargetApi(23)
@@ -210,6 +213,8 @@ public class InvariantDeviceProfile {
         result.landscapeIconSize = defaultDisplayOption.landscapeIconSize;
         result.allAppsIconSize = Math.min(
                 defaultDisplayOption.allAppsIconSize, myDisplayOption.allAppsIconSize);
+
+        devicePaddings = new DevicePaddings(context);
         initGrid(context, myInfo, result);
     }
 
@@ -237,6 +242,7 @@ public class InvariantDeviceProfile {
         ArrayList<DisplayOption> allOptions = getPredefinedDeviceProfiles(context, gridName);
 
         DisplayOption displayOption = invDistWeightedInterpolate(displayInfo, allOptions);
+        devicePaddings = new DevicePaddings(context);
         initGrid(context, displayInfo, displayOption);
         return displayOption.grid.name;
     }

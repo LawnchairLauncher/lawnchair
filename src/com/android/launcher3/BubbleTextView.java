@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.FastBitmapDrawable.newIcon;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_FOUR_COLUMNS;
 import static com.android.launcher3.graphics.IconShape.getShape;
 import static com.android.launcher3.graphics.PreloadIconDrawable.newPendingIcon;
 import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
@@ -194,6 +195,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.iconTextSizePx);
             setCompoundDrawablePadding(grid.iconDrawablePaddingPx);
             defaultIconSize = grid.iconSizePx;
+            setCenterVertically(ENABLE_FOUR_COLUMNS.get());
         } else if (mDisplay == DISPLAY_ALL_APPS) {
             setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.allAppsIconTextSizePx);
             setCompoundDrawablePadding(grid.allAppsIconDrawablePaddingPx);
@@ -228,7 +230,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         int shadowSize = context.getResources().getDimensionPixelSize(
                 R.dimen.blur_size_click_shadow);
         mHighlightShadowFilter = new BlurMaskFilter(shadowSize, BlurMaskFilter.Blur.INNER);
-
     }
 
     @Override
@@ -548,6 +549,14 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         int right = left + iconSize;
         int bottom = top + iconSize;
         outBounds.set(left, top, right, bottom);
+    }
+
+
+    /**
+     * Sets whether to vertically center the content.
+     */
+    public void setCenterVertically(boolean centerVertically) {
+        mCenterVertically = centerVertically;
     }
 
     @Override

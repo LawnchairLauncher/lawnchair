@@ -42,8 +42,10 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
 
     private int mCellWidth;
     private int mCellHeight;
+    private int mBorderSpacing;
 
     private int mCountX;
+    private int mCountY;
 
     private final ActivityContext mActivity;
     private boolean mInvertIfRtl = false;
@@ -55,20 +57,23 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
         mContainerType = containerType;
     }
 
-    public void setCellDimensions(int cellWidth, int cellHeight, int countX, int countY) {
+    public void setCellDimensions(int cellWidth, int cellHeight, int countX, int countY,
+            int borderSpacing) {
         mCellWidth = cellWidth;
         mCellHeight = cellHeight;
         mCountX = countX;
+        mCountY = countY;
+        mBorderSpacing = borderSpacing;
     }
 
-    public View getChildAt(int x, int y) {
+    public View getChildAt(int cellX, int cellY) {
         final int count = getChildCount();
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
             CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
 
-            if ((lp.cellX <= x) && (x < lp.cellX + lp.cellHSpan) &&
-                    (lp.cellY <= y) && (y < lp.cellY + lp.cellVSpan)) {
+            if ((lp.cellX <= cellX) && (cellX < lp.cellX + lp.cellHSpan)
+                    && (lp.cellY <= cellY) && (cellY < lp.cellY + lp.cellVSpan)) {
                 return child;
             }
         }
@@ -95,10 +100,11 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
         if (child instanceof LauncherAppWidgetHostView) {
             DeviceProfile profile = mActivity.getDeviceProfile();
-            lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX,
-                    profile.appWidgetScale.x, profile.appWidgetScale.y);
+            lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX, mCountY,
+                    profile.appWidgetScale.x, profile.appWidgetScale.y, mBorderSpacing);
         } else {
-            lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX);
+            lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX, mCountY,
+                    mBorderSpacing);
         }
     }
 
@@ -117,11 +123,12 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
         final DeviceProfile profile = mActivity.getDeviceProfile();
 
         if (child instanceof LauncherAppWidgetHostView) {
-            lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX,
-                    profile.appWidgetScale.x, profile.appWidgetScale.y);
+            lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX, mCountY,
+                    profile.appWidgetScale.x, profile.appWidgetScale.y, mBorderSpacing);
             // Widgets have their own padding
         } else {
-            lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX);
+            lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX, mCountY,
+                    mBorderSpacing);
             // Center the icon/folder
             int cHeight = getCellContentHeight();
             int cellPaddingY = (int) Math.max(0, ((lp.height - cHeight) / 2f));
