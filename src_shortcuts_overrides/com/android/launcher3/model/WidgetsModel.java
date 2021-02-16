@@ -31,6 +31,7 @@ import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.widget.WidgetManagerHelper;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.model.WidgetsListContentEntry;
+import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
 import com.android.launcher3.widget.picker.WidgetsDiffReporter;
 
 import java.util.ArrayList;
@@ -73,11 +74,11 @@ public class WidgetsModel {
 
         for (Map.Entry<PackageItemInfo, List<WidgetItem>> entry : mWidgetsList.entrySet()) {
             PackageItemInfo pkgItem = entry.getKey();
+            List<WidgetItem> widgetItems = entry.getValue();
             String sectionName = (pkgItem.title == null) ? "" :
                     indexer.computeSectionName(pkgItem.title);
-            WidgetsListContentEntry row =
-                    new WidgetsListContentEntry(pkgItem, sectionName, entry.getValue());
-            result.add(row);
+            result.add(new WidgetsListHeaderEntry(pkgItem, sectionName, widgetItems));
+            result.add(new WidgetsListContentEntry(pkgItem, sectionName, widgetItems));
         }
         return result;
     }

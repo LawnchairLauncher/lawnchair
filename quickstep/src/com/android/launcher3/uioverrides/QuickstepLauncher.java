@@ -81,7 +81,6 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 public class QuickstepLauncher extends BaseQuickstepLauncher {
@@ -106,10 +105,9 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
     protected void logAppLaunch(ItemInfo info, InstanceId instanceId) {
         // If the app launch is from any of the surfaces in AllApps then add the InstanceId from
         // LiveSearchManager to recreate the AllApps session on the server side.
-        Optional<InstanceId> logInstanceId = this.getLiveSearchManager().getLogInstanceId();
-        if (logInstanceId.isPresent() && ALL_APPS.equals(
+        if (mAllAppsSessionLogId != null && ALL_APPS.equals(
                 getStateManager().getCurrentStableState())) {
-            instanceId = logInstanceId.get();
+            instanceId = mAllAppsSessionLogId;
         }
 
         StatsLogger logger = getStatsLogManager()
