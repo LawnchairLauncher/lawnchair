@@ -40,6 +40,8 @@ import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_LAUNCHER_LOAD;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_ENTRY;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_EXIT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ONRESUME;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ONSTOP;
 import static com.android.launcher3.model.ItemInstallQueue.FLAG_ACTIVITY_PAUSED;
@@ -124,6 +126,8 @@ import com.android.launcher3.keyboard.CustomActionsPopup;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logging.FileLog;
+import com.android.launcher3.logging.InstanceId;
+import com.android.launcher3.logging.InstanceIdSequence;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.ItemInstallQueue;
@@ -351,6 +355,13 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     private boolean mTouchInProgress;
 
     private SafeCloseable mUserChangedCallbackCloseable;
+
+    // New InstanceId is assigned to mAllAppsSessionLogId for each AllApps sessions.
+    // When Launcher is not in AllApps state mAllAppsSessionLogId will be null.
+    // User actions within AllApps state are logged with this InstanceId, to recreate AllApps
+    // session on the server side.
+    protected InstanceId mAllAppsSessionLogId;
+    private LauncherState mPrevLauncherState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -1027,6 +1038,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         }
         // When multiple pages are visible, show persistent page indicator
         mWorkspace.getPageIndicator().setShouldAutoHide(!state.hasFlag(FLAG_MULTI_PAGE));
+        mPrevLauncherState = mStateManager.getCurrentStableState();
     }
 
     @Override
@@ -1049,6 +1061,17 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
             // Clear any rotation locks when going to normal state
             getRotationHelper().setCurrentStateRequest(REQUEST_NONE);
+        }
+
+        if (ALL_APPS.equals(state)) {
+            // creates new instance ID since new all apps session is started.
+            mAllAppsSessionLogId = new InstanceIdSequence().newInstanceId();
+            getStatsLogManager().logger().log(LAUNCHER_ALLAPPS_ENTRY);
+        } else if (ALL_APPS.equals(mPrevLauncherState)
+                // Check if mLogInstanceId is not null to make sure exit event is logged only once.
+                && mAllAppsSessionLogId != null) {
+            getStatsLogManager().logger().log(LAUNCHER_ALLAPPS_EXIT);
+            mAllAppsSessionLogId = null;
         }
     }
 
@@ -2817,5 +2840,10 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     private static class NonConfigInstance {
         public Configuration config;
         public Bitmap snapshot;
+    }
+
+    @Override
+    public StatsLogManager getStatsLogManager() {
+        return super.getStatsLogManager().withDefaultInstanceId(mAllAppsSessionLogId);
     }
 }
