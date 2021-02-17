@@ -18,13 +18,13 @@ package com.android.launcher3.settings;
 
 import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS;
 
+import static com.android.launcher3.util.SettingsCache.NOTIFICATION_BADGING_URI;
+import static com.android.launcher3.util.SettingsCache.NOTIFICATION_ENABLED_LISTENERS;
 import static com.android.launcher3.states.RotationHelper.ALLOW_ROTATION_PREFERENCE_KEY;
 import static com.android.launcher3.states.RotationHelper.getAllowRotationDefaultValue;
-import static com.android.launcher3.util.SecureSettingsObserver.newNotificationSettingsObserver;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
@@ -45,8 +45,8 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.WidgetsModel;
+import com.android.launcher3.util.SettingsCache;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
-import com.android.launcher3.util.SecureSettingsObserver;
 
 /**
  * Settings activity for Launcher. Currently implements the following setting: Allow rotation
@@ -59,8 +59,6 @@ public class SettingsActivity extends FragmentActivity
     private static final String FLAGS_PREFERENCE_KEY = "flag_toggler";
 
     private static final String NOTIFICATION_DOTS_PREFERENCE_KEY = "pref_icon_badging";
-    /** Hidden field Settings.Secure.ENABLED_NOTIFICATION_LISTENERS */
-    private static final String NOTIFICATION_ENABLED_LISTENERS = "enabled_notification_listeners";
 
     public static final String EXTRA_FRAGMENT_ARG_KEY = ":settings:fragment_args_key";
     public static final String EXTRA_SHOW_FRAGMENT_ARGS = ":settings:show_fragment_args";
@@ -126,10 +124,11 @@ public class SettingsActivity extends FragmentActivity
      */
     public static class LauncherSettingsFragment extends PreferenceFragmentCompat {
 
-        private SecureSettingsObserver mNotificationDotsObserver;
+        private SettingsCache mSettingsCache;
 
         private String mHighLightKey;
         private boolean mPreferenceHighlighted = false;
+        private NotificationDotsPreference mNotificationSettingsChangedListener;
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -177,14 +176,16 @@ public class SettingsActivity extends FragmentActivity
                     }
 
                     // Listen to system notification dot settings while this UI is active.
-                    mNotificationDotsObserver = newNotificationSettingsObserver(
-                            getActivity(), (NotificationDotsPreference) preference);
-                    mNotificationDotsObserver.register();
+                    mSettingsCache = SettingsCache.INSTANCE.get(getActivity());
+                    mNotificationSettingsChangedListener =
+                            ((NotificationDotsPreference) preference);
+                    mSettingsCache.register(NOTIFICATION_BADGING_URI,
+                            (NotificationDotsPreference) mNotificationSettingsChangedListener);
                     // Also listen if notification permission changes
-                    mNotificationDotsObserver.getResolver().registerContentObserver(
-                            Settings.Secure.getUriFor(NOTIFICATION_ENABLED_LISTENERS), false,
-                            mNotificationDotsObserver);
-                    mNotificationDotsObserver.dispatchOnChange();
+                    mSettingsCache.register(NOTIFICATION_ENABLED_LISTENERS,
+                            mNotificationSettingsChangedListener);
+                    mSettingsCache.dispatchOnChange(NOTIFICATION_BADGING_URI);
+                    mSettingsCache.dispatchOnChange(NOTIFICATION_ENABLED_LISTENERS);
                     return true;
 
                 case ALLOW_ROTATION_PREFERENCE_KEY:
@@ -251,9 +252,11 @@ public class SettingsActivity extends FragmentActivity
 
         @Override
         public void onDestroy() {
-            if (mNotificationDotsObserver != null) {
-                mNotificationDotsObserver.unregister();
-                mNotificationDotsObserver = null;
+            if (mSettingsCache != null) {
+                mSettingsCache.unregister(NOTIFICATION_BADGING_URI,
+                        mNotificationSettingsChangedListener);
+                mSettingsCache.unregister(NOTIFICATION_ENABLED_LISTENERS,
+                        mNotificationSettingsChangedListener);
             }
             super.onDestroy();
         }
