@@ -42,8 +42,7 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.search.SearchAdapterProvider;
-import com.android.launcher3.allapps.search.SearchSectionInfo;
-import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.allapps.search.SectionDecorationInfo;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.util.PackageManagerHelper;
 
@@ -109,7 +108,7 @@ public class AllAppsGridAdapter extends
         // The index of this app not including sections
         public int appIndex = -1;
         // Search section associated to result
-        public SearchSectionInfo searchSectionInfo = null;
+        public SectionDecorationInfo sectionDecorationInfo = null;
 
         /**
          * Factory method for AppIcon AdapterItem
@@ -372,10 +371,6 @@ public class AllAppsGridAdapter extends
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()
-                && holder.itemView instanceof AllAppsSectionDecorator.SelfDecoratingView) {
-            ((AllAppsSectionDecorator.SelfDecoratingView) holder.itemView).removeDecoration();
-        }
         switch (holder.getItemViewType()) {
             case VIEW_TYPE_ICON:
                 AdapterItem adapterItem = mApps.getAdapterItems().get(position);
@@ -409,10 +404,6 @@ public class AllAppsGridAdapter extends
     @Override
     public void onViewRecycled(@NonNull ViewHolder holder) {
         super.onViewRecycled(holder);
-        if (!FeatureFlags.ENABLE_DEVICE_SEARCH.get()) return;
-        if (holder.itemView instanceof AllAppsSectionDecorator.SelfDecoratingView) {
-            ((AllAppsSectionDecorator.SelfDecoratingView) holder.itemView).removeDecoration();
-        }
     }
 
     @Override
