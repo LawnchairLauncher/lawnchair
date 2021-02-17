@@ -206,6 +206,7 @@ public class PopupContainerWithArrow<T extends BaseDraggingActivity> extends Arr
                         .filter(Objects::nonNull)
                         .collect(Collectors.toList()));
         launcher.refreshAndBindWidgetsForPackageUser(PackageUserKey.fromItemInfo(item));
+        container.requestFocus();
         return container;
     }
 

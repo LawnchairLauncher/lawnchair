@@ -37,6 +37,8 @@ import com.android.launcher3.Launcher.OnResumeCallback;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.logging.FileLog;
+import com.android.launcher3.logging.InstanceId;
+import com.android.launcher3.logging.InstanceIdSequence;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
 import com.android.launcher3.model.data.ItemInfo;
@@ -203,9 +205,13 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
         d.dragSource = new DeferredOnComplete(d.dragSource, getContext());
 
         super.onDrop(d, options);
-        StatsLogger logger = mStatsLogManager.logger().withInstanceId(d.logInstanceId);
-        if (d.originalDragInfo != null) {
-            logger.withItemInfo(d.originalDragInfo);
+        doLog(d.logInstanceId, d.originalDragInfo);
+    }
+
+    private void doLog(InstanceId logInstanceId, ItemInfo itemInfo) {
+        StatsLogger logger = mStatsLogManager.logger().withInstanceId(logInstanceId);
+        if (itemInfo != null) {
+            logger.withItemInfo(itemInfo);
         }
         if (mCurrentAccessibilityAction == UNINSTALL) {
             logger.log(LAUNCHER_ITEM_DROPPED_ON_UNINSTALL);
@@ -296,6 +302,7 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
 
     @Override
     public void onAccessibilityDrop(View view, ItemInfo item) {
+        doLog(new InstanceIdSequence().newInstanceId(), item);
         performDropAction(view, item);
     }
 

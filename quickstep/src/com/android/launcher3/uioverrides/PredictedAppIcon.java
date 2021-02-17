@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.uioverrides;
 
-import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.PIN_PREDICTION;
 import static com.android.launcher3.graphics.IconShape.getShape;
 
 import android.content.Context;
@@ -29,7 +28,6 @@ import android.os.Process;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.view.accessibility.AccessibilityNodeInfo;
 
 import androidx.core.graphics.ColorUtils;
 
@@ -37,9 +35,7 @@ import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.graphics.IconPalette;
-import com.android.launcher3.hybridhotseat.HotseatPredictionController;
 import com.android.launcher3.icons.IconNormalizer;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.model.data.ItemInfo;
@@ -53,8 +49,7 @@ import com.android.launcher3.views.DoubleShadowBubbleTextView;
 /**
  * A BubbleTextView with a ring around it's drawable
  */
-public class PredictedAppIcon extends DoubleShadowBubbleTextView implements
-        LauncherAccessibilityDelegate.AccessibilityActionHandler {
+public class PredictedAppIcon extends DoubleShadowBubbleTextView {
 
     private static final int RING_SHADOW_COLOR = 0x99000000;
     private static final float RING_EFFECT_RATIO = 0.095f;
@@ -148,35 +143,16 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView implements
     }
 
     @Override
-    public void addSupportedAccessibilityActions(AccessibilityNodeInfo accessibilityNodeInfo) {
-        if (!mIsPinned) {
-            accessibilityNodeInfo.addAction(
-                    new AccessibilityNodeInfo.AccessibilityAction(PIN_PREDICTION,
-                            getContext().getText(R.string.pin_prediction)));
-        }
-    }
-
-    @Override
-    public boolean performAccessibilityAction(int action, ItemInfo info) {
-        QuickstepLauncher launcher = Launcher.cast(Launcher.getLauncher(getContext()));
-        if (action == PIN_PREDICTION) {
-            if (launcher == null) {
-                return false;
-            }
-            HotseatPredictionController controller = launcher.getHotseatPredictionController();
-            controller.pinPrediction(info);
-            return true;
-        }
-        return false;
-    }
-
-    @Override
     public void getIconBounds(Rect outBounds) {
         super.getIconBounds(outBounds);
         if (!mIsPinned && !mIsDrawingDot) {
             int predictionInset = (int) (getIconSize() * RING_EFFECT_RATIO);
             outBounds.inset(predictionInset, predictionInset);
         }
+    }
+
+    public boolean isPinned() {
+        return mIsPinned;
     }
 
     private int getOutlineOffsetX() {
