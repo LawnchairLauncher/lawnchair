@@ -166,19 +166,19 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         mDotParams = new DotRenderer.DrawParams();
     }
 
-    public static FolderIcon inflateFolderAndIcon(int resId, Launcher launcher, ViewGroup group,
-            FolderInfo folderInfo) {
-        Folder folder = Folder.fromXml(launcher);
-        folder.setDragController(launcher.getDragController());
+    public static <T extends Context & ActivityContext> FolderIcon inflateFolderAndIcon(int resId,
+            T activityContext, ViewGroup group, FolderInfo folderInfo) {
+        Folder folder = Folder.fromXml(activityContext);
+        folder.setDragController(folder.mLauncher.getDragController());
 
-        FolderIcon icon = inflateIcon(resId, launcher, group, folderInfo);
+        FolderIcon icon = inflateIcon(resId, activityContext, group, folderInfo);
         folder.setFolderIcon(icon);
         folder.bind(folderInfo);
         icon.setFolder(folder);
 
-        icon.setOnFocusChangeListener(launcher.getFocusHandler());
+        icon.setOnFocusChangeListener(folder.mLauncher.getFocusHandler());
         icon.mBackground.paddingY = icon.isInHotseat()
-                ? 0 : launcher.getDeviceProfile().cellYPaddingPx;
+                ? 0 : activityContext.getDeviceProfile().cellYPaddingPx;
         return icon;
     }
 

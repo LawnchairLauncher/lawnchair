@@ -36,7 +36,6 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
@@ -230,7 +229,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
     }
 
     private CellLayout createAndAddNewPage() {
-        DeviceProfile grid = Launcher.getLauncher(getContext()).getDeviceProfile();
+        DeviceProfile grid = mFolder.mActivityContext.getDeviceProfile();
         CellLayout page = mViewCache.getView(R.layout.folder_page, getContext(), this);
         page.setCellDimensions(grid.folderCellWidthPx, grid.folderCellHeightPx);
         page.getShortcutsAndWidgets().setMotionEventSplittingEnabled(false);
@@ -624,7 +623,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
 
     @Override
     protected boolean canScroll(float absVScroll, float absHScroll) {
-        return AbstractFloatingView.getTopOpenViewWithType(mFolder.mLauncher,
+        return AbstractFloatingView.getTopOpenViewWithType(mFolder.mActivityContext,
                 TYPE_ALL & ~TYPE_FOLDER) == null;
     }
 
