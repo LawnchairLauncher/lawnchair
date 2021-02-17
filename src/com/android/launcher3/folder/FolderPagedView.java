@@ -193,7 +193,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
         int pageNo = rank / mOrganizer.getMaxItemsPerPage();
 
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
-        lp.setXY(mOrganizer.getPosForRank(rank));
+        lp.setCellXY(mOrganizer.getPosForRank(rank));
         getPageAt(pageNo).addViewToCellLayout(view, -1, item.getViewId(), lp, true);
     }
 
@@ -306,7 +306,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
             if (v != null) {
                 CellLayout.LayoutParams lp = (CellLayout.LayoutParams) v.getLayoutParams();
                 ItemInfo info = (ItemInfo) v.getTag();
-                lp.setXY(mOrganizer.getPosForRank(rank));
+                lp.setCellXY(mOrganizer.getPosForRank(rank));
                 currentPage.addViewToCellLayout(v, -1, info.getViewId(), lp, true);
 
                 if (mOrganizer.isItemInPreview(rank) && v instanceof BubbleTextView) {

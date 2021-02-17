@@ -84,7 +84,7 @@ public class QuickstepModelDelegate extends ModelDelegate implements OnIDPChange
     private final InvariantDeviceProfile mIDP;
     private final AppEventProducer mAppEventProducer;
 
-    private boolean mActive = false;
+    protected boolean mActive = false;
 
     public QuickstepModelDelegate(Context context) {
         mAppEventProducer = new AppEventProducer(context, this::onAppTargetEvent);
@@ -200,7 +200,6 @@ public class QuickstepModelDelegate extends ModelDelegate implements OnIDPChange
                         .setPredictedTargetCount(mIDP.numHotseatIcons)
                         .setExtras(convertDataModelToAppTargetBundle(context, mDataModel))
                         .build()));
-
     }
 
     private void registerPredictor(PredictorState state, AppPredictor predictor) {
@@ -236,14 +235,14 @@ public class QuickstepModelDelegate extends ModelDelegate implements OnIDPChange
     static class PredictorState {
 
         public final FixedContainerItems items;
-        public final PersistedItemArray storage;
+        public final PersistedItemArray<ItemInfo> storage;
         public AppPredictor predictor;
 
         private List<AppTarget> mLastTargets;
 
         PredictorState(int container, String storageName) {
             items = new FixedContainerItems(container);
-            storage = new PersistedItemArray(storageName);
+            storage = new PersistedItemArray<>(storageName);
             mLastTargets = Collections.emptyList();
         }
 
@@ -255,7 +254,7 @@ public class QuickstepModelDelegate extends ModelDelegate implements OnIDPChange
         }
 
         /**
-         * Sets the new targets and returns true if it was different than before.
+         * Sets the new targets and returns true if it was the same as before.
          */
         boolean setTargets(List<AppTarget> newTargets) {
             List<AppTarget> oldTargets = mLastTargets;
@@ -289,7 +288,7 @@ public class QuickstepModelDelegate extends ModelDelegate implements OnIDPChange
         return true;
     }
 
-    private static class WorkspaceItemFactory implements PersistedItemArray.ItemFactory {
+    private static class WorkspaceItemFactory implements PersistedItemArray.ItemFactory<ItemInfo> {
 
         private final LauncherAppState mAppState;
         private final UserManagerState mUMS;
