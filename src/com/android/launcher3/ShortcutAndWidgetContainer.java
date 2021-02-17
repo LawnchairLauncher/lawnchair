@@ -26,10 +26,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.launcher3.CellLayout.ContainerType;
+import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
-public class ShortcutAndWidgetContainer extends ViewGroup {
+public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.FolderIconParent {
     static final String TAG = "ShortcutAndWidgetContainer";
 
     // These are temporary variables to prevent having to allocate a new object just to
@@ -226,6 +227,26 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
         for (int i = 0; i < count; i++) {
             final View child = getChildAt(i);
             child.cancelLongPress();
+        }
+    }
+
+    @Override
+    public void drawFolderLeaveBehindForIcon(FolderIcon child) {
+        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
+        // While the folder is open, the position of the icon cannot change.
+        lp.canReorder = false;
+        if (mContainerType == CellLayout.HOTSEAT) {
+            CellLayout cl = (CellLayout) getParent();
+            cl.setFolderLeaveBehindCell(lp.cellX, lp.cellY);
+        }
+    }
+
+    @Override
+    public void clearFolderLeaveBehind(FolderIcon child) {
+        ((CellLayout.LayoutParams) child.getLayoutParams()).canReorder = true;
+        if (mContainerType == CellLayout.HOTSEAT) {
+            CellLayout cl = (CellLayout) getParent();
+            cl.clearFolderLeaveBehind();
         }
     }
 }
