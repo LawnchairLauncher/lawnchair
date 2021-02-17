@@ -30,7 +30,6 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
 import android.os.CancellationSignal;
-import android.view.LayoutInflater;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -43,7 +42,7 @@ import com.android.launcher3.proxy.StartActivityParams;
 import com.android.launcher3.statehandlers.BackButtonAlphaHandler;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
-import com.android.launcher3.taskbar.TaskbarContainerView;
+import com.android.launcher3.taskbar.TaskbarActivityContext;
 import com.android.launcher3.taskbar.TaskbarController;
 import com.android.launcher3.taskbar.TaskbarStateHandler;
 import com.android.launcher3.uioverrides.RecentsViewStateController;
@@ -207,6 +206,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
         mActionsView.updateVerticalMargin(SysUINavigationMode.getMode(this));
 
         addTaskbarIfNecessary();
+        addOnDeviceProfileChangeListener(newDp -> addTaskbarIfNecessary());
     }
 
     @Override
@@ -223,9 +223,9 @@ public abstract class BaseQuickstepLauncher extends Launcher
             mTaskbarController = null;
         }
         if (FeatureFlags.ENABLE_TASKBAR.get() && mDeviceProfile.isTablet) {
-            TaskbarContainerView taskbarContainer = (TaskbarContainerView) LayoutInflater.from(this)
-                    .inflate(R.layout.taskbar, null, false);
-            mTaskbarController = new TaskbarController(this, taskbarContainer);
+            TaskbarActivityContext taskbarActivityContext = new TaskbarActivityContext(this);
+            mTaskbarController = new TaskbarController(this,
+                    taskbarActivityContext.getTaskbarContainerView());
             mTaskbarController.init();
         }
     }
