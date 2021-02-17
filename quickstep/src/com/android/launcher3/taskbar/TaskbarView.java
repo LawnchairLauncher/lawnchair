@@ -17,6 +17,7 @@ package com.android.launcher3.taskbar;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Canvas;
 import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -44,7 +45,7 @@ import com.android.systemui.shared.recents.model.Task;
 /**
  * Hosts the Taskbar content such as Hotseat and Recent Apps. Drawn on top of other apps.
  */
-public class TaskbarView extends LinearLayout {
+public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconParent {
 
     private final ColorDrawable mBackgroundDrawable;
     private final int mItemMarginLeftRight;
@@ -69,6 +70,8 @@ public class TaskbarView extends LinearLayout {
     private View mDelegateView;
 
     private boolean mIsDraggingItem;
+    // Only non-null when the corresponding Folder is open.
+    private @Nullable FolderIcon mLeaveBehindFolderIcon;
 
     public TaskbarView(@NonNull Context context) {
         this(context, null);
@@ -385,6 +388,33 @@ public class TaskbarView extends LinearLayout {
 
     public boolean isDraggingItem() {
         return mIsDraggingItem;
+    }
+
+    // FolderIconParent implemented methods.
+
+    @Override
+    public void drawFolderLeaveBehindForIcon(FolderIcon child) {
+        mLeaveBehindFolderIcon = child;
+        invalidate();
+    }
+
+    @Override
+    public void clearFolderLeaveBehind(FolderIcon child) {
+        mLeaveBehindFolderIcon = null;
+        invalidate();
+    }
+
+    // End FolderIconParent implemented methods.
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        if (mLeaveBehindFolderIcon != null) {
+            canvas.save();
+            canvas.translate(mLeaveBehindFolderIcon.getLeft(), mLeaveBehindFolderIcon.getTop());
+            mLeaveBehindFolderIcon.getFolderBackground().drawLeaveBehind(canvas);
+            canvas.restore();
+        }
     }
 
     private View inflate(@LayoutRes int layoutResId) {
