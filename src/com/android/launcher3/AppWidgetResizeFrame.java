@@ -279,8 +279,9 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
      *  Based on the current deltas, we determine if and how to resize the widget.
      */
     private void resizeWidgetIfNeeded(boolean onDismiss) {
-        float xThreshold = mCellLayout.getCellWidth();
-        float yThreshold = mCellLayout.getCellHeight();
+        DeviceProfile dp = mLauncher.getDeviceProfile();
+        float xThreshold = mCellLayout.getCellWidth() + dp.cellLayoutBorderSpacingPx;
+        float yThreshold = mCellLayout.getCellHeight() + dp.cellLayoutBorderSpacingPx;
 
         int hSpanInc = getSpanIncrement((mDeltaX + mDeltaXAddOn) / xThreshold - mRunningHInc);
         int vSpanInc = getSpanIncrement((mDeltaY + mDeltaYAddOn) / yThreshold - mRunningVInc);
@@ -364,13 +365,18 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         final float density = context.getResources().getDisplayMetrics().density;
         final Point[] cellSize = CELL_SIZE.get(context);
 
+        final int borderSpacing = context.getResources()
+                .getDimensionPixelSize(R.dimen.dynamic_grid_cell_border_spacing);
+        final float hBorderSpacing = (spanX - 1) * borderSpacing;
+        final float vBorderSpacing = (spanY - 1) * borderSpacing;
+
         // Compute landscape size
-        int landWidth = (int) ((spanX * cellSize[0].x) / density);
-        int landHeight = (int) ((spanY * cellSize[0].y) / density);
+        int landWidth = (int) (((spanX * cellSize[0].x) + hBorderSpacing) / density);
+        int landHeight = (int) (((spanY * cellSize[0].y) + vBorderSpacing) / density);
 
         // Compute portrait size
-        int portWidth = (int) ((spanX * cellSize[1].x) / density);
-        int portHeight = (int) ((spanY * cellSize[1].y) / density);
+        int portWidth = (int) (((spanX * cellSize[1].x) + hBorderSpacing) / density);
+        int portHeight = (int) (((spanY * cellSize[1].y) + vBorderSpacing) / density);
         rect.set(portWidth, landHeight, landWidth, portHeight);
         return rect;
     }
@@ -384,8 +390,9 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     }
 
     private void onTouchUp() {
-        int xThreshold = mCellLayout.getCellWidth();
-        int yThreshold = mCellLayout.getCellHeight();
+        DeviceProfile dp = mLauncher.getDeviceProfile();
+        int xThreshold = mCellLayout.getCellWidth() + dp.cellLayoutBorderSpacingPx;
+        int yThreshold = mCellLayout.getCellHeight() + dp.cellLayoutBorderSpacingPx;
 
         mDeltaXAddOn = mRunningHInc * xThreshold;
         mDeltaYAddOn = mRunningVInc * yThreshold;
