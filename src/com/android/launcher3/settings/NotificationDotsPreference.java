@@ -35,14 +35,14 @@ import androidx.preference.PreferenceViewHolder;
 
 import com.android.launcher3.R;
 import com.android.launcher3.notification.NotificationListener;
-import com.android.launcher3.util.SecureSettingsObserver;
+import com.android.launcher3.util.SettingsCache;
 
 /**
  * A {@link Preference} for indicating notification dots status.
  * Also has utility methods for updating UI based on dots status changes.
  */
 public class NotificationDotsPreference extends Preference
-        implements SecureSettingsObserver.OnChangeListener {
+        implements SettingsCache.OnChangeListener {
 
     private boolean mWidgetFrameVisible = false;
 

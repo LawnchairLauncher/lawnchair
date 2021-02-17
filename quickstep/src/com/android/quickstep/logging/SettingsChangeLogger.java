@@ -28,7 +28,7 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_NOTIFICATION_DOT_DISABLED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_NOTIFICATION_DOT_ENABLED;
 import static com.android.launcher3.model.QuickstepModelDelegate.LAST_PREDICTION_ENABLED_STATE;
-import static com.android.launcher3.util.SecureSettingsObserver.newNotificationSettingsObserver;
+import static com.android.launcher3.util.SettingsCache.NOTIFICATION_BADGING_URI;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -43,7 +43,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.logging.InstanceIdSequence;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
-import com.android.launcher3.util.SecureSettingsObserver;
+import com.android.launcher3.util.SettingsCache;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
@@ -77,11 +77,10 @@ public class SettingsChangeLogger implements
         getPrefs(context).registerOnSharedPreferenceChangeListener(this);
         getDevicePrefs(context).registerOnSharedPreferenceChangeListener(this);
 
-        SecureSettingsObserver dotsObserver =
-                newNotificationSettingsObserver(context, this::onNotificationDotsChanged);
-        mNotificationDotsEnabled = dotsObserver.getValue();
-        dispatchUserEvent();
-
+        SettingsCache mSettingsCache = SettingsCache.INSTANCE.get(context);
+        mSettingsCache.register(NOTIFICATION_BADGING_URI,
+                this::onNotificationDotsChanged);
+        mSettingsCache.dispatchOnChange(NOTIFICATION_BADGING_URI);
     }
 
     private static ArrayMap<String, LoggablePref> loadPrefKeys(Context context) {

@@ -23,22 +23,18 @@ import static android.view.Surface.ROTATION_180;
 import static android.view.Surface.ROTATION_270;
 import static android.view.Surface.ROTATION_90;
 
-import static com.android.launcher3.Utilities.newContentObserver;
+import static com.android.launcher3.util.SettingsCache.ROTATION_SETTING_URI;
 import static com.android.launcher3.states.RotationHelper.ALLOW_ROTATION_PREFERENCE_KEY;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.database.ContentObserver;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.os.Handler;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.OrientationEventListener;
@@ -51,6 +47,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.util.SettingsCache;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.WindowBounds;
@@ -71,9 +68,6 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
 
     private static final String TAG = "RecentsOrientedState";
     private static final boolean DEBUG = false;
-
-    private ContentObserver mSystemAutoRotateObserver =
-            newContentObserver(new Handler(), t -> updateAutoRotateSetting());
 
     @Retention(SOURCE)
     @IntDef({ROTATION_0, ROTATION_90, ROTATION_180, ROTATION_270})
@@ -118,9 +112,11 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
                     | FLAG_SWIPE_UP_NOT_RUNNING;
 
     private final Context mContext;
-    private final ContentResolver mContentResolver;
     private final SharedPreferences mSharedPrefs;
     private final OrientationEventListener mOrientationListener;
+    private final SettingsCache mSettingsCache;
+    private final SettingsCache.OnChangeListener mRotationChangeListener =
+            isEnabled -> updateAutoRotateSetting();
 
     private final Matrix mTmpMatrix = new Matrix();
 
@@ -138,7 +134,6 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
     public RecentsOrientedState(Context context, BaseActivityInterface sizeStrategy,
             IntConsumer rotationChangeListener) {
         mContext = context;
-        mContentResolver = context.getContentResolver();
         mSharedPrefs = Utilities.getPrefs(context);
         mOrientationListener = new OrientationEventListener(context) {
             @Override
@@ -162,6 +157,7 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
             mFlags |= FLAG_MULTIPLE_ORIENTATION_SUPPORTED_BY_DENSITY;
         }
         mFlags |= FLAG_SWIPE_UP_NOT_RUNNING;
+        mSettingsCache = SettingsCache.INSTANCE.get(mContext);
         initFlags();
     }
 
@@ -271,8 +267,8 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
     }
 
     private void updateAutoRotateSetting() {
-        setFlag(FLAG_SYSTEM_ROTATION_ALLOWED, Settings.System.getInt(mContentResolver,
-                Settings.System.ACCELEROMETER_ROTATION, 1) == 1);
+        setFlag(FLAG_SYSTEM_ROTATION_ALLOWED,
+                mSettingsCache.getValue(ROTATION_SETTING_URI, 1));
     }
 
     private void updateHomeRotationSetting() {
@@ -295,9 +291,7 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
     public void initListeners() {
         if (isMultipleOrientationSupportedByDevice()) {
             mSharedPrefs.registerOnSharedPreferenceChangeListener(this);
-            mContentResolver.registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.ACCELEROMETER_ROTATION),
-                    false, mSystemAutoRotateObserver);
+            mSettingsCache.register(ROTATION_SETTING_URI, mRotationChangeListener);
         }
         initFlags();
     }
@@ -308,7 +302,7 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
     public void destroyListeners() {
         if (isMultipleOrientationSupportedByDevice()) {
             mSharedPrefs.unregisterOnSharedPreferenceChangeListener(this);
-            mContentResolver.unregisterContentObserver(mSystemAutoRotateObserver);
+            mSettingsCache.unregister(ROTATION_SETTING_URI, mRotationChangeListener);
         }
         setRotationWatcherEnabled(false);
     }
