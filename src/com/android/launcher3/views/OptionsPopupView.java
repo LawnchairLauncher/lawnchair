@@ -118,7 +118,8 @@ public class OptionsPopupView extends ArrowPopup
         mTargetRect.roundOut(outPos);
     }
 
-    public static void show(Launcher launcher, RectF targetRect, List<OptionItem> items) {
+    public static OptionsPopupView show(
+            Launcher launcher, RectF targetRect, List<OptionItem> items) {
         OptionsPopupView popup = (OptionsPopupView) launcher.getLayoutInflater()
                 .inflate(R.layout.longpress_options_menu, launcher.getDragLayer(), false);
         popup.mTargetRect = targetRect;
@@ -134,6 +135,7 @@ public class OptionsPopupView extends ArrowPopup
             popup.mItemMap.put(view, item);
         }
         popup.show();
+        return popup;
     }
 
     @VisibleForTesting
