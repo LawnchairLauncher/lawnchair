@@ -39,6 +39,6 @@ public interface BcSmartspaceDataPlugin extends Plugin {
     /** Provides Smartspace data to registered listeners. */
     interface SmartspaceTargetListener {
         /** Each Parcelable is a SmartspaceTarget that represents a card. */
-        void onSmartspaceTargetsUpdated(List<Parcelable> targets);
+        void onSmartspaceTargetsUpdated(List<? extends Parcelable> targets);
     }
 }
