@@ -135,6 +135,16 @@
         <attr name="demoModeLayoutId" format="reference" />
     </declare-styleable>
 
+    <declare-styleable name="DevicePadding">
+        <attr name="maxEmptySpace" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="DevicePaddingFormula">
+        <attr name="a" format="float|dimension" />
+        <attr name="b" format="float|dimension" />
+        <attr name="c" format="float|dimension" />
+    </declare-styleable>
+
     <declare-styleable name="ProfileDisplayOption">
         <attr name="name" />
         <attr name="minWidthDps" format="float" />

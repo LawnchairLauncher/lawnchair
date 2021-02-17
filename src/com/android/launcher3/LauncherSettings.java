@@ -75,6 +75,37 @@ public class LauncherSettings {
         public static final int ITEM_TYPE_SHORTCUT = 1;
 
         /**
+         * The favorite is a user created folder
+         */
+        public static final int ITEM_TYPE_FOLDER = 2;
+
+        /**
+         * The favorite is a widget
+         */
+        public static final int ITEM_TYPE_APPWIDGET = 4;
+
+        /**
+         * The favorite is a custom widget provided by the launcher
+         */
+        public static final int ITEM_TYPE_CUSTOM_APPWIDGET = 5;
+
+        /**
+         * The gesture is an application created deep shortcut
+         */
+        public static final int ITEM_TYPE_DEEP_SHORTCUT = 6;
+
+        /**
+         * Type of the item is recents task.
+         * TODO(hyunyoungs): move constants not related to Favorites DB to a better location.
+         */
+        public static final int ITEM_TYPE_TASK = 7;
+
+        /**
+         * The item is QSB
+         */
+        public static final int ITEM_TYPE_QSB = 8;
+
+        /**
          * The icon package name in Intent.ShortcutIconResource
          * <P>Type: TEXT</P>
          */
@@ -170,6 +201,7 @@ public class LauncherSettings {
         public static final int CONTAINER_SHORTCUTS = -107;
         public static final int CONTAINER_SETTINGS = -108;
         public static final int CONTAINER_TASKSWITCHER = -109;
+        public static final int CONTAINER_QSB = -110;
 
         // Represents any of the extended containers implemented in non-AOSP variants.
         public static final int EXTENDED_CONTAINERS = -200;
@@ -195,6 +227,8 @@ public class LauncherSettings {
                 case ITEM_TYPE_APPWIDGET: return "WIDGET";
                 case ITEM_TYPE_CUSTOM_APPWIDGET: return "CUSTOMWIDGET";
                 case ITEM_TYPE_DEEP_SHORTCUT: return "DEEPSHORTCUT";
+                case ITEM_TYPE_TASK: return "TASK";
+                case ITEM_TYPE_QSB: return "QSB";
                 default: return String.valueOf(type);
             }
         }
@@ -238,32 +272,6 @@ public class LauncherSettings {
          * </P>
          */
         public static final String PROFILE_ID = "profileId";
-
-        /**
-         * The favorite is a user created folder
-         */
-        public static final int ITEM_TYPE_FOLDER = 2;
-
-        /**
-         * The favorite is a widget
-         */
-        public static final int ITEM_TYPE_APPWIDGET = 4;
-
-        /**
-         * The favorite is a custom widget provided by the launcher
-         */
-        public static final int ITEM_TYPE_CUSTOM_APPWIDGET = 5;
-
-        /**
-         * The gesture is an application created deep shortcut
-         */
-        public static final int ITEM_TYPE_DEEP_SHORTCUT = 6;
-
-        /**
-         * Type of the item is recents task.
-         * TODO(hyunyoungs): move constants not related to Favorites DB to a better location.
-         */
-        public static final int ITEM_TYPE_TASK = 7;
 
         /**
          * The appWidgetId of the widget
