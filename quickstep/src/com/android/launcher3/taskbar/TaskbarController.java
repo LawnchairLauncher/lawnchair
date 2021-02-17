@@ -232,14 +232,10 @@ public class TaskbarController {
     }
 
     private void removeFromWindowManager() {
-        if (mTaskbarContainerView.isAttachedToWindow()) {
-            mWindowManager.removeViewImmediate(mTaskbarContainerView);
-        }
+        mWindowManager.removeViewImmediate(mTaskbarContainerView);
     }
 
     private void addToWindowManager() {
-        removeFromWindowManager();
-
         final int gravity = Gravity.BOTTOM;
 
         mWindowLayoutParams = new WindowManager.LayoutParams(
@@ -377,7 +373,8 @@ public class TaskbarController {
      * @return Whether the given View is in the same window as Taskbar.
      */
     public boolean isViewInTaskbar(View v) {
-        return mTaskbarContainerView.getWindowId().equals(v.getWindowId());
+        return mTaskbarContainerView.isAttachedToWindow()
+                && mTaskbarContainerView.getWindowId().equals(v.getWindowId());
     }
 
     /**
