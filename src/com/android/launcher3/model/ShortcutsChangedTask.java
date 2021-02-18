@@ -25,6 +25,7 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.util.ItemInfoMatcher;
+import com.android.launcher3.util.PackageManagerHelper;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -66,6 +67,14 @@ public class ShortcutsChangedTask extends BaseModelUpdateTask {
         }
 
         if (!matchingWorkspaceItems.isEmpty()) {
+            if (mShortcuts.isEmpty()) {
+                // Verify that the app is indeed installed.
+                if (!new PackageManagerHelper(app.getContext())
+                        .isAppInstalled(mPackageName, mUser)) {
+                    // App is not installed, ignoring package events
+                    return;
+                }
+            }
             // Update the workspace to reflect the changes to updated shortcuts residing on it.
             List<String> allLauncherKnownIds = matchingWorkspaceItems.stream()
                     .map(WorkspaceItemInfo::getDeepShortcutId)

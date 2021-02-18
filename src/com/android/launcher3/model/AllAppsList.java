@@ -22,7 +22,6 @@ import static com.android.launcher3.model.data.AppInfo.EMPTY_ARRAY;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
 import android.os.LocaleList;
@@ -145,10 +144,9 @@ public class AllAppsList {
     }
 
     public void addPromiseApp(Context context, PackageInstallInfo installInfo) {
-        ApplicationInfo applicationInfo = new PackageManagerHelper(context)
-                .getApplicationInfo(installInfo.packageName, installInfo.user, 0);
         // only if not yet installed
-        if (applicationInfo == null) {
+        if (!new PackageManagerHelper(context)
+                .isAppInstalled(installInfo.packageName, installInfo.user)) {
             AppInfo info = new AppInfo(installInfo);
             mIconCache.getTitleAndIcon(info, info.usingLowResIcon());
             info.sectionName = mIndex.computeSectionName(info.title);

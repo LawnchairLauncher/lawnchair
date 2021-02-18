@@ -217,8 +217,8 @@ public class InstallSessionHelper {
                 && sessionInfo.getAppIcon() != null
                 && !TextUtils.isEmpty(sessionInfo.getAppLabel())
                 && !promiseIconAddedForId(sessionInfo.getSessionId())
-                && new PackageManagerHelper(mAppContext).getApplicationInfo(
-                        sessionInfo.getAppPackageName(), getUserHandle(sessionInfo), 0) == null) {
+                && !new PackageManagerHelper(mAppContext).isAppInstalled(
+                        sessionInfo.getAppPackageName(), getUserHandle(sessionInfo))) {
             ItemInstallQueue.INSTANCE.get(mAppContext)
                     .queueItem(sessionInfo.getAppPackageName(), getUserHandle(sessionInfo));
 
