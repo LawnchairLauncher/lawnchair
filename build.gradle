@@ -376,26 +376,31 @@ dependencies {
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
     androidTestImplementation 'com.android.support.test.uiautomator:uiautomator-v18:2.1.3'
     androidTestImplementation "androidx.annotation:annotation:${ANDROID_X_VERSION}"
+
+    implementation 'com.google.protobuf:protobuf-lite:3.0.0'
 }
 
 protobuf {
     // Configure the protoc executable
     protoc {
         artifact = 'com.google.protobuf:protoc:3.0.0'
-
-        generateProtoTasks {
-            all().each { task ->
-                task.builtins {
-                    remove java
-                    javanano {
-                        option "java_package=launcher_log_extension.proto|com.android.launcher3.userevent.nano"
-                        option "java_package=launcher_log.proto|com.android.launcher3.userevent.nano"
-                        option "java_package=launcher_dump.proto|com.android.launcher3.model.nano"
-                        option "java_package=search.proto|com.google.android.apps.nexuslauncher.search.nano"
-                        option "java_package=smartspace.proto|com.google.android.apps.nexuslauncher.smartspace.nano"
-                        option "enum_style=java"
-                    }
+    }
+    plugins {
+        javalite {
+            // The codegen for lite comes as a separate artifact
+            artifact = 'com.google.protobuf:protoc-gen-javalite:3.0.0'
+        }
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                remove java
+                javanano {
+                    option "enum_style=java"
                 }
+            }
+            task.plugins {
+                javalite { }
             }
         }
     }
