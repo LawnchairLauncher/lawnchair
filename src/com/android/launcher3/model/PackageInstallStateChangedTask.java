@@ -15,7 +15,7 @@
  */
 package com.android.launcher3.model;
 
-import android.content.ComponentName;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 
@@ -72,9 +72,9 @@ public class PackageInstallStateChangedTask extends BaseModelUpdateTask {
         synchronized (dataModel) {
             final HashSet<ItemInfo> updates = new HashSet<>();
             dataModel.forAllWorkspaceItemInfos(mInstallInfo.user, si -> {
-                ComponentName cn = si.getTargetComponent();
-                if (si.hasPromiseIconUi() && (cn != null)
-                        && cn.getPackageName().equals(mInstallInfo.packageName)) {
+                Intent intent = si.getIntent();
+                if (si.hasPromiseIconUi() && (intent != null)
+                        && mInstallInfo.packageName.equals(intent.getPackage())) {
                     int installProgress = mInstallInfo.progress;
 
                     si.setProgressLevel(installProgress, PackageInstallInfo.STATUS_INSTALLING);

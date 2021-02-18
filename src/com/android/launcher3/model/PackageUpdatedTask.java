@@ -30,6 +30,7 @@ import android.os.UserManager;
 import android.util.Log;
 
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.BitmapInfo;
@@ -228,7 +229,8 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                                 isTargetValid = context.getSystemService(LauncherApps.class)
                                         .isActivityEnabled(cn, mUser);
                             }
-                            if (si.hasStatusFlag(FLAG_RESTORED_ICON | FLAG_AUTOINSTALL_ICON)) {
+                            if (!isTargetValid && si.hasStatusFlag(
+                                    FLAG_RESTORED_ICON | FLAG_AUTOINSTALL_ICON)) {
                                 if (updateWorkspaceItemIntent(context, si, packageName)) {
                                     infoUpdated = true;
                                 } else if (si.hasPromiseIconUi()) {
@@ -250,8 +252,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                             }
                         }
 
-                        if (isNewApkAvailable
-                                && si.itemType == Favorites.ITEM_TYPE_APPLICATION) {
+                        if (isNewApkAvailable) {
                             List<LauncherActivityInfo> activities = activitiesLists.get(
                                     packageName);
                             si.setProgressLevel(
@@ -260,8 +261,10 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                                             : PackageManagerHelper.getLoadingProgress(
                                                     activities.get(0)),
                                     PackageInstallInfo.STATUS_INSTALLED_DOWNLOADING);
-                            iconCache.getTitleAndIcon(si, si.usingLowResIcon());
-                            infoUpdated = true;
+                            if (si.itemType == Favorites.ITEM_TYPE_APPLICATION) {
+                                iconCache.getTitleAndIcon(si, si.usingLowResIcon());
+                                infoUpdated = true;
+                            }
                         }
 
                         int oldRuntimeFlags = si.runtimeStatusFlags;
@@ -353,6 +356,11 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
      */
     private boolean updateWorkspaceItemIntent(Context context,
             WorkspaceItemInfo si, String packageName) {
+        if (si.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
+            // Do not update intent for deep shortcuts as they contain additional information
+            // about the shortcut.
+            return false;
+        }
         // Try to find the best match activity.
         Intent intent = new PackageManagerHelper(context).getAppLaunchIntent(packageName, mUser);
         if (intent != null) {
