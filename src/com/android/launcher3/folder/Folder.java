@@ -46,6 +46,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.FocusFinder;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
@@ -82,7 +83,6 @@ import com.android.launcher3.accessibility.FolderAccessibilityHelper;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragController.DragListener;
-import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.logger.LauncherAtom.FromState;
 import com.android.launcher3.logger.LauncherAtom.ToState;
@@ -96,6 +96,8 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pageindicators.PageIndicatorDots;
 import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.views.ActivityContext;
+import com.android.launcher3.views.BaseDragLayer;
 import com.android.launcher3.views.ClipPathView;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 
@@ -165,7 +167,11 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     private AnimatorSet mCurrentAnimator;
     private boolean mIsAnimatingClosed = false;
 
+    // Folder can be displayed in Launcher's activity or a separate window (e.g. Taskbar).
+    // Anything specific to Launcher should use mLauncher, otherwise should use mActivityContext.
     protected final Launcher mLauncher;
+    protected final ActivityContext mActivityContext;
+
     protected DragController mDragController;
     public FolderInfo mInfo;
     private CharSequence mFromTitle;
@@ -228,6 +234,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         setAlwaysDrawnWithCacheEnabled(false);
 
         mLauncher = Launcher.getLauncher(context);
+        mActivityContext = ActivityContext.lookupContext(context);
         mStatsLogManager = StatsLogManager.newInstance(context);
         // We need this view to be focusable in touch mode so that when text editing of the folder
         // name is complete, we have something to focus on, thus hiding the cursor and giving
@@ -457,9 +464,9 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         Collections.sort(children, ITEM_POS_COMPARATOR);
         updateItemLocationsInDatabaseBatch(true);
 
-        DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
+        BaseDragLayer.LayoutParams lp = (BaseDragLayer.LayoutParams) getLayoutParams();
         if (lp == null) {
-            lp = new DragLayer.LayoutParams(0, 0);
+            lp = new BaseDragLayer.LayoutParams(0, 0);
             lp.customPosition = true;
             setLayoutParams(lp);
         }
@@ -513,13 +520,14 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     /**
      * Creates a new UserFolder, inflated from R.layout.user_folder.
      *
-     * @param launcher The main activity.
+     * @param activityContext The main ActivityContext in which to inflate this Folder. It must also
+     *                        be an instance or ContextWrapper around the Launcher activity context.
      *
      * @return A new UserFolder.
      */
     @SuppressLint("InflateParams")
-    static Folder fromXml(Launcher launcher) {
-        return (Folder) launcher.getLayoutInflater()
+    static <T extends Context & ActivityContext> Folder fromXml(T activityContext) {
+        return (Folder) LayoutInflater.from(activityContext).cloneInContext(activityContext)
                 .inflate(R.layout.user_folder_icon_normalized, null);
     }
 
@@ -597,7 +605,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
      * is played.
      */
     private void animateOpen(List<WorkspaceItemInfo> items, int pageNo) {
-        Folder openFolder = getOpen(mLauncher);
+        Folder openFolder = getOpen(mActivityContext);
         if (openFolder != null && openFolder != this) {
             // Close any open folder before opening a folder.
             openFolder.close(true);
@@ -610,7 +618,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
         mIsOpen = true;
 
-        DragLayer dragLayer = mLauncher.getDragLayer();
+        BaseDragLayer dragLayer = mActivityContext.getDragLayer();
         // Just verify that the folder hasn't already been added to the DragLayer.
         // There was a one-off crash where the folder had a parent already.
         if (getParent() == null) {
@@ -724,7 +732,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
         // Notify the accessibility manager that this folder "window" has disappeared and no
         // longer occludes the workspace items
-        mLauncher.getDragLayer().sendAccessibilityEvent(
+        mActivityContext.getDragLayer().sendAccessibilityEvent(
                 AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
     }
 
@@ -772,7 +780,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
     private void closeComplete(boolean wasAnimated) {
         // TODO: Clear all active animations.
-        DragLayer parent = (DragLayer) getParent();
+        BaseDragLayer parent = (BaseDragLayer) getParent();
         if (parent != null) {
             parent.removeView(this);
         }
@@ -1011,7 +1019,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
     private void updateItemLocationsInDatabaseBatch(boolean isBind) {
         FolderGridOrganizer verifier = new FolderGridOrganizer(
-                mLauncher.getDeviceProfile().inv).setFolderInfo(mInfo);
+                mActivityContext.getDeviceProfile().inv).setFolderInfo(mInfo);
 
         ArrayList<ItemInfo> items = new ArrayList<>();
         int total = mInfo.contents.size();
@@ -1048,10 +1056,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     }
 
     private void centerAboutIcon() {
-        DeviceProfile grid = mLauncher.getDeviceProfile();
-
-        DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
-        DragLayer parent = mLauncher.getDragLayer();
+        BaseDragLayer.LayoutParams lp = (BaseDragLayer.LayoutParams) getLayoutParams();
+        BaseDragLayer parent = mActivityContext.getDragLayer();
         int width = getFolderWidth();
         int height = getFolderHeight();
 
@@ -1061,38 +1067,13 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         int centeredLeft = centerX - width / 2;
         int centeredTop = centerY - height / 2;
 
-        // We need to bound the folder to the currently visible workspace area
-        if (mLauncher.getStateManager().getState().overviewUi) {
-            parent.getDescendantRectRelativeToSelf(mLauncher.getOverviewPanel(), sTempRect);
-        } else {
-            mLauncher.getWorkspace().getPageAreaRelativeToDragLayer(sTempRect);
-        }
-        int left = Math.min(Math.max(sTempRect.left, centeredLeft),
-                sTempRect.right- width);
-        int top = Math.min(Math.max(sTempRect.top, centeredTop),
-                sTempRect.bottom - height);
-
-        int distFromEdgeOfScreen = mLauncher.getWorkspace().getPaddingLeft() + getPaddingLeft();
-
-        if (grid.isPhone && (grid.availableWidthPx - width) < 4 * distFromEdgeOfScreen) {
-            // Center the folder if it is very close to being centered anyway, by virtue of
-            // filling the majority of the viewport. ie. remove it from the uncanny valley
-            // of centeredness.
-            left = (grid.availableWidthPx - width) / 2;
-        } else if (width >= sTempRect.width()) {
-            // If the folder doesn't fit within the bounds, center it about the desired bounds
-            left = sTempRect.left + (sTempRect.width() - width) / 2;
-        }
-        if (height >= sTempRect.height()) {
-            // Folder height is greater than page height, center on page
-            top = sTempRect.top + (sTempRect.height() - height) / 2;
-        } else {
-            // Folder height is less than page height, so bound it to the absolute open folder
-            // bounds if necessary
-            Rect folderBounds = grid.getAbsoluteOpenFolderBounds();
-            left = Math.max(folderBounds.left, Math.min(left, folderBounds.right - width));
-            top = Math.max(folderBounds.top, Math.min(top, folderBounds.bottom - height));
-        }
+        sTempRect.set(mActivityContext.getFolderBoundingBox());
+        int left = Utilities.boundToRange(centeredLeft, sTempRect.left, sTempRect.right - width);
+        int top = Utilities.boundToRange(centeredTop, sTempRect.top, sTempRect.bottom - height);
+        int[] inOutPosition = new int[] {left, top};
+        mActivityContext.updateOpenFolderPosition(inOutPosition, sTempRect, width, height);
+        left = inOutPosition[0];
+        top = inOutPosition[1];
 
         int folderPivotX = width / 2 + (centeredLeft - left);
         int folderPivotY = height / 2 + (centeredTop - top);
@@ -1106,7 +1087,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     }
 
     protected int getContentAreaHeight() {
-        DeviceProfile grid = mLauncher.getDeviceProfile();
+        DeviceProfile grid = mActivityContext.getDeviceProfile();
         int maxContentAreaHeight = grid.availableHeightPx - grid.getTotalWorkspacePadding().y
                 - mFooterHeight;
         int height = Math.min(maxContentAreaHeight,
@@ -1384,7 +1365,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     @Override
     public void onAdd(WorkspaceItemInfo item, int rank) {
         FolderGridOrganizer verifier = new FolderGridOrganizer(
-                mLauncher.getDeviceProfile().inv).setFolderInfo(mInfo);
+                mActivityContext.getDeviceProfile().inv).setFolderInfo(mInfo);
         verifier.updateRankAndPos(item, rank);
         mLauncher.getModelWriter().addOrMoveItemInDatabase(item, mInfo.id, 0, item.cellX,
                 item.cellY);
@@ -1591,8 +1572,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     /**
      * Returns a folder which is already open or null
      */
-    public static Folder getOpen(Launcher launcher) {
-        return getOpenView(launcher, TYPE_FOLDER);
+    public static Folder getOpen(ActivityContext activityContext) {
+        return getOpenView(activityContext, TYPE_FOLDER);
     }
 
     /**
@@ -1611,7 +1592,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     @Override
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            DragLayer dl = mLauncher.getDragLayer();
+            BaseDragLayer dl = (BaseDragLayer) getParent();
 
             if (isEditingName()) {
                 if (!dl.isEventOverView(mFolderName, ev)) {
@@ -1633,6 +1614,11 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
             }
         }
         return false;
+    }
+
+    @Override
+    public boolean canInterceptEventsInSystemGestureRegion() {
+        return true;
     }
 
     /**
@@ -1663,9 +1649,9 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
     /** Returns the height of the current folder's bottom edge from the bottom of the screen. */
     private int getHeightFromBottom() {
-        DragLayer.LayoutParams layoutParams = (DragLayer.LayoutParams) getLayoutParams();
+        BaseDragLayer.LayoutParams layoutParams = (BaseDragLayer.LayoutParams) getLayoutParams();
         int folderBottomPx = layoutParams.y + layoutParams.height;
-        int windowBottomPx = mLauncher.getDeviceProfile().heightPx;
+        int windowBottomPx = mActivityContext.getDeviceProfile().heightPx;
 
         return windowBottomPx - folderBottomPx;
     }

@@ -21,6 +21,8 @@ import static com.android.launcher3.model.data.AppInfo.EMPTY_ARRAY;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
@@ -78,6 +80,11 @@ public class AllAppsStore {
         return (mModelFlags & mask) != 0;
     }
 
+    /**
+     * Returns {@link AppInfo} if any apps matches with provided {@link ComponentKey}, otherwise
+     * null.
+     */
+    @Nullable
     public AppInfo getApp(ComponentKey key) {
         mTempInfo.componentName = key.componentName;
         mTempInfo.user = key.user;

@@ -130,4 +130,5 @@
     <dimen name="taskbar_icon_spacing">14dp</dimen>
     <dimen name="taskbar_divider_thickness">1dp</dimen>
     <dimen name="taskbar_divider_height">24dp</dimen>
+    <dimen name="taskbar_folder_margin">16dp</dimen>
 </resources>

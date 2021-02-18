@@ -43,7 +43,9 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.QuickstepAccessibilityDelegate;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.appprediction.PredictionRowView;
 import com.android.launcher3.hybridhotseat.HotseatPredictionController;
@@ -132,6 +134,11 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
         logger.log(LAUNCHER_APP_LAUNCH_TAP);
 
         mHotseatPredictionController.logLaunchedAppRankingInfo(info, instanceId);
+    }
+
+    @Override
+    protected LauncherAccessibilityDelegate createAccessibilityDelegate() {
+        return new QuickstepAccessibilityDelegate(this);
     }
 
     /**
