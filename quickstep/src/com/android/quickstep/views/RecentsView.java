@@ -646,9 +646,9 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
 
     public TaskView getTaskView(int taskId) {
         for (int i = 0; i < getTaskViewCount(); i++) {
-            TaskView tv = getTaskViewAt(i);
-            if (tv.getTask() != null && tv.getTask().key != null && tv.getTask().key.id == taskId) {
-                return tv;
+            TaskView taskView = getTaskViewAt(i);
+            if (taskView.hasTaskId(taskId)) {
+                return taskView;
             }
         }
         return null;
@@ -808,6 +808,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             final Task task = tasks.get(i);
             final TaskView taskView = (TaskView) getChildAt(pageIndex);
             taskView.bind(task, mOrientationState);
+            taskView.updateTaskSize(!taskView.hasTaskId(mRunningTaskId));
         }
 
         if (mNextPage == INVALID_PAGE) {
@@ -942,7 +943,8 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         // Force TaskView to update size from thumbnail
         final int taskCount = getTaskViewCount();
         for (int i = 0; i < taskCount; i++) {
-            getTaskViewAt(i).updateTaskSize();
+            TaskView taskView = getTaskViewAt(i);
+            taskView.updateTaskSize(!taskView.hasTaskId(mRunningTaskId));
         }
     }
 
@@ -1252,6 +1254,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             // gesture and the task list is loaded and applied
             mTmpRunningTask = Task.from(new TaskKey(runningTaskInfo), runningTaskInfo, false);
             taskView.bind(mTmpRunningTask, mOrientationState);
+            taskView.updateTaskSize(false);
 
             // Measure and layout immediately so that the scroll values is updated instantly
             // as the user might be quick-switching
