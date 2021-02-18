@@ -96,6 +96,7 @@ import androidx.annotation.VisibleForTesting;
 import ch.deletescape.lawnchair.LawnchairAppKt;
 import ch.deletescape.lawnchair.LawnchairLauncher;
 import ch.deletescape.lawnchair.LawnchairPreferences;
+import ch.deletescape.lawnchair.popup.LawnchairShortcut;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.allapps.AllAppsContainerView;
@@ -2769,8 +2770,12 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         AbstractFloatingView.closeAllOpenViews(this, animate);
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public Stream<SystemShortcut.Factory> getSupportedShortcuts() {
-        return Stream.of(APP_INFO, WIDGETS, INSTALL);
+        Object shortcuts = LawnchairShortcut.Companion.getInstance(this).getEnabledShortcuts();
+        // There is no way to represent SystemShortcut.Factory in Kotlin, so I needed to use this hack
+        List<SystemShortcut.Factory> shortcutsList = (List<SystemShortcut.Factory>) shortcuts;
+        return shortcutsList.stream();
     }
 
 
