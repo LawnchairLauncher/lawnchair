@@ -92,6 +92,14 @@ public class PackageManagerHelper {
     }
 
     /**
+     * Returns whether the target app is installed for a given user
+     */
+    public boolean isAppInstalled(String packageName, UserHandle user) {
+        ApplicationInfo info = getApplicationInfo(packageName, user, 0);
+        return info != null;
+    }
+
+    /**
      * Returns the application info for the provided package or null
      */
     public ApplicationInfo getApplicationInfo(String packageName, UserHandle user, int flags) {
@@ -105,7 +113,7 @@ public class PackageManagerHelper {
     }
 
     public boolean isSafeMode() {
-        return mContext.getPackageManager().isSafeMode();
+        return mPm.isSafeMode();
     }
 
     public Intent getAppLaunchIntent(String pkg, UserHandle user) {
