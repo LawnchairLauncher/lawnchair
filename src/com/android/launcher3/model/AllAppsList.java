@@ -136,7 +136,7 @@ public class AllAppsList {
         if (findAppInfo(info.componentName, info.user) != null) {
             return;
         }
-        mIconCache.getTitleAndIcon(info, activityInfo, true /* useLowResIcon */);
+        mIconCache.getTitleAndIcon(info, activityInfo, false /* useLowResIcon */);
         info.sectionName = mIndex.computeSectionName(info.title);
 
         data.add(info);
@@ -280,7 +280,7 @@ public class AllAppsList {
                 } else {
                     Intent launchIntent = AppInfo.makeLaunchIntent(info);
 
-                    mIconCache.getTitleAndIcon(applicationInfo, info, true /* useLowResIcon */);
+                    mIconCache.getTitleAndIcon(applicationInfo, info, false /* useLowResIcon */);
                     applicationInfo.sectionName = mIndex.computeSectionName(applicationInfo.title);
                     applicationInfo.setProgressLevel(
                             PackageManagerHelper.getLoadingProgress(info),
