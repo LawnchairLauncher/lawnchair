@@ -39,14 +39,13 @@ import androidx.core.graphics.ColorUtils;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PropertyResetListener;
-import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.util.Themes;
+import com.android.launcher3.views.BaseDragLayer;
 
 import java.util.List;
 
@@ -69,7 +68,6 @@ public class FolderAnimationManager {
     private PreviewBackground mPreviewBackground;
 
     private Context mContext;
-    private Launcher mLauncher;
 
     private final boolean mIsOpening;
 
@@ -92,8 +90,7 @@ public class FolderAnimationManager {
         mPreviewBackground = mFolderIcon.mBackground;
 
         mContext = folder.getContext();
-        mLauncher = folder.mLauncher;
-        mPreviewVerifier = new FolderGridOrganizer(mLauncher.getDeviceProfile().inv);
+        mPreviewVerifier = new FolderGridOrganizer(folder.mActivityContext.getDeviceProfile().inv);
 
         mIsOpening = isOpening;
 
@@ -114,14 +111,15 @@ public class FolderAnimationManager {
      * Prepares the Folder for animating between open / closed states.
      */
     public AnimatorSet getAnimator() {
-        final DragLayer.LayoutParams lp = (DragLayer.LayoutParams) mFolder.getLayoutParams();
+        final BaseDragLayer.LayoutParams lp =
+                (BaseDragLayer.LayoutParams) mFolder.getLayoutParams();
         mFolderIcon.getPreviewItemManager().recomputePreviewDrawingParams();
         ClippedFolderIconLayoutRule rule = mFolderIcon.getLayoutRule();
         final List<BubbleTextView> itemsInPreview = getPreviewIconsOnPage(0);
 
         // Match position of the FolderIcon
         final Rect folderIconPos = new Rect();
-        float scaleRelativeToDragLayer = mLauncher.getDragLayer()
+        float scaleRelativeToDragLayer = mFolder.mActivityContext.getDragLayer()
                 .getDescendantRectRelativeToSelf(mFolderIcon, folderIconPos);
         int scaledRadius = mPreviewBackground.getScaledRadius();
         float initialSize = (scaledRadius * 2) * scaleRelativeToDragLayer;

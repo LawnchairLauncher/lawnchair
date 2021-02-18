@@ -168,7 +168,7 @@ public class NavigationModeSwitchRule implements TestRule {
 
         Log.d(TAG, "setActiveOverlay: " + overlayPackage + "...");
         UiDevice.getInstance(getInstrumentation()).executeShellCommand(
-                "cmd overlay enable-exclusive " + overlayPackage);
+                "cmd overlay enable-exclusive --category " + overlayPackage);
 
         if (currentSysUiNavigationMode() != expectedMode) {
             final CountDownLatch latch = new CountDownLatch(1);

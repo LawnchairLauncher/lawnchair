@@ -89,6 +89,5 @@
     <!-- Icon displayed on the taskbar -->
     <style name="BaseIcon.Workspace.Taskbar" >
         <item name="iconDisplay">taskbar</item>
-        <item name="iconSizeOverride">@dimen/taskbar_icon_size</item>
     </style>
 </resources>

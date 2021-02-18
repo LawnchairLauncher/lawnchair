@@ -59,7 +59,7 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
             TYPE_SNACKBAR,
             TYPE_LISTENER,
             TYPE_ALL_APPS_EDU,
-
+            TYPE_DRAG_DROP_POPUP,
             TYPE_TASK_MENU,
             TYPE_OPTIONS_POPUP,
             TYPE_ICON_SURFACE

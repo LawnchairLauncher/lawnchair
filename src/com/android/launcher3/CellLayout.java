@@ -309,6 +309,8 @@ public class CellLayout extends ViewGroup {
         setImportantForAccessibility(accessibilityFlag);
         getShortcutsAndWidgets().setImportantForAccessibility(accessibilityFlag);
 
+        // ExploreByTouchHelper sets focusability. Clear it when the delegate is cleared.
+        setFocusable(delegate != null);
         // Invalidate the accessibility hierarchy
         if (getParent() != null) {
             getParent().notifySubtreeAccessibilityStateChanged(
