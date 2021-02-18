@@ -34,6 +34,7 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.animation.LayoutTransition;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
@@ -120,6 +121,7 @@ import com.android.launcher3.widget.PendingAppWidgetHostView;
 import com.android.launcher3.widget.WidgetManagerHelper;
 import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverlay;
 
+import com.google.android.material.animation.AnimatorSetCompat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.function.Predicate;
@@ -327,7 +329,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         int paddingBottom = grid.cellLayoutBottomPaddingPx;
         for (int i = mWorkspaceScreens.size() - 1; i >= 0; i--) {
             mWorkspaceScreens.valueAt(i)
-                    .setPadding(paddingLeftRight, 0, stableGrid.cellLayoutPaddingRightPx, paddingBottom);
+                    .setPadding(paddingLeftRight, 0, grid.cellLayoutPaddingRightPx, paddingBottom);
         }
     }
 
@@ -580,7 +582,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                         R.layout.workspace_screen, this, false /* attachToRoot */);
         DeviceProfile grid = mLauncher.getDeviceProfile();
         int paddingBottom = grid.cellLayoutBottomPaddingPx;
-        newScreen.setPadding(paddingLeftRight, 0, stableGrid.cellLayoutPaddingRightPx, paddingBottom);
+        newScreen.setPadding(paddingLeftRight, 0, grid.cellLayoutPaddingRightPx, paddingBottom);
 
         mWorkspaceScreens.put(screenId, newScreen);
         mScreenOrder.add(insertIndex, screenId);
@@ -3480,7 +3482,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         /**
          * Called when the workspace state is changing.
          */
-        void prepareStateChange(AnimatorSetBuilder builder);
+        void prepareStateChange(AnimatorSetCompat builder);
     }
 
     public static boolean isQsbContainerPage(int pageNo) {

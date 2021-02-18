@@ -42,6 +42,7 @@ import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewDebug;
 import android.widget.TextView;
 
@@ -252,7 +253,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         }
 
         CustomFontManager customFontManager = CustomFontManager.Companion.getInstance(context);
-        int customFontType = getCustomFontType(display);
+        int customFontType = getCustomFontType(mDisplay);
         if (customFontType != -1) {
             customFontManager.setCustomFont(this, customFontType);
         } else {

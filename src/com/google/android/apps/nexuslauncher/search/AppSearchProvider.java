@@ -111,7 +111,7 @@ public class AppSearchProvider extends ContentProvider
                 public Bitmap call() {
                     final AppItemInfoWithIcon d = new AppItemInfoWithIcon(dl);
                     mApp.getIconCache().getTitleAndIcon(d, false);
-                    return d.bitmap;
+                    return d.bitmap.icon;
                 }
             };
             final Bundle bundle2 = new Bundle();
@@ -154,7 +154,7 @@ public class AppSearchProvider extends ContentProvider
                 public Bitmap call() {
                     final AppItemInfoWithIcon d = new AppItemInfoWithIcon(dl);
                     mApp.getIconCache().getTitleAndIcon(d, false);
-                    return d.bitmap;
+                    return d.bitmap.icon;
                 }
             };
             return openPipeHelper(uri, s2, null, mLooper.submit(g), this.mPipeDataWriter);

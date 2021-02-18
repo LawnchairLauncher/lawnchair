@@ -157,7 +157,7 @@ public class PinchStateChangeTouchController extends AnimatorListenerAdapter imp
                 f3 = f;
             } else {
                 f = Utilities.boundToRange(((16 * f2) * mProgressMultiplier) + progressFraction, 0, 1);
-                j = SwipeDetector.calculateDuration(f2, 1 - Math.max(progressFraction, 0));
+                j = BaseSwipeDetector.calculateDuration(f2, 1 - Math.max(progressFraction, 0));
                 f3 = 1;
             }
         } else if (progressFraction <= 0) {

@@ -588,7 +588,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         try {
             getContext().startActivity(new Intent(str).addFlags(268468224).setPackage("com.google.android.googlequicksearchbox"));
         } catch (ActivityNotFoundException e) {
-            getContext().getSystemService(LauncherApps.class).showAppDetailsForProfile(new ComponentName("com.google.android.googlequicksearchbox", ".SearchActivity"), Process.myUserHandle(), null, null);
+            getContext().getSystemService(LauncherApps.class).startAppDetailsActivity(new ComponentName("com.google.android.googlequicksearchbox", ".SearchActivity"), Process.myUserHandle(), null, null);
         }
     }
 

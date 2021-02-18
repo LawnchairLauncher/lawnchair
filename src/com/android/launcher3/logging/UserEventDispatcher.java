@@ -63,6 +63,7 @@ import com.google.protobuf.nano.InvalidProtocolBufferNanoException;
 import com.google.protobuf.nano.MessageNano;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.UUID;
 
 /**
@@ -486,7 +487,7 @@ public class UserEventDispatcher implements ResourceBasedOverride {
         try {
             liteLauncherEvent =
                     LauncherLogProto.LauncherEvent.parseFrom(MessageNano.toByteArray(ev));
-        } catch (InvalidProtocolBufferException e) {
+        } catch (InvalidProtocolBufferNanoException e) {
             throw new RuntimeException("Cannot parse LauncherEvent from Nano to Lite version");
         }
         Log.d(TAG, liteLauncherEvent.toString());
@@ -496,10 +497,6 @@ public class UserEventDispatcher implements ResourceBasedOverride {
      * Constructs an ArrayList with targets
      */
     public static ArrayList<Target> makeTargetsList(Target... targets) {
-        ArrayList<Target> result = new ArrayList<>();
-        for (Target target : targets) {
-            result.add(target);
-        }
-        return result;
+        return new ArrayList<>(Arrays.asList(targets));
     }
 }

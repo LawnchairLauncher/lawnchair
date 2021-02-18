@@ -449,8 +449,8 @@ public class DeviceProfile {
         }
 
         // Hotseat
-        invIconSizePx = isVerticalLayout ? inv.landscapeHotseatIconSize : inv.hotseatIconSize;
-        hotseatIconSizePx = Math.max(1, (int) (ResourceUtils.pxFromDp(invIconSizePx, dm) * scale));
+        iconSizePx = Math.round((isVerticalLayout ? inv.landscapeHotseatIconSize : inv.hotseatIconSize));
+        hotseatIconSizePx = Math.max(1, (int) (ResourceUtils.pxFromDp(iconSizePx, dm) * scale));
         if (isVerticalLayout) {
             hotseatBarSizePx = hotseatIconSizePx + hotseatBarSidePaddingStartPx
                     + hotseatBarSidePaddingEndPx;

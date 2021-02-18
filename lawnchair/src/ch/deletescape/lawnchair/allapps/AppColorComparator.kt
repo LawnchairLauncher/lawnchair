@@ -32,8 +32,8 @@ class AppColorComparator(context: Context) : AppInfoComparator(context) {
         val hslB = FloatArray(3)
 
         val colorExtractor = ColorExtractor()
-        ColorUtils.colorToHSL(colorExtractor.findDominantColorByHue(a.bitmap), hslA)
-        ColorUtils.colorToHSL(colorExtractor.findDominantColorByHue(b.bitmap), hslB)
+        ColorUtils.colorToHSL(colorExtractor.findDominantColorByHue(a.bitmap.icon), hslA)
+        ColorUtils.colorToHSL(colorExtractor.findDominantColorByHue(b.bitmap.icon), hslB)
 
         val h2A = remapHue(hslA[0])
         val h2B = remapHue(hslB[0])

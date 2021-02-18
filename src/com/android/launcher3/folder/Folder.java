@@ -1465,10 +1465,6 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         return mItemsInReadingOrder;
     }
 
-    public void iterateOverItems(ItemOperator op) {
-        mContent.iterateOverItems(op);
-    }
-
     public List<BubbleTextView> getItemsOnPage(int page) {
         ArrayList<View> allItems = getIconsInReadingOrder();
         int lastPage = mContent.getPageCount() - 1;
@@ -1702,15 +1698,6 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
     public static String getDefaultFolderName() {
         return sDefaultFolderName;
-    }
-
-    public static void setLocaleDependentFields(Resources res, boolean force) {
-        if (sDefaultFolderName == null || force) {
-            sDefaultFolderName = res.getString(R.string.folder_name);
-        }
-        if (sHintText == null || force) {
-            sHintText = res.getString(R.string.folder_hint_text);
-        }
     }
 
     /**

@@ -19,14 +19,13 @@ import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController.CardDat
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController.WeatherData;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace.OnStateChangeListener;
-import com.android.launcher3.anim.AnimatorSetBuilder;
+import com.android.launcher3.model.data.ItemInfo;
 import com.google.android.apps.nexuslauncher.smartspace.SmartspacePreferencesShortcut;
-import org.jetbrains.annotations.NotNull;
+import com.google.android.material.animation.AnimatorSetCompat;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -34,11 +33,9 @@ import org.jetbrains.annotations.Nullable;
  */
 public class QsbBlockerView extends FrameLayout implements OnStateChangeListener, LawnchairSmartspaceController.Listener, View.OnLongClickListener, View.OnClickListener {
     public static final Property<QsbBlockerView, Integer> QSB_BLOCKER_VIEW_ALPHA = new QsbBlockerViewAlpha(Integer.TYPE, "bgAlpha");
-    private LawnchairSmartspaceController mController;
+    private final LawnchairSmartspaceController mController;
     private int mState = 0;
     private View mView;
-
-    private BubbleTextView mDummyBubbleTextView;
 
     private final Paint mBgPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
@@ -55,7 +52,7 @@ public class QsbBlockerView extends FrameLayout implements OnStateChangeListener
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        mDummyBubbleTextView = findViewById(R.id.dummyBubbleTextView);
+        BubbleTextView mDummyBubbleTextView = findViewById(R.id.dummyBubbleTextView);
         mDummyBubbleTextView.setTag(new ItemInfo() {
             @Override
             public ComponentName getTargetComponent() {
@@ -105,7 +102,7 @@ public class QsbBlockerView extends FrameLayout implements OnStateChangeListener
     }
 
     @Override
-    public void prepareStateChange(AnimatorSetBuilder builder) {
+    public void prepareStateChange(AnimatorSetCompat builder) {
 
     }
 
@@ -139,12 +136,8 @@ public class QsbBlockerView extends FrameLayout implements OnStateChangeListener
 
         if (oldState != mState) {
             if (oldView != null) {
-                oldView.animate().setDuration(200L).alpha(0f).withEndAction(new Runnable() {
-                    @Override
-                    public void run() {
-                        removeView(oldView);
-                    }
-                });
+                oldView.animate().setDuration(200L).alpha(0f).withEndAction(
+                        () -> removeView(oldView));
             }
             addView(mView);
             mView.setAlpha(0f);

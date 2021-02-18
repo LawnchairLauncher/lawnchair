@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RemoteViews;
 import androidx.core.graphics.ColorUtils;
-import androidx.core.os.UserManagerCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.android.launcher3.BubbleTextView;
@@ -54,7 +53,7 @@ public class ConfigBuilder {
         mQsbLayout = qsbLayout;
         mActivity = qsbLayout.getLauncher();
         mIsAllApps = isAllApps;
-        userCache = new UserCache.INSTANCE.get(mActivity);
+        userCache = UserCache.INSTANCE.get(mActivity);
     }
 
     public static Intent getSearchIntent(Rect sourceBounds, View gIcon, View micIcon) {

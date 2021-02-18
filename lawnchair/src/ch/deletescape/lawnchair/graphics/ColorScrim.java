@@ -54,7 +54,7 @@ public class ColorScrim extends ViewScrim {
     }
 
     public static ColorScrim createExtractedColorScrim(View view) {
-        WallpaperColorInfo colors = WallpaperColorInfo.getInstance(view.getContext());
+        WallpaperColorInfo colors = WallpaperColorInfo.INSTANCE.get(view.getContext());
         int alpha = view.getResources().getInteger(R.integer.extracted_color_gradient_alpha);
         ColorScrim scrim = new ColorScrim(view, ColorUtils.setAlphaComponent(
                 colors.getSecondaryColor(), alpha), Interpolators.LINEAR);

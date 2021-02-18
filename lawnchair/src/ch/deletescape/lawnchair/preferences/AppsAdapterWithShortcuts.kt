@@ -171,7 +171,7 @@ open class AppsAdapterWithShortcuts(
         init {
             val appInfo = AppInfo(context, info, info.user)
             LauncherAppState.getInstance(context).iconCache.getTitleAndIcon(appInfo, false)
-            iconDrawable = BitmapDrawable(context.resources, appInfo.bitmap)
+            iconDrawable = BitmapDrawable(context.resources, appInfo.bitmap.icon)
         }
 
         private fun loadShortcuts(): List<ShortcutItem> {

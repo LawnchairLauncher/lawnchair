@@ -19,6 +19,7 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Interpolator;
+import android.widget.EditText;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -102,8 +103,8 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
 
     @Override
     public float getScrollRangeDelta(Rect insets) {
-        DeviceProfile wallpaperDeviceProfile = mActivity.getWallpaperDeviceProfile();
-        int i = (wallpaperDeviceProfile.hotseatBarSizePx - wallpaperDeviceProfile.hotseatCellHeightPx) - getLayoutParams().height;
+        DeviceProfile deviceProfile = mActivity.getDeviceProfile();
+        int i = (deviceProfile.hotseatBarSizePx - deviceProfile.hotseatCellHeightPx) - getLayoutParams().height;
         int i2 = insets.bottom;
         return (float) (((getLayoutParams().height + Math.max(-mVerticalOffset, insets.top - mTopAdjusting)) + mVerticalOffset) + (i2 + ((int) (((float) (i - i2)) * 0.45f))));
     }

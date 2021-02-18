@@ -7,6 +7,8 @@ import android.widget.FrameLayout;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.logging.StatsLogUtils;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
+import java.util.ArrayList;
 
 class LogContainerProvider extends FrameLayout implements StatsLogUtils.LogContainerProvider {
     private final int mPredictedRank;

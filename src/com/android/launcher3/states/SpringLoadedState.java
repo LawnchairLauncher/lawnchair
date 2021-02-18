@@ -30,18 +30,20 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
  */
 public class SpringLoadedState extends HomeState {
 
+    private static final int transitionDuration = 150;
+
     private static final int STATE_FLAGS = FLAG_MULTI_PAGE
             | FLAG_WORKSPACE_INACCESSIBLE | FLAG_DISABLE_RESTORE
             | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED | FLAG_WORKSPACE_HAS_BACKGROUNDS
             | FLAG_HIDE_BACK_BUTTON;
 
     public SpringLoadedState(int id) {
-        super(id, ContainerType.WORKSPACE, STATE_FLAGS);
+        super(id, ContainerType.WORKSPACE, transitionDuration, STATE_FLAGS);
     }
 
     @Override
     public int getTransitionDuration(Context context) {
-        return 150;
+        return transitionDuration;
     }
 
     @Override

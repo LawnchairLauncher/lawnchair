@@ -196,11 +196,11 @@ public class StatsLogCompatManager extends StatsLogManager {
                 getGridY(info, true) /* grid_y_parent */,
                 getParentPageId(info) /* page_id_parent */,
                 getHierarchy(info) /* hierarchy */,
-                info.isWork /* is_work_profile */,
+                info.getIsWork() /* is_work_profile */,
                 info.getAttribute().getNumber() /* origin */,
                 getCardinality(info) /* cardinality */,
-                info.getWidget().spanX,
-                info.getWidget().spanY);
+                info.getWidget().getSpanX(),
+                info.getWidget().getSpanY());
     }
 
     /**
@@ -361,8 +361,8 @@ public class StatsLogCompatManager extends StatsLogManager {
                     getGridY(atomInfo, true) /* grid_y_parent */,
                     getParentPageId(atomInfo) /* page_id_parent */,
                     getHierarchy(atomInfo) /* hierarchy */,
-                    atomInfo.isWork /* is_work_profile */,
-                    atomInfo.rank /* rank */,
+                    atomInfo.getIsWork() /* is_work_profile */,
+                    atomInfo.getRank() /* rank */,
                     atomInfo.getFolderIcon().getFromLabelState().getNumber() /* fromState */,
                     atomInfo.getFolderIcon().getToLabelState().getNumber() /* toState */,
                     atomInfo.getFolderIcon().getLabelInfo() /* edittext */,

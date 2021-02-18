@@ -61,7 +61,6 @@ import androidx.preference.PreferenceRecyclerViewAccessibilityDelegate;
 import androidx.preference.PreferenceScreen;
 import androidx.preference.SwitchPreference;
 import androidx.preference.TwoStatePreference;
-import androidx.preference.internal.AbstractMultiSelectListPreference;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import ch.deletescape.lawnchair.DefaultHomeCompat;
@@ -423,7 +422,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
                 return;
             }
             if (mAdapter != null) {
-                mAdapter.requestHighlight(Objects.requireNonNull(getView()), getListView());
+                mAdapter.requestHighlight(requireView(), getListView());
             }
         }
 

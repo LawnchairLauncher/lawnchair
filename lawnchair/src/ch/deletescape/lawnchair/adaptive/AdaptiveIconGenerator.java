@@ -126,7 +126,7 @@ public class AdaptiveIconGenerator {
             RectF bounds = new RectF();
 
             initTmpIfNeeded();
-            scale = normalizer.getScale(extractee, bounds, tmp.getIconMask(), outShape, MIN_VISIBLE_ALPHA);
+            scale = normalizer.getScale(extractee, bounds, tmp.getIconMask(), outShape);
             matchesMaskShape = outShape[0];
 
             if (extractee instanceof ColorDrawable) {

@@ -93,7 +93,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             if (itemInfo instanceof WorkspaceItemInfo && ((WorkspaceItemInfo) itemInfo).customIcon != null) {
                 icon.setImageBitmap(((WorkspaceItemInfo) itemInfo).customIcon);
             } else if (itemInfo instanceof  ItemInfoWithIcon) {
-                icon.setImageBitmap(((ItemInfoWithIcon) itemInfo).iconBitmap);
+                icon.setImageBitmap(((ItemInfoWithIcon) itemInfo).bitmap.icon);
             } else if (itemInfo instanceof FolderInfo) {
                 FolderInfo folderInfo = (FolderInfo) itemInfo;
                 icon.setImageDrawable(folderInfo.getIcon(mLauncher));

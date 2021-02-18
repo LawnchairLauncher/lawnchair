@@ -45,6 +45,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.ShadowGenerator;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.Themes;
 import com.google.android.apps.nexuslauncher.DynamicIconProvider;
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity;

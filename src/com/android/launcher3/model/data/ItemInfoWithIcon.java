@@ -30,7 +30,7 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
     /**
      * The bitmap for the application icon
      */
-    public Bitmap bitmap = BitmapInfo.LOW_RES_ICON;
+    public BitmapInfo bitmap = BitmapInfo.LOW_RES_INFO;
 
     /**
      * Indicates that the icon is disabled due to safe mode restrictions.
@@ -118,7 +118,7 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
      * Indicates whether we're using a low res icon
      */
     public boolean usingLowResIcon() {
-        return BitmapInfo.fromBitmap(bitmap).isLowRes();
+        return BitmapInfo.fromBitmap(bitmap.icon).isLowRes();
     }
 
     /**

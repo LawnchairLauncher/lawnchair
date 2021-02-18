@@ -53,6 +53,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.icons.IconProvider;
 import com.android.launcher3.icons.LauncherIcons;
+import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.util.Themes;

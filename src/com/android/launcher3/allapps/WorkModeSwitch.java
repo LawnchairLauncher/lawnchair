@@ -28,6 +28,8 @@ import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 import android.widget.Switch;
 
+import ch.deletescape.lawnchair.LawnchairUtilsKt;
+import ch.deletescape.lawnchair.colors.ColorEngine;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;

@@ -17,6 +17,7 @@ import static com.android.launcher3.states.StateAnimationConfig.ANIM_VERTICAL_PR
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.util.FloatProperty;
@@ -46,6 +47,7 @@ import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.views.ScrimView;
 import com.android.systemui.plugins.AllAppsSearchPlugin;
 import com.android.systemui.plugins.PluginListener;
+import com.google.android.material.animation.AnimatorSetCompat;
 
 /**
  * Handles AllApps view transition.
@@ -164,7 +166,7 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
      */
     @Override
     public void setStateWithAnimation(LauncherState toState,
-            AnimatorSetBuilder builder, AnimationConfig config) {
+            AnimatorSetCompat builder, StateAnimationConfig config) {
         float targetProgress = toState.getVerticalProgress(mLauncher);
         if (Float.compare(mProgress, targetProgress) == 0) {
             if (!config.onlyPlayAtomicComponent()) {

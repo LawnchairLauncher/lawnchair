@@ -52,15 +52,13 @@ import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.custom.CustomAppWidgetProviderInfo;
-import com.android.launcher3.widget.custom.CustomWidgetParser;
+import com.android.launcher3.widget.custom.CustomWidgetManager;
 import java.io.IOException;
 import java.util.Locale;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import java.io.IOException;
-import java.util.Locale;
 import java.util.function.Supplier;
 
 /**
@@ -597,8 +595,7 @@ public class AutoInstallsLayout {
             mValues.put(Favorites.SPANX, getAttributeValue(parser, ATTR_SPAN_X));
             mValues.put(Favorites.SPANY, getAttributeValue(parser, ATTR_SPAN_Y));
             mValues.put(Favorites.ITEM_TYPE, Favorites.ITEM_TYPE_CUSTOM_APPWIDGET);
-            mValues.put(Favorites.APPWIDGET_ID, CustomWidgetParser
-                    .getWidgetIdForCustomProvider(mContext, provider.provider));
+            mValues.put(Favorites.APPWIDGET_ID, CustomWidgetManager.INSTANCE.get(mContext).getWidgetIdForCustomProvider(provider.provider));
 
             // Read the extras
             Bundle extras = new Bundle();
