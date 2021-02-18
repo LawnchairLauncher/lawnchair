@@ -166,19 +166,19 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         mDotParams = new DotRenderer.DrawParams();
     }
 
-    public static FolderIcon inflateFolderAndIcon(int resId, Launcher launcher, ViewGroup group,
-            FolderInfo folderInfo) {
-        Folder folder = Folder.fromXml(launcher);
-        folder.setDragController(launcher.getDragController());
+    public static <T extends Context & ActivityContext> FolderIcon inflateFolderAndIcon(int resId,
+            T activityContext, ViewGroup group, FolderInfo folderInfo) {
+        Folder folder = Folder.fromXml(activityContext);
+        folder.setDragController(folder.mLauncher.getDragController());
 
-        FolderIcon icon = inflateIcon(resId, launcher, group, folderInfo);
+        FolderIcon icon = inflateIcon(resId, activityContext, group, folderInfo);
         folder.setFolderIcon(icon);
         folder.bind(folderInfo);
         icon.setFolder(folder);
 
-        icon.setOnFocusChangeListener(launcher.getFocusHandler());
+        icon.setOnFocusChangeListener(folder.mLauncher.getFocusHandler());
         icon.mBackground.paddingY = icon.isInHotseat()
-                ? 0 : launcher.getDeviceProfile().cellYPaddingPx;
+                ? 0 : activityContext.getDeviceProfile().cellYPaddingPx;
         return icon;
     }
 
@@ -754,20 +754,14 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     }
 
     public void clearLeaveBehindIfExists() {
-        ((CellLayout.LayoutParams) getLayoutParams()).canReorder = true;
-        if (isInHotseat()) {
-            CellLayout cl = (CellLayout) getParent().getParent();
-            cl.clearFolderLeaveBehind();
+        if (getParent() instanceof FolderIconParent) {
+            ((FolderIconParent) getParent()).clearFolderLeaveBehind(this);
         }
     }
 
     public void drawLeaveBehindIfExists() {
-        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) getLayoutParams();
-        // While the folder is open, the position of the icon cannot change.
-        lp.canReorder = false;
-        if (isInHotseat()) {
-            CellLayout cl = (CellLayout) getParent().getParent();
-            cl.setFolderLeaveBehindCell(lp.cellX, lp.cellY);
+        if (getParent() instanceof FolderIconParent) {
+            ((FolderIconParent) getParent()).drawFolderLeaveBehindForIcon(this);
         }
     }
 
@@ -835,5 +829,20 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
             return getContext().getString(R.string.folder_name_format_overflow, title,
                     MAX_NUM_ITEMS_IN_PREVIEW);
         }
+    }
+
+    /**
+     * Interface that provides callbacks to a parent ViewGroup that hosts this FolderIcon.
+     */
+    public interface FolderIconParent {
+        /**
+         * Tells the FolderIconParent to draw a "leave-behind" when the Folder is open and leaving a
+         * gap where the FolderIcon would be when the Folder is closed.
+         */
+        void drawFolderLeaveBehindForIcon(FolderIcon child);
+        /**
+         * Tells the FolderIconParent to stop drawing the "leave-behind" as the Folder is closed.
+         */
+        void clearFolderLeaveBehind(FolderIcon child);
     }
 }

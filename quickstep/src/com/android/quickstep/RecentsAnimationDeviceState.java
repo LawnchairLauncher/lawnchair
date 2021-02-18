@@ -17,14 +17,16 @@ package com.android.quickstep;
 
 import static android.content.Intent.ACTION_USER_UNLOCKED;
 
+import static com.android.launcher3.util.SettingsCache.ONE_HANDED_ENABLED;
+import static com.android.launcher3.util.SettingsCache.ONE_HANDED_SWIPE_BOTTOM_TO_NOTIFICATION_ENABLED;
 import static com.android.launcher3.util.DisplayController.DisplayHolder.CHANGE_ALL;
 import static com.android.launcher3.util.DisplayController.DisplayHolder.CHANGE_FRAME_DELAY;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 import static com.android.quickstep.SysUINavigationMode.Mode.THREE_BUTTONS;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_CLICKABLE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_LONG_CLICKABLE;
-import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_ASSIST_GESTURE_CONSTRAINED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_ALLOW_GESTURE_IGNORING_BAR_VISIBILITY;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_ASSIST_GESTURE_CONSTRAINED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_BUBBLES_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_GLOBAL_ACTIONS_SHOWING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_HOME_DISABLED;
@@ -44,6 +46,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Region;
+import android.net.Uri;
 import android.os.Process;
 import android.os.SystemProperties;
 import android.os.UserManager;
@@ -57,11 +60,11 @@ import androidx.annotation.BinderThread;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.util.SettingsCache;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.DisplayHolder;
 import com.android.launcher3.util.DisplayController.DisplayInfoChangeListener;
 import com.android.launcher3.util.DisplayController.Info;
-import com.android.launcher3.util.SecureSettingsObserver;
 import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
 import com.android.quickstep.SysUINavigationMode.OneHandedModeChangeListener;
 import com.android.quickstep.util.NavBarPosition;
@@ -177,33 +180,33 @@ public class RecentsAnimationDeviceState implements
             }
         }
 
+        SettingsCache settingsCache = SettingsCache.INSTANCE.get(mContext);
         if (mIsOneHandedModeSupported) {
-            SecureSettingsObserver oneHandedEnabledObserver =
-                    SecureSettingsObserver.newOneHandedSettingsObserver(
-                            mContext, enabled -> mIsOneHandedModeEnabled = enabled);
-            oneHandedEnabledObserver.register();
-            oneHandedEnabledObserver.dispatchOnChange();
-            runOnDestroy(oneHandedEnabledObserver::unregister);
+            Uri oneHandedUri = Settings.Secure.getUriFor(ONE_HANDED_ENABLED);
+            SettingsCache.OnChangeListener onChangeListener =
+                    enabled -> mIsOneHandedModeEnabled = enabled;
+            settingsCache.register(oneHandedUri, onChangeListener);
+            settingsCache.dispatchOnChange(oneHandedUri);
+            runOnDestroy(() -> settingsCache.unregister(oneHandedUri, onChangeListener));
         } else {
             mIsOneHandedModeEnabled = false;
         }
 
-        SecureSettingsObserver swipeBottomEnabledObserver =
-                SecureSettingsObserver.newSwipeToNotificationSettingsObserver(
-                        mContext, enabled -> mIsSwipeToNotificationEnabled = enabled);
-        swipeBottomEnabledObserver.register();
-        swipeBottomEnabledObserver.dispatchOnChange();
-        runOnDestroy(swipeBottomEnabledObserver::unregister);
 
-        SecureSettingsObserver userSetupObserver = new SecureSettingsObserver(
-                context.getContentResolver(),
-                e -> mIsUserSetupComplete = e,
-                Settings.Secure.USER_SETUP_COMPLETE,
-                0);
-        mIsUserSetupComplete = userSetupObserver.getValue();
+        Uri swipeBottomNotificationUri =
+                Settings.Secure.getUriFor(ONE_HANDED_SWIPE_BOTTOM_TO_NOTIFICATION_ENABLED);
+        SettingsCache.OnChangeListener onChangeListener =
+                enabled -> mIsSwipeToNotificationEnabled = enabled;
+        settingsCache.register(swipeBottomNotificationUri, onChangeListener);
+        settingsCache.dispatchOnChange(swipeBottomNotificationUri);
+        runOnDestroy(() -> settingsCache.unregister(swipeBottomNotificationUri, onChangeListener));
+
+        Uri setupCompleteUri = Settings.Secure.getUriFor(Settings.Secure.USER_SETUP_COMPLETE);
+        mIsUserSetupComplete = settingsCache.getValue(setupCompleteUri, 0);
         if (!mIsUserSetupComplete) {
-            userSetupObserver.register();
-            runOnDestroy(userSetupObserver::unregister);
+            SettingsCache.OnChangeListener userSetupChangeListener = e -> mIsUserSetupComplete = e;
+            settingsCache.register(setupCompleteUri, userSetupChangeListener);
+            runOnDestroy(() -> settingsCache.unregister(setupCompleteUri, userSetupChangeListener));
         }
     }
 

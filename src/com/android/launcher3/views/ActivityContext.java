@@ -17,7 +17,7 @@ package com.android.launcher3.views;
 
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.view.ContextThemeWrapper;
+import android.graphics.Rect;
 import android.view.View.AccessibilityDelegate;
 
 import com.android.launcher3.DeviceProfile;
@@ -49,6 +49,23 @@ public interface ActivityContext {
         return null;
     }
 
+    default Rect getFolderBoundingBox() {
+        return getDeviceProfile().getAbsoluteOpenFolderBounds();
+    }
+
+    /**
+     * After calling {@link #getFolderBoundingBox()}, we calculate a (left, top) position for a
+     * Folder of size width x height to be within those bounds. However, the chosen position may
+     * not be visually ideal (e.g. uncanny valley of centeredness), so here's a chance to update it.
+     * @param inOutPosition A 2-size array where the first element is the left position of the open
+     *     folder and the second element is the top position. Should be updated in place if desired.
+     * @param bounds The bounds that the open folder should fit inside.
+     * @param width The width of the open folder.
+     * @param height The height of the open folder.
+     */
+    default void updateOpenFolderPosition(int[] inOutPosition, Rect bounds, int width, int height) {
+    }
+
     /**
      * The root view to support drag-and-drop and popup support.
      */
@@ -56,10 +73,10 @@ public interface ActivityContext {
 
     DeviceProfile getDeviceProfile();
 
-    static ActivityContext lookupContext(Context context) {
+    static <T extends ActivityContext> T lookupContext(Context context) {
         if (context instanceof ActivityContext) {
-            return (ActivityContext) context;
-        } else if (context instanceof ContextThemeWrapper) {
+            return (T) context;
+        } else if (context instanceof ContextWrapper) {
             return lookupContext(((ContextWrapper) context).getBaseContext());
         } else {
             throw new IllegalArgumentException("Cannot find ActivityContext in parent tree");
