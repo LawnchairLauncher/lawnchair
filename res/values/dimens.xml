@@ -260,4 +260,7 @@
     <dimen name="search_settings_icon_vertical_offset">16dp</dimen>
     <dimen name="search_line_spacing">4dp</dimen>
 
+<!-- Taskbar related (placeholders to compile in Launcher3 without Quickstep) -->
+    <dimen name="taskbar_size">0dp</dimen>
+
 </resources>

@@ -197,6 +197,10 @@ public class DisplayController implements DisplayListener {
             return new Info(displayContext, display);
         }
 
+        public Context getDisplayContext() {
+            return mDisplayContext;
+        }
+
         protected void handleOnChange() {
             Info oldInfo = mInfo;
             Info newInfo = createInfoForContext(mDisplayContext);
