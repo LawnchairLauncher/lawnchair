@@ -30,6 +30,7 @@ import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dragndrop.DragOptions;
+import com.android.launcher3.dragndrop.LivePreviewWidgetCell;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
@@ -99,12 +100,16 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView
             return false;
         }
 
+        PendingItemDragHelper dragHelper = new PendingItemDragHelper(v);
+        if (v instanceof LivePreviewWidgetCell) {
+            dragHelper.setPreview(((LivePreviewWidgetCell) v).getPreview());
+        }
+
         int[] loc = new int[2];
         getPopupContainer().getLocationInDragLayer(image, loc);
 
-        new PendingItemDragHelper(v).startDrag(
-                image.getBitmapBounds(), image.getBitmap().getWidth(), image.getWidth(),
-                new Point(loc[0], loc[1]), this, new DragOptions());
+        dragHelper.startDrag(image.getBitmapBounds(), image.getBitmap().getWidth(),
+                image.getWidth(), new Point(loc[0], loc[1]), this, new DragOptions());
         close(true);
         return true;
     }

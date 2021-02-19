@@ -25,6 +25,8 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.RemoteViews;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.Launcher;
@@ -48,14 +50,14 @@ public class PendingItemDragHelper extends DragPreviewProvider {
     private final PendingAddItemInfo mAddInfo;
     private int[] mEstimatedCellSize;
 
-    private RemoteViews mPreview;
+    @Nullable private RemoteViews mPreview;
 
     public PendingItemDragHelper(View view) {
         super(view);
         mAddInfo = (PendingAddItemInfo) view.getTag();
     }
 
-    public void setPreview(RemoteViews preview) {
+    public void setPreview(@Nullable RemoteViews preview) {
         mPreview = preview;
     }
 
