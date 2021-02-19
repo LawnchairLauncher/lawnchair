@@ -48,6 +48,7 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Outline;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
@@ -449,12 +450,15 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         cancelPendingLoadTasks();
         mTask = task;
         mSnapshotView.bind(task);
-        updateTaskSize();
         setOrientationState(orientedState);
     }
 
     public Task getTask() {
         return mTask;
+    }
+
+    public boolean hasTaskId(int taskId) {
+        return mTask != null && mTask.key != null && mTask.key.id == taskId;
     }
 
     public TaskThumbnailView getThumbnail() {
@@ -1077,9 +1081,11 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                 previewPositionHelper);
     }
 
-    void updateTaskSize() {
+    void updateTaskSize(boolean variableWidth) {
         ViewGroup.LayoutParams params = getLayoutParams();
-        if (mActivity.getDeviceProfile().isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get()) {
+        float thumbnailRatio = mTask != null ? mTask.getVisibleThumbnailRatio() : 0f;
+        if (variableWidth && mActivity.getDeviceProfile().isTablet
+                && FeatureFlags.ENABLE_OVERVIEW_GRID.get() && thumbnailRatio != 0f) {
             final int thumbnailPadding = (int) getResources().getDimension(
                     R.dimen.task_thumbnail_top_margin);
 
@@ -1087,7 +1093,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             int taskWidth = lastComputedTaskSize.width();
             int taskHeight = lastComputedTaskSize.height();
             int boxLength = Math.max(taskWidth, taskHeight);
-            float thumbnailRatio = mSnapshotView.getThumbnailRatio();
 
             int expectedWidth;
             int expectedHeight;

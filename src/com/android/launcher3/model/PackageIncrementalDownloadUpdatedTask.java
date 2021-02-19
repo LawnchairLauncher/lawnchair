@@ -15,7 +15,7 @@
  */
 package com.android.launcher3.model;
 
-import android.content.ComponentName;
+import android.content.Intent;
 import android.os.UserHandle;
 
 import com.android.launcher3.LauncherAppState;
@@ -66,8 +66,8 @@ public class PackageIncrementalDownloadUpdatedTask extends BaseModelUpdateTask {
         final ArrayList<WorkspaceItemInfo> updatedWorkspaceItems = new ArrayList<>();
         synchronized (dataModel) {
             dataModel.forAllWorkspaceItemInfos(mUser, si -> {
-                ComponentName cn = si.getTargetComponent();
-                if ((cn != null) && cn.getPackageName().equals(mPackageName)) {
+                Intent intent = si.getIntent();
+                if ((intent != null) && mPackageName.equals(intent.getPackage())) {
                     si.runtimeStatusFlags &= ~ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE;
                     si.setProgressLevel(downloadInfo);
                     updatedWorkspaceItems.add(si);

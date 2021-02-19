@@ -111,9 +111,6 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
     private boolean mOverlayEnabled;
     private OverviewScreenshotActions mOverviewScreenshotActionsPlugin;
 
-    // TODO(b/179466077): Remove when proper API is ready.
-    private Float mThumbnailRatio = null;
-
     public TaskThumbnailView(Context context) {
         this(context, null);
     }
@@ -452,31 +449,6 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
             return false;
         }
         return mThumbnailData.isRealSnapshot;
-    }
-
-    // TODO(b/179466077): Remove when proper API is ready.
-    public float getThumbnailRatio() {
-        // API is ready.
-        if (mThumbnailRatio != null) {
-            return mThumbnailRatio;
-        }
-
-        if (mThumbnailData == null || mThumbnailData.thumbnail == null) {
-            final float[] thumbnailRatios =
-                    new float[]{0.8882452f, 1.2834098f, 0.5558415f, 2.15625f};
-            // Use key's hash code to return a deterministic thumbnail ratio.
-            mThumbnailRatio = thumbnailRatios[mTask.key.hashCode() % thumbnailRatios.length];
-            return mThumbnailRatio;
-        }
-
-        float surfaceWidth = mThumbnailData.thumbnail.getWidth() / mThumbnailData.scale;
-        float surfaceHeight = mThumbnailData.thumbnail.getHeight() / mThumbnailData.scale;
-        float availableWidth = surfaceWidth
-                - (mThumbnailData.insets.left + mThumbnailData.insets.right);
-        float availableHeight = surfaceHeight
-                - (mThumbnailData.insets.top + mThumbnailData.insets.bottom);
-        mThumbnailRatio = availableWidth / availableHeight;
-        return mThumbnailRatio;
     }
 
     /**
