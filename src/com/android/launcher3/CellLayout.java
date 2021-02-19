@@ -19,6 +19,7 @@ package com.android.launcher3;
 import static android.animation.ValueAnimator.areAnimatorsEnabled;
 
 import static com.android.launcher3.anim.Interpolators.DEACCEL_1_5;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_FOUR_COLUMNS;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -309,6 +310,8 @@ public class CellLayout extends ViewGroup {
         setImportantForAccessibility(accessibilityFlag);
         getShortcutsAndWidgets().setImportantForAccessibility(accessibilityFlag);
 
+        // ExploreByTouchHelper sets focusability. Clear it when the delegate is cleared.
+        setFocusable(delegate != null);
         // Invalidate the accessibility hierarchy
         if (getParent() != null) {
             getParent().notifySubtreeAccessibilityStateChanged(
@@ -597,7 +600,9 @@ public class CellLayout extends ViewGroup {
         if (child instanceof BubbleTextView) {
             BubbleTextView bubbleChild = (BubbleTextView) child;
             bubbleChild.setTextVisibility(mContainerType != HOTSEAT);
-            bubbleChild.setCenterVertically(mContainerType != HOTSEAT);
+            if (ENABLE_FOUR_COLUMNS.get()) {
+                bubbleChild.setCenterVertically(mContainerType != HOTSEAT);
+            }
         }
 
         child.setScaleX(mChildScale);
