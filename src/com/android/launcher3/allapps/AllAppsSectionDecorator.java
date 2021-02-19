@@ -18,16 +18,18 @@ package com.android.launcher3.allapps;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.RectF;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsGridAdapter.AppsGridLayoutManager;
-import com.android.launcher3.allapps.search.SearchSectionInfo;
+import com.android.launcher3.allapps.search.SectionDecorationInfo;
 import com.android.launcher3.util.Themes;
 
 import java.util.List;
@@ -45,52 +47,51 @@ public class AllAppsSectionDecorator extends RecyclerView.ItemDecoration {
 
     @Override
     public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
-        // Iterate through views in recylerview and draw bounds around views in the same section.
-        // Since views in the same section will follow each other, we can skip to a last view in
-        // a section to get the bounds of the section without having to iterate on every item.
-        int itemCount = parent.getChildCount();
         List<AllAppsGridAdapter.AdapterItem> adapterItems = mAppsView.getApps().getAdapterItems();
-        SectionDecorationHandler lastDecorationHandler = null;
-        int i = 0;
-        while (i < itemCount) {
+        boolean drawFallbackFocusedView = true;
+        for (int i = 0; i < parent.getChildCount(); i++) {
             View view = parent.getChildAt(i);
-            if (view instanceof SelfDecoratingView) {
-                ((SelfDecoratingView) view).removeDecoration();
-            }
             int position = parent.getChildAdapterPosition(view);
             AllAppsGridAdapter.AdapterItem adapterItem = adapterItems.get(position);
-            if (adapterItem.searchSectionInfo != null) {
-                SearchSectionInfo sectionInfo = adapterItem.searchSectionInfo;
-                int endIndex = Math.min(i + sectionInfo.getPosEnd() - position, itemCount - 1);
+            if (adapterItem.sectionDecorationInfo != null) {
+                SectionDecorationInfo sectionInfo = adapterItem.sectionDecorationInfo;
                 SectionDecorationHandler decorationHandler = sectionInfo.getDecorationHandler();
-                if (decorationHandler != lastDecorationHandler && lastDecorationHandler != null) {
-                    drawDecoration(c, lastDecorationHandler, parent);
-                }
-                lastDecorationHandler = decorationHandler;
                 if (decorationHandler != null) {
                     decorationHandler.extendBounds(view);
-                }
-
-                if (endIndex > i) {
-                    i = endIndex;
-                    continue;
+                    if (sectionInfo.isFocusedView()) {
+                        decorationHandler.onFocusDraw(c, view);
+                        drawFallbackFocusedView = false;
+                    } else {
+                        decorationHandler.onGroupDraw(c);
+                    }
                 }
             }
-            i++;
         }
-        if (lastDecorationHandler != null) {
-            drawDecoration(c, lastDecorationHandler, parent);
+        // fallback logic in case none of the SearchTarget is labeled as focused item
+        if (drawFallbackFocusedView) {
+            for (int i = 0; i < parent.getChildCount(); i++) {
+                View view = parent.getChildAt(i);
+                int position = parent.getChildAdapterPosition(view);
+                AllAppsGridAdapter.AdapterItem adapterItem = adapterItems.get(position);
+                if (adapterItem.sectionDecorationInfo != null) {
+                    SectionDecorationInfo sectionInfo = adapterItem.sectionDecorationInfo;
+                    SectionDecorationHandler decorationHandler = sectionInfo.getDecorationHandler();
+                    if (decorationHandler != null) {
+                        drawDecoration(c, decorationHandler, parent);
+                    }
+                }
+            }
         }
     }
 
-    private void drawDecoration(Canvas c, SectionDecorationHandler decorationHandler,
-            RecyclerView parent) {
-        if (decorationHandler == null) return;
+    // Fallback logic in case non of the SearchTarget is labeled as focused item.
+    private void drawDecoration(@NonNull Canvas c,
+            @NonNull SectionDecorationHandler decorationHandler,
+            @NonNull RecyclerView parent) {
         if (decorationHandler.mIsFullWidth) {
             decorationHandler.mBounds.left = parent.getPaddingLeft();
             decorationHandler.mBounds.right = parent.getWidth() - parent.getPaddingRight();
         }
-        decorationHandler.onDraw(c);
         if (mAppsView.getFloatingHeaderView().getFocusedChild() == null
                 && mAppsView.getApps().getFocusedChild() != null) {
             int index = mAppsView.getApps().getFocusedChildIndex();
@@ -109,23 +110,41 @@ public class AllAppsSectionDecorator extends RecyclerView.ItemDecoration {
      * Handles grouping and drawing of items in the same all apps sections.
      */
     public static class SectionDecorationHandler {
-        private static final int FILL_ALPHA = 0;
-
         protected RectF mBounds = new RectF();
         private final boolean mIsFullWidth;
         private final float mRadius;
 
-        protected int mFocusColor;
-        protected int mFillcolor;
+        protected final int mFocusColor; // main focused item color
+        protected final int mFillcolor; // grouping color
+
         private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        private final boolean mIsTopRound;
+        private final boolean mIsBottomRound;
+        private float [] mCorners;
+        private float mFillSpacing;
 
+        public SectionDecorationHandler(Context context, boolean isFullWidth, int fillAlpha,
+                boolean isTopRound, boolean isBottomRound) {
 
-        public SectionDecorationHandler(Context context, boolean isFullWidth) {
             mIsFullWidth = isFullWidth;
             int endScrim = Themes.getColorBackground(context);
-            mFillcolor = ColorUtils.setAlphaComponent(endScrim, FILL_ALPHA);
-            mFocusColor = endScrim;
-            mRadius = Themes.getDialogCornerRadius(context);
+            mFillcolor = ColorUtils.setAlphaComponent(endScrim, fillAlpha);
+            mFocusColor = ColorUtils.setAlphaComponent(endScrim, fillAlpha);
+
+            mIsTopRound = isTopRound;
+            mIsBottomRound = isBottomRound;
+
+            mRadius = context.getResources().getDimensionPixelSize(
+                    R.dimen.search_decoration_corner_radius);
+            mFillSpacing = context.getResources().getDimensionPixelSize(
+                    R.dimen.search_decoration_padding);
+            mCorners = new float[]{
+                    mIsTopRound ? mRadius : 0, mIsTopRound ? mRadius : 0, // Top left radius in px
+                    mIsTopRound ? mRadius : 0, mIsTopRound ? mRadius : 0, // Top right radius in px
+                    mIsBottomRound ? mRadius : 0, mIsBottomRound ? mRadius : 0, // Bottom right
+                    mIsBottomRound ? mRadius : 0, mIsBottomRound ? mRadius : 0  // Bottom left
+            };
+
         }
 
         /**
@@ -147,9 +166,9 @@ public class AllAppsSectionDecorator extends RecyclerView.ItemDecoration {
         /**
          * Draw bounds onto canvas.
          */
-        public void onDraw(Canvas canvas) {
+        public void onGroupDraw(Canvas canvas) {
             mPaint.setColor(mFillcolor);
-            canvas.drawRoundRect(mBounds, mRadius, mRadius, mPaint);
+            onDraw(canvas);
         }
 
         /**
@@ -159,13 +178,20 @@ public class AllAppsSectionDecorator extends RecyclerView.ItemDecoration {
             if (view == null) {
                 return;
             }
-            if (view instanceof SelfDecoratingView) {
-                ((SelfDecoratingView) view).decorate(mFocusColor);
-                return;
-            }
             mPaint.setColor(mFocusColor);
-            canvas.drawRoundRect(view.getLeft(), view.getTop(),
-                    view.getRight(), view.getBottom(), mRadius, mRadius, mPaint);
+            mBounds.set(view.getLeft(), view.getTop(), view.getRight(), view.getBottom());
+            onDraw(canvas);
+        }
+
+
+        private void onDraw(Canvas canvas) {
+            final Path path = new Path();
+            RectF finalBounds = new RectF(mBounds.left + mFillSpacing,
+                    mBounds.top + mFillSpacing,
+                    mBounds.right - mFillSpacing,
+                    mBounds.bottom - mFillSpacing);
+            path.addRoundRect(finalBounds, mCorners, Path.Direction.CW);
+            canvas.drawPath(path, mPaint);
         }
 
         /**
@@ -174,20 +200,5 @@ public class AllAppsSectionDecorator extends RecyclerView.ItemDecoration {
         public void reset() {
             mBounds.setEmpty();
         }
-    }
-
-    /**
-     * An interface for a view to draw highlight indicator
-     */
-    public interface SelfDecoratingView {
-        /**
-         * Removes decorations drawing if focus is acquired by another view
-         */
-        void removeDecoration();
-
-        /**
-         * Draws highlight indicator on view.
-         */
-        void decorate(int focusColor);
     }
 }
