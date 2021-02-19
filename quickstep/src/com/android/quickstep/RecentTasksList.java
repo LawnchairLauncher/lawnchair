@@ -191,6 +191,7 @@ public class RecentTasksList extends TaskStackChangeListener {
             } else {
                 task = new Task(taskKey);
             }
+            task.setLastSnapshotData(rawTask);
             allTasks.add(task);
         }
 
@@ -200,9 +201,7 @@ public class RecentTasksList extends TaskStackChangeListener {
     private ArrayList<Task> copyOf(ArrayList<Task> tasks) {
         ArrayList<Task> newTasks = new ArrayList<>();
         for (int i = 0; i < tasks.size(); i++) {
-            Task t = tasks.get(i);
-            newTasks.add(new Task(t.key, t.colorPrimary, t.colorBackground, t.isDockable,
-                    t.isLocked, t.taskDescription, t.topActivity));
+            newTasks.add(new Task(tasks.get(i)));
         }
         return newTasks;
     }
