@@ -67,12 +67,13 @@ import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 import com.android.launcher3.views.SpringRelativeLayout;
+import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.OnActivePageChangedListener;
 
 /**
  * The all apps view container.
  */
 public class AllAppsContainerView extends SpringRelativeLayout implements DragSource,
-        Insettable, OnDeviceProfileChangeListener {
+        Insettable, OnDeviceProfileChangeListener, OnActivePageChangedListener {
 
     private static final float FLING_VELOCITY_MULTIPLIER = 135f;
     // Starts the springs after at least 55% of the animation has passed.
@@ -434,7 +435,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
                     .setOnClickListener((View view) -> mViewPager.snapToPage(AdapterHolder.MAIN));
             findViewById(R.id.tab_work)
                     .setOnClickListener((View view) -> mViewPager.snapToPage(AdapterHolder.WORK));
-            onTabChanged(mViewPager.getNextPage());
+            onActivePageChanged(mViewPager.getNextPage());
         } else {
             mAH[AdapterHolder.MAIN].setup(findViewById(R.id.apps_list_view), null);
             mAH[AdapterHolder.WORK].recyclerView = null;
@@ -483,7 +484,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         if (showTabs) {
             mViewPager = (AllAppsPagedView) newView;
             mViewPager.initParentViews(this);
-            mViewPager.getPageIndicator().setContainerView(this);
+            mViewPager.getPageIndicator().setOnActivePageChangedListener(this);
         } else {
             mViewPager = null;
         }
@@ -493,14 +494,15 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         return mViewPager != null ? mViewPager : findViewById(R.id.apps_list_view);
     }
 
-    public void onTabChanged(int pos) {
-        mHeader.setMainActive(pos == 0);
-        if (mAH[pos].recyclerView != null) {
-            mAH[pos].recyclerView.bindFastScrollbar();
+    @Override
+    public void onActivePageChanged(int currentActivePage) {
+        mHeader.setMainActive(currentActivePage == 0);
+        if (mAH[currentActivePage].recyclerView != null) {
+            mAH[currentActivePage].recyclerView.bindFastScrollbar();
         }
         reset(true /* animate */);
         if (mWorkModeSwitch != null) {
-            mWorkModeSwitch.setWorkTabVisible(pos == AdapterHolder.WORK
+            mWorkModeSwitch.setWorkTabVisible(currentActivePage == AdapterHolder.WORK
                     && mAllAppsStore.hasModelFlag(
                     FLAG_HAS_SHORTCUT_PERMISSION | FLAG_QUIET_MODE_CHANGE_PERMISSION));
         }
