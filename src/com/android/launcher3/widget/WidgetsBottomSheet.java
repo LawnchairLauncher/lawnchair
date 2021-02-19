@@ -36,6 +36,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.dragndrop.LivePreviewWidgetCell;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.PackageUserKey;
@@ -136,8 +137,8 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
     }
 
     protected WidgetCell addItemCell(ViewGroup parent) {
-        WidgetCell widget = (WidgetCell) LayoutInflater.from(getContext()).inflate(
-                R.layout.widget_cell, parent, false);
+        LivePreviewWidgetCell widget = (LivePreviewWidgetCell) LayoutInflater.from(
+                getContext()).inflate(R.layout.live_preview_widget_cell, parent, false);
 
         widget.setOnClickListener(this);
         widget.setOnLongClickListener(this);
