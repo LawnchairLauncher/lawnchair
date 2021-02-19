@@ -130,7 +130,7 @@ public class PredictionRowView extends LinearLayout implements
 
         if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
             mDecorationHandler = new AllAppsSectionDecorator.SectionDecorationHandler(getContext(),
-                    false);
+                    false, 0, true, true);
         }
 
         updateVisibility();
@@ -164,7 +164,7 @@ public class PredictionRowView extends LinearLayout implements
             for (int i = 0; i < childrenCount; i++) {
                 mDecorationHandler.extendBounds(getChildAt(i));
             }
-            mDecorationHandler.onDraw(canvas);
+            mDecorationHandler.onGroupDraw(canvas);
             mDecorationHandler.onFocusDraw(canvas, getFocusedChild());
             mLauncher.getAppsView().getActiveRecyclerView().invalidateItemDecorations();
         }
