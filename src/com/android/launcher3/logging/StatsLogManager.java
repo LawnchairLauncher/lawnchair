@@ -31,8 +31,6 @@ import com.android.launcher3.logger.LauncherAtom.ToState;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.ResourceBasedOverride;
 
-import java.util.Optional;
-
 /**
  * Handles the user event logging in R+.
  *
@@ -486,7 +484,9 @@ public class StatsLogManager implements ResourceBasedOverride {
      */
     public StatsLogger logger() {
         StatsLogger logger = createLogger();
-        Optional.ofNullable(mInstanceId).ifPresent(logger::withInstanceId);
+        if (mInstanceId != null) {
+            return logger.withInstanceId(mInstanceId);
+        }
         return logger;
     }
 
