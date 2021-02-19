@@ -222,7 +222,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
             mTaskbarController.cleanup();
             mTaskbarController = null;
         }
-        if (FeatureFlags.ENABLE_TASKBAR.get() && mDeviceProfile.isTablet) {
+        if (mDeviceProfile.isTaskbarPresent) {
             TaskbarActivityContext taskbarActivityContext = new TaskbarActivityContext(this);
             mTaskbarController = new TaskbarController(this,
                     taskbarActivityContext.getTaskbarContainerView());
