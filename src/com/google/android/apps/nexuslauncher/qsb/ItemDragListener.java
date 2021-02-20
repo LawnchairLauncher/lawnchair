@@ -13,7 +13,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingItemDragHelper;
 
-public class ItemDragListener extends BaseItemDragListener {
+/*public class ItemDragListener extends BaseItemDragListener {
     private final LauncherActivityInfo mActivityInfo;
 
     public ItemDragListener(LauncherActivityInfo activityInfo, Rect rect) {
@@ -36,4 +36,4 @@ public class ItemDragListener extends BaseItemDragListener {
     @Override
     public void fillInLogContainerData(View v, ItemInfo info, LauncherLogProto.Target target, LauncherLogProto.Target targetParent) {
     }
-}
+}*/

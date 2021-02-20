@@ -38,26 +38,4 @@ public class HotseatQsbWidget extends FrameLayout {
                 .equals(context.getString(R.string.default_live_wallpaper));
     }
 
-    public static int getBottomMargin(ActivityContext launcher) {
-        Context context = (Context) launcher;
-        Resources resources = context.getResources();
-        int minBottom = launcher.getDeviceProfile().getInsets().bottom + resources
-                .getDimensionPixelSize(R.dimen.hotseat_qsb_bottom_margin);
-
-        DeviceProfile profile = launcher.getDeviceProfile();
-        Rect rect = profile.getInsets();
-        Rect hotseatLayoutPadding = profile.getHotseatLayoutPadding();
-
-        int hotseatTop = profile.hotseatBarSizePx + rect.bottom;
-        int hotseatIconsTop = hotseatTop - hotseatLayoutPadding.top;
-
-        float f = ((hotseatIconsTop - hotseatLayoutPadding.bottom) + (profile.iconSizePx * 0.92f)) / 2.0f;
-        float f2 = ((float) rect.bottom) * 0.67f;
-        int bottomMargin = Math.round(f2 + (
-                ((((((float) hotseatTop) - f2) - f) - resources
-                        .getDimension(R.dimen.qsb_widget_height))
-                        - ((float) profile.verticalDragHandleSizePx)) / 2.0f));
-
-        return Math.max(minBottom, bottomMargin);
-    }
 }

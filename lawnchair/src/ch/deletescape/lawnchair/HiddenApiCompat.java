@@ -91,16 +91,6 @@ public class HiddenApiCompat {
         }
     }
 
-    public static boolean isResizeableMode(int mode) {
-        return ActivityInfo.isResizeableMode(mode);
-    }
-
-    public static ActivityOptions makePopupWindowOptions() {
-        ActivityOptions options = ActivityOptions.makeBasic();
-        options.setLaunchWindowingMode(WindowConfiguration.WINDOWING_MODE_FREEFORM);
-        return options;
-    }
-
     public static boolean isInstantApp(ApplicationInfo applicationInfo) {
         return applicationInfo.isInstantApp();
     }

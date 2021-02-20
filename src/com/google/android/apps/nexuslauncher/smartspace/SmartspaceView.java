@@ -14,7 +14,6 @@ import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Process;
@@ -33,7 +32,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import ch.deletescape.lawnchair.LawnchairAppKt;
 import ch.deletescape.lawnchair.LawnchairPreferences;
-import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController;
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController.CardData;
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController.Line;
@@ -57,7 +55,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAnimator.AnimatorUpdateListener,
-        View.OnClickListener, View.OnLongClickListener, Runnable, LawnchairSmartspaceController.Listener {
+        View.OnClickListener, Runnable, LawnchairSmartspaceController.Listener {
     private TextView mSubtitleWeatherText;
     private final TextPaint dB;
     private TextView mTitleText;
@@ -233,7 +231,6 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
             cs();
         }
         setOnClickListener(this);
-        setOnLongClickListener(co());
         mWeatherAvailable = weather != null;
         if (mDoubleLine) {
             loadDoubleLine(weather, card);
@@ -294,7 +291,6 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         if (mPrefs.getSmartspaceDate() || mPrefs.getSmartspaceTime()) {
             mClockView.setVisibility(View.VISIBLE);
             mClockView.setOnClickListener(mCalendarClickListener);
-            mClockView.setOnLongClickListener(co());
             if (forced)
                 mClockView.reloadDateFormat(true);
         } else {
@@ -307,7 +303,6 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         if(mPrefs.getSmartspaceTime() && mPrefs.getSmartspaceTimeAbove()) {
             mClockAboveView.setVisibility(View.VISIBLE);
             mClockAboveView.setOnClickListener(mClockClickListener);
-            mClockAboveView.setOnLongClickListener(co());
             if (forced)
                 mClockAboveView.reloadDateFormat(true);
         } else {
@@ -320,7 +315,6 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         if (mWeatherAvailable) {
             container.setVisibility(View.VISIBLE);
             container.setOnClickListener(mWeatherClickListener);
-            container.setOnLongClickListener(co());
             title.setText(weather.getTitle(
                     Utilities.getLawnchairPrefs(getContext()).getWeatherUnit()));
             icon.setImageBitmap(addShadowToBitmap(weather.getIcon()));
@@ -368,10 +362,6 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         final SmartspaceCard dp = dq.dP;
         return dp.cC(TextUtils.ellipsize(dp.cB(b), dB, getWidth() - getPaddingLeft()
                 - getPaddingRight() - getResources().getDimensionPixelSize(R.dimen.smartspace_horizontal_padding) - dB.measureText(dp.cA(b)), TextUtils.TruncateAt.END).toString());
-    }
-
-    private OnLongClickListener co() {
-        return this;
     }
 
     private void cs() {
@@ -451,34 +441,6 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
                 mTitleText.setText(cn);
             }
         }
-    }
-
-    public boolean onLongClick(final View view) {
-        TextView textView;
-        if (mClockView == null || mClockView.getVisibility() != View.VISIBLE) {
-            textView = mTitleText;
-        } else {
-            textView = mClockView;
-        }
-        if (view == null) {
-            return false;
-        }
-        Rect rect = new Rect();
-        float tmp = 0f;
-        Launcher launcher = Launcher.getLauncher(getContext());
-        launcher.getDragLayer().getDescendantRectRelativeToSelf(view, rect);
-        if (textView != null) {
-            Paint.FontMetrics fontMetrics = textView.getPaint().getFontMetrics();
-            tmp = (((float) view.getHeight()) - (fontMetrics.bottom - fontMetrics.top)) / 2.0f;
-        }
-        RectF rectF = new RectF();
-        float exactCenterX = rect.exactCenterX();
-        rectF.right = exactCenterX;
-        rectF.left = exactCenterX;
-        rectF.top = 0.0f;
-        rectF.bottom = ((float) rect.bottom) - tmp;
-        LawnchairUtilsKt.openPopupMenu(this, rectF, new SmartspacePreferencesShortcut());
-        return true;
     }
 
     public void onPause() {

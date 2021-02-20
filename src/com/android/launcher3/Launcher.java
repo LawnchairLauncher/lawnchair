@@ -1118,13 +1118,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         }
 
         @Override
-        public void onStateTransitionStart(LauncherState toState) {
-            if (toState instanceof OverviewState) {
-                hideOverlay(true);
-            }
-        }
-
-        @Override
         public void onStateTransitionComplete(LauncherState finalState) {
 
         }

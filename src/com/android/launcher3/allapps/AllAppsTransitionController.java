@@ -160,39 +160,8 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
         onProgressAnimationEnd();
     }
 
-    /**
-     * Creates an animation which updates the vertical transition progress and updates all the
-     * dependent UI using various animation events
-     */
-    @Override
-    public void setStateWithAnimation(LauncherState toState,
-            AnimatorSetCompat builder, StateAnimationConfig config) {
-        float targetProgress = toState.getVerticalProgress(mLauncher);
-        if (Float.compare(mProgress, targetProgress) == 0) {
-            if (!config.onlyPlayAtomicComponent()) {
-                setAlphas(toState, config, builder);
-            }
-            // Fail fast
-            onProgressAnimationEnd();
-            return;
-        }
-
-        if (config.onlyPlayAtomicComponent()) {
-            // There is no atomic component for the all apps transition, so just return early.
-            return;
-        }
-
-        Interpolator interpolator = config.userControlled ? LINEAR : toState == OVERVIEW
-                ? config.getInterpolator(ANIM_OVERVIEW_SCALE, FAST_OUT_SLOW_IN)
-                : FAST_OUT_SLOW_IN;
-
-        Animator anim = createSpringAnimation(mProgress, targetProgress);
-        anim.setInterpolator(config.getInterpolator(ANIM_VERTICAL_PROGRESS, interpolator));
-        anim.addListener(getProgressAnimatorListener());
-        builder.add(anim);
-
-        setAlphas(toState, config, builder);
-    }
+    // TODO: Reimplement `setStateWithAnimation`. Method removed with pull request #64:
+    // https://github.com/LawnchairLauncher/LawnchairAlpha/pull/64/files/5159fc03b1e829bf694e98e451c9f13bed7c3ba6#diff-4c795d252a85e1cea48512f0f4beb0d28cffb49e9c57eb2e961ed6a3944315c2.
 
     public Animator createSpringAnimation(float... progressValues) {
         return ObjectAnimator.ofFloat(this, ALL_APPS_PROGRESS, progressValues);

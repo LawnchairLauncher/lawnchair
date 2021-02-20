@@ -62,10 +62,6 @@ public class MediaListener extends MediaController.Callback implements OnChangeL
         return mTracking;
     }
 
-    String getPackage() {
-        return mTracking.controller.getPackageName();
-    }
-
     private void updateControllers(List<MediaNotificationController> controllers) {
         for (MediaNotificationController mnc : mControllers) {
             mnc.controller.unregisterCallback(this);
@@ -119,14 +115,6 @@ public class MediaListener extends MediaController.Callback implements OnChangeL
         if (finalClick) {
             Log.d(TAG, "Next");
             pressButton(KeyEvent.KEYCODE_MEDIA_NEXT);
-            pressButton(KeyEvent.KEYCODE_MEDIA_PLAY);
-        }
-    }
-
-    void previous(boolean finalClick) {
-        if (finalClick) {
-            Log.d(TAG, "Previous");
-            pressButton(KeyEvent.KEYCODE_MEDIA_PREVIOUS);
             pressButton(KeyEvent.KEYCODE_MEDIA_PLAY);
         }
     }
@@ -201,15 +189,6 @@ public class MediaListener extends MediaController.Callback implements OnChangeL
             return hasTitle()
                     && controller.getPlaybackState() != null
                     && controller.getPlaybackState().getState() == PlaybackState.STATE_PLAYING;
-        }
-
-        private boolean isPausedOrPlaying() {
-            if (!hasTitle() || controller.getPlaybackState() == null) {
-                return false;
-            }
-            int state = controller.getPlaybackState().getState();
-            return state == PlaybackState.STATE_PAUSED
-                    || state == PlaybackState.STATE_PLAYING;
         }
 
         private void pressButton(int keyCode) {

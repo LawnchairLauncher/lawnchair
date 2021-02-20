@@ -24,7 +24,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace.OnStateChangeListener;
 import com.android.launcher3.model.data.ItemInfo;
-import com.google.android.apps.nexuslauncher.smartspace.SmartspacePreferencesShortcut;
 import com.google.android.material.animation.AnimatorSetCompat;
 import org.jetbrains.annotations.Nullable;
 
@@ -169,13 +168,6 @@ public class QsbBlockerView extends FrameLayout implements OnStateChangeListener
     public void onClick(View v) {
         if (mController != null)
             mController.openWeather(v);
-    }
-
-    @Override
-    public boolean onLongClick(View v) {
-        // TODO: move it to below the widget view
-        LawnchairUtilsKt.openPopupMenu(mView, null, new SmartspacePreferencesShortcut());
-        return true;
     }
 
     static class QsbBlockerViewAlpha extends Property<QsbBlockerView, Integer> {

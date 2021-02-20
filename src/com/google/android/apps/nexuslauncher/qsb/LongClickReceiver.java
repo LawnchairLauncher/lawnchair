@@ -22,7 +22,7 @@ public class LongClickReceiver extends BroadcastReceiver {
     }
 
     public void onReceive(final Context context, final Intent intent) {
-        final NexusLauncherActivity launcher = LongClickReceiver.bR.get();
+        /*final NexusLauncherActivity launcher = LongClickReceiver.bR.get();
         if (launcher != null) {
             final ComponentKey dl = AppSearchProvider.uriToComponent(intent.getData(), context);
             final LauncherActivityInfo resolveActivity = context
@@ -42,6 +42,6 @@ public class LongClickReceiver extends BroadcastReceiver {
             final Bundle bundle = new Bundle();
             bundle.putParcelable("clip_data", clipData);
             this.setResult(-1, null, bundle);
-        }
+        }*/
     }
 }

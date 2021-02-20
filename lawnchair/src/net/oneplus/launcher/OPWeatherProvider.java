@@ -24,7 +24,6 @@ import java.util.Locale;
 
 public class OPWeatherProvider {
 
-    private static final String TAG = "OPWeatherProvider";
     public static final int TEMPERATURE_NONE = -99;
     public static final String TEMP_UNIT_CELSIUS = "℃";
     // TIL these glyphs exist
@@ -34,6 +33,7 @@ public class OPWeatherProvider {
     public static final String WEATHER_LAUNCH_ACTIVITY = "net.oneplus.weather.app.MainActivity";
     public static final String WEATHER_NAME_NONE = "N/A";
     public static final String WEATHER_PACKAGE_NAME = "net.oneplus.weather";
+    private static final String TAG = "OPWeatherProvider";
     private final String KEY_CITY_NAME = "weather_city";
     private final String KEY_TEMPERATURE = "weather_temp";
     private final String KEY_TEMPERATURE_HIGH = "weather_temp_high";
@@ -49,110 +49,6 @@ public class OPWeatherProvider {
     private WeatherObserver mObserver;
 
     private Handler mUiWorkerHandler = new Handler(LauncherModel.getUiWorkerLooper());
-
-    public interface IWeatherCallback {
-
-        void onWeatherUpdated(@NonNull WeatherData weatherData);
-    }
-
-    private enum WEATHER_COLUMNS {
-        TIMESTAMP(0),
-        CITY_NAME(1),
-        WEATHER_CODE(2),
-        WEATHER_NAME(6),
-        TEMP(3),
-        TEMP_HIGH(4),
-        TEMP_LOW(5),
-        TEMP_UNIT(7);
-
-        private int index;
-
-        WEATHER_COLUMNS(int i) {
-            this.index = i;
-        }
-    }
-
-    private enum WEATHER_TYPE {
-        SUNNY(1001, WeatherIconManager.Icon.CLEAR),
-        SUNNY_INTERVALS(1002, WeatherIconManager.Icon.MOSTLY_CLEAR),
-        CLOUDY(1003, WeatherIconManager.Icon.CLOUDY),
-        OVERCAST(1004, WeatherIconManager.Icon.OVERCAST),
-        DRIZZLE(1005, WeatherIconManager.Icon.PARTLY_CLOUDY_W_SHOWERS),
-        RAIN(1006, WeatherIconManager.Icon.RAIN),
-        SHOWER(1007, WeatherIconManager.Icon.SHOWERS),
-        DOWNPOUR(1008, WeatherIconManager.Icon.RAIN),
-        RAINSTORM(1009, WeatherIconManager.Icon.RAIN),
-        SLEET(1010, WeatherIconManager.Icon.SLEET),
-        FLURRY(1011, WeatherIconManager.Icon.FLURRIES),
-        SNOW(1012, WeatherIconManager.Icon.SNOW),
-        SNOWSTORM(1013, WeatherIconManager.Icon.SNOWSTORM),
-        HAIL(1014, WeatherIconManager.Icon.HAIL),
-        THUNDERSHOWER(1015, WeatherIconManager.Icon.THUNDERSTORMS),
-        SANDSTORM(1016, WeatherIconManager.Icon.SANDSTORM),
-        FOG(1017, WeatherIconManager.Icon.FOG),
-        HURRICANE(1018, WeatherIconManager.Icon.HURRICANE),
-        HAZE(1019, WeatherIconManager.Icon.HAZY),
-        NONE(9999, WeatherIconManager.Icon.NA);
-
-        int weatherCode;
-        WeatherIconManager.Icon icon;
-
-        WEATHER_TYPE(@IntRange(from = 1000, to = 9999) int i, WeatherIconManager.Icon icon) {
-            weatherCode = i;
-            this.icon = icon;
-        }
-
-        public static WEATHER_TYPE getWeather(int i) {
-            for (WEATHER_TYPE weather_type : values()) {
-                if (weather_type.weatherCode == i) {
-                    Log.d(TAG, "get weather: " + weather_type);
-                    return weather_type;
-                }
-            }
-            Log.d(TAG, "get weather: " + NONE);
-            return NONE;
-        }
-
-        public String toString() {
-            return String.valueOf(this.weatherCode);
-        }
-    }
-
-    public class WeatherData {
-
-        public String cityName = "";
-        public int temperature = TEMPERATURE_NONE;
-        public int temperatureHigh = TEMPERATURE_NONE;
-        public int temperatureLow = TEMPERATURE_NONE;
-        public String temperatureUnit = TEMP_UNIT_CELSIUS;
-        public long timestamp = 0;
-        public int weatherCode = WEATHER_CODE_NONE;
-        public String weatherName = WEATHER_NAME_NONE;
-        public WeatherIconManager.Icon icon = WeatherIconManager.Icon.NA;
-
-        public String toString() {
-            return "[timestamp] " + timestamp + "; "
-                    + "[cityName] " + cityName + "; "
-                    + "[weatherCode] " + weatherCode + "; "
-                    + "[weatherName] " + weatherName + "; "
-                    + "[temperature] " + temperature + "; "
-                    + "[temperatureHigh] " + temperatureHigh + "; "
-                    + "[temperatureLow] " + temperatureLow + "; "
-                    + "[temperatureUnit] " + temperatureUnit + "; ";
-        }
-    }
-
-    private class WeatherObserver extends ContentObserver {
-
-        public WeatherObserver() {
-            super(makeBasicHandler(true));
-        }
-
-        public void onChange(boolean z) {
-            super.onChange(z);
-            mUiWorkerHandler.post(OPWeatherProvider.this::queryWeatherInformation);
-        }
-    }
 
     public OPWeatherProvider(Context context) {
         mContext = context;
@@ -182,10 +78,6 @@ public class OPWeatherProvider {
         mUiWorkerHandler.post(this::queryWeatherInformation);
         Log.d(TAG, "never get the weather information, querying... ");
         return null;
-    }
-
-    public void getCurrentWeatherInformation() {
-        getCurrentWeatherInformation(null);
     }
 
     public void getCurrentWeatherInformation(IWeatherCallback iWeatherCallback) {
@@ -379,5 +271,109 @@ public class OPWeatherProvider {
                 .putInt(KEY_TEMPERATURE_HIGH, weatherData.temperatureHigh)
                 .putInt(KEY_TEMPERATURE_LOW, weatherData.temperatureLow)
                 .putString(KEY_TEMPERATURE_UNIT, weatherData.temperatureUnit).apply();
+    }
+
+    private enum WEATHER_COLUMNS {
+        TIMESTAMP(0),
+        CITY_NAME(1),
+        WEATHER_CODE(2),
+        WEATHER_NAME(6),
+        TEMP(3),
+        TEMP_HIGH(4),
+        TEMP_LOW(5),
+        TEMP_UNIT(7);
+
+        private int index;
+
+        WEATHER_COLUMNS(int i) {
+            this.index = i;
+        }
+    }
+
+    private enum WEATHER_TYPE {
+        SUNNY(1001, WeatherIconManager.Icon.CLEAR),
+        SUNNY_INTERVALS(1002, WeatherIconManager.Icon.MOSTLY_CLEAR),
+        CLOUDY(1003, WeatherIconManager.Icon.CLOUDY),
+        OVERCAST(1004, WeatherIconManager.Icon.OVERCAST),
+        DRIZZLE(1005, WeatherIconManager.Icon.PARTLY_CLOUDY_W_SHOWERS),
+        RAIN(1006, WeatherIconManager.Icon.RAIN),
+        SHOWER(1007, WeatherIconManager.Icon.SHOWERS),
+        DOWNPOUR(1008, WeatherIconManager.Icon.RAIN),
+        RAINSTORM(1009, WeatherIconManager.Icon.RAIN),
+        SLEET(1010, WeatherIconManager.Icon.SLEET),
+        FLURRY(1011, WeatherIconManager.Icon.FLURRIES),
+        SNOW(1012, WeatherIconManager.Icon.SNOW),
+        SNOWSTORM(1013, WeatherIconManager.Icon.SNOWSTORM),
+        HAIL(1014, WeatherIconManager.Icon.HAIL),
+        THUNDERSHOWER(1015, WeatherIconManager.Icon.THUNDERSTORMS),
+        SANDSTORM(1016, WeatherIconManager.Icon.SANDSTORM),
+        FOG(1017, WeatherIconManager.Icon.FOG),
+        HURRICANE(1018, WeatherIconManager.Icon.HURRICANE),
+        HAZE(1019, WeatherIconManager.Icon.HAZY),
+        NONE(9999, WeatherIconManager.Icon.NA);
+
+        int weatherCode;
+        WeatherIconManager.Icon icon;
+
+        WEATHER_TYPE(@IntRange(from = 1000, to = 9999) int i, WeatherIconManager.Icon icon) {
+            weatherCode = i;
+            this.icon = icon;
+        }
+
+        public static WEATHER_TYPE getWeather(int i) {
+            for (WEATHER_TYPE weather_type : values()) {
+                if (weather_type.weatherCode == i) {
+                    Log.d(TAG, "get weather: " + weather_type);
+                    return weather_type;
+                }
+            }
+            Log.d(TAG, "get weather: " + NONE);
+            return NONE;
+        }
+
+        public String toString() {
+            return String.valueOf(this.weatherCode);
+        }
+    }
+
+    public interface IWeatherCallback {
+
+        void onWeatherUpdated(@NonNull WeatherData weatherData);
+    }
+
+    public class WeatherData {
+
+        public String cityName = "";
+        public int temperature = TEMPERATURE_NONE;
+        public int temperatureHigh = TEMPERATURE_NONE;
+        public int temperatureLow = TEMPERATURE_NONE;
+        public String temperatureUnit = TEMP_UNIT_CELSIUS;
+        public long timestamp = 0;
+        public int weatherCode = WEATHER_CODE_NONE;
+        public String weatherName = WEATHER_NAME_NONE;
+        public WeatherIconManager.Icon icon = WeatherIconManager.Icon.NA;
+
+        public String toString() {
+            return "[timestamp] " + timestamp + "; "
+                    + "[cityName] " + cityName + "; "
+                    + "[weatherCode] " + weatherCode + "; "
+                    + "[weatherName] " + weatherName + "; "
+                    + "[temperature] " + temperature + "; "
+                    + "[temperatureHigh] " + temperatureHigh + "; "
+                    + "[temperatureLow] " + temperatureLow + "; "
+                    + "[temperatureUnit] " + temperatureUnit + "; ";
+        }
+    }
+
+    private class WeatherObserver extends ContentObserver {
+
+        public WeatherObserver() {
+            super(makeBasicHandler(true));
+        }
+
+        public void onChange(boolean z) {
+            super.onChange(z);
+            mUiWorkerHandler.post(OPWeatherProvider.this::queryWeatherInformation);
+        }
     }
 }
