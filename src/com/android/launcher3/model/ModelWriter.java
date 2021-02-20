@@ -205,7 +205,7 @@ public class ModelWriter {
         item.spanX = spanX;
         item.spanY = spanY;
 
-        ((Executor) MODEL_EXECUTOR).execute(new UpdateItemRunnable(item, () ->
+        MODEL_EXECUTOR.execute(new UpdateItemRunnable(item, () ->
                 new ContentWriter(mContext)
                         .put(Favorites.CONTAINER, item.container)
                         .put(Favorites.CELLX, item.cellX)
@@ -217,7 +217,7 @@ public class ModelWriter {
     }
 
     private void executeUpdateItem(ItemInfo item, Supplier<ContentWriter> writer) {
-        mWorkerExecutor.execute(new UpdateItemRunnable(item, writer));
+        MODEL_EXECUTOR.execute(new UpdateItemRunnable(item, writer));
     }
 
     public static void modifyItemInDatabase(Context context, final ItemInfo item, String alias,
@@ -243,7 +243,7 @@ public class ModelWriter {
      * Update an item to the database in a specified container.
      */
     public void updateItemInDatabase(ItemInfo item) {
-        ((Executor) MODEL_EXECUTOR).execute(new UpdateItemRunnable(item, () -> {
+        MODEL_EXECUTOR.execute(new UpdateItemRunnable(item, () -> {
             ContentWriter writer = new ContentWriter(mContext);
             item.onAddToDatabase(writer);
             return writer;
@@ -263,7 +263,7 @@ public class ModelWriter {
 
         ModelVerifier verifier = new ModelVerifier();
         final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
-        ((Executor) MODEL_EXECUTOR).execute(() -> {
+        MODEL_EXECUTOR.execute(() -> {
             // Write the item on background thread, as some properties might have been updated in
             // the background.
             final ContentWriter writer = new ContentWriter(mContext);
@@ -370,14 +370,14 @@ public class ModelWriter {
         if (mPreparingToUndo) {
             mDeleteRunnables.add(r);
         } else {
-            ((Executor) MODEL_EXECUTOR).execute(r);
+            MODEL_EXECUTOR.execute(r);
         }
     }
 
     public void commitDelete() {
         mPreparingToUndo = false;
         for (Runnable runnable : mDeleteRunnables) {
-            ((Executor) MODEL_EXECUTOR).execute(runnable);
+            MODEL_EXECUTOR.execute(runnable);
         }
         mDeleteRunnables.clear();
     }
