@@ -223,7 +223,7 @@
 
     <!-- Section 6 -->
 
-    <string name="app_drawer_pref_title">Drawer</string>
+    <string name="app_drawer_pref_title">App Drawer</string>
     <string name="app_drawer_pref_summary">Layout, Categories, Suggestions</string>
 
     <string name="pref_category_theme">Style</string>
@@ -479,7 +479,7 @@
     <string name="label_turn_off_suggestions">Disable</string>
     <string name="about_summary_title">Summary</string>
 
-    <string name="hide_app">Hide Shortcut</string>
+    <string name="hide_app">Hide from App Drawer</string>
     <string name="icon_shape_rounded_square">Rounded Square</string>
 
     <string name="hide_app_selected">“&#160;” hidden.</string>
@@ -566,7 +566,7 @@
 
     <string name="debug_crash_launcher">Force Stop</string>
 
-    <string name="action_open_drawer">Open Drawer</string>
+    <string name="action_open_drawer">Open App Drawer</string>
     <string name="action_last_task">Launch Last Used App</string>
     <string name="action_open_widgets">Open Widget Drawer</string>
     <string name="action_open_overview">Show Home Screen Bubble</string>
@@ -696,7 +696,7 @@
     <string name="pref_fonts_home_smartspace">At a Glance</string>
     <string name="pref_fonts_home_shortcuts">Shortcut Bubbles</string>
 
-    <string name="pref_fonts_category_drawer">Drawer</string>
+    <string name="pref_fonts_category_drawer">App Drawer</string>
     <string name="pref_fonts_drawer_icons">Labels</string>
     <string name="pref_fonts_drawer_app_actions_icons">Actions</string>
     <string name="pref_fonts_drawer_tabs">Tab Names</string>
@@ -755,7 +755,7 @@
     <string name="onbording">Onboarding</string>
     <string name="onbording_settings_title">Set Up %s</string>
     <string name="onbording_settings_summary">Touch &amp; hold on the Home Screen.</string>
-    <string name="onboarding_swipe_up">Swipe up to open the Drawer.</string>
+    <string name="onboarding_swipe_up">Swipe up to open the App Drawer.</string>
 
     <string name="weather_icons_default">Default</string>
     <string name="pref_weather_icon_pack">Weather Icon Pack</string>
