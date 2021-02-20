@@ -20,7 +20,7 @@ import android.content.Context;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItem;
-import com.android.launcher3.allapps.search.SearchSectionInfo;
+import com.android.launcher3.allapps.search.SectionDecorationInfo;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -201,20 +201,11 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
     }
 
     void updateSearchAdapterItems(ArrayList<AdapterItem> list, int offset) {
-        SearchSectionInfo lastSection = null;
         for (int i = 0; i < list.size(); i++) {
             AdapterItem adapterItem = list.get(i);
             adapterItem.position = offset + i;
             mAdapterItems.add(adapterItem);
-            if (adapterItem.searchSectionInfo != lastSection) {
-                if (adapterItem.searchSectionInfo != null) {
-                    adapterItem.searchSectionInfo.setPosStart(adapterItem.position);
-                }
-                if (lastSection != null) {
-                    lastSection.setPosEnd(adapterItem.position - 1);
-                }
-                lastSection = adapterItem.searchSectionInfo;
-            }
+
             if (adapterItem.isCountedForAccessibility()) {
                 mAccessibilityResultsCount++;
             }
@@ -295,16 +286,16 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         mFastScrollerSections.clear();
         mAdapterItems.clear();
 
-        SearchSectionInfo appSection = new SearchSectionInfo();
+        SectionDecorationInfo appSection = new SectionDecorationInfo();
         appSection.setDecorationHandler(
-                new AllAppsSectionDecorator.SectionDecorationHandler(mLauncher, true));
+                new AllAppsSectionDecorator.SectionDecorationHandler(mLauncher, true,
+                        0, false, false));
 
         // Recreate the filtered and sectioned apps (for convenience for the grid layout) from the
         // ordered set of sections
 
         if (!hasFilter()) {
             mAccessibilityResultsCount = mApps.size();
-            appSection.setPosStart(position);
             for (AppInfo info : mApps) {
                 String sectionName = info.sectionName;
 
@@ -321,11 +312,10 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
                     lastFastScrollerSectionInfo.fastScrollToItem = appItem;
                 }
                 if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
-                    appItem.searchSectionInfo = appSection;
+                    appItem.sectionDecorationInfo = appSection;
                 }
                 mAdapterItems.add(appItem);
             }
-            appSection.setPosEnd(mApps.isEmpty() ? appSection.getPosStart() : position - 1);
         } else {
             updateSearchAdapterItems(mSearchResults, 0);
             if (!FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
