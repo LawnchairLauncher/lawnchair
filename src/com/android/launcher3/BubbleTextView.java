@@ -755,8 +755,15 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         setCompoundDrawables(null, null, null, null);
     }
 
+    public boolean getIconVisible() {
+        return mIsIconVisible;
+    }
+
     public void setIconVisible(boolean visible) {
         mIsIconVisible = visible;
+        if (!mIsIconVisible) {
+            resetIconScale();
+        }
         Drawable icon = visible ? mIcon : new ColorDrawable(Color.TRANSPARENT);
         applyCompoundDrawables(icon);
     }
@@ -845,5 +852,11 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     public int getDotColor() {
         return mDotParams.color;
+    }
+
+    private void resetIconScale() {
+        if (mIcon instanceof FastBitmapDrawable) {
+            ((FastBitmapDrawable) mIcon).setScale(1f);
+        }
     }
 }

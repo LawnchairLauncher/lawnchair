@@ -144,6 +144,8 @@ public final class Utilities {
     private static final Matrix sMatrix = new Matrix();
     private static final Matrix sInverseMatrix = new Matrix();
 
+    public static final boolean ATLEAST_R = Build.VERSION.SDK_INT > Build.VERSION_CODES.Q;
+
     public static final boolean ATLEAST_Q = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
 
     public static final boolean IS_NEW_Q = ATLEAST_Q && HiddenApiCompat.isNewQ();

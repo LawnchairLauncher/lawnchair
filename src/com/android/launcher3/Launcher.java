@@ -20,6 +20,7 @@ import static android.content.pm.ActivityInfo.CONFIG_LOCALE;
 import static android.content.pm.ActivityInfo.CONFIG_ORIENTATION;
 import static android.content.pm.ActivityInfo.CONFIG_SCREEN_SIZE;
 
+import static com.android.launcher3.AbstractFloatingView.TYPE_ICON_SURFACE;
 import static com.android.launcher3.AbstractFloatingView.TYPE_SNACKBAR;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherState.ALL_APPS;
@@ -144,6 +145,7 @@ import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.launcher3.util.ViewOnDrawExecutor;
 import com.android.launcher3.views.ActivityContext;
+import com.android.launcher3.views.FloatingSurfaceView;
 import com.android.launcher3.views.OptionsPopupView;
 import com.android.launcher3.views.ScrimView;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
@@ -432,6 +434,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         UiFactory.onEnterAnimationComplete(this);
         mAllAppsController.highlightWorkTabIfNecessary();
         mRotationHelper.setCurrentTransitionRequest(REQUEST_NONE);
+        AbstractFloatingView.closeOpenViews(this, false, TYPE_ICON_SURFACE);
     }
 
     @Override
@@ -1457,9 +1460,21 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             if (mLauncherCallbacks != null) {
                 mLauncherCallbacks.onHomeIntent(internalStateHandled);
             }
+            handleGestureContract(intent);
         }
 
         TraceHelper.endSection("NEW_INTENT");
+    }
+
+    /**
+     * Handles gesture nav contract
+     */
+    protected void handleGestureContract(Intent intent) {
+        GestureNavContract gnc = GestureNavContract.fromIntent(intent);
+        if (gnc != null) {
+            AbstractFloatingView.closeOpenViews(this, false, TYPE_ICON_SURFACE);
+            FloatingSurfaceView.show(this, gnc);
+        }
     }
 
     @Override
