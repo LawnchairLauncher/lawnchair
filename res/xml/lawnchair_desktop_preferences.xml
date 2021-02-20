@@ -89,7 +89,6 @@
             android:defaultValue="true"
             android:key="pref_add_icon_to_home"
             android:persistent="true"
-            android:summary="@string/auto_add_shortcuts_description"
             android:title="@string/auto_add_shortcuts_label"
             app:controllerClass=".AddIconToHomeController"/>
 

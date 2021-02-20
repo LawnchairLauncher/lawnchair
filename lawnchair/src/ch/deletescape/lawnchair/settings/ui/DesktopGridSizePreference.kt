@@ -42,7 +42,7 @@ class DesktopGridSizePreference(context: Context, attrs: AttributeSet?) :
 
     private fun updateSummary() {
         val value = getSize()
-        summary = "${value.first}x${value.second}"
+        summary = "${value.first} × ${value.second}"
     }
 
     override fun onResume() {

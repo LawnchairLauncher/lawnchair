@@ -38,7 +38,7 @@
                 android:key="pref_forceShapeless"
                 android:persistent="true"
                 android:summary="@string/pref_force_shapeless_summary"
-                android:title="@string/pref_force_shapeless_summary"/>
+                android:title="@string/pref_force_shapeless"/>
 
             <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
                 android:defaultValue="@bool/config_enable_legacy_treatment"

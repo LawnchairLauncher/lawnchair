@@ -37,7 +37,7 @@
     <string name="icon_pack_default">System Icons</string>
 
     <string name="pref_icon_pack_masking">Icon Masking</string>
-    <string name="pref_icon_pack_masking_summary">Match unthemed icons to Icon Pack.</string>
+    <string name="pref_icon_pack_masking_summary">Match unthemed icons to icon pack.</string>
 
     <string name="pref_legacy_treatment_title">Create Adaptive Icons</string>
     <string name="pref_legacy_treatment_summary">Create Adaptive Icons for all shortcuts.</string>
@@ -80,8 +80,8 @@
 
     <!-- Section 3 -->
 
-    <string name="general_pref_title">Desktop</string>
-    <string name="general_pref_summary">Layout, Lock Desktop, Transitions</string>
+    <string name="general_pref_title">Home Screen</string>
+    <string name="general_pref_summary">Layout, Lock Home Screen, Transitions</string>
 
     <string name="grid_size">Icon Grid</string>
     <string name="grid_size_width">Width</string>
@@ -90,7 +90,7 @@
 
     <string name="overlap_placement">Allow Overlaps</string>
 
-    <string name="lock_desktop">Lock Desktop</string>
+    <string name="lock_desktop">Lock Home Screen</string>
 
     <string name="pref_category_icons">Shortcuts</string>
     <string name="hide_icon_labels_pref_title">Hide Labels</string>
@@ -100,7 +100,7 @@
 
     <string name="icon_scale_pref_title">Icon Size</string>
 
-    <string name="auto_add_shortcuts_label">Add New Shortcuts to Desktop</string>
+    <string name="auto_add_shortcuts_label">Add New Apps to Home Screen</string>
 
     <string name="pref_icon_popup_menu">Shortcut Bubble</string>
 
@@ -222,7 +222,7 @@
 
     <!-- Section 6 -->
 
-    <string name="app_drawer_pref_title">Drawer</string>
+    <string name="app_drawer_pref_title">App Drawer</string>
     <string name="app_drawer_pref_summary">Layout, Categories, Suggestions</string>
 
     <string name="pref_category_theme">Style</string>
@@ -397,7 +397,7 @@
     <string name="restore_contents">Data to Restore</string>
 
     <string name="backup_settings">Settings</string>
-    <string name="homescreen">Desktop Layout</string>
+    <string name="homescreen">Home Screen Layout</string>
     <string name="backup_wallpaper">Wallpaper</string>
 
     <string name="name">Name</string>
@@ -527,7 +527,7 @@
     <string name="dock_style_hidden">Hidden</string>
     <string name="opacity">Opacity</string>
 
-    <string name="add_settings_shortcut_title">Add Shortcut to Desktop</string>
+    <string name="add_settings_shortcut_title">Add Shortcut to Home Screen</string>
 
     <string name="low_performance_mode_pref_title">Low Performance Mode</string>
     <string name="action_preferences">@string/customize</string>
@@ -561,15 +561,15 @@
     <string name="about_bio_josh">Freelance graphic designer.</string>
     <string name="about_bio_harsh">Android application and library developer. Core developer at AOSiP.</string>
     <string name="about_bio_david">19 years old, turns caffeine and pizza into code, provides hosting and 24/7 support for Lawnchair if something goes wrong. Contributes to open-source projects and fixes bugs during his free time. Also previously known as Codebucket.</string>
-    <string name="about_bio_lumiq">It’s just got harder to build a bad product.</string>
+    <string name="about_bio_lumiq">I arrange shapes, command computers, and put together words.</string>
     <string name="about_bio_paphonb">A 18-year-old student, Android Developer and one of the top developers at Lawnchair Launcher.</string>
 
     <string name="debug_crash_launcher">Force Stop</string>
 
-    <string name="action_open_drawer">Open Drawer</string>
+    <string name="action_open_drawer">Open App Drawer</string>
     <string name="action_last_task">Launch Last Used App</string>
     <string name="action_open_widgets">Open Widget Drawer</string>
-    <string name="action_open_overview">Show Desktop Bubble</string>
+    <string name="action_open_overview">Show Home Screen Bubble</string>
     <string name="action_global_search">Launch Global Search</string>
     <string name="action_app_search">Launch App Search</string>
     <string name="action_close_notifications">Close Notification Panel</string>
@@ -696,7 +696,7 @@
     <string name="pref_fonts_home_smartspace">At a Glance</string>
     <string name="pref_fonts_home_shortcuts">Shortcut Bubbles</string>
 
-    <string name="pref_fonts_category_drawer">Drawer</string>
+    <string name="pref_fonts_category_drawer">App Drawer</string>
     <string name="pref_fonts_drawer_icons">Labels</string>
     <string name="pref_fonts_drawer_app_actions_icons">Actions</string>
     <string name="pref_fonts_drawer_tabs">Tab Names</string>
@@ -754,8 +754,8 @@
 
     <string name="onbording">Onboarding</string>
     <string name="onbording_settings_title">Set Up %s</string>
-    <string name="onbording_settings_summary">Touch &amp; hold on the Desktop.</string>
-    <string name="onboarding_swipe_up">Swipe up to open the Drawer.</string>
+    <string name="onbording_settings_summary">Touch &amp; hold on the Home Screen.</string>
+    <string name="onboarding_swipe_up">Swipe up to open the App Drawer.</string>
 
     <string name="weather_icons_default">Default</string>
     <string name="pref_weather_icon_pack">Weather Icon Pack</string>
@@ -776,7 +776,7 @@
     <string name="icon_shape_corner_squircle">Smooth</string>
     <string name="icon_shape_corner_cut">Cut</string>
 
-    <string name="smartspace_add_to_home">Add to Desktop</string>
+    <string name="smartspace_add_to_home">Add to Home Screen</string>
     <string name="get_lawnfeed">Get Lawnfeed</string>
 
     <!-- Section 13 -->
@@ -798,28 +798,31 @@
 
     <string name="activity_not_found">App not installed.</string>
 
-    <string name="out_of_space">No more room on the Desktop.</string>
+    <string name="out_of_space">No more room on the Home Screen.</string>
     <string name="hotseat_out_of_space">No more room in the Dock.</string>
 
     <string name="feed_provider">Feed Provider</string>
-    <string name="icon_shape_corner_lightsquircle">Light Squircle</string>
-    <string name="icon_shape_corner_strongsquircle">Strong Squircle</string>
-    <string name="icon_shape_corner_ultrasquircle">Ultra Squircle</string>
 
     <string name="full_gesture_mode_title">Full gesture mode</string>
     <string name="action_open_drawer_or_recents">Open recents/app drawer</string>
-    <string name="action_open_recents">Open recents</string>
+    <string name="action_open_recents">Open Recents</string>
 
-    <string name="pref_force_shapeless_summary">Attempts to load non-adaptive icons for all apps</string>
-    <string name="pref_force_shapeless">Force shapeless icons</string>
+    <string name="pref_force_shapeless_summary">Try to use legacy icons for all apps.</string>
+    <string name="pref_force_shapeless">Force Legacy Icons</string>
 
-    <string name="smartspace_provider_calendar">Calendar events</string>
+    <string name="smartspace_provider_calendar">Calendar Events</string>
     <string name="action_press_back">Back button</string>
-    <string name="icon_shape_sammy">Sammy</string>
-    <string name="dock_enable_pref_title">Enable dock</string>
+    <string name="icon_shape_sammy">One UI</string>
+    <string name="dock_enable_pref_title">Show Dock</string>
 
     <string name="smartspace_now">now</string>
     <string name="smartspace_in_time">in %1$s</string>
 
-    <string name="pref_keep_empty">Keep empty screens</string>
+    <string name="pref_keep_empty">Allow Empty Pages</string>
+
+    <string name="about_special_thanks">Special Thanks</string>
+    <string name="about_role_founder">Founder</string>
+    <string name="styles_wallpaper_button_text">Styles &amp; Wallpapers</string>
+    <string name="item_removed">Item removed.</string>
+
 </resources>
