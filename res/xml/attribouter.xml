@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <about>
     <me.jfenn.attribouter.wedges.AppWedge
-        repo="LawnchairLauncher/Lawnchair"
-        icon="@mipmap/ic_launcher"
         description="^@string/about_app_description"
+        icon="@mipmap/ic_launcher"
         playStoreUrl="https://play.google.com/store/apps/details?id=ch.deletescape.lawnchair.plah"
+        repo="LawnchairLauncher/Lawnchair"
         websiteUrl="https://lawnchair.app">
+
         <me.jfenn.attribouter.wedges.link.LinkWedge
-            name="@string/about_twitter"
             icon="@drawable/ic_twitter"
+            name="@string/about_twitter"
             priority="-1"
             url="https://twitter.com/lawnchairapp" />
+
         <me.jfenn.attribouter.wedges.link.LinkWedge
-            name="@string/about_translate"
             icon="@drawable/ic_translate"
+            name="@string/about_translate"
             priority="-1"
             url="https://translate.lawnchair.app" />
     </me.jfenn.attribouter.wedges.AppWedge>
@@ -21,265 +23,268 @@
     <me.jfenn.attribouter.wedges.ContributorsWedge
         showDefaults="false"
         title="@string/about_our_team">
-
-        <!-- Lead developer: deletescape -->
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="^Till Kottmann"
-            avatar="https://i.imgur.com/xgMNifF.jpg"
-            bio="^@string/about_bio_deletescape"
-            blog="https://deletescape.ch"
-            login="deletescape"
+            avatar="https://avatars.githubusercontent.com/u/18647641?s=400&amp;u=2a813505405116e0d380b88b5c390f3aebdef263&amp;v=4"
+            bio="^@string/about_bio_kshitij"
+            login="AgentFabulous"
+            name="^Kshitij Gupta"
             position="1"
-            task="^@string/about_role_lead">
+            task="^@string/about_role_dev">
             <me.jfenn.attribouter.wedges.link.LinkWedge
-                name="@string/about_twitter"
                 icon="@drawable/ic_twitter"
-                url="https://twitter.com/deletescape" />
+                name="@string/about_twitter"
+                url="https://twitter.com/@Agent_Fabulous" />
         </me.jfenn.attribouter.wedges.ContributorWedge>
 
-        <!-- Developer: paphonb -->
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="^paphonb"
             avatar="https://avatars.githubusercontent.com/u/8080853"
             bio="^@string/about_bio_paphonb"
             blog="https://paphonb.xyz"
             login="paphonb"
+            name="^paphonb"
             position="2"
             task="^@string/about_role_dev">
             <me.jfenn.attribouter.wedges.link.LinkWedge
-                name="@string/about_twitter"
                 icon="@drawable/ic_twitter"
+                name="@string/about_twitter"
                 url="https://twitter.com/paphonb" />
         </me.jfenn.attribouter.wedges.ContributorWedge>
-        
-        <!-- UI/UX Designer: lumiqcreative -->
+
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="^Lumiq Creative"
-            avatar="https://raw.githubusercontent.com/lumiqcreative/brand-resources/master/profile-photo.png"
-            login="lumiqcreative"
-            position="3"
-            blog="https://lumiqcreative.com"
+            avatar="https://raw.githubusercontent.com/patrykmichalik/brand/master/logo-on-indigo.png"
             bio="^@string/about_bio_lumiq"
-            task="^@string/about_role_writer">
+            blog="https://patrykmichalik.com"
+            login="patrykmichalik"
+            name="^Patryk M."
+            position="3"
+            task="^@string/about_role_dev">
             <me.jfenn.attribouter.wedges.link.LinkWedge
-                name="@string/about_twitter"
                 icon="@drawable/ic_twitter"
-                url="https://twitter.com/lumiqcreative" />
+                name="@string/about_twitter"
+                url="https://twitter.com/patrykmichalik_" />
         </me.jfenn.attribouter.wedges.ContributorWedge>
 
-
-        <!-- Developer: amirzaidi -->
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="^Amir Zaidi"
-            avatar="https://avatars.githubusercontent.com/u/2102185"
-            login="amirzaidi"
-            task="^@string/about_role_dev" />
-
-        <!-- Supporter: bohrabhijeet -->
-        <me.jfenn.attribouter.wedges.ContributorWedge
-            name="^Abhijeet Bohra"
-            avatar="https://avatars.githubusercontent.com/u/34155181"
-            login="bohrabhijeet"
-            task="^@string/about_role_pr">
+            avatar="https://avatars.githubusercontent.com/u/914983?s=400&amp;u=0985ee1bbdd0afe26ed5d0e30087c606bba3b55a&amp;v=4"
+            blog="https://6020peaks.com"
+            login="narko"
+            name="^Antonio J. Roa Valverde"
+            task="^@string/about_role_dev">
             <me.jfenn.attribouter.wedges.link.LinkWedge
-                name="@string/about_twitter"
                 icon="@drawable/ic_twitter"
-                url="https://twitter.com/bohrabhijeet" />
+                name="@string/about_twitter"
+                url="https://twitter.com/6020peaks" />
         </me.jfenn.attribouter.wedges.ContributorWedge>
 
-        <!-- Operations & Infrastructur: divadsn -->
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="^David Sn"
+            avatar="https://avatars.githubusercontent.com/u/183264?s=400&amp;u=698d04fdb03d3170f5f6e56a8b44c41157409f81&amp;v=4"
+            bio="^@string/about_bio_manuel"
+            blog="http://noloman.github.io"
+            login="noloman"
+            name="^Manuel Lorenzo"
+            task="^@string/about_role_dev">
+            <me.jfenn.attribouter.wedges.link.LinkWedge
+                icon="@drawable/ic_twitter"
+                name="@string/about_twitter"
+                url="https://twitter.com/noloman" />
+        </me.jfenn.attribouter.wedges.ContributorWedge>
+
+        <me.jfenn.attribouter.wedges.ContributorWedge
+            avatar="https://avatars.githubusercontent.com/u/47694127?s=400&amp;u=a8450a043d0f97073b44e8d3cfdd84f3ce9fe0f8&amp;v=4"
+            bio="^@string/about_bio_raphtlw"
+            blog="https://raphtlw.rocks"
+            login="raphtlw"
+            name="^raphtlw"
+            task="^@string/about_role_dev">
+            <me.jfenn.attribouter.wedges.link.LinkWedge
+                icon="@drawable/ic_twitter"
+                name="@string/about_twitter"
+                url="https://twitter.com/raphtlw" />
+        </me.jfenn.attribouter.wedges.ContributorWedge>
+
+        <me.jfenn.attribouter.wedges.ContributorWedge
             avatar="https://i.imgur.com/b65akTl.png"
-            login="divadsn"
-            blog="https://www.codebucket.de"
             bio="^@string/about_bio_david"
+            blog="https://www.codebucket.de"
+            login="divadsn"
+            name="^David Sn"
             task="^@string/about_role_ops">
             <me.jfenn.attribouter.wedges.link.LinkWedge
-                name="@string/about_twitter"
                 icon="@drawable/ic_twitter"
+                name="@string/about_twitter"
                 url="https://twitter.com/divadsn" />
         </me.jfenn.attribouter.wedges.ContributorWedge>
 
-        <!-- Developer: fonix232 -->
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="^Jozsef Kiraly"
-            avatar="https://avatars.githubusercontent.com/u/371847"
-            login="fonix232"
-            task="^@string/about_role_dev" />
-
-        <!-- Developer: reCoded -->
-        <me.jfenn.attribouter.wedges.ContributorWedge
-            name="^Colin Reimer"
-            avatar="https://avatars.githubusercontent.com/u/29968331"
-            bio="^@string/about_bio_recoded"
-            login="reC0D3D"
-            task="^@string/about_role_dev_mod">
+            avatar="https://avatars.githubusercontent.com/u/34155181"
+            login="bohrabhijeet"
+            name="^Abhijeet Bohra"
+            task="^@string/about_role_pr">
             <me.jfenn.attribouter.wedges.link.LinkWedge
-                name="@string/about_twitter"
                 icon="@drawable/ic_twitter"
-                url="https://twitter.com/colinrecoded" />
+                name="@string/about_twitter"
+                url="https://twitter.com/bohrabhijeet" />
         </me.jfenn.attribouter.wedges.ContributorWedge>
 
-        <!-- Designer: joshuabaldassarre -->
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="^Joshua Baldassarre"
-            avatar="https://avatars.githubusercontent.com/u/20582840"
-            bio="^@string/about_bio_josh"
-            blog="https://joshuabaldassarre.github.io/"
-            login="joshuabaldassarre"
-            task="^@string/about_role_designer">
-            <me.jfenn.attribouter.wedges.link.LinkWedge
-                name="@string/about_twitter"
-                icon="@drawable/ic_twitter"
-                url="https://twitter.com/JoshBaldassarre" />
-        </me.jfenn.attribouter.wedges.ContributorWedge>
-
-        <!-- Supporter: rickkode -->
-        <me.jfenn.attribouter.wedges.ContributorWedge
-            name="^Rik Koedoot"
             avatar="https://avatars.githubusercontent.com/u/29402532"
             login="rickkode"
+            name="^Rik Koedoot"
             task="^@string/about_role_mod_support">
             <me.jfenn.attribouter.wedges.link.LinkWedge
-                name="@string/about_twitter"
                 icon="@drawable/ic_twitter"
+                name="@string/about_twitter"
                 url="https://twitter.com/RickKode" />
         </me.jfenn.attribouter.wedges.ContributorWedge>
 
-        <!-- Moderator: dan -->
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="^Daniel Felipe"
-            avatar="https://i.imgur.com/2SLWkNU.jpg"
-            task="^@string/about_role_mod_support"/>
-
-        <!-- Magisk boi: Skittles9823 -->
-        <me.jfenn.attribouter.wedges.ContributorWedge
-            name="^Rhyse Simpson"
             avatar="https://avatars.githubusercontent.com/u/7065700"
             login="Skittles9823"
+            name="^Rhyse Simpson"
             task="^@string/about_role_magisk_maintainer">
             <me.jfenn.attribouter.wedges.link.LinkWedge
-                name="@string/about_twitter"
                 icon="@drawable/ic_twitter"
-                url="https://twitter.com/skittles9823"/>
+                name="@string/about_twitter"
+                url="https://twitter.com/skittles9823" />
         </me.jfenn.attribouter.wedges.ContributorWedge>
     </me.jfenn.attribouter.wedges.ContributorsWedge>
 
-    <!-- Other family members -->
     <me.jfenn.attribouter.wedges.ContributorsWedge
         showDefaults="false"
         title="@string/about_our_family">
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="^Anas Karbila"
             avatar="https://avatars.githubusercontent.com/u/7457130"
             login="thecrazyskull"
-            task="^@string/about_role_family_member" />
+            name="^Anas Karbila" />
+
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="Craig Hart"
+            avatar="https://avatars.githubusercontent.com/u/29968331"
+            bio="^@string/about_bio_recoded"
+            login="reC0D3D"
+            name="^Colin Reimer">
+            <me.jfenn.attribouter.wedges.link.LinkWedge
+                icon="@drawable/ic_twitter"
+                name="@string/about_twitter"
+                url="https://twitter.com/colinrecoded" />
+        </me.jfenn.attribouter.wedges.ContributorWedge>
+
+        <me.jfenn.attribouter.wedges.ContributorWedge
             avatar="https://i.imgur.com/aRTfabO.png"
             blog="https://craigary.net/"
-            task="@string/about_role_family_member" />
+            name="Craig Hart" />
+
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="^Dulce"
+            avatar="https://i.imgur.com/2SLWkNU.jpg"
+            name="^Daniel Felipe" />
+
+        <me.jfenn.attribouter.wedges.ContributorWedge
             avatar="https://avatars.githubusercontent.com/u/32991635"
             login="dulcetiseduce"
-            task="^@string/about_role_family_member" />
+            name="^Dulce" />
+
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="Giuseppe"
             avatar="https://avatars.githubusercontent.com/u/49398464"
-            task="@string/about_role_family_member" />
+            name="Giuseppe" />
+
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="^Harsh Shandilya"
             avatar="https://avatars.githubusercontent.com/u/13348378"
             bio="^@string/about_bio_harsh"
             blog="https://msfjarvis.website/"
             login="MSF-Jarvis"
-            task="^@string/about_role_family_member" />
+            name="^Harsh Shandilya" />
+
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="Jaffar"
             avatar="https://i.imgur.com/QS29Pw1.png"
-            task="@string/about_role_family_member" />
+            name="Jaffar" />
+
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="Joaco"
             avatar="https://i.imgur.com/4IN8bUD.png"
-            task="@string/about_role_family_member" />
+            name="Joaco" />
+
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="Jeff the Gardener"
-            avatar="https://i.imgur.com/u6wFXEU.png"
-            task="Jeff"/>
+            avatar="https://avatars.githubusercontent.com/u/20582840"
+            bio="^@string/about_bio_josh"
+            blog="https://joshuabaldassarre.github.io/"
+            login="joshuabaldassarre"
+            name="^Joshua Baldassarre">
+            <me.jfenn.attribouter.wedges.link.LinkWedge
+                icon="@drawable/ic_twitter"
+                name="@string/about_twitter"
+                url="https://twitter.com/JoshBaldassarre" />
+        </me.jfenn.attribouter.wedges.ContributorWedge>
+
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="Luca"
+            avatar="https://avatars.githubusercontent.com/u/371847"
+            login="fonix232"
+            name="^Jozsef Kiraly" />
+
+        <me.jfenn.attribouter.wedges.ContributorWedge
             avatar="https://i.imgur.com/IFXZUr7.png"
-            task="@string/about_role_family_member" />
+            name="Luca" />
+
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="Lukas (LPW00)"
             avatar="https://i.imgur.com/Dy3oThJ.png"
-            task="@string/about_role_family_member" />
+            name="Lukas (LPW00)" />
+
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="^Nico Franke"
             avatar="https://avatars.githubusercontent.com/u/23036430"
             login="ZerNico"
-            task="^@string/about_role_family_member" />
+            name="^Nico Franke" />
+
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="Pratik"
             avatar="https://i.imgur.com/ZYTifu9.png"
-            task="@string/about_role_family_member" />
+            name="Pratik" />
+
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="^Shubby"
             avatar="https://avatars.githubusercontent.com/u/24932404"
             login="shubhchan"
-            task="^@string/about_role_family_member" />
+            name="^Shubby" />
+
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="^Sicarius"
             avatar="https://avatars.githubusercontent.com/u/19359270"
-            login="sicrs"
             blog="https://sicrs.github.io/"
-            task="^@string/about_role_family_member" />
+            login="sicrs"
+            name="^Sicarius" />
+
         <me.jfenn.attribouter.wedges.ContributorWedge
-            name="Yannick"
             avatar="https://i.imgur.com/p9FrMbi.png"
-            task="@string/about_role_family_member" />
+            name="Yannick" />
     </me.jfenn.attribouter.wedges.ContributorsWedge>
 
-    <!-- TODO: UPDATE THIS!!! -->
     <me.jfenn.attribouter.wedges.LicensesWedge>
-
-        <!-- OpenWeatherMap-Android-Library -->
         <me.jfenn.attribouter.wedges.LicenseWedge
-            title="^OpenWeatherMap-Android-Library"
+            license="mit"
             repo="KwabenBerko/OpenWeatherMap-Android-Library"
-            license="mit" />
+            title="^OpenWeatherMap-Android-Library" />
 
-        <!-- Sunrise/SunsetLib -->
         <me.jfenn.attribouter.wedges.LicenseWedge
-            title="^Sunrise/SunsetLib"
+            license="apache-2.0"
             repo="mikereedell/sunrisesunsetlib-java"
-            license="apache-2.0" />
+            title="^Sunrise/SunsetLib" />
 
-        <!-- HokoBlur-Lite -->
         <me.jfenn.attribouter.wedges.LicenseWedge
-            title="^HokoBlur-Lite"
+            license="apache-2.0"
             repo="LawnchairLauncher/hoko-lite"
-            license="apache-2.0" />
+            title="^HokoBlur-Lite" />
 
-        <!-- Chroma -->
         <me.jfenn.attribouter.wedges.LicenseWedge
-            title="^Chroma"
+            license="apache-2.0"
             repo="LawnchairLauncher/chroma"
-            license="apache-2.0" />
+            title="^Chroma" />
 
-        <!-- FiftyShadesOf -->
-        <me.jfenn.attribouter.wedges.LicenseWedge 
-            title="^FiftyShadesOf"
+        <me.jfenn.attribouter.wedges.LicenseWedge
+            license="apache-2.0"
             repo="florent37/FiftyShadesOf"
-            license="apache-2.0" />
+            title="^FiftyShadesOf" />
 
-        <!-- libRootJava -->
-        <me.jfenn.attribouter.wedges.LicenseWedge 
-            title="^libRootJava"
+        <me.jfenn.attribouter.wedges.LicenseWedge
+            license="apache-2.0"
             repo="Chainfire/librootjava"
-            license="apache-2.0" />
+            title="^libRootJava" />
 
+        <me.jfenn.attribouter.wedges.LicenseWedge
+            license="mit"
+            repo="feathericons/feather"
+            title="^Feather Icons" />
     </me.jfenn.attribouter.wedges.LicensesWedge>
 </about>
