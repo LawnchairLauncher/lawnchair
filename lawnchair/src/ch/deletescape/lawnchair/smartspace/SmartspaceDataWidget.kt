@@ -166,11 +166,11 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
             var subtitle2: TextView? = null
             var temperatureText: TextView? = null
             if (texts.isEmpty()) return
-            if (images.size >= 2) {
+            if (images.isNotEmpty()) {
                 weatherIconView = images.last()
                 temperatureText = texts.last()
             }
-            if (images.isNotEmpty() && images.size != 2) {
+            if (images.size > 1) {
                 cardIconView = images.first()
                 title = texts[0]
                 subtitle = texts[1]
