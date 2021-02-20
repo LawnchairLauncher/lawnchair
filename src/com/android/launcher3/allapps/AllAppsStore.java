@@ -20,26 +20,21 @@ import static com.android.launcher3.model.data.AppInfo.EMPTY_ARRAY;
 
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.PromiseAppInfo;
-import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageUserKey;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import org.jetbrains.annotations.Nullable;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -49,12 +44,12 @@ import java.util.function.Predicate;
 public class AllAppsStore {
 
     // Defer updates flag used to defer all apps updates to the next draw.
-    public static final int DEFER_UPDATES_NEXT_DRAW = 1 << 0;
+    public static final int DEFER_UPDATES_NEXT_DRAW = 1;
     // Defer updates flag used to defer all apps updates by a test's request.
     public static final int DEFER_UPDATES_TEST = 1 << 1;
 
-    private PackageUserKey mTempKey = new PackageUserKey(null, null);
-    private AppInfo mTempInfo = new AppInfo();
+    private final PackageUserKey mTempKey = new PackageUserKey(null, null);
+    private final AppInfo mTempInfo = new AppInfo();
 
     private AppInfo[] mApps = EMPTY_ARRAY;
 
@@ -93,16 +88,6 @@ public class AllAppsStore {
         mTempInfo.user = key.user;
         int index = Arrays.binarySearch(mApps, mTempInfo, COMPONENT_KEY_COMPARATOR);
         return index < 0 ? null : mApps[index];
-    }
-
-    @Nullable
-    public AppInfo getApp(String packageName) {
-        for (AppInfo app : mComponentToAppMap.values()) {
-            if (app.componentName.getPackageName().equals(packageName)) {
-                return app;
-            }
-        }
-        return null;
     }
 
     public void enableDeferUpdates(int flag) {
