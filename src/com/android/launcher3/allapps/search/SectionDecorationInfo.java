@@ -18,44 +18,36 @@ package com.android.launcher3.allapps.search;
 import com.android.launcher3.allapps.AllAppsSectionDecorator.SectionDecorationHandler;
 
 /**
- * Info class for a search section
+ * Info class for a search section that is primarily used for decoration.
  */
-public class SearchSectionInfo {
+public class SectionDecorationInfo {
+
+    public static final int QUICK_LAUNCH = 1 << 0;
+    public static final int GROUPING = 1 << 1;
 
     private String mSectionId;
+    private boolean mFocused;
     private SectionDecorationHandler mDecorationHandler;
 
-    public int getPosStart() {
-        return mPosStart;
+    public boolean isFocusedView() {
+        return mFocused;
     }
 
-    public void setPosStart(int posStart) {
-        mPosStart = posStart;
+    public void setFocusedView(boolean focused) {
+        mFocused = focused;
     }
 
-    public int getPosEnd() {
-        return mPosEnd;
-    }
-
-    public void setPosEnd(int posEnd) {
-        mPosEnd = posEnd;
-    }
-
-    private int mPosStart;
-    private int mPosEnd;
-
-    public SearchSectionInfo() {
+    public SectionDecorationInfo() {
         this(null);
     }
 
-    public SearchSectionInfo(String sectionId) {
+    public SectionDecorationInfo(String sectionId) {
         mSectionId = sectionId;
     }
 
     public void setDecorationHandler(SectionDecorationHandler sectionDecorationHandler) {
         mDecorationHandler = sectionDecorationHandler;
     }
-
 
     public SectionDecorationHandler getDecorationHandler() {
         return mDecorationHandler;

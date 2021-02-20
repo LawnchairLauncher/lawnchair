@@ -53,7 +53,6 @@ import androidx.annotation.UiThread;
 
 import com.android.launcher3.Launcher.OnResumeCallback;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
-import com.android.launcher3.allapps.AllAppsSectionDecorator;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.dragndrop.DraggableView;
@@ -84,7 +83,7 @@ import java.text.NumberFormat;
  * too aggressive.
  */
 public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, OnResumeCallback,
-        IconLabelDotView, DraggableView, Reorderable, AllAppsSectionDecorator.SelfDecoratingView {
+        IconLabelDotView, DraggableView, Reorderable {
 
     private static final int DISPLAY_WORKSPACE = 0;
     private static final int DISPLAY_ALL_APPS = 1;
@@ -953,17 +952,5 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         } else {
             setCompoundDrawables(null, newIcon, null, null);
         }
-    }
-
-    @Override
-    public void decorate(int color) {
-        mHighlightColor = color;
-        invalidate();
-    }
-
-    @Override
-    public void removeDecoration() {
-        mHighlightColor = Color.TRANSPARENT;
-        invalidate();
     }
 }

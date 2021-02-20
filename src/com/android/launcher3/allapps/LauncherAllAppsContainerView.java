@@ -87,17 +87,18 @@ public class LauncherAllAppsContainerView extends AllAppsContainerView {
     }
 
     @Override
-    public void onTabChanged(int pos) {
-        super.onTabChanged(pos);
+    public void onActivePageChanged(int currentActivePage) {
+        super.onActivePageChanged(currentActivePage);
         if (mUsingTabs) {
             // Log tab switches only when the launcher is in AllApps state
             if (mLauncher.getStateManager().getCurrentStableState() == LauncherState.ALL_APPS) {
                 mLauncher.getStatsLogManager().logger()
-                        .log(pos == AdapterHolder.WORK ? LAUNCHER_ALLAPPS_SWITCHED_TO_WORK_TAB
+                        .log(currentActivePage == AdapterHolder.WORK
+                                ? LAUNCHER_ALLAPPS_SWITCHED_TO_WORK_TAB
                                 : LAUNCHER_ALLAPPS_SWITCHED_TO_MAIN_TAB);
             }
 
-            if (pos == AdapterHolder.WORK) {
+            if (currentActivePage == AdapterHolder.WORK) {
                 WorkEduView.showWorkEduIfNeeded(mLauncher);
             } else {
                 mWorkTabListener = WorkEduView.showEduFlowIfNeeded(mLauncher, mWorkTabListener);

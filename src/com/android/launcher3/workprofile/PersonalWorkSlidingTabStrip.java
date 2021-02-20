@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.allapps;
+package com.android.launcher3.workprofile;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -35,9 +35,6 @@ import com.android.launcher3.util.Themes;
  * Supports two indicator colors, dedicated for personal and work tabs.
  */
 public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageIndicator {
-    private static final int POSITION_PERSONAL = 0;
-    private static final int POSITION_WORK = 1;
-
     private final Paint mSelectedIndicatorPaint;
     private final Paint mDividerPaint;
 
@@ -47,7 +44,7 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     private float mScrollOffset;
     private int mSelectedPosition = 0;
 
-    private AllAppsContainerView mContainerView;
+    private OnActivePageChangedListener mOnActivePageChangedListener;
     private int mLastActivePage = 0;
     private boolean mIsRtl;
 
@@ -123,7 +120,7 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
         float y = getHeight() - mDividerPaint.getStrokeWidth();
         canvas.drawLine(getPaddingLeft(), y, getWidth() - getPaddingRight(), y, mDividerPaint);
         canvas.drawRect(mIndicatorLeft, getHeight() - mSelectedIndicatorHeight,
-            mIndicatorRight, getHeight(), mSelectedIndicatorPaint);
+                mIndicatorRight, getHeight(), mSelectedIndicatorPaint);
     }
 
     @Override
@@ -135,15 +132,15 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     @Override
     public void setActiveMarker(int activePage) {
         updateTabTextColor(activePage);
-        if (mContainerView != null && mLastActivePage != activePage) {
+        if (mOnActivePageChangedListener != null && mLastActivePage != activePage) {
             updateIndicatorPosition(activePage);
-            mContainerView.onTabChanged(activePage);
+            mOnActivePageChangedListener.onActivePageChanged(activePage);
         }
         mLastActivePage = activePage;
     }
 
-    public void setContainerView(AllAppsContainerView containerView) {
-        mContainerView = containerView;
+    public void setOnActivePageChangedListener(OnActivePageChangedListener listener) {
+        mOnActivePageChangedListener = listener;
     }
 
     @Override
@@ -152,5 +149,13 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     @Override
     public boolean hasOverlappingRendering() {
         return false;
+    }
+
+    /**
+     * Interface definition for a callback to be invoked when an active page has been changed.
+     */
+    public interface OnActivePageChangedListener {
+        /** Called when the active page has been changed. */
+        void onActivePageChanged(int currentActivePage);
     }
 }
