@@ -46,7 +46,7 @@ class GridSizePreference(context: Context, attrs: AttributeSet?) : DialogPrefere
 
     private fun updateSummary() {
         val value = getSize()
-        summary = "${value.first}x${value.second}"
+        summary = "${value.first} × ${value.second}"
     }
 
     override fun getDialogLayoutResource() = R.layout.pref_dialog_grid_size
