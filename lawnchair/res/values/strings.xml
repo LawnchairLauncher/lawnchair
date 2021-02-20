@@ -81,8 +81,8 @@
 
     <!-- Section 3 -->
 
-    <string name="general_pref_title">Desktop</string>
-    <string name="general_pref_summary">Layout, Lock Desktop, Transitions</string>
+    <string name="general_pref_title">Home Screen</string>
+    <string name="general_pref_summary">Layout, Lock Home Screen, Transitions</string>
 
     <string name="grid_size">Icon Grid</string>
     <string name="grid_size_width">Width</string>
@@ -91,7 +91,7 @@
 
     <string name="overlap_placement">Allow Overlaps</string>
 
-    <string name="lock_desktop">Lock Desktop</string>
+    <string name="lock_desktop">Lock Home Screen</string>
 
     <string name="pref_category_icons">Shortcuts</string>
     <string name="hide_icon_labels_pref_title">Hide Labels</string>
@@ -101,7 +101,7 @@
 
     <string name="icon_scale_pref_title">Icon Size</string>
 
-    <string name="auto_add_shortcuts_label">Add New Shortcuts to Desktop</string>
+    <string name="auto_add_shortcuts_label">Add New Shortcuts to Home Screen</string>
 
     <string name="pref_icon_popup_menu">Shortcut Bubble</string>
 
@@ -397,7 +397,7 @@
     <string name="restore_contents">Data to Restore</string>
 
     <string name="backup_settings">Settings</string>
-    <string name="homescreen">Desktop Layout</string>
+    <string name="homescreen">Home Screen Layout</string>
     <string name="backup_wallpaper">Wallpaper</string>
 
     <string name="name">Name</string>
@@ -527,7 +527,7 @@
     <string name="dock_style_hidden">Hidden</string>
     <string name="opacity">Opacity</string>
 
-    <string name="add_settings_shortcut_title">Add Shortcut to Desktop</string>
+    <string name="add_settings_shortcut_title">Add Shortcut to Home Screen</string>
 
     <string name="low_performance_mode_pref_title">Low Performance Mode</string>
     <string name="action_preferences">@string/customize</string>
@@ -569,7 +569,7 @@
     <string name="action_open_drawer">Open Drawer</string>
     <string name="action_last_task">Launch Last Used App</string>
     <string name="action_open_widgets">Open Widget Drawer</string>
-    <string name="action_open_overview">Show Desktop Bubble</string>
+    <string name="action_open_overview">Show Home Screen Bubble</string>
     <string name="action_global_search">Launch Global Search</string>
     <string name="action_app_search">Launch App Search</string>
     <string name="action_close_notifications">Close Notification Panel</string>
@@ -754,7 +754,7 @@
 
     <string name="onbording">Onboarding</string>
     <string name="onbording_settings_title">Set Up %s</string>
-    <string name="onbording_settings_summary">Touch &amp; hold on the Desktop.</string>
+    <string name="onbording_settings_summary">Touch &amp; hold on the Home Screen.</string>
     <string name="onboarding_swipe_up">Swipe up to open the Drawer.</string>
 
     <string name="weather_icons_default">Default</string>
@@ -776,7 +776,7 @@
     <string name="icon_shape_corner_squircle">Smooth</string>
     <string name="icon_shape_corner_cut">Cut</string>
 
-    <string name="smartspace_add_to_home">Add to Desktop</string>
+    <string name="smartspace_add_to_home">Add to Home Screen</string>
     <string name="get_lawnfeed">Get Lawnfeed</string>
 
     <!-- Section 13 -->
@@ -798,7 +798,7 @@
     
     <string name="activity_not_found">App not installed.</string>
     
-    <string name="out_of_space">No more room on the Desktop.</string>
+    <string name="out_of_space">No more room on the Home Screen.</string>
     <string name="hotseat_out_of_space">No more room in the Dock.</string>
 
     <string name="about_special_thanks">Special Thanks</string>
