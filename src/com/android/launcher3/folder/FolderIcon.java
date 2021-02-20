@@ -266,10 +266,10 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
                 ItemClickHandler.FOLDER_COVER_INSTANCE : ItemClickHandler.INSTANCE);
 
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mFolderName.getLayoutParams();
-        DeviceProfile grid = mLauncher.getDeviceProfile();
+        DeviceProfile grid = mActivity.getDeviceProfile();
         mFolderName.setTag(null);
 
-        if (mInfo.useIconMode(mLauncher)) {
+        if (mInfo.useIconMode(getContext())) {
             lp.topMargin = 0;
             if (isInAppDrawer()) {
                 mFolderName.setCompoundDrawablePadding(grid.allAppsIconDrawablePaddingPx);
@@ -780,8 +780,8 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        if (!mInfo.useIconMode(mLauncher) && isInAppDrawer()) {
-            DeviceProfile grid = mLauncher.getDeviceProfile();
+        if (!mInfo.useIconMode(getContext()) && isInAppDrawer()) {
+            DeviceProfile grid = mActivity.getDeviceProfile();
             int drawablePadding = grid.allAppsIconDrawablePaddingPx;
 
             Paint.FontMetrics fm = mFolderName.getPaint().getFontMetrics();
@@ -1036,7 +1036,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     public void updateIconDots(Predicate<PackageUserKey> updatedBadges, PackageUserKey tmpKey) {
         FolderDotInfo folderDotInfo = new FolderDotInfo();
         for (WorkspaceItemInfo si : mInfo.contents) {
-            folderDotInfo.addDotInfo(mLauncher.getDotInfoForItem(si));
+            folderDotInfo.addDotInfo(mActivity.getDotInfoForItem(si));
         }
         setDotInfo(folderDotInfo);
 
