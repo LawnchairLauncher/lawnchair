@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 
 import com.android.launcher3.R;
 import com.android.launcher3.WidgetPreviewLoader;
+import com.android.launcher3.dragndrop.LivePreviewWidgetCell;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.recyclerview.ViewHolderBinder;
 import com.android.launcher3.widget.WidgetCell;
@@ -107,8 +108,8 @@ public class WidgetsListRowViewHolderBinder
                     mLayoutInflater.inflate(R.layout.widget_list_divider, row);
                 } else {
                     // Add cell for even index
-                    WidgetCell widget = (WidgetCell) mLayoutInflater.inflate(
-                            R.layout.widget_cell, row, false);
+                    LivePreviewWidgetCell widget = (LivePreviewWidgetCell) mLayoutInflater.inflate(
+                            R.layout.live_preview_widget_cell, row, false);
 
                     // set up touch.
                     widget.setOnClickListener(mIconClickListener);
@@ -124,7 +125,8 @@ public class WidgetsListRowViewHolderBinder
 
         // Bind the view in the widget horizontal tray region.
         for (int i = 0; i < infoList.size(); i++) {
-            WidgetCell widget = (WidgetCell) row.getChildAt(2 * i);
+            LivePreviewWidgetCell widget = (LivePreviewWidgetCell) row.getChildAt(2 * i);
+            widget.reset();
             widget.applyFromCellItem(infoList.get(i), mWidgetPreviewLoader);
             widget.setApplyBitmapDeferred(mApplyBitmapDeferred);
             widget.ensurePreview();
