@@ -10,7 +10,9 @@ import android.widget.RemoteViews;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
+import com.android.launcher3.WidgetPreviewLoader;
 import com.android.launcher3.icons.BitmapRenderer;
+import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.widget.WidgetCell;
 
 /**
@@ -36,6 +38,15 @@ public class LivePreviewWidgetCell extends WidgetCell {
         mPreview = view;
     }
 
+    public RemoteViews getPreview() {
+        return mPreview;
+    }
+
+    /** Resets any resource. This should be called before recycling this view. */
+    public void reset() {
+        mPreview = null;
+    }
+
     @Override
     public void ensurePreview() {
         if (mPreview != null && mActiveRequest == null) {
@@ -47,6 +58,18 @@ public class LivePreviewWidgetCell extends WidgetCell {
             }
         }
         super.ensurePreview();
+    }
+
+    @Override
+    public void applyFromCellItem(WidgetItem item, WidgetPreviewLoader loader) {
+        if (mPreview == null
+                && item.widgetInfo != null
+                && item.widgetInfo.previewLayout != View.NO_ID) {
+            mPreview = new RemoteViews(item.widgetInfo.provider.getPackageName(),
+                    item.widgetInfo.previewLayout);
+        }
+
+        super.applyFromCellItem(item, loader);
     }
 
     /**

@@ -37,14 +37,14 @@ public class AppsSearchPipeline implements SearchPipeline {
 
     private static final int MAX_RESULTS_COUNT = 5;
 
-    private final SearchSectionInfo mSearchSectionInfo;
+    private final SectionDecorationInfo mSearchSectionInfo;
     private final LauncherAppState mLauncherAppState;
 
     public AppsSearchPipeline(Context context, LauncherAppState launcherAppState) {
         mLauncherAppState = launcherAppState;
-        mSearchSectionInfo = new SearchSectionInfo();
+        mSearchSectionInfo = new SectionDecorationInfo();
         mSearchSectionInfo.setDecorationHandler(
-                new SectionDecorationHandler(context, true));
+                new SectionDecorationHandler(context, true, 0, true, true));
     }
 
     @Override
@@ -81,7 +81,7 @@ public class AppsSearchPipeline implements SearchPipeline {
         ArrayList<AdapterItem> items = new ArrayList<>();
         for (int i = 0; i < matchingApps.size() && i < MAX_RESULTS_COUNT; i++) {
             AdapterItem appItem = AdapterItem.asApp(i, "", matchingApps.get(i), i);
-            appItem.searchSectionInfo = mSearchSectionInfo;
+            appItem.sectionDecorationInfo = mSearchSectionInfo;
             items.add(appItem);
         }
 
