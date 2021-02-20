@@ -801,4 +801,7 @@
     <string name="out_of_space">No more room on the Desktop.</string>
     <string name="hotseat_out_of_space">No more room in the Dock.</string>
 
+    <string name="about_special_thanks">Special Thanks</string>
+    <string name="about_role_founder">Founder</string>
+
 </resources>

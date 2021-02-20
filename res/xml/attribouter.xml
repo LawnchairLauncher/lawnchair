@@ -151,6 +151,18 @@
 
     <me.jfenn.attribouter.wedges.ContributorsWedge
         showDefaults="false"
+        title="@string/about_special_thanks">
+        <me.jfenn.attribouter.wedges.ContributorWedge
+            name="^Till Kottmann"
+            avatar="https://i.imgur.com/xgMNifF.jpg"
+            bio="^@string/about_bio_deletescape"
+            blog="https://deletescape.ch"
+            login="deletescape"
+            task="^@string/about_role_founder" />
+    </me.jfenn.attribouter.wedges.ContributorsWedge>
+
+    <me.jfenn.attribouter.wedges.ContributorsWedge
+        showDefaults="false"
         title="@string/about_our_family">
         <me.jfenn.attribouter.wedges.ContributorWedge
             avatar="https://avatars.githubusercontent.com/u/7457130"
