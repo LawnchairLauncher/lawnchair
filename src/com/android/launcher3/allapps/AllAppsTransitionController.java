@@ -25,13 +25,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Interpolator;
 import android.widget.EditText;
-import androidx.annotation.NonNull;
 
-import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import ch.deletescape.lawnchair.allapps.BlurQsbLayout;
-import ch.deletescape.lawnchair.colors.ColorEngine;
-import ch.deletescape.lawnchair.colors.ColorEngine.ResolveInfo;
-import ch.deletescape.lawnchair.colors.ColorEngine.Resolvers;
 import ch.deletescape.lawnchair.views.BlurScrimView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
@@ -65,16 +60,16 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
     public static final FloatProperty<AllAppsTransitionController> ALL_APPS_PROGRESS =
             new FloatProperty<AllAppsTransitionController>("allAppsProgress") {
 
-        @Override
-        public Float get(AllAppsTransitionController controller) {
-            return controller.mProgress;
-        }
+                @Override
+                public Float get(AllAppsTransitionController controller) {
+                    return controller.mProgress;
+                }
 
-        @Override
-        public void setValue(AllAppsTransitionController controller, float progress) {
-            controller.setProgress(progress);
-        }
-    };
+                @Override
+                public void setValue(AllAppsTransitionController controller, float progress) {
+                    controller.setProgress(progress);
+                }
+            };
 
     private static final int APPS_VIEW_ALPHA_CHANNEL_INDEX = 0;
 
@@ -106,7 +101,6 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
 
         mIsVerticalLayout = mLauncher.getDeviceProfile().isVerticalBarLayout();
         mLauncher.addOnDeviceProfileChangeListener(this);
-        ColorEngine.getInstance(l).addColorChangeListeners(this, Resolvers.ALLAPPS_BACKGROUND);
     }
 
     public float getShiftRange() {
@@ -160,8 +154,39 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
         onProgressAnimationEnd();
     }
 
-    // TODO: Reimplement `setStateWithAnimation`. Method removed with pull request #64:
-    // https://github.com/LawnchairLauncher/LawnchairAlpha/pull/64/files/5159fc03b1e829bf694e98e451c9f13bed7c3ba6#diff-4c795d252a85e1cea48512f0f4beb0d28cffb49e9c57eb2e961ed6a3944315c2.
+    /**
+     * Creates an animation which updates the vertical transition progress and updates all the
+     * dependent UI using various animation events
+     */
+    @Override
+    public void setStateWithAnimation(LauncherState toState,
+            StateAnimationConfig config, PendingAnimation builder) {
+        float targetProgress = toState.getVerticalProgress(mLauncher);
+        if (Float.compare(mProgress, targetProgress) == 0) {
+            if (!config.onlyPlayAtomicComponent()) {
+                setAlphas(toState, config, builder);
+            }
+            // Fail fast
+            onProgressAnimationEnd();
+            return;
+        }
+
+        if (config.onlyPlayAtomicComponent()) {
+            // There is no atomic component for the all apps transition, so just return early.
+            return;
+        }
+
+        Interpolator interpolator = config.userControlled ? LINEAR : toState == OVERVIEW
+                ? config.getInterpolator(ANIM_OVERVIEW_SCALE, FAST_OUT_SLOW_IN)
+                : FAST_OUT_SLOW_IN;
+
+        Animator anim = createSpringAnimation(mProgress, targetProgress);
+        anim.setInterpolator(config.getInterpolator(ANIM_VERTICAL_PROGRESS, interpolator));
+        anim.addListener(getProgressAnimatorListener());
+        builder.add(anim);
+
+        setAlphas(toState, config, builder);
+    }
 
     public Animator createSpringAnimation(float... progressValues) {
         return ObjectAnimator.ofFloat(this, ALL_APPS_PROGRESS, progressValues);
