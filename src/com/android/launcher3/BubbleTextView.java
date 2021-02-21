@@ -23,7 +23,6 @@ import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
@@ -45,14 +44,10 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewDebug;
 import android.widget.TextView;
-
-import ch.deletescape.lawnchair.LawnchairLauncher;
 import ch.deletescape.lawnchair.LawnchairPreferences;
-import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import ch.deletescape.lawnchair.colors.ColorEngine;
 import ch.deletescape.lawnchair.colors.ColorEngine.ResolveInfo;
 import ch.deletescape.lawnchair.colors.ColorEngine.Resolvers;
-import ch.deletescape.lawnchair.colors.resolvers.DrawerLabelAutoResolver;
 import ch.deletescape.lawnchair.font.CustomFontManager;
 import ch.deletescape.lawnchair.gestures.BlankGestureHandler;
 import ch.deletescape.lawnchair.gestures.GestureController;
@@ -80,7 +75,6 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.IconLabelDotView;
-
 import java.text.NumberFormat;
 import org.jetbrains.annotations.NotNull;
 
@@ -210,7 +204,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         LawnchairPreferences prefs = Utilities.getLawnchairPrefs(context);
         if (mDisplay == DISPLAY_WORKSPACE) {
             mHideText = prefs.getHideAppLabels();
-            DeviceProfile grid = mActivity.getWallpaperDeviceProfile();
+            DeviceProfile grid = mActivity.getDeviceProfile();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, isTextHidden() ? 0 : grid.iconTextSizePx);
             setCompoundDrawablePadding(grid.iconDrawablePaddingPx);
             defaultIconSize = grid.iconSizePx;
@@ -405,7 +399,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     public void applyIcon(ItemInfoWithIcon info) {
         FastBitmapDrawable iconDrawable = newIcon(getContext(), info);
-        mDotParams.color = IconPalette.getMutedColor(info.iconColor, 0.54f);
+        mDotParams.color = IconPalette.getMutedColor(info.bitmap.color, 0.54f);
 
         setIcon(iconDrawable);
     }
