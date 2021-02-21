@@ -34,7 +34,6 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
 import android.animation.LayoutTransition;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
@@ -64,7 +63,6 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
-
 import ch.deletescape.lawnchair.ClockVisibilityManager;
 import ch.deletescape.lawnchair.LawnchairLauncher;
 import ch.deletescape.lawnchair.LawnchairPreferences;
@@ -76,11 +74,9 @@ import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.dot.FolderDotInfo;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
-import com.android.launcher3.dragndrop.DragOptions.PreDragCondition;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.dragndrop.SpringLoadedDragController;
@@ -120,7 +116,6 @@ import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.PendingAppWidgetHostView;
 import com.android.launcher3.widget.WidgetManagerHelper;
 import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverlay;
-
 import com.google.android.material.animation.AnimatorSetCompat;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -327,6 +322,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
 
         int paddingBottom = grid.cellLayoutBottomPaddingPx;
+        int paddingLeftRight = grid.cellLayoutPaddingLeftRightPx;
         for (int i = mWorkspaceScreens.size() - 1; i >= 0; i--) {
             mWorkspaceScreens.valueAt(i)
                     .setPadding(paddingLeftRight, 0, grid.cellLayoutPaddingRightPx, paddingBottom);
@@ -582,6 +578,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                         R.layout.workspace_screen, this, false /* attachToRoot */);
         DeviceProfile grid = mLauncher.getDeviceProfile();
         int paddingBottom = grid.cellLayoutBottomPaddingPx;
+        int paddingLeftRight = grid.cellLayoutPaddingLeftRightPx;
         newScreen.setPadding(paddingLeftRight, 0, grid.cellLayoutPaddingRightPx, paddingBottom);
 
         mWorkspaceScreens.put(screenId, newScreen);
@@ -1030,6 +1027,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         if (shouldScrollOverlay) {
             if (!mStartedSendingScrollEvents && mScrollInteractionBegan) {
                 mStartedSendingScrollEvents = true;
+                assert mLauncherOverlay != null;
                 mLauncherOverlay.onScrollInteractionBegin();
             }
 
@@ -1160,9 +1158,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
      * when launcher's window has focus and the overlay is no longer being shown. If a callback
      * is already present, the new callback will chain off it so both are run.
      *
-     * @return Whether the callback was deferred.
      */
-    public boolean runOnOverlayHidden(Runnable callback) {
+    public void runOnOverlayHidden(Runnable callback) {
         if (mOnOverlayHiddenCallback == null) {
             mOnOverlayHiddenCallback = callback;
         } else {
@@ -1185,9 +1182,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                                 }
                             }});
             }
-            return true;
         }
-        return false;
     }
 
     @Override
@@ -1670,7 +1665,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             float distance = dropTargetLayout.getDistanceFromCell(mDragViewVisualCenter[0],
                     mDragViewVisualCenter[1], mTargetCell);
             if (mCreateUserFolderOnDrop && willCreateUserFolder(d.dragInfo,
-                    dropTargetLayout, mTargetCell, distance, true)) {
+                    dropTargetLayout, mTargetCell, distance)) {
                 return true;
             }
 
@@ -1701,10 +1696,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     boolean willCreateUserFolder(ItemInfo info, CellLayout target, int[] targetCell,
-            float distance, boolean considerTimeout) {
+            float distance) {
         if (distance > mMaxDistanceForFolderCreation) return false;
         View dropOverView = target.getChildAt(targetCell[0], targetCell[1]);
-        return willCreateUserFolder(info, dropOverView, considerTimeout);
+        return willCreateUserFolder(info, dropOverView, true);
     }
 
     boolean willCreateUserFolder(ItemInfo info, View dropOverView, boolean considerTimeout) {
@@ -1752,9 +1747,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         if (dropOverView instanceof FolderIcon) {
             FolderIcon fi = (FolderIcon) dropOverView;
-            if (fi.acceptDrop(dragInfo)) {
-                return true;
-            }
+            return fi.acceptDrop(dragInfo);
         }
         return false;
     }
@@ -1799,18 +1792,11 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             sourceInfo.cellY = -1;
 
             // If the dragView is null, we can't animate
-            boolean animate = d != null;
-            if (animate) {
-                // In order to keep everything continuous, we hand off the currently rendered
-                // folder background to the newly created icon. This preserves animation state.
-                fi.setFolderBackground(mFolderCreateBg);
-                mFolderCreateBg = new PreviewBackground();
-                fi.performCreateAnimation(destInfo, v, sourceInfo, d, folderLocation, scale);
-            } else {
-                fi.prepareCreateAnimation(v);
-                fi.addItem(destInfo);
-                fi.addItem(sourceInfo);
-            }
+            // In order to keep everything continuous, we hand off the currently rendered
+            // folder background to the newly created icon. This preserves animation state.
+            fi.setFolderBackground(mFolderCreateBg);
+            mFolderCreateBg = new PreviewBackground();
+            fi.performCreateAnimation(destInfo, v, sourceInfo, d, folderLocation, scale);
             mLauncher.folderCreatedFromItem(fi.getFolder(), destInfo);
             return true;
         }
@@ -2529,7 +2515,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                         cellLayout, mTargetCell);
                 float distance = cellLayout.getDistanceFromCell(mDragViewVisualCenter[0],
                         mDragViewVisualCenter[1], mTargetCell);
-                if (willCreateUserFolder(d.dragInfo, cellLayout, mTargetCell, distance, true)
+                if (willCreateUserFolder(d.dragInfo, cellLayout, mTargetCell, distance)
                         || willAddToExistingUserFolder(
                                 d.dragInfo, cellLayout, mTargetCell, distance)) {
                     findNearestVacantCell = false;
@@ -2737,7 +2723,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         mLauncher.getDragLayer().getViewRectRelativeToSelf(dragView, from);
 
         int[] finalPos = new int[2];
-        float scaleXY[] = new float[2];
+        float[] scaleXY = new float[2];
         boolean scalePreview = !(info instanceof PendingAddShortcutInfo);
         getFinalPositionForDropAnimation(finalPos, scaleXY, dragView, cellLayout, info, mTargetCell,
                 scalePreview);
@@ -3046,15 +3032,12 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     public View getFirstMatch(final ItemOperator operator) {
         final View[] value = new View[1];
-        mapOverItems(new ItemOperator() {
-            @Override
-            public boolean evaluate(ItemInfo info, View v) {
-                if (operator.evaluate(info, v)) {
-                    value[0] = v;
-                    return true;
-                }
-                return false;
+        mapOverItems((info, v) -> {
+            if (operator.evaluate(info, v)) {
+                value[0] = v;
+                return true;
             }
+            return false;
         });
         return value[0];
     }
@@ -3094,15 +3077,12 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     void clearDropTargets() {
-        mapOverItems(new ItemOperator() {
-            @Override
-            public boolean evaluate(ItemInfo info, View v) {
-                if (v instanceof DropTarget) {
-                    mDragController.removeDropTarget((DropTarget) v);
-                }
-                // not done, process all the shortcuts
-                return false;
+        mapOverItems((info, v) -> {
+            if (v instanceof DropTarget) {
+                mDragController.removeDropTarget((DropTarget) v);
             }
+            // not done, process all the shortcuts
+            return false;
         });
     }
 
