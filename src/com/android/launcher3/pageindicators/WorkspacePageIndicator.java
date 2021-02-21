@@ -17,7 +17,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.FrameLayout;
-
 import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.theme.ThemeManager;
 import com.android.launcher3.DeviceProfile;
@@ -135,7 +134,7 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
     public void updateLineHeight() {
         boolean show = Utilities.getLawnchairPrefs(getContext()).getDockShowPageIndicator();
         mLineHeight = !show ? 0 : getResources()
-                .getDimensionPixelSize(R.dimen.dynamic_grid_page_indicator_line_height);
+                .getDimensionPixelSize(R.dimen.workspace_page_indicator_line_height);
     }
 
     @Override
