@@ -37,8 +37,8 @@ pipeline:
   deploy_tag:
     image: lawnchairlauncher/drone-telegram:latest
     secrets: [ bot_token, channel_id, dev_channel_id ]
-    apk_path: out/apks/Lawnchair.apk
-    mapping_path: out/mappings/mapping.txt
+    apk_path: build/outputs/apk/*/*/*.apk
+    mapping_path: build/outputs/mapping/quickstepLawnchairCi/optimized/mapping.txt
     channel_id: "-1001083653933"
     public_branch: alpha
     environment:
