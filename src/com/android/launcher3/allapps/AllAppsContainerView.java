@@ -218,7 +218,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         if (hasWorkApps) {
             resetWorkProfile();
         }
-        rebindAdapters(mTabsController.getShouldShowTabs(), force);
+        rebindAdapters(mTabsController.getShouldShowTabs(), true);
     }
 
     private void resetWorkProfile() {
@@ -524,7 +524,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     public void onTabChanged(int pos) {
         pos = Utilities.boundToRange(pos, 0, mTabsController.getTabsCount() - 1);
         mHeader.setCurrentActive(pos);
-        mHeader.setMainActive(pos == 0);
         if (mAH[pos].recyclerView != null) {
             mAH[pos].recyclerView.bindFastScrollbar();
         }
