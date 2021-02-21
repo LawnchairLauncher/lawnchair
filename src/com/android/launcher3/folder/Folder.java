@@ -17,7 +17,6 @@
 package com.android.launcher3.folder;
 
 import static android.text.TextUtils.isEmpty;
-
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
 import static com.android.launcher3.LauncherState.NORMAL;
@@ -34,7 +33,6 @@ import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetHostView;
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Path;
 import android.graphics.Rect;
@@ -53,7 +51,6 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
-
 import ch.deletescape.lawnchair.groups.DrawerFolderInfo;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Alarm;
@@ -94,7 +91,6 @@ import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.views.ClipPathView;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
-
 import com.google.android.apps.nexuslauncher.CustomBottomSheet;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -1442,15 +1438,6 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
      */
     public void iterateOverItems(ItemOperator op) {
         mContent.iterateOverItems(op);
-    }
-
-    @Override
-    public void prepareAutoUpdate() {
-        close(false);
-    }
-
-    public void onTitleChanged(CharSequence title) {
-        mFolderName.setText(title);
     }
 
     /**
