@@ -154,7 +154,7 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
                 .put(Favorites.RESTORED, status);
 
         if (!usingLowResIcon()) {
-            writer.putIcon(bitmap.icon, user);
+            writer.putIcon(bitmap, user);
         }
         if (iconResource != null) {
             writer.put(Favorites.ICON_PACKAGE, iconResource.packageName)
