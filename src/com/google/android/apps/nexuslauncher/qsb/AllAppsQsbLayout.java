@@ -509,4 +509,17 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
             mMicIconView.setVisibility(micProgress > 0 ? View.VISIBLE : View.INVISIBLE);
         }
     }
+
+    @Override
+    public boolean isQsbVisible(int visibleElements) {
+        // TODO: Implement
+        return false;
+    }
+
+    @Nullable
+    @Override
+    public EditText setTextSearchEnabled(boolean isEnabled) {
+        // TODO: Implement
+        return null;
+    }
 }

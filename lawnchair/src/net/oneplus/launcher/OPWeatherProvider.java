@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import ch.deletescape.lawnchair.smartspace.weather.icons.WeatherIconManager;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.R;
+import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.PackageManagerHelper;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ public class OPWeatherProvider {
     private Context mContext;
     private WeatherObserver mObserver;
 
-    private Handler mUiWorkerHandler = new Handler(LauncherModel.getUiWorkerLooper());
+    private Handler mUiWorkerHandler = new Handler(Executors.UI_HELPER_EXECUTOR.getLooper());
 
     public OPWeatherProvider(Context context) {
         mContext = context;

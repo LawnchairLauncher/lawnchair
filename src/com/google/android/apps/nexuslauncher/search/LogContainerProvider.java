@@ -1,12 +1,10 @@
 package com.google.android.apps.nexuslauncher.search;
 
 import android.content.Context;
-import android.view.View;
 import android.widget.FrameLayout;
 
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.logging.StatsLogUtils;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import java.util.ArrayList;
 
@@ -19,12 +17,14 @@ class LogContainerProvider extends FrameLayout implements StatsLogUtils.LogConta
     }
 
     @Override
-    public void fillInLogContainerData(View v, ItemInfo info, LauncherLogProto.Target target, LauncherLogProto.Target targetParent) {
+    public void fillInLogContainerData(ItemInfo info, Target child, ArrayList<Target> parents) {
         if (mPredictedRank >= 0) {
-            targetParent.containerType = 7;
-            target.predictedRank = mPredictedRank;
+            child.containerType = 7;
+            child.predictedRank = mPredictedRank;
         } else {
-            targetParent.containerType = 8;
+            for (Target parent : parents) {
+                parent.containerType = 8;
+            }
         }
     }
 }

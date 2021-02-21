@@ -143,7 +143,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             if (!newTitle.equals(mPreviousTitle)) {
                 if (newTitle.equals(""))
                     newTitle = null;
-                mInfoProvider.setTitle(mItemInfo, newTitle);
+                mInfoProvider.setTitle(mItemInfo, newTitle, mLauncher.getModel().getWriter(false, true));
             }
         }
         super.onDetachedFromWindow();

@@ -65,8 +65,8 @@ public class HomeWidgetMigrationTask extends GridSizeMigrationTask {
 
         mContext = context;
         mTableName = usePreviewTable ? Favorites.PREVIEW_TABLE_NAME : Favorites.TABLE_NAME;
-        mTrgX = size.x;
-        mTrgY = size.y;
+        mTrgX = targetSize.x;
+        mTrgY = targetSize.y;
     }
 
     @Override

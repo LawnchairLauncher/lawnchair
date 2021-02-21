@@ -121,7 +121,7 @@ public class MediaListener extends MediaController.Callback implements OnChangeL
 
     private List<MediaNotificationController> getControllers() {
         List<MediaNotificationController> controllers = new ArrayList<>();
-        for (StatusBarNotification notif : mNotificationsManager.getNotifications()) {
+        for (StatusBarNotification notif : mNotificationsManager.getSbNotifications()) {
             Bundle extras = notif.getNotification().extras;
             MediaSession.Token notifToken = extras.getParcelable(Notification.EXTRA_MEDIA_SESSION);
             if (notifToken != null) {

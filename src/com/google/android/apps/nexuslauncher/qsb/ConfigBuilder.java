@@ -100,7 +100,7 @@ public class ConfigBuilder {
         final b_search b = new b_search();
         b.label = appInfo.title.toString();
         b.ej = "icon_bitmap_" + n;
-        mBundle.putParcelable(b.ej, appInfo.bitmap);
+        mBundle.putParcelable(b.ej, appInfo.bitmap.icon);
         Uri uri = AppSearchProvider.buildUri(appInfo, userCache);
         b.el = uri.toString();
         b.ek = new Intent("com.google.android.apps.nexuslauncher.search.APP_LAUNCH",
