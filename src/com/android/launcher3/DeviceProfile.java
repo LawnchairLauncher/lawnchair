@@ -194,7 +194,6 @@ public class DeviceProfile {
                 ? Configuration.ORIENTATION_LANDSCAPE
                 : Configuration.ORIENTATION_PORTRAIT);
         final Resources res = context.getResources();
-
         edgeMarginPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
         desiredWorkspaceLeftRightMarginPx = isVerticalBarLayout() ? 0 : edgeMarginPx;
 
@@ -285,20 +284,20 @@ public class DeviceProfile {
 
         if (prefs.getDockHide()) {
             hotseatBarSizePx = 0;
-            updateAvailableDimensions(dm, res);
+            updateAvailableDimensions(res);
         } else if (targetDockScale > 0f && !isVerticalBarLayout()) {
             int extraSpace = (int) (targetDockScale * previousDockSize - hotseatBarSizePx);
             if (extraSpace != 0) {
                 hotseatBarSizePx += extraSpace;
 
-                int dockTopSpace = verticalDragHandleSizePx - verticalDragHandleOverlapWorkspace;
+                int dockTopSpace = workspacePageIndicatorHeight - mWorkspacePageIndicatorOverlapWorkspace;
                 int dockBottomSpace = Math
                         .max(hotseatBarBottomPaddingPx - previousDockBottomPadding, dockTopSpace);
                 int dockVerticalSpace = dockTopSpace + dockBottomSpace;
 
                 hotseatBarBottomPaddingPx += extraSpace * ((float) dockBottomSpace / dockVerticalSpace);
 
-                updateAvailableDimensions(dm, res);
+                updateAvailableDimensions(res);
             }
         }
 
@@ -406,6 +405,8 @@ public class DeviceProfile {
      * hotseat sizes, workspaceSpringLoadedShrinkFactor, folderIconSizePx, and folderIconOffsetYPx.
      */
     private void updateIconSize(float scale, Resources res) {
+        DisplayMetrics dm = res.getDisplayMetrics();
+
         // Workspace
         final boolean isVerticalLayout = isVerticalBarLayout();
         float invIconSizeDp = isVerticalLayout ? inv.landscapeIconSize : inv.iconSize;

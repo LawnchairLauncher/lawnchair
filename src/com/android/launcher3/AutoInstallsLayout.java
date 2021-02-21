@@ -56,6 +56,7 @@ import com.android.launcher3.widget.custom.CustomWidgetManager;
 import java.io.IOException;
 import java.util.Locale;
 
+import java.util.stream.Collectors;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -578,7 +579,9 @@ public class AutoInstallsLayout {
             final int providerId = Integer.parseInt(getAttributeValue(parser, ATTR_PROVIDER_ID));
             LauncherAppWidgetProviderInfo provider = null;
 
-            for (LauncherAppWidgetProviderInfo each : CustomWidgetParser.getCustomWidgets(mContext)) {
+            for (LauncherAppWidgetProviderInfo each : CustomWidgetManager.INSTANCE.get(mContext)
+                    .stream()
+                    .collect(Collectors.toList())) {
                 if (each instanceof CustomAppWidgetProviderInfo) {
                     if (((CustomAppWidgetProviderInfo) each).providerId == providerId) {
                         provider = each;

@@ -39,10 +39,11 @@ import com.android.launcher3.model.GridSizeMigrationTask;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.IntArray;
-import com.android.launcher3.widget.custom.CustomWidgetParser;
+import com.android.launcher3.widget.custom.CustomWidgetManager;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class HomeWidgetMigrationTask extends GridSizeMigrationTask {
 
@@ -52,22 +53,25 @@ public class HomeWidgetMigrationTask extends GridSizeMigrationTask {
 
     private final Context mContext;
     private final int mTrgX, mTrgY;
+    private final String mTableName;
 
     private HomeWidgetMigrationTask(Context context,
             SQLiteDatabase db,
             HashSet<String> validPackages,
-            Point size) {
-        super(context, db, validPackages, size, size);
+            boolean usePreviewTable,
+            Point sourceSize,
+            Point targetSize) {
+        super(context, db, validPackages, usePreviewTable, sourceSize, targetSize);
 
         mContext = context;
-
+        mTableName = usePreviewTable ? Favorites.PREVIEW_TABLE_NAME : Favorites.TABLE_NAME;
         mTrgX = size.x;
         mTrgY = size.y;
     }
 
     @Override
     protected boolean migrateWorkspace() throws Exception {
-        IntArray allScreens = getWorkspaceScreenIds(mDb);
+        @SuppressLint("VisibleForTests") IntArray allScreens = getWorkspaceScreenIds(mDb, mTableName);
         if (allScreens.isEmpty()) {
             throw new Exception("Unable to get workspace screens");
         }
@@ -94,11 +98,12 @@ public class HomeWidgetMigrationTask extends GridSizeMigrationTask {
 
         if (allowOverlap || occupied.isRegionVacant(0, 0, mTrgX, 1)) {
             List<LauncherAppWidgetProviderInfo> customWidgets =
-                    CustomWidgetParser.getCustomWidgets(mContext);
+                    CustomWidgetManager.INSTANCE.get(mContext).stream()
+                            .collect(Collectors.toList());
             if (!customWidgets.isEmpty()) {
                 LauncherAppWidgetProviderInfo provider = customWidgets.get(0);
-                int widgetId = CustomWidgetParser
-                        .getWidgetIdForCustomProvider(mContext, provider.provider);
+                int widgetId = CustomWidgetManager.INSTANCE.get(mContext)
+                        .getWidgetIdForCustomProvider(provider.provider);
                 long itemId = LauncherSettings.Settings.call(mContext.getContentResolver(),
                         Settings.METHOD_NEW_ITEM_ID)
                         .getLong(LauncherSettings.Settings.EXTRA_VALUE);
@@ -141,7 +146,7 @@ public class HomeWidgetMigrationTask extends GridSizeMigrationTask {
                 context.getContentResolver(), Settings.METHOD_NEW_TRANSACTION)
                 .getBinder(Settings.EXTRA_VALUE)) {
             if (!new HomeWidgetMigrationTask(context, transaction.getDb(),
-                    validPackages, size).migrateWorkspace()) {
+                    validPackages, false, size, size).migrateWorkspace()) {
                 throw new RuntimeException("Failed to migrate Smartspace");
             }
         } catch (Exception e) {

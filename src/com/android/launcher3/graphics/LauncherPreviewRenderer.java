@@ -235,7 +235,7 @@ public class LauncherPreviewRenderer {
                 Build.VERSION.SDK_INT);
 
         mWorkspaceItemInfo = new WorkspaceItemInfo();
-        mWorkspaceItemInfo.bitmap = iconInfo.icon;
+        mWorkspaceItemInfo.bitmap = iconInfo;
         mWorkspaceItemInfo.intent = new Intent();
         mWorkspaceItemInfo.contentDescription = mWorkspaceItemInfo.title =
                 context.getString(R.string.label_application);

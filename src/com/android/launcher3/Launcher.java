@@ -1116,11 +1116,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                 ((NexusLauncherActivity) launcher).getGoogleNow().hideOverlay(animate);
             }
         }
-
-        @Override
-        public void onStateTransitionComplete(LauncherState finalState) {
-
-        }
     }
 
     /**
