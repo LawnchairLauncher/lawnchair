@@ -32,6 +32,8 @@ if (localPropsFile.exists()) {
 
 def publicBranches = ["alpha", "beta", "stable"]
 def ciBuild = localProps.getProperty("ciBuild") == "true" || System.getenv("CI_BUILD") == "true"
+def ciBuildNumber = localProps.getProperty("buildNumber") ?: System.getenv("CI_BUILD_NUMBER")
+def tagVersionName = System.getenv("TAG_VERSION_NAME")
 def isPublicBuild = localProps.getProperty("public") == "true" || (ciBuild && publicBranches.contains(System.getenv("DRONE_BRANCH")))
 
 apply plugin: 'com.android.application'
@@ -54,8 +56,12 @@ android {
         minSdkVersion 21
         targetSdkVersion 28
 
-        if (ciBuild) {
-            def ciBuildNumber = localProps.getProperty("buildNumber") ?: System.getenv("CI_BUILD_NUMBER")
+        if (tagVersionName != null) {
+            def major = Integer.valueOf(System.getenv("TAG_MAJOR"))
+            def minor = Integer.valueOf(System.getenv("TAG_MINOR"))
+            versionCode = major * 1000000 + minor * 10000 + Integer.valueOf(ciBuildNumber)
+            versionName = tagVersionName
+        } else if (ciBuild) {
             versionCode = Integer.valueOf(ciBuildNumber)
             def majorMinor = localProps.getProperty("majorMinor") ?: System.getenv("MAJOR_MINOR")
             def drone = localProps.getProperty("public") == "true" || System.getenv("DRONE")
@@ -185,7 +191,9 @@ android {
         ci {
             dimension "build"
             applicationIdSuffix ".ci"
-            versionNameSuffix "-ci-" + (localProps.getProperty("branch") ?: System.getenv("DRONE_BRANCH"))
+            if (tagVersionName == null) {
+                versionNameSuffix "-ci-" + (localProps.getProperty("branch") ?: System.getenv("DRONE_BRANCH"))
+            }
 
             buildConfigField "boolean", "SIGNATURE_VERIFICATION", "true"
         }
