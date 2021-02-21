@@ -21,9 +21,7 @@ else
     fi
 fi
 
-if [[ $TRACK = "beta" ]]; then
-    BUILD_COMMAND="assembleAospWithQuickstepLawnchairPlahRelease"
-elif [[ $TRACK = "stable" ]]; then
+if [ $DRONE_BRANCH = "beta" ] || [ $DRONE_BRANCH = "stable" ]; then
     BUILD_COMMAND="assembleAospWithQuickstepLawnchairPlahRelease"
 else
     BUILD_COMMAND="assembleAospWithQuickstepLawnchairCiRelease"
