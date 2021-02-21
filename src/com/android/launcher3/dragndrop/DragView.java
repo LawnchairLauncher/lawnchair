@@ -68,7 +68,7 @@ public class DragView extends View implements StateListener<LauncherState> {
     public static final int VIEW_ZOOM_DURATION = 150;
 
     private boolean mDrawBitmap = true;
-    private Bitmap mBitmap;
+    private final Bitmap mBitmap;
     private Bitmap mCrossFadeBitmap;
     @Thunk Paint mPaint;
     private final int mBlurSizeOutline;
@@ -86,7 +86,6 @@ public class DragView extends View implements StateListener<LauncherState> {
     final FirstFrameAnimatorHelper mFirstFrameAnimatorHelper;
     private boolean mHasDrawn = false;
     @Thunk float mCrossFadeProgress = 0f;
-    private boolean mAnimationCancelled = false;
 
     ValueAnimator mAnim;
     // The intrinsic icon scale factor is the scale factor for a drag icon over the workspace
@@ -108,7 +107,6 @@ public class DragView extends View implements StateListener<LauncherState> {
     private Drawable mBadge;
     private ColorMatrixColorFilter mBaseFilter;
 
-    private final IconProvider iconProvider;
     private final LawnchairPreferences prefs;
 
     /**
@@ -129,7 +127,7 @@ public class DragView extends View implements StateListener<LauncherState> {
         mDragController = launcher.getDragController();
         mFirstFrameAnimatorHelper = new FirstFrameAnimatorHelper(this);
 
-        iconProvider = IconProvider.newInstance(launcher);
+        new IconProvider(launcher);
 
         final float scale = (bitmap.getWidth() + finalScaleDps) / bitmap.getWidth();
 
@@ -336,32 +334,12 @@ public class DragView extends View implements StateListener<LauncherState> {
         mIntrinsicIconScale = scale;
     }
 
-    public float getIntrinsicIconScaleFactor() {
-        return mIntrinsicIconScale;
-    }
-
-    public int getDragRegionLeft() {
-        return mDragRegion.left;
-    }
-
-    public int getDragRegionTop() {
-        return mDragRegion.top;
-    }
-
     public int getDragRegionWidth() {
         return mDragRegion.width();
     }
 
-    public int getDragRegionHeight() {
-        return mDragRegion.height();
-    }
-
     public void setDragVisualizeOffset(Point p) {
         mDragVisualizeOffset = p;
-    }
-
-    public Point getDragVisualizeOffset() {
-        return mDragVisualizeOffset;
     }
 
     public void setDragRegion(Rect r) {
@@ -384,7 +362,7 @@ public class DragView extends View implements StateListener<LauncherState> {
             // Always draw the bitmap to mask anti aliasing due to clipPath
             boolean crossFade = mCrossFadeProgress > 0 && mCrossFadeBitmap != null;
             if (crossFade) {
-                int alpha = crossFade ? (int) (255 * (1 - mCrossFadeProgress)) : 255;
+                int alpha = (int) (255 * (1 - mCrossFadeProgress));
                 mPaint.setAlpha(alpha);
             }
             canvas.drawBitmap(mBitmap, 0.0f, 0.0f, mPaint);
@@ -503,7 +481,6 @@ public class DragView extends View implements StateListener<LauncherState> {
     }
 
     public void cancelAnimation() {
-        mAnimationCancelled = true;
         if (mAnim != null && mAnim.isRunning()) {
             mAnim.cancel();
         }
@@ -540,14 +517,11 @@ public class DragView extends View implements StateListener<LauncherState> {
         mAnimatedShiftX = shiftX;
         mAnimatedShiftY = shiftY;
         applyTranslation();
-        mAnim.addUpdateListener(new AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float fraction = 1 - animation.getAnimatedFraction();
-                mAnimatedShiftX = (int) (fraction * shiftX);
-                mAnimatedShiftY = (int) (fraction * shiftY);
-                applyTranslation();
-            }
+        mAnim.addUpdateListener(animation -> {
+            float fraction = 1 - animation.getAnimatedFraction();
+            mAnimatedShiftX = (int) (fraction * shiftX);
+            mAnimatedShiftY = (int) (fraction * shiftY);
+            applyTranslation();
         });
     }
 
