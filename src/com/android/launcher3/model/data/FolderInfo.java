@@ -262,7 +262,7 @@ public class FolderInfo extends ItemInfo {
     public Drawable getFolderIcon(Launcher launcher) {
         int iconSize = launcher.getDeviceProfile().iconSizePx;
         FrameLayout dummy = new FrameLayout(launcher, null);
-        FolderIcon icon = FolderIcon.fromXml(R.layout.folder_icon, launcher, dummy, this);
+        FolderIcon icon = FolderIcon.inflateIcon(R.layout.folder_icon, launcher, dummy, this);
         icon.isCustomIcon = false;
         icon.getFolderBackground().setStartOpacity(1f);
         Bitmap b = BitmapRenderer.createHardwareBitmap(iconSize, iconSize, out -> {
