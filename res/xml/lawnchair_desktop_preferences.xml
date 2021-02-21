@@ -125,8 +125,7 @@
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:key="pref_displayNotificationCount"
             android:persistent="true"
-            android:title="@string/pref_notification_count_title"
-            android:summary="@string/pref_notification_count_title"/>
+            android:title="@string/pref_notification_count_title" />
 
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:defaultValue="@bool/allow_rotation"
