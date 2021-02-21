@@ -23,6 +23,7 @@ import static android.view.MotionEvent.ACTION_UP;
 
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OPTIONS;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.IGNORE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WORKSPACE_LONGPRESS;
 
 import android.graphics.PointF;
@@ -197,12 +198,12 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
         if (mLauncher.isInState(NORMAL)) {
             mGestureController.onLongPress();
         } else if (mLauncher.isInState(OPTIONS)) {
-            final int currentScreen = mLauncher.getCurrentWorkspaceScreen();
+            final int currentScreen = mLauncher.getWorkspace().getCurrentPage();
             ArrayList<OptionItem> options = new ArrayList<>();
             options.add(new OptionItem(
                     R.string.remove_drop_target_label,
                     R.drawable.ic_remove_no_shadow,
-                    -1, v -> {
+                    IGNORE, v -> {
                 mLauncher.getWorkspace().removeScreen(currentScreen, true);
                         return true;
             }));

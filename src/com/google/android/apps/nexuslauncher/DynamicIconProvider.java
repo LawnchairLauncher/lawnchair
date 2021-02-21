@@ -79,7 +79,7 @@ public class DynamicIconProvider extends IconProvider {
     }
 
     @Override
-    public Drawable getIcon(LauncherActivityInfo launcherActivityInfo, int iconDpi, boolean flattenDrawable) {
+    public Drawable getIcon(LauncherActivityInfo launcherActivityInfo, int iconDpi) {
         Drawable drawable = null;
         String packageName = launcherActivityInfo.getApplicationInfo().packageName;
         if (isCalendar(packageName)) {
@@ -92,8 +92,7 @@ public class DynamicIconProvider extends IconProvider {
                 }
             } catch (NameNotFoundException ignored) {
             }
-        } else if (!flattenDrawable &&
-                Utilities.ATLEAST_OREO &&
+        } else if (Utilities.ATLEAST_OREO &&
                 DynamicClock.DESK_CLOCK.equals(launcherActivityInfo.getComponentName()) &&
                 Process.myUserHandle().equals(launcherActivityInfo.getUser())) {
             drawable = DynamicClock.getClock(mContext, iconDpi);

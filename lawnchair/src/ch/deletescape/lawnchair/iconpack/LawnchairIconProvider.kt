@@ -31,20 +31,12 @@ class LawnchairIconProvider(context: Context) : DynamicIconProvider(context) {
 
     private val iconPackManager by lazy { IconPackManager.getInstance(context) }
 
-    override fun getIcon(launcherActivityInfo: LauncherActivityInfo, iconDpi: Int, flattenDrawable: Boolean): Drawable {
-        return iconPackManager.getIcon(launcherActivityInfo, iconDpi, flattenDrawable, null, this).assertNotAdaptiveIconDrawable(launcherActivityInfo)
-    }
-
-    fun getIcon(launcherActivityInfo: LauncherActivityInfo, itemInfo: ItemInfo, iconDpi: Int, flattenDrawable: Boolean): Drawable {
-        return iconPackManager.getIcon(launcherActivityInfo, iconDpi, flattenDrawable, itemInfo, this).assertNotAdaptiveIconDrawable(launcherActivityInfo)
-    }
-
     fun getIcon(shortcutInfo: ShortcutInfo, iconDpi: Int): Drawable? {
         return iconPackManager.getIcon(shortcutInfo, iconDpi).assertNotAdaptiveIconDrawable(shortcutInfo)
     }
 
-    fun getDynamicIcon(launcherActivityInfo: LauncherActivityInfo?, iconDpi: Int, flattenDrawable: Boolean): Drawable {
-        return super.getIcon(launcherActivityInfo, iconDpi, flattenDrawable).assertNotAdaptiveIconDrawable(launcherActivityInfo)
+    fun getDynamicIcon(launcherActivityInfo: LauncherActivityInfo?, iconDpi: Int): Drawable {
+        return super.getIcon(launcherActivityInfo, iconDpi).assertNotAdaptiveIconDrawable(launcherActivityInfo)
     }
 
     private fun <T> T.assertNotAdaptiveIconDrawable(info: Any?): T {

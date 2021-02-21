@@ -116,7 +116,7 @@ class IconPackManager(private val context: Context) {
             pack.getIcon(launcherActivityInfo, iconDpi,
                     flattenDrawable, null, iconProvider)?.let { return it }
         }
-        return defaultPack.getIcon(launcherActivityInfo, iconDpi, flattenDrawable, null, iconProvider)
+        return defaultPack.getIcon(launcherActivityInfo, iconDpi, flattenDrawable, null, iconProvider)!!
     }
 
     fun getIcon(shortcutInfo: ShortcutInfo, iconDpi: Int): Drawable? {

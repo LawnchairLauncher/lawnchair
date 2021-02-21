@@ -9,6 +9,8 @@ import android.util.AttributeSet;
 import android.util.Property;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,6 +18,7 @@ import ch.deletescape.lawnchair.LawnchairAppKt;
 import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController;
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController.CardData;
+import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController.Listener;
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController.WeatherData;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
@@ -30,7 +33,8 @@ import org.jetbrains.annotations.Nullable;
 /**
  * A simple view used to show the region blocked by QSB during drag and drop.
  */
-public class QsbBlockerView extends FrameLayout implements OnStateChangeListener, LawnchairSmartspaceController.Listener, View.OnClickListener {
+public class QsbBlockerView extends FrameLayout implements OnStateChangeListener, Listener,
+        OnClickListener, OnLongClickListener {
     public static final Property<QsbBlockerView, Integer> QSB_BLOCKER_VIEW_ALPHA = new QsbBlockerViewAlpha(Integer.TYPE, "bgAlpha");
     private final LawnchairSmartspaceController mController;
     private int mState = 0;
@@ -168,6 +172,11 @@ public class QsbBlockerView extends FrameLayout implements OnStateChangeListener
     public void onClick(View v) {
         if (mController != null)
             mController.openWeather(v);
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        return false;
     }
 
     static class QsbBlockerViewAlpha extends Property<QsbBlockerView, Integer> {

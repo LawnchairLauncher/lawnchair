@@ -37,7 +37,6 @@ public class LauncherFiles {
             BACKUP_DB,
             SHARED_PREFERENCES_KEY + XML,
             WIDGET_PREVIEWS_DB,
-            MANAGED_USER_PREFERENCES_KEY + XML,
             DEVICE_PREFERENCES_KEY + XML,
             REFLECTION_PREFERENCES_KEY + XML,
             APP_ICONS_DB));

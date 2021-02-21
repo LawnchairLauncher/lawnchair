@@ -177,7 +177,7 @@ public class ItemClickHandler {
         }
         UserHandle user = v.getTag() instanceof ItemInfo
                 ? ((ItemInfo) v.getTag()).user : Process.myUserHandle();
-        new AlertDialog.Builder(launcher)
+        AlertDialog dialog = new AlertDialog.Builder(launcher)
                 .setTitle(R.string.abandoned_promises_title)
                 .setMessage(R.string.abandoned_promise_explanation)
                 .setPositiveButton(R.string.abandoned_search,
@@ -185,7 +185,8 @@ public class ItemClickHandler {
                 .setNeutralButton(R.string.abandoned_clean_this,
                         (d, i) -> launcher.getWorkspace()
                                 .removeAbandonedPromise(packageName, user))
-                .create().show();
+                .create();
+        dialog.show();
         LawnchairUtilsKt.applyAccent(dialog);
     }
 

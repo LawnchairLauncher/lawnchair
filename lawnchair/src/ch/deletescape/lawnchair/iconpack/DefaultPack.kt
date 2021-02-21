@@ -78,9 +78,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
         }
     }
 
-    override fun loadPack() {
-
-    }
+    override fun loadPack() { }
 
     override fun getEntryForComponent(key: ComponentKey) = appMap[key]
 
@@ -107,10 +105,10 @@ class DefaultPack(context: Context) : IconPack(context, "") {
         return gen.result
     }
 
-    override fun getIcon(launcherActivityInfo: LauncherActivityInfo,
-                         iconDpi: Int, flattenDrawable: Boolean,
+    override fun getIcon(launcherActivityInfo: LauncherActivityInfo, iconDpi: Int,
+                         flattenDrawable: Boolean,
                          customIconEntry: IconPackManager.CustomIconEntry?,
-                         iconProvider: LawnchairIconProvider?): Drawable {
+                         iconProvider: LawnchairIconProvider?): Drawable? {
         ensureInitialLoadComplete()
 
         val key: ComponentKey
@@ -138,7 +136,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
             val gen = AdaptiveIconGenerator(context, originalIcon, roundIcon)
             return gen.result
         }
-        return iconProvider.getDynamicIcon(info, iconDpi, flattenDrawable)
+        return iconProvider.getDynamicIcon(info, iconDpi)
     }
 
     override fun getIcon(shortcutInfo: ShortcutInfo, iconDpi: Int): Drawable? {
