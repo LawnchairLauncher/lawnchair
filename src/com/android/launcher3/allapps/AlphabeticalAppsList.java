@@ -56,8 +56,6 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
     private static final int FAST_SCROLL_FRACTION_DISTRIBUTE_BY_ROWS_FRACTION = 0;
     private static final int FAST_SCROLL_FRACTION_DISTRIBUTE_BY_NUM_SECTIONS = 1;
 
-    private final int mFastScrollDistributionMode = FAST_SCROLL_FRACTION_DISTRIBUTE_BY_NUM_SECTIONS;
-
     /**
      * Info about a fast scroller section, depending if sections are merged, the fast scroller
      * sections will not be the same set as the section headers.
@@ -180,14 +178,13 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
 
     // The of ordered component names as a result of a search query
     private ArrayList<ComponentKey> mSearchResults;
-    private HashMap<AppInfo, String> mCachedSectionNames = new HashMap<>();
     private AllAppsGridAdapter mAdapter;
-    private AppInfoComparator mAppNameComparator;
-    private AppColorComparator mAppColorComparator;
+    private final AppInfoComparator mAppNameComparator;
+    private final AppColorComparator mAppColorComparator;
     private final int mNumAppsPerRow;
     private int mNumAppRowsInAdapter;
     private ItemInfoMatcher mItemFilter;
-    private LawnchairPreferences prefs;
+    private final LawnchairPreferences prefs;
 
     private List<String> mSearchSuggestions;
 
@@ -312,9 +309,9 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         }
 
         if (prefs.getSortDrawerByColors()) {
-            Collections.sort(mApps, mAppColorComparator);
+            mApps.sort(mAppColorComparator);
         } else {
-            Collections.sort(mApps, mAppNameComparator);
+            mApps.sort(mAppNameComparator);
         }
 
         // As a special case for some languages (currently only Simplified Chinese), we may need to
@@ -423,7 +420,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
                 lastSectionName = sectionName;
                 int color = 0;
                 if (prefs.getSortDrawerByColors()) {
-                    color = info.iconColor;
+                    color = info.bitmap.color;
                 }
                 lastFastScrollerSectionInfo = new FastScrollSectionInfo(sectionName, color);
                 mFastScrollerSections.add(lastFastScrollerSectionInfo);
@@ -472,33 +469,16 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
             mNumAppRowsInAdapter = rowIndex + 1;
 
             // Pre-calculate all the fast scroller fractions
-            switch (mFastScrollDistributionMode) {
-                case FAST_SCROLL_FRACTION_DISTRIBUTE_BY_ROWS_FRACTION:
-                    float rowFraction = 1f / mNumAppRowsInAdapter;
-                    for (FastScrollSectionInfo info : mFastScrollerSections) {
-                        AdapterItem item = info.fastScrollToItem;
-                        if (!AllAppsGridAdapter.isIconViewType(item.viewType)) {
-                            info.touchFraction = 0f;
-                            continue;
-                        }
-
-                        float subRowFraction = item.rowAppIndex * (rowFraction / mNumAppsPerRow);
-                        info.touchFraction = item.rowIndex * rowFraction + subRowFraction;
-                    }
-                    break;
-                case FAST_SCROLL_FRACTION_DISTRIBUTE_BY_NUM_SECTIONS:
-                    float perSectionTouchFraction = 1f / mFastScrollerSections.size();
-                    float cumulativeTouchFraction = 0f;
-                    for (FastScrollSectionInfo info : mFastScrollerSections) {
-                        AdapterItem item = info.fastScrollToItem;
-                        if (!AllAppsGridAdapter.isIconViewType(item.viewType)) {
-                            info.touchFraction = 0f;
-                            continue;
-                        }
-                        info.touchFraction = cumulativeTouchFraction;
-                        cumulativeTouchFraction += perSectionTouchFraction;
-                    }
-                    break;
+            float perSectionTouchFraction = 1f / mFastScrollerSections.size();
+            float cumulativeTouchFraction = 0f;
+            for (FastScrollSectionInfo info : mFastScrollerSections) {
+                AdapterItem item = info.fastScrollToItem;
+                if (!AllAppsGridAdapter.isIconViewType(item.viewType)) {
+                    info.touchFraction = 0f;
+                    continue;
+                }
+                info.touchFraction = cumulativeTouchFraction;
+                cumulativeTouchFraction += perSectionTouchFraction;
             }
         }
     }
