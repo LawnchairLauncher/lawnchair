@@ -22,9 +22,6 @@ import android.annotation.TargetApi;
 import android.app.prediction.AppPredictionContext;
 import android.app.prediction.AppPredictionManager;
 import android.app.prediction.AppPredictor;
-import android.app.prediction.AppTarget;
-import android.app.prediction.AppTargetEvent;
-import android.app.prediction.AppTargetId;
 import android.content.ComponentName;
 import android.content.Context;
 import android.os.Build;
@@ -33,18 +30,18 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.UserHandle;
 import android.util.Log;
-
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
-
+import ch.deletescape.lawnchair.predictions.AppTargetCompat;
+import ch.deletescape.lawnchair.predictions.AppTargetEventCompat;
+import ch.deletescape.lawnchair.predictions.AppTargetIdCompat;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.appprediction.PredictionUiStateManager.Client;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.systemui.plugins.AppLaunchEventsPlugin;
 import com.android.systemui.plugins.PluginListener;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -151,7 +148,7 @@ public class PredictionAppTracker extends AppLaunchTracker
             }
             case MSG_LAUNCH: {
                 if (mHomeAppPredictor != null) {
-                    mHomeAppPredictor.notifyAppTargetEvent((AppTargetEvent) msg.obj);
+                    mHomeAppPredictor.notifyAppTargetEvent((AppTargetEventCompat) msg.obj);
                 }
                 return true;
             }
@@ -189,8 +186,8 @@ public class PredictionAppTracker extends AppLaunchTracker
     public void onStartShortcut(String packageName, String shortcutId, UserHandle user,
                                 String container) {
         // TODO: Use the full shortcut info
-        AppTarget target = new AppTarget.Builder(
-                new AppTargetId("shortcut:" + shortcutId), packageName, user)
+        AppTargetCompat target = new AppTargetCompat.Builder(
+                new AppTargetIdCompat("shortcut:" + shortcutId), packageName, user)
                 .setClassName(shortcutId)
                 .build();
 
@@ -211,8 +208,8 @@ public class PredictionAppTracker extends AppLaunchTracker
     @UiThread
     public void onStartApp(ComponentName cn, UserHandle user, String container) {
         if (cn != null) {
-            AppTarget target = new AppTarget.Builder(
-                    new AppTargetId("app:" + cn), cn.getPackageName(), user)
+            AppTargetCompat target = new AppTargetCompat.Builder(
+                    new AppTargetIdCompat("app:" + cn), cn.getPackageName(), user)
                     .setClassName(cn.getClassName())
                     .build();
             sendLaunch(target, container);
@@ -231,8 +228,8 @@ public class PredictionAppTracker extends AppLaunchTracker
     @UiThread
     public void onDismissApp(ComponentName cn, UserHandle user, String container) {
         if (cn == null) return;
-        AppTarget target = new AppTarget.Builder(
-                new AppTargetId("app: " + cn), cn.getPackageName(), user)
+        AppTargetCompat target = new AppTargetCompat.Builder(
+                new AppTargetIdCompat("app: " + cn), cn.getPackageName(), user)
                 .setClassName(cn.getClassName())
                 .build();
         sendDismiss(target, container);
@@ -247,21 +244,21 @@ public class PredictionAppTracker extends AppLaunchTracker
     }
 
     @UiThread
-    private void sendEvent(AppTarget target, String container, int eventId) {
-        AppTargetEvent event = new AppTargetEvent.Builder(target, eventId)
+    private void sendEvent(AppTargetCompat target, String container, int eventId) {
+        AppTargetEventCompat event = new AppTargetEventCompat.Builder(target, eventId)
                 .setLaunchLocation(container == null ? CONTAINER_DEFAULT : container)
                 .build();
         Message.obtain(mMessageHandler, MSG_LAUNCH, event).sendToTarget();
     }
 
     @UiThread
-    private void sendLaunch(AppTarget target, String container) {
-        sendEvent(target, container, AppTargetEvent.ACTION_LAUNCH);
+    private void sendLaunch(AppTargetCompat target, String container) {
+        sendEvent(target, container, AppTargetEventCompat.ACTION_LAUNCH);
     }
 
     @UiThread
-    private void sendDismiss(AppTarget target, String container) {
-        sendEvent(target, container, AppTargetEvent.ACTION_DISMISS);
+    private void sendDismiss(AppTargetCompat target, String container) {
+        sendEvent(target, container, AppTargetEventCompat.ACTION_DISMISS);
     }
 
     @Override
