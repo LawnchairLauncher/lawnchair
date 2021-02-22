@@ -54,4 +54,4 @@ pipeline:
       status: success
 
 branches:
-  exclude: [ l10n_alpha2, lawnchair-v1 ]
+  - alpha # an invalid branch to disable builds
