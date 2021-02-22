@@ -22,6 +22,7 @@ import android.annotation.TargetApi;
 import android.app.prediction.AppPredictionContext;
 import android.app.prediction.AppPredictionManager;
 import android.app.prediction.AppPredictor;
+import android.app.prediction.AppTargetEvent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.os.Build;
@@ -115,7 +116,7 @@ public class PredictionAppTracker extends AppLaunchTracker
                         .setExtras(getAppPredictionContextExtras(client))
                         .build());
         predictor.registerPredictionUpdates(mContext.getMainExecutor(),
-                PredictionUiStateManager.INSTANCE.get(mContext).appPredictorCallback(client));
+                (AppPredictor.Callback) (PredictionUiStateManager.INSTANCE.get(mContext).appPredictorCallback(client)));
         predictor.requestPredictionUpdate();
         return predictor;
     }
@@ -148,7 +149,7 @@ public class PredictionAppTracker extends AppLaunchTracker
             }
             case MSG_LAUNCH: {
                 if (mHomeAppPredictor != null) {
-                    mHomeAppPredictor.notifyAppTargetEvent((AppTargetEventCompat) msg.obj);
+                    mHomeAppPredictor.notifyAppTargetEvent((AppTargetEvent) msg.obj);
                 }
                 return true;
             }
