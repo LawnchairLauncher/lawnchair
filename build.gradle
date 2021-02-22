@@ -52,6 +52,8 @@ if (localPropsFile.exists()) {
 
 def publicBranches = ["alpha", "beta", "q-pre-alpha"]
 def ciBuild = localProps.getProperty("ciBuild") == "true" || System.getenv("CI_BUILD") == "true"
+def ciBuildNumber = localProps.getProperty("buildNumber") ?: System.getenv("CI_BUILD_NUMBER")
+def tagVersionName = System.getenv("TAG_VERSION_NAME")
 def signed = ciBuild || localProps.getProperty("storePass") != null
 //noinspection GroovyUnusedAssignment
 def isPublicBuild = localProps.getProperty("public") == "true" || (ciBuild && publicBranches.contains(System.getenv("DRONE_BRANCH")))
@@ -79,8 +81,12 @@ android {
         targetSdkVersion 30
 
         def majorMinor = "2.1"
-        if (ciBuild) {
-            def ciBuildNumber = localProps.getProperty("buildNumber") ?: System.getenv("CI_BUILD_NUMBER")
+        if (tagVersionName != null) {
+            def major = Integer.valueOf(System.getenv("TAG_MAJOR"))
+            def minor = Integer.valueOf(System.getenv("TAG_MINOR"))
+            versionCode = major * 1000000 + minor * 10000 + Integer.valueOf(ciBuildNumber)
+            versionName = tagVersionName
+        } else if (ciBuild) {
             versionCode = 210000 + Integer.valueOf(ciBuildNumber)
             def drone = localProps.getProperty("public") == "true" || System.getenv("DRONE")
             versionName = majorMinor + (drone ? "-" : ".") + ciBuildNumber
@@ -202,28 +208,30 @@ android {
             versionNameSuffix "-dev"
         }
 
-//        ci {
-//            dimension "dist"
-//            applicationIdSuffix ".ci"
-//            versionNameSuffix "-ci-" + (localProps.getProperty("branch") ?: System.getenv("DRONE_BRANCH"))
-//
-//            buildConfigField "boolean", "SIGNATURE_VERIFICATION", "true"
-//        }
-//
-//        plah {
-//            dimension "dist"
-//            applicationIdSuffix ".plah"
-//
-//            buildConfigField "boolean", "SIGNATURE_VERIFICATION", "true"
-//            buildConfigField "boolean", "FEATURE_BUG_REPORTER", "false"
-//        }
+        ci {
+            dimension "dist"
+            applicationIdSuffix ".ci"
+            if (tagVersionName == null) {
+                versionNameSuffix "-ci-" + (localProps.getProperty("branch") ?: System.getenv("DRONE_BRANCH"))
+            }
+
+            buildConfigField "boolean", "SIGNATURE_VERIFICATION", "true"
+        }
+
+        plah {
+            dimension "dist"
+            applicationIdSuffix ".plah"
+
+            buildConfigField "boolean", "SIGNATURE_VERIFICATION", "true"
+            buildConfigField "boolean", "FEATURE_BUG_REPORTER", "false"
+        }
     }
 
     android.variantFilter { variant ->
         // Hide all non "lawnchairWithQuickstep" tasks to make this a little more bearable
-//        if (!name.startsWith("lawnchairWithQuickstep")) {
-//            variant.setIgnore(true)
-//        }
+        if (!name.startsWith("lawnchairWithQuickstep")) {
+            variant.setIgnore(true)
+        }
     }
 
     sourceSets {

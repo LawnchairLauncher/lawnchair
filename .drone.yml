@@ -18,7 +18,7 @@ pipeline:
       - CI_BUILD_NUMBER=${DRONE_BUILD_NUMBER}
       - CI_EVENT_TYPE=${DRONE_BUILD_EVENT}
     commands:
-      - bash ./build-ci.sh
+      - TAG=$DRONE_TAG bash ./build-ci.sh
 
   # Step 3: Upload to Telegram, APKMirror or Transfer.sh, depending on the event or branch
   deploy:
@@ -32,6 +32,18 @@ pipeline:
       - MAJOR_MINOR=${DRONE_BRANCH}
     when:
       event: push
+      status: success
+  deploy_tag:
+    image: lawnchairlauncher/drone-telegram:latest
+    secrets: [ bot_token, channel_id, dev_channel_id ]
+    apk_path: out/apks/Lawnchair.apk
+    mapping_path: out/mappings/mapping.txt
+    channel_id: "-1001083653933"
+    public_branch: alpha
+    environment:
+      - MAJOR_MINOR=${DRONE_TAG}
+    when:
+      event: tag
       status: success
   mirror:
     image: lawnchairlauncher/drone-apkmirror:latest
@@ -54,4 +66,4 @@ pipeline:
       status: success
 
 branches:
-  - alpha # an invalid branch to disable builds
+  - 11-dev
