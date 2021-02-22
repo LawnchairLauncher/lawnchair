@@ -199,8 +199,7 @@ public class WorkspaceStateTransitionAnimation {
                 state.hasFlag(FLAG_HAS_SYS_UI_SCRIM) ? 1 : 0, LINEAR);
 
         LawnchairBackgroundView background = LawnchairLauncher.getLauncher(mLauncher).getBackground();
-        propertySetter.setFloat(background.getBlurAlphas().getProperty(ALPHA_INDEX_STATE),
-                InvertedMultiValueAlpha.VALUE, state.getWorkspaceBlurAlpha(mLauncher), LINEAR);
+        propertySetter.setFloat(background.getBlurAlphas().getProperty(ALPHA_INDEX_STATE), InvertedMultiValueAlpha.VALUE, state.getWorkspaceBlurAlpha(mLauncher), LINEAR);
     }
 
     public void applyChildState(LauncherState state, CellLayout cl, int childIndex) {

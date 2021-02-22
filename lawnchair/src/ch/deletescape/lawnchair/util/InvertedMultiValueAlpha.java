@@ -16,6 +16,7 @@
 
 package ch.deletescape.lawnchair.util;
 
+import android.util.FloatProperty;
 import android.util.Property;
 import java.util.function.Consumer;
 
@@ -24,8 +25,8 @@ import java.util.function.Consumer;
  */
 public class InvertedMultiValueAlpha {
 
-    public static final Property<InvertedAlphaProperty, Float> VALUE =
-            new Property<InvertedAlphaProperty, Float>(Float.TYPE, "value") {
+    public static final FloatProperty<InvertedAlphaProperty> VALUE =
+            new FloatProperty<InvertedAlphaProperty>("value") {
 
                 @Override
                 public Float get(InvertedAlphaProperty alphaProperty) {
@@ -33,7 +34,7 @@ public class InvertedMultiValueAlpha {
                 }
 
                 @Override
-                public void set(InvertedAlphaProperty object, Float value) {
+                public void setValue(InvertedAlphaProperty object, float value) {
                     object.setValue(value);
                 }
             };
