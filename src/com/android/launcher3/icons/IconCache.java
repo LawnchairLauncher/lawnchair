@@ -331,9 +331,9 @@ public class IconCache extends BaseIconCache {
         cachePackageInstallInfo(key.mPackageName, key.mUser, info.getAppIcon(), info.getAppLabel());
     }
 
-    public Drawable getFullResIcon(LauncherActivityInfo info, ItemInfo itemInfo, boolean flattenDrawable) {
+    public Drawable getFullResIcon(LauncherActivityInfo info, ItemInfo itemInfo) {
         if (mIconProvider instanceof LawnchairIconProvider)
-            return ((LawnchairIconProvider) mIconProvider).getIcon(info, itemInfo, mIconDpi, flattenDrawable);
+            return ((LawnchairIconProvider) mIconProvider).getIcon(info, mIconDpi);
         return getFullResIcon(info);
     }
 
