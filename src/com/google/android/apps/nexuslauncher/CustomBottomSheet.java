@@ -30,6 +30,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -174,6 +175,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
 
     public static class PrefsFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
         private final static String PREF_HIDE = "pref_app_hide";
+        private final static String PREF_HIDE_BADGE = "pref_badge_hide";
         private final static String PREF_HIDE_FROM_PREDICTIONS = "pref_app_prediction_hide";
         private final static boolean HIDE_PREDICTION_OPTION = true;
         public final static int requestCode = "swipeUp".hashCode() & 65535;
@@ -182,6 +184,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
         private LauncherGesturePreference mSwipeUpPref;
         private MultiSelectTabPreference mTabsPref;
         private SwitchPreference mPrefCoverMode;
+        private SwitchPreference mPrefHideBadge;
         private LawnchairPreferences prefs;
 
         private ComponentKey mKey;
@@ -220,6 +223,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
                 mKey = new ComponentKey(itemInfo.getTargetComponent(), itemInfo.user);
             }
             SwitchPreference mPrefHide = (SwitchPreference) findPreference(PREF_HIDE);
+            mPrefHideBadge = (SwitchPreference) findPreference(PREF_HIDE_BADGE);
             mPrefCoverMode = (SwitchPreference) findPreference("pref_cover_mode");
 
             if (isApp) {
@@ -245,6 +249,13 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
                 });
             } else {
                 getPreferenceScreen().removePreference(mSwipeUpPref);
+            }
+
+            if (mProvider != null && mProvider.supportsBadgeVisible(itemInfo)) {
+                boolean badgeVisible = mProvider.getBadgeVisible(itemInfo);
+                mPrefHideBadge.setChecked(!badgeVisible);
+            } else {
+                screen.removePreference(mPrefHideBadge);
             }
 
             if (mPrefHidePredictions != null) {
@@ -337,6 +348,12 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
                 provider.setSwipeUpAction(itemInfo, stringValue);
             }
 
+            if (mProvider != null && mProvider.supportsBadgeVisible(itemInfo)) {
+                CustomInfoProvider provider = CustomInfoProvider.Companion.forItem(getActivity(), itemInfo);
+                boolean badgeHidden = mPrefHideBadge.isChecked();
+                provider.setBadgeVisible(itemInfo, !badgeHidden);
+            }
+
             if (mTabsPref.getEdited()) {
                 prefs.getDrawerTabs().saveToJson();
             }
@@ -362,6 +379,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
                     break;
                 case PREF_HIDE_FROM_PREDICTIONS:
                     CustomAppPredictor.setComponentNameState(launcher, mKey, enabled);
+                    break;
             }
             return true;
         }

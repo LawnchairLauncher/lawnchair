@@ -22,6 +22,12 @@
         android:defaultValue="false"
         android:persistent="false"/>
 
+    <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
+        android:key="pref_badge_hide"
+        android:title="@string/hide_badge"
+        android:defaultValue="false"
+        android:persistent="false"/>
+
     <ch.deletescape.lawnchair.preferences.MultiSelectTabPreference
         android:key="pref_show_in_tabs"
         android:title="@string/show_in_tabs"/>

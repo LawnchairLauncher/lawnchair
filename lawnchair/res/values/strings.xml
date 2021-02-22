@@ -480,6 +480,7 @@
     <string name="about_summary_title">Summary</string>
 
     <string name="hide_app">Hide from App Drawer</string>
+    <string name="hide_badge">Hide Badge</string>
     <string name="icon_shape_rounded_square">Rounded Square</string>
 
     <string name="hide_app_selected">“&#160;” hidden.</string>
@@ -627,7 +628,7 @@
     <string name="title_app_suggestions">Apps</string>
 
     <string name="theme_dark">Dark</string>
-    <string name="theme_dark_theme_mode">Dark Mode</string>
+    <string name="theme_dark_theme_mode">Dark theme</string>
     <string name="theme_dark_dark_text">Dark w/ Dark Text</string>
     <string name="theme_black">Black</string>
     <string name="theme_black_dark_text">Black w/ Dark Text</string>

@@ -189,7 +189,7 @@ public class FolderInfo extends ItemInfo {
 
     public void setSwipeUpAction(@NonNull Context context, @Nullable String action) {
         swipeUpAction = action;
-        ModelWriter.modifyItemInDatabase(context, this, null, swipeUpAction, null, null, false, true);
+        ModelWriter.modifyItemInDatabase(context, this, null, swipeUpAction, false, null, null, false, true);
     }
 
     public ComponentKey toComponentKey() {

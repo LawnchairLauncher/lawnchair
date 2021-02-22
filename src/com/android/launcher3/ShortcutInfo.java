@@ -27,6 +27,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import android.util.DisplayMetrics;
+import android.util.Log;
 import ch.deletescape.lawnchair.iconpack.IconPackManager;
 import ch.deletescape.lawnchair.sesame.SesameShortcutInfo;
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -105,6 +106,8 @@ public class ShortcutInfo extends ItemInfoWithIcon {
     public IconPackManager.CustomIconEntry customIconEntry;
 
     public String swipeUpAction;
+
+    private boolean badgeVisible = true;
 
     public ShortcutInfoCompat shortcutInfo;
 
@@ -234,21 +237,27 @@ public class ShortcutInfo extends ItemInfoWithIcon {
         return cn;
     }
 
+    @Override
+    public boolean isBadgeVisible() {
+        return badgeVisible;
+    }
+
     private void updateDatabase(Context context, boolean updateIcon, boolean reload) {
         if (updateIcon)
             ModelWriter.modifyItemInDatabase(context, this, (String) customTitle, swipeUpAction
-                    , customIconEntry, customIcon, true, reload);
+                    , badgeVisible, customIconEntry, customIcon, true, reload);
         else
             ModelWriter.modifyItemInDatabase(context, this, (String) customTitle, swipeUpAction
-                    , null, null, false, reload);
+                    , badgeVisible, null, null, false, reload);
     }
 
-    public void onLoadCustomizations(String titleAlias, String swipeUpAction,
+    public void onLoadCustomizations(String titleAlias, String swipeUpAction, boolean badgeVisible,
             IconPackManager.CustomIconEntry customIcon, Bitmap icon) {
         customTitle = titleAlias;
         customIconEntry = customIcon;
         this.customIcon = icon;
         this.swipeUpAction = swipeUpAction;
+        this.badgeVisible = badgeVisible;
     }
 
     public void setTitle(@NotNull Context context, @Nullable String title) {
@@ -268,6 +277,11 @@ public class ShortcutInfo extends ItemInfoWithIcon {
 
     public void setSwipeUpAction(@NonNull Context context, @Nullable String action) {
         swipeUpAction = action;
+        updateDatabase(context, false, true);
+    }
+
+    public void setBadgeVisible(@NonNull Context context, @NonNull Boolean visible) {
+        badgeVisible = visible;
         updateDatabase(context, false, true);
     }
 }

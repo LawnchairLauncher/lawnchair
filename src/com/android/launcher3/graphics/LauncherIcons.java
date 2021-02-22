@@ -146,9 +146,13 @@ public class LauncherIcons implements AutoCloseable {
             Resources resources = mPm.getResourcesForApplication(iconRes.packageName);
             if (resources != null) {
                 final int id = resources.getIdentifier(iconRes.resourceName, null, null);
+                Drawable drawable = resources.getDrawableForDensity(id, mFillResIconDpi);
+                if (drawable != null) {
+                    drawable = AdaptiveIconCompat.wrap(drawable);
+                }
                 // do not stamp old legacy shortcuts as the app may have already forgotten about it
                 return createBadgedIconBitmap(
-                        resources.getDrawableForDensity(id, mFillResIconDpi),
+                        drawable,
                         Process.myUserHandle() /* only available on primary user */,
                         0 /* do not apply legacy treatment */);
             }
@@ -350,7 +354,7 @@ public class LauncherIcons implements AutoCloseable {
     }
 
     public BitmapInfo createShortcutIcon(ShortcutInfoCompat shortcutInfo) {
-        return createShortcutIcon(shortcutInfo, true /* badged */);
+        return createShortcutIcon(shortcutInfo, true /* badged */,  null);
     }
 
     public BitmapInfo createShortcutIcon(ShortcutInfoCompat shortcutInfo, boolean badged) {
@@ -359,6 +363,33 @@ public class LauncherIcons implements AutoCloseable {
 
     public BitmapInfo createShortcutIcon(ShortcutInfoCompat shortcutInfo,
             boolean badged, @Nullable Provider<Bitmap> fallbackIconProvider) {
+        IconCache cache = LauncherAppState.getInstance(mContext).getIconCache();
+        BitmapInfo result = createShortcutIconPlain(shortcutInfo, fallbackIconProvider);
+
+        final Bitmap unbadgedfinal = result.icon;
+        final ItemInfoWithIcon badge;
+        if (badged) {
+            badge = getShortcutInfoBadge(shortcutInfo, cache);
+            result.color = badge.iconColor;
+        } else {
+            badge = null;
+        }
+
+        result.icon = BitmapRenderer.createHardwareBitmap(mIconBitmapSize, mIconBitmapSize, (c) -> {
+            getShadowGenerator().recreateIcon(unbadgedfinal, c);
+            if (badge != null) {
+                badgeWithDrawable(c, new FastBitmapDrawable(badge));
+            }
+        });
+        return result;
+    }
+
+    public BitmapInfo createShortcutIconPlain(ShortcutInfoCompat shortcutInfo) {
+        return createShortcutIconPlain(shortcutInfo, null);
+    }
+
+    public BitmapInfo createShortcutIconPlain(ShortcutInfoCompat shortcutInfo,
+            @Nullable Provider<Bitmap> fallbackIconProvider) {
         Drawable unbadgedDrawable;
         if (iconProvider instanceof LawnchairIconProvider) {
             unbadgedDrawable = ((LawnchairIconProvider) iconProvider).getIcon(shortcutInfo, mFillResIconDpi);
@@ -383,20 +414,8 @@ public class LauncherIcons implements AutoCloseable {
         }
 
         BitmapInfo result = new BitmapInfo();
-        if (!badged) {
-            result.color = Themes.getColorAccent(mContext);
-            result.icon = unbadgedBitmap;
-            return result;
-        }
-
-        final Bitmap unbadgedfinal = unbadgedBitmap;
-        final ItemInfoWithIcon badge = getShortcutInfoBadge(shortcutInfo, cache);
-
-        result.color = badge.iconColor;
-        result.icon = BitmapRenderer.createHardwareBitmap(mIconBitmapSize, mIconBitmapSize, (c) -> {
-            getShadowGenerator().recreateIcon(unbadgedfinal, c);
-            badgeWithDrawable(c, new FastBitmapDrawable(badge));
-        });
+        result.color = Themes.getColorAccent(mContext);
+        result.icon = unbadgedBitmap;
         return result;
     }
 
