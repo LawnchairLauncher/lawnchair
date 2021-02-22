@@ -34,6 +34,7 @@ public class SearchActionItemInfo extends ItemInfoWithIcon {
     public static final int FLAG_SHOULD_START_FOR_RESULT = FLAG_SHOULD_START | 1 << 2;
     public static final int FLAG_BADGE_WITH_PACKAGE = 1 << 3;
     public static final int FLAG_PRIMARY_ICON_FROM_TITLE = 1 << 4;
+    public static final int FLAG_BADGE_WITH_COMPONENT_NAME = 1 << 5;
 
     private final String mFallbackPackageName;
     private int mFlags = 0;
