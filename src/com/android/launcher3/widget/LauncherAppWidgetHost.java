@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3;
+package com.android.launcher3.widget;
 
 import static android.app.Activity.RESULT_CANCELED;
 
@@ -29,12 +29,13 @@ import android.os.Handler;
 import android.util.SparseArray;
 import android.widget.Toast;
 
+import com.android.launcher3.BaseActivity;
+import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
-import com.android.launcher3.widget.DeferredAppWidgetHostView;
-import com.android.launcher3.widget.LauncherAppWidgetHostView;
-import com.android.launcher3.widget.PendingAppWidgetHostView;
 import com.android.launcher3.widget.custom.CustomWidgetManager;
 
 import java.util.ArrayList;
@@ -199,7 +200,7 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
         }
     }
 
-    void addPendingView(int appWidgetId, PendingAppWidgetHostView view) {
+    public void addPendingView(int appWidgetId, PendingAppWidgetHostView view) {
         mPendingViews.put(appWidgetId, view);
     }
 
@@ -247,7 +248,7 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
         super.onProviderChanged(appWidgetId, info);
         // The super method updates the dimensions of the providerInfo. Update the
         // launcher spans accordingly.
-        info.initSpans(mContext);
+        info.initSpans(mContext, LauncherAppState.getIDP(mContext));
     }
 
     /**
