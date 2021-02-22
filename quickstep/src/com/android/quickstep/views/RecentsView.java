@@ -26,6 +26,7 @@ import static com.android.launcher3.LauncherAnimUtils.SUCCESS_TRANSITION_PROGRES
 import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.OVERVIEW_MODAL_TASK;
+import static com.android.launcher3.LauncherState.OVERVIEW_SPLIT_SELECT;
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.Utilities.mapToRange;
 import static com.android.launcher3.Utilities.squaredHypot;
@@ -48,6 +49,7 @@ import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NON_ZERO_RO
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NO_RECENTS;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NO_TASKS;
 
+import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.LayoutTransition;
 import android.animation.LayoutTransition.TransitionListener;
@@ -114,6 +116,7 @@ import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.OverScroller;
 import com.android.launcher3.util.ResourceBasedOverride.Overrides;
+import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.ViewPool;
 import com.android.quickstep.AnimatedFloat;
@@ -211,16 +214,41 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                 }
             };
 
+    /**
+     * Even though {@link TaskView} has distinct offsetTranslationX/Y and resistance property, they
+     * are currently both used to apply secondary translation. Should their use cases change to be
+     * more specific, we'd want to create a similar FloatProperty just for a TaskView's
+     * offsetX/Y property
+     */
     public static final FloatProperty<RecentsView> TASK_SECONDARY_TRANSLATION =
             new FloatProperty<RecentsView>("taskSecondaryTranslation") {
                 @Override
                 public void setValue(RecentsView recentsView, float v) {
-                    recentsView.setTaskViewsSecondaryTranslation(v);
+                    recentsView.setTaskViewsResistanceTranslation(v);
                 }
 
                 @Override
                 public Float get(RecentsView recentsView) {
                     return recentsView.mTaskViewsSecondaryTranslation;
+                }
+            };
+
+    /**
+     * Even though {@link TaskView} has distinct offsetTranslationX/Y and resistance property, they
+     * are currently both used to apply secondary translation. Should their use cases change to be
+     * more specific, we'd want to create a similar FloatProperty just for a TaskView's
+     * offsetX/Y property
+     */
+    public static final FloatProperty<RecentsView> TASK_PRIMARY_TRANSLATION =
+            new FloatProperty<RecentsView>("taskPrimaryTranslation") {
+                @Override
+                public void setValue(RecentsView recentsView, float v) {
+                    recentsView.setTaskViewsPrimaryTranslation(v);
+                }
+
+                @Override
+                public Float get(RecentsView recentsView) {
+                    return recentsView.mTaskViewsPrimaryTranslation;
                 }
             };
 
@@ -234,7 +262,8 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                     view.mLastComputedTaskPushOutDistance = null;
                     view.mLiveTileTaskViewSimulator.recentsViewScale.value = scale;
                     view.updatePageOffsets();
-                    view.setTaskViewsSecondaryTranslation(view.mTaskViewsSecondaryTranslation);
+                    view.setTaskViewsResistanceTranslation(view.mTaskViewsSecondaryTranslation);
+                    view.setTaskViewsPrimaryTranslation(view.mTaskViewsPrimaryTranslation);
                 }
 
                 @Override
@@ -306,6 +335,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
 
     private float mAdjacentPageOffset = 0;
     private float mTaskViewsSecondaryTranslation = 0;
+    private float mTaskViewsPrimaryTranslation = 0;
     // Progress from 0 to 1 where 0 is a carousel and 1 is a 2 row grid.
     private float mGridProgress = 0;
     private boolean mShowAsGrid;
@@ -426,6 +456,28 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     private boolean mShowEmptyMessage;
     private OnEmptyMessageUpdatedListener mOnEmptyMessageUpdatedListener;
     private Layout mEmptyTextLayout;
+
+    /**
+     * Placeholder view indicating where the first split screen selected app will be placed
+     */
+    private SplitPlaceholderView mSplitPlaceholderView;
+    /**
+     * The first task that split screen selection was initiated with. When split select state is
+     * initialized, we create a
+     * {@link #createTaskDismissAnimation(TaskView, boolean, boolean, long)} for this TaskView but
+     * don't actually remove the task since the user might back out. As such, we also ensure this
+     * View doesn't go back into the {@link #mTaskViewPool}, see {@link #onViewRemoved(View)}
+     */
+    private TaskView mSplitHiddenTaskView;
+    /**
+     * Keeps track of the index of the TaskView that split screen was initialized with so we know
+     * where to insert it back into list of taskViews in case user backs out of entering split
+     * screen.
+     * NOTE: This index is the index while {@link #mSplitHiddenTaskView} was a child of recentsView,
+     * this doesn't get adjusted to reflect the new child count after the taskView is dismissed/
+     * removed from recentsView
+     */
+    private int mSplitHiddenTaskViewIndex;
 
     // Keeps track of the index where the first TaskView should be
     private int mTaskViewStartIndex = 0;
@@ -582,9 +634,19 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         loadVisibleTaskData();
     }
 
-    public void init(OverviewActionsView actionsView) {
+    public void init(OverviewActionsView actionsView, SplitPlaceholderView splitPlaceholderView) {
         mActionsView = actionsView;
         mActionsView.updateHiddenFlags(HIDDEN_NO_TASKS, getTaskViewCount() == 0);
+        mSplitPlaceholderView = splitPlaceholderView;
+
+    }
+
+    public SplitPlaceholderView getSplitPlaceholder() {
+        return mSplitPlaceholderView;
+    }
+
+    public boolean isSplitSelectionActive() {
+        return mSplitPlaceholderView.getSplitController().isSplitSelectActive();
     }
 
     @Override
@@ -628,8 +690,9 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     public void onViewRemoved(View child) {
         super.onViewRemoved(child);
 
-        // Clear the task data for the removed child if it was visible
-        if (child instanceof TaskView) {
+        // Clear the task data for the removed child if it was visible unless it's the initial
+        // taskview for entering split screen, we only pretend to dismiss the task
+        if (child instanceof TaskView && child != mSplitHiddenTaskView) {
             TaskView taskView = (TaskView) child;
             mHasVisibleTaskData.delete(taskView.getTask().key.id);
             mTaskViewPool.recycle(taskView);
@@ -707,6 +770,9 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             // Reset the running task when leaving overview since it can still have a reference to
             // its thumbnail
             mTmpRunningTask = null;
+            if (mSplitPlaceholderView.getSplitController().isSplitSelectActive()) {
+                cancelSplitSelect(false);
+            }
         }
     }
 
@@ -1764,7 +1830,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         // alpha is set to 0 so that it can be recycled in the view pool properly
         anim.setFloat(taskView, VIEW_ALPHA, 0, ACCEL_2);
         FloatProperty<TaskView> secondaryViewTranslate =
-                taskView.getDismissTaskTranslationProperty();
+                taskView.getSecondaryDissmissTranslationProperty();
         int secondaryTaskDimension = mOrientationHandler.getSecondaryDimension(taskView);
         int verticalFactor = mOrientationHandler.getSecondaryTranslationDirectionFactor();
 
@@ -1827,10 +1893,23 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                         offset += mIsRtl ? -scrollDiffPerPage : scrollDiffPerPage;
                     }
                 }
+
+                // Additional offset for fake landscape, if the pinning happens to the right or
+                // left, we need to scroll all the tasks away from the direction of the splaceholder
+                // view
+                if (isSplitSelectionActive()) {
+                    int splitPosition = getSplitPlaceholder().getSplitController()
+                            .getActiveSplitPositionOption().mStagePosition;
+                    int direction = mOrientationHandler
+                            .getSplitTranslationDirectionFactor(splitPosition);
+                    int splitOffset = mOrientationHandler.getSplitAnimationTranslation(
+                            mSplitPlaceholderView.getHeight(), mActivity.getDeviceProfile());
+                    offset += direction * splitOffset;
+                }
                 int scrollDiff = newScroll[i] - oldScroll[i] + offset;
                 if (scrollDiff != 0) {
                     FloatProperty translationProperty = child instanceof TaskView
-                            ? ((TaskView) child).getFillDismissGapTranslationProperty()
+                            ? ((TaskView) child).getPrimaryDismissTranslationProperty()
                             : mOrientationHandler.getPrimaryViewTranslate();
 
                     ResourceProvider rp = DynamicResource.provider(mActivity);
@@ -1908,6 +1987,12 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                     onLayout(false /*  changed */, getLeft(), getTop(), getRight(), getBottom());
                 }
                 resetTaskVisuals();
+                if (mActivity.isInState(OVERVIEW_SPLIT_SELECT)) {
+                    // We want to keep the tasks translations in this temporary state
+                    // after resetting the rest above
+                    setTaskViewsResistanceTranslation(mTaskViewsSecondaryTranslation);
+                    setTaskViewsPrimaryTranslation(mTaskViewsPrimaryTranslation);
+                }
                 mPendingAnimation = null;
             }
         });
@@ -2299,13 +2384,22 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         return distanceToOffscreen * offsetProgress;
     }
 
-    private void setTaskViewsSecondaryTranslation(float translation) {
+    private void setTaskViewsResistanceTranslation(float translation) {
         mTaskViewsSecondaryTranslation = translation;
         for (int i = 0; i < getTaskViewCount(); i++) {
             TaskView task = getTaskViewAt(i);
             task.getTaskResistanceTranslationProperty().set(task, translation / getScaleY());
         }
         mLiveTileTaskViewSimulator.recentsViewSecondaryTranslation.value = translation;
+    }
+
+    private void setTaskViewsPrimaryTranslation(float translation) {
+        mTaskViewsPrimaryTranslation = translation;
+        for (int i = 0; i < getTaskViewCount(); i++) {
+            TaskView task = getTaskViewAt(i);
+            task.getPrimaryDismissTranslationProperty().set(task, translation / getScaleY());
+        }
+        mLiveTileTaskViewSimulator.recentsViewPrimaryTranslation.value = translation;
     }
 
     /**
@@ -2323,6 +2417,111 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         if (taskView != null) {
             taskView.getThumbnail().getTaskOverlay().resetModalVisuals();
         }
+    }
+
+    public void initiateSplitSelect(TaskView taskView, SplitPositionOption splitPositionOption) {
+        mSplitHiddenTaskView = taskView;
+        mSplitPlaceholderView.getSplitController().setInitialTaskSelect(taskView,
+                splitPositionOption);
+        mSplitHiddenTaskViewIndex = indexOfChild(taskView);
+        mActivity.getStateManager().goToState(LauncherState.OVERVIEW_SPLIT_SELECT);
+    }
+
+    public PendingAnimation createSplitSelectInitAnimation() {
+        int duration = mActivity.getStateManager().getState().getTransitionDuration(getContext());
+        return createTaskDismissAnimation(mSplitHiddenTaskView, true, false, duration);
+    }
+
+    public void confirmSplitSelect(TaskView taskView) {
+        mSplitPlaceholderView.getSplitController().setSecondTaskId(taskView);
+        resetTaskVisuals();
+        setTranslationY(0);
+    }
+
+    public PendingAnimation cancelSplitSelect(boolean animate) {
+        mSplitPlaceholderView.getSplitController().resetState();
+        int duration = mActivity.getStateManager().getState().getTransitionDuration(getContext());
+        PendingAnimation pendingAnim = new PendingAnimation(duration);
+        if (!animate) {
+            resetFromSplitSelectionState();
+            return pendingAnim;
+        }
+
+        addViewInLayout(mSplitHiddenTaskView, mSplitHiddenTaskViewIndex,
+                mSplitHiddenTaskView.getLayoutParams());
+        mSplitHiddenTaskView.setAlpha(0);
+        int[] oldScroll = new int[getChildCount()];
+        getPageScrolls(oldScroll, false,
+                view -> view.getVisibility() != GONE && view != mSplitHiddenTaskView);
+
+        // x is correct, y is before tasks move up
+        int[] locationOnScreen = mSplitHiddenTaskView.getLocationOnScreen();
+        int[] newScroll = new int[getChildCount()];
+        getPageScrolls(newScroll, false, SIMPLE_SCROLL_LOGIC);
+
+        boolean needsCurveUpdates = false;
+        for (int i = mSplitHiddenTaskViewIndex; i >= 0; i--) {
+            View child = getChildAt(i);
+            if (child == mSplitHiddenTaskView) {
+
+                int left = newScroll[i] + getPaddingStart();
+                int topMargin = mSplitHiddenTaskView.getThumbnailTopMargin();
+                int top = -mSplitHiddenTaskView.getHeight() - locationOnScreen[1];
+                mSplitHiddenTaskView.layout(left, top,
+                        left + mSplitHiddenTaskView.getWidth(),
+                        top + mSplitHiddenTaskView.getHeight());
+                pendingAnim.add(ObjectAnimator.ofFloat(mSplitHiddenTaskView, TRANSLATION_Y,
+                        -top + mSplitPlaceholderView.getHeight() - topMargin));
+                pendingAnim.add(ObjectAnimator.ofFloat(mSplitHiddenTaskView, ALPHA, 1));
+            } else {
+                // If insertion is on last index (furthest from clear all), we directly add the view
+                // else we translate all views to the right of insertion index further right,
+                // ignore views to left
+                int scrollDiff = newScroll[i] - oldScroll[i];
+                if (scrollDiff != 0) {
+                    FloatProperty translationProperty = child instanceof TaskView
+                            ? ((TaskView) child).getPrimaryDismissTranslationProperty()
+                            : mOrientationHandler.getPrimaryViewTranslate();
+
+                    ResourceProvider rp = DynamicResource.provider(mActivity);
+                    SpringProperty sp = new SpringProperty(SpringProperty.FLAG_CAN_SPRING_ON_END)
+                            .setDampingRatio(
+                                    rp.getFloat(R.dimen.dismiss_task_trans_x_damping_ratio))
+                            .setStiffness(rp.getFloat(R.dimen.dismiss_task_trans_x_stiffness));
+                    pendingAnim.add(ObjectAnimator.ofFloat(child, translationProperty, scrollDiff)
+                            .setDuration(duration), ACCEL, sp);
+                    needsCurveUpdates = true;
+                }
+            }
+        }
+
+        if (needsCurveUpdates) {
+            pendingAnim.addOnFrameCallback(this::updateCurveProperties);
+        }
+
+        pendingAnim.addListener(new AnimationSuccessListener() {
+            @Override
+            public void onAnimationSuccess(Animator animator) {
+                resetFromSplitSelectionState();
+            }
+        });
+
+        return pendingAnim;
+    }
+
+    private void resetFromSplitSelectionState() {
+        mSplitHiddenTaskView.setTranslationY(0);
+        int pageToSnapTo = mCurrentPage;
+        if (mSplitHiddenTaskViewIndex <= pageToSnapTo) {
+            pageToSnapTo += 1;
+        } else {
+            pageToSnapTo = mSplitHiddenTaskViewIndex;
+        }
+        snapToPageImmediately(pageToSnapTo);
+        onLayout(false /*  changed */, getLeft(), getTop(), getRight(), getBottom());
+        resetTaskVisuals();
+        mSplitHiddenTaskView = null;
+        mSplitHiddenTaskViewIndex = -1;
     }
 
     private void updateDeadZoneRects() {

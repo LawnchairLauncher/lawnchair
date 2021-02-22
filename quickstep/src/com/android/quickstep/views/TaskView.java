@@ -28,6 +28,7 @@ import static android.view.Surface.ROTATION_90;
 import static android.widget.Toast.LENGTH_SHORT;
 
 import static com.android.launcher3.QuickstepTransitionManager.RECENTS_LAUNCH_DURATION;
+import static com.android.launcher3.LauncherState.OVERVIEW_SPLIT_SELECT;
 import static com.android.launcher3.Utilities.comp;
 import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncestor;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
@@ -84,6 +85,7 @@ import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.RunnableList;
+import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.util.TransformingTouchDelegate;
 import com.android.launcher3.util.ViewPool.Reusable;
 import com.android.quickstep.RecentsModel;
@@ -345,7 +347,12 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                 });
                 anim.start();
             } else {
-                launchTaskAnimated();
+                if (mActivity.isInState(OVERVIEW_SPLIT_SELECT)) {
+                    // User tapped to select second split screen app
+                    getRecentsView().confirmSplitSelect(this);
+                } else {
+                    launchTaskAnimated();
+                }
             }
             mActivity.getStatsLogManager().logger().withItemInfo(getItemInfo())
                     .log(LAUNCHER_TASK_LAUNCH_TAP);
@@ -591,6 +598,11 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     }
 
     private boolean showTaskMenu() {
+        if (getRecentsView().mActivity.isInState(OVERVIEW_SPLIT_SELECT)) {
+            // Don't show menu when selecting second split screen app
+            return true;
+        }
+
         if (!getRecentsView().isClearAllHidden()) {
             getRecentsView().snapToPage(getRecentsView().indexOfChild(this));
         } else {
@@ -617,6 +629,10 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             mIconView.setOnClickListener(null);
             mIconView.setOnLongClickListener(null);
         }
+    }
+
+    public int getThumbnailTopMargin() {
+        return (int) getResources().getDimension(R.dimen.task_thumbnail_top_margin);
     }
 
     public void setOrientationState(RecentsOrientedState orientationState) {
@@ -998,12 +1014,12 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         return Utilities.mapRange(progress, 0, endTranslation);
     }
 
-    public FloatProperty<TaskView> getFillDismissGapTranslationProperty() {
+    public FloatProperty<TaskView> getPrimaryDismissTranslationProperty() {
         return getPagedOrientationHandler().getPrimaryValue(
                 DISMISS_TRANSLATION_X, DISMISS_TRANSLATION_Y);
     }
 
-    public FloatProperty<TaskView> getDismissTaskTranslationProperty() {
+    public FloatProperty<TaskView> getSecondaryDissmissTranslationProperty() {
         return getPagedOrientationHandler().getSecondaryValue(
                 DISMISS_TRANSLATION_X, DISMISS_TRANSLATION_Y);
     }
@@ -1081,7 +1097,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                         getContext().getText(R.string.accessibility_close)));
 
         final Context context = getContext();
-        for (SystemShortcut s : TaskOverlayFactory.getEnabledShortcuts(this)) {
+        for (SystemShortcut s : TaskOverlayFactory.getEnabledShortcuts(this,
+                mActivity.getDeviceProfile())) {
             info.addAction(s.createAccessibilityAction(context));
         }
 
@@ -1113,7 +1130,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             return true;
         }
 
-        for (SystemShortcut s : TaskOverlayFactory.getEnabledShortcuts(this)) {
+        for (SystemShortcut s : TaskOverlayFactory.getEnabledShortcuts(this,
+                mActivity.getDeviceProfile())) {
             if (s.hasHandlerForAction(action)) {
                 s.onClick(this);
                 return true;
@@ -1272,6 +1290,12 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     public void setOverlayEnabled(boolean overlayEnabled) {
         mSnapshotView.setOverlayEnabled(overlayEnabled);
+    }
+
+    public void initiateSplitSelect(SplitPositionOption splitPositionOption) {
+        RecentsView rv = getRecentsView();
+        getMenuView().close(false);
+        rv.initiateSplitSelect(this, splitPositionOption);
     }
 
     /**
