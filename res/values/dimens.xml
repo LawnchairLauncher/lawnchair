@@ -166,7 +166,7 @@
 
     <dimen name="drag_flingToDeleteMinVelocity">-1500dp</dimen>
 
-    <dimen name="spring_loaded_panel_border">1dp</dimen>
+    <dimen name="spring_loaded_panel_border">2dp</dimen>
     <dimen name="keyboard_drag_stroke_width">4dp</dimen>
 
 <!-- Folders -->
@@ -297,5 +297,9 @@
     <dimen name="task_thumbnail_icon_size">0dp</dimen>
     <dimen name="task_thumbnail_icon_size_grid">0dp</dimen>
     <dimen name="overview_task_margin">0dp</dimen>
+
+<!-- Workspace grid visualization parameters -->
+    <dimen name="grid_visualization_rounding_radius">28dp</dimen>
+    <dimen name="grid_visualization_cell_spacing">6dp</dimen>
 
 </resources>
