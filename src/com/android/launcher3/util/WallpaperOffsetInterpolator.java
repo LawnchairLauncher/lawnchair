@@ -218,6 +218,7 @@ public class WallpaperOffsetInterpolator extends BroadcastReceiver {
             super(UI_HELPER_EXECUTOR.getLooper());
             mContext = context;
             mWM = WallpaperManager.getInstance(context);
+            mInterpolator = Interpolators.DEACCEL_1_5;
         }
 
         @Override

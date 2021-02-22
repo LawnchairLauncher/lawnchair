@@ -655,10 +655,11 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
 
         int currentPage = getNextPage();
-        snapToPage(index, SNAP_OFF_EMPTY_SCREEN_DURATION);
+        // Duration is zero since we don't want to animate here
+        // Reference: https://android.googlesource.com/platform/packages/apps/Launcher3/+/6e379fc78472b0ada5d35afe7188dfa1eaa5a836
+        snapToPage(index, 0);
         int id = getScreenIdForPageIndex(index);
-        fadeAndRemoveScreen(id, SNAP_OFF_EMPTY_SCREEN_DURATION,
-                FADE_EMPTY_SCREEN_DURATION, null, false);
+        removeExtraScreen(id, false);
 
         CellLayout cl = mWorkspaceScreens.get(id);
         mWorkspaceScreens.remove(id);
@@ -667,10 +668,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         boolean isInAccessibleDrag = mLauncher.getAccessibilityDelegate().isInAccessibleDrag();
 
         boolean pageShift = indexOfChild(cl) < currentPage;
-
-        if (isInAccessibleDrag) {
-            cl.enableAccessibleDrag(false, CellLayout.WORKSPACE_ACCESSIBILITY_DRAG);
-        }
 
         removeView(cl);
 
@@ -683,12 +680,21 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
     }
 
+    public void removeExtraScreen(int id, boolean stripEmptyScreens) {
+        removeExtraScreenDelayed(id, 0, stripEmptyScreens, null);
+    }
+
     public void removeExtraEmptyScreen(boolean stripEmptyScreens) {
         removeExtraEmptyScreenDelayed(0, stripEmptyScreens, null);
     }
 
     public void removeExtraEmptyScreenDelayed(
             int delay, boolean stripEmptyScreens, Runnable onComplete) {
+        removeExtraScreenDelayed(EXTRA_EMPTY_SCREEN_ID, delay, stripEmptyScreens, onComplete);
+    }
+
+    public void removeExtraScreenDelayed(int id,
+        int delay, boolean stripEmptyScreens, Runnable onComplete) {
         if (mLauncher.isWorkspaceLoading()) {
             // Don't strip empty screens if the workspace is still loading
             return;
@@ -702,9 +708,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         convertFinalScreenToEmptyScreenIfNecessary();
         if (hasExtraEmptyScreen()) {
-            removeView(mWorkspaceScreens.get(EXTRA_EMPTY_SCREEN_ID));
-            mWorkspaceScreens.remove(EXTRA_EMPTY_SCREEN_ID);
-            mScreenOrder.removeValue(EXTRA_EMPTY_SCREEN_ID);
+            removeView(mWorkspaceScreens.get(id));
+            mWorkspaceScreens.remove(id);
+            mScreenOrder.removeValue(id);
 
             // Update the page indicator to reflect the removed page.
             showPageIndicatorAtCurrentScroll();
@@ -1958,7 +1964,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
                         final LauncherAppWidgetHostView hostView = (LauncherAppWidgetHostView) cell;
                         AppWidgetProviderInfo pInfo = hostView.getAppWidgetInfo();
-                        if (pInfo != null && !d.accessibleDrag) {
+                        if (pInfo != null && pInfo.resizeMode != AppWidgetProviderInfo.RESIZE_NONE
+                                && !options.isAccessibleDrag) {
                             onCompleteRunnable = () -> {
                                 if (!isPageInTransition()) {
                                     AppWidgetResizeFrame.showForWidget(hostView, cellLayout);

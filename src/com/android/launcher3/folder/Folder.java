@@ -1683,8 +1683,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         return mInfo.container == ItemInfo.NO_ID;
     }
 
-    public static String getDefaultFolderName() {
-        return sDefaultFolderName;
+    public String getDefaultFolderName() {
+        return mFolderName.getText().toString();
     }
 
     /**

@@ -718,9 +718,6 @@ public class SettingsActivity extends SettingsBaseActivity implements
             } else if (preference instanceof EditTextPreference) {
                 f = ThemedEditTextPreferenceDialogFragmentCompat.Companion
                         .newInstance(preference.getKey());
-            } else if (preference instanceof AbstractMultiSelectListPreference) {
-                f = ThemedMultiSelectListPreferenceDialogFragmentCompat.Companion
-                        .newInstance(preference.getKey());
             } else if (preference instanceof SmartspaceEventProvidersPreference) {
                 f = SmartspaceEventProvidersFragment.Companion.newInstance(preference.getKey());
             } else if (preference instanceof WeatherIconPackPreference) {

@@ -310,8 +310,8 @@ public class FolderInfo extends ItemInfo {
         return firstItemProvider.getFirstItem();
     }
 
-    public CharSequence getIconTitle() {
-        if (!TextUtils.equals(Folder.getDefaultFolderName(), title)) {
+    public CharSequence getIconTitle(Folder folder) {
+        if (!TextUtils.equals(folder.getDefaultFolderName(), title)) {
             return title;
         } else if (isCoverMode()) {
             WorkspaceItemInfo info = getCoverInfo();
@@ -320,7 +320,7 @@ public class FolderInfo extends ItemInfo {
             }
             return info.title;
         } else {
-            return Folder.getDefaultFolderName();
+            return folder.getDefaultFolderName();
         }
     }
 

@@ -213,7 +213,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
 
         icon.setClipToPadding(false);
         icon.mFolderName = icon.findViewById(R.id.folder_icon_name);
-        icon.mFolderName.setText(folderInfo.getIconTitle());
+        icon.mFolderName.setText(folderInfo.getIconTitle(icon.getFolder()));
         icon.mFolderName.setCompoundDrawablePadding(0);
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) icon.mFolderName.getLayoutParams();
         if (folderInfo instanceof DrawerFolderInfo) {
@@ -304,7 +304,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
             mFolderName.clearIcon();
             mBackground.setStartOpacity(1f);
         }
-        mFolderName.setText(mInfo.getIconTitle());
+        mFolderName.setText(mInfo.getIconTitle(getFolder()));
         requestLayout();
     }
 
@@ -798,7 +798,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     public void onItemsChanged(boolean animate) {
         if (mInfo.isCoverMode()) {
             onIconChanged();
-            mFolderName.setText(mInfo.getIconTitle());
+            mFolderName.setText(mInfo.getIconTitle(getFolder()));
         }
         updatePreviewItems(animate);
         invalidate();
@@ -841,7 +841,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     }
 
     public void onTitleChanged(CharSequence title) {
-        mFolderName.setText(mInfo.getIconTitle());
+        mFolderName.setText(mInfo.getIconTitle(getFolder()));
         applySwipeUpAction(mInfo);
     }
 

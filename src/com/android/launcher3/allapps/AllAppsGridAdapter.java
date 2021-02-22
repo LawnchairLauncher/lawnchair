@@ -44,6 +44,7 @@ import ch.deletescape.lawnchair.globalsearch.SearchProviderController;
 import ch.deletescape.lawnchair.globalsearch.providers.web.WebSearchProvider;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.AlphabeticalAppsList.AdapterItem;
 import com.android.launcher3.folder.FolderIcon;
@@ -338,7 +339,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             case VIEW_TYPE_FOLDER:
                 ViewGroup container = (ViewGroup) holder.itemView;
                 FolderIcon folderIcon = mApps.getAdapterItems().get(position)
-                        .folderItem.getFolderIcon(mLauncher, container);
+                        .folderItem.getFolderIcon((Launcher) mLauncher, container);
 
                 container.removeAllViews();
                 container.addView(folderIcon);

@@ -23,6 +23,7 @@ import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
@@ -83,6 +84,7 @@ import org.jetbrains.annotations.NotNull;
  * because we want to make the bubble taller than the text and TextView's clip is
  * too aggressive.
  */
+@SuppressLint("AppCompatCustomView")
 public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, OnResumeCallback,
         IconLabelDotView, DraggableView, Reorderable, ColorEngine.OnColorChangeListener {
 
@@ -131,7 +133,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     private Drawable mIcon;
     private boolean mCenterVertically;
 
-    private final int mDisplay;
+    private int mDisplay;
 
     private final CheckLongPressHelper mLongPressHelper;
 
@@ -185,12 +187,9 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             mIconSize = 0;
             mCenterVertically = true;
             mLongPressHelper = new CheckLongPressHelper(this);
-            mStylusEventHelper = null;
-            mSlop = 0;
             return;
         }
         mActivity = activity;
-        mSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
 
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.BubbleTextView, defStyle, 0);
@@ -204,7 +203,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         LawnchairPreferences prefs = Utilities.getLawnchairPrefs(context);
         if (mDisplay == DISPLAY_WORKSPACE) {
             mHideText = prefs.getHideAppLabels();
-            DeviceProfile grid = mActivity.getDeviceProfile();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, isTextHidden() ? 0 : grid.iconTextSizePx);
             setCompoundDrawablePadding(grid.iconDrawablePaddingPx);
             defaultIconSize = grid.iconSizePx;
@@ -213,7 +211,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             colorEngine.addColorChangeListeners(this, Resolvers.WORKSPACE_ICON_LABEL);
         } else if (mDisplay == DISPLAY_ALL_APPS) {
             mHideText = prefs.getHideAllAppsAppLabels();
-            DeviceProfile grid = mActivity.getDeviceProfile();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, isTextHidden() ? 0 : grid.allAppsIconTextSizePx);
             setCompoundDrawablePadding(grid.allAppsIconDrawablePaddingPx);
             defaultIconSize = grid.allAppsIconSizePx;
@@ -222,7 +219,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             colorEngine.addColorChangeListeners(this, Resolvers.ALLAPPS_ICON_LABEL);
         } else if (mDisplay == DISPLAY_FOLDER) {
             mHideText = prefs.getHideAppLabels();
-            DeviceProfile grid = mActivity.getDeviceProfile();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, isTextHidden() ? 0 : grid.folderChildTextSizePx);
             setCompoundDrawablePadding(grid.folderChildDrawablePaddingPx);
             defaultIconSize = grid.folderChildIconSizePx;
@@ -230,7 +226,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             setLineCount(lines);
         } else if (mDisplay == DISPLAY_DRAWER_FOLDER) {
             mHideText = prefs.getHideAllAppsAppLabels();
-            DeviceProfile grid = mActivity.getDeviceProfile();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, isTextHidden() ? 0 : grid.folderChildTextSizePx);
             setCompoundDrawablePadding(grid.folderChildDrawablePaddingPx);
             defaultIconSize = grid.folderChildIconSizePx;
