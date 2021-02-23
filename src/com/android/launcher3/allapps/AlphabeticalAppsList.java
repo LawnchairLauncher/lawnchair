@@ -185,7 +185,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         if (results == null || mSearchResults != results) {
             boolean same = mSearchResults != null && mSearchResults.equals(results);
             mSearchResults = results;
-            onAppsUpdated();
+            updateAdapterItems();
             return !same;
         }
         return false;
@@ -257,11 +257,13 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         }
 
         // Recompose the set of adapter items from the current set of apps
-        updateAdapterItems();
+        if (mSearchResults == null) {
+            updateAdapterItems();
+        }
     }
 
     /**
-     * Updates the set of filtered apps with the current filter.  At this point, we expect
+     * Updates the set of filtered apps with the current filter. At this point, we expect
      * mCachedSectionNames to have been calculated for the set of all apps in mApps.
      */
     private void updateAdapterItems() {
