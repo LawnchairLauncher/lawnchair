@@ -42,12 +42,15 @@ public class SearchActionItemInfo extends ItemInfoWithIcon {
     private int mFlags = 0;
     private final Icon mIcon;
 
+    // If true title does not contain any personal info and eligible for logging.
+    private final boolean mIsPersonalTitle;
     private Intent mIntent;
 
     private PendingIntent mPendingIntent;
 
     public SearchActionItemInfo(Icon icon, String packageName, UserHandle user,
-            CharSequence title) {
+            CharSequence title, boolean isPersonalTitle) {
+        mIsPersonalTitle = isPersonalTitle;
         this.user = user == null ? Process.myUserHandle() : user;
         this.title = title;
         this.container = EXTENDED_CONTAINERS;
@@ -62,6 +65,7 @@ public class SearchActionItemInfo extends ItemInfoWithIcon {
         mFlags = info.mFlags;
         title = info.title;
         this.container = EXTENDED_CONTAINERS;
+        this.mIsPersonalTitle = info.mIsPersonalTitle;
     }
 
     /**
@@ -118,11 +122,14 @@ public class SearchActionItemInfo extends ItemInfoWithIcon {
 
     @Override
     public ItemInfo buildProto(FolderInfo fInfo) {
+        SearchActionItem.Builder itemBuilder = SearchActionItem.newBuilder()
+                .setPackageName(mFallbackPackageName);
+
+        if (!mIsPersonalTitle) {
+            itemBuilder.setTitle(title.toString());
+        }
         return getDefaultItemInfoBuilder()
-                .setSearchActionItem(
-                        SearchActionItem.newBuilder()
-                                .setTitle(title.toString())
-                                .setPackageName(mFallbackPackageName))
+                .setSearchActionItem(itemBuilder)
                 .setContainerInfo(getContainerInfo())
                 .build();
     }
