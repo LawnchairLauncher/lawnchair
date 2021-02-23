@@ -327,6 +327,8 @@ public class StatsLogCompatManager extends StatsLogManager {
                 return info.getWidget().getPackageName();
             case TASK:
                 return info.getTask().getPackageName();
+            case SEARCH_ACTION_ITEM:
+                return info.getSearchActionItem().getPackageName();
             default:
                 return null;
         }
@@ -342,6 +344,8 @@ public class StatsLogCompatManager extends StatsLogManager {
                 return info.getWidget().getComponentName();
             case TASK:
                 return info.getTask().getComponentName();
+            case SEARCH_ACTION_ITEM:
+                return info.getSearchActionItem().getTitle();
             default:
                 return null;
         }
