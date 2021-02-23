@@ -34,6 +34,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
@@ -61,7 +63,8 @@ import java.util.function.Predicate;
  * Popup for showing the full list of available widgets
  */
 public class WidgetsFullSheet extends BaseWidgetSheet
-        implements Insettable, ProviderChangedListener, OnActivePageChangedListener {
+        implements Insettable, ProviderChangedListener, OnActivePageChangedListener,
+        WidgetsRecyclerView.HeaderViewDimensionsProvider {
 
     private static final long DEFAULT_OPEN_DURATION = 267;
     private static final long FADE_IN_DURATION = 150;
@@ -77,6 +80,10 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             mPrimaryWidgetsFilter.negate();
 
     @Nullable private PersonalWorkPagedView mViewPager;
+    private int mInitialTabsHeight = 0;
+    private View mTabsView;
+    private SearchAndRecommendationViewHolder mSearchAndRecommendationViewHolder;
+    private SearchAndRecommendationsScrollController mSearchAndRecommendationsScrollController;
 
     public WidgetsFullSheet(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -98,8 +105,9 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         int contentLayoutRes = mHasWorkProfile ? R.layout.widgets_full_sheet_paged_view
                 : R.layout.widgets_full_sheet_recyclerview;
-        layoutInflater.inflate(contentLayoutRes,  springLayout, true);
+        layoutInflater.inflate(contentLayoutRes, springLayout, true);
 
+        RecyclerViewFastScroller fastScroller = findViewById(R.id.fast_scroller);
         if (mHasWorkProfile) {
             mViewPager = findViewById(R.id.widgets_view_pager);
             // Temporarily disable swipe gesture until widgets list horizontal scrollviews per
@@ -108,10 +116,12 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             mViewPager.initParentViews(this);
             mViewPager.getPageIndicator().setOnActivePageChangedListener(this);
             mViewPager.getPageIndicator().setActiveMarker(AdapterHolder.PRIMARY);
+            mTabsView = findViewById(R.id.tabs);
             findViewById(R.id.tab_personal)
                     .setOnClickListener((View view) -> mViewPager.snapToPage(0));
             findViewById(R.id.tab_work)
                     .setOnClickListener((View view) -> mViewPager.snapToPage(1));
+            fastScroller.setIsRecyclerViewFirstChildInParent(false);
             springLayout.addSpringView(R.id.primary_widgets_list_view);
             springLayout.addSpringView(R.id.work_widgets_list_view);
         } else {
@@ -119,12 +129,36 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             springLayout.addSpringView(R.id.primary_widgets_list_view);
         }
 
+        layoutInflater.inflate(R.layout.widgets_full_sheet_search_and_recommendations, springLayout,
+                true);
+        springLayout.addSpringView(R.id.search_and_recommendations_container);
+
+        mSearchAndRecommendationViewHolder = new SearchAndRecommendationViewHolder(
+                findViewById(R.id.search_and_recommendations_container));
+        mSearchAndRecommendationsScrollController = new SearchAndRecommendationsScrollController(
+                mHasWorkProfile,
+                mSearchAndRecommendationViewHolder,
+                findViewById(R.id.primary_widgets_list_view),
+                mHasWorkProfile ? findViewById(R.id.work_widgets_list_view) : null,
+                mTabsView,
+                mViewPager);
+        fastScroller.setOnFastScrollChangeListener(mSearchAndRecommendationsScrollController);
+
         onWidgetsBound();
     }
 
     @Override
     public void onActivePageChanged(int currentActivePage) {
         mAdapters.get(currentActivePage).mWidgetsRecyclerView.bindFastScrollbar();
+
+        reset();
+    }
+
+    private void reset() {
+        mAdapters.get(AdapterHolder.PRIMARY).mWidgetsRecyclerView.scrollToTop();
+        if (mHasWorkProfile) {
+            mAdapters.get(AdapterHolder.WORK).mWidgetsRecyclerView.scrollToTop();
+        }
     }
 
     @VisibleForTesting
@@ -220,6 +254,12 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 contentLeft + contentWidth, height);
 
         setTranslationShift(mTranslationShift);
+
+        if (mInitialTabsHeight == 0 && mTabsView != null) {
+            mInitialTabsHeight = mTabsView.getMeasuredHeight();
+        }
+
+        mSearchAndRecommendationsScrollController.updateMarginAndPadding();
     }
 
     @Override
@@ -325,6 +365,14 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         AccessibilityManagerCompat.sendStateEventToTest(getContext(), NORMAL_STATE_ORDINAL);
     }
 
+    @Override
+    public int getHeaderViewHeight() {
+        // No need to check work profile here because mInitialTabHeight is always 0 if there is no
+        // work profile.
+        return mInitialTabsHeight
+                + mSearchAndRecommendationViewHolder.mContainer.getMeasuredHeight();
+    }
+
     /** A holder class for holding adapters & their corresponding recycler view. */
     private final class AdapterHolder {
         static final int PRIMARY = 0;
@@ -354,9 +402,24 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         void setup(WidgetsRecyclerView recyclerView) {
             mWidgetsRecyclerView = recyclerView;
             mWidgetsRecyclerView.setAdapter(mWidgetsListAdapter);
+            mWidgetsRecyclerView.setHeaderViewDimensionsProvider(WidgetsFullSheet.this);
             mWidgetsRecyclerView.setEdgeEffectFactory(
                     ((TopRoundedCornerView) mContent).createEdgeEffectFactory());
             mWidgetsListAdapter.setApplyBitmapDeferred(false, mWidgetsRecyclerView);
+        }
+    }
+
+    final class SearchAndRecommendationViewHolder {
+        final View mContainer;
+        final View mCollapseHandle;
+        final EditText mSearchBar;
+        final TextView mHeaderTitle;
+
+        SearchAndRecommendationViewHolder(View searchAndRecommendationContainer) {
+            mContainer = searchAndRecommendationContainer;
+            mCollapseHandle = mContainer.findViewById(R.id.collapse_handle);
+            mSearchBar = mContainer.findViewById(R.id.widgets_search_bar);
+            mHeaderTitle = mContainer.findViewById(R.id.title);
         }
     }
 }

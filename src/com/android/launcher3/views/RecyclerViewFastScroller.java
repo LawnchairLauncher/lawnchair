@@ -34,6 +34,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.BaseRecyclerView;
@@ -99,6 +100,7 @@ public class RecyclerViewFastScroller extends View {
     private boolean mIsThumbDetached;
     private final boolean mCanThumbDetach;
     private boolean mIgnoreDragGesture;
+    private boolean mIsRecyclerViewFirstChildInParent = true;
 
     // This is the offset from the top of the scrollbar when the user first starts touching.  To
     // prevent jumping, this offset is applied as the user scrolls.
@@ -112,6 +114,7 @@ public class RecyclerViewFastScroller extends View {
 
     protected BaseRecyclerView mRv;
     private RecyclerView.OnScrollListener mOnScrollListener;
+    @Nullable private OnFastScrollChangeListener mOnFastScrollChangeListener;
 
     private int mDownX;
     private int mDownY;
@@ -188,6 +191,9 @@ public class RecyclerViewFastScroller extends View {
         updatePopupY(y);
         mThumbOffsetY = y;
         invalidate();
+        if (mOnFastScrollChangeListener != null) {
+            mOnFastScrollChangeListener.onThumbOffsetYChanged(mThumbOffsetY);
+        }
     }
 
     public int getThumbOffsetY() {
@@ -391,7 +397,9 @@ public class RecyclerViewFastScroller extends View {
             return false;
         }
         getHitRect(sTempRect);
-        sTempRect.top += mRv.getScrollBarTop();
+        if (mIsRecyclerViewFirstChildInParent) {
+            sTempRect.top += mRv.getScrollBarTop();
+        }
         if (outOffset != null) {
             outOffset.set(sTempRect.left, sTempRect.top);
         }
@@ -403,5 +411,24 @@ public class RecyclerViewFastScroller extends View {
         // There is actually some overlap between the track and the thumb. But since the track
         // alpha is so low, it does not matter.
         return false;
+    }
+
+    public void setIsRecyclerViewFirstChildInParent(boolean isRecyclerViewFirstChildInParent) {
+        mIsRecyclerViewFirstChildInParent = isRecyclerViewFirstChildInParent;
+    }
+
+    public void setOnFastScrollChangeListener(
+            @Nullable OnFastScrollChangeListener onFastScrollChangeListener) {
+        mOnFastScrollChangeListener = onFastScrollChangeListener;
+    }
+
+    /**
+     * A callback that is invoked when there is a scroll change in {@link RecyclerViewFastScroller}.
+     */
+    public interface OnFastScrollChangeListener {
+        /**
+         * Called when the thumb offset vertical position, in pixels, has changed to {@code y}.
+         */
+        void onThumbOffsetYChanged(int y);
     }
 }
