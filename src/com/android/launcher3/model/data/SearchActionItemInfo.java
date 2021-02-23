@@ -25,6 +25,9 @@ import android.os.UserHandle;
 
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.logger.LauncherAtom.ItemInfo;
+import com.android.launcher3.logger.LauncherAtom.SearchActionItem;
+
 /**
  * Represents a SearchAction with in launcher
  */
@@ -111,5 +114,16 @@ public class SearchActionItemInfo extends ItemInfoWithIcon {
     @Override
     public ItemInfoWithIcon clone() {
         return new SearchActionItemInfo(this);
+    }
+
+    @Override
+    public ItemInfo buildProto(FolderInfo fInfo) {
+        return getDefaultItemInfoBuilder()
+                .setSearchActionItem(
+                        SearchActionItem.newBuilder()
+                                .setTitle(title.toString())
+                                .setPackageName(mFallbackPackageName))
+                .setContainerInfo(getContainerInfo())
+                .build();
     }
 }

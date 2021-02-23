@@ -129,7 +129,7 @@ public class AllAppsSectionDecorator extends RecyclerView.ItemDecoration {
             mIsFullWidth = isFullWidth;
             int endScrim = Themes.getColorBackground(context);
             mFillcolor = ColorUtils.setAlphaComponent(endScrim, fillAlpha);
-            mFocusColor = ColorUtils.setAlphaComponent(endScrim, fillAlpha);
+            mFocusColor = endScrim;
 
             mIsTopRound = isTopRound;
             mIsBottomRound = isBottomRound;
