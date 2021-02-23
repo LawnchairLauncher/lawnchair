@@ -122,13 +122,13 @@
     <dimen name="accessibility_gesture_min_swipe_distance">80dp</dimen>
 
     <!-- Taskbar -->
-    <dimen name="taskbar_size">48dp</dimen>
-    <dimen name="taskbar_icon_size">32dp</dimen>
+    <dimen name="taskbar_size">60dp</dimen>
+    <dimen name="taskbar_icon_size">44dp</dimen>
     <dimen name="taskbar_icon_touch_size">48dp</dimen>
     <dimen name="taskbar_icon_drag_icon_size">54dp</dimen>
     <!-- Note that this applies to both sides of all icons, so visible space is double this. -->
-    <dimen name="taskbar_icon_spacing">14dp</dimen>
+    <dimen name="taskbar_icon_spacing">8dp</dimen>
     <dimen name="taskbar_divider_thickness">1dp</dimen>
-    <dimen name="taskbar_divider_height">24dp</dimen>
+    <dimen name="taskbar_divider_height">32dp</dimen>
     <dimen name="taskbar_folder_margin">16dp</dimen>
 </resources>
