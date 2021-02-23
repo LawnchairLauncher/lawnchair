@@ -148,9 +148,12 @@ public class QuickstepModelDelegate extends ModelDelegate implements OnIDPChange
                         ? (FolderInfo) itemsIdMap.get(info.container) : null;
                 StatsLogCompatManager.writeSnapshot(info.buildProto(parent), instanceId);
             }
+            additionalSnapshotEvents(instanceId);
             prefs.edit().putLong(LAST_SNAPSHOT_TIME_MILLIS, now).apply();
         }
     }
+
+    protected void additionalSnapshotEvents(InstanceId snapshotInstanceId){}
 
     @Override
     public void validateData() {
