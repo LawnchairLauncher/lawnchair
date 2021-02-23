@@ -96,6 +96,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     private static final int MIN_FLING_VELOCITY = 250;
 
     private boolean mFreeScroll = false;
+    /** If {@code false}, disable swipe gesture to switch between pages. */
+    private boolean mSwipeGestureEnabled = true;
 
     protected final int mFlingThresholdVelocity;
     protected final int mEasyFlingThresholdVelocity;
@@ -858,6 +860,14 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
     /**
+     * If {@code enableSwipeGesture} is {@code true}, enables swipe gesture to navigate between
+     * pages. Otherwise, disables the navigation gesture.
+     */
+    public void setSwipeGestureEnabled(boolean swipeGestureEnabled) {
+        mSwipeGestureEnabled = swipeGestureEnabled;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -878,6 +888,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
          * If we return true, onTouchEvent will be called and we do the actual
          * scrolling there.
          */
+
+        if (!mSwipeGestureEnabled) return false;
 
         // Skip touch handling if there are no pages to swipe
         if (getChildCount() <= 0) return false;
