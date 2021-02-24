@@ -49,6 +49,7 @@ import com.android.launcher3.uioverrides.states.OverviewState;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
+import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 
 /**
  * Touch controller for handling various state transitions in portrait UI.
@@ -318,5 +319,45 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
         public float getInterpolation(float v) {
             return baseInterpolator.getInterpolation(v);
         }
+    }
+
+    @Override
+    public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                InteractionJankMonitorWrapper.begin(
+                        mLauncher.getRootView(), InteractionJankMonitorWrapper.CUJ_OPEN_ALL_APPS);
+                break;
+
+            case MotionEvent.ACTION_CANCEL:
+            case MotionEvent.ACTION_UP:
+                InteractionJankMonitorWrapper.cancel(
+                        InteractionJankMonitorWrapper.CUJ_OPEN_ALL_APPS);
+                break;
+        }
+        return super.onControllerInterceptTouchEvent(ev);
+
+    }
+
+    @Override
+    protected void onReinitToState(LauncherState newToState) {
+        super.onReinitToState(newToState);
+        if (newToState != ALL_APPS) {
+            InteractionJankMonitorWrapper.cancel(InteractionJankMonitorWrapper.CUJ_OPEN_ALL_APPS);
+        }
+    }
+
+    @Override
+    protected void onReachedFinalState(LauncherState toState) {
+        super.onReinitToState(toState);
+        if (toState == ALL_APPS) {
+            InteractionJankMonitorWrapper.end(InteractionJankMonitorWrapper.CUJ_OPEN_ALL_APPS);
+        }
+    }
+
+    @Override
+    protected void clearState() {
+        super.clearState();
+        InteractionJankMonitorWrapper.cancel(InteractionJankMonitorWrapper.CUJ_OPEN_ALL_APPS);
     }
 }

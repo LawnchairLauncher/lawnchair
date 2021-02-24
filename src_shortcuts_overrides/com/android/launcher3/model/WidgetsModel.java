@@ -9,7 +9,6 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.os.Process;
 import android.os.UserHandle;
 import android.util.Log;
 
@@ -115,7 +114,7 @@ public class WidgetsModel {
                 widgetsAndShortcuts.add(new WidgetItem(info, app.getIconCache(), pm));
                 updatedItems.add(info);
             }
-            setWidgetsAndShortcuts(widgetsAndShortcuts, app, packageUser);
+            setWidgetsAndShortcuts(widgetsAndShortcuts, app);
         } catch (Exception e) {
             if (!FeatureFlags.IS_STUDIO_BUILD && Utilities.isBinderSizeError(e)) {
                 // the returned value may be incomplete and will not be refreshed until the next
@@ -132,52 +131,28 @@ public class WidgetsModel {
     }
 
     private synchronized void setWidgetsAndShortcuts(ArrayList<WidgetItem> rawWidgetsShortcuts,
-            LauncherAppState app, @Nullable PackageUserKey packageUser) {
+            LauncherAppState app) {
         if (DEBUG) {
             Log.d(TAG, "addWidgetsAndShortcuts, widgetsShortcuts#=" + rawWidgetsShortcuts.size());
         }
 
         // Temporary list for {@link PackageItemInfos} to avoid having to go through
         // {@link mPackageItemInfos} to locate the key to be used for {@link #mWidgetsList}
-        HashMap<String, PackageItemInfo> tmpPackageItemInfos = new HashMap<>();
+        HashMap<PackageUserKey, PackageItemInfo> tmpPackageItemInfos = new HashMap<>();
 
         // clear the lists.
-        if (packageUser == null) {
-            mWidgetsList.clear();
-        } else {
-            PackageItemInfo packageItem = mWidgetsList.keySet()
-                    .stream()
-                    .filter(item -> item.packageName.equals(packageUser.mPackageName))
-                    .findFirst()
-                    .orElse(null);
-            if (packageItem != null) {
-                // We want to preserve the user that was on the packageItem previously,
-                // so add it to tmpPackageItemInfos here to avoid creating a new entry.
-                tmpPackageItemInfos.put(packageItem.packageName, packageItem);
-
-                // Add the widgets for other users in the rawList as it only contains widgets for
-                // packageUser
-                List<WidgetItem> otherUserItems = mWidgetsList.remove(packageItem);
-                otherUserItems.removeIf(w -> w.user.equals(packageUser.mUser));
-                rawWidgetsShortcuts.addAll(otherUserItems);
-            }
-        }
-
-        UserHandle myUser = Process.myUserHandle();
-
+        mWidgetsList.clear();
         // add and update.
         mWidgetsList.putAll(rawWidgetsShortcuts.stream()
                 .filter(new WidgetValidityCheck(app))
                 .collect(Collectors.groupingBy(item -> {
-                    String packageName = item.componentName.getPackageName();
-                    PackageItemInfo pInfo = tmpPackageItemInfos.get(packageName);
+                    PackageUserKey packageUserKey = new PackageUserKey(
+                            item.componentName.getPackageName(), item.user);
+                    PackageItemInfo pInfo = tmpPackageItemInfos.get(packageUserKey);
                     if (pInfo == null) {
-                        pInfo = new PackageItemInfo(packageName);
+                        pInfo = new PackageItemInfo(packageUserKey.mPackageName);
                         pInfo.user = item.user;
-                        tmpPackageItemInfos.put(packageName,  pInfo);
-                    } else if (!myUser.equals(pInfo.user)) {
-                        // Keep updating the user, until we get the primary user.
-                        pInfo.user = item.user;
+                        tmpPackageItemInfos.put(packageUserKey,  pInfo);
                     }
                     return pInfo;
                 })));
