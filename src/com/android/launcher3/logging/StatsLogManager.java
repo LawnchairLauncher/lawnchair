@@ -392,6 +392,9 @@ public class StatsLogManager implements ResourceBasedOverride {
 
         @UiEvent(doc = "User selected from a selection row of Slice.")
         LAUNCHER_SLICE_SELECTION_ACTION(707),
+
+        @UiEvent(doc = "Launcher entered into AllApps state with device search enabled.")
+        LAUNCHER_ALLAPPS_ENTRY_WITH_DEVICE_SEARCH(720),
         ;
 
         // ADD MORE
