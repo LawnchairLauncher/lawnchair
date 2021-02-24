@@ -189,6 +189,14 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
     /** Updates vertical margins for different navigation mode or configuration changes. */
     public void updateVerticalMargin(Mode mode) {
+        LayoutParams actionParams = (LayoutParams) findViewById(
+                R.id.action_buttons).getLayoutParams();
+        actionParams.setMargins(
+                actionParams.leftMargin, actionParams.topMargin, actionParams.rightMargin,
+                getBottomVerticalMargin(mode));
+    }
+
+    protected int getBottomVerticalMargin(Mode mode) {
         int bottomMargin;
         int orientation = getResources().getConfiguration().orientation;
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -201,8 +209,6 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
                     .getDimensionPixelSize(R.dimen.overview_actions_bottom_margin_gesture);
         }
         bottomMargin += mInsets.bottom;
-        LayoutParams params = (LayoutParams) getLayoutParams();
-        params.setMargins(
-                params.leftMargin, params.topMargin, params.rightMargin, bottomMargin);
+        return bottomMargin;
     }
 }

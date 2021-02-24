@@ -27,12 +27,6 @@
         android:background="?android:attr/colorPrimary"
         android:elevation="4dp">
 
-        <com.android.launcher3.widget.picker.WidgetsRecyclerView
-            android:id="@+id/widgets_list_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false" />
-
         <!-- Fast scroller popup -->
         <TextView
             android:id="@+id/fast_scroller_popup"

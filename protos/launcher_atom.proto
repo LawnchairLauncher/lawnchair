@@ -29,6 +29,7 @@ message ItemInfo {
     Shortcut shortcut = 3;
     Widget widget = 4;
     FolderIcon folder_icon = 9;
+    Slice slice = 10;
     SearchActionItem search_action_item = 11;
   }
   // When used for launch event, stores the global predictive rank
@@ -168,6 +169,11 @@ message FolderIcon {
   // Details about actual folder label.
   // Populated when folder label is not a PII.
   optional string label_info = 4;
+}
+
+// Contains Slice details for logging.
+message Slice{
+  optional string uri = 1;
 }
 
 // Represents SearchAction with in launcher
