@@ -23,6 +23,7 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import android.content.Context;
 
 import androidx.annotation.Nullable;
+import androidx.slice.SliceItem;
 
 import com.android.launcher3.R;
 import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
@@ -366,6 +367,31 @@ public class StatsLogManager implements ResourceBasedOverride {
 
         @UiEvent(doc = "User switched to Work tab in AllApps screen.")
         LAUNCHER_ALLAPPS_SWITCHED_TO_WORK_TAB(696),
+
+        @UiEvent(doc = "Default event when dedicated UI event is not available for the user action"
+                + " on slice .")
+        LAUNCHER_SLICE_DEFAULT_ACTION(700),
+
+        @UiEvent(doc = "User toggled-on a Slice item.")
+        LAUNCHER_SLICE_TOGGLE_ON(701),
+
+        @UiEvent(doc = "User toggled-off a Slice item.")
+        LAUNCHER_SLICE_TOGGLE_OFF(702),
+
+        @UiEvent(doc = "User acted on a Slice item with a button.")
+        LAUNCHER_SLICE_BUTTON_ACTION(703),
+
+        @UiEvent(doc = "User acted on a Slice item with a slider.")
+        LAUNCHER_SLICE_SLIDER_ACTION(704),
+
+        @UiEvent(doc = "User tapped on the entire row of a Slice.")
+        LAUNCHER_SLICE_CONTENT_ACTION(705),
+
+        @UiEvent(doc = "User tapped on the see more button of a Slice.")
+        LAUNCHER_SLICE_SEE_MORE_ACTION(706),
+
+        @UiEvent(doc = "User selected from a selection row of Slice.")
+        LAUNCHER_SLICE_SELECTION_ACTION(707),
         ;
 
         // ADD MORE
@@ -469,6 +495,13 @@ public class StatsLogManager implements ResourceBasedOverride {
          * override those values.
          */
         default StatsLogger withContainerInfo(ContainerInfo containerInfo) {
+            return this;
+        }
+
+        /**
+         * Sets logging fields from provided {@link SliceItem}.
+         */
+        default StatsLogger withSliceItem(SliceItem sliceItem) {
             return this;
         }
 

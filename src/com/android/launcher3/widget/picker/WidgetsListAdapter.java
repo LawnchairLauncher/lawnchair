@@ -43,6 +43,7 @@ import com.android.launcher3.widget.picker.WidgetsListHeaderViewHolderBinder.OnH
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -74,6 +75,11 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     private ArrayList<WidgetsListBaseEntry> mVisibleEntries = new ArrayList<>();
     @Nullable private String mWidgetsContentVisiblePackage = null;
 
+    private Predicate<WidgetsListBaseEntry> mHeaderAndSelectedContentFilter = entry ->
+            entry instanceof WidgetsListHeaderEntry
+                    || entry.mPkgItem.packageName.equals(mWidgetsContentVisiblePackage);
+    @Nullable private Predicate<WidgetsListBaseEntry> mFilter = null;
+
     public WidgetsListAdapter(Context context, LayoutInflater layoutInflater,
             WidgetPreviewLoader widgetPreviewLoader, IconCache iconCache,
             OnClickListener iconClickListener, OnLongClickListener iconLongClickListener) {
@@ -83,6 +89,10 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
         mViewHolderBinders.put(VIEW_TYPE_WIDGETS_LIST, mWidgetsListRowViewHolderBinder);
         mViewHolderBinders.put(VIEW_TYPE_WIDGETS_HEADER,
                 new WidgetsListHeaderViewHolderBinder(layoutInflater, this::onHeaderClicked));
+    }
+
+    public void setFilter(Predicate<WidgetsListBaseEntry> filter) {
+        mFilter = filter;
     }
 
     /**
@@ -132,8 +142,8 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
             }
         });
         List<WidgetsListBaseEntry> newVisibleEntries = mAllEntries.stream()
-                .filter(entry -> entry instanceof WidgetsListHeaderEntry
-                        || entry.mPkgItem.packageName.equals(mWidgetsContentVisiblePackage))
+                .filter(entry -> (mFilter == null || mFilter.test(entry))
+                        && mHeaderAndSelectedContentFilter.test(entry))
                 .collect(Collectors.toList());
         mDiffReporter.process(mVisibleEntries, newVisibleEntries, mRowComparator);
     }
