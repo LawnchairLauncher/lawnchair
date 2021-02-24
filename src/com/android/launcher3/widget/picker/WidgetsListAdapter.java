@@ -19,10 +19,10 @@ import android.content.Context;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
+import android.widget.TableRow;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
@@ -67,7 +67,7 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
 
     private final WidgetsDiffReporter mDiffReporter;
     private final SparseArray<ViewHolderBinder> mViewHolderBinders = new SparseArray<>();
-    private final WidgetsListRowViewHolderBinder mWidgetsListRowViewHolderBinder;
+    private final WidgetsListTableViewHolderBinder mWidgetsListTableViewHolderBinder;
     private final WidgetListBaseRowEntryComparator mRowComparator =
             new WidgetListBaseRowEntryComparator();
 
@@ -84,9 +84,9 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
             WidgetPreviewLoader widgetPreviewLoader, IconCache iconCache,
             OnClickListener iconClickListener, OnLongClickListener iconLongClickListener) {
         mDiffReporter = new WidgetsDiffReporter(iconCache, this);
-        mWidgetsListRowViewHolderBinder = new WidgetsListRowViewHolderBinder(context,
+        mWidgetsListTableViewHolderBinder = new WidgetsListTableViewHolderBinder(context,
                 layoutInflater, iconClickListener, iconLongClickListener, widgetPreviewLoader);
-        mViewHolderBinders.put(VIEW_TYPE_WIDGETS_LIST, mWidgetsListRowViewHolderBinder);
+        mViewHolderBinders.put(VIEW_TYPE_WIDGETS_LIST, mWidgetsListTableViewHolderBinder);
         mViewHolderBinders.put(VIEW_TYPE_WIDGETS_HEADER,
                 new WidgetsListHeaderViewHolderBinder(layoutInflater, this::onHeaderClicked));
     }
@@ -101,16 +101,16 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
      * @see WidgetCell#setApplyBitmapDeferred(boolean)
      */
     public void setApplyBitmapDeferred(boolean isDeferred, RecyclerView rv) {
-        mWidgetsListRowViewHolderBinder.setApplyBitmapDeferred(isDeferred);
+        mWidgetsListTableViewHolderBinder.setApplyBitmapDeferred(isDeferred);
 
         for (int i = rv.getChildCount() - 1; i >= 0; i--) {
             ViewHolder viewHolder = rv.getChildViewHolder(rv.getChildAt(i));
             if (viewHolder.getItemViewType() == VIEW_TYPE_WIDGETS_LIST) {
                 WidgetsRowViewHolder holder = (WidgetsRowViewHolder) viewHolder;
-                for (int j = holder.cellContainer.getChildCount() - 1; j >= 0; j--) {
-                    View v = holder.cellContainer.getChildAt(j);
-                    if (v instanceof WidgetCell) {
-                        ((WidgetCell) v).setApplyBitmapDeferred(isDeferred);
+                for (int j = holder.mTableContainer.getChildCount() - 1; j >= 0; j--) {
+                    TableRow row =  (TableRow) holder.mTableContainer.getChildAt(j);
+                    for (int k = row.getChildCount() - 1; k >= 0; k--) {
+                        ((WidgetCell) row.getChildAt(k)).setApplyBitmapDeferred(isDeferred);
                     }
                 }
             }
@@ -202,6 +202,23 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
             mWidgetsContentVisiblePackage = null;
             updateVisibleEntries();
         }
+    }
+
+    /**
+     * Sets the max horizontal spans that are allowed for grouping more than one widgets in a table
+     * row.
+     *
+     * <p>If there is only one widget in a row, that widget horizontal span is allowed to exceed
+     * {@code maxHorizontalSpans}.
+     * <p>Let's say the max horizontal spans is set to 5. Widgets can be grouped in the same row if
+     * their total horizontal spans added don't exceed 5.
+     * Example 1: Row 1: 2x2, 2x3, 1x1. Total horizontal spans is 5. This is okay.
+     * Example 2: Row 1: 2x2, 4x3, 1x1. the total horizontal spans is 7. This is wrong.
+     *            4x3 and 1x1 should be moved to a new row.
+     * Example 3: Row 1: 6x4. This is okay because this is the only item in the row.
+     */
+    public void setMaxHorizontalSpansPerRow(int maxHorizontalSpans) {
+        mWidgetsListTableViewHolderBinder.setMaxSpansPerRow(maxHorizontalSpans);
     }
 
     /** Comparator for sorting WidgetListRowEntry based on package title. */

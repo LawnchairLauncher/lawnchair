@@ -32,6 +32,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.widget.FrameLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.android.launcher3.DeviceProfile;
@@ -65,12 +66,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RunWith(RobolectricTestRunner.class)
-public final class WidgetsListRowViewHolderBinderTest {
+public final class WidgetsListTableViewHolderBinderTest {
     private static final String TEST_PACKAGE = "com.google.test";
     private static final String APP_NAME = "Test app";
 
     private Context mContext;
-    private WidgetsListRowViewHolderBinder mViewHolderBinder;
+    private WidgetsListTableViewHolderBinder mViewHolderBinder;
     private InvariantDeviceProfile mTestProfile;
     // Replace ActivityController with ActivityScenario, which is the recommended way for activity
     // testing.
@@ -105,7 +106,7 @@ public final class WidgetsListRowViewHolderBinderTest {
             return componentWithLabel.getComponent().getShortClassName();
         }).when(mIconCache).getTitleNoCache(any());
 
-        mViewHolderBinder = new WidgetsListRowViewHolderBinder(
+        mViewHolderBinder = new WidgetsListTableViewHolderBinder(
                 mContext,
                 LayoutInflater.from(mTestActivity),
                 mOnIconClickListener,
@@ -129,16 +130,17 @@ public final class WidgetsListRowViewHolderBinderTest {
         mViewHolderBinder.bindViewHolder(viewHolder, entry);
         shadowOf(getMainLooper()).idle();
 
-        // THEN the cell container has 5 children: 3 widgets + 2 separators
-        // Index:        0       1        2       3        4
+        // THEN the table container has one row, which contains 3 widgets.
         // View:  .SampleWidget0 | .SampleWidget1 | .SampleWidget2
-        assertThat(viewHolder.cellContainer.getChildCount()).isEqualTo(5);
+        assertThat(viewHolder.mTableContainer.getChildCount()).isEqualTo(1);
+        TableRow row = (TableRow) viewHolder.mTableContainer.getChildAt(0);
+        assertThat(row.getChildCount()).isEqualTo(3);
         // Widget 0 label is .SampleWidget0.
-        assertWidgetCellWithLabel(viewHolder.cellContainer.getChildAt(0), ".SampleWidget0");
+        assertWidgetCellWithLabel(row.getChildAt(0), ".SampleWidget0");
         // Widget 1 label is .SampleWidget1.
-        assertWidgetCellWithLabel(viewHolder.cellContainer.getChildAt(2), ".SampleWidget1");
+        assertWidgetCellWithLabel(row.getChildAt(1), ".SampleWidget1");
         // Widget 2 label is .SampleWidget2.
-        assertWidgetCellWithLabel(viewHolder.cellContainer.getChildAt(4), ".SampleWidget2");
+        assertWidgetCellWithLabel(row.getChildAt(2), ".SampleWidget2");
     }
 
     private WidgetsListContentEntry generateSampleAppWithWidgets(String appName, String packageName,
