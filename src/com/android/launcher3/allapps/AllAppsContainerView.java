@@ -757,6 +757,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
                 int bottomOffset = mWorkModeSwitch != null && mIsWork ? switchH : 0;
                 recyclerView.setPadding(padding.left, padding.top, padding.right,
                         padding.bottom + bottomOffset);
+                recyclerView.scrollToTop();
             }
         }
 

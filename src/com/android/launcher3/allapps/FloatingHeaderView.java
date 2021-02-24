@@ -200,7 +200,7 @@ public class FloatingHeaderView extends LinearLayout implements
     public View getFocusedChild() {
         if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
             for (FloatingHeaderRow row : mAllRows) {
-                if (row.hasVisibleContent() && row.shouldDraw()) {
+                if (row.hasVisibleContent() && row.isVisible()) {
                     return row.getFocusedChild();
                 }
             }
