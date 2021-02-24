@@ -60,6 +60,6 @@ public class PackageItemInfo extends ItemInfoWithIcon {
 
     @Override
     public int hashCode() {
-        return Objects.hash(packageName);
+        return Objects.hash(packageName, user);
     }
 }

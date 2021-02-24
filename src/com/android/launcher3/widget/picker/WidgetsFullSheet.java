@@ -22,16 +22,22 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
+import android.content.pm.LauncherApps;
 import android.graphics.Rect;
+import android.os.Process;
+import android.os.UserHandle;
 import android.util.AttributeSet;
 import android.util.Pair;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
@@ -43,30 +49,39 @@ import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 import com.android.launcher3.views.TopRoundedCornerView;
 import com.android.launcher3.widget.BaseWidgetSheet;
+import com.android.launcher3.widget.model.WidgetsListBaseEntry;
+import com.android.launcher3.workprofile.PersonalWorkPagedView;
+import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.OnActivePageChangedListener;
+
+import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * Popup for showing the full list of available widgets
  */
 public class WidgetsFullSheet extends BaseWidgetSheet
-        implements Insettable, ProviderChangedListener {
+        implements Insettable, ProviderChangedListener, OnActivePageChangedListener {
 
     private static final long DEFAULT_OPEN_DURATION = 267;
     private static final long FADE_IN_DURATION = 150;
     private static final float VERTICAL_START_POSITION = 0.3f;
 
     private final Rect mInsets = new Rect();
+    private final boolean mHasWorkProfile;
+    private final SparseArray<AdapterHolder> mAdapters = new SparseArray();
+    private final UserHandle mCurrentUser = Process.myUserHandle();
+    private final Predicate<WidgetsListBaseEntry> mPrimaryWidgetsFilter = entry ->
+            mCurrentUser.equals(entry.mPkgItem.user);
+    private final Predicate<WidgetsListBaseEntry> mWorkWidgetsFilter =
+            mPrimaryWidgetsFilter.negate();
 
-    private final WidgetsListAdapter mAdapter;
-
-    private WidgetsRecyclerView mRecyclerView;
+    @Nullable private PersonalWorkPagedView mViewPager;
 
     public WidgetsFullSheet(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        LauncherAppState apps = LauncherAppState.getInstance(context);
-        mAdapter = new WidgetsListAdapter(context,
-                LayoutInflater.from(context), apps.getWidgetCache(), apps.getIconCache(),
-                this, this);
-
+        mHasWorkProfile = context.getSystemService(LauncherApps.class).getProfiles().size() > 1;
+        mAdapters.put(AdapterHolder.PRIMARY, new AdapterHolder(AdapterHolder.PRIMARY));
+        mAdapters.put(AdapterHolder.WORK, new AdapterHolder(AdapterHolder.WORK));
     }
 
     public WidgetsFullSheet(Context context, AttributeSet attrs) {
@@ -77,25 +92,51 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     protected void onFinishInflate() {
         super.onFinishInflate();
         mContent = findViewById(R.id.container);
-
-        mRecyclerView = findViewById(R.id.widgets_list_view);
-        mRecyclerView.setAdapter(mAdapter);
-        mAdapter.setApplyBitmapDeferred(true, mRecyclerView);
-
         TopRoundedCornerView springLayout = (TopRoundedCornerView) mContent;
-        springLayout.addSpringView(R.id.widgets_list_view);
-        mRecyclerView.setEdgeEffectFactory(springLayout.createEdgeEffectFactory());
+
+        LayoutInflater layoutInflater = LayoutInflater.from(getContext());
+        int contentLayoutRes = mHasWorkProfile ? R.layout.widgets_full_sheet_paged_view
+                : R.layout.widgets_full_sheet_recyclerview;
+        layoutInflater.inflate(contentLayoutRes,  springLayout, true);
+
+        if (mHasWorkProfile) {
+            mViewPager = findViewById(R.id.widgets_view_pager);
+            // Temporarily disable swipe gesture until widgets list horizontal scrollviews per
+            // app are replaced by gird views.
+            mViewPager.setSwipeGestureEnabled(false);
+            mViewPager.initParentViews(this);
+            mViewPager.getPageIndicator().setOnActivePageChangedListener(this);
+            mViewPager.getPageIndicator().setActiveMarker(AdapterHolder.PRIMARY);
+            findViewById(R.id.tab_personal)
+                    .setOnClickListener((View view) -> mViewPager.snapToPage(0));
+            findViewById(R.id.tab_work)
+                    .setOnClickListener((View view) -> mViewPager.snapToPage(1));
+            springLayout.addSpringView(R.id.primary_widgets_list_view);
+            springLayout.addSpringView(R.id.work_widgets_list_view);
+        } else {
+            mViewPager = null;
+            springLayout.addSpringView(R.id.primary_widgets_list_view);
+        }
+
         onWidgetsBound();
+    }
+
+    @Override
+    public void onActivePageChanged(int currentActivePage) {
+        mAdapters.get(currentActivePage).mWidgetsRecyclerView.bindFastScrollbar();
     }
 
     @VisibleForTesting
     public WidgetsRecyclerView getRecyclerView() {
-        return mRecyclerView;
+        if (!mHasWorkProfile || mViewPager.getCurrentPage() == AdapterHolder.PRIMARY) {
+            return mAdapters.get(AdapterHolder.PRIMARY).mWidgetsRecyclerView;
+        }
+        return mAdapters.get(AdapterHolder.WORK).mWidgetsRecyclerView;
     }
 
     @Override
     protected Pair<View, String> getAccessibilityTarget() {
-        return Pair.create(mRecyclerView, getContext().getString(
+        return Pair.create(getRecyclerView(), getContext().getString(
                 mIsOpen ? R.string.widgets_list : R.string.widgets_list_closed));
     }
 
@@ -116,9 +157,10 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     public void setInsets(Rect insets) {
         mInsets.set(insets);
 
-        mRecyclerView.setPadding(
-                mRecyclerView.getPaddingLeft(), mRecyclerView.getPaddingTop(),
-                mRecyclerView.getPaddingRight(), insets.bottom);
+        setBottomPadding(mAdapters.get(AdapterHolder.PRIMARY).mWidgetsRecyclerView, insets.bottom);
+        if (mHasWorkProfile) {
+            setBottomPadding(mAdapters.get(AdapterHolder.WORK).mWidgetsRecyclerView, insets.bottom);
+        }
         if (insets.bottom > 0) {
             setupNavBarColor();
         } else {
@@ -127,6 +169,14 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
         ((TopRoundedCornerView) mContent).setNavBarScrimHeight(mInsets.bottom);
         requestLayout();
+    }
+
+    private void setBottomPadding(RecyclerView recyclerView, int bottomPadding) {
+        recyclerView.setPadding(
+                recyclerView.getPaddingLeft(),
+                recyclerView.getPaddingTop(),
+                recyclerView.getPaddingRight(),
+                bottomPadding);
     }
 
     @Override
@@ -168,7 +218,17 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
     @Override
     public void onWidgetsBound() {
-        mAdapter.setWidgets(mLauncher.getPopupDataProvider().getAllWidgets());
+        List<WidgetsListBaseEntry> allWidgets = mLauncher.getPopupDataProvider().getAllWidgets();
+
+        AdapterHolder primaryUserAdapterHolder = mAdapters.get(AdapterHolder.PRIMARY);
+        primaryUserAdapterHolder.setup(findViewById(R.id.primary_widgets_list_view));
+        primaryUserAdapterHolder.mWidgetsListAdapter.setWidgets(allWidgets);
+        if (mHasWorkProfile) {
+            AdapterHolder workUserAdapterHolder = mAdapters.get(AdapterHolder.WORK);
+            workUserAdapterHolder.setup(findViewById(R.id.work_widgets_list_view));
+            workUserAdapterHolder.mWidgetsListAdapter.setWidgets(allWidgets);
+            onActivePageChanged(mViewPager.getCurrentPage());
+        }
     }
 
     private void open(boolean animate) {
@@ -183,12 +243,9 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                     .setDuration(DEFAULT_OPEN_DURATION)
                     .setInterpolator(AnimationUtils.loadInterpolator(
                             getContext(), android.R.interpolator.linear_out_slow_in));
-            mRecyclerView.setLayoutFrozen(true);
             mOpenCloseAnimator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    mRecyclerView.setLayoutFrozen(false);
-                    mAdapter.setApplyBitmapDeferred(false, mRecyclerView);
                     mOpenCloseAnimator.removeListener(this);
                 }
             });
@@ -198,7 +255,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             });
         } else {
             setTranslationShift(TRANSLATION_SHIFT_OPENED);
-            mAdapter.setApplyBitmapDeferred(false, mRecyclerView);
             post(this::announceAccessibilityChanges);
         }
     }
@@ -218,12 +274,12 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         // Disable swipe down when recycler view is scrolling
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             mNoIntercept = false;
-            RecyclerViewFastScroller scroller = mRecyclerView.getScrollbar();
+            RecyclerViewFastScroller scroller = getRecyclerView().getScrollbar();
             if (scroller.getThumbOffsetY() >= 0
                     && getPopupContainer().isEventOverView(scroller, ev)) {
                 mNoIntercept = true;
             } else if (getPopupContainer().isEventOverView(mContent, ev)) {
-                mNoIntercept = !mRecyclerView.shouldContainerScroll(ev, getPopupContainer());
+                mNoIntercept = !getRecyclerView().shouldContainerScroll(ev, getPopupContainer());
             }
         }
         return super.onControllerInterceptTouchEvent(ev);
@@ -242,19 +298,54 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     /** Gets the {@link WidgetsRecyclerView} which shows all widgets in {@link WidgetsFullSheet}. */
     @VisibleForTesting
     public static WidgetsRecyclerView getWidgetsView(Launcher launcher) {
-        return launcher.findViewById(R.id.widgets_list_view);
+        return launcher.findViewById(R.id.primary_widgets_list_view);
     }
 
     @Override
     public void addHintCloseAnim(
             float distanceToMove, Interpolator interpolator, PendingAnimation target) {
-        target.setFloat(mRecyclerView, VIEW_TRANSLATE_Y, -distanceToMove, interpolator);
-        target.setViewAlpha(mRecyclerView, 0.5f, interpolator);
+        target.setFloat(getRecyclerView(), VIEW_TRANSLATE_Y, -distanceToMove, interpolator);
+        target.setViewAlpha(getRecyclerView(), 0.5f, interpolator);
     }
 
     @Override
     protected void onCloseComplete() {
         super.onCloseComplete();
         AccessibilityManagerCompat.sendStateEventToTest(getContext(), NORMAL_STATE_ORDINAL);
+    }
+
+    /** A holder class for holding adapters & their corresponding recycler view. */
+    private final class AdapterHolder {
+        static final int PRIMARY = 0;
+        static final int WORK = 1;
+
+        private final int mAdapterType;
+        private final WidgetsListAdapter mWidgetsListAdapter;
+
+        private WidgetsRecyclerView mWidgetsRecyclerView;
+
+        AdapterHolder(int adapterType) {
+            mAdapterType = adapterType;
+
+            Context context = getContext();
+            LauncherAppState apps = LauncherAppState.getInstance(context);
+            mWidgetsListAdapter = new WidgetsListAdapter(
+                    context,
+                    LayoutInflater.from(context),
+                    apps.getWidgetCache(),
+                    apps.getIconCache(),
+                    /* iconClickListener= */ WidgetsFullSheet.this,
+                    /* iconLongClickListener= */ WidgetsFullSheet.this);
+            mWidgetsListAdapter.setFilter(
+                    mAdapterType == PRIMARY ? mPrimaryWidgetsFilter : mWorkWidgetsFilter);
+        }
+
+        void setup(WidgetsRecyclerView recyclerView) {
+            mWidgetsRecyclerView = recyclerView;
+            mWidgetsRecyclerView.setAdapter(mWidgetsListAdapter);
+            mWidgetsRecyclerView.setEdgeEffectFactory(
+                    ((TopRoundedCornerView) mContent).createEdgeEffectFactory());
+            mWidgetsListAdapter.setApplyBitmapDeferred(false, mWidgetsRecyclerView);
+        }
     }
 }

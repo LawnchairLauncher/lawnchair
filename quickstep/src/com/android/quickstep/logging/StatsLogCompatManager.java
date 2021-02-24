@@ -16,6 +16,9 @@
 
 package com.android.quickstep.logging;
 
+import static androidx.core.util.Preconditions.checkNotNull;
+import static androidx.core.util.Preconditions.checkState;
+
 import static com.android.launcher3.logger.LauncherAtom.ContainerInfo.ContainerCase.EXTENDED_CONTAINERS;
 import static com.android.launcher3.logger.LauncherAtom.ContainerInfo.ContainerCase.FOLDER;
 import static com.android.launcher3.logger.LauncherAtom.ContainerInfo.ContainerCase.SEARCH_RESULT_CONTAINER;
@@ -29,7 +32,9 @@ import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGE
 import android.content.Context;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.WorkerThread;
+import androidx.slice.SliceItem;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
@@ -140,6 +145,7 @@ public class StatsLogCompatManager extends StatsLogManager {
         private Optional<FromState> mFromState = Optional.empty();
         private Optional<ToState> mToState = Optional.empty();
         private Optional<String> mEditText = Optional.empty();
+        private SliceItem mSliceItem;
 
         @Override
         public StatsLogger withItemInfo(ItemInfo itemInfo) {
@@ -177,10 +183,8 @@ public class StatsLogCompatManager extends StatsLogManager {
 
         @Override
         public StatsLogger withContainerInfo(ContainerInfo containerInfo) {
-            if (mItemInfo != DEFAULT_ITEM_INFO) {
-                throw new IllegalArgumentException(
+            checkState(mItemInfo == DEFAULT_ITEM_INFO,
                         "ItemInfo and ContainerInfo are mutual exclusive; cannot log both.");
-            }
             this.mContainerInfo = Optional.of(containerInfo);
             return this;
         }
@@ -204,12 +208,34 @@ public class StatsLogCompatManager extends StatsLogManager {
         }
 
         @Override
+        public StatsLogger withSliceItem(@NonNull SliceItem sliceItem) {
+            this.mSliceItem = checkNotNull(sliceItem, "expected valid sliceItem but received null");
+            checkState(mItemInfo == DEFAULT_ITEM_INFO,
+                    "ItemInfo and SliceItem are mutual exclusive; cannot log both.");
+            return this;
+        }
+
+        @Override
         public void log(EventEnum event) {
             if (!Utilities.ATLEAST_R) {
                 return;
             }
 
             LauncherAppState appState = LauncherAppState.getInstanceNoCreate();
+
+            if (mSliceItem != null) {
+                Executors.MODEL_EXECUTOR.execute(
+                        () -> {
+                            LauncherAtom.ItemInfo.Builder itemInfoBuilder =
+                                    LauncherAtom.ItemInfo.newBuilder().setSlice(
+                                            LauncherAtom.Slice.newBuilder().setUri(
+                                                    mSliceItem.getSlice().getUri().toString()));
+                            mContainerInfo.ifPresent(itemInfoBuilder::setContainerInfo);
+                            write(event, applyOverwrites(itemInfoBuilder.build()));
+                        });
+                return;
+            }
+
             if (mItemInfo.container < 0 || appState == null) {
                 // Write log on the model thread so that logs do not go out of order
                 // (for eg: drop comes after drag)
@@ -346,6 +372,8 @@ public class StatsLogCompatManager extends StatsLogManager {
                 return info.getTask().getComponentName();
             case SEARCH_ACTION_ITEM:
                 return info.getSearchActionItem().getTitle();
+            case SLICE:
+                return info.getSlice().getUri();
             default:
                 return null;
         }
