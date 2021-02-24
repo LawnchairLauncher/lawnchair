@@ -59,6 +59,9 @@ public class TaskbarVisibilityController {
         boolean isImeVisible = (SystemUiProxy.INSTANCE.get(mLauncher).getLastSystemUiStateFlags()
                 & QuickStepContract.SYSUI_STATE_IME_SHOWING) != 0;
         mTaskbarVisibilityAlphaForIme.updateValue(isImeVisible ? 0f : 1f);
+
+        onTaskbarBackgroundAlphaChanged();
+        updateVisibilityAlpha();
     }
 
     protected void cleanup() {
