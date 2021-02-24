@@ -50,6 +50,7 @@ class CustomGridView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
 
     init {
         View.inflate(context, R.layout.custom_grid_view, this)
+        scrollView.fadeTopEdge = true
     }
 
     fun setInitialValues(values: Values) {

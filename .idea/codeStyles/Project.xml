@@ -10,7 +10,6 @@
     <option name="LINE_SEPARATOR" value="&#10;" />
     <option name="SOFT_MARGINS" value="80,100" />
     <AndroidXmlCodeStyleSettings>
-      <option name="ARRANGEMENT_SETTINGS_MIGRATED_TO_191" value="true" />
       <option name="LAYOUT_SETTINGS">
         <value>
           <option name="INSERT_BLANK_LINE_BEFORE_TAG" value="false" />
@@ -38,6 +37,25 @@
       <option name="JD_KEEP_EMPTY_EXCEPTION" value="false" />
       <option name="JD_KEEP_EMPTY_RETURN" value="false" />
     </JavaCodeStyleSettings>
+    <JetCodeStyleSettings>
+      <option name="PACKAGES_TO_USE_STAR_IMPORTS">
+        <value>
+          <package name="java.util" alias="false" withSubpackages="false" />
+          <package name="kotlinx.android.synthetic" alias="false" withSubpackages="true" />
+          <package name="io.ktor" alias="false" withSubpackages="true" />
+        </value>
+      </option>
+      <option name="PACKAGES_IMPORT_LAYOUT">
+        <value>
+          <package name="" alias="false" withSubpackages="true" />
+          <package name="java" alias="false" withSubpackages="true" />
+          <package name="javax" alias="false" withSubpackages="true" />
+          <package name="kotlin" alias="false" withSubpackages="true" />
+          <package name="" alias="true" withSubpackages="true" />
+        </value>
+      </option>
+      <option name="CODE_STYLE_DEFAULTS" value="KOTLIN_OFFICIAL" />
+    </JetCodeStyleSettings>
     <Objective-C>
       <option name="INDENT_NAMESPACE_MEMBERS" value="0" />
       <option name="INDENT_C_STRUCT_MEMBERS" value="2" />
@@ -314,19 +332,194 @@
       </arrangement>
     </codeStyleSettings>
     <codeStyleSettings language="kotlin">
+      <option name="CODE_STYLE_DEFAULTS" value="KOTLIN_OFFICIAL" />
+      <option name="RIGHT_MARGIN" value="125" />
       <option name="KEEP_FIRST_COLUMN_COMMENT" value="false" />
       <option name="ALIGN_MULTILINE_PARAMETERS_IN_CALLS" value="true" />
-      <option name="ALIGN_MULTILINE_BINARY_OPERATION" value="true" />
       <option name="ALIGN_MULTILINE_EXTENDS_LIST" value="true" />
       <option name="ALIGN_MULTILINE_METHOD_BRACKETS" value="true" />
-      <option name="CALL_PARAMETERS_WRAP" value="1" />
-      <option name="METHOD_PARAMETERS_WRAP" value="1" />
-      <option name="EXTENDS_LIST_WRAP" value="1" />
-      <option name="METHOD_CALL_CHAIN_WRAP" value="1" />
       <option name="WRAP_FIRST_METHOD_IN_CALL_CHAIN" value="true" />
-      <option name="ASSIGNMENT_WRAP" value="1" />
       <option name="PARAMETER_ANNOTATION_WRAP" value="1" />
       <option name="VARIABLE_ANNOTATION_WRAP" value="1" />
+      <option name="WRAP_ON_TYPING" value="0" />
+      <option name="arrangementSettings" />
+      <option name="forceArrangeMenuAvailable" value="false" />
+      <option name="CODE_STYLE_DEFAULTS" value="KOTLIN_OFFICIAL" />
+      <option name="RIGHT_MARGIN" value="125" />
+      <option name="LINE_COMMENT_AT_FIRST_COLUMN" value="true" />
+      <option name="BLOCK_COMMENT_AT_FIRST_COLUMN" value="true" />
+      <option name="LINE_COMMENT_ADD_SPACE" value="false" />
+      <option name="KEEP_LINE_BREAKS" value="true" />
+      <option name="KEEP_FIRST_COLUMN_COMMENT" value="false" />
+      <option name="KEEP_CONTROL_STATEMENT_IN_ONE_LINE" value="true" />
+      <option name="KEEP_BLANK_LINES_IN_DECLARATIONS" value="2" />
+      <option name="KEEP_BLANK_LINES_IN_CODE" value="2" />
+      <option name="KEEP_BLANK_LINES_BETWEEN_PACKAGE_DECLARATION_AND_HEADER" value="2" />
+      <option name="KEEP_BLANK_LINES_BEFORE_RBRACE" value="2" />
+      <option name="BLANK_LINES_BEFORE_PACKAGE" value="0" />
+      <option name="BLANK_LINES_AFTER_PACKAGE" value="1" />
+      <option name="BLANK_LINES_BEFORE_IMPORTS" value="1" />
+      <option name="BLANK_LINES_AFTER_IMPORTS" value="1" />
+      <option name="BLANK_LINES_AROUND_CLASS" value="1" />
+      <option name="BLANK_LINES_AROUND_FIELD" value="0" />
+      <option name="BLANK_LINES_AROUND_METHOD" value="1" />
+      <option name="BLANK_LINES_BEFORE_METHOD_BODY" value="0" />
+      <option name="BLANK_LINES_AROUND_FIELD_IN_INTERFACE" value="0" />
+      <option name="BLANK_LINES_AROUND_METHOD_IN_INTERFACE" value="1" />
+      <option name="BLANK_LINES_AFTER_CLASS_HEADER" value="0" />
+      <option name="BLANK_LINES_AFTER_ANONYMOUS_CLASS_HEADER" value="0" />
+      <option name="BLANK_LINES_BEFORE_CLASS_END" value="0" />
+      <option name="BRACE_STYLE" value="1" />
+      <option name="CLASS_BRACE_STYLE" value="1" />
+      <option name="METHOD_BRACE_STYLE" value="1" />
+      <option name="LAMBDA_BRACE_STYLE" value="1" />
+      <option name="DO_NOT_INDENT_TOP_LEVEL_CLASS_MEMBERS" value="false" />
+      <option name="ELSE_ON_NEW_LINE" value="false" />
+      <option name="WHILE_ON_NEW_LINE" value="false" />
+      <option name="CATCH_ON_NEW_LINE" value="false" />
+      <option name="FINALLY_ON_NEW_LINE" value="false" />
+      <option name="INDENT_CASE_FROM_SWITCH" value="true" />
+      <option name="CASE_STATEMENT_ON_NEW_LINE" value="true" />
+      <option name="INDENT_BREAK_FROM_CASE" value="true" />
+      <option name="SPECIAL_ELSE_IF_TREATMENT" value="true" />
+      <option name="ALIGN_MULTILINE_CHAINED_METHODS" value="false" />
+      <option name="ALIGN_MULTILINE_PARAMETERS" value="true" />
+      <option name="ALIGN_MULTILINE_PARAMETERS_IN_CALLS" value="true" />
+      <option name="ALIGN_MULTILINE_RESOURCES" value="true" />
+      <option name="ALIGN_MULTILINE_FOR" value="true" />
+      <option name="ALIGN_MULTILINE_BINARY_OPERATION" value="false" />
+      <option name="ALIGN_MULTILINE_ASSIGNMENT" value="false" />
+      <option name="ALIGN_MULTILINE_TERNARY_OPERATION" value="false" />
+      <option name="ALIGN_MULTILINE_THROWS_LIST" value="false" />
+      <option name="ALIGN_THROWS_KEYWORD" value="false" />
+      <option name="ALIGN_MULTILINE_EXTENDS_LIST" value="true" />
+      <option name="ALIGN_MULTILINE_METHOD_BRACKETS" value="true" />
+      <option name="ALIGN_MULTILINE_PARENTHESIZED_EXPRESSION" value="false" />
+      <option name="ALIGN_MULTILINE_ARRAY_INITIALIZER_EXPRESSION" value="false" />
+      <option name="ALIGN_GROUP_FIELD_DECLARATIONS" value="false" />
+      <option name="ALIGN_CONSECUTIVE_VARIABLE_DECLARATIONS" value="false" />
+      <option name="ALIGN_CONSECUTIVE_ASSIGNMENTS" value="false" />
+      <option name="ALIGN_SUBSEQUENT_SIMPLE_METHODS" value="false" />
+      <option name="SPACE_AROUND_ASSIGNMENT_OPERATORS" value="true" />
+      <option name="SPACE_AROUND_LOGICAL_OPERATORS" value="true" />
+      <option name="SPACE_AROUND_EQUALITY_OPERATORS" value="true" />
+      <option name="SPACE_AROUND_RELATIONAL_OPERATORS" value="true" />
+      <option name="SPACE_AROUND_BITWISE_OPERATORS" value="true" />
+      <option name="SPACE_AROUND_ADDITIVE_OPERATORS" value="true" />
+      <option name="SPACE_AROUND_MULTIPLICATIVE_OPERATORS" value="true" />
+      <option name="SPACE_AROUND_SHIFT_OPERATORS" value="true" />
+      <option name="SPACE_AROUND_UNARY_OPERATOR" value="false" />
+      <option name="SPACE_AROUND_LAMBDA_ARROW" value="true" />
+      <option name="SPACE_AROUND_METHOD_REF_DBL_COLON" value="false" />
+      <option name="SPACE_AFTER_COMMA" value="true" />
+      <option name="SPACE_AFTER_COMMA_IN_TYPE_ARGUMENTS" value="true" />
+      <option name="SPACE_BEFORE_COMMA" value="false" />
+      <option name="SPACE_AFTER_SEMICOLON" value="true" />
+      <option name="SPACE_BEFORE_SEMICOLON" value="false" />
+      <option name="SPACE_WITHIN_PARENTHESES" value="false" />
+      <option name="SPACE_WITHIN_METHOD_CALL_PARENTHESES" value="false" />
+      <option name="SPACE_WITHIN_EMPTY_METHOD_CALL_PARENTHESES" value="false" />
+      <option name="SPACE_WITHIN_METHOD_PARENTHESES" value="false" />
+      <option name="SPACE_WITHIN_EMPTY_METHOD_PARENTHESES" value="false" />
+      <option name="SPACE_WITHIN_IF_PARENTHESES" value="false" />
+      <option name="SPACE_WITHIN_WHILE_PARENTHESES" value="false" />
+      <option name="SPACE_WITHIN_FOR_PARENTHESES" value="false" />
+      <option name="SPACE_WITHIN_TRY_PARENTHESES" value="false" />
+      <option name="SPACE_WITHIN_CATCH_PARENTHESES" value="false" />
+      <option name="SPACE_WITHIN_SWITCH_PARENTHESES" value="false" />
+      <option name="SPACE_WITHIN_SYNCHRONIZED_PARENTHESES" value="false" />
+      <option name="SPACE_WITHIN_CAST_PARENTHESES" value="false" />
+      <option name="SPACE_WITHIN_BRACKETS" value="false" />
+      <option name="SPACE_WITHIN_BRACES" value="false" />
+      <option name="SPACE_WITHIN_ARRAY_INITIALIZER_BRACES" value="false" />
+      <option name="SPACE_WITHIN_EMPTY_ARRAY_INITIALIZER_BRACES" value="false" />
+      <option name="SPACE_AFTER_TYPE_CAST" value="true" />
+      <option name="SPACE_BEFORE_METHOD_CALL_PARENTHESES" value="false" />
+      <option name="SPACE_BEFORE_METHOD_PARENTHESES" value="false" />
+      <option name="SPACE_BEFORE_IF_PARENTHESES" value="true" />
+      <option name="SPACE_BEFORE_WHILE_PARENTHESES" value="true" />
+      <option name="SPACE_BEFORE_FOR_PARENTHESES" value="true" />
+      <option name="SPACE_BEFORE_TRY_PARENTHESES" value="true" />
+      <option name="SPACE_BEFORE_CATCH_PARENTHESES" value="true" />
+      <option name="SPACE_BEFORE_SWITCH_PARENTHESES" value="true" />
+      <option name="SPACE_BEFORE_SYNCHRONIZED_PARENTHESES" value="true" />
+      <option name="SPACE_BEFORE_CLASS_LBRACE" value="true" />
+      <option name="SPACE_BEFORE_METHOD_LBRACE" value="true" />
+      <option name="SPACE_BEFORE_IF_LBRACE" value="true" />
+      <option name="SPACE_BEFORE_ELSE_LBRACE" value="true" />
+      <option name="SPACE_BEFORE_WHILE_LBRACE" value="true" />
+      <option name="SPACE_BEFORE_FOR_LBRACE" value="true" />
+      <option name="SPACE_BEFORE_DO_LBRACE" value="true" />
+      <option name="SPACE_BEFORE_SWITCH_LBRACE" value="true" />
+      <option name="SPACE_BEFORE_TRY_LBRACE" value="true" />
+      <option name="SPACE_BEFORE_CATCH_LBRACE" value="true" />
+      <option name="SPACE_BEFORE_FINALLY_LBRACE" value="true" />
+      <option name="SPACE_BEFORE_SYNCHRONIZED_LBRACE" value="true" />
+      <option name="SPACE_BEFORE_ARRAY_INITIALIZER_LBRACE" value="false" />
+      <option name="SPACE_BEFORE_ANNOTATION_ARRAY_INITIALIZER_LBRACE" value="false" />
+      <option name="SPACE_BEFORE_ELSE_KEYWORD" value="true" />
+      <option name="SPACE_BEFORE_WHILE_KEYWORD" value="true" />
+      <option name="SPACE_BEFORE_CATCH_KEYWORD" value="true" />
+      <option name="SPACE_BEFORE_FINALLY_KEYWORD" value="true" />
+      <option name="SPACE_BEFORE_QUEST" value="true" />
+      <option name="SPACE_AFTER_QUEST" value="true" />
+      <option name="SPACE_BEFORE_COLON" value="true" />
+      <option name="SPACE_AFTER_COLON" value="true" />
+      <option name="SPACE_BEFORE_TYPE_PARAMETER_LIST" value="false" />
+      <option name="CALL_PARAMETERS_WRAP" value="5" />
+      <option name="PREFER_PARAMETERS_WRAP" value="false" />
+      <option name="CALL_PARAMETERS_LPAREN_ON_NEXT_LINE" value="true" />
+      <option name="CALL_PARAMETERS_RPAREN_ON_NEXT_LINE" value="true" />
+      <option name="METHOD_PARAMETERS_WRAP" value="5" />
+      <option name="METHOD_PARAMETERS_LPAREN_ON_NEXT_LINE" value="true" />
+      <option name="METHOD_PARAMETERS_RPAREN_ON_NEXT_LINE" value="true" />
+      <option name="RESOURCE_LIST_WRAP" value="0" />
+      <option name="RESOURCE_LIST_LPAREN_ON_NEXT_LINE" value="false" />
+      <option name="RESOURCE_LIST_RPAREN_ON_NEXT_LINE" value="false" />
+      <option name="EXTENDS_LIST_WRAP" value="1" />
+      <option name="THROWS_LIST_WRAP" value="0" />
+      <option name="EXTENDS_KEYWORD_WRAP" value="0" />
+      <option name="THROWS_KEYWORD_WRAP" value="0" />
+      <option name="METHOD_CALL_CHAIN_WRAP" value="1" />
+      <option name="WRAP_FIRST_METHOD_IN_CALL_CHAIN" value="true" />
+      <option name="PARENTHESES_EXPRESSION_LPAREN_WRAP" value="false" />
+      <option name="PARENTHESES_EXPRESSION_RPAREN_WRAP" value="false" />
+      <option name="BINARY_OPERATION_WRAP" value="0" />
+      <option name="BINARY_OPERATION_SIGN_ON_NEXT_LINE" value="false" />
+      <option name="TERNARY_OPERATION_WRAP" value="0" />
+      <option name="TERNARY_OPERATION_SIGNS_ON_NEXT_LINE" value="false" />
+      <option name="MODIFIER_LIST_WRAP" value="false" />
+      <option name="KEEP_SIMPLE_BLOCKS_IN_ONE_LINE" value="false" />
+      <option name="KEEP_SIMPLE_METHODS_IN_ONE_LINE" value="false" />
+      <option name="KEEP_SIMPLE_LAMBDAS_IN_ONE_LINE" value="false" />
+      <option name="KEEP_SIMPLE_CLASSES_IN_ONE_LINE" value="false" />
+      <option name="KEEP_MULTIPLE_EXPRESSIONS_IN_ONE_LINE" value="false" />
+      <option name="FOR_STATEMENT_WRAP" value="0" />
+      <option name="FOR_STATEMENT_LPAREN_ON_NEXT_LINE" value="false" />
+      <option name="FOR_STATEMENT_RPAREN_ON_NEXT_LINE" value="false" />
+      <option name="ARRAY_INITIALIZER_WRAP" value="0" />
+      <option name="ARRAY_INITIALIZER_LBRACE_ON_NEXT_LINE" value="false" />
+      <option name="ARRAY_INITIALIZER_RBRACE_ON_NEXT_LINE" value="false" />
+      <option name="ASSIGNMENT_WRAP" value="1" />
+      <option name="PLACE_ASSIGNMENT_SIGN_ON_NEXT_LINE" value="false" />
+      <option name="WRAP_COMMENTS" value="false" />
+      <option name="ASSERT_STATEMENT_WRAP" value="0" />
+      <option name="ASSERT_STATEMENT_COLON_ON_NEXT_LINE" value="false" />
+      <option name="IF_BRACE_FORCE" value="0" />
+      <option name="DOWHILE_BRACE_FORCE" value="0" />
+      <option name="WHILE_BRACE_FORCE" value="0" />
+      <option name="FOR_BRACE_FORCE" value="0" />
+      <option name="WRAP_LONG_LINES" value="false" />
+      <option name="METHOD_ANNOTATION_WRAP" value="2" />
+      <option name="CLASS_ANNOTATION_WRAP" value="2" />
+      <option name="FIELD_ANNOTATION_WRAP" value="2" />
+      <option name="PARAMETER_ANNOTATION_WRAP" value="1" />
+      <option name="VARIABLE_ANNOTATION_WRAP" value="1" />
+      <option name="SPACE_BEFORE_ANOTATION_PARAMETER_LIST" value="false" />
+      <option name="SPACE_WITHIN_ANNOTATION_PARENTHESES" value="false" />
+      <option name="ENUM_CONSTANTS_WRAP" value="0" />
+      <option name="FORCE_REARRANGE_MODE" value="0" />
+      <option name="WRAP_ON_TYPING" value="0" />
     </codeStyleSettings>
     <codeStyleSettings language="protobuf">
       <option name="RIGHT_MARGIN" value="80" />
