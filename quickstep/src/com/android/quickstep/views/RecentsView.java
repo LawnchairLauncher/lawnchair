@@ -537,7 +537,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     @Override
     protected void onWindowVisibilityChanged(int visibility) {
         super.onWindowVisibilityChanged(visibility);
-        if (visibility == GONE && ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+        if (visibility != VISIBLE && ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             finishRecentsAnimation(true /* toRecents */, null);
         }
         updateTaskStackListenerState();
@@ -1748,7 +1748,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         if (alpha > 0) {
             setVisibility(VISIBLE);
         } else if (!mFreezeViewVisibility) {
-            setVisibility(GONE);
+            setVisibility(INVISIBLE);
         }
     }
 
@@ -1760,7 +1760,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         if (mFreezeViewVisibility != freezeViewVisibility) {
             mFreezeViewVisibility = freezeViewVisibility;
             if (!mFreezeViewVisibility) {
-                setVisibility(mContentAlpha > 0 ? VISIBLE : GONE);
+                setVisibility(mContentAlpha > 0 ? VISIBLE : INVISIBLE);
             }
         }
     }
