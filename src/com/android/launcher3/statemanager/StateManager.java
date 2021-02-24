@@ -302,10 +302,6 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
     }
 
     private PendingAnimation createAnimationToNewWorkspaceInternal(final STATE_TYPE state) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.OVERIEW_NOT_ALLAPPS, "createAnimationToNewWorkspaceInternal: "
-                    + state);
-        }
         PendingAnimation builder = new PendingAnimation(mConfig.duration);
         if (mConfig.getAnimComponents() != 0) {
             for (StateHandler handler : getStateHandlers()) {
@@ -328,9 +324,6 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
 
             @Override
             public void onAnimationSuccess(Animator animator) {
-                if (TestProtocol.sDebugTracing) {
-                    Log.d(TestProtocol.OVERIEW_NOT_ALLAPPS, "onAnimationSuccess: " + state);
-                }
                 onStateTransitionEnd(state);
             }
         };
