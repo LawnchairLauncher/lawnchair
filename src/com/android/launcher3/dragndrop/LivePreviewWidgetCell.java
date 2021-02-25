@@ -1,6 +1,9 @@
 package com.android.launcher3.dragndrop;
 
+import static com.android.launcher3.Utilities.ATLEAST_S;
+
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.view.View;
@@ -62,9 +65,10 @@ public class LivePreviewWidgetCell extends WidgetCell {
 
     @Override
     public void applyFromCellItem(WidgetItem item, WidgetPreviewLoader loader) {
-        if (mPreview == null
+        if (ATLEAST_S
+                && mPreview == null
                 && item.widgetInfo != null
-                && item.widgetInfo.previewLayout != View.NO_ID) {
+                && item.widgetInfo.previewLayout != Resources.ID_NULL) {
             mPreview = new RemoteViews(item.widgetInfo.provider.getPackageName(),
                     item.widgetInfo.previewLayout);
         }
