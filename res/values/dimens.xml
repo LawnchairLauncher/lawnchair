@@ -102,8 +102,8 @@
     <dimen name="work_profile_footer_text_size">16sp</dimen>
 
 <!-- Widget tray -->
-    <dimen name="widget_preview_label_vertical_padding">8dp</dimen>
-    <dimen name="widget_preview_label_horizontal_padding">16dp</dimen>
+    <dimen name="widget_cell_vertical_padding">8dp</dimen>
+    <dimen name="widget_cell_horizontal_padding">16dp</dimen>
 
     <dimen name="widget_preview_shadow_blur">0.5dp</dimen>
     <dimen name="widget_preview_key_shadow_distance">1dp</dimen>
