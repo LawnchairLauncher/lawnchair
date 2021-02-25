@@ -43,4 +43,20 @@ public class WidgetItem extends ComponentKey {
         activityInfo = info;
         spanX = spanY = 1;
     }
+
+    /**
+     * Returns {@code true} if this {@link WidgetItem} has the same type as the given
+     * {@code otherItem}.
+     *
+     * For example, both items are widgets or both items are shortcuts.
+     */
+    public boolean hasSameType(WidgetItem otherItem) {
+        if (widgetInfo != null && otherItem.widgetInfo != null) {
+            return true;
+        }
+        if (activityInfo != null && otherItem.activityInfo != null) {
+            return true;
+        }
+        return false;
+    }
 }

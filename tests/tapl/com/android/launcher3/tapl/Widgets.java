@@ -27,7 +27,6 @@ import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
 
-import com.android.launcher3.tapl.LauncherInstrumentation.GestureScope;
 import com.android.launcher3.testing.TestProtocol;
 
 import java.util.Collection;
@@ -107,43 +106,25 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
                     fullWidgetsPicker.wait(Until.scrollable(true), WAIT_TIME_MS));
             final Point displaySize = mLauncher.getRealDisplaySize();
 
-            final UiObject2 widgetsContainer = findTestAppWidgetsScrollContainer();
+            final UiObject2 widgetsContainer = findTestAppWidgetsTableContainer();
             mLauncher.assertTrue("Can't locate widgets list for the test app: "
-                                    + mLauncher.getLauncherPackageName(),
+                            + mLauncher.getLauncherPackageName(),
                     widgetsContainer != null);
             final BySelector labelSelector = By.clazz("android.widget.TextView").text(labelText);
             int i = 0;
             for (; ; ) {
-                final Collection<UiObject2> cells = widgetsContainer.getChildren();
-                mLauncher.assertTrue("Widgets doesn't have 2 rows: ", cells.size() >= 2);
-                for (UiObject2 cell : cells) {
-                    final UiObject2 label = cell.findObject(labelSelector);
-                    // The logic below doesn't handle the case which a widget cell of the given
-                    // label is not yet visible on the horizontal scrolling container. This won't be
-                    // an issue once we get rid of the horizontal scrolling container.
-                    if (label == null) continue;
-
-                    final UiObject2 widget = cell;
-                    mLauncher.assertEquals(
-                            "View is not WidgetCell",
-                            "com.android.launcher3.widget.WidgetCell",
-                            widget.getClassName());
-
-                    int maxWidth = 0;
-                    for (UiObject2 sibling : widget.getParent().getChildren()) {
-                        maxWidth = Math.max(mLauncher.getVisibleBounds(sibling).width(), maxWidth);
-                    }
-
-                    if (mLauncher.getVisibleBounds(widget).bottom
-                            <= displaySize.y - mLauncher.getBottomGestureSize()) {
-                        int visibleDelta = maxWidth - mLauncher.getVisibleBounds(widget).width();
-                        if (visibleDelta > 0) {
-                            Rect parentBounds = mLauncher.getVisibleBounds(cell.getParent());
-                            mLauncher.linearGesture(parentBounds.centerX() + visibleDelta
-                                            + mLauncher.getTouchSlop(),
-                                    parentBounds.centerY(), parentBounds.centerX(),
-                                    parentBounds.centerY(), 10, true, GestureScope.INSIDE);
+                final Collection<UiObject2> tableRows = widgetsContainer.getChildren();
+                for (UiObject2 row : tableRows) {
+                    final Collection<UiObject2> widgetCells = row.getChildren();
+                    for (UiObject2 widget : widgetCells) {
+                        final UiObject2 label = widget.findObject(labelSelector);
+                        if (label == null) {
+                            continue;
                         }
+                        mLauncher.assertEquals(
+                                "View is not WidgetCell",
+                                "com.android.launcher3.widget.WidgetCell",
+                                widget.getClassName());
 
                         return new Widget(mLauncher, widget);
                     }
@@ -151,7 +132,7 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
 
                 mLauncher.assertTrue("Too many attempts", ++i <= 40);
                 final int scroll = getWidgetsScroll();
-                mLauncher.scrollToLastVisibleRow(widgetsContainer, cells, 0);
+                mLauncher.scrollToLastVisibleRow(fullWidgetsPicker, tableRows, 0);
                 final int newScroll = getWidgetsScroll();
                 mLauncher.assertTrue(
                         "Scrolled in a wrong direction in Widgets: from " + scroll + " to "
@@ -162,13 +143,13 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
     }
 
     /** Finds the widgets list of this test app from the collapsed full widgets picker. */
-    private UiObject2 findTestAppWidgetsScrollContainer() {
+    private UiObject2 findTestAppWidgetsTableContainer() {
         final BySelector headerSelector = By.res(mLauncher.getLauncherPackageName(),
                 "widgets_list_header");
         final BySelector targetAppSelector = By.clazz("android.widget.TextView").text(
                 mLauncher.getContext().getPackageName());
         final BySelector widgetsContainerSelector = By.res(mLauncher.getLauncherPackageName(),
-                "widgets_cell_list");
+                "widgets_table");
 
         boolean hasHeaderExpanded = false;
         for (int i = 0; i < 40; i++) {
@@ -196,14 +177,12 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
                 // Look for a widgets list.
                 UiObject2 widgetsContainer = fullWidgetsPicker.findObject(widgetsContainerSelector);
                 if (widgetsContainer != null) {
-                    // Make sure the widgets list is fully visible on the screen.
-                    mLauncher.scrollToLastVisibleRow(fullWidgetsPicker,
-                            widgetsContainer.getChildren(), 0);
                     return widgetsContainer;
                 }
                 mLauncher.scrollToLastVisibleRow(fullWidgetsPicker, List.of(headerTitle), 0);
             } else {
-                mLauncher.scrollToLastVisibleRow(fullWidgetsPicker, header.getChildren(), 0);
+                mLauncher.scrollToLastVisibleRow(fullWidgetsPicker, fullWidgetsPicker.getChildren(),
+                        0);
             }
         }
 
