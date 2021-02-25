@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.allapps.search;
 
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_FOCUSED_ITEM_SELECTED_WITH_IME;
+
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -105,6 +107,8 @@ public class AllAppsSearchBarController
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
             if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_GO) {
+                mLauncher.getStatsLogManager().logger()
+                        .log(LAUNCHER_ALLAPPS_FOCUSED_ITEM_SELECTED_WITH_IME);
                 // selectFocusedView should return SearchTargetEvent that is passed onto onClick
                 if (Launcher.getLauncher(mLauncher).getAppsView().selectFocusedView(v)) {
                     return true;
