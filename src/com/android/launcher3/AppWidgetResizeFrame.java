@@ -3,7 +3,6 @@ package com.android.launcher3;
 import static com.android.launcher3.LauncherAnimUtils.LAYOUT_HEIGHT;
 import static com.android.launcher3.LauncherAnimUtils.LAYOUT_WIDTH;
 import static com.android.launcher3.Utilities.ATLEAST_S;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_FOUR_COLUMNS;
 import static com.android.launcher3.views.BaseDragLayer.LAYOUT_X;
 import static com.android.launcher3.views.BaseDragLayer.LAYOUT_Y;
 
@@ -48,6 +47,14 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
                 InvariantDeviceProfile inv = LauncherAppState.getIDP(c);
                 return new Point[] {inv.landscapeProfile.getCellSize(),
                         inv.portraitProfile.getCellSize()};
+            });
+
+    // Represents the border spacing size on the grid in the two orientations.
+    public static final MainThreadInitializedObject<int[]> BORDER_SPACING_SIZE =
+            new MainThreadInitializedObject<>(c -> {
+                InvariantDeviceProfile inv = LauncherAppState.getIDP(c);
+                return new int[] {inv.landscapeProfile.cellLayoutBorderSpacingPx,
+                        inv.portraitProfile.cellLayoutBorderSpacingPx};
             });
 
     private static final int HANDLE_COUNT = 4;
@@ -370,16 +377,12 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         }
     }
 
-    private static PointF getWidgetSize(Context context, Point cellSize, int spanX, int spanY) {
+    private static PointF getWidgetSize(Context context, Point cellSize, int spanX, int spanY,
+            int borderSpacing) {
         final float density = context.getResources().getDisplayMetrics().density;
-        float hBorderSpacing = 0;
-        float vBorderSpacing = 0;
-        if (ENABLE_FOUR_COLUMNS.get()) {
-            final int borderSpacing = context.getResources()
-                    .getDimensionPixelSize(R.dimen.dynamic_grid_cell_border_spacing);
-            hBorderSpacing = (spanX - 1) * borderSpacing;
-            vBorderSpacing = (spanY - 1) * borderSpacing;
-        }
+        final float hBorderSpacing = (spanX - 1) * borderSpacing;
+        final float vBorderSpacing = (spanY - 1) * borderSpacing;
+
         PointF widgetSize = new PointF();
         widgetSize.x = ((spanX * cellSize.x) + hBorderSpacing) / density;
         widgetSize.y = ((spanY * cellSize.y) + vBorderSpacing) / density;
@@ -389,10 +392,11 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     /** Returns the actual widget size given its span. */
     public static PointF getWidgetSize(Context context, int spanX, int spanY) {
         final Point[] cellSize = CELL_SIZE.get(context);
+        final int[] borderSpacing = BORDER_SPACING_SIZE.get(context);
         if (isLandscape(context)) {
-            return getWidgetSize(context, cellSize[0], spanX, spanY);
+            return getWidgetSize(context, cellSize[0], spanX, spanY, borderSpacing[0]);
         }
-        return getWidgetSize(context, cellSize[1], spanX, spanY);
+        return getWidgetSize(context, cellSize[1], spanX, spanY, borderSpacing[1]);
     }
 
     /** Returns true if the screen is in landscape mode. */
@@ -404,9 +408,10 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     /** Returns the list of sizes for a widget of given span, in dp. */
     public static ArrayList<PointF> getWidgetSizes(Context context, int spanX, int spanY) {
         final Point[] cellSize = CELL_SIZE.get(context);
+        final int[] borderSpacing = BORDER_SPACING_SIZE.get(context);
 
-        PointF landSize = getWidgetSize(context, cellSize[0], spanX, spanY);
-        PointF portSize = getWidgetSize(context, cellSize[1], spanX, spanY);
+        PointF landSize = getWidgetSize(context, cellSize[0], spanX, spanY, borderSpacing[0]);
+        PointF portSize = getWidgetSize(context, cellSize[1], spanX, spanY,  borderSpacing[1]);
 
         ArrayList<PointF> sizes = new ArrayList<>(2);
         sizes.add(landSize);
