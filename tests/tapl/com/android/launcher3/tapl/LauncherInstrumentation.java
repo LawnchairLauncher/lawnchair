@@ -365,9 +365,11 @@ public final class LauncherInstrumentation {
 
             if (hasSystemUiObject("keyguard_status_view")) return "Phone is locked";
 
-            if (!mDevice.hasObject(By.textStartsWith(""))) return "Screen is empty";
+            if (!mDevice.wait(Until.hasObject(By.textStartsWith("")), WAIT_TIME_MS)) {
+                return "Screen is empty";
+            }
 
-            final String navigationModeError = getNavigationModeMismatchError();
+            final String navigationModeError = getNavigationModeMismatchError(true);
             if (navigationModeError != null) return navigationModeError;
         } catch (Throwable e) {
             Log.w(TAG, "getSystemAnomalyMessage failed", e);
@@ -535,17 +537,28 @@ public final class LauncherInstrumentation {
         mExpectedRotation = expectedRotation;
     }
 
-    public String getNavigationModeMismatchError() {
+    public String getNavigationModeMismatchError(boolean waitForCorrectState) {
+        final int waitTime = waitForCorrectState ? WAIT_TIME_MS : 0;
         final NavigationModel navigationModel = getNavigationModel();
-        final boolean hasRecentsButton = hasSystemUiObject("recent_apps");
-        final boolean hasHomeButton = hasSystemUiObject("home");
-        if ((navigationModel == NavigationModel.THREE_BUTTON) != hasRecentsButton) {
-            return "Presence of recents button doesn't match the interaction mode, mode="
-                    + navigationModel.name() + ", hasRecents=" + hasRecentsButton;
+
+        if (navigationModel == NavigationModel.THREE_BUTTON) {
+            if (!mDevice.wait(Until.hasObject(By.res(SYSTEMUI_PACKAGE, "recent_apps")), waitTime)) {
+                return "Recents button not present in 3-button mode";
+            }
+        } else {
+            if (!mDevice.wait(Until.gone(By.res(SYSTEMUI_PACKAGE, "recent_apps")), waitTime)) {
+                return "Recents button is present in non-3-button mode";
+            }
         }
-        if ((navigationModel != NavigationModel.ZERO_BUTTON) != hasHomeButton) {
-            return "Presence of home button doesn't match the interaction mode, mode="
-                    + navigationModel.name() + ", hasHome=" + hasHomeButton;
+
+        if (navigationModel == NavigationModel.ZERO_BUTTON) {
+            if (!mDevice.wait(Until.gone(By.res(SYSTEMUI_PACKAGE, "home")), waitTime)) {
+                return "Home button is present in gestural mode";
+            }
+        } else {
+            if (!mDevice.wait(Until.hasObject(By.res(SYSTEMUI_PACKAGE, "home")), waitTime)) {
+                return "Home button not present in non-gestural mode";
+            }
         }
         return null;
     }
@@ -556,7 +569,7 @@ public final class LauncherInstrumentation {
         assertEquals("Unexpected display rotation",
                 mExpectedRotation, mDevice.getDisplayRotation());
 
-        final String error = getNavigationModeMismatchError();
+        final String error = getNavigationModeMismatchError(true);
         assertTrue(error, error == null);
 
         log("verifyContainerType: " + containerType);

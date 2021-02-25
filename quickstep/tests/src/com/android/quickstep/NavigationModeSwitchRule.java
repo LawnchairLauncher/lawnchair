@@ -200,8 +200,8 @@ public class NavigationModeSwitchRule implements TestRule {
                 () -> launcher.getNavigationModel() == expectedMode, WAIT_TIME_MS, launcher);
 
         Wait.atMost(() -> "Switching nav mode: "
-                        + launcher.getNavigationModeMismatchError(),
-                () -> launcher.getNavigationModeMismatchError() == null,
+                        + launcher.getNavigationModeMismatchError(false),
+                () -> launcher.getNavigationModeMismatchError(false) == null,
                 WAIT_TIME_MS, launcher);
         AbstractLauncherUiTest.checkDetectedLeaks(launcher);
         return true;
