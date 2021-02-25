@@ -2,6 +2,8 @@ package com.android.launcher3;
 
 import static com.android.launcher3.LauncherAnimUtils.LAYOUT_HEIGHT;
 import static com.android.launcher3.LauncherAnimUtils.LAYOUT_WIDTH;
+import static com.android.launcher3.Utilities.ATLEAST_S;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_FOUR_COLUMNS;
 import static com.android.launcher3.views.BaseDragLayer.LAYOUT_X;
 import static com.android.launcher3.views.BaseDragLayer.LAYOUT_Y;
 
@@ -11,13 +13,18 @@ import android.animation.PropertyValuesHolder;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
 import com.android.launcher3.dragndrop.DragLayer;
@@ -352,33 +359,99 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     }
 
     public static void updateWidgetSizeRanges(AppWidgetHostView widgetView, Launcher launcher,
-            int spanX, int spanY) {
-        getWidgetSizeRanges(launcher, spanX, spanY, sTmpRect);
-        widgetView.updateAppWidgetSize(null, sTmpRect.left, sTmpRect.top,
-                sTmpRect.right, sTmpRect.bottom);
+                                              int spanX, int spanY) {
+        List<PointF> sizes = getWidgetSizes(launcher, spanX, spanY);
+        if (ATLEAST_S) {
+            widgetView.updateAppWidgetSize(new Bundle(), sizes);
+        } else {
+            Rect bounds = getMinMaxSizes(sizes, null /* outRect */);
+            widgetView.updateAppWidgetSize(new Bundle(), bounds.left, bounds.top, bounds.right,
+                    bounds.bottom);
+        }
     }
 
-    public static Rect getWidgetSizeRanges(Context context, int spanX, int spanY, Rect rect) {
-        if (rect == null) {
-            rect = new Rect();
-        }
+    private static PointF getWidgetSize(Context context, Point cellSize, int spanX, int spanY) {
         final float density = context.getResources().getDisplayMetrics().density;
+        float hBorderSpacing = 0;
+        float vBorderSpacing = 0;
+        if (ENABLE_FOUR_COLUMNS.get()) {
+            final int borderSpacing = context.getResources()
+                    .getDimensionPixelSize(R.dimen.dynamic_grid_cell_border_spacing);
+            hBorderSpacing = (spanX - 1) * borderSpacing;
+            vBorderSpacing = (spanY - 1) * borderSpacing;
+        }
+        PointF widgetSize = new PointF();
+        widgetSize.x = ((spanX * cellSize.x) + hBorderSpacing) / density;
+        widgetSize.y = ((spanY * cellSize.y) + vBorderSpacing) / density;
+        return widgetSize;
+    }
+
+    /** Returns the actual widget size given its span. */
+    public static PointF getWidgetSize(Context context, int spanX, int spanY) {
+        final Point[] cellSize = CELL_SIZE.get(context);
+        if (isLandscape(context)) {
+            return getWidgetSize(context, cellSize[0], spanX, spanY);
+        }
+        return getWidgetSize(context, cellSize[1], spanX, spanY);
+    }
+
+    /** Returns true if the screen is in landscape mode. */
+    private static boolean isLandscape(Context context) {
+        return context.getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE;
+    }
+
+    /** Returns the list of sizes for a widget of given span, in dp. */
+    public static ArrayList<PointF> getWidgetSizes(Context context, int spanX, int spanY) {
         final Point[] cellSize = CELL_SIZE.get(context);
 
-        final int borderSpacing = context.getResources()
-                .getDimensionPixelSize(R.dimen.dynamic_grid_cell_border_spacing);
-        final float hBorderSpacing = (spanX - 1) * borderSpacing;
-        final float vBorderSpacing = (spanY - 1) * borderSpacing;
+        PointF landSize = getWidgetSize(context, cellSize[0], spanX, spanY);
+        PointF portSize = getWidgetSize(context, cellSize[1], spanX, spanY);
 
-        // Compute landscape size
-        int landWidth = (int) (((spanX * cellSize[0].x) + hBorderSpacing) / density);
-        int landHeight = (int) (((spanY * cellSize[0].y) + vBorderSpacing) / density);
+        ArrayList<PointF> sizes = new ArrayList<>(2);
+        sizes.add(landSize);
+        sizes.add(portSize);
+        return sizes;
+    }
 
-        // Compute portrait size
-        int portWidth = (int) (((spanX * cellSize[1].x) + hBorderSpacing) / density);
-        int portHeight = (int) (((spanY * cellSize[1].y) + vBorderSpacing) / density);
-        rect.set(portWidth, landHeight, landWidth, portHeight);
-        return rect;
+    /**
+     * Returns the min and max widths and heights given a list of sizes, in dp.
+     *
+     * @param sizes List of sizes to get the min/max from.
+     * @param outRect Rectangle in which the result can be stored, to avoid extra allocations. If
+     *               null, a new rectangle will be allocated.
+     * @return A rectangle with the left (resp. top) is used for the min width (resp. height) and
+     * the right (resp. bottom) for the max. The returned rectangle is set with 0s if the list is
+     * empty.
+     */
+    public static Rect getMinMaxSizes(List<PointF> sizes, @Nullable Rect outRect) {
+        if (outRect == null) {
+            outRect = new Rect();
+        }
+        if (sizes.isEmpty()) {
+            outRect.set(0, 0, 0, 0);
+        } else {
+            PointF first = sizes.get(0);
+            outRect.set((int) first.x, (int) first.y, (int) first.x, (int) first.y);
+            for (int i = 1; i < sizes.size(); i++) {
+                outRect.union((int) sizes.get(i).x, (int) sizes.get(i).y);
+            }
+        }
+        return outRect;
+    }
+
+    /**
+     * Returns the range of sizes a widget may be displayed, given its span.
+     *
+     * @param context Context in which the View is rendered.
+     * @param spanX Width of the widget, in cells.
+     * @param spanY Height of the widget, in cells.
+     * @param outRect Rectangle in which the result can be stored, to avoid extra allocations. If
+     *               null, a new rectangle will be allocated.
+     */
+    public static Rect getWidgetSizeRanges(Context context, int spanX, int spanY,
+            @Nullable Rect outRect) {
+        return getMinMaxSizes(getWidgetSizes(context, spanX, spanY), outRect);
     }
 
     @Override

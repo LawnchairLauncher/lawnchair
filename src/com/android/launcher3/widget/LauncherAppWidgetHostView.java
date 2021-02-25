@@ -16,9 +16,12 @@
 
 package com.android.launcher3.widget;
 
+import static com.android.launcher3.Utilities.ATLEAST_S;
+
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.PointF;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.util.SparseBooleanArray;
@@ -69,8 +72,6 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
     private boolean mIsAttachedToWindow;
     private boolean mIsAutoAdvanceRegistered;
     private Runnable mAutoAdvanceRunnable;
-
-
 
     public LauncherAppWidgetHostView(Context context) {
         super(context);
@@ -216,6 +217,16 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
         }
 
         mIsScrollable = checkScrollableRecursively(this);
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+
+        if (ATLEAST_S) {
+            float density = getContext().getResources().getDisplayMetrics().density;
+            setCurrentSize(new PointF(w / density, h / density));
+        }
     }
 
     @Override
