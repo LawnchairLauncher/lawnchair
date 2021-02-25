@@ -61,4 +61,11 @@ public interface FloatingHeaderRow {
      * Returns a child that has focus to be launched by the IME.
      */
     View getFocusedChild();
+
+    /**
+     * Returns true if view is currently visible
+     */
+    default boolean isVisible() {
+        return shouldDraw();
+    }
 }

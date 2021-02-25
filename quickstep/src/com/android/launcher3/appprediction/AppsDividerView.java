@@ -42,7 +42,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.allapps.FloatingHeaderRow;
 import com.android.launcher3.allapps.FloatingHeaderView;
 import com.android.launcher3.anim.PropertySetter;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.util.Themes;
 
@@ -183,11 +182,6 @@ public class AppsDividerView extends View implements StateListener<LauncherState
     }
 
     private void updateViewVisibility() {
-        // hide divider since we have item decoration for prediction row
-        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
-            setVisibility(GONE);
-            return;
-        }
         setVisibility(mDividerType == DividerType.NONE
                 ? GONE
                 : (mIsScrolledOut ? INVISIBLE : VISIBLE));

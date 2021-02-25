@@ -108,7 +108,8 @@ public class PredictionRowView extends LinearLayout implements
 
     AllAppsSectionDecorator.SectionDecorationHandler mDecorationHandler;
 
-    @Nullable private List<ItemInfo> mPendingPredictedItems;
+    @Nullable
+    private List<ItemInfo> mPendingPredictedItems;
 
     public PredictionRowView(@NonNull Context context) {
         this(context, null);
@@ -181,12 +182,17 @@ public class PredictionRowView extends LinearLayout implements
 
     @Override
     public boolean shouldDraw() {
-        return getVisibility() == VISIBLE;
+        return getVisibility() != GONE;
     }
 
     @Override
     public boolean hasVisibleContent() {
         return mPredictionsEnabled;
+    }
+
+    @Override
+    public boolean isVisible() {
+        return getVisibility() == VISIBLE;
     }
 
     /**

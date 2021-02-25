@@ -33,6 +33,7 @@ import static com.android.launcher3.util.SystemUiController.UI_STATE_ALLAPPS;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.content.SharedPreferences;
 import android.util.FloatProperty;
 import android.view.View;
 import android.view.animation.Interpolator;
@@ -63,7 +64,7 @@ import com.android.launcher3.views.ScrimView;
  * closer to top or closer to the page indicator.
  */
 public class AllAppsTransitionController implements StateHandler<LauncherState>,
-        OnDeviceProfileChangeListener {
+        OnDeviceProfileChangeListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
     public static final FloatProperty<AllAppsTransitionController> ALL_APPS_PROGRESS =
             new FloatProperty<AllAppsTransitionController>("allAppsProgress") {
@@ -80,6 +81,7 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
             };
 
     private static final int APPS_VIEW_ALPHA_CHANNEL_INDEX = 0;
+    private static final String PREF_KEY_SHOW_SEARCH_IME = "pref_search_show_ime";
 
     private AllAppsContainerView mAppsView;
     private ScrimView mScrimView;
@@ -98,6 +100,7 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
 
     private float mScrollRangeDelta = 0;
     private AllAppsInsetTransitionController mInsetController;
+    private boolean mSearchImeEnabled;
 
     public AllAppsTransitionController(Launcher l) {
         mLauncher = l;
@@ -106,6 +109,9 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
 
         mIsVerticalLayout = mLauncher.getDeviceProfile().isVerticalBarLayout();
         mLauncher.addOnDeviceProfileChangeListener(this);
+
+        onSharedPreferenceChanged(mLauncher.getSharedPrefs(), PREF_KEY_SHOW_SEARCH_IME);
+        mLauncher.getSharedPrefs().registerOnSharedPreferenceChangeListener(this);
     }
 
     public float getShiftRange() {
@@ -142,8 +148,7 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
         float shiftCurrent = progress * mShiftRange;
 
         mAppsView.setTranslationY(shiftCurrent);
-        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()
-                && !FeatureFlags.DISABLE_INITIAL_IME_IN_ALLAPPS.get()) {
+        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get() && mSearchImeEnabled) {
             mInsetController.setProgress(progress);
         }
     }
@@ -234,9 +239,7 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
     public void setupViews(AllAppsContainerView appsView, ScrimView scrimView) {
         mAppsView = appsView;
         mScrimView = scrimView;
-        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()
-                && !FeatureFlags.DISABLE_INITIAL_IME_IN_ALLAPPS.get()
-                && BuildCompat.isAtLeastR()) {
+        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get() && BuildCompat.isAtLeastR()) {
             mInsetController = new AllAppsInsetTransitionController(mShiftRange, mAppsView);
             mLauncher.getSystemUiController().updateUiState(UI_STATE_ALLAPPS,
                     View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -264,8 +267,8 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
         if (Float.compare(mProgress, 1f) == 0) {
             mAppsView.reset(false /* animate */);
         }
-        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()
-                && !FeatureFlags.DISABLE_INITIAL_IME_IN_ALLAPPS.get() && BuildCompat.isAtLeastR()) {
+        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get() && mSearchImeEnabled
+                && BuildCompat.isAtLeastR()) {
             mInsetController.onAnimationEnd(mProgress);
             if (Float.compare(mProgress, 0f) == 0) {
                 EditText editText = mAppsView.getSearchUiManager().getEditText();
@@ -274,6 +277,13 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
                 }
             }
             // TODO: should make the controller hide synchronously
+        }
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+        if (s.equals(PREF_KEY_SHOW_SEARCH_IME)) {
+            mSearchImeEnabled = sharedPreferences.getBoolean(s, true);
         }
     }
 }
