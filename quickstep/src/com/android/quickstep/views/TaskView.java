@@ -48,7 +48,6 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Outline;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
@@ -429,7 +428,9 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             mContextualChip.setScaleX(comp(modalness));
             mContextualChip.setScaleY(comp(modalness));
         }
-        mDigitalWellBeingToast.updateBannerOffset(modalness);
+        mDigitalWellBeingToast.updateBannerOffset(modalness,
+                mCurrentFullscreenParams.mCurrentDrawnInsets.top
+                        + mCurrentFullscreenParams.mCurrentDrawnInsets.bottom);
     }
 
     public TaskMenuView getMenuView() {
@@ -666,7 +667,9 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             mContextualChip.setScaleX(scale);
             mContextualChip.setScaleY(scale);
         }
-        mDigitalWellBeingToast.updateBannerOffset(1f - scale);
+        mDigitalWellBeingToast.updateBannerOffset(1f - scale,
+                mCurrentFullscreenParams.mCurrentDrawnInsets.top
+                        + mCurrentFullscreenParams.mCurrentDrawnInsets.bottom);
     }
 
     public void setIconScaleAnimStartProgress(float startProgress) {
