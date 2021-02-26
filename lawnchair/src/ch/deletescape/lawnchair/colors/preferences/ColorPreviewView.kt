@@ -44,6 +44,7 @@ class ColorPreviewView(context: Context, attrs: AttributeSet) : AppCompatTextVie
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.getSize(heightMeasureSpec))
+        setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec),
+                             MeasureSpec.getSize(heightMeasureSpec))
     }
 }

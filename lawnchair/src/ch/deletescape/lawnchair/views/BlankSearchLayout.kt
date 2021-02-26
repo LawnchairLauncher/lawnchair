@@ -28,7 +28,8 @@ import com.android.launcher3.allapps.AllAppsContainerView
 import com.android.launcher3.allapps.SearchUiManager
 import com.android.launcher3.anim.PropertySetter
 
-class BlankSearchLayout(context: Context, attrs: AttributeSet?) : View(context, attrs), SearchUiManager {
+class BlankSearchLayout(context: Context, attrs: AttributeSet?) : View(context, attrs),
+                                                                  SearchUiManager {
 
     var topMargin = 0
         set(value) {

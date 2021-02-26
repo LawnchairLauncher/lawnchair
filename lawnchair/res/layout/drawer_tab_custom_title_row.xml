@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~     This file is part of Lawnchair Launcher.
   ~
   ~     Lawnchair Launcher is free software: you can redistribute it and/or modify
@@ -16,8 +15,7 @@
   ~     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -33,10 +31,11 @@
         android:text="@string/name"
         android:textAlignment="viewStart"
         android:textColor="?android:colorAccent"
-        app:customFontType="preferenceTitle"/>
+        app:customFontType="preferenceTitle" />
 
     <EditText
         android:id="@+id/name"
+        style="@style/TextAppearance.AppCompat.Title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="52dp"
@@ -46,7 +45,6 @@
         android:selectAllOnFocus="true"
         android:singleLine="true"
         android:textAlignment="viewStart"
-        style="@style/TextAppearance.AppCompat.Title"
-        tools:text="Favorites"
-        app:customFontType="title"/>
+        app:customFontType="title"
+        tools:text="Favorites" />
 </LinearLayout>

@@ -56,7 +56,7 @@ class SleepGestureHandler(context: Context, config: JSONObject?) : GestureHandle
                 SleepMethodRoot(context),
                 SleepMethodPieAccessibility(context),
                 SleepMethodDeviceAdmin(context)
-        ).firstOrNull { it.supported }
+              ).firstOrNull { it.supported }
     }
 
     override val isAvailable = true // At least the device admin method is always going to work
@@ -111,13 +111,17 @@ class SleepMethodDeviceAdmin(context: Context) : SleepGestureHandler.SleepMethod
     override val supported = true
 
     override fun sleep(controller: GestureController) {
-        val devicePolicyManager = context.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
-        if (devicePolicyManager.isAdminActive(ComponentName(context, SleepMethodDeviceAdmin.SleepDeviceAdmin::class.java))) {
+        val devicePolicyManager =
+                context.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
+        if (devicePolicyManager.isAdminActive(ComponentName(context,
+                                                            SleepMethodDeviceAdmin.SleepDeviceAdmin::class.java))) {
             devicePolicyManager.lockNow()
         } else {
             val intent = Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN)
-            intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, ComponentName(context, SleepMethodDeviceAdmin.SleepDeviceAdmin::class.java))
-            intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, context.getString(R.string.dt2s_admin_hint))
+            intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, ComponentName(context,
+                                                                                  SleepMethodDeviceAdmin.SleepDeviceAdmin::class.java))
+            intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,
+                            context.getString(R.string.dt2s_admin_hint))
             context.startActivity(intent)
         }
     }
@@ -131,7 +135,8 @@ class SleepMethodDeviceAdmin(context: Context) : SleepGestureHandler.SleepMethod
 }
 
 @Keep
-class SleepGestureHandlerTimeout(context: Context, config: JSONObject?) : GestureHandler(context, config) {
+class SleepGestureHandlerTimeout(context: Context, config: JSONObject?) :
+        GestureHandler(context, config) {
 
     override val displayName: String = context.getString(R.string.action_sleep_timeout)
 

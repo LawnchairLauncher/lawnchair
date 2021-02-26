@@ -18,6 +18,7 @@
 package ch.deletescape.lawnchair.smartspace.accu.model.sub;
 
 public class AccuCategoryGSon {
+
     String Category;
     String CategoryValue;
     String Name;

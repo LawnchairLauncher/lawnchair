@@ -30,14 +30,15 @@ import ch.deletescape.lawnchair.util.InvertedMultiValueAlpha
 import com.android.launcher3.Insettable
 
 class LawnchairBackgroundView(context: Context, attrs: AttributeSet) : View(context, attrs),
-        Insettable, BlurWallpaperProvider.Listener {
+                                                                       Insettable,
+                                                                       BlurWallpaperProvider.Listener {
 
     private val blurProvider by lazy { BlurWallpaperProvider.getInstance(context) }
     private var fullBlurDrawable: BlurDrawable? = null
     val blurAlphas = InvertedMultiValueAlpha({ alpha ->
-        blurAlpha = Math.round(255 * alpha)
-        invalidate()
-    }, 4)
+                                                 blurAlpha = Math.round(255 * alpha)
+                                                 invalidate()
+                                             }, 4)
     private var blurAlpha = 0
 
     private val blurDrawableCallback by lazy {

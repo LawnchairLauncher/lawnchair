@@ -3,44 +3,35 @@ package ch.deletescape.lawnchair.smartspace;
 import static ch.deletescape.lawnchair.LawnchairUtilsKt.makeBasicHandler;
 
 import android.app.Notification;
-import android.content.ComponentName;
 import android.content.Context;
 import android.media.MediaMetadata;
 import android.media.session.MediaController;
 import android.media.session.MediaSession;
-import android.media.session.MediaSessionManager;
-import android.media.session.MediaSessionManager.OnActiveSessionsChangedListener;
 import android.media.session.PlaybackState;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.service.notification.StatusBarNotification;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
-
 import ch.deletescape.lawnchair.smartspace.NotificationsManager.OnChangeListener;
-import com.android.launcher3.Utilities;
-import com.android.launcher3.notification.NotificationListener;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.jetbrains.annotations.Nullable;
 
 /**
- * Paused mode is not supported on Marshmallow because the MediaSession is missing
- * notifications. Without this information, it is impossible to hide on stop.
+ * Paused mode is not supported on Marshmallow because the MediaSession is missing notifications.
+ * Without this information, it is impossible to hide on stop.
  */
 public class MediaListener extends MediaController.Callback implements OnChangeListener {
+
     private static final String TAG = "MediaListener";
 
     private final Context mContext;
     private final Runnable mOnChange;
     private final NotificationsManager mNotificationsManager;
+    private final Handler mHandler = makeBasicHandler(true);
     private List<MediaNotificationController> mControllers = Collections.emptyList();
     private MediaNotificationController mTracking;
-    private final Handler mHandler = makeBasicHandler(true);
 
     MediaListener(Context context, Runnable onChange) {
         mContext = context;
@@ -171,8 +162,8 @@ public class MediaListener extends MediaController.Callback implements OnChangeL
 
     class MediaNotificationController {
 
-        private MediaController controller;
-        private StatusBarNotification sbn;
+        private final MediaController controller;
+        private final StatusBarNotification sbn;
         private MediaInfo info;
 
         private MediaNotificationController(MediaController controller, StatusBarNotification sbn) {

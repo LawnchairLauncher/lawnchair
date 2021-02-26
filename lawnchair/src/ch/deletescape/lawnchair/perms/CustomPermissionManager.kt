@@ -20,18 +20,21 @@ package ch.deletescape.lawnchair.perms
 import android.content.Context
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import ch.deletescape.lawnchair.*
+import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.util.LawnchairSingletonHolder
 import ch.deletescape.lawnchair.util.extensions.d
 import com.android.launcher3.R
 
 class CustomPermissionManager private constructor(private val context: Context) {
-    private var grantedPerms by context.lawnchairPrefs.StringSetPref("pref_grantedCustomPerms", emptySet())
-    private var deniedPerms by context.lawnchairPrefs.StringSetPref("pref_deniedCustomPerms", emptySet())
+    private var grantedPerms by context.lawnchairPrefs.StringSetPref("pref_grantedCustomPerms",
+                                                                     emptySet())
+    private var deniedPerms by context.lawnchairPrefs.StringSetPref("pref_deniedCustomPerms",
+                                                                    emptySet())
 
     fun checkPermission(permission: String) = grantedPerms.contains(permission)
 
-    fun checkOrRequestPermission(permission: String, @StringRes explanation: Int?, callback: (allowed: Boolean) -> Unit) {
+    fun checkOrRequestPermission(permission: String, @StringRes explanation: Int?,
+                                 callback: (allowed: Boolean) -> Unit) {
         deniedPerms.forEach {
             it.d()
         }
@@ -64,7 +67,8 @@ class CustomPermissionManager private constructor(private val context: Context) 
         deniedPerms -= permission
     }
 
-    companion object : LawnchairSingletonHolder<CustomPermissionManager>(::CustomPermissionManager) {
+    companion object :
+            LawnchairSingletonHolder<CustomPermissionManager>(::CustomPermissionManager) {
         /**
          * Allows access to coarse, network based location
          */
@@ -72,10 +76,11 @@ class CustomPermissionManager private constructor(private val context: Context) 
 
         private val MAP = mapOf<String, Pair<@StringRes Int, @DrawableRes Int>>(
                 PERMISSION_IPLOCATE to Pair(R.string.permission_iplocate, R.drawable.ic_location)
-        )
+                                                                               )
 
         private const val DEBUG_PROMPT_ALWAYS = false
     }
 }
 
-fun Context.checkCustomPermission(permission: String) = CustomPermissionManager.getInstance(this).checkPermission(permission)
+fun Context.checkCustomPermission(permission: String) = CustomPermissionManager.getInstance(this)
+        .checkPermission(permission)

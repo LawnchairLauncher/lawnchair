@@ -24,6 +24,7 @@ import ch.deletescape.lawnchair.smartspace.accu.model.sub.AccuLocationGSon;
 import java.util.List;
 
 public class AccuLocalWeatherGSon extends GSonBase {
+
     AccuCurrentConditionsGSon CurrentConditions;
     AccuForecastSummaryGSon ForecastSummary;
     AccuLocationGSon Location;

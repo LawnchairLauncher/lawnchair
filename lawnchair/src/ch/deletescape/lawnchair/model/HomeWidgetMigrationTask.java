@@ -47,10 +47,8 @@ import java.util.stream.Collectors;
 
 public class HomeWidgetMigrationTask extends GridSizeMigrationTask {
 
-    private static final String TAG = "HomeWidgetMigrationTask";
-
     public static final String PREF_MIGRATION_STATUS = "pref_migratedSmartspace";
-
+    private static final String TAG = "HomeWidgetMigrationTask";
     private final Context mContext;
     private final int mTrgX, mTrgY;
     private final String mTableName;
@@ -69,9 +67,43 @@ public class HomeWidgetMigrationTask extends GridSizeMigrationTask {
         mTrgY = targetSize.y;
     }
 
+    @SuppressLint("ApplySharedPref")
+    public static void migrateIfNeeded(Context context) {
+        SharedPreferences prefs = Utilities.getPrefs(context);
+
+        boolean needsMigration = !prefs.getBoolean(PREF_MIGRATION_STATUS, false)
+                && prefs.getBoolean(SMARTSPACE_PREF, false);
+        if (!needsMigration) {
+            return;
+        }
+        // Save the pref so we only run migration once
+        prefs.edit().putBoolean(PREF_MIGRATION_STATUS, true).commit();
+
+        HashSet<String> validPackages = getValidPackages(context);
+
+        InvariantDeviceProfile idp = LauncherAppState.getIDP(context);
+        Point size = new Point(idp.numColumns, idp.numRows);
+
+        long migrationStartTime = System.currentTimeMillis();
+        try (SQLiteTransaction transaction = (SQLiteTransaction) Settings.call(
+                context.getContentResolver(), Settings.METHOD_NEW_TRANSACTION)
+                .getBinder(Settings.EXTRA_VALUE)) {
+            if (!new HomeWidgetMigrationTask(context, transaction.getDb(),
+                    validPackages, false, size, size).migrateWorkspace()) {
+                throw new RuntimeException("Failed to migrate Smartspace");
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error during grid migration", e);
+        } finally {
+            Log.v(TAG, "Home widget migration completed in "
+                    + (System.currentTimeMillis() - migrationStartTime));
+        }
+    }
+
     @Override
     protected boolean migrateWorkspace() throws Exception {
-        @SuppressLint("VisibleForTests") IntArray allScreens = getWorkspaceScreenIds(mDb, mTableName);
+        @SuppressLint("VisibleForTests") IntArray allScreens = getWorkspaceScreenIds(mDb,
+                mTableName);
         if (allScreens.isEmpty()) {
             throw new Exception("Unable to get workspace screens");
         }
@@ -124,36 +156,5 @@ public class HomeWidgetMigrationTask extends GridSizeMigrationTask {
         }
 
         return true;
-    }
-
-    @SuppressLint("ApplySharedPref")
-    public static void migrateIfNeeded(Context context) {
-        SharedPreferences prefs = Utilities.getPrefs(context);
-
-        boolean needsMigration = !prefs.getBoolean(PREF_MIGRATION_STATUS, false)
-                && prefs.getBoolean(SMARTSPACE_PREF, false);
-        if (!needsMigration) return;
-        // Save the pref so we only run migration once
-        prefs.edit().putBoolean(PREF_MIGRATION_STATUS, true).commit();
-
-        HashSet<String> validPackages = getValidPackages(context);
-
-        InvariantDeviceProfile idp = LauncherAppState.getIDP(context);
-        Point size = new Point(idp.numColumns, idp.numRows);
-
-        long migrationStartTime = System.currentTimeMillis();
-        try (SQLiteTransaction transaction = (SQLiteTransaction) Settings.call(
-                context.getContentResolver(), Settings.METHOD_NEW_TRANSACTION)
-                .getBinder(Settings.EXTRA_VALUE)) {
-            if (!new HomeWidgetMigrationTask(context, transaction.getDb(),
-                    validPackages, false, size, size).migrateWorkspace()) {
-                throw new RuntimeException("Failed to migrate Smartspace");
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "Error during grid migration", e);
-        } finally {
-            Log.v(TAG, "Home widget migration completed in "
-                    + (System.currentTimeMillis() - migrationStartTime));
-        }
     }
 }

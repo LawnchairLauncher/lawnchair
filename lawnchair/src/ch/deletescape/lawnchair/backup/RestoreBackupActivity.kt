@@ -38,7 +38,8 @@ import com.android.launcher3.provider.RestoreDbTask
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 
-class RestoreBackupActivity : SettingsBaseActivity(), LawnchairBackup.MetaLoader.Callback, ColorEngine.OnColorChangeListener {
+class RestoreBackupActivity : SettingsBaseActivity(), LawnchairBackup.MetaLoader.Callback,
+                              ColorEngine.OnColorChangeListener {
     private val backupName by lazy { findViewById<AppCompatEditText>(R.id.name) }
     private val backupTimestamp by lazy { findViewById<AppCompatEditText>(R.id.timestamp) }
 
@@ -73,6 +74,7 @@ class RestoreBackupActivity : SettingsBaseActivity(), LawnchairBackup.MetaLoader
             }
             field = value
         }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_restore_backup)
@@ -80,8 +82,11 @@ class RestoreBackupActivity : SettingsBaseActivity(), LawnchairBackup.MetaLoader
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         when {
-            intent.hasExtra(EXTRA_URI) -> {  }
-            intent.data != null -> { fromExternal = true }
+            intent.hasExtra(EXTRA_URI) -> {
+            }
+            intent.data != null -> {
+                fromExternal = true
+            }
             intent.hasExtra(EXTRA_SUCCESS) -> {
                 inProgress = true
                 showMessage(R.drawable.ic_check, R.string.restore_success)
@@ -214,13 +219,15 @@ class RestoreBackupActivity : SettingsBaseActivity(), LawnchairBackup.MetaLoader
                 }
 
                 makeBasicHandler(true).postDelayed({
-                    if (fromExternal) {
-                        val intent = Intent(this@RestoreBackupActivity,
-                                RestoreBackupActivity::class.java).putExtra(EXTRA_SUCCESS, true)
-                        startActivity(intent)
-                    }
-                    Utilities.killLauncher()
-                }, 500)
+                                                       if (fromExternal) {
+                                                           val intent =
+                                                                   Intent(this@RestoreBackupActivity,
+                                                                          RestoreBackupActivity::class.java).putExtra(
+                                                                           EXTRA_SUCCESS, true)
+                                                           startActivity(intent)
+                                                       }
+                                                       Utilities.killLauncher()
+                                                   }, 500)
             } else {
                 inProgress = false
 

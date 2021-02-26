@@ -21,20 +21,21 @@ import android.content.Context
 import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
-import android.widget.LinearLayout
-import com.android.launcher3.Insettable
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.forEachChild
 import ch.deletescape.lawnchair.isVisible
 import ch.deletescape.lawnchair.lawnchairPrefs
+import com.android.launcher3.Insettable
 import com.android.launcher3.Launcher
 import com.android.launcher3.R
 import com.android.launcher3.views.OptionsPopupView
 import kotlinx.android.synthetic.main.options_view.view.*
 
 class OptionsPanel(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs),
-        Insettable, View.OnClickListener, LawnchairPreferences.OnPreferenceChangeListener {
+                                                            Insettable, View.OnClickListener,
+                                                            LawnchairPreferences.OnPreferenceChangeListener {
 
     private val launcher = Launcher.getLauncher(context)
 

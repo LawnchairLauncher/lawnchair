@@ -29,8 +29,8 @@ import android.os.ParcelFileDescriptor
 import android.text.TextUtils
 import ch.deletescape.lawnchair.adaptive.AdaptiveIconGenerator
 import com.android.launcher3.FastBitmapDrawable
-import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.Utilities
+import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.util.ComponentKey
 import java.io.FileDescriptor
 
@@ -57,7 +57,8 @@ class UriIconPack(context: Context) : IconPack(context, "lawnchairUriPack") {
         if (entry == null) return null
         if (TextUtils.isEmpty(entry.icon)) return null
         val key = entry.icon!! to (entry.arg == "true")
-        val uriEntry = entryCache.getOrPut(key) { UriEntry.fromSpec(context, entry.icon, entry.arg) }
+        val uriEntry =
+                entryCache.getOrPut(key) { UriEntry.fromSpec(context, entry.icon, entry.arg) }
         if (!uriEntry.isAvailable) return null
         return uriEntry
     }
@@ -71,7 +72,8 @@ class UriIconPack(context: Context) : IconPack(context, "lawnchairUriPack") {
     }
 
     override fun getIcon(launcherActivityInfo: LauncherActivityInfo, iconDpi: Int,
-                         flattenDrawable: Boolean, customIconEntry: IconPackManager.CustomIconEntry?,
+                         flattenDrawable: Boolean,
+                         customIconEntry: IconPackManager.CustomIconEntry?,
                          iconProvider: LawnchairIconProvider?): Drawable? {
         val entry = getUriEntry(customIconEntry)
         val icon = entry?.drawable
@@ -111,7 +113,8 @@ class UriIconPack(context: Context) : IconPack(context, "lawnchairUriPack") {
         }
 
         private fun loadBitmap(): Bitmap {
-            val parcelFileDescriptor: ParcelFileDescriptor = context.contentResolver.openFileDescriptor(uri, "r")!!
+            val parcelFileDescriptor: ParcelFileDescriptor =
+                    context.contentResolver.openFileDescriptor(uri, "r")!!
             val fileDescriptor: FileDescriptor = parcelFileDescriptor.fileDescriptor
             val image: Bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor)
             parcelFileDescriptor.close()

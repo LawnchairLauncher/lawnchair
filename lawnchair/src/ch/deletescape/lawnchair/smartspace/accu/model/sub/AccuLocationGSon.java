@@ -21,6 +21,7 @@ package ch.deletescape.lawnchair.smartspace.accu.model.sub;
 import ch.deletescape.lawnchair.smartspace.accu.model.AccuCommonLocalGSon;
 
 public class AccuLocationGSon extends AccuCommonLocalGSon {
+
     AccuDetailGSon Details;
 
     public AccuDetailGSon getDetails() {

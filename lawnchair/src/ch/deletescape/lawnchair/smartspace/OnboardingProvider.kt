@@ -65,8 +65,10 @@ class OnboardingProvider(controller: LawnchairSmartspaceController) :
     private fun update() {
         val card = when {
             !prefs.getBoolean(HOME_BOUNCE_SEEN, false) -> LawnchairSmartspaceController.CardData(
-                    lines = listOf(LawnchairSmartspaceController.Line(context, R.string.onboarding_swipe_up)))
-            !devicePrefs.getBoolean(PREF_HAS_OPENED_SETTINGS, false) -> LawnchairSmartspaceController.CardData(
+                    lines = listOf(LawnchairSmartspaceController.Line(context,
+                                                                      R.string.onboarding_swipe_up)))
+            !devicePrefs.getBoolean(PREF_HAS_OPENED_SETTINGS,
+                                    false) -> LawnchairSmartspaceController.CardData(
                     icon = null,
                     title = context.getString(
                             R.string.onbording_settings_title,

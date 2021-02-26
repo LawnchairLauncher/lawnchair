@@ -27,7 +27,8 @@ import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.gestures.GestureHandler
 import ch.deletescape.lawnchair.preferences.LauncherRecyclerViewPreference
 
-class LauncherGesturePreference(context: Context, attrs: AttributeSet?) : LauncherRecyclerViewPreference(context, attrs) {
+class LauncherGesturePreference(context: Context, attrs: AttributeSet?) :
+        LauncherRecyclerViewPreference(context, attrs) {
 
     var value: String? = null
         set(value) {
@@ -38,7 +39,8 @@ class LauncherGesturePreference(context: Context, attrs: AttributeSet?) : Launch
     lateinit var onSelectHandler: (GestureHandler) -> Unit
 
     private val blankGestureHandler = BlankGestureHandler(context, null)
-    private val handler get() = GestureController.createGestureHandler(context, value, blankGestureHandler)
+    private val handler
+        get() = GestureController.createGestureHandler(context, value, blankGestureHandler)
 
     override fun getSummary() = handler.displayName
 
@@ -57,7 +59,8 @@ class LauncherGesturePreference(context: Context, attrs: AttributeSet?) : Launch
     }
 
     override fun onBindRecyclerView(recyclerView: RecyclerView) {
-        recyclerView.adapter = HandlerListAdapter(themedContext, false, getClassName(), onSelectHandler)
+        recyclerView.adapter =
+                HandlerListAdapter(themedContext, false, getClassName(), onSelectHandler)
         recyclerView.layoutManager = LinearLayoutManager(themedContext)
     }
 

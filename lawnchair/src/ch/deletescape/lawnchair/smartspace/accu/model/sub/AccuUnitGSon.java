@@ -18,6 +18,7 @@
 package ch.deletescape.lawnchair.smartspace.accu.model.sub;
 
 public class AccuUnitGSon {
+
     AccuUnitGSon Cooling;
     AccuDirectionGSon Direction;
     AccuUnitGSon Heating;

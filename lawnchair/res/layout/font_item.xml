@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~     This file is part of Lawnchair Launcher.
   ~
   ~     Lawnchair Launcher is free software: you can redistribute it and/or modify
@@ -16,8 +15,7 @@
   ~     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/font_item"
@@ -46,10 +44,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textAppearance="@style/SettingsTheme.PreferenceTheme.Preference.Title"
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
-        tools:text="Open Sans Regular"/>
+        android:textAppearance="@style/SettingsTheme.PreferenceTheme.Preference.Title"
+        tools:text="Open Sans Regular" />
 
     <Spinner
         android:id="@+id/spinner"
@@ -63,5 +61,5 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="26dp"
         android:background="?attr/selectableItemBackgroundBorderless"
-        app:srcCompat="@drawable/ic_uninstall_no_shadow"/>
+        app:srcCompat="@drawable/ic_uninstall_no_shadow" />
 </LinearLayout>

@@ -23,10 +23,8 @@ import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import com.android.launcher3.BuildConfig
-import java.util.*
-
 import com.android.launcher3.R
+import java.util.*
 
 class DogbinUploadService : Service() {
 
@@ -65,7 +63,7 @@ class DogbinUploadService : Service() {
 
                 private fun next() {
                     startService(Intent(this@DogbinUploadService, BugReportService::class.java)
-                            .putExtra("report", report))
+                                         .putExtra("report", report))
                     uploadNext()
                 }
             })

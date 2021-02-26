@@ -18,23 +18,17 @@
 package ch.deletescape.lawnchair.location
 
 import android.content.Context
-import android.location.Location
 import android.os.NetworkOnMainThreadException
 import android.os.SystemClock
 import ch.deletescape.lawnchair.perms.CustomPermissionManager
 import ch.deletescape.lawnchair.perms.checkCustomPermission
-import ch.deletescape.lawnchair.runOnUiWorkerThread
 import ch.deletescape.lawnchair.util.okhttp.OkHttpClientBuilder
-import okhttp3.*
-import okhttp3.internal.http.promisesBody
-import okhttp3.logging.HttpLoggingInterceptor
+import okhttp3.Request
 import org.json.JSONObject
-import retrofit2.Retrofit
-import java.io.IOException
-import java.lang.Exception
 import java.util.concurrent.TimeUnit
 
-class IPLocation(private val context: Context, private val cacheValidityMs: Long = TimeUnit.MINUTES.toMillis(30)) {
+class IPLocation(private val context: Context,
+                 private val cacheValidityMs: Long = TimeUnit.MINUTES.toMillis(30)) {
     private val permissionManager = CustomPermissionManager.getInstance(context)
     private val client = OkHttpClientBuilder().build(context)
 
@@ -86,7 +80,7 @@ class IPLocation(private val context: Context, private val cacheValidityMs: Long
 
     companion object {
         private val URLS = arrayOf("https://freegeoip.app/json/",
-                "https://geoip-db.com/json/",
-                "https://api.iplocate.app/json/")
+                                   "https://geoip-db.com/json/",
+                                   "https://api.iplocate.app/json/")
     }
 }

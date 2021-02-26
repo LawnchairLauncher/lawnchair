@@ -23,9 +23,9 @@ import androidx.preference.DialogPreference
 import ch.deletescape.lawnchair.settings.ui.preview.CustomGridProvider
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
-import com.android.launcher3.Utilities
 
-class GridSizePreference(context: Context, attrs: AttributeSet?) : DialogPreference(context, attrs) {
+class GridSizePreference(context: Context, attrs: AttributeSet?) :
+        DialogPreference(context, attrs) {
 
     private val customGrid = CustomGridProvider.getInstance(context)
     private val idp = LauncherAppState.getIDP(context)

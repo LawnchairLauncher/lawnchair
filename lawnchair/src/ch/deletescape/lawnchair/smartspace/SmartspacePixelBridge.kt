@@ -64,7 +64,8 @@ class SmartspacePixelBridge(controller: LawnchairSmartspaceController) :
         }
         val cardData: LawnchairSmartspaceController.CardData? = if (e.cS()) {
             val dp = e.dP
-            LawnchairSmartspaceController.CardData(dp.icon, dp.title, dp.cx(true), dp.cy(), dp.cx(false))
+            LawnchairSmartspaceController.CardData(dp.icon, dp.title, dp.cx(true), dp.cy(),
+                                                   dp.cx(false))
         } else {
             null
         }

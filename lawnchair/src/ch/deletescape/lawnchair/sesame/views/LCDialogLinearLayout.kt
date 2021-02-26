@@ -34,6 +34,7 @@ class LCDialogLinearLayout(context: Context, attrs: AttributeSet) : LinearLayout
 
     init {
         ThemeOverride(themeSet, context).applyTheme(context)
-        backgroundTintList = ColorStateList.valueOf(Themes.getAttrColor(context, R.attr.settingsBackground))
+        backgroundTintList =
+                ColorStateList.valueOf(Themes.getAttrColor(context, R.attr.settingsBackground))
     }
 }

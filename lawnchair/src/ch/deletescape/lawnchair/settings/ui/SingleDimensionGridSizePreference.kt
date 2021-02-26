@@ -23,7 +23,9 @@ import androidx.preference.DialogPreference
 import ch.deletescape.lawnchair.settings.GridSize
 import com.android.launcher3.R
 
-abstract class SingleDimensionGridSizePreference(context: Context, attrs: AttributeSet?, private val gridSize: GridSize) : DialogPreference(context, attrs) {
+abstract class SingleDimensionGridSizePreference(context: Context, attrs: AttributeSet?,
+                                                 private val gridSize: GridSize) :
+        DialogPreference(context, attrs) {
     val defaultSize by lazy { gridSize.numRowsOriginal }
 
     init {

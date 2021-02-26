@@ -18,19 +18,21 @@
 package ch.deletescape.lawnchair.gestures.ui
 
 import android.content.Context
-import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckedTextView
 import androidx.recyclerview.widget.RecyclerView
 import ch.deletescape.lawnchair.applyAccent
-import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.gestures.GestureHandler
 import com.android.launcher3.R
 
-class HandlerListAdapter(private val context: Context, isSwipeUp: Boolean, private val currentClass: String, private val onSelectHandler: (handler: GestureHandler) -> Unit, showBlank: Boolean = true) : RecyclerView.Adapter<HandlerListAdapter.Holder>() {
+class HandlerListAdapter(private val context: Context, isSwipeUp: Boolean,
+                         private val currentClass: String,
+                         private val onSelectHandler: (handler: GestureHandler) -> Unit,
+                         showBlank: Boolean = true) :
+        RecyclerView.Adapter<HandlerListAdapter.Holder>() {
 
     val handlers = GestureController.getGestureHandlers(context, isSwipeUp, showBlank)
 

@@ -26,7 +26,8 @@ import com.android.launcher3.R
 class LegacyDrawerTabsAdapter(context: Context) : DrawerTabsAdapter(context) {
 
     override fun createGroupHolder(parent: ViewGroup): TabHolder {
-        return LegacyTabHolder(LayoutInflater.from(parent.context).inflate(R.layout.legacy_tab_item, parent, false))
+        return LegacyTabHolder(LayoutInflater.from(parent.context)
+                                       .inflate(R.layout.legacy_tab_item, parent, false))
     }
 
     override fun createHeaderItem(): Item? {

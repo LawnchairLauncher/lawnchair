@@ -92,7 +92,7 @@ class BlurWallpaperProvider(val context: Context) {
             updatePending = true
             return
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 && !context.hasStoragePermission){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 && !context.hasStoragePermission) {
             prefs.enableBlur = false
             return
         }
@@ -204,7 +204,7 @@ class BlurWallpaperProvider(val context: Context) {
 
     val tintColor: Int
         get() = 0x45ffffff // TODO: replace this with theme attr
-//        get() = Utilities.resolveAttributeData(context, R.attr.blurTintColor)
+    //        get() = Utilities.resolveAttributeData(context, R.attr.blurTintColor)
 
     fun updateAsync() {
         Executors.THREAD_POOL_EXECUTOR.execute(mUpdateRunnable)
@@ -263,7 +263,8 @@ class BlurWallpaperProvider(val context: Context) {
             xPixels += (availw * (offset - .5f) + .5f).toInt()
 
         mOffset = Utilities.boundToRange((-xPixels).toFloat(),
-                0f, (mWallpaperWidth - mDisplayMetrics.widthPixels).toFloat())
+                                         0f,
+                                         (mWallpaperWidth - mDisplayMetrics.widthPixels).toFloat())
 
         for (listener in ArrayList(mListeners)) {
             listener.onOffsetChanged(mOffset)
@@ -284,7 +285,8 @@ class BlurWallpaperProvider(val context: Context) {
         fun onEnabledChanged() {}
     }
 
-    companion object : SingletonHolder<BlurWallpaperProvider, Context>(ensureOnMainThread(useApplicationContext(::BlurWallpaperProvider))) {
+    companion object : SingletonHolder<BlurWallpaperProvider, Context>(
+            ensureOnMainThread(useApplicationContext(::BlurWallpaperProvider))) {
 
         const val BLUR_QSB = 1
         const val BLUR_FOLDER = 2

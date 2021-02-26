@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~     This file is part of Lawnchair Launcher.
   ~
   ~     Lawnchair Launcher is free software: you can redistribute it and/or modify
@@ -17,17 +16,28 @@
   -->
 
 <set xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shareInterpolator="false" android:zAdjustment="top">
-    <scale android:fromXScale="1.2" android:toXScale="1.0"
-        android:fromYScale=".8" android:toYScale="1.0"
-        android:pivotX="50%p" android:pivotY="50%p"
-        android:fillEnabled="true" android:fillBefore="true" android:fillAfter="true"
+    android:shareInterpolator="false"
+    android:zAdjustment="top">
+    <scale
+        android:duration="240"
+        android:fillAfter="true"
+        android:fillBefore="true"
+        android:fillEnabled="true"
+        android:fromXScale="1.2"
+        android:fromYScale=".8"
         android:interpolator="@android:interpolator/decelerate_quint"
+        android:pivotX="50%p"
+        android:pivotY="50%p"
         android:startOffset="300"
-        android:duration="240" />
-    <alpha android:fromAlpha="0" android:toAlpha="1.0"
-        android:fillEnabled="true" android:fillBefore="true" android:fillAfter="true"
+        android:toXScale="1.0"
+        android:toYScale="1.0" />
+    <alpha
+        android:duration="300"
+        android:fillAfter="true"
+        android:fillBefore="true"
+        android:fillEnabled="true"
+        android:fromAlpha="0"
         android:interpolator="@android:interpolator/decelerate_quad"
         android:startOffset="300"
-        android:duration="300"/>
+        android:toAlpha="1.0" />
 </set>

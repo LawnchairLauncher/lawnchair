@@ -22,6 +22,7 @@ import ch.deletescape.lawnchair.smartspace.accu.model.sub.AccuUnitGSon;
 import ch.deletescape.lawnchair.smartspace.accu.model.sub.AccuUnitValueGSon;
 
 public class AccuHourlyForecastGSon extends GSonBase {
+
     AccuUnitValueGSon Ceiling;
     int CloudCover;
     String DateTime;

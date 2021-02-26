@@ -20,7 +20,7 @@ package ch.deletescape.lawnchair.settings.ui
 import android.content.Intent
 import com.android.launcher3.R
 
-class SettingsSearchActivity: SettingsActivity() {
+class SettingsSearchActivity : SettingsActivity() {
 
     init {
         forceSubSettings = true

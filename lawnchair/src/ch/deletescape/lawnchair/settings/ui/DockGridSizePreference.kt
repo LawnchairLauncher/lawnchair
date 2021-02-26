@@ -23,8 +23,6 @@ import androidx.preference.Preference
 import ch.deletescape.lawnchair.preferences.ResumablePreference
 import ch.deletescape.lawnchair.settings.ui.preview.CustomGridProvider
 import com.android.launcher3.LauncherAppState
-import com.android.launcher3.R
-import com.android.launcher3.Utilities
 
 class DockGridSizePreference(context: Context, attrs: AttributeSet?) :
         Preference(context, attrs), ResumablePreference {

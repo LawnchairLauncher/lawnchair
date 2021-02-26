@@ -33,7 +33,6 @@ import com.android.launcher3.R
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
-import java.lang.Exception
 
 class FontCache(private val context: Context) {
 
@@ -48,7 +47,9 @@ class FontCache(private val context: Context) {
             Pair("700", R.string.font_weight_bold),
             Pair("800", R.string.font_weight_extra_bold),
             Pair("900", R.string.font_weight_extra_black)
-    ).mapValues { context.getString(it.value) }
+                                                          ).mapValues {
+        context.getString(it.value)
+    }
 
     fun loadFont(font: Font): FontLoader {
         return fontLoaders.getOrPut(font) { FontLoader(font) }
@@ -95,7 +96,8 @@ class FontCache(private val context: Context) {
                 val obj = JSONObject(jsonString)
                 val className = obj.getString(KEY_CLASS_NAME)
                 val clazz = Class.forName(className)
-                val constructor = clazz.getMethod("fromJson", Context::class.java, JSONObject::class.java)
+                val constructor =
+                        clazz.getMethod("fromJson", Context::class.java, JSONObject::class.java)
                 return constructor.invoke(null, context, obj) as Font
             }
         }
@@ -232,7 +234,8 @@ class FontCache(private val context: Context) {
 
     class AssetFont(
             assets: AssetManager,
-            private val name: String) : TypefaceFont(Typeface.createFromAsset(assets, "$name.ttf")) {
+            private val name: String) :
+            TypefaceFont(Typeface.createFromAsset(assets, "$name.ttf")) {
 
         private val hashCode = "AssetFont|$name".hashCode()
 
@@ -257,7 +260,8 @@ class FontCache(private val context: Context) {
 
         override val displayName = createVariantName()
         override val fullDisplayName = "$family $displayName"
-        override val familySorter = "${GoogleFontsListing.getWeight(variant)}${GoogleFontsListing.isItalic(variant)}"
+        override val familySorter =
+                "${GoogleFontsListing.getWeight(variant)}${GoogleFontsListing.isItalic(variant)}"
 
         private fun createVariantName(): String {
             if (variant == "italic") return context.getString(R.string.font_variant_italic)
@@ -276,15 +280,17 @@ class FontCache(private val context: Context) {
                     R.array.com_google_android_gms_fonts_certs)
 
             // retrieve font in the background
-            FontsContractCompat.requestFont(context, request, object : FontsContractCompat.FontRequestCallback() {
-                override fun onTypefaceRetrieved(typeface: Typeface) {
-                    callback.onFontLoaded(typeface)
-                }
+            FontsContractCompat.requestFont(context, request,
+                                            object : FontsContractCompat.FontRequestCallback() {
+                                                override fun onTypefaceRetrieved(
+                                                        typeface: Typeface) {
+                                                    callback.onFontLoaded(typeface)
+                                                }
 
-                override fun onTypefaceRequestFailed(reason: Int) {
-                    callback.onFontLoaded(null)
-                }
-            }, uiWorkerHandler)
+                                                override fun onTypefaceRequestFailed(reason: Int) {
+                                                    callback.onFontLoaded(null)
+                                                }
+                                            }, uiWorkerHandler)
         }
 
         override fun saveToJson(obj: JSONObject) {

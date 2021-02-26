@@ -18,12 +18,13 @@
 package ch.deletescape.lawnchair.groups
 
 import ch.deletescape.lawnchair.LawnchairPreferences
-import ch.deletescape.lawnchair.util.extensions.d
 
 class AppGroupsManager(val prefs: LawnchairPreferences) {
 
-    var categorizationEnabled by prefs.BooleanPref("pref_appsCategorizationEnabled", false, ::onPrefsChanged)
-    var categorizationType by prefs.EnumPref("pref_appsCategorizationType", CategorizationType.Tabs, ::onPrefsChanged)
+    var categorizationEnabled by prefs.BooleanPref("pref_appsCategorizationEnabled", false,
+                                                   ::onPrefsChanged)
+    var categorizationType by prefs.EnumPref("pref_appsCategorizationType", CategorizationType.Tabs,
+                                             ::onPrefsChanged)
 
     val drawerTabs by lazy { CustomTabs(this) }
     val flowerpotTabs by lazy { FlowerpotTabs(this) }

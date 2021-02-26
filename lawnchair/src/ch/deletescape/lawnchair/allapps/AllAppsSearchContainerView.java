@@ -64,7 +64,8 @@ public class AllAppsSearchContainerView extends AllAppsContainerView
             if (Utilities.ATLEAST_P && Utilities.HIDDEN_APIS_ALLOWED) {
                 canvas.saveUnclippedLayer(left, 0, right, bottom);
             } else {
-                int flags = Utilities.ATLEAST_P ? Canvas.ALL_SAVE_FLAG : 0x04 /* HAS_ALPHA_LAYER_SAVE_FLAG */;
+                int flags = Utilities.ATLEAST_P ? Canvas.ALL_SAVE_FLAG
+                        : 0x04 /* HAS_ALPHA_LAYER_SAVE_FLAG */;
                 canvas.saveLayer(left, 0, right, bottom, null, flags);
             }
         }
@@ -75,13 +76,15 @@ public class AllAppsSearchContainerView extends AllAppsContainerView
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        ColorEngine.getInstance(getContext()).addColorChangeListeners(this, Resolvers.ALLAPPS_QSB_BG);
+        ColorEngine.getInstance(getContext())
+                .addColorChangeListeners(this, Resolvers.ALLAPPS_QSB_BG);
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        ColorEngine.getInstance(getContext()).removeColorChangeListeners(this, Resolvers.ALLAPPS_QSB_BG);
+        ColorEngine.getInstance(getContext())
+                .removeColorChangeListeners(this, Resolvers.ALLAPPS_QSB_BG);
     }
 
     @Override

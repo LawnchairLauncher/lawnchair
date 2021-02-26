@@ -20,13 +20,13 @@ package ch.deletescape.lawnchair.settings.ui
 import android.content.Intent
 import com.android.launcher3.R
 
-class SettingsIntegrationActivity: SettingsActivity() {
+class SettingsIntegrationActivity : SettingsActivity() {
 
     init {
         forceSubSettings = true
     }
 
     override fun createLaunchFragment(intent: Intent?) = SubSettingsFragment.newInstance(
-                getString(R.string.pref_integrations),
-                R.xml.lawnchair_integration_preferences)
+            getString(R.string.pref_integrations),
+            R.xml.lawnchair_integration_preferences)
 }

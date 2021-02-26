@@ -26,7 +26,8 @@ import com.android.launcher3.anim.Interpolators.LINEAR
 
 abstract class IconCornerShape {
 
-    abstract fun addCorner(path: Path, position: Position, size: PointF, progress: Float, offsetX: Float, offsetY: Float)
+    abstract fun addCorner(path: Path, position: Position, size: PointF, progress: Float,
+                           offsetX: Float, offsetY: Float)
 
     abstract class BaseBezierPath : IconCornerShape() {
 
@@ -53,8 +54,10 @@ abstract class IconCornerShape {
 
         override fun addCorner(path: Path, position: Position, size: PointF, progress: Float,
                                offsetX: Float, offsetY: Float) {
-            val controlDistanceX = Utilities.mapRange(progress, controlDistanceX, roundControlDistance)
-            val controlDistanceY = Utilities.mapRange(progress, controlDistanceY, roundControlDistance)
+            val controlDistanceX =
+                    Utilities.mapRange(progress, controlDistanceX, roundControlDistance)
+            val controlDistanceY =
+                    Utilities.mapRange(progress, controlDistanceY, roundControlDistance)
             path.cubicTo(
                     getControl1X(position, controlDistanceX) * size.x + offsetX,
                     getControl1Y(position, controlDistanceY) * size.y + offsetY,
@@ -150,7 +153,8 @@ abstract class IconCornerShape {
                 path.lineTo(
                         position.startX * newSize.x + offsetX + xAdjustment,
                         position.startY * newSize.y + offsetY + yAdjustment)
-                super.addCorner(path, position, newSize, progress, offsetX + xAdjustment, offsetY + yAdjustment)
+                super.addCorner(path, position, newSize, progress, offsetX + xAdjustment,
+                                offsetY + yAdjustment)
                 return
             }
             val points = points[position] ?: error("")
@@ -186,7 +190,8 @@ abstract class IconCornerShape {
                         PointF(0.603866f, 0f),
                         PointF(0.71195f, 0.0341666f),
                         PointF(0.82995f, 0.0771166f))
-                val positions = listOf(Position.TopLeft, Position.TopRight, Position.BottomRight, Position.BottomLeft)
+                val positions = listOf(Position.TopLeft, Position.TopRight, Position.BottomRight,
+                                       Position.BottomLeft)
                 val allScales = tmp + tmp.asReversed().map { PointF(it.y, it.x) }
                 val reversedScales = allScales.asReversed()
                 points = positions.associateWith {

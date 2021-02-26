@@ -25,7 +25,8 @@ import ch.deletescape.lawnchair.theme.ThemeManager
 import ch.deletescape.lawnchair.util.hasFlag
 
 @Keep
-class ThemeBlackSwitchPreference(context: Context, attrs: AttributeSet) : ThemeFlagSwitchPreference(context, attrs) {
+class ThemeBlackSwitchPreference(context: Context, attrs: AttributeSet) :
+        ThemeFlagSwitchPreference(context, attrs) {
 
     override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
         super.onValueChanged(key, prefs, force)

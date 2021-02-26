@@ -43,9 +43,9 @@ import com.android.launcher3.R;
 
 public class HighlightablePreferenceGroupAdapter extends PreferenceGroupAdapter {
 
-    private static final String TAG = "HighlightableAdapter";
     @VisibleForTesting
     static final long DELAY_HIGHLIGHT_DURATION_MILLIS = 600L;
+    private static final String TAG = "HighlightableAdapter";
     private static final long HIGHLIGHT_DURATION = 15000L;
     private static final long HIGHLIGHT_FADE_OUT_DURATION = 500L;
     private static final long HIGHLIGHT_FADE_IN_DURATION = 200L;
@@ -53,14 +53,30 @@ public class HighlightablePreferenceGroupAdapter extends PreferenceGroupAdapter 
     final int mInvisibleBackground;
     @VisibleForTesting
     final int mHighlightColor;
-    @VisibleForTesting
-    boolean mFadeInAnimated;
-
     private final int mNormalBackgroundRes;
     private final String mHighlightKey;
+    @VisibleForTesting
+    boolean mFadeInAnimated;
     private boolean mHighlightRequested;
     private int mHighlightPosition = RecyclerView.NO_POSITION;
 
+
+    public HighlightablePreferenceGroupAdapter(PreferenceGroup preferenceGroup, String key,
+            boolean highlightRequested) {
+        super(preferenceGroup);
+        mHighlightKey = key;
+        mHighlightRequested = highlightRequested;
+        final Context context = preferenceGroup.getContext();
+        final TypedValue outValue = new TypedValue();
+        context.getTheme().resolveAttribute(android.R.attr.selectableItemBackground,
+                outValue, true /* resolveRefs */);
+        mNormalBackgroundRes = outValue.resourceId;
+        context.getTheme().resolveAttribute(android.R.attr.windowBackground, outValue, true);
+        mInvisibleBackground = ColorUtils
+                .setAlphaComponent(ContextCompat.getColor(context, outValue.resourceId), 0);
+        int accent = ColorEngine.getInstance(context).getAccent();
+        mHighlightColor = ColorUtils.setAlphaComponent(accent, (int) (255 * 0.26));
+    }
 
     /**
      * Tries to override initial expanded child count.
@@ -91,23 +107,6 @@ public class HighlightablePreferenceGroupAdapter extends PreferenceGroupAdapter 
             return;
         }
         screen.setInitialExpandedChildrenCount(initialCount);
-    }
-
-    public HighlightablePreferenceGroupAdapter(PreferenceGroup preferenceGroup, String key,
-            boolean highlightRequested) {
-        super(preferenceGroup);
-        mHighlightKey = key;
-        mHighlightRequested = highlightRequested;
-        final Context context = preferenceGroup.getContext();
-        final TypedValue outValue = new TypedValue();
-        context.getTheme().resolveAttribute(android.R.attr.selectableItemBackground,
-                outValue, true /* resolveRefs */);
-        mNormalBackgroundRes = outValue.resourceId;
-        context.getTheme().resolveAttribute(android.R.attr.windowBackground, outValue, true);
-        mInvisibleBackground = ColorUtils
-                .setAlphaComponent(ContextCompat.getColor(context, outValue.resourceId), 0);
-        int accent = ColorEngine.getInstance(context).getAccent();
-        mHighlightColor = ColorUtils.setAlphaComponent(accent, (int) (255 * 0.26));
     }
 
     @Override

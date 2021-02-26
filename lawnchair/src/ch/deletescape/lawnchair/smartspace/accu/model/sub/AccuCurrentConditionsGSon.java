@@ -21,6 +21,7 @@ import ch.deletescape.lawnchair.smartspace.accu.model.GSonBase;
 import java.util.List;
 
 public class AccuCurrentConditionsGSon extends GSonBase {
+
     AccuUnitValueGSon ApparentTemperature;
     AccuUnitValueGSon Ceiling;
     int CloudCover;
@@ -136,7 +137,8 @@ public class AccuCurrentConditionsGSon extends GSonBase {
         return this.Past24HourTemperatureDeparture;
     }
 
-    public void setPast24HourTemperatureDeparture(AccuUnitValueGSon past24HourTemperatureDeparture) {
+    public void setPast24HourTemperatureDeparture(
+            AccuUnitValueGSon past24HourTemperatureDeparture) {
         this.Past24HourTemperatureDeparture = past24HourTemperatureDeparture;
     }
 

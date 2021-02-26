@@ -18,6 +18,7 @@
 package ch.deletescape.lawnchair.smartspace.accu.model.sub;
 
 public class AccuPrecipitationSummaryGSon {
+
     AccuUnitValueGSon Past12Hours;
     AccuUnitValueGSon Past18Hours;
     AccuUnitValueGSon Past24Hours;

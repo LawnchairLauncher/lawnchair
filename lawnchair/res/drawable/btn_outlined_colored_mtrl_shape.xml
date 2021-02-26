@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~     This file is part of Lawnchair Launcher.
   ~
   ~     Lawnchair Launcher is free software: you can redistribute it and/or modify
@@ -21,13 +20,15 @@
     android:insetTop="@dimen/abc_button_inset_vertical_material"
     android:insetRight="@dimen/abc_button_inset_horizontal_material"
     android:insetBottom="@dimen/abc_button_inset_vertical_material">
-    <shape android:shape="rectangle"
+    <shape
+        android:shape="rectangle"
         android:tint="?android:colorAccent">
         <corners android:radius="@dimen/button_corner_radius" />
         <solid android:color="#19FFFFFF" />
-        <padding android:left="@dimen/abc_button_padding_horizontal_material"
-            android:top="@dimen/abc_button_padding_vertical_material"
+        <padding
+            android:bottom="@dimen/abc_button_padding_vertical_material"
+            android:left="@dimen/abc_button_padding_horizontal_material"
             android:right="@dimen/abc_button_padding_horizontal_material"
-            android:bottom="@dimen/abc_button_padding_vertical_material"/>
+            android:top="@dimen/abc_button_padding_vertical_material" />
     </shape>
 </inset>

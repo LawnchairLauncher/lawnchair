@@ -27,9 +27,7 @@ abstract class PredictionsDividerLayout(context: Context, attrs: AttributeSet?)
 
     private val resolverKey = ColorEngine.Resolvers.ALLAPPS_ICON_LABEL
     var allAppsLabelColor = ColorEngine.getInstance(context).getResolver(resolverKey).resolveColor()
-        private set(value) {
-            field = value
-        }
+        private set
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()

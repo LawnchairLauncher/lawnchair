@@ -37,7 +37,8 @@ import com.android.launcher3.*
 import java.io.File
 
 @SuppressLint("ViewConstructor")
-class DecorLayout(context: Context, private val window: Window) : InsettableFrameLayout(context, null),
+class DecorLayout(context: Context, private val window: Window) :
+        InsettableFrameLayout(context, null),
         View.OnClickListener, BlurWallpaperProvider.Listener {
 
     private var tapCount = 0
@@ -59,7 +60,9 @@ class DecorLayout(context: Context, private val window: Window) : InsettableFram
             }
         }
 
-    private val shouldDrawBackground by lazy { context.getBooleanAttr(android.R.attr.windowShowWallpaper) }
+    private val shouldDrawBackground by lazy {
+        context.getBooleanAttr(android.R.attr.windowShowWallpaper)
+    }
     private val settingsBackground by lazy { context.getColorAttr(R.attr.settingsBackground) }
 
     var actionBarElevation: Float
@@ -88,11 +91,12 @@ class DecorLayout(context: Context, private val window: Window) : InsettableFram
             updateToolbar()
         }
 
-    private val contentTop get() = when {
-        hideToolbar -> 0
-        useLargeTitle -> context.resources.getDimensionPixelSize(R.dimen.large_title_height)
-        else -> context.getDimenAttr(R.attr.actionBarSize)
-    }
+    private val contentTop
+        get() = when {
+            hideToolbar -> 0
+            useLargeTitle -> context.resources.getDimensionPixelSize(R.dimen.large_title_height)
+            else -> context.getDimenAttr(R.attr.actionBarSize)
+        }
 
     private fun updateToolbar() {
         largeTitle.visibility = if (useLargeTitle && !hideToolbar) View.VISIBLE else View.GONE
@@ -168,7 +172,8 @@ class DecorLayout(context: Context, private val window: Window) : InsettableFram
         (background as BlurDrawable?)?.stopListening()
     }
 
-    class ContentFrameLayout(context: Context, attrs: AttributeSet?) : InsettableFrameLayout(context, attrs) {
+    class ContentFrameLayout(context: Context, attrs: AttributeSet?) :
+            InsettableFrameLayout(context, attrs) {
 
         private var decorLayout: DecorLayout? = null
 
@@ -301,7 +306,8 @@ class DecorLayout(context: Context, private val window: Window) : InsettableFram
         }
     }
 
-    class FrontScrimView(context: Context, attrs: AttributeSet?) : View(context, attrs), Insettable {
+    class FrontScrimView(context: Context, attrs: AttributeSet?) : View(context, attrs),
+                                                                   Insettable {
 
         private val parent by lazy { parents.first { it is ContentFrameLayout } as ContentFrameLayout }
 
@@ -323,7 +329,8 @@ class DecorLayout(context: Context, private val window: Window) : InsettableFram
         }
     }
 
-    class ToolbarElevationHelper constructor(private val scrollingView: View) : ViewTreeObserver.OnScrollChangedListener {
+    class ToolbarElevationHelper constructor(private val scrollingView: View) :
+            ViewTreeObserver.OnScrollChangedListener {
 
         private val decorLayout by lazy { scrollingView.parents.first { it is DecorLayout } as DecorLayout }
 

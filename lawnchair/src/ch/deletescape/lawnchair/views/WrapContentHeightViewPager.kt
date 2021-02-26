@@ -25,7 +25,8 @@ import androidx.viewpager.widget.ViewPager
 import ch.deletescape.lawnchair.forEachChild
 import kotlin.math.max
 
-class WrapContentHeightViewPager(context: Context, attrs: AttributeSet?) : ViewPager(context, attrs) {
+class WrapContentHeightViewPager(context: Context, attrs: AttributeSet?) :
+        ViewPager(context, attrs) {
 
     var childFilter: (View) -> Boolean = { true }
 
@@ -33,13 +34,15 @@ class WrapContentHeightViewPager(context: Context, attrs: AttributeSet?) : ViewP
         if (layoutParams.height == ViewGroup.LayoutParams.WRAP_CONTENT) {
             var height = 0
             forEachChild {
-                it.measure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED))
+                it.measure(widthMeasureSpec,
+                           MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED))
                 if (childFilter(it)) {
                     height = max(height, it.measuredHeight)
                 }
             }
 
-            super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY))
+            super.onMeasure(widthMeasureSpec,
+                            MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY))
         } else {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         }

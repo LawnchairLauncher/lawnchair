@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~     This file is part of Lawnchair Launcher.
   ~
   ~     Lawnchair Launcher is free software: you can redistribute it and/or modify
@@ -21,6 +20,5 @@
     <item
         android:id="@android:id/mask"
         android:drawable="@drawable/btn_outlined_mtrl_mask" />
-    <item
-        android:drawable="@drawable/btn_outlined_colored_mtrl_shape" />
+    <item android:drawable="@drawable/btn_outlined_colored_mtrl_shape" />
 </ripple>

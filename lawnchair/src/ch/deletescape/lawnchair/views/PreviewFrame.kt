@@ -36,7 +36,8 @@ import com.android.launcher3.LauncherAppWidgetProviderInfo
 import kotlin.math.max
 
 class PreviewFrame(context: Context, attrs: AttributeSet?) :
-        FrameLayout(context, attrs), View.OnLongClickListener, ViewTreeObserver.OnScrollChangedListener {
+        FrameLayout(context, attrs), View.OnLongClickListener,
+        ViewTreeObserver.OnScrollChangedListener {
 
     private val viewLocation = IntArray(2)
     private val wallpaper = WallpaperPreviewProvider.getInstance(context).wallpaper
@@ -88,7 +89,7 @@ class PreviewFrame(context: Context, attrs: AttributeSet?) :
             val provider = it.provider
             val bounds = clipBounds
             val listener = CustomWidgetDragListener(provider, bounds,
-                    width, width)
+                                                    width, width)
 
             val homeIntent = listener.addToIntent(
                     Intent(Intent.ACTION_MAIN)
@@ -96,7 +97,7 @@ class PreviewFrame(context: Context, attrs: AttributeSet?) :
                             .setPackage(context.packageName)
                             .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
 
-//            listener.initWhenReady()
+            //            listener.initWhenReady()
             context.startActivity(
                     homeIntent,
                     ActivityOptions.makeCustomAnimation(

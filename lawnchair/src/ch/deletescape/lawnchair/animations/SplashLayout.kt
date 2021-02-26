@@ -75,7 +75,7 @@ class SplashLayout(context: Context) : FrameLayout(context), Insettable {
         cutoutParams.setMargins(0, 0, 0, 0)
 
         val isSeascape = Utilities.ATLEAST_OREO
-                && LauncherAppState.getIDP(context).getDeviceProfile(context).isSeascape
+                         && LauncherAppState.getIDP(context).getDeviceProfile(context).isSeascape
         if (insets.left == 0 && insets.right == 0) {
             // Navbar is on the bottom
             navParams.width = ViewGroup.LayoutParams.MATCH_PARENT

@@ -70,7 +70,8 @@ class AllAppsTabs(private val context: Context) : Iterable<AllAppsTabs.Tab> {
         }
     }
 
-    private fun createMatcher(components: List<ComponentKey>, base: ItemInfoMatcher? = null): ItemInfoMatcher {
+    private fun createMatcher(components: List<ComponentKey>,
+                              base: ItemInfoMatcher? = null): ItemInfoMatcher {
         return object : ItemInfoMatcher {
             override fun matches(info: ItemInfo, cn: ComponentName?): Boolean {
                 if (base?.matches(info, cn) == false) return false

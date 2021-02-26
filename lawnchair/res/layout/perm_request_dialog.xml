@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~     This file is part of Lawnchair Launcher.
   ~
   ~     Lawnchair Launcher is free software: you can redistribute it and/or modify
@@ -19,26 +18,26 @@
 <!-- find out where the permission request width comes from -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingStart="@dimen/select_dialog_padding_start_material"
     android:paddingTop="18dp"
-    android:paddingEnd="@dimen/select_dialog_padding_material"
-    android:paddingStart="@dimen/select_dialog_padding_start_material">
+    android:paddingEnd="@dimen/select_dialog_padding_material">
     <ImageView
+        android:id="@+id/icon"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        android:id="@+id/icon"
-        tools:src="@drawable/ic_location"/>
+        tools:src="@drawable/ic_location" />
 
     <TextView
+        android:id="@+id/message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="?android:dialogPreferredPadding"
-        android:id="@+id/message"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:layout_toEndOf="@id/icon"
-        tools:text="@string/permission_iplocate"/>
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        tools:text="@string/permission_iplocate" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -46,22 +45,22 @@
         android:layout_below="@id/message"
         android:layout_alignStart="@id/message">
         <ImageView
+            android:id="@+id/icon_info"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:id="@+id/icon_info"
-            android:src="@drawable/ic_info_no_shadow"
-            android:visibility="gone"
-            android:tint="?android:textColorSecondary"
             android:layout_gravity="center"
-            tools:visibility="visible"/>
+            android:src="@drawable/ic_info_no_shadow"
+            android:tint="?android:textColorSecondary"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <TextView
+            android:id="@+id/text_explanation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingStart="12dp"
-            android:id="@+id/text_explanation"
-            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
             android:layout_gravity="center"
-            tools:text="@string/permission_iplocate_twilight_explanation"/>
+            android:paddingStart="12dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+            tools:text="@string/permission_iplocate_twilight_explanation" />
     </LinearLayout>
 </RelativeLayout>

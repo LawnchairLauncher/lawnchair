@@ -50,7 +50,7 @@ import com.android.launcher3.uioverrides.WallpaperColorInfo
  */
 
 class ThemeManager(val context: Context) : WallpaperColorInfo.OnChangeListener, TwilightListener,
-        ColorEngine.OnColorChangeListener {
+                                           ColorEngine.OnColorChangeListener {
 
     private val app = context.lawnchairApp
     private val wallpaperColorInfo = WallpaperColorInfo.INSTANCE.get(context)
@@ -67,12 +67,13 @@ class ThemeManager(val context: Context) : WallpaperColorInfo.OnChangeListener, 
 
     val isDark get() = themeFlags and THEME_DARK != 0
     val supportsDarkText get() = themeFlags and THEME_DARK_TEXT != 0
-    val displayName: String get() {
-        val values = context.resources.getIntArray(R.array.themeValues)
-        val strings = context.resources.getStringArray(R.array.themes)
-        val index = values.indexOf(themeFlags)
-        return strings.getOrNull(index) ?: context.resources.getString(R.string.theme_auto)
-    }
+    val displayName: String
+        get() {
+            val values = context.resources.getIntArray(R.array.themeValues)
+            val strings = context.resources.getStringArray(R.array.themes)
+            val index = values.indexOf(themeFlags)
+            return strings.getOrNull(index) ?: context.resources.getString(R.string.theme_auto)
+        }
 
     private val twilightManager by lazy { TwilightManager.getInstance(context) }
     private val handler = makeBasicHandler(true)
@@ -113,7 +114,8 @@ class ThemeManager(val context: Context) : WallpaperColorInfo.OnChangeListener, 
     }
 
     fun registerColorListener() {
-        ColorEngine.getInstance(context).addColorChangeListeners(this, ColorEngine.Resolvers.WORKSPACE_ICON_LABEL)
+        ColorEngine.getInstance(context)
+                .addColorChangeListeners(this, ColorEngine.Resolvers.WORKSPACE_ICON_LABEL)
     }
 
     override fun onColorChange(resolveInfo: ColorEngine.ResolveInfo) {
@@ -198,7 +200,7 @@ class ThemeManager(val context: Context) : WallpaperColorInfo.OnChangeListener, 
         }
 
         BlankActivity.requestPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION,
-                LawnchairLauncher.REQUEST_PERMISSION_LOCATION_ACCESS) { granted ->
+                                        LawnchairLauncher.REQUEST_PERMISSION_LOCATION_ACCESS) { granted ->
             if (granted) {
                 listenToTwilight = true
             } else {
@@ -232,7 +234,8 @@ class ThemeManager(val context: Context) : WallpaperColorInfo.OnChangeListener, 
         fun onThemeChanged()
     }
 
-    companion object : SingletonHolder<ThemeManager, Context>(ensureOnMainThread(useApplicationContext(::ThemeManager))) {
+    companion object : SingletonHolder<ThemeManager, Context>(
+            ensureOnMainThread(useApplicationContext(::ThemeManager))) {
 
         const val THEME_FOLLOW_WALLPAPER = 1         // 0000001 = 1
         const val THEME_DARK_TEXT = 1 shl 1          // 0000010 = 2
@@ -242,7 +245,8 @@ class ThemeManager(val context: Context) : WallpaperColorInfo.OnChangeListener, 
         const val THEME_FOLLOW_DAYLIGHT = 1 shl 5    // 0100000 = 32
         const val THEME_DARK_MAIN_COLOR = 1 shl 6    // 1000000 = 64
 
-        const val THEME_AUTO_MASK = THEME_FOLLOW_WALLPAPER or THEME_FOLLOW_NIGHT_MODE or THEME_FOLLOW_DAYLIGHT
+        const val THEME_AUTO_MASK =
+                THEME_FOLLOW_WALLPAPER or THEME_FOLLOW_NIGHT_MODE or THEME_FOLLOW_DAYLIGHT
         const val THEME_DARK_MASK = THEME_DARK or THEME_AUTO_MASK
 
         fun isDarkText(flags: Int) = (flags and THEME_DARK_TEXT) != 0

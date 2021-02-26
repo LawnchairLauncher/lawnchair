@@ -22,7 +22,8 @@ import android.graphics.Rect
 import android.util.AttributeSet
 import com.android.launcher3.InsettableFrameLayout
 
-class SettingsSearchLayout(context: Context, attrs: AttributeSet?) : InsettableFrameLayout(context, attrs) {
+class SettingsSearchLayout(context: Context, attrs: AttributeSet?) :
+        InsettableFrameLayout(context, attrs) {
 
     override fun setInsets(insets: Rect) {
         setPadding(0, insets.top, 0, 0)

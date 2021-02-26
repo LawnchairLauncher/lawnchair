@@ -38,20 +38,23 @@ class DynamicDrawable {
     companion object {
         const val TAG = "DynamicDrawable"
 
-        fun getIcon(context: Context, drawable: Drawable, metadata: Metadata, iconDpi: Int): Drawable {
+        fun getIcon(context: Context, drawable: Drawable, metadata: Metadata,
+                    iconDpi: Int): Drawable {
             metadata.load(context, iconDpi)
             return when (metadata.type) {
                 Type.CLOCK -> CustomClock.getClock(context, metadata.clockMetadata!!.drawable,
-                        metadata.clockMetadata!!.metadata, iconDpi)
+                                                   metadata.clockMetadata!!.metadata, iconDpi)
                 else -> drawable
             }
         }
 
-        fun drawIcon(context: Context, icon: Bitmap, metadata: Metadata, iconDpi: Int) : FastBitmapDrawable? {
+        fun drawIcon(context: Context, icon: Bitmap, metadata: Metadata,
+                     iconDpi: Int): FastBitmapDrawable? {
             metadata.load(context, iconDpi)
             val customClockDrawer = CustomClock(context)
             return when (metadata.type) {
-                Type.CLOCK -> customClockDrawer.drawIcon(icon, metadata.clockMetadata!!.drawable, metadata.clockMetadata!!.metadata)
+                Type.CLOCK -> customClockDrawer.drawIcon(icon, metadata.clockMetadata!!.drawable,
+                                                         metadata.clockMetadata!!.metadata)
                 else -> null
             }
         }
@@ -74,7 +77,8 @@ class DynamicDrawable {
             return null
         }
 
-        fun getDrawable(context: Context, packageName: String, name: String, density: Int): Drawable? {
+        fun getDrawable(context: Context, packageName: String, name: String,
+                        density: Int): Drawable? {
             return try {
                 val res = context.packageManager.getResourcesForApplication(packageName)
                 val id = res.getIdentifier(name, "drawable", packageName)
@@ -96,7 +100,7 @@ class DynamicDrawable {
             if (!loaded) {
                 val mutableItems: MutableList<Item> = ArrayList()
                 val parser = getXml(context, xml, packageName)
-                while (parser != null &&parser.next() != XmlPullParser.END_DOCUMENT) {
+                while (parser != null && parser.next() != XmlPullParser.END_DOCUMENT) {
                     if (parser.eventType == XmlPullParser.START_TAG) {
                         if (parser.name == "item") {
                             val item = Item(
@@ -118,7 +122,8 @@ class DynamicDrawable {
                     Type.CLOCK -> {
                         loadClock(context, iconDpi)
                     }
-                    else -> {}
+                    else -> {
+                    }
                 }
                 loaded = true
             }
@@ -136,18 +141,19 @@ class DynamicDrawable {
                 if (item != null) {
                     if (item.drawables.size > 1) {
                         Log.e(TAG, "Unexpected number of drawables ${item.drawables.size}! " +
-                                "Assuming first and continuing.")
+                                   "Assuming first and continuing.")
                     } else if (item.drawables.isEmpty()) {
                         throw RuntimeException("Item '${item.key}' has no drawables!")
                     }
                     var d = getDrawable(context, packageName, item.drawables.first().res, iconDpi)
                     if (d != null) {
-                        if (relevantItem != "background"){
+                        if (relevantItem != "background") {
                             val d2 = RotateDrawable()
-                            with (d2) {
+                            with(d2) {
                                 drawable = d
                                 fromDegrees = 0f
-                                toDegrees = if (relevantItem == "hour_hand") hourTo else if(relevantItem == "minute_hand") minTo else secTo
+                                toDegrees =
+                                        if (relevantItem == "hour_hand") hourTo else if (relevantItem == "minute_hand") minTo else secTo
                             }
                             d = d2
                         }
@@ -157,7 +163,7 @@ class DynamicDrawable {
             }
             val layerDrawable = LayerDrawable(drawables.toTypedArray())
             this.clockMetadata = ClockMetadata(
-                        layerDrawable,
+                    layerDrawable,
                     CustomClock.Metadata(
                             1,
                             2,
@@ -165,8 +171,8 @@ class DynamicDrawable {
                             0,
                             0,
                             0
-                    )
-            )
+                                        )
+                                              )
         }
     }
 
@@ -182,7 +188,7 @@ class DynamicDrawable {
                             drawables.add(DrawableItem(
                                     parser["value"]!!,
                                     parser["res"]!!
-                            ))
+                                                      ))
                         }
                     }
                 }
@@ -201,7 +207,7 @@ class DynamicDrawable {
                             parser["shadowLayerColor"],
                             parser["shadowLayerAlpha"],
                             parser["enabled"]?.toBoolean() ?: true
-                    )
+                                                   )
                 }
             }
         }
@@ -210,9 +216,11 @@ class DynamicDrawable {
     internal class DrawableItem(val value: String, val res: String)
     internal class TextAttributes(val alignX: String?, val alignY: String?, val offsetX: String?,
                                   val offsetY: String?, val textSize: String?, val font: String?,
-                                  val color: String?, val shadowLayerX: String?, val shadowLayerY: String?,
+                                  val color: String?, val shadowLayerX: String?,
+                                  val shadowLayerY: String?,
                                   val shadowLayerRadius: Int?, val shadowLayerColor: String?,
                                   val shadowLayerAlpha: String?, val enabled: Boolean = true)
+
     internal class ClockMetadata(val drawable: Drawable, val metadata: CustomClock.Metadata)
 
     internal enum class Type {

@@ -47,7 +47,8 @@ data class WallpaperActivityInfo(
 
     companion object {
 
-        private const val STYLES_WALLPAPERS_NAME = "com.android.customization.picker.CustomizationPickerActivity"
+        private const val STYLES_WALLPAPERS_NAME =
+                "com.android.customization.picker.CustomizationPickerActivity"
 
         @JvmStatic
         fun resolve(context: Context): WallpaperActivityInfo? {

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~     This file is part of Lawnchair Launcher.
   ~
   ~     Lawnchair Launcher is free software: you can redistribute it and/or modify
@@ -16,9 +15,8 @@
   ~     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<ch.deletescape.lawnchair.views.HomeWidgetSwitchLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ch.deletescape.lawnchair.views.HomeWidgetSwitchLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@id/search_container_workspace"
-    android:background="?android:selectableItemBackground"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    android:layout_height="match_parent"
+    android:background="?android:selectableItemBackground" />

@@ -28,7 +28,8 @@ import com.android.launcher3.R
 
 class PreferenceScreenDialogFragment : DialogFragment() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.dialog_preference_fragment, container, false)
     }
 
@@ -51,7 +52,8 @@ class PreferenceScreenDialogFragment : DialogFragment() {
         private const val KEY_THEME = "theme"
         private const val KEY_CONTENT = "content"
 
-        fun newInstance(preference: PreferenceDialogPreference) = PreferenceScreenDialogFragment().apply {
+        fun newInstance(
+                preference: PreferenceDialogPreference) = PreferenceScreenDialogFragment().apply {
             arguments = Bundle(2).apply {
                 putInt(KEY_THEME, preference.context.getThemeAttr(R.attr.alertDialogTheme))
                 putInt(KEY_CONTENT, preference.content)

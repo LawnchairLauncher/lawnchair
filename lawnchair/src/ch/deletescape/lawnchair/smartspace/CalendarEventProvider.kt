@@ -65,7 +65,8 @@ class CalendarEventProvider(controller: LawnchairSmartspaceController)
         if (event == null) return null
         val icon = context.getDrawable(R.drawable.ic_calendar)!!.toBitmap()
         val lines = mutableListOf<Line>()
-        lines.add(Line("${event.title} ${formatTimeRelative(event.start)}", TextUtils.TruncateAt.MIDDLE))
+        lines.add(Line("${event.title} ${formatTimeRelative(event.start)}",
+                       TextUtils.TruncateAt.MIDDLE))
         val timeText = "${formatTime(event.start)} – ${formatTime(event.end)}"
         if (event.location != null) {
             lines.add(Line("${event.location} $timeText"))
@@ -90,8 +91,10 @@ class CalendarEventProvider(controller: LawnchairSmartspaceController)
                                 c.getString(c.getColumnIndex(CalendarContract.Events.TITLE)),
                                 c.getLong(c.getColumnIndex(CalendarContract.Events.DTSTART)),
                                 c.getLong(c.getColumnIndex(CalendarContract.Events.DTEND)),
-                                c.getString(c.getColumnIndex(CalendarContract.Events.EVENT_LOCATION)),
-                                c.getString(c.getColumnIndex(CalendarContract.Events.CUSTOM_APP_PACKAGE)))
+                                c.getString(
+                                        c.getColumnIndex(CalendarContract.Events.EVENT_LOCATION)),
+                                c.getString(c.getColumnIndex(
+                                        CalendarContract.Events.CUSTOM_APP_PACKAGE)))
                     }
                 }
         return null

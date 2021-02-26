@@ -22,7 +22,6 @@ import android.content.pm.LauncherActivityInfo
 import android.content.pm.ShortcutInfo
 import android.graphics.drawable.AdaptiveIconDrawable
 import android.graphics.drawable.Drawable
-import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.google.android.apps.nexuslauncher.DynamicIconProvider
@@ -32,11 +31,13 @@ class LawnchairIconProvider(context: Context) : DynamicIconProvider(context) {
     private val iconPackManager by lazy { IconPackManager.getInstance(context) }
 
     fun getIcon(shortcutInfo: ShortcutInfo, iconDpi: Int): Drawable? {
-        return iconPackManager.getIcon(shortcutInfo, iconDpi).assertNotAdaptiveIconDrawable(shortcutInfo)
+        return iconPackManager.getIcon(shortcutInfo, iconDpi)
+                .assertNotAdaptiveIconDrawable(shortcutInfo)
     }
 
     fun getDynamicIcon(launcherActivityInfo: LauncherActivityInfo?, iconDpi: Int): Drawable {
-        return super.getIcon(launcherActivityInfo, iconDpi).assertNotAdaptiveIconDrawable(launcherActivityInfo)
+        return super.getIcon(launcherActivityInfo, iconDpi)
+                .assertNotAdaptiveIconDrawable(launcherActivityInfo)
     }
 
     private fun <T> T.assertNotAdaptiveIconDrawable(info: Any?): T {

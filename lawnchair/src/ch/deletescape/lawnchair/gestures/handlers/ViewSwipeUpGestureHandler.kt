@@ -18,7 +18,6 @@
 package ch.deletescape.lawnchair.gestures.handlers
 
 import android.view.View
-import android.view.animation.DecelerateInterpolator
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.gestures.GestureHandler
 import com.android.launcher3.R
@@ -27,8 +26,12 @@ import com.android.launcher3.touch.OverScroll
 class ViewSwipeUpGestureHandler(private val view: View, private val handler: GestureHandler)
     : GestureHandler(view.context, null), VerticalSwipeGestureHandler {
 
-    private val negativeMax by lazy { view.resources.getDimensionPixelSize(R.dimen.swipe_up_negative_max) }
-    private val positiveMax by lazy { view.resources.getDimensionPixelSize(R.dimen.swipe_up_positive_max) }
+    private val negativeMax by lazy {
+        view.resources.getDimensionPixelSize(R.dimen.swipe_up_negative_max)
+    }
+    private val positiveMax by lazy {
+        view.resources.getDimensionPixelSize(R.dimen.swipe_up_positive_max)
+    }
 
     override fun onGestureTrigger(controller: GestureController, view: View?) {
         controller.launcher.prepareDummyView(this.view) {

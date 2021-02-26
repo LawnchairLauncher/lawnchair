@@ -54,7 +54,9 @@ class GoogleFontsListing(private val context: Context) {
             val variants = font.getJSONArray(KEY_VARIANTS).toArrayList<String>()
             fonts.add(GoogleFontInfo(family, variants))
         }
-        fonts.add(GoogleFontInfo("Google Sans", listOf("regular", "italic", "500", "500italic", "700", "700italic")))
+        fonts.add(GoogleFontInfo("Google Sans",
+                                 listOf("regular", "italic", "500", "500italic", "700",
+                                        "700italic")))
         fonts.sort()
         runOnMainThread { onParseFinished(fonts) }
     }
@@ -88,7 +90,8 @@ class GoogleFontsListing(private val context: Context) {
         }
     }
 
-    class GoogleFontInfo(val family: String, val variants: List<String>) : Comparable<GoogleFontInfo> {
+    class GoogleFontInfo(val family: String, val variants: List<String>) :
+            Comparable<GoogleFontInfo> {
 
         override fun compareTo(other: GoogleFontInfo): Int {
             return family.compareTo(other.family)

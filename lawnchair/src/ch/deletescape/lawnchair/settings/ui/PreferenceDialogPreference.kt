@@ -22,7 +22,8 @@ import android.util.AttributeSet
 import androidx.preference.DialogPreference
 import com.android.launcher3.R
 
-open class PreferenceDialogPreference(context: Context, attrs: AttributeSet?) : DialogPreference(context, attrs) {
+open class PreferenceDialogPreference(context: Context, attrs: AttributeSet?) :
+        DialogPreference(context, attrs) {
 
     var content = 0
 

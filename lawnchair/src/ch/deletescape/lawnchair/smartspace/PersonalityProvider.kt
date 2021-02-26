@@ -42,7 +42,7 @@ class PersonalityProvider(controller: LawnchairSmartspaceController) :
         }
     }
 
-    var time = currentTime()!!
+    var time = currentTime()
     var randomIndex = 0
     val isMorning get() = time.hourOfDay in 5 until 9
     val isEvening get() = time.hourOfDay in 19 until 21
@@ -51,8 +51,10 @@ class PersonalityProvider(controller: LawnchairSmartspaceController) :
     val eveningGreeting get() = eveningStrings[randomIndex % eveningStrings.size]
     val nightGreeting get() = nightStrings[randomIndex % nightStrings.size]
 
-    private val morningStrings = controller.context.resources.getStringArray(R.array.greetings_morning)
-    private val eveningStrings = controller.context.resources.getStringArray(R.array.greetings_evening)
+    private val morningStrings =
+            controller.context.resources.getStringArray(R.array.greetings_morning)
+    private val eveningStrings =
+            controller.context.resources.getStringArray(R.array.greetings_evening)
     private val nightStrings = controller.context.resources.getStringArray(R.array.greetings_night)
 
     private val handler = makeBasicHandler(true)

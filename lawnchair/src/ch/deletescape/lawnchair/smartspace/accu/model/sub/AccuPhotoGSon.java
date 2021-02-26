@@ -18,6 +18,7 @@
 package ch.deletescape.lawnchair.smartspace.accu.model.sub;
 
 public class AccuPhotoGSon {
+
     String DateTaken;
     String Description;
     String LandscapeLink;

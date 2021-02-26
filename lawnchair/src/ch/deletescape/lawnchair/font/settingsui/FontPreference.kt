@@ -28,7 +28,7 @@ import ch.deletescape.lawnchair.font.FontCache
 import ch.deletescape.lawnchair.settings.ui.BasePreference
 
 open class FontPreference(context: Context, attrs: AttributeSet) : BasePreference(context, attrs),
-        FontCache.Font.LoadCallback {
+                                                                   FontCache.Font.LoadCallback {
 
     private val pref = CustomFontManager.getInstance(context).fontPrefs.getValue(key)
     private var typeface: Typeface? = null
@@ -58,7 +58,7 @@ open class FontPreference(context: Context, attrs: AttributeSet) : BasePreferenc
 
     override fun onClick() {
         context.startActivity(Intent(context, FontSelectionActivity::class.java)
-                .putExtra(FontSelectionActivity.EXTRA_KEY, key))
+                                      .putExtra(FontSelectionActivity.EXTRA_KEY, key))
     }
 
     override fun onAttached() {

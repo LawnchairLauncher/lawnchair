@@ -24,6 +24,7 @@ import ch.deletescape.lawnchair.smartspace.accu.model.sub.AccuUnitGSon;
 import java.util.List;
 
 public class AccuCommonLocalGSon extends GSonBase {
+
     AccuAreaGSon AdministrativeArea;
     AccuAreaGSon Country;
     String EnglishName;

@@ -25,7 +25,8 @@ import android.widget.LinearLayout
 import ch.deletescape.lawnchair.forEachChild
 import ch.deletescape.lawnchair.forEachChildIndexed
 
-class ExpandFillLinearLayout(context: Context, attrs: AttributeSet?) : LinearLayout(context, attrs) {
+class ExpandFillLinearLayout(context: Context, attrs: AttributeSet?) :
+        LinearLayout(context, attrs) {
 
     var childWidth = 0
     var childHeight = 0
@@ -44,7 +45,8 @@ class ExpandFillLinearLayout(context: Context, attrs: AttributeSet?) : LinearLay
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
     }
 
-    private inline fun calculateChildSize(sizeSpec: Int, min: Int, crossinline setSize: (View, Int) -> Unit) {
+    private inline fun calculateChildSize(sizeSpec: Int, min: Int,
+                                          crossinline setSize: (View, Int) -> Unit) {
         var available = MeasureSpec.getSize(sizeSpec)
         if (min * childCount >= available || childCount == 0) {
             forEachChild {

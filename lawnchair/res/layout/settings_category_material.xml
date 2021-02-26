@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~     This file is part of Lawnchair Launcher.
   ~
   ~     Lawnchair Launcher is free software: you can redistribute it and/or modify
@@ -23,6 +22,6 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="16dip"
     android:paddingStart="?android:attr/listPreferredItemPaddingStart"
-    android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
     android:paddingTop="16dip"
+    android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
     app:customFontType="categoryTitle" />

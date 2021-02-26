@@ -90,10 +90,14 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
         return null
     }
 
-    fun createHandlerPref(key: String, defaultValue: GestureHandler = blankGestureHandler) = prefs.StringBasedPref(
-            key, defaultValue, prefs.doNothing, ::createGestureHandler, GestureHandler::toString, GestureHandler::onDestroy)
+    fun createHandlerPref(key: String,
+                          defaultValue: GestureHandler = blankGestureHandler) = prefs.StringBasedPref(
+            key, defaultValue, prefs.doNothing, ::createGestureHandler, GestureHandler::toString,
+            GestureHandler::onDestroy)
 
-    private fun createGestureHandler(jsonString: String) = createGestureHandler(launcher, jsonString, blankGestureHandler)
+    private fun createGestureHandler(jsonString: String) = createGestureHandler(launcher,
+                                                                                jsonString,
+                                                                                blankGestureHandler)
 
     companion object {
 
@@ -103,7 +107,8 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
                 "ch.deletescape.lawnchair.gestures.handlers.SleepGestureHandlerAccessibility",
                 "ch.deletescape.lawnchair.gestures.handlers.SleepGestureHandlerRoot")
 
-        fun createGestureHandler(context: Context, jsonString: String?, fallback: GestureHandler): GestureHandler {
+        fun createGestureHandler(context: Context, jsonString: String?,
+                                 fallback: GestureHandler): GestureHandler {
             if (!TextUtils.isEmpty(jsonString)) {
                 val config: JSONObject? = try {
                     JSONObject(jsonString)
@@ -114,12 +119,14 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
                 if (className in LEGACY_SLEEP_HANDLERS) {
                     className = SleepGestureHandler::class.java.name
                 }
-                val configValue = if (config?.has("config") == true) config.getJSONObject("config") else null
+                val configValue =
+                        if (config?.has("config") == true) config.getJSONObject("config") else null
                 // Log.d(TAG, "creating handler $className with config ${configValue?.toString(2)}")
                 try {
-                    val handler =  Class.forName(className).getConstructor(Context::class.java, JSONObject::class.java)
+                    val handler = Class.forName(className)
+                            .getConstructor(Context::class.java, JSONObject::class.java)
                             .newInstance(context, configValue) as GestureHandler
-                    if(handler.isAvailable) return handler
+                    if (handler.isAvailable) return handler
                 } catch (t: Throwable) {
                     Log.e(TAG, "can't create gesture handler", t)
                 }
@@ -141,7 +148,8 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
             }
         }
 
-        fun getGestureHandlers(context: Context, isSwipeUp: Boolean, hasBlank: Boolean) = mutableListOf(
+        fun getGestureHandlers(context: Context, isSwipeUp: Boolean,
+                               hasBlank: Boolean) = mutableListOf(
                 // BlankGestureHandler(context, null), -> Added in apply block
                 PressBackGestureHandler(context, null),
                 SleepGestureHandler(context, null),
@@ -159,7 +167,7 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
                 PlayDespacitoGestureHandler(context, null),
                 StartAppGestureHandler(context, null),
                 OpenRecentsGestureHandler(context, null)
-        ).apply {
+                                                                 ).apply {
             if (hasBlank) {
                 add(0, BlankGestureHandler(context, null))
             }

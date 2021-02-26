@@ -22,7 +22,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
 import com.android.launcher3.R
-import java.util.*
 
 class WeatherIconProvider(private val context: Context) {
 
@@ -68,6 +67,6 @@ class WeatherIconProvider(private val context: Context) {
                 "${CONDITION_MIST}d" to R.drawable.weather_50,
                 "${CONDITION_MIST}n" to R.drawable.weather_50,
                 CONDITION_UNKNOWN to R.drawable.weather_none_available
-        )
+                                  )
     }
 }

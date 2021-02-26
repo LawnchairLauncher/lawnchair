@@ -27,20 +27,22 @@ import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.gestures.NavSwipeUpGesture
 import com.android.launcher3.R
 
-class GesturePreference(context: Context, attrs: AttributeSet?) : DialogPreference(context, attrs), SharedPreferences.OnSharedPreferenceChangeListener {
+class GesturePreference(context: Context, attrs: AttributeSet?) : DialogPreference(context, attrs),
+                                                                  SharedPreferences.OnSharedPreferenceChangeListener {
 
     var value = ""
-    var defaultValue : String? = ""
+    var defaultValue: String? = ""
 
     private val blankGestureHandler = BlankGestureHandler(context, null)
-    private val handler get() = GestureController.createGestureHandler(context, value, blankGestureHandler)
+    private val handler
+        get() = GestureController.createGestureHandler(context, value, blankGestureHandler)
     internal var isSwipeUp = false
 
     init {
         val ta = context.obtainStyledAttributes(attrs, R.styleable.GesturePreference)
         val className = ta.getString(R.styleable.GesturePreference_gestureClass) ?: ""
         when (className) {
-             NavSwipeUpGesture::class.java.name -> isSwipeUp = true
+            NavSwipeUpGesture::class.java.name -> isSwipeUp = true
         }
 
         ta.recycle()
@@ -80,13 +82,13 @@ class GesturePreference(context: Context, attrs: AttributeSet?) : DialogPreferen
         return defaultValue
     }
 
-//    override fun onClick() {
-//        context.startActivity(Intent(context, SelectGestureHandlerActivity::class.java).apply {
-//            putExtra("title", title)
-//            putExtra("key", key)
-//            putExtra("value", value)
-//        })
-//    }
+    //    override fun onClick() {
+    //        context.startActivity(Intent(context, SelectGestureHandlerActivity::class.java).apply {
+    //            putExtra("title", title)
+    //            putExtra("key", key)
+    //            putExtra("value", value)
+    //        })
+    //    }
 
     override fun getDialogLayoutResource() = R.layout.dialog_preference_recyclerview
 }

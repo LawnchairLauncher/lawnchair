@@ -18,32 +18,12 @@ public class InsettableLinearLayout extends LinearLayout implements Insettable {
 
     private boolean mInsetsSet = false;
 
-    public Rect getInsets() {
-        return mInsets;
-    }
-
     public InsettableLinearLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public void setLinearLayoutChildInsets(View child, Rect newInsets, Rect oldInsets) {
-        final LayoutParams lp = (LayoutParams) child.getLayoutParams();
-
-        int childIndex = indexOfChild(child);
-        int newTop = childIndex == 0 ? newInsets.top : 0;
-        int oldTop = childIndex == 0 ? oldInsets.top : 0;
-        int newBottom = childIndex == getChildCount() - 1 ? newInsets.bottom : 0;
-        int oldBottom = childIndex == getChildCount() - 1 ? oldInsets.bottom : 0;
-
-        if (child instanceof Insettable) {
-            ((Insettable) child).setInsets(new Rect(newInsets.left, newTop, newInsets.right, newBottom));
-        } else if (!lp.ignoreInsets) {
-            lp.topMargin += (newTop - oldTop);
-            lp.leftMargin += (newInsets.left - oldInsets.left);
-            lp.rightMargin += (newInsets.right - oldInsets.right);
-            lp.bottomMargin += (newBottom - oldBottom);
-        }
-        child.setLayoutParams(lp);
+    public Rect getInsets() {
+        return mInsets;
     }
 
     @Override
@@ -58,6 +38,27 @@ public class InsettableLinearLayout extends LinearLayout implements Insettable {
             setLinearLayoutChildInsets(child, insets, mInsets);
         }
         mInsets.set(insets);
+    }
+
+    public void setLinearLayoutChildInsets(View child, Rect newInsets, Rect oldInsets) {
+        final LayoutParams lp = (LayoutParams) child.getLayoutParams();
+
+        int childIndex = indexOfChild(child);
+        int newTop = childIndex == 0 ? newInsets.top : 0;
+        int oldTop = childIndex == 0 ? oldInsets.top : 0;
+        int newBottom = childIndex == getChildCount() - 1 ? newInsets.bottom : 0;
+        int oldBottom = childIndex == getChildCount() - 1 ? oldInsets.bottom : 0;
+
+        if (child instanceof Insettable) {
+            ((Insettable) child)
+                    .setInsets(new Rect(newInsets.left, newTop, newInsets.right, newBottom));
+        } else if (!lp.ignoreInsets) {
+            lp.topMargin += (newTop - oldTop);
+            lp.leftMargin += (newInsets.left - oldInsets.left);
+            lp.rightMargin += (newInsets.right - oldInsets.right);
+            lp.bottomMargin += (newBottom - oldBottom);
+        }
+        child.setLayoutParams(lp);
     }
 
     @Override
@@ -81,7 +82,24 @@ public class InsettableLinearLayout extends LinearLayout implements Insettable {
         return new LayoutParams(p);
     }
 
+    @Override
+    public void onViewAdded(View child) {
+        super.onViewAdded(child);
+        if (mInsetsSet) {
+            throw new IllegalStateException("Cannot modify views after insets are set");
+        }
+    }
+
+    @Override
+    public void onViewRemoved(View child) {
+        super.onViewRemoved(child);
+        if (mInsetsSet) {
+            throw new IllegalStateException("Cannot modify views after insets are set");
+        }
+    }
+
     public static class LayoutParams extends LinearLayout.LayoutParams {
+
         boolean ignoreInsets = false;
 
         public LayoutParams(Context c, AttributeSet attrs) {
@@ -99,22 +117,6 @@ public class InsettableLinearLayout extends LinearLayout implements Insettable {
 
         public LayoutParams(ViewGroup.LayoutParams lp) {
             super(lp);
-        }
-    }
-
-    @Override
-    public void onViewAdded(View child) {
-        super.onViewAdded(child);
-        if (mInsetsSet) {
-            throw new IllegalStateException("Cannot modify views after insets are set");
-        }
-    }
-
-    @Override
-    public void onViewRemoved(View child) {
-        super.onViewRemoved(child);
-        if (mInsetsSet) {
-            throw new IllegalStateException("Cannot modify views after insets are set");
         }
     }
 }

@@ -33,16 +33,20 @@ import kotlin.math.max
 import kotlin.math.min
 
 @Keep
-class DrawerQsbAutoResolver(config: Config) : ColorEngine.ColorResolver(config), LawnchairPreferences.OnPreferenceChangeListener, BrightnessManager.OnBrightnessChangeListener {
+class DrawerQsbAutoResolver(config: Config) : ColorEngine.ColorResolver(config),
+                                              LawnchairPreferences.OnPreferenceChangeListener,
+                                              BrightnessManager.OnBrightnessChangeListener {
 
     override val themeAware = true
-    private val isDark get() =  ThemeManager.getInstance(engine.context).isDark
-    private val lightResolver = DrawerQsbLightResolver(Config("DrawerQsbAutoResolver@Light", engine, {
-        _, _ -> if (!isDark) notifyChanged()
-    }))
-    private val darkResolver = DrawerQsbDarkResolver(Config("DrawerQsbAutoResolver@Dark", engine, {
-        _, _ -> if (isDark) notifyChanged()
-    }))
+    private val isDark get() = ThemeManager.getInstance(engine.context).isDark
+    private val lightResolver =
+            DrawerQsbLightResolver(Config("DrawerQsbAutoResolver@Light", engine, { _, _ ->
+                if (!isDark) notifyChanged()
+            }))
+    private val darkResolver =
+            DrawerQsbDarkResolver(Config("DrawerQsbAutoResolver@Dark", engine, { _, _ ->
+                if (isDark) notifyChanged()
+            }))
     private val prefs = context.lawnchairPrefs
     private var brightness = 1f
 
@@ -75,7 +79,8 @@ class DrawerQsbAutoResolver(config: Config) : ColorEngine.ColorResolver(config),
 }
 
 @Keep
-class DrawerQsbLightResolver(config: Config) : WallpaperColorResolver(config), LawnchairPreferences.OnPreferenceChangeListener {
+class DrawerQsbLightResolver(config: Config) : WallpaperColorResolver(config),
+                                               LawnchairPreferences.OnPreferenceChangeListener {
 
     override val themeAware = true
     private val isDark get() = ThemeManager.getInstance(engine.context).isDark
@@ -89,10 +94,11 @@ class DrawerQsbLightResolver(config: Config) : WallpaperColorResolver(config), L
                 R.color.qsb_background_drawer_dark
             else
                 R.color.qsb_background_drawer_default
-    ).let {
+                                                                   ).let {
         ColorUtils.compositeColors(ColorUtils
-                .compositeColors(it, Themes.getAttrColor(themedContext, R.attr.allAppsScrimColor)),
-                colorInfo.mainColor)
+                                           .compositeColors(it, Themes.getAttrColor(themedContext,
+                                                                                    R.attr.allAppsScrimColor)),
+                                   colorInfo.mainColor)
     }
 
     override fun getDisplayName() = engine.context.resources.getString(R.string.theme_light)
@@ -105,14 +111,18 @@ class DrawerQsbDarkResolver(config: Config) : WallpaperColorResolver(config) {
     val color = engine.context.resources.getColor(R.color.qsb_background_drawer_dark_bar)
 
     override fun resolveColor() = ColorUtils.compositeColors(ColorUtils
-            .compositeColors(color, Themes.getAttrColor(themedContext, R.attr.allAppsScrimColor)),
-            colorInfo.mainColor)
+                                                                     .compositeColors(color,
+                                                                                      Themes.getAttrColor(
+                                                                                              themedContext,
+                                                                                              R.attr.allAppsScrimColor)),
+                                                             colorInfo.mainColor)
 
     override fun getDisplayName() = engine.context.resources.getString(R.string.theme_dark)
 }
 
 @Keep
-class ShelfBackgroundAutoResolver(config: Config) : ThemeAttributeColorResolver(config), BrightnessManager.OnBrightnessChangeListener {
+class ShelfBackgroundAutoResolver(config: Config) : ThemeAttributeColorResolver(config),
+                                                    BrightnessManager.OnBrightnessChangeListener {
 
     override val colorAttr = R.attr.allAppsScrimColor
     private var brightness = 1f

@@ -19,20 +19,25 @@ package ch.deletescape.lawnchair.colors.preferences
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.*
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import android.widget.TextView
 import ch.deletescape.lawnchair.ViewPagerAdapter
-import ch.deletescape.lawnchair.colors.*
+import ch.deletescape.lawnchair.colors.ARGBColorResolver
+import ch.deletescape.lawnchair.colors.ColorEngine
+import ch.deletescape.lawnchair.colors.RGBColorResolver
 import ch.deletescape.lawnchair.font.CustomFontManager
 import ch.deletescape.lawnchair.getTabRipple
 import ch.deletescape.lawnchair.setCustomFont
 import com.android.launcher3.R
 import kotlinx.android.synthetic.main.tabbed_color_picker.view.*
-import me.priyesh.chroma.*
+import me.priyesh.chroma.ChromaView
+import me.priyesh.chroma.ColorMode
+import me.priyesh.chroma.orientation
 
 @SuppressLint("ViewConstructor")
 class TabbedPickerView(context: Context, val key: String, initialColor: Int,
@@ -47,10 +52,14 @@ class TabbedPickerView(context: Context, val key: String, initialColor: Int,
 
     private val isLandscape = orientation(context) == Configuration.ORIENTATION_LANDSCAPE
 
-    private val minItemHeight = context.resources.getDimensionPixelSize(R.dimen.color_preview_height)
-    private val minItemWidthLandscape = context.resources.getDimensionPixelSize(R.dimen.color_preview_width)
-    private val chromaViewHeight = context.resources.getDimensionPixelSize(R.dimen.chroma_view_height)
-    private val viewHeightLandscape = context.resources.getDimensionPixelSize(R.dimen.chroma_dialog_height)
+    private val minItemHeight =
+            context.resources.getDimensionPixelSize(R.dimen.color_preview_height)
+    private val minItemWidthLandscape =
+            context.resources.getDimensionPixelSize(R.dimen.color_preview_width)
+    private val chromaViewHeight =
+            context.resources.getDimensionPixelSize(R.dimen.chroma_view_height)
+    private val viewHeightLandscape =
+            context.resources.getDimensionPixelSize(R.dimen.chroma_dialog_height)
 
     val chromaView = ChromaView(initialColor, colorMode, context).apply {
         val applyColor = { color: Int ->
@@ -60,9 +69,17 @@ class TabbedPickerView(context: Context, val key: String, initialColor: Int,
             val green = Color.green(color)
             val blue = Color.blue(color)
             setResolver(if (colorMode == ColorMode.RGB)
-                RGBColorResolver(ColorEngine.ColorResolver.Config(key, engine, args = listOf("$red", "$green", "$blue")))
-            else
-                ARGBColorResolver(ColorEngine.ColorResolver.Config(key, engine, args = listOf("$alpha", "$red", "$green", "$blue"))))
+                            RGBColorResolver(ColorEngine.ColorResolver.Config(key, engine,
+                                                                              args = listOf("$red",
+                                                                                            "$green",
+                                                                                            "$blue")))
+                        else
+                            ARGBColorResolver(ColorEngine.ColorResolver.Config(key, engine,
+                                                                               args = listOf(
+                                                                                       "$alpha",
+                                                                                       "$red",
+                                                                                       "$green",
+                                                                                       "$blue"))))
             dismiss()
         }
         enableButtonBar(object : ChromaView.ButtonBarListener {
@@ -82,11 +99,11 @@ class TabbedPickerView(context: Context, val key: String, initialColor: Int,
 
     init {
         LayoutInflater.from(context).inflate(R.layout.tabbed_color_picker, this)
-        measure(MeasureSpec.EXACTLY,0)
+        measure(MeasureSpec.EXACTLY, 0)
         viewPager.adapter = ViewPagerAdapter(listOf(
                 Pair(context.getString(R.string.color_presets), initPresetList()),
                 Pair(context.getString(R.string.custom), chromaView)
-        ))
+                                                   ))
         if (!isLandscape) {
             viewPager.layoutParams.height = chromaViewHeight
         } else {
@@ -111,7 +128,8 @@ class TabbedPickerView(context: Context, val key: String, initialColor: Int,
             childHeight = minItemHeight
 
             colors.forEach {
-                val preview = LayoutInflater.from(context).inflate(R.layout.color_preview, null) as ColorPreviewView
+                val preview = LayoutInflater.from(context)
+                        .inflate(R.layout.color_preview, null) as ColorPreviewView
                 preview.colorResolver = it
                 preview.setOnClickListener { _ ->
                     setResolver(it)
@@ -129,7 +147,7 @@ class TabbedPickerView(context: Context, val key: String, initialColor: Int,
             val resolverCache = ColorEngine.getInstance(context).getResolverCache(key)
             val resolver = resolverCache.value
             return TabbedPickerView(context, key, initialColor, colorMode, resolvers,
-                    resolver.isCustom, { resolverCache.set(it) }, dismiss)
+                                    resolver.isCustom, { resolverCache.set(it) }, dismiss)
         }
     }
 }

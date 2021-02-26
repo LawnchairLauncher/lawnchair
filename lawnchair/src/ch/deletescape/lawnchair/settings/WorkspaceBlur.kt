@@ -27,7 +27,8 @@ import com.android.launcher3.logging.StatsLogManager
 import com.android.launcher3.util.IntSparseArrayMap
 import com.android.launcher3.views.OptionsPopupView
 
-class WorkspaceBlur(private val workspace: Workspace, private val screens: IntSparseArrayMap<CellLayout>) {
+class WorkspaceBlur(private val workspace: Workspace,
+                    private val screens: IntSparseArrayMap<CellLayout>) {
 
     private val prefs = workspace.context.lawnchairPrefs
     private val blurredScreens = prefs.workspaceBlurScreens.toMutableSet()

@@ -42,7 +42,9 @@ open class HomeState(id: Int,
 
     companion object {
 
-        private val shelfOffset = SingletonHolder<Int, Context> { it.resources.getDimensionPixelSize(R.dimen.vertical_drag_handle_width) }
+        private val shelfOffset = SingletonHolder<Int, Context> {
+            it.resources.getDimensionPixelSize(R.dimen.vertical_drag_handle_width)
+        }
 
         fun getNormalProgress(launcher: Launcher): Float {
             return 1 - (getScrimHeight(launcher) / launcher.allAppsController.shiftRange)

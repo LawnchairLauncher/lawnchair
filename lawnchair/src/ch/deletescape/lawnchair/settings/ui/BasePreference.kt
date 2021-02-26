@@ -22,4 +22,5 @@ import android.util.AttributeSet
 import androidx.preference.Preference
 
 open class BasePreference(context: Context, attrs: AttributeSet?) : Preference(context, attrs),
-                                                                    ControlledPreference by ControlledPreference.Delegate(context, attrs)
+                                                                    ControlledPreference by ControlledPreference.Delegate(
+                                                                            context, attrs)

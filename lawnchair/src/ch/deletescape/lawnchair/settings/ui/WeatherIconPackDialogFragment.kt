@@ -35,7 +35,7 @@ import com.android.launcher3.R
 import com.android.launcher3.util.PackageManagerHelper
 
 // TODO: why in the world can't I manage to theme the buttons?!
-class WeatherIconPackDialogFragment: PreferenceDialogFragmentCompat() {
+class WeatherIconPackDialogFragment : PreferenceDialogFragmentCompat() {
     private lateinit var manager: WeatherIconManager
     private lateinit var list: ListView
 
@@ -47,7 +47,8 @@ class WeatherIconPackDialogFragment: PreferenceDialogFragmentCompat() {
     override fun onPrepareDialogBuilder(builder: AlertDialog.Builder) {
         super.onPrepareDialogBuilder(builder)
         builder.setNeutralButton(R.string.get_more_icon_packs) { dialog, _ ->
-            activity?.startActivity(PackageManagerHelper.getMarketSearchIntent(activity, "Chronus Weather Icons"))
+            activity?.startActivity(
+                    PackageManagerHelper.getMarketSearchIntent(activity, "Chronus Weather Icons"))
             dialog.dismiss()
         }.setPositiveButton(null, null)
     }
@@ -55,7 +56,8 @@ class WeatherIconPackDialogFragment: PreferenceDialogFragmentCompat() {
     override fun onBindDialogView(view: View) {
         super.onBindDialogView(view)
         list = view.findViewById(R.id.pack_list)
-        list.adapter = WeatherIconPackAdapter(context!!, manager.getIconPacks(), manager.getPack().pkgName) {
+        list.adapter = WeatherIconPackAdapter(context!!, manager.getIconPacks(),
+                                              manager.getPack().pkgName) {
             context?.lawnchairPrefs?.weatherIconPack = it
             dismiss()
         }
@@ -65,8 +67,13 @@ class WeatherIconPackDialogFragment: PreferenceDialogFragmentCompat() {
 
     }
 
-    inner class WeatherIconPackAdapter(context: Context, val packs: List<WeatherIconManager.WeatherIconPack>, private val selected: String, private val onSelect: (String) -> Unit) :
-            ArrayAdapter<WeatherIconManager.WeatherIconPack>(context, R.layout.weather_icon_pack_dialog_item, 0, packs) {
+    inner class WeatherIconPackAdapter(context: Context,
+                                       val packs: List<WeatherIconManager.WeatherIconPack>,
+                                       private val selected: String,
+                                       private val onSelect: (String) -> Unit) :
+            ArrayAdapter<WeatherIconManager.WeatherIconPack>(context,
+                                                             R.layout.weather_icon_pack_dialog_item,
+                                                             0, packs) {
         private val color = ColorEngine.getInstance(context).accent
         private val showDebug = context.lawnchairPrefs.showDebugInfo
 

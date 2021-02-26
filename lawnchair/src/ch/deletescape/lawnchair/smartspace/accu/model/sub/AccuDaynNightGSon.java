@@ -18,6 +18,7 @@
 package ch.deletescape.lawnchair.smartspace.accu.model.sub;
 
 public class AccuDaynNightGSon {
+
     String CloudCover;
     String HoursOfPrecipitation;
     String HoursOfRain;

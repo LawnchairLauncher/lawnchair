@@ -33,21 +33,20 @@
 
 package ch.deletescape.lawnchair.bugreport;
 
-import android.util.JsonReader;
 import android.os.Handler;
 import android.os.HandlerThread;
-
-
+import android.util.JsonReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
-
+import java.nio.charset.StandardCharsets;
 import javax.net.ssl.HttpsURLConnection;
 
 /**
  * Helper functions for uploading to del.dog
  */
 public final class DogbinUtils {
+
     private static final String TAG = "DogbinUtils";
     private static final String BASE_URL = "https://del.dog";
     private static final String API_URL = String.format("%s/documents", BASE_URL);
@@ -65,17 +64,19 @@ public final class DogbinUtils {
     public static void upload(final String content, final UploadResultCallback callback) {
         getHandler().post(() -> {
             try {
-                HttpsURLConnection urlConnection = (HttpsURLConnection) new URL(API_URL).openConnection();
+                HttpsURLConnection urlConnection = (HttpsURLConnection) new URL(API_URL)
+                        .openConnection();
                 try {
                     urlConnection.setRequestProperty("Accept-Charset", "UTF-8");
                     urlConnection.setDoOutput(true);
 
                     try (OutputStream output = urlConnection.getOutputStream()) {
-                        output.write(content.getBytes("UTF-8"));
+                        output.write(content.getBytes(StandardCharsets.UTF_8));
                     }
                     String key = "";
                     try (JsonReader reader = new JsonReader(
-                            new InputStreamReader(urlConnection.getInputStream(), "UTF-8"))) {
+                            new InputStreamReader(urlConnection.getInputStream(),
+                                    StandardCharsets.UTF_8))) {
                         reader.beginObject();
                         while (reader.hasNext()) {
                             String name = reader.nextName();
@@ -113,14 +114,16 @@ public final class DogbinUtils {
     private static Handler getHandler() {
         if (handler == null) {
             HandlerThread handlerThread = new HandlerThread("dogbinThread");
-            if (!handlerThread.isAlive())
+            if (!handlerThread.isAlive()) {
                 handlerThread.start();
+            }
             handler = new Handler(handlerThread.getLooper());
         }
         return handler;
     }
 
     public interface UploadResultCallback {
+
         void onSuccess(String url);
 
         void onFail(String message, Exception e);

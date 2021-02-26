@@ -252,7 +252,8 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) :
             "shortcut" -> {
                 config.put("intent", intent!!.toUri(0))
                 config.put("user",
-                           context.getSystemService(UserManager::class.java).getSerialNumberForUser(user))
+                           context.getSystemService(UserManager::class.java)
+                                   .getSerialNumberForUser(user))
                 config.put("packageName", packageName)
                 config.put("id", id)
             }
@@ -297,7 +298,8 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) :
             "app" -> {
                 target?.let {
                     try {
-                        context.getSystemService(LauncherApps::class.java).startMainActivity(it.componentName, it.user, null, opts)
+                        context.getSystemService(LauncherApps::class.java)
+                                .startMainActivity(it.componentName, it.user, null, opts)
                     } catch (e: SecurityException) {
                         showErrorToast()
                     }

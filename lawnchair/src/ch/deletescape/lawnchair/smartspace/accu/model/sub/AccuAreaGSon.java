@@ -18,6 +18,7 @@
 package ch.deletescape.lawnchair.smartspace.accu.model.sub;
 
 public class AccuAreaGSon {
+
     String CountryID;
     String EnglishName;
     String EnglishType;

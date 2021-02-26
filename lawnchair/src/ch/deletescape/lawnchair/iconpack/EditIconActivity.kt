@@ -42,13 +42,11 @@ import ch.deletescape.lawnchair.applyAccent
 import ch.deletescape.lawnchair.isVisible
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
-import com.android.launcher3.LauncherModel
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.icons.LauncherIcons
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR
-import com.android.launcher3.util.LooperExecutor
 import java.lang.ref.WeakReference
 
 class EditIconActivity : SettingsBaseActivity() {
@@ -56,16 +54,20 @@ class EditIconActivity : SettingsBaseActivity() {
     private val originalIcon by lazy { findViewById<ImageView>(R.id.originalIcon) }
     private val divider by lazy { findViewById<View>(R.id.divider) }
     private val iconRecyclerView by lazy { findViewById<RecyclerView>(R.id.iconRecyclerView) }
-    private val iconPackRecyclerView by lazy { findViewById<RecyclerView>(R.id.iconPackRecyclerView) }
+    private val iconPackRecyclerView by lazy {
+        findViewById<RecyclerView>(R.id.iconPackRecyclerView)
+    }
     private val iconPackManager by lazy { IconPackManager.getInstance(this) }
     private val component by lazy {
         if (intent.hasExtra(EXTRA_COMPONENT)) {
-            ComponentKey(intent.getParcelableExtra<ComponentName>(EXTRA_COMPONENT), intent.getParcelableExtra(EXTRA_USER))
+            ComponentKey(intent.getParcelableExtra<ComponentName>(EXTRA_COMPONENT),
+                         intent.getParcelableExtra(EXTRA_USER))
         } else null
     }
     private val isFolder by lazy { intent.getBooleanExtra(EXTRA_FOLDER, false) }
     private val iconPacks by lazy {
-        listOf(IconPackInfo(iconPackManager.defaultPackProvider)) + iconPackManager.getPackProviders()
+        listOf(IconPackInfo(iconPackManager.defaultPackProvider)) + iconPackManager
+                .getPackProviders()
                 .map { IconPackInfo(it) }.sortedBy { it.title }
     }
     private val iconAdapter by lazy { IconAdapter() }
@@ -83,25 +85,26 @@ class EditIconActivity : SettingsBaseActivity() {
             if (isFolder) {
                 packs.forEach {
                     it.ensureInitialLoadComplete()
-                    it.getAllIcons({
-                        list ->
-                        // Max 3 icons per pack
-                        list.mapNotNull { it as? IconPack.Entry }.take(3).forEach { entry ->
-                            runOnUiThread {
-                                val item = IconItem(entry, it is DefaultPack, it.displayName)
-                                val index = icons.size - 1
-                                if (index >= 0) {
-                                    icons.add(index, item)
-                                    iconAdapter.notifyItemInserted(index)
-                                }
-                            }
-                        }
-                    }, {
-                        false
-                    }, {
-                        // Filter for folder icons
-                        it.contains("folder", true)
-                    })
+                    it.getAllIcons({ list ->
+                                       // Max 3 icons per pack
+                                       list.mapNotNull { it as? IconPack.Entry }.take(3)
+                                               .forEach { entry ->
+                                                   runOnUiThread {
+                                                       val item = IconItem(entry, it is DefaultPack,
+                                                                           it.displayName)
+                                                       val index = icons.size - 1
+                                                       if (index >= 0) {
+                                                           icons.add(index, item)
+                                                           iconAdapter.notifyItemInserted(index)
+                                                       }
+                                                   }
+                                               }
+                                   }, {
+                                       false
+                                   }, {
+                                       // Filter for folder icons
+                                       it.contains("folder", true)
+                                   })
                 }
                 runOnUiThread {
                     icons.removeAt(icons.size - 1)
@@ -140,7 +143,8 @@ class EditIconActivity : SettingsBaseActivity() {
 
         if (component != null) {
             iconRecyclerView.adapter = iconAdapter
-            iconRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+            iconRecyclerView.layoutManager =
+                    LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         } else {
             divider.visibility = View.GONE
             iconRecyclerView.visibility = View.GONE
@@ -202,8 +206,10 @@ class EditIconActivity : SettingsBaseActivity() {
                 .setView(dialogContent)
                 .setPositiveButton(android.R.string.ok) { _, _ ->
                     entry.adaptive = checkBox.isChecked
-                    contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                    setResult(Activity.RESULT_OK, Intent().putExtra(EXTRA_ENTRY, entry.toCustomEntry().toString()))
+                    contentResolver.takePersistableUriPermission(uri,
+                                                                 Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    setResult(Activity.RESULT_OK,
+                              Intent().putExtra(EXTRA_ENTRY, entry.toCustomEntry().toString()))
                     finish()
                 }
                 .show().applyAccent()
@@ -213,8 +219,10 @@ class EditIconActivity : SettingsBaseActivity() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
             return when (viewType) {
-                0 -> Holder(LayoutInflater.from(parent.context).inflate(R.layout.icon_suggestion_item, parent, false))
-                else -> LoadingHolder(LayoutInflater.from(parent.context).inflate(R.layout.icon_loading, parent, false))
+                0 -> Holder(LayoutInflater.from(parent.context)
+                                    .inflate(R.layout.icon_suggestion_item, parent, false))
+                else -> LoadingHolder(LayoutInflater.from(parent.context)
+                                              .inflate(R.layout.icon_loading, parent, false))
             }
         }
 
@@ -231,7 +239,8 @@ class EditIconActivity : SettingsBaseActivity() {
             holder.bind(icons[position])
         }
 
-        open inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+        open inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView),
+                                                  View.OnClickListener {
 
             init {
                 itemView.setOnClickListener(this)
@@ -267,7 +276,8 @@ class EditIconActivity : SettingsBaseActivity() {
     inner class IconPackAdapter : RecyclerView.Adapter<IconPackAdapter.Holder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-            return Holder(LayoutInflater.from(parent.context).inflate(R.layout.icon_pack_item, parent, false))
+            return Holder(LayoutInflater.from(parent.context)
+                                  .inflate(R.layout.icon_pack_item, parent, false))
         }
 
         override fun getItemCount() = iconPacks.size + 1
@@ -280,7 +290,8 @@ class EditIconActivity : SettingsBaseActivity() {
             }
         }
 
-        inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+        inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView),
+                                             View.OnClickListener {
 
             private val icon = itemView.findViewById<ImageView>(android.R.id.icon)
             private val title = itemView.findViewById<TextView>(android.R.id.title)
@@ -293,7 +304,8 @@ class EditIconActivity : SettingsBaseActivity() {
             fun bind(info: IconPackInfo) {
                 icon.setImageDrawable(info.icon)
                 title.text = info.title
-                packageName.isVisible = lawnchairPrefs.showDebugInfo && !TextUtils.isEmpty(info.packageName)
+                packageName.isVisible =
+                        lawnchairPrefs.showDebugInfo && !TextUtils.isEmpty(info.packageName)
                 if (packageName.isVisible) {
                     packageName.text = info.packageName
                 }
@@ -336,10 +348,14 @@ class EditIconActivity : SettingsBaseActivity() {
 
     abstract class AdapterItem : Comparable<AdapterItem>
 
-    inner class IconItem(val entry: IconPack.Entry, val isDefault: Boolean, val title: String) : AdapterItem() {
+    inner class IconItem(val entry: IconPack.Entry, val isDefault: Boolean, val title: String) :
+            AdapterItem() {
 
-        private val normalizedIconBitmap by lazy { LauncherIcons.obtain(this@EditIconActivity).createBadgedIconBitmap(
-                entry.drawableForDensity(getIconDensity()), component?.user ?: Process.myUserHandle(), Build.VERSION.SDK_INT) }
+        private val normalizedIconBitmap by lazy {
+            LauncherIcons.obtain(this@EditIconActivity).createBadgedIconBitmap(
+                    entry.drawableForDensity(getIconDensity()),
+                    component?.user ?: Process.myUserHandle(), Build.VERSION.SDK_INT)
+        }
         val iconDrawable by lazy { BitmapDrawable(resources, normalizedIconBitmap.icon) }
 
         override fun compareTo(other: AdapterItem): Int {
@@ -351,7 +367,8 @@ class EditIconActivity : SettingsBaseActivity() {
             return -1
         }
 
-        private fun getIconDensity(requiredSize: Int = resources.getDimensionPixelSize(R.dimen.icon_preview_size)): Int {
+        private fun getIconDensity(requiredSize: Int = resources.getDimensionPixelSize(
+                R.dimen.icon_preview_size)): Int {
             // Densities typically defined by an app.
             val densityBuckets =
                     intArrayOf(DisplayMetrics.DENSITY_LOW, DisplayMetrics.DENSITY_MEDIUM,
@@ -389,7 +406,8 @@ class EditIconActivity : SettingsBaseActivity() {
 
         const val PICKER_REQUEST_CODE = 999
 
-        fun newIntent(context: Context, title: String, isFolder: Boolean, componentKey: ComponentKey? = null): Intent {
+        fun newIntent(context: Context, title: String, isFolder: Boolean,
+                      componentKey: ComponentKey? = null): Intent {
             return Intent(context, EditIconActivity::class.java).apply {
                 putExtra(EXTRA_TITLE, title)
                 componentKey?.run {

@@ -22,6 +22,7 @@ import ch.deletescape.lawnchair.smartspace.accu.model.GSonBase;
 import java.util.List;
 
 public class AccuForecastSummaryGSon extends GSonBase {
+
     List<AccuDailyForecastGSon> DailyForecasts;
     AccuHeadlineGSon Headline;
     List<AccuHourlyForecastGSon> HourlyForecasts;

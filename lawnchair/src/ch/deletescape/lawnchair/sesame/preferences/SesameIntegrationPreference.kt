@@ -20,7 +20,7 @@ package ch.deletescape.lawnchair.sesame.preferences
 import android.content.Context
 import android.util.AttributeSet
 import androidx.preference.PreferenceViewHolder
-import ch.deletescape.lawnchair.*
+import ch.deletescape.lawnchair.isVisible
 import ch.deletescape.lawnchair.preferences.ResumablePreference
 import ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
 import ch.deletescape.lawnchair.sesame.Sesame
@@ -28,8 +28,11 @@ import com.android.launcher3.R
 import com.android.launcher3.util.PackageManagerHelper
 import ninja.sesame.lib.bridge.v1.SesameFrontend
 
-class SesameIntegrationPreference(context: Context, attrs: AttributeSet?): StyledSwitchPreferenceCompat(context, attrs), ResumablePreference {
-    private val isInstalled: Boolean by lazy { PackageManagerHelper.isAppEnabled(context.packageManager, Sesame.PACKAGE, 0) }
+class SesameIntegrationPreference(context: Context, attrs: AttributeSet?) :
+        StyledSwitchPreferenceCompat(context, attrs), ResumablePreference {
+    private val isInstalled: Boolean by lazy {
+        PackageManagerHelper.isAppEnabled(context.packageManager, Sesame.PACKAGE, 0)
+    }
 
     init {
         isPersistent = false // !important
@@ -42,10 +45,10 @@ class SesameIntegrationPreference(context: Context, attrs: AttributeSet?): Style
 
     private fun updateSummary() {
         summary = context.getString(when {
-            !isInstalled -> R.string.sesame_upsell
-            isChecked -> R.string.pref_sesame_enabled
-            else -> R.string.pref_sesame_disabled
-        })
+                                        !isInstalled -> R.string.sesame_upsell
+                                        isChecked -> R.string.pref_sesame_enabled
+                                        else -> R.string.pref_sesame_disabled
+                                    })
     }
 
     private fun updateValue() {

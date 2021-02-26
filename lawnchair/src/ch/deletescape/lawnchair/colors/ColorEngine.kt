@@ -19,7 +19,7 @@ package ch.deletescape.lawnchair.colors
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.graphics.Color.*
+import android.graphics.Color.alpha
 import android.text.TextUtils
 import ch.deletescape.lawnchair.*
 import ch.deletescape.lawnchair.colors.resolvers.*
@@ -30,7 +30,8 @@ import ch.deletescape.lawnchair.util.extensions.d
 import com.android.launcher3.Utilities
 import java.lang.reflect.Constructor
 
-class ColorEngine private constructor(val context: Context) : LawnchairPreferences.OnPreferenceChangeListener {
+class ColorEngine private constructor(val context: Context) :
+        LawnchairPreferences.OnPreferenceChangeListener {
 
     private val prefs by lazy { Utilities.getLawnchairPrefs(context) }
     private val colorListeners = mutableMapOf<String, MutableSet<OnColorChangeListener>>()
@@ -97,7 +98,8 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
             val constructor = constructorCache.getOrPut(className) {
                 Class.forName(className).getConstructor(ColorResolver.Config::class.java)
             }
-            resolver = constructor.newInstance(ColorResolver.Config(key, this, ::onColorChanged, args)) as ColorResolver
+            resolver = constructor.newInstance(
+                    ColorResolver.Config(key, this, ::onColorChanged, args)) as ColorResolver
         } catch (e: IllegalStateException) {
         } catch (e: ClassNotFoundException) {
         } catch (e: InstantiationException) {
@@ -128,7 +130,8 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
         }
     }
 
-    companion object : SingletonHolder<ColorEngine, Context>(ensureOnMainThread(useApplicationContext(::ColorEngine))) {
+    companion object : SingletonHolder<ColorEngine, Context>(
+            ensureOnMainThread(useApplicationContext(::ColorEngine))) {
         @JvmStatic
         override fun getInstance(arg: Context) = super.getInstance(arg)
 
@@ -199,14 +202,16 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
                     }
                     else -> {
                         engine.createColorResolverNullable(key,
-                                LawnchairConfig.getInstance(context).defaultColorResolver)
-                                ?: PixelAccentResolver(createConfig(key, engine))
+                                                           LawnchairConfig.getInstance(
+                                                                   context).defaultColorResolver)
+                        ?: PixelAccentResolver(createConfig(key, engine))
                     }
                 }
             }
 
-            private fun createConfig(key: String, engine: ColorEngine)
-                    = ColorResolver.Config(key, engine, engine::onColorChanged)
+            private fun createConfig(key: String, engine: ColorEngine) = ColorResolver.Config(key,
+                                                                                              engine,
+                                                                                              engine::onColorChanged)
         }
     }
 
@@ -260,7 +265,8 @@ class ColorEngine private constructor(val context: Context) : LawnchairPreferenc
 
         abstract fun getDisplayName(): String
 
-        override fun toString() = TextUtils.join("|", listOf(this::class.java.name) + args) as String
+        override fun toString() = TextUtils.join("|",
+                                                 listOf(this::class.java.name) + args) as String
 
         fun computeForegroundColor() = resolveColor().foregroundColor
 

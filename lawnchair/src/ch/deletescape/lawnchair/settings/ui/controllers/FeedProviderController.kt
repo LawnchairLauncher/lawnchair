@@ -22,13 +22,10 @@ package ch.deletescape.lawnchair.settings.ui.controllers
 import android.content.Context
 import androidx.annotation.Keep
 import ch.deletescape.lawnchair.FeedBridge
-import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.settings.ui.PreferenceController
-import ch.deletescape.lawnchair.smartspace.AccuWeatherDataProvider
-import ch.deletescape.lawnchair.smartspace.OnePlusWeatherDataProvider
 
 @Keep
 class FeedProviderController(context: Context) : PreferenceController(context) {
 
-    override val isVisible= FeedBridge.getAvailableProviders(context).isNotEmpty()
+    override val isVisible = FeedBridge.getAvailableProviders(context).isNotEmpty()
 }

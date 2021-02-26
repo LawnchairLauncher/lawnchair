@@ -23,10 +23,11 @@ import android.view.View
 import ch.deletescape.lawnchair.colors.ColorEngine
 
 class SmartspaceDividerView(context: Context, attrs: AttributeSet?) : View(context, attrs),
-        ColorEngine.OnColorChangeListener {
+                                                                      ColorEngine.OnColorChangeListener {
 
     init {
-        ColorEngine.getInstance(context).addColorChangeListeners(this, ColorEngine.Resolvers.WORKSPACE_ICON_LABEL)
+        ColorEngine.getInstance(context)
+                .addColorChangeListeners(this, ColorEngine.Resolvers.WORKSPACE_ICON_LABEL)
     }
 
     override fun onColorChange(resolveInfo: ColorEngine.ResolveInfo) {

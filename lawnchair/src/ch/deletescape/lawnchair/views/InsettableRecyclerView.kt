@@ -24,7 +24,8 @@ import com.android.launcher3.Insettable
 
 open class InsettableRecyclerView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : SpringRecyclerView(context, attrs, defStyleAttr), Insettable {
+                                                           ) :
+        SpringRecyclerView(context, attrs, defStyleAttr), Insettable {
 
     private val currentInsets = Rect()
     private val currentPadding = Rect()

@@ -40,7 +40,8 @@ import kotlin.math.roundToInt
 
 @Keep
 class AccuWeatherDataProvider(controller: LawnchairSmartspaceController) :
-        LawnchairSmartspaceController.PeriodicDataProvider(controller), LawnchairPreferences.OnPreferenceChangeListener {
+        LawnchairSmartspaceController.PeriodicDataProvider(controller),
+        LawnchairPreferences.OnPreferenceChangeListener {
 
     private val prefs = Utilities.getLawnchairPrefs(context)
 
@@ -62,7 +63,8 @@ class AccuWeatherDataProvider(controller: LawnchairSmartspaceController) :
         // TODO: Add support for location based info with AccuWeather
         if (false && prefs.weatherCity == "##Auto") {
             if (!locationAccess) {
-                Utilities.requestLocationPermission(context.lawnchairApp.activityHandler.foregroundActivity)
+                Utilities.requestLocationPermission(
+                        context.lawnchairApp.activityHandler.foregroundActivity)
                 return
             }
             val locationProvider = locationManager?.getBestProvider(Criteria(), true)
@@ -71,18 +73,22 @@ class AccuWeatherDataProvider(controller: LawnchairSmartspaceController) :
             }
         } else {
             if (keyCache.first != prefs.weatherCity) {
-                AccuRetrofitServiceFactory.accuSearchRetrofitService.search(prefs.weatherCity, context.locale.language).enqueue(object : Callback<List<AccuLocationGSon>> {
-                    override fun onFailure(call: Call<List<AccuLocationGSon>>, t: Throwable) {
-                        updateData(null, null)
-                    }
+                AccuRetrofitServiceFactory.accuSearchRetrofitService
+                        .search(prefs.weatherCity, context.locale.language)
+                        .enqueue(object : Callback<List<AccuLocationGSon>> {
+                            override fun onFailure(call: Call<List<AccuLocationGSon>>,
+                                                   t: Throwable) {
+                                updateData(null, null)
+                            }
 
-                    override fun onResponse(call: Call<List<AccuLocationGSon>>, response: Response<List<AccuLocationGSon>>) {
-                        response.body()?.firstOrNull()?.key?.let {
-                            keyCache = Pair(prefs.weatherCity, it)
-                            loadWeather()
-                        }
-                    }
-                })
+                            override fun onResponse(call: Call<List<AccuLocationGSon>>,
+                                                    response: Response<List<AccuLocationGSon>>) {
+                                response.body()?.firstOrNull()?.key?.let {
+                                    keyCache = Pair(prefs.weatherCity, it)
+                                    loadWeather()
+                                }
+                            }
+                        })
             } else {
                 loadWeather()
             }
@@ -90,24 +96,28 @@ class AccuWeatherDataProvider(controller: LawnchairSmartspaceController) :
     }
 
     private fun loadWeather() {
-        AccuRetrofitServiceFactory.accuWeatherRetrofitService.getLocalWeather(keyCache.second, context.locale.language).enqueue(object : Callback<AccuLocalWeatherGSon> {
-            override fun onFailure(call: Call<AccuLocalWeatherGSon>, t: Throwable) {
-                updateData(null, null)
-            }
+        AccuRetrofitServiceFactory.accuWeatherRetrofitService
+                .getLocalWeather(keyCache.second, context.locale.language)
+                .enqueue(object : Callback<AccuLocalWeatherGSon> {
+                    override fun onFailure(call: Call<AccuLocalWeatherGSon>, t: Throwable) {
+                        updateData(null, null)
+                    }
 
-            override fun onResponse(call: Call<AccuLocalWeatherGSon>, response: Response<AccuLocalWeatherGSon>) {
-                val conditions = response.body()?.currentConditions
-                if (conditions != null) {
-                    updateData(LawnchairSmartspaceController.WeatherData(
-                            getIcon(context, conditions.weatherIcon, conditions.isDayTime),
-                            Temperature(conditions.temperature.value.toFloat().roundToInt(), Temperature.Unit.Celsius),
-                            // TODO add support for intents to open the AccuWeather app if available
-                            forecastUrl = conditions.mobileLink
-                    ), null)
-                }
-            }
+                    override fun onResponse(call: Call<AccuLocalWeatherGSon>,
+                                            response: Response<AccuLocalWeatherGSon>) {
+                        val conditions = response.body()?.currentConditions
+                        if (conditions != null) {
+                            updateData(LawnchairSmartspaceController.WeatherData(
+                                    getIcon(context, conditions.weatherIcon, conditions.isDayTime),
+                                    Temperature(conditions.temperature.value.toFloat().roundToInt(),
+                                                Temperature.Unit.Celsius),
+                                    // TODO add support for intents to open the AccuWeather app if available
+                                    forecastUrl = conditions.mobileLink
+                                                                                ), null)
+                        }
+                    }
 
-        })
+                })
     }
 
     override fun stopListening() {
@@ -163,7 +173,7 @@ class AccuWeatherDataProvider(controller: LawnchairSmartspaceController) :
                 43 to WeatherIconManager.Icon.MOSTLY_CLOUDY_W_FLURRIES,
                 44 to WeatherIconManager.Icon.MOSTLY_CLOUDY_W_SNOW,
                 99 to WeatherIconManager.Icon.NA
-        )
+                                  )
 
         fun getIcon(context: Context, iconID: Int, isDay: Boolean): Bitmap {
             return WeatherIconManager.getInstance(context)

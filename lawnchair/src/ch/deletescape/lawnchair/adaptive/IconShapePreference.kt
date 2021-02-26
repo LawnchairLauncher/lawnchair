@@ -51,7 +51,8 @@ class IconShapePreference(context: Context, attrs: AttributeSet?) :
         }
     private var iconShapeString = iconShape.toString()
     private val drawable = IconShapeDrawable(dpToPx(48f).toInt(), iconShape).apply {
-        setColorFilter(context.getColorAttr(android.R.attr.colorControlNormal), PorterDuff.Mode.SRC_IN)
+        setColorFilter(context.getColorAttr(android.R.attr.colorControlNormal),
+                       PorterDuff.Mode.SRC_IN)
     }
     private var forceCustomizeMode: Boolean? = null
     private val isCustomIcon get() = iconShapeString.startsWith("v1")

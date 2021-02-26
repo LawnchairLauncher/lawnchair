@@ -43,8 +43,11 @@ class MinusOneController(context: Context) : PreferenceController(context) {
     private fun getDisplayGoogleTitle(): String {
         var charSequence: CharSequence? = null
         try {
-            val resourcesForApplication = context.packageManager.getResourcesForApplication("com.google.android.googlequicksearchbox")
-            val identifier = resourcesForApplication.getIdentifier("title_google_home_screen", "string", "com.google.android.googlequicksearchbox")
+            val resourcesForApplication = context.packageManager.getResourcesForApplication(
+                    "com.google.android.googlequicksearchbox")
+            val identifier =
+                    resourcesForApplication.getIdentifier("title_google_home_screen", "string",
+                                                          "com.google.android.googlequicksearchbox")
             if (identifier != 0) {
                 charSequence = resourcesForApplication.getString(identifier)
             }

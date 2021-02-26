@@ -106,8 +106,10 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                             var componentName: String? = parseXml[null, "component"]
                             val drawableName = parseXml[if (isCalendar) "prefix" else "drawable"]
                             if (componentName != null && drawableName != null) {
-                                if (componentName.startsWith(compStart) && componentName.endsWith(compEnd)) {
-                                    componentName = componentName.substring(compStartlength, componentName.length - compEndLength)
+                                if (componentName.startsWith(compStart) && componentName.endsWith(
+                                                compEnd)) {
+                                    componentName = componentName.substring(compStartlength,
+                                                                            componentName.length - compEndLength)
                                 }
                                 val parsed = ComponentName.unflattenFromString(componentName)
                                 if (parsed != null) {
@@ -125,9 +127,12 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                                 val drawableId = getDrawableId(drawableName)
                                 if (parseXml is XmlResourceParser && drawableId != 0) {
                                     packClocks[drawableId] = CustomClock.Metadata(
-                                            parseXml.getAttributeIntValue(null, "hourLayerIndex", -1),
-                                            parseXml.getAttributeIntValue(null, "minuteLayerIndex", -1),
-                                            parseXml.getAttributeIntValue(null, "secondLayerIndex", -1),
+                                            parseXml.getAttributeIntValue(null, "hourLayerIndex",
+                                                                          -1),
+                                            parseXml.getAttributeIntValue(null, "minuteLayerIndex",
+                                                                          -1),
+                                            parseXml.getAttributeIntValue(null, "secondLayerIndex",
+                                                                          -1),
                                             parseXml.getAttributeIntValue(null, "defaultHour", 0),
                                             parseXml.getAttributeIntValue(null, "defaultMinute", 0),
                                             parseXml.getAttributeIntValue(null, "defaultSecond", 0))
@@ -171,7 +176,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                             val dynamicDrawable = parseDrawableXml["dynamic_drawable"]
                             if (dynamicDrawable != null) {
                                 val drawableId = res.getIdentifier(dynamicDrawable, "drawable",
-                                        packPackageName)
+                                                                   packPackageName)
                                 if (drawableId != 0) {
                                     packDynamicDrawables[drawableId] = DynamicDrawable.Metadata(
                                             parseDrawableXml["xml"]!!,
@@ -225,9 +230,11 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
             try {
                 var drawable = packResources.getDrawable(drawableId)
                 if (Utilities.ATLEAST_OREO && packClocks.containsKey(drawableId)) {
-                    drawable = CustomClock.getClock(context, drawable, packClocks[drawableId], iconDpi)
+                    drawable =
+                            CustomClock.getClock(context, drawable, packClocks[drawableId], iconDpi)
                 } else if (packDynamicDrawables.containsKey(drawableId)) {
-                    drawable = DynamicDrawable.getIcon(context, drawable, packDynamicDrawables[drawableId]!!, iconDpi)
+                    drawable = DynamicDrawable.getIcon(context, drawable,
+                                                       packDynamicDrawables[drawableId]!!, iconDpi)
                 }
                 if (prefs.adaptifyIconPacks) {
                     val gen = AdaptiveIconGenerator(context, drawable.mutate(), null)
@@ -250,7 +257,8 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
         val component = launcherActivityInfo.componentName
         val drawableId = when {
             customIconEntry?.icon != null -> getDrawableId(customIconEntry.icon)
-            packCalendars.containsKey(component) -> getDrawableId(packCalendars[component] + Calendar.getInstance().get(Calendar.DAY_OF_MONTH))
+            packCalendars.containsKey(component) -> getDrawableId(
+                    packCalendars[component] + Calendar.getInstance().get(Calendar.DAY_OF_MONTH))
             packComponents.containsKey(component) -> packComponents[component]!!.drawableId
             else -> 0
         }
@@ -258,12 +266,14 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
         if (drawableId != 0) {
             try {
                 var drawable = AdaptiveIconCompat.wrap(
-                        packResources.getDrawableForDensity(drawableId, iconDpi) ?:
-                        packResources.getDrawable(drawableId))
+                        packResources.getDrawableForDensity(drawableId, iconDpi)
+                        ?: packResources.getDrawable(drawableId))
                 if (Utilities.ATLEAST_OREO && packClocks.containsKey(drawableId)) {
-                    drawable = CustomClock.getClock(context, drawable, packClocks[drawableId], iconDpi)
+                    drawable =
+                            CustomClock.getClock(context, drawable, packClocks[drawableId], iconDpi)
                 } else if (packDynamicDrawables.containsKey(drawableId)) {
-                    drawable = DynamicDrawable.getIcon(context, drawable, packDynamicDrawables[drawableId]!!, iconDpi)
+                    drawable = DynamicDrawable.getIcon(context, drawable,
+                                                       packDynamicDrawables[drawableId]!!, iconDpi)
                 }
                 if (prefs.adaptifyIconPacks) {
                     val gen = AdaptiveIconGenerator(context, drawable.mutate(), null)
@@ -275,11 +285,14 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
             }
         }
 
-        val isCustomPack = customIconEntry?.packPackageName == packPackageName && customIconEntry.icon == null
+        val isCustomPack =
+                customIconEntry?.packPackageName == packPackageName && customIconEntry.icon == null
         if ((prefs.iconPackMasking || isCustomPack) && packMask.hasMask) {
             val baseIcon = defaultPack.getIcon(launcherActivityInfo, iconDpi, flattenDrawable,
-                    customIconEntry, iconProvider)
-            val icon = baseIcon?.let { packMask.getIcon(context, it, launcherActivityInfo.componentName) }
+                                               customIconEntry, iconProvider)
+            val icon = baseIcon?.let {
+                packMask.getIcon(context, it, launcherActivityInfo.componentName)
+            }
             if (prefs.adaptifyIconPacks) {
                 val gen = icon?.let { AdaptiveIconGenerator(context, it, null) }
                 return gen?.result
@@ -324,10 +337,11 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                         .wrap(packResources.getDrawable(drawableId))
                 val customClockDrawer = CustomClock(context)
                 return customClockDrawer.drawIcon(icon, drawable, packClocks[drawableId])
-            } else if(packDynamicDrawables.containsKey(drawableId)) {
+            } else if (packDynamicDrawables.containsKey(drawableId)) {
                 val iconDpi = LauncherAppState.getIDP(context).fillResIconDpi
-                val icn = DynamicDrawable.drawIcon(context, icon, packDynamicDrawables[drawableId]!!,
-                                                   iconDpi)
+                val icn =
+                        DynamicDrawable.drawIcon(context, icon, packDynamicDrawables[drawableId]!!,
+                                                 iconDpi)
                 if (icn != null) return icn
             }
             if (drawableId != 0) {
@@ -337,7 +351,8 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
         return null
     }
 
-    override fun getAllIcons(callback: (List<PackEntry>) -> Unit, cancel: () -> Boolean, filter: (item: String) -> Boolean) {
+    override fun getAllIcons(callback: (List<PackEntry>) -> Unit, cancel: () -> Boolean,
+                             filter: (item: String) -> Boolean) {
         var lastSend = System.currentTimeMillis() - 900
         var tmpList = ArrayList<PackEntry>()
         val sendResults = { force: Boolean ->
@@ -416,7 +431,8 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
     }
 
     private val idCache = mutableMapOf<String, Int>()
-    private fun getDrawableId(name: String) = packResources.getIdentifier(name, "drawable", packPackageName)// idCache.getOrPut(name) {    }
+    private fun getDrawableId(name: String) = packResources.getIdentifier(name, "drawable",
+                                                                          packPackageName) // idCache.getOrPut(name) {    }
 
     fun createEntry(icon: Intent.ShortcutIconResource): Entry {
         val id = packResources.getIdentifier(icon.resourceName, null, null)
@@ -426,7 +442,9 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
 
     inner class Entry(private val drawableName: String, val id: Int? = null) : IconPack.Entry() {
 
-        override val displayName by lazy { drawableName.replace(Regex("""_+"""), " ").trim().toTitleCase() }
+        override val displayName by lazy {
+            drawableName.replace(Regex("""_+"""), " ").trim().toTitleCase()
+        }
         override val identifierName = drawableName
         override val isAvailable by lazy { drawableId != 0 && checkResourceExists() }
 
@@ -445,7 +463,8 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
             }
         }
 
-        override fun toCustomEntry() = IconPackManager.CustomIconEntry(packPackageName, drawableName)
+        override fun toCustomEntry() = IconPackManager.CustomIconEntry(packPackageName,
+                                                                       drawableName)
 
         private fun checkResourceExists(): Boolean {
             return try {
@@ -473,7 +492,8 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
             return icon
         }
 
-        override fun toCustomEntry() = IconPackManager.CustomIconEntry(packPackageName, key.toString(), "mask")
+        override fun toCustomEntry() = IconPackManager.CustomIconEntry(packPackageName,
+                                                                       key.toString(), "mask")
     }
 
 }

@@ -44,7 +44,8 @@ abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.Cate
 
     private val personalTabCreator = ProfileTabCreator(Profile(null))
     private val workTabCreator by lazy {
-        val workUser = UserCache.INSTANCE.get(context).userProfiles.firstOrNull { it != Process.myUserHandle() }
+        val workUser = UserCache.INSTANCE.get(
+                context).userProfiles.firstOrNull { it != Process.myUserHandle() }
         if (workUser != null) ProfileTabCreator(Profile(workUser)) else GroupCreator<Tab> { null }
     }
     private val allAppsTabCreator = ProfileTabCreator(Profile())
@@ -58,8 +59,8 @@ abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.Cate
     override fun getDefaultCreators(): List<GroupCreator<Tab>> {
         return listOf(allAppsTabCreator) + personalTabCreator + UserCache.INSTANCE.get(context)
                 .userProfiles.mapNotNull {
-            if (it != Process.myUserHandle()) ProfileTabCreator(Profile(it)) else null
-        }
+                    if (it != Process.myUserHandle()) ProfileTabCreator(Profile(it)) else null
+                }
     }
 
     override fun getGroupCreator(type: String): GroupCreator<Tab> {
@@ -82,19 +83,22 @@ abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.Cate
         changeCallback.launcher.allAppsController.appsView.reloadTabs()
     }
 
-    abstract class Tab(context: Context, type: String, title: String) : Group(type, context, title) {
+    abstract class Tab(context: Context, type: String, title: String) :
+            Group(type, context, title) {
 
-        val colorResolver = ColorRow(KEY_COLOR, AppGroupsUtils.getInstance(context).defaultColorResolver)
+        val colorResolver =
+                ColorRow(KEY_COLOR, AppGroupsUtils.getInstance(context).defaultColorResolver)
 
         init {
             addCustomization(colorResolver)
         }
     }
 
-    class CustomTab(context: Context) : Tab(context, TYPE_CUSTOM, context.getString(R.string.default_tab_name)) {
+    class CustomTab(context: Context) :
+            Tab(context, TYPE_CUSTOM, context.getString(R.string.default_tab_name)) {
 
         val hideFromAllApps = SwitchRow(R.drawable.tab_hide_from_main, R.string.tab_hide_from_main,
-                KEY_HIDE_FROM_ALL_APPS, true)
+                                        KEY_HIDE_FROM_ALL_APPS, true)
         val contents = AppsRow(KEY_ITEMS, mutableSetOf())
 
         init {
@@ -109,10 +113,12 @@ abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.Cate
             return context.resources.getQuantityString(R.plurals.tab_apps_count, size, size)
         }
 
-        fun getFilter(context: Context): Filter<*> = CustomFilter(context, contents.value()) // IconPackFilter(context)
+        fun getFilter(context: Context): Filter<*> = CustomFilter(context,
+                                                                  contents.value()) // IconPackFilter(context)
     }
 
-    open class ProfileTab(context: Context, val profile: Profile) : Tab(context, "$TYPE_PROFILE_PREFIX$profile}", getTitle(context, profile)) {
+    open class ProfileTab(context: Context, val profile: Profile) :
+            Tab(context, "$TYPE_PROFILE_PREFIX$profile}", getTitle(context, profile)) {
 
         init {
             addCustomization(HiddenAppsRow(profile))
@@ -146,7 +152,8 @@ abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.Cate
         private val predicate get() = getWorkFilter(profile)
 
         override fun createRow(context: Context, parent: ViewGroup, accent: Int): View? {
-            val view = LayoutInflater.from(context).inflate(R.layout.drawer_tab_hidden_apps_row, parent, false)
+            val view = LayoutInflater.from(context)
+                    .inflate(R.layout.drawer_tab_hidden_apps_row, parent, false)
 
             view.findViewById<ImageView>(R.id.manage_apps_icon).tintDrawable(accent)
             updateCount(view)
@@ -189,8 +196,8 @@ abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.Cate
         private fun setHiddenApps(context: Context, hidden: Collection<ComponentKey>) {
             val prefs = context.lawnchairPrefs
             val hiddenSet = ArrayList(prefs.hiddenAppSet
-                    .map { makeComponentKey(context, it) }
-                    .filter { !predicate(it) })
+                                              .map { makeComponentKey(context, it) }
+                                              .filter { !predicate(it) })
             hiddenSet.addAll(hidden)
             prefs.hiddenAppSet = hiddenSet.map(ComponentKey::toString).toSet()
         }

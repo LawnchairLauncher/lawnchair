@@ -18,7 +18,6 @@
 package ch.deletescape.lawnchair.sesame
 
 import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.colors.ColorEngine
@@ -26,9 +25,7 @@ import ch.deletescape.lawnchair.dpToPx
 import ch.deletescape.lawnchair.globalsearch.providers.SesameSearchProvider
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.util.diff.diff
-import ch.deletescape.lawnchair.util.extensions.d
 import com.android.launcher3.BuildConfig
-import com.android.launcher3.R
 import com.google.android.apps.nexuslauncher.qsb.AbstractQsbLayout
 import ninja.sesame.lib.bridge.v1.SesameFrontend
 import ninja.sesame.lib.bridge.v1_1.LookFeelKeys
@@ -47,19 +44,21 @@ object Sesame : ColorEngine.OnColorChangeListener, LawnchairPreferences.OnPrefer
     fun isAvailable(context: Context) = BuildConfig.FEATURE_QUINOA &&
                                         SesameFrontend.isConnected() &&
                                         SesameFrontend.getIntegrationState(context)
+
     @JvmStatic
-    var showShortcuts by LawnchairPreferences.getInstanceNoCreate().BooleanPref("pref_sesame_show_shortcuts", true)
+    var showShortcuts by LawnchairPreferences.getInstanceNoCreate()
+            .BooleanPref("pref_sesame_show_shortcuts", true)
 
     private val syncedColors = arrayOf(
             ColorEngine.Resolvers.ACCENT,
             ColorEngine.Resolvers.HOTSEAT_QSB_BG
-    )
+                                      )
     private val syncedPrefs = arrayOf(
             "pref_iconShape",
             "opa_enabled",
             "opa_assistant",
             "pref_searchbarRadius"
-    )
+                                     )
 
     private lateinit var context: Context
 
@@ -107,10 +106,12 @@ object Sesame : ColorEngine.OnColorChangeListener, LawnchairPreferences.OnPrefer
     override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
         when (key) {
             "pref_iconShape" -> {
-                LookAndFeel[LookFeelKeys.SEARCH_CORNER_RADIUS] = AbstractQsbLayout.getCornerRadius(context, dpToPx(24f)).roundToInt()
+                LookAndFeel[LookFeelKeys.SEARCH_CORNER_RADIUS] =
+                        AbstractQsbLayout.getCornerRadius(context, dpToPx(24f)).roundToInt()
             }
             "pref_searchbarRadius" -> {
-                LookAndFeel[LookFeelKeys.SEARCH_CORNER_RADIUS] = AbstractQsbLayout.getCornerRadius(context, dpToPx(24f)).roundToInt()
+                LookAndFeel[LookFeelKeys.SEARCH_CORNER_RADIUS] =
+                        AbstractQsbLayout.getCornerRadius(context, dpToPx(24f)).roundToInt()
             }
             "opa_enabled" -> if (isSesameSearch) {
                 LookAndFeel[LookFeelKeys.SEARCH_HAS_ASSISTANT_ICON] = prefs.showVoiceSearchIcon
@@ -143,7 +144,9 @@ object Sesame : ColorEngine.OnColorChangeListener, LawnchairPreferences.OnPrefer
         operator fun get(key: String) = SesameFrontend.getLookFeelPreferences()?.get(key)
     }
 
-    class LookFeelSync(private val context: Context, private var previous: Bundle, private val setUnsetListeners: (enable: Boolean) -> Unit): LookFeelOnChange {
+    class LookFeelSync(private val context: Context, private var previous: Bundle,
+                       private val setUnsetListeners: (enable: Boolean) -> Unit) :
+            LookFeelOnChange {
         private val prefs = context.lawnchairPrefs
         private val colors = ColorEngine.getInstance(context)
 
@@ -153,10 +156,13 @@ object Sesame : ColorEngine.OnColorChangeListener, LawnchairPreferences.OnPrefer
 
             val diff = previous diff bundle
             for (key in diff.changed) when (key) {
-                LookFeelKeys.SEARCH_HAS_ASSISTANT_ICON -> prefs.showVoiceSearchIcon = LookAndFeel[key] as Boolean
-                LookFeelKeys.SEARCH_BAR_COLOR -> colors.setColor(ColorEngine.Resolvers.HOTSEAT_QSB_BG, LookAndFeel[key] as Int)
+                LookFeelKeys.SEARCH_HAS_ASSISTANT_ICON -> prefs.showVoiceSearchIcon =
+                        LookAndFeel[key] as Boolean
+                LookFeelKeys.SEARCH_BAR_COLOR -> colors.setColor(
+                        ColorEngine.Resolvers.HOTSEAT_QSB_BG, LookAndFeel[key] as Int)
                 LookFeelKeys.SEARCH_ICON_COLOR -> prefs.sesameIconColor = LookAndFeel[key] as Int
-                LookFeelKeys.SEARCH_CORNER_RADIUS -> prefs.searchBarRadius = (LookAndFeel[LookFeelKeys.SEARCH_CORNER_RADIUS] as Int).toFloat()
+                LookFeelKeys.SEARCH_CORNER_RADIUS -> prefs.searchBarRadius =
+                        (LookAndFeel[LookFeelKeys.SEARCH_CORNER_RADIUS] as Int).toFloat()
             }
             previous = bundle
 

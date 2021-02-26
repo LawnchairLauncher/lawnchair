@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~     This file is part of Lawnchair Launcher.
   ~
   ~     Lawnchair Launcher is free software: you can redistribute it and/or modify
@@ -16,55 +15,54 @@
   ~     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/manage_apps"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="?android:attr/listPreferredItemHeightSmall"
-    android:gravity="center_vertical"
-    android:paddingStart="16dp"
-    android:paddingEnd="16dp"
     android:background="?android:attr/selectableItemBackground"
+    android:baselineAligned="false"
     android:clipToPadding="false"
     android:focusable="true"
-    android:baselineAligned="false">
+    android:gravity="center_vertical"
+    android:minHeight="?android:attr/listPreferredItemHeightSmall"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp">
 
     <ImageView
         android:id="@+id/manage_apps_icon"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginEnd="16dp"
-        android:src="@drawable/tab_hide_from_main"/>
+        android:src="@drawable/tab_hide_from_main" />
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:orientation="vertical"
         android:paddingTop="16dp"
-        android:paddingBottom="16dp"
-        android:orientation="vertical">
+        android:paddingBottom="16dp">
 
         <TextView
             android:id="@+id/manage_apps_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:textAppearance="?android:attr/textAppearanceListItem"
             android:ellipsize="marquee"
+            android:singleLine="true"
             android:text="@string/hide_apps"
+            android:textAppearance="?android:attr/textAppearanceListItem"
             app:customFontType="preferenceTitle" />
 
         <TextView
             android:id="@+id/apps_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceListItemSecondary"
-            android:textAlignment="viewStart"
-            android:textColor="?android:attr/textColorSecondary"
             android:maxLines="10"
+            android:textAlignment="viewStart"
+            android:textAppearance="?android:attr/textAppearanceListItemSecondary"
+            android:textColor="?android:attr/textColorSecondary"
             tools:text="0 apps" />
     </LinearLayout>
 

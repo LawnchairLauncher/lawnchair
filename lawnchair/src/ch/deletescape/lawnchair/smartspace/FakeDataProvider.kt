@@ -22,13 +22,17 @@ import androidx.annotation.Keep
 import ch.deletescape.lawnchair.util.Temperature
 
 @Keep
-class FakeDataProvider(controller: LawnchairSmartspaceController) : LawnchairSmartspaceController.DataProvider(controller) {
+class FakeDataProvider(controller: LawnchairSmartspaceController) :
+        LawnchairSmartspaceController.DataProvider(controller) {
 
     private val iconProvider = WeatherIconProvider(controller.context)
     private val weather = LawnchairSmartspaceController.WeatherData(iconProvider.getIcon("-1"),
-            Temperature(0, Temperature.Unit.Celsius), "")
+                                                                    Temperature(0,
+                                                                                Temperature.Unit.Celsius),
+                                                                    "")
     private val card = LawnchairSmartspaceController.CardData(iconProvider.getIcon("-1"),
-            "Title", TextUtils.TruncateAt.END, "Subtitle", TextUtils.TruncateAt.END)
+                                                              "Title", TextUtils.TruncateAt.END,
+                                                              "Subtitle", TextUtils.TruncateAt.END)
 
     init {
         updateData(weather, card)

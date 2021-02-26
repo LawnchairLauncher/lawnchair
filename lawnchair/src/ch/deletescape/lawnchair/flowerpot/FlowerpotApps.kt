@@ -53,7 +53,7 @@ class FlowerpotApps(private val context: Context, private val pot: Flowerpot) :
     private fun addFromPackage(packageName: String?, user: UserHandle) {
         launcherApps.getActivityList(packageName, user).forEach {
             if (intentMatches.contains(it.componentName.packageName)
-                    || pot.rules.contains(Rule.Package(it.componentName.packageName))) {
+                || pot.rules.contains(Rule.Package(it.componentName.packageName))) {
                 matches.add(ComponentKey(it.componentName, it.user))
                 packageMatches.add(PackageUserKey(it.componentName.packageName, it.user))
             } else {
@@ -71,9 +71,11 @@ class FlowerpotApps(private val context: Context, private val pot: Flowerpot) :
     private fun queryIntentMatches() {
         intentMatches.clear()
         for (rule in pot.rules.filterIsInstance<Rule.IntentCategory>()) {
-            context.packageManager.queryIntentActivities(Intent(Intent.ACTION_MAIN).addCategory(rule.category), 0).forEach {
-                intentMatches.add(it.activityInfo.packageName)
-            }
+            context.packageManager
+                    .queryIntentActivities(Intent(Intent.ACTION_MAIN).addCategory(rule.category), 0)
+                    .forEach {
+                        intentMatches.add(it.activityInfo.packageName)
+                    }
         }
         for (rule in pot.rules.filterIsInstance<Rule.IntentAction>()) {
             context.packageManager.queryIntentActivities(Intent(rule.action), 0).forEach {
@@ -100,11 +102,13 @@ class FlowerpotApps(private val context: Context, private val pot: Flowerpot) :
         }
     }
 
-    override fun onPackagesAvailable(packageNames: Array<out String>, user: UserHandle, replacing: Boolean) {
+    override fun onPackagesAvailable(packageNames: Array<out String>, user: UserHandle,
+                                     replacing: Boolean) {
         packageNames.forEach { onPackageAdded(it, user) }
     }
 
-    override fun onPackagesUnavailable(packageNames: Array<out String>, user: UserHandle, replacing: Boolean) {
+    override fun onPackagesUnavailable(packageNames: Array<out String>, user: UserHandle,
+                                       replacing: Boolean) {
         packageNames.forEach { onPackageRemoved(it, user) }
     }
 

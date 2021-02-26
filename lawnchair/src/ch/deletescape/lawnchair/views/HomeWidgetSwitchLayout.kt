@@ -55,6 +55,7 @@ class HomeWidgetSwitchLayout(context: Context, attrs: AttributeSet?) :
     }
 
     override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
-        currentLayout = if (prefs.usePillQsb) R.layout.qsb_container else R.layout.search_container_workspace
+        currentLayout =
+                if (prefs.usePillQsb) R.layout.qsb_container else R.layout.search_container_workspace
     }
 }

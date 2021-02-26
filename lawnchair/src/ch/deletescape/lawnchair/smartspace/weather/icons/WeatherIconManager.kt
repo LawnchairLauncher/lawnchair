@@ -28,7 +28,6 @@ import android.graphics.drawable.Drawable
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.util.LawnchairSingletonHolder
 import com.android.launcher3.R
-import java.lang.RuntimeException
 
 class WeatherIconManager(private val context: Context) {
     private val pm = context.packageManager
@@ -37,6 +36,7 @@ class WeatherIconManager(private val context: Context) {
             object : WeatherIconPack(context, context.getString(R.string.weather_icons_default), "",
                                      RecoloringMode.NEVER) {
                 override val provider = DefaultIconProvider(context)
+
                 @SuppressLint("UseCompatLoadingForDrawables")
                 override val icon: Drawable = context.getDrawable(R.drawable.weather_04)!!
             }
@@ -44,7 +44,7 @@ class WeatherIconManager(private val context: Context) {
     fun getIconPacks(): List<WeatherIconPack> = mutableListOf<WeatherIconPack>(defaultPack).apply {
         pm.queryIntentActivities(
                 Intent(Intent.ACTION_MAIN).addCategory(
-                        INTENT_CATEGORY), PackageManager.GET_META_DATA)?.map {
+                        INTENT_CATEGORY), PackageManager.GET_META_DATA).map {
             val recoloringMode =
                     it.activityInfo.metaData?.getString(METADATA_KEY)?.let {
                         RecoloringMode.fromName(it)
@@ -54,7 +54,7 @@ class WeatherIconManager(private val context: Context) {
                     it.loadLabel(pm).toString(),
                     it.activityInfo.packageName,
                     recoloringMode)
-        }?.let { addAll(it) }
+        }.let { addAll(it) }
     }
 
     fun getIcon(which: Icon, night: Boolean) = getProvider().getIcon(which, night)
@@ -134,7 +134,9 @@ class WeatherIconManager(private val context: Context) {
 
     open class WeatherIconPack(val context: Context, val name: String, val pkgName: String,
                                val recoloringMode: RecoloringMode) {
-        open val provider: IconProvider by lazy { WeatherIconPackProviderImpl(context, pkgName, this) }
+        open val provider: IconProvider by lazy {
+            WeatherIconPackProviderImpl(context, pkgName, this)
+        }
         open val icon by lazy { context.packageManager.getApplicationIcon(pkgName) }
     }
 

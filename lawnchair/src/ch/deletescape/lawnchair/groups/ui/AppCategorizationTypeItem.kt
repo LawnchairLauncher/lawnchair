@@ -28,7 +28,8 @@ import ch.deletescape.lawnchair.*
 import ch.deletescape.lawnchair.groups.AppGroupsManager
 import kotlinx.android.synthetic.lawnchair.app_categorization_type_item.view.*
 
-class AppCategorizationTypeItem(context: Context, attrs: AttributeSet?) : LinearLayout(context, attrs),
+class AppCategorizationTypeItem(context: Context, attrs: AttributeSet?) :
+        LinearLayout(context, attrs),
         View.OnClickListener, LawnchairPreferences.OnPreferenceChangeListener {
 
     private val prefs = context.lawnchairPrefs
@@ -44,17 +45,17 @@ class AppCategorizationTypeItem(context: Context, attrs: AttributeSet?) : Linear
         val tintList = ColorStateList(arrayOf(
                 intArrayOf(android.R.attr.state_selected),
                 intArrayOf()),
-                intArrayOf(
-                        tintSelected,
-                        tintNormal))
+                                      intArrayOf(
+                                              tintSelected,
+                                              tintNormal))
         background.setTintList(tintList)
 
         val rippleTintList = ColorStateList(arrayOf(
                 intArrayOf(android.R.attr.state_selected),
                 intArrayOf()),
-                intArrayOf(
-                        ColorUtils.setAlphaComponent(tintSelected, 31),
-                        ColorUtils.setAlphaComponent(tintNormal, 31)))
+                                            intArrayOf(
+                                                    ColorUtils.setAlphaComponent(tintSelected, 31),
+                                                    ColorUtils.setAlphaComponent(tintNormal, 31)))
         (background as RippleDrawable).setColor(rippleTintList)
     }
 

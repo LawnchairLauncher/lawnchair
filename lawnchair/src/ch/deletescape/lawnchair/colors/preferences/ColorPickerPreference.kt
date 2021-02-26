@@ -40,7 +40,8 @@ open class ColorPickerPreference(context: Context, attrs: AttributeSet?)
         layoutResource = R.layout.pref_with_preview_icon
         val ta = context.obtainStyledAttributes(attrs, R.styleable.ColorPickerPreference)
         colorMode = getColorMode(ta.getInt(R.styleable.ColorPickerPreference_colorMode, 0))
-        resolvers = context.resources.getStringArray(ta.getResourceId(R.styleable.ColorPickerPreference_resolvers, -1))
+        resolvers = context.resources.getStringArray(
+                ta.getResourceId(R.styleable.ColorPickerPreference_resolvers, -1))
         ta.recycle()
     }
 
@@ -76,8 +77,11 @@ open class ColorPickerPreference(context: Context, attrs: AttributeSet?)
 
     fun showDialog(fragmentManager: FragmentManager) {
         val resolver = engine.getResolver(key)
-        ColorPickerDialog.newInstance(key, resolver.resolveColor(), colorMode, resolvers).show(fragmentManager, key)
+        ColorPickerDialog.newInstance(key, resolver.resolveColor(), colorMode, resolvers)
+                .show(fragmentManager, key)
     }
 }
 
-internal fun Array<String>.mapToResolvers(engine: ColorEngine) = map { engine.createColorResolver("PickerPreference", it) }.filter { Color.alpha(it.resolveColor()) > 0 }
+internal fun Array<String>.mapToResolvers(engine: ColorEngine) = map {
+    engine.createColorResolver("PickerPreference", it)
+}.filter { Color.alpha(it.resolveColor()) > 0 }

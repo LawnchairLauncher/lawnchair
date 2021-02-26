@@ -17,6 +17,4 @@
 
 package ch.deletescape.lawnchair.flowerpot
 
-import java.lang.RuntimeException
-
 class FlowerpotFormatException(message: String?) : RuntimeException(message)

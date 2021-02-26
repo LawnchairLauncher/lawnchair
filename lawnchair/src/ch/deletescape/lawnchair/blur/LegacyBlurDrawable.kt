@@ -49,7 +49,9 @@ class LegacyBlurDrawable internal constructor(
     private val mColorCornerPaint = Paint(Paint.ANTI_ALIAS_FLAG)
             .apply { xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_ATOP) }
     private val mClipPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-    private val mClearPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR) }
+    private val mClearPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
+    }
     private val mRect = RectF()
     private var mPositionX: Float = 0f
     private var mPositionY: Float = 0f
@@ -60,7 +62,7 @@ class LegacyBlurDrawable internal constructor(
     private val mDownsampleFactor: Int = BlurWallpaperProvider.DOWNSAMPLE_FACTOR
     private var mOverlayColor: Int = 0
 
-//    private val mClipCanvas = Canvas()
+    //    private val mClipCanvas = Canvas()
 
     private var mBlurredView: View? = null
     private var mBlurredViewWidth: Int = 0
@@ -70,6 +72,7 @@ class LegacyBlurDrawable internal constructor(
     private var mBitmapToBlur: Bitmap? = null
     private var mBlurredBitmap: Bitmap? = null
     private var mBlurringCanvas: Canvas? = null
+
     //    private var mTempBitmap: Bitmap? = null
     private var mBlurInvalid: Boolean = false
 
@@ -130,13 +133,13 @@ class LegacyBlurDrawable internal constructor(
                 if (mTopRounded) {
                     mTopRoundBitmap?.recycle()
                     mTopRoundBitmap = Bitmap.createBitmap(width, mTopRadius.toInt(),
-                            Bitmap.Config.ARGB_8888)
+                                                          Bitmap.Config.ARGB_8888)
                     mTopCanvas.setBitmap(mTopRoundBitmap)
                 }
                 if (mBottomRounded) {
                     mBottomRoundBitmap?.recycle()
                     mBottomRoundBitmap = Bitmap.createBitmap(width, mBottomRadius.toInt(),
-                            Bitmap.Config.ARGB_8888)
+                                                             Bitmap.Config.ARGB_8888)
                     mBottomCanvas.setBitmap(mBottomRoundBitmap)
                 }
             }
@@ -199,7 +202,7 @@ class LegacyBlurDrawable internal constructor(
         // Check again if the bitmap is recycled
         if (toDraw.isRecycled) return
         try {
-//            canvas.drawBitmap(toDraw, blurTranslateX, translateY - mProvider.wallpaperYOffset, mPaint)
+            //            canvas.drawBitmap(toDraw, blurTranslateX, translateY - mProvider.wallpaperYOffset, mPaint)
             canvas.translate(-mOffset, 0f)
             canvas.drawRect(mNormalBounds, mShaderPaint)
             canvas.translate(mOffset, 0f)
@@ -207,10 +210,13 @@ class LegacyBlurDrawable internal constructor(
             Log.e("BlurDrawable", "Failed to draw blurred bitmasp", e)
         }
         if (topRounded) {
-            mTopCanvas.drawBitmap(toDraw, blurTranslateX - mRect.left, translateY - mProvider.wallpaperYOffset - mRect.top, mCornerPaint)
+            mTopCanvas.drawBitmap(toDraw, blurTranslateX - mRect.left,
+                                  translateY - mProvider.wallpaperYOffset - mRect.top, mCornerPaint)
         }
         if (bottomRounded) {
-            mBottomCanvas.drawBitmap(toDraw, blurTranslateX - mRect.left, translateY - mProvider.wallpaperYOffset - bottomY, mCornerPaint)
+            mBottomCanvas.drawBitmap(toDraw, blurTranslateX - mRect.left,
+                                     translateY - mProvider.wallpaperYOffset - bottomY,
+                                     mCornerPaint)
         }
 
         if (prepare()) {
@@ -269,7 +275,7 @@ class LegacyBlurDrawable internal constructor(
         val height = mBlurredView!!.height
 
         if (mBlurringCanvas == null || mDownsampleFactorChanged
-                || mBlurredViewWidth != width || mBlurredViewHeight != height) {
+            || mBlurredViewWidth != width || mBlurredViewHeight != height) {
             mDownsampleFactorChanged = false
 
             mBlurredViewWidth = width
@@ -370,7 +376,8 @@ class LegacyBlurDrawable internal constructor(
         } else {
             mRoundPath.reset()
             mRoundPath.addRoundRect(bounds.left.toFloat(), bounds.top.toFloat(),
-                    bounds.right.toFloat(), bounds.bottom.toFloat(), mRadii, Path.Direction.CW)
+                                    bounds.right.toFloat(), bounds.bottom.toFloat(), mRadii,
+                                    Path.Direction.CW)
             outline.setConvexPath(mRoundPath)
         }
     }

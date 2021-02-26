@@ -18,7 +18,6 @@
 package ch.deletescape.lawnchair.flowerpot.rules
 
 import android.content.pm.ApplicationInfo
-import android.content.pm.PackageInfo
 import ch.deletescape.lawnchair.hasFlag
 import com.android.launcher3.Utilities
 
@@ -26,7 +25,8 @@ sealed class CodeRule(vararg val args: String) {
     abstract fun matches(info: ApplicationInfo): Boolean
 
     class IsGame(vararg args: String) : CodeRule(*args) {
-        override fun matches(info: ApplicationInfo) = info.flags hasFlag ApplicationInfo.FLAG_IS_GAME
+        override fun matches(
+                info: ApplicationInfo) = info.flags hasFlag ApplicationInfo.FLAG_IS_GAME
     }
 
     class Category(vararg args: String) : CodeRule(*args) {
@@ -46,11 +46,13 @@ sealed class CodeRule(vararg val args: String) {
                 "news" -> ApplicationInfo.CATEGORY_NEWS
                 "maps" -> ApplicationInfo.CATEGORY_MAPS
                 "productivity" -> ApplicationInfo.CATEGORY_PRODUCTIVITY
-                else -> throw IllegalArgumentException("Expected a known category, got '${args[0]}' instead")
+                else -> throw IllegalArgumentException(
+                        "Expected a known category, got '${args[0]}' instead")
             }
         }
 
-        override fun matches(info: ApplicationInfo) = Utilities.ATLEAST_OREO && info.category == category
+        override fun matches(
+                info: ApplicationInfo) = Utilities.ATLEAST_OREO && info.category == category
     }
 
     companion object {

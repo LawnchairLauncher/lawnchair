@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2014 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2014 The Android Open Source Project
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
      You may obtain a copy of the License at
@@ -11,25 +10,24 @@
      limitations under the License.
 -->
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/dashboard_tile"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
-    android:gravity="center_vertical"
-    android:minHeight="@dimen/dashboard_tile_minimum_height"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+    android:gravity="center_vertical"
+    android:minHeight="@dimen/dashboard_tile_minimum_height">
 
     <ImageView
         android:id="@android:id/icon"
         android:layout_width="@dimen/dashboard_tile_image_size"
         android:layout_height="@dimen/dashboard_tile_image_size"
-        android:scaleType="centerInside"
-        android:src="@drawable/ic_add"
         android:layout_marginStart="@dimen/dashboard_tile_image_margin_start"
-        android:layout_marginEnd="@dimen/dashboard_tile_image_margin_end" />
+        android:layout_marginEnd="@dimen/dashboard_tile_image_margin_end"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_add" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -39,21 +37,21 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:fadingEdge="horizontal"
             android:singleLine="true"
             android:text="@string/pref_fonts_add_fonts"
-            android:textAppearance="@style/SettingsTheme.PreferenceTheme.Preference.Title"
-            android:ellipsize="marquee"
-            android:fadingEdge="horizontal" />
+            android:textAppearance="@style/SettingsTheme.PreferenceTheme.Preference.Title" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:paddingEnd="@dimen/dashboard_tile_image_margin_start"
             android:text="@string/pref_fonts_add_fonts_summary"
             android:textAppearance="@style/TextAppearance.Small"
-            android:textColor="?android:attr/textColorSecondary"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:paddingEnd="@dimen/dashboard_tile_image_margin_start" />
+            android:textColor="?android:attr/textColorSecondary" />
 
     </LinearLayout>
 

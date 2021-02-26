@@ -27,6 +27,7 @@ import kotlin.system.measureTimeMillis
 // The instance variants (Any.*) are faster and also produce significantly less overhead when compiled
 
 inline val currentStackTrace get() = Throwable().stackTrace
+
 // Let's assume stack array is never empty
 inline val callingClass get() = currentStackTrace[0].className.substringAfterLast('.')
 
@@ -49,7 +50,7 @@ inline fun d(message: String, t: Throwable) = Log.d(callingClass, message, t)
 
 inline fun d(message: String) = Log.d(callingClass, message)
 
-inline fun <reified T> T.d(): T{
+inline fun <reified T> T.d(): T {
     Log.d(callingClass, Gson().toJson(this))
     return this
 }

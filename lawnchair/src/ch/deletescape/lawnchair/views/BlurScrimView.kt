@@ -42,8 +42,9 @@ import kotlin.math.roundToInt
 
 
 class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(context, attrs),
-        LawnchairPreferences.OnPreferenceChangeListener,
-        BlurWallpaperProvider.Listener, ColorEngine.OnColorChangeListener {
+                                                             LawnchairPreferences.OnPreferenceChangeListener,
+                                                             BlurWallpaperProvider.Listener,
+                                                             ColorEngine.OnColorChangeListener {
 
     private val key_radius = "pref_dockRadius"
     private val key_opacity = "pref_allAppsOpacitySB"
@@ -55,7 +56,8 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
     private val prefsToWatch =
             arrayOf(key_radius, key_opacity, key_dock_opacity, key_dock_arrow, key_search_radius,
                     key_debug_state)
-    private val colorsToWatch = arrayOf(ColorEngine.Resolvers.ALLAPPS_BACKGROUND, ColorEngine.Resolvers.DOCK_BACKGROUND)
+    private val colorsToWatch =
+            arrayOf(ColorEngine.Resolvers.ALLAPPS_BACKGROUND, ColorEngine.Resolvers.DOCK_BACKGROUND)
 
     private val blurDrawableCallback by lazy {
         object : Drawable.Callback {
@@ -104,10 +106,13 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
     private var mMidAlpha: Int by ReflectionDelegate("mMidAlpha")
     private val mMaxScrimAlpha: Int by ReflectionDelegate("mMaxScrimAlpha")
     private var mShelfColor: Int by ReflectionDelegate("mShelfColor")
-    private var mSysUINavigationMode: SysUINavigationMode.Mode by ReflectionDelegate("mSysUINavigationMode")
+    private var mSysUINavigationMode: SysUINavigationMode.Mode by ReflectionDelegate(
+            "mSysUINavigationMode")
     private var mMidProgress: Float by ReflectionDelegate("mMidProgress")
-    private var mBeforeMidProgressColorInterpolator: Interpolator by ReflectionDelegate("mBeforeMidProgressColorInterpolator")
-    private var mAfterMidProgressColorInterpolator: Interpolator by ReflectionDelegate("mAfterMidProgressColorInterpolator")
+    private var mBeforeMidProgressColorInterpolator: Interpolator by ReflectionDelegate(
+            "mBeforeMidProgressColorInterpolator")
+    private var mAfterMidProgressColorInterpolator: Interpolator by ReflectionDelegate(
+            "mAfterMidProgressColorInterpolator")
     private var mShelfTop: Float by ReflectionDelegate("mShelfTop")
 
 
@@ -253,7 +258,8 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         }
     }
 
-    override fun onDrawRoundRect(canvas: Canvas, left: Float, top: Float, right: Float, bottom: Float, rx: Float, ry: Float, paint: Paint) {
+    override fun onDrawRoundRect(canvas: Canvas, left: Float, top: Float, right: Float,
+                                 bottom: Float, rx: Float, ry: Float, paint: Paint) {
         blurDrawable?.run {
             setBlurBounds(left, top, right, bottom)
             draw(canvas)
@@ -333,7 +339,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         blurDrawable?.viewOffsetX = scroll
     }
 
-    public fun getShelfColor() : Int {
+    fun getShelfColor(): Int {
         return mShelfColor
     }
 

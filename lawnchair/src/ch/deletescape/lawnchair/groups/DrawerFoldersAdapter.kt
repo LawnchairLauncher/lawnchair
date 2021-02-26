@@ -24,7 +24,8 @@ import android.view.ViewGroup
 import ch.deletescape.lawnchair.groups.ui.AppGroupsAdapter
 import com.android.launcher3.R
 
-class DrawerFoldersAdapter(context: Context) : AppGroupsAdapter<DrawerFoldersAdapter.FolderHolder, DrawerFolders.Folder>(context) {
+class DrawerFoldersAdapter(context: Context) :
+        AppGroupsAdapter<DrawerFoldersAdapter.FolderHolder, DrawerFolders.Folder>(context) {
 
     override val groupsModel = manager.drawerFolders
     override val headerText = R.string.drawer_folders
@@ -34,7 +35,8 @@ class DrawerFoldersAdapter(context: Context) : AppGroupsAdapter<DrawerFoldersAda
     }
 
     override fun createGroupHolder(parent: ViewGroup): FolderHolder {
-        return FolderHolder(LayoutInflater.from(parent.context).inflate(R.layout.tab_item, parent, false))
+        return FolderHolder(
+                LayoutInflater.from(parent.context).inflate(R.layout.tab_item, parent, false))
     }
 
     override fun filterGroups() = groupsModel.getGroups()

@@ -20,6 +20,7 @@ package ch.deletescape.lawnchair.smartspace.accu.model.sub;
 import java.util.List;
 
 public class AccuSatelliteGSon {
+
     List<AccuImageGSon> Images;
     String Size;
 

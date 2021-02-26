@@ -44,7 +44,8 @@ open class PreferenceController(val context: Context) {
 
         fun create(context: Context, controllerClass: String?): PreferenceController? {
             if (controllerClass?.startsWith(".") == true) {
-                return create(context, "ch.deletescape.lawnchair.settings.ui.controllers$controllerClass")
+                return create(context,
+                              "ch.deletescape.lawnchair.settings.ui.controllers$controllerClass")
             }
             return try {
                 Class.forName(controllerClass!!).getConstructor(Context::class.java)

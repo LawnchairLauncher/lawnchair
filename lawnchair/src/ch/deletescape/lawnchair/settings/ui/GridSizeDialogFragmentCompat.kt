@@ -29,7 +29,8 @@ import ch.deletescape.lawnchair.colors.ColorEngine
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 
-class GridSizeDialogFragmentCompat : PreferenceDialogFragmentCompat(), ColorEngine.OnColorChangeListener {
+class GridSizeDialogFragmentCompat : PreferenceDialogFragmentCompat(),
+                                     ColorEngine.OnColorChangeListener {
 
     private val gridSizePreference get() = preference as GridSizePreference
 
@@ -61,7 +62,8 @@ class GridSizeDialogFragmentCompat : PreferenceDialogFragmentCompat(), ColorEngi
         numRowsPicker.value = numRows
         numColumnsPicker.value = numColumns
 
-        ColorEngine.getInstance(context!!).addColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
+        ColorEngine.getInstance(context!!)
+                .addColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
     }
 
     override fun onDialogClosed(positiveResult: Boolean) {
@@ -89,7 +91,8 @@ class GridSizeDialogFragmentCompat : PreferenceDialogFragmentCompat(), ColorEngi
     override fun onColorChange(resolveInfo: ColorEngine.ResolveInfo) {
         if (resolveInfo.key == ColorEngine.Resolvers.ACCENT) {
             try {
-                val mSelectionDivider = NumberPicker::class.java.getDeclaredField("mSelectionDivider")
+                val mSelectionDivider =
+                        NumberPicker::class.java.getDeclaredField("mSelectionDivider")
                 mSelectionDivider.isAccessible = true
                 val drawable = mSelectionDivider.get(numColumnsPicker) as Drawable
                 drawable.setTint(resolveInfo.color)
@@ -108,7 +111,8 @@ class GridSizeDialogFragmentCompat : PreferenceDialogFragmentCompat(), ColorEngi
 
     override fun onDetach() {
         super.onDetach()
-        ColorEngine.getInstance(context!!).removeColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
+        ColorEngine.getInstance(context!!)
+                .removeColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
     }
 
     companion object {

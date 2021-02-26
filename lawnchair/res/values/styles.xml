@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 /*
 * Copyright (C) 2008 The Android Open Source Project
 *
@@ -42,6 +41,7 @@
     </style>
 
     <style name="AppTheme.Black" parent="@style/LauncherTheme.Black" />
+
     <style name="AppTheme.Black.DarkText" parent="@style/LauncherTheme.Black.DarkText" />
 
     <!-- Theme for the widget container. Overridden on API 26. -->
@@ -88,6 +88,7 @@
         <item name="gIcon">@drawable/ic_super_g_shadow</item>
         <item name="micIcon">@drawable/ic_mic_shadow</item>
     </style>
+
     <style name="HotseatQsbTheme.Colored" parent="@style/HotseatQsbTheme">
         <item name="gIcon">@drawable/ic_super_g_color</item>
         <item name="micIcon">@drawable/ic_mic_color</item>
@@ -97,18 +98,23 @@
     <style name="ScreenshotTheme" parent="@style/AppTheme">
         <item name="android:windowIsTranslucent">true</item>
     </style>
+
     <style name="ScreenshotTheme.DarkText" parent="@style/AppTheme.DarkText">
         <item name="android:windowIsTranslucent">true</item>
     </style>
+
     <style name="ScreenshotTheme.Dark" parent="@style/AppTheme.Dark">
         <item name="android:windowIsTranslucent">true</item>
     </style>
+
     <style name="ScreenshotTheme.Dark.DarkText" parent="@style/AppTheme.Dark.DarkText">
         <item name="android:windowIsTranslucent">true</item>
     </style>
+
     <style name="ScreenshotTheme.Black" parent="@style/AppTheme.Black">
         <item name="android:windowIsTranslucent">true</item>
     </style>
+
     <style name="ScreenshotTheme.Black.DarkText" parent="@style/AppTheme.Black.DarkText">
         <item name="android:windowIsTranslucent">true</item>
     </style>
@@ -120,34 +126,46 @@
         <item name="android:colorAccent">@color/colorAccent</item>
         <item name="android:statusBarColor">@color/lollipopStatusBar</item>
     </style>
+
     <style name="SettingsTheme.ActionBar">
         <item name="android:textColorPrimary">@color/colorAccent</item>
         <item name="android:colorControlNormal">@color/colorAccent</item>
     </style>
 
     <style name="SettingsTheme.PreferenceTheme" parent="@style/PreferenceThemeOverlay.v14.Material">
-        <item name="preferenceFragmentCompatStyle">@style/SettingsTheme.PreferenceTheme.Fragment</item>
+        <item name="preferenceFragmentCompatStyle">@style/SettingsTheme.PreferenceTheme.Fragment
+        </item>
         <item name="preferenceCategoryStyle">@style/SettingsTheme.PreferenceTheme.Category</item>
         <item name="preferenceStyle">@style/SettingsTheme.PreferenceTheme.Preference</item>
-        <item name="dialogPreferenceStyle">@style/SettingsTheme.PreferenceTheme.DialogPreference</item>
-        <item name="switchPreferenceStyle">@style/SettingsTheme.PreferenceTheme.SwitchPreference</item>
-        <item name="android:textAppearanceListItem">@style/SettingsTheme.PreferenceTheme.Preference.Title</item>
+        <item name="dialogPreferenceStyle">@style/SettingsTheme.PreferenceTheme.DialogPreference
+        </item>
+        <item name="switchPreferenceStyle">@style/SettingsTheme.PreferenceTheme.SwitchPreference
+        </item>
+        <item name="android:textAppearanceListItem">
+            @style/SettingsTheme.PreferenceTheme.Preference.Title
+        </item>
     </style>
+
     <style name="SettingsTheme.PreferenceTheme.Fragment" parent="@style/PreferenceFragment.Material">
         <item name="android:layout">@layout/settings_fragment</item>
     </style>
+
     <style name="SettingsTheme.PreferenceTheme.Category" parent="@style/Preference.Category.Material">
         <item name="android:layout">@layout/settings_category_material</item>
     </style>
+
     <style name="SettingsTheme.PreferenceTheme.Preference" parent="@style/Preference.Material">
         <item name="iconSpaceReserved">false</item>
     </style>
+
     <style name="SettingsTheme.PreferenceTheme.DialogPreference" parent="@style/Preference.DialogPreference.Material">
         <item name="iconSpaceReserved">false</item>
     </style>
+
     <style name="SettingsTheme.PreferenceTheme.SwitchPreference" parent="@style/Preference.SwitchPreference.Material">
         <item name="iconSpaceReserved">false</item>
     </style>
+
     <style name="SettingsTheme.PreferenceTheme.Preference.Title" parent="@style/TextAppearance.AppCompat.Subhead">
         <item name="customFontType">preferenceTitle</item>
     </style>
@@ -210,27 +228,34 @@
         <item name="actionOverflowMenuStyle">@style/SettingsTheme.PopupMenu.Overflow</item>
         <item name="popupMenuStyle">@style/SettingsTheme.PopupMenu</item>
     </style>
+
     <style name="SettingsTheme.PopupMenu" parent="@style/Widget.AppCompat.PopupMenu">
         <item name="android:popupBackground">@drawable/mtrl_popupmenu_background</item>
         <item name="android:popupElevation">8dp</item>
     </style>
+
     <style name="SettingsTheme.PopupMenu.Overflow" parent="@style/Widget.AppCompat.PopupMenu.Overflow">
         <item name="android:popupBackground">@drawable/mtrl_popupmenu_background</item>
         <item name="android:popupElevation">8dp</item>
     </style>
+
     <style name="SettingsTheme.V2" parent="@style/SettingsTheme.Base">
         <item name="android:statusBarColor">@color/lollipopStatusBar</item>
     </style>
+
     <style name="SettingsTheme.V2.ActionBar.Title" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="customFontType">title</item>
     </style>
+
     <style name="SettingsTheme.V2.ActionBar" parent="SettingsTheme.V2">
         <item name="titleTextAppearance">@style/SettingsTheme.V2.ActionBar.Title</item>
     </style>
+
     <style name="SettingsTheme.V2.Button" parent="Widget.AppCompat.Button">
         <item name="customFontType">button</item>
         <item name="android:textAllCaps">false</item>
     </style>
+
     <style name="SettingsTheme.V2.Dialog" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:windowBackground">@drawable/dialog_material_background</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -259,9 +284,11 @@
         <item name="actionOverflowMenuStyle">@style/SettingsTheme.PopupMenu.Overflow</item>
         <item name="popupMenuStyle">@style/SettingsTheme.PopupMenu</item>
     </style>
+
     <style name="SettingsTheme.V2.Dark.ActionBar" parent="SettingsTheme.V2.Dark">
         <item name="titleTextAppearance">@style/SettingsTheme.V2.ActionBar.Title</item>
     </style>
+
     <style name="SettingsTheme.V2.Dark.Dialog" parent="Theme.AppCompat.Dialog.Alert">
         <item name="android:windowBackground">@drawable/dialog_material_background</item>
         <item name="colorAccent">@color/colorAccentDark</item>
@@ -276,6 +303,7 @@
         <item name="settingsPopupBackground">@color/settings_background_black_8dp</item>
         <item name="actionBarTheme">@style/SettingsTheme.V2.Black.ActionBar</item>
     </style>
+
     <style name="SettingsTheme.V2.Black.ActionBar" parent="SettingsTheme.V2.Black">
         <item name="titleTextAppearance">@style/SettingsTheme.V2.ActionBar.Title</item>
     </style>
@@ -372,7 +400,9 @@
     <style name="SettingsTheme.Search" />
 
     <style name="SettingsTheme.Search.Toolbar" parent="Widget.AppCompat.Light.ActionBar.Solid">
-        <item name="toolbarNavigationButtonStyle">@style/SettingsTheme.Search.Toolbar.Button.Navigation</item>
+        <item name="toolbarNavigationButtonStyle">
+            @style/SettingsTheme.Search.Toolbar.Button.Navigation
+        </item>
     </style>
 
     <style name="SettingsTheme.Search.Toolbar.Button.Navigation" parent="Widget.AppCompat.Toolbar.Button.Navigation">
@@ -380,6 +410,7 @@
     </style>
 
     <style name="TextAppearance.Small" parent="@android:style/TextAppearance.Material.Small" />
+
     <style name="TextAppearance.TileTitle" parent="@android:style/TextAppearance.Material.Subhead">
         <item name="customFontType">settingsTileTitle</item>
     </style>

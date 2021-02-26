@@ -35,7 +35,6 @@ import androidx.core.graphics.ColorUtils;
 import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.iconpack.AdaptiveIconCompat;
 import ch.deletescape.lawnchair.iconpack.LawnchairIconProvider;
-
 import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.ColorExtractor;
 import com.android.launcher3.icons.FixedScaleDrawable;
@@ -56,16 +55,13 @@ public class AdaptiveIconGenerator {
     private static final int SINGLE_COLOR_LIMIT = 5;
     // Minimal alpha to be considered opaque
     private static final int MIN_VISIBLE_ALPHA = 0xEF;
-
-    private Context context;
-    private Drawable icon;
-    private Drawable roundIcon;
-
     private final boolean extractColor;
     private final boolean treatWhite;
-
+    private final Context context;
+    private Drawable icon;
+    private final Drawable roundIcon;
     private boolean ranLoop;
-    private boolean shouldWrap;
+    private final boolean shouldWrap;
     private int backgroundColor = Color.WHITE;
     private boolean isFullBleed;
     private boolean noMixinNeeded;
@@ -81,7 +77,8 @@ public class AdaptiveIconGenerator {
 
     private AdaptiveIconCompat tmp;
 
-    public AdaptiveIconGenerator(Context context, @NonNull Drawable icon, @Nullable Drawable roundIcon) {
+    public AdaptiveIconGenerator(Context context, @NonNull Drawable icon,
+            @Nullable Drawable roundIcon) {
         this.context = context;
         this.icon = AdaptiveIconCompat.wrap(icon);
         this.roundIcon = AdaptiveIconCompat.wrapNullable(roundIcon);
@@ -226,7 +223,8 @@ public class AdaptiveIconGenerator {
             isFullBleed |= !fullBleedChecked && !isBackgroundWhite;
 
             // return early if a mix-in isnt needed
-            noMixinNeeded = !isFullBleed && !isBackgroundWhite && almostSquarish && transparentScore <= noMixinScore;
+            noMixinNeeded = !isFullBleed && !isBackgroundWhite && almostSquarish
+                    && transparentScore <= noMixinScore;
             if (isFullBleed || noMixinNeeded) {
                 backgroundColor = bestRGB;
                 onExitLoop();
@@ -300,7 +298,8 @@ public class AdaptiveIconGenerator {
                 ((ColorDrawable) mutIcon.getBackground()).setColor(backgroundColor);
                 return mutIcon;
             }
-            return new AdaptiveIconCompat(new ColorDrawable(backgroundColor), ((AdaptiveIconCompat) icon).getForeground());
+            return new AdaptiveIconCompat(new ColorDrawable(backgroundColor),
+                    ((AdaptiveIconCompat) icon).getForeground());
         }
         initTmpIfNeeded();
         ((FixedScaleDrawable) tmp.getForeground()).setDrawable(icon);

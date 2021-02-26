@@ -37,14 +37,17 @@ class SmartspacePreview(context: Context, attrs: AttributeSet?) :
 
     private val prefs = Utilities.getLawnchairPrefs(context)
     private val usePillQsb = prefs::usePillQsb
-    private val prefsToWatch = arrayOf("pref_smartspace_time",  "pref_smartspace_time_above",
-            "pref_smartspace_time_24_h", "pref_smartspace_date", "pref_use_pill_qsb")
+    private val prefsToWatch = arrayOf("pref_smartspace_time", "pref_smartspace_time_above",
+                                       "pref_smartspace_time_24_h", "pref_smartspace_date",
+                                       "pref_use_pill_qsb")
     private val needsReinflate = setOf("pref_use_pill_qsb")
     private var currentView: SmartspaceView? = null
-    private val themedContext = ContextThemeWrapper(context, ThemeOverride.Launcher().getTheme(context))
+    private val themedContext =
+            ContextThemeWrapper(context, ThemeOverride.Launcher().getTheme(context))
 
     // TODO ideally we can return a default provider value in case this code returns null
-    override val provider = CustomWidgetManager.INSTANCE.get(context).getWidgetProvider(LauncherAppWidgetInfo.CUSTOM_WIDGET_ID)!!
+    override val provider = CustomWidgetManager.INSTANCE.get(context)
+            .getWidgetProvider(LauncherAppWidgetInfo.CUSTOM_WIDGET_ID)!!
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
@@ -68,13 +71,15 @@ class SmartspacePreview(context: Context, attrs: AttributeSet?) :
     }
 
     private fun inflateCurrentView() {
-        val layout = if (usePillQsb.get()) R.layout.qsb_container_preview else R.layout.search_container_workspace
+        val layout =
+                if (usePillQsb.get()) R.layout.qsb_container_preview else R.layout.search_container_workspace
         addView(inflateView(layout))
     }
 
     private fun inflateView(layout: Int): View {
         val view = LayoutInflater.from(themedContext).inflate(layout, this, false)
-        view.layoutParams.height = resources.getDimensionPixelSize(R.dimen.smartspace_preview_height)
+        view.layoutParams.height =
+                resources.getDimensionPixelSize(R.dimen.smartspace_preview_height)
         currentView = view as? SmartspaceView
         return view
     }

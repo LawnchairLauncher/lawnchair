@@ -78,7 +78,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
         }
     }
 
-    override fun loadPack() { }
+    override fun loadPack() {}
 
     override fun getEntryForComponent(key: ComponentKey) = appMap[key]
 
@@ -177,8 +177,10 @@ class DefaultPack(context: Context) : IconPack(context, "") {
         val elementTags = HashMap<String, String>()
 
         try {
-            val resourcesForApplication = context.packageManager.getResourcesForApplication(component.packageName)
-            val info = context.packageManager.getApplicationInfo(component.packageName, PackageManager.GET_SHARED_LIBRARY_FILES or PackageManager.GET_META_DATA)
+            val resourcesForApplication =
+                    context.packageManager.getResourcesForApplication(component.packageName)
+            val info = context.packageManager.getApplicationInfo(component.packageName,
+                                                                 PackageManager.GET_SHARED_LIBRARY_FILES or PackageManager.GET_META_DATA)
 
             val parseXml = try {
                 // For apps which are installed as Split APKs the asset instance we can get via PM won't hold the right Manifest for us.
@@ -199,8 +201,8 @@ class DefaultPack(context: Context) : IconPack(context, "") {
                         if (name == "application") {
                             appIcon = elementTags["roundIcon"]
                         } else if ((name == "activity" || name == "activity-alias") &&
-                                elementTags.containsKey("name") &&
-                                elementTags["name"] == component.className) {
+                                   elementTags.containsKey("name") &&
+                                   elementTags["name"] == component.className) {
                             appIcon = elementTags["roundIcon"]
                             break
                         }
@@ -211,7 +213,8 @@ class DefaultPack(context: Context) : IconPack(context, "") {
             parseXml.close()
 
             if (appIcon != null) {
-                val resId = Utilities.parseResourceIdentifier(resourcesForApplication, appIcon, component.packageName)
+                val resId = Utilities.parseResourceIdentifier(resourcesForApplication, appIcon,
+                                                              component.packageName)
                 return resourcesForApplication.getDrawableForDensity(resId, iconDpi)
             }
         } catch (ex: PackageManager.NameNotFoundException) {
@@ -227,13 +230,16 @@ class DefaultPack(context: Context) : IconPack(context, "") {
         return null
     }
 
-    private fun getLegacyIcon(component: ComponentName, iconDpi: Int, loadShapeless: Boolean): Drawable? {
+    private fun getLegacyIcon(component: ComponentName, iconDpi: Int,
+                              loadShapeless: Boolean): Drawable? {
         var appIcon: String? = null
         val elementTags = HashMap<String, String>()
 
         try {
-            val resourcesForApplication = context.packageManager.getResourcesForApplication(component.packageName)
-            val info = context.packageManager.getApplicationInfo(component.packageName, PackageManager.GET_SHARED_LIBRARY_FILES or PackageManager.GET_META_DATA)
+            val resourcesForApplication =
+                    context.packageManager.getResourcesForApplication(component.packageName)
+            val info = context.packageManager.getApplicationInfo(component.packageName,
+                                                                 PackageManager.GET_SHARED_LIBRARY_FILES or PackageManager.GET_META_DATA)
 
             val parseXml = try {
                 // For apps which are installed as Split APKs the asset instance we can get via PM won't hold the right Manifest for us.
@@ -254,8 +260,8 @@ class DefaultPack(context: Context) : IconPack(context, "") {
                         if (name == "application") {
                             appIcon = elementTags["icon"]
                         } else if ((name == "activity" || name == "activity-alias") &&
-                                elementTags.containsKey("name") &&
-                                elementTags["name"] == component.className) {
+                                   elementTags.containsKey("name") &&
+                                   elementTags["name"] == component.className) {
                             appIcon = elementTags["icon"]
                             break
                         }
@@ -266,9 +272,12 @@ class DefaultPack(context: Context) : IconPack(context, "") {
             parseXml.close()
 
             if (appIcon != null) {
-                val resId = Utilities.parseResourceIdentifier(resourcesForApplication, appIcon, component.packageName)
+                val resId = Utilities.parseResourceIdentifier(resourcesForApplication, appIcon,
+                                                              component.packageName)
                 if (loadShapeless) {
-                    return resourcesForApplication.overrideSdk(Build.VERSION_CODES.M) { getDrawable(resId) }
+                    return resourcesForApplication.overrideSdk(Build.VERSION_CODES.M) {
+                        getDrawable(resId)
+                    }
                 }
                 return resourcesForApplication.getDrawableForDensity(resId, iconDpi)
             }
@@ -295,6 +304,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
             return AdaptiveIconCompat.wrap(app.getIcon(density)!!)
         }
 
-        override fun toCustomEntry() = IconPackManager.CustomIconEntry("", ComponentKey(app.componentName, app.user).toString())
+        override fun toCustomEntry() = IconPackManager.CustomIconEntry("", ComponentKey(
+                app.componentName, app.user).toString())
     }
 }

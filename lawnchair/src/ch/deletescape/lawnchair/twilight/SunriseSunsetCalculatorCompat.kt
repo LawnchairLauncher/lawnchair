@@ -17,10 +17,9 @@
 
 package ch.deletescape.lawnchair.twilight
 
-import android.location.Location
 import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator
-import com.luckycatlabs.sunrisesunset.dto.Location as SSLocation
 import java.util.*
+import com.luckycatlabs.sunrisesunset.dto.Location as SSLocation
 
 class SunriseSunsetCalculatorCompat(latitude: Double?, longitude: Double?, timeZone: TimeZone) {
 

@@ -34,7 +34,7 @@ class FadingImageView(context: Context, attrs: AttributeSet?) : AppCompatImageVi
             field = value
             if (value != null) {
                 setImageDrawable(TransitionDrawable(arrayOf(transparentDrawable, value))
-                        .apply { startTransition(125) })
+                                         .apply { startTransition(125) })
             } else {
                 setImageDrawable(null)
             }

@@ -16,6 +16,7 @@
  */
 
 package ch.deletescape.lawnchair.iconpack
+
 import android.app.Activity
 import android.os.Bundle
 import android.widget.Toast
@@ -30,7 +31,7 @@ class ApplyIconPackActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ThemeOverride(themeSet, this).applyTheme(this)
-        intent.getStringExtra("packageName")?.let{
+        intent.getStringExtra("packageName")?.let {
             prefs.iconPacks.remove(it)
             prefs.iconPacks.add(0, it)
         }

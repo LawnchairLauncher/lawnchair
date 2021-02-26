@@ -29,7 +29,8 @@ import com.android.launcher3.InsettableFrameLayout
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.TouchController
 
-class SettingsDragLayer(context: Context, attrs: AttributeSet?) : InsettableFrameLayout(context, attrs) {
+class SettingsDragLayer(context: Context, attrs: AttributeSet?) :
+        InsettableFrameLayout(context, attrs) {
 
     private val mTmpXY = FloatArray(2)
     private val mHitRect = Rect()
@@ -88,8 +89,8 @@ class SettingsDragLayer(context: Context, attrs: AttributeSet?) : InsettableFram
         val scale = getDescendantCoordRelativeToSelf(descendant, mTmpXY)
 
         r.set(mTmpXY[0].toInt(), mTmpXY[1].toInt(),
-                (mTmpXY[0] + scale * descendant.measuredWidth).toInt(),
-                (mTmpXY[1] + scale * descendant.measuredHeight).toInt())
+              (mTmpXY[0] + scale * descendant.measuredWidth).toInt(),
+              (mTmpXY[1] + scale * descendant.measuredHeight).toInt())
         return scale
     }
 
@@ -100,6 +101,6 @@ class SettingsDragLayer(context: Context, attrs: AttributeSet?) : InsettableFram
     private fun getDescendantCoordRelativeToSelf(descendant: View, coord: FloatArray,
                                                  includeRootScroll: Boolean): Float {
         return Utilities.getDescendantCoordRelativeToAncestor(descendant, this,
-                coord, includeRootScroll)
+                                                              coord, includeRootScroll)
     }
 }

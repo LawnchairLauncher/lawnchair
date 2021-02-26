@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~     This file is part of Lawnchair Launcher.
   ~
   ~     Lawnchair Launcher is free software: you can redistribute it and/or modify
@@ -16,17 +15,16 @@
   ~     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<ch.deletescape.lawnchair.views.PreferenceNestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ch.deletescape.lawnchair.views.PreferenceNestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <ch.deletescape.lawnchair.views.InsettableLinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:clipChildren="false"
-        android:clipToPadding="false">
+        android:clipToPadding="false"
+        android:orientation="vertical">
 
         <include
             android:id="@+id/enableToggle"
@@ -34,10 +32,10 @@
 
         <include
             android:id="@+id/styleHeader"
+            layout="@layout/settings_category_v2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            layout="@layout/settings_category_v2" />
+            android:layout_marginBottom="16dp" />
 
         <include
             android:id="@+id/folderTypeItem"

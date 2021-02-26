@@ -20,8 +20,6 @@ package ch.deletescape.lawnchair.settings.ui.controllers
 import android.content.Context
 import androidx.annotation.Keep
 import ch.deletescape.lawnchair.settings.ui.PreferenceController
-import com.android.launcher3.R
-import com.android.quickstep.TouchInteractionService
 
 @Keep
 class AppSuggestionsController(context: Context) : PreferenceController(context)

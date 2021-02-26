@@ -7,29 +7,29 @@
     android:background="?selectableItemBackground"
     android:gravity="center_vertical"
     android:minHeight="?android:attr/listPreferredItemHeightSmall"
+    android:orientation="horizontal"
     android:paddingTop="8dp"
-    android:paddingBottom="8dp"
-    android:orientation="horizontal">
+    android:paddingBottom="8dp">
 
     <TextView
         android:id="@+id/title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_gravity="center_vertical"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
         android:ellipsize="end"
         android:maxLines="1"
         android:textAlignment="viewStart"
         android:textColor="?android:attr/textColorPrimary"
         android:textSize="18sp"
+        app:customFontType="preferenceTitle"
         app:layout_constraintBottom_toTopOf="@+id/summary"
         app:layout_constraintEnd_toStartOf="@+id/delete"
         app:layout_constraintStart_toEndOf="@+id/drag_handle"
         app:layout_constraintTop_toTopOf="parent"
-        app:customFontType="preferenceTitle"
-        tools:text="Tab 1"/>
+        tools:text="Tab 1" />
 
     <ImageView
         android:id="@+id/drag_handle"
@@ -44,7 +44,7 @@
         android:src="@drawable/ic_drag_handle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
     <TextView
         android:id="@+id/summary"
         android:layout_width="0dp"
@@ -55,7 +55,7 @@
         app:layout_constraintStart_toStartOf="@+id/title"
         app:layout_constraintTop_toBottomOf="@+id/title"
         tools:text="0 apps"
-        tools:visibility="visible"/>
+        tools:visibility="visible" />
     <ImageView
         android:id="@+id/edit"
         android:layout_width="wrap_content"
@@ -66,7 +66,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_edit_no_shadow"/>
+        app:srcCompat="@drawable/ic_edit_no_shadow" />
     <ImageView
         android:id="@+id/delete"
         android:layout_width="wrap_content"
@@ -77,5 +77,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/edit"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_uninstall_no_shadow"/>
+        app:srcCompat="@drawable/ic_uninstall_no_shadow" />
 </androidx.constraintlayout.widget.ConstraintLayout>

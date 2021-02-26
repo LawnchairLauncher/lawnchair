@@ -18,6 +18,7 @@
 package ch.deletescape.lawnchair.smartspace.accu.model.sub;
 
 public class AccuDirectionGSon {
+
     int Degrees;
     String English;
     String Localized;

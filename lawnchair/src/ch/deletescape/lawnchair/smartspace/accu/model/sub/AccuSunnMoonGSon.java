@@ -18,6 +18,7 @@
 package ch.deletescape.lawnchair.smartspace.accu.model.sub;
 
 public class AccuSunnMoonGSon {
+
     String Age;
     String EpochRise;
     String EpochSet;

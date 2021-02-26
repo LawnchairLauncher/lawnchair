@@ -47,7 +47,8 @@ import com.android.launcher3.util.TouchController
  * Base class for custom popups
  */
 class SettingsBottomSheet(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs),
-        Insettable, TouchController, SingleAxisSwipeDetector.Listener {
+                                                                   Insettable, TouchController,
+                                                                   SingleAxisSwipeDetector.Listener {
 
     private val activity = SettingsBaseActivity.getActivity(context)
 
@@ -64,7 +65,8 @@ class SettingsBottomSheet(context: Context, attrs: AttributeSet) : LinearLayout(
     private var isOpen = false
     private val openCloseAnimator: ObjectAnimator
     private var scrollInterpolator = Interpolators.SCROLL_CUBIC
-    private val mSwipeDetector = SingleAxisSwipeDetector(context, this, SingleAxisSwipeDetector.VERTICAL)
+    private val mSwipeDetector =
+            SingleAxisSwipeDetector(context, this, SingleAxisSwipeDetector.VERTICAL)
     private val content = this
 
     init {
@@ -80,7 +82,8 @@ class SettingsBottomSheet(context: Context, attrs: AttributeSet) : LinearLayout(
     }
 
     private fun createScrim(): ColorScrim {
-        val color = ColorUtils.setAlphaComponent(context.getColorAttr(R.attr.bottomSheetScrimColor), 153)
+        val color = ColorUtils.setAlphaComponent(context.getColorAttr(R.attr.bottomSheetScrimColor),
+                                                 153)
         return ColorScrim(this, color, Interpolators.LINEAR).apply { attach() }
     }
 
@@ -110,7 +113,8 @@ class SettingsBottomSheet(context: Context, attrs: AttributeSet) : LinearLayout(
         mSwipeDetector.setDetectableScrollConditions(
                 directionsToDetectScroll, false)
         mSwipeDetector.onTouchEvent(ev)
-        return mSwipeDetector.isDraggingOrSettling || !activity.dragLayer.isEventOverView(content, ev)
+        return mSwipeDetector.isDraggingOrSettling || !activity.dragLayer.isEventOverView(content,
+                                                                                          ev)
     }
 
     override fun onControllerTouchEvent(ev: MotionEvent): Boolean {
@@ -219,22 +223,23 @@ class SettingsBottomSheet(context: Context, attrs: AttributeSet) : LinearLayout(
         }
 
         setPadding(paddingLeft + leftInset, paddingTop,
-                paddingRight + rightInset, paddingBottom + bottomInset)
+                   paddingRight + rightInset, paddingBottom + bottomInset)
     }
 
     companion object {
 
         private var TRANSLATION_SHIFT: Property<SettingsBottomSheet, Float> =
-                object : Property<SettingsBottomSheet, Float>(Float::class.java, "translationShift") {
+                object : Property<SettingsBottomSheet, Float>(Float::class.java,
+                                                              "translationShift") {
 
-            override fun get(view: SettingsBottomSheet): Float {
-                return view.translationShift
-            }
+                    override fun get(view: SettingsBottomSheet): Float {
+                        return view.translationShift
+                    }
 
-            override fun set(view: SettingsBottomSheet, value: Float) {
-                view.translationShift = value
-            }
-        }
+                    override fun set(view: SettingsBottomSheet, value: Float) {
+                        view.translationShift = value
+                    }
+                }
         private const val TRANSLATION_SHIFT_CLOSED = 1f
         private const val TRANSLATION_SHIFT_OPENED = 0f
 
@@ -243,7 +248,8 @@ class SettingsBottomSheet(context: Context, attrs: AttributeSet) : LinearLayout(
         fun inflate(context: Context): SettingsBottomSheet {
             val activity = SettingsBaseActivity.getActivity(context)
             return LayoutInflater.from(context)
-                    .inflate(R.layout.settings_bottom_sheet, activity.dragLayer, false) as SettingsBottomSheet
+                    .inflate(R.layout.settings_bottom_sheet, activity.dragLayer,
+                             false) as SettingsBottomSheet
         }
     }
 

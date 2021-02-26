@@ -29,10 +29,12 @@ import java.io.InputStream
 /**
  * A ruleset for an app category
  */
-class Flowerpot(private val context: Context, val name: String, private val loader: Flowerpot.() -> Unit) {
+class Flowerpot(private val context: Context, val name: String,
+                private val loader: Flowerpot.() -> Unit) {
 
     val displayName by lazy {
-        val id = context.resources.getIdentifier("category_${name.toLowerCase()}", "string", context.packageName)
+        val id = context.resources.getIdentifier("category_${name.toLowerCase()}", "string",
+                                                 context.packageName)
         if (id != 0)
             context.getString(id)
         else
@@ -76,12 +78,14 @@ class Flowerpot(private val context: Context, val name: String, private val load
          * The current Flowerpot format version
          */
         const val VERSION_CURRENT = Version.AZALEA
+
         /**
          * List of all currently supported versions
          */
         val SUPPORTED_VERSIONS = arrayOf(
                 VERSION_CURRENT
-        )
+                                        )
+
         /**
          * Path relative to assets/ to the directory containing the shipped flowerpot files
          */
@@ -140,7 +144,8 @@ class Flowerpot(private val context: Context, val name: String, private val load
 
         fun getAllPots() = pots.values
 
-        companion object: SingletonHolder<Manager, Context>(ensureOnMainThread(useApplicationContext(::Manager))) {
+        companion object : SingletonHolder<Manager, Context>(
+                ensureOnMainThread(useApplicationContext(::Manager))) {
 
             @JvmStatic
             override fun getInstance(arg: Context): Manager {

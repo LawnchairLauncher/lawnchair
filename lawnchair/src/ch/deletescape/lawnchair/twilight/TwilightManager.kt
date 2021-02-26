@@ -50,7 +50,8 @@ class TwilightManager(private val context: Context) : Handler.Callback, Location
     private val handler = makeBasicHandler(callback = this)
 
     private val alarmManager = ContextCompat.getSystemService(context, AlarmManager::class.java)!!
-    private val locationManager = ContextCompat.getSystemService(context, LocationManager::class.java)!!
+    private val locationManager =
+            ContextCompat.getSystemService(context, LocationManager::class.java)!!
 
     private val listeners = ArrayMap<TwilightListener, Handler>()
     private var hasListeners = false
@@ -58,7 +59,8 @@ class TwilightManager(private val context: Context) : Handler.Callback, Location
     private var timeChangedReceiver: BroadcastReceiver? = null
     private var lastLocation: Location? = null
 
-    var lastTwilightState: TwilightState? = calculateTwilightState(null, null, System.currentTimeMillis())
+    var lastTwilightState: TwilightState? =
+            calculateTwilightState(null, null, System.currentTimeMillis())
         get() = synchronized(listeners) { field }
         private set(value) {
             synchronized(listeners) {
@@ -136,7 +138,8 @@ class TwilightManager(private val context: Context) : Handler.Callback, Location
 
         val locationProvider = locationManager.getBestProvider(Criteria(), true)
         if (locationProvider != null) {
-            locationManager.requestLocationUpdates(locationProvider, 0, 0f, this, Looper.getMainLooper())
+            locationManager.requestLocationUpdates(locationProvider, 0, 0f, this,
+                                                   Looper.getMainLooper())
 
             if (locationManager.getLastKnownLocation(locationProvider) == null) {
                 locationManager.requestSingleUpdate(locationProvider, this, Looper.getMainLooper())
@@ -182,16 +185,18 @@ class TwilightManager(private val context: Context) : Handler.Callback, Location
         val currentTimeMillis = System.currentTimeMillis()
         val location = lastLocation ?: locationManager.getBestProvider(Criteria(), true)
                 ?.let { locationManager.getLastKnownLocation(it) }
-        val state = calculateTwilightState(location?.latitude, location?.longitude, currentTimeMillis)
+        val state =
+                calculateTwilightState(location?.latitude, location?.longitude, currentTimeMillis)
         Log.d(TAG, "updateTwilightState: $state")
 
         lastTwilightState = state
 
         // Schedule an alarm to update the state at the next sunrise or sunset.
         if (state != null) {
-            val triggerAtMillis = if (state.isNight) state.sunriseTimeMillis else state.sunsetTimeMillis
+            val triggerAtMillis =
+                    if (state.isNight) state.sunriseTimeMillis else state.sunsetTimeMillis
             alarmManager.setExact(AlarmManager.RTC, triggerAtMillis,
-                    PendingIntent.getBroadcast(context, 0, updateIntent, 0))
+                                  PendingIntent.getBroadcast(context, 0, updateIntent, 0))
         }
     }
 
@@ -201,9 +206,9 @@ class TwilightManager(private val context: Context) : Handler.Callback, Location
         // user actually being at these coordinates is quite low.
         if (!(location.longitude == 0.0 && location.latitude == 0.0)) {
             Log.d(TAG, "onLocationChanged:"
-                    + " provider=" + location.provider
-                    + " accuracy=" + location.accuracy
-                    + " time=" + location.time)
+                       + " provider=" + location.provider
+                       + " accuracy=" + location.accuracy
+                       + " time=" + location.time)
             lastLocation = location
             updateTwilightState()
         }
@@ -226,12 +231,14 @@ class TwilightManager(private val context: Context) : Handler.Callback, Location
 
         private const val TAG = "TwilightManager"
 
-        private const val ACTION_UPDATE_TWILIGHT = "${BuildConfig.APPLICATION_ID}.action.UPDATE_TWILIGHT"
+        private const val ACTION_UPDATE_TWILIGHT =
+                "${BuildConfig.APPLICATION_ID}.action.UPDATE_TWILIGHT"
 
         private const val MSG_START_LISTENING = 1
         private const val MSG_STOP_LISTENING = 2
 
-        fun calculateTwilightState(latitude: Double?, longitude: Double?, timeMillis: Long): TwilightState? {
+        fun calculateTwilightState(latitude: Double?, longitude: Double?,
+                                   timeMillis: Long): TwilightState? {
             val c = Calendar.getInstance().apply { timeInMillis = timeMillis }
             val calc = SunriseSunsetCalculatorCompat(latitude, longitude, c.timeZone)
             val sunrise = calc.getOfficialSunriseCalendarForDate(c)

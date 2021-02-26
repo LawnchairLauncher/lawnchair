@@ -28,7 +28,8 @@ import org.json.JSONObject
 import java.lang.reflect.InvocationTargetException
 
 @Keep
-class NotificationsOpenGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
+class NotificationsOpenGestureHandler(context: Context, config: JSONObject?) :
+        GestureHandler(context, config) {
 
     override val displayName: String = context.getString(R.string.action_open_notifications)
 
@@ -47,7 +48,8 @@ class NotificationsOpenGestureHandler(context: Context, config: JSONObject?) : G
 }
 
 @Keep
-class NotificationsCloseGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
+class NotificationsCloseGestureHandler(context: Context, config: JSONObject?) :
+        GestureHandler(context, config) {
 
     override val displayName: String = context.getString(R.string.action_close_notifications)
 

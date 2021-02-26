@@ -20,7 +20,6 @@ package ch.deletescape.lawnchair.settings.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
@@ -28,14 +27,12 @@ import androidx.annotation.Keep
 import androidx.preference.Preference
 import ch.deletescape.lawnchair.iconpack.DefaultPack
 import ch.deletescape.lawnchair.iconpack.IconPackManager
-import ch.deletescape.lawnchair.mainHandler
 import ch.deletescape.lawnchair.preferences.IconPackFragment
-import ch.deletescape.lawnchair.runOnMainThread
 import ch.deletescape.lawnchair.settings.ui.search.SearchIndex
 import com.android.launcher3.R
-import java.lang.IllegalStateException
 
-class IconPackPreference(context: Context, attrs: AttributeSet? = null) : Preference(context, attrs) {
+class IconPackPreference(context: Context, attrs: AttributeSet? = null) :
+        Preference(context, attrs) {
 
     private val ipm = IconPackManager.getInstance(context)
     private val packList = ipm.packList
@@ -57,7 +54,7 @@ class IconPackPreference(context: Context, attrs: AttributeSet? = null) : Prefer
     override fun onDetached() {
         super.onDetached()
 
-       ipm.removeListener(onChangeListener)
+        ipm.removeListener(onChangeListener)
     }
 
     private fun updatePreview() {
@@ -70,7 +67,7 @@ class IconPackPreference(context: Context, attrs: AttributeSet? = null) : Prefer
                         .joinToString(", ") { it.displayName }
             }
             icon = packList.currentPack().displayIcon
-        } catch(ignored: IllegalStateException) {
+        } catch (ignored: IllegalStateException) {
             //TODO: Fix updating pref when scrolled down
         }
     }
@@ -80,16 +77,22 @@ class IconPackPreference(context: Context, attrs: AttributeSet? = null) : Prefer
         override fun createSliceView(): View {
             return (View.inflate(context, R.layout.preview_icon, null) as ImageView).apply {
                 IconPackManager.getInstance(context).addListener {
-                    setImageDrawable(IconPackManager.getInstance(context).packList.currentPack().displayIcon)
+                    setImageDrawable(
+                            IconPackManager.getInstance(context).packList.currentPack().displayIcon)
                 }
                 setOnClickListener {
                     context.startActivity(Intent()
-                            .setClass(context, SettingsActivity::class.java)
-                            .putExtra(SettingsActivity.EXTRA_FRAGMENT, IconPackFragment::class.java.name)
-                            .putExtra(SettingsActivity.EXTRA_FRAGMENT_ARGS, Bundle().apply {
-                                putString(SettingsActivity.SubSettingsFragment.TITLE, context.getString(R.string.icon_pack))
-                            })
-                    )
+                                                  .setClass(context, SettingsActivity::class.java)
+                                                  .putExtra(SettingsActivity.EXTRA_FRAGMENT,
+                                                            IconPackFragment::class.java.name)
+                                                  .putExtra(SettingsActivity.EXTRA_FRAGMENT_ARGS,
+                                                            Bundle().apply {
+                                                                putString(
+                                                                        SettingsActivity.SubSettingsFragment.TITLE,
+                                                                        context.getString(
+                                                                                R.string.icon_pack))
+                                                            })
+                                         )
                 }
             }
         }

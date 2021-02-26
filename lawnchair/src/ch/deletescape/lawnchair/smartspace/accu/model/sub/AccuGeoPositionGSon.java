@@ -18,6 +18,7 @@
 package ch.deletescape.lawnchair.smartspace.accu.model.sub;
 
 public class AccuGeoPositionGSon {
+
     AccuUnitGSon Elevation;
     String Latitude;
     String Longitude;

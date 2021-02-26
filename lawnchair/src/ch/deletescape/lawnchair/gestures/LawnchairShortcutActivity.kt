@@ -71,7 +71,8 @@ class LawnchairShortcutActivity : SettingsBaseActivity() {
         }
 
         val icon = if (selectedHandler?.icon != null)
-            launcherIcons.createScaledBitmapWithoutShadow(selectedHandler?.icon, Build.VERSION.SDK_INT)
+            launcherIcons.createScaledBitmapWithoutShadow(selectedHandler?.icon,
+                                                          Build.VERSION.SDK_INT)
         else null
         val intent = Intent().apply {
             putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent)

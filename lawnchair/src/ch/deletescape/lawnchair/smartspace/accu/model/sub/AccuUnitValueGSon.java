@@ -18,6 +18,7 @@
 package ch.deletescape.lawnchair.smartspace.accu.model.sub;
 
 public class AccuUnitValueGSon {
+
     String Unit;
     String UnitType;
     String Value;

@@ -27,7 +27,8 @@ import com.android.launcher3.anim.PendingAnimation
 import com.android.launcher3.statemanager.StateManager
 import com.android.launcher3.states.StateAnimationConfig
 
-class GestureHandlerInitListener(private val handler: GestureHandler) : StateManager.StateHandler<LauncherState> {
+class GestureHandlerInitListener(private val handler: GestureHandler) :
+        StateManager.StateHandler<LauncherState> {
 
     fun init(launcher: Launcher, alreadyOnHome: Boolean): Boolean {
         handler.onGestureTrigger((launcher as LawnchairLauncher).gestureController)
@@ -38,7 +39,8 @@ class GestureHandlerInitListener(private val handler: GestureHandler) : StateMan
         TODO("Not yet implemented")
     }
 
-    override fun setStateWithAnimation(toState: LauncherState?, config: StateAnimationConfig?, animation: PendingAnimation?) {
+    override fun setStateWithAnimation(toState: LauncherState?, config: StateAnimationConfig?,
+                                       animation: PendingAnimation?) {
         TODO("Not yet implemented")
     }
 

@@ -21,7 +21,8 @@ package ch.deletescape.lawnchair.adaptive
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.*
+import android.graphics.Path
+import android.graphics.Region
 import android.graphics.drawable.AdaptiveIconDrawable
 import android.text.TextUtils
 import androidx.annotation.Keep
@@ -32,7 +33,6 @@ import ch.deletescape.lawnchair.util.LawnchairSingletonHolder
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.Utilities
 import com.android.launcher3.icons.GraphicsUtils
-import java.lang.RuntimeException
 
 class IconShapeManager(private val context: Context) {
 
@@ -106,7 +106,7 @@ class IconShapeManager(private val context: Context) {
                 IconShape.Squircle,
                 IconShape.Sammy,
                 IconShape.Teardrop,
-                IconShape.Cylinder).minBy {
+                IconShape.Cylinder).minByOrNull {
             shapePath.reset()
             it.addShape(shapePath, 0f, 0f, size / 2f)
             shapeR.setPath(shapePath, clip)
@@ -127,7 +127,8 @@ class IconShapeManager(private val context: Context) {
 
         @Keep
         @JvmStatic
-        @Suppress("unused") /** Used in AdaptiveIconCompat to get the mask path **/
+        @Suppress("unused")
+                /** Used in AdaptiveIconCompat to get the mask path **/
         fun getAdaptiveIconMaskPath() = dangerousGetInstance()!!.iconShape.getMaskPath()
     }
 }

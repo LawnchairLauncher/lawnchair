@@ -4,17 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="?android:attr/listPreferredItemHeightSmall"
     android:background="?selectableItemBackground"
     android:gravity="center_vertical"
+    android:minHeight="?android:attr/listPreferredItemHeightSmall"
     android:orientation="horizontal">
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="@dimen/dialog_horizontal_padding"
+        android:layout_weight="1"
         android:orientation="vertical"
         android:paddingEnd="16dp">
 
@@ -45,14 +45,14 @@
         android:id="@+id/drag_handle"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:paddingStart="?android:attr/listPreferredItemPaddingEnd"
-        android:paddingEnd="21dp"
-        android:src="@drawable/ic_drag_handle"
         android:background="@android:color/transparent"
         android:clickable="false"
         android:duplicateParentState="true"
         android:focusable="false"
         android:gravity="center_vertical|end"
+        android:paddingStart="?android:attr/listPreferredItemPaddingEnd"
+        android:paddingEnd="21dp"
+        android:src="@drawable/ic_drag_handle"
         android:visibility="gone"
-        tools:visibility="visible"/>
+        tools:visibility="visible" />
 </LinearLayout>

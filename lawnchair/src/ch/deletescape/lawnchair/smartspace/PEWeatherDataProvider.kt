@@ -18,14 +18,13 @@
 package ch.deletescape.lawnchair.smartspace
 
 import android.content.Context
-import android.net.Uri
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.net.Uri
 import androidx.annotation.Keep
 import androidx.core.content.ContextCompat
 import ch.deletescape.lawnchair.util.Temperature
 import com.android.launcher3.Utilities
-import java.lang.RuntimeException
 
 @Keep
 class PEWeatherDataProvider(controller: LawnchairSmartspaceController) :
@@ -39,25 +38,27 @@ class PEWeatherDataProvider(controller: LawnchairSmartspaceController) :
         }
     }
 
-    override fun queryWeatherData() : LawnchairSmartspaceController.WeatherData? {
-        contentResolver.query(weatherUri, PROJECTION_DEFAULT_WEATHER, null, null, null)?.use { cursor ->
-            val count = cursor.count
-            if (count > 0) {
-                cursor.moveToPosition(0)
-                val status = cursor.getInt(0)
-                if (status == 0) {
-                    val conditions = cursor.getString(1)
-                    val temperature = cursor.getInt(2)
-                    return LawnchairSmartspaceController.WeatherData(getConditionIcon(conditions),
-                            Temperature(temperature, Temperature.Unit.Celsius), "")
+    override fun queryWeatherData(): LawnchairSmartspaceController.WeatherData? {
+        contentResolver.query(weatherUri, PROJECTION_DEFAULT_WEATHER, null, null, null)
+                ?.use { cursor ->
+                    val count = cursor.count
+                    if (count > 0) {
+                        cursor.moveToPosition(0)
+                        val status = cursor.getInt(0)
+                        if (status == 0) {
+                            val conditions = cursor.getString(1)
+                            val temperature = cursor.getInt(2)
+                            return LawnchairSmartspaceController.WeatherData(
+                                    getConditionIcon(conditions),
+                                    Temperature(temperature, Temperature.Unit.Celsius), "")
+                        }
+                    }
                 }
-            }
-        }
         return null
     }
 
     private fun getConditionIcon(condition: String): Bitmap {
-        val resName = when(condition) {
+        val resName = when (condition) {
             "partly-cloudy" -> "weather_partly_cloudy"
             "partly-cloudy-night" -> "weather_partly_cloudy_night"
             "mostly-cloudy" -> "weather_mostly_cloudy"
@@ -94,11 +95,15 @@ class PEWeatherDataProvider(controller: LawnchairSmartspaceController) :
         private const val conditionsColumn = "conditions"
         private const val metricTemperatureColumn = "temperatureMetric"
         private const val imperialTemperatureColumn = "temperatureImperial"
-        private val PROJECTION_DEFAULT_WEATHER = arrayOf(statusColumn, conditionsColumn, metricTemperatureColumn, imperialTemperatureColumn)
+        private val PROJECTION_DEFAULT_WEATHER =
+                arrayOf(statusColumn, conditionsColumn, metricTemperatureColumn,
+                        imperialTemperatureColumn)
 
         fun isAvailable(context: Context): Boolean {
-            val providerInfo = context.packageManager.resolveContentProvider(authority, 0) ?: return false
-            return ContextCompat.checkSelfPermission(context, providerInfo.readPermission) == PackageManager.PERMISSION_GRANTED
+            val providerInfo =
+                    context.packageManager.resolveContentProvider(authority, 0) ?: return false
+            return ContextCompat.checkSelfPermission(context,
+                                                     providerInfo.readPermission) == PackageManager.PERMISSION_GRANTED
         }
     }
 }

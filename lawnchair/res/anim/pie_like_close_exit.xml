@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~     This file is part of Lawnchair Launcher.
   ~
   ~     Lawnchair Launcher is free software: you can redistribute it and/or modify
@@ -18,12 +17,13 @@
 
 <set xmlns:android="http://schemas.android.com/apk/res/android">
     <alpha
-        android:fromAlpha="1.0" android:toAlpha="0.0"
+        android:duration="125"
+        android:fromAlpha="1.0"
         android:startOffset="25"
-        android:duration="125" />
+        android:toAlpha="0.0" />
     <translate
+        android:duration="250"
         android:fromYDelta="0%"
-        android:toYDelta="23%"
         android:interpolator="@interpolator/decelerate_1_7"
-        android:duration="250" />
+        android:toYDelta="23%" />
 </set>

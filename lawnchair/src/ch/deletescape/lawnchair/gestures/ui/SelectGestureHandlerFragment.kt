@@ -48,7 +48,9 @@ class SelectGestureHandlerFragment : PreferenceDialogFragmentCompat() {
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.list)
         recyclerView.adapter =
-                currentClass?.let { HandlerListAdapter(activity as Context, isSwipeUp, it, ::onSelectHandler) }
+                currentClass?.let {
+                    HandlerListAdapter(activity as Context, isSwipeUp, it, ::onSelectHandler)
+                }
         recyclerView.layoutManager = LinearLayoutManager(activity)
     }
 
@@ -70,7 +72,8 @@ class SelectGestureHandlerFragment : PreferenceDialogFragmentCompat() {
     }
 
     private fun saveChanges() {
-        Utilities.getLawnchairPrefs(activity).sharedPrefs.edit().putString(key, selectedHandler.toString()).apply()
+        Utilities.getLawnchairPrefs(activity).sharedPrefs.edit()
+                .putString(key, selectedHandler.toString()).apply()
         dismiss()
     }
 

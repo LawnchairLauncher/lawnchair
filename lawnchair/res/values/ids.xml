@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~     This file is part of Lawnchair Launcher.
   ~
   ~     Lawnchair Launcher is free software: you can redistribute it and/or modify
@@ -19,10 +18,10 @@
 <resources>
     <item name="action_dismiss_suggestion" type="id" />
     <item name="dismiss_drop_target_label" type="id" />
-    <item name="preference_highlighted" type="id"/>
-    <item name="font_switcher" type="id"/>
-    <item name="view_scrim" type="id"/>
+    <item name="preference_highlighted" type="id" />
+    <item name="font_switcher" type="id" />
+    <item name="view_scrim" type="id" />
 
     <!-- TODO: remove this -->
-    <item name="search_container_hotseat" type="id"/>
+    <item name="search_container_hotseat" type="id" />
 </resources>

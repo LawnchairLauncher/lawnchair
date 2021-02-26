@@ -48,7 +48,8 @@ class SuperGLightResolver(config: Config) : ColorEngine.ColorResolver(config) {
 @Keep
 class SuperGDarkResolver(config: Config) : ColorEngine.ColorResolver(config) {
 
-    override fun resolveColor() = ContextCompat.getColor(engine.context, R.color.qsb_background_dark)
+    override fun resolveColor() = ContextCompat.getColor(engine.context,
+                                                         R.color.qsb_background_dark)
 
     override fun getDisplayName() = engine.context.resources.getString(R.string.theme_dark)
 }

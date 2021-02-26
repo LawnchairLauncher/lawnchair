@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2015 The Android Open Source Project
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,12 +15,12 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:clipChildren="false"
-              android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:orientation="vertical">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -40,41 +39,43 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_horizontal"
-                android:scaleType="fitCenter"/>
+                android:scaleType="fitCenter" />
         </androidx.cardview.widget.CardView>
     </FrameLayout>
 
-    <ScrollView android:layout_width="match_parent"
+    <ScrollView
+        android:layout_width="match_parent"
         android:layout_height="300dp">
-        <LinearLayout android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="?android:attr/listPreferredItemHeightSmall"
-                android:gravity="center_vertical"
-                android:paddingStart="?android:attr/listPreferredItemPaddingStart"
-                android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
                 android:background="?android:attr/activatedBackgroundIndicator"
-                android:baselineAligned="false">
+                android:baselineAligned="false"
+                android:gravity="center_vertical"
+                android:minHeight="?android:attr/listPreferredItemHeightSmall"
+                android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+                android:paddingEnd="?android:attr/listPreferredItemPaddingEnd">
 
                 <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:paddingTop="16dp"
-                    android:paddingBottom="16dp"
-                    android:layout_weight="1">
+                    android:paddingBottom="16dp">
 
                     <TextView
                         android:id="@+id/widthTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:ellipsize="marquee"
+                        android:fadingEdge="horizontal"
                         android:singleLine="true"
                         android:text="@string/grid_size_width"
-                        android:textAppearance="?android:attr/textAppearanceListItem"
-                        android:ellipsize="marquee"
-                        android:fadingEdge="horizontal"/>
+                        android:textAppearance="?android:attr/textAppearanceListItem" />
 
                     <TextView
                         android:id="@+id/widthSummary"
@@ -82,10 +83,10 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/widthTitle"
                         android:layout_alignStart="@id/widthTitle"
-                        android:textAppearance="?android:attr/textAppearanceListItemSecondary"
-                        android:textColor="?android:attr/textColorSecondary"
+                        android:ellipsize="end"
                         android:maxLines="10"
-                        android:ellipsize="end"/>
+                        android:textAppearance="?android:attr/textAppearanceListItemSecondary"
+                        android:textColor="?android:attr/textColorSecondary" />
 
                     <TextView
                         android:id="@+id/widthValue"
@@ -93,44 +94,44 @@
                         android:layout_height="30dp"
                         android:layout_below="@id/widthSummary"
                         android:gravity="center|end"
-                        tools:text="5"/>
+                        tools:text="5" />
 
                     <SeekBar
                         android:id="@+id/widthSeekbar"
                         android:layout_width="match_parent"
                         android:layout_height="30dp"
                         android:layout_below="@id/widthSummary"
-                        android:layout_toEndOf="@id/widthValue"
-                        android:layout_alignParentEnd="true"/>
+                        android:layout_alignParentEnd="true"
+                        android:layout_toEndOf="@id/widthValue" />
                 </RelativeLayout>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="?android:attr/listPreferredItemHeightSmall"
-                android:gravity="center_vertical"
-                android:paddingStart="?android:attr/listPreferredItemPaddingStart"
-                android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
                 android:background="?android:attr/activatedBackgroundIndicator"
-                android:baselineAligned="false">
+                android:baselineAligned="false"
+                android:gravity="center_vertical"
+                android:minHeight="?android:attr/listPreferredItemHeightSmall"
+                android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+                android:paddingEnd="?android:attr/listPreferredItemPaddingEnd">
 
                 <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:paddingTop="16dp"
-                    android:paddingBottom="16dp"
-                    android:layout_weight="1">
+                    android:paddingBottom="16dp">
 
                     <TextView
                         android:id="@+id/heightTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:ellipsize="marquee"
+                        android:fadingEdge="horizontal"
                         android:singleLine="true"
                         android:text="@string/grid_size_height"
-                        android:textAppearance="?android:attr/textAppearanceListItem"
-                        android:ellipsize="marquee"
-                        android:fadingEdge="horizontal"/>
+                        android:textAppearance="?android:attr/textAppearanceListItem" />
 
                     <TextView
                         android:id="@+id/heightSummary"
@@ -138,10 +139,10 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/heightTitle"
                         android:layout_alignStart="@id/heightTitle"
-                        android:textAppearance="?android:attr/textAppearanceListItemSecondary"
-                        android:textColor="?android:attr/textColorSecondary"
+                        android:ellipsize="end"
                         android:maxLines="10"
-                        android:ellipsize="end"/>
+                        android:textAppearance="?android:attr/textAppearanceListItemSecondary"
+                        android:textColor="?android:attr/textColorSecondary" />
 
                     <TextView
                         android:id="@+id/heightValue"
@@ -149,43 +150,43 @@
                         android:layout_height="30dp"
                         android:layout_below="@id/heightSummary"
                         android:gravity="center|end"
-                        tools:text="5"/>
+                        tools:text="5" />
 
                     <SeekBar
                         android:id="@+id/heightSeekbar"
                         android:layout_width="match_parent"
                         android:layout_height="30dp"
                         android:layout_below="@id/heightSummary"
-                        android:layout_toEndOf="@id/heightValue"
-                        android:layout_alignParentEnd="true"/>
+                        android:layout_alignParentEnd="true"
+                        android:layout_toEndOf="@id/heightValue" />
                 </RelativeLayout>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="?android:attr/listPreferredItemHeightSmall"
-                android:gravity="center_vertical"
-                android:paddingStart="?android:attr/listPreferredItemPaddingStart"
-                android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
                 android:background="?android:attr/activatedBackgroundIndicator"
-                android:baselineAligned="false">
+                android:baselineAligned="false"
+                android:gravity="center_vertical"
+                android:minHeight="?android:attr/listPreferredItemHeightSmall"
+                android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+                android:paddingEnd="?android:attr/listPreferredItemPaddingEnd">
 
                 <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:paddingTop="16dp"
-                    android:paddingBottom="16dp"
-                    android:layout_weight="1">
+                    android:paddingBottom="16dp">
 
                     <TextView
                         android:id="@+id/numHotseatTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:ellipsize="marquee"
+                        android:fadingEdge="horizontal"
                         android:singleLine="true"
                         android:text="@string/num_hotseat_icons_pref_title"
-                        android:textAppearance="?android:attr/textAppearanceListItem"
-                        android:ellipsize="marquee"
-                        android:fadingEdge="horizontal"/>
+                        android:textAppearance="?android:attr/textAppearanceListItem" />
 
                     <TextView
                         android:id="@+id/numHotseatSummary"
@@ -193,10 +194,10 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/numHotseatTitle"
                         android:layout_alignStart="@id/numHotseatTitle"
-                        android:textAppearance="?android:attr/textAppearanceListItemSecondary"
-                        android:textColor="?android:attr/textColorSecondary"
+                        android:ellipsize="end"
                         android:maxLines="10"
-                        android:ellipsize="end"/>
+                        android:textAppearance="?android:attr/textAppearanceListItemSecondary"
+                        android:textColor="?android:attr/textColorSecondary" />
 
                     <TextView
                         android:id="@+id/numHotseatValue"
@@ -204,44 +205,44 @@
                         android:layout_height="30dp"
                         android:layout_below="@id/numHotseatSummary"
                         android:gravity="center|end"
-                        tools:text="5"/>
+                        tools:text="5" />
 
                     <SeekBar
                         android:id="@+id/numHotseatSeekbar"
                         android:layout_width="match_parent"
                         android:layout_height="30dp"
                         android:layout_below="@id/numHotseatSummary"
-                        android:layout_toEndOf="@id/numHotseatValue"
-                        android:layout_alignParentEnd="true"/>
+                        android:layout_alignParentEnd="true"
+                        android:layout_toEndOf="@id/numHotseatValue" />
                 </RelativeLayout>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="?android:attr/listPreferredItemHeightSmall"
-                android:gravity="center_vertical"
-                android:paddingStart="?android:attr/listPreferredItemPaddingStart"
-                android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
                 android:background="?android:attr/activatedBackgroundIndicator"
-                android:baselineAligned="false">
+                android:baselineAligned="false"
+                android:gravity="center_vertical"
+                android:minHeight="?android:attr/listPreferredItemHeightSmall"
+                android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+                android:paddingEnd="?android:attr/listPreferredItemPaddingEnd">
 
                 <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:paddingTop="16dp"
-                    android:paddingBottom="16dp"
-                    android:layout_weight="1">
+                    android:paddingBottom="16dp">
 
                     <TextView
                         android:id="@+id/workspacePaddingLeftTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:ellipsize="marquee"
+                        android:fadingEdge="horizontal"
                         android:singleLine="true"
                         android:text="Homescreen padding Left"
-                        android:textAppearance="?android:attr/textAppearanceListItem"
-                        android:ellipsize="marquee"
-                        android:fadingEdge="horizontal"/>
+                        android:textAppearance="?android:attr/textAppearanceListItem" />
 
                     <TextView
                         android:id="@+id/workspacePaddingLeftSummary"
@@ -249,10 +250,10 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/workspacePaddingLeftTitle"
                         android:layout_alignStart="@id/workspacePaddingLeftTitle"
-                        android:textAppearance="?android:attr/textAppearanceListItemSecondary"
-                        android:textColor="?android:attr/textColorSecondary"
+                        android:ellipsize="end"
                         android:maxLines="10"
-                        android:ellipsize="end"/>
+                        android:textAppearance="?android:attr/textAppearanceListItemSecondary"
+                        android:textColor="?android:attr/textColorSecondary" />
 
                     <TextView
                         android:id="@+id/workspacePaddingLeftValue"
@@ -260,43 +261,43 @@
                         android:layout_height="30dp"
                         android:layout_below="@id/workspacePaddingLeftSummary"
                         android:gravity="center|end"
-                        tools:text="5"/>
+                        tools:text="5" />
 
                     <SeekBar
                         android:id="@+id/workspacePaddingLeftSeekbar"
                         android:layout_width="match_parent"
                         android:layout_height="30dp"
                         android:layout_below="@id/workspacePaddingLeftSummary"
-                        android:layout_toEndOf="@id/workspacePaddingLeftValue"
-                        android:layout_alignParentEnd="true"/>
+                        android:layout_alignParentEnd="true"
+                        android:layout_toEndOf="@id/workspacePaddingLeftValue" />
                 </RelativeLayout>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="?android:attr/listPreferredItemHeightSmall"
-                android:gravity="center_vertical"
-                android:paddingStart="?android:attr/listPreferredItemPaddingStart"
-                android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
                 android:background="?android:attr/activatedBackgroundIndicator"
-                android:baselineAligned="false">
+                android:baselineAligned="false"
+                android:gravity="center_vertical"
+                android:minHeight="?android:attr/listPreferredItemHeightSmall"
+                android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+                android:paddingEnd="?android:attr/listPreferredItemPaddingEnd">
 
                 <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:paddingTop="16dp"
-                    android:paddingBottom="16dp"
-                    android:layout_weight="1">
+                    android:paddingBottom="16dp">
 
                     <TextView
                         android:id="@+id/workspacePaddingRightTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:ellipsize="marquee"
+                        android:fadingEdge="horizontal"
                         android:singleLine="true"
                         android:text="Homescreen padding Right"
-                        android:textAppearance="?android:attr/textAppearanceListItem"
-                        android:ellipsize="marquee"
-                        android:fadingEdge="horizontal"/>
+                        android:textAppearance="?android:attr/textAppearanceListItem" />
 
                     <TextView
                         android:id="@+id/workspacePaddingRightSummary"
@@ -304,10 +305,10 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/workspacePaddingRightTitle"
                         android:layout_alignStart="@id/workspacePaddingRightTitle"
-                        android:textAppearance="?android:attr/textAppearanceListItemSecondary"
-                        android:textColor="?android:attr/textColorSecondary"
+                        android:ellipsize="end"
                         android:maxLines="10"
-                        android:ellipsize="end"/>
+                        android:textAppearance="?android:attr/textAppearanceListItemSecondary"
+                        android:textColor="?android:attr/textColorSecondary" />
 
                     <TextView
                         android:id="@+id/workspacePaddingRightValue"
@@ -315,43 +316,43 @@
                         android:layout_height="30dp"
                         android:layout_below="@id/workspacePaddingRightSummary"
                         android:gravity="center|end"
-                        tools:text="5"/>
+                        tools:text="5" />
 
                     <SeekBar
                         android:id="@+id/workspacePaddingRightSeekbar"
                         android:layout_width="match_parent"
                         android:layout_height="30dp"
                         android:layout_below="@id/workspacePaddingRightSummary"
-                        android:layout_toEndOf="@id/workspacePaddingRightValue"
-                        android:layout_alignParentEnd="true"/>
+                        android:layout_alignParentEnd="true"
+                        android:layout_toEndOf="@id/workspacePaddingRightValue" />
                 </RelativeLayout>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="?android:attr/listPreferredItemHeightSmall"
-                android:gravity="center_vertical"
-                android:paddingStart="?android:attr/listPreferredItemPaddingStart"
-                android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
                 android:background="?android:attr/activatedBackgroundIndicator"
-                android:baselineAligned="false">
+                android:baselineAligned="false"
+                android:gravity="center_vertical"
+                android:minHeight="?android:attr/listPreferredItemHeightSmall"
+                android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+                android:paddingEnd="?android:attr/listPreferredItemPaddingEnd">
 
                 <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:paddingTop="16dp"
-                    android:paddingBottom="16dp"
-                    android:layout_weight="1">
+                    android:paddingBottom="16dp">
 
                     <TextView
                         android:id="@+id/workspacePaddingTopTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:ellipsize="marquee"
+                        android:fadingEdge="horizontal"
                         android:singleLine="true"
                         android:text="Homescreen padding Top"
-                        android:textAppearance="?android:attr/textAppearanceListItem"
-                        android:ellipsize="marquee"
-                        android:fadingEdge="horizontal"/>
+                        android:textAppearance="?android:attr/textAppearanceListItem" />
 
                     <TextView
                         android:id="@+id/workspacePaddingTopSummary"
@@ -359,10 +360,10 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/workspacePaddingTopTitle"
                         android:layout_alignStart="@id/workspacePaddingTopTitle"
-                        android:textAppearance="?android:attr/textAppearanceListItemSecondary"
-                        android:textColor="?android:attr/textColorSecondary"
+                        android:ellipsize="end"
                         android:maxLines="10"
-                        android:ellipsize="end"/>
+                        android:textAppearance="?android:attr/textAppearanceListItemSecondary"
+                        android:textColor="?android:attr/textColorSecondary" />
 
                     <TextView
                         android:id="@+id/workspacePaddingTopValue"
@@ -370,44 +371,44 @@
                         android:layout_height="30dp"
                         android:layout_below="@id/workspacePaddingTopSummary"
                         android:gravity="center|end"
-                        tools:text="5"/>
+                        tools:text="5" />
 
                     <SeekBar
                         android:id="@+id/workspacePaddingTopSeekbar"
                         android:layout_width="match_parent"
                         android:layout_height="30dp"
                         android:layout_below="@id/workspacePaddingTopSummary"
-                        android:layout_toEndOf="@id/workspacePaddingTopValue"
-                        android:layout_alignParentEnd="true"/>
+                        android:layout_alignParentEnd="true"
+                        android:layout_toEndOf="@id/workspacePaddingTopValue" />
                 </RelativeLayout>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="?android:attr/listPreferredItemHeightSmall"
-                android:gravity="center_vertical"
-                android:paddingStart="?android:attr/listPreferredItemPaddingStart"
-                android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
                 android:background="?android:attr/activatedBackgroundIndicator"
                 android:baselineAligned="false"
+                android:gravity="center_vertical"
+                android:minHeight="?android:attr/listPreferredItemHeightSmall"
+                android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+                android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
                 android:visibility="gone">
 
                 <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:paddingTop="16dp"
-                    android:paddingBottom="16dp"
-                    android:layout_weight="1">
+                    android:paddingBottom="16dp">
 
                     <TextView
                         android:id="@+id/workspacePaddingBottomTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:ellipsize="marquee"
+                        android:fadingEdge="horizontal"
                         android:singleLine="true"
                         android:text="Homescreen padding Bottom"
-                        android:textAppearance="?android:attr/textAppearanceListItem"
-                        android:ellipsize="marquee"
-                        android:fadingEdge="horizontal"/>
+                        android:textAppearance="?android:attr/textAppearanceListItem" />
 
                     <TextView
                         android:id="@+id/workspacePaddingBottomSummary"
@@ -415,10 +416,10 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/workspacePaddingBottomTitle"
                         android:layout_alignStart="@id/workspacePaddingBottomTitle"
-                        android:textAppearance="?android:attr/textAppearanceListItemSecondary"
-                        android:textColor="?android:attr/textColorSecondary"
+                        android:ellipsize="end"
                         android:maxLines="10"
-                        android:ellipsize="end"/>
+                        android:textAppearance="?android:attr/textAppearanceListItemSecondary"
+                        android:textColor="?android:attr/textColorSecondary" />
 
                     <TextView
                         android:id="@+id/workspacePaddingBottomValue"
@@ -426,15 +427,15 @@
                         android:layout_height="30dp"
                         android:layout_below="@id/workspacePaddingBottomSummary"
                         android:gravity="center|end"
-                        tools:text="5"/>
+                        tools:text="5" />
 
                     <SeekBar
                         android:id="@+id/workspacePaddingBottomSeekbar"
                         android:layout_width="match_parent"
                         android:layout_height="30dp"
                         android:layout_below="@id/workspacePaddingBottomSummary"
-                        android:layout_toEndOf="@id/workspacePaddingBottomValue"
-                        android:layout_alignParentEnd="true"/>
+                        android:layout_alignParentEnd="true"
+                        android:layout_toEndOf="@id/workspacePaddingBottomValue" />
                 </RelativeLayout>
             </LinearLayout>
         </LinearLayout>

@@ -20,6 +20,7 @@ package ch.deletescape.lawnchair.smartspace.accu.model.sub;
 import ch.deletescape.lawnchair.smartspace.accu.model.GSonBase;
 
 public class AccuBriefGSon extends GSonBase {
+
     String Link;
     String MobileLink;
     AccuSatelliteGSon Radar;

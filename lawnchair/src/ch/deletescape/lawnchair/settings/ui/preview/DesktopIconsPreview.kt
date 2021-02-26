@@ -20,7 +20,6 @@
 package ch.deletescape.lawnchair.settings.ui.preview
 
 import android.content.Context
-import android.os.Handler
 import android.util.AttributeSet
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
@@ -45,7 +44,8 @@ class DesktopIconsPreview(context: Context, attrs: AttributeSet?) :
 
     private val idp = previewContext.idp
 
-    private val homeElementInflater = LayoutInflater.from(ContextThemeWrapper(previewContext, R.style.HomeScreenElementTheme))
+    private val homeElementInflater =
+            LayoutInflater.from(ContextThemeWrapper(previewContext, R.style.HomeScreenElementTheme))
 
     init {
         runOnThread(MODEL_EXECUTOR.handler) {

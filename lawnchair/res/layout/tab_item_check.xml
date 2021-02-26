@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
      Copyright (C) 2014 The Android Open Source Project
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -17,12 +16,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
-    android:minHeight="?android:attr/listPreferredItemHeightSmall"
-    android:textAppearance="?android:textAppearanceMedium"
-    android:textColor="?android:attr/textColorAlertDialogListItem"
-    android:gravity="center_vertical"
-    android:paddingStart="@dimen/select_dialog_padding_start_material"
-    android:paddingEnd="@dimen/select_dialog_padding_material"
     android:drawableStart="?android:listChoiceIndicatorMultiple"
     android:drawablePadding="@dimen/select_dialog_drawable_padding_start_material"
-    android:ellipsize="marquee" />
+    android:ellipsize="marquee"
+    android:gravity="center_vertical"
+    android:minHeight="?android:attr/listPreferredItemHeightSmall"
+    android:paddingStart="@dimen/select_dialog_padding_start_material"
+    android:paddingEnd="@dimen/select_dialog_padding_material"
+    android:textAppearance="?android:textAppearanceMedium"
+    android:textColor="?android:attr/textColorAlertDialogListItem" />

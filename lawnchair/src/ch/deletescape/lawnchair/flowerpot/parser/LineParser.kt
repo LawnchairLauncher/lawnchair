@@ -44,7 +44,8 @@ object LineParser {
             }
             // Package
             else -> if (!line[0].isLetter()) {
-                throw FlowerpotFormatException("Unknown rule identifier '${line[0]}' for version $version")
+                throw FlowerpotFormatException(
+                        "Unknown rule identifier '${line[0]}' for version $version")
             } else {
                 Rule.Package(line)
             }

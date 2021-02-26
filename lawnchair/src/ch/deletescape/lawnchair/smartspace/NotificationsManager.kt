@@ -20,7 +20,6 @@ package ch.deletescape.lawnchair.smartspace
 import android.service.notification.StatusBarNotification
 import ch.deletescape.lawnchair.runOnMainThread
 import ch.deletescape.lawnchair.runOnUiWorkerThread
-import ch.deletescape.lawnchair.util.extensions.d
 import com.android.launcher3.notification.NotificationKeyData
 import com.android.launcher3.notification.NotificationListener
 import com.android.launcher3.util.PackageUserKey
@@ -28,7 +27,7 @@ import com.android.launcher3.util.PackageUserKey
 object NotificationsManager : NotificationListener.NotificationsChangedListener {
 
     private val notificationsMap = mutableMapOf<String?, NotificationKeyData?>()
-    private val listeners  = mutableListOf<OnChangeListener>()
+    private val listeners = mutableListOf<OnChangeListener>()
 
     var sbNotifications = emptyList<StatusBarNotification>()
     var notifications = emptyList<NotificationKeyData?>()

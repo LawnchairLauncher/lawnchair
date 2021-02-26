@@ -29,7 +29,7 @@ import ch.deletescape.lawnchair.font.FontLoader
 import com.android.launcher3.Utilities
 
 class SettingsSearchView(context: Context, attrs: AttributeSet?) : SearchView(context, attrs),
-        FontLoader.FontReceiver {
+                                                                   FontLoader.FontReceiver {
 
     private var customTypeface: Typeface? = null
 
@@ -47,7 +47,7 @@ class SettingsSearchView(context: Context, attrs: AttributeSet?) : SearchView(co
         if (Utilities.ATLEAST_P && hint != null && typeface != null) {
             val styled = SpannableString(hint)
             styled.setSpan(TypefaceSpan(typeface), 0, styled.length,
-                    Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+                           Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
             super.setQueryHint(styled)
         } else {
             super.setQueryHint(hint)

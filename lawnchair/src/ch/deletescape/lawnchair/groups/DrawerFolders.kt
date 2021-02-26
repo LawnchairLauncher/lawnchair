@@ -49,7 +49,8 @@ class DrawerFolders(manager: AppGroupsManager) :
         changeCallback.reloadDrawer()
     }
 
-    fun getFolderInfos(apps: AlphabeticalAppsList, modelWriter: ModelWriter) = getFolderInfos(buildAppsMap(apps)::get, modelWriter)
+    fun getFolderInfos(apps: AlphabeticalAppsList, modelWriter: ModelWriter) = getFolderInfos(
+            buildAppsMap(apps)::get, modelWriter)
 
     private fun buildAppsMap(apps: AlphabeticalAppsList): Map<ComponentKey, AppInfo> {
         // Copy the list before accessing it to prevent concurrent list access
@@ -57,7 +58,8 @@ class DrawerFolders(manager: AppGroupsManager) :
     }
 
     private fun getFolderInfos(
-            getAppInfo: (ComponentKey) -> AppInfo?, modelWriter: ModelWriter): List<DrawerFolderInfo> = getGroups()
+            getAppInfo: (ComponentKey) -> AppInfo?,
+            modelWriter: ModelWriter): List<DrawerFolderInfo> = getGroups()
             .asSequence()
             .filter { !it.isEmpty }
             .map { it.toFolderInfo(getAppInfo, modelWriter) }
@@ -81,7 +83,8 @@ class DrawerFolders(manager: AppGroupsManager) :
             addCustomization(id)
         }
 
-        open fun toFolderInfo(getAppInfo: (ComponentKey) -> AppInfo?, modelWriter: ModelWriter) = DrawerFolderInfo(
+        open fun toFolderInfo(getAppInfo: (ComponentKey) -> AppInfo?,
+                              modelWriter: ModelWriter) = DrawerFolderInfo(
                 this).apply {
             setTitle(this@Folder.getTitle(), modelWriter)
             id = this@Folder.id.value().toInt()
@@ -113,13 +116,14 @@ class DrawerFolders(manager: AppGroupsManager) :
 
         fun getFilter(context: Context): Filter<*> = CustomFilter(context, contents.value())
 
-        override fun toFolderInfo(getAppInfo: (ComponentKey) -> AppInfo?, modelWriter: ModelWriter) = super
+        override fun toFolderInfo(getAppInfo: (ComponentKey) -> AppInfo?,
+                                  modelWriter: ModelWriter) = super
                 .toFolderInfo(getAppInfo, modelWriter).apply {
-            // ✨
-            this@CustomFolder.contents.value?.mapNotNullTo(contents) { key ->
-                getAppInfo(key)?.makeWorkspaceItem()
-            }?.sortWith(comparator)
-        }
+                    // ✨
+                    this@CustomFolder.contents.value?.mapNotNullTo(contents) { key ->
+                        getAppInfo(key)?.makeWorkspaceItem()
+                    }?.sortWith(comparator)
+                }
     }
 
     companion object {

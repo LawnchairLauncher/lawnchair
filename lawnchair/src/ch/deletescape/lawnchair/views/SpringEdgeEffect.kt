@@ -125,7 +125,8 @@ class SpringEdgeEffect(
             return result
         }
 
-        inline fun withSpringNegative(canvas: Canvas, allow: Boolean = true, body: () -> Boolean): Boolean {
+        inline fun withSpringNegative(canvas: Canvas, allow: Boolean = true,
+                                      body: () -> Boolean): Boolean {
             val result: Boolean
             if ((shiftX == 0f && shiftY == 0f) || !allow) {
                 result = body()
@@ -141,10 +142,14 @@ class SpringEdgeEffect(
 
         fun createEdgeEffect(direction: Int, reverseAbsorb: Boolean = false): EdgeEffect? {
             return when (direction) {
-                DIRECTION_LEFT -> SpringEdgeEffect(view.context, view::getWidth, ::shiftX, ::activeEdgeX, 0.3f, reverseAbsorb)
-                DIRECTION_TOP -> SpringEdgeEffect(view.context, view::getHeight, ::shiftY, ::activeEdgeY, 0.3f, reverseAbsorb)
-                DIRECTION_RIGHT -> SpringEdgeEffect(view.context, view::getWidth, ::shiftX, ::activeEdgeX, -0.3f, reverseAbsorb)
-                DIRECTION_BOTTOM -> SpringEdgeEffect(view.context, view::getWidth, ::shiftY, ::activeEdgeY, -0.3f, reverseAbsorb)
+                DIRECTION_LEFT -> SpringEdgeEffect(view.context, view::getWidth, ::shiftX,
+                                                   ::activeEdgeX, 0.3f, reverseAbsorb)
+                DIRECTION_TOP -> SpringEdgeEffect(view.context, view::getHeight, ::shiftY,
+                                                  ::activeEdgeY, 0.3f, reverseAbsorb)
+                DIRECTION_RIGHT -> SpringEdgeEffect(view.context, view::getWidth, ::shiftX,
+                                                    ::activeEdgeX, -0.3f, reverseAbsorb)
+                DIRECTION_BOTTOM -> SpringEdgeEffect(view.context, view::getWidth, ::shiftY,
+                                                     ::activeEdgeY, -0.3f, reverseAbsorb)
                 else -> null
             }
         }
@@ -152,7 +157,8 @@ class SpringEdgeEffect(
         inner class SpringEdgeEffectFactory : RecyclerView.EdgeEffectFactory() {
 
             override fun createEdgeEffect(recyclerView: RecyclerView, direction: Int): EdgeEffect {
-                return createEdgeEffect(direction) ?: super.createEdgeEffect(recyclerView, direction)
+                return createEdgeEffect(direction) ?: super.createEdgeEffect(recyclerView,
+                                                                             direction)
             }
         }
     }

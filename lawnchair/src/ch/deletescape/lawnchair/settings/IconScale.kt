@@ -26,7 +26,9 @@ class IconScale @JvmOverloads constructor(
         scaleKey: String,
         private val fallbackScaleKey: String? = null,
         landscapeScaleKey: String = "landscape${Utilities.upperCaseFirstLetter(scaleKey)}",
-        private val landscapeFallbackScaleKey: String = "landscape${Utilities.upperCaseFirstLetter(fallbackScaleKey)}",
+        private val landscapeFallbackScaleKey: String = "landscape${
+            Utilities.upperCaseFirstLetter(fallbackScaleKey)
+        }",
         private val targetObject: Any,
         private val onChangeListener: () -> Unit = prefs.restart) {
 

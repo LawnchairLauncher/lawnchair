@@ -79,5 +79,6 @@ class WallpaperPreviewProvider(private val context: Context) : BroadcastReceiver
         loadedWallpaper = null
     }
 
-    companion object : LawnchairSingletonHolder<WallpaperPreviewProvider>(::WallpaperPreviewProvider)
+    companion object :
+            LawnchairSingletonHolder<WallpaperPreviewProvider>(::WallpaperPreviewProvider)
 }

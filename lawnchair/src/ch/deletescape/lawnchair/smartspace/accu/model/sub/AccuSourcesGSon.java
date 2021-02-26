@@ -18,6 +18,7 @@
 package ch.deletescape.lawnchair.smartspace.accu.model.sub;
 
 public class AccuSourcesGSon {
+
     String DataType;
     String Source;
     String SourceId;

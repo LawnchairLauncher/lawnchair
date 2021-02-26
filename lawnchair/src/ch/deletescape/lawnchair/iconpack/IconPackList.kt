@@ -23,11 +23,9 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.text.TextUtils
-import com.android.launcher3.LauncherModel
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.Executors.ICON_PACK_EXECUTOR
-import com.android.launcher3.util.LooperExecutor
 import com.google.android.apps.nexuslauncher.utils.ActionIntentFilter
 
 class IconPackList(private val context: Context, private val manager: IconPackManager) {
@@ -116,7 +114,7 @@ class IconPackList(private val context: Context, private val manager: IconPackMa
         abstract val displayName: String
         abstract val displayIcon: Drawable
 
-        abstract fun load() : IconPack
+        abstract fun load(): IconPack
 
         override fun equals(other: Any?): Boolean {
             return other is PackInfo && packageName == other.packageName
@@ -142,7 +140,9 @@ class IconPackList(private val context: Context, private val manager: IconPackMa
     class DefaultPackInfo(context: Context) : PackInfo(context, "") {
 
         override val displayIcon by lazy { context.getDrawable(R.mipmap.ic_launcher)!! }
-        override val displayName by lazy { context.resources.getString(R.string.icon_pack_default)!! }
+        override val displayName by lazy {
+            context.resources.getString(R.string.icon_pack_default)
+        }
 
         override fun load() = IconPackManager.getInstance(context).defaultPack
     }
@@ -154,7 +154,7 @@ class IconPackList(private val context: Context, private val manager: IconPackMa
         }
 
         override val displayIcon by lazy {
-            context.packageManager.getApplicationIcon(applicationInfo)!!
+            context.packageManager.getApplicationIcon(applicationInfo)
         }
 
         override val displayName by lazy {
@@ -202,9 +202,9 @@ class IconPackList(private val context: Context, private val manager: IconPackMa
             super.register()
 
             context.registerReceiver(updateReceiver, ActionIntentFilter.newInstance(packageName,
-                    Intent.ACTION_PACKAGE_CHANGED,
-                    Intent.ACTION_PACKAGE_REPLACED,
-                    Intent.ACTION_PACKAGE_FULLY_REMOVED))
+                                                                                    Intent.ACTION_PACKAGE_CHANGED,
+                                                                                    Intent.ACTION_PACKAGE_REPLACED,
+                                                                                    Intent.ACTION_PACKAGE_FULLY_REMOVED))
         }
 
         override fun unregister() {

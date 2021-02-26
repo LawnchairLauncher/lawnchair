@@ -20,6 +20,7 @@ package ch.deletescape.lawnchair.smartspace.accu.model.sub;
 import java.util.List;
 
 public class AccuDailyForecastGSon {
+
     List<AccuCategoryGSon> AirAndPollen;
     String Date;
     AccuDaynNightGSon Day;

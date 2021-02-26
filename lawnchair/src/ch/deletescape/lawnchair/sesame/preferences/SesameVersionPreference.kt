@@ -23,7 +23,8 @@ import androidx.preference.Preference
 import ch.deletescape.lawnchair.sesame.Sesame
 import ninja.sesame.lib.bridge.v1.SesameFrontend
 
-class SesameVersionPreference(context: Context?, attrs: AttributeSet?) : Preference(context, attrs) {
+class SesameVersionPreference(context: Context?, attrs: AttributeSet?) :
+        Preference(context, attrs) {
     init {
         summary = SesameFrontend.getVersion()
     }

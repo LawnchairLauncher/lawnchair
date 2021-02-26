@@ -38,12 +38,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import ch.deletescape.lawnchair.*
 import ch.deletescape.lawnchair.util.Temperature
-import ch.deletescape.lawnchair.util.extensions.d
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
 @Keep
-class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : LawnchairSmartspaceController.DataProvider(controller) {
+class SmartspaceDataWidget(controller: LawnchairSmartspaceController) :
+        LawnchairSmartspaceController.DataProvider(controller) {
 
     private val prefs = Utilities.getLawnchairPrefs(context)
     private val smartspaceWidgetHost = SmartspaceWidgetHost()
@@ -51,7 +51,8 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
     private val widgetIdPref = prefs::smartspaceWidgetId
     private val providerInfo = getSmartspaceWidgetProvider(context)
     private var isWidgetBound = false
-    private val pendingIntentTagId = context.resources.getIdentifier("pending_intent_tag", "id", "android")
+    private val pendingIntentTagId =
+            context.resources.getIdentifier("pending_intent_tag", "id", "android")
 
     init {
         bindWidget { }
@@ -77,7 +78,8 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
         }
 
         if (isWidgetBound) {
-            smartspaceView = smartspaceWidgetHost.createView(context, widgetId, providerInfo) as SmartspaceWidgetHostView
+            smartspaceView = smartspaceWidgetHost.createView(context, widgetId,
+                                                             providerInfo) as SmartspaceWidgetHostView
             smartspaceWidgetHost.startListening()
             onSetupComplete()
         } else {
@@ -117,11 +119,13 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
         smartspaceWidgetHost.stopListening()
     }
 
-    private fun updateData(weatherIcon: Bitmap?, temperature: TextView?, cardIcon: Bitmap?, title: TextView?, subtitle: TextView?, subtitle2: TextView?) {
+    private fun updateData(weatherIcon: Bitmap?, temperature: TextView?, cardIcon: Bitmap?,
+                           title: TextView?, subtitle: TextView?, subtitle2: TextView?) {
         val weather = parseWeatherData(weatherIcon, temperature)
         val card = if (cardIcon != null && title != null && subtitle != null) {
             val pendingIntent = getPendingIntent(title.parent.parent.parent as? View)
-            val ttl = title.text.toString() + if (subtitle2 != null) subtitle.text.toString() else ""
+            val ttl =
+                    title.text.toString() + if (subtitle2 != null) subtitle.text.toString() else ""
             val sub = subtitle2 ?: subtitle
             LawnchairSmartspaceController.CardData(cardIcon, ttl, title.ellipsize,
                                                    sub.text.toString(), sub.ellipsize,
@@ -132,7 +136,8 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
         updateData(weather, card)
     }
 
-    private fun parseWeatherData(weatherIcon: Bitmap?, temperatureText: TextView?): LawnchairSmartspaceController.WeatherData? {
+    private fun parseWeatherData(weatherIcon: Bitmap?,
+                                 temperatureText: TextView?): LawnchairSmartspaceController.WeatherData? {
         val temperature = temperatureText?.text?.toString()
         return parseWeatherData(weatherIcon, temperature, getPendingIntent(temperatureText))
     }
@@ -143,7 +148,8 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
 
     inner class SmartspaceWidgetHost : AppWidgetHost(context, 1027) {
 
-        override fun onCreateView(context: Context, appWidgetId: Int, appWidget: AppWidgetProviderInfo?): AppWidgetHostView {
+        override fun onCreateView(context: Context, appWidgetId: Int,
+                                  appWidget: AppWidgetProviderInfo?): AppWidgetHostView {
             return SmartspaceWidgetHostView(context)
         }
     }
@@ -155,7 +161,9 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
             super.updateAppWidget(remoteViews)
 
             val childs = getAllChilds()
-            val texts = (childs.filter { it is TextView } as List<TextView>).filter { !TextUtils.isEmpty(it.text) }
+            val texts = (childs.filter { it is TextView } as List<TextView>).filter {
+                !TextUtils.isEmpty(it.text)
+            }
             val images = childs.filter { it is ImageView } as List<ImageView>
             var weatherIconView: ImageView? = null
             var cardIconView: ImageView? = null
@@ -176,7 +184,8 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
                     subtitle2 = texts[2]
                 }
             }
-            updateData(extractBitmap(weatherIconView), temperatureText, extractBitmap(cardIconView), title, subtitle, subtitle2)
+            updateData(extractBitmap(weatherIconView), temperatureText, extractBitmap(cardIconView),
+                       title, subtitle, subtitle2)
         }
     }
 
@@ -188,20 +197,22 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
 
         private const val TAG = "SmartspaceDataWidget"
         private const val googlePackage = "com.google.android.googlequicksearchbox"
-        private const val smartspaceComponent = "com.google.android.apps.gsa.staticplugins.smartspace.widget.SmartspaceWidgetProvider"
+        private const val smartspaceComponent =
+                "com.google.android.apps.gsa.staticplugins.smartspace.widget.SmartspaceWidgetProvider"
 
         private val smartspaceProviderComponent = ComponentName(googlePackage, smartspaceComponent)
 
         fun getSmartspaceWidgetProvider(context: Context): AppWidgetProviderInfo {
             val appWidgetManager = AppWidgetManager.getInstance(context)
-            val providers = appWidgetManager.installedProviders.filter { it.provider == smartspaceProviderComponent }
+            val providers =
+                    appWidgetManager.installedProviders.filter { it.provider == smartspaceProviderComponent }
             val provider = providers.firstOrNull()
             if (provider != null) {
                 return provider
             } else {
                 runOnMainThread {
                     val foreground = context.lawnchairApp.activityHandler.foregroundActivity
-                            ?: context
+                                     ?: context
                     if (foreground is AppCompatActivity) {
                         AlertDialog.Builder(foreground)
                                 .setTitle(R.string.failed)
@@ -217,10 +228,13 @@ class SmartspaceDataWidget(controller: LawnchairSmartspaceController) : Lawnchai
             }
         }
 
-        fun parseWeatherData(weatherIcon: Bitmap?, temperature: String?, intent: PendingIntent? = null): LawnchairSmartspaceController.WeatherData? {
+        fun parseWeatherData(weatherIcon: Bitmap?, temperature: String?,
+                             intent: PendingIntent? = null): LawnchairSmartspaceController.WeatherData? {
             return if (weatherIcon != null && temperature != null) {
                 try {
-                    val value = temperature.substring(0, temperature.indexOfFirst { (it < '0' || it > '9') && it != '-' }).toInt()
+                    val value = temperature.substring(0,
+                                                      temperature.indexOfFirst { (it < '0' || it > '9') && it != '-' })
+                            .toInt()
                     LawnchairSmartspaceController.WeatherData(weatherIcon, Temperature(value, when {
                         temperature.contains("C") -> Temperature.Unit.Celsius
                         temperature.contains("F") -> Temperature.Unit.Fahrenheit

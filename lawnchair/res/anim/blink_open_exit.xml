@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~     This file is part of Lawnchair Launcher.
   ~
   ~     Lawnchair Launcher is free software: you can redistribute it and/or modify
@@ -17,18 +16,31 @@
   -->
 
 <set xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shareInterpolator="false" android:zAdjustment="normal">
-    <alpha android:fromAlpha="1.0" android:toAlpha="0"
-        android:fillEnabled="true" android:fillBefore="true" android:fillAfter="true"
+    android:shareInterpolator="false"
+    android:zAdjustment="normal">
+    <alpha
+        android:duration="200"
+        android:fillAfter="true"
+        android:fillBefore="true"
+        android:fillEnabled="true"
+        android:fromAlpha="1.0"
         android:interpolator="@android:interpolator/decelerate_cubic"
-        android:duration="200"/>
-    <scale android:fromXScale="1.0" android:toXScale="0.95"
-        android:fromYScale="1.0" android:toYScale="0.95"
-        android:pivotX="50%p" android:pivotY="50%p"
-        android:fillEnabled="true" android:fillBefore="true" android:fillAfter="true"
+        android:toAlpha="0" />
+    <scale
+        android:duration="300"
+        android:fillAfter="true"
+        android:fillBefore="true"
+        android:fillEnabled="true"
+        android:fromXScale="1.0"
+        android:fromYScale="1.0"
         android:interpolator="@android:interpolator/decelerate_quint"
-        android:duration="300" />
+        android:pivotX="50%p"
+        android:pivotY="50%p"
+        android:toXScale="0.95"
+        android:toYScale="0.95" />
     <!-- This is needed to keep the animation running while task_open_enter completes -->
-    <alpha android:fromAlpha="1.0" android:toAlpha="1.0"
-        android:duration="540" />
+    <alpha
+        android:duration="540"
+        android:fromAlpha="1.0"
+        android:toAlpha="1.0" />
 </set>

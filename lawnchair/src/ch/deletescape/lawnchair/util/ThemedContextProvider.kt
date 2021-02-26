@@ -22,7 +22,8 @@ import android.view.ContextThemeWrapper
 import ch.deletescape.lawnchair.theme.ThemeManager
 import ch.deletescape.lawnchair.theme.ThemeOverride
 
-class ThemedContextProvider(private val base: Context, var listener: Listener?, themeSet: ThemeOverride.ThemeSet)
+class ThemedContextProvider(private val base: Context, var listener: Listener?,
+                            themeSet: ThemeOverride.ThemeSet)
     : ThemeOverride.ThemeOverrideListener {
 
     override val isAlive = true

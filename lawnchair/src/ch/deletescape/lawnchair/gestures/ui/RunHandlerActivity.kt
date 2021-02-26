@@ -42,7 +42,8 @@ class RunHandlerActivity : Activity() {
         if (intent.action == LawnchairShortcutActivity.START_ACTION) {
             val handlerString = intent.getStringExtra(LawnchairShortcutActivity.EXTRA_HANDLER)
             if (handlerString != null) {
-                val handler = GestureController.createGestureHandler(this.applicationContext, handlerString, fallback)
+                val handler = GestureController.createGestureHandler(this.applicationContext,
+                                                                     handlerString, fallback)
                 if (handler.requiresForeground) {
                     val homeIntent =
                             Intent(Intent.ACTION_MAIN)
@@ -65,7 +66,8 @@ class RunHandlerActivity : Activity() {
         Toast.makeText(this.applicationContext, R.string.failed, Toast.LENGTH_LONG).show()
     }
 
-    class RunHandlerActivityTracker(private val handler: GestureHandler) : ActivityTracker.SchedulerCallback<LawnchairLauncher> {
+    class RunHandlerActivityTracker(private val handler: GestureHandler) :
+            ActivityTracker.SchedulerCallback<LawnchairLauncher> {
         override fun init(activity: LawnchairLauncher, alreadyOnHome: Boolean): Boolean {
             handler.onGestureTrigger(activity.gestureController)
             return true

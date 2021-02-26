@@ -64,7 +64,8 @@ class AppCategorizationFragment : Fragment(), LawnchairPreferences.OnPreferenceC
     private val flowerpotTabsAdapter by lazy { FlowerpotTabsAdapter(ourContext) }
     private val drawerFoldersAdapter by lazy { DrawerFoldersAdapter(ourContext) }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_app_categorization, container, false)
     }
 
@@ -129,12 +130,12 @@ class AppCategorizationFragment : Fragment(), LawnchairPreferences.OnPreferenceC
 
         (folderTypeItem as AppCategorizationTypeItem)
                 .setup(AppGroupsManager.CategorizationType.Folders,
-                        R.string.pref_appcategorization_folders_title,
-                        R.string.pref_appcategorization_folders_summary)
+                       R.string.pref_appcategorization_folders_title,
+                       R.string.pref_appcategorization_folders_summary)
 
         (tabTypeItem as AppCategorizationTypeItem)
                 .setup(AppGroupsManager.CategorizationType.Tabs,
-                        R.string.pref_appcategorization_tabs_title,
-                        R.string.pref_appcategorization_tabs_summary)
+                       R.string.pref_appcategorization_tabs_title,
+                       R.string.pref_appcategorization_tabs_summary)
     }
 }

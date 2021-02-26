@@ -24,7 +24,8 @@ import ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
 import ch.deletescape.lawnchair.sesame.Sesame
 import com.android.launcher3.R
 
-class SesameSearchUpsellPreference(context: Context, attrs: AttributeSet?): StyledSwitchPreferenceCompat(context, attrs) {
+class SesameSearchUpsellPreference(context: Context, attrs: AttributeSet?) :
+        StyledSwitchPreferenceCompat(context, attrs) {
     private val prefs = context.lawnchairPrefs
 
     init {

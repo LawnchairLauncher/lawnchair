@@ -45,11 +45,11 @@ class GestureTouchConsumer(
         private val context: Context,
         private val leftRegion: RectF,
         private val rightRegion: RectF,
-        private val activityControlHelper: BaseActivityInterface<*,*>,
+        private val activityControlHelper: BaseActivityInterface<*, *>,
         delegate: InputConsumer, inputMonitor: InputMonitorCompat)
     : DelegateInputConsumer(delegate, inputMonitor) {
 
-    private val launcher get() = activityControlHelper.getCreatedActivity() as? LawnchairLauncher
+    private val launcher get() = activityControlHelper.createdActivity as? LawnchairLauncher
     private val controller get() = launcher?.gestureController
     private var gestureHandler: GestureHandler? = null
 
@@ -71,7 +71,8 @@ class GestureTouchConsumer(
     private var timeFraction = 0f
     private var dragTime = 0L
     private var distance = 0f
-    private val distThreshold = context.resources.getDimension(R.dimen.gestures_assistant_drag_threshold)
+    private val distThreshold =
+            context.resources.getDimension(R.dimen.gestures_assistant_drag_threshold)
 
     private val squaredSlop = ViewConfiguration.get(context).scaledTouchSlop.let { it * it }
 
@@ -119,7 +120,8 @@ class GestureTouchConsumer(
                     if (pointerIndex != -1) {
                         lastPos.set(ev.getX(pointerIndex), ev.getY(pointerIndex))
                         if (!passedSlop) {
-                            if (squaredHypot(lastPos.x - downPos.x, lastPos.y - downPos.y) > squaredSlop) {
+                            if (squaredHypot(lastPos.x - downPos.x,
+                                             lastPos.y - downPos.y) > squaredSlop) {
                                 passedSlop = true
                                 startDragPos.set(lastPos)
                                 dragTime = SystemClock.uptimeMillis()
@@ -212,8 +214,10 @@ class NavSwipeUpGesture(controller: GestureController) : Gesture(controller) {
     override val isEnabled = true
 
     private val blankHandler = controller.blankGestureHandler
-    private val leftHandlerPref by controller.createHandlerPref("pref_gesture_nav_swipe_up_left", blankHandler)
-    private val rightHandlerPref by controller.createHandlerPref("pref_gesture_nav_swipe_up_right", blankHandler)
+    private val leftHandlerPref by controller.createHandlerPref("pref_gesture_nav_swipe_up_left",
+                                                                blankHandler)
+    private val rightHandlerPref by controller.createHandlerPref("pref_gesture_nav_swipe_up_right",
+                                                                 blankHandler)
 
     val leftHandler get() = leftHandlerPref.takeUnless { it is BlankGestureHandler }
     val rightHandler get() = rightHandlerPref.takeUnless { it is BlankGestureHandler }

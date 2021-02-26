@@ -26,7 +26,7 @@ import kotlin.math.roundToInt
 /**
  * Weighted ratio with higher scores for strings with common prefix like in the Jaro-Winkler algorithm
  */
-class WinklerWeightedRatio: WeightedRatio() {
+class WinklerWeightedRatio : WeightedRatio() {
 
     override fun apply(s1: String?, s2: String?, stringProcessor: ToStringFunction<String>): Int {
         val first = stringProcessor.apply(s1)

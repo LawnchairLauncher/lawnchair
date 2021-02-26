@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~     This file is part of Lawnchair Launcher.
   ~
   ~     Lawnchair Launcher is free software: you can redistribute it and/or modify
@@ -33,26 +32,24 @@
   ~     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/types_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="28dp"
     android:orientation="vertical"
     android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+    android:paddingTop="28dp"
     android:paddingEnd="?android:attr/listPreferredItemPaddingEnd">
 
     <TextView
         android:id="@android:id/title"
+        style="@style/TextAppearance.AppCompat.Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/TextAppearance.AppCompat.Title"
-        android:textColor="?android:colorAccent"
+        android:paddingBottom="16dp"
         android:text="@string/select_tab_type"
-        app:customFontType="title"
-        android:paddingBottom="16dp"/>
+        android:textColor="?android:colorAccent"
+        app:customFontType="title" />
 
 </LinearLayout>

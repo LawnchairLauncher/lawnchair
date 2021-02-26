@@ -39,7 +39,6 @@ import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.iconpack.EditIconActivity.Companion.EXTRA_ENTRY
 import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
 import ch.deletescape.lawnchair.views.FadingImageView
-import com.android.launcher3.LauncherModel
 import com.android.launcher3.R
 import com.android.launcher3.util.Executors.ICON_PACK_EXECUTOR
 import kotlinx.android.synthetic.main.activity_settings_search.*
@@ -47,7 +46,8 @@ import java.text.Collator
 import java.util.*
 import java.util.concurrent.Semaphore
 
-class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, SearchView.OnQueryTextListener {
+class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener,
+                           SearchView.OnQueryTextListener {
     private val iconPackManager = IconPackManager.getInstance(this)
     private val iconGrid by lazy { findViewById<RecyclerView>(R.id.list_results) }
     private val iconPack by lazy {
@@ -66,8 +66,11 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
 
     private var dynamicPadding = 0
 
-    private val pickerComponent by lazy { this.getSystemService(LauncherApps::class.java)
-            .getActivityList(iconPack?.packPackageName, Process.myUserHandle()).firstOrNull()?.componentName }
+    private val pickerComponent by lazy {
+        this.getSystemService(LauncherApps::class.java)
+                .getActivityList(iconPack?.packPackageName, Process.myUserHandle())
+                .firstOrNull()?.componentName
+    }
 
     private var searchItems: MutableList<AdapterItem>? = null
     private val searchHandler = object : Handler(ICON_PACK_EXECUTOR.looper) {
@@ -159,7 +162,8 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
     private fun processSearchQuery(query: String?) {
         val q = query?.trim()
         val filtered = if (!TextUtils.isEmpty(q)) {
-            actualItems.filter { it is IconItem && collator.matches(q!!, it.entry.displayName) }.toMutableList()
+            actualItems.filter { it is IconItem && collator.matches(q!!, it.entry.displayName) }
+                    .toMutableList()
         } else null
         runOnUiThread {
             val hashCode = items.hashCode()
@@ -210,7 +214,8 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == 1000 && resultCode == Activity.RESULT_OK && data != null) {
             if (data.hasExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE)) {
-                val icon = data.getParcelableExtra<Intent.ShortcutIconResource>(Intent.EXTRA_SHORTCUT_ICON_RESOURCE)
+                val icon = data.getParcelableExtra<Intent.ShortcutIconResource>(
+                        Intent.EXTRA_SHORTCUT_ICON_RESOURCE)
                 val entry = icon?.let { (iconPack as IconPackImpl).createEntry(it) }
                 entry?.let { onSelectIcon(it) }
                 return
@@ -224,7 +229,8 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
         canceled = true
     }
 
-    override fun onLayoutChange(v: View?, left: Int, top: Int, right: Int, bottom: Int, oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int) {
+    override fun onLayoutChange(v: View?, left: Int, top: Int, right: Int, bottom: Int,
+                                oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int) {
         getContentFrame().removeOnLayoutChangeListener(this)
         calculateDynamicGrid(iconGrid.width)
         iconGrid.adapter = adapter
@@ -243,11 +249,12 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int) = getItemSpan(position)
         }
-        iconGrid.setPadding(iconPadding - dynamicPadding, iconPadding, iconPadding - dynamicPadding, iconPadding)
+        iconGrid.setPadding(iconPadding - dynamicPadding, iconPadding, iconPadding - dynamicPadding,
+                            iconPadding)
     }
 
-    private fun getItemSpan(position: Int)
-            = if (adapter.isItem(position)) 1 else layoutManager.spanCount
+    private fun getItemSpan(position: Int) = if (adapter.isItem(
+                    position)) 1 else layoutManager.spanCount
 
     fun onSelectIcon(entry: IconPack.Entry) {
         val customEntry = entry.toCustomEntry()
@@ -265,8 +272,10 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
             val layoutInflater = LayoutInflater.from(parent.context)
             return when (viewType) {
                 itemType -> IconHolder(layoutInflater.inflate(R.layout.icon_item, parent, false))
-                categoryType -> CategoryHolder(layoutInflater.inflate(R.layout.icon_category, parent, false))
-                else -> LoadingHolder(layoutInflater.inflate(R.layout.adapter_loading, parent, false))
+                categoryType -> CategoryHolder(
+                        layoutInflater.inflate(R.layout.icon_category, parent, false))
+                else -> LoadingHolder(
+                        layoutInflater.inflate(R.layout.adapter_loading, parent, false))
             }
         }
 
@@ -290,7 +299,8 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
 
         fun isItem(position: Int) = getItemViewType(position) == itemType
 
-        inner class IconHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener, IconItem.Callback {
+        inner class IconHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+                                                 View.OnClickListener, IconItem.Callback {
 
             private var iconLoader: IconItem? = null
                 set(value) {

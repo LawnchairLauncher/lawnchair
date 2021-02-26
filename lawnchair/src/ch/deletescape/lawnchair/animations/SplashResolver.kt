@@ -38,7 +38,7 @@ class SplashResolver(private val context: Context) {
         val themedContext: Context
         themedContext = if (activityInfo == null
                             || (activityInfo.packageName == BuildConfig.APPLICATION_ID
-                            && activityInfo.name == SettingsActivity::class.java.name)) {
+                                && activityInfo.name == SettingsActivity::class.java.name)) {
             ContextThemeWrapper(context, ThemeOverride.Settings().getTheme(context))
         } else {
             val theme = activityInfo.themeResource

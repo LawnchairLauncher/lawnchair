@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
      Copyright (C) 2018 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,32 +22,32 @@
     android:layout_height="fill_parent"
     android:layout_gravity="center"
     android:animateLayoutChanges="true"
-    android:orientation="vertical"
-    android:gravity="center_vertical">
+    android:gravity="center_vertical"
+    android:orientation="vertical">
     <com.google.android.apps.nexuslauncher.graphics.IcuDateTextView
         android:id="@+id/time_above"
         style="@style/TextTitle"
-        android:scrollHorizontally="true"
-        android:ellipsize="end"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_gravity="center"
         android:layout_weight="1.25"
         android:background="@drawable/bg_smartspace"
         android:clickable="true"
+        android:ellipsize="end"
         android:gravity="center"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
+        android:scrollHorizontally="true"
         android:textColor="?workspaceTextColor"
         android:textSize="@dimen/smartspace_clock_above_size"
         android:visibility="gone"
         launcher:ambientShadowBlur="3dp"
         launcher:ambientShadowColor="?workspaceAmbientShadowColor"
+        launcher:customFontType="smartspaceText"
         launcher:keyShadowBlur="2dp"
         launcher:keyShadowColor="?workspaceKeyShadowColor"
         launcher:keyShadowOffset="0.5dip"
-        launcher:customFontType="smartspaceText"
-        tools:visibility="gone"/>
+        tools:visibility="gone" />
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -57,25 +56,25 @@
         <com.google.android.apps.nexuslauncher.graphics.IcuDateTextView
             android:id="@+id/clock"
             style="@style/TextTitle"
-            android:scrollHorizontally="true"
-            android:ellipsize="end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:background="@drawable/bg_smartspace"
             android:clickable="true"
+            android:ellipsize="end"
             android:gravity="center"
             android:maxLines="1"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
+            android:scrollHorizontally="true"
             android:textColor="?workspaceTextColor"
             android:textSize="@dimen/smartspace_title_size"
             launcher:ambientShadowBlur="3dp"
             launcher:ambientShadowColor="?workspaceAmbientShadowColor"
+            launcher:customFontType="smartspaceText"
             launcher:keyShadowBlur="2dp"
             launcher:keyShadowColor="?workspaceKeyShadowColor"
-            launcher:keyShadowOffset="0.5dip"
-            launcher:customFontType="smartspaceText" />
+            launcher:keyShadowOffset="0.5dip" />
 
         <LinearLayout
             android:id="@+id/title_weather_content"
@@ -99,7 +98,7 @@
                 android:layout_gravity="center"
                 android:layout_marginRight="4dp"
                 android:scaleType="fitXY"
-                tools:src="@drawable/weather_01"/>
+                tools:src="@drawable/weather_01" />
 
             <com.google.android.apps.nexuslauncher.graphics.DoubleShadowTextView
                 android:id="@+id/title_weather_text"
@@ -112,11 +111,11 @@
                 android:textSize="@dimen/smartspace_title_size"
                 launcher:ambientShadowBlur="3dp"
                 launcher:ambientShadowColor="?workspaceAmbientShadowColor"
+                launcher:customFontType="smartspaceText"
                 launcher:keyShadowBlur="2dp"
                 launcher:keyShadowColor="?workspaceKeyShadowColor"
                 launcher:keyShadowOffset="0.5dip"
-                launcher:customFontType="smartspaceText"
-                tools:text="30°C"/>
+                tools:text="30°C" />
         </LinearLayout>
     </LinearLayout>
 
@@ -126,10 +125,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
         android:layout_marginTop="4dp"
-        android:clipChildren="false"
+        android:layout_marginRight="20dp"
         android:animateLayoutChanges="true"
+        android:clipChildren="false"
         android:orientation="horizontal">
 
         <ImageView
@@ -148,18 +147,18 @@
             android:layout_weight="1.0"
             android:drawablePadding="6dp"
             android:includeFontPadding="false"
+            android:inputType="textNoSuggestions"
             android:maxLines="1"
-            android:paddingBottom="4dp"
             android:paddingTop="4dp"
+            android:paddingBottom="4dp"
             android:text="Test"
             android:textColor="?workspaceTextColor"
             android:textSize="16dp"
-            android:inputType="textNoSuggestions"
             launcher:ambientShadowBlur="3dp"
             launcher:ambientShadowColor="?workspaceAmbientShadowColor"
+            launcher:customFontType="smartspaceText"
             launcher:keyShadowBlur="2dp"
             launcher:keyShadowColor="?workspaceKeyShadowColor"
-            launcher:keyShadowOffset="0.5dip"
-            launcher:customFontType="smartspaceText" />
+            launcher:keyShadowOffset="0.5dip" />
     </LinearLayout>
 </LinearLayout>

@@ -23,7 +23,8 @@ import ch.deletescape.lawnchair.settings.ui.DecorLayout
 
 class PreferenceRecyclerView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : InsettableRecyclerView(context, attrs, defStyleAttr) {
+                                                      ) :
+        InsettableRecyclerView(context, attrs, defStyleAttr) {
 
     private var elevationHelper: DecorLayout.ToolbarElevationHelper? = null
         set(value) {

@@ -24,9 +24,10 @@ import android.graphics.Bitmap
 import ch.deletescape.lawnchair.toBitmap
 import com.android.launcher3.R
 
-class DefaultIconProvider(private val context: Context): WeatherIconManager.IconProvider {
+class DefaultIconProvider(private val context: Context) : WeatherIconManager.IconProvider {
     override fun getIcon(which: WeatherIconManager.Icon, night: Boolean): Bitmap {
-        return context.resources.getDrawable((if (night) NIGHT_MAP[which] else DAY_MAP[which]) ?: NA).toBitmap()!!
+        return context.resources
+                .getDrawable((if (night) NIGHT_MAP[which] else DAY_MAP[which]) ?: NA).toBitmap()!!
     }
 
     companion object {

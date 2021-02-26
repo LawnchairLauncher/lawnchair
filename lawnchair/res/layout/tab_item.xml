@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp"
     android:background="?selectableItemBackground"
     android:gravity="center_vertical"
     android:minHeight="?android:attr/listPreferredItemHeightSmall"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp">
 
     <ImageView
         android:id="@+id/drag_handle"
@@ -24,7 +24,7 @@
         android:src="@drawable/ic_drag_handle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/delete"
@@ -36,7 +36,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/drag_handle"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_uninstall_no_shadow"/>
+        app:srcCompat="@drawable/ic_uninstall_no_shadow" />
     <TextView
         android:id="@+id/summary"
         android:layout_width="0dp"
@@ -48,14 +48,14 @@
         app:layout_constraintEnd_toStartOf="@+id/delete"
         app:layout_constraintStart_toEndOf="@+id/title"
         tools:text="0 apps"
-        tools:visibility="visible"/>
+        tools:visibility="visible" />
     <TextView
         android:id="@+id/title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_marginStart="72dp"
         android:layout_gravity="center_vertical"
+        android:layout_marginStart="72dp"
+        android:layout_weight="1"
         android:ellipsize="end"
         android:maxLines="1"
         android:textAlignment="viewStart"
@@ -65,5 +65,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Tab 1"/>
+        tools:text="Tab 1" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~     This file is part of Lawnchair Launcher.
   ~
   ~     Lawnchair Launcher is free software: you can redistribute it and/or modify
@@ -16,23 +15,22 @@
   ~     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<com.android.launcher3.folder.FolderIcon
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.launcher3.folder.FolderIcon xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/folder_icon"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
+    android:focusable="true"
     android:orientation="vertical"
     android:paddingLeft="@dimen/dynamic_grid_cell_padding_x"
-    android:paddingRight="@dimen/dynamic_grid_cell_padding_x"
-    android:focusable="true" >
+    android:paddingRight="@dimen/dynamic_grid_cell_padding_x">
     <com.android.launcher3.BubbleTextView
-        style="@style/BaseIcon"
         android:id="@+id/folder_icon_name"
-        android:focusable="false"
-        android:layout_gravity="top"
+        style="@style/BaseIcon"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:iconDisplay="all_apps"/>
+        android:layout_gravity="top"
+        android:focusable="false"
+        app:iconDisplay="all_apps" />
 </com.android.launcher3.folder.FolderIcon>

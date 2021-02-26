@@ -26,8 +26,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.createDisabledColor
 import ch.deletescape.lawnchair.groups.AppGroups
@@ -37,7 +37,8 @@ import ch.deletescape.lawnchair.preferences.DrawerTabEditBottomSheet
 import ch.deletescape.lawnchair.tintDrawable
 import com.android.launcher3.R
 
-abstract class AppGroupsAdapter<VH : AppGroupsAdapter<VH, T>.GroupHolder, T : AppGroups.Group>(val context: Context)
+abstract class AppGroupsAdapter<VH : AppGroupsAdapter<VH, T>.GroupHolder, T : AppGroups.Group>(
+        val context: Context)
     : RecyclerView.Adapter<AppGroupsAdapter.Holder>() {
 
     private var saved = true
@@ -66,8 +67,11 @@ abstract class AppGroupsAdapter<VH : AppGroupsAdapter<VH, T>.GroupHolder, T : Ap
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         return when (viewType) {
-            TYPE_HEADER -> HeaderHolder(LayoutInflater.from(parent.context).inflate(R.layout.app_groups_adapter_header, parent, false))
-            TYPE_ADD -> AddHolder(LayoutInflater.from(parent.context).inflate(R.layout.app_groups_adapter_add, parent, false))
+            TYPE_HEADER -> HeaderHolder(LayoutInflater.from(parent.context)
+                                                .inflate(R.layout.app_groups_adapter_header, parent,
+                                                         false))
+            TYPE_ADD -> AddHolder(LayoutInflater.from(parent.context)
+                                          .inflate(R.layout.app_groups_adapter_add, parent, false))
             TYPE_GROUP -> createGroupHolder(parent)
             else -> throw IllegalStateException("Unknown view type $viewType")
         }
@@ -77,7 +81,8 @@ abstract class AppGroupsAdapter<VH : AppGroupsAdapter<VH, T>.GroupHolder, T : Ap
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
         when (holder) {
-            is AppGroupsAdapter<*, *>.GroupHolder -> holder.bind((items[position] as GroupItem).group)
+            is AppGroupsAdapter<*, *>.GroupHolder -> holder.bind(
+                    (items[position] as GroupItem).group)
         }
     }
 
@@ -154,11 +159,13 @@ abstract class AppGroupsAdapter<VH : AppGroupsAdapter<VH, T>.GroupHolder, T : Ap
 
         init {
             val context = itemView.context
-            val title = itemView.findViewById<View>(R.id.categoryHeader).findViewById<TextView>(android.R.id.title)
+            val title = itemView.findViewById<View>(R.id.categoryHeader)
+                    .findViewById<TextView>(android.R.id.title)
             title.setText(headerText)
             title.setTextColor(context.createDisabledColor(accent))
 
-            val tipIcon = itemView.findViewById<View>(R.id.tipRow).findViewById<ImageView>(android.R.id.icon)
+            val tipIcon = itemView.findViewById<View>(R.id.tipRow)
+                    .findViewById<ImageView>(android.R.id.icon)
             tipIcon.tintDrawable(accent)
         }
     }
@@ -237,12 +244,14 @@ abstract class AppGroupsAdapter<VH : AppGroupsAdapter<VH, T>.GroupHolder, T : Ap
 
     inner class TouchHelperCallback : ItemTouchHelper.Callback() {
 
-        override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
+        override fun getMovementFlags(recyclerView: RecyclerView,
+                                      viewHolder: RecyclerView.ViewHolder): Int {
             if (viewHolder !is AppGroupsAdapter<*, *>.GroupHolder) return 0
             return makeMovementFlags(ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0)
         }
 
-        override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+        override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
+                            target: RecyclerView.ViewHolder): Boolean {
             return move(viewHolder.adapterPosition, target.adapterPosition)
         }
 

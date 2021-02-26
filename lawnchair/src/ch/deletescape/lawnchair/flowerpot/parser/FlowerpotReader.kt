@@ -40,7 +40,8 @@ class FlowerpotReader(inputStream: InputStream) : BufferedReader(InputStreamRead
                 throw FlowerpotFormatException("Version declaration can only appear once")
             }
             if (!Flowerpot.SUPPORTED_VERSIONS.contains(filter.version)) {
-                throw FlowerpotFormatException("Unsupported version ${filter.version} (supported are ${Flowerpot.SUPPORTED_VERSIONS.joinToString()})")
+                throw FlowerpotFormatException(
+                        "Unsupported version ${filter.version} (supported are ${Flowerpot.SUPPORTED_VERSIONS.joinToString()})")
             }
             version = filter.version
         }

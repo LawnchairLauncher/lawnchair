@@ -47,7 +47,8 @@ import ch.deletescape.lawnchair.util.hasFlags
 import com.android.launcher3.R
 
 @Keep
-class ThemePreference(context: Context, attrs: AttributeSet?) : PreferenceDialogPreference(context, attrs),
+class ThemePreference(context: Context, attrs: AttributeSet?) :
+        PreferenceDialogPreference(context, attrs),
         LawnchairPreferences.OnPreferenceChangeListener {
 
     private val prefs = context.lawnchairPrefs

@@ -19,7 +19,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.view.View;
 import android.view.animation.Interpolator;
-
 import androidx.core.graphics.ColorUtils;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
@@ -40,6 +39,15 @@ public class ColorScrim extends ViewScrim {
         mInterpolator = interpolator;
     }
 
+    public static ColorScrim createExtractedColorScrim(View view) {
+        WallpaperColorInfo colors = WallpaperColorInfo.INSTANCE.get(view.getContext());
+        int alpha = view.getResources().getInteger(R.integer.extracted_color_gradient_alpha);
+        ColorScrim scrim = new ColorScrim(view, ColorUtils.setAlphaComponent(
+                colors.getSecondaryColor(), alpha), Interpolators.LINEAR);
+        scrim.attach();
+        return scrim;
+    }
+
     @Override
     protected void onProgressChanged() {
         mCurrentColor = ColorUtils.setAlphaComponent(mColor,
@@ -51,14 +59,5 @@ public class ColorScrim extends ViewScrim {
         if (mProgress > 0) {
             canvas.drawColor(mCurrentColor);
         }
-    }
-
-    public static ColorScrim createExtractedColorScrim(View view) {
-        WallpaperColorInfo colors = WallpaperColorInfo.INSTANCE.get(view.getContext());
-        int alpha = view.getResources().getInteger(R.integer.extracted_color_gradient_alpha);
-        ColorScrim scrim = new ColorScrim(view, ColorUtils.setAlphaComponent(
-                colors.getSecondaryColor(), alpha), Interpolators.LINEAR);
-        scrim.attach();
-        return scrim;
     }
 }

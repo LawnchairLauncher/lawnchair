@@ -18,6 +18,7 @@
 package ch.deletescape.lawnchair.smartspace.accu.model.sub;
 
 public class AccuTemperatureSummaryGSon {
+
     AccuUnitGSon Past12HourRange;
     AccuUnitGSon Past24HourRange;
     AccuUnitGSon Past6HourRange;

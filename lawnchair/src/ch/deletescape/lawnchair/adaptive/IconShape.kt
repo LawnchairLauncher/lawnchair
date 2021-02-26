@@ -24,8 +24,6 @@ import android.graphics.PointF
 import ch.deletescape.lawnchair.util.extensions.e
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
-import java.lang.Exception
-import kotlin.math.min
 
 open class IconShape(val topLeft: Corner,
                      val topRight: Corner,
@@ -52,9 +50,9 @@ open class IconShape(val topLeft: Corner,
                 topRightScale: PointF,
                 bottomLeftScale: PointF,
                 bottomRightScale: PointF) : this(Corner(topLeftShape, topLeftScale),
-                                                Corner(topRightShape, topRightScale),
-                                                Corner(bottomLeftShape, bottomLeftScale),
-                                                Corner(bottomRightShape, bottomRightScale))
+                                                 Corner(topRightShape, topRightScale),
+                                                 Corner(bottomLeftShape, bottomLeftScale),
+                                                 Corner(bottomRightShape, bottomRightScale))
 
     constructor(shape: IconShape) : this(
             shape.topLeft, shape.topRight, shape.bottomLeft, shape.bottomRight)
@@ -84,7 +82,7 @@ open class IconShape(val topLeft: Corner,
 
     @JvmOverloads
     fun addToPath(path: Path, left: Float, top: Float, right: Float, bottom: Float,
-                  size : Float = 50f, endSize: Float = size, progress: Float = 0f) {
+                  size: Float = 50f, endSize: Float = size, progress: Float = 0f) {
         val topLeftSizeX = Utilities.mapRange(progress, topLeft.scale.x * size, endSize)
         val topLeftSizeY = Utilities.mapRange(progress, topLeft.scale.y * size, endSize)
         val topRightSizeX = Utilities.mapRange(progress, topRight.scale.x * size, endSize)
@@ -234,10 +232,10 @@ open class IconShape(val topLeft: Corner,
     }
 
     object Sammy : IconShape(IconCornerShape.sammy,
-                                IconCornerShape.sammy,
-                                IconCornerShape.sammy,
-                                IconCornerShape.sammy,
-                                1f, 1f, 1f, 1f) {
+                             IconCornerShape.sammy,
+                             IconCornerShape.sammy,
+                             IconCornerShape.sammy,
+                             1f, 1f, 1f, 1f) {
 
         override val qsbEdgeRadius = R.dimen.qsb_radius_squircle
 

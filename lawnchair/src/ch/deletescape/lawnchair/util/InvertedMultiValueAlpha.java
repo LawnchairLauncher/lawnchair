@@ -17,7 +17,6 @@
 package ch.deletescape.lawnchair.util;
 
 import android.util.FloatProperty;
-import android.util.Property;
 import java.util.function.Consumer;
 
 /**
@@ -72,6 +71,10 @@ public class InvertedMultiValueAlpha {
             mMyMask = myMask;
         }
 
+        public float getValue() {
+            return 1 - mValue;
+        }
+
         public void setValue(float value) {
             value = 1 - value;
             if (mValue == value) {
@@ -94,10 +97,6 @@ public class InvertedMultiValueAlpha {
             mValue = value;
 
             mConsumer.accept(1 - mOthers * mValue);
-        }
-
-        public float getValue() {
-            return 1 - mValue;
         }
     }
 }

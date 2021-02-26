@@ -20,14 +20,12 @@ package ch.deletescape.lawnchair.settings.ui.search
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import com.android.launcher3.R
-import kotlinx.android.synthetic.main.activity_settings_search.*
-import android.text.TextUtils
-import android.view.MenuItem
 import android.widget.*
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -38,6 +36,8 @@ import ch.deletescape.lawnchair.settings.ui.SettingsActivity.EXTRA_FRAGMENT_ARG_
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity.SubSettingsFragment.*
 import ch.deletescape.lawnchair.settings.ui.SettingsBaseActivity
 import com.android.launcher3.BuildConfig
+import com.android.launcher3.R
+import kotlinx.android.synthetic.main.activity_settings_search.*
 
 class SettingsSearchActivity : SettingsBaseActivity(), SearchView.OnQueryTextListener {
 
@@ -113,20 +113,23 @@ class SettingsSearchActivity : SettingsBaseActivity(), SearchView.OnQueryTextLis
             if (debugCommand.hash("SHA-1").endsWith(BuildConfig.DEBUG_MENU_CODE_HASH)) {
                 lawnchairPrefs.debugMenuEnabled = !lawnchairPrefs.debugMenuEnabled
                 startActivity(Intent(this, SettingsActivity::class.java)
-                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+                                      .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
                 onBackPressed()
             }
         }
         val matches = if (query.isEmpty())
             emptyList()
         else
-            searchIndex.entries.filter { it.title?.toLowerCase()?.contains(query.toLowerCase()) == true }
+            searchIndex.entries.filter {
+                it.title?.toLowerCase()?.contains(query.toLowerCase()) == true
+            }
         val showNoResults = matches.isEmpty() && query.isNotEmpty()
         no_results_layout.animate().alpha(if (showNoResults) 1f else 0f).start()
         searchAdapter.postSearchResults(matches)
     }
 
-    class SearchAdapter(private val activity: SettingsSearchActivity) : RecyclerView.Adapter<SearchAdapter.Holder>() {
+    class SearchAdapter(private val activity: SettingsSearchActivity) :
+            RecyclerView.Adapter<SearchAdapter.Holder>() {
 
         private val searchResults = ArrayList<SearchIndex.SettingsEntry>()
 
@@ -166,7 +169,8 @@ class SettingsSearchActivity : SettingsBaseActivity(), SearchView.OnQueryTextLis
             protected val iconView = itemView.findViewById(android.R.id.icon) as ImageView
             protected val breadcrumbView = itemView.findViewById(R.id.breadcrumb) as TextView
             protected val sliceView = itemView.findViewById(R.id.slice_square) as LinearLayout
-            protected val horizontalSliceView = itemView.findViewById(R.id.slice_horizontal) as LinearLayout
+            protected val horizontalSliceView =
+                    itemView.findViewById(R.id.slice_horizontal) as LinearLayout
 
             open fun onBind(activity: SettingsSearchActivity, entry: SearchIndex.SettingsEntry) {
                 titleView.text = entry.title
@@ -220,7 +224,8 @@ class SettingsSearchActivity : SettingsBaseActivity(), SearchView.OnQueryTextLis
 
         class SettingsEntryHolder(itemView: View) : Holder(itemView) {
 
-            override fun onBind(activity: SettingsSearchActivity, entry: SearchIndex.SettingsEntry) {
+            override fun onBind(activity: SettingsSearchActivity,
+                                entry: SearchIndex.SettingsEntry) {
                 super.onBind(activity, entry)
 
                 itemView.setOnClickListener {

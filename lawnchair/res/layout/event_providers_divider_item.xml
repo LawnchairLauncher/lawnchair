@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~     This file is part of Lawnchair Launcher.
   ~
   ~     Lawnchair Launcher is free software: you can redistribute it and/or modify
@@ -16,8 +15,7 @@
   ~     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -26,10 +24,10 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginStart="@dimen/dialog_horizontal_padding"
-        android:layout_marginEnd="@dimen/dialog_horizontal_padding"
-        android:background="?android:attr/listDivider"
         android:layout_marginTop="13dp"
+        android:layout_marginEnd="@dimen/dialog_horizontal_padding"
         android:layout_marginBottom="13dp"
+        android:background="?android:attr/listDivider"
         android:importantForAccessibility="no" />
 
     <include

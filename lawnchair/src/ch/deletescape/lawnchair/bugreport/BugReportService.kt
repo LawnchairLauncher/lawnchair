@@ -85,7 +85,8 @@ class BugReportService : Service() {
 
     @SuppressLint("StringFormatInvalid")
     fun notify(report: BugReport, uploading: Boolean = false) {
-        val manager = ContextCompat.getSystemService(this, NotificationManager::class.java) ?: return
+        val manager =
+                ContextCompat.getSystemService(this, NotificationManager::class.java) ?: return
         val notificationId = report.notificationId
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(report.getTitle(this))
@@ -96,8 +97,8 @@ class BugReportService : Service() {
                 .setGroup(GROUP_KEY)
                 .setShowWhen(true)
                 .setWhen(report.id)
-                // This apparently breaks grouping
-                //.setAutoCancel(true)
+        // This apparently breaks grouping
+        //.setAutoCancel(true)
 
         val count = manager.activeNotifications.filter { it.groupKey == GROUP_KEY }.count()
         val summary = if (count > 99 || count < 0) {
@@ -132,7 +133,8 @@ class BugReportService : Service() {
         }
 
         val pendingShareIntent = PendingIntent.getActivity(
-                this, notificationId, report.createShareIntent(this), PendingIntent.FLAG_UPDATE_CURRENT)
+                this, notificationId, report.createShareIntent(this),
+                PendingIntent.FLAG_UPDATE_CURRENT)
         val shareActionBuilder = NotificationCompat.Action.Builder(
                 R.drawable.ic_share, getString(R.string.action_share), pendingShareIntent)
         builder.addAction(shareActionBuilder.build())
@@ -143,7 +145,8 @@ class BugReportService : Service() {
                     .putExtra(INTENT_EXTRA_REPORT, report)
             val pendingCopyIntent = PendingIntent.getBroadcast(
                     this, notificationId, copyIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-            val copyText = if (report.link != null) R.string.action_copy_link else R.string.action_copy
+            val copyText =
+                    if (report.link != null) R.string.action_copy_link else R.string.action_copy
             val copyActionBuilder = NotificationCompat.Action.Builder(
                     R.drawable.ic_copy, getString(copyText), pendingCopyIntent)
             builder.addAction(copyActionBuilder.build())
@@ -158,7 +161,8 @@ class BugReportService : Service() {
                     .putExtra(INTENT_EXTRA_REPORT, report)
             val pendingUploadIntent = PendingIntent.getBroadcast(
                     this, notificationId, uploadIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-            val uploadText = if (report.uploadError) R.string.action_dogbin_upload_error else R.string.action_dogbin_upload
+            val uploadText =
+                    if (report.uploadError) R.string.action_dogbin_upload_error else R.string.action_dogbin_upload
             val uploadActionBuilder = NotificationCompat.Action.Builder(
                     R.drawable.ic_upload, getString(uploadText), pendingUploadIntent)
             builder.addAction(uploadActionBuilder.build())
@@ -171,12 +175,14 @@ class BugReportService : Service() {
     private fun startDogbinUpload(report: BugReport) {
         notify(report, true)
         startService(Intent(this, DogbinUploadService::class.java)
-                .putExtra(INTENT_EXTRA_REPORT, report))
+                             .putExtra(INTENT_EXTRA_REPORT, report))
     }
 
     private fun copyReport(report: BugReport) {
-        val clipData = ClipData.newPlainText(getString(R.string.lawnchair_bug_report), report.link ?: report.contents)
-        ContextCompat.getSystemService(this, ClipboardManager::class.java)!!.setPrimaryClip(clipData)
+        val clipData = ClipData.newPlainText(getString(R.string.lawnchair_bug_report),
+                                             report.link ?: report.contents)
+        ContextCompat.getSystemService(this, ClipboardManager::class.java)!!
+                .setPrimaryClip(clipData)
 
         Toast.makeText(this, R.string.copied_toast, Toast.LENGTH_LONG).show()
     }
@@ -209,7 +215,8 @@ class BugReportService : Service() {
         const val GROUP_KEY = "ch.deletescape.lawnchair.CRASHES"
         const val GROUP_ID = 0
 
-        private const val PERMISSION = "${BuildConfig.APPLICATION_ID}.permission.BROADCAST_BUGREPORT"
+        private const val PERMISSION =
+                "${BuildConfig.APPLICATION_ID}.permission.BROADCAST_BUGREPORT"
         private const val COPY_ACTION = "${BuildConfig.APPLICATION_ID}.bugreport.COPY"
         private const val UPLOAD_ACTION = "${BuildConfig.APPLICATION_ID}.bugreport.UPLOAD"
         const val UPLOAD_COMPLETE_ACTION = "${BuildConfig.APPLICATION_ID}.bugreport.UPLOAD_COMPLETE"
@@ -217,12 +224,17 @@ class BugReportService : Service() {
         fun registerNotificationChannel(context: Context) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val channels = arrayListOf(
-                        NotificationChannel(CHANNEL_ID, context.getString(R.string.bugreport_channel_name), NotificationManager.IMPORTANCE_HIGH),
-                        NotificationChannel(STATUS_ID, context.getString(R.string.status_channel_name), NotificationManager.IMPORTANCE_NONE)
-                )
+                        NotificationChannel(CHANNEL_ID,
+                                            context.getString(R.string.bugreport_channel_name),
+                                            NotificationManager.IMPORTANCE_HIGH),
+                        NotificationChannel(STATUS_ID,
+                                            context.getString(R.string.status_channel_name),
+                                            NotificationManager.IMPORTANCE_NONE)
+                                          )
 
                 // Register the channel with the system
-                context.getSystemService(NotificationManager::class.java).createNotificationChannels(channels)
+                context.getSystemService(NotificationManager::class.java)
+                        .createNotificationChannels(channels)
             }
         }
 

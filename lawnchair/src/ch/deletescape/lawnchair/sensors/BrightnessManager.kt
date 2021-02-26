@@ -26,7 +26,7 @@ import ch.deletescape.lawnchair.ensureOnMainThread
 import ch.deletescape.lawnchair.useApplicationContext
 import ch.deletescape.lawnchair.util.SingletonHolder
 
-class BrightnessManager private constructor(private val context: Context): SensorEventListener {
+class BrightnessManager private constructor(private val context: Context) : SensorEventListener {
 
     private val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
     private val sensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)
@@ -69,7 +69,8 @@ class BrightnessManager private constructor(private val context: Context): Senso
         }
     }
 
-    companion object : SingletonHolder<BrightnessManager, Context>(ensureOnMainThread(useApplicationContext(::BrightnessManager)))
+    companion object : SingletonHolder<BrightnessManager, Context>(
+            ensureOnMainThread(useApplicationContext(::BrightnessManager)))
 
     interface OnBrightnessChangeListener {
         fun onBrightnessChanged(illuminance: Float)

@@ -32,7 +32,9 @@ abstract class GestureHandler(val context: Context, val config: JSONObject?) {
     open val configIntent: Intent? = null
     open val isAvailable: Boolean = true
     open val icon: Drawable? = null
-    open val iconResource: Intent.ShortcutIconResource by lazy { Intent.ShortcutIconResource.fromContext(context, R.mipmap.ic_launcher) }
+    open val iconResource: Intent.ShortcutIconResource by lazy {
+        Intent.ShortcutIconResource.fromContext(context, R.mipmap.ic_launcher)
+    }
 
     abstract fun onGestureTrigger(controller: GestureController, view: View? = null)
 
@@ -48,7 +50,8 @@ abstract class GestureHandler(val context: Context, val config: JSONObject?) {
 
     }
 
-    open fun isAvailableForSwipeUp(isSwipeUp: Boolean) = isAvailable && (!isSwipeUp || !requiresForeground)
+    open fun isAvailableForSwipeUp(
+            isSwipeUp: Boolean) = isAvailable && (!isSwipeUp || !requiresForeground)
 
     override fun toString(): String {
         return JSONObject().apply {
@@ -72,7 +75,7 @@ class BlankGestureHandler(context: Context, config: JSONObject?) : GestureHandle
 }
 
 class RunnableGestureHandler(context: Context,
-        private val onTrigger: Runnable) : GestureHandler(context, null) {
+                             private val onTrigger: Runnable) : GestureHandler(context, null) {
 
     override val displayName: String = context.getString(R.string.action_none)
 

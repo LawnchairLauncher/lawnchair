@@ -42,7 +42,9 @@ class FontSelectionActivity : SettingsBaseActivity(), SearchView.OnQueryTextList
 
     private val adapter by lazy { FontAdapter(this) }
     private val key by lazy { intent.getStringExtra(EXTRA_KEY) }
-    private val fontPref by lazy { CustomFontManager.getInstance(this).fontPrefs.getValue(key!!.toString()) }
+    private val fontPref by lazy {
+        CustomFontManager.getInstance(this).fontPrefs.getValue(key!!.toString())
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -110,7 +112,8 @@ class FontSelectionActivity : SettingsBaseActivity(), SearchView.OnQueryTextList
     }
 
     private fun addCustomFont(uri: Uri): FontCache.TTFFont? {
-        val name = contentResolver.getDisplayName(uri) ?: throw AddFontException("Couldn't get file name")
+        val name = contentResolver.getDisplayName(uri) ?: throw AddFontException(
+                "Couldn't get file name")
         val file = FontCache.TTFFont.getFile(this, name)
         val tmpFile = File(cacheDir.apply { mkdirs() }, file.name)
 
@@ -170,7 +173,8 @@ class FontSelectionActivity : SettingsBaseActivity(), SearchView.OnQueryTextList
         return fontsDir.listFiles().map { FontCache.TTFFont(this, it) }
     }
 
-    inner class FontAdapter(private val context: Context) : RecyclerView.Adapter<FontAdapter.Holder>() {
+    inner class FontAdapter(private val context: Context) :
+            RecyclerView.Adapter<FontAdapter.Holder>() {
 
         private val items = ArrayList<Item>()
         private val filtered = ArrayList<Item>()
@@ -193,12 +197,14 @@ class FontSelectionActivity : SettingsBaseActivity(), SearchView.OnQueryTextList
                 items.add(Divider())
                 items.add(FamilyCache(FontCache.Family(FontCache.SystemFont("sans-serif"))))
                 items.add(FamilyCache(FontCache.Family(FontCache.SystemFont("sans-serif-medium"))))
-                items.add(FamilyCache(FontCache.Family(FontCache.SystemFont("sans-serif-condensed"))))
+                items.add(
+                        FamilyCache(FontCache.Family(FontCache.SystemFont("sans-serif-condensed"))))
                 it.mapTo(items) { font ->
                     val variantsMap = HashMap<String, FontCache.Font>()
                     val variants = font.variants.toTypedArray()
                     font.variants.forEach { variant ->
-                        variantsMap[variant] = FontCache.GoogleFont(context, font.family, variant, variants)
+                        variantsMap[variant] =
+                                FontCache.GoogleFont(context, font.family, variant, variants)
                     }
                     FamilyCache(FontCache.Family(font.family, variantsMap))
                 }
@@ -252,7 +258,8 @@ class FontSelectionActivity : SettingsBaseActivity(), SearchView.OnQueryTextList
         override fun getItemViewType(position: Int) = filtered[position].viewType
 
         abstract inner class Holder(parent: ViewGroup, layout: Int) :
-                RecyclerView.ViewHolder(LayoutInflater.from(context).inflate(layout, parent, false)) {
+                RecyclerView.ViewHolder(
+                        LayoutInflater.from(context).inflate(layout, parent, false)) {
 
             open var selected = false
 
@@ -269,7 +276,8 @@ class FontSelectionActivity : SettingsBaseActivity(), SearchView.OnQueryTextList
             override fun bind(item: Item) {
                 super.bind(item)
                 itemView.setOnClickListener(this)
-                itemView.findViewById<ImageView>(android.R.id.icon).tintDrawable(getColorEngineAccent())
+                itemView.findViewById<ImageView>(android.R.id.icon)
+                        .tintDrawable(getColorEngineAccent())
             }
 
             override fun onClick(v: View) {
@@ -278,7 +286,8 @@ class FontSelectionActivity : SettingsBaseActivity(), SearchView.OnQueryTextList
         }
 
         open inner class FamilyHolder(parent: ViewGroup) : Holder(parent, R.layout.font_item),
-                View.OnClickListener, AdapterView.OnItemSelectedListener {
+                                                           View.OnClickListener,
+                                                           AdapterView.OnItemSelectedListener {
 
             private val radioButton: RadioButton = itemView.findViewById(R.id.radio_button)
             private val title: TextView = itemView.findViewById(android.R.id.title)
@@ -328,7 +337,8 @@ class FontSelectionActivity : SettingsBaseActivity(), SearchView.OnQueryTextList
 
             override fun bind(item: Item) {
                 super.bind(item)
-                val family = item as? FamilyCache ?: throw IllegalArgumentException("item is not a font family")
+                val family = item as? FamilyCache ?: throw IllegalArgumentException(
+                        "item is not a font family")
                 deleted = false
                 itemView.setOnClickListener(this)
                 deleteButton.setOnClickListener(this)
@@ -366,7 +376,8 @@ class FontSelectionActivity : SettingsBaseActivity(), SearchView.OnQueryTextList
                 spinner.setSelection(selectedVariant)
             }
 
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int,
+                                        id: Long) {
                 if (selectedVariant == position) return
                 selectedVariant = position
                 if (selected) {
@@ -402,7 +413,7 @@ class FontSelectionActivity : SettingsBaseActivity(), SearchView.OnQueryTextList
             val variants = family.variants.values.sortedBy { it.familySorter }.map { Cache(it) }
         }
 
-        inner class Cache(val font: FontCache.Font): FontCache.Font.LoadCallback {
+        inner class Cache(val font: FontCache.Font) : FontCache.Font.LoadCallback {
 
             var callback: FontCache.Font.LoadCallback? = null
             var typeface: Typeface? = null
@@ -430,7 +441,8 @@ class FontSelectionActivity : SettingsBaseActivity(), SearchView.OnQueryTextList
         }
     }
 
-    class FontSwitcher private constructor(private val textView: TextView) : FontCache.Font.LoadCallback {
+    class FontSwitcher private constructor(private val textView: TextView) :
+            FontCache.Font.LoadCallback {
 
         var toLoad: FontAdapter.Cache? = null
             set(value) {
@@ -454,12 +466,14 @@ class FontSelectionActivity : SettingsBaseActivity(), SearchView.OnQueryTextList
         companion object {
 
             fun get(textView: TextView): FontSwitcher {
-                return textView.getTag(R.id.font_switcher) as? FontSwitcher ?: FontSwitcher(textView)
+                return textView.getTag(R.id.font_switcher) as? FontSwitcher ?: FontSwitcher(
+                        textView)
             }
         }
     }
 
-    class FamilySpinner(context: Context) : ArrayAdapter<FontAdapter.Cache>(context, android.R.layout.simple_spinner_item) {
+    class FamilySpinner(context: Context) :
+            ArrayAdapter<FontAdapter.Cache>(context, android.R.layout.simple_spinner_item) {
 
         init {
             setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)

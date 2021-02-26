@@ -20,7 +20,6 @@ package ch.deletescape.lawnchair.theme
 import android.app.Activity
 import android.content.Context
 import com.android.launcher3.R
-import com.android.launcher3.Utilities
 import java.lang.ref.WeakReference
 
 /*

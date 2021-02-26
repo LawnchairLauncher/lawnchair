@@ -24,11 +24,14 @@ import retrofit2.http.Query
 
 interface AccuSearchRetrofitService {
     @GET("locations/v1/cities/autocomplete.json")
-    fun getAutoComplete(@Query("q") query: String, @Query("language") language: String): Call<List<AccuLocationGSon>>
+    fun getAutoComplete(@Query("q") query: String,
+                        @Query("language") language: String): Call<List<AccuLocationGSon>>
 
     @GET("locations/v1/cities/geoposition/search.json")
-    fun getGeoPosition(@Query("q") query: String, @Query("language") language: String): Call<AccuLocationGSon>
+    fun getGeoPosition(@Query("q") query: String,
+                       @Query("language") language: String): Call<AccuLocationGSon>
 
     @GET("locations/v1/search")
-    fun search(@Query("q") query: String, @Query("language") language: String): Call<List<AccuLocationGSon>>
+    fun search(@Query("q") query: String,
+               @Query("language") language: String): Call<List<AccuLocationGSon>>
 }

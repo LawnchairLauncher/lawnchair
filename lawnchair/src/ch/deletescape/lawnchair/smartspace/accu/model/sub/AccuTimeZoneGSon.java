@@ -18,6 +18,7 @@
 package ch.deletescape.lawnchair.smartspace.accu.model.sub;
 
 public class AccuTimeZoneGSon {
+
     String Code;
     String GmtOffset;
     String IsDaylightSaving;

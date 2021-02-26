@@ -9,17 +9,18 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.Workspace;
 
 public class WorkspaceOptionModeTouchHelper {
+
     private static final String TAG = "WorkspaceOptionModeTouchHelper";
     private long mCurrentMillis;
     private boolean mIsInTouchCycle;
     private boolean mIsStillPossibleClick;
     private int mLastTouchX;
     private int mLastTouchY;
-    private Launcher mLauncher;
-    private int mMinSnapDistance;
-    private int mMinSnapVelocity;
-    private float mPossibleClickDistanceSquare = 400.0f;
-    private int mScreenWidth;
+    private final Launcher mLauncher;
+    private final int mMinSnapDistance;
+    private final int mMinSnapVelocity;
+    private final float mPossibleClickDistanceSquare = 400.0f;
+    private final int mScreenWidth;
     private int mTouchDownWorkspaceCurrentPage;
     private int mTouchDownWorkspaceScrollX;
     private int mTouchDownX;
@@ -28,8 +29,19 @@ public class WorkspaceOptionModeTouchHelper {
     private int mWorkspaceOptionModeEndPage;
     private int mWorkspaceOptionModeStartPage;
 
+    public WorkspaceOptionModeTouchHelper(Launcher launcher) {
+        mLauncher = launcher;
+        mScreenWidth = launcher.getDeviceProfile().widthPx;
+        mMinSnapDistance = mScreenWidth / 3;
+        mMinSnapVelocity = 1;
+    }
+
     private static float computeDampeningFactor(float f) {
         return f / (15.915494f + f);
+    }
+
+    public static float interpolate(float f, float f2, float f3) {
+        return ((1.0f - f3) * f) + (f3 * f2);
     }
 
     private float disSquare(float f, float f2, float f3, float f4) {
@@ -38,19 +50,9 @@ public class WorkspaceOptionModeTouchHelper {
         return (f * f) + (f2 * f2);
     }
 
-    public static float interpolate(float f, float f2, float f3) {
-        return ((1.0f - f3) * f) + (f3 * f2);
-    }
-
-    public WorkspaceOptionModeTouchHelper(Launcher launcher) {
-        mLauncher = launcher;
-        mScreenWidth = launcher.getDeviceProfile().widthPx;
-        mMinSnapDistance = mScreenWidth / 3;
-        mMinSnapVelocity = 1;
-    }
-
     public boolean dispatchTouchEvent(MotionEvent motionEvent) {
-        if (!mLauncher.isInState(LauncherState.OPTIONS) || AbstractFloatingView.getTopOpenView(mLauncher) != null) {
+        if (!mLauncher.isInState(LauncherState.OPTIONS)
+                || AbstractFloatingView.getTopOpenView(mLauncher) != null) {
             return false;
         }
         switch (motionEvent.getAction()) {
@@ -101,7 +103,8 @@ public class WorkspaceOptionModeTouchHelper {
         if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
             float x = ((float) mTouchDownX) - motionEvent.getX();
             boolean isPossibleClick = isPossibleClick(motionEvent);
-            if ((Math.abs(x) > mMinSnapDistance || mVelocity >= ((float) mMinSnapVelocity)) && !(mIsStillPossibleClick && isPossibleClick)) {
+            if ((Math.abs(x) > mMinSnapDistance || mVelocity >= ((float) mMinSnapVelocity)) && !(
+                    mIsStillPossibleClick && isPossibleClick)) {
                 workspace.snapToPage(getNextPage(mTouchDownWorkspaceCurrentPage, x > 0));
             } else {
                 if (mIsStillPossibleClick && isPossibleClick) {
@@ -121,8 +124,12 @@ public class WorkspaceOptionModeTouchHelper {
 
     private int getNextPage(int page, boolean positive) {
         page += positive ? 1 : -1;
-        if (page < mWorkspaceOptionModeStartPage) return mWorkspaceOptionModeStartPage;
-        if (page > mWorkspaceOptionModeEndPage) return mWorkspaceOptionModeEndPage;
+        if (page < mWorkspaceOptionModeStartPage) {
+            return mWorkspaceOptionModeStartPage;
+        }
+        if (page > mWorkspaceOptionModeEndPage) {
+            return mWorkspaceOptionModeEndPage;
+        }
         return page;
     }
 
@@ -136,7 +143,8 @@ public class WorkspaceOptionModeTouchHelper {
             workspace.getLocalVisibleRect(new Rect());
             if (mTouchDownY >= iArr[1]
                     && mTouchDownY <= iArr[1] + (workspace.getHeight() * workspace.getScaleY())
-                    && (mTouchDownX < iArr[0] || mTouchDownX > iArr[0] + (workspace.getWidth() * workspace.getScaleX()))) {
+                    && (mTouchDownX < iArr[0] || mTouchDownX > iArr[0] + (workspace.getWidth()
+                    * workspace.getScaleX()))) {
                 mTouchDownWorkspaceCurrentPage = workspace.getNextPage();
                 mTouchDownWorkspaceScrollX = workspace.getScrollX();
                 mWorkspaceOptionModeEndPage = workspace.getPageCount() - 1;
@@ -150,7 +158,8 @@ public class WorkspaceOptionModeTouchHelper {
     }
 
     private boolean isPossibleClick(MotionEvent motionEvent) {
-        return disSquare(mTouchDownX, mTouchDownY, motionEvent.getX(), motionEvent.getY()) <= mPossibleClickDistanceSquare;
+        return disSquare(mTouchDownX, mTouchDownY, motionEvent.getX(), motionEvent.getY())
+                <= mPossibleClickDistanceSquare;
     }
 
     public float computeVelocity(float f, long j) {

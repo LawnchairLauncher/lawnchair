@@ -23,7 +23,10 @@ import android.content.Intent
 import android.graphics.Rect
 import android.view.View
 import ch.deletescape.lawnchair.lawnchairPrefs
-import com.android.launcher3.*
+import com.android.launcher3.BubbleTextView
+import com.android.launcher3.Launcher
+import com.android.launcher3.R
+import com.android.launcher3.Utilities
 
 abstract class AnimationType {
 
@@ -95,7 +98,8 @@ abstract class AnimationType {
 
         override fun getActivityLaunchOptions(launcher: Launcher, v: View?): ActivityOptions? {
             val bounds = getBounds(v) ?: return super.getActivityLaunchOptions(launcher, v)
-            return ActivityOptions.makeScaleUpAnimation(v, bounds.left, bounds.top, bounds.width(), bounds.height())
+            return ActivityOptions.makeScaleUpAnimation(v, bounds.left, bounds.top, bounds.width(),
+                                                        bounds.height())
         }
     }
 
@@ -111,7 +115,8 @@ abstract class AnimationType {
 
         override fun getActivityLaunchOptions(launcher: Launcher, v: View?): ActivityOptions? {
             val bounds = getBounds(v) ?: return super.getActivityLaunchOptions(launcher, v)
-            return ActivityOptions.makeClipRevealAnimation(v, bounds.left, bounds.top, bounds.width(), bounds.height())
+            return ActivityOptions.makeClipRevealAnimation(v, bounds.left, bounds.top,
+                                                           bounds.width(), bounds.height())
         }
     }
 
@@ -151,7 +156,7 @@ abstract class AnimationType {
 
         fun hasControlRemoteAppTransitionPermission(context: Context): Boolean {
             return !context.lawnchairPrefs.forceFakePieAnims
-                    && Utilities.hasPermission(context, CONTROL_REMOTE_APP_TRANSITION_PERMISSION)
+                   && Utilities.hasPermission(context, CONTROL_REMOTE_APP_TRANSITION_PERMISSION)
         }
     }
 }

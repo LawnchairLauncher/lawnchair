@@ -18,6 +18,7 @@
 package ch.deletescape.lawnchair.smartspace.accu.model.sub;
 
 public class AccuHeadlineGSon {
+
     String Category;
     String EffectiveDate;
     long EffectiveEpochDate;

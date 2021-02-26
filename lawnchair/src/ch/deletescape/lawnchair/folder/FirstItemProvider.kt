@@ -29,7 +29,7 @@ class FirstItemProvider(private val info: FolderInfo) : FolderInfo.FolderListene
         info.addListener(this)
     }
 
-    private fun findFirstItem() = info.contents.minBy { it.rank }
+    private fun findFirstItem() = info.contents.minByOrNull { it.rank }
 
     override fun onItemsChanged(animate: Boolean) {
         firstItem = findFirstItem()

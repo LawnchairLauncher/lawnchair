@@ -32,7 +32,10 @@ class ApkAssets(apkPath: String) {
 
     companion object {
         private val clazz by lazy { Class.forName("android.content.res.ApkAssets") }
-        private val loadFromPath by lazy { clazz.getDeclaredMethod("loadFromPath", String::class.java, Boolean::class.java, Boolean::class.java) }
+        private val loadFromPath by lazy {
+            clazz.getDeclaredMethod("loadFromPath", String::class.java, Boolean::class.java,
+                                    Boolean::class.java)
+        }
         private val getXml by lazy { clazz.getDeclaredMethod("openXml", String::class.java) }
     }
 }

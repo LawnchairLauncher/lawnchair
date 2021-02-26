@@ -21,7 +21,6 @@ package ch.deletescape.lawnchair.settings.ui.preview
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.Rect
 import android.graphics.RectF
 import android.graphics.drawable.BitmapDrawable
 import android.util.AttributeSet
@@ -57,10 +56,14 @@ class CustomGridView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
         heightSeekbar.progress = currentValues.height
         widthSeekbar.progress = currentValues.width
         numHotseatSeekbar.progress = currentValues.numHotseat
-        workspacePaddingLeftSeekbar.progress = (currentValues.workspacePaddingScale.left * 100).toInt()
-        workspacePaddingRightSeekbar.progress = (currentValues.workspacePaddingScale.right * 100).toInt()
-        workspacePaddingTopSeekbar.progress = (currentValues.workspacePaddingScale.top * 100).toInt()
-        workspacePaddingBottomSeekbar.progress = (currentValues.workspacePaddingScale.bottom * 100).toInt()
+        workspacePaddingLeftSeekbar.progress =
+                (currentValues.workspacePaddingScale.left * 100).toInt()
+        workspacePaddingRightSeekbar.progress =
+                (currentValues.workspacePaddingScale.right * 100).toInt()
+        workspacePaddingTopSeekbar.progress =
+                (currentValues.workspacePaddingScale.top * 100).toInt()
+        workspacePaddingBottomSeekbar.progress =
+                (currentValues.workspacePaddingScale.bottom * 100).toInt()
         heightSeekbar.let {
             it.min = 3
             it.max = 20
@@ -104,10 +107,13 @@ class CustomGridView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
         heightValue.text = "${values.height}"
         widthValue.text = "${values.width}"
         numHotseatValue.text = "${values.numHotseat}"
-        workspacePaddingLeftValue.text = (values.workspacePaddingScale.left * 100).toInt().toString()
-        workspacePaddingRightValue.text = (values.workspacePaddingScale.right * 100).toInt().toString()
+        workspacePaddingLeftValue.text =
+                (values.workspacePaddingScale.left * 100).toInt().toString()
+        workspacePaddingRightValue.text =
+                (values.workspacePaddingScale.right * 100).toInt().toString()
         workspacePaddingTopValue.text = (values.workspacePaddingScale.top * 100).toInt().toString()
-        workspacePaddingBottomValue.text = (values.workspacePaddingScale.bottom * 100).toInt().toString()
+        workspacePaddingBottomValue.text =
+                (values.workspacePaddingScale.bottom * 100).toInt().toString()
     }
 
     private fun updatePreview() {
@@ -115,8 +121,12 @@ class CustomGridView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
     }
 
     override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-        val paddings = RectF(workspacePaddingLeftSeekbar.progress / 100f, workspacePaddingTopSeekbar.progress / 100f, workspacePaddingRightSeekbar.progress / 100f, workspacePaddingBottomSeekbar.progress / 100f)
-        updateText(Values(heightSeekbar.progress, widthSeekbar.progress, numHotseatSeekbar.progress, paddings))
+        val paddings = RectF(workspacePaddingLeftSeekbar.progress / 100f,
+                             workspacePaddingTopSeekbar.progress / 100f,
+                             workspacePaddingRightSeekbar.progress / 100f,
+                             workspacePaddingBottomSeekbar.progress / 100f)
+        updateText(Values(heightSeekbar.progress, widthSeekbar.progress, numHotseatSeekbar.progress,
+                          paddings))
     }
 
     override fun onStartTrackingTouch(seekBar: SeekBar) {
@@ -124,8 +134,12 @@ class CustomGridView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
     }
 
     override fun onStopTrackingTouch(seekBar: SeekBar) {
-        val paddings = RectF(workspacePaddingLeftSeekbar.progress / 100f, workspacePaddingTopSeekbar.progress / 100f, workspacePaddingRightSeekbar.progress / 100f, workspacePaddingBottomSeekbar.progress / 100f)
-        setValues(Values(heightSeekbar.progress, widthSeekbar.progress, numHotseatSeekbar.progress, paddings))
+        val paddings = RectF(workspacePaddingLeftSeekbar.progress / 100f,
+                             workspacePaddingTopSeekbar.progress / 100f,
+                             workspacePaddingRightSeekbar.progress / 100f,
+                             workspacePaddingBottomSeekbar.progress / 100f)
+        setValues(Values(heightSeekbar.progress, widthSeekbar.progress, numHotseatSeekbar.progress,
+                         paddings))
     }
 
     fun setValues(newSize: Values) {
@@ -135,10 +149,14 @@ class CustomGridView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
             heightSeekbar.progress = currentValues.height
             widthSeekbar.progress = currentValues.width
             numHotseatSeekbar.progress = currentValues.numHotseat
-            workspacePaddingLeftSeekbar.progress = (currentValues.workspacePaddingScale.left * 100).toInt()
-            workspacePaddingRightSeekbar.progress = (currentValues.workspacePaddingScale.right * 100).toInt()
-            workspacePaddingTopSeekbar.progress = (currentValues.workspacePaddingScale.top * 100).toInt()
-            workspacePaddingBottomSeekbar.progress = (currentValues.workspacePaddingScale.bottom * 100).toInt()
+            workspacePaddingLeftSeekbar.progress =
+                    (currentValues.workspacePaddingScale.left * 100).toInt()
+            workspacePaddingRightSeekbar.progress =
+                    (currentValues.workspacePaddingScale.right * 100).toInt()
+            workspacePaddingTopSeekbar.progress =
+                    (currentValues.workspacePaddingScale.top * 100).toInt()
+            workspacePaddingBottomSeekbar.progress =
+                    (currentValues.workspacePaddingScale.bottom * 100).toInt()
         }
     }
 

@@ -26,11 +26,12 @@ import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.useApplicationContext
 import ch.deletescape.lawnchair.util.SingletonHolder
 import com.android.launcher3.LauncherAppState
-import com.android.launcher3.model.data.WorkspaceItemInfo
 import com.android.launcher3.icons.LauncherIcons
 import com.android.launcher3.model.ModelWriter
+import com.android.launcher3.model.data.WorkspaceItemInfo
 
-class ShortcutInfoProvider private constructor(context: Context) : CustomInfoProvider<WorkspaceItemInfo>(context) {
+class ShortcutInfoProvider private constructor(context: Context) :
+        CustomInfoProvider<WorkspaceItemInfo>(context) {
 
     private val launcherApps by lazy { context.getSystemService(LauncherApps::class.java) }
 
@@ -56,7 +57,8 @@ class ShortcutInfoProvider private constructor(context: Context) : CustomInfoPro
             val launcherActivityInfo = getLauncherActivityInfo(info)
             val iconCache = LauncherAppState.getInstance(context).iconCache
             val drawable = iconCache.getFullResIcon(launcherActivityInfo, info)
-            val bitmap = LauncherIcons.obtain(context).createBadgedIconBitmap(drawable, info.user, Build.VERSION_CODES.O_MR1)
+            val bitmap = LauncherIcons.obtain(context)
+                    .createBadgedIconBitmap(drawable, info.user, Build.VERSION_CODES.O_MR1)
             info.setIcon(context, bitmap.icon)
         } else {
             info.setIcon(context, null)

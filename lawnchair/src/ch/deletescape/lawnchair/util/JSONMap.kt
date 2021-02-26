@@ -103,10 +103,11 @@ class JSONMap(private val obj: JSONObject) : Map<String, Any> {
 
         override fun isEmpty() = size != 0
 
-        override fun iterator() = TransformIterator(obj.keys()) { key -> obj.get(key)}
+        override fun iterator() = TransformIterator(obj.keys()) { key -> obj.get(key) }
     }
 
-    class TransformIterator<T1, T2>(private val base: Iterator<T1>, private val transform: (T1) -> T2) : Iterator<T2> {
+    class TransformIterator<T1, T2>(private val base: Iterator<T1>,
+                                    private val transform: (T1) -> T2) : Iterator<T2> {
 
         override fun hasNext() = base.hasNext()
 

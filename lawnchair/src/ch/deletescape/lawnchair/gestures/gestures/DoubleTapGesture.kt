@@ -19,7 +19,6 @@ package ch.deletescape.lawnchair.gestures.gestures
 
 import android.view.GestureDetector
 import android.view.MotionEvent
-import ch.deletescape.lawnchair.gestures.BlankGestureHandler
 import ch.deletescape.lawnchair.gestures.Gesture
 import ch.deletescape.lawnchair.gestures.GestureController
 import com.android.launcher3.Utilities

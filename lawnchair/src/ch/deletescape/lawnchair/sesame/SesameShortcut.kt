@@ -38,7 +38,6 @@ import com.android.launcher3.icons.ShortcutCachingLogic
 import com.bumptech.glide.Glide
 import ninja.sesame.lib.bridge.v1.SesameFrontend
 import ninja.sesame.lib.bridge.v1.SesameShortcut
-import java.lang.Exception
 
 const val QUINOA_PREFIX = "sesame_"
 fun SesameShortcut.getId() = "${QUINOA_PREFIX}$id"
@@ -67,7 +66,8 @@ fun SesameShortcut.getIcon(context: Context, density: Int): Drawable {
                     (foreground as FixedScaleDrawable).drawable = icn
                 }
             } else icn
-        } catch (ignored: Exception) {}
+        } catch (ignored: Exception) {
+        }
     }
 
     if (componentName != null) {
@@ -91,7 +91,8 @@ fun SesameShortcut.getIcon(context: Context, density: Int): Drawable {
 
 private fun SesameShortcut.getAccentColor(context: Context) = colors.getOrPut(id) {
     if (packageName != null) {
-        val activities = context.getSystemService(LauncherApps::class.java).getActivityList(packageName, Process.myUserHandle())
+        val activities = context.getSystemService(LauncherApps::class.java)
+                .getActivityList(packageName, Process.myUserHandle())
         if (activities.isNotEmpty()) {
             val icon = context.launcherAppState.iconCache.getFullResIcon(activities[0]).toBitmap()
             if (icon != null) {

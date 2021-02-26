@@ -75,7 +75,8 @@ class ThemedEditTextPreferenceDialogFragmentCompat : EditTextPreferenceDialogFra
     }
 }
 
-class ThemedMultiSelectListPreferenceDialogFragmentCompat : MultiSelectListPreferenceDialogFragmentCompat() {
+class ThemedMultiSelectListPreferenceDialogFragmentCompat :
+        MultiSelectListPreferenceDialogFragmentCompat() {
 
     override fun onStart() {
         super.onStart()

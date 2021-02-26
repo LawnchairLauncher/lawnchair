@@ -21,12 +21,12 @@ import android.content.Context
 import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
-import android.view.ViewGroup
 import com.android.launcher3.Insettable
 
 open class InsettableNestedScrollView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : SpringNestedScrollView(context, attrs, defStyleAttr), Insettable {
+                                                               ) :
+        SpringNestedScrollView(context, attrs, defStyleAttr), Insettable {
 
     private val currentInsets = Rect()
 

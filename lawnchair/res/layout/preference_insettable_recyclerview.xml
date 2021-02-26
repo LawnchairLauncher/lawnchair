@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2015 The Android Open Source Project
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,8 +19,8 @@
     style="?attr/preferenceFragmentListStyle"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clipToPadding="false"
     android:paddingTop="0dp"
     android:paddingBottom="0dp"
-    android:clipToPadding="false"
     android:scrollbarStyle="insideOverlay"
     android:scrollbars="vertical" />

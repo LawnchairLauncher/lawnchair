@@ -19,9 +19,9 @@ package ch.deletescape.lawnchair.allapps
 
 import android.content.Context
 import androidx.core.graphics.ColorUtils
-import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.allapps.AppInfoComparator
 import com.android.launcher3.icons.ColorExtractor
+import com.android.launcher3.model.data.AppInfo
 
 // Reference: https://www.alanzucconi.com/2015/09/30/colour-sorting/ - Step sorting
 class AppColorComparator(context: Context) : AppInfoComparator(context) {
@@ -72,7 +72,7 @@ class AppColorComparator(context: Context) : AppInfoComparator(context) {
     }
 
     companion object {
-        const val REPETITIONS = 6;
+        const val REPETITIONS = 6
 
         @JvmStatic
         fun remapHue(hue: Float) = (hue / 360 * REPETITIONS).toInt()

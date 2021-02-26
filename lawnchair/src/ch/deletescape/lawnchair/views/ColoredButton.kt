@@ -29,7 +29,7 @@ import ch.deletescape.lawnchair.getColorAttr
 import ch.deletescape.lawnchair.getTabRipple
 
 class ColoredButton(context: Context, attrs: AttributeSet) : Button(context, attrs),
-        ColorEngine.OnColorChangeListener {
+                                                             ColorEngine.OnColorChangeListener {
 
     var colorResolver: ColorEngine.ColorResolver = ColorEngine.getInstance(context).accentResolver
         set(value) {
@@ -56,9 +56,9 @@ class ColoredButton(context: Context, attrs: AttributeSet) : Button(context, att
         val stateList = ColorStateList(arrayOf(
                 intArrayOf(android.R.attr.state_selected),
                 intArrayOf()),
-                intArrayOf(
-                        color,
-                        defaultColor))
+                                       intArrayOf(
+                                               color,
+                                               defaultColor))
         setTextColor(stateList)
     }
 
@@ -68,18 +68,21 @@ class ColoredButton(context: Context, attrs: AttributeSet) : Button(context, att
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        ColorEngine.getInstance(context).addColorChangeListeners(this, ColorEngine.Resolvers.ALLAPPS_ICON_LABEL)
+        ColorEngine.getInstance(context)
+                .addColorChangeListeners(this, ColorEngine.Resolvers.ALLAPPS_ICON_LABEL)
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        ColorEngine.getInstance(context).removeColorChangeListeners(this, ColorEngine.Resolvers.ALLAPPS_ICON_LABEL)
+        ColorEngine.getInstance(context)
+                .removeColorChangeListeners(this, ColorEngine.Resolvers.ALLAPPS_ICON_LABEL)
     }
 
     override fun onColorChange(resolveInfo: ColorEngine.ResolveInfo) {
         when (resolveInfo.key) {
             ColorEngine.Resolvers.ALLAPPS_ICON_LABEL -> {
-                defaultColor = if (DrawerLabelAutoResolver::class.java.isAssignableFrom(resolveInfo.resolverClass)) {
+                defaultColor = if (DrawerLabelAutoResolver::class.java.isAssignableFrom(
+                                resolveInfo.resolverClass)) {
                     context.getColorAttr(android.R.attr.textColorTertiary)
                 } else {
                     resolveInfo.color

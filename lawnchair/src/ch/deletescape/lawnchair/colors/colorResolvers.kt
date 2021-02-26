@@ -27,7 +27,8 @@ import com.android.launcher3.Utilities
 import com.android.launcher3.uioverrides.WallpaperColorInfo
 
 @Keep
-class LawnchairAccentResolver(config: Config) : ColorEngine.ColorResolver(config), ColorEngine.OnColorChangeListener {
+class LawnchairAccentResolver(config: Config) : ColorEngine.ColorResolver(config),
+                                                ColorEngine.OnColorChangeListener {
 
     override fun startListening() {
         super.startListening()
@@ -45,7 +46,7 @@ class LawnchairAccentResolver(config: Config) : ColorEngine.ColorResolver(config
 
     override fun resolveColor() = engine.accent
 
-    override fun getDisplayName() = engine.context.getString(R.string.lawnchair_accent) as String
+    override fun getDisplayName() = engine.context.getString(R.string.lawnchair_accent)
 }
 
 @Keep
@@ -68,7 +69,7 @@ class SystemAccentResolver(config: Config) : ColorEngine.ColorResolver(config) {
         return color
     }
 
-    override fun getDisplayName() = engine.context.getString(R.string.color_system_accent) as String
+    override fun getDisplayName() = engine.context.getString(R.string.color_system_accent)
 }
 
 @Keep
@@ -80,7 +81,7 @@ class PixelAccentResolver(config: Config) : ColorEngine.ColorResolver(config) {
         return themedContext.getColorAttr(android.R.attr.colorAccent)
     }
 
-    override fun getDisplayName() = engine.context.getString(R.string.color_pixel_accent) as String
+    override fun getDisplayName() = engine.context.getString(R.string.color_pixel_accent)
 }
 
 @Keep
@@ -91,7 +92,8 @@ class RGBColorResolver(config: Config) : ColorEngine.ColorResolver(config) {
 
     init {
         if (args.size < 3) throw IllegalArgumentException("not enough args")
-        val rgb = args.subList(0, 3).map { it.toIntOrNull() ?: throw IllegalArgumentException("args malformed: $it") }
+        val rgb = args.subList(0, 3)
+                .map { it.toIntOrNull() ?: throw IllegalArgumentException("args malformed: $it") }
         color = Color.rgb(rgb[0], rgb[1], rgb[2])
     }
 
@@ -144,7 +146,8 @@ class WallpaperMainColorResolver(config: Config) : WallpaperColorResolver(config
 
     override fun resolveColor() = colorInfo.mainColor
 
-    override fun getDisplayName() = engine.context.getString(R.string.color_wallpaper_main) as String
+    override fun getDisplayName() = engine.context.getString(
+            R.string.color_wallpaper_main)
 }
 
 @Keep
@@ -152,7 +155,8 @@ class WallpaperSecondaryColorResolver(config: Config) : WallpaperColorResolver(c
 
     override fun resolveColor() = colorInfo.secondaryColor
 
-    override fun getDisplayName() = engine.context.getString(R.string.color_wallpaper_secondary) as String
+    override fun getDisplayName() = engine.context.getString(
+            R.string.color_wallpaper_secondary)
 }
 
 abstract class ThemeAttributeColorResolver(config: Config) :

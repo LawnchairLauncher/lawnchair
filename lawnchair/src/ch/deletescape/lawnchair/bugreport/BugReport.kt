@@ -35,7 +35,7 @@ data class BugReport(
         var link: String?,
         var uploadError: Boolean = false,
         val file: File?
-) : Parcelable {
+                    ) : Parcelable {
 
     constructor(type: String, description: String, contents: String, file: File?) : this(
             System.currentTimeMillis(), type, description, contents, null, false, file)

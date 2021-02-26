@@ -25,8 +25,10 @@ import android.view.View
 import ch.deletescape.lawnchair.preferences.StyledIconPreference
 import com.android.launcher3.R
 
-open class SubPreference(context: Context, attrs: AttributeSet) : StyledIconPreference(context, attrs),
-        View.OnLongClickListener, ControlledPreference by ControlledPreference.Delegate(context, attrs) {
+open class SubPreference(context: Context, attrs: AttributeSet) :
+        StyledIconPreference(context, attrs),
+        View.OnLongClickListener,
+        ControlledPreference by ControlledPreference.Delegate(context, attrs) {
 
     private var mContent: Int = 0
     private var mLongClickContent: Int = 0
@@ -42,7 +44,8 @@ open class SubPreference(context: Context, attrs: AttributeSet) : StyledIconPref
             val attr = a.getIndex(i)
             when (attr) {
                 R.styleable.SubPreference_content -> mContent = a.getResourceId(attr, 0)
-                R.styleable.SubPreference_longClickContent -> mLongClickContent = a.getResourceId(attr, 0)
+                R.styleable.SubPreference_longClickContent -> mLongClickContent =
+                        a.getResourceId(attr, 0)
                 R.styleable.SubPreference_hasPreview -> mHasPreview = a.getBoolean(attr, false)
             }
         }

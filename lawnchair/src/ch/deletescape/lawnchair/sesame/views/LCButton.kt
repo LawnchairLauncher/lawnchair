@@ -27,7 +27,8 @@ import ch.deletescape.lawnchair.setCustomFont
 /**
  * Simple button class to use in externally displayed layouts where we can't programmatically change the design otherwise
  */
-class LCButton(context: Context, attrs: AttributeSet) : Button(context, attrs, android.R.attr.buttonBarButtonStyle) {
+class LCButton(context: Context, attrs: AttributeSet) :
+        Button(context, attrs, android.R.attr.buttonBarButtonStyle) {
 
     init {
         val color = ColorEngine.getInstance(context).accent

@@ -17,4 +17,6 @@
 
 package ch.deletescape.lawnchair.smartspace.accu.model;
 
-public abstract class GSonBase { }
+public abstract class GSonBase {
+
+}

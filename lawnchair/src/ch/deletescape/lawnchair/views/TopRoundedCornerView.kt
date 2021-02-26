@@ -25,12 +25,15 @@ import android.util.AttributeSet
 import android.view.View
 import com.android.launcher3.R
 
-class TopRoundedCornerView(context: Context, attrs: AttributeSet) : SpringFrameLayout(context, attrs) {
+class TopRoundedCornerView(context: Context, attrs: AttributeSet) :
+        SpringFrameLayout(context, attrs) {
 
     private val rect = RectF()
     private val clipPath = Path()
 
-    private val radius by lazy { resources.getDimensionPixelSize(R.dimen.bg_round_rect_radius).toFloat() }
+    private val radius by lazy {
+        resources.getDimensionPixelSize(R.dimen.bg_round_rect_radius).toFloat()
+    }
     private val radii by lazy { floatArrayOf(radius, radius, radius, radius, 0f, 0f, 0f, 0f) }
 
     override fun drawChild(canvas: Canvas, child: View, drawingTime: Long): Boolean {

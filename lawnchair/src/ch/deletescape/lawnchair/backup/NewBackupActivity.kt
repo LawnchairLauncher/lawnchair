@@ -59,7 +59,9 @@ class NewBackupActivity : SettingsBaseActivity(), ColorEngine.OnColorChangeListe
     private val backupWallpaper by lazy { findViewById<CheckBox>(R.id.content_wallpaper) }
 
     private val backupLocationDevice by lazy { findViewById<RadioButton>(R.id.location_device) }
-    private val backupLocationDocuments by lazy { findViewById<RadioButton>(R.id.location_documents) }
+    private val backupLocationDocuments by lazy {
+        findViewById<RadioButton>(R.id.location_documents)
+    }
 
     private val config by lazy { findViewById<View>(R.id.config) }
     private val startButton by lazy { findViewById<FloatingActionButton>(R.id.fab) }
@@ -92,7 +94,8 @@ class NewBackupActivity : SettingsBaseActivity(), ColorEngine.OnColorChangeListe
             onStartBackup()
         }
 
-        if (ContextCompat.getSystemService(this, WallpaperManager::class.java)?.wallpaperInfo != null) {
+        if (ContextCompat.getSystemService(this,
+                                           WallpaperManager::class.java)?.wallpaperInfo != null) {
             backupWallpaper.isChecked = false
             backupWallpaper.isEnabled = false
         }
@@ -104,11 +107,11 @@ class NewBackupActivity : SettingsBaseActivity(), ColorEngine.OnColorChangeListe
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                                                                     Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 Snackbar.make(findViewById(R.id.content), R.string.read_external_storage_required,
-                        Snackbar.LENGTH_SHORT).show()
+                              Snackbar.LENGTH_SHORT).show()
             }
             ActivityCompat.requestPermissions(this,
-                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                    permissionRequestReadExternalStorage)
+                                              arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                                              permissionRequestReadExternalStorage)
         } else {
             val error = validateOptions()
             if (error == 0) {
@@ -148,15 +151,17 @@ class NewBackupActivity : SettingsBaseActivity(), ColorEngine.OnColorChangeListe
         return simpleDateFormat.format(Date())
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
+                                            grantResults: IntArray) {
         when (requestCode) {
             permissionRequestReadExternalStorage -> {
                 // If request is cancelled, the result arrays are empty.
                 if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     onStartBackup()
                 } else {
-                    Snackbar.make(findViewById(R.id.content), R.string.read_external_storage_required,
-                            Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(findViewById(R.id.content),
+                                  R.string.read_external_storage_required,
+                                  Snackbar.LENGTH_SHORT).show()
                 }
             }
             else -> {
@@ -203,11 +208,13 @@ class NewBackupActivity : SettingsBaseActivity(), ColorEngine.OnColorChangeListe
                     supportBackgroundTintList = tintList
                 }
                 try {
-                    val focusedTextColor = TextInputLayout::class.java.getDeclaredField("focusedTextColor")
+                    val focusedTextColor =
+                            TextInputLayout::class.java.getDeclaredField("focusedTextColor")
                     focusedTextColor.isAccessible = true
                     focusedTextColor.set(backupNameLayout, tintList)
                 } catch (e: Exception) {
-                    lawnchairApp.bugReporter.writeReport("Failed to set focusedTextColor on TextInputLayout", e)
+                    lawnchairApp.bugReporter.writeReport(
+                            "Failed to set focusedTextColor on TextInputLayout", e)
                 }
                 backupHomescreen.buttonTintList = tintList
                 backupSettings.buttonTintList = tintList
@@ -225,7 +232,8 @@ class NewBackupActivity : SettingsBaseActivity(), ColorEngine.OnColorChangeListe
     }
 
     @SuppressLint("StaticFieldLeak")
-    private inner class CreateBackupTask(val context: Context) : AsyncTask<Void, Void, Exception?>() {
+    private inner class CreateBackupTask(val context: Context) :
+            AsyncTask<Void, Void, Exception?>() {
 
         var includeHomescreen = false
         var includeSettings = false
@@ -264,7 +272,7 @@ class NewBackupActivity : SettingsBaseActivity(), ColorEngine.OnColorChangeListe
                     name = backupNameString,
                     location = backupUri,
                     contents = contents
-            )
+                                         )
         }
 
         override fun onPostExecute(result: Exception?) {

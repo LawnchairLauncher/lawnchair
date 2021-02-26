@@ -30,8 +30,11 @@ abstract class Filter<T>(val context: Context) {
     abstract val matcher: ItemInfoMatcher
 }
 
-class CustomFilter(context: Context, override val matches: Set<ComponentKey>) : Filter<ComponentKey>(context) {
+class CustomFilter(context: Context, override val matches: Set<ComponentKey>) :
+        Filter<ComponentKey>(context) {
 
     override val matcher
-        get() = ItemInfoMatcher { info, cn -> matches.contains(ComponentKey(info.targetComponent, info.user)) }
+        get() = ItemInfoMatcher { info, cn ->
+            matches.contains(ComponentKey(info.targetComponent, info.user))
+        }
 }

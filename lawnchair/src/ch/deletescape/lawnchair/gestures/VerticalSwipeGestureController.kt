@@ -29,7 +29,8 @@ import com.android.launcher3.util.TouchController
 import java.lang.reflect.InvocationTargetException
 import kotlin.math.abs
 
-class VerticalSwipeGestureController(private val launcher: Launcher) : TouchController, SingleAxisSwipeDetector.Listener {
+class VerticalSwipeGestureController(private val launcher: Launcher) : TouchController,
+                                                                       SingleAxisSwipeDetector.Listener {
 
     enum class GestureState {
         Locked,
@@ -44,7 +45,9 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
 
     private val controller by lazy { LawnchairLauncher.getLauncher(launcher).gestureController }
     private val gesture by lazy { controller.verticalSwipeGesture }
-    private val detector by lazy { SingleAxisSwipeDetector(launcher, this, SingleAxisSwipeDetector.VERTICAL) }
+    private val detector by lazy {
+        SingleAxisSwipeDetector(launcher, this, SingleAxisSwipeDetector.VERTICAL)
+    }
     private var noIntercept = false
 
     private var swipeUpOverride: GestureHandler? = null
@@ -63,7 +66,8 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
     override fun onControllerInterceptTouchEvent(ev: MotionEvent): Boolean {
         downTime = ev.downTime
         val isDown = ev.actionMasked == MotionEvent.ACTION_DOWN
-        val overrideAppeared = !hasSwipeUpOverride && controller.getSwipeUpOverride(ev.downTime) != null
+        val overrideAppeared =
+                !hasSwipeUpOverride && controller.getSwipeUpOverride(ev.downTime) != null
         if (isDown || overrideAppeared) {
             swipeUpOverride = if (isDown) {
                 downSent = false
@@ -97,7 +101,7 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
 
     private fun canInterceptTouch(): Boolean {
         return AbstractFloatingView.getTopOpenView(launcher) == null &&
-                launcher.isInState(LauncherState.NORMAL)
+               launcher.isInState(LauncherState.NORMAL)
     }
 
     private fun isOverHotseat(ev: MotionEvent): Boolean {
@@ -145,10 +149,12 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
                 }
             } else {
                 if (velocity > triggerVelocity &&
-                        (state == GestureState.Free || state == GestureState.NotificationClosed)) {
-                    state = if (openNotificationsOrQuickSettings()) GestureState.NotificationOpened else GestureState.Locked
+                    (state == GestureState.Free || state == GestureState.NotificationClosed)) {
+                    state =
+                            if (openNotificationsOrQuickSettings()) GestureState.NotificationOpened else GestureState.Locked
                 } else if (velocity < -notificationsCloseVelocity && state == GestureState.NotificationOpened) {
-                    state = if (closeNotifications()) GestureState.NotificationClosed else GestureState.Locked
+                    state =
+                            if (closeNotifications()) GestureState.NotificationClosed else GestureState.Locked
                 }
             }
 

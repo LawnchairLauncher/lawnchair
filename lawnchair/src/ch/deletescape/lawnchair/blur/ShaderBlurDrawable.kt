@@ -32,7 +32,9 @@ class ShaderBlurDrawable internal constructor(
         set(value) {
             if (field != value) {
                 field = value
-                blurShader = value?.let { BitmapShader(it, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP) }
+                blurShader = value?.let {
+                    BitmapShader(it, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)
+                }
                 blurPaint.shader = blurShader
             }
         }

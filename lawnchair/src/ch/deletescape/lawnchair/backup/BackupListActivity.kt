@@ -66,19 +66,21 @@ class BackupListActivity : SettingsBaseActivity(), BackupListAdapter.Callbacks {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                            Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                Snackbar.make(findViewById(android.R.id.content), R.string.read_external_storage_required,
-                        Snackbar.LENGTH_SHORT).show()
+                                                                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                Snackbar.make(findViewById(android.R.id.content),
+                              R.string.read_external_storage_required,
+                              Snackbar.LENGTH_SHORT).show()
             }
             ActivityCompat.requestPermissions(this,
-                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                    permissionRequestReadExternalStorage)
+                                              arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                                              permissionRequestReadExternalStorage)
         } else {
             adapter.setData(LawnchairBackup.listLocalBackups(this))
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
+                                            grantResults: IntArray) {
         when (requestCode) {
             permissionRequestReadExternalStorage -> {
                 if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
@@ -114,7 +116,7 @@ class BackupListActivity : SettingsBaseActivity(), BackupListAdapter.Callbacks {
         val visibility = if (adapter[position].meta != null) View.VISIBLE else View.GONE
 
         val bottomSheetView = layoutInflater.inflate(R.layout.backup_bottom_sheet,
-                findViewById(android.R.id.content), false)
+                                                     findViewById(android.R.id.content), false)
         bottomSheetView.findViewById<TextView>(android.R.id.title).text =
                 adapter[position].meta?.name ?: getString(R.string.backup_invalid)
         bottomSheetView.findViewById<TextView>(android.R.id.summary).text =

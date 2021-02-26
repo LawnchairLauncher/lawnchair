@@ -19,13 +19,13 @@
 
 package ch.deletescape.lawnchair.util
 
-import android.content.Context
-import ch.deletescape.lawnchair.lawnchairPrefs
 import android.content.ContentResolver
+import android.content.Context
 import android.content.res.Resources
 import android.database.ContentObserver
 import android.os.Handler
 import android.provider.Settings
+import ch.deletescape.lawnchair.lawnchairPrefs
 import com.android.quickstep.SysUINavigationMode
 
 class NavigationModeCompat(context: Context) {
@@ -37,14 +37,16 @@ class NavigationModeCompat(context: Context) {
                 notifyChange()
             }
         }
-    private var fullGestureMode by context.lawnchairPrefs.BooleanPref("pref_fullGestureMode", false, ::notifyChange)
+    private var fullGestureMode by context.lawnchairPrefs.BooleanPref("pref_fullGestureMode", false,
+                                                                      ::notifyChange)
 
     var listener: Listener? = null
-    val currentMode get() = when {
-        !swipeUpEnabled -> SysUINavigationMode.Mode.THREE_BUTTONS
-        fullGestureMode -> SysUINavigationMode.Mode.NO_BUTTON
-        else -> SysUINavigationMode.Mode.TWO_BUTTONS
-    }
+    val currentMode
+        get() = when {
+            !swipeUpEnabled -> SysUINavigationMode.Mode.THREE_BUTTONS
+            fullGestureMode -> SysUINavigationMode.Mode.NO_BUTTON
+            else -> SysUINavigationMode.Mode.TWO_BUTTONS
+        }
 
     init {
         SwipeUpGestureEnabledSettingObserver(context.contentResolver).register()
@@ -58,7 +60,8 @@ class NavigationModeCompat(context: Context) {
             private val resolver: ContentResolver) :
             ContentObserver(Handler()) {
 
-        private val defaultValue: Int = if (getSystemBooleanRes(SWIPE_UP_ENABLED_DEFAULT_RES_NAME)) 1 else 0
+        private val defaultValue: Int =
+                if (getSystemBooleanRes(SWIPE_UP_ENABLED_DEFAULT_RES_NAME)) 1 else 0
 
         private val value: Boolean
             get() = Settings.Secure.getInt(resolver, SWIPE_UP_SETTING_NAME, defaultValue) == 1

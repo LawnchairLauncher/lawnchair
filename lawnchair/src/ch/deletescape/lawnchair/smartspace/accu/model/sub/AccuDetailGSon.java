@@ -20,6 +20,7 @@ package ch.deletescape.lawnchair.smartspace.accu.model.sub;
 import java.util.List;
 
 public class AccuDetailGSon {
+
     String BandMap;
     String CanonicalLocationKey;
     String CanonicalPostalCode;

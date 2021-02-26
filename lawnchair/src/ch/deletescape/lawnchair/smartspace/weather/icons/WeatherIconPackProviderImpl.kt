@@ -26,18 +26,23 @@ import ch.deletescape.lawnchair.toBitmap
 import com.android.launcher3.R
 
 // See: https://github.com/DvTonder/Sample_icon_set
-class WeatherIconPackProviderImpl(private val context: Context, private val pkgName: String, private val pack: WeatherIconManager.WeatherIconPack): WeatherIconManager.IconProvider {
+class WeatherIconPackProviderImpl(private val context: Context, private val pkgName: String,
+                                  private val pack: WeatherIconManager.WeatherIconPack) :
+        WeatherIconManager.IconProvider {
     private val res = context.packageManager.getResourcesForApplication(pkgName)
-    private val tintColor get() = ColorEngine.getInstance(context).getResolver(ColorEngine.Resolvers.WORKSPACE_ICON_LABEL).resolveColor()
+    private val tintColor
+        get() = ColorEngine.getInstance(context)
+                .getResolver(ColorEngine.Resolvers.WORKSPACE_ICON_LABEL).resolveColor()
 
     override fun getIcon(which: WeatherIconManager.Icon, night: Boolean): Bitmap {
         val resId = res.getIdentifier(getResName(which, night), "drawable", pkgName)
-        return (if (resId > 0) res.getDrawable(resId) else context.getDrawable(R.drawable.weather_none_available))
+        return (if (resId > 0) res.getDrawable(resId) else context.getDrawable(
+                R.drawable.weather_none_available))
                 ?.apply {
-            if (pack.recoloringMode == WeatherIconManager.RecoloringMode.ALWAYS) {
-                setTint(tintColor)
-            }
-        }?.toBitmap()!!
+                    if (pack.recoloringMode == WeatherIconManager.RecoloringMode.ALWAYS) {
+                        setTint(tintColor)
+                    }
+                }?.toBitmap()!!
     }
 
     companion object {
@@ -80,7 +85,8 @@ class WeatherIconPackProviderImpl(private val context: Context, private val pkgN
 
         private inline fun entry(day: String, night: String? = null) = IconMapEntry(day, night)
 
-        fun getResName(icon: WeatherIconManager.Icon, night: Boolean) = PREFIX + (MAP[icon]?.getEntry(night) ?: NA)
+        fun getResName(icon: WeatherIconManager.Icon,
+                       night: Boolean) = PREFIX + (MAP[icon]?.getEntry(night) ?: NA)
     }
 
     data class IconMapEntry(private val day: String, private val night: String? = null) {

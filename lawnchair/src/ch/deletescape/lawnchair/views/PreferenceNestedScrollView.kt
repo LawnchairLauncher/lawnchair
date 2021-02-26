@@ -23,7 +23,8 @@ import ch.deletescape.lawnchair.settings.ui.DecorLayout
 
 class PreferenceNestedScrollView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : InsettableNestedScrollView(context, attrs, defStyleAttr) {
+                                                          ) :
+        InsettableNestedScrollView(context, attrs, defStyleAttr) {
 
     private var elevationHelper: DecorLayout.ToolbarElevationHelper? = null
         set(value) {

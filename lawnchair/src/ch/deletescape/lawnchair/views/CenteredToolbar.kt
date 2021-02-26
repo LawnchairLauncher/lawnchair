@@ -44,7 +44,7 @@ import com.android.launcher3.R
 
 class CenteredToolbar @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = R.attr.toolbarStyle
-) : Toolbar(context, attrs, defStyleAttr) {
+                                               ) : Toolbar(context, attrs, defStyleAttr) {
 
     private var mTitleTextView: AppCompatTextView? = null
     private var mSubtitleTextView: AppCompatTextView? = null

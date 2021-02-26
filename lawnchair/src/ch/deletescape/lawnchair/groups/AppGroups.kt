@@ -61,13 +61,18 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
     var isEnabled = manager.categorizationEnabled && manager.categorizationType == type
         private set
 
-    private val defaultGroups by lazy { getDefaultCreators().mapNotNull { it.createGroup(context) } }
+    private val defaultGroups by lazy {
+        getDefaultCreators().mapNotNull {
+            it.createGroup(context)
+        }
+    }
 
     private fun loadGroupsArray(): JSONArray {
         try {
             val obj = JSONObject(groupsDataJson)
             val version = if (obj.has(KEY_VERSION)) obj.getInt(KEY_VERSION) else 0
-            if (version > currentVersion) throw IllegalArgumentException("Version $version is higher than supported ($currentVersion)")
+            if (version > currentVersion) throw IllegalArgumentException(
+                    "Version $version is higher than supported ($currentVersion)")
 
             val groups = obj.getJSONArray(KEY_GROUPS)
 
@@ -102,10 +107,12 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
         (0 until arr.length())
                 .map { arr.getJSONObject(it) }
                 .mapNotNullTo(groups) { group ->
-                    val type = if (group.has(KEY_TYPE)) group.getString(KEY_TYPE) else TYPE_UNDEFINED
+                    val type =
+                            if (group.has(KEY_TYPE)) group.getString(KEY_TYPE) else TYPE_UNDEFINED
                     val creator = getGroupCreator(type)
                     used.add(creator)
-                    creator.createGroup(context)?.apply { loadCustomizations(context, group.asMap()) }
+                    creator.createGroup(context)
+                            ?.apply { loadCustomizations(context, group.asMap()) }
                 }
         getDefaultCreators().asReversed().forEach { creator ->
             if (creator !in used) {
@@ -226,7 +233,7 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
             return CustomizationMap(customizations)
         }
 
-        abstract class Customization<T: Any, S: Any>(val key: String, protected val default: T) {
+        abstract class Customization<T : Any, S : Any>(val key: String, protected val default: T) {
 
             var value: T? = null
 
@@ -271,7 +278,8 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
         class CustomTitle(key: String, default: String) : StringCustomization(key, default) {
 
             override fun createRow(context: Context, parent: ViewGroup, accent: Int): View? {
-                val view = LayoutInflater.from(context).inflate(R.layout.drawer_tab_custom_title_row, parent, false)
+                val view = LayoutInflater.from(context)
+                        .inflate(R.layout.drawer_tab_custom_title_row, parent, false)
                 view.findViewById<TextView>(R.id.name_label).setTextColor(accent)
 
                 val tabName = view.findViewById<TextView>(R.id.name)
@@ -282,11 +290,13 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
                         value = s?.toString()?.trim()?.asNonEmpty()
                     }
 
-                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int,
+                                                   after: Int) {
 
                     }
 
-                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int,
+                                               count: Int) {
 
                     }
 
@@ -319,7 +329,8 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
             }
         }
 
-        open class LongCustomization(key: String, default: Long) : Customization<Long, Long>(key, default) {
+        open class LongCustomization(key: String, default: Long) :
+                Customization<Long, Long>(key, default) {
             override fun loadFromJson(context: Context, obj: Long?) {
                 value = obj
             }
@@ -334,11 +345,13 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
 
         }
 
-        class SwitchRow(private val icon: Int, private val label: Int, key: String, default: Boolean) :
+        class SwitchRow(private val icon: Int, private val label: Int, key: String,
+                        default: Boolean) :
                 BooleanCustomization(key, default) {
 
             override fun createRow(context: Context, parent: ViewGroup, accent: Int): View? {
-                val view = LayoutInflater.from(context).inflate(R.layout.drawer_tab_switch_row, parent, false)
+                val view = LayoutInflater.from(context)
+                        .inflate(R.layout.drawer_tab_switch_row, parent, false)
 
                 view.findViewById<ImageView>(R.id.icon).apply {
                     setImageResource(icon)
@@ -384,7 +397,8 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
                 ColorCustomization(key, default) {
 
             override fun createRow(context: Context, parent: ViewGroup, accent: Int): View? {
-                val view = LayoutInflater.from(context).inflate(R.layout.drawer_tab_color_row, parent, false)
+                val view = LayoutInflater.from(context)
+                        .inflate(R.layout.drawer_tab_color_row, parent, false)
                 val resources = context.resources
 
                 updateColor(view)
@@ -394,14 +408,16 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
                     val current = value()
                     val resolvers = resources.getStringArray(R.array.resolver_tabs)
                     with(dialog) {
-                        val tabbedPickerView = TabbedPickerView(this.context, "tabs", current.resolveColor(),
-                                ColorMode.RGB, resolvers, current.isCustom, {
-                            value = it
-                            updateColor(view)
-                        }, dialog::dismiss)
+                        val tabbedPickerView =
+                                TabbedPickerView(this.context, "tabs", current.resolveColor(),
+                                                 ColorMode.RGB, resolvers, current.isCustom, {
+                                                     value = it
+                                                     updateColor(view)
+                                                 }, dialog::dismiss)
                         setView(tabbedPickerView)
                         setOnShowListener {
-                            val width: Int; val height: Int
+                            val width: Int
+                            val height: Int
                             if (orientation(this.context) == Configuration.ORIENTATION_LANDSCAPE) {
                                 height = WindowManager.LayoutParams.WRAP_CONTENT
                                 width = 80 percentOf screenDimensions(this.context).widthPixels
@@ -412,7 +428,8 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
                             window!!.setLayout(width, height)
 
                             // for some reason it won't respect the windowBackground attribute in the theme
-                            window!!.setBackgroundDrawable(this.context.getDrawable(R.drawable.dialog_material_background))
+                            window!!.setBackgroundDrawable(
+                                    this.context.getDrawable(R.drawable.dialog_material_background))
                         }
                     }
                     dialog.show()
@@ -422,7 +439,8 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
             }
 
             private fun updateColor(view: View) {
-                view.findViewById<ImageView>(R.id.color_ring_icon).tintDrawable(value().resolveColor())
+                view.findViewById<ImageView>(R.id.color_ring_icon)
+                        .tintDrawable(value().resolveColor())
             }
 
             override fun clone(): Customization<ColorEngine.ColorResolver, String> {
@@ -430,7 +448,7 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
             }
         }
 
-        abstract class SetCustomization<T: Any, S: Any>(key: String, default: MutableSet<T>) :
+        abstract class SetCustomization<T : Any, S : Any>(key: String, default: MutableSet<T>) :
                 Customization<MutableSet<T>, JSONArray>(key, default) {
 
             @Suppress("UNCHECKED_CAST")
@@ -487,7 +505,8 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
                 ComponentsCustomization(key, default) {
 
             override fun createRow(context: Context, parent: ViewGroup, accent: Int): View? {
-                val view = LayoutInflater.from(context).inflate(R.layout.drawer_tab_apps_row, parent, false)
+                val view = LayoutInflater.from(context)
+                        .inflate(R.layout.drawer_tab_apps_row, parent, false)
 
                 view.findViewById<ImageView>(R.id.manage_apps_icon).tintDrawable(accent)
                 updateCount(view)
@@ -548,9 +567,10 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
 
             val entries get() = map.values
 
-            val sortedEntries get() =
-                if (order.isEmpty()) entries
-                else entries.sortedBy { order[it.key] }
+            val sortedEntries
+                get() =
+                    if (order.isEmpty()) entries
+                    else entries.sortedBy { order[it.key] }
 
             override fun equals(other: Any?): Boolean {
                 if (other !is CustomizationMap) return false
@@ -572,7 +592,7 @@ class AppGroupsUtils(context: Context) {
 
     fun createColorResolver(resolver: String?): ColorEngine.ColorResolver {
         return colorEngine.createColorResolverNullable("group", resolver ?: "")
-                ?: defaultColorResolver
+               ?: defaultColorResolver
     }
 
     companion object : SingletonHolder<AppGroupsUtils, Context>(

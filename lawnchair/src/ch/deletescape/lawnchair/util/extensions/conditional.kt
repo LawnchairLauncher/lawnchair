@@ -21,9 +21,9 @@ inline fun <T> whenEnabled(flag: Boolean, block: () -> T) = if (flag) block() el
 
 inline fun <T> Boolean.whenTrue(block: () -> T) = if (this) block() else null
 
-inline infix fun <T: Any> Boolean.then(block: () -> T) = if (this) block() else null
+inline infix fun <T : Any> Boolean.then(block: () -> T) = if (this) block() else null
 
-inline infix fun <T: Any> Boolean.then(value: T) = if (this) value else null
+inline infix fun <T : Any> Boolean.then(value: T) = if (this) value else null
 
 inline infix fun <T> T.or(block: () -> T) = this ?: block()
 

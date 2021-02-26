@@ -51,9 +51,11 @@ class DesktopGridSizeFragment : Fragment(), SettingsActivity.PreviewFragment {
                 grid.workspacePaddingTopScale = currentValues.workspacePaddingScale.top
                 grid.workspacePaddingBottomScale = currentValues.workspacePaddingScale.bottom
             }
-            val paddings = RectF(idp.workspacePaddingLeftScale, idp.workspacePaddingTopScale, idp.workspacePaddingRightScale, idp.workspacePaddingBottomScale)
+            val paddings = RectF(idp.workspacePaddingLeftScale, idp.workspacePaddingTopScale,
+                                 idp.workspacePaddingRightScale, idp.workspacePaddingBottomScale)
             setInitialValues(
-                    CustomGridView.Values(idp.numRows, idp.numColumns, idp.numHotseatIcons, paddings))
+                    CustomGridView.Values(idp.numRows, idp.numColumns, idp.numHotseatIcons,
+                                          paddings))
         }
     }
 
@@ -65,8 +67,10 @@ class DesktopGridSizeFragment : Fragment(), SettingsActivity.PreviewFragment {
     override fun onPause() {
         super.onPause()
         val idp = LauncherAppState.getIDP(context)
-        val paddings = RectF(idp.workspacePaddingLeftScale, idp.workspacePaddingTopScale, idp.workspacePaddingRightScale, idp.workspacePaddingBottomScale)
-        val oldValues = CustomGridView.Values(idp.numRows, idp.numColumns, idp.numHotseatIcons, paddings)
+        val paddings = RectF(idp.workspacePaddingLeftScale, idp.workspacePaddingTopScale,
+                             idp.workspacePaddingRightScale, idp.workspacePaddingBottomScale)
+        val oldValues =
+                CustomGridView.Values(idp.numRows, idp.numColumns, idp.numHotseatIcons, paddings)
         val newValues = customGridView.currentValues
         if (oldValues != newValues) {
             val provider = CustomGridProvider.getInstance(context!!)
@@ -88,7 +92,9 @@ class DesktopGridSizeFragment : Fragment(), SettingsActivity.PreviewFragment {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_reset_grid_size) {
             val idp = LauncherAppState.getIDP(context)
-            customGridView.setValues(CustomGridView.Values(idp.numRowsOriginal, idp.numColumnsOriginal, idp.numHotseatIconsOriginal, RectF(1f, 1f, 1f, 1f)))
+            customGridView.setValues(
+                    CustomGridView.Values(idp.numRowsOriginal, idp.numColumnsOriginal,
+                                          idp.numHotseatIconsOriginal, RectF(1f, 1f, 1f, 1f)))
         }
         return super.onOptionsItemSelected(item)
     }

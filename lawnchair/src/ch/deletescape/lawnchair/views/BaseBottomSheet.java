@@ -39,9 +39,8 @@ import com.android.launcher3.views.AbstractSlideInView;
 public class BaseBottomSheet extends AbstractSlideInView implements Insettable {
 
     private static final int DEFAULT_CLOSE_DURATION = 200;
-    private Rect mInsets;
-
     protected final ColorScrim mColorScrim;
+    private final Rect mInsets;
 
     public BaseBottomSheet(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -53,6 +52,11 @@ public class BaseBottomSheet extends AbstractSlideInView implements Insettable {
         setWillNotDraw(false);
         mInsets = new Rect();
         mContent = this;
+    }
+
+    public static BaseBottomSheet inflate(Launcher launcher) {
+        return (BaseBottomSheet) launcher.getLayoutInflater()
+                .inflate(R.layout.base_bottom_sheet, launcher.getDragLayer(), false);
     }
 
     @Override
@@ -73,7 +77,6 @@ public class BaseBottomSheet extends AbstractSlideInView implements Insettable {
         super.setTranslationShift(translationShift);
         mColorScrim.setProgress(1 - mTranslationShift);
     }
-
 
     protected void onCloseComplete() {
         super.onCloseComplete();
@@ -140,11 +143,6 @@ public class BaseBottomSheet extends AbstractSlideInView implements Insettable {
     @Override
     public final void logActionCommand(int command) {
 
-    }
-
-    public static BaseBottomSheet inflate(Launcher launcher) {
-        return (BaseBottomSheet) launcher.getLayoutInflater()
-                .inflate(R.layout.base_bottom_sheet, launcher.getDragLayer(), false);
     }
 
 }

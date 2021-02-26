@@ -39,7 +39,8 @@ import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
 @SuppressLint("Registered")
-open class SettingsBaseActivity : AppCompatActivity(), ColorEngine.OnColorChangeListener, ThemeManager.ThemeableActivity {
+open class SettingsBaseActivity : AppCompatActivity(), ColorEngine.OnColorChangeListener,
+                                  ThemeManager.ThemeableActivity {
     val dragLayer by lazy { SettingsDragLayer(this, null) }
     val decorLayout by lazy { DecorLayout(this, window) }
 
@@ -49,7 +50,8 @@ open class SettingsBaseActivity : AppCompatActivity(), ColorEngine.OnColorChange
     private var paused = false
 
     private val customLayoutInflater by lazy {
-        LawnchairLayoutInflater(super.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater, this)
+        LawnchairLayoutInflater(
+                super.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater, this)
     }
 
     private val fromSettings by lazy { intent.getBooleanExtra(EXTRA_FROM_SETTINGS, false) }
@@ -192,9 +194,11 @@ open class SettingsBaseActivity : AppCompatActivity(), ColorEngine.OnColorChange
         return super.getSystemService(name)
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
+                                            grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        launcherAppState.launcher?.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        launcherAppState.launcher?.onRequestPermissionsResult(requestCode, permissions,
+                                                              grantResults)
     }
 
     companion object {
@@ -202,7 +206,8 @@ open class SettingsBaseActivity : AppCompatActivity(), ColorEngine.OnColorChange
         const val EXTRA_FROM_SETTINGS = "fromSettings"
 
         fun getActivity(context: Context): SettingsBaseActivity {
-            return context as? SettingsBaseActivity ?: (context as ContextWrapper).baseContext as SettingsBaseActivity
+            return context as? SettingsBaseActivity
+                   ?: (context as ContextWrapper).baseContext as SettingsBaseActivity
         }
     }
 }

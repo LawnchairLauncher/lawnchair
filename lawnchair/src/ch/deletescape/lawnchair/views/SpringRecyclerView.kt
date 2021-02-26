@@ -19,9 +19,9 @@ package ch.deletescape.lawnchair.views
 
 import android.content.Context
 import android.graphics.Canvas
-import android.util.AttributeSet
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
+import android.util.AttributeSet
 import androidx.annotation.Keep
 import androidx.recyclerview.widget.RecyclerView
 import ch.deletescape.lawnchair.colors.ColorEngine
@@ -30,7 +30,8 @@ import ch.deletescape.lawnchair.getColorAttr
 
 open class SpringRecyclerView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : RecyclerView(context, attrs, defStyleAttr) {
+                                                       ) :
+        RecyclerView(context, attrs, defStyleAttr) {
 
     private val springManager = SpringEdgeEffect.Manager(this)
     private val scrollBarColor by lazy {
@@ -69,7 +70,8 @@ open class SpringRecyclerView @JvmOverloads constructor(
      * Called by Android [android.view.View.onDrawScrollBars]
      */
     @Keep
-    protected fun onDrawHorizontalScrollBar(canvas: Canvas, scrollBar: Drawable, l: Int, t: Int, r: Int, b: Int) {
+    protected fun onDrawHorizontalScrollBar(canvas: Canvas, scrollBar: Drawable, l: Int, t: Int,
+                                            r: Int, b: Int) {
         springManager.withSpringNegative(canvas, shouldTranslateSelf) {
             scrollBar.setColorFilter(scrollBarColor, PorterDuff.Mode.SRC_ATOP)
             scrollBar.setBounds(l, t, r, b)
@@ -82,7 +84,8 @@ open class SpringRecyclerView @JvmOverloads constructor(
      * Called by Android [android.view.View.onDrawScrollBars]
      */
     @Keep
-    protected fun onDrawVerticalScrollBar(canvas: Canvas, scrollBar: Drawable, l: Int, t: Int, r: Int, b: Int) {
+    protected fun onDrawVerticalScrollBar(canvas: Canvas, scrollBar: Drawable, l: Int, t: Int,
+                                          r: Int, b: Int) {
         springManager.withSpringNegative(canvas, shouldTranslateSelf) {
             scrollBar.setColorFilter(scrollBarColor, PorterDuff.Mode.SRC_ATOP)
             scrollBar.setBounds(l, t, r, b)

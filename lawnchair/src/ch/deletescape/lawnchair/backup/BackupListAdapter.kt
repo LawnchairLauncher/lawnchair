@@ -37,7 +37,7 @@ class BackupListAdapter(val context: Context) : RecyclerView.Adapter<BackupListA
 
     var callbacks: Callbacks? = null
 
-    fun setData(data: List<LawnchairBackup>){
+    fun setData(data: List<LawnchairBackup>) {
         backupList.clear()
         data.forEach {
             backupList.add(it)
@@ -111,7 +111,8 @@ class BackupListAdapter(val context: Context) : RecyclerView.Adapter<BackupListA
         init {
             itemView.findViewById<View>(R.id.action_new_backup).setOnClickListener(this)
             itemView.findViewById<View>(R.id.action_restore_backup).setOnClickListener(this)
-            itemView.findViewById<TextView>(R.id.local_backup_title).setTextColor(ColorEngine.getInstance(context).accent)
+            itemView.findViewById<TextView>(R.id.local_backup_title)
+                    .setTextColor(ColorEngine.getInstance(context).accent)
         }
 
         override fun onClick(v: View) {
@@ -122,7 +123,8 @@ class BackupListAdapter(val context: Context) : RecyclerView.Adapter<BackupListA
         }
     }
 
-    inner class ItemHolder(itemView: View) : Holder(itemView), View.OnClickListener, View.OnLongClickListener {
+    inner class ItemHolder(itemView: View) : Holder(itemView), View.OnClickListener,
+                                             View.OnLongClickListener {
 
         private val previewContainer = itemView.findViewById<View>(R.id.preview_container)
         private val wallpaper = itemView.findViewById<ImageView>(R.id.wallpaper)
@@ -143,7 +145,8 @@ class BackupListAdapter(val context: Context) : RecyclerView.Adapter<BackupListA
                 previewContainer.isVisible = true
                 backupItem.isEnabled = true
                 title.text = metaLoader.meta?.name ?: context.getString(R.string.backup_invalid)
-                summary.text = metaLoader.meta?.localizedTimestamp ?: context.getString(R.string.backup_invalid)
+                summary.text = metaLoader.meta?.localizedTimestamp ?: context.getString(
+                        R.string.backup_invalid)
                 metaLoader.meta?.preview?.apply {
                     previewContainer.isVisible = true
                     preview.setImageBitmap(first)
@@ -162,6 +165,7 @@ class BackupListAdapter(val context: Context) : RecyclerView.Adapter<BackupListA
                 metaLoader.loadMeta(true)
             }
         }
+
         override fun onClick(v: View) {
             callbacks?.openRestore(adapterPosition - 1)
         }

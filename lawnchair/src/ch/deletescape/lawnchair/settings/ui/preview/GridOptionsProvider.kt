@@ -24,16 +24,12 @@ import android.content.ContentValues
 import android.database.Cursor
 import android.database.MatrixCursor
 import android.net.Uri
-import android.os.ParcelFileDescriptor
-import android.text.TextUtils
 import ch.deletescape.lawnchair.comparing
 import ch.deletescape.lawnchair.then
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
-import com.android.launcher3.Utilities
 import com.android.launcher3.util.PackageManagerHelper.isSystemApp
 import java.io.FileNotFoundException
-import kotlin.jvm.Throws
 
 class GridOptionsProvider : ContentProvider() {
 
@@ -134,7 +130,8 @@ class GridOptionsProvider : ContentProvider() {
         require(isSystemApp(context!!.packageManager, callingPackage))
     }
 
-    private data class CustomGridOption(val numRows: Int, val numColumns: Int, val numHotseatColumns: Int)
+    private data class CustomGridOption(val numRows: Int, val numColumns: Int,
+                                        val numHotseatColumns: Int)
         : InvariantDeviceProfile.GridCustomizer {
 
         val name = "$numRows,$numColumns,$numHotseatColumns"

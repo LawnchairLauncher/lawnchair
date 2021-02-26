@@ -20,7 +20,6 @@ package ch.deletescape.lawnchair.colors.resolvers
 import android.graphics.Color
 import androidx.annotation.Keep
 import androidx.core.graphics.ColorUtils
-import ch.deletescape.lawnchair.LawnchairLauncher
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.colors.WallpaperColorResolver
@@ -33,16 +32,20 @@ import kotlin.math.max
 import kotlin.math.min
 
 @Keep
-class DockQsbAutoResolver(config: Config) : ColorEngine.ColorResolver(config), LawnchairPreferences.OnPreferenceChangeListener, BrightnessManager.OnBrightnessChangeListener {
+class DockQsbAutoResolver(config: Config) : ColorEngine.ColorResolver(config),
+                                            LawnchairPreferences.OnPreferenceChangeListener,
+                                            BrightnessManager.OnBrightnessChangeListener {
 
     override val themeAware = true
     private val isDark get() = ThemeManager.getInstance(engine.context).isDark
-    private val lightResolver = DockQsbLightResolver(Config("DockQsbAutoResolver@Light", engine, { _, _ ->
-        if (!isDark) notifyChanged()
-    }))
-    private val darkResolver = DockQsbDarkResolver(Config("DockQsbAutoResolver@Dark", engine, { _, _ ->
-        if (isDark) notifyChanged()
-    }))
+    private val lightResolver =
+            DockQsbLightResolver(Config("DockQsbAutoResolver@Light", engine, { _, _ ->
+                if (!isDark) notifyChanged()
+            }))
+    private val darkResolver =
+            DockQsbDarkResolver(Config("DockQsbAutoResolver@Dark", engine, { _, _ ->
+                if (isDark) notifyChanged()
+            }))
     private val prefs = context.lawnchairPrefs
     private var brightness = 1f
 
@@ -75,11 +78,13 @@ class DockQsbAutoResolver(config: Config) : ColorEngine.ColorResolver(config), L
 }
 
 @Keep
-class DockQsbLightResolver(config: Config) : WallpaperColorResolver(config), LawnchairPreferences.OnPreferenceChangeListener {
+class DockQsbLightResolver(config: Config) : WallpaperColorResolver(config),
+                                             LawnchairPreferences.OnPreferenceChangeListener {
 
     override fun startListening() {
         super.startListening()
-        LawnchairPreferences.getInstanceNoCreate().addOnPreferenceChangeListener(this, HotseatQsbWidget.KEY_DOCK_COLORED_GOOGLE)
+        LawnchairPreferences.getInstanceNoCreate()
+                .addOnPreferenceChangeListener(this, HotseatQsbWidget.KEY_DOCK_COLORED_GOOGLE)
     }
 
     override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
@@ -88,7 +93,8 @@ class DockQsbLightResolver(config: Config) : WallpaperColorResolver(config), Law
 
     override fun stopListening() {
         super.stopListening()
-        LawnchairPreferences.getInstanceNoCreate().removeOnPreferenceChangeListener(this, HotseatQsbWidget.KEY_DOCK_COLORED_GOOGLE)
+        LawnchairPreferences.getInstanceNoCreate()
+                .removeOnPreferenceChangeListener(this, HotseatQsbWidget.KEY_DOCK_COLORED_GOOGLE)
     }
 
     override fun resolveColor() = engine.context.resources.getColor(
@@ -96,7 +102,7 @@ class DockQsbLightResolver(config: Config) : WallpaperColorResolver(config), Law
                 R.color.qsb_background_hotseat_white
             else
                 R.color.qsb_background_hotseat_default
-    )
+                                                                   )
 
     override fun getDisplayName() = engine.context.resources.getString(R.string.theme_light)
 }
@@ -104,7 +110,8 @@ class DockQsbLightResolver(config: Config) : WallpaperColorResolver(config), Law
 @Keep
 class DockQsbDarkResolver(config: Config) : ColorEngine.ColorResolver(config) {
 
-    override fun resolveColor() = engine.context.resources.getColor(R.color.qsb_background_hotseat_dark)
+    override fun resolveColor() = engine.context.resources.getColor(
+            R.color.qsb_background_hotseat_dark)
 
     override fun getDisplayName() = engine.context.resources.getString(R.string.theme_dark)
 }

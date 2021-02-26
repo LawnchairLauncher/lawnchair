@@ -20,7 +20,6 @@ import android.graphics.Canvas;
 import android.util.Property;
 import android.view.View;
 import android.view.ViewParent;
-
 import com.android.launcher3.R;
 
 /**
@@ -48,6 +47,10 @@ public abstract class ViewScrim<T extends View> {
         mView = view;
     }
 
+    public static ViewScrim get(View view) {
+        return (ViewScrim) view.getTag(R.id.view_scrim);
+    }
+
     public void attach() {
         mView.setTag(R.id.view_scrim, this);
     }
@@ -62,16 +65,13 @@ public abstract class ViewScrim<T extends View> {
 
     public abstract void draw(Canvas canvas, int width, int height);
 
-    protected void onProgressChanged() { }
+    protected void onProgressChanged() {
+    }
 
     public void invalidate() {
         ViewParent parent = mView.getParent();
         if (parent != null) {
             ((View) parent).invalidate();
         }
-    }
-
-    public static ViewScrim get(View view) {
-        return (ViewScrim) view.getTag(R.id.view_scrim);
     }
 }

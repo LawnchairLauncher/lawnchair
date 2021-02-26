@@ -28,11 +28,15 @@ class VerticalSwipeGesture(controller: GestureController) : Gesture(controller) 
     override val isEnabled = true
 
     private val swipeUpHandler by controller.createHandlerPref("pref_gesture_swipe_up",
-            OpenDrawerGestureHandler(controller.launcher, null))
+                                                               OpenDrawerGestureHandler(
+                                                                       controller.launcher, null))
     private val dockSwipeUpHandler by controller.createHandlerPref("pref_gesture_dock_swipe_up",
-            OpenDrawerGestureHandler(controller.launcher, null))
+                                                                   OpenDrawerGestureHandler(
+                                                                           controller.launcher,
+                                                                           null))
     private val swipeDownHandler by controller.createHandlerPref("pref_gesture_swipe_down",
-            NotificationsOpenGestureHandler(controller.launcher, null))
+                                                                 NotificationsOpenGestureHandler(
+                                                                         controller.launcher, null))
 
     val customSwipeUp get() = swipeUpHandler !is VerticalSwipeGestureHandler
     val customDockSwipeUp get() = dockSwipeUpHandler !is VerticalSwipeGestureHandler

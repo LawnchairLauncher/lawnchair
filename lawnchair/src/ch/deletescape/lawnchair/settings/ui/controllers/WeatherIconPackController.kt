@@ -29,7 +29,7 @@ import ch.deletescape.lawnchair.smartspace.OnePlusWeatherDataProvider
 @Keep
 class WeatherIconPackController(context: Context) : PreferenceController(context) {
 
-    override val isVisible= context.lawnchairPrefs.weatherProvider in SUPPORTED
+    override val isVisible = context.lawnchairPrefs.weatherProvider in SUPPORTED
 
     companion object {
         private val SUPPORTED = listOf(

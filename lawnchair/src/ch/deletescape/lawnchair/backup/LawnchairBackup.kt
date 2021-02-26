@@ -77,7 +77,7 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
         }
         if (screenshot == wallpaper) return null // both are null
         return Pair(Utilities.getScaledDownBitmap(screenshot, 1000, false),
-                Utilities.getScaledDownBitmap(wallpaper, 1000, false))
+                    Utilities.getScaledDownBitmap(wallpaper, 1000, false))
     }
 
     private inline fun readZip(body: (ZipInputStream) -> Unit) {
@@ -104,7 +104,8 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
             val contextWrapper = ContextWrapper(context)
             val dbFile = contextWrapper.getDatabasePath(LauncherFiles.LAUNCHER_DB)
             val dir = contextWrapper.cacheDir.parent
-            val settingsFile = File(dir, "shared_prefs/" + LauncherFiles.SHARED_PREFERENCES_KEY + ".xml")
+            val settingsFile =
+                    File(dir, "shared_prefs/" + LauncherFiles.SHARED_PREFERENCES_KEY + ".xml")
 
             val pfd = context.contentResolver.openFileDescriptor(uri, "r")!!
             val inStream = FileInputStream(pfd.fileDescriptor)
@@ -206,7 +207,8 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
 
     data class Meta(val name: String, val contents: Int, val timestamp: String) {
 
-        val localizedTimestamp = SimpleDateFormat.getDateTimeInstance().format(timestampFormat.parse(timestamp))
+        val localizedTimestamp =
+                SimpleDateFormat.getDateTimeInstance().format(timestampFormat.parse(timestamp))
         var preview: Pair<Bitmap?, Bitmap?>? = null
 
         override fun toString(): String {
@@ -241,7 +243,7 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
                         name = arr.getString(NAME_INDEX),
                         contents = arr.getInt(CONTENTS_INDEX),
                         timestamp = arr.getString(TIMESTAMP_INDEX)
-                )
+                           )
             }
         }
     }
@@ -265,7 +267,8 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
         val timestampFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.US)
 
         fun getFolder(): File {
-            val folder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "Lawnchair/backup")
+            val folder = File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOCUMENTS), "Lawnchair/backup")
             Log.d(TAG, "path: $folder")
             if (!folder.exists()) {
                 folder.mkdirs()
@@ -275,10 +278,14 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
 
         fun listLocalBackups(context: Context): List<LawnchairBackup> {
             return getFolder().listFiles { file -> file.extension == EXTENSION }
-                    ?.sortedByDescending { it.lastModified() }
-                    ?.map { FileProvider.getUriForFile(context, "${BuildConfig.APPLICATION_ID}.provider", it) }
-                    ?.map { LawnchairBackup(context, it) }
-                    ?: Collections.emptyList()
+                           ?.sortedByDescending { it.lastModified() }
+                           ?.map {
+                               FileProvider.getUriForFile(context,
+                                                          "${BuildConfig.APPLICATION_ID}.provider",
+                                                          it)
+                           }
+                           ?.map { LawnchairBackup(context, it) }
+                   ?: Collections.emptyList()
         }
 
         private fun prepareConfig(context: Context) {
@@ -304,7 +311,8 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
             }
             if (contents and INCLUDE_SETTINGS != 0) {
                 val dir = contextWrapper.cacheDir.parent
-                files.add(File(dir, "shared_prefs/" + LauncherFiles.SHARED_PREFERENCES_KEY + ".xml"))
+                files.add(
+                        File(dir, "shared_prefs/" + LauncherFiles.SHARED_PREFERENCES_KEY + ".xml"))
             }
 
             val prefs = Utilities.getLawnchairPrefs(context)
@@ -330,7 +338,8 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
             try {
                 val metaEntry = ZipEntry(Meta.FILE_NAME)
                 out.putNextEntry(metaEntry)
-                val actualContents = if (includeScreenshot) contents or INCLUDE_SCREENSHOT else contents
+                val actualContents =
+                        if (includeScreenshot) contents or INCLUDE_SCREENSHOT else contents
                 out.write(getMeta(name, actualContents).toString().toByteArray())
                 if (contents and INCLUDE_WALLPAPER != 0) {
                     val wallpaperManager = WallpaperManager.getInstance(context)
@@ -370,7 +379,7 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
                 name = name,
                 contents = contents,
                 timestamp = getTimestamp()
-        )
+                                                               )
 
         private fun getTimestamp(): String {
             return timestampFormat.format(Date())

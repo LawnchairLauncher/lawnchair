@@ -28,7 +28,9 @@ import ch.deletescape.lawnchair.applyAccent
 import ch.deletescape.lawnchair.colors.ColorEngine
 import com.android.launcher3.R
 
-class SingleDimensionGridSizeDialogFragmentCompat : PreferenceDialogFragmentCompat(), SeekBar.OnSeekBarChangeListener, ColorEngine.OnColorChangeListener {
+class SingleDimensionGridSizeDialogFragmentCompat : PreferenceDialogFragmentCompat(),
+                                                    SeekBar.OnSeekBarChangeListener,
+                                                    ColorEngine.OnColorChangeListener {
 
     private val gridSizePreference get() = preference as SingleDimensionGridSizePreference
 
@@ -58,7 +60,8 @@ class SingleDimensionGridSizeDialogFragmentCompat : PreferenceDialogFragmentComp
         numRowsPicker.setOnSeekBarChangeListener(this)
 
         numRowsLabel.text = "${numRowsPicker.progress + minValue}"
-        ColorEngine.getInstance(context!!).addColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
+        ColorEngine.getInstance(context!!)
+                .addColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
     }
 
     override fun onDialogClosed(positiveResult: Boolean) {
@@ -70,7 +73,7 @@ class SingleDimensionGridSizeDialogFragmentCompat : PreferenceDialogFragmentComp
     override fun onPrepareDialogBuilder(builder: AlertDialog.Builder) {
         super.onPrepareDialogBuilder(builder)
 
-        builder.setNeutralButton(R.string.theme_default, {_, _ ->
+        builder.setNeutralButton(R.string.theme_default, { _, _ ->
             gridSizePreference.setSize(0)
         })
     }
@@ -111,7 +114,8 @@ class SingleDimensionGridSizeDialogFragmentCompat : PreferenceDialogFragmentComp
 
     override fun onDetach() {
         super.onDetach()
-        ColorEngine.getInstance(context!!).removeColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
+        ColorEngine.getInstance(context!!)
+                .removeColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
     }
 
     companion object {

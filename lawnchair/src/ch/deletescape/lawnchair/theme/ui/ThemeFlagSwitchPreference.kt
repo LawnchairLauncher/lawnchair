@@ -28,7 +28,8 @@ import ch.deletescape.lawnchair.util.setFlag
 import com.android.launcher3.R
 
 @Keep
-open class ThemeFlagSwitchPreference(context: Context, attrs: AttributeSet) : SwitchPreference(context, attrs),
+open class ThemeFlagSwitchPreference(context: Context, attrs: AttributeSet) :
+        SwitchPreference(context, attrs),
         LawnchairPreferences.OnPreferenceChangeListener {
 
     protected val prefs = context.lawnchairPrefs

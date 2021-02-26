@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~     This file is part of Lawnchair Launcher.
   ~
   ~     Lawnchair Launcher is free software: you can redistribute it and/or modify
@@ -16,36 +15,33 @@
   ~     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/customization_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="28dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingTop="28dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:gravity="end"
         android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:gravity="end">
+        android:paddingEnd="16dp">
 
         <Button
             android:id="@+id/cancel"
+            style="@style/SettingsTheme.Widget.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@android:string/cancel"
-            style="@style/SettingsTheme.Widget.OutlinedButton"/>
+            android:text="@android:string/cancel" />
 
         <Button
             android:id="@+id/save"
+            style="@style/SettingsTheme.Widget.OutlinedButton.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/tab_bottom_sheet_save"
-            style="@style/SettingsTheme.Widget.OutlinedButton.Colored"/>
+            android:text="@string/tab_bottom_sheet_save" />
     </LinearLayout>
 </LinearLayout>

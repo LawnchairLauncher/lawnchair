@@ -24,8 +24,8 @@ import android.content.Intent
 import android.os.Build
 import android.os.SystemClock
 import android.view.KeyEvent
-import androidx.annotation.Keep
 import android.view.View
+import androidx.annotation.Keep
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.gestures.GestureHandler
 import ch.deletescape.lawnchair.lawnchairApp
@@ -36,13 +36,16 @@ import com.android.quickstep.TouchInteractionService
 import org.json.JSONObject
 
 @Keep
-open class OpenRecentsGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config),
+open class OpenRecentsGestureHandler(context: Context, config: JSONObject?) :
+        GestureHandler(context, config),
         VerticalSwipeGestureHandler, StateChangeGestureHandler {
 
     override val displayName: String = context.getString(R.string.action_open_recents)
     override val isAvailable: Boolean
         get() = TouchInteractionService.isConnected()
-    override val iconResource: Intent.ShortcutIconResource by lazy { Intent.ShortcutIconResource.fromContext(context, R.drawable.ic_lawnstep) }
+    override val iconResource: Intent.ShortcutIconResource by lazy {
+        Intent.ShortcutIconResource.fromContext(context, R.drawable.ic_lawnstep)
+    }
 
     override fun onGestureTrigger(controller: GestureController, view: View?) {
         controller.launcher.stateManager.goToState(LauncherState.OVERVIEW)
@@ -57,7 +60,8 @@ open class OpenRecentsGestureHandler(context: Context, config: JSONObject?) : Ge
 
 @Keep
 @TargetApi(Build.VERSION_CODES.P)
-open class PressBackGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
+open class PressBackGestureHandler(context: Context, config: JSONObject?) :
+        GestureHandler(context, config) {
 
     override val displayName: String = context.getString(R.string.action_press_back)
 

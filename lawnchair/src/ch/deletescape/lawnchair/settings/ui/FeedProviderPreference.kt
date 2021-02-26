@@ -28,14 +28,14 @@ import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.getIcon
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.settings.ui.controllers.FeedProviderController
-import ch.deletescape.lawnchair.settings.ui.controllers.WeatherIconPackController
-import ch.deletescape.lawnchair.smartspace.weather.icons.WeatherIconManager
 import com.android.launcher3.R
 
 class FeedProviderPreference(context: Context, attrs: AttributeSet? = null) :
         DialogPreference(context, attrs), LawnchairPreferences.OnPreferenceChangeListener {
     private val prefs = context.lawnchairPrefs
-    private val current get() = providers(context).firstOrNull { it.packageName == prefs.feedProvider } ?: providers(context)[0]
+    private val current
+        get() = providers(context).firstOrNull { it.packageName == prefs.feedProvider }
+                ?: providers(context)[0]
 
     init {
         layoutResource = R.layout.pref_with_preview_icon
@@ -72,7 +72,9 @@ class FeedProviderPreference(context: Context, attrs: AttributeSet? = null) :
                 name = context.getString(R.string.theme_default),
                 icon = context.getIcon())) +
                                           FeedBridge.getAvailableProviders(context).map {
-                                              ProviderInfo(it.loadLabel(context.packageManager).toString(), it.packageName, it.loadIcon(context.packageManager))
+                                              ProviderInfo(it.loadLabel(context.packageManager)
+                                                                   .toString(), it.packageName,
+                                                           it.loadIcon(context.packageManager))
                                           }
     }
 

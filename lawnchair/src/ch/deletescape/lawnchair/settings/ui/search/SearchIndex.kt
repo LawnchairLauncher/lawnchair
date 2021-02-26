@@ -71,15 +71,20 @@ class SearchIndex(private val context: Context) {
                 cls != null && SubPreference::class.java.isAssignableFrom(cls) -> {
                     val controller = createController(ta)
                     if (controller?.isVisible != false) {
-                        val iconRes = ta.getResourceId(R.styleable.IndexablePreference_android_icon, 0)
-                        val title = controller?.title ?: ta.getString(R.styleable.IndexablePreference_android_title)
+                        val iconRes =
+                                ta.getResourceId(R.styleable.IndexablePreference_android_icon, 0)
+                        val title = controller?.title ?: ta.getString(
+                                R.styleable.IndexablePreference_android_title)
                         val content = ta.getResourceId(R.styleable.IndexablePreference_content, 0)
-                        val hasPreview = ta.getBoolean(R.styleable.IndexablePreference_hasPreview, false)
+                        val hasPreview =
+                                ta.getBoolean(R.styleable.IndexablePreference_hasPreview, false)
                         var canIndex = indexable
                         if (SwitchSubPreference::class.java.isAssignableFrom(cls)) {
                             val key = ta.getString(R.styleable.IndexablePreference_android_key)
-                            val defaultValue = ta.getBoolean(R.styleable.IndexablePreference_android_defaultValue, false)
-                            val summary = controller?.summary ?: ta.getString(R.styleable.IndexablePreference_android_summary)
+                            val defaultValue = ta.getBoolean(
+                                    R.styleable.IndexablePreference_android_defaultValue, false)
+                            val summary = controller?.summary ?: ta.getString(
+                                    R.styleable.IndexablePreference_android_summary)
                             if (parent != null && key != null) {
                                 if (addedKeys.add(key)) {
                                     entries.add(SettingsEntry(iconRes, key, title, summary, parent))
@@ -88,7 +93,9 @@ class SearchIndex(private val context: Context) {
                             canIndex = Utilities.getPrefs(context).getBoolean(key, defaultValue)
                         }
                         if (canIndex) {
-                            indexScreen(content, SettingsScreen(title, title, findScreen(parent), content, hasPreview))
+                            indexScreen(content,
+                                        SettingsScreen(title, title, findScreen(parent), content,
+                                                       hasPreview))
                         }
                     }
                     skip(parser)
@@ -96,10 +103,12 @@ class SearchIndex(private val context: Context) {
                 cls != null && PreferenceGroup::class.java.isAssignableFrom(cls) -> {
                     val controller = createController(ta)
                     if (controller?.isVisible != false && indexable) {
-                        val title = controller?.title ?: ta.getString(R.styleable.IndexablePreference_android_title)
+                        val title = controller?.title ?: ta.getString(
+                                R.styleable.IndexablePreference_android_title)
                         if (parent != null) {
                             indexSection(parser, SettingsCategory(parent.title, title,
-                                    parent, parent.contentRes, parent.hasPreview))
+                                                                  parent, parent.contentRes,
+                                                                  parent.hasPreview))
                         } else {
                             indexSection(parser, null)
                         }
@@ -110,13 +119,17 @@ class SearchIndex(private val context: Context) {
                 else -> {
                     val controller = createController(ta)
                     if (controller?.isVisible != false && indexable) {
-                        val iconRes = ta.getResourceId(R.styleable.IndexablePreference_android_icon, 0)
+                        val iconRes =
+                                ta.getResourceId(R.styleable.IndexablePreference_android_icon, 0)
                         val key = ta.getString(R.styleable.IndexablePreference_android_key)
-                        val title = controller?.title ?: ta.getString(R.styleable.IndexablePreference_android_title)
-                        val summary = controller?.summary ?: ta.getString(R.styleable.IndexablePreference_android_summary)
+                        val title = controller?.title ?: ta.getString(
+                                R.styleable.IndexablePreference_android_title)
+                        val summary = controller?.summary ?: ta.getString(
+                                R.styleable.IndexablePreference_android_summary)
                         if (parent != null && key != null && title != null) {
                             if (addedKeys.add(key)) {
-                                entries.add(SettingsEntry(iconRes, key, title, summary, parent, getSlice(cls, attrs)))
+                                entries.add(SettingsEntry(iconRes, key, title, summary, parent,
+                                                          getSlice(cls, attrs)))
                             }
                         }
                     }
@@ -174,7 +187,7 @@ class SearchIndex(private val context: Context) {
             parent: SettingsScreen?,
             contentRes: Int,
             hasPreview: Boolean
-    ) : SettingsScreen(
+                                ) : SettingsScreen(
             title,
             categoryTitle,
             parent,

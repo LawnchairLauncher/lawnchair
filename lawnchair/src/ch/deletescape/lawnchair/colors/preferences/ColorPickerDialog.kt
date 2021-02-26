@@ -38,14 +38,16 @@ class ColorPickerDialog : DialogFragment() {
         private const val ARG_RESOLVERS = "arg_resolvers"
 
         @JvmStatic
-        fun newInstance(key: String, @ColorInt initialColor: Int, colorMode: ColorMode, resolvers: Array<String>): ColorPickerDialog {
+        fun newInstance(key: String, @ColorInt initialColor: Int, colorMode: ColorMode,
+                        resolvers: Array<String>): ColorPickerDialog {
             val fragment = ColorPickerDialog()
             fragment.arguments = makeArgs(key, initialColor, colorMode, resolvers)
             return fragment
         }
 
         @JvmStatic
-        private fun makeArgs(key: String, @ColorInt initialColor: Int, colorMode: ColorMode, resolvers: Array<String>): Bundle {
+        private fun makeArgs(key: String, @ColorInt initialColor: Int, colorMode: ColorMode,
+                             resolvers: Array<String>): Bundle {
             val args = Bundle()
             args.putString(ARG_KEY, key)
             args.putInt(ARG_INITIAL_COLOR, initialColor)
@@ -61,19 +63,21 @@ class ColorPickerDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val context = requireContext()
         val key = savedInstanceState?.getString(ARG_KEY)
-                ?: requireArguments().getString(ARG_KEY, "pref_accentColorResolver")
+                  ?: requireArguments().getString(ARG_KEY, "pref_accentColorResolver")
         val initialColor = savedInstanceState?.getInt(ARG_INITIAL_COLOR, ChromaView.DefaultColor)
-                ?: requireArguments().getInt(ARG_INITIAL_COLOR)
+                           ?: requireArguments().getInt(ARG_INITIAL_COLOR)
         val resolvers = savedInstanceState?.getStringArray(ARG_RESOLVERS)
-                ?: requireArguments().getStringArray(ARG_RESOLVERS)
+                        ?: requireArguments().getStringArray(ARG_RESOLVERS)
         val colorMode = ColorMode.fromName(savedInstanceState?.getString(ARG_COLOR_MODE)
-                ?: requireArguments().getString(ARG_COLOR_MODE, ColorMode.RGB.name))
+                                           ?: requireArguments().getString(ARG_COLOR_MODE,
+                                                                           ColorMode.RGB.name))
 
         tabbedPickerView = TabbedPickerView.fromPrefs(context, key, initialColor, colorMode,
                                                       resolvers as Array<String>, ::dismiss)
         return AlertDialog.Builder(context).setView(tabbedPickerView).create().apply {
             setOnShowListener {
-                val width: Int; val height: Int
+                val width: Int
+                val height: Int
                 if (orientation(context) == ORIENTATION_LANDSCAPE) {
                     height = WindowManager.LayoutParams.WRAP_CONTENT
                     width = 80 percentOf screenDimensions(context).widthPixels
@@ -84,7 +88,8 @@ class ColorPickerDialog : DialogFragment() {
                 window?.setLayout(width, height)
 
                 // for some reason it won't respect the windowBackground attribute in the theme
-                window?.setBackgroundDrawable(context.getDrawable(R.drawable.dialog_material_background))
+                window?.setBackgroundDrawable(
+                        context.getDrawable(R.drawable.dialog_material_background))
             }
         }
     }
@@ -93,11 +98,13 @@ class ColorPickerDialog : DialogFragment() {
         super.onStart()
         val dialog = (dialog as AlertDialog)
         dialog.applyAccent()
-        dialog.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM)
+        dialog.window?.clearFlags(
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putAll(makeArgs(tabbedPickerView.key, tabbedPickerView.chromaView.currentColor, tabbedPickerView.chromaView.colorMode, tabbedPickerView.resolvers))
+        outState.putAll(makeArgs(tabbedPickerView.key, tabbedPickerView.chromaView.currentColor,
+                                 tabbedPickerView.chromaView.colorMode, tabbedPickerView.resolvers))
         super.onSaveInstanceState(outState)
     }
 

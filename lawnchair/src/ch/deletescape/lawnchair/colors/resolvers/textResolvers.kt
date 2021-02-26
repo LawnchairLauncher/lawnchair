@@ -21,7 +21,6 @@ import android.graphics.Color
 import androidx.annotation.Keep
 import androidx.core.graphics.ColorUtils
 import ch.deletescape.lawnchair.colors.ThemeAttributeColorResolver
-import ch.deletescape.lawnchair.foregroundColor
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.sensors.BrightnessManager
 import com.android.launcher3.R
@@ -30,7 +29,8 @@ import kotlin.math.max
 import kotlin.math.min
 
 @Keep
-class DrawerLabelAutoResolver(config: Config) : ThemeAttributeColorResolver(config), BrightnessManager.OnBrightnessChangeListener {
+class DrawerLabelAutoResolver(config: Config) : ThemeAttributeColorResolver(config),
+                                                BrightnessManager.OnBrightnessChangeListener {
 
     override val colorAttr = android.R.attr.textColorSecondary
     private var brightness = 1f
@@ -50,7 +50,8 @@ class DrawerLabelAutoResolver(config: Config) : ThemeAttributeColorResolver(conf
 
     override fun resolveColor(): Int {
         if (prefs.brightnessTheme) {
-            val bg = ColorUtils.setAlphaComponent(ColorUtils.blendARGB(Color.BLACK, Color.WHITE, brightness), 255)
+            val bg = ColorUtils.setAlphaComponent(
+                    ColorUtils.blendARGB(Color.BLACK, Color.WHITE, brightness), 255)
             val fg = ColorUtils.blendARGB(Color.WHITE, Color.BLACK, brightness)
             return IconPalette.ensureTextContrast(fg, bg)
         }

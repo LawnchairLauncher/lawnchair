@@ -54,14 +54,18 @@ object AccuRetrofitServiceFactory {
 
     private fun <T> getRetrofitService(serviceClass: Class<T>): T {
         val client = buildOkHttpClient()
-        return Retrofit.Builder().baseUrl(ACCU_BASE_URL).addConverterFactory(GsonConverterFactory.create()).client(client).build().create(serviceClass)
+        return Retrofit.Builder().baseUrl(ACCU_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create()).client(client).build()
+                .create(serviceClass)
     }
 
     private fun buildOkHttpClient(): OkHttpClient? {
         if (okHttpClient == null) {
             synchronized(AccuRetrofitServiceFactory::class.java) {
                 if (okHttpClient == null) {
-                    okHttpClient = OkHttpClientBuilder().addQueryParam(ACCU_APIKEY).addQueryParam(ACCU_DETAILS).addQueryParam(ACCU_METRIC).build(LauncherAppState.getInstanceNoCreate().context)
+                    okHttpClient = OkHttpClientBuilder().addQueryParam(ACCU_APIKEY)
+                            .addQueryParam(ACCU_DETAILS).addQueryParam(ACCU_METRIC)
+                            .build(LauncherAppState.getInstanceNoCreate().context)
                 }
             }
         }
