@@ -71,6 +71,7 @@ public final class DigitalWellBeingToast {
     private ViewOutlineProvider mOldBannerOutlineProvider;
     private float mBannerOffsetPercentage;
     private float mBannerAlpha = 1f;
+    private float mVerticalOffset = 0f;
 
     public DigitalWellBeingToast(BaseDraggingActivity activity, TaskView taskView) {
         mActivity = activity;
@@ -275,16 +276,17 @@ public final class DigitalWellBeingToast {
             @Override
             public void getOutline(View view, Outline outline) {
                 mOldBannerOutlineProvider.getOutline(view, outline);
-                outline.offset(0, -Math.round(view.getTranslationY()));
+                outline.offset(0, Math.round(-view.getTranslationY() + mVerticalOffset));
             }
         });
         mBanner.setClipToOutline(true);
     }
 
-    void updateBannerOffset(float offsetPercentage) {
+    void updateBannerOffset(float offsetPercentage, float verticalOffset) {
         if (mBanner != null && mBannerOffsetPercentage != offsetPercentage) {
+            mVerticalOffset = verticalOffset;
             mBannerOffsetPercentage = offsetPercentage;
-            mBanner.setTranslationY(offsetPercentage * mBanner.getHeight());
+            mBanner.setTranslationY(offsetPercentage * mBanner.getHeight() + mVerticalOffset);
             mBanner.invalidateOutline();
         }
     }
