@@ -36,7 +36,6 @@ import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
-import com.android.launcher3.allapps.AllAppsGridAdapter.AppsGridLayoutManager;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 
 import java.util.ArrayList;
@@ -109,23 +108,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_ICON, grid.allAppsCellHeightPx);
     }
 
-    /**
-     * Scrolls this recycler view to the top.
-     */
-    public void scrollToTop() {
-        // Ensure we reattach the scrollbar if it was previously detached while fast-scrolling
-        if (mScrollbar != null) {
-            mScrollbar.reattachThumbToScroll();
-        }
-        if (getLayoutManager() instanceof AppsGridLayoutManager) {
-            AppsGridLayoutManager layoutManager = (AppsGridLayoutManager) getLayoutManager();
-            if (layoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
-                // We are at the top, so don't scrollToPosition (would cause unnecessary relayout).
-                return;
-            }
-        }
-        scrollToPosition(0);
-    }
 
     @Override
     public void onDraw(Canvas c) {
