@@ -22,6 +22,7 @@ import static com.android.launcher3.graphics.PreloadIconDrawable.newPendingIcon;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.PointF;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -45,6 +46,8 @@ import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.Themes;
+
+import java.util.List;
 
 public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
         implements OnClickListener, ItemInfoUpdateReceiver {
@@ -105,6 +108,11 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
     @Override
     public void updateAppWidgetSize(Bundle newOptions, int minWidth, int minHeight, int maxWidth,
             int maxHeight) {
+        // No-op
+    }
+
+    @Override
+    public void updateAppWidgetSize(Bundle newOptions, List<PointF> sizes) {
         // No-op
     }
 
