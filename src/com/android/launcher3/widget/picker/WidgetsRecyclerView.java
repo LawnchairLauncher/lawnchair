@@ -40,6 +40,7 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
 
     private final Point mFastScrollerOffset = new Point();
     private boolean mTouchDownOnScroller;
+    private HeaderViewDimensionsProvider mHeaderViewDimensionsProvider;
 
     public WidgetsRecyclerView(Context context) {
         this(context, null);
@@ -135,8 +136,8 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
     @Override
     protected int getAvailableScrollHeight() {
         View child = getChildAt(0);
-        return child.getMeasuredHeight() * mAdapter.getItemCount() - getScrollbarTrackHeight()
-                - mScrollbarTop;
+        return child.getMeasuredHeight() * mAdapter.getItemCount() + getScrollBarTop()
+                + getPaddingBottom() - mScrollbar.getHeight();
     }
 
     private boolean isModelNotReady() {
@@ -145,7 +146,9 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
 
     @Override
     public int getScrollBarTop() {
-        return mScrollbarTop;
+        return mHeaderViewDimensionsProvider == null
+                ? mScrollbarTop
+                : mHeaderViewDimensionsProvider.getHeaderViewHeight() + mScrollbarTop;
     }
 
     @Override
@@ -170,5 +173,22 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
 
     @Override
     public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+    }
+
+    public void setHeaderViewDimensionsProvider(
+            HeaderViewDimensionsProvider headerViewDimensionsProvider) {
+        mHeaderViewDimensionsProvider = headerViewDimensionsProvider;
+    }
+
+    /**
+     * Provides dimensions of the header view that is shown at the top of a
+     * {@link WidgetsRecyclerView}.
+     */
+    public interface HeaderViewDimensionsProvider {
+        /**
+         * Returns the height, in pixels, of the header view that is shown at the top of a
+         * {@link WidgetsRecyclerView}.
+         */
+        int getHeaderViewHeight();
     }
 }
