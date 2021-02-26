@@ -33,9 +33,9 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItem;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.search.SearchAlgorithm;
+import com.android.launcher3.search.SearchCallback;
 import com.android.launcher3.util.PackageManagerHelper;
-
-import java.util.ArrayList;
 
 /**
  * An interface to a search box that AllApps can command.
@@ -45,11 +45,11 @@ public class AllAppsSearchBarController
         OnFocusChangeListener {
 
     protected BaseDraggingActivity mLauncher;
-    protected Callbacks mCb;
+    protected SearchCallback<AdapterItem> mCallback;
     protected ExtendedEditText mInput;
     protected String mQuery;
 
-    protected SearchAlgorithm mSearchAlgorithm;
+    protected SearchAlgorithm<AdapterItem> mSearchAlgorithm;
 
     public void setVisibility(int visibility) {
         mInput.setVisibility(visibility);
@@ -59,9 +59,9 @@ public class AllAppsSearchBarController
      * Sets the references to the apps model and the search result callback.
      */
     public final void initialize(
-            SearchAlgorithm searchAlgorithm, ExtendedEditText input,
-            BaseDraggingActivity launcher, Callbacks cb) {
-        mCb = cb;
+            SearchAlgorithm<AdapterItem> searchAlgorithm, ExtendedEditText input,
+            BaseDraggingActivity launcher, SearchCallback<AdapterItem> callback) {
+        mCallback = callback;
         mLauncher = launcher;
 
         mInput = input;
@@ -87,10 +87,10 @@ public class AllAppsSearchBarController
         mQuery = s.toString();
         if (mQuery.isEmpty()) {
             mSearchAlgorithm.cancel(true);
-            mCb.clearSearchResult();
+            mCallback.clearSearchResult();
         } else {
             mSearchAlgorithm.cancel(false);
-            mSearchAlgorithm.doSearch(mQuery, mCb);
+            mSearchAlgorithm.doSearch(mQuery, mCallback);
         }
     }
 
@@ -100,7 +100,7 @@ public class AllAppsSearchBarController
         }
         // If play store continues auto updating an app, we want to show partial result.
         mSearchAlgorithm.cancel(false);
-        mSearchAlgorithm.doSearch(mQuery, mCb);
+        mSearchAlgorithm.doSearch(mQuery, mCallback);
     }
 
     @Override
@@ -153,7 +153,7 @@ public class AllAppsSearchBarController
      * Resets the search bar state.
      */
     public void reset() {
-        mCb.clearSearchResult();
+        mCallback.clearSearchResult();
         mInput.reset();
         mQuery = null;
     }
@@ -171,31 +171,4 @@ public class AllAppsSearchBarController
     public boolean isSearchFieldFocused() {
         return mInput.isFocused();
     }
-
-    /**
-     * Callback for getting search results.
-     */
-    public interface Callbacks {
-
-        /**
-         * Called when the search from primary source is complete.
-         *
-         * @param items sorted list of search result adapter items
-         */
-        void onSearchResult(String query, ArrayList<AdapterItem> items);
-
-        /**
-         * Called when the search from secondary source is complete.
-         *
-         * @param items sorted list of search result adapter items
-         */
-        void onAppendSearchResult(String query, ArrayList<AdapterItem> items);
-
-        /**
-         * Called when the search results should be cleared.
-         */
-        void clearSearchResult();
-    }
-
-
 }
