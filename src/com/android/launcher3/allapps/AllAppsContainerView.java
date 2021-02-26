@@ -32,6 +32,7 @@ import android.os.Process;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -61,6 +62,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
@@ -481,6 +483,10 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         int layout = showTabs ? R.layout.all_apps_tabs : R.layout.all_apps_rv_layout;
         View newView = getLayoutInflater().inflate(layout, this, false);
         addView(newView, index);
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.WORK_PROFILE_REMOVED, "should show tabs:" + showTabs,
+                    new Exception());
+        }
         if (showTabs) {
             mViewPager = (AllAppsPagedView) newView;
             mViewPager.initParentViews(this);
