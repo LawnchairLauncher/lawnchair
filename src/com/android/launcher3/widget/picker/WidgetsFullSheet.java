@@ -39,6 +39,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
@@ -181,20 +182,30 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        DeviceProfile deviceProfile = mLauncher.getDeviceProfile();
         int widthUsed;
         if (mInsets.bottom > 0) {
             widthUsed = mInsets.left + mInsets.right;
         } else {
-            Rect padding = mLauncher.getDeviceProfile().workspacePadding;
+            Rect padding = deviceProfile.workspacePadding;
             widthUsed = Math.max(padding.left + padding.right,
                     2 * (mInsets.left + mInsets.right));
         }
 
-        int heightUsed = mInsets.top + mLauncher.getDeviceProfile().edgeMarginPx;
+        int heightUsed = mInsets.top + deviceProfile.edgeMarginPx;
         measureChildWithMargins(mContent, widthMeasureSpec,
                 widthUsed, heightMeasureSpec, heightUsed);
         setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec),
                 MeasureSpec.getSize(heightMeasureSpec));
+
+        int maxSpansPerRow = getMeasuredWidth() / (deviceProfile.cellWidthPx
+                + deviceProfile.workspaceCellPaddingXPx);
+        mAdapters.get(AdapterHolder.PRIMARY).mWidgetsListAdapter.setMaxHorizontalSpansPerRow(
+                maxSpansPerRow);
+        if (mHasWorkProfile) {
+            mAdapters.get(AdapterHolder.WORK).mWidgetsListAdapter.setMaxHorizontalSpansPerRow(
+                    maxSpansPerRow);
+        }
     }
 
     @Override

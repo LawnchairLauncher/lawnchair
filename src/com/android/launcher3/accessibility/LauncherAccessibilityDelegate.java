@@ -357,10 +357,8 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         }
 
         layout.markCellsAsOccupiedForView(host);
-        Rect sizeRange = new Rect();
-        AppWidgetResizeFrame.getWidgetSizeRanges(mLauncher, info.spanX, info.spanY, sizeRange);
-        ((LauncherAppWidgetHostView) host).updateAppWidgetSize(null,
-                sizeRange.left, sizeRange.top, sizeRange.right, sizeRange.bottom);
+        AppWidgetResizeFrame.updateWidgetSizeRanges(((LauncherAppWidgetHostView) host), mLauncher,
+                info.spanX, info.spanY);
         host.requestLayout();
         mLauncher.getModelWriter().updateItemInDatabase(info);
         announceConfirmation(mLauncher.getString(R.string.widget_resized, info.spanX, info.spanY));
