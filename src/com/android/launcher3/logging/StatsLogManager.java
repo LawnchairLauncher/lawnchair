@@ -396,6 +396,9 @@ public class StatsLogManager implements ResourceBasedOverride {
         @UiEvent(doc = "IME is used for selecting the focused item on the AllApps screen.")
         LAUNCHER_ALLAPPS_FOCUSED_ITEM_SELECTED_WITH_IME(718),
 
+        @UiEvent(doc = "User long-pressed on an AllApps item.")
+        LAUNCHER_ALLAPPS_ITEM_LONG_PRESSED(719),
+
         @UiEvent(doc = "Launcher entered into AllApps state with device search enabled.")
         LAUNCHER_ALLAPPS_ENTRY_WITH_DEVICE_SEARCH(720),
 
