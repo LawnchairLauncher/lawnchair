@@ -214,6 +214,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val drawerTextScale by FloatPref("pref_allAppsIconTextScale", 1f)
     val drawerIconScale by FloatPref("pref_allAppsIconSize", 1f)
     val searchHiddenApps by BooleanPref(DefaultAppSearchAlgorithm.SEARCH_HIDDEN_APPS, false)
+    val infiniteScroll by BooleanPref("pref_infiniteScroll", true)
 
     // Dev
     var developerOptionsEnabled by BooleanPref("pref_showDevOptions", false, doNothing)
