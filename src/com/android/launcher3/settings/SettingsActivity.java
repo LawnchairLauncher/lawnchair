@@ -129,6 +129,7 @@ public class SettingsActivity extends FragmentActivity
         private String mHighLightKey;
         private boolean mPreferenceHighlighted = false;
         private NotificationDotsPreference mNotificationSettingsChangedListener;
+        private Preference mDeveloperOptionPref;
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -202,17 +203,36 @@ public class SettingsActivity extends FragmentActivity
                     return FeatureFlags.showFlagTogglerUi(getContext());
 
                 case DEVELOPER_OPTIONS_KEY:
-                    // Show if plugins are enabled or flag UI is enabled.
-                    return FeatureFlags.showFlagTogglerUi(getContext()) ||
-                            PluginManagerWrapper.hasPlugins(getContext());
+                    mDeveloperOptionPref = preference;
+                    return updateDeveloperOption();
             }
 
             return true;
         }
 
+        /**
+         * Show if plugins are enabled or flag UI is enabled.
+         * @return True if we should show the preference option.
+         */
+        private boolean updateDeveloperOption() {
+            boolean showPreference = FeatureFlags.showFlagTogglerUi(getContext())
+                    || PluginManagerWrapper.hasPlugins(getContext());
+            if (mDeveloperOptionPref != null) {
+                mDeveloperOptionPref.setEnabled(showPreference);
+                if (showPreference) {
+                    getPreferenceScreen().addPreference(mDeveloperOptionPref);
+                } else {
+                    getPreferenceScreen().removePreference(mDeveloperOptionPref);
+                }
+            }
+            return showPreference;
+        }
+
         @Override
         public void onResume() {
             super.onResume();
+
+            updateDeveloperOption();
 
             if (isAdded() && !mPreferenceHighlighted) {
                 PreferenceHighlighter highlighter = createHighlighter();
