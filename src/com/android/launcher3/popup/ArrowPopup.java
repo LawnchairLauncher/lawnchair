@@ -26,11 +26,8 @@ import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.CornerPathEffect;
 import android.graphics.Outline;
-import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.drawable.ShapeDrawable;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.Gravity;
@@ -51,7 +48,6 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.RevealOutlineAnimation;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.dragndrop.DragLayer;
-import com.android.launcher3.graphics.TriangleShape;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BaseDragLayer;
 
@@ -72,7 +68,11 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
     protected final T mLauncher;
     protected final boolean mIsRtl;
 
-    private final int mArrowOffset;
+    private final int mArrowOffsetVertical;
+    private final int mArrowOffsetHorizontal;
+    private final int mArrowWidth;
+    private final int mArrowHeight;
+    private final int mArrowPointRadius;
     private final View mArrow;
 
     protected boolean mIsLeftAligned;
@@ -103,11 +103,14 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
 
         // Initialize arrow view
         final Resources resources = getResources();
-        final int arrowWidth = resources.getDimensionPixelSize(R.dimen.popup_arrow_width);
-        final int arrowHeight = resources.getDimensionPixelSize(R.dimen.popup_arrow_height);
+        mArrowWidth = resources.getDimensionPixelSize(R.dimen.popup_arrow_width);
+        mArrowHeight = resources.getDimensionPixelSize(R.dimen.popup_arrow_height);
         mArrow = new View(context);
-        mArrow.setLayoutParams(new DragLayer.LayoutParams(arrowWidth, arrowHeight));
-        mArrowOffset = resources.getDimensionPixelSize(R.dimen.popup_arrow_vertical_offset);
+        mArrow.setLayoutParams(new DragLayer.LayoutParams(mArrowWidth, mArrowHeight));
+        mArrowOffsetVertical = resources.getDimensionPixelSize(R.dimen.popup_arrow_vertical_offset);
+        mArrowOffsetHorizontal = resources.getDimensionPixelSize(
+                R.dimen.popup_arrow_horizontal_center_offset) - (mArrowWidth / 2);
+        mArrowPointRadius = resources.getDimensionPixelSize(R.dimen.popup_arrow_corner_radius);
     }
 
     public ArrowPopup(Context context, AttributeSet attrs) {
@@ -200,48 +203,33 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
         orientAboutObject();
     }
 
-    private void addArrow() {
-        final Resources res = getResources();
-        final int arrowCenterOffset = res.getDimensionPixelSize(isAlignedWithStart()
-                ? R.dimen.popup_arrow_horizontal_center_start
-                : R.dimen.popup_arrow_horizontal_center_end);
-        final int halfArrowWidth = res.getDimensionPixelSize(R.dimen.popup_arrow_width) / 2;
-        getPopupContainer().addView(mArrow);
-        DragLayer.LayoutParams arrowLp = (DragLayer.LayoutParams) mArrow.getLayoutParams();
+    private int getArrowLeft() {
         if (mIsLeftAligned) {
-            mArrow.setX(getX() + arrowCenterOffset - halfArrowWidth);
-        } else {
-            mArrow.setX(getX() + getMeasuredWidth() - arrowCenterOffset - halfArrowWidth);
+            return mArrowOffsetHorizontal;
         }
+        return getMeasuredWidth() - mArrowOffsetHorizontal - mArrowWidth;
+    }
+
+    private void addArrow() {
+        getPopupContainer().addView(mArrow);
+        mArrow.setX(getX() + getArrowLeft());
 
         if (Gravity.isVertical(mGravity)) {
             // This is only true if there wasn't room for the container next to the icon,
             // so we centered it instead. In that case we don't want to showDefaultOptions the arrow.
             mArrow.setVisibility(INVISIBLE);
         } else {
-            ShapeDrawable arrowDrawable = new ShapeDrawable(TriangleShape.create(
-                    arrowLp.width, arrowLp.height, !mIsAboveIcon));
-            Paint arrowPaint = arrowDrawable.getPaint();
-            arrowPaint.setColor(Themes.getAttrColor(getContext(), R.attr.popupColorPrimary));
-            // The corner path effect won't be reflected in the shadow, but shouldn't be noticeable.
-            int radius = getResources().getDimensionPixelSize(R.dimen.popup_arrow_corner_radius);
-            arrowPaint.setPathEffect(new CornerPathEffect(radius));
-            mArrow.setBackground(arrowDrawable);
-            // Clip off the part of the arrow that is underneath the popup.
-            if (mIsAboveIcon) {
-                mArrow.setClipBounds(new Rect(0, -mArrowOffset, arrowLp.width, arrowLp.height));
-            } else {
-                mArrow.setClipBounds(new Rect(0, 0, arrowLp.width, arrowLp.height + mArrowOffset));
-            }
+            mArrow.setBackground(new RoundedArrowDrawable(
+                    mArrowWidth, mArrowHeight, mArrowPointRadius,
+                    mOutlineRadius, getMeasuredWidth(), getMeasuredHeight(),
+                    mArrowOffsetHorizontal, -mArrowOffsetVertical,
+                    !mIsAboveIcon, mIsLeftAligned,
+                    Themes.getAttrColor(getContext(), R.attr.popupColorPrimary)));
             mArrow.setElevation(getElevation());
         }
 
-        mArrow.setPivotX(arrowLp.width / 2);
-        mArrow.setPivotY(mIsAboveIcon ? arrowLp.height : 0);
-    }
-
-    protected boolean isAlignedWithStart() {
-        return mIsLeftAligned && !mIsRtl || !mIsLeftAligned && mIsRtl;
+        mArrow.setPivotX(mArrowWidth / 2.0f);
+        mArrow.setPivotY(mIsAboveIcon ? mArrowHeight : 0);
     }
 
     /**
@@ -274,8 +262,9 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
      */
     private void orientAboutObject(boolean allowAlignLeft, boolean allowAlignRight) {
         measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
+
         int width = getMeasuredWidth();
-        int extraVerticalSpace = mArrow.getLayoutParams().height + mArrowOffset
+        int extraVerticalSpace = mArrowHeight + mArrowOffsetVertical
                 + getResources().getDimensionPixelSize(R.dimen.popup_vertical_padding);
         int height = getMeasuredHeight() + extraVerticalSpace;
 
@@ -291,22 +280,7 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
 
         // Offset x so that the arrow and shortcut icons are center-aligned with the original icon.
         int iconWidth = mTempRect.width();
-        Resources resources = getResources();
-        int xOffset;
-        if (isAlignedWithStart()) {
-            // Aligning with the shortcut icon.
-            int shortcutIconWidth = resources.getDimensionPixelSize(R.dimen.deep_shortcut_icon_size);
-            int shortcutPaddingStart = resources.getDimensionPixelSize(
-                    R.dimen.popup_padding_start);
-            xOffset = iconWidth / 2 - shortcutIconWidth / 2 - shortcutPaddingStart;
-        } else {
-            // Aligning with the drag handle.
-            int shortcutDragHandleWidth = resources.getDimensionPixelSize(
-                    R.dimen.deep_shortcut_drag_handle_size);
-            int shortcutPaddingEnd = resources.getDimensionPixelSize(
-                    R.dimen.popup_padding_end);
-            xOffset = iconWidth / 2 - shortcutDragHandleWidth / 2 - shortcutPaddingEnd;
-        }
+        int xOffset = iconWidth / 2 - mArrowOffsetHorizontal - mArrowWidth / 2;
         x += mIsLeftAligned ? xOffset : -xOffset;
 
         // Check whether we can still align as we originally wanted, now that we've calculated x.
@@ -375,12 +349,14 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
         FrameLayout.LayoutParams arrowLp = (FrameLayout.LayoutParams) mArrow.getLayoutParams();
         if (mIsAboveIcon) {
             arrowLp.gravity = lp.gravity = Gravity.BOTTOM;
-            lp.bottomMargin = getPopupContainer().getHeight() - y - getMeasuredHeight() - insets.top;
-            arrowLp.bottomMargin = lp.bottomMargin - arrowLp.height - mArrowOffset - insets.bottom;
+            lp.bottomMargin =
+                    getPopupContainer().getHeight() - y - getMeasuredHeight() - insets.top;
+            arrowLp.bottomMargin =
+                    lp.bottomMargin - arrowLp.height - mArrowOffsetVertical - insets.bottom;
         } else {
             arrowLp.gravity = lp.gravity = Gravity.TOP;
             lp.topMargin = y + insets.top;
-            arrowLp.topMargin = lp.topMargin - insets.top - arrowLp.height - mArrowOffset;
+            arrowLp.topMargin = lp.topMargin - insets.top - arrowLp.height - mArrowOffsetVertical;
         }
     }
 
@@ -529,22 +505,13 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
     protected void onCreateCloseAnimation(AnimatorSet anim) { }
 
     private RoundedRectRevealOutlineProvider createOpenCloseOutlineProvider() {
-        Resources res = getResources();
-        int arrowCenterX = res.getDimensionPixelSize(mIsLeftAligned ^ mIsRtl ?
-                R.dimen.popup_arrow_horizontal_center_start:
-                R.dimen.popup_arrow_horizontal_center_end);
-        int halfArrowWidth = res.getDimensionPixelSize(R.dimen.popup_arrow_width) / 2;
-        float arrowCornerRadius = res.getDimension(R.dimen.popup_arrow_corner_radius);
-        if (!mIsLeftAligned) {
-            arrowCenterX = getMeasuredWidth() - arrowCenterX;
-        }
+        int arrowLeft = getArrowLeft();
         int arrowCenterY = mIsAboveIcon ? getMeasuredHeight() : 0;
 
-        mStartRect.set(arrowCenterX - halfArrowWidth, arrowCenterY, arrowCenterX + halfArrowWidth,
-                arrowCenterY);
+        mStartRect.set(arrowLeft, arrowCenterY, arrowLeft + mArrowWidth, arrowCenterY);
 
-        return new RoundedRectRevealOutlineProvider
-                (arrowCornerRadius, mOutlineRadius, mStartRect, mEndRect);
+        return new RoundedRectRevealOutlineProvider(
+                mArrowPointRadius, mOutlineRadius, mStartRect, mEndRect);
     }
 
     /**
