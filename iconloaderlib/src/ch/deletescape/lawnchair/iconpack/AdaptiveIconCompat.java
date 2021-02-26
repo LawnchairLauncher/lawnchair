@@ -37,6 +37,7 @@ import android.graphics.Region;
 import android.graphics.Shader;
 import android.graphics.Shader.TileMode;
 import android.graphics.drawable.AdaptiveIconDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
@@ -51,6 +52,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Objects;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -148,12 +150,14 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
             Class classIconShapeManager = Class.forName("ch.deletescape.lawnchair.adaptive.IconShapeManager");
             methodGetAdaptiveIconMaskPath = classIconShapeManager.getMethod("getAdaptiveIconMaskPath");
             methodExtractThemeAttrs = TypedArray.class.getDeclaredMethod("extractThemeAttrs");
+            // Not accessible anymore, will only work on hidden api
             methodCreateFromXmlInnerForDensity = Drawable.class.getDeclaredMethod(
                     "createFromXmlInnerForDensity", Resources.class,
                     XmlPullParser.class, AttributeSet.class, int.class, Theme.class);
             methodCreateFromXmlInnerForDensity.setAccessible(true);
         } catch (NoSuchMethodException | ClassNotFoundException e) {
-            e.printStackTrace();
+            methodCreateFromXmlInnerForDensity = null;
+            Log.e(TAG, Objects.requireNonNull(e.getMessage())); // Don't spam my log pls
         }
     }
 
@@ -525,11 +529,16 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
             @NonNull XmlPullParser parser, @NonNull AttributeSet attrs, int density,
             @Nullable Theme theme) {
         try {
-            return (Drawable) methodCreateFromXmlInnerForDensity.invoke(null,
-                    r, parser, attrs, density, theme);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException("Error while creating adaptive icon", e);
+            if (methodCreateFromXmlInnerForDensity != null) {
+                return (Drawable) methodCreateFromXmlInnerForDensity.invoke(null,
+                        r, parser, attrs, density, theme);
+            } else {
+                return Drawable.createFromXmlInner(r, parser, attrs, theme);
+            }
+        } catch (XmlPullParserException | IOException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
         }
+        return new ColorDrawable(Color.TRANSPARENT);
     }
 
     private void dumpAttrs(AttributeSet attrs) {

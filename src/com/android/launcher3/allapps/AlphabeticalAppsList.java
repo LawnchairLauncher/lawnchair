@@ -229,6 +229,9 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
      * Returns the current filtered list of applications broken down into their sections.
      */
     public List<AdapterItem> getAdapterItems() {
+        if (mAdapterItems.size() == 0) {
+            reset();
+        }
         return mAdapterItems;
     }
 

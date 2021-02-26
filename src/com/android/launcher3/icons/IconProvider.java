@@ -33,6 +33,7 @@ import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Log;
 
+import ch.deletescape.lawnchair.iconpack.LawnchairIconProvider;
 import com.android.launcher3.R;
 import com.android.launcher3.icons.BitmapInfo.Extender;
 import com.android.launcher3.pm.UserCache;
@@ -73,6 +74,10 @@ public class IconProvider {
         mContext = context;
         mCalendar = parseComponentOrNull(context, R.string.calendar_component_name);
         mClock = parseComponentOrNull(context, R.string.clock_component_name);
+    }
+
+    public static IconProvider createLawnInstance(Context context) {
+        return new LawnchairIconProvider(context);
     }
 
     /**

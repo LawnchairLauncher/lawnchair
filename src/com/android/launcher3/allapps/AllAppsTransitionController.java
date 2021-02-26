@@ -235,7 +235,7 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
         PluginManagerWrapper.INSTANCE.get(mLauncher)
                 .addPluginListener(this, AllAppsSearchPlugin.class, false);
 
-        ((BlurQsbLayout) mAppsView.getSearchView()).setScrimView((BlurScrimView) mScrimView);
+//        ((BlurQsbLayout) mAppsView.getSearchView()).setScrimView((BlurScrimView) mScrimView);
     }
 
     /**

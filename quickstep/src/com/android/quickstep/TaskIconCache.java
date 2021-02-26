@@ -71,7 +71,7 @@ public class TaskIconCache {
         Resources res = context.getResources();
         int cacheSize = res.getInteger(R.integer.recentsIconCacheSize);
         mIconCache = new TaskKeyLruCache<>(cacheSize);
-        mIconProvider = new IconProvider(context);
+        mIconProvider = IconProvider.createLawnInstance(context);
     }
 
     /**

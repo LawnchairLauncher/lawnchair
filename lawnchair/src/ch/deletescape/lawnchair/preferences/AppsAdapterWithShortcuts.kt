@@ -73,7 +73,7 @@ open class AppsAdapterWithShortcuts(
 
     init {
         if (iconProvider == null) {
-            iconProvider = IconProvider(context)
+            iconProvider = IconProvider.createLawnInstance(context)
         }
         MODEL_EXECUTOR.handler.postAtFrontOfQueue(::loadAppsList)
     }

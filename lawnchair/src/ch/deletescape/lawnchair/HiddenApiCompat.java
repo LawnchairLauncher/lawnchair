@@ -25,6 +25,8 @@ import android.content.pm.ApplicationInfo;
 import android.graphics.Bitmap;
 import android.graphics.Region;
 import android.os.Build;
+import android.os.Build.VERSION_CODES;
+import android.view.ThreadedRenderer;
 import androidx.annotation.RequiresApi;
 import com.android.systemui.shared.system.SystemGestureExclusionListenerCompat;
 import com.android.systemui.shared.system.ThreadedRendererCompat;
@@ -47,12 +49,6 @@ public class HiddenApiCompat {
     }
 
     public static boolean checkIfAllowed() {
-        if (tryAccess()) {
-            return true;
-        }
-
-        tryWhitelist();
-
         return tryAccess();
     }
 
@@ -67,39 +63,14 @@ public class HiddenApiCompat {
         }
     }
 
-    private static void tryWhitelist() {
-        if (sForName == null || sGetDeclaredMethod == null) return;
-        try {
-            Class<?> vmRuntimeClass = (Class<?>) sForName.invoke(null, "dalvik.system.VMRuntime");
-            Method getRuntime = (Method) sGetDeclaredMethod.invoke(vmRuntimeClass, "getRuntime", null);
-            Method setHiddenApiExemptions = (Method) sGetDeclaredMethod.invoke(vmRuntimeClass, "setHiddenApiExemptions", new Class[]{String[].class});
-            Object vmRuntime = getRuntime.invoke(null);
-
-            setHiddenApiExemptions.invoke(vmRuntime, new Object[] { new String[] { "L" } });
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
-    }
-
     private static boolean tryAccess() {
         // TODO: is there a better way?
         try {
-            ThreadedRendererCompat.class.getMethod("setContextPriority", int.class);
+            ThreadedRenderer.class.getMethod("setContextPriority", int.class);
             return true;
         } catch (NoSuchMethodException e) {
             return false;
         }
     }
 
-    public static boolean isInstantApp(ApplicationInfo applicationInfo) {
-        return applicationInfo.isInstantApp();
-    }
-
-    public static int getIconResource(TaskDescription desc) {
-        return desc.getIconResource();
-    }
-
-    public static Bitmap loadTaskDescriptionIcon(TaskDescription desc, int userId) {
-        return ActivityManager.TaskDescription.loadTaskDescriptionIcon(desc.getIconFilename(), userId);
-    }
 }

@@ -1,5 +1,6 @@
 package com.android.systemui.shared;
 
+
 import android.os.Build;
 
 import xyz.paphonb.quickstep.compat.ActivityManagerCompat;

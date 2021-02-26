@@ -20,9 +20,10 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.provider.DeviceConfig;
+import com.android.launcher3.Utilities;
 
+import android.util.Log;
 import com.android.launcher3.config.FeatureFlags.DebugFlag;
-
 import java.util.ArrayList;
 
 @TargetApi(Build.VERSION_CODES.P)
@@ -61,6 +62,7 @@ public class DeviceFlag extends DebugFlag {
     }
 
     private void registerDeviceConfigChangedListener(Context context) {
+        if (!Utilities.isRecentsEnabled()) return;
         DeviceConfig.addOnPropertiesChangedListener(
                 NAMESPACE_LAUNCHER,
                 context.getMainExecutor(),
@@ -78,6 +80,7 @@ public class DeviceFlag extends DebugFlag {
     }
 
     protected static boolean getDeviceValue(String key, boolean defaultValue) {
+        if (!Utilities.isRecentsEnabled()) return defaultValue;
         return DeviceConfig.getBoolean(NAMESPACE_LAUNCHER, key, defaultValue);
     }
 }

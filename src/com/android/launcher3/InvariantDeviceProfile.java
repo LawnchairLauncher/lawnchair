@@ -169,22 +169,42 @@ public class InvariantDeviceProfile {
 
     private InvariantDeviceProfile(InvariantDeviceProfile p) {
         numRows = p.numRows;
+        numRowsOriginal = p.numRowsOriginal;
         numColumns = p.numColumns;
+        numColumnsOriginal = p.numColumnsOriginal;
+        numColsDrawer = p.numColsDrawer;
+        numColsDrawerOriginal = p.numColsDrawerOriginal;
+        numPredictions = p.numPredictions;
+        numPredictionsOriginal = p.numPredictionsOriginal;
         numFolderRows = p.numFolderRows;
         numFolderColumns = p.numFolderColumns;
         iconSize = p.iconSize;
+        hotseatIconSize = p.hotseatIconSize;
         iconShapePath = p.iconShapePath;
         landscapeIconSize = p.landscapeIconSize;
+        landscapeHotseatIconSize = p.landscapeHotseatIconSize;
+        allAppsIconSize = p.allAppsIconSize;
+        landscapeAllAppsIconSize = p.landscapeAllAppsIconSize;
         iconBitmapSize = p.iconBitmapSize;
+        fillResIconDpi = p.fillResIconDpi;
         iconTextSize = p.iconTextSize;
+        allAppsIconTextSize = p.allAppsIconTextSize;
+        workspacePaddingLeftScale = p.workspacePaddingLeftScale;
+        workspacePaddingRightScale = p.workspacePaddingRightScale;
+        workspacePaddingTopScale = p.workspacePaddingTopScale;
+        workspacePaddingBottomScale = p.workspacePaddingBottomScale;
+        mExtraAttrs = p.mExtraAttrs;
         numHotseatIcons = p.numHotseatIcons;
+        numHotseatIconsOriginal = p.numHotseatIconsOriginal;
         numAllAppsColumns = p.numAllAppsColumns;
         dbFile = p.dbFile;
-        allAppsIconSize = p.allAppsIconSize;
-        allAppsIconTextSize = p.allAppsIconTextSize;
         defaultLayoutId = p.defaultLayoutId;
         demoModeLayoutId = p.demoModeLayoutId;
-        mExtraAttrs = p.mExtraAttrs;
+        landscapeProfile = p.landscapeProfile;
+        portraitProfile = p.portraitProfile;
+        defaultWallpaperSize = p.defaultWallpaperSize;
+        defaultWidgetPadding = p.defaultWidgetPadding;
+        mConfigMonitor = p.mConfigMonitor;
         mOverlayMonitor = p.mOverlayMonitor;
     }
 
@@ -245,6 +265,11 @@ public class InvariantDeviceProfile {
         result.landscapeIconSize = defaultDisplayOption.landscapeIconSize;
         result.allAppsIconSize = Math.min(
                 defaultDisplayOption.allAppsIconSize, myDisplayOption.allAppsIconSize);
+        GridOption closestProfile = result.grid;
+        if (!closestProfile.name.equals(gridName)) {
+            Utilities.getPrefs(context).edit()
+                    .putString(KEY_IDP_GRID_NAME, closestProfile.name).apply();
+        }
         initGrid(context, myInfo, result, null);
     }
 
@@ -277,12 +302,18 @@ public class InvariantDeviceProfile {
         ArrayList<DisplayOption> allOptions = getPredefinedDeviceProfiles(context, gridName);
 
         DisplayOption displayOption = invDistWeightedInterpolate(displayInfo, allOptions);
+        GridOption closestProfile = displayOption.grid;
+        if (!closestProfile.name.equals(gridName)) {
+            Utilities.getPrefs(context).edit()
+                    .putString(KEY_IDP_GRID_NAME, closestProfile.name).apply();
+        }
         initGrid(context, displayInfo, displayOption, customizer);
         return displayOption.grid.name;
     }
 
     private void initGrid(
             Context context, DefaultDisplay.Info displayInfo, DisplayOption displayOption, @Nullable GridCustomizer customizer) {
+        LawnchairPreferences prefs = Utilities.getLawnchairPrefs(context);
         GridOption closestProfile = displayOption.grid;
         // TODO: reimplement grid customizations
 
@@ -305,12 +336,29 @@ public class InvariantDeviceProfile {
         numAllAppsColumns = closestProfile.numAllAppsColumns;
 
         mExtraAttrs = closestProfile.extraAttrs;
+        workspacePaddingLeftScale = closestProfile.workspacePaddingLeftScale;
+        workspacePaddingRightScale = closestProfile.workspacePaddingRightScale;
+        workspacePaddingTopScale = closestProfile.workspacePaddingTopScale;
+        workspacePaddingBottomScale = closestProfile.workspacePaddingBottomScale;
 
-        iconSize = displayOption.iconSize;
+        iconSize = displayOption.iconSize * prefs.getDesktopIconScale();
+        if (prefs.getDockIconScale() > 0) {
+            hotseatIconSize = displayOption.iconSize * prefs.getDockIconScale();
+        } else {
+            hotseatIconSize = iconSize;
+        }
+        allAppsIconSize = displayOption.iconSize * prefs.getDrawerIconScale();
         iconShapePath = getIconShapePath(context);
-        landscapeIconSize = displayOption.landscapeIconSize;
-        iconBitmapSize = ResourceUtils.pxFromDp(iconSize, displayInfo.metrics);
+        landscapeIconSize = displayOption.landscapeIconSize  * prefs.getDesktopIconScale();
+        if (prefs.getDockIconScale() > 0) {
+            landscapeHotseatIconSize = displayOption.landscapeIconSize * prefs.getDockIconScale();
+        } else {
+            landscapeHotseatIconSize = landscapeIconSize;
+        }
+        landscapeAllAppsIconSize = displayOption.landscapeIconSize  * prefs.getDrawerIconScale();
+        iconBitmapSize = ResourceUtils.pxFromDp(max(iconSize, max(hotseatIconSize, allAppsIconSize)), displayInfo.metrics);
         iconTextSize = displayOption.iconTextSize;
+        allAppsIconTextSize =  displayOption.iconTextSize * prefs.getDrawerTextScale();
         fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
 
         if (Utilities.isGridOptionsEnabled(context)) {

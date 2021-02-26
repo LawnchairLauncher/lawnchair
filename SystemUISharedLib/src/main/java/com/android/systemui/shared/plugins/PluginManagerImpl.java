@@ -482,10 +482,12 @@ public class PluginManagerImpl extends BroadcastReceiver implements PluginManage
 
     private static Object invoke(Method method, Object obj, Object... args) {
         try {
-            return method.invoke(obj, args);
+            if (method != null) {
+                return method.invoke(obj, args);
+            }
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
-            return null;
         }
+        return null;
     }
 }

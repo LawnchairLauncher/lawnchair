@@ -127,7 +127,7 @@ public class DragView extends View implements StateListener<LauncherState> {
         mDragController = launcher.getDragController();
         mFirstFrameAnimatorHelper = new FirstFrameAnimatorHelper(this);
 
-        new IconProvider(launcher);
+        IconProvider.createLawnInstance(launcher);
 
         final float scale = (bitmap.getWidth() + finalScaleDps) / bitmap.getWidth();
 

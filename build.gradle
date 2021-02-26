@@ -368,8 +368,8 @@ dependencies {
     implementation 'com.luckycatlabs:SunriseSunsetCalculator:1.2'
     implementation 'me.mvdw.recyclerviewmergeadapter:recyclerviewmergeadapter:2.1.0'
     implementation 'com.squareup.retrofit2:retrofit:2.6.0'
-    implementation 'com.squareup.okhttp3:okhttp:4.0.0-RC1'
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.0.0-RC1'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.6.0'
 
     implementation 'me.xdrop:fuzzywuzzy:1.2.0'
@@ -386,6 +386,8 @@ dependencies {
     androidTestImplementation "androidx.annotation:annotation:${ANDROID_X_VERSION}"
 
     implementation 'com.google.protobuf:protobuf-lite:3.0.0'
+
+    implementation 'com.github.ChickenHook:RestrictionBypass:2.2'
 }
 
 protobuf {

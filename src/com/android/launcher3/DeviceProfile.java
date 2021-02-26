@@ -450,8 +450,9 @@ public class DeviceProfile {
         }
 
         // Hotseat
-        iconSizePx = Math.round((isVerticalLayout ? inv.landscapeHotseatIconSize : inv.hotseatIconSize));
-        hotseatIconSizePx = Math.max(1, (int) (ResourceUtils.pxFromDp(iconSizePx, dm) * scale));
+        int newIconSizePx = Math.round((isVerticalLayout ? inv.landscapeHotseatIconSize : inv.hotseatIconSize));
+        iconSizePx = Math.max(1, (int) (ResourceUtils.pxFromDp((newIconSizePx == 0 ? iconSizePx : newIconSizePx), dm) * scale));
+        hotseatIconSizePx = Math.max(1, iconSizePx);
         if (isVerticalLayout) {
             hotseatBarSizePx = hotseatIconSizePx + hotseatBarSidePaddingStartPx
                     + hotseatBarSidePaddingEndPx;
