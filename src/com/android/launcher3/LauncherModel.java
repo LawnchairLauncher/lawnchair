@@ -615,7 +615,9 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
                         + "\" bitmapIcon=" + info.bitmap.icon
                         + " componentName=" + info.componentName.getPackageName());
             }
+            writer.println();
         }
+        mModelDelegate.dump(prefix, fd, writer, args);
         mBgDataModel.dump(prefix, fd, writer, args);
     }
 
