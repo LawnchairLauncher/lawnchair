@@ -1106,6 +1106,10 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         }
     }
 
+    public int getRunningTaskId() {
+        return mRunningTaskId;
+    }
+
     public @Nullable TaskView getRunningTaskView() {
         return getTaskView(mRunningTaskId);
     }

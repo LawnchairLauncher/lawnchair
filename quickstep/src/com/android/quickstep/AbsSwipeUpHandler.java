@@ -1494,7 +1494,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
         @Override
         public void onActivityRestartAttempt(ActivityManager.RunningTaskInfo task,
                 boolean homeTaskVisible, boolean clearedTask, boolean wasVisible) {
-            if (mRecentsAnimationTargets.hasTask(task.taskId)) {
+            if (mRecentsView.getRunningTaskIndex() != -1
+                    && mRecentsView.getRunningTaskId() == task.taskId
+                    && mRecentsAnimationTargets.hasTask(task.taskId)) {
                 launchOtherTaskInLiveTileMode(task.taskId, mRecentsAnimationTargets.apps);
             }
             ActivityManagerWrapper.getInstance().unregisterTaskStackListener(
