@@ -18,6 +18,7 @@ package com.android.launcher3.appprediction;
 import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_GRID;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.prediction.AppPredictionContext;
 import android.app.prediction.AppPredictionManager;
@@ -27,6 +28,7 @@ import android.app.prediction.AppTargetEvent;
 import android.app.prediction.AppTargetId;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -110,6 +112,9 @@ public class PredictionAppTracker extends AppLaunchTracker
         if (apm == null) {
             return null;
         }
+
+        int usagePerm = mContext.checkCallingOrSelfPermission(Manifest.permission.PACKAGE_USAGE_STATS);
+        if (usagePerm != PackageManager.PERMISSION_GRANTED) return null;
 
         AppPredictor predictor = apm.createAppPredictionSession(
                 new AppPredictionContext.Builder(mContext)

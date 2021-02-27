@@ -21,6 +21,7 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.hybridhotseat.HotseatEduController.getSettingsIntent;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOTSEAT_RANKED;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -30,6 +31,7 @@ import android.app.prediction.AppPredictor;
 import android.app.prediction.AppTarget;
 import android.app.prediction.AppTargetEvent;
 import android.content.ComponentName;
+import android.content.pm.PackageManager;
 import android.os.Process;
 import android.util.Log;
 import android.view.HapticFeedbackConstants;
@@ -321,6 +323,11 @@ public class HotseatPredictionController implements DragController.DragListener,
 
         mPredictionModel.createBundle(bundle -> {
             if (mIsDestroyed) return;
+            int usagePerm = mLauncher.checkCallingOrSelfPermission(Manifest.permission.PACKAGE_USAGE_STATS);
+            if (usagePerm != PackageManager.PERMISSION_GRANTED) {
+                mAppPredictor = null;
+                return;
+            }
             mAppPredictor = apm.createAppPredictionSession(
                     new AppPredictionContext.Builder(mLauncher)
                             .setUiSurface(PREDICTION_CLIENT)

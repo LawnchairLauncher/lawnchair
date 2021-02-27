@@ -61,23 +61,24 @@ public class DeviceFlag extends DebugFlag {
     }
 
     private void registerDeviceConfigChangedListener(Context context) {
-        DeviceConfig.addOnPropertiesChangedListener(
-                NAMESPACE_LAUNCHER,
-                context.getMainExecutor(),
-                properties -> {
-                    if (!NAMESPACE_LAUNCHER.equals(properties.getNamespace())
-                            || !properties.getKeyset().contains(key)) {
-                        return;
-                    }
-                    defaultValue = getDeviceValue(key, mDefaultValueInCode);
-                    initialize(context);
-                    for (Runnable r: mListeners) {
-                        r.run();
-                    }
-                });
+//        DeviceConfig.addOnPropertiesChangedListener(
+//                NAMESPACE_LAUNCHER,
+//                context.getMainExecutor(),
+//                properties -> {
+//                    if (!NAMESPACE_LAUNCHER.equals(properties.getNamespace())
+//                            || !properties.getKeyset().contains(key)) {
+//                        return;
+//                    }
+//                    defaultValue = getDeviceValue(key, mDefaultValueInCode);
+//                    initialize(context);
+//                    for (Runnable r: mListeners) {
+//                        r.run();
+//                    }
+//                });
     }
 
     protected static boolean getDeviceValue(String key, boolean defaultValue) {
-        return DeviceConfig.getBoolean(NAMESPACE_LAUNCHER, key, defaultValue);
+        return defaultValue;
+//        return DeviceConfig.getBoolean(NAMESPACE_LAUNCHER, key, defaultValue);
     }
 }

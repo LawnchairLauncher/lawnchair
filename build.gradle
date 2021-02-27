@@ -10,8 +10,28 @@ buildscript {
     }
 }
 
-final String ANDROID_TOP = "${rootDir}/../../.."
-final String FRAMEWORK_PREBUILTS_DIR = "${ANDROID_TOP}/prebuilts/framework_intermediates/"
+final String FRAMEWORK_PREBUILTS_DIR = "prebuilts"
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        jcenter()
+        maven { url 'https://jitpack.io' }
+    }
+
+    ext.addFrameworkJar = { String path ->
+        def frameworkJar = new File(rootProject.projectDir, 'prebuilts/libs/' + path)
+        if (!frameworkJar.exists()) {
+            throw new IllegalArgumentException("Framework jar path doesn't exist")
+        }
+        gradle.projectsEvaluated {
+            tasks.withType(JavaCompile) {
+                options.bootstrapClasspath = files([frameworkJar] + (options.bootstrapClasspath.files as Iterable<File>))
+            }
+        }
+    }
+}
 
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.protobuf'
@@ -47,13 +67,13 @@ android {
     productFlavors {
         aosp {
             dimension "app"
-            applicationId 'com.android.launcher3'
+            applicationId 'ch.deletescape.lawnchair'
             testApplicationId 'com.android.launcher3.tests'
         }
 
         l3go {
             dimension "app"
-            applicationId 'com.android.launcher3'
+            applicationId 'ch.deletescape.lawnchair'
             testApplicationId 'com.android.launcher3.tests'
         }
 
@@ -132,6 +152,8 @@ android {
             manifest.srcFile "quickstep/AndroidManifest.xml"
         }
     }
+
+    addFrameworkJar('framework.jar')
 }
 
 allprojects {
@@ -151,9 +173,10 @@ dependencies {
     implementation project(':IconLoader')
     withQuickstepImplementation project(':SharedLibWrapper')
     implementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'launcher_protos.jar')
+    implementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'sysui_statslog.jar')
 
     // Recents lib dependency
-    withQuickstepImplementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/quickstep/libs", include: 'sysui_shared.jar')
+    withQuickstepImplementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'sysui_shared.jar')
 
     // Required for AOSP to compile. This is already included in the sysui_shared.jar
     withoutQuickstepImplementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'plugin_core.jar')
@@ -166,6 +189,8 @@ dependencies {
     androidTestImplementation 'com.android.support.test:rules:1.0.0'
     androidTestImplementation 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
     androidTestImplementation "androidx.annotation:annotation:${ANDROID_X_VERSION}"
+    implementation 'com.google.protobuf.nano:protobuf-javanano:3.1.0'
+    implementation 'com.github.ChickenHook:RestrictionBypass:2.2'
 }
 
 protobuf {
