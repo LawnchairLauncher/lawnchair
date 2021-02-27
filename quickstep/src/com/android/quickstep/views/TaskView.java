@@ -121,6 +121,12 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
      */
     public static final float MAX_PAGE_SCRIM_ALPHA = 0.4f;
 
+    /**
+     * Should the TaskView display clip off the status and navigation bars in recents. When this
+     * is false the overview shows the whole screen scaled down instead.
+     */
+    public static final boolean CLIP_STATUS_AND_NAV_BARS = false;
+
     private static final float EDGE_SCALE_DOWN_FACTOR_CAROUSEL = 0.03f;
     private static final float EDGE_SCALE_DOWN_FACTOR_GRID = 0.00f;
 
@@ -620,12 +626,11 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         int thumbnailPadding = (int) getResources().getDimension(R.dimen.task_thumbnail_top_margin);
         int taskIconMargin = (int) getResources().getDimension(R.dimen.task_icon_top_margin);
         int taskIconHeight = (int) getResources().getDimension(R.dimen.task_thumbnail_icon_size);
-        int iconTopMargin = taskIconMargin - taskIconHeight + thumbnailPadding;
         LayoutParams iconParams = (LayoutParams) mIconView.getLayoutParams();
         switch (orientationHandler.getRotation()) {
             case ROTATION_90:
                 iconParams.gravity = (isRtl ? START : END) | CENTER_VERTICAL;
-                iconParams.rightMargin = -thumbnailPadding;
+                iconParams.rightMargin = -taskIconHeight - taskIconMargin / 2;
                 iconParams.leftMargin = 0;
                 iconParams.topMargin = snapshotParams.topMargin / 2;
                 break;
@@ -633,11 +638,11 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                 iconParams.gravity = BOTTOM | CENTER_HORIZONTAL;
                 iconParams.bottomMargin = -thumbnailPadding;
                 iconParams.leftMargin = iconParams.rightMargin = 0;
-                iconParams.topMargin = iconTopMargin;
+                iconParams.topMargin = taskIconMargin;
                 break;
             case ROTATION_270:
                 iconParams.gravity = (isRtl ? END : START) | CENTER_VERTICAL;
-                iconParams.leftMargin = -thumbnailPadding;
+                iconParams.leftMargin = -taskIconHeight - taskIconMargin / 2;
                 iconParams.rightMargin = 0;
                 iconParams.topMargin = snapshotParams.topMargin / 2;
                 break;
@@ -645,7 +650,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             default:
                 iconParams.gravity = TOP | CENTER_HORIZONTAL;
                 iconParams.leftMargin = iconParams.rightMargin = 0;
-                iconParams.topMargin = iconTopMargin;
+                iconParams.topMargin = taskIconMargin;
                 break;
         }
         mIconView.setLayoutParams(iconParams);
@@ -1191,7 +1196,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
             int expectedWidth;
             int expectedHeight;
-            float thumbnailRatio = mTask != null ? mTask.getVisibleThumbnailRatio() : 0f;
+            float thumbnailRatio = mTask != null ? mTask.getVisibleThumbnailRatio(
+                    TaskView.CLIP_STATUS_AND_NAV_BARS) : 0f;
             if (isRunningTask() || thumbnailRatio == 0f) {
                 expectedWidth = taskWidth;
                 expectedHeight = taskHeight + thumbnailPadding;
