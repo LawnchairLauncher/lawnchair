@@ -1746,7 +1746,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
         if (mWindowTransitionController != null) {
             mWindowTransitionController.setProgress(mCurrentShift.value, mDragLengthFactor);
         }
-        if (mRecentsAnimationTargets != null) {
+        // No need to apply any transform if there is ongoing swipe-pip-to-home animator since
+        // that animator handles the leash solely.
+        if (mRecentsAnimationTargets != null && !mIsSwipingPipToHome) {
             if (mRecentsViewScrollLinked) {
                 mTaskViewSimulator.setScroll(mRecentsView.getScrollOffset());
             }
