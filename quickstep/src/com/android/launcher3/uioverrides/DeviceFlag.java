@@ -16,8 +16,11 @@
 
 package com.android.launcher3.uioverrides;
 
+import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.ActivityThread;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.provider.DeviceConfig;
 
@@ -61,24 +64,27 @@ public class DeviceFlag extends DebugFlag {
     }
 
     private void registerDeviceConfigChangedListener(Context context) {
-//        DeviceConfig.addOnPropertiesChangedListener(
-//                NAMESPACE_LAUNCHER,
-//                context.getMainExecutor(),
-//                properties -> {
-//                    if (!NAMESPACE_LAUNCHER.equals(properties.getNamespace())
-//                            || !properties.getKeyset().contains(key)) {
-//                        return;
-//                    }
-//                    defaultValue = getDeviceValue(key, mDefaultValueInCode);
-//                    initialize(context);
-//                    for (Runnable r: mListeners) {
-//                        r.run();
-//                    }
-//                });
+        int usagePerm = context.checkCallingOrSelfPermission("android.permission.READ_DEVICE_CONFIG");
+        if (usagePerm != PackageManager.PERMISSION_GRANTED) return;
+        DeviceConfig.addOnPropertiesChangedListener(
+                NAMESPACE_LAUNCHER,
+                context.getMainExecutor(),
+                properties -> {
+                    if (!NAMESPACE_LAUNCHER.equals(properties.getNamespace())
+                            || !properties.getKeyset().contains(key)) {
+                        return;
+                    }
+                    defaultValue = getDeviceValue(key, mDefaultValueInCode);
+                    initialize(context);
+                    for (Runnable r: mListeners) {
+                        r.run();
+                    }
+                });
     }
 
     protected static boolean getDeviceValue(String key, boolean defaultValue) {
-        return defaultValue;
-//        return DeviceConfig.getBoolean(NAMESPACE_LAUNCHER, key, defaultValue);
+        int usagePerm = ActivityThread.currentApplication().checkCallingOrSelfPermission("android.permission.READ_DEVICE_CONFIG");
+        if (usagePerm != PackageManager.PERMISSION_GRANTED) return defaultValue;
+        return DeviceConfig.getBoolean(NAMESPACE_LAUNCHER, key, defaultValue);
     }
 }
