@@ -23,8 +23,8 @@ import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncest
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
 import static com.android.launcher3.anim.Interpolators.clampToProgress;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.statehandlers.DepthController.DEPTH;
+import static com.android.quickstep.util.NavigationModeFeatureFlag.LIVE_TILE;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
@@ -139,7 +139,7 @@ public final class TaskViewUtils {
         boolean isRunningTask = v.isRunningTask();
         TransformParams params = null;
         TaskViewSimulator tsv = null;
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && isRunningTask) {
+        if (LIVE_TILE.get() && isRunningTask) {
             params = v.getRecentsView().getLiveTileParams();
             tsv = v.getRecentsView().getLiveTileTaskViewSimulator();
         }
@@ -159,8 +159,7 @@ public final class TaskViewUtils {
         boolean isQuickSwitch = v.isEndQuickswitchCuj();
         v.setEndQuickswitchCuj(false);
 
-        boolean inLiveTileMode =
-                ENABLE_QUICKSTEP_LIVE_TILE.get() && v.getRecentsView().getRunningTaskIndex() != -1;
+        boolean inLiveTileMode = LIVE_TILE.get() && v.getRecentsView().getRunningTaskIndex() != -1;
         final RemoteAnimationTargets targets =
                 new RemoteAnimationTargets(appTargets, wallpaperTargets,
                         inLiveTileMode ? MODE_CLOSING : MODE_OPENING);
@@ -341,7 +340,7 @@ public final class TaskViewUtils {
             };
         }
         pa.add(launcherAnim);
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && recentsView.getRunningTaskIndex() != -1) {
+        if (LIVE_TILE.get() && recentsView.getRunningTaskIndex() != -1) {
             pa.addOnFrameCallback(recentsView::redrawLiveTile);
         }
         anim.play(pa.buildAnim());
