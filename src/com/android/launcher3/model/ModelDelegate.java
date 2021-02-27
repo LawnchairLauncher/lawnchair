@@ -27,6 +27,8 @@ import com.android.launcher3.R;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ResourceBasedOverride;
 
+import java.io.FileDescriptor;
+import java.io.PrintWriter;
 import java.util.Map;
 
 /**
@@ -89,4 +91,11 @@ public class ModelDelegate implements ResourceBasedOverride {
     @WorkerThread
     public void destroy() { }
 
+    /**
+     * Add data to a dumpsys request for Launcher (e.g. for bug reports).
+     *
+     * @see com.android.launcher3.Launcher#dump(java.lang.String, java.io.FileDescriptor,
+     *                                          java.io.PrintWriter, java.lang.String[])
+     **/
+    public void dump(String prefix, FileDescriptor fd, PrintWriter writer, String[] args) { }
 }
