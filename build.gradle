@@ -78,11 +78,17 @@ android {
     productFlavors {
         aosp {
             dimension "app"
-            applicationId 'ch.deletescape.lawnchair'
+            applicationId 'com.android.launcher3'
             testApplicationId 'com.android.launcher3.tests'
         }
 
         l3go {
+            dimension "app"
+            applicationId 'com.android.launcher3'
+            testApplicationId 'com.android.launcher3.tests'
+        }
+
+        lawn {
             dimension "app"
             applicationId 'ch.deletescape.lawnchair'
             testApplicationId 'com.android.launcher3.tests'
@@ -153,6 +159,20 @@ android {
             manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
         }
 
+        lawn {
+            java.srcDirs = ['src_flags', 'src_shortcuts_overrides', 'lawnchair/src']
+            res.srcDirs = ['lawnchair/res']
+            manifest.srcFile "lawnchair/AndroidManifest.xml"
+        }
+
+        lawnWithoutQuickstep {
+            manifest.srcFile "AndroidManifest.xml"
+        }
+
+        lawnWithQuickstep {
+            manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
+        }
+
         withoutQuickstep {
             java.srcDirs = ['src_ui_overrides']
         }
@@ -182,7 +202,6 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:${ANDROID_X_VERSION}"
     implementation "androidx.preference:preference:${ANDROID_X_VERSION}"
     implementation project(':IconLoader')
-    implementation project(':Lawnchair')
     withQuickstepImplementation project(':SharedLibWrapper')
     implementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'launcher_protos.jar')
     implementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'sysui_statslog.jar')

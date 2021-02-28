@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2015 Google Inc.
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<androidx.preference.PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <com.android.launcher3.settings.NotificationDotsPreference
+        android:key="pref_icon_badging"
+        android:title="@string/notification_dots_title"
+        android:persistent="false"
+        android:widgetLayout="@layout/notification_pref_warning" >
+        <intent android:action="android.settings.NOTIFICATION_SETTINGS">
+            <!-- This extra highlights the "Allow notification dots" field in Notification settings -->
+            <extra
+                android:name=":settings:fragment_args_key"
+                android:value="notification_badging" />
+        </intent>
+    </com.android.launcher3.settings.NotificationDotsPreference>
+
+    <SwitchPreference
+        android:key="pref_add_icon_to_home"
+        android:title="@string/auto_add_shortcuts_label"
+        android:summary="@string/auto_add_shortcuts_description"
+        android:defaultValue="true"
+        android:persistent="true" />
+
+    <SwitchPreference
+        android:key="pref_allowRotation"
+        android:title="@string/allow_rotation_title"
+        android:summary="@string/allow_rotation_desc"
+        android:defaultValue="@bool/allow_rotation"
+        android:persistent="true" />
+
+    <SwitchPreference
+        android:key="pref_grid_options"
+        android:title="Enable grid options"
+        android:defaultValue="false"
+        android:persistent="true" />
+
+    <androidx.preference.PreferenceScreen
+        android:key="pref_developer_options"
+        android:persistent="false"
+        android:title="Developer Options"
+        android:fragment="com.android.launcher3.settings.DeveloperOptionsFragment"/>
+
+</androidx.preference.PreferenceScreen>
