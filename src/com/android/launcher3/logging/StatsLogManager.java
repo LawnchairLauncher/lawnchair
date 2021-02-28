@@ -362,11 +362,11 @@ public class StatsLogManager implements ResourceBasedOverride {
         @UiEvent(doc = "User closed the AllApps keyboard.")
         LAUNCHER_ALLAPPS_KEYBOARD_CLOSED(694),
 
-        @UiEvent(doc = "User switched to Main tab in AllApps screen.")
-        LAUNCHER_ALLAPPS_SWITCHED_TO_MAIN_TAB(695),
+        @UiEvent(doc = "User switched to AllApps Main/Personal tab by swiping left.")
+        LAUNCHER_ALLAPPS_SWIPE_TO_PERSONAL_TAB(695),
 
-        @UiEvent(doc = "User switched to Work tab in AllApps screen.")
-        LAUNCHER_ALLAPPS_SWITCHED_TO_WORK_TAB(696),
+        @UiEvent(doc = "User switched to AllApps Work tab by swiping right.")
+        LAUNCHER_ALLAPPS_SWIPE_TO_WORK_TAB(696),
 
         @UiEvent(doc = "Default event when dedicated UI event is not available for the user action"
                 + " on slice .")
@@ -396,8 +396,17 @@ public class StatsLogManager implements ResourceBasedOverride {
         @UiEvent(doc = "IME is used for selecting the focused item on the AllApps screen.")
         LAUNCHER_ALLAPPS_FOCUSED_ITEM_SELECTED_WITH_IME(718),
 
+        @UiEvent(doc = "User long-pressed on an AllApps item.")
+        LAUNCHER_ALLAPPS_ITEM_LONG_PRESSED(719),
+
         @UiEvent(doc = "Launcher entered into AllApps state with device search enabled.")
         LAUNCHER_ALLAPPS_ENTRY_WITH_DEVICE_SEARCH(720),
+
+        @UiEvent(doc = "User switched to AllApps Main/Personal tab by tapping on it.")
+        LAUNCHER_ALLAPPS_TAP_ON_PERSONAL_TAB(721),
+
+        @UiEvent(doc = "User switched to AllApps Work tab by tapping on it.")
+        LAUNCHER_ALLAPPS_TAP_ON_WORK_TAB(722),
         ;
 
         // ADD MORE
