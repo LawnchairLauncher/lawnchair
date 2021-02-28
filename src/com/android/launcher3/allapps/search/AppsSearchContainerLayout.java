@@ -47,6 +47,7 @@ import com.android.launcher3.allapps.AlphabeticalAppsList;
 import com.android.launcher3.allapps.SearchUiManager;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.search.SearchCallback;
 
 import java.util.ArrayList;
 
@@ -54,7 +55,7 @@ import java.util.ArrayList;
  * Layout to contain the All-apps search UI.
  */
 public class AppsSearchContainerLayout extends ExtendedEditText
-        implements SearchUiManager, AllAppsSearchBarController.Callbacks,
+        implements SearchUiManager, SearchCallback<AdapterItem>,
         AllAppsStore.OnUpdateListener, Insettable {
 
     private final BaseDraggingActivity mLauncher;

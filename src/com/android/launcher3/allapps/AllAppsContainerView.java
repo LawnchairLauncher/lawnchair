@@ -16,6 +16,8 @@
 package com.android.launcher3.allapps;
 
 import static com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItem;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_TAP_ON_PERSONAL_TAB;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_TAP_ON_WORK_TAB;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_HAS_SHORTCUT_PERMISSION;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_CHANGE_PERMISSION;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_ENABLED;
@@ -432,9 +434,19 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             mAH[AdapterHolder.WORK].setup(mViewPager.getChildAt(1), mWorkMatcher);
             mViewPager.getPageIndicator().setActiveMarker(AdapterHolder.MAIN);
             findViewById(R.id.tab_personal)
-                    .setOnClickListener((View view) -> mViewPager.snapToPage(AdapterHolder.MAIN));
+                    .setOnClickListener((View view) -> {
+                        if (mViewPager.snapToPage(AdapterHolder.MAIN)) {
+                            mLauncher.getStatsLogManager().logger()
+                                    .log(LAUNCHER_ALLAPPS_TAP_ON_PERSONAL_TAB);
+                        }
+                    });
             findViewById(R.id.tab_work)
-                    .setOnClickListener((View view) -> mViewPager.snapToPage(AdapterHolder.WORK));
+                    .setOnClickListener((View view) -> {
+                        if (mViewPager.snapToPage(AdapterHolder.WORK)) {
+                            mLauncher.getStatsLogManager().logger()
+                                    .log(LAUNCHER_ALLAPPS_TAP_ON_WORK_TAB);
+                        }
+                    });
             onActivePageChanged(mViewPager.getNextPage());
         } else {
             mAH[AdapterHolder.MAIN].setup(findViewById(R.id.apps_list_view), null);

@@ -57,6 +57,12 @@
         <item quantity="one"><xliff:g id="widget_count" example="1">%1$d</xliff:g> widget</item>
         <item quantity="other"><xliff:g id="widget_count" example="2">%1$d</xliff:g> widgets</item>
     </plurals>
+    <!-- Text for both the tile of a popup view, which shows all available widgets installed on
+         the device, and the text of a button, which opens this popup view. [CHAR LIMIT=30]-->
+    <string name="widget_button_text">Widgets</string>
+    <!-- Search bar text shown in the popup view showing all available widgets installed on the
+         device. [CHAR_LIMIT=50] -->
+    <string name="widgets_full_sheet_search_bar_hint">Search</string>
 
     <!-- All Apps -->
     <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
@@ -185,8 +191,6 @@
     <string name="folder_name_format_overflow">Folder: <xliff:g id="name" example="Games">%1$s</xliff:g>, <xliff:g id="size" example="2">%2$d</xliff:g> or more items</string>
 
     <!-- Strings for the customization mode -->
-    <!-- Text for widget add button [CHAR LIMIT=30]-->
-    <string name="widget_button_text">Widgets</string>
     <!-- Text for wallpaper change button [CHAR LIMIT=30]-->
     <string name="wallpaper_button_text">Wallpapers</string>
     <!-- Text for wallpaper change button [CHAR LIMIT=30]-->
