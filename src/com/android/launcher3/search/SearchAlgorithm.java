@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.allapps.search;
+package com.android.launcher3.search;
 
 /**
  * An interface for handling search.
+ *
+ * @param <T> Search Result type
  */
-public interface SearchAlgorithm {
+public interface SearchAlgorithm<T> {
 
     /**
-     * Performs search and sends the result to the callback.
+     * Performs search and sends the result to {@link SearchCallback}.
      */
-    void doSearch(String query, AllAppsSearchBarController.Callbacks callback);
+    void doSearch(String query, SearchCallback<T> callback);
 
     /**
      * Cancels any active request.
