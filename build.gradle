@@ -1,3 +1,5 @@
+import org.gradle.api.tasks.wrapper.Wrapper.DistributionType
+
 buildscript {
     ext {
         kotlin_version = '1.4.30'
@@ -38,6 +40,7 @@ allprojects {
 }
 
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 apply plugin: 'com.google.protobuf'
 
 android {
@@ -57,6 +60,10 @@ android {
         debug {
             minifyEnabled false
         }
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
     }
 
     compileOptions {
@@ -185,6 +192,7 @@ dependencies {
     // Required for AOSP to compile. This is already included in the sysui_shared.jar
     withoutQuickstepImplementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'plugin_core.jar')
 
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     testImplementation 'junit:junit:4.12'
     androidTestImplementation "org.mockito:mockito-core:1.9.5"
     androidTestImplementation 'com.google.dexmaker:dexmaker:1.2'
@@ -217,3 +225,5 @@ protobuf {
         }
     }
 }
+
+apply plugin: 'kotlin-android-extensions'
