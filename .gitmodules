@@ -1,0 +1,3 @@
+[submodule "IconLoader"]
+	path = IconLoader
+	url = https://github.com/LawnchairLauncher/IconLoader
