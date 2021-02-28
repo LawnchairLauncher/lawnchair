@@ -182,6 +182,7 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:${ANDROID_X_VERSION}"
     implementation "androidx.preference:preference:${ANDROID_X_VERSION}"
     implementation project(':IconLoader')
+    implementation project(':Lawnchair')
     withQuickstepImplementation project(':SharedLibWrapper')
     implementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'launcher_protos.jar')
     implementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'sysui_statslog.jar')
