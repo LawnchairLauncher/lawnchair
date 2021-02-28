@@ -158,7 +158,7 @@ public final class FeatureFlags {
             "ENABLE_SMARTSPACE_UNIVERSAL", false,
             "Replace Smartspace with a version rendered by System UI.");
 
-    public static final BooleanFlag ENABLE_SMARTSPACE_ENHANCED = getDebugFlag(
+    public static final BooleanFlag ENABLE_SMARTSPACE_ENHANCED = new DeviceFlag(
             "ENABLE_SMARTSPACE_ENHANCED", false,
             "Replace Smartspace with the enhanced version. "
               + "Ignored if ENABLE_SMARTSPACE_UNIVERSAL is enabled.");
@@ -263,6 +263,8 @@ public final class FeatureFlags {
         }
 
         public void addChangeListener(Context context, Runnable r) { }
+
+        public void removeChangeListener(Runnable r) {}
     }
 
     public static class DebugFlag extends BooleanFlag {

@@ -110,7 +110,8 @@ public final class Workspace extends Home {
                     TestProtocol.REQUEST_HOME_TO_ALL_APPS_SWIPE_HEIGHT).
                     getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
             LauncherInstrumentation.log(
-                    "switchToAllApps: swipeHeight = " + swipeHeight + ", slop = "
+                    "switchToAllApps: deviceHeight = " + deviceHeight + ", startY = " + startY
+                            + ", swipeHeight = " + swipeHeight + ", slop = "
                             + mLauncher.getTouchSlop());
 
             mLauncher.swipeToState(

@@ -16,13 +16,15 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto">
 
-    <include layout="@layout/personal_work_tabs" />
+    <include layout="@layout/personal_work_tabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp" />
 
     <com.android.launcher3.workprofile.PersonalWorkPagedView
         android:id="@+id/widgets_view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/tabs"
         android:clipToPadding="false"
         android:descendantFocusability="afterDescendants"
         launcher:pageIndicator="@+id/tabs">

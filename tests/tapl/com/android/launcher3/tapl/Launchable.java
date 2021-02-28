@@ -67,7 +67,7 @@ abstract class Launchable {
                 () -> "Launching an app didn't open a new window: " + label);
 
         mLauncher.assertTrue(
-                "App didn't start: " + label,
+                "App didn't start: " + label + " (" + selector + ")",
                 TestHelpers.wait(Until.hasObject(selector), LauncherInstrumentation.WAIT_TIME_MS));
         return new Background(mLauncher);
     }
