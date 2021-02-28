@@ -1,4 +1,7 @@
 buildscript {
+    ext {
+        kotlin_version = '1.4.30'
+    }
     repositories {
         mavenCentral()
         google()
@@ -7,6 +10,7 @@ buildscript {
     dependencies {
         classpath GRADLE_CLASS_PATH
         classpath PROTOBUF_CLASS_PATH
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
