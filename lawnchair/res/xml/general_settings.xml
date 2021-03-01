@@ -7,7 +7,6 @@
         android:key="pref_icon_badging"
         android:title="@string/notification_dots_title"
         android:persistent="false"
-        app:iconSpaceReserved="false"
         android:widgetLayout="@layout/notification_pref_warning" >
         <intent android:action="android.settings.NOTIFICATION_SETTINGS">
             <extra

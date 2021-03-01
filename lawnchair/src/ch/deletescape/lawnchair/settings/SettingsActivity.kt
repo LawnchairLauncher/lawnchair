@@ -3,6 +3,7 @@ package ch.deletescape.lawnchair.settings
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.preference.Preference
@@ -12,9 +13,15 @@ import com.google.android.material.appbar.MaterialToolbar
 
 class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
     private lateinit var topAppBar: MaterialToolbar
+    private val context = this
 
     private val fragmentListener = object: FragmentManager.FragmentLifecycleCallbacks() {
         override fun onFragmentViewCreated(fm: FragmentManager, fragment: Fragment, v: View, savedInstanceState: Bundle?) {
+            if (fragment !is SettingsFragment && topAppBar.navigationIcon == null) {
+                topAppBar.navigationIcon = ContextCompat.getDrawable(context, R.drawable.ic_back)
+            } else {
+                topAppBar.navigationIcon = null
+            }
             topAppBar.title = (fragment as? TitledFragment)?.title
         }
     }
@@ -23,6 +30,9 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         super.onCreate(savedInstanceState)
         setContentView(R.layout.settings_activity)
         topAppBar = findViewById(R.id.top_app_bar)
+        topAppBar.setNavigationOnClickListener {
+            supportFragmentManager.popBackStack()
+        }
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentListener, false)
         supportFragmentManager
             .beginTransaction()
