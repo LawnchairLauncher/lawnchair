@@ -1,20 +1,29 @@
 package ch.deletescape.lawnchair.settings
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.android.launcher3.R
 import com.google.android.material.appbar.MaterialToolbar
 
-// TODO: Migrate missing code from ch.deletescape.settings.ui.SettingsActivity.
-
 class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
     private lateinit var topAppBar: MaterialToolbar
+
+    private val fragmentListener = object: FragmentManager.FragmentLifecycleCallbacks() {
+        override fun onFragmentViewCreated(fm: FragmentManager, fragment: Fragment, v: View, savedInstanceState: Bundle?) {
+            topAppBar.title = (fragment as? TitledFragment)?.title
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.settings_activity)
+        topAppBar = findViewById(R.id.top_app_bar)
+        supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentListener, false)
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.content, SettingsFragment())

@@ -5,7 +5,11 @@ import androidx.preference.PreferenceFragmentCompat
 import com.android.launcher3.LauncherFiles
 import com.google.android.material.transition.MaterialSharedAxis
 
-open class BasePreferenceFragment(var preferenceResource: Int, var isTopLevelFragment: Boolean = false) : PreferenceFragmentCompat() {
+interface TitledFragment {
+    val title: String
+}
+
+abstract class BasePreferenceFragment(var preferenceResource: Int, var isTopLevelFragment: Boolean = false) : PreferenceFragmentCompat(), TitledFragment {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(preferenceResource, rootKey)
