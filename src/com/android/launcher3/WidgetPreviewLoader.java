@@ -41,6 +41,8 @@ import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.icons.ShadowGenerator;
+import com.android.launcher3.icons.cache.IconPack;
+import com.android.launcher3.icons.cache.IconPackProvider;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.pm.ShortcutConfigActivityInfo;
 import com.android.launcher3.pm.UserCache;
@@ -542,8 +544,12 @@ public class WidgetPreviewLoader {
         RectF boxRect = drawBoxWithShadow(c, size, size);
 
         LauncherIcons li = LauncherIcons.obtain(mContext);
+        IconPack iconPack = IconPackProvider.loadAndGetIconPack(mContext);
+        Drawable iconDrawable = iconPack == null
+                ? info.getFullResIcon(mIconCache)
+                : iconPack.getIcon(info.getComponent(), info.getFullResIcon(mIconCache), info.getLabel(mContext.getPackageManager()));
         Bitmap icon = li.createBadgedIconBitmap(
-                mutateOnMainThread(info.getFullResIcon(mIconCache)),
+                mutateOnMainThread(iconDrawable),
                 Process.myUserHandle(), 0).icon;
         li.recycle();
 

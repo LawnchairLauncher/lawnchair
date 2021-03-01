@@ -21,6 +21,8 @@ import android.graphics.drawable.Drawable;
 import androidx.annotation.NonNull;
 
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.icons.cache.IconPack;
+import com.android.launcher3.icons.cache.IconPackProvider;
 
 /**
  * Extension of ComponentWithLabel to also support loading icons
@@ -47,7 +49,12 @@ public interface ComponentWithLabelAndIcon extends ComponentWithLabel {
                 return super.loadIcon(context, object);
             }
             try (LauncherIcons li = LauncherIcons.obtain(context)) {
-                return li.createBadgedIconBitmap(d, object.getUser(), 0);
+                IconPack iconPack = IconPackProvider.loadAndGetIconPack(context);
+                Drawable drawable = iconPack == null
+                        ? d
+                        : iconPack.getIcon(object.getComponent(), d,
+                        object.getLabel(context.getPackageManager()));
+                return li.createBadgedIconBitmap(drawable, object.getUser(), 0);
             }
         }
     }
