@@ -17,18 +17,16 @@
 ** limitations under the License.
 */
 -->
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
         android:name="ch.deletescape.lawnchair.LawnchairApp">
         <activity android:name="ch.deletescape.lawnchair.settings.ui.SettingsActivity"
             android:autoRemoveFromRecents="true" android:label="@string/settings_button_text"
-            android:theme="@style/HomeSettingsTheme">
+            android:theme="@style/Theme.Lawnchair">
             <intent-filter android:priority="1">
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
     </application>
-
 </manifest>
