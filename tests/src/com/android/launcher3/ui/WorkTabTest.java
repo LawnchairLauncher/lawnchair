@@ -154,9 +154,12 @@ public class WorkTabTest extends AbstractLauncherUiTest {
                 Log.d(TestProtocol.WORK_PROFILE_REMOVED, "Work tab not setup. Skipping test");
                 return false;
             }
-            return ((AllAppsPagedView) l.getAppsView().getContentView()).getCurrentPage()
-                    == WORK_PAGE && ((TextView) workEduView.findViewById(
-                    R.id.content_text)).getText().equals(
+            if (((AllAppsPagedView) l.getAppsView().getContentView()).getCurrentPage()
+                    != WORK_PAGE) {
+                Log.d(TestProtocol.WORK_PROFILE_REMOVED, "Work page not highlighted");
+                return false;
+            }
+            return ((TextView) workEduView.findViewById(R.id.content_text)).getText().equals(
                     l.getResources().getString(R.string.work_profile_edu_work_apps));
         }, 60000);
     }
