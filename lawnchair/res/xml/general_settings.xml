@@ -15,4 +15,6 @@
         </intent>
     </com.android.launcher3.settings.NotificationDotsPreference>
 
+    <Preference android:title="Icon Pack" android:fragment="ch.deletescape.lawnchair.settings.fragments.IconPackSettingsFragment" />
+
 </androidx.preference.PreferenceScreen>

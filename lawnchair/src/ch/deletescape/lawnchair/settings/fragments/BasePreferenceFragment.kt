@@ -1,24 +1,28 @@
-package ch.deletescape.lawnchair.settings
+package ch.deletescape.lawnchair.settings.fragments
 
 import android.os.Bundle
 import androidx.preference.PreferenceFragmentCompat
+import ch.deletescape.lawnchair.settings.interfaces.TitledFragment
 import com.android.launcher3.LauncherFiles
 import com.google.android.material.transition.MaterialSharedAxis
 
-interface TitledFragment {
-    val title: String
-}
-
-abstract class BasePreferenceFragment(var preferenceResource: Int, var isTopLevelFragment: Boolean = false) : PreferenceFragmentCompat(), TitledFragment {
+abstract class BasePreferenceFragment(
+    var preferenceResource: Int,
+    var hasChild: Boolean,
+    var hasParent: Boolean
+) : PreferenceFragmentCompat(),
+    TitledFragment {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(preferenceResource, rootKey)
         preferenceManager.sharedPreferencesName = LauncherFiles.SHARED_PREFERENCES_KEY
 
-        if (isTopLevelFragment) {
+        if (hasChild) {
             exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
             reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
-        } else {
+        }
+
+        if (hasParent) {
             enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
             returnTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
         }

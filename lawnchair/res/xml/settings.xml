@@ -6,12 +6,12 @@
         android:title="General"
         android:summary="Notification Dots"
         android:icon="@drawable/ic_general"
-        android:fragment="ch.deletescape.lawnchair.settings.GeneralSettingsFragment" />
+        android:fragment="ch.deletescape.lawnchair.settings.fragments.GeneralSettingsFragment" />
 
     <Preference
         android:title="Home Screen"
         android:summary="Rotation, Grid Options"
         android:icon="@drawable/ic_home_screen"
-        android:fragment="ch.deletescape.lawnchair.settings.HomeScreenSettingsFragment" />
+        android:fragment="ch.deletescape.lawnchair.settings.fragments.HomeScreenSettingsFragment" />
 
 </androidx.preference.PreferenceScreen>

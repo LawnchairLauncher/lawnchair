@@ -1,4 +1,4 @@
-package ch.deletescape.lawnchair.settings
+package ch.deletescape.lawnchair.settings.activities
 
 import android.os.Bundle
 import android.view.View
@@ -8,19 +8,27 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import ch.deletescape.lawnchair.settings.fragments.SettingsFragment
+import ch.deletescape.lawnchair.settings.interfaces.TitledFragment
 import com.android.launcher3.R
 import com.google.android.material.appbar.MaterialToolbar
 
-class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
+class SettingsActivity : AppCompatActivity(),
+    PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
     private lateinit var topAppBar: MaterialToolbar
     private val context = this
 
-    private val fragmentListener = object: FragmentManager.FragmentLifecycleCallbacks() {
-        override fun onFragmentViewCreated(fm: FragmentManager, fragment: Fragment, v: View, savedInstanceState: Bundle?) {
-            if (fragment !is SettingsFragment && topAppBar.navigationIcon == null) {
-                topAppBar.navigationIcon = ContextCompat.getDrawable(context, R.drawable.ic_back)
-            } else {
+    private val fragmentListener = object : FragmentManager.FragmentLifecycleCallbacks() {
+        override fun onFragmentViewCreated(
+            fm: FragmentManager,
+            fragment: Fragment,
+            v: View,
+            savedInstanceState: Bundle?
+        ) {
+            if (fragment is SettingsFragment) {
                 topAppBar.navigationIcon = null
+            } else if (topAppBar.navigationIcon == null) {
+                topAppBar.navigationIcon = ContextCompat.getDrawable(context, R.drawable.ic_back)
             }
             topAppBar.title = (fragment as? TitledFragment)?.title
         }
@@ -40,11 +48,15 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             .commit()
     }
 
-    override fun onPreferenceStartFragment(caller: PreferenceFragmentCompat, pref: Preference): Boolean {
+    override fun onPreferenceStartFragment(
+        caller: PreferenceFragmentCompat,
+        pref: Preference
+    ): Boolean {
         val args = pref.extras
         val fragment = supportFragmentManager.fragmentFactory.instantiate(
             classLoader,
-            pref.fragment)
+            pref.fragment
+        )
         fragment.arguments = args
         fragment.setTargetFragment(caller, 0)
         supportFragmentManager.beginTransaction()
