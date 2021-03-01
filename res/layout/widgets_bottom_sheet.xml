@@ -44,11 +44,16 @@
         android:textSize="14sp"
         android:text="@string/long_press_widget_to_add"/>
 
-    <include layout="@layout/widgets_scroll_container"
-         android:id="@+id/widgets"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_marginTop="45dp"
-         android:layout_marginBottom="40dp"/>
+    <ScrollView
+        android:id="@+id/widgets_table_scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="45dp"
+        android:layout_marginBottom="40dp">
+        <include layout="@layout/widgets_table_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal" />
+    </ScrollView>
 
 </com.android.launcher3.widget.WidgetsBottomSheet>

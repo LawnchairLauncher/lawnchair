@@ -18,4 +18,5 @@
     android:id="@+id/widgets_table"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginHorizontal="8dp"
     android:background="?android:attr/colorPrimaryDark" />
