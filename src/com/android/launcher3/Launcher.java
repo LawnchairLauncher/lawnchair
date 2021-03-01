@@ -200,6 +200,8 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import ch.deletescape.lawnchair.sharedprefs.LawnchairPreferences;
+
 /**
  * Default launcher application.
  */
@@ -345,6 +347,8 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
     private SafeCloseable mUserChangedCallbackCloseable;
 
+    private LawnchairPreferences lawnchairPreferences = new LawnchairPreferences(this);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Object traceToken = TraceHelper.INSTANCE.beginSection(ON_CREATE_EVT,
@@ -465,7 +469,11 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
         mUserChangedCallbackCloseable = UserCache.INSTANCE.get(this).addUserChangeListener(
                 () -> getStateManager().goToState(NORMAL));
+
+        LawnchairPreferences.Companion.getInstance(this)
+                .registerOnSharedPreferenceChangeListener(lawnchairPreferences.getListener());
     }
+
 
     protected LauncherOverlayManager getDefaultOverlay() {
         return new LauncherOverlayManager() { };

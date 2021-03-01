@@ -17,4 +17,10 @@
 
     <Preference android:title="Icon Pack" android:fragment="ch.deletescape.lawnchair.settings.fragments.IconPackSettingsFragment" />
 
+    <ch.deletescape.lawnchair.settings.ui.preferences.IconPackPreference
+        android:key="pref_iconPackPackage"
+        android:title="@string/icon_pack"
+        android:summary="@string/icon_pack_summary"
+        android:persistent="true" />
+
 </androidx.preference.PreferenceScreen>

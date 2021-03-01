@@ -86,6 +86,7 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     private final LauncherAppState mApp;
     private final Object mLock = new Object();
     private final LooperExecutor mMainExecutor = MAIN_EXECUTOR;
+    private final IconCache mIconCache;
 
     private LoaderTask mLoaderTask;
     private boolean mIsLoaderTaskRunning;
@@ -126,6 +127,7 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     LauncherModel(LauncherAppState app, IconCache iconCache, AppFilter appFilter) {
         mApp = app;
         mBgAllAppsList = new AllAppsList(iconCache, appFilter);
+        mIconCache = iconCache;
     }
 
     /**
@@ -608,5 +610,9 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
         synchronized (mCallbacksList) {
             return mCallbacksList.toArray(new Callbacks[mCallbacksList.size()]);
         }
+    }
+
+    public void clearIconCache() {
+        mIconCache.clearIconCache();
     }
 }
