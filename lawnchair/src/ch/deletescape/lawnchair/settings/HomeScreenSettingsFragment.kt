@@ -7,11 +7,11 @@ import com.google.android.material.transition.MaterialSharedAxis
 
 // TODO: Migrate missing code from ch.deletescape.settings.ui.SettingsActivity.
 
-class SettingsFragment : PreferenceFragmentCompat() {
+class HomeScreenSettingsFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        setPreferencesFromResource(R.xml.settings, rootKey)
+        setPreferencesFromResource(R.xml.home_screen_settings, rootKey)
 
-        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
-        reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
+        returnTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
     }
 }

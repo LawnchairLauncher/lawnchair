@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Preference
+        android:title="General"
+        android:summary="Notification Dots"
+        android:fragment="ch.deletescape.lawnchair.settings.GeneralSettingsFragment" />
+
+    <Preference
+        android:title="Home Screen"
+        android:summary="Icon Pack, Grid Options"
+        android:fragment="ch.deletescape.lawnchair.settings.HomeScreenSettingsFragment" />
+
+</androidx.preference.PreferenceScreen>

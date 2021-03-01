@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-
+    <style name="PreferenceThemeOverlay.LawnchairTheme.v14.Material" parent="@style/PreferenceThemeOverlay.v14.Material">
+        <item name="android:layout">@layout/settings_template</item>
+    </style>
 </resources>

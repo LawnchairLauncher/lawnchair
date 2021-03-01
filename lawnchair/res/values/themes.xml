@@ -24,6 +24,7 @@
         <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.LawnchairTheme.LargeComponent</item>
 
         <item name="toolbarStyle">@style/Widget.MaterialComponents.Toolbar.Surface</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.LawnchairTheme.v14.Material</item>
     </style>
 
     <style name="Base.Theme.MaterialThemeBuilder" parent="Theme.MaterialComponents.DayNight.NoActionBar">

@@ -4,8 +4,8 @@
     <style name="Theme.Lawnchair" parent="Base.Theme.Lawnchair">
         <item name="colorPrimary">@color/purple_200</item>
         <item name="colorPrimaryVariant">@color/purple_600</item>
-        <item name="colorSecondary">@color/green_200</item>
-        <item name="colorSecondaryVariant">@color/green_500</item>
+        <item name="colorSecondary">@color/purple_200</item>
+        <item name="colorSecondaryVariant">@color/purple_600</item>
         <item name="android:colorBackground">@color/black_900</item>
         <item name="colorSurface">@color/black_800</item>
         <item name="colorError">@color/red_200</item>

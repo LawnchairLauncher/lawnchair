@@ -2,18 +2,6 @@
 
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <com.android.launcher3.settings.NotificationDotsPreference
-        android:key="pref_icon_badging"
-        android:title="@string/notification_dots_title"
-        android:persistent="false"
-        app:iconSpaceReserved="false"
-        android:widgetLayout="@layout/notification_pref_warning" >
-        <intent android:action="android.settings.NOTIFICATION_SETTINGS">
-            <extra
-                android:name=":settings:fragment_args_key"
-                android:value="notification_badging" />
-        </intent>
-    </com.android.launcher3.settings.NotificationDotsPreference>
 
     <SwitchPreference
         android:key="pref_add_icon_to_home"
@@ -37,4 +25,5 @@
         android:defaultValue="false"
         android:persistent="true"
         app:iconSpaceReserved="false"/>
+
 </androidx.preference.PreferenceScreen>
