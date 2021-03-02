@@ -43,6 +43,8 @@ class LawnchairPreferences(val context: Context) {
         var ALL_APPS_ICON_SIZE_FACTOR: String = "pref_allAppsIconSizeFactor"
         @kotlin.jvm.JvmField
         var ALL_APPS_TEXT_SIZE_FACTOR: String = "pref_allAppsTextSizeFactor"
+        @kotlin.jvm.JvmField
+        var WRAP_ADAPTIVE_ICONS: String = "prefs_wrapAdaptive"
 
         fun getInstance(context: Context?): SharedPreferences? = when {
             context == null -> null

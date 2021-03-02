@@ -25,7 +25,14 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.drawable.AdaptiveIconDrawable;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Process;
@@ -35,6 +42,8 @@ import android.util.Log;
 
 import com.android.launcher3.R;
 import com.android.launcher3.icons.BitmapInfo.Extender;
+import com.android.launcher3.icons.cache.IconPack;
+import com.android.launcher3.icons.cache.IconPackProvider;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.SafeCloseable;
@@ -125,7 +134,20 @@ public class IconProvider {
                 && Process.myUserHandle().equals(user)) {
             icon = loadClockDrawable(0);
         }
-        return icon == null ? loader.apply(obj, param) : icon;
+        Drawable ret = icon == null ? loader.apply(obj, param) : icon;
+        IconPack iconPack = IconPackProvider.loadAndGetIconPack(mContext);
+        try {
+            if (iconPack != null) {
+                ret = iconPack.getIcon(packageName, ret, mContext.getPackageManager().getApplicationInfo(packageName, 0).name);
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            ret = iconPack.getIcon(packageName, ret, "");
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !(ret instanceof AdaptiveIconDrawable)) {
+            ret = IconPack.wrapAdaptiveIcon(ret, mContext);
+        }
+        return ret;
     }
 
     private Drawable loadCalendarDrawable(int iconDpi) {
