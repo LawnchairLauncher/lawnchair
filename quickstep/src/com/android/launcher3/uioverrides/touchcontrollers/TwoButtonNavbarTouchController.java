@@ -31,6 +31,7 @@ import com.android.launcher3.states.StateAnimationConfig.AnimationFlags;
 import com.android.launcher3.touch.AbstractStateChangeTouchController;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.quickstep.SystemUiProxy;
+import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.AllAppsEduView;
 
 /**
@@ -92,7 +93,8 @@ public class TwoButtonNavbarTouchController extends AbstractStateChangeTouchCont
                     mLauncher.getDeviceProfile().isSeascape() == isDragTowardPositive;
             return draggingFromNav ? OVERVIEW : NORMAL;
         } else {
-            return isDragTowardPositive ^ (fromState == OVERVIEW) ? OVERVIEW : NORMAL;
+            LauncherState startState = mStartState != null ? mStartState : fromState;
+            return isDragTowardPositive ^ (startState == OVERVIEW) ? OVERVIEW : NORMAL;
         }
     }
 
@@ -106,8 +108,8 @@ public class TwoButtonNavbarTouchController extends AbstractStateChangeTouchCont
 
     @Override
     protected float getShiftRange() {
-        return mLauncher.getDeviceProfile().isVerticalBarLayout()
-                ? mLauncher.getDragLayer().getWidth() : super.getShiftRange();
+        // Should be in sync with TestProtocol.REQUEST_HOME_TO_OVERVIEW_SWIPE_HEIGHT
+        return LayoutUtils.getDefaultSwipeHeight(mLauncher, mLauncher.getDeviceProfile());
     }
 
     @Override
@@ -116,7 +118,7 @@ public class TwoButtonNavbarTouchController extends AbstractStateChangeTouchCont
         long maxAccuracy = (long) (2 * range);
         mCurrentAnimation = mLauncher.getStateManager().createAnimationToNewWorkspace(mToState,
                 maxAccuracy, animComponent);
-        return (mLauncher.getDeviceProfile().isSeascape() ? 2 : -2) / range;
+        return (mLauncher.getDeviceProfile().isSeascape() ? 1 : -1) / range;
     }
 
     @Override
@@ -134,5 +136,6 @@ public class TwoButtonNavbarTouchController extends AbstractStateChangeTouchCont
                 AllAppsEduView.show(mLauncher);
             }
         }
+        mStartState = null;
     }
 }
