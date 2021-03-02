@@ -13,7 +13,6 @@ import android.view.View;
 import com.android.launcher3.AppWidgetResizeFrame;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;

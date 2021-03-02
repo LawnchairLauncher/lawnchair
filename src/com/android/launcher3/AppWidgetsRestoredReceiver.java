@@ -21,6 +21,7 @@ import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.provider.RestoreDbTask;
 import com.android.launcher3.util.ContentWriter;
+import com.android.launcher3.widget.LauncherAppWidgetHost;
 
 public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
 
