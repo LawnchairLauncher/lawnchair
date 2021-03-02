@@ -32,8 +32,6 @@ class IconPackSettingsFragment : Fragment(R.layout.icon_pack_settings_fragment),
         val dataSet: ArrayList<IconPackAdapter.IconPackInfo> = ArrayList()
         dataSet.add(IconPackAdapter.IconPackInfo("System Icons", "",
             context?.let { ContextCompat.getDrawable(it, R.drawable.ic_launcher_home) }))
-        dataSet.add(IconPackAdapter.IconPackInfo("System Icons 2", "a",
-            context?.let { ContextCompat.getDrawable(it, R.drawable.ic_launcher_home) }))
 
         recyclerView.adapter = IconPackAdapter(dataSet)
     }
