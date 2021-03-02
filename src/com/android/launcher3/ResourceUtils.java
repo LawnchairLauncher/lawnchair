@@ -60,7 +60,11 @@ public class ResourceUtils {
     }
 
     public static int pxFromDp(float size, DisplayMetrics metrics) {
-        return size < 0 ? INVALID_RESOURCE_HANDLE : Math.round(
-                TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, size, metrics));
+        return pxFromDp(size, metrics, 1f);
+    }
+
+    public static int pxFromDp(float size, DisplayMetrics metrics, float scale) {
+        return size < 0 ? INVALID_RESOURCE_HANDLE : Math.round(scale
+                * TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, size, metrics));
     }
 }
