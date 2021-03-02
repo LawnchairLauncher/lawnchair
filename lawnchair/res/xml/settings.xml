@@ -14,4 +14,14 @@
         android:icon="@drawable/ic_home_screen"
         android:fragment="ch.deletescape.lawnchair.settings.fragments.HomeScreenSettingsFragment" />
 
+    <Preference
+        android:title="Dock"
+        android:summary="TBD"
+        android:fragment="ch.deletescape.lawnchair.settings.fragments.DockSettingsFragment" />
+
+    <Preference
+        android:title="App Drawer"
+        android:summary="TBD"
+        android:fragment="ch.deletescape.lawnchair.settings.fragments.AppDrawerSettingsFragment" />
+
 </androidx.preference.PreferenceScreen>

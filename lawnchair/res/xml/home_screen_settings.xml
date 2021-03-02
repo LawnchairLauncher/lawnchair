@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:lawnchair="http://schemas.android.com/apk/res-auto">
 
     <SwitchPreference
         android:key="pref_add_icon_to_home"
@@ -22,5 +23,35 @@
         android:title="Enable grid options"
         android:defaultValue="false"
         android:persistent="true" />
+
+    <ch.deletescape.lawnchair.settings.ui.preferences.CustomSeekBarPreference
+        android:defaultValue="100"
+        android:key="pref_home_screen_icon_size"
+        android:title="Icon Size"
+        app:showSeekBarValue="true"
+        lawnchair:minValue="50"
+        lawnchair:maxValue="150" />
+
+    <ch.deletescape.lawnchair.settings.ui.preferences.CustomSeekBarPreference
+        android:key="pref_home_screen_grid_width"
+        android:title="Grid Width"
+        app:showSeekBarValue="true"
+        lawnchair:minValue="3"
+        lawnchair:maxValue="7" />
+
+    <ch.deletescape.lawnchair.settings.ui.preferences.CustomSeekBarPreference
+        android:key="pref_home_screen_grid_height"
+        android:title="Grid Height"
+        app:showSeekBarValue="true"
+        lawnchair:minValue="4"
+        lawnchair:maxValue="10" />
+
+    <ch.deletescape.lawnchair.settings.ui.preferences.CustomSeekBarPreference
+        android:defaultValue="100"
+        android:key="pref_home_screen_label_size"
+        android:title="Label Size"
+        app:showSeekBarValue="true"
+        lawnchair:minValue="50"
+        lawnchair:maxValue="150" />
 
 </androidx.preference.PreferenceScreen>
