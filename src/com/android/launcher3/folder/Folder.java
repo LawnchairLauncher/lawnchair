@@ -44,6 +44,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Pair;
+import android.util.TypedValue;
 import android.view.FocusFinder;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -246,11 +247,16 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        final DeviceProfile dp = mLauncher.getDeviceProfile();
+        final int paddingLeftRight = dp.folderContentPaddingLeftRight;
+
         mContent = findViewById(R.id.folder_content);
+        mContent.setPadding(paddingLeftRight, dp.folderContentPaddingTop, paddingLeftRight, 0);
         mContent.setFolder(this);
 
         mPageIndicator = findViewById(R.id.folder_page_indicator);
         mFolderName = findViewById(R.id.folder_name);
+        mFolderName.setTextSize(TypedValue.COMPLEX_UNIT_PX, dp.folderLabelTextSizePx);
         mFolderName.setOnBackKeyListener(this);
         mFolderName.setOnFocusChangeListener(this);
         mFolderName.setOnEditorActionListener(this);
@@ -262,12 +268,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         mFolderName.forceDisableSuggestions(true);
 
         mFooter = findViewById(R.id.folder_footer);
-
-        // We find out how tall footer wants to be (it is set to wrap_content), so that
-        // we can allocate the appropriate amount of space for it.
-        int measureSpec = MeasureSpec.UNSPECIFIED;
-        mFooter.measure(measureSpec, measureSpec);
-        mFooterHeight = mFooter.getMeasuredHeight();
+        mFooterHeight = getResources().getDimensionPixelSize(R.dimen.folder_label_height);
 
         if (Utilities.ATLEAST_R) {
             mFolderWindowInsetsAnimationCallback =
