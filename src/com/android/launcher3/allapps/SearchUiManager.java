@@ -61,7 +61,8 @@ public interface SearchUiManager {
     /**
      * Called when activity is destroyed. Used to close search system services
      */
-    default void destroy(){}
+    default void destroy() {
+    }
 
     /**
      * Returns true if the QSB should be visible for the given set of visible elements
@@ -75,4 +76,9 @@ public interface SearchUiManager {
      */
     @Nullable
     EditText getEditText();
+
+    /**
+     * sets highlight result's title
+     */
+    default void setFocusedResultTitle(@Nullable  CharSequence title) { }
 }

@@ -232,8 +232,9 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec),
                 MeasureSpec.getSize(heightMeasureSpec));
 
-        int maxSpansPerRow = getMeasuredWidth() / (deviceProfile.cellWidthPx
-                + deviceProfile.workspaceCellPaddingXPx);
+        int paddingPx = 2 * getResources().getDimensionPixelOffset(
+                R.dimen.widget_cell_horizontal_padding);
+        int maxSpansPerRow = getMeasuredWidth() / (deviceProfile.cellWidthPx + paddingPx);
         mAdapters.get(AdapterHolder.PRIMARY).mWidgetsListAdapter.setMaxHorizontalSpansPerRow(
                 maxSpansPerRow);
         if (mHasWorkProfile) {
