@@ -45,6 +45,7 @@ import android.os.Bundle;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.text.TextUtils;
+import android.util.ArrayMap;
 import android.util.Log;
 import android.util.LongSparseArray;
 import android.util.TimingLogger;
@@ -126,7 +127,7 @@ public class LoaderTask implements Runnable {
 
     private final UserManagerState mUserManagerState = new UserManagerState();
 
-    protected Map<ComponentKey, AppWidgetProviderInfo> mWidgetProvidersMap;
+    protected final Map<ComponentKey, AppWidgetProviderInfo> mWidgetProvidersMap = new ArrayMap<>();
 
     private boolean mStopped;
 
@@ -664,12 +665,13 @@ public class LoaderTask implements Runnable {
                             final boolean wasProviderReady = !c.hasRestoreFlag(
                                     LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY);
 
-                            if (mWidgetProvidersMap == null) {
-                                mWidgetProvidersMap = WidgetManagerHelper.getAllProvidersMap(
-                                        context);
+                            ComponentKey providerKey = new ComponentKey(component, c.user);
+                            if (!mWidgetProvidersMap.containsKey(providerKey)) {
+                                mWidgetProvidersMap.put(providerKey,
+                                        widgetHelper.findProvider(component, c.user));
                             }
-                            final AppWidgetProviderInfo provider = mWidgetProvidersMap.get(
-                                    new ComponentKey(component, c.user));
+                            final AppWidgetProviderInfo provider =
+                                    mWidgetProvidersMap.get(providerKey);
 
                             final boolean isProviderReady = isValidProvider(provider);
                             if (!isSafeMode && !customWidget &&
@@ -873,7 +875,6 @@ public class LoaderTask implements Runnable {
                     mBgDataModel.itemsIdMap.remove(folderId);
                 }
             }
-
             // Remove any ghost widgets
             LauncherSettings.Settings.call(contentResolver,
                     LauncherSettings.Settings.METHOD_REMOVE_GHOST_WIDGETS);
