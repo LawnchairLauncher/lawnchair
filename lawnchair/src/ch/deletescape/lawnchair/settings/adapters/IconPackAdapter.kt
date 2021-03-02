@@ -1,13 +1,13 @@
 package ch.deletescape.lawnchair.settings.adapters
 
+import android.content.SharedPreferences
 import android.graphics.drawable.Drawable
 import android.view.ViewGroup
-import android.widget.CompoundButton
 import androidx.recyclerview.widget.RecyclerView
-import ch.deletescape.lawnchair.settings.adapters.IconPackAdapter.CheckListener
 import ch.deletescape.lawnchair.settings.views.IconPackListItem
+import ch.deletescape.lawnchair.sharedprefs.LawnchairPreferences
 
-class IconPackAdapter(private val dataSet: List<IconPackInfo>) :
+class IconPackAdapter(private val dataSet: List<IconPackInfo>, prefs: SharedPreferences) :
     RecyclerView.Adapter<IconPackAdapter.ViewHolder>() {
 
     data class IconPackInfo(val name: String, val packageName: String, val icon: Drawable?)
@@ -24,6 +24,7 @@ class IconPackAdapter(private val dataSet: List<IconPackInfo>) :
             selectedIconPackPackageName = id
             // TODO: Use `DiffUtil` instead of `notifyDataSetChanged` to fix animations.
             notifyDataSetChanged()
+            prefs.edit().putString(LawnchairPreferences.ICON_PACK_PACKAGE, id).apply()
         }
     }
 
