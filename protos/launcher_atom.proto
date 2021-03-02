@@ -55,6 +55,7 @@ message ContainerInfo {
     SettingsContainer settings_container = 9;
     PredictedHotseatContainer predicted_hotseat_container = 10;
     TaskSwitcherContainer task_switcher_container = 11;
+    TaskForegroundContainer task_foreground_container = 12;
   }
 }
 
@@ -92,8 +93,14 @@ message ShortcutsContainer {
 message SettingsContainer {
 }
 
-message TaskSwitcherContainer {
-}
+// Container for tasks in the Overview UI.
+// Typically entered using either the overview gesture or overview button.
+message TaskSwitcherContainer {}
+
+// Container for tasks from another foreground app, when not on launcher screen.
+// Typically home gesture or overview gesture can be triggered from
+// this container.
+message TaskForegroundContainer {}
 
 enum Attribute {
   UNKNOWN = 0;
