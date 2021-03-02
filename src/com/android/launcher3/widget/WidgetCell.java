@@ -24,7 +24,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnLayoutChangeListener;
-import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.LinearLayout;
@@ -60,6 +59,8 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     /** Widget preview width is calculated by multiplying this factor to the widget cell width. */
     private static final float PREVIEW_SCALE = 0.8f;
 
+    private int mPreviewWidth;
+    private int mPreviewHeight;
     protected int mPresetPreviewSize;
     private int mCellSize;
 
@@ -106,6 +107,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     private void setContainerWidth() {
         mCellSize = (int) (mDeviceProfile.allAppsIconSizePx * WIDTH_SCALE);
         mPresetPreviewSize = (int) (mCellSize * PREVIEW_SCALE);
+        mPreviewWidth = mPreviewHeight = mPresetPreviewSize;
     }
 
     @Override
@@ -128,6 +130,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         mWidgetImage.setBitmap(null, null);
         mWidgetName.setText(null);
         mWidgetDims.setText(null);
+        mPreviewWidth = mPreviewHeight = mPresetPreviewSize;
 
         if (mActiveRequest != null) {
             mActiveRequest.cancel();
@@ -181,6 +184,11 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             return;
         }
         if (bitmap != null) {
+            LayoutParams layoutParams = (LayoutParams) mWidgetImage.getLayoutParams();
+            layoutParams.width = bitmap.getWidth();
+            layoutParams.height = bitmap.getHeight();
+            mWidgetImage.setLayoutParams(layoutParams);
+
             mWidgetImage.setBitmap(bitmap, mWidgetPreviewLoader.getBadgeForUser(mItem.user,
                     BaseIconFactory.getBadgeSizeForIconSize(mDeviceProfile.allAppsIconSizePx)));
             if (mAnimatePreview) {
@@ -197,8 +205,16 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         if (mActiveRequest != null) {
             return;
         }
-        mActiveRequest = mWidgetPreviewLoader.getPreview(
-                mItem, mPresetPreviewSize, mPresetPreviewSize, this);
+        mActiveRequest = mWidgetPreviewLoader.getPreview(mItem, mPreviewWidth, mPreviewHeight,
+                this);
+    }
+
+    /** Sets the widget preview image size in number of cells. */
+    public void setPreviewSize(int spanX, int spanY) {
+        int padding = 2 * getResources()
+                .getDimensionPixelSize(R.dimen.widget_preview_shortcut_padding);
+        mPreviewWidth = mDeviceProfile.cellWidthPx * spanX + padding;
+        mPreviewHeight = mDeviceProfile.cellHeightPx * spanY + padding;
     }
 
     @Override
@@ -230,12 +246,6 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             return getTag().toString();
         }
         return "";
-    }
-
-    @Override
-    public void setLayoutParams(ViewGroup.LayoutParams params) {
-        params.width = params.height = mCellSize;
-        super.setLayoutParams(params);
     }
 
     @Override
