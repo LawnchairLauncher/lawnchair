@@ -21,7 +21,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.util.PendingRequestArgs;

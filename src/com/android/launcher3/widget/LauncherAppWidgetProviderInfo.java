@@ -1,4 +1,4 @@
-package com.android.launcher3;
+package com.android.launcher3.widget;
 
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
@@ -11,6 +11,9 @@ import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.UserHandle;
 
+import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.ComponentWithLabelAndIcon;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
@@ -48,7 +51,7 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo
             launcherInfo = new LauncherAppWidgetProviderInfo(p);
             p.recycle();
         }
-        launcherInfo.initSpans(context);
+        launcherInfo.initSpans(context, LauncherAppState.getIDP(context));
         return launcherInfo;
     }
 
@@ -58,9 +61,7 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo
         super(in);
     }
 
-    public void initSpans(Context context) {
-        InvariantDeviceProfile idp = LauncherAppState.getIDP(context);
-
+    public void initSpans(Context context, InvariantDeviceProfile idp) {
         Point landCellSize = idp.landscapeProfile.getCellSize();
         Point portCellSize = idp.portraitProfile.getCellSize();
 
