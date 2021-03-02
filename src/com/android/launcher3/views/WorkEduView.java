@@ -168,8 +168,8 @@ public class WorkEduView extends AbstractSlideInView
     }
 
     private AllAppsPagedView getAllAppsPagedView() {
-        View v =  mLauncher.getAppsView().getContentView();
-        return  (v instanceof AllAppsPagedView)  ? (AllAppsPagedView) v : null;
+        View v = mLauncher.getAppsView().getContentView();
+        return (v instanceof AllAppsPagedView) ? (AllAppsPagedView) v : null;
     }
 
     /**
