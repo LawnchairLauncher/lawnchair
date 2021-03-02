@@ -31,6 +31,7 @@ import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.util.FocusLogic;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
+import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -12,10 +12,10 @@ import android.widget.RemoteViews;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.WidgetPreviewLoader;
 import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.model.WidgetItem;
+import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.WidgetCell;
 
 /**
