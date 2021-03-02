@@ -48,6 +48,7 @@ import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
 import static com.android.quickstep.util.NavigationModeFeatureFlag.LIVE_TILE;
 import static com.android.quickstep.views.RecentsView.RECENTS_GRID_PROGRESS;
 import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
+import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME;
 
 import android.animation.Animator;
@@ -616,7 +617,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         final boolean passed = mCurrentShift.value >= MIN_PROGRESS_FOR_OVERVIEW;
         if (passed != mPassedOverviewThreshold) {
             mPassedOverviewThreshold = passed;
-            if (!mDeviceState.isFullyGesturalNavMode()) {
+            if (!mDeviceState.isTwoButtonNavMode()) {
                 performHapticFeedback();
             }
         }
@@ -722,6 +723,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
     @UiThread
     public void onGestureStarted(boolean isLikelyToStartNewTask) {
+        mActivityInterface.closeOverlay();
+        TaskUtils.closeSystemWindowsAsync(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
+
         if (mRecentsView != null) {
             InteractionJankMonitorWrapper.begin(mRecentsView,
                     InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH, 2000 /* ms timeout */);
@@ -849,6 +853,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
     private GestureEndTarget calculateEndTarget(PointF velocity, float endVelocity, boolean isFling,
             boolean isCancel) {
+        if (mDeviceState.isButtonNavMode()) {
+            // Button mode, this is only used to go to recents
+            return RECENTS;
+        }
         final GestureEndTarget endTarget;
         final boolean goingToNewTask;
         if (mRecentsView != null) {
@@ -953,15 +961,20 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         } else if (endTarget == RECENTS) {
             if (mRecentsView != null) {
                 int nearestPage = mRecentsView.getDestinationPage();
+                boolean isScrolling = false;
                 if (mRecentsView.getNextPage() != nearestPage) {
                     // We shouldn't really scroll to the next page when swiping up to recents.
                     // Only allow settling on the next page if it's nearest to the center.
                     mRecentsView.snapToPage(nearestPage, Math.toIntExact(duration));
+                    isScrolling = true;
                 }
                 if (mRecentsView.getScroller().getDuration() > MAX_SWIPE_DURATION) {
                     mRecentsView.snapToPage(mRecentsView.getNextPage(), (int) MAX_SWIPE_DURATION);
+                    isScrolling = true;
                 }
-                duration = Math.max(duration, mRecentsView.getScroller().getDuration());
+                if (!mDeviceState.isButtonNavMode() || isScrolling) {
+                    duration = Math.max(duration, mRecentsView.getScroller().getDuration());
+                }
             }
         }
 
@@ -1764,7 +1777,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
     public interface Factory {
 
-        AbsSwipeUpHandler newHandler(
-                GestureState gestureState, long touchTimeMs, boolean continuingLastGesture);
+        AbsSwipeUpHandler newHandler(GestureState gestureState, long touchTimeMs);
     }
 }
