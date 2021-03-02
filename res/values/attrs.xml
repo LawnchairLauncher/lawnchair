@@ -133,6 +133,8 @@
         <attr name="numAllAppsColumns" format="integer" />
         <attr name="defaultLayoutId" format="reference" />
         <attr name="demoModeLayoutId" format="reference" />
+        <attr name="isScalable" format="boolean" />
+
     </declare-styleable>
 
     <declare-styleable name="DevicePadding">
@@ -149,6 +151,12 @@
         <attr name="name" />
         <attr name="minWidthDps" format="float" />
         <attr name="minHeightDps" format="float" />
+
+        <!-- These min cell values are only used if GridDisplayOption#isScalable is true-->
+        <attr name="minCellHeightDps" format="float" />
+        <attr name="minCellWidthDps" format="float" />
+
+        <attr name="borderSpacingDps" format="float" />
 
         <attr name="iconImageSize" format="float" />
         <!-- landscapeIconSize defaults to iconSize, if not specified -->
