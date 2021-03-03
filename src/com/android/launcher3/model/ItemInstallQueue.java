@@ -42,7 +42,6 @@ import androidx.annotation.WorkerThread;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
@@ -52,6 +51,7 @@ import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.PersistedItemArray;
 import com.android.launcher3.util.Preconditions;
+import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 
 import java.util.HashSet;
 import java.util.List;

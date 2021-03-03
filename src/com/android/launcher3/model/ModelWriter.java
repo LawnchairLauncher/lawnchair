@@ -28,7 +28,6 @@ import android.os.Looper;
 import android.util.Log;
 
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherAppWidgetHost;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.LauncherSettings;
@@ -43,6 +42,7 @@ import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.ItemInfoMatcher;
+import com.android.launcher3.widget.LauncherAppWidgetHost;
 
 import java.util.ArrayList;
 import java.util.Arrays;

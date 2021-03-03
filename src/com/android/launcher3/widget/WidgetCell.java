@@ -16,6 +16,8 @@
 
 package com.android.launcher3.widget;
 
+import static com.android.launcher3.Utilities.ATLEAST_S;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.CancellationSignal;
@@ -67,6 +69,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     private WidgetImageView mWidgetImage;
     private TextView mWidgetName;
     private TextView mWidgetDims;
+    private TextView mWidgetDescription;
 
     protected WidgetItem mItem;
 
@@ -114,9 +117,10 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        mWidgetImage = (WidgetImageView) findViewById(R.id.widget_preview);
-        mWidgetName = ((TextView) findViewById(R.id.widget_name));
-        mWidgetDims = ((TextView) findViewById(R.id.widget_dims));
+        mWidgetImage = findViewById(R.id.widget_preview);
+        mWidgetName = findViewById(R.id.widget_name);
+        mWidgetDims = findViewById(R.id.widget_dims);
+        mWidgetDescription = findViewById(R.id.widget_description);
     }
 
     /**
@@ -130,6 +134,8 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         mWidgetImage.setBitmap(null, null);
         mWidgetName.setText(null);
         mWidgetDims.setText(null);
+        mWidgetDescription.setText(null);
+        mWidgetDescription.setVisibility(GONE);
         mPreviewWidth = mPreviewHeight = mPresetPreviewSize;
 
         if (mActiveRequest != null) {
@@ -145,8 +151,17 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
                 mItem.spanX, mItem.spanY));
         mWidgetDims.setContentDescription(getContext().getString(
                 R.string.widget_accessible_dims_format, mItem.spanX, mItem.spanY));
-        mWidgetPreviewLoader = loader;
+        if (ATLEAST_S && mItem.widgetInfo != null) {
+            CharSequence description = mItem.widgetInfo.loadDescription(getContext());
+            if (description != null && description.length() > 0) {
+                mWidgetDescription.setText(description);
+                mWidgetDescription.setVisibility(VISIBLE);
+            } else {
+                mWidgetDescription.setVisibility(GONE);
+            }
+        }
 
+        mWidgetPreviewLoader = loader;
         if (item.activityInfo != null) {
             setTag(new PendingAddShortcutInfo(item.activityInfo));
         } else {

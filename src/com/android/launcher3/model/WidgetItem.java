@@ -4,11 +4,11 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.pm.ShortcutConfigActivityInfo;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 
 /**
  * An wrapper over various items displayed in a widget picker,
