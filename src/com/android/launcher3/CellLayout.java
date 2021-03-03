@@ -53,6 +53,7 @@ import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 
 import androidx.annotation.IntDef;
+import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
 
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -2663,20 +2664,21 @@ public class CellLayout extends ViewGroup {
         }
 
         public void setup(int cellWidth, int cellHeight, boolean invertHorizontally, int colCount,
-                int rowCount, int borderSpacing) {
+                int rowCount, int borderSpacing, @Nullable Rect inset) {
             setup(cellWidth, cellHeight, invertHorizontally, colCount, rowCount, 1.0f, 1.0f,
-                    borderSpacing);
+                    borderSpacing, inset);
         }
 
         /**
-         * Use this method, as opposed to {@link #setup(int, int, boolean, int, int, int)},
+         * Use this method, as opposed to {@link #setup(int, int, boolean, int, int, int, Rect)},
          * if the view needs to be scaled.
          *
          * ie. In multi-window mode, we setup widgets so that they are measured and laid out
          * using their full/invariant device profile sizes.
          */
         public void setup(int cellWidth, int cellHeight, boolean invertHorizontally, int colCount,
-                int rowCount, float cellScaleX, float cellScaleY, int borderSpacing) {
+                int rowCount, float cellScaleX, float cellScaleY, int borderSpacing,
+                @Nullable Rect inset) {
             if (isLockedToGrid) {
                 final int myCellHSpan = cellHSpan;
                 final int myCellVSpan = cellVSpan;
@@ -2697,6 +2699,13 @@ public class CellLayout extends ViewGroup {
                 height = Math.round(myCellHeight) - topMargin - bottomMargin;
                 x = leftMargin + (myCellX * cellWidth) + (myCellX * borderSpacing);
                 y = topMargin + (myCellY * cellHeight) + (myCellY * borderSpacing);
+
+                if (inset != null) {
+                    x -= inset.left;
+                    y -= inset.top;
+                    width += inset.left + inset.right;
+                    height += inset.top + inset.bottom;
+                }
             }
         }
 

@@ -37,6 +37,8 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
     // return an (x, y) value from helper functions. Do NOT use them to maintain other state.
     private final int[] mTmpCellXY = new int[2];
 
+    private final Rect mTempRect = new Rect();
+
     @ContainerType
     private final int mContainerType;
     private final WallpaperManager mWallpaperManager;
@@ -101,11 +103,12 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
         if (child instanceof LauncherAppWidgetHostView) {
             DeviceProfile profile = mActivity.getDeviceProfile();
+            ((LauncherAppWidgetHostView) child).getWidgetInset(profile, mTempRect);
             lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX, mCountY,
-                    profile.appWidgetScale.x, profile.appWidgetScale.y, mBorderSpacing);
+                    profile.appWidgetScale.x, profile.appWidgetScale.y, mBorderSpacing, mTempRect);
         } else {
             lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX, mCountY,
-                    mBorderSpacing);
+                    mBorderSpacing, null);
         }
     }
 
@@ -124,12 +127,12 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
         final DeviceProfile profile = mActivity.getDeviceProfile();
 
         if (child instanceof LauncherAppWidgetHostView) {
+            ((LauncherAppWidgetHostView) child).getWidgetInset(profile, mTempRect);
             lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX, mCountY,
-                    profile.appWidgetScale.x, profile.appWidgetScale.y, mBorderSpacing);
-            // Widgets have their own padding
+                    profile.appWidgetScale.x, profile.appWidgetScale.y, mBorderSpacing, mTempRect);
         } else {
             lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX, mCountY,
-                    mBorderSpacing);
+                    mBorderSpacing, null);
             // Center the icon/folder
             int cHeight = getCellContentHeight();
             int cellPaddingY = (int) Math.max(0, ((lp.height - cHeight) / 2f));
