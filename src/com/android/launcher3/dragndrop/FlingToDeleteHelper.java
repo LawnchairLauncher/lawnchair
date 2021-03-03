@@ -65,6 +65,9 @@ public class FlingToDeleteHelper {
     }
 
     public Runnable getFlingAnimation(DropTarget.DragObject dragObject, DragOptions options) {
+        if (options == null) {
+            return null;
+        }
         PointF vel = isFlingingToDelete();
         options.isFlingToDelete = vel != null;
         if (!options.isFlingToDelete) {

@@ -1,0 +1,119 @@
+/*
+ * Copyright (C) 2021 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.android.launcher3.widget;
+
+import static com.google.common.truth.Truth.assertThat;
+
+import android.content.Context;
+import android.graphics.Point;
+
+import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.InvariantDeviceProfile;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
+
+@RunWith(RobolectricTestRunner.class)
+public final class LauncherAppWidgetProviderInfoTest {
+
+    private static final int CELL_SIZE = 50;
+
+    private Context mContext;
+
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+        mContext = RuntimeEnvironment.application;
+    }
+
+    @Test
+    public void initSpans_minWidthSmallerThanCellWidth_shouldInitializeSpansToOne() {
+        LauncherAppWidgetProviderInfo info = new LauncherAppWidgetProviderInfo();
+        info.minWidth = 20;
+        info.minHeight = 20;
+        InvariantDeviceProfile idp = createIDP();
+
+        info.initSpans(mContext, idp);
+
+        assertThat(info.spanX).isEqualTo(1);
+        assertThat(info.spanY).isEqualTo(1);
+    }
+
+    @Test
+    public void initSpans_minWidthLargerThanCellWidth_shouldInitializeSpans() {
+        LauncherAppWidgetProviderInfo info = new LauncherAppWidgetProviderInfo();
+        info.minWidth = 80;
+        info.minHeight = 80;
+        InvariantDeviceProfile idp = createIDP();
+
+        info.initSpans(mContext, idp);
+
+        assertThat(info.spanX).isEqualTo(2);
+        assertThat(info.spanY).isEqualTo(2);
+    }
+
+    @Test
+    public void initSpans_minResizeWidthUnspecified_shouldInitializeMinSpansToOne() {
+        LauncherAppWidgetProviderInfo info = new LauncherAppWidgetProviderInfo();
+        InvariantDeviceProfile idp = createIDP();
+
+        info.initSpans(mContext, idp);
+
+        assertThat(info.minSpanX).isEqualTo(1);
+        assertThat(info.minSpanY).isEqualTo(1);
+    }
+
+    @Test
+    public void initSpans_minResizeWidthSmallerThanCellWidth_shouldInitializeMinSpansToOne() {
+        LauncherAppWidgetProviderInfo info = new LauncherAppWidgetProviderInfo();
+        info.minResizeWidth = 20;
+        info.minResizeHeight = 20;
+        InvariantDeviceProfile idp = createIDP();
+
+        info.initSpans(mContext, idp);
+
+        assertThat(info.minSpanX).isEqualTo(1);
+        assertThat(info.minSpanY).isEqualTo(1);
+    }
+
+    @Test
+    public void initSpans_minResizeWidthLargerThanCellWidth_shouldInitializeMinSpans() {
+        LauncherAppWidgetProviderInfo info = new LauncherAppWidgetProviderInfo();
+        info.minResizeWidth = 80;
+        info.minResizeHeight = 80;
+        InvariantDeviceProfile idp = createIDP();
+
+        info.initSpans(mContext, idp);
+
+        assertThat(info.minSpanX).isEqualTo(2);
+        assertThat(info.minSpanY).isEqualTo(2);
+    }
+
+    private InvariantDeviceProfile createIDP() {
+        DeviceProfile profile = Mockito.mock(DeviceProfile.class);
+        Mockito.when(profile.getCellSize()).thenReturn(new Point(CELL_SIZE, CELL_SIZE));
+
+        InvariantDeviceProfile idp = new InvariantDeviceProfile();
+        idp.landscapeProfile = idp.portraitProfile = profile;
+        return idp;
+    }
+
+}
