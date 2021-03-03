@@ -147,13 +147,6 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public void setPrimaryAndResetSecondaryTranslate(
-            View view, float translation, float defaultTranslationX, float defaultTranslationY) {
-        view.setTranslationX(defaultTranslationX);
-        view.setTranslationY(translation);
-    }
-
-    @Override
     public int getPrimaryScroll(View view) {
         return view.getScrollY();
     }

@@ -30,6 +30,7 @@ import static com.android.launcher3.states.StateAnimationConfig.PLAY_ATOMIC_OVER
 import static com.android.launcher3.states.StateAnimationConfig.PLAY_ATOMIC_OVERVIEW_SCALE;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_OVERVIEW;
 import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_OFFSET;
+import static com.android.quickstep.views.RecentsView.RECENTS_GRID_PROGRESS;
 import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
 import static com.android.quickstep.views.RecentsView.TASK_SECONDARY_TRANSLATION;
 
@@ -73,6 +74,8 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
         SCRIM_PROGRESS.set(scrim, state.getOverviewScrimAlpha(mLauncher));
         SCRIM_MULTIPLIER.set(scrim, 1f);
         getTaskModalnessProperty().set(mRecentsView, state.getOverviewModalness());
+        RECENTS_GRID_PROGRESS.set(mRecentsView, state.displayOverviewTasksAsGrid(mLauncher)
+                ? 1f : 0f);
     }
 
     @Override
@@ -117,6 +120,8 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
                 mRecentsView, getTaskModalnessProperty(),
                 toState.getOverviewModalness(),
                 config.getInterpolator(ANIM_OVERVIEW_MODAL, LINEAR));
+        setter.setFloat(mRecentsView, RECENTS_GRID_PROGRESS,
+                toState.displayOverviewTasksAsGrid(mLauncher) ? 1f : 0f, LINEAR);
     }
 
     abstract FloatProperty getTaskModalnessProperty();

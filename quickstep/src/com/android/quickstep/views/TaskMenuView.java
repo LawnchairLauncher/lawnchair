@@ -38,6 +38,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.Themes;
@@ -113,7 +114,12 @@ public class TaskMenuView extends AbstractFloatingView {
         // NOTE: Changing the pivots means the rotated view gets rotated about the new pivots set,
         // which would render the X and Y position set here incorrect
         setPivotX(0);
-        setPivotY(0);
+        if (mActivity.getDeviceProfile().isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get()) {
+            // In tablet, set pivotY to original position without mThumbnailTopMargin adjustment.
+            setPivotY(-mThumbnailTopMargin);
+        } else {
+            setPivotY(0);
+        }
         setRotation(pagedOrientationHandler.getDegreesRotated());
         setX(pagedOrientationHandler.getTaskMenuX(x, mTaskView.getThumbnail()));
         setY(pagedOrientationHandler.getTaskMenuY(adjustedY, mTaskView.getThumbnail()));

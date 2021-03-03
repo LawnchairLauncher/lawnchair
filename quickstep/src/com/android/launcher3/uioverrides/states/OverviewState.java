@@ -28,6 +28,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
@@ -122,12 +123,18 @@ public class OverviewState extends LauncherState {
 
     @Override
     public int getVisibleElements(Launcher launcher) {
-        return OVERVIEW_BUTTONS;
+        return displayOverviewTasksAsGrid(launcher) ? CLEAR_ALL_BUTTON
+                : CLEAR_ALL_BUTTON | OVERVIEW_ACTIONS;
     }
 
     @Override
     public float getOverviewScrimAlpha(Launcher launcher) {
         return 0.5f;
+    }
+
+    @Override
+    public boolean displayOverviewTasksAsGrid(Launcher launcher) {
+        return launcher.getDeviceProfile().isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get();
     }
 
     @Override
