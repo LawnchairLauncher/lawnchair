@@ -19,6 +19,7 @@ import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_UP;
 import static android.view.MotionEvent.ACTION_CANCEL;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SWIPE_DOWN_WORKSPACE_NOTISHADE_OPEN;
 
 import android.graphics.PointF;
 import android.util.SparseArray;
@@ -136,6 +137,8 @@ public class StatusBarTouchController implements TouchController {
             mLauncher.getUserEventDispatcher().logActionOnContainer(action == ACTION_UP ?
                     Touch.FLING : Touch.SWIPE, Direction.DOWN, ContainerType.WORKSPACE,
                     mLauncher.getWorkspace().getCurrentPage());
+            mLauncher.getStatsLogManager().logger()
+                    .log(LAUNCHER_SWIPE_DOWN_WORKSPACE_NOTISHADE_OPEN);
             setWindowSlippery(false);
             return true;
         }
