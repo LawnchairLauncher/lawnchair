@@ -24,8 +24,8 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_ALL_APPS_EDU;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOME_GESTURE;
+import static com.android.quickstep.util.NavigationModeFeatureFlag.LIVE_TILE;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
 import android.animation.ValueAnimator;
@@ -145,7 +145,7 @@ public class NavBarToHomeTouchController implements TouchController,
                     OverviewScrim.SCRIM_MULTIPLIER, OVERVIEW_TO_HOME_SCRIM_MULTIPLIER,
                     PULLBACK_INTERPOLATOR);
 
-            if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            if (LIVE_TILE.get()) {
                 builder.addOnFrameCallback(recentsView::redrawLiveTile);
             }
 
@@ -194,7 +194,7 @@ public class NavBarToHomeTouchController implements TouchController,
         boolean success = interpolatedProgress >= SUCCESS_TRANSITION_PROGRESS
                 || (velocity < 0 && fling);
         if (success) {
-            if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            if (LIVE_TILE.get()) {
                 RecentsView recentsView = mLauncher.getOverviewPanel();
                 recentsView.switchToScreenshot(null,
                         () -> recentsView.finishRecentsAnimation(true /* toRecents */, null));
