@@ -3,5 +3,7 @@
     <declare-styleable name="CustomSeekBarPreference">
         <attr name="minValue" format="integer" />
         <attr name="maxValue" format="integer" />
+        <attr name="snapEvery" format="integer" />
+        <attr name="asPercentages" format="boolean" />
     </declare-styleable>
 </resources>

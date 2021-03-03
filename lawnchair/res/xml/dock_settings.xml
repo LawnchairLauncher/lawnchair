@@ -23,7 +23,9 @@
         android:key="pref_dock_label_size"
         android:title="Label Size"
         app:showSeekBarValue="true"
+        lawnchair:snapEvery="10"
         lawnchair:minValue="50"
-        lawnchair:maxValue="150" />
+        lawnchair:maxValue="150"
+        lawnchair:asPercentages="true" />
 
 </PreferenceScreen>
