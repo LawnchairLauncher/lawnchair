@@ -7,7 +7,7 @@ import androidx.annotation.AttrRes
 fun Context.getThemeDrawable(@AttrRes drawableAttrRes: Int): Drawable? {
     val tempArray = IntArray(1)
     tempArray[0] = drawableAttrRes
-    var drawable: Drawable? = null
+    var drawable: Drawable?
     obtainStyledAttributes(null, tempArray).apply {
         drawable = this.getDrawable(0)
         recycle()

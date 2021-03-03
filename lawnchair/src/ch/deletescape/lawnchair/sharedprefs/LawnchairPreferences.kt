@@ -8,7 +8,7 @@ import com.android.launcher3.Utilities
 class LawnchairPreferences(val context: Context) {
 
     val listener: SharedPreferences.OnSharedPreferenceChangeListener =
-            SharedPreferences.OnSharedPreferenceChangeListener { sharedPrefs: SharedPreferences?, key: String? ->
+            SharedPreferences.OnSharedPreferenceChangeListener { _: SharedPreferences?, key: String? ->
                 when (key) {
                     ICON_PACK_PACKAGE -> {
                         LauncherAppState.getInstance(context).model.clearIconCache()

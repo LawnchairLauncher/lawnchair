@@ -21,7 +21,6 @@ import android.app.Activity
 import android.app.Application
 import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
@@ -45,7 +44,7 @@ class LawnchairApp : Application() {
 
     fun restart(recreateLauncher: Boolean = true) {
         if (recreateLauncher) {
-            activityHandler.finishAll(recreateLauncher)
+            activityHandler.finishAll()
         } /*else {
             Utilities.restartLauncher(this)
         }*/
@@ -60,7 +59,7 @@ class LawnchairApp : Application() {
         val activities = HashSet<Activity>()
         var foregroundActivity: Activity? = null
 
-        fun finishAll(recreateLauncher: Boolean = true) {
+        fun finishAll() {
             HashSet(activities).forEach { it.finish() }
         }
 
