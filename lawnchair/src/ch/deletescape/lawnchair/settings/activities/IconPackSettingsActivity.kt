@@ -46,7 +46,7 @@ class IconPackSettingsActivity : AppCompatActivity() {
             IconPackInfo(
                 "System Icons",
                 "",
-                AppCompatResources.getDrawable(applicationContext, R.drawable.ic_launcher_home)!!
+                AppCompatResources.getDrawable(this, R.drawable.ic_launcher_home)!!
             )
         )
     }
