@@ -199,7 +199,9 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
                 break;
             }
         }
-        rebindAdapters(hasWorkApps);
+        if (!mAH[AdapterHolder.MAIN].appsList.hasFilter()) {
+            rebindAdapters(hasWorkApps);
+        }
         if (hasWorkApps) {
             resetWorkProfile();
         }
