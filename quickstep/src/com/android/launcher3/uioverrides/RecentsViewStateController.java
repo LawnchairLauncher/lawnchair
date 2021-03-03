@@ -15,7 +15,8 @@
  */
 package com.android.launcher3.uioverrides;
 
-import static com.android.launcher3.LauncherState.OVERVIEW_BUTTONS;
+import static com.android.launcher3.LauncherState.CLEAR_ALL_BUTTON;
+import static com.android.launcher3.LauncherState.OVERVIEW_ACTIONS;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_ACTIONS_FADE;
 import static com.android.quickstep.views.RecentsView.CONTENT_ALPHA;
@@ -83,11 +84,14 @@ public final class RecentsViewStateController extends
 
     private void setAlphas(PropertySetter propertySetter, StateAnimationConfig config,
             LauncherState state) {
-        float buttonAlpha = (state.getVisibleElements(mLauncher) & OVERVIEW_BUTTONS) != 0 ? 1 : 0;
+        float clearAllButtonAlpha = (state.getVisibleElements(mLauncher) & CLEAR_ALL_BUTTON) != 0
+                ? 1 : 0;
         propertySetter.setFloat(mRecentsView.getClearAllButton(), ClearAllButton.VISIBILITY_ALPHA,
-                buttonAlpha, LINEAR);
+                clearAllButtonAlpha, LINEAR);
+        float overviewButtonAlpha = (state.getVisibleElements(mLauncher) & OVERVIEW_ACTIONS) != 0
+                ? 1 : 0;
         propertySetter.setFloat(mLauncher.getActionsView().getVisibilityAlpha(),
-                MultiValueAlpha.VALUE, buttonAlpha, config.getInterpolator(
+                MultiValueAlpha.VALUE, overviewButtonAlpha, config.getInterpolator(
                         ANIM_OVERVIEW_ACTIONS_FADE, LINEAR));
     }
 

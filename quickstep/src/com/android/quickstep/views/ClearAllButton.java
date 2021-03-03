@@ -43,9 +43,12 @@ public class ClearAllButton extends Button implements PageCallbacks {
     private float mScrollAlpha = 1;
     private float mContentAlpha = 1;
     private float mVisibilityAlpha = 1;
+    private float mGridProgress = 1;
 
     private boolean mIsRtl;
     private final float mOriginalTranslationX, mOriginalTranslationY;
+    private float mNormalTranslationPrimary;
+    private float mGridTranslationPrimary;
 
     private int mScrollOffset;
 
@@ -100,10 +103,18 @@ public class ClearAllButton extends Button implements PageCallbacks {
             return;
         }
 
-        float shift = Math.min(scrollState.scrollFromEdge, orientationSize);
-        float translation = mIsRtl ? (mScrollOffset - shift) : (mScrollOffset + shift);
-        orientationHandler.setPrimaryAndResetSecondaryTranslate(
-                this, translation, mOriginalTranslationX, mOriginalTranslationY);
+        float shift;
+        if (mIsRtl) {
+            shift = Math.min(scrollState.scrollFromEdge, orientationSize);
+        } else {
+            shift = Math.min(scrollState.scrollFromEdge,
+                    orientationSize + getGridTrans(mGridTranslationPrimary))
+                    - getGridTrans(mGridTranslationPrimary);
+        }
+        mNormalTranslationPrimary = mIsRtl ? (mScrollOffset - shift) : (mScrollOffset + shift);
+        applyPrimaryTranslation();
+        orientationHandler.getSecondaryViewTranslate().set(this,
+                orientationHandler.getSecondaryValue(mOriginalTranslationX, mOriginalTranslationY));
         mScrollAlpha = 1 - shift / orientationSize;
         updateAlpha();
     }
@@ -111,6 +122,48 @@ public class ClearAllButton extends Button implements PageCallbacks {
     private void updateAlpha() {
         final float alpha = mScrollAlpha * mContentAlpha * mVisibilityAlpha;
         setAlpha(alpha);
-        setClickable(alpha == 1);
+        setClickable(Math.min(alpha, 1) == 1);
+    }
+
+    public void setGridTranslationPrimary(float gridTranslationPrimary) {
+        mGridTranslationPrimary = gridTranslationPrimary;
+        applyPrimaryTranslation();
+    }
+
+    public float getScrollAdjustment() {
+        float scrollAdjustment = 0;
+        if (mGridProgress > 0) {
+            scrollAdjustment += mGridTranslationPrimary;
+        }
+        return scrollAdjustment;
+    }
+
+    public float getOffsetAdjustment() {
+        return getScrollAdjustment();
+    }
+
+    /**
+     * Moves ClearAllButton between carousel and 2 row grid.
+     *
+     * @param gridProgress 0 = carousel; 1 = 2 row grid.
+     */
+    public void setGridProgress(float gridProgress) {
+        mGridProgress = gridProgress;
+        applyPrimaryTranslation();
+    }
+
+    private void applyPrimaryTranslation() {
+        RecentsView recentsView = getRecentsView();
+        if (recentsView == null) {
+            return;
+        }
+
+        PagedOrientationHandler orientationHandler = recentsView.getPagedOrientationHandler();
+        orientationHandler.getPrimaryViewTranslate().set(this,
+                mNormalTranslationPrimary + getGridTrans(mGridTranslationPrimary));
+    }
+
+    private float getGridTrans(float endTranslation) {
+        return mGridProgress > 0 ? endTranslation : 0;
     }
 }
