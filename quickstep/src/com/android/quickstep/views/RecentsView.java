@@ -35,7 +35,6 @@ import static com.android.launcher3.anim.Interpolators.ACCEL_0_75;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_CLEAR_ALL;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_DISMISS_SWIPE_UP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_SWIPE_DOWN;
@@ -43,6 +42,7 @@ import static com.android.launcher3.statehandlers.DepthController.DEPTH;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
 import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
+import static com.android.quickstep.util.NavigationModeFeatureFlag.LIVE_TILE;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NON_ZERO_ROTATION;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NO_RECENTS;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NO_TASKS;
@@ -561,7 +561,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     @Override
     protected void onWindowVisibilityChanged(int visibility) {
         super.onWindowVisibilityChanged(visibility);
-        if (visibility != VISIBLE && ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+        if (visibility != VISIBLE && LIVE_TILE.get()) {
             finishRecentsAnimation(true /* toRecents */, null);
         }
         updateTaskStackListenerState();
@@ -922,7 +922,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                 taskView.setModalness(mTaskModalness);
             }
         }
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+        if (LIVE_TILE.get()) {
             // Since we reuse the same mLiveTileTaskViewSimulator in the RecentsView, we need
             // to reset the params after it settles in Overview from swipe up so that we don't
             // render with obsolete param values.
@@ -1042,7 +1042,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         mModel.getThumbnailCache().getHighResLoadingState().setFlingingFast(isFlingingFast);
 
         mLiveTileTaskViewSimulator.setScroll(getScrollOffset());
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && mEnableDrawingLiveTile
+        if (LIVE_TILE.get() && mEnableDrawingLiveTile
                 && mLiveTileParams.getTargetSet() != null) {
             redrawLiveTile();
         }
@@ -1264,7 +1264,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
      */
     public void onSwipeUpAnimationSuccess() {
         if (getRunningTaskView() != null) {
-            float startProgress = ENABLE_QUICKSTEP_LIVE_TILE.get() && mLiveTileOverlayAttached
+            float startProgress = LIVE_TILE.get() && mLiveTileOverlayAttached
                     ? LiveTileOverlay.INSTANCE.cancelIconAnimation()
                     : 0f;
             animateUpRunningTaskIconScale(startProgress);
@@ -1326,7 +1326,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         setOnScrollChangeListener(null);
         setEnableFreeScroll(true);
         setEnableDrawingLiveTile(true);
-        if (!ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+        if (!LIVE_TILE.get()) {
             setRunningTaskViewShowScreenshot(true);
         }
         setRunningTaskHidden(false);
@@ -1418,7 +1418,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     }
 
     private void setRunningTaskViewShowScreenshot(boolean showScreenshot) {
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+        if (LIVE_TILE.get()) {
             TaskView runningTaskView = getRunningTaskView();
             if (runningTaskView != null) {
                 runningTaskView.setShowScreenshot(showScreenshot);
@@ -1824,7 +1824,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             anim.addOnFrameCallback(this::updateCurveProperties);
         }
 
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && getRunningTaskView() == taskView) {
+        if (LIVE_TILE.get() && getRunningTaskView() == taskView) {
             anim.addOnFrameCallback(() -> {
                 mLiveTileTaskViewSimulator.taskSecondaryTranslation.value =
                         mOrientationHandler.getSecondaryValue(
@@ -1843,7 +1843,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         mPendingAnimation.addEndListener(new Consumer<Boolean>() {
             @Override
             public void accept(Boolean success) {
-                if (ENABLE_QUICKSTEP_LIVE_TILE.get() && taskView.isRunningTask() && success) {
+                if (LIVE_TILE.get() && taskView.isRunningTask() && success) {
                     finishRecentsAnimation(true /* toHome */, () -> onEnd(success));
                 } else {
                     onEnd(success);
@@ -2390,7 +2390,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             anim.play(ObjectAnimator.ofFloat(getPageAt(centerTaskIndex),
                     mOrientationHandler.getPrimaryViewTranslate(), primaryTranslation));
             int runningTaskIndex = recentsView.getRunningTaskIndex();
-            if (ENABLE_QUICKSTEP_LIVE_TILE.get() && runningTaskIndex != -1
+            if (LIVE_TILE.get() && runningTaskIndex != -1
                     && runningTaskIndex != taskIndex) {
                 anim.play(ObjectAnimator.ofFloat(
                         recentsView.getLiveTileTaskViewSimulator().taskPrimaryTranslation,
@@ -2467,7 +2467,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
 
         mPendingAnimation = new PendingAnimation(duration);
         mPendingAnimation.add(anim);
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+        if (LIVE_TILE.get()) {
             mLiveTileTaskViewSimulator.addOverviewToAppAnim(mPendingAnimation, interpolator);
             mPendingAnimation.addOnFrameCallback(this::redrawLiveTile);
         }
@@ -2479,7 +2479,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                         tv.notifyTaskLaunchFailed(TAG);
                     }
                 };
-                if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+                if (LIVE_TILE.get()) {
                     finishRecentsAnimation(false /* toRecents */, null);
                     onLaunchResult.accept(true /* success */);
                 } else {

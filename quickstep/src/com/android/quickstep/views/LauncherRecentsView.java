@@ -23,7 +23,7 @@ import static com.android.launcher3.LauncherState.OVERVIEW_MODAL_TASK;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.QuickstepAppTransitionManagerImpl.ALL_APPS_PROGRESS_OFF_SCREEN;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
+import static com.android.quickstep.util.NavigationModeFeatureFlag.LIVE_TILE;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -95,7 +95,7 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
     public void startHome() {
         Runnable onReachedHome = () -> mActivity.getStateManager().goToState(NORMAL, false);
         OverviewToHomeAnim overviewToHomeAnim = new OverviewToHomeAnim(mActivity, onReachedHome);
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+        if (LIVE_TILE.get()) {
             switchToScreenshot(null,
                     () -> finishRecentsAnimation(true /* toRecents */,
                             () -> overviewToHomeAnim.animateWithVelocity(0)));
