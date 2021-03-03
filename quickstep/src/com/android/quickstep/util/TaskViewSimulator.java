@@ -15,6 +15,7 @@
  */
 package com.android.quickstep.util;
 
+import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.states.RotationHelper.deltaRotation;
 import static com.android.launcher3.touch.PagedOrientationHandler.MATRIX_POST_TRANSLATE;
@@ -24,6 +25,7 @@ import static com.android.systemui.shared.system.WindowManagerWrapper.WINDOWING_
 
 import android.animation.TimeInterpolator;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.PointF;
@@ -34,6 +36,7 @@ import android.util.IntProperty;
 import androidx.annotation.NonNull;
 
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.touch.PagedOrientationHandler;
@@ -73,6 +76,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
 
     @NonNull
     private RecentsOrientedState mOrientationState;
+    private final boolean mIsRecentsRtl;
 
     private final Rect mTaskRect = new Rect();
     private boolean mDrawsBelowRecents;
@@ -98,12 +102,15 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     public final AnimatedFloat recentsViewScale = new AnimatedFloat();
     public final AnimatedFloat fullScreenProgress = new AnimatedFloat();
     public final AnimatedFloat recentsViewSecondaryTranslation = new AnimatedFloat();
+    public final AnimatedFloat gridProgress = new AnimatedFloat();
     private final ScrollState mScrollState = new ScrollState();
 
     // Cached calculations
     private boolean mLayoutValid = false;
     private boolean mScrollValid = false;
     private int mOrientationStateId;
+    private final int mTaskThumbnailPadding;
+    private final int mRowSpacing;
 
     public TaskViewSimulator(Context context, BaseActivityInterface sizeStrategy) {
         mContext = context;
@@ -113,6 +120,10 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         mOrientationState.setGestureActive(true);
         mCurrentFullscreenParams = new FullscreenDrawParams(context);
         mOrientationStateId = mOrientationState.getStateId();
+        Resources resources = context.getResources();
+        mIsRecentsRtl = mOrientationState.getOrientationHandler().getRecentsRtlSetting(resources);
+        mTaskThumbnailPadding = (int) resources.getDimension(R.dimen.task_thumbnail_top_margin);
+        mRowSpacing = (int) resources.getDimension(R.dimen.recents_row_spacing);
     }
 
     /**
@@ -277,9 +288,10 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
             mScrollState.updateInterpolation(mDp, start);
         }
 
-        float progress = Utilities.boundToRange(fullScreenProgress.value, 0, 1);
+        float fullScreenProgress = Utilities.boundToRange(this.fullScreenProgress.value, 0, 1);
         mCurrentFullscreenParams.setProgress(
-                progress, recentsViewScale.value, mTaskRect.width(), mDp, mPositionHelper);
+                fullScreenProgress, recentsViewScale.value, mTaskRect.width(), mDp,
+                mPositionHelper);
 
         // Apply thumbnail matrix
         RectF insets = mCurrentFullscreenParams.mCurrentDrawnInsets;
@@ -290,6 +302,23 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         mMatrix.set(mPositionHelper.getMatrix());
         mMatrix.postTranslate(insets.left, insets.top);
         mMatrix.postScale(scale, scale);
+
+        float interpolatedGridProgress = ACCEL_DEACCEL.getInterpolation(gridProgress.value);
+
+        // Apply TaskView matrix: gridProgress
+        final int boxLength = (int) Math.max(taskWidth, taskHeight);
+        float availableHeight =
+                mTaskThumbnailPadding + taskHeight + mSizeStrategy.getOverviewActionsHeight(
+                        mContext);
+        float rowHeight = (availableHeight - mRowSpacing) / 2;
+        float gridScale = rowHeight / (boxLength + mTaskThumbnailPadding);
+        scale = Utilities.mapRange(interpolatedGridProgress, 1f, gridScale);
+        mMatrix.postScale(scale, scale, mIsRecentsRtl ? 0 : taskWidth, 0);
+        float taskWidthDiff = taskWidth * (1 - gridScale);
+        float taskWidthOffset = mIsRecentsRtl ? taskWidthDiff : -taskWidthDiff;
+        float translationPrimary = Utilities.mapRange(interpolatedGridProgress, 0, taskWidthOffset);
+        mOrientationState.getOrientationHandler().set(mMatrix, MATRIX_POST_TRANSLATE,
+                translationPrimary);
 
         // Apply TaskView matrix: translate, scroll
         mMatrix.postTranslate(mTaskRect.left, mTaskRect.top);

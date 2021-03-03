@@ -31,6 +31,7 @@ import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MOD
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
@@ -307,7 +308,11 @@ public final class TaskViewUtils {
         Animator launcherAnim;
         final AnimatorListenerAdapter windowAnimEndListener;
         if (launcherClosing) {
-            launcherAnim = recentsView.createAdjacentPageAnimForTaskLaunch(taskView);
+            Context context = v.getContext();
+            DeviceProfile dp = BaseActivity.fromContext(context).getDeviceProfile();
+            launcherAnim = dp.isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get()
+                    ? ObjectAnimator.ofFloat(recentsView, RecentsView.CONTENT_ALPHA, 0)
+                    : recentsView.createAdjacentPageAnimForTaskLaunch(taskView);
             launcherAnim.setInterpolator(Interpolators.TOUCH_RESPONSE_INTERPOLATOR);
             launcherAnim.setDuration(RECENTS_LAUNCH_DURATION);
 

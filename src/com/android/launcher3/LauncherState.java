@@ -56,8 +56,9 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     public static final int ALL_APPS_HEADER_EXTRA = 1 << 3; // e.g. app predictions
     public static final int ALL_APPS_CONTENT = 1 << 4;
     public static final int VERTICAL_SWIPE_INDICATOR = 1 << 5;
-    public static final int OVERVIEW_BUTTONS = 1 << 6;
+    public static final int OVERVIEW_ACTIONS = 1 << 6;
     public static final int TASKBAR = 1 << 7;
+    public static final int CLEAR_ALL_BUTTON = 1 << 8;
 
     /** Mask of all the items that are contained in the apps view. */
     public static final int APPS_VIEW_ITEM_MASK =
@@ -218,6 +219,13 @@ public abstract class LauncherState implements BaseState<LauncherState> {
      */
     public float getOverviewModalness() {
         return 0;
+    }
+
+    /**
+     * For this state, whether tasks should layout as a grid rather than a list.
+     */
+    public boolean displayOverviewTasksAsGrid(Launcher launcher) {
+        return false;
     }
 
     /**
