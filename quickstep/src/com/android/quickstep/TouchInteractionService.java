@@ -290,7 +290,13 @@ public class TouchInteractionService extends Service implements PluginListener<O
 
     private void initInputMonitor() {
         disposeEventHandlers();
-        if (mDeviceState.isButtonNavMode() || !SystemUiProxy.INSTANCE.get(this).isActive()) {
+
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.TIS_NO_EVENTS, "initInputMonitor: isButtonMode? "
+                    + mDeviceState.isButtonNavMode());
+        }
+
+        if (mDeviceState.isButtonNavMode()) {
             return;
         }
 
