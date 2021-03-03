@@ -28,5 +28,11 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity android:name="ch.deletescape.lawnchair.settings.activities.IconPackSettingsActivity" android:theme="@style/Theme.Lawnchair">
+            <intent-filter>
+                <action android:name="ch.deletescape.lawnchair.settings.activities.IconPackSettingsActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>

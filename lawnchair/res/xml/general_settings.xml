@@ -17,4 +17,8 @@
 
     <Preference android:title="Icon Pack" android:fragment="ch.deletescape.lawnchair.settings.fragments.IconPackSettingsFragment" />
 
+    <Preference android:title="Icon Pack (Jetpack Compose)">
+        <intent android:action="ch.deletescape.lawnchair.settings.activities.IconPackSettingsActivity" />
+    </Preference>
+
 </androidx.preference.PreferenceScreen>
