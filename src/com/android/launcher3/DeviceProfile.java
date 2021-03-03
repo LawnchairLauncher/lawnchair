@@ -331,6 +331,19 @@ public class DeviceProfile {
         }
     }
 
+    /**
+     * We inset the widget padding added by the system and instead rely on the border spacing
+     * between cells to create reliable consistency between widgets
+     */
+    public boolean shouldInsetWidgets() {
+        Rect widgetPadding = inv.defaultWidgetPadding;
+
+        // Check all sides to ensure that the widget won't overlap into another cell.
+        return cellLayoutBorderSpacingPx > widgetPadding.left
+                && cellLayoutBorderSpacingPx > widgetPadding.top
+                && cellLayoutBorderSpacingPx > widgetPadding.right
+                && cellLayoutBorderSpacingPx > widgetPadding.bottom;
+    }
 
     public Builder toBuilder(Context context) {
         Point size = new Point(availableWidthPx, availableHeightPx);
