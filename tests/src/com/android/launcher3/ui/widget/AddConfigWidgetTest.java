@@ -28,7 +28,6 @@ import android.view.View;
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
-import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
@@ -39,6 +38,7 @@ import com.android.launcher3.ui.TestViewHelpers;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.Wait.Condition;
 import com.android.launcher3.util.rule.ShellCommandRule;
+import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 
 import org.junit.Before;
 import org.junit.Rule;

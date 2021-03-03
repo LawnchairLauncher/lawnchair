@@ -27,18 +27,14 @@ import android.os.UserHandle;
 
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.pm.UserCache;
-import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.widget.custom.CustomWidgetManager;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -120,15 +116,6 @@ public class WidgetManagerHelper {
     public boolean isAppWidgetRestored(int appWidgetId) {
         return !WidgetsModel.GO_DISABLE_WIDGETS && mAppWidgetManager.getAppWidgetOptions(
                 appWidgetId).getBoolean(WIDGET_OPTION_RESTORE_COMPLETED);
-    }
-
-    public static Map<ComponentKey, AppWidgetProviderInfo> getAllProvidersMap(Context context) {
-        if (WidgetsModel.GO_DISABLE_WIDGETS) {
-            return Collections.emptyMap();
-        }
-        return allWidgetsSteam(context).collect(
-                        Collectors.toMap(info -> new ComponentKey(info.provider, info.getProfile()),
-                        Function.identity()));
     }
 
     private static Stream<AppWidgetProviderInfo> allWidgetsSteam(Context context) {
