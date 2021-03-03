@@ -9,7 +9,9 @@
         android:title="Icon Size"
         app:showSeekBarValue="true"
         lawnchair:minValue="50"
-        lawnchair:maxValue="150" />
+        lawnchair:maxValue="150"
+        lawnchair:snapEvery="10"
+        lawnchair:asPercentages="true" />
 
     <ch.deletescape.lawnchair.settings.ui.preferences.CustomSeekBarPreference
         android:key="pref_dock_icon_count"

@@ -8,8 +8,10 @@
         android:key="pref_app_drawer_icon_size"
         android:title="Icon Size"
         app:showSeekBarValue="true"
+        lawnchair:snapEvery="10"
         lawnchair:minValue="50"
-        lawnchair:maxValue="150" />
+        lawnchair:maxValue="150"
+        lawnchair:asPercentages="true" />
 
     <ch.deletescape.lawnchair.settings.ui.preferences.CustomSeekBarPreference
         android:key="pref_app_drawer_grid_width"
@@ -31,6 +33,8 @@
         android:title="Label Size"
         app:showSeekBarValue="true"
         lawnchair:minValue="50"
-        lawnchair:maxValue="150" />
+        lawnchair:maxValue="150"
+        lawnchair:snapEvery="10"
+        lawnchair:asPercentages="true" />
 
 </PreferenceScreen>
