@@ -324,7 +324,9 @@ public class FolderAnimationManager {
 
             final int previewPosX =
                     (int) ((mTmpParams.transX - iconOffsetX + previewItemOffsetX) / folderScale);
-            final int previewPosY = (int) ((mTmpParams.transY + previewItemOffsetY) / folderScale);
+            final float paddingTop = btv.getPaddingTop() * iconScale;
+            final int previewPosY = (int) ((mTmpParams.transY + previewItemOffsetY - paddingTop)
+                    / folderScale);
 
             final float xDistance = previewPosX - btvLp.x;
             final float yDistance = previewPosY - btvLp.y;
