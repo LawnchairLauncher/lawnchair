@@ -1,5 +1,9 @@
 package ch.deletescape.lawnchair.settings.activities
 
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
+import android.content.pm.ResolveInfo
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -22,9 +26,11 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import ch.deletescape.lawnchair.settings.ui.theme.LawnchairTheme
+import ch.deletescape.lawnchair.sharedprefs.LawnchairPreferences
 import com.android.launcher3.R
 
 class IconPackSettingsActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -41,19 +47,37 @@ class IconPackSettingsActivity : AppCompatActivity() {
 
     data class IconPackInfo(val name: String, val packageName: String, val icon: Drawable)
 
-    val dataSet by lazy {
-        listOf(
-            IconPackInfo(
-                "System Icons",
-                "",
-                AppCompatResources.getDrawable(this, R.drawable.ic_launcher_home)!!
-            )
+    private fun getIconPacks(): MutableMap<String, IconPackInfo> {
+        val pm = this.packageManager
+        val iconPacks: MutableMap<String, IconPackInfo> = HashMap()
+        val list: MutableList<ResolveInfo> = pm.queryIntentActivities(Intent("com.novalauncher.THEME"), 0)
+
+        list.addAll(pm.queryIntentActivities(Intent("org.adw.launcher.icons.ACTION_PICK_ICON"), 0))
+        list.addAll(pm.queryIntentActivities(Intent("com.dlto.atom.launcher.THEME"), 0))
+        list.addAll(pm.queryIntentActivities(Intent("android.intent.action.MAIN").addCategory("com.anddoes.launcher.THEME"), 0))
+
+        // TODO: Ensure ‘System Icons’ entry is first in list.
+        iconPacks["system"] = IconPackInfo(
+            "System Icons",
+            "",
+            AppCompatResources.getDrawable(this, R.drawable.ic_launcher_home)!!
         )
+
+        for (info in list) {
+            iconPacks[info.activityInfo.packageName] = IconPackInfo(
+                info.loadLabel(pm).toString(),
+                info.activityInfo.packageName,
+                info.loadIcon(pm)
+            )
+        }
+
+        return iconPacks
     }
 
     @Composable
     fun IconPackSettings() {
         var selectedIconPackPackageName by remember { mutableStateOf("") }
+
         Column {
             TopAppBar(
                 title = { Text(text = "Icon Packs") },
@@ -78,7 +102,7 @@ class IconPackSettingsActivity : AppCompatActivity() {
                 }
             )
             IconPackList(
-                dataSet,
+                getIconPacks(),
                 selectedIconPackPackageName,
                 onSelectionChange = { selectedIconPackPackageName = it })
         }
@@ -86,14 +110,14 @@ class IconPackSettingsActivity : AppCompatActivity() {
 
     @Composable
     fun IconPackList(
-        iconPacks: List<IconPackInfo>,
+        iconPacks: MutableMap<String, IconPackInfo>,
         selectedIconPackPackageName: String,
         modifier: Modifier = Modifier,
         onSelectionChange: (String) -> Unit
     ) {
         Box(modifier) {
             LazyColumn(Modifier.fillMaxWidth()) {
-                items(iconPacks) { iconPack ->
+                items(iconPacks.values.toList()) { iconPack ->
                     IconPackListItem(iconPack, selectedIconPackPackageName, onSelectionChange)
                 }
             }
@@ -135,4 +159,5 @@ class IconPackSettingsActivity : AppCompatActivity() {
             )
         }
     }
+
 }
