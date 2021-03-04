@@ -25,6 +25,7 @@ import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAG
 import static com.android.launcher3.QuickstepAppTransitionManagerImpl.RECENTS_LAUNCH_DURATION;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
+import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.IGNORE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOME_GESTURE;
@@ -79,7 +80,6 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
@@ -918,26 +918,15 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
                 isFling, isCancel);
         float endShift = endTarget.isLauncher ? 1 : 0;
         final float startShift;
-        Interpolator interpolator = DEACCEL;
         if (!isFling) {
             long expectedDuration = Math.abs(Math.round((endShift - currentShift)
                     * MAX_SWIPE_DURATION * SWIPE_DURATION_MULTIPLIER));
             duration = Math.min(MAX_SWIPE_DURATION, expectedDuration);
             startShift = currentShift;
-            interpolator = endTarget == RECENTS ? ACCEL_DEACCEL : DEACCEL;
         } else {
             startShift = Utilities.boundToRange(currentShift - velocity.y
                     * getSingleFrameMs(mContext) / mTransitionDragLength, 0, mDragLengthFactor);
             if (mTransitionDragLength > 0) {
-                if (endTarget == RECENTS && !mDeviceState.isFullyGesturalNavMode()) {
-                    Interpolators.OvershootParams overshoot = new Interpolators.OvershootParams(
-                            startShift, endShift, endShift, endVelocity,
-                            mTransitionDragLength, mContext);
-                    endShift = overshoot.end;
-                    interpolator = overshoot.interpolator;
-                    duration = Utilities.boundToRange(overshoot.duration, MIN_OVERSHOOT_DURATION,
-                            MAX_SWIPE_DURATION);
-                } else {
                     float distanceToTravel = (endShift - currentShift) * mTransitionDragLength;
 
                     // we want the page's snap velocity to approximately match the velocity at
@@ -945,13 +934,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
                     // derivative of the scroll interpolator at zero, ie. 2.
                     long baseDuration = Math.round(Math.abs(distanceToTravel / velocity.y));
                     duration = Math.min(MAX_SWIPE_DURATION, 2 * baseDuration);
-
-                    if (endTarget == RECENTS) {
-                        interpolator = ACCEL_DEACCEL;
-                    }
-                }
             }
         }
+        Interpolator interpolator = endTarget == RECENTS ? OVERSHOOT_1_2 : DEACCEL;
 
         if (endTarget.isLauncher) {
             mInputConsumerProxy.enable();
