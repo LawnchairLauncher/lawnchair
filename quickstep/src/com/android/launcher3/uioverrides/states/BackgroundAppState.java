@@ -69,9 +69,15 @@ public class BackgroundAppState extends OverviewState {
     @Override
     public int getVisibleElements(Launcher launcher) {
         return super.getVisibleElements(launcher)
-                & ~OVERVIEW_BUTTONS
+                & ~OVERVIEW_ACTIONS
+                & ~CLEAR_ALL_BUTTON
                 & ~VERTICAL_SWIPE_INDICATOR
                 | TASKBAR;
+    }
+
+    @Override
+    public boolean displayOverviewTasksAsGrid(Launcher launcher) {
+        return false;
     }
 
     @Override
