@@ -219,7 +219,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     /**
      * Returns the index of the currently displayed page. When in free scroll mode, this is the page
      * that the user was on before entering free scroll mode (e.g. the home screen page they
-     * long-pressed on to enter the overview). Try using {@link #getPageNearestToCenterOfScreen()}
+     * long-pressed on to enter the overview). Try using {@link #getDestinationPage()}
      * to get the page the user is currently scrolling over.
      */
     public int getCurrentPage() {
@@ -1289,7 +1289,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                     if (((initialScroll >= maxScroll) && (isVelocityLeft || !isFling)) ||
                         ((initialScroll <= minScroll) && (!isVelocityLeft || !isFling))) {
                         mScroller.springBack(initialScroll, minScroll, maxScroll);
-                        mNextPage = getPageNearestToCenterOfScreen();
+                        mNextPage = getDestinationPage();
                     } else {
                         mScroller.setInterpolator(mDefaultInterpolator);
                         mScroller.fling(initialScroll, -velocity,
@@ -1297,11 +1297,12 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                             Math.round(getWidth() * 0.5f * OVERSCROLL_DAMP_FACTOR));
 
                         int finalPos = mScroller.getFinalPos();
-                        mNextPage = getPageNearestToCenterOfScreen(finalPos);
+                        mNextPage = getDestinationPage(finalPos);
 
                         int firstPageScroll = getScrollForPage(!mIsRtl ? 0 : getPageCount() - 1);
                         int lastPageScroll = getScrollForPage(!mIsRtl ? getPageCount() - 1 : 0);
-                        if (finalPos > minScroll && finalPos < maxScroll) {
+                        if (snapToPageInFreeScroll() && finalPos > minScroll
+                                && finalPos < maxScroll) {
                             // If scrolling ends in the half of the added space that is closer to
                             // the end, settle to the end. Otherwise snap to the nearest page.
                             // If flinging past one of the ends, don't change the velocity as it
@@ -1344,6 +1345,10 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
             break;
         }
 
+        return true;
+    }
+
+    protected boolean snapToPageInFreeScroll() {
         return true;
     }
 
@@ -1452,6 +1457,14 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         }
     }
 
+    public int getDestinationPage() {
+        return getDestinationPage(mOrientationHandler.getPrimaryScroll(this));
+    }
+
+    protected int getDestinationPage(int scaledScroll) {
+        return getPageNearestToCenterOfScreen(scaledScroll);
+    }
+
     public int getPageNearestToCenterOfScreen() {
         return getPageNearestToCenterOfScreen(mOrientationHandler.getPrimaryScroll(this));
     }
@@ -1487,7 +1500,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
     protected void snapToDestination() {
-        snapToPage(getPageNearestToCenterOfScreen(), getPageSnapDuration());
+        snapToPage(getDestinationPage(), getPageSnapDuration());
     }
 
     protected boolean isInOverScroll() {
