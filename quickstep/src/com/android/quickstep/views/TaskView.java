@@ -35,10 +35,10 @@ import static com.android.launcher3.anim.Interpolators.EXAGGERATED_EASE;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_TAP;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+import static com.android.quickstep.util.NavigationModeFeatureFlag.LIVE_TILE;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -248,8 +248,9 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private IconView mIconView;
     private final DigitalWellBeingToast mDigitalWellBeingToast;
     private float mFullscreenProgress;
-    private float mScaleAtFullscreen = 1;
+    private float mGridProgress;
     private float mFullscreenScale = 1;
+    private float mGridScale = 1;
     private final FullscreenDrawParams mCurrentFullscreenParams;
     private final StatefulActivity mActivity;
 
@@ -262,8 +263,14 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private float mTaskResistanceTranslationY;
     // The following translation variables should only be used in the same orientation as Launcher.
     private float mFullscreenTranslationX;
-    private float mAccumulatedTranslationX;
+    private float mAccumulatedFullscreenTranslationX;
     private float mBoxTranslationY;
+    // The following grid translations scales with mGridProgress.
+    private float mGridTranslationX;
+    private float mGridTranslationY;
+    // Offset translation does not affect scroll calculation.
+    private float mGridOffsetTranslationX;
+    private float mNonRtlVisibleOffset;
 
     private ObjectAnimator mIconAndDimAnimator;
     private float mIconScaleAnimStartProgress = 0;
@@ -301,7 +308,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             if (getTask() == null) {
                 return;
             }
-            if (ENABLE_QUICKSTEP_LIVE_TILE.get() && isRunningTask()) {
+            if (LIVE_TILE.get() && isRunningTask()) {
                 if (!mIsClickableAsLiveTile) {
                     return;
                 }
@@ -552,7 +559,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             mIconLoadRequest = iconCache.updateIconInBackground(mTask,
                     (task) -> {
                         setIcon(task.icon);
-                        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && isRunningTask()) {
+                        if (LIVE_TILE.get() && isRunningTask()) {
                             getRecentsView().updateLiveTileIcon(task.icon);
                         }
                         mDigitalWellBeingToast.initialize(mTask);
@@ -722,7 +729,9 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     @Override
     public void onRecycle() {
-        mFullscreenTranslationX = mAccumulatedTranslationX = mBoxTranslationY = 0f;
+        mFullscreenTranslationX = mAccumulatedFullscreenTranslationX = mGridTranslationX =
+                mGridTranslationY =
+                        mGridOffsetTranslationX = mBoxTranslationY = mNonRtlVisibleOffset = 0f;
         resetViewTransforms();
         // Clear any references to the thumbnail (it will be re-read either from the cache or the
         // system on next bind)
@@ -807,7 +816,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         super.onLayout(changed, left, top, right, bottom);
         if (mActivity.getDeviceProfile().isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get()) {
             setPivotX(getLayoutDirection() == LAYOUT_DIRECTION_RTL ? (right - left) : 0);
-            setPivotY(0);
+            setPivotY(mSnapshotView.getTop());
         } else {
             setPivotX((right - left) * 0.5f);
             setPivotY(mSnapshotView.getTop() + mSnapshotView.getHeight() * 0.5f);
@@ -834,9 +843,31 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         applyScale();
     }
 
+    public void setGridScale(float gridScale) {
+        mGridScale = gridScale;
+        applyScale();
+    }
+
+    /**
+     * Moves TaskView between carousel and 2 row grid.
+     *
+     * @param gridProgress 0 = carousel; 1 = 2 row grid.
+     */
+    public void setGridProgress(float gridProgress) {
+        mGridProgress = gridProgress;
+        applyTranslationX();
+        applyTranslationY();
+        applyScale();
+    }
+
     private void applyScale() {
-        setScaleX(mFullscreenScale);
-        setScaleY(mFullscreenScale);
+        float scale = 1;
+        float fullScreenProgress = EXAGGERATED_EASE.getInterpolation(mFullscreenProgress);
+        scale *= Utilities.mapRange(fullScreenProgress, 1f, mFullscreenScale);
+        float gridProgress = ACCEL_DEACCEL.getInterpolation(mGridProgress);
+        scale *= Utilities.mapRange(gridProgress, 1f, mGridScale);
+        setScaleX(scale);
+        setScaleY(scale);
     }
 
     private void setDismissTranslationX(float x) {
@@ -878,13 +909,58 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         return mFullscreenTranslationX;
     }
 
-    public void setAccumulatedTranslationX(float accumulatedTranslationX) {
-        mAccumulatedTranslationX = accumulatedTranslationX;
+    public void setAccumulatedFullscreenTranslationX(float accumulatedFullscreenTranslationX) {
+        mAccumulatedFullscreenTranslationX = accumulatedFullscreenTranslationX;
         applyTranslationX();
     }
 
-    public float getAccumulatedTranslationX() {
-        return mAccumulatedTranslationX;
+    public void setGridTranslationX(float gridTranslationX) {
+        mGridTranslationX = gridTranslationX;
+        applyTranslationX();
+    }
+
+    public void setGridTranslationY(float gridTranslationY) {
+        mGridTranslationY = gridTranslationY;
+        applyTranslationY();
+    }
+
+    public void setGridOffsetTranslationX(float gridOffsetTranslationX) {
+        mGridOffsetTranslationX = gridOffsetTranslationX;
+        applyTranslationX();
+    }
+
+    public void setNonRtlVisibleOffset(float nonRtlVisibleOffset) {
+        mNonRtlVisibleOffset = nonRtlVisibleOffset;
+    }
+
+    public float getScrollAdjustment() {
+        float scrollAdjustment = 0;
+        if (mFullscreenProgress > 0) {
+            scrollAdjustment += mFullscreenTranslationX + mAccumulatedFullscreenTranslationX;
+        }
+        if (mGridProgress > 0) {
+            scrollAdjustment += mGridTranslationX;
+        }
+        return scrollAdjustment;
+    }
+
+    public float getOffsetAdjustment() {
+        float offsetAdjustment = getScrollAdjustment();
+        if (mGridProgress > 0) {
+            offsetAdjustment += mGridOffsetTranslationX + mNonRtlVisibleOffset;
+        }
+        return offsetAdjustment;
+    }
+
+    public float getSizeAdjustment() {
+        float sizeAdjustment = 1;
+        if (mFullscreenProgress > 0) {
+            sizeAdjustment *= mFullscreenScale;
+        }
+        if (mGridProgress > 0) {
+            sizeAdjustment *= mGridScale;
+        }
+        return sizeAdjustment;
     }
 
     private void setBoxTranslationY(float boxTranslationY) {
@@ -893,15 +969,20 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     }
 
     private void applyTranslationX() {
-        setTranslationX(
-                mDismissTranslationX + mTaskOffsetTranslationX + mTaskResistanceTranslationX
-                        + mFullscreenTranslationX + mAccumulatedTranslationX);
+        setTranslationX(mDismissTranslationX + mTaskOffsetTranslationX + mTaskResistanceTranslationX
+                + getFullscreenTrans(mFullscreenTranslationX + mAccumulatedFullscreenTranslationX)
+                + getGridTrans(mGridTranslationX + mGridOffsetTranslationX));
     }
 
     private void applyTranslationY() {
         setTranslationY(
                 mDismissTranslationY + mTaskOffsetTranslationY + mTaskResistanceTranslationY
-                        + mBoxTranslationY);
+                        + getGridTrans(mGridTranslationY) + mBoxTranslationY);
+    }
+
+    private float getGridTrans(float endTranslation) {
+        float progress = ACCEL_DEACCEL.getInterpolation(mGridProgress);
+        return Utilities.mapRange(progress, 0, endTranslation);
     }
 
     public FloatProperty<TaskView> getFillDismissGapTranslationProperty() {
@@ -1057,7 +1138,9 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         mIconView.setVisibility(progress < 1 ? VISIBLE : INVISIBLE);
         getThumbnail().getTaskOverlay().setFullscreenProgress(progress);
 
-        updateTaskScaling();
+        applyTranslationX();
+        applyTranslationY();
+        applyScale();
 
         TaskThumbnailView thumbnail = getThumbnail();
         updateCurrentFullscreenParams(thumbnail.getPreviewPositionHelper());
@@ -1084,41 +1167,53 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                 previewPositionHelper);
     }
 
-    void updateTaskSize(boolean variableWidth) {
+    /**
+     * Updates TaskView scaling and translation required to support variable width if enabled, while
+     * ensuring TaskView fits into screen in fullscreen.
+     */
+    void updateTaskSize() {
         ViewGroup.LayoutParams params = getLayoutParams();
-        float thumbnailRatio = mTask != null ? mTask.getVisibleThumbnailRatio() : 0f;
-        if (variableWidth && mActivity.getDeviceProfile().isTablet
-                && FeatureFlags.ENABLE_OVERVIEW_GRID.get() && thumbnailRatio != 0f) {
+        if (mActivity.getDeviceProfile().isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get()) {
             final int thumbnailPadding = (int) getResources().getDimension(
                     R.dimen.task_thumbnail_top_margin);
 
             Rect lastComputedTaskSize = getRecentsView().getLastComputedTaskSize();
             int taskWidth = lastComputedTaskSize.width();
             int taskHeight = lastComputedTaskSize.height();
-            int boxLength = Math.max(taskWidth, taskHeight);
 
             int expectedWidth;
             int expectedHeight;
-            if (thumbnailRatio > 1) {
-                expectedWidth = boxLength;
-                expectedHeight = (int) (boxLength / thumbnailRatio) + thumbnailPadding;
+            float thumbnailRatio = mTask != null ? mTask.getVisibleThumbnailRatio() : 0f;
+            if (isRunningTask() || thumbnailRatio == 0f) {
+                expectedWidth = taskWidth;
+                expectedHeight = taskHeight + thumbnailPadding;
             } else {
-                expectedWidth = (int) (boxLength * thumbnailRatio);
-                expectedHeight = boxLength + thumbnailPadding;
+                int boxLength = Math.max(taskWidth, taskHeight);
+                if (thumbnailRatio > 1) {
+                    expectedWidth = boxLength;
+                    expectedHeight = (int) (boxLength / thumbnailRatio) + thumbnailPadding;
+                } else {
+                    expectedWidth = (int) (boxLength * thumbnailRatio);
+                    expectedHeight = boxLength + thumbnailPadding;
+                }
             }
 
             float heightDiff = (expectedHeight - thumbnailPadding - taskHeight) / 2.0f;
             setBoxTranslationY(heightDiff);
 
+            float fullscreenScale = 1f;
             if (expectedWidth > taskWidth) {
                 // In full screen, expectedWidth should not be larger than taskWidth.
-                mScaleAtFullscreen = taskWidth / (float) expectedWidth;
+                fullscreenScale = taskWidth / (float) expectedWidth;
             } else if (expectedHeight - thumbnailPadding > taskHeight) {
                 // In full screen, expectedHeight should not be larger than taskHeight.
-                mScaleAtFullscreen = taskHeight / (float) (expectedHeight - thumbnailPadding);
-            } else {
-                mScaleAtFullscreen = 1f;
+                fullscreenScale = taskHeight / (float) (expectedHeight - thumbnailPadding);
             }
+            setFullscreenScale(fullscreenScale);
+
+            float widthDiff = params.width * (1 - mFullscreenScale);
+            setFullscreenTranslationX(
+                    getLayoutDirection() == LAYOUT_DIRECTION_RTL ? -widthDiff : widthDiff);
 
             if (params.width != expectedWidth || params.height != expectedHeight) {
                 params.width = expectedWidth;
@@ -1127,35 +1222,16 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             }
         } else {
             setBoxTranslationY(0);
+            setFullscreenTranslationX(0);
+            setFullscreenScale(1);
             if (params.width != ViewGroup.LayoutParams.MATCH_PARENT) {
                 params.width = ViewGroup.LayoutParams.MATCH_PARENT;
                 params.height = ViewGroup.LayoutParams.MATCH_PARENT;
                 setLayoutParams(params);
             }
         }
-        updateTaskScaling();
     }
 
-    private void updateTaskScaling() {
-        if (mActivity.getDeviceProfile().isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get()) {
-            ViewGroup.LayoutParams params = getLayoutParams();
-            if (params.width == ViewGroup.LayoutParams.MATCH_PARENT
-                    || params.height == ViewGroup.LayoutParams.MATCH_PARENT) {
-                // Snapshot is not loaded yet, skip.
-                return;
-            }
-
-            float progress = EXAGGERATED_EASE.getInterpolation(mFullscreenProgress);
-            setFullscreenScale(Utilities.mapRange(progress, 1f, mScaleAtFullscreen));
-
-            float widthDiff = params.width * (1 - mFullscreenScale);
-            setFullscreenTranslationX(getFullscreenTrans(
-                    getLayoutDirection() == LAYOUT_DIRECTION_RTL ? -widthDiff : widthDiff));
-        } else {
-            setFullscreenScale(1);
-            setFullscreenTranslationX(0);
-        }
-    }
 
     private float getFullscreenTrans(float endTranslation) {
         float progress = ACCEL_DEACCEL.getInterpolation(mFullscreenProgress);
