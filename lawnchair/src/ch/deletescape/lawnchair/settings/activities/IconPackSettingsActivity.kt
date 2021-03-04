@@ -74,9 +74,12 @@ class IconPackSettingsActivity : AppCompatActivity() {
         return iconPacks
     }
 
+    private val sharedPref: SharedPreferences by lazy { this.getPreferences(Context.MODE_PRIVATE) }
+    private val dbSelectedIconPackPackageName by lazy { sharedPref.getString(LawnchairPreferences.ICON_PACK_PACKAGE, "")!! }
+
     @Composable
     fun IconPackSettings() {
-        var selectedIconPackPackageName by remember { mutableStateOf("") }
+        var selectedIconPackPackageName by remember { mutableStateOf(dbSelectedIconPackPackageName) }
 
         Column {
             TopAppBar(
@@ -132,6 +135,7 @@ class IconPackSettingsActivity : AppCompatActivity() {
     ) {
         fun select() {
             onSelectionChange(iconPack.packageName)
+            sharedPref.edit().putString(LawnchairPreferences.ICON_PACK_PACKAGE, iconPack.packageName).apply()
         }
         Row(
             verticalAlignment = Alignment.CenterVertically,
