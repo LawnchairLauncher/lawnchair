@@ -15,9 +15,7 @@
         </intent>
     </com.android.launcher3.settings.NotificationDotsPreference>
 
-    <Preference android:title="Icon Pack" android:fragment="ch.deletescape.lawnchair.settings.fragments.IconPackSettingsFragment" />
-
-    <Preference android:title="Icon Pack (Jetpack Compose)">
+    <Preference android:title="Icon Pack">
         <intent android:action="ch.deletescape.lawnchair.settings.activities.IconPackSettingsActivity" />
     </Preference>
 

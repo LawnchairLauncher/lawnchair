@@ -1,6 +1,5 @@
 package ch.deletescape.lawnchair.settings.activities
 
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.ResolveInfo
@@ -28,6 +27,7 @@ import androidx.core.graphics.drawable.toBitmap
 import ch.deletescape.lawnchair.settings.ui.theme.LawnchairTheme
 import ch.deletescape.lawnchair.sharedprefs.LawnchairPreferences
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
 
 class IconPackSettingsActivity : AppCompatActivity() {
 
@@ -74,7 +74,7 @@ class IconPackSettingsActivity : AppCompatActivity() {
         return iconPacks
     }
 
-    private val sharedPref: SharedPreferences by lazy { this.getPreferences(Context.MODE_PRIVATE) }
+    private val sharedPref: SharedPreferences by lazy { Utilities.getPrefs(this) }
     private val dbSelectedIconPackPackageName by lazy { sharedPref.getString(LawnchairPreferences.ICON_PACK_PACKAGE, "")!! }
 
     @Composable
