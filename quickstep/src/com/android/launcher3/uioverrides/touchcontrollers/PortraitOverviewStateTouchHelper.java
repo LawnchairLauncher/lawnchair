@@ -76,7 +76,7 @@ public final class PortraitOverviewStateTouchHelper {
      * @return the animation
      */
     PendingAnimation createSwipeDownToTaskAppAnimation(long duration, Interpolator interpolator) {
-        mRecentsView.setCurrentPage(mRecentsView.getPageNearestToCenterOfScreen());
+        mRecentsView.setCurrentPage(mRecentsView.getDestinationPage());
         TaskView taskView = mRecentsView.getCurrentPageTaskView();
         if (taskView == null) {
             throw new IllegalStateException("There is no task view to animate to.");

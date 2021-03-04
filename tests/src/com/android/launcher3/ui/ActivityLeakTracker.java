@@ -25,6 +25,7 @@ import androidx.test.InstrumentationRegistry;
 import com.android.launcher3.tapl.TestHelpers;
 
 import java.util.WeakHashMap;
+import java.util.stream.Collectors;
 
 public class ActivityLeakTracker implements Application.ActivityLifecycleCallbacks {
     private final WeakHashMap<Activity, Boolean> mActivities = new WeakHashMap<>();
@@ -80,5 +81,10 @@ public class ActivityLeakTracker implements Application.ActivityLifecycleCallbac
         }
 
         return mActivities.size() <= 2;
+    }
+
+    public String getActivitiesList() {
+        return mActivities.keySet().stream().map(a -> a.getClass().getSimpleName())
+                .collect(Collectors.joining(","));
     }
 }

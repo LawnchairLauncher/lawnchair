@@ -72,8 +72,12 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo
 
         // We want to account for the extra amount of padding that we are adding to the widget
         // to ensure that it gets the full amount of space that it has requested.
-        Rect widgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(
-                context, provider, null);
+        // If grids supports insetting widgets, we do not account for widget padding.
+        Rect widgetPadding = new Rect();
+        if (!idp.landscapeProfile.shouldInsetWidgets()
+                || !idp.portraitProfile.shouldInsetWidgets()) {
+            AppWidgetHostView.getDefaultPaddingForWidget(context, provider, widgetPadding);
+        }
         spanX = Math.max(1, (int) Math.ceil(
                         (minWidth + widgetPadding.left + widgetPadding.right) / smallestCellWidth));
         spanY = Math.max(1, (int) Math.ceil(

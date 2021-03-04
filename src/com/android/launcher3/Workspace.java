@@ -417,7 +417,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 // widgets as they cannot be placed inside a folder.
                 // Start at the current page and search right (on LTR) until finding a page with
                 // enough space. Since an empty screen is the furthest right, a page must be found.
-                int currentPage = getPageNearestToCenterOfScreen();
+                int currentPage = getDestinationPage();
                 for (int pageIndex = currentPage; pageIndex < getPageCount(); pageIndex++) {
                     CellLayout page = (CellLayout) getPageAt(pageIndex);
                     if (page.hasReorderSolution(dragObject.dragInfo)) {

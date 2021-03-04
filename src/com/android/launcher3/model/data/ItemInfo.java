@@ -184,6 +184,24 @@ public class ItemInfo {
         return Optional.ofNullable(getIntent()).map(Intent::getComponent).orElse(mComponentName);
     }
 
+    /**
+     * Returns this item's package name.
+     *
+     * Prioritizes the component package name, then uses the intent package name as a fallback.
+     * This ensures deep shortcuts are supported.
+     */
+    @Nullable
+    public String getTargetPackage() {
+        ComponentName component = getTargetComponent();
+        Intent intent = getIntent();
+
+        return component != null
+                ? component.getPackageName()
+                : intent != null
+                        ? intent.getPackage()
+                        : null;
+    }
+
     public void writeToValues(ContentWriter writer) {
         writer.put(LauncherSettings.Favorites.ITEM_TYPE, itemType)
                 .put(LauncherSettings.Favorites.CONTAINER, container)
