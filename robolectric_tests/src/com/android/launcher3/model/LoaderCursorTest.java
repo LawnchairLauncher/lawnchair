@@ -136,7 +136,7 @@ public class LoaderCursorTest {
         initCursor(ITEM_TYPE_APPLICATION, "");
         assertTrue(mLoaderCursor.moveToNext());
 
-        ComponentName cn = new ComponentName(mContext.getPackageName(), "placeholder-do");
+        ComponentName cn = new ComponentName(mContext.getPackageName(), "dummy-do");
         WorkspaceItemInfo info = Executors.MODEL_EXECUTOR.submit(() ->
                 mLoaderCursor.getAppShortcutInfo(
                         new Intent().setComponent(cn), true  /* allowMissingTarget */, true))

@@ -121,7 +121,9 @@ public abstract class StatefulActivity<STATE_TYPE extends BaseState<STATE_TYPE>>
         final int origDragLayerChildCount = dragLayer.getChildCount();
         super.onStop();
 
-        getStateManager().moveToRestState();
+        if (!isChangingConfigurations()) {
+            getStateManager().moveToRestState();
+        }
 
         // Workaround for b/78520668, explicitly trim memory once UI is hidden
         onTrimMemory(TRIM_MEMORY_UI_HIDDEN);
