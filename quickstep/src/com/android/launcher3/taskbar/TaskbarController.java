@@ -19,6 +19,8 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
 import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
 
+import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
+import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.systemui.shared.system.WindowManagerWrapper.ITYPE_BOTTOM_TAPPABLE_ELEMENT;
 import static com.android.systemui.shared.system.WindowManagerWrapper.ITYPE_EXTRA_NAVIGATION_BAR;
 
@@ -27,6 +29,7 @@ import android.app.ActivityOptions;
 import android.content.ComponentName;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -207,6 +210,8 @@ public class TaskbarController {
         mTaskbarVisibilityController.init();
         mHotseatController.init();
         mRecentsController.init();
+
+        SCALE_PROPERTY.set(mTaskbarView, mLauncher.hasBeenResumed() ? getTaskbarScaleOnHome() : 1f);
     }
 
     private TaskbarStateHandlerCallbacks createTaskbarStateHandlerCallbacks() {
@@ -285,16 +290,23 @@ public class TaskbarController {
      * @param toState If known, the state we will end up in when reaching Launcher.
      */
     public Animator createAnimToLauncher(@Nullable LauncherState toState, long duration) {
+        alignRealHotseatWithTaskbar();
+
         PendingAnimation anim = new PendingAnimation(duration);
         anim.add(mTaskbarVisibilityController.createAnimToBackgroundAlpha(0, duration));
         if (toState != null) {
             mTaskbarStateHandler.setStateWithAnimation(toState, new StateAnimationConfig(), anim);
         }
+        anim.addFloat(mTaskbarView, SCALE_PROPERTY, mTaskbarView.getScaleX(),
+                getTaskbarScaleOnHome(), LINEAR);
         return anim.buildAnim();
     }
 
     private Animator createAnimToApp(long duration) {
-        return mTaskbarVisibilityController.createAnimToBackgroundAlpha(1, duration);
+        PendingAnimation anim = new PendingAnimation(duration);
+        anim.add(mTaskbarVisibilityController.createAnimToBackgroundAlpha(1, duration));
+        anim.addFloat(mTaskbarView, SCALE_PROPERTY, mTaskbarView.getScaleX(), 1f, LINEAR);
+        return anim.buildAnim();
     }
 
     /**
@@ -375,6 +387,21 @@ public class TaskbarController {
     public boolean isViewInTaskbar(View v) {
         return mTaskbarContainerView.isAttachedToWindow()
                 && mTaskbarContainerView.getWindowId().equals(v.getWindowId());
+    }
+
+    /**
+     * Pads the Hotseat to line up exactly with Taskbar's copy of the Hotseat.
+     */
+    public void alignRealHotseatWithTaskbar() {
+        Rect hotseatBounds = new Rect();
+        mTaskbarView.getHotseatBoundsAtScale(getTaskbarScaleOnHome()).roundOut(hotseatBounds);
+        mLauncher.getHotseat().setPadding(hotseatBounds.left, hotseatBounds.top,
+                mTaskbarView.getWidth() - hotseatBounds.right,
+                mTaskbarView.getHeight() - hotseatBounds.bottom);
+    }
+
+    private float getTaskbarScaleOnHome() {
+        return 1f / mTaskbarContainerView.getTaskbarActivityContext().getTaskbarIconScale();
     }
 
     /**
