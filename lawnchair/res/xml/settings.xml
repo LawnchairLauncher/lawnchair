@@ -4,7 +4,7 @@
 
     <Preference
         android:title="General"
-        android:summary="Notification Dots"
+        android:summary="Notification Dots, Icon Pack"
         android:icon="@drawable/ic_general"
         android:fragment="ch.deletescape.lawnchair.settings.fragments.GeneralSettingsFragment" />
 
@@ -16,12 +16,14 @@
 
     <Preference
         android:title="Dock"
-        android:summary="TBD"
+        android:summary="Icon Size, Grid Size"
+        android:icon="@drawable/ic_dock"
         android:fragment="ch.deletescape.lawnchair.settings.fragments.DockSettingsFragment" />
 
     <Preference
         android:title="App Drawer"
-        android:summary="TBD"
+        android:summary="Icon Size, Grid Size"
+        android:icon="@drawable/ic_app_drawer"
         android:fragment="ch.deletescape.lawnchair.settings.fragments.AppDrawerSettingsFragment" />
 
 </androidx.preference.PreferenceScreen>
