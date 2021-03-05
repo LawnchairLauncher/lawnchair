@@ -919,9 +919,17 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         applyTranslationX();
     }
 
+    public float getGridTranslationX() {
+        return mGridTranslationX;
+    }
+
     public void setGridTranslationY(float gridTranslationY) {
         mGridTranslationY = gridTranslationY;
         applyTranslationY();
+    }
+
+    public float getGridTranslationY() {
+        return mGridTranslationY;
     }
 
     public void setGridOffsetTranslationX(float gridOffsetTranslationX) {
