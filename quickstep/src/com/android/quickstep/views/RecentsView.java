@@ -2729,7 +2729,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     }
 
     /**
-     * @return How many pixels the page is offset on the currently laid out dominant axis.
+     * Returns how many pixels the page is offset on the currently laid out dominant axis.
      */
     public int getScrollOffset(int pageIndex) {
         if (pageIndex == -1) {
@@ -2743,6 +2743,20 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         int scroll = Math.round(unboundedScroll * unboundedProgress
                 + boundedScroll * (1 - unboundedProgress));
         return getScrollForPage(pageIndex) - scroll;
+    }
+
+    /**
+     * Returns how many pixels the task is offset on the currently laid out secondary axis
+     * according to {@link #mGridProgress}.
+     */
+    public float getGridTranslationSecondary(int pageIndex) {
+        TaskView taskView = getTaskViewAtByAbsoluteIndex(pageIndex);
+        if (taskView == null) {
+            return 0;
+        }
+
+        return mOrientationHandler.getSecondaryValue(taskView.getGridTranslationX(),
+                taskView.getGridTranslationY());
     }
 
     public Consumer<MotionEvent> getEventDispatcher(float navbarRotation) {
