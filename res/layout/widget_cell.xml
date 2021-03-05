@@ -22,7 +22,6 @@
     android:layout_weight="1"
     android:orientation="vertical"
     android:focusable="true"
-    android:background="?android:attr/colorPrimaryDark"
     android:gravity="center_horizontal">
 
     <include layout="@layout/widget_cell_content"  />

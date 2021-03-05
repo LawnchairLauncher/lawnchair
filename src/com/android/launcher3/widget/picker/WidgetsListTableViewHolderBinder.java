@@ -17,6 +17,7 @@ package com.android.launcher3.widget.picker;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -30,6 +31,7 @@ import com.android.launcher3.WidgetPreviewLoader;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.recyclerview.ViewHolderBinder;
 import com.android.launcher3.widget.WidgetCell;
+import com.android.launcher3.widget.WidgetImageView;
 import com.android.launcher3.widget.model.WidgetsListContentEntry;
 import com.android.launcher3.widget.util.WidgetsTableUtils;
 
@@ -144,6 +146,7 @@ public final class WidgetsListTableViewHolderBinder
                 tableRow = (TableRow) table.getChildAt(i);
             } else {
                 tableRow = new TableRow(table.getContext());
+                tableRow.setGravity(Gravity.CENTER_VERTICAL);
                 table.addView(tableRow);
             }
             if (tableRow.getChildCount() > widgetItems.size()) {
@@ -153,10 +156,11 @@ public final class WidgetsListTableViewHolderBinder
             } else {
                 for (int j = tableRow.getChildCount(); j < widgetItems.size(); j++) {
                     WidgetCell widget = (WidgetCell) mLayoutInflater.inflate(
-                            R.layout.live_preview_widget_cell, tableRow, false);
+                            R.layout.widget_cell, tableRow, false);
                     // set up touch.
-                    widget.setOnClickListener(mIconClickListener);
-                    widget.setOnLongClickListener(mIconLongClickListener);
+                    WidgetImageView preview = widget.findViewById(R.id.widget_preview);
+                    preview.setOnClickListener(mIconClickListener);
+                    preview.setOnLongClickListener(mIconLongClickListener);
                     tableRow.addView(widget);
                 }
             }
