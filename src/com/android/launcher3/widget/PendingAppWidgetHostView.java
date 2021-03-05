@@ -22,7 +22,6 @@ import static com.android.launcher3.graphics.PreloadIconDrawable.newPendingIcon;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.PointF;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -30,6 +29,7 @@ import android.os.Bundle;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
+import android.util.SizeF;
 import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
 import android.view.View;
@@ -112,7 +112,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
     }
 
     @Override
-    public void updateAppWidgetSize(Bundle newOptions, List<PointF> sizes) {
+    public void updateAppWidgetSize(Bundle newOptions, List<SizeF> sizes) {
         // No-op
     }
 

@@ -32,11 +32,11 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.AttributeSet;
+import android.util.SizeF;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -299,7 +299,7 @@ public class QsbContainerView extends FrameLayout {
             InvariantDeviceProfile idp = LauncherAppState.getIDP(getContext());
 
             Bundle opts = new Bundle();
-            ArrayList<PointF> sizes = AppWidgetResizeFrame
+            ArrayList<SizeF> sizes = AppWidgetResizeFrame
                     .getWidgetSizes(getContext(), idp.numColumns, 1);
             Rect size = AppWidgetResizeFrame.getMinMaxSizes(sizes, null /* outRect */);
             opts.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, size.left);
