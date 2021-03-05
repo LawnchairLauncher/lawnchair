@@ -42,6 +42,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.RemoteException;
+import android.util.Log;
 
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
@@ -55,6 +56,7 @@ import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.tapl.OverviewTask;
 import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.testcomponent.TestCommandReceiver;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.FailureWatcher;
 import com.android.quickstep.views.RecentsView;
@@ -172,9 +174,15 @@ public class FallbackRecentsTest {
 
     protected <T> T getFromRecents(Function<RecentsActivity, T> f) {
         if (!TestHelpers.isInLauncherProcess()) return null;
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.GET_RECENTS_FAILED, "getFromRecents");
+        }
         Object[] result = new Object[1];
         Wait.atMost("Failed to get from recents", () -> MAIN_EXECUTOR.submit(() -> {
             RecentsActivity activity = RecentsActivity.ACTIVITY_TRACKER.getCreatedActivity();
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.GET_RECENTS_FAILED, "activity=" + activity);
+            }
             if (activity == null) {
                 return false;
             }
@@ -200,8 +208,13 @@ public class FallbackRecentsTest {
                 () -> mLauncher.getRecentTasks().size() >= 3, DEFAULT_ACTIVITY_TIMEOUT, mLauncher);
 
         BaseOverview overview = mLauncher.getBackground().switchToOverview();
-        executeOnRecents(recents ->
-                assertTrue("Don't have at least 3 tasks", getTaskCount(recents) >= 3));
+        executeOnRecents(recents -> {
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.GET_RECENTS_FAILED, "isLoading=" +
+                        recents.<RecentsView>getOverviewPanel().isLoadingTasks());
+            }
+            assertTrue("Don't have at least 3 tasks", getTaskCount(recents) >= 3);
+        });
 
         // Test flinging forward and backward.
         overview.flingForward();

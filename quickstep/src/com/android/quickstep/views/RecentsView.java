@@ -72,6 +72,7 @@ import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
@@ -104,6 +105,7 @@ import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.StatefulActivity;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.touch.PagedOrientationHandler.CurveProperties;
 import com.android.launcher3.util.DynamicResource;
@@ -823,6 +825,12 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     }
 
     protected void applyLoadPlan(ArrayList<Task> tasks) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.GET_RECENTS_FAILED, "applyLoadPlan: taskCount=" + tasks.size());
+            for (Task t : tasks) {
+                Log.d(TestProtocol.GET_RECENTS_FAILED, "\t" + t);
+            }
+        }
         if (mPendingAnimation != null) {
             mPendingAnimation.addEndListener(success -> applyLoadPlan(tasks));
             return;
@@ -884,10 +892,19 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         resetTaskVisuals();
         onTaskStackUpdated();
         updateEnabledOverlays();
+
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.GET_RECENTS_FAILED, "applyLoadPlan: taskViewCount="
+                    + getTaskViewCount());
+        }
     }
 
     private boolean isModal() {
         return mTaskModalness > 0;
+    }
+
+    public boolean isLoadingTasks() {
+        return mModel.isLoadingTasksInBackground();
     }
 
     private void removeTasksViewsAndClearAllButton() {
@@ -900,6 +917,12 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     }
 
     public int getTaskViewCount() {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.GET_RECENTS_FAILED, "getTaskViewCount:"
+                    + " numChildren=" + getChildCount()
+                    + " start=" + mTaskViewStartIndex
+                    + " clearAll=" + indexOfChild(mClearAllButton));
+        }
         int taskViewCount = getChildCount() - mTaskViewStartIndex;
         if (indexOfChild(mClearAllButton) != -1) {
             taskViewCount--;
