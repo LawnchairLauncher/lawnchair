@@ -94,13 +94,7 @@ public abstract class SwipeUpAnimationLogic {
         mTransitionDragLength = mGestureState.getActivityInterface().getSwipeUpDestinationAndLength(
                 dp, mContext, TEMP_RECT,
                 mTaskViewSimulator.getOrientationState().getOrientationHandler());
-
-        if (mDeviceState.isFullyGesturalNavMode()) {
-            // We can drag all the way to the top of the screen.
-            mDragLengthFactor = (float) dp.heightPx / mTransitionDragLength;
-        } else {
-            mDragLengthFactor = 1 + AnimatorControllerWithResistance.TWO_BUTTON_EXTRA_DRAG_FACTOR;
-        }
+        mDragLengthFactor = (float) dp.heightPx / mTransitionDragLength;
 
         PendingAnimation pa = new PendingAnimation(mTransitionDragLength * 2);
         mTaskViewSimulator.addAppToOverviewAnim(pa, LINEAR);
