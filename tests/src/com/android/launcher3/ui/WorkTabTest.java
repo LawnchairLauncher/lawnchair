@@ -17,6 +17,7 @@ package com.android.launcher3.ui;
 
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.allapps.AllAppsStore.DEFER_UPDATES_TEST;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -75,6 +76,17 @@ public class WorkTabTest extends AbstractLauncherUiTest {
         Log.d(TestProtocol.WORK_PROFILE_REMOVED, "(teardown) removing uid" + mProfileUserId,
                 new Exception());
         mDevice.executeShellCommand("pm remove-user " + mProfileUserId);
+    }
+
+    @After
+    public void resumeAppStoreUpdate() {
+        executeOnLauncher(launcher -> {
+            if (launcher == null || launcher.getAppsView() == null) {
+                return;
+            }
+            launcher.getAppsView().getAppsStore().disableDeferUpdates(DEFER_UPDATES_TEST);
+            Log.d(TestProtocol.WORK_PROFILE_REMOVED, "resuming AppStore updates");
+        });
     }
 
     @Test
@@ -145,6 +157,12 @@ public class WorkTabTest extends AbstractLauncherUiTest {
                 "work profile status (" + mProfileUserId + ") :"
                         + launcher.getAppsView().isWorkTabVisible()));
 
+
+        executeOnLauncher(launcher -> {
+            launcher.getAppsView().getAppsStore().enableDeferUpdates(DEFER_UPDATES_TEST);
+            Log.d(TestProtocol.WORK_PROFILE_REMOVED, "Defer all apps update");
+        });
+
         AtomicInteger attempt = new AtomicInteger(0);
         // verify work edu is seen next
         waitForLauncherCondition("Launcher did not show the next edu screen", l -> {
@@ -157,7 +175,6 @@ public class WorkTabTest extends AbstractLauncherUiTest {
             if (((AllAppsPagedView) l.getAppsView().getContentView()).getCurrentPage()
                     != WORK_PAGE) {
                 Log.d(TestProtocol.WORK_PROFILE_REMOVED, "Work page not highlighted");
-                return false;
             }
             return ((TextView) workEduView.findViewById(R.id.content_text)).getText().equals(
                     l.getResources().getString(R.string.work_profile_edu_work_apps));
