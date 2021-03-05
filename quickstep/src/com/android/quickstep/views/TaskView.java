@@ -559,9 +559,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             mIconLoadRequest = iconCache.updateIconInBackground(mTask,
                     (task) -> {
                         setIcon(task.icon);
-                        if (LIVE_TILE.get() && isRunningTask()) {
-                            getRecentsView().updateLiveTileIcon(task.icon);
-                        }
                         mDigitalWellBeingToast.initialize(mTask);
                     });
         } else {

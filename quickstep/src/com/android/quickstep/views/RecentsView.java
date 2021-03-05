@@ -422,7 +422,6 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     private boolean mShowEmptyMessage;
     private OnEmptyMessageUpdatedListener mOnEmptyMessageUpdatedListener;
     private Layout mEmptyTextLayout;
-    private boolean mLiveTileOverlayAttached;
 
     // Keeps track of the index where the first TaskView should be
     private int mTaskViewStartIndex = 0;
@@ -953,10 +952,6 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             mLiveTileTaskViewSimulator.taskSecondaryTranslation.value = 0;
             mLiveTileTaskViewSimulator.fullScreenProgress.value = 0;
             mLiveTileTaskViewSimulator.recentsViewScale.value = 1;
-
-            // Reset the live tile rect
-            DeviceProfile deviceProfile = mActivity.getDeviceProfile();
-            LiveTileOverlay.INSTANCE.update(0, 0, deviceProfile.widthPx, deviceProfile.heightPx);
         }
         if (mRunningTaskTileHidden) {
             setRunningTaskHidden(mRunningTaskTileHidden);
@@ -1289,10 +1284,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
      */
     public void onSwipeUpAnimationSuccess() {
         if (getRunningTaskView() != null) {
-            float startProgress = LIVE_TILE.get() && mLiveTileOverlayAttached
-                    ? LiveTileOverlay.INSTANCE.cancelIconAnimation()
-                    : 0f;
-            animateUpRunningTaskIconScale(startProgress);
+            animateUpRunningTaskIconScale(0f);
         }
         setSwipeDownShouldLaunchApp(true);
     }
@@ -2611,16 +2603,6 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             mLiveTileTaskViewSimulator.setPreview(
                     recentsAnimationTargets.apps[recentsAnimationTargets.apps.length - 1]);
             mLiveTileParams.setTargetSet(recentsAnimationTargets);
-        }
-    }
-
-    public void setLiveTileOverlayAttached(boolean liveTileOverlayAttached) {
-        mLiveTileOverlayAttached = liveTileOverlayAttached;
-    }
-
-    public void updateLiveTileIcon(Drawable icon) {
-        if (mLiveTileOverlayAttached) {
-            LiveTileOverlay.INSTANCE.setIcon(icon);
         }
     }
 
