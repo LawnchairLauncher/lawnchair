@@ -273,7 +273,6 @@ class OrientationTouchTransformer {
         Point size = display.realSize;
         int rotation = display.rotation;
         int touchHeight = mNavBarGesturalHeight;
-        int largerGesturalHeight = mNavBarLargerGesturalHeight;
         OrientationRectF orientationRectF =
                 new OrientationRectF(0, 0, size.x, size.y, rotation);
         if (mMode == SysUINavigationMode.Mode.NO_BUTTON) {
