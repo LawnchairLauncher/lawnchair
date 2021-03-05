@@ -180,6 +180,7 @@ public final class TaskViewUtils {
         boolean parallaxCenterAndAdjacentTask =
                 taskIndex != recentsView.getCurrentPage() && !(dp.isTablet
                         && FeatureFlags.ENABLE_OVERVIEW_GRID.get());
+        float gridTranslationSecondary = recentsView.getGridTranslationSecondary(taskIndex);
         int startScroll = recentsView.getScrollOffset(taskIndex);
 
         TaskViewSimulator topMostSimulator = null;
@@ -196,6 +197,8 @@ public final class TaskViewUtils {
             tsv.setPreview(targets.apps[targets.apps.length - 1]);
             tsv.fullScreenProgress.value = 0;
             tsv.recentsViewScale.value = 1;
+            tsv.gridProgress.value = 1;
+            tsv.gridTranslationSecondary.value = gridTranslationSecondary;
             tsv.setScroll(startScroll);
 
             // Fade in the task during the initial 20% of the animation
@@ -208,6 +211,7 @@ public final class TaskViewUtils {
                     AnimatedFloat.VALUE, 1, TOUCH_RESPONSE_INTERPOLATOR);
             out.setFloat(tsv.recentsViewScale,
                     AnimatedFloat.VALUE, tsv.getFullScreenScale(), TOUCH_RESPONSE_INTERPOLATOR);
+            out.setFloat(tsv.gridProgress, AnimatedFloat.VALUE, 0, TOUCH_RESPONSE_INTERPOLATOR);
             out.setInt(tsv, TaskViewSimulator.SCROLL, 0, TOUCH_RESPONSE_INTERPOLATOR);
 
             TaskViewSimulator finalTsv = tsv;
