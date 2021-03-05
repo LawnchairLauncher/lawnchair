@@ -59,6 +59,7 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     public static final int OVERVIEW_ACTIONS = 1 << 6;
     public static final int TASKBAR = 1 << 7;
     public static final int CLEAR_ALL_BUTTON = 1 << 8;
+    public static final int WORKSPACE_PAGE_INDICATOR = 1 << 9;
 
     /** Mask of all the items that are contained in the apps view. */
     public static final int APPS_VIEW_ITEM_MASK =
@@ -188,12 +189,23 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     }
 
     public int getVisibleElements(Launcher launcher) {
-        int flags = HOTSEAT_ICONS | VERTICAL_SWIPE_INDICATOR | TASKBAR;
-        if (!FeatureFlags.ENABLE_DEVICE_SEARCH.get()
-                && !launcher.getDeviceProfile().isVerticalBarLayout()) {
+        DeviceProfile deviceProfile = launcher.getDeviceProfile();
+        int flags = WORKSPACE_PAGE_INDICATOR | VERTICAL_SWIPE_INDICATOR | TASKBAR;
+        if (!FeatureFlags.ENABLE_DEVICE_SEARCH.get() && !deviceProfile.isVerticalBarLayout()) {
             flags |= HOTSEAT_SEARCH_BOX;
         }
+        if (!deviceProfile.isTaskbarPresent) {
+            flags |= HOTSEAT_ICONS;
+        }
         return flags;
+    }
+
+    /**
+     * A shorthand for checking getVisibleElements() & elements == elements.
+     * @return Whether all of the given elements are visible.
+     */
+    public boolean areElementsVisible(Launcher launcher, int elements) {
+        return (getVisibleElements(launcher) & elements) == elements;
     }
 
     /**
