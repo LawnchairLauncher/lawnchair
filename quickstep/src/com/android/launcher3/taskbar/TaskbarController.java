@@ -25,6 +25,7 @@ import static com.android.systemui.shared.system.WindowManagerWrapper.ITYPE_BOTT
 import static com.android.systemui.shared.system.WindowManagerWrapper.ITYPE_EXTRA_NAVIGATION_BAR;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.ActivityOptions;
 import android.content.ComponentName;
 import android.graphics.PixelFormat;
@@ -83,6 +84,8 @@ public class TaskbarController {
     private List<Task> mLatestLoadedRecentTasks;
     // Contains all loaded Hotseat items.
     private ItemInfo[] mLatestLoadedHotseatItems;
+
+    private boolean mIsAnimatingToLauncher;
 
     public TaskbarController(BaseQuickstepLauncher launcher,
             TaskbarContainerView taskbarContainerView) {
@@ -168,6 +171,14 @@ public class TaskbarController {
             @Override
             public View.OnLongClickListener getItemOnLongClickListener() {
                 return mDragController::startDragOnLongClick;
+            }
+
+            @Override
+            public int getEmptyHotseatViewVisibility() {
+                // When on the home screen, we want the empty hotseat views to take up their full
+                // space so that the others line up with the home screen hotseat.
+                return mLauncher.hasBeenResumed() || mIsAnimatingToLauncher
+                        ? View.INVISIBLE : View.GONE;
             }
         };
     }
@@ -290,8 +301,6 @@ public class TaskbarController {
      * @param toState If known, the state we will end up in when reaching Launcher.
      */
     public Animator createAnimToLauncher(@Nullable LauncherState toState, long duration) {
-        alignRealHotseatWithTaskbar();
-
         PendingAnimation anim = new PendingAnimation(duration);
         anim.add(mTaskbarVisibilityController.createAnimToBackgroundAlpha(0, duration));
         if (toState != null) {
@@ -299,6 +308,22 @@ public class TaskbarController {
         }
         anim.addFloat(mTaskbarView, SCALE_PROPERTY, mTaskbarView.getScaleX(),
                 getTaskbarScaleOnHome(), LINEAR);
+
+        anim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                mIsAnimatingToLauncher = true;
+                mTaskbarView.updateHotseatItemsVisibility();
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mIsAnimatingToLauncher = false;
+            }
+        });
+
+        anim.addOnFrameCallback(this::alignRealHotseatWithTaskbar);
+
         return anim.buildAnim();
     }
 
@@ -306,6 +331,12 @@ public class TaskbarController {
         PendingAnimation anim = new PendingAnimation(duration);
         anim.add(mTaskbarVisibilityController.createAnimToBackgroundAlpha(1, duration));
         anim.addFloat(mTaskbarView, SCALE_PROPERTY, mTaskbarView.getScaleX(), 1f, LINEAR);
+        anim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                mTaskbarView.updateHotseatItemsVisibility();
+            }
+        });
         return anim.buildAnim();
     }
 
@@ -447,6 +478,7 @@ public class TaskbarController {
     protected interface TaskbarViewCallbacks {
         View.OnClickListener getItemOnClickListener();
         View.OnLongClickListener getItemOnLongClickListener();
+        int getEmptyHotseatViewVisibility();
     }
 
     /**

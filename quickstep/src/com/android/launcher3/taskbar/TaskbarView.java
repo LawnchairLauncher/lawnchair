@@ -182,23 +182,42 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
                     && hotseatItemInfo instanceof WorkspaceItemInfo) {
                 ((BubbleTextView) hotseatView).applyFromWorkspaceItem(
                         (WorkspaceItemInfo) hotseatItemInfo);
-                hotseatView.setVisibility(VISIBLE);
                 hotseatView.setOnClickListener(mControllerCallbacks.getItemOnClickListener());
                 hotseatView.setOnLongClickListener(
                         mControllerCallbacks.getItemOnLongClickListener());
             } else if (isFolder) {
-                hotseatView.setVisibility(VISIBLE);
                 hotseatView.setOnClickListener(mControllerCallbacks.getItemOnClickListener());
                 hotseatView.setOnLongClickListener(
                         mControllerCallbacks.getItemOnLongClickListener());
             } else {
-                hotseatView.setVisibility(GONE);
                 hotseatView.setOnClickListener(null);
                 hotseatView.setOnLongClickListener(null);
             }
+            updateHotseatItemVisibility(hotseatView);
         }
 
         updateHotseatRecentsDividerVisibility();
+    }
+
+    protected void updateHotseatItemsVisibility() {
+        for (int i = mHotseatStartIndex; i <= mHotseatEndIndex; i++) {
+            updateHotseatItemVisibility(getChildAt(i));
+        }
+    }
+
+    private void updateHotseatItemVisibility(View hotseatView) {
+        if (hotseatView.getTag() != null) {
+            hotseatView.setVisibility(VISIBLE);
+        } else {
+            int oldVisibility = hotseatView.getVisibility();
+            int newVisibility = mControllerCallbacks.getEmptyHotseatViewVisibility();
+            hotseatView.setVisibility(newVisibility);
+            if (oldVisibility == GONE && newVisibility != GONE) {
+                // By default, the layout transition only runs when going to VISIBLE,
+                // but we want it to run when going to GONE to INVISIBLE as well.
+                getLayoutTransition().showChild(this, hotseatView, oldVisibility);
+            }
+        }
     }
 
     private View addDivider(int dividerIndex) {
