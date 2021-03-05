@@ -52,11 +52,22 @@
     <string name="add_item_request_drag_hint">Touch &amp; hold to place manually</string>
     <!-- Button label to automatically add icon on home screen [CHAR_LIMIT=50] -->
     <string name="place_automatically">Add automatically</string>
-    <!-- Label for showing the number of widgets an app has in the full widgets picker. [CHAR_LIMIT=25] -->
-    <plurals name="widgets_tray_subtitle">
-        <item quantity="one"><xliff:g id="widget_count" example="1">%1$d</xliff:g> widget</item>
-        <item quantity="other"><xliff:g id="widget_count" example="2">%1$d</xliff:g> widgets</item>
+    <!-- Label for showing the number of widgets an app has in the full widgets picker.
+         [CHAR_LIMIT=25] -->
+    <plurals name="widgets_count">
+        <item quantity="one"><xliff:g id="widgets_count" example="1">%1$d</xliff:g> widget</item>
+        <item quantity="other"><xliff:g id="widgets_count" example="2">%1$d</xliff:g> widgets</item>
     </plurals>
+    <!-- Label for showing the number of shortcut an app has in the full widgets picker.
+         [CHAR_LIMIT=25] -->
+    <plurals name="shortcuts_count">
+        <item quantity="one"><xliff:g id="shortcuts_count" example="1">%1$d</xliff:g> shortcut</item>
+        <item quantity="other"><xliff:g id="shortcuts_count" example="2">%1$d</xliff:g> shortcuts</item>
+    </plurals>
+    <!-- Label for showing both the number of widgets and shortcuts an app has in the full widgets
+         picker. [CHAR_LIMIT=50] -->
+    <string name="widgets_and_shortcuts_count"><xliff:g id="widgets_count" example="5 widgets">%1$s</xliff:g>, <xliff:g id="shortcuts_count" example="1 shortcut">%2$s</xliff:g></string>
+
     <!-- Text for both the tile of a popup view, which shows all available widgets installed on
          the device, and the text of a button, which opens this popup view. [CHAR LIMIT=30]-->
     <string name="widget_button_text">Widgets</string>
