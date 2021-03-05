@@ -16,7 +16,6 @@
 package com.android.quickstep.util;
 
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.states.RotationHelper.deltaRotation;
 import static com.android.launcher3.touch.PagedOrientationHandler.MATRIX_POST_TRANSLATE;
 import static com.android.quickstep.util.NavigationModeFeatureFlag.LIVE_TILE;
@@ -98,6 +97,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     private final FullscreenDrawParams mCurrentFullscreenParams;
     public final AnimatedFloat taskPrimaryTranslation = new AnimatedFloat();
     public final AnimatedFloat taskSecondaryTranslation = new AnimatedFloat();
+    public final AnimatedFloat gridTranslationSecondary = new AnimatedFloat();
 
     // RecentsView properties
     public final AnimatedFloat recentsViewScale = new AnimatedFloat();
@@ -317,9 +317,10 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         mMatrix.postScale(scale, scale, mIsRecentsRtl ? 0 : taskWidth, 0);
         float taskWidthDiff = taskWidth * (1 - gridScale);
         float taskWidthOffset = mIsRecentsRtl ? taskWidthDiff : -taskWidthDiff;
-        float translationPrimary = Utilities.mapRange(interpolatedGridProgress, 0, taskWidthOffset);
         mOrientationState.getOrientationHandler().set(mMatrix, MATRIX_POST_TRANSLATE,
-                translationPrimary);
+                Utilities.mapRange(interpolatedGridProgress, 0, taskWidthOffset));
+        mOrientationState.getOrientationHandler().setSecondary(mMatrix, MATRIX_POST_TRANSLATE,
+                Utilities.mapRange(interpolatedGridProgress, 0, gridTranslationSecondary.value));
 
         // Apply TaskView matrix: translate, scroll
         mMatrix.postTranslate(mTaskRect.left, mTaskRect.top);
