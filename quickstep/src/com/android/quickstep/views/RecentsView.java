@@ -926,6 +926,8 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             // Since we reuse the same mLiveTileTaskViewSimulator in the RecentsView, we need
             // to reset the params after it settles in Overview from swipe up so that we don't
             // render with obsolete param values.
+            mLiveTileTaskViewSimulator.taskPrimaryTranslation.value = 0;
+            mLiveTileTaskViewSimulator.taskSecondaryTranslation.value = 0;
             mLiveTileTaskViewSimulator.fullScreenProgress.value = 0;
             mLiveTileTaskViewSimulator.recentsViewScale.value = 1;
 
