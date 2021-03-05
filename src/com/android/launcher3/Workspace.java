@@ -446,6 +446,19 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
 
         updateChildrenLayersEnabled();
+        StateManager<LauncherState> stateManager = mLauncher.getStateManager();
+        stateManager.addStateListener(new StateManager.StateListener<LauncherState>() {
+            @Override
+            public void onStateTransitionComplete(LauncherState finalState) {
+                if (finalState == NORMAL) {
+                    if (!mDeferRemoveExtraEmptyScreen) {
+                        removeExtraEmptyScreen(true /* stripEmptyScreens */);
+                    }
+                    stateManager.removeStateListener(this);
+                }
+            }
+        });
+
         mDragInfo = null;
         mOutlineProvider = null;
         mDragSourceInternal = null;
@@ -1877,19 +1890,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                             };
                         }
                     }
-                    StateManager<LauncherState> stateManager = mLauncher.getStateManager();
-                    stateManager.addStateListener(new StateManager.StateListener<LauncherState>() {
-                        @Override
-                        public void onStateTransitionComplete(LauncherState finalState) {
-                            if (finalState == NORMAL) {
-                                if (!mDeferRemoveExtraEmptyScreen) {
-                                    removeExtraEmptyScreen(true /* stripEmptyScreens */);
-                                }
-                                stateManager.removeStateListener(this);
-                            }
-                        }
-                    });
-
                     mLauncher.getModelWriter().modifyItemInDatabase(info, container, screenId,
                             lp.cellX, lp.cellY, item.spanX, item.spanY);
                 } else {
