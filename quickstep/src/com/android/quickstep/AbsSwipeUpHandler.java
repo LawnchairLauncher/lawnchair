@@ -104,7 +104,6 @@ import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.SurfaceTransactionApplier;
 import com.android.quickstep.util.SwipePipToHomeAnimator;
 import com.android.quickstep.util.TransformParams;
-import com.android.quickstep.views.LiveTileOverlay;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -353,7 +352,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
 
         mRecentsView = activity.getOverviewPanel();
         mRecentsView.setOnPageTransitionEndCallback(null);
-        addLiveTileOverlay();
 
         mStateCallback.setState(STATE_LAUNCHER_PRESENT);
         if (alreadyOnHome) {
@@ -1241,13 +1239,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
         });
         anim.addAnimatorListener(new AnimationSuccessListener() {
             @Override
-            public void onAnimationStart(Animator animation) {
-                if (mActivity != null) {
-                    removeLiveTileOverlay();
-                }
-            }
-
-            @Override
             public void onAnimationSuccess(Animator animator) {
                 if (mRecentsView != null) {
                     mRecentsView.post(mRecentsView::resetTaskVisuals);
@@ -1268,7 +1259,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
             // In the off chance that the gesture ends before Launcher is started, we should clear
             // the callback here so that it doesn't update with the wrong state
             mActivity.clearRunOnceOnStartCallback();
-            resetLauncherListenersAndOverlays();
+            resetLauncherListeners();
         }
         if (mGestureState.getEndTarget() != null && !mGestureState.isRunningAnimationToLauncher()) {
             cancelCurrentAnimation();
@@ -1351,7 +1342,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
         endLauncherTransitionController();
 
         mRecentsView.onGestureAnimationEnd();
-        resetLauncherListenersAndOverlays();
+        resetLauncherListeners();
     }
 
     private void endLauncherTransitionController() {
@@ -1364,13 +1355,12 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
         }
     }
 
-    private void resetLauncherListenersAndOverlays() {
+    private void resetLauncherListeners() {
         // Reset the callback for deferred activity launches
         if (!LIVE_TILE.get()) {
             mActivityInterface.setOnDeferredActivityLaunchCallback(null);
         }
         mActivity.getRootView().setOnApplyWindowInsetsListener(null);
-        removeLiveTileOverlay();
     }
 
     private void notifyTransitionCancelled() {
@@ -1594,17 +1584,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
         anim.start();
     }
 
-    private void addLiveTileOverlay() {
-        if (LiveTileOverlay.INSTANCE.attach(mActivity.getRootView().getOverlay())) {
-            mRecentsView.setLiveTileOverlayAttached(true);
-        }
-    }
-
-    private void removeLiveTileOverlay() {
-        LiveTileOverlay.INSTANCE.detach(mActivity.getRootView().getOverlay());
-        mRecentsView.setLiveTileOverlayAttached(false);
-    }
-
     private static boolean isNotInRecents(RemoteAnimationTargetCompat app) {
         return app.isNotInRecents
                 || app.activityType == ACTIVITY_TYPE_HOME;
@@ -1764,13 +1743,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
                 mTaskViewSimulator.setScroll(mRecentsView.getScrollOffset());
             }
             mTaskViewSimulator.apply(mTransformParams);
-        }
-        if (LIVE_TILE.get() && mRecentsAnimationTargets != null) {
-            LiveTileOverlay.INSTANCE.update(
-                    mTaskViewSimulator.getCurrentRect(),
-                    mTaskViewSimulator.getCurrentCornerRadius());
-            LiveTileOverlay.INSTANCE.setRotation(
-                    mTaskViewSimulator.getOrientationState().getDisplayRotation());
         }
         ProtoTracer.INSTANCE.get(mContext).scheduleFrameUpdate();
     }
