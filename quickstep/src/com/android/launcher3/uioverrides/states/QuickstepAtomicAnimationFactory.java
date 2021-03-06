@@ -18,6 +18,7 @@ package com.android.launcher3.uioverrides.states;
 import static android.view.View.VISIBLE;
 
 import static com.android.launcher3.LauncherState.HINT_STATE;
+import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.WorkspaceStateTransitionAnimation.getSpringScaleAnimator;
@@ -32,6 +33,7 @@ import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
 import static com.android.launcher3.anim.Interpolators.clampToProgress;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_DEPTH;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SCALE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_X;
@@ -48,7 +50,6 @@ import android.view.View;
 
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.Hotseat;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.allapps.AllAppsContainerView;
@@ -62,7 +63,7 @@ import com.android.quickstep.views.RecentsView;
  * Animation factory for quickstep specific transitions
  */
 public class QuickstepAtomicAnimationFactory extends
-        RecentsAtomicAnimationFactory<Launcher, LauncherState> {
+        RecentsAtomicAnimationFactory<QuickstepLauncher, LauncherState> {
 
     // Scale recents takes before animating in
     private static final float RECENTS_PREPARE_SCALE = 1.33f;
@@ -149,6 +150,17 @@ public class QuickstepAtomicAnimationFactory extends
                 mHintToNormalDuration = (int) va.getDuration();
             }
             config.duration = Math.max(config.duration, mHintToNormalDuration);
+        } else if (mActivity.getTaskbarController() != null)  {
+            boolean wasHotseatVisible = fromState.areElementsVisible(mActivity, HOTSEAT_ICONS);
+            boolean isHotseatVisible = toState.areElementsVisible(mActivity, HOTSEAT_ICONS);
+            if (wasHotseatVisible || isHotseatVisible) {
+                config.setInterpolator(ANIM_TASKBAR_FADE, INSTANT);
+                config.setInterpolator(ANIM_HOTSEAT_FADE, INSTANT);
+
+                if (isHotseatVisible) {
+                    mActivity.getTaskbarController().alignRealHotseatWithTaskbar();
+                }
+            }
         }
     }
 }

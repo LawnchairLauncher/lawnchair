@@ -107,4 +107,5 @@ public final class TestProtocol {
     public static final String NO_SWIPE_TO_HOME = "b/158017601";
     public static final String WORK_PROFILE_REMOVED = "b/159671700";
     public static final String TIS_NO_EVENTS = "b/180915942";
+    public static final String GET_RECENTS_FAILED = "b/177472267";
 }
