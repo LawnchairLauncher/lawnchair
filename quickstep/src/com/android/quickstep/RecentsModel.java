@@ -28,6 +28,8 @@ import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
 
+import androidx.annotation.VisibleForTesting;
+
 import com.android.launcher3.icons.IconProvider;
 import com.android.launcher3.util.Executors.SimpleThreadFactory;
 import com.android.launcher3.util.MainThreadInitializedObject;
@@ -99,6 +101,14 @@ public class RecentsModel extends TaskStackChangeListener {
      */
     public boolean isTaskListValid(int changeId) {
         return mTaskList.isTaskListValid(changeId);
+    }
+
+    /**
+     * @return Whether the task list is currently updating in the background
+     */
+    @VisibleForTesting
+    public boolean isLoadingTasksInBackground() {
+        return mTaskList.isLoadingTasksInBackground();
     }
 
     /**

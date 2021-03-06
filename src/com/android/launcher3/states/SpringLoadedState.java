@@ -93,6 +93,6 @@ public class SpringLoadedState extends LauncherState {
 
     @Override
     public int getVisibleElements(Launcher launcher) {
-        return super.getVisibleElements(launcher) & ~TASKBAR;
+        return (super.getVisibleElements(launcher) | HOTSEAT_ICONS) & ~TASKBAR;
     }
 }

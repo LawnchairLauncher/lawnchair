@@ -12,12 +12,11 @@ import android.animation.PropertyValuesHolder;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.graphics.Point;
-import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.util.SizeF;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -368,7 +367,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
 
     public static void updateWidgetSizeRanges(AppWidgetHostView widgetView, Launcher launcher,
                                               int spanX, int spanY) {
-        List<PointF> sizes = getWidgetSizes(launcher, spanX, spanY);
+        List<SizeF> sizes = getWidgetSizes(launcher, spanX, spanY);
         if (ATLEAST_S) {
             widgetView.updateAppWidgetSize(new Bundle(), sizes);
         } else {
@@ -378,43 +377,25 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         }
     }
 
-    private static PointF getWidgetSize(Context context, Point cellSize, int spanX, int spanY,
+    private static SizeF getWidgetSize(Context context, Point cellSize, int spanX, int spanY,
             int borderSpacing) {
         final float density = context.getResources().getDisplayMetrics().density;
         final float hBorderSpacing = (spanX - 1) * borderSpacing;
         final float vBorderSpacing = (spanY - 1) * borderSpacing;
 
-        PointF widgetSize = new PointF();
-        widgetSize.x = ((spanX * cellSize.x) + hBorderSpacing) / density;
-        widgetSize.y = ((spanY * cellSize.y) + vBorderSpacing) / density;
-        return widgetSize;
-    }
-
-    /** Returns the actual widget size given its span. */
-    public static PointF getWidgetSize(Context context, int spanX, int spanY) {
-        final Point[] cellSize = CELL_SIZE.get(context);
-        final int[] borderSpacing = BORDER_SPACING_SIZE.get(context);
-        if (isLandscape(context)) {
-            return getWidgetSize(context, cellSize[0], spanX, spanY, borderSpacing[0]);
-        }
-        return getWidgetSize(context, cellSize[1], spanX, spanY, borderSpacing[1]);
-    }
-
-    /** Returns true if the screen is in landscape mode. */
-    private static boolean isLandscape(Context context) {
-        return context.getResources().getConfiguration().orientation
-                == Configuration.ORIENTATION_LANDSCAPE;
+        return new SizeF(((spanX * cellSize.x) + hBorderSpacing) / density,
+                ((spanY * cellSize.y) + vBorderSpacing) / density);
     }
 
     /** Returns the list of sizes for a widget of given span, in dp. */
-    public static ArrayList<PointF> getWidgetSizes(Context context, int spanX, int spanY) {
+    public static ArrayList<SizeF> getWidgetSizes(Context context, int spanX, int spanY) {
         final Point[] cellSize = CELL_SIZE.get(context);
         final int[] borderSpacing = BORDER_SPACING_SIZE.get(context);
 
-        PointF landSize = getWidgetSize(context, cellSize[0], spanX, spanY, borderSpacing[0]);
-        PointF portSize = getWidgetSize(context, cellSize[1], spanX, spanY,  borderSpacing[1]);
+        SizeF landSize = getWidgetSize(context, cellSize[0], spanX, spanY, borderSpacing[0]);
+        SizeF portSize = getWidgetSize(context, cellSize[1], spanX, spanY, borderSpacing[1]);
 
-        ArrayList<PointF> sizes = new ArrayList<>(2);
+        ArrayList<SizeF> sizes = new ArrayList<>(2);
         sizes.add(landSize);
         sizes.add(portSize);
         return sizes;
@@ -430,17 +411,18 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
      * the right (resp. bottom) for the max. The returned rectangle is set with 0s if the list is
      * empty.
      */
-    public static Rect getMinMaxSizes(List<PointF> sizes, @Nullable Rect outRect) {
+    public static Rect getMinMaxSizes(List<SizeF> sizes, @Nullable Rect outRect) {
         if (outRect == null) {
             outRect = new Rect();
         }
         if (sizes.isEmpty()) {
             outRect.set(0, 0, 0, 0);
         } else {
-            PointF first = sizes.get(0);
-            outRect.set((int) first.x, (int) first.y, (int) first.x, (int) first.y);
+            SizeF first = sizes.get(0);
+            outRect.set((int) first.getWidth(), (int) first.getHeight(), (int) first.getWidth(),
+                    (int) first.getHeight());
             for (int i = 1; i < sizes.size(); i++) {
-                outRect.union((int) sizes.get(i).x, (int) sizes.get(i).y);
+                outRect.union((int) sizes.get(i).getWidth(), (int) sizes.get(i).getHeight());
             }
         }
         return outRect;

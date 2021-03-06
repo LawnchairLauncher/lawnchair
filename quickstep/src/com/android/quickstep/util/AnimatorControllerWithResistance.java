@@ -17,7 +17,6 @@ package com.android.quickstep.util;
 
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
 import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
 import static com.android.quickstep.views.RecentsView.TASK_SECONDARY_TRANSLATION;
 
@@ -38,7 +37,6 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.quickstep.LauncherActivityInterface;
-import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.views.RecentsView;
 
 /**
@@ -48,12 +46,6 @@ import com.android.quickstep.views.RecentsView;
  * starts applying resistance as well.
  */
 public class AnimatorControllerWithResistance {
-
-    /**
-     * How much farther we can drag past overview in 2-button mode, as a factor of the distance
-     * it takes to drag from an app to overview.
-     */
-    public static final float TWO_BUTTON_EXTRA_DRAG_FACTOR = 0.25f;
 
     private enum RecentsResistanceParams {
         FROM_APP(0.75f, 0.5f, 1f),
@@ -161,12 +153,6 @@ public class AnimatorControllerWithResistance {
         LauncherActivityInterface.INSTANCE.calculateTaskSize(params.context, params.dp, startRect,
                 orientationHandler);
         long distanceToCover = startRect.bottom;
-        boolean isTwoButtonMode = SysUINavigationMode.getMode(params.context) == TWO_BUTTONS;
-        if (isTwoButtonMode) {
-            // We can only drag a small distance past overview, not to the top of the screen.
-            distanceToCover = (long)
-                    ((params.dp.heightPx - startRect.bottom) * TWO_BUTTON_EXTRA_DRAG_FACTOR);
-        }
         PendingAnimation resistAnim = params.resistAnim != null
                 ? params.resistAnim
                 : new PendingAnimation(distanceToCover * 2);
@@ -178,43 +164,35 @@ public class AnimatorControllerWithResistance {
                 / (params.dp.heightPx - startRect.bottom);
         // This is what the scale would be at the end of the drag if we didn't apply resistance.
         float endScale = params.startScale - prevScaleRate * distanceToCover;
-        final TimeInterpolator scaleInterpolator;
-        if (isTwoButtonMode) {
-            // We are bounded by the distance of the drag, so we don't need to apply resistance.
-            scaleInterpolator = LINEAR;
-        } else {
-            // Create an interpolator that resists the scale so the scale doesn't get smaller than
-            // RECENTS_SCALE_MAX_RESIST.
-            float startResist = Utilities.getProgress(params.resistanceParams.scaleStartResist,
-                    params.startScale, endScale);
-            float maxResist = Utilities.getProgress(params.resistanceParams.scaleMaxResist,
-                    params.startScale, endScale);
-            scaleInterpolator = t -> {
-                if (t < startResist) {
-                    return t;
-                }
-                float resistProgress = Utilities.getProgress(t, startResist, 1);
-                resistProgress = RECENTS_SCALE_RESIST_INTERPOLATOR.getInterpolation(resistProgress);
-                return startResist + resistProgress * (maxResist - startResist);
-            };
-        }
+        // Create an interpolator that resists the scale so the scale doesn't get smaller than
+        // RECENTS_SCALE_MAX_RESIST.
+        float startResist = Utilities.getProgress(params.resistanceParams.scaleStartResist,
+                params.startScale, endScale);
+        float maxResist = Utilities.getProgress(params.resistanceParams.scaleMaxResist,
+                params.startScale, endScale);
+        final TimeInterpolator scaleInterpolator = t -> {
+            if (t < startResist) {
+                return t;
+            }
+            float resistProgress = Utilities.getProgress(t, startResist, 1);
+            resistProgress = RECENTS_SCALE_RESIST_INTERPOLATOR.getInterpolation(resistProgress);
+            return startResist + resistProgress * (maxResist - startResist);
+        };
         resistAnim.addFloat(params.scaleTarget, params.scaleProperty, params.startScale, endScale,
                 scaleInterpolator);
 
-        if (!isTwoButtonMode) {
-            // Compute where the task view would be based on the end scale, if we didn't translate.
-            RectF endRectF = new RectF(startRect);
-            Matrix temp = new Matrix();
-            temp.setScale(params.resistanceParams.scaleMaxResist,
-                    params.resistanceParams.scaleMaxResist, pivot.x, pivot.y);
-            temp.mapRect(endRectF);
-            // Translate such that the task view touches the top of the screen when drag does.
-            float endTranslation = endRectF.top
-                    * orientationHandler.getSecondaryTranslationDirectionFactor()
-                    * params.resistanceParams.translationFactor;
-            resistAnim.addFloat(params.translationTarget, params.translationProperty,
-                    params.startTranslation, endTranslation, RECENTS_TRANSLATE_RESIST_INTERPOLATOR);
-        }
+        // Compute where the task view would be based on the end scale.
+        RectF endRectF = new RectF(startRect);
+        Matrix temp = new Matrix();
+        temp.setScale(params.resistanceParams.scaleMaxResist,
+                params.resistanceParams.scaleMaxResist, pivot.x, pivot.y);
+        temp.mapRect(endRectF);
+        // Translate such that the task view touches the top of the screen when drag does.
+        float endTranslation = endRectF.top
+                * orientationHandler.getSecondaryTranslationDirectionFactor()
+                * params.resistanceParams.translationFactor;
+        resistAnim.addFloat(params.translationTarget, params.translationProperty,
+                params.startTranslation, endTranslation, RECENTS_TRANSLATE_RESIST_INTERPOLATOR);
 
         return resistAnim;
     }
