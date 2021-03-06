@@ -641,7 +641,8 @@ public class DeviceProfile {
                 padding.right = hotseatBarSizePx;
             }
         } else {
-            int paddingBottom = hotseatBarSizePx + workspacePageIndicatorHeight
+            int hotseatTop = isTaskbarPresent ? taskbarSize : hotseatBarSizePx;
+            int paddingBottom = hotseatTop + workspacePageIndicatorHeight
                     + workspaceBottomPadding - mWorkspacePageIndicatorOverlapWorkspace;
             if (isTablet) {
                 // Pad the left and right of the workspace to ensure consistent spacing
@@ -651,9 +652,10 @@ public class DeviceProfile {
                         ((inv.numColumns - 1) * cellWidthPx)));
                 availablePaddingX = (int) Math.min(availablePaddingX,
                         widthPx * MAX_HORIZONTAL_PADDING_PERCENT);
+                int hotseatVerticalPadding = isTaskbarPresent ? 0
+                        : hotseatBarTopPaddingPx + hotseatBarBottomPaddingPx;
                 int availablePaddingY = Math.max(0, heightPx - edgeMarginPx - paddingBottom
-                        - (2 * inv.numRows * cellHeightPx) - hotseatBarTopPaddingPx
-                        - hotseatBarBottomPaddingPx);
+                        - (2 * inv.numRows * cellHeightPx) - hotseatVerticalPadding);
                 padding.set(availablePaddingX / 2, edgeMarginPx + availablePaddingY / 2,
                         availablePaddingX / 2, paddingBottom + availablePaddingY / 2);
             } else {

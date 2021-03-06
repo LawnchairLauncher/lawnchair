@@ -126,26 +126,11 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
 
     @Override
     protected LauncherState getTargetState(LauncherState fromState, boolean isDragTowardPositive) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.OVERIEW_NOT_ALLAPPS, "PortraitStatesTouchController.getTargetState");
-        }
         if (fromState == ALL_APPS && !isDragTowardPositive) {
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.OVERIEW_NOT_ALLAPPS,
-                        "PortraitStatesTouchController.getTargetState 1");
-            }
             return NORMAL;
         } else if (fromState == OVERVIEW) {
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.OVERIEW_NOT_ALLAPPS,
-                        "PortraitStatesTouchController.getTargetState 2");
-            }
             return isDragTowardPositive ? OVERVIEW : NORMAL;
         } else if (fromState == NORMAL && isDragTowardPositive) {
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.OVERIEW_NOT_ALLAPPS,
-                        "PortraitStatesTouchController.getTargetState 3");
-            }
             return ALL_APPS;
         }
         return fromState;
