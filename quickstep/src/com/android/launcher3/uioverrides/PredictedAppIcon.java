@@ -228,17 +228,13 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView {
      */
     public static class PredictedIconOutlineDrawing extends CellLayout.DelegatedCellDrawing {
 
-        private int mOffsetX;
-        private int mOffsetY;
-        private int mIconRadius;
-        private Paint mOutlinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        private final PredictedAppIcon mIcon;
+        private final Paint mOutlinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
         public PredictedIconOutlineDrawing(int cellX, int cellY, PredictedAppIcon icon) {
             mDelegateCellX = cellX;
             mDelegateCellY = cellY;
-            mOffsetX = icon.getOutlineOffsetX();
-            mOffsetY = icon.getOutlineOffsetY();
-            mIconRadius = icon.mNormalizedIconRadius;
+            mIcon = icon;
             mOutlinePaint.setStyle(Paint.Style.FILL);
             mOutlinePaint.setColor(Color.argb(24, 245, 245, 245));
         }
@@ -248,7 +244,8 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView {
          */
         @Override
         public void drawUnderItem(Canvas canvas) {
-            getShape().drawShape(canvas, mOffsetX, mOffsetY, mIconRadius, mOutlinePaint);
+            getShape().drawShape(canvas, mIcon.getOutlineOffsetX(), mIcon.getOutlineOffsetY(),
+                    mIcon.mNormalizedIconRadius, mOutlinePaint);
         }
 
         /**

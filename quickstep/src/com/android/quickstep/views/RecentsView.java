@@ -72,6 +72,7 @@ import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
@@ -104,6 +105,7 @@ import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.StatefulActivity;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.touch.PagedOrientationHandler.CurveProperties;
 import com.android.launcher3.util.DynamicResource;
@@ -420,7 +422,6 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     private boolean mShowEmptyMessage;
     private OnEmptyMessageUpdatedListener mOnEmptyMessageUpdatedListener;
     private Layout mEmptyTextLayout;
-    private boolean mLiveTileOverlayAttached;
 
     // Keeps track of the index where the first TaskView should be
     private int mTaskViewStartIndex = 0;
@@ -823,6 +824,12 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     }
 
     protected void applyLoadPlan(ArrayList<Task> tasks) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.GET_RECENTS_FAILED, "applyLoadPlan: taskCount=" + tasks.size());
+            for (Task t : tasks) {
+                Log.d(TestProtocol.GET_RECENTS_FAILED, "\t" + t);
+            }
+        }
         if (mPendingAnimation != null) {
             mPendingAnimation.addEndListener(success -> applyLoadPlan(tasks));
             return;
@@ -884,10 +891,19 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         resetTaskVisuals();
         onTaskStackUpdated();
         updateEnabledOverlays();
+
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.GET_RECENTS_FAILED, "applyLoadPlan: taskViewCount="
+                    + getTaskViewCount());
+        }
     }
 
     private boolean isModal() {
         return mTaskModalness > 0;
+    }
+
+    public boolean isLoadingTasks() {
+        return mModel.isLoadingTasksInBackground();
     }
 
     private void removeTasksViewsAndClearAllButton() {
@@ -900,6 +916,12 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     }
 
     public int getTaskViewCount() {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.GET_RECENTS_FAILED, "getTaskViewCount:"
+                    + " numChildren=" + getChildCount()
+                    + " start=" + mTaskViewStartIndex
+                    + " clearAll=" + indexOfChild(mClearAllButton));
+        }
         int taskViewCount = getChildCount() - mTaskViewStartIndex;
         if (indexOfChild(mClearAllButton) != -1) {
             taskViewCount--;
@@ -926,12 +948,10 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             // Since we reuse the same mLiveTileTaskViewSimulator in the RecentsView, we need
             // to reset the params after it settles in Overview from swipe up so that we don't
             // render with obsolete param values.
+            mLiveTileTaskViewSimulator.taskPrimaryTranslation.value = 0;
+            mLiveTileTaskViewSimulator.taskSecondaryTranslation.value = 0;
             mLiveTileTaskViewSimulator.fullScreenProgress.value = 0;
             mLiveTileTaskViewSimulator.recentsViewScale.value = 1;
-
-            // Reset the live tile rect
-            DeviceProfile deviceProfile = mActivity.getDeviceProfile();
-            LiveTileOverlay.INSTANCE.update(0, 0, deviceProfile.widthPx, deviceProfile.heightPx);
         }
         if (mRunningTaskTileHidden) {
             setRunningTaskHidden(mRunningTaskTileHidden);
@@ -1264,10 +1284,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
      */
     public void onSwipeUpAnimationSuccess() {
         if (getRunningTaskView() != null) {
-            float startProgress = LIVE_TILE.get() && mLiveTileOverlayAttached
-                    ? LiveTileOverlay.INSTANCE.cancelIconAnimation()
-                    : 0f;
-            animateUpRunningTaskIconScale(startProgress);
+            animateUpRunningTaskIconScale(0f);
         }
         setSwipeDownShouldLaunchApp(true);
     }
@@ -2589,16 +2606,6 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         }
     }
 
-    public void setLiveTileOverlayAttached(boolean liveTileOverlayAttached) {
-        mLiveTileOverlayAttached = liveTileOverlayAttached;
-    }
-
-    public void updateLiveTileIcon(Drawable icon) {
-        if (mLiveTileOverlayAttached) {
-            LiveTileOverlay.INSTANCE.setIcon(icon);
-        }
-    }
-
     public void finishRecentsAnimation(boolean toRecents, Runnable onFinishComplete) {
         if (mRecentsAnimationController == null) {
             if (onFinishComplete != null) {
@@ -2729,7 +2736,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     }
 
     /**
-     * @return How many pixels the page is offset on the currently laid out dominant axis.
+     * Returns how many pixels the page is offset on the currently laid out dominant axis.
      */
     public int getScrollOffset(int pageIndex) {
         if (pageIndex == -1) {
@@ -2743,6 +2750,20 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         int scroll = Math.round(unboundedScroll * unboundedProgress
                 + boundedScroll * (1 - unboundedProgress));
         return getScrollForPage(pageIndex) - scroll;
+    }
+
+    /**
+     * Returns how many pixels the task is offset on the currently laid out secondary axis
+     * according to {@link #mGridProgress}.
+     */
+    public float getGridTranslationSecondary(int pageIndex) {
+        TaskView taskView = getTaskViewAtByAbsoluteIndex(pageIndex);
+        if (taskView == null) {
+            return 0;
+        }
+
+        return mOrientationHandler.getSecondaryValue(taskView.getGridTranslationX(),
+                taskView.getGridTranslationY());
     }
 
     public Consumer<MotionEvent> getEventDispatcher(float navbarRotation) {

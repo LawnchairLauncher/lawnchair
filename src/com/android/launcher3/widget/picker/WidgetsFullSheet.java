@@ -149,7 +149,10 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
     @Override
     public void onActivePageChanged(int currentActivePage) {
-        mAdapters.get(currentActivePage).mWidgetsRecyclerView.bindFastScrollbar();
+        WidgetsRecyclerView currentRecyclerView =
+                mAdapters.get(currentActivePage).mWidgetsRecyclerView;
+        currentRecyclerView.bindFastScrollbar();
+        mSearchAndRecommendationsScrollController.setCurrentRecyclerView(currentRecyclerView);
 
         reset();
     }
@@ -159,6 +162,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         if (mHasWorkProfile) {
             mAdapters.get(AdapterHolder.WORK).mWidgetsRecyclerView.scrollToTop();
         }
+        mSearchAndRecommendationsScrollController.reset();
     }
 
     @VisibleForTesting
@@ -241,6 +245,12 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             mAdapters.get(AdapterHolder.WORK).mWidgetsListAdapter.setMaxHorizontalSpansPerRow(
                     maxSpansPerRow);
         }
+
+        if (mInitialTabsHeight == 0 && mTabsView != null) {
+            mInitialTabsHeight = measureHeightWithVerticalMargins(mTabsView);
+        }
+
+        mSearchAndRecommendationsScrollController.updateMarginAndPadding();
     }
 
     @Override
@@ -255,12 +265,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 contentLeft + contentWidth, height);
 
         setTranslationShift(mTranslationShift);
-
-        if (mInitialTabsHeight == 0 && mTabsView != null) {
-            mInitialTabsHeight = mTabsView.getMeasuredHeight();
-        }
-
-        mSearchAndRecommendationsScrollController.updateMarginAndPadding();
     }
 
     @Override
@@ -371,7 +375,14 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         // No need to check work profile here because mInitialTabHeight is always 0 if there is no
         // work profile.
         return mInitialTabsHeight
-                + mSearchAndRecommendationViewHolder.mContainer.getMeasuredHeight();
+                + measureHeightWithVerticalMargins(mSearchAndRecommendationViewHolder.mContainer);
+    }
+
+    /** private the height, in pixel, + the vertical margins of a given view. */
+    private static int measureHeightWithVerticalMargins(View view) {
+        MarginLayoutParams marginLayoutParams = (MarginLayoutParams) view.getLayoutParams();
+        return view.getMeasuredHeight() + marginLayoutParams.bottomMargin
+                + marginLayoutParams.topMargin;
     }
 
     /** A holder class for holding adapters & their corresponding recycler view. */

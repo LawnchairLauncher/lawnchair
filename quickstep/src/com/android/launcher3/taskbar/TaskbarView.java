@@ -18,6 +18,7 @@ package com.android.launcher3.taskbar;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -35,6 +36,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
@@ -50,10 +52,12 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
     private final ColorDrawable mBackgroundDrawable;
     private final int mItemMarginLeftRight;
     private final int mIconTouchSize;
+    private final boolean mIsRtl;
     private final int mTouchSlop;
     private final RectF mTempDelegateBounds = new RectF();
     private final RectF mDelegateSlopBounds = new RectF();
     private final int[] mTempOutLocation = new int[2];
+    private final Matrix mTempMatrix = new Matrix();
 
     // Initialized in TaskbarController constructor.
     private TaskbarController.TaskbarViewCallbacks mControllerCallbacks;
@@ -94,6 +98,7 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
         mBackgroundDrawable = (ColorDrawable) getBackground();
         mItemMarginLeftRight = resources.getDimensionPixelSize(R.dimen.taskbar_icon_spacing);
         mIconTouchSize = resources.getDimensionPixelSize(R.dimen.taskbar_icon_touch_size);
+        mIsRtl = Utilities.isRtl(resources);
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
     }
 
@@ -131,7 +136,8 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
      */
     protected void updateHotseatItems(ItemInfo[] hotseatItemInfos) {
         for (int i = 0; i < hotseatItemInfos.length; i++) {
-            ItemInfo hotseatItemInfo = hotseatItemInfos[i];
+            ItemInfo hotseatItemInfo = hotseatItemInfos[!mIsRtl ? i
+                    : hotseatItemInfos.length - i - 1];
             int hotseatIndex = mHotseatStartIndex + i;
             View hotseatView = getChildAt(hotseatIndex);
 
@@ -176,23 +182,42 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
                     && hotseatItemInfo instanceof WorkspaceItemInfo) {
                 ((BubbleTextView) hotseatView).applyFromWorkspaceItem(
                         (WorkspaceItemInfo) hotseatItemInfo);
-                hotseatView.setVisibility(VISIBLE);
                 hotseatView.setOnClickListener(mControllerCallbacks.getItemOnClickListener());
                 hotseatView.setOnLongClickListener(
                         mControllerCallbacks.getItemOnLongClickListener());
             } else if (isFolder) {
-                hotseatView.setVisibility(VISIBLE);
                 hotseatView.setOnClickListener(mControllerCallbacks.getItemOnClickListener());
                 hotseatView.setOnLongClickListener(
                         mControllerCallbacks.getItemOnLongClickListener());
             } else {
-                hotseatView.setVisibility(GONE);
                 hotseatView.setOnClickListener(null);
                 hotseatView.setOnLongClickListener(null);
             }
+            updateHotseatItemVisibility(hotseatView);
         }
 
         updateHotseatRecentsDividerVisibility();
+    }
+
+    protected void updateHotseatItemsVisibility() {
+        for (int i = mHotseatStartIndex; i <= mHotseatEndIndex; i++) {
+            updateHotseatItemVisibility(getChildAt(i));
+        }
+    }
+
+    private void updateHotseatItemVisibility(View hotseatView) {
+        if (hotseatView.getTag() != null) {
+            hotseatView.setVisibility(VISIBLE);
+        } else {
+            int oldVisibility = hotseatView.getVisibility();
+            int newVisibility = mControllerCallbacks.getEmptyHotseatViewVisibility();
+            hotseatView.setVisibility(newVisibility);
+            if (oldVisibility == GONE && newVisibility != GONE) {
+                // By default, the layout transition only runs when going to VISIBLE,
+                // but we want it to run when going to GONE to INVISIBLE as well.
+                getLayoutTransition().showChild(this, hotseatView, oldVisibility);
+            }
+        }
     }
 
     private View addDivider(int dividerIndex) {
@@ -388,6 +413,35 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
 
     public boolean isDraggingItem() {
         return mIsDraggingItem;
+    }
+
+    /**
+     * @return The bounding box of where the hotseat elements will be when we reach the given scale.
+     */
+    protected RectF getHotseatBoundsAtScale(float taskbarViewScale) {
+        View firstHotseatView = null, lastHotseatView = null;
+        for (int i = mHotseatStartIndex; i <= mHotseatEndIndex; i++) {
+            View child = getChildAt(i);
+            if (child.getVisibility() != GONE) {
+                if (firstHotseatView == null) {
+                    firstHotseatView = child;
+                }
+                lastHotseatView = child;
+            }
+        }
+        if (firstHotseatView == null || lastHotseatView == null) {
+            return new RectF();
+        }
+        View leftmostHotseatView = !mIsRtl ? firstHotseatView : lastHotseatView;
+        View rightmostHotseatView = !mIsRtl ? lastHotseatView : firstHotseatView;
+        RectF hotseatBounds = new RectF(
+                leftmostHotseatView.getLeft() - mItemMarginLeftRight,
+                leftmostHotseatView.getTop(),
+                rightmostHotseatView.getRight() + mItemMarginLeftRight,
+                rightmostHotseatView.getBottom());
+        mTempMatrix.setScale(taskbarViewScale, taskbarViewScale, getPivotX(), getPivotY());
+        mTempMatrix.mapRect(hotseatBounds);
+        return hotseatBounds;
     }
 
     // FolderIconParent implemented methods.

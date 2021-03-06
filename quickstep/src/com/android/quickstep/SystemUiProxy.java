@@ -21,11 +21,11 @@ import android.app.PendingIntent;
 import android.app.PictureInPictureParams;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Insets;
 import android.graphics.Rect;
-import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.IBinder.DeathRecipient;
@@ -516,14 +516,26 @@ public class SystemUiProxy implements ISystemUiProxy {
     }
 
     @Override
-    public void startIntent(PendingIntent intent, int stage, int position, Bundle options) {
+    public void startIntent(PendingIntent intent, Intent fillInIntent, int stage,
+            int position, Bundle options) {
         if (mSystemUiProxy != null) {
             try {
-                mSystemUiProxy.startIntent(intent, stage, position, options);
+                mSystemUiProxy.startIntent(intent, fillInIntent, stage, position,
+                        options);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call startIntent");
             }
         }
     }
 
+    @Override
+    public void removeFromSideStage(int taskId) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.removeFromSideStage(taskId);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call removeFromSideStage");
+            }
+        }
+    }
 }

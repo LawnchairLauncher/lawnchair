@@ -157,14 +157,29 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
     private void setTitles(WidgetsListHeaderEntry entry) {
         mTitle.setText(entry.mPkgItem.title);
 
-        if (entry.widgetsCount > 0) {
-            Resources resources = getContext().getResources();
-            mSubtitle.setText(resources.getQuantityString(R.plurals.widgets_tray_subtitle,
-                    entry.widgetsCount, entry.widgetsCount));
-            mSubtitle.setVisibility(VISIBLE);
-        } else {
+        Resources resources = getContext().getResources();
+        if (entry.widgetsCount == 0 && entry.shortcutsCount == 0) {
             mSubtitle.setVisibility(GONE);
+            return;
         }
+
+        String subtitle;
+        if (entry.widgetsCount > 0 && entry.shortcutsCount > 0) {
+            String widgetsCount = resources.getQuantityString(R.plurals.widgets_count,
+                    entry.widgetsCount, entry.widgetsCount);
+            String shortcutsCount = resources.getQuantityString(R.plurals.shortcuts_count,
+                    entry.shortcutsCount, entry.shortcutsCount);
+            subtitle = resources.getString(R.string.widgets_and_shortcuts_count, widgetsCount,
+                    shortcutsCount);
+        } else if (entry.widgetsCount > 0) {
+            subtitle = resources.getQuantityString(R.plurals.widgets_count,
+                     entry.widgetsCount, entry.widgetsCount);
+        } else {
+            subtitle = resources.getQuantityString(R.plurals.shortcuts_count,
+                    entry.shortcutsCount, entry.shortcutsCount);
+        }
+        mSubtitle.setText(subtitle);
+        mSubtitle.setVisibility(VISIBLE);
     }
 
     @Override

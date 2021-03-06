@@ -25,6 +25,7 @@ import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAG
 import static com.android.launcher3.QuickstepAppTransitionManagerImpl.RECENTS_LAUNCH_DURATION;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
+import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.IGNORE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOME_GESTURE;
@@ -79,7 +80,6 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
@@ -104,7 +104,6 @@ import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.SurfaceTransactionApplier;
 import com.android.quickstep.util.SwipePipToHomeAnimator;
 import com.android.quickstep.util.TransformParams;
-import com.android.quickstep.views.LiveTileOverlay;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -353,7 +352,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
 
         mRecentsView = activity.getOverviewPanel();
         mRecentsView.setOnPageTransitionEndCallback(null);
-        addLiveTileOverlay();
 
         mStateCallback.setState(STATE_LAUNCHER_PRESENT);
         if (alreadyOnHome) {
@@ -918,26 +916,15 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
                 isFling, isCancel);
         float endShift = endTarget.isLauncher ? 1 : 0;
         final float startShift;
-        Interpolator interpolator = DEACCEL;
         if (!isFling) {
             long expectedDuration = Math.abs(Math.round((endShift - currentShift)
                     * MAX_SWIPE_DURATION * SWIPE_DURATION_MULTIPLIER));
             duration = Math.min(MAX_SWIPE_DURATION, expectedDuration);
             startShift = currentShift;
-            interpolator = endTarget == RECENTS ? ACCEL_DEACCEL : DEACCEL;
         } else {
             startShift = Utilities.boundToRange(currentShift - velocity.y
                     * getSingleFrameMs(mContext) / mTransitionDragLength, 0, mDragLengthFactor);
             if (mTransitionDragLength > 0) {
-                if (endTarget == RECENTS && !mDeviceState.isFullyGesturalNavMode()) {
-                    Interpolators.OvershootParams overshoot = new Interpolators.OvershootParams(
-                            startShift, endShift, endShift, endVelocity,
-                            mTransitionDragLength, mContext);
-                    endShift = overshoot.end;
-                    interpolator = overshoot.interpolator;
-                    duration = Utilities.boundToRange(overshoot.duration, MIN_OVERSHOOT_DURATION,
-                            MAX_SWIPE_DURATION);
-                } else {
                     float distanceToTravel = (endShift - currentShift) * mTransitionDragLength;
 
                     // we want the page's snap velocity to approximately match the velocity at
@@ -945,13 +932,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
                     // derivative of the scroll interpolator at zero, ie. 2.
                     long baseDuration = Math.round(Math.abs(distanceToTravel / velocity.y));
                     duration = Math.min(MAX_SWIPE_DURATION, 2 * baseDuration);
-
-                    if (endTarget == RECENTS) {
-                        interpolator = ACCEL_DEACCEL;
-                    }
-                }
             }
         }
+        Interpolator interpolator = endTarget == RECENTS ? OVERSHOOT_1_2 : DEACCEL;
 
         if (endTarget.isLauncher) {
             mInputConsumerProxy.enable();
@@ -1241,13 +1224,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
         });
         anim.addAnimatorListener(new AnimationSuccessListener() {
             @Override
-            public void onAnimationStart(Animator animation) {
-                if (mActivity != null) {
-                    removeLiveTileOverlay();
-                }
-            }
-
-            @Override
             public void onAnimationSuccess(Animator animator) {
                 if (mRecentsView != null) {
                     mRecentsView.post(mRecentsView::resetTaskVisuals);
@@ -1268,7 +1244,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
             // In the off chance that the gesture ends before Launcher is started, we should clear
             // the callback here so that it doesn't update with the wrong state
             mActivity.clearRunOnceOnStartCallback();
-            resetLauncherListenersAndOverlays();
+            resetLauncherListeners();
         }
         if (mGestureState.getEndTarget() != null && !mGestureState.isRunningAnimationToLauncher()) {
             cancelCurrentAnimation();
@@ -1351,7 +1327,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
         endLauncherTransitionController();
 
         mRecentsView.onGestureAnimationEnd();
-        resetLauncherListenersAndOverlays();
+        resetLauncherListeners();
     }
 
     private void endLauncherTransitionController() {
@@ -1364,13 +1340,12 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
         }
     }
 
-    private void resetLauncherListenersAndOverlays() {
+    private void resetLauncherListeners() {
         // Reset the callback for deferred activity launches
         if (!LIVE_TILE.get()) {
             mActivityInterface.setOnDeferredActivityLaunchCallback(null);
         }
         mActivity.getRootView().setOnApplyWindowInsetsListener(null);
-        removeLiveTileOverlay();
     }
 
     private void notifyTransitionCancelled() {
@@ -1594,17 +1569,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
         anim.start();
     }
 
-    private void addLiveTileOverlay() {
-        if (LiveTileOverlay.INSTANCE.attach(mActivity.getRootView().getOverlay())) {
-            mRecentsView.setLiveTileOverlayAttached(true);
-        }
-    }
-
-    private void removeLiveTileOverlay() {
-        LiveTileOverlay.INSTANCE.detach(mActivity.getRootView().getOverlay());
-        mRecentsView.setLiveTileOverlayAttached(false);
-    }
-
     private static boolean isNotInRecents(RemoteAnimationTargetCompat app) {
         return app.isNotInRecents
                 || app.activityType == ACTIVITY_TYPE_HOME;
@@ -1764,13 +1728,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
                 mTaskViewSimulator.setScroll(mRecentsView.getScrollOffset());
             }
             mTaskViewSimulator.apply(mTransformParams);
-        }
-        if (LIVE_TILE.get() && mRecentsAnimationTargets != null) {
-            LiveTileOverlay.INSTANCE.update(
-                    mTaskViewSimulator.getCurrentRect(),
-                    mTaskViewSimulator.getCurrentCornerRadius());
-            LiveTileOverlay.INSTANCE.setRotation(
-                    mTaskViewSimulator.getOrientationState().getDisplayRotation());
         }
         ProtoTracer.INSTANCE.get(mContext).scheduleFrameUpdate();
     }

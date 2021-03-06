@@ -559,9 +559,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             mIconLoadRequest = iconCache.updateIconInBackground(mTask,
                     (task) -> {
                         setIcon(task.icon);
-                        if (LIVE_TILE.get() && isRunningTask()) {
-                            getRecentsView().updateLiveTileIcon(task.icon);
-                        }
                         mDigitalWellBeingToast.initialize(mTask);
                     });
         } else {
@@ -919,9 +916,17 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         applyTranslationX();
     }
 
+    public float getGridTranslationX() {
+        return mGridTranslationX;
+    }
+
     public void setGridTranslationY(float gridTranslationY) {
         mGridTranslationY = gridTranslationY;
         applyTranslationY();
+    }
+
+    public float getGridTranslationY() {
+        return mGridTranslationY;
     }
 
     public void setGridOffsetTranslationX(float gridOffsetTranslationX) {

@@ -97,7 +97,12 @@ public class TaskbarContainerView extends BaseDragLayer<TaskbarActivityContext> 
             // to show a floating view like Folder. Thus, we set the contentInsets to be where
             // mTaskbarView is, since its position never changes and insets rather than overlays.
             int[] loc = mTempLoc;
+            float scale = mTaskbarView.getScaleX();
+            mTaskbarView.setScaleX(1);
+            mTaskbarView.setScaleY(1);
             mTaskbarView.getLocationInWindow(loc);
+            mTaskbarView.setScaleX(scale);
+            mTaskbarView.setScaleY(scale);
             insetsInfo.contentInsets.left = loc[0];
             insetsInfo.contentInsets.top = loc[1];
             insetsInfo.contentInsets.right = getWidth() - (loc[0] + mTaskbarView.getWidth());

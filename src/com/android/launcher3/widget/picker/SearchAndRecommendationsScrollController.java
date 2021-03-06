@@ -16,10 +16,10 @@
 package com.android.launcher3.widget.picker;
 
 import android.view.View;
+import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.views.RecyclerViewFastScroller;
 import com.android.launcher3.widget.picker.WidgetsFullSheet.SearchAndRecommendationViewHolder;
@@ -33,20 +33,21 @@ final class SearchAndRecommendationsScrollController implements
         RecyclerViewFastScroller.OnFastScrollChangeListener {
     private final boolean mHasWorkProfile;
     private final SearchAndRecommendationViewHolder mViewHolder;
-    private final RecyclerView mPrimaryRecyclerView;
+    private final WidgetsRecyclerView mPrimaryRecyclerView;
 
     // The following are only non null if mHasWorkProfile is true.
-    @Nullable private final RecyclerView mWorkRecyclerView;
+    @Nullable private final WidgetsRecyclerView mWorkRecyclerView;
     @Nullable private final View mPrimaryWorkTabsView;
     @Nullable private final PersonalWorkPagedView mPrimaryWorkViewPager;
 
+    private WidgetsRecyclerView mCurrentRecyclerView;
     private int mMaxCollapsibleHeight = 0;
 
     SearchAndRecommendationsScrollController(
             boolean hasWorkProfile,
             SearchAndRecommendationViewHolder viewHolder,
-            RecyclerView primaryRecyclerView,
-            @Nullable RecyclerView workRecyclerView,
+            WidgetsRecyclerView primaryRecyclerView,
+            @Nullable WidgetsRecyclerView workRecyclerView,
             @Nullable View personalWorkTabsView,
             @Nullable PersonalWorkPagedView primaryWorkViewPager) {
         mHasWorkProfile = hasWorkProfile;
@@ -55,6 +56,12 @@ final class SearchAndRecommendationsScrollController implements
         mWorkRecyclerView = workRecyclerView;
         mPrimaryWorkTabsView = personalWorkTabsView;
         mPrimaryWorkViewPager = primaryWorkViewPager;
+        mCurrentRecyclerView = mPrimaryRecyclerView;
+    }
+
+    /** Sets the current active {@link WidgetsRecyclerView}. */
+    public void setCurrentRecyclerView(WidgetsRecyclerView currentRecyclerView) {
+        mCurrentRecyclerView = currentRecyclerView;
     }
 
     /**
@@ -64,10 +71,10 @@ final class SearchAndRecommendationsScrollController implements
         // The maximum vertical distance, in pixels, until the last collapsible element is not
         // visible from the screen when the user scrolls down the recycler view.
         mMaxCollapsibleHeight = mViewHolder.mContainer.getPaddingTop()
-                + mViewHolder.mCollapseHandle.getMeasuredHeight()
-                + mViewHolder.mHeaderTitle.getMeasuredHeight();
+                + measureHeightWithVerticalMargins(mViewHolder.mCollapseHandle)
+                + measureHeightWithVerticalMargins(mViewHolder.mHeaderTitle);
 
-        int topContainerHeight = mViewHolder.mContainer.getMeasuredHeight();
+        int topContainerHeight = measureHeightWithVerticalMargins(mViewHolder.mContainer);
         if (mHasWorkProfile) {
             // In a work profile setup, the full widget sheet contains the following views:
             //           -------               -|
@@ -114,8 +121,8 @@ final class SearchAndRecommendationsScrollController implements
             //
             // When the views are first inflated, the sum of topOffsetAfterAllViewsCollapsed and
             // mMaxCollapsibleDistance should equal to the top container height.
-            int tabsViewActualHeight =
-                    mPrimaryWorkTabsView.getMeasuredHeight() - mPrimaryWorkTabsView.getPaddingTop();
+            int tabsViewActualHeight = measureHeightWithVerticalMargins(mPrimaryWorkTabsView)
+                    - mPrimaryWorkTabsView.getPaddingTop();
             int topOffsetAfterAllViewsCollapsed =
                     topContainerHeight + tabsViewActualHeight - mMaxCollapsibleHeight;
 
@@ -149,14 +156,33 @@ final class SearchAndRecommendationsScrollController implements
      * views (e.g. recycler views, tabs) upon scrolling.
      */
     @Override
-    public void onThumbOffsetYChanged(int y) {
+    public void onThumbOffsetYChanged(int unused) {
+        // Always use the recycler view offset because fast scroller offset has a different scale.
+        int recyclerViewYOffset = mCurrentRecyclerView.getCurrentScrollY();
+        if (recyclerViewYOffset < 0) return;
         if (mMaxCollapsibleHeight > 0) {
-            int yDisplacement = Math.max(-y, -mMaxCollapsibleHeight);
+            int yDisplacement = Math.max(-recyclerViewYOffset, -mMaxCollapsibleHeight);
             mViewHolder.mHeaderTitle.setTranslationY(yDisplacement);
             mViewHolder.mSearchBar.setTranslationY(yDisplacement);
             if (mHasWorkProfile) {
                 mPrimaryWorkTabsView.setTranslationY(yDisplacement);
             }
         }
+    }
+
+    /** Resets any previous view translation. */
+    public void reset() {
+        mViewHolder.mHeaderTitle.setTranslationY(0);
+        mViewHolder.mSearchBar.setTranslationY(0);
+        if (mHasWorkProfile) {
+            mPrimaryWorkTabsView.setTranslationY(0);
+        }
+    }
+
+    /** private the height, in pixel, + the vertical margins of a given view. */
+    private static int measureHeightWithVerticalMargins(View view) {
+        MarginLayoutParams marginLayoutParams = (MarginLayoutParams) view.getLayoutParams();
+        return view.getMeasuredHeight() + marginLayoutParams.bottomMargin
+                + marginLayoutParams.topMargin;
     }
 }

@@ -75,6 +75,7 @@ public class StateAnimationConfig {
             ANIM_DEPTH,
             ANIM_OVERVIEW_ACTIONS_FADE,
             ANIM_TASKBAR_FADE,
+            ANIM_HOTSEAT_FADE,
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface AnimType {}
@@ -95,8 +96,9 @@ public class StateAnimationConfig {
     public static final int ANIM_DEPTH = 14;
     public static final int ANIM_OVERVIEW_ACTIONS_FADE = 15;
     public static final int ANIM_TASKBAR_FADE = 16;
+    public static final int ANIM_HOTSEAT_FADE = 17; // if not set, falls back to ANIM_WORKSPACE_FADE
 
-    private static final int ANIM_TYPES_COUNT = 17;
+    private static final int ANIM_TYPES_COUNT = 18;
 
     protected final Interpolator[] mInterpolators = new Interpolator[ANIM_TYPES_COUNT];
 
