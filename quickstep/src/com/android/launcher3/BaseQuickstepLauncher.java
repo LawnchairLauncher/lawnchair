@@ -35,6 +35,7 @@ import android.view.View;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.model.WellbeingModel;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.proxy.ProxyActivityStarter;
@@ -83,6 +84,8 @@ public abstract class BaseQuickstepLauncher extends Launcher
 
     private @Nullable TaskbarController mTaskbarController;
     private final TaskbarStateHandler mTaskbarStateHandler = new TaskbarStateHandler(this);
+    // Will be updated when dragging from taskbar.
+    private DragOptions mWorkspaceDragOptions = new DragOptions();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -267,6 +270,15 @@ public abstract class BaseQuickstepLauncher extends Launcher
     @Override
     public boolean isViewInTaskbar(View v) {
         return mTaskbarController != null && mTaskbarController.isViewInTaskbar(v);
+    }
+
+    @Override
+    public DragOptions getDefaultWorkspaceDragOptions() {
+        return mWorkspaceDragOptions;
+    }
+
+    public void setWorkspaceDragOptions(DragOptions dragOptions) {
+        mWorkspaceDragOptions = dragOptions;
     }
 
     @Override
