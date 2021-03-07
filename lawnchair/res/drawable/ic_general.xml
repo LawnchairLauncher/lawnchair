@@ -1,14 +1,35 @@
-<vector
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:name="vector"
-    android:width="24dp"
-    android:height="24dp"
-    android:viewportWidth="24"
-    android:viewportHeight="24"
-    android:tint="?android:attr/textColorPrimary">
+    android:width="32dp"
+    android:height="32dp"
+    android:viewportWidth="32"
+    android:viewportHeight="32">
+    <path
+        android:name="path"
+        android:fillAlpha="0.16"
+        android:fillColor="#000"
+        android:pathData="M 16 0 C 20.242 0 24.314 1.687 27.314 4.686 C 30.313 7.686 32 11.758 32 16 C 32 20.242 30.313 24.314 27.314 27.314 C 24.314 30.313 20.242 32 16 32 C 11.758 32 7.686 30.313 4.686 27.314 C 1.687 24.314 0 20.242 0 16 C 0 11.758 1.687 7.686 4.686 4.686 C 7.686 1.687 11.758 0 16 0"
+        android:strokeWidth="1" />
+    <path
+        android:name="path_1"
+        android:fillColor="#000"
+        android:pathData="M 11 9 C 10.205 9 9.441 9.316 8.879 9.879 C 8.316 10.441 8 11.205 8 12 C 8 12.795 8.316 13.559 8.879 14.121 C 9.441 14.684 10.205 15 11 15 C 11.795 15 12.559 14.684 13.121 14.121 C 13.684 13.559 14 12.795 14 12 C 14 11.205 13.684 10.441 13.121 9.879 C 12.559 9.316 11.795 9 11 9 Z"
+        android:strokeWidth="1" />
     <path
         android:name="path_2"
-        android:pathData="M 3 17 L 3 19 L 9 19 L 9 17 L 3 17 Z M 3 5 L 3 7 L 13 7 L 13 5 L 3 5 Z M 13 21 L 13 19 L 21 19 L 21 17 L 13 17 L 13 15 L 11 15 L 11 21 L 13 21 Z M 7 9 L 7 11 L 3 11 L 3 13 L 7 13 L 7 15 L 9 15 L 9 9 L 7 9 Z M 21 13 L 21 11 L 11 11 L 11 13 L 21 13 Z M 15 9 L 17 9 L 17 7 L 21 7 L 21 5 L 17 5 L 17 3 L 15 3 L 15 9 Z"
         android:fillColor="#000"
-        android:strokeWidth="1"/>
+        android:pathData="M 10 12 L 24 12"
+        android:strokeWidth="2"
+        android:strokeColor="#000" />
+    <path
+        android:name="path_8"
+        android:fillColor="#000"
+        android:pathData="M 21 17 C 21.795 17 22.559 17.316 23.121 17.879 C 23.684 18.441 24 19.205 24 20 C 24 20.795 23.684 21.559 23.121 22.121 C 22.559 22.684 21.795 23 21 23 C 20.205 23 19.441 22.684 18.879 22.121 C 18.316 21.559 18 20.795 18 20 C 18 19.205 18.316 18.441 18.879 17.879 C 19.441 17.316 20.205 17 21 17 Z"
+        android:strokeWidth="1" />
+    <path
+        android:name="path_9"
+        android:fillColor="#000"
+        android:pathData="M 22 20 L 8 20"
+        android:strokeWidth="2"
+        android:strokeColor="#000" />
 </vector>

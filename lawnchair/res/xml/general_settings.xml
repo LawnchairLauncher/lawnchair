@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <com.android.launcher3.settings.NotificationDotsPreference
         android:key="pref_icon_badging"
-        android:title="@string/notification_dots_title"
         android:persistent="false"
-        android:widgetLayout="@layout/notification_pref_warning" >
+        android:title="@string/notification_dots_title"
+        android:widgetLayout="@layout/notification_pref_warning">
         <intent android:action="android.settings.NOTIFICATION_SETTINGS">
             <extra
                 android:name=":settings:fragment_args_key"

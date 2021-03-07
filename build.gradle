@@ -247,6 +247,7 @@ dependencies {
     implementation 'androidx.compose.runtime:runtime-livedata:1.0.0-beta01'
     implementation 'androidx.compose.runtime:runtime-rxjava2:1.0.0-beta01'
     implementation "androidx.compose.compiler:compiler:1.0.0-beta01"
+    implementation "androidx.navigation:navigation-compose:1.0.0-alpha08"
 }
 
 protobuf {

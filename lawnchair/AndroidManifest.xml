@@ -34,5 +34,11 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity android:name="ch.deletescape.lawnchair.compose.ui.settings.SettingsActivity" android:theme="@style/Theme.Lawnchair">
+            <intent-filter>
+                <action android:name="ch.deletescape.lawnchair.compose.ui.settings.SettingsActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>
