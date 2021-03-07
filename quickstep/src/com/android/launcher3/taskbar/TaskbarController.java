@@ -41,7 +41,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.QuickstepAppTransitionManagerImpl;
+import com.android.launcher3.QuickstepTransitionManager;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.folder.Folder;
@@ -298,7 +298,7 @@ public class TaskbarController {
      * Should be called from onResume() and onPause(), and animates the Taskbar accordingly.
      */
     public void onLauncherResumedOrPaused(boolean isResumed) {
-        long duration = QuickstepAppTransitionManagerImpl.CONTENT_ALPHA_DURATION;
+        long duration = QuickstepTransitionManager.CONTENT_ALPHA_DURATION;
         if (mAnimator != null) {
             mAnimator.cancel();
         }

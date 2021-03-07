@@ -27,7 +27,7 @@ import static android.view.Surface.ROTATION_270;
 import static android.view.Surface.ROTATION_90;
 import static android.widget.Toast.LENGTH_SHORT;
 
-import static com.android.launcher3.QuickstepAppTransitionManagerImpl.RECENTS_LAUNCH_DURATION;
+import static com.android.launcher3.QuickstepTransitionManager.RECENTS_LAUNCH_DURATION;
 import static com.android.launcher3.Utilities.comp;
 import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncestor;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
@@ -37,6 +37,7 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_TAP;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.quickstep.util.NavigationModeFeatureFlag.LIVE_TILE;
 
@@ -52,7 +53,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.util.Log;
@@ -65,6 +65,8 @@ import android.view.ViewOutlineProvider;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherSettings;
@@ -79,7 +81,9 @@ import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.PagedOrientationHandler;
+import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.TransformingTouchDelegate;
 import com.android.launcher3.util.ViewPool.Reusable;
 import com.android.quickstep.RecentsModel;
@@ -335,7 +339,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                 });
                 anim.start();
             } else {
-                launchTask(true /* animate */);
+                launchTaskAnimated();
             }
             mActivity.getStatsLogManager().logger().withItemInfo(getItemInfo())
                     .log(LAUNCHER_TASK_LAUNCH_TAP);
@@ -483,63 +487,62 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                 .createPlaybackController();
     }
 
-    public void launchTask(boolean animate) {
-        launchTask(animate, false /* freezeTaskList */);
-    }
-
-    public void launchTask(boolean animate, boolean freezeTaskList) {
-        launchTask(animate, freezeTaskList, (result) -> {
-            if (!result) {
-                notifyTaskLaunchFailed(TAG);
-            }
-        }, getHandler());
-    }
-
-    public void launchTask(boolean animate, Consumer<Boolean> resultCallback,
-            Handler resultCallbackHandler) {
-        launchTask(animate, false /* freezeTaskList */, resultCallback, resultCallbackHandler);
-    }
-
-    public void launchTask(boolean animate, boolean freezeTaskList, Consumer<Boolean> resultCallback,
-            Handler resultCallbackHandler) {
+    /**
+     * Starts the task associated with this view and animates the startup.
+     * @return CompletionStage to indicate the animation completion or null if the launch failed.
+     */
+    public RunnableList launchTaskAnimated() {
         if (mTask != null) {
-            final ActivityOptions opts;
             TestLogging.recordEvent(
                     TestProtocol.SEQUENCE_MAIN, "startActivityFromRecentsAsync", mTask);
-            if (animate) {
-                opts = mActivity.getActivityLaunchOptions(this);
-                if (freezeTaskList) {
-                    ActivityOptionsCompat.setFreezeRecentTasksList(opts);
-                }
-                ActivityManagerWrapper.getInstance().startActivityFromRecentsAsync(mTask.key,
-                        opts, resultCallback, resultCallbackHandler);
+            ActivityOptionsWrapper opts =  mActivity.getActivityLaunchOptions(this);
+            if (ActivityManagerWrapper.getInstance()
+                    .startActivityFromRecents(mTask.key, opts.options)) {
+                return opts.onEndCallback;
             } else {
-                opts = ActivityOptionsCompat.makeCustomAnimation(getContext(), 0, 0, () -> {
-                    if (resultCallback != null) {
-                        // Only post the animation start after the system has indicated that the
-                        // transition has started
-                        resultCallbackHandler.post(() -> resultCallback.accept(true));
-                    }
-                }, resultCallbackHandler);
-                if (freezeTaskList) {
-                    ActivityOptionsCompat.setFreezeRecentTasksList(opts);
-                }
-                UI_HELPER_EXECUTOR.execute(
-                        () -> ActivityManagerWrapper.getInstance().startActivityFromRecentsAsync(
-                                mTask.key,
-                                opts,
-                                (success) -> {
-                                    if (resultCallback != null && !success) {
-                                        // If the call to start activity failed, then post the
-                                        // result
-                                        // immediately, otherwise, wait for the animation start
-                                        // callback
-                                        // from the activity options above
-                                        resultCallbackHandler.post(
-                                                () -> resultCallback.accept(false));
-                                    }
-                                }, resultCallbackHandler));
+                notifyTaskLaunchFailed(TAG);
+                return null;
             }
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Starts the task associated with this view without any animation
+     */
+    public void launchTask(@NonNull Consumer<Boolean> callback) {
+        launchTask(callback, false /* freezeTaskList */);
+    }
+
+    /**
+     * Starts the task associated with this view without any animation
+     */
+    public void launchTask(@NonNull Consumer<Boolean> callback, boolean freezeTaskList) {
+        if (mTask != null) {
+            TestLogging.recordEvent(
+                    TestProtocol.SEQUENCE_MAIN, "startActivityFromRecentsAsync", mTask);
+
+            // Indicate success once the system has indicated that the transition has started
+            ActivityOptions opts = ActivityOptionsCompat.makeCustomAnimation(
+                    getContext(), 0, 0, () -> callback.accept(true), MAIN_EXECUTOR.getHandler());
+            if (freezeTaskList) {
+                ActivityOptionsCompat.setFreezeRecentTasksList(opts);
+            }
+            Task.TaskKey key = mTask.key;
+            UI_HELPER_EXECUTOR.execute(() -> {
+                if (!ActivityManagerWrapper.getInstance().startActivityFromRecents(key, opts)) {
+                    // If the call to start activity failed, then post the result immediately,
+                    // otherwise, wait for the animation start callback from the activity options
+                    // above
+                    MAIN_EXECUTOR.post(() -> {
+                        notifyTaskLaunchFailed(TAG);
+                        callback.accept(false);
+                    });
+                }
+            });
+        } else {
+            callback.accept(false);
         }
     }
 
@@ -1123,7 +1126,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         return getRecentsView().mOrientationState.getOrientationHandler();
     }
 
-    public void notifyTaskLaunchFailed(String tag) {
+    private void notifyTaskLaunchFailed(String tag) {
         String msg = "Failed to launch task";
         if (mTask != null) {
             msg += " (task=" + mTask.key.baseIntent + " userId=" + mTask.key.userId + ")";

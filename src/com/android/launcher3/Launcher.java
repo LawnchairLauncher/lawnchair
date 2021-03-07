@@ -61,7 +61,6 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
-import android.app.ActivityOptions;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
 import android.content.ActivityNotFoundException;
@@ -276,7 +275,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
     private static final int THEME_CROSS_FADE_ANIMATION_DURATION = 375;
 
-    private LauncherAppTransitionManager mAppTransitionManager;
     private Configuration mOldConfig;
 
     private LiveSearchManager mLiveSearchManager;
@@ -311,8 +309,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
     @Thunk
     boolean mWorkspaceLoading = true;
-
-    private ArrayList<OnResumeCallback> mOnResumeCallbacks = new ArrayList<>();
 
     // Used to notify when an activity launch has been deferred because launcher is not yet resumed
     // TODO: See if we can remove this later
@@ -418,9 +414,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         setupViews();
         crossFadeWithPreviousAppearance();
         mPopupDataProvider = new PopupDataProvider(this::updateNotificationDots);
-
-        mAppTransitionManager = LauncherAppTransitionManager.newInstance(this);
-        mAppTransitionManager.registerRemoteAnimations();
 
         boolean internalStateHandled = ACTIVITY_TRACKER.handleCreate(this);
         if (internalStateHandled) {
@@ -1090,15 +1083,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                 TraceHelper.FLAG_UI_EVENT);
         super.onResume();
 
-        if (!mOnResumeCallbacks.isEmpty()) {
-            final ArrayList<OnResumeCallback> resumeCallbacks = new ArrayList<>(mOnResumeCallbacks);
-            mOnResumeCallbacks.clear();
-            for (int i = resumeCallbacks.size() - 1; i >= 0; i--) {
-                resumeCallbacks.get(i).onLauncherResume();
-            }
-            resumeCallbacks.clear();
-        }
-
         if (mDeferOverlayCallbacks) {
             scheduleDeferredCheck();
         } else {
@@ -1609,7 +1593,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         LauncherAppState.getIDP(this).removeOnChangeListener(this);
 
         mOverlayManager.onActivityDestroyed(this);
-        mAppTransitionManager.onActivityDestroyed();
         mUserChangedCallbackCloseable.close();
         mLiveSearchManager.stop();
     }
@@ -1935,16 +1918,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
     @TargetApi(Build.VERSION_CODES.M)
     @Override
-    public ActivityOptions getActivityLaunchOptions(View v) {
-        return mAppTransitionManager.getActivityLaunchOptions(this, v);
-    }
-
-    public LauncherAppTransitionManager getAppTransitionManager() {
-        return mAppTransitionManager;
-    }
-
-    @TargetApi(Build.VERSION_CODES.M)
-    @Override
     protected boolean onErrorStartingShortcut(Intent intent, ItemInfo info) {
         // Due to legacy reasons, direct call shortcuts require Launchers to have the
         // corresponding permission. Show the appropriate permission prompt if that
@@ -1993,7 +1966,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
             // state when we return to launcher.
             BubbleTextView btv = (BubbleTextView) v;
             btv.setStayPressed(true);
-            addOnResumeCallback(btv);
+            addOnResumeCallback(() -> btv.setStayPressed(false));
         }
         return success;
     }
@@ -2035,10 +2008,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                 ? getString(R.string.home_screen)
                 : mStateManager.getState().getDescription(this));
         return result;
-    }
-
-    public void addOnResumeCallback(OnResumeCallback callback) {
-        mOnResumeCallbacks.add(callback);
     }
 
     /**
@@ -2814,15 +2783,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         return (T) activityContext;
     }
 
-
-    /**
-     * Callback for listening for onResume
-     */
-    public interface OnResumeCallback {
-
-        void onLauncherResume();
-    }
-
     /**
      * Cross-fades the launcher's updated appearance with its previous appearance.
      *
@@ -2862,6 +2822,10 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
      * @return Whether the View is in the same window as the Taskbar window.
      */
     public boolean isViewInTaskbar(View v) {
+        return false;
+    }
+
+    public boolean supportsAdaptiveIconAnimation(View clickedView) {
         return false;
     }
 

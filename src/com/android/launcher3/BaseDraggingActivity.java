@@ -27,6 +27,7 @@ import android.content.res.Configuration;
 import android.graphics.Insets;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Process;
 import android.os.StrictMode;
@@ -40,6 +41,7 @@ import android.view.WindowInsets.Type;
 import android.view.WindowMetrics;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -52,10 +54,12 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
+import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.DisplayInfoChangeListener;
 import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.PackageManagerHelper;
+import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.util.WindowBounds;
@@ -76,6 +80,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
     protected boolean mIsSafeModeEnabled;
 
     private Runnable mOnStartCallback;
+    private RunnableList mOnResumeCallbacks = new RunnableList();
 
     private int mThemeRes = R.style.AppTheme;
 
@@ -95,6 +100,16 @@ public abstract class BaseDraggingActivity extends BaseActivity
             mThemeRes = themeRes;
             setTheme(themeRes);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mOnResumeCallbacks.executeAllAndClear();
+    }
+
+    public void addOnResumeCallback(Runnable callback) {
+        mOnResumeCallbacks.add(callback);
     }
 
     @Override
@@ -149,12 +164,27 @@ public abstract class BaseDraggingActivity extends BaseActivity
         return new Rect(pos[0], pos[1], pos[0] + v.getWidth(), pos[1] + v.getHeight());
     }
 
-    public final Bundle getActivityLaunchOptionsAsBundle(View v) {
-        ActivityOptions activityOptions = getActivityLaunchOptions(v);
-        return activityOptions == null ? null : activityOptions.toBundle();
+    @NonNull
+    public ActivityOptionsWrapper getActivityLaunchOptions(View v) {
+        int left = 0, top = 0;
+        int width = v.getMeasuredWidth(), height = v.getMeasuredHeight();
+        if (v instanceof BubbleTextView) {
+            // Launch from center of icon, not entire view
+            Drawable icon = ((BubbleTextView) v).getIcon();
+            if (icon != null) {
+                Rect bounds = icon.getBounds();
+                left = (width - bounds.width()) / 2;
+                top = v.getPaddingTop();
+                width = bounds.width();
+                height = bounds.height();
+            }
+        }
+        ActivityOptions options =
+                ActivityOptions.makeClipRevealAnimation(v, left, top, width, height);
+        RunnableList callback = new RunnableList();
+        addOnResumeCallback(callback::executeAllAndDestroy);
+        return new ActivityOptionsWrapper(options, callback);
     }
-
-    public abstract ActivityOptions getActivityLaunchOptions(View v);
 
     public boolean startActivitySafely(View v, Intent intent, @Nullable ItemInfo item) {
         if (mIsSafeModeEnabled && !PackageManagerHelper.isSystemApp(this, intent)) {
@@ -162,7 +192,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
             return false;
         }
 
-        Bundle optsBundle = (v != null) ? getActivityLaunchOptionsAsBundle(v) : null;
+        Bundle optsBundle = (v != null) ? getActivityLaunchOptions(v).toBundle() : null;
         UserHandle user = item == null ? null : item.user;
 
         // Prepare intent
