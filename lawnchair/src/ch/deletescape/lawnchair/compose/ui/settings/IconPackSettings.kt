@@ -29,10 +29,9 @@ data class IconPackInfo(val name: String, val packageName: String, val icon: Dra
 @Composable
 fun IconPackSettings() {
     val context = LocalContext.current
+    val sharedPref = Utilities.getPrefs(context)
 
-    val sharedPref: SharedPreferences by lazy { Utilities.getPrefs(context) }
-    val dbSelectedIconPackPackageName by lazy { sharedPref.getString(LawnchairPreferences.ICON_PACK_PACKAGE, "")!! }
-
+    val dbSelectedIconPackPackageName = sharedPref.getString(LawnchairPreferences.ICON_PACK_PACKAGE, "")!!
     var selectedIconPackPackageName by remember { mutableStateOf(dbSelectedIconPackPackageName) }
 
     fun getIconPacks(): MutableMap<String, IconPackInfo> {
