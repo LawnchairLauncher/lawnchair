@@ -12,4 +12,6 @@
     <string name="home_screen_rotation_label">Home Screen Rotation</string>
     <string name="home_screen_rotaton_description">When device is rotated.</string>
     <string name="auto_add_shortcuts_label">Add New Apps to Home Screen</string>
+    <string name="make_icon_packs_adaptive_label">Make Adaptive Icons for Icon Packs</string>
+    <string name="make_icon_packs_adaptive_description">Doesn’t affect Adaptive icon packs.</string>
 </resources>

@@ -48,6 +48,10 @@ sealed class Screen(
         subtitleResId = R.string.home_screen_description,
         iconResId = R.drawable.ic_home_screen
     )
+    object IconPackSettings : Screen(
+        route = "iconPackSettings",
+        titleResId = R.string.icon_pack
+    )
 }
 
 val screens = listOf(
@@ -69,7 +73,8 @@ fun Settings() {
         NavHost(navController = navController, startDestination = Screen.Top.route) {
             composable(route = Screen.Top.route) { Top(navController) }
             composable(route = Screen.HomeScreenSettings.route) { HomeScreenSettings() }
-            composable(route = Screen.GeneralSettings.route) { GeneralSettings() }
+            composable(route = Screen.GeneralSettings.route) { GeneralSettings(navController) }
+            composable(route = Screen.IconPackSettings.route) { IconPackSettings() }
         }
     }
 }
@@ -97,6 +102,7 @@ private fun TopBar(navController: NavController) {
         "top" -> stringResource(id = R.string.settings)
         "homeScreenSettings" -> stringResource(id = R.string.home_screen_label)
         "generalSettings" -> stringResource(id = R.string.general_label)
+        "iconPackSettings" -> stringResource(id = R.string.icon_pack)
         else -> ""
     }
 
