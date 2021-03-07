@@ -170,7 +170,14 @@ public class TaskbarController {
 
             @Override
             public View.OnLongClickListener getItemOnLongClickListener() {
-                return mDragController::startDragOnLongClick;
+                return view -> {
+                    if (mLauncher.hasBeenResumed() && view.getTag() instanceof ItemInfo) {
+                        alignRealHotseatWithTaskbar();
+                        return mDragController.startWorkspaceDragOnLongClick(view);
+                    } else {
+                        return mDragController.startSystemDragOnLongClick(view);
+                    }
+                };
             }
 
             @Override

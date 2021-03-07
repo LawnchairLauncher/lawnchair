@@ -121,6 +121,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.folder.FolderGridOrganizer;
 import com.android.launcher3.folder.FolderIcon;
@@ -2861,6 +2862,10 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
      */
     public boolean isViewInTaskbar(View v) {
         return false;
+    }
+
+    public DragOptions getDefaultWorkspaceDragOptions() {
+        return new DragOptions();
     }
 
     private static class NonConfigInstance {

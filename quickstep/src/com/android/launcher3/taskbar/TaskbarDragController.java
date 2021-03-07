@@ -33,6 +33,7 @@ import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ClipDescriptionCompat;
@@ -57,7 +58,7 @@ public class TaskbarDragController {
      * generate the ClipDescription and Intent.
      * @return Whether {@link View#startDragAndDrop} started successfully.
      */
-    protected boolean startDragOnLongClick(View view) {
+    protected boolean startSystemDragOnLongClick(View view) {
         if (!(view instanceof BubbleTextView)) {
             return false;
         }
@@ -120,6 +121,38 @@ public class TaskbarDragController {
             view.setOnDragListener(getDraggedViewDragListener());
             return view.startDragAndDrop(clipData, shadowBuilder, null /* localState */,
                     View.DRAG_FLAG_GLOBAL | View.DRAG_FLAG_OPAQUE);
+        }
+        return false;
+    }
+
+    /**
+     * Starts a drag and drop operation that controls a real Workspace (Hotseat) view.
+     * @param view The Taskbar item that was long clicked.
+     * @return Whether {@link View#startDragAndDrop} started successfully.
+     */
+    protected boolean startWorkspaceDragOnLongClick(View view) {
+        View.DragShadowBuilder transparentShadowBuilder = new View.DragShadowBuilder(view) {
+            private static final int ARBITRARY_SHADOW_SIZE = 10;
+
+            @Override
+            public void onDrawShadow(Canvas canvas) {
+            }
+
+            @Override
+            public void onProvideShadowMetrics(Point outShadowSize, Point outShadowTouchPoint) {
+                outShadowSize.set(ARBITRARY_SHADOW_SIZE, ARBITRARY_SHADOW_SIZE);
+                outShadowTouchPoint.set(ARBITRARY_SHADOW_SIZE / 2, ARBITRARY_SHADOW_SIZE / 2);
+            }
+        };
+
+        TaskbarDragListener taskbarDragListener = new TaskbarDragListener(mLauncher,
+                (ItemInfo) view.getTag());
+        if (view.startDragAndDrop(new ClipData("", new String[] {taskbarDragListener.getMimeType()},
+                        new ClipData.Item("")),
+                transparentShadowBuilder, null /* localState */, View.DRAG_FLAG_GLOBAL)) {
+            view.setOnDragListener(getDraggedViewDragListener());
+            taskbarDragListener.init(mLauncher.getDragLayer());
+            return true;
         }
         return false;
     }
