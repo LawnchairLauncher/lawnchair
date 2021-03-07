@@ -192,6 +192,16 @@ public class LoaderTask implements Runnable {
             loadWorkspace(allShortcuts);
             logger.addSplit("loadWorkspace");
 
+            // Sanitize data re-syncs widgets/shortcuts based on the workspace loaded from db.
+            // sanitizeData should not be invoked if the workspace is loaded from a db different
+            // from the main db as defined in the invariant device profile.
+            // (e.g. both grid preview and minimal device mode uses a different db)
+            if (mApp.getInvariantDeviceProfile().dbFile.equals(mDbName)) {
+                verifyNotStopped();
+                sanitizeData();
+                logger.addSplit("sanitizeData");
+            }
+
             verifyNotStopped();
             mResults.bindWorkspace();
             logger.addSplit("bindWorkspace");
@@ -272,14 +282,6 @@ public class LoaderTask implements Runnable {
             // fifth step
             if (FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
                 loadFolderNames();
-            }
-
-            // Sanitize data re-syncs widgets/shortcuts based on the workspace loaded from db.
-            // sanitizeData should not be invoked if the workspace is loaded from a db different
-            // from the main db as defined in the invariant device profile.
-            // (e.g. both grid preview and minimal device mode uses a different db)
-            if (mApp.getInvariantDeviceProfile().dbFile.equals(mDbName)) {
-                sanitizeData();
             }
 
             verifyNotStopped();
@@ -875,10 +877,11 @@ public class LoaderTask implements Runnable {
                     mBgDataModel.itemsIdMap.remove(folderId);
                 }
             }
-            // Remove any ghost widgets
-            LauncherSettings.Settings.call(contentResolver,
-                    LauncherSettings.Settings.METHOD_REMOVE_GHOST_WIDGETS);
+
         }
+        // Remove any ghost widgets
+        LauncherSettings.Settings.call(contentResolver,
+                LauncherSettings.Settings.METHOD_REMOVE_GHOST_WIDGETS);
 
         // Update pinned state of model shortcuts
         mBgDataModel.updateShortcutPinnedState(context);
