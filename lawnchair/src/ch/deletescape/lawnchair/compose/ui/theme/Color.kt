@@ -1,4 +1,4 @@
-package ch.deletescape.lawnchair.settings.ui.theme
+package ch.deletescape.lawnchair.compose.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

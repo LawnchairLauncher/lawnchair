@@ -22,7 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import ch.deletescape.lawnchair.settings.ui.theme.LawnchairTheme
+import ch.deletescape.lawnchair.compose.ui.theme.LawnchairTheme
 
 private enum class TabPage {
     HomeScreen, Dock, AppDrawer

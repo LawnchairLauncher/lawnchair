@@ -1,11 +1,11 @@
-package ch.deletescape.lawnchair.settings.ui.theme
+package ch.deletescape.lawnchair.compose.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
-import ch.deletescape.lawnchair.compose.ui.theme.Typography
+import ch.deletescape.lawnchair.settings.ui.theme.Shapes
 
 private val DarkColorPalette = darkColors(
     primary = Purple200,
@@ -31,7 +31,7 @@ onSurface = Color.Black,
 @Composable
 fun LawnchairTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable() () -> Unit
+    content: @Composable () -> Unit
 ) {
     val colors = if (darkTheme) {
         DarkColorPalette

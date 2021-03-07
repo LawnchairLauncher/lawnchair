@@ -24,7 +24,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
-import ch.deletescape.lawnchair.settings.ui.theme.LawnchairTheme
+import ch.deletescape.lawnchair.compose.ui.theme.LawnchairTheme
 import ch.deletescape.lawnchair.sharedprefs.LawnchairPreferences
 import com.android.launcher3.R
 import com.android.launcher3.Utilities

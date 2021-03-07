@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
-import ch.deletescape.lawnchair.settings.ui.theme.LawnchairTheme
+import ch.deletescape.lawnchair.compose.ui.theme.LawnchairTheme
 
 class SettingsActivity : ComponentActivity() {
     @ExperimentalAnimationApi
