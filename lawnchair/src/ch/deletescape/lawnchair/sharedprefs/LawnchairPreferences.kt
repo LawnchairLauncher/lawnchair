@@ -10,7 +10,7 @@ class LawnchairPreferences(val context: Context) {
     val listener: SharedPreferences.OnSharedPreferenceChangeListener =
         SharedPreferences.OnSharedPreferenceChangeListener { _: SharedPreferences?, key: String? ->
             when (key) {
-                ICON_PACK_PACKAGE -> {
+                ICON_PACK_PACKAGE, WRAP_ADAPTIVE_ICONS -> {
                     LauncherAppState.getInstance(context).model.clearIconCache()
                     LauncherAppState.getInstance(context).model.forceReload()
                 }
