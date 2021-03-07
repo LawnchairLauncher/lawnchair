@@ -28,10 +28,10 @@ fun NavActionSetting(
             .clickable { navController.navigate(route = destination) }
             .padding(start = 16.dp, end = 16.dp),
     ) {
-        Text(text = title, style = MaterialTheme.typography.subtitle1)
+        Text(text = title, style = MaterialTheme.typography.subtitle1, color = MaterialTheme.colors.onBackground)
         subtitle?.let {
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                Text(text = subtitle, style = MaterialTheme.typography.body2)
+                Text(text = it, style = MaterialTheme.typography.body2, color = MaterialTheme.colors.onBackground)
             }
         }
     }

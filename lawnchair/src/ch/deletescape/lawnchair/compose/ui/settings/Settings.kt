@@ -42,12 +42,14 @@ sealed class Screen(
         subtitleResId = R.string.general_description,
         iconResId = R.drawable.ic_general
     )
+
     object HomeScreenSettings : Screen(
         route = "homeScreenSettings",
         titleResId = R.string.home_screen_label,
         subtitleResId = R.string.home_screen_description,
         iconResId = R.drawable.ic_home_screen
     )
+
     object IconPackSettings : Screen(
         route = "iconPackSettings",
         titleResId = R.string.icon_pack
@@ -134,7 +136,8 @@ private fun TopBar(navController: NavController) {
         Text(
             text = title,
             style = MaterialTheme.typography.h6,
-            modifier = Modifier.padding(start = 16.dp)
+            modifier = Modifier.padding(start = 16.dp),
+            color = MaterialTheme.colors.onSurface
         )
     }
 }
@@ -160,10 +163,18 @@ private fun ScreenRow(titleResId: Int, onClick: () -> Unit, subtitleResId: Int?,
             )
         }
         Column(Modifier.padding(start = 24.dp)) {
-            Text(text = stringResource(id = titleResId), style = MaterialTheme.typography.subtitle1)
+            Text(
+                text = stringResource(id = titleResId),
+                style = MaterialTheme.typography.subtitle1,
+                color = MaterialTheme.colors.onBackground
+            )
             subtitleResId?.let {
                 CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                    Text(text = stringResource(id = it), style = MaterialTheme.typography.body2)
+                    Text(
+                        text = stringResource(id = it),
+                        style = MaterialTheme.typography.body2,
+                        color = MaterialTheme.colors.onBackground
+                    )
                 }
             }
         }

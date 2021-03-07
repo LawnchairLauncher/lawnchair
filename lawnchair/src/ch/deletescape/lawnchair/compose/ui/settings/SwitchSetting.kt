@@ -24,10 +24,10 @@ fun SwitchSetting(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Column {
-            Text(text = title, style = MaterialTheme.typography.subtitle1)
+            Text(text = title, style = MaterialTheme.typography.subtitle1, color = MaterialTheme.colors.onBackground)
             subtitle?.let {
                 CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                    Text(text = subtitle, style = MaterialTheme.typography.body2)
+                    Text(text = subtitle, style = MaterialTheme.typography.body2, color = MaterialTheme.colors.onBackground)
                 }
             }
         }
