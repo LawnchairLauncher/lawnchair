@@ -28,6 +28,7 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -60,6 +61,8 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+
+import ch.deletescape.lawnchair.sharedprefs.LawnchairPreferences;
 
 public class InvariantDeviceProfile {
 
@@ -298,6 +301,25 @@ public class InvariantDeviceProfile {
 
         ComponentName cn = new ComponentName(context.getPackageName(), getClass().getName());
         defaultWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(context, cn, null);
+
+        // Lawnchair prefs
+        SharedPreferences prefs = LawnchairPreferences.Companion.getInstance(context);
+        if (prefs == null) return;
+
+        // Lawnchair grid sizes
+        numHotseatIcons = prefs.getInt(LawnchairPreferences.HOTSEAT_COLUMNS, numHotseatIcons);
+        numRows = prefs.getInt(LawnchairPreferences.WORKSPACE_ROWS, numRows);
+        numColumns = prefs.getInt(LawnchairPreferences.WORKSPACE_COLUMNS, numColumns);
+        numAllAppsColumns = prefs.getInt(LawnchairPreferences.ALL_APPS_COLUMNS, numAllAppsColumns);
+        numFolderRows = prefs.getInt(LawnchairPreferences.FOLDER_ROWS, numFolderRows);
+        numFolderColumns = prefs.getInt(LawnchairPreferences.FOLDER_COLUMNS, numFolderColumns);
+
+        // Lawnchair icon and text sizes
+        iconSize = prefs.getFloat(LawnchairPreferences.ICON_SIZE_FACTOR, 1f) * iconSize;
+        iconTextSize = prefs.getFloat(LawnchairPreferences.TEXT_SIZE_FACTOR, 1f) * iconTextSize;
+        allAppsIconSize = prefs.getFloat(LawnchairPreferences.ALL_APPS_ICON_SIZE_FACTOR, 1f) * allAppsIconSize;
+        allAppsIconTextSize = prefs.getFloat(LawnchairPreferences.ALL_APPS_TEXT_SIZE_FACTOR, 1f) * allAppsIconTextSize;
+
     }
 
     @Nullable
