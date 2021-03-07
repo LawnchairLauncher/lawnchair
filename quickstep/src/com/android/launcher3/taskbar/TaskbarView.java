@@ -192,6 +192,7 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
             } else {
                 hotseatView.setOnClickListener(null);
                 hotseatView.setOnLongClickListener(null);
+                hotseatView.setTag(null);
             }
             updateHotseatItemVisibility(hotseatView);
         }

@@ -2973,7 +2973,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
      * @param operators List of operators, in order starting from best matching operator.
      * @return
      */
-    private View getFirstMatch(CellLayout[] cellLayouts, final ItemOperator... operators) {
+    View getFirstMatch(CellLayout[] cellLayouts, final ItemOperator... operators) {
         // This array is filled with the first match for each operator.
         final View[] matches = new View[operators.length];
         // For efficiency, the outer loop should be CellLayout.
