@@ -61,8 +61,8 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     /** Widget preview width is calculated by multiplying this factor to the widget cell width. */
     private static final float PREVIEW_SCALE = 0.8f;
 
-    private int mPreviewWidth;
-    private int mPreviewHeight;
+    protected int mPreviewWidth;
+    protected int mPreviewHeight;
     protected int mPresetPreviewSize;
     private int mCellSize;
 
