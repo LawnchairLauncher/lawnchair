@@ -67,9 +67,9 @@ public class DragView extends View implements StateListener<LauncherState> {
     public static final int COLOR_CHANGE_DURATION = 120;
     public static final int VIEW_ZOOM_DURATION = 150;
 
-    private boolean mDrawBitmap = true;
-    private Bitmap mBitmap;
-    private Bitmap mCrossFadeBitmap;
+    private boolean mShouldDraw = true;
+    private Drawable mDrawable;
+    private Drawable mCrossFadeDrawable;
     @Thunk Paint mPaint;
     private final int mBlurSizeOutline;
     private final int mRegistrationX;
@@ -114,19 +114,21 @@ public class DragView extends View implements StateListener<LauncherState> {
      * The registration point is the point inside our view that the touch events should
      * be centered upon.
      * @param launcher The Launcher instance
-     * @param bitmap The view that we're dragging around.  We scale it up when we draw it.
+     * @param drawable The view that we're dragging around.  We scale it up when we draw it.
      * @param registrationX The x coordinate of the registration point.
      * @param registrationY The y coordinate of the registration point.
      */
-    public DragView(Launcher launcher, Bitmap bitmap, int registrationX, int registrationY,
-                    final float initialScale, final float scaleOnDrop, final float finalScaleDps) {
+    public DragView(Launcher launcher, Drawable drawable, int registrationX,
+            int registrationY, final float initialScale, final float scaleOnDrop,
+            final float finalScaleDps) {
         super(launcher);
         mLauncher = launcher;
         mDragLayer = launcher.getDragLayer();
         mDragController = launcher.getDragController();
         mFirstFrameAnimatorHelper = new FirstFrameAnimatorHelper(this);
 
-        final float scale = (bitmap.getWidth() + finalScaleDps) / bitmap.getWidth();
+        final float scale = (drawable.getIntrinsicWidth() + finalScaleDps)
+                / drawable.getIntrinsicWidth();
 
         // Set the initial scale to avoid any jumps
         setScaleX(initialScale);
@@ -144,8 +146,9 @@ public class DragView extends View implements StateListener<LauncherState> {
             }
         });
 
-        mBitmap = bitmap;
-        setDragRegion(new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight()));
+        mDrawable = drawable;
+        setDragRegion(new Rect(0, 0, drawable.getIntrinsicWidth(),
+                drawable.getIntrinsicHeight()));
 
         // The point in our scaled bitmap that the touch events are located
         mRegistrationX = registrationX;
@@ -197,8 +200,8 @@ public class DragView extends View implements StateListener<LauncherState> {
             @Override
             public void run() {
                 Object[] outObj = new Object[1];
-                int w = mBitmap.getWidth();
-                int h = mBitmap.getHeight();
+                int w = mDrawable.getIntrinsicWidth();
+                int h = mDrawable.getIntrinsicHeight();
                 Drawable dr = Utilities.getFullDrawable(mLauncher, info, w, h, outObj);
 
                 if (dr instanceof AdaptiveIconDrawable) {
@@ -214,11 +217,11 @@ public class DragView extends View implements StateListener<LauncherState> {
                     mBadge.setBounds(badgeBounds);
 
                     // Do not draw the background in case of folder as its translucent
-                    mDrawBitmap = !(dr instanceof FolderAdaptiveIcon);
+                    mShouldDraw = !(dr instanceof FolderAdaptiveIcon);
 
                     try (LauncherIcons li = LauncherIcons.obtain(mLauncher)) {
                         Drawable nDr; // drawable to be normalized
-                        if (mDrawBitmap) {
+                        if (mShouldDraw) {
                             nDr = dr;
                         } else {
                             // Since we just want the scale, avoid heavy drawing operations
@@ -308,7 +311,7 @@ public class DragView extends View implements StateListener<LauncherState> {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        setMeasuredDimension(mBitmap.getWidth(), mBitmap.getHeight());
+        setMeasuredDimension(mDrawable.getIntrinsicWidth(), mDrawable.getIntrinsicHeight());
     }
 
     /** Sets the scale of the view over the normal workspace icon size. */
@@ -352,29 +355,37 @@ public class DragView extends View implements StateListener<LauncherState> {
         return mDragRegion;
     }
 
-    public Bitmap getPreviewBitmap() {
-        return mBitmap;
-    }
-
     @Override
     protected void onDraw(Canvas canvas) {
         mHasDrawn = true;
 
-        if (mDrawBitmap) {
+        if (mShouldDraw) {
             // Always draw the bitmap to mask anti aliasing due to clipPath
-            boolean crossFade = mCrossFadeProgress > 0 && mCrossFadeBitmap != null;
+            boolean crossFade = mCrossFadeProgress > 0 && mCrossFadeDrawable != null;
             if (crossFade) {
                 int alpha = crossFade ? (int) (255 * (1 - mCrossFadeProgress)) : 255;
                 mPaint.setAlpha(alpha);
             }
-            canvas.drawBitmap(mBitmap, 0.0f, 0.0f, mPaint);
+            mDrawable.setColorFilter(mPaint.getColorFilter());
+            mDrawable.setAlpha(mPaint.getAlpha());
+            mDrawable.setBounds(
+                    new Rect(0, 0, mDrawable.getIntrinsicWidth(),
+                            mDrawable.getIntrinsicHeight()));
+            mDrawable.draw(canvas);
             if (crossFade) {
                 mPaint.setAlpha((int) (255 * mCrossFadeProgress));
                 final int saveCount = canvas.save();
-                float sX = (mBitmap.getWidth() * 1.0f) / mCrossFadeBitmap.getWidth();
-                float sY = (mBitmap.getHeight() * 1.0f) / mCrossFadeBitmap.getHeight();
+                float sX = ((float) mDrawable.getIntrinsicWidth())
+                        / mCrossFadeDrawable.getIntrinsicWidth();
+                float sY = ((float) mDrawable.getIntrinsicHeight())
+                        / mCrossFadeDrawable.getIntrinsicHeight();
                 canvas.scale(sX, sY);
-                canvas.drawBitmap(mCrossFadeBitmap, 0.0f, 0.0f, mPaint);
+                mCrossFadeDrawable.setColorFilter(mPaint.getColorFilter());
+                mCrossFadeDrawable.setAlpha(mPaint.getAlpha());
+                mDrawable.setBounds(
+                        new Rect(0, 0, mDrawable.getIntrinsicWidth(),
+                                mDrawable.getIntrinsicHeight()));
+                mCrossFadeDrawable.draw(canvas);
                 canvas.restoreToCount(saveCount);
             }
         }
@@ -390,8 +401,8 @@ public class DragView extends View implements StateListener<LauncherState> {
         }
     }
 
-    public void setCrossFadeBitmap(Bitmap crossFadeBitmap) {
-        mCrossFadeBitmap = crossFadeBitmap;
+    public void setCrossFadeDrawable(Drawable crossFadeDrawable) {
+        mCrossFadeDrawable = crossFadeDrawable;
     }
 
     public void crossFade(int duration) {
@@ -469,8 +480,8 @@ public class DragView extends View implements StateListener<LauncherState> {
 
         // Start the pick-up animation
         DragLayer.LayoutParams lp = new DragLayer.LayoutParams(0, 0);
-        lp.width = mBitmap.getWidth();
-        lp.height = mBitmap.getHeight();
+        lp.width = mDrawable.getIntrinsicWidth();
+        lp.height = mDrawable.getIntrinsicHeight();
         lp.customPosition = true;
         setLayoutParams(lp);
         move(touchX, touchY);
