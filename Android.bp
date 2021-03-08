@@ -93,3 +93,93 @@ java_library {
     sdk_version: "current",
     min_sdk_version: "28",
 }
+
+//
+// Build rule for Launcher3 dependencies lib.
+//
+android_library {
+    name: "Launcher3CommonDepsLib",
+    static_libs: [
+        "androidx.recyclerview_recyclerview",
+        "androidx.dynamicanimation_dynamicanimation",
+        "androidx.preference_preference",
+        "androidx.slice_slice-view",
+        "iconloader_base",
+        "LauncherPluginLib",
+        "launcher_quickstep_log_protos_lite"
+    ],
+    srcs: [
+        "src_build_config/**/*.java",
+    ],
+    resource_dirs: ["res"],
+    optimize: {
+        enabled: false,
+    },
+    sdk_version: "current",
+    min_sdk_version: "26",
+    manifest: "AndroidManifest-common.xml",
+}
+
+//
+// Build rule for Launcher3 app.
+//
+android_app {
+    name: "Launcher3",
+
+    static_libs: [
+        "Launcher3CommonDepsLib",
+    ],
+    srcs: [
+        "src/**/*.java",
+        "src_shortcuts_overrides/**/*.java",
+        "src_ui_overrides/**/*.java",
+        "ext_tests/src/**/*.java",
+    ],
+    resource_dirs: [
+        "ext_tests/res",
+    ],
+    optimize: {
+        proguard_flags_files: ["proguard.flags"],
+        // Proguard is disable for testing. Derivarive prjects to keep proguard enabled
+        enabled: false,
+    },
+
+    sdk_version: "current",
+    min_sdk_version: "26",
+    target_sdk_version: "29",
+    privileged: true,
+    system_ext_specific: true,
+
+    overrides: [
+        "Home",
+        "Launcher2",
+    ],
+    required: ["privapp_whitelist_com.android.launcher3"],
+
+    jacoco: {
+        include_filter: ["com.android.launcher3.**"],
+    },
+    additional_manifests: [
+        "AndroidManifest-common.xml",
+    ],
+}
+
+//
+// Launcher Robolectric test target.
+//
+java_library {
+    name: "Launcher3TestCommon",
+    libs: [
+        "Launcher3CommonDepsLib",
+    ],
+    srcs: [
+        "src/**/*.java",
+        "src_shortcuts_overrides/**/*.java",
+        "src_ui_overrides/**/*.java",
+        "ext_tests/src/**/*.java",
+        "tests/src_common/**/*.java",
+    ],
+    target_sdk_version: "29",
+    sdk_version: "current",
+    min_sdk_version: "26",
+}
