@@ -18,6 +18,7 @@ package com.android.launcher3.ui;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.allapps.AllAppsStore.DEFER_UPDATES_TEST;
+import static com.android.launcher3.tapl.LauncherInstrumentation.LONG_WAIT_TIME_MS;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -140,9 +141,13 @@ public class WorkTabTest extends AbstractLauncherUiTest {
                 WorkEduView.KEY_WORK_EDU_STEP).remove(
                 WorkEduView.KEY_LEGACY_WORK_EDU_SEEN).commit());
 
-        waitForLauncherCondition("Work tab not setup",
-                launcher -> launcher.getAppsView().getContentView() instanceof AllAppsPagedView,
-                60000);
+        waitForLauncherCondition("Work tab not setup", launcher -> {
+            if (launcher.getAppsView().getContentView() instanceof AllAppsPagedView) {
+                launcher.getAppsView().getAppsStore().enableDeferUpdates(DEFER_UPDATES_TEST);
+                return true;
+            }
+            return false;
+        }, LONG_WAIT_TIME_MS);
 
         executeOnLauncher(launcher -> launcher.getStateManager().goToState(ALL_APPS));
         WorkEduView workEduView = getEduView();
@@ -151,16 +156,6 @@ public class WorkTabTest extends AbstractLauncherUiTest {
             assertEquals(((TextView) workEduView.findViewById(R.id.content_text)).getText(),
                     l.getResources().getString(R.string.work_profile_edu_personal_apps));
             workEduView.findViewById(R.id.proceed).callOnClick();
-        });
-
-        executeOnLauncher(launcher -> Log.d(TestProtocol.WORK_PROFILE_REMOVED,
-                "work profile status (" + mProfileUserId + ") :"
-                        + launcher.getAppsView().isWorkTabVisible()));
-
-
-        executeOnLauncher(launcher -> {
-            launcher.getAppsView().getAppsStore().enableDeferUpdates(DEFER_UPDATES_TEST);
-            Log.d(TestProtocol.WORK_PROFILE_REMOVED, "Defer all apps update");
         });
 
         AtomicInteger attempt = new AtomicInteger(0);
@@ -178,7 +173,7 @@ public class WorkTabTest extends AbstractLauncherUiTest {
             }
             return ((TextView) workEduView.findViewById(R.id.content_text)).getText().equals(
                     l.getResources().getString(R.string.work_profile_edu_work_apps));
-        }, 60000);
+        });
     }
 
     @Test
