@@ -85,6 +85,7 @@ public class TaskbarController {
     // Contains all loaded Hotseat items.
     private ItemInfo[] mLatestLoadedHotseatItems;
 
+    private @Nullable Animator mAnimator;
     private boolean mIsAnimatingToLauncher;
 
     public TaskbarController(BaseQuickstepLauncher launcher,
@@ -245,6 +246,10 @@ public class TaskbarController {
         mTaskbarVisibilityController.cleanup();
         mHotseatController.cleanup();
         mRecentsController.cleanup();
+
+        if (mAnimator != null) {
+            mAnimator.end();
+        }
     }
 
     private void removeFromWindowManager() {
@@ -287,13 +292,21 @@ public class TaskbarController {
      */
     public void onLauncherResumedOrPaused(boolean isResumed) {
         long duration = QuickstepAppTransitionManagerImpl.CONTENT_ALPHA_DURATION;
-        final Animator anim;
-        if (isResumed) {
-            anim = createAnimToLauncher(null, duration);
-        } else {
-            anim = createAnimToApp(duration);
+        if (mAnimator != null) {
+            mAnimator.cancel();
         }
-        anim.start();
+        if (isResumed) {
+            mAnimator = createAnimToLauncher(null, duration);
+        } else {
+            mAnimator = createAnimToApp(duration);
+        }
+        mAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mAnimator = null;
+            }
+        });
+        mAnimator.start();
     }
 
     /**
