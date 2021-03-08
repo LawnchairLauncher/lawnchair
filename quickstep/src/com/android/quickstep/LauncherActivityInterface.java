@@ -187,9 +187,6 @@ public final class LauncherActivityInterface extends
 
     @Override
     public boolean switchToRecentsIfVisible(Runnable onCompleteCallback) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.OVERIEW_NOT_ALLAPPS, "switchToRecentsIfVisible");
-        }
         Launcher launcher = getVisibleLauncher();
         if (launcher == null) {
             return false;
