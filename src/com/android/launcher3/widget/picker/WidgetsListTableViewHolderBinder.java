@@ -153,7 +153,7 @@ public final class WidgetsListTableViewHolderBinder
             } else {
                 for (int j = tableRow.getChildCount(); j < widgetItems.size(); j++) {
                     WidgetCell widget = (WidgetCell) mLayoutInflater.inflate(
-                            R.layout.widget_cell, tableRow, false);
+                            R.layout.live_preview_widget_cell, tableRow, false);
                     // set up touch.
                     widget.setOnClickListener(mIconClickListener);
                     widget.setOnLongClickListener(mIconLongClickListener);
