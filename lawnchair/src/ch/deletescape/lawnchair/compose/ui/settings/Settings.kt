@@ -1,7 +1,11 @@
 package ch.deletescape.lawnchair.compose.ui.settings
 
+import android.app.Application
+import android.content.Intent
+import android.content.pm.ResolveInfo
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
@@ -14,9 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,9 +27,65 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.*
+import ch.deletescape.lawnchair.sharedprefs.PrefManager
 import com.android.launcher3.R
+
+class SettingsViewModel(application: Application) : AndroidViewModel(application), SettingsInteractor {
+    private val pm = PrefManager(application)
+
+    override val iconPackPackage: MutableState<String> = mutableStateOf(pm.iconPackPackage)
+    override fun setIconPackPackage(iconPackPackage: String) {
+        pm.iconPackPackage = iconPackPackage
+        this.iconPackPackage.value = iconPackPackage
+    }
+
+    override val allowRotation: MutableState<Boolean> = mutableStateOf(pm.allowRotation)
+    override fun setAllowRotation(allowRotation: Boolean) {
+        pm.allowRotation = allowRotation
+        this.allowRotation.value = allowRotation
+    }
+
+    override val wrapAdaptiveIcons: MutableState<Boolean> = mutableStateOf(pm.wrapAdaptiveIcons)
+    override fun setWrapAdaptiveIcons(wrapAdaptiveIcons: Boolean) {
+        pm.wrapAdaptiveIcons = wrapAdaptiveIcons
+        this.wrapAdaptiveIcons.value = wrapAdaptiveIcons
+    }
+
+    override val addIconToHome: MutableState<Boolean> = mutableStateOf(pm.addIconToHome)
+    override fun setAddIconToHome(addIconToHome: Boolean) {
+        pm.addIconToHome = addIconToHome
+        this.addIconToHome.value = addIconToHome
+    }
+
+    override fun getIconPacks(): MutableMap<String, IconPackInfo> {
+        val pm = getApplication<Application>().packageManager
+        val iconPacks: MutableMap<String, IconPackInfo> = HashMap()
+        val list: MutableList<ResolveInfo> = pm.queryIntentActivities(Intent("com.novalauncher.THEME"), 0)
+
+        list.addAll(pm.queryIntentActivities(Intent("org.adw.launcher.icons.ACTION_PICK_ICON"), 0))
+        list.addAll(pm.queryIntentActivities(Intent("com.dlto.atom.launcher.THEME"), 0))
+        list.addAll(
+            pm.queryIntentActivities(Intent("android.intent.action.MAIN").addCategory("com.anddoes.launcher.THEME"), 0)
+        )
+
+        iconPacks["system"] =
+            IconPackInfo("System Icons", "", AppCompatResources.getDrawable(getApplication(), R.drawable.ic_launcher_home)!!)
+
+        for (info in list) {
+            iconPacks[info.activityInfo.packageName] = IconPackInfo(
+                info.loadLabel(pm).toString(),
+                info.activityInfo.packageName,
+                info.loadIcon(pm)
+            )
+        }
+
+        return iconPacks
+    }
+}
 
 sealed class Screen(
     val route: String,
@@ -36,6 +94,7 @@ sealed class Screen(
     @DrawableRes val iconResId: Int? = null
 ) {
     object Top : Screen(route = "top", titleResId = R.string.settings)
+
     object GeneralSettings : Screen(
         route = "generalSettings",
         titleResId = R.string.general_label,
@@ -63,7 +122,7 @@ val screens = listOf(
 
 @ExperimentalAnimationApi
 @Composable
-fun Settings() {
+fun Settings(interactor: SettingsInteractor = viewModel<SettingsViewModel>()) {
     val navController = rememberNavController()
 
     Column(
@@ -74,9 +133,14 @@ fun Settings() {
         TopBar(navController = navController)
         NavHost(navController = navController, startDestination = Screen.Top.route) {
             composable(route = Screen.Top.route) { Top(navController) }
-            composable(route = Screen.HomeScreenSettings.route) { HomeScreenSettings() }
-            composable(route = Screen.GeneralSettings.route) { GeneralSettings(navController) }
-            composable(route = Screen.IconPackSettings.route) { IconPackSettings() }
+            composable(route = Screen.HomeScreenSettings.route) { HomeScreenSettings(interactor = interactor) }
+            composable(route = Screen.GeneralSettings.route) {
+                GeneralSettings(
+                    navController = navController,
+                    interactor = interactor
+                )
+            }
+            composable(route = Screen.IconPackSettings.route) { IconPackSettings(interactor = interactor) }
         }
     }
 }

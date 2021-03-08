@@ -27,7 +27,7 @@ fun SwitchSetting(
             Text(text = title, style = MaterialTheme.typography.subtitle1, color = MaterialTheme.colors.onBackground)
             subtitle?.let {
                 CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                    Text(text = subtitle, style = MaterialTheme.typography.body2, color = MaterialTheme.colors.onBackground)
+                    Text(text = it, style = MaterialTheme.typography.body2, color = MaterialTheme.colors.onBackground)
                 }
             }
         }
