@@ -144,11 +144,14 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
      */
     public void setProgress(float progress) {
         mProgress = progress;
+
         mScrimView.setProgress(progress);
         float shiftCurrent = progress * mShiftRange;
-
         mAppsView.setTranslationY(shiftCurrent);
         if (FeatureFlags.ENABLE_DEVICE_SEARCH.get() && mSearchImeEnabled) {
+            if (mInsetController == null) {
+                setupInsetTransitionController();
+            }
             mInsetController.setProgress(progress);
         }
     }
@@ -240,11 +243,15 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
         mAppsView = appsView;
         mScrimView = scrimView;
         if (FeatureFlags.ENABLE_DEVICE_SEARCH.get() && BuildCompat.isAtLeastR()) {
-            mInsetController = new AllAppsInsetTransitionController(mShiftRange, mAppsView);
-            mLauncher.getSystemUiController().updateUiState(UI_STATE_ALLAPPS,
-                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            setupInsetTransitionController();
         }
+    }
+
+    private void setupInsetTransitionController() {
+        mInsetController = new AllAppsInsetTransitionController(mShiftRange, mAppsView);
+        mLauncher.getSystemUiController().updateUiState(UI_STATE_ALLAPPS,
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
     }
 
     /**
