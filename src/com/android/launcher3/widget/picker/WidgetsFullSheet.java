@@ -110,9 +110,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         RecyclerViewFastScroller fastScroller = findViewById(R.id.fast_scroller);
         if (mHasWorkProfile) {
             mViewPager = findViewById(R.id.widgets_view_pager);
-            // Temporarily disable swipe gesture until widgets list horizontal scrollviews per
-            // app are replaced by gird views.
-            mViewPager.setSwipeGestureEnabled(false);
             mViewPager.initParentViews(this);
             mViewPager.getPageIndicator().setOnActivePageChangedListener(this);
             mViewPager.getPageIndicator().setActiveMarker(AdapterHolder.PRIMARY);
