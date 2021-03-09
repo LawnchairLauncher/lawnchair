@@ -5,6 +5,8 @@ import static android.appwidget.AppWidgetProviderInfo.WIDGET_FEATURE_HIDE_FROM_P
 
 import static com.android.launcher3.pm.ShortcutConfigActivityInfo.queryList;
 
+import static java.util.stream.Collectors.toList;
+
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
@@ -67,7 +69,7 @@ public class WidgetsModel {
      *
      * @see com.android.launcher3.widget.picker.WidgetsListAdapter#setWidgets(List)
      */
-    public synchronized ArrayList<WidgetsListBaseEntry> getWidgetsList(Context context) {
+    public synchronized ArrayList<WidgetsListBaseEntry> getWidgetsListForPicker(Context context) {
         ArrayList<WidgetsListBaseEntry> result = new ArrayList<>();
         AlphabeticIndexCompat indexer = new AlphabeticIndexCompat(context);
 
@@ -80,6 +82,22 @@ public class WidgetsModel {
             result.add(new WidgetsListContentEntry(pkgItem, sectionName, widgetItems));
         }
         return result;
+    }
+
+    /** Returns a mapping of packages to their widgets without static shortcuts. */
+    public synchronized Map<PackageUserKey, List<WidgetItem>> getAllWidgetsWithoutShortcuts() {
+        Map<PackageUserKey, List<WidgetItem>> packagesToWidgets = new HashMap<>();
+        mWidgetsList.forEach((packageItemInfo, widgetsAndShortcuts) -> {
+            List<WidgetItem> widgets = widgetsAndShortcuts.stream()
+                        .filter(item -> item.widgetInfo != null)
+                        .collect(toList());
+            if (widgets.size() > 0) {
+                packagesToWidgets.put(
+                        new PackageUserKey(packageItemInfo.packageName, packageItemInfo.user),
+                        widgets);
+            }
+        });
+        return packagesToWidgets;
     }
 
     /**

@@ -124,7 +124,7 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
 
     public void bindUpdatedWidgets(BgDataModel dataModel) {
         final ArrayList<WidgetsListBaseEntry> widgets =
-                dataModel.widgetsModel.getWidgetsList(mApp.getContext());
+                dataModel.widgetsModel.getWidgetsListForPicker(mApp.getContext());
         scheduleCallbackTask(c -> c.bindAllWidgets(widgets));
     }
 
