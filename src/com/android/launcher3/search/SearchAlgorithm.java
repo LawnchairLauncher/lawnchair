@@ -31,4 +31,9 @@ public interface SearchAlgorithm<T> {
      * Cancels any active request.
      */
     void cancel(boolean interruptActiveRequests);
+
+    /**
+     * Cleans up after search is no longer needed.
+     */
+    default void destroy() {};
 }
