@@ -35,7 +35,6 @@ import com.android.launcher3.PendingAddItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DraggableView;
-import com.android.launcher3.dragndrop.LivePreviewWidgetCell;
 import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.icons.LauncherIcons;
 
@@ -92,7 +91,7 @@ public class PendingItemDragHelper extends DragPreviewProvider {
             int[] previewSizeBeforeScale = new int[1];
 
             if (mPreview != null) {
-                preview = LivePreviewWidgetCell.generateFromRemoteViews(launcher, mPreview,
+                preview = WidgetCell.generateFromRemoteViews(launcher, mPreview,
                         createWidgetInfo.info, maxWidth, previewSizeBeforeScale);
             }
             if (preview == null) {
