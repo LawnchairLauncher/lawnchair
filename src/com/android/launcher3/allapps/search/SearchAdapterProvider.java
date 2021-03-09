@@ -51,17 +51,10 @@ public abstract class SearchAdapterProvider {
             ViewGroup parent, int viewType);
 
     /**
-     * Returns supported item per row combinations supported
-     */
-    public int[] getSupportedItemsPerRow() {
-        return new int[]{};
-    }
-
-    /**
      * Returns how many cells a view should span
      */
-    public int getItemsPerRow(int viewType, int appsPerRow) {
-        return appsPerRow;
+    public int getGridSpanSize(int viewType, int appsPerRow) {
+        return appsPerRow * AllAppsGridAdapter.SPAN_MULTIPLIER;
     }
 
     /**
