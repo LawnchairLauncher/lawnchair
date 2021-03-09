@@ -130,16 +130,16 @@ public class ClearAllButton extends Button implements PageCallbacks {
         applyPrimaryTranslation();
     }
 
-    public float getScrollAdjustment() {
+    public float getScrollAdjustment(boolean gridEnabled) {
         float scrollAdjustment = 0;
-        if (mGridProgress > 0) {
+        if (gridEnabled) {
             scrollAdjustment += mGridTranslationPrimary;
         }
         return scrollAdjustment;
     }
 
-    public float getOffsetAdjustment() {
-        return getScrollAdjustment();
+    public float getOffsetAdjustment(boolean gridEnabled) {
+        return getScrollAdjustment(gridEnabled);
     }
 
     /**

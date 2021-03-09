@@ -160,6 +160,8 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
             reset();
         }
         setOverlayEnabled(finalState == OVERVIEW || finalState == OVERVIEW_MODAL_TASK);
+        setOverviewGridEnabled(finalState.displayOverviewTasksAsGrid(mActivity));
+        setOverviewFullscreenEnabled(finalState.getOverviewFullscreenProgress() == 1);
         setFreezeViewVisibility(false);
     }
 

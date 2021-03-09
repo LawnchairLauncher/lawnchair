@@ -48,7 +48,6 @@ public class AllAppsSectionDecorator extends RecyclerView.ItemDecoration {
     @Override
     public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
         List<AllAppsGridAdapter.AdapterItem> adapterItems = mAppsView.getApps().getAdapterItems();
-        boolean drawFallbackFocusedView = true;
         for (int i = 0; i < parent.getChildCount(); i++) {
             View view = parent.getChildAt(i);
             int position = parent.getChildAdapterPosition(view);
@@ -60,24 +59,8 @@ public class AllAppsSectionDecorator extends RecyclerView.ItemDecoration {
                     decorationHandler.extendBounds(view);
                     if (sectionInfo.isFocusedView()) {
                         decorationHandler.onFocusDraw(c, view);
-                        drawFallbackFocusedView = false;
                     } else {
                         decorationHandler.onGroupDraw(c);
-                    }
-                }
-            }
-        }
-        // fallback logic in case none of the SearchTarget is labeled as focused item
-        if (drawFallbackFocusedView) {
-            for (int i = 0; i < parent.getChildCount(); i++) {
-                View view = parent.getChildAt(i);
-                int position = parent.getChildAdapterPosition(view);
-                AllAppsGridAdapter.AdapterItem adapterItem = adapterItems.get(position);
-                if (adapterItem.sectionDecorationInfo != null) {
-                    SectionDecorationInfo sectionInfo = adapterItem.sectionDecorationInfo;
-                    SectionDecorationHandler decorationHandler = sectionInfo.getDecorationHandler();
-                    if (decorationHandler != null) {
-                        drawDecoration(c, decorationHandler, parent);
                     }
                 }
             }
