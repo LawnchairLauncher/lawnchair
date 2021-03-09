@@ -240,17 +240,19 @@ public class AllAppsGridAdapter extends
         @Override
         public int getSpanSize(int position) {
             int viewType = mApps.getAdapterItems().get(position).viewType;
-            int totalSpans = mGridLayoutMgr.getSpanCount();
             if (isIconViewType(viewType)) {
-                return totalSpans / mAppsPerRow;
+                return 1 * SPAN_MULTIPLIER;
             } else if (mSearchAdapterProvider.isSearchView(viewType)) {
-                return totalSpans / mSearchAdapterProvider.getItemsPerRow(viewType, mAppsPerRow);
+                return mSearchAdapterProvider.getGridSpanSize(viewType, mAppsPerRow);
             } else {
                 // Section breaks span the full width
-                return totalSpans;
+                return mAppsPerRow * SPAN_MULTIPLIER;
             }
         }
     }
+
+    // multiplier to support adapter item column count that is not mAppsPerRow.
+    public static final int SPAN_MULTIPLIER = 3;
 
     private final BaseDraggingActivity mLauncher;
     private final LayoutInflater mLayoutInflater;
@@ -283,17 +285,14 @@ public class AllAppsGridAdapter extends
 
         mOnIconClickListener = launcher.getItemOnClickListener();
 
-        mSearchAdapterProvider = searchAdapterProvider;
         setAppsPerRow(mLauncher.getDeviceProfile().inv.numAllAppsColumns);
+
+        mSearchAdapterProvider = searchAdapterProvider;
     }
 
     public void setAppsPerRow(int appsPerRow) {
         mAppsPerRow = appsPerRow;
-        int totalSpans = mAppsPerRow;
-        for (int itemPerRow : mSearchAdapterProvider.getSupportedItemsPerRow()) {
-            totalSpans *= itemPerRow;
-        }
-        mGridLayoutMgr.setSpanCount(totalSpans);
+        mGridLayoutMgr.setSpanCount(mAppsPerRow * SPAN_MULTIPLIER);
     }
 
     /**
