@@ -24,6 +24,7 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.IntProperty;
 import android.util.Pair;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +39,6 @@ import com.android.launcher3.Insettable;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.PendingAnimation;
-import com.android.launcher3.dragndrop.LivePreviewWidgetCell;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.PackageUserKey;
@@ -140,6 +140,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
 
         WidgetsTableUtils.groupWidgetItemsIntoTable(widgets, mMaxHorizontalSpan).forEach(row -> {
             TableRow tableRow = new TableRow(getContext());
+            tableRow.setGravity(Gravity.CENTER_VERTICAL);
             row.forEach(widgetItem -> {
                 WidgetCell widget = addItemCell(tableRow);
                 widget.setPreviewSize(widgetItem.spanX, widgetItem.spanY);
@@ -153,11 +154,12 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
     }
 
     protected WidgetCell addItemCell(ViewGroup parent) {
-        LivePreviewWidgetCell widget = (LivePreviewWidgetCell) LayoutInflater.from(
-                getContext()).inflate(R.layout.live_preview_widget_cell, parent, false);
+        WidgetCell widget = (WidgetCell) LayoutInflater.from(getContext())
+                .inflate(R.layout.widget_cell, parent, false);
 
-        widget.setOnClickListener(this);
-        widget.setOnLongClickListener(this);
+        WidgetImageView preview = widget.findViewById(R.id.widget_preview);
+        preview.setOnClickListener(this);
+        preview.setOnLongClickListener(this);
         widget.setAnimatePreview(false);
 
         parent.addView(widget);

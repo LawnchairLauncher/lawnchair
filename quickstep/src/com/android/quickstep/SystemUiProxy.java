@@ -37,6 +37,7 @@ import android.view.MotionEvent;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.systemui.shared.recents.IPinnedStackAnimationListener;
 import com.android.systemui.shared.recents.ISplitScreenListener;
+import com.android.systemui.shared.recents.IStartingWindowListener;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.RemoteTransitionCompat;
@@ -535,6 +536,20 @@ public class SystemUiProxy implements ISystemUiProxy {
                 mSystemUiProxy.removeFromSideStage(taskId);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call removeFromSideStage");
+            }
+        }
+    }
+
+    /**
+     * Sets listener to get callbacks when launching a task.
+     */
+    @Override
+    public void setStartingWindowListener(IStartingWindowListener listener) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.setStartingWindowListener(listener);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call setStartingWindowListener", e);
             }
         }
     }
