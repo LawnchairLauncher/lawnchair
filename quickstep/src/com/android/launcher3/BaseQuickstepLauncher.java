@@ -85,7 +85,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
     private @Nullable TaskbarController mTaskbarController;
     private final TaskbarStateHandler mTaskbarStateHandler = new TaskbarStateHandler(this);
     // Will be updated when dragging from taskbar.
-    private DragOptions mWorkspaceDragOptions = new DragOptions();
+    private @Nullable DragOptions mNextWorkspaceDragOptions = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -274,11 +274,16 @@ public abstract class BaseQuickstepLauncher extends Launcher
 
     @Override
     public DragOptions getDefaultWorkspaceDragOptions() {
-        return mWorkspaceDragOptions;
+        if (mNextWorkspaceDragOptions != null) {
+            DragOptions options = mNextWorkspaceDragOptions;
+            mNextWorkspaceDragOptions = null;
+            return options;
+        }
+        return super.getDefaultWorkspaceDragOptions();
     }
 
-    public void setWorkspaceDragOptions(DragOptions dragOptions) {
-        mWorkspaceDragOptions = dragOptions;
+    public void setNextWorkspaceDragOptions(DragOptions dragOptions) {
+        mNextWorkspaceDragOptions = dragOptions;
     }
 
     @Override
