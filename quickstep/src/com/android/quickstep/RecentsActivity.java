@@ -71,6 +71,7 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
+import java.util.List;
 
 /**
  * A recents activity that shows the recently launched tasks as swipable task cards.
@@ -317,8 +318,8 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
     }
 
     @Override
-    protected StateHandler<RecentsState>[] createStateHandlers() {
-        return new StateHandler[] { new FallbackRecentsStateController(this) };
+    protected void collectStateHandlers(List<StateHandler> out) {
+        out.add(new FallbackRecentsStateController(this));
     }
 
     @Override
