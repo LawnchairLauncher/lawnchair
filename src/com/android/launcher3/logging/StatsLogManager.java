@@ -21,6 +21,7 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_OVERVIEW_GESTURE;
 
 import android.content.Context;
+import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.slice.SliceItem;
@@ -407,6 +408,12 @@ public class StatsLogManager implements ResourceBasedOverride {
 
         @UiEvent(doc = "User switched to AllApps Work tab by tapping on it.")
         LAUNCHER_ALLAPPS_TAP_ON_WORK_TAB(722),
+
+        @UiEvent(doc = "All apps vertical fling started.")
+        LAUNCHER_ALLAPPS_VERTICAL_SWIPE_BEGIN(724),
+
+        @UiEvent(doc = "All apps vertical fling ended.")
+        LAUNCHER_ALLAPPS_VERTICAL_SWIPE_END(725)
         ;
 
         // ADD MORE
@@ -524,6 +531,13 @@ public class StatsLogManager implements ResourceBasedOverride {
          * Builds the final message and logs it as {@link EventEnum}.
          */
         default void log(EventEnum event) {
+        }
+
+        /**
+         * Builds the final message and logs it to two different atoms, one for
+         * event tracking and the other for jank tracking.
+         */
+        default void sendToInteractionJankMonitor(EventEnum event, View v) {
         }
     }
 

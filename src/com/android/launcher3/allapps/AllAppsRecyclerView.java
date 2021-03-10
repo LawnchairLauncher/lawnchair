@@ -19,6 +19,9 @@ import static android.view.View.MeasureSpec.EXACTLY;
 import static android.view.View.MeasureSpec.UNSPECIFIED;
 import static android.view.View.MeasureSpec.makeMeasureSpec;
 
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_VERTICAL_SWIPE_BEGIN;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_VERTICAL_SWIPE_END;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
@@ -36,6 +39,7 @@ import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 
 import java.util.ArrayList;
@@ -172,6 +176,23 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
             // For the time being, we just immediately hide the background to ensure that it does
             // not overlap with the results
             mEmptySearchBackground.setBgAlpha(0f);
+        }
+    }
+
+    @Override
+    public void onScrollStateChanged(int state) {
+        super.onScrollStateChanged(state);
+
+        StatsLogManager mgr = BaseDraggingActivity.fromContext(getContext()).getStatsLogManager();
+        switch (state) {
+            case SCROLL_STATE_DRAGGING:
+                mgr.logger().sendToInteractionJankMonitor(
+                        LAUNCHER_ALLAPPS_VERTICAL_SWIPE_BEGIN, this);
+                break;
+            case SCROLL_STATE_IDLE:
+                mgr.logger().sendToInteractionJankMonitor(
+                        LAUNCHER_ALLAPPS_VERTICAL_SWIPE_END, this);
+                break;
         }
     }
 

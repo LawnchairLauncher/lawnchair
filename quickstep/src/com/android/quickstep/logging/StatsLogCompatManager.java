@@ -31,6 +31,7 @@ import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGE
 
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.WorkerThread;
@@ -55,6 +56,7 @@ import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.LogConfig;
+import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.SysUiStatsLog;
 
 import java.util.Optional;
@@ -94,7 +96,7 @@ public class StatsLogCompatManager extends StatsLogManager {
 
     @Override
     protected StatsLogger createLogger() {
-        return new StatsCompatLogger();
+        return new StatsCompatLogger(mContext);
     }
 
     /**
@@ -136,6 +138,7 @@ public class StatsLogCompatManager extends StatsLogManager {
 
         private static final ItemInfo DEFAULT_ITEM_INFO = new ItemInfo();
 
+        private Context mContext;
         private ItemInfo mItemInfo = DEFAULT_ITEM_INFO;
         private InstanceId mInstanceId = DEFAULT_INSTANCE_ID;
         private OptionalInt mRank = OptionalInt.empty();
@@ -146,6 +149,10 @@ public class StatsLogCompatManager extends StatsLogManager {
         private Optional<ToState> mToState = Optional.empty();
         private Optional<String> mEditText = Optional.empty();
         private SliceItem mSliceItem;
+
+        StatsCompatLogger(Context context) {
+            mContext = context;
+        }
 
         @Override
         public StatsLogger withItemInfo(ItemInfo itemInfo) {
@@ -220,7 +227,6 @@ public class StatsLogCompatManager extends StatsLogManager {
             if (!Utilities.ATLEAST_R) {
                 return;
             }
-
             LauncherAppState appState = LauncherAppState.getInstanceNoCreate();
 
             if (mSliceItem != null) {
@@ -253,6 +259,26 @@ public class StatsLogCompatManager extends StatsLogManager {
                                 write(event, applyOverwrites(mItemInfo.buildProto(folderInfo)));
                             }
                         });
+            }
+        }
+
+        @Override
+        public void sendToInteractionJankMonitor(EventEnum event, View view) {
+            if (!(event instanceof LauncherEvent)) {
+                return;
+            }
+            switch ((LauncherEvent) event) {
+                case LAUNCHER_ALLAPPS_VERTICAL_SWIPE_BEGIN:
+                    InteractionJankMonitorWrapper.begin(
+                            view,
+                            InteractionJankMonitorWrapper.CUJ_ALL_APPS_SCROLL);
+                    break;
+                case LAUNCHER_ALLAPPS_VERTICAL_SWIPE_END:
+                    InteractionJankMonitorWrapper.end(
+                            InteractionJankMonitorWrapper.CUJ_ALL_APPS_SCROLL);
+                    break;
+                default:
+                    break;
             }
         }
 
