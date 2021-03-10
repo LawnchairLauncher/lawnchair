@@ -30,6 +30,7 @@ import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -53,8 +54,13 @@ public class WidgetsModel {
      *
      * @see com.android.launcher3.widget.picker.WidgetsListAdapter#setWidgets(List)
      */
-    public synchronized ArrayList<WidgetsListBaseEntry> getWidgetsList(Context context) {
+    public synchronized ArrayList<WidgetsListBaseEntry> getWidgetsListForPicker(Context context) {
         return EMPTY_WIDGET_LIST;
+    }
+
+    /** Returns a mapping of packages to their widgets without static shortcuts. */
+    public synchronized Map<PackageUserKey, List<WidgetItem>> getAllWidgetsWithoutShortcuts() {
+        return Map.of();
     }
 
     /**
