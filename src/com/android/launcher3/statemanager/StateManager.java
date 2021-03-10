@@ -26,12 +26,14 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.states.StateAnimationConfig.AnimationFlags;
+import com.android.launcher3.testing.TestProtocol;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -88,9 +90,7 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
 
     public StateHandler[] getStateHandlers() {
         if (mStateHandlers == null) {
-            ArrayList<StateHandler> handlers = new ArrayList<>();
-            mActivity.collectStateHandlers(handlers);
-            mStateHandlers = handlers.toArray(new StateHandler[handlers.size()]);
+            mStateHandlers = mActivity.createStateHandlers();
         }
         return mStateHandlers;
     }
