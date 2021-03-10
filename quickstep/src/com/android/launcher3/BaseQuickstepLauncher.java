@@ -63,7 +63,6 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
-import java.util.List;
 import java.util.stream.Stream;
 
 /**
@@ -245,12 +244,15 @@ public abstract class BaseQuickstepLauncher extends Launcher
     }
 
     @Override
-    protected void collectStateHandlers(List<StateHandler> out) {
-        super.collectStateHandlers(out);
-        out.add(getDepthController());
-        out.add(new RecentsViewStateController(this));
-        out.add(new BackButtonAlphaHandler(this));
-        out.add(getTaskbarStateHandler());
+    protected StateHandler<LauncherState>[] createStateHandlers() {
+        return new StateHandler[] {
+                getAllAppsController(),
+                getWorkspace(),
+                getDepthController(),
+                new RecentsViewStateController(this),
+                new BackButtonAlphaHandler(this),
+                getTaskbarStateHandler(),
+        };
     }
 
     public DepthController getDepthController() {
