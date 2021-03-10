@@ -15,6 +15,7 @@
 -->
 <com.android.launcher3.widget.picker.WidgetsFullSheet
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -26,6 +27,14 @@
         android:layout_height="match_parent"
         android:background="?android:attr/colorPrimary"
         android:elevation="4dp">
+
+        <TextView
+            android:id="@+id/no_widgets_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:visibility="gone"
+            tools:text="No widgets available" />
 
         <!-- Fast scroller popup -->
         <TextView

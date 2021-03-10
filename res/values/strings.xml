@@ -74,6 +74,9 @@
     <!-- Search bar text shown in the popup view showing all available widgets installed on the
          device. [CHAR_LIMIT=50] -->
     <string name="widgets_full_sheet_search_bar_hint">Search</string>
+    <!-- Text shown when there is no widgets shown in the popup view showing all available widgets
+         installed on the device. [CHAR_LIMIT=none] -->
+    <string name="no_widgets_available">No widgets available</string>
 
     <!-- All Apps -->
     <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
