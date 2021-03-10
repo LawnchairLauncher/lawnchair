@@ -155,7 +155,7 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
             super.onDragEnd(velocity);
         }
 
-        View searchView = mLauncher.getAppsView().getSearchView();
+        View searchView = mLauncher.getHotseat().getQsb();
         if (searchView instanceof FeedbackHandler) {
             ((FeedbackHandler) searchView).resetFeedback();
         }

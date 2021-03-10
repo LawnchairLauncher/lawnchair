@@ -30,7 +30,6 @@ import static com.android.launcher3.testing.TestProtocol.SPRING_LOADED_STATE_ORD
 import android.content.Context;
 import android.view.animation.Interpolator;
 
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.states.HintState;
@@ -52,20 +51,13 @@ public abstract class LauncherState implements BaseState<LauncherState> {
      */
     public static final int NONE = 0;
     public static final int HOTSEAT_ICONS = 1 << 0;
-    public static final int HOTSEAT_SEARCH_BOX = 1 << 1;
-    public static final int ALL_APPS_HEADER = 1 << 2;
-    public static final int ALL_APPS_HEADER_EXTRA = 1 << 3; // e.g. app predictions
-    public static final int ALL_APPS_CONTENT = 1 << 4;
-    public static final int VERTICAL_SWIPE_INDICATOR = 1 << 5;
-    public static final int OVERVIEW_ACTIONS = 1 << 6;
-    public static final int TASKBAR = 1 << 7;
-    public static final int CLEAR_ALL_BUTTON = 1 << 8;
-    public static final int WORKSPACE_PAGE_INDICATOR = 1 << 9;
-    public static final int SPLIT_PLACHOLDER_VIEW = 1 << 10;
-
-    /** Mask of all the items that are contained in the apps view. */
-    public static final int APPS_VIEW_ITEM_MASK =
-            HOTSEAT_SEARCH_BOX | ALL_APPS_HEADER | ALL_APPS_HEADER_EXTRA | ALL_APPS_CONTENT;
+    public static final int ALL_APPS_CONTENT = 1 << 1;
+    public static final int VERTICAL_SWIPE_INDICATOR = 1 << 2;
+    public static final int OVERVIEW_ACTIONS = 1 << 3;
+    public static final int TASKBAR = 1 << 4;
+    public static final int CLEAR_ALL_BUTTON = 1 << 5;
+    public static final int WORKSPACE_PAGE_INDICATOR = 1 << 6;
+    public static final int SPLIT_PLACHOLDER_VIEW = 1 << 7;
 
     // Flag indicating workspace has multiple pages visible.
     public static final int FLAG_MULTI_PAGE = BaseState.getFlag(0);
@@ -195,9 +187,6 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     public int getVisibleElements(Launcher launcher) {
         DeviceProfile deviceProfile = launcher.getDeviceProfile();
         int flags = WORKSPACE_PAGE_INDICATOR | VERTICAL_SWIPE_INDICATOR | TASKBAR;
-        if (!FeatureFlags.ENABLE_DEVICE_SEARCH.get() && !deviceProfile.isVerticalBarLayout()) {
-            flags |= HOTSEAT_SEARCH_BOX;
-        }
         if (!deviceProfile.isTaskbarPresent) {
             flags |= HOTSEAT_ICONS;
         }

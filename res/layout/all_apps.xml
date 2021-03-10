@@ -44,7 +44,6 @@
     </com.android.launcher3.allapps.FloatingHeaderView>
 
     <include
-        android:id="@id/search_container_all_apps"
         layout="@layout/search_container_all_apps"/>
 
     <include layout="@layout/all_apps_fast_scroller" />
