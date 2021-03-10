@@ -122,6 +122,11 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
         return mVisibleEntries.size();
     }
 
+    /** Returns all items that will be drawn in a recycler view. */
+    public List<WidgetsListBaseEntry> getItems() {
+        return mVisibleEntries;
+    }
+
     /** Gets the section name for {@link com.android.launcher3.views.RecyclerViewFastScroller}. */
     public String getSectionName(int pos) {
         return mVisibleEntries.get(pos).mTitleSectionName;

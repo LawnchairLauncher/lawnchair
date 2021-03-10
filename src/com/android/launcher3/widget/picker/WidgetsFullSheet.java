@@ -385,14 +385,16 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
     @Override
     public int getHeaderViewHeight() {
-        // No need to check work profile here because mInitialTabHeight is always 0 if there is no
-        // work profile.
-        return mInitialTabsHeight
-                + measureHeightWithVerticalMargins(mSearchAndRecommendationViewHolder.mContainer);
+        return measureHeightWithVerticalMargins(mSearchAndRecommendationViewHolder.mCollapseHandle)
+                + measureHeightWithVerticalMargins(mSearchAndRecommendationViewHolder.mHeaderTitle)
+                + measureHeightWithVerticalMargins(mSearchAndRecommendationViewHolder.mSearchBar);
     }
 
     /** private the height, in pixel, + the vertical margins of a given view. */
     private static int measureHeightWithVerticalMargins(View view) {
+        if (view.getVisibility() != VISIBLE) {
+            return 0;
+        }
         MarginLayoutParams marginLayoutParams = (MarginLayoutParams) view.getLayoutParams();
         return view.getMeasuredHeight() + marginLayoutParams.bottomMargin
                 + marginLayoutParams.topMargin;
