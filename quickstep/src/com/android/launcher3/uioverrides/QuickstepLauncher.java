@@ -218,6 +218,8 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
                     .setPredictedApps(item.items);
         } else if (item.containerId == Favorites.CONTAINER_HOTSEAT_PREDICTION) {
             mHotseatPredictionController.setPredictedItems(item);
+        } else if (item.containerId == Favorites.CONTAINER_WIDGETS_PREDICTION) {
+            getPopupDataProvider().setRecommendedWidgets(item.items);
         }
     }
 
