@@ -246,6 +246,11 @@ public class TaskbarController {
      * Removes the Taskbar from the screen, and removes any obsolete listeners etc.
      */
     public void cleanup() {
+        if (mAnimator != null) {
+            // End this first, in case it relies on properties that are about to be cleaned up.
+            mAnimator.end();
+        }
+
         mTaskbarView.cleanup();
         mTaskbarContainerView.cleanup();
         removeFromWindowManager();
@@ -253,10 +258,6 @@ public class TaskbarController {
         mTaskbarVisibilityController.cleanup();
         mHotseatController.cleanup();
         mRecentsController.cleanup();
-
-        if (mAnimator != null) {
-            mAnimator.end();
-        }
     }
 
     private void removeFromWindowManager() {
