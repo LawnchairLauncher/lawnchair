@@ -290,8 +290,10 @@ public class AllAppsGridAdapter extends
     public void setAppsPerRow(int appsPerRow) {
         mAppsPerRow = appsPerRow;
         int totalSpans = mAppsPerRow;
-        for (int itemPerRow : mSearchAdapterProvider.getSupportedItemsPerRow()) {
-            totalSpans *= itemPerRow;
+        for (int itemPerRow : mSearchAdapterProvider.getSupportedItemsPerRowArray()) {
+            if (totalSpans % itemPerRow != 0) {
+                totalSpans *= itemPerRow;
+            }
         }
         mGridLayoutMgr.setSpanCount(totalSpans);
     }

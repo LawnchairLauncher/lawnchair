@@ -53,7 +53,7 @@ public abstract class SearchAdapterProvider {
     /**
      * Returns supported item per row combinations supported
      */
-    public int[] getSupportedItemsPerRow() {
+    public int[] getSupportedItemsPerRowArray() {
         return new int[]{};
     }
 
