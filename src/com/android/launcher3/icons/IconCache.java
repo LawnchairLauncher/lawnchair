@@ -131,6 +131,7 @@ public class IconCache extends BaseIconCache {
 
     /**
      * Fetches high-res icon for the provided ItemInfo and updates the caller when done.
+     *
      * @return a request ID that can be used to cancel the request.
      */
     public HandlerRunnable updateIconInBackground(final ItemInfoUpdateReceiver caller,
@@ -139,7 +140,7 @@ public class IconCache extends BaseIconCache {
         if (mPendingIconRequestCount <= 0) {
             MODEL_EXECUTOR.setThreadPriority(Process.THREAD_PRIORITY_FOREGROUND);
         }
-        mPendingIconRequestCount ++;
+        mPendingIconRequestCount++;
 
         HandlerRunnable<ItemInfoWithIcon> request = new HandlerRunnable<>(mWorkerHandler,
                 () -> {
@@ -158,7 +159,7 @@ public class IconCache extends BaseIconCache {
     }
 
     private void onIconRequestEnd() {
-        mPendingIconRequestCount --;
+        mPendingIconRequestCount--;
         if (mPendingIconRequestCount <= 0) {
             MODEL_EXECUTOR.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
         }
@@ -289,7 +290,8 @@ public class IconCache extends BaseIconCache {
             @NonNull Supplier<LauncherActivityInfo> activityInfoProvider,
             boolean usePkgIcon, boolean useLowResIcon) {
         CacheEntry entry = cacheLocked(infoInOut.getTargetComponent(), infoInOut.user,
-                activityInfoProvider, mLauncherActivityInfoCachingLogic, usePkgIcon, useLowResIcon);
+                activityInfoProvider, mLauncherActivityInfoCachingLogic, usePkgIcon,
+                useLowResIcon);
         applyCacheEntry(entry, infoInOut);
     }
 
@@ -315,7 +317,8 @@ public class IconCache extends BaseIconCache {
     }
 
     public void updateSessionCache(PackageUserKey key, PackageInstaller.SessionInfo info) {
-        cachePackageInstallInfo(key.mPackageName, key.mUser, info.getAppIcon(), info.getAppLabel());
+        cachePackageInstallInfo(key.mPackageName, key.mUser, info.getAppIcon(),
+                info.getAppLabel());
     }
 
     @Override
