@@ -48,7 +48,7 @@ public class LoaderResults extends BaseLoaderResults {
     @Override
     public void bindWidgets() {
         final List<WidgetsListBaseEntry> widgets =
-                mBgDataModel.widgetsModel.getWidgetsList(mApp.getContext());
+                mBgDataModel.widgetsModel.getWidgetsListForPicker(mApp.getContext());
         executeCallbacksTask(c -> c.bindAllWidgets(widgets), mUiExecutor);
     }
 }
