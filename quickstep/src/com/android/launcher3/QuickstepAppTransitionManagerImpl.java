@@ -16,6 +16,9 @@
 
 package com.android.launcher3;
 
+import static android.window.StartingWindowInfo.STARTING_WINDOW_TYPE_NONE;
+import static android.window.StartingWindowInfo.STARTING_WINDOW_TYPE_SPLASH_SCREEN;
+
 import static com.android.launcher3.BaseActivity.INVISIBLE_ALL;
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_APP_TRANSITIONS;
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_PENDING_FLAGS;
@@ -80,6 +83,7 @@ import com.android.quickstep.util.MultiValueUpdateListener;
 import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.util.StaggeredWorkspaceAnim;
 import com.android.quickstep.util.SurfaceTransactionApplier;
+import com.android.systemui.shared.recents.IStartingWindowListener;
 import com.android.systemui.shared.system.ActivityCompat;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
@@ -91,6 +95,8 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.RemoteTransitionCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
 import com.android.systemui.shared.system.WindowManagerWrapper;
+
+import java.util.LinkedHashMap;
 
 /**
  * {@link LauncherAppTransitionManager} with Quickstep-specific app transitions for launching from
@@ -145,6 +151,8 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
     // Progress = 0: All apps is fully pulled up, Progress = 1: All apps is fully pulled down.
     public static final float ALL_APPS_PROGRESS_OFF_SCREEN = 1.3059858f;
 
+    private static final int MAX_NUM_TASKS = 5;
+
     protected final BaseQuickstepLauncher mLauncher;
 
     private final DragLayer mDragLayer;
@@ -180,6 +188,9 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         }
     };
 
+    // Will never be larger than MAX_NUM_TASKS
+    private LinkedHashMap<Integer, Integer> mTypeForTaskId;
+
     public QuickstepAppTransitionManagerImpl(Context context) {
         mLauncher = Launcher.cast(Launcher.getLauncher(context));
         mDragLayer = mLauncher.getDragLayer();
@@ -194,6 +205,23 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         mMaxShadowRadius = res.getDimensionPixelSize(R.dimen.max_shadow_radius);
 
         mLauncher.addOnDeviceProfileChangeListener(this);
+
+        if (supportsSSplashScreen()) {
+            mTypeForTaskId = new LinkedHashMap<Integer, Integer>(MAX_NUM_TASKS) {
+                @Override
+                protected boolean removeEldestEntry(Entry<Integer, Integer> entry) {
+                    return size() > MAX_NUM_TASKS;
+                }
+            };
+
+            SystemUiProxy.INSTANCE.get(mLauncher).setStartingWindowListener(
+                    new IStartingWindowListener.Stub() {
+                        @Override
+                        public void onTaskLaunching(int taskId, int supportedType) {
+                            mTypeForTaskId.put(taskId, supportedType);
+                        }
+                    });
+        }
     }
 
     @Override
@@ -336,6 +364,15 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         return bounds;
     }
 
+    private int getOpeningTaskId(RemoteAnimationTargetCompat[] appTargets) {
+        for (RemoteAnimationTargetCompat target : appTargets) {
+            if (target.mode == MODE_OPENING) {
+                return target.taskId;
+            }
+        }
+        return -1;
+    }
+
     public void setRemoteAnimationProvider(final RemoteAnimationProvider animationProvider,
             CancellationSignal cancellationSignal) {
         mRemoteAnimationProvider = animationProvider;
@@ -471,8 +508,19 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         int[] dragLayerBounds = new int[2];
         mDragLayer.getLocationOnScreen(dragLayerBounds);
 
+        final boolean hasSplashScreen;
+        if (supportsSSplashScreen()) {
+            int taskId = getOpeningTaskId(appTargets);
+            int type = mTypeForTaskId.getOrDefault(taskId, STARTING_WINDOW_TYPE_NONE);
+            mTypeForTaskId.remove(taskId);
+            hasSplashScreen = type == STARTING_WINDOW_TYPE_SPLASH_SCREEN;
+        } else {
+            hasSplashScreen = false;
+        }
+
         AnimOpenProperties prop = new AnimOpenProperties(mLauncher.getResources(), mDeviceProfile,
-                windowTargetBounds, launcherIconBounds, v, dragLayerBounds[0], dragLayerBounds[1]);
+                windowTargetBounds, launcherIconBounds, v, dragLayerBounds[0], dragLayerBounds[1],
+                hasSplashScreen);
         int left = (int) (prop.cropCenterXStart - prop.cropWidthStart / 2);
         int top = (int) (prop.cropCenterYStart - prop.cropHeightStart / 2);
         int right = (int) (left + prop.cropWidthStart);
@@ -562,7 +610,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                 Utilities.scaleRectFAboutCenter(tmpRectF, mIconScaleToFitScreen.value);
                 float windowTransX0 = tmpRectF.left - offsetX;
                 float windowTransY0 = tmpRectF.top - offsetY;
-                if (ENABLE_SHELL_STARTING_SURFACE) {
+                if (hasSplashScreen) {
                     windowTransX0 -= crop.left * scale;
                     windowTransY0 -= crop.top * scale;
                 }
@@ -684,6 +732,14 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
             mLauncherOpenTransition.addHomeOpenCheck();
             SystemUiProxy.INSTANCE.getNoCreate().registerRemoteTransition(mLauncherOpenTransition);
         }
+    }
+
+    @Override
+    public void onActivityDestroyed() {
+        super.onActivityDestroyed();
+        unregisterRemoteAnimations();
+        unregisterRemoteTransitions();
+        SystemUiProxy.INSTANCE.getNoCreate().setStartingWindowListener(null);
     }
 
     /**
@@ -819,6 +875,12 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         });
 
         return closingAnimator;
+    }
+
+    private boolean supportsSSplashScreen() {
+        return hasControlRemoteAppTransitionPermission()
+                && Utilities.ATLEAST_S
+                && ENABLE_SHELL_STARTING_SURFACE;
     }
 
     private boolean hasControlRemoteAppTransitionPermission() {
@@ -1030,7 +1092,8 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         public final float iconAlphaStart;
 
         AnimOpenProperties(Resources r, DeviceProfile dp, Rect windowTargetBounds,
-                RectF launcherIconBounds, View view, int dragLayerLeft, int dragLayerTop) {
+                RectF launcherIconBounds, View view, int dragLayerLeft, int dragLayerTop,
+                boolean hasSplashScreen) {
             // Scale the app icon to take up the entire screen. This simplifies the math when
             // animating the app window position / scale.
             float smallestSize = Math.min(windowTargetBounds.height(), windowTargetBounds.width());
@@ -1063,7 +1126,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
             alphaDuration = useUpwardAnimation ? APP_LAUNCH_ALPHA_DURATION
                     : APP_LAUNCH_ALPHA_DOWN_DURATION;
 
-            if (ENABLE_SHELL_STARTING_SURFACE) {
+            if (hasSplashScreen) {
                 iconAlphaStart = 0;
 
                 // TOOD: Share value from shell when available.
