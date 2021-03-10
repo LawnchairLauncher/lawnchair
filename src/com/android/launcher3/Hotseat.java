@@ -21,6 +21,7 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -165,5 +166,12 @@ public class Hotseat extends CellLayout implements Insettable {
 
     protected void showInlineQsb() {
         //Does nothing
+    }
+
+    /**
+     * Returns the first View for which the given itemOperator returns true, or null.
+     */
+    public View getFirstItemMatch(Workspace.ItemOperator itemOperator) {
+        return mWorkspace.getFirstMatch(new CellLayout[] { this }, itemOperator);
     }
 }
