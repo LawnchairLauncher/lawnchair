@@ -62,6 +62,13 @@ public class LauncherAppTransitionManager implements ResourceBasedOverride {
     }
 
     /**
+     * Handles clean up when activity is destroyed.
+     */
+    public void onActivityDestroyed() {
+        // Do nothing
+    }
+
+    /**
      * Unregisters all remote animations.
      */
     public void unregisterRemoteAnimations() {

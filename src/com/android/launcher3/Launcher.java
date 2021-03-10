@@ -1609,8 +1609,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         LauncherAppState.getIDP(this).removeOnChangeListener(this);
 
         mOverlayManager.onActivityDestroyed(this);
-        mAppTransitionManager.unregisterRemoteAnimations();
-        mAppTransitionManager.unregisterRemoteTransitions();
+        mAppTransitionManager.onActivityDestroyed();
         mUserChangedCallbackCloseable.close();
         mLiveSearchManager.stop();
     }
