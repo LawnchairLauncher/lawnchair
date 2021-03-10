@@ -264,6 +264,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     protected final TransformParams mLiveTileParams = new TransformParams();
     protected final TaskViewSimulator mLiveTileTaskViewSimulator;
     protected final Rect mLastComputedTaskSize = new Rect();
+    protected final Rect mLastComputedGridSize = new Rect();
     // How much a task that is directly offscreen will be pushed out due to RecentsView scale/pivot.
     protected Float mLastComputedTaskPushOutDistance = null;
     protected boolean mEnableDrawingLiveTile = false;
@@ -471,7 +472,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         setLayoutDirection(mIsRtl ? View.LAYOUT_DIRECTION_RTL : View.LAYOUT_DIRECTION_LTR);
         mTaskTopMargin = getResources()
                 .getDimensionPixelSize(R.dimen.task_thumbnail_top_margin);
-        mRowSpacing = (int) getResources().getDimension(R.dimen.recents_row_spacing);
+        mRowSpacing = getResources().getDimensionPixelSize(R.dimen.overview_grid_row_spacing);
         mSquaredTouchSlop = squaredTouchSlop(context);
 
         mEmptyIcon = context.getDrawable(R.drawable.ic_empty_recents);
@@ -1012,6 +1013,10 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         setPadding(mTempRect.left - mInsets.left, mTempRect.top - mInsets.top,
                 dp.widthPx - mInsets.right - mTempRect.right,
                 dp.heightPx - mInsets.bottom - mTempRect.bottom);
+
+        mSizeStrategy.calculateGridSize(mActivity, mActivity.getDeviceProfile(),
+                mLastComputedGridSize);
+
         // Force TaskView to update size from thumbnail
         updateTaskSize();
     }
@@ -1521,21 +1526,9 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         }
 
         final int boxLength = Math.max(mTaskWidth, mTaskHeight);
-
-        float availableHeight =
-                mTaskTopMargin + mTaskHeight + mSizeStrategy.getOverviewActionsHeight(mContext);
+        float availableHeight = mLastComputedGridSize.height();
         float rowHeight = (availableHeight - mRowSpacing) / 2;
         float gridScale = rowHeight / (boxLength + mTaskTopMargin);
-
-        TaskView firstTask = getTaskViewAt(0);
-        float firstTaskWidthOffset;
-        if (mIsRtl) {
-            // Move the first task to the right edge.
-            firstTaskWidthOffset = mTaskWidth - firstTask.getLayoutParams().width * gridScale;
-        } else {
-            // Move the first task to the left edge.
-            firstTaskWidthOffset = -firstTask.getLayoutParams().width * (1 - gridScale);
-        }
 
         int topRowWidth = 0;
         int bottomRowWidth = 0;
@@ -1546,13 +1539,22 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         for (int i = 0; i < taskCount; i++) {
             TaskView taskView = getTaskViewAt(i);
             taskView.setGridScale(gridScale);
+            gridTranslations[i] = 0;
 
-            float taskWidthDiff = mTaskWidth - taskView.getLayoutParams().width * gridScale;
-            float taskWidthOffset = mIsRtl ? taskWidthDiff : -taskWidthDiff;
-            // Visually we want to move all task by firstTaskWidthOffset, but calculate page scroll
-            // according to right edge (or left in nonRtl) of TaskView.
-            gridTranslations[i] = firstTaskWidthOffset - taskWidthOffset;
-            taskView.setGridOffsetTranslationX(taskWidthOffset);
+            float scaledWidth = taskView.getLayoutParams().width * gridScale;
+            float taskGridHorizontalDiff;
+            if (mIsRtl) {
+                float taskRight = mLastComputedTaskSize.left + scaledWidth;
+                taskGridHorizontalDiff = mLastComputedGridSize.right - taskRight;
+            } else {
+                float taskLeft = mLastComputedTaskSize.right - scaledWidth;
+                taskGridHorizontalDiff = mLastComputedGridSize.left - taskLeft;
+            }
+            gridTranslations[i] -= taskGridHorizontalDiff;
+            taskView.setGridOffsetTranslationX(taskGridHorizontalDiff);
+
+            float taskGridVerticalDiff = mLastComputedGridSize.top + mTaskTopMargin * gridScale
+                    - mLastComputedTaskSize.top;
 
             // Off-set gap due to task scaling.
             float widthDiff = taskView.getLayoutParams().width * (1 - gridScale);
@@ -1567,7 +1569,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                 topRowWidth += taskView.getLayoutParams().width * gridScale + mPageSpacing;
                 topSet.add(i);
 
-                taskView.setGridTranslationY(0);
+                taskView.setGridTranslationY(taskGridVerticalDiff);
 
                 // Move horizontally into empty space.
                 float widthOffset = 0;
@@ -1578,15 +1580,14 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
 
                 float gridTranslationX = mIsRtl ? widthOffset : -widthOffset;
                 gridTranslations[i] += gridTranslationX;
-                topAccumulatedTranslationX += gridTranslationX + gridScaleTranslationX;
-                bottomAccumulatedTranslationX += gridScaleTranslationX;
+                topAccumulatedTranslationX += gridTranslationX;
             } else {
                 gridTranslations[i] += bottomAccumulatedTranslationX;
                 bottomRowWidth += taskView.getLayoutParams().width * gridScale + mPageSpacing;
 
                 // Move into bottom row.
                 float heightOffset = (boxLength + mTaskTopMargin) * gridScale + mRowSpacing;
-                taskView.setGridTranslationY(heightOffset);
+                taskView.setGridTranslationY(heightOffset + taskGridVerticalDiff);
 
                 // Move horizontally into empty space.
                 float widthOffset = 0;
@@ -1597,9 +1598,10 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
 
                 float gridTranslationX = mIsRtl ? widthOffset : -widthOffset;
                 gridTranslations[i] += gridTranslationX;
-                topAccumulatedTranslationX += gridScaleTranslationX;
-                bottomAccumulatedTranslationX += gridTranslationX + gridScaleTranslationX;
+                bottomAccumulatedTranslationX += gridTranslationX;
             }
+            topAccumulatedTranslationX += gridScaleTranslationX;
+            bottomAccumulatedTranslationX += gridScaleTranslationX;
         }
 
         // Use the accumulated translation of the longer row.
@@ -1632,8 +1634,9 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                     mIsRtl ? -shortTotalCompensation : shortTotalCompensation;
         }
 
-        float clearAllTotalTranslationX = firstTaskWidthOffset + clearAllAccumulatedTranslation
-                + clearAllShorterRowCompensation + clearAllShortTotalCompensation;
+        float clearAllTotalTranslationX =
+                clearAllAccumulatedTranslation + clearAllShorterRowCompensation
+                        + clearAllShortTotalCompensation;
 
         // We need to maintain first task's grid translation at 0, now shift translation of all
         // the TaskViews to achieve that.
