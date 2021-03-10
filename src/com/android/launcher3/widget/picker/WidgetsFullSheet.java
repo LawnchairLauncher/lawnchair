@@ -82,6 +82,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     @Nullable private PersonalWorkPagedView mViewPager;
     private int mInitialTabsHeight = 0;
     private View mTabsView;
+    private TextView mNoWidgetsView;
     private SearchAndRecommendationViewHolder mSearchAndRecommendationViewHolder;
     private SearchAndRecommendationsScrollController mSearchAndRecommendationsScrollController;
 
@@ -141,17 +142,30 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 mViewPager);
         fastScroller.setOnFastScrollChangeListener(mSearchAndRecommendationsScrollController);
 
+        mNoWidgetsView = findViewById(R.id.no_widgets_text);
+
         onWidgetsBound();
     }
 
     @Override
     public void onActivePageChanged(int currentActivePage) {
-        WidgetsRecyclerView currentRecyclerView =
-                mAdapters.get(currentActivePage).mWidgetsRecyclerView;
+        AdapterHolder currentAdapterHolder = mAdapters.get(currentActivePage);
+        WidgetsRecyclerView currentRecyclerView = currentAdapterHolder.mWidgetsRecyclerView;
         currentRecyclerView.bindFastScrollbar();
         mSearchAndRecommendationsScrollController.setCurrentRecyclerView(currentRecyclerView);
 
+        updateNoWidgetsView(currentAdapterHolder);
+
         reset();
+    }
+
+    private void updateNoWidgetsView(AdapterHolder adapterHolder) {
+        boolean isWidgetAvailable = adapterHolder.mWidgetsListAdapter.getItemCount() > 0;
+        adapterHolder.mWidgetsRecyclerView.setVisibility(isWidgetAvailable ? VISIBLE : GONE);
+
+        // Always resets the text in case this is updated by search.
+        mNoWidgetsView.setText(R.string.no_widgets_available);
+        mNoWidgetsView.setVisibility(isWidgetAvailable ? GONE : VISIBLE);
     }
 
     private void reset() {
@@ -276,6 +290,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         AdapterHolder primaryUserAdapterHolder = mAdapters.get(AdapterHolder.PRIMARY);
         primaryUserAdapterHolder.setup(findViewById(R.id.primary_widgets_list_view));
         primaryUserAdapterHolder.mWidgetsListAdapter.setWidgets(allWidgets);
+        updateNoWidgetsView(primaryUserAdapterHolder);
+
         if (mHasWorkProfile) {
             AdapterHolder workUserAdapterHolder = mAdapters.get(AdapterHolder.WORK);
             workUserAdapterHolder.setup(findViewById(R.id.work_widgets_list_view));
