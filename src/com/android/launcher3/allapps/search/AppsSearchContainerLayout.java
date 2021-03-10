@@ -32,6 +32,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.view.animation.Interpolator;
+import android.widget.EditText;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
@@ -229,7 +230,7 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     }
 
     @Override
-    public ExtendedEditText getEditText() {
+    public EditText getEditText() {
         return this;
     }
 }
