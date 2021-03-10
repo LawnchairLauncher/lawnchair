@@ -46,7 +46,7 @@
                 android:background="?android:attr/colorPrimaryDark"
                 android:theme="?attr/widgetsTheme">
 
-                <com.android.launcher3.dragndrop.LivePreviewWidgetCell
+                <com.android.launcher3.widget.WidgetCell
                     android:id="@+id/widget_cell"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -59,7 +59,7 @@
 
                     <include layout="@layout/widget_cell_content"  />
 
-                </com.android.launcher3.dragndrop.LivePreviewWidgetCell>
+                </com.android.launcher3.widget.WidgetCell>
             </FrameLayout>
         </LinearLayout>
     </ScrollView>
