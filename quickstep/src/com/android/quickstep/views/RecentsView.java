@@ -2773,6 +2773,15 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                 taskView.getGridTranslationY());
     }
 
+    /**
+     * Returns the progress of forming a grid from carousel.
+     *
+     * @return A float from 0 to 1 where 0 is a carousel and 1 is a 2 row grid.
+     */
+    public float getGridProgress() {
+        return mGridProgress;
+    }
+
     public Consumer<MotionEvent> getEventDispatcher(float navbarRotation) {
         float degreesRotated;
         if (navbarRotation == 0) {
