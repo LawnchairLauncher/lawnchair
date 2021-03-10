@@ -33,18 +33,15 @@ import static com.android.launcher3.util.SystemUiController.UI_STATE_ALLAPPS;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
-import android.content.SharedPreferences;
 import android.util.FloatProperty;
 import android.view.View;
 import android.view.animation.Interpolator;
-import android.widget.EditText;
-
-import androidx.core.os.BuildCompat;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.PropertySetter;
@@ -63,8 +60,8 @@ import com.android.launcher3.views.ScrimView;
  * If release velocity < THRES1, snap according to either top or bottom depending on whether it's
  * closer to top or closer to the page indicator.
  */
-public class AllAppsTransitionController implements StateHandler<LauncherState>,
-        OnDeviceProfileChangeListener, SharedPreferences.OnSharedPreferenceChangeListener {
+public class AllAppsTransitionController
+        implements StateHandler<LauncherState>, OnDeviceProfileChangeListener {
 
     public static final FloatProperty<AllAppsTransitionController> ALL_APPS_PROGRESS =
             new FloatProperty<AllAppsTransitionController>("allAppsProgress") {
@@ -81,7 +78,6 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
             };
 
     private static final int APPS_VIEW_ALPHA_CHANNEL_INDEX = 0;
-    private static final String PREF_KEY_SHOW_SEARCH_IME = "pref_search_show_ime";
 
     private AllAppsContainerView mAppsView;
     private ScrimView mScrimView;
@@ -99,8 +95,6 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
     private float mProgress;        // [0, 1], mShiftRange * mProgress = shiftCurrent
 
     private float mScrollRangeDelta = 0;
-    private AllAppsInsetTransitionController mInsetController;
-    private boolean mSearchImeEnabled;
 
     public AllAppsTransitionController(Launcher l) {
         mLauncher = l;
@@ -109,17 +103,10 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
 
         mIsVerticalLayout = mLauncher.getDeviceProfile().isVerticalBarLayout();
         mLauncher.addOnDeviceProfileChangeListener(this);
-
-        onSharedPreferenceChanged(mLauncher.getSharedPrefs(), PREF_KEY_SHOW_SEARCH_IME);
-        mLauncher.getSharedPrefs().registerOnSharedPreferenceChangeListener(this);
     }
 
     public float getShiftRange() {
         return mShiftRange;
-    }
-
-    public AllAppsInsetTransitionController getInsetController() {
-        return mInsetController;
     }
 
     @Override
@@ -146,14 +133,7 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
         mProgress = progress;
 
         mScrimView.setProgress(progress);
-        float shiftCurrent = progress * mShiftRange;
-        mAppsView.setTranslationY(shiftCurrent);
-        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get() && mSearchImeEnabled) {
-            if (mInsetController == null) {
-                setupInsetTransitionController();
-            }
-            mInsetController.setProgress(progress);
-        }
+        mAppsView.setTranslationY(progress * mShiftRange);
     }
 
     public float getProgress() {
@@ -242,16 +222,11 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
     public void setupViews(AllAppsContainerView appsView, ScrimView scrimView) {
         mAppsView = appsView;
         mScrimView = scrimView;
-        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get() && BuildCompat.isAtLeastR()) {
-            setupInsetTransitionController();
+        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get() && Utilities.ATLEAST_R) {
+            mLauncher.getSystemUiController().updateUiState(UI_STATE_ALLAPPS,
+                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
         }
-    }
-
-    private void setupInsetTransitionController() {
-        mInsetController = new AllAppsInsetTransitionController(mShiftRange, mAppsView);
-        mLauncher.getSystemUiController().updateUiState(UI_STATE_ALLAPPS,
-                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
     }
 
     /**
@@ -273,24 +248,6 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
     private void onProgressAnimationEnd() {
         if (Float.compare(mProgress, 1f) == 0) {
             mAppsView.reset(false /* animate */);
-        }
-        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get() && mSearchImeEnabled
-                && BuildCompat.isAtLeastR()) {
-            mInsetController.onAnimationEnd(mProgress);
-            if (Float.compare(mProgress, 0f) == 0) {
-                EditText editText = mAppsView.getSearchUiManager().getEditText();
-                if (editText != null && !mInsetController.showSearchEduIfNecessary()) {
-                    editText.requestFocus();
-                }
-            }
-            // TODO: should make the controller hide synchronously
-        }
-    }
-
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-        if (s.equals(PREF_KEY_SHOW_SEARCH_IME)) {
-            mSearchImeEnabled = sharedPreferences.getBoolean(s, true);
         }
     }
 }

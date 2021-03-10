@@ -20,10 +20,10 @@ import static com.android.launcher3.LauncherState.ALL_APPS_HEADER;
 import android.graphics.Rect;
 import android.view.KeyEvent;
 import android.view.animation.Interpolator;
-import android.widget.EditText;
 
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.anim.PropertySetter;
 
 /**
@@ -75,7 +75,7 @@ public interface SearchUiManager {
      * @return the edit text object
      */
     @Nullable
-    EditText getEditText();
+    ExtendedEditText getEditText();
 
     /**
      * sets highlight result's title
