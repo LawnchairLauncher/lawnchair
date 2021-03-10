@@ -934,7 +934,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
                     duration = Math.min(MAX_SWIPE_DURATION, 2 * baseDuration);
             }
         }
-        Interpolator interpolator = endTarget == RECENTS ? OVERSHOOT_1_2 : DEACCEL;
+        Interpolator interpolator =
+                endTarget == RECENTS ? (mDp.isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get()
+                        ? ACCEL_DEACCEL : OVERSHOOT_1_2) : DEACCEL;
 
         if (endTarget.isLauncher) {
             mInputConsumerProxy.enable();
