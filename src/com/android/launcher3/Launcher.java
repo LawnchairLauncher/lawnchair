@@ -2761,10 +2761,8 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         return super.onKeyUp(keyCode, event);
     }
 
-    @Override
-    protected void collectStateHandlers(List<StateHandler> out) {
-        out.add(getAllAppsController());
-        out.add(getWorkspace());
+    protected StateHandler<LauncherState>[] createStateHandlers() {
+        return new StateHandler[] { getAllAppsController(), getWorkspace() };
     }
 
     public TouchController[] createTouchControllers() {
