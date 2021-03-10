@@ -31,6 +31,7 @@ import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowInsets;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -188,6 +189,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
             case SCROLL_STATE_DRAGGING:
                 mgr.logger().sendToInteractionJankMonitor(
                         LAUNCHER_ALLAPPS_VERTICAL_SWIPE_BEGIN, this);
+                getWindowInsetsController().hide(WindowInsets.Type.ime());
                 break;
             case SCROLL_STATE_IDLE:
                 mgr.logger().sendToInteractionJankMonitor(
