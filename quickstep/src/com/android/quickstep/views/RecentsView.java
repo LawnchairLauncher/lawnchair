@@ -299,6 +299,8 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     protected boolean mDisallowScrollToClearAll;
     private boolean mOverlayEnabled;
     protected boolean mFreezeViewVisibility;
+    private boolean mOverviewGridEnabled;
+    private boolean mOverviewFullscreenEnabled;
 
     private float mAdjacentPageOffset = 0;
     private float mTaskViewsSecondaryTranslation = 0;
@@ -676,8 +678,10 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     }
 
     private boolean isTaskViewWithinBounds(TaskView tv, int start, int end) {
-        int taskStart = mOrientationHandler.getChildStart(tv) + (int) tv.getOffsetAdjustment();
-        int taskSize = (int) (mOrientationHandler.getMeasuredSize(tv) * tv.getSizeAdjustment());
+        int taskStart = mOrientationHandler.getChildStart(tv) + (int) tv.getOffsetAdjustment(
+                mOverviewFullscreenEnabled, mOverviewGridEnabled);
+        int taskSize = (int) (mOrientationHandler.getMeasuredSize(tv) * tv.getSizeAdjustment(
+                mOverviewFullscreenEnabled, mOverviewGridEnabled));
         int taskEnd = taskStart + taskSize;
         return (taskStart >= start && taskStart <= end) || (taskEnd >= start
                 && taskEnd <= end);
@@ -2664,9 +2668,10 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             View child = getChildAt(i);
             float scrollDiff = 0;
             if (child instanceof TaskView) {
-                scrollDiff = ((TaskView) child).getScrollAdjustment();
+                scrollDiff = ((TaskView) child).getScrollAdjustment(mOverviewFullscreenEnabled,
+                        mOverviewGridEnabled);
             } else if (child instanceof ClearAllButton) {
-                scrollDiff = ((ClearAllButton) child).getScrollAdjustment();
+                scrollDiff = ((ClearAllButton) child).getScrollAdjustment(mOverviewGridEnabled);
             }
 
             if (scrollDiff != 0) {
@@ -2682,9 +2687,10 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         int childOffset = super.getChildOffset(index);
         View child = getChildAt(index);
         if (child instanceof TaskView) {
-            childOffset += ((TaskView) child).getOffsetAdjustment();
+            childOffset += ((TaskView) child).getOffsetAdjustment(mOverviewFullscreenEnabled,
+                    mOverviewGridEnabled);
         } else if (child instanceof ClearAllButton) {
-            childOffset += ((ClearAllButton) child).getOffsetAdjustment();
+            childOffset += ((ClearAllButton) child).getOffsetAdjustment(mOverviewGridEnabled);
         }
         return childOffset;
     }
@@ -2695,7 +2701,8 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         if (taskView == null) {
             return super.getChildVisibleSize(index);
         }
-        return (int) (super.getChildVisibleSize(index) * taskView.getSizeAdjustment());
+        return (int) (super.getChildVisibleSize(index) * taskView.getSizeAdjustment(
+                mOverviewFullscreenEnabled, mOverviewGridEnabled));
     }
 
     @Override
@@ -2807,6 +2814,23 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         if (mOverlayEnabled != overlayEnabled) {
             mOverlayEnabled = overlayEnabled;
             updateEnabledOverlays();
+        }
+    }
+
+    public void setOverviewGridEnabled(boolean overviewGridEnabled) {
+        if (mOverviewGridEnabled != overviewGridEnabled) {
+            mOverviewGridEnabled = overviewGridEnabled;
+            // Request layout to ensure scroll position is recalculated with updated mGridProgress.
+            requestLayout();
+        }
+    }
+
+    public void setOverviewFullscreenEnabled(boolean overviewFullscreenEnabled) {
+        if (mOverviewFullscreenEnabled != overviewFullscreenEnabled) {
+            mOverviewFullscreenEnabled = overviewFullscreenEnabled;
+            // Request layout to ensure scroll position is recalculated with updated
+            // mFullscreenProgress.
+            requestLayout();
         }
     }
 

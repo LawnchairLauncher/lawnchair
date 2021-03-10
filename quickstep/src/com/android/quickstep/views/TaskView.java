@@ -938,31 +938,31 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         mNonRtlVisibleOffset = nonRtlVisibleOffset;
     }
 
-    public float getScrollAdjustment() {
+    public float getScrollAdjustment(boolean fullscreenEnabled, boolean gridEnabled) {
         float scrollAdjustment = 0;
-        if (mFullscreenProgress > 0) {
+        if (fullscreenEnabled) {
             scrollAdjustment += mFullscreenTranslationX + mAccumulatedFullscreenTranslationX;
         }
-        if (mGridProgress > 0) {
+        if (gridEnabled) {
             scrollAdjustment += mGridTranslationX;
         }
         return scrollAdjustment;
     }
 
-    public float getOffsetAdjustment() {
-        float offsetAdjustment = getScrollAdjustment();
-        if (mGridProgress > 0) {
+    public float getOffsetAdjustment(boolean fullscreenEnabled, boolean gridEnabled) {
+        float offsetAdjustment = getScrollAdjustment(fullscreenEnabled, gridEnabled);
+        if (gridEnabled) {
             offsetAdjustment += mGridOffsetTranslationX + mNonRtlVisibleOffset;
         }
         return offsetAdjustment;
     }
 
-    public float getSizeAdjustment() {
+    public float getSizeAdjustment(boolean fullscreenEnabled, boolean gridEnabled) {
         float sizeAdjustment = 1;
-        if (mFullscreenProgress > 0) {
+        if (fullscreenEnabled) {
             sizeAdjustment *= mFullscreenScale;
         }
-        if (mGridProgress > 0) {
+        if (gridEnabled) {
             sizeAdjustment *= mGridScale;
         }
         return sizeAdjustment;
