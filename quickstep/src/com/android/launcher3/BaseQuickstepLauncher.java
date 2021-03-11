@@ -63,6 +63,7 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 /**
@@ -85,7 +86,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
     private @Nullable TaskbarController mTaskbarController;
     private final TaskbarStateHandler mTaskbarStateHandler = new TaskbarStateHandler(this);
     // Will be updated when dragging from taskbar.
-    private DragOptions mWorkspaceDragOptions = new DragOptions();
+    private @Nullable DragOptions mNextWorkspaceDragOptions = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -244,15 +245,12 @@ public abstract class BaseQuickstepLauncher extends Launcher
     }
 
     @Override
-    protected StateHandler<LauncherState>[] createStateHandlers() {
-        return new StateHandler[] {
-                getAllAppsController(),
-                getWorkspace(),
-                getDepthController(),
-                new RecentsViewStateController(this),
-                new BackButtonAlphaHandler(this),
-                getTaskbarStateHandler(),
-        };
+    protected void collectStateHandlers(List<StateHandler> out) {
+        super.collectStateHandlers(out);
+        out.add(getDepthController());
+        out.add(new RecentsViewStateController(this));
+        out.add(new BackButtonAlphaHandler(this));
+        out.add(getTaskbarStateHandler());
     }
 
     public DepthController getDepthController() {
@@ -274,11 +272,16 @@ public abstract class BaseQuickstepLauncher extends Launcher
 
     @Override
     public DragOptions getDefaultWorkspaceDragOptions() {
-        return mWorkspaceDragOptions;
+        if (mNextWorkspaceDragOptions != null) {
+            DragOptions options = mNextWorkspaceDragOptions;
+            mNextWorkspaceDragOptions = null;
+            return options;
+        }
+        return super.getDefaultWorkspaceDragOptions();
     }
 
-    public void setWorkspaceDragOptions(DragOptions dragOptions) {
-        mWorkspaceDragOptions = dragOptions;
+    public void setNextWorkspaceDragOptions(DragOptions dragOptions) {
+        mNextWorkspaceDragOptions = dragOptions;
     }
 
     @Override
