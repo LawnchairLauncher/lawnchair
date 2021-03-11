@@ -29,7 +29,11 @@
     <dimen name="overview_actions_bottom_margin_three_button">8dp</dimen>
     <dimen name="overview_actions_horizontal_margin">16dp</dimen>
 
-    <dimen name="recents_row_spacing">48dp</dimen>
+    <dimen name="overview_grid_top_margin">77dp</dimen>
+    <dimen name="overview_grid_bottom_margin">90dp</dimen>
+    <dimen name="overview_grid_side_margin">54dp</dimen>
+    <dimen name="overview_grid_row_spacing">42dp</dimen>
+
     <dimen name="recents_page_spacing">16dp</dimen>
     <dimen name="recents_clear_all_deadzone_vertical_margin">70dp</dimen>
 
