@@ -337,7 +337,9 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     private float mTaskViewsPrimaryTranslation = 0;
     // Progress from 0 to 1 where 0 is a carousel and 1 is a 2 row grid.
     private float mGridProgress = 0;
-    private boolean mShowAsGrid;
+
+    // The GestureEndTarget that is still in progress.
+    private GestureState.GestureEndTarget mCurrentGestureEndTarget;
 
     /**
      * TODO: Call reloadIdNeeded in onTaskStackChanged.
@@ -554,11 +556,6 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         mLiveTileTaskViewSimulator.recentsViewScale.value = 1;
         mLiveTileTaskViewSimulator.setOrientationState(mOrientationState);
         mLiveTileTaskViewSimulator.setDrawsBelowRecents(true);
-
-        mShowAsGrid =
-                mActivity.getDeviceProfile().isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get();
-        mActivity.addOnDeviceProfileChangeListener(newDp ->
-                mShowAsGrid = newDp.isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get());
     }
 
     public OverScroller getScroller() {
@@ -731,7 +728,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     }
 
     public boolean isTaskViewVisible(TaskView tv) {
-        if (mShowAsGrid) {
+        if (showAsGrid()) {
             int screenStart = mOrientationHandler.getPrimaryScroll(this);
             int screenEnd = screenStart + mOrientationHandler.getMeasuredSize(this);
             return isTaskViewWithinBounds(tv, screenStart, screenEnd);
@@ -743,9 +740,9 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
 
     private boolean isTaskViewWithinBounds(TaskView tv, int start, int end) {
         int taskStart = mOrientationHandler.getChildStart(tv) + (int) tv.getOffsetAdjustment(
-                mOverviewFullscreenEnabled, mOverviewGridEnabled);
+                mOverviewFullscreenEnabled, showAsGrid());
         int taskSize = (int) (mOrientationHandler.getMeasuredSize(tv) * tv.getSizeAdjustment(
-                mOverviewFullscreenEnabled, mOverviewGridEnabled));
+                mOverviewFullscreenEnabled, showAsGrid()));
         int taskEnd = taskStart + taskSize;
         return (taskStart >= start && taskStart <= end) || (taskEnd >= start
                 && taskEnd <= end);
@@ -813,7 +810,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     public boolean onTouchEvent(MotionEvent ev) {
         super.onTouchEvent(ev);
 
-        if (mShowAsGrid) {
+        if (showAsGrid()) {
             int taskCount = getTaskViewCount();
             for (int i = 0; i < taskCount; i++) {
                 TaskView taskView = getTaskViewAt(i);
@@ -880,7 +877,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
 
     @Override
     protected boolean snapToPageInFreeScroll() {
-        return !mShowAsGrid;
+        return !showAsGrid();
     }
 
     @Override
@@ -1091,14 +1088,35 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
      * Updates TaskView scaling and translation required to support variable width.
      */
     private void updateTaskSize() {
-        float accumulatedTranslationX = 0;
         final int taskCount = getTaskViewCount();
+        float accumulatedTranslationX = 0;
+        float[] fullscreenTranslations = new float[taskCount];
+        int firstNonHomeTaskIndex = 0;
         for (int i = 0; i < taskCount; i++) {
             TaskView taskView = getTaskViewAt(i);
+            if (isHomeTask(taskView)) {
+                if (firstNonHomeTaskIndex == i) {
+                    firstNonHomeTaskIndex++;
+                }
+                continue;
+            }
+
             taskView.updateTaskSize();
-            taskView.setAccumulatedFullscreenTranslationX(accumulatedTranslationX);
-            accumulatedTranslationX += taskView.getFullscreenTranslationX();
+            fullscreenTranslations[i] += accumulatedTranslationX;
+            float widthDiff =
+                    taskView.getLayoutParams().width * (1 - taskView.getFullscreenScale());
+            float fullscreenTranslationX = mIsRtl ? widthDiff : -widthDiff;
+            fullscreenTranslations[i] += fullscreenTranslationX;
+            accumulatedTranslationX += fullscreenTranslationX;
         }
+
+        // We need to maintain first non-home task's full screen translation at 0, now shift
+        // translation of all the TaskViews to achieve that.
+        for (int i = firstNonHomeTaskIndex; i < taskCount; i++) {
+            getTaskViewAt(i).setFullscreenTranslationX(
+                    fullscreenTranslations[i] - fullscreenTranslations[firstNonHomeTaskIndex]);
+        }
+
         updateGridProperties();
     }
 
@@ -1204,7 +1222,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         int upper = 0;
         int visibleStart = 0;
         int visibleEnd = 0;
-        if (mShowAsGrid) {
+        if (showAsGrid()) {
             int screenStart = mOrientationHandler.getPrimaryScroll(this);
             int pageOrientedSize = mOrientationHandler.getMeasuredSize(this);
             int halfScreenSize = pageOrientedSize / 2;
@@ -1224,7 +1242,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             Task task = taskView.getTask();
             int index = indexOfChild(taskView);
             boolean visible;
-            if (mShowAsGrid) {
+            if (showAsGrid()) {
                 visible = isTaskViewWithinBounds(taskView, visibleStart, visibleEnd);
             } else {
                 visible = lower <= index && index <= upper;
@@ -1404,7 +1422,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
      * Called when a gesture from an app has finished, and an end target has been determined.
      */
     public void onGestureEndTargetCalculated(GestureState.GestureEndTarget endTarget) {
-
+        mCurrentGestureEndTarget = endTarget;
     }
 
     /**
@@ -1425,9 +1443,11 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         animateUpRunningTaskIconScale();
 
         // TODO: This should be tied to whether there is a focus app on overview.
-        if (!mShowAsGrid) {
+        if (!showAsGrid()) {
             animateActionsViewIn();
         }
+
+        mCurrentGestureEndTarget = null;
     }
 
     /**
@@ -1601,11 +1621,19 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         float topAccumulatedTranslationX = 0;
         float bottomAccumulatedTranslationX = 0;
         IntSet topSet = new IntSet();
+        IntSet bottomSet = new IntSet();
         float[] gridTranslations = new float[taskCount];
+        int firstNonHomeTaskIndex = 0;
         for (int i = 0; i < taskCount; i++) {
             TaskView taskView = getTaskViewAt(i);
+            if (isHomeTask(taskView)) {
+                if (firstNonHomeTaskIndex == i) {
+                    firstNonHomeTaskIndex++;
+                }
+                continue;
+            }
+
             taskView.setGridScale(gridScale);
-            gridTranslations[i] = 0;
 
             float scaledWidth = taskView.getLayoutParams().width * gridScale;
             float taskGridHorizontalDiff;
@@ -1639,7 +1667,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
 
                 // Move horizontally into empty space.
                 float widthOffset = 0;
-                for (int j = i - 1; !topSet.contains(j) && j >= 0; j--) {
+                for (int j = i - 1; bottomSet.contains(j); j--) {
                     widthOffset += getTaskViewAt(j).getLayoutParams().width * gridScale
                             + mPageSpacing;
                 }
@@ -1650,6 +1678,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             } else {
                 gridTranslations[i] += bottomAccumulatedTranslationX;
                 bottomRowWidth += taskView.getLayoutParams().width * gridScale + mPageSpacing;
+                bottomSet.add(i);
 
                 // Move into bottom row.
                 float heightOffset = (boxLength + mTaskTopMargin) * gridScale + mRowSpacing;
@@ -1704,14 +1733,20 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                 clearAllAccumulatedTranslation + clearAllShorterRowCompensation
                         + clearAllShortTotalCompensation;
 
-        // We need to maintain first task's grid translation at 0, now shift translation of all
-        // the TaskViews to achieve that.
-        for (int i = 0; i < taskCount; i++) {
-            getTaskViewAt(i).setGridTranslationX(gridTranslations[i] - gridTranslations[0]);
+        // We need to maintain first non-home task's grid translation at 0, now shift translation
+        // of all the TaskViews to achieve that.
+        for (int i = firstNonHomeTaskIndex; i < taskCount; i++) {
+            getTaskViewAt(i).setGridTranslationX(
+                    gridTranslations[i] - gridTranslations[firstNonHomeTaskIndex]);
         }
-        mClearAllButton.setGridTranslationPrimary(clearAllTotalTranslationX - gridTranslations[0]);
+        mClearAllButton.setGridTranslationPrimary(
+                clearAllTotalTranslationX - gridTranslations[firstNonHomeTaskIndex]);
 
         setGridProgress(mGridProgress);
+    }
+
+    protected boolean isHomeTask(TaskView taskView) {
+        return false;
     }
 
     /**
@@ -1719,14 +1754,10 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
      *
      * @param gridProgress 0 = carousel; 1 = 2 row grid.
      */
-    public void setGridProgress(float gridProgress) {
+    private void setGridProgress(float gridProgress) {
         int taskCount = getTaskViewCount();
         if (taskCount == 0) {
             return;
-        }
-
-        if (!mShowAsGrid) {
-            gridProgress = 0;
         }
 
         mGridProgress = gridProgress;
@@ -1872,7 +1903,8 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                 if (animateTaskView) {
                     addDismissedTaskAnimations(taskView, duration, anim);
                 }
-            } else if (!mShowAsGrid) {  // Don't animate other tasks when dismissing in grid for now
+            } else if (!showAsGrid()) {
+                // For grid layout, don't animate other tasks when dismissing in grid for now.
                 // If we just take newScroll - oldScroll, everything to the right of dragged task
                 // translates to the left. We need to offset this in some cases:
                 // - In RTL, add page offset to all pages, since we want pages to move to the right
@@ -2865,9 +2897,9 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             float scrollDiff = 0;
             if (child instanceof TaskView) {
                 scrollDiff = ((TaskView) child).getScrollAdjustment(mOverviewFullscreenEnabled,
-                        mOverviewGridEnabled);
+                        showAsGrid());
             } else if (child instanceof ClearAllButton) {
-                scrollDiff = ((ClearAllButton) child).getScrollAdjustment(mOverviewGridEnabled);
+                scrollDiff = ((ClearAllButton) child).getScrollAdjustment(showAsGrid());
             }
 
             if (scrollDiff != 0) {
@@ -2884,9 +2916,9 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         View child = getChildAt(index);
         if (child instanceof TaskView) {
             childOffset += ((TaskView) child).getOffsetAdjustment(mOverviewFullscreenEnabled,
-                    mOverviewGridEnabled);
+                    showAsGrid());
         } else if (child instanceof ClearAllButton) {
-            childOffset += ((ClearAllButton) child).getOffsetAdjustment(mOverviewGridEnabled);
+            childOffset += ((ClearAllButton) child).getOffsetAdjustment(showAsGrid());
         }
         return childOffset;
     }
@@ -2898,7 +2930,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             return super.getChildVisibleSize(index);
         }
         return (int) (super.getChildVisibleSize(index) * taskView.getSizeAdjustment(
-                mOverviewFullscreenEnabled, mOverviewGridEnabled));
+                mOverviewFullscreenEnabled, showAsGrid()));
     }
 
     @Override
@@ -3107,6 +3139,12 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
 
     public BaseActivityInterface getSizeStrategy() {
         return mSizeStrategy;
+    }
+
+    private boolean showAsGrid() {
+        return mOverviewGridEnabled || (mCurrentGestureEndTarget != null
+                && mSizeStrategy.stateFromGestureEndTarget(
+                mCurrentGestureEndTarget).displayOverviewTasksAsGrid(mActivity.getDeviceProfile()));
     }
 
     /**
