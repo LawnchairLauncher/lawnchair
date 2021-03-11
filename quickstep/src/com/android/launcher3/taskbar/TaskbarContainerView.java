@@ -83,10 +83,15 @@ public class TaskbarContainerView extends BaseDragLayer<TaskbarActivityContext> 
 
     private ViewTreeObserverWrapper.OnComputeInsetsListener createTaskbarInsetsComputer() {
         return insetsInfo -> {
-            if (getAlpha() < AlphaUpdateListener.ALPHA_CUTOFF_THRESHOLD) {
-                // We're invisible, let touches pass through us.
+            if (getAlpha() < AlphaUpdateListener.ALPHA_CUTOFF_THRESHOLD
+                    || mTaskbarView.isDraggingItem()) {
+                // We're invisible or dragging out of taskbar, let touches pass through us.
                 insetsInfo.touchableRegion.setEmpty();
                 insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION);
+                // TODO(b/182234653): Shouldn't need to do this, but for the meantime, reporting
+                // that visibleInsets is empty allows DragEvents through. Setting them as completely
+                // empty reverts to default behavior, so set 1 px instead.
+                insetsInfo.visibleInsets.set(0, 0, 0, 1);
             } else {
                  // We're visible again, accept touches anywhere in our bounds.
                 insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_FRAME);

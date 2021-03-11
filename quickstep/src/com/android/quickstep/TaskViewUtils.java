@@ -180,6 +180,7 @@ public final class TaskViewUtils {
         boolean parallaxCenterAndAdjacentTask =
                 taskIndex != recentsView.getCurrentPage() && !(dp.isTablet
                         && FeatureFlags.ENABLE_OVERVIEW_GRID.get());
+        float gridProgress = recentsView.getGridProgress();
         float gridTranslationSecondary = recentsView.getGridTranslationSecondary(taskIndex);
         int startScroll = recentsView.getScrollOffset(taskIndex);
 
@@ -197,7 +198,7 @@ public final class TaskViewUtils {
             tsv.setPreview(targets.apps[targets.apps.length - 1]);
             tsv.fullScreenProgress.value = 0;
             tsv.recentsViewScale.value = 1;
-            tsv.gridProgress.value = 1;
+            tsv.gridProgress.value = gridProgress;
             tsv.gridTranslationSecondary.value = gridTranslationSecondary;
             tsv.setScroll(startScroll);
 
