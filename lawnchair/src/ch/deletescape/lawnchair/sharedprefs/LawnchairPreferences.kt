@@ -6,6 +6,10 @@ import com.android.launcher3.LauncherAppState
 import com.android.launcher3.Utilities
 
 class LawnchairPreferences(val context: Context) {
+    /**
+     * TODO: Fix grid and empty page preferences not taking effect until Lawnchair is restarted.
+     *  `forceReload` doesn’t appear to help in this respect.
+     */
     val listener: SharedPreferences.OnSharedPreferenceChangeListener =
         SharedPreferences.OnSharedPreferenceChangeListener { _: SharedPreferences?, key: String? ->
             when (key) {
@@ -41,6 +45,8 @@ class LawnchairPreferences(val context: Context) {
         @kotlin.jvm.JvmField
         var FOLDER_ROWS: String = "pref_folderRows"
 
+        // TODO: Fix the four following preferences not taking effect.
+
         @kotlin.jvm.JvmField
         var ICON_SIZE_FACTOR: String = "pref_iconSizeFactor"
 
@@ -55,6 +61,10 @@ class LawnchairPreferences(val context: Context) {
 
         @kotlin.jvm.JvmField
         var WRAP_ADAPTIVE_ICONS: String = "prefs_wrapAdaptive"
+
+        // TODO: Add the ability to manually delete empty pages.
+        @kotlin.jvm.JvmField
+        var ALLOW_EMPTY_PAGES: String = "pref_allowEmptyPages"
 
         fun getInstance(context: Context?): SharedPreferences? = when {
             context == null -> null

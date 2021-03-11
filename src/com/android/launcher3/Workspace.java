@@ -42,6 +42,7 @@ import android.app.WallpaperManager;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Point;
@@ -116,6 +117,8 @@ import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverla
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.function.Predicate;
+
+import ch.deletescape.lawnchair.sharedprefs.LawnchairPreferences;
 
 /**
  * The workspace is a wide area with a wallpaper and a finite number of pages.
@@ -255,6 +258,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     private final StatsLogManager mStatsLogManager;
 
+    // Lawnchair: Create boolean to indicate if empty pages are allowed.
+    Boolean emptyScreensAllowed;
+
     /**
      * Used to inflate the Workspace from XML.
      *
@@ -288,6 +294,12 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         setMotionEventSplittingEnabled(true);
         setOnTouchListener(new WorkspaceTouchListener(mLauncher, this));
         mStatsLogManager = StatsLogManager.newInstance(context);
+
+        // Lawnchair: Get instance of `SharedPreferences`, assign value to `emptyScreensAllowed`.
+        SharedPreferences prefs = LawnchairPreferences.Companion.getInstance(getContext());
+        if (prefs != null) {
+            emptyScreensAllowed = prefs.getBoolean(LawnchairPreferences.ALLOW_EMPTY_PAGES, false);
+        }
     }
 
     @Override
@@ -621,6 +633,12 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
 
         if (hasExtraEmptyScreen() || mScreenOrder.size() == 0) return;
+
+        // Lawnchair: Stop execution if empty pages are allowed.
+        if (emptyScreensAllowed) {
+            return;
+        }
+
         int finalScreenId = mScreenOrder.get(mScreenOrder.size() - 1);
 
         CellLayout finalScreen = mWorkspaceScreens.get(finalScreenId);
@@ -738,6 +756,11 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         if (mLauncher.isWorkspaceLoading()) {
             // Don't strip empty screens if the workspace is still loading.
             // This is dangerous and can result in data loss.
+            return;
+        }
+
+        // Lawnchair: Stop execution if empty pages are allowed.
+        if (emptyScreensAllowed) {
             return;
         }
 

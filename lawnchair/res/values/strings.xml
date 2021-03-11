@@ -32,4 +32,5 @@
     <string name="icons">Icons</string>
     <string name="icon_size">Icon Size</string>
     <string name="label_size">Label Size</string>
+    <string name="allow_empty_pages_label">Allow Empty Pages</string>
 </resources>

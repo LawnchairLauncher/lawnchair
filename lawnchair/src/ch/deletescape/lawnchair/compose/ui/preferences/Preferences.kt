@@ -40,6 +40,7 @@ class PreferenceViewModel(application: Application) : AndroidViewModel(applicati
     override val allAppsIconSizeFactor: MutableState<Float> = mutableStateOf(pm.allAppsIconSizeFactor)
     override val allAppsTextSizeFactor: MutableState<Float> = mutableStateOf(pm.allAppsTextSizeFactor)
     override val allAppsColumns: MutableState<Float> = mutableStateOf(pm.allAppsColumns)
+    override val allowEmptyPages: MutableState<Boolean> = mutableStateOf(pm.allowEmptyPages)
 
     override fun setIconPackPackage(iconPackPackage: String) {
         pm.iconPackPackage = iconPackPackage
@@ -109,6 +110,11 @@ class PreferenceViewModel(application: Application) : AndroidViewModel(applicati
     override fun setAllAppsColumns(allAppsColumns: Float) {
         pm.allAppsColumns = allAppsColumns
         this.allAppsColumns.value = allAppsColumns
+    }
+
+    override fun setAllowEmptyPages(allowEmptyPages: Boolean) {
+        pm.allowEmptyPages = allowEmptyPages
+        this.allowEmptyPages.value = allowEmptyPages
     }
 
     override fun getIconPacks(): MutableMap<String, IconPackInfo> {

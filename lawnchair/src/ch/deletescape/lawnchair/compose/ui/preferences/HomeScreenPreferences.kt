@@ -14,6 +14,11 @@ fun HomeScreenPreferences(interactor: PreferenceInteractor) {
                 onCheckedChange = { interactor.setAddIconToHome(it) },
                 label = stringResource(id = R.string.auto_add_shortcuts_label)
             )
+            SwitchPreference(
+                checked = interactor.allowEmptyPages.value,
+                onCheckedChange = { interactor.setAllowEmptyPages(it) },
+                label = stringResource(id = R.string.allow_empty_pages_label)
+            )
         }
         PreferenceGroup(heading = stringResource(id = R.string.grid), showDivider = true) {
             SliderPreference(

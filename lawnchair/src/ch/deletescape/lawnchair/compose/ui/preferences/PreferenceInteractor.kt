@@ -17,6 +17,7 @@ interface PreferenceInteractor {
     val allAppsIconSizeFactor: State<Float>
     val allAppsTextSizeFactor: State<Float>
     val allAppsColumns: State<Float>
+    val allowEmptyPages: State<Boolean>
 
     fun setIconPackPackage(iconPackPackage: String)
     fun setAllowRotation(allowRotation: Boolean)
@@ -32,6 +33,7 @@ interface PreferenceInteractor {
     fun setAllAppsIconSizeFactor(allAppsIconSizeFactor: Float)
     fun setAllAppsTextSizeFactor(allAppsTextSizeFactor: Float)
     fun setAllAppsColumns(allAppsColumns: Float)
+    fun setAllowEmptyPages(allowEmptyPages: Boolean)
 
     fun getIconPacks(): MutableMap<String, IconPackInfo>
 }
