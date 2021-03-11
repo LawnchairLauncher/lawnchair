@@ -22,7 +22,7 @@ import static android.widget.Toast.LENGTH_SHORT;
 
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_STATE_HANDLER;
 import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAGS;
-import static com.android.launcher3.QuickstepAppTransitionManagerImpl.RECENTS_LAUNCH_DURATION;
+import static com.android.launcher3.QuickstepTransitionManager.RECENTS_LAUNCH_DURATION;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
@@ -1624,19 +1624,17 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
                 mGestureState.updateLastStartedTaskId(taskId);
                 boolean hasTaskPreviouslyAppeared = mGestureState.getPreviouslyAppearedTaskIds()
                         .contains(taskId);
-                nextTask.launchTask(false /* animate */, true /* freezeTaskList */,
-                        success -> {
-                            resultCallback.accept(success);
-                            if (success) {
-                                if (hasTaskPreviouslyAppeared) {
-                                    onRestartPreviouslyAppearedTask();
-                                }
-                            } else {
-                                mActivityInterface.onLaunchTaskFailed();
-                                nextTask.notifyTaskLaunchFailed(TAG);
-                                mRecentsAnimationController.finish(true /* toRecents */, null);
-                            }
-                        }, MAIN_EXECUTOR.getHandler());
+                nextTask.launchTask(success -> {
+                    resultCallback.accept(success);
+                    if (success) {
+                        if (hasTaskPreviouslyAppeared) {
+                            onRestartPreviouslyAppearedTask();
+                        }
+                    } else {
+                        mActivityInterface.onLaunchTaskFailed();
+                        mRecentsAnimationController.finish(true /* toRecents */, null);
+                    }
+                }, true /* freezeTaskList */);
             } else {
                 mActivityInterface.onLaunchTaskFailed();
                 Toast.makeText(mContext, R.string.activity_not_available, LENGTH_SHORT).show();

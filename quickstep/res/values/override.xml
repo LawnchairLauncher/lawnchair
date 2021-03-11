@@ -17,8 +17,6 @@
 <!-- Class overrides for launcher with quickstep. -->
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="app_transition_manager_class" translatable="false">com.android.launcher3.LauncherAppTransitionManagerImpl</string>
-
   <string name="instant_app_resolver_class" translatable="false">com.android.quickstep.InstantAppResolverImpl</string>
 
   <string name="app_launch_tracker_class" translatable="false">com.android.launcher3.appprediction.PredictionAppTracker</string>
