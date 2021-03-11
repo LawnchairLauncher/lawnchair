@@ -90,6 +90,7 @@
     <string name="wallpaper_picker_package" translatable="false"></string>
     <string name="calendar_component_name" translatable="false"></string>
     <string name="clock_component_name" translatable="false"></string>
+    <string name="local_colors_extraction_class" translatable="false"></string>
 
     <!-- Accessibility actions -->
     <item type="id" name="action_remove" />
@@ -188,4 +189,8 @@
     </string-array>
 
     <string-array name="filtered_components" ></string-array>
+
+    <!-- Name of the class used to generate colors from the wallpaper colors. Must be implementing the LauncherAppWidgetHostView.ColorGenerator interface. -->
+    <string name="color_generator_class" translatable="false"/>
+
 </resources>

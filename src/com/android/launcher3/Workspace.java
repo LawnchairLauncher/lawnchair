@@ -186,7 +186,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     @Thunk final Launcher mLauncher;
     @Thunk DragController mDragController;
 
-    private final Rect mTempRect = new Rect();
     private final int[] mTempXY = new int[2];
     private final float[] mTempFXY = new float[2];
     @Thunk float[] mDragViewVisualCenter = new float[2];
@@ -367,8 +366,17 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     public float getWallpaperOffsetForCenterPage() {
-        int pageScroll = getScrollForPage(getPageNearestToCenterOfScreen());
+        return getWallpaperOffsetForPage(getPageNearestToCenterOfScreen());
+    }
+
+    private float getWallpaperOffsetForPage(int page) {
+        int pageScroll = getScrollForPage(page);
         return mWallpaperOffset.wallpaperOffsetForScroll(pageScroll);
+    }
+
+    /** Returns the number of pages used for the wallpaper parallax. */
+    public int getNumPagesForWallpaperParallax() {
+        return mWallpaperOffset.getNumPagesForWallpaperParallax();
     }
 
     public Rect estimateItemPosition(CellLayout cl, int hCell, int vCell, int hSpan, int vSpan) {
