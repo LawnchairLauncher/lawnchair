@@ -395,7 +395,8 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     @Override
     public WindowInsets dispatchApplyWindowInsets(WindowInsets insets) {
         if (Utilities.ATLEAST_Q) {
-            mNavBarScrimHeight = insets.getTappableElementInsets().bottom;
+            mNavBarScrimHeight = insets.getTappableElementInsets().bottom
+                    - mLauncher.getDeviceProfile().nonOverlappingTaskbarInset;
         } else {
             mNavBarScrimHeight = insets.getStableInsetBottom();
         }
