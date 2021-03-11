@@ -206,7 +206,7 @@ fun Settings(interactor: PreferenceInteractor = viewModel<PreferenceViewModel>()
     ) {
         TopBar(navController = navController)
         NavHost(navController = navController, startDestination = Screen.Top.route) {
-            composable(route = Screen.Top.route) { Top(navController) }
+            composable(route = Screen.Top.route) { PreferenceCategoryList(navController) }
             composable(route = Screen.HomeScreenSettings.route) { HomeScreenPreferences(interactor = interactor) }
             composable(route = Screen.IconPackSettings.route) { IconPackPreferences(interactor = interactor) }
             composable(route = Screen.DockSettings.route) { DockPreferences(interactor = interactor) }

@@ -7,10 +7,10 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 
 @Composable
-fun Top(navController: NavController) {
+fun PreferenceCategoryList(navController: NavController) {
     LazyColumn {
         items(screens) { screen ->
-            ScreenRow(
+            PreferenceCategoryLink(
                 titleResId = screen.titleResId,
                 subtitleResId = screen.subtitleResId,
                 iconResId = screen.iconResId,

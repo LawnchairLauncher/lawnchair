@@ -34,9 +34,9 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name="ch.deletescape.lawnchair.compose.ui.preferences.PreferencesActivity" android:theme="@style/Theme.Lawnchair">
+        <activity android:name="ch.deletescape.lawnchair.compose.ui.preferences.PreferenceActivity" android:theme="@style/Theme.Lawnchair">
             <intent-filter>
-                <action android:name="ch.deletescape.lawnchair.compose.ui.preferences.PreferencesActivity" />
+                <action android:name="ch.deletescape.lawnchair.compose.ui.preferences.PreferenceActivity" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

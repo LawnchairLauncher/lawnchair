@@ -27,7 +27,7 @@
         android:fragment="ch.deletescape.lawnchair.settings.fragments.AppDrawerSettingsFragment" />
 
     <Preference android:title="Open Compose Settings">
-        <intent android:action="ch.deletescape.lawnchair.compose.ui.preferences.PreferencesActivity" />
+        <intent android:action="ch.deletescape.lawnchair.compose.ui.preferences.PreferenceActivity" />
     </Preference>
 
 </androidx.preference.PreferenceScreen>

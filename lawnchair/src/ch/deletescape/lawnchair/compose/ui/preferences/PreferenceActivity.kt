@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import ch.deletescape.lawnchair.compose.ui.theme.LawnchairTheme
 
-class PreferencesActivity : ComponentActivity() {
+class PreferenceActivity : ComponentActivity() {
     @ExperimentalAnimationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

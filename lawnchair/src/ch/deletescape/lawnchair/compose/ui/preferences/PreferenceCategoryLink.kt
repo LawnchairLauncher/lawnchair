@@ -14,14 +14,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import kotlin.random.Random
 
-fun getRandomColor(): Color = Color(
-    red = Random.nextInt(0, 255),
-    green = Random.nextInt(0, 255),
-    blue = Random.nextInt(0, 255)
-)
-
 @Composable
-fun ScreenRow(titleResId: Int, onClick: () -> Unit, subtitleResId: Int?, iconResId: Int?) {
+fun PreferenceCategoryLink(titleResId: Int, onClick: () -> Unit, subtitleResId: Int?, iconResId: Int?) {
     Row(
         modifier = Modifier
             .clickable(onClick = onClick)
