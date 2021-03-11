@@ -19,6 +19,8 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
 import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
 
+import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
+import static com.android.launcher3.AbstractFloatingView.TYPE_REPLACE_TASKBAR_WITH_HOTSEAT;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.systemui.shared.system.WindowManagerWrapper.ITYPE_BOTTOM_TAPPABLE_ELEMENT;
@@ -40,6 +42,7 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseQuickstepLauncher;
+import com.android.launcher3.Hotseat;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.QuickstepAppTransitionManagerImpl;
 import com.android.launcher3.R;
@@ -144,22 +147,13 @@ public class TaskbarController {
                         ActivityManagerWrapper.getInstance().startActivityFromRecents(task.key,
                                 ActivityOptions.makeBasic());
                     } else if (tag instanceof FolderInfo) {
-                        FolderIcon folderIcon = (FolderIcon) view;
-                        Folder folder = folderIcon.getFolder();
-
-                        setTaskbarWindowFullscreen(true);
-
-                        mTaskbarContainerView.post(() -> {
-                            folder.animateOpen();
-
-                            folder.iterateOverItems((itemInfo, itemView) -> {
-                                itemView.setOnClickListener(getItemOnClickListener());
-                                itemView.setOnLongClickListener(getItemOnLongClickListener());
-                                // To play haptic when dragging, like other Taskbar items do.
-                                itemView.setHapticFeedbackEnabled(true);
-                                return false;
-                            });
-                        });
+                        if (mLauncher.hasBeenResumed()) {
+                            FolderInfo folderInfo = (FolderInfo) tag;
+                            onClickedOnFolderFromHome(folderInfo);
+                        } else {
+                            FolderIcon folderIcon = (FolderIcon) view;
+                            onClickedOnFolderInApp(folderIcon);
+                        }
                     } else {
                         ItemClickHandler.INSTANCE.onClick(view);
                     }
@@ -167,6 +161,34 @@ public class TaskbarController {
                     AbstractFloatingView.closeAllOpenViews(
                             mTaskbarContainerView.getTaskbarActivityContext());
                 };
+            }
+
+            // Open the real folder in Launcher.
+            private void onClickedOnFolderFromHome(FolderInfo folderInfo) {
+                alignRealHotseatWithTaskbar();
+
+                FolderIcon folderIcon = (FolderIcon) mLauncher.getHotseat()
+                        .getFirstItemMatch((info, v) -> info == folderInfo);
+                folderIcon.post(folderIcon::performClick);
+            }
+
+            // Open the Taskbar folder, and handle clicks on folder items.
+            private void onClickedOnFolderInApp(FolderIcon folderIcon) {
+                Folder folder = folderIcon.getFolder();
+
+                setTaskbarWindowFullscreen(true);
+
+                mTaskbarContainerView.post(() -> {
+                    folder.animateOpen();
+
+                    folder.iterateOverItems((itemInfo, itemView) -> {
+                        itemView.setOnClickListener(getItemOnClickListener());
+                        itemView.setOnLongClickListener(getItemOnLongClickListener());
+                        // To play haptic when dragging, like other Taskbar items do.
+                        itemView.setHapticFeedbackEnabled(true);
+                        return false;
+                    });
+                });
             }
 
             @Override
@@ -306,6 +328,7 @@ public class TaskbarController {
             mAnimator = createAnimToLauncher(null, duration);
         } else {
             mAnimator = createAnimToApp(duration);
+            replaceTaskbarWithHotseatOrViceVersa();
         }
         mAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -355,6 +378,7 @@ public class TaskbarController {
             @Override
             public void onAnimationStart(Animator animation) {
                 mTaskbarView.updateHotseatItemsVisibility();
+                setReplaceTaskbarWithHotseat(false);
             }
         });
         return anim.buildAnim();
@@ -449,6 +473,35 @@ public class TaskbarController {
         mLauncher.getHotseat().setPadding(hotseatBounds.left, hotseatBounds.top,
                 mTaskbarView.getWidth() - hotseatBounds.right,
                 mTaskbarView.getHeight() - hotseatBounds.bottom);
+    }
+
+    /**
+     * A view was added or removed from DragLayer, check if we need to hide our hotseat copy and
+     * show the real one instead.
+     */
+    public void onLauncherDragLayerHierarchyChanged() {
+        replaceTaskbarWithHotseatOrViceVersa();
+    }
+
+    private void replaceTaskbarWithHotseatOrViceVersa() {
+        boolean replaceTaskbarWithHotseat = AbstractFloatingView.getTopOpenViewWithType(mLauncher,
+                TYPE_ALL & TYPE_REPLACE_TASKBAR_WITH_HOTSEAT) != null;
+        if (!mLauncher.hasBeenResumed()) {
+            replaceTaskbarWithHotseat = false;
+        }
+        setReplaceTaskbarWithHotseat(replaceTaskbarWithHotseat);
+    }
+
+    private void setReplaceTaskbarWithHotseat(boolean replaceTaskbarWithHotseat) {
+        Hotseat hotseat = mLauncher.getHotseat();
+        if (replaceTaskbarWithHotseat) {
+            alignRealHotseatWithTaskbar();
+            hotseat.getReplaceTaskbarAlpha().setValue(1f);
+            mTaskbarView.setHotseatViewsHidden(true);
+        } else {
+            hotseat.getReplaceTaskbarAlpha().setValue(0f);
+            mTaskbarView.setHotseatViewsHidden(false);
+        }
     }
 
     private float getTaskbarScaleOnHome() {
