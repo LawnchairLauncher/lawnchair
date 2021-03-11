@@ -45,7 +45,8 @@ import com.android.systemui.shared.system.RemoteTransitionCompat;
 /**
  * Holds the reference to SystemUI.
  */
-public class SystemUiProxy implements ISystemUiProxy {
+public class SystemUiProxy implements ISystemUiProxy,
+        SysUINavigationMode.NavigationModeChangeListener {
     private static final String TAG = SystemUiProxy.class.getSimpleName();
 
     public static final MainThreadInitializedObject<SystemUiProxy> INSTANCE =
@@ -59,14 +60,20 @@ public class SystemUiProxy implements ISystemUiProxy {
     // Used to dedupe calls to SystemUI
     private int mLastShelfHeight;
     private boolean mLastShelfVisible;
-    private float mLastBackButtonAlpha;
-    private boolean mLastBackButtonAnimate;
+    private float mLastNavButtonAlpha;
+    private boolean mLastNavButtonAnimate;
 
     // TODO(141886704): Find a way to remove this
     private int mLastSystemUiStateFlags;
 
     public SystemUiProxy(Context context) {
-        // Do nothing
+        SysUINavigationMode.INSTANCE.get(context).addModeChangeListener(this);
+    }
+
+    @Override
+    public void onNavigationModeChanged(SysUINavigationMode.Mode newMode) {
+        // Whenever the nav mode changes, force reset the nav button alpha
+        setNavBarButtonAlpha(1f, false);
     }
 
     @Override
@@ -149,28 +156,17 @@ public class SystemUiProxy implements ISystemUiProxy {
         return null;
     }
 
-    @Override
-    public void setBackButtonAlpha(float alpha, boolean animate) {
-        boolean changed = Float.compare(alpha, mLastBackButtonAlpha) != 0
-                || animate != mLastBackButtonAnimate;
-        if (mSystemUiProxy != null && changed) {
-            mLastBackButtonAlpha = alpha;
-            mLastBackButtonAnimate = animate;
-            try {
-                mSystemUiProxy.setBackButtonAlpha(alpha, animate);
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed call setBackButtonAlpha", e);
-            }
-        }
-    }
-
-    public float getLastBackButtonAlpha() {
-        return mLastBackButtonAlpha;
+    public float getLastNavButtonAlpha() {
+        return mLastNavButtonAlpha;
     }
 
     @Override
     public void setNavBarButtonAlpha(float alpha, boolean animate) {
-        if (mSystemUiProxy != null) {
+        boolean changed = Float.compare(alpha, mLastNavButtonAlpha) != 0
+                || animate != mLastNavButtonAnimate;
+        if (mSystemUiProxy != null && changed) {
+            mLastNavButtonAlpha = alpha;
+            mLastNavButtonAnimate = animate;
             try {
                 mSystemUiProxy.setNavBarButtonAlpha(alpha, animate);
             } catch (RemoteException e) {
