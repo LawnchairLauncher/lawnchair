@@ -1609,8 +1609,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         LauncherAppState.getIDP(this).removeOnChangeListener(this);
 
         mOverlayManager.onActivityDestroyed(this);
-        mAppTransitionManager.unregisterRemoteAnimations();
-        mAppTransitionManager.unregisterRemoteTransitions();
+        mAppTransitionManager.onActivityDestroyed();
         mUserChangedCallbackCloseable.close();
         mLiveSearchManager.stop();
     }
@@ -2761,8 +2760,10 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         return super.onKeyUp(keyCode, event);
     }
 
-    protected StateHandler<LauncherState>[] createStateHandlers() {
-        return new StateHandler[] { getAllAppsController(), getWorkspace() };
+    @Override
+    protected void collectStateHandlers(List<StateHandler> out) {
+        out.add(getAllAppsController());
+        out.add(getWorkspace());
     }
 
     public TouchController[] createTouchControllers() {

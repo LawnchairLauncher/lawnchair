@@ -78,7 +78,10 @@ public class TaskbarHotseatController {
                 CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
                 // Since the hotseat might be laid out vertically or horizontally, use whichever
                 // index is higher.
-                hotseatItemInfos[Math.max(lp.cellX, lp.cellY)] = itemInfo;
+                int index = Math.max(lp.cellX, lp.cellY);
+                if (0 <= index && index < hotseatItemInfos.length) {
+                    hotseatItemInfos[index] = itemInfo;
+                }
             }
         }
 
