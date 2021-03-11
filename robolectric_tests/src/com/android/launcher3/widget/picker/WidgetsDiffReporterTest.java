@@ -221,6 +221,27 @@ public final class WidgetsDiffReporterTest {
         assertThat(currentList).containsExactlyElementsIn(newList);
     }
 
+    @Test
+    public void headersContentsMix_headerWidgetsModified_shouldInvokeCorrectCallbacks() {
+        // GIVEN the current list has app headers [A, B, E content].
+        ArrayList<WidgetsListBaseEntry> currentList = new ArrayList<>(
+                List.of(mHeaderA, mHeaderB, mContentE));
+        // GIVEN the new list has one of the headers widgets list modified.
+        List<WidgetsListBaseEntry> newList = List.of(
+                new WidgetsListHeaderEntry(
+                        mHeaderA.mPkgItem, mHeaderA.mTitleSectionName,
+                        mHeaderA.mWidgets.subList(0, 1)),
+                mHeaderB, mContentE);
+
+        // WHEN computing the list difference.
+        mWidgetsDiffReporter.process(currentList, newList, COMPARATOR);
+
+        // THEN notify "A" has been changed.
+        verify(mAdapter).notifyItemChanged(/* position= */ 0);
+        // THEN the current list contains all elements from the new list.
+        assertThat(currentList).containsExactlyElementsIn(newList);
+    }
+
 
     private WidgetsListHeaderEntry createWidgetsHeaderEntry(String packageName, String appName,
             int numOfWidgets) {
