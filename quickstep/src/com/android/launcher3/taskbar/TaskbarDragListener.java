@@ -37,7 +37,6 @@ public class TaskbarDragListener implements View.OnDragListener {
 
     private final BaseQuickstepLauncher mLauncher;
     private final ItemInfo mDraggedItem;
-    private final DragOptions mDragOptions;
     // Randomly generated id used to verify the drag event.
     private final String mId;
 
@@ -51,8 +50,6 @@ public class TaskbarDragListener implements View.OnDragListener {
     public TaskbarDragListener(BaseQuickstepLauncher launcher, ItemInfo draggedItem) {
         mLauncher = launcher;
         mDraggedItem = draggedItem;
-        mDragOptions = new DragOptions();
-        mDragOptions.simulatedDndStartPoint = new Point();
         mId = UUID.randomUUID().toString();
     }
 
@@ -63,7 +60,7 @@ public class TaskbarDragListener implements View.OnDragListener {
 
     private void cleanup() {
         mDragLayer.setOnDragListener(null);
-        mLauncher.setWorkspaceDragOptions(new DragOptions());
+        mLauncher.setNextWorkspaceDragOptions(null);
     }
 
     /**
@@ -88,8 +85,10 @@ public class TaskbarDragListener implements View.OnDragListener {
                 cleanup();
                 return false;
             }
-            mDragOptions.simulatedDndStartPoint.set((int) dragEvent.getX(), (int) dragEvent.getY());
-            mLauncher.setWorkspaceDragOptions(mDragOptions);
+            DragOptions dragOptions = new DragOptions();
+            dragOptions.simulatedDndStartPoint = new Point((int) dragEvent.getX(),
+                    (int) dragEvent.getY());
+            mLauncher.setNextWorkspaceDragOptions(dragOptions);
             hotseatView.performLongClick();
         } else if (dragEvent.getAction() == DragEvent.ACTION_DRAG_ENDED) {
             cleanup();

@@ -472,7 +472,7 @@ public class DeviceProfile {
         final boolean isVerticalLayout = isVerticalBarLayout();
         float invIconSizeDp = isVerticalLayout ? inv.landscapeIconSize : inv.iconSize;
         iconSizePx = Math.max(1, pxFromDp(invIconSizeDp, mInfo.metrics, scale));
-        iconTextSizePx = pxFromDp(inv.iconTextSize, mInfo.metrics, scale);
+        iconTextSizePx = (int) (Utilities.pxFromSp(inv.iconTextSize, mInfo.metrics) * scale);
         iconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * scale);
 
         setCellLayoutBorderSpacing((int) (cellLayoutBorderSpacingOriginalPx * scale));
