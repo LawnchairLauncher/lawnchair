@@ -269,5 +269,3 @@ protobuf {
         }
     }
 }
-
-apply plugin: 'kotlin-android-extensions'
