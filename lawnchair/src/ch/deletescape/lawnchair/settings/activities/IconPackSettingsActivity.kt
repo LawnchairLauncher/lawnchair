@@ -55,8 +55,7 @@ class IconPackSettingsActivity : AppCompatActivity() {
         list.addAll(pm.queryIntentActivities(Intent("org.adw.launcher.icons.ACTION_PICK_ICON"), 0))
         list.addAll(pm.queryIntentActivities(Intent("com.dlto.atom.launcher.THEME"), 0))
         list.addAll(pm.queryIntentActivities(Intent("android.intent.action.MAIN").addCategory("com.anddoes.launcher.THEME"), 0))
-
-        // TODO: Ensure ‘System Icons’ entry is first in list.
+        
         iconPacks["system"] = IconPackInfo(
             "System Icons",
             "",
