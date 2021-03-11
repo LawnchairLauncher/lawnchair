@@ -1,4 +1,4 @@
-package ch.deletescape.lawnchair.compose.ui.settings
+package ch.deletescape.lawnchair.compose.ui.preferences
 
 import android.graphics.drawable.Drawable
 import androidx.compose.foundation.Image
@@ -19,7 +19,7 @@ import androidx.core.graphics.drawable.toBitmap
 data class IconPackInfo(val name: String, val packageName: String, val icon: Drawable)
 
 @Composable
-fun IconPackSettings(interactor: SettingsInteractor) {
+fun IconPackPreferences(interactor: PreferenceInteractor) {
     Box {
         LazyColumn(Modifier.fillMaxWidth()) {
             items(interactor.getIconPacks().values.toList()) { iconPack ->
@@ -36,26 +36,23 @@ fun IconPackSettings(interactor: SettingsInteractor) {
 @Composable
 fun IconPackListItem(
     iconPack: IconPackInfo,
-    selectedIconPackPackageName: String,
+    activeIconPackPackageName: String,
     onSelectionChange: (String) -> Unit
 ) {
-    fun select() {
-        onSelectionChange(iconPack.packageName)
-    }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp)
-            .clickable { select() }
-            .padding(start = 16.dp)
+            .clickable { onSelectionChange(iconPack.packageName) }
+            .padding(start = 16.dp, end = 16.dp)
     ) {
         RadioButton(
-            selected = iconPack.packageName == selectedIconPackPackageName,
-            { select() })
+            selected = iconPack.packageName == activeIconPackPackageName,
+            { onSelectionChange(iconPack.packageName) })
         Image(
             iconPack.icon.toBitmap().asImageBitmap(),
-            iconPack.name,
+            null,
             modifier = Modifier
                 .padding(start = 32.dp)
                 .width(36.dp)

@@ -307,18 +307,18 @@ public class InvariantDeviceProfile {
         if (prefs == null) return;
 
         // Lawnchair grid sizes
-        numHotseatIcons = prefs.getInt(LawnchairPreferences.HOTSEAT_COLUMNS, numHotseatIcons);
-        numRows = prefs.getInt(LawnchairPreferences.WORKSPACE_ROWS, numRows);
-        numColumns = prefs.getInt(LawnchairPreferences.WORKSPACE_COLUMNS, numColumns);
-        numAllAppsColumns = prefs.getInt(LawnchairPreferences.ALL_APPS_COLUMNS, numAllAppsColumns);
-        numFolderRows = prefs.getInt(LawnchairPreferences.FOLDER_ROWS, numFolderRows);
-        numFolderColumns = prefs.getInt(LawnchairPreferences.FOLDER_COLUMNS, numFolderColumns);
+        numHotseatIcons = Math.round(prefs.getFloat(LawnchairPreferences.HOTSEAT_COLUMNS, numHotseatIcons));
+        numRows = Math.round(prefs.getFloat(LawnchairPreferences.WORKSPACE_ROWS, numRows));
+        numColumns = Math.round(prefs.getFloat(LawnchairPreferences.WORKSPACE_COLUMNS, numColumns));
+        numAllAppsColumns = Math.round(prefs.getFloat(LawnchairPreferences.ALL_APPS_COLUMNS, numAllAppsColumns));
+        numFolderRows = Math.round(prefs.getFloat(LawnchairPreferences.FOLDER_ROWS, numFolderRows));
+        numFolderColumns = Math.round(prefs.getFloat(LawnchairPreferences.FOLDER_COLUMNS, numFolderColumns));
 
         // Lawnchair icon and text sizes
-        iconSize = prefs.getFloat(LawnchairPreferences.ICON_SIZE_FACTOR, 1f) * iconSize;
-        iconTextSize = prefs.getFloat(LawnchairPreferences.TEXT_SIZE_FACTOR, 1f) * iconTextSize;
-        allAppsIconSize = prefs.getFloat(LawnchairPreferences.ALL_APPS_ICON_SIZE_FACTOR, 1f) * allAppsIconSize;
-        allAppsIconTextSize = prefs.getFloat(LawnchairPreferences.ALL_APPS_TEXT_SIZE_FACTOR, 1f) * allAppsIconTextSize;
+        iconSize *= prefs.getFloat(LawnchairPreferences.ICON_SIZE_FACTOR, 1f);
+        iconTextSize *= prefs.getFloat(LawnchairPreferences.TEXT_SIZE_FACTOR, 1f);;
+        allAppsIconSize *= prefs.getFloat(LawnchairPreferences.ALL_APPS_ICON_SIZE_FACTOR, 1f);
+        allAppsIconTextSize *= prefs.getFloat(LawnchairPreferences.ALL_APPS_TEXT_SIZE_FACTOR, 1f);
 
     }
 

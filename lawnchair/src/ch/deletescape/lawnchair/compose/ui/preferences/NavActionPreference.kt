@@ -1,4 +1,4 @@
-package ch.deletescape.lawnchair.compose.ui.settings
+package ch.deletescape.lawnchair.compose.ui.preferences
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -14,8 +14,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 
 @Composable
-fun NavActionSetting(
-    title: String,
+fun NavActionPreference(
+    label: String,
     subtitle: String? = null,
     navController: NavController,
     destination: String
@@ -28,7 +28,7 @@ fun NavActionSetting(
             .clickable { navController.navigate(route = destination) }
             .padding(start = 16.dp, end = 16.dp),
     ) {
-        Text(text = title, style = MaterialTheme.typography.subtitle1, color = MaterialTheme.colors.onBackground)
+        Text(text = label, style = MaterialTheme.typography.subtitle1, color = MaterialTheme.colors.onBackground)
         subtitle?.let {
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(text = it, style = MaterialTheme.typography.body2, color = MaterialTheme.colors.onBackground)

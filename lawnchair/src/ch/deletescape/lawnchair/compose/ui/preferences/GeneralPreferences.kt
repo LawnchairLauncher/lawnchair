@@ -1,0 +1,33 @@
+package ch.deletescape.lawnchair.compose.ui.preferences
+
+import android.os.Build
+import androidx.compose.foundation.layout.Column
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavController
+import com.android.launcher3.R
+
+@Composable
+fun GeneralPreferences(navController: NavController, interactor: PreferenceInteractor) {
+    Column {
+        SwitchPreference(
+            checked = interactor.allowRotation.value,
+            onCheckedChange = { interactor.setAllowRotation(it) },
+            label = stringResource(id = R.string.home_screen_rotation_label),
+            description = stringResource(id = R.string.home_screen_rotaton_description)
+        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            SwitchPreference(
+                checked = interactor.wrapAdaptiveIcons.value,
+                onCheckedChange = { interactor.setWrapAdaptiveIcons(it) },
+                label = stringResource(id = R.string.make_icon_packs_adaptive_label),
+                description = stringResource(id = R.string.make_icon_packs_adaptive_description)
+            )
+        }
+        NavActionPreference(
+            label = stringResource(id = R.string.icon_pack),
+            navController = navController,
+            destination = Screen.IconPackSettings.route
+        )
+    }
+}

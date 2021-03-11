@@ -28,3 +28,29 @@ class BoolPrefDelegate(private val key: String, private val defValue: Boolean) :
         return thisRef.sp.getBoolean(key, defValue)
     }
 }
+
+class IntPrefDelegate(private val key: String, private val defValue: Int) : ReadWriteProperty<PrefManager, Int> {
+    override fun setValue(thisRef: PrefManager, property: KProperty<*>, value: Int) {
+        with(thisRef.sp.edit()) {
+            putInt(key, value)
+            apply()
+        }
+    }
+
+    override fun getValue(thisRef: PrefManager, property: KProperty<*>): Int {
+        return thisRef.sp.getInt(key, defValue)
+    }
+}
+
+class FloatPrefDelegate(private val key: String, private val defValue: Float) : ReadWriteProperty<PrefManager, Float> {
+    override fun setValue(thisRef: PrefManager, property: KProperty<*>, value: Float) {
+        with(thisRef.sp.edit()) {
+            putFloat(key, value)
+            apply()
+        }
+    }
+
+    override fun getValue(thisRef: PrefManager, property: KProperty<*>): Float {
+        return thisRef.sp.getFloat(key, defValue)
+    }
+}
