@@ -3,8 +3,9 @@ package ch.deletescape.lawnchair.compose.ui.preferences
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -55,7 +56,8 @@ fun TopBar(navController: NavController) {
                     .padding(start = 8.dp, end = 8.dp)
                     .height(40.dp)
                     .width(40.dp)
-                    .clip(shape = RoundedCornerShape(20.dp))
+                    .clip(CircleShape)
+                    .clickable { navController.popBackStack() }
             ) {
                 Icon(
                     imageVector = Icons.Rounded.ArrowBack,
