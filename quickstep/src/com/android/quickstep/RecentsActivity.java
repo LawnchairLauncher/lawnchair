@@ -18,9 +18,9 @@ package com.android.quickstep;
 import static android.content.pm.ActivityInfo.CONFIG_ORIENTATION;
 import static android.content.pm.ActivityInfo.CONFIG_SCREEN_SIZE;
 
-import static com.android.launcher3.QuickstepAppTransitionManagerImpl.RECENTS_LAUNCH_DURATION;
-import static com.android.launcher3.QuickstepAppTransitionManagerImpl.STATUS_BAR_TRANSITION_DURATION;
-import static com.android.launcher3.QuickstepAppTransitionManagerImpl.STATUS_BAR_TRANSITION_PRE_DELAY;
+import static com.android.launcher3.QuickstepTransitionManager.RECENTS_LAUNCH_DURATION;
+import static com.android.launcher3.QuickstepTransitionManager.STATUS_BAR_TRANSITION_DURATION;
+import static com.android.launcher3.QuickstepTransitionManager.STATUS_BAR_TRANSITION_PRE_DELAY;
 import static com.android.launcher3.Utilities.createHomeIntent;
 import static com.android.launcher3.testing.TestProtocol.OVERVIEW_STATE_ORDINAL;
 import static com.android.quickstep.TaskUtils.taskIsATargetWithMode;
@@ -30,7 +30,6 @@ import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MOD
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
-import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -46,7 +45,6 @@ import com.android.launcher3.LauncherAnimationRunner.AnimationResult;
 import com.android.launcher3.R;
 import com.android.launcher3.WrappedAnimationRunnerImpl;
 import com.android.launcher3.WrappedLauncherAnimationRunner;
-import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
@@ -54,7 +52,9 @@ import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.statemanager.StateManager.AtomicAnimationFactory;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.statemanager.StatefulActivity;
+import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.util.ActivityTracker;
+import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BaseDragLayer;
@@ -94,7 +94,6 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
 
     // Strong refs to runners which are cleared when the activity is destroyed
     private WrappedAnimationRunnerImpl mActivityLaunchAnimationRunner;
-    private SearchAdapterProvider mSearchAdapterProvider;
 
     /**
      * Init drag layer and overview panel views.
@@ -172,42 +171,40 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
     }
 
     @Override
-    public ActivityOptions getActivityLaunchOptions(final View v) {
+    public ActivityOptionsWrapper getActivityLaunchOptions(final View v) {
         if (!(v instanceof TaskView)) {
-            return null;
+            return super.getActivityLaunchOptions(v);
         }
 
         final TaskView taskView = (TaskView) v;
-        mActivityLaunchAnimationRunner = new WrappedAnimationRunnerImpl() {
-            @Override
-            public Handler getHandler() {
-                return mUiHandler;
-            }
+        RunnableList onEndCallback = new RunnableList();
 
-            @Override
-            public void onCreateAnimation(int transit,
+        mActivityLaunchAnimationRunner = (int transit,
                     RemoteAnimationTargetCompat[] appTargets,
                     RemoteAnimationTargetCompat[] wallpaperTargets,
                     RemoteAnimationTargetCompat[] nonAppTargets,
-                    AnimationResult result) {
-                AnimatorSet anim = composeRecentsLaunchAnimator(taskView, appTargets,
-                        wallpaperTargets);
-                anim.addListener(resetStateListener());
-                result.setAnimation(anim, RecentsActivity.this);
-            }
+                    AnimationResult result) -> {
+            AnimatorSet anim = composeRecentsLaunchAnimator(taskView, appTargets,
+                    wallpaperTargets);
+            anim.addListener(resetStateListener());
+            result.setAnimation(anim, RecentsActivity.this, onEndCallback::executeAllAndDestroy);
         };
+
         final LauncherAnimationRunner wrapper = new WrappedLauncherAnimationRunner<>(
-                mActivityLaunchAnimationRunner, true /* startAtFrontOfQueue */);
-        return ActivityOptionsCompat.makeRemoteAnimation(new RemoteAnimationAdapterCompat(
+                mUiHandler, mActivityLaunchAnimationRunner, true /* startAtFrontOfQueue */);
+        RemoteAnimationAdapterCompat adapterCompat = new RemoteAnimationAdapterCompat(
                 wrapper, RECENTS_LAUNCH_DURATION,
                 RECENTS_LAUNCH_DURATION - STATUS_BAR_TRANSITION_DURATION
-                        - STATUS_BAR_TRANSITION_PRE_DELAY));
+                        - STATUS_BAR_TRANSITION_PRE_DELAY);
+        return new ActivityOptionsWrapper(
+                ActivityOptionsCompat.makeRemoteAnimation(adapterCompat),
+                onEndCallback);
     }
 
     /**
      * Composes the animations for a launch from the recents list if possible.
      */
-    private AnimatorSet composeRecentsLaunchAnimator(TaskView taskView,
+    private AnimatorSet  composeRecentsLaunchAnimator(TaskView taskView,
             RemoteAnimationTargetCompat[] appTargets,
             RemoteAnimationTargetCompat[] wallpaperTargets) {
         AnimatorSet target = new AnimatorSet();

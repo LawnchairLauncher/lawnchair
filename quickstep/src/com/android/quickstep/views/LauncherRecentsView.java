@@ -21,7 +21,7 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_MODAL_TASK;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
-import static com.android.launcher3.QuickstepAppTransitionManagerImpl.ALL_APPS_PROGRESS_OFF_SCREEN;
+import static com.android.launcher3.QuickstepTransitionManager.ALL_APPS_PROGRESS_OFF_SCREEN;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 import static com.android.quickstep.util.NavigationModeFeatureFlag.LIVE_TILE;
 
