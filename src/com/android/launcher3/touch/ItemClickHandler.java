@@ -180,7 +180,7 @@ public class ItemClickHandler {
                 LauncherApps launcherApps = launcher.getSystemService(LauncherApps.class);
                 try {
                     launcherApps.startPackageInstallerSessionDetailsActivity(sessionInfo, null,
-                            launcher.getActivityLaunchOptionsAsBundle(v));
+                            launcher.getActivityLaunchOptions(v).toBundle());
                     return;
                 } catch (Exception e) {
                     Log.e(TAG, "Unable to launch market intent for package=" + packageName, e);
@@ -304,7 +304,7 @@ public class ItemClickHandler {
                 intent.setPackage(null);
             }
         }
-        if (v != null && launcher.getAppTransitionManager().supportsAdaptiveIconAnimation(v)) {
+        if (v != null && launcher.supportsAdaptiveIconAnimation(v)) {
             // Preload the icon to reduce latency b/w swapping the floating view with the original.
             FloatingIconView.fetchIcon(launcher, v, item, true /* isOpening */);
         }

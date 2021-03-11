@@ -17,6 +17,7 @@ package com.android.launcher3;
 
 import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.util.DisplayController.getSingleFrameMs;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.systemui.shared.recents.utilities.Utilities.postAtFrontOfQueueAsynchronously;
 
@@ -29,6 +30,7 @@ import android.os.Build;
 import android.os.Handler;
 
 import androidx.annotation.BinderThread;
+import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
 import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
@@ -36,8 +38,6 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 @TargetApi(Build.VERSION_CODES.P)
 public abstract class LauncherAnimationRunner implements RemoteAnimationRunnerCompat {
-
-    private static final String TAG = "LauncherAnimationRunner";
 
     private final Handler mHandler;
     private final boolean mStartAtFrontOfQueue;
@@ -66,10 +66,7 @@ public abstract class LauncherAnimationRunner implements RemoteAnimationRunnerCo
             Runnable runnable) {
         Runnable r = () -> {
             finishExistingAnimation();
-            mAnimationResult = new AnimationResult(() -> {
-                UI_HELPER_EXECUTOR.execute(runnable);
-                mAnimationResult = null;
-            });
+            mAnimationResult = new AnimationResult(() -> mAnimationResult = null, runnable);
             onCreateAnimation(transit, appTargets, wallpaperTargets, nonAppTargets,
                     mAnimationResult);
         };
@@ -126,37 +123,60 @@ public abstract class LauncherAnimationRunner implements RemoteAnimationRunnerCo
 
     public static final class AnimationResult {
 
-        private final Runnable mFinishRunnable;
+        private final Runnable mSyncFinishRunnable;
+        private final Runnable mASyncFinishRunnable;
 
         private AnimatorSet mAnimator;
+        private Runnable mOnCompleteCallback;
         private boolean mFinished = false;
         private boolean mInitialized = false;
 
-        private AnimationResult(Runnable finishRunnable) {
-            mFinishRunnable = finishRunnable;
+        private AnimationResult(Runnable syncFinishRunnable, Runnable asyncFinishRunnable) {
+            mSyncFinishRunnable = syncFinishRunnable;
+            mASyncFinishRunnable = asyncFinishRunnable;
         }
 
         @UiThread
         private void finish() {
             if (!mFinished) {
-                mFinishRunnable.run();
+                mSyncFinishRunnable.run();
+                UI_HELPER_EXECUTOR.execute(() -> {
+                    mASyncFinishRunnable.run();
+                    if (mOnCompleteCallback != null) {
+                        MAIN_EXECUTOR.execute(mOnCompleteCallback);
+                    }
+                });
                 mFinished = true;
             }
         }
 
         @UiThread
         public void setAnimation(AnimatorSet animation, Context context) {
+            setAnimation(animation, context, null);
+
+        }
+
+        /**
+         * Sets the animation to play for this app launch
+         */
+        @UiThread
+        public void setAnimation(AnimatorSet animation, Context context,
+                @Nullable Runnable onCompleteCallback) {
             if (mInitialized) {
                 throw new IllegalStateException("Animation already initialized");
             }
             mInitialized = true;
             mAnimator = animation;
+            mOnCompleteCallback = onCompleteCallback;
             if (mAnimator == null) {
                 finish();
             } else if (mFinished) {
                 // Animation callback was already finished, skip the animation.
                 mAnimator.start();
                 mAnimator.end();
+                if (mOnCompleteCallback != null) {
+                    mOnCompleteCallback.run();
+                }
             } else {
                 // Start the animation
                 mAnimator.addListener(new AnimatorListenerAdapter() {
