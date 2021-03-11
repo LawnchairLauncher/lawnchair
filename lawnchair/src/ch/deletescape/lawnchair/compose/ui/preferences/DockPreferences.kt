@@ -2,13 +2,15 @@ package ch.deletescape.lawnchair.compose.ui.preferences
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import com.android.launcher3.R
 
 @Composable
 fun DockPreferences(interactor: PreferenceInteractor) {
     Column {
         PreferenceGroup {
             SliderPreference(
-                label = "Dock Icons",
+                label = stringResource(id = R.string.dock_icons),
                 value = interactor.hotseatColumns.value,
                 onValueChange = { interactor.setHotseatColumns(it) },
                 steps = 3,

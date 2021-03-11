@@ -15,25 +15,25 @@ fun HomeScreenPreferences(interactor: PreferenceInteractor) {
                 label = stringResource(id = R.string.auto_add_shortcuts_label)
             )
         }
-        PreferenceGroup(heading = "GRID", showDivider = true) {
+        PreferenceGroup(heading = stringResource(id = R.string.grid), showDivider = true) {
             SliderPreference(
-                label = "Home Screen Columns",
+                label = stringResource(id = R.string.home_screen_columns),
                 value = interactor.workspaceColumns.value,
                 onValueChange = { interactor.setWorkspaceColumns(it) },
                 steps = 3,
                 valueRange = 3.0F..7.0F
             )
             SliderPreference(
-                label = "Home Screen Rows",
+                label = stringResource(id = R.string.home_screen_rows),
                 value = interactor.workspaceRows.value,
                 onValueChange = { interactor.setWorkspaceRows(it) },
                 steps = 3,
                 valueRange = 3.0F..7.0F
             )
         }
-        PreferenceGroup(heading = "ICONS", showDivider = true) {
+        PreferenceGroup(heading = stringResource(id = R.string.icons), showDivider = true) {
             SliderPreference(
-                label = "Icon Size",
+                label = stringResource(id = R.string.icon_size),
                 value = interactor.iconSizeFactor.value,
                 onValueChange = { interactor.setIconSizeFactor(it) },
                 steps = 9,
@@ -41,7 +41,7 @@ fun HomeScreenPreferences(interactor: PreferenceInteractor) {
                 showAsPercentage = true
             )
             SliderPreference(
-                label = "Label Size",
+                label = stringResource(id = R.string.label_size),
                 value = interactor.textSizeFactor.value,
                 onValueChange = { interactor.setTextSizeFactor(it) },
                 steps = 9,

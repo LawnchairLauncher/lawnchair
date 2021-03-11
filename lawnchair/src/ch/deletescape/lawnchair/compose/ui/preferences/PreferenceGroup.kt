@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import java.util.*
 
 @Composable
 fun PreferenceGroup(heading: String? = null, showDivider: Boolean = false, content: @Composable () -> Unit) {
@@ -21,7 +22,11 @@ fun PreferenceGroup(heading: String? = null, showDivider: Boolean = false, conte
                     .padding(start = 16.dp, end = 16.dp)
                     .fillMaxWidth()
             ) {
-                Text(text = it, style = MaterialTheme.typography.overline, color = MaterialTheme.colors.primary)
+                Text(
+                    text = it.toUpperCase(Locale.ROOT),
+                    style = MaterialTheme.typography.overline,
+                    color = MaterialTheme.colors.primary
+                )
             }
         }
         content()

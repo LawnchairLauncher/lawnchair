@@ -22,4 +22,14 @@
     <string name="app_drawer_description">Column count.</string>
     <string name="folders_label">Folders</string>
     <string name="folders_description">Row and column count.</string>
+    <string name="app_drawer_columns">App Drawer Columns</string>
+    <string name="dock_icons">Dock Icons</string>
+    <string name="max_folder_columns">Max. Folder Columns</string>
+    <string name="max_folder_rows">Max. Folder Rows</string>
+    <string name="home_screen_columns">Home Screen Columns</string>
+    <string name="grid">Grid</string>
+    <string name="home_screen_rows">Home Screen Rows</string>
+    <string name="icons">Icons</string>
+    <string name="icon_size">Icon Size</string>
+    <string name="label_size">Label Size</string>
 </resources>
