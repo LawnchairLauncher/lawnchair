@@ -258,6 +258,21 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     }
 
     /**
+     * Calculates the overview grid size for the provided device configuration.
+     */
+    public final void calculateGridSize(Context context, DeviceProfile dp, Rect outRect) {
+        Resources res = context.getResources();
+        int topMargin = res.getDimensionPixelSize(R.dimen.overview_grid_top_margin);
+        int bottomMargin = res.getDimensionPixelSize(R.dimen.overview_grid_bottom_margin);
+        int sideMargin = res.getDimensionPixelSize(R.dimen.overview_grid_side_margin);
+
+        Rect insets = dp.getInsets();
+        outRect.set(0, 0, dp.widthPx, dp.heightPx);
+        outRect.inset(Math.max(insets.left, sideMargin), Math.max(insets.top, topMargin),
+                Math.max(insets.right, sideMargin), Math.max(insets.bottom, bottomMargin));
+    }
+
+    /**
      * Calculates the modal taskView size for the provided device configuration
      */
     public final void calculateModalTaskSize(Context context, DeviceProfile dp, Rect outRect) {
