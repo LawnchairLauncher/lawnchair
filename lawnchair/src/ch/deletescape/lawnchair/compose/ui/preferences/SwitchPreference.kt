@@ -8,6 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
+
 @Composable
 fun SwitchPreference(
     checked: Boolean,
@@ -34,6 +35,10 @@ fun SwitchPreference(
                 }
             }
         }
-        Switch(checked = checked, onCheckedChange = onCheckedChange)
+        Switch(
+            checked = checked,
+            onCheckedChange = onCheckedChange,
+            colors = SwitchDefaults.colors(checkedThumbColor = MaterialTheme.colors.primary)
+        )
     }
 }
