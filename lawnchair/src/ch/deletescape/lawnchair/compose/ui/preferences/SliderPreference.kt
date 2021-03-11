@@ -1,10 +1,9 @@
 package ch.deletescape.lawnchair.compose.ui.preferences
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Slider
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -34,13 +33,18 @@ fun SliderPreference(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(text = label, style = MaterialTheme.typography.subtitle1, color = MaterialTheme.colors.onBackground)
-            Text(
-                text = if (showAsPercentage) {
-                    "${(DecimalFormat("#.#").format(value).toFloat() * 100).toInt()}%"
-                } else {
-                    "${value.roundToInt()}"
-                }
-            )
+            CompositionLocalProvider(
+                LocalContentAlpha provides ContentAlpha.medium,
+                LocalContentColor provides MaterialTheme.colors.onBackground
+            ) {
+                Text(
+                    text = if (showAsPercentage) {
+                        "${(DecimalFormat("#.#").format(value).toFloat() * 100).toInt()}%"
+                    } else {
+                        "${value.roundToInt()}"
+                    }
+                )
+            }
         }
         Spacer(modifier = Modifier.requiredHeight(4.dp))
         Slider(
