@@ -769,7 +769,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         }
         if (view != null) {
             mContextualChipWrapper = view;
-            LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT,
+            LayoutParams layoutParams = new LayoutParams(((View) getParent()).getMeasuredWidth(),
                     LayoutParams.WRAP_CONTENT);
             layoutParams.gravity = BOTTOM | CENTER_HORIZONTAL;
             int expectedChipHeight = getExpectedViewHeight(view);
