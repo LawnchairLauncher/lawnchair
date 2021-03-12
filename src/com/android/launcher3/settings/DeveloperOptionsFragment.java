@@ -88,7 +88,6 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
     private PreferenceCategory mPluginsCategory;
     private FlagTogglerPrefUi mFlagTogglerPrefUi;
 
-
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         IntentFilter filter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);

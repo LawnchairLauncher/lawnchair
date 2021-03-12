@@ -23,12 +23,14 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.graphics.Outline;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewOutlineProvider;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -41,10 +43,10 @@ import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.touch.PagedOrientationHandler;
-import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskUtils;
+import com.android.quickstep.util.TaskCornerRadius;
 
 /**
  * Contains options for a recent task when long-pressing its icon.
@@ -72,6 +74,7 @@ public class TaskMenuView extends AbstractFloatingView {
 
         mActivity = BaseDraggingActivity.fromContext(context);
         mThumbnailTopMargin = getResources().getDimension(R.dimen.task_thumbnail_top_margin);
+        setClipToOutline(true);
     }
 
     @Override
@@ -106,6 +109,17 @@ public class TaskMenuView extends AbstractFloatingView {
     @Override
     protected boolean isOfType(int type) {
         return (type & TYPE_TASK_MENU) != 0;
+    }
+
+    @Override
+    public ViewOutlineProvider getOutlineProvider() {
+        return new ViewOutlineProvider() {
+            @Override
+            public void getOutline(View view, Outline outline) {
+                outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(),
+                        TaskCornerRadius.get(view.getContext()));
+            }
+        };
     }
 
     public void setPosition(float x, float y, PagedOrientationHandler pagedOrientationHandler) {
@@ -260,7 +274,7 @@ public class TaskMenuView extends AbstractFloatingView {
     }
 
     private RoundedRectRevealOutlineProvider createOpenCloseOutlineProvider() {
-        float radius = Themes.getDialogCornerRadius(getContext());
+        float radius = TaskCornerRadius.get(mContext);
         Rect fromRect = new Rect(0, 0, getWidth(), 0);
         Rect toRect = new Rect(0, 0, getWidth(), getHeight());
         return new RoundedRectRevealOutlineProvider(radius, radius, fromRect, toRect);

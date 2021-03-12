@@ -33,7 +33,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.android.launcher3.Launcher.OnResumeCallback;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.logging.FileLog;
@@ -228,7 +227,7 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
             DeferredOnComplete deferred = (DeferredOnComplete) d.dragSource;
             if (target != null) {
                 deferred.mPackageName = target.getPackageName();
-                mLauncher.addOnResumeCallback(deferred);
+                mLauncher.addOnResumeCallback(deferred::onLauncherResume);
             } else {
                 deferred.sendFailure();
             }
@@ -311,7 +310,7 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
      * A wrapper around {@link DragSource} which delays the {@link #onDropCompleted} action until
      * {@link #onLauncherResume}
      */
-    private class DeferredOnComplete implements DragSource, OnResumeCallback {
+    private class DeferredOnComplete implements DragSource {
 
         private final DragSource mOriginal;
         private final Context mContext;
@@ -330,7 +329,6 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
             mDragObject = d;
         }
 
-        @Override
         public void onLauncherResume() {
             // We use MATCH_UNINSTALLED_PACKAGES as the app can be on SD card as well.
             if (new PackageManagerHelper(mContext).getApplicationInfo(mPackageName,

@@ -1467,7 +1467,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             }
         }
         targetTask.setEndQuickswitchCuj(true);
-        targetTask.launchTask(true);
+        targetTask.launchTaskAnimated();
     }
 
     public void setRunningTaskIconScaledDown(boolean isScaledDown) {
@@ -2494,17 +2494,11 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         }
         mPendingAnimation.addEndListener(isSuccess -> {
             if (isSuccess) {
-                Consumer<Boolean> onLaunchResult = (result) -> {
-                    onTaskLaunchAnimationEnd(result);
-                    if (!result) {
-                        tv.notifyTaskLaunchFailed(TAG);
-                    }
-                };
                 if (LIVE_TILE.get()) {
                     finishRecentsAnimation(false /* toRecents */, null);
-                    onLaunchResult.accept(true /* success */);
+                    onTaskLaunchAnimationEnd(true /* success */);
                 } else {
-                    tv.launchTask(false, onLaunchResult, getHandler());
+                    tv.launchTask(this::onTaskLaunchAnimationEnd);
                 }
                 Task task = tv.getTask();
                 if (task != null) {

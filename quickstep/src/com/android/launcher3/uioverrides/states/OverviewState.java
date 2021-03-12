@@ -155,7 +155,7 @@ public class OverviewState extends LauncherState {
     public void onBackPressed(Launcher launcher) {
         TaskView taskView = launcher.<RecentsView>getOverviewPanel().getRunningTaskView();
         if (taskView != null) {
-            taskView.launchTask(true);
+            taskView.launchTaskAnimated();
         } else {
             super.onBackPressed(launcher);
         }

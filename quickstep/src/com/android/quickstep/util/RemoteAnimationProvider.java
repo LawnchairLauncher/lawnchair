@@ -21,7 +21,6 @@ import android.content.Context;
 import android.os.Handler;
 
 import com.android.launcher3.LauncherAnimationRunner;
-import com.android.launcher3.LauncherAnimationRunner.AnimationResult;
 import com.android.launcher3.WrappedAnimationRunnerImpl;
 import com.android.launcher3.WrappedLauncherAnimationRunner;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
@@ -36,23 +35,10 @@ public abstract class RemoteAnimationProvider {
             RemoteAnimationTargetCompat[] wallpaperTargets);
 
     ActivityOptions toActivityOptions(Handler handler, long duration, Context context) {
-        mAnimationRunner = new WrappedAnimationRunnerImpl() {
-            @Override
-            public Handler getHandler() {
-                return handler;
-            }
-
-            @Override
-            public void onCreateAnimation(int transit,
-                    RemoteAnimationTargetCompat[] appTargets,
-                    RemoteAnimationTargetCompat[] wallpaperTargets,
-                    RemoteAnimationTargetCompat[] nonApps,
-                    AnimationResult result) {
+        mAnimationRunner = (transit, appTargets, wallpaperTargets, nonApps, result) ->
                 result.setAnimation(createWindowAnimation(appTargets, wallpaperTargets), context);
-            }
-        };
         final LauncherAnimationRunner wrapper = new WrappedLauncherAnimationRunner(
-                mAnimationRunner, false /* startAtFrontOfQueue */);
+                handler, mAnimationRunner, false /* startAtFrontOfQueue */);
         return ActivityOptionsCompat.makeRemoteAnimation(
                 new RemoteAnimationAdapterCompat(wrapper, duration, 0));
     }

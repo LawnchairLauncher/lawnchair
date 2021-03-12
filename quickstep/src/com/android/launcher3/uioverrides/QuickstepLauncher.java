@@ -30,7 +30,6 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.testing.TestProtocol.HINT_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.OVERVIEW_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.QUICK_SWITCH_STATE_ORDINAL;
-import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY;
 
 import android.content.Intent;
@@ -262,14 +261,13 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
                 RecentsView rv = getOverviewPanel();
                 TaskView tasktolaunch = rv.getTaskViewAt(0);
                 if (tasktolaunch != null) {
-                    tasktolaunch.launchTask(false, success -> {
+                    tasktolaunch.launchTask(success -> {
                         if (!success) {
                             getStateManager().goToState(OVERVIEW);
-                            tasktolaunch.notifyTaskLaunchFailed(TAG);
                         } else {
                             getStateManager().moveToRestState();
                         }
-                    }, MAIN_EXECUTOR.getHandler());
+                    });
                 } else {
                     getStateManager().goToState(NORMAL);
                 }
