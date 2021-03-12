@@ -50,7 +50,6 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
-import com.android.launcher3.Launcher.OnResumeCallback;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dot.DotInfo;
@@ -81,7 +80,7 @@ import java.text.NumberFormat;
  * because we want to make the bubble taller than the text and TextView's clip is
  * too aggressive.
  */
-public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, OnResumeCallback,
+public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         IconLabelDotView, DraggableView, Reorderable {
 
     private static final int DISPLAY_WORKSPACE = 0;
@@ -429,13 +428,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         if (mIcon != null) {
             mIcon.setVisible(isVisible, false);
         }
-    }
-
-    @Override
-    public void onLauncherResume() {
-        // Reset the pressed state of icon that was locked in the press state while activity
-        // was launching
-        setStayPressed(false);
     }
 
     void clearPressedBackground() {

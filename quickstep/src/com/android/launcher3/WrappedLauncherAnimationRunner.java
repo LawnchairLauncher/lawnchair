@@ -16,6 +16,8 @@
 
 package com.android.launcher3;
 
+import android.os.Handler;
+
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.lang.ref.WeakReference;
@@ -40,8 +42,9 @@ public class WrappedLauncherAnimationRunner<R extends WrappedAnimationRunnerImpl
         extends LauncherAnimationRunner {
     private WeakReference<R> mImpl;
 
-    public WrappedLauncherAnimationRunner(R animationRunnerImpl, boolean startAtFrontOfQueue) {
-        super(animationRunnerImpl.getHandler(), startAtFrontOfQueue);
+    public WrappedLauncherAnimationRunner(
+            Handler handler, R animationRunnerImpl, boolean startAtFrontOfQueue) {
+        super(handler, startAtFrontOfQueue);
         mImpl = new WeakReference<>(animationRunnerImpl);
     }
 

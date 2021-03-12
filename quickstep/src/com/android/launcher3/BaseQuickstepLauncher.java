@@ -25,7 +25,6 @@ import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SY
 
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
-import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
@@ -47,6 +46,7 @@ import com.android.launcher3.taskbar.TaskbarActivityContext;
 import com.android.launcher3.taskbar.TaskbarController;
 import com.android.launcher3.taskbar.TaskbarStateHandler;
 import com.android.launcher3.uioverrides.RecentsViewStateController;
+import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.quickstep.RecentsModel;
@@ -73,6 +73,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
         implements NavigationModeChangeListener {
 
     private DepthController mDepthController = new DepthController(this);
+    private QuickstepTransitionManager mAppTransitionManager;
 
     /**
      * Reusable command for applying the back button alpha on the background thread.
@@ -91,6 +92,8 @@ public abstract class BaseQuickstepLauncher extends Launcher
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mAppTransitionManager = new QuickstepTransitionManager(this);
+        mAppTransitionManager.registerRemoteAnimations();
 
         SysUINavigationMode.INSTANCE.get(this).addModeChangeListener(this);
         addMultiWindowModeChangedListener(mDepthController);
@@ -98,13 +101,18 @@ public abstract class BaseQuickstepLauncher extends Launcher
 
     @Override
     public void onDestroy() {
-        SysUINavigationMode.INSTANCE.get(this).removeModeChangeListener(this);
+        mAppTransitionManager.onActivityDestroyed();
 
+        SysUINavigationMode.INSTANCE.get(this).removeModeChangeListener(this);
         if (mTaskbarController != null) {
             mTaskbarController.cleanup();
         }
 
         super.onDestroy();
+    }
+
+    public QuickstepTransitionManager getAppTransitionManager() {
+        return mAppTransitionManager;
     }
 
     @Override
@@ -270,6 +278,12 @@ public abstract class BaseQuickstepLauncher extends Launcher
         return mTaskbarController != null && mTaskbarController.isViewInTaskbar(v);
     }
 
+    public boolean supportsAdaptiveIconAnimation(View clickedView) {
+        return mAppTransitionManager.hasControlRemoteAppTransitionPermission()
+                && FeatureFlags.ADAPTIVE_ICON_WINDOW_ANIM.get()
+                && !isViewInTaskbar(clickedView);
+    }
+
     @Override
     public DragOptions getDefaultWorkspaceDragOptions() {
         if (mNextWorkspaceDragOptions != null) {
@@ -286,8 +300,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
 
     @Override
     public void useFadeOutAnimationForLauncherStart(CancellationSignal signal) {
-        QuickstepAppTransitionManagerImpl appTransitionManager =
-                (QuickstepAppTransitionManagerImpl) getAppTransitionManager();
+        QuickstepTransitionManager appTransitionManager = getAppTransitionManager();
         appTransitionManager.setRemoteAnimationProvider(new RemoteAnimationProvider() {
             @Override
             public AnimatorSet createWindowAnimation(RemoteAnimationTargetCompat[] appTargets,
@@ -379,10 +392,14 @@ public abstract class BaseQuickstepLauncher extends Launcher
     }
 
     @Override
-    public ActivityOptions getActivityLaunchOptions(View v) {
-        ActivityOptions activityOptions = super.getActivityLaunchOptions(v);
-        if (activityOptions != null && mLastTouchUpTime > 0) {
-            ActivityOptionsCompat.setLauncherSourceInfo(activityOptions, mLastTouchUpTime);
+    public ActivityOptionsWrapper getActivityLaunchOptions(View v) {
+        ActivityOptionsWrapper activityOptions =
+                mAppTransitionManager.hasControlRemoteAppTransitionPermission()
+                        ? mAppTransitionManager.getActivityLaunchOptions(this, v)
+                        : super.getActivityLaunchOptions(v);
+        if (mLastTouchUpTime > 0) {
+            ActivityOptionsCompat.setLauncherSourceInfo(
+                    activityOptions.options, mLastTouchUpTime);
         }
         return activityOptions;
     }

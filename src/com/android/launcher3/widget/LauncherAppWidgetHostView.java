@@ -16,12 +16,17 @@
 
 package com.android.launcher3.widget;
 
+import android.app.WallpaperManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.util.Log;
 import android.util.SparseBooleanArray;
+import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -32,10 +37,13 @@ import android.widget.AdapterView;
 import android.widget.Advanceable;
 import android.widget.RemoteViews;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.CheckLongPressHelper;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.Workspace;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
@@ -43,11 +51,16 @@ import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BaseDragLayer.TouchCompleteListener;
 
+import java.util.List;
+
 /**
  * {@inheritDoc}
  */
 public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
-        implements TouchCompleteListener, View.OnLongClickListener {
+        implements TouchCompleteListener, View.OnLongClickListener,
+        LocalColorExtractor.Listener {
+
+    private static final String LOG_TAG = "LauncherAppWidgetHostView";
 
     // Related to the auto-advancing of widgets
     private static final long ADVANCE_INTERVAL = 20000;
@@ -60,18 +73,29 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
 
     private final CheckLongPressHelper mLongPressHelper;
     protected final Launcher mLauncher;
+    private final Workspace mWorkspace;
+    private final WallpaperManager mWallpaperManager;
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mReinflateOnConfigChange;
+
+    // Maintain the color manager.
+    private final LocalColorExtractor mColorExtractor;
 
     private boolean mIsScrollable;
     private boolean mIsAttachedToWindow;
     private boolean mIsAutoAdvanceRegistered;
     private Runnable mAutoAdvanceRunnable;
+    private RectF mLastLocationRegistered = null;
+    // Used to store the widget size during onLayout.
+    private final Rect mCurrentWidgetSize = new Rect();
+    private final RectF mTempRectF = new RectF();
+    private final boolean mIsRtl;
 
     public LauncherAppWidgetHostView(Context context) {
         super(context);
         mLauncher = Launcher.getLauncher(context);
+        mWorkspace = mLauncher.getWorkspace();
         mLongPressHelper = new CheckLongPressHelper(this, this);
         mInflater = LayoutInflater.from(context);
         setAccessibilityDelegate(mLauncher.getAccessibilityDelegate());
@@ -80,6 +104,19 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
         setExecutor(Executors.THREAD_POOL_EXECUTOR);
         if (Utilities.ATLEAST_Q && Themes.getAttrBoolean(mLauncher, R.attr.isWorkspaceDarkText)) {
             setOnLightBackground(true);
+        }
+        mIsRtl = Utilities.isRtl(context.getResources());
+        mWallpaperManager = WallpaperManager.getInstance(getContext());
+        mColorExtractor = LocalColorExtractor.newInstance(getContext());
+        mColorExtractor.setListener(this);
+    }
+
+    @Override
+    public void setColorResources(@Nullable SparseIntArray colors) {
+        if (colors == null) {
+            resetColorResources();
+        } else {
+            super.setColorResources(colors);
         }
     }
 
@@ -167,6 +204,7 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
         // state is updated. So isAttachedToWindow() will return true until next frame.
         mIsAttachedToWindow = false;
         checkIfAutoAdvance();
+        mColorExtractor.removeLocations();
     }
 
     @Override
@@ -213,6 +251,78 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
         }
 
         mIsScrollable = checkScrollableRecursively(this);
+
+        mCurrentWidgetSize.left = left;
+        mCurrentWidgetSize.top = top;
+        mCurrentWidgetSize.right = right;
+        mCurrentWidgetSize.bottom = bottom;
+        updateColorExtraction(mCurrentWidgetSize);
+    }
+
+    private void updateColorExtraction(Rect widgetLocation) {
+        // If the widget hasn't been measured and laid out, we cannot do this.
+        if (widgetLocation.isEmpty()) {
+            return;
+        }
+        LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) getTag();
+        if (info != null) {
+            int screenWidth = mLauncher.getDeviceProfile().widthPx;
+            int screenHeight = mLauncher.getDeviceProfile().heightPx;
+            int numScreens = mWorkspace.getNumPagesForWallpaperParallax();
+            int screenId = mIsRtl ? numScreens - info.screenId : info.screenId;
+            float relativeScreenWidth = 1f / numScreens;
+            float absoluteTop = widgetLocation.top;
+            float absoluteBottom = widgetLocation.bottom;
+            for (View v = (View) getParent();
+                    v != null && v.getId() != R.id.launcher;
+                    v = (View) v.getParent()) {
+                absoluteBottom += v.getTop();
+                absoluteTop += v.getTop();
+            }
+            float xOffset = 0;
+            View parentView = (View) getParent();
+            // The layout depends on the orientation.
+            if (getResources().getConfiguration().orientation
+                    == Configuration.ORIENTATION_LANDSCAPE) {
+                xOffset = screenHeight - mWorkspace.getPaddingRight()
+                        - parentView.getWidth();
+            } else {
+                xOffset = mWorkspace.getPaddingLeft() + parentView.getPaddingLeft();
+            }
+            // This is the position of the widget relative to the wallpaper, as expected by the
+            // local color extraction of the WallpaperManager.
+            // The coordinate system is such that, on the horizontal axis, each screen has a
+            // distinct range on the [0,1] segment. So if there are 3 screens, they will have the
+            // ranges [0, 1/3], [1/3, 2/3] and [2/3, 1]. The position on the subrange should be
+            // the position of the widget relative to the screen. For the vertical axis, this is
+            // simply the location of the widget relative to the screen.
+            mTempRectF.left = ((widgetLocation.left + xOffset) / screenWidth + screenId)
+                    * relativeScreenWidth;
+            mTempRectF.right = ((widgetLocation.right + xOffset) / screenWidth + screenId)
+                    * relativeScreenWidth;
+            mTempRectF.top = absoluteTop / screenHeight;
+            mTempRectF.bottom = absoluteBottom / screenHeight;
+            if (mTempRectF.left < 0 || mTempRectF.right > 1 || mTempRectF.top < 0
+                    || mTempRectF.bottom > 1) {
+                Log.e(LOG_TAG, "   Error, invalid relative position");
+                return;
+            }
+            if (!mTempRectF.equals(mLastLocationRegistered)) {
+                if (mLastLocationRegistered != null) {
+                    mColorExtractor.removeLocations();
+                }
+                mLastLocationRegistered = new RectF(mTempRectF);
+                mColorExtractor.addLocation(List.of(mLastLocationRegistered));
+            }
+        } else {
+            mColorExtractor.removeLocations();
+        }
+    }
+
+    @Override
+    public void onColorsChanged(RectF rectF, SparseIntArray colors) {
+        // setColorResources will reapply the view, which must happen in the UI thread.
+        post(() -> setColorResources(colors));
     }
 
     @Override
@@ -225,6 +335,14 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
     protected void onWindowVisibilityChanged(int visibility) {
         super.onWindowVisibilityChanged(visibility);
         maybeRegisterAutoAdvance();
+
+        if (visibility == View.VISIBLE) {
+            if (mLastLocationRegistered != null) {
+                mColorExtractor.addLocation(List.of(mLastLocationRegistered));
+            }
+        } else {
+            mColorExtractor.removeLocations();
+        }
     }
 
     private void checkIfAutoAdvance() {
