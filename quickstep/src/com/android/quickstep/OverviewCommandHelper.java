@@ -132,7 +132,7 @@ public class OverviewCommandHelper {
             }
             int currentPage = recents.getNextPage();
             if (currentPage >= 0 && currentPage < recents.getTaskViewCount()) {
-                ((TaskView) recents.getPageAt(currentPage)).launchTask(true);
+                ((TaskView) recents.getPageAt(currentPage)).launchTaskAnimated();
             } else {
                 recents.startHome();
             }

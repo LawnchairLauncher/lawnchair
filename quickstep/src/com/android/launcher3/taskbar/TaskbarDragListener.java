@@ -56,11 +56,14 @@ public class TaskbarDragListener implements View.OnDragListener {
     protected void init(DragLayer dragLayer) {
         mDragLayer = dragLayer;
         mDragLayer.setOnDragListener(this);
+        // Temporarily disable haptics, as system will already play one when drag and drop starts.
+        mDragLayer.setHapticFeedbackEnabled(false);
     }
 
     private void cleanup() {
         mDragLayer.setOnDragListener(null);
         mLauncher.setNextWorkspaceDragOptions(null);
+        mDragLayer.setHapticFeedbackEnabled(true);
     }
 
     /**
