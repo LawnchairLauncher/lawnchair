@@ -38,7 +38,6 @@ import com.android.launcher3.logging.StatsLogManager.LauncherEvent;
 import com.android.launcher3.model.WellbeingModel;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.popup.SystemShortcut.AppInfo;
-import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskThumbnailView;
@@ -54,7 +53,6 @@ import com.android.systemui.shared.system.WindowManagerWrapper;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Consumer;
 
 /**
  * Represents a system shortcut that can be shown for a recent task.
@@ -281,15 +279,9 @@ public interface TaskShortcutFactory {
 
         @Override
         public void onClick(View view) {
-            Consumer<Boolean> resultCallback = success -> {
-                if (success) {
-                    SystemUiProxy.INSTANCE.get(mTarget).startScreenPinning(
-                            mTaskView.getTask().key.id);
-                } else {
-                    mTaskView.notifyTaskLaunchFailed(TAG);
-                }
-            };
-            mTaskView.launchTask(true, resultCallback, Executors.MAIN_EXECUTOR.getHandler());
+            if (mTaskView.launchTaskAnimated() != null) {
+                SystemUiProxy.INSTANCE.get(mTarget).startScreenPinning(mTaskView.getTask().key.id);
+            }
             dismissTaskMenuView(mTarget);
             mTarget.getStatsLogManager().logger().withItemInfo(mTaskView.getItemInfo())
                     .log(LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_PIN_TAP);
