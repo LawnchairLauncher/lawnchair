@@ -12,8 +12,8 @@
     <string name="home_screen_rotation_label">Home Screen Rotation</string>
     <string name="home_screen_rotaton_description">When device is rotated.</string>
     <string name="auto_add_shortcuts_label">Add New Apps to Home Screen</string>
-    <string name="make_icon_packs_adaptive_label">Make Adaptive Icons for Icon Packs</string>
-    <string name="make_icon_packs_adaptive_description">Doesn’t affect Adaptive icon packs.</string>
+    <string name="make_icon_packs_adaptive_label">Make Adaptive Icons</string>
+    <string name="make_icon_packs_adaptive_description">For legacy icons and non-Adaptive icon packs.</string>
     <string name="grid_label">Grid</string>
     <string name="grid_description">Grid dimensions, icon size.</string>
     <string name="dock_label">Dock</string>
@@ -33,4 +33,6 @@
     <string name="icon_size">Icon Size</string>
     <string name="label_size">Label Size</string>
     <string name="allow_empty_pages_label">Allow Empty Pages</string>
+    <string name="colored_generated_icon_backgrounds_label">Make Colored Backgrounds</string>
+    <string name="colored_generated_icon_backgrounds_description">For generated Adaptive icons.</string>
 </resources>

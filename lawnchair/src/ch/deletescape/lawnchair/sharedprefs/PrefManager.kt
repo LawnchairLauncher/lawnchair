@@ -22,4 +22,5 @@ class PrefManager(context: Context) {
     var allAppsTextSizeFactor by FloatPrefDelegate(lp.ALL_APPS_TEXT_SIZE_FACTOR, 1F)
     var allAppsColumns by FloatPrefDelegate(lp.ALL_APPS_COLUMNS, 5F)
     var allowEmptyPages by BoolPrefDelegate(lp.ALLOW_EMPTY_PAGES, false)
+    var makeColoredBackgrounds by BoolPrefDelegate(lp.MAKE_COLORED_BACKGROUNDS, false)
 }

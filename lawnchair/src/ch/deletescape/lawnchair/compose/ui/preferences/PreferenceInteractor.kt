@@ -18,6 +18,7 @@ interface PreferenceInteractor {
     val allAppsTextSizeFactor: State<Float>
     val allAppsColumns: State<Float>
     val allowEmptyPages: State<Boolean>
+    val makeColoredBackgrounds: State<Boolean>
 
     fun setIconPackPackage(iconPackPackage: String)
     fun setAllowRotation(allowRotation: Boolean)
@@ -34,6 +35,7 @@ interface PreferenceInteractor {
     fun setAllAppsTextSizeFactor(allAppsTextSizeFactor: Float)
     fun setAllAppsColumns(allAppsColumns: Float)
     fun setAllowEmptyPages(allowEmptyPages: Boolean)
+    fun setMakeColoredBackgrounds(makeColoredBackgrounds: Boolean)
 
     fun getIconPacks(): MutableMap<String, IconPackInfo>
 }

@@ -13,7 +13,7 @@ class LawnchairPreferences(val context: Context) {
     val listener: SharedPreferences.OnSharedPreferenceChangeListener =
         SharedPreferences.OnSharedPreferenceChangeListener { _: SharedPreferences?, key: String? ->
             when (key) {
-                ICON_PACK_PACKAGE, WRAP_ADAPTIVE_ICONS -> {
+                ICON_PACK_PACKAGE, WRAP_ADAPTIVE_ICONS, MAKE_COLORED_BACKGROUNDS -> {
                     LauncherAppState.getInstance(context).model.clearIconCache()
                     LauncherAppState.getInstance(context).model.forceReload()
                 }
@@ -65,6 +65,9 @@ class LawnchairPreferences(val context: Context) {
         // TODO: Add the ability to manually delete empty pages.
         @kotlin.jvm.JvmField
         var ALLOW_EMPTY_PAGES: String = "pref_allowEmptyPages"
+
+        @kotlin.jvm.JvmField
+        var MAKE_COLORED_BACKGROUNDS: String = "pref_makeColoredBackgrounds"
 
         fun getInstance(context: Context?): SharedPreferences? = when {
             context == null -> null
