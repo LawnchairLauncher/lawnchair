@@ -61,7 +61,8 @@ fun IconPackListItem(
         Text(
             modifier = Modifier.padding(start = 16.dp),
             text = iconPack.name,
-            style = MaterialTheme.typography.subtitle1
+            style = MaterialTheme.typography.subtitle1,
+            color = MaterialTheme.colors.onBackground
         )
     }
 }
