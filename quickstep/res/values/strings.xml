@@ -126,7 +126,7 @@
 
     <!-- Feedback shown during interactive parts of Overview gesture tutorial when the gesture is started too far from the edge. [CHAR LIMIT=100] -->
     <string name="overview_gesture_feedback_swipe_too_far_from_edge">Make sure you swipe up from the bottom edge of the screen.</string>
-    <!-- Feedback shown during interactive parts of Overview gesture tutorial when the Home gesture is detected. [CHAR LIMIT=100] -->
+    <!-- Feedback shown during interactive parts of Overview gesture tutorial when the Home gesture is detected. The window refers to the current app's window during the gesture. [CHAR LIMIT=100] -->
     <string name="overview_gesture_feedback_home_detected">Try holding the window for longer before releasing.</string>
     <!-- Feedback shown during interactive parts of Overview gesture tutorial when the gesture is horizontal instead of vertical. [CHAR LIMIT=100] -->
     <string name="overview_gesture_feedback_wrong_swipe_direction">Make sure you swipe straight up, then pause.</string>
