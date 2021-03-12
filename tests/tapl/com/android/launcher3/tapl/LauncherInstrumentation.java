@@ -155,8 +155,7 @@ public final class LauncherInstrumentation {
     private static final String OVERVIEW_RES_ID = "overview_panel";
     private static final String WIDGETS_RES_ID = "primary_widgets_list_view";
     private static final String CONTEXT_MENU_RES_ID = "deep_shortcuts_container";
-    public static final int WAIT_TIME_MS = 10000;
-    public static final int LONG_WAIT_TIME_MS = 60000;
+    public static final int WAIT_TIME_MS = 60000;
     private static final String SYSTEMUI_PACKAGE = "com.android.systemui";
     private static final String ANDROID_PACKAGE = "android";
 
@@ -656,7 +655,7 @@ public final class LauncherInstrumentation {
         try {
             final AccessibilityEvent event =
                     mInstrumentation.getUiAutomation().executeAndWaitForEvent(
-                            command, eventFilter, LONG_WAIT_TIME_MS);
+                            command, eventFilter, WAIT_TIME_MS);
             assertNotNull("executeAndWaitForEvent returned null (this can't happen)", event);
             final Parcelable parcelableData = event.getParcelableData();
             event.recycle();
