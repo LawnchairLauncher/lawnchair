@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.allapps.search;
 
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,11 @@ public class DefaultSearchAdapterProvider extends SearchAdapterProvider {
 
     @Override
     public void onBindView(AllAppsGridAdapter.ViewHolder holder, int position) {
+
+    }
+
+    @Override
+    public void onSliceStatusUpdate(Uri sliceUri) {
 
     }
 
