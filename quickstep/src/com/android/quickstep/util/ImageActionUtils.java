@@ -99,7 +99,14 @@ public class ImageActionUtils {
             .putExtra(Intent.EXTRA_STREAM, uri)
             .putExtra(Intent.EXTRA_SHORTCUT_ID, shortcutInfo.getId())
             .setClipData(clipdata);
-        context.startActivity(intent);
+
+        if (context.getUserId() != appTarget.getUser().getIdentifier()) {
+            intent.prepareToLeaveUser(context.getUserId());
+            intent.fixUris(context.getUserId());
+            context.startActivityAsUser(intent, appTarget.getUser());
+        } else {
+            context.startActivity(intent);
+        }
     }
 
     /**

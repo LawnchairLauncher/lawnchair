@@ -212,13 +212,6 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
         return mDimAlpha;
     }
 
-    public Rect getInsets(Rect fallback) {
-        if (mThumbnailData != null) {
-            return mThumbnailData.insets;
-        }
-        return fallback;
-    }
-
     /**
      * Get the scaled insets that are being used to draw the task view. This is a subsection of
      * the full snapshot.
@@ -227,6 +220,10 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
     @RequiresApi(api = Build.VERSION_CODES.Q)
     public Insets getScaledInsets() {
         if (mThumbnailData == null) {
+            return Insets.NONE;
+        }
+
+        if (!TaskView.CLIP_STATUS_AND_NAV_BARS) {
             return Insets.NONE;
         }
 
@@ -459,7 +456,6 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
         // Contains the portion of the thumbnail that is clipped when fullscreen progress = 0.
         private final RectF mClippedInsets = new RectF();
         private final Matrix mMatrix = new Matrix();
-        private float mClipBottom = -1;
         private boolean mIsOrientationChanged;
 
         public Matrix getMatrix() {
@@ -476,7 +472,8 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
 
             int thumbnailRotation = thumbnailData.rotation;
             int deltaRotate = getRotationDelta(currentRotation, thumbnailRotation);
-            RectF thumbnailClipHint = new RectF(thumbnailData.insets);
+            RectF thumbnailClipHint = TaskView.CLIP_STATUS_AND_NAV_BARS
+                    ? new RectF(thumbnailData.insets) : new RectF();
 
             float scale = thumbnailData.scale;
             final float thumbnailScale;

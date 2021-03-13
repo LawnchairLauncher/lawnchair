@@ -26,7 +26,6 @@ import android.view.MotionEvent;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.R;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.quickstep.fallback.RecentsState;
 import com.android.quickstep.util.ActivityInitListener;
@@ -154,11 +153,5 @@ public final class FallbackActivityInterface extends
             return;
         }
         activity.<RecentsView>getOverviewPanel().startHome();
-    }
-
-    @Override
-    protected float getExtraSpace(Context context, DeviceProfile dp,
-            PagedOrientationHandler orientationHandler) {
-        return context.getResources().getDimensionPixelSize(R.dimen.overview_actions_height);
     }
 }
