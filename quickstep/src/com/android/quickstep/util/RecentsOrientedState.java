@@ -23,9 +23,9 @@ import static android.view.Surface.ROTATION_180;
 import static android.view.Surface.ROTATION_270;
 import static android.view.Surface.ROTATION_90;
 
-import static com.android.launcher3.util.SettingsCache.ROTATION_SETTING_URI;
 import static com.android.launcher3.states.RotationHelper.ALLOW_ROTATION_PREFERENCE_KEY;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+import static com.android.launcher3.util.SettingsCache.ROTATION_SETTING_URI;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
@@ -47,11 +47,12 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.util.SettingsCache;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.PagedOrientationHandler;
+import com.android.launcher3.util.SettingsCache;
 import com.android.launcher3.util.WindowBounds;
 import com.android.quickstep.BaseActivityInterface;
+import com.android.quickstep.views.TaskView;
 
 import java.lang.annotation.Retention;
 import java.util.function.IntConsumer;
@@ -367,8 +368,12 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
      */
     public float getFullScreenScaleAndPivot(Rect taskView, DeviceProfile dp, PointF outPivot) {
         Rect insets = dp.getInsets();
-        float fullWidth = dp.widthPx - insets.left - insets.right;
-        float fullHeight = dp.heightPx - insets.top - insets.bottom;
+        float fullWidth = dp.widthPx;
+        float fullHeight = dp.heightPx;
+        if (TaskView.CLIP_STATUS_AND_NAV_BARS) {
+            fullWidth -= insets.left + insets.right;
+            fullHeight -= insets.top + insets.bottom;
+        }
 
         if (dp.isMultiWindowMode) {
             WindowBounds bounds = SplitScreenBounds.INSTANCE.getSecondaryWindowBounds(mContext);

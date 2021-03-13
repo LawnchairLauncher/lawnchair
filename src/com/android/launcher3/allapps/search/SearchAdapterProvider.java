@@ -16,6 +16,7 @@
 
 package com.android.launcher3.allapps.search;
 
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +39,11 @@ public abstract class SearchAdapterProvider {
      * Called from RecyclerView.Adapter#onBindViewHolder
      */
     public abstract void onBindView(AllAppsGridAdapter.ViewHolder holder, int position);
+
+    /**
+     * Called from LiveSearchManager to notify slice status updates.
+     */
+    public abstract void onSliceStatusUpdate(Uri sliceUri);
 
     /**
      * Returns whether or not viewType can be handled by searchProvider
