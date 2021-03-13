@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.taskbar;
 
+import android.animation.LayoutTransition;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
@@ -63,6 +64,7 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
     private TaskbarController.TaskbarViewCallbacks mControllerCallbacks;
 
     // Initialized in init().
+    private LayoutTransition mLayoutTransition;
     private int mHotseatStartIndex;
     private int mHotseatEndIndex;
     private View mHotseatRecentsDivider;
@@ -76,6 +78,7 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
     private boolean mIsDraggingItem;
     // Only non-null when the corresponding Folder is open.
     private @Nullable FolderIcon mLeaveBehindFolderIcon;
+    private boolean mIsHotseatHidden;
 
     public TaskbarView(@NonNull Context context) {
         this(context, null);
@@ -107,6 +110,9 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
     }
 
     protected void init(int numHotseatIcons, int numRecentIcons) {
+        mLayoutTransition = new LayoutTransition();
+        setLayoutTransitionsEnabled(true);
+
         mHotseatStartIndex = 0;
         mHotseatEndIndex = mHotseatStartIndex + numHotseatIcons - 1;
         updateHotseatItems(new ItemInfo[numHotseatIcons]);
@@ -117,6 +123,10 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
         mRecentsStartIndex = dividerIndex + 1;
         mRecentsEndIndex = mRecentsStartIndex + numRecentIcons - 1;
         updateRecentTasks(new Task[numRecentIcons]);
+    }
+
+    private void setLayoutTransitionsEnabled(boolean enabled) {
+        setLayoutTransition(enabled ? mLayoutTransition : null);
     }
 
     protected void cleanup() {
@@ -206,9 +216,19 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
         }
     }
 
+    /**
+     * Hides or shows the hotseat items immediately (without layout transitions).
+     */
+    protected void setHotseatViewsHidden(boolean hidden) {
+        mIsHotseatHidden = hidden;
+        setLayoutTransitionsEnabled(false);
+        updateHotseatItemsVisibility();
+        setLayoutTransitionsEnabled(true);
+    }
+
     private void updateHotseatItemVisibility(View hotseatView) {
         if (hotseatView.getTag() != null) {
-            hotseatView.setVisibility(VISIBLE);
+            hotseatView.setVisibility(mIsHotseatHidden ? INVISIBLE : VISIBLE);
         } else {
             int oldVisibility = hotseatView.getVisibility();
             int newVisibility = mControllerCallbacks.getEmptyHotseatViewVisibility();

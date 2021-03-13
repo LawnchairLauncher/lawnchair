@@ -328,6 +328,10 @@ public abstract class BaseQuickstepLauncher extends Launcher
     @Override
     public void onDragLayerHierarchyChanged() {
         onLauncherStateOrFocusChanged();
+
+        if (mTaskbarController != null) {
+            mTaskbarController.onLauncherDragLayerHierarchyChanged();
+        }
     }
 
     @Override
