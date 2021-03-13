@@ -198,10 +198,10 @@ public final class FeatureFlags {
             "ENABLE_APP_PREDICTIONS_WHILE_VISIBLE", true, "Allows app "
             + "predictions to be updated while they are visible to the user.");
 
-    public static final BooleanFlag ENABLE_TASKBAR = new DeviceFlag(
+    public static final BooleanFlag ENABLE_TASKBAR = getDebugFlag(
             "ENABLE_TASKBAR", false, "Allows a system Taskbar to be shown on larger devices.");
 
-    public static final BooleanFlag ENABLE_OVERVIEW_GRID = new DeviceFlag(
+    public static final BooleanFlag ENABLE_OVERVIEW_GRID = getDebugFlag(
             "ENABLE_OVERVIEW_GRID", false, "Uses grid overview layout. "
             + "Only applicable on large screen devices.");
 
