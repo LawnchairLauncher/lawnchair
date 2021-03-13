@@ -62,7 +62,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import ch.deletescape.lawnchair.sharedprefs.LawnchairPreferences;
+import ch.deletescape.lawnchair.util.preferences.LawnchairPreferences;
 
 public class InvariantDeviceProfile {
 

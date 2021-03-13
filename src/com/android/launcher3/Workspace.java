@@ -118,7 +118,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.function.Predicate;
 
-import ch.deletescape.lawnchair.sharedprefs.LawnchairPreferences;
+import ch.deletescape.lawnchair.util.preferences.LawnchairPreferences;
 
 /**
  * The workspace is a wide area with a wallpaper and a finite number of pages.

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 /*
 **
 ** Copyright 2017, The Android Open Source Project
@@ -18,25 +17,14 @@
 */
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <application
-        android:name="ch.deletescape.lawnchair.LawnchairApp">
-        <activity android:name="ch.deletescape.lawnchair.settings.activities.SettingsActivity"
-            android:autoRemoveFromRecents="true" android:label="@string/settings_button_text"
+    <application android:name="ch.deletescape.lawnchair.ui.LawnchairApp">
+        <activity
+            android:name="ch.deletescape.lawnchair.ui.preferences.PreferenceActivity"
+            android:autoRemoveFromRecents="true"
+            android:label="@string/settings_button_text"
             android:theme="@style/Theme.Lawnchair">
             <intent-filter android:priority="1">
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity android:name="ch.deletescape.lawnchair.settings.activities.IconPackSettingsActivity" android:theme="@style/Theme.Lawnchair">
-            <intent-filter>
-                <action android:name="ch.deletescape.lawnchair.settings.activities.IconPackSettingsActivity" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity android:name="ch.deletescape.lawnchair.compose.ui.preferences.PreferenceActivity" android:theme="@style/Theme.Lawnchair">
-            <intent-filter>
-                <action android:name="ch.deletescape.lawnchair.compose.ui.preferences.PreferenceActivity" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
