@@ -79,6 +79,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     private final boolean mIsRecentsRtl;
 
     private final Rect mTaskRect = new Rect();
+    private final Rect mGridRect = new Rect();
     private boolean mDrawsBelowRecents;
     private final PointF mPivot = new PointF();
     private DeviceProfile mDp;
@@ -124,7 +125,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         Resources resources = context.getResources();
         mIsRecentsRtl = mOrientationState.getOrientationHandler().getRecentsRtlSetting(resources);
         mTaskThumbnailPadding = (int) resources.getDimension(R.dimen.task_thumbnail_top_margin);
-        mRowSpacing = (int) resources.getDimension(R.dimen.recents_row_spacing);
+        mRowSpacing = (int) resources.getDimension(R.dimen.overview_grid_row_spacing);
     }
 
     /**
@@ -266,6 +267,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
             mOrientationStateId = mOrientationState.getStateId();
 
             getFullScreenScale();
+            mSizeStrategy.calculateGridSize(mContext, mDp, mGridRect);
             mThumbnailData.rotation = mOrientationState.getDisplayRotation();
 
             mPositionHelper.updateThumbnailMatrix(
@@ -304,23 +306,33 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         mMatrix.postTranslate(insets.left, insets.top);
         mMatrix.postScale(scale, scale);
 
+        // Apply TaskView matrix: gridProgress related properties
         float interpolatedGridProgress = ACCEL_DEACCEL.getInterpolation(gridProgress.value);
-
-        // Apply TaskView matrix: gridProgress
         final int boxLength = (int) Math.max(taskWidth, taskHeight);
-        float availableHeight =
-                mTaskThumbnailPadding + taskHeight + mSizeStrategy.getOverviewActionsHeight(
-                        mContext);
+        float availableHeight = mGridRect.height();
         float rowHeight = (availableHeight - mRowSpacing) / 2;
         float gridScale = rowHeight / (boxLength + mTaskThumbnailPadding);
         scale = Utilities.mapRange(interpolatedGridProgress, 1f, gridScale);
         mMatrix.postScale(scale, scale, mIsRecentsRtl ? 0 : taskWidth, 0);
-        float taskWidthDiff = taskWidth * (1 - gridScale);
-        float taskWidthOffset = mIsRecentsRtl ? taskWidthDiff : -taskWidthDiff;
-        mOrientationState.getOrientationHandler().set(mMatrix, MATRIX_POST_TRANSLATE,
-                Utilities.mapRange(interpolatedGridProgress, 0, taskWidthOffset));
         mOrientationState.getOrientationHandler().setSecondary(mMatrix, MATRIX_POST_TRANSLATE,
                 Utilities.mapRange(interpolatedGridProgress, 0, gridTranslationSecondary.value));
+
+        // Apply TaskView matrix: task rect and grid rect difference
+        float scaledWidth = taskWidth * gridScale;
+        float taskGridHorizontalDiff;
+        if (mIsRecentsRtl) {
+            float taskRight = mTaskRect.left + scaledWidth;
+            taskGridHorizontalDiff = mGridRect.right - taskRight;
+        } else {
+            float taskLeft = mTaskRect.right - scaledWidth;
+            taskGridHorizontalDiff = mGridRect.left - taskLeft;
+        }
+        float taskGridVerticalDiff =
+                mGridRect.top + mTaskThumbnailPadding * gridScale - mTaskRect.top;
+        mOrientationState.getOrientationHandler().set(mMatrix, MATRIX_POST_TRANSLATE,
+                Utilities.mapRange(interpolatedGridProgress, 0, taskGridHorizontalDiff));
+        mOrientationState.getOrientationHandler().setSecondary(mMatrix, MATRIX_POST_TRANSLATE,
+                Utilities.mapRange(interpolatedGridProgress, 0, taskGridVerticalDiff));
 
         // Apply TaskView matrix: translate, scroll
         mMatrix.postTranslate(mTaskRect.left, mTaskRect.top);

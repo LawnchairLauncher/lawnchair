@@ -42,6 +42,7 @@ import androidx.slice.Slice;
 import androidx.slice.SliceViewManager;
 import androidx.slice.SliceViewManager.SliceCallback;
 
+import com.android.launcher3.Alarm;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.statemanager.StateManager.StateListener;
@@ -52,6 +53,7 @@ import com.android.launcher3.widget.PendingAddWidgetInfo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.function.Consumer;
 
 /**
  * Manages Lifecycle for Live search results
@@ -60,6 +62,7 @@ public class LiveSearchManager implements StateListener<LauncherState> {
 
     private static final String TAG = "LiveSearchManager";
 
+    private static final long SLICE_TIMEOUT_MS = 50;
     public static final int SEARCH_APPWIDGET_HOST_ID = 2048;
 
     private final Launcher mLauncher;
@@ -144,16 +147,50 @@ public class LiveSearchManager implements StateListener<LauncherState> {
     /**
      * Adds a new observer for the provided uri and returns a callback to cancel this observer
      */
-    public SafeCloseable addObserver(Uri uri, Observer<Slice> listener) {
+    public SafeCloseable addObserver(Uri uri, Observer<Slice> listener,
+            Consumer<Uri> timeoutConsumer) {
         SliceLifeCycle slc = mUriSliceMap.get(uri);
         if (slc == null) {
             slc = new SliceLifeCycle(uri, mLauncher);
             mUriSliceMap.put(uri, slc);
         }
-        slc.addListener(listener);
+        if (slc.mLastValue != null) {
+            listener.onChanged(slc.mLastValue);
+        }
+
+        // Use a listener wrapper to handle error timeout.
+        Observer<Slice> listenerWrapper = new Observer<Slice>() {
+            final Alarm mErrorTimeout = new Alarm();
+            {
+                mErrorTimeout.setOnAlarmListener(alarm -> {
+                    alarm.cancelAlarm();
+                    timeoutConsumer.accept(uri);
+                });
+                mErrorTimeout.setAlarm(SLICE_TIMEOUT_MS);
+            }
+
+            @Override
+            public void onChanged(Slice slice) {
+                if (slice == null) {
+                    return;
+                }
+
+                if (mErrorTimeout.alarmPending()) {
+                    mErrorTimeout.cancelAlarm();
+                }
+
+                if (mUriSliceMap.get(uri) != null) {
+                    mUriSliceMap.get(uri).mLastValue = slice;
+                }
+
+                listener.onChanged(slice);
+            }
+        };
+
+        slc.addListener(listenerWrapper);
 
         final SliceLifeCycle sliceLifeCycle = slc;
-        return () -> sliceLifeCycle.removeListener(listener);
+        return () -> sliceLifeCycle.removeListener(listenerWrapper);
     }
 
     static class SearchWidgetHost extends AppWidgetHost {
@@ -183,6 +220,8 @@ public class LiveSearchManager implements StateListener<LauncherState> {
 
         private boolean mDestroyed = false;
         private boolean mWasListening = false;
+
+        Slice mLastValue;
 
         SliceLifeCycle(Uri uri, Launcher launcher) {
             mUri = uri;
