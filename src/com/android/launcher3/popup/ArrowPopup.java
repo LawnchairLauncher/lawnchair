@@ -164,7 +164,9 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
             reverseOrder(viewsToFlip);
         }
         onInflationComplete(reverseOrder);
-        addArrow();
+        if (shouldAddArrow()) {
+            addArrow();
+        }
         animateOpen();
     }
 
@@ -174,7 +176,9 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
     protected void show() {
         setupForDisplay();
         onInflationComplete(false);
-        addArrow();
+        if (shouldAddArrow()) {
+            addArrow();
+        }
         animateOpen();
     }
 
@@ -230,6 +234,13 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
 
         mArrow.setPivotX(mArrowWidth / 2.0f);
         mArrow.setPivotY(mIsAboveIcon ? mArrowHeight : 0);
+    }
+
+    /**
+     * Returns whether or not we should add the arrow.
+     */
+    protected boolean shouldAddArrow() {
+        return true;
     }
 
     /**
@@ -392,13 +403,18 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
         return getChildCount() > 0 ? getChildAt(0) : this;
     }
 
+    private int getArrowDuration() {
+        return shouldAddArrow()
+                ? getResources().getInteger(R.integer.config_popupArrowOpenCloseDuration)
+                : 0;
+    }
     private void animateOpen() {
         setVisibility(View.VISIBLE);
 
         final AnimatorSet openAnim = new AnimatorSet();
         final Resources res = getResources();
         final long revealDuration = (long) res.getInteger(R.integer.config_popupOpenCloseDuration);
-        final long arrowDuration = res.getInteger(R.integer.config_popupArrowOpenCloseDuration);
+        final long arrowDuration = getArrowDuration();
         final TimeInterpolator revealInterpolator = ACCEL_DEACCEL;
 
         // Rectangular reveal.
@@ -460,7 +476,7 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
         final Resources res = getResources();
         final TimeInterpolator revealInterpolator = ACCEL_DEACCEL;
         final long revealDuration = res.getInteger(R.integer.config_popupOpenCloseDuration);
-        final long arrowDuration = res.getInteger(R.integer.config_popupArrowOpenCloseDuration);
+        final long arrowDuration = getArrowDuration();
 
         // Hide the arrow
         Animator scaleArrow = ObjectAnimator.ofFloat(mArrow, LauncherAnimUtils.SCALE_PROPERTY, 0)
