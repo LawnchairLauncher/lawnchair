@@ -37,6 +37,7 @@ import org.robolectric.util.ReflectionHelpers;
 
 @RunWith(RobolectricTestRunner.class)
 @LooperMode(Mode.PAUSED)
+@org.junit.Ignore
 public class RecentsActivityTest {
 
     @Test
