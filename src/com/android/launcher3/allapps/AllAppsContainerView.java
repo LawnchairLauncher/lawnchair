@@ -201,9 +201,9 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         }
         if (!mAH[AdapterHolder.MAIN].appsList.hasFilter()) {
             rebindAdapters(hasWorkApps);
-        }
-        if (hasWorkApps) {
-            resetWorkProfile();
+            if (hasWorkApps) {
+                resetWorkProfile();
+            }
         }
     }
 
