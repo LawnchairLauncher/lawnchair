@@ -114,6 +114,11 @@ public class OptionsPopupView extends ArrowPopup
     }
 
     @Override
+    protected boolean shouldAddArrow() {
+        return false;
+    }
+
+    @Override
     protected void getTargetObjectLocation(Rect outPos) {
         mTargetRect.roundOut(outPos);
     }
