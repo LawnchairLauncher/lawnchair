@@ -708,10 +708,11 @@ public class DeviceProfile {
                     mInsets.top + availableHeightPx);
         } else {
             // Folders should only appear below the drop target bar and above the hotseat
+            int hotseatTop = isTaskbarPresent ? taskbarSize : hotseatBarSizePx;
             return new Rect(mInsets.left + edgeMarginPx,
                     mInsets.top + dropTargetBarSizePx + edgeMarginPx,
                     mInsets.left + availableWidthPx - edgeMarginPx,
-                    mInsets.top + availableHeightPx - hotseatBarSizePx
+                    mInsets.top + availableHeightPx - hotseatTop
                             - workspacePageIndicatorHeight - edgeMarginPx);
         }
     }

@@ -18,7 +18,6 @@ package com.android.launcher3.ui;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.allapps.AllAppsStore.DEFER_UPDATES_TEST;
-import static com.android.launcher3.tapl.LauncherInstrumentation.LONG_WAIT_TIME_MS;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -37,6 +36,7 @@ import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsPagedView;
 import com.android.launcher3.allapps.WorkModeSwitch;
 import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.views.WorkEduView;
 
@@ -147,7 +147,7 @@ public class WorkTabTest extends AbstractLauncherUiTest {
                 return true;
             }
             return false;
-        }, LONG_WAIT_TIME_MS);
+        }, LauncherInstrumentation.WAIT_TIME_MS);
 
         executeOnLauncher(launcher -> launcher.getStateManager().goToState(ALL_APPS));
         WorkEduView workEduView = getEduView();
