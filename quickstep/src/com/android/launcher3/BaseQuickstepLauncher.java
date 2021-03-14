@@ -21,6 +21,7 @@ import static com.android.launcher3.LauncherState.FLAG_HIDE_BACK_BUTTON;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.util.DisplayController.DisplayHolder.CHANGE_SIZE;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY;
 
 import android.animation.AnimatorSet;
@@ -79,7 +80,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
      * Reusable command for applying the back button alpha on the background thread.
      */
     public static final UiThreadHelper.AsyncCommand SET_BACK_BUTTON_ALPHA =
-            (context, arg1, arg2) -> SystemUiProxy.INSTANCE.get(context).setBackButtonAlpha(
+            (context, arg1, arg2) -> SystemUiProxy.INSTANCE.get(context).setNavBarButtonAlpha(
                     Float.intBitsToFloat(arg1), arg2 != 0);
 
     private OverviewActionsView mActionsView;
@@ -373,8 +374,10 @@ public abstract class BaseQuickstepLauncher extends Launcher
      */
     private void onLauncherStateOrFocusChanged() {
         boolean shouldBackButtonBeHidden = shouldBackButtonBeHidden(getStateManager().getState());
-        UiThreadHelper.setBackButtonAlphaAsync(this, SET_BACK_BUTTON_ALPHA,
-                shouldBackButtonBeHidden ? 0f : 1f, true /* animate */);
+        if (SysUINavigationMode.getMode(this) == TWO_BUTTONS) {
+            UiThreadHelper.setBackButtonAlphaAsync(this, SET_BACK_BUTTON_ALPHA,
+                    shouldBackButtonBeHidden ? 0f : 1f, true /* animate */);
+        }
         if (getDragLayer() != null) {
             getRootView().setDisallowBackGesture(shouldBackButtonBeHidden);
         }
