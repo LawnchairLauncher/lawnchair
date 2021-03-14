@@ -42,16 +42,49 @@ public class MultiValueAlpha {
                 }
             };
 
+    /**
+     * Determines how each alpha should factor into the final alpha.
+     */
+    public enum Mode {
+        BLEND(1f) {
+            @Override
+            public float calculateNewAlpha(float currentAlpha, float otherAlpha) {
+                return currentAlpha * otherAlpha;
+            }
+        },
+
+        MAX(0f) {
+            @Override
+            public float calculateNewAlpha(float currentAlpha, float otherAlpha) {
+                return Math.max(currentAlpha, otherAlpha);
+            }
+        };
+
+        Mode(float startAlpha) {
+            mStartAlpha = startAlpha;
+        }
+
+        protected final float mStartAlpha;
+        protected abstract float calculateNewAlpha(float currentAlpha, float otherAlpha);
+    }
+
     private final View mView;
     private final AlphaProperty[] mMyProperties;
+    private final Mode mMode;
 
     private int mValidMask;
     // Whether we should change from INVISIBLE to VISIBLE and vice versa at low alpha values.
     private boolean mUpdateVisibility;
 
     public MultiValueAlpha(View view, int size) {
+        this(view, size, Mode.BLEND);
+    }
+
+    public MultiValueAlpha(View view, int size, Mode mode) {
         mView = view;
         mMyProperties = new AlphaProperty[size];
+        mMode = mode;
+        mView.setAlpha(mMode.mStartAlpha);
 
         mValidMask = 0;
         for (int i = 0; i < size; i++) {
@@ -79,9 +112,9 @@ public class MultiValueAlpha {
 
         private final int mMyMask;
 
-        private float mValue = 1;
+        private float mValue = mMode.mStartAlpha;
         // Factor of all other alpha channels, only valid if mMyMask is present in mValidMask.
-        private float mOthers = 1;
+        private float mOthers = mMode.mStartAlpha;
 
         AlphaProperty(int myMask) {
             mMyMask = myMask;
@@ -94,10 +127,10 @@ public class MultiValueAlpha {
 
             if ((mValidMask & mMyMask) == 0) {
                 // Our cache value is not correct, recompute it.
-                mOthers = 1;
+                mOthers = mMode.mStartAlpha;
                 for (AlphaProperty prop : mMyProperties) {
                     if (prop != this) {
-                        mOthers *= prop.mValue;
+                        mOthers = mMode.calculateNewAlpha(mOthers, prop.mValue);
                     }
                 }
             }
@@ -107,7 +140,7 @@ public class MultiValueAlpha {
             mValidMask = mMyMask;
             mValue = value;
 
-            mView.setAlpha(mOthers * mValue);
+            mView.setAlpha(mMode.calculateNewAlpha(mOthers, mValue));
             if (mUpdateVisibility) {
                 AlphaUpdateListener.updateVisibility(mView);
             }

@@ -29,6 +29,7 @@ import android.widget.FrameLayout;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.util.MultiValueAlpha;
 
 import java.util.function.Consumer;
 
@@ -37,12 +38,18 @@ import java.util.function.Consumer;
  */
 public class Hotseat extends CellLayout implements Insettable {
 
+    private static final int ALPHA_INDEX_STATE = 0;
+    private static final int ALPHA_INDEX_REPLACE_TASKBAR = 1;
+    private static final int NUM_ALPHA_CHANNELS = 2;
+
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mHasVerticalHotseat;
     private Workspace mWorkspace;
     private boolean mSendTouchToWorkspace;
     @Nullable
     private Consumer<Boolean> mOnVisibilityAggregatedCallback;
+
+    private final MultiValueAlpha mMultiValueAlpha;
 
     public Hotseat(Context context) {
         this(context, null);
@@ -54,6 +61,8 @@ public class Hotseat extends CellLayout implements Insettable {
 
     public Hotseat(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        mMultiValueAlpha = new MultiValueAlpha(this, NUM_ALPHA_CHANNELS, MultiValueAlpha.Mode.MAX);
+        mMultiValueAlpha.setUpdateVisibility(true);
     }
 
     /**
@@ -173,5 +182,13 @@ public class Hotseat extends CellLayout implements Insettable {
      */
     public View getFirstItemMatch(Workspace.ItemOperator itemOperator) {
         return mWorkspace.getFirstMatch(new CellLayout[] { this }, itemOperator);
+    }
+
+    public MultiValueAlpha.AlphaProperty getStateAlpha() {
+        return mMultiValueAlpha.getProperty(ALPHA_INDEX_STATE);
+    }
+
+    public MultiValueAlpha.AlphaProperty getReplaceTaskbarAlpha() {
+        return mMultiValueAlpha.getProperty(ALPHA_INDEX_REPLACE_TASKBAR);
     }
 }
