@@ -14,12 +14,12 @@ fun PreferenceGroup(heading: String? = null, showDivider: Boolean = false, conte
     Column {
         if (showDivider) Divider()
         heading?.let {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
+            Column(
                 modifier = Modifier
-                    .height(48.dp)
+                    .height(44.dp)
                     .padding(start = 16.dp, end = 16.dp)
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.Bottom
             ) {
                 CompositionLocalProvider(
                     LocalContentAlpha provides ContentAlpha.medium,
@@ -30,6 +30,7 @@ fun PreferenceGroup(heading: String? = null, showDivider: Boolean = false, conte
                         style = MaterialTheme.typography.overline
                     )
                 }
+                Spacer(modifier = Modifier.requiredHeight(12.dp))
             }
         }
         content()
