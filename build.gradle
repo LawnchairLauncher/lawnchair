@@ -17,6 +17,10 @@ buildscript {
 
 final String FRAMEWORK_PREBUILTS_DIR = "prebuilts"
 
+wrapper {
+    gradleVersion = '8.6.3'
+}
+
 allprojects {
     repositories {
         google()
