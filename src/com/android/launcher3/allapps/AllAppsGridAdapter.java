@@ -201,7 +201,17 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
         mOnIconClickListener = launcher.getItemOnClickListener();
 
-        setAppsPerRow(mLauncher.getDeviceProfile().inv.numAllAppsColumns);
+        setAllAppsColumns();
+    }
+
+    private int mColumns = 0;
+
+    public void setAllAppsColumns() {
+        int newColumns = mLauncher.getDeviceProfile().inv.numAllAppsColumns;
+        if (newColumns != mColumns) {
+            mColumns = newColumns;
+            setAppsPerRow(mColumns);
+        }
     }
 
     public void setAppsPerRow(int appsPerRow) {
