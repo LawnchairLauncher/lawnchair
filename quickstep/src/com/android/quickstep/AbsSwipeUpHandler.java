@@ -1469,7 +1469,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
                     mSwipePipToHomeAnimator.getDestinationBounds());
             mRecentsAnimationController.setFinishTaskBounds(
                     mSwipePipToHomeAnimator.getTaskId(),
-                    mSwipePipToHomeAnimator.getDestinationBounds());
+                    mSwipePipToHomeAnimator.getDestinationBounds(),
+                    mSwipePipToHomeAnimator.getFinishWindowCrop(),
+                    mSwipePipToHomeAnimator.getFinishTransform());
             mIsSwipingPipToHome = false;
         }
     }
