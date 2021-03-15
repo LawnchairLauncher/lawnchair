@@ -25,6 +25,7 @@ import com.android.launcher3.model.AllAppsList;
 import com.android.launcher3.model.BaseModelUpdateTask;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.search.StringMatcherUtility;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,10 +68,10 @@ public class AppsSearchPipeline implements SearchPipeline {
         // apps that don't match all of the words in the query.
         final String queryTextLower = query.toLowerCase();
         final ArrayList<AppInfo> result = new ArrayList<>();
-        DefaultAppSearchAlgorithm.StringMatcher matcher =
-                DefaultAppSearchAlgorithm.StringMatcher.getInstance();
+        StringMatcherUtility.StringMatcher matcher =
+                StringMatcherUtility.StringMatcher.getInstance();
         for (AppInfo info : apps) {
-            if (DefaultAppSearchAlgorithm.matches(info, queryTextLower, matcher)) {
+            if (StringMatcherUtility.matches(queryTextLower, info.title.toString(), matcher)) {
                 result.add(info);
             }
         }

@@ -1,0 +1,111 @@
+/*
+ * Copyright (C) 2021 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.android.launcher3.widget.picker.search;
+
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.widget.EditText;
+import android.widget.ImageButton;
+
+import com.android.launcher3.search.SearchAlgorithm;
+import com.android.launcher3.search.SearchCallback;
+import com.android.launcher3.widget.model.WidgetsListBaseEntry;
+
+import java.util.ArrayList;
+
+/**
+ * Controller for a search bar with an edit text and a cancel button.
+ */
+public class WidgetsSearchBarController implements TextWatcher,
+        SearchCallback<WidgetsListBaseEntry> {
+    private static final String TAG = "WidgetsSearchBarController";
+    private static final boolean DEBUG = false;
+
+    protected SearchAlgorithm<WidgetsListBaseEntry> mSearchAlgorithm;
+    protected EditText mInput;
+    protected ImageButton mCancelButton;
+    protected SearchModeListener mSearchModeListener;
+    protected String mQuery;
+
+    public WidgetsSearchBarController(
+            SearchAlgorithm<WidgetsListBaseEntry> algo, EditText editText, ImageButton cancelButton,
+            SearchModeListener searchModeListener) {
+        mSearchAlgorithm = algo;
+        mInput = editText;
+        mInput.addTextChangedListener(this);
+        mCancelButton = cancelButton;
+        mCancelButton.setOnClickListener(v -> clearSearchResult());
+        mSearchModeListener = searchModeListener;
+    }
+
+    @Override
+    public void afterTextChanged(final Editable s) {
+        mQuery = s.toString();
+        if (mQuery.isEmpty()) {
+            mSearchAlgorithm.cancel(/* interruptActiveRequests= */ true);
+            mSearchModeListener.exitSearchMode();
+            mCancelButton.setVisibility(GONE);
+        } else {
+            mSearchAlgorithm.cancel(/* interruptActiveRequests= */ false);
+            mSearchModeListener.enterSearchMode();
+            mSearchAlgorithm.doSearch(mQuery, this);
+            mCancelButton.setVisibility(VISIBLE);
+        }
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        // Do nothing.
+    }
+
+    @Override
+    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        // Do nothing.
+    }
+
+    @Override
+    public void onSearchResult(String query, ArrayList<WidgetsListBaseEntry> items) {
+        if (DEBUG) {
+            Log.d(TAG, "onSearchResult query: " + query + " items: " + items);
+        }
+        mSearchModeListener.onSearchResults(items);
+    }
+
+    @Override
+    public void onAppendSearchResult(String query, ArrayList<WidgetsListBaseEntry> items) {
+        // Not needed.
+    }
+
+    @Override
+    public void clearSearchResult() {
+        mSearchAlgorithm.cancel(/* interruptActiveRequests= */ true);
+        mInput.getText().clear();
+        mInput.clearFocus();
+        mSearchModeListener.exitSearchMode();
+    }
+
+    /**
+     * Cleans up after search is no longer needed.
+     */
+    public void onDestroy() {
+        mSearchAlgorithm.destroy();
+    }
+}

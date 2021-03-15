@@ -17,23 +17,18 @@ package com.android.launcher3.widget.model;
 
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.data.PackageItemInfo;
-import com.android.launcher3.widget.WidgetItemComparator;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /** An information holder for an app which has widgets or/and shortcuts, to be shown in search. */
 public final class WidgetsListSearchHeaderEntry extends WidgetsListBaseEntry {
-
-    public final List<WidgetItem> mWidgets;
 
     private boolean mIsWidgetListShown = false;
     private boolean mHasEntryUpdated = false;
 
     public WidgetsListSearchHeaderEntry(PackageItemInfo pkgItem, String titleSectionName,
             List<WidgetItem> items) {
-        super(pkgItem, titleSectionName);
-        mWidgets = items.stream().sorted(new WidgetItemComparator()).collect(Collectors.toList());
+        super(pkgItem, titleSectionName, items);
     }
 
     /** Sets if the widgets list associated with this header is shown. */
