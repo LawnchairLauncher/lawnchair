@@ -17,25 +17,21 @@ package com.android.launcher3.widget.model;
 
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.data.PackageItemInfo;
-import com.android.launcher3.widget.WidgetItemComparator;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /** An information holder for an app which has widgets or/and shortcuts. */
 public final class WidgetsListHeaderEntry extends WidgetsListBaseEntry {
 
     public final int widgetsCount;
     public final int shortcutsCount;
-    public final List<WidgetItem> mWidgets;
 
     private boolean mIsWidgetListShown = false;
     private boolean mHasEntryUpdated = false;
 
     public WidgetsListHeaderEntry(PackageItemInfo pkgItem, String titleSectionName,
             List<WidgetItem> items) {
-        super(pkgItem, titleSectionName);
-        mWidgets = items.stream().sorted(new WidgetItemComparator()).collect(Collectors.toList());
+        super(pkgItem, titleSectionName, items);
         widgetsCount = (int) items.stream().filter(item -> item.widgetInfo != null).count();
         shortcutsCount = Math.max(0, items.size() - widgetsCount);
     }
