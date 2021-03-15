@@ -41,6 +41,9 @@ import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
+import com.android.launcher3.widget.model.WidgetsListSearchHeaderEntry;
+
+import java.util.stream.Collectors;
 
 /**
  * A UI represents a header of an app shown in the full widgets tray.
@@ -173,12 +176,38 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
                     shortcutsCount);
         } else if (entry.widgetsCount > 0) {
             subtitle = resources.getQuantityString(R.plurals.widgets_count,
-                     entry.widgetsCount, entry.widgetsCount);
+                    entry.widgetsCount, entry.widgetsCount);
         } else {
             subtitle = resources.getQuantityString(R.plurals.shortcuts_count,
                     entry.shortcutsCount, entry.shortcutsCount);
         }
         mSubtitle.setText(subtitle);
+        mSubtitle.setVisibility(VISIBLE);
+    }
+
+    /** Apply app icon, labels and tag using a generic {@link WidgetsListSearchHeaderEntry}. */
+    @UiThread
+    public void applyFromItemInfoWithIcon(WidgetsListSearchHeaderEntry entry) {
+        applyIconAndLabel(entry);
+    }
+
+    @UiThread
+    private void applyIconAndLabel(WidgetsListSearchHeaderEntry entry) {
+        PackageItemInfo info = entry.mPkgItem;
+        setIcon(info);
+        setTitles(entry);
+        setExpanded(entry.isWidgetListShown());
+
+        super.setTag(info);
+
+        verifyHighRes();
+    }
+
+    private void setTitles(WidgetsListSearchHeaderEntry entry) {
+        mTitle.setText(entry.mPkgItem.title);
+
+        mSubtitle.setText(entry.mWidgets.stream()
+                .map(item -> item.label).sorted().collect(Collectors.joining(", ")));
         mSubtitle.setVisibility(VISIBLE);
     }
 

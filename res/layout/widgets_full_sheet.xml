@@ -51,5 +51,13 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
             android:layout_marginEnd="@dimen/fastscroll_end_margin" />
+
+        <com.android.launcher3.widget.picker.WidgetsRecyclerView
+            android:id="@+id/search_widgets_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:clipToPadding="false" />
+
     </com.android.launcher3.views.TopRoundedCornerView>
 </com.android.launcher3.widget.picker.WidgetsFullSheet>

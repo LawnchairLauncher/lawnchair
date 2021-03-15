@@ -42,7 +42,7 @@ import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.testing.TestActivity;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
-import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
+import com.android.launcher3.widget.model.WidgetsListSearchHeaderEntry;
 
 import org.junit.After;
 import org.junit.Before;
@@ -61,12 +61,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RunWith(RobolectricTestRunner.class)
-public final class WidgetsListHeaderViewHolderBinderTest {
+public final class WidgetsListSearchHeaderViewHolderBinderTest {
     private static final String TEST_PACKAGE = "com.google.test";
     private static final String APP_NAME = "Test app";
 
     private Context mContext;
-    private WidgetsListHeaderViewHolderBinder mViewHolderBinder;
+    private WidgetsListSearchHeaderViewHolderBinder mViewHolderBinder;
     private InvariantDeviceProfile mTestProfile;
     // Replace ActivityController with ActivityScenario, which is the recommended way for activity
     // testing.
@@ -97,7 +97,7 @@ public final class WidgetsListHeaderViewHolderBinderTest {
             return componentWithLabel.getComponent().getShortClassName();
         }).when(mIconCache).getTitleNoCache(any());
 
-        mViewHolderBinder = new WidgetsListHeaderViewHolderBinder(
+        mViewHolderBinder = new WidgetsListSearchHeaderViewHolderBinder(
                 LayoutInflater.from(mTestActivity), mOnHeaderClickListener);
     }
 
@@ -108,10 +108,10 @@ public final class WidgetsListHeaderViewHolderBinderTest {
 
     @Test
     public void bindViewHolder_appWith3Widgets_shouldShowTheCorrectAppNameAndSubtitle() {
-        WidgetsListHeaderHolder viewHolder = mViewHolderBinder.newViewHolder(
+        WidgetsListSearchHeaderHolder viewHolder = mViewHolderBinder.newViewHolder(
                 new FrameLayout(mTestActivity));
         WidgetsListHeader widgetsListHeader = viewHolder.mWidgetsListHeader;
-        WidgetsListHeaderEntry entry = generateSampleAppHeader(
+        WidgetsListSearchHeaderEntry entry = generateSampleSearchHeader(
                 APP_NAME,
                 TEST_PACKAGE,
                 /* numOfWidgets= */ 3);
@@ -120,15 +120,16 @@ public final class WidgetsListHeaderViewHolderBinderTest {
         TextView appTitle = widgetsListHeader.findViewById(R.id.app_title);
         TextView appSubtitle = widgetsListHeader.findViewById(R.id.app_subtitle);
         assertThat(appTitle.getText()).isEqualTo(APP_NAME);
-        assertThat(appSubtitle.getText()).isEqualTo("3 widgets");
+        assertThat(appSubtitle.getText())
+                .isEqualTo(".SampleWidget0, .SampleWidget1, .SampleWidget2");
     }
 
     @Test
     public void bindViewHolder_shouldAttachOnHeaderClickListener() {
-        WidgetsListHeaderHolder viewHolder = mViewHolderBinder.newViewHolder(
+        WidgetsListSearchHeaderHolder viewHolder = mViewHolderBinder.newViewHolder(
                 new FrameLayout(mTestActivity));
         WidgetsListHeader widgetsListHeader = viewHolder.mWidgetsListHeader;
-        WidgetsListHeaderEntry entry = generateSampleAppHeader(
+        WidgetsListSearchHeaderEntry entry = generateSampleSearchHeader(
                 APP_NAME,
                 TEST_PACKAGE,
                 /* numOfWidgets= */ 3);
@@ -140,13 +141,13 @@ public final class WidgetsListHeaderViewHolderBinderTest {
                 eq(new PackageUserKey(entry.mPkgItem.packageName, entry.mPkgItem.user)));
     }
 
-    private WidgetsListHeaderEntry generateSampleAppHeader(String appName, String packageName,
-            int numOfWidgets) {
+    private WidgetsListSearchHeaderEntry generateSampleSearchHeader(String appName,
+            String packageName, int numOfWidgets) {
         PackageItemInfo appInfo = new PackageItemInfo(packageName);
         appInfo.title = appName;
         appInfo.bitmap = BitmapInfo.of(Bitmap.createBitmap(10, 10, Bitmap.Config.ALPHA_8), 0);
 
-        return new WidgetsListHeaderEntry(appInfo,
+        return new WidgetsListSearchHeaderEntry(appInfo,
                 /* titleSectionName= */ "",
                 generateWidgetItems(packageName, numOfWidgets));
     }
