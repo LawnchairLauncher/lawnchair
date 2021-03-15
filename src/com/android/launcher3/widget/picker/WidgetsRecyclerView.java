@@ -34,6 +34,7 @@ import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.model.WidgetsListContentEntry;
 import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
+import com.android.launcher3.widget.model.WidgetsListSearchHeaderEntry;
 
 /**
  * The widgets recycler view.
@@ -219,7 +220,8 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
         int totalItemsHeight = 0;
         for (int i = 0; i < untilIndex; i++) {
             WidgetsListBaseEntry entry = mAdapter.getItems().get(i);
-            if (entry instanceof WidgetsListHeaderEntry) {
+            if (entry instanceof WidgetsListHeaderEntry ||
+                    entry instanceof WidgetsListSearchHeaderEntry) {
                 totalItemsHeight += mEstimatedWidgetListHeaderHeight;
             } else if (entry instanceof WidgetsListContentEntry) {
                 totalItemsHeight += mLastVisibleWidgetContentTableHeight;
