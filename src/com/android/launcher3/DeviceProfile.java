@@ -167,6 +167,8 @@ public class DeviceProfile {
      // Taskbar
     public boolean isTaskbarPresent;
     public int taskbarSize;
+    // How much of the bottom inset is due to Taskbar rather than other system elements.
+    public int nonOverlappingTaskbarInset;
 
     DeviceProfile(Context context, InvariantDeviceProfile inv, Info info,
             Point minSize, Point maxSize, int width, int height, boolean isLandscape,
@@ -221,7 +223,7 @@ public class DeviceProfile {
             WindowInsets windowInsets = DisplayController.INSTANCE.get(context).getHolder(mInfo.id)
                     .getDisplayContext().getSystemService(WindowManager.class)
                     .getCurrentWindowMetrics().getWindowInsets();
-            int nonOverlappingTaskbarInset =
+            nonOverlappingTaskbarInset =
                     taskbarSize - windowInsets.getSystemWindowInsetBottom();
             if (nonOverlappingTaskbarInset > 0) {
                 nonFinalAvailableHeightPx -= nonOverlappingTaskbarInset;
