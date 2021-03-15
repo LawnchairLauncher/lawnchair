@@ -1,6 +1,7 @@
 name: Build debug APK
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - 11-dev
