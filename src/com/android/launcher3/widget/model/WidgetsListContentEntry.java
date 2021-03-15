@@ -39,7 +39,7 @@ public final class WidgetsListContentEntry extends WidgetsListBaseEntry {
 
     @Override
     public String toString() {
-        return mPkgItem.packageName + ":" + mWidgets.size();
+        return "Content:" + mPkgItem.packageName + ":" + mWidgets.size();
     }
 
     @Override

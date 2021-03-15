@@ -34,6 +34,7 @@ final class SearchAndRecommendationsScrollController implements
     private final boolean mHasWorkProfile;
     private final SearchAndRecommendationViewHolder mViewHolder;
     private final WidgetsRecyclerView mPrimaryRecyclerView;
+    private final WidgetsRecyclerView mSearchRecyclerView;
 
     // The following are only non null if mHasWorkProfile is true.
     @Nullable private final WidgetsRecyclerView mWorkRecyclerView;
@@ -48,12 +49,14 @@ final class SearchAndRecommendationsScrollController implements
             SearchAndRecommendationViewHolder viewHolder,
             WidgetsRecyclerView primaryRecyclerView,
             @Nullable WidgetsRecyclerView workRecyclerView,
+            WidgetsRecyclerView searchRecyclerView,
             @Nullable View personalWorkTabsView,
             @Nullable PersonalWorkPagedView primaryWorkViewPager) {
         mHasWorkProfile = hasWorkProfile;
         mViewHolder = viewHolder;
         mPrimaryRecyclerView = primaryRecyclerView;
         mWorkRecyclerView = workRecyclerView;
+        mSearchRecyclerView = searchRecyclerView;
         mPrimaryWorkTabsView = personalWorkTabsView;
         mPrimaryWorkViewPager = primaryWorkViewPager;
         mCurrentRecyclerView = mPrimaryRecyclerView;
@@ -149,6 +152,11 @@ final class SearchAndRecommendationsScrollController implements
                     mPrimaryRecyclerView.getPaddingRight(),
                     mPrimaryRecyclerView.getPaddingBottom());
         }
+        mSearchRecyclerView.setPadding(
+                mSearchRecyclerView.getPaddingLeft(),
+                topContainerHeight,
+                mSearchRecyclerView.getPaddingRight(),
+                mSearchRecyclerView.getPaddingBottom());
     }
 
     /**

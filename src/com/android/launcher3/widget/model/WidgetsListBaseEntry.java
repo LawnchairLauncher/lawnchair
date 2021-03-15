@@ -51,10 +51,11 @@ public abstract class WidgetsListBaseEntry {
     public abstract int getRank();
 
     @Retention(SOURCE)
-    @IntDef({RANK_WIDGETS_LIST_HEADER, RANK_WIDGETS_LIST_CONTENT})
+    @IntDef({RANK_WIDGETS_LIST_HEADER, RANK_WIDGETS_LIST_SEARCH_HEADER, RANK_WIDGETS_LIST_CONTENT})
     public @interface Rank {
     }
 
     public static final int RANK_WIDGETS_LIST_HEADER = 1;
-    public static final int RANK_WIDGETS_LIST_CONTENT = 2;
+    public static final int RANK_WIDGETS_LIST_SEARCH_HEADER = 2;
+    public static final int RANK_WIDGETS_LIST_CONTENT = 3;
 }
