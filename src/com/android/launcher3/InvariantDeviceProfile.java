@@ -140,6 +140,8 @@ public class InvariantDeviceProfile {
     private ConfigMonitor mConfigMonitor;
     private OverlayMonitor mOverlayMonitor;
 
+    private Context mContext;
+
     @VisibleForTesting
     public InvariantDeviceProfile() {}
 
@@ -162,10 +164,12 @@ public class InvariantDeviceProfile {
         demoModeLayoutId = p.demoModeLayoutId;
         mExtraAttrs = p.mExtraAttrs;
         mOverlayMonitor = p.mOverlayMonitor;
+        mContext = p.mContext;
     }
 
     @TargetApi(23)
     private InvariantDeviceProfile(Context context) {
+        mContext = context;
         String gridName = getCurrentGridName(context);
         String newGridName = initGrid(context, gridName);
         if (!newGridName.equals(gridName)) {
@@ -185,6 +189,7 @@ public class InvariantDeviceProfile {
      * This constructor should NOT have any monitors by design.
      */
     public InvariantDeviceProfile(Context context, String gridName) {
+        mContext = context;
         String newName = initGrid(context, gridName);
         if (newName == null || !newName.equals(gridName)) {
             throw new IllegalArgumentException("Unknown grid name");
@@ -195,6 +200,7 @@ public class InvariantDeviceProfile {
      * This constructor should NOT have any monitors by design.
      */
     public InvariantDeviceProfile(Context context, Display display) {
+        mContext = context;
         // Ensure that the main device profile is initialized
         InvariantDeviceProfile originalProfile = INSTANCE.get(context);
         String gridName = getCurrentGridName(context);
@@ -320,6 +326,10 @@ public class InvariantDeviceProfile {
         allAppsIconSize *= prefs.getFloat(LawnchairPreferences.ALL_APPS_ICON_SIZE_FACTOR, 1f);
         allAppsIconTextSize *= prefs.getFloat(LawnchairPreferences.ALL_APPS_TEXT_SIZE_FACTOR, 1f);
 
+    }
+
+    public void reInitGrid() {
+        initGrid(mContext, getCurrentGridName(mContext));
     }
 
     @Nullable

@@ -2,6 +2,7 @@ package ch.deletescape.lawnchair.util.preferences
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.Utilities
 
@@ -15,6 +16,10 @@ class LawnchairPreferences(val context: Context) {
             when (key) {
                 ICON_PACK_PACKAGE, WRAP_ADAPTIVE_ICONS, MAKE_COLORED_BACKGROUNDS -> {
                     LauncherAppState.getInstance(context).model.clearIconCache()
+                    LauncherAppState.getInstance(context).model.forceReload()
+                }
+                WORKSPACE_ROWS, WORKSPACE_COLUMNS, ALL_APPS_COLUMNS, FOLDER_ROWS, FOLDER_COLUMNS, HOTSEAT_COLUMNS -> {
+                    LauncherAppState.getInstance(context).invariantDeviceProfile.reInitGrid()
                     LauncherAppState.getInstance(context).model.forceReload()
                 }
             }
