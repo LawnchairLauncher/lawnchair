@@ -19,7 +19,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
-    android:paddingVertical="20dp"
+    android:paddingVertical="@dimen/widget_list_header_view_vertical_padding"
     android:orientation="horizontal">
 
     <ImageView
