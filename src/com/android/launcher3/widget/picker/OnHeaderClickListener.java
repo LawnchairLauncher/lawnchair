@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 The Android Open Source Project
+ * Copyright (C) 2021 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,27 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.search;
+package com.android.launcher3.widget.picker;
+
+import com.android.launcher3.util.PackageUserKey;
 
 /**
- * An interface for handling search.
- *
- * @param <T> Search Result type
+ * A listener to be invoked when a header is clicked.
  */
-public interface SearchAlgorithm<T> {
-
+public interface OnHeaderClickListener {
     /**
-     * Performs search and sends the result to {@link SearchCallback}.
+     * Calls when a header is clicked to show / hide widgets for a package.
      */
-    void doSearch(String query, SearchCallback<T> callback);
-
-    /**
-     * Cancels any active request.
-     */
-    void cancel(boolean interruptActiveRequests);
-
-    /**
-     * Cleans up after search is no longer needed.
-     */
-    default void destroy() {};
+    void onHeaderClicked(boolean showWidgets, PackageUserKey packageUserKey);
 }

@@ -17,10 +17,8 @@ package com.android.launcher3.widget.model;
 
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.data.PackageItemInfo;
-import com.android.launcher3.widget.WidgetItemComparator;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Holder class to store all the information related to a list of widgets from the same app which is
@@ -28,23 +26,27 @@ import java.util.stream.Collectors;
  */
 public final class WidgetsListContentEntry extends WidgetsListBaseEntry {
 
-    public final List<WidgetItem> mWidgets;
-
     public WidgetsListContentEntry(PackageItemInfo pkgItem, String titleSectionName,
             List<WidgetItem> items) {
-        super(pkgItem, titleSectionName);
-        this.mWidgets =
-                items.stream().sorted(new WidgetItemComparator()).collect(Collectors.toList());
+        super(pkgItem, titleSectionName, items);
     }
 
     @Override
     public String toString() {
-        return mPkgItem.packageName + ":" + mWidgets.size();
+        return "Content:" + mPkgItem.packageName + ":" + mWidgets.size();
     }
 
     @Override
     @Rank
     public int getRank() {
         return RANK_WIDGETS_LIST_CONTENT;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof WidgetsListContentEntry)) return false;
+        WidgetsListContentEntry otherEntry = (WidgetsListContentEntry) obj;
+        return mWidgets.equals(otherEntry.mWidgets) && mPkgItem.equals(otherEntry.mPkgItem)
+                && mTitleSectionName.equals(otherEntry.mTitleSectionName);
     }
 }

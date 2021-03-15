@@ -34,7 +34,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -53,6 +52,8 @@ import com.android.launcher3.views.TopRoundedCornerView;
 import com.android.launcher3.widget.BaseWidgetSheet;
 import com.android.launcher3.widget.LauncherAppWidgetHost.ProviderChangedListener;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
+import com.android.launcher3.widget.picker.search.SearchModeListener;
+import com.android.launcher3.widget.picker.search.WidgetsSearchBar;
 import com.android.launcher3.workprofile.PersonalWorkPagedView;
 import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.OnActivePageChangedListener;
 
@@ -64,7 +65,7 @@ import java.util.function.Predicate;
  */
 public class WidgetsFullSheet extends BaseWidgetSheet
         implements Insettable, ProviderChangedListener, OnActivePageChangedListener,
-        WidgetsRecyclerView.HeaderViewDimensionsProvider {
+        WidgetsRecyclerView.HeaderViewDimensionsProvider, SearchModeListener {
 
     private static final long DEFAULT_OPEN_DURATION = 267;
     private static final long FADE_IN_DURATION = 150;
@@ -81,6 +82,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
     @Nullable private PersonalWorkPagedView mViewPager;
     private int mInitialTabsHeight = 0;
+    private boolean mIsInSearchMode;
     private View mTabsView;
     private TextView mNoWidgetsView;
     private SearchAndRecommendationViewHolder mSearchAndRecommendationViewHolder;
@@ -91,6 +93,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         mHasWorkProfile = context.getSystemService(LauncherApps.class).getProfiles().size() > 1;
         mAdapters.put(AdapterHolder.PRIMARY, new AdapterHolder(AdapterHolder.PRIMARY));
         mAdapters.put(AdapterHolder.WORK, new AdapterHolder(AdapterHolder.WORK));
+        mAdapters.put(AdapterHolder.SEARCH, new AdapterHolder(AdapterHolder.SEARCH));
     }
 
     public WidgetsFullSheet(Context context, AttributeSet attrs) {
@@ -138,6 +141,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 mSearchAndRecommendationViewHolder,
                 findViewById(R.id.primary_widgets_list_view),
                 mHasWorkProfile ? findViewById(R.id.work_widgets_list_view) : null,
+                findViewById(R.id.search_widgets_list_view),
                 mTabsView,
                 mViewPager);
         fastScroller.setOnFastScrollChangeListener(mSearchAndRecommendationsScrollController);
@@ -145,17 +149,25 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         mNoWidgetsView = findViewById(R.id.no_widgets_text);
 
         onWidgetsBound();
+
+        mSearchAndRecommendationViewHolder.mSearchBar.initialize(
+                mLauncher.getPopupDataProvider().getAllWidgets(), /* searchModeListener= */ this);
     }
 
     @Override
     public void onActivePageChanged(int currentActivePage) {
         AdapterHolder currentAdapterHolder = mAdapters.get(currentActivePage);
-        WidgetsRecyclerView currentRecyclerView = currentAdapterHolder.mWidgetsRecyclerView;
-        currentRecyclerView.bindFastScrollbar();
-        mSearchAndRecommendationsScrollController.setCurrentRecyclerView(currentRecyclerView);
+        WidgetsRecyclerView currentRecyclerView =
+                mAdapters.get(currentActivePage).mWidgetsRecyclerView;
 
         updateNoWidgetsView(currentAdapterHolder);
 
+        attachScrollbarToRecyclerView(currentRecyclerView);
+    }
+
+    private void attachScrollbarToRecyclerView(WidgetsRecyclerView recyclerView) {
+        recyclerView.bindFastScrollbar();
+        mSearchAndRecommendationsScrollController.setCurrentRecyclerView(recyclerView);
         reset();
     }
 
@@ -173,11 +185,15 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         if (mHasWorkProfile) {
             mAdapters.get(AdapterHolder.WORK).mWidgetsRecyclerView.scrollToTop();
         }
+        mAdapters.get(AdapterHolder.SEARCH).mWidgetsRecyclerView.scrollToTop();
         mSearchAndRecommendationsScrollController.reset();
     }
 
     @VisibleForTesting
     public WidgetsRecyclerView getRecyclerView() {
+        if (mIsInSearchMode) {
+            return mAdapters.get(AdapterHolder.SEARCH).mWidgetsRecyclerView;
+        }
         if (!mHasWorkProfile || mViewPager.getCurrentPage() == AdapterHolder.PRIMARY) {
             return mAdapters.get(AdapterHolder.PRIMARY).mWidgetsRecyclerView;
         }
@@ -289,6 +305,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
         AdapterHolder primaryUserAdapterHolder = mAdapters.get(AdapterHolder.PRIMARY);
         primaryUserAdapterHolder.setup(findViewById(R.id.primary_widgets_list_view));
+        AdapterHolder searchAdapterHolder = mAdapters.get(AdapterHolder.SEARCH);
+        searchAdapterHolder.setup(findViewById(R.id.search_widgets_list_view));
         primaryUserAdapterHolder.mWidgetsListAdapter.setWidgets(allWidgets);
         updateNoWidgetsView(primaryUserAdapterHolder);
 
@@ -298,6 +316,40 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             workUserAdapterHolder.mWidgetsListAdapter.setWidgets(allWidgets);
             onActivePageChanged(mViewPager.getCurrentPage());
         }
+    }
+
+    @Override
+    public void enterSearchMode() {
+        if (mIsInSearchMode) return;
+        setViewVisibilityBasedOnSearch(/*isInSearchMode= */ true);
+        attachScrollbarToRecyclerView(mAdapters.get(AdapterHolder.SEARCH).mWidgetsRecyclerView);
+    }
+
+    @Override
+    public void exitSearchMode() {
+        setViewVisibilityBasedOnSearch(/*isInSearchMode=*/ false);
+        if (mHasWorkProfile) {
+            mViewPager.snapToPage(AdapterHolder.PRIMARY);
+        }
+        attachScrollbarToRecyclerView(mAdapters.get(AdapterHolder.PRIMARY).mWidgetsRecyclerView);
+    }
+
+    @Override
+    public void onSearchResults(List<WidgetsListBaseEntry> entries) {
+        mAdapters.get(AdapterHolder.SEARCH).mWidgetsListAdapter.setWidgetsOnSearch(entries);
+    }
+
+    private void setViewVisibilityBasedOnSearch(boolean isInSearchMode) {
+        mIsInSearchMode = isInSearchMode;
+        if (mHasWorkProfile) {
+            mViewPager.setVisibility(isInSearchMode ? GONE : VISIBLE);
+            mTabsView.setVisibility(isInSearchMode ? GONE : VISIBLE);
+        } else {
+            mAdapters.get(AdapterHolder.PRIMARY).mWidgetsRecyclerView
+                    .setVisibility(isInSearchMode ? GONE : VISIBLE);
+        }
+        mAdapters.get(AdapterHolder.SEARCH).mWidgetsRecyclerView
+                .setVisibility(mIsInSearchMode ? VISIBLE : GONE);
     }
 
     private void open(boolean animate) {
@@ -404,6 +456,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     private final class AdapterHolder {
         static final int PRIMARY = 0;
         static final int WORK = 1;
+        static final int SEARCH = 2;
 
         private final int mAdapterType;
         private final WidgetsListAdapter mWidgetsListAdapter;
@@ -422,8 +475,16 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                     apps.getIconCache(),
                     /* iconClickListener= */ WidgetsFullSheet.this,
                     /* iconLongClickListener= */ WidgetsFullSheet.this);
-            mWidgetsListAdapter.setFilter(
-                    mAdapterType == PRIMARY ? mPrimaryWidgetsFilter : mWorkWidgetsFilter);
+            switch (mAdapterType) {
+                case PRIMARY:
+                    mWidgetsListAdapter.setFilter(mPrimaryWidgetsFilter);
+                    break;
+                case WORK:
+                    mWidgetsListAdapter.setFilter(mWorkWidgetsFilter);
+                    break;
+                default:
+                    break;
+            }
         }
 
         void setup(WidgetsRecyclerView recyclerView) {
@@ -439,7 +500,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     final class SearchAndRecommendationViewHolder {
         final View mContainer;
         final View mCollapseHandle;
-        final EditText mSearchBar;
+        final WidgetsSearchBar mSearchBar;
         final TextView mHeaderTitle;
 
         SearchAndRecommendationViewHolder(View searchAndRecommendationContainer) {

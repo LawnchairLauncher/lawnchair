@@ -16,12 +16,19 @@
 
 package com.android.launcher3.widget.picker.search;
 
-import com.android.launcher3.widget.model.WidgetsListBaseEntry;
+import static com.android.launcher3.search.StringMatcherUtility.matches;
 
-import java.text.Collator;
+import com.android.launcher3.model.WidgetItem;
+import com.android.launcher3.search.StringMatcherUtility.StringMatcher;
+import com.android.launcher3.widget.model.WidgetsListBaseEntry;
+import com.android.launcher3.widget.model.WidgetsListContentEntry;
+import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
+import com.android.launcher3.widget.model.WidgetsListSearchHeaderEntry;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * Implementation of {@link WidgetsPickerSearchPipeline} that performs search by prefix matching on
@@ -37,52 +44,29 @@ public final class SimpleWidgetsSearchPipeline implements WidgetsPickerSearchPip
 
     @Override
     public void query(String input, Consumer<List<WidgetsListBaseEntry>> callback) {
-        StringMatcher matcher =  StringMatcher.getInstance();
         ArrayList<WidgetsListBaseEntry> results = new ArrayList<>();
-        // TODO(b/157286785): Filter entries based on query prefix matching on widget labels also.
-        for (WidgetsListBaseEntry e : mAllEntries) {
-            if (matcher.matches(input, e.mPkgItem.title.toString())) {
-                results.add(e);
-            }
-        }
+        mAllEntries.stream().filter(entry -> entry instanceof WidgetsListHeaderEntry)
+                .forEach(headerEntry -> {
+                    List<WidgetItem> matchedWidgetItems = filterWidgetItems(
+                            input, headerEntry.mPkgItem.title.toString(), headerEntry.mWidgets);
+                    if (matchedWidgetItems.size() > 0) {
+                        results.add(new WidgetsListSearchHeaderEntry(headerEntry.mPkgItem,
+                                headerEntry.mTitleSectionName, matchedWidgetItems));
+                        results.add(new WidgetsListContentEntry(headerEntry.mPkgItem,
+                                headerEntry.mTitleSectionName, matchedWidgetItems));
+                    }
+                });
         callback.accept(results);
     }
 
-    /**
-     * Performs locale sensitive string comparison using {@link Collator}.
-     */
-    public static class StringMatcher {
-
-        private static final char MAX_UNICODE = '\uFFFF';
-
-        private final Collator mCollator;
-
-        StringMatcher() {
-            mCollator = Collator.getInstance();
-            mCollator.setStrength(Collator.PRIMARY);
-            mCollator.setDecomposition(Collator.CANONICAL_DECOMPOSITION);
+    private List<WidgetItem> filterWidgetItems(String query, String packageTitle,
+            List<WidgetItem> items) {
+        StringMatcher matcher = StringMatcher.getInstance();
+        if (matches(query, packageTitle, matcher)) {
+            return items;
         }
-
-        /**
-         * Returns true if {@param query} is a prefix of {@param target}.
-         */
-        public boolean matches(String query, String target) {
-            switch (mCollator.compare(query, target)) {
-                case 0:
-                    return true;
-                case -1:
-                    // The target string can contain a modifier which would make it larger than
-                    // the query string (even though the length is same). If the query becomes
-                    // larger after appending a unicode character, it was originally a prefix of
-                    // the target string and hence should match.
-                    return mCollator.compare(query + MAX_UNICODE, target) > -1;
-                default:
-                    return false;
-            }
-        }
-
-        public static StringMatcher getInstance() {
-            return new StringMatcher();
-        }
+        return items.stream()
+                .filter(item -> matches(query, item.label, matcher))
+                .collect(Collectors.toList());
     }
 }

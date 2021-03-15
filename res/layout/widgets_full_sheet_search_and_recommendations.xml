@@ -34,16 +34,5 @@
         android:textSize="24sp"
         android:layout_marginTop="16dp"
         android:text="@string/widget_button_text"/>
-    <!-- Disable the search bar because it has not been implemented. -->
-    <EditText
-        android:id="@+id/widgets_search_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/bg_widgets_searchbox"
-        android:drawablePadding="8dp"
-        android:drawableStart="@drawable/ic_allapps_search"
-        android:hint="@string/widgets_full_sheet_search_bar_hint"
-        android:padding="12dp" />
+    <include layout="@layout/widgets_search_bar"/>
 </LinearLayout>
