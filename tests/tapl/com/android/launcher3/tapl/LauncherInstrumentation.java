@@ -1027,14 +1027,18 @@ public final class LauncherInstrumentation {
                 expectedState);
     }
 
-    int getBottomGestureSize() {
+    private int getBottomGestureSize() {
         return ResourceUtils.getNavbarSize(
                 ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE, getResources()) + 1;
     }
 
     int getBottomGestureMarginInContainer(UiObject2 container) {
-        final int bottomGestureStartOnScreen = getRealDisplaySize().y - getBottomGestureSize();
+        final int bottomGestureStartOnScreen = getBottomGestureStartOnScreen();
         return getVisibleBounds(container).bottom - bottomGestureStartOnScreen;
+    }
+
+    int getBottomGestureStartOnScreen() {
+        return getRealDisplaySize().y - getBottomGestureSize();
     }
 
     void clickLauncherObject(UiObject2 object) {
