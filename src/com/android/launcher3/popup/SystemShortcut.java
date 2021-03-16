@@ -45,6 +45,11 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
     protected final T mTarget;
     protected final ItemInfo mItemInfo;
 
+    /**
+     * Indicates if it's invokable or not through some disabled UI
+     */
+    private boolean isEnabled = true;
+
     public SystemShortcut(int iconResId, int labelResId, T target, ItemInfo itemInfo) {
         mIconResId = iconResId;
         mLabelResId = labelResId;
@@ -81,6 +86,14 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
     public AccessibilityNodeInfo.AccessibilityAction createAccessibilityAction(Context context) {
         return new AccessibilityNodeInfo.AccessibilityAction(
                 mAccessibilityActionId, context.getText(mLabelResId));
+    }
+
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
+    }
+
+    public boolean isEnabled() {
+        return isEnabled;
     }
 
     public boolean hasHandlerForAction(int action) {

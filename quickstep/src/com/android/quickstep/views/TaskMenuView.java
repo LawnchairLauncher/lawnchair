@@ -186,7 +186,8 @@ public class TaskMenuView extends AbstractFloatingView {
         mTaskName.setText(TaskUtils.getTitle(getContext(), taskView.getTask()));
         mTaskName.setOnClickListener(v -> close(true));
 
-        TaskOverlayFactory.getEnabledShortcuts(taskView).forEach(this::addMenuOption);
+        TaskOverlayFactory.getEnabledShortcuts(taskView, mActivity.getDeviceProfile())
+                .forEach(this::addMenuOption);
     }
 
     private void addMenuOption(SystemShortcut menuOption) {
@@ -196,6 +197,8 @@ public class TaskMenuView extends AbstractFloatingView {
                 menuOptionView.findViewById(R.id.icon), menuOptionView.findViewById(R.id.text));
         LayoutParams lp = (LayoutParams) menuOptionView.getLayoutParams();
         mTaskView.getPagedOrientationHandler().setLayoutParamsForTaskMenuOptionItem(lp);
+        menuOptionView.setEnabled(menuOption.isEnabled());
+        menuOptionView.setAlpha(menuOption.isEnabled() ? 1 : 0.5f);
         menuOptionView.setOnClickListener(view -> {
             if (LIVE_TILE.get()) {
                 RecentsView recentsView = mTaskView.getRecentsView();

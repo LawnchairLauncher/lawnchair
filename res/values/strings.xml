@@ -38,6 +38,13 @@
     <!-- User visible name for the launcher/home screen. [CHAR_LIMIT=30] -->
     <string name="home_screen">Home</string>
 
+    <!-- Options for recent tasks -->
+    <!-- Title for an option to enter split screen mode for a given app -->
+    <string name="recent_task_option_split_screen">Split screen</string>
+    <string translatable="false" name="split_screen_position_top">Pin to top</string>
+    <string translatable="false" name="split_screen_position_left">Pin to left</string>
+    <string translatable="false" name="split_screen_position_right">Pin to right</string>
+
     <!-- Widgets -->
     <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
     <string name="long_press_widget_to_add">Touch &amp; hold to move a widget.</string>

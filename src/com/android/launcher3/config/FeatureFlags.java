@@ -205,6 +205,9 @@ public final class FeatureFlags {
             "ENABLE_OVERVIEW_GRID", false, "Uses grid overview layout. "
             + "Only applicable on large screen devices.");
 
+    public static final BooleanFlag ENABLE_SPLIT_SELECT = getDebugFlag(
+            "ENABLE_SPLIT_SELECT", false, "Uses new split screen selection overview UI");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {

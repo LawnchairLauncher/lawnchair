@@ -175,4 +175,12 @@ public class OverviewState extends LauncherState {
     public static OverviewState newModalTaskState(int id) {
         return new OverviewModalTaskState(id);
     }
+
+    /**
+     * New Overview substate representing state where 1 app for split screen has been selected and
+     * pinned and user is selecting the second one
+     */
+    public static OverviewState newSplitSelectState(int id) {
+        return new SplitScreenSelectState(id);
+    }
 }

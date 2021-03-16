@@ -19,6 +19,14 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
+    <com.android.quickstep.views.SplitPlaceholderView
+        android:id="@+id/split_placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/split_placeholder_size"
+        android:background="@android:color/white"
+        android:alpha=".8"
+        android:visibility="gone" />
+
     <com.android.quickstep.fallback.RecentsDragLayer
         android:id="@+id/drag_layer"
         android:layout_width="match_parent"
