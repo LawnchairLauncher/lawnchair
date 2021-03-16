@@ -19,7 +19,7 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
 import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
 
-import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
+import static com.android.launcher3.AbstractFloatingView.TYPE_HIDE_TASKBAR;
 import static com.android.launcher3.AbstractFloatingView.TYPE_REPLACE_TASKBAR_WITH_HOTSEAT;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
@@ -486,11 +486,15 @@ public class TaskbarController {
 
     private void replaceTaskbarWithHotseatOrViceVersa() {
         boolean replaceTaskbarWithHotseat = AbstractFloatingView.getTopOpenViewWithType(mLauncher,
-                TYPE_ALL & TYPE_REPLACE_TASKBAR_WITH_HOTSEAT) != null;
+                TYPE_REPLACE_TASKBAR_WITH_HOTSEAT) != null;
         if (!mLauncher.hasBeenResumed()) {
             replaceTaskbarWithHotseat = false;
         }
         setReplaceTaskbarWithHotseat(replaceTaskbarWithHotseat);
+
+        boolean hideTaskbar = AbstractFloatingView.getTopOpenViewWithType(mLauncher,
+                TYPE_HIDE_TASKBAR) != null;
+        mTaskbarVisibilityController.animateToVisibilityForFloatingView(hideTaskbar ? 0f : 1f);
     }
 
     private void setReplaceTaskbarWithHotseat(boolean replaceTaskbarWithHotseat) {
