@@ -20,7 +20,7 @@ jobs:
       - name: Grant execution permission to Gradle Wrapper
         run: chmod +x gradlew
       - name: Build debug APK
-        run: sudo ./gradlew assembleLawnWithQuickstepDebug
+        run: ./gradlew assembleLawnWithQuickstepDebug
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
