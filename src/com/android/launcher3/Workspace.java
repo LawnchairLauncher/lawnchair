@@ -69,6 +69,7 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dot.FolderDotInfo;
+import com.android.launcher3.dragndrop.AppWidgetHostViewDrawable;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
@@ -396,15 +397,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         if (mDragInfo != null && mDragInfo.cell != null) {
             CellLayout layout = (CellLayout) mDragInfo.cell.getParent().getParent();
             layout.markCellsAsUnoccupiedForView(mDragInfo.cell);
-        }
-
-        if (mOutlineProvider != null) {
-            if (dragObject.dragView != null) {
-                Bitmap preview = dragObject.dragView.getPreviewBitmap();
-
-                // The outline is used to visualize where the item will land if dropped
-                mOutlineProvider.generateDragOutline(preview);
-            }
         }
 
         updateChildrenLayersEnabled();
@@ -1506,10 +1498,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             draggableView = (DraggableView) child;
         }
 
-        // The drag bitmap follows the touch point around on the screen
-        final Bitmap b = previewProvider.createDragBitmap();
+        // The draggable drawable follows the touch point around on the screen
+        final Drawable drawable = previewProvider.createDrawable();
         int halfPadding = previewProvider.previewPadding / 2;
-        float scale = previewProvider.getScaleAndPosition(b, mTempXY);
+        float scale = previewProvider.getScaleAndPosition(drawable, mTempXY);
         int dragLayerX = mTempXY[0];
         int dragLayerY = mTempXY[1];
 
@@ -1535,9 +1527,18 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             }
         }
 
-        DragView dv = mDragController.startDrag(b, draggableView, dragLayerX, dragLayerY, source,
-                dragObject, dragVisualizeOffset, dragRect, scale * iconScale,
-                scale, dragOptions);
+        DragView dv = mDragController.startDrag(
+                drawable,
+                draggableView,
+                dragLayerX,
+                dragLayerY,
+                source,
+                dragObject,
+                dragVisualizeOffset,
+                dragRect,
+                scale * iconScale,
+                scale,
+                dragOptions);
         dv.setIntrinsicIconScaleFactor(dragOptions.intrinsicIconScaleFactor);
         return dv;
     }
@@ -2585,7 +2586,11 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     }
 
-    public Bitmap createWidgetBitmap(ItemInfo widgetInfo, View layout) {
+    private Drawable createWidgetDrawable(ItemInfo widgetInfo, View layout) {
+        if (layout instanceof LauncherAppWidgetHostView) {
+            return new AppWidgetHostViewDrawable((LauncherAppWidgetHostView) layout);
+        }
+
         int[] unScaledSize = estimateItemSize(widgetInfo);
         int visibility = layout.getVisibility();
         layout.setVisibility(VISIBLE);
@@ -2597,7 +2602,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         Bitmap b = BitmapRenderer.createHardwareBitmap(
                 unScaledSize[0], unScaledSize[1], layout::draw);
         layout.setVisibility(visibility);
-        return b;
+        return new FastBitmapDrawable(b);
     }
 
     private void getFinalPositionForDropAnimation(int[] loc, float[] scaleXY,
@@ -2667,8 +2672,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         boolean isWidget = info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET ||
                 info.itemType == LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET;
         if ((animationType == ANIMATE_INTO_POSITION_AND_RESIZE || external) && finalView != null) {
-            Bitmap crossFadeBitmap = createWidgetBitmap(info, finalView);
-            dragView.setCrossFadeBitmap(crossFadeBitmap);
+            Drawable crossFadeDrawable = createWidgetDrawable(info, finalView);
+            dragView.setCrossFadeDrawable(crossFadeDrawable);
             dragView.crossFade((int) (duration * 0.8f));
         } else if (isWidget && external) {
             scaleXY[0] = scaleXY[1] = Math.min(scaleXY[0],  scaleXY[1]);
