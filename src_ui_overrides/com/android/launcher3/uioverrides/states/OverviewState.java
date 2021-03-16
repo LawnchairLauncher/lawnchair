@@ -49,4 +49,11 @@ public class OverviewState extends LauncherState {
     public static OverviewState newModalTaskState(int id) {
         return new OverviewState(id);
     }
+
+    /**
+     *  New Overview substate that represents the overview in modal mode (one task shown on its own)
+     */
+    public static OverviewState newSplitSelectState(int id) {
+        return new OverviewState(id);
+    }
 }

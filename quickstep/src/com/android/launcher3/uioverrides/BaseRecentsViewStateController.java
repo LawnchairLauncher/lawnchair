@@ -32,6 +32,7 @@ import static com.android.launcher3.states.StateAnimationConfig.SKIP_OVERVIEW;
 import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_OFFSET;
 import static com.android.quickstep.views.RecentsView.RECENTS_GRID_PROGRESS;
 import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
+import static com.android.quickstep.views.RecentsView.TASK_PRIMARY_TRANSLATION;
 import static com.android.quickstep.views.RecentsView.TASK_SECONDARY_TRANSLATION;
 
 import android.util.FloatProperty;
@@ -44,6 +45,7 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.graphics.OverviewScrim;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.states.StateAnimationConfig;
+import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.quickstep.views.RecentsView;
 
 /**
@@ -105,7 +107,12 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
                 config.getInterpolator(ANIM_OVERVIEW_SCALE, LINEAR));
         setter.setFloat(mRecentsView, ADJACENT_PAGE_OFFSET, scaleAndOffset[1],
                 config.getInterpolator(ANIM_OVERVIEW_TRANSLATE_X, LINEAR));
-        setter.setFloat(mRecentsView, TASK_SECONDARY_TRANSLATION, 0f,
+        PagedOrientationHandler orientationHandler =
+                ((RecentsView) mLauncher.getOverviewPanel()).getPagedOrientationHandler();
+        FloatProperty taskViewsFloat = orientationHandler.getSplitSelectTaskOffset(
+                TASK_PRIMARY_TRANSLATION, TASK_SECONDARY_TRANSLATION, mLauncher.getDeviceProfile());
+        setter.setFloat(mRecentsView, taskViewsFloat,
+                toState.getOverviewSecondaryTranslation(mLauncher),
                 config.getInterpolator(ANIM_OVERVIEW_TRANSLATE_Y, LINEAR));
 
         setter.setFloat(mRecentsView, getContentAlphaProperty(), toState.overviewUi ? 1 : 0,

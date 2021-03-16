@@ -104,6 +104,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     public final AnimatedFloat recentsViewScale = new AnimatedFloat();
     public final AnimatedFloat fullScreenProgress = new AnimatedFloat();
     public final AnimatedFloat recentsViewSecondaryTranslation = new AnimatedFloat();
+    public final AnimatedFloat recentsViewPrimaryTranslation = new AnimatedFloat();
     public final AnimatedFloat gridProgress = new AnimatedFloat();
     private final ScrollState mScrollState = new ScrollState();
 
@@ -347,6 +348,8 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         mMatrix.postScale(recentsViewScale.value, recentsViewScale.value, mPivot.x, mPivot.y);
         mOrientationState.getOrientationHandler().setSecondary(mMatrix, MATRIX_POST_TRANSLATE,
                 recentsViewSecondaryTranslation.value);
+        mOrientationState.getOrientationHandler().set(mMatrix, MATRIX_POST_TRANSLATE,
+                recentsViewPrimaryTranslation.value);
         applyWindowToHomeRotation(mMatrix);
 
         // Crop rect is the inverse of thumbnail matrix

@@ -36,11 +36,16 @@ import androidx.annotation.RequiresApi;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
+import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.ResourceBasedOverride;
+import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
+import com.android.quickstep.TaskShortcutFactory.SplitSelectSystemShortcut;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
@@ -57,11 +62,18 @@ import java.util.List;
  */
 public class TaskOverlayFactory implements ResourceBasedOverride {
 
-    public static List<SystemShortcut> getEnabledShortcuts(TaskView taskView) {
+    public static List<SystemShortcut> getEnabledShortcuts(TaskView taskView,
+            DeviceProfile deviceProfile) {
         final ArrayList<SystemShortcut> shortcuts = new ArrayList<>();
         final BaseDraggingActivity activity = BaseActivity.fromContext(taskView.getContext());
         for (TaskShortcutFactory menuOption : MENU_OPTIONS) {
             SystemShortcut shortcut = menuOption.getShortcut(activity, taskView);
+            if (menuOption == TaskShortcutFactory.SPLIT_SCREEN &&
+                    FeatureFlags.ENABLE_SPLIT_SELECT.get()) {
+                addSplitOptions(shortcuts, activity, taskView, deviceProfile);
+                continue;
+            }
+
             if (shortcut != null) {
                 shortcuts.add(shortcut);
             }
@@ -89,6 +101,18 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
             }
         }
         return shortcuts;
+    }
+
+
+    public static void addSplitOptions(List<SystemShortcut> outShortcuts,
+            BaseDraggingActivity activity, TaskView taskView, DeviceProfile deviceProfile) {
+        PagedOrientationHandler orientationHandler =
+                taskView.getRecentsView().getPagedOrientationHandler();
+        List<SplitPositionOption> positions =
+                orientationHandler.getSplitPositionOptions(deviceProfile);
+        for (SplitPositionOption option : positions) {
+            outShortcuts.add(new SplitSelectSystemShortcut(activity, taskView, option));
+        }
     }
 
     public TaskOverlay createOverlay(TaskThumbnailView thumbnailView) {
