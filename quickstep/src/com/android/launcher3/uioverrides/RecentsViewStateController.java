@@ -17,11 +17,14 @@ package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.LauncherState.CLEAR_ALL_BUTTON;
 import static com.android.launcher3.LauncherState.OVERVIEW_ACTIONS;
+import static com.android.launcher3.LauncherState.OVERVIEW_SPLIT_SELECT;
+import static com.android.launcher3.LauncherState.SPLIT_PLACHOLDER_VIEW;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_ACTIONS_FADE;
 import static com.android.quickstep.views.RecentsView.CONTENT_ALPHA;
 import static com.android.quickstep.views.RecentsView.FULLSCREEN_PROGRESS;
 import static com.android.quickstep.views.RecentsView.TASK_MODALNESS;
+import static com.android.quickstep.views.SplitPlaceholderView.ALPHA_FLOAT;
 
 import android.annotation.TargetApi;
 import android.os.Build;
@@ -77,9 +80,24 @@ public final class RecentsViewStateController extends
                     AnimationSuccessListener.forRunnable(mRecentsView::resetTaskVisuals));
         }
 
+        // Create or dismiss split screen select animations
+        LauncherState currentState = mLauncher.getStateManager().getState();
+        if (isSplitSelectionState(toState) && !isSplitSelectionState(currentState)) {
+            builder.add(mRecentsView.createSplitSelectInitAnimation().buildAnim());
+        } else if (!isSplitSelectionState(toState) && isSplitSelectionState(currentState)) {
+            builder.add(mRecentsView.cancelSplitSelect(true).buildAnim());
+        }
+
         setAlphas(builder, config, toState);
         builder.setFloat(mRecentsView, FULLSCREEN_PROGRESS,
                 toState.getOverviewFullscreenProgress(), LINEAR);
+    }
+
+    /**
+     * @return true if {@param toState} is {@link LauncherState#OVERVIEW_SPLIT_SELECT}
+     */
+    private boolean isSplitSelectionState(@NonNull LauncherState toState) {
+        return toState == OVERVIEW_SPLIT_SELECT;
     }
 
     private void setAlphas(PropertySetter propertySetter, StateAnimationConfig config,
@@ -93,6 +111,11 @@ public final class RecentsViewStateController extends
         propertySetter.setFloat(mLauncher.getActionsView().getVisibilityAlpha(),
                 MultiValueAlpha.VALUE, overviewButtonAlpha, config.getInterpolator(
                         ANIM_OVERVIEW_ACTIONS_FADE, LINEAR));
+
+        float splitPlaceholderAlpha = state.areElementsVisible(mLauncher, SPLIT_PLACHOLDER_VIEW) ?
+                1 : 0;
+        propertySetter.setFloat(mRecentsView.getSplitPlaceholder(), ALPHA_FLOAT,
+                splitPlaceholderAlpha, LINEAR);
     }
 
     @Override

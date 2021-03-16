@@ -58,8 +58,10 @@ import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.util.RemoteFadeOutAnimationListener;
+import com.android.quickstep.util.SplitSelectStateController;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
+import com.android.quickstep.views.SplitPlaceholderView;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -215,7 +217,12 @@ public abstract class BaseQuickstepLauncher extends Launcher
 
         SysUINavigationMode.INSTANCE.get(this).updateMode();
         mActionsView = findViewById(R.id.overview_actions_view);
-        ((RecentsView) getOverviewPanel()).init(mActionsView);
+        SplitPlaceholderView splitPlaceholderView = findViewById(R.id.split_placeholder);
+        RecentsView overviewPanel = (RecentsView) getOverviewPanel();
+        splitPlaceholderView.init(
+                new SplitSelectStateController(SystemUiProxy.INSTANCE.get(this))
+        );
+        overviewPanel.init(mActionsView, splitPlaceholderView);
         mActionsView.updateVerticalMargin(SysUINavigationMode.getMode(this));
 
         addTaskbarIfNecessary();
