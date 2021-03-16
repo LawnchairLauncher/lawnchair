@@ -96,7 +96,7 @@ public class PinItemDragListener extends BaseItemDragListener {
 
         PendingItemDragHelper dragHelper = new PendingItemDragHelper(view);
         if (mRequest.getRequestType() == PinItemRequest.REQUEST_TYPE_APPWIDGET) {
-            dragHelper.setPreview(getPreview(mRequest));
+            dragHelper.setRemoteViewsPreview(getPreview(mRequest));
         }
         return dragHelper;
     }
