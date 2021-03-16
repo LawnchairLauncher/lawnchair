@@ -7,8 +7,9 @@ on:
       - 11-dev
 
 jobs:
-  set-up-environment:
+  build-debug-apk:
     runs-on: ubuntu-latest
+    needs: set-up-environment
     continue-on-error: true
     steps:
       - name: Check out repository
@@ -29,11 +30,6 @@ jobs:
           java-version: 11
       - name: Grant execution permission to Gradle Wrapper
         run: chmod +x gradlew
-  build-debug-apk:
-    runs-on: ubuntu-latest
-    needs: set-up-environment
-    continue-on-error: true
-    steps:
       - name: Build debug APK
         run: ./gradlew assembleLawnWithQuickstepDebug
       - name: Upload artifact
