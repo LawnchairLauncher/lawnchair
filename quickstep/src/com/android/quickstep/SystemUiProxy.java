@@ -62,6 +62,7 @@ public class SystemUiProxy implements ISystemUiProxy,
     private boolean mLastShelfVisible;
     private float mLastNavButtonAlpha;
     private boolean mLastNavButtonAnimate;
+    private boolean mHasNavButtonAlphaBeenSet = false;
 
     // TODO(141886704): Find a way to remove this
     private int mLastSystemUiStateFlags;
@@ -163,10 +164,12 @@ public class SystemUiProxy implements ISystemUiProxy,
     @Override
     public void setNavBarButtonAlpha(float alpha, boolean animate) {
         boolean changed = Float.compare(alpha, mLastNavButtonAlpha) != 0
-                || animate != mLastNavButtonAnimate;
+                || animate != mLastNavButtonAnimate
+                || !mHasNavButtonAlphaBeenSet;
         if (mSystemUiProxy != null && changed) {
             mLastNavButtonAlpha = alpha;
             mLastNavButtonAnimate = animate;
+            mHasNavButtonAlphaBeenSet = true;
             try {
                 mSystemUiProxy.setNavBarButtonAlpha(alpha, animate);
             } catch (RemoteException e) {
