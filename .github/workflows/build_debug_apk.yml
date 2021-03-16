@@ -7,18 +7,33 @@ on:
       - 11-dev
 
 jobs:
-  build-debug-apk:
+  set-up-environment:
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
-      - uses: actions/checkout@v2.3.4
+      - name: Check out repository
+        uses: actions/checkout@v2.3.4
         with:
           submodules: true
+      - name: Restore Gradle cache
+        uses: actions/cache@2.1.4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: ${{ runner.os }}-gradle-
       - name: Set up Java 11
         uses: actions/setup-java@v1.4.3
         with:
           java-version: 11
       - name: Grant execution permission to Gradle Wrapper
         run: chmod +x gradlew
+  build-debug-apk:
+    runs-on: ubuntu-latest
+    needs: set-up-environment
+    continue-on-error: true
+    steps:
       - name: Build debug APK
         run: ./gradlew assembleLawnWithQuickstepDebug
       - name: Upload artifact
@@ -26,3 +41,16 @@ jobs:
         with:
           name: Lawnchair
           path: build/outputs/apk/lawnWithQuickstep/debug/**.apk
+  send-notification:
+    runs-on: ubuntu-latest
+    needs: build-debug-apk
+    steps:
+      - uses: technote-space/workflow-conclusion-action@v2.1.5
+      - name: Send notification
+        uses: appleboy/telegram-action@v0.1.0
+        with:
+          to: ${{ secrets.TELEGRAM_CI_CHANNEL_ID }}
+          token: ${{ secrets.TELEGRAM_CI_BOT_TOKEN }}
+          document: build/outputs/apk/lawnWithQuickstep/debug/**.apk
+          args: |
+            Build ${{ github.run_id }} finished with status ‘${{ env.WORKFLOW_CONCLUSION_ACTION }}’.
