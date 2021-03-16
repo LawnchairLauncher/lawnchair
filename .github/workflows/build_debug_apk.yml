@@ -9,7 +9,6 @@ on:
 jobs:
   build-debug-apk:
     runs-on: ubuntu-latest
-    needs: set-up-environment
     continue-on-error: true
     steps:
       - name: Check out repository
