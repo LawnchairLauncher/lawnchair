@@ -246,11 +246,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             hideInput();
             return false;
         }
-        boolean shouldScroll = rv.shouldContainerScroll(ev, mLauncher.getDragLayer());
-        if (shouldScroll) {
-            hideInput();
-        }
-        return shouldScroll;
+        return rv.shouldContainerScroll(ev, mLauncher.getDragLayer());
     }
 
     @Override
