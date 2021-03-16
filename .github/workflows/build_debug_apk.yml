@@ -36,11 +36,8 @@ jobs:
         with:
           name: Lawnchair
           path: build/outputs/apk/lawnWithQuickstep/debug/**.apk
-  send-notification:
-    runs-on: ubuntu-latest
-    needs: build-debug-apk
-    steps:
-      - uses: technote-space/workflow-conclusion-action@v2.1.5
+      - name: Save Workflow status as environment variable
+        uses: technote-space/workflow-conclusion-action@v2.1.5
       - name: Send notification
         uses: appleboy/telegram-action@v0.1.0
         with:
