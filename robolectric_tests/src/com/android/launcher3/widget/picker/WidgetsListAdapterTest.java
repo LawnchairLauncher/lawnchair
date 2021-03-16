@@ -26,6 +26,8 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Process;
+import android.os.UserHandle;
 import android.view.LayoutInflater;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -37,6 +39,7 @@ import com.android.launcher3.icons.ComponentWithLabel;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.data.PackageItemInfo;
+import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.model.WidgetsListContentEntry;
@@ -67,6 +70,7 @@ public final class WidgetsListAdapterTest {
 
     private WidgetsListAdapter mAdapter;
     private InvariantDeviceProfile mTestProfile;
+    private UserHandle mUserHandle;
     private Context mContext;
 
     @Before
@@ -76,6 +80,7 @@ public final class WidgetsListAdapterTest {
         mTestProfile = new InvariantDeviceProfile();
         mTestProfile.numRows = 5;
         mTestProfile.numColumns = 5;
+        mUserHandle = Process.myUserHandle();
         mAdapter = new WidgetsListAdapter(mContext, mMockLayoutInflater, mMockWidgetCache,
                 mIconCache, null, null);
         mAdapter.registerAdapterDataObserver(mListener);
@@ -126,7 +131,8 @@ public final class WidgetsListAdapterTest {
         mAdapter.setWidgets(generateSampleMap(3));
 
         // WHEN com.google.test.1 header is expanded.
-        mAdapter.onHeaderClicked(/* isExpanded= */ true, TEST_PACKAGE_PLACEHOLDER + 1);
+        mAdapter.onHeaderClicked(/* showWidgets= */ true,
+                new PackageUserKey(TEST_PACKAGE_PLACEHOLDER + 1, mUserHandle));
 
         // THEN the visible entries list becomes:
         // [com.google.test0, com.google.test1, com.google.test1 content, com.google.test2]
@@ -143,7 +149,8 @@ public final class WidgetsListAdapterTest {
         // GIVEN test com.google.test1 is expanded.
         // Visible entries in the adapter are:
         // [com.google.test0, com.google.test1, com.google.test1 content]
-        mAdapter.onHeaderClicked(/* isExpanded= */ true, TEST_PACKAGE_PLACEHOLDER + 1);
+        mAdapter.onHeaderClicked(/* showWidgets= */ true,
+                new PackageUserKey(TEST_PACKAGE_PLACEHOLDER + 1, mUserHandle));
         Mockito.reset(mListener);
 
         // WHEN the adapter is updated with the same list of apps but com.google.test1 has 2 widgets
@@ -198,6 +205,30 @@ public final class WidgetsListAdapterTest {
         verify(mListener).onItemRangeInserted(/* positionStart= */ 2, /* itemCount= */ 1);
         // THEN E <> null = -1, E deleted from index 3 | [A, C, D]
         verify(mListener).onItemRangeRemoved(/* positionStart= */ 3, /* itemCount= */ 1);
+    }
+
+    @Test
+    public void setWidgetsOnSearch_expandedApp_shouldResetExpandedApp() {
+        // GIVEN a list of widgets entries:
+        // [com.google.test0, com.google.test0 content,
+        //  com.google.test1, com.google.test1 content,
+        //  com.google.test2, com.google.test2 content]
+        // The visible widgets entries: [com.google.test0, com.google.test1, com.google.test2].
+        ArrayList<WidgetsListBaseEntry> allEntries = generateSampleMap(2);
+        mAdapter.setWidgetsOnSearch(allEntries);
+        // GIVEN com.google.test.1 header is expanded. The visible entries list becomes:
+        // [com.google.test0, com.google.test1, com.google.test1 content, com.google.test2]
+        mAdapter.onHeaderClicked(/* showWidgets= */ true,
+                new PackageUserKey(TEST_PACKAGE_PLACEHOLDER + 1, mUserHandle));
+        Mockito.reset(mListener);
+
+        // WHEN same widget entries are set again.
+        mAdapter.setWidgetsOnSearch(allEntries);
+
+        // THEN expanded app is reset and the visible entries list becomes:
+        // [com.google.test0, com.google.test1, com.google.test2]
+        verify(mListener).onItemRangeChanged(eq(1), eq(1), isNull());
+        verify(mListener).onItemRangeRemoved(/* positionStart= */ 2, /* itemCount= */ 1);
     }
 
     /**

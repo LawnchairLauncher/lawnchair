@@ -56,11 +56,10 @@ public class AllAppsSectionDecorator extends RecyclerView.ItemDecoration {
                 SectionDecorationInfo sectionInfo = adapterItem.sectionDecorationInfo;
                 SectionDecorationHandler decorationHandler = sectionInfo.getDecorationHandler();
                 if (decorationHandler != null) {
-                    decorationHandler.extendBounds(view);
                     if (sectionInfo.isFocusedView()) {
                         decorationHandler.onFocusDraw(c, view);
                     } else {
-                        decorationHandler.onGroupDraw(c);
+                        decorationHandler.onGroupDraw(c, view);
                     }
                 }
             }
@@ -131,26 +130,13 @@ public class AllAppsSectionDecorator extends RecyclerView.ItemDecoration {
         }
 
         /**
-         * Extends current bounds to include the view.
-         */
-        public void extendBounds(View view) {
-            if (mBounds.isEmpty()) {
-                mBounds.set(view.getLeft(), view.getTop(), view.getRight(), view.getBottom());
-            } else {
-                mBounds.set(
-                        Math.min(mBounds.left, view.getLeft()),
-                        Math.min(mBounds.top, view.getTop()),
-                        Math.max(mBounds.right, view.getRight()),
-                        Math.max(mBounds.bottom, view.getBottom())
-                );
-            }
-        }
-
-        /**
          * Draw bounds onto canvas.
          */
-        public void onGroupDraw(Canvas canvas) {
+        public void onGroupDraw(Canvas canvas, View view) {
+            if (view == null) return;
+
             mPaint.setColor(mFillcolor);
+            mBounds.set(view.getLeft(), view.getTop(), view.getRight(), view.getBottom());
             onDraw(canvas);
         }
 
