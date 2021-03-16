@@ -34,11 +34,12 @@ import com.android.launcher3.WidgetPreviewLoader;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.recyclerview.ViewHolderBinder;
 import com.android.launcher3.util.LabelComparator;
+import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.widget.WidgetCell;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.model.WidgetsListContentEntry;
 import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
-import com.android.launcher3.widget.picker.WidgetsListHeaderViewHolderBinder.OnHeaderClickListener;
+import com.android.launcher3.widget.model.WidgetsListSearchHeaderEntry;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -62,8 +63,9 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     private static final boolean DEBUG = false;
 
     /** Uniquely identifies widgets list view type within the app. */
-    private static final int VIEW_TYPE_WIDGETS_LIST = R.layout.widgets_list_row_view;
-    private static final int VIEW_TYPE_WIDGETS_HEADER = R.layout.widgets_list_row_header;
+    private static final int VIEW_TYPE_WIDGETS_LIST = R.id.view_type_widgets_list;
+    private static final int VIEW_TYPE_WIDGETS_HEADER = R.id.view_type_widgets_header;
+    private static final int VIEW_TYPE_WIDGETS_SEARCH_HEADER = R.id.view_type_widgets_search_header;
 
     private final WidgetsDiffReporter mDiffReporter;
     private final SparseArray<ViewHolderBinder> mViewHolderBinders = new SparseArray<>();
@@ -73,11 +75,13 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
 
     private List<WidgetsListBaseEntry> mAllEntries = new ArrayList<>();
     private ArrayList<WidgetsListBaseEntry> mVisibleEntries = new ArrayList<>();
-    @Nullable private String mWidgetsContentVisiblePackage = null;
+    @Nullable private PackageUserKey mWidgetsContentVisiblePackageUserKey = null;
 
     private Predicate<WidgetsListBaseEntry> mHeaderAndSelectedContentFilter = entry ->
             entry instanceof WidgetsListHeaderEntry
-                    || entry.mPkgItem.packageName.equals(mWidgetsContentVisiblePackage);
+                    || entry instanceof WidgetsListSearchHeaderEntry
+                    || new PackageUserKey(entry.mPkgItem.packageName, entry.mPkgItem.user)
+                    .equals(mWidgetsContentVisiblePackageUserKey);
     @Nullable private Predicate<WidgetsListBaseEntry> mFilter = null;
 
     public WidgetsListAdapter(Context context, LayoutInflater layoutInflater,
@@ -87,8 +91,14 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
         mWidgetsListTableViewHolderBinder = new WidgetsListTableViewHolderBinder(context,
                 layoutInflater, iconClickListener, iconLongClickListener, widgetPreviewLoader);
         mViewHolderBinders.put(VIEW_TYPE_WIDGETS_LIST, mWidgetsListTableViewHolderBinder);
-        mViewHolderBinders.put(VIEW_TYPE_WIDGETS_HEADER,
-                new WidgetsListHeaderViewHolderBinder(layoutInflater, this::onHeaderClicked));
+        mViewHolderBinders.put(
+                VIEW_TYPE_WIDGETS_HEADER,
+                new WidgetsListHeaderViewHolderBinder(
+                        layoutInflater, /*onHeaderClickListener=*/this));
+        mViewHolderBinders.put(
+                VIEW_TYPE_WIDGETS_SEARCH_HEADER,
+                new WidgetsListSearchHeaderViewHolderBinder(
+                        layoutInflater, /*onHeaderClickListener=*/ this));
     }
 
     public void setFilter(Predicate<WidgetsListBaseEntry> filter) {
@@ -122,23 +132,40 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
         return mVisibleEntries.size();
     }
 
+    /** Returns all items that will be drawn in a recycler view. */
+    public List<WidgetsListBaseEntry> getItems() {
+        return mVisibleEntries;
+    }
+
     /** Gets the section name for {@link com.android.launcher3.views.RecyclerViewFastScroller}. */
     public String getSectionName(int pos) {
         return mVisibleEntries.get(pos).mTitleSectionName;
     }
 
-    /** Updates the widget list. */
+    /** Updates the widget list based on {@code tempEntries}. */
     public void setWidgets(List<WidgetsListBaseEntry> tempEntries) {
         mAllEntries = tempEntries.stream().sorted(mRowComparator)
                 .collect(Collectors.toList());
         updateVisibleEntries();
     }
 
+    /** Updates the widget list based on {@code searchResults}. */
+    public void setWidgetsOnSearch(List<WidgetsListBaseEntry> searchResults) {
+        // Forget the expanded package every time widget list is refreshed in search mode.
+        mWidgetsContentVisiblePackageUserKey = null;
+        setWidgets(searchResults);
+    }
+
     private void updateVisibleEntries() {
         mAllEntries.forEach(entry -> {
             if (entry instanceof WidgetsListHeaderEntry) {
                 ((WidgetsListHeaderEntry) entry).setIsWidgetListShown(
-                        entry.mPkgItem.packageName.equals(mWidgetsContentVisiblePackage));
+                        new PackageUserKey(entry.mPkgItem.packageName, entry.mPkgItem.user)
+                                .equals(mWidgetsContentVisiblePackageUserKey));
+            } else if (entry instanceof WidgetsListSearchHeaderEntry) {
+                ((WidgetsListSearchHeaderEntry) entry).setIsWidgetListShown(
+                        new PackageUserKey(entry.mPkgItem.packageName, entry.mPkgItem.user)
+                                .equals(mWidgetsContentVisiblePackageUserKey));
             }
         });
         List<WidgetsListBaseEntry> newVisibleEntries = mAllEntries.stream()
@@ -189,17 +216,19 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
             return VIEW_TYPE_WIDGETS_LIST;
         } else if (entry instanceof WidgetsListHeaderEntry) {
             return VIEW_TYPE_WIDGETS_HEADER;
+        } else if (entry instanceof WidgetsListSearchHeaderEntry) {
+            return VIEW_TYPE_WIDGETS_SEARCH_HEADER;
         }
         throw new UnsupportedOperationException("ViewHolderBinder not found for " + entry);
     }
 
     @Override
-    public void onHeaderClicked(boolean showWidgets, String expandedPackage) {
+    public void onHeaderClicked(boolean showWidgets, PackageUserKey packageUserKey) {
         if (showWidgets) {
-            mWidgetsContentVisiblePackage = expandedPackage;
+            mWidgetsContentVisiblePackageUserKey = packageUserKey;
             updateVisibleEntries();
-        } else if (expandedPackage.equals(mWidgetsContentVisiblePackage)) {
-            mWidgetsContentVisiblePackage = null;
+        } else if (packageUserKey.equals(mWidgetsContentVisiblePackageUserKey)) {
+            mWidgetsContentVisiblePackageUserKey = null;
             updateVisibleEntries();
         }
     }

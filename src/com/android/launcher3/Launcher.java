@@ -113,7 +113,6 @@ import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
-import com.android.launcher3.allapps.search.LiveSearchManager;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
@@ -277,8 +276,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
     private Configuration mOldConfig;
 
-    private LiveSearchManager mLiveSearchManager;
-
     @Thunk
     Workspace mWorkspace;
     @Thunk
@@ -401,8 +398,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         mAllAppsController = new AllAppsTransitionController(this);
         mStateManager = new StateManager<>(this, NORMAL);
 
-        mLiveSearchManager = new LiveSearchManager(this);
-
         mOnboardingPrefs = createOnboardingPrefs(mSharedPrefs);
 
         mAppWidgetManager = new WidgetManagerHelper(this);
@@ -488,10 +483,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         if (Utilities.ATLEAST_R) {
             getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         }
-    }
-
-    public LiveSearchManager getLiveSearchManager() {
-        return mLiveSearchManager;
     }
 
     protected LauncherOverlayManager getDefaultOverlay() {
@@ -1594,7 +1585,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
         mOverlayManager.onActivityDestroyed(this);
         mUserChangedCallbackCloseable.close();
-        mLiveSearchManager.stop();
     }
 
     public LauncherAccessibilityDelegate getAccessibilityDelegate() {

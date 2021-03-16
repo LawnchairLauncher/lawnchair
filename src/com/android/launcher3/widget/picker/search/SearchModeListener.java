@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 The Android Open Source Project
+ * Copyright (C) 2021 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,27 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.search;
+package com.android.launcher3.widget.picker.search;
+
+import com.android.launcher3.widget.model.WidgetsListBaseEntry;
+
+import java.util.List;
 
 /**
- * An interface for handling search.
- *
- * @param <T> Search Result type
+ * A listener to help with widgets picker search.
  */
-public interface SearchAlgorithm<T> {
+public interface SearchModeListener {
+    /**
+     * Notifies the subscriber when user enters widget picker search mode.
+     */
+    void enterSearchMode();
 
     /**
-     * Performs search and sends the result to {@link SearchCallback}.
+     * Notifies the subscriber when user exits widget picker search mode.
      */
-    void doSearch(String query, SearchCallback<T> callback);
+    void exitSearchMode();
 
     /**
-     * Cancels any active request.
+     * Notifies the subscriber with search results.
      */
-    void cancel(boolean interruptActiveRequests);
-
-    /**
-     * Cleans up after search is no longer needed.
-     */
-    default void destroy() {};
+    void onSearchResults(List<WidgetsListBaseEntry> entries);
 }
