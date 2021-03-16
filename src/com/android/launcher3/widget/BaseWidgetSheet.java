@@ -108,17 +108,18 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView
 
         // If the ImageView doesn't have a drawable yet, the widget preview hasn't been loaded and
         // we abort the drag.
-        if (image.getBitmap() == null) {
+        if (image.getDrawable() == null) {
             return false;
         }
 
         PendingItemDragHelper dragHelper = new PendingItemDragHelper(v);
-        dragHelper.setPreview(v.getPreview());
+        dragHelper.setRemoteViewsPreview(v.getPreview());
+        dragHelper.setAppWidgetHostViewPreview(v.getAppWidgetHostViewPreview());
 
         int[] loc = new int[2];
         getPopupContainer().getLocationInDragLayer(image, loc);
 
-        dragHelper.startDrag(image.getBitmapBounds(), image.getBitmap().getWidth(),
+        dragHelper.startDrag(image.getBitmapBounds(), image.getDrawable().getIntrinsicWidth(),
                 image.getWidth(), new Point(loc[0], loc[1]), this, new DragOptions());
         close(true);
         return true;
