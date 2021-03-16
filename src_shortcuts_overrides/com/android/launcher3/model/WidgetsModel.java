@@ -132,7 +132,7 @@ public class WidgetsModel {
                 widgetsAndShortcuts.add(new WidgetItem(info, app.getIconCache(), pm));
                 updatedItems.add(info);
             }
-            setWidgetsAndShortcuts(widgetsAndShortcuts, app);
+            setWidgetsAndShortcuts(widgetsAndShortcuts, app, packageUser);
         } catch (Exception e) {
             if (!FeatureFlags.IS_STUDIO_BUILD && Utilities.isBinderSizeError(e)) {
                 // the returned value may be incomplete and will not be refreshed until the next
@@ -149,7 +149,7 @@ public class WidgetsModel {
     }
 
     private synchronized void setWidgetsAndShortcuts(ArrayList<WidgetItem> rawWidgetsShortcuts,
-            LauncherAppState app) {
+            LauncherAppState app, @Nullable PackageUserKey packageUser) {
         if (DEBUG) {
             Log.d(TAG, "addWidgetsAndShortcuts, widgetsShortcuts#=" + rawWidgetsShortcuts.size());
         }
@@ -158,8 +158,12 @@ public class WidgetsModel {
         // {@link mPackageItemInfos} to locate the key to be used for {@link #mWidgetsList}
         HashMap<PackageUserKey, PackageItemInfo> tmpPackageItemInfos = new HashMap<>();
 
-        // clear the lists.
-        mWidgetsList.clear();
+        // Clear the lists only if this is an update on all widgets and shortcuts. If packageUser
+        // isn't null, only updates the shortcuts and widgets for the app represented in
+        // packageUser.
+        if (packageUser == null) {
+            mWidgetsList.clear();
+        }
         // add and update.
         mWidgetsList.putAll(rawWidgetsShortcuts.stream()
                 .filter(new WidgetValidityCheck(app))
