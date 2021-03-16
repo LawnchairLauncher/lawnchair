@@ -65,6 +65,7 @@ public class TaskbarVisibilityController {
     }
 
     protected void cleanup() {
+        setNavBarButtonAlpha(1f);
     }
 
     protected AnimatedFloat getTaskbarVisibilityForLauncherState() {
@@ -93,6 +94,14 @@ public class TaskbarVisibilityController {
         float alphaDueToLauncher = Math.max(mTaskbarBackgroundAlpha.value,
                 mTaskbarVisibilityAlphaForLauncherState.value);
         float alphaDueToOther = mTaskbarVisibilityAlphaForIme.value;
-        mTaskbarCallbacks.updateTaskbarVisibilityAlpha(alphaDueToLauncher * alphaDueToOther);
+        float taskbarAlpha = alphaDueToLauncher * alphaDueToOther;
+        mTaskbarCallbacks.updateTaskbarVisibilityAlpha(taskbarAlpha);
+
+        // Make the nav bar invisible if taskbar is visible.
+        setNavBarButtonAlpha(1f - taskbarAlpha);
+    }
+
+    private void setNavBarButtonAlpha(float navBarAlpha) {
+        SystemUiProxy.INSTANCE.get(mLauncher).setNavBarButtonAlpha(navBarAlpha, false);
     }
 }
