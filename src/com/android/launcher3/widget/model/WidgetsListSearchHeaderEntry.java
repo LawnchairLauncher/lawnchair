@@ -20,20 +20,15 @@ import com.android.launcher3.model.data.PackageItemInfo;
 
 import java.util.List;
 
-/** An information holder for an app which has widgets or/and shortcuts. */
-public final class WidgetsListHeaderEntry extends WidgetsListBaseEntry {
-
-    public final int widgetsCount;
-    public final int shortcutsCount;
+/** An information holder for an app which has widgets or/and shortcuts, to be shown in search. */
+public final class WidgetsListSearchHeaderEntry extends WidgetsListBaseEntry {
 
     private boolean mIsWidgetListShown = false;
     private boolean mHasEntryUpdated = false;
 
-    public WidgetsListHeaderEntry(PackageItemInfo pkgItem, String titleSectionName,
+    public WidgetsListSearchHeaderEntry(PackageItemInfo pkgItem, String titleSectionName,
             List<WidgetItem> items) {
         super(pkgItem, titleSectionName, items);
-        widgetsCount = (int) items.stream().filter(item -> item.widgetInfo != null).count();
-        shortcutsCount = Math.max(0, items.size() - widgetsCount);
     }
 
     /** Sets if the widgets list associated with this header is shown. */
@@ -58,19 +53,19 @@ public final class WidgetsListHeaderEntry extends WidgetsListBaseEntry {
 
     @Override
     public String toString() {
-        return "Header:" + mPkgItem.packageName + ":" + mWidgets.size();
+        return "SearchHeader:" + mPkgItem.packageName + ":" + mWidgets.size();
     }
 
     @Override
     @Rank
     public int getRank() {
-        return RANK_WIDGETS_LIST_HEADER;
+        return RANK_WIDGETS_LIST_SEARCH_HEADER;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof WidgetsListHeaderEntry)) return false;
-        WidgetsListHeaderEntry otherEntry = (WidgetsListHeaderEntry) obj;
+        if (!(obj instanceof WidgetsListSearchHeaderEntry)) return false;
+        WidgetsListSearchHeaderEntry otherEntry = (WidgetsListSearchHeaderEntry) obj;
         return mWidgets.equals(otherEntry.mWidgets) && mPkgItem.equals(otherEntry.mPkgItem)
                 && mTitleSectionName.equals(otherEntry.mTitleSectionName);
     }

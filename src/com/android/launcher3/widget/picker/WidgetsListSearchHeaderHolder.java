@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 The Android Open Source Project
+ * Copyright (C) 2021 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,27 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.search;
+package com.android.launcher3.widget.picker;
+
+import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 /**
- * An interface for handling search.
- *
- * @param <T> Search Result type
+ * A {@link ViewHolder} for {@link WidgetsListHeader} of an app, which renders the app icon, the app
+ * name, label and a button for showing / hiding widgets.
  */
-public interface SearchAlgorithm<T> {
+public final class WidgetsListSearchHeaderHolder extends ViewHolder {
+    final WidgetsListHeader mWidgetsListHeader;
 
-    /**
-     * Performs search and sends the result to {@link SearchCallback}.
-     */
-    void doSearch(String query, SearchCallback<T> callback);
+    public WidgetsListSearchHeaderHolder(WidgetsListHeader view) {
+        super(view);
 
-    /**
-     * Cancels any active request.
-     */
-    void cancel(boolean interruptActiveRequests);
-
-    /**
-     * Cleans up after search is no longer needed.
-     */
-    default void destroy() {};
+        mWidgetsListHeader = view;
+    }
 }

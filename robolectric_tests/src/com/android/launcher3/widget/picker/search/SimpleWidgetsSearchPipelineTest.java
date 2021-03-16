@@ -19,8 +19,6 @@ package com.android.launcher3.widget.picker.search;
 import static android.os.Looper.getMainLooper;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.robolectric.Shadows.shadowOf;
@@ -40,6 +38,7 @@ import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.model.WidgetsListContentEntry;
 import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
+import com.android.launcher3.widget.model.WidgetsListSearchHeaderEntry;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -56,9 +55,6 @@ import java.util.List;
 
 @RunWith(RobolectricTestRunner.class)
 public class SimpleWidgetsSearchPipelineTest {
-    private static final SimpleWidgetsSearchPipeline.StringMatcher MATCHER =
-            SimpleWidgetsSearchPipeline.StringMatcher.getInstance();
-
     @Mock private IconCache mIconCache;
 
     private InvariantDeviceProfile mTestProfile;
@@ -73,9 +69,10 @@ public class SimpleWidgetsSearchPipelineTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        doAnswer(invocation -> ((ComponentWithLabel) invocation.getArgument(0))
-                .getComponent().getPackageName())
-                .when(mIconCache).getTitleNoCache(any());
+        doAnswer(invocation -> {
+            ComponentWithLabel componentWithLabel = (ComponentWithLabel) invocation.getArgument(0);
+            return componentWithLabel.getComponent().getShortClassName();
+        }).when(mIconCache).getTitleNoCache(any());
         mTestProfile = new InvariantDeviceProfile();
         mTestProfile.numRows = 5;
         mTestProfile.numColumns = 5;
@@ -85,54 +82,60 @@ public class SimpleWidgetsSearchPipelineTest {
                 createWidgetsHeaderEntry("com.example.android.Calendar", "Calendar", 2);
         mCalendarContentEntry =
                 createWidgetsContentEntry("com.example.android.Calendar", "Calendar", 2);
-        mCameraHeaderEntry = createWidgetsHeaderEntry("com.example.android.Camera", "Camera", 5);
-        mCameraContentEntry = createWidgetsContentEntry("com.example.android.Camera", "Camera", 5);
+        mCameraHeaderEntry = createWidgetsHeaderEntry("com.example.android.Camera", "Camera", 11);
+        mCameraContentEntry = createWidgetsContentEntry("com.example.android.Camera", "Camera", 11);
         mClockHeaderEntry = createWidgetsHeaderEntry("com.example.android.Clock", "Clock", 3);
         mClockContentEntry = createWidgetsContentEntry("com.example.android.Clock", "Clock", 3);
     }
 
     @Test
-    public void query_shouldInformCallbackWithResultsMatchedOnAppName() {
+    public void query_shouldMatchOnAppName() {
         SimpleWidgetsSearchPipeline pipeline = new SimpleWidgetsSearchPipeline(
                 List.of(mCalendarHeaderEntry, mCalendarContentEntry, mCameraHeaderEntry,
                         mCameraContentEntry, mClockHeaderEntry, mClockContentEntry));
 
         pipeline.query("Ca", results ->
-                assertEquals(results, List.of(mCalendarHeaderEntry, mCalendarContentEntry,
-                        mCameraHeaderEntry, mCameraContentEntry)));
+                assertEquals(results,
+                        List.of(
+                                new WidgetsListSearchHeaderEntry(
+                                        mCalendarHeaderEntry.mPkgItem,
+                                        mCalendarHeaderEntry.mTitleSectionName,
+                                        mCalendarHeaderEntry.mWidgets),
+                                mCalendarContentEntry,
+                                new WidgetsListSearchHeaderEntry(
+                                        mCameraHeaderEntry.mPkgItem,
+                                        mCameraHeaderEntry.mTitleSectionName,
+                                        mCameraHeaderEntry.mWidgets),
+                                mCameraContentEntry)));
         shadowOf(getMainLooper()).idle();
     }
 
     @Test
-    public void testMatches() {
-        assertTrue(MATCHER.matches("q", "Q"));
-        assertTrue(MATCHER.matches("q", "  Q"));
-        assertTrue(MATCHER.matches("e", "elephant"));
-        assertTrue(MATCHER.matches("eL", "Elephant"));
-        assertTrue(MATCHER.matches("elephant ", "elephant"));
-        assertTrue(MATCHER.matches("whitec", "white cow"));
-        assertTrue(MATCHER.matches("white  c", "white cow"));
-        assertTrue(MATCHER.matches("white ", "white cow"));
-        assertTrue(MATCHER.matches("white c", "white cow"));
-        assertTrue(MATCHER.matches("电", "电子邮件"));
-        assertTrue(MATCHER.matches("电子", "电子邮件"));
-        assertTrue(MATCHER.matches("다", "다운로드"));
-        assertTrue(MATCHER.matches("드", "드라이브"));
-        assertTrue(MATCHER.matches("åbç", "abc"));
-        assertTrue(MATCHER.matches("ål", "Alpha"));
+    public void query_shouldMatchOnWidgetLabel() {
+        SimpleWidgetsSearchPipeline pipeline = new SimpleWidgetsSearchPipeline(
+                List.of(mCalendarHeaderEntry, mCalendarContentEntry, mCameraHeaderEntry,
+                        mCameraContentEntry));
 
-        assertFalse(MATCHER.matches("phant", "elephant"));
-        assertFalse(MATCHER.matches("elephants", "elephant"));
-        assertFalse(MATCHER.matches("cow", "white cow"));
-        assertFalse(MATCHER.matches("cow", "whiteCow"));
-        assertFalse(MATCHER.matches("dog", "cats&Dogs"));
-        assertFalse(MATCHER.matches("ba", "Bot"));
-        assertFalse(MATCHER.matches("ba", "bot"));
-        assertFalse(MATCHER.matches("子", "电子邮件"));
-        assertFalse(MATCHER.matches("邮件", "电子邮件"));
-        assertFalse(MATCHER.matches("ㄷ", "다운로드 드라이브"));
-        assertFalse(MATCHER.matches("ㄷㄷ", "다운로드 드라이브"));
-        assertFalse(MATCHER.matches("åç", "abc"));
+        pipeline.query("Widget1", results ->
+                assertEquals(results,
+                        List.of(
+                                new WidgetsListSearchHeaderEntry(
+                                        mCalendarHeaderEntry.mPkgItem,
+                                        mCalendarHeaderEntry.mTitleSectionName,
+                                        mCalendarHeaderEntry.mWidgets.subList(1, 2)),
+                                new WidgetsListContentEntry(
+                                        mCalendarHeaderEntry.mPkgItem,
+                                        mCalendarHeaderEntry.mTitleSectionName,
+                                        mCalendarHeaderEntry.mWidgets.subList(1, 2)),
+                                new WidgetsListSearchHeaderEntry(
+                                        mCameraHeaderEntry.mPkgItem,
+                                        mCameraHeaderEntry.mTitleSectionName,
+                                        mCameraHeaderEntry.mWidgets.subList(1, 3)),
+                                new WidgetsListContentEntry(
+                                        mCameraHeaderEntry.mPkgItem,
+                                        mCameraHeaderEntry.mTitleSectionName,
+                                        mCameraHeaderEntry.mWidgets.subList(1, 3)))));
+        shadowOf(getMainLooper()).idle();
     }
 
     private WidgetsListHeaderEntry createWidgetsHeaderEntry(String packageName, String appName,

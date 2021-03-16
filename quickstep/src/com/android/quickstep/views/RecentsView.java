@@ -1625,12 +1625,12 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         float clearAllShorterRowCompensation =
                 mIsRtl ? -shorterRowCompensation : shorterRowCompensation;
 
-        // If the total width is shorter than one task's width, move ClearAllButton further away
+        // If the total width is shorter than one grid's width, move ClearAllButton further away
         // accordingly.
         float clearAllShortTotalCompensation = 0;
         float longRowWidth = Math.max(topRowWidth, bottomRowWidth);
-        if (longRowWidth < mTaskWidth) {
-            float shortTotalCompensation = mTaskWidth - longRowWidth;
+        if (longRowWidth < mLastComputedGridSize.width()) {
+            float shortTotalCompensation = mLastComputedGridSize.width() - longRowWidth;
             clearAllShortTotalCompensation =
                     mIsRtl ? -shortTotalCompensation : shortTotalCompensation;
         }
