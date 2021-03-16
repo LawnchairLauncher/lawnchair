@@ -77,6 +77,15 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
         return mCurrentStableState;
     }
 
+    @Override
+    public String toString() {
+        return " StateManager(mLastStableState:" + mLastStableState
+                + ", mCurrentStableState:" + mCurrentStableState
+                + ", mState:" + mState
+                + ", mRestState:" + mRestState
+                + ", isInTransition:" + (mConfig.currentAnimation != null) + ")";
+    }
+
     public void dump(String prefix, PrintWriter writer) {
         writer.println(prefix + "StateManager:");
         writer.println(prefix + "\tmLastStableState:" + mLastStableState);
