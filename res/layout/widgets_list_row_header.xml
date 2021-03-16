@@ -19,7 +19,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
-    android:paddingVertical="20dp"
+    android:paddingVertical="@dimen/widget_list_header_view_vertical_padding"
     android:orientation="horizontal">
 
     <ImageView
@@ -52,6 +52,8 @@
             android:id="@+id/app_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
             tools:text="m widgets, n shortcuts" />
 
     </LinearLayout>

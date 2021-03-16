@@ -25,6 +25,7 @@ import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.model.WidgetsListContentEntry;
 import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
+import com.android.launcher3.widget.model.WidgetsListSearchHeaderEntry;
 import com.android.launcher3.widget.picker.WidgetsListAdapter.WidgetListBaseRowEntryComparator;
 
 import java.util.ArrayList;
@@ -113,7 +114,7 @@ public class WidgetsDiffReporter {
                 // or did the header view changed due to user interactions?
                 // or did the widget size and desc, span, etc change?
                 if (!isSamePackageItemInfo(orgRowEntry.mPkgItem, newRowEntry.mPkgItem)
-                        || hasHeaderUpdated(newRowEntry)
+                        || hasHeaderUpdated(orgRowEntry, newRowEntry)
                         || hasWidgetsListChanged(orgRowEntry, newRowEntry)) {
                     index = currentEntries.indexOf(orgRowEntry);
                     currentEntries.set(index, newRowEntry);
@@ -174,12 +175,16 @@ public class WidgetsDiffReporter {
      * Returns {@code true} if {@code newRow} is {@link WidgetsListHeaderEntry} and its content has
      * been changed due to user interactions.
      */
-    private boolean hasHeaderUpdated(WidgetsListBaseEntry newRow) {
-        if (!(newRow instanceof WidgetsListHeaderEntry)) {
-            return false;
+    private boolean hasHeaderUpdated(WidgetsListBaseEntry curRow, WidgetsListBaseEntry newRow) {
+        if (newRow instanceof WidgetsListHeaderEntry && curRow instanceof WidgetsListHeaderEntry) {
+            return ((WidgetsListHeaderEntry) newRow).hasEntryUpdated() || !curRow.equals(newRow);
         }
-        WidgetsListHeaderEntry newRowEntry = (WidgetsListHeaderEntry) newRow;
-        return newRowEntry.hasEntryUpdated();
+        if (newRow instanceof WidgetsListSearchHeaderEntry
+                && curRow instanceof WidgetsListSearchHeaderEntry) {
+            return ((WidgetsListSearchHeaderEntry) newRow).hasEntryUpdated()
+                    || !curRow.equals(newRow);
+        }
+        return false;
     }
 
     private boolean isSamePackageItemInfo(PackageItemInfo curInfo, PackageItemInfo newInfo) {
