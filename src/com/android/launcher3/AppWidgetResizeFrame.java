@@ -20,7 +20,6 @@ import android.util.SizeF;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 
@@ -139,10 +138,10 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        ViewGroup content = (ViewGroup) getChildAt(0);
-        for (int i = 0; i < HANDLE_COUNT; i ++) {
-            mDragHandles[i] = content.getChildAt(i);
-        }
+        mDragHandles[INDEX_LEFT] = findViewById(R.id.widget_resize_left_handle);
+        mDragHandles[INDEX_TOP] = findViewById(R.id.widget_resize_top_handle);
+        mDragHandles[INDEX_RIGHT] = findViewById(R.id.widget_resize_right_handle);
+        mDragHandles[INDEX_BOTTOM] = findViewById(R.id.widget_resize_bottom_handle);
     }
 
     @Override
