@@ -140,6 +140,9 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_OVERVIEW_SELECTIONS = new DeviceFlag(
             "ENABLE_OVERVIEW_SELECTIONS", true, "Show Select Mode button in Overview Actions");
 
+    public static final BooleanFlag ENABLE_WIDGETS_PICKER_AIAI_SEARCH = new DeviceFlag(
+            "ENABLE_WIDGETS_PICKER_AIAI_SEARCH", false, "Enable AiAi search in the widgets picker");
+
     public static final BooleanFlag ENABLE_OVERVIEW_SHARE = getDebugFlag(
             "ENABLE_OVERVIEW_SHARE", false, "Show Share button in Overview Actions");
 
