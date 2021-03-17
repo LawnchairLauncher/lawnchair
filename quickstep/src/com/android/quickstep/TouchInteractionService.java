@@ -24,11 +24,6 @@ import static com.android.launcher3.config.FeatureFlags.ASSISTANT_GIVES_LAUNCHER
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.quickstep.GestureState.DEFAULT_STATE;
 import static com.android.quickstep.util.NavigationModeFeatureFlag.LIVE_TILE;
-import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SHELL_ONE_HANDED;
-import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SHELL_PIP;
-import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SHELL_SHELL_TRANSITIONS;
-import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SHELL_SPLIT_SCREEN;
-import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SHELL_STARTING_WINDOW;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SYSUI_PROXY;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_TRACING_ENABLED;
 
@@ -106,11 +101,6 @@ import com.android.systemui.shared.system.InputChannelCompat.InputEventReceiver;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.InputMonitorCompat;
 import com.android.systemui.shared.tracing.ProtoTraceable;
-import com.android.wm.shell.onehanded.IOneHanded;
-import com.android.wm.shell.pip.IPip;
-import com.android.wm.shell.splitscreen.ISplitScreen;
-import com.android.wm.shell.startingsurface.IStartingWindow;
-import com.android.wm.shell.transition.IShellTransitions;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -150,18 +140,8 @@ public class TouchInteractionService extends Service implements PluginListener<O
         public void onInitialize(Bundle bundle) {
             ISystemUiProxy proxy = ISystemUiProxy.Stub.asInterface(
                     bundle.getBinder(KEY_EXTRA_SYSUI_PROXY));
-            IPip pip = IPip.Stub.asInterface(bundle.getBinder(KEY_EXTRA_SHELL_PIP));
-            ISplitScreen splitscreen = ISplitScreen.Stub.asInterface(bundle.getBinder(
-                    KEY_EXTRA_SHELL_SPLIT_SCREEN));
-            IOneHanded onehanded = IOneHanded.Stub.asInterface(
-                    bundle.getBinder(KEY_EXTRA_SHELL_ONE_HANDED));
-            IShellTransitions shellTransitions = IShellTransitions.Stub.asInterface(
-                    bundle.getBinder(KEY_EXTRA_SHELL_SHELL_TRANSITIONS));
-            IStartingWindow startingWindow = IStartingWindow.Stub.asInterface(
-                    bundle.getBinder(KEY_EXTRA_SHELL_STARTING_WINDOW));
             MAIN_EXECUTOR.execute(() -> {
-                SystemUiProxy.INSTANCE.get(TouchInteractionService.this).setProxy(proxy, pip,
-                        splitscreen, onehanded, shellTransitions, startingWindow);
+                SystemUiProxy.INSTANCE.get(TouchInteractionService.this).setProxy(proxy);
                 TouchInteractionService.this.initInputMonitor();
                 preloadOverview(true /* fromInit */);
                 mDeviceState.runOnUserUnlocked(() -> {
@@ -441,7 +421,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
         }
         disposeEventHandlers();
         mDeviceState.destroy();
-        SystemUiProxy.INSTANCE.get(this).clearProxy();
+        SystemUiProxy.INSTANCE.get(this).setProxy(null);
         ProtoTracer.INSTANCE.get(this).stop();
         ProtoTracer.INSTANCE.get(this).remove(this);
 

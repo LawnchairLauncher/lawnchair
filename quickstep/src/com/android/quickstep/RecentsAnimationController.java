@@ -149,10 +149,14 @@ public class RecentsAnimationController {
      * accordingly. This should be called before `finish`
      * @param taskId for which the leash should be updated
      * @param destinationBounds bounds of the final PiP window
+     * @param windowCrop bounds to crop as part of final transform.
+     * @param float9 An array of 9 floats to be used as matrix transform.
      */
-    public void setFinishTaskBounds(int taskId, Rect destinationBounds) {
+    public void setFinishTaskBounds(int taskId, Rect destinationBounds, Rect windowCrop,
+            float[] float9) {
         UI_HELPER_EXECUTOR.execute(
-                () -> mController.setFinishTaskBounds(taskId, destinationBounds));
+                () -> mController.setFinishTaskBounds(taskId, destinationBounds, windowCrop,
+                        float9));
     }
 
     /**

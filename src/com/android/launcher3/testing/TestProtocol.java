@@ -32,6 +32,7 @@ public final class TestProtocol {
     public static final int ALL_APPS_STATE_ORDINAL = 5;
     public static final int BACKGROUND_APP_STATE_ORDINAL = 6;
     public static final int HINT_STATE_ORDINAL = 7;
+    public static final int OVERVIEW_SPLIT_SELECT_ORDINAL = 8;
     public static final String TAPL_EVENTS_TAG = "TaplEvents";
     public static final String SEQUENCE_MAIN = "Main";
     public static final String SEQUENCE_TIS = "TIS";
@@ -55,6 +56,8 @@ public final class TestProtocol {
                 return "Background";
             case HINT_STATE_ORDINAL:
                 return "Hint";
+            case OVERVIEW_SPLIT_SELECT_ORDINAL:
+                return "OverviewSplitSelect";
             default:
                 return "Unknown";
         }

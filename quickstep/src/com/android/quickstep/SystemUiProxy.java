@@ -35,17 +35,12 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 import com.android.launcher3.util.MainThreadInitializedObject;
+import com.android.systemui.shared.recents.IPinnedStackAnimationListener;
+import com.android.systemui.shared.recents.ISplitScreenListener;
+import com.android.systemui.shared.recents.IStartingWindowListener;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.RemoteTransitionCompat;
-import com.android.wm.shell.onehanded.IOneHanded;
-import com.android.wm.shell.pip.IPip;
-import com.android.wm.shell.pip.IPipAnimationListener;
-import com.android.wm.shell.splitscreen.ISplitScreen;
-import com.android.wm.shell.splitscreen.ISplitScreenListener;
-import com.android.wm.shell.startingsurface.IStartingWindow;
-import com.android.wm.shell.startingsurface.IStartingWindowListener;
-import com.android.wm.shell.transition.IShellTransitions;
 
 /**
  * Holds the reference to SystemUI.
@@ -58,13 +53,8 @@ public class SystemUiProxy implements ISystemUiProxy,
             new MainThreadInitializedObject<>(SystemUiProxy::new);
 
     private ISystemUiProxy mSystemUiProxy;
-    private IPip mPip;
-    private ISplitScreen mSplitScreen;
-    private IOneHanded mOneHanded;
-    private IShellTransitions mShellTransitions;
-    private IStartingWindow mStartingWindow;
     private final DeathRecipient mSystemUiProxyDeathRecipient = () -> {
-        MAIN_EXECUTOR.execute(() -> clearProxy());
+        MAIN_EXECUTOR.execute(() -> setProxy(null));
     };
 
     // Used to dedupe calls to SystemUI
@@ -72,6 +62,7 @@ public class SystemUiProxy implements ISystemUiProxy,
     private boolean mLastShelfVisible;
     private float mLastNavButtonAlpha;
     private boolean mLastNavButtonAnimate;
+    private boolean mHasNavButtonAlphaBeenSet = false;
 
     // TODO(141886704): Find a way to remove this
     private int mLastSystemUiStateFlags;
@@ -92,21 +83,10 @@ public class SystemUiProxy implements ISystemUiProxy,
         return null;
     }
 
-    public void setProxy(ISystemUiProxy proxy, IPip pip, ISplitScreen splitScreen,
-            IOneHanded oneHanded, IShellTransitions shellTransitions,
-            IStartingWindow startingWindow) {
+    public void setProxy(ISystemUiProxy proxy) {
         unlinkToDeath();
         mSystemUiProxy = proxy;
-        mPip = pip;
-        mSplitScreen = splitScreen;
-        mOneHanded = oneHanded;
-        mShellTransitions = shellTransitions;
-        mStartingWindow = startingWindow;
         linkToDeath();
-    }
-
-    public void clearProxy() {
-        setProxy(null, null, null, null, null, null);
     }
 
     // TODO(141886704): Find a way to remove this
@@ -184,10 +164,12 @@ public class SystemUiProxy implements ISystemUiProxy,
     @Override
     public void setNavBarButtonAlpha(float alpha, boolean animate) {
         boolean changed = Float.compare(alpha, mLastNavButtonAlpha) != 0
-                || animate != mLastNavButtonAnimate;
+                || animate != mLastNavButtonAnimate
+                || !mHasNavButtonAlphaBeenSet;
         if (mSystemUiProxy != null && changed) {
             mLastNavButtonAlpha = alpha;
             mLastNavButtonAnimate = animate;
+            mHasNavButtonAlphaBeenSet = true;
             try {
                 mSystemUiProxy.setNavBarButtonAlpha(alpha, animate);
             } catch (RemoteException e) {
@@ -286,6 +268,21 @@ public class SystemUiProxy implements ISystemUiProxy,
     }
 
     @Override
+    public void setShelfHeight(boolean visible, int shelfHeight) {
+        boolean changed = visible != mLastShelfVisible || shelfHeight != mLastShelfHeight;
+        if (mSystemUiProxy != null && changed) {
+            mLastShelfVisible = visible;
+            mLastShelfHeight = shelfHeight;
+            try {
+                mSystemUiProxy.setShelfHeight(visible, shelfHeight);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call setShelfHeight visible: " + visible
+                        + " height: " + shelfHeight, e);
+            }
+        }
+    }
+
+    @Override
     public void handleImageAsScreenshot(Bitmap bitmap, Rect rect, Insets insets, int i) {
         if (mSystemUiProxy != null) {
             try {
@@ -321,6 +318,20 @@ public class SystemUiProxy implements ISystemUiProxy,
         }
     }
 
+    /**
+     * Sets listener to get pinned stack animation callbacks.
+     */
+    @Override
+    public void setPinnedStackAnimationListener(IPinnedStackAnimationListener listener) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.setPinnedStackAnimationListener(listener);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call setPinnedStackAnimationListener", e);
+            }
+        }
+    }
+
     @Override
     public void onQuickSwitchToNewTask(int rotation) {
         if (mSystemUiProxy != null) {
@@ -346,6 +357,28 @@ public class SystemUiProxy implements ISystemUiProxy,
     }
 
     @Override
+    public void startOneHandedMode() {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.startOneHandedMode();
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call startOneHandedMode", e);
+            }
+        }
+    }
+
+    @Override
+    public void stopOneHandedMode() {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.stopOneHandedMode();
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call stopOneHandedMode", e);
+            }
+        }
+    }
+
+    @Override
     public void expandNotificationPanel() {
         if (mSystemUiProxy != null) {
             try {
@@ -356,45 +389,12 @@ public class SystemUiProxy implements ISystemUiProxy,
         }
     }
 
-    //
-    // Pip
-    //
-
-    /**
-     * Sets the shelf height.
-     */
-    public void setShelfHeight(boolean visible, int shelfHeight) {
-        boolean changed = visible != mLastShelfVisible || shelfHeight != mLastShelfHeight;
-        if (mPip != null && changed) {
-            mLastShelfVisible = visible;
-            mLastShelfHeight = shelfHeight;
-            try {
-                mPip.setShelfHeight(visible, shelfHeight);
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed call setShelfHeight visible: " + visible
-                        + " height: " + shelfHeight, e);
-            }
-        }
-    }
-
-    /**
-     * Sets listener to get pinned stack animation callbacks.
-     */
-    public void setPinnedStackAnimationListener(IPipAnimationListener listener) {
-        if (mPip != null) {
-            try {
-                mPip.setPinnedStackAnimationListener(listener);
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed call setPinnedStackAnimationListener", e);
-            }
-        }
-    }
-
+    @Override
     public Rect startSwipePipToHome(ComponentName componentName, ActivityInfo activityInfo,
             PictureInPictureParams pictureInPictureParams, int launcherRotation, int shelfHeight) {
-        if (mPip != null) {
+        if (mSystemUiProxy != null) {
             try {
-                return mPip.startSwipePipToHome(componentName, activityInfo,
+                return mSystemUiProxy.startSwipePipToHome(componentName, activityInfo,
                         pictureInPictureParams, launcherRotation, shelfHeight);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call startSwipePipToHome", e);
@@ -403,85 +403,111 @@ public class SystemUiProxy implements ISystemUiProxy,
         return null;
     }
 
+    @Override
     public void stopSwipePipToHome(ComponentName componentName, Rect destinationBounds) {
-        if (mPip != null) {
+        if (mSystemUiProxy != null) {
             try {
-                mPip.stopSwipePipToHome(componentName, destinationBounds);
+                mSystemUiProxy.stopSwipePipToHome(componentName, destinationBounds);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call stopSwipePipToHome");
             }
         }
     }
 
-    //
-    // Splitscreen
-    //
-
-    public void registerSplitScreenListener(ISplitScreenListener listener) {
-        if (mSplitScreen != null) {
+    @Override
+    public void registerRemoteTransition(RemoteTransitionCompat remoteTransition) {
+        if (mSystemUiProxy != null) {
             try {
-                mSplitScreen.registerSplitScreenListener(listener);
+                mSystemUiProxy.registerRemoteTransition(remoteTransition);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call registerRemoteTransition");
+            }
+        }
+    }
+
+    @Override
+    public void unregisterRemoteTransition(RemoteTransitionCompat remoteTransition) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.unregisterRemoteTransition(remoteTransition);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call registerRemoteTransition");
+            }
+        }
+    }
+
+    @Override
+    public void registerSplitScreenListener(ISplitScreenListener listener) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.registerSplitScreenListener(listener);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call registerSplitScreenListener");
             }
         }
     }
 
+    @Override
     public void unregisterSplitScreenListener(ISplitScreenListener listener) {
-        if (mSplitScreen != null) {
+        if (mSystemUiProxy != null) {
             try {
-                mSplitScreen.unregisterSplitScreenListener(listener);
+                mSystemUiProxy.unregisterSplitScreenListener(listener);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call unregisterSplitScreenListener");
             }
         }
     }
 
+    @Override
     public void setSideStageVisibility(boolean visible) {
-        if (mSplitScreen != null) {
+        if (mSystemUiProxy != null) {
             try {
-                mSplitScreen.setSideStageVisibility(visible);
+                mSystemUiProxy.setSideStageVisibility(visible);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call setSideStageVisibility");
             }
         }
     }
 
+    @Override
     public void exitSplitScreen() {
-        if (mSplitScreen != null) {
+        if (mSystemUiProxy != null) {
             try {
-                mSplitScreen.exitSplitScreen();
+                mSystemUiProxy.exitSplitScreen();
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call exitSplitScreen");
             }
         }
     }
 
+    @Override
     public void exitSplitScreenOnHide(boolean exitSplitScreenOnHide) {
-        if (mSplitScreen != null) {
+        if (mSystemUiProxy != null) {
             try {
-                mSplitScreen.exitSplitScreenOnHide(exitSplitScreenOnHide);
+                mSystemUiProxy.exitSplitScreenOnHide(exitSplitScreenOnHide);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call exitSplitScreen");
             }
         }
     }
 
+    @Override
     public void startTask(int taskId, int stage, int position, Bundle options) {
-        if (mSplitScreen != null) {
+        if (mSystemUiProxy != null) {
             try {
-                mSplitScreen.startTask(taskId, stage, position, options);
+                mSystemUiProxy.startTask(taskId, stage, position, options);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call startTask");
             }
         }
     }
 
+    @Override
     public void startShortcut(String packageName, String shortcutId, int stage, int position,
             Bundle options, UserHandle user) {
-        if (mSplitScreen != null) {
+        if (mSystemUiProxy != null) {
             try {
-                mSplitScreen.startShortcut(packageName, shortcutId, stage, position, options,
+                mSystemUiProxy.startShortcut(packageName, shortcutId, stage, position, options,
                         user);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call startShortcut");
@@ -489,87 +515,38 @@ public class SystemUiProxy implements ISystemUiProxy,
         }
     }
 
-    public void startIntent(PendingIntent intent, Intent fillInIntent, int stage, int position,
-            Bundle options) {
-        if (mSplitScreen != null) {
+    @Override
+    public void startIntent(PendingIntent intent, Intent fillInIntent, int stage,
+            int position, Bundle options) {
+        if (mSystemUiProxy != null) {
             try {
-                mSplitScreen.startIntent(intent, fillInIntent, stage, position, options);
+                mSystemUiProxy.startIntent(intent, fillInIntent, stage, position,
+                        options);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call startIntent");
             }
         }
     }
 
+    @Override
     public void removeFromSideStage(int taskId) {
-        if (mSplitScreen != null) {
+        if (mSystemUiProxy != null) {
             try {
-                mSplitScreen.removeFromSideStage(taskId);
+                mSystemUiProxy.removeFromSideStage(taskId);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call removeFromSideStage");
             }
         }
     }
 
-    //
-    // One handed
-    //
-
-    public void startOneHandedMode() {
-        if (mOneHanded != null) {
-            try {
-                mOneHanded.startOneHanded();
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed call startOneHandedMode", e);
-            }
-        }
-    }
-
-    public void stopOneHandedMode() {
-        if (mOneHanded != null) {
-            try {
-                mOneHanded.stopOneHanded();
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed call stopOneHandedMode", e);
-            }
-        }
-    }
-
-    //
-    // Remote transitions
-    //
-
-    public void registerRemoteTransition(RemoteTransitionCompat remoteTransition) {
-        if (mShellTransitions != null) {
-            try {
-                mShellTransitions.registerRemote(remoteTransition.getFilter(),
-                        remoteTransition.getTransition());
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed call registerRemoteTransition");
-            }
-        }
-    }
-
-    public void unregisterRemoteTransition(RemoteTransitionCompat remoteTransition) {
-        if (mShellTransitions != null) {
-            try {
-                mShellTransitions.unregisterRemote(remoteTransition.getTransition());
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed call registerRemoteTransition");
-            }
-        }
-    }
-
-    //
-    // Starting window
-    //
-
     /**
      * Sets listener to get callbacks when launching a task.
      */
+    @Override
     public void setStartingWindowListener(IStartingWindowListener listener) {
-        if (mStartingWindow != null) {
+        if (mSystemUiProxy != null) {
             try {
-                mStartingWindow.setStartingWindowListener(listener);
+                mSystemUiProxy.setStartingWindowListener(listener);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call setStartingWindowListener", e);
             }

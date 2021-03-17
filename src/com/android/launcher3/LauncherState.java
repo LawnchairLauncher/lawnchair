@@ -22,6 +22,7 @@ import static com.android.launcher3.testing.TestProtocol.BACKGROUND_APP_STATE_OR
 import static com.android.launcher3.testing.TestProtocol.HINT_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.NORMAL_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.OVERVIEW_MODAL_TASK_STATE_ORDINAL;
+import static com.android.launcher3.testing.TestProtocol.OVERVIEW_SPLIT_SELECT_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.OVERVIEW_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.QUICK_SWITCH_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.SPRING_LOADED_STATE_ORDINAL;
@@ -60,6 +61,7 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     public static final int TASKBAR = 1 << 7;
     public static final int CLEAR_ALL_BUTTON = 1 << 8;
     public static final int WORKSPACE_PAGE_INDICATOR = 1 << 9;
+    public static final int SPLIT_PLACHOLDER_VIEW = 1 << 10;
 
     /** Mask of all the items that are contained in the apps view. */
     public static final int APPS_VIEW_ITEM_MASK =
@@ -126,6 +128,8 @@ public abstract class LauncherState implements BaseState<LauncherState> {
             OverviewState.newSwitchState(QUICK_SWITCH_STATE_ORDINAL);
     public static final LauncherState BACKGROUND_APP =
             OverviewState.newBackgroundState(BACKGROUND_APP_STATE_ORDINAL);
+    public static final LauncherState OVERVIEW_SPLIT_SELECT =
+            OverviewState.newSplitSelectState(OVERVIEW_SPLIT_SELECT_ORDINAL);
 
     public final int ordinal;
 
@@ -238,6 +242,14 @@ public abstract class LauncherState implements BaseState<LauncherState> {
      */
     public boolean displayOverviewTasksAsGrid(Launcher launcher) {
         return false;
+    }
+
+    /**
+     * For this state, how much additional vertical translation there should be for each of the
+     * child TaskViews.
+     */
+    public float getOverviewSecondaryTranslation(Launcher launcher) {
+        return 0;
     }
 
     /**
