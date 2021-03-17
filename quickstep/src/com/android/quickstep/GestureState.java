@@ -25,6 +25,7 @@ import android.app.ActivityManager;
 import android.content.Intent;
 import android.os.Build;
 
+import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.tracing.GestureStateProto;
 import com.android.launcher3.tracing.SwipeHandlerProto;
@@ -213,7 +214,8 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     /**
      * @return the interface to the activity handing the UI updates for this gesture.
      */
-    public <T extends StatefulActivity<?>> BaseActivityInterface<?, T> getActivityInterface() {
+    public <S extends BaseState<S>,
+            T extends StatefulActivity<S>> BaseActivityInterface<S, T> getActivityInterface() {
         return mActivityInterface;
     }
 

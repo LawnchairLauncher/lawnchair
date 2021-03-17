@@ -55,6 +55,7 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.SpringAnimationBuilder;
 import com.android.quickstep.fallback.FallbackRecentsView;
+import com.android.quickstep.fallback.RecentsState;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.util.TransformParams.BuilderProxy;
@@ -73,7 +74,7 @@ import java.util.function.Consumer;
  */
 @TargetApi(Build.VERSION_CODES.R)
 public class FallbackSwipeHandler extends
-        AbsSwipeUpHandler<RecentsActivity, FallbackRecentsView> {
+        AbsSwipeUpHandler<RecentsActivity, FallbackRecentsView, RecentsState> {
 
     /**
      * Message used for receiving gesture nav contract information. We use a static messenger to

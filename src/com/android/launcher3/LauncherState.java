@@ -238,13 +238,6 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     }
 
     /**
-     * For this state, whether tasks should layout as a grid rather than a list.
-     */
-    public boolean displayOverviewTasksAsGrid(Launcher launcher) {
-        return false;
-    }
-
-    /**
      * For this state, how much additional vertical translation there should be for each of the
      * child TaskViews.
      */

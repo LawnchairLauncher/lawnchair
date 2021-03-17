@@ -80,9 +80,9 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
+import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.tracing.InputConsumerProto;
 import com.android.launcher3.tracing.SwipeHandlerProto;
@@ -124,14 +124,15 @@ import java.util.function.Consumer;
  * Handles the navigation gestures when Launcher is the default home activity.
  */
 @TargetApi(Build.VERSION_CODES.R)
-public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends RecentsView>
+public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
+        Q extends RecentsView, S extends BaseState<S>>
         extends SwipeUpAnimationLogic implements OnApplyWindowInsetsListener,
         RecentsAnimationCallbacks.RecentsAnimationListener {
     private static final String TAG = "AbsSwipeUpHandler";
 
     private static final String[] STATE_NAMES = DEBUG_STATES ? new String[17] : null;
 
-    protected final BaseActivityInterface<?, T> mActivityInterface;
+    protected final BaseActivityInterface<S, T> mActivityInterface;
     protected final InputConsumerProxy mInputConsumerProxy;
     protected final ActivityInitListener mActivityInitListener;
     // Callbacks to be made once the recents animation starts
@@ -934,9 +935,15 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
                     duration = Math.min(MAX_SWIPE_DURATION, 2 * baseDuration);
             }
         }
-        Interpolator interpolator =
-                endTarget == RECENTS ? (mDp.isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get()
-                        ? ACCEL_DEACCEL : OVERSHOOT_1_2) : DEACCEL;
+        Interpolator interpolator;
+        S state = mActivityInterface.stateFromGestureEndTarget(endTarget);
+        if (state.displayOverviewTasksAsGrid(mActivity.getDeviceProfile())) {
+            interpolator = ACCEL_DEACCEL;
+        } else if (endTarget == RECENTS) {
+            interpolator = OVERSHOOT_1_2;
+        } else {
+            interpolator = DEACCEL;
+        }
 
         if (endTarget.isLauncher) {
             mInputConsumerProxy.enable();
@@ -1126,8 +1133,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
                 }
             });
             animatorSet.play(windowAnim);
-            if (mRecentsView != null && mDp.isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get()
-                    && mGestureState.getEndTarget() == RECENTS) {
+            S state = mActivityInterface.stateFromGestureEndTarget(mGestureState.getEndTarget());
+            if (mRecentsView != null && state.displayOverviewTasksAsGrid(
+                    mActivity.getDeviceProfile())) {
                 animatorSet.play(ObjectAnimator.ofFloat(mRecentsView, RECENTS_GRID_PROGRESS, 1));
                 animatorSet.play(mTaskViewSimulator.gridProgress.animateToValue(0, 1));
             }
@@ -1756,7 +1764,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
 
     public interface Factory {
 
-        AbsSwipeUpHandler<StatefulActivity<?>, RecentsView> newHandler(
+        AbsSwipeUpHandler newHandler(
                 GestureState gestureState, long touchTimeMs, boolean continuingLastGesture);
     }
 }

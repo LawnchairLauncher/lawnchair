@@ -76,8 +76,8 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
         SCRIM_PROGRESS.set(scrim, state.getOverviewScrimAlpha(mLauncher));
         SCRIM_MULTIPLIER.set(scrim, 1f);
         getTaskModalnessProperty().set(mRecentsView, state.getOverviewModalness());
-        RECENTS_GRID_PROGRESS.set(mRecentsView, state.displayOverviewTasksAsGrid(mLauncher)
-                ? 1f : 0f);
+        RECENTS_GRID_PROGRESS.set(mRecentsView,
+                state.displayOverviewTasksAsGrid(mLauncher.getDeviceProfile()) ? 1f : 0f);
     }
 
     @Override
@@ -128,7 +128,7 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
                 toState.getOverviewModalness(),
                 config.getInterpolator(ANIM_OVERVIEW_MODAL, LINEAR));
         setter.setFloat(mRecentsView, RECENTS_GRID_PROGRESS,
-                toState.displayOverviewTasksAsGrid(mLauncher) ? 1f : 0f, LINEAR);
+                toState.displayOverviewTasksAsGrid(mLauncher.getDeviceProfile()) ? 1f : 0f, LINEAR);
     }
 
     abstract FloatProperty getTaskModalnessProperty();
