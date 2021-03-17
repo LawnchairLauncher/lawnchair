@@ -372,6 +372,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         super.onCreate(savedInstanceState);
 
         LauncherAppState app = LauncherAppState.getInstance(this);
+        app.setLauncher(this);
         mOldConfig = new Configuration(getResources().getConfiguration());
         mModel = app.getModel();
 

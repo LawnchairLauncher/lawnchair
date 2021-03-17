@@ -319,13 +319,6 @@ public class InvariantDeviceProfile {
         numAllAppsColumns = Math.round(prefs.getFloat(LawnchairPreferences.ALL_APPS_COLUMNS, numAllAppsColumns));
         numFolderRows = Math.round(prefs.getFloat(LawnchairPreferences.FOLDER_ROWS, numFolderRows));
         numFolderColumns = Math.round(prefs.getFloat(LawnchairPreferences.FOLDER_COLUMNS, numFolderColumns));
-
-        // Lawnchair icon and text sizes
-        iconSize *= prefs.getFloat(LawnchairPreferences.ICON_SIZE_FACTOR, 1f);
-        iconTextSize *= prefs.getFloat(LawnchairPreferences.TEXT_SIZE_FACTOR, 1f);;
-        allAppsIconSize *= prefs.getFloat(LawnchairPreferences.ALL_APPS_ICON_SIZE_FACTOR, 1f);
-        allAppsIconTextSize *= prefs.getFloat(LawnchairPreferences.ALL_APPS_TEXT_SIZE_FACTOR, 1f);
-
     }
 
     public void reInitGrid() {
