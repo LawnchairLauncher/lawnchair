@@ -18,7 +18,7 @@ buildscript {
 final String FRAMEWORK_PREBUILTS_DIR = "prebuilts"
 
 wrapper {
-    gradleVersion = '8.6.3'
+    gradleVersion = '6.8.3'
 }
 
 allprojects {
