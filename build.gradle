@@ -64,10 +64,15 @@ android {
         targetSdkVersion 30
         versionCode 1
         versionName "11.0-alpha.01+${commitHash()}"
-        setProperty("archivesBaseName", "Lawnchair-$versionName")
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "Lawnchair ${variant.versionName}.apk"
+        }
     }
 
     buildFeatures {
@@ -81,6 +86,7 @@ android {
     buildTypes {
         debug {
             minifyEnabled false
+            versionNameSuffix ".d"
         }
     }
 
