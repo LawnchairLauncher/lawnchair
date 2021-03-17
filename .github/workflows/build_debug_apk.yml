@@ -7,8 +7,19 @@ on:
       - 11-dev
 
 jobs:
+  send-start-notification:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Send start notification
+        uses: appleboy/telegram-action@v0.1.0
+        with:
+          to: ${{ secrets.TELEGRAM_CI_CHANNEL_ID }}
+          token: ${{ secrets.TELEGRAM_CI_BOT_TOKEN }}
+          format: New push to <pre>11-dev</pre>. Building debug APK…
   build-debug-apk:
     runs-on: ubuntu-latest
+    needs: send-start-notification
     continue-on-error: true
     steps:
       - name: Check out repository
@@ -36,7 +47,7 @@ jobs:
         with:
           name: Debug APK
           path: build/outputs/apk/lawnWithQuickstep/debug/**.apk
-  send-notification:
+  send-end-notification:
     runs-on: ubuntu-latest
     needs: build-debug-apk
     steps:
@@ -52,5 +63,4 @@ jobs:
           to: ${{ secrets.TELEGRAM_CI_CHANNEL_ID }}
           token: ${{ secrets.TELEGRAM_CI_BOT_TOKEN }}
           document: artifacts/debug-apk/**.apk
-          args: |
-            Build ${{ github.run_id }} finished with status ‘${{ env.WORKFLOW_CONCLUSION }}’.
+          format: Build finished with status <pre>${{ env.WORKFLOW_CONCLUSION }}</pre>. Uploading APK if available…

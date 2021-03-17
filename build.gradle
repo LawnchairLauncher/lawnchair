@@ -46,6 +46,15 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'com.google.protobuf'
 
+final def commitHash = { ->
+    final def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'rev-parse', '--short=7', 'HEAD'
+        standardOutput = stdout
+    }
+    stdout.toString().trim()
+}
+
 android {
     compileSdkVersion COMPILE_SDK
     buildToolsVersion BUILD_TOOLS_VERSION
@@ -54,7 +63,8 @@ android {
         minSdkVersion 25
         targetSdkVersion 30
         versionCode 1
-        versionName "1.0"
+        versionName "11.0-alpha.01+${commitHash()}"
+        setProperty("archivesBaseName", "Lawnchair-$versionName")
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
