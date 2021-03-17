@@ -313,7 +313,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         // Increase our bottom insets so we don't overlap with the taskbar.
         mInsets.bottom += grid.nonOverlappingTaskbarInset;
 
-        if (mWorkspaceFadeInAdjacentScreens) {
+        if (isTwoPanelEnabled()) {
+            setPageSpacing(0); // we have two pages and we don't want any spacing
+        } else if (mWorkspaceFadeInAdjacentScreens) {
             // In landscape mode the page spacing is set to the default.
             setPageSpacing(grid.edgeMarginPx);
         } else {
@@ -325,12 +327,30 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             setPageSpacing(Math.max(maxInsets, maxPadding));
         }
 
-
         int paddingLeftRight = grid.cellLayoutPaddingLeftRightPx;
         int paddingBottom = grid.cellLayoutBottomPaddingPx;
+        int twoPanelLandscapeSidePadding = paddingLeftRight * 2;
+        int twoPanelPortraitSidePadding = paddingLeftRight / 2;
+
+        int panelCount = getPanelCount();
         for (int i = mWorkspaceScreens.size() - 1; i >= 0; i--) {
-            mWorkspaceScreens.valueAt(i)
-                    .setPadding(paddingLeftRight, 0, paddingLeftRight, paddingBottom);
+            int paddingLeft = paddingLeftRight;
+            int paddingRight = paddingLeftRight;
+            if (panelCount > 1) {
+                if (i % panelCount == 0) { // left side panel
+                    paddingLeft = grid.isLandscape ? twoPanelLandscapeSidePadding
+                            : twoPanelPortraitSidePadding;
+                    paddingRight = 0;
+                } else if (i % panelCount == panelCount - 1) { // right side panel
+                    paddingLeft = 0;
+                    paddingRight = grid.isLandscape ? twoPanelLandscapeSidePadding
+                            : twoPanelPortraitSidePadding;
+                } else { // middle panel
+                    paddingLeft = 0;
+                    paddingRight = 0;
+                }
+            }
+            mWorkspaceScreens.valueAt(i).setPadding(paddingLeft, 0, paddingRight, paddingBottom);
         }
     }
 
@@ -435,6 +455,15 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         mStatsLogManager.logger().withItemInfo(dragObject.dragInfo)
                 .withInstanceId(dragObject.logInstanceId)
                 .log(LauncherEvent.LAUNCHER_ITEM_DRAG_STARTED);
+    }
+
+    private boolean isTwoPanelEnabled() {
+        return mLauncher.mDeviceProfile.isTablet && FeatureFlags.ENABLE_TWO_PANEL_HOME.get();
+    }
+
+    @Override
+    protected int getPanelCount() {
+        return isTwoPanelEnabled() ? 2 : super.getPanelCount();
     }
 
     public void deferRemoveExtraEmptyScreen() {
@@ -824,7 +853,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     private boolean shouldConsumeTouch(View v) {
         return !workspaceIconsCanBeDragged()
-                || (!workspaceInModalState() && indexOfChild(v) != mCurrentPage);
+                || (!workspaceInModalState() && !isVisible(v));
     }
 
     public boolean isSwitchingState() {
@@ -2260,17 +2289,25 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         int nextPage = getNextPage();
         if (layout == null && !isPageInTransition()) {
-            // Check if the item is dragged over left page
+            // Check if the item is dragged over currentPage - 1 page
             mTempTouchCoordinates[0] = Math.min(centerX, d.x);
             mTempTouchCoordinates[1] = d.y;
             layout = verifyInsidePage(nextPage + (mIsRtl ? 1 : -1), mTempTouchCoordinates);
         }
 
         if (layout == null && !isPageInTransition()) {
-            // Check if the item is dragged over right page
+            // Check if the item is dragged over currentPage + 1 page
             mTempTouchCoordinates[0] = Math.max(centerX, d.x);
             mTempTouchCoordinates[1] = d.y;
             layout = verifyInsidePage(nextPage + (mIsRtl ? -1 : 1), mTempTouchCoordinates);
+        }
+
+        // If two panel is enabled, users can also drag items to currentPage + 2
+        if (isTwoPanelEnabled() && layout == null && !isPageInTransition()) {
+            // Check if the item is dragged over currentPage + 2 page
+            mTempTouchCoordinates[0] = Math.max(centerX, d.x);
+            mTempTouchCoordinates[1] = d.y;
+            layout = verifyInsidePage(nextPage + (mIsRtl ? -2 : 2), mTempTouchCoordinates);
         }
 
         // Always pick the current page.
