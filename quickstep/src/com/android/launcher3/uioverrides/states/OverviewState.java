@@ -123,7 +123,7 @@ public class OverviewState extends LauncherState {
 
     @Override
     public int getVisibleElements(Launcher launcher) {
-        return displayOverviewTasksAsGrid(launcher) ? CLEAR_ALL_BUTTON
+        return displayOverviewTasksAsGrid(launcher.getDeviceProfile()) ? CLEAR_ALL_BUTTON
                 : CLEAR_ALL_BUTTON | OVERVIEW_ACTIONS;
     }
 
@@ -133,8 +133,8 @@ public class OverviewState extends LauncherState {
     }
 
     @Override
-    public boolean displayOverviewTasksAsGrid(Launcher launcher) {
-        return launcher.getDeviceProfile().isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get();
+    public boolean displayOverviewTasksAsGrid(DeviceProfile deviceProfile) {
+        return deviceProfile.isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get();
     }
 
     @Override
