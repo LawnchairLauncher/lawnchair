@@ -63,7 +63,9 @@ import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.fallback.RecentsDragLayer;
 import com.android.quickstep.fallback.RecentsState;
 import com.android.quickstep.util.RecentsAtomicAnimationFactory;
+import com.android.quickstep.util.SplitSelectStateController;
 import com.android.quickstep.views.OverviewActionsView;
+import com.android.quickstep.views.SplitPlaceholderView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
@@ -105,8 +107,14 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
         mFallbackRecentsView = findViewById(R.id.overview_panel);
         mActionsView = findViewById(R.id.overview_actions_view);
 
+        SplitPlaceholderView splitPlaceholderView = findViewById(R.id.split_placeholder);
+        splitPlaceholderView.init(
+                new SplitSelectStateController(
+                        SystemUiProxy.INSTANCE.get(this))
+        );
+
         mDragLayer.recreateControllers();
-        mFallbackRecentsView.init(mActionsView);
+        mFallbackRecentsView.init(mActionsView, splitPlaceholderView);
     }
 
     @Override

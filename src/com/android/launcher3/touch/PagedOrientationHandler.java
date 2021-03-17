@@ -32,6 +32,10 @@ import android.widget.LinearLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.util.OverScroller;
+import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
+import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
+
+import java.util.List;
 
 /**
  * Abstraction layer to separate horizontal and vertical specific implementations
@@ -75,6 +79,8 @@ public interface PagedOrientationHandler {
     int getScrollOffsetEnd(View view, Rect insets);
     int getPrimaryTranslationDirectionFactor();
     int getSecondaryTranslationDirectionFactor();
+    int getSplitTranslationDirectionFactor(@StagePosition int stagePosition);
+    int getSplitAnimationTranslation(int translationOffset, DeviceProfile dp);
     ChildBounds getChildBounds(View child, int childStart, int pageCenter, boolean layoutChild);
     void setMaxScroll(AccessibilityEvent event, int maxScroll);
     boolean getRecentsRtlSetting(Resources resources);
@@ -95,6 +101,9 @@ public interface PagedOrientationHandler {
     int getTaskMenuLayoutOrientation(boolean canRecentsActivityRotate, LinearLayout taskMenuLayout);
     void setLayoutParamsForTaskMenuOptionItem(LinearLayout.LayoutParams lp);
     int getDistanceToBottomOfRect(DeviceProfile dp, Rect rect);
+    List<SplitPositionOption> getSplitPositionOptions(DeviceProfile dp);
+    FloatProperty getSplitSelectTaskOffset(FloatProperty primary, FloatProperty secondary,
+            DeviceProfile deviceProfile);
 
     // The following are only used by TaskViewTouchHandler.
     /** @return Either VERTICAL or HORIZONTAL. */
