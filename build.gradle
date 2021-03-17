@@ -63,7 +63,7 @@ android {
         minSdkVersion 25
         targetSdkVersion 30
         versionCode 1
-        versionName "11.0-alpha.01+${commitHash()}"
+        versionName "11.0-alpha.1+${commitHash()}"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -86,7 +86,7 @@ android {
     buildTypes {
         debug {
             minifyEnabled false
-            versionNameSuffix ".d"
+            versionNameSuffix ".debug"
         }
     }
 
