@@ -923,6 +923,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         float currentShift = mCurrentShift.value;
         final GestureEndTarget endTarget = calculateEndTarget(velocity, endVelocity,
                 isFling, isCancel);
+        // Set the state, but don't notify until the animation completes
+        mGestureState.setEndTarget(endTarget, false /* isAtomic */);
+
         float endShift = endTarget.isLauncher ? 1 : 0;
         final float startShift;
         if (!isFling) {
@@ -945,7 +948,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         }
         Interpolator interpolator;
         S state = mActivityInterface.stateFromGestureEndTarget(endTarget);
-        if (state.displayOverviewTasksAsGrid(mActivity.getDeviceProfile())) {
+        if (state.displayOverviewTasksAsGrid(mDp)) {
             interpolator = ACCEL_DEACCEL;
         } else if (endTarget == RECENTS) {
             interpolator = OVERSHOOT_1_2;
@@ -1055,8 +1058,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     @UiThread
     private void animateToProgressInternal(float start, float end, long duration,
             Interpolator interpolator, GestureEndTarget target, PointF velocityPxPerMs) {
-        // Set the state, but don't notify until the animation completes
-        mGestureState.setEndTarget(target, false /* isAtomic */);
         maybeUpdateRecentsAttachedState();
 
         // If we are transitioning to launcher, then listen for the activity to be restarted while
@@ -1147,10 +1148,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             });
             animatorSet.play(windowAnim);
             S state = mActivityInterface.stateFromGestureEndTarget(mGestureState.getEndTarget());
-            if (mRecentsView != null && state.displayOverviewTasksAsGrid(
-                    mActivity.getDeviceProfile())) {
+            if (mRecentsView != null && state.displayOverviewTasksAsGrid(mDp)) {
                 animatorSet.play(ObjectAnimator.ofFloat(mRecentsView, RECENTS_GRID_PROGRESS, 1));
-                animatorSet.play(mTaskViewSimulator.gridProgress.animateToValue(0, 1));
             }
             animatorSet.setDuration(duration).setInterpolator(interpolator);
             animatorSet.start();
