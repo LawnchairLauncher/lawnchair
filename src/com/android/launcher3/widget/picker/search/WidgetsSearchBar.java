@@ -16,64 +16,21 @@
 
 package com.android.launcher3.widget.picker.search;
 
-import android.content.Context;
-import android.util.AttributeSet;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.android.launcher3.R;
-import com.android.launcher3.search.SearchAlgorithm;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 
 import java.util.List;
 
 /**
- * View for a search bar with an edit text with a cancel button.
+ * Interface for a widgets picker search bar.
  */
-public class WidgetsSearchBar extends LinearLayout {
-    private WidgetsSearchBarController mController;
-    private EditText mEditText;
-    private ImageButton mCancelButton;
-
-    public WidgetsSearchBar(Context context) {
-        this(context, null, 0);
-    }
-
-    public WidgetsSearchBar(@NonNull Context context,
-            @Nullable AttributeSet attrs) {
-        this(context, attrs, 0);
-    }
-
-    public WidgetsSearchBar(@NonNull Context context, @Nullable AttributeSet attrs,
-            int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-    }
-
+public interface WidgetsSearchBar {
     /**
      * Attaches a controller to the search bar which interacts with {@code searchModeListener}.
      */
-    public void initialize(List<WidgetsListBaseEntry> allWidgets,
-            SearchModeListener searchModeListener) {
-        SearchAlgorithm<WidgetsListBaseEntry> algo =
-                new SimpleWidgetsSearchAlgorithm(new SimpleWidgetsSearchPipeline(allWidgets));
-        mController = new WidgetsSearchBarController(
-                algo, mEditText, mCancelButton, searchModeListener);
-    }
+    void initialize(List<WidgetsListBaseEntry> allWidgets, SearchModeListener searchModeListener);
 
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        mEditText = findViewById(R.id.widgets_search_bar_edit_text);
-        mCancelButton = findViewById(R.id.widgets_search_cancel_button);
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        mController.onDestroy();
-    }
+    /**
+     * Sets the vertical location, in pixels, of this search bar relative to its top position.
+     */
+    void setTranslationY(float translationY);
 }
