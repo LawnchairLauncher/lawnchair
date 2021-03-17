@@ -58,7 +58,7 @@ public class ViewPool<T extends View & Reusable> {
         Preconditions.assertUIThread();
         Handler handler = new Handler();
 
-        // LayoutInflater is not thread save as it maintains a global variable 'mConstructorArgs'.
+        // LayoutInflater is not thread safe as it maintains a global variable 'mConstructorArgs'.
         // Create a different copy to use on the background thread.
         LayoutInflater inflater = mInflater.cloneInContext(mInflater.getContext());
 

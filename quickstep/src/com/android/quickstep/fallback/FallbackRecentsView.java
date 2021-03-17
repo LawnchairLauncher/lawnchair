@@ -34,6 +34,7 @@ import com.android.quickstep.GestureState;
 import com.android.quickstep.RecentsActivity;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
+import com.android.quickstep.views.SplitPlaceholderView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskKey;
@@ -56,8 +57,8 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity>
     }
 
     @Override
-    public void init(OverviewActionsView actionsView) {
-        super.init(actionsView);
+    public void init(OverviewActionsView actionsView, SplitPlaceholderView splitPlaceholderView) {
+        super.init(actionsView, splitPlaceholderView);
         setOverviewStateEnabled(true);
         setOverlayEnabled(true);
     }

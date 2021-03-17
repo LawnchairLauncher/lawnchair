@@ -144,7 +144,7 @@ public class AllAppsSearchBarController
 
     @Override
     public void onFocusChange(View view, boolean hasFocus) {
-        if (!hasFocus) {
+        if (!hasFocus && !FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
             mInput.hideKeyboard();
         }
     }
