@@ -251,7 +251,12 @@ public class DeviceProfile {
         int cellLayoutPadding = isScalableGrid
                 ? 0
                 : res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_layout_padding);
-        if (isLandscape) {
+
+        if (FeatureFlags.ENABLE_TWO_PANEL_HOME.get() && isTablet) {
+            cellLayoutPaddingLeftRightPx =
+                    res.getDimensionPixelSize(R.dimen.two_panel_home_side_padding);
+            cellLayoutBottomPaddingPx = 0;
+        } else if (isLandscape) {
             cellLayoutPaddingLeftRightPx = 0;
             cellLayoutBottomPaddingPx = cellLayoutPadding;
         } else {
@@ -660,6 +665,10 @@ public class DeviceProfile {
                         - (2 * inv.numRows * cellHeightPx) - hotseatVerticalPadding);
                 padding.set(availablePaddingX / 2, edgeMarginPx + availablePaddingY / 2,
                         availablePaddingX / 2, paddingBottom + availablePaddingY / 2);
+
+                if (FeatureFlags.ENABLE_TWO_PANEL_HOME.get()) {
+                    padding.set(0, padding.top, 0, padding.bottom);
+                }
             } else {
                 // Pad the top and bottom of the workspace with search/hotseat bar sizes
                 padding.set(desiredWorkspaceLeftRightMarginPx,
