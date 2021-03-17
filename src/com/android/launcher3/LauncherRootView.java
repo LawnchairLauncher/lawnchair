@@ -41,8 +41,15 @@ public class LauncherRootView extends InsettableFrameLayout {
     }
 
     private void handleSystemWindowInsets(Rect insets) {
-        // Update device profile before notifying th children.
-        mActivity.getDeviceProfile().updateInsets(insets);
+        DeviceProfile dp = mActivity.getDeviceProfile();
+
+        // Taskbar provides insets, but we don't want that for most Launcher elements so remove it.
+        mTempRect.set(insets);
+        insets = mTempRect;
+        insets.bottom = Math.max(0, insets.bottom - dp.nonOverlappingTaskbarInset);
+
+        // Update device profile before notifying the children.
+        dp.updateInsets(insets);
         boolean resetState = !insets.equals(mInsets);
         setInsets(insets);
 

@@ -134,8 +134,9 @@ public class SwipePipToHomeAnimator extends ValueAnimator implements
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                if (!mHasAnimationEnded) super.onAnimationEnd(animation);
-                SwipePipToHomeAnimator.this.onAnimationEnd();
+                if (mHasAnimationEnded) return;
+                super.onAnimationEnd(animation);
+                mHasAnimationEnded = true;
             }
         });
         addUpdateListener(this);
@@ -223,14 +224,34 @@ public class SwipePipToHomeAnimator extends ValueAnimator implements
         return mDestinationBounds;
     }
 
-    private void onAnimationEnd() {
-        if (mHasAnimationEnded) return;
+    /**
+     * @return {@link Rect} of the final window crop in destination orientation.
+     */
+    public Rect getFinishWindowCrop() {
+        final Rect windowCrop = new Rect(mAppBounds);
+        if (mSourceHintRectInsets != null) {
+            windowCrop.inset(mSourceHintRectInsets);
+        }
+        return windowCrop;
+    }
 
-        final SurfaceControl.Transaction tx =
-                PipSurfaceTransactionHelper.newSurfaceControlTransaction();
-        mSurfaceTransactionHelper.reset(tx, mLeash, mDestinationBoundsTransformed, mFromRotation);
-        tx.apply();
-        mHasAnimationEnded = true;
+    /**
+     * @return Array of 9 floats represents the final transform in destination orientation.
+     */
+    public float[] getFinishTransform() {
+        final Matrix transform = new Matrix();
+        final float[] float9 = new float[9];
+        if (mSourceHintRectInsets == null) {
+            transform.setRectToRect(new RectF(mAppBounds), new RectF(mDestinationBounds),
+                    Matrix.ScaleToFit.FILL);
+        } else {
+            final float scale = mAppBounds.width() <= mAppBounds.height()
+                    ? (float) mDestinationBounds.width() / mAppBounds.width()
+                    : (float) mDestinationBounds.height() / mAppBounds.height();
+            transform.setScale(scale, scale);
+        }
+        transform.getValues(float9);
+        return float9;
     }
 
     private RotatedPosition getRotatedPosition(float fraction) {
