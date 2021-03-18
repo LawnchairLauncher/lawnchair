@@ -16,7 +16,6 @@
 
 package com.android.launcher3.appprediction;
 
-import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 
 import android.annotation.TargetApi;
@@ -30,7 +29,6 @@ import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.animation.Interpolator;
 
 import androidx.annotation.ColorInt;
 import androidx.core.content.ContextCompat;
@@ -41,7 +39,6 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.FloatingHeaderRow;
 import com.android.launcher3.allapps.FloatingHeaderView;
-import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.util.Themes;
 
@@ -284,13 +281,6 @@ public class AppsDividerView extends View implements StateListener<LauncherState
         int leftRightPadding = grid.desiredWorkspaceLeftRightMarginPx
                 + grid.cellLayoutPaddingLeftRightPx;
         setPadding(leftRightPadding, getPaddingTop(), leftRightPadding, getPaddingBottom());
-    }
-
-    @Override
-    public void setContentVisibility(boolean hasHeaderExtra, boolean hasAllAppsContent,
-            PropertySetter setter, Interpolator headerFade, Interpolator allAppsFade) {
-        // Don't use setViewAlpha as we want to control the visibility ourselves.
-        setter.setFloat(this, VIEW_ALPHA, hasAllAppsContent ? 1 : 0, allAppsFade);
     }
 
     @Override
