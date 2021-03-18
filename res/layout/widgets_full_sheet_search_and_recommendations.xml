@@ -25,7 +25,7 @@
         android:layout_width="48dp"
         android:layout_height="2dp"
         android:layout_gravity="center_horizontal"
-        android:background="@color/popup_color_primary_dark"/>
+        android:background="?android:attr/textColorSecondary"/>
     <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
@@ -33,6 +33,7 @@
         android:gravity="center_horizontal"
         android:textSize="24sp"
         android:layout_marginTop="16dp"
+        android:textColor="?android:attr/textColorSecondary"
         android:text="@string/widget_button_text"/>
     <include layout="@layout/widgets_search_bar"/>
 </LinearLayout>
