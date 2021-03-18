@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="dynamic_grid_hotseat_size">70dp</dimen>
+    <dimen name="dynamic_grid_hotseat_top_padding">0dp</dimen>
+    <dimen name="dynamic_grid_hotseat_bottom_padding">72dp</dimen>
+
+    <dimen name="search_widget_top_shift">24dp</dimen>
+    <dimen name="search_widget_hotseat_height">56dp</dimen>
+</resources>
