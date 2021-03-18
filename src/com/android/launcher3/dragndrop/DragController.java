@@ -25,9 +25,9 @@ import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import android.animation.ValueAnimator;
 import android.content.ComponentName;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.view.DragEvent;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
@@ -129,7 +129,7 @@ public class DragController implements DragDriver.EventListener, TouchController
      * drop, it is the responsibility of the {@link DropTarget} to exit out of the spring loaded
      * mode. If the drop was cancelled for some reason, the UI will automatically exit out of this mode.
      *
-     * @param b The bitmap to display as the drag image.  It will be re-scaled to the
+     * @param drawable The drawable to be displayed in the drag view.  It will be re-scaled to the
      *          enlarged size.
      * @param originalView The source view (ie. icon, widget etc.) that is being dragged
      *          and which the DragView represents
@@ -140,9 +140,18 @@ public class DragController implements DragDriver.EventListener, TouchController
      * @param dragRegion Coordinates within the bitmap b for the position of item being dragged.
      *          Makes dragging feel more precise, e.g. you can clip out a transparent border
      */
-    public DragView startDrag(Bitmap b, DraggableView originalView, int dragLayerX, int dragLayerY,
-            DragSource source, ItemInfo dragInfo, Point dragOffset, Rect dragRegion,
-            float initialDragViewScale, float dragViewScaleOnDrop, DragOptions options) {
+    public DragView startDrag(
+            Drawable drawable,
+            DraggableView originalView,
+            int dragLayerX,
+            int dragLayerY,
+            DragSource source,
+            ItemInfo dragInfo,
+            Point dragOffset,
+            Rect dragRegion,
+            float initialDragViewScale,
+            float dragViewScaleOnDrop,
+            DragOptions options) {
         if (PROFILE_DRAWING_DURING_DRAG) {
             android.os.Debug.startMethodTracing("Launcher");
         }
@@ -173,8 +182,14 @@ public class DragController implements DragDriver.EventListener, TouchController
         final Resources res = mLauncher.getResources();
         final float scaleDps = mIsInPreDrag
                 ? res.getDimensionPixelSize(R.dimen.pre_drag_view_scale) : 0f;
-        final DragView dragView = mDragObject.dragView = new DragView(mLauncher, b, registrationX,
-                registrationY, initialDragViewScale, dragViewScaleOnDrop, scaleDps);
+        final DragView dragView = mDragObject.dragView = new DragView(
+                mLauncher,
+                drawable,
+                registrationX,
+                registrationY,
+                initialDragViewScale,
+                dragViewScaleOnDrop,
+                scaleDps);
         dragView.setItemInfo(dragInfo);
         mDragObject.dragComplete = false;
 

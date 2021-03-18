@@ -56,9 +56,8 @@ public class SpringLoadedDragController implements OnAlarmListener {
         if (mScreen != null) {
             // Snap to the screen that we are hovering over now
             Workspace w = mLauncher.getWorkspace();
-            int page = w.indexOfChild(mScreen);
-            if (page != w.getCurrentPage()) {
-                w.snapToPage(page);
+            if (!w.isVisible(mScreen)) {
+                w.snapToPage(w.indexOfChild(mScreen));
             }
         } else {
             mLauncher.getDragController().cancelDrag();

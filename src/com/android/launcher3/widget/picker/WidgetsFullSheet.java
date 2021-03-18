@@ -439,7 +439,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     public int getHeaderViewHeight() {
         return measureHeightWithVerticalMargins(mSearchAndRecommendationViewHolder.mCollapseHandle)
                 + measureHeightWithVerticalMargins(mSearchAndRecommendationViewHolder.mHeaderTitle)
-                + measureHeightWithVerticalMargins(mSearchAndRecommendationViewHolder.mSearchBar);
+                + measureHeightWithVerticalMargins(
+                (View) mSearchAndRecommendationViewHolder.mSearchBar);
     }
 
     /** private the height, in pixel, + the vertical margins of a given view. */

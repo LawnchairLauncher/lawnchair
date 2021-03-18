@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.android.launcher3.widget.picker.search.WidgetsSearchBar
+<com.android.launcher3.widget.picker.search.LauncherWidgetsSearchBar
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/widgets_search_bar"
     android:layout_width="match_parent"
@@ -7,8 +7,7 @@
     android:orientation="horizontal"
     android:layout_marginTop="16dp"
     android:background="@drawable/bg_widgets_searchbox"
-    android:padding="12dp"
-    android:visibility="gone">
+    android:padding="12dp">
 
     <EditText
         android:id="@+id/widgets_search_bar_edit_text"
@@ -30,4 +29,4 @@
         android:background="?android:selectableItemBackground"
         android:layout_gravity="center"
         android:visibility="gone"/>
-</com.android.launcher3.widget.picker.search.WidgetsSearchBar>
+</com.android.launcher3.widget.picker.search.LauncherWidgetsSearchBar>

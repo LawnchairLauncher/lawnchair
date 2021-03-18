@@ -42,6 +42,7 @@ import android.app.prediction.AppTargetEvent;
 import android.app.prediction.AppTargetId;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.pm.ShortcutInfo;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
@@ -62,9 +63,11 @@ import com.android.launcher3.logger.LauncherAtom.WorkspaceContainer;
 import com.android.launcher3.logging.StatsLogManager.EventEnum;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.pm.UserCache;
+import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.quickstep.logging.StatsLogCompatManager.StatsLogConsumer;
 
 import java.util.Locale;
+import java.util.Optional;
 import java.util.function.ObjIntConsumer;
 import java.util.function.Predicate;
 
@@ -174,6 +177,7 @@ public class AppEventProducer implements StatsLogConsumer {
             return null;
         }
         ComponentName cn = null;
+        ShortcutInfo shortcutInfo = null;
         String id = null;
 
         switch (info.getItemCase()) {
@@ -188,6 +192,14 @@ public class AppEventProducer implements StatsLogConsumer {
                 LauncherAtom.Shortcut si = info.getShortcut();
                 if (!TextUtils.isEmpty(si.getShortcutId())
                         && (cn = parseNullable(si.getShortcutName())) != null) {
+                    Optional<ShortcutInfo> opt = new ShortcutRequest(mContext,
+                            userHandle).forPackage(cn.getPackageName(), si.getShortcutId()).query(
+                            ShortcutRequest.ALL).stream().findFirst();
+                    if (opt.isPresent()) {
+                        shortcutInfo = opt.get();
+                    } else {
+                        return null;
+                    }
                     id = "shortcut:" + si.getShortcutId();
                 }
                 break;
@@ -210,12 +222,16 @@ public class AppEventProducer implements StatsLogConsumer {
                 return createTempFolderTarget();
         }
         if (id != null && cn != null) {
+            if (shortcutInfo != null) {
+                return new AppTarget.Builder(new AppTargetId(id), shortcutInfo).build();
+            }
             return new AppTarget.Builder(new AppTargetId(id), cn.getPackageName(), userHandle)
                     .setClassName(cn.getClassName())
                     .build();
         }
         return null;
     }
+
 
     private AppTarget createTempFolderTarget() {
         return new AppTarget.Builder(new AppTargetId("folder:" + SystemClock.uptimeMillis()),

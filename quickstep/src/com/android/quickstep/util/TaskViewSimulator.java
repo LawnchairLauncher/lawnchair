@@ -271,10 +271,12 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
             mSizeStrategy.calculateGridSize(mContext, mDp, mGridRect);
             mThumbnailData.rotation = mOrientationState.getDisplayRotation();
 
+            // mIsRecentsRtl is the inverse of TaskView RTL.
+            boolean isRtlEnabled = !mIsRecentsRtl;
             mPositionHelper.updateThumbnailMatrix(
                     mThumbnailPosition, mThumbnailData,
                     mTaskRect.width(), mTaskRect.height(),
-                    mDp, mOrientationState.getRecentsActivityRotation());
+                    mDp, mOrientationState.getRecentsActivityRotation(), isRtlEnabled);
             mPositionHelper.getMatrix().invert(mInversePositionMatrix);
 
             PagedOrientationHandler poh = mOrientationState.getOrientationHandler();

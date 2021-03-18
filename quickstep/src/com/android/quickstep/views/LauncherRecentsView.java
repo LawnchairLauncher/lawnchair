@@ -150,6 +150,8 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
     @Override
     public void onStateTransitionStart(LauncherState toState) {
         setOverviewStateEnabled(toState.overviewUi);
+        setOverviewGridEnabled(toState.displayOverviewTasksAsGrid(mActivity.getDeviceProfile()));
+        setOverviewFullscreenEnabled(toState.getOverviewFullscreenProgress() == 1);
         setFreezeViewVisibility(true);
     }
 
@@ -160,8 +162,6 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
             reset();
         }
         setOverlayEnabled(finalState == OVERVIEW || finalState == OVERVIEW_MODAL_TASK);
-        setOverviewGridEnabled(finalState.displayOverviewTasksAsGrid(mActivity));
-        setOverviewFullscreenEnabled(finalState.getOverviewFullscreenProgress() == 1);
         setFreezeViewVisibility(false);
     }
 
