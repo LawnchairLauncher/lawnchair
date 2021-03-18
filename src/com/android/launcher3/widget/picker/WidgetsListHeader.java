@@ -29,6 +29,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.FastBitmapDrawable;
@@ -58,6 +59,7 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
     @Nullable private HandlerRunnable mIconLoadRequest;
     @Nullable private Drawable mIconDrawable;
     private final int mIconSize;
+    private final int mBottomMarginSize;
 
     private ImageView mAppIcon;
     private TextView mTitle;
@@ -83,6 +85,8 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
                 R.styleable.WidgetsListRowHeader, defStyleAttr, /* defStyleRes= */ 0);
         mIconSize = a.getDimensionPixelSize(R.styleable.WidgetsListRowHeader_appIconSize,
                 grid.iconSizePx);
+        mBottomMarginSize =
+                getResources().getDimensionPixelSize(R.dimen.widget_list_entry_bottom_margin);
     }
 
     @Override
@@ -113,6 +117,13 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
     public void setExpanded(boolean isExpanded) {
         this.mIsExpanded = isExpanded;
         mExpandToggle.setChecked(isExpanded);
+        if (getLayoutParams() instanceof RecyclerView.LayoutParams) {
+            int bottomMargin = isExpanded ? 0 : mBottomMarginSize;
+            RecyclerView.LayoutParams layoutParams =
+                    ((RecyclerView.LayoutParams) getLayoutParams());
+            layoutParams.bottomMargin = bottomMargin;
+            setLayoutParams(layoutParams);
+        }
     }
 
     /** Apply app icon, labels and tag using a generic {@link WidgetsListHeaderEntry}. */

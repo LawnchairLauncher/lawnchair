@@ -89,16 +89,17 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
             OnClickListener iconClickListener, OnLongClickListener iconLongClickListener) {
         mDiffReporter = new WidgetsDiffReporter(iconCache, this);
         mWidgetsListTableViewHolderBinder = new WidgetsListTableViewHolderBinder(context,
-                layoutInflater, iconClickListener, iconLongClickListener, widgetPreviewLoader);
+                layoutInflater, iconClickListener, iconLongClickListener,
+                widgetPreviewLoader, /* listAdapter= */ this);
         mViewHolderBinders.put(VIEW_TYPE_WIDGETS_LIST, mWidgetsListTableViewHolderBinder);
         mViewHolderBinders.put(
                 VIEW_TYPE_WIDGETS_HEADER,
                 new WidgetsListHeaderViewHolderBinder(
-                        layoutInflater, /*onHeaderClickListener=*/this));
+                        layoutInflater, /* onHeaderClickListener= */this, /* listAdapter= */ this));
         mViewHolderBinders.put(
                 VIEW_TYPE_WIDGETS_SEARCH_HEADER,
                 new WidgetsListSearchHeaderViewHolderBinder(
-                        layoutInflater, /*onHeaderClickListener=*/ this));
+                        layoutInflater, /*onHeaderClickListener=*/ this, /* listAdapter= */ this));
     }
 
     public void setFilter(Predicate<WidgetsListBaseEntry> filter) {
@@ -178,7 +179,7 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     @Override
     public void onBindViewHolder(ViewHolder holder, int pos) {
         ViewHolderBinder viewHolderBinder = mViewHolderBinders.get(getItemViewType(pos));
-        viewHolderBinder.bindViewHolder(holder, mVisibleEntries.get(pos));
+        viewHolderBinder.bindViewHolder(holder, mVisibleEntries.get(pos), pos);
     }
 
     @Override

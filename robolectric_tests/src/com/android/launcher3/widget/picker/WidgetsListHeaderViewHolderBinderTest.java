@@ -34,6 +34,7 @@ import android.widget.TextView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.R;
+import com.android.launcher3.WidgetPreviewLoader;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.ComponentWithLabel;
 import com.android.launcher3.icons.IconCache;
@@ -78,6 +79,8 @@ public final class WidgetsListHeaderViewHolderBinderTest {
     @Mock
     private DeviceProfile mDeviceProfile;
     @Mock
+    private WidgetPreviewLoader mWidgetPreviewLoader;
+    @Mock
     private OnHeaderClickListener mOnHeaderClickListener;
 
     @Before
@@ -97,8 +100,14 @@ public final class WidgetsListHeaderViewHolderBinderTest {
             return componentWithLabel.getComponent().getShortClassName();
         }).when(mIconCache).getTitleNoCache(any());
 
+        WidgetsListAdapter widgetsListAdapter = new WidgetsListAdapter(mContext,
+                LayoutInflater.from(mTestActivity),
+                mWidgetPreviewLoader,
+                mIconCache,
+                /* iconClickListener= */ view -> {},
+                /* iconLongClickListener= */ view -> false);
         mViewHolderBinder = new WidgetsListHeaderViewHolderBinder(
-                LayoutInflater.from(mTestActivity), mOnHeaderClickListener);
+                LayoutInflater.from(mTestActivity), mOnHeaderClickListener, widgetsListAdapter);
     }
 
     @After
@@ -115,7 +124,7 @@ public final class WidgetsListHeaderViewHolderBinderTest {
                 APP_NAME,
                 TEST_PACKAGE,
                 /* numOfWidgets= */ 3);
-        mViewHolderBinder.bindViewHolder(viewHolder, entry);
+        mViewHolderBinder.bindViewHolder(viewHolder, entry, /* position= */ 0);
 
         TextView appTitle = widgetsListHeader.findViewById(R.id.app_title);
         TextView appSubtitle = widgetsListHeader.findViewById(R.id.app_subtitle);
@@ -133,7 +142,7 @@ public final class WidgetsListHeaderViewHolderBinderTest {
                 TEST_PACKAGE,
                 /* numOfWidgets= */ 3);
 
-        mViewHolderBinder.bindViewHolder(viewHolder, entry);
+        mViewHolderBinder.bindViewHolder(viewHolder, entry, /* position= */ 0);
         widgetsListHeader.callOnClick();
 
         verify(mOnHeaderClickListener).onHeaderClicked(eq(true),

@@ -52,6 +52,7 @@ public final class WidgetsListTableViewHolderBinder
     private final OnClickListener mIconClickListener;
     private final OnLongClickListener mIconLongClickListener;
     private final WidgetPreviewLoader mWidgetPreviewLoader;
+    private final WidgetsListAdapter mWidgetsListAdapter;
     private boolean mApplyBitmapDeferred = false;
 
     public WidgetsListTableViewHolderBinder(
@@ -59,12 +60,14 @@ public final class WidgetsListTableViewHolderBinder
             LayoutInflater layoutInflater,
             OnClickListener iconClickListener,
             OnLongClickListener iconLongClickListener,
-            WidgetPreviewLoader widgetPreviewLoader) {
+            WidgetPreviewLoader widgetPreviewLoader,
+            WidgetsListAdapter listAdapter) {
         mLayoutInflater = layoutInflater;
         mIndent = context.getResources().getDimensionPixelSize(R.dimen.widget_section_indent);
         mIconClickListener = iconClickListener;
         mIconLongClickListener = iconLongClickListener;
         mWidgetPreviewLoader = widgetPreviewLoader;
+        mWidgetsListAdapter = listAdapter;
     }
 
     /**
@@ -97,11 +100,20 @@ public final class WidgetsListTableViewHolderBinder
     }
 
     @Override
-    public void bindViewHolder(WidgetsRowViewHolder holder, WidgetsListContentEntry entry) {
+    public void bindViewHolder(WidgetsRowViewHolder holder, WidgetsListContentEntry entry,
+            int position) {
         TableLayout table = holder.mTableContainer;
         if (DEBUG) {
             Log.d(TAG, String.format("onBindViewHolder [widget#=%d, table.getChildCount=%d]",
                     entry.mWidgets.size(), table.getChildCount()));
+        }
+
+        if (position == mWidgetsListAdapter.getItemCount() - 1) {
+            table.setBackgroundResource(R.drawable.widgets_list_bottom_ripple);
+        } else {
+            // WidgetsListContentEntry is never shown in position 0. There must be a header above
+            // it.
+            table.setBackgroundResource(R.drawable.widgets_list_middle_ripple);
         }
 
         List<ArrayList<WidgetItem>> widgetItemsTable =
