@@ -120,6 +120,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
                 getCurrentOverviewPage(launcher) < currentTaskAfterFlingForward));
 
         // Test opening a task.
+        startTestActivity(2);
         OverviewTask task = mLauncher.pressHome().switchToOverview().getCurrentTask();
         assertNotNull("overview.getCurrentTask() returned null (1)", task);
         assertNotNull("OverviewTask.open returned null", task.open());
