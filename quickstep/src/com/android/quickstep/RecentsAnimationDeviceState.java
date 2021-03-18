@@ -17,12 +17,13 @@ package com.android.quickstep;
 
 import static android.content.Intent.ACTION_USER_UNLOCKED;
 
-import static com.android.launcher3.util.SettingsCache.ONE_HANDED_ENABLED;
-import static com.android.launcher3.util.SettingsCache.ONE_HANDED_SWIPE_BOTTOM_TO_NOTIFICATION_ENABLED;
 import static com.android.launcher3.util.DisplayController.DisplayHolder.CHANGE_ALL;
 import static com.android.launcher3.util.DisplayController.DisplayHolder.CHANGE_FRAME_DELAY;
+import static com.android.launcher3.util.SettingsCache.ONE_HANDED_ENABLED;
+import static com.android.launcher3.util.SettingsCache.ONE_HANDED_SWIPE_BOTTOM_TO_NOTIFICATION_ENABLED;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 import static com.android.quickstep.SysUINavigationMode.Mode.THREE_BUTTONS;
+import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_CLICKABLE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_LONG_CLICKABLE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_ALLOW_GESTURE_IGNORING_BAR_VISIBILITY;
@@ -60,11 +61,11 @@ import androidx.annotation.BinderThread;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.util.SettingsCache;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.DisplayHolder;
 import com.android.launcher3.util.DisplayController.DisplayInfoChangeListener;
 import com.android.launcher3.util.DisplayController.Info;
+import com.android.launcher3.util.SettingsCache;
 import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
 import com.android.quickstep.SysUINavigationMode.OneHandedModeChangeListener;
 import com.android.quickstep.util.NavBarPosition;
@@ -301,6 +302,13 @@ public class RecentsAnimationDeviceState implements
      */
     public boolean isGesturalNavMode() {
         return mMode.hasGestures;
+    }
+
+    /**
+     * @return whether the current nav mode is 2-button-based.
+     */
+    public boolean isTwoButtonNavMode() {
+        return mMode == TWO_BUTTONS;
     }
 
     /**
