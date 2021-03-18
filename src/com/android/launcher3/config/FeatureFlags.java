@@ -140,6 +140,9 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_OVERVIEW_SELECTIONS = new DeviceFlag(
             "ENABLE_OVERVIEW_SELECTIONS", true, "Show Select Mode button in Overview Actions");
 
+    public static final BooleanFlag ENABLE_WIDGETS_PICKER_AIAI_SEARCH = new DeviceFlag(
+            "ENABLE_WIDGETS_PICKER_AIAI_SEARCH", false, "Enable AiAi search in the widgets picker");
+
     public static final BooleanFlag ENABLE_OVERVIEW_SHARE = getDebugFlag(
             "ENABLE_OVERVIEW_SHARE", false, "Show Share button in Overview Actions");
 
@@ -204,6 +207,10 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_OVERVIEW_GRID = getDebugFlag(
             "ENABLE_OVERVIEW_GRID", false, "Uses grid overview layout. "
             + "Only applicable on large screen devices.");
+
+    public static final BooleanFlag ENABLE_TWO_PANEL_HOME = getDebugFlag(
+            "ENABLE_TWO_PANEL_HOME", false,
+            "Uses two panel on home screen. Only applicable on large screen devices.");
 
     public static final BooleanFlag ENABLE_SPLIT_SELECT = getDebugFlag(
             "ENABLE_SPLIT_SELECT", false, "Uses new split screen selection overview UI");

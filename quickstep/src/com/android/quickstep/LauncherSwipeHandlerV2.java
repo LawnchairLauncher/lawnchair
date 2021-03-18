@@ -27,6 +27,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 
 import com.android.launcher3.BaseQuickstepLauncher;
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.util.RectFSpringAnim;
@@ -39,7 +40,7 @@ import com.android.systemui.shared.system.InputConsumerController;
  * Temporary class to allow easier refactoring
  */
 public class LauncherSwipeHandlerV2 extends
-        AbsSwipeUpHandler<BaseQuickstepLauncher, RecentsView> {
+        AbsSwipeUpHandler<BaseQuickstepLauncher, RecentsView, LauncherState> {
 
     public LauncherSwipeHandlerV2(Context context, RecentsAnimationDeviceState deviceState,
             TaskAnimationManager taskAnimationManager, GestureState gestureState, long touchTimeMs,

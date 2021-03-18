@@ -24,6 +24,7 @@ import android.view.MotionEvent;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.Utilities;
+import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
@@ -38,7 +39,7 @@ import com.android.systemui.shared.system.InputMonitorCompat;
 /**
  * Input consumer for handling touch on the recents/Launcher activity.
  */
-public class OverviewInputConsumer<T extends StatefulActivity<?>>
+public class OverviewInputConsumer<S extends BaseState<S>, T extends StatefulActivity<S>>
         implements InputConsumer {
 
     private final T mActivity;
