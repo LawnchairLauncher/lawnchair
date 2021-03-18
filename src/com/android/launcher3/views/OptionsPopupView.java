@@ -41,6 +41,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.Workspace;
 import com.android.launcher3.logging.StatsLogManager.EventEnum;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -169,6 +170,9 @@ public class OptionsPopupView extends ArrowPopup
         options.add(new OptionItem(R.string.settings_button_text, R.drawable.ic_setting,
                 LAUNCHER_SETTINGS_BUTTON_TAP_OR_LONGPRESS,
                 OptionsPopupView::startSettings));
+        if (launcher.getWorkspace().canCurrentPageBeDeleted()) {
+            options.add(new OptionItem(R.string.delete_page, R.drawable.delete, IGNORE, OptionsPopupView::deleteCurrentPage));
+        }
 
         show(launcher, target, options);
     }
@@ -194,6 +198,13 @@ public class OptionsPopupView extends ArrowPopup
         launcher.startActivity(new Intent(Intent.ACTION_APPLICATION_PREFERENCES)
                 .setPackage(launcher.getPackageName())
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        return true;
+    }
+    
+    public static boolean deleteCurrentPage(View view) {
+        Launcher launcher = Launcher.getLauncher(view.getContext());
+        Workspace workspace = launcher.getWorkspace();
+        workspace.deleteCurrentPage();
         return true;
     }
 

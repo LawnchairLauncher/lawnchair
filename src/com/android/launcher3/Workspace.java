@@ -752,6 +752,15 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         return mScreenOrder;
     }
 
+    public boolean canCurrentPageBeDeleted() {
+        return getChildCount() > 1 && getCurrentPage() != FIRST_SCREEN_ID && !mLauncher.isWorkspaceLoading();
+    }
+
+    public void deleteCurrentPage() {
+        int currentPage = getCurrentPage();
+        // TODO: Add logic to delete current page. See `stripEmptyScreens` below for reference.
+    }
+
     public void stripEmptyScreens() {
         if (mLauncher.isWorkspaceLoading()) {
             // Don't strip empty screens if the workspace is still loading.
