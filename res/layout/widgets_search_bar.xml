@@ -9,7 +9,7 @@
     android:background="@drawable/bg_widgets_searchbox"
     android:padding="12dp">
 
-    <EditText
+    <com.android.launcher3.ExtendedEditText
         android:id="@+id/widgets_search_bar_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

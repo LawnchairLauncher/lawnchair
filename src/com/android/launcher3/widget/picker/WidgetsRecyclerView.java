@@ -220,8 +220,8 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
         int totalItemsHeight = 0;
         for (int i = 0; i < untilIndex; i++) {
             WidgetsListBaseEntry entry = mAdapter.getItems().get(i);
-            if (entry instanceof WidgetsListHeaderEntry ||
-                    entry instanceof WidgetsListSearchHeaderEntry) {
+            if (entry instanceof WidgetsListHeaderEntry
+                    || entry instanceof WidgetsListSearchHeaderEntry) {
                 totalItemsHeight += mEstimatedWidgetListHeaderHeight;
             } else if (entry instanceof WidgetsListContentEntry) {
                 totalItemsHeight += mLastVisibleWidgetContentTableHeight;
