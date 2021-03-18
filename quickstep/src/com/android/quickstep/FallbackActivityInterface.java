@@ -105,7 +105,7 @@ public final class FallbackActivityInterface extends
     @Override
     public RecentsView getVisibleRecentsView() {
         RecentsActivity activity = getCreatedActivity();
-        if (activity != null && activity.hasWindowFocus()) {
+        if (activity != null && activity.hasBeenResumed()) {
             return activity.getOverviewPanel();
         }
         return null;

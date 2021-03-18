@@ -1535,29 +1535,6 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         }
     }
 
-    public void showNextTask() {
-        final TaskView runningTaskView = getRunningTaskView();
-        final TaskView targetTask;
-
-        if (runningTaskView == null) {
-            // Launch the first task
-            if (getTaskViewCount() > 0) {
-                targetTask = getTaskViewAt(0);
-            } else {
-                return;
-            }
-        } else {
-            final TaskView nextTask = getNextTaskView();
-            if (nextTask != null) {
-                targetTask = nextTask;
-            } else {
-                targetTask = runningTaskView;
-            }
-        }
-        targetTask.setEndQuickswitchCuj(true);
-        targetTask.launchTaskAnimated();
-    }
-
     public void setRunningTaskIconScaledDown(boolean isScaledDown) {
         if (mRunningTaskIconScaledDown != isScaledDown) {
             mRunningTaskIconScaledDown = isScaledDown;
