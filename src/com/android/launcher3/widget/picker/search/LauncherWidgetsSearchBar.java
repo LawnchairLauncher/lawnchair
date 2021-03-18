@@ -18,13 +18,13 @@ package com.android.launcher3.widget.picker.search;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.R;
 import com.android.launcher3.search.SearchAlgorithm;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
@@ -36,7 +36,7 @@ import java.util.List;
  */
 public class LauncherWidgetsSearchBar extends LinearLayout implements WidgetsSearchBar {
     private WidgetsSearchBarController mController;
-    private EditText mEditText;
+    private ExtendedEditText mEditText;
     private ImageButton mCancelButton;
 
     public LauncherWidgetsSearchBar(Context context) {

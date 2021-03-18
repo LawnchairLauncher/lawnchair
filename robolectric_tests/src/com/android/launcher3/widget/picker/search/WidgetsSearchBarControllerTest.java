@@ -24,9 +24,9 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import android.content.Context;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageButton;
 
+import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.search.SearchAlgorithm;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 
@@ -45,7 +45,7 @@ public class WidgetsSearchBarControllerTest {
 
     private WidgetsSearchBarController mController;
     private Context mContext;
-    private EditText mEditText;
+    private ExtendedEditText mEditText;
     private ImageButton mCancelButton;
     @Mock
     private SearchModeListener mSearchModeListener;
@@ -56,7 +56,7 @@ public class WidgetsSearchBarControllerTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         mContext = RuntimeEnvironment.application;
-        mEditText = new EditText(mContext);
+        mEditText = new ExtendedEditText(mContext);
         mCancelButton = new ImageButton(mContext);
         mController = new WidgetsSearchBarController(
                 mSearchAlgorithm, mEditText, mCancelButton, mSearchModeListener);
@@ -116,11 +116,10 @@ public class WidgetsSearchBarControllerTest {
     }
 
     @Test
-    public void cancelSearch_shouldInformSearchModeListenerToExitSearch() {
+    public void cancelSearch_shouldInformSearchModeListenerToClearResultsAndExitSearch() {
         mCancelButton.performClick();
 
         verify(mSearchModeListener).exitSearchMode();
-        verifyNoMoreInteractions(mSearchModeListener);
     }
 
     @Test
