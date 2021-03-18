@@ -85,7 +85,7 @@ public final class FeatureFlags {
             "ADAPTIVE_ICON_WINDOW_ANIM", true, "Use adaptive icons for window animations.");
 
     public static final BooleanFlag ENABLE_QUICKSTEP_LIVE_TILE = getDebugFlag(
-            "ENABLE_QUICKSTEP_LIVE_TILE", true, "Enable live tile in Quickstep overview");
+            "ENABLE_QUICKSTEP_LIVE_TILE", false, "Enable live tile in Quickstep overview");
 
     // Keep as DeviceFlag to allow remote disable in emergency.
     public static final BooleanFlag ENABLE_SUGGESTED_ACTIONS_OVERVIEW = new DeviceFlag(

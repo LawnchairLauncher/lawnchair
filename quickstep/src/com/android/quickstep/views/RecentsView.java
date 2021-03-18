@@ -617,6 +617,9 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     @Override
     protected void onWindowVisibilityChanged(int visibility) {
         super.onWindowVisibilityChanged(visibility);
+        if (visibility != VISIBLE && LIVE_TILE.get()) {
+            finishRecentsAnimation(true /* toRecents */, null);
+        }
         updateTaskStackListenerState();
     }
 
