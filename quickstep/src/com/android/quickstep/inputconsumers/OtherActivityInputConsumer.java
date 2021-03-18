@@ -31,7 +31,6 @@ import static com.android.launcher3.util.TraceHelper.FLAG_CHECK_FOR_RACE_CONDITI
 import static com.android.launcher3.util.VelocityUtils.PX_PER_MS;
 import static com.android.quickstep.GestureState.STATE_OVERSCROLL_WINDOW_CREATED;
 import static com.android.quickstep.util.ActiveGestureLog.INTENT_EXTRA_LOG_TRACE_ID;
-import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -65,7 +64,6 @@ import com.android.quickstep.RecentsAnimationCallbacks;
 import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.quickstep.RotationTouchHelper;
 import com.android.quickstep.TaskAnimationManager;
-import com.android.quickstep.TaskUtils;
 import com.android.quickstep.TouchInteractionService;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.CachedEventDispatcher;
@@ -381,9 +379,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         // Once we detect the gesture, we can enable batching to reduce further updates
         mInputEventReceiver.setBatchingEnabled(true);
 
-        mActivityInterface.closeOverlay();
-        TaskUtils.closeSystemWindowsAsync(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
-
         // Notify the handler that the gesture has actually started
         mInteractionHandler.onGestureStarted(isLikelyToStartNewTask);
     }
@@ -391,8 +386,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     private void startTouchTrackingForWindowAnimation(long touchTimeMs) {
         ActiveGestureLog.INSTANCE.addLog("startRecentsAnimation");
 
-        mInteractionHandler = mHandlerFactory.newHandler(mGestureState, touchTimeMs,
-                mTaskAnimationManager.isRecentsAnimationRunning());
+        mInteractionHandler = mHandlerFactory.newHandler(mGestureState, touchTimeMs);
         mInteractionHandler.setGestureEndCallback(this::onInteractionGestureFinished);
         mMotionPauseDetector.setOnMotionPauseListener(mInteractionHandler.getMotionPauseListener());
         Intent intent = new Intent(mInteractionHandler.getLaunchIntent());
