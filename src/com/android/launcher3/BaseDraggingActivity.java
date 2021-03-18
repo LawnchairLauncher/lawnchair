@@ -42,7 +42,6 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.Launcher.OnResumeCallback;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.InstanceIdSequence;
@@ -109,18 +108,8 @@ public abstract class BaseDraggingActivity extends BaseActivity
 
     private void updateTheme() {
         if (mThemeRes != Themes.getActivityThemeRes(this)) {
-            // Workaround (b/162812884): The system currently doesn't allow recreating an activity
-            // when it is not resumed, in such a case defer recreation until it is possible
-            if (hasBeenResumed()) {
-                recreate();
-            } else {
-                addOnResumeCallback(this::recreate);
-            }
+            recreate();
         }
-    }
-
-    protected void addOnResumeCallback(OnResumeCallback callback) {
-        // To be overridden
     }
 
     @Override
