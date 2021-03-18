@@ -94,27 +94,35 @@ java_library {
     min_sdk_version: "28",
 }
 
+// Library with all the dependencies for building Launcher3
+android_library {
+    name: "Launcher3ResLib",
+    srcs: [ ],
+    resource_dirs: ["res"],
+    static_libs: [
+        "LauncherPluginLib",
+        "launcher_quickstep_log_protos_lite",
+        "androidx-constraintlayout_constraintlayout",
+        "androidx.recyclerview_recyclerview",
+        "androidx.dynamicanimation_dynamicanimation",
+        "androidx.fragment_fragment",
+        "androidx.preference_preference",
+        "androidx.slice_slice-view",
+        "androidx.cardview_cardview",
+        "iconloader_base",
+    ],
+    manifest: "AndroidManifest-common.xml",
+    sdk_version: "current",
+    min_sdk_version: "26",
+}
+
 //
 // Build rule for Launcher3 dependencies lib.
 //
 android_library {
     name: "Launcher3CommonDepsLib",
-    static_libs: [
-        "androidx.recyclerview_recyclerview",
-        "androidx.dynamicanimation_dynamicanimation",
-        "androidx.preference_preference",
-        "androidx.slice_slice-view",
-        "iconloader_base",
-        "LauncherPluginLib",
-        "launcher_quickstep_log_protos_lite"
-    ],
-    srcs: [
-        "src_build_config/**/*.java",
-    ],
-    resource_dirs: ["res"],
-    optimize: {
-        enabled: false,
-    },
+    srcs: ["src_build_config/**/*.java"],
+    static_libs: ["Launcher3ResLib"],
     sdk_version: "current",
     min_sdk_version: "26",
     manifest: "AndroidManifest-common.xml",
@@ -164,22 +172,42 @@ android_app {
     ],
 }
 
-//
-// Launcher Robolectric test target.
-//
-java_library {
-    name: "Launcher3TestCommon",
-    libs: [
-        "Launcher3CommonDepsLib",
+// Library with all the dependencies for building quickstep
+android_library {
+    name: "QuickstepResLib",
+    srcs: [ ],
+    resource_dirs: [
+        "quickstep/res",
+        "quickstep/overview_ui_overrides/res",
     ],
+    static_libs: [
+        "Launcher3ResLib",
+        "SystemUISharedLib",
+        "SystemUI-statsd",
+    ],
+    manifest: "quickstep/AndroidManifest.xml",
+    min_sdk_version: "28",
+}
+
+
+// Source code used for test helpers
+filegroup {
+    name: "launcher-src-ext-tests",
+    srcs: ["ext_tests/src/**/*.java"],
+}
+
+// Common source files used to build launcher
+filegroup {
+    name: "launcher-src-no-build-config",
     srcs: [
         "src/**/*.java",
         "src_shortcuts_overrides/**/*.java",
-        "src_ui_overrides/**/*.java",
-        "ext_tests/src/**/*.java",
-        "tests/src_common/**/*.java",
+        "quickstep/src/**/*.java",
     ],
-    target_sdk_version: "29",
-    sdk_version: "current",
-    min_sdk_version: "26",
+}
+
+// Proguard files for Launcher3
+filegroup {
+    name: "launcher-proguard-rules",
+    srcs: ["proguard.flags"],
 }
