@@ -107,6 +107,7 @@ import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.WallpaperOffsetInterpolator;
+import com.android.launcher3.views.Snackbar;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
@@ -759,6 +760,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     public void deleteCurrentPage() {
         int currentPage = getCurrentPage();
         // TODO: Add logic to delete current page. See `stripEmptyScreens` below for reference.
+        Runnable commitDelete = () -> {};
+        Runnable onUndoClicked = () -> {};
+        Snackbar.show(mLauncher, R.string.page_deleted, R.string.undo, commitDelete, onUndoClicked);
     }
 
     public void stripEmptyScreens() {

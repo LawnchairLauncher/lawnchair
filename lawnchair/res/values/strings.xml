@@ -37,4 +37,5 @@
     <string name="colored_generated_icon_backgrounds_description">For generated Adaptive icons.</string>
     <string name="notification_dots">Notification Dots</string>
     <string name="delete_page">Delete Page</string>
+    <string name="page_deleted">Page deleted.</string>
 </resources>
