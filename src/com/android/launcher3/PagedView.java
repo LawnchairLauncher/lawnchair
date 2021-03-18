@@ -282,7 +282,32 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     private int validateNewPage(int newPage) {
         newPage = ensureWithinScrollBounds(newPage);
         // Ensure that it is clamped by the actual set of children in all cases
-        return Utilities.boundToRange(newPage, 0, getPageCount() - 1);
+        newPage = Utilities.boundToRange(newPage, 0, getPageCount() - 1);
+
+        if (getPanelCount() > 1) {
+            // Always return left panel as new page
+            newPage = getLeftmostVisiblePageForIndex(newPage);
+        }
+        return newPage;
+    }
+
+    private int getLeftmostVisiblePageForIndex(int pageIndex) {
+        int panelCount = getPanelCount();
+        return (pageIndex / panelCount) * panelCount;
+    }
+
+    /**
+     * Returns the number of pages that are shown at the same time.
+     */
+    protected int getPanelCount() {
+        return 1;
+    }
+
+    /**
+     * Returns true if the view is on one of the current pages, false otherwise.
+     */
+    public boolean isVisible(View child) {
+        return getLeftmostVisiblePageForIndex(indexOfChild(child)) == mCurrentPage;
     }
 
     /**
@@ -548,6 +573,10 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         super.forceLayout();
     }
 
+    private int getPageWidthSize(int widthSize) {
+        return (widthSize - mInsets.left - mInsets.right) / getPanelCount();
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (getChildCount() == 0) {
@@ -578,7 +607,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         if (DEBUG) Log.d(TAG, "PagedView.onMeasure(): " + widthSize + ", " + heightSize);
 
         int myWidthSpec = MeasureSpec.makeMeasureSpec(
-                widthSize - mInsets.left - mInsets.right, MeasureSpec.EXACTLY);
+                getPageWidthSize(widthSize), MeasureSpec.EXACTLY);
         int myHeightSpec = MeasureSpec.makeMeasureSpec(
                 heightSize - mInsets.top - mInsets.bottom, MeasureSpec.EXACTLY);
 
@@ -672,14 +701,29 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
                 // In case the pages are of different width, align the page to left or right edge
                 // based on the orientation.
+                // In case we have multiple panels on the screen, scrollOffsetEnd is the scroll
+                // needed for the whole visible area, so we have to divide it by panelCount.
                 final int pageScroll = mIsRtl
-                    ? (childStart - scrollOffsetStart)
-                    : Math.max(0, childPrimaryEnd  - scrollOffsetEnd);
+                        ? (childStart - scrollOffsetStart)
+                        : Math.max(0, childPrimaryEnd - scrollOffsetEnd / getPanelCount());
                 if (outPageScrolls[i] != pageScroll) {
                     pageScrollChanged = true;
                     outPageScrolls[i] = pageScroll;
                 }
                 childStart += primaryDimension + mPageSpacing + getChildGap();
+            }
+        }
+
+        int panelCount = getPanelCount();
+        if (panelCount > 1) {
+            for (int i = 0; i < childCount; i++) {
+                // In case we have multiple panels, always use left panel's page scroll for all
+                // panels on the screen.
+                int adjustedScroll = outPageScrolls[getLeftmostVisiblePageForIndex(i)];
+                if (outPageScrolls[i] != adjustedScroll) {
+                    outPageScrolls[i] = adjustedScroll;
+                    pageScrollChanged = true;
+                }
             }
         }
         return pageScrollChanged;
@@ -794,14 +838,16 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         }
         if (direction == View.FOCUS_LEFT) {
             if (getCurrentPage() > 0) {
-                snapToPage(getCurrentPage() - 1);
-                getChildAt(getCurrentPage() - 1).requestFocus(direction);
+                int nextPage = validateNewPage(getCurrentPage() - 1);
+                snapToPage(nextPage);
+                getChildAt(nextPage).requestFocus(direction);
                 return true;
             }
         } else if (direction == View.FOCUS_RIGHT) {
             if (getCurrentPage() < getPageCount() - 1) {
-                snapToPage(getCurrentPage() + 1);
-                getChildAt(getCurrentPage() + 1).requestFocus(direction);
+                int nextPage = validateNewPage(getCurrentPage() + 1);
+                snapToPage(nextPage);
+                getChildAt(nextPage).requestFocus(direction);
                 return true;
             }
         }
@@ -820,11 +866,13 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         }
         if (direction == View.FOCUS_LEFT) {
             if (mCurrentPage > 0) {
-                getPageAt(mCurrentPage - 1).addFocusables(views, direction, focusableMode);
+                int nextPage = validateNewPage(mCurrentPage - 1);
+                getPageAt(nextPage).addFocusables(views, direction, focusableMode);
             }
-        } else if (direction == View.FOCUS_RIGHT){
+        } else if (direction == View.FOCUS_RIGHT) {
             if (mCurrentPage < getPageCount() - 1) {
-                getPageAt(mCurrentPage + 1).addFocusables(views, direction, focusableMode);
+                int nextPage = validateNewPage(mCurrentPage + 1);
+                getPageAt(nextPage).addFocusables(views, direction, focusableMode);
             }
         }
     }
@@ -1255,12 +1303,14 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
                     if (((isSignificantMove && !isDeltaLeft && !isFling) ||
                             (isFling && !isVelocityLeft)) && mCurrentPage > 0) {
-                        finalPage = returnToOriginalPage ? mCurrentPage : mCurrentPage - 1;
+                        finalPage = returnToOriginalPage
+                                ? mCurrentPage : mCurrentPage - getPanelCount();
                         snapToPageWithVelocity(finalPage, velocity);
                     } else if (((isSignificantMove && isDeltaLeft && !isFling) ||
                             (isFling && isVelocityLeft)) &&
                             mCurrentPage < getChildCount() - 1) {
-                        finalPage = returnToOriginalPage ? mCurrentPage : mCurrentPage + 1;
+                        finalPage = returnToOriginalPage
+                                ? mCurrentPage : mCurrentPage + getPanelCount();
                         snapToPageWithVelocity(finalPage, velocity);
                     } else {
                         snapToDestination();

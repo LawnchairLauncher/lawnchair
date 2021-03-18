@@ -17,9 +17,7 @@
 package com.android.launcher3.widget;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
@@ -35,11 +33,10 @@ import com.android.launcher3.Utilities;
  */
 public class WidgetImageView extends View {
 
-    private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
     private final RectF mDstRectF = new RectF();
     private final int mBadgeMargin;
 
-    private Bitmap mBitmap;
+    private Drawable mDrawable;
     private Drawable mBadge;
 
     public WidgetImageView(Context context) {
@@ -57,21 +54,22 @@ public class WidgetImageView extends View {
                 .getDimensionPixelSize(R.dimen.profile_badge_margin);
     }
 
-    public void setBitmap(Bitmap bitmap, Drawable badge) {
-        mBitmap = bitmap;
+    public void setDrawable(Drawable drawable, Drawable badge) {
+        mDrawable = drawable;
         mBadge = badge;
         invalidate();
     }
 
-    public Bitmap getBitmap() {
-        return mBitmap;
+    public Drawable getDrawable() {
+        return mDrawable;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (mBitmap != null) {
+        if (mDrawable != null) {
             updateDstRectF();
-            canvas.drawBitmap(mBitmap, null, mDstRectF, mPaint);
+            mDrawable.setBounds(getBitmapBounds());
+            mDrawable.draw(canvas);
 
             // Only draw the badge if a preview was drawn.
             if (mBadge != null) {
@@ -91,11 +89,11 @@ public class WidgetImageView extends View {
     private void updateDstRectF() {
         float myWidth = getWidth();
         float myHeight = getHeight();
-        float bitmapWidth = mBitmap.getWidth();
+        float bitmapWidth = mDrawable.getIntrinsicWidth();
 
         final float scale = bitmapWidth > myWidth ? myWidth / bitmapWidth : 1;
         float scaledWidth = bitmapWidth * scale;
-        float scaledHeight = mBitmap.getHeight() * scale;
+        float scaledHeight = mDrawable.getIntrinsicHeight() * scale;
 
         mDstRectF.left = (myWidth - scaledWidth) / 2;
         mDstRectF.right = (myWidth + scaledWidth) / 2;

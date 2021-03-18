@@ -20,6 +20,8 @@ import static com.android.launcher3.uioverrides.states.OverviewModalTaskState.ge
 
 import android.content.Context;
 
+import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.quickstep.RecentsActivity;
 
@@ -29,14 +31,19 @@ import com.android.quickstep.RecentsActivity;
 public class RecentsState implements BaseState<RecentsState> {
 
     private static final int FLAG_MODAL = BaseState.getFlag(0);
-    private static final int FLAG_HAS_BUTTONS = BaseState.getFlag(1);
+    private static final int FLAG_CLEAR_ALL_BUTTON = BaseState.getFlag(1);
     private static final int FLAG_FULL_SCREEN = BaseState.getFlag(2);
+    private static final int FLAG_OVERVIEW_ACTIONS = BaseState.getFlag(3);
+    private static final int FLAG_SHOW_AS_GRID = BaseState.getFlag(4);
 
-    public static final RecentsState DEFAULT = new RecentsState(0, FLAG_HAS_BUTTONS);
+    public static final RecentsState DEFAULT = new RecentsState(0,
+            FLAG_CLEAR_ALL_BUTTON | FLAG_OVERVIEW_ACTIONS | FLAG_SHOW_AS_GRID);
     public static final RecentsState MODAL_TASK = new ModalState(1,
-            FLAG_DISABLE_RESTORE | FLAG_HAS_BUTTONS | FLAG_MODAL);
+            FLAG_DISABLE_RESTORE | FLAG_CLEAR_ALL_BUTTON | FLAG_OVERVIEW_ACTIONS | FLAG_MODAL
+                    | FLAG_SHOW_AS_GRID);
     public static final RecentsState BACKGROUND_APP = new BackgroundAppState(2,
             FLAG_DISABLE_RESTORE | FLAG_NON_INTERACTIVE | FLAG_FULL_SCREEN);
+    public static final RecentsState HOME = new RecentsState(3, 0);
 
     public final int ordinal;
     private final int mFlags;
@@ -82,12 +89,33 @@ public class RecentsState implements BaseState<RecentsState> {
         return hasFlag(FLAG_FULL_SCREEN);
     }
 
-    public boolean hasButtons() {
-        return hasFlag(FLAG_HAS_BUTTONS);
+    /**
+     * For this state, whether clear all button should be shown.
+     */
+    public boolean hasClearAllButton() {
+        return hasFlag(FLAG_CLEAR_ALL_BUTTON);
+    }
+
+    /**
+     * For this state, whether overview actions should be shown.
+     */
+    public boolean hasOverviewActions(RecentsActivity activity) {
+        return hasFlag(FLAG_OVERVIEW_ACTIONS) && !showAsGrid(activity.getDeviceProfile());
     }
 
     public float[] getOverviewScaleAndOffset(RecentsActivity activity) {
         return new float[] { NO_SCALE, NO_OFFSET };
+    }
+
+    /**
+     * For this state, whether tasks should layout as a grid rather than a list.
+     */
+    public boolean displayOverviewTasksAsGrid(DeviceProfile deviceProfile) {
+        return hasFlag(FLAG_SHOW_AS_GRID) && showAsGrid(deviceProfile);
+    }
+
+    private boolean showAsGrid(DeviceProfile deviceProfile) {
+        return deviceProfile.isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get();
     }
 
     private static class ModalState extends RecentsState {

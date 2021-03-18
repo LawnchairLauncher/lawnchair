@@ -34,6 +34,7 @@
 
         <!-- Left -->
         <ImageView
+            android:id="@+id/widget_resize_left_handle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left|center_vertical"
@@ -43,6 +44,7 @@
 
         <!-- Top -->
         <ImageView
+            android:id="@+id/widget_resize_top_handle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="top|center_horizontal"
@@ -52,6 +54,7 @@
 
         <!-- Right -->
         <ImageView
+            android:id="@+id/widget_resize_right_handle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right|center_vertical"
@@ -61,6 +64,7 @@
 
         <!-- Bottom -->
         <ImageView
+            android:id="@+id/widget_resize_bottom_handle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center_horizontal"

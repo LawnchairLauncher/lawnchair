@@ -306,6 +306,11 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     public void onSystemUiFlagsChanged(int systemUiStateFlags) {
     }
 
+    /**
+     * Returns the expected STATE_TYPE from the provided GestureEndTarget.
+     */
+    public abstract STATE_TYPE stateFromGestureEndTarget(GestureState.GestureEndTarget endTarget);
+
     public interface AnimationFactory {
 
         void createActivityInterface(long transitionLength);

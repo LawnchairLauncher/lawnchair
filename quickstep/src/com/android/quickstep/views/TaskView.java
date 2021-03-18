@@ -27,8 +27,8 @@ import static android.view.Surface.ROTATION_270;
 import static android.view.Surface.ROTATION_90;
 import static android.widget.Toast.LENGTH_SHORT;
 
-import static com.android.launcher3.QuickstepTransitionManager.RECENTS_LAUNCH_DURATION;
 import static com.android.launcher3.LauncherState.OVERVIEW_SPLIT_SELECT;
+import static com.android.launcher3.QuickstepTransitionManager.RECENTS_LAUNCH_DURATION;
 import static com.android.launcher3.Utilities.comp;
 import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncestor;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
@@ -275,7 +275,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private float mTaskResistanceTranslationY;
     // The following translation variables should only be used in the same orientation as Launcher.
     private float mFullscreenTranslationX;
-    private float mAccumulatedFullscreenTranslationX;
     private float mBoxTranslationY;
     // The following grid translations scales with mGridProgress.
     private float mGridTranslationX;
@@ -750,9 +749,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     @Override
     public void onRecycle() {
-        mFullscreenTranslationX = mAccumulatedFullscreenTranslationX = mGridTranslationX =
-                mGridTranslationY =
-                        mGridOffsetTranslationX = mBoxTranslationY = mNonRtlVisibleOffset = 0f;
+        mFullscreenTranslationX = mGridTranslationX = mGridTranslationY =
+                mGridOffsetTranslationX = mBoxTranslationY = mNonRtlVisibleOffset = 0f;
         resetViewTransforms();
         // Clear any references to the thumbnail (it will be re-read either from the cache or the
         // system on next bind)
@@ -864,6 +862,10 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         applyScale();
     }
 
+    public float getFullscreenScale() {
+        return mFullscreenScale;
+    }
+
     public void setGridScale(float gridScale) {
         mGridScale = gridScale;
         applyScale();
@@ -921,17 +923,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         applyTranslationY();
     }
 
-    private void setFullscreenTranslationX(float fullscreenTranslationX) {
+    public void setFullscreenTranslationX(float fullscreenTranslationX) {
         mFullscreenTranslationX = fullscreenTranslationX;
-        applyTranslationX();
-    }
-
-    public float getFullscreenTranslationX() {
-        return mFullscreenTranslationX;
-    }
-
-    public void setAccumulatedFullscreenTranslationX(float accumulatedFullscreenTranslationX) {
-        mAccumulatedFullscreenTranslationX = accumulatedFullscreenTranslationX;
         applyTranslationX();
     }
 
@@ -965,7 +958,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     public float getScrollAdjustment(boolean fullscreenEnabled, boolean gridEnabled) {
         float scrollAdjustment = 0;
         if (fullscreenEnabled) {
-            scrollAdjustment += mFullscreenTranslationX + mAccumulatedFullscreenTranslationX;
+            scrollAdjustment += mFullscreenTranslationX;
         }
         if (gridEnabled) {
             scrollAdjustment += mGridTranslationX;
@@ -999,7 +992,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     private void applyTranslationX() {
         setTranslationX(mDismissTranslationX + mTaskOffsetTranslationX + mTaskResistanceTranslationX
-                + getFullscreenTrans(mFullscreenTranslationX + mAccumulatedFullscreenTranslationX)
+                + getFullscreenTrans(mFullscreenTranslationX)
                 + getGridTrans(mGridTranslationX + mGridOffsetTranslationX));
     }
 
@@ -1243,10 +1236,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             }
             setFullscreenScale(fullscreenScale);
 
-            float widthDiff = params.width * (1 - mFullscreenScale);
-            setFullscreenTranslationX(
-                    getLayoutDirection() == LAYOUT_DIRECTION_RTL ? -widthDiff : widthDiff);
-
             if (params.width != expectedWidth || params.height != expectedHeight) {
                 params.width = expectedWidth;
                 params.height = expectedHeight;
@@ -1254,7 +1243,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             }
         } else {
             setBoxTranslationY(0);
-            setFullscreenTranslationX(0);
             setFullscreenScale(1);
             if (params.width != ViewGroup.LayoutParams.MATCH_PARENT) {
                 params.width = ViewGroup.LayoutParams.MATCH_PARENT;
