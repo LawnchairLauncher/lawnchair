@@ -27,7 +27,6 @@ import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.Utilities.postAsyncCallback;
-import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_1_7;
 import static com.android.launcher3.anim.Interpolators.EXAGGERATED_EASE;
@@ -67,7 +66,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
-import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.shortcuts.DeepShortcutView;
@@ -147,9 +145,6 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
     public static final int CONTENT_ALPHA_DURATION = 217;
     protected static final int CONTENT_TRANSLATION_DURATION = 350;
-
-    // Progress = 0: All apps is fully pulled up, Progress = 1: All apps is fully pulled down.
-    public static final float ALL_APPS_PROGRESS_OFF_SCREEN = 1.3059858f;
 
     private static final int MAX_NUM_TASKS = 5;
 
@@ -429,9 +424,6 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 appsView.setLayerType(View.LAYER_TYPE_NONE, null);
             };
         } else if (mLauncher.isInState(OVERVIEW)) {
-            AllAppsTransitionController allAppsController = mLauncher.getAllAppsController();
-            launcherAnimator.play(ObjectAnimator.ofFloat(allAppsController, ALL_APPS_PROGRESS,
-                    allAppsController.getProgress(), ALL_APPS_PROGRESS_OFF_SCREEN));
             endListener = composeViewContentAnimator(launcherAnimator, alphas, trans);
         } else {
             mDragLayerAlpha.setValue(alphas[0]);
