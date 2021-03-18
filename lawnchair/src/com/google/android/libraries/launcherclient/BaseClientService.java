@@ -1,4 +1,4 @@
-package com.google.android.libraries.gsa.launcherclient;
+package com.google.android.libraries.launcherclient;
 
 import android.content.ComponentName;
 import android.content.Context;

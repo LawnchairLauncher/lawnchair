@@ -1,10 +1,9 @@
-package com.google.android.libraries.gsa.launcherclient;
+package com.google.android.libraries.launcherclient;
 
 import android.content.ComponentName;
 import android.content.Context;
 import android.os.IBinder;
 
-import com.google.android.libraries.launcherclient.ILauncherOverlay;
 import java.lang.ref.WeakReference;
 
 public class LauncherClientService extends BaseClientService {

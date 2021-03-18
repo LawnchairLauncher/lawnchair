@@ -1,4 +1,4 @@
-package com.google.android.libraries.gsa.launcherclient;
+package com.google.android.libraries.launcherclient;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -22,15 +22,13 @@ import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 import ch.deletescape.lawnchair.FeedBridge;
 import ch.deletescape.lawnchair.FeedBridge.BridgeInfo;
-import com.google.android.libraries.launcherclient.ILauncherOverlay;
-import com.google.android.libraries.launcherclient.ILauncherOverlayCallback;
 import java.lang.ref.WeakReference;
 
 public class LauncherClient {
     private static int apiVersion = -1;
 
     private ILauncherOverlay mOverlay;
-    private final IScrollCallback mScrollCallback;
+    public final IScrollCallback mScrollCallback;
 
     public final BaseClientService mBaseService;
     public final LauncherClientService mLauncherService;
@@ -188,7 +186,9 @@ public class LauncherClient {
     }
 
     public final void onStart() {
+        Log.i("FEED", "1");
         if (!mDestroyed) {
+            Log.i("FEED", "2");
             mLauncherService.setStopped(false);
             reconnect();
             mActivityState |= 1;
@@ -217,12 +217,7 @@ public class LauncherClient {
 
     private void reconnect() {
         if (!mDestroyed && (!mLauncherService.connect() || !mBaseService.connect())) {
-            mActivity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    setServiceState(0);
-                }
-            });
+            mActivity.runOnUiThread(() -> setServiceState(0));
         }
     }
 

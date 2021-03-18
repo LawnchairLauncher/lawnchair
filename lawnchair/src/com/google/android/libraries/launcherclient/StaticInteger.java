@@ -1,4 +1,4 @@
-package com.google.android.libraries.gsa.launcherclient;
+package com.google.android.libraries.launcherclient;
 
 public class StaticInteger {
     public final int mData;
