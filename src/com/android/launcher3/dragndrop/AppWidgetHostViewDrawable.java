@@ -76,4 +76,9 @@ public final class AppWidgetHostViewDrawable extends Drawable {
     public ColorFilter getColorFilter() {
         return mPaint.getColorFilter();
     }
+
+    /** Returns the {@link LauncherAppWidgetHostView}. */
+    public LauncherAppWidgetHostView getAppWidgetHostView() {
+        return mAppWidgetHostView;
+    }
 }

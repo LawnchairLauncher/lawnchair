@@ -39,6 +39,7 @@ import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.icons.LauncherIcons;
+import com.android.launcher3.widget.dragndrop.AppWidgetHostViewDragListener;
 
 /**
  * Extension of {@link DragPreviewProvider} with logic specific to pending widgets/shortcuts
@@ -110,6 +111,8 @@ public class PendingItemDragHelper extends DragPreviewProvider {
             }
             if (mAppWidgetHostViewPreview != null) {
                 preview = new AppWidgetHostViewDrawable(mAppWidgetHostViewPreview);
+                launcher.getDragController()
+                        .addDragListener(new AppWidgetHostViewDragListener(launcher));
             }
             if (preview == null) {
                 preview = new FastBitmapDrawable(
