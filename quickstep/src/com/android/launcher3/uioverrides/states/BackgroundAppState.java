@@ -20,6 +20,7 @@ import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKG
 import android.content.Context;
 
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.quickstep.util.LayoutUtils;
@@ -76,7 +77,7 @@ public class BackgroundAppState extends OverviewState {
     }
 
     @Override
-    public boolean displayOverviewTasksAsGrid(Launcher launcher) {
+    public boolean displayOverviewTasksAsGrid(DeviceProfile deviceProfile) {
         return false;
     }
 

@@ -142,7 +142,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
 
         // If the ImageView doesn't have a drawable yet, the widget preview hasn't been loaded and
         // we abort the drag.
-        if (img.getBitmap() == null) {
+        if (img.getDrawable() == null) {
             return false;
         }
 
@@ -151,7 +151,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
 
         // Start home and pass the draw request params
         PinItemDragListener listener = new PinItemDragListener(mRequest, bounds,
-                img.getBitmap().getWidth(), img.getWidth());
+                img.getDrawable().getIntrinsicWidth(), img.getWidth());
 
 
         // Start a system drag and drop. We use a transparent bitmap as preview for system drag

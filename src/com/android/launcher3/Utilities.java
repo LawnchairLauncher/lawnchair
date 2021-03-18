@@ -690,6 +690,16 @@ public final class Utilities {
         };
     }
 
+    /**
+     * Compares the ratio of two quantities and returns whether that ratio is greater than the
+     * provided bound. Order of quantities does not matter. Bound should be a decimal representation
+     * of a percentage.
+     */
+    public static boolean isRelativePercentDifferenceGreaterThan(float first, float second,
+            float bound) {
+        return (Math.abs(first - second) / Math.abs((first + second) / 2.0f)) > bound;
+    }
+
     private static class FixedSizeEmptyDrawable extends ColorDrawable {
 
         private final int mSize;

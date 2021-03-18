@@ -19,6 +19,7 @@ package com.android.launcher3;
 import static com.android.launcher3.Utilities.getDevicePrefs;
 import static com.android.launcher3.Utilities.getPointString;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_FOUR_COLUMNS;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_TWO_PANEL_HOME;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.PackageManagerHelper.getPackageFilter;
 
@@ -235,6 +236,9 @@ public class InvariantDeviceProfile {
     }
 
     public static String getCurrentGridName(Context context) {
+        if (ENABLE_TWO_PANEL_HOME.get()) {
+            return ENABLE_TWO_PANEL_HOME.key;
+        }
         if (ENABLE_FOUR_COLUMNS.get()) {
             return ENABLE_FOUR_COLUMNS.key;
         }

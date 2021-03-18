@@ -18,6 +18,7 @@ package com.android.quickstep;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.LauncherState.QUICK_SWITCH;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IME_SHOWING;
 
@@ -270,7 +271,7 @@ public final class LauncherActivityInterface extends
         if (taskbarController == null) {
             return;
         }
-        LauncherState toState = endTarget == GestureEndTarget.RECENTS ? OVERVIEW : NORMAL;
+        LauncherState toState = stateFromGestureEndTarget(endTarget);
         taskbarController.createAnimToLauncher(toState, duration).start();
     }
 
@@ -300,5 +301,19 @@ public final class LauncherActivityInterface extends
             return super.shouldCancelCurrentGesture();
         }
         return taskbarController.isDraggingItem();
+    }
+
+    @Override
+    public LauncherState stateFromGestureEndTarget(GestureEndTarget endTarget) {
+        switch (endTarget) {
+            case RECENTS:
+                return OVERVIEW;
+            case NEW_TASK:
+            case LAST_TASK:
+                return QUICK_SWITCH;
+            case HOME:
+            default:
+                return NORMAL;
+        }
     }
 }

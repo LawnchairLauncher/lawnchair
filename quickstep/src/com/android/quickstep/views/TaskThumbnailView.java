@@ -379,9 +379,10 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
                     mThumbnailData.thumbnail.getHeight());
             int currentRotation = getTaskView().getRecentsView().getPagedViewOrientedState()
                     .getRecentsActivityRotation();
+            boolean isRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
             mPreviewPositionHelper.updateThumbnailMatrix(mPreviewRect, mThumbnailData,
                     getMeasuredWidth(), getMeasuredHeight(), mActivity.getDeviceProfile(),
-                    currentRotation);
+                    currentRotation, isRtl);
 
             mBitmapShader.setLocalMatrix(mPreviewPositionHelper.mMatrix);
             mPaint.setShader(mBitmapShader);
@@ -466,7 +467,8 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
          * Updates the matrix based on the provided parameters
          */
         public void updateThumbnailMatrix(Rect thumbnailBounds, ThumbnailData thumbnailData,
-                int canvasWidth, int canvasHeight, DeviceProfile dp, int currentRotation) {
+                int canvasWidth, int canvasHeight, DeviceProfile dp, int currentRotation,
+                boolean isRtl) {
             boolean isRotated = false;
             boolean isOrientationDifferent;
 
@@ -499,6 +501,17 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
                         - (thumbnailClipHint.left + thumbnailClipHint.right);
                 float availableHeight = surfaceHeight
                         - (thumbnailClipHint.top + thumbnailClipHint.bottom);
+
+                if (isRotated) {
+                    float canvasAspect = canvasWidth / (float) canvasHeight;
+                    float availableAspect = availableHeight / availableWidth;
+                    // Do not rotate thumbnail if it would not improve fit
+                    if (Utilities.isRelativePercentDifferenceGreaterThan(canvasAspect,
+                            availableAspect, 0.1f)) {
+                        isRotated = false;
+                        isOrientationDifferent = false;
+                    }
+                }
 
                 final float targetW, targetH;
                 if (isOrientationDifferent) {
@@ -535,28 +548,25 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
                     }
                 }
 
-                // Update the clip hints
-                float halfExtraW = (availableWidth - croppedWidth) / 2;
-                thumbnailClipHint.left += halfExtraW;
-                thumbnailClipHint.right += halfExtraW;
-                if (thumbnailClipHint.left < 0) {
-                    thumbnailClipHint.right += thumbnailClipHint.left;
-                    thumbnailClipHint.left = 0;
-                } else if (thumbnailClipHint.right < 0) {
-                    thumbnailClipHint.left += thumbnailClipHint.right;
+                // Update the clip hints. Align to 0,0, crop the remaining.
+                if (isRtl) {
+                    if (thumbnailClipHint.right < 0) {
+                        thumbnailClipHint.left += thumbnailClipHint.right;
+                    }
                     thumbnailClipHint.right = 0;
+                    thumbnailClipHint.left += availableWidth - croppedWidth;
+                } else {
+                    if (thumbnailClipHint.left < 0) {
+                        thumbnailClipHint.right += thumbnailClipHint.left;
+                    }
+                    thumbnailClipHint.left = 0;
+                    thumbnailClipHint.right += availableWidth - croppedWidth;
                 }
-
-                float halfExtraH = (availableHeight - croppedHeight) / 2;
-                thumbnailClipHint.top += halfExtraH;
-                thumbnailClipHint.bottom += halfExtraH;
                 if (thumbnailClipHint.top < 0) {
                     thumbnailClipHint.bottom += thumbnailClipHint.top;
-                    thumbnailClipHint.top = 0;
-                } else if (thumbnailClipHint.bottom < 0) {
-                    thumbnailClipHint.top += thumbnailClipHint.bottom;
-                    thumbnailClipHint.bottom = 0;
                 }
+                thumbnailClipHint.top = 0;
+                thumbnailClipHint.bottom += availableHeight - croppedHeight;
 
                 thumbnailScale = targetW / (croppedWidth * scale);
             }

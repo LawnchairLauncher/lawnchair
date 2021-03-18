@@ -1,5 +1,7 @@
 package com.android.launcher3.widget;
 
+import static com.android.launcher3.Utilities.ATLEAST_S;
+
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
@@ -33,6 +35,8 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo
     public int spanY;
     public int minSpanX;
     public int minSpanY;
+    public int maxSpanX;
+    public int maxSpanY;
 
     public static LauncherAppWidgetProviderInfo fromProviderInfo(Context context,
             AppWidgetProviderInfo info) {
@@ -78,15 +82,40 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo
                 || !idp.portraitProfile.shouldInsetWidgets()) {
             AppWidgetHostView.getDefaultPaddingForWidget(context, provider, widgetPadding);
         }
-        spanX = Math.max(1, (int) Math.ceil(
-                        (minWidth + widgetPadding.left + widgetPadding.right) / smallestCellWidth));
-        spanY = Math.max(1, (int) Math.ceil(
-                (minHeight + widgetPadding.top + widgetPadding.bottom) / smallestCellHeight));
 
-        minSpanX = Math.max(1, (int) Math.ceil(
-                (minResizeWidth + widgetPadding.left + widgetPadding.right) / smallestCellWidth));
-        minSpanY = Math.max(1, (int) Math.ceil(
-                (minResizeHeight + widgetPadding.top + widgetPadding.bottom) / smallestCellHeight));
+        minSpanX = getSpanX(widgetPadding, minResizeWidth, smallestCellWidth);
+        minSpanY = getSpanY(widgetPadding, minResizeHeight, smallestCellHeight);
+
+        // Use maxResizeWidth/Height if they are defined and we're on S or above.
+        maxSpanX =
+                (ATLEAST_S && maxResizeWidth > 0)
+                        ? getSpanX(widgetPadding, maxResizeWidth, smallestCellWidth)
+                        : idp.numColumns;
+        maxSpanY =
+                (ATLEAST_S && maxResizeHeight > 0)
+                        ? getSpanY(widgetPadding, maxResizeHeight, smallestCellHeight)
+                        : idp.numRows;
+
+        // Use targetCellWidth/Height if it is within the min/max ranges and we're on S or above.
+        // Otherwise, fall back to minWidth/Height.
+        if (ATLEAST_S && targetCellWidth >= minSpanX && targetCellWidth <= maxSpanX
+                && targetCellHeight >= minSpanY && targetCellHeight <= maxSpanY) {
+            spanX = targetCellWidth;
+            spanY = targetCellHeight;
+        } else {
+            spanX = getSpanX(widgetPadding, minWidth, smallestCellWidth);
+            spanY = getSpanY(widgetPadding, minHeight, smallestCellHeight);
+        }
+    }
+
+    private int getSpanX(Rect widgetPadding, int widgetWidth, float cellWidth) {
+        return Math.max(1, (int) Math.ceil(
+                (widgetWidth + widgetPadding.left + widgetPadding.right) / cellWidth));
+    }
+
+    private int getSpanY(Rect widgetPadding, int widgetHeight, float cellHeight) {
+        return Math.max(1, (int) Math.ceil(
+                (widgetHeight + widgetPadding.top + widgetPadding.bottom) / cellHeight));
     }
 
     public String getLabel(PackageManager packageManager) {
