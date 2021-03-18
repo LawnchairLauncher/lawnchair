@@ -17,10 +17,8 @@ package com.android.launcher3.allapps;
 
 import android.graphics.Rect;
 import android.view.View;
-import android.view.animation.Interpolator;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.anim.PropertySetter;
 
 /**
  * A abstract representation of a row in all-apps view
@@ -46,9 +44,6 @@ public interface FloatingHeaderRow {
      * position.
      */
     boolean hasVisibleContent();
-
-    void setContentVisibility(boolean hasHeaderExtra, boolean hasAllAppsContent,
-            PropertySetter setter, Interpolator headerFade, Interpolator allAppsFade);
 
     /**
      * Scrolls the content vertically.

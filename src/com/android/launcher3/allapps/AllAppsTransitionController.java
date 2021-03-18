@@ -16,16 +16,11 @@
 package com.android.launcher3.allapps;
 
 import static com.android.launcher3.LauncherState.ALL_APPS_CONTENT;
-import static com.android.launcher3.LauncherState.ALL_APPS_HEADER_EXTRA;
-import static com.android.launcher3.LauncherState.APPS_VIEW_ITEM_MASK;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
-import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
-import static com.android.launcher3.anim.Interpolators.INSTANT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_HEADER_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SCALE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_VERTICAL_PROGRESS;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_ALLAPPS;
@@ -194,25 +189,10 @@ public class AllAppsTransitionController
      */
     public void setAlphas(LauncherState state, StateAnimationConfig config, PropertySetter setter) {
         int visibleElements = state.getVisibleElements(mLauncher);
-        boolean hasHeaderExtra = (visibleElements & ALL_APPS_HEADER_EXTRA) != 0;
         boolean hasAllAppsContent = (visibleElements & ALL_APPS_CONTENT) != 0;
 
-        boolean hasAnyVisibleItem = (visibleElements & APPS_VIEW_ITEM_MASK) != 0;
-
         Interpolator allAppsFade = config.getInterpolator(ANIM_ALL_APPS_FADE, LINEAR);
-        Interpolator headerFade = config.getInterpolator(ANIM_ALL_APPS_HEADER_FADE, allAppsFade);
-
-
-        setter.setViewAlpha(mAppsView.getContentView(), hasAllAppsContent ? 1 : 0, allAppsFade);
-        setter.setViewAlpha(mAppsView.getScrollBar(), hasAllAppsContent ? 1 : 0, allAppsFade);
-        mAppsView.getFloatingHeaderView().setContentVisibility(hasHeaderExtra,
-                hasAllAppsContent, setter, headerFade, allAppsFade);
-
-        mAppsView.getSearchUiManager().setContentVisibility(visibleElements, setter, allAppsFade);
-
-        // Set visibility of the container at the very beginning or end of the transition.
-        setter.setViewAlpha(mAppsView, hasAnyVisibleItem ? 1 : 0,
-                hasAnyVisibleItem ? INSTANT : FINAL_FRAME);
+        setter.setViewAlpha(mAppsView, hasAllAppsContent ? 1 : 0, allAppsFade);
     }
 
     public AnimatorListenerAdapter getProgressAnimatorListener() {
