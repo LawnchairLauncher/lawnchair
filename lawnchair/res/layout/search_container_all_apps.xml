@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ch.deletescape.nexuslauncher.HotseatQsb
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@id/search_container_all_apps"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/search_widget_hotseat_height"
+    android:layout_gravity="top|center_horizontal">
+
+    <fragment
+        android:id="@+id/search_wrapper_view"
+        android:name="ch.deletescape.nexuslauncher.HotseatQsb$HotseatQsbFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:tag="qsb_view"
+        tools:ignore="FragmentTagUsage" />
+
+    <com.android.launcher3.ExtendedEditText
+        android:id="@+id/fallback_search_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/all_apps_search_bar_field_height"
+        android:layout_gravity="center"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@drawable/bg_all_apps_searchbox"
+        android:elevation="1dp"
+        android:focusableInTouchMode="true"
+        android:gravity="center"
+        android:hint="@string/all_apps_search_bar_hint"
+        android:imeOptions="actionSearch|flagNoExtractUi"
+        android:inputType="text|textNoSuggestions|textCapWords"
+        android:maxLines="1"
+        android:padding="8dp"
+        android:saveEnabled="false"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
+        android:textColor="?android:attr/textColorSecondary"
+        android:textColorHint="@drawable/all_apps_search_hint"
+        android:textSize="16sp"
+        android:visibility="invisible" />
+</ch.deletescape.nexuslauncher.HotseatQsb>

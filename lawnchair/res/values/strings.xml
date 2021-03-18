@@ -36,4 +36,6 @@
     <string name="colored_generated_icon_backgrounds_label">Make Colored Backgrounds</string>
     <string name="colored_generated_icon_backgrounds_description">For generated Adaptive icons.</string>
     <string name="notification_dots">Notification Dots</string>
+
+    <string name="smartspace_preferences">Preferences</string>
 </resources>
