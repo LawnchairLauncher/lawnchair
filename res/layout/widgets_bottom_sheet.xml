@@ -19,12 +19,17 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="28dp"
+    android:paddingTop="16dp"
     android:background="@drawable/top_round_rect_primary"
     android:elevation="@dimen/deep_shortcuts_elevation"
     android:layout_gravity="bottom"
     android:theme="?attr/widgetsTheme">
-
+    <View
+        android:layout_width="48dp"
+        android:layout_height="2dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"
+        android:background="?android:attr/textColorSecondary"/>
     <TextView
         style="@style/TextHeadline"
         android:id="@+id/title"
@@ -48,8 +53,8 @@
         android:id="@+id/widgets_table_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="45dp"
-        android:layout_marginBottom="40dp">
+        android:fadeScrollbars="false"
+        android:layout_marginVertical="16dp">
         <include layout="@layout/widgets_table_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
