@@ -16,7 +16,6 @@
 
 package com.android.launcher3.widget;
 
-import android.app.WallpaperManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -50,6 +49,7 @@ import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BaseDragLayer.TouchCompleteListener;
+import com.android.launcher3.widget.dragndrop.AppWidgetHostViewDragListener;
 
 import java.util.List;
 
@@ -74,7 +74,6 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
     private final CheckLongPressHelper mLongPressHelper;
     protected final Launcher mLauncher;
     private final Workspace mWorkspace;
-    private final WallpaperManager mWallpaperManager;
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mReinflateOnConfigChange;
@@ -85,10 +84,14 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
     private boolean mIsScrollable;
     private boolean mIsAttachedToWindow;
     private boolean mIsAutoAdvanceRegistered;
+    private boolean mIsInDragMode = false;
     private Runnable mAutoAdvanceRunnable;
     private RectF mLastLocationRegistered = null;
+    @Nullable private AppWidgetHostViewDragListener mDragListener;
+
     // Used to store the widget size during onLayout.
     private final Rect mCurrentWidgetSize = new Rect();
+    private final Rect mWidgetSizeAtDrag = new Rect();
     private final RectF mTempRectF = new RectF();
     private final boolean mIsRtl;
 
@@ -106,7 +109,6 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
             setOnLightBackground(true);
         }
         mIsRtl = Utilities.isRtl(context.getResources());
-        mWallpaperManager = WallpaperManager.getInstance(getContext());
         mColorExtractor = LocalColorExtractor.newInstance(getContext());
         mColorExtractor.setListener(this);
     }
@@ -118,12 +120,16 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
         } else {
             super.setColorResources(colors);
         }
+
+        if (mDragListener != null) {
+            mDragListener.onDragContentChanged();
+        }
     }
 
     @Override
     public boolean onLongClick(View view) {
         if (mIsScrollable) {
-            DragLayer dragLayer = Launcher.getLauncher(getContext()).getDragLayer();
+            DragLayer dragLayer = mLauncher.getDragLayer();
             dragLayer.requestDisallowInterceptTouchEvent(false);
         }
         view.performLongClick();
@@ -172,7 +178,7 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
 
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            DragLayer dragLayer = Launcher.getLauncher(getContext()).getDragLayer();
+            DragLayer dragLayer = mLauncher.getDragLayer();
             if (mIsScrollable) {
                 dragLayer.requestDisallowInterceptTouchEvent(true);
             }
@@ -252,70 +258,89 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
 
         mIsScrollable = checkScrollableRecursively(this);
 
-        mCurrentWidgetSize.left = left;
-        mCurrentWidgetSize.top = top;
-        mCurrentWidgetSize.right = right;
-        mCurrentWidgetSize.bottom = bottom;
-        updateColorExtraction(mCurrentWidgetSize);
+        if (!mIsInDragMode && getTag() instanceof LauncherAppWidgetInfo) {
+            mCurrentWidgetSize.left = left;
+            mCurrentWidgetSize.top = top;
+            mCurrentWidgetSize.right = right;
+            mCurrentWidgetSize.bottom = bottom;
+            LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) getTag();
+            int pageId = mWorkspace.getPageIndexForScreenId(info.screenId);
+            updateColorExtraction(mCurrentWidgetSize, pageId);
+        }
     }
 
-    private void updateColorExtraction(Rect widgetLocation) {
+    /** Starts the drag mode. */
+    public void startDrag(AppWidgetHostViewDragListener dragListener) {
+        mIsInDragMode = true;
+        mDragListener = dragListener;
+    }
+
+    /** Handles a drag event occurred on a workspace page, {@code pageId}. */
+    public void handleDrag(Rect rect, int pageId) {
+        mWidgetSizeAtDrag.set(rect);
+        updateColorExtraction(mWidgetSizeAtDrag, pageId);
+    }
+
+    /** Ends the drag mode. */
+    public void endDrag() {
+        mIsInDragMode = false;
+        mDragListener = null;
+        mWidgetSizeAtDrag.setEmpty();
+        requestLayout();
+    }
+
+    private void updateColorExtraction(Rect widgetLocation, int pageId) {
         // If the widget hasn't been measured and laid out, we cannot do this.
         if (widgetLocation.isEmpty()) {
             return;
         }
-        LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) getTag();
-        if (info != null) {
-            int screenWidth = mLauncher.getDeviceProfile().widthPx;
-            int screenHeight = mLauncher.getDeviceProfile().heightPx;
-            int numScreens = mWorkspace.getNumPagesForWallpaperParallax();
-            int screenId = mIsRtl ? numScreens - info.screenId : info.screenId;
-            float relativeScreenWidth = 1f / numScreens;
-            float absoluteTop = widgetLocation.top;
-            float absoluteBottom = widgetLocation.bottom;
-            for (View v = (View) getParent();
-                    v != null && v.getId() != R.id.launcher;
-                    v = (View) v.getParent()) {
-                absoluteBottom += v.getTop();
-                absoluteTop += v.getTop();
-            }
-            float xOffset = 0;
-            View parentView = (View) getParent();
-            // The layout depends on the orientation.
-            if (getResources().getConfiguration().orientation
-                    == Configuration.ORIENTATION_LANDSCAPE) {
-                xOffset = screenHeight - mWorkspace.getPaddingRight()
-                        - parentView.getWidth();
-            } else {
-                xOffset = mWorkspace.getPaddingLeft() + parentView.getPaddingLeft();
-            }
-            // This is the position of the widget relative to the wallpaper, as expected by the
-            // local color extraction of the WallpaperManager.
-            // The coordinate system is such that, on the horizontal axis, each screen has a
-            // distinct range on the [0,1] segment. So if there are 3 screens, they will have the
-            // ranges [0, 1/3], [1/3, 2/3] and [2/3, 1]. The position on the subrange should be
-            // the position of the widget relative to the screen. For the vertical axis, this is
-            // simply the location of the widget relative to the screen.
-            mTempRectF.left = ((widgetLocation.left + xOffset) / screenWidth + screenId)
-                    * relativeScreenWidth;
-            mTempRectF.right = ((widgetLocation.right + xOffset) / screenWidth + screenId)
-                    * relativeScreenWidth;
-            mTempRectF.top = absoluteTop / screenHeight;
-            mTempRectF.bottom = absoluteBottom / screenHeight;
-            if (mTempRectF.left < 0 || mTempRectF.right > 1 || mTempRectF.top < 0
-                    || mTempRectF.bottom > 1) {
-                Log.e(LOG_TAG, "   Error, invalid relative position");
-                return;
-            }
-            if (!mTempRectF.equals(mLastLocationRegistered)) {
-                if (mLastLocationRegistered != null) {
-                    mColorExtractor.removeLocations();
-                }
-                mLastLocationRegistered = new RectF(mTempRectF);
-                mColorExtractor.addLocation(List.of(mLastLocationRegistered));
-            }
+        int screenWidth = mLauncher.getDeviceProfile().widthPx;
+        int screenHeight = mLauncher.getDeviceProfile().heightPx;
+        int numScreens = mWorkspace.getNumPagesForWallpaperParallax();
+        pageId = mIsRtl ? numScreens - pageId - 1 : pageId;
+        float relativeScreenWidth = 1f / numScreens;
+        float absoluteTop = widgetLocation.top;
+        float absoluteBottom = widgetLocation.bottom;
+        for (View v = (View) getParent();
+                v != null && v.getId() != R.id.launcher;
+                v = (View) v.getParent()) {
+            absoluteBottom += v.getTop();
+            absoluteTop += v.getTop();
+        }
+        float xOffset = 0;
+        View parentView = (View) getParent();
+        // The layout depends on the orientation.
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            int parentViewWidth = parentView == null ? 0 : parentView.getWidth();
+            xOffset = screenHeight - mWorkspace.getPaddingRight() - parentViewWidth;
         } else {
-            mColorExtractor.removeLocations();
+            int parentViewPaddingLeft = parentView == null ? 0 : parentView.getPaddingLeft();
+            xOffset = mWorkspace.getPaddingLeft() + parentViewPaddingLeft;
+        }
+        // This is the position of the widget relative to the wallpaper, as expected by the
+        // local color extraction of the WallpaperManager.
+        // The coordinate system is such that, on the horizontal axis, each screen has a
+        // distinct range on the [0,1] segment. So if there are 3 screens, they will have the
+        // ranges [0, 1/3], [1/3, 2/3] and [2/3, 1]. The position on the subrange should be
+        // the position of the widget relative to the screen. For the vertical axis, this is
+        // simply the location of the widget relative to the screen.
+        mTempRectF.left = ((widgetLocation.left + xOffset) / screenWidth + pageId)
+                * relativeScreenWidth;
+        mTempRectF.right = ((widgetLocation.right + xOffset) / screenWidth + pageId)
+                * relativeScreenWidth;
+        mTempRectF.top = absoluteTop / screenHeight;
+        mTempRectF.bottom = absoluteBottom / screenHeight;
+        if (mTempRectF.left < 0 || mTempRectF.right > 1 || mTempRectF.top < 0
+                || mTempRectF.bottom > 1) {
+            Log.e(LOG_TAG, "   Error, invalid relative position");
+            return;
+        }
+        if (!mTempRectF.equals(mLastLocationRegistered)) {
+            if (mLastLocationRegistered != null) {
+                mColorExtractor.removeLocations();
+            }
+            mLastLocationRegistered = new RectF(mTempRectF);
+            mColorExtractor.addLocation(List.of(mLastLocationRegistered));
         }
     }
 
