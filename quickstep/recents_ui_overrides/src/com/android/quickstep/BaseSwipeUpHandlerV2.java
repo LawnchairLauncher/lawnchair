@@ -47,6 +47,7 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PointF;
@@ -62,12 +63,14 @@ import androidx.annotation.UiThread;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.UserEventDispatcher;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
@@ -717,6 +720,8 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
     }
 
     private void onSettledOnEndTarget() {
+        // Fast-finish the attaching animation if it's still running.
+        maybeUpdateRecentsAttachedState(false);
         switch (mGestureState.getEndTarget()) {
             case HOME:
                 mStateCallback.setState(STATE_SCALED_CONTROLLER_HOME | STATE_CAPTURE_SCREENSHOT);
@@ -928,10 +933,23 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
             default:
                 event = IGNORE;
         }
+        ComponentName componentName = mGestureState.getRunningTask().baseActivity;
         StatsLogManager.newInstance(mContext).logger()
                 .withSrcState(LAUNCHER_STATE_BACKGROUND)
                 .withDstState(StatsLogManager.containerTypeToAtomState(endTarget.containerType))
+                .withItemInfo(getItemInfo(componentName))
                 .log(event);
+    }
+
+    /**
+     * Builds proto for logging
+     */
+    public WorkspaceItemInfo getItemInfo(ComponentName componentName) {
+        WorkspaceItemInfo placeholderInfo = new WorkspaceItemInfo();
+        placeholderInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_TASK;
+        placeholderInfo.container = LauncherSettings.Favorites.CONTAINER_TASKFOREGROUND;
+        placeholderInfo.intent = new Intent().setComponent(componentName);
+        return placeholderInfo;
     }
 
     /** Animates to the given progress, where 0 is the current app and 1 is overview. */
