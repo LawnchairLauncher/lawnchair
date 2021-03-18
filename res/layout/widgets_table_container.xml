@@ -19,4 +19,5 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="8dp"
-    android:background="?android:attr/colorPrimaryDark" />
+    android:background="@drawable/widgets_list_middle_ripple"
+    android:layout_marginBottom="@dimen/widget_list_entry_bottom_margin"/>

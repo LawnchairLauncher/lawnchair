@@ -106,12 +106,19 @@ public final class WidgetsListTableViewHolderBinderTest {
             return componentWithLabel.getComponent().getShortClassName();
         }).when(mIconCache).getTitleNoCache(any());
 
+        WidgetsListAdapter widgetsListAdapter = new WidgetsListAdapter(mContext,
+                LayoutInflater.from(mTestActivity),
+                mWidgetPreviewLoader,
+                mIconCache,
+                /* iconClickListener= */ view -> {},
+                /* iconLongClickListener= */ view -> false);
         mViewHolderBinder = new WidgetsListTableViewHolderBinder(
                 mContext,
                 LayoutInflater.from(mTestActivity),
                 mOnIconClickListener,
                 mOnLongClickListener,
-                mWidgetPreviewLoader);
+                mWidgetPreviewLoader,
+                widgetsListAdapter);
     }
 
     @After
@@ -127,7 +134,7 @@ public final class WidgetsListTableViewHolderBinderTest {
                 APP_NAME,
                 TEST_PACKAGE,
                 /* numOfWidgets= */ 3);
-        mViewHolderBinder.bindViewHolder(viewHolder, entry);
+        mViewHolderBinder.bindViewHolder(viewHolder, entry, /* position= */ 0);
         shadowOf(getMainLooper()).idle();
 
         // THEN the table container has one row, which contains 3 widgets.
