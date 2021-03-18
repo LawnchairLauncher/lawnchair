@@ -20,6 +20,7 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
+import android.graphics.Outline;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
@@ -32,12 +33,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
+import android.view.ViewOutlineProvider;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.AdapterView;
 import android.widget.Advanceable;
 import android.widget.RemoteViews;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
 
 import com.android.launcher3.CheckLongPressHelper;
 import com.android.launcher3.Launcher;
@@ -95,6 +98,18 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
     private final Rect mWidgetSizeAtDrag = new Rect();
     private final RectF mTempRectF = new RectF();
     private final boolean mIsRtl;
+    private final Rect mEnforcedRectangle = new Rect();
+    private final float mEnforcedCornerRadius;
+    private final ViewOutlineProvider mCornerRadiusEnforcementOutline = new ViewOutlineProvider() {
+        @Override
+        public void getOutline(View view, Outline outline) {
+            if (mEnforcedRectangle.isEmpty() || mEnforcedCornerRadius <= 0) {
+                outline.setEmpty();
+            } else {
+                outline.setRoundRect(mEnforcedRectangle, mEnforcedCornerRadius);
+            }
+        }
+    };
 
     public LauncherAppWidgetHostView(Context context) {
         super(context);
@@ -112,6 +127,8 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
         mIsRtl = Utilities.isRtl(context.getResources());
         mColorExtractor = LocalColorExtractor.newInstance(getContext());
         mColorExtractor.setListener(this);
+
+        mEnforcedCornerRadius = RoundedCornerEnforcement.computeEnforcedRadius(getContext());
     }
 
     @Override
@@ -169,7 +186,7 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
         if (viewGroup instanceof AdapterView) {
             return true;
         } else {
-            for (int i=0; i < viewGroup.getChildCount(); i++) {
+            for (int i = 0; i < viewGroup.getChildCount(); i++) {
                 View child = viewGroup.getChildAt(i);
                 if (child instanceof ViewGroup) {
                     if (checkScrollableRecursively((ViewGroup) child)) {
@@ -272,6 +289,8 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
             int pageId = mWorkspace.getPageIndexForScreenId(info.screenId);
             updateColorExtraction(mCurrentWidgetSize, pageId);
         }
+
+        enforceRoundedCorners();
     }
 
     /** Starts the drag mode. */
@@ -468,5 +487,39 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
             return item.spanX == 1 && item.spanY == 1;
         }
         return false;
+    }
+
+    @UiThread
+    private void resetRoundedCorners() {
+        setOutlineProvider(ViewOutlineProvider.BACKGROUND);
+        setClipToOutline(false);
+    }
+
+    @UiThread
+    private void enforceRoundedCorners() {
+        if (mEnforcedCornerRadius <= 0 || !RoundedCornerEnforcement.isRoundedCornerEnabled(this)) {
+            resetRoundedCorners();
+            return;
+        }
+        View background = RoundedCornerEnforcement.findBackground(this);
+        if (RoundedCornerEnforcement.hasAppWidgetOptedOut(this, background)) {
+            resetRoundedCorners();
+            return;
+        }
+        RoundedCornerEnforcement.computeRoundedRectangle(this,
+                background,
+                mEnforcedRectangle);
+        setOutlineProvider(mCornerRadiusEnforcementOutline);
+        setClipToOutline(true);
+    }
+
+    /** Returns the corner radius currently enforced, in pixels. */
+    public float getEnforcedCornerRadius() {
+        return mEnforcedCornerRadius;
+    }
+
+    /** Returns true if the corner radius are enforced for this App Widget. */
+    public boolean hasEnforcedCornerRadius() {
+        return getClipToOutline();
     }
 }

@@ -215,6 +215,9 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_SPLIT_SELECT = getDebugFlag(
             "ENABLE_SPLIT_SELECT", false, "Uses new split screen selection overview UI");
 
+    public static final BooleanFlag ENABLE_ENFORCED_ROUNDED_CORNERS = new DeviceFlag(
+            "ENABLE_ENFORCED_ROUNDED_CORNERS", true, "Enforce rounded corners on all App Widgets");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
