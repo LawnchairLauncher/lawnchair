@@ -550,23 +550,26 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
 
                 // Update the clip hints. Align to 0,0, crop the remaining.
                 if (isRtl) {
+                    thumbnailClipHint.left += availableWidth - croppedWidth;
                     if (thumbnailClipHint.right < 0) {
                         thumbnailClipHint.left += thumbnailClipHint.right;
+                        thumbnailClipHint.right = 0;
                     }
-                    thumbnailClipHint.right = 0;
-                    thumbnailClipHint.left += availableWidth - croppedWidth;
                 } else {
+                    thumbnailClipHint.right += availableWidth - croppedWidth;
                     if (thumbnailClipHint.left < 0) {
                         thumbnailClipHint.right += thumbnailClipHint.left;
+                        thumbnailClipHint.left = 0;
                     }
-                    thumbnailClipHint.left = 0;
-                    thumbnailClipHint.right += availableWidth - croppedWidth;
                 }
+                thumbnailClipHint.bottom += availableHeight - croppedHeight;
                 if (thumbnailClipHint.top < 0) {
                     thumbnailClipHint.bottom += thumbnailClipHint.top;
+                    thumbnailClipHint.top = 0;
+                } else if (thumbnailClipHint.bottom < 0) {
+                    thumbnailClipHint.top += thumbnailClipHint.bottom;
+                    thumbnailClipHint.bottom = 0;
                 }
-                thumbnailClipHint.top = 0;
-                thumbnailClipHint.bottom += availableHeight - croppedHeight;
 
                 thumbnailScale = targetW / (croppedWidth * scale);
             }
