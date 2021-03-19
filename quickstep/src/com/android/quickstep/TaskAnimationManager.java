@@ -50,6 +50,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
     private GestureState mLastGestureState;
     private RemoteAnimationTargetCompat mLastAppearedTaskTarget;
     private Consumer<RemoteAnimationTargetCompat> mLaunchOtherTaskHandler;
+    private Runnable mLiveTileCleanUpHandler;
     private Context mCtx;
 
     TaskAnimationManager(Context ctx) {
@@ -169,6 +170,10 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
         mLaunchOtherTaskHandler = handler;
     }
 
+    public void setLiveTileCleanUpHandler(Runnable runnable) {
+        mLiveTileCleanUpHandler = runnable;
+    }
+
     /**
      * Finishes the running recents animation.
      */
@@ -206,6 +211,11 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
      * Cleans up the recents animation entirely.
      */
     private void cleanUpRecentsAnimation() {
+        if (mLiveTileCleanUpHandler != null) {
+            mLiveTileCleanUpHandler.run();
+            mLiveTileCleanUpHandler = null;
+        }
+
         // Release all the target leashes
         if (mTargets != null) {
             mTargets.release();
