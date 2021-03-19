@@ -23,6 +23,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.content.pm.LauncherApps;
+import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Process;
 import android.os.UserHandle;
@@ -232,6 +233,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         mInsets.set(insets);
 
         setBottomPadding(mAdapters.get(AdapterHolder.PRIMARY).mWidgetsRecyclerView, insets.bottom);
+        setBottomPadding(mAdapters.get(AdapterHolder.SEARCH).mWidgetsRecyclerView, insets.bottom);
         if (mHasWorkProfile) {
             setBottomPadding(mAdapters.get(AdapterHolder.WORK).mWidgetsRecyclerView, insets.bottom);
         }
@@ -275,6 +277,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 R.dimen.widget_cell_horizontal_padding);
         int maxSpansPerRow = getMeasuredWidth() / (deviceProfile.cellWidthPx + paddingPx);
         mAdapters.get(AdapterHolder.PRIMARY).mWidgetsListAdapter.setMaxHorizontalSpansPerRow(
+                maxSpansPerRow);
+        mAdapters.get(AdapterHolder.SEARCH).mWidgetsListAdapter.setMaxHorizontalSpansPerRow(
                 maxSpansPerRow);
         if (mHasWorkProfile) {
             mAdapters.get(AdapterHolder.WORK).mWidgetsListAdapter.setMaxHorizontalSpansPerRow(
@@ -469,6 +473,23 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         MarginLayoutParams marginLayoutParams = (MarginLayoutParams) view.getLayoutParams();
         return view.getMeasuredHeight() + marginLayoutParams.bottomMargin
                 + marginLayoutParams.topMargin;
+    }
+
+    @Override
+    protected void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (mIsInSearchMode) {
+            mSearchAndRecommendationViewHolder.mSearchBar.reset();
+        }
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        if (mIsInSearchMode) {
+            mSearchAndRecommendationViewHolder.mSearchBar.reset();
+            return true;
+        }
+        return super.onBackPressed();
     }
 
     /** A holder class for holding adapters & their corresponding recycler view. */
