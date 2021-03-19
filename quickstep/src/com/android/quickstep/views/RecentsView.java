@@ -40,6 +40,7 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_DISMISS_SWIPE_UP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_SWIPE_DOWN;
 import static com.android.launcher3.statehandlers.DepthController.DEPTH;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
 import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
@@ -136,13 +137,13 @@ import com.android.quickstep.util.SurfaceTransactionApplier;
 import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.util.TransformParams;
 import com.android.systemui.plugins.ResourceProvider;
-import com.android.systemui.shared.recents.IPinnedStackAnimationListener;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskKey;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.PackageManagerWrapper;
 import com.android.systemui.shared.system.TaskStackChangeListener;
+import com.android.wm.shell.pip.IPipAnimationListener;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
@@ -409,7 +410,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         }
     };
 
-    private final PinnedStackAnimationListener mIPinnedStackAnimationListener =
+    private final PinnedStackAnimationListener mIPipAnimationListener =
             new PinnedStackAnimationListener();
 
     // Used to keep track of the last requested task list id, so that we do not request to load the
@@ -653,9 +654,9 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         mLiveTileParams.setSyncTransactionApplier(mSyncTransactionApplier);
         RecentsModel.INSTANCE.get(getContext()).addThumbnailChangeListener(this);
         mIdp.addOnChangeListener(this);
-        mIPinnedStackAnimationListener.setActivity(mActivity);
+        mIPipAnimationListener.setActivity(mActivity);
         SystemUiProxy.INSTANCE.get(getContext()).setPinnedStackAnimationListener(
-                mIPinnedStackAnimationListener);
+                mIPipAnimationListener);
         mOrientationState.initListeners();
         SplitScreenBounds.INSTANCE.addOnChangeListener(this);
         mTaskOverlayFactory.initListeners();
@@ -674,7 +675,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         mIdp.removeOnChangeListener(this);
         SystemUiProxy.INSTANCE.get(getContext()).setPinnedStackAnimationListener(null);
         SplitScreenBounds.INSTANCE.removeOnChangeListener(this);
-        mIPinnedStackAnimationListener.setActivity(null);
+        mIPipAnimationListener.setActivity(null);
         mOrientationState.destroyListeners();
         mTaskOverlayFactory.removeListeners();
     }
@@ -3133,7 +3134,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     }
 
     private static class PinnedStackAnimationListener<T extends BaseActivity> extends
-            IPinnedStackAnimationListener.Stub {
+            IPipAnimationListener.Stub {
         private T mActivity;
 
         public void setActivity(T activity) {
@@ -3141,10 +3142,12 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         }
 
         @Override
-        public void onPinnedStackAnimationStarted() {
-            // Needed for activities that auto-enter PiP, which will not trigger a remote
-            // animation to be created
-            mActivity.clearForceInvisibleFlag(STATE_HANDLER_INVISIBILITY_FLAGS);
+        public void onPipAnimationStarted() {
+            MAIN_EXECUTOR.execute(() -> {
+                // Needed for activities that auto-enter PiP, which will not trigger a remote
+                // animation to be created
+                mActivity.clearForceInvisibleFlag(STATE_HANDLER_INVISIBILITY_FLAGS);
+            });
         }
     }
 }
