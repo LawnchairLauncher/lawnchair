@@ -43,7 +43,8 @@ public abstract class SearchAdapterProvider {
     /**
      * Called from LiveSearchManager to notify slice status updates.
      */
-    public abstract void onSliceStatusUpdate(Uri sliceUri);
+    public void onSliceStatusUpdate(Uri sliceUri) {
+    }
 
     /**
      * Returns whether or not viewType can be handled by searchProvider
@@ -74,6 +75,12 @@ public abstract class SearchAdapterProvider {
      * handles selection event on search adapter item. Returns false if provider can not handle
      * event
      */
-    public abstract boolean onAdapterItemSelected(AllAppsGridAdapter.AdapterItem adapterItem,
-            View view);
+    public abstract boolean launchHighlightedItem();
+
+    /**
+     * Returns the current highlighted view
+     */
+    public abstract View getHighlightedItem();
+
+
 }
