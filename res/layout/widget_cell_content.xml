@@ -24,6 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:importantForAccessibility="no"
         android:layout_marginVertical="8dp" />
 
     <!-- The name of the widget. -->
