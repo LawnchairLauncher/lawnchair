@@ -1334,7 +1334,11 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     }
 
     private void invalidateHandler() {
-        mInputConsumerProxy.destroy();
+        if (!LIVE_TILE.get() || !mActivityInterface.isInLiveTileMode()
+                || mGestureState.getEndTarget() != RECENTS) {
+            mInputConsumerProxy.destroy();
+            mTaskAnimationManager.setLiveTileCleanUpHandler(null);
+        }
         endRunningWindowAnim(false /* cancel */);
 
         if (mGestureEndCallback != null) {
@@ -1526,6 +1530,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                         apps[apps.length - 1] = appearedTaskTarget;
                         launchOtherTaskInLiveTileMode(appearedTaskTarget.taskId, apps);
                     });
+            mTaskAnimationManager.setLiveTileCleanUpHandler(mInputConsumerProxy::destroy);
             ActivityManagerWrapper.getInstance().registerTaskStackListener(
                     mLiveTileRestartListener);
         }
