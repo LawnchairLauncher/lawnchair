@@ -96,14 +96,6 @@
 
     </com.android.launcher3.notification.NotificationMainView>
 
-    <!-- Divider -->
-    <View
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/popup_item_divider_height"
-        android:layout_below="@id/main_view"
-        android:background="?attr/popupColorTertiary" />
-
     <!-- Footer -->
     <com.android.launcher3.notification.NotificationFooterLayout
         android:id="@+id/footer"

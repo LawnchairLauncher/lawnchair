@@ -28,6 +28,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Outline;
 import android.graphics.Rect;
+import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.Gravity;
@@ -48,6 +49,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.RevealOutlineAnimation;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BaseDragLayer;
 
@@ -75,6 +77,8 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
     private final int mArrowPointRadius;
     private final View mArrow;
 
+    private final int mMargin;
+
     protected boolean mIsLeftAligned;
     protected boolean mIsAboveIcon;
     private int mGravity;
@@ -83,6 +87,9 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
     protected boolean mDeferContainerRemoval;
     private final Rect mStartRect = new Rect();
     private final Rect mEndRect = new Rect();
+
+    private final GradientDrawable mRoundedTop;
+    private final GradientDrawable mRoundedBottom;
 
     private Runnable mOnCloseCallback = () -> { };
 
@@ -103,6 +110,7 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
 
         // Initialize arrow view
         final Resources resources = getResources();
+        mMargin = resources.getDimensionPixelSize(R.dimen.popup_margin);
         mArrowWidth = resources.getDimensionPixelSize(R.dimen.popup_arrow_width);
         mArrowHeight = resources.getDimensionPixelSize(R.dimen.popup_arrow_height);
         mArrow = new View(context);
@@ -111,6 +119,17 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
         mArrowOffsetHorizontal = resources.getDimensionPixelSize(
                 R.dimen.popup_arrow_horizontal_center_offset) - (mArrowWidth / 2);
         mArrowPointRadius = resources.getDimensionPixelSize(R.dimen.popup_arrow_corner_radius);
+
+        mRoundedTop = new GradientDrawable();
+        mRoundedTop.setColor(Themes.getAttrColor(context, R.attr.popupColorPrimary));
+        mRoundedTop.setCornerRadii(new float[] { mOutlineRadius, mOutlineRadius, mOutlineRadius,
+                mOutlineRadius, 0, 0, 0, 0});
+
+        mRoundedBottom = new GradientDrawable();
+        mRoundedBottom.setColor(Themes.getAttrColor(context, R.attr.popupColorPrimary));
+        mRoundedBottom.setCornerRadii(new float[] { 0, 0, 0, 0, mOutlineRadius, mOutlineRadius,
+                mOutlineRadius, mOutlineRadius});
+
     }
 
     public ArrowPopup(Context context, AttributeSet attrs) {
@@ -154,6 +173,50 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
     protected void onInflationComplete(boolean isReversed) { }
 
     /**
+     * Set the margins and radius of backgrounds after views are properly ordered.
+     */
+    protected void assignMarginsAndBackgrounds() {
+        int count = getChildCount();
+        int totalVisibleShortcuts = 0;
+        for (int i = 0; i < count; i++) {
+            View view = getChildAt(i);
+            if (view.getVisibility() == VISIBLE && view instanceof DeepShortcutView) {
+                totalVisibleShortcuts++;
+            }
+        }
+
+        int numVisibleShortcut = 0;
+        View lastView = null;
+        for (int i = 0; i < count; i++) {
+            View view = getChildAt(i);
+            boolean isShortcut = view instanceof DeepShortcutView;
+            if (view.getVisibility() == VISIBLE) {
+                if (lastView != null) {
+                    MarginLayoutParams mlp = (MarginLayoutParams) lastView.getLayoutParams();
+                    mlp.bottomMargin = mMargin;
+                }
+                lastView = view;
+                MarginLayoutParams mlp = (MarginLayoutParams) lastView.getLayoutParams();
+                mlp.bottomMargin = 0;
+
+                if (isShortcut) {
+                    if (totalVisibleShortcuts == 1) {
+                        view.setBackgroundResource(R.drawable.single_item_primary);
+                    } else if (totalVisibleShortcuts > 1) {
+                        if (numVisibleShortcut == 0) {
+                            view.setBackground(mRoundedTop);
+                        } else if (numVisibleShortcut == (totalVisibleShortcuts - 1)) {
+                            view.setBackground(mRoundedBottom);
+                        }
+                        numVisibleShortcut++;
+                    }
+                }
+            }
+        }
+        measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
+    }
+
+    /**
      * Shows the popup at the desired location, optionally reversing the children.
      * @param viewsToFlip number of views from the top to to flip in case of reverse order
      */
@@ -164,6 +227,8 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
             reverseOrder(viewsToFlip);
         }
         onInflationComplete(reverseOrder);
+        assignMarginsAndBackgrounds();
+        orientAboutObject();
         if (shouldAddArrow()) {
             addArrow();
         }
@@ -176,6 +241,8 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
     protected void show() {
         setupForDisplay();
         onInflationComplete(false);
+        assignMarginsAndBackgrounds();
+        orientAboutObject();
         if (shouldAddArrow()) {
             addArrow();
         }
@@ -203,8 +270,6 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
         for (int i = 0; i < count; i++) {
             addView(allViews.get(i));
         }
-
-        orientAboutObject();
     }
 
     private int getArrowLeft() {
@@ -408,6 +473,7 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
                 ? getResources().getInteger(R.integer.config_popupArrowOpenCloseDuration)
                 : 0;
     }
+
     private void animateOpen() {
         setVisibility(View.VISIBLE);
 
