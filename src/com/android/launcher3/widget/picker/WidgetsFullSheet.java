@@ -515,6 +515,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                     apps.getIconCache(),
                     /* iconClickListener= */ WidgetsFullSheet.this,
                     /* iconLongClickListener= */ WidgetsFullSheet.this);
+            mWidgetsListAdapter.setHasStableIds(true);
             switch (mAdapterType) {
                 case PRIMARY:
                     mWidgetsListAdapter.setFilter(mPrimaryWidgetsFilter);
@@ -530,6 +531,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         void setup(WidgetsRecyclerView recyclerView) {
             mWidgetsRecyclerView = recyclerView;
             mWidgetsRecyclerView.setAdapter(mWidgetsListAdapter);
+            // Disables animation because it disrupts the item focus upon adapter item change.
+            mWidgetsRecyclerView.setItemAnimator(null);
             mWidgetsRecyclerView.setHeaderViewDimensionsProvider(WidgetsFullSheet.this);
             mWidgetsRecyclerView.setEdgeEffectFactory(
                     ((TopRoundedCornerView) mContent).createEdgeEffectFactory());
