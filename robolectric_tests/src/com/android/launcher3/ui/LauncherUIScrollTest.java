@@ -54,6 +54,7 @@ import org.robolectric.shadows.ShadowLooper;
  */
 @RunWith(RobolectricTestRunner.class)
 @LooperMode(Mode.PAUSED)
+@org.junit.Ignore
 public class LauncherUIScrollTest {
 
     private Context mTargetContext;

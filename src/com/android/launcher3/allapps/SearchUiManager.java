@@ -15,16 +15,12 @@
  */
 package com.android.launcher3.allapps;
 
-import static com.android.launcher3.LauncherState.ALL_APPS_HEADER;
-
 import android.graphics.Rect;
 import android.view.KeyEvent;
-import android.view.animation.Interpolator;
 
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.ExtendedEditText;
-import com.android.launcher3.anim.PropertySetter;
 
 /**
  * Interface for controlling the Apps search UI.
@@ -34,7 +30,7 @@ public interface SearchUiManager {
     /**
      * Initializes the search manager.
      */
-    void initialize(AllAppsContainerView containerView);
+    void initializeSearch(AllAppsContainerView containerView);
 
     /**
      * Notifies the search manager to close any active search session.
@@ -45,7 +41,7 @@ public interface SearchUiManager {
      * Called before dispatching a key event, in case the search manager wants to initialize
      * some UI beforehand.
      */
-    void preDispatchKeyEvent(KeyEvent keyEvent);
+    default void preDispatchKeyEvent(KeyEvent keyEvent) { };
 
     /**
      * Returns the vertical shift for the all-apps view, so that it aligns with the hotseat.
@@ -53,23 +49,9 @@ public interface SearchUiManager {
     float getScrollRangeDelta(Rect insets);
 
     /**
-     * Called as part of state transition to update the content UI
-     */
-    void setContentVisibility(int visibleElements, PropertySetter setter,
-            Interpolator interpolator);
-
-    /**
      * Called when activity is destroyed. Used to close search system services
      */
-    default void destroy() {
-    }
-
-    /**
-     * Returns true if the QSB should be visible for the given set of visible elements
-     */
-    default boolean isQsbVisible(int visibleElements) {
-        return (visibleElements & ALL_APPS_HEADER) != 0;
-    }
+    default void destroySearch() { }
 
     /**
      * @return the edit text object

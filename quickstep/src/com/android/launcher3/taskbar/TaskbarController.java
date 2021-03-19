@@ -42,6 +42,7 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseQuickstepLauncher;
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.QuickstepTransitionManager;
@@ -470,8 +471,12 @@ public class TaskbarController {
      */
     public void alignRealHotseatWithTaskbar() {
         Rect hotseatBounds = new Rect();
+        DeviceProfile grid = mLauncher.getDeviceProfile();
+        int hotseatHeight = grid.workspacePadding.bottom + grid.getInsets().bottom;
+        int hotseatTopDiff = hotseatHeight - grid.taskbarSize;
+
         mTaskbarView.getHotseatBoundsAtScale(getTaskbarScaleOnHome()).roundOut(hotseatBounds);
-        mLauncher.getHotseat().setPadding(hotseatBounds.left, hotseatBounds.top,
+        mLauncher.getHotseat().setPadding(hotseatBounds.left, hotseatBounds.top + hotseatTopDiff,
                 mTaskbarView.getWidth() - hotseatBounds.right,
                 mTaskbarView.getHeight() - hotseatBounds.bottom);
     }

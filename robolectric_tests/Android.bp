@@ -25,27 +25,31 @@ package {
     default_applicable_licenses: ["packages_apps_Launcher3_license"],
 }
 
+filegroup {
+    name: "launcher3-robolectric-resources",
+    path: "resources",
+    srcs: ["resources/*"],
+}
+
+filegroup {
+    name: "launcher3-robolectric-src",
+    srcs: ["src/**/*.java"],
+}
+
 android_robolectric_test {
     name: "LauncherRoboTests",
     srcs: [
-        "src/**/*.java",
+        ":launcher3-robolectric-src",
+        ":launcher3-test-src-common",
     ],
-    java_resource_dirs: [
-        "resources",
-        "res",
-        "config",
-    ],
+    java_resources: [":launcher3-robolectric-resources"],
     static_libs: [
         "truth-prebuilt",
-        "Launcher3TestCommon",
         "androidx.test.runner",
         "androidx.test.rules",
         "mockito-robolectric-prebuilt",
     ],
-    //robolectric_prebuilt_version: "4.4",
-    libs: [
-        "platform-robolectric-4.4-prebuilt",
-    ],
+    robolectric_prebuilt_version: "4.5.1",
     instrumentation_for: "Launcher3",
 
     test_options: {

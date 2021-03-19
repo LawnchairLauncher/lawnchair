@@ -18,7 +18,9 @@
     android:id="@+id/widgets_list_header"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?android:attr/selectableItemBackground"
+    android:layout_marginHorizontal="8dp"
+    android:background="@drawable/widgets_list_middle_ripple"
+    android:layout_marginBottom="@dimen/widget_list_entry_bottom_margin"
     android:paddingVertical="@dimen/widget_list_header_view_vertical_padding"
     android:orientation="horizontal">
 
@@ -54,6 +56,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
+            android:textColor="?android:attr/textColorTertiary"
             tools:text="m widgets, n shortcuts" />
 
     </LinearLayout>

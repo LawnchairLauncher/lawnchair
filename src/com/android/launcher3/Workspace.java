@@ -111,6 +111,7 @@ import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.PendingAppWidgetHostView;
 import com.android.launcher3.widget.WidgetManagerHelper;
+import com.android.launcher3.widget.dragndrop.AppWidgetHostViewDragListener;
 import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverlay;
 
 import java.util.ArrayList;
@@ -1556,6 +1557,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             }
         }
 
+        if (drawable instanceof AppWidgetHostViewDrawable) {
+            mDragController.addDragListener(new AppWidgetHostViewDragListener(mLauncher));
+        }
         DragView dv = mDragController.startDrag(
                 drawable,
                 draggableView,

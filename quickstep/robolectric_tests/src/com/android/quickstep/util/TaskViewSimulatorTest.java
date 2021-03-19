@@ -17,6 +17,8 @@ package com.android.quickstep.util;
 
 import static android.view.Display.DEFAULT_DISPLAY;
 
+import static org.mockito.Mockito.mock;
+
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -29,6 +31,7 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.shadows.LShadowDisplay;
 import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.LauncherActivityInterface;
+import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
 
 import org.hamcrest.Description;
@@ -162,7 +165,7 @@ public class TaskViewSimulatorTest {
         @Override
         public SurfaceParams[] createSurfaceParams(BuilderProxy proxy) {
             SurfaceParams.Builder builder = new SurfaceParams.Builder((SurfaceControl) null);
-            proxy.onBuildTargetParams(builder, null, this);
+            proxy.onBuildTargetParams(builder, mock(RemoteAnimationTargetCompat.class), this);
             return new SurfaceParams[] {builder.build()};
         }
 

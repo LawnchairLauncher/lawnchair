@@ -37,6 +37,7 @@ import android.view.ViewGroup;
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
@@ -84,7 +85,7 @@ public class StaggeredWorkspaceAnim {
         Workspace workspace = launcher.getWorkspace();
         CellLayout cellLayout = (CellLayout) workspace.getChildAt(workspace.getCurrentPage());
         ShortcutAndWidgetContainer currentPage = cellLayout.getShortcutsAndWidgets();
-        ViewGroup hotseat = launcher.getHotseat();
+        Hotseat hotseat = launcher.getHotseat();
 
         boolean workspaceClipChildren = workspace.getClipChildren();
         boolean workspaceClipToPadding = workspace.getClipToPadding();
@@ -124,11 +125,7 @@ public class StaggeredWorkspaceAnim {
                 addStaggeredAnimationForView(child, grid.inv.numRows + 1, totalRows);
             }
 
-            if (launcher.getAppsView().getSearchUiManager()
-                    .isQsbVisible(NORMAL.getVisibleElements(launcher))) {
-                addStaggeredAnimationForView(launcher.getAppsView().getSearchView(),
-                        grid.inv.numRows + 2, totalRows);
-            }
+            addStaggeredAnimationForView(hotseat.getQsb(), grid.inv.numRows + 2, totalRows);
         }
 
         if (animateOverviewScrim) {
