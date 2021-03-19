@@ -63,6 +63,11 @@ public class LauncherWidgetsSearchBar extends LinearLayout implements WidgetsSea
     }
 
     @Override
+    public void reset() {
+        mController.clearSearchResult();
+    }
+
+    @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
         mEditText = findViewById(R.id.widgets_search_bar_edit_text);
