@@ -91,6 +91,7 @@ public class PopupContainerWithArrow<T extends BaseDraggingActivity> extends Arr
     private BubbleTextView mOriginalIcon;
     private NotificationItemView mNotificationItemView;
     private int mNumNotifications;
+    private ViewGroup mNotificationContainer;
 
     private ViewGroup mSystemShortcutContainer;
 
@@ -222,20 +223,6 @@ public class PopupContainerWithArrow<T extends BaseDraggingActivity> extends Arr
         if (isReversed && mNotificationItemView != null) {
             mNotificationItemView.inverseGutterMargin();
         }
-
-        // Update dividers
-        int count = getChildCount();
-        DeepShortcutView lastView = null;
-        for (int i = 0; i < count; i++) {
-            View view = getChildAt(i);
-            if (view.getVisibility() == VISIBLE && view instanceof DeepShortcutView) {
-                if (lastView != null) {
-                    lastView.setDividerVisibility(VISIBLE);
-                }
-                lastView = (DeepShortcutView) view;
-                lastView.setDividerVisibility(INVISIBLE);
-            }
-        }
     }
 
     @TargetApi(Build.VERSION_CODES.P)
@@ -257,8 +244,12 @@ public class PopupContainerWithArrow<T extends BaseDraggingActivity> extends Arr
         // Add views
         if (mNumNotifications > 0) {
             // Add notification entries
-            View.inflate(getContext(), R.layout.notification_content, this);
-            mNotificationItemView = new NotificationItemView(this);
+            if (mNotificationContainer == null) {
+                mNotificationContainer = findViewById(R.id.notification_container);
+                mNotificationContainer.setVisibility(VISIBLE);
+            }
+            View.inflate(getContext(), R.layout.notification_content, mNotificationContainer);
+            mNotificationItemView = new NotificationItemView(this, mNotificationContainer);
             if (mNumNotifications == 1) {
                 mNotificationItemView.removeFooter();
             }
@@ -355,21 +346,6 @@ public class PopupContainerWithArrow<T extends BaseDraggingActivity> extends Arr
             view.getLayoutParams().height = itemHeight;
             view.getIconView().setScaleX(iconScale);
             view.getIconView().setScaleY(iconScale);
-        }
-    }
-
-    private void updateDividers() {
-        int count = getChildCount();
-        DeepShortcutView lastView = null;
-        for (int i = 0; i < count; i++) {
-            View view = getChildAt(i);
-            if (view.getVisibility() == VISIBLE && view instanceof DeepShortcutView) {
-                if (lastView != null) {
-                    lastView.setDividerVisibility(VISIBLE);
-                }
-                lastView = (DeepShortcutView) view;
-                lastView.setDividerVisibility(INVISIBLE);
-            }
         }
     }
 
@@ -592,7 +568,7 @@ public class PopupContainerWithArrow<T extends BaseDraggingActivity> extends Arr
                 mNotificationItemView.removeAllViews();
                 mNotificationItemView = null;
                 updateHiddenShortcuts();
-                updateDividers();
+                assignMarginsAndBackgrounds();
             } else {
                 mNotificationItemView.trimNotifications(
                         NotificationKeyData.extractKeysOnly(dotInfo.getNotificationKeys()));
