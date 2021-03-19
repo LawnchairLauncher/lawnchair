@@ -109,6 +109,7 @@
 <!-- Widget tray -->
     <dimen name="widget_cell_vertical_padding">8dp</dimen>
     <dimen name="widget_cell_horizontal_padding">16dp</dimen>
+    <dimen name="widget_cell_font_size">14sp</dimen>
 
 
     <dimen name="widget_list_top_bottom_corner_radius">28dp</dimen>
