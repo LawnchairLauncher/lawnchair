@@ -130,13 +130,14 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
                 R.dimen.popup_arrow_horizontal_center_offset) - (mArrowWidth / 2);
         mArrowPointRadius = resources.getDimensionPixelSize(R.dimen.popup_arrow_corner_radius);
 
+        int smallerRadius = resources.getDimensionPixelSize(R.dimen.popup_smaller_radius);
         mRoundedTop = new GradientDrawable();
         mRoundedTop.setCornerRadii(new float[] { mOutlineRadius, mOutlineRadius, mOutlineRadius,
-                mOutlineRadius, 0, 0, 0, 0});
+                mOutlineRadius, smallerRadius, smallerRadius, smallerRadius, smallerRadius});
 
         mRoundedBottom = new GradientDrawable();
-        mRoundedBottom.setCornerRadii(new float[] { 0, 0, 0, 0, mOutlineRadius, mOutlineRadius,
-                mOutlineRadius, mOutlineRadius});
+        mRoundedBottom.setCornerRadii(new float[] { smallerRadius, smallerRadius, smallerRadius,
+                smallerRadius, mOutlineRadius, mOutlineRadius, mOutlineRadius, mOutlineRadius});
 
         int primaryColor = Themes.getAttrColor(context, R.attr.popupColorPrimary);
         int secondaryColor = Themes.getAttrColor(context, R.attr.popupColorSecondary);
@@ -272,7 +273,6 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
         }
         onInflationComplete(reverseOrder);
         assignMarginsAndBackgrounds();
-        orientAboutObject();
         if (shouldAddArrow()) {
             addArrow();
         }
@@ -286,7 +286,6 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
         setupForDisplay();
         onInflationComplete(false);
         assignMarginsAndBackgrounds();
-        orientAboutObject();
         if (shouldAddArrow()) {
             addArrow();
         }
@@ -383,10 +382,18 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
     private void orientAboutObject(boolean allowAlignLeft, boolean allowAlignRight) {
         measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
 
-        int width = getMeasuredWidth();
         int extraVerticalSpace = mArrowHeight + mArrowOffsetVertical
                 + getResources().getDimensionPixelSize(R.dimen.popup_vertical_padding);
-        int height = getMeasuredHeight() + extraVerticalSpace;
+        // The margins are added after we call this method, so we need to account for them here.
+        int numVisibleChildren = 0;
+        for (int i = getChildCount() - 1; i >= 0; --i) {
+            if (getChildAt(i).getVisibility() == VISIBLE) {
+                numVisibleChildren++;
+            }
+        }
+        int childMargins = (numVisibleChildren - 1) * mMargin;
+        int height = getMeasuredHeight() + extraVerticalSpace + childMargins;
+        int width = getMeasuredWidth();
 
         getTargetObjectLocation(mTempRect);
         InsettableFrameLayout dragLayer = getPopupContainer();

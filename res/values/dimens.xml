@@ -192,7 +192,7 @@
     <dimen name="deep_shortcut_icon_size">32dp</dimen>
     <dimen name="popup_margin">2dp</dimen>
     <dimen name="popup_single_item_radius">100dp</dimen>
-    <dimen name="popup_middle_item_radius">4dp</dimen>
+    <dimen name="popup_smaller_radius">4dp</dimen>
     <dimen name="deep_shortcut_drawable_padding">12dp</dimen>
     <dimen name="deep_shortcut_drag_handle_size">16dp</dimen>
     <dimen name="popup_padding_start">10dp</dimen>
