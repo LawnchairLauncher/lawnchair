@@ -33,7 +33,7 @@ public interface ViewHolderBinder<T, V extends ViewHolder> {
     V newViewHolder(ViewGroup parent);
 
     /** Populate UI references in {@link ViewHolder} with data. */
-    void bindViewHolder(V viewHolder, T data);
+    void bindViewHolder(V viewHolder, T data, int position);
 
     /**
      * Called when the view is recycled. Views are recycled in batches once they are sufficiently
