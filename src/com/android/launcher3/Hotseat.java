@@ -29,7 +29,6 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.MultiValueAlpha;
 
 import java.util.function.Consumer;
@@ -96,7 +95,7 @@ public class Hotseat extends CellLayout implements Insettable {
         if (hasVerticalHotseat) {
             setGridSize(1, idp.numHotseatIcons);
         } else {
-            setGridSize(idp.numHotseatIcons, FeatureFlags.ENABLE_DEVICE_SEARCH.get() ? 2 : 1);
+            setGridSize(idp.numHotseatIcons, 1);
         }
         showInlineQsb();
     }
@@ -130,11 +129,7 @@ public class Hotseat extends CellLayout implements Insettable {
             // When taskbar is present, we set the padding separately to ensure a seamless visual
             // handoff between taskbar and hotseat during drag and drop.
             Rect padding = grid.getHotseatLayoutPadding();
-            int paddingBottom = padding.bottom;
-            if (FeatureFlags.ENABLE_DEVICE_SEARCH.get() && !grid.isVerticalBarLayout()) {
-                paddingBottom -= grid.hotseatBarBottomPaddingPx;
-            }
-            setPadding(padding.left, padding.top, padding.right, paddingBottom);
+            setPadding(padding.left, padding.top, padding.right, padding.bottom);
         }
 
         setLayoutParams(lp);
