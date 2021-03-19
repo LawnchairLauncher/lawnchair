@@ -522,4 +522,5 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
     public boolean hasEnforcedCornerRadius() {
         return getClipToOutline();
     }
+
 }
