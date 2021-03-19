@@ -110,7 +110,12 @@
     <dimen name="widget_cell_vertical_padding">8dp</dimen>
     <dimen name="widget_cell_horizontal_padding">16dp</dimen>
 
+
+    <dimen name="widget_list_top_bottom_corner_radius">28dp</dimen>
+    <dimen name="widget_list_content_corner_radius">4dp</dimen>
+
     <dimen name="widget_list_header_view_vertical_padding">20dp</dimen>
+    <dimen name="widget_list_entry_bottom_margin">2dp</dimen>
 
     <dimen name="widget_preview_shadow_blur">0.5dp</dimen>
     <dimen name="widget_preview_key_shadow_distance">1dp</dimen>

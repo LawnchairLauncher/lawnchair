@@ -31,7 +31,6 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup.MarginLayoutParams;
-import android.view.animation.Interpolator;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
@@ -44,7 +43,6 @@ import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItem;
 import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AlphabeticalAppsList;
 import com.android.launcher3.allapps.SearchUiManager;
-import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.search.SearchCallback;
 
@@ -134,7 +132,7 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     }
 
     @Override
-    public void initialize(AllAppsContainerView appsView) {
+    public void initializeSearch(AllAppsContainerView appsView) {
         mApps = appsView.getApps();
         mAppsView = appsView;
         mSearchBarController.initialize(
@@ -220,12 +218,6 @@ public class AppsSearchContainerLayout extends ExtendedEditText
         } else {
             return insets.bottom + insets.top;
         }
-    }
-
-    @Override
-    public void setContentVisibility(int visibleElements, PropertySetter setter,
-            Interpolator interpolator) {
-        setter.setViewAlpha(this, isQsbVisible(visibleElements) ? 1 : 0, interpolator);
     }
 
     @Override

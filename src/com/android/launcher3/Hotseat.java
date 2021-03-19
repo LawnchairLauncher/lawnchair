@@ -20,6 +20,7 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
@@ -42,6 +43,9 @@ public class Hotseat extends CellLayout implements Insettable {
     private static final int ALPHA_INDEX_REPLACE_TASKBAR = 1;
     private static final int NUM_ALPHA_CHANNELS = 2;
 
+    // Ratio of empty space, qsb should take up to appear visually centered.
+    public static final float QSB_CENTER_FACTOR = .325f;
+
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mHasVerticalHotseat;
     private Workspace mWorkspace;
@@ -50,6 +54,8 @@ public class Hotseat extends CellLayout implements Insettable {
     private Consumer<Boolean> mOnVisibilityAggregatedCallback;
 
     private final MultiValueAlpha mMultiValueAlpha;
+    private final View mQsb;
+    private final int mQsbHeight;
 
     public Hotseat(Context context) {
         this(context, null);
@@ -63,6 +69,10 @@ public class Hotseat extends CellLayout implements Insettable {
         super(context, attrs, defStyle);
         mMultiValueAlpha = new MultiValueAlpha(this, NUM_ALPHA_CHANNELS, MultiValueAlpha.Mode.MAX);
         mMultiValueAlpha.setUpdateVisibility(true);
+
+        mQsb = LayoutInflater.from(context).inflate(R.layout.search_container_hotseat, this, false);
+        mQsbHeight = mQsb.getLayoutParams().height;
+        addView(mQsb);
     }
 
     /**
@@ -97,6 +107,7 @@ public class Hotseat extends CellLayout implements Insettable {
         DeviceProfile grid = mActivity.getDeviceProfile();
 
         if (grid.isVerticalBarLayout()) {
+            mQsb.setVisibility(View.GONE);
             lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
             if (grid.isSeascape()) {
                 lp.gravity = Gravity.LEFT;
@@ -106,12 +117,15 @@ public class Hotseat extends CellLayout implements Insettable {
                 lp.width = grid.hotseatBarSizePx + insets.right;
             }
         } else {
+            mQsb.setVisibility(View.VISIBLE);
             lp.gravity = Gravity.BOTTOM;
             lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            lp.height = grid.isTaskbarPresent
-                    ? grid.taskbarSize
-                    : grid.hotseatBarSizePx + insets.bottom;
+            lp.height = (grid.isTaskbarPresent
+                        ? grid.workspacePadding.bottom
+                        : grid.hotseatBarSizePx)
+                    + insets.bottom;
         }
+
         if (!grid.isTaskbarPresent) {
             // When taskbar is present, we set the padding separately to ensure a seamless visual
             // handoff between taskbar and hotseat during drag and drop.
@@ -177,6 +191,34 @@ public class Hotseat extends CellLayout implements Insettable {
         //Does nothing
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        int width = getShortcutsAndWidgets().getMeasuredWidth();
+        mQsb.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(mQsbHeight, MeasureSpec.EXACTLY));
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+
+        int qsbWidth = mQsb.getMeasuredWidth();
+        int left = (r - l - qsbWidth) / 2;
+        int right = left + qsbWidth;
+
+        DeviceProfile dp = mActivity.getDeviceProfile();
+        int freeSpace = dp.isTaskbarPresent
+                ? dp.workspacePadding.bottom
+                : dp.hotseatBarSizePx - dp.hotseatCellHeightPx - mQsbHeight;
+        int bottom = b - t
+                - (int) (freeSpace * QSB_CENTER_FACTOR)
+                - dp.getInsets().bottom;
+        int top = bottom - mQsbHeight;
+        mQsb.layout(left, top, right, bottom);
+    }
+
     /**
      * Returns the first View for which the given itemOperator returns true, or null.
      */
@@ -190,5 +232,12 @@ public class Hotseat extends CellLayout implements Insettable {
 
     public MultiValueAlpha.AlphaProperty getReplaceTaskbarAlpha() {
         return mMultiValueAlpha.getProperty(ALPHA_INDEX_REPLACE_TASKBAR);
+    }
+
+    /**
+     * Returns the QSB inside hotseat
+     */
+    public View getQsb() {
+        return mQsb;
     }
 }

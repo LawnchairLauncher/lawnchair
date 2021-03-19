@@ -18,7 +18,7 @@
     android:height="24dp"
     android:viewportWidth="24"
     android:viewportHeight="24"
-    android:tint="?android:attr/textColorHint">
+    android:tint="?android:attr/textColorSecondary">
     <path
         android:fillColor="#FF000000"
         android:pathData="M5.41,7.59L4,9l8,8 8,-8 -1.41,-1.41L12,14.17"/>

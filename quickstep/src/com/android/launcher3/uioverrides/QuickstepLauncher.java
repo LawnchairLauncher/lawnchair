@@ -234,7 +234,7 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        getAppsView().getSearchUiManager().destroy();
+        getAppsView().getSearchUiManager().destroySearch();
         mHotseatPredictionController.destroy();
     }
 

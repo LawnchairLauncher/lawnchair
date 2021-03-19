@@ -16,6 +16,7 @@
 package com.android.launcher3.widget.picker;
 
 import android.content.Context;
+import android.os.Process;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -81,7 +82,7 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
             entry instanceof WidgetsListHeaderEntry
                     || entry instanceof WidgetsListSearchHeaderEntry
                     || new PackageUserKey(entry.mPkgItem.packageName, entry.mPkgItem.user)
-                    .equals(mWidgetsContentVisiblePackageUserKey);
+                            .equals(mWidgetsContentVisiblePackageUserKey);
     @Nullable private Predicate<WidgetsListBaseEntry> mFilter = null;
 
     public WidgetsListAdapter(Context context, LayoutInflater layoutInflater,
@@ -89,16 +90,17 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
             OnClickListener iconClickListener, OnLongClickListener iconLongClickListener) {
         mDiffReporter = new WidgetsDiffReporter(iconCache, this);
         mWidgetsListTableViewHolderBinder = new WidgetsListTableViewHolderBinder(context,
-                layoutInflater, iconClickListener, iconLongClickListener, widgetPreviewLoader);
+                layoutInflater, iconClickListener, iconLongClickListener,
+                widgetPreviewLoader, /* listAdapter= */ this);
         mViewHolderBinders.put(VIEW_TYPE_WIDGETS_LIST, mWidgetsListTableViewHolderBinder);
         mViewHolderBinders.put(
                 VIEW_TYPE_WIDGETS_HEADER,
                 new WidgetsListHeaderViewHolderBinder(
-                        layoutInflater, /*onHeaderClickListener=*/this));
+                        layoutInflater, /* onHeaderClickListener= */this, /* listAdapter= */ this));
         mViewHolderBinders.put(
                 VIEW_TYPE_WIDGETS_SEARCH_HEADER,
                 new WidgetsListSearchHeaderViewHolderBinder(
-                        layoutInflater, /*onHeaderClickListener=*/ this));
+                        layoutInflater, /*onHeaderClickListener=*/ this, /* listAdapter= */ this));
     }
 
     public void setFilter(Predicate<WidgetsListBaseEntry> filter) {
@@ -175,10 +177,18 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
         mDiffReporter.process(mVisibleEntries, newVisibleEntries, mRowComparator);
     }
 
+    /**
+     * Resets any expanded widget header.
+     */
+    public void resetExpandedHeader() {
+        mWidgetsContentVisiblePackageUserKey = null;
+        updateVisibleEntries();
+    }
+
     @Override
     public void onBindViewHolder(ViewHolder holder, int pos) {
         ViewHolderBinder viewHolderBinder = mViewHolderBinders.get(getItemViewType(pos));
-        viewHolderBinder.bindViewHolder(holder, mVisibleEntries.get(pos));
+        viewHolderBinder.bindViewHolder(holder, mVisibleEntries.get(pos), pos);
     }
 
     @Override
@@ -258,7 +268,14 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
 
         @Override
         public int compare(WidgetsListBaseEntry a, WidgetsListBaseEntry b) {
-            return mComparator.compare(a.mPkgItem.title.toString(), b.mPkgItem.title.toString());
+            int i = mComparator.compare(a.mPkgItem.title.toString(), b.mPkgItem.title.toString());
+            if (i != 0) {
+                return i;
+            }
+            // Prioritize entries from current user over other users if the entries are same.
+            if (a.mPkgItem.user.equals(b.mPkgItem.user)) return 0;
+            if (a.mPkgItem.user.equals(Process.myUserHandle())) return -1;
+            return 1;
         }
     }
 }

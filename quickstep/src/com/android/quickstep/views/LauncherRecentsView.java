@@ -15,18 +15,13 @@
  */
 package com.android.quickstep.views;
 
-import static com.android.launcher3.LauncherState.ALL_APPS_HEADER_EXTRA;
 import static com.android.launcher3.LauncherState.CLEAR_ALL_BUTTON;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_MODAL_TASK;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
-import static com.android.launcher3.QuickstepTransitionManager.ALL_APPS_PROGRESS_OFF_SCREEN;
-import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 import static com.android.quickstep.util.NavigationModeFeatureFlag.LIVE_TILE;
 
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
@@ -41,7 +36,6 @@ import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.quickstep.LauncherActivityInterface;
-import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.util.OverviewToHomeAnim;
 import com.android.systemui.plugins.PluginListener;
 import com.android.systemui.plugins.RecentsExtraCard;
@@ -102,31 +96,6 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
         } else {
             overviewToHomeAnim.animateWithVelocity(0);
         }
-    }
-
-    /**
-     * Animates adjacent tasks and translate hotseat off screen as well.
-     */
-    @Override
-    public AnimatorSet createAdjacentPageAnimForTaskLaunch(TaskView tv) {
-        AnimatorSet anim = super.createAdjacentPageAnimForTaskLaunch(tv);
-
-        if (!SysUINavigationMode.getMode(mActivity).hasGestures) {
-            // Hotseat doesn't move when opening recents with the button,
-            // so don't animate it here either.
-            return anim;
-        }
-
-        float allAppsProgressOffscreen = ALL_APPS_PROGRESS_OFF_SCREEN;
-        LauncherState state = mActivity.getStateManager().getState();
-        if ((state.getVisibleElements(mActivity) & ALL_APPS_HEADER_EXTRA) != 0) {
-            float maxShiftRange = mActivity.getDeviceProfile().heightPx;
-            float currShiftRange = mActivity.getAllAppsController().getShiftRange();
-            allAppsProgressOffscreen = 1f + (maxShiftRange - currShiftRange) / maxShiftRange;
-        }
-        anim.play(ObjectAnimator.ofFloat(
-                mActivity.getAllAppsController(), ALL_APPS_PROGRESS, allAppsProgressOffscreen));
-        return anim;
     }
 
     @Override

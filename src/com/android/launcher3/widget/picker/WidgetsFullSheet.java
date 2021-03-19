@@ -57,6 +57,7 @@ import com.android.launcher3.widget.picker.search.WidgetsSearchBar;
 import com.android.launcher3.workprofile.PersonalWorkPagedView;
 import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.OnActivePageChangedListener;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -161,8 +162,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 mAdapters.get(currentActivePage).mWidgetsRecyclerView;
 
         updateNoWidgetsView(currentAdapterHolder);
-
         attachScrollbarToRecyclerView(currentRecyclerView);
+        resetExpandedHeaders();
     }
 
     private void attachScrollbarToRecyclerView(WidgetsRecyclerView recyclerView) {
@@ -178,6 +179,13 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         // Always resets the text in case this is updated by search.
         mNoWidgetsView.setText(R.string.no_widgets_available);
         mNoWidgetsView.setVisibility(isWidgetAvailable ? GONE : VISIBLE);
+    }
+
+    private void updateNoSearchResultsView(boolean isVisible) {
+        mNoWidgetsView.setVisibility(isVisible ? VISIBLE : GONE);
+        if (isVisible) {
+            mNoWidgetsView.setText(R.string.no_search_results);
+        }
     }
 
     private void reset() {
@@ -323,10 +331,12 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         if (mIsInSearchMode) return;
         setViewVisibilityBasedOnSearch(/*isInSearchMode= */ true);
         attachScrollbarToRecyclerView(mAdapters.get(AdapterHolder.SEARCH).mWidgetsRecyclerView);
+        resetExpandedHeaders();
     }
 
     @Override
     public void exitSearchMode() {
+        onSearchResults(new ArrayList<>());
         setViewVisibilityBasedOnSearch(/*isInSearchMode=*/ false);
         if (mHasWorkProfile) {
             mViewPager.snapToPage(AdapterHolder.PRIMARY);
@@ -337,6 +347,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     @Override
     public void onSearchResults(List<WidgetsListBaseEntry> entries) {
         mAdapters.get(AdapterHolder.SEARCH).mWidgetsListAdapter.setWidgetsOnSearch(entries);
+        updateNoSearchResultsView(
+                mAdapters.get(AdapterHolder.SEARCH).mWidgetsListAdapter.getItemCount() == 0);
     }
 
     private void setViewVisibilityBasedOnSearch(boolean isInSearchMode) {
@@ -350,6 +362,12 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         }
         mAdapters.get(AdapterHolder.SEARCH).mWidgetsRecyclerView
                 .setVisibility(mIsInSearchMode ? VISIBLE : GONE);
+        mNoWidgetsView.setVisibility(GONE);
+    }
+
+    private void resetExpandedHeaders() {
+        mAdapters.get(AdapterHolder.PRIMARY).mWidgetsListAdapter.resetExpandedHeader();
+        mAdapters.get(AdapterHolder.WORK).mWidgetsListAdapter.resetExpandedHeader();
     }
 
     private void open(boolean animate) {

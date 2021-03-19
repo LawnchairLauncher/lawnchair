@@ -22,9 +22,11 @@ import static android.view.View.VISIBLE;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.widget.EditText;
+import android.view.KeyEvent;
+import android.view.View;
 import android.widget.ImageButton;
 
+import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.search.SearchAlgorithm;
 import com.android.launcher3.search.SearchCallback;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
@@ -35,22 +37,25 @@ import java.util.ArrayList;
  * Controller for a search bar with an edit text and a cancel button.
  */
 public class WidgetsSearchBarController implements TextWatcher,
-        SearchCallback<WidgetsListBaseEntry> {
+        SearchCallback<WidgetsListBaseEntry>,  ExtendedEditText.OnBackKeyListener,
+        View.OnKeyListener {
     private static final String TAG = "WidgetsSearchBarController";
     private static final boolean DEBUG = false;
 
     protected SearchAlgorithm<WidgetsListBaseEntry> mSearchAlgorithm;
-    protected EditText mInput;
+    protected ExtendedEditText mInput;
     protected ImageButton mCancelButton;
     protected SearchModeListener mSearchModeListener;
     protected String mQuery;
 
     public WidgetsSearchBarController(
-            SearchAlgorithm<WidgetsListBaseEntry> algo, EditText editText, ImageButton cancelButton,
-            SearchModeListener searchModeListener) {
+            SearchAlgorithm<WidgetsListBaseEntry> algo, ExtendedEditText editText,
+            ImageButton cancelButton, SearchModeListener searchModeListener) {
         mSearchAlgorithm = algo;
         mInput = editText;
         mInput.addTextChangedListener(this);
+        mInput.setOnBackKeyListener(this);
+        mInput.setOnKeyListener(this);
         mCancelButton = cancelButton;
         mCancelButton.setOnClickListener(v -> clearSearchResult());
         mSearchModeListener = searchModeListener;
@@ -99,6 +104,7 @@ public class WidgetsSearchBarController implements TextWatcher,
         mSearchAlgorithm.cancel(/* interruptActiveRequests= */ true);
         mInput.getText().clear();
         mInput.clearFocus();
+        mInput.hideKeyboard();
         mSearchModeListener.exitSearchMode();
     }
 
@@ -107,5 +113,22 @@ public class WidgetsSearchBarController implements TextWatcher,
      */
     public void onDestroy() {
         mSearchAlgorithm.destroy();
+    }
+
+    @Override
+    public boolean onBackKey() {
+        mInput.clearFocus();
+        mInput.hideKeyboard();
+        return true;
+    }
+
+    @Override
+    public boolean onKey(View view, int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_UP) {
+            mInput.clearFocus();
+            mInput.hideKeyboard();
+            return true;
+        }
+        return false;
     }
 }

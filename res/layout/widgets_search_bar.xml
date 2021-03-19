@@ -6,13 +6,13 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:layout_marginTop="16dp"
-    android:background="@drawable/bg_widgets_searchbox"
-    android:padding="12dp">
+    android:background="@drawable/bg_widgets_searchbox">
 
-    <EditText
+    <com.android.launcher3.ExtendedEditText
         android:id="@+id/widgets_search_bar_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="12dp"
         android:drawablePadding="8dp"
         android:drawableStart="@drawable/ic_allapps_search"
         android:background="@null"

@@ -15,8 +15,6 @@
  */
 package com.android.launcher3.allapps;
 
-import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
-
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Point;
@@ -26,7 +24,6 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
@@ -37,7 +34,6 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
-import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.systemui.plugins.AllAppsRow;
@@ -88,7 +84,6 @@ public class FloatingHeaderView extends LinearLayout implements
     private int mSnappedScrolledY;
     private int mTranslationY;
 
-    private boolean mAllowTouchForwarding;
     private boolean mForwardToRecyclerView;
 
     protected boolean mTabsHidden;
@@ -350,10 +345,6 @@ public class FloatingHeaderView extends LinearLayout implements
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (!mAllowTouchForwarding) {
-            mForwardToRecyclerView = false;
-            return super.onInterceptTouchEvent(ev);
-        }
         calcOffset(mTempOffset);
         ev.offsetLocation(mTempOffset.x, mTempOffset.y);
         mForwardToRecyclerView = mCurrentRV.onInterceptTouchEvent(ev);
@@ -380,20 +371,6 @@ public class FloatingHeaderView extends LinearLayout implements
     private void calcOffset(Point p) {
         p.x = getLeft() - mCurrentRV.getLeft() - mParent.getLeft();
         p.y = getTop() - mCurrentRV.getTop() - mParent.getTop();
-    }
-
-    public void setContentVisibility(boolean hasHeader, boolean hasAllAppsContent,
-            PropertySetter setter, Interpolator headerFade, Interpolator allAppsFade) {
-        for (FloatingHeaderRow row : mAllRows) {
-            row.setContentVisibility(hasHeader, hasAllAppsContent, setter, headerFade, allAppsFade);
-        }
-
-        allowTouchForwarding(hasAllAppsContent);
-        setter.setFloat(mTabLayout, VIEW_ALPHA, hasAllAppsContent ? 1 : 0, headerFade);
-    }
-
-    protected void allowTouchForwarding(boolean allow) {
-        mAllowTouchForwarding = allow;
     }
 
     public boolean hasVisibleContent() {

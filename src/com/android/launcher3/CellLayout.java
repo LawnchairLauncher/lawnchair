@@ -60,6 +60,7 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.accessibility.DragAndDropAccessibilityDelegate;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.dragndrop.AppWidgetHostViewDrawable;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.folder.PreviewBackground;
 import com.android.launcher3.graphics.DragPreviewProvider;
@@ -180,6 +181,9 @@ public class CellLayout extends ViewGroup {
     private final ArrayList<View> mIntersectingViews = new ArrayList<>();
     private final Rect mOccupiedRect = new Rect();
     private final int[] mDirectionVector = new int[2];
+    private final Workspace mWorkspace;
+    private final DeviceProfile mDeviceProfile;
+
     final int[] mPreviousReorderDirection = new int[2];
     private static final int INVALID_DIRECTION = -100;
 
@@ -209,15 +213,15 @@ public class CellLayout extends ViewGroup {
         setWillNotDraw(false);
         setClipToPadding(false);
         mActivity = ActivityContext.lookupContext(context);
+        mWorkspace = Launcher.cast(mActivity).getWorkspace();
+        mDeviceProfile = mActivity.getDeviceProfile();
 
-        DeviceProfile grid = mActivity.getDeviceProfile();
-
-        mBorderSpacing = grid.cellLayoutBorderSpacingPx;
+        mBorderSpacing = mDeviceProfile.cellLayoutBorderSpacingPx;
         mCellWidth = mCellHeight = -1;
         mFixedCellWidth = mFixedCellHeight = -1;
 
-        mCountX = grid.inv.numColumns;
-        mCountY = grid.inv.numRows;
+        mCountX = mDeviceProfile.inv.numColumns;
+        mCountY = mDeviceProfile.inv.numRows;
         mOccupied =  new GridOccupancy(mCountX, mCountY);
         mTmpOccupied = new GridOccupancy(mCountX, mCountY);
 
@@ -234,7 +238,7 @@ public class CellLayout extends ViewGroup {
         mBackground.setCallback(this);
         mBackground.setAlpha(0);
 
-        mReorderPreviewAnimationMagnitude = (REORDER_PREVIEW_MAGNITUDE * grid.iconSizePx);
+        mReorderPreviewAnimationMagnitude = (REORDER_PREVIEW_MAGNITUDE * mDeviceProfile.iconSizePx);
 
         // Initialize the data structures used for the drag visualization.
         mEaseOutInterpolator = Interpolators.DEACCEL_2_5; // Quint ease out
@@ -961,14 +965,17 @@ public class CellLayout extends ViewGroup {
         final int oldDragCellX = mDragCell[0];
         final int oldDragCellY = mDragCell[1];
 
-        if (outlineProvider == null || outlineProvider.generatedDragOutline == null) {
-            return;
-        }
-
-        Bitmap dragOutline = outlineProvider.generatedDragOutline;
         if (cellX != oldDragCellX || cellY != oldDragCellY) {
             mDragCell[0] = cellX;
             mDragCell[1] = cellY;
+
+            applyColorExtraction(dragObject, mDragCell, spanX, spanY);
+
+            if (outlineProvider == null || outlineProvider.generatedDragOutline == null) {
+                return;
+            }
+
+            Bitmap dragOutline = outlineProvider.generatedDragOutline;
 
             final int oldIndex = mDragOutlineCurrent;
             mDragOutlineAnims[oldIndex].animateOut();
@@ -1008,6 +1015,20 @@ public class CellLayout extends ViewGroup {
             if (dragObject.stateAnnouncer != null) {
                 dragObject.stateAnnouncer.announce(getItemMoveDescription(cellX, cellY));
             }
+        }
+    }
+
+    /** Applies the local color extraction to a dragging widget object. */
+    private void applyColorExtraction(DropTarget.DragObject dragObject, int[] targetCell, int spanX,
+            int spanY) {
+        // Apply local extracted color if the DragView is an AppWidgetHostViewDrawable.
+        Drawable drawable = dragObject.dragView.getDrawable();
+        if (drawable instanceof AppWidgetHostViewDrawable) {
+            int screenId = mWorkspace.getIdForScreen(this);
+            int pageId = mWorkspace.getPageIndexForScreenId(screenId);
+            AppWidgetHostViewDrawable hostViewDrawable = ((AppWidgetHostViewDrawable) drawable);
+            cellToRect(targetCell[0], targetCell[1], spanX, spanY, mTempRect);
+            hostViewDrawable.getAppWidgetHostView().handleDrag(mTempRect, pageId);
         }
     }
 
@@ -2076,7 +2097,7 @@ public class CellLayout extends ViewGroup {
     private void commitTempPlacement() {
         mTmpOccupied.copyTo(mOccupied);
 
-        int screenId = Launcher.cast(mActivity).getWorkspace().getIdForScreen(this);
+        int screenId = mWorkspace.getIdForScreen(this);
         int container = Favorites.CONTAINER_DESKTOP;
 
         if (mContainerType == HOTSEAT) {
