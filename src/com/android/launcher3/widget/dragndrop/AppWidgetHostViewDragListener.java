@@ -54,6 +54,8 @@ public final class AppWidgetHostViewDragListener implements DragController.DragL
 
     /** Notifies when there is a content change in the drag view. */
     public void onDragContentChanged() {
-        mDragObject.dragView.invalidate();
+        if (mDragObject.dragView != null) {
+            mDragObject.dragView.invalidate();
+        }
     }
 }
