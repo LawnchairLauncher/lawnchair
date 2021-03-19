@@ -489,7 +489,7 @@ public class TaskView extends FrameLayout implements Reusable {
             AnimatorSet anim = new AnimatorSet();
             TaskViewUtils.composeRecentsLaunchAnimator(
                     anim, this, targets.apps,
-                    targets.wallpapers, true /* launcherClosing */,
+                    targets.wallpapers, targets.nonApps, true /* launcherClosing */,
                     mActivity.getStateManager(), recentsView,
                     recentsView.getDepthController());
             anim.addListener(new AnimatorListenerAdapter() {
