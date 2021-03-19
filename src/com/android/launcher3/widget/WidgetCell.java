@@ -74,6 +74,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     protected int mPreviewHeight;
     protected int mPresetPreviewSize;
     private int mCellSize;
+    private float mPreviewScale = 1f;
 
     private WidgetImageView mWidgetImage;
     private TextView mWidgetName;
@@ -254,8 +255,8 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         }
         if (drawable != null) {
             LayoutParams layoutParams = (LayoutParams) mWidgetImage.getLayoutParams();
-            layoutParams.width = drawable.getIntrinsicWidth();
-            layoutParams.height = drawable.getIntrinsicHeight();
+            layoutParams.width = (int) (drawable.getIntrinsicWidth() * mPreviewScale);
+            layoutParams.height = (int) (drawable.getIntrinsicHeight() * mPreviewScale);
             mWidgetImage.setLayoutParams(layoutParams);
 
             mWidgetImage.setDrawable(drawable, mWidgetPreviewLoader.getBadgeForUser(mItem.user,
@@ -305,10 +306,16 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
 
     /** Sets the widget preview image size in number of cells. */
     public void setPreviewSize(int spanX, int spanY) {
+        setPreviewSize(spanX, spanY, 1f);
+    }
+
+    /** Sets the widget preview image size, in number of cells, and preview scale. */
+    public void setPreviewSize(int spanX, int spanY, float previewScale) {
         int padding = 2 * getResources()
                 .getDimensionPixelSize(R.dimen.widget_preview_shortcut_padding);
         mPreviewWidth = mDeviceProfile.cellWidthPx * spanX + padding;
         mPreviewHeight = mDeviceProfile.cellHeightPx * spanY + padding;
+        mPreviewScale = previewScale;
     }
 
     @Override
