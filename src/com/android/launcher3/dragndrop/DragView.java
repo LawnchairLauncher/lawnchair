@@ -561,6 +561,11 @@ public class DragView extends View implements StateListener<LauncherState> {
         return mInitialScale;
     }
 
+    /** Returns the current {@link Drawable} that is rendered in this view. */
+    public Drawable getDrawable() {
+        return mDrawable;
+    }
+
     private static class SpringFloatValue {
 
         private static final FloatPropertyCompat<SpringFloatValue> VALUE =

@@ -177,7 +177,7 @@ public final class LauncherActivityInterface extends
     @UiThread
     private Launcher getVisibleLauncher() {
         Launcher launcher = getCreatedActivity();
-        return (launcher != null) && launcher.isStarted() && launcher.hasWindowFocus()
+        return (launcher != null) && launcher.isStarted() && launcher.hasBeenResumed()
                 ? launcher : null;
     }
 
@@ -188,6 +188,7 @@ public final class LauncherActivityInterface extends
             return false;
         }
 
+        closeOverlay();
         launcher.getStateManager().goToState(OVERVIEW,
                 launcher.getStateManager().shouldAnimateStateChange(), onCompleteCallback);
         return true;

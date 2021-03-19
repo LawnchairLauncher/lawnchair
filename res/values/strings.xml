@@ -84,12 +84,13 @@
     <!-- Text shown when there is no widgets shown in the popup view showing all available widgets
          installed on the device. [CHAR_LIMIT=none] -->
     <string name="no_widgets_available">No widgets available</string>
+    <!-- Text shown when there are no matching widget search results for user's search query.
+         [CHAR_LIMIT=none] -->
+    <string name="no_search_results">No search results</string>
 
     <!-- All Apps -->
     <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
     <string name="all_apps_search_bar_hint">Search apps</string>
-    <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
-    <string name="all_apps_on_device_search_bar_hint">Search this phone and more…</string>
     <!-- Loading apps text. [CHAR_LIMIT=50] -->
     <string name="all_apps_loading_message">Loading apps&#8230;</string>
     <!-- No-search-results text. [CHAR_LIMIT=50] -->

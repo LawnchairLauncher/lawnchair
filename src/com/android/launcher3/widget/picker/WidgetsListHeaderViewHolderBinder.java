@@ -30,11 +30,14 @@ public final class WidgetsListHeaderViewHolderBinder implements
         ViewHolderBinder<WidgetsListHeaderEntry, WidgetsListHeaderHolder> {
     private final LayoutInflater mLayoutInflater;
     private final OnHeaderClickListener mOnHeaderClickListener;
+    private final WidgetsListAdapter mWidgetsListAdapter;
 
     public WidgetsListHeaderViewHolderBinder(LayoutInflater layoutInflater,
-            OnHeaderClickListener onHeaderClickListener) {
+            OnHeaderClickListener onHeaderClickListener,
+            WidgetsListAdapter listAdapter) {
         mLayoutInflater = layoutInflater;
         mOnHeaderClickListener = onHeaderClickListener;
+        mWidgetsListAdapter = listAdapter;
     }
 
     @Override
@@ -46,8 +49,16 @@ public final class WidgetsListHeaderViewHolderBinder implements
     }
 
     @Override
-    public void bindViewHolder(WidgetsListHeaderHolder viewHolder, WidgetsListHeaderEntry data) {
+    public void bindViewHolder(WidgetsListHeaderHolder viewHolder, WidgetsListHeaderEntry data,
+            int position) {
         WidgetsListHeader widgetsListHeader = viewHolder.mWidgetsListHeader;
+        if (position == 0) {
+            widgetsListHeader.setBackgroundResource(R.drawable.widgets_list_top_ripple);
+        } else if (position == mWidgetsListAdapter.getItemCount() - 1) {
+            widgetsListHeader.setBackgroundResource(R.drawable.widgets_list_bottom_ripple);
+        } else {
+            widgetsListHeader.setBackgroundResource(R.drawable.widgets_list_middle_ripple);
+        }
         widgetsListHeader.applyFromItemInfoWithIcon(data);
         widgetsListHeader.setExpanded(data.isWidgetListShown());
         widgetsListHeader.setOnExpandChangeListener(isExpanded ->

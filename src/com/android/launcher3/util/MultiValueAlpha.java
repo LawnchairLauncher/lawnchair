@@ -46,25 +46,20 @@ public class MultiValueAlpha {
      * Determines how each alpha should factor into the final alpha.
      */
     public enum Mode {
-        BLEND(1f) {
+        BLEND() {
             @Override
             public float calculateNewAlpha(float currentAlpha, float otherAlpha) {
                 return currentAlpha * otherAlpha;
             }
         },
 
-        MAX(0f) {
+        MAX() {
             @Override
             public float calculateNewAlpha(float currentAlpha, float otherAlpha) {
                 return Math.max(currentAlpha, otherAlpha);
             }
         };
 
-        Mode(float startAlpha) {
-            mStartAlpha = startAlpha;
-        }
-
-        protected final float mStartAlpha;
         protected abstract float calculateNewAlpha(float currentAlpha, float otherAlpha);
     }
 
@@ -84,7 +79,6 @@ public class MultiValueAlpha {
         mView = view;
         mMyProperties = new AlphaProperty[size];
         mMode = mode;
-        mView.setAlpha(mMode.mStartAlpha);
 
         mValidMask = 0;
         for (int i = 0; i < size; i++) {
@@ -112,9 +106,9 @@ public class MultiValueAlpha {
 
         private final int mMyMask;
 
-        private float mValue = mMode.mStartAlpha;
+        private float mValue = 1;
         // Factor of all other alpha channels, only valid if mMyMask is present in mValidMask.
-        private float mOthers = mMode.mStartAlpha;
+        private float mOthers = 1;
 
         AlphaProperty(int myMask) {
             mMyMask = myMask;
@@ -127,7 +121,7 @@ public class MultiValueAlpha {
 
             if ((mValidMask & mMyMask) == 0) {
                 // Our cache value is not correct, recompute it.
-                mOthers = mMode.mStartAlpha;
+                mOthers = 1;
                 for (AlphaProperty prop : mMyProperties) {
                     if (prop != this) {
                         mOthers = mMode.calculateNewAlpha(mOthers, prop.mValue);
