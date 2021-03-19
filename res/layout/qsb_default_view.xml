@@ -21,34 +21,35 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_margin="8dp"
         android:layout_gravity="center_vertical"
-        android:background="@drawable/round_rect_primary"
+        android:layout_margin="8dp"
+        android:background="@drawable/bg_all_apps_searchbox"
         android:elevation="2dp"
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="0dp"
             android:id="@+id/btn_qsb_search"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
             android:gravity="center_vertical"
             android:paddingStart="16dp"
             android:text="@string/abandoned_search"
-            android:textColor="?android:attr/textColorSecondary"
             android:textAppearance="?android:textAppearanceMedium"
-            android:clickable="true"
-            android:background="?android:attr/selectableItemBackground" />
+            android:textColor="?android:attr/textColorSecondary" />
+
         <ImageView
-            android:layout_width="48dp"
             android:id="@+id/btn_qsb_setup"
-            android:clickable="true"
-            android:visibility="gone"
+            android:layout_width="48dp"
             android:layout_height="match_parent"
-            android:src="@drawable/ic_setting"
-            android:tint="?android:attr/textColorSecondary"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
             android:contentDescription="@string/gadget_setup_text"
             android:padding="8dp"
-            android:background="?android:attr/selectableItemBackground" />
+            android:src="@drawable/ic_setting"
+            android:tint="?android:attr/textColorSecondary"
+            android:visibility="gone" />
     </LinearLayout>
 </FrameLayout>
