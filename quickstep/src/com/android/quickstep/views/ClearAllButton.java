@@ -21,6 +21,7 @@ import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.widget.Button;
 
+import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.quickstep.views.RecentsView.PageCallbacks;
 import com.android.quickstep.views.RecentsView.ScrollState;
@@ -40,13 +41,13 @@ public class ClearAllButton extends Button implements PageCallbacks {
                 }
             };
 
+    private final StatefulActivity mActivity;
     private float mScrollAlpha = 1;
     private float mContentAlpha = 1;
     private float mVisibilityAlpha = 1;
     private float mGridProgress = 1;
 
     private boolean mIsRtl;
-    private final float mOriginalTranslationX, mOriginalTranslationY;
     private float mNormalTranslationPrimary;
     private float mGridTranslationPrimary;
 
@@ -55,8 +56,7 @@ public class ClearAllButton extends Button implements PageCallbacks {
     public ClearAllButton(Context context, AttributeSet attrs) {
         super(context, attrs);
         mIsRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
-        mOriginalTranslationX = getTranslationX();
-        mOriginalTranslationY = getTranslationY();
+        mActivity = StatefulActivity.fromContext(context);
     }
 
     @Override
@@ -114,7 +114,7 @@ public class ClearAllButton extends Button implements PageCallbacks {
         mNormalTranslationPrimary = mIsRtl ? (mScrollOffset - shift) : (mScrollOffset + shift);
         applyPrimaryTranslation();
         orientationHandler.getSecondaryViewTranslate().set(this,
-                orientationHandler.getSecondaryValue(mOriginalTranslationX, mOriginalTranslationY));
+                orientationHandler.getSecondaryValue(0f, getOriginalTranslationY()));
         mScrollAlpha = 1 - shift / orientationSize;
         updateAlpha();
     }
@@ -165,5 +165,12 @@ public class ClearAllButton extends Button implements PageCallbacks {
 
     private float getGridTrans(float endTranslation) {
         return mGridProgress > 0 ? endTranslation : 0;
+    }
+
+    /**
+     * Get the Y translation that is set in the original layout position, before scrolling.
+     */
+    private float getOriginalTranslationY() {
+        return mActivity.getDeviceProfile().overviewTaskThumbnailTopMarginPx / 2.0f;
     }
 }

@@ -112,7 +112,6 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     private boolean mLayoutValid = false;
     private boolean mScrollValid = false;
     private int mOrientationStateId;
-    private final int mTaskThumbnailPadding;
     private final int mRowSpacing;
 
     public TaskViewSimulator(Context context, BaseActivityInterface sizeStrategy) {
@@ -125,7 +124,6 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         mOrientationStateId = mOrientationState.getStateId();
         Resources resources = context.getResources();
         mIsRecentsRtl = mOrientationState.getOrientationHandler().getRecentsRtlSetting(resources);
-        mTaskThumbnailPadding = (int) resources.getDimension(R.dimen.task_thumbnail_top_margin);
         mRowSpacing = (int) resources.getDimension(R.dimen.overview_grid_row_spacing);
     }
 
@@ -314,7 +312,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         final int boxLength = (int) Math.max(taskWidth, taskHeight);
         float availableHeight = mGridRect.height();
         float rowHeight = (availableHeight - mRowSpacing) / 2;
-        float gridScale = rowHeight / (boxLength + mTaskThumbnailPadding);
+        float gridScale = rowHeight / (boxLength + mDp.overviewTaskThumbnailTopMarginPx);
         scale = Utilities.mapRange(interpolatedGridProgress, 1f, gridScale);
         mMatrix.postScale(scale, scale, mIsRecentsRtl ? 0 : taskWidth, 0);
         mOrientationState.getOrientationHandler().setSecondary(mMatrix, MATRIX_POST_TRANSLATE,
@@ -331,7 +329,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
             taskGridHorizontalDiff = mGridRect.left - taskLeft;
         }
         float taskGridVerticalDiff =
-                mGridRect.top + mTaskThumbnailPadding * gridScale - mTaskRect.top;
+                mGridRect.top + mDp.overviewTaskThumbnailTopMarginPx * gridScale - mTaskRect.top;
         mOrientationState.getOrientationHandler().set(mMatrix, MATRIX_POST_TRANSLATE,
                 Utilities.mapRange(interpolatedGridProgress, 0, taskGridHorizontalDiff));
         mOrientationState.getOrientationHandler().setSecondary(mMatrix, MATRIX_POST_TRANSLATE,

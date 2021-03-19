@@ -286,4 +286,8 @@
     <!-- Size of the maximum radius for the enforced rounded rectangles. -->
     <dimen name="enforced_rounded_corner_max_radius">16dp</dimen>
 
+<!-- Overview placeholder to compile in Launcer3 without Quickstep -->
+    <dimen name="task_thumbnail_icon_size">0dp</dimen>
+    <dimen name="overview_task_margin">0dp</dimen>
+
 </resources>
