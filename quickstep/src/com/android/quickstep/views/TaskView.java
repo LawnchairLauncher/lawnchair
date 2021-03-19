@@ -987,7 +987,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         return scrollAdjustment;
     }
 
-    public float getOffsetAdjustment(boolean fullscreenEnabled,boolean gridEnabled) {
+    public float getOffsetAdjustment(boolean fullscreenEnabled, boolean gridEnabled) {
         return getScrollAdjustment(fullscreenEnabled, gridEnabled);
     }
 
@@ -1213,61 +1213,76 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
      */
     void updateTaskSize() {
         ViewGroup.LayoutParams params = getLayoutParams();
+        float fullscreenScale;
+        float boxTranslationY;
+        int expectedWidth;
+        int expectedHeight;
         if (mActivity.getDeviceProfile().isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get()) {
             final int thumbnailPadding =
                     mActivity.getDeviceProfile().overviewTaskThumbnailTopMarginPx;
+            final Rect lastComputedTaskSize = getRecentsView().getLastComputedTaskSize();
+            final int taskWidth = lastComputedTaskSize.width();
+            final int taskHeight = lastComputedTaskSize.height();
 
-            Rect lastComputedTaskSize = getRecentsView().getLastComputedTaskSize();
-            int taskWidth = lastComputedTaskSize.width();
-            int taskHeight = lastComputedTaskSize.height();
-
-            int expectedWidth;
-            int expectedHeight;
-            float thumbnailRatio = mTask != null ? mTask.getVisibleThumbnailRatio(
-                    TaskView.CLIP_STATUS_AND_NAV_BARS) : 0f;
-            if (isRunningTask() || thumbnailRatio == 0f) {
-                expectedWidth = taskWidth;
-                expectedHeight = taskHeight + thumbnailPadding;
+            int boxWidth;
+            int boxHeight;
+            float thumbnailRatio;
+            boolean isFocusedTask = isFocusedTask();
+            if (isFocusedTask || isRunningTask()) {
+                // Task will be focused and should use focused task size. Use runningTaskRatio
+                // that is associated with the original orientation of the focused task if possible.
+                boxWidth = taskWidth;
+                boxHeight = taskHeight;
+                thumbnailRatio = isFocusedTask ? getRecentsView().getFocusedTaskRatio() : 0;
             } else {
-                int boxLength = Math.max(taskWidth, taskHeight);
-                if (thumbnailRatio > 1) {
-                    expectedWidth = boxLength;
-                    expectedHeight = (int) (boxLength / thumbnailRatio) + thumbnailPadding;
-                } else {
-                    expectedWidth = (int) (boxLength * thumbnailRatio);
-                    expectedHeight = boxLength + thumbnailPadding;
-                }
+                // Otherwise task is in grid, and should use lastComputedGridTaskSize.
+                Rect lastComputedGridTaskSize = getRecentsView().getLastComputedGridTaskSize();
+                boxWidth = lastComputedGridTaskSize.width();
+                boxHeight = lastComputedGridTaskSize.height();
+                thumbnailRatio = mTask != null ? mTask.getVisibleThumbnailRatio(
+                        TaskView.CLIP_STATUS_AND_NAV_BARS) : 0f;
+            }
+            int boxLength = Math.max(boxWidth, boxHeight);
+
+            // Bound width/height to the box size.
+            if (thumbnailRatio == 0f) {
+                expectedWidth = boxWidth;
+                expectedHeight = boxHeight + thumbnailPadding;
+            } else if (thumbnailRatio > 1) {
+                expectedWidth = boxLength;
+                expectedHeight = (int) (boxLength / thumbnailRatio) + thumbnailPadding;
+            } else {
+                expectedWidth = (int) (boxLength * thumbnailRatio);
+                expectedHeight = boxLength + thumbnailPadding;
             }
 
-            float heightDiff = (expectedHeight - thumbnailPadding - taskHeight) / 2.0f;
-            setBoxTranslationY(heightDiff);
+            // Scale to to fit task Rect.
+            fullscreenScale = taskWidth / (float) boxWidth;
 
-            float fullscreenScale = 1f;
-            if (expectedWidth > taskWidth) {
-                // In full screen, expectedWidth should not be larger than taskWidth.
-                fullscreenScale = taskWidth / (float) expectedWidth;
-            } else if (expectedHeight - thumbnailPadding > taskHeight) {
-                // In full screen, expectedHeight should not be larger than taskHeight.
-                fullscreenScale = taskHeight / (float) (expectedHeight - thumbnailPadding);
+            // In full screen, scale back TaskView to original size.
+            if (expectedWidth > boxWidth) {
+                fullscreenScale *= boxWidth / (float) expectedWidth;
+            } else if (expectedHeight - thumbnailPadding > boxHeight) {
+                fullscreenScale *= boxHeight / (float) (expectedHeight - thumbnailPadding);
             }
-            setFullscreenScale(fullscreenScale);
 
-            if (params.width != expectedWidth || params.height != expectedHeight) {
-                params.width = expectedWidth;
-                params.height = expectedHeight;
-                setLayoutParams(params);
-            }
+            // Align to top of task Rect.
+            boxTranslationY = (expectedHeight - thumbnailPadding - taskHeight) / 2.0f;
         } else {
-            setBoxTranslationY(0);
-            setFullscreenScale(1);
-            if (params.width != ViewGroup.LayoutParams.MATCH_PARENT) {
-                params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-                params.height = ViewGroup.LayoutParams.MATCH_PARENT;
-                setLayoutParams(params);
-            }
+            fullscreenScale = 1f;
+            boxTranslationY = 0f;
+            expectedWidth = ViewGroup.LayoutParams.MATCH_PARENT;
+            expectedHeight = ViewGroup.LayoutParams.MATCH_PARENT;
+        }
+
+        setFullscreenScale(fullscreenScale);
+        setBoxTranslationY(boxTranslationY);
+        if (params.width != expectedWidth || params.height != expectedHeight) {
+            params.width = expectedWidth;
+            params.height = expectedHeight;
+            setLayoutParams(params);
         }
     }
-
 
     private float getFullscreenTrans(float endTranslation) {
         float progress = ACCEL_DEACCEL.getInterpolation(mFullscreenProgress);
@@ -1279,6 +1294,13 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             return false;
         }
         return this == getRecentsView().getRunningTaskView();
+    }
+
+    public boolean isFocusedTask() {
+        if (getRecentsView() == null) {
+            return false;
+        }
+        return this == getRecentsView().getFocusedTaskView();
     }
 
     public void setShowScreenshot(boolean showScreenshot) {

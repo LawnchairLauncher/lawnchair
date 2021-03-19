@@ -206,18 +206,17 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             Rect gridRect = new Rect();
             calculateGridSize(context, dp, gridRect);
 
-            int rowSpacing = res.getDimensionPixelSize(R.dimen.overview_grid_row_spacing);
-            float rowHeight = (gridRect.height() - rowSpacing) / 2f;
+            int verticalMargin = res.getDimensionPixelSize(
+                    R.dimen.overview_grid_focus_vertical_margin);
+            float taskHeight = gridRect.height() - verticalMargin * 2;
 
             PointF taskDimension = getTaskDimension(context, dp);
-            float scale = (rowHeight - dp.overviewTaskThumbnailTopMarginPx) / Math.max(
-                    taskDimension.x, taskDimension.y);
+            float scale = taskHeight / Math.max(taskDimension.x, taskDimension.y);
             int outWidth = Math.round(scale * taskDimension.x);
             int outHeight = Math.round(scale * taskDimension.y);
 
-            int gravity = Gravity.TOP;
+            int gravity = Gravity.CENTER_VERTICAL;
             gravity |= orientedState.getRecentsRtlSetting(res) ? Gravity.RIGHT : Gravity.LEFT;
-            gridRect.inset(0, dp.overviewTaskThumbnailTopMarginPx, 0, 0);
             Gravity.apply(gravity, outWidth, outHeight, gridRect, outRect);
         } else {
             int taskMargin = dp.overviewTaskMarginPx;
@@ -291,6 +290,30 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         outRect.set(0, 0, dp.widthPx, dp.heightPx);
         outRect.inset(Math.max(insets.left, sideMargin), Math.max(insets.top, topMargin),
                 Math.max(insets.right, sideMargin), Math.max(insets.bottom, bottomMargin));
+    }
+
+    /**
+     * Calculates the overview grid non-focused task size for the provided device configuration.
+     */
+    public final void calculateGridTaskSize(Context context, DeviceProfile dp, Rect outRect,
+            PagedOrientationHandler orientedState) {
+        Resources res = context.getResources();
+        Rect gridRect = new Rect();
+        calculateGridSize(context, dp, gridRect);
+
+        int rowSpacing = res.getDimensionPixelSize(R.dimen.overview_grid_row_spacing);
+        float rowHeight = (gridRect.height() - rowSpacing) / 2f;
+
+        PointF taskDimension = getTaskDimension(context, dp);
+        float scale = (rowHeight - dp.overviewTaskThumbnailTopMarginPx) / Math.max(
+                taskDimension.x, taskDimension.y);
+        int outWidth = Math.round(scale * taskDimension.x);
+        int outHeight = Math.round(scale * taskDimension.y);
+
+        int gravity = Gravity.TOP;
+        gravity |= orientedState.getRecentsRtlSetting(res) ? Gravity.RIGHT : Gravity.LEFT;
+        gridRect.inset(0, dp.overviewTaskThumbnailTopMarginPx, 0, 0);
+        Gravity.apply(gravity, outWidth, outHeight, gridRect, outRect);
     }
 
     /**
