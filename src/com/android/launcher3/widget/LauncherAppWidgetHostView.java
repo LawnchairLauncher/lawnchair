@@ -19,6 +19,7 @@ package com.android.launcher3.widget;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
@@ -120,8 +121,12 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
         } else {
             super.setColorResources(colors);
         }
+    }
 
-        if (mDragListener != null) {
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        if (mIsInDragMode && mDragListener != null) {
             mDragListener.onDragContentChanged();
         }
     }
