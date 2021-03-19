@@ -134,7 +134,6 @@ public class OptionsPopupView extends ArrowPopup
                     (DeepShortcutView) popup.inflateAndAdd(R.layout.system_shortcut, popup);
             view.getIconView().setBackgroundResource(item.iconRes);
             view.getBubbleText().setText(item.labelRes);
-            view.setDividerVisibility(View.INVISIBLE);
             view.setOnClickListener(popup);
             view.setOnLongClickListener(popup);
             popup.mItemMap.put(view, item);
