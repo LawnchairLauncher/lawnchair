@@ -189,6 +189,7 @@ android {
 
         lawn {
             java.srcDirs = ['src_flags', 'src_shortcuts_overrides', 'lawnchair/src']
+            aidl.srcDirs = ['lawnchair/aidl']
             res.srcDirs = ['lawnchair/res']
             manifest.srcFile "lawnchair/AndroidManifest.xml"
         }

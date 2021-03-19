@@ -74,6 +74,15 @@ class LawnchairPreferences(val context: Context) {
         @kotlin.jvm.JvmField
         var MAKE_COLORED_BACKGROUNDS: String = "pref_makeColoredBackgrounds"
 
+        @kotlin.jvm.JvmField
+        var IGNORE_FEED_WHITELIST: String = "pref_ignoreFeedWhitelist"
+
+        @kotlin.jvm.JvmField
+        var FEED_PROVIDER: String = "pref_feedProvider"
+
+        @kotlin.jvm.JvmField
+        var ENABLE_MINUS_ONE: String = "pref_enableMinusOne"
+
         fun getInstance(context: Context?): SharedPreferences? = when {
             context == null -> null
             INSTANCE == null -> Utilities.getPrefs(context)
