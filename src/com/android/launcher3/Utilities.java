@@ -700,6 +700,37 @@ public final class Utilities {
         return (Math.abs(first - second) / Math.abs((first + second) / 2.0f)) > bound;
     }
 
+    /**
+     * Rotates `inOutBounds` by `delta` 90-degree increments. Rotation is visually CCW. Parent
+     * sizes represent the "space" that will rotate carrying inOutBounds along with it to determine
+     * the final bounds.
+     */
+    public static void rotateBounds(Rect inOutBounds, int parentWidth, int parentHeight,
+            int delta) {
+        int rdelta = ((delta % 4) + 4) % 4;
+        int origLeft = inOutBounds.left;
+        switch (rdelta) {
+            case 0:
+                return;
+            case 1:
+                inOutBounds.left = inOutBounds.top;
+                inOutBounds.top = parentWidth - inOutBounds.right;
+                inOutBounds.right = inOutBounds.bottom;
+                inOutBounds.bottom = parentWidth - origLeft;
+                return;
+            case 2:
+                inOutBounds.left = parentWidth - inOutBounds.right;
+                inOutBounds.right = parentWidth - origLeft;
+                return;
+            case 3:
+                inOutBounds.left = parentHeight - inOutBounds.bottom;
+                inOutBounds.bottom = inOutBounds.right;
+                inOutBounds.right = parentHeight - inOutBounds.top;
+                inOutBounds.top = origLeft;
+                return;
+        }
+    }
+
     private static class FixedSizeEmptyDrawable extends ColorDrawable {
 
         private final int mSize;
