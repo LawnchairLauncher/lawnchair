@@ -472,7 +472,7 @@ public class TaskbarController {
     public void alignRealHotseatWithTaskbar() {
         Rect hotseatBounds = new Rect();
         DeviceProfile grid = mLauncher.getDeviceProfile();
-        int hotseatHeight = grid.workspacePadding.bottom + grid.getInsets().bottom;
+        int hotseatHeight = grid.workspacePadding.bottom + grid.taskbarSize;
         int hotseatTopDiff = hotseatHeight - grid.taskbarSize;
 
         mTaskbarView.getHotseatBoundsAtScale(getTaskbarScaleOnHome()).roundOut(hotseatBounds);

@@ -41,7 +41,6 @@ public class DeepShortcutView extends FrameLayout {
 
     private BubbleTextView mBubbleText;
     private View mIconView;
-    private View mDivider;
 
     private WorkspaceItemInfo mInfo;
     private ShortcutInfo mDetail;
@@ -63,11 +62,6 @@ public class DeepShortcutView extends FrameLayout {
         super.onFinishInflate();
         mBubbleText = findViewById(R.id.bubble_text);
         mIconView = findViewById(R.id.icon);
-        mDivider = findViewById(R.id.divider);
-    }
-
-    public void setDividerVisibility(int visibility) {
-        mDivider.setVisibility(visibility);
     }
 
     public BubbleTextView getBubbleText() {

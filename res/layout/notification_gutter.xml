@@ -16,6 +16,5 @@
 <View
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="4dp"
-    android:layout_marginTop="4dp"
-    android:background="@drawable/bg_notification_content" />
+    android:layout_height="0dp"
+    android:layout_marginTop="@dimen/popup_margin" />

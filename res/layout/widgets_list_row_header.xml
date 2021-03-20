@@ -71,6 +71,7 @@
         android:layout_gravity="center_vertical"
         android:layout_alignParentEnd="true"
         android:clickable="false"
+        android:importantForAccessibility="no"
         android:button="@drawable/widgets_tray_expand_button"/>
 
 </com.android.launcher3.widget.picker.WidgetsListHeader>
