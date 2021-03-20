@@ -97,7 +97,7 @@ public class ClippedFolderIconLayoutRule {
 
         double thetaShift = 0;
         if (curNumItems == 3) {
-            thetaShift = Math.PI / 6;
+            thetaShift = Math.PI / 2;
         } else if (curNumItems == 4) {
             thetaShift = Math.PI / 4;
         }

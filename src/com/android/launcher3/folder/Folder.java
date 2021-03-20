@@ -26,6 +26,7 @@ import static com.android.launcher3.config.FeatureFlags.ALWAYS_USE_HARDWARE_OPTI
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_CONVERTED_TO_ICON;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_LABEL_UPDATED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ITEM_DROP_COMPLETED;
+import static com.android.launcher3.util.DisplayController.getSingleFrameMs;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -695,6 +696,9 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
         mPageIndicator.stopAllAnimations();
         startAnimation(anim);
+        // Because t=0 has the folder match the folder icon, we can skip the
+        // first frame and have the same movement one frame earlier.
+        anim.setCurrentPlayTime(Math.min(getSingleFrameMs(getContext()), anim.getTotalDuration()));
 
         // Make sure the folder picks up the last drag move even if the finger doesn't move.
         if (mDragController.isDragging()) {
