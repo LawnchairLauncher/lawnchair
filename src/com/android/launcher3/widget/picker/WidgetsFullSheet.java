@@ -33,6 +33,7 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.widget.TextView;
@@ -48,6 +49,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
+import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 import com.android.launcher3.views.TopRoundedCornerView;
 import com.android.launcher3.widget.BaseWidgetSheet;
@@ -55,6 +57,7 @@ import com.android.launcher3.widget.LauncherAppWidgetHost.ProviderChangedListene
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.picker.search.SearchModeListener;
 import com.android.launcher3.widget.picker.search.WidgetsSearchBar;
+import com.android.launcher3.widget.util.WidgetsTableUtils;
 import com.android.launcher3.workprofile.PersonalWorkPagedView;
 import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.OnActivePageChangedListener;
 
@@ -68,10 +71,15 @@ import java.util.function.Predicate;
 public class WidgetsFullSheet extends BaseWidgetSheet
         implements Insettable, ProviderChangedListener, OnActivePageChangedListener,
         WidgetsRecyclerView.HeaderViewDimensionsProvider, SearchModeListener {
+    private static final String TAG = WidgetsFullSheet.class.getSimpleName();
 
     private static final long DEFAULT_OPEN_DURATION = 267;
     private static final long FADE_IN_DURATION = 150;
     private static final float VERTICAL_START_POSITION = 0.3f;
+    // The widget recommendation table can easily take over the entire screen on devices with small
+    // resolution or landscape on phone. This ratio defines the max percentage of content area that
+    // the table can display.
+    private static final float RECOMMENDATION_TABLE_HEIGHT_RATIO = 0.75f;
 
     private final Rect mInsets = new Rect();
     private final boolean mHasWorkProfile;
@@ -81,10 +89,12 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             mCurrentUser.equals(entry.mPkgItem.user);
     private final Predicate<WidgetsListBaseEntry> mWorkWidgetsFilter =
             mPrimaryWidgetsFilter.negate();
+    private final int mTabsHeight;
+    private final int mWidgetCellHorizontalPadding;
 
     @Nullable private PersonalWorkPagedView mViewPager;
-    private int mInitialTabsHeight = 0;
     private boolean mIsInSearchMode;
+    private int mMaxSpansPerRow = 4;
     private View mTabsView;
     private TextView mNoWidgetsView;
     private SearchAndRecommendationViewHolder mSearchAndRecommendationViewHolder;
@@ -96,6 +106,12 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         mAdapters.put(AdapterHolder.PRIMARY, new AdapterHolder(AdapterHolder.PRIMARY));
         mAdapters.put(AdapterHolder.WORK, new AdapterHolder(AdapterHolder.WORK));
         mAdapters.put(AdapterHolder.SEARCH, new AdapterHolder(AdapterHolder.SEARCH));
+        mTabsHeight = mHasWorkProfile
+                ? getContext().getResources()
+                        .getDimensionPixelSize(R.dimen.all_apps_header_tab_height)
+                : 0;
+        mWidgetCellHorizontalPadding = 2 * getResources().getDimensionPixelOffset(
+                R.dimen.widget_cell_horizontal_padding);
     }
 
     public WidgetsFullSheet(Context context, AttributeSet attrs) {
@@ -140,6 +156,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 findViewById(R.id.search_and_recommendations_container));
         mSearchAndRecommendationsScrollController = new SearchAndRecommendationsScrollController(
                 mHasWorkProfile,
+                mTabsHeight,
                 mSearchAndRecommendationViewHolder,
                 findViewById(R.id.primary_widgets_list_view),
                 mHasWorkProfile ? findViewById(R.id.work_widgets_list_view) : null,
@@ -150,6 +167,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
         mNoWidgetsView = findViewById(R.id.no_widgets_text);
 
+        onRecommendedWidgetsBound();
         onWidgetsBound();
 
         mSearchAndRecommendationViewHolder.mSearchBar.initialize(
@@ -257,6 +275,22 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        doMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        if (mSearchAndRecommendationsScrollController.updateMarginAndPadding()) {
+            doMeasure(widthMeasureSpec, heightMeasureSpec);
+        }
+
+        if (updateMaxSpansPerRow()) {
+            doMeasure(widthMeasureSpec, heightMeasureSpec);
+
+            if (mSearchAndRecommendationsScrollController.updateMarginAndPadding()) {
+                doMeasure(widthMeasureSpec, heightMeasureSpec);
+            }
+        }
+    }
+
+    private void doMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         DeviceProfile deviceProfile = mLauncher.getDeviceProfile();
         int widthUsed;
         if (mInsets.bottom > 0) {
@@ -272,24 +306,29 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 widthUsed, heightMeasureSpec, heightUsed);
         setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec),
                 MeasureSpec.getSize(heightMeasureSpec));
+    }
 
-        int paddingPx = 2 * getResources().getDimensionPixelOffset(
-                R.dimen.widget_cell_horizontal_padding);
-        int maxSpansPerRow = getMeasuredWidth() / (deviceProfile.cellWidthPx + paddingPx);
-        mAdapters.get(AdapterHolder.PRIMARY).mWidgetsListAdapter.setMaxHorizontalSpansPerRow(
-                maxSpansPerRow);
-        mAdapters.get(AdapterHolder.SEARCH).mWidgetsListAdapter.setMaxHorizontalSpansPerRow(
-                maxSpansPerRow);
-        if (mHasWorkProfile) {
-            mAdapters.get(AdapterHolder.WORK).mWidgetsListAdapter.setMaxHorizontalSpansPerRow(
-                    maxSpansPerRow);
+    /** Returns {@code true} if the max spans have been updated. */
+    private boolean updateMaxSpansPerRow() {
+        if (getMeasuredWidth() == 0) return false;
+
+        int previousMaxSpansPerRow = mMaxSpansPerRow;
+        mMaxSpansPerRow = getMeasuredWidth()
+                / (mLauncher.getDeviceProfile().cellWidthPx + mWidgetCellHorizontalPadding);
+
+        if (previousMaxSpansPerRow != mMaxSpansPerRow) {
+            mAdapters.get(AdapterHolder.PRIMARY).mWidgetsListAdapter.setMaxHorizontalSpansPerRow(
+                    mMaxSpansPerRow);
+            mAdapters.get(AdapterHolder.SEARCH).mWidgetsListAdapter.setMaxHorizontalSpansPerRow(
+                    mMaxSpansPerRow);
+            if (mHasWorkProfile) {
+                mAdapters.get(AdapterHolder.WORK).mWidgetsListAdapter.setMaxHorizontalSpansPerRow(
+                        mMaxSpansPerRow);
+            }
+            onRecommendedWidgetsBound();
+            return true;
         }
-
-        if (mInitialTabsHeight == 0 && mTabsView != null) {
-            mInitialTabsHeight = measureHeightWithVerticalMargins(mTabsView);
-        }
-
-        mSearchAndRecommendationsScrollController.updateMarginAndPadding();
+        return false;
     }
 
     @Override
@@ -346,6 +385,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             mViewPager.snapToPage(AdapterHolder.PRIMARY);
         }
         attachScrollbarToRecyclerView(mAdapters.get(AdapterHolder.PRIMARY).mWidgetsRecyclerView);
+
+        mSearchAndRecommendationsScrollController.updateMarginAndPadding();
     }
 
     @Override
@@ -357,6 +398,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
     private void setViewVisibilityBasedOnSearch(boolean isInSearchMode) {
         mIsInSearchMode = isInSearchMode;
+        mSearchAndRecommendationViewHolder.mRecommendedWidgetsTable
+                .setVisibility(isInSearchMode ? GONE : VISIBLE);
         if (mHasWorkProfile) {
             mViewPager.setVisibility(isInSearchMode ? GONE : VISIBLE);
             mTabsView.setVisibility(isInSearchMode ? GONE : VISIBLE);
@@ -372,6 +415,25 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     private void resetExpandedHeaders() {
         mAdapters.get(AdapterHolder.PRIMARY).mWidgetsListAdapter.resetExpandedHeader();
         mAdapters.get(AdapterHolder.WORK).mWidgetsListAdapter.resetExpandedHeader();
+    }
+
+    @Override
+    public void onRecommendedWidgetsBound() {
+        List<WidgetItem> recommendedWidgets =
+                mLauncher.getPopupDataProvider().getRecommendedWidgets();
+        WidgetsRecommendationTableLayout table =
+                mSearchAndRecommendationViewHolder.mRecommendedWidgetsTable;
+        if (recommendedWidgets.size() > 0) {
+            float maxTableHeight =
+                    (mLauncher.getDeviceProfile().heightPx - mTabsHeight - getHeaderViewHeight())
+                            * RECOMMENDATION_TABLE_HEIGHT_RATIO;
+            List<ArrayList<WidgetItem>> recommendedWidgetsInTable =
+                    WidgetsTableUtils.groupWidgetItemsIntoTable(recommendedWidgets,
+                            mMaxSpansPerRow);
+            table.setRecommendedWidgets(recommendedWidgetsInTable, maxTableHeight);
+        } else {
+            table.setVisibility(GONE);
+        }
     }
 
     private void open(boolean animate) {
@@ -534,20 +596,29 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             mWidgetsRecyclerView.setEdgeEffectFactory(
                     ((TopRoundedCornerView) mContent).createEdgeEffectFactory());
             mWidgetsListAdapter.setApplyBitmapDeferred(false, mWidgetsRecyclerView);
+            mWidgetsListAdapter.setMaxHorizontalSpansPerRow(mMaxSpansPerRow);
         }
     }
 
     final class SearchAndRecommendationViewHolder {
-        final View mContainer;
+        final ViewGroup mContainer;
         final View mCollapseHandle;
         final WidgetsSearchBar mSearchBar;
         final TextView mHeaderTitle;
+        final WidgetsRecommendationTableLayout mRecommendedWidgetsTable;
 
-        SearchAndRecommendationViewHolder(View searchAndRecommendationContainer) {
+        SearchAndRecommendationViewHolder(ViewGroup searchAndRecommendationContainer) {
             mContainer = searchAndRecommendationContainer;
             mCollapseHandle = mContainer.findViewById(R.id.collapse_handle);
             mSearchBar = mContainer.findViewById(R.id.widgets_search_bar);
             mHeaderTitle = mContainer.findViewById(R.id.title);
+            mRecommendedWidgetsTable = mContainer.findViewById(R.id.recommended_widget_table);
+            mRecommendedWidgetsTable.setWidgetCellOnTouchListener((view, event) -> {
+                getRecyclerView().onTouchEvent(event);
+                return false;
+            });
+            mRecommendedWidgetsTable.setWidgetCellLongClickListener(WidgetsFullSheet.this);
+            mRecommendedWidgetsTable.setWidgetCellOnClickListener(WidgetsFullSheet.this);
         }
     }
 }

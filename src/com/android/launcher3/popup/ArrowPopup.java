@@ -17,10 +17,12 @@
 package com.android.launcher3.popup;
 
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
+import static com.android.launcher3.popup.PopupPopulator.MAX_SHORTCUTS;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
+import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
@@ -28,6 +30,8 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Outline;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
 import android.util.Pair;
@@ -63,6 +67,9 @@ import java.util.Collections;
  */
 public abstract class ArrowPopup<T extends BaseDraggingActivity> extends AbstractFloatingView {
 
+    // +1 for system shortcut view
+    private static final int MAX_NUM_CHILDREN = MAX_SHORTCUTS + 1;
+
     private final Rect mTempRect = new Rect();
 
     protected final LayoutInflater mInflater;
@@ -93,6 +100,9 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
 
     private Runnable mOnCloseCallback = () -> { };
 
+    private int mArrowColor;
+    private final int[] mColors;
+
     public ArrowPopup(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mInflater = LayoutInflater.from(context);
@@ -121,15 +131,22 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
         mArrowPointRadius = resources.getDimensionPixelSize(R.dimen.popup_arrow_corner_radius);
 
         mRoundedTop = new GradientDrawable();
-        mRoundedTop.setColor(Themes.getAttrColor(context, R.attr.popupColorPrimary));
         mRoundedTop.setCornerRadii(new float[] { mOutlineRadius, mOutlineRadius, mOutlineRadius,
                 mOutlineRadius, 0, 0, 0, 0});
 
         mRoundedBottom = new GradientDrawable();
-        mRoundedBottom.setColor(Themes.getAttrColor(context, R.attr.popupColorPrimary));
         mRoundedBottom.setCornerRadii(new float[] { 0, 0, 0, 0, mOutlineRadius, mOutlineRadius,
                 mOutlineRadius, mOutlineRadius});
 
+        int primaryColor = Themes.getAttrColor(context, R.attr.popupColorPrimary);
+        int secondaryColor = Themes.getAttrColor(context, R.attr.popupColorSecondary);
+        ArgbEvaluator argb = new ArgbEvaluator();
+        mColors = new int[MAX_NUM_CHILDREN];
+        // Interpolate between the two colors, exclusive.
+        float step = 1f / (MAX_NUM_CHILDREN + 1);
+        for (int i = 0; i < mColors.length; ++i) {
+            mColors[i] = (int) argb.evaluate((i + 1) * step, primaryColor, secondaryColor);
+        }
     }
 
     public ArrowPopup(Context context, AttributeSet attrs) {
@@ -187,6 +204,7 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
 
         int numVisibleShortcut = 0;
         View lastView = null;
+        int numVisibleChild = 0;
         for (int i = 0; i < count; i++) {
             View view = getChildAt(i);
             boolean isShortcut = view instanceof DeepShortcutView;
@@ -207,13 +225,39 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
                             view.setBackground(mRoundedTop);
                         } else if (numVisibleShortcut == (totalVisibleShortcuts - 1)) {
                             view.setBackground(mRoundedBottom);
+                        } else {
+                            view.setBackgroundResource(R.drawable.middle_item_primary);
                         }
                         numVisibleShortcut++;
                     }
                 }
+
+                int color = mColors[numVisibleChild % mColors.length];
+                setChildColor(view, color);
+
+                // Arrow color matches the first child or the last child.
+                if (!mIsAboveIcon && numVisibleChild == 0) {
+                    mArrowColor = color;
+                } else if (mIsAboveIcon) {
+                    mArrowColor = color;
+                }
+
+                numVisibleChild++;
             }
         }
         measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
+    }
+
+    /**
+     * Sets the background color of the child.
+     */
+    protected void setChildColor(View view, int color) {
+        Drawable bg = view.getBackground();
+        if (bg instanceof GradientDrawable) {
+            ((GradientDrawable) bg.mutate()).setColor(color);
+        } else if (bg instanceof ColorDrawable) {
+            ((ColorDrawable) bg.mutate()).setColor(color);
+        }
     }
 
     /**
@@ -293,7 +337,7 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
                     mOutlineRadius, getMeasuredWidth(), getMeasuredHeight(),
                     mArrowOffsetHorizontal, -mArrowOffsetVertical,
                     !mIsAboveIcon, mIsLeftAligned,
-                    Themes.getAttrColor(getContext(), R.attr.popupColorPrimary)));
+                    mArrowColor));
             mArrow.setElevation(getElevation());
         }
 

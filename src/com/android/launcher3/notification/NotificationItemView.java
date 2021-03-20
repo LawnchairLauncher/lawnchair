@@ -92,6 +92,10 @@ public class NotificationItemView {
         });
     }
 
+    public void updateBackgroundColor(int color) {
+        mMainView.updateBackgroundColor(color);
+    }
+
     public void addGutter() {
         if (mGutter == null) {
             mGutter = mPopupContainer.inflateAndAdd(R.layout.notification_gutter, mRootView);
