@@ -97,15 +97,24 @@ public class NotificationMainView extends FrameLayout implements SingleAxisSwipe
         super.onFinishInflate();
 
         mTextAndBackground = findViewById(R.id.text_and_background);
-        ColorDrawable colorBackground = (ColorDrawable) mTextAndBackground.getBackground();
-        mBackgroundColor = colorBackground.getColor();
-        RippleDrawable rippleBackground = new RippleDrawable(ColorStateList.valueOf(
-                Themes.getAttrColor(getContext(), android.R.attr.colorControlHighlight)),
-                colorBackground, null);
-        mTextAndBackground.setBackground(rippleBackground);
         mTitleView = mTextAndBackground.findViewById(R.id.title);
         mTextView = mTextAndBackground.findViewById(R.id.text);
         mIconView = findViewById(R.id.popup_item_icon);
+
+        ColorDrawable colorBackground = (ColorDrawable) mTextAndBackground.getBackground();
+        updateBackgroundColor(colorBackground.getColor());
+    }
+
+    public void updateBackgroundColor(int color) {
+        mBackgroundColor = color;
+        RippleDrawable rippleBackground = new RippleDrawable(ColorStateList.valueOf(
+                Themes.getAttrColor(getContext(), android.R.attr.colorControlHighlight)),
+                new ColorDrawable(color), null);
+        mTextAndBackground.setBackground(rippleBackground);
+        if (mNotificationInfo != null) {
+            mIconView.setBackground(mNotificationInfo.getIconForBackground(getContext(),
+                    mBackgroundColor));
+        }
     }
 
     public void setSwipeDetector(SingleAxisSwipeDetector swipeDetector) {

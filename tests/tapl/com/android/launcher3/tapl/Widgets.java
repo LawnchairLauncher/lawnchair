@@ -30,7 +30,6 @@ import androidx.test.uiautomator.Until;
 import com.android.launcher3.testing.TestProtocol;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * All widgets container.
@@ -106,7 +105,8 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
                     fullWidgetsPicker.wait(Until.scrollable(true), WAIT_TIME_MS));
             final Point displaySize = mLauncher.getRealDisplaySize();
 
-            final UiObject2 widgetsContainer = findTestAppWidgetsTableContainer();
+            Rect headerRect = new Rect();
+            final UiObject2 widgetsContainer = findTestAppWidgetsTableContainer(headerRect);
             mLauncher.assertTrue("Can't locate widgets list for the test app: "
                             + mLauncher.getLauncherPackageName(),
                     widgetsContainer != null);
@@ -132,7 +132,12 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
 
                 mLauncher.assertTrue("Too many attempts", ++i <= 40);
                 final int scroll = getWidgetsScroll();
-                mLauncher.scrollToLastVisibleRow(fullWidgetsPicker, tableRows, 0);
+                mLauncher.scroll(
+                        fullWidgetsPicker,
+                        Direction.DOWN,
+                        headerRect,
+                        10,
+                        true);
                 final int newScroll = getWidgetsScroll();
                 mLauncher.assertTrue(
                         "Scrolled in a wrong direction in Widgets: from " + scroll + " to "
@@ -143,7 +148,7 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
     }
 
     /** Finds the widgets list of this test app from the collapsed full widgets picker. */
-    private UiObject2 findTestAppWidgetsTableContainer() {
+    private UiObject2 findTestAppWidgetsTableContainer(Rect outHeaderRect) {
         final BySelector headerSelector = By.res(mLauncher.getLauncherPackageName(),
                 "widgets_list_header");
         final BySelector targetAppSelector = By.clazz("android.widget.TextView").text(
@@ -156,6 +161,7 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
             UiObject2 fullWidgetsPicker = verifyActiveContainer();
 
             UiObject2 header = fullWidgetsPicker.findObject(headerSelector);
+            outHeaderRect.set(0, 0, 0, header.getVisibleBounds().height());
             mLauncher.assertTrue("Can't find a widget header", header != null);
 
             // Look for a header that has the test app name.
@@ -179,11 +185,14 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
                 if (widgetsContainer != null) {
                     return widgetsContainer;
                 }
-                mLauncher.scrollToLastVisibleRow(fullWidgetsPicker, List.of(headerTitle), 0);
-            } else {
-                mLauncher.scrollToLastVisibleRow(fullWidgetsPicker, fullWidgetsPicker.getChildren(),
-                        0);
+
             }
+            mLauncher.scroll(
+                    fullWidgetsPicker,
+                    Direction.DOWN,
+                    outHeaderRect,
+                    /* steps= */ 10,
+                    /* slowDown= */ true);
         }
 
         return null;
