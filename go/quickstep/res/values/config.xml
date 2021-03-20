@@ -20,5 +20,5 @@
     <string name="niu_actions_package" translatable="false"/>
 
     <!-- Feature Flags -->
-    <bool name="enable_niu_actions">false</bool>
+    <bool name="enable_niu_actions">true</bool>
 </resources>
