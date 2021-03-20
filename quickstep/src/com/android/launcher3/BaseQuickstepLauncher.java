@@ -95,9 +95,6 @@ public abstract class BaseQuickstepLauncher extends Launcher
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAppTransitionManager = new QuickstepTransitionManager(this);
-        mAppTransitionManager.registerRemoteAnimations();
-
         SysUINavigationMode.INSTANCE.get(this).addModeChangeListener(this);
         addMultiWindowModeChangedListener(mDepthController);
     }
@@ -224,6 +221,9 @@ public abstract class BaseQuickstepLauncher extends Launcher
         );
         overviewPanel.init(mActionsView, splitPlaceholderView);
         mActionsView.updateVerticalMargin(SysUINavigationMode.getMode(this));
+
+        mAppTransitionManager = new QuickstepTransitionManager(this);
+        mAppTransitionManager.registerRemoteAnimations();
 
         addTaskbarIfNecessary();
         addOnDeviceProfileChangeListener(newDp -> addTaskbarIfNecessary());
