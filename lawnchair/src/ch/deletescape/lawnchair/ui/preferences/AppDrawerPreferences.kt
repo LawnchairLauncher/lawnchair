@@ -14,10 +14,11 @@ fun AppDrawerPreferences(interactor: PreferenceInteractor) {
                 value = interactor.allAppsColumns.value,
                 onValueChange = { interactor.setAllAppsColumns(it) },
                 steps = 3,
-                valueRange = 3.0F..7.0F
+                valueRange = 3.0F..7.0F,
+                showDivider = false
             )
         }
-        PreferenceGroup(heading = stringResource(id = R.string.icons), showDivider = true) {
+        PreferenceGroup(heading = stringResource(id = R.string.icons), useTopPadding = true) {
             SliderPreference(
                 label = stringResource(id = R.string.icon_size),
                 value = interactor.allAppsIconSizeFactor.value,
@@ -32,7 +33,8 @@ fun AppDrawerPreferences(interactor: PreferenceInteractor) {
                 onValueChange = { interactor.setAllAppsTextSizeFactor(it) },
                 steps = 9,
                 valueRange = 0.5F..1.5F,
-                showAsPercentage = true
+                showAsPercentage = true,
+                showDivider = false
             )
         }
     }

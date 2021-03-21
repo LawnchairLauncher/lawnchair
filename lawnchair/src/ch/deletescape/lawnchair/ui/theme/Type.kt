@@ -8,20 +8,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.android.launcher3.R
 
-private val MetropolisFontFamily = FontFamily(
-    Font(R.font.metropolis_light, FontWeight.Light),
-    Font(R.font.metropolis_normal, FontWeight.Normal),
-    Font(R.font.metropolis_semi_bold, FontWeight.SemiBold),
-    Font(R.font.metropolis_medium, FontWeight.Medium)
-)
-
-private val KarlaFontFamily = FontFamily(
-    Font(R.font.karla_regular),
-    Font(R.font.karla_bold, FontWeight.Bold)
+private val InterFontFamily = FontFamily(
+    Font(R.font.inter_regular, FontWeight.Normal),
+    Font(R.font.inter_medium, FontWeight.Medium),
+    Font(R.font.inter_semi_bold, FontWeight.SemiBold),
+    Font(R.font.inter_bold, FontWeight.Bold)
 )
 
 val Typography = Typography(
-    defaultFontFamily = MetropolisFontFamily,
+    defaultFontFamily = InterFontFamily,
     h1 = TextStyle(
         fontWeight = FontWeight.Light,
         fontSize = 96.sp,
@@ -48,30 +43,25 @@ val Typography = Typography(
         letterSpacing = 0.sp
     ),
     h6 = TextStyle(
-        fontWeight = FontWeight.SemiBold,
         fontSize = 20.sp,
         letterSpacing = (-0.5).sp
     ),
     subtitle1 = TextStyle(
-        fontWeight = FontWeight.Medium,
-        fontSize = 16.sp,
-        letterSpacing = (-0.25).sp
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp
     ),
     subtitle2 = TextStyle(
-        fontFamily = KarlaFontFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 14.sp,
         letterSpacing = 0.1.sp
     ),
     body1 = TextStyle(
-        fontFamily = KarlaFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         letterSpacing = 0.sp,
-        lineHeight = 24.sp
+        lineHeight = 20.sp
     ),
     body2 = TextStyle(
-        fontFamily = KarlaFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
         letterSpacing = 0.25.sp
@@ -82,7 +72,6 @@ val Typography = Typography(
         letterSpacing = 1.25.sp
     ),
     caption = TextStyle(
-        fontFamily = KarlaFontFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 12.sp,
         letterSpacing = 0.15.sp

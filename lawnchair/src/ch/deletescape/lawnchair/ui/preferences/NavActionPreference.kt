@@ -18,21 +18,23 @@ fun NavActionPreference(
     label: String,
     subtitle: String? = null,
     navController: NavController,
-    destination: String
-) {
-    Column(
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier
-            .height(if (subtitle != null) 64.dp else 48.dp)
-            .fillMaxWidth()
-            .clickable { navController.navigate(route = destination) }
-            .padding(start = 16.dp, end = 16.dp),
-    ) {
-        Text(text = label, style = MaterialTheme.typography.subtitle1, color = MaterialTheme.colors.onBackground)
-        subtitle?.let {
-            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                Text(text = it, style = MaterialTheme.typography.body2, color = MaterialTheme.colors.onBackground)
+    destination: String,
+    showDivider: Boolean = true
+) =
+    PreferenceTemplate(height = if (subtitle != null) 72.dp else 52.dp, showDivider = showDivider) {
+        Column(
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .clickable { navController.navigate(route = destination) }
+                .padding(start = 16.dp, end = 16.dp),
+        ) {
+            Text(text = label, style = MaterialTheme.typography.subtitle1, color = MaterialTheme.colors.onBackground)
+            subtitle?.let {
+                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                    Text(text = it, style = MaterialTheme.typography.body2, color = MaterialTheme.colors.onBackground)
+                }
             }
         }
     }
-}

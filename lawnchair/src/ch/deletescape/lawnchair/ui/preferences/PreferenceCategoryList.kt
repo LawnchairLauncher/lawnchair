@@ -11,8 +11,8 @@ fun PreferenceCategoryList(navController: NavController) {
     LazyColumn {
         items(screens) { screen ->
             PreferenceCategoryLink(
-                titleResId = screen.titleResId,
-                subtitleResId = screen.subtitleResId,
+                titleResId = screen.labelResId,
+                subtitleResId = screen.descriptionResId,
                 iconResId = screen.iconResId,
                 onClick = { navController.navigate(screen.route) })
         }

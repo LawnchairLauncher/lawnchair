@@ -17,44 +17,42 @@ fun SliderPreference(
     onValueChange: (Float) -> Unit,
     valueRange: ClosedFloatingPointRange<Float>,
     steps: Int,
-    showAsPercentage: Boolean = false
-) {
-    Column(
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier
-            .height(72.dp)
-            .fillMaxWidth()
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(text = label, style = MaterialTheme.typography.subtitle1, color = MaterialTheme.colors.onBackground)
-            CompositionLocalProvider(
-                LocalContentAlpha provides ContentAlpha.medium,
-                LocalContentColor provides MaterialTheme.colors.onBackground
+    showAsPercentage: Boolean = false,
+    showDivider: Boolean = true
+) =
+    PreferenceTemplate(height = 76.dp, showDivider = showDivider) {
+        Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Center) {
+            Spacer(modifier = Modifier.requiredHeight(2.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = if (showAsPercentage) {
-                        "${(DecimalFormat("#.#").format(value).toFloat() * 100).toInt()}%"
-                    } else {
-                        "${value.roundToInt()}"
-                    }
-                )
+                Text(text = label, style = MaterialTheme.typography.subtitle1, color = MaterialTheme.colors.onBackground)
+                CompositionLocalProvider(
+                    LocalContentAlpha provides ContentAlpha.medium,
+                    LocalContentColor provides MaterialTheme.colors.onBackground
+                ) {
+                    Text(
+                        text = if (showAsPercentage) {
+                            "${(DecimalFormat("#.#").format(value).toFloat() * 100).toInt()}%"
+                        } else {
+                            "${value.roundToInt()}"
+                        }
+                    )
+                }
             }
+            Spacer(modifier = Modifier.requiredHeight(2.dp))
+            Slider(
+                value = value,
+                onValueChange = onValueChange,
+                valueRange = valueRange,
+                steps = steps,
+                modifier = Modifier
+                    .height(24.dp)
+                    .padding(start = 10.dp, end = 10.dp)
+            )
         }
-        Spacer(modifier = Modifier.requiredHeight(4.dp))
-        Slider(
-            value = value,
-            onValueChange = onValueChange,
-            valueRange = valueRange,
-            steps = steps,
-            modifier = Modifier
-                .height(24.dp)
-                .padding(start = 10.dp, end = 10.dp)
-        )
     }
-}

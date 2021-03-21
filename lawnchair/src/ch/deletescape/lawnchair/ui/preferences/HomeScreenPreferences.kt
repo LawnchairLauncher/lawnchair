@@ -8,7 +8,7 @@ import com.android.launcher3.R
 @Composable
 fun HomeScreenPreferences(interactor: PreferenceInteractor) {
     Column {
-        PreferenceGroup {
+        PreferenceGroup(heading = "General", useTopPadding = false) {
             SwitchPreference(
                 checked = interactor.addIconToHome.value,
                 onCheckedChange = { interactor.setAddIconToHome(it) },
@@ -17,10 +17,11 @@ fun HomeScreenPreferences(interactor: PreferenceInteractor) {
             SwitchPreference(
                 checked = interactor.allowEmptyPages.value,
                 onCheckedChange = { interactor.setAllowEmptyPages(it) },
-                label = stringResource(id = R.string.allow_empty_pages_label)
+                label = stringResource(id = R.string.allow_empty_pages_label),
+                showDivider = false
             )
         }
-        PreferenceGroup(heading = stringResource(id = R.string.grid), showDivider = true) {
+        PreferenceGroup(heading = stringResource(id = R.string.grid), useTopPadding = true) {
             SliderPreference(
                 label = stringResource(id = R.string.home_screen_columns),
                 value = interactor.workspaceColumns.value,
@@ -33,10 +34,11 @@ fun HomeScreenPreferences(interactor: PreferenceInteractor) {
                 value = interactor.workspaceRows.value,
                 onValueChange = { interactor.setWorkspaceRows(it) },
                 steps = 3,
-                valueRange = 3.0F..7.0F
+                valueRange = 4.0F..8.0F,
+                showDivider = false
             )
         }
-        PreferenceGroup(heading = stringResource(id = R.string.icons), showDivider = true) {
+        PreferenceGroup(heading = stringResource(id = R.string.icons), useTopPadding = true) {
             SliderPreference(
                 label = stringResource(id = R.string.icon_size),
                 value = interactor.iconSizeFactor.value,
@@ -51,7 +53,8 @@ fun HomeScreenPreferences(interactor: PreferenceInteractor) {
                 onValueChange = { interactor.setTextSizeFactor(it) },
                 steps = 9,
                 valueRange = 0.5F..1.5F,
-                showAsPercentage = true
+                showAsPercentage = true,
+                showDivider = false
             )
         }
     }

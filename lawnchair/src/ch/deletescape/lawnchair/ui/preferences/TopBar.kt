@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import androidx.navigation.compose.KEY_ROUTE
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -32,12 +33,13 @@ fun TopBar(navController: NavController) {
 
     val title = when (currentRoute) {
         "top" -> stringResource(id = R.string.settings)
-        "homeScreenSettings" -> stringResource(id = R.string.home_screen_label)
-        "generalSettings" -> stringResource(id = R.string.general_label)
-        "iconPackSettings" -> stringResource(id = R.string.icon_pack)
-        "dockSettings" -> stringResource(id = R.string.dock_label)
-        "appDrawerSettings" -> stringResource(id = R.string.app_drawer_label)
-        "folderSettings" -> stringResource(id = R.string.folders_label)
+        "homeScreenPreferences" -> stringResource(id = R.string.home_screen_label)
+        "generalPreferences" -> stringResource(id = R.string.general_label)
+        "iconPackPreferences" -> stringResource(id = R.string.icon_pack)
+        "dockPreferences" -> stringResource(id = R.string.dock_label)
+        "appDrawerPreferences" -> stringResource(id = R.string.app_drawer_label)
+        "folderPreferences" -> stringResource(id = R.string.folders_label)
+        "about" -> stringResource(id = R.string.about_label)
         else -> ""
     }
 
@@ -46,14 +48,13 @@ fun TopBar(navController: NavController) {
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp)
-            .shadow(4.dp)
-            .background(MaterialTheme.colors.surface)
+            .background(MaterialTheme.colors.background)
     ) {
         AnimatedVisibility(visible = currentRoute != "top" && currentRoute != null) {
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
-                    .padding(start = 8.dp, end = 8.dp)
+                    .padding(start = 8.dp)
                     .height(40.dp)
                     .width(40.dp)
                     .clip(CircleShape)
@@ -71,7 +72,7 @@ fun TopBar(navController: NavController) {
             text = title,
             style = MaterialTheme.typography.h6,
             modifier = Modifier.padding(start = 16.dp),
-            color = MaterialTheme.colors.onSurface
+            color = MaterialTheme.colors.onSurface,
         )
     }
 }

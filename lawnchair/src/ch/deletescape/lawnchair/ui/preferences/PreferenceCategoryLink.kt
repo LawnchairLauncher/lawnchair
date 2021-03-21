@@ -17,7 +17,7 @@ fun PreferenceCategoryLink(titleResId: Int, onClick: () -> Unit, subtitleResId: 
     Row(
         modifier = Modifier
             .clickable(onClick = onClick)
-            .height(64.dp)
+            .height(72.dp)
             .padding(start = 16.dp, end = 16.dp)
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
@@ -31,7 +31,7 @@ fun PreferenceCategoryLink(titleResId: Int, onClick: () -> Unit, subtitleResId: 
                     .height(32.dp)
             )
         }
-        Column(Modifier.padding(start = 24.dp)) {
+        Column(Modifier.padding(start = 16.dp)) {
             Text(
                 text = stringResource(id = titleResId),
                 style = MaterialTheme.typography.subtitle1,

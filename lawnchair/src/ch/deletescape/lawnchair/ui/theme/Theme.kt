@@ -6,7 +6,6 @@ import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import ch.deletescape.lawnchair.settings.ui.theme.Shapes
 
 private val DarkColorPalette = darkColors(
     primary = Purple200,

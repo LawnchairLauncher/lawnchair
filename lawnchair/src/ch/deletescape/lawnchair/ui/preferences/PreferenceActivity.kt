@@ -11,8 +11,9 @@ class PreferenceActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            SystemUi(windows = this.window)
             LawnchairTheme {
-                Settings()
+                Preferences()
             }
         }
     }

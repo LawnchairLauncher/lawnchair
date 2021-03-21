@@ -3,10 +3,14 @@ package ch.deletescape.lawnchair.ui.preferences
 import android.content.ComponentName
 import android.content.Intent
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -38,18 +42,19 @@ fun NotificationDotsPreference(interactor: PreferenceInteractor) {
         context.startActivity(intent)
     }
 
-    Column(
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier
-            .height(48.dp)
-            .fillMaxWidth()
-            .clickable { onClick() }
-            .padding(start = 16.dp, end = 16.dp),
-    ) {
-        Text(
-            text = stringResource(id = R.string.notification_dots),
-            style = MaterialTheme.typography.subtitle1,
-            color = MaterialTheme.colors.onBackground
-        )
+    PreferenceTemplate(height = 52.dp) {
+        Row(
+            modifier = Modifier
+                .clickable { onClick() }
+                .fillMaxHeight()
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp), verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = stringResource(id = R.string.notification_dots),
+                style = MaterialTheme.typography.subtitle1,
+                color = MaterialTheme.colors.onBackground
+            )
+        }
     }
 }

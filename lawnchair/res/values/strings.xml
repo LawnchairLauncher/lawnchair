@@ -13,7 +13,7 @@
     <string name="home_screen_rotaton_description">When device is rotated.</string>
     <string name="auto_add_shortcuts_label">Add New Apps to Home Screen</string>
     <string name="make_icon_packs_adaptive_label">Make Adaptive Icons</string>
-    <string name="make_icon_packs_adaptive_description">For legacy icons and non-Adaptive icon packs.</string>
+    <string name="make_icon_packs_adaptive_description">For non-Adaptive icons and icon packs.</string>
     <string name="grid_label">Grid</string>
     <string name="grid_description">Grid dimensions, icon size.</string>
     <string name="dock_label">Dock</string>
@@ -36,6 +36,17 @@
     <string name="colored_generated_icon_backgrounds_label">Make Colored Backgrounds</string>
     <string name="colored_generated_icon_backgrounds_description">For generated Adaptive icons.</string>
     <string name="notification_dots">Notification Dots</string>
-
     <string name="smartspace_preferences">Preferences</string>
+    <string name="about_label">About</string>
+    <string name="about_description">Lawnchair 11</string>
+    <string name="news">News</string>
+    <string name="support">Support</string>
+    <string name="twitter" translatable="false">Twitter</string>
+    <string name="github" translatable="false">GitHub</string>
+    <string name="team_members">Team Members</string>
+    <string name="os_licenses">Open-Source Licenses</string>
+    <string name="patryk_description">To be determined.</string>
+    <string name="kshitij_description">To be determined.</string>
+    <string name="devops_engineer">DevOps Engineer</string>
+    <string name="quickswitch_maintainer">QuickSwitch Maintainer</string>
 </resources>

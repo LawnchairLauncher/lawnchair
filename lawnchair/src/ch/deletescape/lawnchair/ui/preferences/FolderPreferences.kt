@@ -6,7 +6,7 @@ import com.android.launcher3.R
 
 @Composable
 fun FolderPreferences(interactor: PreferenceInteractor) {
-    PreferenceGroup {
+    PreferenceGroup(heading = stringResource(id = R.string.grid)) {
         SliderPreference(
             label = stringResource(id = R.string.max_folder_columns),
             value = interactor.folderColumns.value,
@@ -19,7 +19,8 @@ fun FolderPreferences(interactor: PreferenceInteractor) {
             value = interactor.folderRows.value,
             onValueChange = { interactor.setFolderRows(it) },
             steps = 3,
-            valueRange = 3.0F..7.0F
+            valueRange = 3.0F..7.0F,
+            showDivider = false
         )
     }
 }
