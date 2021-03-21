@@ -20,8 +20,8 @@ import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
-import ch.deletescape.lawnchair.FeedBridge;
-import ch.deletescape.lawnchair.FeedBridge.BridgeInfo;
+import com.lawnchair.FeedBridge;
+import com.lawnchair.FeedBridge.BridgeInfo;
 import java.lang.ref.WeakReference;
 
 public class LauncherClient {

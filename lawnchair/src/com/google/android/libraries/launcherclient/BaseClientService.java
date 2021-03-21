@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.util.Log;
-import ch.deletescape.lawnchair.FeedBridge;
+import com.lawnchair.FeedBridge;
 
 public class BaseClientService implements ServiceConnection {
     private boolean mConnected;

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ch.deletescape.nexuslauncher.SmartspaceQsb
+<com.lawnchair.nexuslauncher.SmartspaceQsb
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@id/search_container_workspace"
@@ -7,10 +7,10 @@
     android:layout_height="0dp">
 
     <fragment
-        android:name="ch.deletescape.nexuslauncher.SmartspaceQsb$SmartSpaceFragment"
+        android:name="com.lawnchair.nexuslauncher.SmartspaceQsb$SmartSpaceFragment"
         android:layout_width="match_parent"
         android:tag="smart_space_view"
         android:layout_height="match_parent"
         tools:ignore="FragmentTagUsage" />
 
-</ch.deletescape.nexuslauncher.SmartspaceQsb>
+</com.lawnchair.nexuslauncher.SmartspaceQsb>
