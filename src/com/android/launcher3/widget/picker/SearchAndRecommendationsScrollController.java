@@ -35,6 +35,7 @@ final class SearchAndRecommendationsScrollController implements
     private final SearchAndRecommendationViewHolder mViewHolder;
     private final WidgetsRecyclerView mPrimaryRecyclerView;
     private final WidgetsRecyclerView mSearchRecyclerView;
+    private final int mTabsHeight;
 
     // The following are only non null if mHasWorkProfile is true.
     @Nullable private final WidgetsRecyclerView mWorkRecyclerView;
@@ -42,10 +43,28 @@ final class SearchAndRecommendationsScrollController implements
     @Nullable private final PersonalWorkPagedView mPrimaryWorkViewPager;
 
     private WidgetsRecyclerView mCurrentRecyclerView;
-    private int mMaxCollapsibleHeight = 0;
+
+    /**
+     * The vertical distance, in pixels, until the search is pinned at the top of the screen when
+     * the user scrolls down the recycler view.
+     */
+    private int mCollapsibleHeightForSearch = 0;
+    /**
+     * The vertical distance, in pixels, until the recommendation table disappears from the top of
+     * the screen when the user scrolls down the recycler view.
+     */
+    private int mCollapsibleHeightForRecommendation = 0;
+    /**
+     * The vertical distance, in pixels, until the tabs is pinned at the top of the screen when the
+     * user scrolls down the recycler view.
+     *
+     * <p>Always 0 if there is no work profile.
+     */
+    private int mCollapsibleHeightForTabs = 0;
 
     SearchAndRecommendationsScrollController(
             boolean hasWorkProfile,
+            int tabsHeight,
             SearchAndRecommendationViewHolder viewHolder,
             WidgetsRecyclerView primaryRecyclerView,
             @Nullable WidgetsRecyclerView workRecyclerView,
@@ -55,46 +74,63 @@ final class SearchAndRecommendationsScrollController implements
         mHasWorkProfile = hasWorkProfile;
         mViewHolder = viewHolder;
         mPrimaryRecyclerView = primaryRecyclerView;
+        mCurrentRecyclerView = mPrimaryRecyclerView;
         mWorkRecyclerView = workRecyclerView;
         mSearchRecyclerView = searchRecyclerView;
         mPrimaryWorkTabsView = personalWorkTabsView;
         mPrimaryWorkViewPager = primaryWorkViewPager;
         mCurrentRecyclerView = mPrimaryRecyclerView;
+        mTabsHeight = tabsHeight;
     }
 
     /** Sets the current active {@link WidgetsRecyclerView}. */
     public void setCurrentRecyclerView(WidgetsRecyclerView currentRecyclerView) {
         mCurrentRecyclerView = currentRecyclerView;
+        mCurrentRecyclerView = currentRecyclerView;
+        mViewHolder.mHeaderTitle.setTranslationY(0);
+        mViewHolder.mRecommendedWidgetsTable.setTranslationY(0);
+        mViewHolder.mSearchBar.setTranslationY(0);
+
+        if (mHasWorkProfile) {
+            mPrimaryWorkTabsView.setTranslationY(0);
+        }
     }
 
     /**
      * Updates the margin and padding of {@link WidgetsFullSheet} to accumulate collapsible views.
+     *
+     * @return {@code true} if margins or/and padding of views in the search and recommendations
+     * container have been updated.
      */
-    public void updateMarginAndPadding() {
-        // The maximum vertical distance, in pixels, until the last collapsible element is not
-        // visible from the screen when the user scrolls down the recycler view.
-        mMaxCollapsibleHeight = mViewHolder.mContainer.getPaddingTop()
-                + measureHeightWithVerticalMargins(mViewHolder.mCollapseHandle)
-                + measureHeightWithVerticalMargins(mViewHolder.mHeaderTitle);
+    public boolean updateMarginAndPadding() {
+        boolean hasMarginOrPaddingUpdated = false;
+        mCollapsibleHeightForSearch = measureHeightWithVerticalMargins(mViewHolder.mHeaderTitle);
+        mCollapsibleHeightForRecommendation =
+                measureHeightWithVerticalMargins(mViewHolder.mHeaderTitle)
+                        + measureHeightWithVerticalMargins(mViewHolder.mCollapseHandle)
+                        + measureHeightWithVerticalMargins((View) mViewHolder.mSearchBar)
+                        + measureHeightWithVerticalMargins(mViewHolder.mRecommendedWidgetsTable);
 
         int topContainerHeight = measureHeightWithVerticalMargins(mViewHolder.mContainer);
         if (mHasWorkProfile) {
+            mCollapsibleHeightForTabs = measureHeightWithVerticalMargins(mViewHolder.mHeaderTitle)
+                    + measureHeightWithVerticalMargins(mViewHolder.mRecommendedWidgetsTable);
             // In a work profile setup, the full widget sheet contains the following views:
-            //           -------               -|
-            //           Widgets               -|---> LinearLayout for search & recommendations
-            //          Search bar             -|
-            //      Personal | Work
+            //           ------- (pinned)           -|
+            //          Widgets (collapsible)       -|---> LinearLayout for search & recommendations
+            //          Search bar (pinned)         -|
+            //  Widgets recommendation (collapsible)-|
+            //      Personal | Work (pinned)
             //           View Pager
             //
             // Views after the search & recommendations are not bound by RelativelyLayout param.
             // To position them on the expected location, padding & margin are added to these views
 
             // Tabs should have a padding of the height of the search & recommendations container.
-            mPrimaryWorkTabsView.setPadding(
-                    mPrimaryWorkTabsView.getPaddingLeft(),
-                    topContainerHeight,
-                    mPrimaryWorkTabsView.getPaddingRight(),
-                    mPrimaryWorkTabsView.getPaddingBottom());
+            RelativeLayout.LayoutParams tabsLayoutParams =
+                    (RelativeLayout.LayoutParams) mPrimaryWorkTabsView.getLayoutParams();
+            tabsLayoutParams.topMargin = topContainerHeight;
+            mPrimaryWorkTabsView.setLayoutParams(tabsLayoutParams);
 
             // Instead of setting the top offset directly, we split the top offset into two values:
             // 1. topOffsetAfterAllViewsCollapsed: this is the top offset after all collapsible
@@ -124,39 +160,52 @@ final class SearchAndRecommendationsScrollController implements
             //
             // When the views are first inflated, the sum of topOffsetAfterAllViewsCollapsed and
             // mMaxCollapsibleDistance should equal to the top container height.
-            int tabsViewActualHeight = measureHeightWithVerticalMargins(mPrimaryWorkTabsView)
-                    - mPrimaryWorkTabsView.getPaddingTop();
             int topOffsetAfterAllViewsCollapsed =
-                    topContainerHeight + tabsViewActualHeight - mMaxCollapsibleHeight;
+                    topContainerHeight + mTabsHeight - mCollapsibleHeightForTabs;
 
-            RelativeLayout.LayoutParams layoutParams =
+            RelativeLayout.LayoutParams viewPagerLayoutParams =
                     (RelativeLayout.LayoutParams) mPrimaryWorkViewPager.getLayoutParams();
-            layoutParams.setMargins(0, topOffsetAfterAllViewsCollapsed, 0, 0);
-            mPrimaryWorkViewPager.setLayoutParams(layoutParams);
-            mPrimaryWorkViewPager.requestLayout();
+            if (viewPagerLayoutParams.topMargin != topOffsetAfterAllViewsCollapsed) {
+                viewPagerLayoutParams.topMargin = topOffsetAfterAllViewsCollapsed;
+                mPrimaryWorkViewPager.setLayoutParams(viewPagerLayoutParams);
+                hasMarginOrPaddingUpdated = true;
+            }
 
-            mPrimaryRecyclerView.setPadding(
-                    mPrimaryRecyclerView.getPaddingLeft(),
-                    mMaxCollapsibleHeight,
-                    mPrimaryRecyclerView.getPaddingRight(),
-                    mPrimaryRecyclerView.getPaddingBottom());
-            mWorkRecyclerView.setPadding(
-                    mWorkRecyclerView.getPaddingLeft(),
-                    mMaxCollapsibleHeight,
-                    mWorkRecyclerView.getPaddingRight(),
-                    mWorkRecyclerView.getPaddingBottom());
+            if (mPrimaryRecyclerView.getPaddingTop() != mCollapsibleHeightForTabs) {
+                mPrimaryRecyclerView.setPadding(
+                        mPrimaryRecyclerView.getPaddingLeft(),
+                        mCollapsibleHeightForTabs,
+                        mPrimaryRecyclerView.getPaddingRight(),
+                        mPrimaryRecyclerView.getPaddingBottom());
+                hasMarginOrPaddingUpdated = true;
+            }
+            if (mWorkRecyclerView.getPaddingTop() != mCollapsibleHeightForTabs) {
+                mWorkRecyclerView.setPadding(
+                        mWorkRecyclerView.getPaddingLeft(),
+                        mCollapsibleHeightForTabs,
+                        mWorkRecyclerView.getPaddingRight(),
+                        mWorkRecyclerView.getPaddingBottom());
+                hasMarginOrPaddingUpdated = true;
+            }
         } else {
-            mPrimaryRecyclerView.setPadding(
-                    mPrimaryRecyclerView.getPaddingLeft(),
-                    topContainerHeight,
-                    mPrimaryRecyclerView.getPaddingRight(),
-                    mPrimaryRecyclerView.getPaddingBottom());
+            if (mPrimaryRecyclerView.getPaddingTop() != topContainerHeight) {
+                mPrimaryRecyclerView.setPadding(
+                        mPrimaryRecyclerView.getPaddingLeft(),
+                        topContainerHeight,
+                        mPrimaryRecyclerView.getPaddingRight(),
+                        mPrimaryRecyclerView.getPaddingBottom());
+                hasMarginOrPaddingUpdated = true;
+            }
         }
-        mSearchRecyclerView.setPadding(
-                mSearchRecyclerView.getPaddingLeft(),
-                topContainerHeight,
-                mSearchRecyclerView.getPaddingRight(),
-                mSearchRecyclerView.getPaddingBottom());
+        if (mSearchRecyclerView.getPaddingTop() != topContainerHeight) {
+            mSearchRecyclerView.setPadding(
+                    mSearchRecyclerView.getPaddingLeft(),
+                    topContainerHeight,
+                    mSearchRecyclerView.getPaddingRight(),
+                    mSearchRecyclerView.getPaddingBottom());
+            hasMarginOrPaddingUpdated = true;
+        }
+        return hasMarginOrPaddingUpdated;
     }
 
     /**
@@ -168,13 +217,22 @@ final class SearchAndRecommendationsScrollController implements
         // Always use the recycler view offset because fast scroller offset has a different scale.
         int recyclerViewYOffset = mCurrentRecyclerView.getCurrentScrollY();
         if (recyclerViewYOffset < 0) return;
-        if (mMaxCollapsibleHeight > 0) {
-            int yDisplacement = Math.max(-recyclerViewYOffset, -mMaxCollapsibleHeight);
+
+        if (mCollapsibleHeightForRecommendation > 0) {
+            int yDisplacement = Math.max(-recyclerViewYOffset,
+                    -mCollapsibleHeightForRecommendation);
             mViewHolder.mHeaderTitle.setTranslationY(yDisplacement);
-            mViewHolder.mSearchBar.setTranslationY(yDisplacement);
-            if (mHasWorkProfile) {
-                mPrimaryWorkTabsView.setTranslationY(yDisplacement);
-            }
+            mViewHolder.mRecommendedWidgetsTable.setTranslationY(yDisplacement);
+        }
+
+        if (mCollapsibleHeightForSearch > 0) {
+            int searchYDisplacement = Math.max(-recyclerViewYOffset, -mCollapsibleHeightForSearch);
+            mViewHolder.mSearchBar.setTranslationY(searchYDisplacement);
+        }
+
+        if (mHasWorkProfile && mCollapsibleHeightForTabs > 0) {
+            int yDisplacementForTabs = Math.max(-recyclerViewYOffset, -mCollapsibleHeightForTabs);
+            mPrimaryWorkTabsView.setTranslationY(yDisplacementForTabs);
         }
     }
 
@@ -189,6 +247,9 @@ final class SearchAndRecommendationsScrollController implements
 
     /** private the height, in pixel, + the vertical margins of a given view. */
     private static int measureHeightWithVerticalMargins(View view) {
+        if (view.getVisibility() != View.VISIBLE) {
+            return 0;
+        }
         MarginLayoutParams marginLayoutParams = (MarginLayoutParams) view.getLayoutParams();
         return view.getMeasuredHeight() + marginLayoutParams.bottomMargin
                 + marginLayoutParams.topMargin;

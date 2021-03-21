@@ -60,6 +60,7 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.notification.NotificationInfo;
 import com.android.launcher3.notification.NotificationItemView;
 import com.android.launcher3.notification.NotificationKeyData;
+import com.android.launcher3.notification.NotificationMainView;
 import com.android.launcher3.popup.PopupDataProvider.PopupDataChangeListener;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
@@ -168,6 +169,14 @@ public class PopupContainerWithArrow<T extends BaseDraggingActivity> extends Arr
             }
         }
         return false;
+    }
+
+    @Override
+    protected void setChildColor(View v, int color) {
+        super.setChildColor(v, color);
+        if (v.getId() == R.id.notification_container && mNotificationItemView != null) {
+            mNotificationItemView.updateBackgroundColor(color);
+        }
     }
 
     /**
@@ -333,19 +342,11 @@ public class PopupContainerWithArrow<T extends BaseDraggingActivity> extends Arr
     private void updateHiddenShortcuts() {
         int allowedCount = mNotificationItemView != null
                 ? MAX_SHORTCUTS_IF_NOTIFICATIONS : MAX_SHORTCUTS;
-        int originalHeight = getResources().getDimensionPixelSize(R.dimen.bg_popup_item_height);
-        int itemHeight = mNotificationItemView != null ?
-                getResources().getDimensionPixelSize(R.dimen.bg_popup_item_condensed_height)
-                : originalHeight;
-        float iconScale = ((float) itemHeight) / originalHeight;
 
         int total = mShortcuts.size();
         for (int i = 0; i < total; i++) {
             DeepShortcutView view = mShortcuts.get(i);
             view.setVisibility(i >= allowedCount ? GONE : VISIBLE);
-            view.getLayoutParams().height = itemHeight;
-            view.getIconView().setScaleX(iconScale);
-            view.getIconView().setScaleY(iconScale);
         }
     }
 
@@ -567,6 +568,7 @@ public class PopupContainerWithArrow<T extends BaseDraggingActivity> extends Arr
                 // No more notifications, remove the notification views and expand all shortcuts.
                 mNotificationItemView.removeAllViews();
                 mNotificationItemView = null;
+                mNotificationContainer.setVisibility(GONE);
                 updateHiddenShortcuts();
                 assignMarginsAndBackgrounds();
             } else {
