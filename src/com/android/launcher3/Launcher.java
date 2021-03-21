@@ -201,7 +201,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import com.lawnchair.util.preferences.LawnchairPreferences;
+import app.lawnchair.util.preferences.LawnchairPreferences;
 
 /**
  * Default launcher application.

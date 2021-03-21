@@ -118,7 +118,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.function.Predicate;
 
-import com.lawnchair.util.preferences.LawnchairPreferences;
+import app.lawnchair.util.preferences.LawnchairPreferences;
 
 /**
  * The workspace is a wide area with a wallpaper and a finite number of pages.

@@ -17,9 +17,9 @@
 */
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <application android:name="com.lawnchair.ui.LawnchairApp">
+    <application android:name="app.lawnchair.ui.LawnchairApp">
         <activity
-            android:name="com.lawnchair.ui.preferences.PreferenceActivity"
+            android:name="app.lawnchair.ui.preferences.PreferenceActivity"
             android:autoRemoveFromRecents="true"
             android:label="@string/settings_button_text"
             android:theme="@style/Theme.Lawnchair">

@@ -20,8 +20,8 @@ import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
-import com.lawnchair.FeedBridge;
-import com.lawnchair.FeedBridge.BridgeInfo;
+import app.lawnchair.FeedBridge;
+import app.lawnchair.FeedBridge.BridgeInfo;
 import java.lang.ref.WeakReference;
 
 public class LauncherClient {
