@@ -2,6 +2,7 @@ package ch.deletescape.lawnchair.ui.preferences
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -16,10 +17,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import androidx.navigation.compose.KEY_ROUTE
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -60,11 +61,10 @@ fun TopBar(navController: NavController) {
                     .clip(CircleShape)
                     .clickable { navController.popBackStack() }
             ) {
-                Icon(
-                    imageVector = Icons.Rounded.ArrowBack,
+                Image(
+                    painter = painterResource(id = R.drawable.ic_arrow_back),
                     contentDescription = null,
-                    modifier = Modifier,
-                    tint = MaterialTheme.colors.onBackground
+                    colorFilter = ColorFilter.tint(MaterialTheme.colors.onBackground)
                 )
             }
         }
