@@ -4,12 +4,9 @@ import android.app.Application
 import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.ResolveInfo
-import android.os.Build
 import android.provider.Settings.Secure.getString
-import android.view.View
 import android.view.Window
 import androidx.annotation.DrawableRes
-import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -22,16 +19,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.luminance
-import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import ch.deletescape.lawnchair.ui.theme.LawnchairTheme
 import ch.deletescape.lawnchair.util.preferences.PrefManager
 import com.android.launcher3.R
 import com.android.launcher3.notification.NotificationListener
@@ -238,9 +230,10 @@ val screens = listOf(
 
 @ExperimentalAnimationApi
 @Composable
-fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel>()) {
+fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel>(), window: Window) {
     val navController = rememberNavController()
 
+    SystemUi(window = window)
     Column(
         modifier = Modifier
             .background(MaterialTheme.colors.background)
