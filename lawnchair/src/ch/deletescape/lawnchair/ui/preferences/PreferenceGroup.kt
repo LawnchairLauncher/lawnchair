@@ -11,7 +11,27 @@ import ch.deletescape.lawnchair.util.smartBorder
 
 @Composable
 fun PreferenceGroup(heading: String? = null, useTopPadding: Boolean = false, content: @Composable () -> Unit) {
-    if (useTopPadding) Spacer(modifier = Modifier.requiredHeight(16.dp))
+    if (useTopPadding) Spacer(modifier = Modifier.requiredHeight(if (heading != null) 8.dp else 16.dp))
+    heading?.let {
+        Column(
+            modifier = Modifier
+                .height(48.dp)
+                .padding(start = 32.dp, end = 32.dp)
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.Center
+        ) {
+            CompositionLocalProvider(
+                LocalContentAlpha provides ContentAlpha.medium,
+                LocalContentColor provides MaterialTheme.colors.onBackground
+            ) {
+                Text(
+                    text = it,
+                    style = MaterialTheme.typography.subtitle2,
+                    color = MaterialTheme.colors.primary
+                )
+            }
+        }
+    }
     Column {
         Column(
             modifier = Modifier
@@ -23,26 +43,6 @@ fun PreferenceGroup(heading: String? = null, useTopPadding: Boolean = false, con
                 )
                 .clip(shape = MaterialTheme.shapes.large)
         ) {
-            heading?.let {
-                Column(
-                    modifier = Modifier
-                        .height(48.dp)
-                        .padding(start = 16.dp, end = 16.dp)
-                        .fillMaxWidth(),
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    CompositionLocalProvider(
-                        LocalContentAlpha provides ContentAlpha.medium,
-                        LocalContentColor provides MaterialTheme.colors.onBackground
-                    ) {
-                        Text(
-                            text = it,
-                            style = MaterialTheme.typography.subtitle2,
-                            color = MaterialTheme.colors.primary
-                        )
-                    }
-                }
-            }
             content()
         }
     }
