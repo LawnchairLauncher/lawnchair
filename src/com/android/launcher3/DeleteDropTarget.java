@@ -53,9 +53,6 @@ public class DeleteDropTarget extends ButtonDropTarget {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        // Get the hover color
-        mHoverColor = getResources().getColor(R.color.delete_target_hover_tint);
-
         setDrawable(R.drawable.ic_remove_shadow);
     }
 
