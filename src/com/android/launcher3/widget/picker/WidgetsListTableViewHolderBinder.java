@@ -158,7 +158,7 @@ public final class WidgetsListTableViewHolderBinder
                 tableRow = (TableRow) table.getChildAt(i);
             } else {
                 tableRow = new TableRow(table.getContext());
-                tableRow.setGravity(Gravity.CENTER_VERTICAL);
+                tableRow.setGravity(Gravity.TOP);
                 table.addView(tableRow);
             }
             if (tableRow.getChildCount() > widgetItems.size()) {
