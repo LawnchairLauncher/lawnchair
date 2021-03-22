@@ -21,14 +21,9 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static com.android.launcher3.LauncherState.NORMAL;
 
 import android.animation.AnimatorSet;
-import android.animation.FloatArrayEvaluator;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
@@ -45,10 +40,7 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
-import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.util.Themes;
-import com.android.launcher3.util.Thunk;
 
 /**
  * Implements a DropTarget.
@@ -72,6 +64,7 @@ public abstract class ButtonDropTarget extends TextView
 
     private static final int[] sTempCords = new int[2];
     private static final int DRAG_VIEW_DROP_DURATION = 285;
+    private static final float DRAG_VIEW_HOVER_OVER_OPACITY = 0.65f;
 
     public static final int TOOLTIP_DEFAULT = 0;
     public static final int TOOLTIP_LEFT = 1;
@@ -89,9 +82,6 @@ public abstract class ButtonDropTarget extends TextView
     /** An item must be dragged at least this many pixels before this drop target is enabled. */
     private final int mDragDistanceThreshold;
 
-    /** The paint applied to the drag view on hover */
-    protected int mHoverColor = 0;
-
     protected CharSequence mText;
     protected ColorStateList mOriginalTextColor;
     protected Drawable mDrawable;
@@ -101,7 +91,6 @@ public abstract class ButtonDropTarget extends TextView
     private int mToolTipLocation;
 
     private AnimatorSet mCurrentColorAnim;
-    @Thunk ColorMatrix mSrcFilter, mDstFilter, mCurrentFilter;
 
     public ButtonDropTarget(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -177,8 +166,7 @@ public abstract class ButtonDropTarget extends TextView
             mToolTip.showAsDropDown(this, x, y);
         }
 
-        d.dragView.setColor(mHoverColor);
-        animateTextColor(mHoverColor);
+        d.dragView.setAlpha(DRAG_VIEW_HOVER_OVER_OPACITY);
         if (d.stateAnnouncer != null) {
             d.stateAnnouncer.cancel();
         }
@@ -190,51 +178,15 @@ public abstract class ButtonDropTarget extends TextView
         // Do nothing
     }
 
-    protected void resetHoverColor() {
-        animateTextColor(mOriginalTextColor.getDefaultColor());
-    }
-
-    private void animateTextColor(int targetColor) {
-        if (mCurrentColorAnim != null) {
-            mCurrentColorAnim.cancel();
-        }
-
-        mCurrentColorAnim = new AnimatorSet();
-        mCurrentColorAnim.setDuration(DragView.COLOR_CHANGE_DURATION);
-
-        if (mSrcFilter == null) {
-            mSrcFilter = new ColorMatrix();
-            mDstFilter = new ColorMatrix();
-            mCurrentFilter = new ColorMatrix();
-        }
-
-        int defaultTextColor = mOriginalTextColor.getDefaultColor();
-        Themes.setColorChangeOnMatrix(defaultTextColor, getTextColor(), mSrcFilter);
-        Themes.setColorChangeOnMatrix(defaultTextColor, targetColor, mDstFilter);
-
-        ValueAnimator anim1 = ValueAnimator.ofObject(
-                new FloatArrayEvaluator(mCurrentFilter.getArray()),
-                mSrcFilter.getArray(), mDstFilter.getArray());
-        anim1.addUpdateListener((anim) -> {
-            mDrawable.setColorFilter(new ColorMatrixColorFilter(mCurrentFilter));
-            invalidate();
-        });
-
-        mCurrentColorAnim.play(anim1);
-        mCurrentColorAnim.play(ObjectAnimator.ofArgb(this, TEXT_COLOR, targetColor));
-        mCurrentColorAnim.start();
-    }
-
     @Override
     public final void onDragExit(DragObject d) {
         hideTooltip();
 
         if (!d.dragComplete) {
             d.dragView.setColor(0);
-            resetHoverColor();
+            d.dragView.setAlpha(1f);
         } else {
-            // Restore the hover color
-            d.dragView.setColor(mHoverColor);
+            d.dragView.setAlpha(DRAG_VIEW_HOVER_OVER_OPACITY);
         }
     }
 
