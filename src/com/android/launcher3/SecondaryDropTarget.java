@@ -44,7 +44,6 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.util.PackageManagerHelper;
-import com.android.launcher3.util.Themes;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 
 import java.net.URISyntaxException;
@@ -109,15 +108,12 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
         mCurrentAccessibilityAction = action;
 
         if (action == UNINSTALL) {
-            mHoverColor = getResources().getColor(R.color.uninstall_target_hover_tint);
             setDrawable(R.drawable.ic_uninstall_shadow);
             updateText(R.string.uninstall_drop_target_label);
         } else if (action == DISMISS_PREDICTION) {
-            mHoverColor = Themes.getColorAccent(getContext());
             setDrawable(R.drawable.ic_block_shadow);
             updateText(R.string.dismiss_prediction_label);
         } else if (action == RECONFIGURE) {
-            mHoverColor = Themes.getColorAccent(getContext());
             setDrawable(R.drawable.ic_setup_shadow);
             updateText(R.string.gadget_setup_text);
         }
