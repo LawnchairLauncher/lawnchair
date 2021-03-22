@@ -44,7 +44,7 @@
     <string name="twitter" translatable="false">Twitter</string>
     <string name="github" translatable="false">GitHub</string>
     <string name="team_members">Team Members</string>
-    <string name="os_licenses">Open-Source Licenses</string>
+    <string name="acknowledgements">Acknowledgements</string>
     <string name="patryk_description">To be determined.</string>
     <string name="kshitij_description">To be determined.</string>
     <string name="devops_engineer">DevOps Engineer</string>

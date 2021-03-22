@@ -1,5 +1,6 @@
 package app.lawnchair.ui.preferences
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -17,9 +18,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.util.preferences.getFormattedVersionName
 import com.android.launcher3.R
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 
 @Composable
 fun About() {
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -114,6 +118,13 @@ fun About() {
                 photoRes = R.drawable.rhyse_simpson,
                 url = "https://twitter.com/skittles9823"
             )
+        }
+        PreferenceGroup(useTopPadding = true) {
+            ClickListenerPreference(label = stringResource(id = R.string.acknowledgements), showDivider = false, onClick = {
+                val intent = Intent(context, OssLicensesMenuActivity::class.java)
+                OssLicensesMenuActivity.setActivityTitle(context.getString(R.string.acknowledgements))
+                context.startActivity(intent)
+            })
         }
     }
 }
