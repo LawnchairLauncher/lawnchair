@@ -34,6 +34,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowInsets;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.widget.TextView;
@@ -552,6 +553,12 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             return true;
         }
         return super.onBackPressed();
+    }
+
+    @Override
+    public void onDragStart(boolean start, float startDisplacement) {
+        super.onDragStart(start, startDisplacement);
+        getWindowInsetsController().hide(WindowInsets.Type.ime());
     }
 
     /** A holder class for holding adapters & their corresponding recycler view. */
