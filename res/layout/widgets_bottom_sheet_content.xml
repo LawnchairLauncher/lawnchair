@@ -29,16 +29,6 @@
         android:textColor="?android:attr/textColorPrimary"
         android:textSize="24sp"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:paddingTop="4dp"
-        android:fontFamily="sans-serif"
-        android:textColor="?android:attr/textColorTertiary"
-        android:textSize="14sp"
-        android:text="@string/long_press_widget_to_add"/>
-
     <ScrollView
         android:id="@+id/widgets_table_scroll_view"
         android:layout_width="match_parent"
