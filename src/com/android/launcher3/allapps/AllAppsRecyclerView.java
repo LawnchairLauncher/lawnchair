@@ -189,6 +189,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
             case SCROLL_STATE_DRAGGING:
                 mgr.logger().sendToInteractionJankMonitor(
                         LAUNCHER_ALLAPPS_VERTICAL_SWIPE_BEGIN, this);
+                requestFocus();
                 getWindowInsetsController().hide(WindowInsets.Type.ime());
                 break;
             case SCROLL_STATE_IDLE:
