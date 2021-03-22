@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsGridAdapter.AppsGridLayoutManager;
+import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.allapps.search.SectionDecorationInfo;
 import com.android.launcher3.util.Themes;
 
@@ -48,6 +49,7 @@ public class AllAppsSectionDecorator extends RecyclerView.ItemDecoration {
     @Override
     public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
         List<AllAppsGridAdapter.AdapterItem> adapterItems = mAppsView.getApps().getAdapterItems();
+        SearchAdapterProvider adapterProvider = mAppsView.getSearchAdapterProvider();
         for (int i = 0; i < parent.getChildCount(); i++) {
             View view = parent.getChildAt(i);
             int position = parent.getChildAdapterPosition(view);
@@ -56,7 +58,7 @@ public class AllAppsSectionDecorator extends RecyclerView.ItemDecoration {
                 SectionDecorationInfo sectionInfo = adapterItem.sectionDecorationInfo;
                 SectionDecorationHandler decorationHandler = sectionInfo.getDecorationHandler();
                 if (decorationHandler != null) {
-                    if (sectionInfo.isFocusedView()) {
+                    if (view.equals(adapterProvider.getHighlightedItem())) {
                         decorationHandler.onFocusDraw(c, view);
                     } else {
                         decorationHandler.onGroupDraw(c, view);
@@ -102,7 +104,7 @@ public class AllAppsSectionDecorator extends RecyclerView.ItemDecoration {
         private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         private final boolean mIsTopRound;
         private final boolean mIsBottomRound;
-        private float [] mCorners;
+        private float[] mCorners;
         private float mFillSpacing;
 
         public SectionDecorationHandler(Context context, boolean isFullWidth, int fillAlpha,
