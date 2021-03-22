@@ -18,8 +18,6 @@
 package app.lawnchair.util
 
 import android.content.Context
-import app.lawnchair.ensureOnMainThread
-import app.lawnchair.useApplicationContext
 
 // Source: https://medium.com/@BladeCoder/kotlin-singletons-with-argument-194ef06edd9e
 open class SingletonHolder<out T, in A>(creator: (A) -> T) {

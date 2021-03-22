@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Point;
@@ -30,6 +31,8 @@ import com.android.launcher3.icons.DotRenderer;
 import com.android.launcher3.icons.IconNormalizer;
 import com.android.launcher3.util.DefaultDisplay;
 import com.android.launcher3.util.WindowBounds;
+
+import app.lawnchair.util.preferences.LawnchairPreferences;
 
 public class DeviceProfile {
 
@@ -140,10 +143,13 @@ public class DeviceProfile {
     public DotRenderer mDotRendererWorkSpace;
     public DotRenderer mDotRendererAllApps;
 
+    private final Context mContext;
+
     DeviceProfile(Context context, InvariantDeviceProfile inv, DefaultDisplay.Info info,
             Point minSize, Point maxSize, int width, int height, boolean isLandscape,
             boolean isMultiWindowMode, boolean transposeLayoutWithOrientation,
             Point windowPosition) {
+        mContext = context;
 
         this.inv = inv;
         this.isLandscape = isLandscape;
@@ -241,7 +247,6 @@ public class DeviceProfile {
             updateAvailableDimensions(res);
         }
         updateWorkspacePadding();
-
         // This is done last, after iconSizePx is calculated above.
         mDotRendererWorkSpace = new DotRenderer(iconSizePx, IconShape.getShapePath(),
                 IconShape.DEFAULT_PATH_SIZE);
@@ -408,6 +413,16 @@ public class DeviceProfile {
         // Folder icon
         folderIconSizePx = IconNormalizer.getNormalizedCircleSize(iconSizePx);
         folderIconOffsetYPx = (iconSizePx - folderIconSizePx) / 2;
+
+        // Lawnchair prefs
+        SharedPreferences prefs = LawnchairPreferences.Companion.getInstance(mContext);
+        if (prefs == null) return;
+
+        // Lawnchair icon and text sizes
+        iconSizePx *= prefs.getFloat(LawnchairPreferences.ICON_SIZE_FACTOR, 1f);
+        iconTextSizePx *= prefs.getFloat(LawnchairPreferences.TEXT_SIZE_FACTOR, 1f);;
+        allAppsIconSizePx *= prefs.getFloat(LawnchairPreferences.ALL_APPS_ICON_SIZE_FACTOR, 1f);
+        allAppsIconTextSizePx *= prefs.getFloat(LawnchairPreferences.ALL_APPS_TEXT_SIZE_FACTOR, 1f);
     }
 
     private void updateAvailableFolderCellDimensions(Resources res) {

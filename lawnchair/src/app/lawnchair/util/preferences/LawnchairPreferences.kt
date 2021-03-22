@@ -2,6 +2,9 @@ package app.lawnchair.util.preferences
 
 import android.content.Context
 import android.content.SharedPreferences
+import app.lawnchair.LawnchairLauncher
+import app.lawnchair.LawnchairLauncherQuickstep
+import com.android.launcher3.BuildConfig
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.Utilities
 
@@ -20,6 +23,14 @@ class LawnchairPreferences(val context: Context) {
                 WORKSPACE_ROWS, WORKSPACE_COLUMNS, ALL_APPS_COLUMNS, FOLDER_ROWS, FOLDER_COLUMNS, HOTSEAT_COLUMNS -> {
                     LauncherAppState.getInstance(context).invariantDeviceProfile.reInitGrid()
                     LauncherAppState.getInstance(context).model.forceReload()
+                }
+
+                TEXT_SIZE_FACTOR, ICON_SIZE_FACTOR, ALL_APPS_ICON_SIZE_FACTOR, ALL_APPS_TEXT_SIZE_FACTOR -> {
+                    if (BuildConfig.FLAVOR_recents == "withQuickstep") {
+                        LawnchairLauncherQuickstep.getLauncher(context).scheduleRestart()
+                    } else {
+                        LawnchairLauncher.getLauncher(context).scheduleRestart()
+                    }
                 }
             }
         }

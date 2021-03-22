@@ -15,7 +15,7 @@
  *     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package app.lawnchair.ui
+package app.lawnchair
 
 import android.app.Activity
 import android.app.Application
@@ -25,6 +25,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.annotation.Keep
+import app.lawnchair.util.restartLauncher
 import com.android.launcher3.Utilities
 import com.android.quickstep.RecentsActivity
 
@@ -35,9 +36,6 @@ class LawnchairApp : Application() {
     val recentsEnabled by lazy { checkRecentsComponent() }
     val TAG = "LawnchairApp"
 
-    init {
-    }
-
     fun onLauncherAppStateCreated() {
         registerActivityLifecycleCallbacks(activityHandler)
     }
@@ -45,9 +43,9 @@ class LawnchairApp : Application() {
     fun restart(recreateLauncher: Boolean = true) {
         if (recreateLauncher) {
             activityHandler.finishAll()
-        } /*else {
-            Utilities.restartLauncher(this)
-        }*/
+        } else {
+            restartLauncher(this)
+        }
     }
 
     class ActivityHandler : ActivityLifecycleCallbacks {

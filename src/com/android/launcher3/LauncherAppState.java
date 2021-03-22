@@ -45,13 +45,21 @@ import com.android.launcher3.util.SecureSettingsObserver;
 import com.android.launcher3.util.SimpleBroadcastReceiver;
 import com.android.launcher3.widget.custom.CustomWidgetManager;
 
+import app.lawnchair.LawnchairAppKt;
+
 public class LauncherAppState {
 
     public static final String ACTION_FORCE_ROLOAD = "force-reload-launcher";
 
     // We do not need any synchronization for this variable as its only written on UI thread.
     public static final MainThreadInitializedObject<LauncherAppState> INSTANCE =
-            new MainThreadInitializedObject<>(LauncherAppState::new);
+            new MainThreadInitializedObject<LauncherAppState>(LauncherAppState::new) {
+                @Override
+                protected void onPostInit(Context context) {
+                    super.onPostInit(context);
+                    LawnchairAppKt.getLawnchairApp(context).onLauncherAppStateCreated();
+                }
+            };
 
     private final Context mContext;
     private final LauncherModel mModel;
@@ -65,6 +73,7 @@ public class LauncherAppState {
     private SimpleBroadcastReceiver mModelChangeReceiver;
     private SafeCloseable mCalendarChangeTracker;
     private SafeCloseable mUserChangeListener;
+    private Launcher mLauncher;
 
     public static LauncherAppState getInstance(final Context context) {
         return INSTANCE.get(context);
@@ -175,6 +184,14 @@ public class LauncherAppState {
         if (mNotificationDotsObserver != null) {
             mNotificationDotsObserver.unregister();
         }
+    }
+
+    public void setLauncher(Launcher launcher) {
+        mLauncher = launcher;
+    }
+
+    public Launcher getLauncher() {
+        return mLauncher;
     }
 
     public IconCache getIconCache() {
