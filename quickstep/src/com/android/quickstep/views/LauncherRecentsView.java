@@ -101,7 +101,7 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
     @Override
     protected void onTaskLaunchAnimationEnd(boolean success) {
         if (success) {
-            mActivity.getStateManager().goToState(NORMAL, false /* animate */);
+            mActivity.getStateManager().moveToRestState();
         } else {
             LauncherState state = mActivity.getStateManager().getState();
             mActivity.getAllAppsController().setState(state);
