@@ -35,7 +35,6 @@ import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItem;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.search.SearchAlgorithm;
 import com.android.launcher3.search.SearchCallback;
-import com.android.launcher3.util.PackageManagerHelper;
 
 /**
  * An interface to a search box that AllApps can command.
@@ -105,30 +104,14 @@ public class AllAppsSearchBarController
 
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
-            if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_GO) {
-                mLauncher.getStatsLogManager().logger()
-                        .log(LAUNCHER_ALLAPPS_FOCUSED_ITEM_SELECTED_WITH_IME);
-                // selectFocusedView should return SearchTargetEvent that is passed onto onClick
-                if (Launcher.getLauncher(mLauncher).getAppsView().selectFocusedView(v)) {
-                    return true;
-                }
-            }
-        }
 
-        // Skip if it's not the right action
-        if (actionId != EditorInfo.IME_ACTION_SEARCH) {
-            return false;
+        if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_GO) {
+            mLauncher.getStatsLogManager().logger()
+                    .log(LAUNCHER_ALLAPPS_FOCUSED_ITEM_SELECTED_WITH_IME);
+            // selectFocusedView should return SearchTargetEvent that is passed onto onClick
+            return Launcher.getLauncher(mLauncher).getAppsView().launchHighlightedItem();
         }
-
-        // Skip if the query is empty
-        String query = v.getText().toString();
-        if (query.isEmpty()) {
-            return false;
-        }
-        return mLauncher.startActivitySafely(v,
-                PackageManagerHelper.getMarketSearchIntent(mLauncher, query), null
-        );
+        return false;
     }
 
     @Override
