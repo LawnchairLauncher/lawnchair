@@ -53,7 +53,9 @@ public final class WidgetsListSearchHeaderViewHolderBinder implements
     public void bindViewHolder(WidgetsListSearchHeaderHolder viewHolder,
             WidgetsListSearchHeaderEntry data, int position) {
         WidgetsListHeader widgetsListHeader = viewHolder.mWidgetsListHeader;
-        if (position == 0) {
+        if (mWidgetsListAdapter.getItemCount() == 1) {
+            widgetsListHeader.setBackgroundResource(R.drawable.widgets_list_single_item_ripple);
+        } else if (position == 0) {
             widgetsListHeader.setBackgroundResource(R.drawable.widgets_list_top_ripple);
         } else if (position == mWidgetsListAdapter.getItemCount() - 1) {
             widgetsListHeader.setBackgroundResource(R.drawable.widgets_list_bottom_ripple);
