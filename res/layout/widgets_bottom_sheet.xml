@@ -24,41 +24,7 @@
     android:elevation="@dimen/deep_shortcuts_elevation"
     android:layout_gravity="bottom"
     android:theme="?attr/widgetsTheme">
-    <View
-        android:layout_width="48dp"
-        android:layout_height="2dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="16dp"
-        android:background="?android:attr/textColorSecondary"/>
-    <TextView
-        style="@style/TextHeadline"
-        android:id="@+id/title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:textColor="?android:attr/textColorPrimary"
-        android:textSize="24sp"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:paddingTop="4dp"
-        android:fontFamily="sans-serif"
-        android:textColor="?android:attr/textColorTertiary"
-        android:textSize="14sp"
-        android:text="@string/long_press_widget_to_add"/>
-
-    <ScrollView
-        android:id="@+id/widgets_table_scroll_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fadeScrollbars="false"
-        android:layout_marginVertical="16dp">
-        <include layout="@layout/widgets_table_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal" />
-    </ScrollView>
+    <include layout="@layout/widgets_bottom_sheet_content" />
 
 </com.android.launcher3.widget.WidgetsBottomSheet>
