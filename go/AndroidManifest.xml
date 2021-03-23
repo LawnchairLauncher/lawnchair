@@ -24,6 +24,8 @@
 
     <uses-sdk android:targetSdkVersion="29" android:minSdkVersion="25"/>
 
+    <uses-permission android:name="android.permission.GET_TOP_ACTIVITY_INFO" />
+
     <application
         android:backupAgent="com.android.launcher3.LauncherBackupAgent"
         android:fullBackupOnly="true"
