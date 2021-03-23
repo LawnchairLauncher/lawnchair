@@ -96,7 +96,6 @@ public class WorkspaceStateTransitionAnimation {
         ScaleAndTranslation scaleAndTranslation = state.getWorkspaceScaleAndTranslation(mLauncher);
         ScaleAndTranslation hotseatScaleAndTranslation = state.getHotseatScaleAndTranslation(
                 mLauncher);
-        ScaleAndTranslation qsbScaleAndTranslation = state.getQsbScaleAndTranslation(mLauncher);
         mNewScale = scaleAndTranslation.scale;
         PageAlphaProvider pageAlphaProvider = state.getWorkspacePageAlphaProvider(mLauncher);
         final int childCount = mWorkspace.getChildCount();
