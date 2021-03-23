@@ -17,10 +17,11 @@ package com.android.quickstep;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
-import static com.android.quickstep.GestureState.GestureEndTarget.RECENTS;
 import static com.android.quickstep.GestureState.STATE_RECENTS_ANIMATION_INITIALIZED;
 import static com.android.quickstep.GestureState.STATE_RECENTS_ANIMATION_STARTED;
+import static com.android.quickstep.util.NavigationModeFeatureFlag.LIVE_TILE;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -31,13 +32,13 @@ import androidx.annotation.UiThread;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.RemoteTransitionCompat;
-
-import java.util.function.Consumer;
+import com.android.systemui.shared.system.TaskStackChangeListener;
 
 public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAnimationListener {
     public static final boolean ENABLE_SHELL_TRANSITIONS =
@@ -49,9 +50,23 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
     // Temporary until we can hook into gesture state events
     private GestureState mLastGestureState;
     private RemoteAnimationTargetCompat mLastAppearedTaskTarget;
-    private Consumer<RemoteAnimationTargetCompat> mLaunchOtherTaskHandler;
     private Runnable mLiveTileCleanUpHandler;
     private Context mCtx;
+
+    private final TaskStackChangeListener mLiveTileRestartListener = new TaskStackChangeListener() {
+        @Override
+        public void onActivityRestartAttempt(ActivityManager.RunningTaskInfo task,
+                boolean homeTaskVisible, boolean clearedTask, boolean wasVisible) {
+            BaseActivityInterface activityInterface = mLastGestureState.getActivityInterface();
+            if (LIVE_TILE.get() && activityInterface.isInLiveTileMode()
+                    && activityInterface.getCreatedActivity() != null) {
+                RecentsView recentsView = activityInterface.getCreatedActivity().getOverviewPanel();
+                recentsView.launchSideTaskInLiveTileModeForRestartedApp(task.taskId);
+                ActivityManagerWrapper.getInstance().unregisterTaskStackListener(
+                        mLiveTileRestartListener);
+            }
+        }
+    };
 
     TaskAnimationManager(Context ctx) {
         mCtx = ctx;
@@ -114,9 +129,14 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
 
             @Override
             public void onTaskAppeared(RemoteAnimationTargetCompat appearedTaskTarget) {
-                if (mLaunchOtherTaskHandler != null
-                        && mLastGestureState.getEndTarget() == RECENTS) {
-                    mLaunchOtherTaskHandler.accept(appearedTaskTarget);
+                BaseActivityInterface activityInterface = mLastGestureState.getActivityInterface();
+                if (LIVE_TILE.get() && activityInterface.isInLiveTileMode()
+                        && activityInterface.getCreatedActivity() != null) {
+                    RecentsView recentsView =
+                            activityInterface.getCreatedActivity().getOverviewPanel();
+                    RemoteAnimationTargetCompat[] apps = new RemoteAnimationTargetCompat[1];
+                    apps[0] = appearedTaskTarget;
+                    recentsView.launchSideTaskInLiveTileMode(appearedTaskTarget.taskId, apps);
                     return;
                 }
                 if (mController != null) {
@@ -161,17 +181,12 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
         return mCallbacks;
     }
 
-    /**
-     * The passed-in handler is used to render side task launch animation in recents in live tile
-     * mode.
-     */
-    public void setLaunchOtherTaskInLiveTileModeHandler(
-            Consumer<RemoteAnimationTargetCompat> handler) {
-        mLaunchOtherTaskHandler = handler;
+    public void setLiveTileCleanUpHandler(Runnable cleanUpHandler) {
+        mLiveTileCleanUpHandler = cleanUpHandler;
     }
 
-    public void setLiveTileCleanUpHandler(Runnable runnable) {
-        mLiveTileCleanUpHandler = runnable;
+    public void enableLiveTileRestartListener() {
+        ActivityManagerWrapper.getInstance().registerTaskStackListener(mLiveTileRestartListener);
     }
 
     /**
@@ -215,6 +230,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
             mLiveTileCleanUpHandler.run();
             mLiveTileCleanUpHandler = null;
         }
+        ActivityManagerWrapper.getInstance().unregisterTaskStackListener(mLiveTileRestartListener);
 
         // Release all the target leashes
         if (mTargets != null) {
@@ -231,7 +247,6 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
         mTargets = null;
         mLastGestureState = null;
         mLastAppearedTaskTarget = null;
-        mLaunchOtherTaskHandler = null;
     }
 
     public void dump() {
