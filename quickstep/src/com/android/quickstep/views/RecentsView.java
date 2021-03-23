@@ -1018,6 +1018,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             mLiveTileTaskViewSimulator.taskSecondaryTranslation.value = 0;
             mLiveTileTaskViewSimulator.fullScreenProgress.value = 0;
             mLiveTileTaskViewSimulator.recentsViewScale.value = 1;
+            mLiveTileTaskViewSimulator.gridProgress.value = 0;
         }
         if (mRunningTaskTileHidden) {
             setRunningTaskHidden(mRunningTaskTileHidden);
@@ -1740,6 +1741,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         for (int i = 0; i < taskCount; i++) {
             getTaskViewAt(i).setGridProgress(gridProgress);
         }
+        mLiveTileTaskViewSimulator.gridProgress.value = gridProgress;
         mClearAllButton.setGridProgress(gridProgress);
     }
 
