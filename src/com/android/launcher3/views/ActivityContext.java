@@ -18,6 +18,7 @@ package com.android.launcher3.views;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.graphics.Rect;
+import android.view.LayoutInflater;
 import android.view.View.AccessibilityDelegate;
 
 import com.android.launcher3.DeviceProfile;
@@ -67,13 +68,28 @@ public interface ActivityContext {
     }
 
     /**
+     * Returns a LayoutInflater that is cloned in this Context, so that Views inflated by it will
+     * have the same Context. (i.e. {@link #lookupContext(Context)} will find this ActivityContext.)
+     */
+    default LayoutInflater getLayoutInflater() {
+        if (this instanceof Context) {
+            Context context = (Context) this;
+            return LayoutInflater.from(context).cloneInContext(context);
+        }
+        return null;
+    }
+
+    /**
      * The root view to support drag-and-drop and popup support.
      */
     BaseDragLayer getDragLayer();
 
     DeviceProfile getDeviceProfile();
 
-    static <T extends ActivityContext> T lookupContext(Context context) {
+    /**
+     * Returns the ActivityContext associated with the given Context.
+     */
+    static <T extends Context & ActivityContext> T lookupContext(Context context) {
         if (context instanceof ActivityContext) {
             return (T) context;
         } else if (context instanceof ContextWrapper) {
