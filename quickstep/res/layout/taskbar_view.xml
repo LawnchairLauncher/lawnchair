@@ -14,8 +14,13 @@
      limitations under the License.
 -->
 
-<View
+<com.android.launcher3.taskbar.TaskbarView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="@dimen/taskbar_divider_thickness"
-    android:layout_height="@dimen/taskbar_divider_height"
-    android:background="@color/taskbar_divider" />
+    android:id="@+id/taskbar_view"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/taskbar_size"
+    android:background="@android:color/transparent"
+    android:layout_gravity="bottom"
+    android:gravity="center"
+    android:visibility="gone" />
+

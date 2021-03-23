@@ -46,6 +46,7 @@ import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.taskbar.TaskbarActivityContext;
 import com.android.launcher3.taskbar.TaskbarController;
 import com.android.launcher3.taskbar.TaskbarStateHandler;
+import com.android.launcher3.taskbar.TaskbarView;
 import com.android.launcher3.uioverrides.RecentsViewStateController;
 import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.util.DisplayController;
@@ -243,9 +244,10 @@ public abstract class BaseQuickstepLauncher extends Launcher
             mTaskbarController = null;
         }
         if (mDeviceProfile.isTaskbarPresent) {
+            TaskbarView taskbarViewOnHome = (TaskbarView) mHotseat.getTaskbarView();
             TaskbarActivityContext taskbarActivityContext = new TaskbarActivityContext(this);
             mTaskbarController = new TaskbarController(this,
-                    taskbarActivityContext.getTaskbarContainerView());
+                    taskbarActivityContext.getTaskbarContainerView(), taskbarViewOnHome);
             mTaskbarController.init();
         }
     }
