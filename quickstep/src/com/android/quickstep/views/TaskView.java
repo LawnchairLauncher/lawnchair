@@ -298,7 +298,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private boolean mEndQuickswitchCuj;
 
     private View mContextualChipWrapper;
-    private View mContextualChip;
     private final float[] mIconCenterCoords = new float[2];
     private final float[] mChipCenterCoords = new float[2];
 
@@ -447,9 +446,9 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         }
         mModalness = modalness;
         mIconView.setAlpha(comp(modalness));
-        if (mContextualChip != null) {
-            mContextualChip.setScaleX(comp(modalness));
-            mContextualChip.setScaleY(comp(modalness));
+        if (mContextualChipWrapper != null) {
+            mContextualChipWrapper.setScaleX(comp(modalness));
+            mContextualChipWrapper.setScaleY(comp(modalness));
         }
         mDigitalWellBeingToast.updateBannerOffset(modalness,
                 mCurrentFullscreenParams.mCurrentDrawnInsets.top
@@ -689,10 +688,10 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                 .getInterpolation(progress);
         mIconView.setScaleX(scale);
         mIconView.setScaleY(scale);
-        if (mContextualChip != null && mContextualChipWrapper != null) {
+        if (mContextualChipWrapper != null && mContextualChipWrapper != null) {
             mContextualChipWrapper.setAlpha(scale);
-            mContextualChip.setScaleX(scale);
-            mContextualChip.setScaleY(scale);
+            mContextualChipWrapper.setScaleX(Math.min(scale, comp(mModalness)));
+            mContextualChipWrapper.setScaleY(Math.min(scale, comp(mModalness)));
         }
         mDigitalWellBeingToast.updateBannerOffset(1f - scale,
                 mCurrentFullscreenParams.mCurrentDrawnInsets.top
@@ -797,14 +796,12 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             int expectedChipHeight = getExpectedViewHeight(view);
             float chipOffset = getResources().getDimension(R.dimen.chip_hint_vertical_offset);
             layoutParams.bottomMargin = -expectedChipHeight - (int) chipOffset;
-            mContextualChip = ((FrameLayout) mContextualChipWrapper).getChildAt(0);
-            mContextualChip.setScaleX(0f);
-            mContextualChip.setScaleY(0f);
+            mContextualChipWrapper.setScaleX(0f);
+            mContextualChipWrapper.setScaleY(0f);
             addView(view, getChildCount(), layoutParams);
-            if (mContextualChip != null) {
-                mContextualChip.animate().scaleX(1f).scaleY(1f).setDuration(50);
-            }
             if (mContextualChipWrapper != null) {
+                float scale = comp(mModalness);
+                mContextualChipWrapper.animate().scaleX(scale).scaleY(scale).setDuration(50);
                 mChipTouchDelegate = new TransformingTouchDelegate(mContextualChipWrapper);
             }
         }
@@ -825,7 +822,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         }
         View oldContextualChipWrapper = mContextualChipWrapper;
         mContextualChipWrapper = null;
-        mContextualChip = null;
         mChipTouchDelegate = null;
         return oldContextualChipWrapper;
     }
