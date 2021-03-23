@@ -53,8 +53,10 @@ public class TaskbarStateHandler implements StateManager.StateHandler<LauncherSt
         }
 
         AnimatedFloat alphaTarget = mTaskbarCallbacks.getAlphaTarget();
+        AnimatedFloat scaleTarget = mTaskbarCallbacks.getScaleTarget();
         boolean isTaskbarVisible = (state.getVisibleElements(mLauncher) & TASKBAR) != 0;
         alphaTarget.updateValue(isTaskbarVisible ? 1f : 0f);
+        scaleTarget.updateValue(state.getTaskbarScale(mLauncher));
     }
 
     @Override
@@ -65,7 +67,10 @@ public class TaskbarStateHandler implements StateManager.StateHandler<LauncherSt
         }
 
         AnimatedFloat alphaTarget = mTaskbarCallbacks.getAlphaTarget();
+        AnimatedFloat scaleTarget = mTaskbarCallbacks.getScaleTarget();
         boolean isTaskbarVisible = (toState.getVisibleElements(mLauncher) & TASKBAR) != 0;
         animation.setFloat(alphaTarget, AnimatedFloat.VALUE, isTaskbarVisible ? 1f : 0f, LINEAR);
+        animation.setFloat(scaleTarget, AnimatedFloat.VALUE, toState.getTaskbarScale(mLauncher),
+                LINEAR);
     }
 }
