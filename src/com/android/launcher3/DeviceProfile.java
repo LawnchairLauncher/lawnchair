@@ -122,6 +122,7 @@ public class DeviceProfile {
     public int folderIconOffsetYPx;
 
     // Folder content
+    public int folderCellLayoutBorderSpacingPx;
     public int folderContentPaddingLeftRight;
     public int folderContentPaddingTop;
 
@@ -248,6 +249,7 @@ public class DeviceProfile {
 
         setCellLayoutBorderSpacing(pxFromDp(inv.borderSpacing, mInfo.metrics, 1f));
         cellLayoutBorderSpacingOriginalPx = cellLayoutBorderSpacingPx;
+        folderCellLayoutBorderSpacingPx = cellLayoutBorderSpacingPx;
 
         int cellLayoutPaddingLeftRightMultiplier = !isVerticalBarLayout() && isTablet
                 ? PORTRAIT_TABLET_LEFT_RIGHT_PADDING_MULTIPLIER : 1;
@@ -332,13 +334,7 @@ public class DeviceProfile {
     }
 
     private void setCellLayoutBorderSpacing(int borderSpacing) {
-        if (isScalableGrid) {
-            cellLayoutBorderSpacingPx = borderSpacing;
-            folderContentPaddingLeftRight = borderSpacing;
-            folderContentPaddingTop = borderSpacing;
-        } else {
-            cellLayoutBorderSpacingPx = 0;
-        }
+        cellLayoutBorderSpacingPx = isScalableGrid ? borderSpacing : 0;
     }
 
     /**
@@ -565,14 +561,14 @@ public class DeviceProfile {
 
         // Check if the icons fit within the available height.
         float contentUsedHeight = folderCellHeightPx * inv.numFolderRows
-                + ((inv.numFolderRows - 1) * cellLayoutBorderSpacingPx);
+                + ((inv.numFolderRows - 1) * folderCellLayoutBorderSpacingPx);
         int contentMaxHeight = availableHeightPx - totalWorkspacePadding.y - folderBottomPanelSize
                 - folderMargin - folderContentPaddingTop;
         float scaleY = contentMaxHeight / contentUsedHeight;
 
         // Check if the icons fit within the available width.
         float contentUsedWidth = folderCellWidthPx * inv.numFolderColumns
-                + ((inv.numFolderColumns - 1) * cellLayoutBorderSpacingPx);
+                + ((inv.numFolderColumns - 1) * folderCellLayoutBorderSpacingPx);
         int contentMaxWidth = availableWidthPx - totalWorkspacePadding.x - folderMargin
                 - folderContentPaddingLeftRight * 2;
         float scaleX = contentMaxWidth / contentUsedWidth;
@@ -590,11 +586,25 @@ public class DeviceProfile {
         folderLabelTextSizePx = (int) (folderChildTextSizePx * folderLabelTextScale);
 
         int textHeight = Utilities.calculateTextHeight(folderChildTextSizePx);
-        int cellPaddingX = (int) (res.getDimensionPixelSize(R.dimen.folder_cell_x_padding) * scale);
-        int cellPaddingY = (int) (res.getDimensionPixelSize(R.dimen.folder_cell_y_padding) * scale);
 
-        folderCellWidthPx = folderChildIconSizePx + 2 * cellPaddingX;
-        folderCellHeightPx = folderChildIconSizePx + 2 * cellPaddingY + textHeight;
+        if (isScalableGrid) {
+            folderCellWidthPx = (int) (cellWidthPx * scale);
+            folderCellHeightPx = (int) (cellHeightPx * scale);
+
+            int borderSpacing = (int) (cellLayoutBorderSpacingOriginalPx * scale);
+            folderCellLayoutBorderSpacingPx = borderSpacing;
+            folderContentPaddingLeftRight = borderSpacing;
+            folderContentPaddingTop = borderSpacing;
+        } else {
+            int cellPaddingX = (int) (res.getDimensionPixelSize(R.dimen.folder_cell_x_padding)
+                    * scale);
+            int cellPaddingY = (int) (res.getDimensionPixelSize(R.dimen.folder_cell_y_padding)
+                    * scale);
+
+            folderCellWidthPx = folderChildIconSizePx + 2 * cellPaddingX;
+            folderCellHeightPx = folderChildIconSizePx + 2 * cellPaddingY + textHeight;
+        }
+
         folderChildDrawablePaddingPx = Math.max(0,
                 (folderCellHeightPx - folderChildIconSizePx - textHeight) / 3);
     }
@@ -846,6 +856,8 @@ public class DeviceProfile {
         writer.println(prefix + pxToDpStr("folderChildTextSizePx", folderChildTextSizePx));
         writer.println(prefix + pxToDpStr("folderChildDrawablePaddingPx",
                 folderChildDrawablePaddingPx));
+        writer.println(prefix + pxToDpStr("folderCellLayoutBorderSpacingPx",
+                folderCellLayoutBorderSpacingPx));
 
         writer.println(prefix + pxToDpStr("cellLayoutBorderSpacingPx",
                 cellLayoutBorderSpacingPx));
