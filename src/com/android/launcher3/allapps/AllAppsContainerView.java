@@ -180,6 +180,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     @Override
     public void onDeviceProfileChanged(DeviceProfile dp) {
         for (AdapterHolder holder : mAH) {
+            holder.adapter.setAppsPerRow(dp.inv.numAllAppsColumns);
             if (holder.recyclerView != null) {
                 // Remove all views and clear the pool, while keeping the data same. After this
                 // call, all the viewHolders will be recreated.
