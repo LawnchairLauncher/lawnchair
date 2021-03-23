@@ -21,21 +21,10 @@ import com.android.launcher3.allapps.AllAppsSectionDecorator.SectionDecorationHa
  * Info class for a search section that is primarily used for decoration.
  */
 public class SectionDecorationInfo {
-
-    public static final int QUICK_LAUNCH = 1 << 0;
     public static final int GROUPING = 1 << 1;
 
     private String mSectionId;
-    private boolean mFocused;
     private SectionDecorationHandler mDecorationHandler;
-
-    public boolean isFocusedView() {
-        return mFocused;
-    }
-
-    public void setFocusedView(boolean focused) {
-        mFocused = focused;
-    }
 
     public SectionDecorationInfo() {
         this(null);
