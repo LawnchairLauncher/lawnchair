@@ -2634,6 +2634,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         mDragLayer.dump(prefix, writer);
         mStateManager.dump(prefix, writer);
         mPopupDataProvider.dump(prefix, writer);
+        mDeviceProfile.dump(prefix, writer);
 
         try {
             FileLog.flushAll(writer);

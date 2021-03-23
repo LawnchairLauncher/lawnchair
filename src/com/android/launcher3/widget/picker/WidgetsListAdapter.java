@@ -43,6 +43,7 @@ import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
 import com.android.launcher3.widget.model.WidgetsListSearchHeaderEntry;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
@@ -216,7 +217,9 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
 
     @Override
     public long getItemId(int pos) {
-        return pos;
+        return Arrays.hashCode(new Object[]{
+                mVisibleEntries.get(pos).mPkgItem.hashCode(),
+                getItemViewType(pos)});
     }
 
     @Override
