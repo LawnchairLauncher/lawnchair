@@ -29,18 +29,12 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.util.MultiValueAlpha;
-
 import java.util.function.Consumer;
 
 /**
  * View class that represents the bottom row of the home screen.
  */
 public class Hotseat extends CellLayout implements Insettable {
-
-    private static final int ALPHA_INDEX_STATE = 0;
-    private static final int ALPHA_INDEX_REPLACE_TASKBAR = 1;
-    private static final int NUM_ALPHA_CHANNELS = 2;
 
     // Ratio of empty space, qsb should take up to appear visually centered.
     public static final float QSB_CENTER_FACTOR = .325f;
@@ -52,9 +46,11 @@ public class Hotseat extends CellLayout implements Insettable {
     @Nullable
     private Consumer<Boolean> mOnVisibilityAggregatedCallback;
 
-    private final MultiValueAlpha mMultiValueAlpha;
     private final View mQsb;
     private final int mQsbHeight;
+
+    private final View mTaskbarView;
+    private final int mTaskbarViewHeight;
 
     public Hotseat(Context context) {
         this(context, null);
@@ -66,12 +62,15 @@ public class Hotseat extends CellLayout implements Insettable {
 
     public Hotseat(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        mMultiValueAlpha = new MultiValueAlpha(this, NUM_ALPHA_CHANNELS, MultiValueAlpha.Mode.MAX);
-        mMultiValueAlpha.setUpdateVisibility(true);
 
         mQsb = LayoutInflater.from(context).inflate(R.layout.search_container_hotseat, this, false);
         mQsbHeight = mQsb.getLayoutParams().height;
         addView(mQsb);
+
+        mTaskbarView = LayoutInflater.from(context).inflate(R.layout.taskbar_view, this, false);
+        mTaskbarViewHeight = mTaskbarView.getLayoutParams().height;
+        // We want taskbar in the back so its background applies to Hotseat as well.
+        addView(mTaskbarView, 0);
     }
 
     /**
@@ -193,6 +192,8 @@ public class Hotseat extends CellLayout implements Insettable {
         int width = getShortcutsAndWidgets().getMeasuredWidth();
         mQsb.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(mQsbHeight, MeasureSpec.EXACTLY));
+        mTaskbarView.measure(MeasureSpec.makeMeasureSpec(getMeasuredWidth(), MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(mTaskbarViewHeight, MeasureSpec.EXACTLY));
     }
 
     @Override
@@ -212,6 +213,13 @@ public class Hotseat extends CellLayout implements Insettable {
                 - (dp.isTaskbarPresent ? dp.taskbarSize : dp.getInsets().bottom);
         int top = bottom - mQsbHeight;
         mQsb.layout(left, top, right, bottom);
+
+        int taskbarWidth = mTaskbarView.getMeasuredWidth();
+        left = (r - l - taskbarWidth) / 2;
+        right = left + taskbarWidth;
+        bottom = b - t;
+        top = bottom - mTaskbarViewHeight;
+        mTaskbarView.layout(left, top, right, bottom);
     }
 
     /**
@@ -221,12 +229,11 @@ public class Hotseat extends CellLayout implements Insettable {
         return mWorkspace.getFirstMatch(new CellLayout[] { this }, itemOperator);
     }
 
-    public MultiValueAlpha.AlphaProperty getStateAlpha() {
-        return mMultiValueAlpha.getProperty(ALPHA_INDEX_STATE);
-    }
-
-    public MultiValueAlpha.AlphaProperty getReplaceTaskbarAlpha() {
-        return mMultiValueAlpha.getProperty(ALPHA_INDEX_REPLACE_TASKBAR);
+    /**
+     * Sets the alpha value of just our ShortcutAndWidgetContainer.
+     */
+    public void setIconsAlpha(float alpha) {
+        getShortcutsAndWidgets().setAlpha(alpha);
     }
 
     /**
@@ -234,5 +241,12 @@ public class Hotseat extends CellLayout implements Insettable {
      */
     public View getQsb() {
         return mQsb;
+    }
+
+    /**
+     * Returns the Taskbar inside hotseat
+     */
+    public View getTaskbarView() {
+        return mTaskbarView;
     }
 }

@@ -84,7 +84,7 @@ public class TaskbarContainerView extends BaseDragLayer<TaskbarActivityContext> 
     private ViewTreeObserverWrapper.OnComputeInsetsListener createTaskbarInsetsComputer() {
         return insetsInfo -> {
             if (getAlpha() < AlphaUpdateListener.ALPHA_CUTOFF_THRESHOLD
-                    || mTaskbarView.isDraggingItem()) {
+                    || mTaskbarView.getVisibility() != VISIBLE || mTaskbarView.isDraggingItem()) {
                 // We're invisible or dragging out of taskbar, let touches pass through us.
                 insetsInfo.touchableRegion.setEmpty();
                 insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION);
