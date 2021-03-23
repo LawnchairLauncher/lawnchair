@@ -151,13 +151,22 @@ public class TaskbarController {
                         ActivityManagerWrapper.getInstance().startActivityFromRecents(task.key,
                                 ActivityOptions.makeBasic());
                     } else if (tag instanceof FolderInfo) {
-                        if (mLauncher.hasBeenResumed()) {
-                            FolderInfo folderInfo = (FolderInfo) tag;
-                            onClickedOnFolderFromHome(folderInfo);
-                        } else {
-                            FolderIcon folderIcon = (FolderIcon) view;
-                            onClickedOnFolderInApp(folderIcon);
-                        }
+                        FolderIcon folderIcon = (FolderIcon) view;
+                        Folder folder = folderIcon.getFolder();
+
+                        setTaskbarWindowFullscreen(true);
+
+                        mTaskbarContainerView.post(() -> {
+                            folder.animateOpen();
+
+                            folder.iterateOverItems((itemInfo, itemView) -> {
+                                itemView.setOnClickListener(getItemOnClickListener());
+                                itemView.setOnLongClickListener(getItemOnLongClickListener());
+                                // To play haptic when dragging, like other Taskbar items do.
+                                itemView.setHapticFeedbackEnabled(true);
+                                return false;
+                            });
+                        });
                     } else {
                         ItemClickHandler.INSTANCE.onClick(view);
                     }
@@ -167,44 +176,9 @@ public class TaskbarController {
                 };
             }
 
-            // Open the real folder in Launcher.
-            private void onClickedOnFolderFromHome(FolderInfo folderInfo) {
-                alignRealHotseatWithTaskbar();
-
-                FolderIcon folderIcon = (FolderIcon) mLauncher.getHotseat()
-                        .getFirstItemMatch((info, v) -> info == folderInfo);
-                folderIcon.post(folderIcon::performClick);
-            }
-
-            // Open the Taskbar folder, and handle clicks on folder items.
-            private void onClickedOnFolderInApp(FolderIcon folderIcon) {
-                Folder folder = folderIcon.getFolder();
-
-                setTaskbarWindowFullscreen(true);
-
-                mTaskbarContainerView.post(() -> {
-                    folder.animateOpen();
-
-                    folder.iterateOverItems((itemInfo, itemView) -> {
-                        itemView.setOnClickListener(getItemOnClickListener());
-                        itemView.setOnLongClickListener(getItemOnLongClickListener());
-                        // To play haptic when dragging, like other Taskbar items do.
-                        itemView.setHapticFeedbackEnabled(true);
-                        return false;
-                    });
-                });
-            }
-
             @Override
             public View.OnLongClickListener getItemOnLongClickListener() {
-                return view -> {
-                    if (mLauncher.hasBeenResumed() && view.getTag() instanceof ItemInfo) {
-                        // TODO: remove this path
-                        return mDragController.startWorkspaceDragOnLongClick(view);
-                    } else {
-                        return mDragController.startSystemDragOnLongClick(view);
-                    }
-                };
+                return mDragController::startSystemDragOnLongClick;
             }
 
             @Override
@@ -507,14 +481,6 @@ public class TaskbarController {
                 hotseatBounds.top + hotseatTopDiff,
                 mTaskbarViewOnHome.getWidth() - hotseatBounds.right,
                 mTaskbarViewOnHome.getHeight() - hotseatBounds.bottom);
-    }
-
-    /**
-     * A view was added or removed from DragLayer, check if we need to hide our hotseat copy and
-     * show the real one instead.
-     */
-    public void onLauncherDragLayerHierarchyChanged() {
-        // TODO: remove, as this is a no-op now
     }
 
     private void updateWhichTaskbarViewIsVisible() {

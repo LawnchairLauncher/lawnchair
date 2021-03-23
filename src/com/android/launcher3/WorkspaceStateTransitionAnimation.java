@@ -34,7 +34,6 @@ import static com.android.launcher3.anim.Interpolators.ZOOM_OUT;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
 import static com.android.launcher3.graphics.Scrim.SCRIM_PROGRESS;
 import static com.android.launcher3.graphics.SysUiScrim.SYSUI_PROGRESS;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_SCALE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_TRANSLATE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_FADE;
@@ -134,8 +133,7 @@ public class WorkspaceStateTransitionAnimation {
             }
 
             float hotseatIconsAlpha = (elements & HOTSEAT_ICONS) != 0 ? 1 : 0;
-            propertySetter.setViewAlpha(hotseat, hotseatIconsAlpha,
-                    config.getInterpolator(ANIM_HOTSEAT_FADE, fadeInterpolator));
+            propertySetter.setViewAlpha(hotseat, hotseatIconsAlpha, fadeInterpolator);
             float workspacePageIndicatorAlpha = (elements & WORKSPACE_PAGE_INDICATOR) != 0 ? 1 : 0;
             propertySetter.setViewAlpha(mLauncher.getWorkspace().getPageIndicator(),
                     workspacePageIndicatorAlpha, fadeInterpolator);

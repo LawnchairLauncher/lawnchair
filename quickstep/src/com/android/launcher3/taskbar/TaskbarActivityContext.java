@@ -35,14 +35,13 @@ public class TaskbarActivityContext extends ContextWrapper implements ActivityCo
     private final DeviceProfile mDeviceProfile;
     private final LayoutInflater mLayoutInflater;
     private final TaskbarContainerView mTaskbarContainerView;
-    private final float mIconScale;
 
     public TaskbarActivityContext(BaseQuickstepLauncher launcher) {
         super(launcher);
         mDeviceProfile = launcher.getDeviceProfile().copy(this);
         float taskbarIconSize = getResources().getDimension(R.dimen.taskbar_icon_size);
-        mIconScale = taskbarIconSize / mDeviceProfile.iconSizePx;
-        mDeviceProfile.updateIconSize(mIconScale, getResources());
+        float iconScale = taskbarIconSize / mDeviceProfile.iconSizePx;
+        mDeviceProfile.updateIconSize(iconScale, getResources());
 
         mLayoutInflater = LayoutInflater.from(this).cloneInContext(this);
 
@@ -72,12 +71,5 @@ public class TaskbarActivityContext extends ContextWrapper implements ActivityCo
     @Override
     public Rect getFolderBoundingBox() {
         return mTaskbarContainerView.getFolderBoundingBox();
-    }
-
-    /**
-     * @return The ratio of taskbar icon size vs normal workspace/hotseat icon size.
-     */
-    public float getTaskbarIconScale() {
-        return mIconScale;
     }
 }
