@@ -140,7 +140,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
 
         WidgetsTableUtils.groupWidgetItemsIntoTable(widgets, mMaxHorizontalSpan).forEach(row -> {
             TableRow tableRow = new TableRow(getContext());
-            tableRow.setGravity(Gravity.CENTER_VERTICAL);
+            tableRow.setGravity(Gravity.TOP);
             row.forEach(widgetItem -> {
                 WidgetCell widget = addItemCell(tableRow);
                 widget.setPreviewSize(widgetItem.spanX, widgetItem.spanY);

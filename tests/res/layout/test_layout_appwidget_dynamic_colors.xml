@@ -18,7 +18,7 @@
         <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:background="@android:color/system_primary_500"/>
+            android:background="@android:color/system_neutral1_500"/>
     </LinearLayout>
     <LinearLayout
         android:orientation = "horizontal"
@@ -32,7 +32,7 @@
         <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:background="@android:color/system_secondary_500"/>
+            android:background="@android:color/system_accent1_500"/>
     </LinearLayout>
     <LinearLayout
         android:orientation = "horizontal"
@@ -46,7 +46,7 @@
         <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:background="@android:color/system_neutral_500"/>
+            android:background="@android:color/system_neutral2_500"/>
     </LinearLayout>
 
     </LinearLayout>

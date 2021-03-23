@@ -887,6 +887,9 @@ public class TouchInteractionService extends Service implements PluginListener<O
             if (mGestureState != null) {
                 mGestureState.dump(pw);
             }
+            pw.println("Input state:");
+            pw.println("  mInputMonitorCompat=" + mInputMonitorCompat);
+            pw.println("  mInputEventReceiver=" + mInputEventReceiver);
             SysUINavigationMode.INSTANCE.get(this).dump(pw);
             pw.println("TouchState:");
             BaseDraggingActivity createdOverviewActivity = mOverviewComponentObserver == null ? null
