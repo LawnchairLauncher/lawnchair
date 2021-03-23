@@ -78,7 +78,7 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
             }
 
             getActionsView().updateDisabledFlags(DISABLED_ROTATED, rotated);
-            boolean isAllowedByPolicy = thumbnail.isRealSnapshot;
+            boolean isAllowedByPolicy = mThumbnailView.isRealSnapshot();
             getActionsView().setCallbacks(new OverlayUICallbacksGoImpl(isAllowedByPolicy, task));
         }
 
