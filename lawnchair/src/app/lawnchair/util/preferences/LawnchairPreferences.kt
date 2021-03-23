@@ -9,10 +9,6 @@ import com.android.launcher3.LauncherAppState
 import com.android.launcher3.Utilities
 
 class LawnchairPreferences(val context: Context) {
-    /**
-     * TODO: Fix grid and empty page preferences not taking effect until Lawnchair is restarted.
-     *  `forceReload` doesn’t appear to help in this respect.
-     */
     val listener: SharedPreferences.OnSharedPreferenceChangeListener =
         SharedPreferences.OnSharedPreferenceChangeListener { _: SharedPreferences?, key: String? ->
             when (key) {
@@ -21,19 +17,23 @@ class LawnchairPreferences(val context: Context) {
                     LauncherAppState.getInstance(context).model.forceReload()
                 }
                 WORKSPACE_ROWS, WORKSPACE_COLUMNS, ALL_APPS_COLUMNS, FOLDER_ROWS, FOLDER_COLUMNS, HOTSEAT_COLUMNS -> {
-                    LauncherAppState.getInstance(context).invariantDeviceProfile.reInitGrid()
-                    LauncherAppState.getInstance(context).model.forceReload()
+                    // LauncherAppState.getInstance(context).invariantDeviceProfile.reInitGrid()
+                    // LauncherAppState.getInstance(context).model.forceReload()
+                    scheduleRestart()
                 }
-
                 TEXT_SIZE_FACTOR, ICON_SIZE_FACTOR, ALL_APPS_ICON_SIZE_FACTOR, ALL_APPS_TEXT_SIZE_FACTOR -> {
-                    if (BuildConfig.FLAVOR_recents == "withQuickstep") {
-                        LawnchairLauncherQuickstep.getLauncher(context).scheduleRestart()
-                    } else {
-                        LawnchairLauncher.getLauncher(context).scheduleRestart()
-                    }
+                    scheduleRestart()
                 }
             }
         }
+
+    private fun scheduleRestart() {
+        if (BuildConfig.FLAVOR_recents == "withQuickstep") {
+            LawnchairLauncherQuickstep.getLauncher(context).scheduleRestart()
+        } else {
+            LawnchairLauncher.getLauncher(context).scheduleRestart()
+        }
+    }
 
     companion object {
 
@@ -59,8 +59,6 @@ class LawnchairPreferences(val context: Context) {
 
         @kotlin.jvm.JvmField
         var FOLDER_ROWS: String = "pref_folderRows"
-
-        // TODO: Fix the four following preferences not taking effect.
 
         @kotlin.jvm.JvmField
         var ICON_SIZE_FACTOR: String = "pref_iconSizeFactor"
