@@ -78,37 +78,8 @@ public class OverviewState extends LauncherState {
     }
 
     @Override
-    public ScaleAndTranslation getHotseatScaleAndTranslation(Launcher launcher) {
-        if ((getVisibleElements(launcher) & HOTSEAT_ICONS) != 0) {
-            DeviceProfile dp = launcher.getDeviceProfile();
-            if (dp.allAppsIconSizePx >= dp.iconSizePx) {
-                return new ScaleAndTranslation(1, 0, 0);
-            } else {
-                float scale = ((float) dp.allAppsIconSizePx) / dp.iconSizePx;
-                // Distance between the screen center (which is the pivotY for hotseat) and the
-                // bottom of the hotseat (which we want to preserve)
-                float distanceFromBottom = dp.heightPx / 2 - dp.hotseatBarBottomPaddingPx;
-                // On scaling, the bottom edge is moved closer to the pivotY. We move the
-                // hotseat back down so that the bottom edge's position is preserved.
-                float translationY = distanceFromBottom * (1 - scale);
-                return new ScaleAndTranslation(scale, 0, translationY);
-            }
-        }
-        return getWorkspaceScaleAndTranslation(launcher);
-    }
-
-    @Override
     public float[] getOverviewScaleAndOffset(Launcher launcher) {
         return new float[] {NO_SCALE, NO_OFFSET};
-    }
-
-    @Override
-    public ScaleAndTranslation getQsbScaleAndTranslation(Launcher launcher) {
-        if (this == OVERVIEW) {
-            // Treat the QSB as part of the hotseat so they move together.
-            return getHotseatScaleAndTranslation(launcher);
-        }
-        return super.getQsbScaleAndTranslation(launcher);
     }
 
     @Override
