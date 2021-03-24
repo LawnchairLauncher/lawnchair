@@ -77,6 +77,9 @@ public class Interpolators {
 
     public static final Interpolator TOUCH_RESPONSE_INTERPOLATOR =
             new PathInterpolator(0.3f, 0f, 0.1f, 1f);
+    public static final Interpolator TOUCH_RESPONSE_INTERPOLATOR_ACCEL_DEACCEL =
+            v -> ACCEL_DEACCEL.getInterpolation(TOUCH_RESPONSE_INTERPOLATOR.getInterpolation(v));
+
 
     /**
      * Inversion of ZOOM_OUT, compounded with an ease-out.
