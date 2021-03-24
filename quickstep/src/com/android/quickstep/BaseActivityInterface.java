@@ -201,14 +201,18 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             PagedOrientationHandler orientedState) {
         Resources res = context.getResources();
 
-        int taskMargin = res.getDimensionPixelSize(R.dimen.overview_task_margin);
-        int taskIconAndMargin = res.getDimensionPixelSize(R.dimen.task_thumbnail_icon_size)
-                + res.getDimensionPixelSize(R.dimen.task_icon_top_margin);
-        int proactiveRowAndMargin = res.getDimensionPixelSize(R.dimen.overview_proactive_row_height)
-                + res.getDimensionPixelSize(R.dimen.overview_proactive_row_bottom_margin);
-
+        int taskMargin = dp.overviewTaskMarginPx;
+        int proactiveRowAndMargin;
+        if (dp.isVerticalBarLayout()) {
+            // In Vertical Bar Layout the proactive row doesn't have its own space, it's inside
+            // the actions row.
+            proactiveRowAndMargin = 0;
+        } else {
+            proactiveRowAndMargin = res.getDimensionPixelSize(R.dimen.overview_proactive_row_height)
+                    + res.getDimensionPixelSize(R.dimen.overview_proactive_row_bottom_margin);
+        }
         calculateTaskSizeInternal(context, dp,
-                taskIconAndMargin + taskMargin,
+                dp.overviewTaskThumbnailTopMarginPx,
                 proactiveRowAndMargin + getOverviewActionsHeight(context) + taskMargin,
                 res.getDimensionPixelSize(R.dimen.overview_minimum_next_prev_size) + taskMargin,
                 outRect);
@@ -267,13 +271,11 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
      * Calculates the modal taskView size for the provided device configuration
      */
     public final void calculateModalTaskSize(Context context, DeviceProfile dp, Rect outRect) {
-        Resources res = context.getResources();
         calculateTaskSizeInternal(
                 context, dp,
-                res.getDimensionPixelSize(R.dimen.overview_task_margin),
-                getOverviewActionsHeight(context)
-                        + res.getDimensionPixelSize(R.dimen.overview_task_margin),
-                res.getDimensionPixelSize(R.dimen.overview_task_margin),
+                dp.overviewTaskMarginPx,
+                getOverviewActionsHeight(context) + dp.overviewTaskMarginPx,
+                dp.overviewTaskMarginPx,
                 outRect);
     }
 
