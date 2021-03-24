@@ -310,7 +310,6 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     protected final T mActivity;
     private final float mFastFlingVelocity;
     private final RecentsModel mModel;
-    private final int mTaskTopMargin;
     private final int mRowSpacing;
     private final ClearAllButton mClearAllButton;
     private final Rect mClearAllButtonDeadZoneRect = new Rect();
@@ -529,8 +528,6 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
 
         mIsRtl = mOrientationHandler.getRecentsRtlSetting(getResources());
         setLayoutDirection(mIsRtl ? View.LAYOUT_DIRECTION_RTL : View.LAYOUT_DIRECTION_LTR);
-        mTaskTopMargin = getResources()
-                .getDimensionPixelSize(R.dimen.task_thumbnail_top_margin);
         mRowSpacing = getResources().getDimensionPixelSize(R.dimen.overview_grid_row_spacing);
         mSquaredTouchSlop = squaredTouchSlop(context);
 
@@ -1066,7 +1063,9 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     public void setInsets(Rect insets) {
         mInsets.set(insets);
         resetPaddingFromTaskSize();
-        mLiveTileTaskViewSimulator.setDp(mActivity.getDeviceProfile());
+        DeviceProfile dp = mActivity.getDeviceProfile();
+        mLiveTileTaskViewSimulator.setDp(dp);
+        mActionsView.setDp(dp);
     }
 
     private void resetPaddingFromTaskSize() {
@@ -1075,7 +1074,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         mTaskWidth = mTempRect.width();
         mTaskHeight = mTempRect.height();
 
-        mTempRect.top -= mTaskTopMargin;
+        mTempRect.top -= dp.overviewTaskThumbnailTopMarginPx;
         setPadding(mTempRect.left - mInsets.left, mTempRect.top - mInsets.top,
                 dp.widthPx - mInsets.right - mTempRect.right,
                 dp.heightPx - mInsets.bottom - mTempRect.bottom);
@@ -1602,7 +1601,8 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         final int boxLength = Math.max(mTaskWidth, mTaskHeight);
         float availableHeight = mLastComputedGridSize.height();
         float rowHeight = (availableHeight - mRowSpacing) / 2;
-        float gridScale = rowHeight / (boxLength + mTaskTopMargin);
+        int taskTopMargin = mActivity.getDeviceProfile().overviewTaskThumbnailTopMarginPx;
+        float gridScale = rowHeight / (boxLength + taskTopMargin);
 
         int topRowWidth = 0;
         int bottomRowWidth = 0;
@@ -1635,7 +1635,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             gridTranslations[i] -= taskGridHorizontalDiff;
             taskView.setGridOffsetTranslationX(taskGridHorizontalDiff);
 
-            float taskGridVerticalDiff = mLastComputedGridSize.top + mTaskTopMargin * gridScale
+            float taskGridVerticalDiff = mLastComputedGridSize.top + taskTopMargin * gridScale
                     - mLastComputedTaskSize.top;
 
             // Off-set gap due to task scaling.
@@ -1669,7 +1669,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                 bottomSet.add(i);
 
                 // Move into bottom row.
-                float heightOffset = (boxLength + mTaskTopMargin) * gridScale + mRowSpacing;
+                float heightOffset = (boxLength + taskTopMargin) * gridScale + mRowSpacing;
                 taskView.setGridTranslationY(heightOffset + taskGridVerticalDiff);
 
                 // Move horizontally into empty space.
@@ -2485,7 +2485,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             if (child == mSplitHiddenTaskView) {
 
                 int left = newScroll[i] + getPaddingStart();
-                int topMargin = mSplitHiddenTaskView.getThumbnailTopMargin();
+                int topMargin = mActivity.getDeviceProfile().overviewTaskThumbnailTopMarginPx;
                 int top = -mSplitHiddenTaskView.getHeight() - locationOnScreen[1];
                 mSplitHiddenTaskView.layout(left, top,
                         left + mSplitHiddenTaskView.getWidth(),

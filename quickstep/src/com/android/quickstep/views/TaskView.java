@@ -376,7 +376,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         mCurrentFullscreenParams = new FullscreenDrawParams(context);
         mDigitalWellBeingToast = new DigitalWellBeingToast(mActivity, this);
 
-        mOutlineProvider = new TaskOutlineProvider(getContext(), mCurrentFullscreenParams);
+        mOutlineProvider = new TaskOutlineProvider(getContext(), mCurrentFullscreenParams,
+                mActivity.getDeviceProfile().overviewTaskThumbnailTopMarginPx);
         setOutlineProvider(mOutlineProvider);
     }
 
@@ -673,16 +674,12 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         }
     }
 
-    public int getThumbnailTopMargin() {
-        return (int) getResources().getDimension(R.dimen.task_thumbnail_top_margin);
-    }
-
     public void setOrientationState(RecentsOrientedState orientationState) {
         PagedOrientationHandler orientationHandler = orientationState.getOrientationHandler();
         boolean isRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
         LayoutParams snapshotParams = (LayoutParams) mSnapshotView.getLayoutParams();
-        int thumbnailPadding = (int) getResources().getDimension(R.dimen.task_thumbnail_top_margin);
-        int taskIconMargin = (int) getResources().getDimension(R.dimen.task_icon_top_margin);
+        snapshotParams.topMargin = mActivity.getDeviceProfile().overviewTaskThumbnailTopMarginPx;
+        int taskIconMargin = mActivity.getDeviceProfile().overviewTaskMarginPx;
         int taskIconHeight = (int) getResources().getDimension(R.dimen.task_thumbnail_icon_size);
         LayoutParams iconParams = (LayoutParams) mIconView.getLayoutParams();
         switch (orientationHandler.getRotation()) {
@@ -694,7 +691,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                 break;
             case ROTATION_180:
                 iconParams.gravity = BOTTOM | CENTER_HORIZONTAL;
-                iconParams.bottomMargin = -thumbnailPadding;
+                iconParams.bottomMargin = -snapshotParams.topMargin;
                 iconParams.leftMargin = iconParams.rightMargin = 0;
                 iconParams.topMargin = taskIconMargin;
                 break;
@@ -711,6 +708,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                 iconParams.topMargin = taskIconMargin;
                 break;
         }
+        mSnapshotView.setLayoutParams(snapshotParams);
         mIconView.setLayoutParams(iconParams);
         mIconView.setRotation(orientationHandler.getDegreesRotated());
 
@@ -1083,17 +1081,17 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     private static final class TaskOutlineProvider extends ViewOutlineProvider {
 
-        private final int mMarginTop;
+        private int mMarginTop;
         private FullscreenDrawParams mFullscreenParams;
 
-        TaskOutlineProvider(Context context, FullscreenDrawParams fullscreenParams) {
-            mMarginTop = context.getResources().getDimensionPixelSize(
-                    R.dimen.task_thumbnail_top_margin);
+        TaskOutlineProvider(Context context, FullscreenDrawParams fullscreenParams, int topMargin) {
+            mMarginTop = topMargin;
             mFullscreenParams = fullscreenParams;
         }
 
-        public void setFullscreenParams(FullscreenDrawParams params) {
+        public void updateParams(FullscreenDrawParams params, int topMargin) {
             mFullscreenParams = params;
+            mMarginTop = topMargin;
         }
 
         @Override
@@ -1216,7 +1214,9 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         }
 
         thumbnail.setFullscreenParams(mCurrentFullscreenParams);
-        mOutlineProvider.setFullscreenParams(mCurrentFullscreenParams);
+        mOutlineProvider.updateParams(
+                mCurrentFullscreenParams,
+                mActivity.getDeviceProfile().overviewTaskThumbnailTopMarginPx);
         invalidateOutline();
     }
 
@@ -1238,8 +1238,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     void updateTaskSize() {
         ViewGroup.LayoutParams params = getLayoutParams();
         if (mActivity.getDeviceProfile().isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get()) {
-            final int thumbnailPadding = (int) getResources().getDimension(
-                    R.dimen.task_thumbnail_top_margin);
+            final int thumbnailPadding =
+                    mActivity.getDeviceProfile().overviewTaskThumbnailTopMarginPx;
 
             Rect lastComputedTaskSize = getRecentsView().getLastComputedTaskSize();
             int taskWidth = lastComputedTaskSize.width();
