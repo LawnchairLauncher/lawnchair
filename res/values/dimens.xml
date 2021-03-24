@@ -185,7 +185,7 @@
 
 <!-- Deep shortcuts -->
     <dimen name="deep_shortcuts_elevation">0dp</dimen>
-    <dimen name="bg_popup_item_width">234dp</dimen>
+    <dimen name="bg_popup_item_width">216dp</dimen>
     <dimen name="bg_popup_item_height">56dp</dimen>
     <dimen name="pre_drag_view_scale">6dp</dimen>
     <!-- an icon with shortcuts must be dragged this far before the container is removed. -->
@@ -193,7 +193,7 @@
     <dimen name="deep_shortcut_icon_size">32dp</dimen>
     <dimen name="popup_margin">2dp</dimen>
     <dimen name="popup_single_item_radius">100dp</dimen>
-    <dimen name="popup_middle_item_radius">4dp</dimen>
+    <dimen name="popup_smaller_radius">4dp</dimen>
     <dimen name="deep_shortcut_drawable_padding">12dp</dimen>
     <dimen name="deep_shortcut_drag_handle_size">16dp</dimen>
     <dimen name="popup_padding_start">10dp</dimen>

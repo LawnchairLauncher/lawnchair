@@ -119,8 +119,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
 
     public void populateAndShow(ItemInfo itemInfo) {
         mOriginalItemInfo = itemInfo;
-        ((TextView) findViewById(R.id.title)).setText(getContext().getString(
-                R.string.widgets_bottom_sheet_title, mOriginalItemInfo.title));
+        ((TextView) findViewById(R.id.title)).setText(mOriginalItemInfo.title);
 
         onWidgetsBound();
         attachToContainer();
