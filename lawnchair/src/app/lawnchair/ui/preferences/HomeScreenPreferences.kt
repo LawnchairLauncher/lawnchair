@@ -12,7 +12,8 @@ fun HomeScreenPreferences(interactor: PreferenceInteractor) {
             SwitchPreference(
                 checked = interactor.addIconToHome.value,
                 onCheckedChange = { interactor.setAddIconToHome(it) },
-                label = stringResource(id = R.string.auto_add_shortcuts_label)
+                label = stringResource(id = R.string.auto_add_shortcuts_label),
+                showDivider = false
             )
             /*SwitchPreference(
                 checked = interactor.allowEmptyPages.value,
