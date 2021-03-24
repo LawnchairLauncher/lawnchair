@@ -268,6 +268,7 @@ dependencies {
     implementation "androidx.compose.runtime:runtime-rxjava2:$compose_version"
     implementation "androidx.compose.compiler:compiler:$compose_version"
     implementation "androidx.navigation:navigation-compose:1.0.0-alpha09"
+    implementation "com.google.accompanist:accompanist-glide:0.6.2"
 }
 
 protobuf {

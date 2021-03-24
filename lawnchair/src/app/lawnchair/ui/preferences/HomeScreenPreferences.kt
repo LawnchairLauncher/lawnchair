@@ -35,7 +35,7 @@ fun HomeScreenPreferences(interactor: PreferenceInteractor) {
                 value = interactor.workspaceRows.value,
                 onValueChange = { interactor.setWorkspaceRows(it) },
                 steps = 3,
-                valueRange = 4.0F..8.0F,
+                valueRange = 3.0F..7.0F,
                 showDivider = false
             )
         }

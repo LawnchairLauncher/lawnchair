@@ -11,15 +11,15 @@ fun FolderPreferences(interactor: PreferenceInteractor) {
             label = stringResource(id = R.string.max_folder_columns),
             value = interactor.folderColumns.value,
             onValueChange = { interactor.setFolderColumns(it) },
-            steps = 3,
-            valueRange = 3.0F..7.0F
+            steps = 2,
+            valueRange = 2.0F..5.0F
         )
         SliderPreference(
             label = stringResource(id = R.string.max_folder_rows),
             value = interactor.folderRows.value,
             onValueChange = { interactor.setFolderRows(it) },
-            steps = 3,
-            valueRange = 3.0F..7.0F,
+            steps = 2,
+            valueRange = 2.0F..5.0F,
             showDivider = false
         )
     }

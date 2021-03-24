@@ -1,6 +1,7 @@
 package app.lawnchair.ui.preferences
 
 import android.content.Intent
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -19,6 +20,53 @@ import androidx.compose.ui.unit.dp
 import app.lawnchair.util.preferences.getFormattedVersionName
 import com.android.launcher3.R
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
+
+class TeamMember(val name: String, @StringRes val descriptionRes: Int, val photoUrl: String, val socialUrl: String)
+
+val teamMembers = listOf(
+    TeamMember(
+        name = "Antonio J. Roa Valverde",
+        descriptionRes = R.string.developer,
+        photoUrl = "https://avatars.githubusercontent.com/u/914983",
+        socialUrl = "https://twitter.com/6020peaks"
+    ),
+    TeamMember(
+        name = "David Sn",
+        descriptionRes = R.string.devops_engineer,
+        photoUrl = "https://i.imgur.com/b65akTl.png",
+        socialUrl = "https://codebucket.de"
+    ),
+    TeamMember(
+        name = "Manuel Lorenzo",
+        descriptionRes = R.string.developer,
+        photoUrl = "https://avatars.githubusercontent.com/u/183264",
+        socialUrl = "https://twitter.com/noloman"
+    ),
+    TeamMember(
+        name = "paphonb",
+        descriptionRes = R.string.developer,
+        photoUrl = "https://avatars.githubusercontent.com/u/8080853",
+        socialUrl = "https://twitter.com/paphonb"
+    ),
+    TeamMember(
+        name = "raphtlw",
+        descriptionRes = R.string.developer,
+        photoUrl = "https://avatars.githubusercontent.com/u/47694127",
+        socialUrl = "https://twitter.com/raphtlw"
+    ),
+    TeamMember(
+        name = "Rhyse Simpson",
+        descriptionRes = R.string.quickswitch_maintainer,
+        photoUrl = "https://avatars.githubusercontent.com/u/7065700",
+        socialUrl = "https://twitter.com/skittles9823"
+    ),
+    TeamMember(
+        name = "Rik Kode",
+        descriptionRes = R.string.support_representative,
+        photoUrl = "https://avatars.githubusercontent.com/u/29402532",
+        socialUrl = "https://twitter.com/RickKode"
+    )
+)
 
 @Composable
 fun About() {
@@ -88,7 +136,7 @@ fun About() {
         ContributorCard(
             name = "Kshitij Gupta",
             description = stringResource(id = R.string.kshitij_description),
-            photoResId = R.drawable.kshitij_gupta,
+            photoUrl = "https://avatars.githubusercontent.com/u/18647641",
             links = {
                 ContributorLink(iconResId = R.drawable.ic_twitter, url = "https://twitter.com/Agent_Fabulous")
                 ContributorLink(iconResId = R.drawable.ic_github, url = "https://github.com/AgentFabulous")
@@ -96,9 +144,9 @@ fun About() {
         )
         ContributorCard(
             name = "Patryk Michalik",
-            description = stringResource(id = R.string.patryk_description),
             includeTopPadding = true,
-            photoResId = R.drawable.patryk_michalik,
+            description = stringResource(id = R.string.patryk_description),
+            photoUrl = "https://raw.githubusercontent.com/patrykmichalik/brand/master/logo-on-indigo.png",
             links = {
                 ContributorLink(iconResId = R.drawable.ic_website, url = "https://patrykmichalik.com")
                 ContributorLink(iconResId = R.drawable.ic_twitter, url = "https://twitter.com/patrykmichalik_")
@@ -106,18 +154,15 @@ fun About() {
             }
         )
         PreferenceGroup(heading = stringResource(id = R.string.team_members), useTopPadding = true) {
-            ContributorRow(
-                name = "David Sn",
-                description = stringResource(id = R.string.devops_engineer),
-                photoRes = R.drawable.david_sn,
-                url = "https://codebucket.de"
-            )
-            ContributorRow(
-                name = "Rhyse Simpson",
-                description = stringResource(id = R.string.quickswitch_maintainer),
-                photoRes = R.drawable.rhyse_simpson,
-                url = "https://twitter.com/skittles9823"
-            )
+            teamMembers.forEachIndexed { index, it ->
+                ContributorRow(
+                    name = it.name,
+                    description = stringResource(it.descriptionRes),
+                    url = it.socialUrl,
+                    photoUrl = it.photoUrl,
+                    showDivider = index != teamMembers.size - 1
+                )
+            }
         }
         PreferenceGroup(useTopPadding = true) {
             ClickListenerPreference(label = stringResource(id = R.string.acknowledgements), showDivider = false, onClick = {
