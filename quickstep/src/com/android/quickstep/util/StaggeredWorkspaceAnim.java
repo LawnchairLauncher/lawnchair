@@ -112,20 +112,32 @@ public class StaggeredWorkspaceAnim {
         }
 
         // Set up springs for the hotseat and qsb.
-        ViewGroup hotseatChild = (ViewGroup) hotseat.getChildAt(0);
+        ViewGroup hotseatIcons = hotseat.getShortcutsAndWidgets();
         if (grid.isVerticalBarLayout()) {
-            for (int i = hotseatChild.getChildCount() - 1; i >= 0; i--) {
-                View child = hotseatChild.getChildAt(i);
+            for (int i = hotseatIcons.getChildCount() - 1; i >= 0; i--) {
+                View child = hotseatIcons.getChildAt(i);
                 CellLayout.LayoutParams lp = ((CellLayout.LayoutParams) child.getLayoutParams());
                 addStaggeredAnimationForView(child, lp.cellY + 1, totalRows);
             }
         } else {
-            for (int i = hotseatChild.getChildCount() - 1; i >= 0; i--) {
-                View child = hotseatChild.getChildAt(i);
-                addStaggeredAnimationForView(child, grid.inv.numRows + 1, totalRows);
+            final int hotseatRow, qsbRow, taskbarRow;
+            if (grid.isTaskbarPresent) {
+                qsbRow = grid.inv.numRows + 1;
+                hotseatRow = grid.inv.numRows + 2;
+            } else {
+                hotseatRow = grid.inv.numRows + 1;
+                qsbRow = grid.inv.numRows + 2;
+            }
+            // Taskbar and hotseat overlap.
+            taskbarRow = hotseatRow;
+
+            for (int i = hotseatIcons.getChildCount() - 1; i >= 0; i--) {
+                View child = hotseatIcons.getChildAt(i);
+                addStaggeredAnimationForView(child, hotseatRow, totalRows);
             }
 
-            addStaggeredAnimationForView(hotseat.getQsb(), grid.inv.numRows + 2, totalRows);
+            addStaggeredAnimationForView(hotseat.getQsb(), qsbRow, totalRows);
+            addStaggeredAnimationForView(hotseat.getTaskbarView(), taskbarRow, totalRows);
         }
 
         if (animateOverviewScrim) {

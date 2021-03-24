@@ -13,8 +13,14 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
-    <solid android:color="?attr/popupColorPrimary"/>
-    <corners android:radius="@dimen/popup_smaller_radius" />
-</shape>
+
+<com.android.launcher3.taskbar.TaskbarView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/taskbar_view"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/taskbar_size"
+    android:background="@android:color/transparent"
+    android:layout_gravity="bottom"
+    android:gravity="center"
+    android:visibility="gone" />
+

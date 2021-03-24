@@ -100,6 +100,8 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     private int mRunningVInc;
     private int mMinHSpan;
     private int mMinVSpan;
+    private int mMaxHSpan;
+    private int mMaxVSpan;
     private int mDeltaX;
     private int mDeltaY;
     private int mDeltaXAddOn;
@@ -183,6 +185,8 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
 
         mMinHSpan = info.minSpanX;
         mMinVSpan = info.minSpanY;
+        mMaxHSpan = info.maxSpanX;
+        mMaxVSpan = info.maxSpanY;
 
         mWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(getContext(),
                 widgetView.getAppWidgetInfo().provider, null);
@@ -314,7 +318,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         // expandability.
         mTempRange1.set(cellX, spanX + cellX);
         int hSpanDelta = mTempRange1.applyDeltaAndBound(mLeftBorderActive, mRightBorderActive,
-                hSpanInc, mMinHSpan, mCellLayout.getCountX(), mTempRange2);
+                hSpanInc, mMinHSpan, mMaxHSpan, mCellLayout.getCountX(), mTempRange2);
         cellX = mTempRange2.start;
         spanX = mTempRange2.size();
         if (hSpanDelta != 0) {
@@ -323,7 +327,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
 
         mTempRange1.set(cellY, spanY + cellY);
         int vSpanDelta = mTempRange1.applyDeltaAndBound(mTopBorderActive, mBottomBorderActive,
-                vSpanInc, mMinVSpan, mCellLayout.getCountY(), mTempRange2);
+                vSpanInc, mMinVSpan, mMaxVSpan, mCellLayout.getCountY(), mTempRange2);
         cellY = mTempRange2.start;
         spanY = mTempRange2.size();
         if (vSpanDelta != 0) {
@@ -642,12 +646,15 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
          * @param minSize minimum size after with the moving edge should not be shifted any further.
          *                For eg, if delta = -3 when moving the endEdge brings the size to less than
          *                minSize, only delta = -2 will applied
+         * @param maxSize maximum size after with the moving edge should not be shifted any further.
+         *                For eg, if delta = -3 when moving the endEdge brings the size to greater
+         *                than maxSize, only delta = -2 will applied
          * @param maxEnd The maximum value to the end edge (start edge is always restricted to 0)
          * @return the amount of increase when endEdge was moves and the amount of decrease when
          * the start edge was moved.
          */
         public int applyDeltaAndBound(boolean moveStart, boolean moveEnd, int delta,
-                int minSize, int maxEnd, IntRange out) {
+                int minSize, int maxSize, int maxEnd, IntRange out) {
             applyDelta(moveStart, moveEnd, delta, out);
             if (out.start < 0) {
                 out.start = 0;
@@ -660,6 +667,13 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
                     out.start = out.end - minSize;
                 } else if (moveEnd) {
                     out.end = out.start + minSize;
+                }
+            }
+            if (out.size() > maxSize) {
+                if (moveStart) {
+                    out.start = out.end - maxSize;
+                } else if (moveEnd) {
+                    out.end = out.start + maxSize;
                 }
             }
             return moveEnd ? out.size() - size() : size() - out.size();

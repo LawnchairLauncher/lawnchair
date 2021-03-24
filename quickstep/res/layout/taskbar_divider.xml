@@ -18,6 +18,4 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/taskbar_divider_thickness"
     android:layout_height="@dimen/taskbar_divider_height"
-    android:layout_marginStart="@dimen/taskbar_icon_spacing"
-    android:layout_marginEnd="@dimen/taskbar_icon_spacing"
     android:background="@color/taskbar_divider" />

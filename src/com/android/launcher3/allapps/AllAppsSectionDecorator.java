@@ -22,13 +22,11 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.view.View;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.R;
-import com.android.launcher3.allapps.AllAppsGridAdapter.AppsGridLayoutManager;
 import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.allapps.search.SectionDecorationInfo;
 import com.android.launcher3.util.Themes;
@@ -66,28 +64,6 @@ public class AllAppsSectionDecorator extends RecyclerView.ItemDecoration {
                 }
             }
         }
-    }
-
-    // Fallback logic in case non of the SearchTarget is labeled as focused item.
-    private void drawDecoration(@NonNull Canvas c,
-            @NonNull SectionDecorationHandler decorationHandler,
-            @NonNull RecyclerView parent) {
-        if (decorationHandler.mIsFullWidth) {
-            decorationHandler.mBounds.left = parent.getPaddingLeft();
-            decorationHandler.mBounds.right = parent.getWidth() - parent.getPaddingRight();
-        }
-        if (mAppsView.getFloatingHeaderView().getFocusedChild() == null
-                && mAppsView.getApps().getFocusedChild() != null) {
-            int index = mAppsView.getApps().getFocusedChildIndex();
-            AppsGridLayoutManager layoutManager = (AppsGridLayoutManager)
-                    mAppsView.getActiveRecyclerView().getLayoutManager();
-            if (layoutManager.findFirstVisibleItemPosition() <= index
-                    && index < parent.getChildCount()) {
-                RecyclerView.ViewHolder vh = parent.findViewHolderForAdapterPosition(index);
-                if (vh != null) decorationHandler.onFocusDraw(c, vh.itemView);
-            }
-        }
-        decorationHandler.reset();
     }
 
     /**
@@ -136,7 +112,6 @@ public class AllAppsSectionDecorator extends RecyclerView.ItemDecoration {
          */
         public void onGroupDraw(Canvas canvas, View view) {
             if (view == null) return;
-
             mPaint.setColor(mFillcolor);
             mBounds.set(view.getLeft(), view.getTop(), view.getRight(), view.getBottom());
             onDraw(canvas);
