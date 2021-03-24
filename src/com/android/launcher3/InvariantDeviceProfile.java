@@ -225,8 +225,13 @@ public class InvariantDeviceProfile {
                 .add(myDisplayOption);
         result.iconSize = defaultDisplayOption.iconSize;
         result.landscapeIconSize = defaultDisplayOption.landscapeIconSize;
-        result.allAppsIconSize = Math.min(
-                defaultDisplayOption.allAppsIconSize, myDisplayOption.allAppsIconSize);
+        if (defaultDisplayOption.allAppsIconSize < myDisplayOption.allAppsIconSize) {
+            result.allAppsIconSize = defaultDisplayOption.allAppsIconSize;
+            result.numAllAppsColumns = defaultDisplayOption.numAllAppsColumns;
+        } else {
+            result.allAppsIconSize = myDisplayOption.allAppsIconSize;
+            result.numAllAppsColumns = myDisplayOption.numAllAppsColumns;
+        }
         result.minCellHeight = defaultDisplayOption.minCellHeight;
         result.minCellWidth = defaultDisplayOption.minCellWidth;
         result.borderSpacing = defaultDisplayOption.borderSpacing;
@@ -278,7 +283,6 @@ public class InvariantDeviceProfile {
         demoModeLayoutId = closestProfile.demoModeLayoutId;
         numFolderRows = closestProfile.numFolderRows;
         numFolderColumns = closestProfile.numFolderColumns;
-        numAllAppsColumns = closestProfile.numAllAppsColumns;
         isScalable = closestProfile.isScalable;
 
         mExtraAttrs = closestProfile.extraAttrs;
@@ -293,6 +297,7 @@ public class InvariantDeviceProfile {
         minCellHeight = displayOption.minCellHeight;
         minCellWidth = displayOption.minCellWidth;
         borderSpacing = displayOption.borderSpacing;
+        numAllAppsColumns = Math.round(displayOption.numAllAppsColumns);
 
         if (Utilities.isGridOptionsEnabled(context)) {
             allAppsIconSize = displayOption.allAppsIconSize;
@@ -609,7 +614,6 @@ public class InvariantDeviceProfile {
         private final int numHotseatIcons;
 
         private final String dbFile;
-        private final int numAllAppsColumns;
 
         private final int defaultLayoutId;
         private final int demoModeLayoutId;
@@ -636,8 +640,6 @@ public class InvariantDeviceProfile {
                     R.styleable.GridDisplayOption_numFolderRows, numRows);
             numFolderColumns = a.getInt(
                     R.styleable.GridDisplayOption_numFolderColumns, numColumns);
-            numAllAppsColumns = a.getInt(
-                    R.styleable.GridDisplayOption_numAllAppsColumns, numColumns);
 
             isScalable = a.getBoolean(
                     R.styleable.GridDisplayOption_isScalable, false);
@@ -656,6 +658,7 @@ public class InvariantDeviceProfile {
         private final float minHeightDps;
         private final boolean canBeDefault;
 
+        private float numAllAppsColumns;
         private float minCellHeight;
         private float minCellWidth;
         private float borderSpacing;
@@ -676,6 +679,8 @@ public class InvariantDeviceProfile {
             minHeightDps = a.getFloat(R.styleable.ProfileDisplayOption_minHeightDps, 0);
             canBeDefault = a.getBoolean(
                     R.styleable.ProfileDisplayOption_canBeDefault, false);
+            numAllAppsColumns = a.getInt(R.styleable.ProfileDisplayOption_numAllAppsColumns,
+                    grid.numColumns);
 
             minCellHeight = a.getFloat(R.styleable.ProfileDisplayOption_minCellHeightDps, 0);
             minCellWidth = a.getFloat(R.styleable.ProfileDisplayOption_minCellWidthDps, 0);
@@ -702,12 +707,14 @@ public class InvariantDeviceProfile {
             minWidthDps = 0;
             minHeightDps = 0;
             canBeDefault = false;
+            numAllAppsColumns = 0;
             minCellHeight = 0;
             minCellWidth = 0;
             borderSpacing = 0;
         }
 
         private DisplayOption multiply(float w) {
+            numAllAppsColumns *= w;
             iconSize *= w;
             landscapeIconSize *= w;
             allAppsIconSize *= w;
@@ -720,6 +727,7 @@ public class InvariantDeviceProfile {
         }
 
         private DisplayOption add(DisplayOption p) {
+            numAllAppsColumns += p.numAllAppsColumns;
             iconSize += p.iconSize;
             landscapeIconSize += p.landscapeIconSize;
             allAppsIconSize += p.allAppsIconSize;
