@@ -10,5 +10,5 @@
     <!-- Label for a button that translates a screenshot of the current app. [CHAR_LIMIT=40] -->
     <string name="action_translate">Translate</string>
     <!-- Label for a button that triggers Search on a screenshot of the current app. [CHAR_LIMIT=40] -->
-    <string name="action_search">Search</string>
+    <string name="action_search">Lens</string>
 </resources>
