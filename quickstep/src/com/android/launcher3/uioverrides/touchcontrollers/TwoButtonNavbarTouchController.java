@@ -29,7 +29,6 @@ import android.view.MotionEvent;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.states.StateAnimationConfig.AnimationFlags;
 import com.android.launcher3.touch.AbstractStateChangeTouchController;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.quickstep.SystemUiProxy;
@@ -121,11 +120,11 @@ public class TwoButtonNavbarTouchController extends AbstractStateChangeTouchCont
     }
 
     @Override
-    protected float initCurrentAnimation(@AnimationFlags int animComponent) {
+    protected float initCurrentAnimation() {
         float range = getShiftRange();
         long maxAccuracy = (long) (2 * range);
         mCurrentAnimation = mLauncher.getStateManager().createAnimationToNewWorkspace(mToState,
-                maxAccuracy, animComponent);
+                maxAccuracy);
         return (mLauncher.getDeviceProfile().isSeascape() ? 1 : -1) / range;
     }
 

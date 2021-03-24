@@ -18,7 +18,7 @@ package com.android.launcher3.statemanager;
 
 import static android.animation.ValueAnimator.areAnimatorsEnabled;
 
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_COMPONENTS;
+import static com.android.launcher3.states.StateAnimationConfig.PLAY_ANIMATION;
 
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
@@ -289,7 +289,7 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
      */
     public AnimatorPlaybackController createAnimationToNewWorkspace(
             STATE_TYPE state, long duration) {
-        return createAnimationToNewWorkspace(state, duration, ANIM_ALL_COMPONENTS);
+        return createAnimationToNewWorkspace(state, duration, PLAY_ANIMATION);
     }
 
     public AnimatorPlaybackController createAnimationToNewWorkspace(
@@ -312,7 +312,7 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
 
     private PendingAnimation createAnimationToNewWorkspaceInternal(final STATE_TYPE state) {
         PendingAnimation builder = new PendingAnimation(mConfig.duration);
-        if (mConfig.getAnimComponents() != 0) {
+        if (mConfig.hasAnimationFlag(PLAY_ANIMATION)) {
             for (StateHandler handler : getStateHandlers()) {
                 handler.setStateWithAnimation(state, mConfig, builder);
             }

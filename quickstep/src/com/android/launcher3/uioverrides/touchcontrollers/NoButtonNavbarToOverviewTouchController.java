@@ -108,8 +108,8 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
     }
 
     @Override
-    protected float initCurrentAnimation(int animComponents) {
-        float progressMultiplier = super.initCurrentAnimation(animComponents);
+    protected float initCurrentAnimation() {
+        float progressMultiplier = super.initCurrentAnimation();
         if (mToState == HINT_STATE) {
             // Track the drag across the entire height of the screen.
             progressMultiplier = -1 / getShiftRange();
