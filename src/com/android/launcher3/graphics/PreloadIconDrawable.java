@@ -37,8 +37,8 @@ import android.util.Property;
 import android.util.SparseArray;
 import android.view.ContextThemeWrapper;
 
-import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.util.Themes;
 
