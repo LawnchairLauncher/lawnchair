@@ -21,6 +21,8 @@
 
     <style name="AppItemActivityTheme" parent="@android:style/Theme.DeviceDefault.Dialog.Alert">
         <item name="widgetsTheme">@style/WidgetContainerTheme.Dark</item>
+        <item name="android:windowBackground">@drawable/add_item_dialog_background</item>
+        <item name="android:windowNoTitle">true</item>
     </style>
 
 </resources>
