@@ -32,6 +32,8 @@
         android:paddingEnd="@dimen/popup_padding_end"
         android:drawableEnd="@drawable/ic_drag_handle"
         android:drawablePadding="@dimen/deep_shortcut_drawable_padding"
+        android:singleLine="true"
+        android:ellipsize="end"
         android:textSize="14sp"
         android:textColor="?android:attr/textColorPrimary"
         launcher:layoutHorizontal="true"

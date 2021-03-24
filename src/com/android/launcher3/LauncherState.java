@@ -185,12 +185,7 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     }
 
     public int getVisibleElements(Launcher launcher) {
-        DeviceProfile deviceProfile = launcher.getDeviceProfile();
-        int flags = WORKSPACE_PAGE_INDICATOR | VERTICAL_SWIPE_INDICATOR | TASKBAR;
-        if (!deviceProfile.isTaskbarPresent) {
-            flags |= HOTSEAT_ICONS;
-        }
-        return flags;
+        return HOTSEAT_ICONS | WORKSPACE_PAGE_INDICATOR | VERTICAL_SWIPE_INDICATOR | TASKBAR;
     }
 
     /**
