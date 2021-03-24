@@ -58,6 +58,7 @@ import com.android.launcher3.widget.LauncherAppWidgetHost.ProviderChangedListene
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.picker.search.SearchModeListener;
 import com.android.launcher3.widget.picker.search.WidgetsSearchBar;
+import com.android.launcher3.widget.picker.search.WidgetsSearchBarUIHelper;
 import com.android.launcher3.widget.util.WidgetsTableUtils;
 import com.android.launcher3.workprofile.PersonalWorkPagedView;
 import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.OnActivePageChangedListener;
@@ -71,7 +72,8 @@ import java.util.function.Predicate;
  */
 public class WidgetsFullSheet extends BaseWidgetSheet
         implements Insettable, ProviderChangedListener, OnActivePageChangedListener,
-        WidgetsRecyclerView.HeaderViewDimensionsProvider, SearchModeListener {
+        WidgetsRecyclerView.HeaderViewDimensionsProvider, SearchModeListener,
+        WidgetsSearchBarUIHelper {
     private static final String TAG = WidgetsFullSheet.class.getSimpleName();
 
     private static final long DEFAULT_OPEN_DURATION = 267;
@@ -561,6 +563,11 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         getWindowInsetsController().hide(WindowInsets.Type.ime());
     }
 
+    @Override
+    public void clearSearchBarFocus() {
+        mSearchAndRecommendationViewHolder.mSearchBar.clearSearchBarFocus();
+    }
+
     /** A holder class for holding adapters & their corresponding recycler view. */
     private final class AdapterHolder {
         static final int PRIMARY = 0;
@@ -583,7 +590,9 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                     apps.getWidgetCache(),
                     apps.getIconCache(),
                     /* iconClickListener= */ WidgetsFullSheet.this,
-                    /* iconLongClickListener= */ WidgetsFullSheet.this);
+                    /* iconLongClickListener= */ WidgetsFullSheet.this,
+                    /* WidgetsSearchBarUIHelper= */
+                    mAdapterType == SEARCH ? WidgetsFullSheet.this : null);
             mWidgetsListAdapter.setHasStableIds(true);
             switch (mAdapterType) {
                 case PRIMARY:
