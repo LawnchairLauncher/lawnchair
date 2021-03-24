@@ -563,10 +563,10 @@ public class DeviceProfile {
             float hotseatCellWidth = (float) widthPx / inv.numHotseatIcons;
             int hotseatAdjustment = Math.round((workspaceCellWidth - hotseatCellWidth) / 2);
             mHotseatPadding.set(
-                    hotseatAdjustment + workspacePadding.left + cellLayoutPaddingLeftRightPx
+                    /*hotseatAdjustment + */ workspacePadding.left + cellLayoutPaddingLeftRightPx
                             + mInsets.left,
                     hotseatBarTopPaddingPx,
-                    hotseatAdjustment + workspacePadding.right + cellLayoutPaddingLeftRightPx
+                    /* hotseatAdjustment + */ workspacePadding.right + cellLayoutPaddingLeftRightPx
                             + mInsets.right,
                     hotseatBarBottomPaddingPx + mInsets.bottom + cellLayoutBottomPaddingPx);
         }
