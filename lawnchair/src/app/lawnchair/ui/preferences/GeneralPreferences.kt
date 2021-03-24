@@ -1,8 +1,7 @@
 package app.lawnchair.ui.preferences
 
 import android.os.Build
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
@@ -29,7 +28,11 @@ fun GeneralPreferences(navController: NavController, interactor: PreferenceInter
                 label = stringResource(id = R.string.make_icon_packs_adaptive_label),
                 description = stringResource(id = R.string.make_icon_packs_adaptive_description)
             )
-            AnimatedVisibility(visible = interactor.wrapAdaptiveIcons.value) {
+            AnimatedVisibility(
+                visible = interactor.wrapAdaptiveIcons.value,
+                enter = expandVertically() + fadeIn(),
+                exit = shrinkVertically() + fadeOut()
+            ) {
                 SwitchPreference(
                     checked = interactor.makeColoredBackgrounds.value,
                     onCheckedChange = { interactor.setMakeColoredBackgrounds(it) },
