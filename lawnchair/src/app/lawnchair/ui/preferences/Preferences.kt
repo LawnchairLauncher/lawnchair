@@ -2,6 +2,7 @@ package app.lawnchair.ui.preferences
 
 import android.app.Application
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.content.pm.ResolveInfo
 import android.provider.Settings.Secure.getString
@@ -24,19 +25,30 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import app.lawnchair.ui.preferences.PreferenceViewModel.Screen
 import app.lawnchair.util.preferences.PrefManager
+import app.lawnchair.util.preferences.getMajorVersion
 import com.android.launcher3.R
 import com.android.launcher3.notification.NotificationListener
 
+const val topRoute = "top"
+const val generalPreferencesRoute = "generalPreferences"
+const val homeScreenPreferencesRoute = "homeScreenPreferences"
+const val iconPackPreferencesRoute = "iconPackPreferences"
+const val dockPreferencesRoute = "dockPreferences"
+const val appDrawerPreferencesRoute = "appDrawerPreferences"
+const val folderPreferencesRoute = "folderPreferences"
+const val aboutRoute = "about"
+
 class PreferenceViewModel(application: Application) : AndroidViewModel(application), PreferenceInteractor {
     private val pm = PrefManager(application)
+    private val lawnchairNotificationListener = ComponentName(application, NotificationListener::class.java)
     private val enabledNotificationListeners: String? by lazy {
         getString(
             application.contentResolver,
             "enabled_notification_listeners"
         )
     }
-    private val lawnchairNotificationListener = ComponentName(application, NotificationListener::class.java)
 
     override val iconPackPackage: MutableState<String> = mutableStateOf(pm.iconPackPackage)
     override val allowRotation: MutableState<Boolean> = mutableStateOf(pm.allowRotation)
@@ -161,71 +173,71 @@ class PreferenceViewModel(application: Application) : AndroidViewModel(applicati
 
         return iconPacks
     }
+
+    sealed class Screen(
+        val route: String,
+        @StringRes val labelResId: Int,
+        val description: String? = null,
+        @DrawableRes val iconResId: Int? = null
+    ) {
+        object Top : Screen(route = "top", labelResId = R.string.settings)
+
+        class GeneralPreferences(description: String = "") : Screen(
+            route = generalPreferencesRoute,
+            labelResId = R.string.general_label,
+            description = description,
+            iconResId = R.drawable.ic_general
+        )
+
+        class HomeScreenPreferences(description: String = "") : Screen(
+            route = homeScreenPreferencesRoute,
+            labelResId = R.string.home_screen_label,
+            description = description,
+            iconResId = R.drawable.ic_home_screen
+        )
+
+        object IconPackPreferences : Screen(
+            route = iconPackPreferencesRoute,
+            labelResId = R.string.icon_pack
+        )
+
+        class DockPreferences(description: String = "") : Screen(
+            route = dockPreferencesRoute,
+            labelResId = R.string.dock_label,
+            description = description,
+            iconResId = R.drawable.ic_dock
+        )
+
+        class AppDrawerPreferences(description: String = "") : Screen(
+            route = appDrawerPreferencesRoute,
+            labelResId = R.string.app_drawer_label,
+            description = description,
+            iconResId = R.drawable.ic_app_drawer
+        )
+
+        class FolderPreferences(description: String = "") : Screen(
+            route = folderPreferencesRoute,
+            labelResId = R.string.folders_label,
+            description = description,
+            iconResId = R.drawable.ic_folder
+        )
+
+        class About(description: String = "") : Screen(
+            route = aboutRoute,
+            labelResId = R.string.about_label,
+            description = description,
+            iconResId = R.drawable.ic_about
+        )
+    }
 }
 
-sealed class Screen(
-    val route: String,
-    @StringRes val labelResId: Int,
-    @StringRes val descriptionResId: Int? = null,
-    @DrawableRes val iconResId: Int? = null
-) {
-    object Top : Screen(route = "top", labelResId = R.string.settings)
-
-    object GeneralPreferences : Screen(
-        route = "generalPreferences",
-        labelResId = R.string.general_label,
-        descriptionResId = R.string.general_description,
-        iconResId = R.drawable.ic_general
-    )
-
-    object HomeScreenPreferences : Screen(
-        route = "homeScreenPreferences",
-        labelResId = R.string.home_screen_label,
-        descriptionResId = R.string.home_screen_description,
-        iconResId = R.drawable.ic_home_screen
-    )
-
-    object IconPackPreferences : Screen(
-        route = "iconPackPreferences",
-        labelResId = R.string.icon_pack
-    )
-
-    object DockPreferences : Screen(
-        route = "dockPreferences",
-        labelResId = R.string.dock_label,
-        descriptionResId = R.string.dock_description,
-        iconResId = R.drawable.ic_dock
-    )
-
-    object AppDrawerPreferences : Screen(
-        route = "appDrawerPreferences",
-        labelResId = R.string.app_drawer_label,
-        descriptionResId = R.string.app_drawer_description,
-        iconResId = R.drawable.ic_app_drawer
-    )
-
-    object FolderPreferences : Screen(
-        route = "folderPreferences",
-        labelResId = R.string.folders_label,
-        descriptionResId = R.string.folders_description,
-        iconResId = R.drawable.ic_folder
-    )
-
-    object About : Screen(
-        route = "about",
-        labelResId = R.string.about_label,
-        descriptionResId = R.string.about_description,
-        iconResId = R.drawable.ic_about
-    )
-}
-
-val screens = listOf(
-    Screen.GeneralPreferences,
-    Screen.HomeScreenPreferences,
-    Screen.DockPreferences,
-    Screen.AppDrawerPreferences,
-    Screen.FolderPreferences,
-    Screen.About
+fun screens(context: Context) = listOf(
+    Screen.GeneralPreferences(context.getString(R.string.general_description)),
+    Screen.HomeScreenPreferences(context.getString(R.string.home_screen_description)),
+    Screen.DockPreferences(context.getString(R.string.dock_description)),
+    Screen.AppDrawerPreferences(context.getString(R.string.app_drawer_description)),
+    Screen.FolderPreferences(context.getString(R.string.folders_description)),
+    Screen.About("${context.getString(R.string.derived_app_name)} ${getMajorVersion(context)}")
 )
 
 @ExperimentalAnimationApi
@@ -241,15 +253,15 @@ fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel
             .fillMaxHeight()
     ) {
         TopBar(navController = navController)
-        NavHost(navController = navController, startDestination = Screen.Top.route) {
-            composable(route = Screen.Top.route) { PreferenceCategoryList(navController) }
-            composable(route = Screen.HomeScreenPreferences.route) { HomeScreenPreferences(interactor = interactor) }
-            composable(route = Screen.IconPackPreferences.route) { IconPackPreference(interactor = interactor) }
-            composable(route = Screen.DockPreferences.route) { DockPreferences(interactor = interactor) }
-            composable(route = Screen.AppDrawerPreferences.route) { AppDrawerPreferences(interactor = interactor) }
-            composable(route = Screen.FolderPreferences.route) { FolderPreferences(interactor = interactor) }
-            composable(route = Screen.About.route) { About() }
-            composable(route = Screen.GeneralPreferences.route) {
+        NavHost(navController = navController, startDestination = topRoute) {
+            composable(route = topRoute) { PreferenceCategoryList(navController) }
+            composable(route = homeScreenPreferencesRoute) { HomeScreenPreferences(interactor = interactor) }
+            composable(route = iconPackPreferencesRoute) { IconPackPreference(interactor = interactor) }
+            composable(route = dockPreferencesRoute) { DockPreferences(interactor = interactor) }
+            composable(route = appDrawerPreferencesRoute) { AppDrawerPreferences(interactor = interactor) }
+            composable(route = folderPreferencesRoute) { FolderPreferences(interactor = interactor) }
+            composable(route = aboutRoute) { About() }
+            composable(route = generalPreferencesRoute) {
                 GeneralPreferences(
                     navController = navController,
                     interactor = interactor

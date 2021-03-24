@@ -30,14 +30,14 @@ fun TopBar(navController: NavController) {
     val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
 
     val title = when (currentRoute) {
-        "top" -> stringResource(id = R.string.settings)
-        "homeScreenPreferences" -> stringResource(id = R.string.home_screen_label)
-        "generalPreferences" -> stringResource(id = R.string.general_label)
-        "iconPackPreferences" -> stringResource(id = R.string.icon_pack)
-        "dockPreferences" -> stringResource(id = R.string.dock_label)
-        "appDrawerPreferences" -> stringResource(id = R.string.app_drawer_label)
-        "folderPreferences" -> stringResource(id = R.string.folders_label)
-        "about" -> stringResource(id = R.string.about_label)
+        topRoute -> stringResource(id = R.string.settings)
+        homeScreenPreferencesRoute -> stringResource(id = R.string.home_screen_label)
+        generalPreferencesRoute -> stringResource(id = R.string.general_label)
+        iconPackPreferencesRoute -> stringResource(id = R.string.icon_pack)
+        dockPreferencesRoute -> stringResource(id = R.string.dock_label)
+        appDrawerPreferencesRoute -> stringResource(id = R.string.app_drawer_label)
+        folderPreferencesRoute -> stringResource(id = R.string.folders_label)
+        aboutRoute -> stringResource(id = R.string.about_label)
         else -> ""
     }
 

@@ -13,7 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun PreferenceCategoryLink(titleResId: Int, onClick: () -> Unit, subtitleResId: Int?, iconResId: Int?) {
+fun PreferenceCategoryLink(titleResId: Int, onClick: () -> Unit, subtitle: String?, iconResId: Int?) {
     Row(
         modifier = Modifier
             .clickable(onClick = onClick)
@@ -37,13 +37,13 @@ fun PreferenceCategoryLink(titleResId: Int, onClick: () -> Unit, subtitleResId: 
                 style = MaterialTheme.typography.subtitle1,
                 color = MaterialTheme.colors.onBackground
             )
-            subtitleResId?.let {
+            subtitle?.let {
                 CompositionLocalProvider(
                     LocalContentAlpha provides ContentAlpha.medium,
                     LocalContentColor provides MaterialTheme.colors.onBackground
                 ) {
                     Text(
-                        text = stringResource(id = it),
+                        text = it,
                         style = MaterialTheme.typography.body2,
                     )
                 }

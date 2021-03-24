@@ -20,3 +20,9 @@ fun getFormattedVersionName(context: Context): String {
 
     return "$versionSegment $stabilitySegment"
 }
+
+fun getMajorVersion(context: Context): String {
+    val packageInfo: PackageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+    val versionName = packageInfo.versionName
+    return versionName.split(".")[0]
+}

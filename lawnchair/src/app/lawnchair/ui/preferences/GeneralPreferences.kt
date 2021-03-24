@@ -41,7 +41,7 @@ fun GeneralPreferences(navController: NavController, interactor: PreferenceInter
         NavActionPreference(
             label = stringResource(id = R.string.icon_pack),
             navController = navController,
-            destination = Screen.IconPackPreferences.route,
+            destination = iconPackPreferencesRoute,
             showDivider = false
         )
     }
