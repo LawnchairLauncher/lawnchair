@@ -37,6 +37,12 @@ val teamMembers = listOf(
         socialUrl = "https://codebucket.de"
     ),
     TeamMember(
+        name = "Giuseppe Longobardo",
+        descriptionRes = R.string.support_representative,
+        photoUrl = "https://avatars.githubusercontent.com/u/49398464",
+        socialUrl = "https://github.com/joseph-20"
+    ),
+    TeamMember(
         name = "Manuel Lorenzo",
         descriptionRes = R.string.developer,
         photoUrl = "https://avatars.githubusercontent.com/u/183264",
