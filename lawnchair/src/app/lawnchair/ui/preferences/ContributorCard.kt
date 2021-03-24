@@ -56,7 +56,7 @@ fun ContributorCard(
                 LocalContentAlpha provides ContentAlpha.medium,
                 LocalContentColor provides MaterialTheme.colors.onBackground
             ) {
-                Text(text = description, style = MaterialTheme.typography.body1)
+                Text(text = description, style = MaterialTheme.typography.body2)
             }
         }
         Row(modifier = Modifier.padding(4.dp)) {

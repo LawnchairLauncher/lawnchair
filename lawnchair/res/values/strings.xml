@@ -44,12 +44,14 @@
     <string name="github" translatable="false">GitHub</string>
     <string name="team_members">Team Members</string>
     <string name="acknowledgements">Acknowledgements</string>
-    <string name="patryk_description">To be determined.</string>
-    <string name="kshitij_description">To be determined.</string>
+    <string name="patryk_description">Manages the project and develops the UI. Obsessed with Jetpack Compose indefinitely.</string>
+    <string name="kshitij_description">Writes the core logic for Lawnchair features. Proud member of the Spoingus gang.</string>
     <string name="devops_engineer">DevOps Engineer</string>
     <string name="quickswitch_maintainer">QuickSwitch Maintainer</string>
     <string name="all_apps_search_bar_hint">Search Apps</string>
     <string name="settings_button_text">Home Settings</string>
     <string name="developer">Developer</string>
     <string name="support_representative">Support Representative</string>
+    <string name="app_info_drop_target_label">App Info</string>
+    <string name="item_removed">Item removed.</string>
 </resources>

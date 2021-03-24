@@ -134,23 +134,23 @@ fun About() {
         }
         Spacer(modifier = Modifier.requiredHeight(16.dp))
         ContributorCard(
-            name = "Kshitij Gupta",
-            description = stringResource(id = R.string.kshitij_description),
-            photoUrl = "https://avatars.githubusercontent.com/u/18647641",
-            links = {
-                ContributorLink(iconResId = R.drawable.ic_twitter, url = "https://twitter.com/Agent_Fabulous")
-                ContributorLink(iconResId = R.drawable.ic_github, url = "https://github.com/AgentFabulous")
-            }
-        )
-        ContributorCard(
             name = "Patryk Michalik",
-            includeTopPadding = true,
             description = stringResource(id = R.string.patryk_description),
             photoUrl = "https://raw.githubusercontent.com/patrykmichalik/brand/master/logo-on-indigo.png",
             links = {
                 ContributorLink(iconResId = R.drawable.ic_website, url = "https://patrykmichalik.com")
                 ContributorLink(iconResId = R.drawable.ic_twitter, url = "https://twitter.com/patrykmichalik_")
                 ContributorLink(iconResId = R.drawable.ic_github, url = "https://github.com/patrykmichalik")
+            }
+        )
+        ContributorCard(
+            name = "Kshitij Gupta",
+            includeTopPadding = true,
+            description = stringResource(id = R.string.kshitij_description),
+            photoUrl = "https://avatars.githubusercontent.com/u/18647641",
+            links = {
+                ContributorLink(iconResId = R.drawable.ic_twitter, url = "https://twitter.com/Agent_Fabulous")
+                ContributorLink(iconResId = R.drawable.ic_github, url = "https://github.com/AgentFabulous")
             }
         )
         PreferenceGroup(heading = stringResource(id = R.string.team_members), useTopPadding = true) {
