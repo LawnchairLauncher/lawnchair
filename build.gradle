@@ -135,13 +135,6 @@ android {
         }
     }
 
-    // Disable release builds for now
-    android.variantFilter { variant ->
-        if (variant.buildType.name.endsWith('release')) {
-            variant.setIgnore(true)
-        }
-    }
-
     sourceSets {
         main {
             res.srcDirs = ['res']
