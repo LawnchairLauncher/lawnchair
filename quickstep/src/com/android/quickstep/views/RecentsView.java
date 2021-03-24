@@ -315,6 +315,10 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     private final ClearAllButton mClearAllButton;
     private final Rect mClearAllButtonDeadZoneRect = new Rect();
     private final Rect mTaskViewDeadZoneRect = new Rect();
+    /**
+     * Reflects if Recents is currently in the middle of a gesture
+     */
+    private boolean mGestureActive;
 
     private final ScrollState mScrollState = new ScrollState();
     // Keeps track of the previously known visible tasks for purposes of loading/unloading task data
@@ -624,8 +628,8 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             return;
         }
         mModel.getIconCache().clear();
-        unloadVisibleTaskData();
-        loadVisibleTaskData();
+        unloadVisibleTaskData(TaskView.FLAG_UPDATE_ICON);
+        loadVisibleTaskData(TaskView.FLAG_UPDATE_ICON);
     }
 
     public void init(OverviewActionsView actionsView, SplitPlaceholderView splitPlaceholderView) {
@@ -908,7 +912,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         }
 
         // Unload existing visible task data
-        unloadVisibleTaskData();
+        unloadVisibleTaskData(TaskView.FLAG_UPDATE_ALL);
 
         TaskView ignoreResetTaskView =
                 mIgnoreResetTaskId == -1 ? null : getTaskView(mIgnoreResetTaskId);
@@ -1031,7 +1035,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
 
         updateCurveProperties();
         // Update the set of visible task's data
-        loadVisibleTaskData();
+        loadVisibleTaskData(TaskView.FLAG_UPDATE_ALL);
         setTaskModalness(0);
     }
 
@@ -1147,7 +1151,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             }
 
             // After scrolling, update the visible task's data
-            loadVisibleTaskData();
+            loadVisibleTaskData(TaskView.FLAG_UPDATE_ALL);
         }
 
         // Update the high res thumbnail loader state
@@ -1210,7 +1214,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
      * Iterates through all the tasks, and loads the associated task data for newly visible tasks,
      * and unloads the associated task data for tasks that are no longer visible.
      */
-    public void loadVisibleTaskData() {
+    public void loadVisibleTaskData(@TaskView.TaskDataChanges int dataChanges) {
         if (!mOverviewStateEnabled || mTaskListChangeId == -1) {
             // Skip loading visible task data if we've already left the overview state, or if the
             // task list hasn't been loaded yet (the task views will not reflect the task list)
@@ -1252,12 +1256,18 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                     continue;
                 }
                 if (!mHasVisibleTaskData.get(task.key.id)) {
-                    taskView.onTaskListVisibilityChanged(true /* visible */);
+                    // Ignore thumbnail update if it's current running task during the gesture
+                    // We snapshot at end of gesture, it will update then
+                    int changes = dataChanges;
+                    if (taskView == getRunningTaskView() && mGestureActive) {
+                        changes &= ~TaskView.FLAG_UPDATE_THUMBNAIL;
+                    }
+                    taskView.onTaskListVisibilityChanged(true /* visible */, changes);
                 }
                 mHasVisibleTaskData.put(task.key.id, visible);
             } else {
                 if (mHasVisibleTaskData.get(task.key.id)) {
-                    taskView.onTaskListVisibilityChanged(false /* visible */);
+                    taskView.onTaskListVisibilityChanged(false /* visible */, dataChanges);
                 }
                 mHasVisibleTaskData.delete(task.key.id);
             }
@@ -1267,12 +1277,12 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     /**
      * Unloads any associated data from the currently visible tasks
      */
-    private void unloadVisibleTaskData() {
+    private void unloadVisibleTaskData(@TaskView.TaskDataChanges int dataChanges) {
         for (int i = 0; i < mHasVisibleTaskData.size(); i++) {
             if (mHasVisibleTaskData.valueAt(i)) {
                 TaskView taskView = getTaskView(mHasVisibleTaskData.keyAt(i));
                 if (taskView != null) {
-                    taskView.onTaskListVisibilityChanged(false /* visible */);
+                    taskView.onTaskListVisibilityChanged(false /* visible */, dataChanges);
                 }
             }
         }
@@ -1310,7 +1320,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         mRecentsAnimationController = null;
         mLiveTileParams.setTargetSet(null);
 
-        unloadVisibleTaskData();
+        unloadVisibleTaskData(TaskView.FLAG_UPDATE_ALL);
         setCurrentPage(0);
         mDwbToastShown = false;
         mActivity.getSystemUiController().updateUiState(UI_STATE_OVERVIEW, 0);
@@ -1358,6 +1368,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
      * Called when a gesture from an app is starting.
      */
     public void onGestureAnimationStart(RunningTaskInfo runningTaskInfo) {
+        mGestureActive = true;
         // This needs to be called before the other states are set since it can create the task view
         if (mOrientationState.setGestureActive(true)) {
             updateOrientationHandler();
@@ -1428,6 +1439,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
      * Called when a gesture from an app has finished, and the animation to the target has ended.
      */
     public void onGestureAnimationEnd() {
+        mGestureActive = false;
         if (mOrientationState.setGestureActive(false)) {
             updateOrientationHandler();
         }
@@ -2733,7 +2745,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     @Override
     protected void notifyPageSwitchListener(int prevPage) {
         super.notifyPageSwitchListener(prevPage);
-        loadVisibleTaskData();
+        loadVisibleTaskData(TaskView.FLAG_UPDATE_ALL);
         updateEnabledOverlays();
     }
 

@@ -29,6 +29,7 @@ import static com.android.quickstep.views.RecentsView.RECENTS_GRID_PROGRESS;
 import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
 import static com.android.quickstep.views.RecentsView.TASK_MODALNESS;
 import static com.android.quickstep.views.RecentsView.TASK_SECONDARY_TRANSLATION;
+import static com.android.quickstep.views.TaskView.FLAG_UPDATE_ALL;
 
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.PropertySetter;
@@ -70,7 +71,7 @@ public class FallbackRecentsStateController implements StateHandler<RecentsState
             return;
         }
         // While animating into recents, update the visible task data as needed
-        setter.addOnFrameCallback(mRecentsView::loadVisibleTaskData);
+        setter.addOnFrameCallback(() -> mRecentsView.loadVisibleTaskData(FLAG_UPDATE_ALL));
         mRecentsView.updateEmptyMessage();
 
         setProperties(toState, config, setter);
