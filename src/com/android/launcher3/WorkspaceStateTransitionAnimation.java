@@ -54,7 +54,6 @@ import com.android.launcher3.graphics.SysUiScrim;
 import com.android.launcher3.graphics.WorkspaceDragScrim;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.util.DynamicResource;
-import com.android.launcher3.util.MultiValueAlpha;
 import com.android.systemui.plugins.ResourceProvider;
 
 /**
@@ -135,8 +134,8 @@ public class WorkspaceStateTransitionAnimation {
             }
 
             float hotseatIconsAlpha = (elements & HOTSEAT_ICONS) != 0 ? 1 : 0;
-            propertySetter.setFloat(hotseat.getStateAlpha(), MultiValueAlpha.VALUE,
-                    hotseatIconsAlpha, config.getInterpolator(ANIM_HOTSEAT_FADE, fadeInterpolator));
+            propertySetter.setViewAlpha(hotseat, hotseatIconsAlpha,
+                    config.getInterpolator(ANIM_HOTSEAT_FADE, fadeInterpolator));
             float workspacePageIndicatorAlpha = (elements & WORKSPACE_PAGE_INDICATOR) != 0 ? 1 : 0;
             propertySetter.setViewAlpha(mLauncher.getWorkspace().getPageIndicator(),
                     workspacePageIndicatorAlpha, fadeInterpolator);

@@ -54,10 +54,7 @@ public class TaskbarActivityContext extends ContextWrapper implements ActivityCo
         return mTaskbarContainerView;
     }
 
-    /**
-     * @return A LayoutInflater to use in this Context. Views inflated with this LayoutInflater will
-     * be able to access this TaskbarActivityContext via ActivityContext.lookupContext().
-     */
+    @Override
     public LayoutInflater getLayoutInflater() {
         return mLayoutInflater;
     }

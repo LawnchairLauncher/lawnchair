@@ -269,8 +269,6 @@
     <string name="app_waiting_download_title"><xliff:g id="name" example="Messenger">%1$s</xliff:g> waiting to install</string>
 
     <!-- Strings for widgets & more in the popup container/bottom sheet -->
-    <!-- Title for a bottom sheet that shows widgets for a particular app -->
-    <string name="widgets_bottom_sheet_title"><xliff:g id="name" example="Messenger">%1$s</xliff:g> widgets</string>
 
     <!-- Accessibility title for the popup containing a list of widgets. [CHAR_LIMIT=50] -->
     <string name="widgets_list">Widgets list</string>
