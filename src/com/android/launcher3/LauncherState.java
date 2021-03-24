@@ -176,10 +176,6 @@ public abstract class LauncherState implements BaseState<LauncherState> {
         return launcher.getNormalOverviewScaleAndOffset();
     }
 
-    public ScaleAndTranslation getQsbScaleAndTranslation(Launcher launcher) {
-        return new ScaleAndTranslation(NO_SCALE, NO_OFFSET, NO_OFFSET);
-    }
-
     public float getOverviewFullscreenProgress() {
         return 0;
     }
