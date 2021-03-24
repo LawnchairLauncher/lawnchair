@@ -283,4 +283,7 @@
 <!-- Taskbar related (placeholders to compile in Launcher3 without Quickstep) -->
     <dimen name="taskbar_size">0dp</dimen>
 
+    <!-- Size of the maximum radius for the enforced rounded rectangles. -->
+    <dimen name="enforced_rounded_corner_max_radius">16dp</dimen>
+
 </resources>
