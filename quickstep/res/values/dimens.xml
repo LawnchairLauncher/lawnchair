@@ -16,6 +16,7 @@
 
 <resources>
     <dimen name="task_thumbnail_icon_size">48dp</dimen>
+    <dimen name="task_thumbnail_icon_size_grid">32dp</dimen>
     <!-- For screens without rounded corners -->
     <dimen name="task_corner_radius_small">2dp</dimen>
 

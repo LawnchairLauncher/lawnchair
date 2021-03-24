@@ -152,8 +152,9 @@ public class DeviceProfile {
     public float allAppsIconTextSizePx;
 
     // Overview
-    public int overviewTaskThumbnailTopMarginPx;
     public int overviewTaskMarginPx;
+    public int overviewTaskIconSizePx;
+    public int overviewTaskThumbnailTopMarginPx;
 
     // Widgets
     public final PointF appWidgetScale = new PointF(1.0f, 1.0f);
@@ -301,10 +302,12 @@ public class DeviceProfile {
                 : (hotseatBarTopPaddingPx + hotseatBarBottomPaddingPx
                         + (isScalableGrid ? 0 : hotseatExtraVerticalSize)));
 
-
         overviewTaskMarginPx = res.getDimensionPixelSize(R.dimen.overview_task_margin);
-        overviewTaskThumbnailTopMarginPx = res.getDimensionPixelSize(
-                R.dimen.task_thumbnail_icon_size) + 2 * overviewTaskMarginPx;
+        overviewTaskIconSizePx =
+                isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get() ? res.getDimensionPixelSize(
+                        R.dimen.task_thumbnail_icon_size_grid) : res.getDimensionPixelSize(
+                        R.dimen.task_thumbnail_icon_size);
+        overviewTaskThumbnailTopMarginPx = overviewTaskIconSizePx + overviewTaskMarginPx * 2;
 
         // Calculate all of the remaining variables.
         extraSpace = updateAvailableDimensions(res);

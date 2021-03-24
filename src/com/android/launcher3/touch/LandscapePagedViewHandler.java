@@ -136,7 +136,7 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public int getClearAllScrollOffset(View view, boolean isRtl) {
+    public int getClearAllSidePadding(View view, boolean isRtl) {
         return (isRtl ? view.getPaddingBottom() : - view.getPaddingTop()) / 2;
     }
 
