@@ -42,43 +42,16 @@ public class MultiValueAlpha {
                 }
             };
 
-    /**
-     * Determines how each alpha should factor into the final alpha.
-     */
-    public enum Mode {
-        BLEND() {
-            @Override
-            public float calculateNewAlpha(float currentAlpha, float otherAlpha) {
-                return currentAlpha * otherAlpha;
-            }
-        },
-
-        MAX() {
-            @Override
-            public float calculateNewAlpha(float currentAlpha, float otherAlpha) {
-                return Math.max(currentAlpha, otherAlpha);
-            }
-        };
-
-        protected abstract float calculateNewAlpha(float currentAlpha, float otherAlpha);
-    }
-
     private final View mView;
     private final AlphaProperty[] mMyProperties;
-    private final Mode mMode;
 
     private int mValidMask;
     // Whether we should change from INVISIBLE to VISIBLE and vice versa at low alpha values.
     private boolean mUpdateVisibility;
 
     public MultiValueAlpha(View view, int size) {
-        this(view, size, Mode.BLEND);
-    }
-
-    public MultiValueAlpha(View view, int size, Mode mode) {
         mView = view;
         mMyProperties = new AlphaProperty[size];
-        mMode = mode;
 
         mValidMask = 0;
         for (int i = 0; i < size; i++) {
@@ -124,7 +97,7 @@ public class MultiValueAlpha {
                 mOthers = 1;
                 for (AlphaProperty prop : mMyProperties) {
                     if (prop != this) {
-                        mOthers = mMode.calculateNewAlpha(mOthers, prop.mValue);
+                        mOthers *= prop.mValue;
                     }
                 }
             }
@@ -134,7 +107,7 @@ public class MultiValueAlpha {
             mValidMask = mMyMask;
             mValue = value;
 
-            mView.setAlpha(mMode.calculateNewAlpha(mOthers, mValue));
+            mView.setAlpha(mOthers * mValue);
             if (mUpdateVisibility) {
                 AlphaUpdateListener.updateVisibility(mView);
             }
