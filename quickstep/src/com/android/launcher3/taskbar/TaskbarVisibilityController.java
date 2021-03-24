@@ -31,21 +31,18 @@ import com.android.systemui.shared.system.QuickStepContract;
 public class TaskbarVisibilityController {
 
     private static final long IME_VISIBILITY_ALPHA_DURATION = 120;
-    private static final long FLOATING_VIEW_VISIBILITY_ALPHA_DURATION = 120;
 
     private final BaseQuickstepLauncher mLauncher;
     private final TaskbarController.TaskbarVisibilityControllerCallbacks mTaskbarCallbacks;
 
     // Background alpha.
-    private AnimatedFloat mTaskbarBackgroundAlpha = new AnimatedFloat(
+    private final AnimatedFloat mTaskbarBackgroundAlpha = new AnimatedFloat(
             this::onTaskbarBackgroundAlphaChanged);
 
     // Overall visibility.
-    private AnimatedFloat mTaskbarVisibilityAlphaForLauncherState = new AnimatedFloat(
+    private final AnimatedFloat mTaskbarVisibilityAlphaForLauncherState = new AnimatedFloat(
             this::updateVisibilityAlpha);
-    private AnimatedFloat mTaskbarVisibilityAlphaForIme = new AnimatedFloat(
-            this::updateVisibilityAlpha);
-    private AnimatedFloat mTaskbarVisibilityAlphaForFloatingView = new AnimatedFloat(
+    private final AnimatedFloat mTaskbarVisibilityAlphaForIme = new AnimatedFloat(
             this::updateVisibilityAlpha);
 
     public TaskbarVisibilityController(BaseQuickstepLauncher launcher,
@@ -62,7 +59,6 @@ public class TaskbarVisibilityController {
         boolean isImeVisible = (SystemUiProxy.INSTANCE.get(mLauncher).getLastSystemUiStateFlags()
                 & QuickStepContract.SYSUI_STATE_IME_SHOWING) != 0;
         mTaskbarVisibilityAlphaForIme.updateValue(isImeVisible ? 0f : 1f);
-        mTaskbarVisibilityAlphaForFloatingView.updateValue(1f);
 
         onTaskbarBackgroundAlphaChanged();
         updateVisibilityAlpha();
@@ -86,11 +82,6 @@ public class TaskbarVisibilityController {
                 .setDuration(IME_VISIBILITY_ALPHA_DURATION).start();
     }
 
-    protected void animateToVisibilityForFloatingView(float toAlpha) {
-        mTaskbarVisibilityAlphaForIme.animateToValue(mTaskbarVisibilityAlphaForFloatingView.value,
-                toAlpha).setDuration(FLOATING_VIEW_VISIBILITY_ALPHA_DURATION).start();
-    }
-
     private void onTaskbarBackgroundAlphaChanged() {
         mTaskbarCallbacks.updateTaskbarBackgroundAlpha(mTaskbarBackgroundAlpha.value);
         updateVisibilityAlpha();
@@ -102,8 +93,7 @@ public class TaskbarVisibilityController {
         // LauncherState if Launcher is paused.
         float alphaDueToLauncher = Math.max(mTaskbarBackgroundAlpha.value,
                 mTaskbarVisibilityAlphaForLauncherState.value);
-        float alphaDueToOther = mTaskbarVisibilityAlphaForIme.value
-                * mTaskbarVisibilityAlphaForFloatingView.value;
+        float alphaDueToOther = mTaskbarVisibilityAlphaForIme.value;
         float taskbarAlpha = alphaDueToLauncher * alphaDueToOther;
         mTaskbarCallbacks.updateTaskbarVisibilityAlpha(taskbarAlpha);
 
