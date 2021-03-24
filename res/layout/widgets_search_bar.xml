@@ -32,5 +32,6 @@
         android:src="@drawable/ic_gm_close_24"
         android:background="?android:selectableItemBackground"
         android:layout_gravity="center"
+        android:contentDescription="@string/widgets_full_sheet_cancel_button_description"
         android:visibility="gone"/>
 </com.android.launcher3.widget.picker.search.LauncherWidgetsSearchBar>
