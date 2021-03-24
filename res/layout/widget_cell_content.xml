@@ -18,8 +18,8 @@
     android:layout_height="wrap_content">
 
     <!-- The image of the widget. This view does not support padding. Any placement adjustment
-         should be done using margins.
-          width & height are set at runtime after scaling the preview image. -->
+         should be done using margins. Width & height are set at runtime after scaling the preview
+         image. -->
     <com.android.launcher3.widget.WidgetImageView
         android:id="@+id/widget_preview"
         android:layout_width="0dp"
@@ -41,16 +41,15 @@
         android:textColor="?android:attr/textColorPrimary"
         android:textSize="@dimen/widget_cell_font_size" />
 
-    <!-- The original dimensions of the widget (can't be the same text as above due to different
-         style. -->
+    <!-- The original dimensions of the widget -->
     <TextView
         android:id="@+id/widget_dims"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:textColor="?android:attr/textColorTertiary"
+        android:textColor="?android:attr/textColorSecondary"
         android:textSize="@dimen/widget_cell_font_size"
-        android:alpha="0.8" />
+        android:alpha="0.7" />
 
     <TextView
         android:id="@+id/widget_description"
@@ -58,9 +57,10 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:textSize="@dimen/widget_cell_font_size"
-        android:textColor="?android:attr/textColorTertiary"
+        android:textColor="?android:attr/textColorSecondary"
         android:maxLines="2"
         android:ellipsize="end"
-        android:fadingEdge="horizontal" />
+        android:fadingEdge="horizontal"
+        android:alpha="0.7" />
 
 </merge>
