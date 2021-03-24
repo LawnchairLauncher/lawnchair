@@ -79,4 +79,9 @@ public class LauncherWidgetsSearchBar extends LinearLayout implements WidgetsSea
         super.onDetachedFromWindow();
         mController.onDestroy();
     }
+
+    @Override
+    public void clearSearchBarFocus() {
+        mController.clearFocus();
+    }
 }
