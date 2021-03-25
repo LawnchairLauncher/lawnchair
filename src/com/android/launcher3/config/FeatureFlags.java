@@ -187,7 +187,7 @@ public final class FeatureFlags {
             "EXPANDED_SMARTSPACE", false, "Expands smartspace height to two rows. "
               + "Any apps occupying the first row will be removed from workspace.");
 
-    public static final BooleanFlag ENABLE_FOUR_COLUMNS = new DeviceFlag(
+    public static final DeviceFlag ENABLE_FOUR_COLUMNS = new DeviceFlag(
             "ENABLE_FOUR_COLUMNS", false, "Uses 4 columns in launcher grid."
             + "Warning: This will permanently alter your home screen items and is not reversible.");
 
@@ -224,6 +224,12 @@ public final class FeatureFlags {
                 flag.initialize(context);
             }
             sDebugFlags.sort((f1, f2) -> f1.key.compareToIgnoreCase(f2.key));
+        }
+    }
+
+    public static void removeFlag(DebugFlag flag) {
+        synchronized (sDebugFlags) {
+            sDebugFlags.remove(flag);
         }
     }
 
@@ -302,6 +308,15 @@ public final class FeatureFlags {
         public void initialize(Context context) {
             mCurrentValue = context.getSharedPreferences(FLAGS_PREF_NAME, Context.MODE_PRIVATE)
                     .getBoolean(key, defaultValue);
+        }
+
+        /**
+         * Resets value to default value.
+         */
+        public void reset(Context context) {
+            mCurrentValue = defaultValue;
+            context.getSharedPreferences(FLAGS_PREF_NAME, Context.MODE_PRIVATE)
+                    .edit().putBoolean(key, defaultValue).apply();
         }
 
         @Override
