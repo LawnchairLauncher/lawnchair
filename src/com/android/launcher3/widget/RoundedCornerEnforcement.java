@@ -72,12 +72,8 @@ public class RoundedCornerEnforcement {
     }
 
     /** Check if the app widget is in the deny list. */
-    public static boolean isRoundedCornerEnabled(@NonNull View view) {
-        if (!Utilities.ATLEAST_S || !FeatureFlags.ENABLE_ENFORCED_ROUNDED_CORNERS.get()) {
-            return false;
-        }
-        // Here we need to test if the view's component is in the (to be created) deny list.
-        return true;
+    public static boolean isRoundedCornerEnabled() {
+        return Utilities.ATLEAST_S && FeatureFlags.ENABLE_ENFORCED_ROUNDED_CORNERS.get();
     }
 
     /**
