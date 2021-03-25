@@ -37,5 +37,15 @@ fun AppDrawerPreferences(interactor: PreferenceInteractor) {
                 showDivider = false
             )
         }
+        PreferenceGroup(heading = stringResource(id = R.string.background)) {
+            SliderPreference(
+                    label = stringResource(id = R.string.background_opacity),
+                    value = interactor.drawerOpacity.value,
+                    onValueChange = { interactor.setDrawerOpacity(it) },
+                    steps = 255,
+                    valueRange = 0F..255F,
+                    showDivider = false
+            )
+        }
     }
 }

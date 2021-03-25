@@ -34,6 +34,7 @@ import android.graphics.Path.Direction;
 import android.graphics.Path.Op;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.BaseQuickstepLauncher;
@@ -73,7 +74,7 @@ public class ShelfScrimView extends ScrimView<BaseQuickstepLauncher>
     private boolean mDrawingFlatColor;
 
     // For shelf mode
-    private final int mEndAlpha;
+    private int mEndAlpha;
     private final float mRadius;
     private final int mMaxScrimAlpha;
     private final Paint mPaint;
@@ -315,5 +316,17 @@ public class ShelfScrimView extends ScrimView<BaseQuickstepLauncher>
     @Override
     public float getVisualTop() {
         return mShelfTop;
+    }
+
+    @Override
+    public void updateScrimAlpha(int alpha) {
+        if (alpha != -1) {
+            mEndAlpha = alpha;
+        }
+    }
+
+    @Override
+    public int getScrimAlpha() {
+        return mEndAlpha;
     }
 }
