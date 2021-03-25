@@ -134,6 +134,7 @@
         <attr name="defaultLayoutId" format="reference" />
         <attr name="demoModeLayoutId" format="reference" />
         <attr name="isScalable" format="boolean" />
+        <attr name="devicePaddingId" format="reference" />
 
     </declare-styleable>
 

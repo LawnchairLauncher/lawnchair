@@ -52,8 +52,8 @@ public class DevicePaddings {
 
     ArrayList<DevicePadding> mDevicePaddings = new ArrayList<>();
 
-    public DevicePaddings(Context context) {
-        try (XmlResourceParser parser = context.getResources().getXml(R.xml.size_limits)) {
+    public DevicePaddings(Context context, int devicePaddingId) {
+        try (XmlResourceParser parser = context.getResources().getXml(devicePaddingId)) {
             final int depth = parser.getDepth();
             int type;
             while (((type = parser.next()) != XmlPullParser.END_TAG ||
@@ -94,16 +94,27 @@ public class DevicePaddings {
                             if (workspaceTopPadding == null
                                     || workspaceBottomPadding == null
                                     || hotseatBottomPadding == null) {
-                                throw new RuntimeException("DevicePadding missing padding.");
+                                if (Utilities.IS_DEBUG_DEVICE) {
+                                    throw new RuntimeException("DevicePadding missing padding.");
+                                }
                             }
 
-                            mDevicePaddings.add(new DevicePadding(maxWidthPx, workspaceTopPadding,
-                                    workspaceBottomPadding, hotseatBottomPadding));
+                            DevicePadding dp = new DevicePadding(maxWidthPx, workspaceTopPadding,
+                                    workspaceBottomPadding, hotseatBottomPadding);
+                            if (dp.isValid()) {
+                                mDevicePaddings.add(dp);
+                            } else {
+                                Log.e(TAG, "Invalid device padding found.");
+                                if (Utilities.IS_DEBUG_DEVICE) {
+                                    throw new RuntimeException("DevicePadding is invalid");
+                                }
+                            }
                         }
                     }
                 }
             }
         } catch (IOException | XmlPullParserException e) {
+            Log.e(TAG, "Failure parsing device padding layout.", e);
             throw new RuntimeException(e);
         }
 
@@ -128,6 +139,9 @@ public class DevicePaddings {
      */
     public static final class DevicePadding {
 
+        // One for each padding since they can each be off by 1 due to rounding errors.
+        private static final int ROUNDING_THRESHOLD_PX = 3;
+
         private final int maxEmptySpacePx;
         private final PaddingFormula workspaceTopPadding;
         private final PaddingFormula workspaceBottomPadding;
@@ -143,6 +157,10 @@ public class DevicePaddings {
             this.hotseatBottomPadding = hotseatBottomPadding;
         }
 
+        public int getMaxEmptySpacePx() {
+            return maxEmptySpacePx;
+        }
+
         public int getWorkspaceTopPadding(int extraSpacePx) {
             return workspaceTopPadding.calculate(extraSpacePx);
         }
@@ -153,6 +171,22 @@ public class DevicePaddings {
 
         public int getHotseatBottomPadding(int extraSpacePx) {
             return hotseatBottomPadding.calculate(extraSpacePx);
+        }
+
+        public boolean isValid() {
+            int workspaceTopPadding = getWorkspaceTopPadding(maxEmptySpacePx);
+            int workspaceBottomPadding = getWorkspaceBottomPadding(maxEmptySpacePx);
+            int hotseatBottomPadding = getHotseatBottomPadding(maxEmptySpacePx);
+            int sum = workspaceTopPadding + workspaceBottomPadding + hotseatBottomPadding;
+            int diff = Math.abs(sum - maxEmptySpacePx);
+            if (DEBUG) {
+                Log.d(TAG, "isValid: workspaceTopPadding=" + workspaceTopPadding
+                        + ", workspaceBottomPadding=" + workspaceBottomPadding
+                        + ", hotseatBottomPadding=" + hotseatBottomPadding
+                        + ", sum=" + sum
+                        + ", diff=" + diff);
+            }
+            return diff <= ROUNDING_THRESHOLD_PX;
         }
     }
 
