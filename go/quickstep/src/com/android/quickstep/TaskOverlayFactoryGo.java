@@ -36,6 +36,8 @@ import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
 
+import androidx.annotation.VisibleForTesting;
+
 import com.android.launcher3.R;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.TaskThumbnailView;
@@ -51,6 +53,7 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
     public static final String ACTION_SEARCH = "com.android.quickstep.ACTION_SEARCH";
     public static final String ELAPSED_NANOS = "niu_actions_elapsed_realtime_nanos";
     public static final String ACTIONS_URL = "niu_actions_app_url";
+    private static final String ASSIST_KEY_CONTENT = "content";
     private static final String TAG = "TaskOverlayFactoryGo";
 
     // Empty constructor required for ResourceBasedOverride
@@ -68,8 +71,6 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
      * @param <T> The type of View in which the overlay will be placed
      */
     public static final class TaskOverlayGo<T extends OverviewActionsView> extends TaskOverlay {
-        private static final String ASSIST_KEY_CONTENT = "content";
-
         private String mNIUPackageName;
         private int mTaskId;
         private Bundle mAssistData;
@@ -122,7 +123,11 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
             });
         }
 
-        private void sendNIUIntent(String actionType) {
+        /**
+         * Creates and sends an Intent corresponding to the button that was clicked
+         */
+        @VisibleForTesting
+        public void sendNIUIntent(String actionType) {
             Intent intent = createNIUIntent(actionType);
             mImageApi.shareAsDataWithExplicitIntent(/* crop */ null, intent);
         }
@@ -177,6 +182,11 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
                     showBlockedByPolicyMessage();
                 }
             }
+        }
+
+        @VisibleForTesting
+        public void setImageActionsAPI(ImageActionsApi imageActionsApi) {
+            mImageApi = imageActionsApi;
         }
     }
 
