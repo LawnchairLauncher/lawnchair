@@ -497,12 +497,13 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
 
     @UiThread
     private void enforceRoundedCorners() {
-        if (mEnforcedCornerRadius <= 0 || !RoundedCornerEnforcement.isRoundedCornerEnabled(this)) {
+        if (mEnforcedCornerRadius <= 0 || !RoundedCornerEnforcement.isRoundedCornerEnabled()) {
             resetRoundedCorners();
             return;
         }
         View background = RoundedCornerEnforcement.findBackground(this);
-        if (RoundedCornerEnforcement.hasAppWidgetOptedOut(this, background)) {
+        if (background == null
+                || RoundedCornerEnforcement.hasAppWidgetOptedOut(this, background)) {
             resetRoundedCorners();
             return;
         }

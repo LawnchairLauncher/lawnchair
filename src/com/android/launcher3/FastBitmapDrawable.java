@@ -28,6 +28,7 @@ import android.graphics.ColorFilter;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -61,6 +62,8 @@ public class FastBitmapDrawable extends Drawable {
     private boolean mIsPressed;
     private boolean mIsDisabled;
     private float mDisabledAlpha = 1f;
+    private float mRoundedCornersRadius = 0f;
+    private final Path mClipPath = new Path();
 
     // Animator and properties for the fast bitmap drawable's scale
     private static final Property<FastBitmapDrawable, Float> SCALE
@@ -102,6 +105,13 @@ public class FastBitmapDrawable extends Drawable {
 
     @Override
     public final void draw(Canvas canvas) {
+        if (mRoundedCornersRadius > 0) {
+            float radius = mRoundedCornersRadius * mScale;
+            mClipPath.reset();
+            mClipPath.addRoundRect(0, 0, getIntrinsicWidth(), getIntrinsicHeight(),
+                    radius, radius, Path.Direction.CCW);
+            canvas.clipPath(mClipPath);
+        }
         if (mScale != 1f) {
             int count = canvas.save();
             Rect bounds = getBounds();
@@ -162,6 +172,14 @@ public class FastBitmapDrawable extends Drawable {
 
     public float getScale() {
         return mScale;
+    }
+
+    public void setRoundedCornersRadius(float radius) {
+        mRoundedCornersRadius = radius;
+    }
+
+    public float getRoundedCornersRadius() {
+        return mRoundedCornersRadius;
     }
 
     @Override
