@@ -54,10 +54,13 @@ public class PendingItemDragHelper extends DragPreviewProvider {
 
     @Nullable private RemoteViews mRemoteViewsPreview;
     @Nullable private LauncherAppWidgetHostView mAppWidgetHostViewPreview;
+    private final float mEnforcedRoundedCornersForWidget;
 
     public PendingItemDragHelper(View view) {
         super(view);
         mAddInfo = (PendingAddItemInfo) view.getTag();
+        mEnforcedRoundedCornersForWidget = RoundedCornerEnforcement.computeEnforcedRadius(
+                view.getContext());
     }
 
     /**
@@ -115,10 +118,14 @@ public class PendingItemDragHelper extends DragPreviewProvider {
                         .addDragListener(new AppWidgetHostViewDragListener(launcher));
             }
             if (preview == null) {
-                preview = new FastBitmapDrawable(
+                FastBitmapDrawable p = new FastBitmapDrawable(
                         app.getWidgetCache().generateWidgetPreview(launcher,
                                 createWidgetInfo.info, maxWidth, null,
                                 previewSizeBeforeScale).first);
+                if (RoundedCornerEnforcement.isRoundedCornerEnabled()) {
+                    p.setRoundedCornersRadius(mEnforcedRoundedCornersForWidget);
+                }
+                preview = p;
             }
 
             if (previewSizeBeforeScale[0] < previewBitmapWidth) {
