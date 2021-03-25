@@ -52,6 +52,7 @@ import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.test.InstrumentationRegistry;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
@@ -867,6 +868,16 @@ public final class LauncherInstrumentation {
         return object;
     }
 
+    @Nullable
+    UiObject2 findObjectInContainer(UiObject2 container, BySelector selector) {
+        try {
+            return container.findObject(selector);
+        } catch (StaleObjectException e) {
+            fail("The container disappeared from screen");
+            return null;
+        }
+    }
+
     @NonNull
     List<UiObject2> getObjectsInContainer(UiObject2 container, String resName) {
         try {
@@ -1059,6 +1070,11 @@ public final class LauncherInstrumentation {
         final int itemRowNewTopOnScreen = containerRect.top + topPaddingInContainer;
         final int distance = itemRowCurrentTopOnScreen - itemRowNewTopOnScreen + getTouchSlop();
 
+        scrollDownByDistance(container, distance);
+    }
+
+    void scrollDownByDistance(UiObject2 container, int distance) {
+        final Rect containerRect = getVisibleBounds(container);
         final int bottomGestureMarginInContainer = getBottomGestureMarginInContainer(container);
         scroll(
                 container,
