@@ -25,6 +25,7 @@ import static com.android.quickstep.views.RecentsView.CONTENT_ALPHA;
 import static com.android.quickstep.views.RecentsView.FULLSCREEN_PROGRESS;
 import static com.android.quickstep.views.RecentsView.TASK_MODALNESS;
 import static com.android.quickstep.views.SplitPlaceholderView.ALPHA_FLOAT;
+import static com.android.quickstep.views.TaskView.FLAG_UPDATE_ALL;
 
 import android.annotation.TargetApi;
 import android.os.Build;
@@ -73,7 +74,7 @@ public final class RecentsViewStateController extends
 
         if (toState.overviewUi) {
             // While animating into recents, update the visible task data as needed
-            builder.addOnFrameCallback(mRecentsView::loadVisibleTaskData);
+            builder.addOnFrameCallback(() -> mRecentsView.loadVisibleTaskData(FLAG_UPDATE_ALL));
             mRecentsView.updateEmptyMessage();
         } else {
             builder.addListener(

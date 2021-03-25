@@ -110,6 +110,8 @@ public class DragLayer extends BaseDragLayer<Launcher> {
         mDragController = dragController;
         recreateControllers();
 
+        mOverviewScrim.setup();
+
         mWorkspaceDragScrim = new WorkspaceDragScrim((this));
         mWorkspaceDragScrim.setWorkspace(workspace);
 
@@ -118,8 +120,6 @@ public class DragLayer extends BaseDragLayer<Launcher> {
         mRootView = (LauncherRootView) getParent();
         mSysUiScrim = new SysUiScrim(mRootView);
         mRootView.setSysUiScrim(mSysUiScrim);
-
-
     }
 
     @Override
@@ -555,7 +555,6 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     public void setInsets(Rect insets) {
         super.setInsets(insets);
         mSysUiScrim.onInsetsChanged(insets, mAllowSysuiScrims);
-        mOverviewScrim.onInsetsChanged(insets);
     }
 
     public WorkspaceDragScrim getWorkspaceDragScrim() {
