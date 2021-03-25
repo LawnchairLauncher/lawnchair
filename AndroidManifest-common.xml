@@ -116,8 +116,7 @@
             android:theme="@style/AppItemActivityTheme"
             android:excludeFromRecents="true"
             android:autoRemoveFromRecents="true"
-            android:exported="true"
-            android:label="@string/action_add_to_workspace" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.content.pm.action.CONFIRM_PIN_SHORTCUT" />
                 <action android:name="android.content.pm.action.CONFIRM_PIN_APPWIDGET" />

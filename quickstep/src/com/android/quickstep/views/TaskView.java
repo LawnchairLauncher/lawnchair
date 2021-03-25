@@ -42,6 +42,8 @@ import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.quickstep.util.NavigationModeFeatureFlag.LIVE_TILE;
 
+import static java.lang.annotation.RetentionPolicy.SOURCE;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -67,6 +69,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 
 import com.android.launcher3.DeviceProfile;
@@ -106,6 +109,7 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.QuickStepContract;
 
+import java.lang.annotation.Retention;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
@@ -116,6 +120,19 @@ import java.util.function.Consumer;
 public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     private static final String TAG = TaskView.class.getSimpleName();
+
+    public static final int FLAG_UPDATE_ICON = 1;
+    public static final int FLAG_UPDATE_THUMBNAIL = FLAG_UPDATE_ICON << 1;
+
+    public static final int FLAG_UPDATE_ALL = FLAG_UPDATE_ICON | FLAG_UPDATE_THUMBNAIL;
+
+    /**
+     * Used in conjunction with {@link #onTaskListVisibilityChanged(boolean, int)}, providing more
+     * granularity on which components of this task require an update
+     */
+    @Retention(SOURCE)
+    @IntDef({FLAG_UPDATE_ALL, FLAG_UPDATE_ICON, FLAG_UPDATE_THUMBNAIL})
+    public @interface TaskDataChanges {}
 
     /**
      * The alpha of a black scrim on a page in the carousel as it leaves the screen.
@@ -557,7 +574,19 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         }
     }
 
+    /**
+     * See {@link TaskDataChanges}
+     * @param visible If this task view will be visible to the user in overview or hidden
+     */
     public void onTaskListVisibilityChanged(boolean visible) {
+        onTaskListVisibilityChanged(visible, FLAG_UPDATE_ALL);
+    }
+
+    /**
+     * See {@link TaskDataChanges}
+     * @param visible If this task view will be visible to the user in overview or hidden
+     */
+    public void onTaskListVisibilityChanged(boolean visible, @TaskDataChanges int changes) {
         if (mTask == null) {
             return;
         }
@@ -568,20 +597,35 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             RecentsModel model = RecentsModel.INSTANCE.get(getContext());
             TaskThumbnailCache thumbnailCache = model.getThumbnailCache();
             TaskIconCache iconCache = model.getIconCache();
-            mThumbnailLoadRequest = thumbnailCache.updateThumbnailInBackground(
-                    mTask, thumbnail -> mSnapshotView.setThumbnail(mTask, thumbnail));
-            mIconLoadRequest = iconCache.updateIconInBackground(mTask,
-                    (task) -> {
-                        setIcon(task.icon);
-                        mDigitalWellBeingToast.initialize(mTask);
-                    });
+
+            if (needsUpdate(changes, FLAG_UPDATE_THUMBNAIL)) {
+                mThumbnailLoadRequest = thumbnailCache.updateThumbnailInBackground(
+                        mTask, thumbnail -> {
+                            mSnapshotView.setThumbnail(mTask, thumbnail);
+                        });
+            }
+            if (needsUpdate(changes, FLAG_UPDATE_ICON)) {
+                mIconLoadRequest = iconCache.updateIconInBackground(mTask,
+                        (task) -> {
+                            setIcon(task.icon);
+                            mDigitalWellBeingToast.initialize(mTask);
+                        });
+            }
         } else {
-            mSnapshotView.setThumbnail(null, null);
-            setIcon(null);
-            // Reset the task thumbnail reference as well (it will be fetched from the cache or
-            // reloaded next time we need it)
-            mTask.thumbnail = null;
+            if (needsUpdate(changes, FLAG_UPDATE_THUMBNAIL)) {
+                mSnapshotView.setThumbnail(null, null);
+                // Reset the task thumbnail reference as well (it will be fetched from the cache or
+                // reloaded next time we need it)
+                mTask.thumbnail = null;
+            }
+            if (needsUpdate(changes, FLAG_UPDATE_ICON)) {
+                setIcon(null);
+            }
         }
+    }
+
+    private boolean needsUpdate(@TaskDataChanges int dataChange, @TaskDataChanges int flag) {
+        return (dataChange & flag) == flag;
     }
 
     private void cancelPendingLoadTasks() {
