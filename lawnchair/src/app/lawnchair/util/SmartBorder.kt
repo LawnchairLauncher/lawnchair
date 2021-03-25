@@ -39,7 +39,6 @@ fun Modifier.smartBorder(width: Dp, brush: Brush, shape: Shape): Modifier = comp
                 var inset = 0f
                 var insetPath: Path? = null
 
-
                 val cornerCompensation = width.toPx().half * MAGIC_FLOAT
                 if (borderSize > 0 && size.minDimension > 0f) {
                     if (outline is Outline.Rectangle) {
@@ -53,12 +52,10 @@ fun Modifier.smartBorder(width: Dp, brush: Brush, shape: Shape): Modifier = comp
                         )
                         insetOutline = shape.createOutline(insetSize, layoutDirection, this)
                         stroke = Stroke(strokeWidth)
-                        pathClip = if (outline is Outline.Rounded) {
-                            Path().apply { addRoundRect(outline.roundRect) }
-                        } else if (outline is Outline.Generic) {
-                            outline.path
-                        } else {
-                            null
+                        pathClip = when (outline) {
+                            is Outline.Rounded -> Path().apply { addRoundRect(outline.roundRect) }
+                            is Outline.Generic -> outline.path
+                            else -> null
                         }
 
                         insetPath =
@@ -101,14 +98,14 @@ fun Modifier.smartBorder(width: Dp, brush: Brush, shape: Shape): Modifier = comp
                                 }
                             }) {
                                 if (isSimpleRoundRect) {
-                                    val rrect = (insetOutline as Outline.Rounded).roundRect
+                                    val rRect = (insetOutline as Outline.Rounded).roundRect
                                     drawRoundRect(
                                         brush = brush,
-                                        topLeft = Offset(rrect.left, rrect.top),
-                                        size = Size(rrect.width, rrect.height),
+                                        topLeft = Offset(rRect.left, rRect.top),
+                                        size = Size(rRect.width, rRect.height),
                                         cornerRadius = CornerRadius(
-                                            rrect.topLeftCornerRadius.x - cornerCompensation,
-                                            rrect.topLeftCornerRadius.y - cornerCompensation
+                                            rRect.topLeftCornerRadius.x - cornerCompensation,
+                                            rRect.topLeftCornerRadius.y - cornerCompensation
                                         ),
                                         style = stroke
                                     )
@@ -118,12 +115,12 @@ fun Modifier.smartBorder(width: Dp, brush: Brush, shape: Shape): Modifier = comp
                             }
                             clipRect {
                                 if (isSimpleRoundRect) {
-                                    val rrect = (outline as Outline.Rounded).roundRect
+                                    val rRect = (outline as Outline.Rounded).roundRect
                                     drawRoundRect(
                                         brush = brush,
-                                        topLeft = Offset(rrect.left, rrect.top),
-                                        size = Size(rrect.width, rrect.height),
-                                        cornerRadius = rrect.topLeftCornerRadius,
+                                        topLeft = Offset(rRect.left, rRect.top),
+                                        size = Size(rRect.width, rRect.height),
+                                        cornerRadius = rRect.topLeftCornerRadius,
                                         style = HairlineBorderStroke
                                     )
                                 } else {
