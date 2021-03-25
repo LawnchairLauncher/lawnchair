@@ -3152,7 +3152,9 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             MAIN_EXECUTOR.execute(() -> {
                 // Needed for activities that auto-enter PiP, which will not trigger a remote
                 // animation to be created
-                mActivity.clearForceInvisibleFlag(STATE_HANDLER_INVISIBILITY_FLAGS);
+                if (mActivity != null) {
+                    mActivity.clearForceInvisibleFlag(STATE_HANDLER_INVISIBILITY_FLAGS);
+                }
             });
         }
     }
