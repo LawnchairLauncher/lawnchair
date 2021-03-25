@@ -336,6 +336,14 @@ public abstract class BaseQuickstepLauncher extends Launcher
     }
 
     @Override
+    public float getNormalTaskbarScale() {
+        if (mTaskbarController != null) {
+            return mTaskbarController.getTaskbarScaleOnHome();
+        }
+        return super.getNormalTaskbarScale();
+    }
+
+    @Override
     public void onDragLayerHierarchyChanged() {
         onLauncherStateOrFocusChanged();
     }
