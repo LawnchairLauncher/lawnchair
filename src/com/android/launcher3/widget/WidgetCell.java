@@ -94,6 +94,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     protected final BaseActivity mActivity;
     protected final DeviceProfile mDeviceProfile;
     private final CheckLongPressHelper mLongPressHelper;
+    private final float mEnforcedCornerRadius;
 
     private RemoteViews mPreview;
     private LauncherAppWidgetHostView mAppWidgetHostViewPreview;
@@ -118,6 +119,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         setWillNotDraw(false);
         setClipToPadding(false);
         setAccessibilityDelegate(mActivity.getAccessibilityDelegate());
+        mEnforcedCornerRadius = RoundedCornerEnforcement.computeEnforcedRadius(context);
     }
 
     private void setContainerWidth() {
@@ -245,7 +247,9 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     }
 
     public void applyPreview(Bitmap bitmap) {
-        applyPreview(new FastBitmapDrawable(bitmap));
+        FastBitmapDrawable drawable = new FastBitmapDrawable(bitmap);
+        drawable.setRoundedCornersRadius(mEnforcedCornerRadius);
+        applyPreview(drawable);
     }
 
     private void applyPreview(Drawable drawable) {
