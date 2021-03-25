@@ -17,11 +17,13 @@ package com.android.launcher3.uioverrides.touchcontrollers;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_ALL_APPS_EDU;
 import static com.android.launcher3.AbstractFloatingView.getOpenView;
+import static com.android.launcher3.LauncherState.HINT_STATE_TWO_BUTTON;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 
 import android.animation.ValueAnimator;
+import android.os.SystemClock;
 import android.view.MotionEvent;
 
 import com.android.launcher3.AbstractFloatingView;
@@ -91,10 +93,10 @@ public class TwoButtonNavbarTouchController extends AbstractStateChangeTouchCont
         if (mIsTransposed) {
             boolean draggingFromNav =
                     mLauncher.getDeviceProfile().isSeascape() == isDragTowardPositive;
-            return draggingFromNav ? OVERVIEW : NORMAL;
+            return draggingFromNav ? HINT_STATE_TWO_BUTTON : NORMAL;
         } else {
             LauncherState startState = mStartState != null ? mStartState : fromState;
-            return isDragTowardPositive ^ (startState == OVERVIEW) ? OVERVIEW : NORMAL;
+            return isDragTowardPositive ^ (startState == OVERVIEW) ? HINT_STATE_TWO_BUTTON : NORMAL;
         }
     }
 
@@ -104,6 +106,12 @@ public class TwoButtonNavbarTouchController extends AbstractStateChangeTouchCont
         super.updateSwipeCompleteAnimation(animator, expectedDuration, targetState,
                 velocity, isFling);
         mFinishFastOnSecondTouch = !mIsTransposed && mFromState == NORMAL;
+
+        if (targetState == HINT_STATE_TWO_BUTTON) {
+            // We were going to HINT_STATE_TWO_BUTTON, but end that animation immediately so we go
+            // to OVERVIEW instead.
+            animator.setDuration(0);
+        }
     }
 
     @Override
@@ -122,12 +130,26 @@ public class TwoButtonNavbarTouchController extends AbstractStateChangeTouchCont
     }
 
     @Override
+    protected void updateProgress(float fraction) {
+        super.updateProgress(fraction);
+
+        // We have reached HINT_STATE, end the gesture now to go to OVERVIEW.
+        if (fraction >= 1 && mToState == HINT_STATE_TWO_BUTTON) {
+            final long now = SystemClock.uptimeMillis();
+            MotionEvent event = MotionEvent.obtain(now, now,
+                    MotionEvent.ACTION_UP, 0.0f, 0.0f, 0);
+            mDetector.onTouchEvent(event);
+            event.recycle();
+        }
+    }
+
+    @Override
     protected void onSwipeInteractionCompleted(LauncherState targetState) {
         super.onSwipeInteractionCompleted(targetState);
         if (!mIsTransposed) {
             mContinuousTouchCount++;
         }
-        if (mStartState == NORMAL && targetState == OVERVIEW) {
+        if (mStartState == NORMAL && targetState == HINT_STATE_TWO_BUTTON) {
             SystemUiProxy.INSTANCE.get(mLauncher).onOverviewShown(true, TAG);
         } else if (targetState == NORMAL
                 && mContinuousTouchCount >= MAX_NUM_SWIPES_TO_TRIGGER_EDU) {
