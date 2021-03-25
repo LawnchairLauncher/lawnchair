@@ -103,7 +103,6 @@ public class OverviewToHomeAnim {
 
         StateAnimationConfig config = new UseFirstInterpolatorStateAnimConfig();
         config.duration = duration;
-        config.animFlags = StateAnimationConfig.PLAY_ANIMATION;
         boolean isLayoutNaturalToLauncher = recentsView.getPagedOrientationHandler()
                 .isLayoutNaturalToLauncher();
         config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, isLayoutNaturalToLauncher

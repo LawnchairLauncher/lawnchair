@@ -21,7 +21,6 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
-import static com.android.launcher3.states.StateAnimationConfig.PLAY_ANIMATION;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_DEPTH_CONTROLLER;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_OVERVIEW;
 
@@ -181,7 +180,7 @@ public class StaggeredWorkspaceAnim {
      */
     private void prepareToAnimate(Launcher launcher, boolean animateOverviewScrim) {
         StateAnimationConfig config = new StateAnimationConfig();
-        config.animFlags = PLAY_ANIMATION | SKIP_OVERVIEW | SKIP_DEPTH_CONTROLLER;
+        config.animFlags = SKIP_OVERVIEW | SKIP_DEPTH_CONTROLLER;
         config.duration = 0;
         // setRecentsAttachedToAppWindow() will animate recents out.
         launcher.getStateManager().createAtomicAnimation(BACKGROUND_APP, NORMAL, config).start();

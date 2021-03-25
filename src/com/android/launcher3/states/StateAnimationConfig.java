@@ -28,20 +28,19 @@ import java.lang.annotation.RetentionPolicy;
 public class StateAnimationConfig {
 
     @IntDef(flag = true, value = {
-            PLAY_ANIMATION,
+            SKIP_ALL_ANIMATIONS,
             SKIP_OVERVIEW,
             SKIP_DEPTH_CONTROLLER,
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface AnimationFlags {}
-    // TODO: make this the default; invert this to be SKIP_ALL_ANIMATIONS
-    public static final int PLAY_ANIMATION = 1 << 0;
+    public static final int SKIP_ALL_ANIMATIONS = 1 << 0;
     public static final int SKIP_OVERVIEW = 1 << 1;
     public static final int SKIP_DEPTH_CONTROLLER = 1 << 2;
 
     public long duration;
     public boolean userControlled;
-    public @AnimationFlags int animFlags = PLAY_ANIMATION;
+    public @AnimationFlags int animFlags = 0;
 
 
     // Various types of animation state transition
