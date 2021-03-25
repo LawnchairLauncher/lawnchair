@@ -60,7 +60,10 @@ import com.android.systemui.plugins.ResourceProvider;
 public class StaggeredWorkspaceAnim {
 
     private static final int APP_CLOSE_ROW_START_DELAY_MS = 10;
+    // How long it takes to fade in each staggered row.
     private static final int ALPHA_DURATION_MS = 250;
+    // Should be used for animations running alongside this StaggeredWorkspaceAnim.
+    public static final int DURATION_MS = 250;
 
     private static final float MAX_VELOCITY_PX_PER_S = 22f;
 
@@ -131,15 +134,15 @@ public class StaggeredWorkspaceAnim {
         }
 
         if (animateOverviewScrim) {
-            PendingAnimation pendingAnimation = new PendingAnimation(ALPHA_DURATION_MS);
+            PendingAnimation pendingAnimation = new PendingAnimation(DURATION_MS);
             addScrimAnimationForState(launcher, NORMAL, pendingAnimation);
             mAnimators.play(pendingAnimation.buildAnim());
         }
 
-        addDepthAnimationForState(launcher, NORMAL, ALPHA_DURATION_MS);
+        addDepthAnimationForState(launcher, NORMAL, DURATION_MS);
 
         mAnimators.play(launcher.getDragLayer().getSysUiScrim().createSysuiMultiplierAnim(0f, 1f)
-                .setDuration(ALPHA_DURATION_MS));
+                .setDuration(DURATION_MS));
         mAnimators.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
