@@ -27,6 +27,7 @@ import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.OVERVIEW_MODAL_TASK;
 import static com.android.launcher3.LauncherState.OVERVIEW_SPLIT_SELECT;
+import static com.android.launcher3.QuickstepTransitionManager.RECENTS_LAUNCH_DURATION;
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.Utilities.mapToRange;
 import static com.android.launcher3.Utilities.squaredHypot;
@@ -34,6 +35,7 @@ import static com.android.launcher3.Utilities.squaredTouchSlop;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_0_75;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
+import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_CLEAR_ALL;
@@ -50,6 +52,7 @@ import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NO_RECENTS;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NO_TASKS;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.LayoutTransition;
 import android.animation.LayoutTransition.TransitionListener;
@@ -61,6 +64,7 @@ import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
@@ -129,8 +133,11 @@ import com.android.quickstep.RecentsModel.TaskVisualsChangeListener;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskThumbnailCache;
+import com.android.quickstep.TaskViewUtils;
 import com.android.quickstep.ViewUtils;
+import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.LayoutUtils;
+import com.android.quickstep.util.MultiValueUpdateListener;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.util.SplitScreenBounds;
 import com.android.quickstep.util.SurfaceTransactionApplier;
@@ -142,6 +149,8 @@ import com.android.systemui.shared.recents.model.Task.TaskKey;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.PackageManagerWrapper;
+import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
+import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 import com.android.wm.shell.pip.IPipAnimationListener;
 
@@ -713,6 +722,72 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     public void draw(Canvas canvas) {
         maybeDrawEmptyMessage(canvas);
         super.draw(canvas);
+    }
+
+    public void launchSideTaskInLiveTileModeForRestartedApp(int taskId) {
+        if (mRunningTaskId != -1 && mRunningTaskId == taskId &&
+                getLiveTileParams().getTargetSet().findTask(taskId) != null) {
+            launchSideTaskInLiveTileMode(taskId, getLiveTileParams().getTargetSet().apps);
+        }
+    }
+
+    public void launchSideTaskInLiveTileMode(int taskId, RemoteAnimationTargetCompat[] apps) {
+        AnimatorSet anim = new AnimatorSet();
+        TaskView taskView = getTaskView(taskId);
+        if (taskView == null || !isTaskViewVisible(taskView)) {
+            // TODO: Refine this animation.
+            SurfaceTransactionApplier surfaceApplier =
+                    new SurfaceTransactionApplier(mActivity.getDragLayer());
+            ValueAnimator appAnimator = ValueAnimator.ofFloat(0, 1);
+            appAnimator.setDuration(RECENTS_LAUNCH_DURATION);
+            appAnimator.setInterpolator(ACCEL_DEACCEL);
+            appAnimator.addUpdateListener(new MultiValueUpdateListener() {
+                @Override
+                public void onUpdate(float percent) {
+                    SurfaceParams.Builder builder = new SurfaceParams.Builder(
+                            apps[apps.length - 1].leash);
+                    Matrix matrix = new Matrix();
+                    matrix.postScale(percent, percent);
+                    matrix.postTranslate(mActivity.getDeviceProfile().widthPx * (1 - percent) / 2,
+                            mActivity.getDeviceProfile().heightPx * (1 - percent) / 2);
+                    builder.withAlpha(percent).withMatrix(matrix);
+                    surfaceApplier.scheduleApply(builder.build());
+                }
+            });
+            anim.play(appAnimator);
+        } else {
+            TaskViewUtils.composeRecentsLaunchAnimator(
+                    anim, taskView, apps,
+                    mLiveTileParams.getTargetSet().wallpapers, true /* launcherClosing */,
+                    mActivity.getStateManager(), this,
+                    getDepthController());
+        }
+        anim.addListener(new AnimatorListenerAdapter(){
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                cleanUp(false);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+                cleanUp(true);
+            }
+
+            private void cleanUp(boolean canceled) {
+                if (mRecentsAnimationController != null) {
+                    mRecentsAnimationController.finish(false /* toRecents */,
+                            null /* onFinishComplete */);
+                    if (canceled) {
+                        mRecentsAnimationController = null;
+                    } else {
+                        mSizeStrategy.onLaunchTaskSuccess();
+                    }
+                    ActiveGestureLog.INSTANCE.addLog("finishRecentsAnimation", false);
+                }
+            }
+        });
+        anim.start();
     }
 
     private void updateTaskStartIndex(View affectingView) {
