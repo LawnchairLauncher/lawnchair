@@ -7,7 +7,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import java.text.DecimalFormat
+import app.lawnchair.util.round
 import kotlin.math.roundToInt
 
 @Composable
@@ -37,7 +37,7 @@ fun SliderPreference(
                 ) {
                     Text(
                         text = if (showAsPercentage) {
-                            "${(DecimalFormat("#.#").format(value).toFloat() * 100).toInt()}%"
+                            "${(value.round(2) * 100).toInt()}%"
                         } else {
                             "${value.roundToInt()}"
                         }
