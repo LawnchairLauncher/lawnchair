@@ -17,70 +17,51 @@
 */
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/add_item_confirmation"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="24dp"
     android:orientation="vertical">
-    <ScrollView
+
+    <TextView
+        style="@style/TextHeadline"
+        android:id="@+id/widget_appName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:textColor="?android:attr/textColorPrimary"
+        android:textSize="24sp"
+        android:ellipsize="end"
+        android:fadingEdge="horizontal"
+        android:singleLine="true"
+        android:maxLines="1" />
+
+    <include layout="@layout/widget_cell"
+        android:id="@+id/widget_cell"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:clipToPadding="false">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="20dp"
-                android:paddingLeft="24dp"
-                android:paddingRight="24dp"
-                android:paddingTop="4dp"
-                android:text="@string/add_item_request_drag_hint" />
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="?android:attr/colorPrimaryDark"
-                android:theme="?attr/widgetsTheme">
-
-                <com.android.launcher3.widget.WidgetCell
-                    android:id="@+id/widget_cell"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_weight="1"
-                    android:background="?android:attr/colorPrimaryDark"
-                    android:focusable="true"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical" >
-
-                    <include layout="@layout/widget_cell_content"  />
-
-                </com.android.launcher3.widget.WidgetCell>
-            </FrameLayout>
-        </LinearLayout>
-    </ScrollView>
+        android:layout_marginVertical="16dp" />
 
     <LinearLayout
-        style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="end"
-        android:paddingBottom="4dp"
-        android:paddingEnd="12dp"
-        android:paddingStart="12dp"
-        android:paddingTop="4dp" >
+        android:padding="8dp"
+        android:orientation="horizontal">
         <Button
-            style="?android:attr/buttonBarButtonStyle"
+            style="@style/Widget.DeviceDefault.Button.Rounded.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="onCancelClick"
             android:text="@android:string/cancel" />
+
+        <Space
+            android:layout_width="4dp"
+            android:layout_height="wrap_content" />
+
         <Button
-            style="?android:attr/buttonBarButtonStyle"
+            style="@style/Widget.DeviceDefault.Button.Rounded.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="onPlaceAutomaticallyClick"

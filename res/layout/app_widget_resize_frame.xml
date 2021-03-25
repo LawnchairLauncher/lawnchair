@@ -26,6 +26,7 @@
 
         <!-- Frame -->
         <ImageView
+            android:id="@+id/widget_resize_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
