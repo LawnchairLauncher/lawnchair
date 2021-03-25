@@ -28,9 +28,11 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnLayoutChangeListener;
+import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RemoteViews;
 import android.widget.TextView;
@@ -42,7 +44,6 @@ import com.android.launcher3.CheckLongPressHelper;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.WidgetPreviewLoader;
-import com.android.launcher3.dragndrop.AppWidgetHostViewDrawable;
 import com.android.launcher3.icons.BaseIconFactory;
 import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.icons.FastBitmapDrawable;
@@ -77,7 +78,9 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     private int mCellSize;
     private float mPreviewScale = 1f;
 
+    private FrameLayout mWidgetImageContainer;
     private WidgetImageView mWidgetImage;
+    private ImageView mWidgetBadge;
     private TextView mWidgetName;
     private TextView mWidgetDims;
     private TextView mWidgetDescription;
@@ -133,7 +136,9 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     protected void onFinishInflate() {
         super.onFinishInflate();
 
+        mWidgetImageContainer = findViewById(R.id.widget_preview_container);
         mWidgetImage = findViewById(R.id.widget_preview);
+        mWidgetBadge = findViewById(R.id.widget_badge);
         mWidgetName = findViewById(R.id.widget_name);
         mWidgetDims = findViewById(R.id.widget_dims);
         mWidgetDescription = findViewById(R.id.widget_description);
@@ -155,7 +160,9 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             Log.d(TAG, "reset called on:" + mWidgetName.getText());
         }
         mWidgetImage.animate().cancel();
-        mWidgetImage.setDrawable(null, null);
+        mWidgetImage.setDrawable(null);
+        mWidgetImage.setVisibility(View.VISIBLE);
+        mWidgetBadge.setImageDrawable(null);
         mWidgetName.setText(null);
         mWidgetDims.setText(null);
         mWidgetDescription.setText(null);
@@ -167,6 +174,9 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             mActiveRequest = null;
         }
         mPreview = null;
+        if (mAppWidgetHostViewPreview != null) {
+            mWidgetImageContainer.removeView(mAppWidgetHostViewPreview);
+        }
         mAppWidgetHostViewPreview = null;
     }
 
@@ -215,6 +225,13 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             mAppWidgetHostViewPreview.setPadding(/* left= */ 0, /* top= */0, /* right= */
                     0, /* bottom= */ 0);
             mAppWidgetHostViewPreview.updateAppWidget(/* remoteViews= */ null);
+            // Gravity 77 = "fill"
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT, /* gravity= */ 77);
+            mAppWidgetHostViewPreview.setLayoutParams(params);
+            mWidgetImageContainer.addView(mAppWidgetHostViewPreview, /* index= */ 0);
+            mWidgetImage.setVisibility(View.GONE);
         }
     }
 
@@ -258,21 +275,36 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             return;
         }
         if (drawable != null) {
-            LayoutParams layoutParams = (LayoutParams) mWidgetImage.getLayoutParams();
-            layoutParams.width = (int) (drawable.getIntrinsicWidth() * mPreviewScale);
-            layoutParams.height = (int) (drawable.getIntrinsicHeight() * mPreviewScale);
-            mWidgetImage.setLayoutParams(layoutParams);
-
-            mWidgetImage.setDrawable(drawable, mWidgetPreviewLoader.getBadgeForUser(mItem.user,
-                    BaseIconFactory.getBadgeSizeForIconSize(mDeviceProfile.allAppsIconSizePx)));
-            if (mAnimatePreview) {
-                mWidgetImage.setAlpha(0f);
-                ViewPropertyAnimator anim = mWidgetImage.animate();
-                anim.alpha(1.0f).setDuration(FADE_IN_DURATION_MS);
-            } else {
-                mWidgetImage.setAlpha(1f);
+            setContainerSize(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+            mWidgetImage.setDrawable(drawable);
+            mWidgetImage.setVisibility(View.VISIBLE);
+            if (mAppWidgetHostViewPreview != null) {
+                removeView(mAppWidgetHostViewPreview);
+                mAppWidgetHostViewPreview = null;
             }
         }
+        Drawable badge = mWidgetPreviewLoader.getBadgeForUser(mItem.user,
+                BaseIconFactory.getBadgeSizeForIconSize(mDeviceProfile.allAppsIconSizePx));
+        if (badge == null) {
+            mWidgetBadge.setVisibility(View.GONE);
+        } else {
+            mWidgetBadge.setVisibility(View.VISIBLE);
+            mWidgetBadge.setImageDrawable(badge);
+        }
+        if (mAnimatePreview) {
+            mWidgetImageContainer.setAlpha(0f);
+            ViewPropertyAnimator anim = mWidgetImageContainer.animate();
+            anim.alpha(1.0f).setDuration(FADE_IN_DURATION_MS);
+        } else {
+            mWidgetImageContainer.setAlpha(1f);
+        }
+    }
+
+    private void setContainerSize(int width, int height) {
+        LayoutParams layoutParams = (LayoutParams) mWidgetImageContainer.getLayoutParams();
+        layoutParams.width = (int) (width * mPreviewScale);
+        layoutParams.height = (int) (height * mPreviewScale);
+        mWidgetImageContainer.setLayoutParams(layoutParams);
     }
 
     public void ensurePreview() {
@@ -290,15 +322,8 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             int viewWidth = dp.cellWidthPx * mItem.spanX;
             int viewHeight = dp.cellHeightPx * mItem.spanY;
 
-            mAppWidgetHostViewPreview.measure(
-                    MeasureSpec.makeMeasureSpec(viewWidth, MeasureSpec.EXACTLY),
-                    MeasureSpec.makeMeasureSpec(viewHeight, MeasureSpec.EXACTLY));
-
-            viewWidth = mAppWidgetHostViewPreview.getMeasuredWidth();
-            viewHeight = mAppWidgetHostViewPreview.getMeasuredHeight();
-            mAppWidgetHostViewPreview.layout(0, 0, viewWidth, viewHeight);
-            Drawable drawable = new AppWidgetHostViewDrawable(mAppWidgetHostViewPreview);
-            applyPreview(drawable);
+            setContainerSize(viewWidth, viewHeight);
+            applyPreview((Drawable) null);
             return;
         }
         if (mActiveRequest != null) {
