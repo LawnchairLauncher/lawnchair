@@ -132,6 +132,7 @@ public class InvariantDeviceProfile {
      * Do not query directly. see {@link DeviceProfile#isScalableGrid}.
      */
     protected boolean isScalable;
+    public int devicePaddingId;
 
     public String dbFile;
     public int defaultLayoutId;
@@ -140,7 +141,7 @@ public class InvariantDeviceProfile {
     public DeviceProfile landscapeProfile;
     public DeviceProfile portraitProfile;
 
-    public DevicePaddings devicePaddings;
+    @Nullable public DevicePaddings devicePaddings;
 
     public Point defaultWallpaperSize;
     public Rect defaultWidgetPadding;
@@ -165,6 +166,7 @@ public class InvariantDeviceProfile {
         numHotseatIcons = p.numHotseatIcons;
         numAllAppsColumns = p.numAllAppsColumns;
         isScalable = p.isScalable;
+        devicePaddingId = p.devicePaddingId;
         minCellHeight = p.minCellHeight;
         minCellWidth = p.minCellWidth;
         borderSpacing = p.borderSpacing;
@@ -231,7 +233,6 @@ public class InvariantDeviceProfile {
         result.minCellWidth = defaultDisplayOption.minCellWidth;
         result.borderSpacing = defaultDisplayOption.borderSpacing;
 
-        devicePaddings = new DevicePaddings(context);
         initGrid(context, myInfo, result);
     }
 
@@ -262,7 +263,6 @@ public class InvariantDeviceProfile {
         ArrayList<DisplayOption> allOptions = getPredefinedDeviceProfiles(context, gridName);
 
         DisplayOption displayOption = invDistWeightedInterpolate(displayInfo, allOptions);
-        devicePaddings = new DevicePaddings(context);
         initGrid(context, displayInfo, displayOption);
         return displayOption.grid.name;
     }
@@ -280,6 +280,7 @@ public class InvariantDeviceProfile {
         numFolderColumns = closestProfile.numFolderColumns;
         numAllAppsColumns = closestProfile.numAllAppsColumns;
         isScalable = closestProfile.isScalable;
+        devicePaddingId = closestProfile.devicePaddingId;
 
         mExtraAttrs = closestProfile.extraAttrs;
 
@@ -300,6 +301,10 @@ public class InvariantDeviceProfile {
         } else {
             allAppsIconSize = iconSize;
             allAppsIconTextSize = iconTextSize;
+        }
+
+        if (devicePaddingId != 0) {
+            devicePaddings = new DevicePaddings(context, devicePaddingId);
         }
 
         // If the partner customization apk contains any grid overrides, apply them
@@ -615,6 +620,7 @@ public class InvariantDeviceProfile {
         private final int demoModeLayoutId;
 
         private final boolean isScalable;
+        private final int devicePaddingId;
 
         private final SparseArray<TypedValue> extraAttrs;
 
@@ -641,6 +647,8 @@ public class InvariantDeviceProfile {
 
             isScalable = a.getBoolean(
                     R.styleable.GridDisplayOption_isScalable, false);
+            devicePaddingId = a.getResourceId(
+                    R.styleable.GridDisplayOption_devicePaddingId, 0);
 
             a.recycle();
 
