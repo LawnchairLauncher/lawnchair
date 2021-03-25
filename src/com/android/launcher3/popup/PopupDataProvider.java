@@ -40,6 +40,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -224,6 +225,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
                 .map(recommendedWidget -> allWidgetItems.get(
                         new ComponentKey(recommendedWidget.getTargetComponent(),
                                 recommendedWidget.user)))
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 
