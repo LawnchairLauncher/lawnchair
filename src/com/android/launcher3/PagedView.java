@@ -307,7 +307,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     /**
      * Returns the currently visible pages.
      */
-    protected Iterable<View> getVisiblePages() {
+    public Iterable<View> getVisiblePages() {
         int panelCount = getPanelCount();
         List<View> visiblePages = new ArrayList<>(panelCount);
         for (int i = mCurrentPage; i < mCurrentPage + panelCount; i++) {

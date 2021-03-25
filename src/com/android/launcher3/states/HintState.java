@@ -53,10 +53,4 @@ public class HintState extends LauncherState {
     public ScaleAndTranslation getWorkspaceScaleAndTranslation(Launcher launcher) {
         return new ScaleAndTranslation(0.92f, 0, 0);
     }
-
-    @Override
-    public ScaleAndTranslation getQsbScaleAndTranslation(Launcher launcher) {
-        // Treat the QSB as part of the hotseat so they move together.
-        return getHotseatScaleAndTranslation(launcher);
-    }
 }

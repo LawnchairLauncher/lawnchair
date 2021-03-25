@@ -83,33 +83,24 @@ public class StaggeredWorkspaceAnim {
 
         DeviceProfile grid = launcher.getDeviceProfile();
         Workspace workspace = launcher.getWorkspace();
-        CellLayout cellLayout = (CellLayout) workspace.getChildAt(workspace.getCurrentPage());
-        ShortcutAndWidgetContainer currentPage = cellLayout.getShortcutsAndWidgets();
         Hotseat hotseat = launcher.getHotseat();
+
+        // Hotseat and QSB takes up two additional rows.
+        int totalRows = grid.inv.numRows + (grid.isVerticalBarLayout() ? 0 : 2);
+
+        // Add animation for all the visible workspace pages
+        workspace.getVisiblePages()
+                .forEach(page -> addAnimationForPage((CellLayout) page, totalRows));
 
         boolean workspaceClipChildren = workspace.getClipChildren();
         boolean workspaceClipToPadding = workspace.getClipToPadding();
-        boolean cellLayoutClipChildren = cellLayout.getClipChildren();
-        boolean cellLayoutClipToPadding = cellLayout.getClipToPadding();
         boolean hotseatClipChildren = hotseat.getClipChildren();
         boolean hotseatClipToPadding = hotseat.getClipToPadding();
 
         workspace.setClipChildren(false);
         workspace.setClipToPadding(false);
-        cellLayout.setClipChildren(false);
-        cellLayout.setClipToPadding(false);
         hotseat.setClipChildren(false);
         hotseat.setClipToPadding(false);
-
-        // Hotseat and QSB takes up two additional rows.
-        int totalRows = grid.inv.numRows + (grid.isVerticalBarLayout() ? 0 : 2);
-
-        // Set up springs on workspace items.
-        for (int i = currentPage.getChildCount() - 1; i >= 0; i--) {
-            View child = currentPage.getChildAt(i);
-            CellLayout.LayoutParams lp = ((CellLayout.LayoutParams) child.getLayoutParams());
-            addStaggeredAnimationForView(child, lp.cellY + lp.cellVSpan, totalRows);
-        }
 
         // Set up springs for the hotseat and qsb.
         ViewGroup hotseatIcons = hotseat.getShortcutsAndWidgets();
@@ -155,10 +146,33 @@ public class StaggeredWorkspaceAnim {
             public void onAnimationEnd(Animator animation) {
                 workspace.setClipChildren(workspaceClipChildren);
                 workspace.setClipToPadding(workspaceClipToPadding);
-                cellLayout.setClipChildren(cellLayoutClipChildren);
-                cellLayout.setClipToPadding(cellLayoutClipToPadding);
                 hotseat.setClipChildren(hotseatClipChildren);
                 hotseat.setClipToPadding(hotseatClipToPadding);
+            }
+        });
+    }
+
+    private void addAnimationForPage(CellLayout page, int totalRows) {
+        ShortcutAndWidgetContainer itemsContainer = page.getShortcutsAndWidgets();
+
+        boolean pageClipChildren = page.getClipChildren();
+        boolean pageClipToPadding = page.getClipToPadding();
+
+        page.setClipChildren(false);
+        page.setClipToPadding(false);
+
+        // Set up springs on workspace items.
+        for (int i = itemsContainer.getChildCount() - 1; i >= 0; i--) {
+            View child = itemsContainer.getChildAt(i);
+            CellLayout.LayoutParams lp = ((CellLayout.LayoutParams) child.getLayoutParams());
+            addStaggeredAnimationForView(child, lp.cellY + lp.cellVSpan, totalRows);
+        }
+
+        mAnimators.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                page.setClipChildren(pageClipChildren);
+                page.setClipToPadding(pageClipToPadding);
             }
         });
     }

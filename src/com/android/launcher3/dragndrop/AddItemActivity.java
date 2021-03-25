@@ -37,11 +37,14 @@ import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.DragShadowBuilder;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
+import android.view.WindowManager;
+import android.widget.TextView;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.InvariantDeviceProfile;
@@ -127,6 +130,9 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
         if (savedInstanceState == null) {
             logCommand(LAUNCHER_ADD_EXTERNAL_ITEM_START);
         }
+
+        TextView widgetAppName = findViewById(R.id.widget_appName);
+        widgetAppName.setText(getApplicationInfo().labelRes);
     }
 
     @Override
@@ -325,5 +331,16 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
         getStatsLogManager().logger()
                 .withItemInfo((ItemInfo) mWidgetCell.getWidgetView().getTag())
                 .log(command);
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        View view = getWindow().getDecorView();
+        WindowManager.LayoutParams layoutParams =
+                (WindowManager.LayoutParams) view.getLayoutParams();
+        layoutParams.gravity = Gravity.BOTTOM;
+        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        getWindowManager().updateViewLayout(view, layoutParams);
     }
 }

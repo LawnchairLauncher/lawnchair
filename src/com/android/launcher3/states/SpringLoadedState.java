@@ -59,10 +59,11 @@ public class SpringLoadedState extends LauncherState {
 
         float scale = grid.workspaceSpringLoadShrinkFactor;
         Rect insets = launcher.getDragLayer().getInsets();
+        int insetsBottom = grid.isTaskbarPresent ? grid.taskbarSize : insets.bottom;
 
         float scaledHeight = scale * ws.getNormalChildHeight();
         float shrunkTop = insets.top + grid.dropTargetBarSizePx;
-        float shrunkBottom = ws.getMeasuredHeight() - insets.bottom
+        float shrunkBottom = ws.getMeasuredHeight() - insetsBottom
                 - grid.workspacePadding.bottom
                 - grid.workspaceSpringLoadedBottomSpace;
         float totalShrunkSpace = shrunkBottom - shrunkTop;
