@@ -8,7 +8,7 @@ import com.android.launcher3.R
 @Composable
 fun HomeScreenPreferences(interactor: PreferenceInteractor) {
     Column {
-        PreferenceGroup(heading = "General", useTopPadding = false) {
+        PreferenceGroup(heading = "General", isFirstChild = true) {
             SwitchPreference(
                 checked = interactor.addIconToHome.value,
                 onCheckedChange = { interactor.setAddIconToHome(it) },
@@ -22,7 +22,7 @@ fun HomeScreenPreferences(interactor: PreferenceInteractor) {
                 showDivider = false
             )*/
         }
-        PreferenceGroup(heading = stringResource(id = R.string.grid), useTopPadding = true) {
+        PreferenceGroup(heading = stringResource(id = R.string.grid)) {
             SliderPreference(
                 label = stringResource(id = R.string.home_screen_columns),
                 value = interactor.workspaceColumns.value,
@@ -39,7 +39,7 @@ fun HomeScreenPreferences(interactor: PreferenceInteractor) {
                 showDivider = false
             )
         }
-        PreferenceGroup(heading = stringResource(id = R.string.icons), useTopPadding = true) {
+        PreferenceGroup(heading = stringResource(id = R.string.icons)) {
             SliderPreference(
                 label = stringResource(id = R.string.icon_size),
                 value = interactor.iconSizeFactor.value,

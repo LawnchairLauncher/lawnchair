@@ -10,7 +10,7 @@ import com.android.launcher3.R
 @ExperimentalAnimationApi
 @Composable
 fun GeneralPreferences(navController: NavController, interactor: PreferenceInteractor) {
-    PreferenceGroup {
+    PreferenceGroup(isFirstChild = true) {
         SwitchPreference(
             checked = interactor.allowRotation.value,
             onCheckedChange = { interactor.setAllowRotation(it) },
@@ -19,7 +19,7 @@ fun GeneralPreferences(navController: NavController, interactor: PreferenceInter
             showDivider = false
         )
     }
-    PreferenceGroup(heading = stringResource(id = R.string.icons), useTopPadding = true) {
+    PreferenceGroup(heading = stringResource(id = R.string.icons)) {
         NotificationDotsPreference(interactor)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             SwitchPreference(

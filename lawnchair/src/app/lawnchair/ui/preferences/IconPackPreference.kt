@@ -27,7 +27,7 @@ data class IconPackInfo(val name: String, val packageName: String, val icon: Dra
 fun IconPackPreference(interactor: PreferenceInteractor) {
     val iconPacks = interactor.getIconPacks().values.toList()
 
-    PreferenceGroup {
+    PreferenceGroup(isFirstChild = true) {
         LazyColumn(Modifier.fillMaxWidth()) {
             items(iconPacks) { iconPack ->
                 IconPackListItem(

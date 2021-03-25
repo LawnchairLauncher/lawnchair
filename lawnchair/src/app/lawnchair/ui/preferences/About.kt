@@ -159,7 +159,7 @@ fun About() {
                 ContributorLink(iconResId = R.drawable.ic_github, url = "https://github.com/AgentFabulous")
             }
         )
-        PreferenceGroup(heading = stringResource(id = R.string.team_members), useTopPadding = true) {
+        PreferenceGroup(heading = stringResource(id = R.string.team_members)) {
             teamMembers.forEachIndexed { index, it ->
                 ContributorRow(
                     name = it.name,
@@ -170,7 +170,7 @@ fun About() {
                 )
             }
         }
-        PreferenceGroup(useTopPadding = true) {
+        PreferenceGroup {
             ClickListenerPreference(label = stringResource(id = R.string.acknowledgements), showDivider = false, onClick = {
                 val intent = Intent(context, OssLicensesMenuActivity::class.java)
                 OssLicensesMenuActivity.setActivityTitle(context.getString(R.string.acknowledgements))

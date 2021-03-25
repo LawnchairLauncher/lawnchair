@@ -10,8 +10,16 @@ import androidx.compose.ui.unit.dp
 import app.lawnchair.util.smartBorder
 
 @Composable
-fun PreferenceGroup(heading: String? = null, useTopPadding: Boolean = false, content: @Composable () -> Unit) {
-    if (useTopPadding) Spacer(modifier = Modifier.requiredHeight(if (heading != null) 8.dp else 16.dp))
+fun PreferenceGroup(heading: String? = null, isFirstChild: Boolean = false, content: @Composable () -> Unit) {
+    Spacer(
+        modifier = Modifier.requiredHeight(
+            if (isFirstChild) {
+                if (heading != null) 0.dp else 8.dp
+            } else {
+                if (heading != null) 8.dp else 16.dp
+            }
+        )
+    )
     heading?.let {
         Column(
             modifier = Modifier

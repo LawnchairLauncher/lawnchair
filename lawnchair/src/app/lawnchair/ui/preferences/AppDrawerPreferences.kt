@@ -8,7 +8,7 @@ import com.android.launcher3.R
 @Composable
 fun AppDrawerPreferences(interactor: PreferenceInteractor) {
     Column {
-        PreferenceGroup(heading = stringResource(id = R.string.grid)) {
+        PreferenceGroup(heading = stringResource(id = R.string.grid), isFirstChild = true) {
             SliderPreference(
                 label = stringResource(id = R.string.app_drawer_columns),
                 value = interactor.allAppsColumns.value,
@@ -18,7 +18,7 @@ fun AppDrawerPreferences(interactor: PreferenceInteractor) {
                 showDivider = false
             )
         }
-        PreferenceGroup(heading = stringResource(id = R.string.icons), useTopPadding = true) {
+        PreferenceGroup(heading = stringResource(id = R.string.icons)) {
             SliderPreference(
                 label = stringResource(id = R.string.icon_size),
                 value = interactor.allAppsIconSizeFactor.value,

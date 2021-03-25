@@ -8,7 +8,7 @@ import com.android.launcher3.R
 @Composable
 fun DockPreferences(interactor: PreferenceInteractor) {
     Column {
-        PreferenceGroup(heading = stringResource(id = R.string.grid)) {
+        PreferenceGroup(heading = stringResource(id = R.string.grid), isFirstChild = true) {
             SliderPreference(
                 label = stringResource(id = R.string.dock_icons),
                 value = interactor.hotseatColumns.value,
