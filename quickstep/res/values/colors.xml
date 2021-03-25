@@ -27,4 +27,5 @@
 
     <!-- Taskbar -->
     <color name="taskbar_background">#101010</color>
+    <color name="taskbar_icon_selection_ripple">#E0E0E0</color>
 </resources>
