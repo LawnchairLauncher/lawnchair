@@ -120,11 +120,6 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
     }
 
     protected void init(int numHotseatIcons, int numRecentIcons) {
-        mLayoutTransition = new LayoutTransition();
-        addUpdateListenerForAllLayoutTransitions(
-                () -> mControllerCallbacks.onItemPositionsChanged(this));
-        setLayoutTransition(mLayoutTransition);
-
         mHotseatStartIndex = 0;
         mHotseatEndIndex = mHotseatStartIndex + numHotseatIcons - 1;
         updateHotseatItems(new ItemInfo[numHotseatIcons]);
@@ -135,6 +130,14 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
         mRecentsStartIndex = dividerIndex + 1;
         mRecentsEndIndex = mRecentsStartIndex + numRecentIcons - 1;
         updateRecentTasks(new Task[numRecentIcons]);
+
+        mLayoutTransition = new LayoutTransition();
+        addUpdateListenerForAllLayoutTransitions(() -> {
+            if (getLayoutTransition() == mLayoutTransition) {
+                mControllerCallbacks.onItemPositionsChanged(this);
+            }
+        });
+        setLayoutTransition(mLayoutTransition);
     }
 
     private void addUpdateListenerForAllLayoutTransitions(Runnable onUpdate) {
@@ -159,8 +162,18 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
     }
 
     protected void cleanup() {
+        endAllLayoutTransitionAnimators();
+        setLayoutTransition(null);
         removeAllViews();
         mHotseatRecentsDivider = null;
+    }
+
+    private void endAllLayoutTransitionAnimators() {
+        mLayoutTransition.getAnimator(LayoutTransition.CHANGE_APPEARING).end();
+        mLayoutTransition.getAnimator(LayoutTransition.CHANGE_DISAPPEARING).end();
+        mLayoutTransition.getAnimator(LayoutTransition.CHANGING).end();
+        mLayoutTransition.getAnimator(LayoutTransition.APPEARING).end();
+        mLayoutTransition.getAnimator(LayoutTransition.DISAPPEARING).end();
     }
 
     /**
