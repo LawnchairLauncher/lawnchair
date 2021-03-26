@@ -139,6 +139,10 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo
         }
     }
 
+    public boolean isReconfigurable() {
+        return configure != null && (getWidgetFeatures() & WIDGET_FEATURE_RECONFIGURABLE) != 0;
+    }
+
     @Override
     public final ComponentName getComponent() {
         return provider;

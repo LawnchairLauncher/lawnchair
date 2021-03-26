@@ -17,6 +17,7 @@
 package com.android.launcher3.tapl;
 
 import static com.android.launcher3.tapl.LauncherInstrumentation.WAIT_TIME_MS;
+import static com.android.launcher3.tapl.LauncherInstrumentation.log;
 
 import android.graphics.Rect;
 
@@ -29,13 +30,13 @@ import androidx.test.uiautomator.Until;
 import com.android.launcher3.testing.TestProtocol;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * All widgets container.
  */
 public final class Widgets extends LauncherInstrumentation.VisibleContainer {
     private static final int FLING_STEPS = 10;
+    private static final int SCROLL_ATTEMPTS = 60;
 
     Widgets(LauncherInstrumentation launcher) {
         super(launcher);
@@ -49,7 +50,7 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
              LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                      "want to fling forward in widgets")) {
-            LauncherInstrumentation.log("Widgets.flingForward enter");
+            log("Widgets.flingForward enter");
             final UiObject2 widgetsContainer = verifyActiveContainer();
             mLauncher.scroll(
                     widgetsContainer,
@@ -60,7 +61,7 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer("flung forward")) {
                 verifyActiveContainer();
             }
-            LauncherInstrumentation.log("Widgets.flingForward exit");
+            log("Widgets.flingForward exit");
         }
     }
 
@@ -71,7 +72,7 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
              LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                      "want to fling backwards in widgets")) {
-            LauncherInstrumentation.log("Widgets.flingBackward enter");
+            log("Widgets.flingBackward enter");
             final UiObject2 widgetsContainer = verifyActiveContainer();
             mLauncher.scroll(
                     widgetsContainer,
@@ -81,7 +82,7 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer("flung back")) {
                 verifyActiveContainer();
             }
-            LauncherInstrumentation.log("Widgets.flingBackward exit");
+            log("Widgets.flingBackward exit");
         }
     }
 
@@ -101,11 +102,12 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
              LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                      "getting widget " + labelText + " in widgets list")) {
             final UiObject2 searchBar = findSearchBar();
+            final int searchBarHeight = searchBar.getVisibleBounds().height();
             final UiObject2 fullWidgetsPicker = verifyActiveContainer();
             mLauncher.assertTrue("Widgets container didn't become scrollable",
                     fullWidgetsPicker.wait(Until.scrollable(true), WAIT_TIME_MS));
 
-            final UiObject2 widgetsContainer = findTestAppWidgetsTableContainer(searchBar);
+            final UiObject2 widgetsContainer = findTestAppWidgetsTableContainer();
             mLauncher.assertTrue("Can't locate widgets list for the test app: "
                             + mLauncher.getLauncherPackageName(),
                     widgetsContainer != null);
@@ -118,7 +120,8 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
                 for (UiObject2 row : tableRows) {
                     final Collection<UiObject2> widgetCells = row.getChildren();
                     for (UiObject2 widget : widgetCells) {
-                        final UiObject2 label = widget.findObject(labelSelector);
+                        final UiObject2 label = mLauncher.findObjectInContainer(widget,
+                                labelSelector);
                         if (label == null) {
                             continue;
                         }
@@ -126,28 +129,15 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
                                 "View is not WidgetCell",
                                 "com.android.launcher3.widget.WidgetCell",
                                 widget.getClassName());
-                        UiObject2 preview = widget.findObject(previewSelector);
-                        mLauncher.assertTrue("Can't find widget preview", preview != null);
-                        Rect previewRect = new Rect(preview.getVisibleBounds());
-                        boolean intersected = searchBar.getVisibleBounds().intersect(previewRect);
-                        if (intersected) {
-                            Rect scrollUp = new Rect(/* left= */ 0, /* top= */0, /* right*/ 0,
-                                    /* bottom= */ searchBar.getVisibleBounds().height());
-                            mLauncher.scroll(
-                                    fullWidgetsPicker,
-                                    Direction.UP,
-                                    scrollUp,
-                                    /* steps= */ 2,
-                                    /* slowDown= */ true);
-                        }
-                        preview = widget.findObject(previewSelector);
+                        UiObject2 preview = mLauncher.waitForObjectInContainer(widget,
+                                previewSelector);
                         return new Widget(mLauncher, preview);
                     }
                 }
 
-                mLauncher.assertTrue("Too many attempts", ++i <= 40);
+                mLauncher.assertTrue("Too many attempts", ++i <= SCROLL_ATTEMPTS);
                 final int scroll = getWidgetsScroll();
-                mLauncher.scrollToLastVisibleRow(fullWidgetsPicker, tableRows, 0);
+                mLauncher.scrollDownByDistance(fullWidgetsPicker, searchBarHeight);
                 final int newScroll = getWidgetsScroll();
                 mLauncher.assertTrue(
                         "Scrolled in a wrong direction in Widgets: from " + scroll + " to "
@@ -164,14 +154,13 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
                 "widgets_search_bar");
         final UiObject2 searchBarContainer = mLauncher.waitForLauncherObject(
                 searchBarContainerSelector);
-        mLauncher.assertTrue("Can't find a search bar container", searchBarContainer != null);
-        UiObject2 searchBar = searchBarContainer.findObject(searchBarSelector);
-        mLauncher.assertTrue("Can't find a search bar", searchBar != null);
+        UiObject2 searchBar = mLauncher.waitForObjectInContainer(searchBarContainer,
+                searchBarSelector);
         return searchBar;
     }
 
     /** Finds the widgets list of this test app from the collapsed full widgets picker. */
-    private UiObject2 findTestAppWidgetsTableContainer(final UiObject2 searchBar) {
+    private UiObject2 findTestAppWidgetsTableContainer() {
         final BySelector headerSelector = By.res(mLauncher.getLauncherPackageName(),
                 "widgets_list_header");
         final BySelector targetAppSelector = By.clazz("android.widget.TextView").text(
@@ -180,50 +169,34 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
                 "widgets_table");
 
         boolean hasHeaderExpanded = false;
-        for (int i = 0; i < 40; i++) {
+        for (int i = 0; i < SCROLL_ATTEMPTS; i++) {
             UiObject2 fullWidgetsPicker = verifyActiveContainer();
 
-            UiObject2 header = fullWidgetsPicker.findObject(headerSelector);
-            mLauncher.assertTrue("Can't find a widget header", header != null);
+            UiObject2 header = mLauncher.waitForObjectInContainer(fullWidgetsPicker,
+                    headerSelector);
+            int headerHeight = header.getVisibleBounds().height();
 
             // Look for a header that has the test app name.
-            UiObject2 headerTitle = fullWidgetsPicker.findObject(targetAppSelector);
+            UiObject2 headerTitle = mLauncher.findObjectInContainer(fullWidgetsPicker,
+                    targetAppSelector);
             if (headerTitle != null) {
-                Rect headerTitleRect = new Rect(headerTitle.getVisibleBounds());
-                boolean intersected = searchBar.getVisibleBounds().intersect(headerTitleRect);
-                if (intersected) {
-                    Rect scrollUp = new Rect(/* left= */ 0, /* top= */0, /* right*/ 0,
-                            /* bottom= */ searchBar.getVisibleBounds().height());
-                    mLauncher.scroll(
-                            fullWidgetsPicker,
-                            Direction.UP,
-                            scrollUp,
-                            /* steps= */ 2,
-                            /* slowDown= */ true);
-                }
                 // If we find the header and it has not been expanded, let's click it to see the
                 // widgets list.
                 if (!hasHeaderExpanded) {
+                    log("Header has not been expanded. Click to expand.");
                     hasHeaderExpanded = true;
                     mLauncher.clickLauncherObject(headerTitle);
-                    // After clicking the header, the recyclerview has been updated. Let's refresh
-                    // the container UIObject2.
-                    fullWidgetsPicker = verifyActiveContainer();
-                    // Refresh headerTitle because the first instance is stale after
-                    // verifyActiveContainer call.
-                    headerTitle = fullWidgetsPicker.findObject(targetAppSelector);
                 }
 
                 // Look for a widgets list.
-                UiObject2 widgetsContainer = fullWidgetsPicker.findObject(widgetsContainerSelector);
+                UiObject2 widgetsContainer = mLauncher.findObjectInContainer(fullWidgetsPicker,
+                        widgetsContainerSelector);
                 if (widgetsContainer != null) {
+                    log("Widgets container found.");
                     return widgetsContainer;
                 }
-                mLauncher.scrollToLastVisibleRow(fullWidgetsPicker, List.of(headerTitle), 0);
-            } else {
-                mLauncher.scrollToLastVisibleRow(fullWidgetsPicker, fullWidgetsPicker.getChildren(),
-                        0);
             }
+            mLauncher.scrollDownByDistance(fullWidgetsPicker, headerHeight);
         }
 
         return null;

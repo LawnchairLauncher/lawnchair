@@ -36,9 +36,8 @@ final class BackGestureTutorialController extends TutorialController {
     Integer getTitleStringId() {
         switch (mTutorialType) {
             case RIGHT_EDGE_BACK_NAVIGATION:
-                return R.string.back_gesture_tutorial_playground_title_swipe_inward_right_edge;
             case LEFT_EDGE_BACK_NAVIGATION:
-                return R.string.back_gesture_tutorial_playground_title_swipe_inward_left_edge;
+                return R.string.back_gesture_intro_title;
             case BACK_NAVIGATION_COMPLETE:
                 return R.string.gesture_tutorial_confirm_title;
         }
@@ -49,9 +48,8 @@ final class BackGestureTutorialController extends TutorialController {
     Integer getSubtitleStringId() {
         switch (mTutorialType) {
             case RIGHT_EDGE_BACK_NAVIGATION:
-                return R.string.back_gesture_tutorial_engaged_subtitle_swipe_inward_right_edge;
             case LEFT_EDGE_BACK_NAVIGATION:
-                return R.string.back_gesture_tutorial_engaged_subtitle_swipe_inward_left_edge;
+                return R.string.back_gesture_intro_subtitle;
             case BACK_NAVIGATION_COMPLETE:
                 return R.string.back_gesture_tutorial_confirm_subtitle;
         }
