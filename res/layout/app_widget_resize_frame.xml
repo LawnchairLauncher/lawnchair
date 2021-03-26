@@ -73,5 +73,17 @@
             android:src="@drawable/ic_widget_resize_handle"
             android:tint="?android:attr/colorAccent" />
 
+        <ImageButton
+            android:id="@+id/widget_reconfigure_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/widget_reconfigure_button_padding"
+            android:layout_gravity="bottom|end"
+            android:layout_marginBottom="@dimen/widget_reconfigure_button_margin"
+            android:layout_marginEnd="@dimen/widget_reconfigure_button_margin"
+            android:src="@drawable/widget_reconfigure_button_frame"
+            android:background="?android:attr/selectableItemBackground"
+            android:visibility="gone" />
+
     </FrameLayout>
 </com.android.launcher3.AppWidgetResizeFrame>

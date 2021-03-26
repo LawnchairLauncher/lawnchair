@@ -56,6 +56,12 @@
     <dimen name="resize_frame_background_padding">24dp</dimen>
     <dimen name="resize_frame_margin">22dp</dimen>
 
+    <!-- App widget reconfigure button -->
+    <dimen name="widget_reconfigure_button_corner_radius">14dp</dimen>
+    <dimen name="widget_reconfigure_button_padding">6dp</dimen>
+    <dimen name="widget_reconfigure_button_margin">32dp</dimen>
+    <dimen name="widget_reconfigure_button_size">36dp</dimen>
+
 <!-- Fast scroll -->
     <dimen name="fastscroll_track_min_width">6dp</dimen>
     <dimen name="fastscroll_track_max_width">8dp</dimen>
@@ -285,5 +291,10 @@
 
     <!-- Size of the maximum radius for the enforced rounded rectangles. -->
     <dimen name="enforced_rounded_corner_max_radius">16dp</dimen>
+
+<!-- Overview placeholder to compile in Launcer3 without Quickstep -->
+    <dimen name="task_thumbnail_icon_size">0dp</dimen>
+    <dimen name="task_thumbnail_icon_size_grid">0dp</dimen>
+    <dimen name="overview_task_margin">0dp</dimen>
 
 </resources>

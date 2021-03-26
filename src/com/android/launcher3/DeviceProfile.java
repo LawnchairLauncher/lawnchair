@@ -104,6 +104,7 @@ public class DeviceProfile {
     private final int mWorkspacePageIndicatorOverlapWorkspace;
 
     // Workspace icons
+    public float iconScale;
     public int iconSizePx;
     public int iconTextSizePx;
     public int iconDrawablePaddingPx;
@@ -150,6 +151,11 @@ public class DeviceProfile {
     public int allAppsIconSizePx;
     public int allAppsIconDrawablePaddingPx;
     public float allAppsIconTextSizePx;
+
+    // Overview
+    public int overviewTaskMarginPx;
+    public int overviewTaskIconSizePx;
+    public int overviewTaskThumbnailTopMarginPx;
 
     // Widgets
     public final PointF appWidgetScale = new PointF(1.0f, 1.0f);
@@ -297,15 +303,29 @@ public class DeviceProfile {
                 : (hotseatBarTopPaddingPx + hotseatBarBottomPaddingPx
                         + (isScalableGrid ? 0 : hotseatExtraVerticalSize)));
 
+        overviewTaskMarginPx = res.getDimensionPixelSize(R.dimen.overview_task_margin);
+        overviewTaskIconSizePx =
+                isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get() ? res.getDimensionPixelSize(
+                        R.dimen.task_thumbnail_icon_size_grid) : res.getDimensionPixelSize(
+                        R.dimen.task_thumbnail_icon_size);
+        overviewTaskThumbnailTopMarginPx = overviewTaskIconSizePx + overviewTaskMarginPx * 2;
+
         // Calculate all of the remaining variables.
         extraSpace = updateAvailableDimensions(res);
         // Now that we have all of the variables calculated, we can tune certain sizes.
-        if (isScalableGrid) {
-            DevicePadding padding = inv.devicePaddings.getDevicePadding(extraSpace);
-            workspaceTopPadding = padding.getWorkspaceTopPadding(extraSpace);
-            workspaceBottomPadding = padding.getWorkspaceBottomPadding(extraSpace);
+        if (isScalableGrid && inv.devicePaddings != null) {
+            // Paddings were created assuming no scaling, so we first unscale the extra space.
+            int unscaledExtraSpace = (int) (extraSpace / iconScale);
+            DevicePadding padding = inv.devicePaddings.getDevicePadding(unscaledExtraSpace);
 
-            extraHotseatBottomPadding = padding.getHotseatBottomPadding(extraSpace);
+            int paddingWorkspaceTop = padding.getWorkspaceTopPadding(unscaledExtraSpace);
+            int paddingWorkspaceBottom = padding.getWorkspaceBottomPadding(unscaledExtraSpace);
+            int paddingHotseatBottom = padding.getHotseatBottomPadding(unscaledExtraSpace);
+
+            workspaceTopPadding = Math.round(paddingWorkspaceTop * iconScale);
+            workspaceBottomPadding = Math.round(paddingWorkspaceBottom * iconScale);
+            extraHotseatBottomPadding = Math.round(paddingHotseatBottom * iconScale);
+
             hotseatBarSizePx += extraHotseatBottomPadding;
             hotseatBarBottomPaddingPx += extraHotseatBottomPadding;
         } else if (!isVerticalBarLayout() && isPhone && isTallDevice) {
@@ -478,6 +498,8 @@ public class DeviceProfile {
      * hotseat sizes, workspaceSpringLoadedShrinkFactor, folderIconSizePx, and folderIconOffsetYPx.
      */
     public void updateIconSize(float scale, Resources res) {
+        iconScale = scale;
+
         // Workspace
         final boolean isVerticalLayout = isVerticalBarLayout();
         float invIconSizeDp = isVerticalLayout ? inv.landscapeIconSize : inv.iconSize;
@@ -878,7 +900,14 @@ public class DeviceProfile {
         writer.println(prefix + pxToDpStr("workspacePadding.right", workspacePadding.right));
         writer.println(prefix + pxToDpStr("workspacePadding.bottom", workspacePadding.bottom));
 
+        writer.println(prefix + pxToDpStr("scaleToFit", iconScale));
         writer.println(prefix + pxToDpStr("extraSpace", extraSpace));
+
+        if (inv.devicePaddings != null) {
+            int unscaledExtraSpace = (int) (extraSpace / iconScale);
+            writer.println(prefix + pxToDpStr("maxEmptySpace",
+                    inv.devicePaddings.getDevicePadding(unscaledExtraSpace).getMaxEmptySpacePx()));
+        }
         writer.println(prefix + pxToDpStr("workspaceTopPadding", workspaceTopPadding));
         writer.println(prefix + pxToDpStr("workspaceBottomPadding", workspaceBottomPadding));
         writer.println(prefix + pxToDpStr("extraHotseatBottomPadding", extraHotseatBottomPadding));

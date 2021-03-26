@@ -58,7 +58,6 @@ public class TaskMenuView extends AbstractFloatingView {
     private static final int REVEAL_OPEN_DURATION = 150;
     private static final int REVEAL_CLOSE_DURATION = 100;
 
-    private final float mThumbnailTopMargin;
     private BaseDraggingActivity mActivity;
     private TextView mTaskName;
     private AnimatorSet mOpenCloseAnimator;
@@ -73,7 +72,6 @@ public class TaskMenuView extends AbstractFloatingView {
         super(context, attrs, defStyleAttr);
 
         mActivity = BaseDraggingActivity.fromContext(context);
-        mThumbnailTopMargin = getResources().getDimension(R.dimen.task_thumbnail_top_margin);
         setClipToOutline(true);
     }
 
@@ -123,14 +121,15 @@ public class TaskMenuView extends AbstractFloatingView {
     }
 
     public void setPosition(float x, float y, PagedOrientationHandler pagedOrientationHandler) {
-        float adjustedY = y + mThumbnailTopMargin;
+        int taskTopMargin = mActivity.getDeviceProfile().overviewTaskThumbnailTopMarginPx;
+        float adjustedY = y + taskTopMargin;
         // Changing pivot to make computations easier
         // NOTE: Changing the pivots means the rotated view gets rotated about the new pivots set,
         // which would render the X and Y position set here incorrect
         setPivotX(0);
         if (mActivity.getDeviceProfile().isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get()) {
             // In tablet, set pivotY to original position without mThumbnailTopMargin adjustment.
-            setPivotY(-mThumbnailTopMargin);
+            setPivotY(-taskTopMargin);
         } else {
             setPivotY(0);
         }
