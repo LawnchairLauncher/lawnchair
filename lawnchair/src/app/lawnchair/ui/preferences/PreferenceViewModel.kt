@@ -43,6 +43,7 @@ class PreferenceViewModel(application: Application) : AndroidViewModel(applicati
     override val makeColoredBackgrounds: MutableState<Boolean> = mutableStateOf(pm.makeColoredBackgrounds)
     override val notificationDotsEnabled: MutableState<Boolean> =
         mutableStateOf(enabledNotificationListeners?.contains(lawnchairNotificationListener.flattenToString()) == true)
+    override val drawerOpacity: MutableState<Float> = mutableStateOf(pm.drawerOpacity)
 
     override fun setIconPackPackage(iconPackPackage: String) {
         pm.iconPackPackage = iconPackPackage
@@ -122,6 +123,11 @@ class PreferenceViewModel(application: Application) : AndroidViewModel(applicati
     override fun setMakeColoredBackgrounds(makeColoredBackgrounds: Boolean) {
         pm.makeColoredBackgrounds = makeColoredBackgrounds
         this.makeColoredBackgrounds.value = makeColoredBackgrounds
+    }
+
+    override fun setDrawerOpacity(drawerOpacity: Float) {
+        pm.drawerOpacity = drawerOpacity
+        this.drawerOpacity.value = drawerOpacity
     }
 
     override fun getIconPacks(): MutableMap<String, IconPackInfo> {

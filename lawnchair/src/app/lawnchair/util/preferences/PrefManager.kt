@@ -9,6 +9,7 @@ class PrefManager(context: Context) {
     val sp: SharedPreferences = Utilities.getPrefs(context)
     private val lp = LawnchairPreferences
     private val idp = LauncherAppState.getIDP(context)
+    private val launcher = LauncherAppState.getInstance(context).launcher
     var iconPackPackage by StringPrefDelegate(lp.ICON_PACK_PACKAGE, "")
     var allowRotation by BoolPrefDelegate("pref_allowRotation", true)
     var wrapAdaptiveIcons by BoolPrefDelegate(lp.WRAP_ADAPTIVE_ICONS, false)
@@ -25,4 +26,5 @@ class PrefManager(context: Context) {
     var allAppsColumns by FloatPrefDelegate(lp.ALL_APPS_COLUMNS, idp.numAllAppsColumns.toFloat())
     var allowEmptyPages by BoolPrefDelegate(lp.ALLOW_EMPTY_PAGES, false)
     var makeColoredBackgrounds by BoolPrefDelegate(lp.MAKE_COLORED_BACKGROUNDS, false)
+    var drawerOpacity by FloatPrefDelegate(lp.DRAWER_OPACITY, 1F)
 }

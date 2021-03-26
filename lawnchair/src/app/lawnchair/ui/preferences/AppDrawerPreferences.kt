@@ -8,7 +8,18 @@ import com.android.launcher3.R
 @Composable
 fun AppDrawerPreferences(interactor: PreferenceInteractor) {
     Column {
-        PreferenceGroup(heading = stringResource(id = R.string.grid), isFirstChild = true) {
+        PreferenceGroup(heading = stringResource(id = R.string.general_label), isFirstChild = true) {
+            SliderPreference(
+                label = stringResource(id = R.string.background_opacity),
+                value = interactor.drawerOpacity.value,
+                onValueChange = { interactor.setDrawerOpacity(it) },
+                steps = 2,
+                valueRange = 0.7F..1F,
+                showDivider = false,
+                showAsPercentage = true
+            )
+        }
+        PreferenceGroup(heading = stringResource(id = R.string.grid)) {
             SliderPreference(
                 label = stringResource(id = R.string.app_drawer_columns),
                 value = interactor.allAppsColumns.value,

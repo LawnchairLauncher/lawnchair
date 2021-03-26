@@ -26,6 +26,7 @@ import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_SCRIM_VIEW;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -52,6 +53,8 @@ import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
 import com.android.quickstep.util.LayoutUtils;
 
+import app.lawnchair.util.preferences.LawnchairPreferences;
+
 /**
  * Scrim used for all-apps and shelf in Overview
  * In transposed layout, it behaves as a simple color scrim.
@@ -73,7 +76,7 @@ public class ShelfScrimView extends ScrimView<BaseQuickstepLauncher>
     private boolean mDrawingFlatColor;
 
     // For shelf mode
-    private final int mEndAlpha;
+    private int mEndAlpha;
     private final float mRadius;
     private final int mMaxScrimAlpha;
     private final Paint mPaint;
@@ -109,13 +112,14 @@ public class ShelfScrimView extends ScrimView<BaseQuickstepLauncher>
         super(context, attrs);
         mMaxScrimAlpha = Math.round(OVERVIEW.getOverviewScrimAlpha(mLauncher) * 255);
 
-        mEndAlpha = Color.alpha(mEndScrim);
         mRadius = BOTTOM_CORNER_RADIUS_RATIO * Themes.getDialogCornerRadius(context);
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mOnboardingPrefs = mLauncher.getOnboardingPrefs();
 
         // Just assume the easiest UI for now, until we have the proper layout information.
         mDrawingFlatColor = true;
+
+        refreshScrimAlpha(context);
     }
 
     @Override
@@ -315,5 +319,17 @@ public class ShelfScrimView extends ScrimView<BaseQuickstepLauncher>
     @Override
     public float getVisualTop() {
         return mShelfTop;
+    }
+
+    @Override
+    public void refreshScrimAlpha(Context context) {
+        SharedPreferences prefs = LawnchairPreferences.Companion.getInstance(context);
+        if (prefs == null) return;
+        mEndAlpha = (int) (prefs.getFloat(LawnchairPreferences.DRAWER_OPACITY, 1F) * 255);
+    }
+
+    @Override
+    public int getScrimAlpha() {
+        return mEndAlpha;
     }
 }

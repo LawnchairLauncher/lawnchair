@@ -10,11 +10,12 @@ import com.android.launcher3.Utilities
 
 class LawnchairPreferences(val context: Context) {
     val listener: SharedPreferences.OnSharedPreferenceChangeListener =
-        SharedPreferences.OnSharedPreferenceChangeListener { _: SharedPreferences?, key: String? ->
+        SharedPreferences.OnSharedPreferenceChangeListener { prefs: SharedPreferences?, key: String? ->
+            val las = LauncherAppState.getInstance(context)
             when (key) {
                 ICON_PACK_PACKAGE, WRAP_ADAPTIVE_ICONS, MAKE_COLORED_BACKGROUNDS -> {
-                    LauncherAppState.getInstance(context).model.clearIconCache()
-                    LauncherAppState.getInstance(context).model.forceReload()
+                    las.model.clearIconCache()
+                    las.model.forceReload()
                 }
                 WORKSPACE_ROWS, WORKSPACE_COLUMNS, ALL_APPS_COLUMNS, FOLDER_ROWS, FOLDER_COLUMNS, HOTSEAT_COLUMNS -> {
                     // LauncherAppState.getInstance(context).invariantDeviceProfile.reInitGrid()
@@ -23,6 +24,9 @@ class LawnchairPreferences(val context: Context) {
                 }
                 TEXT_SIZE_FACTOR, ICON_SIZE_FACTOR, ALL_APPS_ICON_SIZE_FACTOR, ALL_APPS_TEXT_SIZE_FACTOR -> {
                     scheduleRestart()
+                }
+                DRAWER_OPACITY -> {
+                    las.launcher.scrimView.refreshScrimAlpha(context)
                 }
             }
         }
@@ -90,6 +94,9 @@ class LawnchairPreferences(val context: Context) {
 
         @kotlin.jvm.JvmField
         var ENABLE_MINUS_ONE: String = "pref_enableMinusOne"
+
+        @kotlin.jvm.JvmField
+        var DRAWER_OPACITY: String = "pref_drawerOpacity"
 
         fun getInstance(context: Context?): SharedPreferences? = when {
             context == null -> null

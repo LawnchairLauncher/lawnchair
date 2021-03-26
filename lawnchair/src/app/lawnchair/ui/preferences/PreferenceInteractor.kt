@@ -20,6 +20,7 @@ interface PreferenceInteractor {
     val allowEmptyPages: State<Boolean>
     val makeColoredBackgrounds: State<Boolean>
     val notificationDotsEnabled: State<Boolean>
+    val drawerOpacity: State<Float>
 
     fun setIconPackPackage(iconPackPackage: String)
     fun setAllowRotation(allowRotation: Boolean)
@@ -37,6 +38,8 @@ interface PreferenceInteractor {
     fun setAllAppsColumns(allAppsColumns: Float)
     fun setAllowEmptyPages(allowEmptyPages: Boolean)
     fun setMakeColoredBackgrounds(makeColoredBackgrounds: Boolean)
+    fun setDrawerOpacity(drawerOpacity: Float)
+
 
     fun getIconPacks(): MutableMap<String, IconPackInfo>
 }
