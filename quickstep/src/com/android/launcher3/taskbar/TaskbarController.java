@@ -19,8 +19,6 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
 import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
 
-import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.systemui.shared.system.WindowManagerWrapper.ITYPE_BOTTOM_TAPPABLE_ELEMENT;
 import static com.android.systemui.shared.system.WindowManagerWrapper.ITYPE_EXTRA_NAVIGATION_BAR;
 
@@ -75,7 +73,7 @@ public class TaskbarController {
     // Layout width and height of the Taskbar in the default state.
     private final Point mTaskbarSize;
     private final TaskbarStateHandler mTaskbarStateHandler;
-    private final TaskbarVisibilityController mTaskbarVisibilityController;
+    private final TaskbarAnimationController mTaskbarAnimationController;
     private final TaskbarHotseatController mHotseatController;
     private final TaskbarRecentsController mRecentsController;
     private final TaskbarDragController mDragController;
@@ -104,8 +102,8 @@ public class TaskbarController {
         mWindowManager = mLauncher.getWindowManager();
         mTaskbarSize = new Point(MATCH_PARENT, mLauncher.getDeviceProfile().taskbarSize);
         mTaskbarStateHandler = mLauncher.getTaskbarStateHandler();
-        mTaskbarVisibilityController = new TaskbarVisibilityController(mLauncher,
-                createTaskbarVisibilityControllerCallbacks());
+        mTaskbarAnimationController = new TaskbarAnimationController(mLauncher,
+                createTaskbarAnimationControllerCallbacks());
         mHotseatController = new TaskbarHotseatController(mLauncher,
                 createTaskbarHotseatControllerCallbacks());
         mRecentsController = new TaskbarRecentsController(mLauncher,
@@ -113,8 +111,8 @@ public class TaskbarController {
         mDragController = new TaskbarDragController(mLauncher);
     }
 
-    private TaskbarVisibilityControllerCallbacks createTaskbarVisibilityControllerCallbacks() {
-        return new TaskbarVisibilityControllerCallbacks() {
+    private TaskbarAnimationControllerCallbacks createTaskbarAnimationControllerCallbacks() {
+        return new TaskbarAnimationControllerCallbacks() {
             @Override
             public void updateTaskbarBackgroundAlpha(float alpha) {
                 mTaskbarViewInApp.setBackgroundAlpha(alpha);
@@ -124,6 +122,12 @@ public class TaskbarController {
             public void updateTaskbarVisibilityAlpha(float alpha) {
                 mTaskbarContainerView.setAlpha(alpha);
                 mTaskbarViewOnHome.setAlpha(alpha);
+            }
+
+            @Override
+            public void updateTaskbarScale(float scale) {
+                mTaskbarViewInApp.setScaleX(scale);
+                mTaskbarViewInApp.setScaleY(scale);
             }
         };
     }
@@ -151,13 +155,22 @@ public class TaskbarController {
                         ActivityManagerWrapper.getInstance().startActivityFromRecents(task.key,
                                 ActivityOptions.makeBasic());
                     } else if (tag instanceof FolderInfo) {
-                        if (mLauncher.hasBeenResumed()) {
-                            FolderInfo folderInfo = (FolderInfo) tag;
-                            onClickedOnFolderFromHome(folderInfo);
-                        } else {
-                            FolderIcon folderIcon = (FolderIcon) view;
-                            onClickedOnFolderInApp(folderIcon);
-                        }
+                        FolderIcon folderIcon = (FolderIcon) view;
+                        Folder folder = folderIcon.getFolder();
+
+                        setTaskbarWindowFullscreen(true);
+
+                        mTaskbarContainerView.post(() -> {
+                            folder.animateOpen();
+
+                            folder.iterateOverItems((itemInfo, itemView) -> {
+                                itemView.setOnClickListener(getItemOnClickListener());
+                                itemView.setOnLongClickListener(getItemOnLongClickListener());
+                                // To play haptic when dragging, like other Taskbar items do.
+                                itemView.setHapticFeedbackEnabled(true);
+                                return false;
+                            });
+                        });
                     } else {
                         ItemClickHandler.INSTANCE.onClick(view);
                     }
@@ -167,44 +180,9 @@ public class TaskbarController {
                 };
             }
 
-            // Open the real folder in Launcher.
-            private void onClickedOnFolderFromHome(FolderInfo folderInfo) {
-                alignRealHotseatWithTaskbar();
-
-                FolderIcon folderIcon = (FolderIcon) mLauncher.getHotseat()
-                        .getFirstItemMatch((info, v) -> info == folderInfo);
-                folderIcon.post(folderIcon::performClick);
-            }
-
-            // Open the Taskbar folder, and handle clicks on folder items.
-            private void onClickedOnFolderInApp(FolderIcon folderIcon) {
-                Folder folder = folderIcon.getFolder();
-
-                setTaskbarWindowFullscreen(true);
-
-                mTaskbarContainerView.post(() -> {
-                    folder.animateOpen();
-
-                    folder.iterateOverItems((itemInfo, itemView) -> {
-                        itemView.setOnClickListener(getItemOnClickListener());
-                        itemView.setOnLongClickListener(getItemOnLongClickListener());
-                        // To play haptic when dragging, like other Taskbar items do.
-                        itemView.setHapticFeedbackEnabled(true);
-                        return false;
-                    });
-                });
-            }
-
             @Override
             public View.OnLongClickListener getItemOnLongClickListener() {
-                return view -> {
-                    if (mLauncher.hasBeenResumed() && view.getTag() instanceof ItemInfo) {
-                        // TODO: remove this path
-                        return mDragController.startWorkspaceDragOnLongClick(view);
-                    } else {
-                        return mDragController.startSystemDragOnLongClick(view);
-                    }
-                };
+                return mDragController::startSystemDragOnLongClick;
             }
 
             @Override
@@ -268,12 +246,10 @@ public class TaskbarController {
         mTaskbarContainerView.init(mTaskbarViewInApp);
         addToWindowManager();
         mTaskbarStateHandler.setTaskbarCallbacks(createTaskbarStateHandlerCallbacks());
-        mTaskbarVisibilityController.init();
+        mTaskbarAnimationController.init();
         mHotseatController.init();
         mRecentsController.init();
 
-        SCALE_PROPERTY.set(mTaskbarViewInApp, mLauncher.hasBeenResumed()
-                ? getTaskbarScaleOnHome() : 1f);
         updateWhichTaskbarViewIsVisible();
     }
 
@@ -281,7 +257,12 @@ public class TaskbarController {
         return new TaskbarStateHandlerCallbacks() {
             @Override
             public AnimatedFloat getAlphaTarget() {
-                return mTaskbarVisibilityController.getTaskbarVisibilityForLauncherState();
+                return mTaskbarAnimationController.getTaskbarVisibilityForLauncherState();
+            }
+
+            @Override
+            public AnimatedFloat getScaleTarget() {
+                return mTaskbarAnimationController.getTaskbarScaleForLauncherState();
             }
         };
     }
@@ -300,7 +281,7 @@ public class TaskbarController {
         mTaskbarContainerView.cleanup();
         removeFromWindowManager();
         mTaskbarStateHandler.setTaskbarCallbacks(null);
-        mTaskbarVisibilityController.cleanup();
+        mTaskbarAnimationController.cleanup();
         mHotseatController.cleanup();
         mRecentsController.cleanup();
     }
@@ -368,12 +349,10 @@ public class TaskbarController {
      */
     public Animator createAnimToLauncher(@Nullable LauncherState toState, long duration) {
         PendingAnimation anim = new PendingAnimation(duration);
-        anim.add(mTaskbarVisibilityController.createAnimToBackgroundAlpha(0, duration));
+        anim.add(mTaskbarAnimationController.createAnimToBackgroundAlpha(0, duration));
         if (toState != null) {
             mTaskbarStateHandler.setStateWithAnimation(toState, new StateAnimationConfig(), anim);
         }
-        anim.addFloat(mTaskbarViewInApp, SCALE_PROPERTY, mTaskbarViewInApp.getScaleX(),
-                getTaskbarScaleOnHome(), LINEAR);
 
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -394,8 +373,7 @@ public class TaskbarController {
 
     private Animator createAnimToApp(long duration) {
         PendingAnimation anim = new PendingAnimation(duration);
-        anim.add(mTaskbarVisibilityController.createAnimToBackgroundAlpha(1, duration));
-        anim.addFloat(mTaskbarViewInApp, SCALE_PROPERTY, mTaskbarViewInApp.getScaleX(), 1f, LINEAR);
+        anim.add(mTaskbarAnimationController.createAnimToBackgroundAlpha(1, duration));
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
@@ -416,7 +394,7 @@ public class TaskbarController {
      * Should be called when the IME visibility changes, so we can hide/show Taskbar accordingly.
      */
     public void setIsImeVisible(boolean isImeVisible) {
-        mTaskbarVisibilityController.animateToVisibilityForIme(isImeVisible ? 0 : 1);
+        mTaskbarAnimationController.animateToVisibilityForIme(isImeVisible ? 0 : 1);
     }
 
     /**
@@ -509,14 +487,6 @@ public class TaskbarController {
                 mTaskbarViewOnHome.getHeight() - hotseatBounds.bottom);
     }
 
-    /**
-     * A view was added or removed from DragLayer, check if we need to hide our hotseat copy and
-     * show the real one instead.
-     */
-    public void onLauncherDragLayerHierarchyChanged() {
-        // TODO: remove, as this is a no-op now
-    }
-
     private void updateWhichTaskbarViewIsVisible() {
         boolean isInApp = !mLauncher.hasBeenResumed() || mIsAnimatingToLauncher
                 || mIsAnimatingToApp;
@@ -561,15 +531,17 @@ public class TaskbarController {
      */
     protected interface TaskbarStateHandlerCallbacks {
         AnimatedFloat getAlphaTarget();
+        AnimatedFloat getScaleTarget();
     }
 
     /**
-     * Contains methods that TaskbarVisibilityController can call to interface with
+     * Contains methods that TaskbarAnimationController can call to interface with
      * TaskbarController.
      */
-    protected interface TaskbarVisibilityControllerCallbacks {
+    protected interface TaskbarAnimationControllerCallbacks {
         void updateTaskbarBackgroundAlpha(float alpha);
         void updateTaskbarVisibilityAlpha(float alpha);
+        void updateTaskbarScale(float scale);
     }
 
     /**

@@ -26,6 +26,7 @@ import android.util.IntProperty;
 import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Interpolator;
@@ -150,6 +151,19 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
             });
             widgetsTable.addView(tableRow);
         });
+    }
+
+    @Override
+    public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            mNoIntercept = false;
+            ScrollView scrollView = findViewById(R.id.widgets_table_scroll_view);
+            if (getPopupContainer().isEventOverView(scrollView, ev)
+                    && scrollView.getScrollY() > 0) {
+                mNoIntercept = true;
+            }
+        }
+        return super.onControllerInterceptTouchEvent(ev);
     }
 
     protected WidgetCell addItemCell(ViewGroup parent) {

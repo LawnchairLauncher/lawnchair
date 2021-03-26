@@ -16,14 +16,12 @@
 package com.android.launcher3.taskbar;
 
 import static com.android.launcher3.LauncherState.TASKBAR;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_TASKBAR_FADE;
-import static com.android.launcher3.states.StateAnimationConfig.SKIP_TASKBAR;
+import static com.android.launcher3.anim.Interpolators.LINEAR;
 
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.states.StateAnimationConfig;
@@ -55,8 +53,10 @@ public class TaskbarStateHandler implements StateManager.StateHandler<LauncherSt
         }
 
         AnimatedFloat alphaTarget = mTaskbarCallbacks.getAlphaTarget();
+        AnimatedFloat scaleTarget = mTaskbarCallbacks.getScaleTarget();
         boolean isTaskbarVisible = (state.getVisibleElements(mLauncher) & TASKBAR) != 0;
         alphaTarget.updateValue(isTaskbarVisible ? 1f : 0f);
+        scaleTarget.updateValue(state.getTaskbarScale(mLauncher));
     }
 
     @Override
@@ -65,13 +65,12 @@ public class TaskbarStateHandler implements StateManager.StateHandler<LauncherSt
         if (mTaskbarCallbacks == null) {
             return;
         }
-        if (config.hasAnimationFlag(SKIP_TASKBAR)) {
-            return;
-        }
 
         AnimatedFloat alphaTarget = mTaskbarCallbacks.getAlphaTarget();
+        AnimatedFloat scaleTarget = mTaskbarCallbacks.getScaleTarget();
         boolean isTaskbarVisible = (toState.getVisibleElements(mLauncher) & TASKBAR) != 0;
-        animation.setFloat(alphaTarget, AnimatedFloat.VALUE, isTaskbarVisible ? 1f : 0f,
-                config.getInterpolator(ANIM_TASKBAR_FADE, Interpolators.LINEAR));
+        animation.setFloat(alphaTarget, AnimatedFloat.VALUE, isTaskbarVisible ? 1f : 0f, LINEAR);
+        animation.setFloat(scaleTarget, AnimatedFloat.VALUE, toState.getTaskbarScale(mLauncher),
+                LINEAR);
     }
 }

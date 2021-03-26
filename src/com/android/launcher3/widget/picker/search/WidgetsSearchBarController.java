@@ -103,8 +103,7 @@ public class WidgetsSearchBarController implements TextWatcher,
     public void clearSearchResult() {
         mSearchAlgorithm.cancel(/* interruptActiveRequests= */ true);
         mInput.getText().clear();
-        mInput.clearFocus();
-        mInput.hideKeyboard();
+        clearFocus();
         mSearchModeListener.exitSearchMode();
     }
 
@@ -117,18 +116,24 @@ public class WidgetsSearchBarController implements TextWatcher,
 
     @Override
     public boolean onBackKey() {
-        mInput.clearFocus();
-        mInput.hideKeyboard();
+        clearFocus();
         return true;
     }
 
     @Override
     public boolean onKey(View view, int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_UP) {
-            mInput.clearFocus();
-            mInput.hideKeyboard();
+            clearFocus();
             return true;
         }
         return false;
+    }
+
+    /**
+     * Clears focus from edit text.
+     */
+    public void clearFocus() {
+        mInput.clearFocus();
+        mInput.hideKeyboard();
     }
 }

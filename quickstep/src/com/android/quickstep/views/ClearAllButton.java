@@ -21,6 +21,7 @@ import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.widget.Button;
 
+import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.quickstep.views.RecentsView.PageCallbacks;
 import com.android.quickstep.views.RecentsView.ScrollState;
@@ -40,30 +41,32 @@ public class ClearAllButton extends Button implements PageCallbacks {
                 }
             };
 
+    private final StatefulActivity mActivity;
     private float mScrollAlpha = 1;
     private float mContentAlpha = 1;
     private float mVisibilityAlpha = 1;
     private float mGridProgress = 1;
 
     private boolean mIsRtl;
-    private final float mOriginalTranslationX, mOriginalTranslationY;
     private float mNormalTranslationPrimary;
     private float mGridTranslationPrimary;
+    private float mGridTranslationSecondary;
+    private float mGridScrollOffset;
+    private float mOffsetTranslationPrimary;
 
-    private int mScrollOffset;
+    private int mSidePadding;
 
     public ClearAllButton(Context context, AttributeSet attrs) {
         super(context, attrs);
         mIsRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
-        mOriginalTranslationX = getTranslationX();
-        mOriginalTranslationY = getTranslationY();
+        mActivity = StatefulActivity.fromContext(context);
     }
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         PagedOrientationHandler orientationHandler = getRecentsView().getPagedOrientationHandler();
-        mScrollOffset = orientationHandler.getClearAllScrollOffset(getRecentsView(), mIsRtl);
+        mSidePadding = orientationHandler.getClearAllSidePadding(getRecentsView(), mIsRtl);
     }
 
     private RecentsView getRecentsView() {
@@ -96,25 +99,27 @@ public class ClearAllButton extends Button implements PageCallbacks {
     }
 
     @Override
-    public void onPageScroll(ScrollState scrollState) {
-        PagedOrientationHandler orientationHandler = getRecentsView().getPagedOrientationHandler();
+    public void onPageScroll(ScrollState scrollState, boolean gridEnabled) {
+        RecentsView recentsView = getRecentsView();
+        if (recentsView == null) {
+            return;
+        }
+
+        PagedOrientationHandler orientationHandler = recentsView.getPagedOrientationHandler();
         float orientationSize = orientationHandler.getPrimaryValue(getWidth(), getHeight());
         if (orientationSize == 0) {
             return;
         }
 
-        float shift;
-        if (mIsRtl) {
-            shift = Math.min(scrollState.scrollFromEdge, orientationSize);
-        } else {
-            shift = Math.min(scrollState.scrollFromEdge,
-                    orientationSize + getGridTrans(mGridTranslationPrimary))
-                    - getGridTrans(mGridTranslationPrimary);
+        int leftEdgeScroll = recentsView.getLeftMostChildScroll();
+        float adjustedScrollFromEdge = scrollState.scrollFromEdge - leftEdgeScroll;
+        float shift = Math.min(adjustedScrollFromEdge, orientationSize);
+        mNormalTranslationPrimary = mIsRtl ? -shift : shift;
+        if (!gridEnabled) {
+            mNormalTranslationPrimary += mSidePadding;
         }
-        mNormalTranslationPrimary = mIsRtl ? (mScrollOffset - shift) : (mScrollOffset + shift);
         applyPrimaryTranslation();
-        orientationHandler.getSecondaryViewTranslate().set(this,
-                orientationHandler.getSecondaryValue(mOriginalTranslationX, mOriginalTranslationY));
+        applySecondaryTranslation();
         mScrollAlpha = 1 - shift / orientationSize;
         updateAlpha();
     }
@@ -130,11 +135,26 @@ public class ClearAllButton extends Button implements PageCallbacks {
         applyPrimaryTranslation();
     }
 
+    public void setGridTranslationSecondary(float gridTranslationSecondary) {
+        mGridTranslationSecondary = gridTranslationSecondary;
+        applyPrimaryTranslation();
+    }
+
+    public void setGridScrollOffset(float gridScrollOffset) {
+        mGridScrollOffset = gridScrollOffset;
+    }
+
+    public void setOffsetTranslationPrimary(float offsetTranslationPrimary) {
+        mOffsetTranslationPrimary = offsetTranslationPrimary;
+        applyPrimaryTranslation();
+    }
+
     public float getScrollAdjustment(boolean gridEnabled) {
         float scrollAdjustment = 0;
         if (gridEnabled) {
-            scrollAdjustment += mGridTranslationPrimary;
+            scrollAdjustment += mGridTranslationPrimary + mGridScrollOffset;
         }
+        scrollAdjustment += mOffsetTranslationPrimary;
         return scrollAdjustment;
     }
 
@@ -160,10 +180,31 @@ public class ClearAllButton extends Button implements PageCallbacks {
 
         PagedOrientationHandler orientationHandler = recentsView.getPagedOrientationHandler();
         orientationHandler.getPrimaryViewTranslate().set(this,
-                mNormalTranslationPrimary + getGridTrans(mGridTranslationPrimary));
+                orientationHandler.getPrimaryValue(0f, getOriginalTranslationY())
+                        + mNormalTranslationPrimary + mOffsetTranslationPrimary + getGridTrans(
+                        mGridTranslationPrimary));
+    }
+
+    private void applySecondaryTranslation() {
+        RecentsView recentsView = getRecentsView();
+        if (recentsView == null) {
+            return;
+        }
+
+        PagedOrientationHandler orientationHandler = recentsView.getPagedOrientationHandler();
+        orientationHandler.getSecondaryViewTranslate().set(this,
+                orientationHandler.getSecondaryValue(0f, getOriginalTranslationY())
+                        + getGridTrans(mGridTranslationSecondary));
     }
 
     private float getGridTrans(float endTranslation) {
         return mGridProgress > 0 ? endTranslation : 0;
+    }
+
+    /**
+     * Get the Y translation that is set in the original layout position, before scrolling.
+     */
+    private float getOriginalTranslationY() {
+        return mActivity.getDeviceProfile().overviewTaskThumbnailTopMarginPx / 2.0f;
     }
 }

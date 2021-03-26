@@ -23,8 +23,6 @@ import android.util.AttributeSet;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.PagedView;
-import com.android.launcher3.R;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.workprofile.PersonalWorkPagedView;
 
 /**
@@ -43,10 +41,6 @@ public class AllAppsPagedView extends PersonalWorkPagedView {
 
     public AllAppsPagedView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        int topPadding = FeatureFlags.ENABLE_DEVICE_SEARCH.get() ? 0
-                : context.getResources().getDimensionPixelOffset(
-                        R.dimen.all_apps_header_top_padding);
-        setPadding(0, topPadding, 0, 0);
     }
 
     @Override
