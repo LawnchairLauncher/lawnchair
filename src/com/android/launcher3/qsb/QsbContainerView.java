@@ -307,17 +307,21 @@ public class QsbContainerView extends FrameLayout {
             // Return a default widget with setup icon.
             View v = QsbWidgetHostView.getDefaultView(container);
             if (showSetupIcon) {
+                requestQsbCreate();
                 View setupButton = v.findViewById(R.id.btn_qsb_setup);
                 setupButton.setVisibility(View.VISIBLE);
-                setupButton.setOnClickListener((v2) -> startActivityForResult(
-                        new Intent(ACTION_APPWIDGET_BIND)
-                                .putExtra(EXTRA_APPWIDGET_ID, mQsbWidgetHost.allocateAppWidgetId())
-                                .putExtra(EXTRA_APPWIDGET_PROVIDER, mWidgetInfo.provider),
-                        REQUEST_BIND_QSB));
+                setupButton.setOnClickListener((v2) -> requestQsbCreate());
             }
             return v;
         }
 
+        void requestQsbCreate() {
+            startActivityForResult(
+                    new Intent(ACTION_APPWIDGET_BIND)
+                            .putExtra(EXTRA_APPWIDGET_ID, mQsbWidgetHost.allocateAppWidgetId())
+                            .putExtra(EXTRA_APPWIDGET_PROVIDER, mWidgetInfo.provider),
+                    REQUEST_BIND_QSB);
+        }
 
         /**
          * Returns a widget with category {@link AppWidgetProviderInfo#WIDGET_CATEGORY_SEARCHBOX}

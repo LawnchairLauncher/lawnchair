@@ -61,6 +61,10 @@ android {
     compileSdkVersion COMPILE_SDK
     buildToolsVersion BUILD_TOOLS_VERSION
 
+    lintOptions {
+        checkReleaseBuilds false
+    }
+
     defaultConfig {
         minSdkVersion 25
         targetSdkVersion 30

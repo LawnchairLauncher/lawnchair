@@ -18,8 +18,9 @@ class LawnchairPreferences(val context: Context) {
                     las.model.forceReload()
                 }
                 WORKSPACE_ROWS, WORKSPACE_COLUMNS, ALL_APPS_COLUMNS, FOLDER_ROWS, FOLDER_COLUMNS, HOTSEAT_COLUMNS -> {
-                    las.invariantDeviceProfile.reInitGrid()
-                    las.model.forceReload()
+                    // LauncherAppState.getInstance(context).invariantDeviceProfile.reInitGrid()
+                    // LauncherAppState.getInstance(context).model.forceReload()
+                    scheduleRestart()
                 }
                 TEXT_SIZE_FACTOR, ICON_SIZE_FACTOR, ALL_APPS_ICON_SIZE_FACTOR, ALL_APPS_TEXT_SIZE_FACTOR -> {
                     scheduleRestart()
