@@ -2,5 +2,5 @@
 <resources>
     <integer name="bridge_signature_hash">0xB662CC2F</integer>
     <string name="bridge_version" translatable="false">v3</string>
-    <integer name="lawnfeed_signature_hash">0x7F7A957A</integer>
+    <integer name="lawnfeed_signature_hash">0x60E8FB7D</integer>
 </resources>
