@@ -40,12 +40,12 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.CheckLongPressHelper;
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.R;
 import com.android.launcher3.WidgetPreviewLoader;
 import com.android.launcher3.dragndrop.AppWidgetHostViewDrawable;
 import com.android.launcher3.icons.BaseIconFactory;
 import com.android.launcher3.icons.BitmapRenderer;
+import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.model.WidgetItem;
 
 /**
