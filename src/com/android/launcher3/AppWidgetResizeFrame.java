@@ -22,6 +22,7 @@ import android.util.SizeF;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
@@ -74,6 +75,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     private LauncherAppWidgetHostView mWidgetView;
     private CellLayout mCellLayout;
     private DragLayer mDragLayer;
+    private ImageButton mReconfigureButton;
 
     private Rect mWidgetPadding;
 
@@ -209,6 +211,17 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         } else if (mResizeMode == AppWidgetProviderInfo.RESIZE_VERTICAL) {
             mDragHandles[INDEX_LEFT].setVisibility(GONE);
             mDragHandles[INDEX_RIGHT].setVisibility(GONE);
+        }
+
+        mReconfigureButton = (ImageButton) findViewById(R.id.widget_reconfigure_button);
+        if (info.isReconfigurable()) {
+            mReconfigureButton.setVisibility(VISIBLE);
+            mReconfigureButton.setOnClickListener(view -> mLauncher
+                    .getAppWidgetHost()
+                    .startConfigActivity(
+                            mLauncher,
+                            mWidgetView.getAppWidgetId(),
+                            Launcher.REQUEST_RECONFIGURE_APPWIDGET));
         }
 
         // When we create the resize frame, we first mark all cells as unoccupied. The appropriate
@@ -582,6 +595,13 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         return false;
     }
 
+    private boolean isTouchOnReconfigureButton(MotionEvent ev) {
+        int xFrame = (int) ev.getX() - getLeft();
+        int yFrame = (int) ev.getY() - getTop();
+        mReconfigureButton.getHitRect(sTmpRect);
+        return sTmpRect.contains(xFrame, yFrame);
+    }
+
     @Override
     public boolean onControllerTouchEvent(MotionEvent ev) {
         int action = ev.getAction();
@@ -608,6 +628,11 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN && handleTouchDown(ev)) {
             return true;
+        }
+        // Keep the resize frame open but let a click on the reconfigure button fall through to the
+        // button's OnClickListener.
+        if (isTouchOnReconfigureButton(ev)) {
+            return false;
         }
         close(false);
         return false;

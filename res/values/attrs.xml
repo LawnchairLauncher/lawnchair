@@ -129,11 +129,10 @@
         <!-- numHotseatIcons defaults to numColumns, if not specified -->
         <attr name="numHotseatIcons" format="integer" />
         <attr name="dbFile" format="string" />
-        <!-- numAllAppsColumns defaults to numColumns, if not specified -->
-        <attr name="numAllAppsColumns" format="integer" />
         <attr name="defaultLayoutId" format="reference" />
         <attr name="demoModeLayoutId" format="reference" />
         <attr name="isScalable" format="boolean" />
+        <attr name="devicePaddingId" format="reference" />
 
     </declare-styleable>
 
@@ -170,6 +169,9 @@
         <attr name="allAppsIconSize" format="float" />
         <!-- allAppsIconTextSize defaults to iconTextSize, if not specified -->
         <attr name="allAppsIconTextSize" format="float" />
+
+        <!-- numAllAppsColumns defaults to GridDisplayOption.numColumns, if not specified -->
+        <attr name="numAllAppsColumns" format="integer" />
     </declare-styleable>
 
     <declare-styleable name="CellLayout">

@@ -24,7 +24,6 @@ import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_COMPONENTS;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_DEPTH_CONTROLLER;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_OVERVIEW;
-import static com.android.launcher3.states.StateAnimationConfig.SKIP_TASKBAR;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -61,7 +60,10 @@ import com.android.systemui.plugins.ResourceProvider;
 public class StaggeredWorkspaceAnim {
 
     private static final int APP_CLOSE_ROW_START_DELAY_MS = 10;
+    // How long it takes to fade in each staggered row.
     private static final int ALPHA_DURATION_MS = 250;
+    // Should be used for animations running alongside this StaggeredWorkspaceAnim.
+    public static final int DURATION_MS = 250;
 
     private static final float MAX_VELOCITY_PX_PER_S = 22f;
 
@@ -132,15 +134,15 @@ public class StaggeredWorkspaceAnim {
         }
 
         if (animateOverviewScrim) {
-            PendingAnimation pendingAnimation = new PendingAnimation(ALPHA_DURATION_MS);
+            PendingAnimation pendingAnimation = new PendingAnimation(DURATION_MS);
             addScrimAnimationForState(launcher, NORMAL, pendingAnimation);
             mAnimators.play(pendingAnimation.buildAnim());
         }
 
-        addDepthAnimationForState(launcher, NORMAL, ALPHA_DURATION_MS);
+        addDepthAnimationForState(launcher, NORMAL, DURATION_MS);
 
         mAnimators.play(launcher.getDragLayer().getSysUiScrim().createSysuiMultiplierAnim(0f, 1f)
-                .setDuration(ALPHA_DURATION_MS));
+                .setDuration(DURATION_MS));
         mAnimators.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -182,8 +184,7 @@ public class StaggeredWorkspaceAnim {
      */
     private void prepareToAnimate(Launcher launcher, boolean animateOverviewScrim) {
         StateAnimationConfig config = new StateAnimationConfig();
-        config.animFlags = ANIM_ALL_COMPONENTS | SKIP_OVERVIEW | SKIP_DEPTH_CONTROLLER
-                | SKIP_TASKBAR;
+        config.animFlags = ANIM_ALL_COMPONENTS | SKIP_OVERVIEW | SKIP_DEPTH_CONTROLLER;
         config.duration = 0;
         // setRecentsAttachedToAppWindow() will animate recents out.
         launcher.getStateManager().createAtomicAnimation(BACKGROUND_APP, NORMAL, config).start();
