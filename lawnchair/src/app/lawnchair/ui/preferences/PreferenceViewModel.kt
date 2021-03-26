@@ -45,7 +45,6 @@ class PreferenceViewModel(application: Application) : AndroidViewModel(applicati
         mutableStateOf(enabledNotificationListeners?.contains(lawnchairNotificationListener.flattenToString()) == true)
     override val drawerOpacity: MutableState<Float> = mutableStateOf(pm.drawerOpacity)
 
-
     override fun setIconPackPackage(iconPackPackage: String) {
         pm.iconPackPackage = iconPackPackage
         this.iconPackPackage.value = iconPackPackage

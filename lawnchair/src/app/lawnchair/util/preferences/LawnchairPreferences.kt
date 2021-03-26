@@ -7,26 +7,25 @@ import app.lawnchair.LawnchairLauncherQuickstep
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.Utilities
-import kotlin.math.floor
-import kotlin.math.roundToInt
 
 class LawnchairPreferences(val context: Context) {
     val listener: SharedPreferences.OnSharedPreferenceChangeListener =
         SharedPreferences.OnSharedPreferenceChangeListener { prefs: SharedPreferences?, key: String? ->
+            val las = LauncherAppState.getInstance(context)
             when (key) {
                 ICON_PACK_PACKAGE, WRAP_ADAPTIVE_ICONS, MAKE_COLORED_BACKGROUNDS -> {
-                    LauncherAppState.getInstance(context).model.clearIconCache()
-                    LauncherAppState.getInstance(context).model.forceReload()
+                    las.model.clearIconCache()
+                    las.model.forceReload()
                 }
                 WORKSPACE_ROWS, WORKSPACE_COLUMNS, ALL_APPS_COLUMNS, FOLDER_ROWS, FOLDER_COLUMNS, HOTSEAT_COLUMNS -> {
-                    LauncherAppState.getInstance(context).invariantDeviceProfile.reInitGrid()
-                    LauncherAppState.getInstance(context).model.forceReload()
+                    las.invariantDeviceProfile.reInitGrid()
+                    las.model.forceReload()
                 }
                 TEXT_SIZE_FACTOR, ICON_SIZE_FACTOR, ALL_APPS_ICON_SIZE_FACTOR, ALL_APPS_TEXT_SIZE_FACTOR -> {
                     scheduleRestart()
                 }
                 DRAWER_OPACITY -> {
-                    LauncherAppState.getInstance(context).launcher.scrimView.updateScrimAlpha(floor(prefs!!.getFloat(key, -1f)).toInt())
+                    las.launcher.scrimView.refreshScrimAlpha(context)
                 }
             }
         }
