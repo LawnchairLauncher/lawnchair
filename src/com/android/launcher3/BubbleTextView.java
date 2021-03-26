@@ -16,7 +16,6 @@
 
 package com.android.launcher3;
 
-import static com.android.launcher3.FastBitmapDrawable.newIcon;
 import static com.android.launcher3.graphics.IconShape.getShape;
 import static com.android.launcher3.graphics.PreloadIconDrawable.newPendingIcon;
 import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
@@ -57,11 +56,12 @@ import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.graphics.IconShape;
-import com.android.launcher3.graphics.PlaceHolderIconDrawable;
 import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.icons.DotRenderer;
+import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.icons.LauncherIcons;
+import com.android.launcher3.icons.PlaceHolderIconDrawable;
 import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
@@ -92,11 +92,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     private static final int[] STATE_PRESSED = new int[]{android.R.attr.state_pressed};
     private static final float HIGHLIGHT_SCALE = 1.16f;
 
-
     private final PointF mTranslationForReorderBounce = new PointF(0, 0);
     private final PointF mTranslationForReorderPreview = new PointF(0, 0);
-
-    private static final int ICON_UPDATE_ANIMATION_DURATION = 375;
 
     private float mScaleForReorderBounce = 1f;
 
@@ -335,7 +332,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
 
     @UiThread
     protected void applyIconAndLabel(ItemInfoWithIcon info) {
-        FastBitmapDrawable iconDrawable = newIcon(getContext(), info);
+        FastBitmapDrawable iconDrawable = info.newIcon(getContext());
         mDotParams.color = IconPalette.getMutedColor(info.bitmap.color, 0.54f);
 
         setIcon(iconDrawable);
@@ -933,7 +930,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
 
     private void resetIconScale() {
         if (mIcon instanceof FastBitmapDrawable) {
-            ((FastBitmapDrawable) mIcon).setScale(1f);
+            ((FastBitmapDrawable) mIcon).resetScale();
         }
     }
 

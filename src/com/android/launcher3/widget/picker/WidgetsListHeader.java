@@ -15,8 +15,6 @@
  */
 package com.android.launcher3.widget.picker;
 
-import static com.android.launcher3.FastBitmapDrawable.newIcon;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -32,11 +30,11 @@ import androidx.annotation.UiThread;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
-import com.android.launcher3.graphics.PlaceHolderIconDrawable;
+import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.IconCache.ItemInfoUpdateReceiver;
+import com.android.launcher3.icons.PlaceHolderIconDrawable;
 import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.PackageItemInfo;
@@ -145,7 +143,7 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
     }
 
     private void setIcon(PackageItemInfo info) {
-        FastBitmapDrawable icon = newIcon(getContext(), info);
+        FastBitmapDrawable icon = info.newIcon(getContext());
         applyDrawables(icon);
         mIconDrawable = icon;
         if (mIconDrawable != null) {

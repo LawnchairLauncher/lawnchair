@@ -16,7 +16,6 @@
 
 package com.android.launcher3.widget;
 
-import static com.android.launcher3.FastBitmapDrawable.newIcon;
 import static com.android.launcher3.graphics.PreloadIconDrawable.newPendingIcon;
 
 import android.content.Context;
@@ -37,8 +36,8 @@ import android.view.View.OnClickListener;
 import android.widget.RemoteViews;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.R;
+import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
@@ -152,12 +151,12 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
             //   2) Preload icon in the center
             //   3) Setup icon in the center and app icon in the top right corner.
             if (mDisabledForSafeMode) {
-                FastBitmapDrawable disabledIcon = newIcon(getContext(), info);
+                FastBitmapDrawable disabledIcon = info.newIcon(getContext());
                 disabledIcon.setIsDisabled(true);
                 mCenterDrawable = disabledIcon;
                 mSettingIconDrawable = null;
             } else if (isReadyForClickSetup()) {
-                mCenterDrawable = newIcon(getContext(), info);
+                mCenterDrawable = info.newIcon(getContext());
                 mSettingIconDrawable = getResources().getDrawable(R.drawable.ic_setting).mutate();
                 updateSettingColor(info.bitmap.color);
             } else {

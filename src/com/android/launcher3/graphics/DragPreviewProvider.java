@@ -30,13 +30,13 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 
 import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.AppWidgetHostViewDrawable;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.icons.BitmapRenderer;
+import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
