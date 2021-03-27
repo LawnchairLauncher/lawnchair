@@ -503,6 +503,7 @@ public abstract class AbstractLauncherUiTest {
         // Destroy Launcher activity.
         executeOnLauncher(launcher -> {
             if (launcher != null) {
+                onLauncherActivityClose(launcher);
                 launcher.finish();
             }
         });
@@ -524,7 +525,7 @@ public abstract class AbstractLauncherUiTest {
         return launcher.getAppsView().getActiveRecyclerView().getCurrentScrollY();
     }
 
-    private static void checkLauncherIntegrity(
+    private void checkLauncherIntegrity(
             Launcher launcher, ContainerType expectedContainerType) {
         if (launcher != null) {
             final StateManager<LauncherState> stateManager = launcher.getStateManager();
@@ -535,10 +536,8 @@ public abstract class AbstractLauncherUiTest {
                     stableState == stateManager.getState());
 
             final boolean isResumed = launcher.hasBeenResumed();
-            assertTrue("hasBeenResumed() != isStarted(), hasBeenResumed(): " + isResumed,
-                    isResumed == launcher.isStarted());
-            assertTrue("hasBeenResumed() != isUserActive(), hasBeenResumed(): " + isResumed,
-                    isResumed == launcher.isUserActive());
+            final boolean isStarted = launcher.isStarted();
+            checkLauncherState(launcher, expectedContainerType, isResumed, isStarted);
 
             final int ordinal = stableState.ordinal;
 
@@ -561,8 +560,7 @@ public abstract class AbstractLauncherUiTest {
                     break;
                 }
                 case OVERVIEW: {
-                    assertTrue(
-                            "Launcher is not resumed in state: " + expectedContainerType,
+                    checkLauncherStateInOverview(launcher, expectedContainerType, isStarted,
                             isResumed);
                     assertTrue(TestProtocol.stateOrdinalToString(ordinal),
                             ordinal == TestProtocol.OVERVIEW_STATE_ORDINAL);
@@ -587,4 +585,20 @@ public abstract class AbstractLauncherUiTest {
                             expectedContainerType == ContainerType.FALLBACK_OVERVIEW);
         }
     }
+
+    protected void checkLauncherState(Launcher launcher, ContainerType expectedContainerType,
+            boolean isResumed, boolean isStarted) {
+        assertTrue("hasBeenResumed() != isStarted(), hasBeenResumed(): " + isResumed,
+                isResumed == isStarted);
+        assertTrue("hasBeenResumed() != isUserActive(), hasBeenResumed(): " + isResumed,
+                isResumed == launcher.isUserActive());
+    }
+
+    protected void checkLauncherStateInOverview(Launcher launcher,
+            ContainerType expectedContainerType, boolean isStarted, boolean isResumed) {
+        assertTrue("Launcher is not resumed in state: " + expectedContainerType,
+                isResumed);
+    }
+
+    protected void onLauncherActivityClose(Launcher launcher) { }
 }

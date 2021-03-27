@@ -28,6 +28,7 @@ import android.util.TypedValue;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
 
 /**
@@ -92,10 +93,7 @@ public class Themes {
     }
 
     public static int getAttrColor(Context context, int attr) {
-        TypedArray ta = context.obtainStyledAttributes(new int[]{attr});
-        int colorAccent = ta.getColor(0, 0);
-        ta.recycle();
-        return colorAccent;
+        return GraphicsUtils.getAttrColor(context, attr);
     }
 
     public static boolean getAttrBoolean(Context context, int attr) {
@@ -115,23 +113,6 @@ public class Themes {
     public static int getAttrInteger(Context context, int attr) {
         TypedArray ta = context.obtainStyledAttributes(new int[]{attr});
         int value = ta.getInteger(0, 0);
-        ta.recycle();
-        return value;
-    }
-
-    /**
-     * Returns the alpha corresponding to the theme attribute {@param attr}, in the range [0, 255].
-     */
-    public static int getAlpha(Context context, int attr) {
-        return (int) (255 * getFloat(context, attr, 0) + 0.5f);
-    }
-
-    /**
-     * Returns the alpha corresponding to the theme attribute {@param attr}
-     */
-    public static float getFloat(Context context, int attr, float defValue) {
-        TypedArray ta = context.obtainStyledAttributes(new int[]{attr});
-        float value = ta.getFloat(0, defValue);
         ta.recycle();
         return value;
     }
