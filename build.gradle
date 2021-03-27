@@ -94,6 +94,11 @@ android {
             minifyEnabled false
             versionNameSuffix ".debug"
         }
+
+        release {
+            minifyEnabled true
+            versionNameSuffix ".release"
+        }
     }
 
     kotlinOptions {
