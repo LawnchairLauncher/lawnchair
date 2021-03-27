@@ -8,6 +8,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -27,15 +29,21 @@ data class IconPackInfo(val name: String, val packageName: String, val icon: Dra
 fun IconPackPreference(interactor: PreferenceInteractor) {
     val iconPacks = interactor.getIconPacks().values.toList()
 
-    PreferenceGroup(isFirstChild = true) {
-        LazyColumn(Modifier.fillMaxWidth()) {
-            items(iconPacks) { iconPack ->
-                IconPackListItem(
-                    iconPack,
-                    interactor.iconPackPackage.value,
-                    onSelectionChange = { interactor.setIconPackPackage(it) },
-                    showDivider = iconPacks.last().packageName != iconPack.packageName
-                )
+    Column(
+        modifier = Modifier
+            .fillMaxHeight()
+            .verticalScroll(rememberScrollState())
+    ) {
+        PreferenceGroup(isFirstChild = true) {
+            LazyColumn(Modifier.fillMaxWidth()) {
+                items(iconPacks) { iconPack ->
+                    IconPackListItem(
+                        iconPack,
+                        interactor.iconPackPackage.value,
+                        onSelectionChange = { interactor.setIconPackPackage(it) },
+                        showDivider = iconPacks.last().packageName != iconPack.packageName
+                    )
+                }
             }
         }
     }

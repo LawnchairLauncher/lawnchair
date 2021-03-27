@@ -1,13 +1,21 @@
 package app.lawnchair.ui.preferences
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.android.launcher3.R
 
 @Composable
 fun HomeScreenPreferences(interactor: PreferenceInteractor) {
-    Column {
+    Column(
+        modifier = Modifier
+            .fillMaxHeight()
+            .verticalScroll(rememberScrollState())
+    ) {
         PreferenceGroup(heading = "General", isFirstChild = true) {
             SwitchPreference(
                 checked = interactor.addIconToHome.value,

@@ -43,9 +43,11 @@ fun ContributorRow(name: String, description: String, photoUrl: String, url: Str
                     .width(32.dp)
                     .height(32.dp),
                 loading = {
-                    Box(modifier = Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colors.onBackground.copy(alpha = 0.08F)))
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(MaterialTheme.colors.onBackground.copy(alpha = 0.08F))
+                    )
                 }
             )
             Spacer(modifier = Modifier.requiredWidth(16.dp))

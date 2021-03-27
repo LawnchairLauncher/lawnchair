@@ -29,7 +29,7 @@
     <string name="label_size">Label Size</string>
     <string name="allow_empty_pages_label">Allow Empty Pages</string>
     <string name="colored_generated_icon_backgrounds_label">Make Coloured Backgrounds</string>
-    <string name="colored_generated_icon_backgrounds_description">For generated Adaptive icons.</string>
+    <string name="colored_generated_icon_backgrounds_description">For generated Adaptive Icons.</string>
     <string name="notification_dots">Notification Dots</string>
     <string name="smartspace_preferences">Preferences</string>
     <string name="about_label">About</string>
