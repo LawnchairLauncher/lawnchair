@@ -183,5 +183,6 @@ fun About() {
                 context.startActivity(intent)
             })
         }
+        Spacer(modifier = Modifier.requiredHeight(16.dp))
     }
 }

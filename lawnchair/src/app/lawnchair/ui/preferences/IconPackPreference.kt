@@ -6,8 +6,6 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
@@ -35,8 +33,9 @@ fun IconPackPreference(interactor: PreferenceInteractor) {
             .verticalScroll(rememberScrollState())
     ) {
         PreferenceGroup(isFirstChild = true) {
-            LazyColumn(Modifier.fillMaxWidth()) {
-                items(iconPacks) { iconPack ->
+            // TODO: Use `LazyColumn` if possible.
+            Column(Modifier.fillMaxWidth()) {
+                iconPacks.forEach { iconPack ->
                     IconPackListItem(
                         iconPack,
                         interactor.iconPackPackage.value,
