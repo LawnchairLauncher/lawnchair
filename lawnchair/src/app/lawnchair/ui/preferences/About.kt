@@ -43,6 +43,12 @@ val teamMembers = listOf(
         socialUrl = "https://github.com/joseph-20"
     ),
     TeamMember(
+        name = "Daniel Souza",
+        descriptionRes = R.string.support_representative,
+        photoUrl = "https://avatars.githubusercontent.com/u/32078304",
+        socialUrl = "https://github.com/DanGLES3"
+    ),
+    TeamMember(
         name = "Harsh Shandilya",
         descriptionRes = R.string.developer,
         photoUrl = "https://avatars.githubusercontent.com/u/13348378",
