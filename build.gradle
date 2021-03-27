@@ -96,7 +96,7 @@ android {
         }
 
         release {
-            minifyEnabled true
+            shrinkResources true
             versionNameSuffix ".release"
         }
     }
