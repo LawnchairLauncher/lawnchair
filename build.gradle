@@ -17,6 +17,7 @@ buildscript {
 }
 
 final String FRAMEWORK_PREBUILTS_DIR = "prebuilts"
+final def keystorePropertiesFile = rootProject.file("keystore.properties")
 
 wrapper {
     gradleVersion = '6.8.3'
@@ -89,6 +90,20 @@ android {
         kotlinCompilerExtensionVersion "1.0.0-beta02"
     }
 
+    if (keystorePropertiesFile.exists()) {
+        final def keystoreProperties = new Properties()
+        keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+        signingConfigs {
+            release {
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+                storeFile rootProject.file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+            }
+        }
+    }
+
     buildTypes {
         debug {
             minifyEnabled false
@@ -96,6 +111,7 @@ android {
         }
 
         release {
+            if (keystorePropertiesFile.exists()) signingConfig signingConfigs.release
             minifyEnabled true
             shrinkResources true
             versionNameSuffix ".release"
