@@ -89,3 +89,12 @@
 -dontwarn android.provider.SearchIndexablesContract
 -dontwarn android.provider.SearchIndexablesProvider
 -dontwarn android.content.pm.IPackageManager
+
+# Preserve Protobuf generated code
+-keep class com.android.launcher3.tracing.nano.LauncherTraceFileProto { *; }
+-keep class com.android.launcher3.logger.nano.LauncherAtom { *; }
+-keep class com.android.launcher3.tracing.nano.LauncherTraceEntryProto { *; }
+-keep class com.android.launcher3.tracing.nano.TouchInteractionServiceProto { *; }
+-keep class com.android.launcher3.userevent.nano.LauncherLogProto { *; }
+-keep class com.android.launcher3.tracing.nano.LauncherTraceProto { *; }
+-keep class com.android.launcher3.userevent.nano.LauncherLogExtensions { *; }
