@@ -68,6 +68,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.util.ActivityOptionsWrapper;
