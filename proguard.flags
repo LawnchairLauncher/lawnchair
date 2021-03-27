@@ -60,3 +60,11 @@
 -keep class com.android.quickstep.** {
   *;
 }
+
+# Don't touch the restrictionbypass code
+-keep class org.chickenhook.restrictionbypass.** { *; }
+
+# Silence warnings from Compose tooling
+-dontwarn org.jetbrains.kotlin.**
+-dontwarn androidx.compose.animation.tooling.ComposeAnimation
+-dontwarn sun.misc.Unsafe
