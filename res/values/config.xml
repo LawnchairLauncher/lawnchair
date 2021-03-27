@@ -87,8 +87,6 @@
 
     <!-- Default packages -->
     <string name="wallpaper_picker_package" translatable="false"></string>
-    <string name="calendar_component_name" translatable="false"></string>
-    <string name="clock_component_name" translatable="false"></string>
     <string name="local_colors_extraction_class" translatable="false"></string>
 
     <!-- Accessibility actions -->

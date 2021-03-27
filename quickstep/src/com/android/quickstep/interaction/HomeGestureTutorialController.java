@@ -38,7 +38,7 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
     Integer getTitleStringId() {
         switch (mTutorialType) {
             case HOME_NAVIGATION:
-                return R.string.home_gesture_tutorial_playground_title;
+                return R.string.home_gesture_intro_title;
             case HOME_NAVIGATION_COMPLETE:
                 return R.string.gesture_tutorial_confirm_title;
         }
@@ -48,7 +48,7 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
     @Override
     Integer getSubtitleStringId() {
         if (mTutorialType == TutorialType.HOME_NAVIGATION) {
-            return R.string.home_gesture_tutorial_playground_subtitle;
+            return R.string.home_gesture_intro_subtitle;
         }
         return null;
     }
