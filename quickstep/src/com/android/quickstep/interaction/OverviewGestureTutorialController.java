@@ -39,7 +39,7 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
     Integer getTitleStringId() {
         switch (mTutorialType) {
             case OVERVIEW_NAVIGATION:
-                return R.string.overview_gesture_tutorial_playground_title;
+                return R.string.overview_gesture_intro_title;
             case OVERVIEW_NAVIGATION_COMPLETE:
                 return R.string.gesture_tutorial_confirm_title;
         }
@@ -49,7 +49,7 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
     @Override
     Integer getSubtitleStringId() {
         if (mTutorialType == TutorialType.OVERVIEW_NAVIGATION) {
-            return R.string.overview_gesture_tutorial_playground_subtitle;
+            return R.string.overview_gesture_intro_subtitle;
         }
         return null;
     }
