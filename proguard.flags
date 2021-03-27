@@ -68,3 +68,24 @@
 -dontwarn org.jetbrains.kotlin.**
 -dontwarn androidx.compose.animation.tooling.ComposeAnimation
 -dontwarn sun.misc.Unsafe
+
+# Silence warnings about classes that are available at runtime
+-dontwarn android.provider.DeviceConfig
+-dontwarn com.android.internal.colorextraction.ColorExtractor$GradientColors
+-dontwarn com.android.internal.logging.MetricsLogger
+-dontwarn com.android.internal.os.SomeArgs
+-dontwarn android.content.pm.ParceledListSlice
+-dontwarn com.android.internal.policy.ScreenDecorationsUtils
+-dontwarn android.util.StatsEvent
+-dontwarn android.service.wallpaper.IWallpaperEngine
+-dontwarn android.content.pm.UserInfo
+-dontwarn com.android.internal.app.IVoiceInteractionManagerService$Stub
+-dontwarn com.android.internal.app.IVoiceInteractionManagerService
+-dontwarn com.android.internal.annotations.VisibleForTesting
+-dontwarn android.provider.DeviceConfig$OnPropertiesChangedListener
+-dontwarn android.util.StatsEvent$Builder
+-dontwarn com.android.internal.colorextraction.types.Tonal
+-dontwarn android.content.pm.LauncherApps$AppUsageLimit
+-dontwarn android.provider.SearchIndexablesContract
+-dontwarn android.provider.SearchIndexablesProvider
+-dontwarn android.content.pm.IPackageManager
