@@ -410,10 +410,6 @@ public class DeviceProfile {
                     res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f;
         }
 
-        // Folder icon
-        folderIconSizePx = IconNormalizer.getNormalizedCircleSize(iconSizePx);
-        folderIconOffsetYPx = (iconSizePx - folderIconSizePx) / 2;
-
         // Lawnchair prefs
         SharedPreferences prefs = LawnchairPreferences.Companion.getInstance(mContext);
         if (prefs == null) return;
@@ -423,6 +419,10 @@ public class DeviceProfile {
         iconTextSizePx *= prefs.getFloat(LawnchairPreferences.TEXT_SIZE_FACTOR, 1f);;
         allAppsIconSizePx *= prefs.getFloat(LawnchairPreferences.ALL_APPS_ICON_SIZE_FACTOR, 1f);
         allAppsIconTextSizePx *= prefs.getFloat(LawnchairPreferences.ALL_APPS_TEXT_SIZE_FACTOR, 1f);
+
+        // Folder icon
+        folderIconSizePx = IconNormalizer.getNormalizedCircleSize(iconSizePx);
+        folderIconOffsetYPx = (iconSizePx - folderIconSizePx) / 2;
     }
 
     private void updateAvailableFolderCellDimensions(Resources res) {

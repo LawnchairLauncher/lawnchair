@@ -177,7 +177,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         } else if (mDisplay == DISPLAY_FOLDER) {
             setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.folderChildTextSizePx);
             setCompoundDrawablePadding(grid.folderChildDrawablePaddingPx);
-            defaultIconSize = grid.folderChildIconSizePx;
+            defaultIconSize = grid.iconSizePx;
         } else {
             // widget_selection or shortcut_popup
             defaultIconSize = grid.iconSizePx;
