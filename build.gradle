@@ -96,8 +96,10 @@ android {
         }
 
         release {
+            minifyEnabled true
             shrinkResources true
             versionNameSuffix ".release"
+            proguardFiles "proguard-android-optimize.txt", "proguard.flags"
         }
     }
 
