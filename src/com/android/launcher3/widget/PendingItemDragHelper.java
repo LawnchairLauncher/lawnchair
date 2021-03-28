@@ -39,6 +39,7 @@ import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.LauncherIcons;
+import com.android.launcher3.icons.RoundDrawableWrapper;
 import com.android.launcher3.widget.dragndrop.AppWidgetHostViewDragListener;
 
 /**
@@ -118,12 +119,12 @@ public class PendingItemDragHelper extends DragPreviewProvider {
                         .addDragListener(new AppWidgetHostViewDragListener(launcher));
             }
             if (preview == null) {
-                FastBitmapDrawable p = new FastBitmapDrawable(
+                Drawable p = new FastBitmapDrawable(
                         app.getWidgetCache().generateWidgetPreview(launcher,
                                 createWidgetInfo.info, maxWidth, null,
                                 previewSizeBeforeScale).first);
                 if (RoundedCornerEnforcement.isRoundedCornerEnabled()) {
-                    p.setRoundedCornersRadius(mEnforcedRoundedCornersForWidget);
+                    p = new RoundDrawableWrapper(p, mEnforcedRoundedCornersForWidget);
                 }
                 preview = p;
             }
