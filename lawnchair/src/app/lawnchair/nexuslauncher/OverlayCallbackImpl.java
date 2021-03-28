@@ -1,5 +1,6 @@
 package app.lawnchair.nexuslauncher;
 
+import static android.content.pm.ApplicationInfo.FLAG_SYSTEM;
 import static app.lawnchair.util.preferences.LawnchairPreferences.ENABLE_MINUS_ONE;
 
 import android.app.Activity;
@@ -47,7 +48,7 @@ public class OverlayCallbackImpl
         mLauncher = launcher;
         mClient = new LauncherClient(mLauncher, this, new StaticInteger(
                 (prefs.getBoolean(LawnchairPreferences.ENABLE_MINUS_ONE,
-                        FeedBridge.useBridge(launcher)) ? 1 : 0) | 2 | 4 | 8));
+                        minusOneAvailable()) ? 1 : 0) | 2 | 4 | 8));
         prefs.registerOnSharedPreferenceChangeListener(this);
     }
 
@@ -123,7 +124,7 @@ public class OverlayCallbackImpl
     @Override
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
         if (ENABLE_MINUS_ONE.equals(key)) {
-            mClient.showOverlay(prefs.getBoolean(ENABLE_MINUS_ONE, FeedBridge.useBridge(mLauncher)));
+            mClient.showOverlay(prefs.getBoolean(ENABLE_MINUS_ONE, minusOneAvailable()));
         }
     }
 
@@ -175,5 +176,10 @@ public class OverlayCallbackImpl
             mFlags = flags;
             Utilities.getDevicePrefs(mLauncher).edit().putInt(PREF_PERSIST_FLAGS, flags).apply();
         }
+    }
+
+    boolean minusOneAvailable() {
+        return FeedBridge.useBridge(mLauncher)
+                || ((mLauncher.getApplicationInfo().flags & FLAG_SYSTEM) == FLAG_SYSTEM);
     }
 }
