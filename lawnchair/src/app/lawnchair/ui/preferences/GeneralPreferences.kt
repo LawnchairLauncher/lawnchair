@@ -51,10 +51,10 @@ fun GeneralPreferences(navController: NavController, interactor: PreferenceInter
                     )
                 }
             }
-            NavActionPreference(
+            NavigationActionPreference(
                 label = stringResource(id = R.string.icon_pack),
                 navController = navController,
-                destination = ICON_PACK_PREFERENCES_ROUTE,
+                destination = Routes.ICON_PACK,
                 showDivider = false
             )
         }

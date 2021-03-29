@@ -15,8 +15,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.KEY_ROUTE
@@ -28,18 +28,8 @@ import com.android.launcher3.R
 fun TopBar(navController: NavController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
-
-    val title = when (currentRoute) {
-        TOP_ROUTE -> stringResource(id = R.string.settings)
-        HOME_SCREEN_PREFERENCES_ROUTE -> stringResource(id = R.string.home_screen_label)
-        GENERAL_PREFERENCES_ROUTE -> stringResource(id = R.string.general_label)
-        ICON_PACK_PREFERENCES_ROUTE -> stringResource(id = R.string.icon_pack)
-        DOCK_PREFERENCES_ROUTE -> stringResource(id = R.string.dock_label)
-        APP_DRAWER_PREFERENCES_ROUTE -> stringResource(id = R.string.app_drawer_label)
-        FOLDER_PREFERENCES_ROUTE -> stringResource(id = R.string.folders_label)
-        ABOUT_ROUTE -> stringResource(id = R.string.about_label)
-        else -> ""
-    }
+    val context = LocalContext.current
+    val title = getRoutesToLabels(context)[currentRoute]!!
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -48,7 +38,7 @@ fun TopBar(navController: NavController) {
             .height(56.dp)
             .background(MaterialTheme.colors.background)
     ) {
-        AnimatedVisibility(visible = currentRoute != "top" && currentRoute != null) {
+        AnimatedVisibility(visible = currentRoute != Routes.PREFERENCES && currentRoute != null) {
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier

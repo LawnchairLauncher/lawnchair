@@ -14,7 +14,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 
 @Composable
-fun NavActionPreference(
+fun NavigationActionPreference(
     label: String,
     subtitle: String? = null,
     navController: NavController,

@@ -24,7 +24,7 @@ data class IconPackInfo(val name: String, val packageName: String, val icon: Dra
 
 @ExperimentalAnimationApi
 @Composable
-fun IconPackPreference(interactor: PreferenceInteractor) {
+fun IconPackPreferences(interactor: PreferenceInteractor) {
     val iconPacks = interactor.getIconPacks().values.toList()
 
     Column(

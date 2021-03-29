@@ -5,18 +5,16 @@ import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.ResolveInfo
 import android.provider.Settings
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
-import app.lawnchair.util.preferences.PrefManager
+import app.lawnchair.util.preferences.PreferenceManager
 import com.android.launcher3.R
 import com.android.launcher3.notification.NotificationListener
 
 class PreferenceViewModel(application: Application) : AndroidViewModel(application), PreferenceInteractor {
-    private val pm = PrefManager(application)
+    private val pm = PreferenceManager(application)
     private val lawnchairNotificationListener = ComponentName(application, NotificationListener::class.java)
     private val enabledNotificationListeners: String? by lazy {
         Settings.Secure.getString(
@@ -153,61 +151,5 @@ class PreferenceViewModel(application: Application) : AndroidViewModel(applicati
         }
 
         return iconPacks
-    }
-
-    sealed class Screen(
-        val route: String,
-        @StringRes val labelResId: Int,
-        val description: String? = null,
-        @DrawableRes val iconResId: Int? = null
-    ) {
-        object Top : Screen(route = "top", labelResId = R.string.settings)
-
-        class GeneralPreferences(description: String = "") : Screen(
-            route = GENERAL_PREFERENCES_ROUTE,
-            labelResId = R.string.general_label,
-            description = description,
-            iconResId = R.drawable.ic_general
-        )
-
-        class HomeScreenPreferences(description: String = "") : Screen(
-            route = HOME_SCREEN_PREFERENCES_ROUTE,
-            labelResId = R.string.home_screen_label,
-            description = description,
-            iconResId = R.drawable.ic_home_screen
-        )
-
-        object IconPackPreferences : Screen(
-            route = ICON_PACK_PREFERENCES_ROUTE,
-            labelResId = R.string.icon_pack
-        )
-
-        class DockPreferences(description: String = "") : Screen(
-            route = DOCK_PREFERENCES_ROUTE,
-            labelResId = R.string.dock_label,
-            description = description,
-            iconResId = R.drawable.ic_dock
-        )
-
-        class AppDrawerPreferences(description: String = "") : Screen(
-            route = APP_DRAWER_PREFERENCES_ROUTE,
-            labelResId = R.string.app_drawer_label,
-            description = description,
-            iconResId = R.drawable.ic_app_drawer
-        )
-
-        class FolderPreferences(description: String = "") : Screen(
-            route = FOLDER_PREFERENCES_ROUTE,
-            labelResId = R.string.folders_label,
-            description = description,
-            iconResId = R.drawable.ic_folder
-        )
-
-        class About(description: String = "") : Screen(
-            route = ABOUT_ROUTE,
-            labelResId = R.string.about_label,
-            description = description,
-            iconResId = R.drawable.ic_about
-        )
     }
 }
