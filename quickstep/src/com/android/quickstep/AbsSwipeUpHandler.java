@@ -91,7 +91,6 @@ import com.android.launcher3.util.VibratorWrapper;
 import com.android.launcher3.util.WindowBounds;
 import com.android.quickstep.BaseActivityInterface.AnimationFactory;
 import com.android.quickstep.GestureState.GestureEndTarget;
-import com.android.quickstep.inputconsumers.OverviewInputConsumer;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
@@ -654,8 +653,13 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                     ||  (quickswitchThresholdPassed && centermostTaskFlags != 0));
             mRecentsAnimationController.setSplitScreenMinimized(swipeUpThresholdPassed);
 
-            int sysuiFlags = swipeUpThresholdPassed ? 0 : centermostTaskFlags;
-            mActivity.getSystemUiController().updateUiState(UI_STATE_OVERVIEW, sysuiFlags);
+            if (swipeUpThresholdPassed) {
+                mActivity.getSystemUiController().updateUiState(
+                        UI_STATE_OVERVIEW, mRecentsView.hasLightBackground());
+            } else {
+                mActivity.getSystemUiController().updateUiState(
+                        UI_STATE_OVERVIEW, centermostTaskFlags);
+            }
         }
     }
 
