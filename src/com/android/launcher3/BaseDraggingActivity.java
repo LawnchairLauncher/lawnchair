@@ -329,6 +329,6 @@ public abstract class BaseDraggingActivity extends BaseActivity
      * views
      */
     public SearchAdapterProvider createSearchAdapterProvider(AllAppsContainerView allapps) {
-        return new DefaultSearchAdapterProvider(this);
+        return new DefaultSearchAdapterProvider(this, allapps);
     }
 }

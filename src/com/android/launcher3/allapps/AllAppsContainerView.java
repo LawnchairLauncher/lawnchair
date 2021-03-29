@@ -699,8 +699,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             applyPadding();
             setupOverlay();
             if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
-                recyclerView.addItemDecoration(new AllAppsSectionDecorator(
-                        AllAppsContainerView.this));
+                recyclerView.addItemDecoration(mSearchAdapterProvider.getDecorator());
             }
         }
 
