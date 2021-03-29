@@ -24,6 +24,9 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.xdrop.fuzzywuzzy.FuzzySearch;
+import me.xdrop.fuzzywuzzy.model.BoundExtractedResult;
+
 /**
  * The default search implementation.
  */
@@ -46,28 +49,20 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
 
     @Override
     public void doSearch(final String query,
-            final AllAppsSearchBarController.Callbacks callback) {
+                         final AllAppsSearchBarController.Callbacks callback) {
         final ArrayList<ComponentKey> result = getTitleMatchResult(query);
-        mResultHandler.post(new Runnable() {
-
-            @Override
-            public void run() {
-                callback.onSearchResult(query, result);
-            }
-        });
+        mResultHandler.post(() -> callback.onSearchResult(query, result));
     }
 
     private ArrayList<ComponentKey> getTitleMatchResult(String query) {
-        // Do an intersection of the words in the query and each title, and filter out all the
-        // apps that don't match all of the words in the query.
-        final String queryTextLower = query.toLowerCase();
+        // Run a fuzzy search on all available titles using the Winkler-Jaro algorithm
         final ArrayList<ComponentKey> result = new ArrayList<>();
-        StringMatcher matcher = StringMatcher.getInstance();
-        for (AppInfo info : mApps) {
-            if (matches(info, queryTextLower, matcher)) {
-                result.add(info.toComponentKey());
-            }
+        final List<BoundExtractedResult<AppInfo>> matches = FuzzySearch.extractAll(query.toLowerCase(), mApps,
+                item -> item.title.toString(), new WinklerWeightedRatio(), 65);
+        for (BoundExtractedResult<AppInfo> match : matches) {
+            result.add(match.getReferent().toComponentKey());
         }
+
         return result;
     }
 
@@ -102,10 +97,10 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
     /**
      * Returns true if the current point should be a break point. Following cases
      * are considered as break points:
-     *      1) Any non space character after a space character
-     *      2) Any digit after a non-digit character
-     *      3) Any capital character after a digit or small character
-     *      4) Any capital character before a small character
+     * 1) Any non space character after a space character
+     * 2) Any digit after a non-digit character
+     * 3) Any capital character after a digit or small character
+     * 4) Any capital character before a small character
      */
     private static boolean isBreak(int thisType, int prevType, int nextType) {
         switch (prevType) {
@@ -141,7 +136,7 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
                 // Always a break point for a symbol
                 return true;
             default:
-                return  false;
+                return false;
         }
     }
 
