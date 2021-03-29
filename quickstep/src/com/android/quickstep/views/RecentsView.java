@@ -355,6 +355,8 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     // The GestureEndTarget that is still in progress.
     private GestureState.GestureEndTarget mCurrentGestureEndTarget;
 
+    IntSet mTopIdSet = new IntSet();
+
     /**
      * TODO: Call reloadIdNeeded in onTaskStackChanged.
      */
@@ -1201,7 +1203,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                     fullscreenTranslations[i] - fullscreenTranslations[firstNonHomeTaskIndex]);
         }
 
-        updateGridProperties();
+        updateGridProperties(false);
     }
 
     public void getTaskSize(Rect outRect) {
@@ -1674,7 +1676,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
      * This method only calculates the potential position and depends on {@link #setGridProgress} to
      * apply the actual scaling and translation.
      */
-    private void updateGridProperties() {
+    private void updateGridProperties(boolean isTaskDismissal) {
         int taskCount = getTaskViewCount();
         if (taskCount == 0) {
             return;
@@ -1690,6 +1692,10 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         IntSet bottomSet = new IntSet();
         float[] gridTranslations = new float[taskCount];
         int firstNonHomeTaskIndex = 0;
+
+        if (!isTaskDismissal) {
+            mTopIdSet.clear();
+        }
         for (int i = 0; i < taskCount; i++) {
             TaskView taskView = getTaskViewAt(i);
             if (isHomeTask(taskView)) {
@@ -1699,10 +1705,14 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                 continue;
             }
 
-            if (topRowWidth <= bottomRowWidth) {
+            // Evenly distribute tasks between rows unless rearranging due to task dismissal, in
+            // which case keep tasks in their respective rows.
+            if ((!isTaskDismissal && topRowWidth <= bottomRowWidth) || (isTaskDismissal && mTopIdSet
+                    .contains(taskView.getTask().key.id))) {
                 gridTranslations[i] += topAccumulatedTranslationX;
                 topRowWidth += taskView.getLayoutParams().width + mPageSpacing;
                 topSet.add(i);
+                mTopIdSet.add(taskView.getTask().key.id);
 
                 taskView.setGridTranslationY(0);
 
@@ -2066,7 +2076,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                     } else {
                         snapToPageImmediately(pageToSnapTo);
                         // Grid got messed up, reapply.
-                        updateGridProperties();
+                        updateGridProperties(true);
                     }
                     // Update the layout synchronously so that the position of next view is
                     // immediately available.
