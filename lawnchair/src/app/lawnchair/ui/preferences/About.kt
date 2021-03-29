@@ -79,7 +79,7 @@ val teamMembers = listOf(
         socialUrl = "https://twitter.com/skittles9823"
     ),
     TeamMember(
-        name = "Rik Kode",
+        name = "Rik Koedoot",
         descriptionRes = R.string.support_representative,
         photoUrl = "https://avatars.githubusercontent.com/u/29402532",
         socialUrl = "https://twitter.com/rikkoedoot"
