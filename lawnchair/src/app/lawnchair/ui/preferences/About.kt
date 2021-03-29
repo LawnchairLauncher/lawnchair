@@ -83,7 +83,13 @@ val teamMembers = listOf(
         descriptionRes = R.string.support_representative,
         photoUrl = "https://avatars.githubusercontent.com/u/29402532",
         socialUrl = "https://twitter.com/rikkoedoot"
-    )
+    ),
+    TeamMember(
+        name = "Amogh Lele",
+        descriptionRes = R.string.developer,
+        photoUrl = "https://avatars.githubusercontent.com/u/31761843",
+        socialUrl = "https://www.linkedin.com/in/amogh-lele/"
+    ),
 )
 
 @Composable
