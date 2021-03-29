@@ -17,6 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.KEY_ROUTE
@@ -29,7 +30,7 @@ fun TopBar(navController: NavController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
     val context = LocalContext.current
-    val title = getRoutesToLabels(context)[currentRoute]!!
+    val title = getRoutesToLabels(context)[currentRoute]
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -56,7 +57,7 @@ fun TopBar(navController: NavController) {
             }
         }
         Text(
-            text = title,
+            text = title ?: "",
             style = MaterialTheme.typography.h6,
             modifier = Modifier.padding(start = 16.dp),
             color = MaterialTheme.colors.onSurface,
