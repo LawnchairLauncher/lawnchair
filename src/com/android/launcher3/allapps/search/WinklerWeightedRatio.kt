@@ -21,7 +21,6 @@ package com.android.launcher3.allapps.search
 
 import me.xdrop.fuzzywuzzy.ToStringFunction
 import me.xdrop.fuzzywuzzy.algorithms.WeightedRatio
-import java.util.*
 import kotlin.math.roundToInt
 
 /**
@@ -34,45 +33,11 @@ class WinklerWeightedRatio : WeightedRatio() {
         val second = stringProcessor.apply(s2)
 
         val ratio = super.apply(s1, s2, stringProcessor) / 100.0
-        val cl = commonPrefixLength(first, second)
-        return ((ratio + SCALING_FACTOR * cl * (1.0 - ratio)) * 100).roundToInt()
+
+        val commonPrefix = first.commonPrefixWith(second, true)
+        val commonPrefixLen = commonPrefix.length.coerceAtMost(4)
+        return ((ratio + SCALING_FACTOR * commonPrefixLen * (1.0 - ratio)) * 100).roundToInt()
     }
-
-    /**
-     * Calculates the number of characters from the beginning of the strings that match exactly one-to-one,
-     * up to a maximum of four (4) characters.
-     * @param first The first string.
-     * @param second The second string.
-     * @return A number between 0 and 4.
-     * @see https://github.com/rrice/java-string-similarity/blob/master/src/main/java/net/ricecode/similarity/JaroWinklerStrategy.java
-     */
-    private fun commonPrefixLength(first: String, second: String): Int {
-        val shorter: String
-        val longer: String
-
-        // Determine which string is longer.
-        if (first.length > second.length) {
-            longer = first.toLowerCase(Locale.ROOT)
-            shorter = second.toLowerCase(Locale.ROOT)
-        } else {
-            longer = second.toLowerCase(Locale.ROOT)
-            shorter = first.toLowerCase(Locale.ROOT)
-        }
-
-        var result = 0
-
-        // Iterate through the shorter string.
-        for (i in shorter.indices) {
-            if (shorter[i] != longer[i]) {
-                break
-            }
-            result++
-        }
-
-        // Limit the result to 4.
-        return if (result > 4) 4 else result
-    }
-
 
     companion object {
         const val SCALING_FACTOR = .15
