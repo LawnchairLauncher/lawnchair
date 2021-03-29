@@ -6,7 +6,7 @@
     <string name="home_screen_description">Nuove app, griglia, icone</string>
     <string name="general_label">Generale</string>
     <string name="general_description">Badge di notifica, pacchetto icone</string>
-    <string name="home_screen_rotation_label">Rotazione Schermata Home</string>
+    <string name="home_screen_rotation_label">Rotazione schermata home</string>
     <string name="home_screen_rotaton_description">Quando il dispositivo viene ruotato.</string>
     <string name="auto_add_shortcuts_label">Aggiungi le nuove applicazioni alla schermata home</string>
     <string name="make_icon_packs_adaptive_label">Crea icone adattive</string>
