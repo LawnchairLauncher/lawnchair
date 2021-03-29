@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.xdrop.fuzzywuzzy.FuzzySearch;
+import me.xdrop.fuzzywuzzy.algorithms.WeightedRatio;
 import me.xdrop.fuzzywuzzy.model.BoundExtractedResult;
 
 /**
@@ -57,8 +58,8 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
     private ArrayList<ComponentKey> getTitleMatchResult(String query) {
         // Run a fuzzy search on all available titles using the Winkler-Jaro algorithm
         final ArrayList<ComponentKey> result = new ArrayList<>();
-        final List<BoundExtractedResult<AppInfo>> matches = FuzzySearch.extractAll(query.toLowerCase(), mApps,
-                item -> item.title.toString(), new WinklerWeightedRatio(), 65);
+        final List<BoundExtractedResult<AppInfo>> matches = FuzzySearch.extractSorted(query.toLowerCase(), mApps,
+                item -> item.title.toString(), new WeightedRatio(), 65);
         for (BoundExtractedResult<AppInfo> match : matches) {
             result.add(match.getReferent().toComponentKey());
         }
