@@ -25,10 +25,22 @@ class TeamMember(val name: String, @StringRes val descriptionRes: Int, val photo
 
 val teamMembers = listOf(
     TeamMember(
+        name = "Amogh Lele",
+        descriptionRes = R.string.developer,
+        photoUrl = "https://avatars.githubusercontent.com/u/31761843",
+        socialUrl = "https://www.linkedin.com/in/amogh-lele/"
+    ),
+    TeamMember(
         name = "Antonio J. Roa Valverde",
         descriptionRes = R.string.developer,
         photoUrl = "https://avatars.githubusercontent.com/u/914983",
         socialUrl = "https://twitter.com/6020peaks"
+    ),
+    TeamMember(
+        name = "Daniel Souza",
+        descriptionRes = R.string.support_representative,
+        photoUrl = "https://avatars.githubusercontent.com/u/32078304",
+        socialUrl = "https://github.com/DanGLES3"
     ),
     TeamMember(
         name = "David Sn",
@@ -41,12 +53,6 @@ val teamMembers = listOf(
         descriptionRes = R.string.support_representative,
         photoUrl = "https://avatars.githubusercontent.com/u/49398464",
         socialUrl = "https://github.com/joseph-20"
-    ),
-    TeamMember(
-        name = "Daniel Souza",
-        descriptionRes = R.string.support_representative,
-        photoUrl = "https://avatars.githubusercontent.com/u/32078304",
-        socialUrl = "https://github.com/DanGLES3"
     ),
     TeamMember(
         name = "Harsh Shandilya",
@@ -83,7 +89,7 @@ val teamMembers = listOf(
         descriptionRes = R.string.support_representative,
         photoUrl = "https://avatars.githubusercontent.com/u/29402532",
         socialUrl = "https://twitter.com/rikkoedoot"
-    )
+    ),
 )
 
 @Composable
