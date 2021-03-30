@@ -42,7 +42,6 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.search.SearchAdapterProvider;
-import com.android.launcher3.allapps.search.SectionDecorationInfo;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.util.PackageManagerHelper;
 
@@ -108,7 +107,7 @@ public class AllAppsGridAdapter extends
         // The index of this app not including sections
         public int appIndex = -1;
         // Search section associated to result
-        public SectionDecorationInfo sectionDecorationInfo = null;
+        public DecorationInfo decorationInfo = null;
 
         /**
          * Factory method for AppIcon AdapterItem
