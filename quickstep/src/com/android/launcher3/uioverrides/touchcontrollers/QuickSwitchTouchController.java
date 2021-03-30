@@ -101,7 +101,7 @@ public class QuickSwitchTouchController extends AbstractStateChangeTouchControll
     }
 
     @Override
-    protected float initCurrentAnimation(int animComponents) {
+    protected float initCurrentAnimation() {
         StateAnimationConfig config = new StateAnimationConfig();
         setupInterpolators(config);
         config.duration = (long) (getShiftRange() * 2);

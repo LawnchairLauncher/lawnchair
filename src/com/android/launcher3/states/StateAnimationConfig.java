@@ -27,32 +27,21 @@ import java.lang.annotation.RetentionPolicy;
  */
 public class StateAnimationConfig {
 
-    // We separate the state animations into "atomic" and "non-atomic" components. The atomic
-    // components may be run atomically - that is, all at once, instead of user-controlled. However,
-    // atomic components are not restricted to this purpose; they can be user-controlled alongside
-    // non atomic components as well. Note that each gesture model has exactly one atomic component,
-    // PLAY_ATOMIC_OVERVIEW_SCALE *or* PLAY_ATOMIC_OVERVIEW_PEEK.
     @IntDef(flag = true, value = {
-            PLAY_NON_ATOMIC,
-            PLAY_ATOMIC_OVERVIEW_SCALE,
-            PLAY_ATOMIC_OVERVIEW_PEEK,
+            SKIP_ALL_ANIMATIONS,
             SKIP_OVERVIEW,
             SKIP_DEPTH_CONTROLLER,
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface AnimationFlags {}
-    public static final int PLAY_NON_ATOMIC = 1 << 0;
-    public static final int PLAY_ATOMIC_OVERVIEW_SCALE = 1 << 1;
-    public static final int PLAY_ATOMIC_OVERVIEW_PEEK = 1 << 2;
-    public static final int SKIP_OVERVIEW = 1 << 3;
-    public static final int SKIP_DEPTH_CONTROLLER = 1 << 4;
+    public static final int SKIP_ALL_ANIMATIONS = 1 << 0;
+    public static final int SKIP_OVERVIEW = 1 << 1;
+    public static final int SKIP_DEPTH_CONTROLLER = 1 << 2;
 
     public long duration;
     public boolean userControlled;
-    public @AnimationFlags int animFlags = ANIM_ALL_COMPONENTS;
+    public @AnimationFlags int animFlags = 0;
 
-    public static final int ANIM_ALL_COMPONENTS = PLAY_NON_ATOMIC | PLAY_ATOMIC_OVERVIEW_SCALE
-            | PLAY_ATOMIC_OVERVIEW_PEEK;
 
     // Various types of animation state transition
     @IntDef(value = {
@@ -127,37 +116,9 @@ public class StateAnimationConfig {
     }
 
     /**
-     * @return Whether Overview is scaling as part of this animation. If this is the only
-     * component (i.e. NON_ATOMIC_COMPONENT isn't included), then this scaling is happening
-     * atomically, rather than being part of a normal state animation. StateHandlers can use
-     * this to designate part of their animation that should scale with Overview.
-     */
-    public boolean playAtomicOverviewScaleComponent() {
-        return hasAnimationFlag(StateAnimationConfig.PLAY_ATOMIC_OVERVIEW_SCALE);
-    }
-
-    /**
-     * @return Whether this animation will play atomically at the same time as a different,
-     * user-controlled state transition. StateHandlers, which contribute to both animations, can
-     * use this to avoid animating the same properties in both animations, since they'd conflict
-     * with one another.
-     */
-    public boolean onlyPlayAtomicComponent() {
-        return getAnimComponents() == StateAnimationConfig.PLAY_ATOMIC_OVERVIEW_SCALE
-                || getAnimComponents() == StateAnimationConfig.PLAY_ATOMIC_OVERVIEW_PEEK;
-    }
-
-    /**
      * Returns true if the config and any of the provided component flags
      */
     public boolean hasAnimationFlag(@AnimationFlags int a) {
         return (animFlags & a) != 0;
-    }
-
-    /**
-     * @return Only the flags that determine which animation components to play.
-     */
-    public @AnimationFlags int getAnimComponents() {
-        return animFlags & StateAnimationConfig.ANIM_ALL_COMPONENTS;
     }
 }

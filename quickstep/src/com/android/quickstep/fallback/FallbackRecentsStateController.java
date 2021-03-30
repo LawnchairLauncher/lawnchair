@@ -20,8 +20,6 @@ import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_MO
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SCALE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_X;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_Y;
-import static com.android.launcher3.states.StateAnimationConfig.PLAY_ATOMIC_OVERVIEW_PEEK;
-import static com.android.launcher3.states.StateAnimationConfig.PLAY_ATOMIC_OVERVIEW_SCALE;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_OVERVIEW;
 import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_OFFSET;
 import static com.android.quickstep.views.RecentsView.FULLSCREEN_PROGRESS;
@@ -63,10 +61,6 @@ public class FallbackRecentsStateController implements StateHandler<RecentsState
     @Override
     public void setStateWithAnimation(RecentsState toState, StateAnimationConfig config,
             PendingAnimation setter) {
-        if (!config.hasAnimationFlag(PLAY_ATOMIC_OVERVIEW_PEEK | PLAY_ATOMIC_OVERVIEW_SCALE)) {
-            // The entire recents animation is played atomically.
-            return;
-        }
         if (config.hasAnimationFlag(SKIP_OVERVIEW)) {
             return;
         }
