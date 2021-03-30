@@ -5,8 +5,8 @@
     <string name="home_screen_label">Startscherm</string>
     <string name="home_screen_description">Nieuwe apps, raster, iconen</string>
     <string name="general_label">Algemeen</string>
-    <string name="general_description">Notificatie stippen: icoon pakket</string>
-    <string name="home_screen_rotation_label">Startpagina rotatie</string>
+    <string name="general_description">Notificatie stippen, icoon pakket</string>
+    <string name="home_screen_rotation_label">Startscherm rotatie</string>
     <string name="home_screen_rotaton_description">Wanneer het apparaat is geroteerd.</string>
     <string name="auto_add_shortcuts_label">Voeg nieuwe apps toe aan startscherm</string>
     <string name="make_icon_packs_adaptive_label">Adaptieve iconen maken</string>
