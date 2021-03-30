@@ -48,10 +48,6 @@ public class BackButtonAlphaHandler implements StateHandler<LauncherState> {
     @Override
     public void setStateWithAnimation(LauncherState toState, StateAnimationConfig config,
             PendingAnimation animation) {
-        if (config.onlyPlayAtomicComponent()) {
-            return;
-        }
-
         if (SysUINavigationMode.getMode(mLauncher) != TWO_BUTTONS) {
             return;
         }

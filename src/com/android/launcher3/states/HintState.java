@@ -31,7 +31,11 @@ public class HintState extends LauncherState {
             | FLAG_HAS_SYS_UI_SCRIM;
 
     public HintState(int id) {
-        super(id, LAUNCHER_STATE_HOME, STATE_FLAGS);
+        this(id, LAUNCHER_STATE_HOME);
+    }
+
+    public HintState(int id, int statsLogOrdinal) {
+        super(id, statsLogOrdinal, STATE_FLAGS);
     }
 
     @Override

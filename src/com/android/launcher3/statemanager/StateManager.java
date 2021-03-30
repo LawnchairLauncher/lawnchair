@@ -18,7 +18,7 @@ package com.android.launcher3.statemanager;
 
 import static android.animation.ValueAnimator.areAnimatorsEnabled;
 
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_COMPONENTS;
+import static com.android.launcher3.states.StateAnimationConfig.SKIP_ALL_ANIMATIONS;
 
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
@@ -289,14 +289,14 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
      */
     public AnimatorPlaybackController createAnimationToNewWorkspace(
             STATE_TYPE state, long duration) {
-        return createAnimationToNewWorkspace(state, duration, ANIM_ALL_COMPONENTS);
+        return createAnimationToNewWorkspace(state, duration, 0 /* animFlags */);
     }
 
     public AnimatorPlaybackController createAnimationToNewWorkspace(
-            STATE_TYPE state, long duration, @AnimationFlags int animComponents) {
+            STATE_TYPE state, long duration, @AnimationFlags int animFlags) {
         StateAnimationConfig config = new StateAnimationConfig();
         config.duration = duration;
-        config.animFlags = animComponents;
+        config.animFlags = animFlags;
         return createAnimationToNewWorkspace(state, config);
     }
 
@@ -312,7 +312,7 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
 
     private PendingAnimation createAnimationToNewWorkspaceInternal(final STATE_TYPE state) {
         PendingAnimation builder = new PendingAnimation(mConfig.duration);
-        if (mConfig.getAnimComponents() != 0) {
+        if (!mConfig.hasAnimationFlag(SKIP_ALL_ANIMATIONS)) {
             for (StateHandler handler : getStateHandlers()) {
                 handler.setStateWithAnimation(state, mConfig, builder);
             }

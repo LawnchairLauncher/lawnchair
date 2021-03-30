@@ -33,6 +33,7 @@ import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FA
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_VERTICAL_PROGRESS;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_TRANSLATE;
+import static com.android.launcher3.states.StateAnimationConfig.SKIP_ALL_ANIMATIONS;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_OVERVIEW;
 import static com.android.launcher3.touch.BothAxesSwipeDetector.DIRECTION_RIGHT;
 import static com.android.launcher3.touch.BothAxesSwipeDetector.DIRECTION_UP;
@@ -372,7 +373,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
             // animation as from an app.
             StateAnimationConfig config = new StateAnimationConfig();
             // Update mNonOverviewAnim to do nothing so it doesn't interfere.
-            config.animFlags = 0;
+            config.animFlags = SKIP_ALL_ANIMATIONS;
             updateNonOverviewAnim(targetState, config);
             nonOverviewAnim = mNonOverviewAnim.getAnimationPlayer();
 
