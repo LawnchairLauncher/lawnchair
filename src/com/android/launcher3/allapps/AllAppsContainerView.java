@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.allapps;
 
-import static com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItem;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_TAP_ON_PERSONAL_TAB;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_TAP_ON_WORK_TAB;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_HAS_SHORTCUT_PERMISSION;
@@ -63,7 +62,6 @@ import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
 import com.android.launcher3.model.data.AppInfo;
-import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.MultiValueAlpha;
@@ -79,7 +77,7 @@ import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.OnActivePag
 public class AllAppsContainerView extends SpringRelativeLayout implements DragSource,
         Insettable, OnDeviceProfileChangeListener, OnActivePageChangedListener {
 
-    private static final float FLING_VELOCITY_MULTIPLIER = 135f;
+    private static final float FLING_VELOCITY_MULTIPLIER = 1000 * .8f;
     // Starts the springs after at least 55% of the animation has passed.
     private static final float FLING_ANIMATION_THRESHOLD = 0.55f;
     private static final int ALPHA_CHANNEL_COUNT = 2;
@@ -142,12 +140,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
         mAllAppsStore.addUpdateListener(this::onAppsUpdated);
 
-        addSpringView(R.id.all_apps_header);
-        addSpringView(R.id.apps_list_view);
-        addSpringView(R.id.all_apps_tabs_view_pager);
-
         mMultiValueAlpha = new MultiValueAlpha(this, ALPHA_CHANNEL_COUNT);
-
     }
 
     /**
@@ -171,17 +164,10 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         return mWorkModeSwitch;
     }
 
-
-    @Override
-    protected void setDampedScrollShift(float shift) {
-        // Bound the shift amount to avoid content from drawing on top (Y-val) of the QSB.
-        float maxShift = getSearchView().getHeight() / 2f;
-        super.setDampedScrollShift(Utilities.boundToRange(shift, -maxShift, maxShift));
-    }
-
     @Override
     public void onDeviceProfileChanged(DeviceProfile dp) {
         for (AdapterHolder holder : mAH) {
+            holder.adapter.setAppsPerRow(dp.inv.numAllAppsColumns);
             if (holder.recyclerView != null) {
                 // Remove all views and clear the pool, while keeping the data same. After this
                 // call, all the viewHolders will be recreated.
@@ -409,12 +395,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         }
     }
 
-    @Override
-    public int getCanvasClipTopForOverscroll() {
-        // Do not clip if the QSB is attached to the spring, otherwise the QSB will get clipped.
-        return mSpringViews.get(getSearchView().getId()) ? 0 : mHeader.getTop();
-    }
-
     private void rebindAdapters(boolean showTabs) {
         rebindAdapters(showTabs, false /* force */);
     }
@@ -564,37 +544,9 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     /**
      * Handles selection on focused view and returns success
      */
-    public boolean selectFocusedView(View v) {
-        ItemInfo headerItem = getHighlightedItemFromHeader();
-        if (headerItem != null) {
-            return mLauncher.startActivitySafely(v, headerItem.getIntent(), headerItem);
-        }
-        AdapterItem focusedItem = getActiveRecyclerView().getApps().getFocusedChild();
-        if (focusedItem != null) {
-            View focusedView = getActiveRecyclerView().getLayoutManager()
-                    .findViewByPosition(focusedItem.position);
-            if (focusedView != null && mSearchAdapterProvider.onAdapterItemSelected(focusedItem,
-                    focusedView)) {
-                return true;
-            }
-        }
-        if (focusedItem != null && focusedItem.appInfo != null) {
-            ItemInfo itemInfo = focusedItem.appInfo;
-            return mLauncher.startActivitySafely(v, itemInfo.getIntent(), itemInfo);
-        }
-        return false;
-    }
-
-    /**
-     * Returns the ItemInfo of a focused view inside {@link FloatingHeaderView}
-     */
-    public ItemInfo getHighlightedItemFromHeader() {
-        View view = getFloatingHeaderView().getFocusedChild();
-        if (view != null && view.getTag() instanceof ItemInfo) {
-            return ((ItemInfo) view.getTag());
-        }
-
-        return null;
+    public boolean launchHighlightedItem() {
+        if (mSearchAdapterProvider == null) return false;
+        return mSearchAdapterProvider.launchHighlightedItem();
     }
 
     public SearchAdapterProvider getSearchAdapterProvider() {
@@ -613,10 +565,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         int padding = mHeader.getMaxTranslation();
         for (int i = 0; i < mAH.length; i++) {
             mAH[i].padding.top = padding;
-            if (FeatureFlags.ENABLE_DEVICE_SEARCH.get() && mUsingTabs) {
-                //add extra space between tabs and recycler view
-                mAH[i].padding.top += mLauncher.getDeviceProfile().edgeMarginPx;
-            }
             mAH[i].applyPadding();
         }
     }
@@ -673,11 +621,8 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
                 if (shouldSpring
                         && valueAnimator.getAnimatedFraction() >= FLING_ANIMATION_THRESHOLD) {
-                    int searchViewId = getSearchView().getId();
-                    addSpringView(searchViewId);
-                    finishWithShiftAndVelocity(1, velocity * FLING_VELOCITY_MULTIPLIER,
-                            (anim, canceled, value, velocity) -> removeSpringView(searchViewId));
-
+                    absorbSwipeUpVelocity(Math.abs(
+                            Math.round(velocity * FLING_VELOCITY_MULTIPLIER)));
                     shouldSpring = false;
                 }
             }
@@ -733,8 +678,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             applyPadding();
             setupOverlay();
             if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
-                recyclerView.addItemDecoration(new AllAppsSectionDecorator(
-                        AllAppsContainerView.this));
+                recyclerView.addItemDecoration(mSearchAdapterProvider.getDecorator());
             }
         }
 

@@ -23,6 +23,7 @@ import android.content.Intent;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.icons.BitmapInfo;
+import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.util.PackageManagerHelper;
 
@@ -216,4 +217,14 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
      * @return a copy of this
      */
     public abstract ItemInfoWithIcon clone();
+
+
+    /**
+     * Returns a FastBitmapDrawable with the icon.
+     */
+    public FastBitmapDrawable newIcon(Context context) {
+        FastBitmapDrawable drawable = bitmap.newIcon(context);
+        drawable.setIsDisabled(isDisabled());
+        return drawable;
+    }
 }

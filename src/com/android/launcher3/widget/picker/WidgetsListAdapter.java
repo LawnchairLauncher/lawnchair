@@ -41,8 +41,10 @@ import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.model.WidgetsListContentEntry;
 import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
 import com.android.launcher3.widget.model.WidgetsListSearchHeaderEntry;
+import com.android.launcher3.widget.picker.search.WidgetsSearchBarUIHelper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
@@ -68,6 +70,7 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     private static final int VIEW_TYPE_WIDGETS_HEADER = R.id.view_type_widgets_header;
     private static final int VIEW_TYPE_WIDGETS_SEARCH_HEADER = R.id.view_type_widgets_search_header;
 
+    @Nullable private final WidgetsSearchBarUIHelper mSearchBarUIHelper;
     private final WidgetsDiffReporter mDiffReporter;
     private final SparseArray<ViewHolderBinder> mViewHolderBinders = new SparseArray<>();
     private final WidgetsListTableViewHolderBinder mWidgetsListTableViewHolderBinder;
@@ -87,7 +90,9 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
 
     public WidgetsListAdapter(Context context, LayoutInflater layoutInflater,
             WidgetPreviewLoader widgetPreviewLoader, IconCache iconCache,
-            OnClickListener iconClickListener, OnLongClickListener iconLongClickListener) {
+            OnClickListener iconClickListener, OnLongClickListener iconLongClickListener,
+            @Nullable WidgetsSearchBarUIHelper searchBarUIHelper) {
+        mSearchBarUIHelper = searchBarUIHelper;
         mDiffReporter = new WidgetsDiffReporter(iconCache, this);
         mWidgetsListTableViewHolderBinder = new WidgetsListTableViewHolderBinder(context,
                 layoutInflater, iconClickListener, iconLongClickListener,
@@ -216,7 +221,9 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
 
     @Override
     public long getItemId(int pos) {
-        return pos;
+        return Arrays.hashCode(new Object[]{
+                mVisibleEntries.get(pos).mPkgItem.hashCode(),
+                getItemViewType(pos)});
     }
 
     @Override
@@ -234,6 +241,9 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
 
     @Override
     public void onHeaderClicked(boolean showWidgets, PackageUserKey packageUserKey) {
+        if (mSearchBarUIHelper != null) {
+            mSearchBarUIHelper.clearSearchBarFocus();
+        }
         if (showWidgets) {
             mWidgetsContentVisiblePackageUserKey = packageUserKey;
             updateVisibleEntries();

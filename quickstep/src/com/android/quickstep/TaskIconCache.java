@@ -15,7 +15,6 @@
  */
 package com.android.quickstep;
 
-import static com.android.launcher3.FastBitmapDrawable.newIcon;
 import static com.android.launcher3.uioverrides.QuickstepLauncher.GO_LOW_RAM_RECENTS_ENABLED;
 
 import android.app.ActivityManager.TaskDescription;
@@ -34,7 +33,6 @@ import android.view.accessibility.AccessibilityManager;
 
 import androidx.annotation.WorkerThread;
 
-import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.BitmapInfo;
@@ -137,11 +135,12 @@ public class TaskIconCache {
         // TODO: Load icon resource (b/143363444)
         Bitmap icon = TaskDescriptionCompat.getIcon(desc, key.userId);
         if (icon != null) {
-            entry.icon = new FastBitmapDrawable(getBitmapInfo(
+            /* isInstantApp */
+            entry.icon = getBitmapInfo(
                     new BitmapDrawable(mContext.getResources(), icon),
                     key.userId,
                     desc.getPrimaryColor(),
-                    false /* isInstantApp */));
+                    false /* isInstantApp */).newIcon(mContext);
         } else {
             activityInfo = PackageManagerWrapper.getInstance().getActivityInfo(
                     key.getComponent(), key.userId);
@@ -151,7 +150,7 @@ public class TaskIconCache {
                         key.userId,
                         desc.getPrimaryColor(),
                         activityInfo.applicationInfo.isInstantApp());
-                entry.icon = newIcon(mContext, bitmapInfo);
+                entry.icon = bitmapInfo.newIcon(mContext);
             } else {
                 entry.icon = getDefaultIcon(key.userId);
             }
@@ -199,7 +198,7 @@ public class TaskIconCache {
                 }
                 mDefaultIcons.put(userId, info);
             }
-            return new FastBitmapDrawable(info);
+            return info.newIcon(mContext);
         }
     }
 

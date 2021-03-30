@@ -483,7 +483,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
                 icon.verifyHighRes();
                 // Set the callback back to the actual icon, in case
                 // it was captured by the FolderIcon
-                Drawable d = icon.getCompoundDrawables()[1];
+                Drawable d = icon.getIcon();
                 if (d != null) {
                     d.setCallback(icon);
                 }

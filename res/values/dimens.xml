@@ -56,6 +56,12 @@
     <dimen name="resize_frame_background_padding">24dp</dimen>
     <dimen name="resize_frame_margin">22dp</dimen>
 
+    <!-- App widget reconfigure button -->
+    <dimen name="widget_reconfigure_button_corner_radius">14dp</dimen>
+    <dimen name="widget_reconfigure_button_padding">6dp</dimen>
+    <dimen name="widget_reconfigure_button_margin">32dp</dimen>
+    <dimen name="widget_reconfigure_button_size">36dp</dimen>
+
 <!-- Fast scroll -->
     <dimen name="fastscroll_track_min_width">6dp</dimen>
     <dimen name="fastscroll_track_max_width">8dp</dimen>
@@ -138,6 +144,12 @@
     <dimen name="shortcut_preview_padding_right">0dp</dimen>
     <dimen name="shortcut_preview_padding_top">0dp</dimen>
 
+<!-- Pin widget dialog -->
+    <dimen name="pin_widget_button_padding_horizontal">8dp</dimen>
+    <dimen name="pin_widget_button_padding_vertical">4dp</dimen>
+    <dimen name="pin_widget_button_inset_horizontal">4dp</dimen>
+    <dimen name="pin_widget_button_inset_vertical">6dp</dimen>
+
 <!-- Dragging -->
     <!-- Drag padding to add to the bottom of drop targets -->
     <dimen name="drop_target_drag_padding">14dp</dimen>
@@ -185,7 +197,7 @@
 
 <!-- Deep shortcuts -->
     <dimen name="deep_shortcuts_elevation">0dp</dimen>
-    <dimen name="bg_popup_item_width">234dp</dimen>
+    <dimen name="bg_popup_item_width">216dp</dimen>
     <dimen name="bg_popup_item_height">56dp</dimen>
     <dimen name="pre_drag_view_scale">6dp</dimen>
     <!-- an icon with shortcuts must be dragged this far before the container is removed. -->
@@ -193,7 +205,7 @@
     <dimen name="deep_shortcut_icon_size">32dp</dimen>
     <dimen name="popup_margin">2dp</dimen>
     <dimen name="popup_single_item_radius">100dp</dimen>
-    <dimen name="popup_middle_item_radius">4dp</dimen>
+    <dimen name="popup_smaller_radius">4dp</dimen>
     <dimen name="deep_shortcut_drawable_padding">12dp</dimen>
     <dimen name="deep_shortcut_drag_handle_size">16dp</dimen>
     <dimen name="popup_padding_start">10dp</dimen>
@@ -276,5 +288,13 @@
 
 <!-- Taskbar related (placeholders to compile in Launcher3 without Quickstep) -->
     <dimen name="taskbar_size">0dp</dimen>
+
+    <!-- Size of the maximum radius for the enforced rounded rectangles. -->
+    <dimen name="enforced_rounded_corner_max_radius">16dp</dimen>
+
+<!-- Overview placeholder to compile in Launcer3 without Quickstep -->
+    <dimen name="task_thumbnail_icon_size">0dp</dimen>
+    <dimen name="task_thumbnail_icon_size_grid">0dp</dimen>
+    <dimen name="overview_task_margin">0dp</dimen>
 
 </resources>

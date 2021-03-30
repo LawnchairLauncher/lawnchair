@@ -15,31 +15,45 @@
  */
 package com.android.launcher3.allapps.search;
 
-import android.net.Uri;
+import android.graphics.Canvas;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsGridAdapter;
+import com.android.launcher3.model.data.ItemInfo;
 
 /**
  * Provides views for local search results
  */
 public class DefaultSearchAdapterProvider extends SearchAdapterProvider {
 
-    public DefaultSearchAdapterProvider(BaseDraggingActivity launcher) {
-        super(launcher);
+    private final RecyclerView.ItemDecoration mDecoration;
+    private View mHighlightedView;
+
+    public DefaultSearchAdapterProvider(BaseDraggingActivity launcher,
+            AllAppsContainerView appsContainerView) {
+        super(launcher, appsContainerView);
+        mDecoration = new RecyclerView.ItemDecoration() {
+            @Override
+            public void onDraw(@NonNull Canvas c, @NonNull RecyclerView parent,
+                    @NonNull RecyclerView.State state) {
+                super.onDraw(c, parent, state);
+            }
+        };
     }
 
     @Override
     public void onBindView(AllAppsGridAdapter.ViewHolder holder, int position) {
-
-    }
-
-    @Override
-    public void onSliceStatusUpdate(Uri sliceUri) {
-
+        if (position == 0) {
+            mHighlightedView = holder.itemView;
+        }
     }
 
     @Override
@@ -54,7 +68,22 @@ public class DefaultSearchAdapterProvider extends SearchAdapterProvider {
     }
 
     @Override
-    public boolean onAdapterItemSelected(AllAppsGridAdapter.AdapterItem adapterItem, View view) {
+    public boolean launchHighlightedItem() {
+        if (mHighlightedView instanceof BubbleTextView
+                && mHighlightedView.getTag() instanceof ItemInfo) {
+            ItemInfo itemInfo = (ItemInfo) mHighlightedView.getTag();
+            return mLauncher.startActivitySafely(mHighlightedView, itemInfo.getIntent(), itemInfo);
+        }
         return false;
+    }
+
+    @Override
+    public View getHighlightedItem() {
+        return mHighlightedView;
+    }
+
+    @Override
+    public RecyclerView.ItemDecoration getDecorator() {
+        return mDecoration;
     }
 }

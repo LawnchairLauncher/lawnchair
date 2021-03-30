@@ -63,6 +63,7 @@ import com.android.launcher3.util.Thunk;
 import com.android.launcher3.views.ActivityContext;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An abstraction of the original Workspace which supports browsing through a
@@ -301,6 +302,21 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
      */
     protected int getPanelCount() {
         return 1;
+    }
+
+    /**
+     * Returns the currently visible pages.
+     */
+    public Iterable<View> getVisiblePages() {
+        int panelCount = getPanelCount();
+        List<View> visiblePages = new ArrayList<>(panelCount);
+        for (int i = mCurrentPage; i < mCurrentPage + panelCount; i++) {
+            View page = getPageAt(i);
+            if (page != null) {
+                visiblePages.add(page);
+            }
+        }
+        return visiblePages;
     }
 
     /**
@@ -1052,10 +1068,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         // Try canceling the long press. It could also have been scheduled
         // by a distant descendant, so use the mAllowLongPress flag to block
         // everything
-        final View currentPage = getPageAt(mCurrentPage);
-        if (currentPage != null) {
-            currentPage.cancelLongPress();
-        }
+        getVisiblePages().forEach(View::cancelLongPress);
     }
 
     protected float getScrollProgress(int screenCenter, View v, int page) {
@@ -1499,17 +1512,16 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         return getDestinationPage(mOrientationHandler.getPrimaryScroll(this));
     }
 
-    protected int getDestinationPage(int scaledScroll) {
-        return getPageNearestToCenterOfScreen(scaledScroll);
+    protected int getDestinationPage(int primaryScroll) {
+        return getPageNearestToCenterOfScreen(primaryScroll);
     }
 
     public int getPageNearestToCenterOfScreen() {
         return getPageNearestToCenterOfScreen(mOrientationHandler.getPrimaryScroll(this));
     }
 
-    private int getPageNearestToCenterOfScreen(int scaledScroll) {
-        int pageOrientationSize = mOrientationHandler.getMeasuredSize(this);
-        int screenCenter = scaledScroll + (pageOrientationSize / 2);
+    private int getPageNearestToCenterOfScreen(int primaryScroll) {
+        int screenCenter = getScreenCenter(primaryScroll);
         int minDistanceFromScreenCenter = Integer.MAX_VALUE;
         int minDistanceFromScreenCenterIndex = -1;
         final int childCount = getChildCount();
@@ -1525,16 +1537,24 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
     private int getDisplacementFromScreenCenter(int childIndex, int screenCenter) {
-        int childSize = getChildVisibleSize(childIndex);
+        int childSize = Math.round(getChildVisibleSize(childIndex));
         int halfChildSize = (childSize / 2);
         int childCenter = getChildOffset(childIndex) + halfChildSize;
         return childCenter - screenCenter;
     }
 
     protected int getDisplacementFromScreenCenter(int childIndex) {
-        int pageOrientationSize = mOrientationHandler.getMeasuredSize(this);
-        int screenCenter = mOrientationHandler.getPrimaryScroll(this) + (pageOrientationSize / 2);
+        int primaryScroll = mOrientationHandler.getPrimaryScroll(this);
+        int screenCenter = getScreenCenter(primaryScroll);
         return getDisplacementFromScreenCenter(childIndex, screenCenter);
+    }
+
+    private int getScreenCenter(int primaryScroll) {
+        float primaryScale = mOrientationHandler.getPrimaryScale(this);
+        float primaryPivot =  mOrientationHandler.getPrimaryValue(getPivotX(), getPivotY());
+        int pageOrientationSize = mOrientationHandler.getMeasuredSize(this);
+        return Math.round(primaryScroll + (pageOrientationSize / 2f - primaryPivot) / primaryScale
+                + primaryPivot);
     }
 
     protected void snapToDestination() {

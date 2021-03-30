@@ -38,7 +38,8 @@ public class InputConsumerProxy {
     private static final String TAG = "InputConsumerProxy";
 
     private final InputConsumerController mInputConsumerController;
-    private final Supplier<InputConsumer> mConsumerSupplier;
+    private Runnable mCallback;
+    private Supplier<InputConsumer> mConsumerSupplier;
 
     // The consumer is created lazily on demand.
     private InputConsumer mInputConsumer;
@@ -48,8 +49,9 @@ public class InputConsumerProxy {
     private boolean mDestroyPending = false;
 
     public InputConsumerProxy(InputConsumerController inputConsumerController,
-            Supplier<InputConsumer> consumerSupplier) {
+            Runnable callback, Supplier<InputConsumer> consumerSupplier) {
         mInputConsumerController = inputConsumerController;
+        mCallback = callback;
         mConsumerSupplier = consumerSupplier;
     }
 
@@ -64,9 +66,7 @@ public class InputConsumerProxy {
         if (ev instanceof MotionEvent) {
             onInputConsumerMotionEvent((MotionEvent) ev);
         } else if (ev instanceof KeyEvent) {
-            if (mInputConsumer == null) {
-                mInputConsumer = mConsumerSupplier.get();
-            }
+            initInputConsumerIfNeeded();
             mInputConsumer.onKeyEvent((KeyEvent) ev);
             return true;
         }
@@ -89,9 +89,7 @@ public class InputConsumerProxy {
 
         if (action == ACTION_DOWN) {
             mTouchInProgress = true;
-            if (mInputConsumer == null) {
-                mInputConsumer = mConsumerSupplier.get();
-            }
+            initInputConsumerIfNeeded();
         } else if (action == ACTION_CANCEL || action == ACTION_UP) {
             // Finish any pending actions
             mTouchInProgress = false;
@@ -114,5 +112,19 @@ public class InputConsumerProxy {
         mDestroyPending = false;
         mDestroyed = true;
         mInputConsumerController.setInputListener(null);
+    }
+
+    public void unregisterCallback() {
+        mCallback = null;
+    }
+
+    private void initInputConsumerIfNeeded() {
+        if (mInputConsumer == null) {
+            if (mCallback != null) {
+                mCallback.run();
+            }
+            mInputConsumer = mConsumerSupplier.get();
+            mConsumerSupplier = null;
+        }
     }
 }

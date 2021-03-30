@@ -81,6 +81,9 @@
     <!-- Search bar text shown in the popup view showing all available widgets installed on the
          device. [CHAR_LIMIT=50] -->
     <string name="widgets_full_sheet_search_bar_hint">Search</string>
+    <!-- Spoken text for screen readers. This text lets a user know that the button is used to clear
+         the text that the user entered in the search box. [CHAR_LIMIT=none] -->
+    <string name="widgets_full_sheet_cancel_button_description">Clear text from search box</string>
     <!-- Text shown when there is no widgets shown in the popup view showing all available widgets
          installed on the device. [CHAR_LIMIT=none] -->
     <string name="no_widgets_available">No widgets available</string>
@@ -269,8 +272,6 @@
     <string name="app_waiting_download_title"><xliff:g id="name" example="Messenger">%1$s</xliff:g> waiting to install</string>
 
     <!-- Strings for widgets & more in the popup container/bottom sheet -->
-    <!-- Title for a bottom sheet that shows widgets for a particular app -->
-    <string name="widgets_bottom_sheet_title"><xliff:g id="name" example="Messenger">%1$s</xliff:g> widgets</string>
 
     <!-- Accessibility title for the popup containing a list of widgets. [CHAR_LIMIT=50] -->
     <string name="widgets_list">Widgets list</string>
@@ -379,9 +380,18 @@
     <!--- heading shown when user opens work apps tab while work apps are paused -->
     <string name="work_apps_paused_title">Work profile is paused</string>
     <!--- body shown when user opens work apps tab while work apps are paused -->
-    <string name="work_apps_paused_body">Work apps can\'t send you notifications, use your battery, or access your location</string>
+    <string name="work_apps_paused_body">Work apps can’t send you notifications, use your battery, or access your location</string>
     <!-- content description for paused work apps list -->
-    <string name="work_apps_paused_content_description">Work profile is paused. Work apps can\’t send you notifications, use your battery, or access your location</string>
+    <string name="work_apps_paused_content_description">Work profile is paused. Work apps can’t send you notifications, use your battery, or access your location</string>
+    <!-- string shown in educational banner about work profile -->
+    <string name="work_apps_paused_edu_banner">Work apps are badged and visible to your IT admin</string>
+    <!-- button string shown to dismiss work tab education -->
+    <string name="work_apps_paused_edu_accept">Got it</string>
+
+    <!-- button string shown pause work profile -->
+    <string name="work_apps_pause_btn_text">Pause work apps</string>
+    <!-- button string shown enable work profile -->
+    <string name="work_apps_enable_btn_text">Turn on</string>
 
     <!-- A hint shown in launcher settings develop options filter box -->
     <string name="developer_options_filter_hint">Filter</string>

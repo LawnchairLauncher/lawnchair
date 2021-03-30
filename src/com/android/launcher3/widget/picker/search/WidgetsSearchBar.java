@@ -35,6 +35,11 @@ public interface WidgetsSearchBar {
     void reset();
 
     /**
+     * Clears focus from search bar.
+     */
+    void clearSearchBarFocus();
+
+    /**
      * Sets the vertical location, in pixels, of this search bar relative to its top position.
      */
     void setTranslationY(float translationY);

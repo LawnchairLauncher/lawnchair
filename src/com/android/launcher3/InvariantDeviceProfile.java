@@ -132,6 +132,7 @@ public class InvariantDeviceProfile {
      * Do not query directly. see {@link DeviceProfile#isScalableGrid}.
      */
     protected boolean isScalable;
+    public int devicePaddingId;
 
     public String dbFile;
     public int defaultLayoutId;
@@ -140,7 +141,7 @@ public class InvariantDeviceProfile {
     public DeviceProfile landscapeProfile;
     public DeviceProfile portraitProfile;
 
-    public DevicePaddings devicePaddings;
+    @Nullable public DevicePaddings devicePaddings;
 
     public Point defaultWallpaperSize;
     public Rect defaultWidgetPadding;
@@ -165,6 +166,7 @@ public class InvariantDeviceProfile {
         numHotseatIcons = p.numHotseatIcons;
         numAllAppsColumns = p.numAllAppsColumns;
         isScalable = p.isScalable;
+        devicePaddingId = p.devicePaddingId;
         minCellHeight = p.minCellHeight;
         minCellWidth = p.minCellWidth;
         borderSpacing = p.borderSpacing;
@@ -225,13 +227,17 @@ public class InvariantDeviceProfile {
                 .add(myDisplayOption);
         result.iconSize = defaultDisplayOption.iconSize;
         result.landscapeIconSize = defaultDisplayOption.landscapeIconSize;
-        result.allAppsIconSize = Math.min(
-                defaultDisplayOption.allAppsIconSize, myDisplayOption.allAppsIconSize);
+        if (defaultDisplayOption.allAppsIconSize < myDisplayOption.allAppsIconSize) {
+            result.allAppsIconSize = defaultDisplayOption.allAppsIconSize;
+            result.numAllAppsColumns = defaultDisplayOption.numAllAppsColumns;
+        } else {
+            result.allAppsIconSize = myDisplayOption.allAppsIconSize;
+            result.numAllAppsColumns = myDisplayOption.numAllAppsColumns;
+        }
         result.minCellHeight = defaultDisplayOption.minCellHeight;
         result.minCellWidth = defaultDisplayOption.minCellWidth;
         result.borderSpacing = defaultDisplayOption.borderSpacing;
 
-        devicePaddings = new DevicePaddings(context);
         initGrid(context, myInfo, result);
     }
 
@@ -262,7 +268,6 @@ public class InvariantDeviceProfile {
         ArrayList<DisplayOption> allOptions = getPredefinedDeviceProfiles(context, gridName);
 
         DisplayOption displayOption = invDistWeightedInterpolate(displayInfo, allOptions);
-        devicePaddings = new DevicePaddings(context);
         initGrid(context, displayInfo, displayOption);
         return displayOption.grid.name;
     }
@@ -278,8 +283,8 @@ public class InvariantDeviceProfile {
         demoModeLayoutId = closestProfile.demoModeLayoutId;
         numFolderRows = closestProfile.numFolderRows;
         numFolderColumns = closestProfile.numFolderColumns;
-        numAllAppsColumns = closestProfile.numAllAppsColumns;
         isScalable = closestProfile.isScalable;
+        devicePaddingId = closestProfile.devicePaddingId;
 
         mExtraAttrs = closestProfile.extraAttrs;
 
@@ -293,6 +298,7 @@ public class InvariantDeviceProfile {
         minCellHeight = displayOption.minCellHeight;
         minCellWidth = displayOption.minCellWidth;
         borderSpacing = displayOption.borderSpacing;
+        numAllAppsColumns = Math.round(displayOption.numAllAppsColumns);
 
         if (Utilities.isGridOptionsEnabled(context)) {
             allAppsIconSize = displayOption.allAppsIconSize;
@@ -300,6 +306,10 @@ public class InvariantDeviceProfile {
         } else {
             allAppsIconSize = iconSize;
             allAppsIconTextSize = iconTextSize;
+        }
+
+        if (devicePaddingId != 0) {
+            devicePaddings = new DevicePaddings(context, devicePaddingId);
         }
 
         // If the partner customization apk contains any grid overrides, apply them
@@ -609,12 +619,14 @@ public class InvariantDeviceProfile {
         private final int numHotseatIcons;
 
         private final String dbFile;
-        private final int numAllAppsColumns;
 
         private final int defaultLayoutId;
         private final int demoModeLayoutId;
 
         private final boolean isScalable;
+        private final int devicePaddingId;
+
+        public final boolean visible;
 
         private final SparseArray<TypedValue> extraAttrs;
 
@@ -636,11 +648,13 @@ public class InvariantDeviceProfile {
                     R.styleable.GridDisplayOption_numFolderRows, numRows);
             numFolderColumns = a.getInt(
                     R.styleable.GridDisplayOption_numFolderColumns, numColumns);
-            numAllAppsColumns = a.getInt(
-                    R.styleable.GridDisplayOption_numAllAppsColumns, numColumns);
 
             isScalable = a.getBoolean(
                     R.styleable.GridDisplayOption_isScalable, false);
+            devicePaddingId = a.getResourceId(
+                    R.styleable.GridDisplayOption_devicePaddingId, 0);
+
+            visible = a.getBoolean(R.styleable.GridDisplayOption_visible, true);
 
             a.recycle();
 
@@ -656,6 +670,7 @@ public class InvariantDeviceProfile {
         private final float minHeightDps;
         private final boolean canBeDefault;
 
+        private float numAllAppsColumns;
         private float minCellHeight;
         private float minCellWidth;
         private float borderSpacing;
@@ -676,6 +691,8 @@ public class InvariantDeviceProfile {
             minHeightDps = a.getFloat(R.styleable.ProfileDisplayOption_minHeightDps, 0);
             canBeDefault = a.getBoolean(
                     R.styleable.ProfileDisplayOption_canBeDefault, false);
+            numAllAppsColumns = a.getInt(R.styleable.ProfileDisplayOption_numAllAppsColumns,
+                    grid.numColumns);
 
             minCellHeight = a.getFloat(R.styleable.ProfileDisplayOption_minCellHeightDps, 0);
             minCellWidth = a.getFloat(R.styleable.ProfileDisplayOption_minCellWidthDps, 0);
@@ -702,12 +719,14 @@ public class InvariantDeviceProfile {
             minWidthDps = 0;
             minHeightDps = 0;
             canBeDefault = false;
+            numAllAppsColumns = 0;
             minCellHeight = 0;
             minCellWidth = 0;
             borderSpacing = 0;
         }
 
         private DisplayOption multiply(float w) {
+            numAllAppsColumns *= w;
             iconSize *= w;
             landscapeIconSize *= w;
             allAppsIconSize *= w;
@@ -720,6 +739,7 @@ public class InvariantDeviceProfile {
         }
 
         private DisplayOption add(DisplayOption p) {
+            numAllAppsColumns += p.numAllAppsColumns;
             iconSize += p.iconSize;
             landscapeIconSize += p.landscapeIconSize;
             allAppsIconSize += p.allAppsIconSize;

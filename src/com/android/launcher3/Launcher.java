@@ -1781,9 +1781,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     @Override
     public Rect getFolderBoundingBox() {
         // We need to bound the folder to the currently visible workspace area
-        Rect folderBoundingBox = new Rect();
-        getWorkspace().getPageAreaRelativeToDragLayer(folderBoundingBox);
-        return folderBoundingBox;
+        return getWorkspace().getPageAreaRelativeToDragLayer();
     }
 
     @Override
@@ -2634,6 +2632,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         mDragLayer.dump(prefix, writer);
         mStateManager.dump(prefix, writer);
         mPopupDataProvider.dump(prefix, writer);
+        mDeviceProfile.dump(prefix, writer);
 
         try {
             FileLog.flushAll(writer);
@@ -2760,6 +2759,13 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
      */
     public float[] getNormalOverviewScaleAndOffset() {
         return new float[] {NO_SCALE, NO_OFFSET};
+    }
+
+    /**
+     * @see LauncherState#getTaskbarScale(Launcher)
+     */
+    public float getNormalTaskbarScale() {
+        return 1f;
     }
 
     public static Launcher getLauncher(Context context) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 The Android Open Source Project
+ * Copyright (C) 2021 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.android.launcher3.allapps;
 
-package com.android.launcher3.util;
-
-/**
- * Extension of closeable which does not throw an exception
- */
-public interface SafeCloseable extends AutoCloseable {
-
-    @Override
-    void close();
+public class DecorationInfo {
 }

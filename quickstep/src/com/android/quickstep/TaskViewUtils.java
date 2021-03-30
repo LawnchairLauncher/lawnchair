@@ -22,6 +22,7 @@ import static com.android.launcher3.QuickstepTransitionManager.RECENTS_LAUNCH_DU
 import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncestor;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
+import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR_ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.clampToProgress;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.statehandlers.DepthController.DEPTH;
@@ -200,8 +201,7 @@ public final class TaskViewUtils {
             tsv.setPreview(targets.apps[targets.apps.length - 1]);
             tsv.fullScreenProgress.value = 0;
             tsv.recentsViewScale.value = 1;
-            tsv.gridProgress.value = gridProgress;
-            tsv.gridTranslationSecondary.value = gridTranslationSecondary;
+            tsv.taskSecondaryTranslation.value = gridTranslationSecondary;
             tsv.setScroll(startScroll);
 
             // Fade in the task during the initial 20% of the animation
@@ -214,7 +214,8 @@ public final class TaskViewUtils {
                     AnimatedFloat.VALUE, 1, TOUCH_RESPONSE_INTERPOLATOR);
             out.setFloat(tsv.recentsViewScale,
                     AnimatedFloat.VALUE, tsv.getFullScreenScale(), TOUCH_RESPONSE_INTERPOLATOR);
-            out.setFloat(tsv.gridProgress, AnimatedFloat.VALUE, 0, TOUCH_RESPONSE_INTERPOLATOR);
+            out.setFloat(tsv.taskSecondaryTranslation, AnimatedFloat.VALUE, 0,
+                    TOUCH_RESPONSE_INTERPOLATOR_ACCEL_DEACCEL);
             out.setInt(tsv, TaskViewSimulator.SCROLL, 0, TOUCH_RESPONSE_INTERPOLATOR);
 
             TaskViewSimulator finalTsv = tsv;

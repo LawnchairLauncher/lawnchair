@@ -20,13 +20,17 @@ import static com.android.quickstep.views.OverviewActionsView.DISABLED_NO_THUMBN
 import static com.android.quickstep.views.OverviewActionsView.DISABLED_ROTATED;
 
 import android.annotation.SuppressLint;
+import android.app.assist.AssistContent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Matrix;
 import android.os.SystemClock;
 import android.text.TextUtils;
 
+import androidx.annotation.VisibleForTesting;
+
 import com.android.launcher3.R;
+import com.android.quickstep.util.AssistContentRequester;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.TaskThumbnailView;
 import com.android.systemui.shared.recents.model.Task;
@@ -40,6 +44,8 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
     public static final String ACTION_TRANSLATE = "com.android.quickstep.ACTION_TRANSLATE";
     public static final String ACTION_SEARCH = "com.android.quickstep.ACTION_SEARCH";
     public static final String ELAPSED_NANOS = "niu_actions_elapsed_realtime_nanos";
+    public static final String ACTIONS_URL = "niu_actions_app_url";
+    private static final String TAG = "TaskOverlayFactoryGo";
 
     // Empty constructor required for ResourceBasedOverride
     public TaskOverlayFactoryGo(Context context) {}
@@ -56,8 +62,8 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
      * @param <T> The type of View in which the overlay will be placed
      */
     public static final class TaskOverlayGo<T extends OverviewActionsView> extends TaskOverlay {
-
-        private String mPackageName;
+        private String mNIUPackageName;
+        private String mWebUrl;
 
         private TaskOverlayGo(TaskThumbnailView taskThumbnailView) {
             super(taskThumbnailView);
@@ -70,29 +76,57 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
         public void initOverlay(Task task, ThumbnailData thumbnail, Matrix matrix,
                 boolean rotated) {
             getActionsView().updateDisabledFlags(DISABLED_NO_THUMBNAIL, thumbnail == null);
-            mPackageName =
+            mNIUPackageName =
                     mApplicationContext.getResources().getString(R.string.niu_actions_package);
 
-            if (thumbnail == null || TextUtils.isEmpty(mPackageName)) {
+            if (thumbnail == null || TextUtils.isEmpty(mNIUPackageName)) {
                 return;
             }
 
             getActionsView().updateDisabledFlags(DISABLED_ROTATED, rotated);
-            boolean isAllowedByPolicy = thumbnail.isRealSnapshot;
+            boolean isAllowedByPolicy = mThumbnailView.isRealSnapshot();
             getActionsView().setCallbacks(new OverlayUICallbacksGoImpl(isAllowedByPolicy, task));
+
+            int taskId = task.key.id;
+            AssistContentRequester contentRequester =
+                    new AssistContentRequester(mApplicationContext);
+            contentRequester.requestAssistContent(taskId, this::onAssistContentReceived);
         }
 
-        private void sendNIUIntent(String actionType) {
+        /** Provide Assist Content to the overlay. */
+        @VisibleForTesting
+        public void onAssistContentReceived(AssistContent assistContent) {
+            mWebUrl = assistContent.getWebUri() != null
+                    ? assistContent.getWebUri().toString() : null;
+        }
+
+        @Override
+        public void reset() {
+            super.reset();
+            mWebUrl = null;
+        }
+
+        /**
+         * Creates and sends an Intent corresponding to the button that was clicked
+         */
+        @VisibleForTesting
+        public void sendNIUIntent(String actionType) {
             Intent intent = createNIUIntent(actionType);
             mImageApi.shareAsDataWithExplicitIntent(/* crop */ null, intent);
         }
 
         private Intent createNIUIntent(String actionType) {
-            return new Intent(actionType)
+            Intent intent = new Intent(actionType)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK)
                     .addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                    .setPackage(mPackageName)
+                    .setPackage(mNIUPackageName)
                     .putExtra(ELAPSED_NANOS, SystemClock.elapsedRealtimeNanos());
+
+            if (mWebUrl != null) {
+                intent.putExtra(ACTIONS_URL, mWebUrl);
+            }
+
+            return intent;
         }
 
         protected class OverlayUICallbacksGoImpl extends OverlayUICallbacksImpl
@@ -127,6 +161,11 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
                     showBlockedByPolicyMessage();
                 }
             }
+        }
+
+        @VisibleForTesting
+        public void setImageActionsAPI(ImageActionsApi imageActionsApi) {
+            mImageApi = imageActionsApi;
         }
     }
 

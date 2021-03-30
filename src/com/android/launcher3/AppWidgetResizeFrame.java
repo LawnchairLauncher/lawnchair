@@ -14,12 +14,16 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.SizeF;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 
@@ -71,6 +75,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     private LauncherAppWidgetHostView mWidgetView;
     private CellLayout mCellLayout;
     private DragLayer mDragLayer;
+    private ImageButton mReconfigureButton;
 
     private Rect mWidgetPadding;
 
@@ -100,6 +105,8 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     private int mRunningVInc;
     private int mMinHSpan;
     private int mMinVSpan;
+    private int mMaxHSpan;
+    private int mMaxVSpan;
     private int mDeltaX;
     private int mDeltaY;
     private int mDeltaXAddOn;
@@ -164,6 +171,15 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         DragLayer dl = launcher.getDragLayer();
         AppWidgetResizeFrame frame = (AppWidgetResizeFrame) launcher.getLayoutInflater()
                 .inflate(R.layout.app_widget_resize_frame, dl, false);
+        if (widget.hasEnforcedCornerRadius()) {
+            float enforcedCornerRadius = widget.getEnforcedCornerRadius();
+            ImageView imageView = frame.findViewById(R.id.widget_resize_frame);
+            Drawable d = imageView.getDrawable();
+            if (d instanceof GradientDrawable) {
+                GradientDrawable gd = (GradientDrawable) d.mutate();
+                gd.setCornerRadius(enforcedCornerRadius);
+            }
+        }
         frame.setupForWidget(widget, cellLayout, dl);
         ((DragLayer.LayoutParams) frame.getLayoutParams()).customPosition = true;
 
@@ -183,6 +199,8 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
 
         mMinHSpan = info.minSpanX;
         mMinVSpan = info.minSpanY;
+        mMaxHSpan = info.maxSpanX;
+        mMaxVSpan = info.maxSpanY;
 
         mWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(getContext(),
                 widgetView.getAppWidgetInfo().provider, null);
@@ -193,6 +211,17 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         } else if (mResizeMode == AppWidgetProviderInfo.RESIZE_VERTICAL) {
             mDragHandles[INDEX_LEFT].setVisibility(GONE);
             mDragHandles[INDEX_RIGHT].setVisibility(GONE);
+        }
+
+        mReconfigureButton = (ImageButton) findViewById(R.id.widget_reconfigure_button);
+        if (info.isReconfigurable()) {
+            mReconfigureButton.setVisibility(VISIBLE);
+            mReconfigureButton.setOnClickListener(view -> mLauncher
+                    .getAppWidgetHost()
+                    .startConfigActivity(
+                            mLauncher,
+                            mWidgetView.getAppWidgetId(),
+                            Launcher.REQUEST_RECONFIGURE_APPWIDGET));
         }
 
         // When we create the resize frame, we first mark all cells as unoccupied. The appropriate
@@ -314,7 +343,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         // expandability.
         mTempRange1.set(cellX, spanX + cellX);
         int hSpanDelta = mTempRange1.applyDeltaAndBound(mLeftBorderActive, mRightBorderActive,
-                hSpanInc, mMinHSpan, mCellLayout.getCountX(), mTempRange2);
+                hSpanInc, mMinHSpan, mMaxHSpan, mCellLayout.getCountX(), mTempRange2);
         cellX = mTempRange2.start;
         spanX = mTempRange2.size();
         if (hSpanDelta != 0) {
@@ -323,7 +352,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
 
         mTempRange1.set(cellY, spanY + cellY);
         int vSpanDelta = mTempRange1.applyDeltaAndBound(mTopBorderActive, mBottomBorderActive,
-                vSpanInc, mMinVSpan, mCellLayout.getCountY(), mTempRange2);
+                vSpanInc, mMinVSpan, mMaxVSpan, mCellLayout.getCountY(), mTempRange2);
         cellY = mTempRange2.start;
         spanY = mTempRange2.size();
         if (vSpanDelta != 0) {
@@ -566,6 +595,13 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         return false;
     }
 
+    private boolean isTouchOnReconfigureButton(MotionEvent ev) {
+        int xFrame = (int) ev.getX() - getLeft();
+        int yFrame = (int) ev.getY() - getTop();
+        mReconfigureButton.getHitRect(sTmpRect);
+        return sTmpRect.contains(xFrame, yFrame);
+    }
+
     @Override
     public boolean onControllerTouchEvent(MotionEvent ev) {
         int action = ev.getAction();
@@ -592,6 +628,11 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN && handleTouchDown(ev)) {
             return true;
+        }
+        // Keep the resize frame open but let a click on the reconfigure button fall through to the
+        // button's OnClickListener.
+        if (isTouchOnReconfigureButton(ev)) {
+            return false;
         }
         close(false);
         return false;
@@ -642,12 +683,15 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
          * @param minSize minimum size after with the moving edge should not be shifted any further.
          *                For eg, if delta = -3 when moving the endEdge brings the size to less than
          *                minSize, only delta = -2 will applied
+         * @param maxSize maximum size after with the moving edge should not be shifted any further.
+         *                For eg, if delta = -3 when moving the endEdge brings the size to greater
+         *                than maxSize, only delta = -2 will applied
          * @param maxEnd The maximum value to the end edge (start edge is always restricted to 0)
          * @return the amount of increase when endEdge was moves and the amount of decrease when
          * the start edge was moved.
          */
         public int applyDeltaAndBound(boolean moveStart, boolean moveEnd, int delta,
-                int minSize, int maxEnd, IntRange out) {
+                int minSize, int maxSize, int maxEnd, IntRange out) {
             applyDelta(moveStart, moveEnd, delta, out);
             if (out.start < 0) {
                 out.start = 0;
@@ -660,6 +704,13 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
                     out.start = out.end - minSize;
                 } else if (moveEnd) {
                     out.end = out.start + minSize;
+                }
+            }
+            if (out.size() > maxSize) {
+                if (moveStart) {
+                    out.start = out.end - maxSize;
+                } else if (moveEnd) {
+                    out.end = out.start + maxSize;
                 }
             }
             return moveEnd ? out.size() - size() : size() - out.size();

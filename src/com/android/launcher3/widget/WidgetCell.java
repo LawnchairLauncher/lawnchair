@@ -40,12 +40,12 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.CheckLongPressHelper;
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.R;
 import com.android.launcher3.WidgetPreviewLoader;
 import com.android.launcher3.dragndrop.AppWidgetHostViewDrawable;
 import com.android.launcher3.icons.BaseIconFactory;
 import com.android.launcher3.icons.BitmapRenderer;
+import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.model.WidgetItem;
 
 /**
@@ -94,6 +94,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     protected final BaseActivity mActivity;
     protected final DeviceProfile mDeviceProfile;
     private final CheckLongPressHelper mLongPressHelper;
+    private final float mEnforcedCornerRadius;
 
     private RemoteViews mPreview;
     private LauncherAppWidgetHostView mAppWidgetHostViewPreview;
@@ -118,6 +119,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         setWillNotDraw(false);
         setClipToPadding(false);
         setAccessibilityDelegate(mActivity.getAccessibilityDelegate());
+        mEnforcedCornerRadius = RoundedCornerEnforcement.computeEnforcedRadius(context);
     }
 
     private void setContainerWidth() {
@@ -245,7 +247,9 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     }
 
     public void applyPreview(Bitmap bitmap) {
-        applyPreview(new FastBitmapDrawable(bitmap));
+        FastBitmapDrawable drawable = new FastBitmapDrawable(bitmap);
+        drawable.setRoundedCornersRadius(mEnforcedCornerRadius);
+        applyPreview(drawable);
     }
 
     private void applyPreview(Drawable drawable) {

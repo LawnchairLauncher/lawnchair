@@ -41,13 +41,4 @@ public class RecentsAnimationTargets extends RemoteAnimationTargets {
     public boolean hasTargets() {
         return unfilteredApps.length != 0;
     }
-
-    public boolean hasTask(int taskId) {
-        for (RemoteAnimationTargetCompat target : unfilteredApps) {
-            if (target.taskId == taskId) {
-                return true;
-            }
-        }
-        return false;
-    }
 }

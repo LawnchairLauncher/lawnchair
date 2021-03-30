@@ -34,6 +34,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowInsets;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.widget.TextView;
@@ -57,6 +58,7 @@ import com.android.launcher3.widget.LauncherAppWidgetHost.ProviderChangedListene
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.picker.search.SearchModeListener;
 import com.android.launcher3.widget.picker.search.WidgetsSearchBar;
+import com.android.launcher3.widget.picker.search.WidgetsSearchBarUIHelper;
 import com.android.launcher3.widget.util.WidgetsTableUtils;
 import com.android.launcher3.workprofile.PersonalWorkPagedView;
 import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.OnActivePageChangedListener;
@@ -70,7 +72,8 @@ import java.util.function.Predicate;
  */
 public class WidgetsFullSheet extends BaseWidgetSheet
         implements Insettable, ProviderChangedListener, OnActivePageChangedListener,
-        WidgetsRecyclerView.HeaderViewDimensionsProvider, SearchModeListener {
+        WidgetsRecyclerView.HeaderViewDimensionsProvider, SearchModeListener,
+        WidgetsSearchBarUIHelper {
     private static final String TAG = WidgetsFullSheet.class.getSimpleName();
 
     private static final long DEFAULT_OPEN_DURATION = 267;
@@ -141,17 +144,12 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             findViewById(R.id.tab_work)
                     .setOnClickListener((View view) -> mViewPager.snapToPage(1));
             fastScroller.setIsRecyclerViewFirstChildInParent(false);
-            springLayout.addSpringView(R.id.primary_widgets_list_view);
-            springLayout.addSpringView(R.id.work_widgets_list_view);
         } else {
             mViewPager = null;
-            springLayout.addSpringView(R.id.primary_widgets_list_view);
         }
 
         layoutInflater.inflate(R.layout.widgets_full_sheet_search_and_recommendations, springLayout,
                 true);
-        springLayout.addSpringView(R.id.search_and_recommendations_container);
-
         mSearchAndRecommendationViewHolder = new SearchAndRecommendationViewHolder(
                 findViewById(R.id.search_and_recommendations_container));
         mSearchAndRecommendationsScrollController = new SearchAndRecommendationsScrollController(
@@ -554,6 +552,17 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         return super.onBackPressed();
     }
 
+    @Override
+    public void onDragStart(boolean start, float startDisplacement) {
+        super.onDragStart(start, startDisplacement);
+        getWindowInsetsController().hide(WindowInsets.Type.ime());
+    }
+
+    @Override
+    public void clearSearchBarFocus() {
+        mSearchAndRecommendationViewHolder.mSearchBar.clearSearchBarFocus();
+    }
+
     /** A holder class for holding adapters & their corresponding recycler view. */
     private final class AdapterHolder {
         static final int PRIMARY = 0;
@@ -576,7 +585,10 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                     apps.getWidgetCache(),
                     apps.getIconCache(),
                     /* iconClickListener= */ WidgetsFullSheet.this,
-                    /* iconLongClickListener= */ WidgetsFullSheet.this);
+                    /* iconLongClickListener= */ WidgetsFullSheet.this,
+                    /* WidgetsSearchBarUIHelper= */
+                    mAdapterType == SEARCH ? WidgetsFullSheet.this : null);
+            mWidgetsListAdapter.setHasStableIds(true);
             switch (mAdapterType) {
                 case PRIMARY:
                     mWidgetsListAdapter.setFilter(mPrimaryWidgetsFilter);
@@ -592,6 +604,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         void setup(WidgetsRecyclerView recyclerView) {
             mWidgetsRecyclerView = recyclerView;
             mWidgetsRecyclerView.setAdapter(mWidgetsListAdapter);
+            // Disables animation because it disrupts the item focus upon adapter item change.
+            mWidgetsRecyclerView.setItemAnimator(null);
             mWidgetsRecyclerView.setHeaderViewDimensionsProvider(WidgetsFullSheet.this);
             mWidgetsRecyclerView.setEdgeEffectFactory(
                     ((TopRoundedCornerView) mContent).createEdgeEffectFactory());

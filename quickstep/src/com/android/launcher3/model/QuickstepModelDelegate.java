@@ -73,6 +73,7 @@ public class QuickstepModelDelegate extends ModelDelegate implements OnIDPChange
 
     public static final String LAST_PREDICTION_ENABLED_STATE = "last_prediction_enabled_state";
     private static final String LAST_SNAPSHOT_TIME_MILLIS = "LAST_SNAPSHOT_TIME_MILLIS";
+    private static final int NUM_OF_RECOMMENDED_WIDGETS_PREDICATION = 20;
 
     private static final boolean IS_DEBUG = false;
     private static final String TAG = "QuickstepModelDelegate";
@@ -217,7 +218,7 @@ public class QuickstepModelDelegate extends ModelDelegate implements OnIDPChange
         registerWidgetsPredictor(apm.createAppPredictionSession(
                 new AppPredictionContext.Builder(context)
                         .setUiSurface("widgets")
-                        .setPredictedTargetCount(mIDP.numColumns)
+                        .setPredictedTargetCount(NUM_OF_RECOMMENDED_WIDGETS_PREDICATION)
                         .build()));
     }
 

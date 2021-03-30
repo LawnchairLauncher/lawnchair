@@ -176,8 +176,8 @@ public abstract class LauncherState implements BaseState<LauncherState> {
         return launcher.getNormalOverviewScaleAndOffset();
     }
 
-    public ScaleAndTranslation getQsbScaleAndTranslation(Launcher launcher) {
-        return new ScaleAndTranslation(NO_SCALE, NO_OFFSET, NO_OFFSET);
+    public float getTaskbarScale(Launcher launcher) {
+        return launcher.getNormalTaskbarScale();
     }
 
     public float getOverviewFullscreenProgress() {
@@ -185,12 +185,7 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     }
 
     public int getVisibleElements(Launcher launcher) {
-        DeviceProfile deviceProfile = launcher.getDeviceProfile();
-        int flags = WORKSPACE_PAGE_INDICATOR | VERTICAL_SWIPE_INDICATOR | TASKBAR;
-        if (!deviceProfile.isTaskbarPresent) {
-            flags |= HOTSEAT_ICONS;
-        }
-        return flags;
+        return HOTSEAT_ICONS | WORKSPACE_PAGE_INDICATOR | VERTICAL_SWIPE_INDICATOR | TASKBAR;
     }
 
     /**

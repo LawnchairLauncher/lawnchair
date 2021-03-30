@@ -82,20 +82,6 @@ public class BackgroundAppState extends OverviewState {
     }
 
     @Override
-    public ScaleAndTranslation getHotseatScaleAndTranslation(Launcher launcher) {
-        if ((getVisibleElements(launcher) & HOTSEAT_ICONS) != 0) {
-            // Translate hotseat offscreen if we show it in overview.
-            RecentsView recentsView = launcher.getOverviewPanel();
-            ScaleAndTranslation scaleAndTranslation = super.getHotseatScaleAndTranslation(launcher);
-            scaleAndTranslation.translationY += LayoutUtils.getShelfTrackingDistance(launcher,
-                    launcher.getDeviceProfile(),
-                    recentsView.getPagedOrientationHandler());
-            return scaleAndTranslation;
-        }
-        return super.getHotseatScaleAndTranslation(launcher);
-    }
-
-    @Override
     protected float getDepthUnchecked(Context context) {
         return 1f;
     }

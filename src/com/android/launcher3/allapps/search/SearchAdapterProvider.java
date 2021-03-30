@@ -21,7 +21,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsGridAdapter;
 
 /**
@@ -31,7 +34,7 @@ public abstract class SearchAdapterProvider {
 
     protected final BaseDraggingActivity mLauncher;
 
-    public SearchAdapterProvider(BaseDraggingActivity launcher) {
+    public SearchAdapterProvider(BaseDraggingActivity launcher, AllAppsContainerView appsView) {
         mLauncher = launcher;
     }
 
@@ -43,7 +46,8 @@ public abstract class SearchAdapterProvider {
     /**
      * Called from LiveSearchManager to notify slice status updates.
      */
-    public abstract void onSliceStatusUpdate(Uri sliceUri);
+    public void onSliceStatusUpdate(Uri sliceUri) {
+    }
 
     /**
      * Returns whether or not viewType can be handled by searchProvider
@@ -71,9 +75,18 @@ public abstract class SearchAdapterProvider {
     }
 
     /**
-     * handles selection event on search adapter item. Returns false if provider can not handle
+     * Handles selection event on search adapter item. Returns false if provider can not handle
      * event
      */
-    public abstract boolean onAdapterItemSelected(AllAppsGridAdapter.AdapterItem adapterItem,
-            View view);
+    public abstract boolean launchHighlightedItem();
+
+    /**
+     * Returns the current highlighted view
+     */
+    public abstract View getHighlightedItem();
+
+    /**
+     * Returns the item decorator.
+     */
+    public abstract RecyclerView.ItemDecoration getDecorator();
 }

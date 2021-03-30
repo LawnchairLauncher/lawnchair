@@ -26,6 +26,7 @@ import android.util.IntProperty;
 import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Interpolator;
@@ -119,8 +120,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
 
     public void populateAndShow(ItemInfo itemInfo) {
         mOriginalItemInfo = itemInfo;
-        ((TextView) findViewById(R.id.title)).setText(getContext().getString(
-                R.string.widgets_bottom_sheet_title, mOriginalItemInfo.title));
+        ((TextView) findViewById(R.id.title)).setText(mOriginalItemInfo.title);
 
         onWidgetsBound();
         attachToContainer();
@@ -140,7 +140,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
 
         WidgetsTableUtils.groupWidgetItemsIntoTable(widgets, mMaxHorizontalSpan).forEach(row -> {
             TableRow tableRow = new TableRow(getContext());
-            tableRow.setGravity(Gravity.CENTER_VERTICAL);
+            tableRow.setGravity(Gravity.TOP);
             row.forEach(widgetItem -> {
                 WidgetCell widget = addItemCell(tableRow);
                 widget.setPreviewSize(widgetItem.spanX, widgetItem.spanY);
@@ -151,6 +151,19 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
             });
             widgetsTable.addView(tableRow);
         });
+    }
+
+    @Override
+    public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            mNoIntercept = false;
+            ScrollView scrollView = findViewById(R.id.widgets_table_scroll_view);
+            if (getPopupContainer().isEventOverView(scrollView, ev)
+                    && scrollView.getScrollY() > 0) {
+                mNoIntercept = true;
+            }
+        }
+        return super.onControllerInterceptTouchEvent(ev);
     }
 
     protected WidgetCell addItemCell(ViewGroup parent) {

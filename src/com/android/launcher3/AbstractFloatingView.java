@@ -98,13 +98,6 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     public static final int TYPE_HIDE_BACK_BUTTON = TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE
             | TYPE_SNACKBAR | TYPE_WIDGET_RESIZE_FRAME | TYPE_LISTENER;
 
-    // When these types of floating views are open, hide the taskbar hotseat and show the real one.
-    public static final int TYPE_REPLACE_TASKBAR_WITH_HOTSEAT = TYPE_FOLDER | TYPE_ACTION_POPUP;
-
-    // Hide the taskbar when these types of floating views are open.
-    public static final int TYPE_HIDE_TASKBAR = TYPE_WIDGETS_BOTTOM_SHEET | TYPE_WIDGETS_FULL_SHEET
-            | TYPE_ON_BOARD_POPUP;
-
     public static final int TYPE_ACCESSIBLE = TYPE_ALL & ~TYPE_DISCOVERY_BOUNCE & ~TYPE_LISTENER
             & ~TYPE_ALL_APPS_EDU;
 
