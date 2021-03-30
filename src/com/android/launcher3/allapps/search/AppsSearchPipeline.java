@@ -20,7 +20,6 @@ import android.os.CancellationSignal;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItem;
-import com.android.launcher3.allapps.AllAppsSectionDecorator.SectionDecorationHandler;
 import com.android.launcher3.model.AllAppsList;
 import com.android.launcher3.model.BaseModelUpdateTask;
 import com.android.launcher3.model.BgDataModel;
@@ -38,14 +37,10 @@ public class AppsSearchPipeline implements SearchPipeline {
 
     private static final int MAX_RESULTS_COUNT = 5;
 
-    private final SectionDecorationInfo mSearchSectionInfo;
     private final LauncherAppState mLauncherAppState;
 
     public AppsSearchPipeline(Context context, LauncherAppState launcherAppState) {
         mLauncherAppState = launcherAppState;
-        mSearchSectionInfo = new SectionDecorationInfo();
-        mSearchSectionInfo.setDecorationHandler(
-                new SectionDecorationHandler(context, true, 0, true, true));
     }
 
     @Override
@@ -82,7 +77,6 @@ public class AppsSearchPipeline implements SearchPipeline {
         ArrayList<AdapterItem> items = new ArrayList<>();
         for (int i = 0; i < matchingApps.size() && i < MAX_RESULTS_COUNT; i++) {
             AdapterItem appItem = AdapterItem.asApp(i, "", matchingApps.get(i), i);
-            appItem.sectionDecorationInfo = mSearchSectionInfo;
             items.add(appItem);
         }
 
