@@ -19,7 +19,6 @@ package com.android.launcher3;
 import static android.animation.ValueAnimator.areAnimatorsEnabled;
 
 import static com.android.launcher3.anim.Interpolators.DEACCEL_1_5;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_FOUR_COLUMNS;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -602,7 +601,7 @@ public class CellLayout extends ViewGroup {
         if (child instanceof BubbleTextView) {
             BubbleTextView bubbleChild = (BubbleTextView) child;
             bubbleChild.setTextVisibility(mContainerType != HOTSEAT);
-            if (ENABLE_FOUR_COLUMNS.get()) {
+            if (mActivity.getDeviceProfile().isScalableGrid) {
                 bubbleChild.setCenterVertically(mContainerType != HOTSEAT);
             }
         }
