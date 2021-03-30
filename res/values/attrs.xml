@@ -132,6 +132,9 @@
         <attr name="isScalable" format="boolean" />
         <attr name="devicePaddingId" format="reference" />
 
+        <!-- whether the grid option is shown to the user -->
+        <attr name="visible" format="boolean" />
+
     </declare-styleable>
 
     <declare-styleable name="DevicePadding">
