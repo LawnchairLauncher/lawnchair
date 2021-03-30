@@ -32,8 +32,8 @@ public class TransposedQuickSwitchTouchController extends QuickSwitchTouchContro
     }
 
     @Override
-    protected float initCurrentAnimation(int animComponents) {
-        float multiplier = super.initCurrentAnimation(animComponents);
+    protected float initCurrentAnimation() {
+        float multiplier = super.initCurrentAnimation();
         return mLauncher.getDeviceProfile().isSeascape() ? multiplier : -multiplier;
     }
 

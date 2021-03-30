@@ -28,6 +28,7 @@ import static com.android.launcher3.LauncherState.OVERVIEW_MODAL_TASK;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_TAP;
 import static com.android.launcher3.testing.TestProtocol.HINT_STATE_ORDINAL;
+import static com.android.launcher3.testing.TestProtocol.HINT_STATE_TWO_BUTTON_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.OVERVIEW_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.QUICK_SWITCH_STATE_ORDINAL;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY;
@@ -35,6 +36,7 @@ import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SY
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.view.HapticFeedbackConstants;
 import android.view.View;
 
 import com.android.launcher3.BaseQuickstepLauncher;
@@ -248,6 +250,11 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
                 if (workspace.getNextPage() != Workspace.DEFAULT_PAGE) {
                     workspace.post(workspace::moveToDefaultScreen);
                 }
+                break;
+            }
+            case HINT_STATE_TWO_BUTTON_ORDINAL: {
+                getStateManager().goToState(OVERVIEW);
+                getDragLayer().performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
                 break;
             }
             case OVERVIEW_STATE_ORDINAL: {

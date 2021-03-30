@@ -29,6 +29,7 @@ import androidx.annotation.NonNull;
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.StaggeredWorkspaceAnim;
@@ -134,7 +135,7 @@ public class LauncherSwipeHandlerV2 extends
             // to home.
             long accuracy = 2 * Math.max(mDp.widthPx, mDp.heightPx);
             return mActivity.getStateManager().createAnimationToNewWorkspace(
-                    NORMAL, accuracy, 0 /* animComponents */);
+                    NORMAL, accuracy, StateAnimationConfig.SKIP_ALL_ANIMATIONS);
         }
 
         @Override
