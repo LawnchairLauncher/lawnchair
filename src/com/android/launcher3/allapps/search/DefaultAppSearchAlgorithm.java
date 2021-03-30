@@ -15,25 +15,39 @@
  */
 package com.android.launcher3.allapps.search;
 
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+
 import android.content.Context;
 import android.os.Handler;
 
+import androidx.annotation.AnyThread;
+
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItem;
+import com.android.launcher3.model.AllAppsList;
+import com.android.launcher3.model.BaseModelUpdateTask;
+import com.android.launcher3.model.BgDataModel;
+import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.search.SearchAlgorithm;
 import com.android.launcher3.search.SearchCallback;
+import com.android.launcher3.search.StringMatcherUtility;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The default search implementation.
  */
 public class DefaultAppSearchAlgorithm implements SearchAlgorithm<AdapterItem> {
 
-    protected final Handler mResultHandler;
-    private final AppsSearchPipeline mAppsSearchPipeline;
+    private static final int MAX_RESULTS_COUNT = 5;
 
-    public DefaultAppSearchAlgorithm(Context context, LauncherAppState launcherAppState) {
-        mResultHandler = new Handler();
-        mAppsSearchPipeline = new AppsSearchPipeline(context, launcherAppState);
+    private final LauncherAppState mAppState;
+    private final Handler mResultHandler;
+
+    public DefaultAppSearchAlgorithm(Context context) {
+        mAppState = LauncherAppState.getInstance(context);
+        mResultHandler = new Handler(MAIN_EXECUTOR.getLooper());
     }
 
     @Override
@@ -44,11 +58,38 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm<AdapterItem> {
     }
 
     @Override
-    public void doSearch(final String query,
-            final SearchCallback<AdapterItem> callback) {
-        mAppsSearchPipeline.query(query,
-                results -> mResultHandler.post(
-                        () -> callback.onSearchResult(query, results)),
-                null);
+    public void doSearch(String query, SearchCallback<AdapterItem> callback) {
+        mAppState.getModel().enqueueModelUpdateTask(new BaseModelUpdateTask() {
+            @Override
+            public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
+                ArrayList<AdapterItem> result = getTitleMatchResult(apps.data, query);
+                mResultHandler.post(() -> callback.onSearchResult(query, result));
+            }
+        });
+    }
+
+    /**
+     * Filters {@link AppInfo}s matching specified query
+     */
+    @AnyThread
+    public static ArrayList<AdapterItem> getTitleMatchResult(List<AppInfo> apps, String query) {
+        // Do an intersection of the words in the query and each title, and filter out all the
+        // apps that don't match all of the words in the query.
+        final String queryTextLower = query.toLowerCase();
+        final ArrayList<AdapterItem> result = new ArrayList<>();
+        StringMatcherUtility.StringMatcher matcher =
+                StringMatcherUtility.StringMatcher.getInstance();
+
+        int resultCount = 0;
+        int total = apps.size();
+        for (int i = 0; i < total && resultCount < MAX_RESULTS_COUNT; i++) {
+            AppInfo info = apps.get(i);
+            if (StringMatcherUtility.matches(queryTextLower, info.title.toString(), matcher)) {
+                AdapterItem appItem = AdapterItem.asApp(resultCount, "", info, resultCount);
+                result.add(appItem);
+                resultCount++;
+            }
+        }
+        return result;
     }
 }

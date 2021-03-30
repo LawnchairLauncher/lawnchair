@@ -36,7 +36,6 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Insettable;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItem;
@@ -136,7 +135,7 @@ public class AppsSearchContainerLayout extends ExtendedEditText
         mApps = appsView.getApps();
         mAppsView = appsView;
         mSearchBarController.initialize(
-                new DefaultAppSearchAlgorithm(mLauncher, LauncherAppState.getInstance(mLauncher)),
+                new DefaultAppSearchAlgorithm(mLauncher),
                 this, mLauncher, this);
     }
 
