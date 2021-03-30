@@ -93,7 +93,7 @@ public final class FeatureFlags {
 
 
     public static final BooleanFlag ENABLE_DEVICE_SEARCH = new DeviceFlag(
-            "ENABLE_DEVICE_SEARCH", true, "Allows on device search in all apps");
+            "ENABLE_DEVICE_SEARCH", false, "Allows on device search in all apps");
 
     public static final BooleanFlag FOLDER_NAME_SUGGEST = new DeviceFlag(
             "FOLDER_NAME_SUGGEST", true,
