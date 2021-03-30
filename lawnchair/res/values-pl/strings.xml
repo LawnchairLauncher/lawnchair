@@ -6,7 +6,7 @@
     <string name="home_screen_description">New Apps, Grid, Icons</string>
     <string name="general_label">Ogólne</string>
     <string name="general_description">Plakietki powiadomień, paczka ikon</string>
-    <string name="home_screen_rotation_label">Obrót ekranu głównego</string>
+    <string name="home_screen_rotation_label">Obrót Ekranu głównego</string>
     <string name="home_screen_rotaton_description">Po obróceniu urządzenia.</string>
     <string name="auto_add_shortcuts_label">Add New Apps to Home Screen</string>
     <string name="make_icon_packs_adaptive_label">Make Adaptive Icons</string>
@@ -25,8 +25,8 @@
     <string name="grid">Siatka</string>
     <string name="home_screen_rows">Home Screen Rows</string>
     <string name="icons">Icons</string>
-    <string name="icon_size">Icon Size</string>
-    <string name="label_size">Label Size</string>
+    <string name="icon_size">Rozmiar ikon</string>
+    <string name="label_size">Rozmiar etykiet</string>
     <string name="allow_empty_pages_label">Allow Empty Pages</string>
     <string name="colored_generated_icon_backgrounds_label">Make Colored Backgrounds</string>
     <string name="colored_generated_icon_backgrounds_description">For generated Adaptive Icons.</string>
