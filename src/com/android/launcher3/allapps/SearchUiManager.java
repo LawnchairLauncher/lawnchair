@@ -49,11 +49,6 @@ public interface SearchUiManager {
     float getScrollRangeDelta(Rect insets);
 
     /**
-     * Called when activity is destroyed. Used to close search system services
-     */
-    default void destroySearch() { }
-
-    /**
      * @return the edit text object
      */
     @Nullable
