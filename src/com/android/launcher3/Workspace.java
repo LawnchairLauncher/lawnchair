@@ -2978,8 +2978,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
      * @param user The user of the app to match.
      */
     public View getFirstMatchForAppClose(String packageName, UserHandle user) {
-        final int curPage = getCurrentPage();
-        final CellLayout currentPage = (CellLayout) getPageAt(curPage);
+        List<CellLayout> cellLayouts = new ArrayList<>(getPanelCount() + 1);
+        cellLayouts.add(getHotseat());
+        getVisiblePages().forEach(page -> cellLayouts.add((CellLayout) page));
+
         final Workspace.ItemOperator packageAndUser = (ItemInfo info, View view) -> info != null
                 && info.getTargetComponent() != null
                 && TextUtils.equals(info.getTargetComponent().getPackageName(), packageName)
@@ -3000,13 +3002,11 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         // Order: App icons, app in folder. Items in hotseat get returned first.
         if (ADAPTIVE_ICON_WINDOW_ANIM.get()) {
-            return getFirstMatch(new CellLayout[] { getHotseat(), currentPage },
-                    packageAndUserAndApp, packageAndUserAndAppInFolder);
+            return getFirstMatch(cellLayouts, packageAndUserAndApp, packageAndUserAndAppInFolder);
         } else {
             // Do not use Folder as a criteria, since it'll cause a crash when trying to draw
             // FolderAdaptiveIcon as the background.
-            return getFirstMatch(new CellLayout[] { getHotseat(), currentPage },
-                    packageAndUserAndApp);
+            return getFirstMatch(cellLayouts, packageAndUserAndApp);
         }
     }
 
@@ -3040,7 +3040,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
      * @param operators List of operators, in order starting from best matching operator.
      * @return
      */
-    View getFirstMatch(CellLayout[] cellLayouts, final ItemOperator... operators) {
+    View getFirstMatch(Iterable<CellLayout> cellLayouts, final ItemOperator... operators) {
         // This array is filled with the first match for each operator.
         final View[] matches = new View[operators.length];
         // For efficiency, the outer loop should be CellLayout.
