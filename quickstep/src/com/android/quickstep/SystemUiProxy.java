@@ -88,6 +88,17 @@ public class SystemUiProxy implements ISystemUiProxy,
     }
 
     @Override
+    public void onBackPressed() {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.onBackPressed();
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call onBackPressed", e);
+            }
+        }
+    }
+
+    @Override
     public IBinder asBinder() {
         // Do nothing
         return null;
