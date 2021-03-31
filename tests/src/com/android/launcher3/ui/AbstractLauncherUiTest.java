@@ -512,7 +512,7 @@ public abstract class AbstractLauncherUiTest {
     }
 
     protected boolean isInBackground(Launcher launcher) {
-        return !launcher.hasBeenResumed();
+        return launcher == null || !launcher.hasBeenResumed();
     }
 
     protected boolean isInState(Supplier<LauncherState> state) {
