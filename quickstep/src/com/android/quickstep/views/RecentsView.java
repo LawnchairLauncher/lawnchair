@@ -1192,7 +1192,6 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             // Compensate page spacing widening caused by RecentsView scaling.
             widthDiff += mPageSpacing * (1 - 1 / mFullscreenScale);
             float fullscreenTranslationX = mIsRtl ? widthDiff : -widthDiff;
-            fullscreenTranslations[i] += fullscreenTranslationX;
             accumulatedTranslationX += fullscreenTranslationX;
         }
 
@@ -1202,6 +1201,11 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             getTaskViewAt(i).setFullscreenTranslationX(
                     fullscreenTranslations[i] - fullscreenTranslations[firstNonHomeTaskIndex]);
         }
+
+        // Align ClearAllButton to the left (RTL) or right (non-RTL), which is different from other
+        // TaskViews.
+        int clearAllWidthDiff = mTaskWidth - mClearAllButton.getWidth();
+        mClearAllButton.setScrollOffsetPrimary(mIsRtl ? clearAllWidthDiff : -clearAllWidthDiff);
 
         updateGridProperties(false);
     }
@@ -1746,20 +1750,12 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             }
         }
 
-        // If the first non-home task does not take full width of task Rect, shift all tasks
-        // accordingly without affecting scrolls.
-        int firstTaskWidth = getTaskViewAt(firstNonHomeTaskIndex).getLayoutParams().width;
-        float firstNonHomeTaskOffset = firstTaskWidth == ViewGroup.LayoutParams.MATCH_PARENT ? 0
-                : mTaskWidth - firstTaskWidth;
-        float offsetTranslation = mIsRtl ? firstNonHomeTaskOffset : -firstNonHomeTaskOffset;
-
         // We need to maintain first non-home task's grid translation at 0, now shift translation
         // of all the TaskViews to achieve that.
         for (int i = firstNonHomeTaskIndex; i < taskCount; i++) {
             TaskView taskView = getTaskViewAt(i);
             taskView.setGridTranslationX(
                     gridTranslations[i] - gridTranslations[firstNonHomeTaskIndex]);
-            taskView.setGridOffsetTranslationX(offsetTranslation);
         }
 
         // Use the accumulated translation of the longer row.
@@ -1803,7 +1799,6 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         mClearAllButton.setGridScrollOffset(
                 mIsRtl ? mLastComputedTaskSize.left - mLastComputedGridSize.left
                         : mLastComputedTaskSize.right - mLastComputedGridSize.right);
-        mClearAllButton.setOffsetTranslationPrimary(offsetTranslation);
 
         setGridProgress(mGridProgress);
     }
