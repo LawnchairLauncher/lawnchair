@@ -29,7 +29,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.UiThread;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
@@ -67,8 +66,6 @@ public abstract class SwipeUpAnimationLogic {
     // How much further we can drag past recents, as a factor of mTransitionDragLength.
     protected float mDragLengthFactor = 1;
 
-    protected final float mMaxShadowRadius;
-
     protected AnimatorControllerWithResistance mWindowTransitionController;
 
     public SwipeUpAnimationLogic(Context context, RecentsAnimationDeviceState deviceState,
@@ -82,9 +79,6 @@ public abstract class SwipeUpAnimationLogic {
         mTaskViewSimulator.getOrientationState().update(
                 mDeviceState.getRotationTouchHelper().getCurrentActiveRotation(),
                 mDeviceState.getRotationTouchHelper().getDisplayRotation());
-
-        mMaxShadowRadius = context.getResources().getDimensionPixelSize(R.dimen.max_shadow_radius);
-        mTransformParams.setShadowRadius(mMaxShadowRadius);
     }
 
     protected void initTransitionEndpoints(DeviceProfile dp) {
@@ -271,11 +265,9 @@ public abstract class SwipeUpAnimationLogic {
 
             mMatrix.setRectToRect(mCropRectF, mWindowCurrentRect, ScaleToFit.FILL);
             float cornerRadius = Utilities.mapRange(progress, mStartRadius, mEndRadius);
-            float shadowRadius = Utilities.mapRange(progress, mMaxShadowRadius, 0);
             mTransformParams
                     .setTargetAlpha(getWindowAlpha(progress))
-                    .setCornerRadius(cornerRadius)
-                    .setShadowRadius(shadowRadius);
+                    .setCornerRadius(cornerRadius);
 
             mTransformParams.applySurfaceParams(mTransformParams.createSurfaceParams(this));
             mAnimationFactory.update(currentRect, progress, mMatrix.mapRadius(cornerRadius));
@@ -286,8 +278,7 @@ public abstract class SwipeUpAnimationLogic {
                 Builder builder, RemoteAnimationTargetCompat app, TransformParams params) {
             builder.withMatrix(mMatrix)
                     .withWindowCrop(mCropRect)
-                    .withCornerRadius(params.getCornerRadius())
-                    .withShadowRadius(app.isTranslucent ? 0 : params.getShadowRadius());
+                    .withCornerRadius(params.getCornerRadius());
         }
 
         @Override
