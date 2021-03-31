@@ -626,6 +626,8 @@ public class InvariantDeviceProfile {
         private final boolean isScalable;
         private final int devicePaddingId;
 
+        public final boolean visible;
+
         private final SparseArray<TypedValue> extraAttrs;
 
         public GridOption(Context context, AttributeSet attrs) {
@@ -651,6 +653,8 @@ public class InvariantDeviceProfile {
                     R.styleable.GridDisplayOption_isScalable, false);
             devicePaddingId = a.getResourceId(
                     R.styleable.GridDisplayOption_devicePaddingId, 0);
+
+            visible = a.getBoolean(R.styleable.GridDisplayOption_visible, true);
 
             a.recycle();
 

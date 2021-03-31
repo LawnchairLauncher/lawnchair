@@ -45,6 +45,8 @@ import static com.android.quickstep.GestureState.STATE_END_TARGET_SET;
 import static com.android.quickstep.GestureState.STATE_RECENTS_SCROLLING_FINISHED;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
 import static com.android.quickstep.util.NavigationModeFeatureFlag.LIVE_TILE;
+import static com.android.quickstep.util.SwipePipToHomeAnimator.FRACTION_END;
+import static com.android.quickstep.util.SwipePipToHomeAnimator.FRACTION_START;
 import static com.android.quickstep.views.RecentsView.RECENTS_GRID_PROGRESS;
 import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
@@ -1073,7 +1075,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                         homeAnimFactory, runningTaskTarget, start);
                 mSwipePipToHomeAnimator.setDuration(SWIPE_PIP_TO_HOME_DURATION);
                 mSwipePipToHomeAnimator.setInterpolator(interpolator);
-                mSwipePipToHomeAnimator.setFloatValues(0f, 1f);
+                mSwipePipToHomeAnimator.setFloatValues(FRACTION_START, FRACTION_END);
                 mSwipePipToHomeAnimator.start();
                 mRunningWindowAnim = RunningWindowAnim.wrap(mSwipePipToHomeAnimator);
             } else {
@@ -1483,8 +1485,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             mRecentsAnimationController.setFinishTaskBounds(
                     mSwipePipToHomeAnimator.getTaskId(),
                     mSwipePipToHomeAnimator.getDestinationBounds(),
-                    mSwipePipToHomeAnimator.getFinishWindowCrop(),
-                    mSwipePipToHomeAnimator.getFinishTransform());
+                    mSwipePipToHomeAnimator.getFinishTransaction());
             mIsSwipingPipToHome = false;
         }
     }
