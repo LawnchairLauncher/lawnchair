@@ -77,7 +77,7 @@ import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.OnActivePag
 public class AllAppsContainerView extends SpringRelativeLayout implements DragSource,
         Insettable, OnDeviceProfileChangeListener, OnActivePageChangedListener {
 
-    private static final float FLING_VELOCITY_MULTIPLIER = 135f;
+    private static final float FLING_VELOCITY_MULTIPLIER = 1000 * .8f;
     // Starts the springs after at least 55% of the animation has passed.
     private static final float FLING_ANIMATION_THRESHOLD = 0.55f;
     private static final int ALPHA_CHANNEL_COUNT = 2;
@@ -140,12 +140,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
         mAllAppsStore.addUpdateListener(this::onAppsUpdated);
 
-        addSpringView(R.id.all_apps_header);
-        addSpringView(R.id.apps_list_view);
-        addSpringView(R.id.all_apps_tabs_view_pager);
-
         mMultiValueAlpha = new MultiValueAlpha(this, ALPHA_CHANNEL_COUNT);
-
     }
 
     /**
@@ -169,17 +164,10 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         return mWorkModeSwitch;
     }
 
-
-    @Override
-    protected void setDampedScrollShift(float shift) {
-        // Bound the shift amount to avoid content from drawing on top (Y-val) of the QSB.
-        float maxShift = getSearchView().getHeight() / 2f;
-        super.setDampedScrollShift(Utilities.boundToRange(shift, -maxShift, maxShift));
-    }
-
     @Override
     public void onDeviceProfileChanged(DeviceProfile dp) {
         for (AdapterHolder holder : mAH) {
+            holder.adapter.setAppsPerRow(dp.inv.numAllAppsColumns);
             if (holder.recyclerView != null) {
                 // Remove all views and clear the pool, while keeping the data same. After this
                 // call, all the viewHolders will be recreated.
@@ -405,12 +393,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             canvas.drawRect(0, getHeight() - mNavBarScrimHeight, getWidth(), getHeight(),
                     mNavBarScrimPaint);
         }
-    }
-
-    @Override
-    public int getCanvasClipTopForOverscroll() {
-        // Do not clip if the QSB is attached to the spring, otherwise the QSB will get clipped.
-        return mSpringViews.get(getSearchView().getId()) ? 0 : mHeader.getTop();
     }
 
     private void rebindAdapters(boolean showTabs) {
@@ -639,11 +621,8 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
                 if (shouldSpring
                         && valueAnimator.getAnimatedFraction() >= FLING_ANIMATION_THRESHOLD) {
-                    int searchViewId = getSearchView().getId();
-                    addSpringView(searchViewId);
-                    finishWithShiftAndVelocity(1, velocity * FLING_VELOCITY_MULTIPLIER,
-                            (anim, canceled, value, velocity) -> removeSpringView(searchViewId));
-
+                    absorbSwipeUpVelocity(Math.abs(
+                            Math.round(velocity * FLING_VELOCITY_MULTIPLIER)));
                     shouldSpring = false;
                 }
             }
@@ -699,8 +678,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             applyPadding();
             setupOverlay();
             if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
-                recyclerView.addItemDecoration(new AllAppsSectionDecorator(
-                        AllAppsContainerView.this));
+                recyclerView.addItemDecoration(mSearchAdapterProvider.getDecorator());
             }
         }
 

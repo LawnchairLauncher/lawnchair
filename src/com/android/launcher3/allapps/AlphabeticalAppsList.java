@@ -20,7 +20,6 @@ import android.content.Context;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItem;
-import com.android.launcher3.allapps.search.SectionDecorationInfo;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -288,11 +287,6 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         mFastScrollerSections.clear();
         mAdapterItems.clear();
 
-        SectionDecorationInfo appSection = new SectionDecorationInfo();
-        appSection.setDecorationHandler(
-                new AllAppsSectionDecorator.SectionDecorationHandler(mLauncher, true,
-                        0, false, false));
-
         // Recreate the filtered and sectioned apps (for convenience for the grid layout) from the
         // ordered set of sections
 
@@ -313,9 +307,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
                 if (lastFastScrollerSectionInfo.fastScrollToItem == null) {
                     lastFastScrollerSectionInfo.fastScrollToItem = appItem;
                 }
-                if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
-                    appItem.sectionDecorationInfo = appSection;
-                }
+
                 mAdapterItems.add(appItem);
             }
         } else {

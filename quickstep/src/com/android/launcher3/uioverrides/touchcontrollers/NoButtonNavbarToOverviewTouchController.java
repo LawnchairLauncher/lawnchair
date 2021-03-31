@@ -203,7 +203,7 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
     }
 
     private void maybeSwipeInteractionToOverviewComplete() {
-        if (mReachedOverview && mDetector.isSettlingState()) {
+        if (mReachedOverview && !mDetector.isDraggingState()) {
             onSwipeInteractionCompleted(OVERVIEW);
         }
     }
