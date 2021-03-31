@@ -745,6 +745,10 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         if (mIsAnimatingClosed) {
             return;
         }
+
+        mContent.completePendingPageChanges();
+        mContent.snapToPageImmediately(mContent.getDestinationPage());
+
         if (mCurrentAnimator != null && mCurrentAnimator.isRunning()) {
             mCurrentAnimator.cancel();
         }
