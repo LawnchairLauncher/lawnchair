@@ -439,6 +439,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
 
     private boolean mRunningTaskIconScaledDown = false;
 
+    private final boolean mHasLightBackground;
     private boolean mOverviewStateEnabled;
     private boolean mHandleTaskStackChanges;
     private boolean mSwipeDownShouldLaunchApp;
@@ -570,6 +571,8 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         mLiveTileTaskViewSimulator.recentsViewScale.value = 1;
         mLiveTileTaskViewSimulator.setOrientationState(mOrientationState);
         mLiveTileTaskViewSimulator.setDrawsBelowRecents(true);
+
+        mHasLightBackground = Themes.getAttrBoolean(mActivity, android.R.attr.isLightTheme);
     }
 
     public OverScroller getScroller() {
@@ -846,6 +849,13 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             if (mSplitPlaceholderView.getSplitController().isSplitSelectActive()) {
                 cancelSplitSelect(false);
             }
+        }
+
+        if (enabled) {
+            mActivity.getSystemUiController().updateUiState(
+                    UI_STATE_OVERVIEW, hasLightBackground());
+        } else {
+            mActivity.getSystemUiController().updateUiState(UI_STATE_OVERVIEW, 0);
         }
     }
 
@@ -2510,6 +2520,14 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         }
     }
 
+    /**
+     * True if the background scrim of the recents view is light colored and the foreground elements
+     * should use dark colors.
+     */
+    public boolean hasLightBackground() {
+        return mHasLightBackground;
+    }
+
     public void initiateSplitSelect(TaskView taskView, SplitPositionOption splitPositionOption) {
         mSplitHiddenTaskView = taskView;
         mSplitPlaceholderView.getSplitController().setInitialTaskSelect(taskView,
@@ -2754,10 +2772,13 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         progressAnim.addUpdateListener(animator -> {
             // Once we pass a certain threshold, update the sysui flags to match the target
             // tasks' flags
-            mActivity.getSystemUiController().updateUiState(UI_STATE_OVERVIEW,
-                    animator.getAnimatedFraction() > UPDATE_SYSUI_FLAGS_THRESHOLD
-                            ? targetSysUiFlags
-                            : 0);
+            if (animator.getAnimatedFraction() > UPDATE_SYSUI_FLAGS_THRESHOLD) {
+                mActivity.getSystemUiController().updateUiState(
+                        UI_STATE_OVERVIEW, targetSysUiFlags);
+            } else {
+                mActivity.getSystemUiController().updateUiState(
+                        UI_STATE_OVERVIEW, hasLightBackground());
+            }
 
             // Passing the threshold from taskview to fullscreen app will vibrate
             final boolean passed = animator.getAnimatedFraction() >=
