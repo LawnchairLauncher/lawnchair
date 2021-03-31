@@ -212,7 +212,10 @@ public class CellLayout extends ViewGroup {
         mActivity = ActivityContext.lookupContext(context);
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
 
-        mBorderSpacing = deviceProfile.cellLayoutBorderSpacingPx;
+        mBorderSpacing = mContainerType == FOLDER
+                ? deviceProfile.folderCellLayoutBorderSpacingPx
+                : deviceProfile.cellLayoutBorderSpacingPx;
+
         mCellWidth = mCellHeight = -1;
         mFixedCellWidth = mFixedCellHeight = -1;
 
