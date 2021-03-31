@@ -146,7 +146,7 @@ public class TaskIconCache {
                     key.getComponent(), key.userId);
             if (activityInfo != null) {
                 BitmapInfo bitmapInfo = getBitmapInfo(
-                        mIconProvider.getIcon(activityInfo, UserHandle.of(key.userId)),
+                        mIconProvider.getIcon(activityInfo),
                         key.userId,
                         desc.getPrimaryColor(),
                         activityInfo.applicationInfo.isInstantApp());

@@ -541,20 +541,17 @@ public class WidgetPreviewLoader {
             c.setBitmap(preview);
             c.drawColor(0, PorterDuff.Mode.CLEAR);
         }
-        RectF boxRect = drawBoxWithShadow(c, size, size);
+
+        drawBoxWithShadow(c, size, size);
 
         LauncherIcons li = LauncherIcons.obtain(mContext);
-        Bitmap icon = li.createBadgedIconBitmap(
+        Drawable icon = li.createBadgedIconBitmap(
                 mutateOnMainThread(info.getFullResIcon(mIconCache)),
-                Process.myUserHandle(), 0).icon;
+                Process.myUserHandle(), 0).newIcon(launcher);
         li.recycle();
 
-        Rect src = new Rect(0, 0, icon.getWidth(), icon.getHeight());
-
-        boxRect.set(0, 0, iconSize, iconSize);
-        boxRect.offset(padding, padding);
-        c.drawBitmap(icon, src, boxRect,
-                new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG));
+        icon.setBounds(padding, padding, padding + iconSize, padding + iconSize);
+        icon.draw(c);
         c.setBitmap(null);
         return preview;
     }
