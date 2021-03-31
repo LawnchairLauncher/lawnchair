@@ -122,7 +122,9 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                     endY = startY - swipeLength;
                 } else {
                     startX = getSwipeStartX();
-                    endX = startX - swipeLength;
+                    // TODO(b/184059820) make horizontal swipe use swipe width not height, for the
+                    // moment just double the swipe length.
+                    endX = startX - swipeLength * 2;
                     startY = endY = mLauncher.getDevice().getDisplayHeight() / 2;
                 }
 
