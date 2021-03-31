@@ -144,17 +144,12 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             findViewById(R.id.tab_work)
                     .setOnClickListener((View view) -> mViewPager.snapToPage(1));
             fastScroller.setIsRecyclerViewFirstChildInParent(false);
-            springLayout.addSpringView(R.id.primary_widgets_list_view);
-            springLayout.addSpringView(R.id.work_widgets_list_view);
         } else {
             mViewPager = null;
-            springLayout.addSpringView(R.id.primary_widgets_list_view);
         }
 
         layoutInflater.inflate(R.layout.widgets_full_sheet_search_and_recommendations, springLayout,
                 true);
-        springLayout.addSpringView(R.id.search_and_recommendations_container);
-
         mSearchAndRecommendationViewHolder = new SearchAndRecommendationViewHolder(
                 findViewById(R.id.search_and_recommendations_container));
         mSearchAndRecommendationsScrollController = new SearchAndRecommendationsScrollController(

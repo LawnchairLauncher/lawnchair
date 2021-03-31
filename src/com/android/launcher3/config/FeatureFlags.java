@@ -85,7 +85,7 @@ public final class FeatureFlags {
             "ADAPTIVE_ICON_WINDOW_ANIM", true, "Use adaptive icons for window animations.");
 
     public static final BooleanFlag ENABLE_QUICKSTEP_LIVE_TILE = getDebugFlag(
-            "ENABLE_QUICKSTEP_LIVE_TILE", false, "Enable live tile in Quickstep overview");
+            "ENABLE_QUICKSTEP_LIVE_TILE", true, "Enable live tile in Quickstep overview");
 
     // Keep as DeviceFlag to allow remote disable in emergency.
     public static final BooleanFlag ENABLE_SUGGESTED_ACTIONS_OVERVIEW = new DeviceFlag(
@@ -187,7 +187,7 @@ public final class FeatureFlags {
             "EXPANDED_SMARTSPACE", false, "Expands smartspace height to two rows. "
               + "Any apps occupying the first row will be removed from workspace.");
 
-    public static final BooleanFlag ENABLE_FOUR_COLUMNS = new DeviceFlag(
+    public static final DeviceFlag ENABLE_FOUR_COLUMNS = new DeviceFlag(
             "ENABLE_FOUR_COLUMNS", false, "Uses 4 columns in launcher grid."
             + "Warning: This will permanently alter your home screen items and is not reversible.");
 
@@ -224,6 +224,12 @@ public final class FeatureFlags {
                 flag.initialize(context);
             }
             sDebugFlags.sort((f1, f2) -> f1.key.compareToIgnoreCase(f2.key));
+        }
+    }
+
+    public static void removeFlag(DebugFlag flag) {
+        synchronized (sDebugFlags) {
+            sDebugFlags.remove(flag);
         }
     }
 
@@ -302,6 +308,15 @@ public final class FeatureFlags {
         public void initialize(Context context) {
             mCurrentValue = context.getSharedPreferences(FLAGS_PREF_NAME, Context.MODE_PRIVATE)
                     .getBoolean(key, defaultValue);
+        }
+
+        /**
+         * Resets value to default value.
+         */
+        public void reset(Context context) {
+            mCurrentValue = defaultValue;
+            context.getSharedPreferences(FLAGS_PREF_NAME, Context.MODE_PRIVATE)
+                    .edit().putBoolean(key, defaultValue).apply();
         }
 
         @Override
