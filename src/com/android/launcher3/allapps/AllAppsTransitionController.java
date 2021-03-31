@@ -110,7 +110,6 @@ public class AllAppsTransitionController
         setScrollRangeDelta(mScrollRangeDelta);
 
         if (mIsVerticalLayout) {
-            mAppsView.getAlphaProperty(APPS_VIEW_ALPHA_CHANNEL_INDEX).setValue(1);
             mLauncher.getHotseat().setTranslationY(0);
             mLauncher.getWorkspace().getPageIndicator().setTranslationY(0);
         }
