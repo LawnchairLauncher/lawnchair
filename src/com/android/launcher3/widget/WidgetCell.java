@@ -46,6 +46,7 @@ import com.android.launcher3.dragndrop.AppWidgetHostViewDrawable;
 import com.android.launcher3.icons.BaseIconFactory;
 import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.icons.FastBitmapDrawable;
+import com.android.launcher3.icons.RoundDrawableWrapper;
 import com.android.launcher3.model.WidgetItem;
 
 /**
@@ -248,8 +249,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
 
     public void applyPreview(Bitmap bitmap) {
         FastBitmapDrawable drawable = new FastBitmapDrawable(bitmap);
-        drawable.setRoundedCornersRadius(mEnforcedCornerRadius);
-        applyPreview(drawable);
+        applyPreview(new RoundDrawableWrapper(drawable, mEnforcedCornerRadius));
     }
 
     private void applyPreview(Drawable drawable) {
