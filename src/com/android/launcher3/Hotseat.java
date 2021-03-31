@@ -29,6 +29,7 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.Nullable;
 
+import java.util.Arrays;
 import java.util.function.Consumer;
 
 /**
@@ -226,7 +227,7 @@ public class Hotseat extends CellLayout implements Insettable {
      * Returns the first View for which the given itemOperator returns true, or null.
      */
     public View getFirstItemMatch(Workspace.ItemOperator itemOperator) {
-        return mWorkspace.getFirstMatch(new CellLayout[] { this }, itemOperator);
+        return mWorkspace.getFirstMatch(Arrays.asList(this), itemOperator);
     }
 
     /**
