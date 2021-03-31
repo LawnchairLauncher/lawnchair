@@ -1781,9 +1781,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     @Override
     public Rect getFolderBoundingBox() {
         // We need to bound the folder to the currently visible workspace area
-        Rect folderBoundingBox = new Rect();
-        getWorkspace().getPageAreaRelativeToDragLayer(folderBoundingBox);
-        return folderBoundingBox;
+        return getWorkspace().getPageAreaRelativeToDragLayer();
     }
 
     @Override

@@ -20,6 +20,7 @@ import static com.android.launcher3.util.Executors.THREAD_POOL_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import android.graphics.Rect;
+import android.window.PictureInPictureSurfaceTransaction;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.UiThread;
@@ -149,14 +150,13 @@ public class RecentsAnimationController {
      * accordingly. This should be called before `finish`
      * @param taskId for which the leash should be updated
      * @param destinationBounds bounds of the final PiP window
-     * @param windowCrop bounds to crop as part of final transform.
-     * @param float9 An array of 9 floats to be used as matrix transform.
+     * @param finishTransaction leash operations for the final transform.
      */
-    public void setFinishTaskBounds(int taskId, Rect destinationBounds, Rect windowCrop,
-            float[] float9) {
+    public void setFinishTaskBounds(int taskId, Rect destinationBounds,
+            PictureInPictureSurfaceTransaction finishTransaction) {
         UI_HELPER_EXECUTOR.execute(
-                () -> mController.setFinishTaskBounds(taskId, destinationBounds, windowCrop,
-                        float9));
+                () -> mController.setFinishTaskBounds(taskId, destinationBounds,
+                        finishTransaction));
     }
 
     /**

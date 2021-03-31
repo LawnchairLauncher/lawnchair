@@ -2000,16 +2000,26 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     /**
-     * Computes the area relative to dragLayer which is used to display a page.
+     * Computes and returns the area relative to dragLayer which is used to display a page.
+     * In case we have multiple pages displayed at the same time, we return the union of the areas.
      */
-    public void getPageAreaRelativeToDragLayer(Rect outArea) {
-        CellLayout child = (CellLayout) getChildAt(getNextPage());
-        if (child == null) {
-            return;
+    public Rect getPageAreaRelativeToDragLayer() {
+        Rect area = new Rect();
+        int nextPage = getNextPage();
+        int panelCount = getPanelCount();
+        for (int page = nextPage; page < nextPage + panelCount; page++) {
+            CellLayout child = (CellLayout) getChildAt(page);
+            if (child == null) {
+                break;
+            }
+
+            ShortcutAndWidgetContainer boundingLayout = child.getShortcutsAndWidgets();
+            Rect tmpRect = new Rect();
+            mLauncher.getDragLayer().getDescendantRectRelativeToSelf(boundingLayout, tmpRect);
+            area.union(tmpRect);
         }
 
-        ShortcutAndWidgetContainer boundingLayout = child.getShortcutsAndWidgets();
-        mLauncher.getDragLayer().getDescendantRectRelativeToSelf(boundingLayout, outArea);
+        return area;
     }
 
     @Override

@@ -20,25 +20,17 @@ import static com.android.quickstep.views.OverviewActionsView.DISABLED_NO_THUMBN
 import static com.android.quickstep.views.OverviewActionsView.DISABLED_ROTATED;
 
 import android.annotation.SuppressLint;
-import android.app.ActivityTaskManager;
-import android.app.IAssistDataReceiver;
 import android.app.assist.AssistContent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Matrix;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.RemoteException;
 import android.os.SystemClock;
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.R;
+import com.android.quickstep.util.AssistContentRequester;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.TaskThumbnailView;
 import com.android.systemui.shared.recents.model.Task;
@@ -53,7 +45,6 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
     public static final String ACTION_SEARCH = "com.android.quickstep.ACTION_SEARCH";
     public static final String ELAPSED_NANOS = "niu_actions_elapsed_realtime_nanos";
     public static final String ACTIONS_URL = "niu_actions_app_url";
-    private static final String ASSIST_KEY_CONTENT = "content";
     private static final String TAG = "TaskOverlayFactoryGo";
 
     // Empty constructor required for ResourceBasedOverride
@@ -72,13 +63,10 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
      */
     public static final class TaskOverlayGo<T extends OverviewActionsView> extends TaskOverlay {
         private String mNIUPackageName;
-        private int mTaskId;
-        private Bundle mAssistData;
-        private final Handler mMainThreadHandler;
+        private String mWebUrl;
 
         private TaskOverlayGo(TaskThumbnailView taskThumbnailView) {
             super(taskThumbnailView);
-            mMainThreadHandler = new Handler(Looper.getMainLooper());
         }
 
         /**
@@ -99,28 +87,23 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
             boolean isAllowedByPolicy = mThumbnailView.isRealSnapshot();
             getActionsView().setCallbacks(new OverlayUICallbacksGoImpl(isAllowedByPolicy, task));
 
-            mTaskId = task.key.id;
-            AssistDataReceiverImpl receiver = new AssistDataReceiverImpl();
-            receiver.setOverlay(this);
-
-            try {
-                ActivityTaskManager.getService().requestAssistDataForTask(receiver, mTaskId,
-                        mApplicationContext.getPackageName());
-            } catch (RemoteException e) {
-                Log.e(TAG, "Unable to request AssistData");
-            }
+            int taskId = task.key.id;
+            AssistContentRequester contentRequester =
+                    new AssistContentRequester(mApplicationContext);
+            contentRequester.requestAssistContent(taskId, this::onAssistContentReceived);
         }
 
-        /**
-         * Called when AssistDataReceiverImpl receives data from ActivityTaskManagerService's
-         * AssistDataRequester
-         */
-        public void onAssistDataReceived(Bundle data) {
-            mMainThreadHandler.post(() -> {
-                if (data != null) {
-                    mAssistData = data;
-                }
-            });
+        /** Provide Assist Content to the overlay. */
+        @VisibleForTesting
+        public void onAssistContentReceived(AssistContent assistContent) {
+            mWebUrl = assistContent.getWebUri() != null
+                    ? assistContent.getWebUri().toString() : null;
+        }
+
+        @Override
+        public void reset() {
+            super.reset();
+            mWebUrl = null;
         }
 
         /**
@@ -139,12 +122,8 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
                     .setPackage(mNIUPackageName)
                     .putExtra(ELAPSED_NANOS, SystemClock.elapsedRealtimeNanos());
 
-            if (mAssistData != null) {
-                final AssistContent content = mAssistData.getParcelable(ASSIST_KEY_CONTENT);
-                Uri webUri = (content == null) ? null : content.getWebUri();
-                if (webUri != null) {
-                    intent.putExtra(ACTIONS_URL, webUri.toString());
-                }
+            if (mWebUrl != null) {
+                intent.putExtra(ACTIONS_URL, mWebUrl);
             }
 
             return intent;
@@ -188,26 +167,6 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
         public void setImageActionsAPI(ImageActionsApi imageActionsApi) {
             mImageApi = imageActionsApi;
         }
-    }
-
-    /**
-     * Basic AssistDataReceiver. This is passed to ActivityTaskManagerService, which then requests
-     * the data.
-     */
-    private static final class AssistDataReceiverImpl extends IAssistDataReceiver.Stub {
-        private TaskOverlayGo mOverlay;
-
-        public void setOverlay(TaskOverlayGo overlay) {
-            mOverlay = overlay;
-        }
-
-        @Override
-        public void onHandleAssistData(Bundle data) {
-            mOverlay.onAssistDataReceived(data);
-        }
-
-        @Override
-        public void onHandleAssistScreenshot(Bitmap screenshot) {}
     }
 
     /**

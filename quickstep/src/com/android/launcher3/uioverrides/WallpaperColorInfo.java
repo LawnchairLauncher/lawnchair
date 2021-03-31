@@ -102,9 +102,11 @@ public class WallpaperColorInfo implements OnColorsChangedListener {
     private void notifyChange() {
         // Create a new array to avoid concurrent modification when the activity destroys itself.
         mTempListeners = mListeners.toArray(mTempListeners);
-        for (OnChangeListener listener : mTempListeners) {
+        for (int i = mTempListeners.length - 1; i >= 0; --i) {
+            final OnChangeListener listener = mTempListeners[i];
             if (listener != null) {
                 listener.onExtractedColorsChanged(this);
+                mTempListeners[i] = null;
             }
         }
     }
