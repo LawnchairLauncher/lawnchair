@@ -400,12 +400,7 @@ public class DeviceProfile {
                 .setMultiWindowMode(true)
                 .build();
 
-        // If there isn't enough vertical cell padding with the labels displayed, hide the labels.
-        float workspaceCellPaddingY = profile.getCellSize().y - profile.iconSizePx
-                - iconDrawablePaddingPx - profile.iconTextSizePx;
-        if (workspaceCellPaddingY < profile.iconDrawablePaddingPx * 2) {
-            profile.adjustToHideWorkspaceLabels();
-        }
+        profile.hideWorkspaceLabelsIfNotEnoughSpace();
 
         // We use these scales to measure and layout the widgets using their full invariant profile
         // sizes and then draw them scaled and centered to fit in their multi-window mode cellspans.
@@ -426,24 +421,32 @@ public class DeviceProfile {
     }
 
     /**
-     * Adjusts the profile so that the labels on the Workspace are hidden.
+     * Checks if there is enough space for labels on the workspace.
+     * If there is not, labels on the Workspace are hidden.
      * It is important to call this method after the All Apps variables have been set.
      */
-    private void adjustToHideWorkspaceLabels() {
-        iconTextSizePx = 0;
-        iconDrawablePaddingPx = 0;
-        cellHeightPx = iconSizePx;
-        autoResizeAllAppsCells();
+    private void hideWorkspaceLabelsIfNotEnoughSpace() {
+        float iconTextHeight = Utilities.calculateTextHeight(iconTextSizePx);
+        float workspaceCellPaddingY = getCellSize().y - iconSizePx - iconDrawablePaddingPx
+                - iconTextHeight;
+
+        // We want enough space so that the text is closer to its corresponding icon.
+        if (workspaceCellPaddingY < iconTextHeight) {
+            iconTextSizePx = 0;
+            iconDrawablePaddingPx = 0;
+            cellHeightPx = iconSizePx;
+            autoResizeAllAppsCells();
+        }
     }
 
     /**
      * Re-computes the all-apps cell size to be independent of workspace
      */
     public void autoResizeAllAppsCells() {
-        int topBottomPadding = allAppsIconDrawablePaddingPx * (isVerticalBarLayout() ? 2 : 1);
+        int textHeight = Utilities.calculateTextHeight(allAppsIconTextSizePx);
+        int topBottomPadding = textHeight;
         allAppsCellHeightPx = allAppsIconSizePx + allAppsIconDrawablePaddingPx
-                + Utilities.calculateTextHeight(allAppsIconTextSizePx)
-                + topBottomPadding * 2;
+                + textHeight + (topBottomPadding * 2);
     }
 
     /**
@@ -532,9 +535,7 @@ public class DeviceProfile {
             allAppsIconSizePx = pxFromDp(inv.allAppsIconSize, mInfo.metrics);
             allAppsIconTextSizePx = Utilities.pxFromSp(inv.allAppsIconTextSize, mInfo.metrics);
             allAppsIconDrawablePaddingPx = iconDrawablePaddingOriginalPx;
-            // We use 4 below to ensure labels are closer to their corresponding icon.
-            allAppsCellHeightPx = Math.round(allAppsIconSizePx + allAppsIconTextSizePx
-                    + (4 * allAppsIconDrawablePaddingPx));
+            autoResizeAllAppsCells();
         } else {
             allAppsIconSizePx = iconSizePx;
             allAppsIconTextSizePx = iconTextSizePx;
@@ -543,9 +544,8 @@ public class DeviceProfile {
         }
         allAppsCellWidthPx = allAppsIconSizePx + allAppsIconDrawablePaddingPx;
 
-        if (isVerticalBarLayout()) {
-            // Always hide the Workspace text with vertical bar layout.
-            adjustToHideWorkspaceLabels();
+        if (isVerticalLayout) {
+            hideWorkspaceLabelsIfNotEnoughSpace();
         }
 
         // Hotseat
