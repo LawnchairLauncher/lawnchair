@@ -26,6 +26,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.ArrayMap;
 import android.util.AttributeSet;
@@ -37,6 +38,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
+import androidx.core.content.ContextCompat;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
@@ -62,6 +64,7 @@ public class OptionsPopupView extends ArrowPopup
 
     private final ArrayMap<View, OptionItem> mItemMap = new ArrayMap<>();
     private RectF mTargetRect;
+    private boolean mShouldAddArrow;
 
     public OptionsPopupView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -113,9 +116,13 @@ public class OptionsPopupView extends ArrowPopup
         return (type & TYPE_OPTIONS_POPUP) != 0;
     }
 
+    public void setShouldAddArrow(boolean shouldAddArrow) {
+        mShouldAddArrow = shouldAddArrow;
+    }
+
     @Override
     protected boolean shouldAddArrow() {
-        return false;
+        return mShouldAddArrow;
     }
 
     @Override
@@ -124,16 +131,17 @@ public class OptionsPopupView extends ArrowPopup
     }
 
     public static OptionsPopupView show(
-            Launcher launcher, RectF targetRect, List<OptionItem> items) {
+            Launcher launcher, RectF targetRect, List<OptionItem> items, boolean shouldAddArrow) {
         OptionsPopupView popup = (OptionsPopupView) launcher.getLayoutInflater()
                 .inflate(R.layout.longpress_options_menu, launcher.getDragLayer(), false);
         popup.mTargetRect = targetRect;
+        popup.setShouldAddArrow(shouldAddArrow);
 
         for (OptionItem item : items) {
             DeepShortcutView view =
                     (DeepShortcutView) popup.inflateAndAdd(R.layout.system_shortcut, popup);
-            view.getIconView().setBackgroundResource(item.iconRes);
-            view.getBubbleText().setText(item.labelRes);
+            view.getIconView().setBackgroundDrawable(item.icon);
+            view.getBubbleText().setText(item.label);
             view.setOnClickListener(popup);
             view.setOnLongClickListener(popup);
             popup.mItemMap.put(view, item);
@@ -154,7 +162,7 @@ public class OptionsPopupView extends ArrowPopup
             y = launcher.getDragLayer().getHeight() / 2;
         }
         RectF target = new RectF(x - halfSize, y - halfSize, x + halfSize, y + halfSize);
-        show(launcher, target, getOptions(launcher));
+        show(launcher, target, getOptions(launcher), false);
     }
 
     /**
@@ -162,11 +170,15 @@ public class OptionsPopupView extends ArrowPopup
      */
     public static ArrayList<OptionItem> getOptions(Launcher launcher) {
         ArrayList<OptionItem> options = new ArrayList<>();
-        options.add(new OptionItem(R.string.settings_button_text, R.drawable.ic_setting,
+        options.add(new OptionItem(launcher,
+                R.string.settings_button_text,
+                R.drawable.ic_setting,
                 LAUNCHER_SETTINGS_BUTTON_TAP_OR_LONGPRESS,
                 OptionsPopupView::startSettings));
         if (!WidgetsModel.GO_DISABLE_WIDGETS) {
-            options.add(new OptionItem(R.string.widget_button_text, R.drawable.ic_widget,
+            options.add(new OptionItem(launcher,
+                    R.string.widget_button_text,
+                    R.drawable.ic_widget,
                     LAUNCHER_WIDGETSTRAY_BUTTON_TAP_OR_LONGPRESS,
                     OptionsPopupView::onWidgetsClicked));
         }
@@ -174,7 +186,9 @@ public class OptionsPopupView extends ArrowPopup
                 R.string.styles_wallpaper_button_text : R.string.wallpaper_button_text;
         int resDrawable = Utilities.existsStyleWallpapers(launcher) ?
                 R.drawable.ic_palette : R.drawable.ic_wallpaper;
-        options.add(new OptionItem(resString, resDrawable,
+        options.add(new OptionItem(launcher,
+                resString,
+                resDrawable,
                 IGNORE,
                 OptionsPopupView::startWallpaperPicker));
         return options;
@@ -241,15 +255,28 @@ public class OptionsPopupView extends ArrowPopup
 
     public static class OptionItem {
 
+        // Used to create AccessibilityNodeInfo in AccessibilityActionsView.java.
         public final int labelRes;
-        public final int iconRes;
+
+        public final CharSequence label;
+        public final Drawable icon;
         public final EventEnum eventId;
         public final OnLongClickListener clickListener;
 
-        public OptionItem(int labelRes, int iconRes, EventEnum eventId,
-                OnLongClickListener clickListener) {
+        public OptionItem(Context context, int labelRes, int iconRes, EventEnum eventId,
+                          OnLongClickListener clickListener) {
             this.labelRes = labelRes;
-            this.iconRes = iconRes;
+            this.label = context.getText(labelRes);
+            this.icon = ContextCompat.getDrawable(context, iconRes);
+            this.eventId = eventId;
+            this.clickListener = clickListener;
+        }
+
+        public OptionItem(CharSequence label, Drawable icon, EventEnum eventId,
+                          OnLongClickListener clickListener) {
+            this.labelRes = 0;
+            this.label = label;
+            this.icon = icon;
             this.eventId = eventId;
             this.clickListener = clickListener;
         }
