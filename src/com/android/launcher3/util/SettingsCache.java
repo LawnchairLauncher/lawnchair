@@ -39,12 +39,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * {@link #unregister(Uri, OnChangeListener)} methods.
  *
  * This can be used as a normal cache without any listeners as well via the
- * {@link #getValue(Uri, int)} and {@link #dispatchOnChange(Uri)} to update (and subsequently call
+ * {@link #getValue(Uri, int)} and {@link #onChange)} to update (and subsequently call
  * get)
  *
  * The cache will be invalidated/updated through the normal
  * {@link ContentObserver#onChange(boolean)} calls
- * or can be force updated by calling {@link #dispatchOnChange(Uri)}.
  *
  * Cache will also be updated if a key queried is missing (even if it has no listeners registered).
  */
@@ -58,9 +57,6 @@ public class SettingsCache extends ContentObserver {
     /** Hidden field Settings.Secure.SWIPE_BOTTOM_TO_NOTIFICATION_ENABLED */
     public static final String ONE_HANDED_SWIPE_BOTTOM_TO_NOTIFICATION_ENABLED =
             "swipe_bottom_to_notification_enabled";
-    /** Hidden field Settings.Secure.ENABLED_NOTIFICATION_LISTENERS */
-    public static final Uri NOTIFICATION_ENABLED_LISTENERS =
-            Settings.Secure.getUriFor("enabled_notification_listeners");
     public static final Uri ROTATION_SETTING_URI =
             Settings.System.getUriFor(ACCELEROMETER_ROTATION);
 
@@ -103,6 +99,14 @@ public class SettingsCache extends ContentObserver {
      * Returns the value for this classes key from the cache. If not in cache, will call
      * {@link #updateValue(Uri, int)} to fetch.
      */
+    public boolean getValue(Uri keySetting) {
+        return getValue(keySetting, 1);
+    }
+
+    /**
+     * Returns the value for this classes key from the cache. If not in cache, will call
+     * {@link #updateValue(Uri, int)} to fetch.
+     */
     public boolean getValue(Uri keySetting, int defaultValue) {
         if (mKeyCache.containsKey(keySetting)) {
             return mKeyCache.get(keySetting);
@@ -137,14 +141,6 @@ public class SettingsCache extends ContentObserver {
 
         mKeyCache.put(keyUri, newVal);
         return newVal;
-    }
-
-    /**
-     * Force update a change for a given URI and have all listeners for that URI receive callbacks
-     * even if the value is unchanged.
-     */
-    public void dispatchOnChange(Uri uri) {
-        onChange(true, uri);
     }
 
     /**

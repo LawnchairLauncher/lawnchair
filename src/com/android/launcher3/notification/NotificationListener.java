@@ -16,9 +16,9 @@
 
 package com.android.launcher3.notification;
 
-import static com.android.launcher3.util.SettingsCache.NOTIFICATION_BADGING_URI;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
+import static com.android.launcher3.util.SettingsCache.NOTIFICATION_BADGING_URI;
 
 import android.annotation.TargetApi;
 import android.app.Notification;
@@ -37,8 +37,8 @@ import androidx.annotation.AnyThread;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
-import com.android.launcher3.util.SettingsCache;
 import com.android.launcher3.util.PackageUserKey;
+import com.android.launcher3.util.SettingsCache;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -213,7 +213,7 @@ public class NotificationListener extends NotificationListenerService {
         mNotificationSettingsChangedListener = this::onNotificationSettingsChanged;
         mSettingsCache.register(NOTIFICATION_BADGING_URI,
                 mNotificationSettingsChangedListener);
-        mSettingsCache.dispatchOnChange(NOTIFICATION_BADGING_URI);
+        onNotificationSettingsChanged(mSettingsCache.getValue(NOTIFICATION_BADGING_URI));
 
         onNotificationFullRefresh();
     }
