@@ -56,7 +56,6 @@ import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.util.ActivityTracker;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.SystemUiController;
-import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.fallback.FallbackRecentsStateController;
 import com.android.quickstep.fallback.FallbackRecentsView;
@@ -267,7 +266,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
         setupViews();
 
         getSystemUiController().updateUiState(SystemUiController.UI_STATE_BASE_WINDOW,
-                Themes.getAttrBoolean(this, R.attr.isWorkspaceDarkText));
+                mFallbackRecentsView.hasLightBackground());
         ACTIVITY_TRACKER.handleCreate(this);
     }
 

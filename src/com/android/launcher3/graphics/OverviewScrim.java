@@ -25,6 +25,10 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.R;
+import com.android.launcher3.uioverrides.WallpaperColorInfo;
+import com.android.launcher3.util.Themes;
+
 /**
  * View scrim which draws behind overview (recent apps).
  */
@@ -52,7 +56,7 @@ public class OverviewScrim extends Scrim {
     public OverviewScrim(View view) {
         super(view);
 
-        onExtractedColorsChanged(mWallpaperColorInfo);
+        mScrimColor = Themes.getAttrColor(view.getContext(), R.attr.allAppsScrimColor);
     }
 
     /**
@@ -72,6 +76,11 @@ public class OverviewScrim extends Scrim {
             currentIndex++;
             mCurrentScrimmedView = root.getChildAt(currentIndex);
         }
+    }
+
+    @Override
+    public void onExtractedColorsChanged(WallpaperColorInfo wallpaperColorInfo) {
+        // No super, don't respond to wallpaper colors, follow device ones instead
     }
 
     /**
