@@ -52,7 +52,7 @@ public class ClearAllButton extends Button implements PageCallbacks {
     private float mGridTranslationPrimary;
     private float mGridTranslationSecondary;
     private float mGridScrollOffset;
-    private float mOffsetTranslationPrimary;
+    private float mScrollOffsetPrimary;
 
     private int mSidePadding;
 
@@ -144,9 +144,8 @@ public class ClearAllButton extends Button implements PageCallbacks {
         mGridScrollOffset = gridScrollOffset;
     }
 
-    public void setOffsetTranslationPrimary(float offsetTranslationPrimary) {
-        mOffsetTranslationPrimary = offsetTranslationPrimary;
-        applyPrimaryTranslation();
+    public void setScrollOffsetPrimary(float scrollOffsetPrimary) {
+        mScrollOffsetPrimary = scrollOffsetPrimary;
     }
 
     public float getScrollAdjustment(boolean gridEnabled) {
@@ -154,7 +153,7 @@ public class ClearAllButton extends Button implements PageCallbacks {
         if (gridEnabled) {
             scrollAdjustment += mGridTranslationPrimary + mGridScrollOffset;
         }
-        scrollAdjustment += mOffsetTranslationPrimary;
+        scrollAdjustment += mScrollOffsetPrimary;
         return scrollAdjustment;
     }
 
@@ -181,8 +180,7 @@ public class ClearAllButton extends Button implements PageCallbacks {
         PagedOrientationHandler orientationHandler = recentsView.getPagedOrientationHandler();
         orientationHandler.getPrimaryViewTranslate().set(this,
                 orientationHandler.getPrimaryValue(0f, getOriginalTranslationY())
-                        + mNormalTranslationPrimary + mOffsetTranslationPrimary + getGridTrans(
-                        mGridTranslationPrimary));
+                        + mNormalTranslationPrimary + getGridTrans(mGridTranslationPrimary));
     }
 
     private void applySecondaryTranslation() {

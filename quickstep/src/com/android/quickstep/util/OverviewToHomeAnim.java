@@ -22,13 +22,11 @@ import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
 import static com.android.launcher3.anim.Interpolators.INSTANT;
 import static com.android.launcher3.anim.Interpolators.clampToProgress;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_COMPONENTS;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_ACTIONS_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SCALE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_X;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_Y;
-import static com.android.launcher3.states.StateAnimationConfig.PLAY_ATOMIC_OVERVIEW_PEEK;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -105,10 +103,6 @@ public class OverviewToHomeAnim {
 
         StateAnimationConfig config = new UseFirstInterpolatorStateAnimConfig();
         config.duration = duration;
-        config.animFlags = playStaggeredWorkspaceAnim
-                // StaggeredWorkspaceAnim doesn't animate overview, so we handle it here.
-                ? PLAY_ATOMIC_OVERVIEW_PEEK
-                : ANIM_ALL_COMPONENTS;
         boolean isLayoutNaturalToLauncher = recentsView.getPagedOrientationHandler()
                 .isLayoutNaturalToLauncher();
         config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, isLayoutNaturalToLauncher
