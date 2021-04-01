@@ -18,6 +18,7 @@ package com.android.launcher3.uioverrides.states;
 import static android.view.View.VISIBLE;
 
 import static com.android.launcher3.LauncherState.HINT_STATE;
+import static com.android.launcher3.LauncherState.HINT_STATE_TWO_BUTTON;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.WorkspaceStateTransitionAnimation.getSpringScaleAnimator;
@@ -115,7 +116,8 @@ public class QuickstepAtomicAnimationFactory extends
                     qsbContainer.setScaleY(0.92f);
                 }
             }
-        } else if ((fromState == NORMAL || fromState == HINT_STATE) && toState == OVERVIEW) {
+        } else if ((fromState == NORMAL || fromState == HINT_STATE
+                || fromState == HINT_STATE_TWO_BUTTON) && toState == OVERVIEW) {
             if (SysUINavigationMode.getMode(mActivity) == NO_BUTTON) {
                 config.setInterpolator(ANIM_WORKSPACE_SCALE,
                         fromState == NORMAL ? ACCEL : OVERSHOOT_1_2);

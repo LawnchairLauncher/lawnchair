@@ -101,7 +101,7 @@ public class QuickSwitchTouchController extends AbstractStateChangeTouchControll
     }
 
     @Override
-    protected float initCurrentAnimation(int animComponents) {
+    protected float initCurrentAnimation() {
         StateAnimationConfig config = new StateAnimationConfig();
         setupInterpolators(config);
         config.duration = (long) (getShiftRange() * 2);
@@ -137,14 +137,17 @@ public class QuickSwitchTouchController extends AbstractStateChangeTouchControll
 
     private void updateFullscreenProgress(float progress) {
         mOverviewPanel.setFullscreenProgress(progress);
-        int sysuiFlags = 0;
         if (progress > UPDATE_SYSUI_FLAGS_THRESHOLD) {
+            int sysuiFlags = 0;
             TaskView tv = mOverviewPanel.getTaskViewAt(0);
             if (tv != null) {
                 sysuiFlags = tv.getThumbnail().getSysUiStatusNavFlags();
             }
+            mLauncher.getSystemUiController().updateUiState(UI_STATE_OVERVIEW, sysuiFlags);
+        } else {
+            mLauncher.getSystemUiController().updateUiState(
+                    UI_STATE_OVERVIEW, mOverviewPanel.hasLightBackground());
         }
-        mLauncher.getSystemUiController().updateUiState(UI_STATE_OVERVIEW, sysuiFlags);
     }
 
     @Override

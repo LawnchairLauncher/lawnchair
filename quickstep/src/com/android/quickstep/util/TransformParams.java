@@ -57,7 +57,6 @@ public class TransformParams {
     private float mProgress;
     private float mTargetAlpha;
     private float mCornerRadius;
-    private float mShadowRadius;
     private RemoteAnimationTargets mTargetSet;
     private SurfaceTransactionApplier mSyncTransactionApplier;
     private SurfaceControl mRecentsSurface;
@@ -69,7 +68,6 @@ public class TransformParams {
         mProgress = 0;
         mTargetAlpha = 1;
         mCornerRadius = -1;
-        mShadowRadius = 0;
     }
 
     /**
@@ -89,14 +87,6 @@ public class TransformParams {
      */
     public TransformParams setCornerRadius(float cornerRadius) {
         mCornerRadius = cornerRadius;
-        return this;
-    }
-
-    /**
-     * Sets the shadow radius of the transformed window, in pixels.
-     */
-    public TransformParams setShadowRadius(float shadowRadius) {
-        mShadowRadius = shadowRadius;
         return this;
     }
 
@@ -205,10 +195,6 @@ public class TransformParams {
 
     public float getCornerRadius() {
         return mCornerRadius;
-    }
-
-    public float getShadowRadius() {
-        return mShadowRadius;
     }
 
     public SurfaceControl getRecentsSurface() {
