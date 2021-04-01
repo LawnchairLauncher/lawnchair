@@ -1071,9 +1071,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             HomeAnimationFactory homeAnimFactory = createHomeAnimationFactory(duration);
             mIsSwipingPipToHome = homeAnimFactory.supportSwipePipToHome()
                     && runningTaskTarget != null
-                    && runningTaskTarget.pictureInPictureParams != null
+                    && runningTaskTarget.taskInfo.pictureInPictureParams != null
                     && TaskInfoCompat.isAutoEnterPipEnabled(
-                            runningTaskTarget.pictureInPictureParams);
+                            runningTaskTarget.taskInfo.pictureInPictureParams);
             if (mIsSwipingPipToHome) {
                 mSwipePipToHomeAnimator = getSwipePipToHomeAnimator(
                         homeAnimFactory, runningTaskTarget, start);
@@ -1161,7 +1161,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         final Rect destinationBounds = SystemUiProxy.INSTANCE.get(mContext)
                 .startSwipePipToHome(taskInfo.topActivity,
                         TaskInfoCompat.getTopActivityInfo(taskInfo),
-                        runningTaskTarget.pictureInPictureParams,
+                        runningTaskTarget.taskInfo.pictureInPictureParams,
                         homeRotation,
                         mDp.hotseatBarSizePx);
         final Rect startBounds = new Rect();
@@ -1170,7 +1170,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 runningTaskTarget.taskId,
                 taskInfo.topActivity,
                 runningTaskTarget.leash.getSurfaceControl(),
-                TaskInfoCompat.getPipSourceRectHint(runningTaskTarget.pictureInPictureParams),
+                TaskInfoCompat.getPipSourceRectHint(
+                        runningTaskTarget.taskInfo.pictureInPictureParams),
                 TaskInfoCompat.getWindowConfigurationBounds(taskInfo),
                 startBounds,
                 destinationBounds,
