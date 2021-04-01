@@ -89,6 +89,7 @@ import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
+import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.TransformingTouchDelegate;
 import com.android.launcher3.util.ViewPool.Reusable;
 import com.android.quickstep.RecentsModel;
@@ -134,10 +135,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     @IntDef({FLAG_UPDATE_ALL, FLAG_UPDATE_ICON, FLAG_UPDATE_THUMBNAIL})
     public @interface TaskDataChanges {}
 
-    /**
-     * The alpha of a black scrim on a page in the carousel as it leaves the screen.
-     * In the resting position of the carousel, the adjacent pages have about half this scrim.
-     */
+    /** The maximum amount that a task view can be scrimmed, dimmed or tinted. */
     public static final float MAX_PAGE_SCRIM_ALPHA = 0.4f;
 
     /**
@@ -254,6 +252,19 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                 }
             };
 
+    private static final FloatProperty<TaskView> COLOR_TINT =
+            new FloatProperty<TaskView>("colorTint") {
+                @Override
+                public void setValue(TaskView taskView, float v) {
+                    taskView.setColorTint(v);
+                }
+
+                @Override
+                public Float get(TaskView taskView) {
+                    return taskView.getColorTint();
+                }
+            };
+
     private final OnAttachStateChangeListener mTaskMenuStateListener =
             new OnAttachStateChangeListener() {
                 @Override
@@ -313,6 +324,11 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private View mContextualChipWrapper;
     private final float[] mIconCenterCoords = new float[2];
     private final float[] mChipCenterCoords = new float[2];
+
+    // Colored tint for the task view and all its supplementary views (like the task icon and well
+    // being banner.
+    private final int mTintingColor;
+    private float mTintAmount;
 
     private boolean mIsClickableAsLiveTile = true;
 
@@ -375,6 +391,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         mOutlineProvider = new TaskOutlineProvider(getContext(), mCurrentFullscreenParams,
                 mActivity.getDeviceProfile().overviewTaskThumbnailTopMarginPx);
         setOutlineProvider(mOutlineProvider);
+
+        mTintingColor = Themes.getColorBackgroundFloating(context);
     }
 
     /**
@@ -722,7 +740,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             progress = 1 - progress;
         }
         mFocusTransitionProgress = progress;
-        mSnapshotView.setDimAlphaMultipler(0);
         float iconScalePercentage = (float) SCALE_ICON_DURATION / DIM_ANIM_DURATION;
         float lowerClamp = invert ? 1f - iconScalePercentage : 0;
         float upperClamp = invert ? 1 : iconScalePercentage;
@@ -781,6 +798,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         setTranslationZ(0);
         setAlpha(mStableAlpha);
         setIconScaleAndDim(1);
+        setColorTint(0);
     }
 
     public void setStableAlpha(float parentAlpha) {
@@ -1300,6 +1318,26 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         RecentsView rv = getRecentsView();
         getMenuView().close(false);
         rv.initiateSplitSelect(this, splitPositionOption);
+    }
+
+    private void setColorTint(float amount) {
+        mSnapshotView.setDimAlpha(amount);
+        mIconView.setIconColorTint(mTintingColor, amount);
+        mDigitalWellBeingToast.setBannerColorTint(mTintingColor, amount);
+    }
+
+    private float getColorTint() {
+        return mTintAmount;
+    }
+
+    /**
+     * Show the task view with a color tint (animates value).
+     */
+    public void showColorTint(boolean enable) {
+        ObjectAnimator tintAnimator = ObjectAnimator.ofFloat(
+                this, COLOR_TINT, enable ? MAX_PAGE_SCRIM_ALPHA : 0);
+        tintAnimator.setAutoCancel(true);
+        tintAnimator.start();
     }
 
     /**

@@ -3223,6 +3223,16 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         return mSizeStrategy;
     }
 
+    /**
+     * Set all the task views to color tint scrim mode, dimming or tinting them all. Allows the
+     * tasks to be dimmed while other elements in the recents view are left alone.
+     */
+    public void showForegroundScrim(boolean show) {
+        for (int i = 0; i < getTaskViewCount(); i++) {
+            getTaskViewAt(i).showColorTint(show);
+        }
+    }
+
     private boolean showAsGrid() {
         return mOverviewGridEnabled || (mCurrentGestureEndTarget != null
                 && mSizeStrategy.stateFromGestureEndTarget(
