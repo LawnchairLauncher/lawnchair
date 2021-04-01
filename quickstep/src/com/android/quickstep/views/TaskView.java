@@ -295,8 +295,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     // The following grid translations scales with mGridProgress.
     private float mGridTranslationX;
     private float mGridTranslationY;
-    // Offset translation does not affect scroll calculation.
-    private float mGridOffsetTranslationX;
 
     private ObjectAnimator mIconAndDimAnimator;
     private float mIconScaleAnimStartProgress = 0;
@@ -792,8 +790,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     @Override
     public void onRecycle() {
-        mFullscreenTranslationX = mGridTranslationX =
-                mGridTranslationY = mGridOffsetTranslationX = mBoxTranslationY = 0f;
+        mFullscreenTranslationX = mGridTranslationX = mGridTranslationY = mBoxTranslationY = 0f;
         resetViewTransforms();
         // Clear any references to the thumbnail (it will be re-read either from the cache or the
         // system on next bind)
@@ -874,7 +871,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         if (mActivity.getDeviceProfile().isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get()) {
-            setPivotX(getLayoutDirection() == LAYOUT_DIRECTION_RTL ? (right - left) : 0);
+            setPivotX(getLayoutDirection() == LAYOUT_DIRECTION_RTL ? 0 : right - left);
             setPivotY(mSnapshotView.getTop());
         } else {
             setPivotX((right - left) * 0.5f);
@@ -979,11 +976,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         return mGridTranslationY;
     }
 
-    public void setGridOffsetTranslationX(float gridOffsetTranslationX) {
-        mGridOffsetTranslationX = gridOffsetTranslationX;
-        applyTranslationX();
-    }
-
     public float getScrollAdjustment(boolean fullscreenEnabled, boolean gridEnabled) {
         float scrollAdjustment = 0;
         if (fullscreenEnabled) {
@@ -996,11 +988,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     }
 
     public float getOffsetAdjustment(boolean fullscreenEnabled,boolean gridEnabled) {
-        float offsetAdjustment = getScrollAdjustment(fullscreenEnabled, gridEnabled);
-        if (gridEnabled) {
-            offsetAdjustment += mGridOffsetTranslationX;
-        }
-        return offsetAdjustment;
+        return getScrollAdjustment(fullscreenEnabled, gridEnabled);
     }
 
     public float getSizeAdjustment(boolean fullscreenEnabled) {
@@ -1019,7 +1007,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private void applyTranslationX() {
         setTranslationX(mDismissTranslationX + mTaskOffsetTranslationX + mTaskResistanceTranslationX
                 + getFullscreenTrans(mFullscreenTranslationX)
-                + getGridTrans(mGridTranslationX + mGridOffsetTranslationX));
+                + getGridTrans(mGridTranslationX));
     }
 
     private void applyTranslationY() {

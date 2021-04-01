@@ -715,13 +715,10 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                 final int primaryDimension = bounds.primaryDimension;
                 final int childPrimaryEnd = bounds.childPrimaryEnd;
 
-                // In case the pages are of different width, align the page to left or right edge
-                // based on the orientation.
-                // In case we have multiple panels on the screen, scrollOffsetEnd is the scroll
-                // needed for the whole visible area, so we have to divide it by panelCount.
-                final int pageScroll = mIsRtl
-                        ? (childStart - scrollOffsetStart)
-                        : Math.max(0, childPrimaryEnd - scrollOffsetEnd / getPanelCount());
+                // In case the pages are of different width, align the page to left edge for non-RTL
+                // or right edge for RTL.
+                final int pageScroll =
+                        mIsRtl ? childPrimaryEnd - scrollOffsetEnd : childStart - scrollOffsetStart;
                 if (outPageScrolls[i] != pageScroll) {
                     pageScrollChanged = true;
                     outPageScrolls[i] = pageScroll;
