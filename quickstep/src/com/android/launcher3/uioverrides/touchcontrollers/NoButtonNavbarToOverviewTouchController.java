@@ -38,7 +38,6 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.graphics.PointF;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.ViewConfiguration;
 
 import com.android.launcher3.Launcher;
@@ -153,11 +152,6 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
             goToOverviewOrHomeOnDragEnd(velocity);
         } else {
             super.onDragEnd(velocity);
-        }
-
-        View searchView = mLauncher.getHotseat().getQsb();
-        if (searchView instanceof FeedbackHandler) {
-            ((FeedbackHandler) searchView).resetFeedback();
         }
 
         mMotionPauseDetector.clear();
@@ -313,16 +307,5 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
             return builder;
         }
         return super.getConfigForStates(fromState, toState);
-    }
-
-    /**
-     * Interface for views with feedback animation requiring reset
-     */
-    public interface FeedbackHandler {
-
-        /**
-         * reset searchWidget feedback
-         */
-        void resetFeedback();
     }
 }

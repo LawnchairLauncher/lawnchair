@@ -18,8 +18,6 @@ package com.android.launcher3.settings;
 
 import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS;
 
-import static com.android.launcher3.util.SettingsCache.NOTIFICATION_BADGING_URI;
-import static com.android.launcher3.util.SettingsCache.NOTIFICATION_ENABLED_LISTENERS;
 import static com.android.launcher3.states.RotationHelper.ALLOW_ROTATION_PREFERENCE_KEY;
 import static com.android.launcher3.states.RotationHelper.getAllowRotationDefaultValue;
 
@@ -45,7 +43,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.WidgetsModel;
-import com.android.launcher3.util.SettingsCache;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 
 /**
@@ -124,11 +121,8 @@ public class SettingsActivity extends FragmentActivity
      */
     public static class LauncherSettingsFragment extends PreferenceFragmentCompat {
 
-        private SettingsCache mSettingsCache;
-
         private String mHighLightKey;
         private boolean mPreferenceHighlighted = false;
-        private NotificationDotsPreference mNotificationSettingsChangedListener;
         private Preference mDeveloperOptionPref;
 
         @Override
@@ -172,22 +166,7 @@ public class SettingsActivity extends FragmentActivity
         protected boolean initPreference(Preference preference) {
             switch (preference.getKey()) {
                 case NOTIFICATION_DOTS_PREFERENCE_KEY:
-                    if (WidgetsModel.GO_DISABLE_NOTIFICATION_DOTS) {
-                        return false;
-                    }
-
-                    // Listen to system notification dot settings while this UI is active.
-                    mSettingsCache = SettingsCache.INSTANCE.get(getActivity());
-                    mNotificationSettingsChangedListener =
-                            ((NotificationDotsPreference) preference);
-                    mSettingsCache.register(NOTIFICATION_BADGING_URI,
-                            (NotificationDotsPreference) mNotificationSettingsChangedListener);
-                    // Also listen if notification permission changes
-                    mSettingsCache.register(NOTIFICATION_ENABLED_LISTENERS,
-                            mNotificationSettingsChangedListener);
-                    mSettingsCache.dispatchOnChange(NOTIFICATION_BADGING_URI);
-                    mSettingsCache.dispatchOnChange(NOTIFICATION_ENABLED_LISTENERS);
-                    return true;
+                    return !WidgetsModel.GO_DISABLE_NOTIFICATION_DOTS;
 
                 case ALLOW_ROTATION_PREFERENCE_KEY:
                     if (getResources().getBoolean(R.bool.allow_rotation)) {
@@ -268,17 +247,6 @@ public class SettingsActivity extends FragmentActivity
                             .performAccessibilityAction(ACTION_ACCESSIBILITY_FOCUS, null);
                 }
             });
-        }
-
-        @Override
-        public void onDestroy() {
-            if (mSettingsCache != null) {
-                mSettingsCache.unregister(NOTIFICATION_BADGING_URI,
-                        mNotificationSettingsChangedListener);
-                mSettingsCache.unregister(NOTIFICATION_ENABLED_LISTENERS,
-                        mNotificationSettingsChangedListener);
-            }
-            super.onDestroy();
         }
     }
 }

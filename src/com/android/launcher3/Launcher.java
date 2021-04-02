@@ -34,7 +34,6 @@ import static com.android.launcher3.LauncherState.FLAG_NON_INTERACTIVE;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.NO_OFFSET;
 import static com.android.launcher3.LauncherState.NO_SCALE;
-import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.getSupportedActions;
@@ -149,7 +148,6 @@ import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.qsb.QsbContainerView;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
-import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.testing.TestLogging;
@@ -269,9 +267,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     private static final int NEW_APPS_ANIMATION_INACTIVE_TIMEOUT_SECONDS = 5;
     @Thunk @VisibleForTesting public static final int NEW_APPS_ANIMATION_DELAY = 500;
 
-    private static final int APPS_VIEW_ALPHA_CHANNEL_INDEX = 1;
-    private static final int SCRIM_VIEW_ALPHA_CHANNEL_INDEX = 0;
-
     private static final int THEME_CROSS_FADE_ANIMATION_DURATION = 375;
 
     private Configuration mOldConfig;
@@ -341,8 +336,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     private ViewGroupFocusHelper mFocusHandler;
 
     private RotationHelper mRotationHelper;
-
-    private float mCurrentAssistantVisibility = 0f;
 
     protected LauncherOverlayManager mOverlayManager;
     // If true, overlay callbacks are deferred
@@ -457,24 +450,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                 OverlayPlugin.class, false /* allowedMultiple */);
 
         mRotationHelper.initialize();
-
-        mStateManager.addStateListener(new StateListener<LauncherState>() {
-
-            @Override
-            public void onStateTransitionComplete(LauncherState finalState) {
-                float alpha = 1f - mCurrentAssistantVisibility;
-                if (finalState == NORMAL) {
-                    mAppsView.getAlphaProperty(APPS_VIEW_ALPHA_CHANNEL_INDEX).setValue(alpha);
-                } else if (finalState == OVERVIEW) {
-                    mAppsView.getAlphaProperty(APPS_VIEW_ALPHA_CHANNEL_INDEX).setValue(alpha);
-                    mScrimView.setAlpha(alpha);
-                } else {
-                    mAppsView.getAlphaProperty(APPS_VIEW_ALPHA_CHANNEL_INDEX).setValue(1f);
-                    mScrimView.setAlpha(1f);
-                }
-            }
-        });
-
         TraceHelper.INSTANCE.endSection(traceToken);
 
         mUserChangedCallbackCloseable = UserCache.INSTANCE.get(this).addUserChangeListener(
@@ -563,15 +538,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     }
 
     public void onAssistantVisibilityChanged(float visibility) {
-        mCurrentAssistantVisibility = visibility;
-        float alpha = 1f - visibility;
-        LauncherState state = mStateManager.getState();
-        if (state == NORMAL) {
-            mAppsView.getAlphaProperty(APPS_VIEW_ALPHA_CHANNEL_INDEX).setValue(alpha);
-        } else if (state == OVERVIEW) {
-            mAppsView.getAlphaProperty(APPS_VIEW_ALPHA_CHANNEL_INDEX).setValue(alpha);
-            mScrimView.setAlpha(alpha);
-        }
+        mHotseat.getQsb().setAlpha(1f - visibility);
     }
 
     private void initDeviceProfile(InvariantDeviceProfile idp) {

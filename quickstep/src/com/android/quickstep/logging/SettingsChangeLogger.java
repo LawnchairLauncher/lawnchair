@@ -80,7 +80,7 @@ public class SettingsChangeLogger implements
         SettingsCache mSettingsCache = SettingsCache.INSTANCE.get(context);
         mSettingsCache.register(NOTIFICATION_BADGING_URI,
                 this::onNotificationDotsChanged);
-        mSettingsCache.dispatchOnChange(NOTIFICATION_BADGING_URI);
+        onNotificationDotsChanged(mSettingsCache.getValue(NOTIFICATION_BADGING_URI));
     }
 
     private static ArrayMap<String, LoggablePref> loadPrefKeys(Context context) {
