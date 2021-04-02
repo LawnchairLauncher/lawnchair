@@ -116,7 +116,7 @@ public class LauncherAppState {
         mNotificationSettingsChangedListener = this::onNotificationSettingsChanged;
         mSettingsCache.register(NOTIFICATION_BADGING_URI,
                 mNotificationSettingsChangedListener);
-        mSettingsCache.dispatchOnChange(NOTIFICATION_BADGING_URI);
+        onNotificationSettingsChanged(mSettingsCache.getValue(NOTIFICATION_BADGING_URI));
     }
 
     public LauncherAppState(Context context, @Nullable String iconCacheFileName) {

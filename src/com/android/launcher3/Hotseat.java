@@ -29,7 +29,6 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.Nullable;
 
-import java.util.Arrays;
 import java.util.function.Consumer;
 
 /**
@@ -97,7 +96,6 @@ public class Hotseat extends CellLayout implements Insettable {
         } else {
             setGridSize(idp.numHotseatIcons, 1);
         }
-        showInlineQsb();
     }
 
     @Override
@@ -182,10 +180,6 @@ public class Hotseat extends CellLayout implements Insettable {
         mOnVisibilityAggregatedCallback = callback;
     }
 
-    protected void showInlineQsb() {
-        //Does nothing
-    }
-
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -221,13 +215,6 @@ public class Hotseat extends CellLayout implements Insettable {
         bottom = b - t;
         top = bottom - mTaskbarViewHeight;
         mTaskbarView.layout(left, top, right, bottom);
-    }
-
-    /**
-     * Returns the first View for which the given itemOperator returns true, or null.
-     */
-    public View getFirstItemMatch(Workspace.ItemOperator itemOperator) {
-        return mWorkspace.getFirstMatch(Arrays.asList(this), itemOperator);
     }
 
     /**
