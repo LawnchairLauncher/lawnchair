@@ -7,6 +7,7 @@ import android.content.pm.ResolveInfo
 import android.provider.Settings
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import app.lawnchair.util.preferences.PreferenceManager
@@ -42,6 +43,7 @@ class PreferenceViewModel(application: Application) : AndroidViewModel(applicati
     override val notificationDotsEnabled: MutableState<Boolean> =
         mutableStateOf(enabledNotificationListeners?.contains(lawnchairNotificationListener.flattenToString()) == true)
     override val drawerOpacity: MutableState<Float> = mutableStateOf(pm.drawerOpacity)
+    override val enableMinusOne: MutableState<Boolean> = mutableStateOf(pm.enableMinusOne)
 
     override fun setIconPackPackage(iconPackPackage: String) {
         pm.iconPackPackage = iconPackPackage
@@ -126,6 +128,11 @@ class PreferenceViewModel(application: Application) : AndroidViewModel(applicati
     override fun setDrawerOpacity(drawerOpacity: Float) {
         pm.drawerOpacity = drawerOpacity
         this.drawerOpacity.value = drawerOpacity
+    }
+
+    override fun setEnableMinusOne(enableMinusOne: Boolean) {
+        pm.enableMinusOne = enableMinusOne
+        this.enableMinusOne.value = enableMinusOne
     }
 
     override fun getIconPacks(): MutableMap<String, IconPackInfo> {

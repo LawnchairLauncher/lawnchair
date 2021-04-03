@@ -54,4 +54,6 @@
     <string name="item_removed">Item removed.</string>
     <string name="all_apps_no_search_results">No apps found matching “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
     <string name="background_opacity">Background Opacity</string>
+    <string name="show_feed_label">Show Feed</string>
+    <string name="show_feed_description">Left of the Home Screen.</string>
 </resources>

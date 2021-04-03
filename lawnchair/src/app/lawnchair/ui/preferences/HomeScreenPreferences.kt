@@ -20,7 +20,13 @@ fun HomeScreenPreferences(interactor: PreferenceInteractor) {
             SwitchPreference(
                 checked = interactor.addIconToHome.value,
                 onCheckedChange = { interactor.setAddIconToHome(it) },
-                label = stringResource(id = R.string.auto_add_shortcuts_label),
+                label = stringResource(id = R.string.auto_add_shortcuts_label)
+            )
+            SwitchPreference(
+                checked = interactor.enableMinusOne.value,
+                onCheckedChange = { interactor.setEnableMinusOne(it) },
+                label = stringResource(id = R.string.show_feed_label),
+                description = stringResource(id = R.string.show_feed_description),
                 showDivider = false
             )
             /*SwitchPreference(

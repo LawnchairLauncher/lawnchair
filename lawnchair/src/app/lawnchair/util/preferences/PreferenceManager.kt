@@ -26,4 +26,5 @@ class PreferenceManager(context: Context) {
     var allowEmptyPages by BooleanPreferenceDelegate(lp.ALLOW_EMPTY_PAGES, false)
     var makeColoredBackgrounds by BooleanPreferenceDelegate(lp.MAKE_COLORED_BACKGROUNDS, false)
     var drawerOpacity by FloatPreferenceDelegate(lp.DRAWER_OPACITY, 1F)
+    var enableMinusOne by BooleanPreferenceDelegate(lp.ENABLE_MINUS_ONE, true)
 }

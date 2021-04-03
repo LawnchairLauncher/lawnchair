@@ -28,6 +28,9 @@ class LawnchairPreferences(val context: Context) {
                 DRAWER_OPACITY -> {
                     las.launcher.scrimView.refreshScrimAlpha(context)
                 }
+                ENABLE_MINUS_ONE -> {
+                    scheduleRestart()
+                }
             }
         }
 
