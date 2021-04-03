@@ -19,11 +19,13 @@ import static com.android.launcher3.LauncherState.CLEAR_ALL_BUTTON;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_MODAL_TASK;
+import static com.android.launcher3.LauncherState.OVERVIEW_SPLIT_SELECT;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.quickstep.util.NavigationModeFeatureFlag.LIVE_TILE;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -35,6 +37,7 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
+import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.quickstep.LauncherActivityInterface;
 import com.android.quickstep.util.OverviewToHomeAnim;
 import com.android.systemui.plugins.PluginListener;
@@ -44,7 +47,7 @@ import com.android.systemui.plugins.RecentsExtraCard;
  * {@link RecentsView} used in Launcher activity
  */
 @TargetApi(Build.VERSION_CODES.O)
-public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
+public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher, LauncherState>
         implements StateListener<LauncherState> {
 
     private RecentsExtraCard mRecentsExtraCardPlugin;
@@ -232,6 +235,35 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
             if (mActivity.isInState(LauncherState.OVERVIEW_MODAL_TASK)) {
                 mActivity.getStateManager().goToState(LauncherState.OVERVIEW);
             }
+        }
+    }
+
+    @Override
+    protected void onDismissAnimationEnds() {
+        super.onDismissAnimationEnds();
+        if (mActivity.isInState(OVERVIEW_SPLIT_SELECT)) {
+            // We want to keep the tasks translations in this temporary state
+            // after resetting the rest above
+            setTaskViewsResistanceTranslation(mTaskViewsSecondaryTranslation);
+            setTaskViewsPrimaryTranslation(mTaskViewsPrimaryTranslation);
+        }
+    }
+
+    @Override
+    public void initiateSplitSelect(TaskView taskView,
+            SplitConfigurationOptions.SplitPositionOption splitPositionOption) {
+        super.initiateSplitSelect(taskView, splitPositionOption);
+        mActivity.getStateManager().goToState(LauncherState.OVERVIEW_SPLIT_SELECT);
+    }
+
+    @Override
+    protected void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // If overview is in modal state when rotate, reset it to overview state without running
+        // animation.
+        if (mActivity.isInState(OVERVIEW_MODAL_TASK)) {
+            mActivity.getStateManager().goToState(LauncherState.OVERVIEW, false);
+            resetModalVisuals();
         }
     }
 }

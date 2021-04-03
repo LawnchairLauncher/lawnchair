@@ -99,8 +99,8 @@ public class RecentsState implements BaseState<RecentsState> {
     /**
      * For this state, whether overview actions should be shown.
      */
-    public boolean hasOverviewActions(RecentsActivity activity) {
-        return hasFlag(FLAG_OVERVIEW_ACTIONS) && !showAsGrid(activity.getDeviceProfile());
+    public boolean hasOverviewActions() {
+        return hasFlag(FLAG_OVERVIEW_ACTIONS);
     }
 
     public float[] getOverviewScaleAndOffset(RecentsActivity activity) {
