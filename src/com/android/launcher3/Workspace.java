@@ -24,7 +24,6 @@ import static com.android.launcher3.LauncherState.FLAG_WORKSPACE_ICONS_CAN_BE_DR
 import static com.android.launcher3.LauncherState.FLAG_WORKSPACE_INACCESSIBLE;
 import static com.android.launcher3.LauncherState.HINT_STATE;
 import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.config.FeatureFlags.ADAPTIVE_ICON_WINDOW_ANIM;
 import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_OVERLAY;
@@ -96,10 +95,12 @@ import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.touch.WorkspaceTouchListener;
+import com.android.launcher3.util.EdgeEffectCompat;
 import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSparseArrayMap;
 import com.android.launcher3.util.ItemInfoMatcher;
+import com.android.launcher3.util.OverlayEdgeEffect;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.WallpaperOffsetInterpolator;
@@ -245,10 +246,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     private float mTransitionProgress;
 
     // State related to Launcher Overlay
-    LauncherOverlay mLauncherOverlay;
-    boolean mScrollInteractionBegan;
-    boolean mStartedSendingScrollEvents;
-    float mLastOverlayScroll = 0;
+    private OverlayEdgeEffect mOverlayEdgeEffect;
     boolean mOverlayShown = false;
     private Runnable mOnOverlayHiddenCallback;
 
@@ -945,47 +943,25 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
     }
 
-    protected void onScrollInteractionBegin() {
-        super.onScrollInteractionBegin();
-        mScrollInteractionBegan = true;
-    }
-
-    protected void onScrollInteractionEnd() {
-        super.onScrollInteractionEnd();
-        mScrollInteractionBegan = false;
-        if (mStartedSendingScrollEvents) {
-            mStartedSendingScrollEvents = false;
-            mLauncherOverlay.onScrollInteractionEnd();
-        }
-    }
-
     public void setLauncherOverlay(LauncherOverlay overlay) {
-        mLauncherOverlay = overlay;
-        // A new overlay has been set. Reset event tracking
-        mStartedSendingScrollEvents = false;
+        mOverlayEdgeEffect = overlay == null ? null : new OverlayEdgeEffect(getContext(), overlay);
+        EdgeEffectCompat newEffect = overlay == null
+                ? new EdgeEffectCompat(getContext()) : mOverlayEdgeEffect;
+        if (mIsRtl) {
+            mEdgeGlowRight = newEffect;
+        } else {
+            mEdgeGlowLeft = newEffect;
+        }
         onOverlayScrollChanged(0);
     }
 
     public boolean hasOverlay() {
-        return mLauncherOverlay != null;
-    }
-
-    private boolean isScrollingOverlay() {
-        return mLauncherOverlay != null &&
-                ((mIsRtl && getUnboundedScroll() > mMaxScroll)
-                        || (!mIsRtl && getUnboundedScroll() < mMinScroll));
+        return mOverlayEdgeEffect != null;
     }
 
     @Override
     protected void snapToDestination() {
-        // If we're overscrolling the overlay, we make sure to immediately reset the PagedView
-        // to it's baseline position instead of letting the overscroll settle. The overlay handles
-        // it's own settling, and every gesture to the overlay should be self-contained and start
-        // from 0, so we zero it out here.
-        if (isScrollingOverlay()) {
-            // We reset mWasInOverscroll so that PagedView doesn't zero out the overscroll
-            // interaction when we call snapToPageImmediately.
-            mWasInOverscroll = false;
+        if (mOverlayEdgeEffect != null && !mOverlayEdgeEffect.isFinished()) {
             snapToPageImmediately(0);
         } else {
             super.snapToDestination();
@@ -1015,38 +991,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         if (mPageIndicator != null) {
             mPageIndicator.setScroll(getScrollX(), computeMaxScroll());
         }
-    }
-
-    @Override
-    protected void overScroll(int amount) {
-        boolean shouldScrollOverlay = mLauncherOverlay != null && !mScroller.isSpringing() &&
-                ((amount <= 0 && !mIsRtl) || (amount >= 0 && mIsRtl));
-
-        boolean shouldZeroOverlay = mLauncherOverlay != null && mLastOverlayScroll != 0 &&
-                ((amount >= 0 && !mIsRtl) || (amount <= 0 && mIsRtl));
-
-        if (shouldScrollOverlay) {
-            if (!mStartedSendingScrollEvents && mScrollInteractionBegan) {
-                mStartedSendingScrollEvents = true;
-                mLauncherOverlay.onScrollInteractionBegin();
-            }
-
-            mLastOverlayScroll = Math.abs(((float) amount) / getMeasuredWidth());
-            mLauncherOverlay.onScrollChange(mLastOverlayScroll, mIsRtl);
-        } else {
-            dampedOverScroll(amount);
-        }
-
-        if (shouldZeroOverlay) {
-            mLauncherOverlay.onScrollChange(0, mIsRtl);
-        }
-    }
-
-    @Override
-    protected boolean onOverscroll(int amount) {
-        // Enforce overscroll on -1 direction
-        if ((amount > 0 && !mIsRtl) || (amount < 0 && mIsRtl)) return false;
-        return super.onOverscroll(amount);
     }
 
     @Override
@@ -1375,10 +1319,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     public void prepareDragWithProvider(DragPreviewProvider outlineProvider) {
         mOutlineProvider = outlineProvider;
-    }
-
-    public void snapToPageFromOverView(int whichPage) {
-        snapToPage(whichPage, OVERVIEW.getTransitionDuration(mLauncher), Interpolators.ZOOM_IN);
     }
 
     private void onStartStateTransition(LauncherState state) {

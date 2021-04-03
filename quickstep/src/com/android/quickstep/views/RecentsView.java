@@ -42,6 +42,7 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_DISMISS_SWIPE_UP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_SWIPE_DOWN;
 import static com.android.launcher3.statehandlers.DepthController.DEPTH;
+import static com.android.launcher3.touch.PagedOrientationHandler.CANVAS_TRANSLATE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
@@ -88,11 +89,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver.OnScrollChangedListener;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.OverScroller;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
@@ -116,14 +119,15 @@ import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.touch.OverScroll;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.DynamicResource;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.MultiValueAlpha;
-import com.android.launcher3.util.OverScroller;
 import com.android.launcher3.util.ResourceBasedOverride.Overrides;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.util.Themes;
+import com.android.launcher3.util.TranslateEdgeEffect;
 import com.android.launcher3.util.ViewPool;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.BaseActivityInterface;
@@ -157,6 +161,7 @@ import com.android.systemui.shared.system.TaskStackChangeListeners;
 import com.android.wm.shell.pip.IPipAnimationListener;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -296,6 +301,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 }
             };
 
+    // OverScroll constants
+    private static final int OVERSCROLL_PAGE_SNAP_ANIMATION_DURATION = 270;
+
     protected final RecentsOrientedState mOrientationState;
     protected final BaseActivityInterface<STATE_TYPE, ACTIVITY_TYPE> mSizeStrategy;
     protected RecentsAnimationController mRecentsAnimationController;
@@ -314,6 +322,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     protected final Rect mTempRect = new Rect();
     protected final RectF mTempRectF = new RectF();
     private final PointF mTempPointF = new PointF();
+    private final float[] mTempFloat = new float[1];
+    private final List<OnScrollChangedListener> mScrollListeners = new ArrayList<>();
     private float mFullscreenScale;
 
     private static final int DISMISS_TASK_DURATION = 300;
@@ -359,6 +369,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     protected GestureState.GestureEndTarget mCurrentGestureEndTarget;
 
     IntSet mTopIdSet = new IntSet();
+
+    private int mOverScrollShift = 0;
+
 
     /**
      * TODO: Call reloadIdNeeded in onTaskStackChanged.
@@ -581,6 +594,72 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     public boolean isRtl() {
         return mIsRtl;
+    }
+
+    @Override
+    protected void initEdgeEffect() {
+        mEdgeGlowLeft = new TranslateEdgeEffect(getContext());
+        mEdgeGlowRight = new TranslateEdgeEffect(getContext());
+    }
+
+    @Override
+    protected void drawEdgeEffect(Canvas canvas) {
+        // Do not draw edge effect
+    }
+
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        // Draw overscroll
+        if (mAllowOverScroll && (!mEdgeGlowRight.isFinished() || !mEdgeGlowLeft.isFinished())) {
+            final int restoreCount = canvas.save();
+            final int width = getWidth();
+            final int height = getHeight();
+            int primarySize = mOrientationHandler.getPrimaryValue(width, height);
+            int secondarySize = mOrientationHandler.getSecondaryValue(width, height);
+
+            float effectiveShift = 0;
+            if (!mEdgeGlowLeft.isFinished()) {
+                mEdgeGlowLeft.setSize(secondarySize, primarySize);
+                if (((TranslateEdgeEffect) mEdgeGlowLeft).getTranslationShift(mTempFloat)) {
+                    effectiveShift = mTempFloat[0];
+                    postInvalidateOnAnimation();
+                }
+            }
+            if (!mEdgeGlowRight.isFinished()) {
+                mEdgeGlowRight.setSize(secondarySize, primarySize);
+                if (((TranslateEdgeEffect) mEdgeGlowRight).getTranslationShift(mTempFloat)) {
+                    effectiveShift -= mTempFloat[0];
+                    postInvalidateOnAnimation();
+                }
+            }
+
+            int scroll = OverScroll.dampedScroll(effectiveShift * primarySize, primarySize);
+            mOrientationHandler.set(canvas, CANVAS_TRANSLATE, scroll);
+
+            if (mOverScrollShift != scroll) {
+                mOverScrollShift = scroll;
+                dispatchScrollChanged();
+            }
+
+            super.dispatchDraw(canvas);
+            canvas.restoreToCount(restoreCount);
+        } else {
+            if (mOverScrollShift != 0) {
+                mOverScrollShift = 0;
+                dispatchScrollChanged();
+            }
+            super.dispatchDraw(canvas);
+        }
+        if (LIVE_TILE.get() && mEnableDrawingLiveTile && mLiveTileParams.getTargetSet() != null) {
+            redrawLiveTile();
+        }
+    }
+
+    /**
+     * Returns the view shift due to overscroll
+     */
+    public int getOverScrollShift() {
+        return mOverScrollShift;
     }
 
     @Override
@@ -936,8 +1015,30 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     @Override
-    protected boolean snapToPageInFreeScroll() {
-        return !showAsGrid();
+    protected void onNotSnappingToPageInFreeScroll() {
+        int finalPos = mScroller.getFinalX();
+        if (!showAsGrid() && finalPos > mMinScroll && finalPos < mMaxScroll) {
+            int firstPageScroll = getScrollForPage(!mIsRtl ? 0 : getPageCount() - 1);
+            int lastPageScroll = getScrollForPage(!mIsRtl ? getPageCount() - 1 : 0);
+
+            // If scrolling ends in the half of the added space that is closer to
+            // the end, settle to the end. Otherwise snap to the nearest page.
+            // If flinging past one of the ends, don't change the velocity as it
+            // will get stopped at the end anyway.
+            int pageSnapped = finalPos < (firstPageScroll + mMinScroll) / 2
+                    ? mMinScroll
+                    : finalPos > (lastPageScroll + mMaxScroll) / 2
+                            ? mMaxScroll
+                            : getScrollForPage(mNextPage);
+
+            mScroller.setFinalX(pageSnapped);
+            // Ensure the scroll/snap doesn't happen too fast;
+            int extraScrollDuration = OVERSCROLL_PAGE_SNAP_ANIMATION_DURATION
+                    - mScroller.getDuration();
+            if (extraScrollDuration > 0) {
+                mScroller.extendDuration(extraScrollDuration);
+            }
+        }
     }
 
     @Override
@@ -1267,12 +1368,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
         // Update the high res thumbnail loader state
         mModel.getThumbnailCache().getHighResLoadingState().setFlingingFast(isFlingingFast);
-
-        mLiveTileTaskViewSimulator.setScroll(getScrollOffset());
-        if (LIVE_TILE.get() && mEnableDrawingLiveTile
-                && mLiveTileParams.getTargetSet() != null) {
-            redrawLiveTile();
-        }
         return scrolling;
     }
 
@@ -1571,7 +1666,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             updateOrientationHandler();
         }
 
-        setOnScrollChangeListener(null);
         setEnableFreeScroll(true);
         setEnableDrawingLiveTile(true);
         if (!LIVE_TILE.get()) {
@@ -3207,13 +3301,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         return mClearAllButton;
     }
 
-    @Override
-    protected boolean onOverscroll(int amount) {
-        // overscroll should only be accepted on -1 direction (for clear all button)
-        if ((amount > 0 && !mIsRtl) || (amount < 0 && mIsRtl)) return false;
-        return super.onOverscroll(amount);
-    }
-
     /**
      * @return How many pixels the running task is offset on the currently laid out dominant axis.
      */
@@ -3228,14 +3315,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         if (pageIndex == -1) {
             return 0;
         }
-        // Unbound the scroll (due to overscroll) if the adjacent tasks are offset away from it.
-        // This allows the page to move freely, given there's no visual indication why it shouldn't.
-        int boundedScroll = mOrientationHandler.getPrimaryScroll(this);
-        int unboundedScroll = getUnboundedScroll();
-        float unboundedProgress = mAdjacentPageOffset;
-        int scroll = Math.round(unboundedScroll * unboundedProgress
-                + boundedScroll * (1 - unboundedProgress));
-        return getScrollForPage(pageIndex) - scroll;
+        return getScrollForPage(pageIndex) - mOrientationHandler.getPrimaryScroll(this)
+                + getOverScrollShift();
     }
 
     /**
@@ -3419,6 +3500,33 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     public interface OnEmptyMessageUpdatedListener {
         /** @param isEmpty Whether RecentsView is empty (i.e. has no children) */
         void onEmptyMessageUpdated(boolean isEmpty);
+    }
+
+    /**
+     * Adds a listener for scroll changes
+     */
+    public void addOnScrollChangedListener(OnScrollChangedListener listener) {
+        mScrollListeners.add(listener);
+    }
+
+    /**
+     * Removes a previously added scroll change listener
+     */
+    public void removeOnScrollChangedListener(OnScrollChangedListener listener) {
+        mScrollListeners.remove(listener);
+    }
+
+    @Override
+    protected void onScrollChanged(int l, int t, int oldl, int oldt) {
+        super.onScrollChanged(l, t, oldl, oldt);
+        dispatchScrollChanged();
+    }
+
+    private void dispatchScrollChanged() {
+        mLiveTileTaskViewSimulator.setScroll(getScrollOffset());
+        for (int i = mScrollListeners.size() - 1; i >= 0; i--) {
+            mScrollListeners.get(i).onScrollChanged();
+        }
     }
 
     private static class PinnedStackAnimationListener<T extends BaseActivity> extends
