@@ -1,2 +1,0 @@
-Temp file to prevent build breakage.
-Will be removed in followup cl.

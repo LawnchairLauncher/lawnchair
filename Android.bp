@@ -179,7 +179,6 @@ android_library {
     srcs: [ ],
     resource_dirs: [
         "quickstep/res",
-        "quickstep/overview_ui_overrides/res",
     ],
     static_libs: [
         "Launcher3ResLib",
