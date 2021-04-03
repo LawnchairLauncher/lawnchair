@@ -21,4 +21,6 @@
 
     <!-- Feature Flags -->
     <bool name="enable_niu_actions">true</bool>
+
+    <string name="task_overlay_factory_class" translatable="false">com.android.quickstep.TaskOverlayFactoryGo</string>
 </resources>

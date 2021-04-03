@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2020 The Android Open Source Project
+     Copyright (C) 2021 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,10 +14,12 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.quickstep.views.OverviewActionsView xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- NOTE! don't add dimensions for margins / gravity to root view in this file, they need to be
+     loaded at runtime. -->
+<com.android.quickstep.views.GoOverviewActionsView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center_horizontal|bottom">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:id="@+id/action_buttons"
@@ -32,11 +34,42 @@
             android:layout_weight="1" />
 
         <Button
+            android:id="@+id/action_listen"
+            style="@style/OverviewActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableTop="@drawable/ic_listen"
+            android:drawablePadding="1dp"
+            android:text="@string/action_listen"
+            android:theme="@style/ThemeControlHighlightWorkspaceColor" />
+
+        <Button
+            android:id="@+id/action_translate"
+            style="@style/OverviewActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableTop="@drawable/ic_translate"
+            android:drawablePadding="1dp"
+            android:text="@string/action_translate"
+            android:theme="@style/ThemeControlHighlightWorkspaceColor" />
+
+        <Button
+            android:id="@+id/action_search"
+            style="@style/OverviewActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableTop="@drawable/ic_search"
+            android:drawablePadding="1dp"
+            android:text="@string/action_search"
+            android:theme="@style/ThemeControlHighlightWorkspaceColor" />
+
+        <Button
             android:id="@+id/action_screenshot"
             style="@style/OverviewActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableStart="@drawable/ic_screenshot"
+            android:drawableTop="@drawable/ic_screenshot"
+            android:drawablePadding="1dp"
             android:text="@string/action_screenshot"
             android:theme="@style/ThemeControlHighlightWorkspaceColor" />
 
@@ -63,4 +96,4 @@
             android:visibility="gone" />
     </LinearLayout>
 
-</com.android.quickstep.views.OverviewActionsView>
+</com.android.quickstep.views.GoOverviewActionsView>
