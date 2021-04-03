@@ -42,7 +42,7 @@ import com.android.systemui.shared.recents.model.Task.TaskKey;
 import java.util.ArrayList;
 
 @TargetApi(Build.VERSION_CODES.R)
-public class FallbackRecentsView extends RecentsView<RecentsActivity>
+public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsState>
         implements StateListener<RecentsState> {
 
     private RunningTaskInfo mHomeTaskInfo;
