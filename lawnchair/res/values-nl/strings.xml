@@ -49,4 +49,7 @@
     <string name="item_removed">Item verwijderd.</string>
     <string name="all_apps_no_search_results">Geen apps gevonden die overeenkomen met “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
     <string name="background_opacity">Doorzichtigheid achtergrond</string>
+    <string name="background_lightness_label">Background Lightness</string>
+    <string name="adaptive_icons">Adaptive Icons</string>
+    <string name="adaptive_icon_background_description">Background Lightness only affects generated Adaptive Icons. Use 100% for white.</string>
 </resources>
