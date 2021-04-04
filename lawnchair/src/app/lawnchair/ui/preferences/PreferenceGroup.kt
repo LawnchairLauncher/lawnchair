@@ -1,5 +1,6 @@
 package app.lawnchair.ui.preferences
 
+import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -9,8 +10,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import app.lawnchair.util.smartBorder
 
+@ExperimentalAnimationApi
 @Composable
-fun PreferenceGroup(heading: String? = null, isFirstChild: Boolean = false, content: @Composable () -> Unit) {
+fun PreferenceGroup(
+    heading: String? = null,
+    isFirstChild: Boolean = false,
+    description: String? = null,
+    showDescription: Boolean = true,
+    content: @Composable () -> Unit
+) {
     Spacer(
         modifier = Modifier.requiredHeight(
             if (isFirstChild) {
@@ -52,6 +60,25 @@ fun PreferenceGroup(heading: String? = null, isFirstChild: Boolean = false, cont
                 .clip(shape = MaterialTheme.shapes.large)
         ) {
             content()
+        }
+    }
+    description?.let {
+        AnimatedVisibility(
+            visible = showDescription,
+            enter = expandVertically() + fadeIn(),
+            exit = shrinkVertically() + fadeOut()
+        ) {
+            Row(modifier = Modifier.padding(start = 32.dp, end = 32.dp, top = 16.dp)) {
+                CompositionLocalProvider(
+                    LocalContentAlpha provides ContentAlpha.medium,
+                    LocalContentColor provides MaterialTheme.colors.onBackground
+                ) {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.body2
+                    )
+                }
+            }
         }
     }
 }

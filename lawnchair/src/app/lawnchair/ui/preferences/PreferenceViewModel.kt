@@ -7,6 +7,7 @@ import android.content.pm.ResolveInfo
 import android.provider.Settings
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import app.lawnchair.util.preferences.PreferenceManager
@@ -38,10 +39,10 @@ class PreferenceViewModel(application: Application) : AndroidViewModel(applicati
     override val allAppsTextSizeFactor: MutableState<Float> = mutableStateOf(pm.allAppsTextSizeFactor)
     override val allAppsColumns: MutableState<Float> = mutableStateOf(pm.allAppsColumns)
     override val allowEmptyPages: MutableState<Boolean> = mutableStateOf(pm.allowEmptyPages)
-    override val makeColoredBackgrounds: MutableState<Boolean> = mutableStateOf(pm.makeColoredBackgrounds)
     override val notificationDotsEnabled: MutableState<Boolean> =
         mutableStateOf(enabledNotificationListeners?.contains(lawnchairNotificationListener.flattenToString()) == true)
     override val drawerOpacity: MutableState<Float> = mutableStateOf(pm.drawerOpacity)
+    override val coloredBackgroundLightness: MutableState<Float> = mutableStateOf(pm.coloredBackgroundLightness)
 
     override fun setIconPackPackage(iconPackPackage: String) {
         pm.iconPackPackage = iconPackPackage
@@ -118,14 +119,14 @@ class PreferenceViewModel(application: Application) : AndroidViewModel(applicati
         this.allowEmptyPages.value = allowEmptyPages
     }
 
-    override fun setMakeColoredBackgrounds(makeColoredBackgrounds: Boolean) {
-        pm.makeColoredBackgrounds = makeColoredBackgrounds
-        this.makeColoredBackgrounds.value = makeColoredBackgrounds
-    }
-
     override fun setDrawerOpacity(drawerOpacity: Float) {
         pm.drawerOpacity = drawerOpacity
         this.drawerOpacity.value = drawerOpacity
+    }
+
+    override fun setColoredBackgroundLightness(coloredBackgroundLightness: Float) {
+        pm.coloredBackgroundLightness = coloredBackgroundLightness
+        this.coloredBackgroundLightness.value = coloredBackgroundLightness
     }
 
     override fun getIconPacks(): MutableMap<String, IconPackInfo> {

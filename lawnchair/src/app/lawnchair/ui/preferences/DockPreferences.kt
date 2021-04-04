@@ -1,5 +1,6 @@
 package app.lawnchair.ui.preferences
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.rememberScrollState
@@ -9,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.android.launcher3.R
 
+@ExperimentalAnimationApi
 @Composable
 fun DockPreferences(interactor: PreferenceInteractor) {
     Column(

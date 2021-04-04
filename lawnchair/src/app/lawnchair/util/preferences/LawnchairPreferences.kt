@@ -13,7 +13,7 @@ class LawnchairPreferences(val context: Context) {
         SharedPreferences.OnSharedPreferenceChangeListener { prefs: SharedPreferences?, key: String? ->
             val las = LauncherAppState.getInstance(context)
             when (key) {
-                ICON_PACK_PACKAGE, WRAP_ADAPTIVE_ICONS, MAKE_COLORED_BACKGROUNDS -> {
+                ICON_PACK_PACKAGE, WRAP_ADAPTIVE_ICONS, COLORED_BACKGROUND_LIGHTNESS -> {
                     las.model.clearIconCache()
                     las.model.forceReload()
                 }
@@ -84,9 +84,6 @@ class LawnchairPreferences(val context: Context) {
         var ALLOW_EMPTY_PAGES: String = "pref_allowEmptyPages"
 
         @kotlin.jvm.JvmField
-        var MAKE_COLORED_BACKGROUNDS: String = "pref_makeColoredBackgrounds"
-
-        @kotlin.jvm.JvmField
         var IGNORE_FEED_WHITELIST: String = "pref_ignoreFeedWhitelist"
 
         @kotlin.jvm.JvmField
@@ -97,6 +94,9 @@ class LawnchairPreferences(val context: Context) {
 
         @kotlin.jvm.JvmField
         var DRAWER_OPACITY: String = "pref_drawerOpacity"
+
+        @kotlin.jvm.JvmField
+        var COLORED_BACKGROUND_LIGHTNESS: String = "pref_coloredBackgroundLightness"
 
         fun getInstance(context: Context?): SharedPreferences? = when {
             context == null -> null

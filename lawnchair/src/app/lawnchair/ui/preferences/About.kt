@@ -2,6 +2,7 @@ package app.lawnchair.ui.preferences
 
 import android.content.Intent
 import androidx.annotation.StringRes
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -92,6 +93,7 @@ val teamMembers = listOf(
     ),
 )
 
+@ExperimentalAnimationApi
 @Composable
 fun About() {
     val context = LocalContext.current
