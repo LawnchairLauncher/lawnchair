@@ -49,7 +49,7 @@
     <string name="item_removed">Elemento rimosso.</string>
     <string name="all_apps_no_search_results">Nessuna app trovata corrispondente a «<xliff:g example="Android" id="query">%1$s</xliff:g>».</string>
     <string name="background_opacity">Opacità dello sfondo</string>
-    <string name="background_lightness_label">Background Lightness</string>
-    <string name="adaptive_icons">Adaptive Icons</string>
-    <string name="adaptive_icon_background_description">Background Lightness only affects generated Adaptive Icons. Use 100% for white.</string>
+    <string name="background_lightness_label">Luminosità sfondo</string>
+    <string name="adaptive_icons">Icone adattive</string>
+    <string name="adaptive_icon_background_description">La luminosità dello sfondo ha effetto solo sulle icone adattive generate. Usa il 100% per il bianco.</string>
 </resources>
