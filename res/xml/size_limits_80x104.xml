@@ -36,11 +36,11 @@
             launcher:a="0"
             launcher:b="16dp"/>
         <workspaceBottomPadding
-            launcher:a="0.50"
+            launcher:a="0.56"
             launcher:b="0"
             launcher:c="16dp"/>
         <hotseatBottomPadding
-            launcher:a="0.50"
+            launcher:a="0.44"
             launcher:b="0"
             launcher:c="16dp"/>
     </device-padding>
