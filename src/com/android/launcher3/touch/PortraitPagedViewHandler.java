@@ -306,16 +306,17 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
 
     @Override
     public List<SplitPositionOption> getSplitPositionOptions(DeviceProfile dp) {
-        List<SplitPositionOption> options = new ArrayList<>(2);
+        List<SplitPositionOption> options = new ArrayList<>(1);
         // TODO: Add in correct icons
-        if (dp.isLandscape) { // or seascape
+        if (dp.isSeascape()) { // or seascape
             // Add left/right options
+            options.add(new SplitPositionOption(
+                    R.drawable.ic_split_screen, R.string.split_screen_position_right,
+                    STAGE_POSITION_TOP_OR_LEFT, STAGE_TYPE_MAIN));
+        } else if (dp.isLandscape) {
             options.add(new SplitPositionOption(
                     R.drawable.ic_split_screen, R.string.split_screen_position_left,
                     STAGE_POSITION_TOP_OR_LEFT, STAGE_TYPE_MAIN));
-            options.add(new SplitPositionOption(
-                    R.drawable.ic_split_screen, R.string.split_screen_position_right,
-                    STAGE_POSITION_BOTTOM_OR_RIGHT, STAGE_TYPE_SIDE));
         } else {
             // Only add top option
             options.add(new SplitPositionOption(

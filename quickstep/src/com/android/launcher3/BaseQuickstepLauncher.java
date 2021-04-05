@@ -92,6 +92,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
     private final TaskbarStateHandler mTaskbarStateHandler = new TaskbarStateHandler(this);
     // Will be updated when dragging from taskbar.
     private @Nullable DragOptions mNextWorkspaceDragOptions = null;
+    private SplitPlaceholderView mSplitPlaceholderView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -215,12 +216,12 @@ public abstract class BaseQuickstepLauncher extends Launcher
 
         SysUINavigationMode.INSTANCE.get(this).updateMode();
         mActionsView = findViewById(R.id.overview_actions_view);
-        SplitPlaceholderView splitPlaceholderView = findViewById(R.id.split_placeholder);
+        mSplitPlaceholderView = findViewById(R.id.split_placeholder);
         RecentsView overviewPanel = (RecentsView) getOverviewPanel();
-        splitPlaceholderView.init(
+        mSplitPlaceholderView.init(
                 new SplitSelectStateController(SystemUiProxy.INSTANCE.get(this))
         );
-        overviewPanel.init(mActionsView, splitPlaceholderView);
+        overviewPanel.init(mActionsView, mSplitPlaceholderView);
         mActionsView.updateVerticalMargin(SysUINavigationMode.getMode(this));
 
         mAppTransitionManager = new QuickstepTransitionManager(this);
@@ -254,6 +255,10 @@ public abstract class BaseQuickstepLauncher extends Launcher
 
     public <T extends OverviewActionsView> T getActionsView() {
         return (T) mActionsView;
+    }
+
+    public SplitPlaceholderView getSplitPlaceholderView() {
+        return mSplitPlaceholderView;
     }
 
     @Override
