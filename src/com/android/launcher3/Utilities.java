@@ -37,6 +37,8 @@ import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.LightingColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
@@ -64,6 +66,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.animation.Interpolator;
 
+import androidx.core.graphics.ColorUtils;
 import androidx.core.os.BuildCompat;
 
 import com.android.launcher3.dragndrop.FolderAdaptiveIcon;
@@ -730,6 +733,23 @@ public final class Utilities {
                 inOutBounds.top = origLeft;
                 return;
         }
+    }
+
+    /**
+     * Make a color filter that blends a color into the destination based on a scalable amout.
+     *
+     * @param color to blend in.
+     * @param tintAmount [0-1] 0 no tinting, 1 full color.
+     * @return ColorFilter for tinting, or {@code null} if no filter is needed.
+     */
+    public static ColorFilter makeColorTintingColorFilter(int color, float tintAmount) {
+        if (tintAmount == 0f) {
+            return null;
+        }
+        return new LightingColorFilter(
+                // This isn't blending in white, its making a multiplication mask for the base color
+                ColorUtils.blendARGB(Color.WHITE, 0, tintAmount),
+                ColorUtils.blendARGB(0, color, tintAmount));
     }
 
     private static class FixedSizeEmptyDrawable extends ColorDrawable {
