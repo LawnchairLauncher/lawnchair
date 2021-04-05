@@ -42,7 +42,6 @@ import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItem;
 import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AlphabeticalAppsList;
 import com.android.launcher3.allapps.SearchUiManager;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.search.SearchCallback;
 
 import java.util.ArrayList;
@@ -207,16 +206,6 @@ public class AppsSearchContainerLayout extends ExtendedEditText
         MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
         mlp.topMargin = insets.top;
         requestLayout();
-    }
-
-    @Override
-    public float getScrollRangeDelta(Rect insets) {
-        if (mLauncher.getDeviceProfile().isVerticalBarLayout()
-                || FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
-            return 0;
-        } else {
-            return insets.bottom + insets.top;
-        }
     }
 
     @Override

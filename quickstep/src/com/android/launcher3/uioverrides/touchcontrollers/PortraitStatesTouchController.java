@@ -49,9 +49,15 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     private static final String TAG = "PortraitStatesTouchCtrl";
 
     /**
-     * The progress at which all apps content will be fully visible when swiping up from overview.
+     * The progress at which all apps content will be fully visible.
      */
-    protected static final float ALL_APPS_CONTENT_FADE_THRESHOLD = 0.08f;
+    protected static final float ALL_APPS_CONTENT_FADE_MAX_CLAMPING_THRESHOLD = 0.8f;
+
+    /**
+     * Minimum clamping progress for fading in all apps content
+     */
+    protected static final float ALL_APPS_CONTENT_FADE_MIN_CLAMPING_THRESHOLD = 0.4f;
+
 
     /**
      * The progress at which recents will begin fading out when swiping up from overview.
@@ -116,14 +122,14 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     private StateAnimationConfig getNormalToAllAppsAnimation() {
         StateAnimationConfig builder = new StateAnimationConfig();
         builder.setInterpolator(ANIM_ALL_APPS_FADE, Interpolators.clampToProgress(ACCEL,
-                0, ALL_APPS_CONTENT_FADE_THRESHOLD));
+                0, ALL_APPS_CONTENT_FADE_MAX_CLAMPING_THRESHOLD));
         return builder;
     }
 
     private StateAnimationConfig getAllAppsToNormalAnimation() {
         StateAnimationConfig builder = new StateAnimationConfig();
         builder.setInterpolator(ANIM_ALL_APPS_FADE, Interpolators.clampToProgress(DEACCEL,
-                1 - ALL_APPS_CONTENT_FADE_THRESHOLD, 1));
+                1 - ALL_APPS_CONTENT_FADE_MAX_CLAMPING_THRESHOLD, 1));
         return builder;
     }
 
@@ -135,7 +141,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
             config = getNormalToAllAppsAnimation();
         } else if (fromState == ALL_APPS && toState == NORMAL) {
             config = getAllAppsToNormalAnimation();
-        }  else {
+        } else {
             config = new StateAnimationConfig();
         }
         return config;
@@ -198,7 +204,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
      * Whether the motion event is over the hotseat.
      *
      * @param launcher the launcher activity
-     * @param ev the event to check
+     * @param ev       the event to check
      * @return true if the event is over the hotseat
      */
     static boolean isTouchOverHotseat(Launcher launcher, MotionEvent ev) {
