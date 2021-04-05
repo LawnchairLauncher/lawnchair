@@ -994,7 +994,19 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         }
         // When multiple pages are visible, show persistent page indicator
         mWorkspace.getPageIndicator().setShouldAutoHide(!state.hasFlag(FLAG_MULTI_PAGE));
+
         mPrevLauncherState = mStateManager.getCurrentStableState();
+        if (mPrevLauncherState != state && ALL_APPS.equals(state)
+                // Making sure mAllAppsSessionLogId is null to avoid double logging.
+                && mAllAppsSessionLogId == null) {
+            // creates new instance ID since new all apps session is started.
+            mAllAppsSessionLogId = new InstanceIdSequence().newInstanceId();
+            getStatsLogManager()
+                    .logger()
+                    .log(FeatureFlags.ENABLE_DEVICE_SEARCH.get()
+                            ? LAUNCHER_ALLAPPS_ENTRY_WITH_DEVICE_SEARCH
+                            : LAUNCHER_ALLAPPS_ENTRY);
+        }
     }
 
     @Override
@@ -1019,16 +1031,8 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
             getRotationHelper().setCurrentStateRequest(REQUEST_NONE);
         }
 
-        if (ALL_APPS.equals(state)) {
-            // creates new instance ID since new all apps session is started.
-            mAllAppsSessionLogId = new InstanceIdSequence().newInstanceId();
-            getStatsLogManager()
-                    .logger()
-                    .log(FeatureFlags.ENABLE_DEVICE_SEARCH.get()
-                            ? LAUNCHER_ALLAPPS_ENTRY_WITH_DEVICE_SEARCH
-                            : LAUNCHER_ALLAPPS_ENTRY);
-        } else if (ALL_APPS.equals(mPrevLauncherState)
-                // Check if mLogInstanceId is not null to make sure exit event is logged only once.
+        if (mPrevLauncherState != state && !ALL_APPS.equals(state)
+                // Making sure mAllAppsSessionLogId is not null to avoid double logging.
                 && mAllAppsSessionLogId != null) {
             getStatsLogManager().logger().log(LAUNCHER_ALLAPPS_EXIT);
             mAllAppsSessionLogId = null;

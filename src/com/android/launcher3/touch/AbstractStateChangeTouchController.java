@@ -317,7 +317,9 @@ public abstract class AbstractStateChangeTouchController
                         Math.min(progress, 1) - endProgress) * durationMultiplier;
             }
         }
-
+        if (targetState != mStartState) {
+            logReachedState(targetState);
+        }
         mCurrentAnimation.setEndAction(() -> onSwipeInteractionCompleted(targetState));
         ValueAnimator anim = mCurrentAnimation.getAnimationPlayer();
         anim.setFloatValues(startProgress, endProgress);
@@ -345,9 +347,6 @@ public abstract class AbstractStateChangeTouchController
     }
 
     protected void goToTargetState(LauncherState targetState) {
-        if (targetState != mStartState) {
-            logReachedState(targetState);
-        }
         if (!mLauncher.isInState(targetState)) {
             // If we're already in the target state, don't jump to it at the end of the animation in
             // case the user started interacting with it before the animation finished.
