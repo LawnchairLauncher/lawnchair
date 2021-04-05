@@ -19,9 +19,12 @@ package com.android.quickstep.util;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.THREAD_POOL_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.app.prediction.AppTarget;
 import android.content.ClipData;
 import android.content.ClipDescription;
@@ -37,11 +40,13 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.net.Uri;
 import android.util.Log;
+import android.view.View;
 
 import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
 import androidx.core.content.FileProvider;
 
+import com.android.internal.app.ChooserActivity;
 import com.android.launcher3.BuildConfig;
 import com.android.quickstep.SystemUiProxy;
 import com.android.systemui.shared.recents.model.Task;
@@ -126,6 +131,22 @@ public class ImageActionUtils {
     }
 
     /**
+     * Launch the activity to share image with shared element transition.
+     */
+    @UiThread
+    public static void startShareActivity(Context context, Supplier<Bitmap> bitmapSupplier,
+            Rect crop, Intent intent, String tag, View sharedElement) {
+        if (bitmapSupplier.get() == null) {
+            Log.e(tag, "No snapshot available, not starting share.");
+            return;
+        }
+
+        UI_HELPER_EXECUTOR.execute(() -> persistBitmapAndStartActivity(context,
+                bitmapSupplier.get(), crop, intent, ImageActionUtils::getShareIntentForImageUri,
+                tag, sharedElement));
+    }
+
+    /**
      * Starts activity based on given intent created from image uri.
      */
     @WorkerThread
@@ -140,6 +161,30 @@ public class ImageActionUtils {
             context.startActivities(intents);
         }
     }
+
+    /**
+     * Starts activity based on given intent created from image uri with shared element transition.
+     */
+    @WorkerThread
+    public static void persistBitmapAndStartActivity(Context context, Bitmap bitmap, Rect crop,
+            Intent intent, BiFunction<Uri, Intent, Intent[]> uriToIntentMap, String tag,
+            View scaledImage) {
+        Intent[] intents = uriToIntentMap.apply(getImageUri(bitmap, crop, context, tag), intent);
+
+        // Work around b/159412574
+        if (intents.length == 1) {
+            MAIN_EXECUTOR.execute(() -> context.startActivity(intents[0],
+                    ActivityOptions.makeSceneTransitionAnimation((Activity) context, scaledImage,
+                            ChooserActivity.FIRST_IMAGE_PREVIEW_TRANSITION_NAME).toBundle()));
+
+        } else {
+            MAIN_EXECUTOR.execute(() -> context.startActivities(intents,
+                    ActivityOptions.makeSceneTransitionAnimation((Activity) context, scaledImage,
+                            ChooserActivity.FIRST_IMAGE_PREVIEW_TRANSITION_NAME).toBundle()));
+        }
+    }
+
+
 
     /**
      * Converts image bitmap to Uri by temporarily saving bitmap to cache, and creating Uri pointing
