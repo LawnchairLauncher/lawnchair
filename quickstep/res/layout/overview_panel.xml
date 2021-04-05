@@ -30,7 +30,6 @@
         android:accessibilityPaneTitle="@string/accessibility_recent_apps"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:theme="@style/HomeScreenElementTheme"
         android:visibility="invisible" />
 
     <include
