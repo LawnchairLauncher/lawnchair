@@ -265,7 +265,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
             List<OptionItem> actions = getSupportedResizeActions(host, info);
             Rect pos = new Rect();
             mLauncher.getDragLayer().getDescendantRectRelativeToSelf(host, pos);
-            ArrowPopup popup = OptionsPopupView.show(mLauncher, new RectF(pos), actions);
+            ArrowPopup popup = OptionsPopupView.show(mLauncher, new RectF(pos), actions, false);
             popup.requestFocus();
             popup.setOnCloseCallback(host::requestFocus);
             return true;
@@ -294,15 +294,17 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         if ((providerInfo.resizeMode & AppWidgetProviderInfo.RESIZE_HORIZONTAL) != 0) {
             if (layout.isRegionVacant(info.cellX + info.spanX, info.cellY, 1, info.spanY) ||
                     layout.isRegionVacant(info.cellX - 1, info.cellY, 1, info.spanY)) {
-                actions.add(new OptionItem(
-                        R.string.action_increase_width, R.drawable.ic_widget_width_increase,
+                actions.add(new OptionItem(mLauncher,
+                        R.string.action_increase_width,
+                        R.drawable.ic_widget_width_increase,
                         IGNORE,
                         v -> performResizeAction(R.string.action_increase_width, host, info)));
             }
 
             if (info.spanX > info.minSpanX && info.spanX > 1) {
-                actions.add(new OptionItem(
-                        R.string.action_decrease_width, R.drawable.ic_widget_width_decrease,
+                actions.add(new OptionItem(mLauncher,
+                        R.string.action_decrease_width,
+                        R.drawable.ic_widget_width_decrease,
                         IGNORE,
                         v -> performResizeAction(R.string.action_decrease_width, host, info)));
             }
@@ -311,15 +313,17 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         if ((providerInfo.resizeMode & AppWidgetProviderInfo.RESIZE_VERTICAL) != 0) {
             if (layout.isRegionVacant(info.cellX, info.cellY + info.spanY, info.spanX, 1) ||
                     layout.isRegionVacant(info.cellX, info.cellY - 1, info.spanX, 1)) {
-                actions.add(new OptionItem(
-                        R.string.action_increase_height, R.drawable.ic_widget_height_increase,
+                actions.add(new OptionItem(mLauncher,
+                        R.string.action_increase_height,
+                        R.drawable.ic_widget_height_increase,
                         IGNORE,
                         v -> performResizeAction(R.string.action_increase_height, host, info)));
             }
 
             if (info.spanY > info.minSpanY && info.spanY > 1) {
-                actions.add(new OptionItem(
-                        R.string.action_decrease_height, R.drawable.ic_widget_height_decrease,
+                actions.add(new OptionItem(mLauncher,
+                        R.string.action_decrease_height,
+                        R.drawable.ic_widget_height_decrease,
                         IGNORE,
                         v -> performResizeAction(R.string.action_decrease_height, host, info)));
             }
