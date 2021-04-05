@@ -28,8 +28,6 @@ import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Insets;
 import android.graphics.Matrix;
 import android.graphics.Paint;
@@ -46,10 +44,10 @@ import android.view.Surface;
 import android.view.View;
 
 import androidx.annotation.RequiresApi;
+import androidx.core.graphics.ColorUtils;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
@@ -67,10 +65,6 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
  * A task in the Recents view.
  */
 public class TaskThumbnailView extends View implements PluginListener<OverviewScreenshotActions> {
-
-    private static final ColorMatrix COLOR_MATRIX = new ColorMatrix();
-    private static final ColorMatrix SATURATION_COLOR_MATRIX = new ColorMatrix();
-
     private static final MainThreadInitializedObject<FullscreenDrawParams> TEMP_PARAMS =
             new MainThreadInitializedObject<>(FullscreenDrawParams::new);
 
@@ -89,11 +83,11 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
 
     private final BaseActivity mActivity;
     private TaskOverlay mOverlay;
-    private final boolean mIsDarkTextTheme;
     private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint mBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint mClearPaint = new Paint();
     private final Paint mDimmingPaintAfterClearing = new Paint();
+    private final int mDimColor;
 
     // Contains the portion of the thumbnail that is clipped when fullscreen progress = 0.
     private final Rect mPreviewRect = new Rect();
@@ -104,9 +98,8 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
     private ThumbnailData mThumbnailData;
     protected BitmapShader mBitmapShader;
 
-    private float mDimAlpha = 1f;
-    private float mDimAlphaMultiplier = 1f;
-    private float mSaturation = 1f;
+    /** How much this thumbnail is dimmed, 0 not dimmed at all, 1 totally dimmed. */
+    private float mDimAlpha = 0f;
 
     private boolean mOverlayEnabled;
     private OverviewScreenshotActions mOverviewScreenshotActionsPlugin;
@@ -124,11 +117,12 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
         mPaint.setFilterBitmap(true);
         mBackgroundPaint.setColor(Color.WHITE);
         mClearPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
-        mDimmingPaintAfterClearing.setColor(Color.BLACK);
         mActivity = BaseActivity.fromContext(context);
-        mIsDarkTextTheme = Themes.getAttrBoolean(mActivity, R.attr.isWorkspaceDarkText);
         // Initialize with placeholder value. It is overridden later by TaskView
         mFullscreenParams = TEMP_PARAMS.get(context);
+
+        mDimColor = Themes.getColorBackgroundFloating(context);
+        mDimmingPaintAfterClearing.setColor(mDimColor);
     }
 
     /**
@@ -186,15 +180,12 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
         updateThumbnailPaintFilter();
     }
 
-    public void setDimAlphaMultipler(float dimAlphaMultipler) {
-        mDimAlphaMultiplier = dimAlphaMultipler;
-        setDimAlpha(mDimAlpha);
-    }
-
     /**
      * Sets the alpha of the dim layer on top of this view.
      * <p>
-     * If dimAlpha is 0, no dimming is applied; if dimAlpha is 1, the thumbnail will be black.
+     * If dimAlpha is 0, no dimming is applied; if dimAlpha is 1, the thumbnail will be the
+     * extracted background color.
+     *
      */
     public void setDimAlpha(float dimAlpha) {
         mDimAlpha = dimAlpha;
@@ -359,15 +350,15 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
     }
 
     private void updateThumbnailPaintFilter() {
-        int mul = (int) ((1 - mDimAlpha * mDimAlphaMultiplier) * 255);
-        ColorFilter filter = getColorFilter(mul, mIsDarkTextTheme, mSaturation);
+        ColorFilter filter = getColorFilter(mDimAlpha);
         mBackgroundPaint.setColorFilter(filter);
-        mDimmingPaintAfterClearing.setAlpha(255 - mul);
+        int alpha = (int) (mDimAlpha * 255);
+        mDimmingPaintAfterClearing.setAlpha(alpha);
         if (mBitmapShader != null) {
             mPaint.setColorFilter(filter);
         } else {
             mPaint.setColorFilter(null);
-            mPaint.setColor(Color.argb(255, mul, mul, mul));
+            mPaint.setColor(ColorUtils.blendARGB(Color.BLACK, mDimColor, alpha));
         }
         invalidate();
     }
@@ -401,35 +392,8 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
         updateThumbnailMatrix();
     }
 
-    /**
-     * @param intensity multiplier for color values. 0 - make black (white if shouldLighten), 255 -
-     *                  leave unchanged.
-     */
-    private static ColorFilter getColorFilter(int intensity, boolean shouldLighten,
-            float saturation) {
-        intensity = Utilities.boundToRange(intensity, 0, 255);
-
-        if (intensity == 255 && saturation == 1) {
-            return null;
-        }
-
-        final float intensityScale = intensity / 255f;
-        COLOR_MATRIX.setScale(intensityScale, intensityScale, intensityScale, 1);
-
-        if (saturation != 1) {
-            SATURATION_COLOR_MATRIX.setSaturation(saturation);
-            COLOR_MATRIX.postConcat(SATURATION_COLOR_MATRIX);
-        }
-
-        if (shouldLighten) {
-            final float[] colorArray = COLOR_MATRIX.getArray();
-            final int colorAdd = 255 - intensity;
-            colorArray[4] = colorAdd;
-            colorArray[9] = colorAdd;
-            colorArray[14] = colorAdd;
-        }
-
-        return new ColorMatrixColorFilter(COLOR_MATRIX);
+    private ColorFilter getColorFilter(float dimAmount) {
+        return Utilities.makeColorTintingColorFilter(mDimColor, dimAmount);
     }
 
     public Bitmap getThumbnail() {
