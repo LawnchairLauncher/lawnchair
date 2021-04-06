@@ -317,9 +317,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         mStateCallback.runOnceAtState(STATE_LAUNCHER_PRESENT | STATE_HANDLER_INVALIDATED,
                 this::invalidateHandlerWithLauncher);
         mStateCallback.runOnceAtState(STATE_HANDLER_INVALIDATED | STATE_RESUME_LAST_TASK,
-                this::notifyTransitionCancelled);
+                this::resetStateForAnimationCancel);
         mStateCallback.runOnceAtState(STATE_HANDLER_INVALIDATED | STATE_FINISH_WITH_NO_END,
-                this::notifyTransitionCancelled);
+                this::resetStateForAnimationCancel);
 
         if (!LIVE_TILE.get()) {
             mStateCallback.addChangeListener(STATE_APP_CONTROLLER_RECEIVED | STATE_LAUNCHER_PRESENT
@@ -1368,10 +1368,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             mActivityInterface.setOnDeferredActivityLaunchCallback(null);
         }
         mActivity.getRootView().setOnApplyWindowInsetsListener(null);
-    }
-
-    private void notifyTransitionCancelled() {
-        mAnimationFactory.onTransitionCancelled();
     }
 
     private void resetStateForAnimationCancel() {

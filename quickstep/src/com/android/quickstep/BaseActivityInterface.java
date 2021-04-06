@@ -366,8 +366,6 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
 
         void createActivityInterface(long transitionLength);
 
-        default void onTransitionCancelled() { }
-
         /**
          * @param attached Whether to show RecentsView alongside the app window. If false, recents
          *                 will be hidden by some property we can animate, e.g. alpha.
@@ -431,11 +429,6 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             if (SysUINavigationMode.getMode(mActivity) == Mode.NO_BUTTON) {
                 setRecentsAttachedToAppWindow(mIsAttachedToWindow, false);
             }
-        }
-
-        @Override
-        public void onTransitionCancelled() {
-            mActivity.getStateManager().goToState(mStartState, false /* animate */);
         }
 
         @Override
