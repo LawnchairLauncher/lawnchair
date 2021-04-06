@@ -147,6 +147,7 @@ public class DeviceProfile {
     public final int hotseatBarSidePaddingEndPx;
 
     // All apps
+    public int allAppsOpenVerticalTranslate;
     public int allAppsCellHeightPx;
     public int allAppsCellWidthPx;
     public int allAppsIconSizePx;
@@ -247,6 +248,10 @@ public class DeviceProfile {
                 ? res.getDimensionPixelSize(R.dimen.scalable_grid_left_right_margin)
                 : res.getDimensionPixelSize(R.dimen.dynamic_grid_left_right_margin);
         desiredWorkspaceLeftRightOriginalPx = desiredWorkspaceLeftRightMarginPx;
+
+
+        allAppsOpenVerticalTranslate = res.getDimensionPixelSize(
+                R.dimen.all_apps_open_vertical_translate);
 
         folderLabelTextScale = res.getFloat(R.dimen.folder_label_text_scale);
         folderContentPaddingLeftRight =

@@ -30,6 +30,7 @@ import android.content.Intent;
 import android.content.pm.LauncherApps;
 import android.content.pm.LauncherApps.AppUsageLimit;
 import android.graphics.Outline;
+import android.graphics.Paint;
 import android.icu.text.MeasureFormat;
 import android.icu.text.MeasureFormat.FormatWidth;
 import android.icu.util.Measure;
@@ -48,6 +49,7 @@ import androidx.annotation.StringRes;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.systemui.shared.recents.model.Task;
 
 import java.time.Duration;
@@ -296,5 +298,18 @@ public final class DigitalWellBeingToast {
             mBannerAlpha = alpha;
             mBanner.setAlpha(alpha);
         }
+    }
+
+    void setBannerColorTint(int color, float amount) {
+        if (mBanner == null) {
+            return;
+        }
+        if (mBannerAlpha == 0 || amount == 0) {
+            mBanner.setLayerType(View.LAYER_TYPE_NONE, null);
+        }
+        Paint layerPaint = new Paint();
+        layerPaint.setColorFilter(Utilities.makeColorTintingColorFilter(color, amount));
+        mBanner.setLayerType(View.LAYER_TYPE_HARDWARE, layerPaint);
+        mBanner.setLayerPaint(layerPaint);
     }
 }

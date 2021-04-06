@@ -40,6 +40,7 @@ import com.android.launcher3.util.Themes;
  * Simple scrim which draws a flat color
  */
 public class ScrimView<T extends Launcher> extends View implements Insettable, OnChangeListener {
+    private static final float STATUS_BAR_COLOR_FORCE_UPDATE_THRESHOLD = .1f;
 
     protected final T mLauncher;
     private final WallpaperColorInfo mWallpaperColorInfo;
@@ -117,7 +118,7 @@ public class ScrimView<T extends Launcher> extends View implements Insettable, O
     protected void updateSysUiColors() {
         // Use a light system UI (dark icons) if all apps is behind at least half of the
         // status bar.
-        boolean forceChange = mProgress <= 0.1f;
+        boolean forceChange = mProgress <= STATUS_BAR_COLOR_FORCE_UPDATE_THRESHOLD;
         if (forceChange) {
             mLauncher.getSystemUiController().updateUiState(UI_STATE_SCRIM_VIEW, !mIsScrimDark);
         } else {
