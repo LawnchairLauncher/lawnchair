@@ -40,7 +40,7 @@
 
         <include layout="@layout/floating_header_content" />
 
-        <include layout="@layout/personal_work_tabs" />
+        <include layout="@layout/all_apps_personal_work_tabs" />
     </com.android.launcher3.allapps.FloatingHeaderView>
 
     <include
