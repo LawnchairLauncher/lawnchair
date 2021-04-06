@@ -67,7 +67,7 @@ public class AccessibilityActionsView extends View implements StateListener<Laun
         info.addAction(new AccessibilityAction(
                 R.string.all_apps_button_label, l.getText(R.string.all_apps_button_label)));
         for (OptionItem item : OptionsPopupView.getOptions(l)) {
-            info.addAction(new AccessibilityAction(item.labelRes, l.getText(item.labelRes)));
+            info.addAction(new AccessibilityAction(item.labelRes, item.label));
         }
         return info;
     }

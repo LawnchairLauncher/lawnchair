@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.allapps;
 
-import android.graphics.Rect;
 import android.view.KeyEvent;
 
 import androidx.annotation.Nullable;
@@ -42,11 +41,6 @@ public interface SearchUiManager {
      * some UI beforehand.
      */
     default void preDispatchKeyEvent(KeyEvent keyEvent) { };
-
-    /**
-     * Returns the vertical shift for the all-apps view, so that it aligns with the hotseat.
-     */
-    float getScrollRangeDelta(Rect insets);
 
     /**
      * @return the edit text object

@@ -249,9 +249,11 @@ public class TaskMenuView extends AbstractFloatingView {
         final Animator revealAnimator = createOpenCloseOutlineProvider()
                 .createRevealAnimator(this, closing);
         revealAnimator.setInterpolator(Interpolators.DEACCEL);
-        mOpenCloseAnimator.play(revealAnimator);
-        mOpenCloseAnimator.play(ObjectAnimator.ofFloat(mTaskView.getThumbnail(), DIM_ALPHA,
-                closing ? 0 : TaskView.MAX_PAGE_SCRIM_ALPHA));
+        mOpenCloseAnimator.playTogether(revealAnimator,
+                ObjectAnimator.ofFloat(
+                        mTaskView.getThumbnail(), DIM_ALPHA,
+                        closing ? 0 : TaskView.MAX_PAGE_SCRIM_ALPHA),
+                ObjectAnimator.ofFloat(this, ALPHA, closing ? 0 : 1));
         mOpenCloseAnimator.addListener(new AnimationSuccessListener() {
             @Override
             public void onAnimationStart(Animator animation) {
@@ -265,7 +267,6 @@ public class TaskMenuView extends AbstractFloatingView {
                 }
             }
         });
-        mOpenCloseAnimator.play(ObjectAnimator.ofFloat(this, ALPHA, closing ? 0 : 1));
         mOpenCloseAnimator.setDuration(closing ? REVEAL_CLOSE_DURATION: REVEAL_OPEN_DURATION);
         mOpenCloseAnimator.start();
     }

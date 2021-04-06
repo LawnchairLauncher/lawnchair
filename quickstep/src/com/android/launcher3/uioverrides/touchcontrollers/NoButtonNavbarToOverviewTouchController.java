@@ -182,13 +182,13 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
         }
         mNormalToHintOverviewScrimAnimator = null;
         mCurrentAnimation.getTarget().addListener(newCancelListener(() ->
-            mLauncher.getStateManager().goToState(OVERVIEW, true, () -> {
-                mOverviewResistYAnim = AnimatorControllerWithResistance
-                        .createRecentsResistanceFromOverviewAnim(mLauncher, null)
-                        .createPlaybackController();
-                mReachedOverview = true;
-                maybeSwipeInteractionToOverviewComplete();
-            })));
+                mLauncher.getStateManager().goToState(OVERVIEW, true, () -> {
+                    mOverviewResistYAnim = AnimatorControllerWithResistance
+                            .createRecentsResistanceFromOverviewAnim(mLauncher, null)
+                            .createPlaybackController();
+                    mReachedOverview = true;
+                    maybeSwipeInteractionToOverviewComplete();
+                })));
 
         mCurrentAnimation.getTarget().removeListener(mClearStateOnCancelListener);
         mCurrentAnimation.dispatchOnCancel();
@@ -239,7 +239,7 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
     private void goToOverviewOrHomeOnDragEnd(float velocity) {
         boolean goToHomeInsteadOfOverview = !mMotionPauseDetector.isPaused();
         if (goToHomeInsteadOfOverview) {
-            new OverviewToHomeAnim(mLauncher, ()-> onSwipeInteractionCompleted(NORMAL))
+            new OverviewToHomeAnim(mLauncher, () -> onSwipeInteractionCompleted(NORMAL))
                     .animateWithVelocity(velocity);
         }
         if (mReachedOverview) {
@@ -275,17 +275,14 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
             LauncherState fromState, LauncherState toState) {
         if (fromState == NORMAL && toState == ALL_APPS) {
             StateAnimationConfig builder = new StateAnimationConfig();
-            // Fade in prediction icons quickly, then rest of all apps after reaching overview.
-            float progressToReachOverview = NORMAL.getVerticalProgress(mLauncher)
-                    - OVERVIEW.getVerticalProgress(mLauncher);
             builder.setInterpolator(ANIM_ALL_APPS_HEADER_FADE, Interpolators.clampToProgress(
                     ACCEL,
                     0,
-                    ALL_APPS_CONTENT_FADE_THRESHOLD));
+                    ALL_APPS_CONTENT_FADE_MAX_CLAMPING_THRESHOLD));
             builder.setInterpolator(ANIM_ALL_APPS_FADE, Interpolators.clampToProgress(
                     ACCEL,
-                    progressToReachOverview,
-                    progressToReachOverview + ALL_APPS_CONTENT_FADE_THRESHOLD));
+                    ALL_APPS_CONTENT_FADE_MIN_CLAMPING_THRESHOLD,
+                    ALL_APPS_CONTENT_FADE_MAX_CLAMPING_THRESHOLD));
 
             // Get workspace out of the way quickly, to prepare for potential pause.
             builder.setInterpolator(ANIM_WORKSPACE_SCALE, DEACCEL_3);
@@ -294,15 +291,14 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
             return builder;
         } else if (fromState == ALL_APPS && toState == NORMAL) {
             StateAnimationConfig builder = new StateAnimationConfig();
-            // Keep all apps/predictions opaque until the very end of the transition.
-            float progressToReachOverview = OVERVIEW.getVerticalProgress(mLauncher);
+
             builder.setInterpolator(ANIM_ALL_APPS_FADE, Interpolators.clampToProgress(
                     DEACCEL,
-                    progressToReachOverview - ALL_APPS_CONTENT_FADE_THRESHOLD,
-                    progressToReachOverview));
+                    1 - ALL_APPS_CONTENT_FADE_MAX_CLAMPING_THRESHOLD,
+                    1 - ALL_APPS_CONTENT_FADE_MIN_CLAMPING_THRESHOLD));
             builder.setInterpolator(ANIM_ALL_APPS_HEADER_FADE, Interpolators.clampToProgress(
                     DEACCEL,
-                    1 - ALL_APPS_CONTENT_FADE_THRESHOLD,
+                    1 - ALL_APPS_CONTENT_FADE_MAX_CLAMPING_THRESHOLD,
                     1));
             return builder;
         }
