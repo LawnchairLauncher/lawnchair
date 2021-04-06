@@ -216,7 +216,7 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
         return mLauncher.getDragLayer();
     }
 
-    protected static View createColorScrim(Context context, int bgColor) {
+    protected View createColorScrim(Context context, int bgColor) {
         View view = new View(context);
         view.forceHasOverlappingRendering(false);
         view.setBackgroundColor(bgColor);
