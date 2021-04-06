@@ -217,6 +217,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
     // Either RectFSpringAnim (if animating home) or ObjectAnimator (from mCurrentShift) otherwise
     private RunningWindowAnim mRunningWindowAnim;
+    // Possible second animation running at the same time as mRunningWindowAnim
+    private Animator mParallelRunningAnim;
     private boolean mIsMotionPaused;
     private boolean mHasMotionEverBeenPaused;
 
@@ -798,6 +800,13 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 mRunningWindowAnim.end();
             }
         }
+        if (mParallelRunningAnim != null) {
+            if (cancel) {
+                mParallelRunningAnim.cancel();
+            } else {
+                mParallelRunningAnim.end();
+            }
+        }
     }
 
     private void onSettledOnEndTarget() {
@@ -1060,7 +1069,11 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             ActivityManagerWrapper.getInstance().registerTaskStackListener(
                     mActivityRestartListener);
 
-            mActivityInterface.onAnimateToLauncher(mGestureState.getEndTarget(), duration);
+            mParallelRunningAnim = mActivityInterface.getParallelAnimationToLauncher(
+                    mGestureState.getEndTarget(), duration);
+            if (mParallelRunningAnim != null) {
+                mParallelRunningAnim.start();
+            }
         }
 
         if (mGestureState.getEndTarget() == HOME) {
