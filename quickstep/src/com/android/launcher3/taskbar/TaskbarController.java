@@ -42,6 +42,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.QuickstepTransitionManager;
 import com.android.launcher3.R;
+import com.android.launcher3.anim.AlphaUpdateListener;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
@@ -140,6 +141,13 @@ public class TaskbarController {
                     // Only TaskbarView remains.
                     setTaskbarWindowFullscreen(false);
                 }
+            }
+
+            @Override
+            public boolean isTaskbarTouchable() {
+                return mTaskbarContainerView.getAlpha() > AlphaUpdateListener.ALPHA_CUTOFF_THRESHOLD
+                        && mTaskbarViewInApp.getVisibility() == View.VISIBLE
+                        && !mIsAnimatingToLauncher;
             }
         };
     }
@@ -549,6 +557,7 @@ public class TaskbarController {
      */
     protected interface TaskbarContainerViewCallbacks {
         void onViewRemoved();
+        boolean isTaskbarTouchable();
     }
 
     /**
