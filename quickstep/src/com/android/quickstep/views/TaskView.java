@@ -93,6 +93,7 @@ import com.android.launcher3.util.TransformingTouchDelegate;
 import com.android.launcher3.util.ViewPool.Reusable;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.RemoteAnimationTargets;
+import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskIconCache;
 import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskThumbnailCache;
@@ -327,47 +328,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     public TaskView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mActivity = StatefulActivity.fromContext(context);
-        setOnClickListener((view) -> {
-            if (getTask() == null) {
-                return;
-            }
-            if (LIVE_TILE.get() && isRunningTask()) {
-                if (!mIsClickableAsLiveTile) {
-                    return;
-                }
-
-                mIsClickableAsLiveTile = false;
-                RecentsView recentsView = getRecentsView();
-                RemoteAnimationTargets targets = recentsView.getLiveTileParams().getTargetSet();
-                recentsView.getLiveTileTaskViewSimulator().setDrawsBelowRecents(false);
-
-                AnimatorSet anim = new AnimatorSet();
-                TaskViewUtils.composeRecentsLaunchAnimator(
-                        anim, this, targets.apps,
-                        targets.wallpapers, true /* launcherClosing */,
-                        mActivity.getStateManager(), recentsView,
-                        recentsView.getDepthController());
-                anim.addListener(new AnimatorListenerAdapter() {
-
-                    @Override
-                    public void onAnimationEnd(Animator animator) {
-                        recentsView.getLiveTileTaskViewSimulator().setDrawsBelowRecents(true);
-                        recentsView.finishRecentsAnimation(false, null);
-                        mIsClickableAsLiveTile = true;
-                    }
-                });
-                anim.start();
-            } else {
-                if (mActivity.isInState(OVERVIEW_SPLIT_SELECT)) {
-                    // User tapped to select second split screen app
-                    getRecentsView().confirmSplitSelect(this);
-                } else {
-                    launchTaskAnimated();
-                }
-            }
-            mActivity.getStatsLogManager().logger().withItemInfo(getItemInfo())
-                    .log(LAUNCHER_TASK_LAUNCH_TAP);
-        });
+        setOnClickListener(this::onClick);
 
         mCurrentFullscreenParams = new FullscreenDrawParams(context);
         mDigitalWellBeingToast = new DigitalWellBeingToast(mActivity, this);
@@ -506,10 +467,52 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         return mIconView;
     }
 
-    public AnimatorPlaybackController createLaunchAnimationForRunningTask() {
-        return getRecentsView().createTaskLaunchAnimation(
-                this, RECENTS_LAUNCH_DURATION, TOUCH_RESPONSE_INTERPOLATOR)
-                .createPlaybackController();
+    private void onClick(View view) {
+        if (getTask() == null) {
+            return;
+        }
+        if (LIVE_TILE.get() && isRunningTask()) {
+            if (!mIsClickableAsLiveTile) {
+                return;
+            }
+
+            // Reset the minimized state since we force-toggled the minimized state when entering
+            // overview, but never actually finished the recents animation
+            SystemUiProxy p = SystemUiProxy.INSTANCE.getNoCreate();
+            if (p != null) {
+                p.setSplitScreenMinimized(false);
+            }
+
+            mIsClickableAsLiveTile = false;
+            RecentsView recentsView = getRecentsView();
+            RemoteAnimationTargets targets = recentsView.getLiveTileParams().getTargetSet();
+            recentsView.getLiveTileTaskViewSimulator().setDrawsBelowRecents(false);
+
+            AnimatorSet anim = new AnimatorSet();
+            TaskViewUtils.composeRecentsLaunchAnimator(
+                    anim, this, targets.apps,
+                    targets.wallpapers, true /* launcherClosing */,
+                    mActivity.getStateManager(), recentsView,
+                    recentsView.getDepthController());
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    recentsView.getLiveTileTaskViewSimulator().setDrawsBelowRecents(true);
+                    recentsView.finishRecentsAnimation(false, null);
+                    mIsClickableAsLiveTile = true;
+                }
+            });
+            anim.start();
+        } else {
+            if (mActivity.isInState(OVERVIEW_SPLIT_SELECT)) {
+                // User tapped to select second split screen app
+                getRecentsView().confirmSplitSelect(this);
+            } else {
+                launchTaskAnimated();
+            }
+        }
+        mActivity.getStatsLogManager().logger().withItemInfo(getItemInfo())
+                .log(LAUNCHER_TASK_LAUNCH_TAP);
     }
 
     /**

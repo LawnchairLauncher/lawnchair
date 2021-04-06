@@ -786,8 +786,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
             private void cleanUp(boolean canceled) {
                 if (mRecentsAnimationController != null) {
-                    mRecentsAnimationController.finish(false /* toRecents */,
-                            null /* onFinishComplete */);
+                    finishRecentsAnimation(false /* toRecents */, null /* onFinishComplete */);
                     if (canceled) {
                         mRecentsAnimationController = null;
                     } else {
@@ -3009,6 +3008,16 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     public void finishRecentsAnimation(boolean toRecents, Runnable onFinishComplete) {
+        if (!toRecents && LIVE_TILE.get()) {
+            // Reset the minimized state since we force-toggled the minimized state when entering
+            // overview, but never actually finished the recents animation.  This is a catch all for
+            // cases where we haven't already reset it.
+            SystemUiProxy p = SystemUiProxy.INSTANCE.getNoCreate();
+            if (p != null) {
+                p.setSplitScreenMinimized(false);
+            }
+        }
+
         if (mRecentsAnimationController == null) {
             if (onFinishComplete != null) {
                 onFinishComplete.run();
