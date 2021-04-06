@@ -18,64 +18,197 @@ package com.android.launcher3.widget.picker.search;
 
 import static android.os.Looper.getMainLooper;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.matches;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.robolectric.Shadows.shadowOf;
 
+import android.appwidget.AppWidgetProviderInfo;
+import android.content.ComponentName;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.os.UserHandle;
+
+import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.icons.BitmapInfo;
+import com.android.launcher3.icons.ComponentWithLabel;
+import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.model.WidgetItem;
+import com.android.launcher3.model.data.PackageItemInfo;
+import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.search.SearchCallback;
+import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
+import com.android.launcher3.widget.model.WidgetsListContentEntry;
+import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
+import com.android.launcher3.widget.model.WidgetsListSearchHeaderEntry;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
+import org.robolectric.shadows.ShadowPackageManager;
+import org.robolectric.util.ReflectionHelpers;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.function.Consumer;
 
 @RunWith(RobolectricTestRunner.class)
 public class SimpleWidgetsSearchAlgorithmTest {
 
+    @Mock private IconCache mIconCache;
+
+    private InvariantDeviceProfile mTestProfile;
+    private WidgetsListHeaderEntry mCalendarHeaderEntry;
+    private WidgetsListContentEntry mCalendarContentEntry;
+    private WidgetsListHeaderEntry mCameraHeaderEntry;
+    private WidgetsListContentEntry mCameraContentEntry;
+    private WidgetsListHeaderEntry mClockHeaderEntry;
+    private WidgetsListContentEntry mClockContentEntry;
+    private Context mContext;
+
     private SimpleWidgetsSearchAlgorithm mSimpleWidgetsSearchAlgorithm;
     @Mock
-    private WidgetsPickerSearchPipeline mSearchPipeline;
+    private PopupDataProvider mDataProvider;
     @Mock
     private SearchCallback<WidgetsListBaseEntry> mSearchCallback;
-    @Captor
-    private ArgumentCaptor<Consumer<List<WidgetsListBaseEntry>>> mConsumerCaptor;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        mSimpleWidgetsSearchAlgorithm = new SimpleWidgetsSearchAlgorithm(mSearchPipeline);
+        doAnswer(invocation -> {
+            ComponentWithLabel componentWithLabel = (ComponentWithLabel) invocation.getArgument(0);
+            return componentWithLabel.getComponent().getShortClassName();
+        }).when(mIconCache).getTitleNoCache(any());
+        mTestProfile = new InvariantDeviceProfile();
+        mTestProfile.numRows = 5;
+        mTestProfile.numColumns = 5;
+        mContext = RuntimeEnvironment.application;
+
+        mCalendarHeaderEntry =
+                createWidgetsHeaderEntry("com.example.android.Calendar", "Calendar", 2);
+        mCalendarContentEntry =
+                createWidgetsContentEntry("com.example.android.Calendar", "Calendar", 2);
+        mCameraHeaderEntry = createWidgetsHeaderEntry("com.example.android.Camera", "Camera", 11);
+        mCameraContentEntry = createWidgetsContentEntry("com.example.android.Camera", "Camera", 11);
+        mClockHeaderEntry = createWidgetsHeaderEntry("com.example.android.Clock", "Clock", 3);
+        mClockContentEntry = createWidgetsContentEntry("com.example.android.Clock", "Clock", 3);
+
+
+        mSimpleWidgetsSearchAlgorithm = new SimpleWidgetsSearchAlgorithm(mDataProvider);
+        doReturn(Collections.EMPTY_LIST).when(mDataProvider).getAllWidgets();
     }
 
     @Test
-    public void doSearch_shouldQueryPipeline() {
-        mSimpleWidgetsSearchAlgorithm.doSearch("abc", mSearchCallback);
+    public void filter_shouldMatchOnAppName() {
+        doReturn(List.of(mCalendarHeaderEntry, mCalendarContentEntry, mCameraHeaderEntry,
+                mCameraContentEntry, mClockHeaderEntry, mClockContentEntry))
+                .when(mDataProvider)
+                .getAllWidgets();
 
-        verify(mSearchPipeline).query(eq("abc"), any());
+        assertEquals(List.of(
+                new WidgetsListSearchHeaderEntry(
+                        mCalendarHeaderEntry.mPkgItem,
+                        mCalendarHeaderEntry.mTitleSectionName,
+                        mCalendarHeaderEntry.mWidgets),
+                mCalendarContentEntry,
+                new WidgetsListSearchHeaderEntry(
+                        mCameraHeaderEntry.mPkgItem,
+                        mCameraHeaderEntry.mTitleSectionName,
+                        mCameraHeaderEntry.mWidgets),
+                mCameraContentEntry),
+                SimpleWidgetsSearchAlgorithm.getFilteredWidgets(mDataProvider, "Ca"));
     }
 
     @Test
-    public void doSearch_shouldInformSearchCallbackOnQueryResult() {
-        ArrayList<WidgetsListBaseEntry> baseEntries = new ArrayList<>();
+    public void filter_shouldMatchOnWidgetLabel() {
+        doReturn(List.of(mCalendarHeaderEntry, mCalendarContentEntry, mCameraHeaderEntry,
+                mCameraContentEntry))
+                .when(mDataProvider)
+                .getAllWidgets();
 
-        mSimpleWidgetsSearchAlgorithm.doSearch("abc", mSearchCallback);
+        assertEquals(List.of(
+                new WidgetsListSearchHeaderEntry(
+                        mCalendarHeaderEntry.mPkgItem,
+                        mCalendarHeaderEntry.mTitleSectionName,
+                        mCalendarHeaderEntry.mWidgets.subList(1, 2)),
+                new WidgetsListContentEntry(
+                        mCalendarHeaderEntry.mPkgItem,
+                        mCalendarHeaderEntry.mTitleSectionName,
+                        mCalendarHeaderEntry.mWidgets.subList(1, 2)),
+                new WidgetsListSearchHeaderEntry(
+                        mCameraHeaderEntry.mPkgItem,
+                        mCameraHeaderEntry.mTitleSectionName,
+                        mCameraHeaderEntry.mWidgets.subList(1, 3)),
+                new WidgetsListContentEntry(
+                        mCameraHeaderEntry.mPkgItem,
+                        mCameraHeaderEntry.mTitleSectionName,
+                        mCameraHeaderEntry.mWidgets.subList(1, 3))),
+                SimpleWidgetsSearchAlgorithm.getFilteredWidgets(mDataProvider, "Widget1"));
+    }
 
-        verify(mSearchPipeline).query(eq("abc"), mConsumerCaptor.capture());
-        mConsumerCaptor.getValue().accept(baseEntries);
+    @Test
+    public void doSearch_shouldInformCallback() {
+        doReturn(List.of(mCalendarHeaderEntry, mCalendarContentEntry, mCameraHeaderEntry,
+                mCameraContentEntry, mClockHeaderEntry, mClockContentEntry))
+                .when(mDataProvider)
+                .getAllWidgets();
+        mSimpleWidgetsSearchAlgorithm.doSearch("Ca", mSearchCallback);
         shadowOf(getMainLooper()).idle();
-        // Verify SearchCallback#onSearchResult receives a query token along with the search
-        // results. The query token is the original query string concatenated with the query
-        // timestamp.
-        verify(mSearchCallback).onSearchResult(matches("abc\t\\d*"), eq(baseEntries));
+        verify(mSearchCallback).onSearchResult(
+                matches("Ca"), argThat(a -> a != null && !a.isEmpty()));
+    }
+
+    private WidgetsListHeaderEntry createWidgetsHeaderEntry(String packageName, String appName,
+            int numOfWidgets) {
+        List<WidgetItem> widgetItems = generateWidgetItems(packageName, numOfWidgets);
+        PackageItemInfo pInfo = createPackageItemInfo(packageName, appName,
+                widgetItems.get(0).user);
+
+        return new WidgetsListHeaderEntry(pInfo, /* titleSectionName= */ "", widgetItems);
+    }
+
+    private WidgetsListContentEntry createWidgetsContentEntry(String packageName, String appName,
+            int numOfWidgets) {
+        List<WidgetItem> widgetItems = generateWidgetItems(packageName, numOfWidgets);
+        PackageItemInfo pInfo = createPackageItemInfo(packageName, appName,
+                widgetItems.get(0).user);
+
+        return new WidgetsListContentEntry(pInfo, /* titleSectionName= */ "", widgetItems);
+    }
+
+    private PackageItemInfo createPackageItemInfo(String packageName, String appName,
+            UserHandle userHandle) {
+        PackageItemInfo pInfo = new PackageItemInfo(packageName);
+        pInfo.title = appName;
+        pInfo.user = userHandle;
+        pInfo.bitmap = BitmapInfo.of(Bitmap.createBitmap(10, 10, Bitmap.Config.ALPHA_8), 0);
+        return pInfo;
+    }
+
+    private List<WidgetItem> generateWidgetItems(String packageName, int numOfWidgets) {
+        ShadowPackageManager packageManager = shadowOf(mContext.getPackageManager());
+        ArrayList<WidgetItem> widgetItems = new ArrayList<>();
+        for (int i = 0; i < numOfWidgets; i++) {
+            ComponentName cn = ComponentName.createRelative(packageName, ".SampleWidget" + i);
+            AppWidgetProviderInfo widgetInfo = new AppWidgetProviderInfo();
+            widgetInfo.provider = cn;
+            ReflectionHelpers.setField(widgetInfo, "providerInfo",
+                    packageManager.addReceiverIfNotPresent(cn));
+
+            WidgetItem widgetItem = new WidgetItem(
+                    LauncherAppWidgetProviderInfo.fromProviderInfo(mContext, widgetInfo),
+                    mTestProfile, mIconCache);
+            widgetItems.add(widgetItem);
+        }
+        return widgetItems;
     }
 }
