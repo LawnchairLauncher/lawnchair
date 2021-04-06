@@ -89,7 +89,6 @@ public class TaskbarController {
 
     private @Nullable Animator mAnimator;
     private boolean mIsAnimatingToLauncher;
-    private boolean mIsAnimatingToApp;
 
     public TaskbarController(BaseQuickstepLauncher launcher,
             TaskbarContainerView taskbarContainerView, TaskbarView taskbarViewOnHome) {
@@ -258,7 +257,9 @@ public class TaskbarController {
         mHotseatController.init();
         mRecentsController.init();
 
-        updateWhichTaskbarViewIsVisible();
+        setWhichTaskbarViewIsVisible(mLauncher.hasBeenResumed()
+                ? mTaskbarViewOnHome
+                : mTaskbarViewInApp);
     }
 
     private TaskbarStateHandlerCallbacks createTaskbarStateHandlerCallbacks() {
@@ -292,6 +293,8 @@ public class TaskbarController {
         mTaskbarAnimationController.cleanup();
         mHotseatController.cleanup();
         mRecentsController.cleanup();
+
+        setWhichTaskbarViewIsVisible(null);
     }
 
     private void removeFromWindowManager() {
@@ -372,7 +375,7 @@ public class TaskbarController {
             @Override
             public void onAnimationEnd(Animator animation) {
                 mIsAnimatingToLauncher = false;
-                updateWhichTaskbarViewIsVisible();
+                setWhichTaskbarViewIsVisible(mTaskbarViewOnHome);
             }
         });
 
@@ -385,14 +388,12 @@ public class TaskbarController {
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
-                mIsAnimatingToApp = true;
                 mTaskbarViewInApp.updateHotseatItemsVisibility();
-                updateWhichTaskbarViewIsVisible();
+                setWhichTaskbarViewIsVisible(mTaskbarViewInApp);
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                mIsAnimatingToApp = false;
             }
         });
         return anim.buildAnim();
@@ -495,18 +496,12 @@ public class TaskbarController {
                 mTaskbarViewOnHome.getHeight() - hotseatBounds.bottom);
     }
 
-    private void updateWhichTaskbarViewIsVisible() {
-        boolean isInApp = !mLauncher.hasBeenResumed() || mIsAnimatingToLauncher
-                || mIsAnimatingToApp;
-        if (isInApp) {
-            mTaskbarViewInApp.setVisibility(View.VISIBLE);
-            mTaskbarViewOnHome.setVisibility(View.INVISIBLE);
-            mLauncher.getHotseat().setIconsAlpha(0);
-        } else {
-            mTaskbarViewInApp.setVisibility(View.INVISIBLE);
-            mTaskbarViewOnHome.setVisibility(View.VISIBLE);
-            mLauncher.getHotseat().setIconsAlpha(1);
-        }
+    private void setWhichTaskbarViewIsVisible(@Nullable TaskbarView visibleTaskbar) {
+        mTaskbarViewInApp.setVisibility(visibleTaskbar == mTaskbarViewInApp
+                ? View.VISIBLE : View.INVISIBLE);
+        mTaskbarViewOnHome.setVisibility(visibleTaskbar == mTaskbarViewOnHome
+                ? View.VISIBLE : View.INVISIBLE);
+        mLauncher.getHotseat().setIconsAlpha(visibleTaskbar != mTaskbarViewInApp ? 1f : 0f);
     }
 
     /**
