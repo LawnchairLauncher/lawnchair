@@ -31,6 +31,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
+import android.view.ViewTreeObserver.OnScrollChangedListener;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -51,7 +52,7 @@ import com.android.quickstep.util.TaskCornerRadius;
 /**
  * Contains options for a recent task when long-pressing its icon.
  */
-public class TaskMenuView extends AbstractFloatingView {
+public class TaskMenuView extends AbstractFloatingView implements OnScrollChangedListener {
 
     private static final Rect sTempRect = new Rect();
 
@@ -120,7 +121,8 @@ public class TaskMenuView extends AbstractFloatingView {
         };
     }
 
-    public void setPosition(float x, float y, PagedOrientationHandler pagedOrientationHandler) {
+    private void setPosition(float x, float y) {
+        PagedOrientationHandler pagedOrientationHandler = mTaskView.getPagedOrientationHandler();
         int taskTopMargin = mActivity.getDeviceProfile().overviewTaskThumbnailTopMarginPx;
         float adjustedY = y + taskTopMargin;
         // Changing pivot to make computations easier
@@ -150,11 +152,11 @@ public class TaskMenuView extends AbstractFloatingView {
         }
     }
 
-    public static TaskMenuView showForTask(TaskView taskView) {
+    public static boolean showForTask(TaskView taskView) {
         BaseDraggingActivity activity = BaseDraggingActivity.fromContext(taskView.getContext());
         final TaskMenuView taskMenuView = (TaskMenuView) activity.getLayoutInflater().inflate(
                         R.layout.task_menu, activity.getDragLayer(), false);
-        return taskMenuView.populateAndShowForTask(taskView) ? taskMenuView : null;
+        return taskMenuView.populateAndShowForTask(taskView);
     }
 
     private boolean populateAndShowForTask(TaskView taskView) {
@@ -167,7 +169,14 @@ public class TaskMenuView extends AbstractFloatingView {
             return false;
         }
         post(this::animateOpen);
+        mActivity.getRootView().getViewTreeObserver().addOnScrollChangedListener(this);
         return true;
+    }
+
+    @Override
+    public void onScrollChanged() {
+        RecentsView rv = mTaskView.getRecentsView();
+        setPosition(mTaskView.getX() - rv.getScrollX(), mTaskView.getY() - rv.getScrollY());
     }
 
     /** @return true if successfully able to populate task view menu, false otherwise */
@@ -227,8 +236,7 @@ public class TaskMenuView extends AbstractFloatingView {
             .mOrientationState.isRecentsActivityRotationAllowed();
         mOptionLayout.setOrientation(orientationHandler
                 .getTaskMenuLayoutOrientation(canActivityRotate, mOptionLayout));
-        setPosition(sTempRect.left - insets.left, sTempRect.top - insets.top,
-            taskView.getPagedOrientationHandler());
+        setPosition(sTempRect.left - insets.left, sTempRect.top - insets.top);
     }
 
     private void animateOpen() {
@@ -274,6 +282,7 @@ public class TaskMenuView extends AbstractFloatingView {
     private void closeComplete() {
         mIsOpen = false;
         mActivity.getDragLayer().removeView(this);
+        mActivity.getRootView().getViewTreeObserver().removeOnScrollChangedListener(this);
     }
 
     private RoundedRectRevealOutlineProvider createOpenCloseOutlineProvider() {

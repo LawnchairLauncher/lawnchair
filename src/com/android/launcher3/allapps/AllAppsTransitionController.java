@@ -43,7 +43,6 @@ import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.states.StateAnimationConfig;
-import com.android.launcher3.views.ScrimView;
 
 /**
  * Handles AllApps view transition.
@@ -72,10 +71,7 @@ public class AllAppsTransitionController
                 }
             };
 
-    private static final int APPS_VIEW_ALPHA_CHANNEL_INDEX = 0;
-
     private AllAppsContainerView mAppsView;
-    private ScrimView mScrimView;
 
     private final Launcher mLauncher;
     private boolean mIsVerticalLayout;
@@ -125,8 +121,6 @@ public class AllAppsTransitionController
      */
     public void setProgress(float progress) {
         mProgress = progress;
-
-        mScrimView.setProgress(progress);
         mAppsView.setTranslationY(mProgress * mShiftRange);
     }
 
@@ -191,9 +185,8 @@ public class AllAppsTransitionController
         return AnimationSuccessListener.forRunnable(this::onProgressAnimationEnd);
     }
 
-    public void setupViews(AllAppsContainerView appsView, ScrimView scrimView) {
+    public void setupViews(AllAppsContainerView appsView) {
         mAppsView = appsView;
-        mScrimView = scrimView;
         if (FeatureFlags.ENABLE_DEVICE_SEARCH.get() && Utilities.ATLEAST_R) {
             mLauncher.getSystemUiController().updateUiState(UI_STATE_ALLAPPS,
                     View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -207,10 +200,6 @@ public class AllAppsTransitionController
     void setScrollRangeDelta(float delta) {
         mScrollRangeDelta = delta;
         mShiftRange = mLauncher.getDeviceProfile().heightPx - mScrollRangeDelta;
-
-        if (mScrimView != null) {
-            mScrimView.reInitUi();
-        }
     }
 
     /**

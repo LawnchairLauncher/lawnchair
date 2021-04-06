@@ -49,7 +49,7 @@ public class HintState extends LauncherState {
     }
 
     @Override
-    public float getOverviewScrimAlpha(Launcher launcher) {
+    public float getWorkspaceScrimAlpha(Launcher launcher) {
         return 0.4f;
     }
 

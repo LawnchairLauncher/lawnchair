@@ -209,11 +209,11 @@ public abstract class LauncherState implements BaseState<LauncherState> {
         return 1f;
     }
 
-    public float getWorkspaceScrimAlpha(Launcher launcher) {
+    public float getWorkspaceBackgroundAlpha(Launcher launcher) {
         return 0;
     }
 
-    public float getOverviewScrimAlpha(Launcher launcher) {
+    public float getWorkspaceScrimAlpha(Launcher launcher) {
         return 0;
     }
 

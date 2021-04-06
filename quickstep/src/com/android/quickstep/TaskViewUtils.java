@@ -183,7 +183,6 @@ public final class TaskViewUtils {
         boolean parallaxCenterAndAdjacentTask =
                 taskIndex != recentsView.getCurrentPage() && !(dp.isTablet
                         && FeatureFlags.ENABLE_OVERVIEW_GRID.get());
-        float gridProgress = recentsView.getGridProgress();
         float gridTranslationSecondary = recentsView.getGridTranslationSecondary(taskIndex);
         int startScroll = recentsView.getScrollOffset(taskIndex);
 
@@ -216,7 +215,8 @@ public final class TaskViewUtils {
                     AnimatedFloat.VALUE, tsv.getFullScreenScale(), TOUCH_RESPONSE_INTERPOLATOR);
             out.setFloat(tsv.taskSecondaryTranslation, AnimatedFloat.VALUE, 0,
                     TOUCH_RESPONSE_INTERPOLATOR_ACCEL_DEACCEL);
-            out.setInt(tsv, TaskViewSimulator.SCROLL, 0, TOUCH_RESPONSE_INTERPOLATOR);
+            out.setFloat(tsv.recentsViewScroll, AnimatedFloat.VALUE, 0,
+                    TOUCH_RESPONSE_INTERPOLATOR);
 
             TaskViewSimulator finalTsv = tsv;
             TransformParams finalParams = params;
@@ -374,7 +374,8 @@ public final class TaskViewUtils {
                     AnimatedFloat.VALUE, 1, TOUCH_RESPONSE_INTERPOLATOR);
             out.setFloat(tvs.recentsViewScale,
                     AnimatedFloat.VALUE, tvs.getFullScreenScale(), TOUCH_RESPONSE_INTERPOLATOR);
-            out.setInt(tvs, TaskViewSimulator.SCROLL, 0, TOUCH_RESPONSE_INTERPOLATOR);
+            out.setFloat(tvs.recentsViewScroll,
+                    AnimatedFloat.VALUE, 0, TOUCH_RESPONSE_INTERPOLATOR);
 
             TaskViewSimulator finalTsv = tvs;
             TransformParams finalParams = params;
