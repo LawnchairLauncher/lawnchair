@@ -72,8 +72,9 @@ public class LauncherAllAppsContainerView extends AllAppsContainerView {
     @Override
     public void setInsets(Rect insets) {
         super.setInsets(insets);
-        mLauncher.getAllAppsController()
-                .setScrollRangeDelta(mSearchUiManager.getScrollRangeDelta(insets));
+        int allAppsStartingPositionY = mLauncher.getDeviceProfile().availableHeightPx
+                - mLauncher.getDeviceProfile().allAppsOpenVerticalTranslate;
+        mLauncher.getAllAppsController().setScrollRangeDelta(allAppsStartingPositionY);
     }
 
     @Override

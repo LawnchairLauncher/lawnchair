@@ -127,7 +127,7 @@ public class AllAppsTransitionController
         mProgress = progress;
 
         mScrimView.setProgress(progress);
-        mAppsView.setTranslationY(progress * mShiftRange);
+        mAppsView.setTranslationY(mProgress * mShiftRange);
     }
 
     public float getProgress() {
