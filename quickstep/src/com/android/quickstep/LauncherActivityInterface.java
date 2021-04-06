@@ -22,6 +22,7 @@ import static com.android.launcher3.LauncherState.QUICK_SWITCH;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IME_SHOWING;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.graphics.Rect;
 import android.view.MotionEvent;
@@ -267,13 +268,14 @@ public final class LauncherActivityInterface extends
     }
 
     @Override
-    public void onAnimateToLauncher(GestureEndTarget endTarget, long duration) {
+    public @Nullable Animator getParallelAnimationToLauncher(GestureEndTarget endTarget,
+            long duration) {
         TaskbarController taskbarController = getTaskbarController();
         if (taskbarController == null) {
-            return;
+            return null;
         }
         LauncherState toState = stateFromGestureEndTarget(endTarget);
-        taskbarController.createAnimToLauncher(toState, duration).start();
+        return taskbarController.createAnimToLauncher(toState, duration);
     }
 
     @Override

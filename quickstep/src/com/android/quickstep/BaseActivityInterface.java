@@ -347,7 +347,9 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
      * Called when the gesture ends and the animation starts towards the given target. No-op by
      * default, but subclasses can override to add an additional animation with the same duration.
      */
-    public void onAnimateToLauncher(GestureState.GestureEndTarget endTarget, long duration) {
+    public @Nullable Animator getParallelAnimationToLauncher(
+            GestureState.GestureEndTarget endTarget, long duration) {
+        return null;
     }
 
     /**
