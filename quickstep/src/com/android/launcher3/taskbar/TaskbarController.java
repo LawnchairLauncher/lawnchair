@@ -42,6 +42,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.QuickstepTransitionManager;
 import com.android.launcher3.R;
+import com.android.launcher3.anim.AlphaUpdateListener;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
@@ -88,7 +89,6 @@ public class TaskbarController {
 
     private @Nullable Animator mAnimator;
     private boolean mIsAnimatingToLauncher;
-    private boolean mIsAnimatingToApp;
 
     public TaskbarController(BaseQuickstepLauncher launcher,
             TaskbarContainerView taskbarContainerView, TaskbarView taskbarViewOnHome) {
@@ -140,6 +140,13 @@ public class TaskbarController {
                     // Only TaskbarView remains.
                     setTaskbarWindowFullscreen(false);
                 }
+            }
+
+            @Override
+            public boolean isTaskbarTouchable() {
+                return mTaskbarContainerView.getAlpha() > AlphaUpdateListener.ALPHA_CUTOFF_THRESHOLD
+                        && mTaskbarViewInApp.getVisibility() == View.VISIBLE
+                        && !mIsAnimatingToLauncher;
             }
         };
     }
@@ -250,7 +257,9 @@ public class TaskbarController {
         mHotseatController.init();
         mRecentsController.init();
 
-        updateWhichTaskbarViewIsVisible();
+        setWhichTaskbarViewIsVisible(mLauncher.hasBeenResumed()
+                ? mTaskbarViewOnHome
+                : mTaskbarViewInApp);
     }
 
     private TaskbarStateHandlerCallbacks createTaskbarStateHandlerCallbacks() {
@@ -284,6 +293,8 @@ public class TaskbarController {
         mTaskbarAnimationController.cleanup();
         mHotseatController.cleanup();
         mRecentsController.cleanup();
+
+        setWhichTaskbarViewIsVisible(null);
     }
 
     private void removeFromWindowManager() {
@@ -364,7 +375,7 @@ public class TaskbarController {
             @Override
             public void onAnimationEnd(Animator animation) {
                 mIsAnimatingToLauncher = false;
-                updateWhichTaskbarViewIsVisible();
+                setWhichTaskbarViewIsVisible(mTaskbarViewOnHome);
             }
         });
 
@@ -377,14 +388,12 @@ public class TaskbarController {
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
-                mIsAnimatingToApp = true;
                 mTaskbarViewInApp.updateHotseatItemsVisibility();
-                updateWhichTaskbarViewIsVisible();
+                setWhichTaskbarViewIsVisible(mTaskbarViewInApp);
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                mIsAnimatingToApp = false;
             }
         });
         return anim.buildAnim();
@@ -487,18 +496,12 @@ public class TaskbarController {
                 mTaskbarViewOnHome.getHeight() - hotseatBounds.bottom);
     }
 
-    private void updateWhichTaskbarViewIsVisible() {
-        boolean isInApp = !mLauncher.hasBeenResumed() || mIsAnimatingToLauncher
-                || mIsAnimatingToApp;
-        if (isInApp) {
-            mTaskbarViewInApp.setVisibility(View.VISIBLE);
-            mTaskbarViewOnHome.setVisibility(View.INVISIBLE);
-            mLauncher.getHotseat().setIconsAlpha(0);
-        } else {
-            mTaskbarViewInApp.setVisibility(View.INVISIBLE);
-            mTaskbarViewOnHome.setVisibility(View.VISIBLE);
-            mLauncher.getHotseat().setIconsAlpha(1);
-        }
+    private void setWhichTaskbarViewIsVisible(@Nullable TaskbarView visibleTaskbar) {
+        mTaskbarViewInApp.setVisibility(visibleTaskbar == mTaskbarViewInApp
+                ? View.VISIBLE : View.INVISIBLE);
+        mTaskbarViewOnHome.setVisibility(visibleTaskbar == mTaskbarViewOnHome
+                ? View.VISIBLE : View.INVISIBLE);
+        mLauncher.getHotseat().setIconsAlpha(visibleTaskbar != mTaskbarViewInApp ? 1f : 0f);
     }
 
     /**
@@ -549,6 +552,7 @@ public class TaskbarController {
      */
     protected interface TaskbarContainerViewCallbacks {
         void onViewRemoved();
+        boolean isTaskbarTouchable();
     }
 
     /**
