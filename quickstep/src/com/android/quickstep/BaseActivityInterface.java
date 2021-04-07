@@ -347,7 +347,9 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
      * Called when the gesture ends and the animation starts towards the given target. No-op by
      * default, but subclasses can override to add an additional animation with the same duration.
      */
-    public void onAnimateToLauncher(GestureState.GestureEndTarget endTarget, long duration) {
+    public @Nullable Animator getParallelAnimationToLauncher(
+            GestureState.GestureEndTarget endTarget, long duration) {
+        return null;
     }
 
     /**
@@ -365,8 +367,6 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     public interface AnimationFactory {
 
         void createActivityInterface(long transitionLength);
-
-        default void onTransitionCancelled() { }
 
         /**
          * @param attached Whether to show RecentsView alongside the app window. If false, recents
@@ -431,11 +431,6 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             if (SysUINavigationMode.getMode(mActivity) == Mode.NO_BUTTON) {
                 setRecentsAttachedToAppWindow(mIsAttachedToWindow, false);
             }
-        }
-
-        @Override
-        public void onTransitionCancelled() {
-            mActivity.getStateManager().goToState(mStartState, false /* animate */);
         }
 
         @Override

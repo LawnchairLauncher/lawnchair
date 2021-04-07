@@ -27,7 +27,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.R;
-import com.android.launcher3.anim.AlphaUpdateListener;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.systemui.shared.system.ViewTreeObserverWrapper;
@@ -83,18 +82,13 @@ public class TaskbarContainerView extends BaseDragLayer<TaskbarActivityContext> 
 
     private ViewTreeObserverWrapper.OnComputeInsetsListener createTaskbarInsetsComputer() {
         return insetsInfo -> {
-            if (getAlpha() < AlphaUpdateListener.ALPHA_CUTOFF_THRESHOLD
-                    || mTaskbarView.getVisibility() != VISIBLE || mTaskbarView.isDraggingItem()) {
-                // We're invisible or dragging out of taskbar, let touches pass through us.
+            if (mControllerCallbacks.isTaskbarTouchable()) {
+                 // Accept touches anywhere in our bounds.
+                insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_FRAME);
+            } else {
+                // Let touches pass through us.
                 insetsInfo.touchableRegion.setEmpty();
                 insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION);
-                // TODO(b/182234653): Shouldn't need to do this, but for the meantime, reporting
-                // that visibleInsets is empty allows DragEvents through. Setting them as completely
-                // empty reverts to default behavior, so set 1 px instead.
-                insetsInfo.visibleInsets.set(0, 0, 0, 1);
-            } else {
-                 // We're visible again, accept touches anywhere in our bounds.
-                insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_FRAME);
             }
 
             // TaskbarContainerView provides insets to other apps based on contentInsets. These

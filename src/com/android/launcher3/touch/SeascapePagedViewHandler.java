@@ -20,7 +20,6 @@ import static com.android.launcher3.touch.SingleAxisSwipeDetector.HORIZONTAL;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_TYPE_MAIN;
-import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_TYPE_SIDE;
 
 import android.content.res.Resources;
 import android.graphics.PointF;
@@ -33,7 +32,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
@@ -96,15 +95,10 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
 
     @Override
     public List<SplitPositionOption> getSplitPositionOptions(DeviceProfile dp) {
-        List<SplitPositionOption> options = new ArrayList<>(2);
-        // Add left/right options where left => position bottom, right => position top
-        options.add(new SplitPositionOption(
-                R.drawable.ic_split_screen, R.string.split_screen_position_left,
-                STAGE_POSITION_BOTTOM_OR_RIGHT, STAGE_TYPE_SIDE));
-        options.add(new SplitPositionOption(
+        // Add "right" option which is actually the top
+        return Collections.singletonList(new SplitPositionOption(
                 R.drawable.ic_split_screen, R.string.split_screen_position_right,
                 STAGE_POSITION_TOP_OR_LEFT, STAGE_TYPE_MAIN));
-        return options;
     }
 
     /* ---------- The following are only used by TaskViewTouchHandler. ---------- */
