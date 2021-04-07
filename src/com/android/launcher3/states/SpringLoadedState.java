@@ -88,7 +88,7 @@ public class SpringLoadedState extends LauncherState {
     }
 
     @Override
-    public float getWorkspaceScrimAlpha(Launcher launcher) {
+    public float getWorkspaceBackgroundAlpha(Launcher launcher) {
         return 0.3f;
     }
 
