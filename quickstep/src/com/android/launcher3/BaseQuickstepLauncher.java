@@ -108,6 +108,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
         SysUINavigationMode.INSTANCE.get(this).removeModeChangeListener(this);
         if (mTaskbarController != null) {
             mTaskbarController.cleanup();
+            mTaskbarController = null;
         }
 
         super.onDestroy();
