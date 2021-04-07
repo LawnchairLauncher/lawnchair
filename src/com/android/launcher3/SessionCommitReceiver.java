@@ -24,6 +24,7 @@ import android.content.pm.PackageInstaller.SessionInfo;
 import android.content.pm.PackageManager;
 import android.os.UserHandle;
 import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.annotation.WorkerThread;
 
@@ -35,6 +36,8 @@ import com.android.launcher3.util.Executors;
  * BroadcastReceiver to handle session commit intent.
  */
 public class SessionCommitReceiver extends BroadcastReceiver {
+
+    private static final String LOG = "SessionCommitReceiver";
 
     // Preference key for automatically adding icon to homescreen.
     public static final String ADD_ICON_PREFERENCE_KEY = "pref_add_icon_to_home";
@@ -67,6 +70,11 @@ public class SessionCommitReceiver extends BroadcastReceiver {
             packageInstallerCompat.removePromiseIconId(info.getSessionId());
             return;
         }
+
+        Log.i(LOG,
+                "Adding package name to install queue. Package name: " + info.getAppPackageName()
+                        + ", has app icon: " + (info.getAppIcon() != null)
+                        + ", has app label: " + !TextUtils.isEmpty(info.getAppLabel()));
 
         ItemInstallQueue.INSTANCE.get(context)
                 .queueItem(info.getAppPackageName(), user);
