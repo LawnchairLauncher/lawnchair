@@ -19,8 +19,7 @@
         android:id="@+id/split_placeholder"
         android:layout_width="match_parent"
         android:layout_height="@dimen/split_placeholder_size"
-        android:background="@android:color/white"
-        android:alpha=".8"
+        android:background="@android:color/darker_gray"
         android:visibility="gone" />
 
     <com.android.quickstep.views.LauncherRecentsView
@@ -30,7 +29,6 @@
         android:accessibilityPaneTitle="@string/accessibility_recent_apps"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:theme="@style/HomeScreenElementTheme"
         android:visibility="invisible" />
 
     <include

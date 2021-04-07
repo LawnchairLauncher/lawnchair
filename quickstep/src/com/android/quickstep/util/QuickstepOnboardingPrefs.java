@@ -26,6 +26,7 @@ import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 import android.content.SharedPreferences;
 
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.hybridhotseat.HotseatPredictionController;
@@ -63,7 +64,8 @@ public class QuickstepOnboardingPrefs extends OnboardingPrefs<QuickstepLauncher>
             });
         }
 
-        if (!hasReachedMaxCount(HOTSEAT_DISCOVERY_TIP_COUNT)) {
+        if (!Utilities.IS_RUNNING_IN_TEST_HARNESS
+                && !hasReachedMaxCount(HOTSEAT_DISCOVERY_TIP_COUNT)) {
             stateManager.addStateListener(new StateListener<LauncherState>() {
                 boolean mFromAllApps = false;
 

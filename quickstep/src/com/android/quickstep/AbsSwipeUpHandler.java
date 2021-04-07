@@ -217,6 +217,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
     // Either RectFSpringAnim (if animating home) or ObjectAnimator (from mCurrentShift) otherwise
     private RunningWindowAnim mRunningWindowAnim;
+    // Possible second animation running at the same time as mRunningWindowAnim
+    private Animator mParallelRunningAnim;
     private boolean mIsMotionPaused;
     private boolean mHasMotionEverBeenPaused;
 
@@ -317,9 +319,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         mStateCallback.runOnceAtState(STATE_LAUNCHER_PRESENT | STATE_HANDLER_INVALIDATED,
                 this::invalidateHandlerWithLauncher);
         mStateCallback.runOnceAtState(STATE_HANDLER_INVALIDATED | STATE_RESUME_LAST_TASK,
-                this::notifyTransitionCancelled);
+                this::resetStateForAnimationCancel);
         mStateCallback.runOnceAtState(STATE_HANDLER_INVALIDATED | STATE_FINISH_WITH_NO_END,
-                this::notifyTransitionCancelled);
+                this::resetStateForAnimationCancel);
 
         if (!LIVE_TILE.get()) {
             mStateCallback.addChangeListener(STATE_APP_CONTROLLER_RECEIVED | STATE_LAUNCHER_PRESENT
@@ -798,6 +800,13 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 mRunningWindowAnim.end();
             }
         }
+        if (mParallelRunningAnim != null) {
+            if (cancel) {
+                mParallelRunningAnim.cancel();
+            } else {
+                mParallelRunningAnim.end();
+            }
+        }
     }
 
     private void onSettledOnEndTarget() {
@@ -1060,7 +1069,11 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             ActivityManagerWrapper.getInstance().registerTaskStackListener(
                     mActivityRestartListener);
 
-            mActivityInterface.onAnimateToLauncher(mGestureState.getEndTarget(), duration);
+            mParallelRunningAnim = mActivityInterface.getParallelAnimationToLauncher(
+                    mGestureState.getEndTarget(), duration);
+            if (mParallelRunningAnim != null) {
+                mParallelRunningAnim.start();
+            }
         }
 
         if (mGestureState.getEndTarget() == HOME) {
@@ -1368,10 +1381,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             mActivityInterface.setOnDeferredActivityLaunchCallback(null);
         }
         mActivity.getRootView().setOnApplyWindowInsetsListener(null);
-    }
-
-    private void notifyTransitionCancelled() {
-        mAnimationFactory.onTransitionCancelled();
     }
 
     private void resetStateForAnimationCancel() {

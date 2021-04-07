@@ -116,6 +116,11 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
                 config.getInterpolator(ANIM_OVERVIEW_SCRIM_FADE, LINEAR));
         setter.setFloat(scrim, SCRIM_MULTIPLIER, 1f,
                 config.getInterpolator(ANIM_OVERVIEW_SCRIM_FADE, LINEAR));
+        if (toState.areElementsVisible(mLauncher, LauncherState.SPLIT_PLACHOLDER_VIEW)) {
+            scrim.updateStableScrimmedView(mLauncher.getSplitPlaceholderView());
+        } else {
+            scrim.updateStableScrimmedView(mLauncher.getOverviewPanel());
+        }
 
         setter.setFloat(
                 mRecentsView, getTaskModalnessProperty(),

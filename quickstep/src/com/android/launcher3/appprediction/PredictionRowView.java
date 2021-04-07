@@ -237,7 +237,9 @@ public class PredictionRowView extends LinearLayout implements
             setTranslationY(scroll);
         }
         setAlpha(mScrolledOut ? 0 : 1);
-        AlphaUpdateListener.updateVisibility(this);
+        if (getVisibility() != GONE) {
+            AlphaUpdateListener.updateVisibility(this);
+        }
     }
 
     @Override
