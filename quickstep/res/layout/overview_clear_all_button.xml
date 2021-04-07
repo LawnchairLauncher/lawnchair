@@ -21,5 +21,5 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:text="@string/recents_clear_all"
-    android:textColor="?attr/workspaceTextColor"
+    android:textColor="?android:attr/textColorPrimary"
     android:textSize="14sp" />

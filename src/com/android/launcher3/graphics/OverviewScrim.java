@@ -66,6 +66,13 @@ public class OverviewScrim extends Scrim {
         mStableScrimmedView = mCurrentScrimmedView = mLauncher.getOverviewPanel();
     }
 
+    /**
+     * @param view The view we want the scrim to be behind
+     */
+    public void updateStableScrimmedView(View view) {
+        mStableScrimmedView = view;
+    }
+
     public void updateCurrentScrimmedView(ViewGroup root) {
         // Find the lowest view that is at or above the view we want to show the scrim behind.
         mCurrentScrimmedView = mStableScrimmedView;

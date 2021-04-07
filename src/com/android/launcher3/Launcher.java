@@ -60,6 +60,10 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
 import android.content.ActivityNotFoundException;
@@ -371,6 +375,44 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                     .penaltyLog()
                     .penaltyDeath()
                     .build());
+        }
+
+        if (Utilities.IS_DEBUG_DEVICE && FeatureFlags.NOTIFY_CRASHES.get()) {
+            final String notificationChannelId = "com.android.launcher3.Debug";
+            final String notificationChannelName = "Debug";
+            final String notificationTag = "Debug";
+            final int notificationId = 0;
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(new NotificationChannel(
+                    notificationChannelId, notificationChannelName,
+                    NotificationManager.IMPORTANCE_HIGH));
+
+            Thread.currentThread().setUncaughtExceptionHandler((thread, throwable) -> {
+                String stackTrace = Log.getStackTraceString(throwable);
+
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                shareIntent.putExtra(Intent.EXTRA_TEXT, stackTrace);
+                shareIntent = Intent.createChooser(shareIntent, null);
+                PendingIntent sharePendingIntent = PendingIntent.getActivity(
+                        this, 0, shareIntent, PendingIntent.FLAG_UPDATE_CURRENT
+                );
+
+                Notification notification = new Notification.Builder(this, notificationChannelId)
+                        .setSmallIcon(android.R.drawable.ic_menu_close_clear_cancel)
+                        .setContentTitle("Launcher crash detected!")
+                        .setStyle(new Notification.BigTextStyle().bigText(stackTrace))
+                        .addAction(android.R.drawable.ic_menu_share, "Share", sharePendingIntent)
+                        .build();
+                notificationManager.notify(notificationTag, notificationId, notification);
+
+                Thread.UncaughtExceptionHandler defaultUncaughtExceptionHandler =
+                        Thread.getDefaultUncaughtExceptionHandler();
+                if (defaultUncaughtExceptionHandler != null) {
+                    defaultUncaughtExceptionHandler.uncaughtException(thread, throwable);
+                }
+            });
         }
 
         super.onCreate(savedInstanceState);
