@@ -1228,11 +1228,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mClearAllButton.setFullscreenTranslationPrimary(
                 accumulatedTranslationX - fullscreenTranslations[firstNonHomeTaskIndex]);
 
-        // Align ClearAllButton to the left (RTL) or right (non-RTL), which is different from other
-        // TaskViews.
-        int clearAllWidthDiff = mTaskWidth - mClearAllButton.getWidth();
-        mClearAllButton.setScrollOffsetPrimary(mIsRtl ? clearAllWidthDiff : -clearAllWidthDiff);
-
         updateGridProperties(false);
     }
 
@@ -3019,6 +3014,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             ComputePageScrollsLogic scrollLogic) {
         boolean pageScrollChanged = super.getPageScrolls(outPageScrolls, layoutChildren,
                 scrollLogic);
+
+        // Align ClearAllButton to the left (RTL) or right (non-RTL), which is different from other
+        // TaskViews. This must be called after laying out ClearAllButton.
+        if (layoutChildren) {
+            int clearAllWidthDiff = mTaskWidth - mClearAllButton.getWidth();
+            mClearAllButton.setScrollOffsetPrimary(mIsRtl ? clearAllWidthDiff : -clearAllWidthDiff);
+        }
 
         final int childCount = getChildCount();
         for (int i = 0; i < childCount; i++) {
