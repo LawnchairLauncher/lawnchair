@@ -29,6 +29,7 @@ import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
 import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -55,6 +56,8 @@ import java.util.List;
  * Utility class to tracking install sessions
  */
 public class InstallSessionHelper {
+
+    private static final String LOG = "InstallSessionHelper";
 
     // Set<String> of session ids of promise icons that have been added to the home screen
     // as FLAG_PROMISE_NEW_INSTALLS.
@@ -219,6 +222,9 @@ public class InstallSessionHelper {
                 && !promiseIconAddedForId(sessionInfo.getSessionId())
                 && !new PackageManagerHelper(mAppContext).isAppInstalled(
                         sessionInfo.getAppPackageName(), getUserHandle(sessionInfo))) {
+            Log.i(LOG, "Adding package name to install queue: "
+                    + sessionInfo.getAppPackageName());
+
             ItemInstallQueue.INSTANCE.get(mAppContext)
                     .queueItem(sessionInfo.getAppPackageName(), getUserHandle(sessionInfo));
 

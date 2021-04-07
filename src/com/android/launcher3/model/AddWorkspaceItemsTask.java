@@ -20,6 +20,7 @@ import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
 import android.content.pm.PackageInstaller.SessionInfo;
 import android.os.UserHandle;
+import android.util.Log;
 import android.util.LongSparseArray;
 import android.util.Pair;
 
@@ -46,6 +47,8 @@ import java.util.List;
  * Task to add auto-created workspace items.
  */
 public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
+
+    private static final String LOG = "AddWorkspaceItemsTask";
 
     private final List<Pair<ItemInfo, Object>> mItemList;
 
@@ -167,6 +170,8 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
 
                 // Save the WorkspaceItemInfo for binding in the workspace
                 addedItemsFinal.add(itemInfo);
+
+                Log.i(LOG, "Adding item info to workspace: " + itemInfo);
             }
         }
 
