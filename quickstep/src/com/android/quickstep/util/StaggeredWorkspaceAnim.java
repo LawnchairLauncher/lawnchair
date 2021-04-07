@@ -18,7 +18,6 @@ package com.android.quickstep.util;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_DEPTH_CONTROLLER;
@@ -42,9 +41,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.anim.PendingAnimation;
-import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.anim.SpringAnimationBuilder;
-import com.android.launcher3.graphics.OverviewScrim;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.util.DynamicResource;
@@ -134,7 +131,8 @@ public class StaggeredWorkspaceAnim {
 
         if (animateOverviewScrim) {
             PendingAnimation pendingAnimation = new PendingAnimation(DURATION_MS);
-            addScrimAnimationForState(launcher, NORMAL, pendingAnimation);
+            launcher.getWorkspace().getStateTransitionAnimation()
+                    .setScrim(pendingAnimation, NORMAL, new StateAnimationConfig());
             mAnimators.play(pendingAnimation.buildAnim());
         }
 
@@ -192,7 +190,8 @@ public class StaggeredWorkspaceAnim {
         launcher.<RecentsView>getOverviewPanel().getScroller().forceFinished(true);
 
         if (animateOverviewScrim) {
-            addScrimAnimationForState(launcher, BACKGROUND_APP, NO_ANIM_PROPERTY_SETTER);
+            launcher.getWorkspace().getStateTransitionAnimation()
+                    .setScrim(NO_ANIM_PROPERTY_SETTER, BACKGROUND_APP, config);
         }
     }
 
@@ -261,16 +260,6 @@ public class StaggeredWorkspaceAnim {
             }
         });
         mAnimators.play(alpha);
-    }
-
-    private void addScrimAnimationForState(Launcher launcher, LauncherState state,
-            PropertySetter setter) {
-        launcher.getWorkspace().getStateTransitionAnimation().setScrim(setter, state);
-        setter.setFloat(
-                launcher.getDragLayer().getOverviewScrim(),
-                OverviewScrim.SCRIM_PROGRESS,
-                state.getOverviewScrimAlpha(launcher),
-                ACCEL_DEACCEL);
     }
 
     private void addDepthAnimationForState(Launcher launcher, LauncherState state, long duration) {

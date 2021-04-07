@@ -23,10 +23,8 @@ import android.widget.Button;
 
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.touch.PagedOrientationHandler;
-import com.android.quickstep.views.RecentsView.PageCallbacks;
-import com.android.quickstep.views.RecentsView.ScrollState;
 
-public class ClearAllButton extends Button implements PageCallbacks {
+public class ClearAllButton extends Button {
 
     public static final FloatProperty<ClearAllButton> VISIBILITY_ALPHA =
             new FloatProperty<ClearAllButton>("visibilityAlpha") {
@@ -99,8 +97,7 @@ public class ClearAllButton extends Button implements PageCallbacks {
         }
     }
 
-    @Override
-    public void onPageScroll(ScrollState scrollState, boolean gridEnabled) {
+    public void onRecentsViewScroll(int scrollFromEdge, boolean gridEnabled) {
         RecentsView recentsView = getRecentsView();
         if (recentsView == null) {
             return;
@@ -113,7 +110,7 @@ public class ClearAllButton extends Button implements PageCallbacks {
         }
 
         int leftEdgeScroll = recentsView.getLeftMostChildScroll();
-        float adjustedScrollFromEdge = scrollState.scrollFromEdge - leftEdgeScroll;
+        int adjustedScrollFromEdge = scrollFromEdge - leftEdgeScroll;
         float shift = Math.min(adjustedScrollFromEdge, orientationSize);
         mNormalTranslationPrimary = mIsRtl ? -shift : shift;
         if (!gridEnabled) {
