@@ -25,7 +25,6 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 
 /**
  * View that draws a bitmap horizontally centered. If the image width is greater than the view
@@ -37,7 +36,6 @@ public class WidgetImageView extends View {
     private final int mBadgeMargin;
 
     private Drawable mDrawable;
-    private Drawable mBadge;
 
     public WidgetImageView(Context context) {
         this(context, null);
@@ -54,9 +52,9 @@ public class WidgetImageView extends View {
                 .getDimensionPixelSize(R.dimen.profile_badge_margin);
     }
 
-    public void setDrawable(Drawable drawable, Drawable badge) {
+    /** Set the drawable to use for this view. */
+    public void setDrawable(Drawable drawable) {
         mDrawable = drawable;
-        mBadge = badge;
         invalidate();
     }
 
@@ -70,11 +68,6 @@ public class WidgetImageView extends View {
             updateDstRectF();
             mDrawable.setBounds(getBitmapBounds());
             mDrawable.draw(canvas);
-
-            // Only draw the badge if a preview was drawn.
-            if (mBadge != null) {
-                mBadge.draw(canvas);
-            }
         }
     }
 
@@ -104,17 +97,6 @@ public class WidgetImageView extends View {
         } else {
             mDstRectF.top = (myHeight - scaledHeight) / 2;
             mDstRectF.bottom = (myHeight + scaledHeight) / 2;
-        }
-
-        if (mBadge != null) {
-            Rect bounds = mBadge.getBounds();
-            int left = Utilities.boundToRange(
-                    (int) (mDstRectF.right + mBadgeMargin - bounds.width()),
-                    mBadgeMargin, getWidth() - bounds.width());
-            int top = Utilities.boundToRange(
-                    (int) (mDstRectF.bottom + mBadgeMargin - bounds.height()),
-                    mBadgeMargin, getHeight() - bounds.height());
-            mBadge.setBounds(left, top, bounds.width() + left, bounds.height() + top);
         }
     }
 
