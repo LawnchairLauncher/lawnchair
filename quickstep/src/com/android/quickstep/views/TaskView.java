@@ -29,14 +29,12 @@ import static android.widget.Toast.LENGTH_SHORT;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_TASK_MENU;
 import static com.android.launcher3.LauncherState.OVERVIEW_SPLIT_SELECT;
-import static com.android.launcher3.QuickstepTransitionManager.RECENTS_LAUNCH_DURATION;
 import static com.android.launcher3.Utilities.comp;
 import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncestor;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.EXAGGERATED_EASE;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_TAP;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
@@ -78,7 +76,6 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -287,6 +284,9 @@ public class TaskView extends FrameLayout implements Reusable {
     private float mTaskResistanceTranslationY;
     // The following translation variables should only be used in the same orientation as Launcher.
     private float mFullscreenTranslationX;
+    // Applied as a complement to fullscreenTranslation, for adjusting the carousel overview, or the
+    // in transition carousel before forming the grid on tablets.
+    private float mNonFullscreenTranslationX;
     private float mBoxTranslationY;
     // The following grid translations scales with mGridProgress.
     private float mGridTranslationX;
@@ -784,7 +784,8 @@ public class TaskView extends FrameLayout implements Reusable {
 
     @Override
     public void onRecycle() {
-        mFullscreenTranslationX = mGridTranslationX = mGridTranslationY = mBoxTranslationY = 0f;
+        mFullscreenTranslationX = mNonFullscreenTranslationX =
+                mGridTranslationX = mGridTranslationY = mBoxTranslationY = 0f;
         resetViewTransforms();
         // Clear any references to the thumbnail (it will be re-read either from the cache or the
         // system on next bind)
@@ -931,6 +932,11 @@ public class TaskView extends FrameLayout implements Reusable {
         applyTranslationX();
     }
 
+    public void setNonFullscreenTranslationX(float nonFullscreenTranslationX) {
+        mNonFullscreenTranslationX = nonFullscreenTranslationX;
+        applyTranslationX();
+    }
+
     public void setGridTranslationX(float gridTranslationX) {
         mGridTranslationX = gridTranslationX;
         applyTranslationX();
@@ -953,6 +959,8 @@ public class TaskView extends FrameLayout implements Reusable {
         float scrollAdjustment = 0;
         if (fullscreenEnabled) {
             scrollAdjustment += mFullscreenTranslationX;
+        } else {
+            scrollAdjustment += mNonFullscreenTranslationX;
         }
         if (gridEnabled) {
             scrollAdjustment += mGridTranslationX;
@@ -980,6 +988,7 @@ public class TaskView extends FrameLayout implements Reusable {
     private void applyTranslationX() {
         setTranslationX(mDismissTranslationX + mTaskOffsetTranslationX + mTaskResistanceTranslationX
                 + getFullscreenTrans(mFullscreenTranslationX)
+                + getNonFullscreenTrans(mNonFullscreenTranslationX)
                 + getGridTrans(mGridTranslationX));
     }
 
@@ -1201,12 +1210,12 @@ public class TaskView extends FrameLayout implements Reusable {
             int boxHeight;
             float thumbnailRatio;
             boolean isFocusedTask = isFocusedTask();
-            if (isFocusedTask || isRunningTask()) {
-                // Task will be focused and should use focused task size. Use runningTaskRatio
-                // that is associated with the original orientation of the focused task if possible.
+            if (isFocusedTask) {
+                // Task will be focused and should use focused task size. Use focusTaskRatio
+                // that is associated with the original orientation of the focused task.
                 boxWidth = taskWidth;
                 boxHeight = taskHeight;
-                thumbnailRatio = isFocusedTask ? getRecentsView().getFocusedTaskRatio() : 0;
+                thumbnailRatio = getRecentsView().getFocusedTaskRatio();
             } else {
                 // Otherwise task is in grid, and should use lastComputedGridTaskSize.
                 Rect lastComputedGridTaskSize = getRecentsView().getLastComputedGridTaskSize();
@@ -1260,6 +1269,10 @@ public class TaskView extends FrameLayout implements Reusable {
     private float getFullscreenTrans(float endTranslation) {
         float progress = ACCEL_DEACCEL.getInterpolation(mFullscreenProgress);
         return Utilities.mapRange(progress, 0, endTranslation);
+    }
+
+    private float getNonFullscreenTrans(float endTranslation) {
+        return endTranslation - getFullscreenTrans(endTranslation);
     }
 
     public boolean isRunningTask() {

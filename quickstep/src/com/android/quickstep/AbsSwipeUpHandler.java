@@ -968,6 +968,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             if (mRecentsView != null) {
                 int nearestPage = mRecentsView.getDestinationPage();
                 boolean isScrolling = false;
+                // Update page scroll before snapping to page to make sure we snapped to the
+                // position calculated with target gesture in mind.
+                mRecentsView.updateScrollSynchronously();
                 if (mRecentsView.getNextPage() != nearestPage) {
                     // We shouldn't really scroll to the next page when swiping up to recents.
                     // Only allow settling on the next page if it's nearest to the center.
