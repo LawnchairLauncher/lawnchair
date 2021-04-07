@@ -149,9 +149,10 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher, Laun
     }
 
     @Override
-    protected boolean shouldStealTouchFromSiblingsBelow(MotionEvent ev) {
-        return mActivity.getStateManager().getState().overviewUi
-                && super.shouldStealTouchFromSiblingsBelow(ev);
+    public boolean onTouchEvent(MotionEvent ev) {
+        boolean result = super.onTouchEvent(ev);
+        // Do not let touch escape to siblings below this view.
+        return result || mActivity.getStateManager().getState().overviewUi;
     }
 
     @Override
