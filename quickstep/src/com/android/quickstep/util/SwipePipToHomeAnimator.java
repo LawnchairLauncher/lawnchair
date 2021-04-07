@@ -22,19 +22,24 @@ import android.animation.Animator;
 import android.animation.RectEvaluator;
 import android.animation.ValueAnimator;
 import android.content.ComponentName;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceControl;
+import android.view.SurfaceSession;
 import android.view.View;
 import android.window.PictureInPictureSurfaceTransaction;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
+import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.util.Themes;
 import com.android.systemui.shared.pip.PipSurfaceTransactionHelper;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 
@@ -79,6 +84,12 @@ public class SwipePipToHomeAnimator extends ValueAnimator {
     private boolean mHasAnimationEnded;
 
     /**
+     * An overlay used to mask changes in content when entering PiP for apps that aren't seamless.
+     */
+    @Nullable
+    private SurfaceControl mContentOverlay;
+
+    /**
      * @param taskId Task id associated with this animator, see also {@link #getTaskId()}
      * @param componentName Component associated with this animator,
      *                      see also {@link #getComponentName()}
@@ -112,6 +123,33 @@ public class SwipePipToHomeAnimator extends ValueAnimator {
 
         if (sourceRectHint == null) {
             mSourceHintRectInsets = null;
+
+            // Create a new overlay layer
+            SurfaceSession session = new SurfaceSession();
+            mContentOverlay = new SurfaceControl.Builder(session)
+                    .setCallsite("SwipePipToHomeAnimator")
+                    .setName("PipContentOverlay")
+                    .setColorLayer()
+                    .build();
+            SurfaceControl.Transaction t = new SurfaceControl.Transaction();
+            t.show(mContentOverlay);
+            t.setLayer(mContentOverlay, Integer.MAX_VALUE);
+            int color = Themes.getColorBackground(view.getContext());
+            float[] bgColor = new float[] {Color.red(color) / 255f, Color.green(color) / 255f,
+                    Color.blue(color) / 255f};
+            t.setColor(mContentOverlay, bgColor);
+            t.setAlpha(mContentOverlay, 0f);
+            t.reparent(mContentOverlay, mLeash);
+            t.apply();
+
+            addUpdateListener(valueAnimator -> {
+                float alpha = valueAnimator.getAnimatedFraction() < 0.5f
+                        ? 0
+                        : Utilities.mapToRange(valueAnimator.getAnimatedFraction(), 0.5f, 1f,
+                                0f, 1f, Interpolators.FAST_OUT_SLOW_IN);
+                t.setAlpha(mContentOverlay, alpha);
+                t.apply();
+            });
         } else {
             mSourceHintRectInsets = new Rect(sourceRectHint.left - appBounds.left,
                     sourceRectHint.top - appBounds.top,
@@ -232,6 +270,11 @@ public class SwipePipToHomeAnimator extends ValueAnimator {
 
     public Rect getDestinationBounds() {
         return mDestinationBounds;
+    }
+
+    @Nullable
+    public SurfaceControl getContentOverlay() {
+        return mContentOverlay;
     }
 
     /** @return {@link PictureInPictureSurfaceTransaction} for the final leash transaction. */
