@@ -506,9 +506,10 @@ public class DeviceProfile {
 
         // Workspace
         final boolean isVerticalLayout = isVerticalBarLayout();
-        float invIconSizeDp = isVerticalLayout ? inv.landscapeIconSize : inv.iconSize;
+        float invIconSizeDp = isLandscape ? inv.landscapeIconSize : inv.iconSize;
         iconSizePx = Math.max(1, pxFromDp(invIconSizeDp, mInfo.metrics, scale));
-        iconTextSizePx = (int) (Utilities.pxFromSp(inv.iconTextSize, mInfo.metrics) * scale);
+        float invIconTextSizeSp = isLandscape ? inv.landscapeIconTextSize : inv.iconTextSize;
+        iconTextSizePx = (int) (Utilities.pxFromSp(invIconTextSizeSp, mInfo.metrics) * scale);
         iconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * scale);
 
         setCellLayoutBorderSpacing((int) (cellLayoutBorderSpacingOriginalPx * scale));
