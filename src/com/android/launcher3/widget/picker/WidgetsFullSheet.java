@@ -169,7 +169,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         onWidgetsBound();
 
         mSearchAndRecommendationViewHolder.mSearchBar.initialize(
-                mLauncher.getPopupDataProvider().getAllWidgets(), /* searchModeListener= */ this);
+                mLauncher.getPopupDataProvider(), /* searchModeListener= */ this);
     }
 
     @Override
