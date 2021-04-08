@@ -38,7 +38,7 @@
 
     </com.android.launcher3.workprofile.PersonalWorkPagedView>
 
-    <include layout="@layout/personal_work_tabs"
+    <include layout="@layout/widgets_personal_work_tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp" />
