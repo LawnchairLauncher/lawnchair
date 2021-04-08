@@ -18,16 +18,11 @@ package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE_IN_OUT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.graphics.OverviewScrim.SCRIM_MULTIPLIER;
-import static com.android.launcher3.graphics.Scrim.SCRIM_PROGRESS;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_MODAL;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SCALE;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SCRIM_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_X;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_Y;
-import static com.android.launcher3.states.StateAnimationConfig.PLAY_ATOMIC_OVERVIEW_PEEK;
-import static com.android.launcher3.states.StateAnimationConfig.PLAY_ATOMIC_OVERVIEW_SCALE;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_OVERVIEW;
 import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_OFFSET;
 import static com.android.quickstep.views.RecentsView.RECENTS_GRID_PROGRESS;
@@ -42,7 +37,6 @@ import androidx.annotation.NonNull;
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.anim.PendingAnimation;
-import com.android.launcher3.graphics.OverviewScrim;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.touch.PagedOrientationHandler;
@@ -72,9 +66,6 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
         TASK_SECONDARY_TRANSLATION.set(mRecentsView, 0f);
 
         getContentAlphaProperty().set(mRecentsView, state.overviewUi ? 1f : 0);
-        OverviewScrim scrim = mLauncher.getDragLayer().getOverviewScrim();
-        SCRIM_PROGRESS.set(scrim, state.getOverviewScrimAlpha(mLauncher));
-        SCRIM_MULTIPLIER.set(scrim, 1f);
         getTaskModalnessProperty().set(mRecentsView, state.getOverviewModalness());
         RECENTS_GRID_PROGRESS.set(mRecentsView,
                 state.displayOverviewTasksAsGrid(mLauncher.getDeviceProfile()) ? 1f : 0f);
@@ -83,10 +74,6 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
     @Override
     public void setStateWithAnimation(LauncherState toState, StateAnimationConfig config,
             PendingAnimation builder) {
-        if (!config.hasAnimationFlag(PLAY_ATOMIC_OVERVIEW_PEEK | PLAY_ATOMIC_OVERVIEW_SCALE)) {
-            // The entire recents animation is played atomically.
-            return;
-        }
         if (config.hasAnimationFlag(SKIP_OVERVIEW)) {
             return;
         }
@@ -117,11 +104,6 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
 
         setter.setFloat(mRecentsView, getContentAlphaProperty(), toState.overviewUi ? 1 : 0,
                 config.getInterpolator(ANIM_OVERVIEW_FADE, AGGRESSIVE_EASE_IN_OUT));
-        OverviewScrim scrim = mLauncher.getDragLayer().getOverviewScrim();
-        setter.setFloat(scrim, SCRIM_PROGRESS, toState.getOverviewScrimAlpha(mLauncher),
-                config.getInterpolator(ANIM_OVERVIEW_SCRIM_FADE, LINEAR));
-        setter.setFloat(scrim, SCRIM_MULTIPLIER, 1f,
-                config.getInterpolator(ANIM_OVERVIEW_SCRIM_FADE, LINEAR));
 
         setter.setFloat(
                 mRecentsView, getTaskModalnessProperty(),

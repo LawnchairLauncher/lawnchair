@@ -59,7 +59,7 @@
     <string name="all_apps_prediction_tip">Your predicted apps</string>
 
     <!-- Content description for a close button. [CHAR LIMIT=NONE] -->
-    <string  name="gesture_tutorial_close_button_content_description" translatable="false">Close</string>
+    <string name="gesture_tutorial_close_button_content_description" translatable="false">Close</string>
 
     <!-- Hotseat educational strings for users who don't qualify for migration -->
     <string name="hotseat_edu_title_migrate">Get app suggestions on the bottom row of your Home screen</string>
@@ -91,14 +91,6 @@
     <!-- content description for hotseat items -->
     <string name="hotseat_prediction_content_description">Predicted app: <xliff:g id="title" example="Chrome">%1$s</xliff:g></string>
 
-    <!-- primary educational text shown for first time search users -->
-    <string name="search_edu_primary">Search your phone for apps, people, settings and more!</string>
-    <!-- secondary educational text shown for first time search users -->
-    <string name="search_edu_secondary">Tap keyboard search button to launch the first search
-        result.</string>
-
-    <!-- Dismiss button string for search education view -->
-    <string name="search_edu_dismiss">Got it.</string>
     <!-- Feedback shown during interactive parts of Back gesture tutorial for left edge when the gesture is too far from the edge. [CHAR LIMIT=100] -->
     <string name="back_gesture_feedback_swipe_too_far_from_left_edge">Make sure you swipe from the far-left edge.</string>
     <!-- Feedback shown during interactive parts of Back gesture tutorial for left edge when the gesture is cancelled. [CHAR LIMIT=100] -->

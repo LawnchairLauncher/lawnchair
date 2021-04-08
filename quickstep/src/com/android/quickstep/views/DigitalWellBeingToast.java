@@ -30,6 +30,7 @@ import android.content.Intent;
 import android.content.pm.LauncherApps;
 import android.content.pm.LauncherApps.AppUsageLimit;
 import android.graphics.Outline;
+import android.graphics.Paint;
 import android.icu.text.MeasureFormat;
 import android.icu.text.MeasureFormat.FormatWidth;
 import android.icu.util.Measure;
@@ -48,6 +49,7 @@ import androidx.annotation.StringRes;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.systemui.shared.recents.model.Task;
 
 import java.time.Duration;
@@ -70,7 +72,6 @@ public final class DigitalWellBeingToast {
     private View mBanner;
     private ViewOutlineProvider mOldBannerOutlineProvider;
     private float mBannerOffsetPercentage;
-    private float mBannerAlpha = 1f;
     private float mVerticalOffset = 0f;
 
     public DigitalWellBeingToast(BaseDraggingActivity activity, TaskView taskView) {
@@ -97,10 +98,6 @@ public final class DigitalWellBeingToast {
 
         mTaskView.setContentDescription(
                 getContentDescriptionForTask(mTask, appUsageLimitTimeMs, appRemainingTimeMs));
-        RecentsView rv = mTaskView.getRecentsView();
-        if (rv != null) {
-            rv.onDigitalWellbeingToastShown();
-        }
     }
 
     public String getText() {
@@ -266,7 +263,6 @@ public final class DigitalWellBeingToast {
         layoutParams.bottomMargin = ((ViewGroup.MarginLayoutParams)
                 mTaskView.getThumbnail().getLayoutParams()).bottomMargin;
         mBanner.setTranslationY(mBannerOffsetPercentage * mBanner.getHeight());
-        mBanner.setAlpha(mBannerAlpha);
         mTaskView.addView(mBanner);
     }
 
@@ -291,10 +287,16 @@ public final class DigitalWellBeingToast {
         }
     }
 
-    void updateBannerAlpha(float alpha) {
-        if (mBanner != null && mBannerAlpha != alpha) {
-            mBannerAlpha = alpha;
-            mBanner.setAlpha(alpha);
+    void setBannerColorTint(int color, float amount) {
+        if (mBanner == null) {
+            return;
         }
+        if (amount == 0) {
+            mBanner.setLayerType(View.LAYER_TYPE_NONE, null);
+        }
+        Paint layerPaint = new Paint();
+        layerPaint.setColorFilter(Utilities.makeColorTintingColorFilter(color, amount));
+        mBanner.setLayerType(View.LAYER_TYPE_HARDWARE, layerPaint);
+        mBanner.setLayerPaint(layerPaint);
     }
 }

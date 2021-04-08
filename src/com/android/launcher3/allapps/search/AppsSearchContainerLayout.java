@@ -36,14 +36,12 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Insettable;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItem;
 import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AlphabeticalAppsList;
 import com.android.launcher3.allapps.SearchUiManager;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.search.SearchCallback;
 
 import java.util.ArrayList;
@@ -136,7 +134,7 @@ public class AppsSearchContainerLayout extends ExtendedEditText
         mApps = appsView.getApps();
         mAppsView = appsView;
         mSearchBarController.initialize(
-                new DefaultAppSearchAlgorithm(mLauncher, LauncherAppState.getInstance(mLauncher)),
+                new DefaultAppSearchAlgorithm(mLauncher),
                 this, mLauncher, this);
     }
 
@@ -208,16 +206,6 @@ public class AppsSearchContainerLayout extends ExtendedEditText
         MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
         mlp.topMargin = insets.top;
         requestLayout();
-    }
-
-    @Override
-    public float getScrollRangeDelta(Rect insets) {
-        if (mLauncher.getDeviceProfile().isVerticalBarLayout()
-                || FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
-            return 0;
-        } else {
-            return insets.bottom + insets.top;
-        }
     }
 
     @Override

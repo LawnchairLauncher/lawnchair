@@ -16,6 +16,7 @@
 
 package com.android.quickstep.views;
 
+import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_SHARE;
 
 import android.content.Context;
@@ -32,6 +33,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.quickstep.SysUINavigationMode;
@@ -76,6 +78,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     private static final int INDEX_VISIBILITY_ALPHA = 1;
     private static final int INDEX_FULLSCREEN_ALPHA = 2;
     private static final int INDEX_HIDDEN_FLAGS_ALPHA = 3;
+    private static final int INDEX_SCROLL_ALPHA = 4;
 
     private final MultiValueAlpha mMultiValueAlpha;
 
@@ -87,6 +90,9 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
     protected T mCallbacks;
 
+    private float mModalness;
+    private float mModalTransformY;
+
     public OverviewActionsView(Context context) {
         this(context, null);
     }
@@ -97,7 +103,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
     public OverviewActionsView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr, 0);
-        mMultiValueAlpha = new MultiValueAlpha(this, 4);
+        mMultiValueAlpha = new MultiValueAlpha(this, 5);
         mMultiValueAlpha.setUpdateVisibility(true);
     }
 
@@ -189,6 +195,10 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         return mMultiValueAlpha.getProperty(INDEX_FULLSCREEN_ALPHA);
     }
 
+    public AlphaProperty getScrollAlpha() {
+        return mMultiValueAlpha.getProperty(INDEX_SCROLL_ALPHA);
+    }
+
     private void updateHorizontalPadding() {
         setPadding(mInsets.left, 0, mInsets.right, 0);
     }
@@ -223,5 +233,28 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         }
         bottomMargin += mInsets.bottom;
         return bottomMargin;
+    }
+
+    /**
+     * The current task is fully modal (modalness = 1) when it is shown on its own in a modal
+     * way. Modalness 0 means the task is shown in context with all the other tasks.
+     */
+    public void setTaskModalness(float modalness) {
+        mModalness = modalness;
+        applyTranslationY();
+    }
+
+    public void setModalTransformY(float modalTransformY) {
+        mModalTransformY = modalTransformY;
+        applyTranslationY();
+    }
+
+    private void applyTranslationY() {
+        setTranslationY(getModalTrans(mModalTransformY));
+    }
+
+    private float getModalTrans(float endTranslation) {
+        float progress = ACCEL_DEACCEL.getInterpolation(mModalness);
+        return Utilities.mapRange(progress, 0, endTranslation);
     }
 }

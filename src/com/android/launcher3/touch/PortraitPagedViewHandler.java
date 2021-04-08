@@ -22,7 +22,6 @@ import static com.android.launcher3.touch.SingleAxisSwipeDetector.VERTICAL;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_TYPE_MAIN;
-import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_TYPE_SIDE;
 
 import android.content.res.Resources;
 import android.graphics.PointF;
@@ -71,14 +70,6 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     @Override
     public void scrollerStartScroll(OverScroller scroller, int newPosition) {
         scroller.startScroll(newPosition - scroller.getCurrPos(), scroller.getCurrPos());
-    }
-
-    @Override
-    public void getCurveProperties(PagedView view, Rect insets, CurveProperties out) {
-        out.scroll = view.getScrollX();
-        out.halfPageSize = view.getNormalChildWidth() / 2;
-        out.halfScreenSize = view.getMeasuredWidth() / 2;
-        out.screenCenter = insets.left + view.getPaddingLeft() + out.scroll + out.halfPageSize;
     }
 
     @Override
@@ -306,16 +297,17 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
 
     @Override
     public List<SplitPositionOption> getSplitPositionOptions(DeviceProfile dp) {
-        List<SplitPositionOption> options = new ArrayList<>(2);
+        List<SplitPositionOption> options = new ArrayList<>(1);
         // TODO: Add in correct icons
-        if (dp.isLandscape) { // or seascape
+        if (dp.isSeascape()) { // or seascape
             // Add left/right options
+            options.add(new SplitPositionOption(
+                    R.drawable.ic_split_screen, R.string.split_screen_position_right,
+                    STAGE_POSITION_TOP_OR_LEFT, STAGE_TYPE_MAIN));
+        } else if (dp.isLandscape) {
             options.add(new SplitPositionOption(
                     R.drawable.ic_split_screen, R.string.split_screen_position_left,
                     STAGE_POSITION_TOP_OR_LEFT, STAGE_TYPE_MAIN));
-            options.add(new SplitPositionOption(
-                    R.drawable.ic_split_screen, R.string.split_screen_position_right,
-                    STAGE_POSITION_BOTTOM_OR_RIGHT, STAGE_TYPE_SIDE));
         } else {
             // Only add top option
             options.add(new SplitPositionOption(

@@ -193,7 +193,6 @@ public class DepthController implements StateHandler<LauncherState>,
     public void setStateWithAnimation(LauncherState toState, StateAnimationConfig config,
             PendingAnimation animation) {
         if (mSurface == null
-                || config.onlyPlayAtomicComponent()
                 || config.hasAnimationFlag(SKIP_DEPTH_CONTROLLER)
                 || mIgnoreStateChangesDuringMultiWindowAnimation) {
             return;

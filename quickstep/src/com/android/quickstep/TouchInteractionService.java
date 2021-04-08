@@ -239,8 +239,9 @@ public class TouchInteractionService extends Service implements PluginListener<O
         @BinderThread
         public void onSystemUiStateChanged(int stateFlags) {
             MAIN_EXECUTOR.execute(() -> {
+                int lastFlags = mDeviceState.getSystemUiStateFlags();
                 mDeviceState.setSystemUiFlags(stateFlags);
-                TouchInteractionService.this.onSystemUiFlagsChanged();
+                TouchInteractionService.this.onSystemUiFlagsChanged(lastFlags);
             });
         }
 
@@ -362,7 +363,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
         mResetGestureInputConsumer = new ResetGestureInputConsumer(mTaskAnimationManager);
         mInputConsumer = InputConsumerController.getRecentsAnimationInputConsumer();
         mInputConsumer.registerInputConsumer();
-        onSystemUiFlagsChanged();
+        onSystemUiFlagsChanged(mDeviceState.getSystemUiStateFlags());
         onAssistantVisibilityChanged();
 
         // Temporarily disable model preload
@@ -414,7 +415,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
     }
 
     @UiThread
-    private void onSystemUiFlagsChanged() {
+    private void onSystemUiFlagsChanged(int lastSysUIFlags) {
         if (mDeviceState.isUserUnlocked()) {
             int systemUiStateFlags = mDeviceState.getSystemUiStateFlags();
             SystemUiProxy.INSTANCE.get(this).setLastSystemUiStateFlags(systemUiStateFlags);
@@ -422,14 +423,17 @@ public class TouchInteractionService extends Service implements PluginListener<O
             mOverviewComponentObserver.getActivityInterface().onSystemUiFlagsChanged(
                     systemUiStateFlags);
 
-            // Update the tracing state
-            if ((systemUiStateFlags & SYSUI_STATE_TRACING_ENABLED) != 0) {
-                Log.d(TAG, "Starting tracing.");
-                ProtoTracer.INSTANCE.get(this).start();
-            } else {
-                Log.d(TAG, "Stopping tracing. Dumping to file="
-                    + ProtoTracer.INSTANCE.get(this).getTraceFile());
-                ProtoTracer.INSTANCE.get(this).stop();
+            if ((lastSysUIFlags & SYSUI_STATE_TRACING_ENABLED) !=
+                    (systemUiStateFlags & SYSUI_STATE_TRACING_ENABLED)) {
+                // Update the tracing state
+                if ((systemUiStateFlags & SYSUI_STATE_TRACING_ENABLED) != 0) {
+                    Log.d(TAG, "Starting tracing.");
+                    ProtoTracer.INSTANCE.get(this).start();
+                } else {
+                    Log.d(TAG, "Stopping tracing. Dumping to file="
+                            + ProtoTracer.INSTANCE.get(this).getTraceFile());
+                    ProtoTracer.INSTANCE.get(this).stop();
+                }
             }
         }
     }

@@ -23,10 +23,8 @@ import android.widget.Button;
 
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.touch.PagedOrientationHandler;
-import com.android.quickstep.views.RecentsView.PageCallbacks;
-import com.android.quickstep.views.RecentsView.ScrollState;
 
-public class ClearAllButton extends Button implements PageCallbacks {
+public class ClearAllButton extends Button {
 
     public static final FloatProperty<ClearAllButton> VISIBILITY_ALPHA =
             new FloatProperty<ClearAllButton>("visibilityAlpha") {
@@ -45,14 +43,15 @@ public class ClearAllButton extends Button implements PageCallbacks {
     private float mScrollAlpha = 1;
     private float mContentAlpha = 1;
     private float mVisibilityAlpha = 1;
+    private float mFullscreenProgress = 1;
     private float mGridProgress = 1;
 
     private boolean mIsRtl;
     private float mNormalTranslationPrimary;
+    private float mFullscreenTranslationPrimary;
     private float mGridTranslationPrimary;
-    private float mGridTranslationSecondary;
     private float mGridScrollOffset;
-    private float mOffsetTranslationPrimary;
+    private float mScrollOffsetPrimary;
 
     private int mSidePadding;
 
@@ -98,8 +97,7 @@ public class ClearAllButton extends Button implements PageCallbacks {
         }
     }
 
-    @Override
-    public void onPageScroll(ScrollState scrollState, boolean gridEnabled) {
+    public void onRecentsViewScroll(int scrollFromEdge, boolean gridEnabled) {
         RecentsView recentsView = getRecentsView();
         if (recentsView == null) {
             return;
@@ -112,7 +110,7 @@ public class ClearAllButton extends Button implements PageCallbacks {
         }
 
         int leftEdgeScroll = recentsView.getLeftMostChildScroll();
-        float adjustedScrollFromEdge = scrollState.scrollFromEdge - leftEdgeScroll;
+        int adjustedScrollFromEdge = scrollFromEdge - leftEdgeScroll;
         float shift = Math.min(adjustedScrollFromEdge, orientationSize);
         mNormalTranslationPrimary = mIsRtl ? -shift : shift;
         if (!gridEnabled) {
@@ -130,13 +128,13 @@ public class ClearAllButton extends Button implements PageCallbacks {
         setClickable(Math.min(alpha, 1) == 1);
     }
 
-    public void setGridTranslationPrimary(float gridTranslationPrimary) {
-        mGridTranslationPrimary = gridTranslationPrimary;
+    public void setFullscreenTranslationPrimary(float fullscreenTranslationPrimary) {
+        mFullscreenTranslationPrimary = fullscreenTranslationPrimary;
         applyPrimaryTranslation();
     }
 
-    public void setGridTranslationSecondary(float gridTranslationSecondary) {
-        mGridTranslationSecondary = gridTranslationSecondary;
+    public void setGridTranslationPrimary(float gridTranslationPrimary) {
+        mGridTranslationPrimary = gridTranslationPrimary;
         applyPrimaryTranslation();
     }
 
@@ -144,22 +142,34 @@ public class ClearAllButton extends Button implements PageCallbacks {
         mGridScrollOffset = gridScrollOffset;
     }
 
-    public void setOffsetTranslationPrimary(float offsetTranslationPrimary) {
-        mOffsetTranslationPrimary = offsetTranslationPrimary;
-        applyPrimaryTranslation();
+    public void setScrollOffsetPrimary(float scrollOffsetPrimary) {
+        mScrollOffsetPrimary = scrollOffsetPrimary;
     }
 
-    public float getScrollAdjustment(boolean gridEnabled) {
+    public float getScrollAdjustment(boolean fullscreenEnabled, boolean gridEnabled) {
         float scrollAdjustment = 0;
+        if (fullscreenEnabled) {
+            scrollAdjustment += mFullscreenTranslationPrimary;
+        }
         if (gridEnabled) {
             scrollAdjustment += mGridTranslationPrimary + mGridScrollOffset;
         }
-        scrollAdjustment += mOffsetTranslationPrimary;
+        scrollAdjustment += mScrollOffsetPrimary;
         return scrollAdjustment;
     }
 
-    public float getOffsetAdjustment(boolean gridEnabled) {
-        return getScrollAdjustment(gridEnabled);
+    public float getOffsetAdjustment(boolean fullscreenEnabled, boolean gridEnabled) {
+        return getScrollAdjustment(fullscreenEnabled, gridEnabled);
+    }
+
+    /**
+     * Adjust translation when this TaskView is about to be shown fullscreen.
+     *
+     * @param progress: 0 = no translation; 1 = translate according to TaskVIew translations.
+     */
+    public void setFullscreenProgress(float progress) {
+        mFullscreenProgress = progress;
+        applyPrimaryTranslation();
     }
 
     /**
@@ -181,8 +191,8 @@ public class ClearAllButton extends Button implements PageCallbacks {
         PagedOrientationHandler orientationHandler = recentsView.getPagedOrientationHandler();
         orientationHandler.getPrimaryViewTranslate().set(this,
                 orientationHandler.getPrimaryValue(0f, getOriginalTranslationY())
-                        + mNormalTranslationPrimary + mOffsetTranslationPrimary + getGridTrans(
-                        mGridTranslationPrimary));
+                        + mNormalTranslationPrimary + getFullscreenTrans(
+                        mFullscreenTranslationPrimary) + getGridTrans(mGridTranslationPrimary));
     }
 
     private void applySecondaryTranslation() {
@@ -193,8 +203,11 @@ public class ClearAllButton extends Button implements PageCallbacks {
 
         PagedOrientationHandler orientationHandler = recentsView.getPagedOrientationHandler();
         orientationHandler.getSecondaryViewTranslate().set(this,
-                orientationHandler.getSecondaryValue(0f, getOriginalTranslationY())
-                        + getGridTrans(mGridTranslationSecondary));
+                orientationHandler.getSecondaryValue(0f, getOriginalTranslationY()));
+    }
+
+    private float getFullscreenTrans(float endTranslation) {
+        return mFullscreenProgress > 0 ? endTranslation : 0;
     }
 
     private float getGridTrans(float endTranslation) {

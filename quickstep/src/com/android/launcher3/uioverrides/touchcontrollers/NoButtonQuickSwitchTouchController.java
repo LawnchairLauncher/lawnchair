@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.uioverrides.touchcontrollers;
 
+import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.LauncherAnimUtils.newCancelListener;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
@@ -33,6 +34,7 @@ import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FA
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_VERTICAL_PROGRESS;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_TRANSLATE;
+import static com.android.launcher3.states.StateAnimationConfig.SKIP_ALL_ANIMATIONS;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_OVERVIEW;
 import static com.android.launcher3.touch.BothAxesSwipeDetector.DIRECTION_RIGHT;
 import static com.android.launcher3.touch.BothAxesSwipeDetector.DIRECTION_UP;
@@ -58,7 +60,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
-import com.android.launcher3.graphics.OverviewScrim;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.touch.BaseSwipeDetector;
 import com.android.launcher3.touch.BothAxesSwipeDetector;
@@ -230,8 +231,8 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         //   - OverviewScrim
         PendingAnimation xAnim = new PendingAnimation((long) (mXRange * 2));
         xAnim.setFloat(mRecentsView, ADJACENT_PAGE_OFFSET, scaleAndOffset[1], LINEAR);
-        xAnim.setFloat(mLauncher.getDragLayer().getOverviewScrim(), OverviewScrim.SCRIM_PROGRESS,
-                toState.getOverviewScrimAlpha(mLauncher), LINEAR);
+        xAnim.setFloat(mLauncher.getScrimView(), VIEW_ALPHA,
+                toState.getWorkspaceScrimAlpha(mLauncher), LINEAR);
         mXOverviewAnim = xAnim.createPlaybackController();
         mXOverviewAnim.dispatchOnStart();
 
@@ -372,7 +373,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
             // animation as from an app.
             StateAnimationConfig config = new StateAnimationConfig();
             // Update mNonOverviewAnim to do nothing so it doesn't interfere.
-            config.animFlags = 0;
+            config.animFlags = SKIP_ALL_ANIMATIONS;
             updateNonOverviewAnim(targetState, config);
             nonOverviewAnim = mNonOverviewAnim.getAnimationPlayer();
 

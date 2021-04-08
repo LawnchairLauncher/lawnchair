@@ -34,7 +34,6 @@ import static com.android.launcher3.LauncherState.FLAG_NON_INTERACTIVE;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.NO_OFFSET;
 import static com.android.launcher3.LauncherState.NO_SCALE;
-import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.getSupportedActions;
@@ -61,6 +60,10 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
 import android.content.ActivityNotFoundException;
@@ -149,7 +152,6 @@ import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.qsb.QsbContainerView;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
-import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.testing.TestLogging;
@@ -269,9 +271,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     private static final int NEW_APPS_ANIMATION_INACTIVE_TIMEOUT_SECONDS = 5;
     @Thunk @VisibleForTesting public static final int NEW_APPS_ANIMATION_DELAY = 500;
 
-    private static final int APPS_VIEW_ALPHA_CHANNEL_INDEX = 1;
-    private static final int SCRIM_VIEW_ALPHA_CHANNEL_INDEX = 0;
-
     private static final int THEME_CROSS_FADE_ANIMATION_DURATION = 375;
 
     private Configuration mOldConfig;
@@ -342,8 +341,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
     private RotationHelper mRotationHelper;
 
-    private float mCurrentAssistantVisibility = 0f;
-
     protected LauncherOverlayManager mOverlayManager;
     // If true, overlay callbacks are deferred
     private boolean mDeferOverlayCallbacks;
@@ -378,6 +375,44 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                     .penaltyLog()
                     .penaltyDeath()
                     .build());
+        }
+
+        if (Utilities.IS_DEBUG_DEVICE && FeatureFlags.NOTIFY_CRASHES.get()) {
+            final String notificationChannelId = "com.android.launcher3.Debug";
+            final String notificationChannelName = "Debug";
+            final String notificationTag = "Debug";
+            final int notificationId = 0;
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(new NotificationChannel(
+                    notificationChannelId, notificationChannelName,
+                    NotificationManager.IMPORTANCE_HIGH));
+
+            Thread.currentThread().setUncaughtExceptionHandler((thread, throwable) -> {
+                String stackTrace = Log.getStackTraceString(throwable);
+
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                shareIntent.putExtra(Intent.EXTRA_TEXT, stackTrace);
+                shareIntent = Intent.createChooser(shareIntent, null);
+                PendingIntent sharePendingIntent = PendingIntent.getActivity(
+                        this, 0, shareIntent, PendingIntent.FLAG_UPDATE_CURRENT
+                );
+
+                Notification notification = new Notification.Builder(this, notificationChannelId)
+                        .setSmallIcon(android.R.drawable.ic_menu_close_clear_cancel)
+                        .setContentTitle("Launcher crash detected!")
+                        .setStyle(new Notification.BigTextStyle().bigText(stackTrace))
+                        .addAction(android.R.drawable.ic_menu_share, "Share", sharePendingIntent)
+                        .build();
+                notificationManager.notify(notificationTag, notificationId, notification);
+
+                Thread.UncaughtExceptionHandler defaultUncaughtExceptionHandler =
+                        Thread.getDefaultUncaughtExceptionHandler();
+                if (defaultUncaughtExceptionHandler != null) {
+                    defaultUncaughtExceptionHandler.uncaughtException(thread, throwable);
+                }
+            });
         }
 
         super.onCreate(savedInstanceState);
@@ -457,24 +492,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                 OverlayPlugin.class, false /* allowedMultiple */);
 
         mRotationHelper.initialize();
-
-        mStateManager.addStateListener(new StateListener<LauncherState>() {
-
-            @Override
-            public void onStateTransitionComplete(LauncherState finalState) {
-                float alpha = 1f - mCurrentAssistantVisibility;
-                if (finalState == NORMAL) {
-                    mAppsView.getAlphaProperty(APPS_VIEW_ALPHA_CHANNEL_INDEX).setValue(alpha);
-                } else if (finalState == OVERVIEW) {
-                    mAppsView.getAlphaProperty(APPS_VIEW_ALPHA_CHANNEL_INDEX).setValue(alpha);
-                    mScrimView.setAlpha(alpha);
-                } else {
-                    mAppsView.getAlphaProperty(APPS_VIEW_ALPHA_CHANNEL_INDEX).setValue(1f);
-                    mScrimView.setAlpha(1f);
-                }
-            }
-        });
-
         TraceHelper.INSTANCE.endSection(traceToken);
 
         mUserChangedCallbackCloseable = UserCache.INSTANCE.get(this).addUserChangeListener(
@@ -563,15 +580,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     }
 
     public void onAssistantVisibilityChanged(float visibility) {
-        mCurrentAssistantVisibility = visibility;
-        float alpha = 1f - visibility;
-        LauncherState state = mStateManager.getState();
-        if (state == NORMAL) {
-            mAppsView.getAlphaProperty(APPS_VIEW_ALPHA_CHANNEL_INDEX).setValue(alpha);
-        } else if (state == OVERVIEW) {
-            mAppsView.getAlphaProperty(APPS_VIEW_ALPHA_CHANNEL_INDEX).setValue(alpha);
-            mScrimView.setAlpha(alpha);
-        }
+        mHotseat.getQsb().setAlpha(1f - visibility);
     }
 
     private void initDeviceProfile(InvariantDeviceProfile idp) {
@@ -1027,7 +1036,19 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         }
         // When multiple pages are visible, show persistent page indicator
         mWorkspace.getPageIndicator().setShouldAutoHide(!state.hasFlag(FLAG_MULTI_PAGE));
+
         mPrevLauncherState = mStateManager.getCurrentStableState();
+        if (mPrevLauncherState != state && ALL_APPS.equals(state)
+                // Making sure mAllAppsSessionLogId is null to avoid double logging.
+                && mAllAppsSessionLogId == null) {
+            // creates new instance ID since new all apps session is started.
+            mAllAppsSessionLogId = new InstanceIdSequence().newInstanceId();
+            getStatsLogManager()
+                    .logger()
+                    .log(FeatureFlags.ENABLE_DEVICE_SEARCH.get()
+                            ? LAUNCHER_ALLAPPS_ENTRY_WITH_DEVICE_SEARCH
+                            : LAUNCHER_ALLAPPS_ENTRY);
+        }
     }
 
     @Override
@@ -1052,16 +1073,8 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
             getRotationHelper().setCurrentStateRequest(REQUEST_NONE);
         }
 
-        if (ALL_APPS.equals(state)) {
-            // creates new instance ID since new all apps session is started.
-            mAllAppsSessionLogId = new InstanceIdSequence().newInstanceId();
-            getStatsLogManager()
-                    .logger()
-                    .log(FeatureFlags.ENABLE_DEVICE_SEARCH.get()
-                            ? LAUNCHER_ALLAPPS_ENTRY_WITH_DEVICE_SEARCH
-                            : LAUNCHER_ALLAPPS_ENTRY);
-        } else if (ALL_APPS.equals(mPrevLauncherState)
-                // Check if mLogInstanceId is not null to make sure exit event is logged only once.
+        if (mPrevLauncherState != state && !ALL_APPS.equals(state)
+                // Making sure mAllAppsSessionLogId is not null to avoid double logging.
                 && mAllAppsSessionLogId != null) {
             getStatsLogManager().logger().log(LAUNCHER_ALLAPPS_EXIT);
             mAllAppsSessionLogId = null;
@@ -1178,8 +1191,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
         // Setup the drag controller (drop targets have to be added in reverse order in priority)
         mDropTargetBar.setup(mDragController);
-
-        mAllAppsController.setupViews(mAppsView, mScrimView);
+        mAllAppsController.setupViews(mAppsView);
     }
 
     /**

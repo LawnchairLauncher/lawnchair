@@ -16,6 +16,7 @@
 
 package com.android.launcher3.uioverrides.touchcontrollers;
 
+import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.LauncherAnimUtils.newCancelListener;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.HINT_STATE;
@@ -38,7 +39,6 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.graphics.PointF;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.ViewConfiguration;
 
 import com.android.launcher3.Launcher;
@@ -46,7 +46,6 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.graphics.OverviewScrim;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.util.VibratorWrapper;
 import com.android.quickstep.SystemUiProxy;
@@ -108,11 +107,11 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
     }
 
     @Override
-    protected float initCurrentAnimation(int animComponents) {
-        float progressMultiplier = super.initCurrentAnimation(animComponents);
+    protected float initCurrentAnimation() {
+        float progressMultiplier = super.initCurrentAnimation();
         if (mToState == HINT_STATE) {
             // Track the drag across the entire height of the screen.
-            progressMultiplier = -1 / getShiftRange();
+            progressMultiplier = -1f / mLauncher.getDeviceProfile().heightPx;
         }
         return progressMultiplier;
     }
@@ -129,10 +128,10 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
 
         if (mFromState == NORMAL && mToState == HINT_STATE) {
             mNormalToHintOverviewScrimAnimator = ObjectAnimator.ofFloat(
-                    mLauncher.getDragLayer().getOverviewScrim(),
-                    OverviewScrim.SCRIM_PROGRESS,
-                    mFromState.getOverviewScrimAlpha(mLauncher),
-                    mToState.getOverviewScrimAlpha(mLauncher));
+                    mLauncher.getScrimView(),
+                    VIEW_ALPHA,
+                    mFromState.getWorkspaceScrimAlpha(mLauncher),
+                    mToState.getWorkspaceScrimAlpha(mLauncher));
         }
         mStartedOverview = false;
         mReachedOverview = false;
@@ -153,11 +152,6 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
             goToOverviewOrHomeOnDragEnd(velocity);
         } else {
             super.onDragEnd(velocity);
-        }
-
-        View searchView = mLauncher.getHotseat().getQsb();
-        if (searchView instanceof FeedbackHandler) {
-            ((FeedbackHandler) searchView).resetFeedback();
         }
 
         mMotionPauseDetector.clear();
@@ -188,13 +182,13 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
         }
         mNormalToHintOverviewScrimAnimator = null;
         mCurrentAnimation.getTarget().addListener(newCancelListener(() ->
-            mLauncher.getStateManager().goToState(OVERVIEW, true, () -> {
-                mOverviewResistYAnim = AnimatorControllerWithResistance
-                        .createRecentsResistanceFromOverviewAnim(mLauncher, null)
-                        .createPlaybackController();
-                mReachedOverview = true;
-                maybeSwipeInteractionToOverviewComplete();
-            })));
+                mLauncher.getStateManager().goToState(OVERVIEW, true, () -> {
+                    mOverviewResistYAnim = AnimatorControllerWithResistance
+                            .createRecentsResistanceFromOverviewAnim(mLauncher, null)
+                            .createPlaybackController();
+                    mReachedOverview = true;
+                    maybeSwipeInteractionToOverviewComplete();
+                })));
 
         mCurrentAnimation.getTarget().removeListener(mClearStateOnCancelListener);
         mCurrentAnimation.dispatchOnCancel();
@@ -203,7 +197,7 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
     }
 
     private void maybeSwipeInteractionToOverviewComplete() {
-        if (mReachedOverview && mDetector.isSettlingState()) {
+        if (mReachedOverview && !mDetector.isDraggingState()) {
             onSwipeInteractionCompleted(OVERVIEW);
         }
     }
@@ -245,7 +239,7 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
     private void goToOverviewOrHomeOnDragEnd(float velocity) {
         boolean goToHomeInsteadOfOverview = !mMotionPauseDetector.isPaused();
         if (goToHomeInsteadOfOverview) {
-            new OverviewToHomeAnim(mLauncher, ()-> onSwipeInteractionCompleted(NORMAL))
+            new OverviewToHomeAnim(mLauncher, () -> onSwipeInteractionCompleted(NORMAL))
                     .animateWithVelocity(velocity);
         }
         if (mReachedOverview) {
@@ -281,17 +275,14 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
             LauncherState fromState, LauncherState toState) {
         if (fromState == NORMAL && toState == ALL_APPS) {
             StateAnimationConfig builder = new StateAnimationConfig();
-            // Fade in prediction icons quickly, then rest of all apps after reaching overview.
-            float progressToReachOverview = NORMAL.getVerticalProgress(mLauncher)
-                    - OVERVIEW.getVerticalProgress(mLauncher);
             builder.setInterpolator(ANIM_ALL_APPS_HEADER_FADE, Interpolators.clampToProgress(
                     ACCEL,
                     0,
-                    ALL_APPS_CONTENT_FADE_THRESHOLD));
+                    ALL_APPS_CONTENT_FADE_MAX_CLAMPING_THRESHOLD));
             builder.setInterpolator(ANIM_ALL_APPS_FADE, Interpolators.clampToProgress(
                     ACCEL,
-                    progressToReachOverview,
-                    progressToReachOverview + ALL_APPS_CONTENT_FADE_THRESHOLD));
+                    ALL_APPS_CONTENT_FADE_MIN_CLAMPING_THRESHOLD,
+                    ALL_APPS_CONTENT_FADE_MAX_CLAMPING_THRESHOLD));
 
             // Get workspace out of the way quickly, to prepare for potential pause.
             builder.setInterpolator(ANIM_WORKSPACE_SCALE, DEACCEL_3);
@@ -300,29 +291,17 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
             return builder;
         } else if (fromState == ALL_APPS && toState == NORMAL) {
             StateAnimationConfig builder = new StateAnimationConfig();
-            // Keep all apps/predictions opaque until the very end of the transition.
-            float progressToReachOverview = OVERVIEW.getVerticalProgress(mLauncher);
+
             builder.setInterpolator(ANIM_ALL_APPS_FADE, Interpolators.clampToProgress(
                     DEACCEL,
-                    progressToReachOverview - ALL_APPS_CONTENT_FADE_THRESHOLD,
-                    progressToReachOverview));
+                    1 - ALL_APPS_CONTENT_FADE_MAX_CLAMPING_THRESHOLD,
+                    1 - ALL_APPS_CONTENT_FADE_MIN_CLAMPING_THRESHOLD));
             builder.setInterpolator(ANIM_ALL_APPS_HEADER_FADE, Interpolators.clampToProgress(
                     DEACCEL,
-                    1 - ALL_APPS_CONTENT_FADE_THRESHOLD,
+                    1 - ALL_APPS_CONTENT_FADE_MAX_CLAMPING_THRESHOLD,
                     1));
             return builder;
         }
         return super.getConfigForStates(fromState, toState);
-    }
-
-    /**
-     * Interface for views with feedback animation requiring reset
-     */
-    public interface FeedbackHandler {
-
-        /**
-         * reset searchWidget feedback
-         */
-        void resetFeedback();
     }
 }

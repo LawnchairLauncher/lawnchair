@@ -90,4 +90,9 @@ public class AllAppsState extends LauncherState {
     public LauncherState getHistoryForState(LauncherState previousState) {
         return previousState == OVERVIEW ? OVERVIEW : NORMAL;
     }
+
+    @Override
+    public float getWorkspaceScrimAlpha(Launcher launcher) {
+        return 1;
+    }
 }

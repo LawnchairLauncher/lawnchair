@@ -29,6 +29,7 @@ import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceControl;
 import android.view.View;
+import android.window.PictureInPictureSurfaceTransaction;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -46,9 +47,11 @@ import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
  * Launcher and SysUI. Also, there should be one source of truth for the corner radius of the
  * PiP window, which would ideally be on SysUI side as well.
  */
-public class SwipePipToHomeAnimator extends ValueAnimator implements
-        ValueAnimator.AnimatorUpdateListener {
+public class SwipePipToHomeAnimator extends ValueAnimator {
     private static final String TAG = SwipePipToHomeAnimator.class.getSimpleName();
+
+    public static final float FRACTION_START = 0f;
+    public static final float FRACTION_END = 1f;
 
     private final int mTaskId;
     private final ComponentName mComponentName;
@@ -139,7 +142,7 @@ public class SwipePipToHomeAnimator extends ValueAnimator implements
                 mHasAnimationEnded = true;
             }
         });
-        addUpdateListener(this);
+        addUpdateListener(this::onAnimationUpdate);
     }
 
     /** sets the from rotation if it's different from the target rotation. */
@@ -167,48 +170,53 @@ public class SwipePipToHomeAnimator extends ValueAnimator implements
                 mAppBounds.top + mDestinationBounds.height());
     }
 
-    @Override
-    public void onAnimationUpdate(ValueAnimator animator) {
+    private void onAnimationUpdate(ValueAnimator animator) {
         if (mHasAnimationEnded) return;
-
-        final float fraction = animator.getAnimatedFraction();
-        final Rect bounds = mRectEvaluator.evaluate(fraction, mStartBounds,
-                mDestinationBoundsAnimation);
         final SurfaceControl.Transaction tx =
                 PipSurfaceTransactionHelper.newSurfaceControlTransaction();
-        if (mSourceHintRectInsets == null) {
-            // no source rect hint been set, directly scale the window down
-            onAnimationScale(fraction, tx, bounds);
-        } else {
-            // scale and crop according to the source rect hint
-            onAnimationScaleAndCrop(fraction, tx, bounds);
-        }
-        mSurfaceTransactionHelper.resetCornerRadius(tx, mLeash);
+        onAnimationUpdate(tx, animator.getAnimatedFraction());
         tx.apply();
     }
 
+    private PictureInPictureSurfaceTransaction onAnimationUpdate(SurfaceControl.Transaction tx,
+            float fraction) {
+        final Rect bounds = mRectEvaluator.evaluate(fraction, mStartBounds,
+                mDestinationBoundsAnimation);
+        final PictureInPictureSurfaceTransaction op;
+        if (mSourceHintRectInsets == null) {
+            // no source rect hint been set, directly scale the window down
+            op = onAnimationScale(fraction, tx, bounds);
+        } else {
+            // scale and crop according to the source rect hint
+            op = onAnimationScaleAndCrop(fraction, tx, bounds);
+        }
+        return op;
+    }
+
     /** scale the window directly with no source rect hint being set */
-    private void onAnimationScale(float fraction, SurfaceControl.Transaction tx, Rect bounds) {
+    private PictureInPictureSurfaceTransaction onAnimationScale(
+            float fraction, SurfaceControl.Transaction tx, Rect bounds) {
         if (mFromRotation == Surface.ROTATION_90 || mFromRotation == Surface.ROTATION_270) {
             final RotatedPosition rotatedPosition = getRotatedPosition(fraction);
-            mSurfaceTransactionHelper.scale(tx, mLeash, mAppBounds, bounds,
+            return mSurfaceTransactionHelper.scale(tx, mLeash, mAppBounds, bounds,
                     rotatedPosition.degree, rotatedPosition.positionX, rotatedPosition.positionY);
         } else {
-            mSurfaceTransactionHelper.scale(tx, mLeash, mAppBounds, bounds);
+            return mSurfaceTransactionHelper.scale(tx, mLeash, mAppBounds, bounds);
         }
     }
 
     /** scale and crop the window with source rect hint */
-    private void onAnimationScaleAndCrop(float fraction, SurfaceControl.Transaction tx,
+    private PictureInPictureSurfaceTransaction onAnimationScaleAndCrop(
+            float fraction, SurfaceControl.Transaction tx,
             Rect bounds) {
         final Rect insets = mInsetsEvaluator.evaluate(fraction, mSourceInsets,
                 mSourceHintRectInsets);
         if (mFromRotation == Surface.ROTATION_90 || mFromRotation == Surface.ROTATION_270) {
             final RotatedPosition rotatedPosition = getRotatedPosition(fraction);
-            mSurfaceTransactionHelper.scaleAndRotate(tx, mLeash, mAppBounds, bounds, insets,
+            return mSurfaceTransactionHelper.scaleAndRotate(tx, mLeash, mAppBounds, bounds, insets,
                     rotatedPosition.degree, rotatedPosition.positionX, rotatedPosition.positionY);
         } else {
-            mSurfaceTransactionHelper.scaleAndCrop(tx, mLeash, mAppBounds, bounds, insets);
+            return mSurfaceTransactionHelper.scaleAndCrop(tx, mLeash, mAppBounds, bounds, insets);
         }
     }
 
@@ -224,34 +232,12 @@ public class SwipePipToHomeAnimator extends ValueAnimator implements
         return mDestinationBounds;
     }
 
-    /**
-     * @return {@link Rect} of the final window crop in destination orientation.
-     */
-    public Rect getFinishWindowCrop() {
-        final Rect windowCrop = new Rect(mAppBounds);
-        if (mSourceHintRectInsets != null) {
-            windowCrop.inset(mSourceHintRectInsets);
-        }
-        return windowCrop;
-    }
-
-    /**
-     * @return Array of 9 floats represents the final transform in destination orientation.
-     */
-    public float[] getFinishTransform() {
-        final Matrix transform = new Matrix();
-        final float[] float9 = new float[9];
-        if (mSourceHintRectInsets == null) {
-            transform.setRectToRect(new RectF(mAppBounds), new RectF(mDestinationBounds),
-                    Matrix.ScaleToFit.FILL);
-        } else {
-            final float scale = mAppBounds.width() <= mAppBounds.height()
-                    ? (float) mDestinationBounds.width() / mAppBounds.width()
-                    : (float) mDestinationBounds.height() / mAppBounds.height();
-            transform.setScale(scale, scale);
-        }
-        transform.getValues(float9);
-        return float9;
+    /** @return {@link PictureInPictureSurfaceTransaction} for the final leash transaction. */
+    public PictureInPictureSurfaceTransaction getFinishTransaction() {
+        // get the final leash operations but do not apply to the leash.
+        final SurfaceControl.Transaction tx =
+                PipSurfaceTransactionHelper.newSurfaceControlTransaction();
+        return onAnimationUpdate(tx, FRACTION_END);
     }
 
     private RotatedPosition getRotatedPosition(float fraction) {

@@ -99,13 +99,12 @@ public class OverviewState extends LauncherState {
 
     @Override
     public int getVisibleElements(Launcher launcher) {
-        return displayOverviewTasksAsGrid(launcher.getDeviceProfile()) ? CLEAR_ALL_BUTTON
-                : CLEAR_ALL_BUTTON | OVERVIEW_ACTIONS;
+        return CLEAR_ALL_BUTTON | OVERVIEW_ACTIONS;
     }
 
     @Override
-    public float getOverviewScrimAlpha(Launcher launcher) {
-        return 0.5f;
+    public float getWorkspaceScrimAlpha(Launcher launcher) {
+        return 1f;
     }
 
     @Override

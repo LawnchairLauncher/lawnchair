@@ -30,17 +30,14 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.util.IntProperty;
 
 import androidx.annotation.NonNull;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
-import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.BaseActivityInterface;
-import com.android.quickstep.views.RecentsView.ScrollState;
 import com.android.quickstep.views.TaskThumbnailView.PreviewPositionHelper;
 import com.android.quickstep.views.TaskView.FullscreenDrawParams;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -51,19 +48,6 @@ import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.
  * A utility class which emulates the layout behavior of TaskView and RecentsView
  */
 public class TaskViewSimulator implements TransformParams.BuilderProxy {
-
-    public static final IntProperty<TaskViewSimulator> SCROLL =
-            new IntProperty<TaskViewSimulator>("scroll") {
-                @Override
-                public void setValue(TaskViewSimulator simulator, int scroll) {
-                    simulator.setScroll(scroll);
-                }
-
-                @Override
-                public Integer get(TaskViewSimulator simulator) {
-                    return simulator.mScrollState.scroll;
-                }
-            };
 
     private final Rect mTmpCropRect = new Rect();
     private final RectF mTempRectF = new RectF();
@@ -101,11 +85,10 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     public final AnimatedFloat fullScreenProgress = new AnimatedFloat();
     public final AnimatedFloat recentsViewSecondaryTranslation = new AnimatedFloat();
     public final AnimatedFloat recentsViewPrimaryTranslation = new AnimatedFloat();
-    private final ScrollState mScrollState = new ScrollState();
+    public final AnimatedFloat recentsViewScroll = new AnimatedFloat();
 
     // Cached calculations
     private boolean mLayoutValid = false;
-    private boolean mScrollValid = false;
     private int mOrientationStateId;
 
     public TaskViewSimulator(Context context, BaseActivityInterface sizeStrategy) {
@@ -172,11 +155,8 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     /**
      * Updates the scroll for RecentsView
      */
-    public void setScroll(int scroll) {
-        if (mScrollState.scroll != scroll) {
-            mScrollState.scroll = scroll;
-            mScrollValid = false;
-        }
+    public void setScroll(float scroll) {
+        recentsViewScroll.value = scroll;
     }
 
     public void setDrawsBelowRecents(boolean drawsBelowRecents) {
@@ -268,20 +248,6 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
                     mTaskRect.width(), mTaskRect.height(),
                     mDp, mOrientationState.getRecentsActivityRotation(), isRtlEnabled);
             mPositionHelper.getMatrix().invert(mInversePositionMatrix);
-
-            PagedOrientationHandler poh = mOrientationState.getOrientationHandler();
-            mScrollState.halfPageSize =
-                    poh.getPrimaryValue(mTaskRect.width(), mTaskRect.height()) / 2;
-            mScrollState.halfScreenSize = poh.getPrimaryValue(mDp.widthPx, mDp.heightPx) / 2;
-            mScrollValid = false;
-        }
-
-        if (!mScrollValid) {
-            mScrollValid = true;
-            int start = mOrientationState.getOrientationHandler()
-                    .getPrimaryValue(mTaskRect.left, mTaskRect.top);
-            mScrollState.screenCenter = start + mScrollState.scroll + mScrollState.halfPageSize;
-            mScrollState.updateInterpolation(mDp, start);
         }
 
         float fullScreenProgress = Utilities.boundToRange(this.fullScreenProgress.value, 0, 1);
@@ -306,7 +272,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         mOrientationState.getOrientationHandler().setSecondary(mMatrix, MATRIX_POST_TRANSLATE,
                 taskSecondaryTranslation.value);
         mOrientationState.getOrientationHandler().set(
-                mMatrix, MATRIX_POST_TRANSLATE, mScrollState.scroll);
+                mMatrix, MATRIX_POST_TRANSLATE, recentsViewScroll.value);
 
         // Apply RecentsView matrix
         mMatrix.postScale(recentsViewScale.value, recentsViewScale.value, mPivot.x, mPivot.y);
@@ -330,8 +296,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
             Builder builder, RemoteAnimationTargetCompat app, TransformParams params) {
         builder.withMatrix(mMatrix)
                 .withWindowCrop(mTmpCropRect)
-                .withCornerRadius(getCurrentCornerRadius())
-                .withShadowRadius(app.isTranslucent ? 0 : params.getShadowRadius());
+                .withCornerRadius(getCurrentCornerRadius());
 
         if (LIVE_TILE.get() && params.getRecentsSurface() != null) {
             // When relativeLayer = 0, it reverts the surfaces back to the original order.

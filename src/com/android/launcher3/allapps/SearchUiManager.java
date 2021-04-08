@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.allapps;
 
-import android.graphics.Rect;
 import android.view.KeyEvent;
 
 import androidx.annotation.Nullable;
@@ -42,16 +41,6 @@ public interface SearchUiManager {
      * some UI beforehand.
      */
     default void preDispatchKeyEvent(KeyEvent keyEvent) { };
-
-    /**
-     * Returns the vertical shift for the all-apps view, so that it aligns with the hotseat.
-     */
-    float getScrollRangeDelta(Rect insets);
-
-    /**
-     * Called when activity is destroyed. Used to close search system services
-     */
-    default void destroySearch() { }
 
     /**
      * @return the edit text object

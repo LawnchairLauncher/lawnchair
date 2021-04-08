@@ -187,7 +187,7 @@ public class RecentsAnimationDeviceState implements
             SettingsCache.OnChangeListener onChangeListener =
                     enabled -> mIsOneHandedModeEnabled = enabled;
             settingsCache.register(oneHandedUri, onChangeListener);
-            settingsCache.dispatchOnChange(oneHandedUri);
+            mIsOneHandedModeEnabled = settingsCache.getValue(oneHandedUri);
             runOnDestroy(() -> settingsCache.unregister(oneHandedUri, onChangeListener));
         } else {
             mIsOneHandedModeEnabled = false;
@@ -199,7 +199,7 @@ public class RecentsAnimationDeviceState implements
         SettingsCache.OnChangeListener onChangeListener =
                 enabled -> mIsSwipeToNotificationEnabled = enabled;
         settingsCache.register(swipeBottomNotificationUri, onChangeListener);
-        settingsCache.dispatchOnChange(swipeBottomNotificationUri);
+        mIsSwipeToNotificationEnabled = settingsCache.getValue(swipeBottomNotificationUri);
         runOnDestroy(() -> settingsCache.unregister(swipeBottomNotificationUri, onChangeListener));
 
         Uri setupCompleteUri = Settings.Secure.getUriFor(Settings.Secure.USER_SETUP_COMPLETE);

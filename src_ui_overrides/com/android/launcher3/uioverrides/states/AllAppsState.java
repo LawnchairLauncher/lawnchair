@@ -74,4 +74,9 @@ public class AllAppsState extends LauncherState {
     public float getVerticalProgress(Launcher launcher) {
         return 0f;
     }
+
+    @Override
+    public float getWorkspaceScrimAlpha(Launcher launcher) {
+        return 1;
+    }
 }

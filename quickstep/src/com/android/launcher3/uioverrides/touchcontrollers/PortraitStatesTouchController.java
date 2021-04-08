@@ -23,17 +23,9 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.config.FeatureFlags.UNSTABLE_SPRINGS;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_FADE;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_VERTICAL_PROGRESS;
 
-import android.animation.TimeInterpolator;
-import android.animation.ValueAnimator;
-import android.util.Log;
 import android.view.MotionEvent;
-import android.view.animation.Interpolator;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
@@ -41,8 +33,6 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.states.StateAnimationConfig;
-import com.android.launcher3.states.StateAnimationConfig.AnimationFlags;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.AbstractStateChangeTouchController;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.launcher3.uioverrides.states.OverviewState;
@@ -59,9 +49,15 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     private static final String TAG = "PortraitStatesTouchCtrl";
 
     /**
-     * The progress at which all apps content will be fully visible when swiping up from overview.
+     * The progress at which all apps content will be fully visible.
      */
-    protected static final float ALL_APPS_CONTENT_FADE_THRESHOLD = 0.08f;
+    protected static final float ALL_APPS_CONTENT_FADE_MAX_CLAMPING_THRESHOLD = 0.8f;
+
+    /**
+     * Minimum clamping progress for fading in all apps content
+     */
+    protected static final float ALL_APPS_CONTENT_FADE_MIN_CLAMPING_THRESHOLD = 0.4f;
+
 
     /**
      * The progress at which recents will begin fading out when swiping up from overview.
@@ -69,11 +65,6 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     private static final float RECENTS_FADE_THRESHOLD = 0.88f;
 
     private final PortraitOverviewStateTouchHelper mOverviewPortraitStateTouchHelper;
-
-    private final InterpolatorWrapper mAllAppsInterpolatorWrapper = new InterpolatorWrapper();
-
-    // If true, we will finish the current animation instantly on second touch.
-    private boolean mFinishFastOnSecondTouch;
 
     public PortraitStatesTouchController(Launcher l) {
         super(l, SingleAxisSwipeDetector.VERTICAL);
@@ -85,10 +76,6 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
         // If we are swiping to all apps instead of overview, allow it from anywhere.
         boolean interceptAnywhere = mLauncher.isInState(NORMAL);
         if (mCurrentAnimation != null) {
-            if (mFinishFastOnSecondTouch) {
-                mCurrentAnimation.getAnimationPlayer().end();
-            }
-
             AllAppsTransitionController allAppsController = mLauncher.getAllAppsController();
             if (ev.getY() >= allAppsController.getShiftRange() * allAppsController.getProgress()
                     || interceptAnywhere) {
@@ -96,11 +83,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
                 // the touch is below the current all apps progress (to allow for double swipe).
                 return true;
             }
-            // Otherwise, make sure everything is settled and don't intercept so they can scroll
-            // recents, dismiss a task, etc.
-            if (mAtomicAnim != null) {
-                mAtomicAnim.end();
-            }
+            // Otherwise, don't intercept so they can scroll recents, dismiss a task, etc.
             return false;
         }
         if (mLauncher.isInState(ALL_APPS)) {
@@ -136,43 +119,17 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
         return fromState;
     }
 
-    private StateAnimationConfig getNormalToOverviewAnimation() {
-        mAllAppsInterpolatorWrapper.baseInterpolator = LINEAR;
-
-        StateAnimationConfig builder = new StateAnimationConfig();
-        builder.setInterpolator(ANIM_VERTICAL_PROGRESS, mAllAppsInterpolatorWrapper);
-        return builder;
-    }
-
-    private static StateAnimationConfig getOverviewToAllAppsAnimation() {
-        StateAnimationConfig builder = new StateAnimationConfig();
-        builder.setInterpolator(ANIM_ALL_APPS_FADE, Interpolators.clampToProgress(ACCEL,
-                0, ALL_APPS_CONTENT_FADE_THRESHOLD));
-        builder.setInterpolator(ANIM_OVERVIEW_FADE, Interpolators.clampToProgress(DEACCEL,
-                RECENTS_FADE_THRESHOLD, 1));
-        return builder;
-    }
-
-    private StateAnimationConfig getAllAppsToOverviewAnimation() {
-        StateAnimationConfig builder = new StateAnimationConfig();
-        builder.setInterpolator(ANIM_ALL_APPS_FADE, Interpolators.clampToProgress(DEACCEL,
-                1 - ALL_APPS_CONTENT_FADE_THRESHOLD, 1));
-        builder.setInterpolator(ANIM_OVERVIEW_FADE, Interpolators.clampToProgress(ACCEL,
-                0f, 1 - RECENTS_FADE_THRESHOLD));
-        return builder;
-    }
-
     private StateAnimationConfig getNormalToAllAppsAnimation() {
         StateAnimationConfig builder = new StateAnimationConfig();
         builder.setInterpolator(ANIM_ALL_APPS_FADE, Interpolators.clampToProgress(ACCEL,
-                0, ALL_APPS_CONTENT_FADE_THRESHOLD));
+                0, ALL_APPS_CONTENT_FADE_MAX_CLAMPING_THRESHOLD));
         return builder;
     }
 
     private StateAnimationConfig getAllAppsToNormalAnimation() {
         StateAnimationConfig builder = new StateAnimationConfig();
         builder.setInterpolator(ANIM_ALL_APPS_FADE, Interpolators.clampToProgress(DEACCEL,
-                1 - ALL_APPS_CONTENT_FADE_THRESHOLD, 1));
+                1 - ALL_APPS_CONTENT_FADE_MAX_CLAMPING_THRESHOLD, 1));
         return builder;
     }
 
@@ -180,24 +137,18 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     protected StateAnimationConfig getConfigForStates(
             LauncherState fromState, LauncherState toState) {
         final StateAnimationConfig config;
-        if (fromState == NORMAL && toState == OVERVIEW) {
-            config = getNormalToOverviewAnimation();
-        } else if (fromState == OVERVIEW && toState == ALL_APPS) {
-            config = getOverviewToAllAppsAnimation();
-        } else if (fromState == ALL_APPS && toState == OVERVIEW) {
-            config = getAllAppsToOverviewAnimation();
-        } else if (fromState == NORMAL && toState == ALL_APPS) {
+        if (fromState == NORMAL && toState == ALL_APPS) {
             config = getNormalToAllAppsAnimation();
         } else if (fromState == ALL_APPS && toState == NORMAL) {
             config = getAllAppsToNormalAnimation();
-        }  else {
+        } else {
             config = new StateAnimationConfig();
         }
         return config;
     }
 
     @Override
-    protected float initCurrentAnimation(@AnimationFlags int animFlags) {
+    protected float initCurrentAnimation() {
         float range = getShiftRange();
         long maxAccuracy = (long) (2 * range);
 
@@ -208,7 +159,6 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
 
         final StateAnimationConfig config = totalShift == 0 ? new StateAnimationConfig()
                 : getConfigForStates(mFromState, mToState);
-        config.animFlags = animFlags;
         config.duration = maxAccuracy;
 
         if (mCurrentAnimation != null) {
@@ -243,35 +193,6 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     }
 
     @Override
-    protected void updateSwipeCompleteAnimation(ValueAnimator animator, long expectedDuration,
-            LauncherState targetState, float velocity, boolean isFling) {
-        super.updateSwipeCompleteAnimation(animator, expectedDuration, targetState,
-                velocity, isFling);
-        handleFirstSwipeToOverview(animator, expectedDuration, targetState, velocity, isFling);
-    }
-
-    private void handleFirstSwipeToOverview(final ValueAnimator animator,
-            final long expectedDuration, final LauncherState targetState, final float velocity,
-            final boolean isFling) {
-        if (UNSTABLE_SPRINGS.get() && mFromState == OVERVIEW && mToState == ALL_APPS
-                && targetState == OVERVIEW) {
-            mFinishFastOnSecondTouch = true;
-        } else  if (mFromState == NORMAL && mToState == OVERVIEW && targetState == OVERVIEW) {
-            mFinishFastOnSecondTouch = true;
-            if (isFling && expectedDuration != 0) {
-                // Update all apps interpolator to add a bit of overshoot starting from currFraction
-                final float currFraction = mCurrentAnimation.getProgressFraction();
-                mAllAppsInterpolatorWrapper.baseInterpolator = Interpolators.clampToProgress(
-                        Interpolators.overshootInterpolatorForVelocity(velocity), currFraction, 1);
-                animator.setDuration(Math.min(expectedDuration, ATOMIC_DURATION))
-                        .setInterpolator(LINEAR);
-            }
-        } else {
-            mFinishFastOnSecondTouch = false;
-        }
-    }
-
-    @Override
     protected void onSwipeInteractionCompleted(LauncherState targetState) {
         super.onSwipeInteractionCompleted(targetState);
         if (mStartState == NORMAL && targetState == OVERVIEW) {
@@ -283,7 +204,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
      * Whether the motion event is over the hotseat.
      *
      * @param launcher the launcher activity
-     * @param ev the event to check
+     * @param ev       the event to check
      * @return true if the event is over the hotseat
      */
     static boolean isTouchOverHotseat(Launcher launcher, MotionEvent ev) {
@@ -294,16 +215,6 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
         DeviceProfile dp = launcher.getDeviceProfile();
         int hotseatHeight = dp.hotseatBarSizePx + dp.getInsets().bottom;
         return launcher.getDragLayer().getHeight() - hotseatHeight;
-    }
-
-    private static class InterpolatorWrapper implements Interpolator {
-
-        public TimeInterpolator baseInterpolator = LINEAR;
-
-        @Override
-        public float getInterpolation(float v) {
-            return baseInterpolator.getInterpolation(v);
-        }
     }
 
     @Override

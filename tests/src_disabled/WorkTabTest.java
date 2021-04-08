@@ -42,6 +42,8 @@ import com.android.launcher3.views.WorkEduView;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
@@ -89,7 +91,8 @@ public class WorkTabTest extends AbstractLauncherUiTest {
         });
     }
 
-//    @Test
+    @Ignore("b/182844465")
+    @Test
     public void workTabExists() {
         mDevice.pressHome();
         waitForLauncherCondition("Launcher didn't start", Objects::nonNull);
@@ -101,7 +104,8 @@ public class WorkTabTest extends AbstractLauncherUiTest {
                 launcher -> launcher.getAppsView().isWorkTabVisible(), 60000);
     }
 
-//    @Test
+    @Ignore("b/182844465")
+    @Test
     public void toggleWorks() {
         mDevice.pressHome();
         waitForLauncherCondition("Launcher didn't start", Objects::nonNull);
@@ -132,7 +136,8 @@ public class WorkTabTest extends AbstractLauncherUiTest {
                 l -> l.getSystemService(UserManager.class).isQuietModeEnabled(workProfile));
     }
 
-//    @Test
+    @Ignore("b/182844465")
+    @Test
     public void testWorkEduFlow() {
         mDevice.pressHome();
         waitForLauncherCondition("Launcher didn't start", Objects::nonNull);
@@ -175,7 +180,8 @@ public class WorkTabTest extends AbstractLauncherUiTest {
         });
     }
 
-//    @Test
+    @Ignore("b/182844465")
+    @Test
     public void testWorkEduIntermittent() {
         mDevice.pressHome();
         waitForLauncherCondition("Launcher didn't start", Objects::nonNull);

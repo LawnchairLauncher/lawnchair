@@ -17,6 +17,8 @@ package com.android.launcher3.settings;
 
 import static com.android.launcher3.settings.SettingsActivity.EXTRA_FRAGMENT_ARG_KEY;
 import static com.android.launcher3.settings.SettingsActivity.EXTRA_SHOW_FRAGMENT_ARGS;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.SettingsCache.NOTIFICATION_BADGING_URI;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -24,6 +26,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.ContentObserver;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.AttributeSet;
@@ -49,6 +52,14 @@ public class NotificationDotsPreference extends Preference
     /** Hidden field Settings.Secure.ENABLED_NOTIFICATION_LISTENERS */
     private static final String NOTIFICATION_ENABLED_LISTENERS = "enabled_notification_listeners";
 
+    private final ContentObserver mListenerListObserver =
+            new ContentObserver(MAIN_EXECUTOR.getHandler()) {
+        @Override
+        public void onChange(boolean selfChange) {
+            updateUI();
+        }
+    };
+
     public NotificationDotsPreference(
             Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
@@ -64,6 +75,29 @@ public class NotificationDotsPreference extends Preference
 
     public NotificationDotsPreference(Context context) {
         super(context);
+    }
+
+    @Override
+    public void onAttached() {
+        super.onAttached();
+        SettingsCache.INSTANCE.get(getContext()).register(NOTIFICATION_BADGING_URI, this);
+        getContext().getContentResolver().registerContentObserver(
+                Settings.Secure.getUriFor(NOTIFICATION_ENABLED_LISTENERS),
+                false, mListenerListObserver);
+        updateUI();
+    }
+
+    private void updateUI() {
+        onSettingsChanged(SettingsCache.INSTANCE.get(getContext())
+                .getValue(NOTIFICATION_BADGING_URI));
+    }
+
+    @Override
+    public void onDetached() {
+        super.onDetached();
+        SettingsCache.INSTANCE.get(getContext()).unregister(NOTIFICATION_BADGING_URI, this);
+        getContext().getContentResolver().unregisterContentObserver(mListenerListObserver);
+
     }
 
     private void setWidgetFrameVisible(boolean isVisible) {

@@ -103,18 +103,17 @@ public final class RecentsViewStateController extends
 
     private void setAlphas(PropertySetter propertySetter, StateAnimationConfig config,
             LauncherState state) {
-        float clearAllButtonAlpha = (state.getVisibleElements(mLauncher) & CLEAR_ALL_BUTTON) != 0
-                ? 1 : 0;
+        float clearAllButtonAlpha = state.areElementsVisible(mLauncher, CLEAR_ALL_BUTTON) ? 1 : 0;
         propertySetter.setFloat(mRecentsView.getClearAllButton(), ClearAllButton.VISIBILITY_ALPHA,
                 clearAllButtonAlpha, LINEAR);
-        float overviewButtonAlpha = (state.getVisibleElements(mLauncher) & OVERVIEW_ACTIONS) != 0
-                ? 1 : 0;
+        float overviewButtonAlpha = state.areElementsVisible(mLauncher, OVERVIEW_ACTIONS)
+                && mRecentsView.shouldShowOverviewActionsForState(state) ? 1 : 0;
         propertySetter.setFloat(mLauncher.getActionsView().getVisibilityAlpha(),
                 MultiValueAlpha.VALUE, overviewButtonAlpha, config.getInterpolator(
                         ANIM_OVERVIEW_ACTIONS_FADE, LINEAR));
 
         float splitPlaceholderAlpha = state.areElementsVisible(mLauncher, SPLIT_PLACHOLDER_VIEW) ?
-                1 : 0;
+                0.7f : 0;
         propertySetter.setFloat(mRecentsView.getSplitPlaceholder(), ALPHA_FLOAT,
                 splitPlaceholderAlpha, LINEAR);
     }

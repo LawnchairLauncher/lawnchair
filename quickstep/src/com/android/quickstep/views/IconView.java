@@ -21,6 +21,8 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.android.launcher3.Utilities;
+
 /**
  * A view which draws a drawable stretched to fit its size. Unlike ImageView, it avoids relayout
  * when the drawable changes.
@@ -100,6 +102,18 @@ public class IconView extends View {
             setVisibility(VISIBLE);
         } else {
             setVisibility(INVISIBLE);
+        }
+    }
+
+    /**
+     * Set the tint color of the icon, useful for scrimming or dimming.
+     *
+     * @param color to blend in.
+     * @param amount [0,1] 0 no tint, 1 full tint
+     */
+    public void setIconColorTint(int color, float amount) {
+        if (mDrawable != null) {
+            mDrawable.setColorFilter(Utilities.makeColorTintingColorFilter(color, amount));
         }
     }
 }

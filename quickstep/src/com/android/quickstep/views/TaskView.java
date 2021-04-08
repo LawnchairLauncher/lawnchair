@@ -27,6 +27,7 @@ import static android.view.Surface.ROTATION_270;
 import static android.view.Surface.ROTATION_90;
 import static android.widget.Toast.LENGTH_SHORT;
 
+import static com.android.launcher3.AbstractFloatingView.TYPE_TASK_MENU;
 import static com.android.launcher3.LauncherState.OVERVIEW_SPLIT_SELECT;
 import static com.android.launcher3.QuickstepTransitionManager.RECENTS_LAUNCH_DURATION;
 import static com.android.launcher3.Utilities.comp;
@@ -72,6 +73,7 @@ import android.widget.Toast;
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
@@ -89,10 +91,12 @@ import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
+import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.TransformingTouchDelegate;
 import com.android.launcher3.util.ViewPool.Reusable;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.RemoteAnimationTargets;
+import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskIconCache;
 import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskThumbnailCache;
@@ -101,8 +105,6 @@ import com.android.quickstep.TaskViewUtils;
 import com.android.quickstep.util.CancellableTask;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.util.TaskCornerRadius;
-import com.android.quickstep.views.RecentsView.PageCallbacks;
-import com.android.quickstep.views.RecentsView.ScrollState;
 import com.android.quickstep.views.TaskThumbnailView.PreviewPositionHelper;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -117,7 +119,7 @@ import java.util.function.Consumer;
 /**
  * A task in the Recents view.
  */
-public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
+public class TaskView extends FrameLayout implements Reusable {
 
     private static final String TAG = TaskView.class.getSimpleName();
 
@@ -134,10 +136,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     @IntDef({FLAG_UPDATE_ALL, FLAG_UPDATE_ICON, FLAG_UPDATE_THUMBNAIL})
     public @interface TaskDataChanges {}
 
-    /**
-     * The alpha of a black scrim on a page in the carousel as it leaves the screen.
-     * In the resting position of the carousel, the adjacent pages have about half this scrim.
-     */
+    /** The maximum amount that a task view can be scrimmed, dimmed or tinted. */
     public static final float MAX_PAGE_SCRIM_ALPHA = 0.4f;
 
     /**
@@ -254,18 +253,16 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                 }
             };
 
-    private final OnAttachStateChangeListener mTaskMenuStateListener =
-            new OnAttachStateChangeListener() {
+    private static final FloatProperty<TaskView> COLOR_TINT =
+            new FloatProperty<TaskView>("colorTint") {
                 @Override
-                public void onViewAttachedToWindow(View view) {
+                public void setValue(TaskView taskView, float v) {
+                    taskView.setColorTint(v);
                 }
 
                 @Override
-                public void onViewDetachedFromWindow(View view) {
-                    if (mMenuView != null) {
-                        mMenuView.removeOnAttachStateChangeListener(this);
-                        mMenuView = null;
-                    }
+                public Float get(TaskView taskView) {
+                    return taskView.getColorTint();
                 }
             };
 
@@ -273,7 +270,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     private Task mTask;
     private TaskThumbnailView mSnapshotView;
-    private TaskMenuView mMenuView;
     private IconView mIconView;
     private final DigitalWellBeingToast mDigitalWellBeingToast;
     private float mFullscreenProgress;
@@ -295,8 +291,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     // The following grid translations scales with mGridProgress.
     private float mGridTranslationX;
     private float mGridTranslationY;
-    // Offset translation does not affect scroll calculation.
-    private float mGridOffsetTranslationX;
 
     private ObjectAnimator mIconAndDimAnimator;
     private float mIconScaleAnimStartProgress = 0;
@@ -316,6 +310,11 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private final float[] mIconCenterCoords = new float[2];
     private final float[] mChipCenterCoords = new float[2];
 
+    // Colored tint for the task view and all its supplementary views (like the task icon and well
+    // being banner.
+    private final int mTintingColor;
+    private float mTintAmount;
+
     private boolean mIsClickableAsLiveTile = true;
 
     public TaskView(Context context) {
@@ -329,47 +328,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     public TaskView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mActivity = StatefulActivity.fromContext(context);
-        setOnClickListener((view) -> {
-            if (getTask() == null) {
-                return;
-            }
-            if (LIVE_TILE.get() && isRunningTask()) {
-                if (!mIsClickableAsLiveTile) {
-                    return;
-                }
-
-                mIsClickableAsLiveTile = false;
-                RecentsView recentsView = getRecentsView();
-                RemoteAnimationTargets targets = recentsView.getLiveTileParams().getTargetSet();
-                recentsView.getLiveTileTaskViewSimulator().setDrawsBelowRecents(false);
-
-                AnimatorSet anim = new AnimatorSet();
-                TaskViewUtils.composeRecentsLaunchAnimator(
-                        anim, this, targets.apps,
-                        targets.wallpapers, true /* launcherClosing */,
-                        mActivity.getStateManager(), recentsView,
-                        recentsView.getDepthController());
-                anim.addListener(new AnimatorListenerAdapter() {
-
-                    @Override
-                    public void onAnimationEnd(Animator animator) {
-                        recentsView.getLiveTileTaskViewSimulator().setDrawsBelowRecents(true);
-                        recentsView.finishRecentsAnimation(false, null);
-                        mIsClickableAsLiveTile = true;
-                    }
-                });
-                anim.start();
-            } else {
-                if (mActivity.isInState(OVERVIEW_SPLIT_SELECT)) {
-                    // User tapped to select second split screen app
-                    getRecentsView().confirmSplitSelect(this);
-                } else {
-                    launchTaskAnimated();
-                }
-            }
-            mActivity.getStatsLogManager().logger().withItemInfo(getItemInfo())
-                    .log(LAUNCHER_TASK_LAUNCH_TAP);
-        });
+        setOnClickListener(this::onClick);
 
         mCurrentFullscreenParams = new FullscreenDrawParams(context);
         mDigitalWellBeingToast = new DigitalWellBeingToast(mActivity, this);
@@ -377,6 +336,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         mOutlineProvider = new TaskOutlineProvider(getContext(), mCurrentFullscreenParams,
                 mActivity.getDeviceProfile().overviewTaskThumbnailTopMarginPx);
         setOutlineProvider(mOutlineProvider);
+
+        mTintingColor = Themes.getColorBackgroundFloating(context);
     }
 
     /**
@@ -471,10 +432,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                         + mCurrentFullscreenParams.mCurrentDrawnInsets.bottom);
     }
 
-    public TaskMenuView getMenuView() {
-        return mMenuView;
-    }
-
     public DigitalWellBeingToast getDigitalWellBeingToast() {
         return mDigitalWellBeingToast;
     }
@@ -508,10 +465,52 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         return mIconView;
     }
 
-    public AnimatorPlaybackController createLaunchAnimationForRunningTask() {
-        return getRecentsView().createTaskLaunchAnimation(
-                this, RECENTS_LAUNCH_DURATION, TOUCH_RESPONSE_INTERPOLATOR)
-                .createPlaybackController();
+    private void onClick(View view) {
+        if (getTask() == null) {
+            return;
+        }
+        if (LIVE_TILE.get() && isRunningTask()) {
+            if (!mIsClickableAsLiveTile) {
+                return;
+            }
+
+            // Reset the minimized state since we force-toggled the minimized state when entering
+            // overview, but never actually finished the recents animation
+            SystemUiProxy p = SystemUiProxy.INSTANCE.getNoCreate();
+            if (p != null) {
+                p.setSplitScreenMinimized(false);
+            }
+
+            mIsClickableAsLiveTile = false;
+            RecentsView recentsView = getRecentsView();
+            RemoteAnimationTargets targets = recentsView.getLiveTileParams().getTargetSet();
+            recentsView.getLiveTileTaskViewSimulator().setDrawsBelowRecents(false);
+
+            AnimatorSet anim = new AnimatorSet();
+            TaskViewUtils.composeRecentsLaunchAnimator(
+                    anim, this, targets.apps,
+                    targets.wallpapers, true /* launcherClosing */,
+                    mActivity.getStateManager(), recentsView,
+                    recentsView.getDepthController());
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    recentsView.getLiveTileTaskViewSimulator().setDrawsBelowRecents(true);
+                    recentsView.finishRecentsAnimation(false, null);
+                    mIsClickableAsLiveTile = true;
+                }
+            });
+            anim.start();
+        } else {
+            if (mActivity.isInState(OVERVIEW_SPLIT_SELECT)) {
+                // User tapped to select second split screen app
+                getRecentsView().confirmSplitSelect(this);
+            } else {
+                launchTaskAnimated();
+            }
+        }
+        mActivity.getStatsLogManager().logger().withItemInfo(getItemInfo())
+                .log(LAUNCHER_TASK_LAUNCH_TAP);
     }
 
     /**
@@ -646,15 +645,12 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
         if (!getRecentsView().isClearAllHidden()) {
             getRecentsView().snapToPage(getRecentsView().indexOfChild(this));
+            return false;
         } else {
-            mMenuView = TaskMenuView.showForTask(this);
             mActivity.getStatsLogManager().logger().withItemInfo(getItemInfo())
                     .log(LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS);
-            if (mMenuView != null) {
-                mMenuView.addOnAttachStateChangeListener(mTaskMenuStateListener);
-            }
+            return TaskMenuView.showForTask(this);
         }
-        return mMenuView != null;
     }
 
     private void setIcon(Drawable icon) {
@@ -713,10 +709,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         mIconView.setRotation(orientationHandler.getDegreesRotated());
         snapshotParams.topMargin = deviceProfile.overviewTaskThumbnailTopMarginPx;
         mSnapshotView.setLayoutParams(snapshotParams);
-
-        if (mMenuView != null) {
-            mMenuView.onRotationChanged();
-        }
     }
 
     private void setIconAndDimTransitionProgress(float progress, boolean invert) {
@@ -724,7 +716,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             progress = 1 - progress;
         }
         mFocusTransitionProgress = progress;
-        mSnapshotView.setDimAlphaMultipler(0);
         float iconScalePercentage = (float) SCALE_ICON_DURATION / DIM_ANIM_DURATION;
         float lowerClamp = invert ? 1f - iconScalePercentage : 0;
         float upperClamp = invert ? 1 : iconScalePercentage;
@@ -783,6 +774,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         setTranslationZ(0);
         setAlpha(mStableAlpha);
         setIconScaleAndDim(1);
+        setColorTint(0);
     }
 
     public void setStableAlpha(float parentAlpha) {
@@ -792,35 +784,13 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     @Override
     public void onRecycle() {
-        mFullscreenTranslationX = mGridTranslationX =
-                mGridTranslationY = mGridOffsetTranslationX = mBoxTranslationY = 0f;
+        mFullscreenTranslationX = mGridTranslationX = mGridTranslationY = mBoxTranslationY = 0f;
         resetViewTransforms();
         // Clear any references to the thumbnail (it will be re-read either from the cache or the
         // system on next bind)
         mSnapshotView.setThumbnail(mTask, null);
         setOverlayEnabled(false);
         onTaskListVisibilityChanged(false);
-    }
-
-    @Override
-    public void onPageScroll(ScrollState scrollState, boolean gridEnabled) {
-        // Don't do anything if it's modal.
-        if (mModalness > 0) {
-            return;
-        }
-
-        float dwbBannerAlpha = Utilities.boundToRange(1.0f - 2 * scrollState.linearInterpolation,
-                0f, 1f);
-        mDigitalWellBeingToast.updateBannerAlpha(dwbBannerAlpha);
-
-        if (mMenuView != null) {
-            PagedOrientationHandler pagedOrientationHandler = getPagedOrientationHandler();
-            RecentsView recentsView = getRecentsView();
-            mMenuView.setPosition(getX() - recentsView.getScrollX(),
-                    getY() - recentsView.getScrollY(), pagedOrientationHandler);
-            mMenuView.setScaleX(getScaleX());
-            mMenuView.setScaleY(getScaleY());
-        }
     }
 
     /**
@@ -874,7 +844,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         if (mActivity.getDeviceProfile().isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get()) {
-            setPivotX(getLayoutDirection() == LAYOUT_DIRECTION_RTL ? (right - left) : 0);
+            setPivotX(getLayoutDirection() == LAYOUT_DIRECTION_RTL ? 0 : right - left);
             setPivotY(mSnapshotView.getTop());
         } else {
             setPivotX((right - left) * 0.5f);
@@ -979,11 +949,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         return mGridTranslationY;
     }
 
-    public void setGridOffsetTranslationX(float gridOffsetTranslationX) {
-        mGridOffsetTranslationX = gridOffsetTranslationX;
-        applyTranslationX();
-    }
-
     public float getScrollAdjustment(boolean fullscreenEnabled, boolean gridEnabled) {
         float scrollAdjustment = 0;
         if (fullscreenEnabled) {
@@ -995,12 +960,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         return scrollAdjustment;
     }
 
-    public float getOffsetAdjustment(boolean fullscreenEnabled,boolean gridEnabled) {
-        float offsetAdjustment = getScrollAdjustment(fullscreenEnabled, gridEnabled);
-        if (gridEnabled) {
-            offsetAdjustment += mGridOffsetTranslationX;
-        }
-        return offsetAdjustment;
+    public float getOffsetAdjustment(boolean fullscreenEnabled, boolean gridEnabled) {
+        return getScrollAdjustment(fullscreenEnabled, gridEnabled);
     }
 
     public float getSizeAdjustment(boolean fullscreenEnabled) {
@@ -1019,7 +980,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private void applyTranslationX() {
         setTranslationX(mDismissTranslationX + mTaskOffsetTranslationX + mTaskResistanceTranslationX
                 + getFullscreenTrans(mFullscreenTranslationX)
-                + getGridTrans(mGridTranslationX + mGridOffsetTranslationX));
+                + getGridTrans(mGridTranslationX));
     }
 
     private void applyTranslationY() {
@@ -1225,61 +1186,76 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
      */
     void updateTaskSize() {
         ViewGroup.LayoutParams params = getLayoutParams();
+        float fullscreenScale;
+        float boxTranslationY;
+        int expectedWidth;
+        int expectedHeight;
         if (mActivity.getDeviceProfile().isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get()) {
             final int thumbnailPadding =
                     mActivity.getDeviceProfile().overviewTaskThumbnailTopMarginPx;
+            final Rect lastComputedTaskSize = getRecentsView().getLastComputedTaskSize();
+            final int taskWidth = lastComputedTaskSize.width();
+            final int taskHeight = lastComputedTaskSize.height();
 
-            Rect lastComputedTaskSize = getRecentsView().getLastComputedTaskSize();
-            int taskWidth = lastComputedTaskSize.width();
-            int taskHeight = lastComputedTaskSize.height();
-
-            int expectedWidth;
-            int expectedHeight;
-            float thumbnailRatio = mTask != null ? mTask.getVisibleThumbnailRatio(
-                    TaskView.CLIP_STATUS_AND_NAV_BARS) : 0f;
-            if (isRunningTask() || thumbnailRatio == 0f) {
-                expectedWidth = taskWidth;
-                expectedHeight = taskHeight + thumbnailPadding;
+            int boxWidth;
+            int boxHeight;
+            float thumbnailRatio;
+            boolean isFocusedTask = isFocusedTask();
+            if (isFocusedTask || isRunningTask()) {
+                // Task will be focused and should use focused task size. Use runningTaskRatio
+                // that is associated with the original orientation of the focused task if possible.
+                boxWidth = taskWidth;
+                boxHeight = taskHeight;
+                thumbnailRatio = isFocusedTask ? getRecentsView().getFocusedTaskRatio() : 0;
             } else {
-                int boxLength = Math.max(taskWidth, taskHeight);
-                if (thumbnailRatio > 1) {
-                    expectedWidth = boxLength;
-                    expectedHeight = (int) (boxLength / thumbnailRatio) + thumbnailPadding;
-                } else {
-                    expectedWidth = (int) (boxLength * thumbnailRatio);
-                    expectedHeight = boxLength + thumbnailPadding;
-                }
+                // Otherwise task is in grid, and should use lastComputedGridTaskSize.
+                Rect lastComputedGridTaskSize = getRecentsView().getLastComputedGridTaskSize();
+                boxWidth = lastComputedGridTaskSize.width();
+                boxHeight = lastComputedGridTaskSize.height();
+                thumbnailRatio = mTask != null ? mTask.getVisibleThumbnailRatio(
+                        TaskView.CLIP_STATUS_AND_NAV_BARS) : 0f;
+            }
+            int boxLength = Math.max(boxWidth, boxHeight);
+
+            // Bound width/height to the box size.
+            if (thumbnailRatio == 0f) {
+                expectedWidth = boxWidth;
+                expectedHeight = boxHeight + thumbnailPadding;
+            } else if (thumbnailRatio > 1) {
+                expectedWidth = boxLength;
+                expectedHeight = (int) (boxLength / thumbnailRatio) + thumbnailPadding;
+            } else {
+                expectedWidth = (int) (boxLength * thumbnailRatio);
+                expectedHeight = boxLength + thumbnailPadding;
             }
 
-            float heightDiff = (expectedHeight - thumbnailPadding - taskHeight) / 2.0f;
-            setBoxTranslationY(heightDiff);
+            // Scale to to fit task Rect.
+            fullscreenScale = taskWidth / (float) boxWidth;
 
-            float fullscreenScale = 1f;
-            if (expectedWidth > taskWidth) {
-                // In full screen, expectedWidth should not be larger than taskWidth.
-                fullscreenScale = taskWidth / (float) expectedWidth;
-            } else if (expectedHeight - thumbnailPadding > taskHeight) {
-                // In full screen, expectedHeight should not be larger than taskHeight.
-                fullscreenScale = taskHeight / (float) (expectedHeight - thumbnailPadding);
+            // In full screen, scale back TaskView to original size.
+            if (expectedWidth > boxWidth) {
+                fullscreenScale *= boxWidth / (float) expectedWidth;
+            } else if (expectedHeight - thumbnailPadding > boxHeight) {
+                fullscreenScale *= boxHeight / (float) (expectedHeight - thumbnailPadding);
             }
-            setFullscreenScale(fullscreenScale);
 
-            if (params.width != expectedWidth || params.height != expectedHeight) {
-                params.width = expectedWidth;
-                params.height = expectedHeight;
-                setLayoutParams(params);
-            }
+            // Align to top of task Rect.
+            boxTranslationY = (expectedHeight - thumbnailPadding - taskHeight) / 2.0f;
         } else {
-            setBoxTranslationY(0);
-            setFullscreenScale(1);
-            if (params.width != ViewGroup.LayoutParams.MATCH_PARENT) {
-                params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-                params.height = ViewGroup.LayoutParams.MATCH_PARENT;
-                setLayoutParams(params);
-            }
+            fullscreenScale = 1f;
+            boxTranslationY = 0f;
+            expectedWidth = ViewGroup.LayoutParams.MATCH_PARENT;
+            expectedHeight = ViewGroup.LayoutParams.MATCH_PARENT;
+        }
+
+        setFullscreenScale(fullscreenScale);
+        setBoxTranslationY(boxTranslationY);
+        if (params.width != expectedWidth || params.height != expectedHeight) {
+            params.width = expectedWidth;
+            params.height = expectedHeight;
+            setLayoutParams(params);
         }
     }
-
 
     private float getFullscreenTrans(float endTranslation) {
         float progress = ACCEL_DEACCEL.getInterpolation(mFullscreenProgress);
@@ -1291,6 +1267,13 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             return false;
         }
         return this == getRecentsView().getRunningTaskView();
+    }
+
+    public boolean isFocusedTask() {
+        if (getRecentsView() == null) {
+            return false;
+        }
+        return this == getRecentsView().getFocusedTaskView();
     }
 
     public void setShowScreenshot(boolean showScreenshot) {
@@ -1309,9 +1292,28 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     }
 
     public void initiateSplitSelect(SplitPositionOption splitPositionOption) {
-        RecentsView rv = getRecentsView();
-        getMenuView().close(false);
-        rv.initiateSplitSelect(this, splitPositionOption);
+        AbstractFloatingView.closeOpenViews(mActivity, false, TYPE_TASK_MENU);
+        getRecentsView().initiateSplitSelect(this, splitPositionOption);
+    }
+
+    private void setColorTint(float amount) {
+        mSnapshotView.setDimAlpha(amount);
+        mIconView.setIconColorTint(mTintingColor, amount);
+        mDigitalWellBeingToast.setBannerColorTint(mTintingColor, amount);
+    }
+
+    private float getColorTint() {
+        return mTintAmount;
+    }
+
+    /**
+     * Show the task view with a color tint (animates value).
+     */
+    public void showColorTint(boolean enable) {
+        ObjectAnimator tintAnimator = ObjectAnimator.ofFloat(
+                this, COLOR_TINT, enable ? MAX_PAGE_SCRIM_ALPHA : 0);
+        tintAnimator.setAutoCancel(true);
+        tintAnimator.start();
     }
 
     /**

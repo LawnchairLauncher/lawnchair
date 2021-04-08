@@ -31,7 +31,6 @@ import com.android.launcher3.WidgetPreviewLoader;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.recyclerview.ViewHolderBinder;
 import com.android.launcher3.widget.WidgetCell;
-import com.android.launcher3.widget.WidgetImageView;
 import com.android.launcher3.widget.model.WidgetsListContentEntry;
 import com.android.launcher3.widget.util.WidgetsTableUtils;
 
@@ -170,7 +169,7 @@ public final class WidgetsListTableViewHolderBinder
                     WidgetCell widget = (WidgetCell) mLayoutInflater.inflate(
                             R.layout.widget_cell, tableRow, false);
                     // set up touch.
-                    WidgetImageView preview = widget.findViewById(R.id.widget_preview);
+                    View preview = widget.findViewById(R.id.widget_preview_container);
                     preview.setOnClickListener(mIconClickListener);
                     preview.setOnLongClickListener(mIconLongClickListener);
                     tableRow.addView(widget);

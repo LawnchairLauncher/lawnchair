@@ -36,6 +36,7 @@
     <dimen name="overview_grid_bottom_margin">90dp</dimen>
     <dimen name="overview_grid_side_margin">54dp</dimen>
     <dimen name="overview_grid_row_spacing">42dp</dimen>
+    <dimen name="overview_grid_focus_vertical_margin">130dp</dimen>
     <dimen name="split_placeholder_size">110dp</dimen>
 
     <dimen name="recents_page_spacing">16dp</dimen>

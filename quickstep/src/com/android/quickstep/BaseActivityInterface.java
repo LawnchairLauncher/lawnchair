@@ -206,18 +206,17 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             Rect gridRect = new Rect();
             calculateGridSize(context, dp, gridRect);
 
-            int rowSpacing = res.getDimensionPixelSize(R.dimen.overview_grid_row_spacing);
-            float rowHeight = (gridRect.height() - rowSpacing) / 2f;
+            int verticalMargin = res.getDimensionPixelSize(
+                    R.dimen.overview_grid_focus_vertical_margin);
+            float taskHeight = gridRect.height() - verticalMargin * 2;
 
             PointF taskDimension = getTaskDimension(context, dp);
-            float scale = (rowHeight - dp.overviewTaskThumbnailTopMarginPx) / Math.max(
-                    taskDimension.x, taskDimension.y);
+            float scale = taskHeight / Math.max(taskDimension.x, taskDimension.y);
             int outWidth = Math.round(scale * taskDimension.x);
             int outHeight = Math.round(scale * taskDimension.y);
 
-            int gravity = Gravity.TOP;
+            int gravity = Gravity.CENTER_VERTICAL;
             gravity |= orientedState.getRecentsRtlSetting(res) ? Gravity.RIGHT : Gravity.LEFT;
-            gridRect.inset(0, dp.overviewTaskThumbnailTopMarginPx, 0, 0);
             Gravity.apply(gravity, outWidth, outHeight, gridRect, outRect);
         } else {
             int taskMargin = dp.overviewTaskMarginPx;
@@ -294,6 +293,30 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     }
 
     /**
+     * Calculates the overview grid non-focused task size for the provided device configuration.
+     */
+    public final void calculateGridTaskSize(Context context, DeviceProfile dp, Rect outRect,
+            PagedOrientationHandler orientedState) {
+        Resources res = context.getResources();
+        Rect gridRect = new Rect();
+        calculateGridSize(context, dp, gridRect);
+
+        int rowSpacing = res.getDimensionPixelSize(R.dimen.overview_grid_row_spacing);
+        float rowHeight = (gridRect.height() - rowSpacing) / 2f;
+
+        PointF taskDimension = getTaskDimension(context, dp);
+        float scale = (rowHeight - dp.overviewTaskThumbnailTopMarginPx) / Math.max(
+                taskDimension.x, taskDimension.y);
+        int outWidth = Math.round(scale * taskDimension.x);
+        int outHeight = Math.round(scale * taskDimension.y);
+
+        int gravity = Gravity.TOP;
+        gravity |= orientedState.getRecentsRtlSetting(res) ? Gravity.RIGHT : Gravity.LEFT;
+        gridRect.inset(0, dp.overviewTaskThumbnailTopMarginPx, 0, 0);
+        Gravity.apply(gravity, outWidth, outHeight, gridRect, outRect);
+    }
+
+    /**
      * Calculates the modal taskView size for the provided device configuration
      */
     public final void calculateModalTaskSize(Context context, DeviceProfile dp, Rect outRect) {
@@ -324,7 +347,9 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
      * Called when the gesture ends and the animation starts towards the given target. No-op by
      * default, but subclasses can override to add an additional animation with the same duration.
      */
-    public void onAnimateToLauncher(GestureState.GestureEndTarget endTarget, long duration) {
+    public @Nullable Animator getParallelAnimationToLauncher(
+            GestureState.GestureEndTarget endTarget, long duration) {
+        return null;
     }
 
     /**
@@ -342,8 +367,6 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     public interface AnimationFactory {
 
         void createActivityInterface(long transitionLength);
-
-        default void onTransitionCancelled() { }
 
         /**
          * @param attached Whether to show RecentsView alongside the app window. If false, recents
@@ -408,11 +431,6 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             if (SysUINavigationMode.getMode(mActivity) == Mode.NO_BUTTON) {
                 setRecentsAttachedToAppWindow(mIsAttachedToWindow, false);
             }
-        }
-
-        @Override
-        public void onTransitionCancelled() {
-            mActivity.getStateManager().goToState(mStartState, false /* animate */);
         }
 
         @Override

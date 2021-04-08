@@ -93,7 +93,11 @@ public final class FeatureFlags {
 
 
     public static final BooleanFlag ENABLE_DEVICE_SEARCH = new DeviceFlag(
-            "ENABLE_DEVICE_SEARCH", false, "Allows on device search in all apps");
+            "ENABLE_DEVICE_SEARCH", true, "Allows on device search in all apps");
+
+    public static final BooleanFlag ENABLE_PEOPLE_TILE_PREVIEW = getDebugFlag(
+            "ENABLE_PEOPLE_TILE_PREVIEW", false,
+            "Experimental: Shows conversation shortcuts on home screen as search results");
 
     public static final BooleanFlag FOLDER_NAME_SUGGEST = new DeviceFlag(
             "FOLDER_NAME_SUGGEST", true,
@@ -217,6 +221,9 @@ public final class FeatureFlags {
 
     public static final BooleanFlag ENABLE_ENFORCED_ROUNDED_CORNERS = new DeviceFlag(
             "ENABLE_ENFORCED_ROUNDED_CORNERS", true, "Enforce rounded corners on all App Widgets");
+
+    public static final BooleanFlag NOTIFY_CRASHES = getDebugFlag("NOTIFY_CRASHES", false,
+            "Sends a notification whenever launcher encounters an uncaught exception.");
 
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
