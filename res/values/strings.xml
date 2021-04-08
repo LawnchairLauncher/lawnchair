@@ -91,6 +91,9 @@
          [CHAR_LIMIT=none] -->
     <string name="no_search_results">No search results</string>
 
+    <!-- A widget category label for grouping widgets related to conversations. [CHAR_LIMIT=30] -->
+    <string name="widget_category_conversations">Conversations</string>
+
     <!-- All Apps -->
     <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
     <string name="all_apps_search_bar_hint">Search apps</string>
