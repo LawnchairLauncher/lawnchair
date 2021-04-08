@@ -106,6 +106,7 @@ public class InvariantDeviceProfile {
     public float iconSize;
     public String iconShapePath;
     public float landscapeIconSize;
+    public float landscapeIconTextSize;
     public int iconBitmapSize;
     public int fillResIconDpi;
     public float iconTextSize;
@@ -163,6 +164,7 @@ public class InvariantDeviceProfile {
         landscapeIconSize = p.landscapeIconSize;
         iconBitmapSize = p.iconBitmapSize;
         iconTextSize = p.iconTextSize;
+        landscapeIconTextSize = p.landscapeIconTextSize;
         numHotseatIcons = p.numHotseatIcons;
         numAllAppsColumns = p.numAllAppsColumns;
         isScalable = p.isScalable;
@@ -293,6 +295,7 @@ public class InvariantDeviceProfile {
         landscapeIconSize = displayOption.landscapeIconSize;
         iconBitmapSize = ResourceUtils.pxFromDp(iconSize, displayInfo.metrics);
         iconTextSize = displayOption.iconTextSize;
+        landscapeIconTextSize = displayOption.landscapeIconTextSize;
         fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
 
         minCellHeight = displayOption.minCellHeight;
@@ -678,6 +681,7 @@ public class InvariantDeviceProfile {
         private float iconSize;
         private float iconTextSize;
         private float landscapeIconSize;
+        private float landscapeIconTextSize;
         private float allAppsIconSize;
         private float allAppsIconTextSize;
 
@@ -702,6 +706,8 @@ public class InvariantDeviceProfile {
             landscapeIconSize = a.getFloat(R.styleable.ProfileDisplayOption_landscapeIconSize,
                     iconSize);
             iconTextSize = a.getFloat(R.styleable.ProfileDisplayOption_iconTextSize, 0);
+            landscapeIconTextSize = a.getFloat(
+                    R.styleable.ProfileDisplayOption_landscapeIconTextSize, iconTextSize);
 
             allAppsIconSize = a.getFloat(R.styleable.ProfileDisplayOption_allAppsIconSize,
                     iconSize);
@@ -731,6 +737,7 @@ public class InvariantDeviceProfile {
             landscapeIconSize *= w;
             allAppsIconSize *= w;
             iconTextSize *= w;
+            landscapeIconTextSize *= w;
             allAppsIconTextSize *= w;
             minCellHeight *= w;
             minCellWidth *= w;
@@ -744,6 +751,7 @@ public class InvariantDeviceProfile {
             landscapeIconSize += p.landscapeIconSize;
             allAppsIconSize += p.allAppsIconSize;
             iconTextSize += p.iconTextSize;
+            landscapeIconTextSize += p.landscapeIconTextSize;
             allAppsIconTextSize += p.allAppsIconTextSize;
             minCellHeight += p.minCellHeight;
             minCellWidth += p.minCellWidth;
