@@ -53,7 +53,7 @@ import java.util.Objects;
  */
 class OrientationTouchTransformer {
 
-    class CurrentDisplay {
+    private static class CurrentDisplay {
         public Point size;
         public int rotation;
 
@@ -65,6 +65,13 @@ class OrientationTouchTransformer {
         CurrentDisplay(Point size, int rotation) {
             this.size = size;
             this.rotation = rotation;
+        }
+
+        @Override
+        public String toString() {
+            return "CurrentDisplay:"
+                    + " rotation: " + rotation
+                    + " size: " + size;
         }
 
         @Override
@@ -86,21 +93,20 @@ class OrientationTouchTransformer {
 
     private static final String TAG = "OrientationTouchTransformer";
     private static final boolean DEBUG = false;
-    private static final int MAX_ORIENTATIONS = 4;
 
     private static final int QUICKSTEP_ROTATION_UNINITIALIZED = -1;
 
     private final Matrix mTmpMatrix = new Matrix();
     private final float[] mTmpPoint = new float[2];
 
-    private Map<CurrentDisplay, OrientationRectF> mSwipeTouchRegions =
+    private final Map<CurrentDisplay, OrientationRectF> mSwipeTouchRegions =
             new HashMap<CurrentDisplay, OrientationRectF>();
     private final RectF mAssistantLeftRegion = new RectF();
     private final RectF mAssistantRightRegion = new RectF();
     private final RectF mOneHandedModeRegion = new RectF();
     private CurrentDisplay mCurrentDisplay = new CurrentDisplay();
     private int mNavBarGesturalHeight;
-    private int mNavBarLargerGesturalHeight;
+    private final int mNavBarLargerGesturalHeight;
     private boolean mEnableMultipleRegions;
     private Resources mResources;
     private OrientationRectF mLastRectTouched;
@@ -374,10 +380,7 @@ class OrientationTouchTransformer {
                     return;
                 }
 
-                for (int i = 0; i < MAX_ORIENTATIONS; i++) {
-                    CurrentDisplay display = new CurrentDisplay(mCurrentDisplay.size, i);
-                    OrientationRectF rect = mSwipeTouchRegions.get(display);
-
+                for (OrientationRectF rect : mSwipeTouchRegions.values()) {
                     if (TestProtocol.sDebugTracing) {
                         Log.d(TestProtocol.NO_SWIPE_TO_HOME, "transform:DOWN, rect=" + rect);
                     }
