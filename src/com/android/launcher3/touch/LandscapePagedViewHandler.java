@@ -75,14 +75,6 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public void getCurveProperties(PagedView view, Rect insets, CurveProperties out) {
-        out.scroll = view.getScrollY();
-        out.halfPageSize = view.getNormalChildHeight() / 2;
-        out.halfScreenSize = view.getMeasuredHeight() / 2;
-        out.screenCenter = insets.top + view.getPaddingTop() + out.scroll + out.halfPageSize;
-    }
-
-    @Override
     public boolean isLayoutNaturalToLauncher() {
         return false;
     }

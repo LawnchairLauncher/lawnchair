@@ -38,6 +38,7 @@ import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_SCA
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_TRANSLATE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_SCALE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_SCRIM_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_TRANSLATE;
 
 import android.animation.ValueAnimator;
@@ -150,7 +151,7 @@ public class WorkspaceStateTransitionAnimation {
         propertySetter.setFloat(mWorkspace.getPageIndicator(), VIEW_TRANSLATE_Y,
                 hotseatScaleAndTranslation.translationY, hotseatTranslationInterpolator);
 
-        setScrim(propertySetter, state);
+        setScrim(propertySetter, state, config);
     }
 
     /**
@@ -165,14 +166,19 @@ public class WorkspaceStateTransitionAnimation {
                 - sibling.getLeft() - sibling.getTranslationX());
     }
 
-    public void setScrim(PropertySetter propertySetter, LauncherState state) {
+    public void setScrim(PropertySetter propertySetter, LauncherState state,
+            StateAnimationConfig config) {
         WorkspaceDragScrim workspaceDragScrim = mLauncher.getDragLayer().getWorkspaceDragScrim();
         propertySetter.setFloat(workspaceDragScrim, SCRIM_PROGRESS,
-                state.getWorkspaceScrimAlpha(mLauncher), LINEAR);
+                state.getWorkspaceBackgroundAlpha(mLauncher), LINEAR);
 
         SysUiScrim sysUiScrim = mLauncher.getDragLayer().getSysUiScrim();
         propertySetter.setFloat(sysUiScrim, SYSUI_PROGRESS,
                 state.hasFlag(FLAG_HAS_SYS_UI_SCRIM) ? 1 : 0, LINEAR);
+
+        propertySetter.setViewAlpha(mLauncher.getScrimView(),
+                state.getWorkspaceScrimAlpha(mLauncher),
+                config.getInterpolator(ANIM_WORKSPACE_SCRIM_FADE, LINEAR));
     }
 
     public void applyChildState(LauncherState state, CellLayout cl, int childIndex) {

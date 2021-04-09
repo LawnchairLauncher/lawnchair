@@ -44,7 +44,6 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.graphics.OverviewScrim;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.launcher3.util.TouchController;
@@ -140,10 +139,6 @@ public class NavBarToHomeTouchController implements TouchController,
             RecentsView recentsView = mLauncher.getOverviewPanel();
             AnimatorControllerWithResistance.createRecentsResistanceFromOverviewAnim(mLauncher,
                     builder);
-
-            builder.setFloat(mLauncher.getDragLayer().getOverviewScrim(),
-                    OverviewScrim.SCRIM_MULTIPLIER, OVERVIEW_TO_HOME_SCRIM_MULTIPLIER,
-                    PULLBACK_INTERPOLATOR);
 
             if (LIVE_TILE.get()) {
                 builder.addOnFrameCallback(recentsView::redrawLiveTile);

@@ -93,7 +93,6 @@ public interface PagedOrientationHandler {
     void delegateScrollTo(PagedView pagedView, int primaryScroll);
     void delegateScrollBy(PagedView pagedView, int unboundedScroll, int x, int y);
     void scrollerStartScroll(OverScroller scroller, int newPosition);
-    void getCurveProperties(PagedView view, Rect insets, CurveProperties out);
     boolean isLayoutNaturalToLauncher();
     float getTaskMenuX(float x, View thumbnailView);
     float getTaskMenuY(float y, View thumbnailView);
@@ -120,13 +119,6 @@ public interface PagedOrientationHandler {
      * of Launcher's (which now will always be portrait)
      */
     void adjustFloatingIconStartVelocity(PointF velocity);
-
-    class CurveProperties {
-        public int scroll;
-        public int halfPageSize;
-        public int screenCenter;
-        public int halfScreenSize;
-    }
 
     class ChildBounds {
 
