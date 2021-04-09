@@ -115,6 +115,7 @@ public class PendingItemDragHelper extends DragPreviewProvider {
             }
             if (mAppWidgetHostViewPreview != null) {
                 preview = new AppWidgetHostViewDrawable(mAppWidgetHostViewPreview);
+                previewSizeBeforeScale[0] = mAppWidgetHostViewPreview.getMeasuredWidth();
                 launcher.getDragController()
                         .addDragListener(new AppWidgetHostViewDragListener(launcher));
             }

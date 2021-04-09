@@ -23,7 +23,7 @@ import android.widget.FrameLayout;
 /**
  * Empty view to house recents overview extra card
  */
-public class RecentsExtraViewContainer extends FrameLayout implements RecentsView.PageCallbacks {
+public class RecentsExtraViewContainer extends FrameLayout {
 
     private boolean mScrollable = false;
 
