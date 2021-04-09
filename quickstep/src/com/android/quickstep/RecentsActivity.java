@@ -192,7 +192,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
                     RemoteAnimationTargetCompat[] nonAppTargets,
                     AnimationResult result) -> {
             AnimatorSet anim = composeRecentsLaunchAnimator(taskView, appTargets,
-                    wallpaperTargets);
+                    wallpaperTargets, nonAppTargets);
             anim.addListener(resetStateListener());
             result.setAnimation(anim, RecentsActivity.this, onEndCallback::executeAllAndDestroy);
         };
@@ -213,12 +213,13 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
      */
     private AnimatorSet  composeRecentsLaunchAnimator(TaskView taskView,
             RemoteAnimationTargetCompat[] appTargets,
-            RemoteAnimationTargetCompat[] wallpaperTargets) {
+            RemoteAnimationTargetCompat[] wallpaperTargets,
+            RemoteAnimationTargetCompat[] nonAppTargets) {
         AnimatorSet target = new AnimatorSet();
         boolean activityClosing = taskIsATargetWithMode(appTargets, getTaskId(), MODE_CLOSING);
         PendingAnimation pa = new PendingAnimation(RECENTS_LAUNCH_DURATION);
         createRecentsWindowAnimator(taskView, !activityClosing, appTargets,
-                wallpaperTargets, null /* depthController */, pa);
+                wallpaperTargets, nonAppTargets, null /* depthController */, pa);
         target.play(pa.buildAnim());
 
         // Found a visible recents task that matches the opening app, lets launch the app from there

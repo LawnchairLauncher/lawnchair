@@ -247,7 +247,8 @@ public class FallbackSwipeHandler extends
             if (appearedTaskTarget.activityType == ACTIVITY_TYPE_HOME) {
                 RemoteAnimationTargets targets = new RemoteAnimationTargets(
                         new RemoteAnimationTargetCompat[] {appearedTaskTarget},
-                        new RemoteAnimationTargetCompat[0], appearedTaskTarget.mode);
+                        new RemoteAnimationTargetCompat[0], new RemoteAnimationTargetCompat[0],
+                        appearedTaskTarget.mode);
                 mHomeAlphaParams.setTargetSet(targets);
                 updateHomeAlpha();
                 return true;
