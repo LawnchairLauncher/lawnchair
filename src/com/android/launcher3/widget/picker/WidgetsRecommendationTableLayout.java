@@ -17,6 +17,7 @@ package com.android.launcher3.widget.picker;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -38,7 +39,9 @@ import java.util.List;
 
 /** A {@link TableLayout} for showing recommended widgets. */
 public final class WidgetsRecommendationTableLayout extends TableLayout {
-    private static final float SCALE_DOWN_RATIO = 0.9f;
+    private static final String TAG = "WidgetsRecommendationTableLayout";
+    private static final float DOWN_SCALE_RATIO = 0.9f;
+    private static final float MAX_DOWN_SCALE_RATIO = 0.5f;
     private final DeviceProfile mDeviceProfile;
     private final float mWidgetCellTextViewsHeight;
 
@@ -131,6 +134,10 @@ public final class WidgetsRecommendationTableLayout extends TableLayout {
     private RecommendationTableData fitRecommendedWidgetsToTableSpace(
             float previewScale,
             List<ArrayList<WidgetItem>> recommendedWidgetsInTable) {
+        if (previewScale < MAX_DOWN_SCALE_RATIO) {
+            Log.w(TAG, "Hide recommended widgets. Can't down scale previews to " + previewScale);
+            return new RecommendationTableData(List.of(), previewScale);
+        }
         // A naive estimation of the widgets recommendation table height without inflation.
         float totalHeight = 0;
         for (int i = 0; i < recommendedWidgetsInTable.size(); i++) {
@@ -157,7 +164,7 @@ public final class WidgetsRecommendationTableLayout extends TableLayout {
                             /* toIndex= */recommendedWidgetsInTable.size() - 1));
         }
 
-        float nextPreviewScale = previewScale * SCALE_DOWN_RATIO;
+        float nextPreviewScale = previewScale * DOWN_SCALE_RATIO;
         return fitRecommendedWidgetsToTableSpace(nextPreviewScale, recommendedWidgetsInTable);
     }
 
