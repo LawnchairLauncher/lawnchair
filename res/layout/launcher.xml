@@ -62,9 +62,12 @@
             android:id="@+id/drop_target_bar"
             layout="@layout/drop_target_bar" />
 
-        <include
+        <com.android.launcher3.views.ScrimView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:id="@+id/scrim_view"
-            layout="@layout/scrim_view" />
+            android:background="?attr/allAppsScrimColor"
+            android:alpha="0" />
 
         <include
             android:id="@+id/apps_view"
