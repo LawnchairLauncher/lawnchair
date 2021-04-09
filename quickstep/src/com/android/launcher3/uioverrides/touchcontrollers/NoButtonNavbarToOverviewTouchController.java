@@ -16,6 +16,7 @@
 
 package com.android.launcher3.uioverrides.touchcontrollers;
 
+import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.LauncherAnimUtils.newCancelListener;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.HINT_STATE;
@@ -45,7 +46,6 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.graphics.OverviewScrim;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.util.VibratorWrapper;
 import com.android.quickstep.SystemUiProxy;
@@ -128,10 +128,10 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
 
         if (mFromState == NORMAL && mToState == HINT_STATE) {
             mNormalToHintOverviewScrimAnimator = ObjectAnimator.ofFloat(
-                    mLauncher.getDragLayer().getOverviewScrim(),
-                    OverviewScrim.SCRIM_PROGRESS,
-                    mFromState.getOverviewScrimAlpha(mLauncher),
-                    mToState.getOverviewScrimAlpha(mLauncher));
+                    mLauncher.getScrimView(),
+                    VIEW_ALPHA,
+                    mFromState.getWorkspaceScrimAlpha(mLauncher),
+                    mToState.getWorkspaceScrimAlpha(mLauncher));
         }
         mStartedOverview = false;
         mReachedOverview = false;

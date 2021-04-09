@@ -27,6 +27,7 @@ import static android.view.Surface.ROTATION_270;
 import static android.view.Surface.ROTATION_90;
 import static android.widget.Toast.LENGTH_SHORT;
 
+import static com.android.launcher3.AbstractFloatingView.TYPE_TASK_MENU;
 import static com.android.launcher3.LauncherState.OVERVIEW_SPLIT_SELECT;
 import static com.android.launcher3.QuickstepTransitionManager.RECENTS_LAUNCH_DURATION;
 import static com.android.launcher3.Utilities.comp;
@@ -72,6 +73,7 @@ import android.widget.Toast;
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
@@ -94,6 +96,7 @@ import com.android.launcher3.util.TransformingTouchDelegate;
 import com.android.launcher3.util.ViewPool.Reusable;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.RemoteAnimationTargets;
+import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskIconCache;
 import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskThumbnailCache;
@@ -102,8 +105,6 @@ import com.android.quickstep.TaskViewUtils;
 import com.android.quickstep.util.CancellableTask;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.util.TaskCornerRadius;
-import com.android.quickstep.views.RecentsView.PageCallbacks;
-import com.android.quickstep.views.RecentsView.ScrollState;
 import com.android.quickstep.views.TaskThumbnailView.PreviewPositionHelper;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -118,7 +119,7 @@ import java.util.function.Consumer;
 /**
  * A task in the Recents view.
  */
-public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
+public class TaskView extends FrameLayout implements Reusable {
 
     private static final String TAG = TaskView.class.getSimpleName();
 
@@ -265,26 +266,10 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                 }
             };
 
-    private final OnAttachStateChangeListener mTaskMenuStateListener =
-            new OnAttachStateChangeListener() {
-                @Override
-                public void onViewAttachedToWindow(View view) {
-                }
-
-                @Override
-                public void onViewDetachedFromWindow(View view) {
-                    if (mMenuView != null) {
-                        mMenuView.removeOnAttachStateChangeListener(this);
-                        mMenuView = null;
-                    }
-                }
-            };
-
     private final TaskOutlineProvider mOutlineProvider;
 
     private Task mTask;
     private TaskThumbnailView mSnapshotView;
-    private TaskMenuView mMenuView;
     private IconView mIconView;
     private final DigitalWellBeingToast mDigitalWellBeingToast;
     private float mFullscreenProgress;
@@ -343,47 +328,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     public TaskView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mActivity = StatefulActivity.fromContext(context);
-        setOnClickListener((view) -> {
-            if (getTask() == null) {
-                return;
-            }
-            if (LIVE_TILE.get() && isRunningTask()) {
-                if (!mIsClickableAsLiveTile) {
-                    return;
-                }
-
-                mIsClickableAsLiveTile = false;
-                RecentsView recentsView = getRecentsView();
-                RemoteAnimationTargets targets = recentsView.getLiveTileParams().getTargetSet();
-                recentsView.getLiveTileTaskViewSimulator().setDrawsBelowRecents(false);
-
-                AnimatorSet anim = new AnimatorSet();
-                TaskViewUtils.composeRecentsLaunchAnimator(
-                        anim, this, targets.apps,
-                        targets.wallpapers, true /* launcherClosing */,
-                        mActivity.getStateManager(), recentsView,
-                        recentsView.getDepthController());
-                anim.addListener(new AnimatorListenerAdapter() {
-
-                    @Override
-                    public void onAnimationEnd(Animator animator) {
-                        recentsView.getLiveTileTaskViewSimulator().setDrawsBelowRecents(true);
-                        recentsView.finishRecentsAnimation(false, null);
-                        mIsClickableAsLiveTile = true;
-                    }
-                });
-                anim.start();
-            } else {
-                if (mActivity.isInState(OVERVIEW_SPLIT_SELECT)) {
-                    // User tapped to select second split screen app
-                    getRecentsView().confirmSplitSelect(this);
-                } else {
-                    launchTaskAnimated();
-                }
-            }
-            mActivity.getStatsLogManager().logger().withItemInfo(getItemInfo())
-                    .log(LAUNCHER_TASK_LAUNCH_TAP);
-        });
+        setOnClickListener(this::onClick);
 
         mCurrentFullscreenParams = new FullscreenDrawParams(context);
         mDigitalWellBeingToast = new DigitalWellBeingToast(mActivity, this);
@@ -487,10 +432,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                         + mCurrentFullscreenParams.mCurrentDrawnInsets.bottom);
     }
 
-    public TaskMenuView getMenuView() {
-        return mMenuView;
-    }
-
     public DigitalWellBeingToast getDigitalWellBeingToast() {
         return mDigitalWellBeingToast;
     }
@@ -524,10 +465,52 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         return mIconView;
     }
 
-    public AnimatorPlaybackController createLaunchAnimationForRunningTask() {
-        return getRecentsView().createTaskLaunchAnimation(
-                this, RECENTS_LAUNCH_DURATION, TOUCH_RESPONSE_INTERPOLATOR)
-                .createPlaybackController();
+    private void onClick(View view) {
+        if (getTask() == null) {
+            return;
+        }
+        if (LIVE_TILE.get() && isRunningTask()) {
+            if (!mIsClickableAsLiveTile) {
+                return;
+            }
+
+            // Reset the minimized state since we force-toggled the minimized state when entering
+            // overview, but never actually finished the recents animation
+            SystemUiProxy p = SystemUiProxy.INSTANCE.getNoCreate();
+            if (p != null) {
+                p.setSplitScreenMinimized(false);
+            }
+
+            mIsClickableAsLiveTile = false;
+            RecentsView recentsView = getRecentsView();
+            RemoteAnimationTargets targets = recentsView.getLiveTileParams().getTargetSet();
+            recentsView.getLiveTileTaskViewSimulator().setDrawsBelowRecents(false);
+
+            AnimatorSet anim = new AnimatorSet();
+            TaskViewUtils.composeRecentsLaunchAnimator(
+                    anim, this, targets.apps,
+                    targets.wallpapers, true /* launcherClosing */,
+                    mActivity.getStateManager(), recentsView,
+                    recentsView.getDepthController());
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    recentsView.getLiveTileTaskViewSimulator().setDrawsBelowRecents(true);
+                    recentsView.finishRecentsAnimation(false, null);
+                    mIsClickableAsLiveTile = true;
+                }
+            });
+            anim.start();
+        } else {
+            if (mActivity.isInState(OVERVIEW_SPLIT_SELECT)) {
+                // User tapped to select second split screen app
+                getRecentsView().confirmSplitSelect(this);
+            } else {
+                launchTaskAnimated();
+            }
+        }
+        mActivity.getStatsLogManager().logger().withItemInfo(getItemInfo())
+                .log(LAUNCHER_TASK_LAUNCH_TAP);
     }
 
     /**
@@ -662,15 +645,12 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
         if (!getRecentsView().isClearAllHidden()) {
             getRecentsView().snapToPage(getRecentsView().indexOfChild(this));
+            return false;
         } else {
-            mMenuView = TaskMenuView.showForTask(this);
             mActivity.getStatsLogManager().logger().withItemInfo(getItemInfo())
                     .log(LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS);
-            if (mMenuView != null) {
-                mMenuView.addOnAttachStateChangeListener(mTaskMenuStateListener);
-            }
+            return TaskMenuView.showForTask(this);
         }
-        return mMenuView != null;
     }
 
     private void setIcon(Drawable icon) {
@@ -729,10 +709,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         mIconView.setRotation(orientationHandler.getDegreesRotated());
         snapshotParams.topMargin = deviceProfile.overviewTaskThumbnailTopMarginPx;
         mSnapshotView.setLayoutParams(snapshotParams);
-
-        if (mMenuView != null) {
-            mMenuView.onRotationChanged();
-        }
     }
 
     private void setIconAndDimTransitionProgress(float progress, boolean invert) {
@@ -815,27 +791,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         mSnapshotView.setThumbnail(mTask, null);
         setOverlayEnabled(false);
         onTaskListVisibilityChanged(false);
-    }
-
-    @Override
-    public void onPageScroll(ScrollState scrollState, boolean gridEnabled) {
-        // Don't do anything if it's modal.
-        if (mModalness > 0) {
-            return;
-        }
-
-        float dwbBannerAlpha = Utilities.boundToRange(1.0f - 2 * scrollState.linearInterpolation,
-                0f, 1f);
-        mDigitalWellBeingToast.updateBannerAlpha(dwbBannerAlpha);
-
-        if (mMenuView != null) {
-            PagedOrientationHandler pagedOrientationHandler = getPagedOrientationHandler();
-            RecentsView recentsView = getRecentsView();
-            mMenuView.setPosition(getX() - recentsView.getScrollX(),
-                    getY() - recentsView.getScrollY(), pagedOrientationHandler);
-            mMenuView.setScaleX(getScaleX());
-            mMenuView.setScaleY(getScaleY());
-        }
     }
 
     /**
@@ -1337,9 +1292,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     }
 
     public void initiateSplitSelect(SplitPositionOption splitPositionOption) {
-        RecentsView rv = getRecentsView();
-        getMenuView().close(false);
-        rv.initiateSplitSelect(this, splitPositionOption);
+        AbstractFloatingView.closeOpenViews(mActivity, false, TYPE_TASK_MENU);
+        getRecentsView().initiateSplitSelect(this, splitPositionOption);
     }
 
     private void setColorTint(float amount) {

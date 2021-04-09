@@ -19,6 +19,7 @@ import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 
 import android.content.Context;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -108,7 +109,7 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView
 
         // If the ImageView doesn't have a drawable yet, the widget preview hasn't been loaded and
         // we abort the drag.
-        if (image.getDrawable() == null) {
+        if (image.getDrawable() == null && v.getAppWidgetHostViewPreview() == null) {
             return false;
         }
 
@@ -116,11 +117,21 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView
         dragHelper.setRemoteViewsPreview(v.getPreview());
         dragHelper.setAppWidgetHostViewPreview(v.getAppWidgetHostViewPreview());
 
-        int[] loc = new int[2];
-        getPopupContainer().getLocationInDragLayer(image, loc);
+        if (image.getDrawable() != null) {
+            int[] loc = new int[2];
+            getPopupContainer().getLocationInDragLayer(image, loc);
 
-        dragHelper.startDrag(image.getBitmapBounds(), image.getDrawable().getIntrinsicWidth(),
-                image.getWidth(), new Point(loc[0], loc[1]), this, new DragOptions());
+            dragHelper.startDrag(image.getBitmapBounds(), image.getDrawable().getIntrinsicWidth(),
+                    image.getWidth(), new Point(loc[0], loc[1]), this, new DragOptions());
+        } else {
+            View preview = v.getAppWidgetHostViewPreview();
+            int[] loc = new int[2];
+            getPopupContainer().getLocationInDragLayer(preview, loc);
+
+            Rect r = new Rect(0, 0, preview.getWidth(), preview.getHeight());
+            dragHelper.startDrag(r, preview.getMeasuredWidth(), preview.getMeasuredWidth(),
+                    new Point(loc[0], loc[1]), this, new DragOptions());
+        }
         close(true);
         return true;
     }
