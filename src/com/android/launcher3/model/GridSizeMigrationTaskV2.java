@@ -67,7 +67,7 @@ import java.util.Set;
 public class GridSizeMigrationTaskV2 {
 
     private static final String TAG = "GridSizeMigrationTaskV2";
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     private final Context mContext;
     private final SQLiteDatabase mDb;
