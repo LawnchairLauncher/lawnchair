@@ -137,7 +137,6 @@ import com.android.quickstep.TaskViewUtils;
 import com.android.quickstep.ViewUtils;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.LayoutUtils;
-import com.android.quickstep.util.MultiValueUpdateListener;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.util.SplitScreenBounds;
 import com.android.quickstep.util.SurfaceTransactionApplier;
@@ -752,18 +751,16 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             ValueAnimator appAnimator = ValueAnimator.ofFloat(0, 1);
             appAnimator.setDuration(RECENTS_LAUNCH_DURATION);
             appAnimator.setInterpolator(ACCEL_DEACCEL);
-            appAnimator.addUpdateListener(new MultiValueUpdateListener() {
-                @Override
-                public void onUpdate(float percent) {
-                    SurfaceParams.Builder builder = new SurfaceParams.Builder(
-                            apps[apps.length - 1].leash);
-                    Matrix matrix = new Matrix();
-                    matrix.postScale(percent, percent);
-                    matrix.postTranslate(mActivity.getDeviceProfile().widthPx * (1 - percent) / 2,
-                            mActivity.getDeviceProfile().heightPx * (1 - percent) / 2);
-                    builder.withAlpha(percent).withMatrix(matrix);
-                    surfaceApplier.scheduleApply(builder.build());
-                }
+            appAnimator.addUpdateListener(valueAnimator -> {
+                float percent = valueAnimator.getAnimatedFraction();
+                SurfaceParams.Builder builder = new SurfaceParams.Builder(
+                        apps[apps.length - 1].leash);
+                Matrix matrix = new Matrix();
+                matrix.postScale(percent, percent);
+                matrix.postTranslate(mActivity.getDeviceProfile().widthPx * (1 - percent) / 2,
+                        mActivity.getDeviceProfile().heightPx * (1 - percent) / 2);
+                builder.withAlpha(percent).withMatrix(matrix);
+                surfaceApplier.scheduleApply(builder.build());
             });
             anim.play(appAnimator);
         } else {
