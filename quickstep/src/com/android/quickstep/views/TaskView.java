@@ -523,7 +523,7 @@ public class TaskView extends FrameLayout implements Reusable {
         if (mTask != null) {
             TestLogging.recordEvent(
                     TestProtocol.SEQUENCE_MAIN, "startActivityFromRecentsAsync", mTask);
-            ActivityOptionsWrapper opts =  mActivity.getActivityLaunchOptions(this);
+            ActivityOptionsWrapper opts =  mActivity.getActivityLaunchOptions(this, null);
             if (ActivityManagerWrapper.getInstance()
                     .startActivityFromRecents(mTask.key, opts.options)) {
                 return opts.onEndCallback;

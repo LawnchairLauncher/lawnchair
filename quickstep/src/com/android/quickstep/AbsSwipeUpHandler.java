@@ -66,6 +66,7 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.SystemClock;
 import android.view.MotionEvent;
 import android.view.View;
@@ -1043,7 +1044,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 interpolator, target, velocityPxPerMs));
     }
 
-    protected abstract HomeAnimationFactory createHomeAnimationFactory(long duration);
+    protected abstract HomeAnimationFactory createHomeAnimationFactory(
+            ArrayList<IBinder> launchCookies, long duration);
 
     private final TaskStackChangeListener mActivityRestartListener = new TaskStackChangeListener() {
         @Override
@@ -1084,7 +1086,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             final RemoteAnimationTargetCompat runningTaskTarget = mRecentsAnimationTargets != null
                     ? mRecentsAnimationTargets.findTask(mGestureState.getRunningTaskId())
                     : null;
-            HomeAnimationFactory homeAnimFactory = createHomeAnimationFactory(duration);
+            HomeAnimationFactory homeAnimFactory = createHomeAnimationFactory(
+                    runningTaskTarget.taskInfo.launchCookies, duration);
             mIsSwipingPipToHome = homeAnimFactory.supportSwipePipToHome()
                     && runningTaskTarget != null
                     && runningTaskTarget.taskInfo.pictureInPictureParams != null

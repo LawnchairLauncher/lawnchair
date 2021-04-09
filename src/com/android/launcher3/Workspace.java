@@ -2999,20 +2999,30 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
      * Similar to {@link #getFirstMatch} but optimized to finding a suitable view for the app close
      * animation.
      *
+     * @param preferredItemId The id of the preferred item to match to if it exists.
      * @param packageName The package name of the app to match.
      * @param user The user of the app to match.
      */
-    public View getFirstMatchForAppClose(String packageName, UserHandle user) {
-        List<CellLayout> cellLayouts = new ArrayList<>(getPanelCount() + 1);
-        cellLayouts.add(getHotseat());
-        getVisiblePages().forEach(page -> cellLayouts.add((CellLayout) page));
-
-        final Workspace.ItemOperator packageAndUser = (ItemInfo info, View view) -> info != null
-                && info.getTargetComponent() != null
-                && TextUtils.equals(info.getTargetComponent().getPackageName(), packageName)
-                && info.user.equals(user);
+    public View getFirstMatchForAppClose(int preferredItemId, String packageName, UserHandle user) {
+        final Workspace.ItemOperator preferredItem = (ItemInfo info, View view) ->
+                info != null && info.id == preferredItemId;
+        final Workspace.ItemOperator preferredItemInFolder = (info, view) -> {
+            if (info instanceof FolderInfo) {
+                FolderInfo folderInfo = (FolderInfo) info;
+                for (WorkspaceItemInfo shortcutInfo : folderInfo.contents) {
+                    if (preferredItem.evaluate(shortcutInfo, view)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        };
         final Workspace.ItemOperator packageAndUserAndApp = (ItemInfo info, View view) ->
-                packageAndUser.evaluate(info, view) && info.itemType == ITEM_TYPE_APPLICATION;
+                info != null
+                        && info.getTargetComponent() != null
+                        && TextUtils.equals(info.getTargetComponent().getPackageName(), packageName)
+                        && info.user.equals(user)
+                        && info.itemType == ITEM_TYPE_APPLICATION;
         final Workspace.ItemOperator packageAndUserAndAppInFolder = (info, view) -> {
             if (info instanceof FolderInfo) {
                 FolderInfo folderInfo = (FolderInfo) info;
@@ -3025,13 +3035,18 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             return false;
         };
 
+        List<CellLayout> cellLayouts = new ArrayList<>(getPanelCount() + 1);
+        cellLayouts.add(getHotseat());
+        getVisiblePages().forEach(page -> cellLayouts.add((CellLayout) page));
+
         // Order: App icons, app in folder. Items in hotseat get returned first.
         if (ADAPTIVE_ICON_WINDOW_ANIM.get()) {
-            return getFirstMatch(cellLayouts, packageAndUserAndApp, packageAndUserAndAppInFolder);
+            return getFirstMatch(cellLayouts, preferredItem, preferredItemInFolder,
+                    packageAndUserAndApp, packageAndUserAndAppInFolder);
         } else {
             // Do not use Folder as a criteria, since it'll cause a crash when trying to draw
             // FolderAdaptiveIcon as the background.
-            return getFirstMatch(cellLayouts, packageAndUserAndApp);
+            return getFirstMatch(cellLayouts, preferredItem, packageAndUserAndApp);
         }
     }
 

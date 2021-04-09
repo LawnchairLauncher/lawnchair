@@ -26,10 +26,13 @@ import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SY
 
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.os.Binder;
 import android.os.Bundle;
 import android.os.CancellationSignal;
+import android.os.IBinder;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -37,6 +40,8 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.model.WellbeingModel;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.proxy.ProxyActivityStarter;
 import com.android.launcher3.proxy.StartActivityParams;
@@ -50,6 +55,7 @@ import com.android.launcher3.taskbar.TaskbarView;
 import com.android.launcher3.uioverrides.RecentsViewStateController;
 import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.util.DisplayController;
+import com.android.launcher3.util.ObjectWrapper;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.SysUINavigationMode;
@@ -67,6 +73,7 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -418,16 +425,36 @@ public abstract class BaseQuickstepLauncher extends Launcher
     }
 
     @Override
-    public ActivityOptionsWrapper getActivityLaunchOptions(View v) {
+    public ActivityOptionsWrapper getActivityLaunchOptions(View v, @Nullable ItemInfo item) {
         ActivityOptionsWrapper activityOptions =
                 mAppTransitionManager.hasControlRemoteAppTransitionPermission()
                         ? mAppTransitionManager.getActivityLaunchOptions(this, v)
-                        : super.getActivityLaunchOptions(v);
+                        : super.getActivityLaunchOptions(v, item);
         if (mLastTouchUpTime > 0) {
             ActivityOptionsCompat.setLauncherSourceInfo(
                     activityOptions.options, mLastTouchUpTime);
         }
+        addLaunchCookie(item, activityOptions.options);
         return activityOptions;
+    }
+
+    /**
+     * Adds a new launch cookie for the activity launch of the given {@param info} if supported.
+     */
+    public void addLaunchCookie(ItemInfo info, ActivityOptions opts) {
+        if (info == null) {
+            return;
+        }
+        switch (info.itemType) {
+            case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
+            case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
+            case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
+                // Fall through and continue if it's an app or shortcut
+                break;
+            default:
+                return;
+        }
+        opts.setLaunchCookie(ObjectWrapper.wrap(new Integer(info.id)));
     }
 
     public void setHintUserWillBeActive() {

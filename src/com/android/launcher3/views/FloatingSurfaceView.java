@@ -158,7 +158,7 @@ public class FloatingSurfaceView extends AbstractFloatingView implements
         if (mContract == null) {
             return;
         }
-        View icon = mLauncher.getWorkspace().getFirstMatchForAppClose(
+        View icon = mLauncher.getWorkspace().getFirstMatchForAppClose(-1,
                 mContract.componentName.getPackageName(), mContract.user);
 
         boolean iconChanged = mIcon != icon;
