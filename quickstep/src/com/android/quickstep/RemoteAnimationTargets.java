@@ -15,6 +15,8 @@
  */
 package com.android.quickstep;
 
+import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR;
+
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.ArrayList;
@@ -30,13 +32,15 @@ public class RemoteAnimationTargets {
     public final RemoteAnimationTargetCompat[] unfilteredApps;
     public final RemoteAnimationTargetCompat[] apps;
     public final RemoteAnimationTargetCompat[] wallpapers;
+    public final RemoteAnimationTargetCompat[] nonApps;
     public final int targetMode;
     public final boolean hasRecents;
 
     private boolean mReleased = false;
 
     public RemoteAnimationTargets(RemoteAnimationTargetCompat[] apps,
-            RemoteAnimationTargetCompat[] wallpapers, int targetMode) {
+            RemoteAnimationTargetCompat[] wallpapers, RemoteAnimationTargetCompat[] nonApps,
+            int targetMode) {
         ArrayList<RemoteAnimationTargetCompat> filteredApps = new ArrayList<>();
         boolean hasRecents = false;
         if (apps != null) {
@@ -55,11 +59,24 @@ public class RemoteAnimationTargets {
         this.wallpapers = wallpapers;
         this.targetMode = targetMode;
         this.hasRecents = hasRecents;
+        this.nonApps = nonApps;
     }
 
     public RemoteAnimationTargetCompat findTask(int taskId) {
         for (RemoteAnimationTargetCompat target : apps) {
             if (target.taskId == taskId) {
+                return target;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Gets the navigation bar remote animation target if exists.
+     */
+    public RemoteAnimationTargetCompat getNavBarRemoteAnimationTarget() {
+        for (RemoteAnimationTargetCompat target : nonApps) {
+            if (target.windowType == TYPE_NAVIGATION_BAR) {
                 return target;
             }
         }
@@ -96,6 +113,9 @@ public class RemoteAnimationTargets {
             target.release();
         }
         for (RemoteAnimationTargetCompat target : wallpapers) {
+            target.release();
+        }
+        for (RemoteAnimationTargetCompat target : nonApps) {
             target.release();
         }
     }
