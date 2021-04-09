@@ -20,6 +20,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -32,7 +33,6 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.widget.WidgetCell;
-import com.android.launcher3.widget.WidgetImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -122,9 +122,9 @@ public final class WidgetsRecommendationTableLayout extends TableLayout {
                 getContext()).inflate(R.layout.widget_cell, parent, false);
 
         widget.setOnTouchListener(mWidgetCellOnTouchListener);
-        WidgetImageView preview = widget.findViewById(R.id.widget_preview);
-        preview.setOnClickListener(mWidgetCellOnClickListener);
-        preview.setOnLongClickListener(mWidgetCellOnLongClickListener);
+        View previewContainer = widget.findViewById(R.id.widget_preview_container);
+        previewContainer.setOnClickListener(mWidgetCellOnClickListener);
+        previewContainer.setOnLongClickListener(mWidgetCellOnLongClickListener);
         widget.setAnimatePreview(false);
 
         parent.addView(widget);
