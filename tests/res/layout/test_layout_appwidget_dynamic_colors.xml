@@ -14,7 +14,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="prim"/>
+            android:text="neut1"/>
         <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
@@ -28,7 +28,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="second"/>
+            android:text="accent1"/>
         <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
@@ -42,11 +42,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="neutral"/>
+            android:text="accent2"/>
         <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:background="@android:color/system_neutral2_500"/>
+            android:background="@android:color/system_accent2_500"/>
     </LinearLayout>
 
     </LinearLayout>
