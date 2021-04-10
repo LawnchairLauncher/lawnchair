@@ -64,5 +64,12 @@ public abstract class MultiValueUpdateListener implements ValueAnimator.Animator
 
             mAllProperties.add(this);
         }
+
+        /**
+         * Gets the start value.
+         */
+        public float getStartValue() {
+            return mStart;
+        }
     }
 }
