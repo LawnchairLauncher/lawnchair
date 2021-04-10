@@ -247,10 +247,7 @@ public class OrientationTouchTransformerTest {
     }
 
     @Test
-    @Ignore("There's too much that goes into needing to mock a real motion event so the "
-            + "transforms in native code get applied correctly. Once that happens then maybe we can"
-            + " write slightly more complex unit tests")
-    public void applyTransform_taskNotFrozen_90Rotate_inTwoRegions() {
+    public void applyTransform_taskNotFrozen_90Rotate_withTwoRegions() {
         mTouchTransformer.createOrAddTouchRegion(mInfo);
         mTouchTransformer.enableMultipleRegions(true, mInfo);
         mTouchTransformer
@@ -262,6 +259,7 @@ public class OrientationTouchTransformerTest {
         // Portrait point in landscape orientation axis
         MotionEvent inRegion2 = generateMotionEvent(MotionEvent.ACTION_DOWN, 10, 10);
         mTouchTransformer.transform(inRegion1_down);
+        // no-op
         mTouchTransformer.transform(inRegion2);
         assertTrue(mTouchTransformer.touchInValidSwipeRegions(
                 inRegion1_down.getX(), inRegion1_down.getY()));
@@ -269,9 +267,19 @@ public class OrientationTouchTransformerTest {
         assertFalse(mTouchTransformer.touchInValidSwipeRegions(inRegion2.getX(), inRegion2.getY()));
 
         mTouchTransformer.transform(inRegion1_up);
+    }
 
-        // Set the new region with this MotionEvent.ACTION_DOWN
-        inRegion2 = generateAndTransformMotionEvent(MotionEvent.ACTION_DOWN, 10, 370);
+    @Test
+    public void applyTransform_90Rotate_inRotatedRegion() {
+        // Create regions for both 0 Rotation and 90 Rotation
+        mTouchTransformer.createOrAddTouchRegion(mInfo);
+        mTouchTransformer.enableMultipleRegions(true, mInfo);
+        mTouchTransformer
+                .createOrAddTouchRegion(createDisplayInfo(NORMAL_SCREEN_SIZE, Surface.ROTATION_90));
+        // Portrait point in landscape orientation axis
+        float x1 = generateTouchRegionHeight(NORMAL_SCREEN_SIZE, Surface.ROTATION_0);
+        // bottom of screen, from landscape perspective right side of screen
+        MotionEvent inRegion2 = generateAndTransformMotionEvent(MotionEvent.ACTION_DOWN, x1, 370);
         assertTrue(mTouchTransformer.touchInValidSwipeRegions(inRegion2.getX(), inRegion2.getY()));
     }
 

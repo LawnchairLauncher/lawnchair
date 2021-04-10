@@ -766,7 +766,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         } else {
             TaskViewUtils.composeRecentsLaunchAnimator(
                     anim, taskView, apps,
-                    mLiveTileParams.getTargetSet().wallpapers, true /* launcherClosing */,
+                    mLiveTileParams.getTargetSet().wallpapers,
+                    mLiveTileParams.getTargetSet().nonApps, true /* launcherClosing */,
                     mActivity.getStateManager(), this,
                     getDepthController());
         }
