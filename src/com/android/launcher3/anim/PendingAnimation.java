@@ -117,11 +117,18 @@ public class PendingAnimation implements PropertySetter {
      * Adds a callback to be run on every frame of the animation
      */
     public void addOnFrameCallback(Runnable runnable) {
+        addOnFrameListener(anim -> runnable.run());
+    }
+
+    /**
+     * Adds a listener to be run on every frame of the animation
+     */
+    public void addOnFrameListener(ValueAnimator.AnimatorUpdateListener listener) {
         if (mProgressAnimator == null) {
             mProgressAnimator = ValueAnimator.ofFloat(0, 1);
         }
 
-        mProgressAnimator.addUpdateListener(anim -> runnable.run());
+        mProgressAnimator.addUpdateListener(listener);
     }
 
     /**

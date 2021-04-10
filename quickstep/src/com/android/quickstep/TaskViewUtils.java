@@ -18,6 +18,11 @@ package com.android.quickstep;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.QuickstepTransitionManager.ANIMATION_DELAY_NAV_FADE_IN;
+import static com.android.launcher3.QuickstepTransitionManager.ANIMATION_NAV_FADE_IN_DURATION;
+import static com.android.launcher3.QuickstepTransitionManager.ANIMATION_NAV_FADE_OUT_DURATION;
+import static com.android.launcher3.QuickstepTransitionManager.NAV_FADE_IN_INTERPOLATOR;
+import static com.android.launcher3.QuickstepTransitionManager.NAV_FADE_OUT_INTERPOLATOR;
 import static com.android.launcher3.QuickstepTransitionManager.RECENTS_LAUNCH_DURATION;
 import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncestor;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
@@ -58,6 +63,7 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.util.DisplayController;
+import com.android.quickstep.util.MultiValueUpdateListener;
 import com.android.quickstep.util.SurfaceTransactionApplier;
 import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.util.TransformParams;
@@ -67,6 +73,7 @@ import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
+import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
 
 /**
  * Utility class for helpful methods related to {@link TaskView} objects and their tasks.
@@ -137,7 +144,8 @@ public final class TaskViewUtils {
 
     public static void createRecentsWindowAnimator(TaskView v, boolean skipViewChanges,
             RemoteAnimationTargetCompat[] appTargets,
-            RemoteAnimationTargetCompat[] wallpaperTargets, DepthController depthController,
+            RemoteAnimationTargetCompat[] wallpaperTargets,
+            RemoteAnimationTargetCompat[] nonAppTargets, DepthController depthController,
             PendingAnimation out) {
         boolean isRunningTask = v.isRunningTask();
         TransformParams params = null;
@@ -146,7 +154,7 @@ public final class TaskViewUtils {
             params = v.getRecentsView().getLiveTileParams();
             tsv = v.getRecentsView().getLiveTileTaskViewSimulator();
         }
-        createRecentsWindowAnimator(v, skipViewChanges, appTargets, wallpaperTargets,
+        createRecentsWindowAnimator(v, skipViewChanges, appTargets, wallpaperTargets, nonAppTargets,
                 depthController, out, params, tsv);
     }
 
@@ -156,7 +164,8 @@ public final class TaskViewUtils {
      */
     public static void createRecentsWindowAnimator(TaskView v, boolean skipViewChanges,
             RemoteAnimationTargetCompat[] appTargets,
-            RemoteAnimationTargetCompat[] wallpaperTargets, DepthController depthController,
+            RemoteAnimationTargetCompat[] wallpaperTargets,
+            RemoteAnimationTargetCompat[] nonAppTargets, DepthController depthController,
             PendingAnimation out, @Nullable TransformParams params,
             @Nullable TaskViewSimulator tsv) {
         boolean isQuickSwitch = v.isEndQuickswitchCuj();
@@ -164,8 +173,9 @@ public final class TaskViewUtils {
 
         boolean inLiveTileMode = LIVE_TILE.get() && v.getRecentsView().getRunningTaskIndex() != -1;
         final RemoteAnimationTargets targets =
-                new RemoteAnimationTargets(appTargets, wallpaperTargets,
+                new RemoteAnimationTargets(appTargets, wallpaperTargets, nonAppTargets,
                         inLiveTileMode ? MODE_CLOSING : MODE_OPENING);
+        final RemoteAnimationTargetCompat navBarTarget = targets.getNavBarRemoteAnimationTarget();
 
         if (params == null) {
             SurfaceTransactionApplier applier = new SurfaceTransactionApplier(v);
@@ -225,6 +235,30 @@ public final class TaskViewUtils {
             TaskViewSimulator finalTsv = tsv;
             TransformParams finalParams = params;
             out.addOnFrameCallback(() -> finalTsv.apply(finalParams));
+            if (navBarTarget != null) {
+                final Rect cropRect = new Rect();
+                out.addOnFrameListener(new MultiValueUpdateListener() {
+                    FloatProp mNavFadeOut = new FloatProp(1f, 0f, 0,
+                            ANIMATION_NAV_FADE_OUT_DURATION, NAV_FADE_OUT_INTERPOLATOR);
+                    FloatProp mNavFadeIn = new FloatProp(0f, 1f, ANIMATION_DELAY_NAV_FADE_IN,
+                            ANIMATION_NAV_FADE_IN_DURATION, NAV_FADE_IN_INTERPOLATOR);
+
+                    @Override
+                    public void onUpdate(float percent) {
+                        final SurfaceParams.Builder navBuilder =
+                                new SurfaceParams.Builder(navBarTarget.leash);
+                        if (mNavFadeIn.value > mNavFadeIn.getStartValue()) {
+                            finalTsv.getCurrentCropRect().round(cropRect);
+                            navBuilder.withMatrix(finalTsv.getCurrentMatrix())
+                                    .withWindowCrop(cropRect)
+                                    .withAlpha(mNavFadeIn.value);
+                        } else {
+                            navBuilder.withAlpha(mNavFadeOut.value);
+                        }
+                        finalParams.applySurfaceParams(navBuilder.build());
+                    }
+                });
+            }
             topMostSimulator = tsv;
         }
 
@@ -320,7 +354,8 @@ public final class TaskViewUtils {
      */
     public static void composeRecentsSplitLaunchAnimator(@NonNull AnimatorSet anim,
             @NonNull TaskView v, @NonNull RemoteAnimationTargetCompat[] appTargets,
-            @NonNull RemoteAnimationTargetCompat[] wallpaperTargets, boolean launcherClosing,
+            @NonNull RemoteAnimationTargetCompat[] wallpaperTargets,
+            @NonNull RemoteAnimationTargetCompat[] nonAppTargets, boolean launcherClosing,
             @NonNull StateManager stateManager, @NonNull DepthController depthController,
             int targetStage) {
         PendingAnimation out = new PendingAnimation(RECENTS_LAUNCH_DURATION);
@@ -336,7 +371,7 @@ public final class TaskViewUtils {
         boolean inLiveTileMode =
                 ENABLE_QUICKSTEP_LIVE_TILE.get() && recentsView.getRunningTaskIndex() != -1;
         final RemoteAnimationTargets targets =
-                new RemoteAnimationTargets(appTargets, wallpaperTargets,
+                new RemoteAnimationTargets(appTargets, wallpaperTargets, nonAppTargets,
                         inLiveTileMode ? MODE_CLOSING : MODE_OPENING);
 
         if (params == null) {
@@ -392,7 +427,8 @@ public final class TaskViewUtils {
 
     public static void composeRecentsLaunchAnimator(@NonNull AnimatorSet anim, @NonNull View v,
             @NonNull RemoteAnimationTargetCompat[] appTargets,
-            @NonNull RemoteAnimationTargetCompat[] wallpaperTargets, boolean launcherClosing,
+            @NonNull RemoteAnimationTargetCompat[] wallpaperTargets,
+            @NonNull RemoteAnimationTargetCompat[] nonAppTargets, boolean launcherClosing,
             @NonNull StateManager stateManager, @NonNull RecentsView recentsView,
             @NonNull DepthController depthController) {
         boolean skipLauncherChanges = !launcherClosing;
@@ -400,7 +436,7 @@ public final class TaskViewUtils {
         TaskView taskView = findTaskViewToLaunch(recentsView, v, appTargets);
         PendingAnimation pa = new PendingAnimation(RECENTS_LAUNCH_DURATION);
         createRecentsWindowAnimator(taskView, skipLauncherChanges, appTargets, wallpaperTargets,
-                depthController, pa);
+                nonAppTargets, depthController, pa);
 
         Animator childStateAnimation = null;
         // Found a visible recents task that matches the opening app, lets launch the app from there

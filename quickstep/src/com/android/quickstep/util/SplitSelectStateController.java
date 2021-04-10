@@ -130,7 +130,7 @@ public class SplitSelectStateController {
             AnimatorSet anim = new AnimatorSet();
             BaseQuickstepLauncher activity = BaseActivity.fromContext(mV.getContext());
             TaskViewUtils.composeRecentsSplitLaunchAnimator(anim, mV,
-                    appTargets, wallpaperTargets, true, activity.getStateManager(),
+                    appTargets, wallpaperTargets, nonAppTargets, true, activity.getStateManager(),
                     activity.getDepthController(), mTargetState);
             result.setAnimation(anim, activity);
         }
