@@ -205,7 +205,7 @@ public class TransformParams {
         return mTargetSet;
     }
 
-    public void applySurfaceParams(SurfaceParams[] params) {
+    public void applySurfaceParams(SurfaceParams... params) {
         if (mSyncTransactionApplier != null) {
             mSyncTransactionApplier.scheduleApply(params);
         } else {
