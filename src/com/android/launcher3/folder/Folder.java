@@ -78,7 +78,6 @@ import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.Workspace;
 import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
 import com.android.launcher3.accessibility.FolderAccessibilityHelper;
@@ -534,9 +533,25 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     }
 
     private void startAnimation(final AnimatorSet a) {
-        final Workspace workspace = mLauncher.getWorkspace();
-        final CellLayout currentCellLayout =
-                (CellLayout) workspace.getChildAt(workspace.getCurrentPage());
+        mLauncher.getWorkspace().getVisiblePages()
+                .forEach(visiblePage -> addAnimatorListenerForPage(a, (CellLayout) visiblePage));
+
+        a.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                mState = STATE_ANIMATING;
+                mCurrentAnimator = a;
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mCurrentAnimator = null;
+            }
+        });
+        a.start();
+    }
+
+    private void addAnimatorListenerForPage(AnimatorSet a, CellLayout currentCellLayout) {
         final boolean useHardware = shouldUseHardwareLayerForAnimation(currentCellLayout);
         final boolean wasHardwareAccelerated = currentCellLayout.isHardwareLayerEnabled();
 
@@ -546,8 +561,6 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                 if (useHardware) {
                     currentCellLayout.enableHardwareLayer(true);
                 }
-                mState = STATE_ANIMATING;
-                mCurrentAnimator = a;
             }
 
             @Override
@@ -555,10 +568,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                 if (useHardware) {
                     currentCellLayout.enableHardwareLayer(wasHardwareAccelerated);
                 }
-                mCurrentAnimator = null;
             }
         });
-        a.start();
     }
 
     private boolean shouldUseHardwareLayerForAnimation(CellLayout currentCellLayout) {
