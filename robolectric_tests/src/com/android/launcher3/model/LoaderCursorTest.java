@@ -160,7 +160,7 @@ public class LoaderCursorTest {
     public void checkItemPlacement_outsideBounds() {
         mIDP.numRows = 4;
         mIDP.numColumns = 4;
-        mIDP.numHotseatIcons = 3;
+        mIDP.numDatabaseHotseatIcons = 3;
 
         // Item outside screen bounds are not placed
         assertFalse(mLoaderCursor.checkItemPlacement(
@@ -171,7 +171,7 @@ public class LoaderCursorTest {
     public void checkItemPlacement_overlappingItems() {
         mIDP.numRows = 4;
         mIDP.numColumns = 4;
-        mIDP.numHotseatIcons = 3;
+        mIDP.numDatabaseHotseatIcons = 3;
 
         // Overlapping mItems are not placed
         assertTrue(mLoaderCursor.checkItemPlacement(
@@ -197,7 +197,7 @@ public class LoaderCursorTest {
     public void checkItemPlacement_hotseat() {
         mIDP.numRows = 4;
         mIDP.numColumns = 4;
-        mIDP.numHotseatIcons = 3;
+        mIDP.numDatabaseHotseatIcons = 3;
 
         // Hotseat mItems are only placed based on screenId
         assertTrue(mLoaderCursor.checkItemPlacement(

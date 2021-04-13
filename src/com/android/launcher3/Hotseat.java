@@ -92,9 +92,9 @@ public class Hotseat extends CellLayout implements Insettable {
         mHasVerticalHotseat = hasVerticalHotseat;
         InvariantDeviceProfile idp = mActivity.getDeviceProfile().inv;
         if (hasVerticalHotseat) {
-            setGridSize(1, idp.numHotseatIcons);
+            setGridSize(1, idp.numShownHotseatIcons);
         } else {
-            setGridSize(idp.numHotseatIcons, 1);
+            setGridSize(idp.numShownHotseatIcons, 1);
         }
     }
 

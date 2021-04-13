@@ -44,7 +44,7 @@ public class HotseatRestoreHelper {
                             .getBinder(LauncherSettings.Settings.EXTRA_VALUE)) {
                 InvariantDeviceProfile idp = LauncherAppState.getIDP(context);
                 GridBackupTable backupTable = new GridBackupTable(context,
-                        transaction.getDb(), idp.numHotseatIcons, idp.numColumns,
+                        transaction.getDb(), idp.numDatabaseHotseatIcons, idp.numColumns,
                         idp.numRows);
                 backupTable.createCustomBackupTable(HYBRID_HOTSEAT_BACKUP_TABLE);
                 transaction.commit();
@@ -69,7 +69,7 @@ public class HotseatRestoreHelper {
                 }
                 InvariantDeviceProfile idp = LauncherAppState.getIDP(context);
                 GridBackupTable backupTable = new GridBackupTable(context,
-                        transaction.getDb(), idp.numHotseatIcons, idp.numColumns,
+                        transaction.getDb(), idp.numDatabaseHotseatIcons, idp.numColumns,
                         idp.numRows);
                 backupTable.restoreFromCustomBackupTable(HYBRID_HOTSEAT_BACKUP_TABLE, true);
                 transaction.commit();
