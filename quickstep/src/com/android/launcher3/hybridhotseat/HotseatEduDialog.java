@@ -88,7 +88,7 @@ public class HotseatEduDialog extends AbstractSlideInView implements Insettable 
         Rect padding = grid.getHotseatLayoutPadding();
 
         mSampleHotseat.getLayoutParams().height = grid.cellHeightPx;
-        mSampleHotseat.setGridSize(grid.inv.numHotseatIcons, 1);
+        mSampleHotseat.setGridSize(grid.numShownHotseatIcons, 1);
         mSampleHotseat.setPadding(padding.left, 0, padding.right, 0);
 
         Button turnOnBtn = findViewById(R.id.turn_predictions_on);
@@ -178,7 +178,7 @@ public class HotseatEduDialog extends AbstractSlideInView implements Insettable 
     }
 
     private void populatePreview(List<WorkspaceItemInfo> predictions) {
-        for (int i = 0; i < mLauncher.getDeviceProfile().inv.numHotseatIcons; i++) {
+        for (int i = 0; i < mLauncher.getDeviceProfile().numShownHotseatIcons; i++) {
             WorkspaceItemInfo info = predictions.get(i);
             PredictedAppIcon icon = PredictedAppIcon.createIcon(mSampleHotseat, info);
             icon.setEnabled(false);
@@ -194,7 +194,7 @@ public class HotseatEduDialog extends AbstractSlideInView implements Insettable 
      */
     public void show(List<WorkspaceItemInfo> predictions) {
         if (getParent() != null
-                || predictions.size() < mLauncher.getDeviceProfile().inv.numHotseatIcons
+                || predictions.size() < mLauncher.getDeviceProfile().numShownHotseatIcons
                 || mHotseatEduController == null) {
             return;
         }

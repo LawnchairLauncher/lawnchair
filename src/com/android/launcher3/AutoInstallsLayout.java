@@ -89,7 +89,7 @@ public class AutoInstallsLayout {
 
         // Try with grid size and hotseat count
         String layoutName = String.format(Locale.ENGLISH, FORMATTED_LAYOUT_RES_WITH_HOSTEAT,
-                grid.numColumns, grid.numRows, grid.numHotseatIcons);
+                grid.numColumns, grid.numRows, grid.numDatabaseHotseatIcons);
         int layoutId = targetRes.getIdentifier(layoutName, "xml", pkg);
 
         // Try with only grid size

@@ -149,6 +149,7 @@ public class SettingsChangeLogger implements
 
         SharedPreferences prefs = getPrefs(mContext);
         StatsLogManager.LauncherEvent gridSizeChangedEvent = null;
+        // TODO(b/184981523): This doesn't work for 2-panel grid, which has 6 hotseat icons
         switch (prefs.getInt(KEY_MIGRATION_SRC_HOTSEAT_COUNT, -1)) {
             case 5:
                 gridSizeChangedEvent = LAUNCHER_GRID_SIZE_5;
