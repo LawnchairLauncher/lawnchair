@@ -184,6 +184,10 @@ public abstract class LauncherState implements BaseState<LauncherState> {
         return launcher.getNormalTaskbarScale();
     }
 
+    public float getTaskbarTranslationY(Launcher launcher) {
+        return -launcher.getHotseat().getTaskbarOffsetY();
+    }
+
     public float getOverviewFullscreenProgress() {
         return 0;
     }
