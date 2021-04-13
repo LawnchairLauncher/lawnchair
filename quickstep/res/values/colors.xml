@@ -27,5 +27,4 @@
 
     <!-- Taskbar -->
     <color name="taskbar_background">#101010</color>
-    <color name="taskbar_divider">#C0C0C0</color>
 </resources>
