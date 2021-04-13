@@ -138,7 +138,7 @@ public class RecentsAnimationDeviceState implements
         mDisplayId = mDisplayHolder.getInfo().id;
         mIsOneHandedModeSupported = SystemProperties.getBoolean(SUPPORT_ONE_HANDED_MODE, false);
         runOnDestroy(() -> mDisplayHolder.removeChangeListener(this));
-        mRotationTouchHelper = new RotationTouchHelper(context, mDisplayHolder);
+        mRotationTouchHelper = RotationTouchHelper.INSTANCE.get(context);
         runOnDestroy(mRotationTouchHelper::destroy);
 
         // Register for user unlocked if necessary
