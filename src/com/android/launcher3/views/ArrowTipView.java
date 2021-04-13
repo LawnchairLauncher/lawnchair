@@ -21,6 +21,7 @@ import android.graphics.CornerPathEffect;
 import android.graphics.Paint;
 import android.graphics.drawable.ShapeDrawable;
 import android.os.Handler;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -29,6 +30,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.Px;
 import androidx.core.content.ContextCompat;
 
 import com.android.launcher3.AbstractFloatingView;
@@ -43,6 +46,7 @@ import com.android.launcher3.graphics.TriangleShape;
  */
 public class ArrowTipView extends AbstractFloatingView {
 
+    private static final String TAG = ArrowTipView.class.getSimpleName();
     private static final long AUTO_CLOSE_TIMEOUT_MILLIS = 10 * 1000;
     private static final long SHOW_DELAY_MS = 200;
     private static final long SHOW_DURATION_MS = 300;
@@ -105,7 +109,8 @@ public class ArrowTipView extends AbstractFloatingView {
                 arrowLp.width, arrowLp.height, false));
         Paint arrowPaint = arrowDrawable.getPaint();
         TypedValue typedValue = new TypedValue();
-        context.getTheme().resolveAttribute(android.R.attr.colorAccent, typedValue, true);
+        context.getTheme()
+                .resolveAttribute(android.R.attr.colorAccent, typedValue, true);
         arrowPaint.setColor(ContextCompat.getColor(getContext(), typedValue.resourceId));
         // The corner path effect won't be reflected in the shadow, but shouldn't be noticeable.
         arrowPaint.setPathEffect(new CornerPathEffect(
@@ -153,6 +158,60 @@ public class ArrowTipView extends AbstractFloatingView {
         params.leftMargin = mActivity.getDeviceProfile().workspacePadding.left;
         params.rightMargin = mActivity.getDeviceProfile().workspacePadding.right;
         post(() -> setY(top - getHeight()));
+        setAlpha(0);
+        animate()
+                .alpha(1f)
+                .withLayer()
+                .setStartDelay(SHOW_DELAY_MS)
+                .setDuration(SHOW_DURATION_MS)
+                .setInterpolator(Interpolators.DEACCEL)
+                .start();
+        return this;
+    }
+
+    /**
+     * Show the ArrowTipView (tooltip) custom aligned.
+     *
+     * @param text The text to be shown in the tooltip.
+     * @param arrowXCoord The X coordinate for the arrow on the tip. The arrow is usually in the
+     *                    center of ArrowTipView unless the ArrowTipView goes beyond screen margin.
+     * @param yCoord The Y coordinate of the bottom of the tooltip.
+     * @return The tool tip view.
+     */
+    @Nullable public ArrowTipView showAtLocation(String text, int arrowXCoord, int yCoord) {
+        ViewGroup parent = mActivity.getDragLayer();
+        @Px int parentViewWidth = parent.getWidth();
+        @Px int textViewWidth = getContext().getResources()
+                .getDimensionPixelSize(R.dimen.widget_picker_education_tip_width);
+        @Px int minViewMargin = getContext().getResources()
+                .getDimensionPixelSize(R.dimen.widget_picker_education_tip_min_margin);
+        if (parentViewWidth < textViewWidth + 2 * minViewMargin) {
+            Log.w(TAG, "Cannot display tip on a small screen of size: " + parentViewWidth);
+            return null;
+        }
+
+        TextView textView = findViewById(R.id.text);
+        textView.setText(text);
+        textView.setWidth(textViewWidth);
+        parent.addView(this);
+        requestLayout();
+
+        post(() -> setY(yCoord - getHeight()));
+        post(() -> {
+            float halfWidth = getWidth() / 2f;
+            float xCoord;
+            if (arrowXCoord - halfWidth < minViewMargin) {
+                xCoord = minViewMargin;
+            } else if (arrowXCoord + halfWidth > parentViewWidth - minViewMargin) {
+                xCoord = parentViewWidth - minViewMargin - getWidth();
+            } else {
+                xCoord = arrowXCoord - halfWidth;
+            }
+            setX(xCoord);
+            findViewById(R.id.arrow).setX(arrowXCoord - xCoord);
+            requestLayout();
+        });
+
         setAlpha(0);
         animate()
                 .alpha(1f)
