@@ -24,7 +24,6 @@
         android:id="@+id/taskbar_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/taskbar_background"
         android:gravity="center"/>
 
 </com.android.launcher3.taskbar.TaskbarContainerView>

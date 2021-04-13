@@ -103,7 +103,7 @@ public class TaskbarController {
         return new TaskbarAnimationControllerCallbacks() {
             @Override
             public void updateTaskbarBackgroundAlpha(float alpha) {
-                mTaskbarViewInApp.setBackgroundAlpha(alpha);
+                mTaskbarContainerView.setTaskbarBackgroundAlpha(alpha);
             }
 
             @Override
@@ -116,6 +116,18 @@ public class TaskbarController {
             public void updateTaskbarScale(float scale) {
                 mTaskbarViewInApp.setScaleX(scale);
                 mTaskbarViewInApp.setScaleY(scale);
+            }
+
+            @Override
+            public void updateTaskbarTranslationY(float translationY) {
+                if (translationY < 0) {
+                    // Resize to accommodate the max translation we'll reach.
+                    setTaskbarWindowHeight(mTaskbarSize.y
+                            + mLauncher.getHotseat().getTaskbarOffsetY());
+                } else {
+                    setTaskbarWindowHeight(mTaskbarSize.y);
+                }
+                mTaskbarViewInApp.setTranslationY(translationY);
             }
         };
     }
@@ -239,6 +251,11 @@ public class TaskbarController {
             @Override
             public AnimatedFloat getScaleTarget() {
                 return mTaskbarAnimationController.getTaskbarScaleForLauncherState();
+            }
+
+            @Override
+            public AnimatedFloat getTranslationYTarget() {
+                return mTaskbarAnimationController.getTaskbarTranslationYForLauncherState();
             }
         };
     }
@@ -406,13 +423,15 @@ public class TaskbarController {
         Rect hotseatBounds = new Rect();
         DeviceProfile grid = mLauncher.getDeviceProfile();
         int hotseatHeight = grid.workspacePadding.bottom + grid.taskbarSize;
-        int hotseatTopDiff = hotseatHeight - grid.taskbarSize;
+        int taskbarOffset = mLauncher.getHotseat().getTaskbarOffsetY();
+        int hotseatTopDiff = hotseatHeight - grid.taskbarSize - taskbarOffset;
+        int hotseatBottomDiff = taskbarOffset;
 
         mTaskbarViewOnHome.getHotseatBounds().roundOut(hotseatBounds);
         mLauncher.getHotseat().setPadding(hotseatBounds.left,
                 hotseatBounds.top + hotseatTopDiff,
                 mTaskbarViewOnHome.getWidth() - hotseatBounds.right,
-                mTaskbarViewOnHome.getHeight() - hotseatBounds.bottom);
+                mTaskbarViewOnHome.getHeight() - hotseatBounds.bottom + hotseatBottomDiff);
     }
 
     private void setWhichTaskbarViewIsVisible(@Nullable TaskbarView visibleTaskbar) {
@@ -438,13 +457,15 @@ public class TaskbarController {
      * Updates the TaskbarContainer to MATCH_PARENT vs original Taskbar size.
      */
     private void setTaskbarWindowFullscreen(boolean fullscreen) {
-        if (fullscreen) {
-            mWindowLayoutParams.width = MATCH_PARENT;
-            mWindowLayoutParams.height = MATCH_PARENT;
-        } else {
-            mWindowLayoutParams.width = mTaskbarSize.x;
-            mWindowLayoutParams.height = mTaskbarSize.y;
-        }
+        setTaskbarWindowHeight(fullscreen ? MATCH_PARENT : mTaskbarSize.y);
+    }
+
+    /**
+     * Updates the TaskbarContainer height (pass mTaskbarSize.y to reset).
+     */
+    private void setTaskbarWindowHeight(int height) {
+        mWindowLayoutParams.width = mTaskbarSize.x;
+        mWindowLayoutParams.height = height;
         mWindowManager.updateViewLayout(mTaskbarContainerView, mWindowLayoutParams);
     }
 
@@ -454,6 +475,7 @@ public class TaskbarController {
     protected interface TaskbarStateHandlerCallbacks {
         AnimatedFloat getAlphaTarget();
         AnimatedFloat getScaleTarget();
+        AnimatedFloat getTranslationYTarget();
     }
 
     /**
@@ -464,6 +486,7 @@ public class TaskbarController {
         void updateTaskbarBackgroundAlpha(float alpha);
         void updateTaskbarVisibilityAlpha(float alpha);
         void updateTaskbarScale(float scale);
+        void updateTaskbarTranslationY(float translationY);
     }
 
     /**
