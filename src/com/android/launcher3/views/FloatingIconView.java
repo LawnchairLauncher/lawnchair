@@ -210,8 +210,8 @@ public class FloatingIconView extends FrameLayout implements
     public static void getLocationBoundsForView(Launcher launcher, View v, boolean isOpening,
             RectF outRect, Rect outViewBounds) {
         boolean ignoreTransform = !isOpening;
-        if (v instanceof DeepShortcutView) {
-            v = ((DeepShortcutView) v).getBubbleText();
+        if (v instanceof BubbleTextHolder) {
+            v = ((BubbleTextHolder) v).getBubbleText();
             ignoreTransform = false;
         } else if (v.getParent() instanceof DeepShortcutView) {
             v = ((DeepShortcutView) v.getParent()).getIconView();
