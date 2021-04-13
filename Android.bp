@@ -115,6 +115,9 @@ android_library {
     manifest: "AndroidManifest-common.xml",
     sdk_version: "current",
     min_sdk_version: "26",
+    lint: {
+        baseline_filename: "lint-baseline-res-lib.xml",
+    },
 }
 
 //
@@ -127,6 +130,9 @@ android_library {
     sdk_version: "current",
     min_sdk_version: "26",
     manifest: "AndroidManifest-common.xml",
+    lint: {
+        baseline_filename: "lint-baseline-common-deps-lib.xml",
+    },
 }
 
 //
@@ -171,6 +177,9 @@ android_app {
     additional_manifests: [
         "AndroidManifest-common.xml",
     ],
+    lint: {
+        baseline_filename: "lint-baseline-launcher3.xml",
+    },
 }
 
 // Library with all the dependencies for building quickstep
@@ -236,5 +245,8 @@ android_library {
         "AndroidManifest-common.xml",
     ],
     min_sdk_version: "29",
+    lint: {
+        baseline_filename: "lint-baseline-go-res-lib.xml",
+    },
 }
 
