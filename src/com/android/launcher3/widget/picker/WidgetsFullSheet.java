@@ -392,6 +392,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         mAdapters.get(AdapterHolder.SEARCH).mWidgetsListAdapter.setWidgetsOnSearch(entries);
         updateNoSearchResultsView(
                 mAdapters.get(AdapterHolder.SEARCH).mWidgetsListAdapter.getItemCount() == 0);
+        mAdapters.get(AdapterHolder.SEARCH).mWidgetsRecyclerView.scrollToTop();
     }
 
     private void setViewVisibilityBasedOnSearch(boolean isInSearchMode) {
