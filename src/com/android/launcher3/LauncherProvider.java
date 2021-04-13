@@ -618,7 +618,7 @@ public class LauncherProvider extends ContentProvider {
                 .appendQueryParameter("version", "1")
                 .appendQueryParameter("gridWidth", Integer.toString(grid.numColumns))
                 .appendQueryParameter("gridHeight", Integer.toString(grid.numRows))
-                .appendQueryParameter("hotseatSize", Integer.toString(grid.numHotseatIcons))
+                .appendQueryParameter("hotseatSize", Integer.toString(grid.numDatabaseHotseatIcons))
                 .build();
     }
 

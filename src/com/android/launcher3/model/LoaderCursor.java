@@ -410,10 +410,10 @@ public class LoaderCursor extends CursorWrapper {
             final GridOccupancy hotseatOccupancy =
                     occupied.get(LauncherSettings.Favorites.CONTAINER_HOTSEAT);
 
-            if (item.screenId >= mIDP.numHotseatIcons) {
+            if (item.screenId >= mIDP.numDatabaseHotseatIcons) {
                 Log.e(TAG, "Error loading shortcut " + item
                         + " into hotseat position " + item.screenId
-                        + ", position out of bounds: (0 to " + (mIDP.numHotseatIcons - 1)
+                        + ", position out of bounds: (0 to " + (mIDP.numDatabaseHotseatIcons - 1)
                         + ")");
                 return false;
             }
@@ -429,7 +429,7 @@ public class LoaderCursor extends CursorWrapper {
                     return true;
                 }
             } else {
-                final GridOccupancy occupancy = new GridOccupancy(mIDP.numHotseatIcons, 1);
+                final GridOccupancy occupancy = new GridOccupancy(mIDP.numDatabaseHotseatIcons, 1);
                 occupancy.cells[item.screenId][0] = true;
                 occupied.put(LauncherSettings.Favorites.CONTAINER_HOTSEAT, occupancy);
                 return true;

@@ -33,10 +33,10 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.Hotseat;
-import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimationSuccessListener;
@@ -68,7 +68,7 @@ import java.util.stream.Collectors;
  * pinning of predicted apps and manages replacement of predicted apps with user drag.
  */
 public class HotseatPredictionController implements DragController.DragListener,
-        SystemShortcut.Factory<QuickstepLauncher>, InvariantDeviceProfile.OnIDPChangeListener,
+        SystemShortcut.Factory<QuickstepLauncher>, DeviceProfile.OnDeviceProfileChangeListener,
         DragSource, ViewGroup.OnHierarchyChangeListener {
 
     private static final int FLAG_UPDATE_PAUSED = 1 << 0;
@@ -115,10 +115,10 @@ public class HotseatPredictionController implements DragController.DragListener,
     public HotseatPredictionController(QuickstepLauncher launcher) {
         mLauncher = launcher;
         mHotseat = launcher.getHotseat();
-        mHotSeatItemsCount = mLauncher.getDeviceProfile().inv.numHotseatIcons;
+        mHotSeatItemsCount = mLauncher.getDeviceProfile().numShownHotseatIcons;
         mLauncher.getDragController().addDragListener(this);
 
-        launcher.getDeviceProfile().inv.addOnChangeListener(this);
+        launcher.addOnDeviceProfileChangeListener(this);
         mHotseat.getShortcutsAndWidgets().setOnHierarchyChangeListener(this);
     }
 
@@ -281,7 +281,7 @@ public class HotseatPredictionController implements DragController.DragListener,
      * Unregisters callbacks and frees resources
      */
     public void destroy() {
-        mLauncher.getDeviceProfile().inv.removeOnChangeListener(this);
+        mLauncher.removeOnDeviceProfileChangeListener(this);
     }
 
     /**
@@ -446,8 +446,8 @@ public class HotseatPredictionController implements DragController.DragListener,
     }
 
     @Override
-    public void onIdpChanged(int changeFlags, InvariantDeviceProfile profile) {
-        this.mHotSeatItemsCount = profile.numHotseatIcons;
+    public void onDeviceProfileChanged(DeviceProfile profile) {
+        this.mHotSeatItemsCount = profile.numShownHotseatIcons;
     }
 
     @Override
