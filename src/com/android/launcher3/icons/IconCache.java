@@ -39,6 +39,7 @@ import androidx.annotation.NonNull;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherFiles;
+import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.ComponentWithLabel.ComponentCachingLogic;
@@ -304,6 +305,11 @@ public class IconCache extends BaseIconCache {
         CacheEntry entry = getEntryForPackageLocked(
                 infoInOut.packageName, infoInOut.user, useLowResIcon);
         applyCacheEntry(entry, infoInOut);
+        if (infoInOut.category == PackageItemInfo.CONVERSATIONS) {
+            infoInOut.title = mContext.getString(R.string.widget_category_conversations);
+            infoInOut.contentDescription = mPackageManager.getUserBadgedLabel(
+                    infoInOut.title, infoInOut.user);
+        }
     }
 
     protected void applyCacheEntry(CacheEntry entry, ItemInfoWithIcon info) {
