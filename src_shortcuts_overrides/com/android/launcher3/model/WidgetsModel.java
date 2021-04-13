@@ -36,6 +36,7 @@ import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
 import com.android.launcher3.widget.picker.WidgetsDiffReporter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +58,9 @@ public class WidgetsModel {
 
     private static final String TAG = "WidgetsModel";
     private static final boolean DEBUG = false;
+
+    private static final ComponentName CONVERSATION_WIDGET = ComponentName.createRelative(
+            "com.android.systemui", ".people.widget.PeopleSpaceWidgetProvider");
 
     /* Map of widgets and shortcuts that are tracked per package. */
     private final Map<PackageItemInfo, List<WidgetItem>> mWidgetsList = new HashMap<>();
@@ -156,7 +160,7 @@ public class WidgetsModel {
 
         // Temporary list for {@link PackageItemInfos} to avoid having to go through
         // {@link mPackageItemInfos} to locate the key to be used for {@link #mWidgetsList}
-        HashMap<PackageUserKey, PackageItemInfo> tmpPackageItemInfos = new HashMap<>();
+        HashMap<WidgetPackageOrCategoryKey, PackageItemInfo> tmpPackageItemInfos = new HashMap<>();
 
         // Clear the lists only if this is an update on all widgets and shortcuts. If packageUser
         // isn't null, only updates the shortcuts and widgets for the app represented in
@@ -168,11 +172,11 @@ public class WidgetsModel {
         mWidgetsList.putAll(rawWidgetsShortcuts.stream()
                 .filter(new WidgetValidityCheck(app))
                 .collect(Collectors.groupingBy(item -> {
-                    PackageUserKey packageUserKey = new PackageUserKey(
-                            item.componentName.getPackageName(), item.user);
+                    WidgetPackageOrCategoryKey packageUserKey = getWidgetPackageOrCategoryKey(item);
                     PackageItemInfo pInfo = tmpPackageItemInfos.get(packageUserKey);
                     if (pInfo == null) {
-                        pInfo = new PackageItemInfo(packageUserKey.mPackageName);
+                        pInfo = new PackageItemInfo(item.componentName.getPackageName(),
+                                packageUserKey.mCategory);
                         pInfo.user = item.user;
                         tmpPackageItemInfos.put(packageUserKey,  pInfo);
                     }
@@ -224,6 +228,13 @@ public class WidgetsModel {
         return null;
     }
 
+    private WidgetPackageOrCategoryKey getWidgetPackageOrCategoryKey(WidgetItem item) {
+        if (CONVERSATION_WIDGET.equals(item.componentName)) {
+            return new WidgetPackageOrCategoryKey(PackageItemInfo.CONVERSATIONS, item.user);
+        }
+        return new WidgetPackageOrCategoryKey(item.componentName.getPackageName(), item.user);
+    }
+
     private static class WidgetValidityCheck implements Predicate<WidgetItem> {
 
         private final InvariantDeviceProfile mIdp;
@@ -263,6 +274,42 @@ public class WidgetsModel {
             }
 
             return true;
+        }
+    }
+
+    /** A hash key for grouping widgets by package name or category. */
+    private static class WidgetPackageOrCategoryKey {
+        /**
+         * The package name of the widget provider.
+         *
+         * <p>This shouldn't be empty if {@link #mCategory} has a value,
+         * {@link PackageItemInfo#NO_CATEGORY}.
+         */
+        public final String mPackage;
+        /** A widget category. */
+        @PackageItemInfo.Category public final int mCategory;
+        public final UserHandle mUser;
+        private final int mHashCode;
+
+        WidgetPackageOrCategoryKey(String packageName, UserHandle user) {
+            this(packageName,  PackageItemInfo.NO_CATEGORY, user);
+        }
+
+        WidgetPackageOrCategoryKey(@PackageItemInfo.Category int category, UserHandle user) {
+            this("", category, user);
+        }
+
+        private WidgetPackageOrCategoryKey(String packageName,
+                @PackageItemInfo.Category int category, UserHandle user) {
+            mPackage = packageName;
+            mCategory = category;
+            mUser = user;
+            mHashCode = Arrays.hashCode(new Object[]{mPackage, mCategory, mUser});
+        }
+
+        @Override
+        public int hashCode() {
+            return mHashCode;
         }
     }
 }

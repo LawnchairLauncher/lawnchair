@@ -156,6 +156,11 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
     private void applyDrawables(Drawable icon) {
         icon.setBounds(0, 0, mIconSize, mIconSize);
 
+        LinearLayout.LayoutParams layoutParams =
+                (LinearLayout.LayoutParams) mAppIcon.getLayoutParams();
+        layoutParams.width = mIconSize;
+        layoutParams.height = mIconSize;
+        mAppIcon.setLayoutParams(layoutParams);
         mAppIcon.setImageDrawable(icon);
 
         // If the current icon is a placeholder color, animate its update.
