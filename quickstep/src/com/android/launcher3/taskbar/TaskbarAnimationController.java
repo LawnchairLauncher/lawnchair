@@ -50,6 +50,10 @@ public class TaskbarAnimationController {
     private final AnimatedFloat mTaskbarScaleForLauncherState = new AnimatedFloat(
             this::updateScale);
 
+    // TranslationY.
+    private final AnimatedFloat mTaskbarTranslationYForLauncherState = new AnimatedFloat(
+            this::updateTranslationY);
+
     public TaskbarAnimationController(BaseQuickstepLauncher launcher,
             TaskbarController.TaskbarAnimationControllerCallbacks taskbarCallbacks) {
         mLauncher = launcher;
@@ -81,6 +85,10 @@ public class TaskbarAnimationController {
         return mTaskbarScaleForLauncherState;
     }
 
+    protected AnimatedFloat getTaskbarTranslationYForLauncherState() {
+        return mTaskbarTranslationYForLauncherState;
+    }
+
     protected Animator createAnimToBackgroundAlpha(float toAlpha, long duration) {
         return mTaskbarBackgroundAlpha.animateToValue(mTaskbarBackgroundAlpha.value, toAlpha)
                 .setDuration(duration);
@@ -95,6 +103,7 @@ public class TaskbarAnimationController {
         mTaskbarCallbacks.updateTaskbarBackgroundAlpha(mTaskbarBackgroundAlpha.value);
         updateVisibilityAlpha();
         updateScale();
+        updateTranslationY();
     }
 
     private void updateVisibilityAlpha() {
@@ -118,6 +127,15 @@ public class TaskbarAnimationController {
         float scale = mTaskbarScaleForLauncherState.value;
         scale = Utilities.mapRange(mTaskbarBackgroundAlpha.value, scale, 1f);
         mTaskbarCallbacks.updateTaskbarScale(scale);
+    }
+
+    private void updateTranslationY() {
+        // We use mTaskbarBackgroundAlpha as a proxy for whether Launcher is resumed/paused, the
+        // assumption being that Taskbar should always be at translationY 0f regardless of the
+        // current LauncherState if Launcher is paused.
+        float translationY = mTaskbarTranslationYForLauncherState.value;
+        translationY = Utilities.mapRange(mTaskbarBackgroundAlpha.value, translationY, 0f);
+        mTaskbarCallbacks.updateTaskbarTranslationY(translationY);
     }
 
     private void setNavBarButtonAlpha(float navBarAlpha) {

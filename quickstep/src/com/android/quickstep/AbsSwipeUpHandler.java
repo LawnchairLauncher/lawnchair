@@ -801,11 +801,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             }
         }
         if (mParallelRunningAnim != null) {
-            if (cancel) {
-                mParallelRunningAnim.cancel();
-            } else {
-                mParallelRunningAnim.end();
-            }
+            // Unlike the above animation, the parallel animation won't have anything to take up
+            // the work if it's canceled, so just end it instead.
+            mParallelRunningAnim.end();
         }
     }
 
