@@ -237,7 +237,9 @@ public class SettingsActivity extends FragmentActivity
             RecyclerView list = getListView();
             PreferencePositionCallback callback = (PreferencePositionCallback) list.getAdapter();
             int position = callback.getPreferenceAdapterPosition(mHighLightKey);
-            return position >= 0 ? new PreferenceHighlighter(list, position) : null;
+            return position >= 0 ? new PreferenceHighlighter(
+                    list, position, screen.findPreference(mHighLightKey))
+                    : null;
         }
 
         private void requestAccessibilityFocus(@NonNull final RecyclerView rv) {
