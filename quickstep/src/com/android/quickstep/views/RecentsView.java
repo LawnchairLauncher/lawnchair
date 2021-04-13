@@ -270,7 +270,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 public void setValue(RecentsView view, float scale) {
                     view.setScaleX(scale);
                     view.setScaleY(scale);
-                    view.mLastComputedTaskPushOutDistance = null;
+                    view.mLastComputedTaskStartPushOutDistance = null;
+                    view.mLastComputedTaskEndPushOutDistance = null;
                     view.mLiveTileTaskViewSimulator.recentsViewScale.value = scale;
                     view.updatePageOffsets();
                     view.setTaskViewsResistanceTranslation(view.mTaskViewsSecondaryTranslation);
@@ -308,7 +309,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     protected final Rect mLastComputedGridSize = new Rect();
     protected final Rect mLastComputedGridTaskSize = new Rect();
     // How much a task that is directly offscreen will be pushed out due to RecentsView scale/pivot.
-    protected Float mLastComputedTaskPushOutDistance = null;
+    protected Float mLastComputedTaskStartPushOutDistance = null;
+    protected Float mLastComputedTaskEndPushOutDistance = null;
     protected boolean mEnableDrawingLiveTile = false;
     protected final Rect mTempRect = new Rect();
     protected final RectF mTempRectF = new RectF();
@@ -2467,7 +2469,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         setPivotX(mTempPointF.x);
         setPivotY(mTempPointF.y);
         setTaskModalness(mTaskModalness);
-        mLastComputedTaskPushOutDistance = null;
+        mLastComputedTaskStartPushOutDistance = null;
+        mLastComputedTaskEndPushOutDistance = null;
         updatePageOffsets();
         setImportantForAccessibility(isModal() ? IMPORTANT_FOR_ACCESSIBILITY_NO
                 : IMPORTANT_FOR_ACCESSIBILITY_AUTO);
@@ -2476,10 +2479,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private void updatePageOffsets() {
         float offset = mAdjacentPageOffset;
         float modalOffset = ACCEL_0_75.getInterpolation(mTaskModalness);
-        if (mIsRtl) {
-            offset = -offset;
-            modalOffset = -modalOffset;
-        }
         int count = getChildCount();
 
         TaskView runningTask = mRunningTaskId == -1 || !mRunningTaskTileHidden
@@ -2495,13 +2494,27 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 ? getOffsetSize(midpoint + 1, midpoint, offset)
                 : 0;
 
+        boolean showAsGrid = showAsGrid();
         float modalMidpointOffsetSize = 0;
-        float modalLeftOffsetSize = modalMidpoint - 1 >= 0
-                ? -getOffsetSize(modalMidpoint - 1, modalMidpoint, modalOffset)
-                : 0;
-        float modalRightOffsetSize = modalMidpoint + 1 < count
-                ? getOffsetSize(modalMidpoint + 1, modalMidpoint, modalOffset)
-                : 0;
+        float modalLeftOffsetSize = 0;
+        float modalRightOffsetSize = 0;
+        float gridOffsetSize = 0;
+
+        if (showAsGrid) {
+            // In grid, we only focus the task on the side. The reference index used for offset
+            // calculation is the task directly next to the focus task in the grid.
+            int referenceIndex = modalMidpoint == 0 ? 1 : 0;
+            gridOffsetSize = referenceIndex < count
+                    ? getOffsetSize(referenceIndex, modalMidpoint, modalOffset)
+                    : 0;
+        } else {
+            modalLeftOffsetSize = modalMidpoint - 1 >= 0
+                    ? getOffsetSize(modalMidpoint - 1, modalMidpoint, modalOffset)
+                    : 0;
+            modalRightOffsetSize = modalMidpoint + 1 < count
+                    ? getOffsetSize(modalMidpoint + 1, modalMidpoint, modalOffset)
+                    : 0;
+        }
 
         for (int i = 0; i < count; i++) {
             float translation = i == midpoint
@@ -2511,18 +2524,34 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                             : rightOffsetSize;
             float modalTranslation = i == modalMidpoint
                     ? modalMidpointOffsetSize
-                    : i < modalMidpoint
-                            ? modalLeftOffsetSize
-                            : modalRightOffsetSize;
+                    : showAsGrid
+                            ? gridOffsetSize
+                            : i < modalMidpoint ? modalLeftOffsetSize : modalRightOffsetSize;
             float totalTranslation = translation + modalTranslation;
             View child = getChildAt(i);
             FloatProperty translationProperty = child instanceof TaskView
                     ? ((TaskView) child).getPrimaryTaskOffsetTranslationProperty()
                     : mOrientationHandler.getPrimaryViewTranslate();
-            translationProperty.set(child,
-                    totalTranslation * mOrientationHandler.getPrimaryTranslationDirectionFactor());
+            translationProperty.set(child, totalTranslation);
         }
         updateCurveProperties();
+    }
+
+    /**
+     * Computes the child position with persistent translation considered (see
+     * {@link TaskView#getPersistentTranslationX()}.
+     */
+    private void getPersistentChildPosition(int childIndex, int midPointScroll, RectF outRect) {
+        View child = getChildAt(childIndex);
+        outRect.set(child.getLeft(), child.getTop(), child.getRight(), child.getBottom());
+        if (child instanceof TaskView) {
+            TaskView taskView = (TaskView) child;
+            outRect.offset(taskView.getPersistentTranslationX(),
+                    taskView.getPersistentTranslationY());
+            outRect.top += mActivity.getDeviceProfile().overviewTaskThumbnailTopMarginPx;
+        }
+        outRect.offset(mOrientationHandler.getPrimaryValue(-midPointScroll, 0),
+                mOrientationHandler.getSecondaryValue(-midPointScroll, 0));
     }
 
     /**
@@ -2535,33 +2564,60 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             // Don't bother calculating everything below if we won't offset anyway.
             return 0;
         }
+
         // First, get the position of the task relative to the midpoint. If there is no midpoint
         // then we just use the normal (centered) task position.
-        mTempRectF.set(mLastComputedTaskSize);
         RectF taskPosition = mTempRectF;
-        float desiredLeft = getWidth();
-        // Used to calculate the scale of the task view based on its new offset.
+        // Whether the task should be shifted to start direction (i.e. left edge for portrait, top
+        // edge for landscape/seascape).
+        boolean isStartShift;
         if (midpointIndex > -1) {
             // When there is a midpoint reference task, adjacent tasks have less distance to travel
             // to reach offscreen. Offset the task position to the task's starting point.
-            View child = getChildAt(childIndex);
-            View midpointChild = getChildAt(midpointIndex);
-            int distanceFromMidpoint = Math.abs(mOrientationHandler.getChildStart(child)
-                    - mOrientationHandler.getChildStart(midpointChild)
-                    + getDisplacementFromScreenCenter(midpointIndex));
-            taskPosition.offset(distanceFromMidpoint, 0);
+            int midpointScroll = getScrollForPage(midpointIndex);
+            getPersistentChildPosition(midpointIndex, midpointScroll, taskPosition);
+            float midpointStart = mOrientationHandler.getStart(taskPosition);
+
+            getPersistentChildPosition(childIndex, midpointScroll, taskPosition);
+            // Assume child does not overlap with midPointChild.
+            isStartShift = mOrientationHandler.getStart(taskPosition) < midpointStart;
+        } else {
+            // Position the task at scroll position.
+            getPersistentChildPosition(childIndex, getScrollForPage(childIndex), taskPosition);
+            isStartShift = mIsRtl;
         }
-        float distanceToOffscreen = desiredLeft - taskPosition.left;
-        // Finally, we need to account for RecentsView scale, because it moves tasks based on its
-        // pivot. To do this, we move the task position to where it would be offscreen at scale = 1
-        // (computed above), then we apply the scale via getMatrix() to determine how much that
-        // moves the task from its desired position, and adjust the computed distance accordingly.
-        if (mLastComputedTaskPushOutDistance == null) {
-            taskPosition.offsetTo(desiredLeft, 0);
-            getMatrix().mapRect(taskPosition);
-            mLastComputedTaskPushOutDistance = (taskPosition.left - desiredLeft) / getScaleX();
+
+        // Next, calculate the distance to move the task off screen. We also need to account for
+        // RecentsView scale, because it moves tasks based on its pivot. To do this, we move the
+        // task position to where it would be offscreen at scale = 1 (computed above), then we
+        // apply the scale via getMatrix() to determine how much that moves the task from its
+        // desired position, and adjust the computed distance accordingly.
+        float distanceToOffscreen;
+        if (isStartShift) {
+            float desiredStart = -mOrientationHandler.getPrimarySize(taskPosition);
+            distanceToOffscreen = -mOrientationHandler.getEnd(taskPosition);
+            if (mLastComputedTaskStartPushOutDistance == null) {
+                taskPosition.offsetTo(
+                        mOrientationHandler.getPrimaryValue(desiredStart, 0f),
+                        mOrientationHandler.getSecondaryValue(desiredStart, 0f));
+                getMatrix().mapRect(taskPosition);
+                mLastComputedTaskStartPushOutDistance = mOrientationHandler.getEnd(taskPosition)
+                        / mOrientationHandler.getPrimaryScale(this);
+            }
+            distanceToOffscreen -= mLastComputedTaskStartPushOutDistance;
+        } else {
+            float desiredStart = mOrientationHandler.getPrimarySize(this);
+            distanceToOffscreen = desiredStart - mOrientationHandler.getStart(taskPosition);
+            if (mLastComputedTaskEndPushOutDistance == null) {
+                taskPosition.offsetTo(
+                        mOrientationHandler.getPrimaryValue(desiredStart, 0f),
+                        mOrientationHandler.getSecondaryValue(desiredStart, 0f));
+                getMatrix().mapRect(taskPosition);
+                mLastComputedTaskEndPushOutDistance = (mOrientationHandler.getStart(taskPosition)
+                        - desiredStart) / mOrientationHandler.getPrimaryScale(this);
+            }
+            distanceToOffscreen -= mLastComputedTaskEndPushOutDistance;
         }
-        distanceToOffscreen -= mLastComputedTaskPushOutDistance;
         return distanceToOffscreen * offsetProgress;
     }
 
