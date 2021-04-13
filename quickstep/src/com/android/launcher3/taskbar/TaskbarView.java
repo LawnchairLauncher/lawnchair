@@ -24,7 +24,6 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
 import android.view.DragEvent;
 import android.view.MotionEvent;
@@ -52,7 +51,6 @@ import com.android.launcher3.views.ActivityContext;
  */
 public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconParent, Insettable {
 
-    private final ColorDrawable mBackgroundDrawable;
     private final int mIconTouchSize;
     private final boolean mIsRtl;
     private final int mTouchSlop;
@@ -97,7 +95,6 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
         super(context, attrs, defStyleAttr, defStyleRes);
 
         Resources resources = getResources();
-        mBackgroundDrawable = (ColorDrawable) getBackground();
         mIconTouchSize = resources.getDimensionPixelSize(R.dimen.taskbar_icon_touch_size);
         mIsRtl = Utilities.isRtl(resources);
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
@@ -157,14 +154,6 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
         mLayoutTransition.getAnimator(LayoutTransition.CHANGING).end();
         mLayoutTransition.getAnimator(LayoutTransition.APPEARING).end();
         mLayoutTransition.getAnimator(LayoutTransition.DISAPPEARING).end();
-    }
-
-    /**
-     * Sets the alpha of the background color behind all the Taskbar contents.
-     * @param alpha 0 is fully transparent, 1 is fully opaque.
-     */
-    public void setBackgroundAlpha(float alpha) {
-        mBackgroundDrawable.setAlpha((int) (alpha * 255));
     }
 
     /**

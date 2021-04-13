@@ -16,6 +16,7 @@
 package com.android.launcher3.taskbar;
 
 import static com.android.launcher3.LauncherState.TASKBAR;
+import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 
 import androidx.annotation.Nullable;
@@ -54,9 +55,11 @@ public class TaskbarStateHandler implements StateManager.StateHandler<LauncherSt
 
         AnimatedFloat alphaTarget = mTaskbarCallbacks.getAlphaTarget();
         AnimatedFloat scaleTarget = mTaskbarCallbacks.getScaleTarget();
+        AnimatedFloat translationYTarget = mTaskbarCallbacks.getTranslationYTarget();
         boolean isTaskbarVisible = (state.getVisibleElements(mLauncher) & TASKBAR) != 0;
         alphaTarget.updateValue(isTaskbarVisible ? 1f : 0f);
         scaleTarget.updateValue(state.getTaskbarScale(mLauncher));
+        translationYTarget.updateValue(state.getTaskbarTranslationY(mLauncher));
     }
 
     @Override
@@ -68,9 +71,12 @@ public class TaskbarStateHandler implements StateManager.StateHandler<LauncherSt
 
         AnimatedFloat alphaTarget = mTaskbarCallbacks.getAlphaTarget();
         AnimatedFloat scaleTarget = mTaskbarCallbacks.getScaleTarget();
+        AnimatedFloat translationYTarget = mTaskbarCallbacks.getTranslationYTarget();
         boolean isTaskbarVisible = (toState.getVisibleElements(mLauncher) & TASKBAR) != 0;
         animation.setFloat(alphaTarget, AnimatedFloat.VALUE, isTaskbarVisible ? 1f : 0f, LINEAR);
         animation.setFloat(scaleTarget, AnimatedFloat.VALUE, toState.getTaskbarScale(mLauncher),
                 LINEAR);
+        animation.setFloat(translationYTarget, AnimatedFloat.VALUE,
+                toState.getTaskbarTranslationY(mLauncher), ACCEL_DEACCEL);
     }
 }
