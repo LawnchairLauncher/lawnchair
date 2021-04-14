@@ -52,7 +52,7 @@ public class TaskbarHotseatController {
         mLauncher = launcher;
         mHotseat = mLauncher.getHotseat();
         mTaskbarCallbacks = taskbarCallbacks;
-        mNumHotseatIcons = mLauncher.getDeviceProfile().inv.numHotseatIcons;
+        mNumHotseatIcons = mLauncher.getDeviceProfile().numShownHotseatIcons;
     }
 
     protected void init() {

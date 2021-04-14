@@ -85,6 +85,12 @@ public class NotificationDotsPreference extends Preference
                 Settings.Secure.getUriFor(NOTIFICATION_ENABLED_LISTENERS),
                 false, mListenerListObserver);
         updateUI();
+
+        // Update intent
+        Bundle extras = new Bundle();
+        extras.putString(EXTRA_FRAGMENT_ARG_KEY, "notification_badging");
+        setIntent(new Intent("android.settings.NOTIFICATION_SETTINGS")
+                .putExtra(EXTRA_SHOW_FRAGMENT_ARGS, extras));
     }
 
     private void updateUI() {
