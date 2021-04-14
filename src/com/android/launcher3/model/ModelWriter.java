@@ -91,7 +91,7 @@ public class ModelWriter {
         // in the hotseat
         if (container == Favorites.CONTAINER_HOTSEAT) {
             item.screenId = mHasVerticalHotseat
-                    ? LauncherAppState.getIDP(mContext).numHotseatIcons - cellY - 1 : cellX;
+                    ? LauncherAppState.getIDP(mContext).numDatabaseHotseatIcons - cellY - 1 : cellX;
         } else {
             item.screenId = screenId;
         }

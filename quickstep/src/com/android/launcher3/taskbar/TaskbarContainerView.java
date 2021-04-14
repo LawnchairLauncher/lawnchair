@@ -19,6 +19,8 @@ import static com.android.systemui.shared.system.ViewTreeObserverWrapper.InsetsI
 import static com.android.systemui.shared.system.ViewTreeObserverWrapper.InsetsInfo.TOUCHABLE_INSETS_REGION;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
@@ -38,6 +40,7 @@ public class TaskbarContainerView extends BaseDragLayer<TaskbarActivityContext> 
 
     private final int[] mTempLoc = new int[2];
     private final int mFolderMargin;
+    private final Paint mTaskbarBackgroundPaint;
 
     // Initialized in TaskbarController constructor.
     private TaskbarController.TaskbarContainerViewCallbacks mControllerCallbacks;
@@ -63,6 +66,8 @@ public class TaskbarContainerView extends BaseDragLayer<TaskbarActivityContext> 
             int defStyleAttr, int defStyleRes) {
         super(context, attrs, 1 /* alphaChannelCount */);
         mFolderMargin = getResources().getDimensionPixelSize(R.dimen.taskbar_folder_margin);
+        mTaskbarBackgroundPaint = new Paint();
+        mTaskbarBackgroundPaint.setColor(getResources().getColor(R.color.taskbar_background));
     }
 
     protected void construct(TaskbarController.TaskbarContainerViewCallbacks callbacks) {
@@ -97,11 +102,14 @@ public class TaskbarContainerView extends BaseDragLayer<TaskbarActivityContext> 
             // mTaskbarView is, since its position never changes and insets rather than overlays.
             int[] loc = mTempLoc;
             float scale = mTaskbarView.getScaleX();
+            float translationY = mTaskbarView.getTranslationY();
             mTaskbarView.setScaleX(1);
             mTaskbarView.setScaleY(1);
+            mTaskbarView.setTranslationY(0);
             mTaskbarView.getLocationInWindow(loc);
             mTaskbarView.setScaleX(scale);
             mTaskbarView.setScaleY(scale);
+            mTaskbarView.setTranslationY(translationY);
             insetsInfo.contentInsets.left = loc[0];
             insetsInfo.contentInsets.top = loc[1];
             insetsInfo.contentInsets.right = getWidth() - (loc[0] + mTaskbarView.getWidth());
@@ -152,5 +160,21 @@ public class TaskbarContainerView extends BaseDragLayer<TaskbarActivityContext> 
 
     protected TaskbarActivityContext getTaskbarActivityContext() {
         return mActivity;
+    }
+
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        canvas.drawRect(0, canvas.getHeight() - mTaskbarView.getHeight(), canvas.getWidth(),
+                canvas.getHeight(), mTaskbarBackgroundPaint);
+        super.dispatchDraw(canvas);
+    }
+
+    /**
+     * Sets the alpha of the background color behind all the Taskbar contents.
+     * @param alpha 0 is fully transparent, 1 is fully opaque.
+     */
+    protected void setTaskbarBackgroundAlpha(float alpha) {
+        mTaskbarBackgroundPaint.setAlpha((int) (alpha * 255));
+        invalidate();
     }
 }

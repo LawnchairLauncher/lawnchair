@@ -175,6 +175,9 @@
 
         <!-- numAllAppsColumns defaults to GridDisplayOption.numColumns, if not specified -->
         <attr name="numAllAppsColumns" format="integer" />
+
+        <!-- numShownHotseatIcons defaults to GridDisplayOption.numHotseatIcons, if not specified -->
+        <attr name="numShownHotseatIcons" format="integer" />
     </declare-styleable>
 
     <declare-styleable name="CellLayout">

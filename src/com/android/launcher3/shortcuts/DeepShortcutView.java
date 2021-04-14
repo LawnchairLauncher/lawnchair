@@ -30,12 +30,13 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.PopupContainerWithArrow;
+import com.android.launcher3.views.BubbleTextHolder;
 
 /**
  * A {@link android.widget.FrameLayout} that contains a {@link DeepShortcutView}.
  * This lets us animate the DeepShortcutView (icon and text) separately from the background.
  */
-public class DeepShortcutView extends FrameLayout {
+public class DeepShortcutView extends FrameLayout implements BubbleTextHolder {
 
     private static final Point sTempPoint = new Point();
 
@@ -64,6 +65,7 @@ public class DeepShortcutView extends FrameLayout {
         mIconView = findViewById(R.id.icon);
     }
 
+    @Override
     public BubbleTextView getBubbleText() {
         return mBubbleText;
     }

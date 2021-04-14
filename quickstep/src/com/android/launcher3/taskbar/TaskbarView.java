@@ -24,8 +24,6 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.DragEvent;
 import android.view.MotionEvent;
@@ -47,16 +45,12 @@ import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.views.ActivityContext;
-import com.android.systemui.shared.recents.model.Task;
 
 /**
  * Hosts the Taskbar content such as Hotseat and Recent Apps. Drawn on top of other apps.
  */
 public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconParent, Insettable {
 
-    private final ColorDrawable mBackgroundDrawable;
-    private final int mDividerWidth;
-    private final int mDividerHeight;
     private final int mIconTouchSize;
     private final boolean mIsRtl;
     private final int mTouchSlop;
@@ -74,9 +68,6 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
     private LayoutTransition mLayoutTransition;
     private int mHotseatStartIndex;
     private int mHotseatEndIndex;
-    private View mHotseatRecentsDivider;
-    private int mRecentsStartIndex;
-    private int mRecentsEndIndex;
 
     // Delegate touches to the closest view if within mIconTouchSize.
     private boolean mDelegateTargeted;
@@ -104,9 +95,6 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
         super(context, attrs, defStyleAttr, defStyleRes);
 
         Resources resources = getResources();
-        mBackgroundDrawable = (ColorDrawable) getBackground();
-        mDividerWidth = resources.getDimensionPixelSize(R.dimen.taskbar_divider_thickness);
-        mDividerHeight = resources.getDimensionPixelSize(R.dimen.taskbar_divider_height);
         mIconTouchSize = resources.getDimensionPixelSize(R.dimen.taskbar_icon_touch_size);
         mIsRtl = Utilities.isRtl(resources);
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
@@ -119,17 +107,10 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
         mItemMarginLeftRight = Math.round(mItemMarginLeftRight * mNonIconScale);
     }
 
-    protected void init(int numHotseatIcons, int numRecentIcons) {
+    protected void init(int numHotseatIcons) {
         mHotseatStartIndex = 0;
         mHotseatEndIndex = mHotseatStartIndex + numHotseatIcons - 1;
         updateHotseatItems(new ItemInfo[numHotseatIcons]);
-
-        int dividerIndex = mHotseatEndIndex + 1;
-        mHotseatRecentsDivider = addDivider(dividerIndex);
-
-        mRecentsStartIndex = dividerIndex + 1;
-        mRecentsEndIndex = mRecentsStartIndex + numRecentIcons - 1;
-        updateRecentTasks(new Task[numRecentIcons]);
 
         mLayoutTransition = new LayoutTransition();
         addUpdateListenerForAllLayoutTransitions(() -> {
@@ -165,7 +146,6 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
         endAllLayoutTransitionAnimators();
         setLayoutTransition(null);
         removeAllViews();
-        mHotseatRecentsDivider = null;
     }
 
     private void endAllLayoutTransitionAnimators() {
@@ -174,14 +154,6 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
         mLayoutTransition.getAnimator(LayoutTransition.CHANGING).end();
         mLayoutTransition.getAnimator(LayoutTransition.APPEARING).end();
         mLayoutTransition.getAnimator(LayoutTransition.DISAPPEARING).end();
-    }
-
-    /**
-     * Sets the alpha of the background color behind all the Taskbar contents.
-     * @param alpha 0 is fully transparent, 1 is fully opaque.
-     */
-    public void setBackgroundAlpha(float alpha) {
-        mBackgroundDrawable.setAlpha((int) (alpha * 255));
     }
 
     /**
@@ -248,8 +220,6 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
             }
             updateHotseatItemVisibility(hotseatView);
         }
-
-        updateHotseatRecentsDividerVisibility();
     }
 
     protected void updateHotseatItemsVisibility() {
@@ -271,95 +241,6 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
                 getLayoutTransition().showChild(this, hotseatView, oldVisibility);
             }
         }
-    }
-
-    private View addDivider(int dividerIndex) {
-        View divider = inflate(R.layout.taskbar_divider);
-        LayoutParams lp = new LayoutParams(mDividerWidth, mDividerHeight);
-        lp.setMargins(mItemMarginLeftRight, 0, mItemMarginLeftRight, 0);
-        divider.setScaleX(mNonIconScale);
-        divider.setScaleY(mNonIconScale);
-        addView(divider, dividerIndex, lp);
-        return divider;
-    }
-
-    /**
-     * Inflates/binds the Recents items to show in the Taskbar given their Tasks.
-     */
-    protected void updateRecentTasks(Task[] tasks) {
-        for (int i = 0; i < tasks.length; i++) {
-            Task task = tasks[i];
-            int recentsIndex = mRecentsStartIndex + i;
-            View recentsView = getChildAt(recentsIndex);
-
-            // Inflate empty icon Views.
-            if (recentsView == null) {
-                BubbleTextView btv = (BubbleTextView) inflate(R.layout.taskbar_app_icon);
-                LayoutParams lp = new LayoutParams(btv.getIconSize(), btv.getIconSize());
-                lp.setMargins(mItemMarginLeftRight, 0, mItemMarginLeftRight, 0);
-                recentsView = btv;
-                addView(recentsView, recentsIndex, lp);
-            }
-
-            // Apply the Task, or hide the view if there is none for a given index.
-            if (recentsView instanceof BubbleTextView && task != null) {
-                applyTaskToBubbleTextView((BubbleTextView) recentsView, task);
-                recentsView.setVisibility(VISIBLE);
-                recentsView.setOnClickListener(mControllerCallbacks.getItemOnClickListener());
-                recentsView.setOnLongClickListener(
-                        mControllerCallbacks.getItemOnLongClickListener());
-            } else {
-                recentsView.setVisibility(GONE);
-                recentsView.setOnClickListener(null);
-                recentsView.setOnLongClickListener(null);
-            }
-        }
-
-        updateHotseatRecentsDividerVisibility();
-    }
-
-    private void applyTaskToBubbleTextView(BubbleTextView btv, Task task) {
-        if (task.icon != null) {
-            Drawable icon = task.icon.getConstantState().newDrawable().mutate();
-            btv.applyIconAndLabel(icon, task.titleDescription);
-        }
-        btv.setTag(task);
-    }
-
-    protected void updateRecentTaskAtIndex(int taskIndex, Task task) {
-        View taskView = getChildAt(mRecentsStartIndex + taskIndex);
-        if (taskView instanceof BubbleTextView) {
-            applyTaskToBubbleTextView((BubbleTextView) taskView, task);
-        }
-    }
-
-    /**
-     * Make the divider VISIBLE between the Hotseat and Recents if there is at least one icon in
-     * each, otherwise make it GONE.
-     */
-    private void updateHotseatRecentsDividerVisibility() {
-        if (mHotseatRecentsDivider == null) {
-            return;
-        }
-
-        boolean hasAtLeastOneHotseatItem = false;
-        for (int i = mHotseatStartIndex; i <= mHotseatEndIndex; i++) {
-            if (getChildAt(i).getVisibility() != GONE) {
-                hasAtLeastOneHotseatItem = true;
-                break;
-            }
-        }
-
-        boolean hasAtLeastOneRecentItem = false;
-        for (int i = mRecentsStartIndex; i <= mRecentsEndIndex; i++) {
-            if (getChildAt(i).getVisibility() != GONE) {
-                hasAtLeastOneRecentItem = true;
-                break;
-            }
-        }
-
-        mHotseatRecentsDivider.setVisibility(hasAtLeastOneHotseatItem && hasAtLeastOneRecentItem
-                ? VISIBLE : GONE);
     }
 
     @Override
