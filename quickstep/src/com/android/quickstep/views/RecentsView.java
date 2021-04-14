@@ -72,7 +72,6 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.os.Handler;
 import android.os.UserHandle;
 import android.text.Layout;
 import android.text.StaticLayout;
@@ -96,6 +95,7 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseActivity.MultiWindowModeChangedListener;
@@ -111,6 +111,7 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.SpringProperty;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulActivity;
@@ -153,6 +154,7 @@ import com.android.systemui.shared.system.PackageManagerWrapper;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
 import com.android.systemui.shared.system.TaskStackChangeListener;
+import com.android.systemui.shared.system.TaskStackChangeListeners;
 import com.android.wm.shell.pip.IPipAnimationListener;
 
 import java.util.ArrayList;
@@ -394,34 +396,27 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 return;
             }
 
-            UI_HELPER_EXECUTOR.execute(() -> {
-                TaskView taskView = getTaskView(taskId);
-                if (taskView == null) {
-                    return;
-                }
-                Handler handler = taskView.getHandler();
-                if (handler == null) {
-                    return;
-                }
-
-                // TODO: Add callbacks from AM reflecting adding/removing from the recents list, and
-                //       remove all these checks
-                Task.TaskKey taskKey = taskView.getTask().key;
-                if (PackageManagerWrapper.getInstance().getActivityInfo(taskKey.getComponent(),
-                        taskKey.userId) == null) {
-                    // The package was uninstalled
-                    handler.post(() ->
-                            dismissTask(taskView, true /* animate */, false /* removeTask */));
-                } else {
-                    mModel.findTaskWithId(taskKey.id, (key) -> {
-                        if (key == null) {
-                            // The task was removed from the recents list
-                            handler.post(() -> dismissTask(taskView, true /* animate */,
-                                    false /* removeTask */));
+            TaskView taskView = getTaskView(taskId);
+            if (taskView == null) {
+                return;
+            }
+            Task.TaskKey taskKey = taskView.getTask().key;
+            UI_HELPER_EXECUTOR.execute(new HandlerRunnable<>(
+                    UI_HELPER_EXECUTOR.getHandler(),
+                    () -> PackageManagerWrapper.getInstance()
+                            .getActivityInfo(taskKey.getComponent(), taskKey.userId) == null,
+                    MAIN_EXECUTOR,
+                    apkRemoved -> {
+                        if (apkRemoved) {
+                            dismissTask(taskId);
+                        } else {
+                            mModel.isTaskRemoved(taskKey.id, taskRemoved -> {
+                                if (taskRemoved) {
+                                    dismissTask(taskId);
+                                }
+                            });
                         }
-                    });
-                }
-            });
+                    }));
         }
     };
 
@@ -668,7 +663,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         updateTaskStackListenerState();
         mModel.getThumbnailCache().getHighResLoadingState().addCallback(this);
         mActivity.addMultiWindowModeChangedListener(mMultiWindowModeChangedListener);
-        ActivityManagerWrapper.getInstance().registerTaskStackListener(mTaskStackListener);
+        TaskStackChangeListeners.getInstance().registerTaskStackListener(mTaskStackListener);
         mSyncTransactionApplier = new SurfaceTransactionApplier(this);
         mLiveTileParams.setSyncTransactionApplier(mSyncTransactionApplier);
         RecentsModel.INSTANCE.get(getContext()).addThumbnailChangeListener(this);
@@ -687,7 +682,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         updateTaskStackListenerState();
         mModel.getThumbnailCache().getHighResLoadingState().removeCallback(this);
         mActivity.removeMultiWindowModeChangedListener(mMultiWindowModeChangedListener);
-        ActivityManagerWrapper.getInstance().unregisterTaskStackListener(mTaskStackListener);
+        TaskStackChangeListeners.getInstance().unregisterTaskStackListener(mTaskStackListener);
         mSyncTransactionApplier = null;
         mLiveTileParams.setSyncTransactionApplier(null);
         RecentsModel.INSTANCE.get(getContext()).removeThumbnailChangeListener(this);
@@ -2175,6 +2170,15 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         controller.dispatchOnStart();
         controller.getAnimationPlayer().setInterpolator(FAST_OUT_SLOW_IN);
         controller.start();
+    }
+
+    @UiThread
+    private void dismissTask(int taskId) {
+        TaskView taskView = getTaskView(taskId);
+        if (taskView == null) {
+            return;
+        }
+        dismissTask(taskView, true /* animate */, false /* removeTask */);
     }
 
     public void dismissTask(TaskView taskView, boolean animateTaskView, boolean removeTask) {
