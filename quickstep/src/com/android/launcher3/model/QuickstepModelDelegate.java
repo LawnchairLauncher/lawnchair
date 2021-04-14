@@ -111,7 +111,7 @@ public class QuickstepModelDelegate extends ModelDelegate implements OnIDPChange
         mDataModel.extraItems.put(CONTAINER_PREDICTION, mAllAppsState.items);
 
         WorkspaceItemFactory hotseatFactory =
-                new WorkspaceItemFactory(mApp, ums, pinnedShortcuts, mIDP.numHotseatIcons);
+                new WorkspaceItemFactory(mApp, ums, pinnedShortcuts, mIDP.numDatabaseHotseatIcons);
         mHotseatState.items.setItems(
                 mHotseatState.storage.read(mApp.getContext(), hotseatFactory, ums.allUsers::get));
         mDataModel.extraItems.put(CONTAINER_HOTSEAT_PREDICTION, mHotseatState.items);
@@ -211,7 +211,7 @@ public class QuickstepModelDelegate extends ModelDelegate implements OnIDPChange
         registerPredictor(mHotseatState, apm.createAppPredictionSession(
                 new AppPredictionContext.Builder(context)
                         .setUiSurface("hotseat")
-                        .setPredictedTargetCount(mIDP.numHotseatIcons)
+                        .setPredictedTargetCount(mIDP.numDatabaseHotseatIcons)
                         .setExtras(convertDataModelToAppTargetBundle(context, mDataModel))
                         .build()));
 

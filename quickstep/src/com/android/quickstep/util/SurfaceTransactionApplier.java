@@ -15,8 +15,6 @@
  */
 package com.android.quickstep.util;
 
-import static com.android.systemui.shared.system.TransactionCompat.deferTransactionUntil;
-
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Handler;
@@ -90,11 +88,10 @@ public class SurfaceTransactionApplier extends ReleaseCheck {
             for (int i = params.length - 1; i >= 0; i--) {
                 SurfaceParams surfaceParams = params[i];
                 if (surfaceParams.surface.isValid()) {
-                    deferTransactionUntil(t, surfaceParams.surface, mBarrierSurfaceControl, frame);
-                    surfaceParams.applyTo(t);
+                      surfaceParams.applyTo(t);
                 }
             }
-            t.apply();
+            mTargetViewRootImpl.mergeWithNextTransaction(t, frame);
             Message.obtain(mApplyHandler, MSG_UPDATE_SEQUENCE_NUMBER, toApplySeqNo, 0)
                     .sendToTarget();
         });

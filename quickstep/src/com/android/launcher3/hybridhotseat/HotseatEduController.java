@@ -89,7 +89,7 @@ public class HotseatEduController {
         ArrayList<WorkspaceItemInfo> putIntoFolder = new ArrayList<>();
 
         //separate folders and items that can get in folders
-        for (int i = 0; i < mLauncher.getDeviceProfile().inv.numHotseatIcons; i++) {
+        for (int i = 0; i < mLauncher.getDeviceProfile().numShownHotseatIcons; i++) {
             View view = mHotseat.getChildAt(i, 0);
             if (view == null) continue;
             ItemInfo info = (ItemInfo) view.getTag();
@@ -188,7 +188,7 @@ public class HotseatEduController {
                     .getInt(LauncherSettings.Settings.EXTRA_VALUE);
             mNewScreens = IntArray.wrap(pageId);
         }
-        for (int i = 0; i < mLauncher.getDeviceProfile().inv.numHotseatIcons; i++) {
+        for (int i = 0; i < mLauncher.getDeviceProfile().numShownHotseatIcons; i++) {
             View child = mHotseat.getChildAt(i, 0);
             if (child == null || child.getTag() == null) continue;
             ItemInfo tag = (ItemInfo) child.getTag();
@@ -224,7 +224,7 @@ public class HotseatEduController {
 
     void showDimissTip() {
         if (mHotseat.getShortcutsAndWidgets().getChildCount()
-                < mLauncher.getDeviceProfile().inv.numHotseatIcons) {
+                < mLauncher.getDeviceProfile().numShownHotseatIcons) {
             Snackbar.show(mLauncher, R.string.hotseat_tip_gaps_filled,
                     R.string.hotseat_prediction_settings, null,
                     () -> mLauncher.startActivity(getSettingsIntent()));

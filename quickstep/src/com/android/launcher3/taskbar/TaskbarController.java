@@ -25,7 +25,6 @@ import static com.android.systemui.shared.system.WindowManagerWrapper.ITYPE_EXTR
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.ActivityOptions;
-import android.content.ComponentName;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -56,9 +55,6 @@ import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Interfaces with Launcher/WindowManager/SystemUI to determine what to show in TaskbarView.
  */
@@ -76,16 +72,10 @@ public class TaskbarController {
     private final TaskbarStateHandler mTaskbarStateHandler;
     private final TaskbarAnimationController mTaskbarAnimationController;
     private final TaskbarHotseatController mHotseatController;
-    private final TaskbarRecentsController mRecentsController;
     private final TaskbarDragController mDragController;
 
     // Initialized in init().
     private WindowManager.LayoutParams mWindowLayoutParams;
-
-    // Contains all loaded Tasks, not yet deduped from Hotseat items.
-    private List<Task> mLatestLoadedRecentTasks;
-    // Contains all loaded Hotseat items.
-    private ItemInfo[] mLatestLoadedHotseatItems;
 
     private @Nullable Animator mAnimator;
     private boolean mIsAnimatingToLauncher;
@@ -106,8 +96,6 @@ public class TaskbarController {
                 createTaskbarAnimationControllerCallbacks());
         mHotseatController = new TaskbarHotseatController(mLauncher,
                 createTaskbarHotseatControllerCallbacks());
-        mRecentsController = new TaskbarRecentsController(mLauncher,
-                createTaskbarRecentsControllerCallbacks());
         mDragController = new TaskbarDragController(mLauncher);
     }
 
@@ -115,7 +103,7 @@ public class TaskbarController {
         return new TaskbarAnimationControllerCallbacks() {
             @Override
             public void updateTaskbarBackgroundAlpha(float alpha) {
-                mTaskbarViewInApp.setBackgroundAlpha(alpha);
+                mTaskbarContainerView.setTaskbarBackgroundAlpha(alpha);
             }
 
             @Override
@@ -128,6 +116,18 @@ public class TaskbarController {
             public void updateTaskbarScale(float scale) {
                 mTaskbarViewInApp.setScaleX(scale);
                 mTaskbarViewInApp.setScaleY(scale);
+            }
+
+            @Override
+            public void updateTaskbarTranslationY(float translationY) {
+                if (translationY < 0) {
+                    // Resize to accommodate the max translation we'll reach.
+                    setTaskbarWindowHeight(mTaskbarSize.y
+                            + mLauncher.getHotseat().getTaskbarOffsetY());
+                } else {
+                    setTaskbarWindowHeight(mTaskbarSize.y);
+                }
+                mTaskbarViewInApp.setTranslationY(translationY);
             }
         };
     }
@@ -220,24 +220,6 @@ public class TaskbarController {
             @Override
             public void updateHotseatItems(ItemInfo[] hotseatItemInfos) {
                 mTaskbarViewInApp.updateHotseatItems(hotseatItemInfos);
-                mLatestLoadedHotseatItems = hotseatItemInfos;
-                dedupeAndUpdateRecentItems();
-            }
-        };
-    }
-
-    private TaskbarRecentsControllerCallbacks createTaskbarRecentsControllerCallbacks() {
-        return new TaskbarRecentsControllerCallbacks() {
-            @Override
-            public void updateRecentItems(ArrayList<Task> recentTasks) {
-                mLatestLoadedRecentTasks = recentTasks;
-                dedupeAndUpdateRecentItems();
-            }
-
-            @Override
-            public void updateRecentTaskAtIndex(int taskIndex, Task task) {
-                mTaskbarViewInApp.updateRecentTaskAtIndex(taskIndex, task);
-                mTaskbarViewOnHome.updateRecentTaskAtIndex(taskIndex, task);
             }
         };
     }
@@ -246,16 +228,13 @@ public class TaskbarController {
      * Initializes the Taskbar, including adding it to the screen.
      */
     public void init() {
-        mTaskbarViewInApp.init(mHotseatController.getNumHotseatIcons(),
-                mRecentsController.getNumRecentIcons());
-        mTaskbarViewOnHome.init(mHotseatController.getNumHotseatIcons(),
-                mRecentsController.getNumRecentIcons());
+        mTaskbarViewInApp.init(mHotseatController.getNumHotseatIcons());
+        mTaskbarViewOnHome.init(mHotseatController.getNumHotseatIcons());
         mTaskbarContainerView.init(mTaskbarViewInApp);
         addToWindowManager();
         mTaskbarStateHandler.setTaskbarCallbacks(createTaskbarStateHandlerCallbacks());
         mTaskbarAnimationController.init();
         mHotseatController.init();
-        mRecentsController.init();
 
         setWhichTaskbarViewIsVisible(mLauncher.hasBeenResumed()
                 ? mTaskbarViewOnHome
@@ -272,6 +251,11 @@ public class TaskbarController {
             @Override
             public AnimatedFloat getScaleTarget() {
                 return mTaskbarAnimationController.getTaskbarScaleForLauncherState();
+            }
+
+            @Override
+            public AnimatedFloat getTranslationYTarget() {
+                return mTaskbarAnimationController.getTaskbarTranslationYForLauncherState();
             }
         };
     }
@@ -292,7 +276,6 @@ public class TaskbarController {
         mTaskbarStateHandler.setTaskbarCallbacks(null);
         mTaskbarAnimationController.cleanup();
         mHotseatController.cleanup();
-        mRecentsController.cleanup();
 
         setWhichTaskbarViewIsVisible(null);
     }
@@ -425,53 +408,6 @@ public class TaskbarController {
         return mTaskbarViewInApp.isDraggingItem() || mTaskbarViewOnHome.isDraggingItem();
     }
 
-    private void dedupeAndUpdateRecentItems() {
-        if (mLatestLoadedRecentTasks == null || mLatestLoadedHotseatItems == null) {
-            return;
-        }
-
-        final int numRecentIcons = mRecentsController.getNumRecentIcons();
-
-        // From most recent to least recently opened.
-        List<Task> dedupedTasksInDescendingOrder = new ArrayList<>();
-        for (int i = mLatestLoadedRecentTasks.size() - 1; i >= 0; i--) {
-            Task task = mLatestLoadedRecentTasks.get(i);
-            boolean isTaskInHotseat = false;
-            for (ItemInfo hotseatItem : mLatestLoadedHotseatItems) {
-                if (hotseatItem == null) {
-                    continue;
-                }
-                ComponentName hotseatActivity = hotseatItem.getTargetComponent();
-                if (hotseatActivity != null && task.key.sourceComponent.getPackageName()
-                        .equals(hotseatActivity.getPackageName())) {
-                    isTaskInHotseat = true;
-                    break;
-                }
-            }
-            if (!isTaskInHotseat) {
-                dedupedTasksInDescendingOrder.add(task);
-                if (dedupedTasksInDescendingOrder.size() == numRecentIcons) {
-                    break;
-                }
-            }
-        }
-
-        // TaskbarView expects an array of all the recent tasks to show, in the order to show them.
-        // So we create an array of the proper size, then fill it in such that the most recent items
-        // are at the end. If there aren't enough elements to fill the array, leave them null.
-        Task[] tasksArray = new Task[numRecentIcons];
-        for (int i = 0; i < tasksArray.length; i++) {
-            Task task = i >= dedupedTasksInDescendingOrder.size()
-                    ? null
-                    : dedupedTasksInDescendingOrder.get(i);
-            tasksArray[tasksArray.length - 1 - i] = task;
-        }
-
-        mTaskbarViewInApp.updateRecentTasks(tasksArray);
-        mTaskbarViewOnHome.updateRecentTasks(tasksArray);
-        mRecentsController.loadIconsForTasks(tasksArray);
-    }
-
     /**
      * @return Whether the given View is in the same window as Taskbar.
      */
@@ -487,13 +423,15 @@ public class TaskbarController {
         Rect hotseatBounds = new Rect();
         DeviceProfile grid = mLauncher.getDeviceProfile();
         int hotseatHeight = grid.workspacePadding.bottom + grid.taskbarSize;
-        int hotseatTopDiff = hotseatHeight - grid.taskbarSize;
+        int taskbarOffset = mLauncher.getHotseat().getTaskbarOffsetY();
+        int hotseatTopDiff = hotseatHeight - grid.taskbarSize - taskbarOffset;
+        int hotseatBottomDiff = taskbarOffset;
 
         mTaskbarViewOnHome.getHotseatBounds().roundOut(hotseatBounds);
         mLauncher.getHotseat().setPadding(hotseatBounds.left,
                 hotseatBounds.top + hotseatTopDiff,
                 mTaskbarViewOnHome.getWidth() - hotseatBounds.right,
-                mTaskbarViewOnHome.getHeight() - hotseatBounds.bottom);
+                mTaskbarViewOnHome.getHeight() - hotseatBounds.bottom + hotseatBottomDiff);
     }
 
     private void setWhichTaskbarViewIsVisible(@Nullable TaskbarView visibleTaskbar) {
@@ -519,13 +457,15 @@ public class TaskbarController {
      * Updates the TaskbarContainer to MATCH_PARENT vs original Taskbar size.
      */
     private void setTaskbarWindowFullscreen(boolean fullscreen) {
-        if (fullscreen) {
-            mWindowLayoutParams.width = MATCH_PARENT;
-            mWindowLayoutParams.height = MATCH_PARENT;
-        } else {
-            mWindowLayoutParams.width = mTaskbarSize.x;
-            mWindowLayoutParams.height = mTaskbarSize.y;
-        }
+        setTaskbarWindowHeight(fullscreen ? MATCH_PARENT : mTaskbarSize.y);
+    }
+
+    /**
+     * Updates the TaskbarContainer height (pass mTaskbarSize.y to reset).
+     */
+    private void setTaskbarWindowHeight(int height) {
+        mWindowLayoutParams.width = mTaskbarSize.x;
+        mWindowLayoutParams.height = height;
         mWindowManager.updateViewLayout(mTaskbarContainerView, mWindowLayoutParams);
     }
 
@@ -535,6 +475,7 @@ public class TaskbarController {
     protected interface TaskbarStateHandlerCallbacks {
         AnimatedFloat getAlphaTarget();
         AnimatedFloat getScaleTarget();
+        AnimatedFloat getTranslationYTarget();
     }
 
     /**
@@ -545,6 +486,7 @@ public class TaskbarController {
         void updateTaskbarBackgroundAlpha(float alpha);
         void updateTaskbarVisibilityAlpha(float alpha);
         void updateTaskbarScale(float scale);
+        void updateTaskbarTranslationY(float translationY);
     }
 
     /**
@@ -572,13 +514,5 @@ public class TaskbarController {
      */
     protected interface TaskbarHotseatControllerCallbacks {
         void updateHotseatItems(ItemInfo[] hotseatItemInfos);
-    }
-
-    /**
-     * Contains methods that TaskbarRecentsController can call to interface with TaskbarController.
-     */
-    protected interface TaskbarRecentsControllerCallbacks {
-        void updateRecentItems(ArrayList<Task> recentTasks);
-        void updateRecentTaskAtIndex(int taskIndex, Task task);
     }
 }

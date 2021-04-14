@@ -355,7 +355,7 @@ public class LauncherModelHelper {
             throws Exception {
         Context context = RuntimeEnvironment.application;
         InvariantDeviceProfile idp = InvariantDeviceProfile.INSTANCE.get(context);
-        idp.numRows = idp.numColumns = idp.numHotseatIcons = DEFAULT_GRID_SIZE;
+        idp.numRows = idp.numColumns = idp.numDatabaseHotseatIcons = DEFAULT_GRID_SIZE;
         idp.iconBitmapSize = DEFAULT_BITMAP_SIZE;
 
         Settings.Secure.putString(context.getContentResolver(),
