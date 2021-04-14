@@ -365,7 +365,7 @@ public final class LauncherInstrumentation {
 
             if (hasSystemUiObject("keyguard_status_view")) return "Phone is locked";
 
-            if (!mDevice.wait(Until.hasObject(By.textStartsWith("")), WAIT_TIME_MS)) {
+            if (!mDevice.wait(Until.hasObject(getAnyObjectSelector()), WAIT_TIME_MS)) {
                 return "Screen is empty";
             }
 
@@ -388,7 +388,7 @@ public final class LauncherInstrumentation {
     }
 
     private String getVisiblePackages() {
-        return mDevice.findObjects(By.textStartsWith(""))
+        return mDevice.findObjects(getAnyObjectSelector())
                 .stream()
                 .map(LauncherInstrumentation::getApplicationPackageSafe)
                 .distinct()
@@ -692,6 +692,9 @@ public final class LauncherInstrumentation {
                     try (LauncherInstrumentation.Closable c = addContextLayer(
                             "Swiped up from context menu to home")) {
                         waitUntilLauncherObjectGone(CONTEXT_MENU_RES_ID);
+                        // Swiping up can temporarily bring Nexus Launcher if the current
+                        // Launcher is a Launcher3 one. Wait for the current launcher to reappear.
+                        waitForLauncherObject(getAnyObjectSelector());
                     }
                 }
                 if (hasLauncherObject(WORKSPACE_RES_ID)) {
@@ -736,9 +739,13 @@ public final class LauncherInstrumentation {
         }
     }
 
+    private static BySelector getAnyObjectSelector() {
+        return By.textStartsWith("");
+    }
+
     boolean isLauncherVisible() {
         mDevice.waitForIdle();
-        return hasLauncherObject(By.textStartsWith(""));
+        return hasLauncherObject(getAnyObjectSelector());
     }
 
     /**
