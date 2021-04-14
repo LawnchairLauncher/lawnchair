@@ -467,7 +467,7 @@ public class LauncherPreviewRenderer extends ContextThemeWrapper
                 }
             }
             IntArray ranks = getMissingHotseatRanks(currentWorkspaceItems,
-                    mIdp.numHotseatIcons);
+                    mDp.numShownHotseatIcons);
             List<ItemInfo> predictions = workspaceResult.mHotseatPredictions == null
                     ? Collections.emptyList() : workspaceResult.mHotseatPredictions.items;
             int count = Math.min(ranks.size(), predictions.size());
@@ -484,7 +484,7 @@ public class LauncherPreviewRenderer extends ContextThemeWrapper
             }
         } else {
             // Add hotseat icons
-            for (int i = 0; i < mIdp.numHotseatIcons; i++) {
+            for (int i = 0; i < mDp.numShownHotseatIcons; i++) {
                 WorkspaceItemInfo info = new WorkspaceItemInfo(mWorkspaceItemInfo);
                 info.container = Favorites.CONTAINER_HOTSEAT;
                 info.screenId = i;
