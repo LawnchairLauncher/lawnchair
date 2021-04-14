@@ -62,6 +62,7 @@ import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetCell;
+import com.android.launcher3.widget.WidgetCellPreview;
 import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetImageView;
 import com.android.launcher3.widget.WidgetManagerHelper;
@@ -121,9 +122,10 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
             }
         }
 
-        WidgetImageView preview = mWidgetCell.findViewById(R.id.widget_preview);
-        preview.setOnTouchListener(this);
-        preview.setOnLongClickListener(this);
+        WidgetCellPreview previewContainer = mWidgetCell.findViewById(
+                R.id.widget_preview_container);
+        previewContainer.setOnTouchListener(this);
+        previewContainer.setOnLongClickListener(this);
 
         // savedInstanceState is null when the activity is created the first time (i.e., avoids
         // duplicate logging during rotation)
