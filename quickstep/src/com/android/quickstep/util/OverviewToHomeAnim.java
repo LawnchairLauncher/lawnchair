@@ -27,22 +27,15 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.states.StateAnimationConfig;
-import com.android.quickstep.views.RecentsView;
 
 /**
  * Runs an animation from overview to home. Currently, this animation is just a wrapper around the
- * normal state transition, in order to keep RecentsView at the same scale and translationY that
- * it started out at as it translates offscreen. It also scrolls RecentsView to page 0 and may play
- * a {@link StaggeredWorkspaceAnim} if we're starting from an upward fling.
+ * normal state transition and may play a {@link StaggeredWorkspaceAnim} if we're starting from an
+ * upward fling.
  */
 public class OverviewToHomeAnim {
 
     private static final String TAG = "OverviewToHomeAnim";
-
-    // Constants to specify how to scroll RecentsView to the default page if it's not already there.
-    private static final int DEFAULT_PAGE = 0;
-    private static final int PER_PAGE_SCROLL_DURATION = 150;
-    private static final int MAX_PAGE_SCROLL_DURATION = 750;
 
     private final Launcher mLauncher;
     private final Runnable mOnReachedHome;
@@ -84,14 +77,8 @@ public class OverviewToHomeAnim {
             mIsHomeStaggeredAnimFinished = true;
         }
 
-        RecentsView recentsView = mLauncher.getOverviewPanel();
-        int numPagesToScroll = recentsView.getNextPage() - DEFAULT_PAGE;
-        int scrollDuration = Math.min(MAX_PAGE_SCROLL_DURATION,
-                numPagesToScroll * PER_PAGE_SCROLL_DURATION);
-        int duration = Math.max(scrollDuration, startState.getTransitionDuration(mLauncher));
-
         StateAnimationConfig config = new StateAnimationConfig();
-        config.duration = duration;
+        config.duration = startState.getTransitionDuration(mLauncher);
         AnimatorSet stateAnim = stateManager.createAtomicAnimation(
                 startState, NORMAL, config);
         stateAnim.addListener(new AnimationSuccessListener() {
@@ -104,7 +91,6 @@ public class OverviewToHomeAnim {
         anim.play(stateAnim);
         stateManager.setCurrentAnimation(anim, NORMAL);
         anim.start();
-        recentsView.snapToPage(DEFAULT_PAGE, duration);
     }
 
     private void maybeOverviewToHomeAnimComplete() {
