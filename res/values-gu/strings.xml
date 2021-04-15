@@ -62,11 +62,7 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\"થી મેળ ખાતી કોઈ ઍપ્લિકેશનો મળી નથી"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"વધુ ઍપ્લિકેશનો શોધો"</string>
     <string name="label_application" msgid="8531721983832654978">"ઍપ"</string>
-    <!-- no translation found for search_corpus_apps (1917889409963779022) -->
-    <skip />
-    <!-- no translation found for search_action_try_now (1458737965476149074) -->
-    <skip />
-    <string name="notifications_header" msgid="1404149926117359025">"નોટિફિકેશનો"</string>
+    <string name="notifications_header" msgid="1404149926117359025">"નોટિફિકેશન"</string>
     <!-- no translation found for long_press_shortcut_to_add (5405328730817637737) -->
     <skip />
     <!-- no translation found for long_accessible_way_to_add_shortcut (2199537273817090740) -->

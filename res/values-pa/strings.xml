@@ -62,10 +62,6 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" ਨਾਲ ਮੇਲ ਖਾਂਦੀਆਂ ਕੋਈ ਐਪਾਂ ਨਹੀਂ ਮਿਲੀਆਂ"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"ਹੋਰ ਐਪਾਂ ਖੋਜੋ"</string>
     <string name="label_application" msgid="8531721983832654978">"ਐਪ"</string>
-    <!-- no translation found for search_corpus_apps (1917889409963779022) -->
-    <skip />
-    <!-- no translation found for search_action_try_now (1458737965476149074) -->
-    <skip />
     <string name="notifications_header" msgid="1404149926117359025">"ਸੂਚਨਾਵਾਂ"</string>
     <!-- no translation found for long_press_shortcut_to_add (5405328730817637737) -->
     <skip />
