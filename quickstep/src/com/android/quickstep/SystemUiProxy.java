@@ -256,18 +256,6 @@ public class SystemUiProxy implements ISystemUiProxy,
     }
 
     @Override
-    public Bundle monitorGestureInput(String name, int displayId) {
-        if (mSystemUiProxy != null) {
-            try {
-                return mSystemUiProxy.monitorGestureInput(name, displayId);
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed call monitorGestureInput: " + name, e);
-            }
-        }
-        return null;
-    }
-
-    @Override
     public void notifyAccessibilityButtonClicked(int displayId) {
         if (mSystemUiProxy != null) {
             try {

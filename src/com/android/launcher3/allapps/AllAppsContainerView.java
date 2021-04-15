@@ -75,9 +75,9 @@ import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.OnActivePag
 public class AllAppsContainerView extends SpringRelativeLayout implements DragSource,
         Insettable, OnDeviceProfileChangeListener, OnActivePageChangedListener {
 
-    private static final float FLING_VELOCITY_MULTIPLIER = 1000 * .8f;
+    private static final float FLING_VELOCITY_MULTIPLIER = 1000 * .2f;
     // Starts the springs after at least 55% of the animation has passed.
-    private static final float FLING_ANIMATION_THRESHOLD = 0.55f;
+    private static final float FLING_ANIMATION_THRESHOLD = 0.25f;
 
     protected final BaseDraggingActivity mLauncher;
     protected final AdapterHolder[] mAH;

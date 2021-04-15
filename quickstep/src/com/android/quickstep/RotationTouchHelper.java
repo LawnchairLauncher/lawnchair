@@ -28,9 +28,11 @@ import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 
 import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.DisplayHolder;
 import com.android.launcher3.util.DisplayController.DisplayInfoChangeListener;
 import com.android.launcher3.util.DisplayController.Info;
+import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.QuickStepContract;
@@ -42,6 +44,9 @@ import java.util.ArrayList;
 public class RotationTouchHelper implements
         SysUINavigationMode.NavigationModeChangeListener,
         DisplayInfoChangeListener {
+
+    public static final MainThreadInitializedObject<RotationTouchHelper> INSTANCE =
+            new MainThreadInitializedObject<>(RotationTouchHelper::new);
 
     private final OrientationTouchTransformer mOrientationTouchTransformer;
     private final DisplayHolder mDisplayHolder;
@@ -121,9 +126,9 @@ public class RotationTouchHelper implements
 
     private final Context mContext;
 
-    public RotationTouchHelper(Context context, DisplayHolder displayHolder) {
+    private RotationTouchHelper(Context context) {
         mContext = context;
-        mDisplayHolder = displayHolder;
+        mDisplayHolder = DisplayController.getDefaultDisplay(context);
         Resources resources = mContext.getResources();
         mSysUiNavMode = SysUINavigationMode.INSTANCE.get(context);
         mDisplayId = mDisplayHolder.getInfo().id;
