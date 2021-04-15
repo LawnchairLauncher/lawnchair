@@ -130,6 +130,10 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
         mModelDelegate = ModelDelegate.newInstance(context, app, mBgAllAppsList, mBgDataModel);
     }
 
+    public ModelDelegate getModelDelegate() {
+        return mModelDelegate;
+    }
+
     /**
      * Adds the provided items to the workspace.
      */
