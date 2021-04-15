@@ -40,6 +40,7 @@ import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_F
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_SCALE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_SCRIM_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_TRANSLATE;
+import static com.android.launcher3.states.StateAnimationConfig.SKIP_SCRIM;
 
 import android.animation.ValueAnimator;
 import android.view.View;
@@ -151,7 +152,9 @@ public class WorkspaceStateTransitionAnimation {
         propertySetter.setFloat(mWorkspace.getPageIndicator(), VIEW_TRANSLATE_Y,
                 hotseatScaleAndTranslation.translationY, hotseatTranslationInterpolator);
 
-        setScrim(propertySetter, state, config);
+        if (!config.hasAnimationFlag(SKIP_SCRIM)) {
+            setScrim(propertySetter, state, config);
+        }
     }
 
     /**
