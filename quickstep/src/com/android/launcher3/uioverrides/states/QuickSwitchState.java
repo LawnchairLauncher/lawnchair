@@ -35,7 +35,13 @@ public class QuickSwitchState extends BackgroundAppState {
         float shiftRange = launcher.getAllAppsController().getShiftRange();
         float shiftProgress = getVerticalProgress(launcher) - NORMAL.getVerticalProgress(launcher);
         float translationY = shiftProgress * shiftRange;
-        return new ScaleAndTranslation(1, 0, translationY);
+        return new ScaleAndTranslation(0.9f, 0, translationY);
+    }
+
+    @Override
+    public float getVerticalProgress(Launcher launcher) {
+        // Don't move all apps shelf while quick-switching (just let it fade).
+        return 1f;
     }
 
     @Override

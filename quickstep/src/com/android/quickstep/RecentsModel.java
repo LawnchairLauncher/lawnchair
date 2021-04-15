@@ -112,20 +112,19 @@ public class RecentsModel extends TaskStackChangeListener {
     }
 
     /**
-     * Finds and returns the task key associated with the given task id.
+     * Checks if a task has been removed or not.
      *
-     * @param callback The callback to receive the task key if it is found or null. This is always
-     *                 called on the UI thread.
+     * @param callback Receives true if task is removed, false otherwise
      */
-    public void findTaskWithId(int taskId, Consumer<Task.TaskKey> callback) {
+    public void isTaskRemoved(int taskId, Consumer<Boolean> callback) {
         mTaskList.getTasks(true /* loadKeysOnly */, (tasks) -> {
             for (Task task : tasks) {
                 if (task.key.id == taskId) {
-                    callback.accept(task.key);
+                    callback.accept(false);
                     return;
                 }
             }
-            callback.accept(null);
+            callback.accept(true);
         });
     }
 

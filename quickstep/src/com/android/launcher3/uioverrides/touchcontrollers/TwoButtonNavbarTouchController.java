@@ -24,11 +24,13 @@ import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 
 import android.animation.ValueAnimator;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.AbstractStateChangeTouchController;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.quickstep.SystemUiProxy;
@@ -76,9 +78,18 @@ public class TwoButtonNavbarTouchController extends AbstractStateChangeTouchCont
             return true;
         }
         if (AbstractFloatingView.getTopOpenView(mLauncher) != null) {
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.TWO_BUTTON_NORMAL_NOT_OVERVIEW,
+                        "Didn't intercept touch due to top view: "
+                                + AbstractFloatingView.getTopOpenView(mLauncher));
+            }
             return false;
         }
         if ((ev.getEdgeFlags() & EDGE_NAV_BAR) == 0) {
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.TWO_BUTTON_NORMAL_NOT_OVERVIEW,
+                        "Didn't intercept touch because event wasn't from nav bar");
+            }
             return false;
         }
         if (!mIsTransposed && mLauncher.isInState(OVERVIEW)) {
@@ -89,14 +100,21 @@ public class TwoButtonNavbarTouchController extends AbstractStateChangeTouchCont
 
     @Override
     protected LauncherState getTargetState(LauncherState fromState, boolean isDragTowardPositive) {
+        final LauncherState targetState;
         if (mIsTransposed) {
             boolean draggingFromNav =
                     mLauncher.getDeviceProfile().isSeascape() == isDragTowardPositive;
-            return draggingFromNav ? HINT_STATE_TWO_BUTTON : NORMAL;
+            targetState = draggingFromNav ? HINT_STATE_TWO_BUTTON : NORMAL;
         } else {
             LauncherState startState = mStartState != null ? mStartState : fromState;
-            return isDragTowardPositive ^ (startState == OVERVIEW) ? HINT_STATE_TWO_BUTTON : NORMAL;
+            targetState = isDragTowardPositive ^ (startState == OVERVIEW)
+                    ? HINT_STATE_TWO_BUTTON : NORMAL;
         }
+
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.TWO_BUTTON_NORMAL_NOT_OVERVIEW, "Target state: " + targetState);
+        }
+        return targetState;
     }
 
     @Override
