@@ -109,6 +109,7 @@ public final class TestProtocol {
     public static final String REQUEST_MOCK_SENSOR_ROTATION = "mock-sensor-rotation";
 
     public static final String PERMANENT_DIAG_TAG = "TaplTarget";
+    public static final String RECEIVER_LEAK = "b/185385047";
     public static final String NO_SWIPE_TO_HOME = "b/158017601";
     public static final String WORK_PROFILE_REMOVED = "b/159671700";
     public static final String TIS_NO_EVENTS = "b/180915942";
