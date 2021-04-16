@@ -3048,6 +3048,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             RecentsAnimationTargets recentsAnimationTargets) {
         mRecentsAnimationController = recentsAnimationController;
         if (recentsAnimationTargets != null && recentsAnimationTargets.apps.length > 0) {
+            if (mSyncTransactionApplier != null) {
+                recentsAnimationTargets.addReleaseCheck(mSyncTransactionApplier);
+            }
             mLiveTileTaskViewSimulator.setPreview(
                     recentsAnimationTargets.apps[recentsAnimationTargets.apps.length - 1]);
             mLiveTileParams.setTargetSet(recentsAnimationTargets);
