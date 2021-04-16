@@ -179,6 +179,7 @@ public class OverviewCommandHelper {
         }
 
         GestureState gestureState = mService.createGestureState(GestureState.DEFAULT_STATE);
+        gestureState.setHandlingAtomicEvent(true);
         AbsSwipeUpHandler interactionHandler = mService.getSwipeUpHandlerFactory()
                 .newHandler(gestureState, cmd.createTime);
         interactionHandler.setGestureEndCallback(
