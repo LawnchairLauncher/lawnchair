@@ -484,7 +484,6 @@ public class TaskView extends FrameLayout implements Reusable {
             mIsClickableAsLiveTile = false;
             RecentsView recentsView = getRecentsView();
             RemoteAnimationTargets targets = recentsView.getLiveTileParams().getTargetSet();
-            recentsView.getLiveTileTaskViewSimulator().setDrawsBelowRecents(false);
 
             AnimatorSet anim = new AnimatorSet();
             TaskViewUtils.composeRecentsLaunchAnimator(
@@ -494,9 +493,12 @@ public class TaskView extends FrameLayout implements Reusable {
                     recentsView.getDepthController());
             anim.addListener(new AnimatorListenerAdapter() {
                 @Override
+                public void onAnimationStart(Animator animator) {
+                    recentsView.getLiveTileTaskViewSimulator().setDrawsBelowRecents(false);
+                }
+
+                @Override
                 public void onAnimationEnd(Animator animator) {
-                    recentsView.getLiveTileTaskViewSimulator().setDrawsBelowRecents(true);
-                    recentsView.finishRecentsAnimation(false, null);
                     mIsClickableAsLiveTile = true;
                 }
             });
