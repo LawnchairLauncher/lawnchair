@@ -621,7 +621,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         final boolean passed = mCurrentShift.value >= MIN_PROGRESS_FOR_OVERVIEW;
         if (passed != mPassedOverviewThreshold) {
             mPassedOverviewThreshold = passed;
-            if (mDeviceState.isTwoButtonNavMode()) {
+            if (mDeviceState.isTwoButtonNavMode() && !mGestureState.isHandlingAtomicEvent()) {
                 performHapticFeedback();
             }
         }
@@ -854,7 +854,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
     private GestureEndTarget calculateEndTarget(PointF velocity, float endVelocity, boolean isFling,
             boolean isCancel) {
-        if (mDeviceState.isButtonNavMode()) {
+        if (mGestureState.isHandlingAtomicEvent()) {
             // Button mode, this is only used to go to recents
             return RECENTS;
         }
@@ -976,7 +976,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                     mRecentsView.snapToPage(mRecentsView.getNextPage(), (int) MAX_SWIPE_DURATION);
                     isScrolling = true;
                 }
-                if (!mDeviceState.isButtonNavMode() || isScrolling) {
+                if (!mGestureState.isHandlingAtomicEvent() || isScrolling) {
                     duration = Math.max(duration, mRecentsView.getScroller().getDuration());
                 }
             }
