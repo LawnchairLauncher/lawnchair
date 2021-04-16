@@ -20,6 +20,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
 
+import androidx.annotation.Nullable;
+
 /**
  * View group managing the widget preview: either using a {@link WidgetImageView} or an actual
  * {@link LauncherAppWidgetHostView}.
@@ -43,4 +45,27 @@ public class WidgetCellPreview extends FrameLayout {
         return true;
     }
 
+    /** Returns {@code true} if this container has a preview layout. */
+    public boolean hasPreviewLayout() {
+        for (int i = 0; i < getChildCount(); i++) {
+            if (getChildAt(i) instanceof LauncherAppWidgetHostView) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns {@link LauncherAppWidgetHostView} if this container has a preview layout. Otherwise,
+     * returns null.
+     */
+    @Nullable
+    public LauncherAppWidgetHostView getPreviewLayout() {
+        for (int i = 0; i < getChildCount(); i++) {
+            if (getChildAt(i) instanceof LauncherAppWidgetHostView) {
+                return (LauncherAppWidgetHostView) getChildAt(i);
+            }
+        }
+        return null;
+    }
 }
