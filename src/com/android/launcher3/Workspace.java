@@ -81,7 +81,6 @@ import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.folder.PreviewBackground;
 import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.graphics.PreloadIconDrawable;
-import com.android.launcher3.graphics.WorkspaceDragScrim;
 import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.logger.LauncherAtom;
@@ -203,8 +202,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     private boolean mStripScreensOnPageStopMoving = false;
 
     private DragPreviewProvider mOutlineProvider = null;
-
-    private WorkspaceDragScrim mWorkspaceDragScrim;
 
     private boolean mWorkspaceFadeInAdjacentScreens;
 
@@ -634,6 +631,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         addView(newScreen, insertIndex);
         mStateTransitionAnimation.applyChildState(
                 mLauncher.getStateManager().getState(), newScreen, insertIndex);
+
+        updatePageScrollValues();
         return newScreen;
     }
 
@@ -1007,6 +1006,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
 
         updatePageAlphaValues();
+        updatePageScrollValues();
         enableHwLayersOnVisiblePages();
     }
 
@@ -1212,19 +1212,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
     }
 
-    public void setWorkspaceDragScrim(WorkspaceDragScrim workspaceDragScrim) {
-        mWorkspaceDragScrim = workspaceDragScrim;
-    }
-
-    @Override
-    public void invalidate() {
-        // The workspace scrim may need to be re-rendered based on the workspace scroll
-        if (mWorkspaceDragScrim != null) {
-            mWorkspaceDragScrim.invalidate();
-        }
-        super.invalidate();
-    }
-
     @Override
     public void computeScroll() {
         super.computeScroll();
@@ -1262,6 +1249,17 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                                         : IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
                     }
                 }
+            }
+        }
+    }
+
+    private void updatePageScrollValues() {
+        int screenCenter = getScrollX() + getMeasuredWidth() / 2;
+        for (int i = 0; i < getChildCount(); i++) {
+            CellLayout child = (CellLayout) getChildAt(i);
+            if (child != null) {
+                float scrollProgress = getScrollProgress(screenCenter, child, i);
+                child.setScrollProgress(scrollProgress);
             }
         }
     }
@@ -2254,8 +2252,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                     item.spanY, child, mTargetCell);
 
             if (!nearestDropOccupied) {
-                mDragTargetLayout.visualizeDropLocation(d.originalView, mOutlineProvider,
-                        mTargetCell[0], mTargetCell[1], item.spanX, item.spanY, false, d);
+                mDragTargetLayout.visualizeDropLocation(mTargetCell[0], mTargetCell[1],
+                        item.spanX, item.spanY, d);
             } else if ((mDragMode == DRAG_MODE_NONE || mDragMode == DRAG_MODE_REORDER)
                     && !mReorderAlarm.alarmPending() && (mLastReorderX != reorderX ||
                     mLastReorderY != reorderY)) {
@@ -2445,8 +2443,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             }
 
             boolean resize = resultSpan[0] != spanX || resultSpan[1] != spanY;
-            mDragTargetLayout.visualizeDropLocation(dragObject.originalView, mOutlineProvider,
-                mTargetCell[0], mTargetCell[1], resultSpan[0], resultSpan[1], resize, dragObject);
+            mDragTargetLayout.visualizeDropLocation(mTargetCell[0], mTargetCell[1],
+                    resultSpan[0], resultSpan[1], dragObject);
         }
     }
 
