@@ -36,6 +36,7 @@ import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SY
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.os.SystemProperties;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
 
@@ -71,6 +72,7 @@ import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.launcher3.util.UiThreadHelper.AsyncCommand;
+import com.android.launcher3.widget.LauncherAppWidgetHost;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SystemUiProxy;
@@ -87,6 +89,9 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 public class QuickstepLauncher extends BaseQuickstepLauncher {
+
+    private static final boolean ENABLE_APP_WIDGET_LAUNCH_ANIMATION =
+            SystemProperties.getBoolean("persist.debug.quickstep_app_widget_launch", false);
 
     public static final boolean GO_LOW_RAM_RECENTS_ENABLED = false;
     /**
@@ -318,6 +323,14 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
     @Override
     public AtomicAnimationFactory createAtomicAnimationFactory() {
         return new QuickstepAtomicAnimationFactory(this);
+    }
+
+    protected LauncherAppWidgetHost createAppWidgetHost() {
+        LauncherAppWidgetHost appWidgetHost = super.createAppWidgetHost();
+        if (ENABLE_APP_WIDGET_LAUNCH_ANIMATION) {
+            appWidgetHost.setInteractionHandler(new QuickstepInteractionHandler(this));
+        }
+        return appWidgetHost;
     }
 
     private static final class LauncherTaskViewController extends
