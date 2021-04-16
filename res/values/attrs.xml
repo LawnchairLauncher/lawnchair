@@ -79,7 +79,8 @@
         <attr name="ambientShadowBlur" format="dimension" />
         <attr name="keyShadowColor" format="color" />
         <attr name="keyShadowBlur" format="dimension" />
-        <attr name="keyShadowOffset" format="dimension" />
+        <attr name="keyShadowOffsetX" format="dimension" />
+        <attr name="keyShadowOffsetY" format="dimension" />
     </declare-styleable>
 
     <!-- PagedView specific attributes. These attributes are used to customize
