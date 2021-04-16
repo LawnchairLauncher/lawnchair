@@ -167,6 +167,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         layoutInflater.inflate(contentLayoutRes, springLayout, true);
 
         RecyclerViewFastScroller fastScroller = findViewById(R.id.fast_scroller);
+        mAdapters.get(AdapterHolder.PRIMARY).setup(findViewById(R.id.primary_widgets_list_view));
+        mAdapters.get(AdapterHolder.SEARCH).setup(findViewById(R.id.search_widgets_list_view));
         if (mHasWorkProfile) {
             mViewPager = findViewById(R.id.widgets_view_pager);
             mViewPager.initParentViews(this);
@@ -178,6 +180,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             findViewById(R.id.tab_work)
                     .setOnClickListener((View view) -> mViewPager.snapToPage(1));
             fastScroller.setIsRecyclerViewFirstChildInParent(false);
+            mAdapters.get(AdapterHolder.WORK).setup(findViewById(R.id.work_widgets_list_view));
         } else {
             mViewPager = null;
         }
@@ -391,15 +394,11 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         List<WidgetsListBaseEntry> allWidgets = mLauncher.getPopupDataProvider().getAllWidgets();
 
         AdapterHolder primaryUserAdapterHolder = mAdapters.get(AdapterHolder.PRIMARY);
-        primaryUserAdapterHolder.setup(findViewById(R.id.primary_widgets_list_view));
-        AdapterHolder searchAdapterHolder = mAdapters.get(AdapterHolder.SEARCH);
-        searchAdapterHolder.setup(findViewById(R.id.search_widgets_list_view));
         primaryUserAdapterHolder.mWidgetsListAdapter.setWidgets(allWidgets);
         updateNoWidgetsView(primaryUserAdapterHolder);
 
         if (mHasWorkProfile) {
             AdapterHolder workUserAdapterHolder = mAdapters.get(AdapterHolder.WORK);
-            workUserAdapterHolder.setup(findViewById(R.id.work_widgets_list_view));
             workUserAdapterHolder.mWidgetsListAdapter.setWidgets(allWidgets);
             onActivePageChanged(mViewPager.getCurrentPage());
         }
