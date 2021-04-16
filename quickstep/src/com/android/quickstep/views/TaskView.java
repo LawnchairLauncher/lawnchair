@@ -987,20 +987,30 @@ public class TaskView extends FrameLayout implements Reusable {
 
     private void applyTranslationX() {
         setTranslationX(mDismissTranslationX + mTaskOffsetTranslationX + mTaskResistanceTranslationX
-                + getFullscreenTrans(mFullscreenTranslationX)
-                + getNonFullscreenTrans(mNonFullscreenTranslationX)
-                + getGridTrans(mGridTranslationX));
+                + getPersistentTranslationX());
     }
 
     private void applyTranslationY() {
-        setTranslationY(
-                mDismissTranslationY + mTaskOffsetTranslationY + mTaskResistanceTranslationY
-                        + getGridTrans(mGridTranslationY) + mBoxTranslationY);
+        setTranslationY(mDismissTranslationY + mTaskOffsetTranslationY + mTaskResistanceTranslationY
+                + getPersistentTranslationY());
     }
 
-    private float getGridTrans(float endTranslation) {
-        float progress = ACCEL_DEACCEL.getInterpolation(mGridProgress);
-        return Utilities.mapRange(progress, 0, endTranslation);
+    /**
+     * Returns addition of translationX that is persistent (e.g. fullscreen and grid), and does not
+     * change according to a temporary state (e.g. task offset).
+     */
+    public float getPersistentTranslationX() {
+        return getFullscreenTrans(mFullscreenTranslationX)
+                + getNonFullscreenTrans(mNonFullscreenTranslationX)
+                + getGridTrans(mGridTranslationX);
+    }
+
+    /**
+     * Returns addition of translationY that is persistent (e.g. fullscreen and grid), and does not
+     * change according to a temporary state (e.g. task offset).
+     */
+    public float getPersistentTranslationY() {
+        return getGridTrans(mGridTranslationY) + mBoxTranslationY;
     }
 
     public FloatProperty<TaskView> getPrimaryDismissTranslationProperty() {
@@ -1273,6 +1283,11 @@ public class TaskView extends FrameLayout implements Reusable {
 
     private float getNonFullscreenTrans(float endTranslation) {
         return endTranslation - getFullscreenTrans(endTranslation);
+    }
+
+    private float getGridTrans(float endTranslation) {
+        float progress = ACCEL_DEACCEL.getInterpolation(mGridProgress);
+        return Utilities.mapRange(progress, 0, endTranslation);
     }
 
     public boolean isRunningTask() {
