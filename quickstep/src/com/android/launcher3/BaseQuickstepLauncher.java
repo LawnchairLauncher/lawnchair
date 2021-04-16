@@ -30,8 +30,11 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.ComponentName;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.CancellationSignal;
+import android.os.IBinder;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -61,6 +64,7 @@ import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskUtils;
+import com.android.quickstep.TouchInteractionService;
 import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.util.RemoteFadeOutAnimationListener;
 import com.android.quickstep.util.SplitSelectStateController;
@@ -82,6 +86,8 @@ public abstract class BaseQuickstepLauncher extends Launcher
 
     private DepthController mDepthController = new DepthController(this);
     private QuickstepTransitionManager mAppTransitionManager;
+    private ServiceConnection mTisBinderConnection;
+    protected TouchInteractionService.TISBinder mTisBinder;
 
     /**
      * Reusable command for applying the back button alpha on the background thread.
@@ -103,6 +109,24 @@ public abstract class BaseQuickstepLauncher extends Launcher
         super.onCreate(savedInstanceState);
         SysUINavigationMode.INSTANCE.get(this).addModeChangeListener(this);
         addMultiWindowModeChangedListener(mDepthController);
+        setupTouchInteractionServiceBinder();
+    }
+
+    private void setupTouchInteractionServiceBinder() {
+        Intent intent = new Intent(this, TouchInteractionService.class);
+        mTisBinderConnection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName componentName, IBinder binder) {
+                mTisBinder = ((TouchInteractionService.TISBinder) binder);
+                mTisBinder.setTaskbarOverviewProxyDelegate(mTaskbarController);
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName componentName) {
+                mTisBinder = null;
+            }
+        };
+        bindService(intent, mTisBinderConnection, 0);
     }
 
     @Override
@@ -113,6 +137,10 @@ public abstract class BaseQuickstepLauncher extends Launcher
         if (mTaskbarController != null) {
             mTaskbarController.cleanup();
             mTaskbarController = null;
+            if (mTisBinder != null) {
+                mTisBinder.setTaskbarOverviewProxyDelegate(null);
+                unbindService(mTisBinderConnection);
+            }
         }
 
         super.onDestroy();
@@ -248,6 +276,9 @@ public abstract class BaseQuickstepLauncher extends Launcher
     private void addTaskbarIfNecessary() {
         if (mTaskbarController != null) {
             mTaskbarController.cleanup();
+            if (mTisBinder != null) {
+                mTisBinder.setTaskbarOverviewProxyDelegate(null);
+            }
             mTaskbarController = null;
         }
         if (mDeviceProfile.isTaskbarPresent) {
@@ -256,6 +287,9 @@ public abstract class BaseQuickstepLauncher extends Launcher
             mTaskbarController = new TaskbarController(this,
                     taskbarActivityContext.getTaskbarContainerView(), taskbarViewOnHome);
             mTaskbarController.init();
+            if (mTisBinder != null) {
+                mTisBinder.setTaskbarOverviewProxyDelegate(mTaskbarController);
+            }
         }
     }
 
