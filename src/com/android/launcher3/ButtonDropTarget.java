@@ -183,7 +183,6 @@ public abstract class ButtonDropTarget extends TextView
         hideTooltip();
 
         if (!d.dragComplete) {
-            d.dragView.setColor(0);
             d.dragView.setAlpha(1f);
         } else {
             d.dragView.setAlpha(DRAG_VIEW_HOVER_OVER_OPACITY);
