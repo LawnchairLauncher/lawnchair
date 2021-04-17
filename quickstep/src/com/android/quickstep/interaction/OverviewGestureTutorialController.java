@@ -15,14 +15,21 @@
  */
 package com.android.quickstep.interaction;
 
+import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.quickstep.interaction.TutorialController.TutorialType.OVERVIEW_NAVIGATION_COMPLETE;
 
+import android.animation.AnimatorSet;
 import android.annotation.TargetApi;
 import android.graphics.PointF;
 import android.os.Build;
 import android.view.View;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.R;
+import com.android.launcher3.anim.PendingAnimation;
+import com.android.quickstep.AnimatedFloat;
+import com.android.quickstep.SwipeUpAnimationLogic;
 import com.android.quickstep.interaction.EdgeBackGestureHandler.BackGestureResult;
 import com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestureResult;
 
@@ -62,9 +69,10 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
         return null;
     }
 
+    @Nullable
     @Override
-    void onActionButtonClicked(View button) {
-        mTutorialFragment.closeTutorial();
+    public View getMockLauncherView() {
+        return null;
     }
 
     @Override
@@ -91,12 +99,17 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
 
     @Override
     public void onNavBarGestureAttempted(NavBarGestureResult result, PointF finalVelocity) {
+        if (mHideFeedbackEndAction != null) {
+            return;
+        }
         switch (mTutorialType) {
             case OVERVIEW_NAVIGATION:
                 switch (result) {
                     case HOME_GESTURE_COMPLETED: {
-                        animateFakeTaskViewHome(finalVelocity, () ->
-                                showFeedback(R.string.overview_gesture_feedback_home_detected));
+                        animateFakeTaskViewHome(finalVelocity, () -> {
+                            resetFakeTaskView();
+                            showFeedback(R.string.overview_gesture_feedback_home_detected);
+                        });
                         break;
                     }
                     case HOME_NOT_STARTED_TOO_FAR_FROM_EDGE:
@@ -104,17 +117,19 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
                         showFeedback(R.string.overview_gesture_feedback_swipe_too_far_from_edge);
                         break;
                     case OVERVIEW_GESTURE_COMPLETED:
-                        fadeOutFakeTaskView(true, () -> {
-                            if (mTutorialFragment.isTutorialComplete()) {
-                                mTutorialFragment.changeController(OVERVIEW_NAVIGATION_COMPLETE);
-                            } else {
-                                mTutorialFragment.continueTutorial();
-                            }
-                        });
+                        PendingAnimation anim = new PendingAnimation(300);
+                        anim.setFloat(mTaskViewSwipeUpAnimation
+                                .getCurrentShift(), AnimatedFloat.VALUE, 1, ACCEL);
+                        AnimatorSet animset = anim.buildAnim();
+                        animset.start();
+                        mRunningWindowAnim = SwipeUpAnimationLogic.RunningWindowAnim.wrap(animset);
+                        onMotionPaused(true /*arbitrary value*/);
+                        showFeedback(R.string.overview_gesture_feedback_complete,
+                                mTutorialFragment::continueTutorial);
                         break;
                     case HOME_OR_OVERVIEW_NOT_STARTED_WRONG_SWIPE_DIRECTION:
                     case HOME_OR_OVERVIEW_CANCELLED:
-                        fadeOutFakeTaskView(false, null);
+                        fadeOutFakeTaskView(false, true, null);
                         showFeedback(R.string.overview_gesture_feedback_wrong_swipe_direction);
                         break;
                 }
