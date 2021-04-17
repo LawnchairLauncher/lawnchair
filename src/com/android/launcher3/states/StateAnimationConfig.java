@@ -31,12 +31,14 @@ public class StateAnimationConfig {
             SKIP_ALL_ANIMATIONS,
             SKIP_OVERVIEW,
             SKIP_DEPTH_CONTROLLER,
+            SKIP_SCRIM,
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface AnimationFlags {}
     public static final int SKIP_ALL_ANIMATIONS = 1 << 0;
     public static final int SKIP_OVERVIEW = 1 << 1;
     public static final int SKIP_DEPTH_CONTROLLER = 1 << 2;
+    public static final int SKIP_SCRIM = 1 << 3;
 
     public long duration;
     public boolean userControlled;

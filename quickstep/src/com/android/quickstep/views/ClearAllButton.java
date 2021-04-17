@@ -97,7 +97,7 @@ public class ClearAllButton extends Button {
         }
     }
 
-    public void onRecentsViewScroll(int scrollFromEdge, boolean gridEnabled) {
+    public void onRecentsViewScroll(int scroll, boolean gridEnabled) {
         RecentsView recentsView = getRecentsView();
         if (recentsView == null) {
             return;
@@ -109,8 +109,8 @@ public class ClearAllButton extends Button {
             return;
         }
 
-        int leftEdgeScroll = recentsView.getLeftMostChildScroll();
-        int adjustedScrollFromEdge = scrollFromEdge - leftEdgeScroll;
+        int clearAllScroll = recentsView.getClearAllScroll();
+        int adjustedScrollFromEdge = Math.abs(scroll - clearAllScroll);
         float shift = Math.min(adjustedScrollFromEdge, orientationSize);
         mNormalTranslationPrimary = mIsRtl ? -shift : shift;
         if (!gridEnabled) {

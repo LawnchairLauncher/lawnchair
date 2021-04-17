@@ -118,8 +118,23 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
+    public int getPrimarySize(View view) {
+        return view.getWidth();
+    }
+
+    @Override
     public float getPrimarySize(RectF rect) {
         return rect.width();
+    }
+
+    @Override
+    public float getStart(RectF rect) {
+        return rect.left;
+    }
+
+    @Override
+    public float getEnd(RectF rect) {
+        return rect.right;
     }
 
     @Override
