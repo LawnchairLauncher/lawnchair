@@ -21,14 +21,15 @@ import static com.android.launcher3.Utilities.ATLEAST_S;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.CancellationSignal;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnLayoutChangeListener;
-import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
@@ -96,7 +97,6 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     private Drawable mDeferredDrawable;
 
     protected final BaseActivity mActivity;
-    protected final DeviceProfile mDeviceProfile;
     private final CheckLongPressHelper mLongPressHelper;
     private final float mEnforcedCornerRadius;
 
@@ -115,7 +115,6 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         super(context, attrs, defStyle);
 
         mActivity = BaseActivity.fromContext(context);
-        mDeviceProfile = mActivity.getDeviceProfile();
         mLongPressHelper = new CheckLongPressHelper(this);
 
         mLongPressHelper.setLongPressTimeoutFactor(1);
@@ -127,7 +126,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     }
 
     private void setContainerWidth() {
-        mCellSize = (int) (mDeviceProfile.allAppsIconSizePx * WIDTH_SCALE);
+        mCellSize = (int) (mActivity.getDeviceProfile().allAppsIconSizePx * WIDTH_SCALE);
         mPresetPreviewSize = (int) (mCellSize * PREVIEW_SCALE);
         mPreviewWidth = mPreviewHeight = mPresetPreviewSize;
     }
@@ -222,16 +221,11 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             launcherAppWidgetProviderInfo.initialLayout = item.widgetInfo.previewLayout;
             mAppWidgetHostViewPreview.setAppWidget(/* appWidgetId= */ -1,
                     launcherAppWidgetProviderInfo);
-            mAppWidgetHostViewPreview.setPadding(/* left= */ 0, /* top= */0, /* right= */
-                    0, /* bottom= */ 0);
+            Rect padding = new Rect();
+            mAppWidgetHostViewPreview.getWidgetInset(mActivity.getDeviceProfile(), padding);
+            mAppWidgetHostViewPreview.setPadding(padding.left, padding.top, padding.right,
+                    padding.bottom);
             mAppWidgetHostViewPreview.updateAppWidget(/* remoteViews= */ null);
-            // Gravity 77 = "fill"
-            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT, /* gravity= */ 77);
-            mAppWidgetHostViewPreview.setLayoutParams(params);
-            mWidgetImageContainer.addView(mAppWidgetHostViewPreview, /* index= */ 0);
-            mWidgetImage.setVisibility(View.GONE);
         }
     }
 
@@ -284,7 +278,8 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             }
         }
         Drawable badge = mWidgetPreviewLoader.getBadgeForUser(mItem.user,
-                BaseIconFactory.getBadgeSizeForIconSize(mDeviceProfile.allAppsIconSizePx));
+                BaseIconFactory.getBadgeSizeForIconSize(
+                        mActivity.getDeviceProfile().allAppsIconSizePx));
         if (badge == null) {
             mWidgetBadge.setVisibility(View.GONE);
         } else {
@@ -318,11 +313,12 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         }
 
         if (mAppWidgetHostViewPreview != null) {
-            DeviceProfile dp = mActivity.getDeviceProfile();
-            int viewWidth = dp.cellWidthPx * mItem.spanX;
-            int viewHeight = dp.cellHeightPx * mItem.spanY;
-
-            setContainerSize(viewWidth, viewHeight);
+            setContainerSize(mPreviewWidth, mPreviewHeight);
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                    mPreviewWidth, mPreviewHeight, Gravity.FILL);
+            mAppWidgetHostViewPreview.setLayoutParams(params);
+            mWidgetImageContainer.addView(mAppWidgetHostViewPreview, /* index= */ 0);
+            mWidgetImage.setVisibility(View.GONE);
             applyPreview((Drawable) null);
             return;
         }
@@ -342,8 +338,9 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     public void setPreviewSize(int spanX, int spanY, float previewScale) {
         int padding = 2 * getResources()
                 .getDimensionPixelSize(R.dimen.widget_preview_shortcut_padding);
-        mPreviewWidth = mDeviceProfile.cellWidthPx * spanX + padding;
-        mPreviewHeight = mDeviceProfile.cellHeightPx * spanY + padding;
+        DeviceProfile deviceProfile = mActivity.getDeviceProfile();
+        mPreviewWidth = deviceProfile.cellWidthPx * spanX + padding;
+        mPreviewHeight = deviceProfile.cellHeightPx * spanY + padding;
         mPreviewScale = previewScale;
     }
 

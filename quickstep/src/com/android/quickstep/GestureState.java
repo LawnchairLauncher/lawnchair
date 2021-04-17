@@ -146,6 +146,8 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     /** The time when the swipe up gesture is triggered. */
     private long mSwipeUpStartTimeMs;
 
+    private boolean mHandlingAtomicEvent;
+
     public GestureState(OverviewComponentObserver componentObserver, int gestureId) {
         mHomeIntent = componentObserver.getHomeIntent();
         mOverviewIntent = componentObserver.getOverviewIntent();
@@ -312,6 +314,22 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
         if (isAtomic) {
             mStateCallback.setState(STATE_END_TARGET_ANIMATION_FINISHED);
         }
+    }
+
+    /**
+     * Indicates if the gesture is handling an atomic event like a click and not a
+     * user controlled gesture.
+     */
+    public void setHandlingAtomicEvent(boolean handlingAtomicEvent) {
+        mHandlingAtomicEvent = true;
+    }
+
+    /**
+     * Returns true if the gesture is handling an atomic event like a click and not a
+     * user controlled gesture.
+     */
+    public boolean isHandlingAtomicEvent() {
+        return mHandlingAtomicEvent;
     }
 
     /**
