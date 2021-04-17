@@ -2024,6 +2024,16 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
         anim.add(ObjectAnimator.ofFloat(taskView, secondaryViewTranslate,
                 verticalFactor * secondaryTaskDimension).setDuration(duration), LINEAR, sp);
+
+        if (LIVE_TILE.get() && taskView.isRunningTask()) {
+            anim.addOnFrameCallback(() -> {
+                mLiveTileTaskViewSimulator.taskSecondaryTranslation.value =
+                        mOrientationHandler.getSecondaryValue(
+                                taskView.getTranslationX(),
+                                taskView.getTranslationY());
+                redrawLiveTile();
+            });
+        }
     }
 
     public PendingAnimation createTaskDismissAnimation(TaskView taskView, boolean animateTaskView,
@@ -2110,16 +2120,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
         if (needsCurveUpdates) {
             anim.addOnFrameCallback(this::updateCurveProperties);
-        }
-
-        if (LIVE_TILE.get() && getRunningTaskView() == taskView) {
-            anim.addOnFrameCallback(() -> {
-                mLiveTileTaskViewSimulator.taskSecondaryTranslation.value =
-                        mOrientationHandler.getSecondaryValue(
-                                taskView.getTranslationX(),
-                                taskView.getTranslationY());
-                redrawLiveTile();
-            });
         }
 
         // Add a tiny bit of translation Z, so that it draws on top of other views
@@ -2944,7 +2944,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
         mPendingAnimation.addEndListener(isSuccess -> {
             if (isSuccess) {
-                if (LIVE_TILE.get()) {
+                if (LIVE_TILE.get() && tv.isRunningTask()) {
                     finishRecentsAnimation(false /* toRecents */, null);
                     onTaskLaunchAnimationEnd(true /* success */);
                 } else {

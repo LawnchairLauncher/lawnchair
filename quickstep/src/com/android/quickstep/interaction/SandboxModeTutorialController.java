@@ -16,7 +16,6 @@
 package com.android.quickstep.interaction;
 
 import android.graphics.PointF;
-import android.view.View;
 
 import androidx.annotation.Nullable;
 
@@ -47,11 +46,6 @@ public class SandboxModeTutorialController extends SwipeUpGestureTutorialControl
     @Override
     Integer getActionButtonStringId() {
         return null;
-    }
-
-    @Override
-    void onActionButtonClicked(View button) {
-        mTutorialFragment.closeTutorial();
     }
 
     @Override
@@ -87,7 +81,7 @@ public class SandboxModeTutorialController extends SwipeUpGestureTutorialControl
                 });
                 break;
             case OVERVIEW_GESTURE_COMPLETED:
-                fadeOutFakeTaskView(true, () -> {
+                fadeOutFakeTaskView(true, true, () -> {
                     showFeedback(R.string.sandbox_mode_overview_gesture_feedback_successful);
                 });
                 break;

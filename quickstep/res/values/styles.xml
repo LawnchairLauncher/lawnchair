@@ -47,12 +47,24 @@
         <item name="android:textSize">21sp</item>
     </style>
 
-    <style name="TextAppearance.GestureTutorial.Feedback"
+    <style name="TextAppearance.GestureTutorial.Feedback.Title"
         parent="TextAppearance.GestureTutorial">
-        <item name="android:gravity">center</item>
+        <item name="android:gravity">start</item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:fontFamily">google-sans-display</item>
         <item name="android:letterSpacing">0.03</item>
-        <item name="android:textSize">21sp</item>
+        <item name="android:textSize">36sp</item>
+        <item name="android:lineHeight">42sp</item>
+    </style>
+
+    <style name="TextAppearance.GestureTutorial.Feedback.Subtitle"
+        parent="TextAppearance.GestureTutorial">
+        <item name="android:gravity">start</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:fontFamily">google-sans</item>
+        <item name="android:letterSpacing">0.03</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:lineHeight">24sp</item>
     </style>
 
     <style name="TextAppearance.GestureTutorial.ButtonLabel"
