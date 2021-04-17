@@ -18,7 +18,6 @@ package com.android.quickstep.interaction;
 import static com.android.quickstep.interaction.TutorialController.TutorialType.ASSISTANT_COMPLETE;
 
 import android.graphics.PointF;
-import android.view.View;
 
 import com.android.launcher3.R;
 import com.android.quickstep.interaction.EdgeBackGestureHandler.BackGestureResult;
@@ -60,11 +59,6 @@ final class AssistantGestureTutorialController extends TutorialController {
     }
 
     @Override
-    void onActionButtonClicked(View button) {
-        mTutorialFragment.closeTutorial();
-    }
-
-    @Override
     public void onBackGestureAttempted(BackGestureResult result) {
         switch (mTutorialType) {
             case ASSISTANT:
@@ -101,8 +95,7 @@ final class AssistantGestureTutorialController extends TutorialController {
                         showFeedback(R.string.assistant_gesture_feedback_swipe_too_far_from_corner);
                         break;
                     case ASSISTANT_COMPLETED:
-                        hideFeedback();
-                        hideHandCoachingAnimation();
+                        hideFeedback(true);
                         showRippleEffect(
                                 () -> {
                                     if (mTutorialFragment.isTutorialComplete()) {

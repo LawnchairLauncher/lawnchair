@@ -2,7 +2,7 @@
 <!--
 /*
 **
-** Copyright 2015, The Android Open Source Project
+** Copyright 2021, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -25,14 +25,14 @@
                 android:width="@dimen/spring_loaded_panel_border"
                 android:color="?android:attr/colorAccent" />
             <solid android:color="@color/cell_layout_bg_color_active"/>
-            <corners android:radius="@dimen/bg_round_rect_radius" />
+            <corners android:radius="?android:attr/dialogCornerRadius" />
 
         </shape>
     </item>
     <item>
         <shape android:shape="rectangle" >
             <solid android:color="@color/cell_layout_bg_color_inactive"/>
-            <corners android:radius="@dimen/bg_round_rect_radius" />
+            <corners android:radius="?android:attr/dialogCornerRadius" />
         </shape>
     </item>
 </selector>
