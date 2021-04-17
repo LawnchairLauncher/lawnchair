@@ -436,8 +436,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         mOnboardingPrefs = createOnboardingPrefs(mSharedPrefs);
 
         mAppWidgetManager = new WidgetManagerHelper(this);
-        mAppWidgetHost = new LauncherAppWidgetHost(this,
-                appWidgetId -> getWorkspace().removeWidget(appWidgetId));
+        mAppWidgetHost = createAppWidgetHost();
         mAppWidgetHost.startListening();
 
         inflateRootView(R.layout.launcher);
@@ -1426,6 +1425,11 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
     public LauncherAppWidgetHost getAppWidgetHost() {
         return mAppWidgetHost;
+    }
+
+    protected LauncherAppWidgetHost createAppWidgetHost() {
+        return new LauncherAppWidgetHost(this,
+                appWidgetId -> getWorkspace().removeWidget(appWidgetId));
     }
 
     public LauncherModel getModel() {

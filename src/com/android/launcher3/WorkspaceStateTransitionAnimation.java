@@ -18,13 +18,11 @@ package com.android.launcher3;
 
 import static androidx.dynamicanimation.animation.DynamicAnimation.MIN_VISIBLE_CHANGE_SCALE;
 
-import static com.android.launcher3.LauncherAnimUtils.DRAWABLE_ALPHA;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.LauncherState.FLAG_HAS_SYS_UI_SCRIM;
-import static com.android.launcher3.LauncherState.FLAG_WORKSPACE_HAS_BACKGROUNDS;
 import static com.android.launcher3.LauncherState.HINT_STATE;
 import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
 import static com.android.launcher3.LauncherState.NORMAL;
@@ -51,8 +49,9 @@ import com.android.launcher3.LauncherState.ScaleAndTranslation;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.anim.SpringAnimationBuilder;
+import com.android.launcher3.graphics.Scrim;
 import com.android.launcher3.graphics.SysUiScrim;
-import com.android.launcher3.graphics.WorkspaceDragScrim;
+import com.android.launcher3.states.SpringLoadedState;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.util.DynamicResource;
 import com.android.systemui.plugins.ResourceProvider;
@@ -171,7 +170,7 @@ public class WorkspaceStateTransitionAnimation {
 
     public void setScrim(PropertySetter propertySetter, LauncherState state,
             StateAnimationConfig config) {
-        WorkspaceDragScrim workspaceDragScrim = mLauncher.getDragLayer().getWorkspaceDragScrim();
+        Scrim workspaceDragScrim = mLauncher.getDragLayer().getWorkspaceDragScrim();
         propertySetter.setFloat(workspaceDragScrim, SCRIM_PROGRESS,
                 state.getWorkspaceBackgroundAlpha(mLauncher), LINEAR);
 
@@ -193,11 +192,10 @@ public class WorkspaceStateTransitionAnimation {
             PageAlphaProvider pageAlphaProvider, PropertySetter propertySetter,
             StateAnimationConfig config) {
         float pageAlpha = pageAlphaProvider.getPageAlpha(childIndex);
-        int drawableAlpha = state.hasFlag(FLAG_WORKSPACE_HAS_BACKGROUNDS)
-                ? Math.round(pageAlpha * 255) : 0;
+        float springLoadedProgress = (state instanceof SpringLoadedState) ? 1.0f : 0f;
 
-        propertySetter.setInt(cl.getScrimBackground(),
-                DRAWABLE_ALPHA, drawableAlpha, ZOOM_OUT);
+        propertySetter.setFloat(cl,
+                CellLayout.SPRING_LOADED_PROGRESS, springLoadedProgress, ZOOM_OUT);
         Interpolator fadeInterpolator = config.getInterpolator(ANIM_WORKSPACE_FADE,
                 pageAlphaProvider.interpolator);
         propertySetter.setFloat(cl.getShortcutsAndWidgets(), VIEW_ALPHA,
