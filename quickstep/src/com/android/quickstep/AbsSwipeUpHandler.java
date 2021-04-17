@@ -621,7 +621,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         final boolean passed = mCurrentShift.value >= MIN_PROGRESS_FOR_OVERVIEW;
         if (passed != mPassedOverviewThreshold) {
             mPassedOverviewThreshold = passed;
-            if (mDeviceState.isTwoButtonNavMode()) {
+            if (mDeviceState.isTwoButtonNavMode() && !mGestureState.isHandlingAtomicEvent()) {
                 performHapticFeedback();
             }
         }
@@ -854,7 +854,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
     private GestureEndTarget calculateEndTarget(PointF velocity, float endVelocity, boolean isFling,
             boolean isCancel) {
-        if (mDeviceState.isButtonNavMode()) {
+        if (mGestureState.isHandlingAtomicEvent()) {
             // Button mode, this is only used to go to recents
             return RECENTS;
         }
@@ -966,6 +966,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             if (mRecentsView != null) {
                 int nearestPage = mRecentsView.getDestinationPage();
                 boolean isScrolling = false;
+                // Update page scroll before snapping to page to make sure we snapped to the
+                // position calculated with target gesture in mind.
+                mRecentsView.updateScrollSynchronously();
                 if (mRecentsView.getNextPage() != nearestPage) {
                     // We shouldn't really scroll to the next page when swiping up to recents.
                     // Only allow settling on the next page if it's nearest to the center.
@@ -976,7 +979,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                     mRecentsView.snapToPage(mRecentsView.getNextPage(), (int) MAX_SWIPE_DURATION);
                     isScrolling = true;
                 }
-                if (!mDeviceState.isButtonNavMode() || isScrolling) {
+                if (!mGestureState.isHandlingAtomicEvent() || isScrolling) {
                     duration = Math.max(duration, mRecentsView.getScroller().getDuration());
                 }
             }

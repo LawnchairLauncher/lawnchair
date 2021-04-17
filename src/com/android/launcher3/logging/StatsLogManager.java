@@ -413,7 +413,52 @@ public class StatsLogManager implements ResourceBasedOverride {
         LAUNCHER_ALLAPPS_VERTICAL_SWIPE_BEGIN(724),
 
         @UiEvent(doc = "All apps vertical fling ended.")
-        LAUNCHER_ALLAPPS_VERTICAL_SWIPE_END(725)
+        LAUNCHER_ALLAPPS_VERTICAL_SWIPE_END(725),
+
+        @UiEvent(doc = "Show URL indicator for Overview Sharing")
+        LAUNCHER_OVERVIEW_SHARING_SHOW_URL_INDICATOR(764),
+
+        @UiEvent(doc = "Show image indicator for Overview Sharing")
+        LAUNCHER_OVERVIEW_SHARING_SHOW_IMAGE_INDICATOR(765),
+
+        @UiEvent(doc = "User taps URL indicator in Overview")
+        LAUNCHER_OVERVIEW_SHARING_URL_INDICATOR_TAP(766),
+
+        @UiEvent(doc = "User taps image indicator in Overview")
+        LAUNCHER_OVERVIEW_SHARING_IMAGE_INDICATOR_TAP(767),
+
+        @UiEvent(doc = "User long presses an image in Overview")
+        LAUNCHER_OVERVIEW_SHARING_IMAGE_LONG_PRESS(768),
+
+        @UiEvent(doc = "User drags a URL in Overview")
+        LAUNCHER_OVERVIEW_SHARING_URL_DRAG(769),
+
+        @UiEvent(doc = "User drags an image in Overview")
+        LAUNCHER_OVERVIEW_SHARING_IMAGE_DRAG(770),
+
+        @UiEvent(doc = "User drops URL to a direct share target")
+        LAUNCHER_OVERVIEW_SHARING_DROP_URL_TO_TARGET(771),
+
+        @UiEvent(doc = "User drops an image to a direct share target")
+        LAUNCHER_OVERVIEW_SHARING_DROP_IMAGE_TO_TARGET(772),
+
+        @UiEvent(doc = "User drops URL to the More button")
+        LAUNCHER_OVERVIEW_SHARING_DROP_URL_TO_MORE(773),
+
+        @UiEvent(doc = "User drops an image to the More button")
+        LAUNCHER_OVERVIEW_SHARING_DROP_IMAGE_TO_MORE(774),
+
+        @UiEvent(doc = "User taps a share target to share URL")
+        LAUNCHER_OVERVIEW_SHARING_TAP_TARGET_TO_SHARE_URL(775),
+
+        @UiEvent(doc = "User taps a share target to share an image")
+        LAUNCHER_OVERVIEW_SHARING_TAP_TARGET_TO_SHARE_IMAGE(776),
+
+        @UiEvent(doc = "User taps the More button to share URL")
+        LAUNCHER_OVERVIEW_SHARING_TAP_MORE_TO_SHARE_URL(777),
+
+        @UiEvent(doc = "User taps the More button to share an image")
+        LAUNCHER_OVERVIEW_SHARING_TAP_MORE_TO_SHARE_IMAGE(778)
         ;
 
         // ADD MORE
