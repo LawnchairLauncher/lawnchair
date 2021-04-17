@@ -20,7 +20,6 @@ import static com.android.quickstep.interaction.TutorialController.TutorialType.
 import android.annotation.TargetApi;
 import android.graphics.PointF;
 import android.os.Build;
-import android.view.View;
 
 import com.android.launcher3.R;
 import com.android.quickstep.interaction.EdgeBackGestureHandler.BackGestureResult;
@@ -62,11 +61,6 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
     }
 
     @Override
-    void onActionButtonClicked(View button) {
-        mTutorialFragment.closeTutorial();
-    }
-
-    @Override
     public void onBackGestureAttempted(BackGestureResult result) {
         switch (mTutorialType) {
             case HOME_NAVIGATION:
@@ -90,17 +84,16 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
 
     @Override
     public void onNavBarGestureAttempted(NavBarGestureResult result, PointF finalVelocity) {
+        if (mHideFeedbackEndAction != null) {
+            return;
+        }
         switch (mTutorialType) {
             case HOME_NAVIGATION:
                 switch (result) {
                     case HOME_GESTURE_COMPLETED: {
-                        animateFakeTaskViewHome(finalVelocity, () -> {
-                            if (mTutorialFragment.isTutorialComplete()) {
-                                mTutorialFragment.changeController(HOME_NAVIGATION_COMPLETE);
-                            } else {
-                                mTutorialFragment.continueTutorial();
-                            }
-                        });
+                        animateFakeTaskViewHome(finalVelocity, null);
+                        showFeedback(R.string.home_gesture_feedback_complete,
+                                mTutorialFragment::continueTutorial);
                         break;
                     }
                     case HOME_NOT_STARTED_TOO_FAR_FROM_EDGE:
@@ -108,12 +101,12 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
                         showFeedback(R.string.home_gesture_feedback_swipe_too_far_from_edge);
                         break;
                     case OVERVIEW_GESTURE_COMPLETED:
-                        fadeOutFakeTaskView(true, () ->
+                        fadeOutFakeTaskView(true, true, () ->
                                 showFeedback(R.string.home_gesture_feedback_overview_detected));
                         break;
                     case HOME_OR_OVERVIEW_NOT_STARTED_WRONG_SWIPE_DIRECTION:
                     case HOME_OR_OVERVIEW_CANCELLED:
-                        fadeOutFakeTaskView(false, null);
+                        fadeOutFakeTaskView(false, true, null);
                         showFeedback(R.string.home_gesture_feedback_wrong_swipe_direction);
                         break;
                 }
