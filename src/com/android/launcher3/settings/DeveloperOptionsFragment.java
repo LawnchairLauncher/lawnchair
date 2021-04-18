@@ -276,7 +276,7 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
         launchBackTutorialPreference.setOnPreferenceClickListener(preference -> {
             startActivity(launchSandboxIntent.putExtra(
                     "tutorial_steps",
-                    new String[] {"RIGHT_EDGE_BACK_NAVIGATION"}));
+                    new String[] {"LEFT_EDGE_BACK_NAVIGATION"}));
             return true;
         });
         sandboxCategory.addPreference(launchBackTutorialPreference);

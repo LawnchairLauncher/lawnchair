@@ -15,14 +15,17 @@
  */
 package com.android.quickstep.interaction;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.R;
 import com.android.quickstep.interaction.TutorialController.TutorialType;
 
 /** Shows the Overview gesture interactive tutorial. */
 public class OverviewGestureTutorialFragment extends TutorialFragment {
+    @Nullable
     @Override
-    Integer getHandAnimationResId() {
-        return R.drawable.overview_gesture;
+    Integer getFeedbackVideoResId() {
+        return R.raw.tips_nav_overview;
     }
 
     @Override
