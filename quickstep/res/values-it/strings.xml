@@ -64,7 +64,7 @@
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Assicurati di scorrere verso l\'alto dal bordo inferiore dello schermo."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Prova a tenere premuta la finestra più a lungo prima di rilasciarla."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Assicurati di scorrere verso l\'alto senza fermarti, poi fai una pausa."</string>
-    <string name="overview_gesture_feedback_complete" msgid="5477014491632199169">"Hai completato il gesto Cambia app. Ora puoi usare il telefono."</string>
+    <string name="overview_gesture_feedback_complete" msgid="5477014491632199169">"Hai completato il gesto Cambia app. Ora è tutto pronto per usare il telefono."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Scorri per passare da un\'app all\'altra"</string>
     <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"Scorri verso l\'alto dalla parte inferiore dello schermo, tieni premuto e rilascia."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Fatto"</string>
@@ -78,7 +78,8 @@
     <string name="action_screenshot" msgid="8171125848358142917">"Screenshot"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Questa azione non è consentita dall\'app o dall\'organizzazione"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Saltare il tutorial di navigazione?"</string>
-    <string name="skip_tutorial_dialog_subtitle" msgid="894208145591033987">"Quando vuoi è nell\'app Suggerimenti"</string>
+    <!-- no translation found for skip_tutorial_dialog_subtitle (544063326241955662) -->
+    <skip />
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Annulla"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Salta"</string>
 </resources>
