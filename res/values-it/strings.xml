@@ -156,8 +156,8 @@
     <string name="work_profile_edu_next" msgid="8783418929296503629">"Avanti"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
     <string name="work_apps_paused_title" msgid="2389865654362803723">"Profilo di lavoro in pausa"</string>
-    <string name="work_apps_paused_body" msgid="4209084728264328628">"Le app di lavoro non possono inviarti notifiche, usare la tua batteria o accedere alla tua posizione"</string>
-    <string name="work_apps_paused_content_description" msgid="4473292417145736203">"Profilo di lavoro in pausa. Le app di lavoro non possono inviarti notifiche, usare la tua batteria o accedere alla tua posizione"</string>
+    <string name="work_apps_paused_body" msgid="4209084728264328628">"Le app di lavoro non possono inviarti notifiche, usare la batteria o accedere alla tua posizione"</string>
+    <string name="work_apps_paused_content_description" msgid="4473292417145736203">"Profilo di lavoro in pausa. Le app di lavoro non possono inviarti notifiche, usare la batteria o accedere alla tua posizione"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Le app di lavoro sono contrassegnate con un badge e sono visibili dal tuo amministratore IT"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"OK"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Metti in pausa le app di lavoro"</string>

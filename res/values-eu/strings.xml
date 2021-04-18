@@ -27,9 +27,9 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"Widgetak desgaitu egin dira modu seguruan"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"Lasterbideak ez daude erabilgarri"</string>
     <string name="home_screen" msgid="5629429142036709174">"Hasierako pantaila"</string>
-    <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Pantaila zatitu"</string>
-    <string name="long_press_widget_to_add" msgid="3587712543577675817">"Eduki sakatuta widgeta mugitzeko."</string>
-    <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Sakatu birritan eta eduki sakatuta widgeta mugitzeko edo ekintza pertsonalizatuak erabiltzeko."</string>
+    <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Zatitu pantaila"</string>
+    <string name="long_press_widget_to_add" msgid="3587712543577675817">"Eduki sakatuta widget bat mugitzeko."</string>
+    <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Sakatu birritan eta eduki sakatuta widget bat mugitzeko edo ekintza pertsonalizatuak erabiltzeko."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d zabal eta %2$d luze"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Eduki sakatuta eskuz gehitzeko"</string>
@@ -57,8 +57,8 @@
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Bilatu aplikazio gehiago"</string>
     <string name="label_application" msgid="8531721983832654978">"Aplikazioa"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Jakinarazpenak"</string>
-    <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Eduki sakatuta lasterbidea mugitzeko."</string>
-    <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Sakatu birritan eta eduki sakatuta lasterbidea mugitzeko edo ekintza pertsonalizatuak erabiltzeko."</string>
+    <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Eduki sakatuta lasterbide bat mugitzeko."</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Sakatu birritan eta eduki sakatuta lasterbide bat mugitzeko edo ekintza pertsonalizatuak erabiltzeko."</string>
     <string name="out_of_space" msgid="4691004494942118364">"Hasierako pantaila honetan ez dago toki gehiago."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Ez dago toki gehiago Gogokoak erretiluan"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Aplikazioen zerrenda"</string>
@@ -116,7 +116,7 @@
     <string name="abandoned_search" msgid="891119232568284442">"Bilatu"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Aplikazio hau ez dago instalatuta"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Ikono honen aplikazioa ez dago instalatuta. Ikonoa ken dezakezu, edo aplikazioa bilatu eta eskuz instalatu."</string>
-    <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> aplikazioa instalatzen, <xliff:g id="PROGRESS">%2$s</xliff:g> osatuta"</string>
+    <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> instalatzen, <xliff:g id="PROGRESS">%2$s</xliff:g> osatuta"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> deskargatzen, <xliff:g id="PROGRESS">%2$s</xliff:g> osatuta"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> instalatzeko zain"</string>
     <string name="widgets_list" msgid="796804551140113767">"Widget-zerrenda"</string>
@@ -157,7 +157,7 @@
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Ados"</string>
     <string name="work_apps_paused_title" msgid="2389865654362803723">"Laneko profila pausatuta dago"</string>
     <string name="work_apps_paused_body" msgid="4209084728264328628">"Laneko aplikazioek ezin dute jakinarazpenik bidali, bateria erabili edo kokapena atzitu"</string>
-    <string name="work_apps_paused_content_description" msgid="4473292417145736203">"Laneko profila pausatuta dago. Laneko aplikazioek ezin dute jakinarazpenik bidali, bateria erabili edo kokapena atzitu"</string>
+    <string name="work_apps_paused_content_description" msgid="4473292417145736203">"Laneko profila pausatuta dago. Laneko aplikazioek ezin dute jakinarazpenik bidali, bateria erabili edo kokapena atzitu."</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Laneko aplikazioek bereizgarriak dituzte, eta IKT saileko administratzaileak ikus ditzake"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Ados"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Pausatu laneko aplikazioak"</string>

@@ -78,7 +78,8 @@
     <string name="action_screenshot" msgid="8171125848358142917">"ဖန်သားပြင်ဓာတ်ပုံ"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"ဤလုပ်ဆောင်ချက်ကို အက်ပ် သို့မဟုတ် သင်၏အဖွဲ့အစည်းက ခွင့်မပြုပါ"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"လမ်းညွှန်ခြင်း ရှင်းလင်းပို့ချချက်ကို ကျော်မလား။"</string>
-    <string name="skip_tutorial_dialog_subtitle" msgid="894208145591033987">"၎င်းကို နောက်မှ ‘အကြံပြုချက်များ အက်ပ်’ တွင် ရှာနိုင်သည်"</string>
+    <!-- no translation found for skip_tutorial_dialog_subtitle (544063326241955662) -->
+    <skip />
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"မလုပ်တော့"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"ကျော်ရန်"</string>
 </resources>
