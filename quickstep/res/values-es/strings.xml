@@ -67,9 +67,9 @@
     <string name="overview_gesture_feedback_complete" msgid="5477014491632199169">"Has completado el gesto para cambiar de aplicación. Ya puedes usar el teléfono."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Deslizar el dedo para cambiar de aplicación"</string>
     <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"Desliza el dedo hacia arriba desde la parte inferior de la pantalla, mantenlo pulsado y levántalo."</string>
-    <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Listo"</string>
+    <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Todo listo"</string>
     <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"Siguiente"</string>
-    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"Listo"</string>
+    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"Hecho"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Ajustes"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Reintentar"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"¡Muy bien!"</string>
@@ -78,7 +78,8 @@
     <string name="action_screenshot" msgid="8171125848358142917">"Hacer captura"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"No puedes hacerlo porque la aplicación o tu organización no lo permiten"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"¿Saltar tutorial de navegación?"</string>
-    <string name="skip_tutorial_dialog_subtitle" msgid="894208145591033987">"Tutorial disponible en Consejos para Pixel"</string>
+    <!-- no translation found for skip_tutorial_dialog_subtitle (544063326241955662) -->
+    <skip />
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Cancelar"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Saltar"</string>
 </resources>
