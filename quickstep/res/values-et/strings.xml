@@ -78,7 +78,8 @@
     <string name="action_screenshot" msgid="8171125848358142917">"Ekraanipilt"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Rakendus või teie organisatsioon on selle toimingu keelanud"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Kas jätta navigeerimise õpetused vahele?"</string>
-    <string name="skip_tutorial_dialog_subtitle" msgid="894208145591033987">"Leiate selle hiljem rakendusest Nõuanded"</string>
+    <!-- no translation found for skip_tutorial_dialog_subtitle (544063326241955662) -->
+    <skip />
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Tühista"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Jäta vahele"</string>
 </resources>

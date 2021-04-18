@@ -78,7 +78,8 @@
     <string name="action_screenshot" msgid="8171125848358142917">"Tangkapan skrin"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Tindakan ini tidak dibenarkan oleh apl atau organisasi anda"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Langkau tutorial navigasi?"</string>
-    <string name="skip_tutorial_dialog_subtitle" msgid="894208145591033987">"Anda boleh mendapatkan tutorial ini kemudian dalam apl Petua"</string>
+    <!-- no translation found for skip_tutorial_dialog_subtitle (544063326241955662) -->
+    <skip />
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Batal"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Langkau"</string>
 </resources>
