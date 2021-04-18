@@ -45,73 +45,41 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Tətbiq təklifləri aktivdir"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Tətbiq təklifləri deaktivdir"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Proqnozlaşdırılan tətbiq: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <!-- no translation found for back_gesture_feedback_swipe_too_far_from_left_edge (340972404868601012) -->
-    <skip />
-    <!-- no translation found for back_gesture_feedback_cancelled_left_edge (6671316150388702530) -->
-    <skip />
-    <!-- no translation found for back_gesture_feedback_complete_left_edge (3220478647881674266) -->
-    <skip />
-    <!-- no translation found for back_gesture_feedback_swipe_too_far_from_right_edge (4306700023773832353) -->
-    <skip />
-    <!-- no translation found for back_gesture_feedback_cancelled_right_edge (4951916546256902552) -->
-    <skip />
-    <!-- no translation found for back_gesture_feedback_complete (7261221999760772210) -->
-    <skip />
-    <!-- no translation found for back_gesture_feedback_swipe_in_nav_bar (1148198467090405643) -->
-    <skip />
-    <!-- no translation found for back_gesture_tutorial_confirm_subtitle (5181305411668713250) -->
-    <skip />
-    <!-- no translation found for back_gesture_intro_title (19551256430224428) -->
-    <skip />
-    <!-- no translation found for back_gesture_intro_subtitle (7912576483031802797) -->
-    <skip />
-    <!-- no translation found for home_gesture_feedback_swipe_too_far_from_edge (1446774096007065298) -->
-    <skip />
-    <!-- no translation found for home_gesture_feedback_overview_detected (1557523944897393013) -->
-    <skip />
-    <!-- no translation found for home_gesture_feedback_wrong_swipe_direction (6993979358080825438) -->
-    <skip />
-    <!-- no translation found for home_gesture_feedback_complete (2324789183070815517) -->
-    <skip />
-    <!-- no translation found for home_gesture_intro_title (836590312858441830) -->
-    <skip />
-    <!-- no translation found for home_gesture_intro_subtitle (2632238748497975326) -->
-    <skip />
-    <!-- no translation found for overview_gesture_feedback_swipe_too_far_from_edge (3032757898111577225) -->
-    <skip />
-    <!-- no translation found for overview_gesture_feedback_home_detected (1411130969354020489) -->
-    <skip />
-    <!-- no translation found for overview_gesture_feedback_wrong_swipe_direction (6725820500906747925) -->
-    <skip />
-    <!-- no translation found for overview_gesture_feedback_complete (5477014491632199169) -->
-    <skip />
-    <!-- no translation found for overview_gesture_intro_title (2902054412868489378) -->
-    <skip />
-    <!-- no translation found for overview_gesture_intro_subtitle (1579517193845186042) -->
-    <skip />
-    <!-- no translation found for gesture_tutorial_confirm_title (6201516182040074092) -->
-    <skip />
-    <!-- no translation found for gesture_tutorial_action_button_label_next (2556263116424738762) -->
-    <skip />
-    <!-- no translation found for gesture_tutorial_action_button_label_done (671834508127014231) -->
-    <skip />
-    <!-- no translation found for gesture_tutorial_action_button_label_settings (2923621047916486604) -->
-    <skip />
-    <!-- no translation found for gesture_tutorial_try_again (65962545858556697) -->
-    <skip />
-    <!-- no translation found for gesture_tutorial_nice (2936275692616928280) -->
-    <skip />
-    <!-- no translation found for gesture_tutorial_step (1279786122817620968) -->
-    <skip />
+    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"Ən sol tərəfdən sürüşdürdüyünüzə əmin olun."</string>
+    <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"Ekranın sol kənarından ortasına sürüşdürüb buraxın."</string>
+    <string name="back_gesture_feedback_complete_left_edge" msgid="3220478647881674266">"Bu qədər! İndi isə sağ kənardan sürüşdürün."</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"Ən sağ tərəfdən sürüşdürdüyünüzə əmin olun."</string>
+    <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"Ekranın sağ kənarından ortasına sürüşdürüb buraxın."</string>
+    <string name="back_gesture_feedback_complete" msgid="7261221999760772210">"Geri getmə jestini tamamladınız. Sonra Əsas səhifəyə keçməyi öyrənin."</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Ekranın altına çox yaxın sürüşdürmədiyinizə əmin olun."</string>
+    <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Geri qayıtma jestinin həssaslığını dəyişmək üçün Ayarlara keçin"</string>
+    <string name="back_gesture_intro_title" msgid="19551256430224428">"Geri qayıtmaq üçün sürüşdürün"</string>
+    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Sonuncu ekrana qayıtmaq üçün ekranın sol, yaxud sağ kənarından mərkəzinə doğru sürüşdürün."</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Ekranın aşağı kənarından yuxarı sürüşdürdüyünüzə əmin olun."</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Buraxmazdan əvvəl durdurmadığınıza əmin olun."</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Birbaşa yuxarı sürüşdürdüyünüzə əmin olun."</string>
+    <string name="home_gesture_feedback_complete" msgid="2324789183070815517">"Əsas səhifəyə keçmə jestini tamamladınız. Sonra tətbiqləri keçirməyi öyrənin."</string>
+    <string name="home_gesture_intro_title" msgid="836590312858441830">"Əsas səhifəyə keçmək üçün sürüşdürün"</string>
+    <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Ekranın aşağısından yuxarısına sürüşdürün. Bu jest həmişə Əsas səhifəyə aparır."</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Ekranın aşağı kənarından yuxarı sürüşdürdüyünüzə əmin olun."</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Buraxmadan əvvəl pəncərəni daha uzun müddət saxlamağa çalışın."</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Birbaşa yuxarı sürüşdürdüyünüzə, sonra durdurduğunuza əmin olun."</string>
+    <string name="overview_gesture_feedback_complete" msgid="5477014491632199169">"Tətbiqləri keçirmə jestini tamamladınız. Telefonunuzu istifadə etməyə hazırsınız!"</string>
+    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Tətbiqi keçirmək üçün sürüşdürün"</string>
+    <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"Ekranın aşağısından yuxarı doğru sürüşdürüb saxlayın, sonra buraxın."</string>
+    <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Tam hazır"</string>
+    <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"Sonra"</string>
+    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"Oldu"</string>
+    <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Ayarlar"</string>
+    <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Yenə sınayın"</string>
+    <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Əla!"</string>
+    <string name="gesture_tutorial_step" msgid="1279786122817620968">"Dərslik <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="action_share" msgid="2648470652637092375">"Paylaşın"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Ekran şəkli"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Bu əməliyyata tətbiq və ya təşkilatınız tərəfindən icazə verilmir"</string>
-    <!-- no translation found for skip_tutorial_dialog_title (2725643161260038458) -->
+    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Naviqasiya dərsliyi ötürülsün?"</string>
+    <!-- no translation found for skip_tutorial_dialog_subtitle (544063326241955662) -->
     <skip />
-    <!-- no translation found for skip_tutorial_dialog_subtitle (894208145591033987) -->
-    <skip />
-    <!-- no translation found for gesture_tutorial_action_button_label_cancel (3809842569351264108) -->
-    <skip />
-    <!-- no translation found for gesture_tutorial_action_button_label_skip (394452764989751960) -->
-    <skip />
+    <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Ləğv edin"</string>
+    <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Ötürün"</string>
 </resources>

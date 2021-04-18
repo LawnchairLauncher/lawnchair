@@ -28,8 +28,8 @@
     <string name="shortcut_not_available" msgid="2536503539825726397">"קיצור הדרך אינו זמין"</string>
     <string name="home_screen" msgid="5629429142036709174">"בית"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"מסך מפוצל"</string>
-    <string name="long_press_widget_to_add" msgid="3587712543577675817">"יש לגעת ולהחזיק כדי להעביר ווידג\'ט למקום אחר."</string>
-    <string name="long_accessible_way_to_add" msgid="2733588281439571974">"יש ללחוץ פעמיים ולהמשיך את הלחיצה כדי להעביר ווידג\'ט למקום אחר או להשתמש בפעולות מותאמות אישית."</string>
+    <string name="long_press_widget_to_add" msgid="3587712543577675817">"כדי להעביר ווידג\'ט למקום אחר יש לגעת ולא להרפות."</string>
+    <string name="long_accessible_way_to_add" msgid="2733588281439571974">"כדי להעביר ווידג\'ט למקום אחר או להשתמש בפעולות מותאמות אישית, יש ללחוץ פעמיים ולא להרפות."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"‏רוחב %1$d על גובה %2$d"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"יש ללחוץ לחיצה ארוכה כדי להוסיף ידנית"</string>
@@ -61,8 +61,8 @@
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"חפש אפליקציות נוספות"</string>
     <string name="label_application" msgid="8531721983832654978">"אפליקציה"</string>
     <string name="notifications_header" msgid="1404149926117359025">"התראות"</string>
-    <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"יש לגעת ולהחזיק כדי להעביר קיצור דרך למקום אחר."</string>
-    <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"יש ללחוץ פעמיים ולהמשיך את הלחיצה כדי להעביר קיצור דרך למקום אחר או להשתמש בפעולות מותאמות אישית."</string>
+    <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"כדי להעביר קיצור דרך למקום אחר יש לגעת ולא להרפות."</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"כדי להעביר קיצור דרך למקום אחר או להשתמש בפעולות מותאמות אישית\' יש ללחוץ פעמיים ולא להרפות."</string>
     <string name="out_of_space" msgid="4691004494942118364">"אין עוד מקום במסך דף הבית הזה."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"אין עוד מקום במגש המועדפים"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"רשימת אפליקציות"</string>

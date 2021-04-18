@@ -78,7 +78,8 @@
     <string name="action_screenshot" msgid="8171125848358142917">"Снимак екрана"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Апликација или организација не дозвољавају ову радњу"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Желите да прескочите водич за кретање?"</string>
-    <string name="skip_tutorial_dialog_subtitle" msgid="894208145591033987">"Можете да пронађете ово у апл. Савети"</string>
+    <!-- no translation found for skip_tutorial_dialog_subtitle (544063326241955662) -->
+    <skip />
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Откажи"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Прескочи"</string>
 </resources>
