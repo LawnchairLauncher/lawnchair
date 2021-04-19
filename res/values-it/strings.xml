@@ -56,8 +56,6 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Nessuna app trovata corrispondente a \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Cerca altre app"</string>
     <string name="label_application" msgid="8531721983832654978">"App"</string>
-    <string name="search_corpus_apps" msgid="1917889409963779022">"App"</string>
-    <string name="search_action_try_now" msgid="1458737965476149074">"Prova subito"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Notifiche"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Tocca e tieni premuto per spostare una scorciatoia."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Tocca due volte e tieni premuto per spostare una scorciatoia o per usare le azioni personalizzate."</string>
@@ -158,8 +156,8 @@
     <string name="work_profile_edu_next" msgid="8783418929296503629">"Avanti"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
     <string name="work_apps_paused_title" msgid="2389865654362803723">"Profilo di lavoro in pausa"</string>
-    <string name="work_apps_paused_body" msgid="4209084728264328628">"Le app di lavoro non possono inviarti notifiche, usare la tua batteria o accedere alla tua posizione"</string>
-    <string name="work_apps_paused_content_description" msgid="4473292417145736203">"Profilo di lavoro in pausa. Le app di lavoro non possono inviarti notifiche, usare la tua batteria o accedere alla tua posizione"</string>
+    <string name="work_apps_paused_body" msgid="4209084728264328628">"Le app di lavoro non possono inviarti notifiche, usare la batteria o accedere alla tua posizione"</string>
+    <string name="work_apps_paused_content_description" msgid="4473292417145736203">"Profilo di lavoro in pausa. Le app di lavoro non possono inviarti notifiche, usare la batteria o accedere alla tua posizione"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Le app di lavoro sono contrassegnate con un badge e sono visibili dal tuo amministratore IT"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"OK"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Metti in pausa le app di lavoro"</string>
