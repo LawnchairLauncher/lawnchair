@@ -1038,6 +1038,9 @@ public class CellLayout extends ViewGroup {
             mDragCellSpan[0] = spanX;
             mDragCellSpan[1] = spanY;
 
+            // Apply color extraction on a widget when dragging.
+            applyColorExtractionOnWidget(dragObject, mDragCell, spanX, spanY);
+
             final int oldIndex = mDragOutlineCurrent;
             mDragOutlineAnims[oldIndex].animateOut();
             mDragOutlineCurrent = (oldIndex + 1) % mDragOutlines.length;
@@ -1059,8 +1062,8 @@ public class CellLayout extends ViewGroup {
     }
 
     /** Applies the local color extraction to a dragging widget object. */
-    private void applyColorExtraction(DropTarget.DragObject dragObject, int[] targetCell, int spanX,
-            int spanY) {
+    private void applyColorExtractionOnWidget(DropTarget.DragObject dragObject, int[] targetCell,
+            int spanX, int spanY) {
         // Apply local extracted color if the DragView is an AppWidgetHostViewDrawable.
         Drawable drawable = dragObject.dragView.getDrawable();
         if (drawable instanceof AppWidgetHostViewDrawable) {
