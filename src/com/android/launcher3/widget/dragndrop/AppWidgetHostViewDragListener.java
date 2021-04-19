@@ -17,7 +17,6 @@ package com.android.launcher3.widget.dragndrop;
 
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.dragndrop.AppWidgetHostViewDrawable;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
@@ -26,7 +25,6 @@ import com.android.launcher3.widget.LauncherAppWidgetHostView;
 public final class AppWidgetHostViewDragListener implements DragController.DragListener {
     private final Launcher mLauncher;
     private DropTarget.DragObject mDragObject;
-    private AppWidgetHostViewDrawable mAppWidgetHostViewDrawable;
     private LauncherAppWidgetHostView mAppWidgetHostView;
 
     public AppWidgetHostViewDragListener(Launcher launcher) {
@@ -35,11 +33,9 @@ public final class AppWidgetHostViewDragListener implements DragController.DragL
 
     @Override
     public void onDragStart(DropTarget.DragObject dragObject, DragOptions unused) {
-        if (dragObject.dragView.getDrawable() instanceof AppWidgetHostViewDrawable) {
+        if (dragObject.dragView.getContentView() instanceof LauncherAppWidgetHostView) {
             mDragObject = dragObject;
-            mAppWidgetHostViewDrawable =
-                    (AppWidgetHostViewDrawable) mDragObject.dragView.getDrawable();
-            mAppWidgetHostView = mAppWidgetHostViewDrawable.getAppWidgetHostView();
+            mAppWidgetHostView = (LauncherAppWidgetHostView) dragObject.dragView.getContentView();
             mAppWidgetHostView.startDrag(this);
         } else {
             mLauncher.getDragController().removeDragListener(this);
