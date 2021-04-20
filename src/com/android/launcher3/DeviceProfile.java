@@ -25,6 +25,7 @@ import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.Surface;
 import android.view.WindowInsets;
 import android.view.WindowManager;
@@ -35,6 +36,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.icons.DotRenderer;
 import com.android.launcher3.icons.IconNormalizer;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.WindowBounds;
@@ -973,6 +975,10 @@ public class DeviceProfile {
             mInfo = info;
             mTransposeLayoutWithOrientation = context.getResources()
                     .getBoolean(R.bool.hotseat_transpose_layout_with_orientation);
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.LAUNCHER_NOT_TRANSPOSED,
+                        "transposeLayout=" + mTransposeLayoutWithOrientation);
+            }
         }
 
         public Builder setSizeRange(Point minSize, Point maxSize) {
@@ -985,6 +991,10 @@ public class DeviceProfile {
             mWidth = width;
             mHeight = height;
             mIsLandscape = mWidth > mHeight;
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.LAUNCHER_NOT_TRANSPOSED,
+                        "isLandscape=" + mIsLandscape + " w=" + mWidth + " h=" + mHeight);
+            }
             return this;
         }
 
