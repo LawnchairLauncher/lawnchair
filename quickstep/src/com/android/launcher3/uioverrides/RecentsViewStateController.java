@@ -113,7 +113,7 @@ public final class RecentsViewStateController extends
                         ANIM_OVERVIEW_ACTIONS_FADE, LINEAR));
 
         float splitPlaceholderAlpha = state.areElementsVisible(mLauncher, SPLIT_PLACHOLDER_VIEW) ?
-                0.7f : 0;
+                0.85f : 0;
         propertySetter.setFloat(mRecentsView.getSplitPlaceholder(), ALPHA_FLOAT,
                 splitPlaceholderAlpha, LINEAR);
     }
