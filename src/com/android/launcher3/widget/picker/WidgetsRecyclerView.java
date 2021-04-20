@@ -116,6 +116,7 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
     public void onUpdateScrollbar(int dy) {
         // Skip early if widgets are not bound.
         if (isModelNotReady()) {
+            mScrollbar.setThumbOffsetY(-1);
             return;
         }
 
