@@ -20,7 +20,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
-    <string name="work_folder_name" msgid="3753320833950115786">"Travail"</string>
+    <string name="work_folder_name" msgid="3753320833950115786">"Pro"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"L\'application n\'est pas installée."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"Application indisponible"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"L\'application téléchargée est désactivée en mode sécurisé."</string>
@@ -98,7 +98,7 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Dossier : <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> éléments ou plus"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Fonds d\'écran"</string>
     <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"Styles et fonds d\'écran"</string>
-    <string name="settings_button_text" msgid="8873672322605444408">"Paramètres d\'accueil"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"Paramètres de l\'accueil"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Désactivé par votre administrateur"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Autoriser la rotation de l\'écran d\'accueil"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Lorsque vous faites pivoter le téléphone"</string>
