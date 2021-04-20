@@ -139,10 +139,6 @@ public class FallbackRecentsTest {
                     TestCommandReceiver.GET_SYSTEM_HEALTH_MESSAGE, startTime.toString()).
                     getString("result"));
         }
-        // b/143488140
-        mDevice.pressHome();
-        mDevice.waitForIdle();
-        startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
     }
 
     // b/143488140
