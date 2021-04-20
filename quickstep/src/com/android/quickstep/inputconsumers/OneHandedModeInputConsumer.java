@@ -44,12 +44,10 @@ import com.android.systemui.shared.system.InputMonitorCompat;
  */
 public class OneHandedModeInputConsumer extends DelegateInputConsumer {
 
-    private static final String TAG = "OneHandedModeInputConsumer";
     private static final int ANGLE_MAX = 150;
     private static final int ANGLE_MIN = 30;
 
     private final Context mContext;
-    private final DisplayController.DisplayHolder mDisplayHolder;
     private final Point mDisplaySize;
     private final RecentsAnimationDeviceState mDeviceState;
 
@@ -68,12 +66,11 @@ public class OneHandedModeInputConsumer extends DelegateInputConsumer {
             InputConsumer delegate, InputMonitorCompat inputMonitor) {
         super(delegate, inputMonitor);
         mContext = context;
-        mDisplayHolder = DisplayController.getDefaultDisplay(mContext);
         mDeviceState = deviceState;
         mDragDistThreshold = context.getResources().getDimensionPixelSize(
                 R.dimen.gestures_onehanded_drag_threshold);
         mSquaredSlop = Utilities.squaredTouchSlop(context);
-        mDisplaySize = mDisplayHolder.getInfo().realSize;
+        mDisplaySize = DisplayController.INSTANCE.get(mContext).getInfo().realSize;
         mNavBarSize = ResourceUtils.getNavbarSize(NAVBAR_BOTTOM_GESTURE_SIZE,
                 mContext.getResources());
     }
