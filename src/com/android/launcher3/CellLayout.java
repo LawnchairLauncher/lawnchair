@@ -61,7 +61,6 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.accessibility.DragAndDropAccessibilityDelegate;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.dragndrop.AppWidgetHostViewDrawable;
 import com.android.launcher3.folder.PreviewBackground;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.CellAndSpan;
@@ -70,6 +69,7 @@ import com.android.launcher3.util.ParcelableSparseArray;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.views.ActivityContext;
+import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -1065,15 +1065,14 @@ public class CellLayout extends ViewGroup {
     private void applyColorExtractionOnWidget(DropTarget.DragObject dragObject, int[] targetCell,
             int spanX, int spanY) {
         // Apply local extracted color if the DragView is an AppWidgetHostViewDrawable.
-        Drawable drawable = dragObject.dragView.getDrawable();
-        if (drawable instanceof AppWidgetHostViewDrawable) {
+        View view = dragObject.dragView.getContentView();
+        if (view instanceof LauncherAppWidgetHostView) {
             Workspace workspace =
                     Launcher.getLauncher(dragObject.dragView.getContext()).getWorkspace();
             int screenId = workspace.getIdForScreen(this);
             int pageId = workspace.getPageIndexForScreenId(screenId);
-            AppWidgetHostViewDrawable hostViewDrawable = ((AppWidgetHostViewDrawable) drawable);
             cellToRect(targetCell[0], targetCell[1], spanX, spanY, mTempRect);
-            hostViewDrawable.getAppWidgetHostView().handleDrag(mTempRect, pageId);
+            ((LauncherAppWidgetHostView) view).handleDrag(mTempRect, pageId);
         }
     }
 
