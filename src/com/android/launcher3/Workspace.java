@@ -1571,7 +1571,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 scale * iconScale,
                 scale,
                 dragOptions);
-        dv.setIntrinsicIconScaleFactor(dragOptions.intrinsicIconScaleFactor);
         return dv;
     }
 
@@ -2723,8 +2722,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 info.itemType == LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET;
         if ((animationType == ANIMATE_INTO_POSITION_AND_RESIZE || external) && finalView != null) {
             Drawable crossFadeDrawable = createWidgetDrawable(info, finalView);
-            dragView.setCrossFadeDrawable(crossFadeDrawable);
-            dragView.crossFade((int) (duration * 0.8f));
+            dragView.crossFadeContent(crossFadeDrawable, (int) (duration * 0.8f));
         } else if (isWidget && external) {
             scaleXY[0] = scaleXY[1] = Math.min(scaleXY[0],  scaleXY[1]);
         }
