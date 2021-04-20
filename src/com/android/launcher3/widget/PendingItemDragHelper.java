@@ -33,7 +33,6 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.PendingAddItemInfo;
 import com.android.launcher3.R;
-import com.android.launcher3.dragndrop.AppWidgetHostViewDrawable;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.graphics.DragPreviewProvider;
@@ -93,6 +92,8 @@ public class PendingItemDragHelper extends DragPreviewProvider {
         LauncherAppState app = LauncherAppState.getInstance(launcher);
 
         Drawable preview = null;
+        final int previewWidth;
+        final int previewHeight;
         final float scale;
         final Point dragOffset;
         final Rect dragRegion;
@@ -114,12 +115,11 @@ public class PendingItemDragHelper extends DragPreviewProvider {
                                 createWidgetInfo.info, maxWidth, previewSizeBeforeScale));
             }
             if (mAppWidgetHostViewPreview != null) {
-                preview = new AppWidgetHostViewDrawable(mAppWidgetHostViewPreview);
                 previewSizeBeforeScale[0] = mAppWidgetHostViewPreview.getMeasuredWidth();
                 launcher.getDragController()
                         .addDragListener(new AppWidgetHostViewDragListener(launcher));
             }
-            if (preview == null) {
+            if (preview == null && mAppWidgetHostViewPreview == null) {
                 Drawable p = new FastBitmapDrawable(
                         app.getWidgetCache().generateWidgetPreview(launcher,
                                 createWidgetInfo.info, maxWidth, null,
@@ -140,7 +140,14 @@ public class PendingItemDragHelper extends DragPreviewProvider {
                 previewBounds.left += padding;
                 previewBounds.right -= padding;
             }
-            scale = previewBounds.width() / (float) preview.getIntrinsicWidth();
+            if (mAppWidgetHostViewPreview != null) {
+                previewWidth = mAppWidgetHostViewPreview.getMeasuredWidth();
+                previewHeight = mAppWidgetHostViewPreview.getMeasuredHeight();
+            } else {
+                previewWidth = preview.getIntrinsicWidth();
+                previewHeight = preview.getIntrinsicHeight();
+            }
+            scale = previewBounds.width() / (float) previewWidth;
             launcher.getDragController().addDragListener(new WidgetHostViewLoader(launcher, mView));
 
             dragOffset = null;
@@ -152,8 +159,10 @@ public class PendingItemDragHelper extends DragPreviewProvider {
             LauncherIcons li = LauncherIcons.obtain(launcher);
             preview = new FastBitmapDrawable(
                     li.createScaledBitmapWithoutShadow(icon, 0));
+            previewWidth = preview.getIntrinsicWidth();
+            previewHeight = preview.getIntrinsicHeight();
             li.recycle();
-            scale = ((float) launcher.getDeviceProfile().iconSizePx) / preview.getIntrinsicWidth();
+            scale = ((float) launcher.getDeviceProfile().iconSizePx) / previewWidth;
 
             dragOffset = new Point(previewPadding / 2, previewPadding / 2);
 
@@ -181,13 +190,19 @@ public class PendingItemDragHelper extends DragPreviewProvider {
         launcher.getWorkspace().prepareDragWithProvider(this);
 
         int dragLayerX = screenPos.x + previewBounds.left
-                + (int) ((scale * preview.getIntrinsicWidth() - preview.getIntrinsicWidth()) / 2);
+                + (int) ((scale * previewWidth - previewWidth) / 2);
         int dragLayerY = screenPos.y + previewBounds.top
-                + (int) ((scale * preview.getIntrinsicHeight() - preview.getIntrinsicHeight()) / 2);
+                + (int) ((scale * previewHeight - previewHeight) / 2);
 
         // Start the drag
-        launcher.getDragController().startDrag(preview, draggableView, dragLayerX, dragLayerY,
-                source, mAddInfo, dragOffset, dragRegion, scale, scale, options);
+        if (mAppWidgetHostViewPreview != null) {
+            launcher.getDragController().startDrag(mAppWidgetHostViewPreview, draggableView,
+                    dragLayerX, dragLayerY, source, mAddInfo, dragOffset, dragRegion, scale, scale,
+                    options);
+        } else {
+            launcher.getDragController().startDrag(preview, draggableView, dragLayerX, dragLayerY,
+                    source, mAddInfo, dragOffset, dragRegion, scale, scale, options);
+        }
     }
 
     @Override

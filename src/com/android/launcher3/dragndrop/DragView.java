@@ -42,9 +42,11 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import androidx.annotation.Nullable;
 import androidx.dynamicanimation.animation.FloatPropertyCompat;
 import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
@@ -69,6 +71,10 @@ public class DragView extends FrameLayout implements StateListener<LauncherState
     public static final int VIEW_ZOOM_DURATION = 150;
 
     private final View mContent;
+    // The following are only used for rendering mContent directly during drag-n-drop.
+    @Nullable private ViewGroup.LayoutParams mContentViewLayoutParams;
+    @Nullable private ViewGroup mContentViewParent;
+    private int mContentViewInParentViewIndex = -1;
     private final int mWidth;
     private final int mHeight;
 
@@ -135,6 +141,13 @@ public class DragView extends FrameLayout implements StateListener<LauncherState
         mContent = content;
         mWidth = width;
         mHeight = height;
+        mContentViewLayoutParams = mContent.getLayoutParams();
+        if (mContent.getParent() instanceof ViewGroup) {
+            mContentViewParent = (ViewGroup) mContent.getParent();
+            mContentViewInParentViewIndex = mContentViewParent.indexOfChild(mContent);
+            mContentViewParent.removeView(mContent);
+        }
+
         addView(content, new LayoutParams(width, height));
 
         final float scale = (width + finalScaleDps) / width;
@@ -372,6 +385,12 @@ public class DragView extends FrameLayout implements StateListener<LauncherState
         BaseDragLayer.LayoutParams lp = new BaseDragLayer.LayoutParams(mWidth, mHeight);
         lp.customPosition = true;
         setLayoutParams(lp);
+
+        if (mContent != null) {
+            // At the drag start, the source view visibility is set to invisible.
+            mContent.setVisibility(VISIBLE);
+        }
+
         move(touchX, touchY);
         // Post the animation to skip other expensive work happening on the first frame
         post(mAnim::start);
@@ -430,6 +449,33 @@ public class DragView extends FrameLayout implements StateListener<LauncherState
         setTranslationY(mLastTouchY - mRegistrationY + mAnimatedShiftY);
     }
 
+
+    /**
+     * Detaches {@link #mContent}, if previously attached, from this view.
+     *
+     * <p>In the case of no change in the drop position, sets {@code reattachToPreviousParent} to
+     * {@code true} to attach the {@link #mContent} back to its previous parent.
+     */
+    public void detachContentView(boolean reattachToPreviousParent) {
+        if (mContent != null && mContentViewParent != null && mContentViewInParentViewIndex >= 0) {
+            removeView(mContent);
+            mContent.setLayoutParams(mContentViewLayoutParams);
+            if (reattachToPreviousParent) {
+                mContentViewParent.addView(mContent, mContentViewInParentViewIndex);
+            }
+            mContentViewParent = null;
+            mContentViewInParentViewIndex = -1;
+        }
+    }
+
+    /**
+     * Removes this view from the {@link DragLayer}.
+     *
+     * <p>If the drag content is a {@link #mContent}, this call doesn't reattach the
+     * {@link #mContent} back to its previous parent. To reattach to previous parent, the caller
+     * should call {@link #detachContentView} with {@code reattachToPreviousParent} sets to true
+     * before this call.
+     */
     public void remove() {
         if (getParent() != null) {
             mDragLayer.removeView(DragView.this);
@@ -449,9 +495,18 @@ public class DragView extends FrameLayout implements StateListener<LauncherState
         return false;
     }
 
-    /** Returns the current {@link Drawable} that is rendered in this view. */
-    public Drawable getDrawable() {
-        return mContent instanceof ImageView ? ((ImageView) mContent).getDrawable() : null;
+    /** Returns the current content view that is rendered in the drag view. */
+    public View getContentView() {
+        return mContent;
+    }
+
+    /**
+     * Returns the previous {@link ViewGroup} parent of the {@link #mContent} before the drag
+     * content is attached to this view.
+     */
+    @Nullable
+    public ViewGroup getContentViewParent() {
+        return mContentViewParent;
     }
 
     private static class SpringFloatValue {
