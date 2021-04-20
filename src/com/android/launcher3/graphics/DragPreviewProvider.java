@@ -29,11 +29,12 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.dragndrop.AppWidgetHostViewDrawable;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.icons.FastBitmapDrawable;
@@ -95,7 +96,7 @@ public class DragPreviewProvider {
      */
     public Drawable createDrawable() {
         if (mView instanceof LauncherAppWidgetHostView) {
-            return new AppWidgetHostViewDrawable((LauncherAppWidgetHostView) mView);
+            return null;
         }
 
         int width = 0;
@@ -114,6 +115,18 @@ public class DragPreviewProvider {
         return new FastBitmapDrawable(
                 BitmapRenderer.createHardwareBitmap(width + blurSizeOutline,
                         height + blurSizeOutline, (c) -> drawDragView(c, scale)));
+    }
+
+    /**
+     * Returns the content view if the content should be rendered directly in
+     * {@link com.android.launcher3.dragndrop.DragView}. Otherwise, returns null.
+     */
+    @Nullable
+    public View getContentView() {
+        if (mView instanceof LauncherAppWidgetHostView) {
+            return mView;
+        }
+        return null;
     }
 
     public final void generateDragOutline(Bitmap preview) {
@@ -149,6 +162,22 @@ public class DragPreviewProvider {
                 (preview.getIntrinsicWidth() - scale * mView.getWidth() * mView.getScaleX()) / 2);
         outPos[1] = Math.round(outPos[1] - (1 - scale) * preview.getIntrinsicHeight() / 2
                 - previewPadding / 2);
+        return scale;
+    }
+
+    /** Returns the scale and position of a given view for drag-n-drop. */
+    public float getScaleAndPosition(View view, int[] outPos) {
+        float scale = Launcher.getLauncher(mView.getContext())
+                .getDragLayer().getLocationInDragLayer(mView, outPos);
+        if (mView instanceof LauncherAppWidgetHostView) {
+            // App widgets are technically scaled, but are drawn at their expected size -- so the
+            // app widget scale should not affect the scale of the preview.
+            scale /= ((LauncherAppWidgetHostView) mView).getScaleToFit();
+        }
+
+        outPos[0] = Math.round(outPos[0]
+                - (view.getWidth() - scale * mView.getWidth() * mView.getScaleX()) / 2);
+        outPos[1] = Math.round(outPos[1] - (1 - scale) * view.getHeight() / 2 - previewPadding / 2);
         return scale;
     }
 
