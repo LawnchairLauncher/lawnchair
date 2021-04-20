@@ -168,7 +168,11 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_SMARTSPACE_ENHANCED = new DeviceFlag(
             "ENABLE_SMARTSPACE_ENHANCED", false,
             "Replace Smartspace with the enhanced version. "
-              + "Ignored if ENABLE_SMARTSPACE_UNIVERSAL is enabled.");
+                    + "Ignored if ENABLE_SMARTSPACE_UNIVERSAL is enabled.");
+
+    public static final BooleanFlag ENABLE_SMARTSPACE_FEEDBACK = new DeviceFlag(
+            "ENABLE_SMARTSPACE_FEEDBACK", true,
+            "Adds a menu option to send feedback for Enhanced Smartspace.");
 
     public static final BooleanFlag ALWAYS_USE_HARDWARE_OPTIMIZATION_FOR_FOLDER_ANIMATIONS =
             getDebugFlag(
