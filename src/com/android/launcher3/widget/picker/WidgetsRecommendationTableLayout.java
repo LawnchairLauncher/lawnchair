@@ -42,7 +42,6 @@ public final class WidgetsRecommendationTableLayout extends TableLayout {
     private static final String TAG = "WidgetsRecommendationTableLayout";
     private static final float DOWN_SCALE_RATIO = 0.9f;
     private static final float MAX_DOWN_SCALE_RATIO = 0.5f;
-    private final DeviceProfile mDeviceProfile;
     private final float mWidgetCellTextViewsHeight;
 
     private float mRecommendationTableMaxHeight = Float.MAX_VALUE;
@@ -56,7 +55,6 @@ public final class WidgetsRecommendationTableLayout extends TableLayout {
 
     public WidgetsRecommendationTableLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mDeviceProfile = Launcher.getLauncher(context).getDeviceProfile();
         // There are 1 row for title, 1 row for dimension and 2 rows for description.
         mWidgetCellTextViewsHeight = 4 * getResources().getDimension(R.dimen.widget_cell_font_size);
     }
@@ -143,11 +141,12 @@ public final class WidgetsRecommendationTableLayout extends TableLayout {
         }
         // A naive estimation of the widgets recommendation table height without inflation.
         float totalHeight = 0;
+        DeviceProfile deviceProfile = Launcher.getLauncher(getContext()).getDeviceProfile();
         for (int i = 0; i < recommendedWidgetsInTable.size(); i++) {
             List<WidgetItem> widgetItems = recommendedWidgetsInTable.get(i);
             float rowHeight = 0;
             for (int j = 0; j < widgetItems.size(); j++) {
-                float previewHeight = widgetItems.get(j).spanY * mDeviceProfile.allAppsCellHeightPx
+                float previewHeight = widgetItems.get(j).spanY * deviceProfile.allAppsCellHeightPx
                         * previewScale;
                 rowHeight = Math.max(rowHeight, previewHeight + mWidgetCellTextViewsHeight);
             }
