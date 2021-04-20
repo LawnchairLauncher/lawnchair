@@ -339,7 +339,7 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
         // The layout depends on the orientation.
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             int parentViewWidth = parentView == null ? 0 : parentView.getWidth();
-            xOffset = screenHeight - mWorkspace.getPaddingRight() - parentViewWidth;
+            xOffset = screenWidth - mWorkspace.getPaddingRight() - parentViewWidth;
         } else {
             int parentViewPaddingLeft = parentView == null ? 0 : parentView.getPaddingLeft();
             xOffset = mWorkspace.getPaddingLeft() + parentViewPaddingLeft;
