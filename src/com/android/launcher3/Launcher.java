@@ -566,7 +566,9 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     }
 
     private void onIdpChanged(InvariantDeviceProfile idp) {
-
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.LAUNCHER_NOT_TRANSPOSED, "onIdpChanged", new Throwable());
+        }
         initDeviceProfile(idp);
         dispatchDeviceProfileChanged();
         reapplyUi();
