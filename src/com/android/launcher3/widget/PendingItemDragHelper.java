@@ -23,6 +23,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.view.View;
+import android.view.View.MeasureSpec;
 import android.widget.RemoteViews;
 
 import androidx.annotation.Nullable;
@@ -53,7 +54,7 @@ public class PendingItemDragHelper extends DragPreviewProvider {
     private int[] mEstimatedCellSize;
 
     @Nullable private RemoteViews mRemoteViewsPreview;
-    @Nullable private LauncherAppWidgetHostView mAppWidgetHostViewPreview;
+    @Nullable private NavigableAppWidgetHostView mAppWidgetHostViewPreview;
     private final float mEnforcedRoundedCornersForWidget;
 
     public PendingItemDragHelper(View view) {
@@ -71,9 +72,9 @@ public class PendingItemDragHelper extends DragPreviewProvider {
         mRemoteViewsPreview = remoteViewsPreview;
     }
 
-    /** Sets a {@link LauncherAppWidgetHostView} which shows a preview layout of an app widget. */
+    /** Sets a {@link NavigableAppWidgetHostView} which shows a preview layout of an app widget. */
     public void setAppWidgetHostViewPreview(
-            @Nullable LauncherAppWidgetHostView appWidgetHostViewPreview) {
+            @Nullable NavigableAppWidgetHostView appWidgetHostViewPreview) {
         mAppWidgetHostViewPreview = appWidgetHostViewPreview;
     }
 
@@ -110,9 +111,22 @@ public class PendingItemDragHelper extends DragPreviewProvider {
             int[] previewSizeBeforeScale = new int[1];
 
             if (mRemoteViewsPreview != null) {
-                preview = new FastBitmapDrawable(
-                        WidgetCell.generateFromRemoteViews(launcher, mRemoteViewsPreview,
-                                createWidgetInfo.info, maxWidth, previewSizeBeforeScale));
+                mAppWidgetHostViewPreview = new LauncherAppWidgetHostView(launcher);
+                mAppWidgetHostViewPreview.setAppWidget(/* appWidgetId= */ -1,
+                        ((PendingAddWidgetInfo) mAddInfo).info);
+                DeviceProfile deviceProfile = launcher.getDeviceProfile();
+                Rect padding = new Rect();
+                mAppWidgetHostViewPreview.getWidgetInset(deviceProfile, padding);
+                mAppWidgetHostViewPreview.setPadding(padding.left, padding.top, padding.right,
+                        padding.bottom);
+                mAppWidgetHostViewPreview.updateAppWidget(/* remoteViews= */ mRemoteViewsPreview);
+                int width =
+                        deviceProfile.cellWidthPx * mAddInfo.spanX + padding.left + padding.right;
+                int height =
+                        deviceProfile.cellHeightPx * mAddInfo.spanY + padding.top + padding.bottom;
+                mAppWidgetHostViewPreview.measure(
+                        MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
+                        MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
             }
             if (mAppWidgetHostViewPreview != null) {
                 previewSizeBeforeScale[0] = mAppWidgetHostViewPreview.getMeasuredWidth();
