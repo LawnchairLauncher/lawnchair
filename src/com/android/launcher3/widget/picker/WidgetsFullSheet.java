@@ -469,8 +469,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 Log.d(TAG, "Header view height is 0 when inflating recommended widgets");
             }
             float maxTableHeight =
-                    (mLauncher.getDeviceProfile().heightPx - mTabsHeight - getHeaderViewHeight())
-                            * RECOMMENDATION_TABLE_HEIGHT_RATIO;
+                    (mLauncher.getDeviceProfile().availableHeightPx - mTabsHeight
+                            - getHeaderViewHeight()) * RECOMMENDATION_TABLE_HEIGHT_RATIO;
             List<ArrayList<WidgetItem>> recommendedWidgetsInTable =
                     WidgetsTableUtils.groupWidgetItemsIntoTable(recommendedWidgets,
                             mMaxSpansPerRow);
