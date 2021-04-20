@@ -23,6 +23,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import android.content.Intent;
+import android.util.Log;
 
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
@@ -36,6 +37,7 @@ import com.android.launcher3.tapl.LauncherInstrumentation.NavigationModel;
 import com.android.launcher3.tapl.Overview;
 import com.android.launcher3.tapl.OverviewActions;
 import com.android.launcher3.tapl.OverviewTask;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.ui.TaplTestsLauncher3;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
 import com.android.quickstep.views.RecentsView;
@@ -187,10 +189,12 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @NavigationModeSwitch
     @PortraitLandscape
     public void testSwitchToOverview() throws Exception {
+        Log.d(TestProtocol.LAUNCHER_NOT_TRANSPOSED, "testSwitchToOverview");
         assertNotNull("Workspace.switchToOverview() returned null",
                 mLauncher.pressHome().switchToOverview());
         assertTrue("Launcher internal state didn't switch to Overview",
                 isInState(() -> LauncherState.OVERVIEW));
+        Log.d(TestProtocol.LAUNCHER_NOT_TRANSPOSED, "testSwitchToOverview finished");
     }
 
     @Test
