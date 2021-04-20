@@ -435,8 +435,11 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
     private void setViewVisibilityBasedOnSearch(boolean isInSearchMode) {
         mIsInSearchMode = isInSearchMode;
-        mSearchAndRecommendationViewHolder.mRecommendedWidgetsTable
-                .setVisibility(isInSearchMode ? GONE : VISIBLE);
+        if (isInSearchMode) {
+            mSearchAndRecommendationViewHolder.mRecommendedWidgetsTable.setVisibility(GONE);
+        } else {
+            onRecommendedWidgetsBound();
+        }
         if (mHasWorkProfile) {
             mViewPager.setVisibility(isInSearchMode ? GONE : VISIBLE);
             mTabsView.setVisibility(isInSearchMode ? GONE : VISIBLE);
