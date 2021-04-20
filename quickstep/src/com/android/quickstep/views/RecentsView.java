@@ -3155,7 +3155,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         // Align ClearAllButton to the left (RTL) or right (non-RTL), which is different from other
         // TaskViews. This must be called after laying out ClearAllButton.
         if (layoutChildren) {
-            int clearAllWidthDiff = mTaskWidth - mClearAllButton.getWidth();
+            int clearAllWidthDiff = mOrientationHandler.getPrimaryValue(mTaskWidth, mTaskHeight)
+                    - mOrientationHandler.getPrimarySize(mClearAllButton);
             mClearAllButton.setScrollOffsetPrimary(mIsRtl ? clearAllWidthDiff : -clearAllWidthDiff);
         }
 
