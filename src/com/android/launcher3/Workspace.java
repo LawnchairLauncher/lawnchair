@@ -69,7 +69,6 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dot.FolderDotInfo;
-import com.android.launcher3.dragndrop.AppWidgetHostViewDrawable;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
@@ -414,7 +413,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
 
         if (mDragInfo != null && mDragInfo.cell != null) {
-            CellLayout layout = (CellLayout) mDragInfo.cell.getParent().getParent();
+            CellLayout layout = (CellLayout) (mDragInfo.cell instanceof LauncherAppWidgetHostView
+                    ? dragObject.dragView.getContentViewParent().getParent()
+                    : mDragInfo.cell.getParent().getParent());
             layout.markCellsAsUnoccupiedForView(mDragInfo.cell);
         }
 
@@ -1527,10 +1528,19 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             draggableView = (DraggableView) child;
         }
 
+        final View contentView = previewProvider.getContentView();
+        final float scale;
         // The draggable drawable follows the touch point around on the screen
-        final Drawable drawable = previewProvider.createDrawable();
+        final Drawable drawable;
+        if (contentView == null) {
+            drawable = previewProvider.createDrawable();
+            scale = previewProvider.getScaleAndPosition(drawable, mTempXY);
+        } else {
+            drawable = null;
+            scale = previewProvider.getScaleAndPosition(contentView, mTempXY);
+        }
+
         int halfPadding = previewProvider.previewPadding / 2;
-        float scale = previewProvider.getScaleAndPosition(drawable, mTempXY);
         int dragLayerX = mTempXY[0];
         int dragLayerY = mTempXY[1];
 
@@ -1556,21 +1566,37 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             }
         }
 
-        if (drawable instanceof AppWidgetHostViewDrawable) {
-            mDragController.addDragListener(new AppWidgetHostViewDragListener(mLauncher));
+        final DragView dv;
+        if (contentView instanceof View) {
+            if (contentView instanceof LauncherAppWidgetHostView) {
+                mDragController.addDragListener(new AppWidgetHostViewDragListener(mLauncher));
+            }
+            dv = mDragController.startDrag(
+                    contentView,
+                    draggableView,
+                    dragLayerX,
+                    dragLayerY,
+                    source,
+                    dragObject,
+                    dragVisualizeOffset,
+                    dragRect,
+                    scale * iconScale,
+                    scale,
+                    dragOptions);
+        } else {
+            dv = mDragController.startDrag(
+                    drawable,
+                    draggableView,
+                    dragLayerX,
+                    dragLayerY,
+                    source,
+                    dragObject,
+                    dragVisualizeOffset,
+                    dragRect,
+                    scale * iconScale,
+                    scale,
+                    dragOptions);
         }
-        DragView dv = mDragController.startDrag(
-                drawable,
-                draggableView,
-                dragLayerX,
-                dragLayerY,
-                source,
-                dragObject,
-                dragVisualizeOffset,
-                dragRect,
-                scale * iconScale,
-                scale,
-                dragOptions);
         return dv;
     }
 
@@ -1900,6 +1926,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                         CellLayout parentCell = getParentCellLayoutForView(cell);
                         if (parentCell != null) {
                             parentCell.removeView(cell);
+                        } else if (mDragInfo.cell instanceof LauncherAppWidgetHostView) {
+                            d.dragView.detachContentView(/* reattachToPreviousParent= */ false);
                         } else if (FeatureFlags.IS_STUDIO_BUILD) {
                             throw new NullPointerException("mDragInfo.cell has null parent");
                         }
@@ -1937,6 +1965,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 } else {
                     if (!returnToOriginalCellToPreventShuffling) {
                         onNoCellFound(dropTargetLayout);
+                    }
+                    if (mDragInfo.cell instanceof LauncherAppWidgetHostView) {
+                        d.dragView.detachContentView(/* reattachToPreviousParent= */ true);
                     }
 
                     // If we can't find a drop location, we return the item to its original position
@@ -2636,10 +2667,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     private Drawable createWidgetDrawable(ItemInfo widgetInfo, View layout) {
-        if (layout instanceof LauncherAppWidgetHostView) {
-            return new AppWidgetHostViewDrawable((LauncherAppWidgetHostView) layout);
-        }
-
         int[] unScaledSize = estimateItemSize(widgetInfo);
         int visibility = layout.getVisibility();
         layout.setVisibility(VISIBLE);
@@ -2720,7 +2747,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         boolean isWidget = info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET ||
                 info.itemType == LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET;
-        if ((animationType == ANIMATE_INTO_POSITION_AND_RESIZE || external) && finalView != null) {
+        if ((animationType == ANIMATE_INTO_POSITION_AND_RESIZE || external)
+                && finalView != null
+                && dragView.getContentView() != finalView) {
             Drawable crossFadeDrawable = createWidgetDrawable(info, finalView);
             dragView.crossFadeContent(crossFadeDrawable, (int) (duration * 0.8f));
         } else if (isWidget && external) {
