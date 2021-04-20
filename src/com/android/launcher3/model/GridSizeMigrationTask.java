@@ -53,7 +53,7 @@ import java.util.HashSet;
 public class GridSizeMigrationTask {
 
     private static final String TAG = "GridSizeMigrationTask";
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     // These are carefully selected weights for various item types (Math.random?), to allow for
     // the least absurd migration experience.
