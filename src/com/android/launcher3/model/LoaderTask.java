@@ -109,6 +109,8 @@ import java.util.concurrent.CancellationException;
 public class LoaderTask implements Runnable {
     private static final String TAG = "LoaderTask";
 
+    private static final boolean DEBUG = true;
+
     protected final LauncherAppState mApp;
     private final AllAppsList mBgAllAppsList;
     protected final BgDataModel mBgDataModel;
@@ -190,7 +192,7 @@ public class LoaderTask implements Runnable {
         try (LauncherModel.LoaderTransaction transaction = mApp.getModel().beginLoader(this)) {
             List<ShortcutInfo> allShortcuts = new ArrayList<>();
             loadWorkspace(allShortcuts);
-            logger.addSplit("loadWorkspace");
+            logASplit(logger, "loadWorkspace");
 
             // Sanitize data re-syncs widgets/shortcuts based on the workspace loaded from db.
             // sanitizeData should not be invoked if the workspace is loaded from a db different
@@ -199,30 +201,30 @@ public class LoaderTask implements Runnable {
             if (mApp.getInvariantDeviceProfile().dbFile.equals(mDbName)) {
                 verifyNotStopped();
                 sanitizeData();
-                logger.addSplit("sanitizeData");
+                logASplit(logger, "sanitizeData");
             }
 
             verifyNotStopped();
             mResults.bindWorkspace();
-            logger.addSplit("bindWorkspace");
+            logASplit(logger, "bindWorkspace");
 
             mModelDelegate.workspaceLoadComplete();
             // Notify the installer packages of packages with active installs on the first screen.
             sendFirstScreenActiveInstallsBroadcast();
-            logger.addSplit("sendFirstScreenActiveInstallsBroadcast");
+            logASplit(logger, "sendFirstScreenActiveInstallsBroadcast");
 
             // Take a break
             waitForIdle();
-            logger.addSplit("step 1 complete");
+            logASplit(logger, "step 1 complete");
             verifyNotStopped();
 
             // second step
             List<LauncherActivityInfo> allActivityList = loadAllApps();
-            logger.addSplit("loadAllApps");
+            logASplit(logger, "loadAllApps");
 
             verifyNotStopped();
             mResults.bindAllApps();
-            logger.addSplit("bindAllApps");
+            logASplit(logger, "bindAllApps");
 
             verifyNotStopped();
             IconCacheUpdateHandler updateHandler = mIconCache.getUpdateHandler();
@@ -230,54 +232,54 @@ public class LoaderTask implements Runnable {
             updateHandler.updateIcons(allActivityList,
                     LauncherActivityCachingLogic.newInstance(mApp.getContext()),
                     mApp.getModel()::onPackageIconsUpdated);
-            logger.addSplit("update icon cache");
+            logASplit(logger, "update icon cache");
 
             if (FeatureFlags.ENABLE_DEEP_SHORTCUT_ICON_CACHE.get()) {
                 verifyNotStopped();
-                logger.addSplit("save shortcuts in icon cache");
+                logASplit(logger, "save shortcuts in icon cache");
                 updateHandler.updateIcons(allShortcuts, new ShortcutCachingLogic(),
                         mApp.getModel()::onPackageIconsUpdated);
             }
 
             // Take a break
             waitForIdle();
-            logger.addSplit("step 2 complete");
+            logASplit(logger, "step 2 complete");
             verifyNotStopped();
 
             // third step
             List<ShortcutInfo> allDeepShortcuts = loadDeepShortcuts();
-            logger.addSplit("loadDeepShortcuts");
+            logASplit(logger, "loadDeepShortcuts");
 
             verifyNotStopped();
             mResults.bindDeepShortcuts();
-            logger.addSplit("bindDeepShortcuts");
+            logASplit(logger, "bindDeepShortcuts");
 
             if (FeatureFlags.ENABLE_DEEP_SHORTCUT_ICON_CACHE.get()) {
                 verifyNotStopped();
-                logger.addSplit("save deep shortcuts in icon cache");
+                logASplit(logger, "save deep shortcuts in icon cache");
                 updateHandler.updateIcons(allDeepShortcuts,
                         new ShortcutCachingLogic(), (pkgs, user) -> { });
             }
 
             // Take a break
             waitForIdle();
-            logger.addSplit("step 3 complete");
+            logASplit(logger, "step 3 complete");
             verifyNotStopped();
 
             // fourth step
             List<ComponentWithLabelAndIcon> allWidgetsList =
                     mBgDataModel.widgetsModel.update(mApp, null);
-            logger.addSplit("load widgets");
+            logASplit(logger, "load widgets");
 
             verifyNotStopped();
             mResults.bindWidgets();
-            logger.addSplit("bindWidgets");
+            logASplit(logger, "bindWidgets");
             verifyNotStopped();
 
             updateHandler.updateIcons(allWidgetsList,
                     new ComponentWithIconCachingLogic(mApp.getContext(), true),
                     mApp.getModel()::onWidgetLabelsUpdated);
-            logger.addSplit("save widgets in icon cache");
+            logASplit(logger, "save widgets in icon cache");
 
             // fifth step
             if (FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
@@ -286,13 +288,13 @@ public class LoaderTask implements Runnable {
 
             verifyNotStopped();
             updateHandler.finish();
-            logger.addSplit("finish icon update");
+            logASplit(logger, "finish icon update");
 
             mModelDelegate.modelLoadComplete();
             transaction.commit();
         } catch (CancellationException e) {
             // Loader stopped, ignore
-            logger.addSplit("Cancelled");
+            logASplit(logger, "Cancelled");
         } finally {
             logger.dumpToLog();
         }
@@ -976,5 +978,12 @@ public class LoaderTask implements Runnable {
     public static boolean isValidProvider(AppWidgetProviderInfo provider) {
         return (provider != null) && (provider.provider != null)
                 && (provider.provider.getPackageName() != null);
+    }
+
+    private static void logASplit(final TimingLogger logger, final String label) {
+        logger.addSplit(label);
+        if (DEBUG) {
+            Log.d(TAG, label);
+        }
     }
 }
