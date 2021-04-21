@@ -26,6 +26,7 @@ import android.content.res.Configuration;
 import android.graphics.Point;
 import android.util.Log;
 
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.DisplayController.DisplayInfoChangeListener;
 import com.android.launcher3.util.DisplayController.Info;
 
@@ -72,6 +73,10 @@ public class ConfigMonitor extends BroadcastReceiver implements DisplayInfoChang
 
         // Listen for configuration change
         mContext.registerReceiver(this, new IntentFilter(Intent.ACTION_CONFIGURATION_CHANGED));
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.LAUNCHER_NOT_TRANSPOSED, "ConfigMonitor.register: this="
+                    + System.identityHashCode(this) + " callback=" + callback.getClass().getName());
+        }
     }
 
     @Override
@@ -113,6 +118,10 @@ public class ConfigMonitor extends BroadcastReceiver implements DisplayInfoChang
     }
 
     public void unregister() {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.LAUNCHER_NOT_TRANSPOSED, "ConfigMonitor.unregister: this="
+                    + System.identityHashCode(this));
+        }
         try {
             mContext.unregisterReceiver(this);
             DisplayController.getDefaultDisplay(mContext).removeChangeListener(this);

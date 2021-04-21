@@ -394,6 +394,9 @@ public class InvariantDeviceProfile {
     }
 
     private void onConfigChanged(Context context) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.LAUNCHER_NOT_TRANSPOSED, "IDP.onConfigChanged");
+        }
         // Config changes, what shall we do?
         InvariantDeviceProfile oldProfile = new InvariantDeviceProfile(this);
 
@@ -578,7 +581,7 @@ public class InvariantDeviceProfile {
     public DeviceProfile getDeviceProfile(Context context) {
         if (TestProtocol.sDebugTracing) {
             Log.d(TestProtocol.LAUNCHER_NOT_TRANSPOSED, "getDeviceProfile: orientation="
-                    + context.getResources().getConfiguration().orientation, new Throwable());
+                    + context.getResources().getConfiguration().orientation);
         }
         return context.getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_LANDSCAPE ? landscapeProfile : portraitProfile;
