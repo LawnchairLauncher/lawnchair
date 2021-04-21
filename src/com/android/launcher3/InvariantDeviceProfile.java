@@ -394,6 +394,9 @@ public class InvariantDeviceProfile {
     }
 
     private void onConfigChanged(Context context) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.LAUNCHER_NOT_TRANSPOSED, "IDP.onConfigChanged");
+        }
         // Config changes, what shall we do?
         InvariantDeviceProfile oldProfile = new InvariantDeviceProfile(this);
 
