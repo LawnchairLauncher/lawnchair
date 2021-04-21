@@ -279,6 +279,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         super.onAttachedToWindow();
         mLauncher.getAppWidgetHost().addProviderChangeListener(this);
         notifyWidgetProvidersChanged();
+        onRecommendedWidgetsBound();
     }
 
     @Override
@@ -416,6 +417,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
     @Override
     public void exitSearchMode() {
+        if (!mIsInSearchMode) return;
         onSearchResults(new ArrayList<>());
         setViewVisibilityBasedOnSearch(/*isInSearchMode=*/ false);
         if (mHasWorkProfile) {
@@ -464,7 +466,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 mLauncher.getPopupDataProvider().getRecommendedWidgets();
         WidgetsRecommendationTableLayout table =
                 mSearchAndRecommendationViewHolder.mRecommendedWidgetsTable;
-        if (recommendedWidgets.size() > 0) {
+        if (!mIsInSearchMode && recommendedWidgets.size() > 0) {
             // TODO(b/185508758): Revert the following log after debugging.
             if (getHeaderViewHeight() == 0) {
                 Log.d(TAG, "Header view height is 0 when inflating recommended widgets");
