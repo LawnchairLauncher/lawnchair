@@ -3141,8 +3141,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     @Override
     protected boolean getPageScrolls(int[] outPageScrolls, boolean layoutChildren,
             ComputePageScrollsLogic scrollLogic) {
-        boolean pageScrollChanged = super.getPageScrolls(outPageScrolls, layoutChildren,
-                scrollLogic);
+        int[] newPageScrolls = new int[outPageScrolls.length];
+        super.getPageScrolls(newPageScrolls, layoutChildren, scrollLogic);
         boolean showAsFullscreen = showAsFullscreen();
         boolean showAsGrid = showAsGrid();
 
@@ -3154,6 +3154,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             mClearAllButton.setScrollOffsetPrimary(mIsRtl ? clearAllWidthDiff : -clearAllWidthDiff);
         }
 
+        boolean pageScrollChanged = false;
         final int childCount = getChildCount();
         for (int i = 0; i < childCount; i++) {
             View child = getChildAt(i);
@@ -3165,9 +3166,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                         showAsGrid);
             }
 
-            if (scrollDiff != 0) {
-                outPageScrolls[i] += scrollDiff;
+            final int pageScroll = newPageScrolls[i] + (int) scrollDiff;
+            if (outPageScrolls[i] != pageScroll) {
                 pageScrollChanged = true;
+                outPageScrolls[i] = pageScroll;
             }
         }
         return pageScrollChanged;
