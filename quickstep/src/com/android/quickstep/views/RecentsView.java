@@ -1165,24 +1165,26 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         updateTaskSize();
 
         // Update ActionsView position
-        FrameLayout.LayoutParams layoutParams =
-                (FrameLayout.LayoutParams) mActionsView.getLayoutParams();
-        if (dp.isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get()) {
-            layoutParams.gravity = Gravity.BOTTOM;
-            layoutParams.bottomMargin =
-                    dp.heightPx - mInsets.bottom - mLastComputedGridSize.bottom;
-            layoutParams.leftMargin = mLastComputedTaskSize.left;
-            layoutParams.rightMargin = dp.widthPx - mLastComputedTaskSize.right;
-            // When in modal state, remove bottom margin to avoid covering content.
-            mActionsView.setModalTransformY(layoutParams.bottomMargin);
-        } else {
-            layoutParams.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
-            layoutParams.bottomMargin = 0;
-            layoutParams.leftMargin = 0;
-            layoutParams.rightMargin = 0;
-            mActionsView.setModalTransformY(0);
+        if (mActionsView != null) {
+            FrameLayout.LayoutParams layoutParams =
+                    (FrameLayout.LayoutParams) mActionsView.getLayoutParams();
+            if (dp.isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get()) {
+                layoutParams.gravity = Gravity.BOTTOM;
+                layoutParams.bottomMargin =
+                        dp.heightPx - mInsets.bottom - mLastComputedGridSize.bottom;
+                layoutParams.leftMargin = mLastComputedTaskSize.left;
+                layoutParams.rightMargin = dp.widthPx - mLastComputedTaskSize.right;
+                // When in modal state, remove bottom margin to avoid covering content.
+                mActionsView.setModalTransformY(layoutParams.bottomMargin);
+            } else {
+                layoutParams.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
+                layoutParams.bottomMargin = 0;
+                layoutParams.leftMargin = 0;
+                layoutParams.rightMargin = 0;
+                mActionsView.setModalTransformY(0);
+            }
+            mActionsView.setLayoutParams(layoutParams);
         }
-        mActionsView.setLayoutParams(layoutParams);
     }
 
     /**
@@ -3155,7 +3157,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         // Align ClearAllButton to the left (RTL) or right (non-RTL), which is different from other
         // TaskViews. This must be called after laying out ClearAllButton.
         if (layoutChildren) {
-            int clearAllWidthDiff = mTaskWidth - mClearAllButton.getWidth();
+            int clearAllWidthDiff = mOrientationHandler.getPrimaryValue(mTaskWidth, mTaskHeight)
+                    - mOrientationHandler.getPrimarySize(mClearAllButton);
             mClearAllButton.setScrollOffsetPrimary(mIsRtl ? clearAllWidthDiff : -clearAllWidthDiff);
         }
 

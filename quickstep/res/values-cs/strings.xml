@@ -30,7 +30,7 @@
     <string name="time_left_for_app" msgid="3111996412933644358">"dnes zbývá: <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="title_app_suggestions" msgid="4185902664111965088">"Návrhy aplikací"</string>
     <string name="all_apps_label" msgid="8542784161730910663">"Všechny aplikace"</string>
-    <string name="all_apps_prediction_tip" msgid="2672336544844936186">"Vaše předpovídané aplikace"</string>
+    <string name="all_apps_prediction_tip" msgid="2672336544844936186">"Návrhy aplikací pro vás"</string>
     <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"Nechte si ve spodním řádku na ploše zobrazovat návrhy aplikací"</string>
     <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"Nechte si na řádku oblíbených na ploše zobrazovat návrhy aplikací"</string>
     <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Mějte nejpoužívanější aplikace k dispozici přímo na ploše. Návrhy se budou měnit v závislosti na sledech činností. Aplikace ve spodním řádku se přesunou na vaši plochu."</string>
@@ -78,8 +78,7 @@
     <string name="action_screenshot" msgid="8171125848358142917">"Snímek obrazovky"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Aplikace nebo organizace zakazuje tuto akci"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Přeskočit výukový program k navigaci?"</string>
-    <!-- no translation found for skip_tutorial_dialog_subtitle (544063326241955662) -->
-    <skip />
+    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Program později najdete v aplikaci <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Zrušit"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Přeskočit"</string>
 </resources>

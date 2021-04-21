@@ -34,6 +34,8 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
@@ -125,23 +127,81 @@ public class DragController implements DragDriver.EventListener, TouchController
 
     /**
      * Starts a drag.
-     * When the drag is started, the UI automatically goes into spring loaded mode. On a successful
-     * drop, it is the responsibility of the {@link DropTarget} to exit out of the spring loaded
-     * mode. If the drop was cancelled for some reason, the UI will automatically exit out of this mode.
+     *
+     * <p>When the drag is started, the UI automatically goes into spring loaded mode. On a
+     * successful drop, it is the responsibility of the {@link DropTarget} to exit out of the spring
+     * loaded mode. If the drop was cancelled for some reason, the UI will automatically exit out of
+     * this mode.
      *
      * @param drawable The drawable to be displayed in the drag view.  It will be re-scaled to the
-     *          enlarged size.
-     * @param originalView The source view (ie. icon, widget etc.) that is being dragged
-     *          and which the DragView represents
+     *                 enlarged size.
+     * @param originalView The source view (ie. icon, widget etc.) that is being dragged and which
+     *                     the DragView represents
      * @param dragLayerX The x position in the DragLayer of the left-top of the bitmap.
      * @param dragLayerY The y position in the DragLayer of the left-top of the bitmap.
      * @param source An object representing where the drag originated
      * @param dragInfo The data associated with the object that is being dragged
      * @param dragRegion Coordinates within the bitmap b for the position of item being dragged.
-     *          Makes dragging feel more precise, e.g. you can clip out a transparent border
+     *                   Makes dragging feel more precise, e.g. you can clip out a transparent
+     *                   border
      */
     public DragView startDrag(
             Drawable drawable,
+            DraggableView originalView,
+            int dragLayerX,
+            int dragLayerY,
+            DragSource source,
+            ItemInfo dragInfo,
+            Point dragOffset,
+            Rect dragRegion,
+            float initialDragViewScale,
+            float dragViewScaleOnDrop,
+            DragOptions options) {
+        return startDrag(drawable, /* view= */ null, originalView, dragLayerX, dragLayerY,
+                source, dragInfo, dragOffset, dragRegion, initialDragViewScale, dragViewScaleOnDrop,
+                options);
+    }
+
+    /**
+     * Starts a drag.
+     *
+     * <p>When the drag is started, the UI automatically goes into spring loaded mode. On a
+     * successful drop, it is the responsibility of the {@link DropTarget} to exit out of the spring
+     * loaded mode. If the drop was cancelled for some reason, the UI will automatically exit out of
+     * this mode.
+     *
+     * @param view The view to be displayed in the drag view.  It will be re-scaled to the
+     *             enlarged size.
+     * @param originalView The source view (ie. icon, widget etc.) that is being dragged and which
+     *                     the DragView represents
+     * @param dragLayerX The x position in the DragLayer of the left-top of the bitmap.
+     * @param dragLayerY The y position in the DragLayer of the left-top of the bitmap.
+     * @param source An object representing where the drag originated
+     * @param dragInfo The data associated with the object that is being dragged
+     * @param dragRegion Coordinates within the bitmap b for the position of item being dragged.
+     *                   Makes dragging feel more precise, e.g. you can clip out a transparent
+     *                   border
+     */
+    public DragView startDrag(
+            View view,
+            DraggableView originalView,
+            int dragLayerX,
+            int dragLayerY,
+            DragSource source,
+            ItemInfo dragInfo,
+            Point dragOffset,
+            Rect dragRegion,
+            float initialDragViewScale,
+            float dragViewScaleOnDrop,
+            DragOptions options) {
+        return startDrag(/* drawable= */ null, view, originalView, dragLayerX, dragLayerY,
+                source, dragInfo, dragOffset, dragRegion, initialDragViewScale, dragViewScaleOnDrop,
+                options);
+    }
+
+    private DragView startDrag(
+            @Nullable Drawable drawable,
+            @Nullable View view,
             DraggableView originalView,
             int dragLayerX,
             int dragLayerY,
@@ -182,14 +242,25 @@ public class DragController implements DragDriver.EventListener, TouchController
         final Resources res = mLauncher.getResources();
         final float scaleDps = mIsInPreDrag
                 ? res.getDimensionPixelSize(R.dimen.pre_drag_view_scale) : 0f;
-        final DragView dragView = mDragObject.dragView = new DragView(
-                mLauncher,
-                drawable,
-                registrationX,
-                registrationY,
-                initialDragViewScale,
-                dragViewScaleOnDrop,
-                scaleDps);
+        final DragView dragView = mDragObject.dragView = drawable != null
+                ? new DragView(
+                    mLauncher,
+                    drawable,
+                    registrationX,
+                    registrationY,
+                    initialDragViewScale,
+                    dragViewScaleOnDrop,
+                    scaleDps)
+                : new DragView(
+                    mLauncher,
+                    view,
+                    view.getMeasuredWidth(),
+                    view.getMeasuredHeight(),
+                    registrationX,
+                    registrationY,
+                    initialDragViewScale,
+                    dragViewScaleOnDrop,
+                    scaleDps);
         dragView.setItemInfo(dragInfo);
         mDragObject.dragComplete = false;
 

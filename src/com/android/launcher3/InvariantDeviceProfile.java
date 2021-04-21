@@ -48,6 +48,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.graphics.IconShape;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.ConfigMonitor;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.Info;
@@ -338,6 +339,10 @@ public class InvariantDeviceProfile {
         DeviceProfile.Builder builder = new DeviceProfile.Builder(context, this, displayInfo)
                 .setSizeRange(new Point(displayInfo.smallestSize),
                         new Point(displayInfo.largestSize));
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.LAUNCHER_NOT_TRANSPOSED,
+                    "largeSide=" + largeSide + " smallSide=" + smallSide);
+        }
 
         landscapeProfile = builder.setSize(largeSide, smallSide).build();
         portraitProfile = builder.setSize(smallSide, largeSide).build();
@@ -571,6 +576,10 @@ public class InvariantDeviceProfile {
     }
 
     public DeviceProfile getDeviceProfile(Context context) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.LAUNCHER_NOT_TRANSPOSED, "getDeviceProfile: orientation="
+                    + context.getResources().getConfiguration().orientation, new Throwable());
+        }
         return context.getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_LANDSCAPE ? landscapeProfile : portraitProfile;
     }
