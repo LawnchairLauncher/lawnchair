@@ -197,7 +197,7 @@ public class AllAppsTransitionController
     /**
      * Updates the total scroll range but does not update the UI.
      */
-    void setScrollRangeDelta(float delta) {
+    public void setScrollRangeDelta(float delta) {
         mScrollRangeDelta = delta;
         mShiftRange = mLauncher.getDeviceProfile().heightPx - mScrollRangeDelta;
     }
