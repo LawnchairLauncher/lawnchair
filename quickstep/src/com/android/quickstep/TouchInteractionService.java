@@ -149,6 +149,8 @@ public class TouchInteractionService extends Service implements PluginListener<O
 
         @BinderThread
         public void onInitialize(Bundle bundle) {
+            Log.d(TAG + " b/182478748", "TouchInteractionService.onInitialize: user="
+                    + getUserId());
             ISystemUiProxy proxy = ISystemUiProxy.Stub.asInterface(
                     bundle.getBinder(KEY_EXTRA_SYSUI_PROXY));
             IPip pip = IPip.Stub.asInterface(bundle.getBinder(KEY_EXTRA_SHELL_PIP));
@@ -310,6 +312,8 @@ public class TouchInteractionService extends Service implements PluginListener<O
     }
 
     private void disposeEventHandlers() {
+        Log.d(TAG + " b/182478748", "TouchInteractionService.disposeEventHandlers: user="
+                + getUserId());
         if (mInputEventReceiver != null) {
             mInputEventReceiver.dispose();
             mInputEventReceiver = null;
@@ -321,6 +325,8 @@ public class TouchInteractionService extends Service implements PluginListener<O
     }
 
     private void initInputMonitor() {
+        Log.d(TAG + " b/182478748", "TouchInteractionService.initInputMonitor: user="
+                + getUserId());
         disposeEventHandlers();
 
         if (TestProtocol.sDebugTracing) {
@@ -329,9 +335,11 @@ public class TouchInteractionService extends Service implements PluginListener<O
         }
 
         if (mDeviceState.isButtonNavMode()) {
+            Log.d(TAG + " b/182478748", "isButtonNav: user=" + getUserId());
             return;
         }
 
+        Log.d(TAG + " b/182478748", "create swipe-up input monitor: user=" + getUserId());
         mInputMonitorCompat = new InputMonitorCompat("swipe-up", mDeviceState.getDisplayId());
         mInputEventReceiver = mInputMonitorCompat.getInputReceiver(Looper.getMainLooper(),
                 mMainChoreographer, this::onInputEvent);
@@ -448,6 +456,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
 
     @Override
     public void onDestroy() {
+        Log.d(TAG, "Touch service destroyed: user=" + getUserId());
         sIsInitialized = false;
         if (mDeviceState.isUserUnlocked()) {
             mInputConsumer.unregisterInputConsumer();
@@ -469,7 +478,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
 
     @Override
     public IBinder onBind(Intent intent) {
-        Log.d(TAG, "Touch service connected");
+        Log.d(TAG, "Touch service connected: user=" + getUserId());
         return mMyBinder;
     }
 
