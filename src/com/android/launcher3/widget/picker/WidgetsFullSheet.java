@@ -50,6 +50,7 @@ import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.model.WidgetItem;
@@ -649,7 +650,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     }
 
     private boolean hasSeenEducationTip() {
-        return mLauncher.getSharedPrefs().getBoolean(WIDGETS_EDUCATION_TIP_SEEN, false);
+        return mLauncher.getSharedPrefs().getBoolean(WIDGETS_EDUCATION_TIP_SEEN, false)
+                || Utilities.IS_RUNNING_IN_TEST_HARNESS;
     }
 
     /** A holder class for holding adapters & their corresponding recycler view. */
