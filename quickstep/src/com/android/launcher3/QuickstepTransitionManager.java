@@ -110,7 +110,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     private static final String TAG = "QuickstepTransition";
 
     private static final boolean ENABLE_SHELL_STARTING_SURFACE =
-            SystemProperties.getBoolean("persist.debug.shell_starting_surface", true);
+            SystemProperties.getBoolean("persist.debug.shell_starting_surface", false);
 
     /** Duration of status bar animations. */
     public static final int STATUS_BAR_TRANSITION_DURATION = 120;
