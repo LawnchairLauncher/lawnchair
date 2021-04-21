@@ -108,6 +108,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
         SysUINavigationMode.INSTANCE.get(this).removeModeChangeListener(this);
         if (mTaskbarController != null) {
             mTaskbarController.cleanup();
+            mTaskbarController = null;
         }
 
         super.onDestroy();
@@ -219,7 +220,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
         mSplitPlaceholderView = findViewById(R.id.split_placeholder);
         RecentsView overviewPanel = (RecentsView) getOverviewPanel();
         mSplitPlaceholderView.init(
-                new SplitSelectStateController(SystemUiProxy.INSTANCE.get(this))
+                new SplitSelectStateController(mHandler, SystemUiProxy.INSTANCE.get(this))
         );
         overviewPanel.init(mActionsView, mSplitPlaceholderView);
         mActionsView.updateVerticalMargin(SysUINavigationMode.getMode(this));

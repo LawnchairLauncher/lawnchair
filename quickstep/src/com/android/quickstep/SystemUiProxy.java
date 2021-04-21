@@ -35,6 +35,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 import com.android.launcher3.util.MainThreadInitializedObject;
+import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.RemoteTransitionCompat;
@@ -252,18 +253,6 @@ public class SystemUiProxy implements ISystemUiProxy,
                 Log.w(TAG, "Failed call startAssistant", e);
             }
         }
-    }
-
-    @Override
-    public Bundle monitorGestureInput(String name, int displayId) {
-        if (mSystemUiProxy != null) {
-            try {
-                return mSystemUiProxy.monitorGestureInput(name, displayId);
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed call monitorGestureInput: " + name, e);
-            }
-        }
-        return null;
     }
 
     @Override
@@ -485,6 +474,20 @@ public class SystemUiProxy implements ISystemUiProxy,
         if (mSplitScreen != null) {
             try {
                 mSplitScreen.startTask(taskId, stage, position, options);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call startTask");
+            }
+        }
+    }
+
+    /** Start multiple tasks in split-screen simultaneously. */
+    public void startTasks(int mainTaskId, Bundle mainOptions, int sideTaskId, Bundle sideOptions,
+            @SplitConfigurationOptions.StagePosition int sidePosition,
+            RemoteTransitionCompat remoteTransition) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSplitScreen.startTasks(mainTaskId, mainOptions, sideTaskId, sideOptions,
+                        sidePosition, remoteTransition.getTransition());
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call startTask");
             }

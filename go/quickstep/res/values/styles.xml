@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2021 The Android Open Source Project
+<!--
+     Copyright (C) 2021 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,9 +14,13 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
-<View
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="@dimen/taskbar_divider_thickness"
-    android:layout_height="@dimen/taskbar_divider_height"
-    android:background="@color/taskbar_divider" />
+<resources>
+    <style name="GoOverviewActionButton"
+        parent="@android:style/Widget.DeviceDefault.Button">
+        <item name="android:textColor">@color/overview_button</item>
+        <item name="android:drawableTint">@color/overview_button</item>
+        <item name="android:tint">?android:attr/textColorPrimary</item>
+        <item name="android:drawablePadding">8dp</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+</resources>

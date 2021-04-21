@@ -95,6 +95,9 @@
     <!-- Tab label. A user can tap this tab to access their work widgets. [CHAR_LIMIT=25] -->
     <string name="widgets_full_sheet_work_tab">Work</string>
 
+    <!-- A widget category label for grouping widgets related to conversations. [CHAR_LIMIT=30] -->
+    <string name="widget_category_conversations">Conversations</string>
+
     <!-- All Apps -->
     <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
     <string name="all_apps_search_bar_hint">Search apps</string>
@@ -106,12 +109,6 @@
     <string name="all_apps_search_market_message">Search for more apps</string>
     <!-- Label for an icon representing any generic app. [CHAR_LIMIT=50] -->
     <string name="label_application">App</string>
-
-    <!--All apps Search-->
-    <!-- Section title for apps [CHAR_LIMIT=50] -->
-    <string name="search_corpus_apps">Apps</string>
-    <!-- try instant app action for play search result [CHAR_LIMIT=50 -->
-    <string name="search_action_try_now">Try Now</string>
 
     <!-- Popup items -->
     <!-- Text to display as the header above notifications. [CHAR_LIMIT=30] -->

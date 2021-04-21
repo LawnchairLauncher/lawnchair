@@ -325,9 +325,12 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
         float relativeScreenWidth = 1f / numScreens;
         float absoluteTop = widgetLocation.top;
         float absoluteBottom = widgetLocation.bottom;
-        for (View v = (View) getParent();
-                v != null && v.getId() != R.id.launcher;
-                v = (View) v.getParent()) {
+        View v = this;
+        while (v.getParent() instanceof View) {
+            v = (View) v.getParent();
+            if (v.getId() != R.id.launcher) {
+                break;
+            }
             absoluteBottom += v.getTop();
             absoluteTop += v.getTop();
         }
@@ -336,7 +339,7 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
         // The layout depends on the orientation.
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             int parentViewWidth = parentView == null ? 0 : parentView.getWidth();
-            xOffset = screenHeight - mWorkspace.getPaddingRight() - parentViewWidth;
+            xOffset = screenWidth - mWorkspace.getPaddingRight() - parentViewWidth;
         } else {
             int parentViewPaddingLeft = parentView == null ? 0 : parentView.getPaddingLeft();
             xOffset = mWorkspace.getPaddingLeft() + parentViewPaddingLeft;

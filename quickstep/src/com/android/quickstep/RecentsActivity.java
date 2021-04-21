@@ -108,8 +108,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
 
         SplitPlaceholderView splitPlaceholderView = findViewById(R.id.split_placeholder);
         splitPlaceholderView.init(
-                new SplitSelectStateController(
-                        SystemUiProxy.INSTANCE.get(this))
+                new SplitSelectStateController(mUiHandler, SystemUiProxy.INSTANCE.get(this))
         );
 
         mDragLayer.recreateControllers();

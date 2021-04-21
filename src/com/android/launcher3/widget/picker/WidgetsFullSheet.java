@@ -28,6 +28,7 @@ import android.graphics.Rect;
 import android.os.Process;
 import android.os.UserHandle;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.Pair;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -41,6 +42,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
+import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.DeviceProfile;
@@ -48,9 +50,11 @@ import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.model.WidgetItem;
+import com.android.launcher3.views.ArrowTipView;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 import com.android.launcher3.views.TopRoundedCornerView;
 import com.android.launcher3.widget.BaseWidgetSheet;
@@ -66,6 +70,7 @@ import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.OnActivePag
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.IntStream;
 
 /**
  * Popup for showing the full list of available widgets
@@ -78,11 +83,13 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
     private static final long DEFAULT_OPEN_DURATION = 267;
     private static final long FADE_IN_DURATION = 150;
+    private static final long EDUCATION_TIP_DELAY_MS = 200;
     private static final float VERTICAL_START_POSITION = 0.3f;
     // The widget recommendation table can easily take over the entire screen on devices with small
     // resolution or landscape on phone. This ratio defines the max percentage of content area that
     // the table can display.
     private static final float RECOMMENDATION_TABLE_HEIGHT_RATIO = 0.75f;
+    private static final String WIDGETS_EDUCATION_TIP_SEEN = "launcher.widgets_education_tip_seen";
 
     private final Rect mInsets = new Rect();
     private final boolean mHasWorkProfile;
@@ -92,6 +99,35 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             mCurrentUser.equals(entry.mPkgItem.user);
     private final Predicate<WidgetsListBaseEntry> mWorkWidgetsFilter =
             mPrimaryWidgetsFilter.negate();
+    private final OnLayoutChangeListener mLayoutChangeListenerToShowTips =
+            new OnLayoutChangeListener() {
+                @Override
+                public void onLayoutChange(View v, int left, int top, int right, int bottom,
+                        int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                    if (hasSeenEducationTip()) {
+                        removeOnLayoutChangeListener(this);
+                        return;
+                    }
+
+                    // Widgets are loaded asynchronously, We are adding a delay because we only want
+                    // to show the tip when the widget preview has finished loading and rendering in
+                    // this view.
+                    removeCallbacks(mShowEducationTipTask);
+                    postDelayed(mShowEducationTipTask, EDUCATION_TIP_DELAY_MS);
+                }
+            };
+
+    private final Runnable mShowEducationTipTask = () -> {
+        if (hasSeenEducationTip()) {
+            removeOnLayoutChangeListener(mLayoutChangeListenerToShowTips);
+            return;
+        }
+        View viewForTip = getViewToShowEducationTip();
+        if (viewForTip != null && ViewCompat.isLaidOut(viewForTip)) {
+            removeOnLayoutChangeListener(mLayoutChangeListenerToShowTips);
+            showEducationTipOnView(viewForTip);
+        }
+    };
     private final int mTabsHeight;
     private final int mWidgetCellHorizontalPadding;
 
@@ -133,6 +169,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         layoutInflater.inflate(contentLayoutRes, springLayout, true);
 
         RecyclerViewFastScroller fastScroller = findViewById(R.id.fast_scroller);
+        mAdapters.get(AdapterHolder.PRIMARY).setup(findViewById(R.id.primary_widgets_list_view));
+        mAdapters.get(AdapterHolder.SEARCH).setup(findViewById(R.id.search_widgets_list_view));
         if (mHasWorkProfile) {
             mViewPager = findViewById(R.id.widgets_view_pager);
             mViewPager.initParentViews(this);
@@ -144,6 +182,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             findViewById(R.id.tab_work)
                     .setOnClickListener((View view) -> mViewPager.snapToPage(1));
             fastScroller.setIsRecyclerViewFirstChildInParent(false);
+            mAdapters.get(AdapterHolder.WORK).setup(findViewById(R.id.work_widgets_list_view));
         } else {
             mViewPager = null;
         }
@@ -170,6 +209,10 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
         mSearchAndRecommendationViewHolder.mSearchBar.initialize(
                 mLauncher.getPopupDataProvider(), /* searchModeListener= */ this);
+
+        if (!hasSeenEducationTip()) {
+            addOnLayoutChangeListener(mLayoutChangeListenerToShowTips);
+        }
     }
 
     @Override
@@ -236,6 +279,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         super.onAttachedToWindow();
         mLauncher.getAppWidgetHost().addProviderChangeListener(this);
         notifyWidgetProvidersChanged();
+        onRecommendedWidgetsBound();
     }
 
     @Override
@@ -353,15 +397,11 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         List<WidgetsListBaseEntry> allWidgets = mLauncher.getPopupDataProvider().getAllWidgets();
 
         AdapterHolder primaryUserAdapterHolder = mAdapters.get(AdapterHolder.PRIMARY);
-        primaryUserAdapterHolder.setup(findViewById(R.id.primary_widgets_list_view));
-        AdapterHolder searchAdapterHolder = mAdapters.get(AdapterHolder.SEARCH);
-        searchAdapterHolder.setup(findViewById(R.id.search_widgets_list_view));
         primaryUserAdapterHolder.mWidgetsListAdapter.setWidgets(allWidgets);
         updateNoWidgetsView(primaryUserAdapterHolder);
 
         if (mHasWorkProfile) {
             AdapterHolder workUserAdapterHolder = mAdapters.get(AdapterHolder.WORK);
-            workUserAdapterHolder.setup(findViewById(R.id.work_widgets_list_view));
             workUserAdapterHolder.mWidgetsListAdapter.setWidgets(allWidgets);
             onActivePageChanged(mViewPager.getCurrentPage());
         }
@@ -377,6 +417,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
     @Override
     public void exitSearchMode() {
+        if (!mIsInSearchMode) return;
         onSearchResults(new ArrayList<>());
         setViewVisibilityBasedOnSearch(/*isInSearchMode=*/ false);
         if (mHasWorkProfile) {
@@ -392,12 +433,16 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         mAdapters.get(AdapterHolder.SEARCH).mWidgetsListAdapter.setWidgetsOnSearch(entries);
         updateNoSearchResultsView(
                 mAdapters.get(AdapterHolder.SEARCH).mWidgetsListAdapter.getItemCount() == 0);
+        mAdapters.get(AdapterHolder.SEARCH).mWidgetsRecyclerView.scrollToTop();
     }
 
     private void setViewVisibilityBasedOnSearch(boolean isInSearchMode) {
         mIsInSearchMode = isInSearchMode;
-        mSearchAndRecommendationViewHolder.mRecommendedWidgetsTable
-                .setVisibility(isInSearchMode ? GONE : VISIBLE);
+        if (isInSearchMode) {
+            mSearchAndRecommendationViewHolder.mRecommendedWidgetsTable.setVisibility(GONE);
+        } else {
+            onRecommendedWidgetsBound();
+        }
         if (mHasWorkProfile) {
             mViewPager.setVisibility(isInSearchMode ? GONE : VISIBLE);
             mTabsView.setVisibility(isInSearchMode ? GONE : VISIBLE);
@@ -421,10 +466,14 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 mLauncher.getPopupDataProvider().getRecommendedWidgets();
         WidgetsRecommendationTableLayout table =
                 mSearchAndRecommendationViewHolder.mRecommendedWidgetsTable;
-        if (recommendedWidgets.size() > 0) {
+        if (!mIsInSearchMode && recommendedWidgets.size() > 0) {
+            // TODO(b/185508758): Revert the following log after debugging.
+            if (getHeaderViewHeight() == 0) {
+                Log.d(TAG, "Header view height is 0 when inflating recommended widgets");
+            }
             float maxTableHeight =
-                    (mLauncher.getDeviceProfile().heightPx - mTabsHeight - getHeaderViewHeight())
-                            * RECOMMENDATION_TABLE_HEIGHT_RATIO;
+                    (mLauncher.getDeviceProfile().availableHeightPx - mTabsHeight
+                            - getHeaderViewHeight()) * RECOMMENDATION_TABLE_HEIGHT_RATIO;
             List<ArrayList<WidgetItem>> recommendedWidgetsInTable =
                     WidgetsTableUtils.groupWidgetItemsIntoTable(recommendedWidgets,
                             mMaxSpansPerRow);
@@ -561,6 +610,50 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     @Override
     public void clearSearchBarFocus() {
         mSearchAndRecommendationViewHolder.mSearchBar.clearSearchBarFocus();
+    }
+
+    private void showEducationTipOnView(View view) {
+        mLauncher.getSharedPrefs().edit().putBoolean(WIDGETS_EDUCATION_TIP_SEEN, true).apply();
+        int[] coords = new int[2];
+        view.getLocationOnScreen(coords);
+        ArrowTipView arrowTipView = new ArrowTipView(mLauncher);
+        arrowTipView.showAtLocation(
+                getContext().getString(R.string.long_press_widget_to_add),
+                /* arrowXCoord= */coords[0] + view.getWidth() / 2,
+                /* yCoord= */coords[1]);
+    }
+
+    @Nullable private View getViewToShowEducationTip() {
+        if (mSearchAndRecommendationViewHolder.mRecommendedWidgetsTable.getVisibility() == VISIBLE
+                && mSearchAndRecommendationViewHolder.mRecommendedWidgetsTable.getChildCount() > 0
+        ) {
+            return ((ViewGroup) mSearchAndRecommendationViewHolder.mRecommendedWidgetsTable
+                    .getChildAt(0)).getChildAt(0);
+        }
+
+        AdapterHolder adapterHolder = mAdapters.get(mIsInSearchMode
+                ? AdapterHolder.SEARCH
+                : mViewPager == null
+                        ? AdapterHolder.PRIMARY
+                        : mViewPager.getCurrentPage());
+        WidgetsRowViewHolder viewHolderForTip =
+                (WidgetsRowViewHolder) IntStream.range(
+                                0, adapterHolder.mWidgetsListAdapter.getItemCount())
+                        .mapToObj(adapterHolder.mWidgetsRecyclerView::
+                                findViewHolderForAdapterPosition)
+                        .filter(viewHolder -> viewHolder instanceof WidgetsRowViewHolder)
+                        .findFirst()
+                        .orElse(null);
+        if (viewHolderForTip != null) {
+            return ((ViewGroup) viewHolderForTip.mTableContainer.getChildAt(0)).getChildAt(0);
+        }
+
+        return null;
+    }
+
+    private boolean hasSeenEducationTip() {
+        return mLauncher.getSharedPrefs().getBoolean(WIDGETS_EDUCATION_TIP_SEEN, false)
+                || Utilities.IS_RUNNING_IN_TEST_HARNESS;
     }
 
     /** A holder class for holding adapters & their corresponding recycler view. */

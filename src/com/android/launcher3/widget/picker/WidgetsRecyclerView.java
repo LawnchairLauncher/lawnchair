@@ -116,6 +116,7 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
     public void onUpdateScrollbar(int dy) {
         // Skip early if widgets are not bound.
         if (isModelNotReady()) {
+            mScrollbar.setThumbOffsetY(-1);
             return;
         }
 
@@ -242,5 +243,20 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
          * {@link WidgetsRecyclerView}.
          */
         int getHeaderViewHeight();
+    }
+
+    @Override
+    public void scrollToTop() {
+        if (mScrollbar != null) {
+            mScrollbar.reattachThumbToScroll();
+        }
+
+        if (getLayoutManager() instanceof LinearLayoutManager) {
+            if (getCurrentScrollY() == 0) {
+                // We are at the top, so don't scrollToPosition (would cause unnecessary relayout).
+                return;
+            }
+        }
+        scrollToPosition(0);
     }
 }

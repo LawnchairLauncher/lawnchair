@@ -170,9 +170,9 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
         WidgetCell widget = (WidgetCell) LayoutInflater.from(getContext())
                 .inflate(R.layout.widget_cell, parent, false);
 
-        WidgetImageView preview = widget.findViewById(R.id.widget_preview);
-        preview.setOnClickListener(this);
-        preview.setOnLongClickListener(this);
+        View previewContainer = widget.findViewById(R.id.widget_preview_container);
+        previewContainer.setOnClickListener(this);
+        previewContainer.setOnLongClickListener(this);
         widget.setAnimatePreview(false);
 
         parent.addView(widget);

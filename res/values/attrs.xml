@@ -43,6 +43,7 @@
     <attr name="folderTextColor" format="color" />
     <attr name="folderHintColor" format="color" />
     <attr name="workProfileOverlayTextColor" format="color" />
+    <attr name="gridColor" format="color" />
 
     <!-- BubbleTextView specific attributes. -->
     <declare-styleable name="BubbleTextView">
@@ -175,6 +176,9 @@
 
         <!-- numAllAppsColumns defaults to GridDisplayOption.numColumns, if not specified -->
         <attr name="numAllAppsColumns" format="integer" />
+
+        <!-- numShownHotseatIcons defaults to GridDisplayOption.numHotseatIcons, if not specified -->
+        <attr name="numShownHotseatIcons" format="integer" />
     </declare-styleable>
 
     <declare-styleable name="CellLayout">

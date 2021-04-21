@@ -17,6 +17,7 @@ package com.android.quickstep.fallback;
 
 import static com.android.quickstep.GestureState.GestureEndTarget.RECENTS;
 import static com.android.quickstep.fallback.RecentsState.DEFAULT;
+import static com.android.quickstep.fallback.RecentsState.HOME;
 import static com.android.quickstep.fallback.RecentsState.MODAL_TASK;
 
 import android.annotation.TargetApi;
@@ -98,6 +99,15 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
     }
 
     @Override
+    public void onGestureAnimationEnd() {
+        if (mCurrentGestureEndTarget == GestureState.GestureEndTarget.HOME) {
+            // Clean-up logic that occurs when recents is no longer in use/visible.
+            reset();
+        }
+        super.onGestureAnimationEnd();
+    }
+
+    @Override
     public void setCurrentTask(int runningTaskId) {
         super.setCurrentTask(runningTaskId);
         if (mHomeTaskInfo != null && mHomeTaskInfo.taskId != runningTaskId) {
@@ -156,11 +166,6 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
     }
 
     @Override
-    protected boolean isHomeTask(TaskView taskView) {
-        return mHomeTaskInfo != null && taskView.hasTaskId(mHomeTaskInfo.taskId);
-    }
-
-    @Override
     public void setModalStateEnabled(boolean isModalState) {
         super.setModalStateEnabled(isModalState);
         if (isModalState) {
@@ -182,6 +187,10 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
 
     @Override
     public void onStateTransitionComplete(RecentsState finalState) {
+        if (finalState == HOME) {
+            // Clean-up logic that occurs when recents is no longer in use/visible.
+            reset();
+        }
         setOverlayEnabled(finalState == DEFAULT || finalState == MODAL_TASK);
         setFreezeViewVisibility(false);
     }

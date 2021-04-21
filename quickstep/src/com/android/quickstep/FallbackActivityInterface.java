@@ -27,6 +27,7 @@ import android.view.MotionEvent;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.quickstep.fallback.RecentsState;
 import com.android.quickstep.util.ActivityInitListener;
@@ -139,7 +140,25 @@ public final class FallbackActivityInterface extends
 
     @Override
     public void onExitOverview(RotationTouchHelper deviceState, Runnable exitRunnable) {
-        // no-op, fake landscape not supported for 3P
+        final StateManager<RecentsState> stateManager = getCreatedActivity().getStateManager();
+        if (stateManager.getState() == HOME) {
+            exitRunnable.run();
+            notifyRecentsOfOrientation(deviceState);
+            return;
+        }
+
+        stateManager.addStateListener(
+                new StateManager.StateListener<RecentsState>() {
+                    @Override
+                    public void onStateTransitionComplete(RecentsState toState) {
+                        // Are we going from Recents to Workspace?
+                        if (toState == HOME) {
+                            exitRunnable.run();
+                            notifyRecentsOfOrientation(deviceState);
+                            stateManager.removeStateListener(this);
+                        }
+                    }
+                });
     }
 
     @Override

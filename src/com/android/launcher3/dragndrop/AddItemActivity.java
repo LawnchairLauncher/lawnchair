@@ -59,9 +59,11 @@ import com.android.launcher3.pm.PinRequestHelper;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.launcher3.widget.LauncherAppWidgetHost;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
+import com.android.launcher3.widget.NavigableAppWidgetHostView;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetCell;
+import com.android.launcher3.widget.WidgetCellPreview;
 import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetImageView;
 import com.android.launcher3.widget.WidgetManagerHelper;
@@ -121,9 +123,10 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
             }
         }
 
-        WidgetImageView preview = mWidgetCell.findViewById(R.id.widget_preview);
-        preview.setOnTouchListener(this);
-        preview.setOnLongClickListener(this);
+        WidgetCellPreview previewContainer = mWidgetCell.findViewById(
+                R.id.widget_preview_container);
+        previewContainer.setOnTouchListener(this);
+        previewContainer.setOnLongClickListener(this);
 
         // savedInstanceState is null when the activity is created the first time (i.e., avoids
         // duplicate logging during rotation)
@@ -145,20 +148,31 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
     public boolean onLongClick(View view) {
         // Find the position of the preview relative to the touch location.
         WidgetImageView img = mWidgetCell.getWidgetView();
+        NavigableAppWidgetHostView appWidgetHostView = mWidgetCell.getAppWidgetHostViewPreview();
 
         // If the ImageView doesn't have a drawable yet, the widget preview hasn't been loaded and
         // we abort the drag.
-        if (img.getDrawable() == null) {
+        if (img.getDrawable() == null && appWidgetHostView == null) {
             return false;
         }
 
-        Rect bounds = img.getBitmapBounds();
-        bounds.offset(img.getLeft() - (int) mLastTouchPos.x, img.getTop() - (int) mLastTouchPos.y);
-
+        final Rect bounds;
         // Start home and pass the draw request params
-        PinItemDragListener listener = new PinItemDragListener(mRequest, bounds,
-                img.getDrawable().getIntrinsicWidth(), img.getWidth());
-
+        final PinItemDragListener listener;
+        if (appWidgetHostView != null) {
+            bounds = new Rect();
+            appWidgetHostView.getSourceVisualDragBounds(bounds);
+            bounds.offset(appWidgetHostView.getLeft() - (int) mLastTouchPos.x,
+                    appWidgetHostView.getTop() - (int) mLastTouchPos.y);
+            listener = new PinItemDragListener(mRequest, bounds,
+                    appWidgetHostView.getMeasuredWidth(), appWidgetHostView.getMeasuredWidth());
+        } else {
+            bounds = img.getBitmapBounds();
+            bounds.offset(img.getLeft() - (int) mLastTouchPos.x,
+                    img.getTop() - (int) mLastTouchPos.y);
+            listener = new PinItemDragListener(mRequest, bounds,
+                    img.getDrawable().getIntrinsicWidth(), img.getWidth());
+        }
 
         // Start a system drag and drop. We use a transparent bitmap as preview for system drag
         // as the preview is handled internally by launcher.
@@ -212,7 +226,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
             // Cannot add widget
             return false;
         }
-        mWidgetCell.setPreview(PinItemDragListener.getPreview(mRequest));
+        mWidgetCell.setRemoteViewsPreview(PinItemDragListener.getPreview(mRequest));
 
         mAppWidgetManager = new WidgetManagerHelper(this);
         mAppWidgetHost = new LauncherAppWidgetHost(this);
@@ -236,6 +250,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
 
             @Override
             protected void onPostExecute(WidgetItem item) {
+                mWidgetCell.setPreviewSize(item.spanX, item.spanY);
                 mWidgetCell.applyFromCellItem(item, mApp.getWidgetCache());
                 mWidgetCell.ensurePreview();
             }

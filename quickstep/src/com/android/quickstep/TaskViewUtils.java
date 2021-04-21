@@ -15,6 +15,9 @@
  */
 package com.android.quickstep;
 
+import static android.view.WindowManager.TRANSIT_OPEN;
+import static android.view.WindowManager.TRANSIT_TO_FRONT;
+
 import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.NORMAL;
@@ -47,7 +50,9 @@ import android.graphics.Matrix.ScaleToFit;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
+import android.view.SurfaceControl;
 import android.view.View;
+import android.window.TransitionInfo;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -352,7 +357,47 @@ public final class TaskViewUtils {
      * device is considered in multiWindowMode and things like insets and stuff change
      * and calculations have to be adjusted in the animations for that
      */
-    public static void composeRecentsSplitLaunchAnimator(@NonNull AnimatorSet anim,
+    public static void composeRecentsSplitLaunchAnimator(@NonNull TaskView initialView,
+            @NonNull TaskView v, @NonNull TransitionInfo transitionInfo,
+            SurfaceControl.Transaction t, @NonNull Runnable finishCallback) {
+
+        final TransitionInfo.Change[] splitRoots = new TransitionInfo.Change[2];
+        for (int i = 0; i < transitionInfo.getChanges().size(); ++i) {
+            final TransitionInfo.Change change = transitionInfo.getChanges().get(i);
+            final int taskId = change.getTaskInfo() != null ? change.getTaskInfo().taskId : -1;
+            final int mode = change.getMode();
+            // Find the target tasks' root tasks since those are the split stages that need to
+            // be animated (the tasks themselves are children and thus inherit animation).
+            if (taskId == initialView.getTask().key.id || taskId == v.getTask().key.id) {
+                if (!(mode == TRANSIT_OPEN || mode == TRANSIT_TO_FRONT)) {
+                    throw new IllegalStateException(
+                            "Expected task to be showing, but it is " + mode);
+                }
+                if (change.getParent() == null) {
+                    throw new IllegalStateException("Initiating multi-split launch but the split"
+                            + "root of " + taskId + " is already visible or has broken hierarchy.");
+                }
+                splitRoots[taskId == initialView.getTask().key.id ? 0 : 1] =
+                        transitionInfo.getChange(change.getParent());
+            }
+        }
+
+        // This is where we should animate the split roots. For now, though, just make them visible.
+        for (int i = 0; i < 2; ++i) {
+            t.show(splitRoots[i].getLeash());
+            t.setAlpha(splitRoots[i].getLeash(), 1.f);
+        }
+
+        // This contains the initial state (before animation), so apply this at the beginning of
+        // the animation.
+        t.apply();
+
+        // Once there is an animation, this should be called AFTER the animation completes.
+        finishCallback.run();
+    }
+
+    /** Legacy version (until shell transitions are enabled) */
+    public static void composeRecentsSplitLaunchAnimatorLegacy(@NonNull AnimatorSet anim,
             @NonNull TaskView v, @NonNull RemoteAnimationTargetCompat[] appTargets,
             @NonNull RemoteAnimationTargetCompat[] wallpaperTargets,
             @NonNull RemoteAnimationTargetCompat[] nonAppTargets, boolean launcherClosing,
@@ -455,23 +500,25 @@ public final class TaskViewUtils {
             windowAnimEndListener = new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    recentsView.post(() -> {
-                        stateManager.moveToRestState();
-                        stateManager.reapplyState();
+                    recentsView.finishRecentsAnimation(false /* toRecents */, () -> {
+                        recentsView.post(() -> {
+                            stateManager.moveToRestState();
+                            stateManager.reapplyState();
+                        });
                     });
                 }
             };
         } else {
             AnimatorPlaybackController controller =
-                    stateManager.createAnimationToNewWorkspace(NORMAL,
-                            RECENTS_LAUNCH_DURATION);
+                    stateManager.createAnimationToNewWorkspace(NORMAL, RECENTS_LAUNCH_DURATION);
             controller.dispatchOnStart();
             childStateAnimation = controller.getTarget();
             launcherAnim = controller.getAnimationPlayer().setDuration(RECENTS_LAUNCH_DURATION);
             windowAnimEndListener = new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    stateManager.goToState(NORMAL, false);
+                    recentsView.finishRecentsAnimation(false /* toRecents */,
+                            () -> stateManager.goToState(NORMAL, false));
                 }
             };
         }

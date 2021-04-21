@@ -56,6 +56,7 @@
         <item name="workProfileOverlayTextColor">#FF212121</item>
         <item name="eduHalfSheetBGColor">?android:attr/colorAccent</item>
         <item name="disabledIconAlpha">.54</item>
+        <item name="gridColor">?android:attr/colorAccent</item>
 
         <item name="android:windowTranslucentStatus">false</item>
         <item name="android:windowTranslucentNavigation">false</item>
@@ -150,7 +151,7 @@
     </style>
 
     <style name="HomeSettingsTheme" parent="@android:style/Theme.DeviceDefault.Settings">
-        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">?android:colorPrimaryDark</item>
         <item name="preferenceTheme">@style/HomeSettingsPreferenceTheme</item>
     </style>
 

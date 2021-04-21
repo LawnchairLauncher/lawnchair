@@ -19,19 +19,66 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="recent_task_option_split_screen" msgid="5353188922202653570">"Экранды бөлүү"</string>
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Кадап коюу"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Эркин форма режими"</string>
-    <string name="accessibility_desc_recent_apps" msgid="1444379410873162882">"Сереп салуу"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Акыркы колдонмолор жок"</string>
-    <string name="accessibility_close_task" msgid="5354563209433803643">"Жабуу"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Колдонмону пайдалануу жөндөөлөрү"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Баарын тазалоо"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Акыркы колдонмолор"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; 1 мүнөт"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"Бүгүн <xliff:g id="TIME">%1$s</xliff:g> мүнөт калды"</string>
-    <string name="title_app_suggestions" msgid="4185902664111965088">"Колдонмо сунуштары"</string>
+    <string name="title_app_suggestions" msgid="4185902664111965088">"Сунушталган колдонмолор"</string>
     <string name="all_apps_label" msgid="8542784161730910663">"Бардык колдонмолор"</string>
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"Божомолдонгон колдонмолоруңуз"</string>
+    <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"Сунушталган колдонмолор башкы экрандын ылдый жагында көрүнөт."</string>
+    <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"Сунушталган колдонмолор башкы экрандагы тандалмалардын катарында көрүнөт."</string>
+    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Көп колдонулган колдонмолор башкы экранда жайгашып, алардын тизмеси маал-маалы менен өзгөрүп турат. Ылдый жакта жайгашкан тилкедеги колдонмолор башкы экранга жылдырылат."</string>
+    <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"Көп иштетилген колдонмолорго Башкы экрандан оңой кириңиз. Сунуштар тартиптин негизинде өзгөрөт. Тандалмалардын катарындагы колдонмолор башкы экраныңызга жылдырылат."</string>
+    <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"Көп колдонулган колдонмолор башкы экранда жайгашып, алардын тизмеси маал-маалы менен өзгөрүп турат. Ылдый жакта жайгашкан тилкедеги колдонмолор жаңы папкага жылдырылат."</string>
+    <string name="hotseat_edu_accept" msgid="1611544083278999837">"Сунушталган колдонолорду алуу"</string>
+    <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"Жок, рахмат"</string>
+    <string name="hotseat_prediction_settings" msgid="6246554993566070818">"Жөндөөлөр"</string>
+    <string name="hotseat_auto_enrolled" msgid="522100018967146807">"Көп иштетилген колдонмолор ушул жерде көрүнүп, тартиптин негизинде өзгөрөт"</string>
+    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Сунуштарды алып туруу үчүн, ылдый жактагы тилкедеги колдонмолорду сүйрөп келиңиз"</string>
+    <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"Сунушталган колдонмолор бош жерге кошулат"</string>
+    <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Сунушталган колдонмолор функциясы иштетилди"</string>
+    <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Сунушталган колдонмолор функциясы өчүрүлгөн"</string>
+    <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Божомолдонгон колдонмо: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"Экранды эң четинен солдон оңго карай сүрүңүз."</string>
+    <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"Экранды сол жагынан ортосуна карай сүрүп, манжаңызды алыңыз."</string>
+    <string name="back_gesture_feedback_complete_left_edge" msgid="3220478647881674266">"Бүттү! Эми экранды оң жагынан сүрүп көрүңүз."</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"Экранды эң четинен оңдой солго карай сүрүңүз."</string>
+    <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"Экранды оң жагынан ортосуна карай сүрүп, манжаңызды алыңыз."</string>
+    <string name="back_gesture_feedback_complete" msgid="7261221999760772210">"\"Артка\" жаңсоосу боюнча үйрөткүчтү бүтүрдүңүз. Эми башкы бетке кантип өтүүнү үйрөнүп алыңыз."</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Манжаңызды экрандын ылдый жагына өтө жакындатпай сүрүңүз."</string>
+    <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"\"Артка\" жаң-нун сезгичтигин өзгөртүү үчүн Жөндөөлөргө өтүңүз"</string>
+    <string name="back_gesture_intro_title" msgid="19551256430224428">"Артка кайтуу үчүн сүрүңүз"</string>
+    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Акыркы экранга кайтуу үчүн экранды сол же оң жагынан ортосуна карай сүрүңүз."</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Экранды ылдыйдан өйдө карай сүрүңүз."</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Манжаңызды алганга чейин токтотпоңуз."</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Экранды өйдө карай сүрүңүз."</string>
+    <string name="home_gesture_feedback_complete" msgid="2324789183070815517">"\"Башкы бетке өтүү\" жаңсоосу боюнча үйрөткүчтү бүтүрдүңүз. Эми колдонмолорду которуштуруу ыкмасын үйрөнүп алыңыз."</string>
+    <string name="home_gesture_intro_title" msgid="836590312858441830">"Башкы бетке өтүү үчүн сүрүп коюңуз"</string>
+    <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Экранды ылдый жагынан өйдө карай сүрүңүз. Бул жаңсоо сизди ар дайым Башкы экранга алып барат."</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Экранды ылдыйдан өйдө карай сүрүңүз."</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Манжаңызды алуудан мурун экранда узагыраак кармаңыз."</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Экранды өйдө карай сүрүп, токтоп туруңуз."</string>
+    <string name="overview_gesture_feedback_complete" msgid="5477014491632199169">"\"Колдонмолорду которуштуруу\" жаңсоосу боюнча үйрөткүчтү бүтүрдүңүз. Телефонуңузду колдоно берсеңиз болот."</string>
+    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Колдонмолорду которуштуруу үчүн сүрүңүз"</string>
+    <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"Экранды ылдыйдан өйдө карай сүрүп, бир аз коё бербей кармап туруңуз."</string>
+    <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Дапдаяр!"</string>
+    <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"Кийинки"</string>
+    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"Бүттү"</string>
+    <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Жөндөөлөр"</string>
+    <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Кайра аракет кылыңыз"</string>
+    <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Сонун!"</string>
+    <string name="gesture_tutorial_step" msgid="1279786122817620968">"Үйрөткүч: <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
+    <string name="action_share" msgid="2648470652637092375">"Бөлүшүү"</string>
+    <string name="action_screenshot" msgid="8171125848358142917">"Скриншот"</string>
+    <string name="blocked_by_policy" msgid="2071401072261365546">"Бул аракетти аткарууга колдонмо же ишканаңыз тыюу салган"</string>
+    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Жаңсап өтүү үйрөткүчүн өт-рүп жибер-би?"</string>
+    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Аны кийин <xliff:g id="NAME">%1$s</xliff:g> колдонмосунан табасыз"</string>
+    <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Жокко чыгаруу"</string>
+    <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Өтк-п жиберүү"</string>
 </resources>

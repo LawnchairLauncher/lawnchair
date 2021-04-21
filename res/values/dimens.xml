@@ -84,7 +84,7 @@
     <dimen name="fastscroll_end_margin">-26dp</dimen>
 
     <!-- All Apps -->
-    <dimen name="all_apps_open_vertical_translate">96dp</dimen>
+    <dimen name="all_apps_open_vertical_translate">300dp</dimen>
     <dimen name="all_apps_search_bar_field_height">48dp</dimen>
     <dimen name="all_apps_search_bar_bottom_padding">30dp</dimen>
     <dimen name="all_apps_empty_search_message_top_offset">40dp</dimen>
@@ -140,6 +140,9 @@
     <dimen name="widget_row_padding">8dp</dimen>
     <dimen name="widget_row_divider">2dp</dimen>
 
+    <dimen name="widget_picker_education_tip_width">120dp</dimen>
+    <dimen name="widget_picker_education_tip_min_margin">4dp</dimen>
+
     <!-- Padding applied to shortcut previews -->
     <dimen name="shortcut_preview_padding_left">0dp</dimen>
     <dimen name="shortcut_preview_padding_right">0dp</dimen>
@@ -166,7 +169,7 @@
 
     <dimen name="drag_flingToDeleteMinVelocity">-1500dp</dimen>
 
-    <dimen name="spring_loaded_panel_border">1dp</dimen>
+    <dimen name="spring_loaded_panel_border">2dp</dimen>
     <dimen name="keyboard_drag_stroke_width">4dp</dimen>
 
 <!-- Folders -->
@@ -277,16 +280,6 @@
     <!-- Onboarding bottomsheet related -->
     <dimen name="bottom_sheet_edu_padding">24dp</dimen>
 
-    <!-- Search related -->
-    <dimen name="search_hero_title_size">16sp</dimen>
-    <dimen name="search_hero_subtitle_size">14sp</dimen>
-    <dimen name="search_hero_inline_button_size">12sp</dimen>
-    <dimen name="search_settings_icon_size">36dp</dimen>
-    <dimen name="search_settings_icon_vertical_offset">16dp</dimen>
-    <dimen name="search_line_spacing">4dp</dimen>
-    <dimen name="search_decoration_corner_radius">28dp</dimen>
-    <dimen name="search_decoration_padding">1dp</dimen>
-
 <!-- Taskbar related (placeholders to compile in Launcher3 without Quickstep) -->
     <dimen name="taskbar_size">0dp</dimen>
 
@@ -297,5 +290,9 @@
     <dimen name="task_thumbnail_icon_size">0dp</dimen>
     <dimen name="task_thumbnail_icon_size_grid">0dp</dimen>
     <dimen name="overview_task_margin">0dp</dimen>
+
+<!-- Workspace grid visualization parameters -->
+    <dimen name="grid_visualization_rounding_radius">28dp</dimen>
+    <dimen name="grid_visualization_cell_spacing">6dp</dimen>
 
 </resources>

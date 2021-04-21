@@ -115,7 +115,6 @@ public abstract class AbstractLauncherUiTest {
         if (TestHelpers.isInLauncherProcess()) {
             StrictMode.VmPolicy.Builder builder =
                     new StrictMode.VmPolicy.Builder()
-                            .detectActivityLeaks()
                             .penaltyLog()
                             .penaltyListener(Runnable::run, violation -> {
                                 if (sStrictmodeDetectedActivityLeak == null) {
@@ -250,7 +249,7 @@ public abstract class AbstractLauncherUiTest {
 
     @Before
     public void setUp() throws Exception {
-        Assert.assertTrue("Keyguard is visible",
+        Assert.assertTrue("Keyguard is visible, which is likely caused by a crash in SysUI",
                 TestHelpers.wait(
                         Until.gone(By.res(SYSTEMUI_PACKAGE, "keyguard_status_view")), 60000));
 

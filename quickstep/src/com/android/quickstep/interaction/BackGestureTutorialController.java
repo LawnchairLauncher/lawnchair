@@ -17,9 +17,13 @@ package com.android.quickstep.interaction;
 
 import static com.android.quickstep.interaction.TutorialController.TutorialType.BACK_NAVIGATION_COMPLETE;
 import static com.android.quickstep.interaction.TutorialController.TutorialType.LEFT_EDGE_BACK_NAVIGATION;
+import static com.android.quickstep.interaction.TutorialController.TutorialType.RIGHT_EDGE_BACK_NAVIGATION;
 
 import android.graphics.PointF;
 import android.view.View;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
 
 import com.android.launcher3.R;
 import com.android.quickstep.interaction.EdgeBackGestureHandler.BackGestureResult;
@@ -73,13 +77,14 @@ final class BackGestureTutorialController extends TutorialController {
     }
 
     @Override
-    void onActionButtonClicked(View button) {
-        mTutorialFragment.closeTutorial();
-    }
-
-    @Override
     void onActionTextButtonClicked(View button) {
         mTutorialFragment.startSystemNavigationSetting();
+    }
+
+    @Nullable
+    @Override
+    public View getMockLauncherView() {
+        return null;
     }
 
     @Override
@@ -103,10 +108,12 @@ final class BackGestureTutorialController extends TutorialController {
     private void handleAttemptFromRight(BackGestureResult result) {
         switch (result) {
             case BACK_COMPLETED_FROM_RIGHT:
-                hideFeedback();
-                hideHandCoachingAnimation();
-                showRippleEffect(
-                        () -> mTutorialFragment.changeController(LEFT_EDGE_BACK_NAVIGATION));
+                hideFeedback(true);
+                mFakeTaskView.setBackground(AppCompatResources.getDrawable(mContext,
+                        R.drawable.sandbox_fake_google_search));
+                showRippleEffect(null);
+                showFeedback(R.string.back_gesture_feedback_complete,
+                        mTutorialFragment::continueTutorial);
                 break;
             case BACK_CANCELLED_FROM_RIGHT:
                 showFeedback(R.string.back_gesture_feedback_cancelled_right_edge);
@@ -125,16 +132,12 @@ final class BackGestureTutorialController extends TutorialController {
     private void handleAttemptFromLeft(BackGestureResult result) {
         switch (result) {
             case BACK_COMPLETED_FROM_LEFT:
-                hideFeedback();
-                hideHandCoachingAnimation();
-                showRippleEffect(
-                        () -> {
-                            if (mTutorialFragment.isTutorialComplete()) {
-                                mTutorialFragment.changeController(BACK_NAVIGATION_COMPLETE);
-                            } else {
-                                mTutorialFragment.continueTutorial();
-                            }
-                        });
+                hideFeedback(true);
+                mFakeTaskView.setBackground(AppCompatResources.getDrawable(mContext,
+                        R.drawable.sandbox_fake_google_search));
+                showRippleEffect(null);
+                showFeedback(R.string.back_gesture_feedback_complete_left_edge,
+                        () -> mTutorialFragment.changeController(RIGHT_EDGE_BACK_NAVIGATION));
                 break;
             case BACK_CANCELLED_FROM_LEFT:
                 showFeedback(R.string.back_gesture_feedback_cancelled_left_edge);
@@ -156,6 +159,9 @@ final class BackGestureTutorialController extends TutorialController {
             if (result == NavBarGestureResult.HOME_GESTURE_COMPLETED) {
                 mTutorialFragment.closeTutorial();
             }
+        } else if (mTutorialType == LEFT_EDGE_BACK_NAVIGATION
+                || mTutorialType == RIGHT_EDGE_BACK_NAVIGATION) {
+            showFeedback(R.string.back_gesture_feedback_swipe_in_nav_bar);
         }
     }
 }

@@ -20,39 +20,56 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
-    <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"Trabajo"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"La aplicación no está instalada."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"La aplicación no está disponible"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Aplicación descargada inhabilitada en modo seguro"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Widgets inhabilitados en modo seguro"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"Acceso directo no disponible"</string>
-    <string name="home_screen" msgid="806512411299847073">"Pantalla de inicio"</string>
-    <string name="custom_actions" msgid="3747508247759093328">"Acciones personalizadas"</string>
-    <string name="long_press_widget_to_add" msgid="7699152356777458215">"Mantén pulsado el widget que quieras seleccionar."</string>
-    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Toca dos veces y mantén pulsado el widget que quieras seleccionar o utiliza acciones personalizadas."</string>
+    <string name="home_screen" msgid="5629429142036709174">"Inicio"</string>
+    <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Pantalla dividida"</string>
+    <string name="long_press_widget_to_add" msgid="3587712543577675817">"Mantén pulsado un widget para moverlo."</string>
+    <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Toca dos veces y mantén pulsado un widget para moverlo o usar acciones personalizadas."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d de ancho por %2$d de alto"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Mantenlo pulsado para añadirlo manualmente"</string>
     <string name="place_automatically" msgid="8064208734425456485">"Añadir automáticamente"</string>
+    <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
+      <item quantity="other">Widgets: <xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g></item>
+      <item quantity="one">Widget: <xliff:g id="WIDGETS_COUNT_0">%1$d</xliff:g></item>
+    </plurals>
+    <plurals name="shortcuts_count" formatted="false" msgid="8080294865447938455">
+      <item quantity="other">Accesos directos: <xliff:g id="SHORTCUTS_COUNT_1">%1$d</xliff:g></item>
+      <item quantity="one">Acceso directo: <xliff:g id="SHORTCUTS_COUNT_0">%1$d</xliff:g></item>
+    </plurals>
+    <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
+    <string name="widget_button_text" msgid="2880537293434387943">"Widgets"</string>
+    <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"Buscar"</string>
+    <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"Borrar texto del cuadro de búsqueda"</string>
+    <string name="no_widgets_available" msgid="9140948620298620513">"No hay widgets disponibles"</string>
+    <string name="no_search_results" msgid="6518732304311458580">"No hay resultados de búsqueda"</string>
+    <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Personal"</string>
+    <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Trabajo"</string>
+    <string name="widget_category_conversations" msgid="8894438636213590446">"Conversaciones"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Buscar aplicaciones"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Cargando aplicaciones…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"No se han encontrado aplicaciones que contengan \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Buscar más aplicaciones"</string>
     <string name="label_application" msgid="8531721983832654978">"Aplicación"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Notificaciones"</string>
-    <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"Mantén pulsado para elegir un acceso directo."</string>
-    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"Toca dos veces y mantén pulsado para elegir un acceso directo o utilizar acciones personalizadas."</string>
+    <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Mantén pulsado un acceso directo para moverlo."</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Toca dos veces y mantén pulsado un acceso directo para moverlo o usar acciones personalizadas."</string>
     <string name="out_of_space" msgid="4691004494942118364">"No queda espacio en la pantalla de inicio."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"La bandeja de favoritos está completa"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Lista de aplicaciones"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Lista de aplicaciones personales"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"Lista de aplicaciones del trabajo"</string>
-    <string name="all_apps_home_button_label" msgid="252062713717058851">"Inicio"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Quitar"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Desinstalar"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Información de la aplicación"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Instalar"</string>
+    <string name="dismiss_prediction_label" msgid="3357562989568808658">"No sugerir aplicación"</string>
+    <string name="pin_prediction" msgid="4196423321649756498">"Fijar predicción"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"instalar accesos directos"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Permite que una aplicación añada accesos directos sin intervención del usuario."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"leer información de accesos directos y de ajustes de la pantalla de inicio"</string>
@@ -63,7 +80,7 @@
     <string name="gadget_error_text" msgid="6081085226050792095">"Problema al cargar el widget"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"Configuración"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Esta aplicación es del sistema y no se puede desinstalar."</string>
-    <string name="folder_hint_text" msgid="6617836969016293992">"Carpeta sin nombre"</string>
+    <string name="folder_hint_text" msgid="5174843001373488816">"Editar nombre"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Se ha inhabilitado <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
       <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g> tiene <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> notificaciones</item>
@@ -77,8 +94,8 @@
     <string name="folder_tap_to_rename" msgid="4017685068016979677">"Toca para guardar el nuevo nombre"</string>
     <string name="folder_closed" msgid="4100806530910930934">"Carpeta cerrada"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"Se ha cambiado el nombre de la carpeta a <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="folder_name_format" msgid="6629239338071103179">"Carpeta: <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="widget_button_text" msgid="2880537293434387943">"Widgets"</string>
+    <string name="folder_name_format_exact" msgid="8626242716117004803">"Carpeta: <xliff:g id="NAME">%1$s</xliff:g> (<xliff:g id="SIZE">%2$d</xliff:g> elementos)"</string>
+    <string name="folder_name_format_overflow" msgid="4270108890534995199">"Carpeta: <xliff:g id="NAME">%1$s</xliff:g> (<xliff:g id="SIZE">%2$d</xliff:g> o más elementos)"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Fondos de pantalla"</string>
     <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"Estilos y fondos de pantalla"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Ajustes de la pantalla de inicio"</string>
@@ -92,16 +109,16 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Para mostrar puntos de notificación, activa las notificaciones de <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Cambiar ajustes"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Mostrar puntos de notificación"</string>
-    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Añadir icono a la pantalla de inicio"</string>
-    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Para aplicaciones nuevas"</string>
+    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"Añadir aplicaciones a la pantalla de inicio"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Añade el icono de una aplicación nueva instalada a la pantalla de inicio"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Desconocido"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Quitar"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Buscar"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Esta aplicación no está instalada"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"La aplicación de este icono no está instalada. Puedes quitar el icono o buscar la aplicación e instalarla manualmente."</string>
+    <string name="app_installing_title" msgid="5864044122733792085">"Instalando <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="PROGRESS">%2$s</xliff:g> completado"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"Descargando <xliff:g id="NAME">%1$s</xliff:g> (<xliff:g id="PROGRESS">%2$s</xliff:g> completado)"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"Esperando para instalar <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"Widgets de <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widgets_list" msgid="796804551140113767">"Lista de widgets"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"Lista de widgets cerrada"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Añadir a la pantalla de inicio"</string>
@@ -129,15 +146,23 @@
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Accesos directos"</string>
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Accesos directos y notificaciones"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Cerrar"</string>
+    <string name="accessibility_close" msgid="2277148124685870734">"Cerrar"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Notificación ignorada"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Personal"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Trabajo"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Perfil de trabajo"</string>
-    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Aplicaciones de trabajo"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"Cada aplicación de trabajo tiene una insignia y está protegida por tu organización. Mueve las aplicaciones a la pantalla de inicio para acceder a ellas más fácilmente."</string>
-    <string name="work_mode_on_label" msgid="4781128097185272916">"Administrada por tu organización"</string>
-    <string name="work_mode_off_label" msgid="3194894777601421047">"Las notificaciones y las aplicaciones están desactivadas"</string>
-    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Cerrar"</string>
-    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Cerrada"</string>
+    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"Los datos personales están separados y ocultos de las aplicaciones de trabajo"</string>
+    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"Tu administrador de TI puede ver tus aplicaciones y datos de trabajo"</string>
+    <string name="work_profile_edu_next" msgid="8783418929296503629">"Siguiente"</string>
+    <string name="work_profile_edu_accept" msgid="6069788082535149071">"Entendido"</string>
+    <string name="work_apps_paused_title" msgid="2389865654362803723">"El perfil de trabajo está en pausa"</string>
+    <string name="work_apps_paused_body" msgid="4209084728264328628">"Las aplicaciones de trabajo no pueden enviarte notificaciones, consumir tu batería ni acceder a tu ubicación"</string>
+    <string name="work_apps_paused_content_description" msgid="4473292417145736203">"El perfil de trabajo está en pausa. Las aplicaciones de trabajo no pueden enviarte notificaciones, consumir tu batería ni acceder a tu ubicación"</string>
+    <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Las aplicaciones de trabajo tienen una insignia y tu administrador de TI las puede ver"</string>
+    <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Entendido"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Pausar aplicaciones de trabajo"</string>
+    <string name="work_apps_enable_btn_text" msgid="82111102541971856">"Activar"</string>
+    <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filtro"</string>
+    <string name="work_switch_tip" msgid="808075064383839144">"Pausa apps y notificaciones de trabajo"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Se ha producido un error: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

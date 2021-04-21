@@ -436,8 +436,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         mOnboardingPrefs = createOnboardingPrefs(mSharedPrefs);
 
         mAppWidgetManager = new WidgetManagerHelper(this);
-        mAppWidgetHost = new LauncherAppWidgetHost(this,
-                appWidgetId -> getWorkspace().removeWidget(appWidgetId));
+        mAppWidgetHost = createAppWidgetHost();
         mAppWidgetHost.startListening();
 
         inflateRootView(R.layout.launcher);
@@ -552,9 +551,14 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         int diff = newConfig.diff(mOldConfig);
-
         if ((diff & (CONFIG_ORIENTATION | CONFIG_SCREEN_SIZE)) != 0) {
             onIdpChanged(mDeviceProfile.inv);
+        }
+
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.LAUNCHER_NOT_TRANSPOSED, "onConfigurationChanged: diff=" + diff);
+            Log.d(TestProtocol.LAUNCHER_NOT_TRANSPOSED, "newConfig=" + newConfig);
+            Log.d(TestProtocol.LAUNCHER_NOT_TRANSPOSED, "oldConfig=" + mOldConfig);
         }
 
         mOldConfig.setTo(newConfig);
@@ -567,7 +571,9 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     }
 
     private void onIdpChanged(InvariantDeviceProfile idp) {
-
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.LAUNCHER_NOT_TRANSPOSED, "onIdpChanged");
+        }
         initDeviceProfile(idp);
         dispatchDeviceProfileChanged();
         reapplyUi();
@@ -1426,6 +1432,11 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
     public LauncherAppWidgetHost getAppWidgetHost() {
         return mAppWidgetHost;
+    }
+
+    protected LauncherAppWidgetHost createAppWidgetHost() {
+        return new LauncherAppWidgetHost(this,
+                appWidgetId -> getWorkspace().removeWidget(appWidgetId));
     }
 
     public LauncherModel getModel() {

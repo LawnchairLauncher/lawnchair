@@ -115,6 +115,9 @@ android_library {
     manifest: "AndroidManifest-common.xml",
     sdk_version: "current",
     min_sdk_version: "26",
+    lint: {
+        baseline_filename: "lint-baseline-res-lib.xml",
+    },
 }
 
 //
@@ -127,6 +130,9 @@ android_library {
     sdk_version: "current",
     min_sdk_version: "26",
     manifest: "AndroidManifest-common.xml",
+    lint: {
+        baseline_filename: "lint-baseline-common-deps-lib.xml",
+    },
 }
 
 //
@@ -171,6 +177,9 @@ android_app {
     additional_manifests: [
         "AndroidManifest-common.xml",
     ],
+    lint: {
+        baseline_filename: "lint-baseline-launcher3.xml",
+    },
 }
 
 // Library with all the dependencies for building quickstep
@@ -211,3 +220,33 @@ filegroup {
     name: "launcher-proguard-rules",
     srcs: ["proguard.flags"],
 }
+
+
+// Library with all the dependencies for building Launcher Go
+android_library {
+    name: "LauncherGoResLib",
+    srcs: [
+        "src/**/*.java",
+        "quickstep/src/**/*.java",
+        "go/src/**/*.java",
+        "go/quickstep/src/**/*.java",
+    ],
+    resource_dirs: [
+        "go/res",
+        "go/quickstep/res",
+    ],
+    static_libs: [
+        "Launcher3CommonDepsLib",
+        "QuickstepResLib",
+    ],
+    manifest: "quickstep/AndroidManifest-launcher.xml",
+    additional_manifests: [
+        "go/AndroidManifest.xml",
+        "AndroidManifest-common.xml",
+    ],
+    min_sdk_version: "29",
+    lint: {
+        baseline_filename: "lint-baseline-go-res-lib.xml",
+    },
+}
+

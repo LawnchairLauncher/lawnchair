@@ -122,8 +122,23 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
+    public int getPrimarySize(View view) {
+        return view.getHeight();
+    }
+
+    @Override
     public float getPrimarySize(RectF rect) {
         return rect.height();
+    }
+
+    @Override
+    public float getStart(RectF rect) {
+        return rect.top;
+    }
+
+    @Override
+    public float getEnd(RectF rect) {
+        return rect.bottom;
     }
 
     @Override

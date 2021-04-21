@@ -23,13 +23,16 @@
         <shape android:shape="rectangle" >
             <stroke
                 android:width="@dimen/spring_loaded_panel_border"
-                android:color="@color/spring_loaded_highlighted_panel_border_color" />
-            <solid android:color="@color/spring_loaded_panel_color" />
+                android:color="?android:attr/colorAccent" />
+            <solid android:color="@color/cell_layout_bg_color_active"/>
+            <corners android:radius="@dimen/bg_round_rect_radius" />
+
         </shape>
     </item>
     <item>
         <shape android:shape="rectangle" >
-            <solid android:color="@color/spring_loaded_panel_color" />
+            <solid android:color="@color/cell_layout_bg_color_inactive"/>
+            <corners android:radius="@dimen/bg_round_rect_radius" />
         </shape>
     </item>
 </selector>

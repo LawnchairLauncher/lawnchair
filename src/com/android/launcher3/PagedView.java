@@ -926,8 +926,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         if (disallowIntercept) {
             // We need to make sure to cancel our long press if
             // a scrollable widget takes over touch events
-            final View currentPage = getPageAt(mCurrentPage);
-            currentPage.cancelLongPress();
+            cancelCurrentPageLongPress();
         }
         super.requestDisallowInterceptTouchEvent(disallowIntercept);
     }
