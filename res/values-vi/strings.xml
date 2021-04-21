@@ -108,7 +108,7 @@
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Cần quyền truy cập thông báo"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Để hiển thị Dấu chấm thông báo, hãy bật thông báo ứng dụng cho <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Thay đổi cài đặt"</string>
-    <string name="notification_dots_service_title" msgid="4284221181793592871">"Hiển thị dấu chấm thông báo"</string>
+    <string name="notification_dots_service_title" msgid="4284221181793592871">"Hiện dấu chấm thông báo"</string>
     <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"Thêm biểu tượng ứng dụng vào Màn hình chính"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Cho ứng dụng mới"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Không xác định"</string>
@@ -125,7 +125,7 @@
     <string name="action_move_here" msgid="2170188780612570250">"Di chuyển mục vào đây"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Đã thêm mục vào màn hình chính"</string>
     <string name="item_removed" msgid="851119963877842327">"Đã xóa mục"</string>
-    <string name="undo" msgid="4151576204245173321">"Hoàn tác"</string>
+    <string name="undo" msgid="4151576204245173321">"Hủy"</string>
     <string name="action_move" msgid="4339390619886385032">"Di chuyển mục"</string>
     <string name="move_to_empty_cell" msgid="2833711483015685619">"Di chuyển đến hàng <xliff:g id="NUMBER_0">%1$s</xliff:g> cột <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="move_to_position" msgid="6750008980455459790">"Di chuyển tới vị trí <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
