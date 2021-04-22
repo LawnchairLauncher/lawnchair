@@ -25,7 +25,7 @@ public class OverviewGestureTutorialFragment extends TutorialFragment {
     @Nullable
     @Override
     Integer getFeedbackVideoResId() {
-        return R.raw.tips_nav_overview;
+        return R.drawable.gesture_tutorial_overview;
     }
 
     @Override
