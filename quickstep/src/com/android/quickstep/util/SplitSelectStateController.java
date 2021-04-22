@@ -23,6 +23,7 @@ import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITIO
 import android.animation.AnimatorSet;
 import android.app.ActivityOptions;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Looper;
 import android.util.Pair;
 import android.view.SurfaceControl;
@@ -133,8 +134,8 @@ public class SplitSelectStateController {
         }
 
         @Override
-        public void startAnimation(TransitionInfo info, SurfaceControl.Transaction t,
-                Runnable finishCallback) {
+        public void startAnimation(IBinder transition, TransitionInfo info,
+                SurfaceControl.Transaction t, Runnable finishCallback) {
             TaskViewUtils.composeRecentsSplitLaunchAnimator(mInitialTaskView, mTaskView,
                     info, t, finishCallback);
             // After successful launch, call resetState
