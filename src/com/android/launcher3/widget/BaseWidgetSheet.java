@@ -114,7 +114,7 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView
         }
 
         PendingItemDragHelper dragHelper = new PendingItemDragHelper(v);
-        dragHelper.setRemoteViewsPreview(v.getPreview());
+        dragHelper.setRemoteViewsPreview(v.getRemoteViewsPreview());
         dragHelper.setAppWidgetHostViewPreview(v.getAppWidgetHostViewPreview());
 
         if (image.getDrawable() != null) {

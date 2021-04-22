@@ -169,12 +169,16 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
                 "widgets_table");
 
         boolean hasHeaderExpanded = false;
+        int scrollDistance = 0;
         for (int i = 0; i < SCROLL_ATTEMPTS; i++) {
             UiObject2 fullWidgetsPicker = verifyActiveContainer();
 
             UiObject2 header = mLauncher.waitForObjectInContainer(fullWidgetsPicker,
                     headerSelector);
-            int headerHeight = header.getVisibleBounds().height();
+            // If a header is barely visible in the bottom edge of the screen, its height could be
+            // too small for a scroll gesture. Since all header should have roughly the same height,
+            // let's pick the max height we have seen so far.
+            scrollDistance = Math.max(scrollDistance, header.getVisibleBounds().height());
 
             // Look for a header that has the test app name.
             UiObject2 headerTitle = mLauncher.findObjectInContainer(fullWidgetsPicker,
@@ -196,7 +200,8 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
                     return widgetsContainer;
                 }
             }
-            mLauncher.scrollDownByDistance(fullWidgetsPicker, headerHeight);
+            log("Finding test widget package - scroll with distance: " + scrollDistance);
+            mLauncher.scrollDownByDistance(fullWidgetsPicker, scrollDistance);
         }
 
         return null;

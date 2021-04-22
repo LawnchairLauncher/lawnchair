@@ -137,7 +137,6 @@ import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.TaskViewUtils;
 import com.android.quickstep.ViewUtils;
-import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.MultiValueUpdateListener;
 import com.android.quickstep.util.RecentsOrientedState;
@@ -760,6 +759,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 }
             });
             anim.play(appAnimator);
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    finishRecentsAnimation(true /* toRecents */, null);
+                }
+            });
         } else {
             TaskViewUtils.composeRecentsLaunchAnimator(
                     anim, taskView, apps,
@@ -768,30 +773,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     mActivity.getStateManager(), this,
                     getDepthController());
         }
-        anim.addListener(new AnimatorListenerAdapter(){
-
-            @Override
-            public void onAnimationEnd(Animator animator) {
-                cleanUp(false);
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animator) {
-                cleanUp(true);
-            }
-
-            private void cleanUp(boolean canceled) {
-                if (mRecentsAnimationController != null) {
-                    finishRecentsAnimation(false /* toRecents */, null /* onFinishComplete */);
-                    if (canceled) {
-                        mRecentsAnimationController = null;
-                    } else {
-                        mSizeStrategy.onLaunchTaskSuccess();
-                    }
-                    ActiveGestureLog.INSTANCE.addLog("finishRecentsAnimation", false);
-                }
-            }
-        });
         anim.start();
     }
 
@@ -1441,6 +1422,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
         mRecentsAnimationController = null;
         mLiveTileParams.setTargetSet(null);
+        mLiveTileTaskViewSimulator.setDrawsBelowRecents(true);
 
         unloadVisibleTaskData(TaskView.FLAG_UPDATE_ALL);
         setCurrentPage(0);
@@ -2358,6 +2340,15 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     @Override
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        if (LIVE_TILE.get() && mRunningTaskId != -1) {
+            switchToScreenshot(
+                    () -> finishRecentsAnimation(true, this::onConfigurationChangedInternal));
+        } else {
+            onConfigurationChangedInternal();
+        }
+    }
+
+    private void onConfigurationChangedInternal() {
         final int rotation = mActivity.getDisplay().getRotation();
         if (mOrientationState.setRecentsRotation(rotation)) {
             updateOrientationHandler();
@@ -3078,6 +3069,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
 
         mRecentsAnimationController.finish(toRecents, () -> {
+            mRecentsAnimationController = null;
             if (onFinishComplete != null) {
                 onFinishComplete.run();
             }

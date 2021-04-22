@@ -30,7 +30,7 @@
     <string name="time_left_for_app" msgid="3111996412933644358">"Resta(m) <xliff:g id="TIME">%1$s</xliff:g> hoje."</string>
     <string name="title_app_suggestions" msgid="4185902664111965088">"Sugestões de apps"</string>
     <string name="all_apps_label" msgid="8542784161730910663">"Todas as apps"</string>
-    <string name="all_apps_prediction_tip" msgid="2672336544844936186">"As suas aplicações previstas"</string>
+    <string name="all_apps_prediction_tip" msgid="2672336544844936186">"As suas apps previstas"</string>
     <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"Obtenha sugestões de apps na última fila do ecrã principal"</string>
     <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"Obtenha sugestões de apps na fila dos favoritos do ecrã principal"</string>
     <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Aceda facilmente às suas apps mais utilizadas, diretamente no ecrã principal. As sugestões mudam em função das suas rotinas. As apps na última fila passam para o ecrã principal."</string>
