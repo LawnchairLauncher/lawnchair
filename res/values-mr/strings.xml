@@ -110,7 +110,7 @@
     <string name="title_change_settings" msgid="1376365968844349552">"सेटिंग्ज बदला"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"सूचना बिंदू दाखवा"</string>
     <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"होम स्क्रीनवर ॲप आयकन जोडा"</string>
-    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"नवीन ॲप्ससाठी"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"नवीन अ‍ॅप्ससाठी"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"अज्ञात"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"काढा"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Search"</string>

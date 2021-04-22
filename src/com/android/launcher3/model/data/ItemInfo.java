@@ -66,7 +66,7 @@ import java.util.Optional;
  */
 public class ItemInfo {
 
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     public static final int NO_ID = -1;
 
     /**

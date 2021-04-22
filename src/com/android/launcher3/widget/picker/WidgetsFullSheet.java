@@ -50,6 +50,7 @@ import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.model.WidgetItem;
@@ -278,6 +279,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         super.onAttachedToWindow();
         mLauncher.getAppWidgetHost().addProviderChangeListener(this);
         notifyWidgetProvidersChanged();
+        onRecommendedWidgetsBound();
     }
 
     @Override
@@ -415,6 +417,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
     @Override
     public void exitSearchMode() {
+        if (!mIsInSearchMode) return;
         onSearchResults(new ArrayList<>());
         setViewVisibilityBasedOnSearch(/*isInSearchMode=*/ false);
         if (mHasWorkProfile) {
@@ -463,7 +466,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 mLauncher.getPopupDataProvider().getRecommendedWidgets();
         WidgetsRecommendationTableLayout table =
                 mSearchAndRecommendationViewHolder.mRecommendedWidgetsTable;
-        if (recommendedWidgets.size() > 0) {
+        if (!mIsInSearchMode && recommendedWidgets.size() > 0) {
             // TODO(b/185508758): Revert the following log after debugging.
             if (getHeaderViewHeight() == 0) {
                 Log.d(TAG, "Header view height is 0 when inflating recommended widgets");
@@ -649,7 +652,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     }
 
     private boolean hasSeenEducationTip() {
-        return mLauncher.getSharedPrefs().getBoolean(WIDGETS_EDUCATION_TIP_SEEN, false);
+        return mLauncher.getSharedPrefs().getBoolean(WIDGETS_EDUCATION_TIP_SEEN, false)
+                || Utilities.IS_RUNNING_IN_TEST_HARNESS;
     }
 
     /** A holder class for holding adapters & their corresponding recycler view. */
