@@ -36,55 +36,21 @@ final class BackGestureTutorialController extends TutorialController {
         super(fragment, tutorialType);
     }
 
-    @Override
-    Integer getTitleStringId() {
-        switch (mTutorialType) {
-            case RIGHT_EDGE_BACK_NAVIGATION:
-            case LEFT_EDGE_BACK_NAVIGATION:
-                return R.string.back_gesture_intro_title;
-            case BACK_NAVIGATION_COMPLETE:
-                return R.string.gesture_tutorial_confirm_title;
-        }
-        return null;
-    }
-
-    @Override
-    Integer getSubtitleStringId() {
-        switch (mTutorialType) {
-            case RIGHT_EDGE_BACK_NAVIGATION:
-            case LEFT_EDGE_BACK_NAVIGATION:
-                return R.string.back_gesture_intro_subtitle;
-            case BACK_NAVIGATION_COMPLETE:
-                return R.string.back_gesture_tutorial_confirm_subtitle;
-        }
-        return null;
-    }
-
-    @Override
-    Integer getActionButtonStringId() {
-        if (mTutorialType == BACK_NAVIGATION_COMPLETE) {
-            return R.string.gesture_tutorial_action_button_label_done;
-        }
-        return null;
-    }
-
-    @Override
-    Integer getActionTextButtonStringId() {
-        if (mTutorialType == BACK_NAVIGATION_COMPLETE) {
-            return R.string.gesture_tutorial_action_button_label_settings;
-        }
-        return null;
-    }
-
-    @Override
-    void onActionTextButtonClicked(View button) {
-        mTutorialFragment.startSystemNavigationSetting();
-    }
-
     @Nullable
-    @Override
     public View getMockLauncherView() {
         return null;
+    }
+
+    @Override
+    public Integer getIntroductionTitle() {
+        return mTutorialType == LEFT_EDGE_BACK_NAVIGATION
+                ? R.string.back_gesture_intro_title : null;
+    }
+
+    @Override
+    public Integer getIntroductionSubtitle() {
+        return mTutorialType == LEFT_EDGE_BACK_NAVIGATION
+                ? R.string.back_gesture_intro_subtitle : null;
     }
 
     @Override
@@ -112,8 +78,7 @@ final class BackGestureTutorialController extends TutorialController {
                 mFakeTaskView.setBackground(AppCompatResources.getDrawable(mContext,
                         R.drawable.sandbox_fake_google_search));
                 showRippleEffect(null);
-                showFeedback(R.string.back_gesture_feedback_complete,
-                        mTutorialFragment::continueTutorial);
+                showFeedback(R.string.back_gesture_feedback_complete, true);
                 break;
             case BACK_CANCELLED_FROM_RIGHT:
                 showFeedback(R.string.back_gesture_feedback_cancelled_right_edge);

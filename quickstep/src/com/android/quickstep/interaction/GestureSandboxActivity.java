@@ -41,7 +41,11 @@ public class GestureSandboxActivity extends FragmentActivity {
     private static final String KEY_TUTORIAL_STEPS = "tutorial_steps";
 
     private Deque<TutorialType> mTutorialSteps;
+    private TutorialType mCurrentTutorialStep;
     private TutorialFragment mFragment;
+
+    private int mCurrentStep;
+    private int mNumSteps;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +55,10 @@ public class GestureSandboxActivity extends FragmentActivity {
 
         Bundle args = savedInstanceState == null ? getIntent().getExtras() : savedInstanceState;
         mTutorialSteps = getTutorialSteps(args);
-        mFragment = TutorialFragment.newInstance(mTutorialSteps.pop());
+        mCurrentStep = 1;
+        mNumSteps = mTutorialSteps.size();
+        mCurrentTutorialStep = mTutorialSteps.pop();
+        mFragment = TutorialFragment.newInstance(mCurrentTutorialStep);
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.gesture_tutorial_fragment_container, mFragment)
                 .commit();
@@ -89,6 +96,21 @@ public class GestureSandboxActivity extends FragmentActivity {
         return mTutorialSteps.isEmpty();
     }
 
+    public int getCurrentStep() {
+        return mCurrentStep;
+    }
+
+    public int getNumSteps() {
+        return mNumSteps;
+    }
+
+    /**
+     * Closes the tutorial and this activity.
+     */
+    public void closeTutorial() {
+        mFragment.closeTutorial();
+    }
+
     /**
      * Replaces the current TutorialFragment, continuing to the next tutorial step if there is one.
      *
@@ -99,17 +121,20 @@ public class GestureSandboxActivity extends FragmentActivity {
             mFragment.closeTutorial();
             return;
         }
-        mFragment = TutorialFragment.newInstance(mTutorialSteps.pop());
+        mCurrentTutorialStep = mTutorialSteps.pop();
+        mFragment = TutorialFragment.newInstance(mCurrentTutorialStep);
         getSupportFragmentManager().beginTransaction()
             .replace(R.id.gesture_tutorial_fragment_container, mFragment)
             .runOnCommit(() -> mFragment.onAttachedToWindow())
             .commit();
+        mCurrentStep++;
     }
 
     private String[] getTutorialStepNames() {
-        String[] tutorialStepNames = new String[mTutorialSteps.size()];
+        String[] tutorialStepNames = new String[mTutorialSteps.size() + 1];
 
-        int i = 0;
+        int i = 1;
+        tutorialStepNames[0] = mCurrentTutorialStep.name();
         for (TutorialType tutorialStep : mTutorialSteps) {
             tutorialStepNames[i++] = tutorialStep.name();
         }
