@@ -500,23 +500,25 @@ public final class TaskViewUtils {
             windowAnimEndListener = new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    recentsView.post(() -> {
-                        stateManager.moveToRestState();
-                        stateManager.reapplyState();
+                    recentsView.finishRecentsAnimation(false /* toRecents */, () -> {
+                        recentsView.post(() -> {
+                            stateManager.moveToRestState();
+                            stateManager.reapplyState();
+                        });
                     });
                 }
             };
         } else {
             AnimatorPlaybackController controller =
-                    stateManager.createAnimationToNewWorkspace(NORMAL,
-                            RECENTS_LAUNCH_DURATION);
+                    stateManager.createAnimationToNewWorkspace(NORMAL, RECENTS_LAUNCH_DURATION);
             controller.dispatchOnStart();
             childStateAnimation = controller.getTarget();
             launcherAnim = controller.getAnimationPlayer().setDuration(RECENTS_LAUNCH_DURATION);
             windowAnimEndListener = new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    stateManager.goToState(NORMAL, false);
+                    recentsView.finishRecentsAnimation(false /* toRecents */,
+                            () -> stateManager.goToState(NORMAL, false));
                 }
             };
         }
