@@ -3323,6 +3323,18 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
     }
 
+    /**
+     * Set the given view's pivot point to match the workspace's, so that it scales together. Since
+     * both this view and workspace can move, transform the point manually instead of using
+     * dragLayer.getDescendantCoordRelativeToSelf and related methods.
+     */
+    public void setPivotToScaleWithSelf(View sibling) {
+        sibling.setPivotY(getPivotY() + getTop()
+                - sibling.getTop() - sibling.getTranslationY());
+        sibling.setPivotX(getPivotX() + getLeft()
+                - sibling.getLeft() - sibling.getTranslationX());
+    }
+
     @Override
     public int getExpectedHeight() {
         return getMeasuredHeight() <= 0 || !mIsLayoutValid

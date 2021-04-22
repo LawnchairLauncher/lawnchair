@@ -20,6 +20,7 @@ import android.content.Context;
 import android.graphics.PointF;
 import android.graphics.RectF;
 
+import androidx.annotation.Nullable;
 import androidx.dynamicanimation.animation.DynamicAnimation.OnAnimationEndListener;
 import androidx.dynamicanimation.animation.FloatPropertyCompat;
 import androidx.dynamicanimation.animation.SpringAnimation;
@@ -241,7 +242,7 @@ public class RectFSpringAnim extends ReleaseCheck {
                         mCurrentCenterX + currentWidth / 2, mCurrentY + currentHeight);
             }
             for (OnUpdateListener onUpdateListener : mOnUpdateListeners) {
-                onUpdateListener.onUpdate(mCurrentRect, mCurrentScaleProgress);
+                onUpdateListener.onUpdate(null, mCurrentRect, mCurrentScaleProgress);
             }
         }
     }
@@ -266,7 +267,7 @@ public class RectFSpringAnim extends ReleaseCheck {
     }
 
     public interface OnUpdateListener {
-        void onUpdate(RectF currentRect, float progress);
+        void onUpdate(@Nullable AppCloseConfig values, RectF currentRect, float progress);
 
         default void onCancel() { }
     }
