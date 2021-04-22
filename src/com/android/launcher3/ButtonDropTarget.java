@@ -240,6 +240,7 @@ public abstract class ButtonDropTarget extends TextView
 
         final Rect to = getIconRect(d);
         final float scale = (float) to.width() / from.width();
+        d.dragView.detachContentView(/* reattachToPreviousParent= */ true);
         mDropTargetBar.deferOnDragEnd();
 
         Runnable onAnimationEndRunnable = () -> {
