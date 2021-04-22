@@ -1252,7 +1252,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             HomeAnimationFactory homeAnimationFactory) {
         RectFSpringAnim anim =
                 super.createWindowAnimationToHome(startProgress, homeAnimationFactory);
-        anim.addOnUpdateListener((r, p) -> {
+        anim.addOnUpdateListener((v, r, p) -> {
             updateSysUiFlags(Math.max(p, mCurrentShift.value));
         });
         anim.addAnimatorListener(new AnimationSuccessListener() {

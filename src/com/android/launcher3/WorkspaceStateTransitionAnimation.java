@@ -119,7 +119,7 @@ public class WorkspaceStateTransitionAnimation {
             propertySetter.setFloat(mWorkspace, SCALE_PROPERTY, mNewScale, scaleInterpolator);
         }
 
-        setPivotToScaleWithWorkspace(hotseat);
+        mWorkspace.setPivotToScaleWithSelf(hotseat);
         float hotseatScale = hotseatScaleAndTranslation.scale;
         if (shouldSpring) {
             PendingAnimation pa = (PendingAnimation) propertySetter;
@@ -154,18 +154,6 @@ public class WorkspaceStateTransitionAnimation {
         if (!config.hasAnimationFlag(SKIP_SCRIM)) {
             setScrim(propertySetter, state, config);
         }
-    }
-
-    /**
-     * Set the given view's pivot point to match the workspace's, so that it scales together. Since
-     * both this view and workspace can move, transform the point manually instead of using
-     * dragLayer.getDescendantCoordRelativeToSelf and related methods.
-     */
-    private void setPivotToScaleWithWorkspace(View sibling) {
-        sibling.setPivotY(mWorkspace.getPivotY() + mWorkspace.getTop()
-                - sibling.getTop() - sibling.getTranslationY());
-        sibling.setPivotX(mWorkspace.getPivotX() + mWorkspace.getLeft()
-                - sibling.getLeft() - sibling.getTranslationX());
     }
 
     public void setScrim(PropertySetter propertySetter, LauncherState state,

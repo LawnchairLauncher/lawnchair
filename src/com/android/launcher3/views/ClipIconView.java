@@ -15,9 +15,12 @@
  */
 package com.android.launcher3.views;
 
+import static com.android.launcher3.Utilities.boundToRange;
 import static com.android.launcher3.Utilities.mapToRange;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATION;
+
+import static java.lang.Math.max;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -143,10 +146,9 @@ public class ClipIconView extends View implements ClipPathView {
     /**
      * Update the icon UI to match the provided parameters during an animation frame
      */
-    public void update(RectF rect, float progress, float shapeProgressStart,
-            float cornerRadius, boolean isOpening, View container,
-            DeviceProfile dp, boolean isVerticalBarLayout) {
-
+    public void update(RectF rect, float progress, float shapeProgressStart, float cornerRadius,
+            int fgIconAlpha, boolean isOpening, View container, DeviceProfile dp,
+            boolean isVerticalBarLayout) {
         MarginLayoutParams lp = (MarginLayoutParams) container.getLayoutParams();
 
         float dX = mIsRtl
@@ -166,7 +168,7 @@ public class ClipIconView extends View implements ClipPathView {
             return;
         }
 
-        update(rect, progress, shapeProgressStart, cornerRadius, isOpening, scale,
+        update(rect, progress, shapeProgressStart, cornerRadius, fgIconAlpha, isOpening, scale,
                 minSize, lp, isVerticalBarLayout, dp);
 
         container.setPivotX(0);
@@ -178,8 +180,8 @@ public class ClipIconView extends View implements ClipPathView {
     }
 
     private void update(RectF rect, float progress, float shapeProgressStart, float cornerRadius,
-            boolean isOpening, float scale, float minSize, MarginLayoutParams parentLp,
-            boolean isVerticalBarLayout, DeviceProfile dp) {
+            int fgIconAlpha, boolean isOpening, float scale, float minSize,
+            MarginLayoutParams parentLp, boolean isVerticalBarLayout, DeviceProfile dp) {
         float dX = mIsRtl
                 ? rect.left - (dp.widthPx - parentLp.getMarginStart() - parentLp.width)
                 : rect.left - parentLp.getMarginStart();
@@ -187,9 +189,9 @@ public class ClipIconView extends View implements ClipPathView {
 
         // shapeRevealProgress = 1 when progress = shapeProgressStart + SHAPE_PROGRESS_DURATION
         float toMax = isOpening ? 1 / SHAPE_PROGRESS_DURATION : 1f;
-        float shapeRevealProgress = Utilities.boundToRange(mapToRange(
-                Math.max(shapeProgressStart, progress), shapeProgressStart, 1f, 0, toMax,
-                LINEAR), 0, 1);
+
+        float shapeRevealProgress = boundToRange(mapToRange(max(shapeProgressStart, progress),
+                shapeProgressStart, 1f, 0, toMax, LINEAR), 0, 1);
 
         if (isVerticalBarLayout) {
             mOutline.right = (int) (rect.width() / scale);
@@ -231,6 +233,8 @@ public class ClipIconView extends View implements ClipPathView {
                 sTmpRect.offset(diffX, diffY);
                 mForeground.setBounds(sTmpRect);
             } else {
+                mForeground.setAlpha(fgIconAlpha);
+
                 // Spring the foreground relative to the icon's movement within the DragLayer.
                 int diffX = (int) (dX / dp.availableWidthPx * FG_TRANS_X_FACTOR);
                 int diffY = (int) (dY / dp.availableHeightPx * FG_TRANS_Y_FACTOR);
