@@ -27,7 +27,6 @@ import android.view.animation.PathInterpolator;
 
 import com.android.launcher3.Utilities;
 
-
 /**
  * Common interpolators used in Launcher
  */
