@@ -224,7 +224,7 @@ public class LauncherPreviewRenderer extends ContextThemeWrapper
         mUiHandler = new Handler(Looper.getMainLooper());
         mContext = context;
         mIdp = idp;
-        mDp = idp.portraitProfile.copy(context);
+        mDp = idp.getDeviceProfile(context).copy(context);
         mMigrated = migrated;
 
         // TODO: get correct insets once display cutout API is available.

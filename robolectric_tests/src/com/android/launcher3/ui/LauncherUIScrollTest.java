@@ -161,7 +161,7 @@ public class LauncherUIScrollTest {
 
     private static MotionEvent createScrollEvent(int scroll) {
         DeviceProfile dp = InvariantDeviceProfile.INSTANCE
-                .get(RuntimeEnvironment.application).portraitProfile;
+                .get(RuntimeEnvironment.application).supportedProfiles.get(0);
 
         final PointerProperties[] pointerProperties = new PointerProperties[1];
         pointerProperties[0] = new PointerProperties();

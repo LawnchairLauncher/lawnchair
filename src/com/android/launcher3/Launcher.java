@@ -189,7 +189,6 @@ import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.PendingAppWidgetHostView;
 import com.android.launcher3.widget.WidgetAddFlowHandler;
-import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetManagerHelper;
 import com.android.launcher3.widget.custom.CustomWidgetManager;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
@@ -2332,8 +2331,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                         pendingInfo.spanY = item.spanY;
                         pendingInfo.minSpanX = item.minSpanX;
                         pendingInfo.minSpanY = item.minSpanY;
-                        Bundle options = WidgetHostViewLoader.getDefaultOptionsForWidget(this,
-                                pendingInfo);
+                        Bundle options = pendingInfo.getDefaultSizeOptions(this);
 
                         boolean isDirectConfig =
                                 item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_DIRECT_CONFIG);

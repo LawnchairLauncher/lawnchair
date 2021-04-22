@@ -104,8 +104,8 @@ public class QuickstepModelDelegate extends ModelDelegate implements OnIDPChange
         // TODO: Implement caching and preloading
         super.loadItems(ums, pinnedShortcuts);
 
-        WorkspaceItemFactory allAppsFactory =
-                new WorkspaceItemFactory(mApp, ums, pinnedShortcuts, mIDP.numAllAppsColumns);
+        WorkspaceItemFactory allAppsFactory = new WorkspaceItemFactory(
+                mApp, ums, pinnedShortcuts, mIDP.numDatabaseAllAppsColumns);
         mAllAppsState.items.setItems(
                 mAllAppsState.storage.read(mApp.getContext(), allAppsFactory, ums.allUsers::get));
         mDataModel.extraItems.put(CONTAINER_PREDICTION, mAllAppsState.items);
@@ -204,7 +204,7 @@ public class QuickstepModelDelegate extends ModelDelegate implements OnIDPChange
         registerPredictor(mAllAppsState, apm.createAppPredictionSession(
                 new AppPredictionContext.Builder(context)
                         .setUiSurface("home")
-                        .setPredictedTargetCount(mIDP.numAllAppsColumns)
+                        .setPredictedTargetCount(mIDP.numDatabaseAllAppsColumns)
                         .build()));
 
         // TODO: get bundle

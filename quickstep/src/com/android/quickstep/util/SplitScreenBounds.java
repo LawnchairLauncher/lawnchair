@@ -20,10 +20,7 @@ import static android.view.Surface.ROTATION_180;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.graphics.Insets;
-import android.graphics.Rect;
 import android.os.Build;
-import android.view.WindowInsets.Type;
 import android.view.WindowManager;
 import android.view.WindowMetrics;
 
@@ -73,10 +70,8 @@ public class SplitScreenBounds {
      */
     private static WindowBounds createDefaultWindowBounds(Context context) {
         WindowMetrics wm = context.getSystemService(WindowManager.class).getMaximumWindowMetrics();
-        Insets insets = wm.getWindowInsets().getInsets(Type.systemBars());
+        WindowBounds bounds = WindowBounds.fromWindowMetrics(wm);
 
-        WindowBounds bounds = new WindowBounds(wm.getBounds(),
-                new Rect(insets.left, insets.top, insets.right, insets.bottom));
         int rotation = DisplayController.INSTANCE.get(context).getInfo().rotation;
         int halfDividerSize = context.getResources()
                 .getDimensionPixelSize(R.dimen.multi_window_task_divider_size) / 2;
