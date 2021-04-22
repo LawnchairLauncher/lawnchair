@@ -25,6 +25,7 @@ import android.content.pm.LauncherApps;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
@@ -40,6 +41,7 @@ import com.android.launcher3.SessionCommitReceiver;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.ItemInstallQueue;
+import com.android.launcher3.util.IOUtils;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.MainThreadInitializedObject;
@@ -215,14 +217,8 @@ public class InstallSessionHelper {
     void tryQueuePromiseAppIcon(PackageInstaller.SessionInfo sessionInfo) {
         if (FeatureFlags.PROMISE_APPS_NEW_INSTALLS.get()
                 && SessionCommitReceiver.isEnabled(mAppContext)
-                && verify(sessionInfo) != null
-                && sessionInfo.getInstallReason() == PackageManager.INSTALL_REASON_USER
-                && sessionInfo.getAppIcon() != null
-                && !TextUtils.isEmpty(sessionInfo.getAppLabel())
-                && !promiseIconAddedForId(sessionInfo.getSessionId())
-                && !new PackageManagerHelper(mAppContext).isAppInstalled(
-                        sessionInfo.getAppPackageName(), getUserHandle(sessionInfo))) {
-            Log.i(LOG, "Adding package name to install queue: "
+                && verifySessionInfo(sessionInfo)) {
+            Log.d(LOG, "Adding package name to install queue: "
                     + sessionInfo.getAppPackageName());
 
             ItemInstallQueue.INSTANCE.get(mAppContext)
@@ -231,6 +227,37 @@ public class InstallSessionHelper {
             getPromiseIconIds().add(sessionInfo.getSessionId());
             updatePromiseIconPrefs();
         }
+    }
+
+    public boolean verifySessionInfo(PackageInstaller.SessionInfo sessionInfo) {
+        boolean validSessionInfo = verify(sessionInfo) != null
+                && sessionInfo.getInstallReason() == PackageManager.INSTALL_REASON_USER
+                && sessionInfo.getAppIcon() != null
+                && !TextUtils.isEmpty(sessionInfo.getAppLabel())
+                && !promiseIconAddedForId(sessionInfo.getSessionId())
+                && !new PackageManagerHelper(mAppContext).isAppInstalled(
+                        sessionInfo.getAppPackageName(), getUserHandle(sessionInfo));
+
+        if (sessionInfo != null) {
+            Bitmap appIcon = sessionInfo.getAppIcon();
+
+            Log.d(LOG, String.format(
+                    "Verifying session info. Valid: %b, Session verified: %b, Install reason valid:"
+                            + " %b, App icon: %s, App label: %s, Promise icon added: %b, "
+                            + "App installed: %b.",
+                    validSessionInfo,
+                    verify(sessionInfo) != null,
+                    sessionInfo.getInstallReason() == PackageManager.INSTALL_REASON_USER,
+                    appIcon == null ? "null" : IOUtils.toBase64String(appIcon),
+                    sessionInfo.getAppLabel(),
+                    promiseIconAddedForId(sessionInfo.getSessionId()),
+                    new PackageManagerHelper(mAppContext).isAppInstalled(
+                            sessionInfo.getAppPackageName(), getUserHandle(sessionInfo))));
+        } else {
+            Log.d(LOG, "Verifying session info failed: session info null.");
+        }
+
+        return validSessionInfo;
     }
 
     public InstallSessionTracker registerInstallTracker(InstallSessionTracker.Callback callback) {
