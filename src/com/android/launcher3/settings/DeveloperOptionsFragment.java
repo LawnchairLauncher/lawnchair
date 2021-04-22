@@ -269,6 +269,20 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
         }
         PreferenceCategory sandboxCategory = newCategory("Gesture Navigation Sandbox");
         sandboxCategory.setSummary("Learn and practice navigation gestures");
+        Preference launchOnboardingTutorialPreference = new Preference(context);
+        launchOnboardingTutorialPreference.setKey("launchOnboardingTutorial");
+        launchOnboardingTutorialPreference.setTitle("Launch Onboarding Tutorial");
+        launchOnboardingTutorialPreference.setSummary("Learn the basic navigation gestures.");
+        launchOnboardingTutorialPreference.setOnPreferenceClickListener(preference -> {
+            startActivity(launchSandboxIntent.putExtra(
+                    "tutorial_steps",
+                    new String[] {
+                            "LEFT_EDGE_BACK_NAVIGATION",
+                            "HOME_NAVIGATION",
+                            "OVERVIEW_NAVIGATION"}));
+            return true;
+        });
+        sandboxCategory.addPreference(launchOnboardingTutorialPreference);
         Preference launchBackTutorialPreference = new Preference(context);
         launchBackTutorialPreference.setKey("launchBackTutorial");
         launchBackTutorialPreference.setTitle("Launch Back Tutorial");
