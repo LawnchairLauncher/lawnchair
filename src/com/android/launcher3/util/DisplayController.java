@@ -16,21 +16,28 @@
 package com.android.launcher3.util;
 
 import static android.view.Display.DEFAULT_DISPLAY;
+import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.content.ComponentCallbacks;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.graphics.Point;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.DisplayManager.DisplayListener;
-import android.util.DisplayMetrics;
+import android.os.Build;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.Display;
 
-import androidx.annotation.Nullable;
-import androidx.annotation.VisibleForTesting;
+import androidx.annotation.AnyThread;
+import androidx.annotation.UiThread;
+import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.Utilities;
 
@@ -39,104 +46,78 @@ import java.util.ArrayList;
 /**
  * Utility class to cache properties of default display to avoid a system RPC on every call.
  */
-public class DisplayController implements DisplayListener {
+@SuppressLint("NewApi")
+public class DisplayController implements DisplayListener, ComponentCallbacks {
 
     private static final String TAG = "DisplayController";
 
     public static final MainThreadInitializedObject<DisplayController> INSTANCE =
             new MainThreadInitializedObject<>(DisplayController::new);
 
-    private final SparseArray<DisplayHolder> mOtherDisplays = new SparseArray<>(0);
-    // We store the default display separately, to avoid null checks for primary use case.
-    private final DisplayHolder mDefaultDisplay;
+    public static final int CHANGE_SIZE = 1 << 0;
+    public static final int CHANGE_ROTATION = 1 << 1;
+    public static final int CHANGE_FRAME_DELAY = 1 << 2;
+    public static final int CHANGE_DENSITY = 1 << 3;
 
-    private final ArrayList<DisplayListChangeListener> mListListeners = new ArrayList<>();
+    public static final int CHANGE_ALL = CHANGE_SIZE | CHANGE_ROTATION
+            | CHANGE_FRAME_DELAY | CHANGE_DENSITY;
+
+    private final Context mContext;
+    private final DisplayManager mDM;
+
+    // Null for SDK < S
+    private final Context mWindowContext;
+
+    private final ArrayList<DisplayInfoChangeListener> mListeners = new ArrayList<>();
+    private Info mInfo;
 
     private DisplayController(Context context) {
-        mDefaultDisplay = DisplayHolder.create(context, DEFAULT_DISPLAY);
+        mContext = context;
+        mDM = context.getSystemService(DisplayManager.class);
 
-        DisplayManager dm = context.getSystemService(DisplayManager.class);
-        dm.registerDisplayListener(this, UI_HELPER_EXECUTOR.getHandler());
-    }
-
-    @Override
-    public final void onDisplayAdded(int displayId) {
-        DisplayHolder holder = DisplayHolder.create(mDefaultDisplay.mDisplayContext, displayId);
-        if (holder == null) {
-            // Display is already removed by the time we dot this.
-            return;
-        }
-        synchronized (mOtherDisplays) {
-            mOtherDisplays.put(displayId, holder);
-        }
-        MAIN_EXECUTOR.execute(() -> mListListeners.forEach(l-> l.onDisplayAdded(holder)));
-    }
-
-    @Override
-    public final void onDisplayRemoved(int displayId) {
-        synchronized (mOtherDisplays) {
-            mOtherDisplays.remove(displayId);
-        }
-        MAIN_EXECUTOR.execute(() -> mListListeners.forEach(l-> l.onDisplayRemoved(displayId)));
-    }
-
-    /**
-     * Returns the holder corresponding to the given display
-     */
-    public DisplayHolder getHolder(int displayId) {
-        if (displayId == mDefaultDisplay.mId) {
-            return mDefaultDisplay;
+        Display display = mDM.getDisplay(DEFAULT_DISPLAY);
+        if (Utilities.ATLEAST_S) {
+            mWindowContext = mContext.createWindowContext(display, TYPE_APPLICATION, null);
+            mWindowContext.registerComponentCallbacks(this);
         } else {
-            synchronized (mOtherDisplays) {
-                return mOtherDisplays.get(displayId);
-            }
+            mWindowContext = null;
+            SimpleBroadcastReceiver configChangeReceiver =
+                    new SimpleBroadcastReceiver(this::onConfigChanged);
+            mContext.registerReceiver(configChangeReceiver,
+                    new IntentFilter(Intent.ACTION_CONFIGURATION_CHANGED));
         }
+
+        mInfo = createInfo(display);
+        mDM.registerDisplayListener(this, UI_HELPER_EXECUTOR.getHandler());
     }
 
-    /**
-     * Adds a listener for display list changes
-     */
-    public void addListChangeListener(DisplayListChangeListener listener) {
-        mListListeners.add(listener);
-    }
+    @Override
+    public final void onDisplayAdded(int displayId) { }
 
-    /**
-     * Removes a previously added display list change listener
-     */
-    public void removeListChangeListener(DisplayListChangeListener listener) {
-        mListListeners.remove(listener);
-    }
+    @Override
+    public final void onDisplayRemoved(int displayId) { }
 
+    @WorkerThread
     @Override
     public final void onDisplayChanged(int displayId) {
-        DisplayHolder holder = getHolder(displayId);
-        if (holder != null) {
-            holder.handleOnChange();
+        if (displayId != DEFAULT_DISPLAY) {
+            return;
         }
+        Display display = mDM.getDisplay(DEFAULT_DISPLAY);
+        if (display == null) {
+            return;
+        }
+        if (Utilities.ATLEAST_S) {
+            // Only check for refresh rate. Everything else comes from component callbacks
+            if (getSingleFrameMs(display) == mInfo.singleFrameMs) {
+                return;
+            }
+        }
+        handleInfoChange(display);
     }
 
     public static int getSingleFrameMs(Context context) {
-        return getDefaultDisplay(context).getInfo().singleFrameMs;
-    }
-
-    public static DisplayHolder getDefaultDisplay(Context context) {
-        return INSTANCE.get(context).mDefaultDisplay;
-    }
-
-    /**
-     * A listener to receiving addition or removal of new displays
-     */
-    public interface DisplayListChangeListener {
-
-        /**
-         * Called when a new display is added
-         */
-        void onDisplayAdded(DisplayHolder holder);
-
-        /**
-         * Called when a previously added display is removed
-         */
-        void onDisplayRemoved(int displayId);
+        return INSTANCE.get(context).getInfo().singleFrameMs;
     }
 
     /**
@@ -147,147 +128,121 @@ public class DisplayController implements DisplayListener {
         void onDisplayInfoChanged(Info info, int flags);
     }
 
-    public static class DisplayHolder {
-
-        public static final int CHANGE_SIZE = 1 << 0;
-        public static final int CHANGE_ROTATION = 1 << 1;
-        public static final int CHANGE_FRAME_DELAY = 1 << 2;
-
-        public static final int CHANGE_ALL = CHANGE_SIZE | CHANGE_ROTATION | CHANGE_FRAME_DELAY;
-
-        final Context mDisplayContext;
-        final int mId;
-        private final ArrayList<DisplayInfoChangeListener> mListeners = new ArrayList<>();
-        private DisplayController.Info mInfo;
-
-        private DisplayHolder(Context displayContext) {
-            mDisplayContext = displayContext;
-            // Note that the Display object must be obtained from DisplayManager which is
-            // associated to the display context, so the Display is isolated from Activity and
-            // Application to provide the actual state of device that excludes the additional
-            // adjustment and override.
-            mInfo = new DisplayController.Info(mDisplayContext);
-            mId = mInfo.id;
-        }
-
-        public void addChangeListener(DisplayInfoChangeListener listener) {
-            mListeners.add(listener);
-        }
-
-        public void removeChangeListener(DisplayInfoChangeListener listener) {
-            mListeners.remove(listener);
-        }
-
-        public DisplayController.Info getInfo() {
-            return mInfo;
-        }
-
-        /** Creates and up-to-date DisplayController.Info for the given context. */
-        @Nullable
-        public Info createInfoForContext(Context context) {
-            Display display = Utilities.ATLEAST_R ? context.getDisplay() : null;
-            if (display == null) {
-                display = context.getSystemService(DisplayManager.class).getDisplay(mId);
-            }
-            if (display == null) {
-                return null;
-            }
-            // Refresh the Context the prevent stale DisplayMetrics.
-            Context displayContext = context.getApplicationContext().createDisplayContext(display);
-            return new Info(displayContext, display);
-        }
-
-        public Context getDisplayContext() {
-            return mDisplayContext;
-        }
-
-        protected void handleOnChange() {
-            Info oldInfo = mInfo;
-            Info newInfo = createInfoForContext(mDisplayContext);
-            if (newInfo == null) {
-                return;
-            }
-
-            int change = 0;
-            if (newInfo.hasDifferentSize(oldInfo)) {
-                change |= CHANGE_SIZE;
-            }
-            if (newInfo.rotation != oldInfo.rotation) {
-                change |= CHANGE_ROTATION;
-            }
-            if (newInfo.singleFrameMs != oldInfo.singleFrameMs) {
-                change |= CHANGE_FRAME_DELAY;
-            }
-
-            if (change != 0) {
-                mInfo = newInfo;
-                final int flags = change;
-                MAIN_EXECUTOR.execute(() -> notifyChange(flags));
+    /**
+     * Only used for pre-S
+     */
+    private void onConfigChanged(Intent intent) {
+        Configuration config = mContext.getResources().getConfiguration();
+        if (config.fontScale != config.fontScale || mInfo.densityDpi != config.densityDpi) {
+            Log.d(TAG, "Configuration changed, notifying listeners");
+            Display display = mDM.getDisplay(DEFAULT_DISPLAY);
+            if (display != null) {
+                handleInfoChange(display);
             }
         }
+    }
 
-        private void notifyChange(int flags) {
-            for (int i = mListeners.size() - 1; i >= 0; i--) {
-                mListeners.get(i).onDisplayInfoChanged(mInfo, flags);
-            }
+    @UiThread
+    @Override
+    @TargetApi(Build.VERSION_CODES.S)
+    public final void onConfigurationChanged(Configuration config) {
+        Display display = mWindowContext.getDisplay();
+        if (config.densityDpi != mInfo.densityDpi
+                || config.fontScale != mInfo.fontScale
+                || display.getRotation() != mInfo.rotation
+                || !mInfo.mScreenSizeDp.equals(
+                        Math.min(config.screenHeightDp, config.screenWidthDp),
+                        Math.max(config.screenHeightDp, config.screenWidthDp))) {
+            handleInfoChange(display);
+        }
+    }
+
+    @Override
+    public final void onLowMemory() { }
+
+    public void addChangeListener(DisplayInfoChangeListener listener) {
+        mListeners.add(listener);
+    }
+
+    public void removeChangeListener(DisplayInfoChangeListener listener) {
+        mListeners.remove(listener);
+    }
+
+    public Info getInfo() {
+        return mInfo;
+    }
+
+    private Info createInfo(Display display) {
+        return new Info(mContext.createDisplayContext(display), display);
+    }
+
+    @AnyThread
+    private void handleInfoChange(Display display) {
+        Info oldInfo = mInfo;
+        Info newInfo = createInfo(display);
+        int change = 0;
+        if (newInfo.hasDifferentSize(oldInfo)) {
+            change |= CHANGE_SIZE;
+        }
+        if (newInfo.rotation != oldInfo.rotation) {
+            change |= CHANGE_ROTATION;
+        }
+        if (newInfo.singleFrameMs != oldInfo.singleFrameMs) {
+            change |= CHANGE_FRAME_DELAY;
+        }
+        if (newInfo.densityDpi != oldInfo.densityDpi || newInfo.fontScale != oldInfo.fontScale) {
+            change |= CHANGE_DENSITY;
         }
 
-        private static DisplayHolder create(Context context, int id) {
-            DisplayManager dm = context.getSystemService(DisplayManager.class);
-            Display display = dm.getDisplay(id);
-            if (display == null) {
-                return null;
-            }
-            // Use application context to create display context so that it can have its own
-            // Resources.
-            Context displayContext = context.getApplicationContext().createDisplayContext(display);
-            return new DisplayHolder(displayContext);
+        if (change != 0) {
+            mInfo = newInfo;
+            final int flags = change;
+            MAIN_EXECUTOR.execute(() -> notifyChange(flags));
+        }
+    }
+
+    private void notifyChange(int flags) {
+        for (int i = mListeners.size() - 1; i >= 0; i--) {
+            mListeners.get(i).onDisplayInfoChanged(mInfo, flags);
         }
     }
 
     public static class Info {
 
         public final int id;
-        public final int rotation;
         public final int singleFrameMs;
+
+        // Configuration properties
+        public final int rotation;
+        public final float fontScale;
+        public final int densityDpi;
+
+        private final Point mScreenSizeDp;
 
         public final Point realSize;
         public final Point smallestSize;
         public final Point largestSize;
 
-        public final DisplayMetrics metrics;
-
-        @VisibleForTesting
-        public Info(int id, int rotation, int singleFrameMs, Point realSize, Point smallestSize,
-                Point largestSize, DisplayMetrics metrics) {
-            this.id = id;
-            this.rotation = rotation;
-            this.singleFrameMs = singleFrameMs;
-            this.realSize = realSize;
-            this.smallestSize = smallestSize;
-            this.largestSize = largestSize;
-            this.metrics = metrics;
-        }
-
-        private Info(Context context) {
-            this(context, context.getSystemService(DisplayManager.class)
-                    .getDisplay(DEFAULT_DISPLAY));
-        }
-
         public Info(Context context, Display display) {
             id = display.getDisplayId();
+
             rotation = display.getRotation();
 
-            float refreshRate = display.getRefreshRate();
-            singleFrameMs = refreshRate > 0 ? (int) (1000 / refreshRate) : 16;
+            Configuration config = context.getResources().getConfiguration();
+            fontScale = config.fontScale;
+            densityDpi = config.densityDpi;
+            mScreenSizeDp = new Point(
+                    Math.min(config.screenHeightDp, config.screenWidthDp),
+                    Math.max(config.screenHeightDp, config.screenWidthDp));
+
+            singleFrameMs = getSingleFrameMs(display);
 
             realSize = new Point();
             smallestSize = new Point();
             largestSize = new Point();
+
             display.getRealSize(realSize);
             display.getCurrentSizeRange(smallestSize, largestSize);
-
-            metrics = context.getResources().getDisplayMetrics();
         }
 
         private boolean hasDifferentSize(Info info) {
@@ -306,5 +261,10 @@ public class DisplayController implements DisplayListener {
 
             return false;
         }
+    }
+
+    private static int getSingleFrameMs(Display display) {
+        float refreshRate = display.getRefreshRate();
+        return refreshRate > 0 ? (int) (1000 / refreshRate) : 16;
     }
 }

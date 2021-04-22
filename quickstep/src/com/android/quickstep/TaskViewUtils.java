@@ -209,7 +209,7 @@ public final class TaskViewUtils {
 
             // RecentsView never updates the display rotation until swipe-up so the value may
             // be stale. Use the display value instead.
-            int displayRotation = DisplayController.getDefaultDisplay(context).getInfo().rotation;
+            int displayRotation = DisplayController.INSTANCE.get(context).getInfo().rotation;
             tsv.getOrientationState().update(displayRotation, displayRotation);
 
             tsv.setPreview(targets.apps[targets.apps.length - 1]);
@@ -437,7 +437,7 @@ public final class TaskViewUtils {
 
             // RecentsView never updates the display rotation until swipe-up so the value may
             // be stale. Use the display value instead.
-            int displayRotation = DisplayController.getDefaultDisplay(recentsView.getContext())
+            int displayRotation = DisplayController.INSTANCE.get(recentsView.getContext())
                     .getInfo().rotation;
             tvs.getOrientationState().update(displayRotation, displayRotation);
 

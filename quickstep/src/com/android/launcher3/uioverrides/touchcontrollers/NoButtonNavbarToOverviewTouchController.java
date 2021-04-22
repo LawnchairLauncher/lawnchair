@@ -267,7 +267,7 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
     }
 
     private float dpiFromPx(float pixels) {
-        return Utilities.dpiFromPx(pixels, mLauncher.getResources().getDisplayMetrics());
+        return Utilities.dpiFromPx(pixels, mLauncher.getResources().getDisplayMetrics().densityDpi);
     }
 
     @Override
