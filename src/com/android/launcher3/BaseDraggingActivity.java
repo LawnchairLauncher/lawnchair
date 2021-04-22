@@ -17,7 +17,7 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_TAP;
-import static com.android.launcher3.util.DisplayController.DisplayHolder.CHANGE_ROTATION;
+import static com.android.launcher3.util.DisplayController.CHANGE_ROTATION;
 
 import android.app.ActivityOptions;
 import android.content.ActivityNotFoundException;
@@ -28,7 +28,6 @@ import android.graphics.Insets;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.os.Binder;
 import android.os.Bundle;
 import android.os.Process;
 import android.os.StrictMode;
@@ -92,7 +91,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
 
         mIsSafeModeEnabled = TraceHelper.allowIpcs("isSafeMode",
                 () -> getPackageManager().isSafeMode());
-        DisplayController.getDefaultDisplay(this).addChangeListener(this);
+        DisplayController.INSTANCE.get(this).addChangeListener(this);
 
         // Update theme
         WallpaperColorInfo.INSTANCE.get(this).addOnChangeListener(this);
@@ -279,7 +278,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
     protected void onDestroy() {
         super.onDestroy();
         WallpaperColorInfo.INSTANCE.get(this).removeOnChangeListener(this);
-        DisplayController.getDefaultDisplay(this).removeChangeListener(this);
+        DisplayController.INSTANCE.get(this).removeChangeListener(this);
     }
 
     public void runOnceOnStart(Runnable action) {

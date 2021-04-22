@@ -147,7 +147,7 @@ public class TaskViewSimulatorTest {
                     LauncherActivityInterface.INSTANCE);
             tvs.setDp(mDeviceProfile);
 
-            int launcherRotation = DisplayController.getDefaultDisplay(mContext).getInfo().rotation;
+            int launcherRotation = DisplayController.INSTANCE.get(mContext).getInfo().rotation;
             if (mAppRotation < 0) {
                 mAppRotation = launcherRotation;
             }
