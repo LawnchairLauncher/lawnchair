@@ -1395,7 +1395,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         mActivityInterface.onTransitionCancelled(wasVisible);
 
         // Leave the pending invisible flag, as it may be used by wallpaper open animation.
-        mActivity.clearForceInvisibleFlag(INVISIBLE_BY_STATE_HANDLER);
+        if (mActivity != null) {
+            mActivity.clearForceInvisibleFlag(INVISIBLE_BY_STATE_HANDLER);
+        }
     }
 
     protected void switchToScreenshot() {
