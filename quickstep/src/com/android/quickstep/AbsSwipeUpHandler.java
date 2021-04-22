@@ -65,6 +65,7 @@ import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Build;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.view.MotionEvent;
 import android.view.View;
@@ -135,6 +136,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     protected final BaseActivityInterface<S, T> mActivityInterface;
     protected final InputConsumerProxy mInputConsumerProxy;
     protected final ActivityInitListener mActivityInitListener;
+    private final Handler mHandler = new Handler();
     // Callbacks to be made once the recents animation starts
     private final ArrayList<Runnable> mRecentsAnimationStartCallbacks = new ArrayList<>();
     protected RecentsAnimationController mRecentsAnimationController;
@@ -1357,6 +1359,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         mActivityInitListener.unregister();
         ActivityManagerWrapper.getInstance().unregisterTaskStackListener(mActivityRestartListener);
         mTaskSnapshot = null;
+        mHandler.post(() -> {
+            // Defer clearing the activity since invalidation can happen over multiple callbacks
+            mActivity = null;
+        });
     }
 
     private void invalidateHandlerWithLauncher() {

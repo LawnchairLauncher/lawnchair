@@ -51,7 +51,7 @@ import java.util.List;
  */
 public class AllAppsRecyclerView extends BaseRecyclerView {
     private static final String TAG = "AllAppsContainerView";
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     private AlphabeticalAppsList mApps;
     private final int mNumAppsPerRow;
