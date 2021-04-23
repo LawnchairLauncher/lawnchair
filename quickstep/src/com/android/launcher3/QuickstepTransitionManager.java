@@ -172,6 +172,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     private final float mClosingWindowTransY;
     private final float mMaxShadowRadius;
 
+    private final StartingWindowListener mStartingWindowListener = new StartingWindowListener();
+
     private DeviceProfile mDeviceProfile;
 
     private RemoteAnimationProvider mRemoteAnimationProvider;
@@ -221,13 +223,9 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 }
             };
 
+            mStartingWindowListener.setTransitionManager(this);
             SystemUiProxy.INSTANCE.get(mLauncher).setStartingWindowListener(
-                    new IStartingWindowListener.Stub() {
-                        @Override
-                        public void onTaskLaunching(int taskId, int supportedType) {
-                            mTypeForTaskId.put(taskId, supportedType);
-                        }
-                    });
+                    mStartingWindowListener);
         }
     }
 
@@ -819,6 +817,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     public void onActivityDestroyed() {
         unregisterRemoteAnimations();
         unregisterRemoteTransitions();
+        mStartingWindowListener.setTransitionManager(null);
         SystemUiProxy.INSTANCE.getNoCreate().setStartingWindowListener(null);
     }
 
@@ -1238,6 +1237,19 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
             cropCenterXEnd = windowTargetBounds.centerX();
             cropCenterYEnd = windowTargetBounds.centerY();
+        }
+    }
+
+    private static class StartingWindowListener extends IStartingWindowListener.Stub {
+        private QuickstepTransitionManager mTransitionManager;
+
+        public void setTransitionManager(QuickstepTransitionManager transitionManager) {
+            mTransitionManager = transitionManager;
+        }
+
+        @Override
+        public void onTaskLaunching(int taskId, int supportedType) {
+            mTransitionManager.mTypeForTaskId.put(taskId, supportedType);
         }
     }
 }
