@@ -3069,7 +3069,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
 
         mRecentsAnimationController.finish(toRecents, () -> {
-            mRecentsAnimationController = null;
             if (onFinishComplete != null) {
                 onFinishComplete.run();
             }
@@ -3079,6 +3078,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             // typical example of this is (1) user swipes up from app to Overview (2) user
             // taps on QSB (3) user goes back to Overview and launch the most recent task.
             setCurrentTask(-1);
+            mRecentsAnimationController = null;
         });
     }
 
