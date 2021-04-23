@@ -71,6 +71,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnApplyWindowInsetsListener;
 import android.view.ViewTreeObserver.OnDrawListener;
+import android.view.ViewTreeObserver.OnScrollChangedListener;
 import android.view.WindowInsets;
 import android.view.animation.Interpolator;
 import android.widget.Toast;
@@ -139,6 +140,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     private final Handler mHandler = new Handler();
     // Callbacks to be made once the recents animation starts
     private final ArrayList<Runnable> mRecentsAnimationStartCallbacks = new ArrayList<>();
+    private final OnScrollChangedListener mOnRecentsScrollListener = this::onRecentsViewScroll;
+
     protected RecentsAnimationController mRecentsAnimationController;
     protected RecentsAnimationTargets mRecentsAnimationTargets;
     protected T mActivity;
@@ -1368,6 +1371,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     private void invalidateHandlerWithLauncher() {
         endLauncherTransitionController();
 
+        mRecentsView.removeOnScrollChangedListener(mOnRecentsScrollListener);
         mRecentsView.onGestureAnimationEnd();
         resetLauncherListeners();
     }
@@ -1562,15 +1566,17 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                     mRecentsAnimationTargets.addReleaseCheck(applier));
         });
 
-        mRecentsView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-            if (moveWindowWithRecentsScroll()) {
-                updateFinalShift();
-            }
-        });
+        mRecentsView.addOnScrollChangedListener(mOnRecentsScrollListener);
         runOnRecentsAnimationStart(() ->
                 mRecentsView.setRecentsAnimationTargets(mRecentsAnimationController,
                         mRecentsAnimationTargets));
         mRecentsViewScrollLinked = true;
+    }
+
+    private void onRecentsViewScroll() {
+        if (moveWindowWithRecentsScroll()) {
+            updateFinalShift();
+        }
     }
 
     protected void startNewTask(Consumer<Boolean> resultCallback) {
