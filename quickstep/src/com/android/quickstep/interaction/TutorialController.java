@@ -16,19 +16,25 @@
 package com.android.quickstep.interaction;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.graphics.drawable.Animatable2;
+import android.graphics.drawable.AnimatedVectorDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
+import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.VideoView;
 
 import androidx.annotation.CallSuper;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import com.android.launcher3.InvariantDeviceProfile;
@@ -41,6 +47,11 @@ import com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestureAttem
 abstract class TutorialController implements BackGestureAttemptCallback,
         NavBarGestureAttemptCallback {
 
+    private static final String TAG = "TutorialController";
+
+    private static final String PIXEL_TIPS_APP_PACKAGE_NAME = "com.google.android.apps.tips";
+    private static final CharSequence DEFAULT_PIXEL_TIPS_APP_NAME = "Pixel Tips";
+
     private static final int FEEDBACK_VISIBLE_MS = 2500;
     private static final int FEEDBACK_ANIMATION_MS = 250;
     private static final int RIPPLE_VISIBLE_MS = 300;
@@ -50,20 +61,19 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     final Context mContext;
 
     final ImageButton mCloseButton;
-    final TextView mTitleTextView;
-    final TextView mSubtitleTextView;
     final ViewGroup mFeedbackView;
-    final VideoView mFeedbackVideoView;
+    final ImageView mFeedbackVideoView;
     final ImageView mFakeLauncherView;
     final ClipIconView mFakeIconView;
     final View mFakeTaskView;
     final View mFakePreviousTaskView;
     final View mRippleView;
     final RippleDrawable mRippleDrawable;
-    final Button mActionTextButton;
     final Button mActionButton;
+    final TextView mTutorialStepView;
     private final Runnable mHideFeedbackRunnable;
     Runnable mHideFeedbackEndAction;
+    private final AlertDialog mSkipTutorialDialog;
 
     TutorialController(TutorialFragment tutorialFragment, TutorialType tutorialType) {
         mTutorialFragment = tutorialFragment;
@@ -72,9 +82,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
 
         RootSandboxLayout rootView = tutorialFragment.getRootView();
         mCloseButton = rootView.findViewById(R.id.gesture_tutorial_fragment_close_button);
-        mCloseButton.setOnClickListener(button -> mTutorialFragment.closeTutorial());
-        mTitleTextView = rootView.findViewById(R.id.gesture_tutorial_fragment_title_view);
-        mSubtitleTextView = rootView.findViewById(R.id.gesture_tutorial_fragment_subtitle_view);
+        mCloseButton.setOnClickListener(button -> showSkipTutorialDialog());
         mFeedbackView = rootView.findViewById(R.id.gesture_tutorial_fragment_feedback_view);
         mFeedbackVideoView = rootView.findViewById(R.id.gesture_tutorial_feedback_video);
         mFakeLauncherView = rootView.findViewById(R.id.gesture_tutorial_fake_launcher_view);
@@ -84,9 +92,10 @@ abstract class TutorialController implements BackGestureAttemptCallback,
                 rootView.findViewById(R.id.gesture_tutorial_fake_previous_task_view);
         mRippleView = rootView.findViewById(R.id.gesture_tutorial_ripple_view);
         mRippleDrawable = (RippleDrawable) mRippleView.getBackground();
-        mActionTextButton =
-                rootView.findViewById(R.id.gesture_tutorial_fragment_action_text_button);
         mActionButton = rootView.findViewById(R.id.gesture_tutorial_fragment_action_button);
+        mTutorialStepView =
+                rootView.findViewById(R.id.gesture_tutorial_fragment_feedback_tutorial_step);
+        mSkipTutorialDialog = createSkipTutorialDialog();
 
         mHideFeedbackRunnable =
                 () -> mFeedbackView.animate()
@@ -95,28 +104,14 @@ abstract class TutorialController implements BackGestureAttemptCallback,
                         .withEndAction(this::hideFeedbackEndAction).start();
     }
 
+    private void showSkipTutorialDialog() {
+        if (mSkipTutorialDialog != null) {
+            mSkipTutorialDialog.show();
+        }
+    }
+
     void setTutorialType(TutorialType tutorialType) {
         mTutorialType = tutorialType;
-    }
-
-    @Nullable
-    Integer getTitleStringId() {
-        return null;
-    }
-
-    @Nullable
-    Integer getSubtitleStringId() {
-        return null;
-    }
-
-    @Nullable
-    Integer getActionButtonStringId() {
-        return null;
-    }
-
-    @Nullable
-    Integer getActionTextButtonStringId() {
-        return null;
     }
 
     @DrawableRes
@@ -155,13 +150,39 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         mFakeTaskView.animate().alpha(0).setListener(AnimationSuccessListener.forRunnable(r));
     }
 
+    @StringRes
+    public Integer getIntroductionTitle() {
+        return null;
+    }
+
+    @StringRes
+    public Integer getIntroductionSubtitle() {
+        return null;
+    }
+
     /**
      * Show feedback reflecting a failed gesture attempt.
      *
      * @param subtitleResId Resource of the text to display.
      **/
     void showFeedback(int subtitleResId) {
-        showFeedback(subtitleResId, null);
+        showFeedback(subtitleResId, false);
+    }
+
+    /**
+     * Show feedback reflecting a failed gesture attempt.
+     *
+     * @param showActionButton Whether the tutorial feedback's action button should be shown.
+     **/
+    void showFeedback(int subtitleResId, boolean showActionButton) {
+        showFeedback(subtitleResId, showActionButton ? () -> {} : null, showActionButton);
+    }
+
+    /**
+     * Show feedback reflecting a failed gesture attempt.
+     **/
+    void showFeedback(int subtitleResId, @Nullable Runnable successEndAction) {
+        showFeedback(subtitleResId, successEndAction, false);
     }
 
     /**
@@ -170,32 +191,73 @@ abstract class TutorialController implements BackGestureAttemptCallback,
      * @param successEndAction Non-null iff the gesture was successful; this is run after the
      *                        feedback is shown (i.e. to go to the next step)
      **/
-    void showFeedback(int subtitleResId, @Nullable Runnable successEndAction) {
+    void showFeedback(
+            int subtitleResId, @Nullable Runnable successEndAction, boolean showActionButton) {
+        showFeedback(
+                successEndAction == null
+                        ? R.string.gesture_tutorial_try_again
+                        : R.string.gesture_tutorial_nice,
+                subtitleResId,
+                successEndAction,
+                showActionButton);
+    }
+    void showFeedback(
+            int titleResId,
+            int subtitleResId,
+            @Nullable Runnable successEndAction,
+            boolean showActionButton) {
         if (mHideFeedbackEndAction != null) {
             return;
         }
-        int visibleDuration = FEEDBACK_VISIBLE_MS;
-        if (mTutorialFragment.getFeedbackVideoResId() != null) {
+        TextView title = mFeedbackView.findViewById(R.id.gesture_tutorial_fragment_feedback_title);
+        title.setText(titleResId);
+        TextView subtitle =
+                mFeedbackView.findViewById(R.id.gesture_tutorial_fragment_feedback_subtitle);
+        subtitle.setText(subtitleResId);
+        if (showActionButton) {
+            showActionButton();
+        }
+        mHideFeedbackEndAction = successEndAction;
+
+        AnimatedVectorDrawable tutorialAnimation = mTutorialFragment.getTutorialAnimation();
+        if (tutorialAnimation != null) {
             if (successEndAction == null) {
-                if (mFeedbackVideoView.isPlaying()) {
-                    mFeedbackVideoView.seekTo(1);
-                } else {
-                    mFeedbackVideoView.start();
+                if (tutorialAnimation.isRunning()) {
+                    tutorialAnimation.reset();
                 }
+                tutorialAnimation.registerAnimationCallback(new Animatable2.AnimationCallback() {
+
+                    @Override
+                    public void onAnimationStart(Drawable drawable) {
+                        super.onAnimationStart(drawable);
+
+                        mFeedbackView.setTranslationY(
+                                -mFeedbackView.getHeight() - mFeedbackView.getTop());
+                        mFeedbackView.setVisibility(View.VISIBLE);
+                        mFeedbackView.animate()
+                                .setDuration(FEEDBACK_ANIMATION_MS)
+                                .translationY(0)
+                                .start();
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Drawable drawable) {
+                        super.onAnimationEnd(drawable);
+
+                        mFeedbackView.removeCallbacks(mHideFeedbackRunnable);
+                        mFeedbackView.post(mHideFeedbackRunnable);
+
+                        tutorialAnimation.unregisterAnimationCallback(this);
+                    }
+                });
+
+                tutorialAnimation.start();
                 mFeedbackVideoView.setVisibility(View.VISIBLE);
-                visibleDuration = mTutorialFragment.getFeedbackVideoDuration();
+                return;
             } else {
                 mTutorialFragment.releaseFeedbackVideoView();
             }
         }
-        TextView title = mFeedbackView.findViewById(R.id.gesture_tutorial_fragment_feedback_title);
-        title.setText(successEndAction == null
-                ? R.string.gesture_tutorial_try_again
-                : R.string.gesture_tutorial_nice);
-        TextView subtitle =
-                mFeedbackView.findViewById(R.id.gesture_tutorial_fragment_feedback_subtitle);
-        subtitle.setText(subtitleResId);
-        mHideFeedbackEndAction = successEndAction;
         mFeedbackView.setTranslationY(-mFeedbackView.getHeight() - mFeedbackView.getTop());
         mFeedbackView.setVisibility(View.VISIBLE);
         mFeedbackView.animate()
@@ -203,7 +265,9 @@ abstract class TutorialController implements BackGestureAttemptCallback,
                 .translationY(0)
                 .start();
         mFeedbackView.removeCallbacks(mHideFeedbackRunnable);
-        mFeedbackView.postDelayed(mHideFeedbackRunnable, visibleDuration);
+        if (!showActionButton) {
+            mFeedbackView.postDelayed(mHideFeedbackRunnable, FEEDBACK_VISIBLE_MS);
+        }
     }
 
     void hideFeedback(boolean releaseFeedbackVideo) {
@@ -239,16 +303,14 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     }
 
     void onActionButtonClicked(View button) {
-        mTutorialFragment.closeTutorial();
+        mTutorialFragment.continueTutorial();
     }
-
-    void onActionTextButtonClicked(View button) {}
 
     @CallSuper
     void transitToController() {
         hideFeedback(false);
-        updateTitles();
-        updateActionButtons();
+        hideActionButton();
+        updateSubtext();
         updateDrawables();
 
         if (mFakeLauncherView != null) {
@@ -256,39 +318,33 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         }
     }
 
-    private void updateTitles() {
-        updateTitleView(mTitleTextView, getTitleStringId(),
-                R.style.TextAppearance_GestureTutorial_Title);
-        updateTitleView(mSubtitleTextView, getSubtitleStringId(),
-                R.style.TextAppearance_GestureTutorial_Subtitle);
+    void hideActionButton() {
+        // Invisible to maintain the layout.
+        mActionButton.setVisibility(View.INVISIBLE);
+        mActionButton.setOnClickListener(null);
     }
 
-    private void updateTitleView(TextView textView, @Nullable Integer stringId, int styleId) {
-        if (stringId == null) {
-            textView.setVisibility(View.GONE);
-            return;
+    void showActionButton() {
+        int stringResId = -1;
+
+        if (mContext instanceof GestureSandboxActivity) {
+            GestureSandboxActivity sandboxActivity = (GestureSandboxActivity) mContext;
+
+            stringResId = sandboxActivity.isTutorialComplete()
+                    ? R.string.gesture_tutorial_action_button_label_done
+                    : R.string.gesture_tutorial_action_button_label_next;
         }
 
-        textView.setVisibility(View.VISIBLE);
-        textView.setText(stringId);
-        textView.setTextAppearance(styleId);
+        mActionButton.setText(stringResId == -1 ? null : mContext.getString(stringResId));
+        mActionButton.setVisibility(View.VISIBLE);
+        mActionButton.setOnClickListener(this::onActionButtonClicked);
     }
 
-    private void updateActionButtons() {
-        updateButton(mActionButton, getActionButtonStringId(), this::onActionButtonClicked);
-        updateButton(
-                mActionTextButton, getActionTextButtonStringId(), this::onActionTextButtonClicked);
-    }
-
-    private void updateButton(Button button, @Nullable Integer stringId, OnClickListener listener) {
-        if (stringId == null) {
-            button.setVisibility(View.INVISIBLE);
-            return;
-        }
-
-        button.setVisibility(View.VISIBLE);
-        button.setText(stringId);
-        button.setOnClickListener(listener);
+    private void updateSubtext() {
+        mTutorialStepView.setText(mContext.getString(
+                R.string.gesture_tutorial_step,
+                mTutorialFragment.getCurrentStep(),
+                mTutorialFragment.getNumSteps()));
     }
 
     private void updateDrawables() {
@@ -309,11 +365,67 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         }
     }
 
-    private boolean isComplete() {
-        return mTutorialType == TutorialType.BACK_NAVIGATION_COMPLETE
-                || mTutorialType == TutorialType.HOME_NAVIGATION_COMPLETE
-                || mTutorialType == TutorialType.OVERVIEW_NAVIGATION_COMPLETE
-                || mTutorialType == TutorialType.ASSISTANT_COMPLETE;
+    private AlertDialog createSkipTutorialDialog() {
+        if (mContext instanceof GestureSandboxActivity) {
+            GestureSandboxActivity sandboxActivity = (GestureSandboxActivity) mContext;
+            View contentView = View.inflate(
+                    sandboxActivity, R.layout.gesture_tutorial_dialog, null);
+            AlertDialog tutorialDialog = new AlertDialog
+                    .Builder(sandboxActivity, R.style.Theme_AppCompat_Dialog_Alert)
+                    .setView(contentView)
+                    .create();
+
+            PackageManager packageManager = mContext.getPackageManager();
+            CharSequence tipsAppName = DEFAULT_PIXEL_TIPS_APP_NAME;
+
+            try {
+                tipsAppName = packageManager.getApplicationLabel(
+                        packageManager.getApplicationInfo(
+                                PIXEL_TIPS_APP_PACKAGE_NAME, PackageManager.GET_META_DATA));
+            } catch (PackageManager.NameNotFoundException e) {
+                Log.e(TAG,
+                        "Could not find app label for package name: "
+                                + PIXEL_TIPS_APP_PACKAGE_NAME
+                                + ". Defaulting to 'Pixel Tips.'",
+                        e);
+            }
+
+            TextView subtitleTextView = (TextView) contentView.findViewById(
+                    R.id.gesture_tutorial_dialog_subtitle);
+            if (subtitleTextView != null) {
+                subtitleTextView.setText(
+                        mContext.getString(R.string.skip_tutorial_dialog_subtitle, tipsAppName));
+            } else {
+                Log.w(TAG, "No subtitle view in the skip tutorial dialog to update.");
+            }
+
+            Button cancelButton = (Button) contentView.findViewById(
+                    R.id.gesture_tutorial_dialog_cancel_button);
+            if (cancelButton != null) {
+                cancelButton.setOnClickListener(
+                        v -> tutorialDialog.dismiss());
+            } else {
+                Log.w(TAG, "No cancel button in the skip tutorial dialog to update.");
+            }
+
+            Button confirmButton = contentView.findViewById(
+                    R.id.gesture_tutorial_dialog_confirm_button);
+            if (confirmButton != null) {
+                confirmButton.setOnClickListener(v -> {
+                    sandboxActivity.closeTutorial();
+                    tutorialDialog.dismiss();
+                });
+            } else {
+                Log.w(TAG, "No confirm button in the skip tutorial dialog to update.");
+            }
+
+            tutorialDialog.getWindow().setBackgroundDrawable(
+                    new ColorDrawable(sandboxActivity.getColor(android.R.color.transparent)));
+
+            return tutorialDialog;
+        }
+
+        return null;
     }
 
     /** Denotes the type of the tutorial. */

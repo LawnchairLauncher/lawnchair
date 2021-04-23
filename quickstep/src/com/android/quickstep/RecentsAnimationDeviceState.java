@@ -17,8 +17,8 @@ package com.android.quickstep;
 
 import static android.content.Intent.ACTION_USER_UNLOCKED;
 
-import static com.android.launcher3.util.DisplayController.DisplayHolder.CHANGE_ALL;
-import static com.android.launcher3.util.DisplayController.DisplayHolder.CHANGE_FRAME_DELAY;
+import static com.android.launcher3.util.DisplayController.CHANGE_ALL;
+import static com.android.launcher3.util.DisplayController.CHANGE_FRAME_DELAY;
 import static com.android.launcher3.util.SettingsCache.ONE_HANDED_ENABLED;
 import static com.android.launcher3.util.SettingsCache.ONE_HANDED_SWIPE_BOTTOM_TO_NOTIFICATION_ENABLED;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
@@ -62,7 +62,6 @@ import androidx.annotation.BinderThread;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.DisplayController;
-import com.android.launcher3.util.DisplayController.DisplayHolder;
 import com.android.launcher3.util.DisplayController.DisplayInfoChangeListener;
 import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.SettingsCache;
@@ -91,7 +90,7 @@ public class RecentsAnimationDeviceState implements
 
     private final Context mContext;
     private final SysUINavigationMode mSysUiNavMode;
-    private final DisplayHolder mDisplayHolder;
+    private final DisplayController mDisplayController;
     private final int mDisplayId;
     private final RotationTouchHelper mRotationTouchHelper;
 
@@ -128,17 +127,13 @@ public class RecentsAnimationDeviceState implements
     private boolean mIsUserSetupComplete;
 
     public RecentsAnimationDeviceState(Context context) {
-        this(context, DisplayController.getDefaultDisplay(context));
-    }
-
-    public RecentsAnimationDeviceState(Context context, DisplayHolder displayHolder) {
         mContext = context;
-        mDisplayHolder = displayHolder;
+        mDisplayController = DisplayController.INSTANCE.get(context);
         mSysUiNavMode = SysUINavigationMode.INSTANCE.get(context);
-        mDisplayId = mDisplayHolder.getInfo().id;
+        mDisplayId = mDisplayController.getInfo().id;
         mIsOneHandedModeSupported = SystemProperties.getBoolean(SUPPORT_ONE_HANDED_MODE, false);
-        runOnDestroy(() -> mDisplayHolder.removeChangeListener(this));
-        mRotationTouchHelper = new RotationTouchHelper(context, mDisplayHolder);
+        runOnDestroy(() -> mDisplayController.removeChangeListener(this));
+        mRotationTouchHelper = new RotationTouchHelper(context, mDisplayController);
         runOnDestroy(mRotationTouchHelper::destroy);
 
         // Register for user unlocked if necessary
@@ -244,9 +239,9 @@ public class RecentsAnimationDeviceState implements
 
     @Override
     public void onNavigationModeChanged(SysUINavigationMode.Mode newMode) {
-        mDisplayHolder.removeChangeListener(this);
-        mDisplayHolder.addChangeListener(this);
-        onDisplayInfoChanged(mDisplayHolder.getInfo(), CHANGE_ALL);
+        mDisplayController.removeChangeListener(this);
+        mDisplayController.addChangeListener(this);
+        onDisplayInfoChanged(mDisplayController.getInfo(), CHANGE_ALL);
 
         if (newMode == NO_BUTTON) {
             mExclusionListener.register();
@@ -254,7 +249,7 @@ public class RecentsAnimationDeviceState implements
             mExclusionListener.unregister();
         }
 
-        mNavBarPosition = new NavBarPosition(newMode, mDisplayHolder.getInfo());
+        mNavBarPosition = new NavBarPosition(newMode, mDisplayController.getInfo());
         mMode = newMode;
     }
 
@@ -556,11 +551,11 @@ public class RecentsAnimationDeviceState implements
         }
 
         if (mIsOneHandedModeEnabled || mIsSwipeToNotificationEnabled) {
-            final Info displayInfo = mDisplayHolder.getInfo();
+            final Info displayInfo = mDisplayController.getInfo();
             return (mRotationTouchHelper.touchInOneHandedModeRegion(ev)
                 && displayInfo.rotation != Surface.ROTATION_90
                 && displayInfo.rotation != Surface.ROTATION_270
-                && displayInfo.metrics.densityDpi < DisplayMetrics.DENSITY_600);
+                && displayInfo.densityDpi < DisplayMetrics.DENSITY_600);
         }
         return false;
     }

@@ -636,6 +636,7 @@ public final class LauncherInstrumentation {
             }
             SystemClock.sleep(100);
         }
+        checkForAnomaly();
         fail("Launcher didn't initialize");
     }
 

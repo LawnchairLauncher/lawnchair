@@ -404,8 +404,8 @@ public final class Utilities {
         return res.getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
     }
 
-    public static float dpiFromPx(float size, DisplayMetrics metrics) {
-        float densityRatio = (float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT;
+    public static float dpiFromPx(float size, int densityDpi) {
+        float densityRatio = (float) densityDpi / DisplayMetrics.DENSITY_DEFAULT;
         return (size / densityRatio);
     }
 

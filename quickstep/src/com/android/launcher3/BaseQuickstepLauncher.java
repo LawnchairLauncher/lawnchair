@@ -19,7 +19,7 @@ import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
 import static com.android.launcher3.AbstractFloatingView.TYPE_HIDE_BACK_BUTTON;
 import static com.android.launcher3.LauncherState.FLAG_HIDE_BACK_BUTTON;
 import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.util.DisplayController.DisplayHolder.CHANGE_SIZE;
+import static com.android.launcher3.util.DisplayController.CHANGE_SIZE;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY;
