@@ -145,6 +145,7 @@ import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.MultiValueUpdateListener;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.util.SplitScreenBounds;
+import com.android.quickstep.util.SplitSelectStateController;
 import com.android.quickstep.util.SurfaceTransactionApplier;
 import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.util.TransformParams;
@@ -2753,9 +2754,14 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     public void initiateSplitSelect(TaskView taskView, SplitPositionOption splitPositionOption) {
         mSplitHiddenTaskView = taskView;
-        mSplitPlaceholderView.getSplitController().setInitialTaskSelect(taskView,
+        SplitSelectStateController splitController = mSplitPlaceholderView.getSplitController();
+        splitController.setInitialTaskSelect(taskView,
                 splitPositionOption);
         mSplitHiddenTaskViewIndex = indexOfChild(taskView);
+        mSplitPlaceholderView.setLayoutParams(
+                splitController.getLayoutParamsForActivePosition(getResources(),
+                        mActivity.getDeviceProfile()));
+        mSplitPlaceholderView.setIcon(taskView.getIconView());
     }
 
     public PendingAnimation createSplitSelectInitAnimation() {
