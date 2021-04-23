@@ -42,7 +42,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace.ItemOperator;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -433,8 +432,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
         int scroll = getScrollForPage(getNextPage()) + hint;
         int delta = scroll - getScrollX();
         if (delta != 0) {
-            mScroller.setInterpolator(Interpolators.DEACCEL);
-            mScroller.startScroll(getScrollX(), delta, Folder.SCROLL_HINT_DURATION);
+            mScroller.startScroll(getScrollX(), 0, delta, 0, Folder.SCROLL_HINT_DURATION);
             invalidate();
         }
     }

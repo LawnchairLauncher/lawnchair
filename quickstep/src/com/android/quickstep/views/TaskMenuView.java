@@ -121,7 +121,7 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
         };
     }
 
-    private void setPosition(float x, float y) {
+    private void setPosition(float x, float y, int overscrollShift) {
         PagedOrientationHandler pagedOrientationHandler = mTaskView.getPagedOrientationHandler();
         int taskTopMargin = mActivity.getDeviceProfile().overviewTaskThumbnailTopMarginPx;
         float adjustedY = y + taskTopMargin;
@@ -136,8 +136,9 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
             setPivotY(0);
         }
         setRotation(pagedOrientationHandler.getDegreesRotated());
-        setX(pagedOrientationHandler.getTaskMenuX(x, mTaskView.getThumbnail()));
-        setY(pagedOrientationHandler.getTaskMenuY(adjustedY, mTaskView.getThumbnail()));
+        setX(pagedOrientationHandler.getTaskMenuX(x, mTaskView.getThumbnail(), overscrollShift));
+        setY(pagedOrientationHandler.getTaskMenuY(
+                adjustedY, mTaskView.getThumbnail(), overscrollShift));
     }
 
     public void onRotationChanged() {
@@ -169,14 +170,15 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
             return false;
         }
         post(this::animateOpen);
-        mActivity.getRootView().getViewTreeObserver().addOnScrollChangedListener(this);
+        ((RecentsView) mActivity.getOverviewPanel()).addOnScrollChangedListener(this);
         return true;
     }
 
     @Override
     public void onScrollChanged() {
         RecentsView rv = mTaskView.getRecentsView();
-        setPosition(mTaskView.getX() - rv.getScrollX(), mTaskView.getY() - rv.getScrollY());
+        setPosition(mTaskView.getX() - rv.getScrollX(), mTaskView.getY() - rv.getScrollY(),
+                rv.getOverScrollShift());
     }
 
     /** @return true if successfully able to populate task view menu, false otherwise */
@@ -236,7 +238,7 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
             .mOrientationState.isRecentsActivityRotationAllowed();
         mOptionLayout.setOrientation(orientationHandler
                 .getTaskMenuLayoutOrientation(canActivityRotate, mOptionLayout));
-        setPosition(sTempRect.left - insets.left, sTempRect.top - insets.top);
+        setPosition(sTempRect.left - insets.left, sTempRect.top - insets.top, 0);
     }
 
     private void animateOpen() {
@@ -282,7 +284,7 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
     private void closeComplete() {
         mIsOpen = false;
         mActivity.getDragLayer().removeView(this);
-        mActivity.getRootView().getViewTreeObserver().removeOnScrollChangedListener(this);
+        ((RecentsView) mActivity.getOverviewPanel()).removeOnScrollChangedListener(this);
     }
 
     private RoundedRectRevealOutlineProvider createOpenCloseOutlineProvider() {
