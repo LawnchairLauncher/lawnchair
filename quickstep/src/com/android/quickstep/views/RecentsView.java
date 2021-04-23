@@ -328,6 +328,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private float mFullscreenScale;
 
     private static final int DISMISS_TASK_DURATION = 300;
+    private static final int DISMISS_TASK_TRANSLATION_DURATION = 200;
+    private static final int ADDITIONAL_DISMISS_TASK_TRANSLATION_DURATION = 75;
     private static final int ADDITION_TASK_DURATION = 200;
     // The threshold at which we update the SystemUI flags when animating from the task into the app
     public static final float UPDATE_SYSUI_FLAGS_THRESHOLD = 0.85f;
@@ -365,14 +367,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     protected float mTaskViewsPrimaryTranslation = 0;
     // Progress from 0 to 1 where 0 is a carousel and 1 is a 2 row grid.
     private float mGridProgress = 0;
+    private final IntSet mTopRowIdSet = new IntSet();
 
     // The GestureEndTarget that is still in progress.
     protected GestureState.GestureEndTarget mCurrentGestureEndTarget;
 
-    IntSet mTopIdSet = new IntSet();
-
     private int mOverScrollShift = 0;
-
 
     /**
      * TODO: Call reloadIdNeeded in onTaskStackChanged.
@@ -1299,7 +1299,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
         mClearAllButton.setFullscreenTranslationPrimary(accumulatedTranslationX);
 
-        updateGridProperties(/*isTaskDismissal=*/false);
+        updateGridProperties();
     }
 
     public void getTaskSize(Rect outRect) {
@@ -1652,7 +1652,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             // When switching to tasks in quick switch, ensures the snapped page's scroll maintain
             // invariant between quick switch and overview grid, to ensure a smooth animation
             // transition.
-            updateGridProperties(/*isTaskDismissal=*/false);
+            updateGridProperties();
         }
     }
 
@@ -1825,13 +1825,26 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
     }
 
+    /** Updates TaskView and ClearAllButtion scaling and translation required to turn into grid
+     * layout.
+     * This method is used when no task dismissal has occurred.
+     */
+    private void updateGridProperties() {
+        updateGridProperties(null, -1);
+    }
+
     /**
      * Updates TaskView and ClearAllButton scaling and translation required to turn into grid
      * layout.
      * This method only calculates the potential position and depends on {@link #setGridProgress} to
-     * apply the actual scaling and translation.
+     * apply the actual scaling and translation. This adds task translation animations in the case
+     * of task dismissals: e.g. when dismissedTask is not null.
+     *
+     * @param dismissedTask the TaskView dismissed, possibly null
+     * @param dismissedIndex the index at which the dismissedTask was prior to dismissal, if no
+     *                       dismissal occurred, this is unused
      */
-    private void updateGridProperties(boolean isTaskDismissal) {
+    private void updateGridProperties(TaskView dismissedTask, int dismissedIndex) {
         int taskCount = getTaskViewCount();
         if (taskCount == 0) {
             return;
@@ -1858,8 +1871,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         int snappedPage = getNextPage();
         TaskView snappedTaskView = getTaskViewAtByAbsoluteIndex(snappedPage);
 
+        boolean isTaskDismissal = dismissedTask != null;
+        float dismissedTaskWidth =
+                isTaskDismissal ? dismissedTask.getLayoutParams().width + mPageSpacing : 0;
+
         if (!isTaskDismissal) {
-            mTopIdSet.clear();
+            mTopRowIdSet.clear();
         }
         for (int i = 0; i < taskCount; i++) {
             TaskView taskView = getTaskViewAt(i);
@@ -1894,13 +1911,14 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     // calculate the distance focused task need to shift.
                     focusedTaskShift += mIsRtl ? taskWidthAndSpacing : -taskWidthAndSpacing;
                 }
-                boolean isTopRow = isTaskDismissal ? mTopIdSet.contains(taskView.getTask().key.id)
+                int taskId = taskView.getTask().key.id;
+                boolean isTopRow = isTaskDismissal ? mTopRowIdSet.contains(taskId)
                         : topRowWidth <= bottomRowWidth;
                 if (isTopRow) {
                     gridTranslations[i] += topAccumulatedTranslationX;
                     topRowWidth += taskWidthAndSpacing;
                     topSet.add(i);
-                    mTopIdSet.add(taskView.getTask().key.id);
+                    mTopRowIdSet.add(taskId);
 
                     taskView.setGridTranslationY(taskGridVerticalDiff);
 
@@ -1954,17 +1972,55 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             snappedTaskGridTranslationX = gridTranslations[snappedPage - mTaskViewStartIndex];
         }
 
-
+        // Animate task dismissTranslationX for tasks with index >= dismissed index and in the
+        // same row as the dismissed index, or if the dismissed task was the focused task. Offset
+        // successive task dismissal durations for a staggered effect.
+        ArrayList<Animator> gridTranslationAnimators = new ArrayList<>();
+        boolean isFocusedTaskDismissed =
+                isTaskDismissal && dismissedTask.getTask().key.id == mFocusedTaskId;
         for (int i = 0; i < taskCount; i++) {
             TaskView taskView = getTaskViewAt(i);
+            if (isFocusedTaskDismissed || (i >= dismissedIndex && isSameGridRow(dismissedTask,
+                    taskView))) {
+                Animator taskDismissAnimator = ObjectAnimator.ofFloat(taskView,
+                        taskView.getPrimaryDismissTranslationProperty(),
+                        mIsRtl ? -dismissedTaskWidth : dismissedTaskWidth, 0f);
+                int additionalTranslationDuration =
+                        i >= dismissedIndex ? (ADDITIONAL_DISMISS_TASK_TRANSLATION_DURATION * (
+                                (i - dismissedIndex) / 2)) : 0;
+                taskDismissAnimator.setDuration(
+                        DISMISS_TASK_TRANSLATION_DURATION + additionalTranslationDuration);
+                gridTranslationAnimators.add(taskDismissAnimator);
+            }
             taskView.setGridTranslationX(gridTranslations[i] - snappedTaskGridTranslationX);
             taskView.setNonFullscreenTranslationX(snappedTaskFullscreenScrollAdjustment);
         }
+        AnimatorSet gridTranslationAnimatorSet = new AnimatorSet();
+        gridTranslationAnimatorSet.playTogether(gridTranslationAnimators);
+        gridTranslationAnimatorSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            // Allow the actions view to display again once in focus mode
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                if (getFocusedTaskView() == null) {
+                    mActionsView.getScrollAlpha().setValue(1);
+                }
+            }
 
-        // Use the accumulated translation of the longer row.
-        float clearAllAccumulatedTranslation = mIsRtl ? Math.max(topAccumulatedTranslationX,
-                bottomAccumulatedTranslationX) : Math.min(topAccumulatedTranslationX,
-                bottomAccumulatedTranslationX);
+            @Override
+            // Hide the actions view if not in focus mode
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                if (getFocusedTaskView() == null) {
+                    mActionsView.getScrollAlpha().setValue(0);
+                }
+            }
+        });
+        gridTranslationAnimatorSet.start();
+
+        // Use the accumulated translation of the row containing the last task.
+        float clearAllAccumulatedTranslation = topSet.contains(taskCount - 1)
+                ? topAccumulatedTranslationX : bottomAccumulatedTranslationX;
 
         // If the last task is on the shorter row, ClearAllButton will embed into the shorter row
         // which is not what we want. Compensate the width difference of the 2 rows in that case.
@@ -1982,13 +2038,14 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 mIsRtl ? -shorterRowCompensation : shorterRowCompensation;
 
         // If the total width is shorter than one grid's width, move ClearAllButton further away
-        // accordingly.
+        // accordingly. Update longRowWidth if ClearAllButton has been moved.
         float clearAllShortTotalCompensation = 0;
         int longRowWidth = Math.max(topRowWidth, bottomRowWidth);
         if (longRowWidth < mLastComputedGridSize.width()) {
             float shortTotalCompensation = mLastComputedGridSize.width() - longRowWidth;
             clearAllShortTotalCompensation =
                     mIsRtl ? -shortTotalCompensation : shortTotalCompensation;
+            longRowWidth = mLastComputedGridSize.width();
         }
 
         float clearAllTotalTranslationX =
@@ -2019,6 +2076,19 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                         : mLastComputedTaskSize.right - mLastComputedGridSize.right);
 
         setGridProgress(mGridProgress);
+    }
+
+    private boolean isSameGridRow(TaskView taskView1, TaskView taskView2) {
+        if (taskView1 == null || taskView2 == null) {
+            return false;
+        }
+        int taskId1 = taskView1.getTask().key.id;
+        int taskId2 = taskView2.getTask().key.id;
+        if (taskId1 == mFocusedTaskId || taskId2 == mFocusedTaskId) {
+            return false;
+        }
+        return (mTopRowIdSet.contains(taskId1) && mTopRowIdSet.contains(taskId2)) || (
+                !mTopRowIdSet.contains(taskId1) && !mTopRowIdSet.contains(taskId2));
     }
 
     /**
@@ -2231,8 +2301,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     }
 
                     int pageToSnapTo = mCurrentPage;
-                    if (draggedIndex < pageToSnapTo ||
-                            pageToSnapTo == (getTaskViewCount() - 1)) {
+                    // Snap to start if focused task was dismissed, as after quick switch it could
+                    // be at any page but the focused task always displays at the start.
+                    if (taskView.getTask().key.id == mFocusedTaskId) {
+                        pageToSnapTo = mTaskViewStartIndex;
+                    } else if (draggedIndex < pageToSnapTo || pageToSnapTo == (getTaskViewCount()
+                            - 1)) {
                         pageToSnapTo -= 1;
                     }
                     removeViewInLayout(taskView);
@@ -2243,7 +2317,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     } else {
                         snapToPageImmediately(pageToSnapTo);
                         // Grid got messed up, reapply.
-                        updateGridProperties(/*isTaskDismissal=*/true);
+                        updateGridProperties(taskView, draggedIndex - mTaskViewStartIndex);
                         if (showAsGrid() && getFocusedTaskView() == null) {
                             animateActionsViewOut();
                         }
@@ -2252,7 +2326,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     // immediately available.
                     onLayout(false /*  changed */, getLeft(), getTop(), getRight(), getBottom());
                 }
-                resetTaskVisuals();
+                if (!showAsGrid()) {
+                    resetTaskVisuals();
+                }
                 onDismissAnimationEnds();
                 mPendingAnimation = null;
             }
