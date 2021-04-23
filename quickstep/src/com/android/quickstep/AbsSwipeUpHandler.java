@@ -1509,9 +1509,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             SystemUiProxy.INSTANCE.get(mContext).stopSwipePipToHome(
                     mSwipePipToHomeAnimator.getComponentName(),
                     mSwipePipToHomeAnimator.getDestinationBounds());
-            mRecentsAnimationController.setFinishTaskBounds(
+            mRecentsAnimationController.setFinishTaskTransaction(
                     mSwipePipToHomeAnimator.getTaskId(),
-                    mSwipePipToHomeAnimator.getDestinationBounds(),
                     mSwipePipToHomeAnimator.getFinishTransaction());
             mIsSwipingPipToHome = false;
         }
