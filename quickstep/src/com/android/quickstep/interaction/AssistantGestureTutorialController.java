@@ -32,33 +32,6 @@ final class AssistantGestureTutorialController extends TutorialController {
     }
 
     @Override
-    Integer getTitleStringId() {
-        switch (mTutorialType) {
-            case ASSISTANT:
-                return R.string.assistant_gesture_tutorial_playground_title;
-            case ASSISTANT_COMPLETE:
-                return R.string.gesture_tutorial_confirm_title;
-        }
-        return null;
-    }
-
-    @Override
-    Integer getSubtitleStringId() {
-        if (mTutorialType == TutorialType.ASSISTANT) {
-            return R.string.assistant_gesture_tutorial_playground_subtitle;
-        }
-        return null;
-    }
-
-    @Override
-    Integer getActionButtonStringId() {
-        if (mTutorialType == ASSISTANT_COMPLETE) {
-            return R.string.gesture_tutorial_action_button_label_done;
-        }
-        return null;
-    }
-
-    @Override
     public void onBackGestureAttempted(BackGestureResult result) {
         switch (mTutorialType) {
             case ASSISTANT:
@@ -96,14 +69,8 @@ final class AssistantGestureTutorialController extends TutorialController {
                         break;
                     case ASSISTANT_COMPLETED:
                         hideFeedback(true);
-                        showRippleEffect(
-                                () -> {
-                                    if (mTutorialFragment.isTutorialComplete()) {
-                                        mTutorialFragment.changeController(ASSISTANT_COMPLETE);
-                                    } else {
-                                        mTutorialFragment.continueTutorial();
-                                    }
-                                });
+                        showRippleEffect(null);
+                        showFeedback(R.string.assistant_gesture_tutorial_playground_subtitle);
                         break;
                     case ASSISTANT_NOT_STARTED_BAD_ANGLE:
                         showFeedback(R.string.assistant_gesture_feedback_swipe_not_diagonal);

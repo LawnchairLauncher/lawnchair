@@ -100,6 +100,8 @@ public class FloatingIconView extends FrameLayout implements
     private ListenerView mListenerView;
     private Runnable mFastFinishRunnable;
 
+    private float mIconOffsetY;
+
     public FloatingIconView(Context context) {
         this(context, null);
     }
@@ -136,16 +138,18 @@ public class FloatingIconView extends FrameLayout implements
 
     /**
      * Positions this view to match the size and location of {@param rect}.
-     * @param alpha The alpha to set this view.
+     * @param alpha The alpha[0, 1] of the entire floating view.
+     * @param fgIconAlpha The alpha[0-255] of the foreground layer of the icon (if applicable).
      * @param progress A value from [0, 1] that represents the animation progress.
      * @param shapeProgressStart The progress value at which to start the shape reveal.
      * @param cornerRadius The corner radius of {@param rect}.
+     * @param isOpening True if view is used for app open animation, false for app close animation.
      */
-    public void update(RectF rect, float alpha, float progress, float shapeProgressStart,
-            float cornerRadius, boolean isOpening) {
+    public void update(float alpha, int fgIconAlpha, RectF rect, float progress,
+            float shapeProgressStart, float cornerRadius, boolean isOpening) {
         setAlpha(alpha);
-        mClipIconView.update(rect, progress, shapeProgressStart, cornerRadius, isOpening,
-                this, mLauncher.getDeviceProfile(), mIsVerticalBarLayout);
+        mClipIconView.update(rect, progress, shapeProgressStart, cornerRadius, fgIconAlpha,
+                isOpening, this, mLauncher.getDeviceProfile(), mIsVerticalBarLayout);
     }
 
     @Override
@@ -478,11 +482,19 @@ public class FloatingIconView extends FrameLayout implements
     @Override
     public void onAnimationRepeat(Animator animator) {}
 
+    /**
+     * Offsets and updates the position of this view by {@param y}.
+     */
+    public void setPositionOffsetY(float y) {
+        mIconOffsetY = y;
+        onGlobalLayout();
+    }
+
     @Override
     public void onGlobalLayout() {
-        if (mOriginalIcon.isAttachedToWindow() && mPositionOut != null) {
-            getLocationBoundsForView(mLauncher, mOriginalIcon, mIsOpening,
-                    sTmpRectF);
+        if (mOriginalIcon != null && mOriginalIcon.isAttachedToWindow() && mPositionOut != null) {
+            getLocationBoundsForView(mLauncher, mOriginalIcon, mIsOpening, sTmpRectF);
+            sTmpRectF.offset(0, mIconOffsetY);
             if (!sTmpRectF.equals(mPositionOut)) {
                 updatePosition(sTmpRectF, (InsettableFrameLayout.LayoutParams) getLayoutParams());
                 if (mOnTargetChangeRunnable != null) {
@@ -617,6 +629,7 @@ public class FloatingIconView extends FrameLayout implements
         mClipIconView.recycle();
         mBtvDrawable.setBackground(null);
         mFastFinishRunnable = null;
+        mIconOffsetY = 0;
     }
 
     private static class IconLoadResult {

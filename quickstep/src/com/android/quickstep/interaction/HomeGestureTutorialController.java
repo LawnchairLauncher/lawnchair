@@ -15,8 +15,6 @@
  */
 package com.android.quickstep.interaction;
 
-import static com.android.quickstep.interaction.TutorialController.TutorialType.HOME_NAVIGATION_COMPLETE;
-
 import android.annotation.TargetApi;
 import android.graphics.PointF;
 import android.os.Build;
@@ -34,30 +32,13 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
     }
 
     @Override
-    Integer getTitleStringId() {
-        switch (mTutorialType) {
-            case HOME_NAVIGATION:
-                return R.string.home_gesture_intro_title;
-            case HOME_NAVIGATION_COMPLETE:
-                return R.string.gesture_tutorial_confirm_title;
-        }
-        return null;
+    public Integer getIntroductionTitle() {
+        return R.string.home_gesture_intro_title;
     }
 
     @Override
-    Integer getSubtitleStringId() {
-        if (mTutorialType == TutorialType.HOME_NAVIGATION) {
-            return R.string.home_gesture_intro_subtitle;
-        }
-        return null;
-    }
-
-    @Override
-    Integer getActionButtonStringId() {
-        if (mTutorialType == HOME_NAVIGATION_COMPLETE) {
-            return R.string.gesture_tutorial_action_button_label_done;
-        }
-        return null;
+    public Integer getIntroductionSubtitle() {
+        return R.string.home_gesture_intro_subtitle;
     }
 
     @Override
@@ -92,8 +73,9 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
                 switch (result) {
                     case HOME_GESTURE_COMPLETED: {
                         animateFakeTaskViewHome(finalVelocity, null);
+                        showActionButton();
                         showFeedback(R.string.home_gesture_feedback_complete,
-                                mTutorialFragment::continueTutorial);
+                                true);
                         break;
                     }
                     case HOME_NOT_STARTED_TOO_FAR_FROM_EDGE:

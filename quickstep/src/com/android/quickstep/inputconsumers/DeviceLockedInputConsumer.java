@@ -116,7 +116,7 @@ public class DeviceLockedInputConsumer implements InputConsumer,
                 R.dimen.device_locked_y_offset);
 
         // Do not use DeviceProfile as the user data might be locked
-        mDisplaySize = DisplayController.getDefaultDisplay(context).getInfo().realSize;
+        mDisplaySize = DisplayController.INSTANCE.get(context).getInfo().realSize;
 
         // Init states
         mStateCallback = new MultiStateCallback(STATE_NAMES);
