@@ -31,6 +31,7 @@ import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.RectF;
+import android.os.IBinder;
 import android.os.UserHandle;
 import android.view.View;
 
@@ -47,6 +48,7 @@ import com.android.launcher3.anim.SpringAnimationBuilder;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.util.DynamicResource;
+import com.android.launcher3.util.ObjectWrapper;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.util.AppCloseConfig;
 import com.android.quickstep.util.RectFSpringAnim;
@@ -55,6 +57,8 @@ import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.plugins.ResourceProvider;
 import com.android.systemui.shared.system.InputConsumerController;
+
+import java.util.ArrayList;
 
 /**
  * Temporary class to allow easier refactoring
@@ -71,20 +75,12 @@ public class LauncherSwipeHandlerV2 extends
 
 
     @Override
-    protected HomeAnimationFactory createHomeAnimationFactory(long duration) {
+    protected HomeAnimationFactory createHomeAnimationFactory(ArrayList<IBinder> launchCookies,
+            long duration) {
         HomeAnimationFactory homeAnimFactory;
         if (mActivity != null) {
-            final TaskView runningTaskView = mRecentsView.getRunningTaskView();
-            final View workspaceView;
-            if (runningTaskView != null
-                    && !mIsSwipingPipToHome
-                    && runningTaskView.getTask().key.getComponent() != null) {
-                workspaceView = mActivity.getWorkspace().getFirstMatchForAppClose(
-                        runningTaskView.getTask().key.getComponent().getPackageName(),
-                        UserHandle.of(runningTaskView.getTask().key.userId));
-            } else {
-                workspaceView = null;
-            }
+            final View workspaceView = findWorkspaceView(launchCookies,
+                    mRecentsView.getRunningTaskView());
             boolean canUseWorkspaceView =
                     workspaceView != null && workspaceView.isAttachedToWindow();
 
@@ -230,6 +226,37 @@ public class LauncherSwipeHandlerV2 extends
                     isPresent -> mRecentsView.startHome());
         }
         return homeAnimFactory;
+    }
+
+    /**
+     * Returns the associated view on the workspace matching one of the launch cookies, or the app
+     * associated with the running task.
+     */
+    @Nullable
+    private View findWorkspaceView(ArrayList<IBinder> launchCookies, TaskView runningTaskView) {
+        if (mIsSwipingPipToHome) {
+            // Disable if swiping to PIP
+            return null;
+        }
+        if (runningTaskView == null || runningTaskView.getTask() == null
+                || runningTaskView.getTask().key.getComponent() == null) {
+            // Disable if it's an invalid task
+            return null;
+        }
+
+        // Find the associated item info for the launch cookie (if available)
+        int launchCookieItemId = -1;
+        for (IBinder cookie : launchCookies) {
+            Integer itemId = ObjectWrapper.unwrap(cookie);
+            if (itemId != null) {
+                launchCookieItemId = itemId;
+                break;
+            }
+        }
+
+        return mActivity.getWorkspace().getFirstMatchForAppClose(launchCookieItemId,
+                runningTaskView.getTask().key.getComponent().getPackageName(),
+                UserHandle.of(runningTaskView.getTask().key.userId));
     }
 
     @Override

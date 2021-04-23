@@ -75,9 +75,8 @@ public final class ActivityTracker<T extends BaseActivity> {
     private boolean handleIntent(T activity, Intent intent, boolean alreadyOnHome) {
         if (intent != null && intent.getExtras() != null) {
             IBinder stateBinder = intent.getExtras().getBinder(EXTRA_SCHEDULER_CALLBACK);
-            if (stateBinder instanceof ObjectWrapper) {
-                SchedulerCallback<T> handler =
-                        ((ObjectWrapper<SchedulerCallback>) stateBinder).get();
+            SchedulerCallback<T> handler = ObjectWrapper.unwrap(stateBinder);
+            if (handler != null) {
                 if (!handler.init(activity, alreadyOnHome)) {
                     intent.getExtras().remove(EXTRA_SCHEDULER_CALLBACK);
                 }

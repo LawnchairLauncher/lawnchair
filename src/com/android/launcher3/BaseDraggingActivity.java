@@ -165,7 +165,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
     }
 
     @NonNull
-    public ActivityOptionsWrapper getActivityLaunchOptions(View v) {
+    public ActivityOptionsWrapper getActivityLaunchOptions(View v, @Nullable ItemInfo item) {
         int left = 0, top = 0;
         int width = v.getMeasuredWidth(), height = v.getMeasuredHeight();
         if (v instanceof BubbleTextView) {
@@ -192,7 +192,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
             return false;
         }
 
-        Bundle optsBundle = (v != null) ? getActivityLaunchOptions(v).toBundle() : null;
+        Bundle optsBundle = (v != null) ? getActivityLaunchOptions(v, item).toBundle() : null;
         UserHandle user = item == null ? null : item.user;
 
         // Prepare intent
