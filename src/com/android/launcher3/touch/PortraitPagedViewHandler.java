@@ -36,10 +36,8 @@ import android.view.accessibility.AccessibilityEvent;
 import android.widget.LinearLayout;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.util.OverScroller;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 
 import java.util.ArrayList;
@@ -58,18 +56,23 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public void delegateScrollTo(PagedView pagedView, int secondaryScroll, int primaryScroll) {
-        pagedView.superScrollTo(primaryScroll, secondaryScroll);
+    public int getPrimaryValue(int x, int y) {
+        return x;
     }
 
     @Override
-    public void delegateScrollBy(PagedView pagedView, int unboundedScroll, int x, int y) {
-        pagedView.scrollTo(unboundedScroll + x, pagedView.getScrollY() + y);
+    public int getSecondaryValue(int x, int y) {
+        return y;
     }
 
     @Override
-    public void scrollerStartScroll(OverScroller scroller, int newPosition) {
-        scroller.startScroll(newPosition - scroller.getCurrPos(), scroller.getCurrPos());
+    public float getPrimaryValue(float x, float y) {
+        return x;
+    }
+
+    @Override
+    public float getSecondaryValue(float x, float y) {
+        return y;
     }
 
     @Override
@@ -80,11 +83,6 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     @Override
     public void adjustFloatingIconStartVelocity(PointF velocity) {
         //no-op
-    }
-
-    @Override
-    public void delegateScrollTo(PagedView pagedView, int primaryScroll) {
-        pagedView.superScrollTo(primaryScroll, pagedView.getScrollY());
     }
 
     @Override
@@ -240,12 +238,12 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public float getTaskMenuX(float x, View thumbnailView) {
-        return x;
+    public float getTaskMenuX(float x, View thumbnailView, int overScroll) {
+        return x + overScroll;
     }
 
     @Override
-    public float getTaskMenuY(float y, View thumbnailView) {
+    public float getTaskMenuY(float y, View thumbnailView, int overScroll) {
         return y;
     }
 
