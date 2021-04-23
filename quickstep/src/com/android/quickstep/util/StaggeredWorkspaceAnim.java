@@ -20,6 +20,7 @@ import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
+import static com.android.launcher3.config.FeatureFlags.PROTOTYPE_APP_CLOSE;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_DEPTH_CONTROLLER;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_OVERVIEW;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_SCRIM;
@@ -220,6 +221,9 @@ public class StaggeredWorkspaceAnim {
      * @param totalRows Total number of rows.
      */
     private void addStaggeredAnimationForView(View v, int row, int totalRows) {
+        if (PROTOTYPE_APP_CLOSE.get()) {
+            return;
+        }
         // Invert the rows, because we stagger starting from the bottom of the screen.
         int invertedRow = totalRows - row;
         // Add 1 to the inverted row so that the bottom most row has a start delay.
