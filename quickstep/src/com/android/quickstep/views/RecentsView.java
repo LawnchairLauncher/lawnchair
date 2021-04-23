@@ -1420,7 +1420,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mTaskListChangeId = -1;
         mFocusedTaskId = -1;
 
-        mRecentsAnimationController = null;
+        if (mRecentsAnimationController != null) {
+            finishRecentsAnimation(true /* toRecents */, null);
+        }
         mLiveTileParams.setTargetSet(null);
         mLiveTileTaskViewSimulator.setDrawsBelowRecents(true);
 
@@ -2526,6 +2528,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     ? ((TaskView) child).getPrimaryTaskOffsetTranslationProperty()
                     : mOrientationHandler.getPrimaryViewTranslate();
             translationProperty.set(child, totalTranslation);
+            if (LIVE_TILE.get() && mEnableDrawingLiveTile && i == getRunningTaskIndex()) {
+                mLiveTileTaskViewSimulator.taskPrimaryTranslation.value = totalTranslation;
+                redrawLiveTile();
+            }
         }
         updateCurveProperties();
     }

@@ -77,7 +77,7 @@ public class SplitScreenBounds {
 
         WindowBounds bounds = new WindowBounds(wm.getBounds(),
                 new Rect(insets.left, insets.top, insets.right, insets.bottom));
-        int rotation = DisplayController.getDefaultDisplay(context).getInfo().rotation;
+        int rotation = DisplayController.INSTANCE.get(context).getInfo().rotation;
         int halfDividerSize = context.getResources()
                 .getDimensionPixelSize(R.dimen.multi_window_task_divider_size) / 2;
 
