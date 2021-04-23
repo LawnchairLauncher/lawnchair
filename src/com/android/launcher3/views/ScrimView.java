@@ -15,18 +15,21 @@
  */
 package com.android.launcher3.views;
 
+import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_SCRIM_VIEW;
 
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.animation.Interpolator;
 
 import androidx.core.graphics.ColorUtils;
 
 import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
 
@@ -36,8 +39,21 @@ import com.android.launcher3.util.Themes;
 public class ScrimView extends View implements Insettable {
     private static final float STATUS_BAR_COLOR_FORCE_UPDATE_THRESHOLD = 0.9f;
 
+
+    private static final float TINT_DECAY_MULTIPLIER = .5f;
+
+    //min progress for scrim to become visible
+    private static final float SCRIM_VISIBLE_THRESHOLD = .1f;
+    //max progress where scrim alpha animates.
+    private static final float SCRIM_SOLID_THRESHOLD = .5f;
+    private final Interpolator mScrimInterpolator = Interpolators.clampToProgress(ACCEL,
+            SCRIM_VISIBLE_THRESHOLD,
+            SCRIM_SOLID_THRESHOLD);
+
     private final boolean mIsScrimDark;
     private SystemUiController mSystemUiController;
+
+    private float mProgress;
 
     public ScrimView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -47,17 +63,23 @@ public class ScrimView extends View implements Insettable {
     }
 
     @Override
-    public void setInsets(Rect insets) { }
+    public void setInsets(Rect insets) {
+    }
 
     @Override
     public boolean hasOverlappingRendering() {
         return false;
     }
 
-    @Override
-    protected boolean onSetAlpha(int alpha) {
-        updateSysUiColors();
-        return super.onSetAlpha(alpha);
+    /**
+     * Set progress of scrim animation.
+     * Note: progress should range from 0 for transparent to 1 for solid
+     */
+    public void setProgress(float progress) {
+        if (mProgress != progress) {
+            mProgress = progress;
+            setAlpha(mScrimInterpolator.getInterpolation(progress));
+        }
     }
 
     @Override
