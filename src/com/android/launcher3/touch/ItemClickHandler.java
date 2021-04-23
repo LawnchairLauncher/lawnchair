@@ -180,7 +180,7 @@ public class ItemClickHandler {
                 LauncherApps launcherApps = launcher.getSystemService(LauncherApps.class);
                 try {
                     launcherApps.startPackageInstallerSessionDetailsActivity(sessionInfo, null,
-                            launcher.getActivityLaunchOptions(v).toBundle());
+                            launcher.getActivityLaunchOptions(v, item).toBundle());
                     return;
                 } catch (Exception e) {
                     Log.e(TAG, "Unable to launch market intent for package=" + packageName, e);
