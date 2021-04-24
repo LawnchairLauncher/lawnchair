@@ -38,10 +38,8 @@ import android.view.accessibility.AccessibilityEvent;
 import android.widget.LinearLayout;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.util.OverScroller;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 
 import java.util.Collections;
@@ -60,18 +58,23 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public void delegateScrollTo(PagedView pagedView, int secondaryScroll, int minMaxScroll) {
-        pagedView.superScrollTo(secondaryScroll, minMaxScroll);
+    public int getPrimaryValue(int x, int y) {
+        return y;
     }
 
     @Override
-    public void delegateScrollBy(PagedView pagedView, int unboundedScroll, int x, int y) {
-        pagedView.scrollTo(pagedView.getScrollX() + x, unboundedScroll + y);
+    public int getSecondaryValue(int x, int y) {
+        return x;
     }
 
     @Override
-    public void scrollerStartScroll(OverScroller scroller, int newPosition) {
-        scroller.startScroll(scroller.getCurrPos(), newPosition - scroller.getCurrPos());
+    public float getPrimaryValue(float x, float y) {
+        return y;
+    }
+
+    @Override
+    public float getSecondaryValue(float x, float y) {
+        return x;
     }
 
     @Override
@@ -84,11 +87,6 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
         float oldX = velocity.x;
         float oldY = velocity.y;
         velocity.set(-oldY, oldX);
-    }
-
-    @Override
-    public void delegateScrollTo(PagedView pagedView, int primaryScroll) {
-        pagedView.superScrollTo(pagedView.getScrollX(), primaryScroll);
     }
 
     @Override
@@ -241,13 +239,13 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public float getTaskMenuX(float x, View thumbnailView) {
+    public float getTaskMenuX(float x, View thumbnailView, int overScroll) {
         return thumbnailView.getMeasuredWidth() + x;
     }
 
     @Override
-    public float getTaskMenuY(float y, View thumbnailView) {
-        return y;
+    public float getTaskMenuY(float y, View thumbnailView, int overScroll) {
+        return y + overScroll;
     }
 
     @Override

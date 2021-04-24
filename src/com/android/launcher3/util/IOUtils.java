@@ -16,7 +16,9 @@
 
 package com.android.launcher3.util;
 
+import android.graphics.Bitmap;
 import android.os.FileUtils;
+import android.util.Base64;
 import android.util.Log;
 
 import com.android.launcher3.Utilities;
@@ -48,6 +50,12 @@ public class IOUtils {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         copy(in, out);
         return out.toByteArray();
+    }
+
+    public static String toBase64String(Bitmap bitmap) {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+        return Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT);
     }
 
     public static long copy(InputStream from, OutputStream to) throws IOException {
