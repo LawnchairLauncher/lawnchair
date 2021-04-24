@@ -38,6 +38,7 @@ import android.graphics.RectF;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
@@ -68,6 +69,7 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -126,7 +128,8 @@ public class FallbackSwipeHandler extends
     }
 
     @Override
-    protected HomeAnimationFactory createHomeAnimationFactory(long duration) {
+    protected HomeAnimationFactory createHomeAnimationFactory(ArrayList<IBinder> launchCookies,
+            long duration) {
         mActiveAnimationFactory = new FallbackHomeAnimationFactory(duration);
         ActivityOptions options = ActivityOptions.makeCustomAnimation(mContext, 0, 0);
         Intent intent = new Intent(mGestureState.getHomeIntent());

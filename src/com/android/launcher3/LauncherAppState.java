@@ -17,9 +17,6 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_ICON_PARAMS;
-import static com.android.launcher3.InvariantDeviceProfile.KEY_MIGRATION_SRC_HOTSEAT_COUNT;
-import static com.android.launcher3.InvariantDeviceProfile.KEY_MIGRATION_SRC_WORKSPACE_SIZE;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_FOUR_COLUMNS;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import static com.android.launcher3.util.SettingsCache.NOTIFICATION_BADGING_URI;
 
@@ -125,33 +122,6 @@ public class LauncherAppState {
         mContext = context;
 
         mInvariantDeviceProfile = InvariantDeviceProfile.INSTANCE.get(context);
-
-        // b/175329686 Temporary logic to gracefully migrate group of users to the new 4x5 grid.
-        String gridName = InvariantDeviceProfile.getCurrentGridName(context);
-        if (ENABLE_FOUR_COLUMNS.get()
-                || "reasonable".equals(gridName)
-                || ENABLE_FOUR_COLUMNS.key.equals(gridName)) {
-            // Reset flag and remove it from developer options to prevent it from being enabled
-            // again.
-            ENABLE_FOUR_COLUMNS.reset(context);
-            FeatureFlags.removeFlag(ENABLE_FOUR_COLUMNS);
-
-            // Force migration code to run
-            Utilities.getPrefs(context).edit()
-                    .remove(KEY_MIGRATION_SRC_HOTSEAT_COUNT)
-                    .remove(KEY_MIGRATION_SRC_WORKSPACE_SIZE)
-                    .apply();
-
-            // We make an empty call here to ensure the database is created with the old IDP grid,
-            // so that when we set the new grid the migration can proceeds as expected.
-            LauncherSettings.Settings.call(context.getContentResolver(), "");
-
-            String newGridName = "practical";
-            Utilities.getPrefs(mContext).edit().putString("idp_grid_name", newGridName).commit();
-            mInvariantDeviceProfile.setCurrentGrid(context, "practical");
-        } else {
-            FeatureFlags.removeFlag(ENABLE_FOUR_COLUMNS);
-        }
 
         mIconCache = new IconCache(mContext, mInvariantDeviceProfile, iconCacheFileName);
         mWidgetCache = new WidgetPreviewLoader(mContext, mIconCache);

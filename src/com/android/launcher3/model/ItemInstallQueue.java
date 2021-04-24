@@ -130,6 +130,7 @@ public class ItemInstallQueue {
 
         // Add the items and clear queue
         if (!installQueue.isEmpty()) {
+            // add log
             launcher.getModel().addAndBindAddedWorkspaceItems(installQueue);
         }
         mItems.clear();
@@ -184,14 +185,20 @@ public class ItemInstallQueue {
     }
 
     private void queuePendingShortcutInfo(PendingInstallShortcutInfo info) {
+        final Exception stackTrace = new Exception();
+
         // Queue the item up for adding if launcher has not loaded properly yet
         MODEL_EXECUTOR.post(() -> {
             Pair<ItemInfo, Object> itemInfo = info.getItemInfo(mContext);
             if (itemInfo == null) {
-                Log.i(LOG, "Adding PendingInstallShortcutInfo with no attached info to queue.");
+                Log.d(LOG,
+                        "Adding PendingInstallShortcutInfo with no attached info to queue.",
+                        stackTrace);
             } else {
-                Log.i(LOG, "Adding PendingInstallShortcutInfo to queue. Attached info: "
-                        + itemInfo.first);
+                Log.d(LOG,
+                        "Adding PendingInstallShortcutInfo to queue. Attached info: "
+                                + itemInfo.first,
+                        stackTrace);
             }
 
             addToQueue(info);

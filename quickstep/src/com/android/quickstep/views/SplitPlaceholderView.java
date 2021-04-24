@@ -19,11 +19,12 @@ package com.android.quickstep.views;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
-import android.view.View;
+import android.view.Gravity;
+import android.widget.FrameLayout;
 
 import com.android.quickstep.util.SplitSelectStateController;
 
-public class SplitPlaceholderView extends View {
+public class SplitPlaceholderView extends FrameLayout {
 
     public static final FloatProperty<SplitPlaceholderView> ALPHA_FLOAT =
             new FloatProperty<SplitPlaceholderView>("SplitViewAlpha") {
@@ -40,6 +41,7 @@ public class SplitPlaceholderView extends View {
             };
 
     private SplitSelectStateController mSplitController;
+    private IconView mIcon;
 
     public SplitPlaceholderView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -51,5 +53,16 @@ public class SplitPlaceholderView extends View {
 
     public SplitSelectStateController getSplitController() {
         return mSplitController;
+    }
+
+    public void setIcon(IconView icon) {
+        if (mIcon == null) {
+            mIcon = new IconView(getContext());
+            addView(mIcon);
+        }
+        mIcon.setDrawable(icon.getDrawable());
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(icon.getLayoutParams());
+        params.gravity = Gravity.CENTER;
+        mIcon.setLayoutParams(params);
     }
 }

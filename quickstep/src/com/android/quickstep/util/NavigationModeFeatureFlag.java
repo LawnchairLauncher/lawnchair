@@ -46,7 +46,8 @@ public class NavigationModeFeatureFlag implements
     }
 
     public boolean get() {
-        return mBasePredicate.get() && mSupported && mObserver.isHomeAndOverviewSame();
+        return mBasePredicate.get() && mSupported && mObserver != null
+                && mObserver.isHomeAndOverviewSame();
     }
 
     public void initialize(Context context) {
