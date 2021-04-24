@@ -71,7 +71,7 @@ public class SessionCommitReceiver extends BroadcastReceiver {
             return;
         }
 
-        Log.i(LOG,
+        Log.d(LOG,
                 "Adding package name to install queue. Package name: " + info.getAppPackageName()
                         + ", has app icon: " + (info.getAppIcon() != null)
                         + ", has app label: " + !TextUtils.isEmpty(info.getAppLabel()));
