@@ -43,6 +43,7 @@ public final class WidgetsRecommendationTableLayout extends TableLayout {
     private static final float DOWN_SCALE_RATIO = 0.9f;
     private static final float MAX_DOWN_SCALE_RATIO = 0.5f;
     private final float mWidgetCellTextViewsHeight;
+    private final float mWidgetPreviewPadding;
 
     private float mRecommendationTableMaxHeight = Float.MAX_VALUE;
     @Nullable private OnLongClickListener mWidgetCellOnLongClickListener;
@@ -57,6 +58,8 @@ public final class WidgetsRecommendationTableLayout extends TableLayout {
         super(context, attrs);
         // There are 1 row for title, 1 row for dimension and 2 rows for description.
         mWidgetCellTextViewsHeight = 4 * getResources().getDimension(R.dimen.widget_cell_font_size);
+        mWidgetPreviewPadding = 2 * getResources()
+                .getDimensionPixelSize(R.dimen.widget_preview_shortcut_padding);
     }
 
     /** Sets a {@link android.view.View.OnLongClickListener} for all widget cells in this table. */
@@ -147,7 +150,7 @@ public final class WidgetsRecommendationTableLayout extends TableLayout {
             float rowHeight = 0;
             for (int j = 0; j < widgetItems.size(); j++) {
                 float previewHeight = widgetItems.get(j).spanY * deviceProfile.cellHeightPx
-                        * previewScale;
+                        * previewScale + mWidgetPreviewPadding;
                 rowHeight = Math.max(rowHeight, previewHeight + mWidgetCellTextViewsHeight);
             }
             totalHeight += rowHeight;
