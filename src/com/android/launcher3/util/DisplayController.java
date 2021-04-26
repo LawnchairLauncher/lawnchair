@@ -87,7 +87,7 @@ public class DisplayController implements DisplayListener, ComponentCallbacks {
                     new IntentFilter(Intent.ACTION_CONFIGURATION_CHANGED));
         }
 
-        mInfo = createInfo(display);
+        mInfo = new Info(getContext(display), display);
         mDM.registerDisplayListener(this, UI_HELPER_EXECUTOR.getHandler());
     }
 
@@ -125,7 +125,13 @@ public class DisplayController implements DisplayListener, ComponentCallbacks {
      */
     public interface DisplayInfoChangeListener {
 
-        void onDisplayInfoChanged(Info info, int flags);
+        /**
+         * Invoked when display info has changed.
+         * @param context updated context associated with the display.
+         * @param info updated display information.
+         * @param flags bitmask indicating type of change.
+         */
+        void onDisplayInfoChanged(Context context, Info info, int flags);
     }
 
     /**
@@ -172,14 +178,15 @@ public class DisplayController implements DisplayListener, ComponentCallbacks {
         return mInfo;
     }
 
-    private Info createInfo(Display display) {
-        return new Info(mContext.createDisplayContext(display), display);
+    private Context getContext(Display display) {
+        return Utilities.ATLEAST_S ? mWindowContext : mContext.createDisplayContext(display);
     }
 
     @AnyThread
     private void handleInfoChange(Display display) {
         Info oldInfo = mInfo;
-        Info newInfo = createInfo(display);
+        Context context = getContext(display);
+        Info newInfo = new Info(context, display);
         int change = 0;
         if (newInfo.hasDifferentSize(oldInfo)) {
             change |= CHANGE_SIZE;
@@ -197,13 +204,13 @@ public class DisplayController implements DisplayListener, ComponentCallbacks {
         if (change != 0) {
             mInfo = newInfo;
             final int flags = change;
-            MAIN_EXECUTOR.execute(() -> notifyChange(flags));
+            MAIN_EXECUTOR.execute(() -> notifyChange(context, flags));
         }
     }
 
-    private void notifyChange(int flags) {
+    private void notifyChange(Context context, int flags) {
         for (int i = mListeners.size() - 1; i >= 0; i--) {
-            mListeners.get(i).onDisplayInfoChanged(mInfo, flags);
+            mListeners.get(i).onDisplayInfoChanged(context, mInfo, flags);
         }
     }
 
