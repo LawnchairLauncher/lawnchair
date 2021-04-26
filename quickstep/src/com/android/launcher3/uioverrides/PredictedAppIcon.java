@@ -15,12 +15,11 @@
  */
 package com.android.launcher3.uioverrides;
 
-import static com.android.launcher3.graphics.IconShape.getShape;
-
 import android.content.Context;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
@@ -37,6 +36,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.graphics.IconPalette;
+import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.icons.IconNormalizer;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -58,9 +58,13 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView {
     private final DeviceProfile mDeviceProfile;
     private final Paint mIconRingPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Path mRingPath = new Path();
-    private boolean mIsPinned = false;
-    private final int mNormalizedIconRadius;
+    private final int mNormalizedIconSize;
+    private final Path mShapePath;
+    private final Matrix mTmpMatrix = new Matrix();
+
     private final BlurMaskFilter mShadowFilter;
+
+    private boolean mIsPinned = false;
     private int mPlateColor;
     boolean mDrawForDrag = false;
 
@@ -75,24 +79,18 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView {
     public PredictedAppIcon(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mDeviceProfile = ActivityContext.lookupContext(context).getDeviceProfile();
-        mNormalizedIconRadius = IconNormalizer.getNormalizedCircleSize(getIconSize()) / 2;
+        mNormalizedIconSize = IconNormalizer.getNormalizedCircleSize(getIconSize());
         int shadowSize = context.getResources().getDimensionPixelSize(
                 R.dimen.blur_size_thin_outline);
         mShadowFilter = new BlurMaskFilter(shadowSize, BlurMaskFilter.Blur.OUTER);
+        mShapePath = GraphicsUtils.getShapePath(mNormalizedIconSize);
     }
 
     @Override
     public void onDraw(Canvas canvas) {
         int count = canvas.save();
         if (!mIsPinned) {
-            boolean isBadged = false;
-            if (getTag() instanceof WorkspaceItemInfo) {
-                WorkspaceItemInfo info = (WorkspaceItemInfo) getTag();
-                isBadged = !Process.myUserHandle().equals(info.user)
-                        || info.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT
-                        || info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
-            }
-            drawEffect(canvas, isBadged);
+            drawEffect(canvas);
             canvas.translate(getWidth() * RING_EFFECT_RATIO, getHeight() * RING_EFFECT_RATIO);
             canvas.scale(1 - 2 * RING_EFFECT_RATIO, 1 - 2 * RING_EFFECT_RATIO);
         }
@@ -161,32 +159,57 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView {
     }
 
     private int getOutlineOffsetX() {
-        return (getMeasuredWidth() / 2) - mNormalizedIconRadius;
+        return (getMeasuredWidth() - mNormalizedIconSize) / 2;
     }
 
     private int getOutlineOffsetY() {
         if (mDisplay != DISPLAY_TASKBAR) {
             return getPaddingTop() + mDeviceProfile.folderIconOffsetYPx;
         }
-        return (getMeasuredHeight() / 2) - mNormalizedIconRadius;
+        return (getMeasuredHeight() - mNormalizedIconSize) / 2;
     }
 
-    private void drawEffect(Canvas canvas, boolean isBadged) {
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        updateRingPath();
+    }
+
+    @Override
+    public void setTag(Object tag) {
+        super.setTag(tag);
+        updateRingPath();
+    }
+
+    private void updateRingPath() {
+        boolean isBadged = false;
+        if (getTag() instanceof WorkspaceItemInfo) {
+            WorkspaceItemInfo info = (WorkspaceItemInfo) getTag();
+            isBadged = !Process.myUserHandle().equals(info.user)
+                    || info.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT
+                    || info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
+        }
+
+        mRingPath.reset();
+        mTmpMatrix.setTranslate(getOutlineOffsetX(), getOutlineOffsetY());
+
+        mRingPath.addPath(mShapePath, mTmpMatrix);
+        if (isBadged) {
+            float outlineSize = mNormalizedIconSize * RING_EFFECT_RATIO;
+            float iconSize = getIconSize() * (1 - 2 * RING_EFFECT_RATIO);
+            float badgeSize = LauncherIcons.getBadgeSizeForIconSize((int) iconSize) + outlineSize;
+            float scale = badgeSize / mNormalizedIconSize;
+            mTmpMatrix.postTranslate(mNormalizedIconSize, mNormalizedIconSize);
+            mTmpMatrix.preScale(scale, scale);
+            mTmpMatrix.preTranslate(-mNormalizedIconSize, -mNormalizedIconSize);
+            mRingPath.addPath(mShapePath, mTmpMatrix);
+        }
+    }
+
+    private void drawEffect(Canvas canvas) {
         // Don't draw ring effect if item is about to be dragged.
         if (mDrawForDrag) {
             return;
-        }
-        mRingPath.reset();
-        getShape().addToPath(mRingPath, getOutlineOffsetX(), getOutlineOffsetY(),
-                mNormalizedIconRadius);
-        if (isBadged) {
-            float outlineSize = mNormalizedIconRadius * RING_EFFECT_RATIO * 2;
-            float iconSize = getIconSize() * (1 - 2 * RING_EFFECT_RATIO);
-            float badgeSize = LauncherIcons.getBadgeSizeForIconSize((int) iconSize) + outlineSize;
-            float badgeInset = mNormalizedIconRadius * 2 - badgeSize;
-            getShape().addToPath(mRingPath, getOutlineOffsetX() + badgeInset,
-                    getOutlineOffsetY() + badgeInset, badgeSize / 2);
-
         }
         mIconRingPaint.setColor(RING_SHADOW_COLOR);
         mIconRingPaint.setMaskFilter(mShadowFilter);
@@ -249,8 +272,10 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView {
          */
         @Override
         public void drawUnderItem(Canvas canvas) {
-            getShape().drawShape(canvas, mIcon.getOutlineOffsetX(), mIcon.getOutlineOffsetY(),
-                    mIcon.mNormalizedIconRadius, mOutlinePaint);
+            canvas.save();
+            canvas.translate(mIcon.getOutlineOffsetX(), mIcon.getOutlineOffsetY());
+            canvas.drawPath(mIcon.mShapePath, mOutlinePaint);
+            canvas.restore();
         }
 
         /**

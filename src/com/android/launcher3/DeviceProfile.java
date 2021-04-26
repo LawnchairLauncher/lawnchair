@@ -25,6 +25,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
@@ -38,8 +39,8 @@ import android.view.WindowManager;
 import com.android.launcher3.CellLayout.ContainerType;
 import com.android.launcher3.DevicePaddings.DevicePadding;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.icons.DotRenderer;
+import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.icons.IconNormalizer;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.DisplayController;
@@ -54,6 +55,7 @@ public class DeviceProfile {
     private static final float TABLET_MIN_DPS = 600;
     private static final float LARGE_TABLET_MIN_DPS = 720;
 
+    private static final int DEFAULT_DOT_SIZE = 100;
 
     public final InvariantDeviceProfile inv;
     private final Info mInfo;
@@ -366,11 +368,10 @@ public class DeviceProfile {
         updateWorkspacePadding();
 
         // This is done last, after iconSizePx is calculated above.
-        mDotRendererWorkSpace = new DotRenderer(iconSizePx, IconShape.getShapePath(),
-                IconShape.DEFAULT_PATH_SIZE);
+        Path dotPath = GraphicsUtils.getShapePath(DEFAULT_DOT_SIZE);
+        mDotRendererWorkSpace = new DotRenderer(iconSizePx, dotPath, DEFAULT_DOT_SIZE);
         mDotRendererAllApps = iconSizePx == allAppsIconSizePx ? mDotRendererWorkSpace :
-                new DotRenderer(allAppsIconSizePx, IconShape.getShapePath(),
-                        IconShape.DEFAULT_PATH_SIZE);
+                new DotRenderer(allAppsIconSizePx, dotPath, DEFAULT_DOT_SIZE);
     }
 
     private void setCellLayoutBorderSpacing(int borderSpacing) {
