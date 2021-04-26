@@ -515,8 +515,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
             }
             mRotationTouchHelper.setOrientationTransformIfNeeded(event);
 
-            if (!mDeviceState.isOneHandedModeActive()
-                    && mRotationTouchHelper.isInSwipeUpTouchRegion(event)) {
+            if (mRotationTouchHelper.isInSwipeUpTouchRegion(event)) {
                 if (TestProtocol.sDebugTracing) {
                     Log.d(TestProtocol.NO_SWIPE_TO_HOME,
                             "TouchInteractionService.onInputEvent:isInSwipeUpTouchRegion");
@@ -545,7 +544,8 @@ public class TouchInteractionService extends Service implements PluginListener<O
                             InputConsumer.NO_OP, mInputMonitorCompat,
                             mDeviceState,
                             event);
-                } else if (mDeviceState.canTriggerOneHandedAction(event)) {
+                } else if (mDeviceState.canTriggerOneHandedAction(event)
+                    && !mDeviceState.isOneHandedModeActive()) {
                     // Consume gesture event for triggering one handed feature.
                     mUncheckedConsumer = new OneHandedModeInputConsumer(this, mDeviceState,
                         InputConsumer.NO_OP, mInputMonitorCompat);
