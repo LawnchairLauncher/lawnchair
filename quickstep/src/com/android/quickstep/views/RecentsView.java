@@ -644,28 +644,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         // Draw overscroll
         if (mAllowOverScroll && (!mEdgeGlowRight.isFinished() || !mEdgeGlowLeft.isFinished())) {
             final int restoreCount = canvas.save();
-            final int width = getWidth();
-            final int height = getHeight();
-            int primarySize = mOrientationHandler.getPrimaryValue(width, height);
-            int secondarySize = mOrientationHandler.getSecondaryValue(width, height);
 
-            float effectiveShift = 0;
-            if (!mEdgeGlowLeft.isFinished()) {
-                mEdgeGlowLeft.setSize(secondarySize, primarySize);
-                if (((TranslateEdgeEffect) mEdgeGlowLeft).getTranslationShift(mTempFloat)) {
-                    effectiveShift = mTempFloat[0];
-                    postInvalidateOnAnimation();
-                }
-            }
-            if (!mEdgeGlowRight.isFinished()) {
-                mEdgeGlowRight.setSize(secondarySize, primarySize);
-                if (((TranslateEdgeEffect) mEdgeGlowRight).getTranslationShift(mTempFloat)) {
-                    effectiveShift -= mTempFloat[0];
-                    postInvalidateOnAnimation();
-                }
-            }
-
-            int scroll = OverScroll.dampedScroll(effectiveShift * primarySize, primarySize);
+            int primarySize = mOrientationHandler.getPrimaryValue(getWidth(), getHeight());
+            int scroll = OverScroll.dampedScroll(getUndampedOverScrollShift(), primarySize);
             mOrientationHandler.set(canvas, CANVAS_TRANSLATE, scroll);
 
             if (mOverScrollShift != scroll) {
@@ -685,6 +666,31 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         if (LIVE_TILE.get() && mEnableDrawingLiveTile && mLiveTileParams.getTargetSet() != null) {
             redrawLiveTile();
         }
+    }
+
+    private float getUndampedOverScrollShift() {
+        final int width = getWidth();
+        final int height = getHeight();
+        int primarySize = mOrientationHandler.getPrimaryValue(width, height);
+        int secondarySize = mOrientationHandler.getSecondaryValue(width, height);
+
+        float effectiveShift = 0;
+        if (!mEdgeGlowLeft.isFinished()) {
+            mEdgeGlowLeft.setSize(secondarySize, primarySize);
+            if (((TranslateEdgeEffect) mEdgeGlowLeft).getTranslationShift(mTempFloat)) {
+                effectiveShift = mTempFloat[0];
+                postInvalidateOnAnimation();
+            }
+        }
+        if (!mEdgeGlowRight.isFinished()) {
+            mEdgeGlowRight.setSize(secondarySize, primarySize);
+            if (((TranslateEdgeEffect) mEdgeGlowRight).getTranslationShift(mTempFloat)) {
+                effectiveShift -= mTempFloat[0];
+                postInvalidateOnAnimation();
+            }
+        }
+
+        return effectiveShift * primarySize;
     }
 
     /**
@@ -3512,8 +3518,16 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         if (pageIndex == -1) {
             return 0;
         }
+
+        int overScrollShift = getOverScrollShift();
+        if (mAdjacentPageVerticalOffset > 0) {
+            // Don't dampen the scroll (due to overscroll) if the adjacent tasks are offscreen, so
+            // that the page can move freely given there's no visual indication why it shouldn't.
+            overScrollShift = (int) Utilities.mapRange(mAdjacentPageVerticalOffset, overScrollShift,
+                    getUndampedOverScrollShift());
+        }
         return getScrollForPage(pageIndex) - mOrientationHandler.getPrimaryScroll(this)
-                + getOverScrollShift();
+                + overScrollShift;
     }
 
     /**
