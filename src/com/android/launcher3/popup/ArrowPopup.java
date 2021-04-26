@@ -16,6 +16,7 @@
 
 package com.android.launcher3.popup;
 
+import static com.android.launcher3.AbstractFloatingView.getTopOpenViewWithType;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.popup.PopupPopulator.MAX_SHORTCUTS;
 
@@ -48,12 +49,14 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.LauncherAnimUtils;
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.RevealOutlineAnimation;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.shortcuts.DeepShortcutView;
+import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BaseDragLayer;
 
@@ -65,7 +68,8 @@ import java.util.Collections;
  *
  * @param <T> The activity on with the popup shows
  */
-public abstract class ArrowPopup<T extends BaseDraggingActivity> extends AbstractFloatingView {
+public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
+        extends AbstractFloatingView {
 
     // +1 for system shortcut view
     private static final int MAX_NUM_CHILDREN = MAX_SHORTCUTS + 1;
@@ -139,14 +143,21 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
         mRoundedBottom.setCornerRadii(new float[] { smallerRadius, smallerRadius, smallerRadius,
                 smallerRadius, mOutlineRadius, mOutlineRadius, mOutlineRadius, mOutlineRadius});
 
-        int primaryColor = Themes.getAttrColor(context, R.attr.popupColorPrimary);
-        int secondaryColor = Themes.getAttrColor(context, R.attr.popupColorSecondary);
-        ArgbEvaluator argb = new ArgbEvaluator();
-        mColors = new int[MAX_NUM_CHILDREN];
-        // Interpolate between the two colors, exclusive.
-        float step = 1f / (MAX_NUM_CHILDREN + 1);
-        for (int i = 0; i < mColors.length; ++i) {
-            mColors[i] = (int) argb.evaluate((i + 1) * step, primaryColor, secondaryColor);
+        boolean isAboveAnotherSurface = getTopOpenViewWithType(mLauncher, TYPE_FOLDER) != null
+                || mLauncher.getStateManager().getState() == LauncherState.ALL_APPS;
+        if (isAboveAnotherSurface) {
+            mColors = new int[] { Themes.getAttrColor(context, R.attr.popupColorNeutral) };
+        } else {
+            int primaryColor = Themes.getAttrColor(context, R.attr.popupColorPrimary);
+            int secondaryColor = Themes.getAttrColor(context, R.attr.popupColorSecondary);
+            ArgbEvaluator argb = new ArgbEvaluator();
+            mColors = new int[MAX_NUM_CHILDREN];
+            // Interpolate between the two colors, exclusive.
+            float step = 1f / (MAX_NUM_CHILDREN + 1);
+            for (int i = 0; i < mColors.length; ++i) {
+                mColors[i] =
+                        (int) argb.evaluate((i + 1) * step, primaryColor, secondaryColor);
+            }
         }
     }
 
