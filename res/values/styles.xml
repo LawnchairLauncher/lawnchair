@@ -32,7 +32,6 @@
     <style name="LauncherTheme" parent="@style/BaseLauncherTheme">
         <item name="android:textColorSecondary">#DE000000</item>
         <item name="allAppsScrimColor">?android:attr/colorBackgroundFloating</item>
-        <item name="allAppsInterimScrimAlpha">46</item>
         <item name="allAppsNavBarScrimColor">#66FFFFFF</item>
         <item name="allAppsTheme">@style/AllAppsTheme</item>
         <item name="popupColorNeutral">@color/popup_color_neutral_light</item>
@@ -77,7 +76,6 @@
 
     <style name="LauncherTheme.DarkText" parent="@style/LauncherTheme">
         <item name="workspaceTextColor">@color/workspace_text_color_dark</item>
-        <item name="allAppsInterimScrimAlpha">128</item>
         <item name="workspaceShadowColor">@android:color/transparent</item>
         <item name="workspaceAmbientShadowColor">@android:color/transparent</item>
         <item name="workspaceKeyShadowColor">@android:color/transparent</item>
@@ -97,7 +95,6 @@
         <item name="android:colorControlHighlight">#A0FFFFFF</item>
         <item name="android:colorPrimary">#FF212121</item>
         <item name="allAppsScrimColor">?android:attr/colorBackgroundFloating</item>
-        <item name="allAppsInterimScrimAlpha">102</item>
         <item name="allAppsNavBarScrimColor">#80000000</item>
         <item name="allAppsTheme">@style/AllAppsTheme.Dark</item>
         <item name="popupColorNeutral">@color/popup_color_neutral_dark</item>
@@ -125,7 +122,6 @@
 
     <style name="LauncherTheme.Dark.DarkText" parent="@style/LauncherTheme.Dark">
         <item name="android:colorControlHighlight">#75212121</item>
-        <item name="allAppsInterimScrimAlpha">25</item>
         <item name="folderFillColor">#CDFFFFFF</item>
         <item name="folderTextColor">?attr/workspaceTextColor</item>
         <item name="workspaceTextColor">@color/workspace_text_color_dark</item>

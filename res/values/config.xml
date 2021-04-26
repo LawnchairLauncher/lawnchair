@@ -216,9 +216,6 @@
         <item>@dimen/c2_d</item>
     </array>
 
-    <string-array name="live_wallpapers_remove_sysui_scrims">
-    </string-array>
-
     <string-array name="filtered_components" ></string-array>
 
     <!-- Name of the class used to generate colors from the wallpaper colors. Must be implementing the LauncherAppWidgetHostView.ColorGenerator interface. -->
