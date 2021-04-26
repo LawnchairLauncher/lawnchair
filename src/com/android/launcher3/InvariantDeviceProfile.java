@@ -203,9 +203,9 @@ public class InvariantDeviceProfile {
                 .apply();
 
         DisplayController.INSTANCE.get(context).addChangeListener(
-                (info, flags) -> {
+                (displayContext, info, flags) -> {
                     if ((flags & (CHANGE_SIZE | CHANGE_DENSITY)) != 0) {
-                        onConfigChanged(context);
+                        onConfigChanged(displayContext);
                     }
                 });
         mOverlayMonitor = new OverlayMonitor(context);
@@ -226,7 +226,7 @@ public class InvariantDeviceProfile {
      */
     public InvariantDeviceProfile(Context context, Display display) {
         // Ensure that the main device profile is initialized
-        InvariantDeviceProfile originalProfile = INSTANCE.get(context);
+        INSTANCE.get(context);
         String gridName = getCurrentGridName(context);
 
         // Get the display info based on default display and interpolate it to existing display
