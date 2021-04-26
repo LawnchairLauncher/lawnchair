@@ -27,12 +27,11 @@ import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SY
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.app.ActivityOptions;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.os.Binder;
 import android.os.Bundle;
 import android.os.CancellationSignal;
-import android.os.IBinder;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -41,7 +40,6 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.model.WellbeingModel;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.proxy.ProxyActivityStarter;
 import com.android.launcher3.proxy.StartActivityParams;
@@ -73,7 +71,6 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -240,8 +237,9 @@ public abstract class BaseQuickstepLauncher extends Launcher
     }
 
     @Override
-    public void onDisplayInfoChanged(DisplayController.Info info, int flags) {
-        super.onDisplayInfoChanged(info, flags);
+    public void onDisplayInfoChanged(Context context, DisplayController.Info info,
+            int flags) {
+        super.onDisplayInfoChanged(context, info, flags);
         if ((flags & CHANGE_SIZE) != 0) {
             addTaskbarIfNecessary();
         }

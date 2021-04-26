@@ -225,7 +225,7 @@ public class RotationTouchHelper implements
     public void onNavigationModeChanged(SysUINavigationMode.Mode newMode) {
         mDisplayController.removeChangeListener(this);
         mDisplayController.addChangeListener(this);
-        onDisplayInfoChanged(mDisplayController.getInfo(), CHANGE_ALL);
+        onDisplayInfoChanged(mContext, mDisplayController.getInfo(), CHANGE_ALL);
 
         mOrientationTouchTransformer.setNavigationMode(newMode, mDisplayController.getInfo(),
             mContext.getResources());
@@ -243,7 +243,7 @@ public class RotationTouchHelper implements
     }
 
     @Override
-    public void onDisplayInfoChanged(Info info, int flags) {
+    public void onDisplayInfoChanged(Context context, Info info, int flags) {
         if (info.id != mDisplayId|| flags == CHANGE_FRAME_DELAY) {
             // ignore displays that aren't running launcher and frame refresh rate changes
             return;
