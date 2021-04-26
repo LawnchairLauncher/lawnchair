@@ -100,7 +100,7 @@
     <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"స్ట‌యిల్స్‌ &amp; వాల్‌పేపర్‌లు"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"హోమ్ సెట్టింగ్‌లు"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"మీ నిర్వాహకులు నిలిపివేసారు"</string>
-    <string name="allow_rotation_title" msgid="7728578836261442095">"హోమ్ స్క్రీన్ భ్రమణాన్ని అనుమతించండి"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"హోమ్ స్క్రీన్ రొటేషన్‌ను అనుమతించండి"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"ఫోన్‌‌ను తిప్పినప్పుడు"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"నోటిఫికేషన్ డాట్‌లు"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"ఆన్"</string>

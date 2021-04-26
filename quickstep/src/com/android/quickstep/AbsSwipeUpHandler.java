@@ -66,11 +66,13 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.SystemClock;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnApplyWindowInsetsListener;
 import android.view.ViewTreeObserver.OnDrawListener;
+import android.view.ViewTreeObserver.OnScrollChangedListener;
 import android.view.WindowInsets;
 import android.view.animation.Interpolator;
 import android.widget.Toast;
@@ -139,6 +141,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     private final Handler mHandler = new Handler();
     // Callbacks to be made once the recents animation starts
     private final ArrayList<Runnable> mRecentsAnimationStartCallbacks = new ArrayList<>();
+    private final OnScrollChangedListener mOnRecentsScrollListener = this::onRecentsViewScroll;
+
     protected RecentsAnimationController mRecentsAnimationController;
     protected RecentsAnimationTargets mRecentsAnimationTargets;
     protected T mActivity;
@@ -1043,7 +1047,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 interpolator, target, velocityPxPerMs));
     }
 
-    protected abstract HomeAnimationFactory createHomeAnimationFactory(long duration);
+    protected abstract HomeAnimationFactory createHomeAnimationFactory(
+            ArrayList<IBinder> launchCookies, long duration);
 
     private final TaskStackChangeListener mActivityRestartListener = new TaskStackChangeListener() {
         @Override
@@ -1084,7 +1089,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             final RemoteAnimationTargetCompat runningTaskTarget = mRecentsAnimationTargets != null
                     ? mRecentsAnimationTargets.findTask(mGestureState.getRunningTaskId())
                     : null;
-            HomeAnimationFactory homeAnimFactory = createHomeAnimationFactory(duration);
+            HomeAnimationFactory homeAnimFactory = createHomeAnimationFactory(
+                    runningTaskTarget.taskInfo.launchCookies, duration);
             mIsSwipingPipToHome = homeAnimFactory.supportSwipePipToHome()
                     && runningTaskTarget != null
                     && runningTaskTarget.taskInfo.pictureInPictureParams != null
@@ -1252,7 +1258,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             HomeAnimationFactory homeAnimationFactory) {
         RectFSpringAnim anim =
                 super.createWindowAnimationToHome(startProgress, homeAnimationFactory);
-        anim.addOnUpdateListener((r, p) -> {
+        anim.addOnUpdateListener((v, r, p) -> {
             updateSysUiFlags(Math.max(p, mCurrentShift.value));
         });
         anim.addAnimatorListener(new AnimationSuccessListener() {
@@ -1368,6 +1374,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     private void invalidateHandlerWithLauncher() {
         endLauncherTransitionController();
 
+        mRecentsView.removeOnScrollChangedListener(mOnRecentsScrollListener);
         mRecentsView.onGestureAnimationEnd();
         resetLauncherListeners();
     }
@@ -1395,7 +1402,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         mActivityInterface.onTransitionCancelled(wasVisible);
 
         // Leave the pending invisible flag, as it may be used by wallpaper open animation.
-        mActivity.clearForceInvisibleFlag(INVISIBLE_BY_STATE_HANDLER);
+        if (mActivity != null) {
+            mActivity.clearForceInvisibleFlag(INVISIBLE_BY_STATE_HANDLER);
+        }
     }
 
     protected void switchToScreenshot() {
@@ -1503,9 +1512,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             SystemUiProxy.INSTANCE.get(mContext).stopSwipePipToHome(
                     mSwipePipToHomeAnimator.getComponentName(),
                     mSwipePipToHomeAnimator.getDestinationBounds());
-            mRecentsAnimationController.setFinishTaskBounds(
+            mRecentsAnimationController.setFinishTaskTransaction(
                     mSwipePipToHomeAnimator.getTaskId(),
-                    mSwipePipToHomeAnimator.getDestinationBounds(),
                     mSwipePipToHomeAnimator.getFinishTransaction());
             mIsSwipingPipToHome = false;
         }
@@ -1560,15 +1568,17 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                     mRecentsAnimationTargets.addReleaseCheck(applier));
         });
 
-        mRecentsView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-            if (moveWindowWithRecentsScroll()) {
-                updateFinalShift();
-            }
-        });
+        mRecentsView.addOnScrollChangedListener(mOnRecentsScrollListener);
         runOnRecentsAnimationStart(() ->
                 mRecentsView.setRecentsAnimationTargets(mRecentsAnimationController,
                         mRecentsAnimationTargets));
         mRecentsViewScrollLinked = true;
+    }
+
+    private void onRecentsViewScroll() {
+        if (moveWindowWithRecentsScroll()) {
+            updateFinalShift();
+        }
     }
 
     protected void startNewTask(Consumer<Boolean> resultCallback) {

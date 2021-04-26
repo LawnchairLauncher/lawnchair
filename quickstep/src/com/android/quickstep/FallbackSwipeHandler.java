@@ -38,6 +38,7 @@ import android.graphics.RectF;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
@@ -48,6 +49,7 @@ import android.view.SurfaceControl;
 import android.view.SurfaceControl.Transaction;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Utilities;
@@ -56,6 +58,7 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.SpringAnimationBuilder;
 import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.fallback.RecentsState;
+import com.android.quickstep.util.AppCloseConfig;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.util.TransformParams.BuilderProxy;
@@ -66,6 +69,7 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -124,7 +128,8 @@ public class FallbackSwipeHandler extends
     }
 
     @Override
-    protected HomeAnimationFactory createHomeAnimationFactory(long duration) {
+    protected HomeAnimationFactory createHomeAnimationFactory(ArrayList<IBinder> launchCookies,
+            long duration) {
         mActiveAnimationFactory = new FallbackHomeAnimationFactory(duration);
         ActivityOptions options = ActivityOptions.makeCustomAnimation(mContext, 0, 0);
         Intent intent = new Intent(mGestureState.getHomeIntent());
@@ -298,7 +303,8 @@ public class FallbackSwipeHandler extends
         }
 
         @Override
-        public void update(RectF currentRect, float progress, float radius) {
+        public void update(@Nullable AppCloseConfig config, RectF currentRect, float progress,
+                 float radius) {
             if (mSurfaceControl != null) {
                 currentRect.roundOut(mTempRect);
                 Transaction t = new Transaction();

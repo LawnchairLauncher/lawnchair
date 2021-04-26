@@ -16,15 +16,20 @@
 
 package com.android.quickstep.util;
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
 
 import android.animation.AnimatorSet;
 import android.app.ActivityOptions;
+import android.content.res.Resources;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Looper;
 import android.util.Pair;
+import android.view.Gravity;
 import android.view.SurfaceControl;
 import android.window.TransitionInfo;
 
@@ -32,7 +37,10 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseQuickstepLauncher;
+import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.LauncherAnimationRunner;
+import com.android.launcher3.R;
 import com.android.launcher3.WrappedAnimationRunnerImpl;
 import com.android.launcher3.WrappedLauncherAnimationRunner;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
@@ -114,6 +122,26 @@ public class SplitSelectStateController {
         resetState();
     }
 
+    /**
+     * @return {@link InsettableFrameLayout.LayoutParams} to correctly position the
+     * split placeholder view
+     */
+    public InsettableFrameLayout.LayoutParams getLayoutParamsForActivePosition(Resources resources,
+            DeviceProfile deviceProfile) {
+        InsettableFrameLayout.LayoutParams params =
+                new InsettableFrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
+        boolean topLeftPosition = mInitialPosition.mStagePosition == STAGE_POSITION_TOP_OR_LEFT;
+        if (deviceProfile.isLandscape) {
+            params.width = (int) resources.getDimension(R.dimen.split_placeholder_size);
+            params.gravity = topLeftPosition ? Gravity.START : Gravity.END;
+        } else {
+            params.height = (int) resources.getDimension(R.dimen.split_placeholder_size);
+            params.gravity = Gravity.TOP;
+        }
+
+        return params;
+    }
+
     @Nullable
     public SplitPositionOption getActiveSplitPositionOption() {
         return mInitialPosition;
@@ -133,8 +161,8 @@ public class SplitSelectStateController {
         }
 
         @Override
-        public void startAnimation(TransitionInfo info, SurfaceControl.Transaction t,
-                Runnable finishCallback) {
+        public void startAnimation(IBinder transition, TransitionInfo info,
+                SurfaceControl.Transaction t, Runnable finishCallback) {
             TaskViewUtils.composeRecentsSplitLaunchAnimator(mInitialTaskView, mTaskView,
                     info, t, finishCallback);
             // After successful launch, call resetState

@@ -43,30 +43,13 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
     }
 
     @Override
-    Integer getTitleStringId() {
-        switch (mTutorialType) {
-            case OVERVIEW_NAVIGATION:
-                return R.string.overview_gesture_intro_title;
-            case OVERVIEW_NAVIGATION_COMPLETE:
-                return R.string.gesture_tutorial_confirm_title;
-        }
-        return null;
+    public Integer getIntroductionTitle() {
+        return R.string.overview_gesture_intro_title;
     }
 
     @Override
-    Integer getSubtitleStringId() {
-        if (mTutorialType == TutorialType.OVERVIEW_NAVIGATION) {
-            return R.string.overview_gesture_intro_subtitle;
-        }
-        return null;
-    }
-
-    @Override
-    Integer getActionButtonStringId() {
-        if (mTutorialType == OVERVIEW_NAVIGATION_COMPLETE) {
-            return R.string.gesture_tutorial_action_button_label_done;
-        }
-        return null;
+    public Integer getIntroductionSubtitle() {
+        return R.string.overview_gesture_intro_subtitle;
     }
 
     @Nullable
@@ -124,8 +107,7 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
                         animset.start();
                         mRunningWindowAnim = SwipeUpAnimationLogic.RunningWindowAnim.wrap(animset);
                         onMotionPaused(true /*arbitrary value*/);
-                        showFeedback(R.string.overview_gesture_feedback_complete,
-                                mTutorialFragment::continueTutorial);
+                        showFeedback(R.string.overview_gesture_feedback_complete, true);
                         break;
                     case HOME_OR_OVERVIEW_NOT_STARTED_WRONG_SWIPE_DIRECTION:
                     case HOME_OR_OVERVIEW_CANCELLED:

@@ -18,8 +18,9 @@ package com.android.launcher3;
 
 import static com.android.launcher3.Utilities.getDevicePrefs;
 import static com.android.launcher3.Utilities.getPointString;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_FOUR_COLUMNS;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TWO_PANEL_HOME;
+import static com.android.launcher3.util.DisplayController.CHANGE_DENSITY;
+import static com.android.launcher3.util.DisplayController.CHANGE_SIZE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.PackageManagerHelper.getPackageFilter;
 
@@ -49,7 +50,6 @@ import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.testing.TestProtocol;
-import com.android.launcher3.util.ConfigMonitor;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.IntArray;
@@ -156,7 +156,6 @@ public class InvariantDeviceProfile {
     public Rect defaultWidgetPadding;
 
     private final ArrayList<OnIDPChangeListener> mChangeListeners = new ArrayList<>();
-    private ConfigMonitor mConfigMonitor;
     private OverlayMonitor mOverlayMonitor;
 
     @VisibleForTesting
@@ -203,7 +202,12 @@ public class InvariantDeviceProfile {
                 .putString(KEY_MIGRATION_SRC_WORKSPACE_SIZE, getPointString(numColumns, numRows))
                 .apply();
 
-        mConfigMonitor = new ConfigMonitor(context, this::onConfigChanged);
+        DisplayController.INSTANCE.get(context).addChangeListener(
+                (displayContext, info, flags) -> {
+                    if ((flags & (CHANGE_SIZE | CHANGE_DENSITY)) != 0) {
+                        onConfigChanged(displayContext);
+                    }
+                });
         mOverlayMonitor = new OverlayMonitor(context);
     }
 
@@ -222,12 +226,12 @@ public class InvariantDeviceProfile {
      */
     public InvariantDeviceProfile(Context context, Display display) {
         // Ensure that the main device profile is initialized
-        InvariantDeviceProfile originalProfile = INSTANCE.get(context);
+        INSTANCE.get(context);
         String gridName = getCurrentGridName(context);
 
         // Get the display info based on default display and interpolate it to existing display
         DisplayOption defaultDisplayOption = invDistWeightedInterpolate(
-                DisplayController.getDefaultDisplay(context).getInfo(),
+                DisplayController.INSTANCE.get(context).getInfo(),
                 getPredefinedDeviceProfiles(context, gridName));
 
         Info myInfo = new Info(context, display);
@@ -257,9 +261,6 @@ public class InvariantDeviceProfile {
         if (ENABLE_TWO_PANEL_HOME.get()) {
             return ENABLE_TWO_PANEL_HOME.key;
         }
-        if (ENABLE_FOUR_COLUMNS.get()) {
-            return ENABLE_FOUR_COLUMNS.key;
-        }
         return Utilities.isGridOptionsEnabled(context)
                 ? Utilities.getPrefs(context).getString(KEY_IDP_GRID_NAME, null) : null;
     }
@@ -276,7 +277,7 @@ public class InvariantDeviceProfile {
     }
 
     private String initGrid(Context context, String gridName) {
-        Info displayInfo = DisplayController.getDefaultDisplay(context).getInfo();
+        Info displayInfo = DisplayController.INSTANCE.get(context).getInfo();
         ArrayList<DisplayOption> allOptions = getPredefinedDeviceProfiles(context, gridName);
 
         DisplayOption displayOption = invDistWeightedInterpolate(displayInfo, allOptions);
@@ -286,6 +287,7 @@ public class InvariantDeviceProfile {
 
     private void initGrid(
             Context context, Info displayInfo, DisplayOption displayOption) {
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         GridOption closestProfile = displayOption.grid;
         numRows = closestProfile.numRows;
         numColumns = closestProfile.numColumns;
@@ -303,7 +305,7 @@ public class InvariantDeviceProfile {
         iconSize = displayOption.iconSize;
         iconShapePath = getIconShapePath(context);
         landscapeIconSize = displayOption.landscapeIconSize;
-        iconBitmapSize = ResourceUtils.pxFromDp(iconSize, displayInfo.metrics);
+        iconBitmapSize = ResourceUtils.pxFromDp(iconSize, metrics);
         iconTextSize = displayOption.iconTextSize;
         landscapeIconTextSize = displayOption.landscapeIconTextSize;
         fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
@@ -328,7 +330,7 @@ public class InvariantDeviceProfile {
 
         // If the partner customization apk contains any grid overrides, apply them
         // Supported overrides: numRows, numColumns, iconSize
-        applyPartnerDeviceProfileOverrides(context, displayInfo.metrics);
+        applyPartnerDeviceProfileOverrides(context, metrics);
 
         Point realSize = new Point(displayInfo.realSize);
         // The real size never changes. smallSide and largeSide will remain the
@@ -425,10 +427,6 @@ public class InvariantDeviceProfile {
     }
 
     private void apply(Context context, int changeFlags) {
-        // Create a new config monitor
-        mConfigMonitor.unregister();
-        mConfigMonitor = new ConfigMonitor(context, this::onConfigChanged);
-
         for (OnIDPChangeListener listener : mChangeListeners) {
             listener.onIdpChanged(changeFlags, this);
         }
@@ -530,10 +528,10 @@ public class InvariantDeviceProfile {
         Point largestSize = new Point(displayInfo.largestSize);
 
         // This guarantees that width < height
-        float width = Utilities.dpiFromPx(Math.min(smallestSize.x, smallestSize.y),
-                displayInfo.metrics);
-        float height = Utilities.dpiFromPx(Math.min(largestSize.x, largestSize.y),
-                displayInfo.metrics);
+        float width = Utilities.dpiFromPx((float) Math.min(smallestSize.x, smallestSize.y),
+                displayInfo.densityDpi);
+        float height = Utilities.dpiFromPx((float) Math.min(largestSize.x, largestSize.y),
+                displayInfo.densityDpi);
 
         // Sort the profiles based on the closeness to the device size
         Collections.sort(points, (a, b) ->

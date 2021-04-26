@@ -181,8 +181,8 @@ public class WidgetsDiffReporter {
         }
         if (newRow instanceof WidgetsListSearchHeaderEntry
                 && curRow instanceof WidgetsListSearchHeaderEntry) {
-            return ((WidgetsListSearchHeaderEntry) newRow).hasEntryUpdated()
-                    || !curRow.equals(newRow);
+            // Always refresh search header entries to reset rounded corners in their view holder.
+            return true;
         }
         return false;
     }

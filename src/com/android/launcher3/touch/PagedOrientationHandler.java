@@ -30,8 +30,6 @@ import android.view.accessibility.AccessibilityEvent;
 import android.widget.LinearLayout;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.PagedView;
-import com.android.launcher3.util.OverScroller;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
 
@@ -89,16 +87,19 @@ public interface PagedOrientationHandler {
     boolean getRecentsRtlSetting(Resources resources);
     float getDegreesRotated();
     int getRotation();
+
     <T> T getPrimaryValue(T x, T y);
     <T> T getSecondaryValue(T x, T y);
-    void delegateScrollTo(PagedView pagedView, int secondaryScroll, int primaryScroll);
-    /** Uses {@params pagedView}.getScroll[X|Y]() method for the secondary amount*/
-    void delegateScrollTo(PagedView pagedView, int primaryScroll);
-    void delegateScrollBy(PagedView pagedView, int unboundedScroll, int x, int y);
-    void scrollerStartScroll(OverScroller scroller, int newPosition);
+
+    int getPrimaryValue(int x, int y);
+    int getSecondaryValue(int x, int y);
+
+    float  getPrimaryValue(float x, float y);
+    float getSecondaryValue(float x, float y);
+
     boolean isLayoutNaturalToLauncher();
-    float getTaskMenuX(float x, View thumbnailView);
-    float getTaskMenuY(float y, View thumbnailView);
+    float getTaskMenuX(float x, View thumbnailView, int overScroll);
+    float getTaskMenuY(float y, View thumbnailView, int overScroll);
     int getTaskMenuWidth(View view);
     int getTaskMenuLayoutOrientation(boolean canRecentsActivityRotate, LinearLayout taskMenuLayout);
     void setLayoutParamsForTaskMenuOptionItem(LinearLayout.LayoutParams lp);

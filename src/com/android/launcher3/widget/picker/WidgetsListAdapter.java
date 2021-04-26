@@ -186,8 +186,10 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
      * Resets any expanded widget header.
      */
     public void resetExpandedHeader() {
-        mWidgetsContentVisiblePackageUserKey = null;
-        updateVisibleEntries();
+        if (mWidgetsContentVisiblePackageUserKey != null) {
+            mWidgetsContentVisiblePackageUserKey = null;
+            updateVisibleEntries();
+        }
     }
 
     @Override

@@ -115,7 +115,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Каб паказваліся значкі апавяшчэнняў, уключыце апавяшчэнні праграм для <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Змяніць налады"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Паказваць значкі апавяшчэнняў"</string>
-    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"Дадаць значкі праграм на Галоўны экран"</string>
+    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"Дадаваць значкі праграм на Галоўны экран"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Для новых праграм"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Невядома"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Выдаліць"</string>

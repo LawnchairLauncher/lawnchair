@@ -17,10 +17,11 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_TAP;
-import static com.android.launcher3.util.DisplayController.DisplayHolder.CHANGE_ROTATION;
+import static com.android.launcher3.util.DisplayController.CHANGE_ROTATION;
 
 import android.app.ActivityOptions;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.LauncherApps;
 import android.content.res.Configuration;
@@ -28,7 +29,6 @@ import android.graphics.Insets;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.os.Binder;
 import android.os.Bundle;
 import android.os.Process;
 import android.os.StrictMode;
@@ -92,7 +92,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
 
         mIsSafeModeEnabled = TraceHelper.allowIpcs("isSafeMode",
                 () -> getPackageManager().isSafeMode());
-        DisplayController.getDefaultDisplay(this).addChangeListener(this);
+        DisplayController.INSTANCE.get(this).addChangeListener(this);
 
         // Update theme
         WallpaperColorInfo.INSTANCE.get(this).addOnChangeListener(this);
@@ -166,7 +166,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
     }
 
     @NonNull
-    public ActivityOptionsWrapper getActivityLaunchOptions(View v) {
+    public ActivityOptionsWrapper getActivityLaunchOptions(View v, @Nullable ItemInfo item) {
         int left = 0, top = 0;
         int width = v.getMeasuredWidth(), height = v.getMeasuredHeight();
         if (v instanceof BubbleTextView) {
@@ -193,7 +193,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
             return false;
         }
 
-        Bundle optsBundle = (v != null) ? getActivityLaunchOptions(v).toBundle() : null;
+        Bundle optsBundle = (v != null) ? getActivityLaunchOptions(v, item).toBundle() : null;
         UserHandle user = item == null ? null : item.user;
 
         // Prepare intent
@@ -279,7 +279,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
     protected void onDestroy() {
         super.onDestroy();
         WallpaperColorInfo.INSTANCE.get(this).removeOnChangeListener(this);
-        DisplayController.getDefaultDisplay(this).removeChangeListener(this);
+        DisplayController.INSTANCE.get(this).removeChangeListener(this);
     }
 
     public void runOnceOnStart(Runnable action) {
@@ -297,7 +297,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
     }
 
     @Override
-    public void onDisplayInfoChanged(Info info, int flags) {
+    public void onDisplayInfoChanged(Context context, Info info, int flags) {
         if ((flags & CHANGE_ROTATION) != 0 && mDeviceProfile.updateIsSeascape(this)) {
             reapplyUi();
         }

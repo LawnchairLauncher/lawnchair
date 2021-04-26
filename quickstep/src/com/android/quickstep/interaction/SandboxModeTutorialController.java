@@ -17,8 +17,6 @@ package com.android.quickstep.interaction;
 
 import android.graphics.PointF;
 
-import androidx.annotation.Nullable;
-
 import com.android.launcher3.R;
 import com.android.quickstep.interaction.EdgeBackGestureHandler.BackGestureResult;
 import com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestureResult;
@@ -28,24 +26,6 @@ public class SandboxModeTutorialController extends SwipeUpGestureTutorialControl
 
     SandboxModeTutorialController(SandboxModeTutorialFragment fragment, TutorialType tutorialType) {
         super(fragment, tutorialType);
-    }
-
-    @Nullable
-    @Override
-    Integer getTitleStringId() {
-        return R.string.sandbox_mode_title;
-    }
-
-    @Nullable
-    @Override
-    Integer getSubtitleStringId() {
-        return R.string.sandbox_mode_subtitle;
-    }
-
-    @Nullable
-    @Override
-    Integer getActionButtonStringId() {
-        return null;
     }
 
     @Override
