@@ -16,7 +16,6 @@
 
 package com.android.launcher3;
 
-import static com.android.launcher3.graphics.IconShape.getShape;
 import static com.android.launcher3.graphics.PreloadIconDrawable.newPendingIcon;
 import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 
@@ -26,16 +25,13 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
-import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Process;
 import android.text.TextUtils.TruncateAt;
 import android.util.AttributeSet;
 import android.util.Property;
@@ -50,7 +46,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.folder.FolderIcon;
@@ -60,7 +55,6 @@ import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.icons.DotRenderer;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.IconCache.ItemInfoUpdateReceiver;
-import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.icons.PlaceHolderIconDrawable;
 import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.model.data.AppInfo;
@@ -96,11 +90,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     private final PointF mTranslationForReorderPreview = new PointF(0, 0);
 
     private float mScaleForReorderBounce = 1f;
-
-    protected final Paint mHighlightPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private final Path mHighlightPath = new Path();
-    protected int mHighlightColor = Color.TRANSPARENT;
-    private final BlurMaskFilter mHighlightShadowFilter;
 
     private static final Property<BubbleTextView, Float> DOT_SCALE_PROPERTY
             = new Property<BubbleTextView, Float>(Float.TYPE, "dotScale") {
@@ -220,10 +209,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         setEllipsize(TruncateAt.END);
         setAccessibilityDelegate(mActivity.getAccessibilityDelegate());
         setTextAlpha(1f);
-
-        int shadowSize = context.getResources().getDimensionPixelSize(
-                R.dimen.blur_size_click_shadow);
-        mHighlightShadowFilter = new BlurMaskFilter(shadowSize, BlurMaskFilter.Blur.INNER);
     }
 
     @Override
@@ -451,39 +436,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
 
     @Override
     public void onDraw(Canvas canvas) {
-        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get() && mHighlightColor != Color.TRANSPARENT) {
-            int count = canvas.save();
-            drawFocusHighlight(canvas);
-            canvas.restoreToCount(count);
-        }
         super.onDraw(canvas);
         drawDotIfNecessary(canvas);
-    }
-
-    protected void drawFocusHighlight(Canvas canvas) {
-        boolean isBadged = getTag() instanceof ItemInfo && !Process.myUserHandle().equals(
-                ((ItemInfo) getTag()).user);
-        float insetScale = (HIGHLIGHT_SCALE - 1) / 2;
-        canvas.translate(-getIconSize() * insetScale, -insetScale * getIconSize());
-        float outlineSize = getIconSize() * HIGHLIGHT_SCALE;
-        mHighlightPath.reset();
-        mHighlightPaint.reset();
-        getIconBounds(mDotParams.iconBounds);
-        getShape().addToPath(mHighlightPath, mDotParams.iconBounds.left, mDotParams.iconBounds.top,
-                outlineSize / 2);
-        if (isBadged) {
-            float borderSize = outlineSize - getIconSize();
-            float badgeSize = LauncherIcons.getBadgeSizeForIconSize(getIconSize()) + borderSize;
-            float badgeInset = outlineSize - badgeSize;
-            getShape().addToPath(mHighlightPath, mDotParams.iconBounds.left + badgeInset,
-                    mDotParams.iconBounds.top + badgeInset, badgeSize / 2);
-        }
-        mHighlightPaint.setMaskFilter(mHighlightShadowFilter);
-        mHighlightPaint.setColor(mDotParams.color);
-        canvas.drawPath(mHighlightPath, mHighlightPaint);
-        mHighlightPaint.setMaskFilter(null);
-        mHighlightPaint.setColor(mHighlightColor);
-        canvas.drawPath(mHighlightPath, mHighlightPaint);
     }
 
     /**
@@ -921,11 +875,9 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
 
     @Override
     public SafeCloseable prepareDrawDragView() {
-        int highlightColor = mHighlightColor;
-        mHighlightColor = Color.TRANSPARENT;
         resetIconScale();
         setForceHideDot(true);
-        return () -> mHighlightColor = highlightColor;
+        return () -> { };
     }
 
     private void resetIconScale() {
