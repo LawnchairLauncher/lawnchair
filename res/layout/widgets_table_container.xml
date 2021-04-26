@@ -18,6 +18,6 @@
     android:id="@+id/widgets_table"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="8dp"
+    android:layout_marginHorizontal="16dp"
     android:background="@drawable/widgets_list_middle_ripple"
     android:layout_marginBottom="@dimen/widget_list_entry_bottom_margin"/>
