@@ -17,9 +17,6 @@
 
 package com.android.launcher3.graphics;
 
-import static com.android.launcher3.graphics.IconShape.DEFAULT_PATH_SIZE;
-import static com.android.launcher3.graphics.IconShape.getShapePath;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
@@ -39,6 +36,7 @@ import android.view.ContextThemeWrapper;
 
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.icons.FastBitmapDrawable;
+import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.util.Themes;
 
@@ -62,6 +60,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
                 }
             };
 
+    private static final int DEFAULT_PATH_SIZE = 100;
     private static final float PROGRESS_WIDTH = 7;
     private static final float PROGRESS_GAP = 2;
     private static final int MAX_PAINT_ALPHA = 255;
@@ -132,7 +131,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
             boolean isDarkMode) {
         super(info.bitmap);
         mItem = info;
-        mShapePath = getShapePath();
+        mShapePath = GraphicsUtils.getShapePath(DEFAULT_PATH_SIZE);
         mScaledTrackPath = new Path();
         mScaledProgressPath = new Path();
 
