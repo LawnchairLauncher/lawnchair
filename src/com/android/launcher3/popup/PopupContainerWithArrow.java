@@ -46,6 +46,7 @@ import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.accessibility.ShortcutMenuAccessibilityDelegate;
@@ -60,10 +61,10 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.notification.NotificationInfo;
 import com.android.launcher3.notification.NotificationItemView;
 import com.android.launcher3.notification.NotificationKeyData;
-import com.android.launcher3.notification.NotificationMainView;
 import com.android.launcher3.popup.PopupDataProvider.PopupDataChangeListener;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
+import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.ShortcutUtil;
@@ -81,8 +82,8 @@ import java.util.stream.Collectors;
  *
  * @param <T> The activity on with the popup shows
  */
-public class PopupContainerWithArrow<T extends BaseDraggingActivity> extends ArrowPopup<T>
-        implements DragSource, DragController.DragListener {
+public class PopupContainerWithArrow<T extends StatefulActivity<LauncherState>>
+        extends ArrowPopup<T> implements DragSource, DragController.DragListener {
 
     private final List<DeepShortcutView> mShortcuts = new ArrayList<>();
     private final PointF mInterceptTouchDown = new PointF();
