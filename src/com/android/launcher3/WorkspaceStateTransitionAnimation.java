@@ -36,6 +36,7 @@ import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_SCA
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_TRANSLATE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_SCALE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_SCRIM_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_TRANSLATE;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_SCRIM;
 
@@ -164,6 +165,10 @@ public class WorkspaceStateTransitionAnimation {
         SysUiScrim sysUiScrim = mLauncher.getDragLayer().getSysUiScrim();
         propertySetter.setFloat(sysUiScrim, SYSUI_PROGRESS,
                 state.hasFlag(FLAG_HAS_SYS_UI_SCRIM) ? 1 : 0, LINEAR);
+
+        propertySetter.setViewAlpha(mLauncher.getScrimView(),
+                state.getWorkspaceScrimAlpha(mLauncher),
+                config.getInterpolator(ANIM_WORKSPACE_SCRIM_FADE, LINEAR));
     }
 
     public void applyChildState(LauncherState state, CellLayout cl, int childIndex) {
