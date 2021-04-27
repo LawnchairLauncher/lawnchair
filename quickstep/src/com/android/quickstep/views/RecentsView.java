@@ -1677,7 +1677,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         setRunningTaskHidden(false);
         animateUpRunningTaskIconScale();
 
-        if (!showAsGrid() || getFocusedTaskView() != null) {
+        if (mCurrentGestureEndTarget == GestureState.GestureEndTarget.RECENTS
+                && (!showAsGrid() || getFocusedTaskView() != null)) {
             animateActionsViewIn();
         }
 
@@ -2001,25 +2002,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
         AnimatorSet gridTranslationAnimatorSet = new AnimatorSet();
         gridTranslationAnimatorSet.playTogether(gridTranslationAnimators);
-        gridTranslationAnimatorSet.addListener(new AnimatorListenerAdapter() {
-            @Override
-            // Allow the actions view to display again once in focus mode
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                if (getFocusedTaskView() == null) {
-                    mActionsView.getScrollAlpha().setValue(1);
-                }
-            }
-
-            @Override
-            // Hide the actions view if not in focus mode
-            public void onAnimationStart(Animator animation) {
-                super.onAnimationStart(animation);
-                if (getFocusedTaskView() == null) {
-                    mActionsView.getScrollAlpha().setValue(0);
-                }
-            }
-        });
         gridTranslationAnimatorSet.start();
 
         // Use the accumulated translation of the row containing the last task.
@@ -2322,7 +2304,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                         snapToPageImmediately(pageToSnapTo);
                         // Grid got messed up, reapply.
                         updateGridProperties(taskView, draggedIndex - mTaskViewStartIndex);
-                        if (showAsGrid() && getFocusedTaskView() == null) {
+                        if (showAsGrid() && getFocusedTaskView() == null
+                                && mActionsView.getVisibilityAlpha().getValue() == 1) {
                             animateActionsViewOut();
                         }
                     }
