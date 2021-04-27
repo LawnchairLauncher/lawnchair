@@ -300,7 +300,9 @@ public class TouchInteractionService extends Service implements PluginListener<O
         // Everything else should be initialized in onUserUnlocked() below.
         mMainChoreographer = Choreographer.getInstance();
         mAM = ActivityManagerWrapper.getInstance();
-        mDeviceState = new RecentsAnimationDeviceState(this);
+        mDeviceState = new RecentsAnimationDeviceState(this, true);
+            Log.d(TestProtocol.NO_SWIPE_TO_HOME, "RADS OTT instance: " +
+                    mDeviceState.getRotationTouchHelper().getOrientationTouchTransformer());
         mRotationTouchHelper = mDeviceState.getRotationTouchHelper();
         mDeviceState.addNavigationModeChangedCallback(this::onNavigationModeChanged);
         mDeviceState.addOneHandedModeChangedCallback(this::onOneHandedModeOverlayChanged);
