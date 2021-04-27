@@ -102,7 +102,9 @@ import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.
 import com.android.systemui.shared.system.WindowManagerWrapper;
 import com.android.wm.shell.startingsurface.IStartingWindowListener;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * Manages the opening and closing app transitions from Launcher
@@ -485,32 +487,29 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             alpha.setInterpolator(LINEAR);
             launcherAnimator.play(alpha);
 
+            List<View> viewsToAnimate = new ArrayList<>();
+
             Workspace workspace = mLauncher.getWorkspace();
-            View currentPage = ((CellLayout) workspace.getChildAt(workspace.getCurrentPage()))
-                    .getShortcutsAndWidgets();
-            View hotseat = mLauncher.getHotseat();
-            View qsb = mLauncher.findViewById(R.id.search_container_all_apps);
+            workspace.getVisiblePages().forEach(
+                    view -> viewsToAnimate.add(((CellLayout) view).getShortcutsAndWidgets()));
 
-            currentPage.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-            hotseat.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-            qsb.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            viewsToAnimate.add(mLauncher.getHotseat());
+            // Add QSB
+            viewsToAnimate.add(mLauncher.findViewById(R.id.search_container_all_apps));
 
-            launcherAnimator.play(ObjectAnimator.ofFloat(currentPage, View.TRANSLATION_Y, trans));
-            launcherAnimator.play(ObjectAnimator.ofFloat(hotseat, View.TRANSLATION_Y, trans));
-            launcherAnimator.play(ObjectAnimator.ofFloat(qsb, View.TRANSLATION_Y, trans));
+            viewsToAnimate.forEach(view -> {
+                view.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+                launcherAnimator.play(ObjectAnimator.ofFloat(view, View.TRANSLATION_Y, trans));
+            });
 
             // Pause page indicator animations as they lead to layer trashing.
             mLauncher.getWorkspace().getPageIndicator().pauseAnimations();
 
             endListener = () -> {
-                currentPage.setTranslationY(0);
-                hotseat.setTranslationY(0);
-                qsb.setTranslationY(0);
-
-                currentPage.setLayerType(View.LAYER_TYPE_NONE, null);
-                hotseat.setLayerType(View.LAYER_TYPE_NONE, null);
-                qsb.setLayerType(View.LAYER_TYPE_NONE, null);
-
+                viewsToAnimate.forEach(view -> {
+                    view.setTranslationY(0);
+                    view.setLayerType(View.LAYER_TYPE_NONE, null);
+                });
                 mDragLayerAlpha.setValue(1f);
                 mLauncher.getWorkspace().getPageIndicator().skipAnimationsToEnd();
             };
