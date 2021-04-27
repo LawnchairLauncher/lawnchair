@@ -1597,8 +1597,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * {@link #onGestureAnimationStart} and {@link #onGestureAnimationEnd()}.
      */
     public void onSwipeUpAnimationSuccess() {
+        Log.d("b/186444448", "onSwipeUpAnimationSuccess");
         if (getRunningTaskView() != null) {
-            animateUpRunningTaskIconScale(0f);
+            animateUpRunningTaskIconScale();
         }
         setSwipeDownShouldLaunchApp(true);
     }
@@ -1661,6 +1662,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * Called when a gesture from an app has finished, and the animation to the target has ended.
      */
     public void onGestureAnimationEnd() {
+        Log.d("b/186444448", "onGestureEnd");
         mGestureActive = false;
         if (mOrientationState.setGestureActive(false)) {
             updateOrientationHandler();
@@ -1815,15 +1817,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     public void animateUpRunningTaskIconScale() {
-        animateUpRunningTaskIconScale(0);
-    }
-
-    public void animateUpRunningTaskIconScale(float startProgress) {
         mRunningTaskIconScaledDown = false;
         TaskView firstTask = getRunningTaskView();
+        Log.d("b/186444448", "animateUpRunningTaskIconScale: firstTask="
+                + (firstTask != null ? "t:" + firstTask.getTask() : null));
         if (firstTask != null) {
+            firstTask.setIconScaleAnimStartProgress(0f);
             firstTask.animateIconScaleAndDimIntoView();
-            firstTask.setIconScaleAnimStartProgress(startProgress);
         }
     }
 
