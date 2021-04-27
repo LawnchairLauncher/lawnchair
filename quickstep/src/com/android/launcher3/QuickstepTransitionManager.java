@@ -79,6 +79,7 @@ import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.views.FloatingIconView;
+import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.quickstep.RemoteAnimationTargets;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskViewUtils;
@@ -86,6 +87,7 @@ import com.android.quickstep.util.MultiValueUpdateListener;
 import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.util.StaggeredWorkspaceAnim;
 import com.android.quickstep.util.SurfaceTransactionApplier;
+import com.android.quickstep.views.FloatingWidgetView;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.ActivityCompat;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
@@ -159,6 +161,9 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     protected static final int CONTENT_TRANSLATION_DURATION = 350;
 
     private static final int MAX_NUM_TASKS = 5;
+
+    // Cross-fade duration between App Widget and App
+    private static final int WIDGET_CROSSFADE_DURATION_MILLIS = 125;
 
     protected final BaseQuickstepLauncher mLauncher;
 
@@ -347,6 +352,29 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 }
             });
         }
+    }
+
+    private void composeWidgetLaunchAnimator(
+            @NonNull AnimatorSet anim,
+            @NonNull LauncherAppWidgetHostView v,
+            @NonNull RemoteAnimationTargetCompat[] appTargets,
+            @NonNull RemoteAnimationTargetCompat[] wallpaperTargets,
+            @NonNull RemoteAnimationTargetCompat[] nonAppTargets) {
+        mLauncher.getStateManager().setCurrentAnimation(anim);
+
+        Rect windowTargetBounds = getWindowTargetBounds(appTargets, getRotationChange(appTargets));
+        anim.play(getOpeningWindowAnimatorsForWidget(v, appTargets, wallpaperTargets, nonAppTargets,
+                windowTargetBounds, areAllTargetsTranslucent(appTargets)));
+
+        anim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                mLauncher.addOnResumeCallback(() ->
+                        ObjectAnimator.ofFloat(mLauncher.getDepthController(), DEPTH,
+                                mLauncher.getStateManager().getState().getDepth(
+                                        mLauncher)).start());
+            }
+        });
     }
 
     /**
@@ -737,6 +765,112 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             }
         });
 
+        animatorSet.playTogether(appAnimator, getBackgroundAnimator(appTargets));
+        return animatorSet;
+    }
+
+    private Animator getOpeningWindowAnimatorsForWidget(LauncherAppWidgetHostView v,
+            RemoteAnimationTargetCompat[] appTargets,
+            RemoteAnimationTargetCompat[] wallpaperTargets,
+            RemoteAnimationTargetCompat[] nonAppTargets, Rect windowTargetBounds,
+            boolean appTargetsAreTranslucent) {
+        final RectF widgetBackgroundBounds = new RectF();
+        final Rect appWindowCrop = new Rect();
+        final Matrix matrix = new Matrix();
+
+        final float finalWindowRadius = mDeviceProfile.isMultiWindowMode
+                ? 0 : getWindowCornerRadius(mLauncher.getResources());
+        final FloatingWidgetView floatingView = FloatingWidgetView.getFloatingWidgetView(mLauncher,
+                v, widgetBackgroundBounds, windowTargetBounds, finalWindowRadius);
+        final float initialWindowRadius = supportsRoundedCornersOnWindows(mLauncher.getResources())
+                ? floatingView.getInitialCornerRadius() : 0;
+
+        RemoteAnimationTargets openingTargets = new RemoteAnimationTargets(appTargets,
+                wallpaperTargets, nonAppTargets, MODE_OPENING);
+        SurfaceTransactionApplier surfaceApplier = new SurfaceTransactionApplier(floatingView);
+        openingTargets.addReleaseCheck(surfaceApplier);
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        ValueAnimator appAnimator = ValueAnimator.ofFloat(0, 1);
+        appAnimator.setDuration(APP_LAUNCH_DURATION);
+        appAnimator.setInterpolator(LINEAR);
+        appAnimator.addListener(floatingView);
+        appAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                openingTargets.release();
+            }
+        });
+        floatingView.setFastFinishRunnable(animatorSet::end);
+
+        appAnimator.addUpdateListener(new MultiValueUpdateListener() {
+            float mAppWindowScale = 1;
+            final FloatProp mWidgetForegroundAlpha = new FloatProp(1 /* start */,
+                    0 /* end */, 0 /* delay */,
+                    WIDGET_CROSSFADE_DURATION_MILLIS / 2 /* duration */, LINEAR);
+            final FloatProp mWidgetFallbackBackgroundAlpha = new FloatProp(0 /* start */,
+                    1 /* end */, 0 /* delay */, 75 /* duration */, LINEAR);
+            final FloatProp mPreviewAlpha = new FloatProp(0 /* start */, 1 /* end */,
+                    WIDGET_CROSSFADE_DURATION_MILLIS / 2 /* delay */,
+                    WIDGET_CROSSFADE_DURATION_MILLIS / 2 /* duration */, LINEAR);
+            final FloatProp mWindowRadius = new FloatProp(initialWindowRadius, finalWindowRadius,
+                    0 /* start */, RADIUS_DURATION, LINEAR);
+            final FloatProp mCornerRadiusProgress = new FloatProp(0, 1, 0, RADIUS_DURATION, LINEAR);
+
+            // Window & widget background positioning bounds
+            final FloatProp mDx = new FloatProp(widgetBackgroundBounds.centerX(),
+                    windowTargetBounds.centerX(), 0 /* delay */, APP_LAUNCH_CURVED_DURATION,
+                    EXAGGERATED_EASE);
+            final FloatProp mDy = new FloatProp(widgetBackgroundBounds.centerY(),
+                    windowTargetBounds.centerY(), 0 /* delay */, APP_LAUNCH_DURATION,
+                    EXAGGERATED_EASE);
+            final FloatProp mWidth = new FloatProp(widgetBackgroundBounds.width(),
+                    windowTargetBounds.width(), 0 /* delay */, APP_LAUNCH_DURATION,
+                    EXAGGERATED_EASE);
+            final FloatProp mHeight = new FloatProp(widgetBackgroundBounds.height(),
+                    windowTargetBounds.height(), 0 /* delay */, APP_LAUNCH_DURATION,
+                    EXAGGERATED_EASE);
+
+            @Override
+            public void onUpdate(float percent) {
+                widgetBackgroundBounds.set(mDx.value - mWidth.value / 2f,
+                        mDy.value - mHeight.value / 2f, mDx.value + mWidth.value / 2f,
+                        mDy.value + mHeight.value / 2f);
+                // Set app window scaling factor to match widget background width
+                mAppWindowScale = widgetBackgroundBounds.width() / windowTargetBounds.width();
+                // Crop scaled app window to match widget
+                appWindowCrop.set(0 /* left */, 0 /* top */,
+                        Math.round(windowTargetBounds.width()) /* right */,
+                        Math.round(widgetBackgroundBounds.height() / mAppWindowScale) /* bottom */);
+                matrix.setTranslate(widgetBackgroundBounds.left, widgetBackgroundBounds.top);
+                matrix.postScale(mAppWindowScale, mAppWindowScale, widgetBackgroundBounds.left,
+                        widgetBackgroundBounds.top);
+
+                SurfaceParams[] params = new SurfaceParams[appTargets.length];
+                float floatingViewAlpha = appTargetsAreTranslucent ? 1 - mPreviewAlpha.value : 1;
+                for (int i = appTargets.length - 1; i >= 0; i--) {
+                    RemoteAnimationTargetCompat target = appTargets[i];
+                    SurfaceParams.Builder builder = new SurfaceParams.Builder(target.leash);
+                    if (target.mode == MODE_OPENING) {
+                        floatingView.update(widgetBackgroundBounds, floatingViewAlpha,
+                                mWidgetForegroundAlpha.value, mWidgetFallbackBackgroundAlpha.value,
+                                mCornerRadiusProgress.value);
+                        builder.withMatrix(matrix)
+                                .withWindowCrop(appWindowCrop)
+                                .withAlpha(mPreviewAlpha.value)
+                                .withCornerRadius(mWindowRadius.value / mAppWindowScale);
+                    }
+                    params[i] = builder.build();
+                }
+                surfaceApplier.scheduleApply(params);
+            }
+        });
+
+        animatorSet.playTogether(appAnimator, getBackgroundAnimator(appTargets));
+        return animatorSet;
+    }
+
+    private ObjectAnimator getBackgroundAnimator(RemoteAnimationTargetCompat[] appTargets) {
         // When launching an app from overview that doesn't map to a task, we still want to just
         // blur the wallpaper instead of the launcher surface as well
         boolean allowBlurringLauncher = mLauncher.getStateManager().getState() != OVERVIEW;
@@ -754,9 +888,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 }
             });
         }
-
-        animatorSet.playTogether(appAnimator, backgroundRadiusAnim);
-        return animatorSet;
+        return backgroundRadiusAnim;
     }
 
     /**
@@ -1120,9 +1252,13 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             boolean launcherClosing =
                     launcherIsATargetWithMode(appTargets, MODE_CLOSING);
 
+            final boolean launchingFromWidget = mV instanceof LauncherAppWidgetHostView;
             final boolean launchingFromRecents = isLaunchingFromRecents(mV, appTargets);
             final boolean launchingFromTaskbar = mLauncher.isViewInTaskbar(mV);
-            if (launchingFromRecents) {
+            if (launchingFromWidget) {
+                composeWidgetLaunchAnimator(anim, (LauncherAppWidgetHostView) mV, appTargets,
+                        wallpaperTargets, nonAppTargets);
+            } else if (launchingFromRecents) {
                 composeRecentsLaunchAnimator(anim, mV, appTargets, wallpaperTargets, nonAppTargets,
                         launcherClosing);
             } else if (launchingFromTaskbar) {
