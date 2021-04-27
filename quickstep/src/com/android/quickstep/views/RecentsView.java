@@ -1277,23 +1277,20 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
 
         float accumulatedTranslationX = 0;
-        float[] fullscreenTranslations = new float[taskCount];
         for (int i = 0; i < taskCount; i++) {
             TaskView taskView = getTaskViewAt(i);
             taskView.updateTaskSize();
-            fullscreenTranslations[i] += accumulatedTranslationX;
+            taskView.getPrimaryFullscreenTranslationProperty().set(taskView,
+                    accumulatedTranslationX);
+            taskView.getSecondaryFullscreenTranslationProperty().set(taskView, 0f);
             // Compensate space caused by TaskView scaling.
             float widthDiff =
                     taskView.getLayoutParams().width * (1 - taskView.getFullscreenScale());
             // Compensate page spacing widening caused by RecentsView scaling.
             widthDiff += mPageSpacing * (1 - 1 / mFullscreenScale);
-            float fullscreenTranslationX = mIsRtl ? widthDiff : -widthDiff;
-            accumulatedTranslationX += fullscreenTranslationX;
+            accumulatedTranslationX += mIsRtl ? widthDiff : -widthDiff;
         }
 
-        for (int i = 0; i < taskCount; i++) {
-            getTaskViewAt(i).setFullscreenTranslationX(fullscreenTranslations[i]);
-        }
         mClearAllButton.setFullscreenTranslationPrimary(accumulatedTranslationX);
 
         updateGridProperties();
@@ -1998,7 +1995,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 gridTranslationAnimators.add(taskDismissAnimator);
             }
             taskView.setGridTranslationX(gridTranslations[i] - snappedTaskGridTranslationX);
-            taskView.setNonFullscreenTranslationX(snappedTaskFullscreenScrollAdjustment);
+            taskView.getPrimaryNonFullscreenTranslationProperty().set(taskView,
+                    snappedTaskFullscreenScrollAdjustment);
+            taskView.getSecondaryNonFullscreenTranslationProperty().set(taskView, 0f);
         }
         AnimatorSet gridTranslationAnimatorSet = new AnimatorSet();
         gridTranslationAnimatorSet.playTogether(gridTranslationAnimators);
