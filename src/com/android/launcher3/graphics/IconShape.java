@@ -37,20 +37,14 @@ import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.SparseArray;
-import android.util.TypedValue;
 import android.util.Xml;
 import android.view.View;
 import android.view.ViewOutlineProvider;
-
-import androidx.annotation.Nullable;
 
 import com.android.launcher3.R;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.icons.IconNormalizer;
-import com.android.launcher3.util.IntArray;
-import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ClipPathView;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -66,29 +60,15 @@ import java.util.List;
 public abstract class IconShape {
 
     private static IconShape sInstance = new Circle();
-    private static Path sShapePath;
     private static float sNormalizationScale = ICON_VISIBLE_AREA_FACTOR;
-
-    public static final int DEFAULT_PATH_SIZE = 100;
 
     public static IconShape getShape() {
         return sInstance;
     }
 
-    public static Path getShapePath() {
-        if (sShapePath == null) {
-            Path p = new Path();
-            getShape().addToPath(p, 0, 0, DEFAULT_PATH_SIZE * 0.5f);
-            sShapePath = p;
-        }
-        return sShapePath;
-    }
-
     public static float getNormalizationScale() {
         return sNormalizationScale;
     }
-
-    private SparseArray<TypedValue> mAttrs;
 
     public boolean enableShapeDetection(){
         return false;
@@ -101,11 +81,6 @@ public abstract class IconShape {
 
     public abstract <T extends View & ClipPathView> Animator createRevealAnimator(T target,
             Rect startRect, Rect endRect, float endRadius, boolean isReversed);
-
-    @Nullable
-    public TypedValue getAttrValue(int attr) {
-        return mAttrs == null ? null : mAttrs.get(attr);
-    }
 
     /**
      * Abstract shape where the reveal animation is a derivative of a round rect animation
@@ -410,7 +385,6 @@ public abstract class IconShape {
 
             final int depth = parser.getDepth();
             int[] radiusAttr = new int[] {R.attr.folderIconRadius};
-            IntArray keysToIgnore = new IntArray(0);
 
             while (((type = parser.next()) != XmlPullParser.END_TAG ||
                     parser.getDepth() > depth) && type != XmlPullParser.END_DOCUMENT) {
@@ -421,7 +395,6 @@ public abstract class IconShape {
                     IconShape shape = getShapeDefinition(parser.getName(), a.getFloat(0, 1));
                     a.recycle();
 
-                    shape.mAttrs = Themes.createValueMap(context, attrs, keysToIgnore);
                     result.add(shape);
                 }
             }
@@ -467,8 +440,6 @@ public abstract class IconShape {
         }
 
         // Initialize shape properties
-        drawable.setBounds(0, 0, DEFAULT_PATH_SIZE, DEFAULT_PATH_SIZE);
-        sShapePath = new Path(drawable.getIconMask());
         sNormalizationScale = IconNormalizer.normalizeAdaptiveIcon(drawable, size, null);
     }
 }
