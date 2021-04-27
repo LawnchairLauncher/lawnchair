@@ -21,6 +21,7 @@ import static com.android.launcher3.util.DisplayController.CHANGE_ROTATION;
 
 import android.app.ActivityOptions;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.LauncherApps;
 import android.content.res.Configuration;
@@ -296,7 +297,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
     }
 
     @Override
-    public void onDisplayInfoChanged(Info info, int flags) {
+    public void onDisplayInfoChanged(Context context, Info info, int flags) {
         if ((flags & CHANGE_ROTATION) != 0 && mDeviceProfile.updateIsSeascape(this)) {
             reapplyUi();
         }
