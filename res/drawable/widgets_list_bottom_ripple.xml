@@ -30,7 +30,7 @@
     </item>
     <item android:id="@android:id/background">
         <shape android:shape="rectangle">
-            <solid android:color="?android:attr/colorBackground" />
+            <solid android:color="@color/widgets_picker_surface" />
             <corners
                 android:topLeftRadius="@dimen/widget_list_content_corner_radius"
                 android:topRightRadius="@dimen/widget_list_content_corner_radius"

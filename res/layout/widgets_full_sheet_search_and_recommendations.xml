@@ -20,7 +20,8 @@
     android:layout_height="wrap_content"
     android:paddingHorizontal="16dp"
     android:layout_marginBottom="16dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:clipToPadding="false">
     <View
         android:id="@+id/collapse_handle"
         android:layout_width="48dp"
@@ -44,6 +45,8 @@
         android:id="@+id/recommended_widget_table"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/widgets_recommendation_background"
+        android:paddingVertical="8dp"
         android:layout_marginTop="16dp"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 </LinearLayout>
