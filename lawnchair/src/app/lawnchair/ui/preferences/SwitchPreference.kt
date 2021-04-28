@@ -16,6 +16,7 @@
 
 package app.lawnchair.ui.preferences
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -37,10 +38,11 @@ fun SwitchPreference(
     PreferenceTemplate(height = if (description != null) 72.dp else 52.dp, showDivider = showDivider) {
         Row(
             modifier = Modifier
+                .clickable { onCheckedChange(!checked) }
                 .fillMaxHeight()
                 .fillMaxWidth()
                 .padding(start = 16.dp, end = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(

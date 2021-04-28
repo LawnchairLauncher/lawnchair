@@ -9,7 +9,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.0-rc01'
+        classpath 'com.android.tools.build:gradle:7.0.0-alpha14'
         classpath PROTOBUF_CLASS_PATH
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.android.gms:oss-licenses-plugin:0.10.4'
