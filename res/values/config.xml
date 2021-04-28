@@ -1,7 +1,6 @@
 <resources>
     <!-- Miscellaneous -->
     <bool name="config_largeHeap">false</bool>
-    <bool name="allow_rotation">false</bool>
 
     <integer name="extracted_color_gradient_alpha">153</integer>
 
