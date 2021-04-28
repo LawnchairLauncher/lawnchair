@@ -179,7 +179,10 @@ public class FolderAnimationManager {
                 Math.round((totalOffsetX + initialSize)),
                 Math.round((paddingOffsetY + initialSize)));
         Rect endRect = new Rect(0, 0, lp.width, lp.height);
-        float finalRadius = ResourceUtils.pxFromDp(2, mContext.getResources().getDisplayMetrics());
+        float finalRadius = mContext.getResources().getDimension(R.dimen.bg_round_rect_radius);
+        if (Utilities.ATLEAST_P) {
+            finalRadius = Themes.getDimension(mContext, android.R.attr.dialogCornerRadius, finalRadius);
+        }
 
         // Create the animators.
         AnimatorSet a = new AnimatorSet();
