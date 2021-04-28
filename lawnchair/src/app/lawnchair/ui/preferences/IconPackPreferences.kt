@@ -22,8 +22,6 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -46,11 +44,7 @@ fun IconPackPreferences(interactor: PreferenceInteractor) {
     val iconPacks = interactor.getIconPacks().values.toList()
     val iconPackPackage = preferenceManager().iconPackPackage.getAdapter()
 
-    Column(
-        modifier = Modifier
-            .fillMaxHeight()
-            .verticalScroll(rememberScrollState())
-    ) {
+    PreferenceLayout {
         PreferenceGroup(isFirstChild = true) {
             // TODO: Use `LazyColumn` if possible.
             Column(Modifier.fillMaxWidth()) {

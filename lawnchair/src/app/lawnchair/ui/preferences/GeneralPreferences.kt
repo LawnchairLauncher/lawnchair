@@ -18,12 +18,7 @@ package app.lawnchair.ui.preferences
 
 import android.os.Build
 import androidx.compose.animation.*
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import app.lawnchair.util.preferences.*
@@ -33,11 +28,7 @@ import com.android.launcher3.R
 @Composable
 fun GeneralPreferences(navController: NavController, interactor: PreferenceInteractor) {
     val prefs = preferenceManager()
-    Column(
-        modifier = Modifier
-            .fillMaxHeight()
-            .verticalScroll(rememberScrollState())
-    ) {
+    PreferenceLayout {
         PreferenceGroup(isFirstChild = true) {
             SwitchPreference(
                 adapter = prefs.allowRotation.getAdapter(),

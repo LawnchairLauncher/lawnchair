@@ -17,12 +17,7 @@
 package app.lawnchair.ui.preferences
 
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import app.lawnchair.util.preferences.getAdapter
 import app.lawnchair.util.preferences.preferenceManager
@@ -31,11 +26,7 @@ import com.android.launcher3.R
 @ExperimentalAnimationApi
 @Composable
 fun FolderPreferences(interactor: PreferenceInteractor) {
-    Column(
-        modifier = Modifier
-            .fillMaxHeight()
-            .verticalScroll(rememberScrollState())
-    ) {
+    PreferenceLayout {
         val prefs = preferenceManager()
         PreferenceGroup(heading = stringResource(id = R.string.grid), isFirstChild = true) {
             SliderPreference(
