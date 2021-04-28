@@ -16,6 +16,7 @@
 
 package app.lawnchair.ui.preferences
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -23,6 +24,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -37,10 +39,11 @@ fun SwitchPreference(
     PreferenceTemplate(height = if (description != null) 72.dp else 52.dp, showDivider = showDivider) {
         Row(
             modifier = Modifier
+                .clickable { onCheckedChange(!checked) }
                 .fillMaxHeight()
                 .fillMaxWidth()
                 .padding(start = 16.dp, end = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
