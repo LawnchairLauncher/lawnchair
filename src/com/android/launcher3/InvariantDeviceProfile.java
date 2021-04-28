@@ -30,7 +30,6 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -64,7 +63,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import app.lawnchair.util.preferences.LawnchairPreferences;
+import app.lawnchair.util.preferences.PreferenceManager;
 
 public class InvariantDeviceProfile {
 
@@ -311,16 +310,15 @@ public class InvariantDeviceProfile {
         defaultWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(context, cn, null);
 
         // Lawnchair prefs
-        SharedPreferences prefs = LawnchairPreferences.Companion.getInstance(context);
-        if (prefs == null) return;
+        PreferenceManager prefs = PreferenceManager.getInstance(context);
 
         // Lawnchair grid sizes
-        numHotseatIcons = Math.round(prefs.getFloat(LawnchairPreferences.HOTSEAT_COLUMNS, numHotseatIcons));
-        numRows = Math.round(prefs.getFloat(LawnchairPreferences.WORKSPACE_ROWS, numRows));
-        numColumns = Math.round(prefs.getFloat(LawnchairPreferences.WORKSPACE_COLUMNS, numColumns));
-        numAllAppsColumns = Math.round(prefs.getFloat(LawnchairPreferences.ALL_APPS_COLUMNS, numAllAppsColumns));
-        numFolderRows = Math.round(prefs.getFloat(LawnchairPreferences.FOLDER_ROWS, numFolderRows));
-        numFolderColumns = Math.round(prefs.getFloat(LawnchairPreferences.FOLDER_COLUMNS, numFolderColumns));
+        numHotseatIcons = prefs.getHotseatColumns().get(this);
+        numRows = prefs.getWorkspaceRows().get(this);
+        numColumns = prefs.getWorkspaceColumns().get(this);
+        numAllAppsColumns = prefs.getAllAppsColumns().get(this);
+        numFolderRows = prefs.getFolderRows().get(this);
+        numFolderColumns = prefs.getFolderColumns().get(this);
     }
 
     public void reInitGrid() {

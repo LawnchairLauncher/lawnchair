@@ -18,28 +18,67 @@ package app.lawnchair.util.preferences
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
+import app.lawnchair.LawnchairLauncher
+import app.lawnchair.LawnchairLauncherQuickstep
+import com.android.launcher3.BuildConfig
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.Utilities
+import com.android.launcher3.util.MainThreadInitializedObject
 
-class PreferenceManager(context: Context) {
-    val sp: SharedPreferences = Utilities.getPrefs(context)
-    private val lp = LawnchairPreferences
-    private val idp = LauncherAppState.getIDP(context)
-    var iconPackPackage by StringPreferenceDelegate(lp.ICON_PACK_PACKAGE, "")
-    var allowRotation by BooleanPreferenceDelegate("pref_allowRotation", true)
-    var wrapAdaptiveIcons by BooleanPreferenceDelegate(lp.WRAP_ADAPTIVE_ICONS, false)
-    var addIconToHome by BooleanPreferenceDelegate("pref_add_icon_to_home", true)
-    var hotseatColumns by FloatPreferenceDelegate(lp.HOTSEAT_COLUMNS, idp.numHotseatIcons.toFloat())
-    var workspaceColumns by FloatPreferenceDelegate(lp.WORKSPACE_COLUMNS, idp.numColumns.toFloat())
-    var workspaceRows by FloatPreferenceDelegate(lp.WORKSPACE_ROWS, idp.numRows.toFloat())
-    var folderColumns by FloatPreferenceDelegate(lp.FOLDER_COLUMNS, idp.numFolderColumns.toFloat())
-    var folderRows by FloatPreferenceDelegate(lp.FOLDER_ROWS, idp.numFolderRows.toFloat())
-    var iconSizeFactor by FloatPreferenceDelegate(lp.ICON_SIZE_FACTOR, 1F)
-    var textSizeFactor by FloatPreferenceDelegate(lp.TEXT_SIZE_FACTOR, 1F)
-    var allAppsIconSizeFactor by FloatPreferenceDelegate(lp.ALL_APPS_ICON_SIZE_FACTOR, 1F)
-    var allAppsTextSizeFactor by FloatPreferenceDelegate(lp.ALL_APPS_TEXT_SIZE_FACTOR, 1F)
-    var allAppsColumns by FloatPreferenceDelegate(lp.ALL_APPS_COLUMNS, idp.numAllAppsColumns.toFloat())
-    var allowEmptyPages by BooleanPreferenceDelegate(lp.ALLOW_EMPTY_PAGES, false)
-    var drawerOpacity by FloatPreferenceDelegate(lp.DRAWER_OPACITY, 1F)
-    var coloredBackgroundLightness by FloatPreferenceDelegate(lp.COLORED_BACKGROUND_LIGHTNESS, 0.9F)
+class PreferenceManager private constructor(context: Context) : BasePreferenceManager(context) {
+    private val reloadIcons = {
+        val model = LauncherAppState.getInstance(context).model
+        model.clearIconCache()
+        model.forceReload()
+    }
+    private val scheduleRestart = {
+        if (BuildConfig.FLAVOR_recents == "withQuickstep") {
+            LawnchairLauncherQuickstep.getLauncher(context).scheduleRestart()
+        } else {
+            LawnchairLauncher.getLauncher(context).scheduleRestart()
+        }
+    }
+    private val reloadGrid = scheduleRestart
+
+    val iconPackPackage = StringPref("pref_iconPackPackage", "", reloadIcons)
+    val allowRotation = BoolPref("pref_allowRotation", true)
+    val wrapAdaptiveIcons = BoolPref("prefs_wrapAdaptive", false, reloadIcons)
+    val addIconToHome = BoolPref("pref_add_icon_to_home", true)
+    val hotseatColumns = IdpIntPref("pref_hotseatColumns", { numHotseatIcons }, reloadGrid)
+    val workspaceColumns = IdpIntPref("pref_workspaceColumns", { numColumns }, reloadGrid)
+    val workspaceRows = IdpIntPref("pref_workspaceRows", { numRows }, reloadGrid)
+    val folderColumns = IdpIntPref("pref_folderColumns", { numFolderColumns }, reloadGrid)
+    val folderRows = IdpIntPref("pref_folderRows", { numFolderRows }, reloadGrid)
+    val iconSizeFactor = FloatPref("pref_iconSizeFactor", 1F, scheduleRestart)
+    val textSizeFactor = FloatPref("pref_textSizeFactor", 1F, scheduleRestart)
+    val allAppsIconSizeFactor = FloatPref("pref_allAppsIconSizeFactor", 1F, scheduleRestart)
+    val allAppsTextSizeFactor = FloatPref("pref_allAppsTextSizeFactor", 1F, scheduleRestart)
+    val allAppsColumns = IdpIntPref("pref_allAppsColumns", { numAllAppsColumns }, reloadGrid)
+
+    // TODO: Add the ability to manually delete empty pages.
+    val allowEmptyPages = BoolPref("pref_allowEmptyPages", false)
+    val drawerOpacity = FloatPref("pref_drawerOpacity", 1F) {
+        LauncherAppState.getInstance(context).launcher.scrimView.refreshScrimAlpha(context)
+    }
+    val coloredBackgroundLightness = FloatPref("pref_coloredBackgroundLightness", 0.9F, reloadIcons)
+    val feedProvider = StringPref("pref_feedProvider", "")
+    val ignoreFeedWhitelist = BoolPref("pref_ignoreFeedWhitelist", false)
+
+    init {
+        sp.registerOnSharedPreferenceChangeListener(this)
+    }
+
+    companion object {
+        val INSTANCE = MainThreadInitializedObject(::PreferenceManager)
+
+        @JvmStatic
+        fun getInstance(context: Context) = INSTANCE.get(context)!!
+    }
+}
+
+@Composable
+fun preferenceManager(): PreferenceManager {
+    return PreferenceManager.getInstance(LocalContext.current)
 }

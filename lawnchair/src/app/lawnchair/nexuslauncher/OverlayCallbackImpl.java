@@ -1,7 +1,6 @@
 package app.lawnchair.nexuslauncher;
 
 import static android.content.pm.ApplicationInfo.FLAG_SYSTEM;
-import static app.lawnchair.util.preferences.LawnchairPreferences.ENABLE_MINUS_ONE;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -19,7 +18,6 @@ import com.google.android.libraries.launcherclient.LauncherClientCallbacks;
 import com.google.android.libraries.launcherclient.StaticInteger;
 
 import app.lawnchair.FeedBridge;
-import app.lawnchair.util.preferences.LawnchairPreferences;
 
 /**
  * Implements {@link LauncherOverlay} and passes all the corresponding events to {@link
@@ -32,6 +30,8 @@ public class OverlayCallbackImpl
         implements LauncherOverlay, LauncherClientCallbacks, LauncherOverlayManager,
         OnSharedPreferenceChangeListener, ISerializableScrollCallback {
 
+    // TODO: migrate to PreferenceManager
+    final static String ENABLE_MINUS_ONE = "pref_enableMinusOne";
     final static String PREF_PERSIST_FLAGS = "pref_persistent_flags";
 
     private final Launcher mLauncher;
@@ -47,7 +47,7 @@ public class OverlayCallbackImpl
 
         mLauncher = launcher;
         mClient = new LauncherClient(mLauncher, this, new StaticInteger(
-                (prefs.getBoolean(LawnchairPreferences.ENABLE_MINUS_ONE,
+                (prefs.getBoolean(ENABLE_MINUS_ONE,
                         minusOneAvailable()) ? 1 : 0) | 2 | 4 | 8));
         prefs.registerOnSharedPreferenceChangeListener(this);
     }

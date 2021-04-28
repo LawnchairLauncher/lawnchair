@@ -136,9 +136,9 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                 for (int i = 0; i < N; i++) {
                     FileLog.d(TAG, "Removing app icon" + packages[i]);
                     iconCache.removeIconsForPkg(packages[i], mUser);
-                    PreferenceManager pm = new PreferenceManager(context);
-                    if (packages[i].equals(pm.getIconPackPackage())) {
-                        pm.setIconPackPackage("");
+                    PreferenceManager pm = PreferenceManager.getInstance(context);
+                    if (packages[i].equals(pm.getIconPackPackage().get())) {
+                        pm.getIconPackPackage().set("");
                     };
                 }
                 // Fall through

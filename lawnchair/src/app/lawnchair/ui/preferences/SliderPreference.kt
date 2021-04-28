@@ -23,14 +23,14 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import app.lawnchair.util.preferences.PreferenceAdapter
 import app.lawnchair.util.round
 import kotlin.math.roundToInt
 
 @Composable
 fun SliderPreference(
     label: String,
-    value: Float,
-    onValueChange: (Float) -> Unit,
+    adapter: PreferenceAdapter<Float>,
     valueRange: ClosedFloatingPointRange<Float>,
     steps: Int,
     showAsPercentage: Boolean = false,
@@ -53,17 +53,17 @@ fun SliderPreference(
                 ) {
                     Text(
                         text = if (showAsPercentage) {
-                            "${(value.round(1) * 100).toInt()}%"
+                            "${(adapter.state.value.round(1) * 100).toInt()}%"
                         } else {
-                            "${value.roundToInt()}"
+                            "${adapter.state.value.roundToInt()}"
                         }
                     )
                 }
             }
             Spacer(modifier = Modifier.requiredHeight(2.dp))
             Slider(
-                value = value,
-                onValueChange = onValueChange,
+                value = adapter.state.value,
+                onValueChange = adapter::onChange,
                 valueRange = valueRange,
                 steps = steps,
                 modifier = Modifier

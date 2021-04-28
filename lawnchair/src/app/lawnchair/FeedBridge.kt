@@ -25,7 +25,7 @@ import android.os.Process
 import android.util.Log
 import app.lawnchair.util.SingletonHolder
 import app.lawnchair.util.ensureOnMainThread
-import app.lawnchair.util.preferences.LawnchairPreferences
+import app.lawnchair.util.preferences.PreferenceManager
 import app.lawnchair.util.useApplicationContext
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
@@ -34,7 +34,7 @@ import com.android.launcher3.Utilities
 class FeedBridge(private val context: Context) {
 
     private val shouldUseFeed = context.applicationInfo.flags and FLAG_SYSTEM == 0
-    private val prefs = LawnchairPreferences.getInstance(context)
+    private val prefs = PreferenceManager.getInstance(context)
     private val bridgePackages by lazy {
         listOf(
             PixelBridgeInfo("com.google.android.apps.nexuslauncher", R.integer.bridge_signature_hash),
@@ -51,10 +51,15 @@ class FeedBridge(private val context: Context) {
         }
     }
 
-    private fun customBridgeOrNull() = if (prefs!!.getString(LawnchairPreferences.FEED_PROVIDER, "")!!.isNotBlank()) {
-        val bridge = CustomBridgeInfo(prefs.getString(LawnchairPreferences.FEED_PROVIDER, "")!!)
-        if (bridge.isAvailable()) bridge else null
-    } else null
+    private fun customBridgeOrNull(): CustomBridgeInfo? {
+        val feedProvider = prefs.feedProvider.get()
+        return if (feedProvider.isNotBlank()) {
+            val bridge = CustomBridgeInfo(feedProvider)
+            if (bridge.isAvailable()) bridge else null
+        } else {
+            null
+        }
+    }
 
     private fun customBridgeAvailable() = customBridgeOrNull()?.isAvailable() == true
 
@@ -114,7 +119,7 @@ class FeedBridge(private val context: Context) {
 
     private inner class CustomBridgeInfo(packageName: String) : BridgeInfo(packageName, 0) {
         override val signatureHash = whitelist[packageName]?.toInt() ?: -1
-        private val disableWhitelist = prefs!!.getBoolean(LawnchairPreferences.IGNORE_FEED_WHITELIST, false)
+        private val disableWhitelist = prefs.ignoreFeedWhitelist.get()
         override fun isSigned(): Boolean {
             if (signatureHash == -1 && Utilities.ATLEAST_P) {
                 val info = context.packageManager

@@ -55,7 +55,7 @@ import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
 import com.android.quickstep.util.LayoutUtils;
 
-import app.lawnchair.util.preferences.LawnchairPreferences;
+import app.lawnchair.util.preferences.PreferenceManager;
 
 /**
  * Scrim used for all-apps and shelf in Overview
@@ -325,9 +325,8 @@ public class ShelfScrimView extends ScrimView<BaseQuickstepLauncher>
 
     @Override
     public void refreshScrimAlpha(Context context) {
-        SharedPreferences prefs = LawnchairPreferences.Companion.getInstance(context);
-        if (prefs == null) return;
-        mEndAlpha = (int) (prefs.getFloat(LawnchairPreferences.DRAWER_OPACITY, 1F) * 255);
+        PreferenceManager prefs = PreferenceManager.getInstance(context);
+        mEndAlpha = (int) (prefs.getDrawerOpacity().get() * 255);
     }
 
     @Override

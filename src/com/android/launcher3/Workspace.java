@@ -120,7 +120,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.function.Predicate;
 
-import app.lawnchair.util.preferences.LawnchairPreferences;
+import app.lawnchair.util.preferences.BasePreferenceManager;
+import app.lawnchair.util.preferences.PreferenceManager;
 
 /**
  * The workspace is a wide area with a wallpaper and a finite number of pages.
@@ -261,7 +262,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     private final StatsLogManager mStatsLogManager;
 
     // Lawnchair: Create boolean to indicate if empty pages are allowed.
-    Boolean emptyScreensAllowed;
+    BasePreferenceManager.BoolPref emptyScreensAllowed;
 
     /**
      * Used to inflate the Workspace from XML.
@@ -298,10 +299,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         mStatsLogManager = StatsLogManager.newInstance(context);
 
         // Lawnchair: Get instance of `SharedPreferences`, assign value to `emptyScreensAllowed`.
-        SharedPreferences prefs = LawnchairPreferences.Companion.getInstance(getContext());
-        if (prefs != null) {
-            emptyScreensAllowed = prefs.getBoolean(LawnchairPreferences.ALLOW_EMPTY_PAGES, false);
-        }
+        PreferenceManager prefs = PreferenceManager.getInstance(getContext());
+        emptyScreensAllowed = prefs.getAllowEmptyPages();
     }
 
     @Override
@@ -637,7 +636,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         if (hasExtraEmptyScreen() || mScreenOrder.size() == 0) return;
 
         // Lawnchair: Stop execution if empty pages are allowed.
-        if (emptyScreensAllowed) {
+        if (emptyScreensAllowed.get()) {
             return;
         }
 
@@ -762,7 +761,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
 
         // Lawnchair: Stop execution if empty pages are allowed.
-        if (emptyScreensAllowed) {
+        if (emptyScreensAllowed.get()) {
             return;
         }
 

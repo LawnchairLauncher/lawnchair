@@ -22,8 +22,6 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -34,6 +32,8 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
+import app.lawnchair.util.preferences.getAdapter
+import app.lawnchair.util.preferences.preferenceManager
 import com.android.launcher3.R
 
 data class IconPackInfo(val name: String, val packageName: String, val icon: Drawable)
@@ -42,20 +42,17 @@ data class IconPackInfo(val name: String, val packageName: String, val icon: Dra
 @Composable
 fun IconPackPreferences(interactor: PreferenceInteractor) {
     val iconPacks = interactor.getIconPacks().values.toList()
+    val iconPackPackage = preferenceManager().iconPackPackage.getAdapter()
 
-    Column(
-        modifier = Modifier
-            .fillMaxHeight()
-            .verticalScroll(rememberScrollState())
-    ) {
+    PreferenceLayout {
         PreferenceGroup(isFirstChild = true) {
             // TODO: Use `LazyColumn` if possible.
             Column(Modifier.fillMaxWidth()) {
                 iconPacks.forEach { iconPack ->
                     IconPackListItem(
                         iconPack,
-                        interactor.iconPackPackage.value,
-                        onSelectionChange = { interactor.setIconPackPackage(it) },
+                        iconPackPackage.state.value,
+                        onSelectionChange = iconPackPackage::onChange,
                         showDivider = iconPacks.last().packageName != iconPack.packageName
                     )
                 }

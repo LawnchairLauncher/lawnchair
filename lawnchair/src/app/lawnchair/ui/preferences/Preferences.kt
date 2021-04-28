@@ -128,11 +128,11 @@ fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel
         TopBar(navController = navController)
         NavHost(navController = navController, startDestination = "preferences") {
             composable(route = Routes.PREFERENCES) { PreferenceCategoryList(navController) }
-            composable(route = Routes.HOME_SCREEN) { HomeScreenPreferences(interactor = interactor) }
+            composable(route = Routes.HOME_SCREEN) { HomeScreenPreferences() }
             composable(route = Routes.ICON_PACK) { IconPackPreferences(interactor = interactor) }
-            composable(route = Routes.DOCK) { DockPreferences(interactor = interactor) }
-            composable(route = Routes.APP_DRAWER) { AppDrawerPreferences(interactor = interactor) }
-            composable(route = Routes.FOLDERS) { FolderPreferences(interactor = interactor) }
+            composable(route = Routes.DOCK) { DockPreferences() }
+            composable(route = Routes.APP_DRAWER) { AppDrawerPreferences() }
+            composable(route = Routes.FOLDERS) { FolderPreferences() }
             composable(route = Routes.ABOUT) { About() }
             composable(route = Routes.GENERAL) {
                 GeneralPreferences(
