@@ -162,7 +162,7 @@ public class WorkspaceStateTransitionAnimation {
         propertySetter.setFloat(workspaceDragScrim, SCRIM_PROGRESS,
                 state.getWorkspaceBackgroundAlpha(mLauncher), LINEAR);
 
-        SysUiScrim sysUiScrim = mLauncher.getDragLayer().getSysUiScrim();
+        SysUiScrim sysUiScrim = mLauncher.getRootView().getSysUiScrim();
         propertySetter.setFloat(sysUiScrim, SYSUI_PROGRESS,
                 state.hasFlag(FLAG_HAS_SYS_UI_SCRIM) ? 1 : 0, LINEAR);
 
