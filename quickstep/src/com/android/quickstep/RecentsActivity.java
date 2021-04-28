@@ -59,7 +59,9 @@ import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.util.ActivityTracker;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.SystemUiController;
+import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BaseDragLayer;
+import com.android.launcher3.views.ScrimView;
 import com.android.quickstep.fallback.FallbackRecentsStateController;
 import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.fallback.RecentsDragLayer;
@@ -89,6 +91,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
     private Handler mUiHandler = new Handler(Looper.getMainLooper());
 
     private RecentsDragLayer mDragLayer;
+    private ScrimView mScrimView;
     private FallbackRecentsView mFallbackRecentsView;
     private OverviewActionsView mActionsView;
 
@@ -106,6 +109,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
         inflateRootView(R.layout.fallback_recents_activity);
         setContentView(getRootView());
         mDragLayer = findViewById(R.id.drag_layer);
+        mScrimView = findViewById(R.id.scrim_view);
         mFallbackRecentsView = findViewById(R.id.overview_panel);
         mActionsView = findViewById(R.id.overview_actions_view);
 
@@ -162,6 +166,10 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
     @Override
     public BaseDragLayer getDragLayer() {
         return mDragLayer;
+    }
+
+    public ScrimView getScrimView() {
+        return mScrimView;
     }
 
     @Override
@@ -269,7 +277,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
         setupViews();
 
         getSystemUiController().updateUiState(SystemUiController.UI_STATE_BASE_WINDOW,
-                mFallbackRecentsView.hasLightBackground());
+                Themes.getAttrBoolean(this, R.attr.isWorkspaceDarkText));
         ACTIVITY_TRACKER.handleCreate(this);
     }
 
