@@ -24,11 +24,14 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import app.lawnchair.util.preferences.getAdapter
+import app.lawnchair.util.preferences.preferenceManager
 import com.android.launcher3.R
 
 @ExperimentalAnimationApi
 @Composable
 fun AppDrawerPreferences(interactor: PreferenceInteractor) {
+    val prefs = preferenceManager()
     Column(
         modifier = Modifier
             .fillMaxHeight()
@@ -37,8 +40,7 @@ fun AppDrawerPreferences(interactor: PreferenceInteractor) {
         PreferenceGroup(heading = stringResource(id = R.string.general_label), isFirstChild = true) {
             SliderPreference(
                 label = stringResource(id = R.string.background_opacity),
-                value = interactor.drawerOpacity.value,
-                onValueChange = { interactor.setDrawerOpacity(it) },
+                adapter = prefs.drawerOpacity.getAdapter(),
                 steps = 2,
                 valueRange = 0.7F..1F,
                 showDivider = false,
@@ -48,8 +50,7 @@ fun AppDrawerPreferences(interactor: PreferenceInteractor) {
         PreferenceGroup(heading = stringResource(id = R.string.grid)) {
             SliderPreference(
                 label = stringResource(id = R.string.app_drawer_columns),
-                value = interactor.allAppsColumns.value,
-                onValueChange = { interactor.setAllAppsColumns(it) },
+                adapter = prefs.allAppsColumns.getAdapter(),
                 steps = 3,
                 valueRange = 3.0F..7.0F,
                 showDivider = false
@@ -58,16 +59,14 @@ fun AppDrawerPreferences(interactor: PreferenceInteractor) {
         PreferenceGroup(heading = stringResource(id = R.string.icons)) {
             SliderPreference(
                 label = stringResource(id = R.string.icon_size),
-                value = interactor.allAppsIconSizeFactor.value,
-                onValueChange = { interactor.setAllAppsIconSizeFactor(it) },
+                adapter = prefs.allAppsIconSizeFactor.getAdapter(),
                 steps = 9,
                 valueRange = 0.5F..1.5F,
                 showAsPercentage = true
             )
             SliderPreference(
                 label = stringResource(id = R.string.label_size),
-                value = interactor.allAppsTextSizeFactor.value,
-                onValueChange = { interactor.setAllAppsTextSizeFactor(it) },
+                adapter = prefs.allAppsTextSizeFactor.getAdapter(),
                 steps = 9,
                 valueRange = 0.5F..1.5F,
                 showAsPercentage = true,

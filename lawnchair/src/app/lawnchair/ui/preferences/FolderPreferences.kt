@@ -24,6 +24,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import app.lawnchair.util.preferences.getAdapter
+import app.lawnchair.util.preferences.preferenceManager
 import com.android.launcher3.R
 
 @ExperimentalAnimationApi
@@ -34,18 +36,17 @@ fun FolderPreferences(interactor: PreferenceInteractor) {
             .fillMaxHeight()
             .verticalScroll(rememberScrollState())
     ) {
+        val prefs = preferenceManager()
         PreferenceGroup(heading = stringResource(id = R.string.grid), isFirstChild = true) {
             SliderPreference(
                 label = stringResource(id = R.string.max_folder_columns),
-                value = interactor.folderColumns.value,
-                onValueChange = { interactor.setFolderColumns(it) },
+                adapter = prefs.folderColumns.getAdapter(),
                 steps = 2,
                 valueRange = 2.0F..5.0F
             )
             SliderPreference(
                 label = stringResource(id = R.string.max_folder_rows),
-                value = interactor.folderRows.value,
-                onValueChange = { interactor.setFolderRows(it) },
+                adapter = prefs.folderRows.getAdapter(),
                 steps = 2,
                 valueRange = 2.0F..5.0F,
                 showDivider = false

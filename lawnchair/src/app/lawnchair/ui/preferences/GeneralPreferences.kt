@@ -26,11 +26,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
+import app.lawnchair.util.preferences.*
 import com.android.launcher3.R
 
 @ExperimentalAnimationApi
 @Composable
 fun GeneralPreferences(navController: NavController, interactor: PreferenceInteractor) {
+    val prefs = preferenceManager()
     Column(
         modifier = Modifier
             .fillMaxHeight()
@@ -38,8 +40,7 @@ fun GeneralPreferences(navController: NavController, interactor: PreferenceInter
     ) {
         PreferenceGroup(isFirstChild = true) {
             SwitchPreference(
-                checked = interactor.allowRotation.value,
-                onCheckedChange = { interactor.setAllowRotation(it) },
+                adapter = prefs.allowRotation.getAdapter(),
                 label = stringResource(id = R.string.home_screen_rotation_label),
                 description = stringResource(id = R.string.home_screen_rotaton_description)
             )
@@ -52,27 +53,26 @@ fun GeneralPreferences(navController: NavController, interactor: PreferenceInter
             )
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val wrapAdaptiveIcons = prefs.wrapAdaptiveIcons.observeAsState()
             PreferenceGroup(
                 heading = stringResource(id = R.string.adaptive_icons),
                 description = stringResource(id = (R.string.adaptive_icon_background_description)),
-                showDescription = interactor.wrapAdaptiveIcons.value
+                showDescription = wrapAdaptiveIcons.value
             ) {
                 SwitchPreference(
-                    checked = interactor.wrapAdaptiveIcons.value,
-                    onCheckedChange = { interactor.setWrapAdaptiveIcons(it) },
+                    adapter = prefs.wrapAdaptiveIcons.getAdapter(),
                     label = stringResource(id = R.string.make_icon_packs_adaptive_label),
                     description = stringResource(id = R.string.make_icon_packs_adaptive_description),
-                    showDivider = interactor.wrapAdaptiveIcons.value
+                    showDivider = wrapAdaptiveIcons.value
                 )
                 AnimatedVisibility(
-                    visible = interactor.wrapAdaptiveIcons.value,
+                    visible = wrapAdaptiveIcons.value,
                     enter = expandVertically() + fadeIn(),
                     exit = shrinkVertically() + fadeOut()
                 ) {
                     SliderPreference(
                         label = stringResource(id = R.string.background_lightness_label),
-                        value = interactor.coloredBackgroundLightness.value,
-                        onValueChange = { interactor.setColoredBackgroundLightness(it) },
+                        adapter = prefs.coloredBackgroundLightness.getAdapter(),
                         valueRange = 0F..1F,
                         steps = 9,
                         showAsPercentage = true,

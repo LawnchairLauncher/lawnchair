@@ -24,6 +24,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import app.lawnchair.util.preferences.getAdapter
+import app.lawnchair.util.preferences.preferenceManager
 import com.android.launcher3.R
 
 @ExperimentalAnimationApi
@@ -37,8 +39,7 @@ fun DockPreferences(interactor: PreferenceInteractor) {
         PreferenceGroup(heading = stringResource(id = R.string.grid), isFirstChild = true) {
             SliderPreference(
                 label = stringResource(id = R.string.dock_icons),
-                value = interactor.hotseatColumns.value,
-                onValueChange = { interactor.setHotseatColumns(it) },
+                adapter = preferenceManager().hotseatColumns.getAdapter(),
                 steps = 3,
                 valueRange = 3.0F..7.0F,
                 showDivider = false

@@ -25,11 +25,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import app.lawnchair.util.preferences.PreferenceAdapter
 
 @Composable
 fun SwitchPreference(
-    checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit,
+    adapter: PreferenceAdapter<Boolean>,
     label: String,
     description: String? = null,
     showDivider: Boolean = true
@@ -38,7 +38,7 @@ fun SwitchPreference(
     PreferenceTemplate(height = if (description != null) 72.dp else 52.dp, showDivider = showDivider) {
         Row(
             modifier = Modifier
-                .clickable { onCheckedChange(!checked) }
+                .clickable { adapter.onChange(!adapter.state.value) }
                 .fillMaxHeight()
                 .fillMaxWidth()
                 .padding(start = 16.dp, end = 16.dp),
@@ -68,8 +68,8 @@ fun SwitchPreference(
             }
             Spacer(modifier = Modifier.requiredWidth(16.dp))
             Switch(
-                checked = checked,
-                onCheckedChange = onCheckedChange,
+                checked = adapter.state.value,
+                onCheckedChange = adapter::onChange,
                 colors = SwitchDefaults.colors(checkedThumbColor = MaterialTheme.colors.primary)
             )
         }

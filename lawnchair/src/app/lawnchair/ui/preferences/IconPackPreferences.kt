@@ -34,6 +34,8 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
+import app.lawnchair.util.preferences.getAdapter
+import app.lawnchair.util.preferences.preferenceManager
 import com.android.launcher3.R
 
 data class IconPackInfo(val name: String, val packageName: String, val icon: Drawable)
@@ -42,6 +44,7 @@ data class IconPackInfo(val name: String, val packageName: String, val icon: Dra
 @Composable
 fun IconPackPreferences(interactor: PreferenceInteractor) {
     val iconPacks = interactor.getIconPacks().values.toList()
+    val iconPackPackage = preferenceManager().iconPackPackage.getAdapter()
 
     Column(
         modifier = Modifier
@@ -54,8 +57,8 @@ fun IconPackPreferences(interactor: PreferenceInteractor) {
                 iconPacks.forEach { iconPack ->
                     IconPackListItem(
                         iconPack,
-                        interactor.iconPackPackage.value,
-                        onSelectionChange = { interactor.setIconPackPackage(it) },
+                        iconPackPackage.state.value,
+                        onSelectionChange = iconPackPackage::onChange,
                         showDivider = iconPacks.last().packageName != iconPack.packageName
                     )
                 }
