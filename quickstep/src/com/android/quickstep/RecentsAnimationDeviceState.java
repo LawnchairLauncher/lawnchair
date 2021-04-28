@@ -54,6 +54,7 @@ import android.os.UserManager;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.Surface;
 
@@ -61,6 +62,7 @@ import androidx.annotation.BinderThread;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.DisplayInfoChangeListener;
 import com.android.launcher3.util.DisplayController.Info;
@@ -127,14 +129,27 @@ public class RecentsAnimationDeviceState implements
     private boolean mIsUserSetupComplete;
 
     public RecentsAnimationDeviceState(Context context) {
+        this(context, false);
+    }
+
+    /**
+     * @param isInstanceForTouches {@code true} if this is the persistent instance being used for
+     *                                   gesture touch handling
+     */
+    public RecentsAnimationDeviceState(Context context, boolean isInstanceForTouches) {
         mContext = context;
         mDisplayController = DisplayController.INSTANCE.get(context);
         mSysUiNavMode = SysUINavigationMode.INSTANCE.get(context);
         mDisplayId = mDisplayController.getInfo().id;
         mIsOneHandedModeSupported = SystemProperties.getBoolean(SUPPORT_ONE_HANDED_MODE, false);
         runOnDestroy(() -> mDisplayController.removeChangeListener(this));
-        mRotationTouchHelper = new RotationTouchHelper(context, mDisplayController);
-        runOnDestroy(mRotationTouchHelper::destroy);
+        mRotationTouchHelper = RotationTouchHelper.INSTANCE.get(context);
+        if (isInstanceForTouches) {
+            // rotationTouchHelper doesn't get initialized after being destroyed, so only destroy
+            // if primary TouchInteractionService instance needs to be destroyed.
+            mRotationTouchHelper.init();
+            runOnDestroy(mRotationTouchHelper::destroy);
+        }
 
         // Register for user unlocked if necessary
         mIsUserUnlocked = context.getSystemService(UserManager.class)
@@ -214,6 +229,7 @@ public class RecentsAnimationDeviceState implements
      * Cleans up all the registered listeners and receivers.
      */
     public void destroy() {
+        Log.d(TestProtocol.NO_SWIPE_TO_HOME, "destroying RADS", new Throwable());
         for (Runnable r : mOnDestroyActions) {
             r.run();
         }

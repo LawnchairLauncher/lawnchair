@@ -72,6 +72,8 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
 
     // Maintains a list of widget ids which are supposed to be auto advanced.
     private static final SparseBooleanArray sAutoAdvanceWidgetIds = new SparseBooleanArray();
+    // Maximum duration for which updates can be deferred.
+    private static final long UPDATE_LOCK_TIMEOUT_MILLIS = 1000;
 
     protected final LayoutInflater mInflater;
 
@@ -110,6 +112,9 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
             }
         }
     };
+    private final Object mUpdateLock = new Object();
+    private long mDeferUpdatesUntilMillis = 0;
+    private RemoteViews mMostRecentRemoteViews;
 
     public LauncherAppWidgetHostView(Context context) {
         super(context);
@@ -165,6 +170,11 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
 
     @Override
     public void updateAppWidget(RemoteViews remoteViews) {
+        synchronized (mUpdateLock) {
+            mMostRecentRemoteViews = remoteViews;
+            if (SystemClock.uptimeMillis() < mDeferUpdatesUntilMillis) return;
+        }
+
         super.updateAppWidget(remoteViews);
 
         // The provider info or the views might have changed.
@@ -196,6 +206,34 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
             }
         }
         return false;
+    }
+
+    /**
+     * Begin deferring the application of any {@link RemoteViews} updates made through
+     * {@link #updateAppWidget(RemoteViews)} until {@link #endDeferringUpdates()} has been called or
+     * the next {@link #updateAppWidget(RemoteViews)} call after {@link #UPDATE_LOCK_TIMEOUT_MILLIS}
+     * have elapsed.
+     */
+    public void beginDeferringUpdates() {
+        synchronized (mUpdateLock) {
+            mDeferUpdatesUntilMillis = SystemClock.uptimeMillis() + UPDATE_LOCK_TIMEOUT_MILLIS;
+        }
+    }
+
+    /**
+     * Stop deferring the application of {@link RemoteViews} updates made through
+     * {@link #updateAppWidget(RemoteViews)} and apply the most recently received update.
+     */
+    public void endDeferringUpdates() {
+        RemoteViews remoteViews;
+        synchronized (mUpdateLock) {
+            mDeferUpdatesUntilMillis = 0;
+            remoteViews = mMostRecentRemoteViews;
+            mMostRecentRemoteViews = null;
+        }
+        if (remoteViews != null) {
+            updateAppWidget(remoteViews);
+        }
     }
 
     public boolean onInterceptTouchEvent(MotionEvent ev) {
