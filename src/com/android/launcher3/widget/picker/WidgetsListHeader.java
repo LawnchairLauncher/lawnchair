@@ -19,7 +19,10 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.util.AttributeSet;
+import android.view.View;
+import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -94,6 +97,32 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
         mTitle = findViewById(R.id.app_title);
         mSubtitle = findViewById(R.id.app_subtitle);
         mExpandToggle = findViewById(R.id.toggle);
+        findViewById(R.id.app_container).setAccessibilityDelegate(new AccessibilityDelegate() {
+
+            @Override
+            public void onInitializeAccessibilityNodeInfo(View host, AccessibilityNodeInfo info) {
+                if (mIsExpanded) {
+                    info.removeAction(AccessibilityNodeInfo.ACTION_EXPAND);
+                    info.addAction(AccessibilityNodeInfo.ACTION_COLLAPSE);
+                } else {
+                    info.removeAction(AccessibilityNodeInfo.ACTION_COLLAPSE);
+                    info.addAction(AccessibilityNodeInfo.ACTION_EXPAND);
+                }
+                super.onInitializeAccessibilityNodeInfo(host, info);
+            }
+
+            @Override
+            public boolean performAccessibilityAction(View host, int action, Bundle args) {
+                switch (action) {
+                    case AccessibilityNodeInfo.ACTION_EXPAND:
+                    case AccessibilityNodeInfo.ACTION_COLLAPSE:
+                        callOnClick();
+                        return true;
+                    default:
+                        return super.performAccessibilityAction(host, action, args);
+                }
+            }
+        });
     }
 
     /**
@@ -106,7 +135,9 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
         // Use the entire touch area of this view to expand / collapse an app widgets section.
         setOnClickListener(view -> {
             setExpanded(!mIsExpanded);
-            onExpandChangeListener.onExpansionChange(mIsExpanded);
+            if (onExpandChangeListener != null) {
+                onExpandChangeListener.onExpansionChange(mIsExpanded);
+            }
         });
     }
 
