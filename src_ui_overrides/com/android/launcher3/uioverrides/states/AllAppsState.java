@@ -23,6 +23,7 @@ import android.content.Context;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
+import com.android.launcher3.util.Themes;
 
 /**
  * Definition for AllApps state
@@ -76,7 +77,7 @@ public class AllAppsState extends LauncherState {
     }
 
     @Override
-    public float getWorkspaceScrimAlpha(Launcher launcher) {
-        return 1;
+    public int getWorkspaceScrimColor(Launcher launcher) {
+        return Themes.getAttrColor(launcher, R.attr.allAppsScrimColor);
     }
 }
