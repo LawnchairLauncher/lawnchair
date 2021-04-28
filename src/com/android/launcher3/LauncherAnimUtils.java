@@ -19,6 +19,8 @@ package com.android.launcher3;
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorListenerAdapter;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.FloatProperty;
 import android.util.IntProperty;
@@ -134,6 +136,22 @@ public class LauncherAnimUtils {
                             return view.getAlpha();
                         }
                     };
+
+    public static final IntProperty<View> VIEW_BACKGROUND_COLOR =
+            new IntProperty<View>("backgroundColor") {
+                @Override
+                public void setValue(View view, int color) {
+                    view.setBackgroundColor(color);
+                }
+
+                @Override
+                public Integer get(View view) {
+                    if (!(view.getBackground() instanceof ColorDrawable)) {
+                        return Color.TRANSPARENT;
+                    }
+                    return ((ColorDrawable) view.getBackground()).getColor();
+                }
+            };
 
     /**
      * Utility method to create an {@link AnimatorListener} which executes a callback on animation

@@ -166,8 +166,9 @@ public class WorkspaceStateTransitionAnimation {
         propertySetter.setFloat(sysUiScrim, SYSUI_PROGRESS,
                 state.hasFlag(FLAG_HAS_SYS_UI_SCRIM) ? 1 : 0, LINEAR);
 
-        propertySetter.setViewAlpha(mLauncher.getScrimView(),
-                state.getWorkspaceScrimAlpha(mLauncher),
+
+        propertySetter.setViewBackgroundColor(mLauncher.getScrimView(),
+                state.getWorkspaceScrimColor(mLauncher),
                 config.getInterpolator(ANIM_WORKSPACE_SCRIM_FADE, LINEAR));
     }
 
