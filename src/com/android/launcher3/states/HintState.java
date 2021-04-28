@@ -19,8 +19,12 @@ import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 
 import android.content.Context;
 
+import androidx.core.graphics.ColorUtils;
+
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.R;
+import com.android.launcher3.util.Themes;
 
 /**
  * Scale down workspace/hotseat to hint at going to either overview (on pause) or first home screen.
@@ -49,8 +53,9 @@ public class HintState extends LauncherState {
     }
 
     @Override
-    public float getWorkspaceScrimAlpha(Launcher launcher) {
-        return 0.4f;
+    public int getWorkspaceScrimColor(Launcher launcher) {
+        return ColorUtils.setAlphaComponent(
+                Themes.getAttrColor(launcher, R.attr.overviewScrimColor), 100);
     }
 
     @Override
