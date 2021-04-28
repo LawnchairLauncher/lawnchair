@@ -41,13 +41,11 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DropTargetBar;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherRootView;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.graphics.Scrim;
-import com.android.launcher3.graphics.SysUiScrim;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.views.BaseDragLayer;
@@ -84,8 +82,6 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     // Related to adjacent page hints
     private final ViewGroupFocusHelper mFocusIndicatorHelper;
     private Scrim mWorkspaceDragScrim;
-    private SysUiScrim mSysUiScrim;
-    private LauncherRootView mRootView;
 
     /**
      * Used to create a new DragLayer from XML.
@@ -107,12 +103,6 @@ public class DragLayer extends BaseDragLayer<Launcher> {
         mDragController = dragController;
         recreateControllers();
         mWorkspaceDragScrim = new Scrim(this);
-
-        // We delegate drawing of the workspace scrim to LauncherRootView (one level up), so as
-        // to avoid artifacts when translating the entire drag layer in the -1 transition.
-        mRootView = (LauncherRootView) getParent();
-        mSysUiScrim = new SysUiScrim(mRootView);
-        mRootView.setSysUiScrim(mSysUiScrim);
     }
 
     @Override
@@ -526,23 +516,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
         super.dispatchDraw(canvas);
     }
 
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-        mSysUiScrim.setSize(w, h);
-    }
-
-    @Override
-    public void setInsets(Rect insets) {
-        super.setInsets(insets);
-        mSysUiScrim.onInsetsChanged(insets, mAllowSysuiScrims);
-    }
-
     public Scrim getWorkspaceDragScrim() {
         return mWorkspaceDragScrim;
-    }
-
-    public SysUiScrim getSysUiScrim() {
-        return mSysUiScrim;
     }
 }

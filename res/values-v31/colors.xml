@@ -32,4 +32,7 @@
     <color name="text_color_primary_dark">@android:color/system_neutral1_50</color>
     <color name="text_color_secondary_dark">@android:color/system_neutral2_200</color>
     <color name="text_color_tertiary_dark">@android:color/system_neutral2_400</color>
+
+    <color name="wallpaper_popup_scrim">@android:color/system_neutral1_900</color>
+
 </resources>
