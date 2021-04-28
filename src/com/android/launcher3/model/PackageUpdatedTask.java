@@ -12,6 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * Modifications copyright 2021, Lawnchair
  */
 package com.android.launcher3.model;
 
@@ -56,6 +58,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+
+import app.lawnchair.util.preferences.PreferenceManager;
 
 /**
  * Handles updates due to changes in package manager (app installed/updated/removed)
@@ -132,6 +136,10 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                 for (int i = 0; i < N; i++) {
                     FileLog.d(TAG, "Removing app icon" + packages[i]);
                     iconCache.removeIconsForPkg(packages[i], mUser);
+                    PreferenceManager pm = new PreferenceManager(context);
+                    if (packages[i].equals(pm.getIconPackPackage())) {
+                        pm.setIconPackPackage("");
+                    };
                 }
                 // Fall through
             }
