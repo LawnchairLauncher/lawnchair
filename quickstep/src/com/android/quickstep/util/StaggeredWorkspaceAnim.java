@@ -140,7 +140,7 @@ public class StaggeredWorkspaceAnim {
 
         addDepthAnimationForState(launcher, NORMAL, DURATION_MS);
 
-        mAnimators.play(launcher.getDragLayer().getSysUiScrim().createSysuiMultiplierAnim(0f, 1f)
+        mAnimators.play(launcher.getRootView().getSysUiScrim().createSysuiMultiplierAnim(0f, 1f)
                 .setDuration(DURATION_MS));
         mAnimators.addListener(new AnimatorListenerAdapter() {
             @Override
