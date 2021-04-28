@@ -300,7 +300,9 @@ public class TouchInteractionService extends Service implements PluginListener<O
         // Everything else should be initialized in onUserUnlocked() below.
         mMainChoreographer = Choreographer.getInstance();
         mAM = ActivityManagerWrapper.getInstance();
-        mDeviceState = new RecentsAnimationDeviceState(this);
+        mDeviceState = new RecentsAnimationDeviceState(this, true);
+            Log.d(TestProtocol.NO_SWIPE_TO_HOME, "RADS OTT instance: " +
+                    mDeviceState.getRotationTouchHelper().getOrientationTouchTransformer());
         mRotationTouchHelper = mDeviceState.getRotationTouchHelper();
         mDeviceState.addNavigationModeChangedCallback(this::onNavigationModeChanged);
         mDeviceState.addOneHandedModeChangedCallback(this::onOneHandedModeOverlayChanged);
@@ -515,8 +517,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
             }
             mRotationTouchHelper.setOrientationTransformIfNeeded(event);
 
-            if (!mDeviceState.isOneHandedModeActive()
-                    && mRotationTouchHelper.isInSwipeUpTouchRegion(event)) {
+            if (mRotationTouchHelper.isInSwipeUpTouchRegion(event)) {
                 if (TestProtocol.sDebugTracing) {
                     Log.d(TestProtocol.NO_SWIPE_TO_HOME,
                             "TouchInteractionService.onInputEvent:isInSwipeUpTouchRegion");
@@ -545,7 +546,8 @@ public class TouchInteractionService extends Service implements PluginListener<O
                             InputConsumer.NO_OP, mInputMonitorCompat,
                             mDeviceState,
                             event);
-                } else if (mDeviceState.canTriggerOneHandedAction(event)) {
+                } else if (mDeviceState.canTriggerOneHandedAction(event)
+                    && !mDeviceState.isOneHandedModeActive()) {
                     // Consume gesture event for triggering one handed feature.
                     mUncheckedConsumer = new OneHandedModeInputConsumer(this, mDeviceState,
                         InputConsumer.NO_OP, mInputMonitorCompat);
