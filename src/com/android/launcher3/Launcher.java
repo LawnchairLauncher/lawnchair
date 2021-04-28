@@ -1426,6 +1426,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         return mDropTargetBar;
     }
 
+    @Override
     public ScrimView getScrimView() {
         return mScrimView;
     }

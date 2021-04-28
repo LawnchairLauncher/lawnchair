@@ -34,7 +34,7 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.util.DisplayController.getSingleFrameMs;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
-import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
+import static com.android.launcher3.util.SystemUiController.UI_STATE_FULLSCREEN_TASK;
 import static com.android.launcher3.util.VibratorWrapper.OVERVIEW_HAPTIC;
 import static com.android.quickstep.GestureState.GestureEndTarget.HOME;
 import static com.android.quickstep.GestureState.GestureEndTarget.LAST_TASK;
@@ -664,11 +664,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             mRecentsAnimationController.setSplitScreenMinimized(swipeUpThresholdPassed);
 
             if (swipeUpThresholdPassed) {
-                mActivity.getSystemUiController().updateUiState(
-                        UI_STATE_OVERVIEW, mRecentsView.hasLightBackground());
+                mActivity.getSystemUiController().updateUiState(UI_STATE_FULLSCREEN_TASK, 0);
             } else {
                 mActivity.getSystemUiController().updateUiState(
-                        UI_STATE_OVERVIEW, centermostTaskFlags);
+                        UI_STATE_FULLSCREEN_TASK, centermostTaskFlags);
             }
         }
     }
