@@ -108,13 +108,13 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
         mCurrentAccessibilityAction = action;
 
         if (action == UNINSTALL) {
-            setDrawable(R.drawable.ic_uninstall_shadow);
+            setDrawable(R.drawable.ic_uninstall_no_shadow);
             updateText(R.string.uninstall_drop_target_label);
         } else if (action == DISMISS_PREDICTION) {
-            setDrawable(R.drawable.ic_block_shadow);
+            setDrawable(R.drawable.ic_block_no_shadow);
             updateText(R.string.dismiss_prediction_label);
         } else if (action == RECONFIGURE) {
-            setDrawable(R.drawable.ic_setup_shadow);
+            setDrawable(R.drawable.ic_setting);
             updateText(R.string.gadget_setup_text);
         }
     }

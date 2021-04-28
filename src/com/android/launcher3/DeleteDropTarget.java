@@ -53,7 +53,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        setDrawable(R.drawable.ic_remove_shadow);
+        setDrawable(R.drawable.ic_remove_no_shadow);
     }
 
     @Override
