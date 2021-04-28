@@ -25,7 +25,7 @@ import com.android.launcher3.R
 
 @ExperimentalAnimationApi
 @Composable
-fun DockPreferences(interactor: PreferenceInteractor) {
+fun DockPreferences() {
     PreferenceLayout {
         PreferenceGroup(heading = stringResource(id = R.string.grid), isFirstChild = true) {
             SliderPreference(

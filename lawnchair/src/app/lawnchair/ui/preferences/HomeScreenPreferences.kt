@@ -25,7 +25,7 @@ import com.android.launcher3.R
 
 @ExperimentalAnimationApi
 @Composable
-fun HomeScreenPreferences(interactor: PreferenceInteractor) {
+fun HomeScreenPreferences() {
     val prefs = preferenceManager()
     PreferenceLayout {
         PreferenceGroup(heading = "General", isFirstChild = true) {

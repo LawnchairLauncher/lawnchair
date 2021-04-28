@@ -25,7 +25,7 @@ import com.android.launcher3.R
 
 @ExperimentalAnimationApi
 @Composable
-fun FolderPreferences(interactor: PreferenceInteractor) {
+fun FolderPreferences() {
     PreferenceLayout {
         val prefs = preferenceManager()
         PreferenceGroup(heading = stringResource(id = R.string.grid), isFirstChild = true) {

@@ -25,7 +25,7 @@ import com.android.launcher3.R
 
 @ExperimentalAnimationApi
 @Composable
-fun AppDrawerPreferences(interactor: PreferenceInteractor) {
+fun AppDrawerPreferences() {
     val prefs = preferenceManager()
     PreferenceLayout {
         PreferenceGroup(heading = stringResource(id = R.string.general_label), isFirstChild = true) {
