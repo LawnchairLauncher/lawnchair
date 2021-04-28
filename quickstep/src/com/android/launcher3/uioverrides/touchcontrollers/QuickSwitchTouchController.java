@@ -29,7 +29,7 @@ import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TR
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_VERTICAL_PROGRESS;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_TRANSLATE;
-import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
+import static com.android.launcher3.util.SystemUiController.UI_STATE_FULLSCREEN_TASK;
 import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
@@ -143,10 +143,9 @@ public class QuickSwitchTouchController extends AbstractStateChangeTouchControll
             if (tv != null) {
                 sysuiFlags = tv.getThumbnail().getSysUiStatusNavFlags();
             }
-            mLauncher.getSystemUiController().updateUiState(UI_STATE_OVERVIEW, sysuiFlags);
+            mLauncher.getSystemUiController().updateUiState(UI_STATE_FULLSCREEN_TASK, sysuiFlags);
         } else {
-            mLauncher.getSystemUiController().updateUiState(
-                    UI_STATE_OVERVIEW, mOverviewPanel.hasLightBackground());
+            mLauncher.getSystemUiController().updateUiState(UI_STATE_FULLSCREEN_TASK, 0);
         }
     }
 
