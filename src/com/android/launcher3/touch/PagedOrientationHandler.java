@@ -101,8 +101,9 @@ public interface PagedOrientationHandler {
     float getTaskMenuX(float x, View thumbnailView, int overScroll);
     float getTaskMenuY(float y, View thumbnailView, int overScroll);
     int getTaskMenuWidth(View view);
-    int getTaskMenuLayoutOrientation(boolean canRecentsActivityRotate, LinearLayout taskMenuLayout);
-    void setLayoutParamsForTaskMenuOptionItem(LinearLayout.LayoutParams lp);
+    void setTaskMenuLayoutOrientation(DeviceProfile deviceProfile, LinearLayout taskMenuLayout);
+    void setLayoutParamsForTaskMenuOptionItem(LinearLayout.LayoutParams lp,
+            LinearLayout viewGroup, DeviceProfile deviceProfile);
     int getDistanceToBottomOfRect(DeviceProfile dp, Rect rect);
     List<SplitPositionOption> getSplitPositionOptions(DeviceProfile dp);
     FloatProperty getSplitSelectTaskOffset(FloatProperty primary, FloatProperty secondary,
