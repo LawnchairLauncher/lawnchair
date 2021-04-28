@@ -15,16 +15,6 @@
      limitations under the License.
 -->
 <resources>
-    <!-- Task Menu layout styles. -->
-    <style name="TaskMenu">
-        <item name="android:orientation">vertical</item>
-    </style>
-
-    <!-- Task Menu Option layout styles. -->
-    <style name="TaskMenu.Option">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
 
     <style name="TextAppearance.GestureTutorial"
         parent="android:TextAppearance.Material.Body1" />

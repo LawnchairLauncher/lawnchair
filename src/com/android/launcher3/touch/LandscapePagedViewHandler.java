@@ -254,16 +254,21 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public int getTaskMenuLayoutOrientation(boolean canRecentsActivityRotate,
+    public void setTaskMenuLayoutOrientation(DeviceProfile deviceProfile,
         LinearLayout taskMenuLayout) {
-        return LinearLayout.HORIZONTAL;
+        taskMenuLayout.setOrientation(LinearLayout.HORIZONTAL);
     }
 
     @Override
-    public void setLayoutParamsForTaskMenuOptionItem(LinearLayout.LayoutParams lp) {
+    public void setLayoutParamsForTaskMenuOptionItem(LinearLayout.LayoutParams lp,
+            LinearLayout viewGroup, DeviceProfile deviceProfile) {
+        // Phone fake landscape
+        viewGroup.setOrientation(LinearLayout.VERTICAL);
         lp.width = 0;
         lp.height = WRAP_CONTENT;
         lp.weight = 1;
+        Utilities.setStartMarginForView(viewGroup.findViewById(R.id.text), 0);
+        Utilities.setStartMarginForView(viewGroup.findViewById(R.id.icon), 0);
     }
 
     /* ---------- The following are only used by TaskViewTouchHandler. ---------- */
