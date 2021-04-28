@@ -49,6 +49,10 @@ public class ActivityManagerCompatVQ extends ActivityManagerCompat {
                                              Rect minimizedHomeBounds) {
                     recentsAnimationRunner.onAnimationStart(controller, apps, homeContentInsets, minimizedHomeBounds);
                 }
+                
+                public void reportAllDrawn() {
+
+                }                
 
                 @Override
                 public void onAnimationCanceled(boolean deferredWithScreenshot) {
