@@ -1277,23 +1277,20 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
 
         float accumulatedTranslationX = 0;
-        float[] fullscreenTranslations = new float[taskCount];
         for (int i = 0; i < taskCount; i++) {
             TaskView taskView = getTaskViewAt(i);
             taskView.updateTaskSize();
-            fullscreenTranslations[i] += accumulatedTranslationX;
+            taskView.getPrimaryFullscreenTranslationProperty().set(taskView,
+                    accumulatedTranslationX);
+            taskView.getSecondaryFullscreenTranslationProperty().set(taskView, 0f);
             // Compensate space caused by TaskView scaling.
             float widthDiff =
                     taskView.getLayoutParams().width * (1 - taskView.getFullscreenScale());
             // Compensate page spacing widening caused by RecentsView scaling.
             widthDiff += mPageSpacing * (1 - 1 / mFullscreenScale);
-            float fullscreenTranslationX = mIsRtl ? widthDiff : -widthDiff;
-            accumulatedTranslationX += fullscreenTranslationX;
+            accumulatedTranslationX += mIsRtl ? widthDiff : -widthDiff;
         }
 
-        for (int i = 0; i < taskCount; i++) {
-            getTaskViewAt(i).setFullscreenTranslationX(fullscreenTranslations[i]);
-        }
         mClearAllButton.setFullscreenTranslationPrimary(accumulatedTranslationX);
 
         updateGridProperties();
@@ -1677,7 +1674,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         setRunningTaskHidden(false);
         animateUpRunningTaskIconScale();
 
-        if (!showAsGrid() || getFocusedTaskView() != null) {
+        if (mCurrentGestureEndTarget == GestureState.GestureEndTarget.RECENTS
+                && (!showAsGrid() || getFocusedTaskView() != null)) {
             animateActionsViewIn();
         }
 
@@ -1997,29 +1995,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 gridTranslationAnimators.add(taskDismissAnimator);
             }
             taskView.setGridTranslationX(gridTranslations[i] - snappedTaskGridTranslationX);
-            taskView.setNonFullscreenTranslationX(snappedTaskFullscreenScrollAdjustment);
+            taskView.getPrimaryNonFullscreenTranslationProperty().set(taskView,
+                    snappedTaskFullscreenScrollAdjustment);
+            taskView.getSecondaryNonFullscreenTranslationProperty().set(taskView, 0f);
         }
         AnimatorSet gridTranslationAnimatorSet = new AnimatorSet();
         gridTranslationAnimatorSet.playTogether(gridTranslationAnimators);
-        gridTranslationAnimatorSet.addListener(new AnimatorListenerAdapter() {
-            @Override
-            // Allow the actions view to display again once in focus mode
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                if (getFocusedTaskView() == null) {
-                    mActionsView.getScrollAlpha().setValue(1);
-                }
-            }
-
-            @Override
-            // Hide the actions view if not in focus mode
-            public void onAnimationStart(Animator animation) {
-                super.onAnimationStart(animation);
-                if (getFocusedTaskView() == null) {
-                    mActionsView.getScrollAlpha().setValue(0);
-                }
-            }
-        });
         gridTranslationAnimatorSet.start();
 
         // Use the accumulated translation of the row containing the last task.
@@ -2322,7 +2303,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                         snapToPageImmediately(pageToSnapTo);
                         // Grid got messed up, reapply.
                         updateGridProperties(taskView, draggedIndex - mTaskViewStartIndex);
-                        if (showAsGrid() && getFocusedTaskView() == null) {
+                        if (showAsGrid() && getFocusedTaskView() == null
+                                && mActionsView.getVisibilityAlpha().getValue() == 1) {
                             animateActionsViewOut();
                         }
                     }

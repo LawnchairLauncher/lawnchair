@@ -158,11 +158,7 @@ public class DepthController implements StateHandler<LauncherState>,
      * Sets the specified app target surface to apply the blur to.
      */
     public void setSurfaceToApp(RemoteAnimationTargetCompat target) {
-        if (target != null) {
-            setSurface(target.leash);
-        } else {
-            setActivityStarted(mLauncher.isStarted());
-        }
+        setSurface(target == null ? null : target.leash);
     }
 
     private void setSurface(SurfaceControlCompat surface) {
@@ -170,9 +166,6 @@ public class DepthController implements StateHandler<LauncherState>,
             mSurface = surface;
             if (surface != null) {
                 setDepth(mDepth);
-            } else {
-                // If there is no surface, then reset the ratio
-                setDepth(0f);
             }
         }
     }
@@ -192,8 +185,7 @@ public class DepthController implements StateHandler<LauncherState>,
     @Override
     public void setStateWithAnimation(LauncherState toState, StateAnimationConfig config,
             PendingAnimation animation) {
-        if (mSurface == null
-                || config.hasAnimationFlag(SKIP_DEPTH_CONTROLLER)
+        if (config.hasAnimationFlag(SKIP_DEPTH_CONTROLLER)
                 || mIgnoreStateChangesDuringMultiWindowAnimation) {
             return;
         }

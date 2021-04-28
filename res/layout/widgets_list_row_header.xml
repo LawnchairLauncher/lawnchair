@@ -35,6 +35,7 @@
         tools:src="@drawable/ic_corp"/>
 
     <LinearLayout
+        android:id="@+id/app_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
