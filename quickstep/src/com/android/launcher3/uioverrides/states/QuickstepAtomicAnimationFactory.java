@@ -27,12 +27,15 @@ import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_1_7;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
+import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
 import static com.android.launcher3.anim.Interpolators.INSTANT;
+import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
 import static com.android.launcher3.anim.Interpolators.clampToProgress;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_DEPTH;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_ACTIONS_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SCALE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_X;
@@ -82,17 +85,19 @@ public class QuickstepAtomicAnimationFactory extends
             config.setInterpolator(ANIM_WORKSPACE_SCALE, DEACCEL);
             config.setInterpolator(ANIM_WORKSPACE_FADE, ACCEL);
             config.setInterpolator(ANIM_ALL_APPS_FADE, ACCEL);
-            config.setInterpolator(ANIM_OVERVIEW_SCALE, clampToProgress(ACCEL, 0, 0.9f));
-            config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, ACCEL_DEACCEL);
+            config.setInterpolator(ANIM_OVERVIEW_ACTIONS_FADE, LINEAR);
 
-            if (SysUINavigationMode.getMode(mActivity) == NO_BUTTON) {
-                // Scrolling in tasks, so make visible straight away
-                if (overview.getTaskViewCount() > 0) {
-                    config.setInterpolator(ANIM_OVERVIEW_FADE, FINAL_FRAME);
-                } else {
-                    config.setInterpolator(ANIM_OVERVIEW_FADE, DEACCEL_1_7);
-                }
+            if (SysUINavigationMode.getMode(mActivity).hasGestures
+                    && overview.getTaskViewCount() > 0) {
+                // Overview is going offscreen, so keep it at its current scale and opacity.
+                config.setInterpolator(ANIM_OVERVIEW_SCALE, FINAL_FRAME);
+                config.setInterpolator(ANIM_OVERVIEW_FADE, FINAL_FRAME);
+                config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X,
+                        clampToProgress(FAST_OUT_SLOW_IN, 0, 0.75f));
+                config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_Y, FINAL_FRAME);
             } else {
+                config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, ACCEL_DEACCEL);
+                config.setInterpolator(ANIM_OVERVIEW_SCALE, clampToProgress(ACCEL, 0, 0.9f));
                 config.setInterpolator(ANIM_OVERVIEW_FADE, DEACCEL_1_7);
             }
 

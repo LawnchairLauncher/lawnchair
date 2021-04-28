@@ -17,21 +17,10 @@ package com.android.quickstep.util;
 
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.anim.Interpolators.DEACCEL;
-import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
-import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.anim.Interpolators.clampToProgress;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_ACTIONS_FADE;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_FADE;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SCALE;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_X;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_Y;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.util.Log;
-import android.view.animation.Interpolator;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
@@ -101,18 +90,8 @@ public class OverviewToHomeAnim {
                 numPagesToScroll * PER_PAGE_SCROLL_DURATION);
         int duration = Math.max(scrollDuration, startState.getTransitionDuration(mLauncher));
 
-        StateAnimationConfig config = new UseFirstInterpolatorStateAnimConfig();
+        StateAnimationConfig config = new StateAnimationConfig();
         config.duration = duration;
-        boolean isLayoutNaturalToLauncher = recentsView.getPagedOrientationHandler()
-                .isLayoutNaturalToLauncher();
-        config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, isLayoutNaturalToLauncher
-                ? clampToProgress(FAST_OUT_SLOW_IN, 0, 0.75f) : FINAL_FRAME);
-        config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_Y, FINAL_FRAME);
-        config.setInterpolator(ANIM_OVERVIEW_SCALE, FINAL_FRAME);
-        config.setInterpolator(ANIM_OVERVIEW_ACTIONS_FADE, LINEAR);
-        if (!isLayoutNaturalToLauncher) {
-            config.setInterpolator(ANIM_OVERVIEW_FADE, DEACCEL);
-        }
         AnimatorSet stateAnim = stateManager.createAtomicAnimation(
                 startState, NORMAL, config);
         stateAnim.addListener(new AnimationSuccessListener() {
@@ -131,19 +110,6 @@ public class OverviewToHomeAnim {
     private void maybeOverviewToHomeAnimComplete() {
         if (mIsHomeStaggeredAnimFinished && mIsOverviewHidden) {
             mOnReachedHome.run();
-        }
-    }
-
-    /**
-     * Wrapper around StateAnimationConfig that doesn't allow interpolators to be set if they are
-     * already set. This ensures they aren't overridden before being used.
-     */
-    private static class UseFirstInterpolatorStateAnimConfig extends StateAnimationConfig {
-        @Override
-        public void setInterpolator(int animId, Interpolator interpolator) {
-            if (mInterpolators[animId] == null || interpolator == null) {
-                super.setInterpolator(animId, interpolator);
-            }
         }
     }
 }
