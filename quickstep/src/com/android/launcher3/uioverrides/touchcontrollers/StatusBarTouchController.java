@@ -12,6 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * Modifications copyright 2021, Lawnchair
  */
 package com.android.launcher3.uioverrides.touchcontrollers;
 
@@ -93,11 +95,9 @@ public class StatusBarTouchController implements TouchController {
         if (mSystemUiProxy.isActive()) {
             mLastAction = ev.getActionMasked();
             mSystemUiProxy.onStatusBarMotionEvent(ev);
-        } else {
-            if (!mExpanded) {
-                mExpanded = true;
-                expand();
-            }
+        } else if (!mExpanded) {
+            mExpanded = true;
+            expand();
         }
     }
 
