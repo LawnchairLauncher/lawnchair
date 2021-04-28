@@ -457,10 +457,24 @@ public class WidgetPreviewLoader {
             drawable.setBounds(x, 0, x + previewWidth, previewHeight);
             drawable.draw(c);
         } else {
-            RectF boxRect = drawBoxWithShadow(c, previewWidth, previewHeight);
+            RectF boxRect;
 
             // Draw horizontal and vertical lines to represent individual columns.
             final Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+            if (Utilities.ATLEAST_S) {
+                boxRect = new RectF(/* left= */ 0, /* top= */ 0, /* right= */
+                        previewWidth, /* bottom= */ previewHeight);
+
+                p.setStyle(Paint.Style.FILL);
+                p.setColor(Color.WHITE);
+                float roundedCorner = mContext.getResources().getDimension(
+                        android.R.dimen.system_app_widget_background_radius);
+                c.drawRoundRect(boxRect, roundedCorner, roundedCorner, p);
+            } else {
+                boxRect = drawBoxWithShadow(c, previewWidth, previewHeight);
+            }
+
             p.setStyle(Paint.Style.STROKE);
             p.setStrokeWidth(mContext.getResources()
                     .getDimension(R.dimen.widget_preview_cell_divider_width));
