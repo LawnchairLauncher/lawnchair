@@ -19,7 +19,10 @@ import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_OVERV
 
 import android.content.Context;
 
+import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.R;
+import com.android.launcher3.util.Themes;
 
 /**
  * Definition for overview state
@@ -55,5 +58,10 @@ public class OverviewState extends LauncherState {
      */
     public static OverviewState newSplitSelectState(int id) {
         return new OverviewState(id);
+    }
+
+    @Override
+    public int getWorkspaceScrimColor(Launcher launcher) {
+        return Themes.getAttrColor(launcher, R.attr.overviewScrimColor);
     }
 }
