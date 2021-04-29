@@ -244,8 +244,9 @@ public class LauncherSwipeHandlerV2 extends
             return null;
         }
 
-        // Find the associated item info for the launch cookie (if available)
-        int launchCookieItemId = -1;
+        // Find the associated item info for the launch cookie (if available), note that predicted
+        // apps actually have an id of -1, so use another default id here
+        int launchCookieItemId = -2;
         for (IBinder cookie : launchCookies) {
             Integer itemId = ObjectWrapper.unwrap(cookie);
             if (itemId != null) {
