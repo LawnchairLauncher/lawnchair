@@ -1095,8 +1095,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             final RemoteAnimationTargetCompat runningTaskTarget = mRecentsAnimationTargets != null
                     ? mRecentsAnimationTargets.findTask(mGestureState.getRunningTaskId())
                     : null;
-            HomeAnimationFactory homeAnimFactory = createHomeAnimationFactory(
-                    runningTaskTarget.taskInfo.launchCookies, duration);
+            final ArrayList<IBinder> cookies = runningTaskTarget != null
+                    ? runningTaskTarget.taskInfo.launchCookies
+                    : new ArrayList<>();
+            HomeAnimationFactory homeAnimFactory = createHomeAnimationFactory(cookies, duration);
             mIsSwipingPipToHome = homeAnimFactory.supportSwipePipToHome()
                     && runningTaskTarget != null
                     && runningTaskTarget.taskInfo.pictureInPictureParams != null
