@@ -35,7 +35,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
-import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.icons.PlaceHolderIconDrawable;
 import com.android.launcher3.icons.cache.HandlerRunnable;
@@ -174,7 +173,14 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
     }
 
     private void setIcon(PackageItemInfo info) {
-        FastBitmapDrawable icon = info.newIcon(getContext());
+        Drawable icon;
+        switch (info.category) {
+            case PackageItemInfo.CONVERSATIONS:
+                icon = getContext().getDrawable(R.drawable.ic_conversations_widget_category);
+                break;
+            default:
+                icon = info.newIcon(getContext());
+        }
         applyDrawables(icon);
         mIconDrawable = icon;
         if (mIconDrawable != null) {
