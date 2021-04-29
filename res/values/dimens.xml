@@ -293,7 +293,7 @@
     <dimen name="overview_task_margin">0dp</dimen>
 
 <!-- Workspace grid visualization parameters -->
-    <dimen name="grid_visualization_rounding_radius">28dp</dimen>
+    <dimen name="grid_visualization_rounding_radius">22dp</dimen>
     <dimen name="grid_visualization_cell_spacing">6dp</dimen>
 
 </resources>
