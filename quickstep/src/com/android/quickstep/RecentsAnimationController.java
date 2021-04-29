@@ -25,6 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.UiThread;
 
 import com.android.launcher3.util.Preconditions;
+import com.android.launcher3.util.RunnableList;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
@@ -43,6 +44,8 @@ public class RecentsAnimationController {
 
     private boolean mUseLauncherSysBarFlags = false;
     private boolean mSplitScreenMinimized = false;
+    private boolean mFinishRequested = false;
+    private RunnableList mPendingFinishCallbacks = new RunnableList();
 
     public RecentsAnimationController(RecentsAnimationControllerCompat controller,
             boolean allowMinimizeSplitScreen,
@@ -132,14 +135,22 @@ public class RecentsAnimationController {
 
     @UiThread
     public void finishController(boolean toRecents, Runnable callback, boolean sendUserLeaveHint) {
+        if (mFinishRequested) {
+            // If finishing, add to pending finish callbacks, otherwise, if finished, adding to the
+            // destroyed RunnableList will just trigger the callback to be called immediately
+            mPendingFinishCallbacks.add(callback);
+            return;
+        }
+
+        // Finish not yet requested
+        mFinishRequested = true;
         mOnFinishedListener.accept(this);
+        mPendingFinishCallbacks.add(callback);
         UI_HELPER_EXECUTOR.execute(() -> {
             mController.finish(toRecents, sendUserLeaveHint);
             InteractionJankMonitorWrapper.end(InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
             InteractionJankMonitorWrapper.end(InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME);
-            if (callback != null) {
-                MAIN_EXECUTOR.execute(callback);
-            }
+            MAIN_EXECUTOR.execute(mPendingFinishCallbacks::executeAllAndDestroy);
         });
     }
 

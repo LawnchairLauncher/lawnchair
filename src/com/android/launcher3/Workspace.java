@@ -2066,9 +2066,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         if (mDragOverlappingLayout != null) {
             mDragOverlappingLayout.setIsDragOverlapping(true);
         }
-        // Invalidating the scrim will also force this CellLayout
-        // to be invalidated so that it is highlighted if necessary.
-        mLauncher.getDragLayer().getWorkspaceDragScrim().invalidate();
     }
 
     public CellLayout getCurrentDragOverlappingLayout() {

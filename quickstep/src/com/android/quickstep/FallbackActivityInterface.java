@@ -196,4 +196,9 @@ public final class FallbackActivityInterface extends
         recentsView.setLayoutRotation(rotationTouchHelper.getCurrentActiveRotation(),
                 rotationTouchHelper.getDisplayRotation());
     }
+
+    @Override
+    protected int getOverviewScrimColorForState(RecentsActivity activity, RecentsState state) {
+        return state.getScrimColor(activity);
+    }
 }

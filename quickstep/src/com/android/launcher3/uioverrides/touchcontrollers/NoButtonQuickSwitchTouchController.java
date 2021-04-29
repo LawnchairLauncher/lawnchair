@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.uioverrides.touchcontrollers;
 
-import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.LauncherAnimUtils.newCancelListener;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
@@ -232,8 +231,8 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         //   - OverviewScrim
         PendingAnimation xAnim = new PendingAnimation((long) (mXRange * 2));
         xAnim.setFloat(mRecentsView, ADJACENT_PAGE_OFFSET, scaleAndOffset[1], LINEAR);
-        xAnim.setFloat(mLauncher.getScrimView(), VIEW_ALPHA,
-                toState.getWorkspaceScrimAlpha(mLauncher), LINEAR);
+        xAnim.setViewBackgroundColor(mLauncher.getScrimView(),
+                toState.getWorkspaceScrimColor(mLauncher), LINEAR);
         mXOverviewAnim = xAnim.createPlaybackController();
         mXOverviewAnim.dispatchOnStart();
 

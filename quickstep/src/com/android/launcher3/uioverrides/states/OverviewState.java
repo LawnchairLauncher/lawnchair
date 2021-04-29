@@ -29,6 +29,7 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.util.Themes;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
@@ -108,8 +109,8 @@ public class OverviewState extends LauncherState {
     }
 
     @Override
-    public float getWorkspaceScrimAlpha(Launcher launcher) {
-        return 1f;
+    public int getWorkspaceScrimColor(Launcher launcher) {
+        return Themes.getAttrColor(launcher, R.attr.overviewScrimColor);
     }
 
     @Override

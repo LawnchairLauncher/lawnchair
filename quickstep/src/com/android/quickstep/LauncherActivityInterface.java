@@ -23,6 +23,7 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IME_SHOWING;
 
 import android.animation.Animator;
+import android.animation.AnimatorSet;
 import android.content.Context;
 import android.graphics.Rect;
 import android.view.MotionEvent;
@@ -271,11 +272,25 @@ public final class LauncherActivityInterface extends
     public @Nullable Animator getParallelAnimationToLauncher(GestureEndTarget endTarget,
             long duration) {
         TaskbarController taskbarController = getTaskbarController();
+        Animator superAnimator = super.getParallelAnimationToLauncher(endTarget, duration);
         if (taskbarController == null) {
-            return null;
+            return superAnimator;
         }
         LauncherState toState = stateFromGestureEndTarget(endTarget);
-        return taskbarController.createAnimToLauncher(toState, duration);
+        Animator taskbarAnimator = taskbarController.createAnimToLauncher(toState, duration);
+        if (superAnimator == null) {
+            return taskbarAnimator;
+        } else {
+            AnimatorSet animatorSet = new AnimatorSet();
+            animatorSet.playTogether(superAnimator, taskbarAnimator);
+            return animatorSet;
+        }
+    }
+
+    @Override
+    protected int getOverviewScrimColorForState(BaseQuickstepLauncher launcher,
+            LauncherState state) {
+        return state.getWorkspaceScrimColor(launcher);
     }
 
     @Override

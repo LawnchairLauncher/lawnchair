@@ -19,16 +19,15 @@ import static com.android.launcher3.util.SystemUiController.UI_STATE_SCRIM_VIEW;
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
 import android.view.View;
 
 import androidx.core.graphics.ColorUtils;
 
+import com.android.launcher3.BaseActivity;
 import com.android.launcher3.Insettable;
-import com.android.launcher3.Launcher;
-import com.android.launcher3.R;
 import com.android.launcher3.util.SystemUiController;
-import com.android.launcher3.util.Themes;
 
 /**
  * Simple scrim which draws a flat color
@@ -36,13 +35,10 @@ import com.android.launcher3.util.Themes;
 public class ScrimView extends View implements Insettable {
     private static final float STATUS_BAR_COLOR_FORCE_UPDATE_THRESHOLD = 0.9f;
 
-    private final boolean mIsScrimDark;
     private SystemUiController mSystemUiController;
 
     public ScrimView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mIsScrimDark = ColorUtils.calculateLuminance(
-                Themes.getAttrColor(context, R.attr.allAppsScrimColor)) < 0.5f;
         setFocusable(false);
     }
 
@@ -61,6 +57,12 @@ public class ScrimView extends View implements Insettable {
     }
 
     @Override
+    public void setBackgroundColor(int color) {
+        updateSysUiColors();
+        super.setBackgroundColor(color);
+    }
+
+    @Override
     protected void onVisibilityChanged(View changedView, int visibility) {
         super.onVisibilityChanged(changedView, visibility);
         updateSysUiColors();
@@ -72,7 +74,7 @@ public class ScrimView extends View implements Insettable {
         boolean forceChange =
                 getVisibility() == VISIBLE && getAlpha() > STATUS_BAR_COLOR_FORCE_UPDATE_THRESHOLD;
         if (forceChange) {
-            getSystemUiController().updateUiState(UI_STATE_SCRIM_VIEW, !mIsScrimDark);
+            getSystemUiController().updateUiState(UI_STATE_SCRIM_VIEW, !isScrimDark());
         } else {
             getSystemUiController().updateUiState(UI_STATE_SCRIM_VIEW, 0);
         }
@@ -80,8 +82,18 @@ public class ScrimView extends View implements Insettable {
 
     private SystemUiController getSystemUiController() {
         if (mSystemUiController == null) {
-            mSystemUiController = Launcher.getLauncher(getContext()).getSystemUiController();
+            mSystemUiController = BaseActivity.fromContext(getContext()).getSystemUiController();
         }
         return mSystemUiController;
+    }
+
+    private boolean isScrimDark() {
+        if (!(getBackground() instanceof ColorDrawable)) {
+            throw new IllegalStateException(
+                    "ScrimView must have a ColorDrawable background, this one has: "
+                            + getBackground());
+        }
+        return ColorUtils.calculateLuminance(
+                ((ColorDrawable) getBackground()).getColor()) < 0.5f;
     }
 }
