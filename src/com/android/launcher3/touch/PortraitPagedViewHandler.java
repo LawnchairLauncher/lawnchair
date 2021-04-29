@@ -253,14 +253,34 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public int getTaskMenuLayoutOrientation(boolean canRecentsActivityRotate,
+    public void setTaskMenuLayoutOrientation(DeviceProfile deviceProfile,
         LinearLayout taskMenuLayout) {
-        return canRecentsActivityRotate ? taskMenuLayout.getOrientation() : LinearLayout.VERTICAL;
+        if (deviceProfile.isLandscape && !deviceProfile.isTablet) {
+            // Phone landscape
+            taskMenuLayout.setOrientation(LinearLayout.HORIZONTAL);
+        } else {
+            // Phone Portrait, LargeScreen Landscape/Portrait
+            taskMenuLayout.setOrientation(LinearLayout.VERTICAL);
+        }
     }
 
     @Override
-    public void setLayoutParamsForTaskMenuOptionItem(LinearLayout.LayoutParams lp) {
-        // no-op, defaults are fine
+    public void setLayoutParamsForTaskMenuOptionItem(LinearLayout.LayoutParams lp,
+            LinearLayout viewGroup, DeviceProfile deviceProfile) {
+        if (deviceProfile.isLandscape && !deviceProfile.isTablet) {
+            // Phone landscape
+            viewGroup.setOrientation(LinearLayout.VERTICAL);
+            lp.width = 0;
+            lp.weight = 1;
+            Utilities.setStartMarginForView(viewGroup.findViewById(R.id.text), 0);
+            Utilities.setStartMarginForView(viewGroup.findViewById(R.id.icon), 0);
+        } else {
+            // Phone Portrait, LargeScreen Landscape/Portrait
+            viewGroup.setOrientation(LinearLayout.HORIZONTAL);
+            lp.width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        }
+
+        lp.height = LinearLayout.LayoutParams.WRAP_CONTENT;
     }
 
     /* ---------- The following are only used by TaskViewTouchHandler. ---------- */

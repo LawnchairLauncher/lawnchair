@@ -19,7 +19,6 @@
 
     <!-- Attributes used for launcher theme -->
     <attr name="allAppsScrimColor" format="color" />
-    <attr name="allAppsInterimScrimAlpha" format="integer" />
     <attr name="allAppsNavBarScrimColor" format="color" />
     <attr name="allAppsTheme" format="reference" />
     <attr name="popupColorNeutral" format="color" />
@@ -36,6 +35,7 @@
     <attr name="widgetsTheme" format="reference" />
     <attr name="iconOnlyShortcutColor" format="color" />
     <attr name="eduHalfSheetBGColor" format="color" />
+    <attr name="overviewScrimColor" format="color" />
 
     <attr name="folderDotColor" format="color" />
     <attr name="folderFillColor" format="color" />

@@ -366,7 +366,7 @@ public class ItemInfo {
         return itemBuilder.build();
     }
 
-    LauncherAtom.ItemInfo.Builder getDefaultItemInfoBuilder() {
+    protected LauncherAtom.ItemInfo.Builder getDefaultItemInfoBuilder() {
         LauncherAtom.ItemInfo.Builder itemBuilder = LauncherAtom.ItemInfo.newBuilder();
         itemBuilder.setIsWork(user != Process.myUserHandle());
         return itemBuilder;

@@ -97,9 +97,6 @@
                  android:resource="@xml/overview_file_provider_paths"/>
         </provider>
 
-        <service android:name="com.android.launcher3.uioverrides.dynamicui.WallpaperManagerCompatVL$ColorExtractionService"
-             tools:node="remove"/>
-
         <activity android:name="com.android.launcher3.proxy.ProxyActivityStarter"
              android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
              android:launchMode="singleTask"
