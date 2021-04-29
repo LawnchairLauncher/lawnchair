@@ -447,7 +447,8 @@ public abstract class BaseQuickstepLauncher extends Launcher
             case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
             case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
             case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
-                // Fall through and continue if it's an app or shortcut
+            case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
+                // Fall through and continue if it's an app, shortcut, or widget
                 break;
             default:
                 return;
