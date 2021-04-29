@@ -93,9 +93,6 @@ public final class WidgetsRecommendationTableLayout extends TableLayout {
         mRecommendationTableMaxHeight = recommendationTableMaxHeight;
         RecommendationTableData data = fitRecommendedWidgetsToTableSpace(/* previewScale= */ 1f,
                 recommendedWidgets);
-        // TODO(b/185508758): Revert the following logs after debugging.
-        Log.d(TAG, "Recommended widgets section max height: " + recommendationTableMaxHeight);
-        Log.d(TAG, "Recommended widget down scale: " + data.mPreviewScale);
         bindData(data);
     }
 
