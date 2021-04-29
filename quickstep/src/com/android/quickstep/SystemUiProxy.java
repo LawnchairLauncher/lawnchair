@@ -68,6 +68,12 @@ public class SystemUiProxy implements ISystemUiProxy,
         MAIN_EXECUTOR.execute(() -> clearProxy());
     };
 
+    // Save the listeners passed into the proxy since when set/register these listeners,
+    // setProxy may not have been called, eg. OverviewProxyService is not connected yet.
+    private IPipAnimationListener mPendingPipAnimationListener;
+    private ISplitScreenListener mPendingSplitScreenListener;
+    private IStartingWindowListener mPendingStartingWindowListener;
+
     // Used to dedupe calls to SystemUI
     private int mLastShelfHeight;
     private boolean mLastShelfVisible;
@@ -116,6 +122,19 @@ public class SystemUiProxy implements ISystemUiProxy,
         mShellTransitions = shellTransitions;
         mStartingWindow = startingWindow;
         linkToDeath();
+        // re-attach the listeners once missing due to setProxy has not been initialized yet.
+        if (mPendingPipAnimationListener != null && mPip != null) {
+            setPinnedStackAnimationListener(mPendingPipAnimationListener);
+            mPendingPipAnimationListener = null;
+        }
+        if (mPendingSplitScreenListener != null && mSplitScreen != null) {
+            registerSplitScreenListener(mPendingSplitScreenListener);
+            mPendingSplitScreenListener = null;
+        }
+        if (mPendingStartingWindowListener != null && mStartingWindow != null) {
+            setStartingWindowListener(mPendingStartingWindowListener);
+            mPendingStartingWindowListener = null;
+        }
     }
 
     public void clearProxy() {
@@ -390,6 +409,8 @@ public class SystemUiProxy implements ISystemUiProxy,
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call setPinnedStackAnimationListener", e);
             }
+        } else {
+            mPendingPipAnimationListener = listener;
         }
     }
 
@@ -427,6 +448,8 @@ public class SystemUiProxy implements ISystemUiProxy,
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call registerSplitScreenListener");
             }
+        } else {
+            mPendingSplitScreenListener = listener;
         }
     }
 
@@ -438,6 +461,7 @@ public class SystemUiProxy implements ISystemUiProxy,
                 Log.w(TAG, "Failed call unregisterSplitScreenListener");
             }
         }
+        mPendingSplitScreenListener = null;
     }
 
     public void setSideStageVisibility(boolean visible) {
@@ -590,6 +614,8 @@ public class SystemUiProxy implements ISystemUiProxy,
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call setStartingWindowListener", e);
             }
+        } else {
+            mPendingStartingWindowListener = listener;
         }
     }
 }
