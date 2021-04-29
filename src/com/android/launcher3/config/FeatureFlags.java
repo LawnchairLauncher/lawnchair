@@ -151,7 +151,7 @@ public final class FeatureFlags {
             "ENABLE_OVERVIEW_SHARE", false, "Show Share button in Overview Actions");
 
     public static final BooleanFlag ENABLE_OVERVIEW_SHARING_TO_PEOPLE = getDebugFlag(
-            "ENABLE_OVERVIEW_SHARING_TO_PEOPLE", true,
+            "ENABLE_OVERVIEW_SHARING_TO_PEOPLE", false,
             "Show indicators for content on Overview to share with top people. ");
 
     public static final BooleanFlag ENABLE_OVERVIEW_CONTENT_PUSH = getDebugFlag(

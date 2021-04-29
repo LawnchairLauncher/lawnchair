@@ -45,7 +45,7 @@ import static com.android.launcher3.statehandlers.DepthController.DEPTH;
 import static com.android.launcher3.touch.PagedOrientationHandler.CANVAS_TRANSLATE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
-import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
+import static com.android.launcher3.util.SystemUiController.UI_STATE_FULLSCREEN_TASK;
 import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
 import static com.android.quickstep.util.NavigationModeFeatureFlag.LIVE_TILE;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NON_ZERO_ROTATION;
@@ -450,7 +450,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     private boolean mRunningTaskIconScaledDown = false;
 
-    private final boolean mHasLightBackground;
     private boolean mOverviewStateEnabled;
     private boolean mHandleTaskStackChanges;
     private boolean mSwipeDownShouldLaunchApp;
@@ -584,8 +583,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mLiveTileTaskViewSimulator.recentsViewScale.value = 1;
         mLiveTileTaskViewSimulator.setOrientationState(mOrientationState);
         mLiveTileTaskViewSimulator.setDrawsBelowRecents(true);
-
-        mHasLightBackground = Themes.getAttrBoolean(mActivity, android.R.attr.isLightTheme);
     }
 
     public OverScroller getScroller() {
@@ -907,13 +904,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             if (mSplitPlaceholderView.getSplitController().isSplitSelectActive()) {
                 cancelSplitSelect(false);
             }
-        }
-
-        if (enabled) {
-            mActivity.getSystemUiController().updateUiState(
-                    UI_STATE_OVERVIEW, hasLightBackground());
-        } else {
-            mActivity.getSystemUiController().updateUiState(UI_STATE_OVERVIEW, 0);
         }
     }
 
@@ -1523,7 +1513,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
         unloadVisibleTaskData(TaskView.FLAG_UPDATE_ALL);
         setCurrentPage(0);
-        mActivity.getSystemUiController().updateUiState(UI_STATE_OVERVIEW, 0);
         LayoutUtils.setViewEnabled(mActionsView, true);
         if (mOrientationState.setGestureActive(false)) {
             updateOrientationHandler();
@@ -1597,8 +1586,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * {@link #onGestureAnimationStart} and {@link #onGestureAnimationEnd()}.
      */
     public void onSwipeUpAnimationSuccess() {
+        Log.d("b/186444448", "onSwipeUpAnimationSuccess");
         if (getRunningTaskView() != null) {
-            animateUpRunningTaskIconScale(0f);
+            animateUpRunningTaskIconScale();
         }
         setSwipeDownShouldLaunchApp(true);
     }
@@ -1661,13 +1651,14 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * Called when a gesture from an app has finished, and the animation to the target has ended.
      */
     public void onGestureAnimationEnd() {
+        Log.d("b/186444448", "onGestureEnd");
         mGestureActive = false;
         if (mOrientationState.setGestureActive(false)) {
             updateOrientationHandler();
         }
 
         setEnableFreeScroll(true);
-        setEnableDrawingLiveTile(true);
+        setEnableDrawingLiveTile(mCurrentGestureEndTarget == GestureState.GestureEndTarget.RECENTS);
         if (!LIVE_TILE.get()) {
             setRunningTaskViewShowScreenshot(true);
         }
@@ -1815,15 +1806,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     public void animateUpRunningTaskIconScale() {
-        animateUpRunningTaskIconScale(0);
-    }
-
-    public void animateUpRunningTaskIconScale(float startProgress) {
         mRunningTaskIconScaledDown = false;
         TaskView firstTask = getRunningTaskView();
+        Log.d("b/186444448", "animateUpRunningTaskIconScale: firstTask="
+                + (firstTask != null ? "t:" + firstTask.getTask() : null));
         if (firstTask != null) {
+            firstTask.setIconScaleAnimStartProgress(0f);
             firstTask.animateIconScaleAndDimIntoView();
-            firstTask.setIconScaleAnimStartProgress(startProgress);
         }
     }
 
@@ -2801,14 +2790,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
     }
 
-    /**
-     * True if the background scrim of the recents view is light colored and the foreground elements
-     * should use dark colors.
-     */
-    public boolean hasLightBackground() {
-        return mHasLightBackground;
-    }
-
     public void initiateSplitSelect(TaskView taskView, SplitPositionOption splitPositionOption) {
         mSplitHiddenTaskView = taskView;
         SplitSelectStateController splitController = mSplitPlaceholderView.getSplitController();
@@ -3059,10 +3040,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             // tasks' flags
             if (animator.getAnimatedFraction() > UPDATE_SYSUI_FLAGS_THRESHOLD) {
                 mActivity.getSystemUiController().updateUiState(
-                        UI_STATE_OVERVIEW, targetSysUiFlags);
+                        UI_STATE_FULLSCREEN_TASK, targetSysUiFlags);
             } else {
-                mActivity.getSystemUiController().updateUiState(
-                        UI_STATE_OVERVIEW, hasLightBackground());
+                mActivity.getSystemUiController().updateUiState(UI_STATE_FULLSCREEN_TASK, 0);
             }
 
             // Passing the threshold from taskview to fullscreen app will vibrate

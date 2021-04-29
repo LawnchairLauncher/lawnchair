@@ -16,11 +16,8 @@
 package com.android.quickstep.fallback;
 
 import android.content.Context;
-import android.graphics.Rect;
 import android.util.AttributeSet;
 
-import com.android.launcher3.R;
-import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.RecentsActivity;
@@ -40,13 +37,5 @@ public class RecentsDragLayer extends BaseDragLayer<RecentsActivity> {
                 new RecentsTaskController(mActivity),
                 new FallbackNavBarTouchController(mActivity),
         };
-    }
-
-    @Override
-    public void setInsets(Rect insets) {
-        super.setInsets(insets);
-        setBackground(insets.top == 0  || !mAllowSysuiScrims
-                ? null
-                : Themes.getAttrDrawable(getContext(), R.attr.workspaceStatusBarScrim));
     }
 }

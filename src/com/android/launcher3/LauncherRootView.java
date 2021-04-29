@@ -33,11 +33,12 @@ public class LauncherRootView extends InsettableFrameLayout {
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mForceHideBackArrow;
 
-    private SysUiScrim mSysUiScrim;
+    private final SysUiScrim mSysUiScrim;
 
     public LauncherRootView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mActivity = StatefulActivity.fromContext(context);
+        mSysUiScrim = new SysUiScrim(this);
     }
 
     private void handleSystemWindowInsets(Rect insets) {
@@ -72,6 +73,7 @@ public class LauncherRootView extends InsettableFrameLayout {
         // modifying child layout params.
         if (!insets.equals(mInsets)) {
             super.setInsets(insets);
+            mSysUiScrim.onInsetsChanged(insets);
         }
     }
 
@@ -100,15 +102,9 @@ public class LauncherRootView extends InsettableFrameLayout {
         }
     }
 
-    public void setSysUiScrim(SysUiScrim scrim) {
-        mSysUiScrim = scrim;
-    }
-
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        if (mSysUiScrim != null) {
-            mSysUiScrim.draw(canvas);
-        }
+        mSysUiScrim.draw(canvas);
         super.dispatchDraw(canvas);
     }
 
@@ -117,6 +113,7 @@ public class LauncherRootView extends InsettableFrameLayout {
         super.onLayout(changed, l, t, r, b);
         SYSTEM_GESTURE_EXCLUSION_RECT.get(0).set(l, t, r, b);
         setDisallowBackGesture(mDisallowBackGesture);
+        mSysUiScrim.setSize(r - l, b - t);
     }
 
     @TargetApi(Build.VERSION_CODES.Q)
@@ -134,6 +131,10 @@ public class LauncherRootView extends InsettableFrameLayout {
         setSystemGestureExclusionRects((mForceHideBackArrow || mDisallowBackGesture)
                 ? SYSTEM_GESTURE_EXCLUSION_RECT
                 : Collections.emptyList());
+    }
+
+    public SysUiScrim getSysUiScrim() {
+        return mSysUiScrim;
     }
 
     public interface WindowStateListener {
