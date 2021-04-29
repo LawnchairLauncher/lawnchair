@@ -65,6 +65,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.animation.Interpolator;
+import android.widget.LinearLayout;
 
 import androidx.core.graphics.ColorUtils;
 import androidx.core.os.BuildCompat;
@@ -750,6 +751,16 @@ public final class Utilities {
                 // This isn't blending in white, its making a multiplication mask for the base color
                 ColorUtils.blendARGB(Color.WHITE, 0, tintAmount),
                 ColorUtils.blendARGB(0, color, tintAmount));
+    }
+
+    /**
+     * Sets start margin on the provided {@param view} to be {@param margin}.
+     * Assumes {@param view} is a child of {@link LinearLayout}
+     */
+    public static void setStartMarginForView(View view, int margin) {
+        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) view.getLayoutParams();
+        lp.setMarginStart(margin);
+        view.setLayoutParams(lp);
     }
 
     private static class FixedSizeEmptyDrawable extends ColorDrawable {

@@ -201,12 +201,13 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
     }
 
     private void addMenuOption(SystemShortcut menuOption) {
-        ViewGroup menuOptionView = (ViewGroup) mActivity.getLayoutInflater().inflate(
+        LinearLayout menuOptionView = (LinearLayout) mActivity.getLayoutInflater().inflate(
                 R.layout.task_view_menu_option, this, false);
         menuOption.setIconAndLabelFor(
                 menuOptionView.findViewById(R.id.icon), menuOptionView.findViewById(R.id.text));
         LayoutParams lp = (LayoutParams) menuOptionView.getLayoutParams();
-        mTaskView.getPagedOrientationHandler().setLayoutParamsForTaskMenuOptionItem(lp);
+        mTaskView.getPagedOrientationHandler().setLayoutParamsForTaskMenuOptionItem(lp,
+                menuOptionView, mActivity.getDeviceProfile());
         menuOptionView.setEnabled(menuOption.isEnabled());
         menuOptionView.setAlpha(menuOption.isEnabled() ? 1 : 0.5f);
         menuOptionView.setOnClickListener(view -> {
@@ -228,16 +229,15 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
         mActivity.getDragLayer().getDescendantRectRelativeToSelf(taskView, sTempRect);
         Rect insets = mActivity.getDragLayer().getInsets();
         BaseDragLayer.LayoutParams params = (BaseDragLayer.LayoutParams) getLayoutParams();
+        // TODO(b/186583656) Move the entire menu to the center/make smaller than thumbnail width
         params.width = orientationHandler.getTaskMenuWidth(taskView.getThumbnail());
         // Gravity set to Left instead of Start as sTempRect.left measures Left distance not Start
         params.gravity = Gravity.LEFT;
         setLayoutParams(params);
         setScaleX(taskView.getScaleX());
         setScaleY(taskView.getScaleY());
-        boolean canActivityRotate = taskView.getRecentsView()
-            .mOrientationState.isRecentsActivityRotationAllowed();
-        mOptionLayout.setOrientation(orientationHandler
-                .getTaskMenuLayoutOrientation(canActivityRotate, mOptionLayout));
+        orientationHandler.setTaskMenuLayoutOrientation(
+                mActivity.getDeviceProfile(), mOptionLayout);
         setPosition(sTempRect.left - insets.left, sTempRect.top - insets.top, 0);
     }
 

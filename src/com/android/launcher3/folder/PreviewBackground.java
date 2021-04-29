@@ -50,6 +50,8 @@ import com.android.launcher3.views.ActivityContext;
  */
 public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
 
+    private static final boolean DRAW_SHADOW = false;
+
     private static final int CONSUMPTION_ANIMATION_DURATION = 100;
 
     private final PorterDuffXfermode mShadowPorterDuffXfermode
@@ -163,13 +165,15 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
         // Stroke width is 1dp
         mStrokeWidth = context.getResources().getDisplayMetrics().density;
 
-        float radius = getScaledRadius();
-        float shadowRadius = radius + mStrokeWidth;
-        int shadowColor = Color.argb(SHADOW_OPACITY, 0, 0, 0);
-        mShadowShader = new RadialGradient(0, 0, 1,
-                new int[] {shadowColor, Color.TRANSPARENT},
-                new float[] {radius / shadowRadius, 1},
-                Shader.TileMode.CLAMP);
+        if (DRAW_SHADOW) {
+            float radius = getScaledRadius();
+            float shadowRadius = radius + mStrokeWidth;
+            int shadowColor = Color.argb(SHADOW_OPACITY, 0, 0, 0);
+            mShadowShader = new RadialGradient(0, 0, 1,
+                    new int[]{shadowColor, Color.TRANSPARENT},
+                    new float[]{radius / shadowRadius, 1},
+                    Shader.TileMode.CLAMP);
+        }
 
         invalidate();
     }
@@ -239,6 +243,9 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
     }
 
     public void drawShadow(Canvas canvas) {
+        if (!DRAW_SHADOW) {
+            return;
+        }
         if (mShadowShader == null) {
             return;
         }
@@ -277,6 +284,9 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
     }
 
     public void fadeInBackgroundShadow() {
+        if (!DRAW_SHADOW) {
+            return;
+        }
         if (mShadowAnimator != null) {
             mShadowAnimator.cancel();
         }

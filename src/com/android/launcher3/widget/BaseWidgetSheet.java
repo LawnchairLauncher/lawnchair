@@ -35,7 +35,6 @@ import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.ItemLongClickListener;
-import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.AbstractSlideInView;
@@ -56,9 +55,8 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView
     }
 
     protected int getScrimColor(Context context) {
-        WallpaperColorInfo colors = WallpaperColorInfo.INSTANCE.get(context);
         int alpha = context.getResources().getInteger(R.integer.extracted_color_gradient_alpha);
-        return setColorAlphaBound(colors.getSecondaryColor(), alpha);
+        return setColorAlphaBound(context.getColor(R.color.wallpaper_popup_scrim), alpha);
     }
 
     @Override

@@ -16,7 +16,7 @@
 -->
 <com.android.quickstep.views.TaskMenuView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
     android:background="@drawable/task_menu_bg"
@@ -35,12 +35,10 @@
 
     <LinearLayout
         android:id="@+id/menu_option_layout"
-        style="@style/TaskMenu"
-        android:divider="@drawable/all_apps_divider"
-        android:showDividers="beginning"
-        android:paddingStart="@dimen/task_card_menu_horizontal_padding"
-        android:paddingEnd="@dimen/task_card_menu_horizontal_padding"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:divider="@drawable/all_apps_divider"
+        android:showDividers="beginning" />
 
 </com.android.quickstep.views.TaskMenuView>
