@@ -702,11 +702,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         return taskView;
     }
 
-    /** See {@link #updateThumbnail(int, ThumbnailData, boolean)} */
-    public TaskView updateThumbnail(int taskId, ThumbnailData thumbnailData) {
-        return updateThumbnail(taskId, thumbnailData, true /* refreshNow */);
-    }
-
     @Override
     protected void onWindowVisibilityChanged(int visibility) {
         super.onWindowVisibilityChanged(visibility);
