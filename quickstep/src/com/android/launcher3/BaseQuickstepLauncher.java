@@ -443,6 +443,19 @@ public abstract class BaseQuickstepLauncher extends Launcher
         if (info == null) {
             return;
         }
+        switch (info.container) {
+            case LauncherSettings.Favorites.CONTAINER_DESKTOP:
+            case LauncherSettings.Favorites.CONTAINER_HOTSEAT:
+                // Fall through and continue it's on the workspace (we don't support swiping back
+                // to other containers like all apps or the hotseat predictions (which can change)
+                break;
+            default:
+                if (info.container >= 0) {
+                    // Also allow swiping to folders
+                    break;
+                }
+                return;
+        }
         switch (info.itemType) {
             case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
             case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
