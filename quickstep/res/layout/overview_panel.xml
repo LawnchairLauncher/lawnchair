@@ -15,12 +15,6 @@
 -->
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <com.android.quickstep.views.SplitPlaceholderView
-        android:id="@+id/split_placeholder"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/split_placeholder_size"
-        android:background="@android:color/darker_gray"
-        android:visibility="gone" />
 
     <com.android.quickstep.views.LauncherRecentsView
         android:id="@+id/overview_panel"
@@ -30,6 +24,13 @@
         android:clipChildren="false"
         android:clipToPadding="false"
         android:visibility="invisible" />
+
+    <com.android.quickstep.views.SplitPlaceholderView
+        android:id="@+id/split_placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/split_placeholder_size"
+        android:background="@android:color/darker_gray"
+        android:visibility="gone" />
 
     <include
         android:id="@+id/overview_actions_view"

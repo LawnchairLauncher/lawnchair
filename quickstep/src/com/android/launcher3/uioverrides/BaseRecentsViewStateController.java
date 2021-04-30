@@ -22,12 +22,12 @@ import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_FA
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_MODAL;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SCALE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_X;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_Y;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_OVERVIEW;
 import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_OFFSET;
 import static com.android.quickstep.views.RecentsView.RECENTS_GRID_PROGRESS;
 import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
-import static com.android.quickstep.views.RecentsView.TASK_PRIMARY_TRANSLATION;
+import static com.android.quickstep.views.RecentsView.TASK_PRIMARY_SPLIT_TRANSLATION;
+import static com.android.quickstep.views.RecentsView.TASK_SECONDARY_SPLIT_TRANSLATION;
 import static com.android.quickstep.views.RecentsView.TASK_SECONDARY_TRANSLATION;
 
 import android.util.FloatProperty;
@@ -97,10 +97,10 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
         PagedOrientationHandler orientationHandler =
                 ((RecentsView) mLauncher.getOverviewPanel()).getPagedOrientationHandler();
         FloatProperty taskViewsFloat = orientationHandler.getSplitSelectTaskOffset(
-                TASK_PRIMARY_TRANSLATION, TASK_SECONDARY_TRANSLATION, mLauncher.getDeviceProfile());
+                TASK_PRIMARY_SPLIT_TRANSLATION, TASK_SECONDARY_SPLIT_TRANSLATION,
+                mLauncher.getDeviceProfile());
         setter.setFloat(mRecentsView, taskViewsFloat,
-                toState.getOverviewSecondaryTranslation(mLauncher),
-                config.getInterpolator(ANIM_OVERVIEW_TRANSLATE_Y, LINEAR));
+                toState.getOverviewSecondaryTranslation(mLauncher), LINEAR);
 
         setter.setFloat(mRecentsView, getContentAlphaProperty(), toState.overviewUi ? 1 : 0,
                 config.getInterpolator(ANIM_OVERVIEW_FADE, AGGRESSIVE_EASE_IN_OUT));
