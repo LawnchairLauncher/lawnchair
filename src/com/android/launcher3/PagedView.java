@@ -389,10 +389,16 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
     protected void pageEndTransition() {
         if (mIsPageInTransition && !mIsBeingDragged && mScroller.isFinished()
-                && mEdgeGlowLeft.isFinished() && mEdgeGlowRight.isFinished()) {
+                && (!isShown() || (mEdgeGlowLeft.isFinished() && mEdgeGlowRight.isFinished()))) {
             mIsPageInTransition = false;
             onPageEndTransition();
         }
+    }
+
+    @Override
+    public void onVisibilityAggregated(boolean isVisible) {
+        pageEndTransition();
+        super.onVisibilityAggregated(isVisible);
     }
 
     protected boolean isPageInTransition() {
