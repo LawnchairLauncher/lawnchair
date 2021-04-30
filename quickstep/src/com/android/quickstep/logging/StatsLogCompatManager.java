@@ -84,6 +84,7 @@ public class StatsLogCompatManager extends StatsLogManager {
     private static final int FOLDER_HIERARCHY_OFFSET = 100;
     private static final int SEARCH_RESULT_HIERARCHY_OFFSET = 200;
     private static final int EXTENDED_CONTAINERS_HIERARCHY_OFFSET = 300;
+    private static final int ATTRIBUTE_MULTIPLIER = 100;
 
     public static final CopyOnWriteArrayList<StatsLogConsumer> LOGS_CONSUMER =
             new CopyOnWriteArrayList<>();
@@ -112,7 +113,8 @@ public class StatsLogCompatManager extends StatsLogManager {
         }
         SysUiStatsLog.write(SysUiStatsLog.LAUNCHER_SNAPSHOT,
                 LAUNCHER_WORKSPACE_SNAPSHOT.getId() /* event_id */,
-                info.getItemCase().getNumber() /* target_id */,
+                info.getAttribute().getNumber() * ATTRIBUTE_MULTIPLIER
+                        + info.getItemCase().getNumber()  /* target_id */,
                 instanceId.getId() /* instance_id */,
                 0 /* uid */,
                 getPackageName(info) /* package_name */,
@@ -329,7 +331,8 @@ public class StatsLogCompatManager extends StatsLogManager {
                     null /* launcher extensions, deprecated */,
                     false /* quickstep_enabled, deprecated */,
                     event.getId() /* event_id */,
-                    atomInfo.getItemCase().getNumber() /* target_id */,
+                    atomInfo.getAttribute().getNumber() * ATTRIBUTE_MULTIPLIER
+                            + atomInfo.getItemCase().getNumber() /* target_id */,
                     instanceId.getId() /* instance_id TODO */,
                     0 /* uid TODO */,
                     getPackageName(atomInfo) /* package_name */,
