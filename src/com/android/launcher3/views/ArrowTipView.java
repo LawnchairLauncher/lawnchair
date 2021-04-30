@@ -148,6 +148,10 @@ public class ArrowTipView extends AbstractFloatingView {
         LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) findViewById(
                 R.id.arrow).getLayoutParams();
         lp.gravity = gravity;
+
+        if (parent.getLayoutDirection() == LAYOUT_DIRECTION_RTL) {
+            arrowMarginStart = parent.getMeasuredWidth() - arrowMarginStart;
+        }
         if (gravity == Gravity.END) {
             lp.setMarginEnd(parent.getMeasuredWidth() - arrowMarginStart);
         } else if (gravity == Gravity.START) {
