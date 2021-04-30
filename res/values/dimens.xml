@@ -158,7 +158,7 @@
 <!-- Dragging -->
     <!-- Drag padding to add to the bottom of drop targets -->
     <dimen name="drop_target_drag_padding">14dp</dimen>
-    <dimen name="drop_target_text_size">14sp</dimen>
+    <dimen name="drop_target_text_size">20sp</dimen>
     <dimen name="drop_target_shadow_elevation">2dp</dimen>
 
     <!-- the distance an icon must be dragged before button drop targets accept it -->

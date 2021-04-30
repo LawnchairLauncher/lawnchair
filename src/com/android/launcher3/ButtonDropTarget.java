@@ -36,6 +36,8 @@ import android.view.accessibility.AccessibilityEvent;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import androidx.appcompat.content.res.AppCompatResources;
+
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
@@ -142,6 +144,11 @@ public abstract class ButtonDropTarget extends TextView
         }
     }
 
+    private void setBackgroundDrawable(int resId) {
+        Drawable bd = AppCompatResources.getDrawable(getContext(), resId);
+        setBackground(bd);
+    }
+
     @Override
     public final void onDragEnter(DragObject d) {
         if (!mAccessibleDrag && !mTextVisible) {
@@ -167,6 +174,7 @@ public abstract class ButtonDropTarget extends TextView
         }
 
         d.dragView.setAlpha(DRAG_VIEW_HOVER_OVER_OPACITY);
+        setBackgroundDrawable(R.drawable.drop_target_frame_hover);
         if (d.stateAnnouncer != null) {
             d.stateAnnouncer.cancel();
         }
@@ -184,6 +192,7 @@ public abstract class ButtonDropTarget extends TextView
 
         if (!d.dragComplete) {
             d.dragView.setAlpha(1f);
+            setBackgroundDrawable(R.drawable.drop_target_frame);
         } else {
             d.dragView.setAlpha(DRAG_VIEW_HOVER_OVER_OPACITY);
         }
