@@ -19,6 +19,8 @@ package app.lawnchair.ui.preferences
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import app.lawnchair.util.Meta
+import app.lawnchair.util.pageMeta
 import app.lawnchair.util.preferences.getAdapter
 import app.lawnchair.util.preferences.preferenceManager
 import com.android.launcher3.R
@@ -27,6 +29,7 @@ import com.android.launcher3.R
 @Composable
 fun AppDrawerPreferences() {
     val prefs = preferenceManager()
+    pageMeta.provide(Meta(title = stringResource(id = R.string.app_drawer_label)))
     PreferenceLayout {
         PreferenceGroup(heading = stringResource(id = R.string.general_label), isFirstChild = true) {
             SliderPreference(

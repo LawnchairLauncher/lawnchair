@@ -30,8 +30,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
+import app.lawnchair.util.Meta
+import app.lawnchair.util.pageMeta
 import app.lawnchair.util.preferences.getAdapter
 import app.lawnchair.util.preferences.preferenceManager
 import com.android.launcher3.R
@@ -44,6 +47,7 @@ fun IconPackPreferences(interactor: PreferenceInteractor) {
     val iconPacks = interactor.getIconPacks().values.toList()
     val iconPackPackage = preferenceManager().iconPackPackage.getAdapter()
 
+    pageMeta.provide(Meta(title = stringResource(id = R.string.icon_pack)))
     PreferenceLayout {
         PreferenceGroup(isFirstChild = true) {
             // TODO: Use `LazyColumn` if possible.

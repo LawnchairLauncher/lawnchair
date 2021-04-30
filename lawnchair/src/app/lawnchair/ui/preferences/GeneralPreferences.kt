@@ -21,6 +21,8 @@ import androidx.compose.animation.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
+import app.lawnchair.util.Meta
+import app.lawnchair.util.pageMeta
 import app.lawnchair.util.preferences.*
 import com.android.launcher3.R
 
@@ -28,6 +30,7 @@ import com.android.launcher3.R
 @Composable
 fun GeneralPreferences(navController: NavController, interactor: PreferenceInteractor) {
     val prefs = preferenceManager()
+    pageMeta.provide(Meta(title = stringResource(id = R.string.general_label)))
     PreferenceLayout {
         PreferenceGroup(isFirstChild = true) {
             SwitchPreference(

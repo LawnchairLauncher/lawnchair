@@ -34,6 +34,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import app.lawnchair.util.Meta
+import app.lawnchair.util.pageMeta
 import app.lawnchair.util.preferences.getFormattedVersionName
 import com.android.launcher3.R
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
@@ -114,6 +116,7 @@ val teamMembers = listOf(
 fun About() {
     val context = LocalContext.current
 
+    pageMeta.provide(Meta(title = stringResource(id = R.string.about_label)))
     Column(
         modifier = Modifier
             .fillMaxWidth()
