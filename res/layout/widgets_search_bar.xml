@@ -26,7 +26,7 @@
         android:inputType="text"
         android:imeOptions="actionSearch"
         android:textColor="?android:attr/textColorPrimary"
-        android:textColorHint="?android:attr/textColorTertiary"/>
+        android:textColorHint="?android:attr/textColorSecondary"/>
 
     <ImageButton
         android:id="@+id/widgets_search_cancel_button"
