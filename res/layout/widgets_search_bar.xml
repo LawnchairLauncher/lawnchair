@@ -24,7 +24,7 @@
         android:layout_weight="1"
         android:inputType="text"
         android:imeOptions="actionSearch"
-        android:textColor="?android:attr/textColorSecondary"
+        android:textColor="?android:attr/textColorPrimary"
         android:textColorHint="?android:attr/textColorTertiary"/>
 
     <ImageButton
