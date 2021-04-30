@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package app.lawnchair.ui.preferences
+package app.lawnchair.ui.preferences.components
 
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.lazy.LazyColumn
@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
+import app.lawnchair.ui.preferences.getPreferenceCategories
 
 @Composable
 fun PreferenceCategoryList(navController: NavController) {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package app.lawnchair.ui.preferences
+package app.lawnchair.ui.preferences.components
 
 import android.os.Build
 import android.view.View

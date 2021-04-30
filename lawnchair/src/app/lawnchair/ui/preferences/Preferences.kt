@@ -31,6 +31,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import app.lawnchair.ui.preferences.about.About
+import app.lawnchair.ui.preferences.components.PreferenceCategoryList
+import app.lawnchair.ui.preferences.components.SystemUi
+import app.lawnchair.ui.preferences.components.TopBar
 import app.lawnchair.util.Meta
 import app.lawnchair.util.pageMeta
 import app.lawnchair.util.preferences.getMajorVersion

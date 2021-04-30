@@ -33,6 +33,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
+import app.lawnchair.ui.preferences.components.PreferenceGroup
+import app.lawnchair.ui.preferences.components.PreferenceLayout
+import app.lawnchair.ui.preferences.components.PreferenceTemplate
 import app.lawnchair.util.Meta
 import app.lawnchair.util.pageMeta
 import app.lawnchair.util.preferences.getAdapter

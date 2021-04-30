@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package app.lawnchair.ui.preferences
+package app.lawnchair.ui.preferences.components
 
 import android.content.ComponentName
 import android.content.Intent
@@ -32,6 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
+import app.lawnchair.ui.preferences.PreferenceInteractor
 import com.android.launcher3.R
 import com.android.launcher3.notification.NotificationListener
 import android.provider.Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS as actionNotificationListenerSettings
