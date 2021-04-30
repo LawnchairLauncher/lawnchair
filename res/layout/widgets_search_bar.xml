@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:layout_marginTop="16dp"
+    android:layout_marginBottom="1dp"
     android:background="@drawable/bg_widgets_searchbox"
     android:elevation="2dp">
 
