@@ -57,8 +57,8 @@
     <string name="widget_accessible_dims_format">%1$d wide by %2$d high</string>
     <!-- Message to tell the user to press and hold a widget/icon to add it  -->
     <string name="add_item_request_drag_hint">Touch &amp; hold to place manually</string>
-    <!-- Button label to automatically add icon on home screen [CHAR_LIMIT=50] -->
-    <string name="place_automatically">Add automatically</string>
+    <!-- Button label to automatically add a widget to home screen [CHAR_LIMIT=50] -->
+    <string name="add_to_home_screen">Add to Home screen</string>
     <!-- Label for showing the number of widgets an app has in the full widgets picker.
          [CHAR_LIMIT=25] -->
     <plurals name="widgets_count">
