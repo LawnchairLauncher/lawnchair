@@ -22,7 +22,6 @@ import android.graphics.Paint;
 import android.graphics.drawable.ShapeDrawable;
 import android.os.Handler;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -108,10 +107,7 @@ public class ArrowTipView extends AbstractFloatingView {
         ShapeDrawable arrowDrawable = new ShapeDrawable(TriangleShape.create(
                 arrowLp.width, arrowLp.height, false));
         Paint arrowPaint = arrowDrawable.getPaint();
-        TypedValue typedValue = new TypedValue();
-        context.getTheme()
-                .resolveAttribute(android.R.attr.colorAccent, typedValue, true);
-        arrowPaint.setColor(ContextCompat.getColor(getContext(), typedValue.resourceId));
+        arrowPaint.setColor(ContextCompat.getColor(getContext(),  R.color.arrow_tip_view_bg));
         // The corner path effect won't be reflected in the shadow, but shouldn't be noticeable.
         arrowPaint.setPathEffect(new CornerPathEffect(
                 context.getResources().getDimension(R.dimen.arrow_toast_corner_radius)));
