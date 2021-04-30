@@ -42,8 +42,8 @@
         <item name="isWorkspaceDarkText">false</item>
         <item name="workspaceTextColor">@color/workspace_text_color_light</item>
         <item name="workspaceShadowColor">#B0000000</item>
-        <item name="workspaceAmbientShadowColor">#33000000</item>
-        <item name="workspaceKeyShadowColor">#44000000</item>
+        <item name="workspaceAmbientShadowColor">#00000000</item>
+        <item name="workspaceKeyShadowColor">#89000000</item>
         <item name="workspaceStatusBarScrim">@drawable/workspace_bg</item>
         <item name="widgetsTheme">@style/WidgetContainerTheme</item>
         <item name="folderDotColor">?android:attr/colorPrimary</item>
@@ -243,8 +243,9 @@
         <item name="ambientShadowColor">?attr/workspaceAmbientShadowColor</item>
         <item name="ambientShadowBlur">2.5dp</item>
         <item name="keyShadowColor">?attr/workspaceKeyShadowColor</item>
-        <item name="keyShadowBlur">1dp</item>
-        <item name="keyShadowOffset">.5dp</item>
+        <item name="keyShadowBlur">.5dp</item>
+        <item name="keyShadowOffsetX">.5dp</item>
+        <item name="keyShadowOffsetY">.5dp</item>
     </style>
 
     <!-- Theme for the popup container -->

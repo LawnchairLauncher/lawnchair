@@ -28,7 +28,6 @@ import android.graphics.Rect;
 import android.os.Process;
 import android.os.UserHandle;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.Pair;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -473,10 +472,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         WidgetsRecommendationTableLayout table =
                 mSearchAndRecommendationViewHolder.mRecommendedWidgetsTable;
         if (recommendedWidgets.size() > 0) {
-            // TODO(b/185508758): Revert the following log after debugging.
-            if (getHeaderViewHeight() == 0) {
-                Log.d(TAG, "Header view height is 0 when inflating recommended widgets");
-            }
             float maxTableHeight =
                     (mLauncher.getDeviceProfile().availableHeightPx - mTabsHeight
                             - getHeaderViewHeight()) * RECOMMENDATION_TABLE_HEIGHT_RATIO;
