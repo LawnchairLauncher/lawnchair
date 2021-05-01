@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:layout_marginTop="16dp"
+    android:layout_marginBottom="1dp"
     android:background="@drawable/bg_widgets_searchbox"
     android:elevation="2dp">
 
@@ -24,8 +25,8 @@
         android:layout_weight="1"
         android:inputType="text"
         android:imeOptions="actionSearch"
-        android:textColor="?android:attr/textColorSecondary"
-        android:textColorHint="?android:attr/textColorTertiary"/>
+        android:textColor="?android:attr/textColorPrimary"
+        android:textColorHint="?android:attr/textColorSecondary"/>
 
     <ImageButton
         android:id="@+id/widgets_search_cancel_button"
