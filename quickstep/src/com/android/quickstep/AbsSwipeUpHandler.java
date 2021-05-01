@@ -1423,23 +1423,17 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     }
 
     protected void switchToScreenshot() {
-        final int runningTaskId = mGestureState.getRunningTaskId();
-        if (LIVE_TILE.get()) {
-            if (mRecentsAnimationController != null) {
-                mRecentsAnimationController.getController().setWillFinishToHome(true);
-                // Update the screenshot of the task
-                if (mTaskSnapshot == null) {
-                    mTaskSnapshot = mRecentsAnimationController.screenshotTask(runningTaskId);
-                }
-                mRecentsView.updateThumbnail(runningTaskId, mTaskSnapshot, false /* refreshNow */);
-            }
-            mStateCallback.setStateOnUiThread(STATE_SCREENSHOT_CAPTURED);
-        } else if (!hasTargets()) {
+        if (!hasTargets()) {
             // If there are no targets, then we don't need to capture anything
             mStateCallback.setStateOnUiThread(STATE_SCREENSHOT_CAPTURED);
         } else {
+            final int runningTaskId = mGestureState.getRunningTaskId();
+            final boolean refreshView = !LIVE_TILE.get() /* refreshView */;
             boolean finishTransitionPosted = false;
             if (mRecentsAnimationController != null) {
+                if (LIVE_TILE.get()) {
+                    mRecentsAnimationController.getController().setWillFinishToHome(true);
+                }
                 // Update the screenshot of the task
                 if (mTaskSnapshot == null) {
                     UI_HELPER_EXECUTOR.execute(() -> {
@@ -1448,14 +1442,14 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                                 mRecentsAnimationController.screenshotTask(runningTaskId);
                         MAIN_EXECUTOR.execute(() -> {
                             mTaskSnapshot = taskSnapshot;
-                            if (!updateThumbnail(runningTaskId)) {
+                            if (!updateThumbnail(runningTaskId, refreshView)) {
                                 setScreenshotCapturedState();
                             }
                         });
                     });
                     return;
                 }
-                finishTransitionPosted = updateThumbnail(runningTaskId);
+                finishTransitionPosted = updateThumbnail(runningTaskId, refreshView);
             }
             if (!finishTransitionPosted) {
                 setScreenshotCapturedState();
@@ -1464,17 +1458,17 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     }
 
     // Returns whether finish transition was posted.
-    private boolean updateThumbnail(int runningTaskId) {
+    private boolean updateThumbnail(int runningTaskId, boolean refreshView) {
         boolean finishTransitionPosted = false;
         final TaskView taskView;
-        if (mGestureState.getEndTarget() == HOME) {
-            // Capture the screenshot before finishing the transition to home to ensure it's
-            // taken in the correct orientation, but no need to update the thumbnail.
+        if (mGestureState.getEndTarget() == HOME || mGestureState.getEndTarget() == NEW_TASK) {
+            // Capture the screenshot before finishing the transition to home or quickswitching to
+            // ensure it's taken in the correct orientation, but no need to update the thumbnail.
             taskView = null;
         } else {
-            taskView = mRecentsView.updateThumbnail(runningTaskId, mTaskSnapshot);
+            taskView = mRecentsView.updateThumbnail(runningTaskId, mTaskSnapshot, refreshView);
         }
-        if (taskView != null && !mCanceled) {
+        if (taskView != null && refreshView && !mCanceled) {
             // Defer finishing the animation until the next launcher frame with the
             // new thumbnail
             finishTransitionPosted = ViewUtils.postFrameDrawn(taskView,
