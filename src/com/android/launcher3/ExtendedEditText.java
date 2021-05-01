@@ -99,7 +99,7 @@ public class ExtendedEditText extends EditText {
     }
 
     public void hideKeyboard() {
-        UiThreadHelper.hideKeyboardAsync(getContext(), getWindowToken());
+        UiThreadHelper.hideKeyboardAsync(Launcher.getLauncher(getContext()), getWindowToken());
     }
 
     private boolean showSoftInput() {
