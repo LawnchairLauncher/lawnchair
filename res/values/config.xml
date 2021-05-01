@@ -77,11 +77,6 @@
     <!-- Menu id for feature flags -->
     <item type="id" name="menu_apply_flags" />
 
-    <!-- Popup items -->
-    <integer name="config_popupOpenCloseDuration">150</integer>
-    <integer name="config_popupArrowOpenCloseDuration">40</integer>
-    <integer name="config_removeNotificationViewDuration">300</integer>
-
     <!-- Default packages -->
     <string name="wallpaper_picker_package" translatable="false"></string>
     <string name="local_colors_extraction_class" translatable="false"></string>
