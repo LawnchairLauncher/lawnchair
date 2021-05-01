@@ -36,6 +36,15 @@
         android:singleLine="true"
         android:maxLines="1" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:paddingVertical="8dp"
+        android:text="@string/add_item_request_drag_hint"
+        android:textSize="14sp"
+        android:importantForAccessibility="no"/>
+
     <include layout="@layout/widget_cell"
         android:id="@+id/widget_cell"
         android:layout_width="match_parent"
@@ -53,6 +62,7 @@
             style="@style/Widget.DeviceDefault.Button.Rounded.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingHorizontal="16dp"
             android:onClick="onCancelClick"
             android:text="@android:string/cancel" />
 
@@ -64,7 +74,8 @@
             style="@style/Widget.DeviceDefault.Button.Rounded.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingHorizontal="16dp"
             android:onClick="onPlaceAutomaticallyClick"
-            android:text="@string/place_automatically" />
+            android:text="@string/add_to_home_screen" />
     </LinearLayout>
 </LinearLayout>
