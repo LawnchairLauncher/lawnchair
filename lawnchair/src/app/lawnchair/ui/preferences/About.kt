@@ -43,67 +43,67 @@ class TeamMember(val name: String, @StringRes val descriptionRes: Int, val photo
 val teamMembers = listOf(
     TeamMember(
         name = "Amogh Lele",
-        descriptionRes = R.string.developer,
+        descriptionRes = R.string.development,
         photoUrl = "https://avatars.githubusercontent.com/u/31761843",
         socialUrl = "https://www.linkedin.com/in/amogh-lele/"
     ),
     TeamMember(
         name = "Antonio J. Roa Valverde",
-        descriptionRes = R.string.developer,
+        descriptionRes = R.string.development,
         photoUrl = "https://avatars.githubusercontent.com/u/914983",
         socialUrl = "https://twitter.com/6020peaks"
     ),
     TeamMember(
         name = "Daniel Souza",
-        descriptionRes = R.string.support_representative,
+        descriptionRes = R.string.support,
         photoUrl = "https://avatars.githubusercontent.com/u/32078304",
         socialUrl = "https://github.com/DanGLES3"
     ),
     TeamMember(
         name = "David Sn",
-        descriptionRes = R.string.devops_engineer,
+        descriptionRes = R.string.devops,
         photoUrl = "https://i.imgur.com/b65akTl.png",
         socialUrl = "https://codebucket.de"
     ),
     TeamMember(
         name = "Giuseppe Longobardo",
-        descriptionRes = R.string.support_representative,
+        descriptionRes = R.string.support,
         photoUrl = "https://avatars.githubusercontent.com/u/49398464",
         socialUrl = "https://github.com/joseph-20"
     ),
     TeamMember(
         name = "Harsh Shandilya",
-        descriptionRes = R.string.developer,
+        descriptionRes = R.string.development,
         photoUrl = "https://avatars.githubusercontent.com/u/13348378",
         socialUrl = "https://github.com/msfjarvis"
     ),
     TeamMember(
         name = "Manuel Lorenzo",
-        descriptionRes = R.string.developer,
+        descriptionRes = R.string.development,
         photoUrl = "https://avatars.githubusercontent.com/u/183264",
         socialUrl = "https://twitter.com/noloman"
     ),
     TeamMember(
         name = "paphonb",
-        descriptionRes = R.string.developer,
+        descriptionRes = R.string.development,
         photoUrl = "https://avatars.githubusercontent.com/u/8080853",
         socialUrl = "https://twitter.com/paphonb"
     ),
     TeamMember(
         name = "raphtlw",
-        descriptionRes = R.string.developer,
+        descriptionRes = R.string.development,
         photoUrl = "https://avatars.githubusercontent.com/u/47694127",
         socialUrl = "https://twitter.com/raphtlw"
     ),
     TeamMember(
         name = "Rhyse Simpson",
-        descriptionRes = R.string.quickswitch_maintainer,
+        descriptionRes = R.string.quickswitch_maintenance,
         photoUrl = "https://avatars.githubusercontent.com/u/7065700",
         socialUrl = "https://twitter.com/skittles9823"
     ),
     TeamMember(
         name = "Rik Koedoot",
-        descriptionRes = R.string.support_representative,
+        descriptionRes = R.string.support_and_pr,
         photoUrl = "https://avatars.githubusercontent.com/u/29402532",
         socialUrl = "https://twitter.com/rikkoedoot"
     ),

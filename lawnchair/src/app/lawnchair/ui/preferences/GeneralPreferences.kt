@@ -46,14 +46,14 @@ fun GeneralPreferences(navController: NavController, interactor: PreferenceInter
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val wrapAdaptiveIcons = prefs.wrapAdaptiveIcons.observeAsState()
             PreferenceGroup(
-                heading = stringResource(id = R.string.adaptive_icons),
+                heading = stringResource(id = R.string.auto_adaptive_icons_label),
                 description = stringResource(id = (R.string.adaptive_icon_background_description)),
                 showDescription = wrapAdaptiveIcons.value
             ) {
                 SwitchPreference(
                     adapter = prefs.wrapAdaptiveIcons.getAdapter(),
-                    label = stringResource(id = R.string.make_icon_packs_adaptive_label),
-                    description = stringResource(id = R.string.make_icon_packs_adaptive_description),
+                    label = stringResource(id = R.string.auto_adaptive_icons_label),
+                    description = stringResource(id = R.string.auto_adaptive_icons_description),
                     showDivider = wrapAdaptiveIcons.value
                 )
                 AnimatedVisibility(
