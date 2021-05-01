@@ -1,3 +1,5 @@
+// Modifications copyright 2021, Lawnchair
+
 package com.android.launcher3;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;

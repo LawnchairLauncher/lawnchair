@@ -1,7 +1,24 @@
+/*
+ * Copyright 2021, Lawnchair
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package app.lawnchair.ui.preferences
 
 import android.content.Intent
 import androidx.annotation.StringRes
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -25,67 +42,74 @@ class TeamMember(val name: String, @StringRes val descriptionRes: Int, val photo
 
 val teamMembers = listOf(
     TeamMember(
+        name = "Amogh Lele",
+        descriptionRes = R.string.development,
+        photoUrl = "https://avatars.githubusercontent.com/u/31761843",
+        socialUrl = "https://www.linkedin.com/in/amogh-lele/"
+    ),
+    TeamMember(
         name = "Antonio J. Roa Valverde",
-        descriptionRes = R.string.developer,
+        descriptionRes = R.string.development,
         photoUrl = "https://avatars.githubusercontent.com/u/914983",
         socialUrl = "https://twitter.com/6020peaks"
     ),
     TeamMember(
+        name = "Daniel Souza",
+        descriptionRes = R.string.support,
+        photoUrl = "https://avatars.githubusercontent.com/u/32078304",
+        socialUrl = "https://github.com/DanGLES3"
+    ),
+    TeamMember(
         name = "David Sn",
-        descriptionRes = R.string.devops_engineer,
+        descriptionRes = R.string.devops,
         photoUrl = "https://i.imgur.com/b65akTl.png",
         socialUrl = "https://codebucket.de"
     ),
     TeamMember(
         name = "Giuseppe Longobardo",
-        descriptionRes = R.string.support_representative,
+        descriptionRes = R.string.support,
         photoUrl = "https://avatars.githubusercontent.com/u/49398464",
         socialUrl = "https://github.com/joseph-20"
     ),
     TeamMember(
-        name = "Daniel Souza",
-        descriptionRes = R.string.support_representative,
-        photoUrl = "https://avatars.githubusercontent.com/u/32078304",
-        socialUrl = "https://github.com/DanGLES3"
-    ),
-    TeamMember(
         name = "Harsh Shandilya",
-        descriptionRes = R.string.developer,
+        descriptionRes = R.string.development,
         photoUrl = "https://avatars.githubusercontent.com/u/13348378",
         socialUrl = "https://github.com/msfjarvis"
     ),
     TeamMember(
         name = "Manuel Lorenzo",
-        descriptionRes = R.string.developer,
+        descriptionRes = R.string.development,
         photoUrl = "https://avatars.githubusercontent.com/u/183264",
         socialUrl = "https://twitter.com/noloman"
     ),
     TeamMember(
         name = "paphonb",
-        descriptionRes = R.string.developer,
+        descriptionRes = R.string.development,
         photoUrl = "https://avatars.githubusercontent.com/u/8080853",
         socialUrl = "https://twitter.com/paphonb"
     ),
     TeamMember(
         name = "raphtlw",
-        descriptionRes = R.string.developer,
+        descriptionRes = R.string.development,
         photoUrl = "https://avatars.githubusercontent.com/u/47694127",
         socialUrl = "https://twitter.com/raphtlw"
     ),
     TeamMember(
         name = "Rhyse Simpson",
-        descriptionRes = R.string.quickswitch_maintainer,
+        descriptionRes = R.string.quickswitch_maintenance,
         photoUrl = "https://avatars.githubusercontent.com/u/7065700",
         socialUrl = "https://twitter.com/skittles9823"
     ),
     TeamMember(
-        name = "Rik Kode",
-        descriptionRes = R.string.support_representative,
+        name = "Rik Koedoot",
+        descriptionRes = R.string.support_and_pr,
         photoUrl = "https://avatars.githubusercontent.com/u/29402532",
         socialUrl = "https://twitter.com/rikkoedoot"
-    )
+    ),
 )
 
+@ExperimentalAnimationApi
 @Composable
 fun About() {
     val context = LocalContext.current

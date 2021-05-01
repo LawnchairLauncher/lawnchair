@@ -1,18 +1,17 @@
 /*
- *     This file is part of Lawnchair Launcher.
+ * Copyright 2021, Lawnchair
  *
- *     Lawnchair Launcher is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *     Lawnchair Launcher is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *     You should have received a copy of the GNU General Public License
- *     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package app.lawnchair
@@ -26,7 +25,7 @@ import android.os.Process
 import android.util.Log
 import app.lawnchair.util.SingletonHolder
 import app.lawnchair.util.ensureOnMainThread
-import app.lawnchair.util.preferences.LawnchairPreferences
+import app.lawnchair.util.preferences.PreferenceManager
 import app.lawnchair.util.useApplicationContext
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
@@ -35,7 +34,7 @@ import com.android.launcher3.Utilities
 class FeedBridge(private val context: Context) {
 
     private val shouldUseFeed = context.applicationInfo.flags and FLAG_SYSTEM == 0
-    private val prefs = LawnchairPreferences.getInstance(context)
+    private val prefs = PreferenceManager.getInstance(context)
     private val bridgePackages by lazy {
         listOf(
             PixelBridgeInfo("com.google.android.apps.nexuslauncher", R.integer.bridge_signature_hash),
@@ -52,10 +51,15 @@ class FeedBridge(private val context: Context) {
         }
     }
 
-    private fun customBridgeOrNull() = if (prefs!!.getString(LawnchairPreferences.FEED_PROVIDER, "")!!.isNotBlank()) {
-        val bridge = CustomBridgeInfo(prefs.getString(LawnchairPreferences.FEED_PROVIDER, "")!!)
-        if (bridge.isAvailable()) bridge else null
-    } else null
+    private fun customBridgeOrNull(): CustomBridgeInfo? {
+        val feedProvider = prefs.feedProvider.get()
+        return if (feedProvider.isNotBlank()) {
+            val bridge = CustomBridgeInfo(feedProvider)
+            if (bridge.isAvailable()) bridge else null
+        } else {
+            null
+        }
+    }
 
     private fun customBridgeAvailable() = customBridgeOrNull()?.isAvailable() == true
 
@@ -115,7 +119,7 @@ class FeedBridge(private val context: Context) {
 
     private inner class CustomBridgeInfo(packageName: String) : BridgeInfo(packageName, 0) {
         override val signatureHash = whitelist[packageName]?.toInt() ?: -1
-        private val disableWhitelist = prefs!!.getBoolean(LawnchairPreferences.IGNORE_FEED_WHITELIST, false)
+        private val disableWhitelist = prefs.ignoreFeedWhitelist.get()
         override fun isSigned(): Boolean {
             if (signatureHash == -1 && Utilities.ATLEAST_P) {
                 val info = context.packageManager

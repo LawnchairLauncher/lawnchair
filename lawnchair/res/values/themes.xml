@@ -4,30 +4,11 @@
     <style name="Theme.Lawnchair" parent="Base.Theme.Lawnchair"/>
 
     <style name="Base.Theme.Lawnchair" parent="Base.Theme.MaterialThemeBuilder">
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
-        <item name="colorSecondary">@color/purple_500</item>
-        <item name="colorSecondaryVariant">@color/purple_700</item>
-
         <item name="android:colorBackground">@color/white_50</item>
-        <item name="colorSurface">@color/white_50</item>
-        <item name="colorError">@color/red_600</item>
-
-        <item name="colorOnPrimary">@color/white_50</item>
-        <item name="colorOnSecondary">@color/black_900</item>
-        <item name="colorOnBackground">@color/black_900</item>
-        <item name="colorOnSurface">@color/black_900</item>
-        <item name="colorOnError">@color/white_50</item>
-
-        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.LawnchairTheme.SmallComponent</item>
-        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.LawnchairTheme.MediumComponent</item>
-        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.LawnchairTheme.LargeComponent</item>
-
-        <item name="toolbarStyle">@style/Widget.MaterialComponents.Toolbar.Surface</item>
     </style>
 
     <style name="Base.Theme.MaterialThemeBuilder" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="android:statusBarColor" tools:ignore="NewApi">?attr/colorSurface</item>
+        <item name="android:statusBarColor" tools:ignore="NewApi">?android:attr/colorBackground</item>
         <item name="android:windowLightStatusBar" tools:ignore="NewApi">true</item>
         <item name="android:navigationBarColor" tools:ignore="NewApi">?android:attr/colorBackground</item>
         <item name="android:windowLightNavigationBar" tools:ignore="NewApi">true</item>

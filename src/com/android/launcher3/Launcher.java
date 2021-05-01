@@ -12,6 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * Modifications copyright 2021, Lawnchair
  */
 
 package com.android.launcher3;
@@ -201,8 +203,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import app.lawnchair.util.preferences.LawnchairPreferences;
-
 /**
  * Default launcher application.
  */
@@ -348,8 +348,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
     private SafeCloseable mUserChangedCallbackCloseable;
 
-    private LawnchairPreferences lawnchairPreferences = new LawnchairPreferences(this);
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Object traceToken = TraceHelper.INSTANCE.beginSection(ON_CREATE_EVT,
@@ -471,9 +469,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
         mUserChangedCallbackCloseable = UserCache.INSTANCE.get(this).addUserChangeListener(
                 () -> getStateManager().goToState(NORMAL));
-
-        LawnchairPreferences.Companion.getInstance(this)
-                .registerOnSharedPreferenceChangeListener(lawnchairPreferences.getListener());
     }
 
 

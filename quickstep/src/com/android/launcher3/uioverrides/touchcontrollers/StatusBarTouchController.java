@@ -12,6 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * Modifications copyright 2021, Lawnchair
  */
 package com.android.launcher3.uioverrides.touchcontrollers;
 
@@ -21,6 +23,7 @@ import static android.view.MotionEvent.ACTION_UP;
 import static android.view.MotionEvent.ACTION_CANCEL;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SWIPE_DOWN_WORKSPACE_NOTISHADE_OPEN;
 
+import android.annotation.SuppressLint;
 import android.graphics.PointF;
 import android.util.SparseArray;
 import android.view.MotionEvent;
@@ -39,6 +42,7 @@ import com.android.launcher3.util.TouchController;
 
 import com.android.quickstep.SystemUiProxy;
 import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * TouchController for handling touch events that get sent to the StatusBar. Once the
@@ -69,6 +73,8 @@ public class StatusBarTouchController implements TouchController {
     /* If {@code false}, this controller should not handle the input {@link MotionEvent}.*/
     private boolean mCanIntercept;
 
+    private boolean mExpanded;
+
     public StatusBarTouchController(Launcher l) {
         mLauncher = l;
         mSystemUiProxy = SystemUiProxy.INSTANCE.get(mLauncher);
@@ -89,6 +95,20 @@ public class StatusBarTouchController implements TouchController {
         if (mSystemUiProxy.isActive()) {
             mLastAction = ev.getActionMasked();
             mSystemUiProxy.onStatusBarMotionEvent(ev);
+        } else if (!mExpanded) {
+            mExpanded = true;
+            expand();
+        }
+    }
+
+    @SuppressLint({"WrongConstant", "PrivateApi"})
+    private void expand() {
+        try {
+            Class.forName("android.app.StatusBarManager")
+                    .getMethod("expandNotificationsPanel")
+                    .invoke(mLauncher.getSystemService("statusbar"));
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException e) {
+            e.printStackTrace();
         }
     }
 
@@ -102,6 +122,7 @@ public class StatusBarTouchController implements TouchController {
             if (!mCanIntercept) {
                 return false;
             }
+            mExpanded = false;
             mDownEvents.put(pid, new PointF(ev.getX(), ev.getY()));
         } else if (ev.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN) {
            // Check!! should only set it only when threshold is not entered.
@@ -168,6 +189,6 @@ public class StatusBarTouchController implements TouchController {
                 return false;
             }
         }
-        return SystemUiProxy.INSTANCE.get(mLauncher).isActive();
+        return true;
     }
 }

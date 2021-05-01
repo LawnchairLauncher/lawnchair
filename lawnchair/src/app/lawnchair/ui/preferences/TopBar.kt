@@ -1,3 +1,19 @@
+/*
+ * Copyright 2021, Lawnchair
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package app.lawnchair.ui.preferences
 
 import androidx.compose.animation.AnimatedVisibility
@@ -15,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -28,18 +45,8 @@ import com.android.launcher3.R
 fun TopBar(navController: NavController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
-
-    val title = when (currentRoute) {
-        TOP_ROUTE -> stringResource(id = R.string.settings)
-        HOME_SCREEN_PREFERENCES_ROUTE -> stringResource(id = R.string.home_screen_label)
-        GENERAL_PREFERENCES_ROUTE -> stringResource(id = R.string.general_label)
-        ICON_PACK_PREFERENCES_ROUTE -> stringResource(id = R.string.icon_pack)
-        DOCK_PREFERENCES_ROUTE -> stringResource(id = R.string.dock_label)
-        APP_DRAWER_PREFERENCES_ROUTE -> stringResource(id = R.string.app_drawer_label)
-        FOLDER_PREFERENCES_ROUTE -> stringResource(id = R.string.folders_label)
-        ABOUT_ROUTE -> stringResource(id = R.string.about_label)
-        else -> ""
-    }
+    val context = LocalContext.current
+    val title = getRoutesToLabels(context)[currentRoute]
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -48,7 +55,7 @@ fun TopBar(navController: NavController) {
             .height(56.dp)
             .background(MaterialTheme.colors.background)
     ) {
-        AnimatedVisibility(visible = currentRoute != "top" && currentRoute != null) {
+        AnimatedVisibility(visible = currentRoute != Routes.PREFERENCES && currentRoute != null) {
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
@@ -66,7 +73,7 @@ fun TopBar(navController: NavController) {
             }
         }
         Text(
-            text = title,
+            text = title ?: "",
             style = MaterialTheme.typography.h6,
             modifier = Modifier.padding(start = 16.dp),
             color = MaterialTheme.colors.onSurface,

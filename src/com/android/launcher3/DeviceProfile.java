@@ -12,12 +12,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * Modifications copyright 2021, Lawnchair
  */
 
 package com.android.launcher3;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Point;
@@ -32,7 +33,7 @@ import com.android.launcher3.icons.IconNormalizer;
 import com.android.launcher3.util.DefaultDisplay;
 import com.android.launcher3.util.WindowBounds;
 
-import app.lawnchair.util.preferences.LawnchairPreferences;
+import app.lawnchair.util.preferences.PreferenceManager;
 
 public class DeviceProfile {
 
@@ -411,14 +412,13 @@ public class DeviceProfile {
         }
 
         // Lawnchair prefs
-        SharedPreferences prefs = LawnchairPreferences.Companion.getInstance(mContext);
-        if (prefs == null) return;
+        PreferenceManager prefs = PreferenceManager.getInstance(mContext);
 
         // Lawnchair icon and text sizes
-        iconSizePx *= prefs.getFloat(LawnchairPreferences.ICON_SIZE_FACTOR, 1f);
-        iconTextSizePx *= prefs.getFloat(LawnchairPreferences.TEXT_SIZE_FACTOR, 1f);;
-        allAppsIconSizePx *= prefs.getFloat(LawnchairPreferences.ALL_APPS_ICON_SIZE_FACTOR, 1f);
-        allAppsIconTextSizePx *= prefs.getFloat(LawnchairPreferences.ALL_APPS_TEXT_SIZE_FACTOR, 1f);
+        iconSizePx *= prefs.getIconSizeFactor().get();
+        iconTextSizePx *= prefs.getTextSizeFactor().get();
+        allAppsIconSizePx *= prefs.getAllAppsIconSizeFactor().get();
+        allAppsIconTextSizePx *= prefs.getAllAppsTextSizeFactor().get();
 
         // Folder icon
         folderIconSizePx = IconNormalizer.getNormalizedCircleSize(iconSizePx);

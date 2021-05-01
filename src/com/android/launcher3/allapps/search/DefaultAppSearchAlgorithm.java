@@ -12,6 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * Modifications copyright 2021, Lawnchair
  */
 package com.android.launcher3.allapps.search;
 
@@ -23,6 +25,10 @@ import com.android.launcher3.util.ComponentKey;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.List;
+
+import me.xdrop.fuzzywuzzy.FuzzySearch;
+import me.xdrop.fuzzywuzzy.algorithms.WeightedRatio;
+import me.xdrop.fuzzywuzzy.model.BoundExtractedResult;
 
 /**
  * The default search implementation.
@@ -48,25 +54,16 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
     public void doSearch(final String query,
             final AllAppsSearchBarController.Callbacks callback) {
         final ArrayList<ComponentKey> result = getTitleMatchResult(query);
-        mResultHandler.post(new Runnable() {
-
-            @Override
-            public void run() {
-                callback.onSearchResult(query, result);
-            }
-        });
+        mResultHandler.post(() -> callback.onSearchResult(query, result));
     }
 
     private ArrayList<ComponentKey> getTitleMatchResult(String query) {
-        // Do an intersection of the words in the query and each title, and filter out all the
-        // apps that don't match all of the words in the query.
-        final String queryTextLower = query.toLowerCase();
+        // Run a fuzzy search on all available titles using the Winkler-Jaro algorithm
         final ArrayList<ComponentKey> result = new ArrayList<>();
-        StringMatcher matcher = StringMatcher.getInstance();
-        for (AppInfo info : mApps) {
-            if (matches(info, queryTextLower, matcher)) {
-                result.add(info.toComponentKey());
-            }
+        final List<BoundExtractedResult<AppInfo>> matches = FuzzySearch.extractSorted(query.toLowerCase(), mApps,
+                item -> item.title.toString(), new WeightedRatio(), 65);
+        for (BoundExtractedResult<AppInfo> match : matches) {
+            result.add(match.getReferent().toComponentKey());
         }
         return result;
     }
