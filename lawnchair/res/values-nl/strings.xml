@@ -55,7 +55,6 @@
     <string name="all_apps_search_bar_hint">Zoek Apps</string>
     <string name="settings_button_text">Startscherm instellingen</string>
     <string name="development">Development</string>
-    <string name="support_representative">Ondersteuning vertegenwoordiger</string>
     <string name="app_info_drop_target_label">App informatie</string>
     <string name="item_removed">Item verwijderd.</string>
     <string name="all_apps_no_search_results">Geen apps gevonden die overeenkomen met “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
