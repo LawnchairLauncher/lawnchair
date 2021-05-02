@@ -32,8 +32,10 @@
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"විජට් එකක් ගෙන යාමට හෝ අභිරුචි ක්‍රියා භාවිත කිරීමට දෙවරක් තට්ටු කර අල්ලා ගෙන සිටින්න."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"පළල %1$d උස %2$d"</string>
-    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"අතින් ස්ථානගත කිරීමට ස්පර්ශ කර අල්ලාගෙන සිටින්න"</string>
-    <string name="place_automatically" msgid="8064208734425456485">"ස්වයංක්‍රියව එක් කරන්න"</string>
+    <!-- no translation found for add_item_request_drag_hint (5653291305078645405) -->
+    <skip />
+    <!-- no translation found for add_to_home_screen (8631549138215492708) -->
+    <skip />
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
       <item quantity="one">විජට් <xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g></item>
       <item quantity="other">විජට් <xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g></item>
