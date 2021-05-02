@@ -55,7 +55,6 @@
     <string name="all_apps_search_bar_hint">Buscar Apps</string>
     <string name="settings_button_text">Configuración de Inicio</string>
     <string name="development">Development</string>
-    <string name="support_representative">Representante de Soporte</string>
     <string name="app_info_drop_target_label">Información de App</string>
     <string name="item_removed">Elemento eliminado.</string>
     <string name="all_apps_no_search_results">No se encontraron aplicaciones que coincidan con “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
