@@ -60,6 +60,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemProperties;
 import android.util.Pair;
+import android.util.Size;
 import android.view.View;
 import android.view.animation.Interpolator;
 import android.view.animation.PathInterpolator;
@@ -780,7 +781,9 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         final float finalWindowRadius = mDeviceProfile.isMultiWindowMode
                 ? 0 : getWindowCornerRadius(mLauncher.getResources());
         final FloatingWidgetView floatingView = FloatingWidgetView.getFloatingWidgetView(mLauncher,
-                v, widgetBackgroundBounds, windowTargetBounds, finalWindowRadius);
+                v, widgetBackgroundBounds,
+                new Size(windowTargetBounds.width(), windowTargetBounds.height()),
+                finalWindowRadius);
         final float initialWindowRadius = supportsRoundedCornersOnWindows(mLauncher.getResources())
                 ? floatingView.getInitialCornerRadius() : 0;
 
