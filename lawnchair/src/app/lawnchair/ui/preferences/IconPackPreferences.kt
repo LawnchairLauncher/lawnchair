@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -54,7 +55,7 @@ fun NavGraphBuilder.iconPackGraph(route: String) {
 @Composable
 fun IconPackPreferences() {
     val interactor = LocalPreferenceInteractor.current
-    val iconPacks = interactor.getIconPacks().values.toList()
+    val iconPacks = remember { interactor.getIconPacks() }
     val iconPackPackage = preferenceManager().iconPackPackage.getAdapter()
 
     pageMeta.provide(Meta(title = stringResource(id = R.string.icon_pack)))
