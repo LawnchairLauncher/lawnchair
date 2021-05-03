@@ -234,7 +234,7 @@ public class FloatingIconView extends FrameLayout implements
         }
 
         Utilities.getBoundsForViewInDragLayer(launcher.getDragLayer(), v, outViewBounds,
-                ignoreTransform, outRect);
+                ignoreTransform, null /** recycle */, outRect);
     }
 
     /**

@@ -195,6 +195,7 @@ public class CellLayout extends ViewGroup {
 
     private final Rect mTempRect = new Rect();
     private final RectF mTempRectF = new RectF();
+    private final float[] mTmpFloatArray = new float[4];
 
     private static final Paint sPaint = new Paint();
 
@@ -1080,7 +1081,7 @@ public class CellLayout extends ViewGroup {
 
             // Now get the rect in drag layer coordinates.
             getBoundsForViewInDragLayer(launcher.getDragLayer(), workspace, mTempRect, false,
-                    mTempRectF);
+                    mTmpFloatArray, mTempRectF);
             Utilities.setRect(mTempRectF, mTempRect);
             ((LauncherAppWidgetHostView) view).handleDrag(mTempRect, pageId);
         }
