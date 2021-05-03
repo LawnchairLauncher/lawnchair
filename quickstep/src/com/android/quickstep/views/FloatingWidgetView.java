@@ -20,10 +20,10 @@ import android.animation.Animator.AnimatorListener;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Matrix;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Size;
 import android.view.GhostView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -113,7 +113,7 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener 
     }
 
     private void init(DragLayer dragLayer, LauncherAppWidgetHostView originalView,
-            RectF widgetBackgroundPosition, Rect windowTargetBounds, float windowCornerRadius) {
+            RectF widgetBackgroundPosition, Size windowSize, float windowCornerRadius) {
         mAppWidgetView = originalView;
         mAppWidgetView.beginDeferringUpdates();
         mBackgroundPosition = widgetBackgroundPosition;
@@ -128,7 +128,7 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener 
         getRelativePosition(mAppWidgetBackgroundView, mAppWidgetView, mBackgroundOffset);
         mBackgroundView.init(mAppWidgetView, mAppWidgetBackgroundView, windowCornerRadius);
         // Layout call before GhostView creation so that the overlaid view isn't clipped
-        layout(0, 0, windowTargetBounds.width(), windowTargetBounds.height());
+        layout(0, 0, windowSize.getWidth(), windowSize.getHeight());
         mForegroundOverlayView = GhostView.addGhost(mAppWidgetView, this);
         positionViews();
 
@@ -219,19 +219,19 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener 
      *
      * @param widgetBackgroundPosition a {@link RectF} that will be updated with the widget's
      *                                 background bounds
-     * @param windowTargetBounds       the bounds of the window when launched
+     * @param windowSize               the size of the window when launched
      * @param windowCornerRadius       the corner radius of the window
      */
     public static FloatingWidgetView getFloatingWidgetView(Launcher launcher,
             LauncherAppWidgetHostView originalView, RectF widgetBackgroundPosition,
-            Rect windowTargetBounds, float windowCornerRadius) {
+            Size windowSize, float windowCornerRadius) {
         final DragLayer dragLayer = launcher.getDragLayer();
         ViewGroup parent = (ViewGroup) dragLayer.getParent();
         FloatingWidgetView floatingView =
                 launcher.getViewCache().getView(R.layout.floating_widget_view, launcher, parent);
         floatingView.recycle();
 
-        floatingView.init(dragLayer, originalView, widgetBackgroundPosition, windowTargetBounds,
+        floatingView.init(dragLayer, originalView, widgetBackgroundPosition, windowSize,
                 windowCornerRadius);
         parent.addView(floatingView);
         return floatingView;
@@ -240,7 +240,7 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener 
     private static void getRelativePosition(View descendant, View ancestor, RectF position) {
         float[] points = new float[]{0, 0, descendant.getWidth(), descendant.getHeight()};
         Utilities.getDescendantCoordRelativeToAncestor(descendant, ancestor, points,
-                false /* includeRootScroll */);
+                false /* includeRootScroll */, true /* ignoreTransform */);
         position.set(
                 Math.min(points[0], points[2]),
                 Math.min(points[1], points[3]),

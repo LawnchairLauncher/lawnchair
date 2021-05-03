@@ -145,6 +145,11 @@ public abstract class SwipeUpAnimationLogic {
                     targetX + halfIconSize, targetY + halfIconSize);
         }
 
+        /** Returns the corner radius of the window at the end of the animation. */
+        public float getEndRadius(RectF cropRectF) {
+            return cropRectF.width() / 2f;
+        }
+
         public abstract @NonNull AnimatorPlaybackController createActivityAnimationToHome();
 
         public void playAtomicAnimation(float velocity) {
@@ -197,8 +202,7 @@ public abstract class SwipeUpAnimationLogic {
         final RectF targetRect = homeAnimationFactory.getWindowTargetRect();
 
         Matrix homeToWindowPositionMap = new Matrix();
-        final RectF startRect = updateProgressForStartRect(
-                homeToWindowPositionMap, startProgress);
+        final RectF startRect = updateProgressForStartRect(homeToWindowPositionMap, startProgress);
         RectF cropRectF = new RectF(mTaskViewSimulator.getCurrentCropRect());
 
         // Move the startRect to Launcher space as floatingIconView runs in Launcher
@@ -210,7 +214,7 @@ public abstract class SwipeUpAnimationLogic {
         if (PROTOTYPE_APP_CLOSE.get()) {
             anim = new RectFSpringAnim2(startRect, targetRect, mContext,
                     mTaskViewSimulator.getCurrentCornerRadius(),
-                    cropRectF.width() / 2f);
+                    homeAnimationFactory.getEndRadius(cropRectF));
         } else {
             anim = new RectFSpringAnim(startRect, targetRect, mContext);
         }
@@ -269,7 +273,7 @@ public abstract class SwipeUpAnimationLogic {
             // End on a "round-enough" radius so that the shape reveal doesn't have to do too much
             // rounding at the end of the animation.
             mStartRadius = mTaskViewSimulator.getCurrentCornerRadius();
-            mEndRadius = cropRectF.width() / 2f;
+            mEndRadius = factory.getEndRadius(cropRectF);
         }
 
         @Override
