@@ -18,6 +18,7 @@ package com.android.launcher3;
 
 import static android.animation.ValueAnimator.areAnimatorsEnabled;
 
+import static com.android.launcher3.Utilities.getBoundsForViewInDragLayer;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_1_5;
 
 import android.animation.Animator;
@@ -193,6 +194,7 @@ public class CellLayout extends ViewGroup {
     private static final int INVALID_DIRECTION = -100;
 
     private final Rect mTempRect = new Rect();
+    private final RectF mTempRectF = new RectF();
 
     private static final Paint sPaint = new Paint();
 
@@ -1070,11 +1072,16 @@ public class CellLayout extends ViewGroup {
         // Apply local extracted color if the DragView is an AppWidgetHostViewDrawable.
         View view = dragObject.dragView.getContentView();
         if (view instanceof LauncherAppWidgetHostView) {
-            Workspace workspace =
-                    Launcher.getLauncher(dragObject.dragView.getContext()).getWorkspace();
+            Launcher launcher = Launcher.getLauncher(dragObject.dragView.getContext());
+            Workspace workspace = launcher.getWorkspace();
             int screenId = workspace.getIdForScreen(this);
             int pageId = workspace.getPageIndexForScreenId(screenId);
             cellToRect(targetCell[0], targetCell[1], spanX, spanY, mTempRect);
+
+            // Now get the rect in drag layer coordinates.
+            getBoundsForViewInDragLayer(launcher.getDragLayer(), workspace, mTempRect, false,
+                    mTempRectF);
+            Utilities.setRect(mTempRectF, mTempRect);
             ((LauncherAppWidgetHostView) view).handleDrag(mTempRect, pageId);
         }
     }
