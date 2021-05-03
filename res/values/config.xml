@@ -35,7 +35,7 @@
     <!-- Workspace -->
     <!-- The duration (in ms) of the fade animation on the object outlines, used when
          we are dragging objects around on the home screen. -->
-    <integer name="config_dragOutlineFadeTime">900</integer>
+    <integer name="config_dragOutlineFadeTime">500</integer>
 
     <!-- The alpha value at which to show the most recent drop visualization outline. -->
     <integer name="config_dragOutlineMaxAlpha">255</integer>
