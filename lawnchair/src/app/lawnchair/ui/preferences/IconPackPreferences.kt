@@ -33,6 +33,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
+import androidx.navigation.NavGraphBuilder
 import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.PreferenceTemplate
@@ -45,8 +46,14 @@ import com.android.launcher3.R
 data class IconPackInfo(val name: String, val packageName: String, val icon: Drawable)
 
 @ExperimentalAnimationApi
+fun NavGraphBuilder.iconPackGraph(route: String) {
+    preferenceGraph(route, { IconPackPreferences() })
+}
+
+@ExperimentalAnimationApi
 @Composable
-fun IconPackPreferences(interactor: PreferenceInteractor) {
+fun IconPackPreferences() {
+    val interactor = LocalPreferenceInteractor.current
     val iconPacks = interactor.getIconPacks().values.toList()
     val iconPackPackage = preferenceManager().iconPackPackage.getAdapter()
 

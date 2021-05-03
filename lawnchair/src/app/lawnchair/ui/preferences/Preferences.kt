@@ -25,13 +25,17 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import app.lawnchair.ui.preferences.about.About
+import app.lawnchair.ui.preferences.about.aboutGraph
 import app.lawnchair.ui.preferences.components.PreferenceCategoryList
 import app.lawnchair.ui.preferences.components.SystemUi
 import app.lawnchair.ui.preferences.components.TopBar
@@ -48,7 +52,6 @@ object Routes {
     const val DOCK: String = "dock"
     const val APP_DRAWER: String = "appDrawer"
     const val FOLDERS: String = "folders"
-    const val ICON_PACK: String = "iconPack"
 }
 
 sealed class PreferenceCategory(
@@ -109,6 +112,14 @@ fun getPreferenceCategories(context: Context) = listOf(
     PreferenceCategory.About(context)
 )
 
+val LocalNavController = compositionLocalOf<NavController> {
+    error("CompositionLocal LocalNavController not present")
+}
+
+val LocalPreferenceInteractor = compositionLocalOf<PreferenceInteractor> {
+    error("CompositionLocal LocalPreferenceInteractor not present")
+}
+
 @ExperimentalAnimationApi
 @Composable
 fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel>(), window: Window) {
@@ -120,23 +131,22 @@ fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel
             .fillMaxSize()
             .background(MaterialTheme.colors.background)
     ) {
-        TopBar(navController = navController)
-        NavHost(navController = navController, startDestination = "preferences") {
-            composable(route = Routes.PREFERENCES) {
-                pageMeta.provide(Meta(title = stringResource(id = R.string.settings)))
-                PreferenceCategoryList(navController)
-            }
-            composable(route = Routes.HOME_SCREEN) { HomeScreenPreferences() }
-            composable(route = Routes.ICON_PACK) { IconPackPreferences(interactor = interactor) }
-            composable(route = Routes.DOCK) { DockPreferences() }
-            composable(route = Routes.APP_DRAWER) { AppDrawerPreferences() }
-            composable(route = Routes.FOLDERS) { FolderPreferences() }
-            composable(route = Routes.ABOUT) { About() }
-            composable(route = Routes.GENERAL) {
-                GeneralPreferences(
-                    navController = navController,
-                    interactor = interactor
-                )
+        CompositionLocalProvider(
+            LocalNavController provides navController,
+            LocalPreferenceInteractor provides interactor,
+        ) {
+            TopBar()
+            NavHost(navController = navController, startDestination = "preferences") {
+                composable(route = Routes.PREFERENCES) {
+                    pageMeta.provide(Meta(title = stringResource(id = R.string.settings)))
+                    PreferenceCategoryList(navController)
+                }
+                generalGraph(route = Routes.GENERAL)
+                homeScreenGraph(route = Routes.HOME_SCREEN)
+                dockGraph(route = Routes.DOCK)
+                appDrawerGraph(route = Routes.APP_DRAWER)
+                folderGraph(route = Routes.FOLDERS)
+                aboutGraph(route = Routes.ABOUT)
             }
         }
     }

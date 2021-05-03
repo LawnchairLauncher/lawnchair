@@ -34,8 +34,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavGraphBuilder
 import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.ClickListenerPreference
+import app.lawnchair.ui.preferences.preferenceGraph
 import app.lawnchair.util.Meta
 import app.lawnchair.util.pageMeta
 import app.lawnchair.util.preferences.getFormattedVersionName
@@ -112,6 +114,11 @@ val teamMembers = listOf(
         socialUrl = "https://twitter.com/rikkoedoot"
     ),
 )
+
+@ExperimentalAnimationApi
+fun NavGraphBuilder.aboutGraph(route: String) {
+    preferenceGraph(route, { About() })
+}
 
 @ExperimentalAnimationApi
 @Composable
