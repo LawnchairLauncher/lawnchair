@@ -19,13 +19,25 @@ package app.lawnchair.ui.preferences
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavGraphBuilder
+import app.lawnchair.ui.preferences.components.PreferenceGroup
+import app.lawnchair.ui.preferences.components.PreferenceLayout
+import app.lawnchair.ui.preferences.components.SliderPreference
+import app.lawnchair.util.Meta
+import app.lawnchair.util.pageMeta
 import app.lawnchair.util.preferences.getAdapter
 import app.lawnchair.util.preferences.preferenceManager
 import com.android.launcher3.R
 
 @ExperimentalAnimationApi
+fun NavGraphBuilder.folderGraph(route: String) {
+    preferenceGraph(route, { FolderPreferences() })
+}
+
+@ExperimentalAnimationApi
 @Composable
 fun FolderPreferences() {
+    pageMeta.provide(Meta(title = stringResource(id = R.string.folders_label)))
     PreferenceLayout {
         val prefs = preferenceManager()
         PreferenceGroup(heading = stringResource(id = R.string.grid), isFirstChild = true) {

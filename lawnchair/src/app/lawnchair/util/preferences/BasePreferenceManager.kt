@@ -2,8 +2,6 @@ package app.lawnchair.util.preferences
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
-import androidx.compose.runtime.currentComposer
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.Utilities
 import java.lang.ClassCastException
@@ -26,15 +24,22 @@ abstract class BasePreferenceManager(context: Context) : SharedPreferences.OnSha
     }
 
     interface PreferenceChangeListener {
-        fun onPreferenceChange(pref: BasePref<*>)
+        fun onPreferenceChange(pref: PrefEntry<*>)
     }
 
-    abstract inner class BasePref<T>(val key: String, private val primaryListener: ChangeListener?) {
+    interface PrefEntry<T> {
+        val defaultValue: T
+
+        fun get(): T
+        fun set(newValue: T)
+
+        fun addListener(listener: PreferenceChangeListener)
+        fun removeListener(listener: PreferenceChangeListener)
+    }
+
+    abstract inner class BasePref<T>(val key: String, private val primaryListener: ChangeListener?) : PrefEntry<T> {
         protected var loaded = false
         private val listeners = WeakHashMap<PreferenceChangeListener, Boolean>()
-
-        abstract fun get(): T
-        abstract fun set(newValue: T)
 
         fun onSharedPreferenceChange() {
             loaded = false
@@ -44,18 +49,18 @@ abstract class BasePreferenceManager(context: Context) : SharedPreferences.OnSha
             }
         }
 
-        fun addListener(listener: PreferenceChangeListener) {
+        override fun addListener(listener: PreferenceChangeListener) {
             listeners[listener] = true
         }
 
-        fun removeListener(listener: PreferenceChangeListener) {
+        override fun removeListener(listener: PreferenceChangeListener) {
             listeners.remove(listener)
         }
     }
 
     inner class StringPref(
         key: String,
-        private val defaultValue: String,
+        override val defaultValue: String,
         primaryListener: ChangeListener? = null
     ) : BasePref<String>(key, primaryListener) {
         private var currentValue = ""
@@ -80,7 +85,7 @@ abstract class BasePreferenceManager(context: Context) : SharedPreferences.OnSha
 
     inner class BoolPref(
         key: String,
-        private val defaultValue: Boolean,
+        override val defaultValue: Boolean,
         primaryListener: ChangeListener? = null
     ) : BasePref<Boolean>(key, primaryListener) {
         private var currentValue = false
@@ -105,9 +110,10 @@ abstract class BasePreferenceManager(context: Context) : SharedPreferences.OnSha
 
     open inner class IntPref(
         key: String,
-        private val defaultValue: Int,
+        private val defaultValueInternal: Int,
         primaryListener: ChangeListener? = null
     ) : BasePref<Int>(key, primaryListener) {
+        override val defaultValue = defaultValueInternal
         private var currentValue = 0
 
         init {
@@ -117,9 +123,9 @@ abstract class BasePreferenceManager(context: Context) : SharedPreferences.OnSha
         override fun get(): Int {
             if (!loaded) {
                 currentValue = try {
-                    sp.getInt(key, defaultValue)
+                    sp.getInt(key, defaultValueInternal)
                 } catch (e: ClassCastException) {
-                    sp.getFloat(key, defaultValue.toFloat()).toInt()
+                    sp.getFloat(key, defaultValueInternal.toFloat()).toInt()
                 }
                 loaded = true
             }
@@ -134,30 +140,45 @@ abstract class BasePreferenceManager(context: Context) : SharedPreferences.OnSha
 
     inner class IdpIntPref(
         key: String,
-        private val defaultValue: InvariantDeviceProfile.() -> Int,
+        private val selectDefaultValue: InvariantDeviceProfile.() -> Int,
         primaryListener: ChangeListener? = null
     ) : IntPref(key, -1, primaryListener) {
+        override val defaultValue: Int
+            get() = error("unsupported")
+
+        override fun get(): Int {
+            error("unsupported")
+        }
+
+        override fun set(newValue: Int) {
+            error("unsupported")
+        }
+
+        fun defaultValue(idp: InvariantDeviceProfile): Int {
+            return selectDefaultValue(idp)
+        }
+
         fun get(idp: InvariantDeviceProfile): Int {
-            val value = get()
+            val value = super.get()
             return if (value == -1) {
-                defaultValue(idp)
+                selectDefaultValue(idp)
             } else {
                 value
             }
         }
 
         fun set(newValue: Int, idp: InvariantDeviceProfile) {
-            if (newValue == defaultValue(idp)) {
-                set(-1)
+            if (newValue == selectDefaultValue(idp)) {
+                super.set(-1)
             } else {
-                set(newValue)
+                super.set(newValue)
             }
         }
     }
 
     inner class FloatPref(
         key: String,
-        private val defaultValue: Float,
+        override val defaultValue: Float,
         primaryListener: ChangeListener? = null
     ) : BasePref<Float>(key, primaryListener) {
         private var currentValue = 0f

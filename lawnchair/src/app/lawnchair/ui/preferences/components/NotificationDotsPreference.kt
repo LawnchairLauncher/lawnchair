@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package app.lawnchair.ui.preferences
+package app.lawnchair.ui.preferences.components
 
 import android.content.ComponentName
 import android.content.Intent
@@ -32,15 +32,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
+import app.lawnchair.ui.preferences.LocalPreferenceInteractor
 import com.android.launcher3.R
 import com.android.launcher3.notification.NotificationListener
 import android.provider.Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS as actionNotificationListenerSettings
 
 @Composable
-fun NotificationDotsPreference(interactor: PreferenceInteractor) {
+fun NotificationDotsPreference() {
     val context = LocalContext.current
     val extraFragmentArgKey = ":settings:fragment_args_key"
     val extraShowFragmentArgs = ":settings:show_fragment_args"
+    val interactor = LocalPreferenceInteractor.current
 
     fun onClick() {
         val intent = if (interactor.notificationDotsEnabled.value) {

@@ -21,5 +21,5 @@ import androidx.compose.runtime.State
 interface PreferenceInteractor {
     val notificationDotsEnabled: State<Boolean>
 
-    fun getIconPacks(): MutableMap<String, IconPackInfo>
+    fun getIconPacks(): List<IconPackInfo>
 }

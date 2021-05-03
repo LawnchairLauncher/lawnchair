@@ -19,14 +19,27 @@ package app.lawnchair.ui.preferences
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavGraphBuilder
+import app.lawnchair.ui.preferences.components.PreferenceGroup
+import app.lawnchair.ui.preferences.components.PreferenceLayout
+import app.lawnchair.ui.preferences.components.SliderPreference
+import app.lawnchair.ui.preferences.components.SwitchPreference
+import app.lawnchair.util.Meta
+import app.lawnchair.util.pageMeta
 import app.lawnchair.util.preferences.getAdapter
 import app.lawnchair.util.preferences.preferenceManager
 import com.android.launcher3.R
 
 @ExperimentalAnimationApi
+fun NavGraphBuilder.homeScreenGraph(route: String) {
+    preferenceGraph(route, { HomeScreenPreferences() })
+}
+
+@ExperimentalAnimationApi
 @Composable
 fun HomeScreenPreferences() {
     val prefs = preferenceManager()
+    pageMeta.provide(Meta(title = stringResource(id = R.string.home_screen_label)))
     PreferenceLayout {
         PreferenceGroup(heading = "General", isFirstChild = true) {
             SwitchPreference(
