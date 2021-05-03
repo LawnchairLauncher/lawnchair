@@ -553,6 +553,7 @@ public class TaskView extends FrameLayout implements Reusable {
 
                 @Override
                 public void onAnimationEnd(Animator animator) {
+                    recentsView.getLiveTileTaskViewSimulator().setDrawsBelowRecents(true);
                     mIsClickableAsLiveTile = true;
                 }
             });

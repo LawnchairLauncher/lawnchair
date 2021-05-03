@@ -2249,7 +2249,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mPendingAnimation.addEndListener(new Consumer<Boolean>() {
             @Override
             public void accept(Boolean success) {
-                if (LIVE_TILE.get() && taskView.isRunningTask() && success) {
+                if (LIVE_TILE.get() && mEnableDrawingLiveTile && taskView.isRunningTask()
+                        && success) {
                     finishRecentsAnimation(true /* toHome */, () -> onEnd(success));
                 } else {
                     onEnd(success);

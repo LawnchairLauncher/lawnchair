@@ -25,6 +25,7 @@ import static com.android.launcher3.Utilities.createHomeIntent;
 import static com.android.launcher3.testing.TestProtocol.OVERVIEW_STATE_ORDINAL;
 import static com.android.quickstep.TaskUtils.taskIsATargetWithMode;
 import static com.android.quickstep.TaskViewUtils.createRecentsWindowAnimator;
+import static com.android.quickstep.util.NavigationModeFeatureFlag.LIVE_TILE;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 
 import android.animation.Animator;
@@ -69,6 +70,7 @@ import com.android.quickstep.fallback.RecentsState;
 import com.android.quickstep.util.RecentsAtomicAnimationFactory;
 import com.android.quickstep.util.SplitSelectStateController;
 import com.android.quickstep.views.OverviewActionsView;
+import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.SplitPlaceholderView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
@@ -291,6 +293,16 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
         super.onConfigurationChanged(newConfig);
     }
 
+    @Override
+    public void onStateSetEnd(RecentsState state) {
+        super.onStateSetEnd(state);
+
+        if (state == RecentsState.DEFAULT) {
+            AccessibilityManagerCompat.sendStateEventToTest(getBaseContext(),
+                    OVERVIEW_STATE_ORDINAL);
+        }
+    }
+
     /**
      * Initialize/update the device profile.
      */
@@ -329,6 +341,16 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
     }
 
     public void startHome() {
+        if (LIVE_TILE.get()) {
+            RecentsView recentsView = getOverviewPanel();
+            recentsView.switchToScreenshot(() -> recentsView.finishRecentsAnimation(true,
+                    this::startHomeInternal));
+        } else {
+            startHomeInternal();
+        }
+    }
+
+    private void startHomeInternal() {
         startActivity(createHomeIntent());
     }
 
