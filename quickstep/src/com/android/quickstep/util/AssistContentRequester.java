@@ -28,6 +28,10 @@ import android.util.Log;
 
 import com.android.launcher3.util.Executors;
 
+import java.lang.ref.WeakReference;
+import java.util.Collections;
+import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.concurrent.Executor;
 
 /**
@@ -51,6 +55,10 @@ public class AssistContentRequester {
     private final String mPackageName;
     private final Executor mCallbackExecutor;
 
+    // If system loses the callback, our internal cache of original callback will also get cleared.
+    private final Map<Object, Callback> mPendingCallbacks =
+            Collections.synchronizedMap(new WeakHashMap<>());
+
     public AssistContentRequester(Context context) {
         mActivityTaskManager = ActivityTaskManager.getService();
         mPackageName = context.getApplicationContext().getPackageName();
@@ -66,20 +74,28 @@ public class AssistContentRequester {
     public void requestAssistContent(int taskId, Callback callback) {
         try {
             mActivityTaskManager.requestAssistDataForTask(
-                    new AssistDataReceiver(callback, mCallbackExecutor), taskId, mPackageName);
+                    new AssistDataReceiver(callback, this), taskId, mPackageName);
         } catch (RemoteException e) {
             Log.e(TAG, "Requesting assist content failed for task: " + taskId, e);
         }
     }
 
+    private void executeOnMainExecutor(Runnable callback) {
+        mCallbackExecutor.execute(callback);
+    }
+
     private static final class AssistDataReceiver extends IAssistDataReceiver.Stub {
 
-        private final Executor mExecutor;
-        private final Callback mCallback;
+        // The AssistDataReceiver binder callback object is passed to a system server, that may
+        // keep hold of it for longer than the lifetime of the AssistContentRequester object,
+        // potentially causing a memory leak. In the callback passed to the system server, only
+        // keep a weak reference to the parent object and lookup its callback if it still exists.
+        private final WeakReference<AssistContentRequester> mParentRef;
+        private final Object mCallbackKey = new Object();
 
-        AssistDataReceiver(Callback callback, Executor callbackExecutor) {
-            mCallback = callback;
-            mExecutor = callbackExecutor;
+        AssistDataReceiver(Callback callback, AssistContentRequester parent) {
+            parent.mPendingCallbacks.put(mCallbackKey, callback);
+            mParentRef = new WeakReference<>(parent);
         }
 
         @Override
@@ -94,7 +110,18 @@ public class AssistContentRequester {
                 return;
             }
 
-            mExecutor.execute(() -> mCallback.onAssistContentAvailable(content));
+            AssistContentRequester requester = mParentRef.get();
+            if (requester != null) {
+                Callback callback = requester.mPendingCallbacks.get(mCallbackKey);
+                if (callback != null) {
+                    requester.executeOnMainExecutor(
+                            () -> callback.onAssistContentAvailable(content));
+                } else {
+                    Log.d(TAG, "Callback received after calling UI was disposed of");
+                }
+            } else {
+                Log.d(TAG, "Callback received after Requester was collected");
+            }
         }
 
         @Override
