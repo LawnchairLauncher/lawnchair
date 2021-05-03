@@ -61,6 +61,7 @@ import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.FailureWatcher;
 import com.android.quickstep.views.RecentsView;
 
+import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -139,6 +140,12 @@ public class FallbackRecentsTest {
                     TestCommandReceiver.GET_SYSTEM_HEALTH_MESSAGE, startTime.toString()).
                     getString("result"));
         }
+    }
+
+    @After
+    public void verifyLauncherState() {
+        // Limits UI tests affecting tests running after them.
+        AbstractQuickStepTest.checkDetectedLeaks(mLauncher);
     }
 
     // b/143488140
