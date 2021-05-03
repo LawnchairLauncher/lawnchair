@@ -777,8 +777,7 @@ public class TaskView extends FrameLayout implements Reusable {
         float upperClamp = invert ? 1 : iconScalePercentage;
         float scale = Interpolators.clampToProgress(FAST_OUT_SLOW_IN, lowerClamp, upperClamp)
                 .getInterpolation(progress);
-        mIconView.setScaleX(scale);
-        mIconView.setScaleY(scale);
+        mIconView.setAlpha(scale);
         if (mContextualChipWrapper != null && mContextualChipWrapper != null) {
             mContextualChipWrapper.setAlpha(scale);
             mContextualChipWrapper.setScaleX(Math.min(scale, comp(mModalness)));
