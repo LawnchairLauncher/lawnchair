@@ -49,6 +49,7 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
     public static final String ACTION_SEARCH = "com.android.quickstep.ACTION_SEARCH";
     public static final String ELAPSED_NANOS = "niu_actions_elapsed_realtime_nanos";
     public static final String ACTIONS_URL = "niu_actions_app_url";
+    public static final String ACTIONS_APP_PACKAGE = "niu_actions_app_package";
     public static final String ACTIONS_ERROR_CODE = "niu_actions_app_error_code";
     public static final int ERROR_PERMISSIONS = 1;
     private static final String TAG = "TaskOverlayFactoryGo";
@@ -72,6 +73,7 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
      */
     public static final class TaskOverlayGo<T extends OverviewActionsView> extends TaskOverlay {
         private String mNIUPackageName;
+        private String mTaskPackageName;
         private String mWebUrl;
         private boolean mAssistPermissionsEnabled;
 
@@ -87,7 +89,7 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
                 boolean rotated) {
             getActionsView().updateDisabledFlags(DISABLED_NO_THUMBNAIL, thumbnail == null);
             mNIUPackageName =
-                    mApplicationContext.getResources().getString(R.string.niu_actions_package);
+                    mApplicationContext.getString(R.string.niu_actions_package);
 
             if (thumbnail == null || TextUtils.isEmpty(mNIUPackageName)) {
                 return;
@@ -96,6 +98,7 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
             getActionsView().updateDisabledFlags(DISABLED_ROTATED, rotated);
             boolean isAllowedByPolicy = mThumbnailView.isRealSnapshot();
             getActionsView().setCallbacks(new OverlayUICallbacksGoImpl(isAllowedByPolicy, task));
+            mTaskPackageName = task.key.getPackageName();
 
             checkPermissions();
             if (!mAssistPermissionsEnabled) {
@@ -150,6 +153,7 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK)
                     .addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                     .setPackage(mNIUPackageName)
+                    .putExtra(ACTIONS_APP_PACKAGE, mTaskPackageName)
                     .putExtra(ELAPSED_NANOS, SystemClock.elapsedRealtimeNanos());
 
             if (mWebUrl != null) {
