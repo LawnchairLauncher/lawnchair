@@ -18,7 +18,6 @@ package com.android.launcher3;
 
 import static android.animation.ValueAnimator.areAnimatorsEnabled;
 
-import static com.android.launcher3.Utilities.getBoundsForViewInDragLayer;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_1_5;
 
 import android.animation.Animator;
@@ -194,7 +193,6 @@ public class CellLayout extends ViewGroup {
     private static final int INVALID_DIRECTION = -100;
 
     private final Rect mTempRect = new Rect();
-    private final RectF mTempRectF = new RectF();
 
     private static final Paint sPaint = new Paint();
 
@@ -504,7 +502,7 @@ public class CellLayout extends ViewGroup {
     }
 
     private void updateBgAlpha() {
-        mBackground.setAlpha((int) (mSpringLoadedProgress * mScrollProgress * 255));
+        mBackground.setAlpha((int) (mSpringLoadedProgress * 255));
     }
 
     /**
@@ -527,9 +525,12 @@ public class CellLayout extends ViewGroup {
     }
 
     protected void visualizeGrid(Canvas canvas) {
-        mVisualizeGridRect.set(mGridVisualizationPadding, mGridVisualizationPadding,
-                mCellWidth - mGridVisualizationPadding,
-                mCellHeight - mGridVisualizationPadding);
+        DeviceProfile dp = mActivity.getDeviceProfile();
+        int paddingX = (int) Math.min((mCellWidth - dp.iconSizePx) / 2, mGridVisualizationPadding);
+        int paddingY = (int) Math.min((mCellHeight - dp.iconSizePx) / 2, mGridVisualizationPadding);
+        mVisualizeGridRect.set(paddingX, paddingY,
+                mCellWidth - paddingX,
+                mCellHeight - paddingY);
 
         mVisualizeGridPaint.setStrokeWidth(8);
         int paintAlpha = (int) (120 * mGridAlpha);
@@ -539,9 +540,9 @@ public class CellLayout extends ViewGroup {
             for (int i = 0; i < mCountX; i++) {
                 for (int j = 0; j < mCountY; j++) {
                     int transX = i * mCellWidth + (i * mBorderSpacing) + getPaddingLeft()
-                            + mGridVisualizationPadding;
+                            + paddingX;
                     int transY = j * mCellHeight + (j * mBorderSpacing) + getPaddingTop()
-                            + mGridVisualizationPadding;
+                            + paddingY;
 
                     mVisualizeGridRect.offsetTo(transX, transY);
                     mVisualizeGridPaint.setStyle(Paint.Style.FILL);
@@ -562,14 +563,14 @@ public class CellLayout extends ViewGroup {
                 int spanX = mDragOutlines[i].cellHSpan;
                 int spanY = mDragOutlines[i].cellVSpan;
 
-                mVisualizeGridRect.set(mGridVisualizationPadding, mGridVisualizationPadding,
-                        mCellWidth * spanX - mGridVisualizationPadding,
-                        mCellHeight * spanY - mGridVisualizationPadding);
+                mVisualizeGridRect.set(paddingX, paddingY,
+                        mCellWidth * spanX - paddingX,
+                        mCellHeight * spanY - paddingY);
 
                 int transX = x * mCellWidth + (x * mBorderSpacing)
-                        + getPaddingLeft() + mGridVisualizationPadding;
+                        + getPaddingLeft() + paddingX;
                 int transY = y * mCellHeight + (y * mBorderSpacing)
-                        + getPaddingTop() + mGridVisualizationPadding;
+                        + getPaddingTop() + paddingY;
 
                 mVisualizeGridRect.offsetTo(transX, transY);
 
@@ -1069,16 +1070,11 @@ public class CellLayout extends ViewGroup {
         // Apply local extracted color if the DragView is an AppWidgetHostViewDrawable.
         View view = dragObject.dragView.getContentView();
         if (view instanceof LauncherAppWidgetHostView) {
-            Launcher launcher = Launcher.getLauncher(dragObject.dragView.getContext());
-            Workspace workspace = launcher.getWorkspace();
+            Workspace workspace =
+                    Launcher.getLauncher(dragObject.dragView.getContext()).getWorkspace();
             int screenId = workspace.getIdForScreen(this);
             int pageId = workspace.getPageIndexForScreenId(screenId);
             cellToRect(targetCell[0], targetCell[1], spanX, spanY, mTempRect);
-
-            // Now get the rect in drag layer coordinates.
-            getBoundsForViewInDragLayer(launcher.getDragLayer(), workspace, mTempRect, false,
-                    mTempRectF);
-            Utilities.setRect(mTempRectF, mTempRect);
             ((LauncherAppWidgetHostView) view).handleDrag(mTempRect, pageId);
         }
     }

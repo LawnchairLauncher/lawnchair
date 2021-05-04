@@ -19,8 +19,10 @@ package com.android.launcher3.util;
 import static android.app.WallpaperColors.HINT_SUPPORTS_DARK_TEXT;
 import static android.app.WallpaperColors.HINT_SUPPORTS_DARK_THEME;
 
+import android.app.WallpaperColors;
 import android.app.WallpaperManager;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
@@ -40,19 +42,28 @@ import com.android.launcher3.icons.GraphicsUtils;
 public class Themes {
 
     public static int getActivityThemeRes(Context context) {
-        int colorHints = Utilities.ATLEAST_P ? context.getSystemService(WallpaperManager.class)
-                .getWallpaperColors(WallpaperManager.FLAG_SYSTEM).getColorHints()
-                : 0;
+        final int colorHints;
+        if (Utilities.ATLEAST_P) {
+            WallpaperColors colors = context.getSystemService(WallpaperManager.class)
+                    .getWallpaperColors(WallpaperManager.FLAG_SYSTEM);
+            colorHints = colors == null ? 0 : colors.getColorHints();
+        } else {
+            colorHints = 0;
+        }
         return getActivityThemeRes(context, colorHints);
     }
 
     public static int getActivityThemeRes(Context context, int wallpaperColorHints) {
+        Configuration configuration = context.getResources().getConfiguration();
+        int nightMode = configuration.uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        boolean darkTheme = nightMode == Configuration.UI_MODE_NIGHT_YES;
+
         boolean supportsDarkText = Utilities.ATLEAST_S
                 && (wallpaperColorHints & HINT_SUPPORTS_DARK_TEXT) != 0;
         boolean isMainColorDark = Utilities.ATLEAST_S
                 && (wallpaperColorHints & HINT_SUPPORTS_DARK_THEME) != 0;
 
-        if (Utilities.isDarkTheme(context)) {
+        if (darkTheme) {
             return supportsDarkText ? R.style.AppTheme_Dark_DarkText
                     : isMainColorDark ? R.style.AppTheme_Dark_DarkMainColor : R.style.AppTheme_Dark;
         } else {
