@@ -50,6 +50,7 @@ class QuickstepInteractionHandler implements RemoteViews.InteractionHandler {
         Pair<Intent, ActivityOptions> options = remoteResponse.getLaunchOptions(hostView);
         ActivityOptionsWrapper activityOptions = mLauncher.getAppTransitionManager()
                 .getActivityLaunchOptions(mLauncher, hostView);
+        activityOptions.options.setPendingIntentLaunchFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Object itemInfo = hostView.getTag();
         if (itemInfo instanceof ItemInfo) {
             mLauncher.addLaunchCookie((ItemInfo) itemInfo, activityOptions.options);
