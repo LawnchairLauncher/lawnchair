@@ -20,7 +20,7 @@ import static android.appwidget.AppWidgetManager.ACTION_APPWIDGET_BIND;
 import static android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_ID;
 import static android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_PROVIDER;
 
-import static com.android.launcher3.Utilities.ATLEAST_S;
+import static com.android.launcher3.AppWidgetResizeFrame.getWidgetSizeOptions;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -32,11 +32,9 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.AttributeSet;
-import android.util.SizeF;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,15 +43,12 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.AppWidgetResizeFrame;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.FragmentWithPreview;
-
-import java.util.ArrayList;
 
 /**
  * A frame layout which contains a QSB. This internally uses fragment to bind the view, which
@@ -163,7 +158,7 @@ public class QsbContainerView extends FrameLayout {
 
         protected String mKeyWidgetId = "qsb_widget_id";
         private QsbWidgetHost mQsbWidgetHost;
-        private AppWidgetProviderInfo mWidgetInfo;
+        protected AppWidgetProviderInfo mWidgetInfo;
         private QsbWidgetHostView mQsb;
 
         // We need to store the orientation here, due to a bug (b/64916689) that results in widgets
@@ -297,19 +292,7 @@ public class QsbContainerView extends FrameLayout {
 
         protected Bundle createBindOptions() {
             InvariantDeviceProfile idp = LauncherAppState.getIDP(getContext());
-
-            Bundle opts = new Bundle();
-            ArrayList<SizeF> sizes = AppWidgetResizeFrame
-                    .getWidgetSizes(getContext(), idp.numColumns, 1);
-            Rect size = AppWidgetResizeFrame.getMinMaxSizes(sizes, null /* outRect */);
-            opts.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, size.left);
-            opts.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, size.top);
-            opts.putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, size.right);
-            opts.putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, size.bottom);
-            if (ATLEAST_S) {
-                opts.putParcelableArrayList(AppWidgetManager.OPTION_APPWIDGET_SIZES, sizes);
-            }
-            return opts;
+            return getWidgetSizeOptions(getContext(), mWidgetInfo.provider, idp.numColumns, 1);
         }
 
         protected View getDefaultView(ViewGroup container, boolean showSetupIcon) {
