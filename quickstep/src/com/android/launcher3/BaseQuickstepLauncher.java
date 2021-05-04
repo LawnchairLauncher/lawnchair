@@ -19,7 +19,7 @@ import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
 import static com.android.launcher3.AbstractFloatingView.TYPE_HIDE_BACK_BUTTON;
 import static com.android.launcher3.LauncherState.FLAG_HIDE_BACK_BUTTON;
 import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.util.DisplayController.CHANGE_SIZE;
+import static com.android.launcher3.util.DisplayController.CHANGE_ACTIVE_SCREEN;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY;
@@ -240,7 +240,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
     public void onDisplayInfoChanged(Context context, DisplayController.Info info,
             int flags) {
         super.onDisplayInfoChanged(context, info, flags);
-        if ((flags & CHANGE_SIZE) != 0) {
+        if ((flags & CHANGE_ACTIVE_SCREEN) != 0) {
             addTaskbarIfNecessary();
         }
     }
