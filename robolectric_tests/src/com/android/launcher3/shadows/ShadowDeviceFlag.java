@@ -18,17 +18,24 @@ package com.android.launcher3.shadows;
 
 import android.content.Context;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.uioverrides.DeviceFlag;
 import com.android.launcher3.util.LooperExecutor;
 
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
+import org.robolectric.annotation.RealObject;
+import org.robolectric.shadow.api.Shadow;
 
 /**
  * Shadow for {@link LooperExecutor} to provide reset functionality for static executors.
  */
 @Implements(value = DeviceFlag.class, isInAndroidSdk = false)
 public class ShadowDeviceFlag {
+
+    @RealObject private DeviceFlag mRealObject;
+    @Nullable private Boolean mValue;
 
     /**
      * Mock change listener as it uses internal system classes not available to robolectric
@@ -39,5 +46,17 @@ public class ShadowDeviceFlag {
     @Implementation
     protected static boolean getDeviceValue(String key, boolean defaultValue) {
         return defaultValue;
+    }
+
+    @Implementation
+    public boolean get() {
+        if (mValue != null) {
+            return mValue;
+        }
+        return Shadow.directlyOn(mRealObject, DeviceFlag.class, "get");
+    }
+
+    public void setValue(boolean value) {
+        mValue = new Boolean(value);
     }
 }
