@@ -37,7 +37,6 @@ import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.content.res.AppCompatResources;
 
-import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.views.ClipIconView;
@@ -127,13 +126,6 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     @DrawableRes
     protected int getMockPreviousAppTaskThumbnailResId() {
         return R.drawable.default_sandbox_app_previous_task_thumbnail;
-    }
-
-    @Nullable
-    public View getMockLauncherView() {
-        InvariantDeviceProfile dp = InvariantDeviceProfile.INSTANCE.get(mContext);
-
-        return new SandboxLauncherRenderer(mContext, dp, true).getRenderedView();
     }
 
     @DrawableRes

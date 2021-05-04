@@ -74,9 +74,9 @@ import com.android.launcher3.dragndrop.FolderAdaptiveIcon;
 import com.android.launcher3.graphics.GridCustomizationsProvider;
 import com.android.launcher3.graphics.TintedDrawableSpan;
 import com.android.launcher3.icons.FastBitmapDrawable;
-import com.android.launcher3.icons.IconProvider;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.icons.ShortcutCachingLogic;
+import com.android.launcher3.icons.ThemedIconDrawable.ThemedAdaptiveIcon;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.pm.ShortcutConfigActivityInfo;
@@ -596,13 +596,23 @@ public final class Utilities {
      */
     public static Drawable getFullDrawable(Launcher launcher, ItemInfo info, int width, int height,
             Object[] outObj) {
+        Drawable icon = loadFullDrawableWithoutTheme(launcher, info, width, height, outObj);
+        if (icon instanceof ThemedAdaptiveIcon) {
+            icon = ((ThemedAdaptiveIcon) icon).getThemedDrawable(launcher);
+        }
+        return icon;
+    }
+
+    private static Drawable loadFullDrawableWithoutTheme(Launcher launcher, ItemInfo info,
+            int width, int height, Object[] outObj) {
         LauncherAppState appState = LauncherAppState.getInstance(launcher);
         if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
             LauncherActivityInfo activityInfo = launcher.getSystemService(LauncherApps.class)
                     .resolveActivity(info.getIntent(), info.user);
             outObj[0] = activityInfo;
-            return activityInfo == null ? null : new IconProvider(launcher).getIcon(
-                    activityInfo, launcher.getDeviceProfile().inv.fillResIconDpi);
+            return activityInfo == null ? null : LauncherAppState.getInstance(launcher)
+                    .getIconCache().getIconProvider().getIcon(
+                            activityInfo, launcher.getDeviceProfile().inv.fillResIconDpi);
         } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
             if (info instanceof PendingAddShortcutInfo) {
                 ShortcutConfigActivityInfo activityInfo =
