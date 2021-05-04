@@ -24,6 +24,7 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_SCRIM_FADE;
 
 import android.view.MotionEvent;
 
@@ -56,13 +57,17 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     /**
      * Minimum clamping progress for fading in all apps content
      */
-    protected static final float ALL_APPS_CONTENT_FADE_MIN_CLAMPING_THRESHOLD = 0.4f;
-
+    protected static final float ALL_APPS_CONTENT_FADE_MIN_CLAMPING_THRESHOLD = 0.5f;
 
     /**
-     * The progress at which recents will begin fading out when swiping up from overview.
+     * Minimum clamping progress for fading in all apps scrim
      */
-    private static final float RECENTS_FADE_THRESHOLD = 0.88f;
+    protected static final float ALL_APPS_SCRIM_VISIBLE_THRESHOLD = .1f;
+
+    /**
+     * Maximum clamping progress for opaque all apps scrim
+     */
+    protected static final float ALL_APPS_SCRIM_OPAQUE_THRESHOLD = .5f;
 
     private final PortraitOverviewStateTouchHelper mOverviewPortraitStateTouchHelper;
 
@@ -122,14 +127,22 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     private StateAnimationConfig getNormalToAllAppsAnimation() {
         StateAnimationConfig builder = new StateAnimationConfig();
         builder.setInterpolator(ANIM_ALL_APPS_FADE, Interpolators.clampToProgress(ACCEL,
-                0, ALL_APPS_CONTENT_FADE_MAX_CLAMPING_THRESHOLD));
+                ALL_APPS_CONTENT_FADE_MIN_CLAMPING_THRESHOLD,
+                ALL_APPS_CONTENT_FADE_MAX_CLAMPING_THRESHOLD));
+        builder.setInterpolator(ANIM_SCRIM_FADE, Interpolators.clampToProgress(ACCEL,
+                ALL_APPS_SCRIM_VISIBLE_THRESHOLD,
+                ALL_APPS_SCRIM_OPAQUE_THRESHOLD));
         return builder;
     }
 
     private StateAnimationConfig getAllAppsToNormalAnimation() {
         StateAnimationConfig builder = new StateAnimationConfig();
         builder.setInterpolator(ANIM_ALL_APPS_FADE, Interpolators.clampToProgress(DEACCEL,
-                1 - ALL_APPS_CONTENT_FADE_MAX_CLAMPING_THRESHOLD, 1));
+                1 - ALL_APPS_CONTENT_FADE_MAX_CLAMPING_THRESHOLD,
+                1 - ALL_APPS_CONTENT_FADE_MIN_CLAMPING_THRESHOLD));
+        builder.setInterpolator(ANIM_SCRIM_FADE, Interpolators.clampToProgress(DEACCEL,
+                1 - ALL_APPS_SCRIM_OPAQUE_THRESHOLD,
+                1 - ALL_APPS_SCRIM_VISIBLE_THRESHOLD));
         return builder;
     }
 
