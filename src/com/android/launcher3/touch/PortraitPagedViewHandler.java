@@ -40,12 +40,12 @@ import com.android.launcher3.util.OverScroller;
 public class PortraitPagedViewHandler implements PagedOrientationHandler {
 
     @Override
-    public int getPrimaryValue(int x, int y) {
+    public <T> T getPrimaryValue(T x, T y) {
         return x;
     }
 
     @Override
-    public int getSecondaryValue(int x, int y) {
+    public <T> T getSecondaryValue(T x, T y) {
         return y;
     }
 
