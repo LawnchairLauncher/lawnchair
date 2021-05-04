@@ -21,6 +21,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -33,7 +34,6 @@ import android.util.Property;
 import android.util.SparseArray;
 import android.view.ContextThemeWrapper;
 
-import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.GraphicsUtils;
@@ -119,7 +119,9 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
                 info,
                 IconPalette.getPreloadProgressColor(context, info.bitmap.color),
                 getPreloadColors(context),
-                Utilities.isDarkTheme(context));
+            (context.getResources().getConfiguration().uiMode
+                    & Configuration.UI_MODE_NIGHT_MASK
+                    & Configuration.UI_MODE_NIGHT_YES) != 0) /* isDarkMode */;
     }
 
     public PreloadIconDrawable(
