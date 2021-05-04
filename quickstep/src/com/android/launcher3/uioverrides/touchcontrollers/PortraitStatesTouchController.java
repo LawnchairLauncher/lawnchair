@@ -58,12 +58,6 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
      */
     protected static final float ALL_APPS_CONTENT_FADE_MIN_CLAMPING_THRESHOLD = 0.4f;
 
-
-    /**
-     * The progress at which recents will begin fading out when swiping up from overview.
-     */
-    private static final float RECENTS_FADE_THRESHOLD = 0.88f;
-
     private final PortraitOverviewStateTouchHelper mOverviewPortraitStateTouchHelper;
 
     public PortraitStatesTouchController(Launcher l) {
