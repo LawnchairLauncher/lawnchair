@@ -15,9 +15,11 @@
  */
 package com.android.launcher3.widget;
 
+import static com.android.launcher3.AppWidgetResizeFrame.getWidgetSizeOptions;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_TRAY;
 
 import android.appwidget.AppWidgetHostView;
+import android.content.Context;
 import android.os.Bundle;
 
 import com.android.launcher3.LauncherSettings;
@@ -56,5 +58,9 @@ public class PendingAddWidgetInfo extends PendingAddItemInfo {
 
     public WidgetAddFlowHandler getHandler() {
         return new WidgetAddFlowHandler(info);
+    }
+
+    public Bundle getDefaultSizeOptions(Context context) {
+        return getWidgetSizeOptions(context, componentName, spanX, spanY);
     }
 }
