@@ -1417,9 +1417,10 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     private void setColorTint(float amount) {
-        mSnapshotView.setDimAlpha(amount);
-        mIconView.setIconColorTint(mTintingColor, amount);
-        mDigitalWellBeingToast.setBannerColorTint(mTintingColor, amount);
+        mTintAmount = amount;
+        mSnapshotView.setDimAlpha(mTintAmount);
+        mIconView.setIconColorTint(mTintingColor, mTintAmount);
+        mDigitalWellBeingToast.setBannerColorTint(mTintingColor, mTintAmount);
     }
 
     private float getColorTint() {
