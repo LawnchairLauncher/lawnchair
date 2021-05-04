@@ -64,7 +64,6 @@ import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetCell;
 import com.android.launcher3.widget.WidgetCellPreview;
-import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetImageView;
 import com.android.launcher3.widget.WidgetManagerHelper;
 
@@ -234,7 +233,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
         PendingAddWidgetInfo pendingInfo = new PendingAddWidgetInfo(widgetInfo);
         pendingInfo.spanX = Math.min(mIdp.numColumns, widgetInfo.spanX);
         pendingInfo.spanY = Math.min(mIdp.numRows, widgetInfo.spanY);
-        mWidgetOptions = WidgetHostViewLoader.getDefaultOptionsForWidget(this, pendingInfo);
+        mWidgetOptions = pendingInfo.getDefaultSizeOptions(this);
         mWidgetCell.getWidgetView().setTag(pendingInfo);
 
         applyWidgetItemAsync(() -> new WidgetItem(widgetInfo, mIdp, mApp.getIconCache()));

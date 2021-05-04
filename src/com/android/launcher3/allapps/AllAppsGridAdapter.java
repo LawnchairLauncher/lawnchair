@@ -283,7 +283,7 @@ public class AllAppsGridAdapter extends
         mOnIconClickListener = launcher.getItemOnClickListener();
 
         mSearchAdapterProvider = searchAdapterProvider;
-        setAppsPerRow(mLauncher.getDeviceProfile().inv.numAllAppsColumns);
+        setAppsPerRow(mLauncher.getDeviceProfile().numShownAllAppsColumns);
     }
 
     public void setAppsPerRow(int appsPerRow) {
