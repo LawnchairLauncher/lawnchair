@@ -18,7 +18,6 @@ package com.android.launcher3.widget;
 
 import static com.android.launcher3.Utilities.getBoundsForViewInDragLayer;
 import static com.android.launcher3.Utilities.setRect;
-import static com.android.launcher3.util.ColorExtractionUtils.getColorExtractionRect;
 
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
@@ -102,6 +101,7 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
     private final Rect mCurrentWidgetSize = new Rect();
     private final Rect mWidgetSizeAtDrag = new Rect();
 
+    private final float[] mTmpFloatArray = new float[4];
     private final RectF mTempRectF = new RectF();
     private final Rect mEnforcedRectangle = new Rect();
     private final float mEnforcedCornerRadius;
@@ -323,7 +323,7 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
         if (!mIsInDragMode && getTag() instanceof LauncherAppWidgetInfo) {
             LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) getTag();
             getBoundsForViewInDragLayer(mLauncher.getDragLayer(), this, mCurrentWidgetSize, true,
-                    mTempRectF);
+                    mTmpFloatArray, mTempRectF);
             setRect(mTempRectF, mCurrentWidgetSize);
             updateColorExtraction(mCurrentWidgetSize,
                     mWorkspace.getPageIndexForScreenId(info.screenId));
@@ -357,7 +357,7 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
      * @param pageId The workspace page the widget is on.
      */
     private void updateColorExtraction(Rect rectInDragLayer, int pageId) {
-        getColorExtractionRect(mLauncher, pageId, rectInDragLayer, mTempRectF);
+        mColorExtractor.getExtractedRectForViewRect(mLauncher, pageId, rectInDragLayer, mTempRectF);
 
         if (mTempRectF.isEmpty()) {
             return;

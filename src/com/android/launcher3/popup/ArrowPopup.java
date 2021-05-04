@@ -18,7 +18,6 @@ package com.android.launcher3.popup;
 
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.popup.PopupPopulator.MAX_SHORTCUTS;
-import static com.android.launcher3.util.ColorExtractionUtils.getColorExtractionRect;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -748,7 +747,7 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
                     View view = getChildAt(i);
                     if (view.getVisibility() == VISIBLE) {
                         RectF rf = new RectF();
-                        getColorExtractionRect(Launcher.getLauncher(getContext()),
+                        mColorExtractor.getExtractedRectForView(Launcher.getLauncher(getContext()),
                                 workspace.getCurrentPage(), view, rf);
                         if (rf.isEmpty()) {
                             numVisibleChild++;
