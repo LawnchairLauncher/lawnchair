@@ -90,10 +90,7 @@ public class GridCustomizationsProvider extends ContentProvider {
                     parser.getDepth() > depth) && type != XmlPullParser.END_DOCUMENT) {
                 if ((type == XmlPullParser.START_TAG)
                         && GridOption.TAG_NAME.equals(parser.getName())) {
-                    GridOption option = new GridOption(getContext(), Xml.asAttributeSet(parser));
-                    if (option.visible) {
-                        result.add(option);
-                    }
+                    result.add(new GridOption(getContext(), Xml.asAttributeSet(parser)));
                 }
             }
         } catch (IOException | XmlPullParserException e) {
