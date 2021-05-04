@@ -43,10 +43,7 @@ public class LocalColorExtractor implements ResourceBasedOverride {
         void onColorsChanged(RectF rect, SparseIntArray extractedColors);
     }
 
-    /**
-     * Returns a new instance of the LocalColorExtractor.
-     */
-    public static LocalColorExtractor newInstance(Context context) {
+    static LocalColorExtractor newInstance(Context context) {
         return Overrides.getObject(LocalColorExtractor.class, context.getApplicationContext(),
                 R.string.local_colors_extraction_class);
     }
