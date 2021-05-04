@@ -20,6 +20,7 @@ import static com.android.launcher3.config.FeatureFlags.MULTI_DB_GRID_MIRATION_A
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
+import android.app.WallpaperColors;
 import android.content.Context;
 import android.hardware.display.DisplayManager;
 import android.os.Bundle;
@@ -28,18 +29,23 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
+import android.view.ContextThemeWrapper;
 import android.view.Display;
 import android.view.SurfaceControlViewHost;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
 import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.R;
 import com.android.launcher3.model.GridSizeMigrationTask;
 import com.android.launcher3.model.GridSizeMigrationTaskV2;
+import com.android.launcher3.util.Themes;
+import com.android.launcher3.widget.LocalColorExtractor;
 
 import java.util.concurrent.TimeUnit;
 
 /** Render preview using surface view. */
+@SuppressWarnings("NewApi")
 public class PreviewSurfaceRenderer implements IBinder.DeathRecipient {
 
     private static final int FADE_IN_ANIMATION_DURATION = 200;
@@ -50,6 +56,7 @@ public class PreviewSurfaceRenderer implements IBinder.DeathRecipient {
     private static final String KEY_DISPLAY_ID = "display_id";
     private static final String KEY_SURFACE_PACKAGE = "surface_package";
     private static final String KEY_CALLBACK = "callback";
+    private static final String KEY_COLORS = "wallpaper_colors";
 
     private final Context mContext;
     private final InvariantDeviceProfile mIdp;
@@ -57,6 +64,7 @@ public class PreviewSurfaceRenderer implements IBinder.DeathRecipient {
     private final int mWidth;
     private final int mHeight;
     private final Display mDisplay;
+    private final WallpaperColors mWallpaperColors;
 
     private SurfaceControlViewHost mSurfaceControlViewHost;
 
@@ -68,6 +76,8 @@ public class PreviewSurfaceRenderer implements IBinder.DeathRecipient {
         if (gridName == null) {
             gridName = InvariantDeviceProfile.getCurrentGridName(context);
         }
+        mWallpaperColors = bundle.getParcelable(KEY_COLORS);
+
         mIdp = new InvariantDeviceProfile(context, gridName);
 
         mHostToken = bundle.getBinder(KEY_HOST_TOKEN);
@@ -100,6 +110,19 @@ public class PreviewSurfaceRenderer implements IBinder.DeathRecipient {
         MODEL_EXECUTOR.post(() -> {
             final boolean success = doGridMigrationIfNecessary();
 
+            final Context inflationContext;
+            if (mWallpaperColors != null) {
+                // Workaround to create a themed context
+                Context context = mContext.createDisplayContext(mDisplay);
+                LocalColorExtractor.newInstance(mContext)
+                        .applyColorsOverride(context, mWallpaperColors);
+
+                inflationContext = new ContextThemeWrapper(context,
+                        Themes.getActivityThemeRes(context, mWallpaperColors.getColorHints()));
+            } else {
+                inflationContext = new ContextThemeWrapper(mContext,  R.style.AppTheme);
+            }
+
             MAIN_EXECUTOR.post(() -> {
                 // If mSurfaceControlViewHost is null due to any reason (e.g. binder died,
                 // happening when user leaves the preview screen before preview rendering finishes),
@@ -109,7 +132,8 @@ public class PreviewSurfaceRenderer implements IBinder.DeathRecipient {
                     return;
                 }
 
-                View view = new LauncherPreviewRenderer(mContext, mIdp, success).getRenderedView();
+                View view = new LauncherPreviewRenderer(inflationContext, mIdp, success)
+                        .getRenderedView();
                 // This aspect scales the view to fit in the surface and centers it
                 final float scale = Math.min(mWidth / (float) view.getMeasuredWidth(),
                         mHeight / (float) view.getMeasuredHeight());
