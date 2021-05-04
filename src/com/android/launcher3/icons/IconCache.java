@@ -81,10 +81,11 @@ public class IconCache extends BaseIconCache {
     private int mPendingIconRequestCount = 0;
 
     public IconCache(Context context, InvariantDeviceProfile idp) {
-        this(context, idp, LauncherFiles.APP_ICONS_DB);
+        this(context, idp, LauncherFiles.APP_ICONS_DB, new IconProvider(context));
     }
 
-    public IconCache(Context context, InvariantDeviceProfile idp, String dbFileName) {
+    public IconCache(Context context, InvariantDeviceProfile idp, String dbFileName,
+            IconProvider iconProvider) {
         super(context, dbFileName, MODEL_EXECUTOR.getLooper(),
                 idp.fillResIconDpi, idp.iconBitmapSize, true /* inMemoryCache */);
         mComponentWithLabelCachingLogic = new ComponentCachingLogic(context, false);
@@ -93,7 +94,7 @@ public class IconCache extends BaseIconCache {
         mLauncherApps = mContext.getSystemService(LauncherApps.class);
         mUserManager = UserCache.INSTANCE.get(mContext);
         mInstantAppResolver = InstantAppResolver.newInstance(mContext);
-        mIconProvider = new IconProvider(context, true /* supportsIconTheme */);
+        mIconProvider = iconProvider;
     }
 
     @Override
@@ -104,10 +105,6 @@ public class IconCache extends BaseIconCache {
     @Override
     protected boolean isInstantApp(ApplicationInfo info) {
         return mInstantAppResolver.isInstantApp(info);
-    }
-
-    public IconProvider getIconProvider() {
-        return mIconProvider;
     }
 
     @Override
