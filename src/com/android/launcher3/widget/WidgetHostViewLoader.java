@@ -1,25 +1,18 @@
 package com.android.launcher3.widget;
 
 import android.appwidget.AppWidgetHostView;
-import android.appwidget.AppWidgetManager;
 import android.content.Context;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.util.SizeF;
 import android.view.View;
 
-import com.android.launcher3.AppWidgetResizeFrame;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.util.Thunk;
-
-import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 public class WidgetHostViewLoader implements DragController.DragListener {
     private static final String TAG = "WidgetHostViewLoader";
@@ -90,7 +83,7 @@ public class WidgetHostViewLoader implements DragController.DragListener {
         if (pInfo.isCustomWidget()) {
             return false;
         }
-        final Bundle options = getDefaultOptionsForWidget(mLauncher, mInfo);
+        final Bundle options = mInfo.getDefaultSizeOptions(mLauncher);
 
         // If there is a configuration activity, do not follow thru bound and inflate.
         if (mInfo.getHandler().needsConfigure()) {
@@ -154,29 +147,4 @@ public class WidgetHostViewLoader implements DragController.DragListener {
         return true;
     }
 
-    public static Bundle getDefaultOptionsForWidget(Context context, PendingAddWidgetInfo info) {
-        ArrayList<SizeF> sizes = AppWidgetResizeFrame
-                .getWidgetSizes(context, info.spanX, info.spanY);
-
-        Rect padding = AppWidgetHostView.getDefaultPaddingForWidget(context,
-                info.componentName, null);
-        float density = context.getResources().getDisplayMetrics().density;
-        float xPaddingDips = (padding.left + padding.right) / density;
-        float yPaddingDips = (padding.top + padding.bottom) / density;
-
-        ArrayList<SizeF> paddedSizes = sizes.stream().map(
-                size -> new SizeF(Math.max(0.f, size.getWidth() - xPaddingDips),
-                        Math.max(0.f, size.getHeight() - yPaddingDips))).collect(
-                Collectors.toCollection(ArrayList::new));
-
-        Rect rect = AppWidgetResizeFrame.getMinMaxSizes(paddedSizes, null /* outRect */);
-
-        Bundle options = new Bundle();
-        options.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, rect.left);
-        options.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, rect.top);
-        options.putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, rect.right);
-        options.putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, rect.bottom);
-        options.putParcelableArrayList(AppWidgetManager.OPTION_APPWIDGET_SIZES, paddedSizes);
-        return options;
-    }
 }
