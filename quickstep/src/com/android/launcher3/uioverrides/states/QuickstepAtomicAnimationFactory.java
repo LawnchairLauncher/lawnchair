@@ -77,6 +77,7 @@ public class QuickstepAtomicAnimationFactory extends
     @Override
     public void prepareForAtomicAnimation(LauncherState fromState, LauncherState toState,
             StateAnimationConfig config) {
+        RecentsView overview = mActivity.getOverviewPanel();
         if (toState == NORMAL && fromState == OVERVIEW) {
             config.setInterpolator(ANIM_WORKSPACE_SCALE, DEACCEL);
             config.setInterpolator(ANIM_WORKSPACE_FADE, ACCEL);
@@ -85,7 +86,12 @@ public class QuickstepAtomicAnimationFactory extends
             config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, ACCEL_DEACCEL);
 
             if (SysUINavigationMode.getMode(mActivity) == NO_BUTTON) {
-                config.setInterpolator(ANIM_OVERVIEW_FADE, FINAL_FRAME);
+                // Scrolling in tasks, so make visible straight away
+                if (overview.getTaskViewCount() > 0) {
+                    config.setInterpolator(ANIM_OVERVIEW_FADE, FINAL_FRAME);
+                } else {
+                    config.setInterpolator(ANIM_OVERVIEW_FADE, DEACCEL_1_7);
+                }
             } else {
                 config.setInterpolator(ANIM_OVERVIEW_FADE, DEACCEL_1_7);
             }
@@ -122,13 +128,18 @@ public class QuickstepAtomicAnimationFactory extends
                 config.setInterpolator(ANIM_WORKSPACE_SCALE,
                         fromState == NORMAL ? ACCEL : OVERSHOOT_1_2);
                 config.setInterpolator(ANIM_WORKSPACE_TRANSLATE, ACCEL);
-                config.setInterpolator(ANIM_OVERVIEW_FADE, INSTANT);
+
+                // Scrolling in tasks, so show straight away
+                if (overview.getTaskViewCount() > 0) {
+                    config.setInterpolator(ANIM_OVERVIEW_FADE, INSTANT);
+                } else {
+                    config.setInterpolator(ANIM_OVERVIEW_FADE, OVERSHOOT_1_2);
+                }
             } else {
                 config.setInterpolator(ANIM_WORKSPACE_SCALE, OVERSHOOT_1_2);
                 config.setInterpolator(ANIM_OVERVIEW_FADE, OVERSHOOT_1_2);
 
                 // Scale up the recents, if it is not coming from the side
-                RecentsView overview = mActivity.getOverviewPanel();
                 if (overview.getVisibility() != VISIBLE || overview.getContentAlpha() == 0) {
                     RECENTS_SCALE_PROPERTY.set(overview, RECENTS_PREPARE_SCALE);
                 }
