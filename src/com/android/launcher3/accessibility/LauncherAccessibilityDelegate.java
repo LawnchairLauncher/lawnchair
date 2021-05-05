@@ -32,6 +32,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.dragndrop.DragController.DragListener;
 import com.android.launcher3.dragndrop.DragOptions;
+import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.keyboard.KeyboardDragAndDropView;
 import com.android.launcher3.model.data.AppInfo;
@@ -290,7 +291,12 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
             return actions;
         }
 
-        CellLayout layout = (CellLayout) host.getParent().getParent();
+        CellLayout layout;
+        if (host.getParent() instanceof DragView) {
+            layout = (CellLayout) ((DragView) host.getParent()).getContentViewParent().getParent();
+        } else {
+            layout = (CellLayout) host.getParent().getParent();
+        }
         if ((providerInfo.resizeMode & AppWidgetProviderInfo.RESIZE_HORIZONTAL) != 0) {
             if (layout.isRegionVacant(info.cellX + info.spanX, info.cellY, 1, info.spanY) ||
                     layout.isRegionVacant(info.cellX - 1, info.cellY, 1, info.spanY)) {
