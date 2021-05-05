@@ -18,8 +18,10 @@ package com.android.launcher3.util;
 import static android.view.Display.DEFAULT_DISPLAY;
 import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION;
 
+import static com.android.launcher3.Utilities.dpiFromPx;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+import static com.android.launcher3.util.WindowManagerCompat.MIN_TABLET_WIDTH;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -32,16 +34,22 @@ import android.graphics.Point;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.DisplayManager.DisplayListener;
 import android.os.Build;
+import android.util.ArraySet;
 import android.util.Log;
 import android.view.Display;
+import android.view.WindowMetrics;
 
 import androidx.annotation.AnyThread;
 import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.Utilities;
+import com.android.launcher3.uioverrides.ApiWrapper;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * Utility class to cache properties of default display to avoid a system RPC on every call.
@@ -54,13 +62,14 @@ public class DisplayController implements DisplayListener, ComponentCallbacks {
     public static final MainThreadInitializedObject<DisplayController> INSTANCE =
             new MainThreadInitializedObject<>(DisplayController::new);
 
-    public static final int CHANGE_SIZE = 1 << 0;
+    public static final int CHANGE_ACTIVE_SCREEN = 1 << 0;
     public static final int CHANGE_ROTATION = 1 << 1;
     public static final int CHANGE_FRAME_DELAY = 1 << 2;
     public static final int CHANGE_DENSITY = 1 << 3;
+    public static final int CHANGE_SUPPORTED_BOUNDS = 1 << 4;
 
-    public static final int CHANGE_ALL = CHANGE_SIZE | CHANGE_ROTATION
-            | CHANGE_FRAME_DELAY | CHANGE_DENSITY;
+    public static final int CHANGE_ALL = CHANGE_ACTIVE_SCREEN | CHANGE_ROTATION
+            | CHANGE_FRAME_DELAY | CHANGE_DENSITY | CHANGE_SUPPORTED_BOUNDS;
 
     private final Context mContext;
     private final DisplayManager mDM;
@@ -87,7 +96,22 @@ public class DisplayController implements DisplayListener, ComponentCallbacks {
                     new IntentFilter(Intent.ACTION_CONFIGURATION_CHANGED));
         }
 
-        mInfo = new Info(getContext(display), display);
+        // Create a single holder for all internal displays. External display holders created
+        // lazily.
+        Set<PortraitSize> extraInternalDisplays = new ArraySet<>();
+        for (Display d : mDM.getDisplays()) {
+            if (ApiWrapper.isInternalDisplay(display) && d.getDisplayId() != DEFAULT_DISPLAY) {
+                Point size = new Point();
+                d.getRealSize(size);
+                extraInternalDisplays.add(new PortraitSize(size.x, size.y));
+            }
+        }
+
+        if (extraInternalDisplays.isEmpty() || !Utilities.ATLEAST_S) {
+            mInfo = new Info(createDisplayInfoContext(display), display, Collections.emptySet());
+        } else {
+            mInfo = new Info(mWindowContext, display, extraInternalDisplays);
+        }
         mDM.registerDisplayListener(this, UI_HELPER_EXECUTOR.getHandler());
     }
 
@@ -139,7 +163,7 @@ public class DisplayController implements DisplayListener, ComponentCallbacks {
      */
     private void onConfigChanged(Intent intent) {
         Configuration config = mContext.getResources().getConfiguration();
-        if (config.fontScale != config.fontScale || mInfo.densityDpi != config.densityDpi) {
+        if (mInfo.fontScale != config.fontScale || mInfo.densityDpi != config.densityDpi) {
             Log.d(TAG, "Configuration changed, notifying listeners");
             Display display = mDM.getDisplay(DEFAULT_DISPLAY);
             if (display != null) {
@@ -157,8 +181,7 @@ public class DisplayController implements DisplayListener, ComponentCallbacks {
                 || config.fontScale != mInfo.fontScale
                 || display.getRotation() != mInfo.rotation
                 || !mInfo.mScreenSizeDp.equals(
-                        Math.min(config.screenHeightDp, config.screenWidthDp),
-                        Math.max(config.screenHeightDp, config.screenWidthDp))) {
+                        new PortraitSize(config.screenHeightDp, config.screenWidthDp))) {
             handleInfoChange(display);
         }
     }
@@ -178,18 +201,23 @@ public class DisplayController implements DisplayListener, ComponentCallbacks {
         return mInfo;
     }
 
-    private Context getContext(Display display) {
-        return Utilities.ATLEAST_S ? mWindowContext : mContext.createDisplayContext(display);
+    private Context createDisplayInfoContext(Display display) {
+        return Utilities.ATLEAST_S
+                ? mContext.createWindowContext(display, TYPE_APPLICATION, null)
+                : mContext.createDisplayContext(display);
     }
 
     @AnyThread
     private void handleInfoChange(Display display) {
         Info oldInfo = mInfo;
-        Context context = getContext(display);
-        Info newInfo = new Info(context, display);
+        Set<PortraitSize> extraDisplaysSizes = oldInfo.mAllSizes.size() > 1
+                ? oldInfo.mAllSizes : Collections.emptySet();
+
+        Context displayContext = createDisplayInfoContext(display);
+        Info newInfo = new Info(displayContext, display, extraDisplaysSizes);
         int change = 0;
-        if (newInfo.hasDifferentSize(oldInfo)) {
-            change |= CHANGE_SIZE;
+        if (!newInfo.mScreenSizeDp.equals(oldInfo.mScreenSizeDp)) {
+            change |= CHANGE_ACTIVE_SCREEN;
         }
         if (newInfo.rotation != oldInfo.rotation) {
             change |= CHANGE_ROTATION;
@@ -200,11 +228,14 @@ public class DisplayController implements DisplayListener, ComponentCallbacks {
         if (newInfo.densityDpi != oldInfo.densityDpi || newInfo.fontScale != oldInfo.fontScale) {
             change |= CHANGE_DENSITY;
         }
+        if (!newInfo.supportedBounds.equals(oldInfo.supportedBounds)) {
+            change |= CHANGE_SUPPORTED_BOUNDS;
+        }
 
         if (change != 0) {
             mInfo = newInfo;
             final int flags = change;
-            MAIN_EXECUTOR.execute(() -> notifyChange(context, flags));
+            MAIN_EXECUTOR.execute(() -> notifyChange(displayContext, flags));
         }
     }
 
@@ -224,13 +255,18 @@ public class DisplayController implements DisplayListener, ComponentCallbacks {
         public final float fontScale;
         public final int densityDpi;
 
-        private final Point mScreenSizeDp;
+        private final PortraitSize mScreenSizeDp;
+        private final Set<PortraitSize> mAllSizes;
 
-        public final Point realSize;
-        public final Point smallestSize;
-        public final Point largestSize;
+        public final Point currentSize;
+
+        public final Set<WindowBounds> supportedBounds = new ArraySet<>();
 
         public Info(Context context, Display display) {
+            this(context, display, Collections.emptySet());
+        }
+
+        private Info(Context context, Display display, Set<PortraitSize> extraDisplaysSizes) {
             id = display.getDisplayId();
 
             rotation = display.getRotation();
@@ -238,35 +274,67 @@ public class DisplayController implements DisplayListener, ComponentCallbacks {
             Configuration config = context.getResources().getConfiguration();
             fontScale = config.fontScale;
             densityDpi = config.densityDpi;
-            mScreenSizeDp = new Point(
-                    Math.min(config.screenHeightDp, config.screenWidthDp),
-                    Math.max(config.screenHeightDp, config.screenWidthDp));
+            mScreenSizeDp = new PortraitSize(config.screenHeightDp, config.screenWidthDp);
 
             singleFrameMs = getSingleFrameMs(display);
+            currentSize = new Point();
 
-            realSize = new Point();
-            smallestSize = new Point();
-            largestSize = new Point();
+            display.getRealSize(currentSize);
 
-            display.getRealSize(realSize);
-            display.getCurrentSizeRange(smallestSize, largestSize);
+            if (extraDisplaysSizes.isEmpty() || !Utilities.ATLEAST_S) {
+                Point smallestSize = new Point();
+                Point largestSize = new Point();
+                display.getCurrentSizeRange(smallestSize, largestSize);
+
+                int portraitWidth = Math.min(currentSize.x, currentSize.y);
+                int portraitHeight = Math.max(currentSize.x, currentSize.y);
+
+                supportedBounds.add(new WindowBounds(portraitWidth, portraitHeight,
+                        smallestSize.x, largestSize.y));
+                supportedBounds.add(new WindowBounds(portraitHeight, portraitWidth,
+                        largestSize.x, smallestSize.y));
+                mAllSizes = Collections.singleton(new PortraitSize(currentSize.x, currentSize.y));
+            } else {
+                mAllSizes = new ArraySet<>(extraDisplaysSizes);
+                mAllSizes.add(new PortraitSize(currentSize.x, currentSize.y));
+                Set<WindowMetrics> metrics = WindowManagerCompat.getDisplayProfiles(
+                        context, mAllSizes, densityDpi,
+                        ApiWrapper.TASKBAR_DRAWN_IN_PROCESS);
+                metrics.forEach(wm -> supportedBounds.add(WindowBounds.fromWindowMetrics(wm)));
+            }
         }
 
-        private boolean hasDifferentSize(Info info) {
-            if (!realSize.equals(info.realSize)
-                    && !realSize.equals(info.realSize.y, info.realSize.x)) {
-                Log.d(TAG, String.format("Display size changed from %s to %s",
-                        info.realSize, realSize));
-                return true;
-            }
+        /**
+         * Returns true if the bounds represent a tablet
+         */
+        public boolean isTablet(WindowBounds bounds) {
+            return dpiFromPx(Math.min(bounds.bounds.width(), bounds.bounds.height()),
+                    densityDpi) >= MIN_TABLET_WIDTH;
+        }
+    }
 
-            if (!smallestSize.equals(info.smallestSize) || !largestSize.equals(info.largestSize)) {
-                Log.d(TAG, String.format("Available size changed from [%s, %s] to [%s, %s]",
-                        smallestSize, largestSize, info.smallestSize, info.largestSize));
-                return true;
-            }
+    /**
+     * Utility class to hold a size information in an orientation independent way
+     */
+    public static class PortraitSize {
+        public final int width, height;
 
-            return false;
+        public PortraitSize(int w, int h) {
+            width = Math.min(w, h);
+            height = Math.max(w, h);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            PortraitSize that = (PortraitSize) o;
+            return width == that.width && height == that.height;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(width, height);
         }
     }
 

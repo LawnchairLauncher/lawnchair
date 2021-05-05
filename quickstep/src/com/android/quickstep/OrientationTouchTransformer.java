@@ -191,7 +191,7 @@ class OrientationTouchTransformer {
      * @see #enableMultipleRegions(boolean, Info)
      */
     void createOrAddTouchRegion(Info info) {
-        mCurrentDisplay = new CurrentDisplay(info.realSize, info.rotation);
+        mCurrentDisplay = new CurrentDisplay(info.currentSize, info.rotation);
 
         if (mQuickStepStartingRotation > QUICKSTEP_ROTATION_UNINITIALIZED
                 && mCurrentDisplay.rotation == mQuickStepStartingRotation) {
@@ -256,7 +256,7 @@ class OrientationTouchTransformer {
             Log.d(TAG, "clearing all regions except rotation: " + mCurrentDisplay.rotation);
         }
 
-        mCurrentDisplay = new CurrentDisplay(region.realSize, region.rotation);
+        mCurrentDisplay = new CurrentDisplay(region.currentSize, region.rotation);
         OrientationRectF regionToKeep = mSwipeTouchRegions.get(mCurrentDisplay);
         if (DEBUG) {
             Log.d(TestProtocol.NO_SWIPE_TO_HOME, "cached region: " + regionToKeep
@@ -289,7 +289,7 @@ class OrientationTouchTransformer {
             + " with mode: " + mMode + " displayRotation: " + display.rotation);
         }
 
-        Point size = display.realSize;
+        Point size = display.currentSize;
         int rotation = display.rotation;
         int touchHeight = mNavBarGesturalHeight;
         OrientationRectF orientationRectF =

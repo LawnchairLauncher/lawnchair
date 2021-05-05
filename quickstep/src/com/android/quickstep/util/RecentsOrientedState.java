@@ -33,6 +33,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Matrix;
+import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.util.Log;
@@ -49,6 +50,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.PagedOrientationHandler;
+import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.SettingsCache;
 import com.android.launcher3.util.WindowBounds;
 import com.android.quickstep.BaseActivityInterface;
@@ -561,11 +563,27 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
      */
     public DeviceProfile getLauncherDeviceProfile() {
         InvariantDeviceProfile idp = InvariantDeviceProfile.INSTANCE.get(mContext);
-        // TODO also check the natural orientation is landscape or portrait
-        return  (mRecentsActivityRotation == ROTATION_90
-                || mRecentsActivityRotation == ROTATION_270)
-                ? idp.landscapeProfile
-                : idp.portraitProfile;
+        Point currentSize = DisplayController.INSTANCE.get(mContext).getInfo().currentSize;
+
+        int width, height;
+        if ((mRecentsActivityRotation == ROTATION_90 || mRecentsActivityRotation == ROTATION_270)) {
+            width = Math.max(currentSize.x, currentSize.y);
+            height = Math.min(currentSize.x, currentSize.y);
+        } else {
+            width = Math.min(currentSize.x, currentSize.y);
+            height = Math.max(currentSize.x, currentSize.y);
+        }
+
+        DeviceProfile bestMatch = idp.supportedProfiles.get(0);
+        float minDiff = Float.MAX_VALUE;
+        for (DeviceProfile profile : idp.supportedProfiles) {
+            float diff = Math.abs(profile.widthPx - width) + Math.abs(profile.heightPx - height);
+            if (diff < minDiff) {
+                minDiff = diff;
+                bestMatch = profile;
+            }
+        }
+        return bestMatch;
     }
 
     private static String nameAndAddress(Object obj) {

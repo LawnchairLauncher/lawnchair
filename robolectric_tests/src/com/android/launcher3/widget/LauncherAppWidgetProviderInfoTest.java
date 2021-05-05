@@ -17,6 +17,9 @@ package com.android.launcher3.widget;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
+
 import android.content.Context;
 import android.graphics.Point;
 
@@ -109,10 +112,14 @@ public final class LauncherAppWidgetProviderInfoTest {
 
     private InvariantDeviceProfile createIDP() {
         DeviceProfile profile = Mockito.mock(DeviceProfile.class);
+        doAnswer(i -> {
+            ((Point) i.getArgument(0)).set(CELL_SIZE, CELL_SIZE);
+            return null;
+        }).when(profile).getCellSize(any(Point.class));
         Mockito.when(profile.getCellSize()).thenReturn(new Point(CELL_SIZE, CELL_SIZE));
 
         InvariantDeviceProfile idp = new InvariantDeviceProfile();
-        idp.landscapeProfile = idp.portraitProfile = profile;
+        idp.supportedProfiles.add(profile);
         return idp;
     }
 
