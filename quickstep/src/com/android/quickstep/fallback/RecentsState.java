@@ -50,6 +50,7 @@ public class RecentsState implements BaseState<RecentsState> {
     public static final RecentsState BACKGROUND_APP = new BackgroundAppState(2,
             FLAG_DISABLE_RESTORE | FLAG_NON_INTERACTIVE | FLAG_FULL_SCREEN);
     public static final RecentsState HOME = new RecentsState(3, 0);
+    public static final RecentsState BG_LAUNCHER = new LauncherState(4, 0);
 
     public final int ordinal;
     private final int mFlags;
@@ -159,6 +160,17 @@ public class RecentsState implements BaseState<RecentsState> {
         @Override
         public float[] getOverviewScaleAndOffset(RecentsActivity activity) {
             return getOverviewScaleAndOffsetForBackgroundState(activity);
+        }
+    }
+
+    private static class LauncherState extends RecentsState {
+        LauncherState(int id, int flags) {
+            super(id, flags);
+        }
+
+        @Override
+        public float[] getOverviewScaleAndOffset(RecentsActivity activity) {
+            return new float[] { NO_SCALE, 1 };
         }
     }
 }
