@@ -16,7 +16,6 @@
 package com.android.launcher3.common;
 
 import static com.android.launcher3.WorkspaceLayoutManager.FIRST_SCREEN_ID;
-import static com.android.launcher3.widget.WidgetHostViewLoader.getDefaultOptionsForWidget;
 
 import android.appwidget.AppWidgetHost;
 import android.content.ContentResolver;
@@ -62,7 +61,7 @@ public class WidgetUtils {
             pendingInfo.spanY = item.spanY;
             pendingInfo.minSpanX = item.minSpanX;
             pendingInfo.minSpanY = item.minSpanY;
-            Bundle options = getDefaultOptionsForWidget(targetContext, pendingInfo);
+            Bundle options = pendingInfo.getDefaultSizeOptions(targetContext);
 
             AppWidgetHost host = new LauncherAppWidgetHost(targetContext);
             int widgetId = host.allocateAppWidgetId();

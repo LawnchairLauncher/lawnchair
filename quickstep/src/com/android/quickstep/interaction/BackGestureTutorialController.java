@@ -20,9 +20,7 @@ import static com.android.quickstep.interaction.TutorialController.TutorialType.
 import static com.android.quickstep.interaction.TutorialController.TutorialType.RIGHT_EDGE_BACK_NAVIGATION;
 
 import android.graphics.PointF;
-import android.view.View;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import com.android.launcher3.R;
@@ -34,11 +32,6 @@ final class BackGestureTutorialController extends TutorialController {
 
     BackGestureTutorialController(BackGestureTutorialFragment fragment, TutorialType tutorialType) {
         super(fragment, tutorialType);
-    }
-
-    @Nullable
-    public View getMockLauncherView() {
-        return null;
     }
 
     @Override

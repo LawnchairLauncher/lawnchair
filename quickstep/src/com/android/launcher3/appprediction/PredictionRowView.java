@@ -33,7 +33,6 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.FloatingHeaderRow;
 import com.android.launcher3.allapps.FloatingHeaderView;
@@ -80,9 +79,9 @@ public class PredictionRowView extends LinearLayout implements
         setOrientation(LinearLayout.HORIZONTAL);
 
         mFocusHelper = new SimpleFocusIndicatorHelper(this);
-        mNumPredictedAppsPerRow = LauncherAppState.getIDP(context).numAllAppsColumns;
         mLauncher = Launcher.getLauncher(context);
         mLauncher.addOnDeviceProfileChangeListener(this);
+        mNumPredictedAppsPerRow = mLauncher.getDeviceProfile().numShownAllAppsColumns;
         updateVisibility();
     }
 
@@ -174,7 +173,7 @@ public class PredictionRowView extends LinearLayout implements
 
     @Override
     public void onDeviceProfileChanged(DeviceProfile dp) {
-        mNumPredictedAppsPerRow = dp.inv.numAllAppsColumns;
+        mNumPredictedAppsPerRow = dp.numShownAllAppsColumns;
         removeAllViews();
         applyPredictionApps();
     }

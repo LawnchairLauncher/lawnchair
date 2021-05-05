@@ -26,6 +26,7 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_MODAL_TASK;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_WIDGET_APP_START;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_TAP;
 import static com.android.launcher3.testing.TestProtocol.HINT_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.HINT_STATE_TWO_BUTTON_ORDINAL;
@@ -36,7 +37,6 @@ import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SY
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.os.SystemProperties;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
 
@@ -89,9 +89,6 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 public class QuickstepLauncher extends BaseQuickstepLauncher {
-
-    private static final boolean ENABLE_APP_WIDGET_LAUNCH_ANIMATION =
-            SystemProperties.getBoolean("persist.debug.quickstep_app_widget_launch", false);
 
     public static final boolean GO_LOW_RAM_RECENTS_ENABLED = false;
     /**
@@ -327,7 +324,7 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
 
     protected LauncherAppWidgetHost createAppWidgetHost() {
         LauncherAppWidgetHost appWidgetHost = super.createAppWidgetHost();
-        if (ENABLE_APP_WIDGET_LAUNCH_ANIMATION) {
+        if (ENABLE_QUICKSTEP_WIDGET_APP_START.get()) {
             appWidgetHost.setInteractionHandler(new QuickstepInteractionHandler(this));
         }
         return appWidgetHost;

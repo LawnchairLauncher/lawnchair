@@ -87,6 +87,10 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_QUICKSTEP_LIVE_TILE = getDebugFlag(
             "ENABLE_QUICKSTEP_LIVE_TILE", true, "Enable live tile in Quickstep overview");
 
+    public static final BooleanFlag ENABLE_QUICKSTEP_WIDGET_APP_START = getDebugFlag(
+            "ENABLE_QUICKSTEP_WIDGET_APP_START", false,
+            "Enable Quickstep animation when launching activities from an app widget");
+
     // Keep as DeviceFlag to allow remote disable in emergency.
     public static final BooleanFlag ENABLE_SUGGESTED_ACTIONS_OVERVIEW = new DeviceFlag(
             "ENABLE_SUGGESTED_ACTIONS_OVERVIEW", true, "Show chip hints on the overview screen");
@@ -137,8 +141,8 @@ public final class FeatureFlags {
     public static final BooleanFlag MULTI_DB_GRID_MIRATION_ALGO = getDebugFlag(
             "MULTI_DB_GRID_MIRATION_ALGO", true, "Use the multi-db grid migration algorithm");
 
-    public static final BooleanFlag ENABLE_LAUNCHER_PREVIEW_IN_GRID_PICKER = getDebugFlag(
-            "ENABLE_LAUNCHER_PREVIEW_IN_GRID_PICKER", true, "Show launcher preview in grid picker");
+    public static final BooleanFlag ENABLE_THEMED_ICONS = getDebugFlag(
+            "ENABLE_THEMED_ICONS", false, "Enable themed icons on workspace");
 
     // Keep as DeviceFlag for remote disable in emergency.
     public static final BooleanFlag ENABLE_OVERVIEW_SELECTIONS = new DeviceFlag(
@@ -225,6 +229,10 @@ public final class FeatureFlags {
 
     public static final BooleanFlag ENABLE_ENFORCED_ROUNDED_CORNERS = new DeviceFlag(
             "ENABLE_ENFORCED_ROUNDED_CORNERS", true, "Enforce rounded corners on all App Widgets");
+
+    public static final BooleanFlag ENABLE_LOCAL_RECOMMENDED_WIDGETS_FILTER = new DeviceFlag(
+            "ENABLE_LOCAL_RECOMMENDED_WIDGETS_FILTER", true,
+            "Enables a local filter for recommended widgets.");
 
     public static final BooleanFlag NOTIFY_CRASHES = getDebugFlag("NOTIFY_CRASHES", false,
             "Sends a notification whenever launcher encounters an uncaught exception.");

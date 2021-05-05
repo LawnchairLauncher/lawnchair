@@ -18,7 +18,7 @@ package com.android.quickstep;
 import static android.content.Intent.ACTION_USER_UNLOCKED;
 
 import static com.android.launcher3.util.DisplayController.CHANGE_ALL;
-import static com.android.launcher3.util.DisplayController.CHANGE_FRAME_DELAY;
+import static com.android.launcher3.util.DisplayController.CHANGE_ROTATION;
 import static com.android.launcher3.util.SettingsCache.ONE_HANDED_ENABLED;
 import static com.android.launcher3.util.SettingsCache.ONE_HANDED_SWIPE_BOTTOM_TO_NOTIFICATION_ENABLED;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
@@ -271,15 +271,9 @@ public class RecentsAnimationDeviceState implements
 
     @Override
     public void onDisplayInfoChanged(Context context, Info info, int flags) {
-        if (info.id != getDisplayId() || flags == CHANGE_FRAME_DELAY) {
-            // ignore displays that aren't running launcher and frame refresh rate changes
-            return;
+        if ((flags & CHANGE_ROTATION) != 0) {
+            mNavBarPosition = new NavBarPosition(mMode, info);
         }
-
-        if (!mMode.hasGestures) {
-            return;
-        }
-        mNavBarPosition = new NavBarPosition(mMode, info);
     }
 
     @Override

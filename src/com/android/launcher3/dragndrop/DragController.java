@@ -22,7 +22,6 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.Utilities.ATLEAST_Q;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
-import android.animation.ValueAnimator;
 import android.content.ComponentName;
 import android.content.res.Resources;
 import android.graphics.Point;
@@ -307,14 +306,9 @@ public class DragController implements DragDriver.EventListener, TouchController
             mOptions.preDragCondition.onPreDragEnd(mDragObject, true /* dragStarted*/);
         }
         mIsInPreDrag = false;
+        mDragObject.dragView.onDragStart();
         for (DragListener listener : new ArrayList<>(mListeners)) {
             listener.onDragStart(mDragObject, mOptions);
-        }
-    }
-
-    public void addFirstFrameAnimationHelper(ValueAnimator anim) {
-        if (mDragObject != null && mDragObject.dragView != null) {
-            mDragObject.dragView.mFirstFrameAnimatorHelper.addTo(anim);
         }
     }
 
