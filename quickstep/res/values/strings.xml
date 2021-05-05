@@ -177,6 +177,15 @@
     <!-- Feedback subtext displaying the current step and the total number of steps for the tutorial. [CHAR LIMIT=30] -->
     <string name="gesture_tutorial_step">Tutorial <xliff:g id="current">%1$d</xliff:g>/<xliff:g id="total">%2$d</xliff:g></string>
 
+    <!-- Title of "All Set" page [CHAR LIMIT=NONE] -->
+    <string name="allset_title">All set!</string>
+    <!-- Hint string at the bottom of "All Set" page [CHAR LIMIT=NONE] -->
+    <string name="allset_hint">Swipe up to go home</string>
+    <!-- Description of "All Set" page [CHAR LIMIT=NONE] -->
+    <string name="allset_description">You\u2019re ready to start using your phone</string>
+    <!-- String linking to navigation settings on "All Set" page [CHAR LIMIT=NONE] -->
+    <string name="allset_navigation_settings"><annotation id="link">Navigation settings for accessibility</annotation></string>
+
     <!-- ******* Overview ******* -->
     <!-- Label for a button that causes the current overview app to be shared. [CHAR_LIMIT=40] -->
     <string name="action_share">Share</string>
