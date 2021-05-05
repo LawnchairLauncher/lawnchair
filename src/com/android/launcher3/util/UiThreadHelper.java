@@ -48,7 +48,13 @@ public class UiThreadHelper {
             WindowInsets rootInsets = launcher.getRootView().getRootWindowInsets();
             boolean isImeShown = rootInsets != null && rootInsets.isVisible(
                     WindowInsets.Type.ime());
-            if (!isImeShown) return;
+            if (isImeShown) {
+                // this call is already asynchronous
+                launcher.getAppsView().getWindowInsetsController().hide(
+                        WindowInsets.Type.ime()
+                );
+            }
+            return;
         }
 
         Message.obtain(HANDLER.get(launcher), MSG_HIDE_KEYBOARD, token).sendToTarget();
