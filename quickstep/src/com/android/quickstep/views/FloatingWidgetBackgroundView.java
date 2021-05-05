@@ -100,8 +100,8 @@ final class FloatingWidgetBackgroundView extends View {
     /** Restores the drawables to the source view. */
     void finish() {
         if (isUninitialized()) return;
-        mSourceView.setForeground(mOriginalForeground);
-        mSourceView.setBackground(mOriginalBackground);
+        if (mOriginalForeground != null) mSourceView.setForeground(mOriginalForeground);
+        if (mOriginalBackground != null) mSourceView.setBackground(mOriginalBackground);
     }
 
     void recycle() {
