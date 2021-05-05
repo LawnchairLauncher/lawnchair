@@ -20,6 +20,7 @@ import static android.view.View.VISIBLE;
 
 import android.content.ClipData;
 import android.content.ClipDescription;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.LauncherApps;
 import android.content.res.Resources;
@@ -29,7 +30,6 @@ import android.os.UserHandle;
 import android.view.DragEvent;
 import android.view.View;
 
-import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
@@ -43,12 +43,12 @@ import com.android.systemui.shared.system.LauncherAppsCompat;
  */
 public class TaskbarDragController {
 
-    private final BaseQuickstepLauncher mLauncher;
+    private final Context mContext;
     private final int mDragIconSize;
 
-    public TaskbarDragController(BaseQuickstepLauncher launcher) {
-        mLauncher = launcher;
-        Resources resources = mLauncher.getResources();
+    public TaskbarDragController(Context context) {
+        mContext = context;
+        Resources resources = mContext.getResources();
         mDragIconSize = resources.getDimensionPixelSize(R.dimen.taskbar_icon_drag_icon_size);
     }
 
@@ -63,7 +63,6 @@ public class TaskbarDragController {
         }
 
         BubbleTextView btv = (BubbleTextView) view;
-
         View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view) {
             @Override
             public void onProvideShadowMetrics(Point shadowSize, Point shadowTouchPoint) {
@@ -87,7 +86,7 @@ public class TaskbarDragController {
         Intent intent = null;
         if (tag instanceof WorkspaceItemInfo) {
             WorkspaceItemInfo item = (WorkspaceItemInfo) tag;
-            LauncherApps launcherApps = mLauncher.getSystemService(LauncherApps.class);
+            LauncherApps launcherApps = mContext.getSystemService(LauncherApps.class);
             clipDescription = new ClipDescription(item.title,
                     new String[] {
                             item.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT
