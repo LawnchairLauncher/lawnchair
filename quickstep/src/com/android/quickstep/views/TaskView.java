@@ -172,6 +172,32 @@ public class TaskView extends FrameLayout implements Reusable {
                 }
             };
 
+    private static final FloatProperty<TaskView> SPLIT_SELECT_TRANSLATION_X =
+            new FloatProperty<TaskView>("splitSelectTranslationX") {
+                @Override
+                public void setValue(TaskView taskView, float v) {
+                    taskView.setSplitSelectTranslationX(v);
+                }
+
+                @Override
+                public Float get(TaskView taskView) {
+                    return taskView.mSplitSelectTranslationX;
+                }
+            };
+
+    private static final FloatProperty<TaskView> SPLIT_SELECT_TRANSLATION_Y =
+            new FloatProperty<TaskView>("splitSelectTranslationY") {
+                @Override
+                public void setValue(TaskView taskView, float v) {
+                    taskView.setSplitSelectTranslationY(v);
+                }
+
+                @Override
+                public Float get(TaskView taskView) {
+                    return taskView.mSplitSelectTranslationY;
+                }
+            };
+
     private static final FloatProperty<TaskView> DISMISS_TRANSLATION_X =
             new FloatProperty<TaskView>("dismissTranslationX") {
                 @Override
@@ -345,6 +371,9 @@ public class TaskView extends FrameLayout implements Reusable {
     // The following grid translations scales with mGridProgress.
     private float mGridTranslationX;
     private float mGridTranslationY;
+    // Used when in SplitScreenSelectState
+    private float mSplitSelectTranslationY;
+    private float mSplitSelectTranslationX;
 
     private ObjectAnimator mIconAndDimAnimator;
     private float mIconScaleAnimStartProgress = 0;
@@ -826,8 +855,10 @@ public class TaskView extends FrameLayout implements Reusable {
     protected void resetViewTransforms() {
         // fullscreenTranslation and accumulatedTranslation should not be reset, as
         // resetViewTransforms is called during Quickswitch scrolling.
-        mDismissTranslationX = mTaskOffsetTranslationX = mTaskResistanceTranslationX = 0f;
-        mDismissTranslationY = mTaskOffsetTranslationY = mTaskResistanceTranslationY = 0f;
+        mDismissTranslationX = mTaskOffsetTranslationX = mTaskResistanceTranslationX =
+                mSplitSelectTranslationX = 0f;
+        mDismissTranslationY = mTaskOffsetTranslationY = mTaskResistanceTranslationY =
+                mSplitSelectTranslationY = 0f;
         applyTranslationX();
         applyTranslationY();
         setTranslationZ(0);
@@ -957,6 +988,15 @@ public class TaskView extends FrameLayout implements Reusable {
         setScaleY(scale);
     }
 
+    private void setSplitSelectTranslationX(float x) {
+        mSplitSelectTranslationX = x;
+        applyTranslationX();
+    }
+
+    private void setSplitSelectTranslationY(float y) {
+        mSplitSelectTranslationY = y;
+        applyTranslationY();
+    }
     private void setDismissTranslationX(float x) {
         mDismissTranslationX = x;
         applyTranslationX();
@@ -1057,12 +1097,12 @@ public class TaskView extends FrameLayout implements Reusable {
 
     private void applyTranslationX() {
         setTranslationX(mDismissTranslationX + mTaskOffsetTranslationX + mTaskResistanceTranslationX
-                + getPersistentTranslationX());
+                + mSplitSelectTranslationX + getPersistentTranslationX());
     }
 
     private void applyTranslationY() {
         setTranslationY(mDismissTranslationY + mTaskOffsetTranslationY + mTaskResistanceTranslationY
-                + getPersistentTranslationY());
+                + mSplitSelectTranslationY + getPersistentTranslationY());
     }
 
     /**
@@ -1084,6 +1124,16 @@ public class TaskView extends FrameLayout implements Reusable {
                 + getFullscreenTrans(mFullscreenTranslationY)
                 + getNonFullscreenTrans(mNonFullscreenTranslationY)
                 + getGridTrans(mGridTranslationY);
+    }
+
+    public FloatProperty<TaskView> getPrimarySplitTranslationProperty() {
+        return getPagedOrientationHandler().getPrimaryValue(
+                SPLIT_SELECT_TRANSLATION_X, SPLIT_SELECT_TRANSLATION_Y);
+    }
+
+    public FloatProperty<TaskView> getSecondarySplitTranslationProperty() {
+        return getPagedOrientationHandler().getSecondaryValue(
+                SPLIT_SELECT_TRANSLATION_X, SPLIT_SELECT_TRANSLATION_Y);
     }
 
     public FloatProperty<TaskView> getPrimaryDismissTranslationProperty() {
