@@ -167,6 +167,7 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
                                 mAllowGoingDown = true;
                                 directionsToDetectScroll = DIRECTION_BOTH;
                             } else {
+                                mAllowGoingDown = false;
                                 directionsToDetectScroll = upDirection;
                             }
                         }
