@@ -223,7 +223,7 @@ public class GridSizeMigrationTaskTest {
 
     @Test
     public void testWorkspace_first_row_blocked() throws Exception {
-        if (!FeatureFlags.QSB_ON_FIRST_SCREEN) {
+        if (!FeatureFlags.topQsbOnFirstScreenEnabled()) {
             return;
         }
         // The first screen has one item on the 4th column which needs moving, as the first row
@@ -251,7 +251,7 @@ public class GridSizeMigrationTaskTest {
 
     @Test
     public void testWorkspace_items_moved_to_empty_first_row() throws Exception {
-        if (!FeatureFlags.QSB_ON_FIRST_SCREEN) {
+        if (!FeatureFlags.topQsbOnFirstScreenEnabled()) {
             return;
         }
         // Items will get moved to the next screen to keep the first screen empty.

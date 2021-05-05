@@ -56,6 +56,7 @@ class PreferenceManager private constructor(context: Context) : BasePreferenceMa
     val allAppsIconSizeFactor = FloatPref("pref_allAppsIconSizeFactor", 1F, scheduleRestart)
     val allAppsTextSizeFactor = FloatPref("pref_allAppsTextSizeFactor", 1F, scheduleRestart)
     val allAppsColumns = IdpIntPref("pref_allAppsColumns", { numAllAppsColumns }, reloadGrid)
+    val smartSpaceEnable = BoolPref("pref_smartSpaceEnable", true, scheduleRestart)
 
     // TODO: Add the ability to manually delete empty pages.
     val allowEmptyPages = BoolPref("pref_allowEmptyPages", false)

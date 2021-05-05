@@ -72,4 +72,5 @@
     <string name="auto_adaptive_icons_label">Auto Adaptive Icons</string>
     <string name="auto_adaptive_icons_description">For all non-Adaptive icons.</string>
     <string name="support_and_pr">Support &amp; PR</string>
+    <string name="smart_space_enable">Enable SmartSpace on homescreen</string>
 </resources>
