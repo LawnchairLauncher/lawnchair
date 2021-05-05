@@ -245,8 +245,8 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher, Laun
         if (mActivity.isInState(OVERVIEW_SPLIT_SELECT)) {
             // We want to keep the tasks translations in this temporary state
             // after resetting the rest above
-            setTaskViewsResistanceTranslation(mTaskViewsSecondaryTranslation);
-            setTaskViewsPrimaryTranslation(mTaskViewsPrimaryTranslation);
+            setTaskViewsPrimarySplitTranslation(mTaskViewsPrimarySplitTranslation);
+            setTaskViewsSecondarySplitTranslation(mTaskViewsSecondarySplitTranslation);
         }
     }
 
