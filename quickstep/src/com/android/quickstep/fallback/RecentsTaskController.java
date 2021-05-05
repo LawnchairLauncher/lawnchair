@@ -15,6 +15,8 @@
  */
 package com.android.quickstep.fallback;
 
+import static com.android.quickstep.util.NavigationModeFeatureFlag.LIVE_TILE;
+
 import com.android.launcher3.uioverrides.touchcontrollers.TaskViewTouchController;
 import com.android.quickstep.RecentsActivity;
 
@@ -26,7 +28,8 @@ public class RecentsTaskController extends TaskViewTouchController<RecentsActivi
 
     @Override
     protected boolean isRecentsInteractive() {
-        return mActivity.hasWindowFocus();
+        return mActivity.hasWindowFocus() || (LIVE_TILE.get()
+                && mActivity.getStateManager().getState().hasLiveTile());
     }
 
     @Override
