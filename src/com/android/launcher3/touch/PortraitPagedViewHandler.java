@@ -277,7 +277,7 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
         } else {
             // Phone Portrait, LargeScreen Landscape/Portrait
             viewGroup.setOrientation(LinearLayout.HORIZONTAL);
-            lp.width = LinearLayout.LayoutParams.WRAP_CONTENT;
+            lp.width = LinearLayout.LayoutParams.MATCH_PARENT;
         }
 
         lp.height = LinearLayout.LayoutParams.WRAP_CONTENT;
