@@ -22,11 +22,13 @@ import static com.android.launcher3.QuickstepTransitionManager.RECENTS_LAUNCH_DU
 import static com.android.launcher3.QuickstepTransitionManager.STATUS_BAR_TRANSITION_DURATION;
 import static com.android.launcher3.QuickstepTransitionManager.STATUS_BAR_TRANSITION_PRE_DELAY;
 import static com.android.launcher3.Utilities.createHomeIntent;
+import static com.android.launcher3.graphics.SysUiScrim.SYSUI_PROGRESS;
 import static com.android.launcher3.testing.TestProtocol.OVERVIEW_STATE_ORDINAL;
 import static com.android.quickstep.TaskUtils.taskIsATargetWithMode;
 import static com.android.quickstep.TaskViewUtils.createRecentsWindowAnimator;
 import static com.android.quickstep.util.NavigationModeFeatureFlag.LIVE_TILE;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
+import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -36,6 +38,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.SurfaceControl.Transaction;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -48,6 +51,7 @@ import com.android.launcher3.LauncherAnimationRunner.AnimationResult;
 import com.android.launcher3.R;
 import com.android.launcher3.WrappedAnimationRunnerImpl;
 import com.android.launcher3.WrappedLauncherAnimationRunner;
+import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
@@ -92,6 +96,8 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
 
     private Handler mUiHandler = new Handler(Looper.getMainLooper());
 
+    private static final long HOME_APPEAR_DURATION = 250;
+
     private RecentsDragLayer mDragLayer;
     private ScrimView mScrimView;
     private FallbackRecentsView mFallbackRecentsView;
@@ -114,6 +120,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
         mScrimView = findViewById(R.id.scrim_view);
         mFallbackRecentsView = findViewById(R.id.overview_panel);
         mActionsView = findViewById(R.id.overview_actions_view);
+        SYSUI_PROGRESS.set(getRootView().getSysUiScrim(), 0f);
 
         SplitPlaceholderView splitPlaceholderView = findViewById(R.id.split_placeholder);
         splitPlaceholderView.init(
@@ -351,7 +358,32 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
     }
 
     private void startHomeInternal() {
-        startActivity(createHomeIntent());
+        WrappedLauncherAnimationRunner runner = new WrappedLauncherAnimationRunner(
+                getMainThreadHandler(), this::onCreateAnimationToHome, true);
+        RemoteAnimationAdapterCompat adapterCompat =
+                new RemoteAnimationAdapterCompat(runner, HOME_APPEAR_DURATION, 0);
+        startActivity(createHomeIntent(),
+                ActivityOptionsCompat.makeRemoteAnimation(adapterCompat).toBundle());
+    }
+
+    private void onCreateAnimationToHome(
+            int transit, RemoteAnimationTargetCompat[] appTargets,
+            RemoteAnimationTargetCompat[] wallpaperTargets,
+            RemoteAnimationTargetCompat[] nonAppTargets, AnimationResult result) {
+        AnimatorPlaybackController controller = getStateManager()
+                .createAnimationToNewWorkspace(RecentsState.BG_LAUNCHER, HOME_APPEAR_DURATION);
+        controller.dispatchOnStart();
+
+        RemoteAnimationTargets targets = new RemoteAnimationTargets(
+                appTargets, wallpaperTargets, nonAppTargets, MODE_OPENING);
+        for (RemoteAnimationTargetCompat app : targets.apps) {
+            new Transaction().setAlpha(app.leash.getSurfaceControl(), 1).apply();
+        }
+        AnimatorSet anim = new AnimatorSet();
+        anim.play(controller.getAnimationPlayer());
+        anim.setDuration(HOME_APPEAR_DURATION);
+        result.setAnimation(anim, this,
+                () -> getStateManager().goToState(RecentsState.HOME, false));
     }
 
     @Override
