@@ -83,4 +83,5 @@
     </plurals>
 
     <string name="hotseat_qsb_label">Show Search Bar</string>
+    <string name="minus_one_enable">Show Feed</string>
 </resources>

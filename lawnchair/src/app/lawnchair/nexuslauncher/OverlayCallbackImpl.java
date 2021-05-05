@@ -3,9 +3,11 @@ package app.lawnchair.nexuslauncher;
 import static android.content.pm.ApplicationInfo.FLAG_SYSTEM;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
@@ -18,6 +20,7 @@ import com.google.android.libraries.launcherclient.LauncherClientCallbacks;
 import com.google.android.libraries.launcherclient.StaticInteger;
 
 import app.lawnchair.FeedBridge;
+import app.lawnchair.util.preferences.PreferenceManager;
 
 /**
  * Implements {@link LauncherOverlay} and passes all the corresponding events to {@link
@@ -28,7 +31,7 @@ import app.lawnchair.FeedBridge;
  */
 public class OverlayCallbackImpl
         implements LauncherOverlay, LauncherClientCallbacks, LauncherOverlayManager,
-        OnSharedPreferenceChangeListener, ISerializableScrollCallback {
+        ISerializableScrollCallback {
 
     // TODO: migrate to PreferenceManager
     final static String ENABLE_MINUS_ONE = "pref_enableMinusOne";
@@ -43,13 +46,11 @@ public class OverlayCallbackImpl
     private int mFlags;
 
     public OverlayCallbackImpl(Launcher launcher) {
-        SharedPreferences prefs = Utilities.getPrefs(launcher);
+        PreferenceManager prefs = PreferenceManager.getInstance(launcher);
 
         mLauncher = launcher;
         mClient = new LauncherClient(mLauncher, this, new StaticInteger(
-                (prefs.getBoolean(ENABLE_MINUS_ONE,
-                        minusOneAvailable()) ? 1 : 0) | 2 | 4 | 8));
-        prefs.registerOnSharedPreferenceChangeListener(this);
+                (prefs.getMinusOneEnable().get() ? 1 : 0) | 2 | 4 | 8));
     }
 
     @Override
@@ -118,14 +119,12 @@ public class OverlayCallbackImpl
     @Override
     public void onActivityDestroyed(Activity activity) {
         mClient.mDestroyed = true;
-        mLauncher.getSharedPrefs().unregisterOnSharedPreferenceChangeListener(this);
     }
 
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-        if (ENABLE_MINUS_ONE.equals(key)) {
-            mClient.showOverlay(prefs.getBoolean(ENABLE_MINUS_ONE, minusOneAvailable()));
-        }
+    public void onMinusOneChanged() {
+        PreferenceManager prefs = PreferenceManager.getInstance(mLauncher);
+        boolean enable = prefs.getMinusOneEnable().get();
+        mLauncher.setLauncherOverlay(enable ? this : null);
     }
 
     @Override
@@ -178,8 +177,8 @@ public class OverlayCallbackImpl
         }
     }
 
-    boolean minusOneAvailable() {
-        return FeedBridge.useBridge(mLauncher)
-                || ((mLauncher.getApplicationInfo().flags & FLAG_SYSTEM) == FLAG_SYSTEM);
+    public static boolean minusOneAvailable(Context context) {
+        return FeedBridge.useBridge(context)
+                || ((context.getApplicationInfo().flags & FLAG_SYSTEM) == FLAG_SYSTEM);
     }
 }

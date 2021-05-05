@@ -34,7 +34,7 @@ import com.android.launcher3.Utilities
 class FeedBridge(private val context: Context) {
 
     private val shouldUseFeed = context.applicationInfo.flags and FLAG_SYSTEM == 0
-    private val prefs = PreferenceManager.getInstance(context)
+    private val prefs by lazy { PreferenceManager.getInstance(context) }
     private val bridgePackages by lazy {
         listOf(
             PixelBridgeInfo("com.google.android.apps.nexuslauncher", R.integer.bridge_signature_hash),

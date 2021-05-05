@@ -20,11 +20,10 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import app.lawnchair.LawnchairLauncher
-import app.lawnchair.LawnchairLauncherQuickstep
 import app.lawnchair.launcher
+import app.lawnchair.nexuslauncher.OverlayCallbackImpl
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.LauncherAppState
-import com.android.launcher3.pm.UserCache
 import com.android.launcher3.util.MainThreadInitializedObject
 
 class PreferenceManager private constructor(context: Context) : BasePreferenceManager(context) {
@@ -38,6 +37,14 @@ class PreferenceManager private constructor(context: Context) : BasePreferenceMa
             context.launcher.scheduleRestart()
         } else {
             LawnchairLauncher.getLauncher(context).scheduleRestart()
+        }
+    }
+
+    private val reloadMinusOne = {
+        if (BuildConfig.FLAVOR_recents == "withQuickstep") {
+            context.launcher.defaultOverlay.onMinusOneChanged()
+        } else {
+            LawnchairLauncher.getLauncher(context).defaultOverlay!!.onMinusOneChanged()
         }
     }
     private val reloadGrid = scheduleRestart
@@ -59,6 +66,7 @@ class PreferenceManager private constructor(context: Context) : BasePreferenceMa
     val allAppsTextSizeFactor = FloatPref("pref_allAppsTextSizeFactor", 1F, scheduleRestart)
     val allAppsColumns = IdpIntPref("pref_allAppsColumns", { numAllAppsColumns }, reloadGrid)
     val smartSpaceEnable = BoolPref("pref_smartSpaceEnable", true, scheduleRestart)
+    val minusOneEnable = BoolPref("pref_enableMinusOne", OverlayCallbackImpl.minusOneAvailable(context), reloadMinusOne)
 
     // TODO: Add the ability to manually delete empty pages.
     val allowEmptyPages = BoolPref("pref_allowEmptyPages", false)

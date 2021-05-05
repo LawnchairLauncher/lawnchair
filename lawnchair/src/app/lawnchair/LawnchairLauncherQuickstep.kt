@@ -31,6 +31,7 @@ import com.android.launcher3.LauncherAppState
 
 open class LawnchairLauncherQuickstep : QuickstepLauncher(), LifecycleOwner {
     private val lifecycleRegistry = LifecycleRegistry(this)
+    val defaultOverlay by lazy { OverlayCallbackImpl(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,7 +69,7 @@ open class LawnchairLauncherQuickstep : QuickstepLauncher(), LifecycleOwner {
     }
 
     override fun getDefaultOverlay(): LauncherOverlayManager {
-        return OverlayCallbackImpl(this)
+        return defaultOverlay
     }
 
     open fun restartIfPending() {

@@ -43,6 +43,11 @@ fun HomeScreenPreferences() {
     PreferenceLayout {
         PreferenceGroup(heading = "General", isFirstChild = true) {
             SwitchPreference(
+                prefs.minusOneEnable.getAdapter(),
+                label = stringResource(id = R.string.minus_one_enable),
+                showDivider = true
+            )
+            SwitchPreference(
                 prefs.addIconToHome.getAdapter(),
                 label = stringResource(id = R.string.auto_add_shortcuts_label),
                 showDivider = true
