@@ -260,6 +260,7 @@ public class LauncherSwipeHandlerV2 extends
             @Override
             public void setAnimation(RectFSpringAnim anim) {
                 anim.addAnimatorListener(floatingWidgetView);
+                floatingWidgetView.setOnTargetChangeListener(anim::onTargetPositionChanged);
                 floatingWidgetView.setFastFinishRunnable(anim::end);
             }
 
