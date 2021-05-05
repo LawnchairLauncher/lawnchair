@@ -17,8 +17,9 @@ package com.android.quickstep;
 
 import static android.view.Surface.ROTATION_0;
 
+import static com.android.launcher3.util.DisplayController.CHANGE_ACTIVE_SCREEN;
 import static com.android.launcher3.util.DisplayController.CHANGE_ALL;
-import static com.android.launcher3.util.DisplayController.CHANGE_FRAME_DELAY;
+import static com.android.launcher3.util.DisplayController.CHANGE_ROTATION;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.quickstep.SysUINavigationMode.Mode.THREE_BUTTONS;
 
@@ -274,8 +275,7 @@ public class RotationTouchHelper implements
 
     @Override
     public void onDisplayInfoChanged(Context context, Info info, int flags) {
-        if (info.id != mDisplayId|| flags == CHANGE_FRAME_DELAY) {
-            // ignore displays that aren't running launcher and frame refresh rate changes
+        if ((flags & (CHANGE_ROTATION | CHANGE_ACTIVE_SCREEN)) == 0) {
             return;
         }
 

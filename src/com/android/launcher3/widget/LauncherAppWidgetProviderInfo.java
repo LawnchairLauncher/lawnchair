@@ -13,6 +13,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.UserHandle;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
@@ -66,20 +67,25 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo
     }
 
     public void initSpans(Context context, InvariantDeviceProfile idp) {
-        Point landCellSize = idp.landscapeProfile.getCellSize();
-        Point portCellSize = idp.portraitProfile.getCellSize();
-
         // Always assume we're working with the smallest span to make sure we
         // reserve enough space in both orientations.
-        float smallestCellWidth = Math.min(landCellSize.x, portCellSize.x);
-        float smallestCellHeight = Math.min(landCellSize.y, portCellSize.y);
+        float smallestCellWidth = Float.MAX_VALUE;
+        float smallestCellHeight = Float.MAX_VALUE;
+
+        Point cellSize = new Point();
+        boolean isWidgetPadded = false;
+        for (DeviceProfile dp : idp.supportedProfiles) {
+            dp.getCellSize(cellSize);
+            smallestCellWidth = Math.min(smallestCellWidth, cellSize.x);
+            smallestCellHeight = Math.min(smallestCellHeight, cellSize.y);
+            isWidgetPadded = isWidgetPadded || !dp.shouldInsetWidgets();
+        }
 
         // We want to account for the extra amount of padding that we are adding to the widget
         // to ensure that it gets the full amount of space that it has requested.
         // If grids supports insetting widgets, we do not account for widget padding.
         Rect widgetPadding = new Rect();
-        if (!idp.landscapeProfile.shouldInsetWidgets()
-                || !idp.portraitProfile.shouldInsetWidgets()) {
+        if (isWidgetPadded) {
             AppWidgetHostView.getDefaultPaddingForWidget(context, provider, widgetPadding);
         }
 

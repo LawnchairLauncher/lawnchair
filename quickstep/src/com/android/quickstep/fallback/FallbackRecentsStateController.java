@@ -20,7 +20,7 @@ import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_MO
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SCALE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_X;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_Y;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_SCRIM_FADE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_SCRIM_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_OVERVIEW;
 import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_OFFSET;
 import static com.android.quickstep.views.RecentsView.FULLSCREEN_PROGRESS;
@@ -98,6 +98,6 @@ public class FallbackRecentsStateController implements StateHandler<RecentsState
                 state.displayOverviewTasksAsGrid(mActivity.getDeviceProfile()) ? 1f : 0f, LINEAR);
 
         setter.setViewBackgroundColor(mActivity.getScrimView(), state.getScrimColor(mActivity),
-                config.getInterpolator(ANIM_WORKSPACE_SCRIM_FADE, LINEAR));
+                config.getInterpolator(ANIM_SCRIM_FADE, LINEAR));
     }
 }

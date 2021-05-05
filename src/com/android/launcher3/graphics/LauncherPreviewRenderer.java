@@ -20,7 +20,6 @@ import static android.view.View.MeasureSpec.makeMeasureSpec;
 import static android.view.View.VISIBLE;
 
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_LAUNCHER_PREVIEW_IN_GRID_PICKER;
 import static com.android.launcher3.model.ModelUtils.filterCurrentWorkspaceItems;
 import static com.android.launcher3.model.ModelUtils.getMissingHotseatRanks;
 import static com.android.launcher3.model.ModelUtils.sortWorkspaceItemsSpatially;
@@ -118,7 +117,7 @@ import java.util.concurrent.TimeoutException;
  *   4) Measure and draw the view on a canvas
  */
 @TargetApi(Build.VERSION_CODES.O)
-public class LauncherPreviewRenderer extends ContextThemeWrapper
+public class LauncherPreviewRenderer extends ContextWrapper
         implements ActivityContext, WorkspaceLayoutManager, LayoutInflater.Factory2 {
 
     private static final String TAG = "LauncherPreviewRenderer";
@@ -220,11 +219,11 @@ public class LauncherPreviewRenderer extends ContextThemeWrapper
     private final CellLayout mWorkspace;
 
     public LauncherPreviewRenderer(Context context, InvariantDeviceProfile idp, boolean migrated) {
-        super(context, R.style.AppTheme);
+        super(context);
         mUiHandler = new Handler(Looper.getMainLooper());
         mContext = context;
         mIdp = idp;
-        mDp = idp.portraitProfile.copy(context);
+        mDp = idp.getDeviceProfile(context).copy(context);
         mMigrated = migrated;
 
         // TODO: get correct insets once display cutout API is available.
@@ -269,14 +268,6 @@ public class LauncherPreviewRenderer extends ContextThemeWrapper
     public View getRenderedView() {
         populate();
         return mRootView;
-    }
-
-    public boolean shouldShowRealLauncherPreview() {
-        return ENABLE_LAUNCHER_PREVIEW_IN_GRID_PICKER.get();
-    }
-
-    public boolean shouldShowQsb() {
-        return FeatureFlags.QSB_ON_FIRST_SCREEN;
     }
 
     @Override
@@ -402,107 +393,88 @@ public class LauncherPreviewRenderer extends ContextThemeWrapper
     }
 
     private void populate() {
-        if (shouldShowRealLauncherPreview()) {
-            WorkspaceFetcher fetcher;
-            PreviewContext previewContext = null;
-            if (mMigrated) {
-                previewContext = new PreviewContext(mContext, mIdp);
-                LauncherAppState appForPreview = new LauncherAppState(
-                        previewContext, null /* iconCacheFileName */);
-                fetcher = new WorkspaceItemsInfoFromPreviewFetcher(appForPreview);
-                MODEL_EXECUTOR.execute(fetcher);
-            } else {
-                fetcher = new WorkspaceItemsInfoFetcher();
-                LauncherAppState.getInstance(mContext).getModel().enqueueModelUpdateTask(
-                        (LauncherModel.ModelUpdateTask) fetcher);
-            }
-            WorkspaceResult workspaceResult = fetcher.get();
-            if (previewContext != null) {
-                previewContext.onDestroy();
-            }
-
-            if (workspaceResult == null) {
-                return;
-            }
-
-            // Separate the items that are on the current screen, and the other remaining items.
-            ArrayList<ItemInfo> currentWorkspaceItems = new ArrayList<>();
-            ArrayList<ItemInfo> otherWorkspaceItems = new ArrayList<>();
-            ArrayList<LauncherAppWidgetInfo> currentAppWidgets = new ArrayList<>();
-            ArrayList<LauncherAppWidgetInfo> otherAppWidgets = new ArrayList<>();
-            filterCurrentWorkspaceItems(0 /* currentScreenId */,
-                    workspaceResult.mWorkspaceItems, currentWorkspaceItems,
-                    otherWorkspaceItems);
-            filterCurrentWorkspaceItems(0 /* currentScreenId */, workspaceResult.mAppWidgets,
-                    currentAppWidgets, otherAppWidgets);
-            sortWorkspaceItemsSpatially(mIdp, currentWorkspaceItems);
-            for (ItemInfo itemInfo : currentWorkspaceItems) {
-                switch (itemInfo.itemType) {
-                    case Favorites.ITEM_TYPE_APPLICATION:
-                    case Favorites.ITEM_TYPE_SHORTCUT:
-                    case Favorites.ITEM_TYPE_DEEP_SHORTCUT:
-                        inflateAndAddIcon((WorkspaceItemInfo) itemInfo);
-                        break;
-                    case Favorites.ITEM_TYPE_FOLDER:
-                        inflateAndAddFolder((FolderInfo) itemInfo);
-                        break;
-                    default:
-                        break;
-                }
-            }
-            for (ItemInfo itemInfo : currentAppWidgets) {
-                switch (itemInfo.itemType) {
-                    case Favorites.ITEM_TYPE_APPWIDGET:
-                    case Favorites.ITEM_TYPE_CUSTOM_APPWIDGET:
-                        if (mMigrated) {
-                            inflateAndAddWidgets((LauncherAppWidgetInfo) itemInfo,
-                                    workspaceResult.mWidgetProvidersMap);
-                        } else {
-                            inflateAndAddWidgets((LauncherAppWidgetInfo) itemInfo,
-                                    workspaceResult.mWidgetsModel);
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
-            IntArray ranks = getMissingHotseatRanks(currentWorkspaceItems,
-                    mDp.numShownHotseatIcons);
-            List<ItemInfo> predictions = workspaceResult.mHotseatPredictions == null
-                    ? Collections.emptyList() : workspaceResult.mHotseatPredictions.items;
-            int count = Math.min(ranks.size(), predictions.size());
-            for (int i = 0; i < count; i++) {
-                int rank = ranks.get(i);
-                WorkspaceItemInfo itemInfo =
-                        new WorkspaceItemInfo((WorkspaceItemInfo) predictions.get(i));
-                itemInfo.container = CONTAINER_HOTSEAT_PREDICTION;
-                itemInfo.rank = rank;
-                itemInfo.cellX = mHotseat.getCellXFromOrder(rank);
-                itemInfo.cellY = mHotseat.getCellYFromOrder(rank);
-                itemInfo.screenId = rank;
-                inflateAndAddPredictedIcon(itemInfo);
-            }
+        WorkspaceFetcher fetcher;
+        PreviewContext previewContext = null;
+        if (mMigrated) {
+            previewContext = new PreviewContext(mContext, mIdp);
+            LauncherAppState appForPreview = new LauncherAppState(
+                    previewContext, null /* iconCacheFileName */);
+            fetcher = new WorkspaceItemsInfoFromPreviewFetcher(appForPreview);
+            MODEL_EXECUTOR.execute(fetcher);
         } else {
-            // Add hotseat icons
-            for (int i = 0; i < mDp.numShownHotseatIcons; i++) {
-                WorkspaceItemInfo info = new WorkspaceItemInfo(mWorkspaceItemInfo);
-                info.container = Favorites.CONTAINER_HOTSEAT;
-                info.screenId = i;
-                inflateAndAddIcon(info);
+            fetcher = new WorkspaceItemsInfoFetcher();
+            LauncherAppState.getInstance(mContext).getModel().enqueueModelUpdateTask(
+                    (LauncherModel.ModelUpdateTask) fetcher);
+        }
+        WorkspaceResult workspaceResult = fetcher.get();
+        if (previewContext != null) {
+            previewContext.onDestroy();
+        }
+
+        if (workspaceResult == null) {
+            return;
+        }
+
+        // Separate the items that are on the current screen, and the other remaining items.
+        ArrayList<ItemInfo> currentWorkspaceItems = new ArrayList<>();
+        ArrayList<ItemInfo> otherWorkspaceItems = new ArrayList<>();
+        ArrayList<LauncherAppWidgetInfo> currentAppWidgets = new ArrayList<>();
+        ArrayList<LauncherAppWidgetInfo> otherAppWidgets = new ArrayList<>();
+        filterCurrentWorkspaceItems(0 /* currentScreenId */,
+                workspaceResult.mWorkspaceItems, currentWorkspaceItems,
+                otherWorkspaceItems);
+        filterCurrentWorkspaceItems(0 /* currentScreenId */, workspaceResult.mAppWidgets,
+                currentAppWidgets, otherAppWidgets);
+        sortWorkspaceItemsSpatially(mIdp, currentWorkspaceItems);
+        for (ItemInfo itemInfo : currentWorkspaceItems) {
+            switch (itemInfo.itemType) {
+                case Favorites.ITEM_TYPE_APPLICATION:
+                case Favorites.ITEM_TYPE_SHORTCUT:
+                case Favorites.ITEM_TYPE_DEEP_SHORTCUT:
+                    inflateAndAddIcon((WorkspaceItemInfo) itemInfo);
+                    break;
+                case Favorites.ITEM_TYPE_FOLDER:
+                    inflateAndAddFolder((FolderInfo) itemInfo);
+                    break;
+                default:
+                    break;
             }
-            // Add workspace icons
-            for (int i = 0; i < mIdp.numColumns; i++) {
-                WorkspaceItemInfo info = new WorkspaceItemInfo(mWorkspaceItemInfo);
-                info.container = Favorites.CONTAINER_DESKTOP;
-                info.screenId = 0;
-                info.cellX = i;
-                info.cellY = mIdp.numRows - 1;
-                inflateAndAddIcon(info);
+        }
+        for (ItemInfo itemInfo : currentAppWidgets) {
+            switch (itemInfo.itemType) {
+                case Favorites.ITEM_TYPE_APPWIDGET:
+                case Favorites.ITEM_TYPE_CUSTOM_APPWIDGET:
+                    if (mMigrated) {
+                        inflateAndAddWidgets((LauncherAppWidgetInfo) itemInfo,
+                                workspaceResult.mWidgetProvidersMap);
+                    } else {
+                        inflateAndAddWidgets((LauncherAppWidgetInfo) itemInfo,
+                                workspaceResult.mWidgetsModel);
+                    }
+                    break;
+                default:
+                    break;
             }
+        }
+        IntArray ranks = getMissingHotseatRanks(currentWorkspaceItems,
+                mDp.numShownHotseatIcons);
+        List<ItemInfo> predictions = workspaceResult.mHotseatPredictions == null
+                ? Collections.emptyList() : workspaceResult.mHotseatPredictions.items;
+        int count = Math.min(ranks.size(), predictions.size());
+        for (int i = 0; i < count; i++) {
+            int rank = ranks.get(i);
+            WorkspaceItemInfo itemInfo =
+                    new WorkspaceItemInfo((WorkspaceItemInfo) predictions.get(i));
+            itemInfo.container = CONTAINER_HOTSEAT_PREDICTION;
+            itemInfo.rank = rank;
+            itemInfo.cellX = mHotseat.getCellXFromOrder(rank);
+            itemInfo.cellY = mHotseat.getCellYFromOrder(rank);
+            itemInfo.screenId = rank;
+            inflateAndAddPredictedIcon(itemInfo);
         }
 
         // Add first page QSB
-        if (shouldShowQsb()) {
+        if (FeatureFlags.QSB_ON_FIRST_SCREEN) {
             View qsb = mHomeElementInflater.inflate(
                     R.layout.search_container_workspace, mWorkspace, false);
             CellLayout.LayoutParams lp =

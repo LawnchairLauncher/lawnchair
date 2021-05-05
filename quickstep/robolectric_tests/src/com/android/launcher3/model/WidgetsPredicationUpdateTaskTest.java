@@ -36,6 +36,7 @@ import android.os.UserHandle;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.ComponentWithLabel;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
@@ -44,6 +45,7 @@ import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.shadows.ShadowDeviceFlag;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -60,6 +62,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.shadow.api.Shadow;
 import org.robolectric.shadows.ShadowAppWidgetManager;
 import org.robolectric.shadows.ShadowPackageManager;
 import org.robolectric.util.ReflectionHelpers;
@@ -171,6 +174,41 @@ public final class WidgetsPredicationUpdateTaskTest {
         assertThat(recommendedWidgets).hasSize(3);
         assertWidgetInfo(recommendedWidgets.get(0).info, mApp2Provider1);
         assertWidgetInfo(recommendedWidgets.get(1).info, mApp4Provider2);
+        assertWidgetInfo(recommendedWidgets.get(2).info, mApp1Provider1);
+    }
+
+    @Test
+    public void widgetsRecommendationRan_localFilterDisabled_shouldReturnWidgetsInPredicationOrder()
+            throws Exception {
+        ShadowDeviceFlag shadowDeviceFlag = Shadow.extract(
+                FeatureFlags.ENABLE_LOCAL_RECOMMENDED_WIDGETS_FILTER);
+        shadowDeviceFlag.setValue(false);
+
+        // WHEN newPredicationTask is executed with 5 predicated widgets.
+        AppTarget widget1 = new AppTarget(new AppTargetId("app1"), "app1", "provider1",
+                mUserHandle);
+        AppTarget widget2 = new AppTarget(new AppTargetId("app1"), "app1", "provider2",
+                mUserHandle);
+        // Not installed app
+        AppTarget widget3 = new AppTarget(new AppTargetId("app2"), "app3", "provider1",
+                mUserHandle);
+        // Not installed widget
+        AppTarget widget4 = new AppTarget(new AppTargetId("app4"), "app4", "provider3",
+                mUserHandle);
+        AppTarget widget5 = new AppTarget(new AppTargetId("app5"), "app5", "provider1",
+                mUserHandle);
+        mModelHelper.executeTaskForTest(
+                newWidgetsPredicationTask(List.of(widget5, widget3, widget2, widget4, widget1)))
+                .forEach(Runnable::run);
+
+        // THEN only 3 widgets are returned because the launcher only filters out non-exist widgets.
+        List<PendingAddWidgetInfo> recommendedWidgets = mCallback.mRecommendedWidgets.items
+                .stream()
+                .map(itemInfo -> (PendingAddWidgetInfo) itemInfo)
+                .collect(Collectors.toList());
+        assertThat(recommendedWidgets).hasSize(3);
+        assertWidgetInfo(recommendedWidgets.get(0).info, mApp5Provider1);
+        assertWidgetInfo(recommendedWidgets.get(1).info, mApp1Provider2);
         assertWidgetInfo(recommendedWidgets.get(2).info, mApp1Provider1);
     }
 

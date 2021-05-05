@@ -16,15 +16,11 @@
 package com.android.quickstep.interaction;
 
 import static com.android.launcher3.anim.Interpolators.ACCEL;
-import static com.android.quickstep.interaction.TutorialController.TutorialType.OVERVIEW_NAVIGATION_COMPLETE;
 
 import android.animation.AnimatorSet;
 import android.annotation.TargetApi;
 import android.graphics.PointF;
 import android.os.Build;
-import android.view.View;
-
-import androidx.annotation.Nullable;
 
 import com.android.launcher3.R;
 import com.android.launcher3.anim.PendingAnimation;
@@ -50,12 +46,6 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
     @Override
     public Integer getIntroductionSubtitle() {
         return R.string.overview_gesture_intro_subtitle;
-    }
-
-    @Nullable
-    @Override
-    public View getMockLauncherView() {
-        return null;
     }
 
     @Override

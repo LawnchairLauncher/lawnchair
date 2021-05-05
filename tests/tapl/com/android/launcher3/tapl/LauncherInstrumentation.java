@@ -695,6 +695,7 @@ public final class LauncherInstrumentation {
                         waitUntilLauncherObjectGone(CONTEXT_MENU_RES_ID);
                         // Swiping up can temporarily bring Nexus Launcher if the current
                         // Launcher is a Launcher3 one. Wait for the current launcher to reappear.
+                        SystemClock.sleep(5000); // b/187080582
                         waitForLauncherObject(getAnyObjectSelector());
                     }
                 }
