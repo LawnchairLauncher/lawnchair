@@ -25,6 +25,7 @@ import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITIO
 import android.animation.AnimatorSet;
 import android.app.ActivityOptions;
 import android.content.res.Resources;
+import android.graphics.Rect;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -64,6 +65,7 @@ public class SplitSelectStateController {
     private final SystemUiProxy mSystemUiProxy;
     private TaskView mInitialTaskView;
     private SplitPositionOption mInitialPosition;
+    private Rect mInitialBounds;
     private final Handler mHandler;
 
     public SplitSelectStateController(Handler handler, SystemUiProxy systemUiProxy) {
@@ -74,9 +76,11 @@ public class SplitSelectStateController {
     /**
      * To be called after first task selected
      */
-    public void setInitialTaskSelect(TaskView taskView, SplitPositionOption positionOption) {
+    public void setInitialTaskSelect(TaskView taskView, SplitPositionOption positionOption,
+            Rect initialBounds) {
         mInitialTaskView = taskView;
         mInitialPosition = positionOption;
+        mInitialBounds = initialBounds;
     }
 
     /**
@@ -220,9 +224,14 @@ public class SplitSelectStateController {
     public void resetState() {
         mInitialTaskView = null;
         mInitialPosition = null;
+        mInitialBounds = null;
     }
 
     public boolean isSplitSelectActive() {
         return mInitialTaskView != null;
+    }
+
+    public Rect getInitialBounds() {
+        return mInitialBounds;
     }
 }

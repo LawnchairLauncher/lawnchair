@@ -160,6 +160,19 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
+    public int getSplitTaskViewDismissDirection(SplitPositionOption splitPosition,
+            DeviceProfile dp) {
+        // Don't use device profile here because we know we're in fake landscape, only split option
+        // available is top/left
+        if (splitPosition.mStagePosition == STAGE_POSITION_TOP_OR_LEFT) {
+            // Top (visually left) side
+            return SPLIT_TRANSLATE_PRIMARY_NEGATIVE;
+        }
+        throw new IllegalStateException("Invalid split stage position: " +
+                splitPosition.mStagePosition);
+    }
+
+    @Override
     public int getPrimaryScroll(View view) {
         return view.getScrollY();
     }
