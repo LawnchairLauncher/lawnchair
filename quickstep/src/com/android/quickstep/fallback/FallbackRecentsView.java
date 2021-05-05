@@ -20,6 +20,7 @@ import static com.android.quickstep.fallback.RecentsState.DEFAULT;
 import static com.android.quickstep.fallback.RecentsState.HOME;
 import static com.android.quickstep.fallback.RecentsState.MODAL_TASK;
 
+import android.animation.AnimatorSet;
 import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
@@ -27,6 +28,9 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
+import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.testing.TestProtocol;
@@ -67,7 +71,6 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
     @Override
     public void startHome() {
         mActivity.startHome();
-        mActivity.getStateManager().goToState(RecentsState.HOME);
     }
 
     /**
@@ -86,14 +89,17 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
      * to the center.
      */
     @Override
-    public void onGestureEndTargetCalculated(GestureState.GestureEndTarget endTarget) {
-        super.onGestureEndTargetCalculated(endTarget);
-        if (mHomeTaskInfo != null && endTarget == RECENTS) {
+    public void onPrepareGestureEndAnimation(
+            @Nullable AnimatorSet animatorSet, GestureState.GestureEndTarget endTarget) {
+        super.onPrepareGestureEndAnimation(animatorSet, endTarget);
+        if (mHomeTaskInfo != null && endTarget == RECENTS && animatorSet != null) {
             TaskView tv = getTaskView(mHomeTaskInfo.taskId);
             if (tv != null) {
                 PendingAnimation pa = createTaskDismissAnimation(tv, true, false, 150);
                 pa.addEndListener(e -> setCurrentTask(-1));
-                runDismissAnimation(pa);
+                AnimatorPlaybackController controller = pa.createPlaybackController();
+                controller.dispatchOnStart();
+                animatorSet.play(controller.getAnimationPlayer());
             }
         }
     }
