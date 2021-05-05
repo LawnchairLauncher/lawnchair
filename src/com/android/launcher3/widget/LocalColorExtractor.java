@@ -16,6 +16,7 @@
 
 package com.android.launcher3.widget;
 
+import android.app.WallpaperColors;
 import android.appwidget.AppWidgetHostView;
 import android.content.Context;
 import android.graphics.RectF;
@@ -43,7 +44,10 @@ public class LocalColorExtractor implements ResourceBasedOverride {
         void onColorsChanged(RectF rect, SparseIntArray extractedColors);
     }
 
-    static LocalColorExtractor newInstance(Context context) {
+    /**
+     * Creates a new instance of LocalColorExtractor
+     */
+    public static LocalColorExtractor newInstance(Context context) {
         return Overrides.getObject(LocalColorExtractor.class, context.getApplicationContext(),
                 R.string.local_colors_extraction_class);
     }
@@ -62,4 +66,9 @@ public class LocalColorExtractor implements ResourceBasedOverride {
     public void removeLocations() {
         // no-op
     }
+
+    /**
+     * Updates the base context to contain the colors override
+     */
+    public void applyColorsOverride(Context base, WallpaperColors colors) { }
 }
