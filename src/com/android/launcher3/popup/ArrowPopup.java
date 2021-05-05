@@ -176,7 +176,7 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
                         (int) argb.evaluate((i + 1) * step, primaryColor, secondaryColor);
             }
 
-            if (Utilities.ATLEAST_S) {
+            if (supportsColorExtraction()) {
                 setupColorExtraction();
             }
         }
@@ -704,6 +704,13 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
             mColorExtractor.removeLocations();
             mColorExtractor.setListener(null);
         }
+    }
+
+    /**
+     * Returns whether color extraction is supported.
+     */
+    public boolean supportsColorExtraction() {
+        return Utilities.ATLEAST_S;
     }
 
     /**
