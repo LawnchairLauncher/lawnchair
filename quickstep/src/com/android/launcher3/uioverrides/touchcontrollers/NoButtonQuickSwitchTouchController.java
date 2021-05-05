@@ -36,11 +36,13 @@ import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_F
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_SCALE;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_ALL_ANIMATIONS;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_OVERVIEW;
+import static com.android.launcher3.states.StateAnimationConfig.SKIP_SCRIM;
 import static com.android.launcher3.touch.BothAxesSwipeDetector.DIRECTION_RIGHT;
 import static com.android.launcher3.touch.BothAxesSwipeDetector.DIRECTION_UP;
 import static com.android.launcher3.util.DisplayController.getSingleFrameMs;
 import static com.android.launcher3.util.VibratorWrapper.OVERVIEW_HAPTIC;
 import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_OFFSET;
+import static com.android.quickstep.views.RecentsView.CONTENT_ALPHA;
 import static com.android.quickstep.views.RecentsView.FULLSCREEN_PROGRESS;
 import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
 import static com.android.quickstep.views.RecentsView.TASK_SECONDARY_TRANSLATION;
@@ -207,7 +209,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
     /** Create state animation to control non-overview components. */
     private void updateNonOverviewAnim(LauncherState toState, StateAnimationConfig config) {
         config.duration = (long) (Math.max(mXRange, mYRange) * 2);
-        config.animFlags |= SKIP_OVERVIEW;
+        config.animFlags |= SKIP_OVERVIEW | SKIP_SCRIM;
         mNonOverviewAnim = mLauncher.getStateManager()
                 .createAnimationToNewWorkspace(toState, config);
         mNonOverviewAnim.getTarget().addListener(mClearStateOnCancelListener);
@@ -229,10 +231,14 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         // As we drag right, animate the following properties:
         //   - RecentsView translationX
         //   - OverviewScrim
+        //   - RecentsView fade (if it's empty)
         PendingAnimation xAnim = new PendingAnimation((long) (mXRange * 2));
         xAnim.setFloat(mRecentsView, ADJACENT_PAGE_OFFSET, scaleAndOffset[1], LINEAR);
         xAnim.setViewBackgroundColor(mLauncher.getScrimView(),
                 toState.getWorkspaceScrimColor(mLauncher), LINEAR);
+        if (mRecentsView.getTaskViewCount() == 0) {
+            xAnim.addFloat(mRecentsView, CONTENT_ALPHA, 0f, 1f, LINEAR);
+        }
         mXOverviewAnim = xAnim.createPlaybackController();
         mXOverviewAnim.dispatchOnStart();
 
