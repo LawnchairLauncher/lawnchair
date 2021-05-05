@@ -27,6 +27,7 @@ import android.util.Size;
 import android.view.GhostView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.FrameLayout;
 
 import com.android.launcher3.Launcher;
@@ -39,7 +40,8 @@ import com.android.launcher3.widget.RoundedCornerEnforcement;
 
 /** A view that mimics an App Widget through a launch animation. */
 @TargetApi(Build.VERSION_CODES.S)
-public class FloatingWidgetView extends FrameLayout implements AnimatorListener {
+public class FloatingWidgetView extends FrameLayout implements AnimatorListener,
+        OnGlobalLayoutListener {
     private static final Matrix sTmpMatrix = new Matrix();
 
     private final Launcher mLauncher;
@@ -54,6 +56,7 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener 
 
     private Runnable mEndRunnable;
     private Runnable mFastFinishRunnable;
+    private Runnable mOnTargetChangeRunnable;
 
     public FloatingWidgetView(Context context) {
         this(context, null);
@@ -91,6 +94,32 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener 
 
     @Override
     public void onAnimationRepeat(Animator animator) {
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        getViewTreeObserver().addOnGlobalLayoutListener(this);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        getViewTreeObserver().removeOnGlobalLayoutListener(this);
+        super.onDetachedFromWindow();
+    }
+
+    @Override
+    public void onGlobalLayout() {
+        if (isUninitialized()) return;
+        positionViews();
+        if (mOnTargetChangeRunnable != null) {
+            mOnTargetChangeRunnable.run();
+        }
+    }
+
+    /** Sets a runnable that is called on global layout change. */
+    public void setOnTargetChangeListener(Runnable onTargetChangeListener) {
+        mOnTargetChangeRunnable = onTargetChangeListener;
     }
 
     /** Sets a runnable that is called after a call to {@link #fastFinish()}. */
@@ -205,6 +234,7 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener 
     private void recycle() {
         mEndRunnable = null;
         mFastFinishRunnable = null;
+        mOnTargetChangeRunnable = null;
         mBackgroundPosition = null;
         mListenerView.setListener(null);
         mAppWidgetView = null;
