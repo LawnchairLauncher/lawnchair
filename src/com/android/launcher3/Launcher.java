@@ -124,6 +124,7 @@ import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
+import com.android.launcher3.dragndrop.LauncherDragController;
 import com.android.launcher3.folder.FolderGridOrganizer;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.icons.BitmapRenderer;
@@ -428,7 +429,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         mIconCache = app.getIconCache();
         mAccessibilityDelegate = createAccessibilityDelegate();
 
-        mDragController = new DragController(this);
+        mDragController = new LauncherDragController(this);
         mAllAppsController = new AllAppsTransitionController(this);
         mStateManager = new StateManager<>(this, NORMAL);
 
