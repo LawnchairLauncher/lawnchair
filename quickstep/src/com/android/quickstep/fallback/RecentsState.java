@@ -126,7 +126,7 @@ public class RecentsState implements BaseState<RecentsState> {
     }
 
     public float[] getOverviewScaleAndOffset(RecentsActivity activity) {
-        return new float[] { NO_SCALE, NO_OFFSET };
+        return new float[] { NO_SCALE, NO_OFFSET, NO_OFFSET };
     }
 
     /**
@@ -170,7 +170,7 @@ public class RecentsState implements BaseState<RecentsState> {
 
         @Override
         public float[] getOverviewScaleAndOffset(RecentsActivity activity) {
-            return new float[] { NO_SCALE, 1 };
+            return new float[] { NO_SCALE, NO_OFFSET, 1 };
         }
     }
 }

@@ -19,6 +19,7 @@ import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
 import static com.android.launcher3.AbstractFloatingView.TYPE_HIDE_BACK_BUTTON;
 import static com.android.launcher3.LauncherState.FLAG_HIDE_BACK_BUTTON;
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.LauncherState.NO_OFFSET;
 import static com.android.launcher3.util.DisplayController.CHANGE_ACTIVE_SCREEN;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
@@ -343,7 +344,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
     @Override
     public float[] getNormalOverviewScaleAndOffset() {
         return SysUINavigationMode.getMode(this).hasGestures
-                ? new float[] {1, 1} : new float[] {1.1f, 0};
+                ? new float[] {1, NO_OFFSET, 1} : new float[] {1.1f, NO_OFFSET, NO_OFFSET};
     }
 
     @Override
