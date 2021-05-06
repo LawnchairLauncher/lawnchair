@@ -48,6 +48,10 @@ fun HomeScreenPreferences() {
                 showDivider = true
             )
             SwitchPreference(
+                prefs.smartSpaceEnable.getAdapter(),
+                label = stringResource(id = R.string.smart_space_enable),
+            )
+            SwitchPreference(
                 prefs.workspaceDt2s.getAdapter(),
                 label = stringResource(id = R.string.workspace_dt2s),
                 showDivider = false

@@ -36,6 +36,7 @@ class LawnchairApp : Application() {
     val TAG = "LawnchairApp"
 
     fun onLauncherAppStateCreated() {
+        sApplication = this
         registerActivityLifecycleCallbacks(activityHandler)
     }
 
@@ -116,6 +117,19 @@ class LawnchairApp : Application() {
             return false
         }
         return true
+    }
+
+    companion object {
+        @JvmStatic
+        fun getContext(): Context? {
+            return LawnchairApp.getApplication()?.applicationContext
+        }
+
+        private var sApplication: Application? = null
+
+        fun getApplication(): Application? {
+            return sApplication
+        }
     }
 }
 

@@ -58,6 +58,8 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
+import app.lawnchair.LawnchairApp;
+
 /**
  * All the data stored in-memory and managed by the LauncherModel
  */
@@ -141,7 +143,7 @@ public class BgDataModel {
                 screenSet.add(item.screenId);
             }
         }
-        if (FeatureFlags.QSB_ON_FIRST_SCREEN || screenSet.isEmpty()) {
+        if (FeatureFlags.topQsbOnFirstScreenEnabled(LawnchairApp.getContext()) || screenSet.isEmpty()) {
             screenSet.add(Workspace.FIRST_SCREEN_ID);
         }
         return screenSet.getArray();
