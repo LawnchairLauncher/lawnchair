@@ -58,7 +58,7 @@ public class LauncherActivityCachingLogic
     public BitmapInfo loadIcon(Context context, LauncherActivityInfo object) {
         try (LauncherIcons li = LauncherIcons.obtain(context)) {
             return li.createBadgedIconBitmap(LauncherAppState.getInstance(context)
-                            .getIconCache().getIconProvider().getIcon(object, li.mFillResIconDpi),
+                            .getIconProvider().getIcon(object, li.mFillResIconDpi),
                     object.getUser(), object.getApplicationInfo().targetSdkVersion);
         }
     }
