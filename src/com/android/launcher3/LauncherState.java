@@ -172,10 +172,12 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     }
 
     /**
-     * Returns an array of two elements.
+     * Returns an array of three elements.
      * The first specifies the scale for the overview
      * The second is the factor ([0, 1], 0 => center-screen; 1 => offscreen) by which overview
      * should be shifted horizontally.
+     * The third is the factor ([0, 1], 0 => center-screen; 1 => offscreen) by which overview
+     * should be shifted vertically.
      */
     public float[] getOverviewScaleAndOffset(Launcher launcher) {
         return launcher.getNormalOverviewScaleAndOffset();
