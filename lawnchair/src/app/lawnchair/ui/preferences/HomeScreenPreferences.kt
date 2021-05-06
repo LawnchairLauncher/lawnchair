@@ -45,14 +45,13 @@ fun HomeScreenPreferences() {
             SwitchPreference(
                 prefs.addIconToHome.getAdapter(),
                 label = stringResource(id = R.string.auto_add_shortcuts_label),
+                showDivider = true
+            )
+            SwitchPreference(
+                prefs.workspaceDt2s.getAdapter(),
+                label = stringResource(id = R.string.workspace_dt2s),
                 showDivider = false
             )
-            /*SwitchPreference(
-                checked = interactor.allowEmptyPages.value,
-                onCheckedChange = { interactor.setAllowEmptyPages(it) },
-                label = stringResource(id = R.string.allow_empty_pages_label),
-                showDivider = false
-            )*/
         }
         PreferenceGroup(heading = stringResource(id = R.string.grid)) {
             SliderPreference(
