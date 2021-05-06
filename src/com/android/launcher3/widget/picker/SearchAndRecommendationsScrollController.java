@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.widget.picker;
 
+import android.graphics.Point;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.RelativeLayout;
@@ -33,9 +35,11 @@ final class SearchAndRecommendationsScrollController implements
         RecyclerViewFastScroller.OnFastScrollChangeListener {
     private final boolean mHasWorkProfile;
     private final SearchAndRecommendationViewHolder mViewHolder;
+    private final View mSearchAndRecommendationViewParent;
     private final WidgetsRecyclerView mPrimaryRecyclerView;
     private final WidgetsRecyclerView mSearchRecyclerView;
     private final int mTabsHeight;
+    private final Point mTempOffset = new Point();
 
     // The following are only non null if mHasWorkProfile is true.
     @Nullable private final WidgetsRecyclerView mWorkRecyclerView;
@@ -62,6 +66,8 @@ final class SearchAndRecommendationsScrollController implements
      */
     private int mCollapsibleHeightForTabs = 0;
 
+    private boolean mShouldForwardToRecyclerView = false;
+
     SearchAndRecommendationsScrollController(
             boolean hasWorkProfile,
             int tabsHeight,
@@ -73,6 +79,8 @@ final class SearchAndRecommendationsScrollController implements
             @Nullable PersonalWorkPagedView primaryWorkViewPager) {
         mHasWorkProfile = hasWorkProfile;
         mViewHolder = viewHolder;
+        mViewHolder.mContainer.setSearchAndRecommendationScrollController(this);
+        mSearchAndRecommendationViewParent = (View) mViewHolder.mContainer.getParent();
         mPrimaryRecyclerView = primaryRecyclerView;
         mCurrentRecyclerView = mPrimaryRecyclerView;
         mWorkRecyclerView = workRecyclerView;
@@ -243,6 +251,43 @@ final class SearchAndRecommendationsScrollController implements
         if (mHasWorkProfile) {
             mPrimaryWorkTabsView.setTranslationY(0);
         }
+    }
+
+    /**
+     * Returns {@code true} if a touch event should be intercepted by this controller.
+     */
+    public boolean onInterceptTouchEvent(MotionEvent event) {
+        calculateMotionEventOffset(mTempOffset);
+        event.offsetLocation(mTempOffset.x, mTempOffset.y);
+        try {
+            mShouldForwardToRecyclerView = mCurrentRecyclerView.onInterceptTouchEvent(event);
+            return mShouldForwardToRecyclerView;
+        } finally {
+            event.offsetLocation(-mTempOffset.x, -mTempOffset.y);
+        }
+    }
+
+    /**
+     * Returns {@code true} if this controller has intercepted and consumed a touch event.
+     */
+    public boolean onTouchEvent(MotionEvent event) {
+        if (mShouldForwardToRecyclerView) {
+            calculateMotionEventOffset(mTempOffset);
+            event.offsetLocation(mTempOffset.x, mTempOffset.y);
+            try {
+                return mCurrentRecyclerView.onTouchEvent(event);
+            } finally {
+                event.offsetLocation(-mTempOffset.x, -mTempOffset.y);
+            }
+        }
+        return false;
+    }
+
+    private void calculateMotionEventOffset(Point p) {
+        p.x = mViewHolder.mContainer.getLeft() - mCurrentRecyclerView.getLeft()
+                - mSearchAndRecommendationViewParent.getLeft();
+        p.y = mViewHolder.mContainer.getTop() - mCurrentRecyclerView.getTop()
+                - mSearchAndRecommendationViewParent.getTop();
     }
 
     /** private the height, in pixel, + the vertical margins of a given view. */

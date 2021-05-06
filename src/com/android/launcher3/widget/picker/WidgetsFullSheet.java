@@ -709,13 +709,14 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     }
 
     final class SearchAndRecommendationViewHolder {
-        final ViewGroup mContainer;
+        final SearchAndRecommendationsView mContainer;
         final View mCollapseHandle;
         final WidgetsSearchBar mSearchBar;
         final TextView mHeaderTitle;
         final WidgetsRecommendationTableLayout mRecommendedWidgetsTable;
 
-        SearchAndRecommendationViewHolder(ViewGroup searchAndRecommendationContainer) {
+        SearchAndRecommendationViewHolder(
+                SearchAndRecommendationsView searchAndRecommendationContainer) {
             mContainer = searchAndRecommendationContainer;
             mCollapseHandle = mContainer.findViewById(R.id.collapse_handle);
             mSearchBar = mContainer.findViewById(R.id.widgets_search_bar);
