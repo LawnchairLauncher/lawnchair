@@ -36,6 +36,7 @@ import androidx.annotation.NonNull;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.BaseActivityInterface;
 import com.android.quickstep.views.TaskThumbnailView.PreviewPositionHelper;
@@ -95,7 +96,9 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         mContext = context;
         mSizeStrategy = sizeStrategy;
 
-        mOrientationState = new RecentsOrientedState(context, sizeStrategy, i -> { });
+        // TODO(b/187074722): Don't create this per-TaskViewSimulator
+        mOrientationState = TraceHelper.allowIpcs("",
+                () -> new RecentsOrientedState(context, sizeStrategy, i -> { }));
         mOrientationState.setGestureActive(true);
         mCurrentFullscreenParams = new FullscreenDrawParams(context);
         mOrientationStateId = mOrientationState.getStateId();
