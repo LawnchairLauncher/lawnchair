@@ -146,7 +146,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         mAdapters.put(AdapterHolder.SEARCH, new AdapterHolder(AdapterHolder.SEARCH));
         mTabsHeight = mHasWorkProfile
                 ? getContext().getResources()
-                        .getDimensionPixelSize(R.dimen.all_apps_header_tab_height)
+                        .getDimensionPixelSize(R.dimen.all_apps_header_pill_height)
                 : 0;
         mWidgetCellHorizontalPadding = 2 * getResources().getDimensionPixelOffset(
                 R.dimen.widget_cell_horizontal_padding);
