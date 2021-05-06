@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package app.lawnchair.ui.preferences
+package app.lawnchair.ui.preferences.about
 
 import android.content.Intent
 import android.net.Uri
@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import app.lawnchair.ui.preferences.components.PreferenceTemplate
 import com.google.accompanist.glide.GlideImage
 
 @Composable

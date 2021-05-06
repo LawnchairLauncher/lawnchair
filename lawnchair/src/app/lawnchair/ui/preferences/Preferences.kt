@@ -25,11 +25,22 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import app.lawnchair.ui.preferences.about.About
+import app.lawnchair.ui.preferences.about.aboutGraph
+import app.lawnchair.ui.preferences.components.PreferenceCategoryList
+import app.lawnchair.ui.preferences.components.SystemUi
+import app.lawnchair.ui.preferences.components.TopBar
+import app.lawnchair.util.Meta
+import app.lawnchair.util.pageMeta
 import app.lawnchair.util.preferences.getMajorVersion
 import com.android.launcher3.R
 
@@ -41,20 +52,7 @@ object Routes {
     const val DOCK: String = "dock"
     const val APP_DRAWER: String = "appDrawer"
     const val FOLDERS: String = "folders"
-    const val ICON_PACK: String = "iconPack"
 }
-
-fun getRoutesToLabels(context: Context) =
-    mapOf(
-        Routes.PREFERENCES to context.getString(R.string.settings),
-        Routes.GENERAL to context.getString(R.string.general_label),
-        Routes.ABOUT to context.getString(R.string.about_label),
-        Routes.HOME_SCREEN to context.getString(R.string.home_screen_label),
-        Routes.DOCK to context.getString(R.string.dock_label),
-        Routes.APP_DRAWER to context.getString(R.string.app_drawer_label),
-        Routes.FOLDERS to context.getString(R.string.folders_label),
-        Routes.ICON_PACK to context.getString(R.string.icon_pack)
-    )
 
 sealed class PreferenceCategory(
     val label: String,
@@ -63,42 +61,42 @@ sealed class PreferenceCategory(
     val route: String
 ) {
     class General(context: Context) : PreferenceCategory(
-        label = getRoutesToLabels(context)[Routes.GENERAL]!!,
+        label = context.getString(R.string.settings),
         description = context.getString(R.string.general_description),
         iconResource = R.drawable.ic_general,
         route = Routes.GENERAL
     )
 
     class HomeScreen(context: Context) : PreferenceCategory(
-        label = getRoutesToLabels(context)[Routes.HOME_SCREEN]!!,
+        label = context.getString(R.string.home_screen_label),
         description = context.getString(R.string.home_screen_description),
         iconResource = R.drawable.ic_home_screen,
         route = Routes.HOME_SCREEN
     )
 
     class Dock(context: Context) : PreferenceCategory(
-        label = getRoutesToLabels(context)[Routes.DOCK]!!,
+        label = context.getString(R.string.dock_label),
         description = context.getString(R.string.dock_description),
         iconResource = R.drawable.ic_dock,
         route = Routes.DOCK
     )
 
     class AppDrawer(context: Context) : PreferenceCategory(
-        label = getRoutesToLabels(context)[Routes.APP_DRAWER]!!,
+        label = context.getString(R.string.app_drawer_label),
         description = context.getString(R.string.app_drawer_description),
         iconResource = R.drawable.ic_app_drawer,
         route = Routes.APP_DRAWER
     )
 
     class Folders(context: Context) : PreferenceCategory(
-        label = getRoutesToLabels(context)[Routes.FOLDERS]!!,
+        label = context.getString(R.string.folders_label),
         description = context.getString(R.string.folders_description),
         iconResource = R.drawable.ic_folder,
         route = Routes.FOLDERS
     )
 
     class About(context: Context) : PreferenceCategory(
-        label = getRoutesToLabels(context)[Routes.ABOUT]!!,
+        label = context.getString(R.string.about_label),
         description = "${context.getString(R.string.derived_app_name)} ${getMajorVersion(context)}",
         iconResource = R.drawable.ic_about,
         route = Routes.ABOUT
@@ -114,6 +112,14 @@ fun getPreferenceCategories(context: Context) = listOf(
     PreferenceCategory.About(context)
 )
 
+val LocalNavController = compositionLocalOf<NavController> {
+    error("CompositionLocal LocalNavController not present")
+}
+
+val LocalPreferenceInteractor = compositionLocalOf<PreferenceInteractor> {
+    error("CompositionLocal LocalPreferenceInteractor not present")
+}
+
 @ExperimentalAnimationApi
 @Composable
 fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel>(), window: Window) {
@@ -125,20 +131,22 @@ fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel
             .fillMaxSize()
             .background(MaterialTheme.colors.background)
     ) {
-        TopBar(navController = navController)
-        NavHost(navController = navController, startDestination = "preferences") {
-            composable(route = Routes.PREFERENCES) { PreferenceCategoryList(navController) }
-            composable(route = Routes.HOME_SCREEN) { HomeScreenPreferences() }
-            composable(route = Routes.ICON_PACK) { IconPackPreferences(interactor = interactor) }
-            composable(route = Routes.DOCK) { DockPreferences() }
-            composable(route = Routes.APP_DRAWER) { AppDrawerPreferences() }
-            composable(route = Routes.FOLDERS) { FolderPreferences() }
-            composable(route = Routes.ABOUT) { About() }
-            composable(route = Routes.GENERAL) {
-                GeneralPreferences(
-                    navController = navController,
-                    interactor = interactor
-                )
+        CompositionLocalProvider(
+            LocalNavController provides navController,
+            LocalPreferenceInteractor provides interactor,
+        ) {
+            TopBar()
+            NavHost(navController = navController, startDestination = "preferences") {
+                composable(route = Routes.PREFERENCES) {
+                    pageMeta.provide(Meta(title = stringResource(id = R.string.settings)))
+                    PreferenceCategoryList(navController)
+                }
+                generalGraph(route = Routes.GENERAL)
+                homeScreenGraph(route = Routes.HOME_SCREEN)
+                dockGraph(route = Routes.DOCK)
+                appDrawerGraph(route = Routes.APP_DRAWER)
+                folderGraph(route = Routes.FOLDERS)
+                aboutGraph(route = Routes.ABOUT)
             }
         }
     }

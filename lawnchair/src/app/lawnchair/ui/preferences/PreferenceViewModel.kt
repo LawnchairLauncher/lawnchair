@@ -40,7 +40,7 @@ class PreferenceViewModel(application: Application) : AndroidViewModel(applicati
     override val notificationDotsEnabled: MutableState<Boolean> =
         mutableStateOf(enabledNotificationListeners?.contains(lawnchairNotificationListener.flattenToString()) == true)
 
-    override fun getIconPacks(): MutableMap<String, IconPackInfo> {
+    override fun getIconPacks(): List<IconPackInfo> {
         val pm = getApplication<Application>().packageManager
         val iconPacks: MutableMap<String, IconPackInfo> = HashMap()
         val list: MutableList<ResolveInfo> = pm.queryIntentActivities(Intent("com.novalauncher.THEME"), 0)
@@ -51,9 +51,6 @@ class PreferenceViewModel(application: Application) : AndroidViewModel(applicati
             pm.queryIntentActivities(Intent("android.intent.action.MAIN").addCategory("com.anddoes.launcher.THEME"), 0)
         )
 
-        iconPacks["system"] =
-            IconPackInfo("System Icons", "", AppCompatResources.getDrawable(getApplication(), R.drawable.ic_launcher_home)!!)
-
         for (info in list) {
             iconPacks[info.activityInfo.packageName] = IconPackInfo(
                 info.loadLabel(pm).toString(),
@@ -62,6 +59,17 @@ class PreferenceViewModel(application: Application) : AndroidViewModel(applicati
             )
         }
 
-        return iconPacks
+        val iconPackList = iconPacks.values.toMutableList()
+        iconPackList.sortBy { it.name }
+        iconPackList.add(
+            0,
+            IconPackInfo(
+                "System Icons",
+                "",
+                AppCompatResources.getDrawable(getApplication(), R.drawable.ic_launcher_home)!!
+            )
+        )
+
+        return iconPackList
     }
 }

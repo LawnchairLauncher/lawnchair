@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package app.lawnchair.ui.preferences
+package app.lawnchair.ui.preferences.about
 
 import android.content.Intent
 import androidx.annotation.StringRes
@@ -34,6 +34,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavGraphBuilder
+import app.lawnchair.ui.preferences.components.PreferenceGroup
+import app.lawnchair.ui.preferences.components.ClickListenerPreference
+import app.lawnchair.ui.preferences.preferenceGraph
+import app.lawnchair.util.Meta
+import app.lawnchair.util.pageMeta
 import app.lawnchair.util.preferences.getFormattedVersionName
 import com.android.launcher3.R
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
@@ -110,10 +116,16 @@ val teamMembers = listOf(
 )
 
 @ExperimentalAnimationApi
+fun NavGraphBuilder.aboutGraph(route: String) {
+    preferenceGraph(route, { About() })
+}
+
+@ExperimentalAnimationApi
 @Composable
 fun About() {
     val context = LocalContext.current
 
+    pageMeta.provide(Meta(title = stringResource(id = R.string.about_label)))
     Column(
         modifier = Modifier
             .fillMaxWidth()

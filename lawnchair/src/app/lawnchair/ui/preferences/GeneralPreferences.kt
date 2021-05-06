@@ -20,14 +20,34 @@ import android.os.Build
 import androidx.compose.animation.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
+import app.lawnchair.ui.preferences.components.NavigationActionPreference
+import app.lawnchair.ui.preferences.components.NotificationDotsPreference
+import app.lawnchair.ui.preferences.components.PreferenceGroup
+import app.lawnchair.ui.preferences.components.PreferenceLayout
+import app.lawnchair.ui.preferences.components.SliderPreference
+import app.lawnchair.ui.preferences.components.SwitchPreference
+import app.lawnchair.util.Meta
+import app.lawnchair.util.pageMeta
 import app.lawnchair.util.preferences.*
 import com.android.launcher3.R
 
+object GeneralRoutes {
+    const val ICON_PACK = "iconPack"
+}
+
+@ExperimentalAnimationApi
+fun NavGraphBuilder.generalGraph(route: String) {
+    preferenceGraph(route, { GeneralPreferences() }) { subRoute ->
+        iconPackGraph(route = subRoute(GeneralRoutes.ICON_PACK))
+    }
+}
+
 @ExperimentalAnimationApi
 @Composable
-fun GeneralPreferences(navController: NavController, interactor: PreferenceInteractor) {
+fun GeneralPreferences() {
     val prefs = preferenceManager()
+    pageMeta.provide(Meta(title = stringResource(id = R.string.general_label)))
     PreferenceLayout {
         PreferenceGroup(isFirstChild = true) {
             SwitchPreference(
@@ -35,11 +55,10 @@ fun GeneralPreferences(navController: NavController, interactor: PreferenceInter
                 label = stringResource(id = R.string.home_screen_rotation_label),
                 description = stringResource(id = R.string.home_screen_rotaton_description)
             )
-            NotificationDotsPreference(interactor)
+            NotificationDotsPreference()
             NavigationActionPreference(
                 label = stringResource(id = R.string.icon_pack),
-                navController = navController,
-                destination = Routes.ICON_PACK,
+                destination = subRoute(name = GeneralRoutes.ICON_PACK),
                 showDivider = false
             )
         }

@@ -66,6 +66,7 @@ class PreferenceManager private constructor(context: Context) : BasePreferenceMa
     val coloredBackgroundLightness = FloatPref("pref_coloredBackgroundLightness", 0.9F, reloadIcons)
     val feedProvider = StringPref("pref_feedProvider", "")
     val ignoreFeedWhitelist = BoolPref("pref_ignoreFeedWhitelist", false)
+    val workspaceDt2s = BoolPref("pref_doubleTap2Sleep", true)
 
     init {
         sp.registerOnSharedPreferenceChangeListener(this)
