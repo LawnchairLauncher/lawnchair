@@ -18,6 +18,7 @@ package com.android.launcher3.taskbar;
 
 import android.content.Context;
 import android.content.Intent;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.IntDef;
 
@@ -41,7 +42,8 @@ public class TaskbarNavButtonController {
     @IntDef(value = {
             BUTTON_BACK,
             BUTTON_HOME,
-            BUTTON_RECENTS
+            BUTTON_RECENTS,
+            BUTTON_IME_SWITCH
     })
 
     public @interface TaskbarButton {}
@@ -49,6 +51,7 @@ public class TaskbarNavButtonController {
     static final int BUTTON_BACK = 1;
     static final int BUTTON_HOME = BUTTON_BACK << 1;
     static final int BUTTON_RECENTS = BUTTON_HOME << 1;
+    static final int BUTTON_IME_SWITCH = BUTTON_RECENTS << 1;
 
 
     private final Context mContext;
@@ -68,6 +71,9 @@ public class TaskbarNavButtonController {
             case BUTTON_RECENTS:
                 navigateToOverview();;
                 break;
+            case BUTTON_IME_SWITCH:
+                showIMESwitcher();
+                break;
         }
     }
 
@@ -84,6 +90,11 @@ public class TaskbarNavButtonController {
 
     private void executeBack() {
         SystemUiProxy.INSTANCE.getNoCreate().onBackPressed();
+    }
+
+    private void showIMESwitcher() {
+        mContext.getSystemService(InputMethodManager.class).showInputMethodPickerFromSystem(
+                true /* showAuxiliarySubtypes */, mContext.getDisplayId());
     }
 
 }
