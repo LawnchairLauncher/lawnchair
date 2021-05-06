@@ -259,11 +259,17 @@ public class TouchInteractionService extends Service implements PluginListener<O
     };
 
     private static boolean sConnected = false;
+    private static TouchInteractionService sInstance;
     private static boolean sIsInitialized = false;
     private RotationTouchHelper mRotationTouchHelper;
 
     public static boolean isConnected() {
         return sConnected;
+    }
+
+    @Nullable
+    public static TouchInteractionService getInstance() {
+        return sInstance;
     }
 
     public static boolean isInitialized() {
@@ -292,6 +298,10 @@ public class TouchInteractionService extends Service implements PluginListener<O
     private InputEventReceiver mInputEventReceiver;
 
     private DisplayManager mDisplayManager;
+
+    public TouchInteractionService() {
+        sInstance = this;
+    }
 
     @Override
     public void onCreate() {
@@ -387,6 +397,10 @@ public class TouchInteractionService extends Service implements PluginListener<O
 
         mOverviewComponentObserver.setOverviewChangeListener(this::onOverviewTargetChange);
         onOverviewTargetChange(mOverviewComponentObserver.isHomeAndOverviewSame());
+    }
+
+    public OverviewCommandHelper getOverviewCommandHelper() {
+        return mOverviewCommandHelper;
     }
 
     private void resetHomeBounceSeenOnQuickstepEnabledFirstTime() {
