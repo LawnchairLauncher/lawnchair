@@ -48,9 +48,12 @@ import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.states.StateAnimationConfig;
+import com.android.launcher3.taskbar.TaskbarNavButtonController.TaskbarButton;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.views.ActivityContext;
 import com.android.quickstep.AnimatedFloat;
+import com.android.quickstep.SysUINavigationMode;
+import com.android.quickstep.TaskAnimationManager;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.WindowManagerWrapper;
@@ -73,9 +76,13 @@ public class TaskbarController {
     private final TaskbarAnimationController mTaskbarAnimationController;
     private final TaskbarHotseatController mHotseatController;
     private final TaskbarDragController mDragController;
+    private final TaskbarNavButtonController mNavButtonController;
 
     // Initialized in init().
     private WindowManager.LayoutParams mWindowLayoutParams;
+    private SysUINavigationMode.Mode mNavMode = SysUINavigationMode.Mode.NO_BUTTON;
+    private final SysUINavigationMode.NavigationModeChangeListener mNavigationModeChangeListener =
+            this::onNavModeChanged;
 
     private @Nullable Animator mAnimator;
     private boolean mIsAnimatingToLauncher;
@@ -89,6 +96,7 @@ public class TaskbarController {
         mTaskbarViewInApp.construct(createTaskbarViewCallbacks());
         mTaskbarViewOnHome = taskbarViewOnHome;
         mTaskbarViewOnHome.construct(createTaskbarViewCallbacks());
+        mNavButtonController = new TaskbarNavButtonController(launcher);
         mWindowManager = mLauncher.getWindowManager();
         mTaskbarSize = new Point(MATCH_PARENT, mLauncher.getDeviceProfile().taskbarSize);
         mTaskbarStateHandler = mLauncher.getTaskbarStateHandler();
@@ -212,6 +220,11 @@ public class TaskbarController {
                     alignRealHotseatWithTaskbar();
                 }
             }
+
+            @Override
+            public void onNavigationButtonClick(@TaskbarButton int buttonType) {
+                mNavButtonController.onButtonClick(buttonType);
+            }
         };
     }
 
@@ -228,8 +241,10 @@ public class TaskbarController {
      * Initializes the Taskbar, including adding it to the screen.
      */
     public void init() {
-        mTaskbarViewInApp.init(mHotseatController.getNumHotseatIcons());
-        mTaskbarViewOnHome.init(mHotseatController.getNumHotseatIcons());
+        mNavMode = SysUINavigationMode.INSTANCE.get(mLauncher)
+                .addModeChangeListener(mNavigationModeChangeListener);
+        mTaskbarViewInApp.init(mHotseatController.getNumHotseatIcons(), mNavMode);
+        mTaskbarViewOnHome.init(mHotseatController.getNumHotseatIcons(), mNavMode);
         mTaskbarContainerView.init(mTaskbarViewInApp);
         addToWindowManager();
         mTaskbarStateHandler.setTaskbarCallbacks(createTaskbarStateHandlerCallbacks());
@@ -278,6 +293,8 @@ public class TaskbarController {
         mHotseatController.cleanup();
 
         setWhichTaskbarViewIsVisible(null);
+        SysUINavigationMode.INSTANCE.get(mLauncher)
+                .removeModeChangeListener(mNavigationModeChangeListener);
     }
 
     private void removeFromWindowManager() {
@@ -313,6 +330,12 @@ public class TaskbarController {
         mTaskbarViewInApp.setLayoutParams(taskbarLayoutParams);
 
         mWindowManager.addView(mTaskbarContainerView, mWindowLayoutParams);
+    }
+
+    private void onNavModeChanged(SysUINavigationMode.Mode newMode) {
+        mNavMode = newMode;
+        cleanup();
+        init();
     }
 
     /**
@@ -507,6 +530,7 @@ public class TaskbarController {
         /** Returns how much to scale non-icon elements such as spacing and dividers. */
         float getNonIconScale(TaskbarView taskbarView);
         void onItemPositionsChanged(TaskbarView taskbarView);
+        void onNavigationButtonClick(@TaskbarButton int buttonType);
     }
 
     /**
