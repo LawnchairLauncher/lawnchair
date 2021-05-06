@@ -84,11 +84,6 @@ public class AllAppsState extends LauncherState {
     }
 
     @Override
-    public float[] getOverviewScaleAndOffset(Launcher launcher) {
-        return new float[] {0.9f, 1};
-    }
-
-    @Override
     public LauncherState getHistoryForState(LauncherState previousState) {
         return previousState == OVERVIEW ? OVERVIEW : NORMAL;
     }
