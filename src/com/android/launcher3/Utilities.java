@@ -33,6 +33,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ShortcutInfo;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.Bitmap;
@@ -84,6 +85,7 @@ import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.PackageManagerHelper;
+import com.android.launcher3.views.BaseDragLayer;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 
 import java.lang.reflect.Method;
@@ -103,6 +105,8 @@ public final class Utilities {
 
     private static final Pattern sTrimPattern =
             Pattern.compile("^[\\s|\\p{javaSpaceChar}]*(.*)[\\s|\\p{javaSpaceChar}]*$");
+
+    private static final float[] sTmpFloatArray = new float[4];
 
     private static final int[] sLoc0 = new int[2];
     private static final int[] sLoc1 = new int[2];
@@ -132,6 +136,15 @@ public final class Utilities {
     public static final boolean IS_DEBUG_DEVICE =
             Build.TYPE.toLowerCase(Locale.ROOT).contains("debug") ||
             Build.TYPE.toLowerCase(Locale.ROOT).equals("eng");
+
+    /**
+     * Returns true if theme is dark.
+     */
+    public static boolean isDarkTheme(Context context) {
+        Configuration configuration = context.getResources().getConfiguration();
+        int nightMode = configuration.uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        return nightMode == Configuration.UI_MODE_NIGHT_YES;
+    }
 
     public static boolean isDevelopersOptionsEnabled(Context context) {
         return Settings.Global.getInt(context.getApplicationContext().getContentResolver(),
@@ -219,6 +232,33 @@ public final class Utilities {
     }
 
     /**
+     * Returns bounds for a child view of DragLayer, in drag layer coordinates.
+     *
+     * see {@link com.android.launcher3.dragndrop.DragLayer}.
+     *
+     * @param viewBounds Bounds of the view wanted in drag layer coordinates, relative to the view
+     *                   itself. eg. (0, 0, view.getWidth, view.getHeight)
+     * @param ignoreTransform If true, view transform is ignored
+     * @param outRect The out rect where we return the bounds of {@param view} in drag layer coords.
+     */
+    public static void getBoundsForViewInDragLayer(BaseDragLayer dragLayer, View view,
+            Rect viewBounds, boolean ignoreTransform, float[] recycle, RectF outRect) {
+        float[] points = recycle == null ? new float[4] : recycle;
+        points[0] = viewBounds.left;
+        points[1] = viewBounds.top;
+        points[2] = viewBounds.right;
+        points[3] = viewBounds.bottom;
+
+        Utilities.getDescendantCoordRelativeToAncestor(view, dragLayer, points,
+                false, ignoreTransform);
+        outRect.set(
+                Math.min(points[0], points[2]),
+                Math.min(points[1], points[3]),
+                Math.max(points[0], points[2]),
+                Math.max(points[1], points[3]));
+    }
+
+    /**
      * Inverse of {@link #getDescendantCoordRelativeToAncestor(View, View, float[], boolean)}.
      */
     public static void mapCoordInSelfToDescendant(View descendant, View root, float[] coord) {
@@ -271,6 +311,16 @@ public final class Utilities {
         sLoc1[0] += (v1.getMeasuredWidth() * v1.getScaleX()) / 2;
         sLoc1[1] += (v1.getMeasuredHeight() * v1.getScaleY()) / 2;
         return new int[] {sLoc1[0] - sLoc0[0], sLoc1[1] - sLoc0[1]};
+    }
+
+    /**
+     * Helper method to set rectOut with rectFSrc.
+     */
+    public static void setRect(RectF rectFSrc, Rect rectOut) {
+        rectOut.left = (int) rectFSrc.left;
+        rectOut.top = (int) rectFSrc.top;
+        rectOut.right = (int) rectFSrc.right;
+        rectOut.bottom = (int) rectFSrc.bottom;
     }
 
     public static void scaleRectFAboutCenter(RectF r, float scale) {

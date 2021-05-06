@@ -47,7 +47,6 @@ import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
 import static com.android.quickstep.util.NavigationModeFeatureFlag.LIVE_TILE;
 import static com.android.quickstep.util.SwipePipToHomeAnimator.FRACTION_END;
 import static com.android.quickstep.util.SwipePipToHomeAnimator.FRACTION_START;
-import static com.android.quickstep.views.RecentsView.RECENTS_GRID_PROGRESS;
 import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME;
@@ -55,7 +54,6 @@ import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.ACT
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
@@ -464,8 +462,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                     mDeviceState.getRotationTouchHelper()
                             .onEndTargetCalculated(mGestureState.getEndTarget(),
                                     mActivityInterface);
-
-                    mRecentsView.onGestureEndTargetCalculated(mGestureState.getEndTarget());
                 });
 
         notifyGestureStartedAsync();
@@ -1133,6 +1129,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             }
             homeAnimFactory.playAtomicAnimation(velocityPxPerMs.y);
             mLauncherTransitionController = null;
+
+            if (mRecentsView != null) {
+                mRecentsView.onPrepareGestureEndAnimation(null, mGestureState.getEndTarget());
+            }
         } else {
             AnimatorSet animatorSet = new AnimatorSet();
             ValueAnimator windowAnim = mCurrentShift.animateToValue(start, end);
@@ -1171,9 +1171,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 }
             });
             animatorSet.play(windowAnim);
-            S state = mActivityInterface.stateFromGestureEndTarget(mGestureState.getEndTarget());
-            if (mRecentsView != null && state.displayOverviewTasksAsGrid(mDp)) {
-                animatorSet.play(ObjectAnimator.ofFloat(mRecentsView, RECENTS_GRID_PROGRESS, 1));
+            if (mRecentsView != null) {
+                mRecentsView.onPrepareGestureEndAnimation(
+                        animatorSet, mGestureState.getEndTarget());
             }
             animatorSet.setDuration(duration).setInterpolator(interpolator);
             animatorSet.start();
@@ -1701,7 +1701,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         // No need to apply any transform if there is ongoing swipe-pip-to-home animator since
         // that animator handles the leash solely.
         if (mRecentsAnimationTargets != null && !mIsSwipingPipToHome) {
-            if (mRecentsViewScrollLinked) {
+            if (mRecentsViewScrollLinked && mRecentsView != null) {
                 mTaskViewSimulator.setScroll(mRecentsView.getScrollOffset());
             }
             mTaskViewSimulator.apply(mTransformParams);
