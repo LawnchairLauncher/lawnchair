@@ -17,20 +17,16 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.Utilities.dpiFromPx;
-import static com.android.launcher3.Utilities.getDevicePrefs;
 import static com.android.launcher3.Utilities.getPointString;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TWO_PANEL_HOME;
 import static com.android.launcher3.util.DisplayController.CHANGE_DENSITY;
 import static com.android.launcher3.util.DisplayController.CHANGE_SUPPORTED_BOUNDS;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
-import static com.android.launcher3.util.PackageManagerHelper.getPackageFilter;
 
 import android.annotation.TargetApi;
 import android.appwidget.AppWidgetHostView;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -49,7 +45,6 @@ import android.view.Display;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
-import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.Info;
@@ -83,11 +78,6 @@ public class InvariantDeviceProfile {
 
     private static final float ICON_SIZE_DEFINED_IN_APP_DP = 48;
 
-    public static final int CHANGE_FLAG_GRID = 1 << 0;
-    public static final int CHANGE_FLAG_ICON_PARAMS = 1 << 1;
-
-    public static final String KEY_ICON_PATH_REF = "pref_icon_shape_path";
-
     // Constants that affects the interpolation curve between statically defined device profile
     // buckets.
     private static final float KNEARESTNEIGHBOR = 3;
@@ -95,9 +85,6 @@ public class InvariantDeviceProfile {
 
     // used to offset float not being able to express extremely small weights in extreme cases.
     private static final float WEIGHT_EFFICIENT = 100000f;
-
-    private static final int CONFIG_ICON_MASK_RES_ID = Resources.getSystem().getIdentifier(
-            "config_icon_mask", "string", "android");
 
     /**
      * Number of icons per row and column in the workspace.
@@ -111,7 +98,6 @@ public class InvariantDeviceProfile {
     public int numFolderRows;
     public int numFolderColumns;
     public float iconSize;
-    public String iconShapePath;
     public float landscapeIconSize;
     public float landscapeIconTextSize;
     public int iconBitmapSize;
@@ -162,7 +148,6 @@ public class InvariantDeviceProfile {
     public Rect defaultWidgetPadding;
 
     private final ArrayList<OnIDPChangeListener> mChangeListeners = new ArrayList<>();
-    private OverlayMonitor mOverlayMonitor;
 
     @VisibleForTesting
     public InvariantDeviceProfile() {}
@@ -173,7 +158,6 @@ public class InvariantDeviceProfile {
         numFolderRows = p.numFolderRows;
         numFolderColumns = p.numFolderColumns;
         iconSize = p.iconSize;
-        iconShapePath = p.iconShapePath;
         landscapeIconSize = p.landscapeIconSize;
         iconBitmapSize = p.iconBitmapSize;
         iconTextSize = p.iconTextSize;
@@ -193,7 +177,6 @@ public class InvariantDeviceProfile {
         defaultLayoutId = p.defaultLayoutId;
         demoModeLayoutId = p.demoModeLayoutId;
         mExtraAttrs = p.mExtraAttrs;
-        mOverlayMonitor = p.mOverlayMonitor;
         devicePaddings = p.devicePaddings;
     }
 
@@ -215,7 +198,6 @@ public class InvariantDeviceProfile {
                         onConfigChanged(displayContext);
                     }
                 });
-        mOverlayMonitor = new OverlayMonitor(context);
     }
 
     /**
@@ -266,17 +248,6 @@ public class InvariantDeviceProfile {
                 ? Utilities.getPrefs(context).getString(KEY_IDP_GRID_NAME, null) : null;
     }
 
-    /**
-     * Retrieve system defined or RRO overriden icon shape.
-     */
-    private static String getIconShapePath(Context context) {
-        if (CONFIG_ICON_MASK_RES_ID == 0) {
-            Log.e(TAG, "Icon mask res identifier failed to retrieve.");
-            return "";
-        }
-        return context.getResources().getString(CONFIG_ICON_MASK_RES_ID);
-    }
-
     private String initGrid(Context context, String gridName) {
         Info displayInfo = DisplayController.INSTANCE.get(context).getInfo();
         // Determine if we have split display
@@ -317,7 +288,6 @@ public class InvariantDeviceProfile {
         mExtraAttrs = closestProfile.extraAttrs;
 
         iconSize = displayOption.iconSize;
-        iconShapePath = getIconShapePath(context);
         landscapeIconSize = displayOption.landscapeIconSize;
         iconBitmapSize = ResourceUtils.pxFromDp(iconSize, metrics);
         iconTextSize = displayOption.iconTextSize;
@@ -391,18 +361,6 @@ public class InvariantDeviceProfile {
         mChangeListeners.remove(listener);
     }
 
-    public void verifyConfigChangedInBackground(final Context context) {
-        String savedIconMaskPath = getDevicePrefs(context).getString(KEY_ICON_PATH_REF, "");
-        // Good place to check if grid size changed in themepicker when launcher was dead.
-        if (savedIconMaskPath.isEmpty()) {
-            getDevicePrefs(context).edit().putString(KEY_ICON_PATH_REF, getIconShapePath(context))
-                    .apply();
-        } else if (!savedIconMaskPath.equals(getIconShapePath(context))) {
-            getDevicePrefs(context).edit().putString(KEY_ICON_PATH_REF, getIconShapePath(context))
-                    .apply();
-            apply(CHANGE_FLAG_ICON_PARAMS);
-        }
-    }
 
     public void setCurrentGrid(Context context, String gridName) {
         Context appContext = context.getApplicationContext();
@@ -414,36 +372,13 @@ public class InvariantDeviceProfile {
         if (TestProtocol.sDebugTracing) {
             Log.d(TestProtocol.LAUNCHER_NOT_TRANSPOSED, "IDP.onConfigChanged");
         }
-        // Config changes, what shall we do?
-        InvariantDeviceProfile oldProfile = new InvariantDeviceProfile(this);
 
         // Re-init grid
         String gridName = getCurrentGridName(context);
         initGrid(context, gridName);
 
-        int changeFlags = 0;
-        if (numRows != oldProfile.numRows ||
-                numColumns != oldProfile.numColumns ||
-                numFolderColumns != oldProfile.numFolderColumns ||
-                numFolderRows != oldProfile.numFolderRows ||
-                numDatabaseHotseatIcons != oldProfile.numDatabaseHotseatIcons) {
-            changeFlags |= CHANGE_FLAG_GRID;
-        }
-
-        if (iconSize != oldProfile.iconSize || iconBitmapSize != oldProfile.iconBitmapSize ||
-                !iconShapePath.equals(oldProfile.iconShapePath)) {
-            changeFlags |= CHANGE_FLAG_ICON_PARAMS;
-        }
-        if (!iconShapePath.equals(oldProfile.iconShapePath)) {
-            IconShape.init(context);
-        }
-
-        apply(changeFlags);
-    }
-
-    private void apply(int changeFlags) {
         for (OnIDPChangeListener listener : mChangeListeners) {
-            listener.onIdpChanged(changeFlags, this);
+            listener.onIdpChanged(this);
         }
     }
 
@@ -650,7 +585,10 @@ public class InvariantDeviceProfile {
 
     public interface OnIDPChangeListener {
 
-        void onIdpChanged(int changeFlags, InvariantDeviceProfile profile);
+        /**
+         * Called when the device provide changes
+         */
+        void onIdpChanged(InvariantDeviceProfile profile);
     }
 
 
@@ -807,20 +745,6 @@ public class InvariantDeviceProfile {
             minCellWidth += p.minCellWidth;
             borderSpacing += p.borderSpacing;
             return this;
-        }
-    }
-
-    private class OverlayMonitor extends BroadcastReceiver {
-
-        private final String ACTION_OVERLAY_CHANGED = "android.intent.action.OVERLAY_CHANGED";
-
-        OverlayMonitor(Context context) {
-            context.registerReceiver(this, getPackageFilter("android", ACTION_OVERLAY_CHANGED));
-        }
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            onConfigChanged(context);
         }
     }
 }

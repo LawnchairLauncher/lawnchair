@@ -23,7 +23,6 @@ import static android.view.View.MeasureSpec.makeMeasureSpec;
 import static com.android.launcher3.AbstractFloatingView.TYPE_TASK_MENU;
 import static com.android.launcher3.AbstractFloatingView.getTopOpenViewWithType;
 import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAGS;
-import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_ICON_PARAMS;
 import static com.android.launcher3.LauncherAnimUtils.SUCCESS_TRANSITION_PROGRESS;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
@@ -171,8 +170,7 @@ import java.util.function.Consumer;
 public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_TYPE>,
         STATE_TYPE extends BaseState<STATE_TYPE>> extends PagedView implements Insettable,
         TaskThumbnailCache.HighResLoadingState.HighResLoadingStateChangedCallback,
-        InvariantDeviceProfile.OnIDPChangeListener, TaskVisualsChangeListener,
-        SplitScreenBounds.OnChangeListener {
+        TaskVisualsChangeListener, SplitScreenBounds.OnChangeListener {
 
     public static final FloatProperty<RecentsView> CONTENT_ALPHA =
             new FloatProperty<RecentsView>("contentAlpha") {
@@ -746,16 +744,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         updateTaskStackListenerState();
     }
 
-    @Override
-    public void onIdpChanged(int changeFlags, InvariantDeviceProfile idp) {
-        if ((changeFlags & CHANGE_FLAG_ICON_PARAMS) == 0) {
-            return;
-        }
-        mModel.getIconCache().clear();
-        unloadVisibleTaskData(TaskView.FLAG_UPDATE_ICON);
-        loadVisibleTaskData(TaskView.FLAG_UPDATE_ICON);
-    }
-
     public void init(OverviewActionsView actionsView, SplitPlaceholderView splitPlaceholderView) {
         mActionsView = actionsView;
         mActionsView.updateHiddenFlags(HIDDEN_NO_TASKS, getTaskViewCount() == 0);
@@ -780,7 +768,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mSyncTransactionApplier = new SurfaceTransactionApplier(this);
         mLiveTileParams.setSyncTransactionApplier(mSyncTransactionApplier);
         RecentsModel.INSTANCE.get(getContext()).addThumbnailChangeListener(this);
-        mIdp.addOnChangeListener(this);
         mIPipAnimationListener.setActivity(mActivity);
         SystemUiProxy.INSTANCE.get(getContext()).setPinnedStackAnimationListener(
                 mIPipAnimationListener);
@@ -799,7 +786,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mSyncTransactionApplier = null;
         mLiveTileParams.setSyncTransactionApplier(null);
         RecentsModel.INSTANCE.get(getContext()).removeThumbnailChangeListener(this);
-        mIdp.removeOnChangeListener(this);
         SystemUiProxy.INSTANCE.get(getContext()).setPinnedStackAnimationListener(null);
         SplitScreenBounds.INSTANCE.removeOnChangeListener(this);
         mIPipAnimationListener.setActivity(null);
