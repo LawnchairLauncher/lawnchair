@@ -45,6 +45,7 @@ import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.states.StateAnimationConfig;
+import com.android.launcher3.views.ScrimView;
 
 /**
  * Handles AllApps view transition.
@@ -88,6 +89,7 @@ public class AllAppsTransitionController
     private float mProgress;        // [0, 1], mShiftRange * mProgress = shiftCurrent
 
     private float mScrollRangeDelta = 0;
+    private ScrimView mScrimView;
 
     public AllAppsTransitionController(Launcher l) {
         mLauncher = l;
@@ -158,7 +160,7 @@ public class AllAppsTransitionController
 
         Interpolator interpolator = toState.equals(ALL_APPS)
                 ? (config.userControlled ? ACCEL_2 : ACCEL_0_75) :
-                        (config.userControlled ? DEACCEL_2 : DEACCEL);
+                (config.userControlled ? DEACCEL_2 : DEACCEL);
 
         Animator anim = createSpringAnimation(mProgress, targetProgress);
         anim.setInterpolator(config.getInterpolator(ANIM_VERTICAL_PROGRESS, interpolator));
@@ -181,19 +183,28 @@ public class AllAppsTransitionController
 
         Interpolator allAppsFade = config.getInterpolator(ANIM_ALL_APPS_FADE, LINEAR);
         setter.setViewAlpha(mAppsView, hasAllAppsContent ? 1 : 0, allAppsFade);
+
+        boolean shouldProtectHeader =
+                ALL_APPS == state || mLauncher.getStateManager().getState() == ALL_APPS;
+        mScrimView.setDrawingController(shouldProtectHeader ? mAppsView : null);
     }
 
     public AnimatorListenerAdapter getProgressAnimatorListener() {
         return AnimationSuccessListener.forRunnable(this::onProgressAnimationEnd);
     }
 
-    public void setupViews(AllAppsContainerView appsView) {
+    /**
+     * see Launcher#setupViews
+     */
+    public void setupViews(ScrimView scrimView, AllAppsContainerView appsView) {
+        mScrimView = scrimView;
         mAppsView = appsView;
         if (FeatureFlags.ENABLE_DEVICE_SEARCH.get() && Utilities.ATLEAST_R) {
             mLauncher.getSystemUiController().updateUiState(UI_STATE_ALLAPPS,
                     View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                             | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
         }
+        mAppsView.setScrimView(scrimView);
     }
 
     /**
