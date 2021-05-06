@@ -1658,8 +1658,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         if (endTarget == GestureState.GestureEndTarget.NEW_TASK
                 || endTarget == GestureState.GestureEndTarget.LAST_TASK) {
             // When switching to tasks in quick switch, ensures the snapped page's scroll maintain
-            // invariant between quick switch and overview grid, to ensure a smooth animation
-            // transition.
+            // invariant between quick switch and overview, to ensure a smooth animation transition.
             updateGridProperties();
         }
     }
@@ -3113,6 +3112,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         if (count == 0) {
             return new PendingAnimation(duration);
         }
+
+        // When swiping down from overview to tasks, ensures the snapped page's scroll maintain
+        // invariant between quick switch and overview, to ensure a smooth animation transition.
+        updateGridProperties();
+        updateScrollSynchronously();
 
         int targetSysUiFlags = tv.getThumbnail().getSysUiStatusNavFlags();
         final boolean[] passedOverviewThreshold = new boolean[] {false};
