@@ -338,6 +338,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     }
 
     protected boolean onActivityInit(Boolean alreadyOnHome) {
+        if (mStateCallback.hasStates(STATE_HANDLER_INVALIDATED)) {
+            return false;
+        }
+
         T createdActivity = mActivityInterface.getCreatedActivity();
         if (createdActivity != null) {
             initTransitionEndpoints(createdActivity.getDeviceProfile());
@@ -567,6 +571,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 }
             });
             reapplyWindowTransformAnim.setDuration(RECENTS_ATTACH_DURATION).start();
+            mStateCallback.runOnceAtState(STATE_HANDLER_INVALIDATED,
+                    reapplyWindowTransformAnim::cancel);
         } else {
             applyWindowTransform();
         }
@@ -1376,12 +1382,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         mActivityInitListener.unregister();
         ActivityManagerWrapper.getInstance().unregisterTaskStackListener(mActivityRestartListener);
         mTaskSnapshot = null;
-        mHandler.post(() -> {
-            // Defer clearing the activity since invalidation can happen over multiple callbacks
-            // ie. invalidateHandlerWithLauncher()
-            mActivity = null;
-            mRecentsView = null;
-        });
     }
 
     private void invalidateHandlerWithLauncher() {
@@ -1392,6 +1392,12 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
         mRecentsView.removeOnScrollChangedListener(mOnRecentsScrollListener);
         resetLauncherListeners();
+
+        mHandler.post(() -> {
+            // Defer clearing the activity since invalidation can happen over multiple callbacks.
+            mActivity = null;
+            mRecentsView = null;
+        });
     }
 
     private void endLauncherTransitionController() {
