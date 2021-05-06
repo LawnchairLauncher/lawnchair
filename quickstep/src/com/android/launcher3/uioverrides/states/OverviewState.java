@@ -17,7 +17,6 @@ package com.android.launcher3.uioverrides.states;
 
 import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_OVERVIEW;
-import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 
 import android.content.Context;
 import android.graphics.Rect;
@@ -60,9 +59,8 @@ public class OverviewState extends LauncherState {
 
     @Override
     public int getTransitionDuration(Context context) {
-        // In no-button mode, overview comes in all the way from the left, so give it more time.
-        boolean isNoButtonMode = SysUINavigationMode.INSTANCE.get(context).getMode() == NO_BUTTON;
-        return isNoButtonMode ? 380 : 250;
+        // In gesture modes, overview comes in all the way from the bottom, so give it more time.
+        return SysUINavigationMode.INSTANCE.get(context).getMode().hasGestures ? 380 : 250;
     }
 
     @Override
@@ -80,7 +78,7 @@ public class OverviewState extends LauncherState {
 
     @Override
     public float[] getOverviewScaleAndOffset(Launcher launcher) {
-        return new float[] {NO_SCALE, NO_OFFSET};
+        return new float[] {NO_SCALE, NO_OFFSET, NO_OFFSET};
     }
 
     @Override
