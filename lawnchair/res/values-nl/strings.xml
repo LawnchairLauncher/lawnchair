@@ -51,20 +51,20 @@
     <string name="patryk_description">Manages development and creates the UI. Obsessed with Jetpack Compose indefinitely.</string>
     <string name="kshitij_description">Schrijft de kern van de logica voor Lawnchair functies. Trots lid van de Spoingus gang.</string>
     <string name="devops">DevOps</string>
-    <string name="quickswitch_maintenance">QuickSwitch Maintenance</string>
+    <string name="quickswitch_maintenance">QuickSwitch Onderhouder</string>
     <string name="all_apps_search_bar_hint">Zoek Apps</string>
     <string name="settings_button_text">Startscherm instellingen</string>
-    <string name="development">Development</string>
+    <string name="development">Ontwikkelingen</string>
     <string name="app_info_drop_target_label">App informatie</string>
     <string name="item_removed">Item verwijderd.</string>
     <string name="all_apps_no_search_results">Geen apps gevonden die overeenkomen met “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
     <string name="background_opacity">Doorzichtigheid achtergrond</string>
-    <string name="background_lightness_label">Background Lightness</string>
-    <string name="adaptive_icons">Adaptive Icons</string>
-    <string name="adaptive_icon_background_description">Use 100% background lightness for white.</string>
-    <string name="auto_adaptive_icons_label">Auto Adaptive Icons</string>
-    <string name="auto_adaptive_icons_description">For all non-Adaptive icons.</string>
+    <string name="background_lightness_label">Achtergrond helderheid</string>
+    <string name="adaptive_icons">Adaptieve iconen</string>
+    <string name="adaptive_icon_background_description">Gebruik 100% achtergrondhelderheid voor wit.</string>
+    <string name="auto_adaptive_icons_label">Automatische adaptieve iconen</string>
+    <string name="auto_adaptive_icons_description">Voor alle niet-Adaptieve iconen.</string>
     <string name="support_and_pr">Support &amp; PR</string>
-    <string name="workspace_dt2s">Double-Tap to Sleep</string>
-    <string name="smart_space_enable">Show At a Glance Widget</string>
+    <string name="workspace_dt2s">Dubbeltikken om te slapen</string>
+    <string name="smart_space_enable">Toon at a glance widget</string>
 </resources>
