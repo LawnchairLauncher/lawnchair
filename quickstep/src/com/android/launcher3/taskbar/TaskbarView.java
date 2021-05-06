@@ -15,9 +15,6 @@
  */
 package com.android.launcher3.taskbar;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_BACK;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_HOME;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_RECENTS;
@@ -38,7 +35,6 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.annotation.LayoutRes;
@@ -83,18 +79,21 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
     private LayoutTransition mLayoutTransition;
     private int mHotseatStartIndex;
     private int mHotseatEndIndex;
-
     private LinearLayout mButtonRegion;
 
     // Delegate touches to the closest view if within mIconTouchSize.
     private boolean mDelegateTargeted;
     private View mDelegateView;
+    // Prevents dispatching touches to children if true
+    private boolean mTouchEnabled = true;
 
     private boolean mIsDraggingItem;
     // Only non-null when the corresponding Folder is open.
     private @Nullable FolderIcon mLeaveBehindFolderIcon;
 
     private int mNavButtonStartIndex;
+    /** Provider of buttons added to taskbar in 3 button nav */
+    private ButtonProvider mButtonProvider;
 
     public TaskbarView(@NonNull Context context) {
         this(context, null);
@@ -119,11 +118,14 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
     }
 
-    protected void construct(TaskbarController.TaskbarViewCallbacks taskbarViewCallbacks) {
+    protected void construct(TaskbarController.TaskbarViewCallbacks taskbarViewCallbacks,
+            ButtonProvider buttonProvider) {
         mControllerCallbacks = taskbarViewCallbacks;
         mNonIconScale = mControllerCallbacks.getNonIconScale(this);
         mItemMarginLeftRight = getResources().getDimensionPixelSize(R.dimen.taskbar_icon_spacing);
         mItemMarginLeftRight = Math.round(mItemMarginLeftRight * mNonIconScale);
+        mButtonProvider = buttonProvider;
+        mButtonProvider.setMarginLeftRight(mItemMarginLeftRight);
     }
 
     protected void init(int numHotseatIcons, SysUINavigationMode.Mode newMode) {
@@ -273,9 +275,21 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
     }
 
     @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (!mTouchEnabled) {
+            return true;
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent event) {
         boolean handled = delegateTouchIfNecessary(event);
         return super.onTouchEvent(event) || handled;
+    }
+
+    public void setTouchesEnabled(boolean touchEnabled) {
+        this.mTouchEnabled = touchEnabled;
     }
 
     /**
@@ -383,9 +397,6 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
             mButtonRegion.removeAllViews();
         }
         mButtonRegion.setVisibility(VISIBLE);
-        LayoutParams regionParams = new LayoutParams(WRAP_CONTENT, MATCH_PARENT);
-        regionParams.gravity = Gravity.START; // check left/right preference
-        regionParams.setMargins(mItemMarginLeftRight, 0, mItemMarginLeftRight, 0);
 
         LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(
                 context.getDeviceProfile().iconSizePx,
@@ -393,29 +404,18 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
         );
         buttonParams.gravity = Gravity.CENTER;
 
-        // Back button
-        ImageView backButton = new ImageView(getContext());
-        backButton.setImageResource(R.drawable.ic_sysbar_back);
-        backButton.setBackgroundResource(R.drawable.taskbar_icon_click_feedback_roundrect);
-        backButton.setPadding(mItemMarginLeftRight, 0, mItemMarginLeftRight, 0);
+        View backButton = mButtonProvider.getBack();
         backButton.setOnClickListener(view -> mControllerCallbacks.onNavigationButtonClick(
                 BUTTON_BACK));
         mButtonRegion.addView(backButton, buttonParams);
 
         // Home button
-        ImageView homeButton = new ImageView(getContext());
-        homeButton.setImageResource(R.drawable.ic_sysbar_home);
-        homeButton.setBackgroundResource(R.drawable.taskbar_icon_click_feedback_roundrect);
-        homeButton.setPadding(mItemMarginLeftRight, 0, mItemMarginLeftRight, 0);
+        View homeButton = mButtonProvider.getHome();
         homeButton.setOnClickListener(view -> mControllerCallbacks.onNavigationButtonClick(
                 BUTTON_HOME));
         mButtonRegion.addView(homeButton, buttonParams);
 
-        // Recents button
-        ImageView recentsButton = new ImageView(getContext());
-        recentsButton.setImageResource(R.drawable.ic_sysbar_recent);
-        recentsButton.setBackgroundResource(R.drawable.taskbar_icon_click_feedback_roundrect);
-        recentsButton.setPadding(mItemMarginLeftRight, 0, mItemMarginLeftRight, 0);
+        View recentsButton = mButtonProvider.getRecents();
         recentsButton.setOnClickListener(view -> mControllerCallbacks.onNavigationButtonClick(
                 BUTTON_RECENTS));
         mButtonRegion.addView(recentsButton, buttonParams);
