@@ -221,7 +221,7 @@
     <!-- Text for wallpaper change button [CHAR LIMIT=30]-->
     <string name="wallpaper_button_text">Wallpapers</string>
     <!-- Text for wallpaper change button [CHAR LIMIT=30]-->
-    <string name="styles_wallpaper_button_text">Styles &amp; wallpapers</string>
+    <string name="styles_wallpaper_button_text">Wallpaper &amp; style</string>
     <!-- Text for settings button [CHAR LIMIT=30]-->
     <string name="settings_button_text">Home settings</string>
     <!-- Message shown when a feature is disabled by the administrator -->

@@ -57,6 +57,22 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
 
     private final View[] mDragHandles = new View[HANDLE_COUNT];
     private final List<Rect> mSystemGestureExclusionRects = new ArrayList<>(HANDLE_COUNT);
+    private final OnAttachStateChangeListener mWidgetViewAttachStateChangeListener =
+            new OnAttachStateChangeListener() {
+                @Override
+                public void onViewAttachedToWindow(View view) {
+                    // Do nothing
+                }
+
+                @Override
+                public void onViewDetachedFromWindow(View view) {
+                    // When the app widget view is detached, we should close the resize frame.
+                    // An example is when the dragging starts, the widget view is detached from
+                    // CellLayout and then reattached to DragLayout.
+                    close(false);
+                }
+            };
+
 
     private LauncherAppWidgetHostView mWidgetView;
     private CellLayout mCellLayout;
@@ -177,7 +193,11 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     private void setupForWidget(LauncherAppWidgetHostView widgetView, CellLayout cellLayout,
             DragLayer dragLayer) {
         mCellLayout = cellLayout;
+        if (mWidgetView != null) {
+            mWidgetView.removeOnAttachStateChangeListener(mWidgetViewAttachStateChangeListener);
+        }
         mWidgetView = widgetView;
+        mWidgetView.addOnAttachStateChangeListener(mWidgetViewAttachStateChangeListener);
         LauncherAppWidgetProviderInfo info = (LauncherAppWidgetProviderInfo)
                 widgetView.getAppWidgetInfo();
         mResizeMode = info.resizeMode;
@@ -628,6 +648,9 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     @Override
     protected void handleClose(boolean animate) {
         mDragLayer.removeView(this);
+        if (mWidgetView != null) {
+            mWidgetView.removeOnAttachStateChangeListener(mWidgetViewAttachStateChangeListener);
+        }
     }
 
     @Override

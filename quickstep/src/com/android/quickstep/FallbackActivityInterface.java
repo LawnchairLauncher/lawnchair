@@ -163,7 +163,9 @@ public final class FallbackActivityInterface extends
 
     @Override
     public boolean isInLiveTileMode() {
-        return false;
+        RecentsActivity activity = getCreatedActivity();
+        return activity != null && activity.getStateManager().getState() == DEFAULT &&
+                activity.isStarted();
     }
 
     @Override
