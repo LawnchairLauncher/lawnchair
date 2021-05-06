@@ -16,6 +16,7 @@
 package com.android.quickstep;
 
 import static com.android.launcher3.uioverrides.QuickstepLauncher.GO_LOW_RAM_RECENTS_ENABLED;
+import static com.android.launcher3.util.DisplayController.CHANGE_DENSITY;
 
 import android.app.ActivityManager.TaskDescription;
 import android.content.Context;
@@ -35,9 +36,12 @@ import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.icons.BaseIconFactory;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.IconProvider;
-import com.android.launcher3.icons.LauncherIcons;
+import com.android.launcher3.util.DisplayController;
+import com.android.launcher3.util.DisplayController.DisplayInfoChangeListener;
+import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.Preconditions;
 import com.android.quickstep.util.CancellableTask;
 import com.android.quickstep.util.TaskKeyLruCache;
@@ -52,7 +56,7 @@ import java.util.function.Consumer;
 /**
  * Manages the caching of task icons and related data.
  */
-public class TaskIconCache {
+public class TaskIconCache implements DisplayInfoChangeListener {
 
     private final Executor mBgExecutor;
     private final AccessibilityManager mAccessibilityManager;
@@ -62,15 +66,27 @@ public class TaskIconCache {
     private final SparseArray<BitmapInfo> mDefaultIcons = new SparseArray<>();
     private final IconProvider mIconProvider;
 
-    public TaskIconCache(Context context, Executor bgExecutor) {
+    private BaseIconFactory mIconFactory;
+
+    public TaskIconCache(Context context, Executor bgExecutor, IconProvider iconProvider) {
         mContext = context;
         mBgExecutor = bgExecutor;
         mAccessibilityManager = context.getSystemService(AccessibilityManager.class);
+        mIconProvider = iconProvider;
 
         Resources res = context.getResources();
         int cacheSize = res.getInteger(R.integer.recentsIconCacheSize);
+
         mIconCache = new TaskKeyLruCache<>(cacheSize);
-        mIconProvider = new IconProvider(context);
+
+        DisplayController.INSTANCE.get(mContext).addChangeListener(this);
+    }
+
+    @Override
+    public void onDisplayInfoChanged(Context context, Info info, int flags) {
+        if ((flags & CHANGE_DENSITY) != 0) {
+            clearCache();
+        }
     }
 
     /**
@@ -104,8 +120,11 @@ public class TaskIconCache {
         return request;
     }
 
-    public void clear() {
-        mIconCache.evictAll();
+    /**
+     * Clears the icon cache
+     */
+    public void clearCache() {
+        mBgExecutor.execute(this::resetFactory);
     }
 
     void onTaskRemoved(TaskKey taskKey) {
@@ -193,8 +212,8 @@ public class TaskIconCache {
         synchronized (mDefaultIcons) {
             BitmapInfo info = mDefaultIcons.get(userId);
             if (info == null) {
-                try (LauncherIcons la = LauncherIcons.obtain(mContext)) {
-                    info = la.makeDefaultIcon(UserHandle.of(userId));
+                try (BaseIconFactory bif = getIconFactory()) {
+                    info = bif.makeDefaultIcon(UserHandle.of(userId));
                 }
                 mDefaultIcons.put(userId, info);
             }
@@ -205,14 +224,30 @@ public class TaskIconCache {
     @WorkerThread
     private BitmapInfo getBitmapInfo(Drawable drawable, int userId,
             int primaryColor, boolean isInstantApp) {
-        try (LauncherIcons la = LauncherIcons.obtain(mContext)) {
-            la.disableColorExtraction();
-            la.setWrapperBackgroundColor(primaryColor);
+        try (BaseIconFactory bif = getIconFactory()) {
+            bif.disableColorExtraction();
+            bif.setWrapperBackgroundColor(primaryColor);
 
             // User version code O, so that the icon is always wrapped in an adaptive icon container
-            return la.createBadgedIconBitmap(drawable, UserHandle.of(userId),
+            return bif.createBadgedIconBitmap(drawable, UserHandle.of(userId),
                     Build.VERSION_CODES.O, isInstantApp);
         }
+    }
+
+    @WorkerThread
+    private BaseIconFactory getIconFactory() {
+        if (mIconFactory == null) {
+            mIconFactory = new BaseIconFactory(mContext,
+                    DisplayController.INSTANCE.get(mContext).getInfo().densityDpi,
+                    mContext.getResources().getDimensionPixelSize(R.dimen.taskbar_icon_size));
+        }
+        return mIconFactory;
+    }
+
+    @WorkerThread
+    private void resetFactory() {
+        mIconFactory = null;
+        mIconCache.evictAll();
     }
 
     private static class TaskCacheEntry {

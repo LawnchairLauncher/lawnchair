@@ -31,6 +31,7 @@ import android.os.UserHandle;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.icons.IconProvider;
+import com.android.launcher3.icons.IconProvider.IconChangeListener;
 import com.android.launcher3.util.Executors.SimpleThreadFactory;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.systemui.shared.recents.model.Task;
@@ -49,7 +50,7 @@ import java.util.function.Consumer;
  * Singleton class to load and manage recents model.
  */
 @TargetApi(Build.VERSION_CODES.O)
-public class RecentsModel extends TaskStackChangeListener {
+public class RecentsModel extends TaskStackChangeListener implements IconChangeListener {
 
     // We do not need any synchronization for this variable as its only written on UI thread.
     public static final MainThreadInitializedObject<RecentsModel> INSTANCE =
@@ -69,12 +70,13 @@ public class RecentsModel extends TaskStackChangeListener {
         mContext = context;
         mTaskList = new RecentTasksList(MAIN_EXECUTOR,
                 new KeyguardManagerCompat(context), ActivityManagerWrapper.getInstance());
-        mIconCache = new TaskIconCache(context, RECENTS_MODEL_EXECUTOR);
+
+        IconProvider iconProvider = new IconProvider(context);
+        mIconCache = new TaskIconCache(context, RECENTS_MODEL_EXECUTOR, iconProvider);
         mThumbnailCache = new TaskThumbnailCache(context, RECENTS_MODEL_EXECUTOR);
 
         ActivityManagerWrapper.getInstance().registerTaskStackListener(this);
-        IconProvider.registerIconChangeListener(context,
-                this::onPackageIconChanged, MAIN_EXECUTOR.getHandler());
+        iconProvider.registerIconChangeListener(this, MAIN_EXECUTOR.getHandler());
     }
 
     public TaskIconCache getIconCache() {
@@ -183,15 +185,21 @@ public class RecentsModel extends TaskStackChangeListener {
         if (level == ComponentCallbacks2.TRIM_MEMORY_RUNNING_CRITICAL) {
             // Clear everything once we reach a low-mem situation
             mThumbnailCache.clear();
-            mIconCache.clear();
+            mIconCache.clearCache();
         }
     }
 
-    private void onPackageIconChanged(String pkg, UserHandle user) {
-        mIconCache.invalidateCacheEntries(pkg, user);
+    @Override
+    public void onAppIconChanged(String packageName, UserHandle user) {
+        mIconCache.invalidateCacheEntries(packageName, user);
         for (int i = mThumbnailChangeListeners.size() - 1; i >= 0; i--) {
-            mThumbnailChangeListeners.get(i).onTaskIconChanged(pkg, user);
+            mThumbnailChangeListeners.get(i).onTaskIconChanged(packageName, user);
         }
+    }
+
+    @Override
+    public void onSystemIconStateChanged(String iconState) {
+        mIconCache.clearCache();
     }
 
     /**
