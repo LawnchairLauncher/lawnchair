@@ -15,13 +15,15 @@
  */
 package com.android.launcher3.allapps;
 
+import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.ALL_APPS_CONTENT;
-import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
+import static com.android.launcher3.anim.Interpolators.ACCEL_0_75;
+import static com.android.launcher3.anim.Interpolators.ACCEL_2;
+import static com.android.launcher3.anim.Interpolators.DEACCEL;
+import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SCALE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_VERTICAL_PROGRESS;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_ALLAPPS;
 
@@ -154,9 +156,9 @@ public class AllAppsTransitionController
             return;
         }
 
-        Interpolator interpolator = config.userControlled ? LINEAR : toState == OVERVIEW
-                ? config.getInterpolator(ANIM_OVERVIEW_SCALE, FAST_OUT_SLOW_IN)
-                : FAST_OUT_SLOW_IN;
+        Interpolator interpolator = toState.equals(ALL_APPS)
+                ? (config.userControlled ? ACCEL_2 : ACCEL_0_75) :
+                        (config.userControlled ? DEACCEL_2 : DEACCEL);
 
         Animator anim = createSpringAnimation(mProgress, targetProgress);
         anim.setInterpolator(config.getInterpolator(ANIM_VERTICAL_PROGRESS, interpolator));

@@ -20,8 +20,6 @@ import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TI
 
 import android.content.Context;
 
-import com.android.quickstep.OverviewComponentObserver;
-import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.quickstep.SysUINavigationMode;
 
 import java.util.function.Predicate;
@@ -37,7 +35,6 @@ public class NavigationModeFeatureFlag implements
     private final Supplier<Boolean> mBasePredicate;
     private final Predicate<SysUINavigationMode.Mode> mModePredicate;
     private boolean mSupported;
-    private OverviewComponentObserver mObserver;
 
     private NavigationModeFeatureFlag(Supplier<Boolean> basePredicate,
             Predicate<SysUINavigationMode.Mode> modePredicate) {
@@ -46,17 +43,12 @@ public class NavigationModeFeatureFlag implements
     }
 
     public boolean get() {
-        return mBasePredicate.get() && mSupported && mObserver != null
-                && mObserver.isHomeAndOverviewSame();
+        return mBasePredicate.get() && mSupported;
     }
 
     public void initialize(Context context) {
         onNavigationModeChanged(SysUINavigationMode.INSTANCE.get(context).getMode());
         SysUINavigationMode.INSTANCE.get(context).addModeChangeListener(this);
-
-        // Temporary solution to disable live tile for the fallback launcher
-        RecentsAnimationDeviceState rads = new RecentsAnimationDeviceState(context);
-        mObserver = new OverviewComponentObserver(context, rads);
     }
 
     @Override
