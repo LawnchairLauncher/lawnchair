@@ -52,6 +52,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
+import android.os.RemoteException;
 import android.os.SystemClock;
 import android.os.SystemProperties;
 import android.util.Log;
@@ -145,7 +146,22 @@ public class TouchInteractionService extends Service implements PluginListener<O
     @Nullable
     private OverscrollPlugin mOverscrollPlugin;
 
-    private final IBinder mMyBinder = new IOverviewProxy.Stub() {
+    /**
+     * Extension of OverviewProxy aidl interface without needing to modify the actual interface.
+     * This is for methods that need only need local access and not intended to make IPC calls.
+     */
+    public abstract static class TISBinder extends IOverviewProxy.Stub {
+        public abstract void setTaskbarOverviewProxyDelegate(
+                @Nullable TaskbarOverviewProxyDelegate i);
+    }
+
+
+    private final TISBinder mMyBinder = new TISBinder() {
+
+        public void setTaskbarOverviewProxyDelegate(
+                @Nullable TaskbarOverviewProxyDelegate delegate) {
+            mTaskbarOverviewProxyDelegate = delegate;
+        }
 
         @BinderThread
         public void onInitialize(Bundle bundle) {
@@ -252,18 +268,47 @@ public class TouchInteractionService extends Service implements PluginListener<O
             MAIN_EXECUTOR.execute(() -> mDeviceState.setDeferredGestureRegion(region));
         }
 
+        @Override
         public void onSplitScreenSecondaryBoundsChanged(Rect bounds, Rect insets)  {
             WindowBounds wb = new WindowBounds(bounds, insets);
             MAIN_EXECUTOR.execute(() -> SplitScreenBounds.INSTANCE.setSecondaryWindowBounds(wb));
         }
+
+        @Override
+        public void onImeWindowStatusChanged(int displayId, IBinder token, int vis,
+                int backDisposition, boolean showImeSwitcher) throws RemoteException {
+            if (mTaskbarOverviewProxyDelegate == null) {
+                return;
+            }
+            MAIN_EXECUTOR.execute(() -> {
+                if (mTaskbarOverviewProxyDelegate == null) {
+                    return;
+                }
+                mTaskbarOverviewProxyDelegate
+                        .updateImeStatus(displayId, vis, backDisposition, showImeSwitcher);
+            });
+        }
     };
 
+    public interface TaskbarOverviewProxyDelegate {
+        void updateImeStatus(int displayId, int vis, int backDisposition,
+                boolean showImeSwitcher);
+    }
+
     private static boolean sConnected = false;
+    private static TouchInteractionService sInstance;
     private static boolean sIsInitialized = false;
     private RotationTouchHelper mRotationTouchHelper;
+    @Nullable
+    private TaskbarOverviewProxyDelegate mTaskbarOverviewProxyDelegate;
 
     public static boolean isConnected() {
         return sConnected;
+    }
+
+    @Nullable
+    public static TouchInteractionService getInstance() {
+        return sInstance;
     }
 
     public static boolean isInitialized() {
@@ -292,6 +337,10 @@ public class TouchInteractionService extends Service implements PluginListener<O
     private InputEventReceiver mInputEventReceiver;
 
     private DisplayManager mDisplayManager;
+
+    public TouchInteractionService() {
+        sInstance = this;
+    }
 
     @Override
     public void onCreate() {
@@ -387,6 +436,10 @@ public class TouchInteractionService extends Service implements PluginListener<O
 
         mOverviewComponentObserver.setOverviewChangeListener(this::onOverviewTargetChange);
         onOverviewTargetChange(mOverviewComponentObserver.isHomeAndOverviewSame());
+    }
+
+    public OverviewCommandHelper getOverviewCommandHelper() {
+        return mOverviewCommandHelper;
     }
 
     private void resetHomeBounceSeenOnQuickstepEnabledFirstTime() {
