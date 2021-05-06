@@ -16,8 +16,6 @@
 
 package com.android.launcher3.model.data;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_THEMED_ICONS;
-
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -232,7 +230,7 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
      * Returns a FastBitmapDrawable with the icon and context theme applied
      */
     public FastBitmapDrawable newIcon(Context context, boolean applyTheme) {
-        FastBitmapDrawable drawable = applyTheme && ENABLE_THEMED_ICONS.get()
+        FastBitmapDrawable drawable = applyTheme
                 ? bitmap.newThemedIcon(context) : bitmap.newIcon(context);
         drawable.setIsDisabled(isDisabled());
         return drawable;

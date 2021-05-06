@@ -16,7 +16,8 @@
 
 package com.android.launcher3;
 
-import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_ICON_PARAMS;
+import static com.android.launcher3.Utilities.getDevicePrefs;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_THEMED_ICONS;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import static com.android.launcher3.util.SettingsCache.NOTIFICATION_BADGING_URI;
 
@@ -24,12 +25,13 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.LauncherApps;
-import android.os.Handler;
+import android.os.UserHandle;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.IconProvider;
 import com.android.launcher3.icons.LauncherIcons;
@@ -39,6 +41,7 @@ import com.android.launcher3.pm.InstallSessionTracker;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.Preconditions;
+import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.SettingsCache;
 import com.android.launcher3.util.SimpleBroadcastReceiver;
@@ -47,6 +50,7 @@ import com.android.launcher3.widget.custom.CustomWidgetManager;
 public class LauncherAppState {
 
     public static final String ACTION_FORCE_ROLOAD = "force-reload-launcher";
+    private static final String KEY_ICON_STATE = "pref_icon_shape_path";
 
     // We do not need any synchronization for this variable as its only written on UI thread.
     public static final MainThreadInitializedObject<LauncherAppState> INSTANCE =
@@ -54,16 +58,11 @@ public class LauncherAppState {
 
     private final Context mContext;
     private final LauncherModel mModel;
+    private final IconProvider mIconProvider;
     private final IconCache mIconCache;
     private final WidgetPreviewLoader mWidgetCache;
     private final InvariantDeviceProfile mInvariantDeviceProfile;
-    private SettingsCache.OnChangeListener mNotificationSettingsChangedListener;
-
-    private SettingsCache mSettingsCache;
-    private InstallSessionTracker mInstallSessionTracker;
-    private SimpleBroadcastReceiver mModelChangeReceiver;
-    private SafeCloseable mCalendarChangeTracker;
-    private SafeCloseable mUserChangeListener;
+    private final RunnableList mOnTerminateCallback = new RunnableList();
 
     public static LauncherAppState getInstance(final Context context) {
         return INSTANCE.get(context);
@@ -80,40 +79,47 @@ public class LauncherAppState {
     public LauncherAppState(Context context) {
         this(context, LauncherFiles.APP_ICONS_DB);
 
-        mModelChangeReceiver = new SimpleBroadcastReceiver(mModel::onBroadcastIntent);
+        mInvariantDeviceProfile.addOnChangeListener(idp -> refreshAndReloadLauncher());
 
         mContext.getSystemService(LauncherApps.class).registerCallback(mModel);
-        mModelChangeReceiver.register(mContext, Intent.ACTION_LOCALE_CHANGED,
+
+        SimpleBroadcastReceiver modelChangeReceiver =
+                new SimpleBroadcastReceiver(mModel::onBroadcastIntent);
+        modelChangeReceiver.register(mContext, Intent.ACTION_LOCALE_CHANGED,
                 Intent.ACTION_MANAGED_PROFILE_AVAILABLE,
                 Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE,
                 Intent.ACTION_MANAGED_PROFILE_UNLOCKED);
         if (FeatureFlags.IS_STUDIO_BUILD) {
-            mModelChangeReceiver.register(mContext, ACTION_FORCE_ROLOAD);
+            modelChangeReceiver.register(mContext, ACTION_FORCE_ROLOAD);
         }
-
-        mCalendarChangeTracker = IconProvider.registerIconChangeListener(mContext,
-                mModel::onAppIconChanged, MODEL_EXECUTOR.getHandler());
+        mOnTerminateCallback.add(() -> mContext.unregisterReceiver(modelChangeReceiver));
 
         // TODO: remove listener on terminate
         FeatureFlags.APP_SEARCH_IMPROVEMENTS.addChangeListener(context, mModel::forceReload);
         CustomWidgetManager.INSTANCE.get(mContext)
                 .setWidgetRefreshCallback(mModel::refreshAndBindWidgetsAndShortcuts);
 
-        mUserChangeListener = UserCache.INSTANCE.get(mContext)
+        SafeCloseable userChangeListener = UserCache.INSTANCE.get(mContext)
                 .addUserChangeListener(mModel::forceReload);
+        mOnTerminateCallback.add(userChangeListener::close);
 
-        mInvariantDeviceProfile.addOnChangeListener(this::onIdpChanged);
-        new Handler().post( () -> mInvariantDeviceProfile.verifyConfigChangedInBackground(context));
+        IconObserver observer = new IconObserver();
+        SafeCloseable iconChangeTracker = mIconProvider.registerIconChangeListener(
+                observer, MODEL_EXECUTOR.getHandler());
+        mOnTerminateCallback.add(iconChangeTracker::close);
+        MODEL_EXECUTOR.execute(observer::verifyIconChanged);
 
-        mInstallSessionTracker = InstallSessionHelper.INSTANCE.get(context)
-                .registerInstallTracker(mModel);
+        InstallSessionTracker installSessionTracker =
+                InstallSessionHelper.INSTANCE.get(context).registerInstallTracker(mModel);
+        mOnTerminateCallback.add(installSessionTracker::unregister);
 
         // Register an observer to rebind the notification listener when dots are re-enabled.
-        mSettingsCache = SettingsCache.INSTANCE.get(mContext);
-        mNotificationSettingsChangedListener = this::onNotificationSettingsChanged;
-        mSettingsCache.register(NOTIFICATION_BADGING_URI,
-                mNotificationSettingsChangedListener);
-        onNotificationSettingsChanged(mSettingsCache.getValue(NOTIFICATION_BADGING_URI));
+        SettingsCache settingsCache = SettingsCache.INSTANCE.get(mContext);
+        SettingsCache.OnChangeListener notificationLister = this::onNotificationSettingsChanged;
+        settingsCache.register(NOTIFICATION_BADGING_URI, notificationLister);
+        onNotificationSettingsChanged(settingsCache.getValue(NOTIFICATION_BADGING_URI));
+        mOnTerminateCallback.add(() ->
+                settingsCache.unregister(NOTIFICATION_BADGING_URI, notificationLister));
     }
 
     public LauncherAppState(Context context, @Nullable String iconCacheFileName) {
@@ -122,30 +128,25 @@ public class LauncherAppState {
         mContext = context;
 
         mInvariantDeviceProfile = InvariantDeviceProfile.INSTANCE.get(context);
-
-        mIconCache = new IconCache(mContext, mInvariantDeviceProfile, iconCacheFileName);
+        mIconProvider =  new IconProvider(context, ENABLE_THEMED_ICONS.get());
+        mIconCache = new IconCache(mContext, mInvariantDeviceProfile,
+                iconCacheFileName, mIconProvider);
         mWidgetCache = new WidgetPreviewLoader(mContext, mIconCache);
         mModel = new LauncherModel(context, this, mIconCache, new AppFilter(mContext));
     }
 
-    protected void onNotificationSettingsChanged(boolean areNotificationDotsEnabled) {
+    private void onNotificationSettingsChanged(boolean areNotificationDotsEnabled) {
         if (areNotificationDotsEnabled) {
             NotificationListener.requestRebind(new ComponentName(
                     mContext, NotificationListener.class));
         }
     }
 
-    private void onIdpChanged(int changeFlags, InvariantDeviceProfile idp) {
-        if (changeFlags == 0) {
-            return;
-        }
-
-        if ((changeFlags & CHANGE_FLAG_ICON_PARAMS) != 0) {
-            LauncherIcons.clearPool();
-            mIconCache.updateIconParams(idp.fillResIconDpi, idp.iconBitmapSize);
-            mWidgetCache.refresh();
-        }
-
+    private void refreshAndReloadLauncher() {
+        LauncherIcons.clearPool();
+        mIconCache.updateIconParams(
+                mInvariantDeviceProfile.fillResIconDpi, mInvariantDeviceProfile.iconBitmapSize);
+        mWidgetCache.refresh();
         mModel.forceReload();
     }
 
@@ -154,25 +155,13 @@ public class LauncherAppState {
      */
     public void onTerminate() {
         mModel.destroy();
-        if (mModelChangeReceiver != null) {
-            mContext.unregisterReceiver(mModelChangeReceiver);
-        }
         mContext.getSystemService(LauncherApps.class).unregisterCallback(mModel);
-        if (mInstallSessionTracker != null) {
-            mInstallSessionTracker.unregister();
-        }
-        if (mCalendarChangeTracker != null) {
-            mCalendarChangeTracker.close();
-        }
-        if (mUserChangeListener != null) {
-            mUserChangeListener.close();
-        }
         CustomWidgetManager.INSTANCE.get(mContext).setWidgetRefreshCallback(null);
+        mOnTerminateCallback.executeAllAndDestroy();
+    }
 
-        if (mSettingsCache != null) {
-            mSettingsCache.unregister(NOTIFICATION_BADGING_URI,
-                    mNotificationSettingsChangedListener);
-        }
+    public IconProvider getIconProvider() {
+        return mIconProvider;
     }
 
     public IconCache getIconCache() {
@@ -196,5 +185,27 @@ public class LauncherAppState {
      */
     public static InvariantDeviceProfile getIDP(Context context) {
         return InvariantDeviceProfile.INSTANCE.get(context);
+    }
+
+    private class IconObserver implements IconProvider.IconChangeListener {
+
+        @Override
+        public void onAppIconChanged(String packageName, UserHandle user) {
+            mModel.onAppIconChanged(packageName, user);
+        }
+
+        @Override
+        public void onSystemIconStateChanged(String iconState) {
+            IconShape.init(mContext);
+            refreshAndReloadLauncher();
+            getDevicePrefs(mContext).edit().putString(KEY_ICON_STATE, iconState).apply();
+        }
+
+        void verifyIconChanged() {
+            String iconState = mIconProvider.getSystemIconState();
+            if (!iconState.equals(getDevicePrefs(mContext).getString(KEY_ICON_STATE, ""))) {
+                onSystemIconStateChanged(iconState);
+            }
+        }
     }
 }
