@@ -184,7 +184,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
     }
 
     @Override
-    protected void onUiChangedWhileSleeping() {
+    public void onUiChangedWhileSleeping() {
         // Remove the snapshot because the content view may have obvious changes.
         UI_HELPER_EXECUTOR.execute(
                 () -> ActivityManagerWrapper.getInstance().invalidateHomeTaskSnapshot(this));
