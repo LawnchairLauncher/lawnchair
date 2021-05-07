@@ -34,7 +34,6 @@
         <item name="allAppsScrimColor">?android:attr/colorBackgroundFloating</item>
         <item name="allAppsNavBarScrimColor">#66FFFFFF</item>
         <item name="allAppsTheme">@style/AllAppsTheme</item>
-        <item name="popupColorNeutral">@color/popup_color_neutral_light</item>
         <item name="popupColorPrimary">@color/popup_color_primary_light</item>
         <item name="popupColorSecondary">@color/popup_color_secondary_light</item>
         <item name="popupColorTertiary">@color/popup_color_tertiary_light</item>
@@ -98,7 +97,6 @@
         <item name="allAppsScrimColor">?android:attr/colorBackgroundFloating</item>
         <item name="allAppsNavBarScrimColor">#80000000</item>
         <item name="allAppsTheme">@style/AllAppsTheme.Dark</item>
-        <item name="popupColorNeutral">@color/popup_color_neutral_dark</item>
         <item name="popupColorPrimary">@color/popup_color_primary_dark</item>
         <item name="popupColorSecondary">@color/popup_color_secondary_dark</item>
         <item name="popupColorTertiary">@color/popup_color_tertiary_dark</item>
