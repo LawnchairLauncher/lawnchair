@@ -24,10 +24,10 @@ import android.content.pm.PackageInstaller.SessionInfo;
 import android.content.pm.PackageManager;
 import android.os.UserHandle;
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.annotation.WorkerThread;
 
+import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.ItemInstallQueue;
 import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.util.Executors;
@@ -71,7 +71,7 @@ public class SessionCommitReceiver extends BroadcastReceiver {
             return;
         }
 
-        Log.d(LOG,
+        FileLog.d(LOG,
                 "Adding package name to install queue. Package name: " + info.getAppPackageName()
                         + ", has app icon: " + (info.getAppIcon() != null)
                         + ", has app label: " + !TextUtils.isEmpty(info.getAppLabel()));
