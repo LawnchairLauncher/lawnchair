@@ -48,23 +48,23 @@
     <string name="support">Supporto</string>
     <string name="team_members">Membri del team</string>
     <string name="acknowledgements">Riconoscimenti</string>
-    <string name="patryk_description">Manages development and creates the UI. Obsessed with Jetpack Compose indefinitely.</string>
+    <string name="patryk_description">Gestisce lo sviluppo e crea la UI. Indefinitamente ossessionato da Jetpack Compose.</string>
     <string name="kshitij_description">Scrive la logica di base per le funzioni di Lawnchair. Fiero membro della banda Spoingus.</string>
     <string name="devops">DevOps</string>
-    <string name="quickswitch_maintenance">QuickSwitch Maintenance</string>
+    <string name="quickswitch_maintenance">Manutenzione di QuickSwitch</string>
     <string name="all_apps_search_bar_hint">Cerca app</string>
     <string name="settings_button_text">Impostazioni schermata home</string>
-    <string name="development">Development</string>
+    <string name="development">Sviluppo</string>
     <string name="app_info_drop_target_label">Informazioni app</string>
     <string name="item_removed">Elemento rimosso.</string>
     <string name="all_apps_no_search_results">Nessuna app trovata corrispondente a «<xliff:g example="Android" id="query">%1$s</xliff:g>».</string>
     <string name="background_opacity">Opacità dello sfondo</string>
     <string name="background_lightness_label">Luminosità sfondo</string>
     <string name="adaptive_icons">Icone adattive</string>
-    <string name="adaptive_icon_background_description">Use 100% background lightness for white.</string>
-    <string name="auto_adaptive_icons_label">Auto Adaptive Icons</string>
-    <string name="auto_adaptive_icons_description">For all non-Adaptive icons.</string>
+    <string name="adaptive_icon_background_description">Usa la luminosità dello sfondo al 100% per il bianco.</string>
+    <string name="auto_adaptive_icons_label">Icone adattive automatiche</string>
+    <string name="auto_adaptive_icons_description">Per tutte le icone non adattive.</string>
     <string name="support_and_pr">Support &amp; PR</string>
-    <string name="workspace_dt2s">Double-Tap to Sleep</string>
-    <string name="smart_space_enable">Show At a Glance Widget</string>
+    <string name="workspace_dt2s">Doppio tocco per bloccare lo schermo</string>
+    <string name="smart_space_enable">Mostra il widget “At a Glance”</string>
 </resources>
