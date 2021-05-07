@@ -229,7 +229,6 @@ public class RecentsAnimationDeviceState implements
      * Cleans up all the registered listeners and receivers.
      */
     public void destroy() {
-        Log.d(TestProtocol.NO_SWIPE_TO_HOME, "destroying RADS", new Throwable());
         for (Runnable r : mOnDestroyActions) {
             r.run();
         }

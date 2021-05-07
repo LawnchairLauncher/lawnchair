@@ -1060,12 +1060,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     protected void applyLoadPlan(ArrayList<Task> tasks) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.GET_RECENTS_FAILED, "applyLoadPlan: taskCount=" + tasks.size());
-            for (Task t : tasks) {
-                Log.d(TestProtocol.GET_RECENTS_FAILED, "\t" + t);
-            }
-        }
         if (mPendingAnimation != null) {
             mPendingAnimation.addEndListener(success -> applyLoadPlan(tasks));
             return;
@@ -1127,11 +1121,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         resetTaskVisuals();
         onTaskStackUpdated();
         updateEnabledOverlays();
-
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.GET_RECENTS_FAILED, "applyLoadPlan: taskViewCount="
-                    + getTaskViewCount());
-        }
     }
 
     private boolean isModal() {
@@ -1152,12 +1141,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     public int getTaskViewCount() {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.GET_RECENTS_FAILED, "getTaskViewCount:"
-                    + " numChildren=" + getChildCount()
-                    + " start=" + mTaskViewStartIndex
-                    + " clearAll=" + indexOfChild(mClearAllButton));
-        }
         int taskViewCount = getChildCount() - mTaskViewStartIndex;
         if (indexOfChild(mClearAllButton) != -1) {
             taskViewCount--;
