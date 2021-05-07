@@ -61,9 +61,11 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
             if (LIVE_TILE.get() && activityInterface.isInLiveTileMode()
                     && activityInterface.getCreatedActivity() != null) {
                 RecentsView recentsView = activityInterface.getCreatedActivity().getOverviewPanel();
-                recentsView.launchSideTaskInLiveTileModeForRestartedApp(task.taskId);
-                ActivityManagerWrapper.getInstance().unregisterTaskStackListener(
-                        mLiveTileRestartListener);
+                if (recentsView != null) {
+                    recentsView.launchSideTaskInLiveTileModeForRestartedApp(task.taskId);
+                    ActivityManagerWrapper.getInstance().unregisterTaskStackListener(
+                            mLiveTileRestartListener);
+                }
             }
         }
     };
@@ -135,10 +137,12 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
                         && activityInterface.getCreatedActivity() != null) {
                     RecentsView recentsView =
                             activityInterface.getCreatedActivity().getOverviewPanel();
-                    RemoteAnimationTargetCompat[] apps = new RemoteAnimationTargetCompat[1];
-                    apps[0] = appearedTaskTarget;
-                    recentsView.launchSideTaskInLiveTileMode(appearedTaskTarget.taskId, apps);
-                    return;
+                    if (recentsView != null) {
+                        RemoteAnimationTargetCompat[] apps = new RemoteAnimationTargetCompat[1];
+                        apps[0] = appearedTaskTarget;
+                        recentsView.launchSideTaskInLiveTileMode(appearedTaskTarget.taskId, apps);
+                        return;
+                    }
                 }
                 if (mController != null) {
                     if (mLastAppearedTaskTarget == null
