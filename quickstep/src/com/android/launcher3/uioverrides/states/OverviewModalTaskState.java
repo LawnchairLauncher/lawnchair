@@ -78,6 +78,6 @@ public class OverviewModalTaskState extends OverviewState {
         float scale = Math.min((float) modalTaskSize.height() / taskSize.y,
                 (float) modalTaskSize.width() / taskSize.x);
 
-        return new float[] {scale, NO_OFFSET};
+        return new float[] {scale, NO_OFFSET, NO_OFFSET};
     }
 }

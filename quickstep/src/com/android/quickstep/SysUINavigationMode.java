@@ -34,6 +34,7 @@ import com.android.launcher3.util.MainThreadInitializedObject;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Observer for the resource config that specifies the navigation bar mode.
@@ -75,7 +76,8 @@ public class SysUINavigationMode {
     private int mNavBarGesturalHeight;
     private int mNavBarLargerGesturalHeight;
 
-    private final List<NavigationModeChangeListener> mChangeListeners = new ArrayList<>();
+    private final List<NavigationModeChangeListener> mChangeListeners =
+            new CopyOnWriteArrayList<>();
     private final List<OneHandedModeChangeListener> mOneHandedOverlayChangeListeners =
             new ArrayList<>();
 
