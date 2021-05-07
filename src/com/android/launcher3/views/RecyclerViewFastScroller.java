@@ -106,6 +106,7 @@ public class RecyclerViewFastScroller extends View {
     // prevent jumping, this offset is applied as the user scrolls.
     protected int mTouchOffsetY;
     protected int mThumbOffsetY;
+    protected int mRvOffsetY;
 
     // Fast scroller popup
     private TextView mPopupView;
@@ -186,14 +187,18 @@ public class RecyclerViewFastScroller extends View {
 
     public void setThumbOffsetY(int y) {
         if (mThumbOffsetY == y) {
+            int rvCurrentOffsetY = mRv.getCurrentScrollY();
+            if (mRvOffsetY != rvCurrentOffsetY) {
+                mRvOffsetY = mRv.getCurrentScrollY();
+                notifyScrollChanged();
+            }
             return;
         }
         updatePopupY(y);
         mThumbOffsetY = y;
         invalidate();
-        if (mOnFastScrollChangeListener != null) {
-            mOnFastScrollChangeListener.onThumbOffsetYChanged(mThumbOffsetY);
-        }
+        mRvOffsetY = mRv.getCurrentScrollY();
+        notifyScrollChanged();
     }
 
     public int getThumbOffsetY() {
@@ -422,13 +427,17 @@ public class RecyclerViewFastScroller extends View {
         mOnFastScrollChangeListener = onFastScrollChangeListener;
     }
 
+    private void notifyScrollChanged() {
+        if (mOnFastScrollChangeListener != null) {
+            mOnFastScrollChangeListener.onScrollChanged();
+        }
+    }
+
     /**
      * A callback that is invoked when there is a scroll change in {@link RecyclerViewFastScroller}.
      */
     public interface OnFastScrollChangeListener {
-        /**
-         * Called when the thumb offset vertical position, in pixels, has changed to {@code y}.
-         */
-        void onThumbOffsetYChanged(int y);
+        /** Called when the recycler view scroll has changed. */
+        void onScrollChanged();
     }
 }
