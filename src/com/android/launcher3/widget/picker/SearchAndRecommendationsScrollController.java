@@ -221,7 +221,7 @@ final class SearchAndRecommendationsScrollController implements
      * views (e.g. recycler views, tabs) upon scrolling.
      */
     @Override
-    public void onThumbOffsetYChanged(int unused) {
+    public void onScrollChanged() {
         // Always use the recycler view offset because fast scroller offset has a different scale.
         int recyclerViewYOffset = mCurrentRecyclerView.getCurrentScrollY();
         if (recyclerViewYOffset < 0) return;
