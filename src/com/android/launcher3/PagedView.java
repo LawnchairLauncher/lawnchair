@@ -388,10 +388,17 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
     protected void pageEndTransition() {
-        if (mIsPageInTransition) {
+        if (mIsPageInTransition && !mIsBeingDragged && mScroller.isFinished()
+                && (!isShown() || (mEdgeGlowLeft.isFinished() && mEdgeGlowRight.isFinished()))) {
             mIsPageInTransition = false;
             onPageEndTransition();
         }
+    }
+
+    @Override
+    public void onVisibilityAggregated(boolean isVisible) {
+        pageEndTransition();
+        super.onVisibilityAggregated(isVisible);
     }
 
     protected boolean isPageInTransition() {
@@ -1740,6 +1747,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     public void draw(Canvas canvas) {
         super.draw(canvas);
         drawEdgeEffect(canvas);
+        pageEndTransition();
     }
 
     protected void drawEdgeEffect(Canvas canvas) {

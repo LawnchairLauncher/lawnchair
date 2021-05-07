@@ -97,25 +97,46 @@
                  android:resource="@xml/overview_file_provider_paths"/>
         </provider>
 
-        <service android:name="com.android.launcher3.uioverrides.dynamicui.WallpaperManagerCompatVL$ColorExtractionService"
-             tools:node="remove"/>
-
         <activity android:name="com.android.launcher3.proxy.ProxyActivityStarter"
              android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
              android:launchMode="singleTask"
              android:clearTaskOnLaunch="true"
              android:exported="false"/>
 
+        <!--
+        Activity for gesture nav onboarding.
+        It's protected by android.permission.REBOOT to ensure that only system apps can start it
+        (setup wizard already has this permission)
+        -->
         <activity android:name="com.android.quickstep.interaction.GestureSandboxActivity"
-             android:autoRemoveFromRecents="true"
-             android:excludeFromRecents="true"
-             android:screenOrientation="portrait"
-             android:exported="true">
+            android:autoRemoveFromRecents="true"
+            android:excludeFromRecents="true"
+            android:screenOrientation="portrait"
+            android:permission="android.permission.REBOOT"
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.android.quickstep.action.GESTURE_SANDBOX"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
+
+        <!--
+        Activity following gesture nav onboarding.
+        It's protected by android.permission.REBOOT to ensure that only system apps can start it
+        (setup wizard already has this permission)
+        -->
+        <activity android:name="com.android.quickstep.interaction.AllSetActivity"
+            android:autoRemoveFromRecents="true"
+            android:excludeFromRecents="true"
+            android:screenOrientation="portrait"
+            android:permission="android.permission.REBOOT"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.android.quickstep.action.GESTURE_ONBOARDING_ALL_SET"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".hybridhotseat.HotseatEduActivity"
             android:theme="@android:style/Theme.NoDisplay"

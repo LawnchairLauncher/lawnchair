@@ -20,6 +20,7 @@ import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.IntProperty;
@@ -71,6 +72,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
     private Rect mInsets;
     private final int mMaxTableHeight;
     private int mMaxHorizontalSpan = 4;
+    private Configuration mCurrentConfiguration;
 
     public WidgetsBottomSheet(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -85,6 +87,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
         // Set the max table height to 2 / 3 of the grid height so that the bottom picker won't
         // take over the entire view vertically.
         mMaxTableHeight = deviceProfile.inv.numRows * 2 / 3  * deviceProfile.cellHeightPx;
+        mCurrentConfiguration = new Configuration(getResources().getConfiguration());
     }
 
     @Override
@@ -115,6 +118,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
             ViewGroup.LayoutParams layoutParams = widgetsTableScrollView.getLayoutParams();
             layoutParams.height = mMaxTableHeight;
             widgetsTableScrollView.setLayoutParams(layoutParams);
+            findViewById(R.id.collapse_handle).setVisibility(VISIBLE);
         }
     }
 
@@ -209,6 +213,14 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
         int bottomInset = insets.bottom - mInsets.bottom;
         mInsets.set(insets);
         setPadding(leftInset, getPaddingTop(), rightInset, bottomInset);
+    }
+
+    @Override
+    protected void onConfigurationChanged(Configuration newConfig) {
+        if (mCurrentConfiguration.orientation != newConfig.orientation) {
+            mInsets.setEmpty();
+        }
+        mCurrentConfiguration.updateFrom(newConfig);
     }
 
     @Override

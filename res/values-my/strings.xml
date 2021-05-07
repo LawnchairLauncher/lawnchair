@@ -32,8 +32,8 @@
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"ဝိဂျက်ကို ရွှေ့ရန် (သို့) စိတ်ကြိုက်လုပ်ဆောင်ချက်များကို သုံးရန် နှစ်ချက်တို့ပြီး ဖိထားပါ။"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"အလျား %1$d နှင့် အမြင့် %2$d"</string>
-    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"ကိုယ်တိုင်ထည့်ရန် ထိထားပါ"</string>
-    <string name="place_automatically" msgid="8064208734425456485">"အလိုအလျောက် ထည့်ရန်"</string>
+    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"ပင်မစာမျက်နှာအနီးတွင် ဝိဂျက်ကိုရွှေ့ရန် ၎င်းကို တို့ထိ၍ဖိထားပါ"</string>
+    <string name="add_to_home_screen" msgid="8631549138215492708">"ပင်မစာမျက်နှာသို့ ထည့်ရန်"</string>
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
       <item quantity="other">ဝိဂျက် <xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> ခု</item>
       <item quantity="one">ဝိဂျက် <xliff:g id="WIDGETS_COUNT_0">%1$d</xliff:g> ခု</item>

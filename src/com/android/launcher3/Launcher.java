@@ -189,7 +189,6 @@ import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.PendingAppWidgetHostView;
 import com.android.launcher3.widget.WidgetAddFlowHandler;
-import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetManagerHelper;
 import com.android.launcher3.widget.custom.CustomWidgetManager;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
@@ -566,11 +565,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     }
 
     @Override
-    public void onIdpChanged(int changeFlags, InvariantDeviceProfile idp) {
-        onIdpChanged(idp);
-    }
-
-    private void onIdpChanged(InvariantDeviceProfile idp) {
+    public void onIdpChanged(InvariantDeviceProfile idp) {
         if (TestProtocol.sDebugTracing) {
             Log.d(TestProtocol.LAUNCHER_NOT_TRANSPOSED, "onIdpChanged");
         }
@@ -1197,7 +1192,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
         // Setup the drag controller (drop targets have to be added in reverse order in priority)
         mDropTargetBar.setup(mDragController);
-        mAllAppsController.setupViews(mAppsView, mScrimView);
+        mAllAppsController.setupViews(mAppsView);
     }
 
     /**
@@ -1426,6 +1421,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         return mDropTargetBar;
     }
 
+    @Override
     public ScrimView getScrimView() {
         return mScrimView;
     }
@@ -2331,8 +2327,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                         pendingInfo.spanY = item.spanY;
                         pendingInfo.minSpanX = item.minSpanX;
                         pendingInfo.minSpanY = item.minSpanY;
-                        Bundle options = WidgetHostViewLoader.getDefaultOptionsForWidget(this,
-                                pendingInfo);
+                        Bundle options = pendingInfo.getDefaultSizeOptions(this);
 
                         boolean isDirectConfig =
                                 item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_DIRECT_CONFIG);
@@ -2781,7 +2776,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
      * @see LauncherState#getOverviewScaleAndOffset(Launcher)
      */
     public float[] getNormalOverviewScaleAndOffset() {
-        return new float[] {NO_SCALE, NO_OFFSET};
+        return new float[] {NO_SCALE, NO_OFFSET, NO_OFFSET};
     }
 
     /**

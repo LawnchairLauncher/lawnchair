@@ -22,7 +22,7 @@
     android:layout_height="match_parent"
     android:layout_below="@id/search_container_all_apps"
     android:layout_gravity="center_horizontal|top"
-    android:layout_marginTop="@dimen/all_apps_header_tab_height"
+    android:layout_marginTop="@dimen/all_apps_header_pill_height"
     android:clipChildren="true"
     android:clipToPadding="false"
     android:descendantFocusability="afterDescendants"

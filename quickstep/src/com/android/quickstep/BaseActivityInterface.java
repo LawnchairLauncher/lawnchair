@@ -15,22 +15,26 @@
  */
 package com.android.quickstep;
 
+import static com.android.launcher3.LauncherAnimUtils.VIEW_BACKGROUND_COLOR;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.INSTANT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.AbsSwipeUpHandler.RECENTS_ATTACH_DURATION;
+import static com.android.quickstep.GestureState.GestureEndTarget.RECENTS;
 import static com.android.quickstep.SysUINavigationMode.getMode;
 import static com.android.quickstep.util.RecentsAtomicAnimationFactory.INDEX_RECENTS_FADE_ANIM;
-import static com.android.quickstep.util.RecentsAtomicAnimationFactory.INDEX_RECENTS_TRANSLATE_X_ANIM;
-import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_OFFSET;
+import static com.android.quickstep.util.RecentsAtomicAnimationFactory.INDEX_RECENTS_TRANSLATE_Y_ANIM;
+import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_VERTICAL_OFFSET;
 import static com.android.quickstep.views.RecentsView.FULLSCREEN_PROGRESS;
 import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
 import static com.android.quickstep.views.RecentsView.TASK_SECONDARY_TRANSLATION;
 
 import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Build;
@@ -51,6 +55,7 @@ import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.taskbar.TaskbarController;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.WindowBounds;
+import com.android.launcher3.views.ScrimView;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
@@ -344,13 +349,31 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     }
 
     /**
-     * Called when the gesture ends and the animation starts towards the given target. No-op by
-     * default, but subclasses can override to add an additional animation with the same duration.
+     * Called when the gesture ends and the animation starts towards the given target. Used to add
+     * an optional additional animation with the same duration.
      */
     public @Nullable Animator getParallelAnimationToLauncher(
             GestureState.GestureEndTarget endTarget, long duration) {
+        if (endTarget == RECENTS) {
+            ACTIVITY_TYPE activity = getCreatedActivity();
+            if (activity == null) {
+                return null;
+            }
+            STATE_TYPE state = stateFromGestureEndTarget(endTarget);
+            ScrimView scrimView = activity.getScrimView();
+            ObjectAnimator anim = ObjectAnimator.ofArgb(scrimView, VIEW_BACKGROUND_COLOR,
+                    getOverviewScrimColorForState(activity, state));
+            anim.setDuration(duration);
+            return anim;
+        }
         return null;
     }
+
+    /**
+     * Returns the color of the scrim behind overview when at rest in this state.
+     * Return {@link Color#TRANSPARENT} for no scrim.
+     */
+    protected abstract int getOverviewScrimColorForState(ACTIVITY_TYPE activity, STATE_TYPE state);
 
     /**
      * See {@link com.android.systemui.shared.system.QuickStepContract.SystemUiStateFlags}
@@ -446,17 +469,17 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             float fromTranslation = attached ? 1 : 0;
             float toTranslation = attached ? 0 : 1;
             mActivity.getStateManager()
-                    .cancelStateElementAnimation(INDEX_RECENTS_TRANSLATE_X_ANIM);
+                    .cancelStateElementAnimation(INDEX_RECENTS_TRANSLATE_Y_ANIM);
             if (!recentsView.isShown() && animate) {
-                ADJACENT_PAGE_OFFSET.set(recentsView, fromTranslation);
+                ADJACENT_PAGE_VERTICAL_OFFSET.set(recentsView, fromTranslation);
             } else {
-                fromTranslation = ADJACENT_PAGE_OFFSET.get(recentsView);
+                fromTranslation = ADJACENT_PAGE_VERTICAL_OFFSET.get(recentsView);
             }
             if (!animate) {
-                ADJACENT_PAGE_OFFSET.set(recentsView, toTranslation);
+                ADJACENT_PAGE_VERTICAL_OFFSET.set(recentsView, toTranslation);
             } else {
                 mActivity.getStateManager().createStateElementAnimation(
-                        INDEX_RECENTS_TRANSLATE_X_ANIM,
+                        INDEX_RECENTS_TRANSLATE_Y_ANIM,
                         fromTranslation, toTranslation).start();
             }
 

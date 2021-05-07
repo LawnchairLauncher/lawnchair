@@ -28,7 +28,6 @@ import android.graphics.Rect;
 import android.os.Process;
 import android.os.UserHandle;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.Pair;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -147,7 +146,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         mAdapters.put(AdapterHolder.SEARCH, new AdapterHolder(AdapterHolder.SEARCH));
         mTabsHeight = mHasWorkProfile
                 ? getContext().getResources()
-                        .getDimensionPixelSize(R.dimen.all_apps_header_tab_height)
+                        .getDimensionPixelSize(R.dimen.all_apps_header_pill_height)
                 : 0;
         mWidgetCellHorizontalPadding = 2 * getResources().getDimensionPixelOffset(
                 R.dimen.widget_cell_horizontal_padding);
@@ -221,7 +220,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         WidgetsRecyclerView currentRecyclerView =
                 mAdapters.get(currentActivePage).mWidgetsRecyclerView;
 
-        updateNoWidgetsView(currentAdapterHolder);
+        updateRecyclerViewVisibility(currentAdapterHolder);
         attachScrollbarToRecyclerView(currentRecyclerView);
         resetExpandedHeaders();
     }
@@ -232,20 +231,15 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         reset();
     }
 
-    private void updateNoWidgetsView(AdapterHolder adapterHolder) {
+    private void updateRecyclerViewVisibility(AdapterHolder adapterHolder) {
         boolean isWidgetAvailable = adapterHolder.mWidgetsListAdapter.getItemCount() > 0;
         adapterHolder.mWidgetsRecyclerView.setVisibility(isWidgetAvailable ? VISIBLE : GONE);
 
-        // Always resets the text in case this is updated by search.
-        mNoWidgetsView.setText(R.string.no_widgets_available);
+        mNoWidgetsView.setText(
+                adapterHolder.mAdapterType == AdapterHolder.SEARCH
+                        ? R.string.no_search_results
+                        : R.string.no_widgets_available);
         mNoWidgetsView.setVisibility(isWidgetAvailable ? GONE : VISIBLE);
-    }
-
-    private void updateNoSearchResultsView(boolean isVisible) {
-        mNoWidgetsView.setVisibility(isVisible ? VISIBLE : GONE);
-        if (isVisible) {
-            mNoWidgetsView.setText(R.string.no_search_results);
-        }
     }
 
     private void reset() {
@@ -394,16 +388,22 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
     @Override
     public void onWidgetsBound() {
+        if (mIsInSearchMode) {
+            return;
+        }
         List<WidgetsListBaseEntry> allWidgets = mLauncher.getPopupDataProvider().getAllWidgets();
 
         AdapterHolder primaryUserAdapterHolder = mAdapters.get(AdapterHolder.PRIMARY);
         primaryUserAdapterHolder.mWidgetsListAdapter.setWidgets(allWidgets);
-        updateNoWidgetsView(primaryUserAdapterHolder);
 
         if (mHasWorkProfile) {
+            mViewPager.setVisibility(VISIBLE);
+            mTabsView.setVisibility(VISIBLE);
             AdapterHolder workUserAdapterHolder = mAdapters.get(AdapterHolder.WORK);
             workUserAdapterHolder.mWidgetsListAdapter.setWidgets(allWidgets);
             onActivePageChanged(mViewPager.getCurrentPage());
+        } else {
+            updateRecyclerViewVisibility(primaryUserAdapterHolder);
         }
     }
 
@@ -431,8 +431,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     @Override
     public void onSearchResults(List<WidgetsListBaseEntry> entries) {
         mAdapters.get(AdapterHolder.SEARCH).mWidgetsListAdapter.setWidgetsOnSearch(entries);
-        updateNoSearchResultsView(
-                mAdapters.get(AdapterHolder.SEARCH).mWidgetsListAdapter.getItemCount() == 0);
+        updateRecyclerViewVisibility(mAdapters.get(AdapterHolder.SEARCH));
         mAdapters.get(AdapterHolder.SEARCH).mWidgetsRecyclerView.scrollToTop();
     }
 
@@ -440,19 +439,22 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         mIsInSearchMode = isInSearchMode;
         if (isInSearchMode) {
             mSearchAndRecommendationViewHolder.mRecommendedWidgetsTable.setVisibility(GONE);
+            if (mHasWorkProfile) {
+                mViewPager.setVisibility(GONE);
+                mTabsView.setVisibility(GONE);
+            } else {
+                mAdapters.get(AdapterHolder.PRIMARY).mWidgetsRecyclerView.setVisibility(GONE);
+            }
+            updateRecyclerViewVisibility(mAdapters.get(AdapterHolder.SEARCH));
+            // Hide no search results view to prevent it from flashing on enter search.
+            mNoWidgetsView.setVisibility(GONE);
         } else {
+            mAdapters.get(AdapterHolder.SEARCH).mWidgetsRecyclerView.setVisibility(GONE);
+            // Visibility of recommended widgets, recycler views and headers are handled in methods
+            // below.
             onRecommendedWidgetsBound();
+            onWidgetsBound();
         }
-        if (mHasWorkProfile) {
-            mViewPager.setVisibility(isInSearchMode ? GONE : VISIBLE);
-            mTabsView.setVisibility(isInSearchMode ? GONE : VISIBLE);
-        } else {
-            mAdapters.get(AdapterHolder.PRIMARY).mWidgetsRecyclerView
-                    .setVisibility(isInSearchMode ? GONE : VISIBLE);
-        }
-        mAdapters.get(AdapterHolder.SEARCH).mWidgetsRecyclerView
-                .setVisibility(mIsInSearchMode ? VISIBLE : GONE);
-        mNoWidgetsView.setVisibility(GONE);
     }
 
     private void resetExpandedHeaders() {
@@ -462,15 +464,14 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
     @Override
     public void onRecommendedWidgetsBound() {
+        if (mIsInSearchMode) {
+            return;
+        }
         List<WidgetItem> recommendedWidgets =
                 mLauncher.getPopupDataProvider().getRecommendedWidgets();
         WidgetsRecommendationTableLayout table =
                 mSearchAndRecommendationViewHolder.mRecommendedWidgetsTable;
-        if (!mIsInSearchMode && recommendedWidgets.size() > 0) {
-            // TODO(b/185508758): Revert the following log after debugging.
-            if (getHeaderViewHeight() == 0) {
-                Log.d(TAG, "Header view height is 0 when inflating recommended widgets");
-            }
+        if (recommendedWidgets.size() > 0) {
             float maxTableHeight =
                     (mLauncher.getDeviceProfile().availableHeightPx - mTabsHeight
                             - getHeaderViewHeight()) * RECOMMENDATION_TABLE_HEIGHT_RATIO;
@@ -708,13 +709,14 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     }
 
     final class SearchAndRecommendationViewHolder {
-        final ViewGroup mContainer;
+        final SearchAndRecommendationsView mContainer;
         final View mCollapseHandle;
         final WidgetsSearchBar mSearchBar;
         final TextView mHeaderTitle;
         final WidgetsRecommendationTableLayout mRecommendedWidgetsTable;
 
-        SearchAndRecommendationViewHolder(ViewGroup searchAndRecommendationContainer) {
+        SearchAndRecommendationViewHolder(
+                SearchAndRecommendationsView searchAndRecommendationContainer) {
             mContainer = searchAndRecommendationContainer;
             mCollapseHandle = mContainer.findViewById(R.id.collapse_handle);
             mSearchBar = mContainer.findViewById(R.id.widgets_search_bar);

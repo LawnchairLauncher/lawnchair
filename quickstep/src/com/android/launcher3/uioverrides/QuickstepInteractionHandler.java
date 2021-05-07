@@ -23,6 +23,7 @@ import android.util.Pair;
 import android.view.View;
 import android.widget.RemoteViews;
 
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
@@ -49,6 +50,11 @@ class QuickstepInteractionHandler implements RemoteViews.InteractionHandler {
         Pair<Intent, ActivityOptions> options = remoteResponse.getLaunchOptions(hostView);
         ActivityOptionsWrapper activityOptions = mLauncher.getAppTransitionManager()
                 .getActivityLaunchOptions(mLauncher, hostView);
+        activityOptions.options.setPendingIntentLaunchFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        Object itemInfo = hostView.getTag();
+        if (itemInfo instanceof ItemInfo) {
+            mLauncher.addLaunchCookie((ItemInfo) itemInfo, activityOptions.options);
+        }
         options = Pair.create(options.first, activityOptions.options);
         return RemoteViews.startPendingIntent(hostView, pendingIntent, options);
     }

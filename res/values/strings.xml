@@ -55,10 +55,11 @@
     <string name="widget_dims_format">%1$d \u00d7 %2$d</string>
     <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
     <string name="widget_accessible_dims_format">%1$d wide by %2$d high</string>
-    <!-- Message to tell the user to press and hold a widget/icon to add it  -->
-    <string name="add_item_request_drag_hint">Touch &amp; hold to place manually</string>
-    <!-- Button label to automatically add icon on home screen [CHAR_LIMIT=50] -->
-    <string name="place_automatically">Add automatically</string>
+    <!-- Message to tell the user to press and hold a widget/icon to add it to the home screen.
+         [CHAR LIMIT=NONE]  -->
+    <string name="add_item_request_drag_hint">Touch &amp; hold the widget to move it around the Home screen</string>
+    <!-- Button label to automatically add a widget to home screen [CHAR_LIMIT=50] -->
+    <string name="add_to_home_screen">Add to Home screen</string>
     <!-- Label for showing the number of widgets an app has in the full widgets picker.
          [CHAR_LIMIT=25] -->
     <plurals name="widgets_count">
@@ -220,7 +221,7 @@
     <!-- Text for wallpaper change button [CHAR LIMIT=30]-->
     <string name="wallpaper_button_text">Wallpapers</string>
     <!-- Text for wallpaper change button [CHAR LIMIT=30]-->
-    <string name="styles_wallpaper_button_text">Styles &amp; wallpapers</string>
+    <string name="styles_wallpaper_button_text">Wallpaper &amp; style</string>
     <!-- Text for settings button [CHAR LIMIT=30]-->
     <string name="settings_button_text">Home settings</string>
     <!-- Message shown when a feature is disabled by the administrator -->

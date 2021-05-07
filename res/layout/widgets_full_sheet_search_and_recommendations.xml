@@ -13,7 +13,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<LinearLayout
+<com.android.launcher3.widget.picker.SearchAndRecommendationsView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/search_and_recommendations_container"
     android:layout_width="match_parent"
@@ -46,7 +46,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/widgets_recommendation_background"
-        android:paddingVertical="8dp"
+        android:paddingVertical="@dimen/recommended_widgets_table_vertical_padding"
         android:layout_marginTop="16dp"
         android:visibility="gone"/>
-</LinearLayout>
+</com.android.launcher3.widget.picker.SearchAndRecommendationsView>

@@ -87,8 +87,8 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
         if (mDragLayer != null) {
             return;
         }
-        InvariantDeviceProfile currentDisplayIdp =
-                new InvariantDeviceProfile(this, getWindow().getDecorView().getDisplay());
+        InvariantDeviceProfile currentDisplayIdp = new InvariantDeviceProfile(
+                this, getWindow().getDecorView().getDisplay());
 
         // Disable transpose layout and use multi-window mode so that the icons are scaled properly
         mDeviceProfile = currentDisplayIdp.getDeviceProfile(this)

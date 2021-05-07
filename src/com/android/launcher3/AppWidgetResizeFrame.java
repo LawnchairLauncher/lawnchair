@@ -1,5 +1,7 @@
 package com.android.launcher3;
 
+import static android.appwidget.AppWidgetHostView.getDefaultPaddingForWidget;
+
 import static com.android.launcher3.LauncherAnimUtils.LAYOUT_HEIGHT;
 import static com.android.launcher3.LauncherAnimUtils.LAYOUT_WIDTH;
 import static com.android.launcher3.Utilities.ATLEAST_S;
@@ -10,7 +12,9 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.appwidget.AppWidgetHostView;
+import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
+import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -25,16 +29,14 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
-import androidx.annotation.Nullable;
-
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
 import com.android.launcher3.dragndrop.DragLayer;
-import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AppWidgetResizeFrame extends AbstractFloatingView implements View.OnKeyListener {
     private static final int SNAP_DURATION = 150;
@@ -42,22 +44,6 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     private static final float RESIZE_THRESHOLD = 0.66f;
 
     private static final Rect sTmpRect = new Rect();
-
-    // Represents the cell size on the grid in the two orientations.
-    public static final MainThreadInitializedObject<Point[]> CELL_SIZE =
-            new MainThreadInitializedObject<>(c -> {
-                InvariantDeviceProfile inv = LauncherAppState.getIDP(c);
-                return new Point[] {inv.landscapeProfile.getCellSize(),
-                        inv.portraitProfile.getCellSize()};
-            });
-
-    // Represents the border spacing size on the grid in the two orientations.
-    public static final MainThreadInitializedObject<int[]> BORDER_SPACING_SIZE =
-            new MainThreadInitializedObject<>(c -> {
-                InvariantDeviceProfile inv = LauncherAppState.getIDP(c);
-                return new int[] {inv.landscapeProfile.cellLayoutBorderSpacingPx,
-                        inv.portraitProfile.cellLayoutBorderSpacingPx};
-            });
 
     private static final int HANDLE_COUNT = 4;
     private static final int INDEX_LEFT = 0;
@@ -71,6 +57,22 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
 
     private final View[] mDragHandles = new View[HANDLE_COUNT];
     private final List<Rect> mSystemGestureExclusionRects = new ArrayList<>(HANDLE_COUNT);
+    private final OnAttachStateChangeListener mWidgetViewAttachStateChangeListener =
+            new OnAttachStateChangeListener() {
+                @Override
+                public void onViewAttachedToWindow(View view) {
+                    // Do nothing
+                }
+
+                @Override
+                public void onViewDetachedFromWindow(View view) {
+                    // When the app widget view is detached, we should close the resize frame.
+                    // An example is when the dragging starts, the widget view is detached from
+                    // CellLayout and then reattached to DragLayout.
+                    close(false);
+                }
+            };
+
 
     private LauncherAppWidgetHostView mWidgetView;
     private CellLayout mCellLayout;
@@ -191,7 +193,11 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     private void setupForWidget(LauncherAppWidgetHostView widgetView, CellLayout cellLayout,
             DragLayer dragLayer) {
         mCellLayout = cellLayout;
+        if (mWidgetView != null) {
+            mWidgetView.removeOnAttachStateChangeListener(mWidgetViewAttachStateChangeListener);
+        }
         mWidgetView = widgetView;
+        mWidgetView.addOnAttachStateChangeListener(mWidgetViewAttachStateChangeListener);
         LauncherAppWidgetProviderInfo info = (LauncherAppWidgetProviderInfo)
                 widgetView.getAppWidgetInfo();
         mResizeMode = info.resizeMode;
@@ -202,7 +208,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         mMaxHSpan = info.maxSpanX;
         mMaxVSpan = info.maxSpanY;
 
-        mWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(getContext(),
+        mWidgetPadding = getDefaultPaddingForWidget(getContext(),
                 widgetView.getAppWidgetInfo().provider, null);
 
         if (mResizeMode == AppWidgetProviderInfo.RESIZE_HORIZONTAL) {
@@ -392,81 +398,82 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         mWidgetView.requestLayout();
     }
 
-    public static void updateWidgetSizeRanges(AppWidgetHostView widgetView, Launcher launcher,
-                                              int spanX, int spanY) {
-        List<SizeF> sizes = getWidgetSizes(launcher, spanX, spanY);
+    public static void updateWidgetSizeRanges(
+            AppWidgetHostView widgetView, Context context, int spanX, int spanY) {
+        List<SizeF> sizes = getWidgetSizes(context, spanX, spanY);
         if (ATLEAST_S) {
             widgetView.updateAppWidgetSize(new Bundle(), sizes);
         } else {
-            Rect bounds = getMinMaxSizes(sizes, null /* outRect */);
+            Rect bounds = getMinMaxSizes(sizes);
             widgetView.updateAppWidgetSize(new Bundle(), bounds.left, bounds.top, bounds.right,
                     bounds.bottom);
         }
     }
 
-    private static SizeF getWidgetSize(Context context, Point cellSize, int spanX, int spanY,
-            int borderSpacing) {
-        final float density = context.getResources().getDisplayMetrics().density;
-        final float hBorderSpacing = (spanX - 1) * borderSpacing;
-        final float vBorderSpacing = (spanY - 1) * borderSpacing;
-
-        return new SizeF(((spanX * cellSize.x) + hBorderSpacing) / density,
-                ((spanY * cellSize.y) + vBorderSpacing) / density);
-    }
-
     /** Returns the list of sizes for a widget of given span, in dp. */
     public static ArrayList<SizeF> getWidgetSizes(Context context, int spanX, int spanY) {
-        final Point[] cellSize = CELL_SIZE.get(context);
-        final int[] borderSpacing = BORDER_SPACING_SIZE.get(context);
-
-        SizeF landSize = getWidgetSize(context, cellSize[0], spanX, spanY, borderSpacing[0]);
-        SizeF portSize = getWidgetSize(context, cellSize[1], spanX, spanY, borderSpacing[1]);
-
         ArrayList<SizeF> sizes = new ArrayList<>(2);
-        sizes.add(landSize);
-        sizes.add(portSize);
+        final float density = context.getResources().getDisplayMetrics().density;
+        Point cellSize = new Point();
+
+        for (DeviceProfile profile : LauncherAppState.getIDP(context).supportedProfiles) {
+            final float hBorderSpacing = (spanX - 1) * profile.cellLayoutBorderSpacingPx;
+            final float vBorderSpacing = (spanY - 1) * profile.cellLayoutBorderSpacingPx;
+            profile.getCellSize(cellSize);
+            sizes.add(new SizeF(
+                    ((spanX * cellSize.x) + hBorderSpacing) / density,
+                    ((spanY * cellSize.y) + vBorderSpacing) / density));
+        }
         return sizes;
+    }
+
+    /**
+     * Returns the bundle to be used as the default options for a widget with provided size
+     */
+    public static Bundle getWidgetSizeOptions(
+            Context context, ComponentName provider, int spanX, int spanY) {
+        ArrayList<SizeF> sizes = getWidgetSizes(context, spanX, spanY);
+        Rect padding = getDefaultPaddingForWidget(context, provider, null);
+        float density = context.getResources().getDisplayMetrics().density;
+        float xPaddingDips = (padding.left + padding.right) / density;
+        float yPaddingDips = (padding.top + padding.bottom) / density;
+
+        ArrayList<SizeF> paddedSizes = sizes.stream()
+                .map(size -> new SizeF(
+                        Math.max(0.f, size.getWidth() - xPaddingDips),
+                        Math.max(0.f, size.getHeight() - yPaddingDips)))
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        Rect rect = AppWidgetResizeFrame.getMinMaxSizes(paddedSizes);
+        Bundle options = new Bundle();
+        options.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, rect.left);
+        options.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, rect.top);
+        options.putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, rect.right);
+        options.putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, rect.bottom);
+        options.putParcelableArrayList(AppWidgetManager.OPTION_APPWIDGET_SIZES, paddedSizes);
+        return options;
     }
 
     /**
      * Returns the min and max widths and heights given a list of sizes, in dp.
      *
      * @param sizes List of sizes to get the min/max from.
-     * @param outRect Rectangle in which the result can be stored, to avoid extra allocations. If
-     *               null, a new rectangle will be allocated.
      * @return A rectangle with the left (resp. top) is used for the min width (resp. height) and
      * the right (resp. bottom) for the max. The returned rectangle is set with 0s if the list is
      * empty.
      */
-    public static Rect getMinMaxSizes(List<SizeF> sizes, @Nullable Rect outRect) {
-        if (outRect == null) {
-            outRect = new Rect();
-        }
+    private static Rect getMinMaxSizes(List<SizeF> sizes) {
         if (sizes.isEmpty()) {
-            outRect.set(0, 0, 0, 0);
+            return new Rect();
         } else {
             SizeF first = sizes.get(0);
-            outRect.set((int) first.getWidth(), (int) first.getHeight(), (int) first.getWidth(),
-                    (int) first.getHeight());
+            Rect result = new Rect((int) first.getWidth(), (int) first.getHeight(),
+                    (int) first.getWidth(), (int) first.getHeight());
             for (int i = 1; i < sizes.size(); i++) {
-                outRect.union((int) sizes.get(i).getWidth(), (int) sizes.get(i).getHeight());
+                result.union((int) sizes.get(i).getWidth(), (int) sizes.get(i).getHeight());
             }
+            return result;
         }
-        return outRect;
-    }
-
-    /**
-     * Returns the range of sizes a widget may be displayed, given its span.
-     *
-     * @param context Context in which the View is rendered.
-     * @param spanX Width of the widget, in cells.
-     * @param spanY Height of the widget, in cells.
-     * @param outRect Rectangle in which the result can be stored, to avoid extra allocations. If
-     *               null, a new rectangle will be allocated.
-     */
-    public static Rect getWidgetSizeRanges(Context context, int spanX, int spanY,
-            @Nullable Rect outRect) {
-        return getMinMaxSizes(getWidgetSizes(context, spanX, spanY), outRect);
     }
 
     @Override
@@ -641,6 +648,9 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     @Override
     protected void handleClose(boolean animate) {
         mDragLayer.removeView(this);
+        if (mWidgetView != null) {
+            mWidgetView.removeOnAttachStateChangeListener(mWidgetViewAttachStateChangeListener);
+        }
     }
 
     @Override

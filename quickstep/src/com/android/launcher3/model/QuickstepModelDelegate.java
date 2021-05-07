@@ -18,7 +18,6 @@ package com.android.launcher3.model;
 import static android.text.format.DateUtils.DAY_IN_MILLIS;
 import static android.text.format.DateUtils.formatElapsedTime;
 
-import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_GRID;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_PREDICTION;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_PREDICTION;
@@ -104,8 +103,8 @@ public class QuickstepModelDelegate extends ModelDelegate implements OnIDPChange
         // TODO: Implement caching and preloading
         super.loadItems(ums, pinnedShortcuts);
 
-        WorkspaceItemFactory allAppsFactory =
-                new WorkspaceItemFactory(mApp, ums, pinnedShortcuts, mIDP.numAllAppsColumns);
+        WorkspaceItemFactory allAppsFactory = new WorkspaceItemFactory(
+                mApp, ums, pinnedShortcuts, mIDP.numDatabaseAllAppsColumns);
         mAllAppsState.items.setItems(
                 mAllAppsState.storage.read(mApp.getContext(), allAppsFactory, ums.allUsers::get));
         mDataModel.extraItems.put(CONTAINER_PREDICTION, mAllAppsState.items);
@@ -204,7 +203,7 @@ public class QuickstepModelDelegate extends ModelDelegate implements OnIDPChange
         registerPredictor(mAllAppsState, apm.createAppPredictionSession(
                 new AppPredictionContext.Builder(context)
                         .setUiSurface("home")
-                        .setPredictedTargetCount(mIDP.numAllAppsColumns)
+                        .setPredictedTargetCount(mIDP.numDatabaseAllAppsColumns)
                         .build()));
 
         // TODO: get bundle
@@ -252,11 +251,9 @@ public class QuickstepModelDelegate extends ModelDelegate implements OnIDPChange
     }
 
     @Override
-    public void onIdpChanged(int changeFlags, InvariantDeviceProfile profile) {
-        if ((changeFlags & CHANGE_FLAG_GRID) != 0) {
-            // Reinitialize everything
-            Executors.MODEL_EXECUTOR.execute(this::recreatePredictors);
-        }
+    public void onIdpChanged(InvariantDeviceProfile profile) {
+        // Reinitialize everything
+        Executors.MODEL_EXECUTOR.execute(this::recreatePredictors);
     }
 
     private void onAppTargetEvent(AppTargetEvent event, int client) {

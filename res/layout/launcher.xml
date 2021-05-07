@@ -66,8 +66,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/scrim_view"
-            android:background="?attr/allAppsScrimColor"
-            android:alpha="0" />
+            android:background="@android:color/transparent" />
 
         <include
             android:id="@+id/apps_view"

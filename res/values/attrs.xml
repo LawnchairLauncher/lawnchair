@@ -19,9 +19,9 @@
 
     <!-- Attributes used for launcher theme -->
     <attr name="allAppsScrimColor" format="color" />
-    <attr name="allAppsInterimScrimAlpha" format="integer" />
     <attr name="allAppsNavBarScrimColor" format="color" />
     <attr name="allAppsTheme" format="reference" />
+    <attr name="popupColorNeutral" format="color" />
     <attr name="popupColorPrimary" format="color" />
     <attr name="popupColorSecondary" format="color" />
     <attr name="popupColorTertiary" format="color" />
@@ -35,6 +35,7 @@
     <attr name="widgetsTheme" format="reference" />
     <attr name="iconOnlyShortcutColor" format="color" />
     <attr name="eduHalfSheetBGColor" format="color" />
+    <attr name="overviewScrimColor" format="color" />
 
     <attr name="folderDotColor" format="color" />
     <attr name="folderFillColor" format="color" />
@@ -79,7 +80,8 @@
         <attr name="ambientShadowBlur" format="dimension" />
         <attr name="keyShadowColor" format="color" />
         <attr name="keyShadowBlur" format="dimension" />
-        <attr name="keyShadowOffset" format="dimension" />
+        <attr name="keyShadowOffsetX" format="dimension" />
+        <attr name="keyShadowOffsetY" format="dimension" />
     </declare-styleable>
 
     <!-- PagedView specific attributes. These attributes are used to customize
@@ -125,16 +127,23 @@
         <!-- numFolderRows & numFolderColumns defaults to numRows & numColumns, if not specified -->
         <attr name="numFolderRows" format="integer" />
         <attr name="numFolderColumns" format="integer" />
+        <!-- numAllAppsColumns defaults to numColumns, if not specified -->
+        <attr name="numAllAppsColumns" format="integer" />
+        <!-- Number of columns to use when extending the all-apps size,
+         defaults to 2 * numAllAppsColumns -->
+        <attr name="numExtendedAllAppsColumns" format="integer" />
+
         <!-- numHotseatIcons defaults to numColumns, if not specified -->
         <attr name="numHotseatIcons" format="integer" />
+        <!-- Number of icons to use when extending the hotseat size,
+         defaults to 2 * numHotseatIcons -->
+        <attr name="numExtendedHotseatIcons" format="integer" />
+
         <attr name="dbFile" format="string" />
         <attr name="defaultLayoutId" format="reference" />
         <attr name="demoModeLayoutId" format="reference" />
         <attr name="isScalable" format="boolean" />
         <attr name="devicePaddingId" format="reference" />
-
-        <!-- whether the grid option is shown to the user -->
-        <attr name="visible" format="boolean" />
 
     </declare-styleable>
 
@@ -165,8 +174,12 @@
         <attr name="iconTextSize" format="float" />
         <!-- landscapeIconTextSize defaults to iconTextSize, if not specified -->
         <attr name="landscapeIconTextSize" format="float" />
-        <!-- If true, this display option is used to determine the default grid -->
-        <attr name="canBeDefault" format="boolean" />
+
+        <!-- If set, this display option is used to determine the default grid -->
+        <attr name="canBeDefault" format="boolean|integer" >
+            <!-- The profile can be default on split display devices -->
+            <flag name="split_display" value="0x2" />
+        </attr>
 
         <!-- The following values are only enabled if grid is supported. -->
         <!-- allAppsIconSize defaults to iconSize, if not specified -->
@@ -174,11 +187,6 @@
         <!-- allAppsIconTextSize defaults to iconTextSize, if not specified -->
         <attr name="allAppsIconTextSize" format="float" />
 
-        <!-- numAllAppsColumns defaults to GridDisplayOption.numColumns, if not specified -->
-        <attr name="numAllAppsColumns" format="integer" />
-
-        <!-- numShownHotseatIcons defaults to GridDisplayOption.numHotseatIcons, if not specified -->
-        <attr name="numShownHotseatIcons" format="integer" />
     </declare-styleable>
 
     <declare-styleable name="CellLayout">

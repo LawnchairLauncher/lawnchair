@@ -16,22 +16,13 @@
 
 package com.android.launcher3.uioverrides.touchcontrollers;
 
-import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
+import static com.android.launcher3.LauncherAnimUtils.VIEW_BACKGROUND_COLOR;
 import static com.android.launcher3.LauncherAnimUtils.newCancelListener;
-import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.HINT_STATE;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
-import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
-import static com.android.launcher3.anim.Interpolators.DEACCEL;
-import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_HEADER_FADE;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_FADE;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_SCALE;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_TRANSLATE;
 import static com.android.launcher3.util.VibratorWrapper.OVERVIEW_HAPTIC;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 
@@ -45,7 +36,6 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.util.VibratorWrapper;
 import com.android.quickstep.SystemUiProxy;
@@ -127,11 +117,11 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
         }
 
         if (mFromState == NORMAL && mToState == HINT_STATE) {
-            mNormalToHintOverviewScrimAnimator = ObjectAnimator.ofFloat(
+            mNormalToHintOverviewScrimAnimator = ObjectAnimator.ofArgb(
                     mLauncher.getScrimView(),
-                    VIEW_ALPHA,
-                    mFromState.getWorkspaceScrimAlpha(mLauncher),
-                    mToState.getWorkspaceScrimAlpha(mLauncher));
+                    VIEW_BACKGROUND_COLOR,
+                    mFromState.getWorkspaceScrimColor(mLauncher),
+                    mToState.getWorkspaceScrimColor(mLauncher));
         }
         mStartedOverview = false;
         mReachedOverview = false;
@@ -268,40 +258,5 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
 
     private float dpiFromPx(float pixels) {
         return Utilities.dpiFromPx(pixels, mLauncher.getResources().getDisplayMetrics().densityDpi);
-    }
-
-    @Override
-    protected StateAnimationConfig getConfigForStates(
-            LauncherState fromState, LauncherState toState) {
-        if (fromState == NORMAL && toState == ALL_APPS) {
-            StateAnimationConfig builder = new StateAnimationConfig();
-            builder.setInterpolator(ANIM_ALL_APPS_HEADER_FADE, Interpolators.clampToProgress(
-                    ACCEL,
-                    0,
-                    ALL_APPS_CONTENT_FADE_MAX_CLAMPING_THRESHOLD));
-            builder.setInterpolator(ANIM_ALL_APPS_FADE, Interpolators.clampToProgress(
-                    ACCEL,
-                    ALL_APPS_CONTENT_FADE_MIN_CLAMPING_THRESHOLD,
-                    ALL_APPS_CONTENT_FADE_MAX_CLAMPING_THRESHOLD));
-
-            // Get workspace out of the way quickly, to prepare for potential pause.
-            builder.setInterpolator(ANIM_WORKSPACE_SCALE, DEACCEL_3);
-            builder.setInterpolator(ANIM_WORKSPACE_TRANSLATE, DEACCEL_3);
-            builder.setInterpolator(ANIM_WORKSPACE_FADE, DEACCEL_3);
-            return builder;
-        } else if (fromState == ALL_APPS && toState == NORMAL) {
-            StateAnimationConfig builder = new StateAnimationConfig();
-
-            builder.setInterpolator(ANIM_ALL_APPS_FADE, Interpolators.clampToProgress(
-                    DEACCEL,
-                    1 - ALL_APPS_CONTENT_FADE_MAX_CLAMPING_THRESHOLD,
-                    1 - ALL_APPS_CONTENT_FADE_MIN_CLAMPING_THRESHOLD));
-            builder.setInterpolator(ANIM_ALL_APPS_HEADER_FADE, Interpolators.clampToProgress(
-                    DEACCEL,
-                    1 - ALL_APPS_CONTENT_FADE_MAX_CLAMPING_THRESHOLD,
-                    1));
-            return builder;
-        }
-        return super.getConfigForStates(fromState, toState);
     }
 }

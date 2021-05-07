@@ -15,10 +15,15 @@
  */
 package com.android.launcher3.util;
 
+import android.graphics.Insets;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.view.WindowInsets.Type;
+import android.view.WindowMetrics;
 
 import androidx.annotation.Nullable;
+
+import java.util.Objects;
 
 /**
  * Utility class to hold information about window position and layout
@@ -36,6 +41,18 @@ public class WindowBounds {
                 bounds.height() - insets.top - insets.bottom);
     }
 
+    public WindowBounds(int width, int height, int availableWidth, int availableHeight) {
+        this.bounds = new Rect(0, 0, width, height);
+        this.availableSize = new Point(availableWidth, availableHeight);
+        // We don't care about insets in this case
+        this.insets = new Rect(0, 0, width - availableWidth, height - availableHeight);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(bounds, insets);
+    }
+
     @Override
     public boolean equals(@Nullable Object obj) {
         if (!(obj instanceof WindowBounds)) {
@@ -43,5 +60,31 @@ public class WindowBounds {
         }
         WindowBounds other = (WindowBounds) obj;
         return other.bounds.equals(bounds) && other.insets.equals(insets);
+    }
+
+    @Override
+    public String toString() {
+        return "WindowBounds{"
+                + "bounds=" + bounds
+                + ", insets=" + insets
+                + ", availableSize=" + availableSize
+                + '}';
+    }
+
+    /**
+     * Returns true if the device is in landscape orientation
+     */
+    public final boolean isLandscape() {
+        return availableSize.x > availableSize.y;
+    }
+
+    /**
+     * Returns the bounds corresponding to the provided WindowMetrics
+     */
+    @SuppressWarnings("NewApi")
+    public static WindowBounds fromWindowMetrics(WindowMetrics wm) {
+        Insets insets = wm.getWindowInsets().getInsets(Type.systemBars());
+        return new WindowBounds(wm.getBounds(),
+                new Rect(insets.left, insets.top, insets.right, insets.bottom));
     }
 }

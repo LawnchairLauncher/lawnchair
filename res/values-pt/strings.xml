@@ -32,8 +32,8 @@
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Toque duas vezes e mantenha a tela pressionada para mover um widget ou usar ações personalizadas."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d de largura por %2$d de altura"</string>
-    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Toque e mantenha pressionado para mover manualmente"</string>
-    <string name="place_automatically" msgid="8064208734425456485">"Adicionar automaticamente"</string>
+    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"Toque no widget e mantenha-o pressionado para movê-lo pela tela inicial"</string>
+    <string name="add_to_home_screen" msgid="8631549138215492708">"Adicionar à tela inicial"</string>
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
       <item quantity="one"><xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> widget</item>
       <item quantity="other"><xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> widgets</item>
@@ -51,7 +51,7 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Pessoal"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Trabalho"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Conversas"</string>
-    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Apps de pesquisa"</string>
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Pesquisar apps"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Carregando apps…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Nenhum app encontrado que corresponda a \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Pesquisar mais apps"</string>

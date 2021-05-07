@@ -16,8 +16,12 @@
 
 package com.android.launcher3.util;
 
+import static android.app.WallpaperColors.HINT_SUPPORTS_DARK_TEXT;
+import static android.app.WallpaperColors.HINT_SUPPORTS_DARK_THEME;
+
+import android.app.WallpaperColors;
+import android.app.WallpaperManager;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
@@ -29,34 +33,40 @@ import android.util.TypedValue;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.GraphicsUtils;
-import com.android.launcher3.uioverrides.WallpaperColorInfo;
 
 /**
  * Various utility methods associated with theming.
  */
+@SuppressWarnings("NewApi")
 public class Themes {
 
     public static int getActivityThemeRes(Context context) {
-        WallpaperColorInfo wallpaperColorInfo = WallpaperColorInfo.INSTANCE.get(context);
-        boolean darkTheme;
-        if (Utilities.ATLEAST_Q) {
-            Configuration configuration = context.getResources().getConfiguration();
-            int nightMode = configuration.uiMode & Configuration.UI_MODE_NIGHT_MASK;
-            darkTheme = nightMode == Configuration.UI_MODE_NIGHT_YES;
+        final int colorHints;
+        if (Utilities.ATLEAST_P) {
+            WallpaperColors colors = context.getSystemService(WallpaperManager.class)
+                    .getWallpaperColors(WallpaperManager.FLAG_SYSTEM);
+            colorHints = colors == null ? 0 : colors.getColorHints();
         } else {
-            darkTheme = wallpaperColorInfo.isDark();
+            colorHints = 0;
         }
+        return getActivityThemeRes(context, colorHints);
+    }
 
-        if (darkTheme) {
-            return wallpaperColorInfo.supportsDarkText() ?
-                    R.style.AppTheme_Dark_DarkText : wallpaperColorInfo.isMainColorDark() ?
-                            R.style.AppTheme_Dark_DarkMainColor : R.style.AppTheme_Dark;
+    public static int getActivityThemeRes(Context context, int wallpaperColorHints) {
+        boolean supportsDarkText = Utilities.ATLEAST_S
+                && (wallpaperColorHints & HINT_SUPPORTS_DARK_TEXT) != 0;
+        boolean isMainColorDark = Utilities.ATLEAST_S
+                && (wallpaperColorHints & HINT_SUPPORTS_DARK_THEME) != 0;
+
+        if (Utilities.isDarkTheme(context)) {
+            return supportsDarkText ? R.style.AppTheme_Dark_DarkText
+                    : isMainColorDark ? R.style.AppTheme_Dark_DarkMainColor : R.style.AppTheme_Dark;
         } else {
-            return wallpaperColorInfo.supportsDarkText() ?
-                    R.style.AppTheme_DarkText : wallpaperColorInfo.isMainColorDark() ?
-                            R.style.AppTheme_DarkMainColor : R.style.AppTheme;
+            return supportsDarkText ? R.style.AppTheme_DarkText
+                    : isMainColorDark ? R.style.AppTheme_DarkMainColor : R.style.AppTheme;
         }
     }
+
 
     public static String getDefaultBodyFont(Context context) {
         TypedArray ta = context.obtainStyledAttributes(android.R.style.TextAppearance_DeviceDefault,

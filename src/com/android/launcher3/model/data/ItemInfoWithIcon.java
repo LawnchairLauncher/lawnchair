@@ -223,7 +223,15 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
      * Returns a FastBitmapDrawable with the icon.
      */
     public FastBitmapDrawable newIcon(Context context) {
-        FastBitmapDrawable drawable = bitmap.newIcon(context);
+        return newIcon(context, false);
+    }
+
+    /**
+     * Returns a FastBitmapDrawable with the icon and context theme applied
+     */
+    public FastBitmapDrawable newIcon(Context context, boolean applyTheme) {
+        FastBitmapDrawable drawable = applyTheme
+                ? bitmap.newThemedIcon(context) : bitmap.newIcon(context);
         drawable.setIsDisabled(isDisabled());
         return drawable;
     }

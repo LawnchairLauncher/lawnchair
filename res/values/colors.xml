@@ -41,9 +41,11 @@
     <color name="gesture_tutorial_action_button_label_color">#FF000000</color>
     <color name="gesture_tutorial_primary_color">#B7F29F</color> <!-- Light Green -->
 
+    <color name="popup_color_neutral_light">#FFF</color>
     <color name="popup_color_primary_light">#FFF</color>
     <color name="popup_color_secondary_light">#F1F3F4</color>
     <color name="popup_color_tertiary_light">#E0E0E0</color> <!-- Gray 300 -->
+    <color name="popup_color_neutral_dark">#3C4043</color> <!-- Gray 800 -->
     <color name="popup_color_primary_dark">#3C4043</color> <!-- Gray 800 -->
     <color name="popup_color_secondary_dark">#202124</color>
     <color name="popup_color_tertiary_dark">#757575</color> <!-- Gray 600 -->
@@ -54,5 +56,7 @@
     <color name="text_color_primary_dark">#FFFFFFFF</color>
     <color name="text_color_secondary_dark">#FFFFFFFF</color>
     <color name="text_color_tertiary_dark">#CCFFFFFF</color>
+
+    <color name="wallpaper_popup_scrim">?android:attr/colorAccent</color>
 
 </resources>

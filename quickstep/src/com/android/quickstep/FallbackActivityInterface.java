@@ -163,7 +163,9 @@ public final class FallbackActivityInterface extends
 
     @Override
     public boolean isInLiveTileMode() {
-        return false;
+        RecentsActivity activity = getCreatedActivity();
+        return activity != null && activity.getStateManager().getState() == DEFAULT &&
+                activity.isStarted();
     }
 
     @Override
@@ -195,5 +197,10 @@ public final class FallbackActivityInterface extends
         RecentsView recentsView = getCreatedActivity().getOverviewPanel();
         recentsView.setLayoutRotation(rotationTouchHelper.getCurrentActiveRotation(),
                 rotationTouchHelper.getDisplayRotation());
+    }
+
+    @Override
+    protected int getOverviewScrimColorForState(RecentsActivity activity, RecentsState state) {
+        return state.getScrimColor(activity);
     }
 }

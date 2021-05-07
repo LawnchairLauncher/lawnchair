@@ -19,7 +19,8 @@ import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
 import static com.android.launcher3.AbstractFloatingView.TYPE_HIDE_BACK_BUTTON;
 import static com.android.launcher3.LauncherState.FLAG_HIDE_BACK_BUTTON;
 import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.util.DisplayController.CHANGE_SIZE;
+import static com.android.launcher3.LauncherState.NO_OFFSET;
+import static com.android.launcher3.util.DisplayController.CHANGE_ACTIVE_SCREEN;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY;
@@ -30,8 +31,11 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.ComponentName;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.CancellationSignal;
+import android.os.IBinder;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -61,6 +65,7 @@ import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskUtils;
+import com.android.quickstep.TouchInteractionService;
 import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.util.RemoteFadeOutAnimationListener;
 import com.android.quickstep.util.SplitSelectStateController;
@@ -82,6 +87,8 @@ public abstract class BaseQuickstepLauncher extends Launcher
 
     private DepthController mDepthController = new DepthController(this);
     private QuickstepTransitionManager mAppTransitionManager;
+    private ServiceConnection mTisBinderConnection;
+    protected TouchInteractionService.TISBinder mTisBinder;
 
     /**
      * Reusable command for applying the back button alpha on the background thread.
@@ -103,6 +110,24 @@ public abstract class BaseQuickstepLauncher extends Launcher
         super.onCreate(savedInstanceState);
         SysUINavigationMode.INSTANCE.get(this).addModeChangeListener(this);
         addMultiWindowModeChangedListener(mDepthController);
+        setupTouchInteractionServiceBinder();
+    }
+
+    private void setupTouchInteractionServiceBinder() {
+        Intent intent = new Intent(this, TouchInteractionService.class);
+        mTisBinderConnection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName componentName, IBinder binder) {
+                mTisBinder = ((TouchInteractionService.TISBinder) binder);
+                mTisBinder.setTaskbarOverviewProxyDelegate(mTaskbarController);
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName componentName) {
+                mTisBinder = null;
+            }
+        };
+        bindService(intent, mTisBinderConnection, 0);
     }
 
     @Override
@@ -113,6 +138,10 @@ public abstract class BaseQuickstepLauncher extends Launcher
         if (mTaskbarController != null) {
             mTaskbarController.cleanup();
             mTaskbarController = null;
+            if (mTisBinder != null) {
+                mTisBinder.setTaskbarOverviewProxyDelegate(null);
+                unbindService(mTisBinderConnection);
+            }
         }
 
         super.onDestroy();
@@ -240,7 +269,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
     public void onDisplayInfoChanged(Context context, DisplayController.Info info,
             int flags) {
         super.onDisplayInfoChanged(context, info, flags);
-        if ((flags & CHANGE_SIZE) != 0) {
+        if ((flags & CHANGE_ACTIVE_SCREEN) != 0) {
             addTaskbarIfNecessary();
         }
     }
@@ -248,6 +277,9 @@ public abstract class BaseQuickstepLauncher extends Launcher
     private void addTaskbarIfNecessary() {
         if (mTaskbarController != null) {
             mTaskbarController.cleanup();
+            if (mTisBinder != null) {
+                mTisBinder.setTaskbarOverviewProxyDelegate(null);
+            }
             mTaskbarController = null;
         }
         if (mDeviceProfile.isTaskbarPresent) {
@@ -256,6 +288,9 @@ public abstract class BaseQuickstepLauncher extends Launcher
             mTaskbarController = new TaskbarController(this,
                     taskbarActivityContext.getTaskbarContainerView(), taskbarViewOnHome);
             mTaskbarController.init();
+            if (mTisBinder != null) {
+                mTisBinder.setTaskbarOverviewProxyDelegate(mTaskbarController);
+            }
         }
     }
 
@@ -343,7 +378,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
     @Override
     public float[] getNormalOverviewScaleAndOffset() {
         return SysUINavigationMode.getMode(this).hasGestures
-                ? new float[] {1, 1} : new float[] {1.1f, 0};
+                ? new float[] {1, NO_OFFSET, 1} : new float[] {1.1f, NO_OFFSET, NO_OFFSET};
     }
 
     @Override
@@ -443,11 +478,25 @@ public abstract class BaseQuickstepLauncher extends Launcher
         if (info == null) {
             return;
         }
+        switch (info.container) {
+            case LauncherSettings.Favorites.CONTAINER_DESKTOP:
+            case LauncherSettings.Favorites.CONTAINER_HOTSEAT:
+                // Fall through and continue it's on the workspace (we don't support swiping back
+                // to other containers like all apps or the hotseat predictions (which can change)
+                break;
+            default:
+                if (info.container >= 0) {
+                    // Also allow swiping to folders
+                    break;
+                }
+                return;
+        }
         switch (info.itemType) {
             case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
             case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
             case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
-                // Fall through and continue if it's an app or shortcut
+            case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
+                // Fall through and continue if it's an app, shortcut, or widget
                 break;
             default:
                 return;

@@ -21,7 +21,6 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_MODAL_TASK;
 import static com.android.launcher3.LauncherState.OVERVIEW_SPLIT_SELECT;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
-import static com.android.quickstep.util.NavigationModeFeatureFlag.LIVE_TILE;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -39,7 +38,6 @@ import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.quickstep.LauncherActivityInterface;
-import com.android.quickstep.util.OverviewToHomeAnim;
 import com.android.systemui.plugins.PluginListener;
 import com.android.systemui.plugins.RecentsExtraCard;
 
@@ -90,15 +88,7 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher, Laun
 
     @Override
     public void startHome() {
-        Runnable onReachedHome = () -> mActivity.getStateManager().goToState(NORMAL, false);
-        OverviewToHomeAnim overviewToHomeAnim = new OverviewToHomeAnim(mActivity, onReachedHome);
-        if (LIVE_TILE.get()) {
-            switchToScreenshot(null,
-                    () -> finishRecentsAnimation(true /* toRecents */,
-                            () -> overviewToHomeAnim.animateWithVelocity(0)));
-        } else {
-            overviewToHomeAnim.animateWithVelocity(0);
-        }
+        mActivity.getStateManager().goToState(NORMAL);
     }
 
     @Override
@@ -245,8 +235,8 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher, Laun
         if (mActivity.isInState(OVERVIEW_SPLIT_SELECT)) {
             // We want to keep the tasks translations in this temporary state
             // after resetting the rest above
-            setTaskViewsResistanceTranslation(mTaskViewsSecondaryTranslation);
-            setTaskViewsPrimaryTranslation(mTaskViewsPrimaryTranslation);
+            setTaskViewsPrimarySplitTranslation(mTaskViewsPrimarySplitTranslation);
+            setTaskViewsSecondarySplitTranslation(mTaskViewsSecondarySplitTranslation);
         }
     }
 

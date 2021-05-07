@@ -29,6 +29,9 @@ public class RunnableList {
      * Ads a runnable to this list
      */
     public void add(Runnable runnable) {
+        if (runnable == null) {
+            return;
+        }
         if (mDestroyed) {
             runnable.run();
             return;

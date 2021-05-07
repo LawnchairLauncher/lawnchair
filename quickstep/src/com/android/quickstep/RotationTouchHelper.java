@@ -17,13 +17,15 @@ package com.android.quickstep;
 
 import static android.view.Surface.ROTATION_0;
 
+import static com.android.launcher3.util.DisplayController.CHANGE_ACTIVE_SCREEN;
 import static com.android.launcher3.util.DisplayController.CHANGE_ALL;
-import static com.android.launcher3.util.DisplayController.CHANGE_FRAME_DELAY;
+import static com.android.launcher3.util.DisplayController.CHANGE_ROTATION;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.quickstep.SysUINavigationMode.Mode.THREE_BUTTONS;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 
@@ -31,6 +33,7 @@ import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.DisplayInfoChangeListener;
 import com.android.launcher3.util.DisplayController.Info;
+import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.QuickStepContract;
@@ -43,10 +46,13 @@ public class RotationTouchHelper implements
         SysUINavigationMode.NavigationModeChangeListener,
         DisplayInfoChangeListener {
 
-    private final OrientationTouchTransformer mOrientationTouchTransformer;
-    private final DisplayController mDisplayController;
-    private final SysUINavigationMode mSysUiNavMode;
-    private final int mDisplayId;
+    public static final MainThreadInitializedObject<RotationTouchHelper> INSTANCE =
+            new MainThreadInitializedObject<>(RotationTouchHelper::new);
+
+    private OrientationTouchTransformer mOrientationTouchTransformer;
+    private DisplayController mDisplayController;
+    private SysUINavigationMode mSysUiNavMode;
+    private int mDisplayId;
     private int mDisplayRotation;
 
     private final ArrayList<Runnable> mOnDestroyActions = new ArrayList<>();
@@ -117,25 +123,46 @@ public class RotationTouchHelper implements
      */
     private boolean mInOverview;
     private boolean mTaskListFrozen;
-
-
     private final Context mContext;
 
-    public RotationTouchHelper(Context context, DisplayController displayController) {
+    /**
+     * Keeps track of whether destroy has been called for this instance. Mainly used for TAPL tests
+     * where multiple instances of RotationTouchHelper are being created. b/177316094
+     */
+    private boolean mNeedsInit = true;
+
+    private RotationTouchHelper(Context context) {
         mContext = context;
-        mDisplayController = displayController;
+        Log.d(TestProtocol.NO_SWIPE_TO_HOME, "RotationTouchHelper ctor init? " + mNeedsInit
+                + " " + this);
+        if (mNeedsInit) {
+            init();
+        }
+    }
+
+    public void init() {
+        if (!mNeedsInit) {
+            Log.d(TestProtocol.NO_SWIPE_TO_HOME, "Did not need init? " + " " + this);
+            return;
+        }
+        Log.d(TestProtocol.NO_SWIPE_TO_HOME, "RotationTouchHelper init() " + this,
+                new Throwable());
+        mDisplayController = DisplayController.INSTANCE.get(mContext);
         Resources resources = mContext.getResources();
-        mSysUiNavMode = SysUINavigationMode.INSTANCE.get(context);
+        mSysUiNavMode = SysUINavigationMode.INSTANCE.get(mContext);
         mDisplayId = mDisplayController.getInfo().id;
 
         mOrientationTouchTransformer = new OrientationTouchTransformer(resources, mMode,
                 () -> QuickStepContract.getWindowCornerRadius(resources));
 
         // Register for navigation mode changes
-        onNavigationModeChanged(mSysUiNavMode.addModeChangeListener(this));
+        SysUINavigationMode.Mode newMode = mSysUiNavMode.addModeChangeListener(this);
+        Log.d(TestProtocol.NO_SWIPE_TO_HOME, "AddedModeChangeListener: " + this +
+                " currentMode: " + newMode);
+        onNavigationModeChanged(newMode);
         runOnDestroy(() -> mSysUiNavMode.removeModeChangeListener(this));
 
-        mOrientationListener = new OrientationEventListener(context) {
+        mOrientationListener = new OrientationEventListener(mContext) {
             @Override
             public void onOrientationChanged(int degrees) {
                 int newRotation = RecentsOrientedState.getRotationForUserDegreesRotated(degrees,
@@ -154,6 +181,7 @@ public class RotationTouchHelper implements
                 }
             }
         };
+        mNeedsInit = false;
     }
 
     private void setupOrientationSwipeHandler() {
@@ -176,9 +204,11 @@ public class RotationTouchHelper implements
      * Cleans up all the registered listeners and receivers.
      */
     public void destroy() {
+        Log.d(TestProtocol.NO_SWIPE_TO_HOME, "destroying " + this);
         for (Runnable r : mOnDestroyActions) {
             r.run();
         }
+        mNeedsInit = true;
     }
 
     public boolean isTaskListFrozen() {
@@ -223,6 +253,7 @@ public class RotationTouchHelper implements
 
     @Override
     public void onNavigationModeChanged(SysUINavigationMode.Mode newMode) {
+        Log.d(TestProtocol.NO_SWIPE_TO_HOME, "nav mode changed: " + newMode);
         mDisplayController.removeChangeListener(this);
         mDisplayController.addChangeListener(this);
         onDisplayInfoChanged(mContext, mDisplayController.getInfo(), CHANGE_ALL);
@@ -244,8 +275,7 @@ public class RotationTouchHelper implements
 
     @Override
     public void onDisplayInfoChanged(Context context, Info info, int flags) {
-        if (info.id != mDisplayId|| flags == CHANGE_FRAME_DELAY) {
-            // ignore displays that aren't running launcher and frame refresh rate changes
+        if ((flags & (CHANGE_ROTATION | CHANGE_ACTIVE_SCREEN)) == 0) {
             return;
         }
 
@@ -373,5 +403,9 @@ public class RotationTouchHelper implements
         pw.println("  currentActiveRotation=" + getCurrentActiveRotation());
         pw.println("  displayRotation=" + getDisplayRotation());
         mOrientationTouchTransformer.dump(pw);
+    }
+
+    public OrientationTouchTransformer getOrientationTouchTransformer() {
+        return mOrientationTouchTransformer;
     }
 }

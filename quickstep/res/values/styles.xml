@@ -15,16 +15,6 @@
      limitations under the License.
 -->
 <resources>
-    <!-- Task Menu layout styles. -->
-    <style name="TaskMenu">
-        <item name="android:orientation">vertical</item>
-    </style>
-
-    <!-- Task Menu Option layout styles. -->
-    <style name="TaskMenu.Option">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
 
     <style name="TextAppearance.GestureTutorial"
         parent="android:TextAppearance.Material.Body1" />
@@ -69,7 +59,7 @@
         parent="TextAppearance.GestureTutorial">
         <item name="android:gravity">start</item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
-        <item name="android:fontFamily">google-sans</item>
+        <item name="android:fontFamily">google-sans-text</item>
         <item name="android:letterSpacing">0.03</item>
         <item name="android:textSize">18sp</item>
         <item name="android:lineHeight">24sp</item>
@@ -107,6 +97,11 @@
     <style name="TextAppearance.GestureTutorial.TextButtonLabel"
         parent="TextAppearance.GestureTutorial.ButtonLabel">
         <item name="android:textColor">@color/gesture_tutorial_primary_color</item>
+    </style>
+
+    <style name="TextAppearance.GestureTutorial.LinkText"
+        parent="TextAppearance.GestureTutorial.Feedback.Subtitle">
+        <item name="android:textSize">14sp</item>
     </style>
 
     <!--

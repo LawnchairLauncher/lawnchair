@@ -24,10 +24,12 @@ import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SC
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_X;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_Y;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_OVERVIEW;
-import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_OFFSET;
+import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_HORIZONTAL_OFFSET;
+import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_VERTICAL_OFFSET;
 import static com.android.quickstep.views.RecentsView.RECENTS_GRID_PROGRESS;
 import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
-import static com.android.quickstep.views.RecentsView.TASK_PRIMARY_TRANSLATION;
+import static com.android.quickstep.views.RecentsView.TASK_PRIMARY_SPLIT_TRANSLATION;
+import static com.android.quickstep.views.RecentsView.TASK_SECONDARY_SPLIT_TRANSLATION;
 import static com.android.quickstep.views.RecentsView.TASK_SECONDARY_TRANSLATION;
 
 import android.util.FloatProperty;
@@ -62,7 +64,8 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
     public void setState(@NonNull LauncherState state) {
         float[] scaleAndOffset = state.getOverviewScaleAndOffset(mLauncher);
         RECENTS_SCALE_PROPERTY.set(mRecentsView, scaleAndOffset[0]);
-        ADJACENT_PAGE_OFFSET.set(mRecentsView, scaleAndOffset[1]);
+        ADJACENT_PAGE_HORIZONTAL_OFFSET.set(mRecentsView, scaleAndOffset[1]);
+        ADJACENT_PAGE_VERTICAL_OFFSET.set(mRecentsView, scaleAndOffset[2]);
         TASK_SECONDARY_TRANSLATION.set(mRecentsView, 0f);
 
         getContentAlphaProperty().set(mRecentsView, state.overviewUi ? 1f : 0);
@@ -92,15 +95,17 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
         float[] scaleAndOffset = toState.getOverviewScaleAndOffset(mLauncher);
         setter.setFloat(mRecentsView, RECENTS_SCALE_PROPERTY, scaleAndOffset[0],
                 config.getInterpolator(ANIM_OVERVIEW_SCALE, LINEAR));
-        setter.setFloat(mRecentsView, ADJACENT_PAGE_OFFSET, scaleAndOffset[1],
+        setter.setFloat(mRecentsView, ADJACENT_PAGE_HORIZONTAL_OFFSET, scaleAndOffset[1],
                 config.getInterpolator(ANIM_OVERVIEW_TRANSLATE_X, LINEAR));
+        setter.setFloat(mRecentsView, ADJACENT_PAGE_VERTICAL_OFFSET, scaleAndOffset[2],
+                config.getInterpolator(ANIM_OVERVIEW_TRANSLATE_Y, LINEAR));
         PagedOrientationHandler orientationHandler =
                 ((RecentsView) mLauncher.getOverviewPanel()).getPagedOrientationHandler();
         FloatProperty taskViewsFloat = orientationHandler.getSplitSelectTaskOffset(
-                TASK_PRIMARY_TRANSLATION, TASK_SECONDARY_TRANSLATION, mLauncher.getDeviceProfile());
+                TASK_PRIMARY_SPLIT_TRANSLATION, TASK_SECONDARY_SPLIT_TRANSLATION,
+                mLauncher.getDeviceProfile());
         setter.setFloat(mRecentsView, taskViewsFloat,
-                toState.getOverviewSecondaryTranslation(mLauncher),
-                config.getInterpolator(ANIM_OVERVIEW_TRANSLATE_Y, LINEAR));
+                toState.getOverviewSecondaryTranslation(mLauncher), LINEAR);
 
         setter.setFloat(mRecentsView, getContentAlphaProperty(), toState.overviewUi ? 1 : 0,
                 config.getInterpolator(ANIM_OVERVIEW_FADE, AGGRESSIVE_EASE_IN_OUT));

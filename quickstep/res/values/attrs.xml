@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2018 The Android Open Source Project
+     Copyright (C) 2021 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -15,14 +15,8 @@
      limitations under the License.
 -->
 <resources>
-    <!-- Task Menu layout styles. -->
-    <style name="TaskMenu">
-        <item name="android:orientation">horizontal</item>
-    </style>
-
-    <!-- Task Menu Option layout styles. -->
-    <style name="TaskMenu.Option">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_weight">1</item>
-    </style>
+    <declare-styleable name="AllSetLinkSpan">
+        <attr name="android:textSize"/>
+        <attr name="android:fontFamily"/>
+    </declare-styleable>
 </resources>

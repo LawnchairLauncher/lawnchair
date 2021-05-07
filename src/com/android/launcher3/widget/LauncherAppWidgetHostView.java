@@ -16,6 +16,9 @@
 
 package com.android.launcher3.widget;
 
+import static com.android.launcher3.Utilities.getBoundsForViewInDragLayer;
+import static com.android.launcher3.Utilities.setRect;
+
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -25,7 +28,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.util.SparseIntArray;
 import android.view.LayoutInflater;
@@ -72,6 +74,8 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
 
     // Maintains a list of widget ids which are supposed to be auto advanced.
     private static final SparseBooleanArray sAutoAdvanceWidgetIds = new SparseBooleanArray();
+    // Maximum duration for which updates can be deferred.
+    private static final long UPDATE_LOCK_TIMEOUT_MILLIS = 1000;
 
     protected final LayoutInflater mInflater;
 
@@ -93,11 +97,12 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
     private RectF mLastLocationRegistered = null;
     @Nullable private AppWidgetHostViewDragListener mDragListener;
 
-    // Used to store the widget size during onLayout.
+    // Used to store the widget sizes in drag layer coordinates.
     private final Rect mCurrentWidgetSize = new Rect();
     private final Rect mWidgetSizeAtDrag = new Rect();
+
+    private final float[] mTmpFloatArray = new float[4];
     private final RectF mTempRectF = new RectF();
-    private final boolean mIsRtl;
     private final Rect mEnforcedRectangle = new Rect();
     private final float mEnforcedCornerRadius;
     private final ViewOutlineProvider mCornerRadiusEnforcementOutline = new ViewOutlineProvider() {
@@ -110,6 +115,9 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
             }
         }
     };
+    private final Object mUpdateLock = new Object();
+    private long mDeferUpdatesUntilMillis = 0;
+    private RemoteViews mMostRecentRemoteViews;
 
     public LauncherAppWidgetHostView(Context context) {
         super(context);
@@ -124,7 +132,6 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
         if (Utilities.ATLEAST_Q && Themes.getAttrBoolean(mLauncher, R.attr.isWorkspaceDarkText)) {
             setOnLightBackground(true);
         }
-        mIsRtl = Utilities.isRtl(context.getResources());
         mColorExtractor = LocalColorExtractor.newInstance(getContext());
         mColorExtractor.setListener(this);
 
@@ -165,6 +172,11 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
 
     @Override
     public void updateAppWidget(RemoteViews remoteViews) {
+        synchronized (mUpdateLock) {
+            mMostRecentRemoteViews = remoteViews;
+            if (SystemClock.uptimeMillis() < mDeferUpdatesUntilMillis) return;
+        }
+
         super.updateAppWidget(remoteViews);
 
         // The provider info or the views might have changed.
@@ -196,6 +208,34 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
             }
         }
         return false;
+    }
+
+    /**
+     * Begin deferring the application of any {@link RemoteViews} updates made through
+     * {@link #updateAppWidget(RemoteViews)} until {@link #endDeferringUpdates()} has been called or
+     * the next {@link #updateAppWidget(RemoteViews)} call after {@link #UPDATE_LOCK_TIMEOUT_MILLIS}
+     * have elapsed.
+     */
+    public void beginDeferringUpdates() {
+        synchronized (mUpdateLock) {
+            mDeferUpdatesUntilMillis = SystemClock.uptimeMillis() + UPDATE_LOCK_TIMEOUT_MILLIS;
+        }
+    }
+
+    /**
+     * Stop deferring the application of {@link RemoteViews} updates made through
+     * {@link #updateAppWidget(RemoteViews)} and apply the most recently received update.
+     */
+    public void endDeferringUpdates() {
+        RemoteViews remoteViews;
+        synchronized (mUpdateLock) {
+            mDeferUpdatesUntilMillis = 0;
+            remoteViews = mMostRecentRemoteViews;
+            mMostRecentRemoteViews = null;
+        }
+        if (remoteViews != null) {
+            updateAppWidget(remoteViews);
+        }
     }
 
     public boolean onInterceptTouchEvent(MotionEvent ev) {
@@ -281,13 +321,12 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
         mIsScrollable = checkScrollableRecursively(this);
 
         if (!mIsInDragMode && getTag() instanceof LauncherAppWidgetInfo) {
-            mCurrentWidgetSize.left = left;
-            mCurrentWidgetSize.top = top;
-            mCurrentWidgetSize.right = right;
-            mCurrentWidgetSize.bottom = bottom;
             LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) getTag();
-            int pageId = mWorkspace.getPageIndexForScreenId(info.screenId);
-            updateColorExtraction(mCurrentWidgetSize, pageId);
+            getBoundsForViewInDragLayer(mLauncher.getDragLayer(), this, mCurrentWidgetSize, true,
+                    mTmpFloatArray, mTempRectF);
+            setRect(mTempRectF, mCurrentWidgetSize);
+            updateColorExtraction(mCurrentWidgetSize,
+                    mWorkspace.getPageIndexForScreenId(info.screenId));
         }
 
         enforceRoundedCorners();
@@ -300,8 +339,8 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
     }
 
     /** Handles a drag event occurred on a workspace page, {@code pageId}. */
-    public void handleDrag(Rect rect, int pageId) {
-        mWidgetSizeAtDrag.set(rect);
+    public void handleDrag(Rect rectInDragLayer, int pageId) {
+        mWidgetSizeAtDrag.set(rectInDragLayer);
         updateColorExtraction(mWidgetSizeAtDrag, pageId);
     }
 
@@ -313,53 +352,14 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
         requestLayout();
     }
 
-    private void updateColorExtraction(Rect widgetLocation, int pageId) {
-        // If the widget hasn't been measured and laid out, we cannot do this.
-        if (widgetLocation.isEmpty()) {
-            return;
-        }
-        int screenWidth = mLauncher.getDeviceProfile().widthPx;
-        int screenHeight = mLauncher.getDeviceProfile().heightPx;
-        int numScreens = mWorkspace.getNumPagesForWallpaperParallax();
-        pageId = mIsRtl ? numScreens - pageId - 1 : pageId;
-        float relativeScreenWidth = 1f / numScreens;
-        float absoluteTop = widgetLocation.top;
-        float absoluteBottom = widgetLocation.bottom;
-        View v = this;
-        while (v.getParent() instanceof View) {
-            v = (View) v.getParent();
-            if (v.getId() != R.id.launcher) {
-                break;
-            }
-            absoluteBottom += v.getTop();
-            absoluteTop += v.getTop();
-        }
-        float xOffset = 0;
-        View parentView = (View) getParent();
-        // The layout depends on the orientation.
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            int parentViewWidth = parentView == null ? 0 : parentView.getWidth();
-            xOffset = screenWidth - mWorkspace.getPaddingRight() - parentViewWidth;
-        } else {
-            int parentViewPaddingLeft = parentView == null ? 0 : parentView.getPaddingLeft();
-            xOffset = mWorkspace.getPaddingLeft() + parentViewPaddingLeft;
-        }
-        // This is the position of the widget relative to the wallpaper, as expected by the
-        // local color extraction of the WallpaperManager.
-        // The coordinate system is such that, on the horizontal axis, each screen has a
-        // distinct range on the [0,1] segment. So if there are 3 screens, they will have the
-        // ranges [0, 1/3], [1/3, 2/3] and [2/3, 1]. The position on the subrange should be
-        // the position of the widget relative to the screen. For the vertical axis, this is
-        // simply the location of the widget relative to the screen.
-        mTempRectF.left = ((widgetLocation.left + xOffset) / screenWidth + pageId)
-                * relativeScreenWidth;
-        mTempRectF.right = ((widgetLocation.right + xOffset) / screenWidth + pageId)
-                * relativeScreenWidth;
-        mTempRectF.top = absoluteTop / screenHeight;
-        mTempRectF.bottom = absoluteBottom / screenHeight;
-        if (mTempRectF.left < 0 || mTempRectF.right > 1 || mTempRectF.top < 0
-                || mTempRectF.bottom > 1) {
-            Log.e(LOG_TAG, "   Error, invalid relative position");
+    /**
+     * @param rectInDragLayer Rect of widget in drag layer coordinates.
+     * @param pageId The workspace page the widget is on.
+     */
+    private void updateColorExtraction(Rect rectInDragLayer, int pageId) {
+        mColorExtractor.getExtractedRectForViewRect(mLauncher, pageId, rectInDragLayer, mTempRectF);
+
+        if (mTempRectF.isEmpty()) {
             return;
         }
         if (!mTempRectF.equals(mLastLocationRegistered)) {

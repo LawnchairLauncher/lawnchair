@@ -456,7 +456,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     private boolean isTwoPanelEnabled() {
-        return mLauncher.mDeviceProfile.isTablet && FeatureFlags.ENABLE_TWO_PANEL_HOME.get();
+        return mLauncher.mDeviceProfile.isTwoPanels;
     }
 
     @Override
@@ -2066,9 +2066,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         if (mDragOverlappingLayout != null) {
             mDragOverlappingLayout.setIsDragOverlapping(true);
         }
-        // Invalidating the scrim will also force this CellLayout
-        // to be invalidated so that it is highlighted if necessary.
-        mLauncher.getDragLayer().getWorkspaceDragScrim().invalidate();
     }
 
     public CellLayout getCurrentDragOverlappingLayout() {

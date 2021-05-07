@@ -156,6 +156,25 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
+    public int getSplitTaskViewDismissDirection(SplitPositionOption splitPosition,
+            DeviceProfile dp) {
+        if (splitPosition.mStagePosition == STAGE_POSITION_TOP_OR_LEFT) {
+            if (dp.isLandscape) {
+                // Left side
+                return SPLIT_TRANSLATE_PRIMARY_NEGATIVE;
+            } else {
+                // Top side
+                return SPLIT_TRANSLATE_SECONDARY_NEGATIVE;
+            }
+        } else if (splitPosition.mStagePosition == STAGE_POSITION_BOTTOM_OR_RIGHT) {
+            // We don't have a bottom option, so should be right
+            return SPLIT_TRANSLATE_PRIMARY_POSITIVE;
+        }
+        throw new IllegalStateException("Invalid split stage position: " +
+                splitPosition.mStagePosition);
+    }
+
+    @Override
     public int getPrimaryScroll(View view) {
         return view.getScrollX();
     }
@@ -253,14 +272,34 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public int getTaskMenuLayoutOrientation(boolean canRecentsActivityRotate,
+    public void setTaskMenuLayoutOrientation(DeviceProfile deviceProfile,
         LinearLayout taskMenuLayout) {
-        return canRecentsActivityRotate ? taskMenuLayout.getOrientation() : LinearLayout.VERTICAL;
+        if (deviceProfile.isLandscape && !deviceProfile.isTablet) {
+            // Phone landscape
+            taskMenuLayout.setOrientation(LinearLayout.HORIZONTAL);
+        } else {
+            // Phone Portrait, LargeScreen Landscape/Portrait
+            taskMenuLayout.setOrientation(LinearLayout.VERTICAL);
+        }
     }
 
     @Override
-    public void setLayoutParamsForTaskMenuOptionItem(LinearLayout.LayoutParams lp) {
-        // no-op, defaults are fine
+    public void setLayoutParamsForTaskMenuOptionItem(LinearLayout.LayoutParams lp,
+            LinearLayout viewGroup, DeviceProfile deviceProfile) {
+        if (deviceProfile.isLandscape && !deviceProfile.isTablet) {
+            // Phone landscape
+            viewGroup.setOrientation(LinearLayout.VERTICAL);
+            lp.width = 0;
+            lp.weight = 1;
+            Utilities.setStartMarginForView(viewGroup.findViewById(R.id.text), 0);
+            Utilities.setStartMarginForView(viewGroup.findViewById(R.id.icon), 0);
+        } else {
+            // Phone Portrait, LargeScreen Landscape/Portrait
+            viewGroup.setOrientation(LinearLayout.HORIZONTAL);
+            lp.width = LinearLayout.LayoutParams.MATCH_PARENT;
+        }
+
+        lp.height = LinearLayout.LayoutParams.WRAP_CONTENT;
     }
 
     /* ---------- The following are only used by TaskViewTouchHandler. ---------- */

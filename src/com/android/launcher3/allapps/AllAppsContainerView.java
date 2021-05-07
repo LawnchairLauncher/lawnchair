@@ -75,7 +75,7 @@ import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.OnActivePag
 public class AllAppsContainerView extends SpringRelativeLayout implements DragSource,
         Insettable, OnDeviceProfileChangeListener, OnActivePageChangedListener {
 
-    private static final float FLING_VELOCITY_MULTIPLIER = 1800f;
+    private static final float FLING_VELOCITY_MULTIPLIER = 1000f;
 
     // Starts the springs after at least 25% of the animation has passed.
     private static final float FLING_ANIMATION_THRESHOLD = 0.25f;
@@ -157,7 +157,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     @Override
     public void onDeviceProfileChanged(DeviceProfile dp) {
         for (AdapterHolder holder : mAH) {
-            holder.adapter.setAppsPerRow(dp.inv.numAllAppsColumns);
+            holder.adapter.setAppsPerRow(dp.numShownAllAppsColumns);
             if (holder.recyclerView != null) {
                 // Remove all views and clear the pool, while keeping the data same. After this
                 // call, all the viewHolders will be recreated.
@@ -611,7 +611,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
                 if (shouldSpring
                         && valueAnimator.getAnimatedFraction() >= FLING_ANIMATION_THRESHOLD) {
-                    absorbSwipeUpVelocity(-Math.abs(
+                    absorbSwipeUpVelocity(Math.abs(
                             Math.round(velocity * FLING_VELOCITY_MULTIPLIER)));
                     shouldSpring = false;
                 }

@@ -18,6 +18,7 @@ package com.android.launcher3.uioverrides.states;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
 
 import android.content.Context;
+import android.graphics.Color;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
@@ -86,10 +87,15 @@ public class BackgroundAppState extends OverviewState {
         return 1f;
     }
 
+    @Override
+    public int getWorkspaceScrimColor(Launcher launcher) {
+        return Color.TRANSPARENT;
+    }
+
     public static float[] getOverviewScaleAndOffsetForBackgroundState(
             BaseDraggingActivity activity) {
         return new float[] {
                 ((RecentsView) activity.getOverviewPanel()).getMaxScaleForFullScreen(),
-                NO_OFFSET};
+                NO_OFFSET, NO_OFFSET};
     }
 }

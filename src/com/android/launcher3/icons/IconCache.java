@@ -52,7 +52,6 @@ import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutKey;
-import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Preconditions;
@@ -82,10 +81,11 @@ public class IconCache extends BaseIconCache {
     private int mPendingIconRequestCount = 0;
 
     public IconCache(Context context, InvariantDeviceProfile idp) {
-        this(context, idp, LauncherFiles.APP_ICONS_DB);
+        this(context, idp, LauncherFiles.APP_ICONS_DB, new IconProvider(context));
     }
 
-    public IconCache(Context context, InvariantDeviceProfile idp, String dbFileName) {
+    public IconCache(Context context, InvariantDeviceProfile idp, String dbFileName,
+            IconProvider iconProvider) {
         super(context, dbFileName, MODEL_EXECUTOR.getLooper(),
                 idp.fillResIconDpi, idp.iconBitmapSize, true /* inMemoryCache */);
         mComponentWithLabelCachingLogic = new ComponentCachingLogic(context, false);
@@ -94,7 +94,7 @@ public class IconCache extends BaseIconCache {
         mLauncherApps = mContext.getSystemService(LauncherApps.class);
         mUserManager = UserCache.INSTANCE.get(mContext);
         mInstantAppResolver = InstantAppResolver.newInstance(mContext);
-        mIconProvider = new IconProvider(context);
+        mIconProvider = iconProvider;
     }
 
     @Override
@@ -108,7 +108,7 @@ public class IconCache extends BaseIconCache {
     }
 
     @Override
-    protected BaseIconFactory getIconFactory() {
+    public BaseIconFactory getIconFactory() {
         return LauncherIcons.obtain(mContext);
     }
 
@@ -331,15 +331,6 @@ public class IconCache extends BaseIconCache {
     protected String getIconSystemState(String packageName) {
         return mIconProvider.getSystemStateForPackage(mSystemState, packageName)
                 + ",flags_asi:" + FeatureFlags.APP_SEARCH_IMPROVEMENTS.get();
-    }
-
-    @Override
-    protected boolean getEntryFromDB(ComponentKey cacheKey, CacheEntry entry, boolean lowRes) {
-        if (mIconProvider.isClockIcon(cacheKey)) {
-            // For clock icon, we always load the dynamic icon
-            return false;
-        }
-        return super.getEntryFromDB(cacheKey, entry, lowRes);
     }
 
     /**

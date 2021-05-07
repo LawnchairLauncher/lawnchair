@@ -42,6 +42,10 @@ import java.util.List;
  */
 public interface PagedOrientationHandler {
 
+    int SPLIT_TRANSLATE_PRIMARY_POSITIVE = 0;
+    int SPLIT_TRANSLATE_PRIMARY_NEGATIVE = 1;
+    int SPLIT_TRANSLATE_SECONDARY_NEGATIVE = 2;
+
     PagedOrientationHandler PORTRAIT = new PortraitPagedViewHandler();
     PagedOrientationHandler LANDSCAPE = new LandscapePagedViewHandler();
     PagedOrientationHandler SEASCAPE = new SeascapePagedViewHandler();
@@ -71,6 +75,13 @@ public interface PagedOrientationHandler {
     int getSecondaryDimension(View view);
     FloatProperty<View> getPrimaryViewTranslate();
     FloatProperty<View> getSecondaryViewTranslate();
+
+    /**
+     * @param splitPosition The position where the view to be split will go
+     * @return {@link #SPLIT_TRANSLATE_*} constants to indicate which direction the
+     * dismissal should happen
+     */
+    int getSplitTaskViewDismissDirection(SplitPositionOption splitPosition, DeviceProfile dp);
     int getPrimaryScroll(View view);
     float getPrimaryScale(View view);
     int getChildStart(View view);
@@ -101,8 +112,9 @@ public interface PagedOrientationHandler {
     float getTaskMenuX(float x, View thumbnailView, int overScroll);
     float getTaskMenuY(float y, View thumbnailView, int overScroll);
     int getTaskMenuWidth(View view);
-    int getTaskMenuLayoutOrientation(boolean canRecentsActivityRotate, LinearLayout taskMenuLayout);
-    void setLayoutParamsForTaskMenuOptionItem(LinearLayout.LayoutParams lp);
+    void setTaskMenuLayoutOrientation(DeviceProfile deviceProfile, LinearLayout taskMenuLayout);
+    void setLayoutParamsForTaskMenuOptionItem(LinearLayout.LayoutParams lp,
+            LinearLayout viewGroup, DeviceProfile deviceProfile);
     int getDistanceToBottomOfRect(DeviceProfile dp, Rect rect);
     List<SplitPositionOption> getSplitPositionOptions(DeviceProfile dp);
     FloatProperty getSplitSelectTaskOffset(FloatProperty primary, FloatProperty secondary,

@@ -233,15 +233,8 @@ public class FloatingIconView extends FrameLayout implements
             outViewBounds.set(0, 0, v.getWidth(), v.getHeight());
         }
 
-        float[] points = new float[] {outViewBounds.left, outViewBounds.top, outViewBounds.right,
-                outViewBounds.bottom};
-        Utilities.getDescendantCoordRelativeToAncestor(v, launcher.getDragLayer(), points,
-                false, ignoreTransform);
-        outRect.set(
-                Math.min(points[0], points[2]),
-                Math.min(points[1], points[3]),
-                Math.max(points[0], points[2]),
-                Math.max(points[1], points[3]));
+        Utilities.getBoundsForViewInDragLayer(launcher.getDragLayer(), v, outViewBounds,
+                ignoreTransform, null /** recycle */, outRect);
     }
 
     /**

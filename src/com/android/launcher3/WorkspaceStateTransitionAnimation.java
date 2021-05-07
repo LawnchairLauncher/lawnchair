@@ -34,6 +34,7 @@ import static com.android.launcher3.graphics.Scrim.SCRIM_PROGRESS;
 import static com.android.launcher3.graphics.SysUiScrim.SYSUI_PROGRESS;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_SCALE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_TRANSLATE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_SCRIM_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_SCALE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_TRANSLATE;
@@ -161,9 +162,13 @@ public class WorkspaceStateTransitionAnimation {
         propertySetter.setFloat(workspaceDragScrim, SCRIM_PROGRESS,
                 state.getWorkspaceBackgroundAlpha(mLauncher), LINEAR);
 
-        SysUiScrim sysUiScrim = mLauncher.getDragLayer().getSysUiScrim();
+        SysUiScrim sysUiScrim = mLauncher.getRootView().getSysUiScrim();
         propertySetter.setFloat(sysUiScrim, SYSUI_PROGRESS,
                 state.hasFlag(FLAG_HAS_SYS_UI_SCRIM) ? 1 : 0, LINEAR);
+
+        propertySetter.setViewBackgroundColor(mLauncher.getScrimView(),
+                state.getWorkspaceScrimColor(mLauncher),
+                config.getInterpolator(ANIM_SCRIM_FADE, LINEAR));
     }
 
     public void applyChildState(LauncherState state, CellLayout cl, int childIndex) {

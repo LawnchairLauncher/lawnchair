@@ -20,8 +20,10 @@ import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_MO
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SCALE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_X;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_Y;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_SCRIM_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_OVERVIEW;
-import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_OFFSET;
+import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_HORIZONTAL_OFFSET;
+import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_VERTICAL_OFFSET;
 import static com.android.quickstep.views.RecentsView.FULLSCREEN_PROGRESS;
 import static com.android.quickstep.views.RecentsView.RECENTS_GRID_PROGRESS;
 import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
@@ -85,8 +87,10 @@ public class FallbackRecentsStateController implements StateHandler<RecentsState
         float[] scaleAndOffset = state.getOverviewScaleAndOffset(mActivity);
         setter.setFloat(mRecentsView, RECENTS_SCALE_PROPERTY, scaleAndOffset[0],
                 config.getInterpolator(ANIM_OVERVIEW_SCALE, LINEAR));
-        setter.setFloat(mRecentsView, ADJACENT_PAGE_OFFSET, scaleAndOffset[1],
+        setter.setFloat(mRecentsView, ADJACENT_PAGE_HORIZONTAL_OFFSET, scaleAndOffset[1],
                 config.getInterpolator(ANIM_OVERVIEW_TRANSLATE_X, LINEAR));
+        setter.setFloat(mRecentsView, ADJACENT_PAGE_VERTICAL_OFFSET, scaleAndOffset[2],
+                config.getInterpolator(ANIM_OVERVIEW_TRANSLATE_Y, LINEAR));
         setter.setFloat(mRecentsView, TASK_SECONDARY_TRANSLATION, 0f,
                 config.getInterpolator(ANIM_OVERVIEW_TRANSLATE_Y, LINEAR));
 
@@ -95,5 +99,8 @@ public class FallbackRecentsStateController implements StateHandler<RecentsState
         setter.setFloat(mRecentsView, FULLSCREEN_PROGRESS, state.isFullScreen() ? 1 : 0, LINEAR);
         setter.setFloat(mRecentsView, RECENTS_GRID_PROGRESS,
                 state.displayOverviewTasksAsGrid(mActivity.getDeviceProfile()) ? 1f : 0f, LINEAR);
+
+        setter.setViewBackgroundColor(mActivity.getScrimView(), state.getScrimColor(mActivity),
+                config.getInterpolator(ANIM_SCRIM_FADE, LINEAR));
     }
 }

@@ -160,6 +160,19 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
+    public int getSplitTaskViewDismissDirection(SplitPositionOption splitPosition,
+            DeviceProfile dp) {
+        // Don't use device profile here because we know we're in fake landscape, only split option
+        // available is top/left
+        if (splitPosition.mStagePosition == STAGE_POSITION_TOP_OR_LEFT) {
+            // Top (visually left) side
+            return SPLIT_TRANSLATE_PRIMARY_NEGATIVE;
+        }
+        throw new IllegalStateException("Invalid split stage position: " +
+                splitPosition.mStagePosition);
+    }
+
+    @Override
     public int getPrimaryScroll(View view) {
         return view.getScrollY();
     }
@@ -254,16 +267,21 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public int getTaskMenuLayoutOrientation(boolean canRecentsActivityRotate,
+    public void setTaskMenuLayoutOrientation(DeviceProfile deviceProfile,
         LinearLayout taskMenuLayout) {
-        return LinearLayout.HORIZONTAL;
+        taskMenuLayout.setOrientation(LinearLayout.HORIZONTAL);
     }
 
     @Override
-    public void setLayoutParamsForTaskMenuOptionItem(LinearLayout.LayoutParams lp) {
+    public void setLayoutParamsForTaskMenuOptionItem(LinearLayout.LayoutParams lp,
+            LinearLayout viewGroup, DeviceProfile deviceProfile) {
+        // Phone fake landscape
+        viewGroup.setOrientation(LinearLayout.VERTICAL);
         lp.width = 0;
         lp.height = WRAP_CONTENT;
         lp.weight = 1;
+        Utilities.setStartMarginForView(viewGroup.findViewById(R.id.text), 0);
+        Utilities.setStartMarginForView(viewGroup.findViewById(R.id.icon), 0);
     }
 
     /* ---------- The following are only used by TaskViewTouchHandler. ---------- */
