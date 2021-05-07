@@ -18,6 +18,7 @@ package com.android.launcher3.views;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_SCRIM_VIEW;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
@@ -37,13 +38,16 @@ public class ScrimView extends View implements Insettable {
 
     private SystemUiController mSystemUiController;
 
+    private ScrimDrawingController mDrawingController;
+
     public ScrimView(Context context, AttributeSet attrs) {
         super(context, attrs);
         setFocusable(false);
     }
 
     @Override
-    public void setInsets(Rect insets) { }
+    public void setInsets(Rect insets) {
+    }
 
     @Override
     public boolean hasOverlappingRendering() {
@@ -60,6 +64,14 @@ public class ScrimView extends View implements Insettable {
     public void setBackgroundColor(int color) {
         updateSysUiColors();
         super.setBackgroundColor(color);
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        if (mDrawingController != null) {
+            mDrawingController.drawOnScrim(canvas);
+        }
     }
 
     @Override
@@ -95,5 +107,25 @@ public class ScrimView extends View implements Insettable {
         }
         return ColorUtils.calculateLuminance(
                 ((ColorDrawable) getBackground()).getColor()) < 0.5f;
+    }
+
+    /**
+     * Sets drawing controller. Invalidates ScrimView if drawerController has changed.
+     */
+    public void setDrawingController(ScrimDrawingController drawingController) {
+        if (mDrawingController != drawingController) {
+            mDrawingController = drawingController;
+            invalidate();
+        }
+    }
+
+    /**
+     * A Utility interface allowing for other surfaces to draw on ScrimView
+     */
+    public interface ScrimDrawingController {
+        /**
+         * Called inside ScrimView#OnDraw
+         */
+        void drawOnScrim(Canvas canvas);
     }
 }
