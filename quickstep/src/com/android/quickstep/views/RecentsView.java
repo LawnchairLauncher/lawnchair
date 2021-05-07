@@ -3359,6 +3359,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             return;
         }
 
+        final boolean sendUserLeaveHint = toRecents && LIVE_TILE.get();
+        if (sendUserLeaveHint) {
+            // Notify the SysUI to use fade-in animation when entering PiP from live tile.
+            final SystemUiProxy systemUiProxy = SystemUiProxy.INSTANCE.get(getContext());
+            systemUiProxy.notifySwipeToHomeFinished();
+            systemUiProxy.setShelfHeight(true, mActivity.getDeviceProfile().hotseatBarSizePx);
+        }
         mRecentsAnimationController.finish(toRecents, () -> {
             if (onFinishComplete != null) {
                 onFinishComplete.run();
@@ -3370,7 +3377,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             // taps on QSB (3) user goes back to Overview and launch the most recent task.
             setCurrentTask(-1);
             mRecentsAnimationController = null;
-        });
+        }, sendUserLeaveHint);
     }
 
     public void setDisallowScrollToClearAll(boolean disallowScrollToClearAll) {
