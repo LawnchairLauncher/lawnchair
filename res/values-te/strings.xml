@@ -32,10 +32,8 @@
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"విడ్జెట్‌ను తరలించడానికి లేదా అనుకూల చర్యలను ఉపయోగించడానికి రెండుసార్లు నొక్కండి &amp; హోల్డ్ చేయి."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d వెడల్పు X %2$d ఎత్తు"</string>
-    <!-- no translation found for add_item_request_drag_hint (5653291305078645405) -->
-    <skip />
-    <!-- no translation found for add_to_home_screen (8631549138215492708) -->
-    <skip />
+    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"విడ్జెట్‌ను మొదటి స్క్రీన్ చుట్టూ తిప్పడానికి దాన్ని తాకి, &amp; నొక్కి ఉంచండి"</string>
+    <string name="add_to_home_screen" msgid="8631549138215492708">"మొదటి స్క్రీన్‌కు జోడించు"</string>
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
       <item quantity="other"><xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> విడ్జెట్‌లు</item>
       <item quantity="one"><xliff:g id="WIDGETS_COUNT_0">%1$d</xliff:g> విడ్జెట్</item>
@@ -99,7 +97,8 @@
     <string name="folder_name_format_exact" msgid="8626242716117004803">"ఫోల్డర్: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> ఐటెమ్‌లు"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"ఫోల్డర్: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> లేదా అంతకంటే ఎక్కువ ఐటెమ్‌లు"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"వాల్‌పేపర్‌లు"</string>
-    <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"స్ట‌యిల్స్‌ &amp; వాల్‌పేపర్‌లు"</string>
+    <!-- no translation found for styles_wallpaper_button_text (8216961355289236794) -->
+    <skip />
     <string name="settings_button_text" msgid="8873672322605444408">"హోమ్ సెట్టింగ్‌లు"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"మీ నిర్వాహకులు నిలిపివేసారు"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"హోమ్ స్క్రీన్ రొటేషన్‌ను అనుమతించండి"</string>
