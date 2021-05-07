@@ -1349,6 +1349,8 @@ public final class LauncherInstrumentation {
     }
 
     public int getTotalPssKb() {
+        // GC the system & sysui first before gc'ing launcher
+        logShellCommand("cmd statusbar run-gc");
         return getTestInfo(TestProtocol.REQUEST_TOTAL_PSS_KB).
                 getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
