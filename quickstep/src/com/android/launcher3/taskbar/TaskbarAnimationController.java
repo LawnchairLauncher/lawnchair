@@ -44,7 +44,7 @@ public class TaskbarAnimationController {
     private final AnimatedFloat mTaskbarVisibilityAlphaForLauncherState = new AnimatedFloat(
             this::updateVisibilityAlpha);
     private final AnimatedFloat mTaskbarVisibilityAlphaForIme = new AnimatedFloat(
-            this::updateVisibilityAlpha);
+            this::updateVisibilityAlphaForIme);
 
     // Scale.
     private final AnimatedFloat mTaskbarScaleForLauncherState = new AnimatedFloat(
@@ -110,14 +110,20 @@ public class TaskbarAnimationController {
         // We use mTaskbarBackgroundAlpha as a proxy for whether Launcher is resumed/paused, the
         // assumption being that Taskbar should always be visible regardless of the current
         // LauncherState if Launcher is paused.
+        float alphaDueToIme = mTaskbarVisibilityAlphaForIme.value;
         float alphaDueToLauncher = Math.max(mTaskbarBackgroundAlpha.value,
                 mTaskbarVisibilityAlphaForLauncherState.value);
-        float alphaDueToOther = mTaskbarVisibilityAlphaForIme.value;
-        float taskbarAlpha = alphaDueToLauncher * alphaDueToOther;
+        float taskbarAlpha = alphaDueToLauncher * alphaDueToIme;
         mTaskbarCallbacks.updateTaskbarVisibilityAlpha(taskbarAlpha);
 
         // Make the nav bar invisible if taskbar is visible.
         setNavBarButtonAlpha(1f - taskbarAlpha);
+    }
+
+    private void updateVisibilityAlphaForIme() {
+        updateVisibilityAlpha();
+        float taskbarAlphaDueToIme = mTaskbarVisibilityAlphaForIme.value;
+        mTaskbarCallbacks.updateImeBarVisibilityAlpha(1f - taskbarAlphaDueToIme);
     }
 
     private void updateScale() {
