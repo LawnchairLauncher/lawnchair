@@ -118,6 +118,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
             ViewGroup.LayoutParams layoutParams = widgetsTableScrollView.getLayoutParams();
             layoutParams.height = mMaxTableHeight;
             widgetsTableScrollView.setLayoutParams(layoutParams);
+            findViewById(R.id.collapse_handle).setVisibility(VISIBLE);
         }
     }
 

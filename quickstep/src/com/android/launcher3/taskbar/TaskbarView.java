@@ -15,6 +15,10 @@
  */
 package com.android.launcher3.taskbar;
 
+import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_BACK;
+import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_HOME;
+import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_RECENTS;
+
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.LayoutTransition;
@@ -24,8 +28,10 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.os.SystemProperties;
 import android.util.AttributeSet;
 import android.view.DragEvent;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -45,11 +51,16 @@ import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.views.ActivityContext;
+import com.android.quickstep.SysUINavigationMode;
 
 /**
  * Hosts the Taskbar content such as Hotseat and Recent Apps. Drawn on top of other apps.
  */
 public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconParent, Insettable {
+
+
+    private static final boolean ENABLE_THREE_BUTTON_TASKBAR =
+            SystemProperties.getBoolean("persist.debug.taskbar_three_button", false);
 
     private final int mIconTouchSize;
     private final boolean mIsRtl;
@@ -68,14 +79,21 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
     private LayoutTransition mLayoutTransition;
     private int mHotseatStartIndex;
     private int mHotseatEndIndex;
+    private LinearLayout mButtonRegion;
 
     // Delegate touches to the closest view if within mIconTouchSize.
     private boolean mDelegateTargeted;
     private View mDelegateView;
+    // Prevents dispatching touches to children if true
+    private boolean mTouchEnabled = true;
 
     private boolean mIsDraggingItem;
     // Only non-null when the corresponding Folder is open.
     private @Nullable FolderIcon mLeaveBehindFolderIcon;
+
+    private int mNavButtonStartIndex;
+    /** Provider of buttons added to taskbar in 3 button nav */
+    private ButtonProvider mButtonProvider;
 
     public TaskbarView(@NonNull Context context) {
         this(context, null);
@@ -100,15 +118,28 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
     }
 
-    protected void construct(TaskbarController.TaskbarViewCallbacks taskbarViewCallbacks) {
+    protected void construct(TaskbarController.TaskbarViewCallbacks taskbarViewCallbacks,
+            ButtonProvider buttonProvider) {
         mControllerCallbacks = taskbarViewCallbacks;
         mNonIconScale = mControllerCallbacks.getNonIconScale(this);
         mItemMarginLeftRight = getResources().getDimensionPixelSize(R.dimen.taskbar_icon_spacing);
         mItemMarginLeftRight = Math.round(mItemMarginLeftRight * mNonIconScale);
+        mButtonProvider = buttonProvider;
+        mButtonProvider.setMarginLeftRight(mItemMarginLeftRight);
     }
 
-    protected void init(int numHotseatIcons) {
-        mHotseatStartIndex = 0;
+    protected void init(int numHotseatIcons, SysUINavigationMode.Mode newMode) {
+        // TODO: check if buttons on left
+        if (newMode == SysUINavigationMode.Mode.THREE_BUTTONS && ENABLE_THREE_BUTTON_TASKBAR) {
+            // 3 button
+            mNavButtonStartIndex = 0;
+            createNavButtons();
+        } else {
+            mNavButtonStartIndex = -1;
+            removeNavButtons();
+        }
+
+        mHotseatStartIndex = mNavButtonStartIndex + 1;
         mHotseatEndIndex = mHotseatStartIndex + numHotseatIcons - 1;
         updateHotseatItems(new ItemInfo[numHotseatIcons]);
 
@@ -185,11 +216,11 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
             if (hotseatView == null || hotseatView.getSourceLayoutResId() != expectedLayoutResId
                     || needsReinflate) {
                 removeView(hotseatView);
-                ActivityContext activityContext = ActivityContext.lookupContext(getContext());
+                ActivityContext activityContext = getActivityContext();
                 if (isFolder) {
                     FolderInfo folderInfo = (FolderInfo) hotseatItemInfo;
                     FolderIcon folderIcon = FolderIcon.inflateFolderAndIcon(expectedLayoutResId,
-                            ActivityContext.lookupContext(getContext()), this, folderInfo);
+                            getActivityContext(), this, folderInfo);
                     folderIcon.setTextVisible(false);
                     hotseatView = folderIcon;
                 } else {
@@ -244,9 +275,21 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
     }
 
     @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (!mTouchEnabled) {
+            return true;
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent event) {
         boolean handled = delegateTouchIfNecessary(event);
         return super.onTouchEvent(event) || handled;
+    }
+
+    public void setTouchesEnabled(boolean touchEnabled) {
+        this.mTouchEnabled = touchEnabled;
     }
 
     /**
@@ -335,12 +378,57 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
         return findDelegateView(xInOurCoordinates, yInOurCoorindates) != null;
     }
 
+    private void removeNavButtons() {
+        if (mButtonRegion != null) {
+            mButtonRegion.removeAllViews();
+            removeView(mButtonRegion);
+        } // else We've never been in 3 button. Woah Scoob!
+    }
+
+    /**
+     * Add back/home/recents buttons into a single ViewGroup that will be inserted at
+     * {@param navButtonStartIndex}
+     */
+    private void createNavButtons() {
+        ActivityContext context = getActivityContext();
+        if (mButtonRegion == null) {
+            mButtonRegion = new LinearLayout(getContext());
+        } else {
+            mButtonRegion.removeAllViews();
+        }
+        mButtonRegion.setVisibility(VISIBLE);
+
+        LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(
+                context.getDeviceProfile().iconSizePx,
+                context.getDeviceProfile().iconSizePx
+        );
+        buttonParams.gravity = Gravity.CENTER;
+
+        View backButton = mButtonProvider.getBack();
+        backButton.setOnClickListener(view -> mControllerCallbacks.onNavigationButtonClick(
+                BUTTON_BACK));
+        mButtonRegion.addView(backButton, buttonParams);
+
+        // Home button
+        View homeButton = mButtonProvider.getHome();
+        homeButton.setOnClickListener(view -> mControllerCallbacks.onNavigationButtonClick(
+                BUTTON_HOME));
+        mButtonRegion.addView(homeButton, buttonParams);
+
+        View recentsButton = mButtonProvider.getRecents();
+        recentsButton.setOnClickListener(view -> mControllerCallbacks.onNavigationButtonClick(
+                BUTTON_RECENTS));
+        mButtonRegion.addView(recentsButton, buttonParams);
+
+        addView(mButtonRegion, mNavButtonStartIndex);
+    }
+
     @Override
     public boolean onDragEvent(DragEvent event) {
         switch (event.getAction()) {
             case DragEvent.ACTION_DRAG_STARTED:
                 mIsDraggingItem = true;
-                AbstractFloatingView.closeAllOpenViews(ActivityContext.lookupContext(getContext()));
+                AbstractFloatingView.closeAllOpenViews(getActivityContext());
                 return true;
             case DragEvent.ACTION_DRAG_ENDED:
                 mIsDraggingItem = false;
@@ -407,12 +495,15 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
     }
 
     private View inflate(@LayoutRes int layoutResId) {
-        return ActivityContext.lookupContext(getContext()).getLayoutInflater()
-                .inflate(layoutResId, this, false);
+        return getActivityContext().getLayoutInflater().inflate(layoutResId, this, false);
     }
 
     @Override
     public void setInsets(Rect insets) {
         // Ignore, we just implement Insettable to draw behind system insets.
+    }
+
+    private <T extends Context & ActivityContext> T getActivityContext() {
+        return ActivityContext.lookupContext(getContext());
     }
 }

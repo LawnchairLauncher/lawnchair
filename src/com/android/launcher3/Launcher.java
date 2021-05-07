@@ -565,11 +565,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     }
 
     @Override
-    public void onIdpChanged(int changeFlags, InvariantDeviceProfile idp) {
-        onIdpChanged(idp);
-    }
-
-    private void onIdpChanged(InvariantDeviceProfile idp) {
+    public void onIdpChanged(InvariantDeviceProfile idp) {
         if (TestProtocol.sDebugTracing) {
             Log.d(TestProtocol.LAUNCHER_NOT_TRANSPOSED, "onIdpChanged");
         }
@@ -2780,7 +2776,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
      * @see LauncherState#getOverviewScaleAndOffset(Launcher)
      */
     public float[] getNormalOverviewScaleAndOffset() {
-        return new float[] {NO_SCALE, NO_OFFSET};
+        return new float[] {NO_SCALE, NO_OFFSET, NO_OFFSET};
     }
 
     /**

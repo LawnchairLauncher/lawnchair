@@ -15,6 +15,9 @@
  */
 package com.android.launcher3.taskbar;
 
+import static android.view.View.GONE;
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
 import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
@@ -28,6 +31,7 @@ import android.app.ActivityOptions;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.inputmethodservice.InputMethodService;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -48,9 +52,12 @@ import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.states.StateAnimationConfig;
+import com.android.launcher3.taskbar.TaskbarNavButtonController.TaskbarButton;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.views.ActivityContext;
 import com.android.quickstep.AnimatedFloat;
+import com.android.quickstep.SysUINavigationMode;
+import com.android.quickstep.TouchInteractionService.TaskbarOverviewProxyDelegate;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.WindowManagerWrapper;
@@ -58,13 +65,15 @@ import com.android.systemui.shared.system.WindowManagerWrapper;
 /**
  * Interfaces with Launcher/WindowManager/SystemUI to determine what to show in TaskbarView.
  */
-public class TaskbarController {
+public class TaskbarController implements TaskbarOverviewProxyDelegate {
 
     private static final String WINDOW_TITLE = "Taskbar";
 
     private final TaskbarContainerView mTaskbarContainerView;
     private final TaskbarView mTaskbarViewInApp;
     private final TaskbarView mTaskbarViewOnHome;
+    private final ImeBarView mImeBarView;
+
     private final BaseQuickstepLauncher mLauncher;
     private final WindowManager mWindowManager;
     // Layout width and height of the Taskbar in the default state.
@@ -73,9 +82,13 @@ public class TaskbarController {
     private final TaskbarAnimationController mTaskbarAnimationController;
     private final TaskbarHotseatController mHotseatController;
     private final TaskbarDragController mDragController;
+    private final TaskbarNavButtonController mNavButtonController;
 
     // Initialized in init().
     private WindowManager.LayoutParams mWindowLayoutParams;
+    private SysUINavigationMode.Mode mNavMode = SysUINavigationMode.Mode.NO_BUTTON;
+    private final SysUINavigationMode.NavigationModeChangeListener mNavigationModeChangeListener =
+            this::onNavModeChanged;
 
     private @Nullable Animator mAnimator;
     private boolean mIsAnimatingToLauncher;
@@ -85,10 +98,14 @@ public class TaskbarController {
         mLauncher = launcher;
         mTaskbarContainerView = taskbarContainerView;
         mTaskbarContainerView.construct(createTaskbarContainerViewCallbacks());
+        ButtonProvider buttonProvider = new ButtonProvider(launcher);
         mTaskbarViewInApp = mTaskbarContainerView.findViewById(R.id.taskbar_view);
-        mTaskbarViewInApp.construct(createTaskbarViewCallbacks());
+        mTaskbarViewInApp.construct(createTaskbarViewCallbacks(), buttonProvider);
         mTaskbarViewOnHome = taskbarViewOnHome;
-        mTaskbarViewOnHome.construct(createTaskbarViewCallbacks());
+        mTaskbarViewOnHome.construct(createTaskbarViewCallbacks(), buttonProvider);
+        mImeBarView = mTaskbarContainerView.findViewById(R.id.ime_bar_view);
+        mImeBarView.construct(buttonProvider);
+        mNavButtonController = new TaskbarNavButtonController(launcher);
         mWindowManager = mLauncher.getWindowManager();
         mTaskbarSize = new Point(MATCH_PARENT, mLauncher.getDeviceProfile().taskbarSize);
         mTaskbarStateHandler = mLauncher.getTaskbarStateHandler();
@@ -108,8 +125,18 @@ public class TaskbarController {
 
             @Override
             public void updateTaskbarVisibilityAlpha(float alpha) {
-                mTaskbarContainerView.setAlpha(alpha);
+                mTaskbarViewInApp.setAlpha(alpha);
                 mTaskbarViewOnHome.setAlpha(alpha);
+            }
+
+            @Override
+            public void updateImeBarVisibilityAlpha(float alpha) {
+                if (mNavMode != SysUINavigationMode.Mode.THREE_BUTTONS) {
+                    // TODO Remove sysui IME bar for gesture nav as well
+                    return;
+                }
+                mImeBarView.setAlpha(alpha);
+                mImeBarView.setVisibility(alpha == 0 ? GONE : VISIBLE);
             }
 
             @Override
@@ -136,16 +163,21 @@ public class TaskbarController {
         return new TaskbarContainerViewCallbacks() {
             @Override
             public void onViewRemoved() {
-                if (mTaskbarContainerView.getChildCount() == 1) {
-                    // Only TaskbarView remains.
-                    setTaskbarWindowFullscreen(false);
+                // Ensure no other children present (like Folders, etc)
+                for (int i = 0; i < mTaskbarContainerView.getChildCount(); i++) {
+                    View v = mTaskbarContainerView.getChildAt(i);
+                    if (!((v instanceof TaskbarView) || (v instanceof ImeBarView))){
+                        return;
+                    }
                 }
+                setTaskbarWindowFullscreen(false);
             }
 
             @Override
             public boolean isTaskbarTouchable() {
                 return mTaskbarContainerView.getAlpha() > AlphaUpdateListener.ALPHA_CUTOFF_THRESHOLD
-                        && mTaskbarViewInApp.getVisibility() == View.VISIBLE
+                        && (mTaskbarViewInApp.getVisibility() == VISIBLE
+                            || mImeBarView.getVisibility() == VISIBLE)
                         && !mIsAnimatingToLauncher;
             }
         };
@@ -198,7 +230,7 @@ public class TaskbarController {
                 // space so that the others line up with the home screen hotseat.
                 boolean isOnHomeScreen = taskbarView == mTaskbarViewOnHome
                         || mLauncher.hasBeenResumed() || mIsAnimatingToLauncher;
-                return isOnHomeScreen ? View.INVISIBLE : View.GONE;
+                return isOnHomeScreen ? INVISIBLE : GONE;
             }
 
             @Override
@@ -211,6 +243,11 @@ public class TaskbarController {
                 if (taskbarView == mTaskbarViewOnHome) {
                     alignRealHotseatWithTaskbar();
                 }
+            }
+
+            @Override
+            public void onNavigationButtonClick(@TaskbarButton int buttonType) {
+                mNavButtonController.onButtonClick(buttonType);
             }
         };
     }
@@ -228,9 +265,12 @@ public class TaskbarController {
      * Initializes the Taskbar, including adding it to the screen.
      */
     public void init() {
-        mTaskbarViewInApp.init(mHotseatController.getNumHotseatIcons());
-        mTaskbarViewOnHome.init(mHotseatController.getNumHotseatIcons());
+        mNavMode = SysUINavigationMode.INSTANCE.get(mLauncher)
+                .addModeChangeListener(mNavigationModeChangeListener);
+        mTaskbarViewInApp.init(mHotseatController.getNumHotseatIcons(), mNavMode);
+        mTaskbarViewOnHome.init(mHotseatController.getNumHotseatIcons(), mNavMode);
         mTaskbarContainerView.init(mTaskbarViewInApp);
+        mImeBarView.init(createTaskbarViewCallbacks());
         addToWindowManager();
         mTaskbarStateHandler.setTaskbarCallbacks(createTaskbarStateHandlerCallbacks());
         mTaskbarAnimationController.init();
@@ -272,12 +312,15 @@ public class TaskbarController {
         mTaskbarViewInApp.cleanup();
         mTaskbarViewOnHome.cleanup();
         mTaskbarContainerView.cleanup();
+        mImeBarView.cleanup();
         removeFromWindowManager();
         mTaskbarStateHandler.setTaskbarCallbacks(null);
         mTaskbarAnimationController.cleanup();
         mHotseatController.cleanup();
 
         setWhichTaskbarViewIsVisible(null);
+        SysUINavigationMode.INSTANCE.get(mLauncher)
+                .removeModeChangeListener(mNavigationModeChangeListener);
     }
 
     private void removeFromWindowManager() {
@@ -313,6 +356,12 @@ public class TaskbarController {
         mTaskbarViewInApp.setLayoutParams(taskbarLayoutParams);
 
         mWindowManager.addView(mTaskbarContainerView, mWindowLayoutParams);
+    }
+
+    private void onNavModeChanged(SysUINavigationMode.Mode newMode) {
+        mNavMode = newMode;
+        cleanup();
+        init();
     }
 
     /**
@@ -387,6 +436,28 @@ public class TaskbarController {
      */
     public void setIsImeVisible(boolean isImeVisible) {
         mTaskbarAnimationController.animateToVisibilityForIme(isImeVisible ? 0 : 1);
+        blockTaskbarTouchesForIme(isImeVisible);
+    }
+
+    /**
+     * When in 3 button nav, the above doesn't get called since we prevent sysui nav bar from
+     * instantiating at all, which is what's responsible for sending sysui state flags over.
+     *
+     * @param vis IME visibility flag
+     * @param backDisposition Used to determine back button behavior for software keyboard
+     *                        See BACK_DISPOSITION_* constants in {@link InputMethodService}
+     */
+    public void updateImeStatus(int displayId, int vis, int backDisposition,
+            boolean showImeSwitcher) {
+        if (displayId != mTaskbarContainerView.getContext().getDisplayId() ||
+                mNavMode != SysUINavigationMode.Mode.THREE_BUTTONS) {
+            return;
+        }
+
+        boolean imeVisible = (vis & InputMethodService.IME_VISIBLE) != 0;
+        mTaskbarAnimationController.animateToVisibilityForIme(imeVisible ? 0 : 1);
+        mImeBarView.setImeSwitcherVisibility(showImeSwitcher);
+        blockTaskbarTouchesForIme(imeVisible);
     }
 
     /**
@@ -436,10 +507,15 @@ public class TaskbarController {
 
     private void setWhichTaskbarViewIsVisible(@Nullable TaskbarView visibleTaskbar) {
         mTaskbarViewInApp.setVisibility(visibleTaskbar == mTaskbarViewInApp
-                ? View.VISIBLE : View.INVISIBLE);
+                ? VISIBLE : INVISIBLE);
         mTaskbarViewOnHome.setVisibility(visibleTaskbar == mTaskbarViewOnHome
-                ? View.VISIBLE : View.INVISIBLE);
+                ? VISIBLE : INVISIBLE);
         mLauncher.getHotseat().setIconsAlpha(visibleTaskbar != mTaskbarViewInApp ? 1f : 0f);
+    }
+
+    private void blockTaskbarTouchesForIme(boolean block) {
+        mTaskbarViewOnHome.setTouchesEnabled(!block);
+        mTaskbarViewInApp.setTouchesEnabled(!block);
     }
 
     /**
@@ -485,6 +561,7 @@ public class TaskbarController {
     protected interface TaskbarAnimationControllerCallbacks {
         void updateTaskbarBackgroundAlpha(float alpha);
         void updateTaskbarVisibilityAlpha(float alpha);
+        void updateImeBarVisibilityAlpha(float alpha);
         void updateTaskbarScale(float scale);
         void updateTaskbarTranslationY(float translationY);
     }
@@ -507,6 +584,7 @@ public class TaskbarController {
         /** Returns how much to scale non-icon elements such as spacing and dividers. */
         float getNonIconScale(TaskbarView taskbarView);
         void onItemPositionsChanged(TaskbarView taskbarView);
+        void onNavigationButtonClick(@TaskbarButton int buttonType);
     }
 
     /**

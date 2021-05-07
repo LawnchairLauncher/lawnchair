@@ -26,4 +26,10 @@
         android:layout_height="wrap_content"
         android:gravity="center"/>
 
+    <com.android.launcher3.taskbar.ImeBarView
+        android:id="@+id/ime_bar_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
+
 </com.android.launcher3.taskbar.TaskbarContainerView>

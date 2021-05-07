@@ -146,7 +146,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         mAdapters.put(AdapterHolder.SEARCH, new AdapterHolder(AdapterHolder.SEARCH));
         mTabsHeight = mHasWorkProfile
                 ? getContext().getResources()
-                        .getDimensionPixelSize(R.dimen.all_apps_header_tab_height)
+                        .getDimensionPixelSize(R.dimen.all_apps_header_pill_height)
                 : 0;
         mWidgetCellHorizontalPadding = 2 * getResources().getDimensionPixelOffset(
                 R.dimen.widget_cell_horizontal_padding);
@@ -709,13 +709,14 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     }
 
     final class SearchAndRecommendationViewHolder {
-        final ViewGroup mContainer;
+        final SearchAndRecommendationsView mContainer;
         final View mCollapseHandle;
         final WidgetsSearchBar mSearchBar;
         final TextView mHeaderTitle;
         final WidgetsRecommendationTableLayout mRecommendedWidgetsTable;
 
-        SearchAndRecommendationViewHolder(ViewGroup searchAndRecommendationContainer) {
+        SearchAndRecommendationViewHolder(
+                SearchAndRecommendationsView searchAndRecommendationContainer) {
             mContainer = searchAndRecommendationContainer;
             mCollapseHandle = mContainer.findViewById(R.id.collapse_handle);
             mSearchBar = mContainer.findViewById(R.id.widgets_search_bar);
