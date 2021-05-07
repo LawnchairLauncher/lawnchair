@@ -26,6 +26,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -44,6 +45,7 @@ import android.view.WindowInsets;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
+import androidx.core.graphics.ColorUtils;
 import androidx.core.os.BuildCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -66,6 +68,7 @@ import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.RecyclerViewFastScroller;
+import com.android.launcher3.views.ScrimView;
 import com.android.launcher3.views.SpringRelativeLayout;
 import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.OnActivePageChangedListener;
 
@@ -73,12 +76,15 @@ import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.OnActivePag
  * The all apps view container.
  */
 public class AllAppsContainerView extends SpringRelativeLayout implements DragSource,
-        Insettable, OnDeviceProfileChangeListener, OnActivePageChangedListener {
+        Insettable, OnDeviceProfileChangeListener, OnActivePageChangedListener,
+        ScrimView.ScrimDrawingController {
 
     private static final float FLING_VELOCITY_MULTIPLIER = 1000f;
 
     // Starts the springs after at least 25% of the animation has passed.
     private static final float FLING_ANIMATION_THRESHOLD = 0.25f;
+
+    private final Paint mHeaderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     protected final BaseDraggingActivity mLauncher;
     protected final AdapterHolder[] mAH;
@@ -93,7 +99,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     private View mSearchContainer;
     private AllAppsPagedView mViewPager;
 
-    private FloatingHeaderView mHeader;
+    protected FloatingHeaderView mHeader;
     private WorkModeSwitch mWorkModeSwitch;
 
 
@@ -107,7 +113,14 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     private Rect mInsets = new Rect();
 
-    SearchAdapterProvider mSearchAdapterProvider;
+    private SearchAdapterProvider mSearchAdapterProvider;
+    private final int mHeaderTopPadding;
+    private final int mScrimColor;
+    private final int mHeaderProtectionColor;
+    private final float mHeaderThreshold;
+    private ScrimView mScrimView;
+    private int mHeaderColor;
+
 
     public AllAppsContainerView(Context context) {
         this(context, null);
@@ -121,7 +134,18 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         super(context, attrs, defStyleAttr);
 
         mLauncher = BaseDraggingActivity.fromContext(context);
+
+        mScrimColor = Themes.getAttrColor(context, R.attr.allAppsScrimColor);
+        mHeaderThreshold = getResources().getDimensionPixelSize(
+                R.dimen.dynamic_grid_cell_border_spacing);
+        mHeaderTopPadding = context.getResources()
+                .getDimensionPixelSize(R.dimen.all_apps_header_top_padding);
+        int accentColor = Themes.getColorAccent(getContext());
+        mHeaderProtectionColor = ColorUtils.blendARGB(mScrimColor, accentColor, .3f);
+
         mLauncher.addOnDeviceProfileChangeListener(this);
+
+
 
         mSearchAdapterProvider = mLauncher.createSearchAdapterProvider(this);
         mSearchQueryBuilder = new SpannableStringBuilder();
@@ -300,6 +324,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         }
         // Reset the search bar and base recycler view after transitioning home
         mSearchUiManager.resetSearch();
+        updateHeaderScroll(0);
     }
 
     @Override
@@ -625,6 +650,26 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         outRect.offset(0, (int) getTranslationY());
     }
 
+    @Override
+    public void setTranslationY(float translationY) {
+        super.setTranslationY(translationY);
+        invalidateHeader();
+    }
+
+    public void setScrimView(ScrimView scrimView) {
+        mScrimView = scrimView;
+    }
+
+    @Override
+    public void drawOnScrim(Canvas canvas) {
+        mHeaderPaint.setColor(mHeaderColor);
+        mHeaderPaint.setAlpha((int) (getAlpha() * Color.alpha(mHeaderColor)));
+        if (mHeaderPaint.getColor() != mScrimColor && mHeaderPaint.getColor() != 0) {
+            canvas.drawRect(0, 0, getWidth(), mHeaderTopPadding + getTranslationY(),
+                    mHeaderPaint);
+        }
+    }
+
     public class AdapterHolder {
         public static final int MAIN = 0;
         public static final int WORK = 1;
@@ -723,6 +768,26 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
                 mOverlay = mLauncher.getLayoutInflater().inflate(R.layout.work_apps_paused, null);
             }
             return mOverlay;
+        }
+    }
+
+
+    protected void updateHeaderScroll(int scrolledOffset) {
+        float prog = Math.max(0, Math.min(1, (float) scrolledOffset / mHeaderThreshold));
+        int headerColor = ColorUtils.setAlphaComponent(mHeaderProtectionColor, (int) (prog * 255));
+        if (headerColor != mHeaderColor) {
+            mHeaderColor = headerColor;
+            getSearchView().setBackgroundColor(mHeaderColor);
+            invalidateHeader();
+        }
+    }
+
+    /**
+     * redraws header protection
+     */
+    public void invalidateHeader() {
+        if (mScrimView != null) {
+            mScrimView.invalidate();
         }
     }
 }
