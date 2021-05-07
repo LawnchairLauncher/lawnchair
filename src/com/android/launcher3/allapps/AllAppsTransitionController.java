@@ -17,10 +17,7 @@ package com.android.launcher3.allapps;
 
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.ALL_APPS_CONTENT;
-import static com.android.launcher3.anim.Interpolators.ACCEL_0_75;
-import static com.android.launcher3.anim.Interpolators.ACCEL_2;
-import static com.android.launcher3.anim.Interpolators.DEACCEL;
-import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
+import static com.android.launcher3.anim.Interpolators.DEACCEL_1_7;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
@@ -158,9 +155,8 @@ public class AllAppsTransitionController
             return;
         }
 
-        Interpolator interpolator = toState.equals(ALL_APPS)
-                ? (config.userControlled ? ACCEL_2 : ACCEL_0_75) :
-                (config.userControlled ? DEACCEL_2 : DEACCEL);
+        // need to decide depending on the release velocity
+        Interpolator interpolator = (config.userControlled ? LINEAR : DEACCEL_1_7);
 
         Animator anim = createSpringAnimation(mProgress, targetProgress);
         anim.setInterpolator(config.getInterpolator(ANIM_VERTICAL_PROGRESS, interpolator));
