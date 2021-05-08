@@ -565,11 +565,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     }
 
     @Override
-    public void onIdpChanged(int changeFlags, InvariantDeviceProfile idp) {
-        onIdpChanged(idp);
-    }
-
-    private void onIdpChanged(InvariantDeviceProfile idp) {
+    public void onIdpChanged(InvariantDeviceProfile idp) {
         if (TestProtocol.sDebugTracing) {
             Log.d(TestProtocol.LAUNCHER_NOT_TRANSPOSED, "onIdpChanged");
         }
@@ -1196,7 +1192,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
         // Setup the drag controller (drop targets have to be added in reverse order in priority)
         mDropTargetBar.setup(mDragController);
-        mAllAppsController.setupViews(mAppsView);
+        mAllAppsController.setupViews(mScrimView, mAppsView);
     }
 
     /**

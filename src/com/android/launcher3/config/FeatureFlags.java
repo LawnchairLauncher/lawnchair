@@ -240,6 +240,10 @@ public final class FeatureFlags {
     public static final BooleanFlag PROTOTYPE_APP_CLOSE = getDebugFlag(
             "PROTOTYPE_APP_CLOSE", false, "Enables new app close");
 
+    public static final BooleanFlag ENABLE_WALLPAPER_SCRIM = getDebugFlag(
+            "ENABLE_WALLPAPER_SCRIM", false,
+            "Enables scrim over wallpaper for text protection.");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
