@@ -58,5 +58,6 @@
     <color name="text_color_tertiary_dark">#CCFFFFFF</color>
 
     <color name="wallpaper_popup_scrim">?android:attr/colorAccent</color>
+    <color name="wallpaper_scrim_color">#0D878787</color>
 
 </resources>
