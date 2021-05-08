@@ -74,6 +74,14 @@
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Poskusite znova"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Odlično!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Vadnica <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
+    <!-- no translation found for allset_title (5021126669778966707) -->
+    <skip />
+    <!-- no translation found for allset_hint (459504134589971527) -->
+    <skip />
+    <!-- no translation found for allset_description (6350320429953234580) -->
+    <skip />
+    <!-- no translation found for allset_navigation_settings (417773244979225071) -->
+    <skip />
     <string name="action_share" msgid="2648470652637092375">"Deli"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Posnetek zaslona"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Aplikacija ali vaša organizacija ne dovoljuje tega dejanja"</string>

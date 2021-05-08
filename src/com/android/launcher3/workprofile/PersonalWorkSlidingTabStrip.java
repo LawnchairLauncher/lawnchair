@@ -39,6 +39,8 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     private final Paint mDividerPaint;
 
     private int mSelectedIndicatorHeight;
+    private final int mSelectedIndicatorRadius;
+
     private int mIndicatorLeft = -1;
     private int mIndicatorRight = -1;
     private float mScrollOffset;
@@ -54,7 +56,10 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
         setWillNotDraw(false);
 
         mSelectedIndicatorHeight =
-                getResources().getDimensionPixelSize(R.dimen.all_apps_tabs_indicator_height);
+                getResources().getDimensionPixelSize(R.dimen.all_apps_header_pill_height);
+
+        mSelectedIndicatorRadius = getResources().getDimensionPixelSize(
+                R.dimen.all_apps_header_pill_corner_radius);
 
         mSelectedIndicatorPaint = new Paint();
         mSelectedIndicatorPaint.setColor(
@@ -118,9 +123,9 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
         super.onDraw(canvas);
 
         float y = getHeight() - mDividerPaint.getStrokeWidth();
-        canvas.drawLine(getPaddingLeft(), y, getWidth() - getPaddingRight(), y, mDividerPaint);
-        canvas.drawRect(mIndicatorLeft, getHeight() - mSelectedIndicatorHeight,
-                mIndicatorRight, getHeight(), mSelectedIndicatorPaint);
+        canvas.drawRoundRect(mIndicatorLeft, getHeight() - mSelectedIndicatorHeight,
+                mIndicatorRight, getHeight(), mSelectedIndicatorRadius, mSelectedIndicatorRadius,
+                mSelectedIndicatorPaint);
     }
 
     @Override
@@ -144,7 +149,8 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     }
 
     @Override
-    public void setMarkersCount(int numMarkers) { }
+    public void setMarkersCount(int numMarkers) {
+    }
 
     @Override
     public boolean hasOverlappingRendering() {
