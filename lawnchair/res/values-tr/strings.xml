@@ -46,7 +46,6 @@
     <string name="about_label">Hakkında</string>
     <string name="news">Haberler</string>
     <string name="support">Destek</string>
-    <string name="team_members">Takım Üyeleri</string>
     <string name="acknowledgements">Teşekkürler</string>
     <string name="patryk_description">Geliştirmeyi yönetir ve kullanıcı arayüzünü yaratır. Sonsuza kadar Jetpack Compose\'a takıntılı.</string>
     <string name="kshitij_description">Lawnchair özelliklerinin ana mantığını yazar. Spoingus takımının gururlu üyesi.</string>
@@ -67,4 +66,7 @@
     <string name="support_and_pr">Destek &amp; Halkla İlişkiler</string>
     <string name="workspace_dt2s">Double-Tap to Sleep</string>
     <string name="smart_space_enable">Show At a Glance Widget</string>
+    <string name="design_and_development">Design &amp; Development</string>
+    <string name="translate">Translate</string>
+    <string name="product">Product</string>
 </resources>
