@@ -22,7 +22,7 @@
     <string name="general_label">Algemeen</string>
     <string name="general_description">Notificatie stippen, icoon pakket</string>
     <string name="home_screen_rotation_label">Startscherm rotatie</string>
-    <string name="home_screen_rotaton_description">Wanneer het apparaat is geroteerd.</string>
+    <string name="home_screen_rotaton_description">Wanneer het apparaat is gedraaid.</string>
     <string name="auto_add_shortcuts_label">Voeg nieuwe apps toe aan startscherm</string>
     <string name="dock_label">Onderste balk</string>
     <string name="dock_description">Aantal iconen</string>
@@ -46,7 +46,6 @@
     <string name="about_label">Informatie</string>
     <string name="news">Nieuws</string>
     <string name="support">Ondersteuning</string>
-    <string name="team_members">Team leden</string>
     <string name="acknowledgements">Erkenningen</string>
     <string name="patryk_description">Beheert de ontwikkeling en maakt de gebruikersinterface. Geobsedeerd door Jetpack Compose voor onbepaalde tijd.</string>
     <string name="kshitij_description">Schrijft de kern van de logica voor Lawnchair functies. Trots lid van de Spoingus gang.</string>
@@ -67,4 +66,7 @@
     <string name="support_and_pr">Support &amp; PR</string>
     <string name="workspace_dt2s">Dubbeltikken om te slapen</string>
     <string name="smart_space_enable">Toon in een oogopslag widget</string>
+    <string name="design_and_development">Design &amp; Development</string>
+    <string name="translate">Translate</string>
+    <string name="product">Product</string>
 </resources>
