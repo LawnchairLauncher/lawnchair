@@ -69,8 +69,8 @@ android {
     defaultConfig {
         minSdkVersion 25
         targetSdkVersion 30
-        versionCode 3
-        versionName "11.0-alpha.3+${commitHash()}"
+        versionCode 4
+        versionName "11.0-alpha.4+${commitHash()}"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
