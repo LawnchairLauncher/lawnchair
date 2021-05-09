@@ -91,9 +91,6 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
 
     // +1 for system shortcut view
     private static final int MAX_NUM_CHILDREN = MAX_SHORTCUTS + 1;
-    // Index used to get background color when using local wallpaper color extraction,
-    private static final int LIGHT_COLOR_EXTRACTION_INDEX = android.R.color.system_accent2_50;
-    private static final int DARK_COLOR_EXTRACTION_INDEX = android.R.color.system_accent2_800;
 
     private final Rect mTempRect = new Rect();
 
@@ -129,7 +126,6 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
     private final int[] mColors;
     private final HashMap<String, View> mViewForRect = new HashMap<>();
 
-    private final int mColorExtractionIndex;
     @Nullable private LocalColorExtractor mColorExtractor;
 
     public ArrowPopup(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -138,9 +134,6 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
         mOutlineRadius = Themes.getDialogCornerRadius(context);
         mLauncher = BaseDraggingActivity.fromContext(context);
         mIsRtl = Utilities.isRtl(getResources());
-        mColorExtractionIndex = Utilities.isDarkTheme(context)
-                ? DARK_COLOR_EXTRACTION_INDEX
-                : LIGHT_COLOR_EXTRACTION_INDEX;
         setClipToOutline(true);
         setOutlineProvider(new ViewOutlineProvider() {
             @Override
