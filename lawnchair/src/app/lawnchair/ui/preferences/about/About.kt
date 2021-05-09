@@ -221,7 +221,7 @@ fun About() {
                     description = stringResource(it.descriptionRes),
                     url = it.socialUrl,
                     photoUrl = it.photoUrl,
-                    showDivider = index != product.size - 1
+                    showDivider = index != supportAndPr.size - 1
                 )
             }
         }
