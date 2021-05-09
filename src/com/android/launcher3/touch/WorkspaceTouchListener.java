@@ -22,12 +22,16 @@ import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
-
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WORKSPACE_LONGPRESS;
 
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
@@ -39,11 +43,16 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.R;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.views.OptionsPopupView;
+
+import app.lawnchair.DeviceAdmin;
+import app.lawnchair.util.preferences.PreferenceManager;
+
 
 /**
  * Helper class to handle touch on empty space in workspace and show options popup on long press
@@ -72,6 +81,8 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
 
     private final GestureDetector mGestureDetector;
 
+    DevicePolicyManager mDpm;
+
     public WorkspaceTouchListener(Launcher launcher, Workspace workspace) {
         mLauncher = launcher;
         mWorkspace = workspace;
@@ -79,6 +90,7 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
         // likely to cause movement.
         mTouchSlop = 2 * ViewConfiguration.get(launcher).getScaledTouchSlop();
         mGestureDetector = new GestureDetector(workspace.getContext(), this);
+        mDpm = (DevicePolicyManager) workspace.getContext().getSystemService(Context.DEVICE_POLICY_SERVICE);
     }
 
     @Override
@@ -182,5 +194,21 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
                 cancelLongPress();
             }
         }
+    }
+
+    @Override
+    public boolean onDoubleTap(MotionEvent event) {
+        PreferenceManager prefs = PreferenceManager.getInstance(mWorkspace.getContext());
+        boolean enable = prefs.getWorkspaceDt2s().get();
+        if (!enable) return true;
+        ComponentName adminComponent = new ComponentName(mWorkspace.getContext(), DeviceAdmin.class);
+        if (mDpm.isAdminActive(adminComponent)) {
+            mDpm.lockNow();
+        } else {
+            Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+            intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, adminComponent);
+            mLauncher.startActivityForResult(intent, 1 /* Enable */, new Bundle());
+        }
+        return true;
     }
 }

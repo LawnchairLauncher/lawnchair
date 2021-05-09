@@ -16,7 +16,7 @@ class PreferenceAdapter<T>(
         state.value = newValue
     }
 
-    override fun onPreferenceChange(pref: BasePreferenceManager.BasePref<*>) {
+    override fun onPreferenceChange(pref: BasePreferenceManager.PrefEntry<*>) {
         state.value = get()
     }
 }
@@ -29,18 +29,18 @@ fun BasePreferenceManager.IdpIntPref.getAdapter(): PreferenceAdapter<Float> {
 }
 
 @Composable
-fun <T> BasePreferenceManager.BasePref<T>.getAdapter(): PreferenceAdapter<T> {
+fun <T> BasePreferenceManager.PrefEntry<T>.getAdapter(): PreferenceAdapter<T> {
     return getAdapter(this, ::get, ::set)
 }
 
 @Composable
-fun <T> BasePreferenceManager.BasePref<T>.observeAsState(): State<T> {
+fun <T> BasePreferenceManager.PrefEntry<T>.observeAsState(): State<T> {
     return getAdapter().state
 }
 
 @Composable
 private fun <T> getAdapter(
-    pref: BasePreferenceManager.BasePref<*>,
+    pref: BasePreferenceManager.PrefEntry<*>,
     get: () -> T,
     set: (T) -> Unit
 ): PreferenceAdapter<T> {

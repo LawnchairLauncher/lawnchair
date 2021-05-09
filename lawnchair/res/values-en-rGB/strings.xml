@@ -52,7 +52,6 @@
     <string name="about_label">About</string>
     <string name="news">News</string>
     <string name="support">Support</string>
-    <string name="team_members">Team Members</string>
     <string name="acknowledgements">Acknowledgements</string>
     <string name="patryk_description">Manages development and creates the UI. Obsessed with Jetpack Compose indefinitely.</string>
     <string name="kshitij_description">Writes the core logic for Lawnchair features. Proud member of the Spoingus gang.</string>
@@ -61,7 +60,6 @@
     <string name="all_apps_search_bar_hint">Search Apps</string>
     <string name="settings_button_text">Home Settings</string>
     <string name="development">Development</string>
-    <string name="support_representative">Support Representative</string>
     <string name="app_info_drop_target_label">App Info</string>
     <string name="item_removed">Item removed.</string>
     <string name="all_apps_no_search_results">No apps found matching ‘<xliff:g example="Android" id="query">%1$s</xliff:g>’.</string>
@@ -72,4 +70,7 @@
     <string name="auto_adaptive_icons_label">Auto Adaptive Icons</string>
     <string name="auto_adaptive_icons_description">For all non-Adaptive icons.</string>
     <string name="support_and_pr">Support &amp; PR</string>
+    <string name="design_and_development">Design &amp; Development</string>
+    <string name="translate">Translate</string>
+    <string name="product">Product</string>
 </resources>

@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package app.lawnchair.ui.preferences
+package app.lawnchair.ui.preferences.about
 
 import android.content.Intent
+import android.net.Uri
 import androidx.annotation.StringRes
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
@@ -34,13 +35,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavGraphBuilder
+import app.lawnchair.ui.preferences.components.PreferenceGroup
+import app.lawnchair.ui.preferences.components.ClickListenerPreference
+import app.lawnchair.ui.preferences.preferenceGraph
+import app.lawnchair.util.Meta
+import app.lawnchair.util.pageMeta
 import app.lawnchair.util.preferences.getFormattedVersionName
 import com.android.launcher3.R
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 
 class TeamMember(val name: String, @StringRes val descriptionRes: Int, val photoUrl: String, val socialUrl: String)
 
-val teamMembers = listOf(
+val product = listOf(
     TeamMember(
         name = "Amogh Lele",
         descriptionRes = R.string.development,
@@ -54,28 +61,22 @@ val teamMembers = listOf(
         socialUrl = "https://twitter.com/6020peaks"
     ),
     TeamMember(
-        name = "Daniel Souza",
-        descriptionRes = R.string.support,
-        photoUrl = "https://avatars.githubusercontent.com/u/32078304",
-        socialUrl = "https://github.com/DanGLES3"
-    ),
-    TeamMember(
         name = "David Sn",
         descriptionRes = R.string.devops,
         photoUrl = "https://i.imgur.com/b65akTl.png",
         socialUrl = "https://codebucket.de"
     ),
     TeamMember(
-        name = "Giuseppe Longobardo",
-        descriptionRes = R.string.support,
-        photoUrl = "https://avatars.githubusercontent.com/u/49398464",
-        socialUrl = "https://github.com/joseph-20"
-    ),
-    TeamMember(
         name = "Harsh Shandilya",
         descriptionRes = R.string.development,
         photoUrl = "https://avatars.githubusercontent.com/u/13348378",
         socialUrl = "https://github.com/msfjarvis"
+    ),
+    TeamMember(
+        name = "Kshitij Gupta",
+        descriptionRes = R.string.development,
+        photoUrl = "https://avatars.githubusercontent.com/u/18647641",
+        socialUrl = "https://twitter.com/Agent_Fabulous"
     ),
     TeamMember(
         name = "Manuel Lorenzo",
@@ -90,6 +91,12 @@ val teamMembers = listOf(
         socialUrl = "https://twitter.com/paphonb"
     ),
     TeamMember(
+        name = "Patryk Michalik",
+        descriptionRes = R.string.design_and_development,
+        photoUrl = "https://raw.githubusercontent.com/patrykmichalik/brand/master/logo-on-indigo.png",
+        socialUrl = "https://patrykmichalik.com"
+    ),
+    TeamMember(
         name = "raphtlw",
         descriptionRes = R.string.development,
         photoUrl = "https://avatars.githubusercontent.com/u/47694127",
@@ -101,19 +108,41 @@ val teamMembers = listOf(
         photoUrl = "https://avatars.githubusercontent.com/u/7065700",
         socialUrl = "https://twitter.com/skittles9823"
     ),
+)
+
+val supportAndPr = listOf(
+    TeamMember(
+        name = "Daniel Souza",
+        descriptionRes = R.string.support,
+        photoUrl = "https://avatars.githubusercontent.com/u/32078304",
+        socialUrl = "https://github.com/DanGLES3"
+    ),
+
+    TeamMember(
+        name = "Giuseppe Longobardo",
+        descriptionRes = R.string.support,
+        photoUrl = "https://avatars.githubusercontent.com/u/49398464",
+        socialUrl = "https://github.com/joseph-20"
+    ),
     TeamMember(
         name = "Rik Koedoot",
         descriptionRes = R.string.support_and_pr,
         photoUrl = "https://avatars.githubusercontent.com/u/29402532",
         socialUrl = "https://twitter.com/rikkoedoot"
-    ),
+    )
 )
+
+@ExperimentalAnimationApi
+fun NavGraphBuilder.aboutGraph(route: String) {
+    preferenceGraph(route, { About() })
+}
 
 @ExperimentalAnimationApi
 @Composable
 fun About() {
     val context = LocalContext.current
 
+    pageMeta.provide(Meta(title = stringResource(id = R.string.about_label)))
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -174,43 +203,40 @@ fun About() {
                 url = "https://github.com/LawnchairLauncher/Lawnchair"
             )
         }
-        Spacer(modifier = Modifier.requiredHeight(16.dp))
-        ContributorCard(
-            name = "Patryk Michalik",
-            description = stringResource(id = R.string.patryk_description),
-            photoUrl = "https://raw.githubusercontent.com/patrykmichalik/brand/master/logo-on-indigo.png",
-            links = {
-                ContributorLink(iconResId = R.drawable.ic_website, url = "https://patrykmichalik.com")
-                ContributorLink(iconResId = R.drawable.ic_twitter, url = "https://twitter.com/patrykmichalik_")
-                ContributorLink(iconResId = R.drawable.ic_github, url = "https://github.com/patrykmichalik")
-            }
-        )
-        ContributorCard(
-            name = "Kshitij Gupta",
-            includeTopPadding = true,
-            description = stringResource(id = R.string.kshitij_description),
-            photoUrl = "https://avatars.githubusercontent.com/u/18647641",
-            links = {
-                ContributorLink(iconResId = R.drawable.ic_twitter, url = "https://twitter.com/Agent_Fabulous")
-                ContributorLink(iconResId = R.drawable.ic_github, url = "https://github.com/AgentFabulous")
-            }
-        )
-        PreferenceGroup(heading = stringResource(id = R.string.team_members)) {
-            teamMembers.forEachIndexed { index, it ->
+        PreferenceGroup(heading = stringResource(id = R.string.product)) {
+            product.forEachIndexed { index, it ->
                 ContributorRow(
                     name = it.name,
                     description = stringResource(it.descriptionRes),
                     url = it.socialUrl,
                     photoUrl = it.photoUrl,
-                    showDivider = index != teamMembers.size - 1
+                    showDivider = index != product.size - 1
+                )
+            }
+        }
+        PreferenceGroup(heading = stringResource(id = R.string.support_and_pr)) {
+            supportAndPr.forEachIndexed { index, it ->
+                ContributorRow(
+                    name = it.name,
+                    description = stringResource(it.descriptionRes),
+                    url = it.socialUrl,
+                    photoUrl = it.photoUrl,
+                    showDivider = index != product.size - 1
                 )
             }
         }
         PreferenceGroup {
-            ClickListenerPreference(label = stringResource(id = R.string.acknowledgements), showDivider = false, onClick = {
+            ClickListenerPreference(label = stringResource(id = R.string.acknowledgements), onClick = {
                 val intent = Intent(context, OssLicensesMenuActivity::class.java)
                 OssLicensesMenuActivity.setActivityTitle(context.getString(R.string.acknowledgements))
                 context.startActivity(intent)
+            })
+            ClickListenerPreference(label = stringResource(id = R.string.translate), showDivider = false, onClick = {
+                val webpage = Uri.parse("https://lawnchair.crowdin.com")
+                val intent = Intent(Intent.ACTION_VIEW, webpage)
+                if (intent.resolveActivity(context.packageManager) != null) {
+                    context.startActivity(intent)
+                }
             })
         }
         Spacer(modifier = Modifier.requiredHeight(16.dp))

@@ -19,27 +19,43 @@ package app.lawnchair.ui.preferences
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavGraphBuilder
+import app.lawnchair.ui.preferences.components.PreferenceGroup
+import app.lawnchair.ui.preferences.components.PreferenceLayout
+import app.lawnchair.ui.preferences.components.SliderPreference
+import app.lawnchair.ui.preferences.components.SwitchPreference
+import app.lawnchair.util.Meta
+import app.lawnchair.util.pageMeta
 import app.lawnchair.util.preferences.getAdapter
 import app.lawnchair.util.preferences.preferenceManager
 import com.android.launcher3.R
 
 @ExperimentalAnimationApi
+fun NavGraphBuilder.homeScreenGraph(route: String) {
+    preferenceGraph(route, { HomeScreenPreferences() })
+}
+
+@ExperimentalAnimationApi
 @Composable
 fun HomeScreenPreferences() {
     val prefs = preferenceManager()
+    pageMeta.provide(Meta(title = stringResource(id = R.string.home_screen_label)))
     PreferenceLayout {
         PreferenceGroup(heading = "General", isFirstChild = true) {
             SwitchPreference(
                 prefs.addIconToHome.getAdapter(),
                 label = stringResource(id = R.string.auto_add_shortcuts_label),
+                showDivider = true
+            )
+            SwitchPreference(
+                prefs.smartSpaceEnable.getAdapter(),
+                label = stringResource(id = R.string.smart_space_enable),
+            )
+            SwitchPreference(
+                prefs.workspaceDt2s.getAdapter(),
+                label = stringResource(id = R.string.workspace_dt2s),
                 showDivider = false
             )
-            /*SwitchPreference(
-                checked = interactor.allowEmptyPages.value,
-                onCheckedChange = { interactor.setAllowEmptyPages(it) },
-                label = stringResource(id = R.string.allow_empty_pages_label),
-                showDivider = false
-            )*/
         }
         PreferenceGroup(heading = stringResource(id = R.string.grid)) {
             SliderPreference(

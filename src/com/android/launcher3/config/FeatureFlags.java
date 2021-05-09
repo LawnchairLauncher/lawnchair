@@ -26,6 +26,9 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import app.lawnchair.LawnchairApp;
+import app.lawnchair.util.preferences.PreferenceManager;
+
 /**
  * Defines a set of flags used to control various launcher behaviors.
  *
@@ -52,7 +55,10 @@ public final class FeatureFlags {
      * Enable moving the QSB on the 0th screen of the workspace. This is not a configuration feature
      * and should be modified at a project level.
      */
-    public static final boolean QSB_ON_FIRST_SCREEN = true;
+    public static boolean topQsbOnFirstScreenEnabled(Context context) {
+        PreferenceManager prefs = PreferenceManager.getInstance(context);
+        return prefs.getSmartSpaceEnable().get();
+    }
 
     /**
      * Feature flag to handle define config changes dynamically instead of killing the process.
@@ -60,7 +66,7 @@ public final class FeatureFlags {
      *
      * To add a new flag that can be toggled through the flags UI:
      *
-     * Declare a new ToggleableFlag below. Give it a unique key (e.g. "QSB_ON_FIRST_SCREEN"),
+     * Declare a new ToggleableFlag below. Give it a unique key (e.g. "PROMISE_APPS_IN_ALL_APPS"),
      *    and set a default value for the flag. This will be the default value on Debug builds.
      */
     // When enabled the promise icon is visible in all apps while installation an app.
