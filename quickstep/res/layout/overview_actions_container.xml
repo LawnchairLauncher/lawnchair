@@ -46,6 +46,21 @@
             android:layout_weight="1" />
 
         <Button
+            style="@style/OverviewActionButton"
+            android:id="@+id/clear_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/recents_clear_all"
+            android:theme="@style/ThemeControlHighlightWorkspaceColor"
+            android:drawableStart="@drawable/ic_clear_all_recents"
+            />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <Button
             android:id="@+id/action_share"
             style="@style/OverviewActionButton"
             android:layout_width="wrap_content"
