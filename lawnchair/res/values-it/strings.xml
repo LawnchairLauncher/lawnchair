@@ -46,7 +46,6 @@
     <string name="about_label">Informazioni</string>
     <string name="news">Novità</string>
     <string name="support">Supporto</string>
-    <string name="team_members">Membri del team</string>
     <string name="acknowledgements">Riconoscimenti</string>
     <string name="patryk_description">Gestisce lo sviluppo e crea la UI. Indefinitamente ossessionato da Jetpack Compose.</string>
     <string name="kshitij_description">Scrive la logica di base per le funzioni di Lawnchair. Fiero membro della banda Spoingus.</string>
@@ -67,4 +66,7 @@
     <string name="support_and_pr">Support &amp; PR</string>
     <string name="workspace_dt2s">Doppio tocco per bloccare lo schermo</string>
     <string name="smart_space_enable">Mostra il widget “At a Glance”</string>
+    <string name="design_and_development">Design &amp; Development</string>
+    <string name="translate">Translate</string>
+    <string name="product">Product</string>
 </resources>
