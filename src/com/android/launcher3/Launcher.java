@@ -554,21 +554,12 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
             onIdpChanged(mDeviceProfile.inv);
         }
 
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.LAUNCHER_NOT_TRANSPOSED, "onConfigurationChanged: diff=" + diff);
-            Log.d(TestProtocol.LAUNCHER_NOT_TRANSPOSED, "newConfig=" + newConfig);
-            Log.d(TestProtocol.LAUNCHER_NOT_TRANSPOSED, "oldConfig=" + mOldConfig);
-        }
-
         mOldConfig.setTo(newConfig);
         super.onConfigurationChanged(newConfig);
     }
 
     @Override
     public void onIdpChanged(InvariantDeviceProfile idp) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.LAUNCHER_NOT_TRANSPOSED, "onIdpChanged");
-        }
         initDeviceProfile(idp);
         dispatchDeviceProfileChanged();
         reapplyUi();
