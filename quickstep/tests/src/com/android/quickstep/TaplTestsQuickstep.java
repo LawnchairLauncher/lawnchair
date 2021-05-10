@@ -189,12 +189,10 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @NavigationModeSwitch
     @PortraitLandscape
     public void testSwitchToOverview() throws Exception {
-        Log.d(TestProtocol.LAUNCHER_NOT_TRANSPOSED, "testSwitchToOverview");
         assertNotNull("Workspace.switchToOverview() returned null",
                 mLauncher.pressHome().switchToOverview());
         assertTrue("Launcher internal state didn't switch to Overview",
                 isInState(() -> LauncherState.OVERVIEW));
-        Log.d(TestProtocol.LAUNCHER_NOT_TRANSPOSED, "testSwitchToOverview finished");
     }
 
     @Test
