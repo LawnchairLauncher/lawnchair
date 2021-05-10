@@ -53,7 +53,6 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.SystemUiController;
-import com.android.launcher3.util.Themes;
 import com.android.quickstep.TaskOverlayFactory.TaskOverlay;
 import com.android.quickstep.views.TaskView.FullscreenDrawParams;
 import com.android.systemui.plugins.OverviewScreenshotActions;
@@ -121,7 +120,7 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
         // Initialize with placeholder value. It is overridden later by TaskView
         mFullscreenParams = TEMP_PARAMS.get(context);
 
-        mDimColor = Themes.getColorBackgroundFloating(context);
+        mDimColor = RecentsView.getForegroundScrimDimColor(context);
         mDimmingPaintAfterClearing.setColor(mDimColor);
     }
 
