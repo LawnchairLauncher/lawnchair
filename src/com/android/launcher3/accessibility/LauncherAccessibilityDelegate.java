@@ -230,7 +230,10 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
                                 Favorites.CONTAINER_DESKTOP,
                                 screenId, coordinates[0], coordinates[1]);
 
-                        mLauncher.bindItems(Collections.singletonList(info), true);
+                        mLauncher.bindItems(
+                                Collections.singletonList(info),
+                                /* forceAnimateIcons= */ true,
+                                /* focusFirstItemForAccessibility= */ true);
                         announceConfirmation(R.string.item_added_to_workspace);
                     } else if (item instanceof PendingAddItemInfo) {
                         PendingAddItemInfo info = (PendingAddItemInfo) item;
