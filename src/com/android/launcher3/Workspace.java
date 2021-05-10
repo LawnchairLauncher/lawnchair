@@ -1163,10 +1163,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         mWallpaperOffset.syncWithScroll();
     }
 
-    public void computeScrollWithoutInvalidation() {
-        computeScrollHelper(false);
-    }
-
     @Override
     public void announceForAccessibility(CharSequence text) {
         // Don't announce if apps is on top of us.
