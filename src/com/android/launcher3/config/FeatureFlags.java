@@ -88,7 +88,7 @@ public final class FeatureFlags {
             "ENABLE_QUICKSTEP_LIVE_TILE", true, "Enable live tile in Quickstep overview");
 
     public static final BooleanFlag ENABLE_QUICKSTEP_WIDGET_APP_START = getDebugFlag(
-            "ENABLE_QUICKSTEP_WIDGET_APP_START", false,
+            "ENABLE_QUICKSTEP_WIDGET_APP_START", true,
             "Enable Quickstep animation when launching activities from an app widget");
 
     // Keep as DeviceFlag to allow remote disable in emergency.
