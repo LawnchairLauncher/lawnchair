@@ -1337,14 +1337,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     private final BroadcastReceiver mScreenOffReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            // Reset AllApps to its initial state only if we are not in the middle of
-            // processing a multi-step drop
-            if (mPendingRequestArgs == null) {
-                if (!isInState(NORMAL)) {
-                    onUiChangedWhileSleeping();
-                }
-                mStateManager.goToState(NORMAL);
-            }
+            onScreenOff();
         }
     };
 
@@ -1911,6 +1904,17 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
             // Handled by the floating view.
         } else {
             mStateManager.getState().onBackPressed(this);
+        }
+    }
+
+    protected void onScreenOff() {
+        // Reset AllApps to its initial state only if we are not in the middle of
+        // processing a multi-step drop
+        if (mPendingRequestArgs == null) {
+            if (!isInState(NORMAL)) {
+                onUiChangedWhileSleeping();
+            }
+            mStateManager.goToState(NORMAL);
         }
     }
 
