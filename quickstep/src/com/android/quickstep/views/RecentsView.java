@@ -3607,6 +3607,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * capturing the snapshot at the same time.
      */
     public void switchToScreenshot(Runnable onFinishRunnable) {
+        if (mRecentsAnimationController == null) {
+            if (onFinishRunnable != null) {
+                onFinishRunnable.run();
+            }
+            return;
+        }
         switchToScreenshot(mRunningTaskId == -1 ? null
                 : mRecentsAnimationController.screenshotTask(mRunningTaskId), onFinishRunnable);
     }
