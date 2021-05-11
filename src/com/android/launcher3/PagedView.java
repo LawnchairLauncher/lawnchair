@@ -459,11 +459,6 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         }
     }
 
-    // we moved this functionality to a helper function so SmoothPagedView can reuse it
-    protected boolean computeScrollHelper() {
-        return computeScrollHelper(true);
-    }
-
     protected void announcePageForAccessibility() {
         if (isAccessibilityEnabled(getContext())) {
             // Notify the user when the page changes
@@ -471,7 +466,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         }
     }
 
-    protected boolean computeScrollHelper(boolean shouldInvalidate) {
+    protected boolean computeScrollHelper() {
         if (mScroller.computeScrollOffset()) {
             // Don't bother scrolling if the page does not need to be moved
             int oldPos = mOrientationHandler.getPrimaryScroll(this);
@@ -479,23 +474,29 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
             if (oldPos != newPos) {
                 mOrientationHandler.set(this, VIEW_SCROLL_TO, mScroller.getCurrX());
             }
-            if (shouldInvalidate) {
-                if (mAllowOverScroll) {
-                    if (newPos < mMinScroll && oldPos >= mMinScroll) {
-                        mEdgeGlowLeft.onAbsorb((int) mScroller.getCurrVelocity());
-                        mScroller.abortAnimation();
-                    } else if (newPos > mMaxScroll && oldPos <= mMaxScroll) {
-                        mEdgeGlowRight.onAbsorb((int) mScroller.getCurrVelocity());
-                        mScroller.abortAnimation();
-                    }
+
+            if (mAllowOverScroll) {
+                if (newPos < mMinScroll && oldPos >= mMinScroll) {
+                    mEdgeGlowLeft.onAbsorb((int) mScroller.getCurrVelocity());
+                    mScroller.abortAnimation();
+                } else if (newPos > mMaxScroll && oldPos <= mMaxScroll) {
+                    mEdgeGlowRight.onAbsorb((int) mScroller.getCurrVelocity());
+                    mScroller.abortAnimation();
                 }
-
-                invalidate();
             }
-            return true;
-        } else if (mNextPage != INVALID_PAGE && shouldInvalidate) {
-            sendScrollAccessibilityEvent();
 
+            // If the scroller has scrolled to the final position and there is no edge effect, then
+            // finish the scroller to skip waiting for additional settling
+            int finalPos = mOrientationHandler.getPrimaryValue(mScroller.getFinalX(),
+                    mScroller.getFinalY());
+            if (newPos == finalPos && mEdgeGlowLeft.isFinished() && mEdgeGlowRight.isFinished()) {
+                mScroller.abortAnimation();
+            }
+
+            invalidate();
+            return true;
+        } else if (mNextPage != INVALID_PAGE) {
+            sendScrollAccessibilityEvent();
             int prevPage = mCurrentPage;
             mCurrentPage = validateNewPage(mNextPage);
             mNextPage = INVALID_PAGE;
