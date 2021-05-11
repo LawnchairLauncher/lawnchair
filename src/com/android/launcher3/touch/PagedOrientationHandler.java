@@ -105,7 +105,7 @@ public interface PagedOrientationHandler {
     int getPrimaryValue(int x, int y);
     int getSecondaryValue(int x, int y);
 
-    float  getPrimaryValue(float x, float y);
+    float getPrimaryValue(float x, float y);
     float getSecondaryValue(float x, float y);
 
     boolean isLayoutNaturalToLauncher();
