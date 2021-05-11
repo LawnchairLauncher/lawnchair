@@ -63,7 +63,9 @@ import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.BlendMode;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.PointF;
@@ -98,6 +100,7 @@ import android.widget.OverScroller;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
+import androidx.core.graphics.ColorUtils;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseActivity.MultiWindowModeChangedListener;
@@ -240,6 +243,24 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 @Override
                 public Float get(RecentsView recentsView) {
                     return recentsView.mAdjacentPageVerticalOffset;
+                }
+            };
+
+    /**
+     * Can be used to tint the color of the RecentsView to simulate a scrim that can views
+     * excluded from. Really should be a proper scrim.
+     * TODO(b/187528071): Remove this and replace with a real scrim.
+     */
+    private static final FloatProperty<RecentsView> COLOR_TINT =
+            new FloatProperty<RecentsView>("colorTint") {
+                @Override
+                public void setValue(RecentsView recentsView, float v) {
+                    recentsView.setColorTint(v);
+                }
+
+                @Override
+                public Float get(RecentsView recentsView) {
+                    return recentsView.getColorTint();
                 }
             };
 
@@ -403,6 +424,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     // The GestureEndTarget that is still in progress.
     protected GestureState.GestureEndTarget mCurrentGestureEndTarget;
+
+    // TODO(b/187528071): Remove these and replace with a real scrim.
+    private float mColorTint;
+    private final int mTintingColor;
 
     private int mOverScrollShift = 0;
 
@@ -616,6 +641,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mLiveTileTaskViewSimulator.recentsViewScale.value = 1;
         mLiveTileTaskViewSimulator.setOrientationState(mOrientationState);
         mLiveTileTaskViewSimulator.setDrawsBelowRecents(true);
+
+        mTintingColor = getForegroundScrimDimColor(context);
     }
 
     public OverScroller getScroller() {
@@ -1060,12 +1087,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     protected void applyLoadPlan(ArrayList<Task> tasks) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.GET_RECENTS_FAILED, "applyLoadPlan: taskCount=" + tasks.size());
-            for (Task t : tasks) {
-                Log.d(TestProtocol.GET_RECENTS_FAILED, "\t" + t);
-            }
-        }
         if (mPendingAnimation != null) {
             mPendingAnimation.addEndListener(success -> applyLoadPlan(tasks));
             return;
@@ -1127,11 +1148,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         resetTaskVisuals();
         onTaskStackUpdated();
         updateEnabledOverlays();
-
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.GET_RECENTS_FAILED, "applyLoadPlan: taskViewCount="
-                    + getTaskViewCount());
-        }
     }
 
     private boolean isModal() {
@@ -1152,12 +1168,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     public int getTaskViewCount() {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.GET_RECENTS_FAILED, "getTaskViewCount:"
-                    + " numChildren=" + getChildCount()
-                    + " start=" + mTaskViewStartIndex
-                    + " clearAll=" + indexOfChild(mClearAllButton));
-        }
         int taskViewCount = getChildCount() - mTaskViewStartIndex;
         if (indexOfChild(mClearAllButton) != -1) {
             taskViewCount--;
@@ -1203,6 +1213,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         loadVisibleTaskData(TaskView.FLAG_UPDATE_ALL);
         setTaskModalness(0);
         updateVerticalPageOffsets();
+        setColorTint(0);
     }
 
     public void setFullscreenProgress(float fullscreenProgress) {
@@ -3678,9 +3689,34 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * tasks to be dimmed while other elements in the recents view are left alone.
      */
     public void showForegroundScrim(boolean show) {
+        ObjectAnimator anim = ObjectAnimator.ofFloat(this, COLOR_TINT, show ? 0.5f : 0f);
+        anim.setAutoCancel(true);
+        anim.start();
+    }
+
+    /** Tint the RecentsView and TaskViews in to simulate a scrim. */
+    // TODO(b/187528071): Replace this tinting with a scrim on top of RecentsView
+    private void setColorTint(float tintAmount) {
+        mColorTint = tintAmount;
+
         for (int i = 0; i < getTaskViewCount(); i++) {
-            getTaskViewAt(i).showColorTint(show);
+            getTaskViewAt(i).setColorTint(mColorTint, mTintingColor);
         }
+
+        Drawable scrimBg = mActivity.getScrimView().getBackground();
+        if (scrimBg != null) {
+            if (tintAmount == 0f) {
+                scrimBg.setTintList(null);
+            } else {
+                scrimBg.setTintBlendMode(BlendMode.SRC_OVER);
+                scrimBg.setTint(
+                        ColorUtils.setAlphaComponent(mTintingColor, (int) (255 * tintAmount)));
+            }
+        }
+    }
+
+    private float getColorTint() {
+        return mColorTint;
     }
 
     private boolean showAsGrid() {
@@ -3755,5 +3791,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 }
             });
         }
+    }
+
+    /** Get the color used for foreground scrimming the RecentsView for sharing. */
+    public static int getForegroundScrimDimColor(Context context) {
+        int baseColor = Themes.getAttrColor(context, R.attr.overviewScrimColor);
+        // The Black blending is temporary until we have the proper color token.
+        return ColorUtils.blendARGB(Color.BLACK, baseColor, 0.25f);
     }
 }
