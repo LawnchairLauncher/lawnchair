@@ -15,13 +15,11 @@
  */
 package com.android.launcher3.anim;
 
-import static com.android.launcher3.LauncherAnimUtils.SUCCESS_TRANSITION_PROGRESS;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_BACKGROUND_COLOR;
 import static com.android.launcher3.anim.AnimatorPlaybackController.addAnimationHoldersRecur;
 
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
@@ -182,32 +180,6 @@ public class PendingAnimation implements PropertySetter {
         if (mProgressAnimator == null) {
             mProgressAnimator = ValueAnimator.ofFloat(0, 1);
         }
-        mProgressAnimator.addListener(new EndStateCallbackWrapper(listener));
-    }
-
-    private static class EndStateCallbackWrapper extends AnimatorListenerAdapter {
-
-        private final Consumer<Boolean> mListener;
-        private boolean mCalled = false;
-
-        EndStateCallbackWrapper(Consumer<Boolean> listener) {
-            mListener = listener;
-        }
-
-        @Override
-        public void onAnimationCancel(Animator animation) {
-            if (!mCalled) {
-                mCalled = true;
-                mListener.accept(false);
-            }
-        }
-
-        @Override
-        public void onAnimationEnd(Animator animation) {
-            if (!mCalled) {
-                ValueAnimator anim = (ValueAnimator) animation;
-                mListener.accept(anim.getAnimatedFraction() > SUCCESS_TRANSITION_PROGRESS);
-            }
-        }
+        mProgressAnimator.addListener(AnimatorListeners.forEndCallback(listener));
     }
 }

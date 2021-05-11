@@ -35,7 +35,7 @@ import androidx.annotation.NonNull;
 
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.anim.AnimationSuccessListener;
+import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.states.StateAnimationConfig;
@@ -78,7 +78,7 @@ public final class RecentsViewStateController extends
             mRecentsView.updateEmptyMessage();
         } else {
             builder.addListener(
-                    AnimationSuccessListener.forRunnable(mRecentsView::resetTaskVisuals));
+                    AnimatorListeners.forSuccessCallback(mRecentsView::resetTaskVisuals));
         }
 
         // Create or dismiss split screen select animations
