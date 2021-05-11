@@ -1211,6 +1211,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 TaskInfoCompat.getWindowConfigurationBounds(taskInfo),
                 startBounds,
                 destinationBounds,
+                mRecentsView.getPipCornerRadius(),
                 mRecentsView);
         // We would assume home and app window always in the same rotation While homeRotation
         // is not ROTATION_0 (which implies the rotation is turned on in launcher settings).
