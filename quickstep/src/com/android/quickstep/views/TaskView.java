@@ -88,7 +88,6 @@ import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
-import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.TransformingTouchDelegate;
 import com.android.launcher3.util.ViewPool.Reusable;
 import com.android.quickstep.RecentsModel;
@@ -328,19 +327,6 @@ public class TaskView extends FrameLayout implements Reusable {
                 }
             };
 
-    private static final FloatProperty<TaskView> COLOR_TINT =
-            new FloatProperty<TaskView>("colorTint") {
-                @Override
-                public void setValue(TaskView taskView, float v) {
-                    taskView.setColorTint(v);
-                }
-
-                @Override
-                public Float get(TaskView taskView) {
-                    return taskView.getColorTint();
-                }
-            };
-
     private final TaskOutlineProvider mOutlineProvider;
 
     private Task mTask;
@@ -393,11 +379,6 @@ public class TaskView extends FrameLayout implements Reusable {
     private final float[] mIconCenterCoords = new float[2];
     private final float[] mChipCenterCoords = new float[2];
 
-    // Colored tint for the task view and all its supplementary views (like the task icon and well
-    // being banner.
-    private final int mTintingColor;
-    private float mTintAmount;
-
     private boolean mIsClickableAsLiveTile = true;
 
     public TaskView(Context context) {
@@ -419,8 +400,6 @@ public class TaskView extends FrameLayout implements Reusable {
         mOutlineProvider = new TaskOutlineProvider(getContext(), mCurrentFullscreenParams,
                 mActivity.getDeviceProfile().overviewTaskThumbnailTopMarginPx);
         setOutlineProvider(mOutlineProvider);
-
-        mTintingColor = Themes.getColorBackgroundFloating(context);
     }
 
     /**
@@ -864,7 +843,7 @@ public class TaskView extends FrameLayout implements Reusable {
         setTranslationZ(0);
         setAlpha(mStableAlpha);
         setIconScaleAndDim(1);
-        setColorTint(0);
+        setColorTint(0, 0);
     }
 
     public void setStableAlpha(float parentAlpha) {
@@ -1472,25 +1451,13 @@ public class TaskView extends FrameLayout implements Reusable {
         getRecentsView().initiateSplitSelect(this, splitPositionOption);
     }
 
-    private void setColorTint(float amount) {
-        mTintAmount = amount;
-        mSnapshotView.setDimAlpha(mTintAmount);
-        mIconView.setIconColorTint(mTintingColor, mTintAmount);
-        mDigitalWellBeingToast.setBannerColorTint(mTintingColor, mTintAmount);
-    }
-
-    private float getColorTint() {
-        return mTintAmount;
-    }
-
     /**
-     * Show the task view with a color tint (animates value).
+     * Set a color tint on the snapshot and supporting views.
      */
-    public void showColorTint(boolean enable) {
-        ObjectAnimator tintAnimator = ObjectAnimator.ofFloat(
-                this, COLOR_TINT, enable ? MAX_PAGE_SCRIM_ALPHA : 0);
-        tintAnimator.setAutoCancel(true);
-        tintAnimator.start();
+    public void setColorTint(float amount, int tintColor) {
+        mSnapshotView.setDimAlpha(amount);
+        mIconView.setIconColorTint(tintColor, amount);
+        mDigitalWellBeingToast.setBannerColorTint(tintColor, amount);
     }
 
     /**
