@@ -112,6 +112,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     public void setDp(DeviceProfile dp) {
         mDp = dp;
         mLayoutValid = false;
+        mOrientationState.setDeviceProfile(dp);
     }
 
     /**
