@@ -59,7 +59,7 @@ import com.android.launcher3.util.Thunk;
 import com.android.launcher3.views.ActivityContext;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * An abstraction of the original Workspace which supports browsing through a
@@ -295,18 +295,16 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
     /**
-     * Returns the currently visible pages.
+     * Executes the callback against each visible page
      */
-    public Iterable<View> getVisiblePages() {
+    public void forEachVisiblePage(Consumer<View> callback) {
         int panelCount = getPanelCount();
-        List<View> visiblePages = new ArrayList<>(panelCount);
         for (int i = mCurrentPage; i < mCurrentPage + panelCount; i++) {
             View page = getPageAt(i);
             if (page != null) {
-                visiblePages.add(page);
+                callback.accept(page);
             }
         }
-        return visiblePages;
     }
 
     /**
@@ -1034,7 +1032,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         // Try canceling the long press. It could also have been scheduled
         // by a distant descendant, so use the mAllowLongPress flag to block
         // everything
-        getVisiblePages().forEach(View::cancelLongPress);
+        forEachVisiblePage(View::cancelLongPress);
     }
 
     protected float getScrollProgress(int screenCenter, View v, int page) {

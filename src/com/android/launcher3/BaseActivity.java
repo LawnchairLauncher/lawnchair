@@ -132,6 +132,7 @@ public abstract class BaseActivity extends Activity implements ActivityContext {
 
     private final ViewCache mViewCache = new ViewCache();
 
+    @Override
     public ViewCache getViewCache() {
         return mViewCache;
     }
