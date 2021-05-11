@@ -445,11 +445,10 @@ public final class LauncherInstrumentation {
 
             if (systemHealth != null) {
                 return message
-                        + ",\nperhaps linked to system health problems:\n<<<<<<<<<<<<<<<<<<\n"
+                        + ";\nPerhaps linked to system health problems:\n<<<<<<<<<<<<<<<<<<\n"
                         + systemHealth + "\n>>>>>>>>>>>>>>>>>>";
             }
         }
-
         return message;
     }
 
@@ -460,7 +459,7 @@ public final class LauncherInstrumentation {
             if (checkEvents) {
                 final String eventMismatch = eventChecker.verify(0, false);
                 if (eventMismatch != null) {
-                    message = message + ", having produced " + eventMismatch;
+                    message = message + ";\n" + eventMismatch;
                 }
             } else {
                 eventChecker.finishNoWait();
@@ -497,12 +496,13 @@ public final class LauncherInstrumentation {
     private void fail(String message) {
         checkForAnomaly();
         Assert.fail(formatSystemHealthMessage(formatErrorWithEvents(
-                "http://go/tapl : " + getContextDescription() + message
-                        + " (visible state: " + getVisibleStateMessage() + ")", true)));
+                "http://go/tapl test failure:\nOverview: " + getContextDescription()
+                        + " - visible state is " + getVisibleStateMessage()
+                        + ";\nDetails: " + message, true)));
     }
 
     private String getContextDescription() {
-        return mDiagnosticContext.isEmpty() ? "" : String.join(", ", mDiagnosticContext) + "; ";
+        return mDiagnosticContext.isEmpty() ? "" : String.join(", ", mDiagnosticContext);
     }
 
     void assertTrue(String message, boolean condition) {
