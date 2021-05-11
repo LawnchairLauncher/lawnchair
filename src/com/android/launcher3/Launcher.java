@@ -905,7 +905,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         } else {
             mOverlayManager.onActivityStopped(this);
         }
-
+        hideKeyboard();
         logStopAndResume(false /* isResume */);
         mAppWidgetHost.setActivityStarted(false);
         NotificationListener.removeNotificationsChangedListener();
@@ -1459,7 +1459,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                 && AbstractFloatingView.getTopOpenView(this) == null;
         boolean isActionMain = Intent.ACTION_MAIN.equals(intent.getAction());
         boolean internalStateHandled = ACTIVITY_TRACKER.handleNewIntent(this, intent);
-
+        hideKeyboard();
         if (isActionMain) {
             if (!internalStateHandled) {
                 // In all these cases, only animate if we're already on home
@@ -1480,9 +1480,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                     mWorkspace.post(mWorkspace::moveToDefaultScreen);
                 }
             }
-
-            // Handle HOME_INTENT
-            hideKeyboard();
 
             if (mLauncherCallbacks != null) {
                 mLauncherCallbacks.onHomeIntent(internalStateHandled);
