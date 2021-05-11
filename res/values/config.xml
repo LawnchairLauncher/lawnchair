@@ -137,7 +137,7 @@
     <item name="swipe_up_trans_y_stiffness" type="dimen" format="float">200</item>
 
     <item name="swipe_up_rect_xy_damping_ratio" type="dimen" format="float">0.8</item>
-    <item name="swipe_up_rect_xy_stiffness" type="dimen" format="float">100</item>
+    <item name="swipe_up_rect_xy_stiffness" type="dimen" format="float">200</item>
 
 
     <item name="swipe_up_rect_2_x_damping_ratio" type="dimen" format="float">1</item>
