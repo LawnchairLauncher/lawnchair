@@ -19,7 +19,6 @@ package com.android.launcher3.settings;
 import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS;
 
 import static com.android.launcher3.states.RotationHelper.ALLOW_ROTATION_PREFERENCE_KEY;
-import static com.android.launcher3.states.RotationHelper.getAllowRotationDefaultValue;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -38,6 +37,8 @@ import androidx.preference.PreferenceGroup.PreferencePositionCallback;
 import androidx.preference.PreferenceScreen;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -169,12 +170,14 @@ public class SettingsActivity extends FragmentActivity
                     return !WidgetsModel.GO_DISABLE_NOTIFICATION_DOTS;
 
                 case ALLOW_ROTATION_PREFERENCE_KEY:
-                    if (getResources().getBoolean(R.bool.allow_rotation)) {
+                    DeviceProfile deviceProfile = InvariantDeviceProfile.INSTANCE.get(
+                            getContext()).getDeviceProfile(getContext());
+                    if (deviceProfile.allowRotation) {
                         // Launcher supports rotation by default. No need to show this setting.
                         return false;
                     }
                     // Initialize the UI once
-                    preference.setDefaultValue(getAllowRotationDefaultValue());
+                    preference.setDefaultValue(false);
                     return true;
 
                 case FLAGS_PREFERENCE_KEY:
