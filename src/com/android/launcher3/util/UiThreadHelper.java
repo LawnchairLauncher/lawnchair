@@ -23,11 +23,12 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.view.View;
 import android.view.WindowInsets;
 import android.view.inputmethod.InputMethodManager;
 
-import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.views.ActivityContext;
 
 /**
  * Utility class for offloading some class from UI thread
@@ -43,21 +44,21 @@ public class UiThreadHelper {
     private static final int MSG_RUN_COMMAND = 3;
 
     @SuppressLint("NewApi")
-    public static void hideKeyboardAsync(Launcher launcher, IBinder token) {
+    public static void hideKeyboardAsync(ActivityContext activityContext, IBinder token) {
+        View root = activityContext.getDragLayer();
         if (Utilities.ATLEAST_R) {
-            WindowInsets rootInsets = launcher.getRootView().getRootWindowInsets();
+            WindowInsets rootInsets = root.getRootWindowInsets();
             boolean isImeShown = rootInsets != null && rootInsets.isVisible(
                     WindowInsets.Type.ime());
             if (isImeShown) {
                 // this call is already asynchronous
-                launcher.getAppsView().getWindowInsetsController().hide(
-                        WindowInsets.Type.ime()
-                );
+                root.getWindowInsetsController().hide(WindowInsets.Type.ime());
             }
             return;
         }
 
-        Message.obtain(HANDLER.get(launcher), MSG_HIDE_KEYBOARD, token).sendToTarget();
+        Message.obtain(HANDLER.get(root.getContext()),
+                MSG_HIDE_KEYBOARD, token).sendToTarget();
     }
 
     public static void setOrientationAsync(Activity activity, int orientation) {

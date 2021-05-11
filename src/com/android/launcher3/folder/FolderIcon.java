@@ -169,14 +169,11 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     public static <T extends Context & ActivityContext> FolderIcon inflateFolderAndIcon(int resId,
             T activityContext, ViewGroup group, FolderInfo folderInfo) {
         Folder folder = Folder.fromXml(activityContext);
-        folder.setDragController(folder.mLauncher.getDragController());
 
         FolderIcon icon = inflateIcon(resId, activityContext, group, folderInfo);
         folder.setFolderIcon(icon);
         folder.bind(folderInfo);
         icon.setFolder(folder);
-
-        icon.setOnFocusChangeListener(folder.mLauncher.getFocusHandler());
         icon.mBackground.paddingY = icon.isInHotseat()
                 ? 0 : activityContext.getDeviceProfile().cellYPaddingPx;
         return icon;
@@ -467,7 +464,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         CharSequence newTitle = nameInfos.getLabels()[0];
         FromState fromState = mInfo.getFromLabelState();
 
-        mInfo.setTitle(newTitle, mFolder.mLauncher.getModelWriter());
+        mInfo.setTitle(newTitle, mFolder.mLauncherDelegate.getModelWriter());
         onTitleChanged(mInfo.title);
         mFolder.mFolderName.setText(mInfo.title);
 
