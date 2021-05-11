@@ -47,7 +47,6 @@ public final class WidgetsListTableViewHolderBinder
 
     private int mMaxSpansPerRow = 4;
     private final LayoutInflater mLayoutInflater;
-    private final int mIndent;
     private final OnClickListener mIconClickListener;
     private final OnLongClickListener mIconLongClickListener;
     private final WidgetPreviewLoader mWidgetPreviewLoader;
@@ -62,7 +61,6 @@ public final class WidgetsListTableViewHolderBinder
             WidgetPreviewLoader widgetPreviewLoader,
             WidgetsListAdapter listAdapter) {
         mLayoutInflater = layoutInflater;
-        mIndent = context.getResources().getDimensionPixelSize(R.dimen.widget_section_indent);
         mIconClickListener = iconClickListener;
         mIconLongClickListener = iconLongClickListener;
         mWidgetPreviewLoader = widgetPreviewLoader;
@@ -90,11 +88,6 @@ public final class WidgetsListTableViewHolderBinder
 
         ViewGroup container = (ViewGroup) mLayoutInflater.inflate(
                 R.layout.widgets_table_container, parent, false);
-
-        // if the end padding is 0, then container view (horizontal scroll view) doesn't respect
-        // the end of the linear layout width + the start padding and doesn't allow scrolling.
-        container.findViewById(R.id.widgets_table).setPaddingRelative(mIndent, 0, 1, 0);
-
         return new WidgetsRowViewHolder(container);
     }
 
