@@ -174,12 +174,12 @@ public final class FeatureFlags {
             "Replace Smartspace with the enhanced version. "
                     + "Ignored if ENABLE_SMARTSPACE_UNIVERSAL is enabled.");
 
-    public static final BooleanFlag ENABLE_SMARTSPACE_FEEDBACK = new DeviceFlag(
+    public static final BooleanFlag ENABLE_SMARTSPACE_FEEDBACK = getDebugFlag(
             "ENABLE_SMARTSPACE_FEEDBACK", true,
             "Adds a menu option to send feedback for Enhanced Smartspace.");
 
-    public static final BooleanFlag ENABLE_SMARTSPACE_DISMISS = new DeviceFlag(
-            "ENABLE_SMARTSPACE_DISMISS", false,
+    public static final BooleanFlag ENABLE_SMARTSPACE_DISMISS = getDebugFlag(
+            "ENABLE_SMARTSPACE_DISMISS", true,
             "Adds a menu option to dismiss the current Enhanced Smartspace card.");
 
     public static final BooleanFlag ALWAYS_USE_HARDWARE_OPTIMIZATION_FOR_FOLDER_ANIMATIONS =
