@@ -21,6 +21,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="24dp"
+    android:theme="?attr/widgetsTheme"
     android:orientation="vertical">
 
     <TextView
@@ -43,6 +44,8 @@
         android:paddingVertical="8dp"
         android:text="@string/add_item_request_drag_hint"
         android:textSize="14sp"
+        android:textColor="?android:attr/textColorSecondary"
+        android:alpha="0.7"
         android:importantForAccessibility="no"/>
 
     <include layout="@layout/widget_cell"
