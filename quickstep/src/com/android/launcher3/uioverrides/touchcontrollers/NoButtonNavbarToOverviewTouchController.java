@@ -22,6 +22,7 @@ import static com.android.launcher3.LauncherState.HINT_STATE;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
+import static com.android.launcher3.anim.AnimatorListeners.forSuccessCallback;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.util.VibratorWrapper.OVERVIEW_HAPTIC;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
@@ -172,13 +173,13 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
         }
         mNormalToHintOverviewScrimAnimator = null;
         mCurrentAnimation.getTarget().addListener(newCancelListener(() ->
-                mLauncher.getStateManager().goToState(OVERVIEW, true, () -> {
+                mLauncher.getStateManager().goToState(OVERVIEW, true, forSuccessCallback(() -> {
                     mOverviewResistYAnim = AnimatorControllerWithResistance
                             .createRecentsResistanceFromOverviewAnim(mLauncher, null)
                             .createPlaybackController();
                     mReachedOverview = true;
                     maybeSwipeInteractionToOverviewComplete();
-                })));
+                }))));
 
         mCurrentAnimation.getTarget().removeListener(mClearStateOnCancelListener);
         mCurrentAnimation.dispatchOnCancel();

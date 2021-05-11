@@ -17,6 +17,7 @@ package com.android.launcher3.hybridhotseat;
 
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.anim.AnimatorListeners.forSuccessCallback;
 import static com.android.launcher3.hybridhotseat.HotseatEduController.getSettingsIntent;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOTSEAT_PREDICTION_PINNED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOTSEAT_RANKED;
@@ -150,7 +151,7 @@ public class HotseatPredictionController implements DragController.DragListener,
      * Shows appropriate hotseat education based on prediction enabled and migration states.
      */
     public void showEdu() {
-        mLauncher.getStateManager().goToState(NORMAL, true, () -> {
+        mLauncher.getStateManager().goToState(NORMAL, true, forSuccessCallback(() -> {
             if (mPredictedItems.isEmpty()) {
                 // launcher has empty predictions set
                 Snackbar.show(mLauncher, R.string.hotsaet_tip_prediction_disabled,
@@ -165,7 +166,7 @@ public class HotseatPredictionController implements DragController.DragListener,
                         .collect(Collectors.toList()));
                 eduController.showEdu();
             }
-        });
+        }));
     }
 
     /**
@@ -255,8 +256,8 @@ public class HotseatPredictionController implements DragController.DragListener,
             }
         }
         if (animate) {
-            animationSet.addListener(AnimationSuccessListener
-                    .forRunnable(this::removeOutlineDrawings));
+            animationSet.addListener(
+                    forSuccessCallback(this::removeOutlineDrawings));
             animationSet.start();
         } else {
             removeOutlineDrawings();
