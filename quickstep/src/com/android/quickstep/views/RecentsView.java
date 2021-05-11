@@ -3370,6 +3370,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     public void finishRecentsAnimation(boolean toRecents, Runnable onFinishComplete) {
+        finishRecentsAnimation(toRecents, true /* shouldPip */, onFinishComplete);
+    }
+
+    public void finishRecentsAnimation(boolean toRecents, boolean shouldPip,
+            Runnable onFinishComplete) {
         if (!toRecents && LIVE_TILE.get()) {
             // Reset the minimized state since we force-toggled the minimized state when entering
             // overview, but never actually finished the recents animation.  This is a catch all for
@@ -3387,7 +3392,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             return;
         }
 
-        final boolean sendUserLeaveHint = toRecents && LIVE_TILE.get();
+        final boolean sendUserLeaveHint = toRecents && shouldPip;
         if (sendUserLeaveHint) {
             // Notify the SysUI to use fade-in animation when entering PiP from live tile.
             final SystemUiProxy systemUiProxy = SystemUiProxy.INSTANCE.get(getContext());
