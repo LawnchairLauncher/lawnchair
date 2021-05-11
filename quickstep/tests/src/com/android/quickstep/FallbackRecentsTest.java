@@ -178,13 +178,13 @@ public class FallbackRecentsTest {
     protected <T> T getFromRecents(Function<RecentsActivity, T> f) {
         if (!TestHelpers.isInLauncherProcess()) return null;
         if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.GET_RECENTS_FAILED, "getFromRecents");
+            Log.d(TestProtocol.FALLBACK_ACTIVITY_NO_SET, "getFromRecents");
         }
         Object[] result = new Object[1];
         Wait.atMost("Failed to get from recents", () -> MAIN_EXECUTOR.submit(() -> {
             RecentsActivity activity = RecentsActivity.ACTIVITY_TRACKER.getCreatedActivity();
             if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.GET_RECENTS_FAILED, "activity=" + activity);
+                Log.d(TestProtocol.FALLBACK_ACTIVITY_NO_SET, "activity=" + activity);
             }
             if (activity == null) {
                 return false;
@@ -212,10 +212,6 @@ public class FallbackRecentsTest {
 
         BaseOverview overview = mLauncher.getBackground().switchToOverview();
         executeOnRecents(recents -> {
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.GET_RECENTS_FAILED, "isLoading=" +
-                        recents.<RecentsView>getOverviewPanel().isLoadingTasks());
-            }
             assertTrue("Don't have at least 3 tasks", getTaskCount(recents) >= 3);
         });
 

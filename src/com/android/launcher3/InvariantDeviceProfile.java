@@ -369,10 +369,6 @@ public class InvariantDeviceProfile {
     }
 
     private void onConfigChanged(Context context) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.LAUNCHER_NOT_TRANSPOSED, "IDP.onConfigChanged");
-        }
-
         // Re-init grid
         String gridName = getCurrentGridName(context);
         initGrid(context, gridName);
@@ -527,11 +523,6 @@ public class InvariantDeviceProfile {
         float availableWidth = config.screenWidthDp * res.getDisplayMetrics().density;
         float availableHeight = config.screenHeightDp * res.getDisplayMetrics().density;
 
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.LAUNCHER_NOT_TRANSPOSED,
-                    "getDeviceProfile: orientation=" + config.orientation
-                            + " size=" + availableWidth + "x" + availableHeight);
-        }
         DeviceProfile bestMatch = supportedProfiles.get(0);
         float minDiff = Float.MAX_VALUE;
 
