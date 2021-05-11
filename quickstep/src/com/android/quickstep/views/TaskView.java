@@ -32,7 +32,6 @@ import static com.android.launcher3.LauncherState.OVERVIEW_SPLIT_SELECT;
 import static com.android.launcher3.Utilities.comp;
 import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncestor;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
-import static com.android.launcher3.anim.Interpolators.EXAGGERATED_EASE;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS;
@@ -65,6 +64,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -146,6 +146,9 @@ public class TaskView extends FrameLayout implements Reusable {
 
     public static final long SCALE_ICON_DURATION = 120;
     private static final long DIM_ANIM_DURATION = 700;
+
+    private static final Interpolator FULLSCREEN_INTERPOLATOR = ACCEL_DEACCEL;
+
     /**
      * This technically can be a vanilla {@link TouchDelegate} class, however that class requires
      * setting the touch bounds at construction, so we'd repeatedly be created many instances
@@ -961,7 +964,7 @@ public class TaskView extends FrameLayout implements Reusable {
 
     private void applyScale() {
         float scale = 1;
-        float fullScreenProgress = EXAGGERATED_EASE.getInterpolation(mFullscreenProgress);
+        float fullScreenProgress = FULLSCREEN_INTERPOLATOR.getInterpolation(mFullscreenProgress);
         scale *= Utilities.mapRange(fullScreenProgress, 1f, mFullscreenScale);
         setScaleX(scale);
         setScaleY(scale);
@@ -1404,7 +1407,7 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     private float getFullscreenTrans(float endTranslation) {
-        float progress = ACCEL_DEACCEL.getInterpolation(mFullscreenProgress);
+        float progress = FULLSCREEN_INTERPOLATOR.getInterpolation(mFullscreenProgress);
         return Utilities.mapRange(progress, 0, endTranslation);
     }
 
