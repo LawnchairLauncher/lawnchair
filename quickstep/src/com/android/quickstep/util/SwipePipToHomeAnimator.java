@@ -89,6 +89,7 @@ public class SwipePipToHomeAnimator extends ValueAnimator {
      *                    different from the appBounds if user has swiped a certain distance and
      *                    Launcher has performed transform on the leash.
      * @param destinationBounds Bounds of the destination this animator ends to
+     * @param cornerRadius Corner radius in pixel value for PiP window
      */
     public SwipePipToHomeAnimator(int taskId,
             @NonNull ComponentName componentName,
@@ -97,6 +98,7 @@ public class SwipePipToHomeAnimator extends ValueAnimator {
             @NonNull Rect appBounds,
             @NonNull Rect startBounds,
             @NonNull Rect destinationBounds,
+            int cornerRadius,
             @NonNull View view) {
         mTaskId = taskId;
         mComponentName = componentName;
@@ -106,7 +108,7 @@ public class SwipePipToHomeAnimator extends ValueAnimator {
         mDestinationBounds.set(destinationBounds);
         mDestinationBoundsTransformed.set(mDestinationBounds);
         mDestinationBoundsAnimation.set(mDestinationBounds);
-        mSurfaceTransactionHelper = new PipSurfaceTransactionHelper();
+        mSurfaceTransactionHelper = new PipSurfaceTransactionHelper(cornerRadius);
 
         if (sourceRectHint == null) {
             mSourceHintRectInsets = null;
