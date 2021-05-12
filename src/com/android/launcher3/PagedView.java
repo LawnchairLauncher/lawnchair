@@ -59,7 +59,7 @@ import com.android.launcher3.util.Thunk;
 import com.android.launcher3.views.ActivityContext;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * An abstraction of the original Workspace which supports browsing through a
@@ -295,18 +295,16 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
     /**
-     * Returns the currently visible pages.
+     * Executes the callback against each visible page
      */
-    public Iterable<View> getVisiblePages() {
+    public void forEachVisiblePage(Consumer<View> callback) {
         int panelCount = getPanelCount();
-        List<View> visiblePages = new ArrayList<>(panelCount);
         for (int i = mCurrentPage; i < mCurrentPage + panelCount; i++) {
             View page = getPageAt(i);
             if (page != null) {
-                visiblePages.add(page);
+                callback.accept(page);
             }
         }
-        return visiblePages;
     }
 
     /**
@@ -835,18 +833,25 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
             return;
         }
 
+        // Add the current page's views as focusable and the next possible page's too. If the
+        // last focus change action was left then the left neighbour's views will be added, and
+        // if it was right then the right neighbour's views will be added.
+        // Unfortunately mCurrentPage can be outdated if there were multiple control actions in a
+        // short period of time, but mNextPage is up to date because it is always updated by
+        // method snapToPage.
+        int nextPage = getNextPage();
         // XXX-RTL: This will be fixed in a future CL
-        if (mCurrentPage >= 0 && mCurrentPage < getPageCount()) {
-            getPageAt(mCurrentPage).addFocusables(views, direction, focusableMode);
+        if (nextPage >= 0 && nextPage < getPageCount()) {
+            getPageAt(nextPage).addFocusables(views, direction, focusableMode);
         }
         if (direction == View.FOCUS_LEFT) {
-            if (mCurrentPage > 0) {
-                int nextPage = validateNewPage(mCurrentPage - 1);
+            if (nextPage > 0) {
+                nextPage = validateNewPage(nextPage - 1);
                 getPageAt(nextPage).addFocusables(views, direction, focusableMode);
             }
         } else if (direction == View.FOCUS_RIGHT) {
-            if (mCurrentPage < getPageCount() - 1) {
-                int nextPage = validateNewPage(mCurrentPage + 1);
+            if (nextPage < getPageCount() - 1) {
+                nextPage = validateNewPage(nextPage + 1);
                 getPageAt(nextPage).addFocusables(views, direction, focusableMode);
             }
         }
@@ -1034,7 +1039,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         // Try canceling the long press. It could also have been scheduled
         // by a distant descendant, so use the mAllowLongPress flag to block
         // everything
-        getVisiblePages().forEach(View::cancelLongPress);
+        forEachVisiblePage(View::cancelLongPress);
     }
 
     protected float getScrollProgress(int screenCenter, View v, int page) {
@@ -1416,6 +1421,14 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     @Override
     public void requestChildFocus(View child, View focused) {
         super.requestChildFocus(child, focused);
+
+        // In case the device is controlled by a controller, mCurrentPage isn't updated properly
+        // which results in incorrect navigation
+        int nextPage = getNextPage();
+        if (nextPage != mCurrentPage) {
+            setCurrentPage(nextPage);
+        }
+
         int page = indexToPage(indexOfChild(child));
         if (page >= 0 && page != getCurrentPage() && !isInTouchMode()) {
             snapToPage(page);

@@ -2974,7 +2974,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         List<CellLayout> cellLayouts = new ArrayList<>(getPanelCount() + 1);
         cellLayouts.add(getHotseat());
-        getVisiblePages().forEach(page -> cellLayouts.add((CellLayout) page));
+        forEachVisiblePage(page -> cellLayouts.add((CellLayout) page));
 
         // Order: App icons, app in folder. Items in hotseat get returned first.
         if (ADAPTIVE_ICON_WINDOW_ANIM.get()) {
