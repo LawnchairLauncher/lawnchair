@@ -65,12 +65,6 @@ public final class FallbackActivityInterface extends
         }
     }
 
-    /** 4 */
-    @Override
-    public void onSwipeUpToHomeComplete(RecentsAnimationDeviceState deviceState) {
-        onSwipeUpToRecentsComplete();
-    }
-
     /** 5 */
     @Override
     public void onAssistantVisibilityChanged(float visibility) {
