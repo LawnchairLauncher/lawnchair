@@ -127,6 +127,7 @@ import com.android.launcher3.util.DynamicResource;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.ResourceBasedOverride.Overrides;
+import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.TranslateEdgeEffect;
@@ -2415,6 +2416,47 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             }
         });
         return anim;
+    }
+
+    /**
+     * @return {@code true} if one of the task thumbnails would intersect/overlap with the
+     *         {@link #mSplitPlaceholderView}
+     */
+    public boolean shouldShiftThumbnailsForSplitSelect(@SplitConfigurationOptions.StagePosition
+            int stagePosition) {
+        if (!mActivity.getDeviceProfile().isTablet) {
+            // Never enough space on phones
+            return true;
+        } else if (!mActivity.getDeviceProfile().isLandscape) {
+            return false;
+        }
+
+        Rect splitBounds = new Rect();
+        float placeholderSize = getResources().getDimension(R.dimen.split_placeholder_size);
+        // This acts as a best approximation on where the splitplaceholder view would be,
+        // doesn't need to be exact necessarily. This also doesn't need to take translations
+        // into account since placeholder view is not translated
+        if (stagePosition == SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT) {
+            splitBounds.set((int) (getWidth() - placeholderSize), 0, getWidth(), getHeight());
+        } else {
+            splitBounds.set(0, 0, (int) (placeholderSize), getHeight());
+        }
+        Rect taskBounds = new Rect();
+        int taskCount = getTaskViewCount();
+        for (int i = 0; i < taskCount; i++) {
+            TaskView taskView = getTaskViewAt(i);
+            if (taskView == mSplitHiddenTaskView && taskView != getFocusedTaskView()) {
+                // Case where the hidden task view would have overlapped w/ placeholder,
+                // but because it's going to hide we don't care
+                // TODO (b/187312247) edge case for thumbnails that are off screen but scroll on
+                continue;
+            }
+            taskView.getBoundsOnScreen(taskBounds);
+            if (Rect.intersects(taskBounds, splitBounds)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     protected void onDismissAnimationEnds() {
