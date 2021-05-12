@@ -56,9 +56,8 @@ public abstract class AbstractStateChangeTouchController
 
     protected final AnimatorListener mClearStateOnCancelListener =
             newCancelListener(this::clearState);
+    private final FlingBlockCheck mFlingBlockCheck = new FlingBlockCheck();
 
-    private boolean mNoIntercept;
-    private boolean mIsLogContainerSet;
     protected int mStartContainerType;
 
     protected LauncherState mStartState;
@@ -67,12 +66,14 @@ public abstract class AbstractStateChangeTouchController
     protected AnimatorPlaybackController mCurrentAnimation;
     protected boolean mGoingBetweenStates = true;
 
+    private boolean mNoIntercept;
+    private boolean mIsLogContainerSet;
     private float mStartProgress;
     // Ratio of transition process [0, 1] to drag displacement (px)
     private float mProgressMultiplier;
     private float mDisplacementShift;
     private boolean mCanBlockFling;
-    private final FlingBlockCheck mFlingBlockCheck = new FlingBlockCheck();
+    private boolean mAllAppsOvershootStarted;
 
     public AbstractStateChangeTouchController(Launcher l, SingleAxisSwipeDetector.Direction dir) {
         mLauncher = l;
@@ -216,8 +217,15 @@ public abstract class AbstractStateChangeTouchController
                     mFlingBlockCheck.blockFling();
                 }
             }
+            if (mToState == LauncherState.ALL_APPS && !UNSTABLE_SPRINGS.get()) {
+                mAllAppsOvershootStarted = true;
+                // 1f, value when all apps container hit the top
+                mLauncher.getAppsView().onPull(progress - 1f, progress - 1f);
+            }
+
         } else {
             mFlingBlockCheck.onEvent();
+
         }
 
         return true;
@@ -325,8 +333,15 @@ public abstract class AbstractStateChangeTouchController
         anim.setFloatValues(startProgress, endProgress);
         updateSwipeCompleteAnimation(anim, duration, targetState, velocity, fling);
         mCurrentAnimation.dispatchOnStart();
-        if (fling && targetState == LauncherState.ALL_APPS && !UNSTABLE_SPRINGS.get()) {
-            mLauncher.getAppsView().addSpringFromFlingUpdateListener(anim, velocity);
+        if (targetState == LauncherState.ALL_APPS && !UNSTABLE_SPRINGS.get()) {
+            if (mAllAppsOvershootStarted) {
+
+                mLauncher.getAppsView().onRelease();
+                mAllAppsOvershootStarted = false;
+
+            } else {
+                mLauncher.getAppsView().addSpringFromFlingUpdateListener(anim, velocity);
+            }
         }
         anim.start();
     }
