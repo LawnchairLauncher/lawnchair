@@ -1521,7 +1521,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
     private void setupLauncherUiAfterSwipeUpToRecentsAnimation() {
         endLauncherTransitionController();
-        mActivityInterface.onSwipeUpToRecentsComplete();
         mRecentsView.onSwipeUpAnimationSuccess();
         if (LIVE_TILE.get()) {
             mTaskAnimationManager.setLiveTileCleanUpHandler(mInputConsumerProxy::destroy);
