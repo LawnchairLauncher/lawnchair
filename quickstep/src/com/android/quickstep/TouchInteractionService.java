@@ -534,13 +534,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
             Point sz = new Point();
             display.getRealSize(sz);
             if (rotation != Surface.ROTATION_0) {
-                if ((rotation % 2) != 0) {
-                    // via display-manager, the display size is unrotated, so "rotate" its size
-                    // to match the rotation we are transforming the event into.
-                    final int tmpX = sz.x;
-                    sz.x = sz.y;
-                    sz.y = tmpX;
-                }
                 event.transform(InputChannelCompat.createRotationMatrix(rotation, sz.x, sz.y));
             }
         }
