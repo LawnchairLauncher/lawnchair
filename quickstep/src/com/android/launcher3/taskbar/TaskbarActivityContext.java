@@ -16,12 +16,24 @@
 package com.android.launcher3.taskbar;
 
 import android.content.ContextWrapper;
+import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
+import android.view.View;
+
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.DragSource;
+import com.android.launcher3.DropTarget;
 import com.android.launcher3.R;
+import com.android.launcher3.dragndrop.DragController;
+import com.android.launcher3.dragndrop.DragOptions;
+import com.android.launcher3.dragndrop.DragView;
+import com.android.launcher3.dragndrop.DraggableView;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
 
@@ -35,6 +47,7 @@ public class TaskbarActivityContext extends ContextWrapper implements ActivityCo
     private final DeviceProfile mDeviceProfile;
     private final LayoutInflater mLayoutInflater;
     private final TaskbarContainerView mTaskbarContainerView;
+    private final MyDragController mDragController;
 
     public TaskbarActivityContext(BaseQuickstepLauncher launcher) {
         super(launcher);
@@ -47,6 +60,7 @@ public class TaskbarActivityContext extends ContextWrapper implements ActivityCo
 
         mTaskbarContainerView = (TaskbarContainerView) mLayoutInflater
                 .inflate(R.layout.taskbar, null, false);
+        mDragController = new MyDragController(this);
     }
 
     public TaskbarContainerView getTaskbarContainerView() {
@@ -71,5 +85,32 @@ public class TaskbarActivityContext extends ContextWrapper implements ActivityCo
     @Override
     public Rect getFolderBoundingBox() {
         return mTaskbarContainerView.getFolderBoundingBox();
+    }
+
+    @Override
+    public DragController getDragController() {
+        return mDragController;
+    }
+
+    private static class MyDragController extends DragController<TaskbarActivityContext> {
+        MyDragController(TaskbarActivityContext activity) {
+            super(activity);
+        }
+
+        @Override
+        protected DragView startDrag(@Nullable Drawable drawable, @Nullable View view,
+                DraggableView originalView, int dragLayerX, int dragLayerY, DragSource source,
+                ItemInfo dragInfo, Point dragOffset, Rect dragRegion, float initialDragViewScale,
+                float dragViewScaleOnDrop, DragOptions options) {
+            return null;
+        }
+
+        @Override
+        protected void exitDrag() { }
+
+        @Override
+        protected DropTarget getDefaultDropTarget(int[] dropCoordinates) {
+            return null;
+        }
     }
 }

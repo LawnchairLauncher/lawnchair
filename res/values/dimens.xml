@@ -138,7 +138,6 @@
     <dimen name="widget_section_icon_size">40dp</dimen>
     <dimen name="widget_section_vertical_padding">8dp</dimen>
     <dimen name="widget_section_horizontal_padding">16dp</dimen>
-    <dimen name="widget_section_indent">0dp</dimen>
 
     <dimen name="widget_row_padding">8dp</dimen>
     <dimen name="widget_row_divider">2dp</dimen>

@@ -124,6 +124,7 @@ import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
+import com.android.launcher3.dragndrop.LauncherDragController;
 import com.android.launcher3.folder.FolderGridOrganizer;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.icons.BitmapRenderer;
@@ -428,7 +429,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         mIconCache = app.getIconCache();
         mAccessibilityDelegate = createAccessibilityDelegate();
 
-        mDragController = new DragController(this);
+        mDragController = new LauncherDragController(this);
         mAllAppsController = new AllAppsTransitionController(this);
         mStateManager = new StateManager<>(this, NORMAL);
 
@@ -2154,12 +2155,29 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
      */
     @Override
     public void bindItems(final List<ItemInfo> items, final boolean forceAnimateIcons) {
+        bindItems(items, forceAnimateIcons, /* focusFirstItemForAccessibility= */ false);
+    }
+
+
+    /**
+     * Bind the items start-end from the list.
+     *
+     * Implementation of the method from LauncherModel.Callbacks.
+     *
+     * @param focusFirstItemForAccessibility true iff the first item to be added to the workspace
+     *                                       should be focused for accessibility.
+     */
+    public void bindItems(
+            final List<ItemInfo> items,
+            final boolean forceAnimateIcons,
+            final boolean focusFirstItemForAccessibility) {
         // Get the list of added items and intersect them with the set of items here
         final Collection<Animator> bounceAnims = new ArrayList<>();
         final boolean animateIcons = forceAnimateIcons && canRunNewAppsAnimation();
         Workspace workspace = mWorkspace;
         int newItemsScreenId = -1;
         int end = items.size();
+        View newView = null;
         for (int i = 0; i < end; i++) {
             final ItemInfo item = items.get(i);
 
@@ -2224,12 +2242,25 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                 bounceAnims.add(createNewAppBounceAnimation(view, i));
                 newItemsScreenId = item.screenId;
             }
+
+            if (newView == null) {
+                newView = view;
+            }
         }
 
-        // Animate to the correct page
+        View viewToFocus = newView;
+        // Animate to the correct pager
         if (animateIcons && newItemsScreenId > -1) {
             AnimatorSet anim = new AnimatorSet();
             anim.playTogether(bounceAnims);
+            if (focusFirstItemForAccessibility && viewToFocus != null) {
+                anim.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        viewToFocus.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_FOCUSED);
+                    }
+                });
+            }
 
             int currentScreenId = mWorkspace.getScreenIdForPageIndex(mWorkspace.getNextPage());
             final int newScreenIndex = mWorkspace.getPageIndexForScreenId(newItemsScreenId);
@@ -2252,6 +2283,8 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
             } else {
                 mWorkspace.postDelayed(startBounceAnimRunnable, NEW_APPS_ANIMATION_DELAY);
             }
+        } else if (focusFirstItemForAccessibility && viewToFocus != null) {
+            viewToFocus.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_FOCUSED);
         }
         workspace.requestLayout();
     }

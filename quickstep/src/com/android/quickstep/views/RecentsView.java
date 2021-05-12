@@ -494,6 +494,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     private final PinnedStackAnimationListener mIPipAnimationListener =
             new PinnedStackAnimationListener();
+    private int mPipCornerRadius;
 
     // Used to keep track of the last requested task list id, so that we do not request to load the
     // tasks again if we have already requested it and the task list has not changed
@@ -795,7 +796,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mSyncTransactionApplier = new SurfaceTransactionApplier(this);
         mLiveTileParams.setSyncTransactionApplier(mSyncTransactionApplier);
         RecentsModel.INSTANCE.get(getContext()).addThumbnailChangeListener(this);
-        mIPipAnimationListener.setActivity(mActivity);
+        mIPipAnimationListener.setActivityAndRecentsView(mActivity, this);
         SystemUiProxy.INSTANCE.get(getContext()).setPinnedStackAnimationListener(
                 mIPipAnimationListener);
         mOrientationState.initListeners();
@@ -815,7 +816,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         RecentsModel.INSTANCE.get(getContext()).removeThumbnailChangeListener(this);
         SystemUiProxy.INSTANCE.get(getContext()).setPinnedStackAnimationListener(null);
         SplitScreenBounds.INSTANCE.removeOnChangeListener(this);
-        mIPipAnimationListener.setActivity(null);
+        mIPipAnimationListener.setActivityAndRecentsView(null, null);
         mOrientationState.destroyListeners();
         mTaskOverlayFactory.removeListeners();
     }
@@ -1243,13 +1244,51 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     @Override
     public void setInsets(Rect insets) {
         mInsets.set(insets);
-        resetPaddingFromTaskSize();
+
+        // Update DeviceProfile dependant state.
         DeviceProfile dp = mActivity.getDeviceProfile();
+        setOverviewGridEnabled(
+                mActivity.getStateManager().getState().displayOverviewTasksAsGrid(dp));
+
+        // Propagate DeviceProfile change event.
         mLiveTileTaskViewSimulator.setDp(dp);
         mActionsView.setDp(dp);
+        mOrientationState.setDeviceProfile(dp);
+
+        // Update RecentsView adn TaskView's DeviceProfile dependent layout.
+        updateOrientationHandler();
     }
 
-    private void resetPaddingFromTaskSize() {
+    private void updateOrientationHandler() {
+        // Handle orientation changes.
+        mOrientationHandler = mOrientationState.getOrientationHandler();
+        mIsRtl = mOrientationHandler.getRecentsRtlSetting(getResources());
+        setLayoutDirection(mIsRtl
+                ? View.LAYOUT_DIRECTION_RTL
+                : View.LAYOUT_DIRECTION_LTR);
+        mClearAllButton.setLayoutDirection(mIsRtl
+                ? View.LAYOUT_DIRECTION_LTR
+                : View.LAYOUT_DIRECTION_RTL);
+        mClearAllButton.setRotation(mOrientationHandler.getDegreesRotated());
+        mActivity.getDragLayer().recreateControllers();
+        boolean isInLandscape = mOrientationState.getTouchRotation() != ROTATION_0
+                || mOrientationState.getRecentsActivityRotation() != ROTATION_0;
+        mActionsView.updateHiddenFlags(HIDDEN_NON_ZERO_ROTATION,
+                !mOrientationState.canRecentsActivityRotate() && isInLandscape);
+
+        // Update TaskView's DeviceProfile dependent layout.
+        updateChildTaskOrientations();
+
+        // Recalculate DeviceProfile dependent layout.
+        updateSizeAndPadding();
+
+        requestLayout();
+        // Reapply the current page to update page scrolls.
+        setCurrentPage(mCurrentPage);
+    }
+
+    // Update task size and padding that are dependent on DeviceProfile and insets.
+    private void updateSizeAndPadding() {
         DeviceProfile dp = mActivity.getDeviceProfile();
         getTaskSize(mTempRect);
         mTaskWidth = mTempRect.width();
@@ -2565,28 +2604,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
     }
 
-    private void updateOrientationHandler() {
-        mOrientationHandler = mOrientationState.getOrientationHandler();
-        mIsRtl = mOrientationHandler.getRecentsRtlSetting(getResources());
-        setLayoutDirection(mIsRtl
-                ? View.LAYOUT_DIRECTION_RTL
-                : View.LAYOUT_DIRECTION_LTR);
-        mClearAllButton.setLayoutDirection(mIsRtl
-                ? View.LAYOUT_DIRECTION_LTR
-                : View.LAYOUT_DIRECTION_RTL);
-        mClearAllButton.setRotation(mOrientationHandler.getDegreesRotated());
-        mActivity.getDragLayer().recreateControllers();
-        boolean isInLandscape = mOrientationState.getTouchRotation() != ROTATION_0
-                || mOrientationState.getRecentsActivityRotation() != ROTATION_0;
-        mActionsView.updateHiddenFlags(HIDDEN_NON_ZERO_ROTATION,
-                !mOrientationState.canRecentsActivityRotate() && isInLandscape);
-        updateChildTaskOrientations();
-        resetPaddingFromTaskSize();
-        requestLayout();
-        // Reapply the current page to update page scrolls.
-        setCurrentPage(mCurrentPage);
-    }
-
     public RecentsOrientedState getPagedViewOrientedState() {
         return mOrientationState;
     }
@@ -3618,6 +3635,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * capturing the snapshot at the same time.
      */
     public void switchToScreenshot(Runnable onFinishRunnable) {
+        if (mRecentsAnimationController == null) {
+            if (onFinishRunnable != null) {
+                onFinishRunnable.run();
+            }
+            return;
+        }
         switchToScreenshot(mRunningTaskId == -1 ? null
                 : mRecentsAnimationController.screenshotTask(mRunningTaskId), onFinishRunnable);
     }
@@ -3667,7 +3690,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     public void onSecondaryWindowBoundsChanged() {
         // Invalidate the task view size
         setInsets(mInsets);
-        requestLayout();
     }
 
     /**
@@ -3760,6 +3782,14 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mScrollListeners.remove(listener);
     }
 
+    /**
+     * @return Corner radius in pixel value for PiP window, which is updated via
+     *         {@link #mIPipAnimationListener}
+     */
+    public int getPipCornerRadius() {
+        return mPipCornerRadius;
+    }
+
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
@@ -3776,9 +3806,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private static class PinnedStackAnimationListener<T extends BaseActivity> extends
             IPipAnimationListener.Stub {
         private T mActivity;
+        private RecentsView mRecentsView;
 
-        public void setActivity(T activity) {
+        public void setActivityAndRecentsView(T activity, RecentsView recentsView) {
             mActivity = activity;
+            mRecentsView = recentsView;
         }
 
         @Override
@@ -3790,6 +3822,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     mActivity.clearForceInvisibleFlag(STATE_HANDLER_INVISIBILITY_FLAGS);
                 }
             });
+        }
+
+        @Override
+        public void onPipCornerRadiusChanged(int cornerRadius) {
+            if (mRecentsView != null) {
+                mRecentsView.mPipCornerRadius = cornerRadius;
+            }
         }
     }
 

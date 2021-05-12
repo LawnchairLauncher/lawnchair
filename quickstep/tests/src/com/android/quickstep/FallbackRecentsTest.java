@@ -62,6 +62,7 @@ import com.android.launcher3.util.rule.FailureWatcher;
 import com.android.quickstep.views.RecentsView;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -142,10 +143,19 @@ public class FallbackRecentsTest {
         }
     }
 
+    @Before
+    public void setUp() {
+        mLauncher.onTestStart();
+    }
+
     @After
-    public void verifyLauncherState() {
-        // Limits UI tests affecting tests running after them.
-        AbstractQuickStepTest.checkDetectedLeaks(mLauncher);
+    public void tearDown() {
+        try {
+            // Limits UI tests affecting tests running after them.
+            AbstractQuickStepTest.checkDetectedLeaks(mLauncher);
+        } finally {
+            mLauncher.onTestFinish();
+        }
     }
 
     // b/143488140
