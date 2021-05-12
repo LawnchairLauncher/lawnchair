@@ -43,6 +43,7 @@
     <attr name="folderIconBorderColor" format="color" />
     <attr name="folderTextColor" format="color" />
     <attr name="folderHintColor" format="color" />
+    <attr name="isFolderDarkText" format="boolean" />
     <attr name="workProfileOverlayTextColor" format="color" />
     <attr name="gridColor" format="color" />
 
