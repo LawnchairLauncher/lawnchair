@@ -202,7 +202,8 @@
     <dimen name="pending_widget_elevation">2dp</dimen>
 
 <!-- Deep shortcuts -->
-    <dimen name="deep_shortcuts_elevation">0dp</dimen>
+    <dimen name="deep_shortcuts_elevation">2dp</dimen>
+    <dimen name="bg_popup_padding">2dp</dimen>
     <dimen name="bg_popup_item_width">216dp</dimen>
     <dimen name="bg_popup_item_height">56dp</dimen>
     <dimen name="pre_drag_view_scale">6dp</dimen>
