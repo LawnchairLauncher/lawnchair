@@ -335,8 +335,8 @@ public class LauncherSwipeHandlerV2 extends
 
         @Override
         public void playAtomicAnimation(float velocity) {
-            new StaggeredWorkspaceAnim(mActivity, velocity,
-                    true /* animateOverviewScrim */).start();
+            new StaggeredWorkspaceAnim(mActivity, velocity, true /* animateOverviewScrim */,
+                    !PROTOTYPE_APP_CLOSE.get()).start();
         }
 
         @Override
