@@ -63,7 +63,9 @@ import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.BlendMode;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.PointF;
@@ -98,6 +100,7 @@ import android.widget.OverScroller;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
+import androidx.core.graphics.ColorUtils;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseActivity.MultiWindowModeChangedListener;
@@ -108,6 +111,7 @@ import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
+import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.SpringProperty;
@@ -117,7 +121,6 @@ import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulActivity;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.OverScroll;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.DynamicResource;
@@ -240,6 +243,24 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 @Override
                 public Float get(RecentsView recentsView) {
                     return recentsView.mAdjacentPageVerticalOffset;
+                }
+            };
+
+    /**
+     * Can be used to tint the color of the RecentsView to simulate a scrim that can views
+     * excluded from. Really should be a proper scrim.
+     * TODO(b/187528071): Remove this and replace with a real scrim.
+     */
+    private static final FloatProperty<RecentsView> COLOR_TINT =
+            new FloatProperty<RecentsView>("colorTint") {
+                @Override
+                public void setValue(RecentsView recentsView, float v) {
+                    recentsView.setColorTint(v);
+                }
+
+                @Override
+                public Float get(RecentsView recentsView) {
+                    return recentsView.getColorTint();
                 }
             };
 
@@ -404,6 +425,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     // The GestureEndTarget that is still in progress.
     protected GestureState.GestureEndTarget mCurrentGestureEndTarget;
 
+    // TODO(b/187528071): Remove these and replace with a real scrim.
+    private float mColorTint;
+    private final int mTintingColor;
+
     private int mOverScrollShift = 0;
 
     /**
@@ -469,6 +494,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     private final PinnedStackAnimationListener mIPipAnimationListener =
             new PinnedStackAnimationListener();
+    private int mPipCornerRadius;
 
     // Used to keep track of the last requested task list id, so that we do not request to load the
     // tasks again if we have already requested it and the task list has not changed
@@ -616,6 +642,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mLiveTileTaskViewSimulator.recentsViewScale.value = 1;
         mLiveTileTaskViewSimulator.setOrientationState(mOrientationState);
         mLiveTileTaskViewSimulator.setDrawsBelowRecents(true);
+
+        mTintingColor = getForegroundScrimDimColor(context);
     }
 
     public OverScroller getScroller() {
@@ -768,7 +796,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mSyncTransactionApplier = new SurfaceTransactionApplier(this);
         mLiveTileParams.setSyncTransactionApplier(mSyncTransactionApplier);
         RecentsModel.INSTANCE.get(getContext()).addThumbnailChangeListener(this);
-        mIPipAnimationListener.setActivity(mActivity);
+        mIPipAnimationListener.setActivityAndRecentsView(mActivity, this);
         SystemUiProxy.INSTANCE.get(getContext()).setPinnedStackAnimationListener(
                 mIPipAnimationListener);
         mOrientationState.initListeners();
@@ -788,7 +816,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         RecentsModel.INSTANCE.get(getContext()).removeThumbnailChangeListener(this);
         SystemUiProxy.INSTANCE.get(getContext()).setPinnedStackAnimationListener(null);
         SplitScreenBounds.INSTANCE.removeOnChangeListener(this);
-        mIPipAnimationListener.setActivity(null);
+        mIPipAnimationListener.setActivityAndRecentsView(null, null);
         mOrientationState.destroyListeners();
         mTaskOverlayFactory.removeListeners();
     }
@@ -1186,6 +1214,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         loadVisibleTaskData(TaskView.FLAG_UPDATE_ALL);
         setTaskModalness(0);
         updateVerticalPageOffsets();
+        setColorTint(0);
     }
 
     public void setFullscreenProgress(float fullscreenProgress) {
@@ -1215,13 +1244,51 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     @Override
     public void setInsets(Rect insets) {
         mInsets.set(insets);
-        resetPaddingFromTaskSize();
+
+        // Update DeviceProfile dependant state.
         DeviceProfile dp = mActivity.getDeviceProfile();
+        setOverviewGridEnabled(
+                mActivity.getStateManager().getState().displayOverviewTasksAsGrid(dp));
+
+        // Propagate DeviceProfile change event.
         mLiveTileTaskViewSimulator.setDp(dp);
         mActionsView.setDp(dp);
+        mOrientationState.setDeviceProfile(dp);
+
+        // Update RecentsView adn TaskView's DeviceProfile dependent layout.
+        updateOrientationHandler();
     }
 
-    private void resetPaddingFromTaskSize() {
+    private void updateOrientationHandler() {
+        // Handle orientation changes.
+        mOrientationHandler = mOrientationState.getOrientationHandler();
+        mIsRtl = mOrientationHandler.getRecentsRtlSetting(getResources());
+        setLayoutDirection(mIsRtl
+                ? View.LAYOUT_DIRECTION_RTL
+                : View.LAYOUT_DIRECTION_LTR);
+        mClearAllButton.setLayoutDirection(mIsRtl
+                ? View.LAYOUT_DIRECTION_LTR
+                : View.LAYOUT_DIRECTION_RTL);
+        mClearAllButton.setRotation(mOrientationHandler.getDegreesRotated());
+        mActivity.getDragLayer().recreateControllers();
+        boolean isInLandscape = mOrientationState.getTouchRotation() != ROTATION_0
+                || mOrientationState.getRecentsActivityRotation() != ROTATION_0;
+        mActionsView.updateHiddenFlags(HIDDEN_NON_ZERO_ROTATION,
+                !mOrientationState.canRecentsActivityRotate() && isInLandscape);
+
+        // Update TaskView's DeviceProfile dependent layout.
+        updateChildTaskOrientations();
+
+        // Recalculate DeviceProfile dependent layout.
+        updateSizeAndPadding();
+
+        requestLayout();
+        // Reapply the current page to update page scrolls.
+        setCurrentPage(mCurrentPage);
+    }
+
+    // Update task size and padding that are dependent on DeviceProfile and insets.
+    private void updateSizeAndPadding() {
         DeviceProfile dp = mActivity.getDeviceProfile();
         getTaskSize(mTempRect);
         mTaskWidth = mTempRect.width();
@@ -1605,7 +1672,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             return;
         }
         AnimatorSet pa = setRecentsChangedOrientation(true);
-        pa.addListener(AnimationSuccessListener.forRunnable(() -> {
+        pa.addListener(AnimatorListeners.forSuccessCallback(() -> {
             setLayoutRotation(newRotation, mOrientationState.getDisplayRotation());
             mActivity.getDragLayer().recreateControllers();
             updateChildTaskOrientations();
@@ -2537,28 +2604,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
     }
 
-    private void updateOrientationHandler() {
-        mOrientationHandler = mOrientationState.getOrientationHandler();
-        mIsRtl = mOrientationHandler.getRecentsRtlSetting(getResources());
-        setLayoutDirection(mIsRtl
-                ? View.LAYOUT_DIRECTION_RTL
-                : View.LAYOUT_DIRECTION_LTR);
-        mClearAllButton.setLayoutDirection(mIsRtl
-                ? View.LAYOUT_DIRECTION_LTR
-                : View.LAYOUT_DIRECTION_RTL);
-        mClearAllButton.setRotation(mOrientationHandler.getDegreesRotated());
-        mActivity.getDragLayer().recreateControllers();
-        boolean isInLandscape = mOrientationState.getTouchRotation() != ROTATION_0
-                || mOrientationState.getRecentsActivityRotation() != ROTATION_0;
-        mActionsView.updateHiddenFlags(HIDDEN_NON_ZERO_ROTATION,
-                !mOrientationState.canRecentsActivityRotate() && isInLandscape);
-        updateChildTaskOrientations();
-        resetPaddingFromTaskSize();
-        requestLayout();
-        // Reapply the current page to update page scrolls.
-        setCurrentPage(mCurrentPage);
-    }
-
     public RecentsOrientedState getPagedViewOrientedState() {
         return mOrientationState;
     }
@@ -3325,6 +3370,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     public void finishRecentsAnimation(boolean toRecents, Runnable onFinishComplete) {
+        finishRecentsAnimation(toRecents, true /* shouldPip */, onFinishComplete);
+    }
+
+    public void finishRecentsAnimation(boolean toRecents, boolean shouldPip,
+            Runnable onFinishComplete) {
         if (!toRecents && LIVE_TILE.get()) {
             // Reset the minimized state since we force-toggled the minimized state when entering
             // overview, but never actually finished the recents animation.  This is a catch all for
@@ -3342,7 +3392,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             return;
         }
 
-        final boolean sendUserLeaveHint = toRecents && LIVE_TILE.get();
+        final boolean sendUserLeaveHint = toRecents && shouldPip;
         if (sendUserLeaveHint) {
             // Notify the SysUI to use fade-in animation when entering PiP from live tile.
             final SystemUiProxy systemUiProxy = SystemUiProxy.INSTANCE.get(getContext());
@@ -3590,6 +3640,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * capturing the snapshot at the same time.
      */
     public void switchToScreenshot(Runnable onFinishRunnable) {
+        if (mRecentsAnimationController == null) {
+            if (onFinishRunnable != null) {
+                onFinishRunnable.run();
+            }
+            return;
+        }
         switchToScreenshot(mRunningTaskId == -1 ? null
                 : mRecentsAnimationController.screenshotTask(mRunningTaskId), onFinishRunnable);
     }
@@ -3639,7 +3695,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     public void onSecondaryWindowBoundsChanged() {
         // Invalidate the task view size
         setInsets(mInsets);
-        requestLayout();
     }
 
     /**
@@ -3661,9 +3716,34 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * tasks to be dimmed while other elements in the recents view are left alone.
      */
     public void showForegroundScrim(boolean show) {
+        ObjectAnimator anim = ObjectAnimator.ofFloat(this, COLOR_TINT, show ? 0.5f : 0f);
+        anim.setAutoCancel(true);
+        anim.start();
+    }
+
+    /** Tint the RecentsView and TaskViews in to simulate a scrim. */
+    // TODO(b/187528071): Replace this tinting with a scrim on top of RecentsView
+    private void setColorTint(float tintAmount) {
+        mColorTint = tintAmount;
+
         for (int i = 0; i < getTaskViewCount(); i++) {
-            getTaskViewAt(i).showColorTint(show);
+            getTaskViewAt(i).setColorTint(mColorTint, mTintingColor);
         }
+
+        Drawable scrimBg = mActivity.getScrimView().getBackground();
+        if (scrimBg != null) {
+            if (tintAmount == 0f) {
+                scrimBg.setTintList(null);
+            } else {
+                scrimBg.setTintBlendMode(BlendMode.SRC_OVER);
+                scrimBg.setTint(
+                        ColorUtils.setAlphaComponent(mTintingColor, (int) (255 * tintAmount)));
+            }
+        }
+    }
+
+    private float getColorTint() {
+        return mColorTint;
     }
 
     private boolean showAsGrid() {
@@ -3707,6 +3787,14 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mScrollListeners.remove(listener);
     }
 
+    /**
+     * @return Corner radius in pixel value for PiP window, which is updated via
+     *         {@link #mIPipAnimationListener}
+     */
+    public int getPipCornerRadius() {
+        return mPipCornerRadius;
+    }
+
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
@@ -3723,9 +3811,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private static class PinnedStackAnimationListener<T extends BaseActivity> extends
             IPipAnimationListener.Stub {
         private T mActivity;
+        private RecentsView mRecentsView;
 
-        public void setActivity(T activity) {
+        public void setActivityAndRecentsView(T activity, RecentsView recentsView) {
             mActivity = activity;
+            mRecentsView = recentsView;
         }
 
         @Override
@@ -3738,5 +3828,19 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 }
             });
         }
+
+        @Override
+        public void onPipCornerRadiusChanged(int cornerRadius) {
+            if (mRecentsView != null) {
+                mRecentsView.mPipCornerRadius = cornerRadius;
+            }
+        }
+    }
+
+    /** Get the color used for foreground scrimming the RecentsView for sharing. */
+    public static int getForegroundScrimDimColor(Context context) {
+        int baseColor = Themes.getAttrColor(context, R.attr.overviewScrimColor);
+        // The Black blending is temporary until we have the proper color token.
+        return ColorUtils.blendARGB(Color.BLACK, baseColor, 0.25f);
     }
 }
