@@ -21,6 +21,7 @@ import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION;
 
 import static com.android.launcher3.ResourceUtils.pxFromDp;
 import static com.android.launcher3.Utilities.dpiFromPx;
+import static com.android.launcher3.Utilities.pxFromSp;
 import static com.android.launcher3.util.WindowManagerCompat.MIN_TABLET_WIDTH;
 
 import android.annotation.SuppressLint;
@@ -518,7 +519,7 @@ public class DeviceProfile {
         float invIconSizeDp = isLandscape ? inv.landscapeIconSize : inv.iconSize;
         iconSizePx = Math.max(1, pxFromDp(invIconSizeDp, mMetrics, scale));
         float invIconTextSizeSp = isLandscape ? inv.landscapeIconTextSize : inv.iconTextSize;
-        iconTextSizePx = (int) (Utilities.pxFromSp(invIconTextSizeSp, mMetrics) * scale);
+        iconTextSizePx = (int) (pxFromSp(invIconTextSizeSp, mMetrics) * scale);
         iconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * scale);
 
         setCellLayoutBorderSpacing((int) (cellLayoutBorderSpacingOriginalPx * scale));
@@ -548,7 +549,7 @@ public class DeviceProfile {
         // All apps
         if (numShownAllAppsColumns != inv.numColumns) {
             allAppsIconSizePx = pxFromDp(inv.allAppsIconSize, mMetrics);
-            allAppsIconTextSizePx = Utilities.pxFromSp(inv.allAppsIconTextSize, mMetrics);
+            allAppsIconTextSizePx = pxFromSp(inv.allAppsIconTextSize, mMetrics);
             allAppsIconDrawablePaddingPx = iconDrawablePaddingOriginalPx;
             autoResizeAllAppsCells();
         } else {
@@ -619,7 +620,7 @@ public class DeviceProfile {
     private void updateFolderCellSize(float scale, Resources res) {
         float invIconSizeDp = isVerticalBarLayout() ? inv.landscapeIconSize : inv.iconSize;
         folderChildIconSizePx = Math.max(1, pxFromDp(invIconSizeDp, mMetrics, scale));
-        folderChildTextSizePx = pxFromDp(inv.iconTextSize, mMetrics, scale);
+        folderChildTextSizePx = pxFromSp(inv.iconTextSize, mMetrics, scale);
         folderLabelTextSizePx = (int) (folderChildTextSizePx * folderLabelTextScale);
 
         int textHeight = Utilities.calculateTextHeight(folderChildTextSizePx);
