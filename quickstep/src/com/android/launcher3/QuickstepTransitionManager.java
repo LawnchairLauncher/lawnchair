@@ -783,7 +783,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         final FloatingWidgetView floatingView = FloatingWidgetView.getFloatingWidgetView(mLauncher,
                 v, widgetBackgroundBounds,
                 new Size(windowTargetBounds.width(), windowTargetBounds.height()),
-                finalWindowRadius);
+                finalWindowRadius, appTargetsAreTranslucent);
         final float initialWindowRadius = supportsRoundedCornersOnWindows(mLauncher.getResources())
                 ? floatingView.getInitialCornerRadius() : 0;
 

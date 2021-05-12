@@ -57,6 +57,7 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener,
     private Runnable mEndRunnable;
     private Runnable mFastFinishRunnable;
     private Runnable mOnTargetChangeRunnable;
+    private boolean mAppTargetIsTranslucent;
 
     public FloatingWidgetView(Context context) {
         this(context, null);
@@ -142,10 +143,12 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener,
     }
 
     private void init(DragLayer dragLayer, LauncherAppWidgetHostView originalView,
-            RectF widgetBackgroundPosition, Size windowSize, float windowCornerRadius) {
+            RectF widgetBackgroundPosition, Size windowSize, float windowCornerRadius,
+            boolean appTargetIsTranslucent) {
         mAppWidgetView = originalView;
         mAppWidgetView.beginDeferringUpdates();
         mBackgroundPosition = widgetBackgroundPosition;
+        mAppTargetIsTranslucent = appTargetIsTranslucent;
         mEndRunnable = () -> finish(dragLayer);
 
         mAppWidgetBackgroundView = RoundedCornerEnforcement.findBackground(mAppWidgetView);
@@ -155,11 +158,13 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener,
 
         getRelativePosition(mAppWidgetBackgroundView, dragLayer, mBackgroundPosition);
         getRelativePosition(mAppWidgetBackgroundView, mAppWidgetView, mBackgroundOffset);
-        mBackgroundView.init(mAppWidgetView, mAppWidgetBackgroundView, windowCornerRadius);
-        // Layout call before GhostView creation so that the overlaid view isn't clipped
-        layout(0, 0, windowSize.getWidth(), windowSize.getHeight());
-        mForegroundOverlayView = GhostView.addGhost(mAppWidgetView, this);
-        positionViews();
+        if (!mAppTargetIsTranslucent) {
+            mBackgroundView.init(mAppWidgetView, mAppWidgetBackgroundView, windowCornerRadius);
+            // Layout call before GhostView creation so that the overlaid view isn't clipped
+            layout(0, 0, windowSize.getWidth(), windowSize.getHeight());
+            mForegroundOverlayView = GhostView.addGhost(mAppWidgetView, this);
+            positionViews();
+        }
 
         mListenerView.setListener(this::fastFinish);
         dragLayer.addView(mListenerView);
@@ -179,7 +184,7 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener,
      */
     public void update(RectF backgroundPosition, float floatingWidgetAlpha, float foregroundAlpha,
             float fallbackBackgroundAlpha, float cornerRadiusProgress) {
-        if (isUninitialized()) return;
+        if (isUninitialized() || mAppTargetIsTranslucent) return;
         setAlpha(floatingWidgetAlpha);
         mBackgroundView.update(cornerRadiusProgress, fallbackBackgroundAlpha);
         mAppWidgetView.setAlpha(foregroundAlpha);
@@ -203,13 +208,16 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener,
         backgroundParams.height = (int) mBackgroundPosition.height();
         mBackgroundView.setLayoutParams(backgroundParams);
 
-        sTmpMatrix.reset();
-        float foregroundScale = mBackgroundPosition.width() / mAppWidgetBackgroundView.getWidth();
-        sTmpMatrix.setTranslate(-mBackgroundOffset.left - mAppWidgetView.getLeft(),
-                -mBackgroundOffset.top - mAppWidgetView.getTop());
-        sTmpMatrix.postScale(foregroundScale, foregroundScale);
-        sTmpMatrix.postTranslate(mBackgroundPosition.left, mBackgroundPosition.top);
-        mForegroundOverlayView.setMatrix(sTmpMatrix);
+        if (mForegroundOverlayView != null) {
+            sTmpMatrix.reset();
+            float foregroundScale =
+                    mBackgroundPosition.width() / mAppWidgetBackgroundView.getWidth();
+            sTmpMatrix.setTranslate(-mBackgroundOffset.left - mAppWidgetView.getLeft(),
+                    -mBackgroundOffset.top - mAppWidgetView.getTop());
+            sTmpMatrix.postScale(foregroundScale, foregroundScale);
+            sTmpMatrix.postTranslate(mBackgroundPosition.left, mBackgroundPosition.top);
+            mForegroundOverlayView.setMatrix(sTmpMatrix);
+        }
     }
 
     private void finish(DragLayer dragLayer) {
@@ -254,7 +262,7 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener,
      */
     public static FloatingWidgetView getFloatingWidgetView(Launcher launcher,
             LauncherAppWidgetHostView originalView, RectF widgetBackgroundPosition,
-            Size windowSize, float windowCornerRadius) {
+            Size windowSize, float windowCornerRadius, boolean appTargetsAreTranslucent) {
         final DragLayer dragLayer = launcher.getDragLayer();
         ViewGroup parent = (ViewGroup) dragLayer.getParent();
         FloatingWidgetView floatingView =
@@ -262,7 +270,7 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener,
         floatingView.recycle();
 
         floatingView.init(dragLayer, originalView, widgetBackgroundPosition, windowSize,
-                windowCornerRadius);
+                windowCornerRadius, appTargetsAreTranslucent);
         parent.addView(floatingView);
         return floatingView;
     }
