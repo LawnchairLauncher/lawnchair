@@ -32,6 +32,7 @@ import com.android.launcher3.Utilities;
  */
 public class SpringRelativeLayout extends RelativeLayout {
 
+    // fixed edge at the time force is applied
     private final EdgeEffect mEdgeGlowTop;
     private final EdgeEffect mEdgeGlowBottom;
 
@@ -85,6 +86,15 @@ public class SpringRelativeLayout extends RelativeLayout {
     protected void absorbSwipeUpVelocity(int velocity) {
         mEdgeGlowBottom.onAbsorb(velocity);
         invalidate();
+    }
+
+    protected void absorbPullDeltaDistance(float deltaDistance, float displacement) {
+        mEdgeGlowBottom.onPull(deltaDistance, displacement);
+        invalidate();
+    }
+
+    protected void onRelease() {
+        mEdgeGlowBottom.onRelease();
     }
 
     public EdgeEffectFactory createEdgeEffectFactory() {
