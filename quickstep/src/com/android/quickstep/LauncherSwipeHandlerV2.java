@@ -80,7 +80,7 @@ public class LauncherSwipeHandlerV2 extends
 
     @Override
     protected HomeAnimationFactory createHomeAnimationFactory(ArrayList<IBinder> launchCookies,
-            long duration) {
+            long duration, boolean isTargetTranslucent) {
         if (mActivity == null) {
             mStateCallback.addChangeListener(STATE_LAUNCHER_PRESENT | STATE_HANDLER_INVALIDATED,
                     isPresent -> mRecentsView.startHome());
@@ -103,7 +103,8 @@ public class LauncherSwipeHandlerV2 extends
             return new LauncherHomeAnimationFactory();
         }
         if (workspaceView instanceof LauncherAppWidgetHostView) {
-            return createWidgetHomeAnimationFactory((LauncherAppWidgetHostView) workspaceView);
+            return createWidgetHomeAnimationFactory((LauncherAppWidgetHostView) workspaceView,
+                    isTargetTranslucent);
         }
         return createIconHomeAnimationFactory(workspaceView);
     }
@@ -235,7 +236,7 @@ public class LauncherSwipeHandlerV2 extends
     }
 
     private HomeAnimationFactory createWidgetHomeAnimationFactory(
-            LauncherAppWidgetHostView hostView) {
+            LauncherAppWidgetHostView hostView, boolean isTargetTranslucent) {
 
         RectF backgroundLocation = new RectF();
         Rect crop = new Rect();
@@ -243,7 +244,7 @@ public class LauncherSwipeHandlerV2 extends
         Size windowSize = new Size(crop.width(), crop.height());
         FloatingWidgetView floatingWidgetView = FloatingWidgetView.getFloatingWidgetView(mActivity,
                 hostView, backgroundLocation, windowSize,
-                mTaskViewSimulator.getCurrentCornerRadius());
+                mTaskViewSimulator.getCurrentCornerRadius(), isTargetTranslucent);
 
         return new LauncherHomeAnimationFactory() {
 
