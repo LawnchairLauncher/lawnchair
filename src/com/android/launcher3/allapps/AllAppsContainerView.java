@@ -467,7 +467,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
                     R.layout.work_mode_switch, this, false);
             this.addView(mWorkModeSwitch);
             mWorkModeSwitch.setInsets(mInsets);
-            mWorkModeSwitch.post(() -> mAH[AdapterHolder.WORK].applyPadding());
+            mWorkModeSwitch.post(this::resetWorkProfile);
         }
     }
 
