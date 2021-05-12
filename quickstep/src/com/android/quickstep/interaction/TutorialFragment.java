@@ -51,8 +51,10 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
     EdgeBackGestureHandler mEdgeBackGestureHandler;
     NavBarGestureHandler mNavBarGestureHandler;
     private ImageView mFeedbackVideoView;
+    private ImageView mGestureVideoView;
 
     @Nullable private AnimatedVectorDrawable mTutorialAnimation = null;
+    @Nullable private AnimatedVectorDrawable mGestureAnimation = null;
     private boolean mIntroductionShown = false;
 
     public static TutorialFragment newInstance(TutorialType tutorialType) {
@@ -96,9 +98,18 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
         return null;
     }
 
+    @Nullable Integer getGestureVideoResId() {
+        return null;
+    }
+
     @Nullable
     AnimatedVectorDrawable getTutorialAnimation() {
         return mTutorialAnimation;
+    }
+
+    @Nullable
+    AnimatedVectorDrawable getGestureAnimation() {
+        return mGestureAnimation;
     }
 
     abstract TutorialController createController(TutorialType type);
@@ -135,6 +146,7 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
         });
         mRootView.setOnTouchListener(this);
         mFeedbackVideoView = mRootView.findViewById(R.id.gesture_tutorial_feedback_video);
+        mGestureVideoView = mRootView.findViewById(R.id.gesture_tutorial_gesture_video);
         return mRootView;
     }
 
@@ -162,7 +174,7 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
 
     boolean updateFeedbackVideo() {
         Integer feedbackVideoResId = getFeedbackVideoResId();
-        if (feedbackVideoResId == null || getContext() == null) {
+        if (feedbackVideoResId == null || getContext() == null || !updateGestureVideo()) {
             return false;
         }
         mTutorialAnimation = (AnimatedVectorDrawable) getContext().getDrawable(feedbackVideoResId);
@@ -190,12 +202,43 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
         return true;
     }
 
+    boolean updateGestureVideo() {
+        Integer gestureVideoResId = getGestureVideoResId();
+        if (gestureVideoResId == null || getContext() == null) {
+            return false;
+        }
+        mGestureAnimation = (AnimatedVectorDrawable) getContext().getDrawable(gestureVideoResId);
+
+        if (mGestureAnimation != null) {
+            mGestureAnimation.registerAnimationCallback(new Animatable2.AnimationCallback() {
+
+                @Override
+                public void onAnimationEnd(Drawable drawable) {
+                    super.onAnimationEnd(drawable);
+
+                    mGestureAnimation.start();
+                }
+            });
+        }
+        mGestureVideoView.setImageDrawable(mGestureAnimation);
+
+        return true;
+    }
+
     void releaseFeedbackVideoView() {
         if (mTutorialAnimation != null && mTutorialAnimation.isRunning()) {
             mTutorialAnimation.stop();
         }
 
         mFeedbackVideoView.setVisibility(View.GONE);
+    }
+
+    void releaseGestureVideoView() {
+        if (mGestureAnimation != null && mGestureAnimation.isRunning()) {
+            mGestureAnimation.stop();
+        }
+
+        mGestureVideoView.setVisibility(View.GONE);
     }
 
     @Override
