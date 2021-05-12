@@ -237,10 +237,10 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     }
 
     /**
-     * For this state, how much additional vertical translation there should be for each of the
-     * child TaskViews.
+     * For this state, how much additional translation there should be for each of the
+     * child TaskViews. Note that the translation can be its primary or secondary dimension.
      */
-    public float getOverviewSecondaryTranslation(Launcher launcher) {
+    public float getSplitSelectTranslation(Launcher launcher) {
         return 0;
     }
 
