@@ -1730,6 +1730,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             // When switching to tasks in quick switch, ensures the snapped page's scroll maintain
             // invariant between quick switch and overview, to ensure a smooth animation transition.
             updateGridProperties();
+        } else if (endTarget == GestureState.GestureEndTarget.RECENTS) {
+            setEnableFreeScroll(true);
         }
     }
 
