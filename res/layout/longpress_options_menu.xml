@@ -20,6 +20,5 @@
     android:layout_height="wrap_content"
     android:clipToPadding="false"
     android:clipChildren="false"
-    android:elevation="@dimen/deep_shortcuts_elevation"
     android:importantForAccessibility="yes"
     android:orientation="vertical" />

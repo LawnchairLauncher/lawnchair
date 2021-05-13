@@ -296,6 +296,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         }
 
         if (Utilities.ATLEAST_S) {
+            mColorExtractionIndex = LocalColorExtractor.getColorIndex(
+                    !Themes.getAttrBoolean(getContext(), R.attr.isFolderDarkText));
             mColorExtractor = LocalColorExtractor.newInstance(getContext());
             mColorListener = (RectF rect, SparseIntArray extractedColors) -> {
                 mColorChangeRunnable = () -> {

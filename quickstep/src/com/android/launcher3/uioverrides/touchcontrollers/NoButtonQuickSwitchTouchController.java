@@ -21,6 +21,7 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_ACTIONS;
 import static com.android.launcher3.LauncherState.QUICK_SWITCH;
 import static com.android.launcher3.anim.AlphaUpdateListener.ALPHA_CUTOFF_THRESHOLD;
+import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
 import static com.android.launcher3.anim.Interpolators.ACCEL_0_75;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
@@ -418,7 +419,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
                         targetState.ordinal > mStartState.ordinal
                                 ? LAUNCHER_UNKNOWN_SWIPEUP
                                 : LAUNCHER_UNKNOWN_SWIPEDOWN));
-        mLauncher.getStateManager().goToState(targetState, false, this::clearState);
+        mLauncher.getStateManager().goToState(targetState, false, forEndCallback(this::clearState));
     }
 
     private void cancelAnimations() {

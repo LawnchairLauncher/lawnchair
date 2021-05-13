@@ -113,8 +113,14 @@ public class LocalColorExtractor implements ResourceBasedOverride {
      * Returns an index used to query the color of interest from the list of extracted colors.
      */
     public static int getColorIndex(Context context) {
-        return Utilities.isDarkTheme(context)
-                ? DARK_COLOR_EXTRACTION_INDEX
-                : LIGHT_COLOR_EXTRACTION_INDEX;
+        return getColorIndex(Utilities.isDarkTheme(context));
+    }
+
+    /**
+     * Returns an index used to query the color of interest from the list of extracted colors.
+     * @param getDarkIndex True when dark index is wanted, False when light index is wanted.
+     */
+    public static int getColorIndex(boolean getDarkIndex) {
+        return getDarkIndex ? DARK_COLOR_EXTRACTION_INDEX : LIGHT_COLOR_EXTRACTION_INDEX;
     }
 }

@@ -45,6 +45,7 @@ import android.view.WindowInsets;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
+import androidx.annotation.VisibleForTesting;
 import androidx.core.graphics.ColorUtils;
 import androidx.core.os.BuildCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -79,10 +80,11 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         Insettable, OnDeviceProfileChangeListener, OnActivePageChangedListener,
         ScrimView.ScrimDrawingController {
 
-    private static final float FLING_VELOCITY_MULTIPLIER = 1000f;
+    public static final float PULL_MULTIPLIER = .02f;
+    public static final float FLING_VELOCITY_MULTIPLIER = 2000f;
 
     // Starts the springs after at least 25% of the animation has passed.
-    private static final float FLING_ANIMATION_THRESHOLD = 0.25f;
+    public static final float FLING_ANIMATION_THRESHOLD = 0.25f;
 
     private final Paint mHeaderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
@@ -100,6 +102,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     private AllAppsPagedView mViewPager;
 
     protected FloatingHeaderView mHeader;
+    private float mHeaderTop;
     private WorkModeSwitch mWorkModeSwitch;
 
 
@@ -464,7 +467,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
                     R.layout.work_mode_switch, this, false);
             this.addView(mWorkModeSwitch);
             mWorkModeSwitch.setInsets(mInsets);
-            mWorkModeSwitch.post(() -> mAH[AdapterHolder.WORK].applyPadding());
+            mWorkModeSwitch.post(this::resetWorkProfile);
         }
     }
 
@@ -530,7 +533,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         return view.getGlobalVisibleRect(new Rect());
     }
 
-    // Used by tests only
+    @VisibleForTesting
     public boolean isPersonalTabVisible() {
         return isDescendantViewVisible(R.id.tab_personal);
     }
@@ -582,6 +585,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             mAH[i].padding.top = padding;
             mAH[i].applyPadding();
         }
+        mHeaderTop = mHeader.getTop();
     }
 
     public void setLastSearchQuery(String query) {
@@ -636,14 +640,42 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
                 if (shouldSpring
                         && valueAnimator.getAnimatedFraction() >= FLING_ANIMATION_THRESHOLD) {
-                    absorbSwipeUpVelocity(Math.abs(
-                            Math.round(velocity * FLING_VELOCITY_MULTIPLIER)));
+                    absorbSwipeUpVelocity(Math.max(100, Math.abs(
+                            Math.round(velocity * FLING_VELOCITY_MULTIPLIER))));
+                    // calculate the velocity of using the not user controlled interpolator
+                    // of when the container reach the end.
                     shouldSpring = false;
                 }
             }
         });
     }
 
+    public void onPull(float deltaDistance, float displacement) {
+        absorbPullDeltaDistance(PULL_MULTIPLIER * deltaDistance,
+                PULL_MULTIPLIER * displacement);
+        // ideally, this should be done using EdgeEffect.onPush to create squish effect.
+        // However, until such method is available, launcher to simulate the onPush method.
+        mHeader.setTranslationY(-.5f * mHeaderTop * deltaDistance);
+        getRecyclerViewContainer().setTranslationY(-mHeaderTop * deltaDistance);
+    }
+
+    public void onRelease() {
+        ValueAnimator anim1 = ValueAnimator.ofFloat(1f, 0f);
+        final float floatingHeaderHeight = getFloatingHeaderView().getTranslationY();
+        final float recyclerViewHeight = getRecyclerViewContainer().getTranslationY();
+        anim1.setDuration(200);
+        anim1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                getFloatingHeaderView().setTranslationY(
+                        ((float) valueAnimator.getAnimatedValue()) * floatingHeaderHeight);
+                getRecyclerViewContainer().setTranslationY(
+                        ((float) valueAnimator.getAnimatedValue()) * recyclerViewHeight);
+            }
+        });
+        anim1.start();
+        super.onRelease();
+    }
     @Override
     public void getDrawingRect(Rect outRect) {
         super.getDrawingRect(outRect);

@@ -17,10 +17,7 @@ package com.android.launcher3.allapps;
 
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.ALL_APPS_CONTENT;
-import static com.android.launcher3.anim.Interpolators.ACCEL_0_75;
-import static com.android.launcher3.anim.Interpolators.ACCEL_2;
-import static com.android.launcher3.anim.Interpolators.DEACCEL;
-import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
+import static com.android.launcher3.anim.Interpolators.DEACCEL_1_7;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
@@ -28,7 +25,7 @@ import static com.android.launcher3.states.StateAnimationConfig.ANIM_VERTICAL_PR
 import static com.android.launcher3.util.SystemUiController.UI_STATE_ALLAPPS;
 
 import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
+import android.animation.Animator.AnimatorListener;
 import android.animation.ObjectAnimator;
 import android.util.FloatProperty;
 import android.view.View;
@@ -39,7 +36,7 @@ import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.anim.AnimationSuccessListener;
+import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.config.FeatureFlags;
@@ -158,9 +155,8 @@ public class AllAppsTransitionController
             return;
         }
 
-        Interpolator interpolator = toState.equals(ALL_APPS)
-                ? (config.userControlled ? ACCEL_2 : ACCEL_0_75) :
-                (config.userControlled ? DEACCEL_2 : DEACCEL);
+        // need to decide depending on the release velocity
+        Interpolator interpolator = (config.userControlled ? LINEAR : DEACCEL_1_7);
 
         Animator anim = createSpringAnimation(mProgress, targetProgress);
         anim.setInterpolator(config.getInterpolator(ANIM_VERTICAL_PROGRESS, interpolator));
@@ -189,8 +185,8 @@ public class AllAppsTransitionController
         mScrimView.setDrawingController(shouldProtectHeader ? mAppsView : null);
     }
 
-    public AnimatorListenerAdapter getProgressAnimatorListener() {
-        return AnimationSuccessListener.forRunnable(this::onProgressAnimationEnd);
+    public AnimatorListener getProgressAnimatorListener() {
+        return AnimatorListeners.forSuccessCallback(this::onProgressAnimationEnd);
     }
 
     /**

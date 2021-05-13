@@ -27,6 +27,7 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowShowWallpaper">true</item>
         <item name="folderTextColor">?attr/workspaceTextColor</item>
+        <item name="isFolderDarkText">?attr/isWorkspaceDarkText</item>
     </style>
 
     <style name="LauncherTheme" parent="@style/BaseLauncherTheme">
@@ -34,7 +35,6 @@
         <item name="allAppsScrimColor">?android:attr/colorBackgroundFloating</item>
         <item name="allAppsNavBarScrimColor">#66FFFFFF</item>
         <item name="allAppsTheme">@style/AllAppsTheme</item>
-        <item name="popupColorNeutral">@color/popup_color_neutral_light</item>
         <item name="popupColorPrimary">@color/popup_color_primary_light</item>
         <item name="popupColorSecondary">@color/popup_color_secondary_light</item>
         <item name="popupColorTertiary">@color/popup_color_tertiary_light</item>
@@ -50,6 +50,7 @@
         <item name="folderFillColor">?android:attr/colorBackground</item>
         <item name="folderIconBorderColor">?android:attr/colorPrimary</item>
         <item name="folderTextColor">?android:attr/textColorPrimary</item>
+        <item name="isFolderDarkText">true</item>
         <item name="folderHintColor">#89616161</item>
         <item name="loadingIconColor">#CCFFFFFF</item>
         <item name="iconOnlyShortcutColor">?android:attr/textColorSecondary</item>
@@ -71,6 +72,7 @@
     <style name="LauncherTheme.DarkMainColor" parent="@style/LauncherTheme">
         <item name="folderFillColor">#FF3C4043</item> <!-- 100% GM2 800 -->
         <item name="folderTextColor">?attr/workspaceTextColor</item>
+        <item name="isFolderDarkText">?attr/isWorkspaceDarkText</item>
         <item name="disabledIconAlpha">.254</item>
 
     </style>
@@ -86,6 +88,7 @@
         <item name="folderFillColor">#CDFFFFFF</item>
         <item name="folderIconBorderColor">#FF80868B</item>
         <item name="folderTextColor">?attr/workspaceTextColor</item>
+        <item name="isFolderDarkText">true</item>
     </style>
 
     <style name="LauncherTheme.Dark" parent="@style/LauncherTheme">
@@ -98,7 +101,6 @@
         <item name="allAppsScrimColor">?android:attr/colorBackgroundFloating</item>
         <item name="allAppsNavBarScrimColor">#80000000</item>
         <item name="allAppsTheme">@style/AllAppsTheme.Dark</item>
-        <item name="popupColorNeutral">@color/popup_color_neutral_dark</item>
         <item name="popupColorPrimary">@color/popup_color_primary_dark</item>
         <item name="popupColorSecondary">@color/popup_color_secondary_dark</item>
         <item name="popupColorTertiary">@color/popup_color_tertiary_dark</item>
@@ -107,6 +109,7 @@
         <item name="folderFillColor">?android:attr/colorBackground</item>
         <item name="folderIconBorderColor">?android:attr/colorPrimary</item>
         <item name="folderTextColor">?android:attr/textColorPrimary</item>
+        <item name="isFolderDarkText">false</item>
         <item name="folderHintColor">#89CCCCCC</item>
         <item name="isMainColorDark">true</item>
         <item name="loadingIconColor">#99FFFFFF</item>
@@ -119,6 +122,7 @@
     <style name="LauncherTheme.Dark.DarkMainColor" parent="@style/LauncherTheme.Dark">
         <item name="folderFillColor">#FF3C4043</item> <!-- 100% GM2 800 -->
         <item name="folderTextColor">@android:color/white</item>
+        <item name="isFolderDarkText">false</item>
         <item name="disabledIconAlpha">.54</item>
     </style>
 
@@ -126,6 +130,7 @@
         <item name="android:colorControlHighlight">#19212121</item>
         <item name="folderFillColor">#CDFFFFFF</item>
         <item name="folderTextColor">?attr/workspaceTextColor</item>
+        <item name="isFolderDarkText">?attr/isWorkspaceDarkText</item>
         <item name="workspaceTextColor">@color/workspace_text_color_dark</item>
         <item name="workspaceShadowColor">@android:color/transparent</item>
         <item name="workspaceAmbientShadowColor">@android:color/transparent</item>
@@ -195,7 +200,7 @@
         <item name="android:alpha">0</item>
         <item name="android:elevation">3dp</item>
         <item name="android:saveEnabled">false</item>
-        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
         <item name="android:includeFontPadding">false</item>
         <item name="android:importantForAccessibility">no</item>
     </style>
