@@ -149,12 +149,6 @@
     <style name="AppTheme.Dark.DarkMainColor" parent="@style/LauncherTheme.Dark.DarkMainColor" />
     <style name="AppTheme.Dark.DarkText" parent="@style/LauncherTheme.Dark.DarkText" />
 
-    <style name="AppItemActivityTheme" parent="@android:style/Theme.DeviceDefault.Light.Dialog.Alert">
-        <item name="widgetsTheme">@style/WidgetContainerTheme</item>
-        <item name="android:windowBackground">@drawable/add_item_dialog_background</item>
-        <item name="android:windowNoTitle">true</item>
-    </style>
-
     <style name="HomeSettingsTheme" parent="@android:style/Theme.DeviceDefault.Settings">
         <item name="android:navigationBarColor">?android:colorPrimaryDark</item>
         <item name="preferenceTheme">@style/HomeSettingsPreferenceTheme</item>
@@ -290,5 +284,9 @@
 
     <style name="Widget.DeviceDefault.Button.Rounded.Colored" parent="@android:style/Widget.DeviceDefault.Button.Colored">
         <item name="android:background">@drawable/add_item_dialog_button_background</item>
+    </style>
+
+    <style name="AddItemActivityTheme" parent="@android:style/Theme.Translucent.NoTitleBar">
+        <item name="widgetsTheme">@style/WidgetContainerTheme</item>
     </style>
 </resources>
