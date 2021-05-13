@@ -38,7 +38,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.logging.StatsLogManager;
@@ -53,7 +52,6 @@ import java.util.List;
 public class AllAppsRecyclerView extends BaseRecyclerView {
     private static final String TAG = "AllAppsContainerView";
     private static final boolean DEBUG = false;
-    private final Launcher mLauncher;
 
     private AlphabeticalAppsList mApps;
     private final int mNumAppsPerRow;
@@ -89,7 +87,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
                 R.dimen.all_apps_empty_search_bg_top_offset);
         mNumAppsPerRow = LauncherAppState.getIDP(context).numColumns;
         mFastScrollHelper = new AllAppsFastScrollHelper(this);
-        mLauncher = Launcher.getLauncher(context);
     }
 
     /**
@@ -200,12 +197,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
                         LAUNCHER_ALLAPPS_VERTICAL_SWIPE_END, this);
                 break;
         }
-    }
-
-    @Override
-    public void onScrolled(int dx, int dy) {
-        super.onScrolled(dx, dy);
-        mLauncher.getAppsView().updateHeaderScroll(getCurrentScrollY());
     }
 
     @Override
