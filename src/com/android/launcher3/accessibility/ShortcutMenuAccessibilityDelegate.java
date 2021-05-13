@@ -17,6 +17,7 @@
 package com.android.launcher3.accessibility;
 
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.anim.AnimatorListeners.forSuccessCallback;
 
 import android.view.KeyEvent;
 import android.view.View;
@@ -67,19 +68,14 @@ public class ShortcutMenuAccessibilityDelegate extends LauncherAccessibilityDele
             final WorkspaceItemInfo info = ((DeepShortcutView) host.getParent()).getFinalInfo();
             final int[] coordinates = new int[2];
             final int screenId = findSpaceOnWorkspace(item, coordinates);
-            Runnable onComplete = new Runnable() {
-                @Override
-                public void run() {
-                    mLauncher.getModelWriter().addItemToDatabase(info,
-                            LauncherSettings.Favorites.CONTAINER_DESKTOP,
-                            screenId, coordinates[0], coordinates[1]);
-                    mLauncher.bindItems(Collections.singletonList(info), true);
-                    AbstractFloatingView.closeAllOpenViews(mLauncher);
-                    announceConfirmation(R.string.item_added_to_workspace);
-                }
-            };
-
-            mLauncher.getStateManager().goToState(NORMAL, true, onComplete);
+            mLauncher.getStateManager().goToState(NORMAL, true, forSuccessCallback(() -> {
+                mLauncher.getModelWriter().addItemToDatabase(info,
+                        LauncherSettings.Favorites.CONTAINER_DESKTOP,
+                        screenId, coordinates[0], coordinates[1]);
+                mLauncher.bindItems(Collections.singletonList(info), true);
+                AbstractFloatingView.closeAllOpenViews(mLauncher);
+                announceConfirmation(R.string.item_added_to_workspace);
+            }));
             return true;
         } else if (action == DISMISS_NOTIFICATION) {
             if (!(host instanceof NotificationMainView)) {

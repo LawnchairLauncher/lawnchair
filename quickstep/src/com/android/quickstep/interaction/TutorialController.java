@@ -38,7 +38,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import com.android.launcher3.R;
-import com.android.launcher3.anim.AnimationSuccessListener;
+import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.views.ClipIconView;
 import com.android.quickstep.interaction.EdgeBackGestureHandler.BackGestureAttemptCallback;
 import com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestureAttemptCallback;
@@ -141,7 +141,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     }
 
     void fadeTaskViewAndRun(Runnable r) {
-        mFakeTaskView.animate().alpha(0).setListener(AnimationSuccessListener.forRunnable(r));
+        mFakeTaskView.animate().alpha(0).setListener(AnimatorListeners.forSuccessCallback(r));
     }
 
     @StringRes
@@ -359,8 +359,8 @@ abstract class TutorialController implements BackGestureAttemptCallback,
                     mContext, getMockLauncherResId()));
             mFakeTaskView.setBackground(AppCompatResources.getDrawable(
                     mContext, getMockAppTaskThumbnailResId()));
-            mFakeTaskView.animate().alpha(1).setListener(AnimationSuccessListener.forRunnable(
-                    () -> mFakeTaskView.animate().cancel()));
+            mFakeTaskView.animate().alpha(1).setListener(
+                    AnimatorListeners.forSuccessCallback(() -> mFakeTaskView.animate().cancel()));
             mFakePreviousTaskView.setBackground(AppCompatResources.getDrawable(
                     mContext, getMockPreviousAppTaskThumbnailResId()));
             mFakeIconView.setBackground(AppCompatResources.getDrawable(
