@@ -111,6 +111,7 @@ import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
+import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.SpringProperty;
@@ -120,13 +121,13 @@ import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulActivity;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.OverScroll;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.DynamicResource;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.ResourceBasedOverride.Overrides;
+import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.TranslateEdgeEffect;
@@ -1584,12 +1585,16 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mLiveTileParams.setTargetSet(null);
         mLiveTileTaskViewSimulator.setDrawsBelowRecents(true);
 
-        unloadVisibleTaskData(TaskView.FLAG_UPDATE_ALL);
-        setCurrentPage(0);
-        LayoutUtils.setViewEnabled(mActionsView, true);
-        if (mOrientationState.setGestureActive(false)) {
-            updateOrientationHandler();
-        }
+        // These are relatively expensive and don't need to be done this frame (RecentsView isn't
+        // visible anyway), so defer by a frame to get off the critical path, e.g. app to home.
+        post(() -> {
+            unloadVisibleTaskData(TaskView.FLAG_UPDATE_ALL);
+            setCurrentPage(0);
+            LayoutUtils.setViewEnabled(mActionsView, true);
+            if (mOrientationState.setGestureActive(false)) {
+                updateOrientationHandler();
+            }
+        });
     }
 
     public int getRunningTaskId() {
@@ -1672,7 +1677,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             return;
         }
         AnimatorSet pa = setRecentsChangedOrientation(true);
-        pa.addListener(AnimationSuccessListener.forRunnable(() -> {
+        pa.addListener(AnimatorListeners.forSuccessCallback(() -> {
             setLayoutRotation(newRotation, mOrientationState.getDisplayRotation());
             mActivity.getDragLayer().recreateControllers();
             updateChildTaskOrientations();
@@ -2415,6 +2420,47 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             }
         });
         return anim;
+    }
+
+    /**
+     * @return {@code true} if one of the task thumbnails would intersect/overlap with the
+     *         {@link #mSplitPlaceholderView}
+     */
+    public boolean shouldShiftThumbnailsForSplitSelect(@SplitConfigurationOptions.StagePosition
+            int stagePosition) {
+        if (!mActivity.getDeviceProfile().isTablet) {
+            // Never enough space on phones
+            return true;
+        } else if (!mActivity.getDeviceProfile().isLandscape) {
+            return false;
+        }
+
+        Rect splitBounds = new Rect();
+        float placeholderSize = getResources().getDimension(R.dimen.split_placeholder_size);
+        // This acts as a best approximation on where the splitplaceholder view would be,
+        // doesn't need to be exact necessarily. This also doesn't need to take translations
+        // into account since placeholder view is not translated
+        if (stagePosition == SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT) {
+            splitBounds.set((int) (getWidth() - placeholderSize), 0, getWidth(), getHeight());
+        } else {
+            splitBounds.set(0, 0, (int) (placeholderSize), getHeight());
+        }
+        Rect taskBounds = new Rect();
+        int taskCount = getTaskViewCount();
+        for (int i = 0; i < taskCount; i++) {
+            TaskView taskView = getTaskViewAt(i);
+            if (taskView == mSplitHiddenTaskView && taskView != getFocusedTaskView()) {
+                // Case where the hidden task view would have overlapped w/ placeholder,
+                // but because it's going to hide we don't care
+                // TODO (b/187312247) edge case for thumbnails that are off screen but scroll on
+                continue;
+            }
+            taskView.getBoundsOnScreen(taskBounds);
+            if (Rect.intersects(taskBounds, splitBounds)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     protected void onDismissAnimationEnds() {
@@ -3370,6 +3416,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     public void finishRecentsAnimation(boolean toRecents, Runnable onFinishComplete) {
+        finishRecentsAnimation(toRecents, true /* shouldPip */, onFinishComplete);
+    }
+
+    public void finishRecentsAnimation(boolean toRecents, boolean shouldPip,
+            Runnable onFinishComplete) {
         if (!toRecents && LIVE_TILE.get()) {
             // Reset the minimized state since we force-toggled the minimized state when entering
             // overview, but never actually finished the recents animation.  This is a catch all for
@@ -3387,7 +3438,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             return;
         }
 
-        final boolean sendUserLeaveHint = toRecents && LIVE_TILE.get();
+        final boolean sendUserLeaveHint = toRecents && shouldPip;
         if (sendUserLeaveHint) {
             // Notify the SysUI to use fade-in animation when entering PiP from live tile.
             final SystemUiProxy systemUiProxy = SystemUiProxy.INSTANCE.get(getContext());
