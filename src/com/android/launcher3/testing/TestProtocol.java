@@ -87,9 +87,7 @@ public final class TestProtocol {
     public static final String REQUEST_WIDGETS_SCROLL_Y = "widgets-scroll-y";
     public static final String REQUEST_WINDOW_INSETS = "window-insets";
     public static final String REQUEST_PID = "pid";
-    public static final String REQUEST_TOTAL_PSS_KB = "total_pss";
-    public static final String REQUEST_JAVA_LEAK = "java-leak";
-    public static final String REQUEST_NATIVE_LEAK = "native-leak";
+    public static final String REQUEST_FORCE_GC = "gc";
     public static final String REQUEST_VIEW_LEAK = "view-leak";
     public static final String REQUEST_RECENT_TASKS_LIST = "recent-tasks-list";
     public static final String REQUEST_START_EVENT_LOGGING = "start-event-logging";
