@@ -1520,6 +1520,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     protected abstract void finishRecentsControllerToHome(Runnable callback);
 
     private void setupLauncherUiAfterSwipeUpToRecentsAnimation() {
+        if (mStateCallback.hasStates(STATE_HANDLER_INVALIDATED)) {
+            return;
+        }
         endLauncherTransitionController();
         mRecentsView.onSwipeUpAnimationSuccess();
         if (LIVE_TILE.get()) {
