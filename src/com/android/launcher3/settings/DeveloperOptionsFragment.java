@@ -277,8 +277,8 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
             startActivity(launchSandboxIntent.putExtra(
                     "tutorial_steps",
                     new String[] {
-                            "LEFT_EDGE_BACK_NAVIGATION",
                             "HOME_NAVIGATION",
+                            "LEFT_EDGE_BACK_NAVIGATION",
                             "OVERVIEW_NAVIGATION"}));
             return true;
         });
