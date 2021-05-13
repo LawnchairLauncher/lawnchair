@@ -1358,24 +1358,15 @@ public final class LauncherInstrumentation {
         getTestInfo(TestProtocol.REQUEST_DISABLE_DEBUG_TRACING);
     }
 
-    public int getTotalPssKb() {
+    public void forceGc() {
         // GC the system & sysui first before gc'ing launcher
         logShellCommand("cmd statusbar run-gc");
-        return getTestInfo(TestProtocol.REQUEST_TOTAL_PSS_KB).
-                getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+        getTestInfo(TestProtocol.REQUEST_FORCE_GC);
     }
 
     public Integer getPid() {
         final Bundle testInfo = getTestInfo(TestProtocol.REQUEST_PID);
         return testInfo != null ? testInfo.getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD) : null;
-    }
-
-    public void produceJavaLeak() {
-        getTestInfo(TestProtocol.REQUEST_JAVA_LEAK);
-    }
-
-    public void produceNativeLeak() {
-        getTestInfo(TestProtocol.REQUEST_NATIVE_LEAK);
     }
 
     public void produceViewLeak() {
