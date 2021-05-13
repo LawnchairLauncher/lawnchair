@@ -50,11 +50,9 @@ public class UiThreadHelper {
             WindowInsets rootInsets = root.getRootWindowInsets();
             boolean isImeShown = rootInsets != null && rootInsets.isVisible(
                     WindowInsets.Type.ime());
-            if (isImeShown) {
-                // this call is already asynchronous
-                root.getWindowInsetsController().hide(WindowInsets.Type.ime());
+            if (!isImeShown) {
+                return;
             }
-            return;
         }
 
         Message.obtain(HANDLER.get(root.getContext()),
