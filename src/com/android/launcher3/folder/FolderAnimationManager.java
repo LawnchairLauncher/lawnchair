@@ -168,15 +168,15 @@ public class FolderAnimationManager {
         final float yDistance = initialY - lp.y;
 
         // Set up the Folder background.
-        int previewBackgroundColor = Themes.getAttrColor(mContext, R.attr.folderFillColor);
         final int finalColor;
+        int folderFillColor = Themes.getAttrColor(mContext, R.attr.folderFillColor);
         if (mIsOpening) {
-            finalColor = Themes.getAttrColor(mContext, R.attr.popupColorPrimary);
+            finalColor = folderFillColor;
         } else {
             finalColor = mFolderBackground.getColor().getDefaultColor();
         }
-        final int initialColor = setColorAlphaBound(previewBackgroundColor,
-                mPreviewBackground.getBackgroundAlpha());
+        final int initialColor = setColorAlphaBound(
+                folderFillColor, mPreviewBackground.getBackgroundAlpha());
         mFolderBackground.mutate();
         mFolderBackground.setColor(mIsOpening ? initialColor : finalColor);
 
