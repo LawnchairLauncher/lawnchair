@@ -1378,7 +1378,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     private void invalidateHandlerWithLauncher() {
         endLauncherTransitionController();
 
-        mRecentsView.removeOnScrollChangedListener(mOnRecentsScrollListener);
         mRecentsView.onGestureAnimationEnd();
         resetLauncherListeners();
     }
@@ -1393,12 +1392,18 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         }
     }
 
+    /**
+     * Unlike invalidateHandlerWithLauncher, this is called even when switching consumers, e.g. on
+     * continued quick switch gesture, which cancels the previous handler but doesn't invalidate it.
+     */
     private void resetLauncherListeners() {
         // Reset the callback for deferred activity launches
         if (!LIVE_TILE.get()) {
             mActivityInterface.setOnDeferredActivityLaunchCallback(null);
         }
         mActivity.getRootView().setOnApplyWindowInsetsListener(null);
+
+        mRecentsView.removeOnScrollChangedListener(mOnRecentsScrollListener);
     }
 
     private void resetStateForAnimationCancel() {
