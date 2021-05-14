@@ -138,7 +138,7 @@ public abstract class AbstractLauncherUiTest {
         // Check whether activity leak detector has found leaked activities.
         Wait.atMost(AbstractLauncherUiTest::getActivityLeakErrorMessage,
                 () -> {
-                    launcher.getTotalPssKb();  // Triggers GC
+                    launcher.forceGc();
                     return MAIN_EXECUTOR.submit(
                             () -> ACTIVITY_LEAK_TRACKER.noLeakedActivities()).get();
                 }, DEFAULT_UI_TIMEOUT, launcher);
