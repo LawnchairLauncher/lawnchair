@@ -1476,6 +1476,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     private void finishCurrentTransitionToRecents() {
         if (LIVE_TILE.get()) {
             mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED);
+            if (mRecentsAnimationController != null) {
+                mRecentsAnimationController.getController().detachNavigationBarFromApp(true);
+            }
         } else if (!hasTargets() || mRecentsAnimationController == null) {
             // If there are no targets or the animation not started, then there is nothing to finish
             mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED);
