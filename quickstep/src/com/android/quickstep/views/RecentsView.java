@@ -484,7 +484,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     protected boolean mRunningTaskTileHidden;
     private Task mTmpRunningTask;
     protected int mFocusedTaskId = -1;
-    private float mFocusedTaskRatio;
 
     private boolean mRunningTaskIconScaledDown = false;
 
@@ -1349,19 +1348,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     public Point getSelectedTaskSize() {
         mSizeStrategy.calculateTaskSize(mActivity, mActivity.getDeviceProfile(), mTempRect,
                 mOrientationHandler);
-        int taskWidth = mTempRect.width();
-        int taskHeight = mTempRect.height();
-        if (mRunningTaskId != -1) {
-            int boxLength = Math.max(taskWidth, taskHeight);
-            if (mFocusedTaskRatio > 1) {
-                taskWidth = boxLength;
-                taskHeight = (int) (boxLength / mFocusedTaskRatio);
-            } else {
-                taskWidth = (int) (boxLength * mFocusedTaskRatio);
-                taskHeight = boxLength;
-            }
-        }
-        return new Point(taskWidth, taskHeight);
+        return new Point(mTempRect.width(), mTempRect.height());
     }
 
     /** Gets the last computed task size */
@@ -1591,13 +1578,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     /**
-     * Returns the width to height ratio of the focused {@link TaskView}.
-     */
-    public float getFocusedTaskRatio() {
-        return mFocusedTaskRatio;
-    }
-
-    /**
      * Get the index of the task view whose id matches {@param taskId}.
      * @return -1 if there is no task view for the task id, else the index of the task view.
      */
@@ -1776,7 +1756,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         int runningTaskId = runningTaskInfo == null ? -1 : runningTaskInfo.taskId;
         setCurrentTask(runningTaskId);
         if (mActivity.getDeviceProfile().isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get()) {
-            setFocusedTask(runningTaskId);
+            mFocusedTaskId = runningTaskId;
         }
         setCurrentPage(getRunningTaskIndex());
         setRunningTaskViewShowScreenshot(false);
@@ -1803,15 +1783,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             setRunningTaskHidden(false);
         }
         mRunningTaskId = runningTaskId;
-    }
-
-    /**
-     * Sets the focused task id and store the width to height ratio of the focused task.
-     */
-    protected void setFocusedTask(int focusedTaskId) {
-        mFocusedTaskId = focusedTaskId;
-        mFocusedTaskRatio =
-                mLastComputedTaskSize.width() / (float) mLastComputedTaskSize.height();
     }
 
     /**
@@ -1906,8 +1877,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             return;
         }
 
-        final int boxLength = Math.max(mLastComputedGridTaskSize.width(),
-                mLastComputedGridTaskSize.height());
         int taskTopMargin = mActivity.getDeviceProfile().overviewTaskThumbnailTopMarginPx;
 
         /*
@@ -1918,7 +1887,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
          */
         final float taskGridVerticalDiff =
                 mLastComputedGridTaskSize.top - mLastComputedTaskSize.top;
-        final float heightOffset = (boxLength + taskTopMargin) + mRowSpacing;
+        final float heightOffset =
+                (mLastComputedGridTaskSize.height() + taskTopMargin) + mRowSpacing;
 
         int topRowWidth = 0;
         int bottomRowWidth = 0;
@@ -2087,20 +2057,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         float clearAllShorterRowCompensation =
                 mIsRtl ? -shorterRowCompensation : shorterRowCompensation;
 
-        // If the total width is shorter than one grid's width, move ClearAllButton further away
-        // accordingly. Update longRowWidth if ClearAllButton has been moved.
-        float clearAllShortTotalCompensation = 0;
-        int longRowWidth = Math.max(topRowWidth, bottomRowWidth);
-        if (longRowWidth < mLastComputedGridSize.width()) {
-            float shortTotalCompensation = mLastComputedGridSize.width() - longRowWidth;
-            clearAllShortTotalCompensation =
-                    mIsRtl ? -shortTotalCompensation : shortTotalCompensation;
-            longRowWidth = mLastComputedGridSize.width();
-        }
-
         float clearAllTotalTranslationX =
                 clearAllAccumulatedTranslation + clearAllShorterRowCompensation
-                        + clearAllShortTotalCompensation + snappedTaskFullscreenScrollAdjustment;
+                        + snappedTaskFullscreenScrollAdjustment;
         if (focusedTaskIndex < taskCount) {
             // Shift by focused task's width and spacing if a task is focused.
             clearAllTotalTranslationX +=
@@ -2110,9 +2069,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         // Make sure there are enough space between snapped page and ClearAllButton, for the case
         // of swiping up after quick switch.
         if (snappedTaskView != null) {
+            int longRowWidth = Math.max(topRowWidth, bottomRowWidth);
             int distanceFromClearAll = longRowWidth - snappedTaskRowWidth;
+            // ClearAllButton should be off screen when snapped task is in its snapped position.
             int minimumDistance =
-                    mLastComputedGridSize.width() - snappedTaskView.getLayoutParams().width;
+                    mTaskWidth - snappedTaskView.getLayoutParams().width
+                            + (mLastComputedGridSize.width() - mTaskWidth) / 2;
             if (distanceFromClearAll < minimumDistance) {
                 int distanceDifference = minimumDistance - distanceFromClearAll;
                 clearAllTotalTranslationX += mIsRtl ? -distanceDifference : distanceDifference;

@@ -141,6 +141,11 @@ public class TaskView extends FrameLayout implements Reusable {
      */
     public static final boolean CLIP_STATUS_AND_NAV_BARS = false;
 
+    /**
+     * Should the TaskView scale down to fit whole thumbnail in fullscreen.
+     */
+    public static final boolean FULL_THUMBNAIL = false;
+
     private static final float EDGE_SCALE_DOWN_FACTOR_CAROUSEL = 0.03f;
     private static final float EDGE_SCALE_DOWN_FACTOR_GRID = 0.00f;
 
@@ -1343,45 +1348,25 @@ public class TaskView extends FrameLayout implements Reusable {
 
             int boxWidth;
             int boxHeight;
-            float thumbnailRatio;
             boolean isFocusedTask = isFocusedTask();
             if (isFocusedTask) {
                 // Task will be focused and should use focused task size. Use focusTaskRatio
                 // that is associated with the original orientation of the focused task.
                 boxWidth = taskWidth;
                 boxHeight = taskHeight;
-                thumbnailRatio = getRecentsView().getFocusedTaskRatio();
             } else {
                 // Otherwise task is in grid, and should use lastComputedGridTaskSize.
                 Rect lastComputedGridTaskSize = getRecentsView().getLastComputedGridTaskSize();
                 boxWidth = lastComputedGridTaskSize.width();
                 boxHeight = lastComputedGridTaskSize.height();
-                thumbnailRatio = mTask != null ? mTask.getVisibleThumbnailRatio(
-                        TaskView.CLIP_STATUS_AND_NAV_BARS) : 0f;
             }
-            int boxLength = Math.max(boxWidth, boxHeight);
 
             // Bound width/height to the box size.
-            if (thumbnailRatio == 0f) {
-                expectedWidth = boxWidth;
-                expectedHeight = boxHeight + thumbnailPadding;
-            } else if (thumbnailRatio > 1) {
-                expectedWidth = boxLength;
-                expectedHeight = (int) (boxLength / thumbnailRatio) + thumbnailPadding;
-            } else {
-                expectedWidth = (int) (boxLength * thumbnailRatio);
-                expectedHeight = boxLength + thumbnailPadding;
-            }
+            expectedWidth = boxWidth;
+            expectedHeight = boxHeight + thumbnailPadding;
 
             // Scale to to fit task Rect.
             fullscreenScale = taskWidth / (float) boxWidth;
-
-            // In full screen, scale back TaskView to original size.
-            if (expectedWidth > boxWidth) {
-                fullscreenScale *= boxWidth / (float) expectedWidth;
-            } else if (expectedHeight - thumbnailPadding > boxHeight) {
-                fullscreenScale *= boxHeight / (float) (expectedHeight - thumbnailPadding);
-            }
 
             // Align to top of task Rect.
             boxTranslationY = (expectedHeight - thumbnailPadding - taskHeight) / 2.0f;

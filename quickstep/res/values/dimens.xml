@@ -16,7 +16,7 @@
 
 <resources>
     <dimen name="task_thumbnail_icon_size">48dp</dimen>
-    <dimen name="task_thumbnail_icon_size_grid">32dp</dimen>
+    <dimen name="task_thumbnail_icon_size_grid">40dp</dimen>
     <!-- For screens without rounded corners -->
     <dimen name="task_corner_radius_small">2dp</dimen>
 
@@ -33,10 +33,10 @@
     <dimen name="overview_actions_horizontal_margin">16dp</dimen>
 
     <dimen name="overview_grid_top_margin">77dp</dimen>
-    <dimen name="overview_grid_bottom_margin">90dp</dimen>
+    <dimen name="overview_grid_bottom_margin">70dp</dimen>
     <dimen name="overview_grid_side_margin">54dp</dimen>
     <dimen name="overview_grid_row_spacing">42dp</dimen>
-    <dimen name="overview_grid_focus_vertical_margin">90dp</dimen>
+    <dimen name="overview_grid_focus_vertical_margin">40dp</dimen>
     <dimen name="split_placeholder_size">110dp</dimen>
 
     <dimen name="recents_page_spacing">16dp</dimen>
