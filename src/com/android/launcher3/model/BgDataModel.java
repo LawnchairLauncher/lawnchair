@@ -446,15 +446,16 @@ public class BgDataModel {
         int FLAG_QUIET_MODE_CHANGE_PERMISSION = 1 << 2;
 
         /**
-         * Returns the page number to bind first, synchronously if possible or -1
+         * Returns an IntSet of page numbers to bind first, synchronously if possible
+         * or an empty IntSet
          */
-        int getPageToBindSynchronously();
+        IntSet getPagesToBindSynchronously();
         void clearPendingBinds();
         void startBinding();
         void bindItems(List<ItemInfo> shortcuts, boolean forceAnimateIcons);
         void bindScreens(IntArray orderedScreenIds);
         void finishFirstPageBind(ViewOnDrawExecutor executor);
-        void finishBindingItems(int pageBoundFirst);
+        void finishBindingItems(IntSet pagesBoundFirst);
         void preAddApps();
         void bindAppsAdded(IntArray newScreens,
                 ArrayList<ItemInfo> addNotAnimated, ArrayList<ItemInfo> addAnimated);
@@ -468,7 +469,7 @@ public class BgDataModel {
         void bindRestoreItemsChange(HashSet<ItemInfo> updates);
         void bindWorkspaceComponentsRemoved(ItemInfoMatcher matcher);
         void bindAllWidgets(List<WidgetsListBaseEntry> widgets);
-        void onPageBoundSynchronously(int page);
+        void onPagesBoundSynchronously(IntSet pages);
         void executeOnNextDraw(ViewOnDrawExecutor executor);
         void bindDeepShortcutMap(HashMap<ComponentKey, Integer> deepShortcutMap);
 

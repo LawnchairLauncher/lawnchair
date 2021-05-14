@@ -16,11 +16,13 @@
 package com.android.launcher3.util;
 
 import java.util.Arrays;
+import java.util.Iterator;
 
 /**
  * A wrapper over IntArray implementing a growing set of int primitives.
+ * The elements in the array are sorted in ascending order.
  */
-public class IntSet {
+public class IntSet implements Iterable<Integer> {
 
     final IntArray mArray = new IntArray();
 
@@ -61,6 +63,9 @@ public class IntSet {
         return (obj instanceof IntSet) && ((IntSet) obj).mArray.equals(mArray);
     }
 
+    /**
+     * Returns the wrapped IntArray. The elements in the array are sorted in ascending order.
+     */
     public IntArray getArray() {
         return mArray;
     }
@@ -77,5 +82,22 @@ public class IntSet {
         set.mArray.addAll(array);
         Arrays.sort(set.mArray.mValues, 0, set.mArray.mSize);
         return set;
+    }
+
+    /**
+     * Returns an IntSet with the given values.
+     */
+    public static IntSet wrap(int... array) {
+        return wrap(IntArray.wrap(array));
+    }
+
+    @Override
+    public Iterator<Integer> iterator() {
+        return mArray.iterator();
+    }
+
+    @Override
+    public String toString() {
+        return "IntSet{" + mArray.toConcatString() + '}';
     }
 }

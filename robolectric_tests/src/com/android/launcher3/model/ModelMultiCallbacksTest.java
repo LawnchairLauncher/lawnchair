@@ -26,12 +26,12 @@ import static org.robolectric.Shadows.shadowOf;
 
 import android.os.Process;
 
-import com.android.launcher3.PagedView;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.shadows.ShadowLooperExecutor;
 import com.android.launcher3.util.Executors;
+import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.LauncherLayoutBuilder;
 import com.android.launcher3.util.LauncherModelHelper;
 import com.android.launcher3.util.LooperExecutor;
@@ -92,7 +92,7 @@ public class ModelMultiCallbacksTest {
         // Add a new callback
         cb1.reset();
         MyCallbacks cb2 = spy(MyCallbacks.class);
-        cb2.mPageToBindSync = 2;
+        cb2.mPageToBindSync = IntSet.wrap(2);
         mModelHelper.getModel().addCallbacksAndLoad(cb2);
 
         waitForLoaderAndTempMainThread();
@@ -178,16 +178,16 @@ public class ModelMultiCallbacksTest {
     private abstract static class MyCallbacks implements Callbacks {
 
         final List<ItemInfo> mItems = new ArrayList<>();
-        int mPageToBindSync = 0;
-        int mPageBoundSync = PagedView.INVALID_PAGE;
+        IntSet mPageToBindSync = IntSet.wrap(0);
+        IntSet mPageBoundSync = new IntSet();
         ViewOnDrawExecutor mDeferredExecutor;
         AppInfo[] mAppInfos;
 
         MyCallbacks() { }
 
         @Override
-        public void onPageBoundSynchronously(int page) {
-            mPageBoundSync = page;
+        public void onPagesBoundSynchronously(IntSet pages) {
+            mPageBoundSync = pages;
         }
 
         @Override
@@ -206,13 +206,13 @@ public class ModelMultiCallbacksTest {
         }
 
         @Override
-        public int getPageToBindSynchronously() {
+        public IntSet getPagesToBindSynchronously() {
             return mPageToBindSync;
         }
 
         public void reset() {
             mItems.clear();
-            mPageBoundSync = PagedView.INVALID_PAGE;
+            mPageBoundSync = new IntSet();
             mDeferredExecutor = null;
             mAppInfos = null;
         }

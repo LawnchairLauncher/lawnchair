@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import static androidx.annotation.VisibleForTesting.PROTECTED;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.LauncherState.ALL_APPS;
@@ -62,6 +63,8 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
+
+import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
@@ -461,7 +464,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     @Override
-    protected int getPanelCount() {
+    @VisibleForTesting(otherwise = PROTECTED)
+    public int getPanelCount() {
         return isTwoPanelEnabled() ? 2 : super.getPanelCount();
     }
 

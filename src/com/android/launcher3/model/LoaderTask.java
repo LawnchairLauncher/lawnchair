@@ -83,6 +83,7 @@ import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.shortcuts.ShortcutRequest.QueryResult;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IOUtils;
+import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.LooperIdleLock;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
@@ -173,8 +174,9 @@ public class LoaderTask implements Runnable {
         ArrayList<ItemInfo> allItems = mBgDataModel.getAllWorkspaceItems();
         // Screen set is never empty
         final int firstScreen = mBgDataModel.collectWorkspaceScreens().get(0);
+        // TODO(b/185515153): support two panel home.
 
-        filterCurrentWorkspaceItems(firstScreen, allItems, firstScreenItems,
+        filterCurrentWorkspaceItems(IntSet.wrap(firstScreen), allItems, firstScreenItems,
                 new ArrayList<>() /* otherScreenItems are ignored */);
         mFirstScreenBroadcast.sendBroadcasts(mApp.getContext(), firstScreenItems);
     }
