@@ -97,8 +97,7 @@
     <string name="folder_name_format_exact" msgid="8626242716117004803">"ଫୋଲ୍ଡର୍: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> ଆଇଟମଗୁଡ଼ିକ"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"ଫୋଲ୍ଡର୍: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> କିମ୍ବା ଅଧିକ ଆଇଟମ୍"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"ୱାଲପେପର୍‌"</string>
-    <!-- no translation found for styles_wallpaper_button_text (8216961355289236794) -->
-    <skip />
+    <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"ୱାଲପେପର୍ ଏବଂ ଷ୍ଟାଇଲ୍"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"ହୋମ୍‌ ସେଟିଂସ୍"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"ଆପଣଙ୍କ ଆଡମିନଙ୍କ ଦ୍ୱାରା ଅକ୍ଷମ କରାଯାଇଛି"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"ହୋମ୍‌ ସ୍କ୍ରିନ୍ ବୁଲାଇବାକୁ ଅନୁମତି ଦିଅନ୍ତୁ"</string>

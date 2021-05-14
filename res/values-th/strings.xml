@@ -97,8 +97,7 @@
     <string name="folder_name_format_exact" msgid="8626242716117004803">"โฟลเดอร์: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> รายการ"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"โฟลเดอร์: <xliff:g id="NAME">%1$s</xliff:g>, อย่างน้อย <xliff:g id="SIZE">%2$d</xliff:g> รายการ"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"วอลเปเปอร์"</string>
-    <!-- no translation found for styles_wallpaper_button_text (8216961355289236794) -->
-    <skip />
+    <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"วอลเปเปอร์และรูปแบบ"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"การตั้งค่าหน้าแรก"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"ปิดใช้โดยผู้ดูแลระบบ"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"อนุญาตให้หมุนหน้าจอหลัก"</string>

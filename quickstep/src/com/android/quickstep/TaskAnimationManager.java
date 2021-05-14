@@ -57,6 +57,11 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
         @Override
         public void onActivityRestartAttempt(ActivityManager.RunningTaskInfo task,
                 boolean homeTaskVisible, boolean clearedTask, boolean wasVisible) {
+            if (mLastGestureState == null) {
+                ActivityManagerWrapper.getInstance().unregisterTaskStackListener(
+                        mLiveTileRestartListener);
+                return;
+            }
             BaseActivityInterface activityInterface = mLastGestureState.getActivityInterface();
             if (LIVE_TILE.get() && activityInterface.isInLiveTileMode()
                     && activityInterface.getCreatedActivity() != null) {
