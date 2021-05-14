@@ -50,7 +50,7 @@ public class AnimatorListeners {
     public static AnimatorListener forEndCallback(Runnable callback) {
         return new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationEnd(Animator animation, boolean isReverse) {
+            public void onAnimationEnd(Animator animation) {
                 callback.run();
             }
         };
