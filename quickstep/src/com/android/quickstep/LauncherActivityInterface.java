@@ -19,6 +19,7 @@ import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.QUICK_SWITCH;
+import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IME_SHOWING;
@@ -197,7 +198,8 @@ public final class LauncherActivityInterface extends
 
         closeOverlay();
         launcher.getStateManager().goToState(OVERVIEW,
-                launcher.getStateManager().shouldAnimateStateChange(), onCompleteCallback);
+                launcher.getStateManager().shouldAnimateStateChange(),
+                onCompleteCallback == null ? null : forEndCallback(onCompleteCallback));
         return true;
     }
 

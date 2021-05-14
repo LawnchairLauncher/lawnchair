@@ -22,6 +22,7 @@ import static com.android.launcher3.LauncherAnimUtils.newCancelListener;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
+import static com.android.launcher3.anim.AnimatorListeners.forSuccessCallback;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_ALL_APPS_EDU;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOME_GESTURE;
@@ -38,7 +39,6 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsTransitionController;
-import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PendingAnimation;
@@ -199,7 +199,7 @@ public class NavBarToHomeTouchController implements TouchController,
                         .animateWithVelocity(velocity);
             } else {
                 mLauncher.getStateManager().goToState(mEndState, true,
-                        () -> onSwipeInteractionCompleted(mEndState));
+                        forSuccessCallback(() -> onSwipeInteractionCompleted(mEndState)));
             }
             if (mStartState != mEndState) {
                 logHomeGesture();
@@ -214,8 +214,7 @@ public class NavBarToHomeTouchController implements TouchController,
             // Quickly return to the state we came from (we didn't move far).
             ValueAnimator anim = mCurrentAnimation.getAnimationPlayer();
             anim.setFloatValues(progress, 0);
-            anim.addListener(AnimationSuccessListener.forRunnable(
-                    () -> onSwipeInteractionCompleted(mStartState)));
+            anim.addListener(forSuccessCallback(() -> onSwipeInteractionCompleted(mStartState)));
             anim.setDuration(80).start();
         }
     }
