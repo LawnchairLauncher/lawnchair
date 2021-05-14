@@ -94,6 +94,14 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     private final ItemInfoMatcher mWorkMatcher = mPersonalMatcher.negate();
     private final AllAppsStore mAllAppsStore = new AllAppsStore();
 
+    private final RecyclerView.OnScrollListener mScrollListener =
+            new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                    updateHeaderScroll(((AllAppsRecyclerView) recyclerView).getCurrentScrollY());
+                }
+            };
+
     private final Paint mNavBarScrimPaint;
     private int mNavBarScrimHeight = 0;
 
@@ -147,7 +155,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         mHeaderProtectionColor = ColorUtils.blendARGB(mScrimColor, accentColor, .3f);
 
         mLauncher.addOnDeviceProfileChangeListener(this);
-
 
 
         mSearchAdapterProvider = mLauncher.createSearchAdapterProvider(this);
@@ -676,6 +683,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         anim1.start();
         super.onRelease();
     }
+
     @Override
     public void getDrawingRect(Rect outRect) {
         super.getDrawingRect(outRect);
@@ -738,6 +746,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             recyclerView.setHasFixedSize(true);
             // No animations will occur when changes occur to the items in this RecyclerView.
             recyclerView.setItemAnimator(null);
+            recyclerView.addOnScrollListener(mScrollListener);
             FocusedItemDecorator focusedItemDecorator = new FocusedItemDecorator(recyclerView);
             recyclerView.addItemDecoration(focusedItemDecorator);
             adapter.setIconFocusListener(focusedItemDecorator.getFocusListener());
