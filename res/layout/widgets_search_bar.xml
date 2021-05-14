@@ -5,10 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:layout_marginTop="16dp"
-    android:layout_marginBottom="1dp"
-    android:background="@drawable/bg_widgets_searchbox"
-    android:elevation="2dp">
+    android:layout_marginTop="24dp"
+    android:layout_marginHorizontal="16dp"
+    android:background="@drawable/bg_widgets_searchbox">
 
     <com.android.launcher3.ExtendedEditText
         android:id="@+id/widgets_search_bar_edit_text"
