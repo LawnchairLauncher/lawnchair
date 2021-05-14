@@ -129,14 +129,14 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
     }
 
     /**
-     * @see #goToState(STATE_TYPE, boolean, Runnable)
+     * @see #goToState(STATE_TYPE, boolean, AnimatorListener)
      */
     public void goToState(STATE_TYPE state) {
         goToState(state, shouldAnimateStateChange());
     }
 
     /**
-     * @see #goToState(STATE_TYPE, boolean, Runnable)
+     * @see #goToState(STATE_TYPE, boolean, AnimatorListener)
      */
     public void goToState(STATE_TYPE state, boolean animated) {
         goToState(state, animated, 0, null);
@@ -149,15 +149,15 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
      *                true otherwise
      * @paras onCompleteRunnable any action to perform at the end of the transition, of null.
      */
-    public void goToState(STATE_TYPE state, boolean animated, Runnable onCompleteRunnable) {
-        goToState(state, animated, 0, onCompleteRunnable);
+    public void goToState(STATE_TYPE state, boolean animated, AnimatorListener listener) {
+        goToState(state, animated, 0, listener);
     }
 
     /**
      * Changes the Launcher state to the provided state after the given delay.
      */
-    public void goToState(STATE_TYPE state, long delay, Runnable onCompleteRunnable) {
-        goToState(state, true, delay, onCompleteRunnable);
+    public void goToState(STATE_TYPE state, long delay, AnimatorListener listener) {
+        goToState(state, true, delay, listener);
     }
 
     /**
@@ -187,21 +187,20 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
         }
     }
 
-    private void goToState(STATE_TYPE state, boolean animated, long delay,
-            final Runnable onCompleteRunnable) {
+    private void goToState(
+            STATE_TYPE state, boolean animated, long delay, AnimatorListener listener) {
         animated &= areAnimatorsEnabled();
         if (mActivity.isInState(state)) {
             if (mConfig.currentAnimation == null) {
                 // Run any queued runnable
-                if (onCompleteRunnable != null) {
-                    onCompleteRunnable.run();
+                if (listener != null) {
+                    listener.onAnimationEnd(null);
                 }
                 return;
             } else if (!mConfig.userControlled && animated && mConfig.targetState == state) {
                 // We are running the same animation as requested
-                if (onCompleteRunnable != null) {
-                    mConfig.currentAnimation.addListener(
-                            AnimationSuccessListener.forRunnable(onCompleteRunnable));
+                if (listener != null) {
+                    mConfig.currentAnimation.addListener(listener);
                 }
                 return;
             }
@@ -221,8 +220,8 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
             onStateTransitionEnd(state);
 
             // Run any queued runnable
-            if (onCompleteRunnable != null) {
-                onCompleteRunnable.run();
+            if (listener != null) {
+                listener.onAnimationEnd(null);
             }
             return;
         }
@@ -233,16 +232,16 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
             int startChangeId = mConfig.changeId;
             mUiHandler.postDelayed(() -> {
                 if (mConfig.changeId == startChangeId) {
-                    goToStateAnimated(state, fromState, onCompleteRunnable);
+                    goToStateAnimated(state, fromState, listener);
                 }
             }, delay);
         } else {
-            goToStateAnimated(state, fromState, onCompleteRunnable);
+            goToStateAnimated(state, fromState, listener);
         }
     }
 
     private void goToStateAnimated(STATE_TYPE state, STATE_TYPE fromState,
-            Runnable onCompleteRunnable) {
+            AnimatorListener listener) {
         // Since state mBaseState can be reached from multiple states, just assume that the
         // transition plays in reverse and use the same duration as previous state.
         mConfig.duration = state == mBaseState
@@ -250,8 +249,8 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
                 : state.getTransitionDuration(mActivity);
         prepareForAtomicAnimation(fromState, state, mConfig);
         AnimatorSet animation = createAnimationToNewWorkspaceInternal(state).buildAnim();
-        if (onCompleteRunnable != null) {
-            animation.addListener(AnimationSuccessListener.forRunnable(onCompleteRunnable));
+        if (listener != null) {
+            animation.addListener(listener);
         }
         mUiHandler.post(new StartAnimRunnable(animation));
     }
