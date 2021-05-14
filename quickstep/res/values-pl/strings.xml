@@ -47,24 +47,38 @@
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Przewidywana aplikacja: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"Pamiętaj, aby przesuwać palcem od samej lewej krawędzi."</string>
     <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"Pamiętaj, aby przesuwać palcem od lewej krawędzi do środka ekranu, a potem podnieść palec."</string>
-    <string name="back_gesture_feedback_complete_left_edge" msgid="3220478647881674266">"Dobrze. Teraz przesuń palcem od prawej krawędzi."</string>
+    <!-- no translation found for back_gesture_feedback_title_complete_left_edge (1381455921760094003) -->
+    <skip />
+    <!-- no translation found for back_gesture_feedback_subtitle_complete_left_edge (8106594510099968430) -->
+    <skip />
     <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"Pamiętaj, aby przesuwać palcem od samej prawej krawędzi."</string>
     <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"Pamiętaj, aby przesuwać palcem od prawej krawędzi do środka ekranu, a potem podnieść palec."</string>
-    <string name="back_gesture_feedback_complete" msgid="7261221999760772210">"Gest przejścia wstecz został opanowany. Poćwicz teraz przechodzenie na ekran główny."</string>
+    <!-- no translation found for back_gesture_feedback_complete_with_follow_up (8653374779579748392) -->
+    <skip />
+    <!-- no translation found for back_gesture_feedback_complete_without_follow_up (6405649621667113830) -->
+    <skip />
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Pamiętaj, aby nie przesuwać palcem zbyt blisko dolnej części ekranu."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Czułość gestu cofania możesz zmienić w Ustawieniach"</string>
-    <string name="back_gesture_intro_title" msgid="19551256430224428">"Przesuwanie palcem, aby przejść wstecz"</string>
-    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Aby wrócić do ostatniego ekranu, przesuń palcem od lewej lub prawej krawędzi do środka ekranu."</string>
+    <!-- no translation found for back_gesture_intro_title (5538727561353262952) -->
+    <skip />
+    <!-- no translation found for back_gesture_intro_subtitle (8139048712004626940) -->
+    <skip />
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Pamiętaj, aby przesuwać palcem od dolnej krawędzi ekranu."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Pamiętaj, aby przed podniesieniem palca nie było przerwy."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Pamiętaj, aby przesuwać palcem prosto do góry."</string>
-    <string name="home_gesture_feedback_complete" msgid="2324789183070815517">"Gest przechodzenia na ekran główny został opanowany. Poćwicz teraz przełączanie aplikacji."</string>
+    <!-- no translation found for home_gesture_feedback_complete_with_follow_up (1427872029729605034) -->
+    <skip />
+    <!-- no translation found for home_gesture_feedback_complete_without_follow_up (8049099486868933882) -->
+    <skip />
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Przesuwanie palcem, aby przejść na ekran główny"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Przesuń palcem z dołu ekranu. Ten gest zawsze powoduje przejście na ekran główny."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Pamiętaj, aby przesuwać palcem od dolnej krawędzi ekranu."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Przytrzymaj okno dłużej, zanim podniesiesz palec."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Pamiętaj, aby przesuwać palcem prosto do góry, a potem przerwać ruch."</string>
-    <string name="overview_gesture_feedback_complete" msgid="5477014491632199169">"Gest przełączania aplikacji został opanowany. Możesz już używać telefonu."</string>
+    <!-- no translation found for overview_gesture_feedback_complete_with_follow_up (3544611727467765026) -->
+    <skip />
+    <!-- no translation found for overview_gesture_feedback_complete_without_follow_up (3199486203448379152) -->
+    <skip />
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Przesuwanie palcem, aby przełączać aplikacje"</string>
     <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"Przesuń palcem od dołu ekranu, przytrzymaj i puść."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Wszystko gotowe"</string>
@@ -74,6 +88,10 @@
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Spróbuj ponownie"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Super!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Samouczek <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
+    <string name="allset_title" msgid="5021126669778966707">"Wszystko gotowe"</string>
+    <string name="allset_hint" msgid="459504134589971527">"Aby przejść na stronę główną, przesuń w górę"</string>
+    <string name="allset_description" msgid="6350320429953234580">"Teraz możesz zacząć używać telefonu"</string>
+    <string name="allset_navigation_settings" msgid="417773244979225071"><annotation id="link">"Ustawienia nawigacji na potrzeby ułatwień dostępu"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Udostępnij"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Zrzut ekranu"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Nie możesz wykonać tego działania, bo nie zezwala na to aplikacja lub Twoja organizacja"</string>

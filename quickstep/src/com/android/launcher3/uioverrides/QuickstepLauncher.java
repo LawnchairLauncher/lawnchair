@@ -200,14 +200,18 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
      */
     private void onStateOrResumeChanging(boolean inTransition) {
         LauncherState state = getStateManager().getState();
-        DeviceProfile profile = getDeviceProfile();
-        boolean willUserBeActive = (getActivityFlags() & ACTIVITY_STATE_USER_WILL_BE_ACTIVE) != 0;
-        boolean visible = (state == NORMAL || state == OVERVIEW)
-                && (willUserBeActive || isUserActive())
-                && !profile.isVerticalBarLayout()
-                && profile.isPhone && !profile.isLandscape;
-        UiThreadHelper.runAsyncCommand(this, SET_SHELF_HEIGHT, visible ? 1 : 0,
-                profile.hotseatBarSizePx);
+        boolean started = ((getActivityFlags() & ACTIVITY_STATE_STARTED)) != 0;
+        if (started) {
+            DeviceProfile profile = getDeviceProfile();
+            boolean willUserBeActive =
+                    (getActivityFlags() & ACTIVITY_STATE_USER_WILL_BE_ACTIVE) != 0;
+            boolean visible = (state == NORMAL || state == OVERVIEW)
+                    && (willUserBeActive || isUserActive())
+                    && !profile.isVerticalBarLayout()
+                    && profile.isPhone && !profile.isLandscape;
+            UiThreadHelper.runAsyncCommand(this, SET_SHELF_HEIGHT, visible ? 1 : 0,
+                    profile.hotseatBarSizePx);
+        }
         if (state == NORMAL && !inTransition) {
             ((RecentsView) getOverviewPanel()).setSwipeDownShouldLaunchApp(false);
         }

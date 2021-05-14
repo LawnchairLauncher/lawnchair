@@ -115,7 +115,7 @@ public class LogEventChecker {
             }
         }
 
-        return hasMismatches ? "mismatching events: " + sb.toString() : null;
+        return hasMismatches ? "Mismatching events: " + sb.toString() : null;
     }
 
     // If the list of actual events matches the list of expected events, returns -1, otherwise

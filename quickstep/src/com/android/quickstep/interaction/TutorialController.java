@@ -62,6 +62,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     final ImageButton mCloseButton;
     final ViewGroup mFeedbackView;
     final ImageView mFeedbackVideoView;
+    final ImageView mGestureVideoView;
     final ImageView mFakeLauncherView;
     final ClipIconView mFakeIconView;
     final View mFakeTaskView;
@@ -84,6 +85,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         mCloseButton.setOnClickListener(button -> showSkipTutorialDialog());
         mFeedbackView = rootView.findViewById(R.id.gesture_tutorial_fragment_feedback_view);
         mFeedbackVideoView = rootView.findViewById(R.id.gesture_tutorial_feedback_video);
+        mGestureVideoView = rootView.findViewById(R.id.gesture_tutorial_gesture_video);
         mFakeLauncherView = rootView.findViewById(R.id.gesture_tutorial_fake_launcher_view);
         mFakeIconView = rootView.findViewById(R.id.gesture_tutorial_fake_icon_view);
         mFakeTaskView = rootView.findViewById(R.id.gesture_tutorial_fake_task_view);
@@ -173,8 +175,8 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     /**
      * Show feedback reflecting a failed gesture attempt.
      **/
-    void showFeedback(int subtitleResId, @Nullable Runnable successEndAction) {
-        showFeedback(subtitleResId, successEndAction, false);
+    void showFeedback(int titleResId, int subtitleResId, @Nullable Runnable successEndAction) {
+        showFeedback(titleResId, subtitleResId, successEndAction, false);
     }
 
     /**
@@ -212,7 +214,8 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         mHideFeedbackEndAction = successEndAction;
 
         AnimatedVectorDrawable tutorialAnimation = mTutorialFragment.getTutorialAnimation();
-        if (tutorialAnimation != null) {
+        AnimatedVectorDrawable gestureAnimation = mTutorialFragment.getGestureAnimation();
+        if (tutorialAnimation != null && gestureAnimation != null) {
             if (successEndAction == null) {
                 if (tutorialAnimation.isRunning()) {
                     tutorialAnimation.reset();
@@ -222,6 +225,11 @@ abstract class TutorialController implements BackGestureAttemptCallback,
                     @Override
                     public void onAnimationStart(Drawable drawable) {
                         super.onAnimationStart(drawable);
+
+                        mGestureVideoView.setVisibility(View.GONE);
+                        if (gestureAnimation.isRunning()) {
+                            gestureAnimation.stop();
+                        }
 
                         mFeedbackView.setTranslationY(
                                 -mFeedbackView.getHeight() - mFeedbackView.getTop());
@@ -235,6 +243,9 @@ abstract class TutorialController implements BackGestureAttemptCallback,
                     @Override
                     public void onAnimationEnd(Drawable drawable) {
                         super.onAnimationEnd(drawable);
+
+                        mGestureVideoView.setVisibility(View.VISIBLE);
+                        gestureAnimation.start();
 
                         mFeedbackView.removeCallbacks(mHideFeedbackRunnable);
                         mFeedbackView.post(mHideFeedbackRunnable);

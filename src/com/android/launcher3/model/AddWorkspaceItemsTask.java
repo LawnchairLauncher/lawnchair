@@ -20,7 +20,6 @@ import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
 import android.content.pm.PackageInstaller.SessionInfo;
 import android.os.UserHandle;
-import android.util.Log;
 import android.util.LongSparseArray;
 import android.util.Pair;
 
@@ -28,6 +27,7 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel.CallbackTask;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
@@ -130,7 +130,7 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                             packageName);
 
                     if (!packageInstaller.verifySessionInfo(sessionInfo)) {
-                        Log.d(LOG, "Item info failed session info verification: "
+                        FileLog.d(LOG, "Item info failed session info verification: "
                                 + workspaceInfo);
                     }
 
@@ -180,11 +180,11 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                 addedItemsFinal.add(itemInfo);
 
                 // log bitmap and label
-                Log.d(LOG, "Adding item info to workspace: " + itemInfo);
+                FileLog.d(LOG, "Adding item info to workspace: " + itemInfo);
                 if (itemInfo instanceof ItemInfoWithIcon) {
                     ItemInfoWithIcon infoWithIcon = (ItemInfoWithIcon) itemInfo;
 
-                    Log.d(LOG, "Item info icon base 64 string: "
+                    FileLog.d(LOG, "Item info icon base 64 string: "
                             + infoWithIcon.bitmap.icon == null
                             ? "null" : IOUtils.toBase64String(infoWithIcon.bitmap.icon));
                 }

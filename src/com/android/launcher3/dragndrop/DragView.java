@@ -33,11 +33,13 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Path;
+import android.graphics.Picture;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.PictureDrawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -457,7 +459,6 @@ public class DragView extends FrameLayout implements StateListener<LauncherState
         setTranslationY(mLastTouchY - mRegistrationY + mAnimatedShiftY);
     }
 
-
     /**
      * Detaches {@link #mContent}, if previously attached, from this view.
      *
@@ -466,7 +467,20 @@ public class DragView extends FrameLayout implements StateListener<LauncherState
      */
     public void detachContentView(boolean reattachToPreviousParent) {
         if (mContent != null && mContentViewParent != null && mContentViewInParentViewIndex >= 0) {
-            removeView(mContent);
+            Picture picture = new Picture();
+            mContent.draw(picture.beginRecording(mWidth, mHeight));
+            picture.endRecording();
+            View view = new View(mLauncher);
+            view.setClipToOutline(mContent.getClipToOutline());
+            view.setOutlineProvider(mContent.getOutlineProvider());
+            view.setBackground(new PictureDrawable(picture));
+            view.measure(makeMeasureSpec(mWidth, EXACTLY), makeMeasureSpec(mHeight, EXACTLY));
+            view.layout(mContent.getLeft(), mContent.getTop(),
+                    mContent.getRight(), mContent.getBottom());
+            addViewInLayout(view, indexOfChild(mContent), mContent.getLayoutParams(), true);
+
+            removeViewInLayout(mContent);
+            mContent.setVisibility(INVISIBLE);
             mContent.setLayoutParams(mContentViewLayoutParams);
             if (reattachToPreviousParent) {
                 mContentViewParent.addView(mContent, mContentViewInParentViewIndex);

@@ -84,7 +84,7 @@
     <dimen name="fastscroll_end_margin">-26dp</dimen>
 
     <!-- All Apps -->
-    <dimen name="all_apps_open_vertical_translate">300dp</dimen>
+    <dimen name="all_apps_open_vertical_translate">320dp</dimen>
     <dimen name="all_apps_search_bar_field_height">48dp</dimen>
     <dimen name="all_apps_search_bar_bottom_padding">30dp</dimen>
     <dimen name="all_apps_empty_search_message_top_offset">40dp</dimen>
@@ -92,7 +92,8 @@
     <dimen name="all_apps_background_canvas_width">700dp</dimen>
     <dimen name="all_apps_background_canvas_height">475dp</dimen>
     <dimen name="all_apps_header_pill_height">50dp</dimen>
-    <dimen name="all_apps_header_pill_corner_radius">50dp</dimen>
+    <dimen name="all_apps_header_pill_corner_radius">48dp</dimen>
+    <dimen name="all_apps_header_tab_height">48dp</dimen>
     <dimen name="all_apps_tabs_indicator_height">2dp</dimen>
     <dimen name="all_apps_header_top_padding">36dp</dimen>
     <dimen name="all_apps_work_profile_tab_footer_top_padding">16dp</dimen>
@@ -137,7 +138,6 @@
     <dimen name="widget_section_icon_size">40dp</dimen>
     <dimen name="widget_section_vertical_padding">8dp</dimen>
     <dimen name="widget_section_horizontal_padding">16dp</dimen>
-    <dimen name="widget_section_indent">0dp</dimen>
 
     <dimen name="widget_row_padding">8dp</dimen>
     <dimen name="widget_row_divider">2dp</dimen>
@@ -202,7 +202,8 @@
     <dimen name="pending_widget_elevation">2dp</dimen>
 
 <!-- Deep shortcuts -->
-    <dimen name="deep_shortcuts_elevation">0dp</dimen>
+    <dimen name="deep_shortcuts_elevation">2dp</dimen>
+    <dimen name="bg_popup_padding">2dp</dimen>
     <dimen name="bg_popup_item_width">216dp</dimen>
     <dimen name="bg_popup_item_height">56dp</dimen>
     <dimen name="pre_drag_view_scale">6dp</dimen>

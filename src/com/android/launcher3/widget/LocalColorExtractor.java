@@ -28,12 +28,17 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.util.ResourceBasedOverride;
 
 import java.util.List;
 
 /** Extracts the colors we need from the wallpaper at given locations. */
 public class LocalColorExtractor implements ResourceBasedOverride {
+
+    // Index used to get background color when using local wallpaper color extraction,
+    private static final int LIGHT_COLOR_EXTRACTION_INDEX = android.R.color.system_accent2_50;
+    private static final int DARK_COLOR_EXTRACTION_INDEX = android.R.color.system_accent2_800;
 
     /** Listener for color changes on a screen location. */
     public interface Listener {
@@ -102,5 +107,20 @@ public class LocalColorExtractor implements ResourceBasedOverride {
     public void getExtractedRectForViewRect(Launcher launcher, int pageId, Rect rectInDragLayer,
             RectF colorExtractionRectOut) {
         // no-op
+    }
+
+    /**
+     * Returns an index used to query the color of interest from the list of extracted colors.
+     */
+    public static int getColorIndex(Context context) {
+        return getColorIndex(Utilities.isDarkTheme(context));
+    }
+
+    /**
+     * Returns an index used to query the color of interest from the list of extracted colors.
+     * @param getDarkIndex True when dark index is wanted, False when light index is wanted.
+     */
+    public static int getColorIndex(boolean getDarkIndex) {
+        return getDarkIndex ? DARK_COLOR_EXTRACTION_INDEX : LIGHT_COLOR_EXTRACTION_INDEX;
     }
 }

@@ -42,6 +42,11 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
     }
 
     @Override
+    protected int getMockAppTaskThumbnailResId() {
+        return R.drawable.mock_webpage;
+    }
+
+    @Override
     public void onBackGestureAttempted(BackGestureResult result) {
         switch (mTutorialType) {
             case HOME_NAVIGATION:
@@ -72,10 +77,13 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
             case HOME_NAVIGATION:
                 switch (result) {
                     case HOME_GESTURE_COMPLETED: {
+                        mTutorialFragment.releaseGestureVideoView();
                         animateFakeTaskViewHome(finalVelocity, null);
                         showActionButton();
-                        showFeedback(R.string.home_gesture_feedback_complete,
-                                true);
+                        int subtitleResId = mTutorialFragment.getNumSteps() == 1
+                                ? R.string.home_gesture_feedback_complete_without_follow_up
+                                : R.string.home_gesture_feedback_complete_with_follow_up;
+                        showFeedback(subtitleResId, true);
                         break;
                     }
                     case HOME_NOT_STARTED_TOO_FAR_FROM_EDGE:

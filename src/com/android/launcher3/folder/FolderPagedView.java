@@ -31,7 +31,6 @@ import android.view.View;
 import android.view.ViewDebug;
 
 import com.android.launcher3.AbstractFloatingView;
-import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
@@ -49,6 +48,7 @@ import com.android.launcher3.pageindicators.PageIndicatorDots;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.ViewCache;
+import com.android.launcher3.views.ActivityContext;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -102,7 +102,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
         setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
 
         mFocusIndicatorHelper = new ViewGroupFocusHelper(this);
-        mViewCache = BaseActivity.fromContext(context).getViewCache();
+        mViewCache = ActivityContext.lookupContext(context).getViewCache();
     }
 
     public void setFolder(Folder folder) {

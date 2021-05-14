@@ -43,6 +43,7 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -191,11 +192,11 @@ public class ItemInstallQueue {
         MODEL_EXECUTOR.post(() -> {
             Pair<ItemInfo, Object> itemInfo = info.getItemInfo(mContext);
             if (itemInfo == null) {
-                Log.d(LOG,
+                FileLog.d(LOG,
                         "Adding PendingInstallShortcutInfo with no attached info to queue.",
                         stackTrace);
             } else {
-                Log.d(LOG,
+                FileLog.d(LOG,
                         "Adding PendingInstallShortcutInfo to queue. Attached info: "
                                 + itemInfo.first,
                         stackTrace);

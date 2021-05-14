@@ -165,8 +165,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
 
         @BinderThread
         public void onInitialize(Bundle bundle) {
-            Log.d(TAG + " b/182478748", "TouchInteractionService.onInitialize: user="
-                    + getUserId());
             ISystemUiProxy proxy = ISystemUiProxy.Stub.asInterface(
                     bundle.getBinder(KEY_EXTRA_SYSUI_PROXY));
             IPip pip = IPip.Stub.asInterface(bundle.getBinder(KEY_EXTRA_SHELL_PIP));
@@ -350,8 +348,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
         mMainChoreographer = Choreographer.getInstance();
         mAM = ActivityManagerWrapper.getInstance();
         mDeviceState = new RecentsAnimationDeviceState(this, true);
-            Log.d(TestProtocol.NO_SWIPE_TO_HOME, "RADS OTT instance: " +
-                    mDeviceState.getRotationTouchHelper().getOrientationTouchTransformer());
         mRotationTouchHelper = mDeviceState.getRotationTouchHelper();
         mDeviceState.addNavigationModeChangedCallback(this::onNavigationModeChanged);
         mDeviceState.addOneHandedModeChangedCallback(this::onOneHandedModeOverlayChanged);
@@ -363,8 +359,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
     }
 
     private void disposeEventHandlers() {
-        Log.d(TAG + " b/182478748", "TouchInteractionService.disposeEventHandlers: user="
-                + getUserId());
         if (mInputEventReceiver != null) {
             mInputEventReceiver.dispose();
             mInputEventReceiver = null;
@@ -376,21 +370,12 @@ public class TouchInteractionService extends Service implements PluginListener<O
     }
 
     private void initInputMonitor() {
-        Log.d(TAG + " b/182478748", "TouchInteractionService.initInputMonitor: user="
-                + getUserId());
         disposeEventHandlers();
 
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.TIS_NO_EVENTS, "initInputMonitor: isButtonMode? "
-                    + mDeviceState.isButtonNavMode());
-        }
-
         if (mDeviceState.isButtonNavMode()) {
-            Log.d(TAG + " b/182478748", "isButtonNav: user=" + getUserId());
             return;
         }
 
-        Log.d(TAG + " b/182478748", "create swipe-up input monitor: user=" + getUserId());
         mInputMonitorCompat = new InputMonitorCompat("swipe-up", mDeviceState.getDisplayId());
         mInputEventReceiver = mInputMonitorCompat.getInputReceiver(Looper.getMainLooper(),
                 mMainChoreographer, this::onInputEvent);
@@ -549,13 +534,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
             Point sz = new Point();
             display.getRealSize(sz);
             if (rotation != Surface.ROTATION_0) {
-                if ((rotation % 2) != 0) {
-                    // via display-manager, the display size is unrotated, so "rotate" its size
-                    // to match the rotation we are transforming the event into.
-                    final int tmpX = sz.x;
-                    sz.x = sz.y;
-                    sz.y = tmpX;
-                }
                 event.transform(InputChannelCompat.createRotationMatrix(rotation, sz.x, sz.y));
             }
         }
@@ -572,17 +550,10 @@ public class TouchInteractionService extends Service implements PluginListener<O
 
         final int action = event.getAction();
         if (action == ACTION_DOWN) {
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.NO_SWIPE_TO_HOME, "TouchInteractionService.onInputEvent:DOWN");
-            }
             mRotationTouchHelper.setOrientationTransformIfNeeded(event);
 
             if (!mDeviceState.isOneHandedModeActive()
                     && mRotationTouchHelper.isInSwipeUpTouchRegion(event)) {
-                if (TestProtocol.sDebugTracing) {
-                    Log.d(TestProtocol.NO_SWIPE_TO_HOME,
-                            "TouchInteractionService.onInputEvent:isInSwipeUpTouchRegion");
-                }
                 // Clone the previous gesture state since onConsumerAboutToBeSwitched might trigger
                 // onConsumerInactive and wipe the previous gesture state
                 GestureState prevGestureState = new GestureState(mGestureState);
@@ -678,9 +649,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
 
     private InputConsumer newConsumer(GestureState previousGestureState,
             GestureState newGestureState, MotionEvent event) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_SWIPE_TO_HOME, "newConsumer");
-        }
         boolean canStartSystemGesture = mDeviceState.canStartSystemGesture();
 
         if (!mDeviceState.isUserUnlocked()) {
@@ -691,9 +659,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
             } else {
                 return mResetGestureInputConsumer;
             }
-        }
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_SWIPE_TO_HOME, "newConsumer:user is unlocked");
         }
 
         // When there is an existing recents animation running, bypass systemState check as this is

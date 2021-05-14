@@ -93,10 +93,6 @@ public class RecentTasksList extends TaskStackChangeListener {
      * @return The change id of the current task list
      */
     public synchronized int getTasks(boolean loadKeysOnly, Consumer<ArrayList<Task>> callback) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.GET_RECENTS_FAILED, "getTasks: keysOnly=" + loadKeysOnly
-                    + " callback=" + callback);
-        }
         final int requestLoadId = mChangeId;
         if (mResultsUi.isValidForRequest(requestLoadId, loadKeysOnly)) {
             // The list is up to date, send the callback on the next frame,
@@ -105,9 +101,6 @@ public class RecentTasksList extends TaskStackChangeListener {
                 // Copy synchronously as the changeId might change by next frame
                 ArrayList<Task> result = copyOf(mResultsUi);
                 mMainThreadExecutor.post(() -> {
-                    if (TestProtocol.sDebugTracing) {
-                        Log.d(TestProtocol.GET_RECENTS_FAILED, "getTasks: no new tasks");
-                    }
                     callback.accept(result);
                 });
             }
@@ -118,14 +111,8 @@ public class RecentTasksList extends TaskStackChangeListener {
         // Kick off task loading in the background
         mLoadingTasksInBackground = true;
         UI_HELPER_EXECUTOR.execute(() -> {
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.GET_RECENTS_FAILED, "getTasks: loading in bg start");
-            }
             if (!mResultsBg.isValidForRequest(requestLoadId, loadKeysOnly)) {
                 mResultsBg = loadTasksInBackground(Integer.MAX_VALUE, requestLoadId, loadKeysOnly);
-            }
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.GET_RECENTS_FAILED, "getTasks: loading in bg end");
             }
             TaskLoadResult loadResult = mResultsBg;
             mMainThreadExecutor.execute(() -> {
@@ -133,9 +120,6 @@ public class RecentTasksList extends TaskStackChangeListener {
                 mResultsUi = loadResult;
                 if (callback != null) {
                     ArrayList<Task> result = copyOf(mResultsUi);
-                    if (TestProtocol.sDebugTracing) {
-                        Log.d(TestProtocol.GET_RECENTS_FAILED, "getTasks: callback w/ bg results");
-                    }
                     callback.accept(result);
                 }
             });

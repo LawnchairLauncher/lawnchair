@@ -106,12 +106,7 @@ public class DisplayController implements DisplayListener, ComponentCallbacks {
                 extraInternalDisplays.add(new PortraitSize(size.x, size.y));
             }
         }
-
-        if (extraInternalDisplays.isEmpty() || !Utilities.ATLEAST_S) {
-            mInfo = new Info(createDisplayInfoContext(display), display, Collections.emptySet());
-        } else {
-            mInfo = new Info(mWindowContext, display, extraInternalDisplays);
-        }
+        mInfo = new Info(getDisplayInfoContext(display), display, extraInternalDisplays);
         mDM.registerDisplayListener(this, UI_HELPER_EXECUTOR.getHandler());
     }
 
@@ -201,10 +196,8 @@ public class DisplayController implements DisplayListener, ComponentCallbacks {
         return mInfo;
     }
 
-    private Context createDisplayInfoContext(Display display) {
-        return Utilities.ATLEAST_S
-                ? mContext.createWindowContext(display, TYPE_APPLICATION, null)
-                : mContext.createDisplayContext(display);
+    private Context getDisplayInfoContext(Display display) {
+        return Utilities.ATLEAST_S ? mWindowContext : mContext.createDisplayContext(display);
     }
 
     @AnyThread
@@ -213,7 +206,7 @@ public class DisplayController implements DisplayListener, ComponentCallbacks {
         Set<PortraitSize> extraDisplaysSizes = oldInfo.mAllSizes.size() > 1
                 ? oldInfo.mAllSizes : Collections.emptySet();
 
-        Context displayContext = createDisplayInfoContext(display);
+        Context displayContext = getDisplayInfoContext(display);
         Info newInfo = new Info(displayContext, display, extraDisplaysSizes);
         int change = 0;
         if (!newInfo.mScreenSizeDp.equals(oldInfo.mScreenSizeDp)) {

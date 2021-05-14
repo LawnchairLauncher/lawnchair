@@ -21,7 +21,6 @@
     <attr name="allAppsScrimColor" format="color" />
     <attr name="allAppsNavBarScrimColor" format="color" />
     <attr name="allAppsTheme" format="reference" />
-    <attr name="popupColorNeutral" format="color" />
     <attr name="popupColorPrimary" format="color" />
     <attr name="popupColorSecondary" format="color" />
     <attr name="popupColorTertiary" format="color" />
@@ -43,6 +42,7 @@
     <attr name="folderIconBorderColor" format="color" />
     <attr name="folderTextColor" format="color" />
     <attr name="folderHintColor" format="color" />
+    <attr name="isFolderDarkText" format="boolean" />
     <attr name="workProfileOverlayTextColor" format="color" />
     <attr name="gridColor" format="color" />
 

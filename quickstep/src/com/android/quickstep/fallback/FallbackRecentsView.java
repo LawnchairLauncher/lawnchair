@@ -140,10 +140,6 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
         // as well. This tile is never shown as we have setCurrentTaskHidden, but allows use to
         // track the index of the next task appropriately, as if we are switching on any other app.
         if (mHomeTaskInfo != null && mHomeTaskInfo.taskId == mRunningTaskId && !tasks.isEmpty()) {
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.GET_RECENTS_FAILED,
-                        "FallbackRecentsView.applyLoadPlan: running task is home");
-            }
             // Check if the task list has running task
             boolean found = false;
             for (Task t : tasks) {

@@ -32,10 +32,8 @@
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"વિજેટ ખસેડવા બે વાર ટૅપ કરીને દબાવી રાખો અથવા કસ્ટમ ક્રિયાઓનો ઉપયોગ કરો."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d પહોળાઈ X %2$d ઊંચાઈ"</string>
-    <!-- no translation found for add_item_request_drag_hint (5653291305078645405) -->
-    <skip />
-    <!-- no translation found for add_to_home_screen (8631549138215492708) -->
-    <skip />
+    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"વિજેટને હોમ સ્ક્રીનની આજુબાજુ ખસેડવા માટે, તેને ટચ કરીને થોડીવાર દબાવી રાખો"</string>
+    <string name="add_to_home_screen" msgid="8631549138215492708">"હોમ સ્ક્રીન પર ઉમેરો"</string>
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
       <item quantity="one"><xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> વિજેટ</item>
       <item quantity="other"><xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> વિજેટ</item>
@@ -99,7 +97,8 @@
     <string name="folder_name_format_exact" msgid="8626242716117004803">"ફોલ્ડર: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> આઇટમ"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"ફોલ્ડર: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> કે વધુ આઇટમ"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"વૉલપેપર"</string>
-    <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"શૈલીઓ અને વૉલપેપર"</string>
+    <!-- no translation found for styles_wallpaper_button_text (8216961355289236794) -->
+    <skip />
     <string name="settings_button_text" msgid="8873672322605444408">"હોમ સેટિંગ"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"તમારા વ્યવસ્થાપક દ્વારા અક્ષમ કરેલ"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"હોમ સ્ક્રીનને ફેરવવાની મંજૂરી આપો"</string>

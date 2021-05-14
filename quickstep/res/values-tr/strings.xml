@@ -47,24 +47,38 @@
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Tahmin edilen uygulama: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"Ekranın en solundan kaydırdığınızdan emin olun."</string>
     <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"Sol kenardan ekranın ortasına doğru kaydırıp bıraktığınızdan emin olun."</string>
-    <string name="back_gesture_feedback_complete_left_edge" msgid="3220478647881674266">"İşte oldu. Şimdi sağ kenardan kaydırmayı deneyin."</string>
+    <!-- no translation found for back_gesture_feedback_title_complete_left_edge (1381455921760094003) -->
+    <skip />
+    <!-- no translation found for back_gesture_feedback_subtitle_complete_left_edge (8106594510099968430) -->
+    <skip />
     <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"Ekranın en sağından kaydırdığınızdan emin olun."</string>
     <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"Sağ kenardan ekranın ortasına doğru kaydırıp bıraktığınızdan emin olun."</string>
-    <string name="back_gesture_feedback_complete" msgid="7261221999760772210">"Geri dön hareketini tamamladınız. Sırada, Ana ekrana gitmeyi öğrenmek var."</string>
+    <!-- no translation found for back_gesture_feedback_complete_with_follow_up (8653374779579748392) -->
+    <skip />
+    <!-- no translation found for back_gesture_feedback_complete_without_follow_up (6405649621667113830) -->
+    <skip />
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Ekranın alt kısmına çok yakın bir şekilde kaydırmadığınızdan emin olun."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Geri hareketinin hassasiyetini değiştirmek için Ayarlar\'a gidin"</string>
-    <string name="back_gesture_intro_title" msgid="19551256430224428">"Geri dönmek için kaydırın"</string>
-    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Son ekrana geri gitmek için sol veya sağ kenardan ekranın ortasına doğru kaydırın."</string>
+    <!-- no translation found for back_gesture_intro_title (5538727561353262952) -->
+    <skip />
+    <!-- no translation found for back_gesture_intro_subtitle (8139048712004626940) -->
+    <skip />
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Ekranın alt kenarından yukarı kaydırdığınızdan emin olun."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Bırakmadan önce parmağınızı duraklatmadığınızdan emin olun."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Düz bir şekilde yukarı kaydırdığınızdan emin olun."</string>
-    <string name="home_gesture_feedback_complete" msgid="2324789183070815517">"Ana ekrana git hareketini tamamladınız. Sırada, uygulamalar arasında geçiş yapmayı öğrenmek var."</string>
+    <!-- no translation found for home_gesture_feedback_complete_with_follow_up (1427872029729605034) -->
+    <skip />
+    <!-- no translation found for home_gesture_feedback_complete_without_follow_up (8049099486868933882) -->
+    <skip />
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Ana ekrana gitmek için kaydırma"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Ekranın alt kısmından yukarıya doğru kaydırın. Bu hareket sizi her zaman Ana ekrana götürür."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Ekranın alt kenarından yukarı kaydırdığınızdan emin olun."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Bırakmadan önce pencereyi daha uzun süre tutmayı deneyin."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Düz bir şekilde yukarı kaydırıp ardından parmağınızı duraklattığınızdan emin olun."</string>
-    <string name="overview_gesture_feedback_complete" msgid="5477014491632199169">"Uygulamalar arasında geçiş yapma hareketini tamamladınız. Telefonunuzu kullanmaya hazırsınız."</string>
+    <!-- no translation found for overview_gesture_feedback_complete_with_follow_up (3544611727467765026) -->
+    <skip />
+    <!-- no translation found for overview_gesture_feedback_complete_without_follow_up (3199486203448379152) -->
+    <skip />
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Uygulamalar arasında geçiş yapmak için kaydırma"</string>
     <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"Ekranınızın alt tarafından yukarı doğru kaydırın, tutun ve sonra bırakın."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Hepsi bu kadar"</string>
@@ -74,6 +88,10 @@
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Tekrar deneyin"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Güzel!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Eğitici <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
+    <string name="allset_title" msgid="5021126669778966707">"İşlem tamam!"</string>
+    <string name="allset_hint" msgid="459504134589971527">"Ana ekrana gitmek için yukarı kaydırın"</string>
+    <string name="allset_description" msgid="6350320429953234580">"Telefonunuzu kullanmaya hazırsınız"</string>
+    <string name="allset_navigation_settings" msgid="417773244979225071"><annotation id="link">"Erişilebilirlik için gezinme ayarları"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Paylaş"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Ekran görüntüsü"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Uygulamanız veya kuruluşunuz bu işleme izin vermiyor"</string>

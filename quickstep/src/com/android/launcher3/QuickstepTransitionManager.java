@@ -491,7 +491,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             List<View> viewsToAnimate = new ArrayList<>();
 
             Workspace workspace = mLauncher.getWorkspace();
-            workspace.getVisiblePages().forEach(
+            workspace.forEachVisiblePage(
                     view -> viewsToAnimate.add(((CellLayout) view).getShortcutsAndWidgets()));
 
             viewsToAnimate.add(mLauncher.getHotseat());
@@ -783,7 +783,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         final FloatingWidgetView floatingView = FloatingWidgetView.getFloatingWidgetView(mLauncher,
                 v, widgetBackgroundBounds,
                 new Size(windowTargetBounds.width(), windowTargetBounds.height()),
-                finalWindowRadius);
+                finalWindowRadius, appTargetsAreTranslucent);
         final float initialWindowRadius = supportsRoundedCornersOnWindows(mLauncher.getResources())
                 ? floatingView.getInitialCornerRadius() : 0;
 
@@ -1260,20 +1260,19 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             if (launchingFromWidget) {
                 composeWidgetLaunchAnimator(anim, (LauncherAppWidgetHostView) mV, appTargets,
                         wallpaperTargets, nonAppTargets);
+                // TODO(b/169042867): jank monitoring instrumentation
             } else if (launchingFromRecents) {
                 composeRecentsLaunchAnimator(anim, mV, appTargets, wallpaperTargets, nonAppTargets,
                         launcherClosing);
+                addCujInstrumentation(
+                        anim, InteractionJankMonitorWrapper.CUJ_APP_LAUNCH_FROM_RECENTS);
             } else if (launchingFromTaskbar) {
                 // TODO
             } else {
                 composeIconLaunchAnimator(anim, mV, appTargets, wallpaperTargets, nonAppTargets,
                         launcherClosing);
+                addCujInstrumentation(anim, InteractionJankMonitorWrapper.CUJ_APP_LAUNCH_FROM_ICON);
             }
-
-            addCujInstrumentation(anim,
-                    launchingFromRecents
-                            ? InteractionJankMonitorWrapper.CUJ_APP_LAUNCH_FROM_RECENTS
-                            : InteractionJankMonitorWrapper.CUJ_APP_LAUNCH_FROM_ICON);
 
             if (launcherClosing) {
                 anim.addListener(mForceInvisibleListener);

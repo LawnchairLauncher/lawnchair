@@ -99,16 +99,8 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             DeviceProfile dp, Context context, Rect outRect,
             PagedOrientationHandler orientationHandler);
 
-    public void onSwipeUpToRecentsComplete() {
-        // Re apply state in case we did something funky during the transition.
-        ACTIVITY_TYPE activity = getCreatedActivity();
-        if (activity == null) {
-            return;
-        }
-        activity.getStateManager().reapplyState();
-    }
-
-    public abstract void onSwipeUpToHomeComplete(RecentsAnimationDeviceState deviceState);
+    /** Called when the animation to home has fully settled. */
+    public void onSwipeUpToHomeComplete(RecentsAnimationDeviceState deviceState) {}
 
     public abstract void onAssistantVisibilityChanged(float visibility);
 

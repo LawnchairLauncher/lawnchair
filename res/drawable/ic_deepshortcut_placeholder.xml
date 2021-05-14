@@ -15,6 +15,6 @@
      limitations under the License.
 -->
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
-    <background android:drawable="?attr/popupColorSecondary"/>
-    <foreground android:drawable="?attr/popupColorSecondary"/>
+    <background android:drawable="?attr/popupColorPrimary"/>
+    <foreground android:drawable="?attr/popupColorPrimary"/>
 </adaptive-icon>

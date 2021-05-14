@@ -99,13 +99,15 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
                 config.getInterpolator(ANIM_OVERVIEW_TRANSLATE_X, LINEAR));
         setter.setFloat(mRecentsView, ADJACENT_PAGE_VERTICAL_OFFSET, scaleAndOffset[2],
                 config.getInterpolator(ANIM_OVERVIEW_TRANSLATE_Y, LINEAR));
+        setter.setFloat(mRecentsView, TASK_SECONDARY_TRANSLATION, 0f,
+                config.getInterpolator(ANIM_OVERVIEW_TRANSLATE_Y, LINEAR));
         PagedOrientationHandler orientationHandler =
                 ((RecentsView) mLauncher.getOverviewPanel()).getPagedOrientationHandler();
         FloatProperty taskViewsFloat = orientationHandler.getSplitSelectTaskOffset(
                 TASK_PRIMARY_SPLIT_TRANSLATION, TASK_SECONDARY_SPLIT_TRANSLATION,
                 mLauncher.getDeviceProfile());
         setter.setFloat(mRecentsView, taskViewsFloat,
-                toState.getOverviewSecondaryTranslation(mLauncher), LINEAR);
+                toState.getSplitSelectTranslation(mLauncher), LINEAR);
 
         setter.setFloat(mRecentsView, getContentAlphaProperty(), toState.overviewUi ? 1 : 0,
                 config.getInterpolator(ANIM_OVERVIEW_FADE, AGGRESSIVE_EASE_IN_OUT));

@@ -16,7 +16,6 @@
 
 package com.android.quickstep.util;
 
-import static android.util.DisplayMetrics.DENSITY_DEVICE_STABLE;
 import static android.view.OrientationEventListener.ORIENTATION_UNKNOWN;
 import static android.view.Surface.ROTATION_0;
 import static android.view.Surface.ROTATION_180;
@@ -31,7 +30,6 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.PointF;
@@ -46,7 +44,6 @@ import androidx.annotation.NonNull;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.PagedOrientationHandler;
@@ -67,7 +64,8 @@ import java.util.function.IntConsumer;
  * This class has initial default state assuming the device and foreground app have
  * no ({@link Surface#ROTATION_0} rotation.
  */
-public final class RecentsOrientedState implements SharedPreferences.OnSharedPreferenceChangeListener {
+public final class RecentsOrientedState implements
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String TAG = "RecentsOrientedState";
     private static final boolean DEBUG = false;
@@ -125,6 +123,7 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
 
     private int mFlags;
     private int mPreviousRotation = ROTATION_0;
+    private boolean mListenersInitialized = false;
 
     // Combined int which encodes the full state.
     private int mStateId = 0;
@@ -152,16 +151,29 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
         mFlags = sizeStrategy.rotationSupportedByActivity
                 ? FLAG_MULTIPLE_ORIENTATION_SUPPORTED_BY_ACTIVITY : 0;
 
-        Resources res = context.getResources();
-        int originalSmallestWidth = res.getConfiguration().smallestScreenWidthDp
-                * res.getDisplayMetrics().densityDpi / DENSITY_DEVICE_STABLE;
-        if (originalSmallestWidth < 600 && !mContext.getResources().getBoolean(
-                R.bool.allow_rotation)) {
-            mFlags |= FLAG_MULTIPLE_ORIENTATION_SUPPORTED_BY_DENSITY;
-        }
         mFlags |= FLAG_SWIPE_UP_NOT_RUNNING;
         mSettingsCache = SettingsCache.INSTANCE.get(mContext);
         initFlags();
+    }
+
+    /**
+     * Sets the device profile for the current state.
+     */
+    public void setDeviceProfile(DeviceProfile deviceProfile) {
+        boolean oldMultipleOrientationsSupported = isMultipleOrientationSupportedByDevice();
+        setFlag(FLAG_MULTIPLE_ORIENTATION_SUPPORTED_BY_DENSITY, !deviceProfile.allowRotation);
+        if (mListenersInitialized) {
+            boolean newMultipleOrientationsSupported = isMultipleOrientationSupportedByDevice();
+            // If isMultipleOrientationSupportedByDevice is changed, init or destroy listeners
+            // accordingly.
+            if (newMultipleOrientationsSupported != oldMultipleOrientationsSupported) {
+                if (newMultipleOrientationsSupported) {
+                    initMultipleOrientationListeners();
+                } else {
+                    destroyMultipleOrientationListeners();
+                }
+            }
+        }
     }
 
     /**
@@ -287,14 +299,24 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
         updateHomeRotationSetting();
     }
 
+    private void initMultipleOrientationListeners() {
+        mSharedPrefs.registerOnSharedPreferenceChangeListener(this);
+        mSettingsCache.register(ROTATION_SETTING_URI, mRotationChangeListener);
+    }
+
+    private void destroyMultipleOrientationListeners() {
+        mSharedPrefs.unregisterOnSharedPreferenceChangeListener(this);
+        mSettingsCache.unregister(ROTATION_SETTING_URI, mRotationChangeListener);
+    }
+
     /**
      * Initializes any system values and registers corresponding change listeners. It must be
      * paired with {@link #destroyListeners()} call
      */
     public void initListeners() {
+        mListenersInitialized = true;
         if (isMultipleOrientationSupportedByDevice()) {
-            mSharedPrefs.registerOnSharedPreferenceChangeListener(this);
-            mSettingsCache.register(ROTATION_SETTING_URI, mRotationChangeListener);
+            initMultipleOrientationListeners();
         }
         initFlags();
     }
@@ -303,9 +325,9 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
      * Unregisters any previously registered listeners.
      */
     public void destroyListeners() {
+        mListenersInitialized = false;
         if (isMultipleOrientationSupportedByDevice()) {
-            mSharedPrefs.unregisterOnSharedPreferenceChangeListener(this);
-            mSettingsCache.unregister(ROTATION_SETTING_URI, mRotationChangeListener);
+            destroyMultipleOrientationListeners();
         }
         setRotationWatcherEnabled(false);
     }

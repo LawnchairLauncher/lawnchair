@@ -35,8 +35,6 @@ import android.util.Property;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 
-import androidx.core.graphics.ColorUtils;
-
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.R;
@@ -80,6 +78,8 @@ public class FolderAnimationManager {
     private final PreviewItemDrawingParams mTmpParams = new PreviewItemDrawingParams(0, 0, 0, 0);
     private final FolderGridOrganizer mPreviewVerifier;
 
+    private ObjectAnimator mBgColorAnimator;
+
     public FolderAnimationManager(Folder folder, boolean isOpening) {
         mFolder = folder;
         mContent = folder.mContent;
@@ -105,6 +105,12 @@ public class FolderAnimationManager {
                 R.interpolator.large_folder_preview_item_close_interpolator);
     }
 
+    /**
+     * Returns the animator that changes the background color.
+     */
+    public ObjectAnimator getBgColorAnimator() {
+        return mBgColorAnimator;
+    }
 
     /**
      * Prepares the Folder for animating between open / closed states.
@@ -162,10 +168,15 @@ public class FolderAnimationManager {
         final float yDistance = initialY - lp.y;
 
         // Set up the Folder background.
-        final int finalColor = ColorUtils.setAlphaComponent(
-                Themes.getAttrColor(mContext, R.attr.folderFillColor), 255);
+        final int finalColor;
+        int folderFillColor = Themes.getAttrColor(mContext, R.attr.folderFillColor);
+        if (mIsOpening) {
+            finalColor = folderFillColor;
+        } else {
+            finalColor = mFolderBackground.getColor().getDefaultColor();
+        }
         final int initialColor = setColorAlphaBound(
-                finalColor, mPreviewBackground.getBackgroundAlpha());
+                folderFillColor, mPreviewBackground.getBackgroundAlpha());
         mFolderBackground.mutate();
         mFolderBackground.setColor(mIsOpening ? initialColor : finalColor);
 
@@ -193,11 +204,12 @@ public class FolderAnimationManager {
             play(a, anim);
         }
 
+        mBgColorAnimator = getAnimator(mFolderBackground, "color", initialColor, finalColor);
+        play(a, mBgColorAnimator);
         play(a, getAnimator(mFolder, View.TRANSLATION_X, xDistance, 0f));
         play(a, getAnimator(mFolder, View.TRANSLATION_Y, yDistance, 0f));
         play(a, getAnimator(mFolder.mContent, SCALE_PROPERTY, initialScale, finalScale));
         play(a, getAnimator(mFolder.mFooter, SCALE_PROPERTY, initialScale, finalScale));
-        play(a, getAnimator(mFolderBackground, "color", initialColor, finalColor));
         play(a, mFolderIcon.mFolderName.createTextAlphaAnimator(!mIsOpening));
         play(a, getShape().createRevealAnimator(
                 mFolder, startRect, endRect, finalRadius, !mIsOpening));
@@ -409,7 +421,7 @@ public class FolderAnimationManager {
                 : ObjectAnimator.ofFloat(view, property, v2, v1);
     }
 
-    private Animator getAnimator(GradientDrawable drawable, String property, int v1, int v2) {
+    private ObjectAnimator getAnimator(GradientDrawable drawable, String property, int v1, int v2) {
         return mIsOpening
                 ? ObjectAnimator.ofArgb(drawable, property, v1, v2)
                 : ObjectAnimator.ofArgb(drawable, property, v2, v1);

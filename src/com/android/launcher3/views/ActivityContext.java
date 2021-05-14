@@ -23,7 +23,9 @@ import android.view.View.AccessibilityDelegate;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.dot.DotInfo;
+import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.util.ViewCache;
 
 /**
  * An interface to be used along with a context for various activities in Launcher. This allows a
@@ -85,6 +87,17 @@ public interface ActivityContext {
     BaseDragLayer getDragLayer();
 
     DeviceProfile getDeviceProfile();
+
+    default ViewCache getViewCache() {
+        return new ViewCache();
+    }
+
+    /**
+     * Controller for supporting item drag-and-drop
+     */
+    default <T extends DragController> T getDragController() {
+        return null;
+    }
 
     /**
      * Returns the ActivityContext associated with the given Context.

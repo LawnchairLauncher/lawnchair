@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 
 /**
@@ -181,11 +182,10 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
      * Sets results list for search
      */
     public boolean setSearchResults(ArrayList<AdapterItem> results) {
-        if (results == null || mSearchResults != results) {
-            boolean same = mSearchResults != null && mSearchResults.equals(results);
+        if (!Objects.equals(results, mSearchResults)) {
             mSearchResults = results;
             updateAdapterItems();
-            return !same;
+            return true;
         }
         return false;
     }

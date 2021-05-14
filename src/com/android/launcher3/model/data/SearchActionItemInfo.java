@@ -94,11 +94,6 @@ public class SearchActionItemInfo extends ItemInfoWithIcon {
                     "SearchActionItemInfo can only have either an Intent or a PendingIntent");
         }
         mIntent = intent;
-        // bandage fix for just one week
-        if (intent != null && "com.android.server.telecom".equals(intent.getPackage())) {
-            intent.setAction(Intent.ACTION_DIAL);
-            intent.setPackage(null);
-        }
     }
 
     public PendingIntent getPendingIntent() {

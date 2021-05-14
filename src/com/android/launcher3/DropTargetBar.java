@@ -25,6 +25,7 @@ import android.animation.TimeInterpolator;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewDebug;
@@ -114,6 +115,7 @@ public class DropTargetBar extends FrameLayout
         }
         setLayoutParams(lp);
         for (ButtonDropTarget button : mDropTargets) {
+            button.setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.dropTargetTextSizePx);
             button.setToolTipLocation(tooltipLocation);
         }
     }

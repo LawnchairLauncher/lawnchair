@@ -76,6 +76,10 @@ LOCAL_PACKAGE_NAME := Launcher3Tests
 
 LOCAL_INSTRUMENTATION_FOR := Launcher3
 
+LOCAL_TEST_CONFIG := Launcher3Tests.xml
+
+LOCAL_COMPATIBILITY_SUPPORT_FILES := $(call intermediates-dir-for,APPS,Launcher3)/package.apk:Launcher3.apk
+
 LOCAL_LICENSE_KINDS := SPDX-license-identifier-Apache-2.0
 LOCAL_LICENSE_CONDITIONS := notice
 LOCAL_NOTICE_FILE := $(LOCAL_PATH)/../NOTICE

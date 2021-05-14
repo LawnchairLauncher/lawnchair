@@ -23,6 +23,7 @@ import static com.android.launcher3.LauncherState.NO_OFFSET;
 import static com.android.launcher3.util.DisplayController.CHANGE_ACTIVE_SCREEN;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
+import static com.android.quickstep.util.NavigationModeFeatureFlag.LIVE_TILE;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY;
 
 import android.animation.AnimatorSet;
@@ -187,6 +188,15 @@ public abstract class BaseQuickstepLauncher extends Launcher
         // Remove the snapshot because the content view may have obvious changes.
         UI_HELPER_EXECUTOR.execute(
                 () -> ActivityManagerWrapper.getInstance().invalidateHomeTaskSnapshot(this));
+    }
+
+    @Override
+    protected void onScreenOff() {
+        super.onScreenOff();
+        if (LIVE_TILE.get()) {
+            RecentsView recentsView = getOverviewPanel();
+            recentsView.finishRecentsAnimation(true /* toRecents */, null);
+        }
     }
 
     @Override

@@ -47,6 +47,11 @@ final class BackGestureTutorialController extends TutorialController {
     }
 
     @Override
+    protected int getMockAppTaskThumbnailResId() {
+        return R.drawable.mock_conversation;
+    }
+
+    @Override
     public void onBackGestureAttempted(BackGestureResult result) {
         switch (mTutorialType) {
             case RIGHT_EDGE_BACK_NAVIGATION:
@@ -67,11 +72,14 @@ final class BackGestureTutorialController extends TutorialController {
     private void handleAttemptFromRight(BackGestureResult result) {
         switch (result) {
             case BACK_COMPLETED_FROM_RIGHT:
+                mTutorialFragment.releaseGestureVideoView();
                 hideFeedback(true);
                 mFakeTaskView.setBackground(AppCompatResources.getDrawable(mContext,
-                        R.drawable.sandbox_fake_google_search));
-                showRippleEffect(null);
-                showFeedback(R.string.back_gesture_feedback_complete, true);
+                        R.drawable.mock_conversations_list));
+                int subtitleResId = mTutorialFragment.getNumSteps() == 1
+                        ? R.string.back_gesture_feedback_complete_without_follow_up
+                        : R.string.back_gesture_feedback_complete_with_follow_up;
+                showFeedback(subtitleResId, true);
                 break;
             case BACK_CANCELLED_FROM_RIGHT:
                 showFeedback(R.string.back_gesture_feedback_cancelled_right_edge);
@@ -90,11 +98,13 @@ final class BackGestureTutorialController extends TutorialController {
     private void handleAttemptFromLeft(BackGestureResult result) {
         switch (result) {
             case BACK_COMPLETED_FROM_LEFT:
+                mTutorialFragment.releaseGestureVideoView();
                 hideFeedback(true);
                 mFakeTaskView.setBackground(AppCompatResources.getDrawable(mContext,
-                        R.drawable.sandbox_fake_google_search));
-                showRippleEffect(null);
-                showFeedback(R.string.back_gesture_feedback_complete_left_edge,
+                        R.drawable.mock_conversations_list));
+                showFeedback(
+                        R.string.back_gesture_feedback_title_complete_left_edge,
+                        R.string.back_gesture_feedback_subtitle_complete_left_edge,
                         () -> mTutorialFragment.changeController(RIGHT_EDGE_BACK_NAVIGATION));
                 break;
             case BACK_CANCELLED_FROM_LEFT:

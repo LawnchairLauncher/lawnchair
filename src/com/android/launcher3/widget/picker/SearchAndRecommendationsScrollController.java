@@ -48,6 +48,8 @@ final class SearchAndRecommendationsScrollController implements
 
     private WidgetsRecyclerView mCurrentRecyclerView;
 
+    private OnContentChangeListener mOnContentChangeListener = () -> applyVerticalTransition();
+
     /**
      * The vertical distance, in pixels, until the search is pinned at the top of the screen when
      * the user scrolls down the recycler view.
@@ -82,19 +84,21 @@ final class SearchAndRecommendationsScrollController implements
         mViewHolder.mContainer.setSearchAndRecommendationScrollController(this);
         mSearchAndRecommendationViewParent = (View) mViewHolder.mContainer.getParent();
         mPrimaryRecyclerView = primaryRecyclerView;
-        mCurrentRecyclerView = mPrimaryRecyclerView;
         mWorkRecyclerView = workRecyclerView;
         mSearchRecyclerView = searchRecyclerView;
         mPrimaryWorkTabsView = personalWorkTabsView;
         mPrimaryWorkViewPager = primaryWorkViewPager;
-        mCurrentRecyclerView = mPrimaryRecyclerView;
         mTabsHeight = tabsHeight;
+        setCurrentRecyclerView(mPrimaryRecyclerView);
     }
 
     /** Sets the current active {@link WidgetsRecyclerView}. */
     public void setCurrentRecyclerView(WidgetsRecyclerView currentRecyclerView) {
+        if (mCurrentRecyclerView != null) {
+            mCurrentRecyclerView.setOnContentChangeListener(null);
+        }
         mCurrentRecyclerView = currentRecyclerView;
-        mCurrentRecyclerView = currentRecyclerView;
+        mCurrentRecyclerView.setOnContentChangeListener(mOnContentChangeListener);
         mViewHolder.mHeaderTitle.setTranslationY(0);
         mViewHolder.mRecommendedWidgetsTable.setTranslationY(0);
         mViewHolder.mSearchBar.setTranslationY(0);
@@ -216,12 +220,16 @@ final class SearchAndRecommendationsScrollController implements
         return hasMarginOrPaddingUpdated;
     }
 
+    @Override
+    public void onScrollChanged() {
+        applyVerticalTransition();
+    }
+
     /**
      * Changes the displacement of collapsible views (e.g. title & widget recommendations) and fixed
-     * views (e.g. recycler views, tabs) upon scrolling.
+     * views (e.g. recycler views, tabs) upon scrolling / content changes in the recycler view.
      */
-    @Override
-    public void onThumbOffsetYChanged(int unused) {
+    private void applyVerticalTransition() {
         // Always use the recycler view offset because fast scroller offset has a different scale.
         int recyclerViewYOffset = mCurrentRecyclerView.getCurrentScrollY();
         if (recyclerViewYOffset < 0) return;
@@ -298,5 +306,14 @@ final class SearchAndRecommendationsScrollController implements
         MarginLayoutParams marginLayoutParams = (MarginLayoutParams) view.getLayoutParams();
         return view.getMeasuredHeight() + marginLayoutParams.bottomMargin
                 + marginLayoutParams.topMargin;
+    }
+
+    /**
+     * A listener to be notified when there is a content change in the recycler view that may affect
+     * the relative position of the search and recommendation container.
+     */
+    public interface OnContentChangeListener {
+        /** Notifies a content change in the recycler view. */
+        void onContentChanged();
     }
 }

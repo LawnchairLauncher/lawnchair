@@ -170,9 +170,9 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
         public void checkPermissions() {
             ContentResolver contentResolver = mApplicationContext.getContentResolver();
             boolean structureEnabled = Settings.Secure.getInt(contentResolver,
-                    Settings.Secure.ASSIST_STRUCTURE_ENABLED, 0) != 0;
+                    Settings.Secure.ASSIST_STRUCTURE_ENABLED, 1) != 0;
             boolean screenshotEnabled = Settings.Secure.getInt(contentResolver,
-                    Settings.Secure.ASSIST_SCREENSHOT_ENABLED, 0) != 0;
+                    Settings.Secure.ASSIST_SCREENSHOT_ENABLED, 1) != 0;
             mAssistPermissionsEnabled = structureEnabled && screenshotEnabled;
         }
 

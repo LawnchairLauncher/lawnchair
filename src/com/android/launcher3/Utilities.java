@@ -465,9 +465,14 @@ public final class Utilities {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
 
+
     public static int pxFromSp(float size, DisplayMetrics metrics) {
-        return (int) Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
-                size, metrics));
+        return pxFromSp(size, metrics, 1f);
+    }
+
+    public static int pxFromSp(float size, DisplayMetrics metrics, float scale) {
+        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
+                size, metrics) * scale);
     }
 
     public static String createDbSelectionQuery(String columnName, IntArray values) {

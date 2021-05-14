@@ -78,18 +78,9 @@ public class TwoButtonNavbarTouchController extends AbstractStateChangeTouchCont
             return true;
         }
         if (AbstractFloatingView.getTopOpenView(mLauncher) != null) {
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.TWO_BUTTON_NORMAL_NOT_OVERVIEW,
-                        "Didn't intercept touch due to top view: "
-                                + AbstractFloatingView.getTopOpenView(mLauncher));
-            }
             return false;
         }
         if ((ev.getEdgeFlags() & EDGE_NAV_BAR) == 0) {
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.TWO_BUTTON_NORMAL_NOT_OVERVIEW,
-                        "Didn't intercept touch because event wasn't from nav bar");
-            }
             return false;
         }
         if (!mIsTransposed && mLauncher.isInState(OVERVIEW)) {
@@ -101,10 +92,6 @@ public class TwoButtonNavbarTouchController extends AbstractStateChangeTouchCont
     @Override
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
         boolean intercept = super.onControllerInterceptTouchEvent(ev);
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.TWO_BUTTON_NORMAL_NOT_OVERVIEW,
-                    "2 button touch controller intercept touch? " + intercept);
-        }
         return intercept;
     }
 
@@ -123,10 +110,6 @@ public class TwoButtonNavbarTouchController extends AbstractStateChangeTouchCont
     @Override
     protected void onReinitToState(LauncherState newToState) {
         super.onReinitToState(newToState);
-
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.TWO_BUTTON_NORMAL_NOT_OVERVIEW, "onReinitToState: " + newToState);
-        }
     }
 
     @Override
@@ -175,9 +158,6 @@ public class TwoButtonNavbarTouchController extends AbstractStateChangeTouchCont
     @Override
     protected void onSwipeInteractionCompleted(LauncherState targetState) {
         super.onSwipeInteractionCompleted(targetState);
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.TWO_BUTTON_NORMAL_NOT_OVERVIEW, "Reached state: " + targetState);
-        }
         if (!mIsTransposed) {
             mContinuousTouchCount++;
         }

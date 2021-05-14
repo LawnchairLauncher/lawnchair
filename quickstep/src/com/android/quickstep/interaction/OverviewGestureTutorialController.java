@@ -49,6 +49,11 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
     }
 
     @Override
+    protected int getMockAppTaskThumbnailResId() {
+        return R.drawable.mock_conversations_list;
+    }
+
+    @Override
     public void onBackGestureAttempted(BackGestureResult result) {
         switch (mTutorialType) {
             case OVERVIEW_NAVIGATION:
@@ -90,6 +95,7 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
                         showFeedback(R.string.overview_gesture_feedback_swipe_too_far_from_edge);
                         break;
                     case OVERVIEW_GESTURE_COMPLETED:
+                        mTutorialFragment.releaseGestureVideoView();
                         PendingAnimation anim = new PendingAnimation(300);
                         anim.setFloat(mTaskViewSwipeUpAnimation
                                 .getCurrentShift(), AnimatedFloat.VALUE, 1, ACCEL);
@@ -97,7 +103,10 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
                         animset.start();
                         mRunningWindowAnim = SwipeUpAnimationLogic.RunningWindowAnim.wrap(animset);
                         onMotionPaused(true /*arbitrary value*/);
-                        showFeedback(R.string.overview_gesture_feedback_complete, true);
+                        int subtitleResId = mTutorialFragment.getNumSteps() == 1
+                                ? R.string.overview_gesture_feedback_complete_without_follow_up
+                                : R.string.overview_gesture_feedback_complete_with_follow_up;
+                        showFeedback(subtitleResId, true);
                         break;
                     case HOME_OR_OVERVIEW_NOT_STARTED_WRONG_SWIPE_DIRECTION:
                     case HOME_OR_OVERVIEW_CANCELLED:

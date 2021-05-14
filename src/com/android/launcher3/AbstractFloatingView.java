@@ -39,6 +39,7 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
+import com.android.launcher3.widget.LocalColorExtractor;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -108,12 +109,21 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
 
     protected boolean mIsOpen;
 
+    // Index used to get background color when using local wallpaper color extraction.
+    protected int mColorExtractionIndex;
+
     public AbstractFloatingView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init(context);
     }
 
     public AbstractFloatingView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init(context);
+    }
+
+    private void init(Context context) {
+        mColorExtractionIndex = LocalColorExtractor.getColorIndex(context);
     }
 
     /**

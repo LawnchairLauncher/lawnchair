@@ -65,6 +65,17 @@
         android:scaleType="fitXY"
         android:visibility="gone"/>
 
+    <ImageView
+        android:id="@+id/gesture_tutorial_gesture_video"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:scaleType="fitXY"
+        android:visibility="gone"/>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/gesture_tutorial_fragment_feedback_view"
         android:layout_width="match_parent"

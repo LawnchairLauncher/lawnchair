@@ -172,14 +172,6 @@ public class PopupContainerWithArrow<T extends StatefulActivity<LauncherState>>
         return false;
     }
 
-    @Override
-    protected void setChildColor(View v, int color) {
-        super.setChildColor(v, color);
-        if (v.getId() == R.id.notification_container && mNotificationItemView != null) {
-            mNotificationItemView.updateBackgroundColor(color);
-        }
-    }
-
     /**
      * Returns true if we can show the container.
      */

@@ -23,6 +23,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TableLayout;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener;
@@ -35,6 +37,7 @@ import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.model.WidgetsListContentEntry;
 import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
 import com.android.launcher3.widget.model.WidgetsListSearchHeaderEntry;
+import com.android.launcher3.widget.picker.SearchAndRecommendationsScrollController.OnContentChangeListener;
 
 /**
  * The widgets recycler view.
@@ -50,6 +53,7 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
     private boolean mTouchDownOnScroller;
     private HeaderViewDimensionsProvider mHeaderViewDimensionsProvider;
     private int mLastVisibleWidgetContentTableHeight = 0;
+    @Nullable private OnContentChangeListener mOnContentChangeListener;
 
     public WidgetsRecyclerView(Context context) {
         this(context, null);
@@ -84,6 +88,22 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
     public void setAdapter(Adapter adapter) {
         super.setAdapter(adapter);
         mAdapter = (WidgetsListAdapter) adapter;
+    }
+
+    @Override
+    public void onChildAttachedToWindow(@NonNull View child) {
+        super.onChildAttachedToWindow(child);
+        if (mOnContentChangeListener != null) {
+            mOnContentChangeListener.onContentChanged();
+        }
+    }
+
+    @Override
+    public void onChildDetachedFromWindow(@NonNull View child) {
+        super.onChildDetachedFromWindow(child);
+        if (mOnContentChangeListener != null) {
+            mOnContentChangeListener.onContentChanged();
+        }
     }
 
     /**
@@ -207,6 +227,25 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
         mHeaderViewDimensionsProvider = headerViewDimensionsProvider;
     }
 
+    @Override
+    public void scrollToTop() {
+        if (mScrollbar != null) {
+            mScrollbar.reattachThumbToScroll();
+        }
+
+        if (getLayoutManager() instanceof LinearLayoutManager) {
+            if (getCurrentScrollY() == 0) {
+                // We are at the top, so don't scrollToPosition (would cause unnecessary relayout).
+                return;
+            }
+        }
+        scrollToPosition(0);
+    }
+
+    public void setOnContentChangeListener(@Nullable OnContentChangeListener listener) {
+        mOnContentChangeListener = listener;
+    }
+
     /**
      * Returns the sum of the height, in pixels, of this list adapter's items from index 0 until
      * {@code untilIndex}.
@@ -243,20 +282,5 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
          * {@link WidgetsRecyclerView}.
          */
         int getHeaderViewHeight();
-    }
-
-    @Override
-    public void scrollToTop() {
-        if (mScrollbar != null) {
-            mScrollbar.reattachThumbToScroll();
-        }
-
-        if (getLayoutManager() instanceof LinearLayoutManager) {
-            if (getCurrentScrollY() == 0) {
-                // We are at the top, so don't scrollToPosition (would cause unnecessary relayout).
-                return;
-            }
-        }
-        scrollToPosition(0);
     }
 }

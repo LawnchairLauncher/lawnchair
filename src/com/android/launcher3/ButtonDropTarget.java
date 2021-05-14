@@ -74,7 +74,6 @@ public abstract class ButtonDropTarget extends TextView
 
     protected final Launcher mLauncher;
 
-    private int mBottomDragPadding;
     protected DropTargetBar mDropTargetBar;
 
     /** Whether this drop target is active for the current drag */
@@ -103,7 +102,6 @@ public abstract class ButtonDropTarget extends TextView
         mLauncher = Launcher.getLauncher(context);
 
         Resources resources = getResources();
-        mBottomDragPadding = resources.getDimensionPixelSize(R.dimen.drop_target_drag_padding);
         mDragDistanceThreshold = resources.getDimensionPixelSize(R.dimen.drag_distanceThreshold);
     }
 
@@ -276,7 +274,7 @@ public abstract class ButtonDropTarget extends TextView
     @Override
     public void getHitRectRelativeToDragLayer(android.graphics.Rect outRect) {
         super.getHitRect(outRect);
-        outRect.bottom += mBottomDragPadding;
+        outRect.bottom += mLauncher.getDeviceProfile().dropTargetDragPaddingPx;
 
         sTempCords[0] = sTempCords[1] = 0;
         mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(this, sTempCords);

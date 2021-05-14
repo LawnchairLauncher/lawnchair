@@ -16,8 +16,11 @@
 package com.android.launcher3.uioverrides;
 
 import android.app.ActivityOptions;
+import android.app.ActivityTaskManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.os.Build;
+import android.os.RemoteException;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
@@ -50,6 +53,18 @@ class QuickstepInteractionHandler implements RemoteViews.InteractionHandler {
         Pair<Intent, ActivityOptions> options = remoteResponse.getLaunchOptions(hostView);
         ActivityOptionsWrapper activityOptions = mLauncher.getAppTransitionManager()
                 .getActivityLaunchOptions(mLauncher, hostView);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !pendingIntent.isActivity()) {
+            // In the event this pending intent eventually launches an activity, i.e. a trampoline,
+            // use the Quickstep transition animation.
+            try {
+                ActivityTaskManager.getService()
+                        .registerRemoteAnimationForNextActivityStart(
+                                pendingIntent.getCreatorPackage(),
+                                activityOptions.options.getRemoteAnimationAdapter());
+            } catch (RemoteException e) {
+                // Do nothing.
+            }
+        }
         activityOptions.options.setPendingIntentLaunchFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Object itemInfo = hostView.getTag();
         if (itemInfo instanceof ItemInfo) {

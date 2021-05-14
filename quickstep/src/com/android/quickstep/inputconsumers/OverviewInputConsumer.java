@@ -18,6 +18,8 @@ package com.android.quickstep.inputconsumers;
 import static com.android.quickstep.util.NavigationModeFeatureFlag.LIVE_TILE;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
+import android.media.AudioManager;
+import android.media.session.MediaSessionManager;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
@@ -101,6 +103,17 @@ public class OverviewInputConsumer<S extends BaseState<S>, T extends StatefulAct
     @Override
     public void onKeyEvent(KeyEvent ev) {
         if (LIVE_TILE.get()) {
+            switch (ev.getKeyCode()) {
+                case KeyEvent.KEYCODE_VOLUME_DOWN:
+                case KeyEvent.KEYCODE_VOLUME_UP:
+                case KeyEvent.KEYCODE_VOLUME_MUTE:
+                    MediaSessionManager mgr = mActivity.getSystemService(MediaSessionManager.class);
+                    mgr.dispatchVolumeKeyEventAsSystemService(ev,
+                            AudioManager.USE_DEFAULT_STREAM_TYPE);
+                    break;
+                default:
+                    break;
+            }
             mActivity.dispatchKeyEvent(ev);
         }
     }

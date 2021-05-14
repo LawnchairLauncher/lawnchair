@@ -30,7 +30,6 @@ import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -40,6 +39,7 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.SessionCommitReceiver;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.ItemInstallQueue;
 import com.android.launcher3.util.IOUtils;
 import com.android.launcher3.util.IntArray;
@@ -218,7 +218,7 @@ public class InstallSessionHelper {
         if (FeatureFlags.PROMISE_APPS_NEW_INSTALLS.get()
                 && SessionCommitReceiver.isEnabled(mAppContext)
                 && verifySessionInfo(sessionInfo)) {
-            Log.d(LOG, "Adding package name to install queue: "
+            FileLog.d(LOG, "Adding package name to install queue: "
                     + sessionInfo.getAppPackageName());
 
             ItemInstallQueue.INSTANCE.get(mAppContext)
@@ -241,7 +241,7 @@ public class InstallSessionHelper {
         if (sessionInfo != null) {
             Bitmap appIcon = sessionInfo.getAppIcon();
 
-            Log.d(LOG, String.format(
+            FileLog.d(LOG, String.format(
                     "Verifying session info. Valid: %b, Session verified: %b, Install reason valid:"
                             + " %b, App icon: %s, App label: %s, Promise icon added: %b, "
                             + "App installed: %b.",
@@ -254,7 +254,7 @@ public class InstallSessionHelper {
                     new PackageManagerHelper(mAppContext).isAppInstalled(
                             sessionInfo.getAppPackageName(), getUserHandle(sessionInfo))));
         } else {
-            Log.d(LOG, "Verifying session info failed: session info null.");
+            FileLog.d(LOG, "Verifying session info failed: session info null.");
         }
 
         return validSessionInfo;

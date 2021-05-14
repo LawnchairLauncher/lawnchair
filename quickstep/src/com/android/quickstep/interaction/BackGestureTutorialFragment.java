@@ -29,8 +29,16 @@ public class BackGestureTutorialFragment extends TutorialFragment {
     @Override
     Integer getFeedbackVideoResId() {
         return mTutorialType == TutorialType.RIGHT_EDGE_BACK_NAVIGATION
-                ? R.drawable.gesture_tutorial_back_right
-                : R.drawable.gesture_tutorial_back_left;
+                ? R.drawable.gesture_tutorial_motion_back_right
+                : R.drawable.gesture_tutorial_motion_back_left;
+    }
+
+    @Nullable
+    @Override
+    Integer getGestureVideoResId() {
+        return mTutorialType == TutorialType.RIGHT_EDGE_BACK_NAVIGATION
+                ? R.drawable.gesture_tutorial_loop_back_right
+                : R.drawable.gesture_tutorial_loop_back_left;
     }
 
     @Override
