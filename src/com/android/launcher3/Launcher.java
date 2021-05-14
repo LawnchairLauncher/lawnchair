@@ -2801,7 +2801,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
      * @see LauncherState#getOverviewScaleAndOffset(Launcher)
      */
     public float[] getNormalOverviewScaleAndOffset() {
-        return new float[] {NO_SCALE, NO_OFFSET, NO_OFFSET};
+        return new float[] {NO_SCALE, NO_OFFSET};
     }
 
     /**
