@@ -354,6 +354,10 @@ public class StatsLogCompatManager extends StatsLogManager {
     }
 
     private static int getCardinality(LauncherAtom.ItemInfo info) {
+        // TODO(b/187734511): Implement a unified solution for 1x1 widgets in folders/hotseat.
+        if (info.getItemCase().equals(LauncherAtom.ItemInfo.ItemCase.WIDGET)) {
+            return info.getWidget().getWidgetFeatures();
+        }
         switch (info.getContainerInfo().getContainerCase()) {
             case PREDICTED_HOTSEAT_CONTAINER:
                 return info.getContainerInfo().getPredictedHotseatContainer().getCardinality();
