@@ -68,6 +68,9 @@ class PreferenceManager private constructor(context: Context) : BasePreferenceMa
     val ignoreFeedWhitelist = BoolPref("pref_ignoreFeedWhitelist", false)
     val workspaceDt2s = BoolPref("pref_doubleTap2Sleep", true)
 
+    // TODO: Avoid restarting app to apply accent color.
+    val accentColor = IntPref("pref_accentColor", 0, scheduleRestart)
+
     init {
         sp.registerOnSharedPreferenceChangeListener(this)
     }
