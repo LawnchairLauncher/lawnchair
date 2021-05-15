@@ -1514,10 +1514,12 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         if (mIsSwipingPipToHome && mSwipePipToHomeAnimator != null) {
             SystemUiProxy.INSTANCE.get(mContext).stopSwipePipToHome(
                     mSwipePipToHomeAnimator.getComponentName(),
-                    mSwipePipToHomeAnimator.getDestinationBounds());
+                    mSwipePipToHomeAnimator.getDestinationBounds(),
+                    mSwipePipToHomeAnimator.getContentOverlay());
             mRecentsAnimationController.setFinishTaskTransaction(
                     mSwipePipToHomeAnimator.getTaskId(),
-                    mSwipePipToHomeAnimator.getFinishTransaction());
+                    mSwipePipToHomeAnimator.getFinishTransaction(),
+                    mSwipePipToHomeAnimator.getContentOverlay());
             mIsSwipingPipToHome = false;
         }
     }
