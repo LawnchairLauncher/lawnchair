@@ -26,50 +26,32 @@
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Deskargatutako aplikazioa modu seguruan desgaitu da"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Widgetak desgaitu egin dira modu seguruan"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"Lasterbideak ez daude erabilgarri"</string>
-    <string name="home_screen" msgid="5629429142036709174">"Hasierako pantaila"</string>
-    <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Zatitu pantaila"</string>
-    <string name="long_press_widget_to_add" msgid="3587712543577675817">"Eduki sakatuta widget bat mugitzeko."</string>
-    <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Sakatu birritan eta eduki sakatuta widget bat mugitzeko edo ekintza pertsonalizatuak erabiltzeko."</string>
+    <string name="home_screen" msgid="806512411299847073">"Hasierako pantaila"</string>
+    <string name="custom_actions" msgid="3747508247759093328">"Ekintza pertsonalizatuak"</string>
+    <string name="long_press_widget_to_add" msgid="7699152356777458215">"Eduki sakatuta widgeta aukeratzeko."</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Sakatu birritan eta eduki sakatuta widgeta aukeratzeko edo ekintza pertsonalizatuak erabiltzeko."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d zabal eta %2$d luze"</string>
-    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"Eduki sakatuta widgeta hasierako pantailan zehar mugitzeko"</string>
-    <string name="add_to_home_screen" msgid="8631549138215492708">"Gehitu hasierako pantailan"</string>
-    <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
-      <item quantity="other"><xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> widget</item>
-      <item quantity="one"><xliff:g id="WIDGETS_COUNT_0">%1$d</xliff:g> widget</item>
-    </plurals>
-    <plurals name="shortcuts_count" formatted="false" msgid="8080294865447938455">
-      <item quantity="other"><xliff:g id="SHORTCUTS_COUNT_1">%1$d</xliff:g> lasterbide</item>
-      <item quantity="one"><xliff:g id="SHORTCUTS_COUNT_0">%1$d</xliff:g> lasterbide</item>
-    </plurals>
-    <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>: <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
-    <string name="widget_button_text" msgid="2880537293434387943">"Widgetak"</string>
-    <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"Bilatu"</string>
-    <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"Garbitu bilaketa-koadroko testua"</string>
-    <string name="no_widgets_available" msgid="9140948620298620513">"Ez dago widget erabilgarririk"</string>
-    <string name="no_search_results" msgid="6518732304311458580">"Ez dago bilaketa-emaitzarik"</string>
-    <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Pertsonalak"</string>
-    <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Lanekoak"</string>
-    <string name="widget_category_conversations" msgid="8894438636213590446">"Elkarrizketak"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Eduki sakatuta eskuz gehitzeko"</string>
+    <string name="place_automatically" msgid="8064208734425456485">"Gehitu automatikoki"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Bilatu aplikazioetan"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Aplikazioak kargatzen…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Ez da aurkitu \"<xliff:g id="QUERY">%1$s</xliff:g>\" bilaketaren emaitzarik"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Bilatu aplikazio gehiago"</string>
     <string name="label_application" msgid="8531721983832654978">"Aplikazioa"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Jakinarazpenak"</string>
-    <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Eduki sakatuta lasterbide bat mugitzeko."</string>
-    <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Sakatu birritan eta eduki sakatuta lasterbide bat mugitzeko edo ekintza pertsonalizatuak erabiltzeko."</string>
+    <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"Eduki sakatuta lasterbide bat aukeratzeko."</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"Sakatu birritan eta eduki sakatuta lasterbide bat aukeratzeko edo ekintza pertsonalizatuak erabiltzeko."</string>
     <string name="out_of_space" msgid="4691004494942118364">"Hasierako pantaila honetan ez dago toki gehiago."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Ez dago toki gehiago Gogokoak erretiluan"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Aplikazioen zerrenda"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Aplikazio pertsonalen zerrenda"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"Laneko aplikazioen zerrenda"</string>
+    <string name="all_apps_home_button_label" msgid="252062713717058851">"Hasiera"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Kendu"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Desinstalatu"</string>
-    <string name="app_info_drop_target_label" msgid="692894985365717661">"Aplikazioaren informazioa"</string>
+    <string name="app_info_drop_target_label" msgid="692894985365717661">"Aplikazioaren datuak"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Instalatu"</string>
-    <string name="dismiss_prediction_label" msgid="3357562989568808658">"Ez iradoki aplikazioa"</string>
-    <string name="pin_prediction" msgid="4196423321649756498">"Ainguratu iragarpena"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"Instalatu lasterbideak"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Erabiltzaileak ezer egin gabe lasterbideak gehitzeko baimena ematen die aplikazioei."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"Irakurri hasierako ezarpenak eta lasterbideak"</string>
@@ -80,7 +62,7 @@
     <string name="gadget_error_text" msgid="6081085226050792095">"Arazo bat izan da widgeta kargatzean"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"Konfigurazioa"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Sistema-aplikazioa da hau eta ezin da desinstalatu."</string>
-    <string name="folder_hint_text" msgid="5174843001373488816">"Editatu izena"</string>
+    <string name="folder_hint_text" msgid="6617836969016293992">"Izenik gabeko karpeta"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> desgaituta dago"</string>
     <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
       <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g> aplikazioak <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> jakinarazpen ditu</item>
@@ -89,19 +71,19 @@
     <string name="default_scroll_format" msgid="7475544710230993317">"%1$d/%2$d orria"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"%1$d/%2$d hasierako pantaila"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Hasierako pantailaren orri berria"</string>
-    <string name="folder_opened" msgid="94695026776264709">"Karpeta ireki da: <xliff:g id="WIDTH">%1$d</xliff:g> × <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
+    <string name="folder_opened" msgid="94695026776264709">"Karpeta ireki da: <xliff:g id="WIDTH">%1$d</xliff:g> x <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="4625795376335528256">"Karpeta ixteko, sakatu hau"</string>
     <string name="folder_tap_to_rename" msgid="4017685068016979677">"Izen berria gordetzeko, sakatu hau"</string>
     <string name="folder_closed" msgid="4100806530910930934">"Karpeta itxi da"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"Karpetari <xliff:g id="NAME">%1$s</xliff:g> izena eman zaio"</string>
-    <string name="folder_name_format_exact" msgid="8626242716117004803">"<xliff:g id="NAME">%1$s</xliff:g> karpeta (<xliff:g id="SIZE">%2$d</xliff:g> elementu)"</string>
-    <string name="folder_name_format_overflow" msgid="4270108890534995199">"<xliff:g id="NAME">%1$s</xliff:g> karpeta (<xliff:g id="SIZE">%2$d</xliff:g> elementu edo gehiago)"</string>
+    <string name="folder_name_format" msgid="6629239338071103179">"Karpeta: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="widget_button_text" msgid="2880537293434387943">"Widgetak"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Horma-paperak"</string>
-    <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Horma-papera eta estiloa"</string>
+    <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"Estiloak eta horma-paperak"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Hasierako pantailaren ezarpenak"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Administratzaileak desgaitu du"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Eman hasierako pantaila biratzeko baimena"</string>
-    <string name="allow_rotation_desc" msgid="8662546029078692509">"Telefonoa biratzean"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"Telefonoa biratzen denean"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"Jakinarazpen-biribiltxoak"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"Aktibatuta"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"Desaktibatuta"</string>
@@ -109,16 +91,16 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Jakinarazpen-biribiltxoak ikusteko, aktibatu <xliff:g id="NAME">%1$s</xliff:g> aplikazioaren jakinarazpenak"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Aldatu ezarpenak"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Erakutsi jakinarazpen-biribiltxoak"</string>
-    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"Gehitu aplikazioen ikonoak hasierako pantailan"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Gehitu ikonoa hasierako pantailan"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Aplikazio berrien kasuan"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Ezezaguna"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Kendu"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Bilatu"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Aplikazio hau ez dago instalatuta"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Ikono honen aplikazioa ez dago instalatuta. Ikonoa ken dezakezu, edo aplikazioa bilatu eta eskuz instalatu."</string>
-    <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> instalatzen, <xliff:g id="PROGRESS">%2$s</xliff:g> osatuta"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> deskargatzen, <xliff:g id="PROGRESS">%2$s</xliff:g> osatuta"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> instalatzeko zain"</string>
+    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> widgetak"</string>
     <string name="widgets_list" msgid="796804551140113767">"Widget-zerrenda"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"Itxi da widget-zerrenda"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Gehitu hasierako pantailan"</string>
@@ -146,23 +128,15 @@
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Lasterbideak"</string>
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Lasterbideak eta jakinarazpenak"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Baztertu"</string>
-    <string name="accessibility_close" msgid="2277148124685870734">"Itxi"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Baztertu egin da jakinarazpena"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Pertsonalak"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Lanekoak"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Laneko profila"</string>
-    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"Datu pertsonalak bananduta daude eta ez daude laneko aplikazioen artean ikusgai"</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"IKT saileko administratzaileak laneko aplikazioak eta datuak ikus ditzake"</string>
-    <string name="work_profile_edu_next" msgid="8783418929296503629">"Hurrengoa"</string>
-    <string name="work_profile_edu_accept" msgid="6069788082535149071">"Ados"</string>
-    <string name="work_apps_paused_title" msgid="2389865654362803723">"Laneko profila pausatuta dago"</string>
-    <string name="work_apps_paused_body" msgid="4209084728264328628">"Laneko aplikazioek ezin dute jakinarazpenik bidali, bateria erabili edo kokapena atzitu"</string>
-    <string name="work_apps_paused_content_description" msgid="4473292417145736203">"Laneko profila pausatuta dago. Laneko aplikazioek ezin dute jakinarazpenik bidali, bateria erabili edo kokapena atzitu."</string>
-    <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Laneko aplikazioek bereizgarriak dituzte, eta IKT saileko administratzaileak ikus ditzake"</string>
-    <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Ados"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Pausatu laneko aplikazioak"</string>
-    <string name="work_apps_enable_btn_text" msgid="82111102541971856">"Aktibatu"</string>
-    <string name="developer_options_filter_hint" msgid="5896817443635989056">"Iragazi"</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"Pausatu laneko aplikazioak eta jakinarazpenak"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Hemen dituzu laneko aplikazioak"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"Laneko aplikazio bakoitzak bereizgarri bat dauka eta erakundeak babesten du. Aplikazioak errazago atzitzeko, eraman itzazu hasierako pantailara."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"Erakundeak kudeatzen du"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"Jakinarazpenak eta aplikazioak desaktibatuta daude"</string>
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Itxi"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Itxita"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Huts egin du: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

@@ -19,84 +19,19 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="recent_task_option_split_screen" msgid="5353188922202653570">"स्क्रिन विभाजन गर्नुहोस्"</string>
     <string name="recent_task_option_pin" msgid="7929860679018978258">"पिन गर्नुहोस्"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"फ्रिफर्म"</string>
+    <string name="accessibility_desc_recent_apps" msgid="1444379410873162882">"परिदृश्य"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"हालसालैको कुनै पनि वस्तु छैन"</string>
-    <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"एपको उपयोगका सेटिङहरू"</string>
+    <string name="accessibility_close_task" msgid="5354563209433803643">"बन्द गर्नुहोस्"</string>
+    <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"अनुप्रयोगको उपयोगका सेटिङहरू"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"सबै खाली गर्नुहोस्"</string>
-    <string name="accessibility_recent_apps" msgid="4058661986695117371">"हालसालैका एपहरू"</string>
+    <string name="accessibility_recent_apps" msgid="4058661986695117371">"हालसालैका अनुप्रयोगहरू"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; १ मिनेट"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"आज: <xliff:g id="TIME">%1$s</xliff:g> बाँकी"</string>
-    <string name="title_app_suggestions" msgid="4185902664111965088">"एपसम्बन्धी सुझावहरू"</string>
-    <string name="all_apps_label" msgid="8542784161730910663">"सबै एपहरू"</string>
-    <string name="all_apps_prediction_tip" msgid="2672336544844936186">"तपाईंलाई चाहिने एपहरू"</string>
-    <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"तपाईंको गृह स्क्रिनको पुछारको पङ्क्तिमा सिफारिस गरिएका एपहरू प्राप्त गर्नुहोस्"</string>
-    <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"आफ्नो होम स्क्रिनको मन पर्ने नामक पङ्क्तिमा सिफारिस गरिएका एपहरू प्राप्त गर्नुहोस्"</string>
-    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"गृह स्क्रिनबाटै आफूले सबैभन्दा बढी प्रयोग गर्ने एप सजिलै चलाउनुहोस्। सिफारिस गरिने एपहरूको क्रम तपाईंले एप प्रयोग गर्ने समयतालिकाअनुसार बदलिने छ। फेदको पङ्क्तिमा रहेका एपहरू तपाईंको गृह स्क्रिनको सिरानमा सर्ने छन्।"</string>
-    <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"आफूले सबैभन्दा बढी प्रयोग गर्ने एपहरू गृह स्क्रिनबाटै सजिलैसँग खोल्नुहोस्। सिफारिस गरिने एपहरूको क्रम तपाईंको दिनचर्याअनुसार बदलिने छ। मन पर्ने नामक पङ्क्तिमा रहेका एपहरू सारेर होम स्क्रिनमा लगिने छन्।"</string>
-    <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"गृह स्क्रिनबाटै आफूले सबैभन्दा बढी प्रयोग गर्ने एप सजिलै चलाउनुहोस्। सिफारिस गरिने एपहरूको क्रम तपाईंले एप प्रयोग गर्ने समयतालिकाअनुसार बदलिने छ। फेदको पङ्क्तिमा रहेका एपहरू एउटा नयाँ फोल्डरमा सर्ने छन्।"</string>
-    <string name="hotseat_edu_accept" msgid="1611544083278999837">"सिफारिस गरिएका एपहरू प्राप्त गर्नुहोस्"</string>
-    <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"पर्दैन धन्यवाद"</string>
-    <string name="hotseat_prediction_settings" msgid="6246554993566070818">"सेटिङ"</string>
-    <string name="hotseat_auto_enrolled" msgid="522100018967146807">"सबैभन्दा बढी प्रयोग हुने एपहरू यहाँ देखिन्छन् र यी एपहरूको क्रम तपाईंले एप प्रयोग गर्ने समयतालिकाअनुसार बदलिरहन्छ"</string>
-    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"सिफारिस गरिएका एपहरू प्राप्त गर्न फेदको पङ्क्तिमा रहेका एपहरू ड्र्याग गरी हटाउनुहोस्"</string>
-    <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"खाली ठाउँमा सिफारिस गरिएका एपहरू थपिए"</string>
-    <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"सिफारिस गरिएका एपहरू देखाउने सुविधा सक्षम पारिएका छन्"</string>
-    <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"सिफारिस गरिएका एपहरू देखाउने सुविधा असक्षम पारिएको छ"</string>
-    <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"पूर्वानुमान गरिएको एप: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"स्क्रिनको सबैभन्दा बायाँ किनाराबाट स्वाइप गर्नुहोस्।"</string>
-    <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"स्क्रिनको बायाँ किनाराबाट मध्य भागसम्म स्वाइप गर्नुहोस् अनि औँला उठाउनुहोस्।"</string>
-    <!-- no translation found for back_gesture_feedback_title_complete_left_edge (1381455921760094003) -->
-    <skip />
-    <!-- no translation found for back_gesture_feedback_subtitle_complete_left_edge (8106594510099968430) -->
-    <skip />
-    <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"स्क्रिनको सबैभन्दा दायाँ किनाराबाट स्वाइप गर्नुहोस्।"</string>
-    <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"स्क्रिनको दायाँ किनाराबाट मध्य भागसम्म स्वाइप गर्नुहोस् अनि औँला उठाउनुहोस्।"</string>
-    <!-- no translation found for back_gesture_feedback_complete_with_follow_up (8653374779579748392) -->
-    <skip />
-    <!-- no translation found for back_gesture_feedback_complete_without_follow_up (6405649621667113830) -->
-    <skip />
-    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"स्क्रिनको फेदको धेरै नजिकसम्म स्वाइप नगर्नुहोस्।"</string>
-    <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"\'पछाडि\' नामक इसाराको संवेदनशीलता बदल्न सेटिङमा जानुहोस्"</string>
-    <!-- no translation found for back_gesture_intro_title (5538727561353262952) -->
-    <skip />
-    <!-- no translation found for back_gesture_intro_subtitle (8139048712004626940) -->
-    <skip />
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"स्क्रिनको फेदबाट माथितिर स्वाइप गर्नुहोस्।"</string>
-    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"औँला उठाउनुअघि नरोकिनुहोस्।"</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"सीधै माथितिर स्वाइप गर्नुहोस्।"</string>
-    <!-- no translation found for home_gesture_feedback_complete_with_follow_up (1427872029729605034) -->
-    <skip />
-    <!-- no translation found for home_gesture_feedback_complete_without_follow_up (8049099486868933882) -->
-    <skip />
-    <string name="home_gesture_intro_title" msgid="836590312858441830">"होम स्क्रिनमा जान स्वाइप गर्नुहोस्"</string>
-    <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"स्क्रिनको फेदबाट माथितिर स्वाइप गर्नुहोस्। यो इसारा प्रयोग गर्दा सधैँ होम स्क्रिन खुल्छ।"</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"स्क्रिनको फेदबाट माथितिर स्वाइप गर्नुहोस्।"</string>
-    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"स्क्रिनबाट औँला उठाउनुअघि एपको विन्डोमा केही बेर छोइराख्नुहोस्।"</string>
-    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"सीधै माथितिर स्वाइप गर्नुहोस् अनि रोकिनुहोस्।"</string>
-    <!-- no translation found for overview_gesture_feedback_complete_with_follow_up (3544611727467765026) -->
-    <skip />
-    <!-- no translation found for overview_gesture_feedback_complete_without_follow_up (3199486203448379152) -->
-    <skip />
-    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"एउटा एपबाट अर्को एपमा जान स्वाइप गर्नुहोस्"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"स्क्रिनको फेदबाट माथितिर स्वाइप गर्नुहोस्, छोइराख्नुहोस् अनि औँला उठाउनुहोस्।"</string>
-    <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"सबै तयार छ"</string>
-    <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"अर्को"</string>
-    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"सम्पन्न भयो"</string>
-    <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"सेटिङ"</string>
-    <string name="gesture_tutorial_try_again" msgid="65962545858556697">"फेरि प्रयास गर्नुहोस्"</string>
-    <string name="gesture_tutorial_nice" msgid="2936275692616928280">"राम्रो!"</string>
-    <string name="gesture_tutorial_step" msgid="1279786122817620968">"ट्युटोरियल <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
-    <string name="allset_title" msgid="5021126669778966707">"सबै तयार भयो!"</string>
-    <string name="allset_hint" msgid="459504134589971527">"होममा जान माथितिर स्वाइप गर्नुहोस्"</string>
-    <string name="allset_description" msgid="6350320429953234580">"तपाईं आफ्नो फोन चलाउन थाल्न सक्नुहुन्छ"</string>
-    <string name="allset_navigation_settings" msgid="417773244979225071"><annotation id="link">"सर्वसुलभताका लागि नेभिगेसनसम्बन्धी सेटिङ"</annotation></string>
-    <string name="action_share" msgid="2648470652637092375">"सेयर गर्नुहोस्"</string>
-    <string name="action_screenshot" msgid="8171125848358142917">"स्क्रिनसट"</string>
-    <string name="blocked_by_policy" msgid="2071401072261365546">"यो एप वा तपाईंको सङ्गठनले यो कारबाही गर्ने अनुमति दिँदैन"</string>
-    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"नेभिगेसन ट्युटोरियल स्किप गर्ने हो?"</string>
-    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"तपाईं पछि <xliff:g id="NAME">%1$s</xliff:g> एपमा गई यो ट्युटोरियल भेट्टाउन सक्नुहुन्छ"</string>
-    <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"रद्द गर्नुहोस्"</string>
-    <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"स्किप गर्नु…"</string>
+    <string name="title_app_suggestions" msgid="4185902664111965088">"अनुप्रयोगसम्बन्धी सुझावहरू"</string>
+    <string name="all_apps_label" msgid="8542784161730910663">"सबै अनुप्रयोगहरू"</string>
+    <string name="all_apps_prediction_tip" msgid="2672336544844936186">"तपाईंका पूर्वानुमानित अनुप्रयोगहरू"</string>
 </resources>

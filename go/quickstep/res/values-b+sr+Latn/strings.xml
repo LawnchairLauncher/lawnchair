@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<resources xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_share_drop_target_label" msgid="5804774105974539508">"Deli aplikaciju"</string>
-    <string name="action_listen" msgid="2370304050784689486">"Pusti"</string>
-    <string name="action_translate" msgid="8028378961867277746">"Prevedi"</string>
-    <string name="action_search" msgid="6269564710943755464">"Objektiv"</string>
-</resources>
