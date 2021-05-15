@@ -92,7 +92,7 @@ public class Themes {
         return getAttrColor(context, android.R.attr.colorAccent);
     }
 
-    /** Returns the floating background color attribute. */
+    /** Returns the background color attribute. */
     public static int getColorBackground(Context context) {
         return getAttrColor(context, android.R.attr.colorBackground);
     }
