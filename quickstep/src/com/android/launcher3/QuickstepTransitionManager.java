@@ -1260,7 +1260,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             if (launchingFromWidget) {
                 composeWidgetLaunchAnimator(anim, (LauncherAppWidgetHostView) mV, appTargets,
                         wallpaperTargets, nonAppTargets);
-                // TODO(b/169042867): jank monitoring instrumentation
+                addCujInstrumentation(
+                        anim, InteractionJankMonitorWrapper.CUJ_APP_LAUNCH_FROM_WIDGET);
             } else if (launchingFromRecents) {
                 composeRecentsLaunchAnimator(anim, mV, appTargets, wallpaperTargets, nonAppTargets,
                         launcherClosing);
