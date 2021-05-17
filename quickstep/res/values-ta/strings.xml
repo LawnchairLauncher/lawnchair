@@ -47,38 +47,28 @@
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"கணித்த ஆப்ஸ்: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"இடது ஓரத்தின் விளிம்பிலிருந்து ஸ்வைப் செய்கிறீர்கள் என்பதை உறுதிசெய்துகொள்ளுங்கள்."</string>
     <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"இடது ஓரத்திலிருந்து திரையின் மையப் பகுதிக்கு ஸ்வைப் செய்தபிறகு விடுவிப்பதை உறுதிசெய்துகொள்ளுங்கள்."</string>
-    <!-- no translation found for back_gesture_feedback_title_complete_left_edge (1381455921760094003) -->
-    <skip />
-    <!-- no translation found for back_gesture_feedback_subtitle_complete_left_edge (8106594510099968430) -->
-    <skip />
+    <string name="back_gesture_feedback_title_complete_left_edge" msgid="1381455921760094003">"அருமை! பின்செல்வதற்கு வலதுபுறத்திலிருந்து ஸ்வைப் செய்யுங்கள்"</string>
+    <string name="back_gesture_feedback_subtitle_complete_left_edge" msgid="8106594510099968430">"வலது ஓரத்திலிருந்து திரையின் மையப் பகுதிக்கு ஸ்வைப் செய்தும் முந்தைய திரைக்கு மீண்டும் செல்லலாம்."</string>
     <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"வலது ஓரத்தின் விளிம்பிலிருந்து ஸ்வைப் செய்கிறீர்கள் என்பதை உறுதிசெய்துகொள்ளுங்கள்."</string>
     <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"வலது ஓரத்திலிருந்து திரையின் மையப் பகுதிக்கு ஸ்வைப் செய்தபிறகு விடுவிப்பதை உறுதிசெய்துகொள்ளுங்கள்."</string>
-    <!-- no translation found for back_gesture_feedback_complete_with_follow_up (8653374779579748392) -->
-    <skip />
-    <!-- no translation found for back_gesture_feedback_complete_without_follow_up (6405649621667113830) -->
-    <skip />
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"பின்செல் சைகைப் பயிற்சியை முடித்துவிட்டீர்கள். அடுத்து, ஆப்ஸுக்கிடையே மாறுவது எப்படி என்பதை அறிக."</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"பின்செல் சைகைப் பயிற்சியை முடித்துவிட்டீர்கள்."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"திரையின் கீழ்பகுதிக்கு மிக நெருக்கமாக ஸ்வைப் செய்யவில்லை என்பதை உறுதிசெய்துகொள்ளுங்கள்."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"பின்செல் சைகையின் உணர்திறனை மாற்ற அமைப்புகளுக்குச் செல்க"</string>
-    <!-- no translation found for back_gesture_intro_title (5538727561353262952) -->
-    <skip />
-    <!-- no translation found for back_gesture_intro_subtitle (8139048712004626940) -->
-    <skip />
+    <string name="back_gesture_intro_title" msgid="5538727561353262952">"பின்செல்வதற்கு இடதுபுறத்திலிருந்து ஸ்வைப் செய்யுங்கள்"</string>
+    <string name="back_gesture_intro_subtitle" msgid="8139048712004626940">"முந்தைய திரைக்கு மீண்டும் செல்ல, இடது ஓரத்திலிருந்து திரையின் மையப் பகுதிக்கு ஸ்வைப் செய்யுங்கள்."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"திரையின் கீழ் ஓரத்திலிருந்து மேல்நோக்கி ஸ்வைப் செய்வதை உறுதிசெய்துகொள்ளுங்கள்."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"விடுவிப்பதற்கு முன்பாக இடைநிறுத்தவில்லை என்பதை உறுதிசெய்துகொள்ளுங்கள்."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"மேல்நோக்கி நேராக ஸ்வைப் செய்வதை உறுதிசெய்துகொள்ளுங்கள்."</string>
-    <!-- no translation found for home_gesture_feedback_complete_with_follow_up (1427872029729605034) -->
-    <skip />
-    <!-- no translation found for home_gesture_feedback_complete_without_follow_up (8049099486868933882) -->
-    <skip />
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"முகப்புக்குச் செல் சைகைப் பயிற்சியை முடித்துவிட்டீர்கள். அடுத்து, பின்செல்வது எப்படி என்பதை அறிக."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"முகப்புக்குச் செல் சைகைப் பயிற்சியை முடித்துவிட்டீர்கள்."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"முகப்புக்குச் செல்ல ஸ்வைப் செய்யுங்கள்"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"திரையின் கீழிருந்து மேலாக ஸ்வைப் செய்க. இந்தச் சைகை எப்போதும் முகப்புத் திரைக்கு அழைத்துச் செல்லும்."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"திரையின் கீழ் ஓரத்திலிருந்து மேல்நோக்கி ஸ்வைப் செய்வதை உறுதிசெய்துகொள்ளுங்கள்."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"விடுவிப்பதற்கு முன்பாக நீண்டநேரம் சாளரத்தை அழுத்திப் பிடித்திருங்கள்."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"மேல்நோக்கி நேராக ஸ்வைப் செய்தபிறகு இடைநிறுத்துவதை உறுதிசெய்துகொள்ளுங்கள்."</string>
-    <!-- no translation found for overview_gesture_feedback_complete_with_follow_up (3544611727467765026) -->
-    <skip />
-    <!-- no translation found for overview_gesture_feedback_complete_without_follow_up (3199486203448379152) -->
-    <skip />
+    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"சைகைகளை எப்படி உபயோகிப்பது என்று கற்றுக்கொண்டீர்கள். சைகைகளை முடக்க அமைப்புகளுக்குச் செல்லுங்கள்."</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"ஆப்ஸுக்கிடையே மாறும் சைகைப் பயிற்சியை முடித்துவிட்டீர்கள்."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"ஆப்ஸுக்கிடையே மாற ஸ்வைப் செய்யுங்கள்"</string>
     <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"திரையின் கீழிலிருந்து மேலாக ஸ்வைப் செய்து, சில விநாடிகள் பிடித்திருந்து, பிறகு விரலை எடுங்கள்."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"எல்லாம் தயார்"</string>
