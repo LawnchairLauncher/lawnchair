@@ -101,7 +101,7 @@ final class SearchAndRecommendationsScrollController implements
         mCurrentRecyclerView.setOnContentChangeListener(mOnContentChangeListener);
         mViewHolder.mHeaderTitle.setTranslationY(0);
         mViewHolder.mRecommendedWidgetsTable.setTranslationY(0);
-        mViewHolder.mSearchBar.setTranslationY(0);
+        mViewHolder.mSearchBarContainer.setTranslationY(0);
 
         if (mHasWorkProfile) {
             mPrimaryWorkTabsView.setTranslationY(0);
@@ -120,7 +120,7 @@ final class SearchAndRecommendationsScrollController implements
         mCollapsibleHeightForRecommendation =
                 measureHeightWithVerticalMargins(mViewHolder.mHeaderTitle)
                         + measureHeightWithVerticalMargins(mViewHolder.mCollapseHandle)
-                        + measureHeightWithVerticalMargins((View) mViewHolder.mSearchBar)
+                        + measureHeightWithVerticalMargins((View) mViewHolder.mSearchBarContainer)
                         + measureHeightWithVerticalMargins(mViewHolder.mRecommendedWidgetsTable);
 
         int topContainerHeight = measureHeightWithVerticalMargins(mViewHolder.mContainer);
@@ -243,7 +243,7 @@ final class SearchAndRecommendationsScrollController implements
 
         if (mCollapsibleHeightForSearch > 0) {
             int searchYDisplacement = Math.max(-recyclerViewYOffset, -mCollapsibleHeightForSearch);
-            mViewHolder.mSearchBar.setTranslationY(searchYDisplacement);
+            mViewHolder.mSearchBarContainer.setTranslationY(searchYDisplacement);
         }
 
         if (mHasWorkProfile && mCollapsibleHeightForTabs > 0) {
@@ -255,7 +255,7 @@ final class SearchAndRecommendationsScrollController implements
     /** Resets any previous view translation. */
     public void reset() {
         mViewHolder.mHeaderTitle.setTranslationY(0);
-        mViewHolder.mSearchBar.setTranslationY(0);
+        mViewHolder.mSearchBarContainer.setTranslationY(0);
         if (mHasWorkProfile) {
             mPrimaryWorkTabsView.setTranslationY(0);
         }
