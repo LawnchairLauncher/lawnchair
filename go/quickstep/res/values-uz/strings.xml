@@ -3,6 +3,6 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_share_drop_target_label" msgid="5804774105974539508">"Ilovani ulashish"</string>
     <string name="action_listen" msgid="2370304050784689486">"Tinglash"</string>
-    <string name="action_translate" msgid="8028378961867277746">"Tarjimon"</string>
+    <string name="action_translate" msgid="8028378961867277746">"Tarjima"</string>
     <string name="action_search" msgid="6269564710943755464">"Lens"</string>
 </resources>
