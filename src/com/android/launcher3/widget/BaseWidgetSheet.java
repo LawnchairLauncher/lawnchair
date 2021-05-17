@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget.DragObject;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dragndrop.DragOptions;
@@ -42,10 +43,9 @@ import com.android.launcher3.views.AbstractSlideInView;
 /**
  * Base class for various widgets popup
  */
-public abstract class BaseWidgetSheet extends AbstractSlideInView
+public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
         implements OnClickListener, OnLongClickListener, DragSource,
         PopupDataProvider.PopupDataChangeListener {
-
 
     /* Touch handling related member variables. */
     private Toast mWidgetInstructionToast;
@@ -62,13 +62,13 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        mLauncher.getPopupDataProvider().setChangeListener(this);
+        mActivityContext.getPopupDataProvider().setChangeListener(this);
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        mLauncher.getPopupDataProvider().setChangeListener(null);
+        mActivityContext.getPopupDataProvider().setChangeListener(null);
     }
 
     @Override
@@ -91,7 +91,7 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView
     public boolean onLongClick(View v) {
         TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "Widgets.onLongClick");
         v.cancelLongPress();
-        if (!ItemLongClickListener.canStartDrag(mLauncher)) return false;
+        if (!ItemLongClickListener.canStartDrag(mActivityContext)) return false;
 
         if (v instanceof WidgetCell) {
             return beginDraggingWidget((WidgetCell) v);
@@ -160,7 +160,7 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView
     }
 
     protected SystemUiController getSystemUiController() {
-        return mLauncher.getSystemUiController();
+        return mActivityContext.getSystemUiController();
     }
 
     /**
