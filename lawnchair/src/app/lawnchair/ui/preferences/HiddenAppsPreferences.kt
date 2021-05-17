@@ -1,20 +1,12 @@
 package app.lawnchair.ui.preferences
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.Image
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
-import app.lawnchair.ui.preferences.components.AppItem
-import app.lawnchair.ui.preferences.components.LoadingScreen
-import app.lawnchair.ui.preferences.components.PreferenceLayoutLazyColumn
-import app.lawnchair.ui.preferences.components.preferenceGroupItems
+import app.lawnchair.ui.preferences.components.*
 import app.lawnchair.util.*
 import app.lawnchair.util.preferences.getAdapter
 import app.lawnchair.util.preferences.preferenceManager
@@ -53,13 +45,7 @@ fun HiddenAppsPreferences() {
                     onClick = toggleHiddenApp,
                     showDivider = index != apps.lastIndex
                 ) {
-                    AnimatedVisibility(visible = hiddenApps.contains(app.key.toString())) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_tick),
-                            contentDescription = null,
-                            colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
-                        )
-                    }
+                    AnimatedCheck(visible = hiddenApps.contains(app.key.toString()))
                 }
             }
         }
