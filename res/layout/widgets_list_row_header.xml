@@ -48,7 +48,7 @@
             android:id="@+id/app_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
+            android:layout_gravity="start|center_vertical"
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="16sp"
             tools:text="App name" />
