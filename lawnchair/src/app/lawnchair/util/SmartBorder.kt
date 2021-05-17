@@ -48,7 +48,9 @@ fun Modifier.smartBorder(border: BorderStroke, shape: Shape = RectangleShape) =
 fun Modifier.smartBorder(width: Dp, color: Color, shape: Shape = RectangleShape) =
     smartBorder(width, SolidColor(color), shape)
 
-fun Modifier.smartBorder(width: Dp, brush: Brush, shape: Shape): Modifier = composed(
+fun Modifier.smartBorder(
+    width: Dp, brush: Brush, shape: Shape, cutTop: Boolean = false, cutBottom: Boolean = false
+): Modifier = composed(
     inspectorInfo = debugInspectorInfo {
         name = "border"
         properties["width"] = width
@@ -62,12 +64,14 @@ fun Modifier.smartBorder(width: Dp, brush: Brush, shape: Shape): Modifier = comp
     }
 ) {
     Modifier.drawWithCache {
-        val outline: Outline = shape.createOutline(size, layoutDirection, this)
+        val originalOutline = shape.createOutline(size, layoutDirection, this)
         val borderSize = if (width == Dp.Hairline) 1f else width.toPx()
+        val outline = cutOutline(originalOutline, borderSize, cutTop, cutBottom)
 
         var insetOutline: Outline? = null
         var stroke: Stroke? = null
         var pathClip: Path? = null
+        var drawPathClip: Path? = null
         var inset = 0f
         var insetPath: Path? = null
 
@@ -83,11 +87,17 @@ fun Modifier.smartBorder(width: Dp, brush: Brush, shape: Shape): Modifier = comp
                     size.height - inset * 2
                 )
                 insetOutline = shape.createOutline(insetSize, layoutDirection, this)
+                insetOutline = cutOutline(insetOutline, borderSize, cutTop, cutBottom)
                 stroke = Stroke(strokeWidth)
-                pathClip = when (outline) {
-                    is Outline.Rounded -> Path().apply { addRoundRect(outline.roundRect) }
-                    is Outline.Generic -> outline.path
+                pathClip = when (originalOutline) {
+                    is Outline.Rectangle -> Path().apply { addRect(originalOutline.rect) }
+                    is Outline.Rounded -> Path().apply { addRoundRect(originalOutline.roundRect) }
+                    is Outline.Generic -> originalOutline.path
                     else -> null
+                }
+                drawPathClip = pathClip
+                if (outline is Outline.Rounded) {
+                    drawPathClip = Path().apply { addRoundRect(outline.roundRect) }
                 }
 
                 insetPath =
@@ -102,7 +112,19 @@ fun Modifier.smartBorder(width: Dp, brush: Brush, shape: Shape): Modifier = comp
                                     CornerRadius(
                                         rect.topLeftCornerRadius.x - cornerCompensation,
                                         rect.topLeftCornerRadius.y - cornerCompensation
-                                    )
+                                    ),
+                                    CornerRadius(
+                                        rect.topRightCornerRadius.x - cornerCompensation,
+                                        rect.topRightCornerRadius.y - cornerCompensation
+                                    ),
+                                    CornerRadius(
+                                        rect.bottomLeftCornerRadius.x - cornerCompensation,
+                                        rect.bottomLeftCornerRadius.y - cornerCompensation
+                                    ),
+                                    CornerRadius(
+                                        rect.bottomRightCornerRadius.x - cornerCompensation,
+                                        rect.bottomRightCornerRadius.y - cornerCompensation
+                                    ),
                                 )
                             )
                             translate(Offset(inset, inset))
@@ -156,7 +178,7 @@ fun Modifier.smartBorder(width: Dp, brush: Brush, shape: Shape): Modifier = comp
                                 style = HairlineBorderStroke
                             )
                         } else {
-                            drawPath(pathClip, brush = brush, style = HairlineBorderStroke)
+                            drawPath(drawPathClip!!, brush = brush, style = HairlineBorderStroke)
                         }
                     }
                 } else {
@@ -175,4 +197,37 @@ fun Modifier.smartBorder(width: Dp, brush: Brush, shape: Shape): Modifier = comp
             }
         }
     }
+}
+
+fun cutOutline(outline: Outline, height: Float, cutTop: Boolean, cutBottom: Boolean): Outline {
+    if (!cutTop && !cutBottom) return outline
+    return when (outline) {
+        is Outline.Rectangle -> Outline.Rounded(RoundRect(cutRect(outline.rect, height, cutTop, cutBottom), CornerRadius.Zero))
+        is Outline.Rounded -> Outline.Rounded(RoundRect(
+            cutRect(outline.roundRect.boundingRect, height, cutTop, cutBottom),
+            outline.roundRect.topLeftCornerRadius,
+            outline.roundRect.topRightCornerRadius,
+            outline.roundRect.bottomLeftCornerRadius,
+            outline.roundRect.bottomRightCornerRadius,
+        ))
+        else -> outline
+    }
+}
+
+fun cutRect(
+    rect: Rect,
+    height: Float,
+    cutTop: Boolean,
+    cutBottom: Boolean,
+): Rect {
+    if (!cutTop && !cutBottom) return rect
+    var top = rect.top
+    var bottom = rect.bottom
+    if (cutTop) {
+        top -= height
+    }
+    if (cutBottom) {
+        bottom += height
+    }
+    return Rect(rect.left, top, rect.right, bottom)
 }

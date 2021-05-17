@@ -200,6 +200,31 @@ abstract class BasePreferenceManager(context: Context) : SharedPreferences.OnSha
             editSp { putFloat(key, newValue) }
         }
     }
+
+    inner class StringSetPref(
+        key: String,
+        override val defaultValue: Set<String>,
+        primaryListener: ChangeListener? = null
+    ) : BasePref<Set<String>>(key, primaryListener) {
+        private var currentValue = setOf<String>()
+
+        init {
+            prefsMap[key] = this
+        }
+
+        override fun get(): Set<String> {
+            if (!loaded) {
+                currentValue = sp.getStringSet(key, defaultValue)!!
+                loaded = true
+            }
+            return currentValue
+        }
+
+        override fun set(newValue: Set<String>) {
+            currentValue = newValue
+            editSp { putStringSet(key, newValue) }
+        }
+    }
 }
 
 typealias ChangeListener = () -> Unit

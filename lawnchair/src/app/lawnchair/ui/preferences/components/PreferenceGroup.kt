@@ -35,6 +35,24 @@ fun PreferenceGroup(
     showDescription: Boolean = true,
     content: @Composable () -> Unit
 ) {
+    PreferenceGroupHeading(heading, isFirstChild)
+    Column(
+        modifier = Modifier
+            .padding(start = 16.dp, end = 16.dp)
+            .smartBorder(
+                1.dp,
+                color = MaterialTheme.colors.onBackground.copy(alpha = 0.12F),
+                shape = MaterialTheme.shapes.large
+            )
+            .clip(shape = MaterialTheme.shapes.large)
+    ) {
+        content()
+    }
+    PreferenceGroupDescription(description, showDescription)
+}
+
+@Composable
+fun PreferenceGroupHeading(heading: String? = null, isFirstChild: Boolean) {
     Spacer(
         modifier = Modifier.requiredHeight(
             if (isFirstChild) {
@@ -64,20 +82,11 @@ fun PreferenceGroup(
             }
         }
     }
-    Column {
-        Column(
-            modifier = Modifier
-                .padding(start = 16.dp, end = 16.dp)
-                .smartBorder(
-                    1.dp,
-                    color = MaterialTheme.colors.onBackground.copy(alpha = 0.12F),
-                    shape = MaterialTheme.shapes.large
-                )
-                .clip(shape = MaterialTheme.shapes.large)
-        ) {
-            content()
-        }
-    }
+}
+
+@ExperimentalAnimationApi
+@Composable
+fun PreferenceGroupDescription(description: String? = null, showDescription: Boolean = true) {
     description?.let {
         AnimatedVisibility(
             visible = showDescription,

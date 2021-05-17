@@ -75,4 +75,6 @@
     <string name="design_and_development">Design &amp; Development</string>
     <string name="translate">Translate</string>
     <string name="product">Product</string>
+    <string name="app_drawer_section_apps">Apps</string>
+    <string name="hidden_apps_label">Hidden apps</string>
 </resources>

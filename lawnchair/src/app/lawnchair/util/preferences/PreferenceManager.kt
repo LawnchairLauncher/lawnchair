@@ -25,9 +25,14 @@ import app.lawnchair.LawnchairLauncherQuickstep
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.Utilities
+import com.android.launcher3.pm.UserCache
 import com.android.launcher3.util.MainThreadInitializedObject
 
 class PreferenceManager private constructor(context: Context) : BasePreferenceManager(context) {
+    private val reloadApps = {
+        val launcher = LauncherAppState.getInstance(context).launcher
+        UserCache.INSTANCE.get(context).userProfiles.forEach { launcher.model.onPackagesReload(it) }
+    }
     private val reloadIcons = {
         val model = LauncherAppState.getInstance(context).model
         model.clearIconCache()
@@ -42,6 +47,7 @@ class PreferenceManager private constructor(context: Context) : BasePreferenceMa
     }
     private val reloadGrid = scheduleRestart
 
+    val hiddenAppSet = StringSetPref("hidden-app-set", setOf(), reloadApps)
     val iconPackPackage = StringPref("pref_iconPackPackage", "", reloadIcons)
     val allowRotation = BoolPref("pref_allowRotation", true)
     val wrapAdaptiveIcons = BoolPref("prefs_wrapAdaptive", false, reloadIcons)

@@ -4,6 +4,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import com.android.launcher3.LauncherAppState
+import kotlin.reflect.KProperty
 
 class PreferenceAdapter<T>(
     private val get: () -> T,
@@ -18,6 +19,11 @@ class PreferenceAdapter<T>(
 
     override fun onPreferenceChange(pref: BasePreferenceManager.PrefEntry<*>) {
         state.value = get()
+    }
+
+    operator fun getValue(thisObj: Any?, property: KProperty<*>): T = state.value
+    operator fun setValue(thisObj: Any?, property: KProperty<*>, newValue: T) {
+        onChange(newValue)
     }
 }
 
