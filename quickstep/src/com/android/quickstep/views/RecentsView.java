@@ -377,7 +377,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private final PointF mTempPointF = new PointF();
     private final float[] mTempFloat = new float[1];
     private final List<OnScrollChangedListener> mScrollListeners = new ArrayList<>();
-    private float mFullscreenScale;
 
     private static final int DISMISS_TASK_DURATION = 300;
     private static final int DISMISS_TASK_TRANSLATION_DURATION = 200;
@@ -1350,8 +1349,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             // Compensate space caused by TaskView scaling.
             float widthDiff =
                     taskView.getLayoutParams().width * (1 - taskView.getFullscreenScale());
-            // Compensate page spacing widening caused by RecentsView scaling.
-            widthDiff += mPageSpacing * (1 - 1 / mFullscreenScale);
             accumulatedTranslationX += mIsRtl ? widthDiff : -widthDiff;
         }
 
@@ -2726,8 +2723,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
         // Update the pivots such that when the task is scaled, it fills the full page
         getTaskSize(mTempRect);
-        mFullscreenScale = getPagedViewOrientedState().getFullScreenScaleAndPivot(
-                mTempRect, mActivity.getDeviceProfile(), mTempPointF);
+        getPagedViewOrientedState().getFullScreenScaleAndPivot(mTempRect,
+                mActivity.getDeviceProfile(), mTempPointF);
         setPivotX(mTempPointF.x);
         setPivotY(mTempPointF.y);
         setTaskModalness(mTaskModalness);
