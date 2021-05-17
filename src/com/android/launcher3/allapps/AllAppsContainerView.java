@@ -720,7 +720,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         mHeaderPaint.setColor(mHeaderColor);
         mHeaderPaint.setAlpha((int) (getAlpha() * Color.alpha(mHeaderColor)));
         if (mHeaderPaint.getColor() != mScrimColor && mHeaderPaint.getColor() != 0) {
-            canvas.drawRect(0, 0, getWidth(), mHeaderTopPadding + getTranslationY(),
+            canvas.drawRect(0, 0, getWidth(), mSearchContainer.getTop() + getTranslationY(),
                     mHeaderPaint);
         }
     }
@@ -830,10 +830,13 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     protected void updateHeaderScroll(int scrolledOffset) {
         float prog = Math.max(0, Math.min(1, (float) scrolledOffset / mHeaderThreshold));
-        int headerColor = ColorUtils.setAlphaComponent(mHeaderProtectionColor, (int) (prog * 255));
+        int viewBG = ColorUtils.blendARGB(mScrimColor, mHeaderProtectionColor, prog);
+        int headerColor = ColorUtils.setAlphaComponent(viewBG,
+                (int) (getSearchView().getAlpha() * 255));
         if (headerColor != mHeaderColor) {
             mHeaderColor = headerColor;
-            getSearchView().setBackgroundColor(mHeaderColor);
+            getSearchView().setBackgroundColor(viewBG);
+            getFloatingHeaderView().setHeaderColor(viewBG);
             invalidateHeader();
         }
     }
