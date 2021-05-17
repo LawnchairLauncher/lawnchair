@@ -61,7 +61,7 @@ sealed class PreferenceCategory(
     val route: String
 ) {
     class General(context: Context) : PreferenceCategory(
-        label = context.getString(R.string.settings),
+        label = context.getString(R.string.general_label),
         description = context.getString(R.string.general_description),
         iconResource = R.drawable.ic_general,
         route = Routes.GENERAL
