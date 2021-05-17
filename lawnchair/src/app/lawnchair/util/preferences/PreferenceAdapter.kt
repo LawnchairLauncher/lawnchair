@@ -10,18 +10,19 @@ class PreferenceAdapter<T>(
     private val get: () -> T,
     private val set: (T) -> Unit
 ) : BasePreferenceManager.PreferenceChangeListener {
-    val state = mutableStateOf(get())
+    private val stateInternal = mutableStateOf(get())
+    val state: State<T> get() = stateInternal
 
     fun onChange(newValue: T) {
         set(newValue)
-        state.value = newValue
+        stateInternal.value = newValue
     }
 
     override fun onPreferenceChange(pref: BasePreferenceManager.PrefEntry<*>) {
-        state.value = get()
+        stateInternal.value = get()
     }
 
-    operator fun getValue(thisObj: Any?, property: KProperty<*>): T = state.value
+    operator fun getValue(thisObj: Any?, property: KProperty<*>): T = stateInternal.value
     operator fun setValue(thisObj: Any?, property: KProperty<*>, newValue: T) {
         onChange(newValue)
     }
@@ -38,6 +39,9 @@ fun BasePreferenceManager.IdpIntPref.getAdapter(): PreferenceAdapter<Float> {
 fun <T> BasePreferenceManager.PrefEntry<T>.getAdapter(): PreferenceAdapter<T> {
     return getAdapter(this, ::get, ::set)
 }
+
+@Composable
+fun <T> BasePreferenceManager.PrefEntry<T>.getState() = getAdapter().state
 
 @Composable
 fun <T> BasePreferenceManager.PrefEntry<T>.observeAsState(): State<T> {

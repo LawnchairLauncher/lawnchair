@@ -86,6 +86,7 @@ fun AppDrawerPreferences() {
         PreferenceGroup(heading = stringResource(id = R.string.app_drawer_section_apps)) {
             NavigationActionPreference(
                 label = stringResource(id = R.string.hidden_apps_label),
+                subtitle = hiddenAppsCount(),
                 destination = subRoute(name = AppDrawerRoutes.HIDDEN_APPS),
                 showDivider = false
             )
