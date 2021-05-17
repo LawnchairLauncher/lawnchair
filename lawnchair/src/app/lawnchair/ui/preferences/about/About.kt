@@ -22,9 +22,7 @@ import androidx.annotation.StringRes
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -36,8 +34,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
-import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.ClickListenerPreference
+import app.lawnchair.ui.preferences.components.PreferenceGroup
+import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.preferenceGraph
 import app.lawnchair.util.Meta
 import app.lawnchair.util.pageMeta
@@ -143,11 +142,8 @@ fun About() {
     val context = LocalContext.current
 
     pageMeta.provide(Meta(title = stringResource(id = R.string.about_label)))
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally
+    PreferenceLayout(
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.requiredHeight(24.dp))
         Image(
@@ -239,6 +235,5 @@ fun About() {
                 }
             })
         }
-        Spacer(modifier = Modifier.requiredHeight(16.dp))
     }
 }

@@ -16,30 +16,41 @@
 
 package app.lawnchair.ui.preferences.components
 
-import android.os.Build
-import android.view.View
-import android.view.Window
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.luminance
-import androidx.compose.ui.graphics.toArgb
-import app.lawnchair.ui.theme.LawnchairTheme
+import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun SystemUi(window: Window) =
-    LawnchairTheme {
-        window.statusBarColor = MaterialTheme.colors.background.toArgb()
-        window.navigationBarColor = MaterialTheme.colors.background.toArgb()
+fun SystemUi() {
+    val systemUiController = rememberSystemUiController()
+    val useDarkIcons = MaterialTheme.colors.isLight
 
-        @Suppress("DEPRECATION")
-        if (MaterialTheme.colors.background.luminance() > 0.5f) {
-            window.decorView.systemUiVisibility = window.decorView.systemUiVisibility or
-                    View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-        }
+    SideEffect {
+        // Update all of the system bar colors to be transparent, and use
+        // dark icons if we're in light theme
+        systemUiController.setSystemBarsColor(
+            color = Color.Transparent,
+            darkIcons = useDarkIcons
+        )
 
-        @Suppress("DEPRECATION")
-        if (MaterialTheme.colors.background.luminance() > 0.5f && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            window.decorView.systemUiVisibility = window.decorView.systemUiVisibility or
-                    View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-        }
+        // setStatusBarsColor() and setNavigationBarsColor() also exist
     }
+}
+//    LawnchairTheme {
+//        window.statusBarColor = MaterialTheme.colors.background.toArgb()
+//        window.navigationBarColor = MaterialTheme.colors.background.toArgb()
+//
+//        @Suppress("DEPRECATION")
+//        if (MaterialTheme.colors.background.luminance() > 0.5f) {
+//            window.decorView.systemUiVisibility = window.decorView.systemUiVisibility or
+//                    View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+//        }
+//
+//        @Suppress("DEPRECATION")
+//        if (MaterialTheme.colors.background.luminance() > 0.5f && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            window.decorView.systemUiVisibility = window.decorView.systemUiVisibility or
+//                    View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+//        }
+//    }

@@ -16,12 +16,9 @@
 
 package app.lawnchair.ui.preferences.components
 
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
@@ -32,9 +29,7 @@ fun PreferenceCategoryList(navController: NavController) {
     val context = LocalContext.current
     val categories = remember { getPreferenceCategories(context) }
 
-    LazyColumn(
-        modifier = Modifier.fillMaxHeight()
-    ) {
+    PreferenceLayoutLazyColumn {
         items(categories) { item ->
             PreferenceCategoryListItem(
                 label = item.label,
