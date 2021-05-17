@@ -4,8 +4,6 @@ import android.content.Context
 import android.content.pm.LauncherActivityInfo
 import android.content.pm.LauncherApps
 import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.os.Handler
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
@@ -21,11 +19,7 @@ import java.util.*
 import java.util.Comparator.comparing
 
 @Composable
-fun defaultAppFilter(): DefaultAppFilter {
-    return remember {
-        DefaultAppFilter()
-    }
-}
+fun defaultAppFilter(): DefaultAppFilter = remember { DefaultAppFilter() }
 
 @Composable
 fun appsList(filter: AppFilter?, comparator: Comparator<App> = defaultComparator): State<Optional<List<App>>> {
@@ -35,19 +29,16 @@ fun appsList(filter: AppFilter?, comparator: Comparator<App> = defaultComparator
         Utilities.postAsyncCallback(Handler(MODEL_EXECUTOR.looper)) {
             val appInfos = ArrayList<LauncherActivityInfo>()
             val profiles = UserCache.INSTANCE.get(context).userProfiles
-            val launcherApps  = context.getSystemService(LauncherApps::class.java)
+            val launcherApps = context.getSystemService(LauncherApps::class.java)
             profiles.forEach { appInfos += launcherApps.getActivityList(null, it) }
 
-            val apps = if (filter != null) {
-                appInfos.filter { filter.shouldShowApp(it.componentName, it.user) }
-            } else {
-                appInfos
-            }
-                .map { App(context, it) }
-                .sortedWith(comparator)
+            val apps =
+                (filter?.let { appFilter -> appInfos.filter { appFilter.shouldShowApp(it.componentName, it.user) } }
+                    ?: appInfos).map { App(context, it) }.sortedWith(comparator)
+
             appsState.value = Optional.of(apps)
         }
-        onDispose {  }
+        onDispose { }
     }
     return appsState
 }
