@@ -33,6 +33,7 @@ import android.os.RemoteException;
 import android.os.UserHandle;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.SurfaceControl;
 
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.SplitConfigurationOptions;
@@ -99,6 +100,17 @@ public class SystemUiProxy implements ISystemUiProxy,
         if (mSystemUiProxy != null) {
             try {
                 mSystemUiProxy.onBackPressed();
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call onBackPressed", e);
+            }
+        }
+    }
+
+    @Override
+    public void setHomeRotationEnabled(boolean enabled) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.setHomeRotationEnabled(enabled);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call onBackPressed", e);
             }
@@ -427,10 +439,11 @@ public class SystemUiProxy implements ISystemUiProxy,
         return null;
     }
 
-    public void stopSwipePipToHome(ComponentName componentName, Rect destinationBounds) {
+    public void stopSwipePipToHome(ComponentName componentName, Rect destinationBounds,
+            SurfaceControl overlay) {
         if (mPip != null) {
             try {
-                mPip.stopSwipePipToHome(componentName, destinationBounds);
+                mPip.stopSwipePipToHome(componentName, destinationBounds, overlay);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call stopSwipePipToHome");
             }

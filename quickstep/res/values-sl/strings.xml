@@ -47,38 +47,28 @@
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Predvidena aplikacija: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"Pazite, da ne povlečete s skrajno levega roba."</string>
     <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"Pazite, da povlečete z levega roba do sredine zaslona in dvignete prst."</string>
-    <!-- no translation found for back_gesture_feedback_title_complete_left_edge (1381455921760094003) -->
-    <skip />
-    <!-- no translation found for back_gesture_feedback_subtitle_complete_left_edge (8106594510099968430) -->
-    <skip />
+    <string name="back_gesture_feedback_title_complete_left_edge" msgid="1381455921760094003">"Odlično! Zdaj za pomik nazaj povlecite z desne."</string>
+    <string name="back_gesture_feedback_subtitle_complete_left_edge" msgid="8106594510099968430">"Na zadnji zaslon se lahko vrnete tudi tako, da z desnega roba povlečete do sredine zaslona."</string>
     <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"Pazite, da ne povlečete s skrajno desnega roba."</string>
     <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"Pazite, da povlečete z desnega roba do sredine zaslona in dvignete prst."</string>
-    <!-- no translation found for back_gesture_feedback_complete_with_follow_up (8653374779579748392) -->
-    <skip />
-    <!-- no translation found for back_gesture_feedback_complete_without_follow_up (6405649621667113830) -->
-    <skip />
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"Izvedli ste potezo za pomik nazaj. Zdaj se naučite preklapljanja med aplikacijami."</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Izvedli ste potezo za pomik nazaj."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Pazite, da ne povlečete preblizu dna zaslona."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Občutljivost poteze za nazaj lahko spremenite v nastavitvah."</string>
-    <!-- no translation found for back_gesture_intro_title (5538727561353262952) -->
-    <skip />
-    <!-- no translation found for back_gesture_intro_subtitle (8139048712004626940) -->
-    <skip />
+    <string name="back_gesture_intro_title" msgid="5538727561353262952">"Povlecite z leve za pomik nazaj."</string>
+    <string name="back_gesture_intro_subtitle" msgid="8139048712004626940">"Če se želite vrniti na zadnji prikazani zaslon, povlecite z levega roba do sredine zaslona."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Pazite, da povlečete s spodnjega roba zaslona navzgor."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Pazite, da ne zaustavite prsta, preden ga dvignete."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Pazite, da povlečete naravnost navzgor."</string>
-    <!-- no translation found for home_gesture_feedback_complete_with_follow_up (1427872029729605034) -->
-    <skip />
-    <!-- no translation found for home_gesture_feedback_complete_without_follow_up (8049099486868933882) -->
-    <skip />
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Izvedli ste potezo za pomik na začetni zaslon. Zdaj se naučite, kako se pomaknete nazaj."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Izvedli ste potezo za pomik na začetni zaslon."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Vlečenje za pomik na začetni zaslon"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Z dna zaslona s prstom povlecite navzgor. S to potezo lahko vedno odprete začetni zaslon."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Pazite, da povlečete s spodnjega roba zaslona navzgor."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Poskusite okno pridržati dalj časa, preden ga izpustite."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Pazite, da povlečete naravnost navzgor in nato zaustavite prst."</string>
-    <!-- no translation found for overview_gesture_feedback_complete_with_follow_up (3544611727467765026) -->
-    <skip />
-    <!-- no translation found for overview_gesture_feedback_complete_without_follow_up (3199486203448379152) -->
-    <skip />
+    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Naučili ste se uporabljati poteze. Poteze lahko izklopite v nastavitvah."</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Izvedli ste potezo za preklapljanje med aplikacijami."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Vlečenje za preklapljanje med aplikacijami"</string>
     <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"Povlecite navzgor z dna zaslona, pridržite, nato izpustite."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Zdaj znate"</string>

@@ -1133,11 +1133,6 @@ public class TaskView extends FrameLayout implements Reusable {
                 TASK_OFFSET_TRANSLATION_X, TASK_OFFSET_TRANSLATION_Y);
     }
 
-    public FloatProperty<TaskView> getSecondaryTaskOffsetTranslationProperty() {
-        return getPagedOrientationHandler().getSecondaryValue(
-                TASK_OFFSET_TRANSLATION_X, TASK_OFFSET_TRANSLATION_Y);
-    }
-
     public FloatProperty<TaskView> getTaskResistanceTranslationProperty() {
         return getPagedOrientationHandler().getSecondaryValue(
                 TASK_RESISTANCE_TRANSLATION_X, TASK_RESISTANCE_TRANSLATION_Y);

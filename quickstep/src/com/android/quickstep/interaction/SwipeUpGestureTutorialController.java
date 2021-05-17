@@ -43,7 +43,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.anim.AnimationSuccessListener;
+import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.quickstep.AnimatedFloat;
@@ -156,7 +156,7 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
                         fadeAnim.setViewAlpha(mFakePreviousTaskView, 0, ACCEL);
                     }
                     if (onEndRunnable != null) {
-                        fadeAnim.addListener(AnimationSuccessListener.forRunnable(onEndRunnable));
+                        fadeAnim.addListener(AnimatorListeners.forSuccessCallback(onEndRunnable));
                     }
                     AnimatorSet animset = fadeAnim.buildAnim();
                     animset.setStartDelay(100);
@@ -174,7 +174,7 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
                 anim.setViewAlpha(mFakePreviousTaskView, 0, ACCEL);
             }
             if (onEndRunnable != null) {
-                anim.addListener(AnimationSuccessListener.forRunnable(onEndRunnable));
+                anim.addListener(AnimatorListeners.forSuccessCallback(onEndRunnable));
             }
         }
         AnimatorSet animset = anim.buildAnim();
@@ -205,10 +205,10 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
         PendingAnimation fadeAnim = new PendingAnimation(300);
         fadeAnim.setViewAlpha(mFakeIconView, 0, ACCEL);
         if (onEndRunnable != null) {
-            fadeAnim.addListener(AnimationSuccessListener.forRunnable(onEndRunnable));
+            fadeAnim.addListener(AnimatorListeners.forSuccessCallback(onEndRunnable));
         }
         AnimatorSet animset = fadeAnim.buildAnim();
-        rectAnim.addAnimatorListener(AnimationSuccessListener.forRunnable(animset::start));
+        rectAnim.addAnimatorListener(AnimatorListeners.forSuccessCallback(animset::start));
         mRunningWindowAnim = RunningWindowAnim.wrap(rectAnim);
     }
 
