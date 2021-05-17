@@ -59,7 +59,7 @@ public class OverviewState extends LauncherState {
 
     @Override
     public int getTransitionDuration(Context context) {
-        // In gesture modes, overview comes in all the way from the bottom, so give it more time.
+        // In gesture modes, overview comes in all the way from the side, so give it more time.
         return SysUINavigationMode.INSTANCE.get(context).getMode().hasGestures ? 380 : 250;
     }
 
@@ -78,7 +78,7 @@ public class OverviewState extends LauncherState {
 
     @Override
     public float[] getOverviewScaleAndOffset(Launcher launcher) {
-        return new float[] {NO_SCALE, NO_OFFSET, NO_OFFSET};
+        return new float[] {NO_SCALE, NO_OFFSET};
     }
 
     @Override

@@ -29,10 +29,10 @@ import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SY
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.app.ActivityOptions;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.content.ComponentName;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.CancellationSignal;
@@ -388,7 +388,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
     @Override
     public float[] getNormalOverviewScaleAndOffset() {
         return SysUINavigationMode.getMode(this).hasGestures
-                ? new float[] {1, NO_OFFSET, 1} : new float[] {1.1f, NO_OFFSET, NO_OFFSET};
+                ? new float[] {1, 1} : new float[] {1.1f, NO_OFFSET};
     }
 
     @Override

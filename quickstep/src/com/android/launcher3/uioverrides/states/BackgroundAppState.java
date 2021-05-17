@@ -96,6 +96,6 @@ public class BackgroundAppState extends OverviewState {
             BaseDraggingActivity activity) {
         return new float[] {
                 ((RecentsView) activity.getOverviewPanel()).getMaxScaleForFullScreen(),
-                NO_OFFSET, NO_OFFSET};
+                NO_OFFSET};
     }
 }
