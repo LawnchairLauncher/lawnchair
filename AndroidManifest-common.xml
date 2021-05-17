@@ -107,7 +107,7 @@
                        android:value="true" />
 
         <activity android:name="com.android.launcher3.dragndrop.AddItemActivity"
-            android:theme="@style/AppItemActivityTheme"
+            android:theme="@style/AddItemActivityTheme"
             android:excludeFromRecents="true"
             android:autoRemoveFromRecents="true"
             android:exported="true">

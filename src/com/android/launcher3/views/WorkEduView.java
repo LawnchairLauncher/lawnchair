@@ -42,7 +42,7 @@ import com.android.launcher3.statemanager.StateManager.StateListener;
 /**
  * On boarding flow for users right after setting up work profile
  */
-public class WorkEduView extends AbstractSlideInView
+public class WorkEduView extends AbstractSlideInView<Launcher>
         implements Insettable, StateListener<LauncherState> {
 
     private static final int DEFAULT_CLOSE_DURATION = 200;
@@ -76,14 +76,15 @@ public class WorkEduView extends AbstractSlideInView
 
     @Override
     protected void handleClose(boolean animate) {
-        mLauncher.getSharedPrefs().edit().putInt(KEY_WORK_EDU_STEP, mNextWorkEduStep).apply();
+        mActivityContext.getSharedPrefs().edit()
+                .putInt(KEY_WORK_EDU_STEP, mNextWorkEduStep).apply();
         handleClose(true, DEFAULT_CLOSE_DURATION);
     }
 
     @Override
     protected void onCloseComplete() {
         super.onCloseComplete();
-        mLauncher.getStateManager().removeStateListener(this);
+        mActivityContext.getStateManager().removeStateListener(this);
     }
 
     @Override
@@ -116,13 +117,14 @@ public class WorkEduView extends AbstractSlideInView
             animator.addListener(new AnimationSuccessListener() {
                 @Override
                 public void onAnimationSuccess(Animator animator) {
-                    mContentText.setText(mLauncher.getString(R.string.work_profile_edu_work_apps));
+                    mContentText.setText(
+                            mActivityContext.getString(R.string.work_profile_edu_work_apps));
                     ObjectAnimator.ofFloat(mContentText, ALPHA, 1).start();
                 }
             });
             animator.start();
         } else {
-            mContentText.setText(mLauncher.getString(R.string.work_profile_edu_work_apps));
+            mContentText.setText(mActivityContext.getString(R.string.work_profile_edu_work_apps));
         }
         mNextWorkEduStep = WORK_EDU_WORK_APPS;
         mProceedButton.setOnClickListener(v -> handleClose(true));
@@ -142,7 +144,7 @@ public class WorkEduView extends AbstractSlideInView
     private void show() {
         attachToContainer();
         animateOpen();
-        mLauncher.getStateManager().addStateListener(this);
+        mActivityContext.getStateManager().addStateListener(this);
     }
 
     @Override
@@ -168,7 +170,7 @@ public class WorkEduView extends AbstractSlideInView
     }
 
     private AllAppsPagedView getAllAppsPagedView() {
-        View v = mLauncher.getAppsView().getContentView();
+        View v = mActivityContext.getAppsView().getContentView();
         return (v instanceof AllAppsPagedView) ? (AllAppsPagedView) v : null;
     }
 
