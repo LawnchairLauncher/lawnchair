@@ -41,6 +41,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
+import com.android.launcher3.views.BaseDragLayer;
 
 import java.util.Collections;
 import java.util.List;
@@ -267,7 +268,7 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public void setTaskMenuLayoutOrientation(DeviceProfile deviceProfile,
+    public void setTaskOptionsMenuLayoutOrientation(DeviceProfile deviceProfile,
         LinearLayout taskMenuLayout) {
         taskMenuLayout.setOrientation(LinearLayout.HORIZONTAL);
     }
@@ -282,6 +283,17 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
         lp.weight = 1;
         Utilities.setStartMarginForView(viewGroup.findViewById(R.id.text), 0);
         Utilities.setStartMarginForView(viewGroup.findViewById(R.id.icon), 0);
+    }
+
+    @Override
+    public void setTaskMenuAroundTaskView(LinearLayout taskView, float margin) {
+        BaseDragLayer.LayoutParams lp = (BaseDragLayer.LayoutParams) taskView.getLayoutParams();
+        lp.topMargin += margin;
+    }
+
+    @Override
+    public PointF getAdditionalInsetForTaskMenu(float margin) {
+        return new PointF(margin, 0);
     }
 
     /* ---------- The following are only used by TaskViewTouchHandler. ---------- */
