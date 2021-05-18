@@ -97,8 +97,7 @@
     <string name="folder_name_format_exact" msgid="8626242716117004803">"ফোল্ডার: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g>টি আইটেম"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"ফোল্ডার: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g>টি বা তার বেশি আইটেম"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"ওয়ালপেপারগুলি"</string>
-    <!-- no translation found for styles_wallpaper_button_text (8216961355289236794) -->
-    <skip />
+    <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"ওয়ালপেপার এবং স্টাইল"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"হোম সেটিংস"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"আপনার প্রশাসক দ্বারা অক্ষম করা হয়েছে"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"হোম স্ক্রিন ঘোরানোর অনুমতি দিন"</string>
