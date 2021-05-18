@@ -97,8 +97,7 @@
     <string name="folder_name_format_exact" msgid="8626242716117004803">"フォルダ: <xliff:g id="NAME">%1$s</xliff:g>、<xliff:g id="SIZE">%2$d</xliff:g> 件のアイテム"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"フォルダ: <xliff:g id="NAME">%1$s</xliff:g>、<xliff:g id="SIZE">%2$d</xliff:g> 件以上のアイテム"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"壁紙"</string>
-    <!-- no translation found for styles_wallpaper_button_text (8216961355289236794) -->
-    <skip />
+    <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"壁紙とスタイル"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"ホームの設定"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"管理者により無効にされています"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"ホーム画面の回転を許可"</string>
