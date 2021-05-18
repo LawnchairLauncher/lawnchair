@@ -2592,16 +2592,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     @Override
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (LIVE_TILE.get()) {
-            switchToScreenshot(
-                    () -> finishRecentsAnimation(true /* toRecents */,
-                            this::onConfigurationChangedInternal));
-        } else {
-            onConfigurationChangedInternal();
-        }
-    }
-
-    private void onConfigurationChangedInternal() {
         final int rotation = mActivity.getDisplay().getRotation();
         if (mOrientationState.setRecentsRotation(rotation)) {
             updateOrientationHandler();
