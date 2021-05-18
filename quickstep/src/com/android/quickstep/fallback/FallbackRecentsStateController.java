@@ -77,9 +77,7 @@ public class FallbackRecentsStateController implements StateHandler<RecentsState
         float clearAllButtonAlpha = state.hasClearAllButton() ? 1 : 0;
         setter.setFloat(mRecentsView.getClearAllButton(), ClearAllButton.VISIBILITY_ALPHA,
                 clearAllButtonAlpha, LINEAR);
-        float overviewButtonAlpha =
-                state.hasOverviewActions() && mRecentsView.shouldShowOverviewActionsForState(state)
-                        ? 1 : 0;
+        float overviewButtonAlpha = state.hasOverviewActions() ? 1 : 0;
         setter.setFloat(mActivity.getActionsView().getVisibilityAlpha(),
                 MultiValueAlpha.VALUE, overviewButtonAlpha, LINEAR);
 

@@ -166,7 +166,7 @@ public class TaskView extends FrameLayout implements Reusable {
     private static final List<Rect> SYSTEM_GESTURE_EXCLUSION_RECT =
             Collections.singletonList(new Rect());
 
-    private static final FloatProperty<TaskView> FOCUS_TRANSITION =
+    public static final FloatProperty<TaskView> FOCUS_TRANSITION =
             new FloatProperty<TaskView>("focusTransition") {
                 @Override
                 public void setValue(TaskView taskView, float v) {
@@ -332,6 +332,19 @@ public class TaskView extends FrameLayout implements Reusable {
                 @Override
                 public Float get(TaskView taskView) {
                     return taskView.mNonFullscreenTranslationY;
+                }
+            };
+
+    public static final FloatProperty<TaskView> SNAPSHOT_SCALE =
+            new FloatProperty<TaskView>("snapshotScale") {
+                @Override
+                public void setValue(TaskView taskView, float v) {
+                    taskView.setSnapshotScale(v);
+                }
+
+                @Override
+                public Float get(TaskView taskView) {
+                    return taskView.mSnapshotView.getScaleX();
                 }
             };
 
@@ -523,8 +536,8 @@ public class TaskView extends FrameLayout implements Reusable {
         return mTask;
     }
 
-    public boolean hasTaskId(int taskId) {
-        return mTask != null && mTask.key != null && mTask.key.id == taskId;
+    public int getTaskId() {
+        return mTask != null && mTask.key != null ? mTask.key.id : -1;
     }
 
     public TaskThumbnailView getThumbnail() {
@@ -846,6 +859,7 @@ public class TaskView extends FrameLayout implements Reusable {
                 mSplitSelectTranslationX = 0f;
         mDismissTranslationY = mTaskOffsetTranslationY = mTaskResistanceTranslationY =
                 mSplitSelectTranslationY = 0f;
+        setSnapshotScale(1f);
         applyTranslationX();
         applyTranslationY();
         setTranslationZ(0);
@@ -925,6 +939,9 @@ public class TaskView extends FrameLayout implements Reusable {
         if (mActivity.getDeviceProfile().isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get()) {
             setPivotX(getLayoutDirection() == LAYOUT_DIRECTION_RTL ? 0 : right - left);
             setPivotY(mSnapshotView.getTop());
+            mSnapshotView.setPivotX(
+                    getLayoutDirection() == LAYOUT_DIRECTION_RTL ? 0 : right - left);
+            mSnapshotView.setPivotY(0);
         } else {
             setPivotX((right - left) * 0.5f);
             setPivotY(mSnapshotView.getTop() + mSnapshotView.getHeight() * 0.5f);
@@ -953,6 +970,11 @@ public class TaskView extends FrameLayout implements Reusable {
 
     public float getFullscreenScale() {
         return mFullscreenScale;
+    }
+
+    private void setSnapshotScale(float dismissScale) {
+        mSnapshotView.setScaleX(dismissScale);
+        mSnapshotView.setScaleY(dismissScale);
     }
 
     /**
