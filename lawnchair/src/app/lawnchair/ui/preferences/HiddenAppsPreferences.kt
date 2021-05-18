@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavGraphBuilder
+import app.lawnchair.DefaultAppFilter
 import app.lawnchair.ui.preferences.components.*
 import app.lawnchair.util.*
 import app.lawnchair.util.preferences.getAdapter
@@ -26,7 +27,7 @@ fun HiddenAppsPreferences() {
     pageMeta.provide(Meta(title = hiddenAppsCount()))
     var hiddenApps by preferenceManager().hiddenAppSet.getAdapter()
     val optionalApps by appsList(
-        filter = defaultAppFilter(),
+        filter = remember { DefaultAppFilter() },
         comparator = hiddenAppsComparator(hiddenApps)
     )
     LoadingScreen(isLoading = !optionalApps.isPresent) {
