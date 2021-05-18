@@ -34,6 +34,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.views.FloatingView;
 import com.android.launcher3.views.ListenerView;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.RoundedCornerEnforcement;
@@ -41,7 +42,7 @@ import com.android.launcher3.widget.RoundedCornerEnforcement;
 /** A view that mimics an App Widget through a launch animation. */
 @TargetApi(Build.VERSION_CODES.S)
 public class FloatingWidgetView extends FrameLayout implements AnimatorListener,
-        OnGlobalLayoutListener {
+        OnGlobalLayoutListener, FloatingView {
     private static final Matrix sTmpMatrix = new Matrix();
 
     private final Launcher mLauncher;
@@ -58,6 +59,8 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener,
     private Runnable mFastFinishRunnable;
     private Runnable mOnTargetChangeRunnable;
     private boolean mAppTargetIsTranslucent;
+
+    private float mIconOffsetY;
 
     public FloatingWidgetView(Context context) {
         this(context, null);
@@ -129,6 +132,7 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener,
     }
 
     /** Callback at the end or early exit of the animation. */
+    @Override
     public void fastFinish() {
         if (isUninitialized()) return;
         Runnable fastFinishRunnable = mFastFinishRunnable;
@@ -192,6 +196,12 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener,
         positionViews();
     }
 
+    @Override
+    public void setPositionOffsetY(float y) {
+        mIconOffsetY = y;
+        onGlobalLayout();
+    }
+
     /** Sets the layout parameters of the floating view and its background view child. */
     private void positionViews() {
         LayoutParams layoutParams = (LayoutParams) getLayoutParams();
@@ -200,7 +210,7 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener,
 
         // FloatingWidgetView layout is forced LTR
         mBackgroundView.setTranslationX(mBackgroundPosition.left);
-        mBackgroundView.setTranslationY(mBackgroundPosition.top);
+        mBackgroundView.setTranslationY(mBackgroundPosition.top + mIconOffsetY);
         LayoutParams backgroundParams = (LayoutParams) mBackgroundView.getLayoutParams();
         backgroundParams.leftMargin = 0;
         backgroundParams.topMargin = 0;
@@ -215,7 +225,8 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener,
             sTmpMatrix.setTranslate(-mBackgroundOffset.left - mAppWidgetView.getLeft(),
                     -mBackgroundOffset.top - mAppWidgetView.getTop());
             sTmpMatrix.postScale(foregroundScale, foregroundScale);
-            sTmpMatrix.postTranslate(mBackgroundPosition.left, mBackgroundPosition.top);
+            sTmpMatrix.postTranslate(mBackgroundPosition.left, mBackgroundPosition.top
+                    + mIconOffsetY);
             mForegroundOverlayView.setMatrix(sTmpMatrix);
         }
     }
@@ -240,6 +251,7 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener,
     }
 
     private void recycle() {
+        mIconOffsetY = 0;
         mEndRunnable = null;
         mFastFinishRunnable = null;
         mOnTargetChangeRunnable = null;
