@@ -18,6 +18,7 @@ package app.lawnchair.ui.preferences
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
@@ -45,12 +46,13 @@ fun NavGraphBuilder.appDrawerGraph(route: String) {
 @Composable
 fun AppDrawerPreferences() {
     val prefs = preferenceManager()
+    val resources = LocalContext.current.resources
     pageMeta.provide(Meta(title = stringResource(id = R.string.app_drawer_label)))
     PreferenceLayout {
         PreferenceGroup(heading = stringResource(id = R.string.general_label), isFirstChild = true) {
             NavigationActionPreference(
                 label = stringResource(id = R.string.hidden_apps_label),
-                subtitle = hiddenAppsCount(),
+                subtitle = resources.getQuantityString(R.plurals.apps_count, hiddenAppsCount(), hiddenAppsCount()),
                 destination = subRoute(name = AppDrawerRoutes.HIDDEN_APPS),
             )
             SliderPreference(

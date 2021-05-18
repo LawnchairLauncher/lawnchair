@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.DefaultAppFilter
 import app.lawnchair.ui.preferences.components.*
@@ -27,7 +28,15 @@ fun NavGraphBuilder.hiddenAppsGraph(route: String) {
 @ExperimentalAnimationApi
 @Composable
 fun HiddenAppsPreferences() {
-    pageMeta.provide(Meta(title = hiddenAppsCount()))
+    val pageTitle =
+        with (hiddenAppsCount()) {
+            if (this == 0) {
+                stringResource(id = R.string.hidden_apps_label)
+            } else {
+                stringResource(id = R.string.hidden_apps_label_with_count, this)
+            }
+        }
+    pageMeta.provide(Meta(title = pageTitle))
     var hiddenApps by preferenceManager().hiddenAppSet.getAdapter()
     val optionalApps by appsList(
         filter = remember { DefaultAppFilter() },
@@ -54,13 +63,7 @@ fun HiddenAppsPreferences() {
 }
 
 @Composable
-fun hiddenAppsCount(): String {
-    val resources = LocalContext.current.resources
-    val count = preferenceManager().hiddenAppSet.getState().value.size
-    return remember(count) {
-        resources.getQuantityString(R.plurals.hidden_apps_count, count, count)
-    }
-}
+fun hiddenAppsCount(): Int = preferenceManager().hiddenAppSet.getState().value.size
 
 @Composable
 fun hiddenAppsComparator(hiddenApps: Set<String>): Comparator<App> {
