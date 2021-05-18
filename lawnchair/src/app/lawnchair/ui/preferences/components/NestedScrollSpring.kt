@@ -16,13 +16,14 @@
 
 package app.lawnchair.ui.preferences.components
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.unit.Velocity
 import androidx.dynamicanimation.animation.FloatPropertyCompat
 import androidx.dynamicanimation.animation.SpringAnimation
@@ -33,15 +34,14 @@ import kotlin.math.abs
 fun NestedScrollSpring(content: @Composable () -> Unit) {
     val dampedScrollShift = remember { mutableStateOf(0f) }
     val nestedScrollConnection = remember { NestedScrollSpringConnection(dampedScrollShift) }
-    Layout(
-        content,
+    Box(
         modifier = Modifier
             .nestedScroll(nestedScrollConnection)
-    ) { measurables, constraints ->
-        layout(constraints.maxWidth, constraints.maxHeight) {
-            require(measurables.size == 1)
-            measurables.first().measure(constraints).place(0, dampedScrollShift.value.toInt())
-        }
+            .graphicsLayer {
+                translationY = dampedScrollShift.value
+            },
+    ) {
+        content()
     }
 }
 

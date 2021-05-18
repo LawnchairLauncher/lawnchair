@@ -6,7 +6,6 @@ import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import app.lawnchair.util.backHandler
 import kotlinx.coroutines.launch
 
@@ -17,18 +16,12 @@ fun BottomSheet(
     content: @Composable (showSheet: suspend () -> Unit) -> Unit,
 ) {
     val state = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+    var isAnimatingShow by remember { mutableStateOf(false) }
 
     val currentSheetContent by rememberUpdatedState(sheetContent)
-    val addedToHost = rememberSaveable { mutableStateOf(false) }
-    val wasVisible = rememberSaveable { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
-    if (wasVisible.value && !state.isVisible) {
-        addedToHost.value = false
-    }
-    wasVisible.value = state.isVisible
-
-    if (addedToHost.value) {
+    if (state.isVisible || isAnimatingShow) {
         Portal {
             ModalBottomSheetLayout(
                 sheetState = state,
@@ -41,11 +34,13 @@ fun BottomSheet(
         }
     }
 
-    val showSheet = remember {
-        suspend {
-            addedToHost.value = true
+    val showSheet = remember { suspend {
+        try {
+            isAnimatingShow = true
             state.show()
+        } finally {
+            isAnimatingShow = false
         }
-    }
+    } }
     content(showSheet)
 }
