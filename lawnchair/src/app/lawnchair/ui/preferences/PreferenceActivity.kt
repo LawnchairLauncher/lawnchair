@@ -20,11 +20,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.core.view.WindowCompat
 import app.lawnchair.ui.theme.LawnchairTheme
 import com.google.accompanist.insets.ProvideWindowInsets
 
 class PreferenceActivity : ComponentActivity() {
+    @ExperimentalMaterialApi
     @ExperimentalAnimationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
