@@ -223,11 +223,7 @@ fun cutRect(
     if (!cutTop && !cutBottom) return rect
     var top = rect.top
     var bottom = rect.bottom
-    if (cutTop) {
-        top -= height
-    }
-    if (cutBottom) {
-        bottom += height
-    }
+    if (cutTop) top -= height
+    if (cutBottom) bottom += height
     return Rect(rect.left, top, rect.right, bottom)
 }
