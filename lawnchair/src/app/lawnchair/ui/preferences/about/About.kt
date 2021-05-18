@@ -34,7 +34,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
-import app.lawnchair.ui.preferences.components.ClickListenerPreference
+import app.lawnchair.ui.preferences.components.ClickablePreference
 import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.preferenceGraph
@@ -222,12 +222,12 @@ fun About() {
             }
         }
         PreferenceGroup {
-            ClickListenerPreference(label = stringResource(id = R.string.acknowledgements), onClick = {
+            ClickablePreference(label = stringResource(id = R.string.acknowledgements), onClick = {
                 val intent = Intent(context, OssLicensesMenuActivity::class.java)
                 OssLicensesMenuActivity.setActivityTitle(context.getString(R.string.acknowledgements))
                 context.startActivity(intent)
             })
-            ClickListenerPreference(label = stringResource(id = R.string.translate), showDivider = false, onClick = {
+            ClickablePreference(label = stringResource(id = R.string.translate), showDivider = false, onClick = {
                 val webpage = Uri.parse("https://lawnchair.crowdin.com")
                 val intent = Intent(Intent.ACTION_VIEW, webpage)
                 if (intent.resolveActivity(context.packageManager) != null) {
