@@ -205,6 +205,6 @@
 
         <activity
             android:name="com.google.android.gms.oss.licenses.OssLicensesActivity"
-            android:theme="@style/Theme.AppCompat.DayNight" />
+            android:theme="@style/Theme.Acknowledgements" />
     </application>
 </manifest>
