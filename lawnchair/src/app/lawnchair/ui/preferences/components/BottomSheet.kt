@@ -1,10 +1,7 @@
 package app.lawnchair.ui.preferences.components
 
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import app.lawnchair.util.backHandler
 import kotlinx.coroutines.launch
@@ -13,22 +10,22 @@ import kotlinx.coroutines.launch
 @Composable
 fun BottomSheet(
     sheetContent: @Composable ColumnScope.() -> Unit,
+    sheetState: ModalBottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden),
     content: @Composable (showSheet: suspend () -> Unit) -> Unit,
 ) {
-    val state = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     var isAnimatingShow by remember { mutableStateOf(false) }
 
     val currentSheetContent by rememberUpdatedState(sheetContent)
     val scope = rememberCoroutineScope()
 
-    if (state.isVisible || isAnimatingShow) {
+    if (sheetState.isVisible || isAnimatingShow) {
         Portal {
             ModalBottomSheetLayout(
-                sheetState = state,
+                sheetState = sheetState,
                 sheetContent = currentSheetContent
             ) {
                 backHandler {
-                    scope.launch { state.hide() }
+                    scope.launch { sheetState.hide() }
                 }
             }
         }
@@ -37,7 +34,7 @@ fun BottomSheet(
     val showSheet = remember { suspend {
         try {
             isAnimatingShow = true
-            state.show()
+            sheetState.show()
         } finally {
             isAnimatingShow = false
         }
