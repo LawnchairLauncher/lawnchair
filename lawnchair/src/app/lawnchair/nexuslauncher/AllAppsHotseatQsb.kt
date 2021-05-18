@@ -15,6 +15,9 @@ import android.view.animation.Interpolator
 import android.widget.EditText
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
+import app.lawnchair.util.Color
+import app.lawnchair.util.preferences.PreferenceManager
+import app.lawnchair.util.preferences.PreferenceManager.Companion.getInstance
 import com.android.launcher3.*
 import com.android.launcher3.allapps.AllAppsContainerView
 import com.android.launcher3.allapps.AllAppsStore
@@ -56,6 +59,10 @@ class AllAppsHotseatQsb @JvmOverloads constructor(context: Context?, attrs: Attr
         spanned.setSpan(TintedDrawableSpan(context, R.drawable.ic_allapps_search),
                 0, 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
         mFallbackSearchView.hint = spanned
+
+        val prefs: PreferenceManager = getInstance(context)
+        // TODO: Recolour cursor.
+        mFallbackSearchView.setHintTextColor(Color.parseAccentColorInt(prefs.accentColor.get(), context))
     }
 
     override fun onAttachedToWindow() {

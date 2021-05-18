@@ -92,7 +92,10 @@ fun AppItem(
 
 @ExperimentalAnimationApi
 @Composable
-fun AnimatedCheck(visible: Boolean) {
+fun AnimatedCheck(
+    visible: Boolean,
+    colorFilter: ColorFilter = ColorFilter.tint(MaterialTheme.colors.primary),
+) {
     AnimatedVisibility(
         visible = visible,
         enter = fadeIn(),
@@ -101,7 +104,7 @@ fun AnimatedCheck(visible: Boolean) {
         Image(
             imageVector = Icons.Rounded.Check,
             contentDescription = null,
-            colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
+            colorFilter = colorFilter,
         )
     }
 }
