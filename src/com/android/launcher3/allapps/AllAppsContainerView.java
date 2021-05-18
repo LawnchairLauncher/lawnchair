@@ -127,7 +127,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     private Rect mInsets = new Rect();
 
     private SearchAdapterProvider mSearchAdapterProvider;
-    private final int mHeaderTopPadding;
     private final int mScrimColor;
     private final int mHeaderProtectionColor;
     private final float mHeaderThreshold;
@@ -152,9 +151,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         mScrimColor = Themes.getAttrColor(context, R.attr.allAppsScrimColor);
         mHeaderThreshold = getResources().getDimensionPixelSize(
                 R.dimen.dynamic_grid_cell_border_spacing);
-        mHeaderTopPadding = context.getResources()
-                .getDimensionPixelSize(R.dimen.all_apps_header_top_padding);
-        mHeaderProtectionColor = context.getColor(R.color.all_apps_tab_bg);
+        mHeaderProtectionColor = Themes.getAttrColor(context, R.attr.allappsHeaderProtectionColor);
 
         mLauncher.addOnDeviceProfileChangeListener(this);
 

@@ -52,6 +52,7 @@ public class FloatingHeaderView extends LinearLayout implements
 
     private final Rect mClip = new Rect(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE);
     private final ValueAnimator mAnimator = ValueAnimator.ofInt(0, 0);
+    private final ValueAnimator mHeaderAnimator = ValueAnimator.ofInt(0, 1).setDuration(100);
     private final Point mTempOffset = new Point();
     private final Paint mBGPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final RecyclerView.OnScrollListener mOnScrollListener =
@@ -132,6 +133,7 @@ public class FloatingHeaderView extends LinearLayout implements
         }
         mFixedRows = rows.toArray(new FloatingHeaderRow[rows.size()]);
         mAllRows = mFixedRows;
+        mHeaderAnimator.addUpdateListener(valueAnimator -> invalidate());
     }
 
     @Override
@@ -268,7 +270,6 @@ public class FloatingHeaderView extends LinearLayout implements
                 }
             } else {
                 mHeaderCollapsed = false;
-                invalidate();
             }
             mTranslationY = currentScrollY;
         } else if (!mHeaderCollapsed) {
@@ -281,7 +282,8 @@ public class FloatingHeaderView extends LinearLayout implements
             } else if (mTranslationY <= -mMaxTranslation) { // hide or stay hidden
                 mHeaderCollapsed = true;
                 mSnappedScrolledY = -mMaxTranslation;
-                invalidate();
+                mHeaderAnimator.setCurrentFraction(0);
+                mHeaderAnimator.start();
             }
         }
     }
@@ -296,8 +298,10 @@ public class FloatingHeaderView extends LinearLayout implements
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        if (mHeaderCollapsed && mHeaderColor != Color.TRANSPARENT) {
+        if (mHeaderCollapsed && mTabLayout.getVisibility() == VISIBLE
+                && mHeaderColor != Color.TRANSPARENT) {
             mBGPaint.setColor(mHeaderColor);
+            mBGPaint.setAlpha((int) (255 * mHeaderAnimator.getAnimatedFraction()));
             canvas.drawRect(0, 0, getWidth(), getHeight() + mTranslationY, mBGPaint);
         }
         super.dispatchDraw(canvas);
