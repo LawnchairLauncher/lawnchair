@@ -389,6 +389,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     private final TaskOverlayFactory mTaskOverlayFactory;
 
+    private int mOrientation;
+
     protected boolean mDisallowScrollToClearAll;
     private boolean mOverlayEnabled;
     protected boolean mFreezeViewVisibility;
@@ -582,6 +584,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 .getDimensionPixelSize(R.dimen.recents_fast_fling_velocity);
         mModel = RecentsModel.INSTANCE.get(context);
         mIdp = InvariantDeviceProfile.INSTANCE.get(context);
+        mOrientation = getResources().getConfiguration().orientation;
 
         mClearAllButton = (ClearAllButton) LayoutInflater.from(context)
                 .inflate(R.layout.overview_clear_all_button, this, false);
@@ -2615,6 +2618,18 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     @Override
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        if (LIVE_TILE.get() && mEnableDrawingLiveTile && newConfig.orientation != mOrientation) {
+            switchToScreenshot(
+                    () -> finishRecentsAnimation(true /* toRecents */,
+                            this::onConfigurationChangedInternal));
+            mEnableDrawingLiveTile = false;
+        } else {
+            onConfigurationChangedInternal();
+        }
+        mOrientation = newConfig.orientation;
+    }
+
+    private void onConfigurationChangedInternal() {
         final int rotation = mActivity.getDisplay().getRotation();
         if (mOrientationState.setRecentsRotation(rotation)) {
             updateOrientationHandler();
