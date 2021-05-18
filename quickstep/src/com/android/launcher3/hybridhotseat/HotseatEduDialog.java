@@ -48,7 +48,7 @@ import java.util.List;
  * User education dialog for hybrid hotseat. Allows user to migrate hotseat items to a new page in
  * the workspace and shows predictions on the whole hotseat
  */
-public class HotseatEduDialog extends AbstractSlideInView implements Insettable {
+public class HotseatEduDialog extends AbstractSlideInView<Launcher> implements Insettable {
 
     private static final int DEFAULT_CLOSE_DURATION = 200;
     protected static final int FINAL_SCRIM_BG_COLOR = 0x88000000;
@@ -84,7 +84,7 @@ public class HotseatEduDialog extends AbstractSlideInView implements Insettable 
         mHotseatWrapper = findViewById(R.id.hotseat_wrapper);
         mSampleHotseat = findViewById(R.id.sample_prediction);
 
-        DeviceProfile grid = mLauncher.getDeviceProfile();
+        DeviceProfile grid = mActivityContext.getDeviceProfile();
         Rect padding = grid.getHotseatLayoutPadding();
 
         mSampleHotseat.getLayoutParams().height = grid.cellHeightPx;
@@ -110,13 +110,13 @@ public class HotseatEduDialog extends AbstractSlideInView implements Insettable 
 
         mHotseatEduController.moveHotseatItems();
         mHotseatEduController.finishOnboarding();
-        mLauncher.getStatsLogManager().logger().log(LAUNCHER_HOTSEAT_EDU_ACCEPT);
+        mActivityContext.getStatsLogManager().logger().log(LAUNCHER_HOTSEAT_EDU_ACCEPT);
     }
 
     private void onDismiss(View v) {
         mHotseatEduController.showDimissTip();
         mHotseatEduController.finishOnboarding();
-        mLauncher.getStatsLogManager().logger().log(LAUNCHER_HOTSEAT_EDU_DENY);
+        mActivityContext.getStatsLogManager().logger().log(LAUNCHER_HOTSEAT_EDU_DENY);
         handleClose(true);
     }
 
@@ -131,12 +131,12 @@ public class HotseatEduDialog extends AbstractSlideInView implements Insettable 
         int rightInset = insets.right - mInsets.right;
         int bottomInset = insets.bottom - mInsets.bottom;
         mInsets.set(insets);
-        if (mLauncher.getOrientation() == Configuration.ORIENTATION_PORTRAIT) {
+        if (mActivityContext.getOrientation() == Configuration.ORIENTATION_PORTRAIT) {
             setPadding(leftInset, getPaddingTop(), rightInset, 0);
             mHotseatWrapper.setPadding(mHotseatWrapper.getPaddingLeft(), getPaddingTop(),
                     mHotseatWrapper.getPaddingRight(), bottomInset);
             mHotseatWrapper.getLayoutParams().height =
-                    mLauncher.getDeviceProfile().hotseatBarSizePx + insets.bottom;
+                    mActivityContext.getDeviceProfile().hotseatBarSizePx + insets.bottom;
 
         } else {
             setPadding(0, getPaddingTop(), 0, 0);
@@ -178,7 +178,7 @@ public class HotseatEduDialog extends AbstractSlideInView implements Insettable 
     }
 
     private void populatePreview(List<WorkspaceItemInfo> predictions) {
-        for (int i = 0; i < mLauncher.getDeviceProfile().numShownHotseatIcons; i++) {
+        for (int i = 0; i < mActivityContext.getDeviceProfile().numShownHotseatIcons; i++) {
             WorkspaceItemInfo info = predictions.get(i);
             PredictedAppIcon icon = PredictedAppIcon.createIcon(mSampleHotseat, info);
             icon.setEnabled(false);
@@ -194,13 +194,13 @@ public class HotseatEduDialog extends AbstractSlideInView implements Insettable 
      */
     public void show(List<WorkspaceItemInfo> predictions) {
         if (getParent() != null
-                || predictions.size() < mLauncher.getDeviceProfile().numShownHotseatIcons
+                || predictions.size() < mActivityContext.getDeviceProfile().numShownHotseatIcons
                 || mHotseatEduController == null) {
             return;
         }
-        AbstractFloatingView.closeAllOpenViews(mLauncher);
+        AbstractFloatingView.closeAllOpenViews(mActivityContext);
         attachToContainer();
-        mLauncher.getStatsLogManager().logger().log(LAUNCHER_HOTSEAT_EDU_SEEN);
+        mActivityContext.getStatsLogManager().logger().log(LAUNCHER_HOTSEAT_EDU_SEEN);
         animateOpen();
         populatePreview(predictions);
     }

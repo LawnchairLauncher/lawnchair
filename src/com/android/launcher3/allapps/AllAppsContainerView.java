@@ -151,11 +151,9 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
                 R.dimen.dynamic_grid_cell_border_spacing);
         mHeaderTopPadding = context.getResources()
                 .getDimensionPixelSize(R.dimen.all_apps_header_top_padding);
-        int accentColor = Themes.getColorAccent(getContext());
-        mHeaderProtectionColor = ColorUtils.blendARGB(mScrimColor, accentColor, .3f);
+        mHeaderProtectionColor = context.getColor(R.color.all_apps_tab_bg);
 
         mLauncher.addOnDeviceProfileChangeListener(this);
-
 
         mSearchAdapterProvider = mLauncher.createSearchAdapterProvider(this);
         mSearchQueryBuilder = new SpannableStringBuilder();

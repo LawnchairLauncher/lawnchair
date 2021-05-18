@@ -207,7 +207,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         onWidgetsBound();
 
         mSearchAndRecommendationViewHolder.mSearchBar.initialize(
-                mLauncher.getPopupDataProvider(), /* searchModeListener= */ this);
+                mActivityContext.getPopupDataProvider(), /* searchModeListener= */ this);
 
         if (!hasSeenEducationTip()) {
             addOnLayoutChangeListener(mLayoutChangeListenerToShowTips);
@@ -271,7 +271,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        mLauncher.getAppWidgetHost().addProviderChangeListener(this);
+        mActivityContext.getAppWidgetHost().addProviderChangeListener(this);
         notifyWidgetProvidersChanged();
         onRecommendedWidgetsBound();
     }
@@ -279,7 +279,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        mLauncher.getAppWidgetHost().removeProviderChangeListener(this);
+        mActivityContext.getAppWidgetHost().removeProviderChangeListener(this);
     }
 
     @Override
@@ -327,7 +327,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     }
 
     private void doMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        DeviceProfile deviceProfile = mLauncher.getDeviceProfile();
+        DeviceProfile deviceProfile = mActivityContext.getDeviceProfile();
         int widthUsed;
         if (mInsets.bottom > 0) {
             widthUsed = mInsets.left + mInsets.right;
@@ -350,7 +350,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
         int previousMaxSpansPerRow = mMaxSpansPerRow;
         mMaxSpansPerRow = getMeasuredWidth()
-                / (mLauncher.getDeviceProfile().cellWidthPx + mWidgetCellHorizontalPadding);
+                / (mActivityContext.getDeviceProfile().cellWidthPx + mWidgetCellHorizontalPadding);
 
         if (previousMaxSpansPerRow != mMaxSpansPerRow) {
             mAdapters.get(AdapterHolder.PRIMARY).mWidgetsListAdapter.setMaxHorizontalSpansPerRow(
@@ -383,7 +383,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
     @Override
     public void notifyWidgetProvidersChanged() {
-        mLauncher.refreshAndBindWidgetsForPackageUser(null);
+        mActivityContext.refreshAndBindWidgetsForPackageUser(null);
     }
 
     @Override
@@ -391,7 +391,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         if (mIsInSearchMode) {
             return;
         }
-        List<WidgetsListBaseEntry> allWidgets = mLauncher.getPopupDataProvider().getAllWidgets();
+        List<WidgetsListBaseEntry> allWidgets =
+                mActivityContext.getPopupDataProvider().getAllWidgets();
 
         AdapterHolder primaryUserAdapterHolder = mAdapters.get(AdapterHolder.PRIMARY);
         primaryUserAdapterHolder.mWidgetsListAdapter.setWidgets(allWidgets);
@@ -468,12 +469,12 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             return;
         }
         List<WidgetItem> recommendedWidgets =
-                mLauncher.getPopupDataProvider().getRecommendedWidgets();
+                mActivityContext.getPopupDataProvider().getRecommendedWidgets();
         WidgetsRecommendationTableLayout table =
                 mSearchAndRecommendationViewHolder.mRecommendedWidgetsTable;
         if (recommendedWidgets.size() > 0) {
             float maxTableHeight =
-                    (mLauncher.getDeviceProfile().availableHeightPx - mTabsHeight
+                    (mActivityContext.getDeviceProfile().availableHeightPx - mTabsHeight
                             - getHeaderViewHeight()) * RECOMMENDATION_TABLE_HEIGHT_RATIO;
             List<ArrayList<WidgetItem>> recommendedWidgetsInTable =
                     WidgetsTableUtils.groupWidgetItemsIntoTable(recommendedWidgets,
@@ -614,10 +615,11 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     }
 
     private void showEducationTipOnView(View view) {
-        mLauncher.getSharedPrefs().edit().putBoolean(WIDGETS_EDUCATION_TIP_SEEN, true).apply();
+        mActivityContext.getSharedPrefs().edit()
+                .putBoolean(WIDGETS_EDUCATION_TIP_SEEN, true).apply();
         int[] coords = new int[2];
         view.getLocationOnScreen(coords);
-        ArrowTipView arrowTipView = new ArrowTipView(mLauncher);
+        ArrowTipView arrowTipView = new ArrowTipView(mActivityContext);
         arrowTipView.showAtLocation(
                 getContext().getString(R.string.long_press_widget_to_add),
                 /* arrowXCoord= */coords[0] + view.getWidth() / 2,
@@ -653,7 +655,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     }
 
     private boolean hasSeenEducationTip() {
-        return mLauncher.getSharedPrefs().getBoolean(WIDGETS_EDUCATION_TIP_SEEN, false)
+        return mActivityContext.getSharedPrefs().getBoolean(WIDGETS_EDUCATION_TIP_SEEN, false)
                 || Utilities.IS_RUNNING_IN_TEST_HARNESS;
     }
 
@@ -711,6 +713,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     final class SearchAndRecommendationViewHolder {
         final SearchAndRecommendationsView mContainer;
         final View mCollapseHandle;
+        final View mSearchBarContainer;
         final WidgetsSearchBar mSearchBar;
         final TextView mHeaderTitle;
         final WidgetsRecommendationTableLayout mRecommendedWidgetsTable;
@@ -719,6 +722,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 SearchAndRecommendationsView searchAndRecommendationContainer) {
             mContainer = searchAndRecommendationContainer;
             mCollapseHandle = mContainer.findViewById(R.id.collapse_handle);
+            mSearchBarContainer = mContainer.findViewById(R.id.search_bar_container);
             mSearchBar = mContainer.findViewById(R.id.widgets_search_bar);
             mHeaderTitle = mContainer.findViewById(R.id.title);
             mRecommendedWidgetsTable = mContainer.findViewById(R.id.recommended_widget_table);

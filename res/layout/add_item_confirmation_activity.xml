@@ -16,69 +16,85 @@
 ** limitations under the License.
 */
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/add_item_confirmation"
+<com.android.launcher3.dragndrop.AddItemDragLayer
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/add_item_drag_layer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp"
-    android:theme="?attr/widgetsTheme"
-    android:orientation="vertical">
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:importantForAccessibility="no">
 
-    <TextView
-        style="@style/TextHeadline"
-        android:id="@+id/widget_appName"
+    <com.android.launcher3.widget.AddItemWidgetsBottomSheet
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/add_item_bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:textColor="?android:attr/textColorPrimary"
-        android:textSize="24sp"
-        android:ellipsize="end"
-        android:fadingEdge="horizontal"
-        android:singleLine="true"
-        android:maxLines="1" />
+        android:background="@drawable/add_item_dialog_background"
+        android:padding="24dp"
+        android:theme="?attr/widgetsTheme"
+        android:layout_gravity="bottom"
+        android:orientation="vertical">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:paddingVertical="8dp"
-        android:text="@string/add_item_request_drag_hint"
-        android:textSize="14sp"
-        android:textColor="?android:attr/textColorSecondary"
-        android:alpha="0.7"
-        android:importantForAccessibility="no"/>
-
-    <include layout="@layout/widget_cell"
-        android:id="@+id/widget_cell"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginVertical="16dp" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="end"
-        android:padding="8dp"
-        android:orientation="horizontal">
-        <Button
-            style="@style/Widget.DeviceDefault.Button.Rounded.Colored"
-            android:layout_width="wrap_content"
+        <TextView
+            style="@style/TextHeadline"
+            android:id="@+id/widget_appName"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="16dp"
-            android:onClick="onCancelClick"
-            android:text="@android:string/cancel" />
+            android:gravity="center_horizontal"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="24sp"
+            android:ellipsize="end"
+            android:fadingEdge="horizontal"
+            android:singleLine="true"
+            android:maxLines="1" />
 
-        <Space
-            android:layout_width="4dp"
-            android:layout_height="wrap_content" />
-
-        <Button
-            style="@style/Widget.DeviceDefault.Button.Rounded.Colored"
-            android:layout_width="wrap_content"
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="16dp"
-            android:onClick="onPlaceAutomaticallyClick"
-            android:text="@string/add_to_home_screen" />
-    </LinearLayout>
-</LinearLayout>
+            android:gravity="center_horizontal"
+            android:paddingVertical="8dp"
+            android:text="@string/add_item_request_drag_hint"
+            android:textSize="14sp"
+            android:textColor="?android:attr/textColorSecondary"
+            android:alpha="0.7"
+            android:importantForAccessibility="no"/>
+
+        <include layout="@layout/widget_cell"
+            android:id="@+id/widget_cell"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginVertical="16dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:padding="8dp"
+            android:orientation="horizontal">
+            <Button
+                style="@style/Widget.DeviceDefault.Button.Rounded.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="16dp"
+                android:onClick="onCancelClick"
+                android:text="@android:string/cancel" />
+
+            <Space
+                android:layout_width="4dp"
+                android:layout_height="wrap_content" />
+
+            <Button
+                style="@style/Widget.DeviceDefault.Button.Rounded.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="16dp"
+                android:onClick="onPlaceAutomaticallyClick"
+                android:text="@string/add_to_home_screen"/>
+        </LinearLayout>
+    </com.android.launcher3.widget.AddItemWidgetsBottomSheet>
+
+</com.android.launcher3.dragndrop.AddItemDragLayer>
+
+
