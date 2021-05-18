@@ -52,7 +52,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
-import android.os.RemoteException;
 import android.os.SystemClock;
 import android.os.SystemProperties;
 import android.util.Log;
@@ -75,6 +74,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.provider.RestoreDbTask;
 import com.android.launcher3.statemanager.StatefulActivity;
+import com.android.launcher3.taskbar.TaskbarManager;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.tracing.LauncherTraceProto;
@@ -147,21 +147,9 @@ public class TouchInteractionService extends Service implements PluginListener<O
     private OverscrollPlugin mOverscrollPlugin;
 
     /**
-     * Extension of OverviewProxy aidl interface without needing to modify the actual interface.
-     * This is for methods that need only need local access and not intended to make IPC calls.
+     * Local IOverviewProxy implementation with some methods for local components
      */
-    public abstract static class TISBinder extends IOverviewProxy.Stub {
-        public abstract void setTaskbarOverviewProxyDelegate(
-                @Nullable TaskbarOverviewProxyDelegate i);
-    }
-
-
-    private final TISBinder mMyBinder = new TISBinder() {
-
-        public void setTaskbarOverviewProxyDelegate(
-                @Nullable TaskbarOverviewProxyDelegate delegate) {
-            mTaskbarOverviewProxyDelegate = delegate;
-        }
+    public class TISBinder extends IOverviewProxy.Stub {
 
         @BinderThread
         public void onInitialize(Bundle bundle) {
@@ -274,40 +262,24 @@ public class TouchInteractionService extends Service implements PluginListener<O
 
         @Override
         public void onImeWindowStatusChanged(int displayId, IBinder token, int vis,
-                int backDisposition, boolean showImeSwitcher) throws RemoteException {
-            if (mTaskbarOverviewProxyDelegate == null) {
-                return;
-            }
-            MAIN_EXECUTOR.execute(() -> {
-                if (mTaskbarOverviewProxyDelegate == null) {
-                    return;
-                }
-                mTaskbarOverviewProxyDelegate
-                        .updateImeStatus(displayId, vis, backDisposition, showImeSwitcher);
-            });
+                int backDisposition, boolean showImeSwitcher) {
+            MAIN_EXECUTOR.execute(() -> mTaskbarManager.updateImeStatus(
+                    displayId, vis, backDisposition, showImeSwitcher));
         }
-    };
 
-    public interface TaskbarOverviewProxyDelegate {
-        void updateImeStatus(int displayId, int vis, int backDisposition,
-                boolean showImeSwitcher);
+        public TaskbarManager getTaskbarManager() {
+            return mTaskbarManager;
+        }
     }
 
     private static boolean sConnected = false;
-    private static TouchInteractionService sInstance;
     private static boolean sIsInitialized = false;
     private RotationTouchHelper mRotationTouchHelper;
-    @Nullable
-    private TaskbarOverviewProxyDelegate mTaskbarOverviewProxyDelegate;
 
     public static boolean isConnected() {
         return sConnected;
     }
 
-    @Nullable
-    public static TouchInteractionService getInstance() {
-        return sInstance;
-    }
 
     public static boolean isInitialized() {
         return sIsInitialized;
@@ -336,9 +308,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
 
     private DisplayManager mDisplayManager;
 
-    public TouchInteractionService() {
-        sInstance = this;
-    }
+    private TaskbarManager mTaskbarManager;
 
     @Override
     public void onCreate() {
@@ -348,13 +318,14 @@ public class TouchInteractionService extends Service implements PluginListener<O
         mMainChoreographer = Choreographer.getInstance();
         mAM = ActivityManagerWrapper.getInstance();
         mDeviceState = new RecentsAnimationDeviceState(this, true);
+        mDisplayManager = getSystemService(DisplayManager.class);
+        mTaskbarManager = new TaskbarManager(this);
+
         mRotationTouchHelper = mDeviceState.getRotationTouchHelper();
         mDeviceState.addNavigationModeChangedCallback(this::onNavigationModeChanged);
         mDeviceState.addOneHandedModeChangedCallback(this::onOneHandedModeOverlayChanged);
         mDeviceState.runOnUserUnlocked(this::onUserUnlocked);
         ProtoTracer.INSTANCE.get(this).add(this);
-        mDisplayManager = getSystemService(DisplayManager.class);
-
         sConnected = true;
     }
 
@@ -468,8 +439,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
             int systemUiStateFlags = mDeviceState.getSystemUiStateFlags();
             SystemUiProxy.INSTANCE.get(this).setLastSystemUiStateFlags(systemUiStateFlags);
             mOverviewComponentObserver.onSystemUiStateChanged();
-            mOverviewComponentObserver.getActivityInterface().onSystemUiFlagsChanged(
-                    systemUiStateFlags);
+            mTaskbarManager.onSystemUiFlagsChanged(systemUiStateFlags);
 
             if ((lastSysUIFlags & SYSUI_STATE_TRACING_ENABLED) !=
                     (systemUiStateFlags & SYSUI_STATE_TRACING_ENABLED)) {
@@ -512,6 +482,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
         getSystemService(AccessibilityManager.class)
                 .unregisterSystemAction(SYSTEM_ACTION_ID_ALL_APPS);
 
+        mTaskbarManager.destroy();
         sConnected = false;
         super.onDestroy();
     }
@@ -519,7 +490,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
     @Override
     public IBinder onBind(Intent intent) {
         Log.d(TAG, "Touch service connected: user=" + getUserId());
-        return mMyBinder;
+        return new TISBinder();
     }
 
     private void onInputEvent(InputEvent ev) {
