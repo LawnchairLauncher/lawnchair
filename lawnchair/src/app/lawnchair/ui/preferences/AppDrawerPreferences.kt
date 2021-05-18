@@ -48,13 +48,18 @@ fun AppDrawerPreferences() {
     pageMeta.provide(Meta(title = stringResource(id = R.string.app_drawer_label)))
     PreferenceLayout {
         PreferenceGroup(heading = stringResource(id = R.string.general_label), isFirstChild = true) {
+            NavigationActionPreference(
+                label = stringResource(id = R.string.hidden_apps_label),
+                subtitle = hiddenAppsCount(),
+                destination = subRoute(name = AppDrawerRoutes.HIDDEN_APPS),
+            )
             SliderPreference(
                 label = stringResource(id = R.string.background_opacity),
                 adapter = prefs.drawerOpacity.getAdapter(),
                 steps = 2,
                 valueRange = 0.7F..1F,
-                showDivider = false,
-                showAsPercentage = true
+                showAsPercentage = true,
+                showDivider = false
             )
         }
         PreferenceGroup(heading = stringResource(id = R.string.grid)) {
@@ -80,14 +85,6 @@ fun AppDrawerPreferences() {
                 steps = 9,
                 valueRange = 0.5F..1.5F,
                 showAsPercentage = true,
-                showDivider = false
-            )
-        }
-        PreferenceGroup(heading = stringResource(id = R.string.app_drawer_section_apps)) {
-            NavigationActionPreference(
-                label = stringResource(id = R.string.hidden_apps_label),
-                subtitle = hiddenAppsCount(),
-                destination = subRoute(name = AppDrawerRoutes.HIDDEN_APPS),
                 showDivider = false
             )
         }
