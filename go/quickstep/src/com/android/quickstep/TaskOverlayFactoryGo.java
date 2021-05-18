@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.SystemClock;
+import android.os.UserManager;
 import android.provider.Settings;
 import android.text.TextUtils;
 
@@ -96,7 +97,10 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
             }
 
             getActionsView().updateDisabledFlags(DISABLED_ROTATED, rotated);
-            boolean isAllowedByPolicy = mThumbnailView.isRealSnapshot();
+            // Disable Overview Actions for Work Profile apps
+            boolean isManagedProfileTask =
+                    UserManager.get(mApplicationContext).isManagedProfile(task.key.userId);
+            boolean isAllowedByPolicy = mThumbnailView.isRealSnapshot() && !isManagedProfileTask;
             getActionsView().setCallbacks(new OverlayUICallbacksGoImpl(isAllowedByPolicy, task));
             mTaskPackageName = task.key.getPackageName();
 
@@ -127,8 +131,7 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
         /**
          * Creates and sends an Intent corresponding to the button that was clicked
          */
-        @VisibleForTesting
-        public void sendNIUIntent(String actionType) {
+        private void sendNIUIntent(String actionType) {
             Intent intent = createNIUIntent(actionType);
             // Only add and send the image if the appropriate permissions are held
             if (mAssistPermissionsEnabled) {
