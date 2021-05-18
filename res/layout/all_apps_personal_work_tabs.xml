@@ -32,7 +32,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:background="?android:attr/selectableItemBackground"
+        android:background="@drawable/personal_work_tabs_ripple"
         android:text="@string/all_apps_personal_tab"
         android:textColor="@color/all_apps_tab_text"
         android:textSize="16sp" />
@@ -42,7 +42,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:background="?android:attr/selectableItemBackground"
+        android:background="@drawable/personal_work_tabs_ripple"
         android:text="@string/all_apps_work_tab"
         android:textColor="@color/all_apps_tab_text"
         android:textSize="16sp" />
