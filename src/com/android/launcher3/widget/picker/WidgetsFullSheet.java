@@ -61,7 +61,6 @@ import com.android.launcher3.widget.LauncherAppWidgetHost.ProviderChangedListene
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.picker.search.SearchModeListener;
 import com.android.launcher3.widget.picker.search.WidgetsSearchBar;
-import com.android.launcher3.widget.picker.search.WidgetsSearchBarUIHelper;
 import com.android.launcher3.widget.util.WidgetsTableUtils;
 import com.android.launcher3.workprofile.PersonalWorkPagedView;
 import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.OnActivePageChangedListener;
@@ -76,8 +75,7 @@ import java.util.stream.IntStream;
  */
 public class WidgetsFullSheet extends BaseWidgetSheet
         implements Insettable, ProviderChangedListener, OnActivePageChangedListener,
-        WidgetsRecyclerView.HeaderViewDimensionsProvider, SearchModeListener,
-        WidgetsSearchBarUIHelper {
+        WidgetsRecyclerView.HeaderViewDimensionsProvider, SearchModeListener {
     private static final String TAG = WidgetsFullSheet.class.getSimpleName();
 
     private static final long DEFAULT_OPEN_DURATION = 267;
@@ -535,6 +533,12 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             } else if (getPopupContainer().isEventOverView(mContent, ev)) {
                 mNoIntercept = !getRecyclerView().shouldContainerScroll(ev, getPopupContainer());
             }
+
+            if (mSearchAndRecommendationViewHolder.mSearchBar.isSearchBarFocused()
+                    && !getPopupContainer().isEventOverView(
+                            mSearchAndRecommendationViewHolder.mSearchBarContainer, ev)) {
+                mSearchAndRecommendationViewHolder.mSearchBar.clearSearchBarFocus();
+            }
         }
         return super.onControllerInterceptTouchEvent(ev);
     }
@@ -609,11 +613,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         getWindowInsetsController().hide(WindowInsets.Type.ime());
     }
 
-    @Override
-    public void clearSearchBarFocus() {
-        mSearchAndRecommendationViewHolder.mSearchBar.clearSearchBarFocus();
-    }
-
     private void showEducationTipOnView(View view) {
         mActivityContext.getSharedPrefs().edit()
                 .putBoolean(WIDGETS_EDUCATION_TIP_SEEN, true).apply();
@@ -681,9 +680,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                     apps.getWidgetCache(),
                     apps.getIconCache(),
                     /* iconClickListener= */ WidgetsFullSheet.this,
-                    /* iconLongClickListener= */ WidgetsFullSheet.this,
-                    /* WidgetsSearchBarUIHelper= */
-                    mAdapterType == SEARCH ? WidgetsFullSheet.this : null);
+                    /* iconLongClickListener= */ WidgetsFullSheet.this);
             mWidgetsListAdapter.setHasStableIds(true);
             switch (mAdapterType) {
                 case PRIMARY:
