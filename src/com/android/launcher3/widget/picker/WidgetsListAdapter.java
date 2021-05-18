@@ -33,6 +33,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import com.android.launcher3.R;
 import com.android.launcher3.WidgetPreviewLoader;
 import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.recyclerview.ViewHolderBinder;
 import com.android.launcher3.util.LabelComparator;
 import com.android.launcher3.util.PackageUserKey;
@@ -47,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -153,6 +155,9 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     public void setWidgets(List<WidgetsListBaseEntry> tempEntries) {
         mAllEntries = tempEntries.stream().sorted(mRowComparator)
                 .collect(Collectors.toList());
+        if (shouldClearVisibleEntries()) {
+            mVisibleEntries.clear();
+        }
         updateVisibleEntries();
     }
 
@@ -270,6 +275,30 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
      */
     public void setMaxHorizontalSpansPerRow(int maxHorizontalSpans) {
         mWidgetsListTableViewHolderBinder.setMaxSpansPerRow(maxHorizontalSpans);
+    }
+
+    /**
+     * Returns {@code true} if there is a change in {@link #mAllEntries} that results in an
+     * invalidation of {@link #mVisibleEntries}. e.g. there is change in the device language.
+     */
+    private boolean shouldClearVisibleEntries() {
+        Map<PackageUserKey, PackageItemInfo> packagesInfo =
+                mAllEntries.stream()
+                        .filter(entry -> entry instanceof WidgetsListHeaderEntry)
+                        .map(entry -> entry.mPkgItem)
+                        .collect(Collectors.toMap(
+                                entry -> new PackageUserKey(entry.packageName, entry.user),
+                                entry -> entry));
+        for (WidgetsListBaseEntry visibleEntry: mVisibleEntries) {
+            PackageUserKey key = new PackageUserKey(visibleEntry.mPkgItem.packageName,
+                    visibleEntry.mPkgItem.user);
+            PackageItemInfo packageItemInfo = packagesInfo.get(key);
+            if (packageItemInfo != null
+                    && !visibleEntry.mPkgItem.title.equals(packageItemInfo.title)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /** Comparator for sorting WidgetListRowEntry based on package title. */
