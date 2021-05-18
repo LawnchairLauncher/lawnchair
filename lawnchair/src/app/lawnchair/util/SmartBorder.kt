@@ -23,8 +23,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.*
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.drawscope.withTransform
@@ -43,125 +48,9 @@ fun Modifier.smartBorder(border: BorderStroke, shape: Shape = RectangleShape) =
 fun Modifier.smartBorder(width: Dp, color: Color, shape: Shape = RectangleShape) =
     smartBorder(width, SolidColor(color), shape)
 
-fun Modifier.smartBorder(width: Dp, brush: Brush, shape: Shape): Modifier = composed(
-    factory = {
-        this.then(
-            Modifier.drawWithCache {
-                val outline: Outline = shape.createOutline(size, layoutDirection, this)
-                val borderSize = if (width == Dp.Hairline) 1f else width.toPx()
-
-                var insetOutline: Outline? = null
-                var stroke: Stroke? = null
-                var pathClip: Path? = null
-                var inset = 0f
-                var insetPath: Path? = null
-
-                val cornerCompensation = width.toPx().half * MAGIC_FLOAT
-                if (borderSize > 0 && size.minDimension > 0f) {
-                    if (outline is Outline.Rectangle) {
-                        stroke = Stroke(borderSize)
-                    } else {
-                        val strokeWidth = MAGIC_FLOAT * borderSize
-                        inset = borderSize - strokeWidth / 2
-                        val insetSize = Size(
-                            size.width - inset * 2,
-                            size.height - inset * 2
-                        )
-                        insetOutline = shape.createOutline(insetSize, layoutDirection, this)
-                        stroke = Stroke(strokeWidth)
-                        pathClip = when (outline) {
-                            is Outline.Rounded -> Path().apply { addRoundRect(outline.roundRect) }
-                            is Outline.Generic -> outline.path
-                            else -> null
-                        }
-
-                        insetPath =
-                            if (insetOutline is Outline.Rounded &&
-                                !insetOutline.roundRect.isSimple
-                            ) {
-                                Path().apply {
-                                    val rect = insetOutline.roundRect
-                                    addRoundRect(
-                                        RoundRect(
-                                            rect.left, rect.top, rect.right, rect.bottom,
-                                            CornerRadius(
-                                                rect.topLeftCornerRadius.x - cornerCompensation,
-                                                rect.topLeftCornerRadius.y - cornerCompensation
-                                            )
-                                        )
-                                    )
-                                    translate(Offset(inset, inset))
-                                }
-                            } else if (insetOutline is Outline.Generic) {
-                                Path().apply {
-                                    addPath(insetOutline.path, Offset(inset, inset))
-                                }
-                            } else {
-                                null
-                            }
-                    }
-                }
-
-                onDrawWithContent {
-                    drawContent()
-                    if (stroke != null) {
-                        if (insetOutline != null && pathClip != null) {
-                            val isSimpleRoundRect = insetOutline is Outline.Rounded &&
-                                    insetOutline.roundRect.isSimple
-                            withTransform({
-                                clipPath(pathClip)
-                                if (isSimpleRoundRect) {
-                                    translate(inset, inset)
-                                }
-                            }) {
-                                if (isSimpleRoundRect) {
-                                    val rRect = (insetOutline as Outline.Rounded).roundRect
-                                    drawRoundRect(
-                                        brush = brush,
-                                        topLeft = Offset(rRect.left, rRect.top),
-                                        size = Size(rRect.width, rRect.height),
-                                        cornerRadius = CornerRadius(
-                                            rRect.topLeftCornerRadius.x - cornerCompensation,
-                                            rRect.topLeftCornerRadius.y - cornerCompensation
-                                        ),
-                                        style = stroke
-                                    )
-                                } else if (insetPath != null) {
-                                    drawPath(insetPath, brush, style = stroke)
-                                }
-                            }
-                            clipRect {
-                                if (isSimpleRoundRect) {
-                                    val rRect = (outline as Outline.Rounded).roundRect
-                                    drawRoundRect(
-                                        brush = brush,
-                                        topLeft = Offset(rRect.left, rRect.top),
-                                        size = Size(rRect.width, rRect.height),
-                                        cornerRadius = rRect.topLeftCornerRadius,
-                                        style = HairlineBorderStroke
-                                    )
-                                } else {
-                                    drawPath(pathClip, brush = brush, style = HairlineBorderStroke)
-                                }
-                            }
-                        } else {
-                            val strokeWidth = stroke.width
-                            val halfStrokeWidth = strokeWidth / 2
-                            drawRect(
-                                brush = brush,
-                                topLeft = Offset(halfStrokeWidth, halfStrokeWidth),
-                                size = Size(
-                                    size.width - strokeWidth,
-                                    size.height - strokeWidth
-                                ),
-                                style = stroke
-                            )
-                        }
-                    }
-                }
-            }
-        )
-    },
+fun Modifier.smartBorder(
+    width: Dp, brush: Brush, shape: Shape, cutTop: Boolean = false, cutBottom: Boolean = false
+): Modifier = composed(
     inspectorInfo = debugInspectorInfo {
         name = "border"
         properties["width"] = width
@@ -173,4 +62,175 @@ fun Modifier.smartBorder(width: Dp, brush: Brush, shape: Shape): Modifier = comp
         }
         properties["shape"] = shape
     }
-)
+) {
+    Modifier.drawWithCache {
+        val originalOutline = shape.createOutline(size, layoutDirection, this)
+        val borderSize = if (width == Dp.Hairline) 1f else width.toPx()
+        val outline = cutOutline(originalOutline, borderSize, cutTop, cutBottom)
+
+        var insetOutline: Outline? = null
+        var stroke: Stroke? = null
+        var pathClip: Path? = null
+        var drawPathClip: Path? = null
+        var inset = 0f
+        var insetPath: Path? = null
+
+        val cornerCompensation = width.toPx().half * MAGIC_FLOAT
+        if (borderSize > 0 && size.minDimension > 0f) {
+            if (outline is Outline.Rectangle) {
+                stroke = Stroke(borderSize)
+            } else {
+                val strokeWidth = MAGIC_FLOAT * borderSize
+                inset = borderSize - strokeWidth / 2
+                val insetSize = Size(
+                    size.width - inset * 2,
+                    size.height - inset * 2
+                )
+                insetOutline = shape.createOutline(insetSize, layoutDirection, this)
+                insetOutline = cutOutline(insetOutline, borderSize, cutTop, cutBottom)
+                stroke = Stroke(strokeWidth)
+                pathClip = when (originalOutline) {
+                    is Outline.Rectangle -> Path().apply { addRect(originalOutline.rect) }
+                    is Outline.Rounded -> Path().apply { addRoundRect(originalOutline.roundRect) }
+                    is Outline.Generic -> originalOutline.path
+                    else -> null
+                }
+                drawPathClip = pathClip
+                if (outline is Outline.Rounded) {
+                    drawPathClip = Path().apply { addRoundRect(outline.roundRect) }
+                }
+
+                insetPath =
+                    if (insetOutline is Outline.Rounded &&
+                        !insetOutline.roundRect.isSimple
+                    ) {
+                        Path().apply {
+                            val rect = insetOutline.roundRect
+                            addRoundRect(
+                                RoundRect(
+                                    rect.left, rect.top, rect.right, rect.bottom,
+                                    CornerRadius(
+                                        rect.topLeftCornerRadius.x - cornerCompensation,
+                                        rect.topLeftCornerRadius.y - cornerCompensation
+                                    ),
+                                    CornerRadius(
+                                        rect.topRightCornerRadius.x - cornerCompensation,
+                                        rect.topRightCornerRadius.y - cornerCompensation
+                                    ),
+                                    CornerRadius(
+                                        rect.bottomLeftCornerRadius.x - cornerCompensation,
+                                        rect.bottomLeftCornerRadius.y - cornerCompensation
+                                    ),
+                                    CornerRadius(
+                                        rect.bottomRightCornerRadius.x - cornerCompensation,
+                                        rect.bottomRightCornerRadius.y - cornerCompensation
+                                    ),
+                                )
+                            )
+                            translate(Offset(inset, inset))
+                        }
+                    } else if (insetOutline is Outline.Generic) {
+                        Path().apply {
+                            addPath(insetOutline.path, Offset(inset, inset))
+                        }
+                    } else {
+                        null
+                    }
+            }
+        }
+
+        onDrawWithContent {
+            drawContent()
+            if (stroke != null) {
+                if (insetOutline != null && pathClip != null) {
+                    val isSimpleRoundRect = insetOutline is Outline.Rounded &&
+                            insetOutline.roundRect.isSimple
+                    withTransform({
+                        clipPath(pathClip)
+                        if (isSimpleRoundRect) {
+                            translate(inset, inset)
+                        }
+                    }) {
+                        if (isSimpleRoundRect) {
+                            val rRect = (insetOutline as Outline.Rounded).roundRect
+                            drawRoundRect(
+                                brush = brush,
+                                topLeft = Offset(rRect.left, rRect.top),
+                                size = Size(rRect.width, rRect.height),
+                                cornerRadius = CornerRadius(
+                                    rRect.topLeftCornerRadius.x - cornerCompensation,
+                                    rRect.topLeftCornerRadius.y - cornerCompensation
+                                ),
+                                style = stroke
+                            )
+                        } else if (insetPath != null) {
+                            drawPath(insetPath, brush, style = stroke)
+                        }
+                    }
+                    clipRect {
+                        if (isSimpleRoundRect) {
+                            val rRect = (outline as Outline.Rounded).roundRect
+                            drawRoundRect(
+                                brush = brush,
+                                topLeft = Offset(rRect.left, rRect.top),
+                                size = Size(rRect.width, rRect.height),
+                                cornerRadius = rRect.topLeftCornerRadius,
+                                style = HairlineBorderStroke
+                            )
+                        } else {
+                            drawPath(drawPathClip!!, brush = brush, style = HairlineBorderStroke)
+                        }
+                    }
+                } else {
+                    val strokeWidth = stroke.width
+                    val halfStrokeWidth = strokeWidth / 2
+                    drawRect(
+                        brush = brush,
+                        topLeft = Offset(halfStrokeWidth, halfStrokeWidth),
+                        size = Size(
+                            size.width - strokeWidth,
+                            size.height - strokeWidth
+                        ),
+                        style = stroke
+                    )
+                }
+            }
+        }
+    }
+}
+
+fun cutOutline(outline: Outline, height: Float, cutTop: Boolean, cutBottom: Boolean): Outline {
+    if (!cutTop && !cutBottom) return outline
+    return when (outline) {
+        is Outline.Rectangle -> Outline.Rounded(
+            RoundRect(
+                cutRect(outline.rect, height, cutTop, cutBottom),
+                CornerRadius.Zero
+            )
+        )
+        is Outline.Rounded -> Outline.Rounded(
+            RoundRect(
+                cutRect(outline.roundRect.boundingRect, height, cutTop, cutBottom),
+                outline.roundRect.topLeftCornerRadius,
+                outline.roundRect.topRightCornerRadius,
+                outline.roundRect.bottomLeftCornerRadius,
+                outline.roundRect.bottomRightCornerRadius,
+            )
+        )
+        else -> outline
+    }
+}
+
+fun cutRect(
+    rect: Rect,
+    height: Float,
+    cutTop: Boolean,
+    cutBottom: Boolean,
+): Rect {
+    if (!cutTop && !cutBottom) return rect
+    var top = rect.top
+    var bottom = rect.bottom
+    if (cutTop) top -= height
+    if (cutBottom) bottom += height
+    return Rect(rect.left, top, rect.right, bottom)
+}

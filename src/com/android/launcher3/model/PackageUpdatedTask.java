@@ -78,6 +78,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
     public static final int OP_SUSPEND = 5; // package suspended
     public static final int OP_UNSUSPEND = 6; // package unsuspended
     public static final int OP_USER_AVAILABILITY_CHANGE = 7; // user available/unavailable
+    public static final int OP_RELOAD = 8; // reload packages for user
 
     private final int mOp;
     private final UserHandle mUser;
@@ -174,6 +175,9 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                 appsList.setFlags(FLAG_QUIET_MODE_ENABLED, ums.isAnyProfileQuietModeEnabled());
                 break;
             }
+            case OP_RELOAD:
+                appsList.reloadPackages(context, mUser);
+                break;
         }
 
         bindApplicationsIfNeeded();

@@ -12,6 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * Modifications copyright 2021, Lawnchair
  */
 
 package com.android.launcher3.model;
@@ -132,7 +134,7 @@ public class AllAppsList {
      * If the app is already in the list, doesn't add it.
      */
     public void add(AppInfo info, LauncherActivityInfo activityInfo) {
-        if (!mAppFilter.shouldShowApp(info.componentName)) {
+        if (!mAppFilter.shouldShowApp(info.componentName, info.user)) {
             return;
         }
         if (findAppInfo(info.componentName, info.user) != null) {
@@ -283,6 +285,23 @@ public class AllAppsList {
                     mIconCache.remove(applicationInfo.componentName, user);
                     removeApp(i);
                 }
+            }
+        }
+    }
+
+    public void reloadPackages(Context context, UserHandle user) {
+        final LauncherApps launcherApps = context.getSystemService(LauncherApps.class);
+        for (final LauncherActivityInfo info : launcherApps.getActivityList(null, user)) {
+            AppInfo applicationInfo = findAppInfo(info.getComponentName(), user);
+            if (applicationInfo == null) {
+                add(new AppInfo(context, info, user), info);
+            }
+        }
+
+        for (int i = data.size() - 1; i >= 0; i--) {
+            final AppInfo applicationInfo = data.get(i);
+            if (user.equals(applicationInfo.user) && !mAppFilter.shouldShowApp(applicationInfo.componentName, applicationInfo.user)) {
+                removeApp(i);
             }
         }
     }

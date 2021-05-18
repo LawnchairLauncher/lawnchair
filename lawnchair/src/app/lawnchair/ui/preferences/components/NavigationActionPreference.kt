@@ -18,15 +18,11 @@ package app.lawnchair.ui.preferences.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import app.lawnchair.ui.preferences.LocalNavController
 
@@ -54,11 +50,13 @@ fun NavigationActionPreference(
                 color = MaterialTheme.colors.onBackground
             )
             subtitle?.let {
-                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                CompositionLocalProvider(
+                    LocalContentAlpha provides ContentAlpha.medium,
+                    LocalContentColor provides MaterialTheme.colors.onBackground
+                ) {
                     Text(
                         text = it,
-                        style = MaterialTheme.typography.body2,
-                        color = MaterialTheme.colors.onBackground
+                        style = MaterialTheme.typography.body2
                     )
                 }
             }

@@ -17,27 +17,16 @@
 package app.lawnchair.ui.preferences
 
 import android.graphics.drawable.Drawable
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.navigation.NavGraphBuilder
-import app.lawnchair.ui.preferences.components.PreferenceGroup
-import app.lawnchair.ui.preferences.components.PreferenceLayout
-import app.lawnchair.ui.preferences.components.PreferenceTemplate
+import app.lawnchair.ui.preferences.components.AnimatedCheck
+import app.lawnchair.ui.preferences.components.AppItem
+import app.lawnchair.ui.preferences.components.PreferenceLayoutLazyColumn
+import app.lawnchair.ui.preferences.components.preferenceGroupItems
 import app.lawnchair.util.Meta
 import app.lawnchair.util.pageMeta
 import app.lawnchair.util.preferences.getAdapter
@@ -56,65 +45,18 @@ fun NavGraphBuilder.iconPackGraph(route: String) {
 fun IconPackPreferences() {
     val interactor = LocalPreferenceInteractor.current
     val iconPacks = remember { interactor.getIconPacks() }
-    val iconPackPackage = preferenceManager().iconPackPackage.getAdapter()
+    var iconPackPackage by preferenceManager().iconPackPackage.getAdapter()
 
     pageMeta.provide(Meta(title = stringResource(id = R.string.icon_pack)))
-    PreferenceLayout {
-        PreferenceGroup(isFirstChild = true) {
-            // TODO: Use `LazyColumn` if possible.
-            Column(Modifier.fillMaxWidth()) {
-                iconPacks.forEach { iconPack ->
-                    IconPackListItem(
-                        iconPack,
-                        iconPackPackage.state.value,
-                        onSelectionChange = iconPackPackage::onChange,
-                        showDivider = iconPacks.last().packageName != iconPack.packageName
-                    )
-                }
-            }
-        }
-    }
-}
-
-@ExperimentalAnimationApi
-@Composable
-fun IconPackListItem(
-    iconPack: IconPackInfo,
-    activeIconPackPackageName: String,
-    onSelectionChange: (String) -> Unit,
-    showDivider: Boolean = true
-) {
-    PreferenceTemplate(
-        height = 52.dp,
-        showDivider = showDivider
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxSize()
-                .clickable { onSelectionChange(iconPack.packageName) }
-                .padding(start = 16.dp, end = 16.dp)
-        ) {
-            Image(
-                iconPack.icon.toBitmap().asImageBitmap(),
-                null,
-                modifier = Modifier
-                    .width(32.dp)
-                    .height(32.dp)
-            )
-            Text(
-                modifier = Modifier.padding(start = 16.dp),
-                text = iconPack.name,
-                style = MaterialTheme.typography.subtitle1,
-                color = MaterialTheme.colors.onBackground
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            AnimatedVisibility(visible = iconPack.packageName == activeIconPackPackageName) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_tick),
-                    contentDescription = null,
-                    colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
-                )
+    PreferenceLayoutLazyColumn {
+        preferenceGroupItems(iconPacks, isFirstChild = true) { index, iconPack ->
+            AppItem(
+                label = iconPack.name,
+                icon = remember(iconPack) { iconPack.icon.toBitmap() },
+                onClick = { iconPackPackage = iconPack.packageName },
+                showDivider = index != iconPacks.lastIndex
+            ) {
+                AnimatedCheck(visible = iconPackPackage == iconPack.packageName)
             }
         }
     }

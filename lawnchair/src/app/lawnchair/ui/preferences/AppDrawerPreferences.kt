@@ -18,8 +18,10 @@ package app.lawnchair.ui.preferences
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
+import app.lawnchair.ui.preferences.components.NavigationActionPreference
 import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.SliderPreference
@@ -29,25 +31,37 @@ import app.lawnchair.util.preferences.getAdapter
 import app.lawnchair.util.preferences.preferenceManager
 import com.android.launcher3.R
 
+object AppDrawerRoutes {
+    const val HIDDEN_APPS = "hiddenApps"
+}
+
 @ExperimentalAnimationApi
 fun NavGraphBuilder.appDrawerGraph(route: String) {
-    preferenceGraph(route, { AppDrawerPreferences() })
+    preferenceGraph(route, { AppDrawerPreferences() }) { subRoute ->
+        hiddenAppsGraph(route = subRoute(AppDrawerRoutes.HIDDEN_APPS))
+    }
 }
 
 @ExperimentalAnimationApi
 @Composable
 fun AppDrawerPreferences() {
     val prefs = preferenceManager()
+    val resources = LocalContext.current.resources
     pageMeta.provide(Meta(title = stringResource(id = R.string.app_drawer_label)))
     PreferenceLayout {
         PreferenceGroup(heading = stringResource(id = R.string.general_label), isFirstChild = true) {
+            NavigationActionPreference(
+                label = stringResource(id = R.string.hidden_apps_label),
+                subtitle = resources.getQuantityString(R.plurals.apps_count, hiddenAppsCount(), hiddenAppsCount()),
+                destination = subRoute(name = AppDrawerRoutes.HIDDEN_APPS),
+            )
             SliderPreference(
                 label = stringResource(id = R.string.background_opacity),
                 adapter = prefs.drawerOpacity.getAdapter(),
                 steps = 2,
                 valueRange = 0.7F..1F,
-                showDivider = false,
-                showAsPercentage = true
+                showAsPercentage = true,
+                showDivider = false
             )
         }
         PreferenceGroup(heading = stringResource(id = R.string.grid)) {

@@ -29,7 +29,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun PreferenceCategoryListItem(label: String, description: String, @DrawableRes iconResource: Int, onClick: () -> Unit) {
+fun PreferenceCategoryListItem(
+    label: String,
+    description: String,
+    @DrawableRes iconResource: Int,
+    onClick: () -> Unit
+) {
     Row(
         modifier = Modifier
             .clickable(onClick = onClick)

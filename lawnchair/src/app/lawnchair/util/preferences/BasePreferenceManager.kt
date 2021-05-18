@@ -1,10 +1,25 @@
+/*
+ * Copyright 2021, Lawnchair
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package app.lawnchair.util.preferences
 
 import android.content.Context
 import android.content.SharedPreferences
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.Utilities
-import java.lang.ClassCastException
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -198,6 +213,31 @@ abstract class BasePreferenceManager(context: Context) : SharedPreferences.OnSha
         override fun set(newValue: Float) {
             currentValue = newValue
             editSp { putFloat(key, newValue) }
+        }
+    }
+
+    inner class StringSetPref(
+        key: String,
+        override val defaultValue: Set<String>,
+        primaryListener: ChangeListener? = null
+    ) : BasePref<Set<String>>(key, primaryListener) {
+        private var currentValue = setOf<String>()
+
+        init {
+            prefsMap[key] = this
+        }
+
+        override fun get(): Set<String> {
+            if (!loaded) {
+                currentValue = sp.getStringSet(key, defaultValue)!!
+                loaded = true
+            }
+            return currentValue
+        }
+
+        override fun set(newValue: Set<String>) {
+            currentValue = newValue
+            editSp { putStringSet(key, newValue) }
         }
     }
 }
