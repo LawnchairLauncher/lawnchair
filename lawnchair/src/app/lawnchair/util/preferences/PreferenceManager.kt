@@ -17,14 +17,12 @@
 package app.lawnchair.util.preferences
 
 import android.content.Context
-import android.content.SharedPreferences
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.LawnchairLauncherQuickstep
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.LauncherAppState
-import com.android.launcher3.Utilities
 import com.android.launcher3.pm.UserCache
 import com.android.launcher3.util.MainThreadInitializedObject
 

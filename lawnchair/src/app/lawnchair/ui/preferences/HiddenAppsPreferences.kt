@@ -4,7 +4,6 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.DefaultAppFilter
@@ -29,7 +28,7 @@ fun NavGraphBuilder.hiddenAppsGraph(route: String) {
 @Composable
 fun HiddenAppsPreferences() {
     val pageTitle =
-        with (hiddenAppsCount()) {
+        with(hiddenAppsCount()) {
             if (this == 0) {
                 stringResource(id = R.string.hidden_apps_label)
             } else {

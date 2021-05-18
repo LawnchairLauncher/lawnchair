@@ -9,7 +9,6 @@ import android.graphics.drawable.Drawable
 import android.os.Handler
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
-import app.lawnchair.DefaultAppFilter
 import com.android.launcher3.AppFilter
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.Utilities
@@ -23,7 +22,10 @@ import java.util.Comparator.comparing
 private val appFilter = AppFilter()
 
 @Composable
-fun appsList(filter: AppFilter = appFilter, comparator: Comparator<App> = defaultComparator): State<Optional<List<App>>> {
+fun appsList(
+    filter: AppFilter = appFilter,
+    comparator: Comparator<App> = defaultComparator
+): State<Optional<List<App>>> {
     val context = LocalContext.current
     val appsState = remember { mutableStateOf(Optional.empty<List<App>>()) }
     DisposableEffect(Unit) {
