@@ -215,6 +215,7 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
                 RecentsView recentsView = mTaskView.getRecentsView();
                 recentsView.switchToScreenshot(null,
                         () -> recentsView.finishRecentsAnimation(true /* toRecents */,
+                                false /* shouldPip */,
                                 () -> menuOption.onClick(view)));
             } else {
                 menuOption.onClick(view);
