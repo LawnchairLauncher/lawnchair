@@ -27,15 +27,17 @@ fun PreferenceLayout(
 ) {
     val scrollState = rememberScrollState()
     ProvideTopBarFloatingState(scrollState.value > 0)
-    Column(
-        modifier = Modifier
-            .fillMaxHeight()
-            .verticalScroll(scrollState)
-            .padding(preferenceLayoutPadding()),
-        verticalArrangement = verticalArrangement,
-        horizontalAlignment = horizontalAlignment
-    ) {
-        content()
+    NestedScrollSpring {
+        Column(
+            modifier = Modifier
+                .fillMaxHeight()
+                .verticalScroll(scrollState)
+                .padding(preferenceLayoutPadding()),
+            verticalArrangement = verticalArrangement,
+            horizontalAlignment = horizontalAlignment
+        ) {
+            content()
+        }
     }
 }
 
@@ -43,12 +45,14 @@ fun PreferenceLayout(
 fun PreferenceLayoutLazyColumn(modifier: Modifier = Modifier, content: LazyListScope.() -> Unit) {
     val scrollState = rememberLazyListState()
     ProvideTopBarFloatingState(scrollState.firstVisibleItemIndex > 0 || scrollState.firstVisibleItemScrollOffset > 0)
-    LazyColumn(
-        modifier = modifier.fillMaxHeight(),
-        contentPadding = preferenceLayoutPadding(),
-        state = scrollState
-    ) {
-        content()
+    NestedScrollSpring {
+        LazyColumn(
+            modifier = modifier.fillMaxHeight(),
+            contentPadding = preferenceLayoutPadding(),
+            state = scrollState
+        ) {
+            content()
+        }
     }
 }
 

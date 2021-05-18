@@ -18,11 +18,10 @@ import com.android.launcher3.util.Executors.MODEL_EXECUTOR
 import java.util.*
 import java.util.Comparator.comparing
 
-@Composable
-fun defaultAppFilter(): DefaultAppFilter = remember { DefaultAppFilter() }
+private val appFilter = AppFilter()
 
 @Composable
-fun appsList(filter: AppFilter?, comparator: Comparator<App> = defaultComparator): State<Optional<List<App>>> {
+fun appsList(filter: AppFilter = appFilter, comparator: Comparator<App> = defaultComparator): State<Optional<List<App>>> {
     val context = LocalContext.current
     val appsState = remember { mutableStateOf(Optional.empty<List<App>>()) }
     DisposableEffect(Unit) {
@@ -32,10 +31,10 @@ fun appsList(filter: AppFilter?, comparator: Comparator<App> = defaultComparator
             val launcherApps = context.getSystemService(LauncherApps::class.java)
             profiles.forEach { appInfos += launcherApps.getActivityList(null, it) }
 
-            val apps =
-                (filter?.let { appFilter -> appInfos.filter { appFilter.shouldShowApp(it.componentName, it.user) } }
-                    ?: appInfos).map { App(context, it) }.sortedWith(comparator)
-
+            val apps = appInfos
+                .filter { filter.shouldShowApp(it.componentName, it.user) }
+                .map { App(context, it) }
+                .sortedWith(comparator)
             appsState.value = Optional.of(apps)
         }
         onDispose { }

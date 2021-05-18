@@ -19,5 +19,5 @@ open class DefaultAppFilter : AppFilter() {
         ComponentName(BuildConfig.APPLICATION_ID, LawnchairLauncherQuickstep::class.java.name),
     )
 
-    override fun shouldShowApp(app: ComponentName, user: UserHandle?): Boolean = !defaultHideList.contains(app)
+    override fun shouldShowApp(app: ComponentName, user: UserHandle?) = !defaultHideList.contains(app)
 }
