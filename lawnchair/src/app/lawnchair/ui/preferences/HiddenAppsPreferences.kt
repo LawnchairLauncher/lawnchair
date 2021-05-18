@@ -8,7 +8,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.DefaultAppFilter
 import app.lawnchair.ui.preferences.components.*
-import app.lawnchair.util.*
+import app.lawnchair.util.App
+import app.lawnchair.util.Meta
+import app.lawnchair.util.appsList
+import app.lawnchair.util.pageMeta
 import app.lawnchair.util.preferences.getAdapter
 import app.lawnchair.util.preferences.getState
 import app.lawnchair.util.preferences.preferenceManager
@@ -34,11 +37,7 @@ fun HiddenAppsPreferences() {
         val apps = optionalApps.get()
         val toggleHiddenApp = { app: App ->
             val key = app.key.toString()
-            hiddenApps = if (hiddenApps.contains(key)) {
-                hiddenApps - key
-            } else {
-                hiddenApps + key
-            }
+            if (hiddenApps.contains(key)) hiddenApps -= key else hiddenApps += key
         }
         PreferenceLayoutLazyColumn {
             preferenceGroupItems(apps, isFirstChild = true) { index, app ->
