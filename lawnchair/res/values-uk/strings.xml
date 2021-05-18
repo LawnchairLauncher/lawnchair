@@ -69,4 +69,12 @@
     <string name="design_and_development">Design &amp; Development</string>
     <string name="translate">Translate</string>
     <string name="product">Product</string>
+    <string name="hidden_apps_label">Hidden Apps</string>
+    <string name="hidden_apps_label_with_count">Hidden Apps (%1$d)</string>
+    <plurals name="apps_count">
+        <item quantity="one">%1$d App</item>
+        <item quantity="few">%1$d Apps</item>
+        <item quantity="many">%1$d Apps</item>
+        <item quantity="other">%1$d Apps</item>
+    </plurals>
 </resources>
