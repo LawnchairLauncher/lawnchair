@@ -19,12 +19,9 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="recent_task_option_split_screen" msgid="5353188922202653570">"સ્ક્રીનને વિભાજિત કરો"</string>
     <string name="recent_task_option_pin" msgid="7929860679018978258">"પિન કરો"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"ફ્રિફોર્મ"</string>
-    <string name="accessibility_desc_recent_apps" msgid="1444379410873162882">"ઝલક"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"તાજેતરની કોઈ આઇટમ નથી"</string>
-    <string name="accessibility_close_task" msgid="5354563209433803643">"બંધ કરો"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"ઍપ વપરાશનું સેટિંગ"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"બધું સાફ કરો"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"તાજેતરની ઍપ"</string>
@@ -34,4 +31,76 @@
     <string name="title_app_suggestions" msgid="4185902664111965088">"ઍપ સૂચનો"</string>
     <string name="all_apps_label" msgid="8542784161730910663">"બધી ઍપ"</string>
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"તમારી પૂર્વાનુમાનિત ઍપ"</string>
+    <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"તમારી હોમ સ્ક્રીનની નીચલી પંક્તિમાં ઍપના સુઝાવો મેળવો"</string>
+    <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"તમારી હોમ સ્ક્રીનની મનપસંદ પંક્તિમાં ઍપના સુઝાવો મેળવો"</string>
+    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"તમારી સૌથી વધુ વપરાતી ઍપને સીધી હોમ સ્ક્રીન પરથી જ સરળતાથી ઍક્સેસ કરો. સૂચનો તમારા રૂટિનના આધારે બદલાશે. નીચેની પંક્તિમાં રહેલી ઍપ તમારી હોમ સ્ક્રીન પર ખસેડાશે."</string>
+    <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"તમારી સૌથી વધુ વપરાતી ઍપને સીધી હોમ સ્ક્રીન પરથી જ સરળતાથી ઍક્સેસ કરો. સૂચનો તમારા રૂટિનના આધારે બદલાશે. મનપસંદ પંક્તિમાં રહેલી ઍપ તમારી હોમ સ્ક્રીન પર ખસેડાશે."</string>
+    <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"તમારી સૌથી વધુ વપરાતી ઍપને સીધી હોમ સ્ક્રીન પરથી જ સરળતાથી ઍક્સેસ કરો. સૂચનો તમારા રૂટિનના આધારે બદલાશે. નીચેની પંક્તિમાં રહેલી ઍપ નવા ફોલ્ડરમાં ખસેડાશે."</string>
+    <string name="hotseat_edu_accept" msgid="1611544083278999837">"ઍપ અંગેના સુઝાવો મેળવો"</string>
+    <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"ના, આભાર"</string>
+    <string name="hotseat_prediction_settings" msgid="6246554993566070818">"સેટિંગ"</string>
+    <string name="hotseat_auto_enrolled" msgid="522100018967146807">"સૌથી વધુ વપરાતી ઍપ અહીં દેખાય છે અને રૂટિનના આધારે બદલાય છે"</string>
+    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"ઍપ અંગેના સૂચનો મેળવવા માટે ઍપને નીચલી પંક્તિમાંથી બહાર ખેંચો"</string>
+    <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"ઍપ અંગેના સૂચનો ખાલી જગ્યામાં ઉમેરાયા"</string>
+    <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"ઍપના સુઝાવો ચાલુ છે"</string>
+    <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"ઍપના સુઝાવો બંધ છે"</string>
+    <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"પૂર્વાનુમાનિત ઍપ: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"ખાતરી કરો કે તમે એકદમ દૂરની ડાબી કિનારીએથી સ્વાઇપ કરો છો."</string>
+    <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"ખાતરી કરો કે તમે ડાબી કિનારીએથી સ્ક્રીનના મધ્ય ભાગ સુધી સ્વાઇપ કરો છે અને આંગળી ઊંચકી લો છો."</string>
+    <!-- no translation found for back_gesture_feedback_title_complete_left_edge (1381455921760094003) -->
+    <skip />
+    <!-- no translation found for back_gesture_feedback_subtitle_complete_left_edge (8106594510099968430) -->
+    <skip />
+    <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"ખાતરી કરો કે તમે એકદમ દૂરની જમણી કિનારીએથી સ્વાઇપ કરો છો."</string>
+    <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"ખાતરી કરો કે તમે જમણી કિનારીએથી સ્ક્રીનના મધ્ય ભાગ સુધી સ્વાઇપ કરો છે અને આંગળી ઊંચકી લો છો."</string>
+    <!-- no translation found for back_gesture_feedback_complete_with_follow_up (8653374779579748392) -->
+    <skip />
+    <!-- no translation found for back_gesture_feedback_complete_without_follow_up (6405649621667113830) -->
+    <skip />
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"ખાતરી કરો કે તમારાથી સ્ક્રીનની એકદમ નીચેની કિનારીની ખૂબ નજીક સુધી સ્વાઇપ ન થઈ જાય."</string>
+    <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"પાછા જવાના સંકેતની સંવેદિતા બદલવા માટે, સેટિંગમાં જાઓ"</string>
+    <!-- no translation found for back_gesture_intro_title (5538727561353262952) -->
+    <skip />
+    <!-- no translation found for back_gesture_intro_subtitle (8139048712004626940) -->
+    <skip />
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"ખાતરી કરો કે તમે સ્ક્રીનની નીચેની કિનારીએથી ઉપરની તરફ સ્વાઇપ કરો છો."</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"ખાતરી કરો કે તમે આંગળી ઊંચકી લેતા પહેલાં સ્વાઇપ કરવાનું થોભાવતા નથી."</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"ખાતરી કરો કે તમે સીધું ઉપરની તરફ સ્વાઇપ કરો છો."</string>
+    <!-- no translation found for home_gesture_feedback_complete_with_follow_up (1427872029729605034) -->
+    <skip />
+    <!-- no translation found for home_gesture_feedback_complete_without_follow_up (8049099486868933882) -->
+    <skip />
+    <string name="home_gesture_intro_title" msgid="836590312858441830">"હોમ સ્ક્રીન પર જવા માટે સ્વાઇપ કરો"</string>
+    <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"તમારી સ્ક્રીનના નીચેના ભાગથી ઉપરની તરફ સ્વાઇપ કરો. આ સંકેત તમને હંમેશાં હોમ સ્ક્રીન પર લઈ જાય છે."</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"ખાતરી કરો કે તમે સ્ક્રીનની નીચેની કિનારીએથી ઉપરની તરફ સ્વાઇપ કરો છો."</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"તમારી આંગળી ઊંચકતા પહેલાં તેને વિન્ડો પર થોડી વધારે વાર માટે દબાવી રાખવાનો પ્રયાસ કરો."</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"ખાતરી કરો કે તમે સીધું ઉપર સ્વાઇપ કરો છો, પછી થોભી જાઓ છો."</string>
+    <!-- no translation found for overview_gesture_feedback_complete_with_follow_up (3544611727467765026) -->
+    <skip />
+    <!-- no translation found for overview_gesture_feedback_complete_without_follow_up (3199486203448379152) -->
+    <skip />
+    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"ઍપ સ્વિચ કરવા સ્વાઇપ કરો"</string>
+    <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"તમારી સ્ક્રીનના નીચેના ભાગથી ઉપરની તરફ સ્વાઇપ કરીને, થોડીવાર દબાવી રાખો, પછી છોડી દો."</string>
+    <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"બધું સેટ થઈ ગયું"</string>
+    <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"આગળ"</string>
+    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"થઈ ગયું"</string>
+    <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"સેટિંગ"</string>
+    <string name="gesture_tutorial_try_again" msgid="65962545858556697">"ફરી પ્રયાસ કરો"</string>
+    <string name="gesture_tutorial_nice" msgid="2936275692616928280">"સરસ!"</string>
+    <string name="gesture_tutorial_step" msgid="1279786122817620968">"ટ્યૂટૉરિઅલ <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
+    <!-- no translation found for allset_title (5021126669778966707) -->
+    <skip />
+    <!-- no translation found for allset_hint (459504134589971527) -->
+    <skip />
+    <!-- no translation found for allset_description (6350320429953234580) -->
+    <skip />
+    <!-- no translation found for allset_navigation_settings (417773244979225071) -->
+    <skip />
+    <string name="action_share" msgid="2648470652637092375">"શેર કરો"</string>
+    <string name="action_screenshot" msgid="8171125848358142917">"સ્ક્રીનશૉટ"</string>
+    <string name="blocked_by_policy" msgid="2071401072261365546">"ઍપ કે તમારી સંસ્થા દ્વારા આ ક્રિયા કરવાની મંજૂરી નથી"</string>
+    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"નૅવિગેશન ટ્યૂટૉરિઅલ છોડી દઈએ?"</string>
+    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"તમે આને પછીથી <xliff:g id="NAME">%1$s</xliff:g> ઍપમાં જોઈ શકો છો"</string>
+    <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"રદ કરો"</string>
+    <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"છોડો"</string>
 </resources>

@@ -62,8 +62,7 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
                 R.dimen.all_apps_header_pill_corner_radius);
 
         mSelectedIndicatorPaint = new Paint();
-        mSelectedIndicatorPaint.setColor(
-                Themes.getAttrColor(context, android.R.attr.colorAccent));
+        mSelectedIndicatorPaint.setColor(context.getColor(R.color.all_apps_tab_bg));
 
         mDividerPaint = new Paint();
         mDividerPaint.setColor(Themes.getAttrColor(context, android.R.attr.colorControlHighlight));
