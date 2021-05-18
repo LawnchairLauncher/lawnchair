@@ -49,7 +49,6 @@ public class Hotseat extends CellLayout implements Insettable {
     private final View mQsb;
     private final int mQsbHeight;
 
-    private final View mTaskbarView;
     private final int mTaskbarViewHeight;
 
     public Hotseat(Context context) {
@@ -67,10 +66,7 @@ public class Hotseat extends CellLayout implements Insettable {
         mQsbHeight = mQsb.getLayoutParams().height;
         addView(mQsb);
 
-        mTaskbarView = LayoutInflater.from(context).inflate(R.layout.taskbar_view, this, false);
-        mTaskbarViewHeight = mTaskbarView.getLayoutParams().height;
-        // We want taskbar in the back so its background applies to Hotseat as well.
-        addView(mTaskbarView, 0);
+        mTaskbarViewHeight = context.getResources().getDimensionPixelSize(R.dimen.taskbar_size);
     }
 
     /**
@@ -187,8 +183,6 @@ public class Hotseat extends CellLayout implements Insettable {
         int width = getShortcutsAndWidgets().getMeasuredWidth();
         mQsb.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(mQsbHeight, MeasureSpec.EXACTLY));
-        mTaskbarView.measure(MeasureSpec.makeMeasureSpec(getMeasuredWidth(), MeasureSpec.EXACTLY),
-                MeasureSpec.makeMeasureSpec(mTaskbarViewHeight, MeasureSpec.EXACTLY));
     }
 
     @Override
@@ -202,13 +196,6 @@ public class Hotseat extends CellLayout implements Insettable {
         int bottom = b - t - getQsbOffsetY();
         int top = bottom - mQsbHeight;
         mQsb.layout(left, top, right, bottom);
-
-        int taskbarWidth = mTaskbarView.getMeasuredWidth();
-        left = (r - l - taskbarWidth) / 2;
-        right = left + taskbarWidth;
-        bottom = b - t - getTaskbarOffsetY();
-        top = bottom - mTaskbarViewHeight;
-        mTaskbarView.layout(left, top, right, bottom);
     }
 
     /**
@@ -244,10 +231,4 @@ public class Hotseat extends CellLayout implements Insettable {
         return mQsb;
     }
 
-    /**
-     * Returns the Taskbar inside hotseat
-     */
-    public View getTaskbarView() {
-        return mTaskbarView;
-    }
 }

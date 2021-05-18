@@ -26,6 +26,8 @@ import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.model.data.ItemInfo;
 
+import java.util.function.Consumer;
+
 /**
  * Works with TaskbarController to update the TaskbarView's Hotseat items.
  */
@@ -33,13 +35,12 @@ public class TaskbarHotseatController {
 
     private final BaseQuickstepLauncher mLauncher;
     private final Hotseat mHotseat;
-    private final TaskbarController.TaskbarHotseatControllerCallbacks mTaskbarCallbacks;
+    private final Consumer<ItemInfo[]> mTaskbarCallbacks;
     private final int mNumHotseatIcons;
 
     private final DragController.DragListener mDragListener = new DragController.DragListener() {
         @Override
-        public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
-        }
+        public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) { }
 
         @Override
         public void onDragEnd() {
@@ -47,8 +48,8 @@ public class TaskbarHotseatController {
         }
     };
 
-    public TaskbarHotseatController(BaseQuickstepLauncher launcher,
-            TaskbarController.TaskbarHotseatControllerCallbacks taskbarCallbacks) {
+    public TaskbarHotseatController(
+            BaseQuickstepLauncher launcher, Consumer<ItemInfo[]> taskbarCallbacks) {
         mLauncher = launcher;
         mHotseat = mLauncher.getHotseat();
         mTaskbarCallbacks = taskbarCallbacks;
@@ -85,10 +86,6 @@ public class TaskbarHotseatController {
             }
         }
 
-        mTaskbarCallbacks.updateHotseatItems(hotseatItemInfos);
-    }
-
-    protected int getNumHotseatIcons() {
-        return mNumHotseatIcons;
+        mTaskbarCallbacks.accept(hotseatItemInfos);
     }
 }
