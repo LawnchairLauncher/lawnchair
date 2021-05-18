@@ -196,14 +196,21 @@ fun Modifier.smartBorder(
 fun cutOutline(outline: Outline, height: Float, cutTop: Boolean, cutBottom: Boolean): Outline {
     if (!cutTop && !cutBottom) return outline
     return when (outline) {
-        is Outline.Rectangle -> Outline.Rounded(RoundRect(cutRect(outline.rect, height, cutTop, cutBottom), CornerRadius.Zero))
-        is Outline.Rounded -> Outline.Rounded(RoundRect(
-            cutRect(outline.roundRect.boundingRect, height, cutTop, cutBottom),
-            outline.roundRect.topLeftCornerRadius,
-            outline.roundRect.topRightCornerRadius,
-            outline.roundRect.bottomLeftCornerRadius,
-            outline.roundRect.bottomRightCornerRadius,
-        ))
+        is Outline.Rectangle -> Outline.Rounded(
+            RoundRect(
+                cutRect(outline.rect, height, cutTop, cutBottom),
+                CornerRadius.Zero
+            )
+        )
+        is Outline.Rounded -> Outline.Rounded(
+            RoundRect(
+                cutRect(outline.roundRect.boundingRect, height, cutTop, cutBottom),
+                outline.roundRect.topLeftCornerRadius,
+                outline.roundRect.topRightCornerRadius,
+                outline.roundRect.bottomLeftCornerRadius,
+                outline.roundRect.bottomRightCornerRadius,
+            )
+        )
         else -> outline
     }
 }

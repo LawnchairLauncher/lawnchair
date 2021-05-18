@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.Utilities
-import java.lang.ClassCastException
 import java.util.*
 import kotlin.collections.HashMap
 

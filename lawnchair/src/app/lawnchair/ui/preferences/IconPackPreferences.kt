@@ -23,7 +23,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import androidx.core.graphics.drawable.toBitmap
 import androidx.navigation.NavGraphBuilder
-import app.lawnchair.ui.preferences.components.*
+import app.lawnchair.ui.preferences.components.AnimatedCheck
+import app.lawnchair.ui.preferences.components.AppItem
+import app.lawnchair.ui.preferences.components.PreferenceLayoutLazyColumn
+import app.lawnchair.ui.preferences.components.preferenceGroupItems
 import app.lawnchair.util.Meta
 import app.lawnchair.util.pageMeta
 import app.lawnchair.util.preferences.getAdapter
