@@ -16,18 +16,27 @@
 
 package app.lawnchair.ui.preferences.components
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import app.lawnchair.ui.preferences.getPreferenceCategories
+import com.google.accompanist.insets.navigationBarsPadding
+import kotlinx.coroutines.launch
 
+@ExperimentalMaterialApi
 @Composable
 fun PreferenceCategoryList(navController: NavController) {
     val context = LocalContext.current
     val categories = remember { getPreferenceCategories(context) }
+    val scope = rememberCoroutineScope()
 
     PreferenceLayoutLazyColumn {
         items(categories) { item ->
@@ -36,6 +45,23 @@ fun PreferenceCategoryList(navController: NavController) {
                 description = item.description,
                 iconResource = item.iconResource,
                 onClick = { navController.navigate(item.route) })
+        }
+        item {
+            BottomSheet(
+                sheetContent = {
+                    Text(
+                        modifier = Modifier.padding(16.dp).navigationBarsPadding(),
+                        text = "I'm in a sheet!"
+                    )
+                }
+            ) { showSheet ->
+                Button(
+                    modifier = Modifier.padding(16.dp),
+                    onClick = { scope.launch { showSheet() } }
+                ) {
+                    Text("Example bottom sheet")
+                }
+            }
         }
     }
 }

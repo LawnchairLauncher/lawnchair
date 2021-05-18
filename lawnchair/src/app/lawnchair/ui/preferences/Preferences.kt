@@ -19,6 +19,7 @@ package app.lawnchair.ui.preferences
 import android.content.Context
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
@@ -31,9 +32,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import app.lawnchair.ui.preferences.about.aboutGraph
-import app.lawnchair.ui.preferences.components.PreferenceCategoryList
-import app.lawnchair.ui.preferences.components.SystemUi
-import app.lawnchair.ui.preferences.components.TopBar
+import app.lawnchair.ui.preferences.components.*
 import app.lawnchair.util.Meta
 import app.lawnchair.util.pageMeta
 import app.lawnchair.util.preferences.getMajorVersion
@@ -115,30 +114,33 @@ val LocalPreferenceInteractor = compositionLocalOf<PreferenceInteractor> {
     error("CompositionLocal LocalPreferenceInteractor not present")
 }
 
+@ExperimentalMaterialApi
 @ExperimentalAnimationApi
 @Composable
 fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel>()) {
     val navController = rememberNavController()
 
     SystemUi()
-    Surface(color = MaterialTheme.colors.background) {
-        CompositionLocalProvider(
-            LocalNavController provides navController,
-            LocalPreferenceInteractor provides interactor,
-        ) {
-            NavHost(navController = navController, startDestination = "preferences") {
-                composable(route = Routes.PREFERENCES) {
-                    pageMeta.provide(Meta(title = stringResource(id = R.string.settings)))
-                    PreferenceCategoryList(navController)
+    ProvidePortalNode {
+        Surface(color = MaterialTheme.colors.background) {
+            CompositionLocalProvider(
+                LocalNavController provides navController,
+                LocalPreferenceInteractor provides interactor,
+            ) {
+                NavHost(navController = navController, startDestination = "preferences") {
+                    composable(route = Routes.PREFERENCES) {
+                        pageMeta.provide(Meta(title = stringResource(id = R.string.settings)))
+                        PreferenceCategoryList(navController)
+                    }
+                    generalGraph(route = Routes.GENERAL)
+                    homeScreenGraph(route = Routes.HOME_SCREEN)
+                    dockGraph(route = Routes.DOCK)
+                    appDrawerGraph(route = Routes.APP_DRAWER)
+                    folderGraph(route = Routes.FOLDERS)
+                    aboutGraph(route = Routes.ABOUT)
                 }
-                generalGraph(route = Routes.GENERAL)
-                homeScreenGraph(route = Routes.HOME_SCREEN)
-                dockGraph(route = Routes.DOCK)
-                appDrawerGraph(route = Routes.APP_DRAWER)
-                folderGraph(route = Routes.FOLDERS)
-                aboutGraph(route = Routes.ABOUT)
+                TopBar()
             }
-            TopBar()
         }
     }
 }
