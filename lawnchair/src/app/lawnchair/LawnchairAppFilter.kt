@@ -28,14 +28,10 @@ class LawnchairAppFilter(context: Context) : DefaultAppFilter() {
     private val prefs = PreferenceManager.getInstance(context)
     private val customHideList get() = prefs.hiddenAppSet.get()
 
-    override fun shouldShowApp(app: ComponentName, user: UserHandle?): Boolean {
-        if (!super.shouldShowApp(app, user)) {
-            return false
+    override fun shouldShowApp(app: ComponentName, user: UserHandle?) = 
+        when {
+            !super.shouldShowApp(app, user) -> false
+            customHideList.contains(ComponentKey(app, user).toString()) -> false
+            else -> true
         }
-        val key = ComponentKey(app, user)
-        if (customHideList.contains(key.toString())) {
-            return false
-        }
-        return true
-    }
 }
