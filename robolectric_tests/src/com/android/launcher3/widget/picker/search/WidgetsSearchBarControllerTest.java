@@ -19,24 +19,27 @@ package com.android.launcher3.widget.picker.search;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-import android.content.Context;
 import android.view.View;
 import android.widget.ImageButton;
 
 import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.search.SearchAlgorithm;
+import com.android.launcher3.testing.TestActivity;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
+import org.robolectric.android.controller.ActivityController;
 
 import java.util.ArrayList;
 
@@ -44,7 +47,9 @@ import java.util.ArrayList;
 public class WidgetsSearchBarControllerTest {
 
     private WidgetsSearchBarController mController;
-    private Context mContext;
+    // TODO: Replace ActivityController with ActivityScenario, which is the recommended way for
+    // activity testing.
+    private ActivityController<TestActivity> mActivityController;
     private ExtendedEditText mEditText;
     private ImageButton mCancelButton;
     @Mock
@@ -55,11 +60,18 @@ public class WidgetsSearchBarControllerTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        mContext = RuntimeEnvironment.application;
-        mEditText = new ExtendedEditText(mContext);
-        mCancelButton = new ImageButton(mContext);
+        mActivityController = Robolectric.buildActivity(TestActivity.class);
+        TestActivity testActivity = mActivityController.setup().get();
+
+        mEditText = new ExtendedEditText(testActivity);
+        mCancelButton = new ImageButton(testActivity);
         mController = new WidgetsSearchBarController(
                 mSearchAlgorithm, mEditText, mCancelButton, mSearchModeListener);
+    }
+
+    @After
+    public void tearDown() {
+        mActivityController.destroy();
     }
 
     @Test
@@ -119,14 +131,18 @@ public class WidgetsSearchBarControllerTest {
     public void cancelSearch_shouldInformSearchModeListenerToClearResultsAndExitSearch() {
         mCancelButton.performClick();
 
-        verify(mSearchModeListener).exitSearchMode();
+        // 1 time explicitly from the cancel button on click listener.
+        // Another from the setText("") the cancel button on click listener causing afterTextChange.
+        verify(mSearchModeListener, times(2)).exitSearchMode();
     }
 
     @Test
     public void cancelSearch_shouldCancelSearch() {
         mCancelButton.performClick();
 
-        verify(mSearchAlgorithm).cancel(true);
+        // 1 time explicitly from the cancel button on click listener.
+        // Another from the setText("") the cancel button on click listener causing afterTextChange.
+        verify(mSearchAlgorithm, times(2)).cancel(true);
         verifyNoMoreInteractions(mSearchAlgorithm);
     }
 
