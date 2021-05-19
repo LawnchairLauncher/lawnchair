@@ -61,7 +61,7 @@
     <dimen name="recents_empty_message_text_size">16sp</dimen>
     <dimen name="recents_empty_message_text_padding">16dp</dimen>
 
-    <dimen name="max_shadow_radius">5dp</dimen>
+    <dimen name="max_shadow_radius">0dp</dimen>
 
     <!-- Total space (start + end) between the task card and the edge of the screen
          in various configurations -->
