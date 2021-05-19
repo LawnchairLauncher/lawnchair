@@ -18,12 +18,13 @@ package com.android.quickstep;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.Utilities.boundToRange;
 import static com.android.launcher3.Utilities.dpToPx;
-import static com.android.launcher3.Utilities.mapToRange;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.PROTOTYPE_APP_CLOSE;
 import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATION;
 import static com.android.launcher3.views.FloatingIconView.getFloatingIconView;
+
+import static java.lang.Math.round;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -52,10 +53,12 @@ import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.util.DynamicResource;
 import com.android.launcher3.util.ObjectWrapper;
 import com.android.launcher3.views.FloatingIconView;
+import com.android.launcher3.views.FloatingView;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.quickstep.util.AppCloseConfig;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.StaggeredWorkspaceAnim;
+import com.android.quickstep.util.WorkspaceRevealAnim;
 import com.android.quickstep.views.FloatingWidgetView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
@@ -112,10 +115,6 @@ public class LauncherSwipeHandlerV2 extends
     private HomeAnimationFactory createIconHomeAnimationFactory(View workspaceView) {
         final ResourceProvider rp = DynamicResource.provider(mActivity);
         final float transY = dpToPx(rp.getFloat(R.dimen.swipe_up_trans_y_dp));
-        float dpPerSecond = dpToPx(rp.getFloat(R.dimen.swipe_up_trans_y_dp_per_s));
-        final float launcherAlphaMax =
-                rp.getFloat(R.dimen.swipe_up_launcher_alpha_max_progress);
-
         RectF iconLocation = new RectF();
         FloatingIconView floatingIconView = getFloatingIconView(mActivity, workspaceView,
                 true /* hideOriginal */, iconLocation, false /* isOpening */);
@@ -123,73 +122,25 @@ public class LauncherSwipeHandlerV2 extends
         // We want the window alpha to be 0 once this threshold is met, so that the
         // FolderIconView can be seen morphing into the icon shape.
         float windowAlphaThreshold = 1f - SHAPE_PROGRESS_DURATION;
-        return new LauncherHomeAnimationFactory() {
+
+        return new FloatingViewHomeAnimationFactory(floatingIconView) {
 
             // There is a delay in loading the icon, so we need to keep the window
             // opaque until it is ready.
             private boolean mIsFloatingIconReady = false;
 
-            private @Nullable ValueAnimator mBounceBackAnimator;
-
             @Override
             public RectF getWindowTargetRect() {
-                if (PROTOTYPE_APP_CLOSE.get()) {
-                    // We want the target rect to be at this offset position, so that all
-                    // launcher content can spring back upwards.
-                    floatingIconView.setPositionOffsetY(transY);
-                }
+                super.getWindowTargetRect();
                 return iconLocation;
             }
 
             @Override
             public void setAnimation(RectFSpringAnim anim) {
+                super.setAnimation(anim);
                 anim.addAnimatorListener(floatingIconView);
                 floatingIconView.setOnTargetChangeListener(anim::onTargetPositionChanged);
                 floatingIconView.setFastFinishRunnable(anim::end);
-                if (PROTOTYPE_APP_CLOSE.get()) {
-                    mBounceBackAnimator = bounceBackToRestingPosition();
-                    // Use a spring to put drag layer translation back to 0.
-                    anim.addAnimatorListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            floatingIconView.setPositionOffsetY(0);
-                            mBounceBackAnimator.start();
-                        }
-                    });
-
-                    Workspace workspace = mActivity.getWorkspace();
-                    workspace.setPivotToScaleWithSelf(mActivity.getHotseat());
-                }
-            }
-
-            private ValueAnimator bounceBackToRestingPosition() {
-                DragLayer dl = mActivity.getDragLayer();
-                Workspace workspace = mActivity.getWorkspace();
-                Hotseat hotseat = mActivity.getHotseat();
-
-                final float startValue = transY;
-                final float endValue = 0;
-                // Ensures the velocity is always aligned with the direction.
-                float pixelPerSecond = Math.abs(dpPerSecond) * Math.signum(endValue - transY);
-
-                ValueAnimator springTransY = new SpringAnimationBuilder(dl.getContext())
-                        .setStiffness(rp.getFloat(R.dimen.swipe_up_trans_y_stiffness))
-                        .setDampingRatio(rp.getFloat(R.dimen.swipe_up_trans_y_damping))
-                        .setMinimumVisibleChange(1f)
-                        .setStartValue(startValue)
-                        .setEndValue(endValue)
-                        .setStartVelocity(pixelPerSecond)
-                        .build(dl, VIEW_TRANSLATE_Y);
-                springTransY.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        dl.setTranslationY(0f);
-                        dl.setAlpha(1f);
-                        SCALE_PROPERTY.set(workspace, 1f);
-                        SCALE_PROPERTY.set(hotseat, 1f);
-                    }
-                });
-                return springTransY;
             }
 
             @Override
@@ -204,33 +155,14 @@ public class LauncherSwipeHandlerV2 extends
             @Override
             public void update(@Nullable AppCloseConfig config, RectF currentRect,
                     float progress, float radius) {
+                super.update(config, currentRect, progress, radius);
                 int fgAlpha = 255;
                 if (config != null && PROTOTYPE_APP_CLOSE.get()) {
-                    DragLayer dl = mActivity.getDragLayer();
-                    float translationY = config.getWorkspaceTransY();
-                    dl.setTranslationY(translationY);
-
-                    float alpha = mapToRange(progress, 0, launcherAlphaMax, 0, 1f, LINEAR);
-                    dl.setAlpha(Math.min(alpha, 1f));
-
-                    float scale = Math.min(1f, config.getWorkspaceScale());
-                    SCALE_PROPERTY.set(mActivity.getWorkspace(), scale);
-                    SCALE_PROPERTY.set(mActivity.getHotseat(), scale);
-                    SCALE_PROPERTY.set(mActivity.getAppsView(), scale);
-
                     progress = config.getInterpolatedProgress();
                     fgAlpha = config.getFgAlpha();
                 }
                 floatingIconView.update(1f, fgAlpha, currentRect, progress,
                         windowAlphaThreshold, radius, false);
-            }
-
-            @Override
-            public void onCancel() {
-                floatingIconView.fastFinish();
-                if (mBounceBackAnimator != null) {
-                    mBounceBackAnimator.cancel();
-                }
             }
         };
     }
@@ -246,10 +178,11 @@ public class LauncherSwipeHandlerV2 extends
                 hostView, backgroundLocation, windowSize,
                 mTaskViewSimulator.getCurrentCornerRadius(), isTargetTranslucent);
 
-        return new LauncherHomeAnimationFactory() {
+        return new FloatingViewHomeAnimationFactory(floatingWidgetView) {
 
             @Override
             public RectF getWindowTargetRect() {
+                super.getWindowTargetRect();
                 return backgroundLocation;
             }
 
@@ -260,6 +193,8 @@ public class LauncherSwipeHandlerV2 extends
 
             @Override
             public void setAnimation(RectFSpringAnim anim) {
+                super.setAnimation(anim);
+
                 anim.addAnimatorListener(floatingWidgetView);
                 floatingWidgetView.setOnTargetChangeListener(anim::onTargetPositionChanged);
                 floatingWidgetView.setFastFinishRunnable(anim::end);
@@ -273,14 +208,10 @@ public class LauncherSwipeHandlerV2 extends
             @Override
             public void update(@Nullable AppCloseConfig config, RectF currentRect,
                     float progress, float radius) {
+                super.update(config, currentRect, progress, radius);
                 floatingWidgetView.update(currentRect, 1 /* floatingWidgetAlpha */,
                         config != null ? config.getFgAlpha() : 1f /* foregroundAlpha */,
                         0 /* fallbackBackgroundAlpha */, 1 - progress);
-            }
-
-            @Override
-            public void onCancel() {
-                floatingWidgetView.fastFinish();
             }
         };
     }
@@ -323,6 +254,120 @@ public class LauncherSwipeHandlerV2 extends
                 true /* toRecents */, callback, true /* sendUserLeaveHint */);
     }
 
+    private class FloatingViewHomeAnimationFactory extends LauncherHomeAnimationFactory {
+
+        private final float mTransY;
+        private final FloatingView mFloatingView;
+        private ValueAnimator mBounceBackAnimator;
+        private final AnimatorSet mWorkspaceReveal;
+
+        FloatingViewHomeAnimationFactory(FloatingView floatingView) {
+            mFloatingView = floatingView;
+
+            ResourceProvider rp = DynamicResource.provider(mActivity);
+            mTransY = dpToPx(rp.getFloat(R.dimen.swipe_up_trans_y_dp));
+
+            mWorkspaceReveal = PROTOTYPE_APP_CLOSE.get()
+                    ? new WorkspaceRevealAnim(mActivity, true /* animateScrim */).getAnimators()
+                    : null;
+        }
+
+        @Override
+        public @NonNull RectF getWindowTargetRect() {
+            if (PROTOTYPE_APP_CLOSE.get()) {
+                // We want the target rect to be at this offset position, so that all
+                // launcher content can spring back upwards.
+                mFloatingView.setPositionOffsetY(mTransY);
+            }
+            return super.getWindowTargetRect();
+        }
+
+        @Override
+        public boolean shouldPlayAtomicWorkspaceReveal() {
+            return false;
+        }
+
+        @Override
+        public void update(@Nullable AppCloseConfig config, RectF currentRect, float progress,
+                float radius) {
+            if (config != null && PROTOTYPE_APP_CLOSE.get()) {
+                DragLayer dl = mActivity.getDragLayer();
+                float translationY = config.getWorkspaceTransY();
+                dl.setTranslationY(translationY);
+
+                long duration = mWorkspaceReveal.getDuration();
+                long playTime = boundToRange(round(duration * progress), 0, duration);
+                mWorkspaceReveal.setCurrentPlayTime(playTime);
+            }
+        }
+
+        protected void bounceBackToRestingPosition() {
+            final float startValue = mTransY;
+            final float endValue = 0;
+            // Ensures the velocity is always aligned with the direction.
+            float pixelPerSecond = Math.abs(mSwipeVelocity) * Math.signum(endValue - mTransY);
+
+            DragLayer dl = mActivity.getDragLayer();
+            Workspace workspace = mActivity.getWorkspace();
+            Hotseat hotseat = mActivity.getHotseat();
+
+            ResourceProvider rp = DynamicResource.provider(mActivity);
+            ValueAnimator springTransY = new SpringAnimationBuilder(dl.getContext())
+                    .setStiffness(rp.getFloat(R.dimen.swipe_up_trans_y_stiffness))
+                    .setDampingRatio(rp.getFloat(R.dimen.swipe_up_trans_y_damping))
+                    .setMinimumVisibleChange(1f)
+                    .setStartValue(startValue)
+                    .setEndValue(endValue)
+                    .setStartVelocity(pixelPerSecond)
+                    .build(dl, VIEW_TRANSLATE_Y);
+            springTransY.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    dl.setTranslationY(0f);
+                    dl.setAlpha(1f);
+                    SCALE_PROPERTY.set(workspace, 1f);
+                    SCALE_PROPERTY.set(hotseat, 1f);
+                }
+            });
+
+            mBounceBackAnimator = springTransY;
+            mBounceBackAnimator.start();
+        }
+
+        @Override
+        public void setAnimation(RectFSpringAnim anim) {
+            if (PROTOTYPE_APP_CLOSE.get()) {
+                // Use a spring to put drag layer translation back to 0.
+                anim.addAnimatorListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mFloatingView.setPositionOffsetY(0);
+                        bounceBackToRestingPosition();
+                    }
+                });
+
+                // Will be updated manually below so that the two animations are in sync.
+                mWorkspaceReveal.start();
+                mWorkspaceReveal.pause();
+
+                anim.addAnimatorListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mWorkspaceReveal.end();
+                    }
+                });
+            }
+        }
+
+        @Override
+        public void onCancel() {
+            mFloatingView.fastFinish();
+            if (mBounceBackAnimator != null) {
+                mBounceBackAnimator.cancel();
+            }
+        }
+    }
+
     private class LauncherHomeAnimationFactory extends HomeAnimationFactory {
         @NonNull
         @Override
@@ -336,8 +381,12 @@ public class LauncherSwipeHandlerV2 extends
 
         @Override
         public void playAtomicAnimation(float velocity) {
-            new StaggeredWorkspaceAnim(mActivity, velocity, true /* animateOverviewScrim */,
-                    !PROTOTYPE_APP_CLOSE.get()).start();
+            if (!PROTOTYPE_APP_CLOSE.get()) {
+                new StaggeredWorkspaceAnim(mActivity, velocity, true /* animateOverviewScrim */)
+                        .start();
+            } else if (shouldPlayAtomicWorkspaceReveal()) {
+                new WorkspaceRevealAnim(mActivity, true).start();
+            }
         }
 
         @Override
