@@ -97,7 +97,7 @@
     <string name="back_gesture_feedback_cancelled_left_edge">Make sure you swipe from the left edge to the middle of the screen and let go.</string>
     <!-- Feedback title shown after completing the left back gesture before continuing on to the right edge. [CHAR LIMIT=60] -->
     <string name="back_gesture_feedback_title_complete_left_edge">Nice! Now swipe from the right to go back</string>
-    <!-- Feedback subtitle shown after completing the left back gesture before continuing on to the right edge. [CHAR LIMIT=60] -->
+    <!-- Feedback subtitle shown after completing the left back gesture before continuing on to the right edge. [CHAR LIMIT=200] -->
     <string name="back_gesture_feedback_subtitle_complete_left_edge">You can also go back to the last screen by swiping from the right edge to the middle of the screen.</string>
     <!-- Feedback shown during interactive parts of Back gesture tutorial for right edge when the gesture is too far from the edge. [CHAR LIMIT=100] -->
     <string name="back_gesture_feedback_swipe_too_far_from_right_edge">Make sure you swipe from the far-right edge.</string>
@@ -176,8 +176,6 @@
     <string name="gesture_tutorial_confirm_title">All set</string>
     <!-- Button text shown on a button on the feedback popup to proceed to the next tutorial step. [CHAR LIMIT=14] -->
     <string name="gesture_tutorial_action_button_label_next">Next</string>
-    <!-- Button text shown on a button on the feedback popup to complete the tutorial. [CHAR LIMIT=14] -->
-    <string name="gesture_tutorial_action_button_label_done">Done</string>
     <!-- Button text shown on a button to go to Settings. [CHAR LIMIT=14] -->
     <string name="gesture_tutorial_action_button_label_settings">Settings</string>
     <!-- Feedback title to try again. [CHAR LIMIT=30] -->
