@@ -82,4 +82,5 @@
         <item quantity="other">%1$d Apps</item>
     </plurals>
     <string name="accent_color">Accent Color</string>
+    <string name="apply">Apply</string>
 </resources>
