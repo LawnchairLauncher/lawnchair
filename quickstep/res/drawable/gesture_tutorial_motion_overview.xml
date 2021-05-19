@@ -1612,7 +1612,7 @@
                     <path
                         android:name="_R_G_L_0_G_D_0_P_0"
                         android:fillAlpha="0"
-                        android:fillColor="#84ba69"
+                        android:fillColor="@color/gesture_tutorial_primary_color"
                         android:fillType="nonZero"
                         android:pathData=" M0 406 C21.54,406 39,423.46 39,445 C39,466.54 21.54,484 0,484 C-21.54,484 -39,466.54 -39,445 C-39,423.46 -21.54,406 0,406c " />
                 </group>
