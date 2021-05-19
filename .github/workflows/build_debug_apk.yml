@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - 11-dev
+      - accent-color-customization
 
 jobs:
   send-start-notification:
@@ -16,7 +16,7 @@ jobs:
         with:
           to: ${{ secrets.TELEGRAM_CI_CHANNEL_ID }}
           token: ${{ secrets.TELEGRAM_CI_BOT_TOKEN }}
-          message: New push to “11-dev”. Building debug APK…
+          message: New push to “accent-color-customization”. Building debug APK…
   build-debug-apk:
     runs-on: ubuntu-latest
     needs: send-start-notification
