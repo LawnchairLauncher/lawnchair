@@ -36,7 +36,7 @@ import com.android.launcher3.pageindicators.PageIndicator;
 public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageIndicator {
     private final Paint mSelectedIndicatorPaint;
 
-    private int mSelectedIndicatorHeight;
+    private int mTabVerticalPadding;
     private final int mSelectedIndicatorRadius;
 
     private int mIndicatorLeft = -1;
@@ -52,8 +52,8 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
         super(context, attrs);
         setWillNotDraw(false);
 
-        mSelectedIndicatorHeight =
-                getResources().getDimensionPixelSize(R.dimen.all_apps_header_pill_height);
+        mTabVerticalPadding =
+                getResources().getDimensionPixelSize(R.dimen.all_apps_tabs_vertical_padding);
 
         mSelectedIndicatorRadius = getResources().getDimensionPixelSize(
                 R.dimen.all_apps_header_pill_corner_radius);
@@ -112,9 +112,9 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.drawRoundRect(mIndicatorLeft, getHeight() - mSelectedIndicatorHeight,
-                mIndicatorRight, getHeight(), mSelectedIndicatorRadius, mSelectedIndicatorRadius,
-                mSelectedIndicatorPaint);
+        canvas.drawRoundRect(mIndicatorLeft, mTabVerticalPadding, mIndicatorRight,
+                getHeight() - mTabVerticalPadding, mSelectedIndicatorRadius,
+                mSelectedIndicatorRadius, mSelectedIndicatorPaint);
     }
 
     @Override
