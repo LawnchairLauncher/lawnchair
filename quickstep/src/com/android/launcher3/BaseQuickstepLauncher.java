@@ -49,7 +49,7 @@ import com.android.launcher3.proxy.StartActivityParams;
 import com.android.launcher3.statehandlers.BackButtonAlphaHandler;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
-import com.android.launcher3.taskbar.TaskbarController;
+import com.android.launcher3.taskbar.LauncherTaskbarUIController;
 import com.android.launcher3.taskbar.TaskbarManager;
 import com.android.launcher3.taskbar.TaskbarStateHandler;
 import com.android.launcher3.uioverrides.RecentsViewStateController;
@@ -96,7 +96,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
     private OverviewActionsView mActionsView;
 
     private @Nullable TaskbarManager mTaskbarManager;
-    private @Nullable TaskbarController mTaskbarController;
+    private @Nullable LauncherTaskbarUIController mTaskbarUIController;
     private final ServiceConnection mTisBinderConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
@@ -261,8 +261,8 @@ public abstract class BaseQuickstepLauncher extends Launcher
 
     }
 
-    public void setTaskbarController(TaskbarController taskbarController) {
-        mTaskbarController = taskbarController;
+    public void setTaskbarUIController(LauncherTaskbarUIController taskbarUIController) {
+        mTaskbarUIController = taskbarUIController;
     }
 
     public <T extends OverviewActionsView> T getActionsView() {
@@ -292,8 +292,8 @@ public abstract class BaseQuickstepLauncher extends Launcher
         return mDepthController;
     }
 
-    public @Nullable TaskbarController getTaskbarController() {
-        return mTaskbarController;
+    public @Nullable LauncherTaskbarUIController getTaskbarUIController() {
+        return mTaskbarUIController;
     }
 
     public TaskbarStateHandler getTaskbarStateHandler() {
@@ -349,8 +349,8 @@ public abstract class BaseQuickstepLauncher extends Launcher
 
     @Override
     public float getNormalTaskbarScale() {
-        if (mTaskbarController != null) {
-            return mTaskbarController.getTaskbarScaleOnHome();
+        if (mTaskbarUIController != null) {
+            return mTaskbarUIController.getTaskbarScaleOnHome();
         }
         return super.getNormalTaskbarScale();
     }
@@ -372,8 +372,8 @@ public abstract class BaseQuickstepLauncher extends Launcher
         }
 
         if ((changeBits & ACTIVITY_STATE_RESUMED) != 0) {
-            if (mTaskbarController != null) {
-                mTaskbarController.onLauncherResumedOrPaused(hasBeenResumed());
+            if (mTaskbarUIController != null) {
+                mTaskbarUIController.onLauncherResumedOrPaused(hasBeenResumed());
             }
         }
 
