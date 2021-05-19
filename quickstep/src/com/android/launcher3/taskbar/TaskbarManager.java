@@ -97,7 +97,7 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
         if (mTaskbarActivityContext != null) {
             mTaskbarActivityContext.setUIController(mLauncher == null
                     ? TaskbarUIController.DEFAULT
-                    : new TaskbarController(launcher, mTaskbarActivityContext));
+                    : new LauncherTaskbarUIController(launcher, mTaskbarActivityContext));
         }
     }
 
@@ -115,7 +115,7 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
         mTaskbarActivityContext.init();
         if (mLauncher != null) {
             mTaskbarActivityContext.setUIController(
-                    new TaskbarController(mLauncher, mTaskbarActivityContext));
+                    new LauncherTaskbarUIController(mLauncher, mTaskbarActivityContext));
         }
     }
 
