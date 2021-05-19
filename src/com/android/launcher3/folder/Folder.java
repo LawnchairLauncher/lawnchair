@@ -32,8 +32,10 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.appwidget.AppWidgetHostView;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Canvas;
 import android.graphics.Insets;
 import android.graphics.Path;
@@ -65,6 +67,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.core.graphics.ColorUtils;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Alarm;
@@ -157,12 +160,17 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     private static final float ICON_OVERSCROLL_WIDTH_FACTOR = 0.45f;
 
     private static final int FOLDER_NAME_ANIMATION_DURATION = 633;
-    private static final int FOLDER_COLOR_ANIMATION_DURATION = 150;
+    private static final int FOLDER_COLOR_ANIMATION_DURATION = 200;
 
     private static final int REORDER_DELAY = 250;
     private static final int ON_EXIT_CLOSE_DELAY = 400;
     private static final Rect sTempRect = new Rect();
     private static final int MIN_FOLDERS_FOR_HARDWARE_OPTIMIZATION = 10;
+
+    // Index used to get background color when using local wallpaper color extraction,
+    private static final int DARK_COLOR_EXTRACTION_INDEX = android.R.color.system_neutral1_900;
+    private static final int LIGHT_COLOR_EXTRACTION_INDEX = android.R.color.system_neutral2_500;
+    private static final int LIGHT_COLOR_L_STAR = 98;
 
     private final Alarm mReorderAlarm = new Alarm();
     private final Alarm mOnExitAlarm = new Alarm();
@@ -296,8 +304,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         }
 
         if (Utilities.ATLEAST_S) {
-            mColorExtractionIndex = LocalColorExtractor.getColorIndex(
-                    !Themes.getAttrBoolean(getContext(), R.attr.isFolderDarkText));
+            boolean isFolderDarkText = Themes.getAttrBoolean(getContext(), R.attr.isFolderDarkText);
             mColorExtractor = LocalColorExtractor.newInstance(getContext());
             mColorListener = (RectF rect, SparseIntArray extractedColors) -> {
                 mColorChangeRunnable = () -> {
@@ -313,11 +320,14 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                         mOpenAnimationColorChangeAnimator = null;
                     }
 
-                    // Start a new animator to the extracted color.
-                    int newColor = extractedColors.get(mColorExtractionIndex);
+                    // Start a new animator to the extracted color. Clamp down on the alpha
+                    // to prevent folder from being transparent for too long.
                     GradientDrawable bg = (GradientDrawable) getBackground();
-                    mColorChangeAnimator = ObjectAnimator.ofArgb(bg, "color",
-                            bg.getColor().getDefaultColor(), newColor).setDuration(duration);
+                    int currentColor = ColorUtils.setAlphaComponent(bg.getColor().getDefaultColor(),
+                            255);
+                    int newColor = getExtractedColor(extractedColors, isFolderDarkText);
+                    mColorChangeAnimator = ObjectAnimator.ofArgb(bg, "color", currentColor,
+                            newColor).setDuration(duration);
                     mColorChangeAnimator.addListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
@@ -335,6 +345,21 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                 }
             };
         }
+    }
+
+    /**
+     * Returns an index used to query the color of interest from the list of extracted colors.
+     * @param hasDarkText True when dark index is wanted, False when light index is wanted.
+     */
+    @TargetApi(Build.VERSION_CODES.S)
+    private int getExtractedColor(SparseIntArray colors, boolean hasDarkText) {
+        int color = colors.get(hasDarkText
+                ? LIGHT_COLOR_EXTRACTION_INDEX
+                : DARK_COLOR_EXTRACTION_INDEX);
+        if (hasDarkText) {
+            color = ColorStateList.valueOf(color).withLStar(LIGHT_COLOR_L_STAR).getDefaultColor();
+        }
+        return color;
     }
 
     public boolean onLongClick(View v) {
