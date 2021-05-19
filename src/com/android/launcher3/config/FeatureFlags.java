@@ -214,14 +214,14 @@ public final class FeatureFlags {
             + "predictions to be updated while they are visible to the user.");
 
     public static final BooleanFlag ENABLE_TASKBAR = getDebugFlag(
-            "ENABLE_TASKBAR", false, "Allows a system Taskbar to be shown on larger devices.");
+            "ENABLE_TASKBAR", true, "Allows a system Taskbar to be shown on larger devices.");
 
     public static final BooleanFlag ENABLE_OVERVIEW_GRID = getDebugFlag(
-            "ENABLE_OVERVIEW_GRID", false, "Uses grid overview layout. "
+            "ENABLE_OVERVIEW_GRID", true, "Uses grid overview layout. "
             + "Only applicable on large screen devices.");
 
     public static final BooleanFlag ENABLE_TWO_PANEL_HOME = getDebugFlag(
-            "ENABLE_TWO_PANEL_HOME", false,
+            "ENABLE_TWO_PANEL_HOME", true,
             "Uses two panel on home screen. Only applicable on large screen devices.");
 
     public static final BooleanFlag ENABLE_SPLIT_SELECT = getDebugFlag(
