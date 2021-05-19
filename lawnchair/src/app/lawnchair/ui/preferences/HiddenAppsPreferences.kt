@@ -29,7 +29,7 @@ import app.lawnchair.util.Meta
 import app.lawnchair.util.appsList
 import app.lawnchair.util.pageMeta
 import app.lawnchair.util.preferences.getAdapter
-import app.lawnchair.util.preferences.getState
+import app.lawnchair.util.preferences.observeAsState
 import app.lawnchair.util.preferences.preferenceManager
 import com.android.launcher3.R
 import java.util.*
@@ -78,7 +78,7 @@ fun HiddenAppsPreferences() {
 }
 
 @Composable
-fun hiddenAppsCount(): Int = preferenceManager().hiddenAppSet.getState().value.size
+fun hiddenAppsCount(): Int = preferenceManager().hiddenAppSet.observeAsState().value.size
 
 @Composable
 fun hiddenAppsComparator(hiddenApps: Set<String>): Comparator<App> {

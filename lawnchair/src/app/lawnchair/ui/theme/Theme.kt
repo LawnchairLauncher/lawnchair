@@ -21,6 +21,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 
 private val DarkColorPalette = darkColors(
@@ -37,6 +38,7 @@ private val LightColorPalette = lightColors(
 @Composable
 fun LawnchairTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
+    accent: Color? = null,
     content: @Composable () -> Unit
 ) {
     val colors = if (darkTheme) {
@@ -44,9 +46,15 @@ fun LawnchairTheme(
     } else {
         LightColorPalette
     }
+    val overriddenColors = remember(colors, accent) {
+        when {
+            accent != null -> colors.copy(primary = accent, secondary = accent)
+            else -> colors
+        }
+    }
 
     MaterialTheme(
-        colors = colors,
+        colors = overriddenColors,
         typography = Typography,
         shapes = Shapes,
         content = content

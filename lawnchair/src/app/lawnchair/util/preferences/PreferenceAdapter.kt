@@ -57,9 +57,6 @@ fun <T> BasePreferenceManager.PrefEntry<T>.getAdapter(): PreferenceAdapter<T> {
 }
 
 @Composable
-fun <T> BasePreferenceManager.PrefEntry<T>.getState() = getAdapter().state
-
-@Composable
 fun <T> BasePreferenceManager.PrefEntry<T>.observeAsState(): State<T> {
     return getAdapter().state
 }
