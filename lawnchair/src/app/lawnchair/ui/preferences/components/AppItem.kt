@@ -24,6 +24,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -31,6 +32,7 @@ import androidx.compose.material.icons.rounded.Check
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.dp
@@ -94,17 +96,17 @@ fun AppItem(
 @Composable
 fun AnimatedCheck(
     visible: Boolean,
-    colorFilter: ColorFilter = ColorFilter.tint(MaterialTheme.colors.primary),
+    tint: Color = MaterialTheme.colors.primary,
 ) {
     AnimatedVisibility(
         visible = visible,
         enter = fadeIn(),
         exit = fadeOut()
     ) {
-        Image(
+        Icon(
             imageVector = Icons.Rounded.Check,
             contentDescription = null,
-            colorFilter = colorFilter,
+            tint = tint,
         )
     }
 }
