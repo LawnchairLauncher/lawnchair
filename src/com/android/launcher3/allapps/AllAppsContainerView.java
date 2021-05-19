@@ -30,11 +30,13 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.os.Parcelable;
 import android.os.Process;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -133,6 +135,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     private int mHeaderColor;
 
 
+
     public AllAppsContainerView(Context context) {
         this(context, null);
     }
@@ -167,6 +170,19 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         mNavBarScrimPaint.setColor(Themes.getAttrColor(context, R.attr.allAppsNavBarScrimColor));
 
         mAllAppsStore.addUpdateListener(this::onAppsUpdated);
+    }
+
+    @Override
+    protected void dispatchRestoreInstanceState(SparseArray<Parcelable> sparseArray) {
+        try {
+            // Many slice view id is not properly assigned, and hence throws null
+            // pointer exception in the underneath method. Catching the exception
+            // simply doesn't restore these slice views. This doesn't have any
+            // user visible effect because because we query them again.
+            super.dispatchRestoreInstanceState(sparseArray);
+        } catch (Exception e) {
+            Log.e("AllAppsContainerView", "restoreInstanceState viewId = 0", e);
+        }
     }
 
     /**
@@ -436,6 +452,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             setupWorkToggle();
             mAH[AdapterHolder.MAIN].setup(mViewPager.getChildAt(0), mPersonalMatcher);
             mAH[AdapterHolder.WORK].setup(mViewPager.getChildAt(1), mWorkMatcher);
+            mAH[AdapterHolder.WORK].recyclerView.setId(R.id.apps_list_view_work);
             mViewPager.getPageIndicator().setActiveMarker(AdapterHolder.MAIN);
             findViewById(R.id.tab_personal)
                     .setOnClickListener((View view) -> {
@@ -703,7 +720,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         mHeaderPaint.setColor(mHeaderColor);
         mHeaderPaint.setAlpha((int) (getAlpha() * Color.alpha(mHeaderColor)));
         if (mHeaderPaint.getColor() != mScrimColor && mHeaderPaint.getColor() != 0) {
-            canvas.drawRect(0, 0, getWidth(), mHeaderTopPadding + getTranslationY(),
+            canvas.drawRect(0, 0, getWidth(), mSearchContainer.getTop() + getTranslationY(),
                     mHeaderPaint);
         }
     }
@@ -813,10 +830,13 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     protected void updateHeaderScroll(int scrolledOffset) {
         float prog = Math.max(0, Math.min(1, (float) scrolledOffset / mHeaderThreshold));
-        int headerColor = ColorUtils.setAlphaComponent(mHeaderProtectionColor, (int) (prog * 255));
+        int viewBG = ColorUtils.blendARGB(mScrimColor, mHeaderProtectionColor, prog);
+        int headerColor = ColorUtils.setAlphaComponent(viewBG,
+                (int) (getSearchView().getAlpha() * 255));
         if (headerColor != mHeaderColor) {
             mHeaderColor = headerColor;
-            getSearchView().setBackgroundColor(mHeaderColor);
+            getSearchView().setBackgroundColor(viewBG);
+            getFloatingHeaderView().setHeaderColor(viewBG);
             invalidateHeader();
         }
     }

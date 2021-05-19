@@ -45,8 +45,8 @@ public class AllSetActivity extends Activity {
     private static final String LOG_TAG = "AllSetActivity";
     private static final String URI_SYSTEM_NAVIGATION_SETTING =
             "#Intent;action=com.android.settings.SEARCH_RESULT_TRAMPOLINE;S.:settings:fragment_args_key=gesture_system_navigation_input_summary;S.:settings:show_fragment=com.android.settings.gestures.SystemNavigationGestureSettings;end";
-    private static final String EXTRA_ACCENT_COLOR_DARK_MODE = "accent_color_dark_mode";
-    private static final String EXTRA_ACCENT_COLOR_LIGHT_MODE = "accent_color_light_mode";
+    private static final String EXTRA_ACCENT_COLOR_DARK_MODE = "suwColorAccentDark";
+    private static final String EXTRA_ACCENT_COLOR_LIGHT_MODE = "suwColorAccentLight";
 
     private int mAccentColor;
 

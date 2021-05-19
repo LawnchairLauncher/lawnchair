@@ -63,7 +63,7 @@ import com.android.launcher3.shortcuts.DeepShortcutView;
  */
 @TargetApi(Build.VERSION_CODES.Q)
 public class FloatingIconView extends FrameLayout implements
-        Animator.AnimatorListener, OnGlobalLayoutListener {
+        Animator.AnimatorListener, OnGlobalLayoutListener, FloatingView {
 
     private static final String TAG = FloatingIconView.class.getSimpleName();
 
@@ -443,6 +443,7 @@ public class FloatingIconView extends FrameLayout implements
         mFastFinishRunnable = runnable;
     }
 
+    @Override
     public void fastFinish() {
         if (mFastFinishRunnable != null) {
             mFastFinishRunnable.run();
@@ -475,9 +476,7 @@ public class FloatingIconView extends FrameLayout implements
     @Override
     public void onAnimationRepeat(Animator animator) {}
 
-    /**
-     * Offsets and updates the position of this view by {@param y}.
-     */
+    @Override
     public void setPositionOffsetY(float y) {
         mIconOffsetY = y;
         onGlobalLayout();

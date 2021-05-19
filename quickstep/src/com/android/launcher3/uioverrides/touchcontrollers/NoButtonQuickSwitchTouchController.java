@@ -73,7 +73,7 @@ import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.MotionPauseDetector;
-import com.android.quickstep.util.StaggeredWorkspaceAnim;
+import com.android.quickstep.util.WorkspaceRevealAnim;
 import com.android.quickstep.views.LauncherRecentsView;
 
 /**
@@ -384,8 +384,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
             updateNonOverviewAnim(targetState, config);
             nonOverviewAnim = mNonOverviewAnim.getAnimationPlayer();
 
-            new StaggeredWorkspaceAnim(mLauncher, velocity.y, false /* animateOverviewScrim */)
-                    .start();
+            new WorkspaceRevealAnim(mLauncher, false /* animateOverviewScrim */).start();
         } else {
             boolean canceled = targetState == NORMAL;
             if (canceled) {

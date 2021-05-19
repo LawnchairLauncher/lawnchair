@@ -15,6 +15,7 @@
     limitations under the License.
 -->
 <resources>
+    <item type="id" name="apps_list_view_work" />
     <item type="id" name="view_type_widgets_list" />
     <item type="id" name="view_type_widgets_header" />
     <item type="id" name="view_type_widgets_search_header" />

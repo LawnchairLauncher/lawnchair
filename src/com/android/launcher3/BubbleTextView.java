@@ -447,10 +447,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
      * @param canvas The canvas to draw to.
      */
     protected void drawDotIfNecessary(Canvas canvas) {
-        if (mActivity instanceof Launcher && ((Launcher) mActivity).isViewInTaskbar(this)) {
-            // TODO: support notification dots in Taskbar
-            return;
-        }
         if (!mForceHideDot && (hasDot() || mDotParams.scale > 0)) {
             getIconBounds(mDotParams.iconBounds);
             Utilities.scaleRectAboutCenter(mDotParams.iconBounds,
