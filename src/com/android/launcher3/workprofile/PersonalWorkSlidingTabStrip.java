@@ -29,14 +29,12 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.pageindicators.PageIndicator;
-import com.android.launcher3.util.Themes;
 
 /**
  * Supports two indicator colors, dedicated for personal and work tabs.
  */
 public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageIndicator {
     private final Paint mSelectedIndicatorPaint;
-    private final Paint mDividerPaint;
 
     private int mSelectedIndicatorHeight;
     private final int mSelectedIndicatorRadius;
@@ -52,7 +50,6 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
 
     public PersonalWorkSlidingTabStrip(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        setOrientation(HORIZONTAL);
         setWillNotDraw(false);
 
         mSelectedIndicatorHeight =
@@ -63,11 +60,6 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
 
         mSelectedIndicatorPaint = new Paint();
         mSelectedIndicatorPaint.setColor(context.getColor(R.color.all_apps_tab_bg));
-
-        mDividerPaint = new Paint();
-        mDividerPaint.setColor(Themes.getAttrColor(context, android.R.attr.colorControlHighlight));
-        mDividerPaint.setStrokeWidth(
-                getResources().getDimensionPixelSize(R.dimen.all_apps_divider_height));
 
         mIsRtl = Utilities.isRtl(getResources());
     }
@@ -120,8 +112,6 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
-        float y = getHeight() - mDividerPaint.getStrokeWidth();
         canvas.drawRoundRect(mIndicatorLeft, getHeight() - mSelectedIndicatorHeight,
                 mIndicatorRight, getHeight(), mSelectedIndicatorRadius, mSelectedIndicatorRadius,
                 mSelectedIndicatorPaint);

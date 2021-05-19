@@ -93,6 +93,7 @@
     <dimen name="all_apps_background_canvas_height">475dp</dimen>
     <dimen name="all_apps_header_pill_height">36dp</dimen>
     <dimen name="all_apps_header_pill_corner_radius">18dp</dimen>
+    <dimen name="all_apps_header_pills_width">320dp</dimen>
     <dimen name="all_apps_header_tab_height">48dp</dimen>
     <dimen name="all_apps_tabs_indicator_height">2dp</dimen>
     <dimen name="all_apps_header_top_padding">36dp</dimen>

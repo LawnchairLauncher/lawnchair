@@ -17,6 +17,9 @@ package com.android.launcher3.allapps;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.ArrayMap;
@@ -50,26 +53,28 @@ public class FloatingHeaderView extends LinearLayout implements
     private final Rect mClip = new Rect(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE);
     private final ValueAnimator mAnimator = ValueAnimator.ofInt(0, 0);
     private final Point mTempOffset = new Point();
-    private final RecyclerView.OnScrollListener mOnScrollListener = new RecyclerView.OnScrollListener() {
-        @Override
-        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-        }
+    private final Paint mBGPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final RecyclerView.OnScrollListener mOnScrollListener =
+            new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                }
 
-        @Override
-        public void onScrolled(RecyclerView rv, int dx, int dy) {
-            if (rv != mCurrentRV) {
-                return;
-            }
+                @Override
+                public void onScrolled(RecyclerView rv, int dx, int dy) {
+                    if (rv != mCurrentRV) {
+                        return;
+                    }
 
-            if (mAnimator.isStarted()) {
-                mAnimator.cancel();
-            }
+                    if (mAnimator.isStarted()) {
+                        mAnimator.cancel();
+                    }
 
-            int current = -mCurrentRV.getCurrentScrollY();
-            moved(current);
-            applyVerticalMove();
-        }
-    };
+                    int current = -mCurrentRV.getCurrentScrollY();
+                    moved(current);
+                    applyVerticalMove();
+                }
+            };
 
     private final int mHeaderTopPadding;
 
@@ -80,9 +85,10 @@ public class FloatingHeaderView extends LinearLayout implements
     private AllAppsRecyclerView mWorkRV;
     private AllAppsRecyclerView mCurrentRV;
     private ViewGroup mParent;
-    private boolean mHeaderCollapsed;
+    public boolean mHeaderCollapsed;
     private int mSnappedScrolledY;
     private int mTranslationY;
+    private int mHeaderColor;
 
     private boolean mForwardToRecyclerView;
 
@@ -219,7 +225,7 @@ public class FloatingHeaderView extends LinearLayout implements
     }
 
     private AllAppsRecyclerView setupRV(AllAppsRecyclerView old, AllAppsRecyclerView updated) {
-        if (old != updated && updated != null ) {
+        if (old != updated && updated != null) {
             updated.addOnScrollListener(mOnScrollListener);
         }
         return updated;
@@ -262,6 +268,7 @@ public class FloatingHeaderView extends LinearLayout implements
                 }
             } else {
                 mHeaderCollapsed = false;
+                invalidate();
             }
             mTranslationY = currentScrollY;
         } else if (!mHeaderCollapsed) {
@@ -274,8 +281,26 @@ public class FloatingHeaderView extends LinearLayout implements
             } else if (mTranslationY <= -mMaxTranslation) { // hide or stay hidden
                 mHeaderCollapsed = true;
                 mSnappedScrolledY = -mMaxTranslation;
+                invalidate();
             }
         }
+    }
+
+    /**
+     * Set current header protection background color
+     */
+    public void setHeaderColor(int color) {
+        mHeaderColor = color;
+        invalidate();
+    }
+
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        if (mHeaderCollapsed && mHeaderColor != Color.TRANSPARENT) {
+            mBGPaint.setColor(mHeaderColor);
+            canvas.drawRect(0, 0, getWidth(), getHeight() + mTranslationY, mBGPaint);
+        }
+        super.dispatchDraw(canvas);
     }
 
     protected void applyVerticalMove() {

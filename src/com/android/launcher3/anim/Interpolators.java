@@ -35,6 +35,7 @@ public class Interpolators {
     public static final Interpolator LINEAR = new LinearInterpolator();
 
     public static final Interpolator ACCEL = new AccelerateInterpolator();
+    public static final Interpolator ACCEL_0_5 = new AccelerateInterpolator(0.5f);
     public static final Interpolator ACCEL_0_75 = new AccelerateInterpolator(0.75f);
     public static final Interpolator ACCEL_1_5 = new AccelerateInterpolator(1.5f);
     public static final Interpolator ACCEL_2 = new AccelerateInterpolator(2);
@@ -149,11 +150,15 @@ public class Interpolators {
      */
     public static Interpolator clampToProgress(Interpolator interpolator, float lowerBound,
             float upperBound) {
-        if (upperBound <= lowerBound) {
-            throw new IllegalArgumentException(String.format(
-                    "lowerBound (%f) must be less than upperBound (%f)", lowerBound, upperBound));
+        if (upperBound < lowerBound) {
+            throw new IllegalArgumentException(
+                    String.format("upperBound (%f) must be greater than lowerBound (%f)",
+                            upperBound, lowerBound));
         }
         return t -> {
+            if (t == lowerBound && t == upperBound) {
+                return t == 0f ? 0 : 1;
+            }
             if (t < lowerBound) {
                 return 0;
             }

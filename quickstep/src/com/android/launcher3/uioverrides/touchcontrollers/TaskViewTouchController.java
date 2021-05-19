@@ -28,6 +28,7 @@ import android.view.animation.Interpolator;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.LauncherAnimUtils;
+import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
@@ -49,6 +50,10 @@ import com.android.quickstep.views.TaskView;
 public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
         extends AnimatorListenerAdapter implements TouchController,
         SingleAxisSwipeDetector.Listener {
+
+    private static final float ANIMATION_PROGRESS_FRACTION_MIDPOINT = 0.5f;
+    private static final long MIN_TASK_DISMISS_ANIMATION_DURATION = 300;
+    private static final long MAX_TASK_DISMISS_ANIMATION_DURATION = 600;
 
     protected final T mActivity;
     private final SingleAxisSwipeDetector mDetector;
@@ -277,14 +282,32 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
         } else {
             mFlingBlockCheck.onEvent();
         }
-        mCurrentAnimation.setPlayFraction(Utilities.boundToRange(
-                totalDisplacement * mProgressMultiplier, 0, 1));
+
+        // Once halfway through task dismissal interpolation, switch from reversible dragging-task
+        // animation to playing the remaining task translation animations
+        if (mCurrentAnimation.getProgressFraction() < ANIMATION_PROGRESS_FRACTION_MIDPOINT) {
+            // Halve the value as we are animating the drag across the full length for only the
+            // first half of the progress
+            mCurrentAnimation.setPlayFraction(
+                    Utilities.boundToRange(totalDisplacement * mProgressMultiplier / 2, 0, 1));
+        } else {
+            float dragVelocity = -mTaskBeingDragged.getResources().getDimension(
+                    mRecentsView.showAsGrid() ? R.dimen.default_task_dismiss_drag_velocity_grid
+                            : R.dimen.default_task_dismiss_drag_velocity);
+            onDragEnd(dragVelocity);
+            return true;
+        }
 
         return true;
     }
 
     @Override
     public void onDragEnd(float velocity) {
+        // Limit velocity, as very large scalar values make animations play too quickly
+        float maxTaskDismissDragVelocity = mTaskBeingDragged.getResources().getDimension(
+                R.dimen.max_task_dismiss_drag_velocity);
+        velocity = Utilities.boundToRange(velocity, -maxTaskDismissDragVelocity,
+                maxTaskDismissDragVelocity);
         boolean fling = mDetector.isFling(velocity);
         final boolean goingToEnd;
         boolean blockedFling = fling && mFlingBlockCheck.isBlocked();
@@ -305,6 +328,11 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
         if (blockedFling && !goingToEnd) {
             animationDuration *= LauncherAnimUtils.blockedFlingDurationFactor(velocity);
         }
+        // Due to very high or low velocity dismissals, animation durations can be inconsistently
+        // long or short. Bound the duration for animation of task translations for a more
+        // standardized feel.
+        animationDuration = Utilities.boundToRange(animationDuration,
+                MIN_TASK_DISMISS_ANIMATION_DURATION, MAX_TASK_DISMISS_ANIMATION_DURATION);
 
         mCurrentAnimation.setEndAction(this::clearState);
         mCurrentAnimation.startWithVelocity(mActivity, goingToEnd,

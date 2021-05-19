@@ -126,7 +126,7 @@
 
     <item name="swipe_up_rect_xy_fling_friction" type="dimen" format="float">1.5</item>
 
-    <item name="swipe_up_scale_start"  type="dimen" format="float">0.98</item>
+    <item name="swipe_up_scale_start"  type="dimen" format="float">0.88</item>
     <item name="swipe_up_duration"  type="dimen" format="float">400</item>
 
     <item name="swipe_up_trans_y_dp"  type="dimen" format="float">4.5</item>

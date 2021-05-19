@@ -30,7 +30,7 @@ import com.android.launcher3.states.StateAnimationConfig;
 
 /**
  * Runs an animation from overview to home. Currently, this animation is just a wrapper around the
- * normal state transition and may play a {@link StaggeredWorkspaceAnim} if we're starting from an
+ * normal state transition and may play a {@link WorkspaceRevealAnim} if we're starting from an
  * upward fling.
  */
 public class OverviewToHomeAnim {
@@ -51,7 +51,7 @@ public class OverviewToHomeAnim {
 
     /**
      * Starts the animation. If velocity < 0 (i.e. upwards), also plays a
-     * {@link StaggeredWorkspaceAnim}.
+     * {@link WorkspaceRevealAnim}.
      */
     public void animateWithVelocity(float velocity) {
         StateManager<LauncherState> stateManager = mLauncher.getStateManager();
@@ -61,18 +61,18 @@ public class OverviewToHomeAnim {
         }
         AnimatorSet anim = new AnimatorSet();
 
-        boolean playStaggeredWorkspaceAnim = velocity < 0;
-        if (playStaggeredWorkspaceAnim) {
-            StaggeredWorkspaceAnim staggeredWorkspaceAnim = new StaggeredWorkspaceAnim(
-                    mLauncher, velocity, false /* animateOverviewScrim */);
-            staggeredWorkspaceAnim.addAnimatorListener(new AnimationSuccessListener() {
+        boolean playWorkspaceRevealAnim = velocity < 0;
+        if (playWorkspaceRevealAnim) {
+            WorkspaceRevealAnim workspaceRevealAnim = new WorkspaceRevealAnim(mLauncher,
+                    false /* animateOverviewScrim */);
+            workspaceRevealAnim.addAnimatorListener(new AnimationSuccessListener() {
                 @Override
                 public void onAnimationSuccess(Animator animator) {
                     mIsHomeStaggeredAnimFinished = true;
                     maybeOverviewToHomeAnimComplete();
                 }
             });
-            anim.play(staggeredWorkspaceAnim.getAnimators());
+            anim.play(workspaceRevealAnim.getAnimators());
         } else {
             mIsHomeStaggeredAnimFinished = true;
         }
