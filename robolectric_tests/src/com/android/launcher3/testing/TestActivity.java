@@ -27,7 +27,12 @@ public class TestActivity extends BaseActivity implements ActivityContext {
 
     @Override
     public BaseDragLayer getDragLayer() {
-        return null;
+        return new BaseDragLayer(this, /* attrs= */ null, /* alphaChannelCount= */ 1) {
+            @Override
+            public void recreateControllers() {
+                // Do nothing.
+            }
+        };
     }
 
     @Override
