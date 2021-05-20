@@ -197,17 +197,18 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             Rect gridRect = new Rect();
             calculateGridSize(context, dp, gridRect);
 
-            int verticalMargin = res.getDimensionPixelSize(
-                    R.dimen.overview_grid_focus_vertical_margin);
-            float taskHeight = gridRect.height() - verticalMargin * 2;
+            int verticalMargin = Math.max(
+                    res.getDimensionPixelSize(R.dimen.overview_grid_focus_vertical_margin),
+                    res.getDimensionPixelSize(R.dimen.overview_actions_height));
+            float taskHeight =
+                    gridRect.height() - verticalMargin * 2 - dp.overviewTaskThumbnailTopMarginPx;
 
             PointF taskDimension = getTaskDimension(context, dp);
-            float scale = taskHeight / Math.max(taskDimension.x, taskDimension.y);
+            float scale = taskHeight / taskDimension.y;
             int outWidth = Math.round(scale * taskDimension.x);
             int outHeight = Math.round(scale * taskDimension.y);
 
-            int gravity = Gravity.CENTER_VERTICAL;
-            gravity |= orientedState.getRecentsRtlSetting(res) ? Gravity.RIGHT : Gravity.LEFT;
+            int gravity = Gravity.CENTER;
             Gravity.apply(gravity, outWidth, outHeight, gridRect, outRect);
         } else {
             int taskMargin = dp.overviewTaskMarginPx;
@@ -296,8 +297,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         float rowHeight = (gridRect.height() - rowSpacing) / 2f;
 
         PointF taskDimension = getTaskDimension(context, dp);
-        float scale = (rowHeight - dp.overviewTaskThumbnailTopMarginPx) / Math.max(
-                taskDimension.x, taskDimension.y);
+        float scale = (rowHeight - dp.overviewTaskThumbnailTopMarginPx) / taskDimension.y;
         int outWidth = Math.round(scale * taskDimension.x);
         int outHeight = Math.round(scale * taskDimension.y);
 
