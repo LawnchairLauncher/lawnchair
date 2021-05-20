@@ -38,7 +38,7 @@ import com.android.launcher3.states.StateAnimationConfig;
  * TODO: Rename to have Launcher prefix
  */
 
-public class LauncherTaskbarUIController extends TaskbarUIController {
+public class TaskbarController extends TaskbarUIController {
 
     private final BaseQuickstepLauncher mLauncher;
     private final TaskbarStateHandler mTaskbarStateHandler;
@@ -52,8 +52,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     private @Nullable Animator mAnimator;
     private boolean mIsAnimatingToLauncher;
 
-    public LauncherTaskbarUIController(
-            BaseQuickstepLauncher launcher, TaskbarActivityContext context) {
+    public TaskbarController(BaseQuickstepLauncher launcher, TaskbarActivityContext context) {
         mContext = context;
         mTaskbarContainerView = context.getDragLayer();
         mTaskbarView = mTaskbarContainerView.findViewById(R.id.taskbar_view);
@@ -73,7 +72,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         mHotseatController.init();
         setTaskbarViewVisible(!mLauncher.hasBeenResumed());
         alignRealHotseatWithTaskbar();
-        mLauncher.setTaskbarUIController(this);
+        mLauncher.setTaskbarController(this);
     }
 
     @Override
@@ -87,7 +86,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         mHotseatController.cleanup();
         setTaskbarViewVisible(true);
         mLauncher.getHotseat().setIconsAlpha(1f);
-        mLauncher.setTaskbarUIController(null);
+        mLauncher.setTaskbarController(null);
     }
 
     @Override

@@ -41,7 +41,7 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statehandlers.DepthController.ClampedDepthProperty;
 import com.android.launcher3.statemanager.StateManager;
-import com.android.launcher3.taskbar.LauncherTaskbarUIController;
+import com.android.launcher3.taskbar.TaskbarController;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.quickstep.GestureState.GestureEndTarget;
 import com.android.quickstep.SysUINavigationMode.Mode;
@@ -163,12 +163,12 @@ public final class LauncherActivityInterface extends
     }
 
     @Nullable
-    private LauncherTaskbarUIController getTaskbarController() {
+    private TaskbarController getTaskbarController() {
         BaseQuickstepLauncher launcher = getCreatedActivity();
         if (launcher == null) {
             return null;
         }
-        return launcher.getTaskbarUIController();
+        return launcher.getTaskbarController();
     }
 
     @Nullable
@@ -276,13 +276,13 @@ public final class LauncherActivityInterface extends
     @Override
     public @Nullable Animator getParallelAnimationToLauncher(GestureEndTarget endTarget,
             long duration) {
-        LauncherTaskbarUIController uiController = getTaskbarController();
+        TaskbarController taskbarController = getTaskbarController();
         Animator superAnimator = super.getParallelAnimationToLauncher(endTarget, duration);
-        if (uiController == null) {
+        if (taskbarController == null) {
             return superAnimator;
         }
         LauncherState toState = stateFromGestureEndTarget(endTarget);
-        Animator taskbarAnimator = uiController.createAnimToLauncher(toState, duration);
+        Animator taskbarAnimator = taskbarController.createAnimToLauncher(toState, duration);
         if (superAnimator == null) {
             return taskbarAnimator;
         } else {
@@ -300,20 +300,20 @@ public final class LauncherActivityInterface extends
 
     @Override
     public boolean deferStartingActivity(RecentsAnimationDeviceState deviceState, MotionEvent ev) {
-        LauncherTaskbarUIController uiController = getTaskbarController();
-        if (uiController == null) {
+        TaskbarController taskbarController = getTaskbarController();
+        if (taskbarController == null) {
             return super.deferStartingActivity(deviceState, ev);
         }
-        return uiController.isEventOverAnyTaskbarItem(ev);
+        return taskbarController.isEventOverAnyTaskbarItem(ev);
     }
 
     @Override
     public boolean shouldCancelCurrentGesture() {
-        LauncherTaskbarUIController uiController = getTaskbarController();
-        if (uiController == null) {
+        TaskbarController taskbarController = getTaskbarController();
+        if (taskbarController == null) {
             return super.shouldCancelCurrentGesture();
         }
-        return uiController.isDraggingItem();
+        return taskbarController.isDraggingItem();
     }
 
     @Override

@@ -21,7 +21,7 @@ import android.animation.Animator;
 
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.taskbar.LauncherTaskbarUIController.TaskbarAnimationControllerCallbacks;
+import com.android.launcher3.taskbar.TaskbarController.TaskbarAnimationControllerCallbacks;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.SystemUiProxy;
 import com.android.systemui.shared.system.QuickStepContract;
