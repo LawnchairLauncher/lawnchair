@@ -107,6 +107,17 @@ public class SystemUiProxy implements ISystemUiProxy,
     }
 
     @Override
+    public void setHomeRotationEnabled(boolean enabled) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.setHomeRotationEnabled(enabled);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call onBackPressed", e);
+            }
+        }
+    }
+
+    @Override
     public IBinder asBinder() {
         // Do nothing
         return null;
