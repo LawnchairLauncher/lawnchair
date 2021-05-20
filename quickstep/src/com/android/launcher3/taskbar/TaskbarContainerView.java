@@ -15,9 +15,6 @@
  */
 package com.android.launcher3.taskbar;
 
-import static com.android.systemui.shared.system.ViewTreeObserverWrapper.InsetsInfo.TOUCHABLE_INSETS_FRAME;
-import static com.android.systemui.shared.system.ViewTreeObserverWrapper.InsetsInfo.TOUCHABLE_INSETS_REGION;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -32,22 +29,21 @@ import com.android.launcher3.R;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.systemui.shared.system.ViewTreeObserverWrapper;
+import com.android.systemui.shared.system.ViewTreeObserverWrapper.InsetsInfo;
+import com.android.systemui.shared.system.ViewTreeObserverWrapper.OnComputeInsetsListener;
 
 /**
  * Top-level ViewGroup that hosts the TaskbarView as well as Views created by it such as Folder.
  */
 public class TaskbarContainerView extends BaseDragLayer<TaskbarActivityContext> {
 
-    private final int[] mTempLoc = new int[2];
     private final int mFolderMargin;
     private final Paint mTaskbarBackgroundPaint;
 
-    // Initialized in TaskbarController constructor.
-    private TaskbarController.TaskbarContainerViewCallbacks mControllerCallbacks;
-
-    // Initialized in init.
+    private TaskbarIconController.Callbacks mControllerCallbacks;
     private TaskbarView mTaskbarView;
-    private ViewTreeObserverWrapper.OnComputeInsetsListener mTaskbarInsetsComputer;
+
+    private final OnComputeInsetsListener mTaskbarInsetsComputer = this::onComputeTaskbarInsets;
 
     public TaskbarContainerView(@NonNull Context context) {
         this(context, null);
@@ -68,15 +64,6 @@ public class TaskbarContainerView extends BaseDragLayer<TaskbarActivityContext> 
         mFolderMargin = getResources().getDimensionPixelSize(R.dimen.taskbar_folder_margin);
         mTaskbarBackgroundPaint = new Paint();
         mTaskbarBackgroundPaint.setColor(getResources().getColor(R.color.taskbar_background));
-    }
-
-    protected void construct(TaskbarController.TaskbarContainerViewCallbacks callbacks) {
-        mControllerCallbacks = callbacks;
-    }
-
-    protected void init(TaskbarView taskbarView) {
-        mTaskbarView = taskbarView;
-        mTaskbarInsetsComputer = createTaskbarInsetsComputer();
         recreateControllers();
     }
 
@@ -85,46 +72,24 @@ public class TaskbarContainerView extends BaseDragLayer<TaskbarActivityContext> 
         mControllers = new TouchController[0];
     }
 
-    private ViewTreeObserverWrapper.OnComputeInsetsListener createTaskbarInsetsComputer() {
-        return insetsInfo -> {
-            if (mControllerCallbacks.isTaskbarTouchable()) {
-                 // Accept touches anywhere in our bounds.
-                insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_FRAME);
-            } else {
-                // Let touches pass through us.
-                insetsInfo.touchableRegion.setEmpty();
-                insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION);
-            }
-
-            // TaskbarContainerView provides insets to other apps based on contentInsets. These
-            // insets should stay consistent even if we expand TaskbarContainerView's bounds, e.g.
-            // to show a floating view like Folder. Thus, we set the contentInsets to be where
-            // mTaskbarView is, since its position never changes and insets rather than overlays.
-            int[] loc = mTempLoc;
-            float scale = mTaskbarView.getScaleX();
-            float translationY = mTaskbarView.getTranslationY();
-            mTaskbarView.setScaleX(1);
-            mTaskbarView.setScaleY(1);
-            mTaskbarView.setTranslationY(0);
-            mTaskbarView.getLocationInWindow(loc);
-            mTaskbarView.setScaleX(scale);
-            mTaskbarView.setScaleY(scale);
-            mTaskbarView.setTranslationY(translationY);
-            insetsInfo.contentInsets.left = loc[0];
-            insetsInfo.contentInsets.top = loc[1];
-            insetsInfo.contentInsets.right = getWidth() - (loc[0] + mTaskbarView.getWidth());
-            insetsInfo.contentInsets.bottom = getHeight() - (loc[1] + mTaskbarView.getHeight());
-        };
+    public void init(TaskbarIconController.Callbacks callbacks, TaskbarView taskbarView) {
+        mControllerCallbacks = callbacks;
+        mTaskbarView = taskbarView;
     }
 
-    protected void cleanup() {
+    private void onComputeTaskbarInsets(InsetsInfo insetsInfo) {
+        if (mControllerCallbacks != null) {
+            mControllerCallbacks.updateInsetsTouchability(insetsInfo);
+        }
+    }
+
+    protected void onDestroy() {
         ViewTreeObserverWrapper.removeOnComputeInsetsListener(mTaskbarInsetsComputer);
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-
         ViewTreeObserverWrapper.addOnComputeInsetsListener(getViewTreeObserver(),
                 mTaskbarInsetsComputer);
     }
@@ -133,7 +98,7 @@ public class TaskbarContainerView extends BaseDragLayer<TaskbarActivityContext> 
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
 
-        cleanup();
+        onDestroy();
     }
 
     @Override
@@ -143,10 +108,25 @@ public class TaskbarContainerView extends BaseDragLayer<TaskbarActivityContext> 
         return true;
     }
 
+    public void updateImeBarVisibilityAlpha(float alpha) {
+        if (mControllerCallbacks != null) {
+            mControllerCallbacks.updateImeBarVisibilityAlpha(alpha);
+        }
+    }
+
     @Override
     public void onViewRemoved(View child) {
         super.onViewRemoved(child);
-        mControllerCallbacks.onViewRemoved();
+        if (mControllerCallbacks != null) {
+            mControllerCallbacks.onContainerViewRemoved();
+        }
+    }
+
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        canvas.drawRect(0, canvas.getHeight() - mTaskbarView.getHeight(), canvas.getWidth(),
+                canvas.getHeight(), mTaskbarBackgroundPaint);
+        super.dispatchDraw(canvas);
     }
 
     /**
@@ -158,16 +138,6 @@ public class TaskbarContainerView extends BaseDragLayer<TaskbarActivityContext> 
         return boundingBox;
     }
 
-    protected TaskbarActivityContext getTaskbarActivityContext() {
-        return mActivity;
-    }
-
-    @Override
-    protected void dispatchDraw(Canvas canvas) {
-        canvas.drawRect(0, canvas.getHeight() - mTaskbarView.getHeight(), canvas.getWidth(),
-                canvas.getHeight(), mTaskbarBackgroundPaint);
-        super.dispatchDraw(canvas);
-    }
 
     /**
      * Sets the alpha of the background color behind all the Taskbar contents.
