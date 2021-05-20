@@ -19,6 +19,8 @@
     <dimen name="task_thumbnail_icon_size_grid">40dp</dimen>
     <!-- For screens without rounded corners -->
     <dimen name="task_corner_radius_small">2dp</dimen>
+    <!-- For Launchers that want to override the default dialog corner radius -->
+    <dimen name="task_corner_radius_override">-1dp</dimen>
 
     <dimen name="overview_proactive_row_height">48dp</dimen>
     <dimen name="overview_proactive_row_bottom_margin">16dp</dimen>
@@ -147,4 +149,5 @@
     <!-- Note that this applies to both sides of all icons, so visible space is double this. -->
     <dimen name="taskbar_icon_spacing">8dp</dimen>
     <dimen name="taskbar_folder_margin">16dp</dimen>
+    <dimen name="taskbar_nav_buttons_spacing">16dp</dimen>
 </resources>
