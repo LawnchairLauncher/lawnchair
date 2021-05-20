@@ -47,43 +47,32 @@
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"पूर्वानुमान केलेले अ‍ॅप: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"तुम्ही स्क्रीनच्या अगदी डाव्या कडेपासून स्‍वाइप करत आहात याची खात्री करा."</string>
     <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"तुम्ही स्क्रीनच्या डाव्या कडेपासून मध्यावर स्‍वाइप करून बोट उचलत आहात याची खात्री करा."</string>
-    <!-- no translation found for back_gesture_feedback_title_complete_left_edge (1381455921760094003) -->
-    <skip />
-    <!-- no translation found for back_gesture_feedback_subtitle_complete_left_edge (8106594510099968430) -->
-    <skip />
+    <string name="back_gesture_feedback_title_complete_left_edge" msgid="1381455921760094003">"छान! आता मागे जाण्यासाठी उजवीकडून स्वाइप करा"</string>
+    <string name="back_gesture_feedback_subtitle_complete_left_edge" msgid="8106594510099968430">"तुम्ही स्क्रीनच्या उजव्या कडेपासून मध्याभागी स्वाइप करून मागील स्क्रीनवर परतदेखील जाऊ शकता."</string>
     <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"तुम्ही स्क्रीनच्या अगदी उजव्या कडेपासून स्‍वाइप करत आहात याची खात्री करा."</string>
     <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"तुम्ही स्क्रीनच्या उजव्या कडेपासून मध्यावर स्‍वाइप करून बोट उचलत आहात याची खात्री करा."</string>
-    <!-- no translation found for back_gesture_feedback_complete_with_follow_up (8653374779579748392) -->
-    <skip />
-    <!-- no translation found for back_gesture_feedback_complete_without_follow_up (6405649621667113830) -->
-    <skip />
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"तुम्ही गो बॅक जेश्चर पूर्ण केले. आता, ॲप्स कशी स्विच करायची ते जाणून घ्या."</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"तुम्ही गो बॅक जेश्चर पूर्ण केले."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"तुम्ही स्क्रीनच्या तळाच्या अगदी जवळून स्‍वाइप करत नाही याची खात्री करा."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"बॅक जेश्चरची संवेदनशीलता बदलण्यासाठी, सेटिंग्ज वर जा"</string>
-    <!-- no translation found for back_gesture_intro_title (5538727561353262952) -->
-    <skip />
-    <!-- no translation found for back_gesture_intro_subtitle (8139048712004626940) -->
-    <skip />
+    <string name="back_gesture_intro_title" msgid="5538727561353262952">"मागे जाण्यासाठी डावीकडून स्वाइप करा"</string>
+    <string name="back_gesture_intro_subtitle" msgid="8139048712004626940">"तुम्ही होतात त्या मागील स्क्रीनवर परत जाण्यासाठी, स्क्रीनच्या डाव्या कडेपासून मध्याभागी स्वाइप करा."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"तुम्ही स्क्रीनच्या तळाच्या कडेपासून वर स्वाइप करत आहात याची खात्री करा."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"तुम्ही स्क्रीनवरून बोट उचलण्यापूर्वी ते थांबवत नाही याची खात्री करा."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"तुम्ही सरळ वर स्वाइप करत आहात याची खात्री करा."</string>
-    <!-- no translation found for home_gesture_feedback_complete_with_follow_up (1427872029729605034) -->
-    <skip />
-    <!-- no translation found for home_gesture_feedback_complete_without_follow_up (8049099486868933882) -->
-    <skip />
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"तुम्ही गो होम जेश्चर पूर्ण केले. आता, मागे कसे जायचे ते जाणून घ्या."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"तुम्ही गो होम जेश्चर पूर्ण केले."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"होमवर जाण्यासाठी स्‍वाइप करा"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"तुमच्या स्क्रीनच्या तळाकडून वर स्वाइप करा. हे जेश्चर तुम्हाला नेहमी होम स्क्रीनवर घेऊन जाते."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"तुम्ही स्क्रीनच्या तळाच्या कडेपासून वर स्वाइप करत आहात याची खात्री करा."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"विंडोवरून बोट उचलण्यापूर्वी थोडा वेळ ते तेथेच धरून ठेवा."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"तुम्ही सरळ वर स्वाइप करून, त्यानंतर बोट थांबवत आहात याची खात्री करा."</string>
-    <!-- no translation found for overview_gesture_feedback_complete_with_follow_up (3544611727467765026) -->
-    <skip />
-    <!-- no translation found for overview_gesture_feedback_complete_without_follow_up (3199486203448379152) -->
-    <skip />
+    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"तुम्ही जेश्चर कसे वापरायचे हे शिकलात. जेश्चर बंद करण्यासाठी, सेटिंग्ज वर जा."</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"तुम्ही ॲप्स स्विच करण्याचे जेश्चर पूर्ण केले."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"अ‍ॅप्स स्विच करण्यासाठी स्वाइप करा"</string>
     <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"तुमच्या स्क्रीनच्या तळाकडून वर स्वाइप करा, धरून ठेवा, त्यानंतर बोट उचला."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"सर्व तयार आहे"</string>
     <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"पुढील"</string>
-    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"पूर्ण झाले"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"सेटिंग्ज"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"पुन्हा प्रयत्न करा"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"छान!"</string>
