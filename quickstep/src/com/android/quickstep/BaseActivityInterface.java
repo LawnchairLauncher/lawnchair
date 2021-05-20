@@ -23,8 +23,8 @@ import static com.android.quickstep.AbsSwipeUpHandler.RECENTS_ATTACH_DURATION;
 import static com.android.quickstep.GestureState.GestureEndTarget.RECENTS;
 import static com.android.quickstep.SysUINavigationMode.getMode;
 import static com.android.quickstep.util.RecentsAtomicAnimationFactory.INDEX_RECENTS_FADE_ANIM;
-import static com.android.quickstep.util.RecentsAtomicAnimationFactory.INDEX_RECENTS_TRANSLATE_Y_ANIM;
-import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_VERTICAL_OFFSET;
+import static com.android.quickstep.util.RecentsAtomicAnimationFactory.INDEX_RECENTS_TRANSLATE_X_ANIM;
+import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_HORIZONTAL_OFFSET;
 import static com.android.quickstep.views.RecentsView.FULLSCREEN_PROGRESS;
 import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
 import static com.android.quickstep.views.RecentsView.TASK_SECONDARY_TRANSLATION;
@@ -461,17 +461,17 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             float fromTranslation = attached ? 1 : 0;
             float toTranslation = attached ? 0 : 1;
             mActivity.getStateManager()
-                    .cancelStateElementAnimation(INDEX_RECENTS_TRANSLATE_Y_ANIM);
+                    .cancelStateElementAnimation(INDEX_RECENTS_TRANSLATE_X_ANIM);
             if (!recentsView.isShown() && animate) {
-                ADJACENT_PAGE_VERTICAL_OFFSET.set(recentsView, fromTranslation);
+                ADJACENT_PAGE_HORIZONTAL_OFFSET.set(recentsView, fromTranslation);
             } else {
-                fromTranslation = ADJACENT_PAGE_VERTICAL_OFFSET.get(recentsView);
+                fromTranslation = ADJACENT_PAGE_HORIZONTAL_OFFSET.get(recentsView);
             }
             if (!animate) {
-                ADJACENT_PAGE_VERTICAL_OFFSET.set(recentsView, toTranslation);
+                ADJACENT_PAGE_HORIZONTAL_OFFSET.set(recentsView, toTranslation);
             } else {
                 mActivity.getStateManager().createStateElementAnimation(
-                        INDEX_RECENTS_TRANSLATE_Y_ANIM,
+                        INDEX_RECENTS_TRANSLATE_X_ANIM,
                         fromTranslation, toTranslation).start();
             }
 

@@ -23,10 +23,11 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.WorkspaceStateTransitionAnimation.getSpringScaleAnimator;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
-import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE_IN_OUT;
+import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_1_7;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
+import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
 import static com.android.launcher3.anim.Interpolators.INSTANT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
@@ -66,11 +67,11 @@ public class QuickstepAtomicAnimationFactory extends
     // Scale recents takes before animating in
     private static final float RECENTS_PREPARE_SCALE = 1.33f;
     // Scale workspace takes before animating in
-    private static final float WORKSPACE_PREPARE_SCALE_GESTURES = 0.97f;
-    private static final float WORKSPACE_PREPARE_SCALE_BUTTONS = 0.92f;
-    // When the overview to home transition reaches this percentage, immediately hide overview and
-    // start animating away the scrim and animating in workspace.
-    private static final float OVERVIEW_TO_HOME_HARD_HAND_OFF = 0.4f;
+    private static final float WORKSPACE_PREPARE_SCALE = 0.92f;
+    // Constants to specify how to scroll RecentsView to the default page if it's not already there.
+    private static final int DEFAULT_PAGE = 0;
+    private static final int PER_PAGE_SCROLL_DURATION = 150;
+    private static final int MAX_PAGE_SCROLL_DURATION = 750;
 
     // Due to use of physics, duration may differ between devices so we need to calculate and
     // cache the value.
@@ -85,32 +86,31 @@ public class QuickstepAtomicAnimationFactory extends
             StateAnimationConfig config) {
         RecentsView overview = mActivity.getOverviewPanel();
         if (toState == NORMAL && fromState == OVERVIEW) {
-            final float workspacePrepareScale;
+            config.setInterpolator(ANIM_OVERVIEW_ACTIONS_FADE, DEACCEL);
+            config.setInterpolator(ANIM_SCRIM_FADE, LINEAR);
+            config.setInterpolator(ANIM_WORKSPACE_SCALE, DEACCEL);
+            config.setInterpolator(ANIM_WORKSPACE_FADE, ACCEL);
+
             if (SysUINavigationMode.getMode(mActivity).hasGestures
                     && overview.getTaskViewCount() > 0) {
-                workspacePrepareScale = WORKSPACE_PREPARE_SCALE_GESTURES;
                 // Overview is going offscreen, so keep it at its current scale and opacity.
                 config.setInterpolator(ANIM_OVERVIEW_SCALE, FINAL_FRAME);
-                config.setInterpolator(ANIM_OVERVIEW_FADE, clampToProgress(
-                        FINAL_FRAME, 0f, OVERVIEW_TO_HOME_HARD_HAND_OFF));
-                config.setInterpolator(ANIM_OVERVIEW_ACTIONS_FADE, clampToProgress(
-                        DEACCEL, 0f, OVERVIEW_TO_HOME_HARD_HAND_OFF));
-                config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_Y, AGGRESSIVE_EASE_IN_OUT);
-                config.setInterpolator(ANIM_SCRIM_FADE, clampToProgress(
-                        DEACCEL, OVERVIEW_TO_HOME_HARD_HAND_OFF, 1f));
-                config.setInterpolator(ANIM_WORKSPACE_SCALE, clampToProgress(
-                        DEACCEL, OVERVIEW_TO_HOME_HARD_HAND_OFF, 1f));
-                config.setInterpolator(ANIM_WORKSPACE_FADE, clampToProgress(
-                        INSTANT, OVERVIEW_TO_HOME_HARD_HAND_OFF, 1f));
+                config.setInterpolator(ANIM_OVERVIEW_FADE, FINAL_FRAME);
+                config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X,
+                        clampToProgress(FAST_OUT_SLOW_IN, 0, 0.75f));
+                config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_Y, FINAL_FRAME);
             } else {
-                workspacePrepareScale = WORKSPACE_PREPARE_SCALE_BUTTONS;
+                config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, ACCEL_DEACCEL);
                 config.setInterpolator(ANIM_OVERVIEW_SCALE, clampToProgress(ACCEL, 0, 0.9f));
                 config.setInterpolator(ANIM_OVERVIEW_FADE, DEACCEL_1_7);
-                config.setInterpolator(ANIM_OVERVIEW_ACTIONS_FADE, LINEAR);
-                config.setInterpolator(ANIM_SCRIM_FADE, LINEAR);
-                config.setInterpolator(ANIM_WORKSPACE_SCALE, DEACCEL);
-                config.setInterpolator(ANIM_WORKSPACE_FADE, ACCEL);
             }
+
+            // Scroll RecentsView to page 0 as it goes offscreen, if necessary.
+            int numPagesToScroll = overview.getNextPage() - DEFAULT_PAGE;
+            long scrollDuration = Math.min(MAX_PAGE_SCROLL_DURATION,
+                    numPagesToScroll * PER_PAGE_SCROLL_DURATION);
+            config.duration = Math.max(config.duration, scrollDuration);
+            overview.snapToPage(DEFAULT_PAGE, Math.toIntExact(config.duration));
 
             Workspace workspace = mActivity.getWorkspace();
             // Start from a higher workspace scale, but only if we're invisible so we don't jump.
@@ -122,14 +122,14 @@ public class QuickstepAtomicAnimationFactory extends
                         && currentChild.getShortcutsAndWidgets().getAlpha() > 0;
             }
             if (!isWorkspaceVisible) {
-                workspace.setScaleX(workspacePrepareScale);
-                workspace.setScaleY(workspacePrepareScale);
+                workspace.setScaleX(WORKSPACE_PREPARE_SCALE);
+                workspace.setScaleY(WORKSPACE_PREPARE_SCALE);
             }
             Hotseat hotseat = mActivity.getHotseat();
             boolean isHotseatVisible = hotseat.getVisibility() == VISIBLE && hotseat.getAlpha() > 0;
             if (!isHotseatVisible) {
-                hotseat.setScaleX(workspacePrepareScale);
-                hotseat.setScaleY(workspacePrepareScale);
+                hotseat.setScaleX(WORKSPACE_PREPARE_SCALE);
+                hotseat.setScaleY(WORKSPACE_PREPARE_SCALE);
             }
         } else if ((fromState == NORMAL || fromState == HINT_STATE
                 || fromState == HINT_STATE_TWO_BUTTON) && toState == OVERVIEW) {
