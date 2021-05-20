@@ -17,7 +17,8 @@
 ** limitations under the License.
 */
 -->
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android">
     <!-- The color tints to apply to the text and drag view when hovering
          over the delete target or the info target -->
     <color name="delete_target_hover_tint">#FFC1C1C1</color>
@@ -61,5 +62,4 @@
 
     <color name="wallpaper_popup_scrim">?android:attr/colorAccent</color>
     <color name="wallpaper_scrim_color">#0D878787</color>
-
 </resources>
