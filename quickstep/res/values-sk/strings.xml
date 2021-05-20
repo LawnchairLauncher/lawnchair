@@ -47,16 +47,15 @@
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Predpovedaná aplikácia: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"Musite potiahnuť z úplne krajného ľavého okraja."</string>
     <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"Musíte potiahnuť z ľavého okraja do stredu obrazovky a uvoľniť."</string>
-    <string name="back_gesture_feedback_title_complete_left_edge" msgid="1381455921760094003">"Výborne! Teraz prejdite späť potiahnutím sprava."</string>
-    <string name="back_gesture_feedback_subtitle_complete_left_edge" msgid="8106594510099968430">"Na poslednú obrazovku sa môžete tiež vrátiť potiahnutím z pravého okraja do stredu obrazovky."</string>
+    <string name="back_right_gesture_intro_subtitle" msgid="8106594510099968430">"Na poslednú obrazovku sa môžete tiež vrátiť potiahnutím z pravého okraja do stredu obrazovky."</string>
     <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"Musite potiahnuť z úplne krajného pravého okraja."</string>
     <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"Musíte potiahnuť z pravého okraja do stredu obrazovky a uvoľniť."</string>
-    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"Dokončili ste gesto na prechod späť. V ďalšom kroku sa naučíte, ako prepínať aplikácie."</string>
+    <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="8653374779579748392">"Dokončili ste gesto na prechod späť. V ďalšom kroku sa naučíte, ako prepínať aplikácie."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Dokončili ste gesto na prechod späť."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Nesmiete potiahnuť príliš blízko dolnej časti obrazovky."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Ak chcete zmeniť citlivosť gesta Späť, prejdite do Nastavení"</string>
-    <string name="back_gesture_intro_title" msgid="5538727561353262952">"Vrátite sa potiahnutím zľava"</string>
-    <string name="back_gesture_intro_subtitle" msgid="8139048712004626940">"Na poslednú obrazovku prejdete potiahnutím z ľavého okraja do stredu obrazovky."</string>
+    <string name="back_left_gesture_intro_title" msgid="5538727561353262952">"Vrátite sa potiahnutím zľava"</string>
+    <string name="back_left_gesture_intro_subtitle" msgid="8139048712004626940">"Na poslednú obrazovku prejdete potiahnutím z ľavého okraja do stredu obrazovky."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Musíte potiahnuť nahor z dolného okraja obrazovky."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Pred uvoľnením nesmiete zastať."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Musíte potiahnuť priamo hore."</string>
