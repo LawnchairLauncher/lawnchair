@@ -325,6 +325,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
         mDeviceState.addNavigationModeChangedCallback(this::onNavigationModeChanged);
         mDeviceState.addOneHandedModeChangedCallback(this::onOneHandedModeOverlayChanged);
         mDeviceState.runOnUserUnlocked(this::onUserUnlocked);
+        mDeviceState.runOnUserUnlocked(mTaskbarManager::onUserUnlocked);
         ProtoTracer.INSTANCE.get(this).add(this);
         sConnected = true;
     }

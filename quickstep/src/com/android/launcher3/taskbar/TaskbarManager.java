@@ -57,6 +57,8 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
     private static final int CHANGE_FLAGS =
             CHANGE_ACTIVE_SCREEN | CHANGE_DENSITY | CHANGE_SUPPORTED_BOUNDS;
 
+    private boolean mUserUnlocked = false;
+
     public TaskbarManager(TouchInteractionService service) {
         mDisplayController = DisplayController.INSTANCE.get(service);
         mSysUINavigationMode = SysUINavigationMode.INSTANCE.get(service);
@@ -90,6 +92,14 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
     }
 
     /**
+     * Called when the user is unlocked
+     */
+    public void onUserUnlocked() {
+        mUserUnlocked = true;
+        recreateTaskbar();
+    }
+
+    /**
      * Sets or clears a launcher to act as taskbar callback
      */
     public void setLauncher(@Nullable BaseQuickstepLauncher launcher) {
@@ -104,6 +114,9 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
     private void recreateTaskbar() {
         destroyExistingTaskbar();
         if (!FeatureFlags.ENABLE_TASKBAR.get()) {
+            return;
+        }
+        if (!mUserUnlocked) {
             return;
         }
         DeviceProfile dp = LauncherAppState.getIDP(mContext).getDeviceProfile(mContext);
