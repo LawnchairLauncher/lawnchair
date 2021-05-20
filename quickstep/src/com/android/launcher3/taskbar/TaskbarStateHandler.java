@@ -24,52 +24,59 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.anim.PendingAnimation;
-import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.quickstep.AnimatedFloat;
 
 /**
  * StateHandler to animate Taskbar according to Launcher's state machine. Does nothing if Taskbar
- * isn't present (i.e. {@link #setAnimationController} is never called).
+ * isn't present (i.e. {@link #setTaskbarCallbacks} is never called).
  */
 public class TaskbarStateHandler implements StateManager.StateHandler<LauncherState> {
 
     private final BaseQuickstepLauncher mLauncher;
 
     // Contains Taskbar-related methods and fields we should aniamte. If null, don't do anything.
-    private @Nullable TaskbarAnimationController mAnimationController = null;
+    private @Nullable TaskbarController.TaskbarStateHandlerCallbacks mTaskbarCallbacks = null;
 
     public TaskbarStateHandler(BaseQuickstepLauncher launcher) {
         mLauncher = launcher;
     }
 
-    public void setAnimationController(TaskbarAnimationController callbacks) {
-        mAnimationController = callbacks;
+    public void setTaskbarCallbacks(TaskbarController.TaskbarStateHandlerCallbacks callbacks) {
+        mTaskbarCallbacks = callbacks;
     }
 
     @Override
     public void setState(LauncherState state) {
-        setState(state, PropertySetter.NO_ANIM_PROPERTY_SETTER);
+        if (mTaskbarCallbacks == null) {
+            return;
+        }
+
+        AnimatedFloat alphaTarget = mTaskbarCallbacks.getAlphaTarget();
+        AnimatedFloat scaleTarget = mTaskbarCallbacks.getScaleTarget();
+        AnimatedFloat translationYTarget = mTaskbarCallbacks.getTranslationYTarget();
+        boolean isTaskbarVisible = (state.getVisibleElements(mLauncher) & TASKBAR) != 0;
+        alphaTarget.updateValue(isTaskbarVisible ? 1f : 0f);
+        scaleTarget.updateValue(state.getTaskbarScale(mLauncher));
+        translationYTarget.updateValue(state.getTaskbarTranslationY(mLauncher));
     }
 
     @Override
     public void setStateWithAnimation(LauncherState toState, StateAnimationConfig config,
             PendingAnimation animation) {
-        setState(toState, animation);
-    }
-
-    private void setState(LauncherState toState, PropertySetter setter) {
-        if (mAnimationController == null) {
+        if (mTaskbarCallbacks == null) {
             return;
         }
 
+        AnimatedFloat alphaTarget = mTaskbarCallbacks.getAlphaTarget();
+        AnimatedFloat scaleTarget = mTaskbarCallbacks.getScaleTarget();
+        AnimatedFloat translationYTarget = mTaskbarCallbacks.getTranslationYTarget();
         boolean isTaskbarVisible = (toState.getVisibleElements(mLauncher) & TASKBAR) != 0;
-        setter.setFloat(mAnimationController.getTaskbarVisibilityForLauncherState(),
-                AnimatedFloat.VALUE, isTaskbarVisible ? 1f : 0f, LINEAR);
-        setter.setFloat(mAnimationController.getTaskbarScaleForLauncherState(),
-                AnimatedFloat.VALUE, toState.getTaskbarScale(mLauncher), LINEAR);
-        setter.setFloat(mAnimationController.getTaskbarTranslationYForLauncherState(),
-                AnimatedFloat.VALUE, toState.getTaskbarTranslationY(mLauncher), ACCEL_DEACCEL);
+        animation.setFloat(alphaTarget, AnimatedFloat.VALUE, isTaskbarVisible ? 1f : 0f, LINEAR);
+        animation.setFloat(scaleTarget, AnimatedFloat.VALUE, toState.getTaskbarScale(mLauncher),
+                LINEAR);
+        animation.setFloat(translationYTarget, AnimatedFloat.VALUE,
+                toState.getTaskbarTranslationY(mLauncher), ACCEL_DEACCEL);
     }
 }
