@@ -130,6 +130,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     private final int mTabsHeight;
     private final int mWidgetCellHorizontalPadding;
 
+    @Nullable private WidgetsRecyclerView mCurrentWidgetsRecyclerView;
     @Nullable private PersonalWorkPagedView mViewPager;
     private boolean mIsInSearchMode;
     private int mMaxSpansPerRow = 4;
@@ -222,13 +223,18 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
         updateRecyclerViewVisibility(currentAdapterHolder);
         attachScrollbarToRecyclerView(currentRecyclerView);
-        resetExpandedHeaders();
     }
 
     private void attachScrollbarToRecyclerView(WidgetsRecyclerView recyclerView) {
         recyclerView.bindFastScrollbar();
-        mSearchAndRecommendationsScrollController.setCurrentRecyclerView(recyclerView);
-        reset();
+        if (mCurrentWidgetsRecyclerView != recyclerView) {
+            // Only reset the scroll position & expanded apps if the currently shown recycler view
+            // has been updated.
+            reset();
+            resetExpandedHeaders();
+            mCurrentWidgetsRecyclerView = recyclerView;
+            mSearchAndRecommendationsScrollController.setCurrentRecyclerView(recyclerView);
+        }
     }
 
     private void updateRecyclerViewVisibility(AdapterHolder adapterHolder) {
@@ -413,7 +419,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         if (mIsInSearchMode) return;
         setViewVisibilityBasedOnSearch(/*isInSearchMode= */ true);
         attachScrollbarToRecyclerView(mAdapters.get(AdapterHolder.SEARCH).mWidgetsRecyclerView);
-        resetExpandedHeaders();
     }
 
     @Override
