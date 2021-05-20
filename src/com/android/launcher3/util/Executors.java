@@ -30,18 +30,15 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class Executors {
 
-    // These values are same as that in {@link AsyncTask}.
-    private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
-    private static final int CORE_POOL_SIZE = CPU_COUNT + 1;
-    private static final int MAXIMUM_POOL_SIZE = CPU_COUNT * 2 + 1;
+    private static final int POOL_SIZE =
+            Math.max(Runtime.getRuntime().availableProcessors(), 2);
     private static final int KEEP_ALIVE = 1;
 
     /**
      * An {@link ThreadPoolExecutor} to be used with async task with no limit on the queue size.
      */
     public static final ThreadPoolExecutor THREAD_POOL_EXECUTOR = new ThreadPoolExecutor(
-            CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE,
-            TimeUnit.SECONDS, new LinkedBlockingQueue<>());
+            POOL_SIZE, POOL_SIZE, KEEP_ALIVE, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
 
     /**
      * Returns the executor for running tasks on the main thread.
@@ -53,7 +50,8 @@ public class Executors {
      * A background executor for using time sensitive actions where user is waiting for response.
      */
     public static final LooperExecutor UI_HELPER_EXECUTOR =
-            new LooperExecutor(createAndStartNewForegroundLooper("UiThreadHelper"));
+            new LooperExecutor(
+                    createAndStartNewLooper("UiThreadHelper", Process.THREAD_PRIORITY_FOREGROUND));
 
     /**
      * Utility method to get a started handler thread statically
@@ -69,15 +67,6 @@ public class Executors {
         HandlerThread thread = new HandlerThread(name, priority);
         thread.start();
         return thread.getLooper();
-    }
-
-    /**
-     * Similar to {@link #createAndStartNewLooper(String)}, but starts the thread with
-     * foreground priority.
-     * Think before using
-     */
-    public static Looper createAndStartNewForegroundLooper(String name) {
-        return createAndStartNewLooper(name, Process.THREAD_PRIORITY_FOREGROUND);
     }
 
     /**

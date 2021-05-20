@@ -73,7 +73,6 @@
     <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"អូសឡើងលើ​ពីផ្នែកខាងក្រោមនៃអេក្រង់​របស់អ្នក រួចសង្កត់​ឱ្យជាប់ បន្ទាប់មកដកដៃចេញ។"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"រួចហើយ"</string>
     <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"បន្ទាប់"</string>
-    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"រួចរាល់"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"ការកំណត់"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"ព្យាយាមម្ដងទៀត"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"ល្អ!"</string>

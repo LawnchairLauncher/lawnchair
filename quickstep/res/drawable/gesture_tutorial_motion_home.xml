@@ -1243,7 +1243,7 @@
                     <path
                         android:name="_R_G_L_0_G_D_0_P_0"
                         android:fillAlpha="0"
-                        android:fillColor="#84ba69"
+                        android:fillColor="@color/gesture_tutorial_primary_color"
                         android:fillType="nonZero"
                         android:pathData=" M0 411 C19.33,411 35,426.67 35,446 C35,465.33 19.33,481 0,481 C-19.33,481 -35,465.33 -35,446 C-35,426.67 -19.33,411 0,411c " />
                 </group>

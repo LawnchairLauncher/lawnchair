@@ -17,7 +17,8 @@
 ** limitations under the License.
 */
 -->
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android">
     <!-- The color tints to apply to the text and drag view when hovering
          over the delete target or the info target -->
     <color name="delete_target_hover_tint">#FFC1C1C1</color>
@@ -52,11 +53,13 @@
     <color name="workspace_text_color_light">#FFF</color>
     <color name="workspace_text_color_dark">#FF000000</color>
 
+    <color name="folder_hint_text_color_light">#FFF</color>
+    <color name="folder_hint_text_color_dark">#FF000000</color>
+
     <color name="text_color_primary_dark">#FFFFFFFF</color>
     <color name="text_color_secondary_dark">#FFFFFFFF</color>
     <color name="text_color_tertiary_dark">#CCFFFFFF</color>
 
     <color name="wallpaper_popup_scrim">?android:attr/colorAccent</color>
     <color name="wallpaper_scrim_color">#0D878787</color>
-
 </resources>
