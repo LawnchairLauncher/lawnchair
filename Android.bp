@@ -16,6 +16,8 @@ package {
     default_applicable_licenses: ["packages_apps_Launcher3_license"],
 }
 
+min_launcher3_sdk_version = "26"
+
 // Added automatically by a large-scale-change
 // See: http://go/android-license-faq
 license {
@@ -92,7 +94,7 @@ java_library {
     srcs: ["src_plugins/**/*.java"],
 
     sdk_version: "current",
-    min_sdk_version: "28",
+    min_sdk_version: min_launcher3_sdk_version,
 }
 
 // Library with all the dependencies for building Launcher3
@@ -114,7 +116,7 @@ android_library {
     ],
     manifest: "AndroidManifest-common.xml",
     sdk_version: "current",
-    min_sdk_version: "26",
+    min_sdk_version: min_launcher3_sdk_version,
     lint: {
         baseline_filename: "lint-baseline-res-lib.xml",
     },
@@ -128,7 +130,7 @@ android_library {
     srcs: ["src_build_config/**/*.java"],
     static_libs: ["Launcher3ResLib"],
     sdk_version: "current",
-    min_sdk_version: "26",
+    min_sdk_version: min_launcher3_sdk_version,
     manifest: "AndroidManifest-common.xml",
     lint: {
         baseline_filename: "lint-baseline-common-deps-lib.xml",
@@ -160,8 +162,8 @@ android_app {
     },
 
     sdk_version: "current",
-    min_sdk_version: "26",
-    target_sdk_version: "29",
+    min_sdk_version: min_launcher3_sdk_version,
+    target_sdk_version: "current",
     privileged: true,
     system_ext_specific: true,
 
@@ -195,7 +197,7 @@ android_library {
         "SystemUI-statsd",
     ],
     manifest: "quickstep/AndroidManifest.xml",
-    min_sdk_version: "28",
+    min_sdk_version: "current",
 }
 
 
@@ -244,7 +246,7 @@ android_library {
         "go/AndroidManifest.xml",
         "AndroidManifest-common.xml",
     ],
-    min_sdk_version: "29",
+    min_sdk_version: "current",
     lint: {
         baseline_filename: "lint-baseline-go-res-lib.xml",
     },
