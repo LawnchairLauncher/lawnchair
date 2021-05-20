@@ -77,7 +77,13 @@
     <style name="TextAppearance.GestureTutorial.Feedback.Subtext"
         parent="TextAppearance.GestureTutorial.Feedback.Subtitle">
         <item name="android:textSize">16sp</item>
-        <item name="android:textColor">#909090</item>
+        <item name="android:textColor">@color/gesture_tutorial_primary_color</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="TextAppearance.GestureTutorial.Feedback.Subtext.Dark"
+        parent="TextAppearance.GestureTutorial.Feedback.Subtext">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
     </style>
 
     <style name="TextAppearance.GestureTutorial.ButtonLabel"

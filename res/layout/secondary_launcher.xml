@@ -71,8 +71,6 @@
                 android:id="@+id/tabs"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/all_apps_header_pill_height"
-                android:layout_marginLeft="@dimen/all_apps_tabs_side_padding"
-                android:layout_marginRight="@dimen/all_apps_tabs_side_padding"
                 android:orientation="horizontal"
                 style="@style/TextHeadline">
 
