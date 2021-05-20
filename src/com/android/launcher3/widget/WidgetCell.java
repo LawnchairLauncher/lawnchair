@@ -33,7 +33,6 @@ import android.view.View.OnLayoutChangeListener;
 import android.view.ViewPropertyAnimator;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RemoteViews;
 import android.widget.TextView;
@@ -45,7 +44,6 @@ import com.android.launcher3.CheckLongPressHelper;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.WidgetPreviewLoader;
-import com.android.launcher3.icons.BaseIconFactory;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.RoundDrawableWrapper;
 import com.android.launcher3.model.WidgetItem;
@@ -80,7 +78,6 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
 
     private FrameLayout mWidgetImageContainer;
     private WidgetImageView mWidgetImage;
-    private ImageView mWidgetBadge;
     private TextView mWidgetName;
     private TextView mWidgetDims;
     private TextView mWidgetDescription;
@@ -136,7 +133,6 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
 
         mWidgetImageContainer = findViewById(R.id.widget_preview_container);
         mWidgetImage = findViewById(R.id.widget_preview);
-        mWidgetBadge = findViewById(R.id.widget_badge);
         mWidgetName = findViewById(R.id.widget_name);
         mWidgetDims = findViewById(R.id.widget_dims);
         mWidgetDescription = findViewById(R.id.widget_description);
@@ -161,7 +157,6 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         mWidgetImage.animate().cancel();
         mWidgetImage.setDrawable(null);
         mWidgetImage.setVisibility(View.VISIBLE);
-        mWidgetBadge.setImageDrawable(null);
         mWidgetName.setText(null);
         mWidgetDims.setText(null);
         mWidgetDescription.setText(null);
@@ -293,15 +288,6 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
                 removeView(mAppWidgetHostViewPreview);
                 mAppWidgetHostViewPreview = null;
             }
-        }
-        Drawable badge = mWidgetPreviewLoader.getBadgeForUser(mItem.user,
-                BaseIconFactory.getBadgeSizeForIconSize(
-                        mActivity.getDeviceProfile().allAppsIconSizePx));
-        if (badge == null) {
-            mWidgetBadge.setVisibility(View.GONE);
-        } else {
-            mWidgetBadge.setVisibility(View.VISIBLE);
-            mWidgetBadge.setImageDrawable(badge);
         }
         if (mAnimatePreview) {
             mWidgetImageContainer.setAlpha(0f);
