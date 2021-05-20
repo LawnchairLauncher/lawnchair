@@ -27,7 +27,6 @@ import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_SU
 
 import android.app.AlertDialog;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.LauncherApps;
@@ -195,43 +194,36 @@ public class ItemClickHandler {
     }
 
     /**
-     * Handles clicking on a disabled shortcut
-     */
-    public static void handleDisabledItemClicked(WorkspaceItemInfo shortcut, Context context) {
-        final int disabledFlags = shortcut.runtimeStatusFlags
-                & WorkspaceItemInfo.FLAG_DISABLED_MASK;
-        if ((disabledFlags
-                & ~FLAG_DISABLED_SUSPENDED
-                & ~FLAG_DISABLED_QUIET_USER) == 0) {
-            // If the app is only disabled because of the above flags, launch activity anyway.
-            // Framework will tell the user why the app is suspended.
-        } else {
-            if (!TextUtils.isEmpty(shortcut.disabledMessage)) {
-                // Use a message specific to this shortcut, if it has one.
-                Toast.makeText(context, shortcut.disabledMessage, Toast.LENGTH_SHORT).show();
-                return;
-            }
-            // Otherwise just use a generic error message.
-            int error = R.string.activity_not_available;
-            if ((shortcut.runtimeStatusFlags & FLAG_DISABLED_SAFEMODE) != 0) {
-                error = R.string.safemode_shortcut_error;
-            } else if ((shortcut.runtimeStatusFlags & FLAG_DISABLED_BY_PUBLISHER) != 0
-                    || (shortcut.runtimeStatusFlags & FLAG_DISABLED_LOCKED_USER) != 0) {
-                error = R.string.shortcut_not_available;
-            }
-            Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    /**
      * Event handler for an app shortcut click.
      *
      * @param v The view that was clicked. Must be a tagged with a {@link WorkspaceItemInfo}.
      */
     public static void onClickAppShortcut(View v, WorkspaceItemInfo shortcut, Launcher launcher) {
         if (shortcut.isDisabled()) {
-            handleDisabledItemClicked(shortcut, launcher);
-            return;
+            final int disabledFlags = shortcut.runtimeStatusFlags
+                    & WorkspaceItemInfo.FLAG_DISABLED_MASK;
+            if ((disabledFlags &
+                    ~FLAG_DISABLED_SUSPENDED &
+                    ~FLAG_DISABLED_QUIET_USER) == 0) {
+                // If the app is only disabled because of the above flags, launch activity anyway.
+                // Framework will tell the user why the app is suspended.
+            } else {
+                if (!TextUtils.isEmpty(shortcut.disabledMessage)) {
+                    // Use a message specific to this shortcut, if it has one.
+                    Toast.makeText(launcher, shortcut.disabledMessage, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                // Otherwise just use a generic error message.
+                int error = R.string.activity_not_available;
+                if ((shortcut.runtimeStatusFlags & FLAG_DISABLED_SAFEMODE) != 0) {
+                    error = R.string.safemode_shortcut_error;
+                } else if ((shortcut.runtimeStatusFlags & FLAG_DISABLED_BY_PUBLISHER) != 0 ||
+                        (shortcut.runtimeStatusFlags & FLAG_DISABLED_LOCKED_USER) != 0) {
+                    error = R.string.shortcut_not_available;
+                }
+                Toast.makeText(launcher, error, Toast.LENGTH_SHORT).show();
+                return;
+            }
         }
 
         // Check for abandoned promise

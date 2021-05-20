@@ -22,6 +22,7 @@ import static com.android.launcher3.LauncherState.QUICK_SWITCH;
 import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IME_SHOWING;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -163,7 +164,8 @@ public final class LauncherActivityInterface extends
     }
 
     @Nullable
-    private TaskbarController getTaskbarController() {
+    @Override
+    public TaskbarController getTaskbarController() {
         BaseQuickstepLauncher launcher = getCreatedActivity();
         if (launcher == null) {
             return null;
@@ -296,6 +298,16 @@ public final class LauncherActivityInterface extends
     protected int getOverviewScrimColorForState(BaseQuickstepLauncher launcher,
             LauncherState state) {
         return state.getWorkspaceScrimColor(launcher);
+    }
+
+    @Override
+    public void onSystemUiFlagsChanged(int systemUiStateFlags) {
+        TaskbarController taskbarController = getTaskbarController();
+        if (taskbarController == null) {
+            return;
+        }
+        boolean isImeVisible = (systemUiStateFlags & SYSUI_STATE_IME_SHOWING) != 0;
+        taskbarController.setIsImeVisible(isImeVisible);
     }
 
     @Override
