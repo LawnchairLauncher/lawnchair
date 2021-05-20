@@ -162,6 +162,7 @@ message Widget {
   optional int32 app_widget_id = 3;
   optional string package_name = 4; // only populated during snapshot if from workspace
   optional string component_name = 5; // only populated during snapshot if from workspace
+  optional int32 widget_features = 6;
 }
 
 // Tasks handled by PackageManager
