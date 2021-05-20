@@ -129,6 +129,7 @@ public abstract class SwipeUpAnimationLogic {
     }
 
     protected abstract class HomeAnimationFactory {
+        protected float mSwipeVelocity;
 
         public @NonNull RectF getWindowTargetRect() {
             PagedOrientationHandler orientationHandler = getOrientationHandler();
@@ -152,8 +153,16 @@ public abstract class SwipeUpAnimationLogic {
 
         public abstract @NonNull AnimatorPlaybackController createActivityAnimationToHome();
 
+        public void setSwipeVelocity(float velocity) {
+            mSwipeVelocity = velocity;
+        }
+
         public void playAtomicAnimation(float velocity) {
             // No-op
+        }
+
+        public boolean shouldPlayAtomicWorkspaceReveal() {
+            return true;
         }
 
         public void setAnimation(RectFSpringAnim anim) { }
