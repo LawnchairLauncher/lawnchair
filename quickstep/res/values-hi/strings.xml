@@ -67,13 +67,12 @@
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"देख लें कि आप स्क्रीन के निचले किनारे से ऊपर की ओर स्वाइप कर रहे हों."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"कोशिश करें कि स्क्रीन से उंगली उठाने से पहले, इसे कुछ देर स्क्रीन पर दबाकर रखें."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"देख लें कि आप स्क्रीन पर ऊपर की तरफ़, बिल्कुल सीधे स्वाइप कर रहे हों और फिर रुकें."</string>
-    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"आपने हाथ के जेस्चर (हाव-भाव) को इस्तेमाल करना सीख लिया है. जेस्चर बंद करने के लिए, सेटिंग में जाएं."</string>
+    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"आपने हाथ के जेस्चर (हाव-भाव) इस्तेमाल करने सीख लिए हैं. जेस्चर बंद करने के लिए, सेटिंग में जाएं."</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"आपने एक ऐप्लिकेशन से दूसरे पर जाने के लिए इस्तेमाल होने वाले हाथ के जेस्चर के बारे में जान लिया है."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"एक ऐप्लिकेशन से दूसरे पर जाने के लिए स्वाइप करें"</string>
     <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"अपनी स्क्रीन पर नीचे से ऊपर की तरफ़ स्वाइप करें, दबाकर रखें, फिर छोड़ दें."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"आप पूरी तरह तैयार हैं"</string>
     <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"आगे बढ़ें"</string>
-    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"हो गया"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"सेटिंग"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"फिर से कोशिश करें"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"बहुत बढ़िया!"</string>
@@ -83,7 +82,7 @@
     <string name="allset_description" msgid="6350320429953234580">"अब आप अपना फ़ोन इस्तेमाल कर सकते हैं"</string>
     <string name="allset_navigation_settings" msgid="417773244979225071"><annotation id="link">"सुलभता के लिए नेविगेशन सेटिंग"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"शेयर करें"</string>
-    <string name="action_screenshot" msgid="8171125848358142917">"स्क्रीनशॉट"</string>
+    <string name="action_screenshot" msgid="8171125848358142917">"स्क्रीनशॉट लें"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"ऐप्लिकेशन या आपका संगठन इस कार्रवाई की अनुमति नहीं देता"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"नेविगेशन ट्यूटोरियल छोड़ना चाहते हैं?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"आप बाद में, <xliff:g id="NAME">%1$s</xliff:g> ऐप्लिकेशन पर इसे देख सकते हैं"</string>
