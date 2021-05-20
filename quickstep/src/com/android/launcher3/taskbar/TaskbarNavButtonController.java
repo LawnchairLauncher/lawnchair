@@ -16,8 +16,7 @@
 
 package com.android.launcher3.taskbar;
 
-import static android.view.Display.DEFAULT_DISPLAY;
-
+import android.content.Context;
 import android.content.Intent;
 import android.view.inputmethod.InputMethodManager;
 
@@ -54,10 +53,11 @@ public class TaskbarNavButtonController {
     static final int BUTTON_RECENTS = BUTTON_HOME << 1;
     static final int BUTTON_IME_SWITCH = BUTTON_RECENTS << 1;
 
-    private final TouchInteractionService mService;
 
-    public TaskbarNavButtonController(TouchInteractionService service) {
-        mService = service;
+    private final Context mContext;
+
+    public TaskbarNavButtonController(Context context) {
+        mContext = context;
     }
 
     public void onButtonClick(@TaskbarButton int buttonType) {
@@ -78,13 +78,13 @@ public class TaskbarNavButtonController {
     }
 
     private void navigateHome() {
-        mService.startActivity(new Intent(Intent.ACTION_MAIN)
+        mContext.startActivity(new Intent(Intent.ACTION_MAIN)
                 .addCategory(Intent.CATEGORY_HOME)
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
     private void navigateToOverview() {
-        mService.getOverviewCommandHelper()
+        TouchInteractionService.getInstance().getOverviewCommandHelper()
                 .addCommand(OverviewCommandHelper.TYPE_SHOW);
     }
 
@@ -93,8 +93,8 @@ public class TaskbarNavButtonController {
     }
 
     private void showIMESwitcher() {
-        mService.getSystemService(InputMethodManager.class)
-                .showInputMethodPickerFromSystem(true /* showAuxiliarySubtypes */,
-                        DEFAULT_DISPLAY);
+        mContext.getSystemService(InputMethodManager.class).showInputMethodPickerFromSystem(
+                true /* showAuxiliarySubtypes */, mContext.getDisplayId());
     }
+
 }
