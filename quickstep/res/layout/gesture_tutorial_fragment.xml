@@ -88,27 +88,15 @@
         android:padding="24dp"
         android:background="@drawable/bg_sandbox_feedback">
 
-        <ImageButton
-            android:id="@+id/gesture_tutorial_fragment_close_button"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:src="@drawable/close_icon"
-            android:background="@drawable/bg_sandbox_close_button"
-            android:contentDescription="@string/gesture_tutorial_close_button_content_description"
-
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
         <TextView
             android:id="@+id/gesture_tutorial_fragment_feedback_title"
             style="@style/TextAppearance.GestureTutorial.Feedback.Title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
 
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/gesture_tutorial_fragment_close_button"/>
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
             android:id="@+id/gesture_tutorial_fragment_feedback_subtitle"
@@ -121,14 +109,13 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/gesture_tutorial_fragment_feedback_title"/>
 
-        <TextView
+        <com.android.quickstep.interaction.TutorialStepIndicator
             android:id="@+id/gesture_tutorial_fragment_feedback_tutorial_step"
-            style="@style/TextAppearance.GestureTutorial.Feedback.Subtext"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/gesture_tutorial_fragment_action_button"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/gesture_tutorial_fragment_action_button"
             app:layout_constraintBottom_toBottomOf="@id/gesture_tutorial_fragment_action_button"/>
 
@@ -144,6 +131,7 @@
             android:paddingBottom="8dp"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
+            android:text="@string/gesture_tutorial_action_button_label_next"
             android:background="@drawable/gesture_tutorial_action_button_background"
             android:foreground="?android:attr/selectableItemBackgroundBorderless"
             android:stateListAnimator="@null"
@@ -151,6 +139,19 @@
 
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/gesture_tutorial_fragment_feedback_subtitle"/>
+
+        <Button
+            style="@style/TextAppearance.GestureTutorial.Feedback.Subtext"
+            android:id="@+id/gesture_tutorial_fragment_close_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/gesture_tutorial_action_button_label_skip"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+
+            app:layout_constraintTop_toTopOf="@id/gesture_tutorial_fragment_action_button"
+            app:layout_constraintBottom_toBottomOf="@id/gesture_tutorial_fragment_action_button"
+            app:layout_constraintStart_toStartOf="@id/gesture_tutorial_fragment_action_button"
+            app:layout_constraintEnd_toEndOf="@id/gesture_tutorial_fragment_action_button"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -231,7 +231,7 @@ public interface TaskShortcutFactory {
         @Override
         public SystemShortcut getShortcut(BaseDraggingActivity activity, TaskView taskView) {
             SystemShortcut shortcut = super.getShortcut(activity, taskView);
-            if (FeatureFlags.ENABLE_SPLIT_SELECT.get()) {
+            if (shortcut != null && FeatureFlags.ENABLE_SPLIT_SELECT.get()) {
                 // Disable if there's only one recent app for split screen
                 shortcut.setEnabled(taskView.getRecentsView().getTaskViewCount() > 1);
             }
