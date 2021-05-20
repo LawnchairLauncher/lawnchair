@@ -73,7 +73,6 @@
     <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"مرِّر سريعًا من أسفل الشاشة إلى أعلاها، وأبقِ إصبعك على الشاشة قليلاً ثم ارفعه."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"اكتمل التدريب على الإيماءة"</string>
     <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"التالي"</string>
-    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"تم"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"الإعدادات"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"إعادة المحاولة"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"أحسنت"</string>

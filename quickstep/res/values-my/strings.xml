@@ -73,7 +73,6 @@
     <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"သင့်ဖန်သားပြင် အောက်ခြေမှ အပေါ်သို့ ပွတ်ဆွဲပါ၊ ဖိထားပြီးနောက် လွှတ်လိုက်ပါ။"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"အားလုံးအဆင်သင့်ဖြစ်ပါပြီ"</string>
     <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"ရှေ့သို့"</string>
-    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"ပြီးပြီ"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"ဆက်တင်များ"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"ထပ်စမ်းကြည့်ရန်"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"ကောင်းသည်။"</string>

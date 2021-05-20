@@ -73,7 +73,6 @@
     <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"화면 하단에서 위로 스와이프하고 잠시 멈춘 다음 손가락을 떼세요"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"설정 완료"</string>
     <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"다음"</string>
-    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"완료"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"설정"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"다시 시도"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"잘하셨습니다"</string>
