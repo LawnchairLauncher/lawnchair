@@ -93,6 +93,8 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     private float mModalness;
     private float mModalTransformY;
 
+    protected DeviceProfile mDp;
+
     public OverviewActionsView(Context context) {
         this(context, null);
     }
@@ -205,34 +207,23 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
     /** Updates vertical margins for different navigation mode or configuration changes. */
     public void updateVerticalMargin(Mode mode) {
+        if (mDp == null) {
+            return;
+        }
         LayoutParams actionParams = (LayoutParams) findViewById(
                 R.id.action_buttons).getLayoutParams();
         actionParams.setMargins(
-                actionParams.leftMargin, actionParams.topMargin, actionParams.rightMargin,
-                getBottomVerticalMargin(mode));
+                actionParams.leftMargin, getOverviewActionsTopMarginPx(mode, mDp),
+                actionParams.rightMargin, getOverviewActionsBottomMarginPx(mode, mDp));
     }
 
     /**
      * Set the device profile for this view to draw with.
      */
     public void setDp(DeviceProfile dp) {
+        mDp = dp;
+        updateVerticalMargin(SysUINavigationMode.getMode(getContext()));
         requestLayout();
-    }
-
-    protected int getBottomVerticalMargin(Mode mode) {
-        int bottomMargin;
-        int orientation = getResources().getConfiguration().orientation;
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            bottomMargin = 0;
-        } else if (mode == Mode.THREE_BUTTONS) {
-            bottomMargin = getResources()
-                    .getDimensionPixelSize(R.dimen.overview_actions_bottom_margin_three_button);
-        } else {
-            bottomMargin = getResources()
-                    .getDimensionPixelSize(R.dimen.overview_actions_bottom_margin_gesture);
-        }
-        bottomMargin += mInsets.bottom;
-        return bottomMargin;
     }
 
     /**
@@ -256,5 +247,36 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     private float getModalTrans(float endTranslation) {
         float progress = ACCEL_DEACCEL.getInterpolation(mModalness);
         return Utilities.mapRange(progress, 0, endTranslation);
+    }
+
+    /** Get the top margin associated with the action buttons in Overview. */
+    public static int getOverviewActionsTopMarginPx(
+            SysUINavigationMode.Mode mode, DeviceProfile dp) {
+        // In vertical bar, use the smaller task margin for the top regardless of mode
+        if (dp.isVerticalBarLayout()) {
+            return dp.overviewTaskMarginPx;
+        }
+
+        if (mode == SysUINavigationMode.Mode.THREE_BUTTONS) {
+            return dp.overviewActionsMarginThreeButtonPx;
+        }
+
+        return dp.overviewActionsMarginGesturePx;
+    }
+
+    /** Get the bottom margin associated with the action buttons in Overview. */
+    public static int getOverviewActionsBottomMarginPx(
+            SysUINavigationMode.Mode mode, DeviceProfile dp) {
+        int inset = dp.getInsets().bottom;
+
+        if (dp.isVerticalBarLayout()) {
+            return inset;
+        }
+
+        if (mode == SysUINavigationMode.Mode.THREE_BUTTONS) {
+            return dp.overviewActionsMarginThreeButtonPx + inset;
+        }
+
+        return dp.overviewActionsMarginGesturePx + inset;
     }
 }

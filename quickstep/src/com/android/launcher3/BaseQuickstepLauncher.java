@@ -253,6 +253,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
                 new SplitSelectStateController(mHandler, SystemUiProxy.INSTANCE.get(this))
         );
         overviewPanel.init(mActionsView, mSplitPlaceholderView);
+        mActionsView.setDp(getDeviceProfile());
         mActionsView.updateVerticalMargin(SysUINavigationMode.getMode(this));
 
         mAppTransitionManager = new QuickstepTransitionManager(this);
