@@ -149,5 +149,4 @@
     <!-- Note that this applies to both sides of all icons, so visible space is double this. -->
     <dimen name="taskbar_icon_spacing">8dp</dimen>
     <dimen name="taskbar_folder_margin">16dp</dimen>
-    <dimen name="taskbar_nav_buttons_spacing">16dp</dimen>
 </resources>
