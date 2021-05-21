@@ -45,6 +45,8 @@ import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowInsets;
+import android.view.WindowManager;
 import android.widget.TextClock;
 
 import com.android.launcher3.BubbleTextView;
@@ -56,6 +58,7 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceLayoutManager;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.FolderIcon;
@@ -205,10 +208,19 @@ public class LauncherPreviewRenderer extends ContextWrapper
         mIdp = idp;
         mDp = idp.getDeviceProfile(context).copy(context);
 
-        // TODO: get correct insets once display cutout API is available.
-        mInsets = new Rect();
-        mInsets.left = mInsets.right = (mDp.widthPx - mDp.availableWidthPx) / 2;
-        mInsets.top = mInsets.bottom = (mDp.heightPx - mDp.availableHeightPx) / 2;
+        if (Utilities.ATLEAST_R) {
+            WindowInsets currentWindowInsets = context.getSystemService(WindowManager.class)
+                    .getCurrentWindowMetrics().getWindowInsets();
+            mInsets = new Rect(
+                    currentWindowInsets.getSystemWindowInsetLeft(),
+                    currentWindowInsets.getSystemWindowInsetTop(),
+                    currentWindowInsets.getSystemWindowInsetRight(),
+                    currentWindowInsets.getSystemWindowInsetBottom());
+        } else {
+            mInsets = new Rect();
+            mInsets.left = mInsets.right = (mDp.widthPx - mDp.availableWidthPx) / 2;
+            mInsets.top = mInsets.bottom = (mDp.heightPx - mDp.availableHeightPx) / 2;
+        }
         mDp.updateInsets(mInsets);
 
         BaseIconFactory iconFactory =
