@@ -1252,6 +1252,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
             final boolean launchingFromWidget = mV instanceof LauncherAppWidgetHostView;
             final boolean launchingFromRecents = isLaunchingFromRecents(mV, appTargets);
+            final boolean launchingFromTaskbar = mLauncher.isViewInTaskbar(mV);
             if (launchingFromWidget) {
                 composeWidgetLaunchAnimator(anim, (LauncherAppWidgetHostView) mV, appTargets,
                         wallpaperTargets, nonAppTargets);
@@ -1262,6 +1263,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                         launcherClosing);
                 addCujInstrumentation(
                         anim, InteractionJankMonitorWrapper.CUJ_APP_LAUNCH_FROM_RECENTS);
+            } else if (launchingFromTaskbar) {
+                // TODO
             } else {
                 composeIconLaunchAnimator(anim, mV, appTargets, wallpaperTargets, nonAppTargets,
                         launcherClosing);
