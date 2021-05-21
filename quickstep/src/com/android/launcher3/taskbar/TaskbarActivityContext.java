@@ -87,7 +87,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
 
     private final DeviceProfile mDeviceProfile;
     private final LayoutInflater mLayoutInflater;
-    private final TaskbarContainerView mTaskbarContainerView;
+    private final TaskbarDragLayer mDragLayer;
     private final TaskbarIconController mIconController;
     private final MyDragController mDragController;
 
@@ -123,9 +123,9 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         mDeviceProfile.updateIconSize(iconScale, getResources());
 
         mLayoutInflater = LayoutInflater.from(this).cloneInContext(this);
-        mTaskbarContainerView = (TaskbarContainerView) mLayoutInflater
+        mDragLayer = (TaskbarDragLayer) mLayoutInflater
                 .inflate(R.layout.taskbar, null, false);
-        mIconController = new TaskbarIconController(this, mTaskbarContainerView);
+        mIconController = new TaskbarIconController(this, mDragLayer);
         mDragController = new MyDragController(this);
 
         Display display = windowContext.getDisplay();
@@ -157,7 +157,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         );
 
         mIconController.init(mOnTaskbarIconClickListener, mOnTaskbarIconLongClickListener);
-        mWindowManager.addView(mTaskbarContainerView, mWindowLayoutParams);
+        mWindowManager.addView(mDragLayer, mWindowLayoutParams);
     }
 
     /**
@@ -168,7 +168,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
             return;
         }
         mWindowLayoutParams.height = height;
-        mWindowManager.updateViewLayout(mTaskbarContainerView, mWindowLayoutParams);
+        mWindowManager.updateViewLayout(mDragLayer, mWindowLayoutParams);
     }
 
     public boolean canShowNavButtons() {
@@ -181,8 +181,8 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
     }
 
     @Override
-    public TaskbarContainerView getDragLayer() {
-        return mTaskbarContainerView;
+    public TaskbarDragLayer getDragLayer() {
+        return mDragLayer;
     }
 
     @Override
@@ -192,7 +192,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
 
     @Override
     public Rect getFolderBoundingBox() {
-        return mTaskbarContainerView.getFolderBoundingBox();
+        return mDragLayer.getFolderBoundingBox();
     }
 
     @Override
@@ -216,15 +216,28 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
     public void onDestroy() {
         setUIController(TaskbarUIController.DEFAULT);
         mIconController.onDestroy();
-        mWindowManager.removeViewImmediate(mTaskbarContainerView);
+        mWindowManager.removeViewImmediate(mDragLayer);
     }
 
     void onNavigationButtonClick(@TaskbarButton int buttonType) {
         mNavButtonController.onButtonClick(buttonType);
     }
 
-    public TaskbarIconController getIconController() {
-        return mIconController;
+    /**
+     * Should be called when the IME visibility changes, so we can hide/show Taskbar accordingly.
+     */
+    public void setImeIsVisible(boolean isImeVisible) {
+        mIconController.setImeIsVisible(isImeVisible);
+    }
+
+    /**
+     * When in 3 button nav, the above doesn't get called since we prevent sysui nav bar from
+     * instantiating at all, which is what's responsible for sending sysui state flags over.
+     *
+     * @param vis IME visibility flag
+     */
+    public void updateImeStatus(int displayId, int vis, boolean showImeSwitcher) {
+        mIconController.updateImeStatus(displayId, vis, showImeSwitcher);
     }
 
     /**
