@@ -140,7 +140,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     private DotInfo mDotInfo;
     private DotRenderer mDotRenderer;
     @ViewDebug.ExportedProperty(category = "launcher", deepExport = true)
-    private DotRenderer.DrawParams mDotParams;
+    protected DotRenderer.DrawParams mDotParams;
     private Animator mDotScaleAnim;
     private boolean mForceHideDot;
 
@@ -319,7 +319,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     protected void applyIconAndLabel(ItemInfoWithIcon info) {
         boolean useTheme = mDisplay == DISPLAY_WORKSPACE || mDisplay == DISPLAY_FOLDER;
         FastBitmapDrawable iconDrawable = info.newIcon(getContext(), useTheme);
-        mDotParams.color = IconPalette.getMutedColor(info.bitmap.color, 0.54f);
+        mDotParams.color = IconPalette.getMutedColor(iconDrawable.getIconColor(), 0.54f);
 
         setIcon(iconDrawable);
         applyLabel(info);
