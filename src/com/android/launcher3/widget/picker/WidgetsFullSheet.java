@@ -254,7 +254,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             mAdapters.get(AdapterHolder.WORK).mWidgetsRecyclerView.scrollToTop();
         }
         mAdapters.get(AdapterHolder.SEARCH).mWidgetsRecyclerView.scrollToTop();
-        mSearchAndRecommendationsScrollController.reset();
+        mSearchAndRecommendationsScrollController.reset(/* animate= */ true);
     }
 
     @VisibleForTesting
