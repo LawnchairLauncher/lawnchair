@@ -45,7 +45,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.KEY_ROUTE
 import androidx.navigation.compose.currentBackStackEntryAsState
 import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.Routes
@@ -57,7 +56,7 @@ import com.google.accompanist.insets.statusBarsPadding
 fun TopBar() = pageMeta.consume { state ->
     val navController = LocalNavController.current
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
+    val currentRoute = navBackStackEntry?.destination?.route
 
     TopBarSurface(floating = state.topBarFloating) {
         Row(

@@ -114,9 +114,9 @@ val LocalPreferenceInteractor = compositionLocalOf<PreferenceInteractor> {
     error("CompositionLocal LocalPreferenceInteractor not present")
 }
 
+@Composable
 @ExperimentalMaterialApi
 @ExperimentalAnimationApi
-@Composable
 fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel>()) {
     val navController = rememberNavController()
 
