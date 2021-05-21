@@ -73,7 +73,6 @@
     <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"Leret ke atas dari bahagian bawah skrin anda, tahan, kemudian lepaskan."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Selesai"</string>
     <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"Seterusnya"</string>
-    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"Selesai"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Tetapan"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Cuba lagi"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Bagus!"</string>

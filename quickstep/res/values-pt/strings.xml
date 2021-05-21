@@ -73,7 +73,6 @@
     <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"Deslize de baixo para cima na tela, mantenha-a pressionada e depois solte."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Tudo pronto"</string>
     <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"Próxima"</string>
-    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"Concluído"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Configurações"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Tentar novamente"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Muito bem!"</string>
