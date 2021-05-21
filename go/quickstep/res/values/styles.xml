@@ -25,7 +25,7 @@
     </style>
 
     <style name="GoOverviewActionButtonCaption">
-        <item name="android:fontFamily">roboto-medium</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textSize">14dp</item>
         <item name="android:textColor">@color/go_overview_button_icon_color</item>
         <item name="android:lineHeight">20dp</item>

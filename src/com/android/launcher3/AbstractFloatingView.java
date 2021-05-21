@@ -39,7 +39,6 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
-import com.android.launcher3.widget.LocalColorExtractor;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -63,7 +62,8 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
             TYPE_DRAG_DROP_POPUP,
             TYPE_TASK_MENU,
             TYPE_OPTIONS_POPUP,
-            TYPE_ICON_SURFACE
+            TYPE_ICON_SURFACE,
+            TYPE_PIN_WIDGET_FROM_EXTERNAL_POPUP
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface FloatingViewType {}
@@ -84,11 +84,13 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     public static final int TYPE_OPTIONS_POPUP = 1 << 12;
     public static final int TYPE_ICON_SURFACE = 1 << 13;
 
+    public static final int TYPE_PIN_WIDGET_FROM_EXTERNAL_POPUP = 1 << 14;
+
     public static final int TYPE_ALL = TYPE_FOLDER | TYPE_ACTION_POPUP
             | TYPE_WIDGETS_BOTTOM_SHEET | TYPE_WIDGET_RESIZE_FRAME | TYPE_WIDGETS_FULL_SHEET
             | TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE | TYPE_TASK_MENU
             | TYPE_OPTIONS_POPUP | TYPE_SNACKBAR | TYPE_LISTENER | TYPE_ALL_APPS_EDU
-            | TYPE_ICON_SURFACE | TYPE_DRAG_DROP_POPUP;
+            | TYPE_ICON_SURFACE | TYPE_DRAG_DROP_POPUP | TYPE_PIN_WIDGET_FROM_EXTERNAL_POPUP;
 
     // Type of popups which should be kept open during launcher rebind
     public static final int TYPE_REBIND_SAFE = TYPE_WIDGETS_FULL_SHEET
@@ -109,21 +111,12 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
 
     protected boolean mIsOpen;
 
-    // Index used to get background color when using local wallpaper color extraction.
-    protected int mColorExtractionIndex;
-
     public AbstractFloatingView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context);
     }
 
     public AbstractFloatingView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(context);
-    }
-
-    private void init(Context context) {
-        mColorExtractionIndex = LocalColorExtractor.getColorIndex(context);
     }
 
     /**

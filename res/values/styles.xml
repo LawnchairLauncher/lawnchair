@@ -33,6 +33,7 @@
     <style name="LauncherTheme" parent="@style/BaseLauncherTheme">
         <item name="android:textColorSecondary">#DE000000</item>
         <item name="allAppsScrimColor">?android:attr/colorBackgroundFloating</item>
+        <item name="allappsHeaderProtectionColor">@color/popup_color_tertiary_light</item>
         <item name="allAppsNavBarScrimColor">#66FFFFFF</item>
         <item name="allAppsTheme">@style/AllAppsTheme</item>
         <item name="popupColorPrimary">@color/popup_color_primary_light</item>
@@ -51,7 +52,7 @@
         <item name="folderIconBorderColor">?android:attr/colorPrimary</item>
         <item name="folderTextColor">?android:attr/textColorPrimary</item>
         <item name="isFolderDarkText">true</item>
-        <item name="folderHintColor">#89616161</item>
+        <item name="folderHintColor">@color/folder_hint_text_color_dark</item>
         <item name="loadingIconColor">#CCFFFFFF</item>
         <item name="iconOnlyShortcutColor">?android:attr/textColorSecondary</item>
         <item name="workProfileOverlayTextColor">#FF212121</item>
@@ -73,6 +74,7 @@
         <item name="folderFillColor">#FF3C4043</item> <!-- 100% GM2 800 -->
         <item name="folderTextColor">?attr/workspaceTextColor</item>
         <item name="isFolderDarkText">?attr/isWorkspaceDarkText</item>
+        <item name="folderHintColor">@color/folder_hint_text_color_dark</item>
         <item name="disabledIconAlpha">.254</item>
 
     </style>
@@ -89,6 +91,7 @@
         <item name="folderIconBorderColor">#FF80868B</item>
         <item name="folderTextColor">?attr/workspaceTextColor</item>
         <item name="isFolderDarkText">true</item>
+        <item name="folderHintColor">@color/folder_hint_text_color_dark</item>
     </style>
 
     <style name="LauncherTheme.Dark" parent="@style/LauncherTheme">
@@ -110,7 +113,7 @@
         <item name="folderIconBorderColor">?android:attr/colorPrimary</item>
         <item name="folderTextColor">?android:attr/textColorPrimary</item>
         <item name="isFolderDarkText">false</item>
-        <item name="folderHintColor">#89CCCCCC</item>
+        <item name="folderHintColor">@color/folder_hint_text_color_light</item>
         <item name="isMainColorDark">true</item>
         <item name="loadingIconColor">#99FFFFFF</item>
         <item name="iconOnlyShortcutColor">#B3FFFFFF</item>
@@ -123,6 +126,7 @@
         <item name="folderFillColor">#FF3C4043</item> <!-- 100% GM2 800 -->
         <item name="folderTextColor">@android:color/white</item>
         <item name="isFolderDarkText">false</item>
+        <item name="folderHintColor">@color/folder_hint_text_color_light</item>
         <item name="disabledIconAlpha">.54</item>
     </style>
 
@@ -131,6 +135,7 @@
         <item name="folderFillColor">#CDFFFFFF</item>
         <item name="folderTextColor">?attr/workspaceTextColor</item>
         <item name="isFolderDarkText">?attr/isWorkspaceDarkText</item>
+        <item name="folderHintColor">@color/folder_hint_text_color_dark</item>
         <item name="workspaceTextColor">@color/workspace_text_color_dark</item>
         <item name="workspaceShadowColor">@android:color/transparent</item>
         <item name="workspaceAmbientShadowColor">@android:color/transparent</item>
@@ -148,12 +153,6 @@
     <style name="AppTheme.Dark" parent="@style/LauncherTheme.Dark" />
     <style name="AppTheme.Dark.DarkMainColor" parent="@style/LauncherTheme.Dark.DarkMainColor" />
     <style name="AppTheme.Dark.DarkText" parent="@style/LauncherTheme.Dark.DarkText" />
-
-    <style name="AppItemActivityTheme" parent="@android:style/Theme.DeviceDefault.Light.Dialog.Alert">
-        <item name="widgetsTheme">@style/WidgetContainerTheme</item>
-        <item name="android:windowBackground">@drawable/add_item_dialog_background</item>
-        <item name="android:windowNoTitle">true</item>
-    </style>
 
     <style name="HomeSettingsTheme" parent="@android:style/Theme.DeviceDefault.Settings">
         <item name="android:navigationBarColor">?android:colorPrimaryDark</item>
@@ -213,8 +212,7 @@
         <item name="disabledIconAlpha">.54</item>
     </style>
 
-
-    <style name="BaseIconUnBounded" parent="@android:style/TextAppearance.DeviceDefault">
+    <style name="BaseIconUnBounded" parent="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_gravity">center</item>
@@ -272,7 +270,8 @@
 
     <style name="DropTargetButton" parent="DropTargetButtonBase" />
 
-    <style name="TextHeadline" parent="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle" />
+    <style name="TextHeadline" parent="@android:style/TextAppearance.DeviceDefault" />
+
     <style name="PrimaryHeadline" parent="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle"/>
 
     <style name="TextTitle" parent="@android:style/TextAppearance.DeviceDefault" />
@@ -290,5 +289,9 @@
 
     <style name="Widget.DeviceDefault.Button.Rounded.Colored" parent="@android:style/Widget.DeviceDefault.Button.Colored">
         <item name="android:background">@drawable/add_item_dialog_button_background</item>
+    </style>
+
+    <style name="AddItemActivityTheme" parent="@android:style/Theme.Translucent.NoTitleBar">
+        <item name="widgetsTheme">@style/WidgetContainerTheme</item>
     </style>
 </resources>

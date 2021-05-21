@@ -20,6 +20,7 @@ import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_OVERV
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.os.SystemProperties;
 import android.view.View;
 
 import com.android.launcher3.DeviceProfile;
@@ -59,7 +60,7 @@ public class OverviewState extends LauncherState {
 
     @Override
     public int getTransitionDuration(Context context) {
-        // In gesture modes, overview comes in all the way from the bottom, so give it more time.
+        // In gesture modes, overview comes in all the way from the side, so give it more time.
         return SysUINavigationMode.INSTANCE.get(context).getMode().hasGestures ? 380 : 250;
     }
 
@@ -78,7 +79,7 @@ public class OverviewState extends LauncherState {
 
     @Override
     public float[] getOverviewScaleAndOffset(Launcher launcher) {
-        return new float[] {NO_SCALE, NO_OFFSET, NO_OFFSET};
+        return new float[] {NO_SCALE, NO_OFFSET};
     }
 
     @Override
@@ -127,7 +128,8 @@ public class OverviewState extends LauncherState {
 
     @Override
     protected float getDepthUnchecked(Context context) {
-        return 1f;
+        //TODO revert when b/178661709 is fixed
+        return SystemProperties.getBoolean("ro.launcher.depth.overview", true) ? 1 : 0;
     }
 
     @Override

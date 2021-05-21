@@ -43,7 +43,6 @@ import static com.android.launcher3.touch.BothAxesSwipeDetector.DIRECTION_UP;
 import static com.android.launcher3.util.DisplayController.getSingleFrameMs;
 import static com.android.launcher3.util.VibratorWrapper.OVERVIEW_HAPTIC;
 import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_HORIZONTAL_OFFSET;
-import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_VERTICAL_OFFSET;
 import static com.android.quickstep.views.RecentsView.CONTENT_ALPHA;
 import static com.android.quickstep.views.RecentsView.FULLSCREEN_PROGRESS;
 import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
@@ -74,7 +73,7 @@ import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.MotionPauseDetector;
-import com.android.quickstep.util.StaggeredWorkspaceAnim;
+import com.android.quickstep.util.WorkspaceRevealAnim;
 import com.android.quickstep.views.LauncherRecentsView;
 
 /**
@@ -224,7 +223,6 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         // Set RecentView's initial properties.
         RECENTS_SCALE_PROPERTY.set(mRecentsView, fromState.getOverviewScaleAndOffset(mLauncher)[0]);
         ADJACENT_PAGE_HORIZONTAL_OFFSET.set(mRecentsView, 1f);
-        ADJACENT_PAGE_VERTICAL_OFFSET.set(mRecentsView, 0f);
         mRecentsView.setContentAlpha(1);
         mRecentsView.setFullscreenProgress(fromState.getOverviewFullscreenProgress());
         mLauncher.getActionsView().getVisibilityAlpha().setValue(
@@ -386,8 +384,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
             updateNonOverviewAnim(targetState, config);
             nonOverviewAnim = mNonOverviewAnim.getAnimationPlayer();
 
-            new StaggeredWorkspaceAnim(mLauncher, velocity.y, false /* animateOverviewScrim */)
-                    .start();
+            new WorkspaceRevealAnim(mLauncher, false /* animateOverviewScrim */).start();
         } else {
             boolean canceled = targetState == NORMAL;
             if (canceled) {

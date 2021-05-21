@@ -83,7 +83,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
         setWillNotDraw(false);
         mInsets = new Rect();
         mContent = this;
-        DeviceProfile deviceProfile = mLauncher.getDeviceProfile();
+        DeviceProfile deviceProfile = mActivityContext.getDeviceProfile();
         // Set the max table height to 2 / 3 of the grid height so that the bottom picker won't
         // take over the entire view vertically.
         mMaxTableHeight = deviceProfile.inv.numRows * 2 / 3  * deviceProfile.cellHeightPx;
@@ -97,7 +97,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
         int paddingPx = 2 * getResources().getDimensionPixelOffset(
                 R.dimen.widget_cell_horizontal_padding);
         int maxHorizontalSpan = findViewById(R.id.widgets_table).getMeasuredWidth()
-                / (mLauncher.getDeviceProfile().cellWidthPx + paddingPx);
+                / (mActivityContext.getDeviceProfile().cellWidthPx + paddingPx);
 
         if (mMaxHorizontalSpan != maxHorizontalSpan) {
             // Ensure the table layout is showing widgets in the right column after measure.
@@ -134,7 +134,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
 
     @Override
     public void onWidgetsBound() {
-        List<WidgetItem> widgets = mLauncher.getPopupDataProvider().getWidgetsForPackageUser(
+        List<WidgetItem> widgets = mActivityContext.getPopupDataProvider().getWidgetsForPackageUser(
                 new PackageUserKey(
                         mOriginalItemInfo.getTargetComponent().getPackageName(),
                         mOriginalItemInfo.user));
@@ -148,7 +148,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
             row.forEach(widgetItem -> {
                 WidgetCell widget = addItemCell(tableRow);
                 widget.setPreviewSize(widgetItem.spanX, widgetItem.spanY);
-                widget.applyFromCellItem(widgetItem, LauncherAppState.getInstance(mLauncher)
+                widget.applyFromCellItem(widgetItem, LauncherAppState.getInstance(mActivityContext)
                         .getWidgetCache());
                 widget.ensurePreview();
                 widget.setVisibility(View.VISIBLE);

@@ -19,6 +19,7 @@ import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKG
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.SystemProperties;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
@@ -84,7 +85,8 @@ public class BackgroundAppState extends OverviewState {
 
     @Override
     protected float getDepthUnchecked(Context context) {
-        return 1f;
+        //TODO revert when b/178661709 is fixed
+        return SystemProperties.getBoolean("ro.launcher.depth.appLaunch", true) ? 1 : 0;
     }
 
     @Override
@@ -96,6 +98,6 @@ public class BackgroundAppState extends OverviewState {
             BaseDraggingActivity activity) {
         return new float[] {
                 ((RecentsView) activity.getOverviewPanel()).getMaxScaleForFullScreen(),
-                NO_OFFSET, NO_OFFSET};
+                NO_OFFSET};
     }
 }

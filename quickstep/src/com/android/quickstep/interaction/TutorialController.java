@@ -15,6 +15,8 @@
  */
 package com.android.quickstep.interaction;
 
+import static android.view.View.GONE;
+
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Animatable2;
@@ -26,7 +28,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -38,6 +39,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.views.ClipIconView;
 import com.android.quickstep.interaction.EdgeBackGestureHandler.BackGestureAttemptCallback;
@@ -51,7 +53,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     private static final String PIXEL_TIPS_APP_PACKAGE_NAME = "com.google.android.apps.tips";
     private static final CharSequence DEFAULT_PIXEL_TIPS_APP_NAME = "Pixel Tips";
 
-    private static final int FEEDBACK_VISIBLE_MS = 2500;
+    private static final int FEEDBACK_VISIBLE_MS = 5000;
     private static final int FEEDBACK_ANIMATION_MS = 250;
     private static final int RIPPLE_VISIBLE_MS = 300;
 
@@ -59,7 +61,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     TutorialType mTutorialType;
     final Context mContext;
 
-    final ImageButton mCloseButton;
+    final TextView mCloseButton;
     final ViewGroup mFeedbackView;
     final ImageView mFeedbackVideoView;
     final ImageView mGestureVideoView;
@@ -70,7 +72,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     final View mRippleView;
     final RippleDrawable mRippleDrawable;
     final Button mActionButton;
-    final TextView mTutorialStepView;
+    final TutorialStepIndicator mTutorialStepView;
     private final Runnable mHideFeedbackRunnable;
     Runnable mHideFeedbackEndAction;
     private final AlertDialog mSkipTutorialDialog;
@@ -226,7 +228,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
                     public void onAnimationStart(Drawable drawable) {
                         super.onAnimationStart(drawable);
 
-                        mGestureVideoView.setVisibility(View.GONE);
+                        mGestureVideoView.setVisibility(GONE);
                         if (gestureAnimation.isRunning()) {
                             gestureAnimation.stop();
                         }
@@ -238,6 +240,8 @@ abstract class TutorialController implements BackGestureAttemptCallback,
                                 .setDuration(FEEDBACK_ANIMATION_MS)
                                 .translationY(0)
                                 .start();
+                        mFeedbackView.removeCallbacks(mHideFeedbackRunnable);
+                        mFeedbackView.postDelayed(mHideFeedbackRunnable, FEEDBACK_VISIBLE_MS);
                     }
 
                     @Override
@@ -246,9 +250,6 @@ abstract class TutorialController implements BackGestureAttemptCallback,
 
                         mGestureVideoView.setVisibility(View.VISIBLE);
                         gestureAnimation.start();
-
-                        mFeedbackView.removeCallbacks(mHideFeedbackRunnable);
-                        mFeedbackView.post(mHideFeedbackRunnable);
 
                         tutorialAnimation.unregisterAnimationCallback(this);
                     }
@@ -322,32 +323,25 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     }
 
     void hideActionButton() {
+        mCloseButton.setVisibility(View.VISIBLE);
+        mCloseButton.setTextAppearance(Utilities.isDarkTheme(mContext)
+                ? R.style.TextAppearance_GestureTutorial_Feedback_Subtext
+                : R.style.TextAppearance_GestureTutorial_Feedback_Subtext_Dark);
+
         // Invisible to maintain the layout.
         mActionButton.setVisibility(View.INVISIBLE);
         mActionButton.setOnClickListener(null);
     }
 
     void showActionButton() {
-        int stringResId = -1;
-
-        if (mContext instanceof GestureSandboxActivity) {
-            GestureSandboxActivity sandboxActivity = (GestureSandboxActivity) mContext;
-
-            stringResId = sandboxActivity.isTutorialComplete()
-                    ? R.string.gesture_tutorial_action_button_label_done
-                    : R.string.gesture_tutorial_action_button_label_next;
-        }
-
-        mActionButton.setText(stringResId == -1 ? null : mContext.getString(stringResId));
+        mCloseButton.setVisibility(GONE);
         mActionButton.setVisibility(View.VISIBLE);
         mActionButton.setOnClickListener(this::onActionButtonClicked);
     }
 
     private void updateSubtext() {
-        mTutorialStepView.setText(mContext.getString(
-                R.string.gesture_tutorial_step,
-                mTutorialFragment.getCurrentStep(),
-                mTutorialFragment.getNumSteps()));
+        mTutorialStepView.setTutorialProgress(
+                mTutorialFragment.getCurrentStep(), mTutorialFragment.getNumSteps());
     }
 
     private void updateDrawables() {

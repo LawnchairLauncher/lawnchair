@@ -75,7 +75,6 @@ import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.util.ActivityOptionsWrapper;
-import com.android.launcher3.util.DynamicResource;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.util.RunnableList;
@@ -86,8 +85,8 @@ import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskViewUtils;
 import com.android.quickstep.util.MultiValueUpdateListener;
 import com.android.quickstep.util.RemoteAnimationProvider;
-import com.android.quickstep.util.StaggeredWorkspaceAnim;
 import com.android.quickstep.util.SurfaceTransactionApplier;
+import com.android.quickstep.util.WorkspaceRevealAnim;
 import com.android.quickstep.views.FloatingWidgetView;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.ActivityCompat;
@@ -1213,10 +1212,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                             }
                         });
                     } else {
-                        float velocityPxPerS = DynamicResource.provider(mLauncher)
-                                .getDimension(R.dimen.unlock_staggered_velocity_dp_per_s);
-                        anim.play(new StaggeredWorkspaceAnim(mLauncher, velocityPxPerS, false)
-                                .getAnimators());
+                        anim.play(new WorkspaceRevealAnim(mLauncher, false).getAnimators());
                     }
                 }
             }
