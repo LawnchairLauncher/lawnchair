@@ -92,8 +92,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     private final boolean mHasWorkProfile;
     private final SparseArray<AdapterHolder> mAdapters = new SparseArray();
     private final UserHandle mCurrentUser = Process.myUserHandle();
-    private final Predicate<WidgetsListBaseEntry> mPrimaryWidgetsFilter = entry ->
-            mCurrentUser.equals(entry.mPkgItem.user);
+    private final Predicate<WidgetsListBaseEntry> mPrimaryWidgetsFilter =
+            entry -> mCurrentUser.equals(entry.mPkgItem.user);
     private final Predicate<WidgetsListBaseEntry> mWorkWidgetsFilter =
             mPrimaryWidgetsFilter.negate();
     private final OnLayoutChangeListener mLayoutChangeListenerToShowTips =
@@ -131,6 +131,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     @Nullable private WidgetsRecyclerView mCurrentWidgetsRecyclerView;
     @Nullable private PersonalWorkPagedView mViewPager;
     private boolean mIsInSearchMode;
+    private boolean mIsNoWidgetsViewNeeded;
     private int mMaxSpansPerRow = 4;
     private View mTabsView;
     private TextView mNoWidgetsView;
@@ -187,6 +188,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
         layoutInflater.inflate(R.layout.widgets_full_sheet_search_and_recommendations, springLayout,
                 true);
+        mNoWidgetsView = findViewById(R.id.no_widgets_text);
         mSearchAndRecommendationViewHolder = new SearchAndRecommendationViewHolder(
                 findViewById(R.id.search_and_recommendations_container));
         mSearchAndRecommendationsScrollController = new SearchAndRecommendationsScrollController(
@@ -197,10 +199,10 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 mHasWorkProfile ? findViewById(R.id.work_widgets_list_view) : null,
                 findViewById(R.id.search_widgets_list_view),
                 mTabsView,
-                mViewPager);
+                mViewPager,
+                mNoWidgetsView);
         fastScroller.setOnFastScrollChangeListener(mSearchAndRecommendationsScrollController);
 
-        mNoWidgetsView = findViewById(R.id.no_widgets_text);
 
         onRecommendedWidgetsBound();
         onWidgetsBound();
@@ -295,6 +297,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         if (mHasWorkProfile) {
             setBottomPadding(mAdapters.get(AdapterHolder.WORK).mWidgetsRecyclerView, insets.bottom);
         }
+        mSearchAndRecommendationsScrollController.updateBottomInset(insets.bottom);
         if (insets.bottom > 0) {
             setupNavBarColor();
         } else {
@@ -410,6 +413,16 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         } else {
             updateRecyclerViewVisibility(primaryUserAdapterHolder);
         }
+        // Update recommended widgets section so that it occupies appropriate space on screen to
+        // leave enough space for presence/absence of mNoWidgetsView.
+        boolean isNoWidgetsViewNeeded =
+                mAdapters.get(AdapterHolder.PRIMARY).mWidgetsListAdapter.getItemCount() == 0
+                        || (mHasWorkProfile && mAdapters.get(AdapterHolder.WORK)
+                                .mWidgetsListAdapter.getItemCount() == 0);
+        if (mIsNoWidgetsViewNeeded != isNoWidgetsViewNeeded) {
+            mIsNoWidgetsViewNeeded = isNoWidgetsViewNeeded;
+            onRecommendedWidgetsBound();
+        }
     }
 
     @Override
@@ -476,9 +489,19 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         WidgetsRecommendationTableLayout table =
                 mSearchAndRecommendationViewHolder.mRecommendedWidgetsTable;
         if (recommendedWidgets.size() > 0) {
-            float maxTableHeight =
-                    (mActivityContext.getDeviceProfile().availableHeightPx - mTabsHeight
-                            - getHeaderViewHeight()) * RECOMMENDATION_TABLE_HEIGHT_RATIO;
+            float noWidgetsViewHeight = 0;
+            if (mIsNoWidgetsViewNeeded) {
+                // Make sure recommended section leaves enough space for noWidgetsView.
+                Rect noWidgetsViewTextBounds = new Rect();
+                mNoWidgetsView.getPaint()
+                        .getTextBounds(mNoWidgetsView.getText().toString(), /* start= */ 0,
+                                mNoWidgetsView.getText().length(), noWidgetsViewTextBounds);
+                noWidgetsViewHeight = noWidgetsViewTextBounds.height();
+            }
+            float maxTableHeight = (mActivityContext.getDeviceProfile().availableHeightPx
+                                        - mTabsHeight - getHeaderViewHeight() - noWidgetsViewHeight)
+                                                * RECOMMENDATION_TABLE_HEIGHT_RATIO;
+
             List<ArrayList<WidgetItem>> recommendedWidgetsInTable =
                     WidgetsTableUtils.groupWidgetItemsIntoTable(recommendedWidgets,
                             mMaxSpansPerRow);
