@@ -34,6 +34,8 @@ import androidx.dynamicanimation.animation.FloatPropertyCompat;
 import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
 
+import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.DynamicResource;
@@ -191,8 +193,12 @@ public class RectFSpringAnim2 extends RectFSpringAnim {
      * @param velocityPxPerMs Velocity of swipe in px/ms.
      */
     public void start(Context context, PointF velocityPxPerMs) {
+        DeviceProfile dp = InvariantDeviceProfile.INSTANCE.get(context).getDeviceProfile(context);
+
         mRectXAnim = new SpringAnimation(this, RECT_CENTER_X)
                 .setStartValue(mCurrentCenterX)
+                .setMinValue(Math.min(0, mCurrentCenterX))
+                .setMaxValue(Math.max(dp.widthPx, mCurrentCenterX))
                 .setStartVelocity(velocityPxPerMs.x * 1000)
                 .setSpring(new SpringForce(mTargetX)
                         .setStiffness(mXStiffness)
@@ -204,6 +210,8 @@ public class RectFSpringAnim2 extends RectFSpringAnim {
 
         mRectYAnim = new SpringAnimation(this, RECT_Y)
                 .setStartValue(mCurrentCenterY)
+                .setMinValue(Math.min(0, mCurrentCenterY))
+                .setMaxValue(Math.max(dp.heightPx, mCurrentCenterY))
                 .setStartVelocity(velocityPxPerMs.y * 1000)
                 .setSpring(new SpringForce(mTargetY)
                         .setStiffness(mYStiffness)
