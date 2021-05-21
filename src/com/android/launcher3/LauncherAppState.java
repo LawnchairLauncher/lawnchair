@@ -81,6 +81,8 @@ public class LauncherAppState {
 
     public LauncherAppState(Context context) {
         this(context, LauncherFiles.APP_ICONS_DB);
+        Log.v(Launcher.TAG, "LauncherAppState initiated");
+        Preconditions.assertUIThread();
 
         mInvariantDeviceProfile.addOnChangeListener(idp -> refreshAndReloadLauncher());
 
@@ -132,8 +134,6 @@ public class LauncherAppState {
     }
 
     public LauncherAppState(Context context, @Nullable String iconCacheFileName) {
-        Log.v(Launcher.TAG, "LauncherAppState initiated");
-        Preconditions.assertUIThread();
         mContext = context;
 
         mInvariantDeviceProfile = InvariantDeviceProfile.INSTANCE.get(context);
@@ -142,6 +142,7 @@ public class LauncherAppState {
                 iconCacheFileName, mIconProvider);
         mWidgetCache = new WidgetPreviewLoader(mContext, mIconCache);
         mModel = new LauncherModel(context, this, mIconCache, new AppFilter(mContext));
+        mOnTerminateCallback.add(mIconCache::close);
     }
 
     private void onNotificationSettingsChanged(boolean areNotificationDotsEnabled) {

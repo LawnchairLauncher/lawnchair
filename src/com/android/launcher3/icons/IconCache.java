@@ -131,6 +131,13 @@ public class IconCache extends BaseIconCache {
     }
 
     /**
+     * Closes the cache DB. This will clear any in-memory cache.
+     */
+    public void close() {
+        mIconDb.close();
+    }
+
+    /**
      * Fetches high-res icon for the provided ItemInfo and updates the caller when done.
      *
      * @return a request ID that can be used to cancel the request.
