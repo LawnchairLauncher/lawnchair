@@ -369,7 +369,7 @@ public class RotationTouchHelper implements
 
     private void notifySysuiOfCurrentRotation(int rotation) {
         UI_HELPER_EXECUTOR.execute(() -> SystemUiProxy.INSTANCE.get(mContext)
-                .onQuickSwitchToNewTask(rotation));
+                .notifyPrioritizedRotation(rotation));
     }
 
     /**
