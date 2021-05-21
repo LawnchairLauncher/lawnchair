@@ -76,6 +76,11 @@ public class LauncherWidgetsSearchBar extends LinearLayout implements WidgetsSea
     }
 
     @Override
+    public boolean isSearchBarFocused() {
+        return mEditText.isFocused();
+    }
+
+    @Override
     public void clearSearchBarFocus() {
         mController.clearFocus();
     }
