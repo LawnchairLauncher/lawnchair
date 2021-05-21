@@ -298,7 +298,7 @@ public class FloatingHeaderView extends LinearLayout implements
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        if (mHeaderCollapsed && mTabLayout.getVisibility() == VISIBLE
+        if (mHeaderCollapsed && !mCollapsed && mTabLayout.getVisibility() == VISIBLE
                 && mHeaderColor != Color.TRANSPARENT) {
             mBGPaint.setColor(mHeaderColor);
             mBGPaint.setAlpha((int) (255 * mHeaderAnimator.getAnimatedFraction()));
