@@ -20,6 +20,7 @@ import static com.android.launcher3.AbstractFloatingView.TYPE_HIDE_BACK_BUTTON;
 import static com.android.launcher3.LauncherState.FLAG_HIDE_BACK_BUTTON;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.NO_OFFSET;
+import static com.android.launcher3.model.data.ItemInfo.NO_MATCHING_ID;
 import static com.android.launcher3.util.DisplayController.CHANGE_ACTIVE_SCREEN;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
@@ -499,6 +500,8 @@ public abstract class BaseQuickstepLauncher extends Launcher
                     // Also allow swiping to folders
                     break;
                 }
+                // Reset any existing launch cookies associated with the cookie
+                opts.setLaunchCookie(ObjectWrapper.wrap(NO_MATCHING_ID));
                 return;
         }
         switch (info.itemType) {
@@ -509,6 +512,8 @@ public abstract class BaseQuickstepLauncher extends Launcher
                 // Fall through and continue if it's an app, shortcut, or widget
                 break;
             default:
+                // Reset any existing launch cookies associated with the cookie
+                opts.setLaunchCookie(ObjectWrapper.wrap(NO_MATCHING_ID));
                 return;
         }
         opts.setLaunchCookie(ObjectWrapper.wrap(new Integer(info.id)));
