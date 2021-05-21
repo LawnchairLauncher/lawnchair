@@ -2953,10 +2953,11 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         };
         final Workspace.ItemOperator packageAndUserAndApp = (ItemInfo info, View view) ->
                 info != null
-                        && info.getTargetComponent() != null
-                        && TextUtils.equals(info.getTargetComponent().getPackageName(), packageName)
+                        && info.itemType == ITEM_TYPE_APPLICATION
                         && info.user.equals(user)
-                        && info.itemType == ITEM_TYPE_APPLICATION;
+                        && info.getTargetComponent() != null
+                        && TextUtils.equals(info.getTargetComponent().getPackageName(),
+                                packageName);
         final Workspace.ItemOperator packageAndUserAndAppInFolder = (info, view) -> {
             if (info instanceof FolderInfo) {
                 FolderInfo folderInfo = (FolderInfo) info;
@@ -2973,7 +2974,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         cellLayouts.add(getHotseat());
         forEachVisiblePage(page -> cellLayouts.add((CellLayout) page));
 
-        // Order: App icons, app in folder. Items in hotseat get returned first.
+        // Order: Preferred item, App icons in hotseat/workspace, app in folder in hotseat/workspace
         if (ADAPTIVE_ICON_WINDOW_ANIM.get()) {
             return getFirstMatch(cellLayouts, preferredItem, preferredItemInFolder,
                     packageAndUserAndApp, packageAndUserAndAppInFolder);
@@ -3010,34 +3011,17 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     /**
+     * Finds the first view matching the ordered operators across the given cell layouts by order.
      * @param cellLayouts List of CellLayouts to scan, in order of preference.
      * @param operators List of operators, in order starting from best matching operator.
-     * @return
      */
     View getFirstMatch(Iterable<CellLayout> cellLayouts, final ItemOperator... operators) {
-        // This array is filled with the first match for each operator.
-        final View[] matches = new View[operators.length];
-        // For efficiency, the outer loop should be CellLayout.
-        for (CellLayout cellLayout : cellLayouts) {
-            mapOverCellLayout(cellLayout, (info, v) -> {
-                for (int i = 0; i < operators.length; ++i) {
-                    if (matches[i] == null && operators[i].evaluate(info, v)) {
-                        matches[i] = v;
-                        if (i == 0) {
-                            // We can return since this is the best match possible.
-                            return true;
-                        }
-                    }
+        for (ItemOperator operator : operators) {
+            for (CellLayout cellLayout : cellLayouts) {
+                View match = mapOverCellLayout(cellLayout, operator);
+                if (match != null) {
+                    return match;
                 }
-                return false;
-            });
-            if (matches[0] != null) {
-                break;
-            }
-        }
-        for (View match : matches) {
-            if (match != null) {
-                return match;
             }
         }
         return null;
@@ -3111,16 +3095,16 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
      */
     public void mapOverItems(ItemOperator op) {
         for (CellLayout layout : getWorkspaceAndHotseatCellLayouts()) {
-            if (mapOverCellLayout(layout, op)) {
+            if (mapOverCellLayout(layout, op) != null) {
                 return;
             }
         }
     }
 
-    private boolean mapOverCellLayout(CellLayout layout, ItemOperator op) {
+    private View mapOverCellLayout(CellLayout layout, ItemOperator op) {
         // TODO(b/128460496) Potential race condition where layout is not yet loaded
         if (layout == null) {
-            return false;
+            return null;
         }
         ShortcutAndWidgetContainer container = layout.getShortcutsAndWidgets();
         // map over all the shortcuts on the workspace
@@ -3128,10 +3112,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         for (int itemIdx = 0; itemIdx < itemCount; itemIdx++) {
             View item = container.getChildAt(itemIdx);
             if (op.evaluate((ItemInfo) item.getTag(), item)) {
-                return true;
+                return item;
             }
         }
-        return false;
+        return null;
     }
 
     void updateShortcuts(List<WorkspaceItemInfo> shortcuts) {
