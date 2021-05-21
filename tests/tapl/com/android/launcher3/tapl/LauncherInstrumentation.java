@@ -496,13 +496,14 @@ public final class LauncherInstrumentation {
     private void fail(String message) {
         checkForAnomaly();
         Assert.fail(formatSystemHealthMessage(formatErrorWithEvents(
-                "http://go/tapl test failure:\nOverview: " + getContextDescription()
+                "http://go/tapl test failure:\nSummary: " + getContextDescription()
                         + " - visible state is " + getVisibleStateMessage()
                         + ";\nDetails: " + message, true)));
     }
 
     private String getContextDescription() {
-        return mDiagnosticContext.isEmpty() ? "" : String.join(", ", mDiagnosticContext);
+        return mDiagnosticContext.isEmpty()
+                ? "(no context)" : String.join(", ", mDiagnosticContext);
     }
 
     void assertTrue(String message, boolean condition) {
