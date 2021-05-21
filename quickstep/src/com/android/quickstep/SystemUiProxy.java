@@ -341,6 +341,17 @@ public class SystemUiProxy implements ISystemUiProxy,
         }
     }
 
+    @Override
+    public void notifySwipeUpGestureStarted() {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.notifySwipeUpGestureStarted();
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call notifySwipeUpGestureStarted", e);
+            }
+        }
+    }
+
     /**
      * Notifies that swipe-to-home action is finished.
      */
@@ -350,18 +361,18 @@ public class SystemUiProxy implements ISystemUiProxy,
             try {
                 mSystemUiProxy.notifySwipeToHomeFinished();
             } catch (RemoteException e) {
-                Log.w(TAG, "Failed call setPinnedStackAnimationType", e);
+                Log.w(TAG, "Failed call notifySwipeToHomeFinished", e);
             }
         }
     }
 
     @Override
-    public void onQuickSwitchToNewTask(int rotation) {
+    public void notifyPrioritizedRotation(int rotation) {
         if (mSystemUiProxy != null) {
             try {
-                mSystemUiProxy.onQuickSwitchToNewTask(rotation);
+                mSystemUiProxy.notifyPrioritizedRotation(rotation);
             } catch (RemoteException e) {
-                Log.w(TAG, "Failed call onQuickSwitchToNewTask with arg: " + rotation, e);
+                Log.w(TAG, "Failed call notifyPrioritizedRotation with arg: " + rotation, e);
             }
         }
     }
