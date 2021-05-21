@@ -263,8 +263,8 @@ public class HotseatPredictionController implements DragController.DragListener,
             removeOutlineDrawings();
         }
 
-        if (mLauncher.getTaskbarController() != null) {
-            mLauncher.getTaskbarController().onHotseatUpdated();
+        if (mLauncher.getTaskbarUIController() != null) {
+            mLauncher.getTaskbarUIController().onHotseatUpdated();
         }
     }
 
