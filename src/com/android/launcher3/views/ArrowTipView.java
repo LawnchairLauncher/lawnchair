@@ -196,7 +196,6 @@ public class ArrowTipView extends AbstractFloatingView {
         parent.addView(this);
         requestLayout();
 
-        post(() -> setY(yCoord - getHeight()));
         post(() -> {
             float halfWidth = getWidth() / 2f;
             float xCoord;
@@ -208,7 +207,9 @@ public class ArrowTipView extends AbstractFloatingView {
                 xCoord = arrowXCoord - halfWidth;
             }
             setX(xCoord);
-            findViewById(R.id.arrow).setX(arrowXCoord - xCoord);
+            setY(yCoord - getHeight());
+            View arrowView = findViewById(R.id.arrow);
+            arrowView.setX(arrowXCoord - xCoord - arrowView.getWidth() / 2f);
             requestLayout();
         });
 

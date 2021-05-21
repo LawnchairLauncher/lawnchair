@@ -21,7 +21,6 @@
     android:layout_height="wrap_content"
     android:paddingTop="16dp"
     android:background="@drawable/widgets_bottom_sheet_background"
-    android:elevation="@dimen/deep_shortcuts_elevation"
     android:layout_gravity="bottom"
     android:theme="?attr/widgetsTheme">
 

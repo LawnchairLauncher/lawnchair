@@ -26,6 +26,9 @@ import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.core.view.ViewCompat;
+
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.Launcher;
@@ -39,6 +42,7 @@ import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.AbstractSlideInView;
+import com.android.launcher3.views.ArrowTipView;
 
 /**
  * Base class for various widgets popup
@@ -46,6 +50,9 @@ import com.android.launcher3.views.AbstractSlideInView;
 public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
         implements OnClickListener, OnLongClickListener, DragSource,
         PopupDataProvider.PopupDataChangeListener {
+
+    protected static final String KEY_WIDGETS_EDUCATION_TIP_SEEN =
+            "launcher.widgets_education_tip_seen";
 
     /* Touch handling related member variables. */
     private Toast mWidgetInstructionToast;
@@ -195,5 +202,29 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
         toast = Toast.makeText(context, msg, Toast.LENGTH_SHORT);
         toast.show();
         return toast;
+    }
+
+    /** Shows education tip on top center of {@code view} if view is laid out. */
+    @Nullable
+    protected ArrowTipView showEducationTipOnViewIfPossible(@Nullable View view) {
+        if (view == null || !ViewCompat.isLaidOut(view)) {
+            return null;
+        }
+
+        mActivityContext.getSharedPrefs().edit()
+                .putBoolean(KEY_WIDGETS_EDUCATION_TIP_SEEN, true).apply();
+        int[] coords = new int[2];
+        view.getLocationOnScreen(coords);
+        ArrowTipView arrowTipView = new ArrowTipView(mActivityContext);
+        return arrowTipView.showAtLocation(
+                getContext().getString(R.string.long_press_widget_to_add),
+                /* arrowXCoord= */coords[0] + view.getWidth() / 2,
+                /* yCoord= */coords[1]);
+    }
+
+    /** Returns {@code true} if tip has previously been shown on any of {@link BaseWidgetSheet}. */
+    protected boolean hasSeenEducationTip() {
+        return mActivityContext.getSharedPrefs().getBoolean(KEY_WIDGETS_EDUCATION_TIP_SEEN, false)
+                || Utilities.IS_RUNNING_IN_TEST_HARNESS;
     }
 }
