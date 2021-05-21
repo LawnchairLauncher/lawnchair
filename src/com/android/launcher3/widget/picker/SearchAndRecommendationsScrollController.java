@@ -21,6 +21,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
@@ -39,9 +40,11 @@ final class SearchAndRecommendationsScrollController implements
     private final View mSearchAndRecommendationViewParent;
     private final WidgetsRecyclerView mPrimaryRecyclerView;
     private final WidgetsRecyclerView mSearchRecyclerView;
+    private final TextView mNoWidgetsView;
     private final int mTabsHeight;
     private final ValueAnimator mAnimator = ValueAnimator.ofInt(0, 0);
     private final Point mTempOffset = new Point();
+    private int mBottomInset;
 
     // The following are only non null if mHasWorkProfile is true.
     @Nullable private final WidgetsRecyclerView mWorkRecyclerView;
@@ -81,7 +84,8 @@ final class SearchAndRecommendationsScrollController implements
             @Nullable WidgetsRecyclerView workRecyclerView,
             WidgetsRecyclerView searchRecyclerView,
             @Nullable View personalWorkTabsView,
-            @Nullable PersonalWorkPagedView primaryWorkViewPager) {
+            @Nullable PersonalWorkPagedView primaryWorkViewPager,
+            TextView noWidgetsView) {
         mHasWorkProfile = hasWorkProfile;
         mViewHolder = viewHolder;
         mViewHolder.mContainer.setSearchAndRecommendationScrollController(this);
@@ -92,6 +96,7 @@ final class SearchAndRecommendationsScrollController implements
         mPrimaryWorkTabsView = personalWorkTabsView;
         mPrimaryWorkViewPager = primaryWorkViewPager;
         mTabsHeight = tabsHeight;
+        mNoWidgetsView = noWidgetsView;
         setCurrentRecyclerView(mPrimaryRecyclerView, /* animateReset= */ false);
     }
 
@@ -114,6 +119,15 @@ final class SearchAndRecommendationsScrollController implements
     }
 
     /**
+     * Updates padding of {@link WidgetsFullSheet} contents to include {@code bottomInset} wherever
+     * necessary.
+     */
+    public boolean updateBottomInset(int bottomInset) {
+        mBottomInset = bottomInset;
+        return updateMarginAndPadding();
+    }
+
+    /**
      * Updates the margin and padding of {@link WidgetsFullSheet} to accumulate collapsible views.
      *
      * @return {@code true} if margins or/and padding of views in the search and recommendations
@@ -129,6 +143,8 @@ final class SearchAndRecommendationsScrollController implements
                         + measureHeightWithVerticalMargins(mViewHolder.mRecommendedWidgetsTable);
 
         int topContainerHeight = measureHeightWithVerticalMargins(mViewHolder.mContainer);
+        int noWidgetsViewHeight =  topContainerHeight - mBottomInset;
+
         if (mHasWorkProfile) {
             mCollapsibleHeightForTabs = measureHeightWithVerticalMargins(mViewHolder.mHeaderTitle)
                     + measureHeightWithVerticalMargins(mViewHolder.mRecommendedWidgetsTable);
@@ -180,6 +196,10 @@ final class SearchAndRecommendationsScrollController implements
             int topOffsetAfterAllViewsCollapsed =
                     topContainerHeight + mTabsHeight - mCollapsibleHeightForTabs;
 
+            if (mPrimaryWorkTabsView.getVisibility() == View.VISIBLE) {
+                noWidgetsViewHeight += mTabsHeight;
+            }
+
             RelativeLayout.LayoutParams viewPagerLayoutParams =
                     (RelativeLayout.LayoutParams) mPrimaryWorkViewPager.getLayoutParams();
             if (viewPagerLayoutParams.topMargin != topOffsetAfterAllViewsCollapsed) {
@@ -220,6 +240,14 @@ final class SearchAndRecommendationsScrollController implements
                     topContainerHeight,
                     mSearchRecyclerView.getPaddingRight(),
                     mSearchRecyclerView.getPaddingBottom());
+            hasMarginOrPaddingUpdated = true;
+        }
+        if (mNoWidgetsView.getPaddingTop() != noWidgetsViewHeight) {
+            mNoWidgetsView.setPadding(
+                    mNoWidgetsView.getPaddingLeft(),
+                    noWidgetsViewHeight,
+                    mNoWidgetsView.getPaddingRight(),
+                    mNoWidgetsView.getPaddingBottom());
             hasMarginOrPaddingUpdated = true;
         }
         return hasMarginOrPaddingUpdated;
