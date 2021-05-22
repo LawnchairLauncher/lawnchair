@@ -139,7 +139,7 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
     public void onSystemUiFlagsChanged(int systemUiStateFlags) {
         boolean isImeVisible = (systemUiStateFlags & SYSUI_STATE_IME_SHOWING) != 0;
         if (mTaskbarActivityContext != null) {
-            mTaskbarActivityContext.getIconController().setImeIsVisible(isImeVisible);
+            mTaskbarActivityContext.setImeIsVisible(isImeVisible);
         }
     }
 
@@ -154,8 +154,7 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
     public void updateImeStatus(int displayId, int vis, int backDisposition,
             boolean showImeSwitcher) {
         if (mTaskbarActivityContext != null) {
-            mTaskbarActivityContext.getIconController()
-                    .updateImeStatus(displayId, vis, showImeSwitcher);
+            mTaskbarActivityContext.updateImeStatus(displayId, vis, showImeSwitcher);
         }
     }
 
