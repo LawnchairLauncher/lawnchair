@@ -35,7 +35,7 @@ import com.android.systemui.shared.system.ViewTreeObserverWrapper.OnComputeInset
 /**
  * Top-level ViewGroup that hosts the TaskbarView as well as Views created by it such as Folder.
  */
-public class TaskbarContainerView extends BaseDragLayer<TaskbarActivityContext> {
+public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
 
     private final int mFolderMargin;
     private final Paint mTaskbarBackgroundPaint;
@@ -45,20 +45,20 @@ public class TaskbarContainerView extends BaseDragLayer<TaskbarActivityContext> 
 
     private final OnComputeInsetsListener mTaskbarInsetsComputer = this::onComputeTaskbarInsets;
 
-    public TaskbarContainerView(@NonNull Context context) {
+    public TaskbarDragLayer(@NonNull Context context) {
         this(context, null);
     }
 
-    public TaskbarContainerView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public TaskbarDragLayer(@NonNull Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public TaskbarContainerView(@NonNull Context context, @Nullable AttributeSet attrs,
+    public TaskbarDragLayer(@NonNull Context context, @Nullable AttributeSet attrs,
             int defStyleAttr) {
         this(context, attrs, defStyleAttr, 0);
     }
 
-    public TaskbarContainerView(@NonNull Context context, @Nullable AttributeSet attrs,
+    public TaskbarDragLayer(@NonNull Context context, @Nullable AttributeSet attrs,
             int defStyleAttr, int defStyleRes) {
         super(context, attrs, 1 /* alphaChannelCount */);
         mFolderMargin = getResources().getDimensionPixelSize(R.dimen.taskbar_folder_margin);
@@ -118,7 +118,7 @@ public class TaskbarContainerView extends BaseDragLayer<TaskbarActivityContext> 
     public void onViewRemoved(View child) {
         super.onViewRemoved(child);
         if (mControllerCallbacks != null) {
-            mControllerCallbacks.onContainerViewRemoved();
+            mControllerCallbacks.onDragLayerViewRemoved();
         }
     }
 

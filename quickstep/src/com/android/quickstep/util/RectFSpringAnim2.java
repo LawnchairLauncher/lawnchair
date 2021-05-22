@@ -41,7 +41,7 @@ import com.android.systemui.plugins.ResourceProvider;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Locale;
 
 /**
  * Applies spring forces to animate from a starting rect to a target rect,
@@ -353,7 +353,8 @@ public class RectFSpringAnim2 extends RectFSpringAnim {
 
     private Interpolator getAppCloseInterpolator(Context context) {
         ResourceProvider rp = DynamicResource.provider(context);
-        String path = String.format("M 0,0 C %f, %f, %f, %f, %f, %f C %f, %f, %f, %f, 1, 1",
+        String path = String.format(Locale.ENGLISH,
+                "M 0,0 C %f, %f, %f, %f, %f, %f C %f, %f, %f, %f, 1, 1",
                 rp.getFloat(R.dimen.c1_a),
                 rp.getFloat(R.dimen.c1_b),
                 rp.getFloat(R.dimen.c1_c),

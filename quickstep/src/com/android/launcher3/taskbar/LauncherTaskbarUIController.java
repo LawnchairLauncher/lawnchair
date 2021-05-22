@@ -46,7 +46,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     private final TaskbarHotseatController mHotseatController;
 
     private final TaskbarActivityContext mContext;
-    final TaskbarContainerView mTaskbarContainerView;
+    final TaskbarDragLayer mTaskbarDragLayer;
     final TaskbarView mTaskbarView;
 
     private @Nullable Animator mAnimator;
@@ -55,8 +55,8 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     public LauncherTaskbarUIController(
             BaseQuickstepLauncher launcher, TaskbarActivityContext context) {
         mContext = context;
-        mTaskbarContainerView = context.getDragLayer();
-        mTaskbarView = mTaskbarContainerView.findViewById(R.id.taskbar_view);
+        mTaskbarDragLayer = context.getDragLayer();
+        mTaskbarView = mTaskbarDragLayer.findViewById(R.id.taskbar_view);
 
         mLauncher = launcher;
         mTaskbarStateHandler = mLauncher.getTaskbarStateHandler();
@@ -99,7 +99,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         return new TaskbarAnimationControllerCallbacks() {
             @Override
             public void updateTaskbarBackgroundAlpha(float alpha) {
-                mTaskbarContainerView.setTaskbarBackgroundAlpha(alpha);
+                mTaskbarDragLayer.setTaskbarBackgroundAlpha(alpha);
             }
 
             @Override
@@ -109,7 +109,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
 
             @Override
             public void updateImeBarVisibilityAlpha(float alpha) {
-                mTaskbarContainerView.updateImeBarVisibilityAlpha(alpha);
+                mTaskbarDragLayer.updateImeBarVisibilityAlpha(alpha);
             }
 
             @Override
@@ -202,7 +202,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     }
 
     @Override
-    protected void onImeVisible(TaskbarContainerView containerView, boolean isVisible) {
+    protected void onImeVisible(TaskbarDragLayer containerView, boolean isVisible) {
         mTaskbarAnimationController.animateToVisibilityForIme(isVisible ? 0 : 1);
     }
 
