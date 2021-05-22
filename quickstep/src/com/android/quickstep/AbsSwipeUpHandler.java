@@ -750,6 +750,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         setIsLikelyToStartNewTask(isLikelyToStartNewTask, false /* animate */);
         mStateCallback.setStateOnUiThread(STATE_GESTURE_STARTED);
         mGestureStarted = true;
+        SystemUiProxy.INSTANCE.get(mContext).notifySwipeUpGestureStarted();
     }
 
     /**

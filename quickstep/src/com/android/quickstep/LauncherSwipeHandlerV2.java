@@ -21,6 +21,7 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.Utilities.boundToRange;
 import static com.android.launcher3.Utilities.dpToPx;
 import static com.android.launcher3.config.FeatureFlags.PROTOTYPE_APP_CLOSE;
+import static com.android.launcher3.model.data.ItemInfo.NO_MATCHING_ID;
 import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATION;
 import static com.android.launcher3.views.FloatingIconView.getFloatingIconView;
 
@@ -234,7 +235,7 @@ public class LauncherSwipeHandlerV2 extends
 
         // Find the associated item info for the launch cookie (if available), note that predicted
         // apps actually have an id of -1, so use another default id here
-        int launchCookieItemId = -2;
+        int launchCookieItemId = NO_MATCHING_ID;
         for (IBinder cookie : launchCookies) {
             Integer itemId = ObjectWrapper.unwrap(cookie);
             if (itemId != null) {
