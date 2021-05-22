@@ -19,6 +19,7 @@ import static com.android.launcher3.util.SystemUiController.UI_STATE_SCRIM_VIEW;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
@@ -39,6 +40,8 @@ public class ScrimView extends View implements Insettable {
     private SystemUiController mSystemUiController;
 
     private ScrimDrawingController mDrawingController;
+    private int mBackgroundColor;
+    private boolean mIsVisible = true;
 
     public ScrimView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -62,8 +65,19 @@ public class ScrimView extends View implements Insettable {
 
     @Override
     public void setBackgroundColor(int color) {
+        mBackgroundColor = color;
         updateSysUiColors();
         super.setBackgroundColor(color);
+    }
+
+    @Override
+    public void onVisibilityAggregated(boolean isVisible) {
+        super.onVisibilityAggregated(isVisible);
+        mIsVisible = isVisible;
+    }
+
+    public boolean isFullyOpaque() {
+        return mIsVisible && getAlpha() == 1 && Color.alpha(mBackgroundColor) == 255;
     }
 
     @Override

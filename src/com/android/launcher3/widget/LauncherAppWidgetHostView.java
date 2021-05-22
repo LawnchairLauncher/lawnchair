@@ -319,11 +319,15 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
         }
 
         mIsScrollable = checkScrollableRecursively(this);
-
         if (!mIsInDragMode && getTag() instanceof LauncherAppWidgetInfo) {
+            mCurrentWidgetSize.left = left;
+            mCurrentWidgetSize.right = right;
+            mCurrentWidgetSize.top = top;
+            mCurrentWidgetSize.bottom = bottom;
+
             LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) getTag();
-            getBoundsForViewInDragLayer(mLauncher.getDragLayer(), this, mCurrentWidgetSize, true,
-                    mTmpFloatArray, mTempRectF);
+            getBoundsForViewInDragLayer(mLauncher.getDragLayer(), (View) getParent(),
+                    mCurrentWidgetSize, true, mTmpFloatArray, mTempRectF);
             setRect(mTempRectF, mCurrentWidgetSize);
             updateColorExtraction(mCurrentWidgetSize,
                     mWorkspace.getPageIndexForScreenId(info.screenId));

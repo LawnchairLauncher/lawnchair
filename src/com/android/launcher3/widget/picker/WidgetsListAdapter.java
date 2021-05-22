@@ -33,6 +33,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import com.android.launcher3.R;
 import com.android.launcher3.WidgetPreviewLoader;
 import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.recyclerview.ViewHolderBinder;
 import com.android.launcher3.util.LabelComparator;
 import com.android.launcher3.util.PackageUserKey;
@@ -41,12 +42,12 @@ import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.model.WidgetsListContentEntry;
 import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
 import com.android.launcher3.widget.model.WidgetsListSearchHeaderEntry;
-import com.android.launcher3.widget.picker.search.WidgetsSearchBarUIHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -70,7 +71,6 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     private static final int VIEW_TYPE_WIDGETS_HEADER = R.id.view_type_widgets_header;
     private static final int VIEW_TYPE_WIDGETS_SEARCH_HEADER = R.id.view_type_widgets_search_header;
 
-    @Nullable private final WidgetsSearchBarUIHelper mSearchBarUIHelper;
     private final WidgetsDiffReporter mDiffReporter;
     private final SparseArray<ViewHolderBinder> mViewHolderBinders = new SparseArray<>();
     private final WidgetsListTableViewHolderBinder mWidgetsListTableViewHolderBinder;
@@ -90,9 +90,7 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
 
     public WidgetsListAdapter(Context context, LayoutInflater layoutInflater,
             WidgetPreviewLoader widgetPreviewLoader, IconCache iconCache,
-            OnClickListener iconClickListener, OnLongClickListener iconLongClickListener,
-            @Nullable WidgetsSearchBarUIHelper searchBarUIHelper) {
-        mSearchBarUIHelper = searchBarUIHelper;
+            OnClickListener iconClickListener, OnLongClickListener iconLongClickListener) {
         mDiffReporter = new WidgetsDiffReporter(iconCache, this);
         mWidgetsListTableViewHolderBinder = new WidgetsListTableViewHolderBinder(context,
                 layoutInflater, iconClickListener, iconLongClickListener,
@@ -153,6 +151,9 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     public void setWidgets(List<WidgetsListBaseEntry> tempEntries) {
         mAllEntries = tempEntries.stream().sorted(mRowComparator)
                 .collect(Collectors.toList());
+        if (shouldClearVisibleEntries()) {
+            mVisibleEntries.clear();
+        }
         updateVisibleEntries();
     }
 
@@ -243,9 +244,6 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
 
     @Override
     public void onHeaderClicked(boolean showWidgets, PackageUserKey packageUserKey) {
-        if (mSearchBarUIHelper != null) {
-            mSearchBarUIHelper.clearSearchBarFocus();
-        }
         if (showWidgets) {
             mWidgetsContentVisiblePackageUserKey = packageUserKey;
             updateVisibleEntries();
@@ -270,6 +268,30 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
      */
     public void setMaxHorizontalSpansPerRow(int maxHorizontalSpans) {
         mWidgetsListTableViewHolderBinder.setMaxSpansPerRow(maxHorizontalSpans);
+    }
+
+    /**
+     * Returns {@code true} if there is a change in {@link #mAllEntries} that results in an
+     * invalidation of {@link #mVisibleEntries}. e.g. there is change in the device language.
+     */
+    private boolean shouldClearVisibleEntries() {
+        Map<PackageUserKey, PackageItemInfo> packagesInfo =
+                mAllEntries.stream()
+                        .filter(entry -> entry instanceof WidgetsListHeaderEntry)
+                        .map(entry -> entry.mPkgItem)
+                        .collect(Collectors.toMap(
+                                entry -> new PackageUserKey(entry.packageName, entry.user),
+                                entry -> entry));
+        for (WidgetsListBaseEntry visibleEntry: mVisibleEntries) {
+            PackageUserKey key = new PackageUserKey(visibleEntry.mPkgItem.packageName,
+                    visibleEntry.mPkgItem.user);
+            PackageItemInfo packageItemInfo = packagesInfo.get(key);
+            if (packageItemInfo != null
+                    && !visibleEntry.mPkgItem.title.equals(packageItemInfo.title)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /** Comparator for sorting WidgetListRowEntry based on package title. */
