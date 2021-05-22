@@ -21,9 +21,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.CancellationSignal;
@@ -35,9 +33,7 @@ import android.util.LongSparseArray;
 import android.util.Pair;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.UiThread;
 
-import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.LauncherIcons;
@@ -91,51 +87,6 @@ public class WidgetPreviewLoader {
         mIconCache = iconCache;
         mUserCache = UserCache.INSTANCE.get(context);
         mDb = new CacheDb(context);
-    }
-
-    /**
-     * Returns a drawable that can be used as a badge for the user or null.
-     */
-    @UiThread
-    public Drawable getBadgeForUser(UserHandle user, int badgeSize) {
-        if (mMyUser.equals(user)) {
-            return null;
-        }
-
-        Bitmap badgeBitmap = getUserBadge(user, badgeSize);
-        FastBitmapDrawable d = new FastBitmapDrawable(badgeBitmap);
-        d.setFilterBitmap(true);
-        d.setBounds(0, 0, badgeBitmap.getWidth(), badgeBitmap.getHeight());
-        return d;
-    }
-
-    private Bitmap getUserBadge(UserHandle user, int badgeSize) {
-        synchronized (mUserBadges) {
-            Bitmap badgeBitmap = mUserBadges.get(user);
-            if (badgeBitmap != null) {
-                return badgeBitmap;
-            }
-
-            final Resources res = mContext.getResources();
-            badgeBitmap = Bitmap.createBitmap(badgeSize, badgeSize, Bitmap.Config.ARGB_8888);
-
-            Drawable drawable = mContext.getPackageManager().getUserBadgedDrawableForDensity(
-                    new BitmapDrawable(res, badgeBitmap), user,
-                    new Rect(0, 0, badgeSize, badgeSize),
-                    0);
-            if (drawable instanceof BitmapDrawable) {
-                badgeBitmap = ((BitmapDrawable) drawable).getBitmap();
-            } else {
-                badgeBitmap.eraseColor(Color.TRANSPARENT);
-                Canvas c = new Canvas(badgeBitmap);
-                drawable.setBounds(0, 0, badgeSize, badgeSize);
-                drawable.draw(c);
-                c.setBitmap(null);
-            }
-
-            mUserBadges.put(user, badgeBitmap);
-            return badgeBitmap;
-        }
     }
 
     /**

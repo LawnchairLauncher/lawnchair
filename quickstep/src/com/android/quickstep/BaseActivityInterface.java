@@ -52,7 +52,6 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulActivity;
-import com.android.launcher3.taskbar.TaskbarController;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.WindowBounds;
 import com.android.launcher3.views.ScrimView;
@@ -120,11 +119,6 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
 
     @Nullable
     public DepthController getDepthController() {
-        return null;
-    }
-
-    @Nullable
-    public TaskbarController getTaskbarController() {
         return null;
     }
 
@@ -366,13 +360,6 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
      * Return {@link Color#TRANSPARENT} for no scrim.
      */
     protected abstract int getOverviewScrimColorForState(ACTIVITY_TYPE activity, STATE_TYPE state);
-
-    /**
-     * See {@link com.android.systemui.shared.system.QuickStepContract.SystemUiStateFlags}
-     * @param systemUiStateFlags The latest SystemUiStateFlags
-     */
-    public void onSystemUiFlagsChanged(int systemUiStateFlags) {
-    }
 
     /**
      * Returns the expected STATE_TYPE from the provided GestureEndTarget.
