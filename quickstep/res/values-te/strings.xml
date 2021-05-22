@@ -73,7 +73,6 @@
     <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"మీ స్క్రీన్ కింది వైపు నుండి పైకి స్వైప్ చేసి, హోల్డ్ చేసి, తర్వాత రిలీజ్ చేయండి."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"అంతా సిద్ధంగా ఉంది"</string>
     <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"తర్వాత"</string>
-    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"పూర్తయింది"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"సెట్టింగ్‌లు"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"మళ్లీ ట్రై చేయండి"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"పనితీరు బాగుంది!"</string>

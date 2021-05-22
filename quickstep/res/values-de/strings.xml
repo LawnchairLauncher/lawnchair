@@ -73,7 +73,6 @@
     <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"Wische auf dem Bildschirm von unten nach oben, halte ihn gedrückt und lass ihn dann los."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Fertig"</string>
     <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"Weiter"</string>
-    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"Fertig"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Einstellungen"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Wiederholen"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Sehr gut!"</string>
