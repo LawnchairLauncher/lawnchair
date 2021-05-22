@@ -21,6 +21,7 @@ import android.animation.Animator;
 
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.taskbar.LauncherTaskbarUIController.TaskbarAnimationControllerCallbacks;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.SystemUiProxy;
 import com.android.systemui.shared.system.QuickStepContract;
@@ -34,7 +35,7 @@ public class TaskbarAnimationController {
     private static final long IME_VISIBILITY_ALPHA_DURATION = 120;
 
     private final BaseQuickstepLauncher mLauncher;
-    private final TaskbarController.TaskbarAnimationControllerCallbacks mTaskbarCallbacks;
+    private final TaskbarAnimationControllerCallbacks mTaskbarCallbacks;
 
     // Background alpha.
     private final AnimatedFloat mTaskbarBackgroundAlpha = new AnimatedFloat(
@@ -55,7 +56,7 @@ public class TaskbarAnimationController {
             this::updateTranslationY);
 
     public TaskbarAnimationController(BaseQuickstepLauncher launcher,
-            TaskbarController.TaskbarAnimationControllerCallbacks taskbarCallbacks) {
+            TaskbarAnimationControllerCallbacks taskbarCallbacks) {
         mLauncher = launcher;
         mTaskbarCallbacks = taskbarCallbacks;
     }

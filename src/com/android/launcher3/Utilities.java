@@ -324,15 +324,17 @@ public final class Utilities {
     }
 
     public static void scaleRectFAboutCenter(RectF r, float scale) {
+        scaleRectFAboutPivot(r, scale, r.centerX(), r.centerY());
+    }
+
+    public static void scaleRectFAboutPivot(RectF r, float scale, float px, float py) {
         if (scale != 1.0f) {
-            float cx = r.centerX();
-            float cy = r.centerY();
-            r.offset(-cx, -cy);
+            r.offset(-px, -py);
             r.left = r.left * scale;
             r.top = r.top * scale ;
             r.right = r.right * scale;
             r.bottom = r.bottom * scale;
-            r.offset(cx, cy);
+            r.offset(px, py);
         }
     }
 

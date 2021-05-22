@@ -16,9 +16,6 @@
 
 package com.android.launcher3.taskbar;
 
-import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_BACK;
-import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_IME_SWITCH;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
@@ -29,7 +26,6 @@ import com.android.launcher3.views.ActivityContext;
 public class ImeBarView extends RelativeLayout {
 
     private ButtonProvider mButtonProvider;
-    private TaskbarController.TaskbarViewCallbacks mControllerCallbacks;
     private View mImeView;
 
     public ImeBarView(Context context) {
@@ -44,12 +40,9 @@ public class ImeBarView extends RelativeLayout {
         super(context, attrs, defStyleAttr);
     }
 
-    public void construct(ButtonProvider buttonProvider) {
+    public void init(ButtonProvider buttonProvider) {
         mButtonProvider = buttonProvider;
-    }
 
-    public void init(TaskbarController.TaskbarViewCallbacks taskbarCallbacks) {
-        mControllerCallbacks = taskbarCallbacks;
         ActivityContext context = getActivityContext();
         RelativeLayout.LayoutParams imeParams = new RelativeLayout.LayoutParams(
                 context.getDeviceProfile().iconSizePx,
@@ -64,22 +57,14 @@ public class ImeBarView extends RelativeLayout {
 
         // Down Arrow
         View downView = mButtonProvider.getDown();
-        downView.setOnClickListener(view -> mControllerCallbacks.onNavigationButtonClick(
-                BUTTON_BACK));
         downView.setLayoutParams(downParams);
         downView.setRotation(-90);
         addView(downView);
 
         // IME switcher button
         mImeView = mButtonProvider.getImeSwitcher();
-        mImeView.setOnClickListener(view -> mControllerCallbacks.onNavigationButtonClick(
-                BUTTON_IME_SWITCH));
         mImeView.setLayoutParams(imeParams);
         addView(mImeView);
-    }
-
-    public void cleanup() {
-        removeAllViews();
     }
 
     public void setImeSwitcherVisibility(boolean show) {

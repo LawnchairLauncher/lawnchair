@@ -68,6 +68,8 @@ public class ItemInfo {
 
     public static final boolean DEBUG = false;
     public static final int NO_ID = -1;
+    // An id that doesn't match any item, including predicted apps with have an id=NO_ID
+    public static final int NO_MATCHING_ID = Integer.MIN_VALUE;
 
     /**
      * The id in the settings database for this item
