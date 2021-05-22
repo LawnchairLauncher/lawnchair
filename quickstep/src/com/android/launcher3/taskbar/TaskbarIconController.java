@@ -41,7 +41,7 @@ public class TaskbarIconController {
     private final Rect mTempRect = new Rect();
 
     private final TaskbarActivityContext mActivity;
-    private final TaskbarContainerView mContainerView;
+    private final TaskbarDragLayer mDragLayer;
 
     private final TaskbarView mTaskbarView;
     private final ImeBarView mImeBarView;
@@ -49,15 +49,15 @@ public class TaskbarIconController {
     @NonNull
     private TaskbarUIController mUIController = TaskbarUIController.DEFAULT;
 
-    TaskbarIconController(TaskbarActivityContext activity, TaskbarContainerView containerView) {
+    TaskbarIconController(TaskbarActivityContext activity, TaskbarDragLayer dragLayer) {
         mActivity = activity;
-        mContainerView = containerView;
-        mTaskbarView = mContainerView.findViewById(R.id.taskbar_view);
-        mImeBarView = mContainerView.findViewById(R.id.ime_bar_view);
+        mDragLayer = dragLayer;
+        mTaskbarView = mDragLayer.findViewById(R.id.taskbar_view);
+        mImeBarView = mDragLayer.findViewById(R.id.ime_bar_view);
     }
 
     public void init(OnClickListener clickListener, OnLongClickListener longClickListener) {
-        mContainerView.addOnLayoutChangeListener((v, a, b, c, d, e, f, g, h) ->
+        mDragLayer.addOnLayoutChangeListener((v, a, b, c, d, e, f, g, h) ->
                 mUIController.alignRealHotseatWithTaskbar());
 
         ButtonProvider buttonProvider = new ButtonProvider(mActivity);
@@ -65,11 +65,11 @@ public class TaskbarIconController {
         mTaskbarView.construct(clickListener, longClickListener, buttonProvider);
         mTaskbarView.getLayoutParams().height = mActivity.getDeviceProfile().taskbarSize;
 
-        mContainerView.init(new Callbacks(), mTaskbarView);
+        mDragLayer.init(new Callbacks(), mTaskbarView);
     }
 
     public void onDestroy() {
-        mContainerView.onDestroy();
+        mDragLayer.onDestroy();
     }
 
     public void setUIController(@NonNull TaskbarUIController uiController) {
@@ -96,11 +96,11 @@ public class TaskbarIconController {
      */
     public void setImeIsVisible(boolean isImeVisible) {
         mTaskbarView.setTouchesEnabled(!isImeVisible);
-        mUIController.onImeVisible(mContainerView, isImeVisible);
+        mUIController.onImeVisible(mDragLayer, isImeVisible);
     }
 
     /**
-     * Callbacks for {@link TaskbarContainerView} to interact with the icon controller
+     * Callbacks for {@link TaskbarDragLayer} to interact with the icon controller
      */
     public class Callbacks {
 
@@ -109,7 +109,7 @@ public class TaskbarIconController {
          */
         public void updateInsetsTouchability(InsetsInfo insetsInfo) {
             insetsInfo.touchableRegion.setEmpty();
-            if (mContainerView.getAlpha() < AlphaUpdateListener.ALPHA_CUTOFF_THRESHOLD) {
+            if (mDragLayer.getAlpha() < AlphaUpdateListener.ALPHA_CUTOFF_THRESHOLD) {
                 // Let touches pass through us.
                 insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION);
             } else if (mImeBarView.getVisibility() == VISIBLE) {
@@ -122,7 +122,7 @@ public class TaskbarIconController {
                 insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_FRAME);
             } else {
                 if (mTaskbarView.mSystemButtonContainer.getVisibility() == VISIBLE) {
-                    mContainerView.getDescendantRectRelativeToSelf(
+                    mDragLayer.getDescendantRectRelativeToSelf(
                             mTaskbarView.mSystemButtonContainer, mTempRect);
                     insetsInfo.touchableRegion.set(mTempRect);
                 }
@@ -135,15 +135,15 @@ public class TaskbarIconController {
             // mTaskbarView is, since its position never changes and insets rather than overlays.
             insetsInfo.contentInsets.left = mTaskbarView.getLeft();
             insetsInfo.contentInsets.top = mTaskbarView.getTop();
-            insetsInfo.contentInsets.right = mContainerView.getWidth() - mTaskbarView.getRight();
-            insetsInfo.contentInsets.bottom = mContainerView.getHeight() - mTaskbarView.getBottom();
+            insetsInfo.contentInsets.right = mDragLayer.getWidth() - mTaskbarView.getRight();
+            insetsInfo.contentInsets.bottom = mDragLayer.getHeight() - mTaskbarView.getBottom();
         }
 
-        public void onContainerViewRemoved() {
-            int count = mContainerView.getChildCount();
+        public void onDragLayerViewRemoved() {
+            int count = mDragLayer.getChildCount();
             // Ensure no other children present (like Folders, etc)
             for (int i = 0; i < count; i++) {
-                View v = mContainerView.getChildAt(i);
+                View v = mDragLayer.getChildAt(i);
                 if (!((v instanceof TaskbarView) || (v instanceof ImeBarView))) {
                     return;
                 }

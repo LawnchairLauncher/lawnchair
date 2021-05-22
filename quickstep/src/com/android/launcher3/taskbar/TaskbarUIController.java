@@ -35,7 +35,7 @@ public class TaskbarUIController {
         return true;
     }
 
-    protected void onImeVisible(TaskbarContainerView container, boolean isVisible) {
+    protected void onImeVisible(TaskbarDragLayer container, boolean isVisible) {
         container.updateImeBarVisibilityAlpha(isVisible ? 1 : 0);
     }
 }
