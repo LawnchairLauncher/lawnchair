@@ -73,7 +73,6 @@
     <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"तुमच्या स्क्रीनच्या तळाकडून वर स्वाइप करा, धरून ठेवा, त्यानंतर बोट उचला."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"सर्व तयार आहे"</string>
     <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"पुढील"</string>
-    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"पूर्ण झाले"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"सेटिंग्ज"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"पुन्हा प्रयत्न करा"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"छान!"</string>

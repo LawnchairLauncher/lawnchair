@@ -73,7 +73,6 @@
     <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"अपनी स्क्रीन पर नीचे से ऊपर की तरफ़ स्वाइप करें, दबाकर रखें, फिर छोड़ दें."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"आप पूरी तरह तैयार हैं"</string>
     <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"आगे बढ़ें"</string>
-    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"हो गया"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"सेटिंग"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"फिर से कोशिश करें"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"बहुत बढ़िया!"</string>

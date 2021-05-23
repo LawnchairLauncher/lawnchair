@@ -236,6 +236,7 @@ public class GridCustomizationsProvider extends ContentProvider {
             return;
         }
         observer.destroyed = true;
+        observer.renderer.getHostToken().unlinkToDeath(observer, 0);
         Executors.MAIN_EXECUTOR.execute(observer.renderer::destroy);
         PreviewLifecycleObserver cached = mActivePreviews.get(observer.renderer.getHostToken());
         if (cached == observer) {

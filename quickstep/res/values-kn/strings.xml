@@ -73,7 +73,6 @@
     <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"ನಿಮ್ಮ ಸ್ಕ್ರೀನ್‌ನ ಕೆಳಗಿನಿಂದ ಮೇಲಕ್ಕೆ ಸ್ವೈಪ್ ಮಾಡಿ, ಒತ್ತಿ ಹಿಡಿಯಿರಿ, ನಂತರ ಬಿಟ್ಟು ಬಿಡಿ."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"ಸಂಪೂರ್ಣ ಸಿದ್ಧವಾಗಿದೆ"</string>
     <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"ಮುಂದೆ"</string>
-    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"ಮುಗಿದಿದೆ"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"ಸೆಟ್ಟಿಂಗ್‌ಗಳು"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"ಪುನಃ ಪ್ರಯತ್ನಿಸಿ"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"ಚೆನ್ನಾಗಿದೆ!"</string>
