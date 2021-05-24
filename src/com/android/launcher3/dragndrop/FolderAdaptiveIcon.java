@@ -32,12 +32,12 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.Launcher;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.folder.PreviewBackground;
 import com.android.launcher3.graphics.ShiftedBitmapDrawable;
 import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.util.Preconditions;
+import com.android.launcher3.views.ActivityContext;
 
 /**
  * {@link AdaptiveIconDrawable} representation of a {@link FolderIcon}
@@ -70,14 +70,14 @@ public class FolderAdaptiveIcon extends AdaptiveIconDrawable {
     }
 
     public static @Nullable FolderAdaptiveIcon createFolderAdaptiveIcon(
-            Launcher launcher, int folderId, Point dragViewSize) {
+            ActivityContext activity, int folderId, Point dragViewSize) {
         Preconditions.assertNonUiThread();
 
         // Create the actual drawable on the UI thread to avoid race conditions with
         // FolderIcon draw pass
         try {
             return MAIN_EXECUTOR.submit(() -> {
-                FolderIcon icon = launcher.findFolderIcon(folderId);
+                FolderIcon icon = activity.findFolderIcon(folderId);
                 return icon == null ? null : createDrawableOnUiThread(icon, dragViewSize);
 
             }).get();

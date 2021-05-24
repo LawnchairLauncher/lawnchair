@@ -21,9 +21,12 @@ import android.graphics.Rect;
 import android.view.LayoutInflater;
 import android.view.View.AccessibilityDelegate;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.dragndrop.DragController;
+import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.ViewCache;
 
@@ -96,6 +99,13 @@ public interface ActivityContext {
      * Controller for supporting item drag-and-drop
      */
     default <T extends DragController> T getDragController() {
+        return null;
+    }
+
+    /**
+     * Returns the FolderIcon with the given item id, if it exists.
+     */
+    default @Nullable FolderIcon findFolderIcon(final int folderIconId) {
         return null;
     }
 
