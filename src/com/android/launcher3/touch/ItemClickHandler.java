@@ -196,8 +196,10 @@ public class ItemClickHandler {
 
     /**
      * Handles clicking on a disabled shortcut
+     *
+     * @return true iff the disabled item click has been handled.
      */
-    public static void handleDisabledItemClicked(WorkspaceItemInfo shortcut, Context context) {
+    public static boolean handleDisabledItemClicked(WorkspaceItemInfo shortcut, Context context) {
         final int disabledFlags = shortcut.runtimeStatusFlags
                 & WorkspaceItemInfo.FLAG_DISABLED_MASK;
         if ((disabledFlags
@@ -205,11 +207,12 @@ public class ItemClickHandler {
                 & ~FLAG_DISABLED_QUIET_USER) == 0) {
             // If the app is only disabled because of the above flags, launch activity anyway.
             // Framework will tell the user why the app is suspended.
+            return false;
         } else {
             if (!TextUtils.isEmpty(shortcut.disabledMessage)) {
                 // Use a message specific to this shortcut, if it has one.
                 Toast.makeText(context, shortcut.disabledMessage, Toast.LENGTH_SHORT).show();
-                return;
+                return true;
             }
             // Otherwise just use a generic error message.
             int error = R.string.activity_not_available;
@@ -220,6 +223,7 @@ public class ItemClickHandler {
                 error = R.string.shortcut_not_available;
             }
             Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
+            return true;
         }
     }
 
@@ -229,8 +233,7 @@ public class ItemClickHandler {
      * @param v The view that was clicked. Must be a tagged with a {@link WorkspaceItemInfo}.
      */
     public static void onClickAppShortcut(View v, WorkspaceItemInfo shortcut, Launcher launcher) {
-        if (shortcut.isDisabled()) {
-            handleDisabledItemClicked(shortcut, launcher);
+        if (shortcut.isDisabled() && handleDisabledItemClicked(shortcut, launcher)) {
             return;
         }
 
