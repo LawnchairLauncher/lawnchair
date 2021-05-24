@@ -40,7 +40,7 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
     private final int mFolderMargin;
     private final Paint mTaskbarBackgroundPaint;
 
-    private TaskbarIconController.Callbacks mControllerCallbacks;
+    private TaskbarIconController.TaskbarDragLayerCallbacks mControllerCallbacks;
     private TaskbarView mTaskbarView;
 
     private final OnComputeInsetsListener mTaskbarInsetsComputer = this::onComputeTaskbarInsets;
@@ -69,10 +69,11 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
 
     @Override
     public void recreateControllers() {
-        mControllers = new TouchController[0];
+        mControllers = new TouchController[] {mActivity.getDragController()};
     }
 
-    public void init(TaskbarIconController.Callbacks callbacks, TaskbarView taskbarView) {
+    public void init(TaskbarIconController.TaskbarDragLayerCallbacks callbacks,
+            TaskbarView taskbarView) {
         mControllerCallbacks = callbacks;
         mTaskbarView = taskbarView;
     }
