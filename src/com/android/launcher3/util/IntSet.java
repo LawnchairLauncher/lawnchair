@@ -34,6 +34,16 @@ public class IntSet {
         }
     }
 
+    /**
+     * Removes the specified value from the set if it exist.
+     */
+    public void remove(int value) {
+        int index = Arrays.binarySearch(mArray.mValues, 0, mArray.mSize, value);
+        if (index >= 0) {
+            mArray.removeIndex(index);
+        }
+    }
+
     public boolean contains(int value) {
         return Arrays.binarySearch(mArray.mValues, 0, mArray.mSize, value) >= 0;
     }

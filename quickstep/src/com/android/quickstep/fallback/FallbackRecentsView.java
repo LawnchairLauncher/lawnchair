@@ -26,14 +26,12 @@ import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statemanager.StateManager.StateListener;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.quickstep.FallbackActivityInterface;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.RecentsActivity;
@@ -120,6 +118,12 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
             mHomeTaskInfo = null;
             setRunningTaskHidden(false);
         }
+    }
+
+    @Nullable
+    @Override
+    protected TaskView getHomeTaskView() {
+        return mHomeTaskInfo != null ? getTaskView(mHomeTaskInfo.taskId) : null;
     }
 
     @Override

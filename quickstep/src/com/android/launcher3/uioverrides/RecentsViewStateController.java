@@ -106,8 +106,7 @@ public final class RecentsViewStateController extends
         float clearAllButtonAlpha = state.areElementsVisible(mLauncher, CLEAR_ALL_BUTTON) ? 1 : 0;
         propertySetter.setFloat(mRecentsView.getClearAllButton(), ClearAllButton.VISIBILITY_ALPHA,
                 clearAllButtonAlpha, LINEAR);
-        float overviewButtonAlpha = state.areElementsVisible(mLauncher, OVERVIEW_ACTIONS)
-                && mRecentsView.shouldShowOverviewActionsForState(state) ? 1 : 0;
+        float overviewButtonAlpha = state.areElementsVisible(mLauncher, OVERVIEW_ACTIONS) ? 1 : 0;
         propertySetter.setFloat(mLauncher.getActionsView().getVisibilityAlpha(),
                 MultiValueAlpha.VALUE, overviewButtonAlpha, config.getInterpolator(
                         ANIM_OVERVIEW_ACTIONS_FADE, LINEAR));
