@@ -156,6 +156,8 @@
 
     <style name="HomeSettingsTheme" parent="@android:style/Theme.DeviceDefault.Settings">
         <item name="android:navigationBarColor">?android:colorPrimaryDark</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
         <item name="preferenceTheme">@style/HomeSettingsPreferenceTheme</item>
     </style>
 

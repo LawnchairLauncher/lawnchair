@@ -80,6 +80,8 @@ public class SettingsActivity extends FragmentActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.settings_activity);
+        setActionBar(findViewById(R.id.action_bar));
 
         if (savedInstanceState == null) {
             Intent intent = getIntent();
@@ -98,7 +100,7 @@ public class SettingsActivity extends FragmentActivity
                     getPreferenceFragment());
             f.setArguments(args);
             // Display the fragment as the main content.
-            fm.beginTransaction().replace(android.R.id.content, f).commit();
+            fm.beginTransaction().replace(R.id.content_frame, f).commit();
         }
         Utilities.getPrefs(getApplicationContext()).registerOnSharedPreferenceChangeListener(this);
     }
