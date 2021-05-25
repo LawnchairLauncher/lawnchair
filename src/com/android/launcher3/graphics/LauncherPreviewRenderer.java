@@ -79,6 +79,7 @@ import com.android.launcher3.uioverrides.PredictedAppIconInflater;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
+import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
@@ -391,11 +392,14 @@ public class LauncherPreviewRenderer extends ContextWrapper
         ArrayList<ItemInfo> otherWorkspaceItems = new ArrayList<>();
         ArrayList<LauncherAppWidgetInfo> currentAppWidgets = new ArrayList<>();
         ArrayList<LauncherAppWidgetInfo> otherAppWidgets = new ArrayList<>();
-        filterCurrentWorkspaceItems(0 /* currentScreenId */,
-                dataModel.workspaceItems, currentWorkspaceItems,
-                otherWorkspaceItems);
-        filterCurrentWorkspaceItems(0 /* currentScreenId */, dataModel.appWidgets,
-                currentAppWidgets, otherAppWidgets);
+
+        IntSet currentScreenIds = IntSet.wrap(0);
+        // TODO(b/185508060): support two panel preview.
+        filterCurrentWorkspaceItems(currentScreenIds, dataModel.workspaceItems,
+                currentWorkspaceItems, otherWorkspaceItems);
+        filterCurrentWorkspaceItems(currentScreenIds, dataModel.appWidgets, currentAppWidgets,
+                otherAppWidgets);
+
         sortWorkspaceItemsSpatially(mIdp, currentWorkspaceItems);
         for (ItemInfo itemInfo : currentWorkspaceItems) {
             switch (itemInfo.itemType) {
