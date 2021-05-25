@@ -126,6 +126,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         }
     };
     private final int mTabsHeight;
+    private final int mViewPagerTopPadding;
     private final int mWidgetCellHorizontalPadding;
 
     @Nullable private WidgetsRecyclerView mCurrentWidgetsRecyclerView;
@@ -147,6 +148,10 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         mTabsHeight = mHasWorkProfile
                 ? getContext().getResources()
                         .getDimensionPixelSize(R.dimen.all_apps_header_pill_height)
+                : 0;
+        mViewPagerTopPadding = mHasWorkProfile
+                ? getContext().getResources()
+                    .getDimensionPixelSize(R.dimen.widget_picker_view_pager_top_padding)
                 : 0;
         mWidgetCellHorizontalPadding = 2 * getResources().getDimensionPixelOffset(
                 R.dimen.widget_cell_horizontal_padding);
@@ -499,8 +504,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 noWidgetsViewHeight = noWidgetsViewTextBounds.height();
             }
             float maxTableHeight = (mActivityContext.getDeviceProfile().availableHeightPx
-                                        - mTabsHeight - getHeaderViewHeight() - noWidgetsViewHeight)
-                                                * RECOMMENDATION_TABLE_HEIGHT_RATIO;
+                    - mTabsHeight - mViewPagerTopPadding - getHeaderViewHeight()
+                    - noWidgetsViewHeight) * RECOMMENDATION_TABLE_HEIGHT_RATIO;
 
             List<ArrayList<WidgetItem>> recommendedWidgetsInTable =
                     WidgetsTableUtils.groupWidgetItemsIntoTable(recommendedWidgets,
@@ -605,7 +610,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         return measureHeightWithVerticalMargins(mSearchAndRecommendationViewHolder.mCollapseHandle)
                 + measureHeightWithVerticalMargins(mSearchAndRecommendationViewHolder.mHeaderTitle)
                 + measureHeightWithVerticalMargins(
-                (View) mSearchAndRecommendationViewHolder.mSearchBar);
+                        (View) mSearchAndRecommendationViewHolder.mSearchBarContainer);
     }
 
     /** private the height, in pixel, + the vertical margins of a given view. */

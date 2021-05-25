@@ -20,10 +20,9 @@
     android:id="@+id/tabs"
     android:layout_width="match_parent"
     android:layout_height="@dimen/all_apps_header_pill_height"
-    android:layout_marginHorizontal="16dp"
+    android:layout_marginHorizontal="32dp"
     android:orientation="horizontal"
     android:background="@drawable/all_apps_tabs_background"
-    android:elevation="2dp"
     style="@style/TextHeadline">
 
     <Button
