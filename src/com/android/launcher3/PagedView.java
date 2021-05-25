@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import static androidx.annotation.VisibleForTesting.PACKAGE_PRIVATE;
 import static com.android.launcher3.anim.Interpolators.SCROLL;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.isObservedEventType;
@@ -48,6 +49,7 @@ import android.widget.OverScroller;
 import android.widget.ScrollView;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
@@ -55,6 +57,7 @@ import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.touch.PagedOrientationHandler.ChildBounds;
 import com.android.launcher3.util.EdgeEffectCompat;
+import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.views.ActivityContext;
 
@@ -282,9 +285,15 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         return newPage;
     }
 
-    private int getLeftmostVisiblePageForIndex(int pageIndex) {
+    /**
+     * In most cases where panelCount is 1, this method will just return the page index that was
+     * passed in.
+     * But for example when two panel home is enabled we might need the leftmost visible page index
+     * because that page is the current page.
+     */
+    public int getLeftmostVisiblePageForIndex(int pageIndex) {
         int panelCount = getPanelCount();
-        return (pageIndex / panelCount) * panelCount;
+        return pageIndex - pageIndex % panelCount;
     }
 
     /**
@@ -295,16 +304,34 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
     /**
+     * Returns an IntSet with the indices of the currently visible pages
+     */
+    @VisibleForTesting(otherwise = PACKAGE_PRIVATE)
+    public IntSet getVisiblePageIndices() {
+        IntSet visiblePageIndices = new IntSet();
+        int panelCount = getPanelCount();
+        int pageCount = getPageCount();
+
+        // If a device goes from one panel to two panel (i.e. unfolding a foldable device) while
+        // an odd indexed page is the current page, then the new leftmost visible page will be
+        // different from the old mCurrentPage.
+        int currentPage = getLeftmostVisiblePageForIndex(mCurrentPage);
+        for (int page = currentPage; page < currentPage + panelCount && page < pageCount; page++) {
+            visiblePageIndices.add(page);
+        }
+        return visiblePageIndices;
+    }
+
+    /**
      * Executes the callback against each visible page
      */
     public void forEachVisiblePage(Consumer<View> callback) {
-        int panelCount = getPanelCount();
-        for (int i = mCurrentPage; i < mCurrentPage + panelCount; i++) {
-            View page = getPageAt(i);
+        getVisiblePageIndices().forEach(pageIndex -> {
+            View page = getPageAt(pageIndex);
             if (page != null) {
                 callback.accept(page);
             }
-        }
+        });
     }
 
     /**

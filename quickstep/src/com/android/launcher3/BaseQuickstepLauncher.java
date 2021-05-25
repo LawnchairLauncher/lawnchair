@@ -55,6 +55,7 @@ import com.android.launcher3.taskbar.TaskbarManager;
 import com.android.launcher3.taskbar.TaskbarStateHandler;
 import com.android.launcher3.uioverrides.RecentsViewStateController;
 import com.android.launcher3.util.ActivityOptionsWrapper;
+import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ObjectWrapper;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.quickstep.RecentsModel;
@@ -410,8 +411,8 @@ public abstract class BaseQuickstepLauncher extends Launcher
     }
 
     @Override
-    public void finishBindingItems(int pageBoundFirst) {
-        super.finishBindingItems(pageBoundFirst);
+    public void finishBindingItems(IntSet pagesBoundFirst) {
+        super.finishBindingItems(pagesBoundFirst);
         // Instantiate and initialize WellbeingModel now that its loading won't interfere with
         // populating workspace.
         // TODO: Find a better place for this
