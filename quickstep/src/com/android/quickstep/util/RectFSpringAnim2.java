@@ -34,8 +34,6 @@ import androidx.dynamicanimation.animation.FloatPropertyCompat;
 import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
 
-import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.DynamicResource;
@@ -43,7 +41,7 @@ import com.android.systemui.plugins.ResourceProvider;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Locale;
 
 /**
  * Applies spring forces to animate from a starting rect to a target rect,
@@ -193,12 +191,8 @@ public class RectFSpringAnim2 extends RectFSpringAnim {
      * @param velocityPxPerMs Velocity of swipe in px/ms.
      */
     public void start(Context context, PointF velocityPxPerMs) {
-        DeviceProfile dp = InvariantDeviceProfile.INSTANCE.get(context).getDeviceProfile(context);
-
         mRectXAnim = new SpringAnimation(this, RECT_CENTER_X)
                 .setStartValue(mCurrentCenterX)
-                .setMinValue(Math.min(0, mCurrentCenterX))
-                .setMaxValue(Math.max(dp.widthPx, mCurrentCenterX))
                 .setStartVelocity(velocityPxPerMs.x * 1000)
                 .setSpring(new SpringForce(mTargetX)
                         .setStiffness(mXStiffness)
@@ -210,8 +204,6 @@ public class RectFSpringAnim2 extends RectFSpringAnim {
 
         mRectYAnim = new SpringAnimation(this, RECT_Y)
                 .setStartValue(mCurrentCenterY)
-                .setMinValue(Math.min(0, mCurrentCenterY))
-                .setMaxValue(Math.max(dp.heightPx, mCurrentCenterY))
                 .setStartVelocity(velocityPxPerMs.y * 1000)
                 .setSpring(new SpringForce(mTargetY)
                         .setStiffness(mYStiffness)
@@ -361,7 +353,8 @@ public class RectFSpringAnim2 extends RectFSpringAnim {
 
     private Interpolator getAppCloseInterpolator(Context context) {
         ResourceProvider rp = DynamicResource.provider(context);
-        String path = String.format("M 0,0 C %f, %f, %f, %f, %f, %f C %f, %f, %f, %f, 1, 1",
+        String path = String.format(Locale.ENGLISH,
+                "M 0,0 C %f, %f, %f, %f, %f, %f C %f, %f, %f, %f, 1, 1",
                 rp.getFloat(R.dimen.c1_a),
                 rp.getFloat(R.dimen.c1_b),
                 rp.getFloat(R.dimen.c1_c),

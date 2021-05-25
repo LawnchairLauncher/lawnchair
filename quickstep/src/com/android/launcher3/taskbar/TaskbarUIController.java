@@ -13,15 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.android.launcher3.widget.picker.search;
+package com.android.launcher3.taskbar;
 
 /**
- * UI helper for {@link WidgetsSearchBar}.
+ * Base class for providing different taskbar UI
  */
-public interface WidgetsSearchBarUIHelper {
+public class TaskbarUIController {
+
+    public static final TaskbarUIController DEFAULT = new TaskbarUIController();
+
     /**
-     * Clears focus from the search bar.
+     * Pads the Hotseat to line up exactly with Taskbar's copy of the Hotseat.
      */
-    void clearSearchBarFocus();
+    public void alignRealHotseatWithTaskbar() { }
+
+    protected void onCreate() { }
+
+    protected void onDestroy() { }
+
+    protected boolean isTaskbarTouchable() {
+        return true;
+    }
+
+    protected void onImeVisible(TaskbarDragLayer container, boolean isVisible) {
+        container.updateImeBarVisibilityAlpha(isVisible ? 1 : 0);
+    }
 }

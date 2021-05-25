@@ -165,7 +165,7 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
     @Override
     public boolean startActivitySafely(View v, Intent intent, ItemInfo item) {
         // Only pause is taskbar controller is not present
-        mHotseatPredictionController.setPauseUIUpdate(getTaskbarController() == null);
+        mHotseatPredictionController.setPauseUIUpdate(getTaskbarUIController() == null);
         return super.startActivitySafely(v, intent, item);
     }
 
@@ -233,9 +233,9 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
     @Override
     public void bindWorkspaceItemsChanged(List<WorkspaceItemInfo> updated) {
         super.bindWorkspaceItemsChanged(updated);
-        if (getTaskbarController() != null && updated.stream()
+        if (getTaskbarUIController() != null && updated.stream()
                 .filter(w -> w.container == CONTAINER_HOTSEAT).findFirst().isPresent()) {
-            getTaskbarController().onHotseatUpdated();
+            getTaskbarUIController().onHotseatUpdated();
         }
     }
 

@@ -82,7 +82,7 @@ public final class WidgetsListAdapterTest {
         mTestProfile.numColumns = 5;
         mUserHandle = Process.myUserHandle();
         mAdapter = new WidgetsListAdapter(mContext, mMockLayoutInflater, mMockWidgetCache,
-                mIconCache, null, null, null);
+                mIconCache, null, null);
         mAdapter.registerAdapterDataObserver(mListener);
 
         doAnswer(invocation -> ((ComponentWithLabel) invocation.getArgument(0))

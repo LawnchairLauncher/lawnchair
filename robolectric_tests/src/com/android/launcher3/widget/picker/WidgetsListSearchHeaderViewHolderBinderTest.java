@@ -105,8 +105,7 @@ public final class WidgetsListSearchHeaderViewHolderBinderTest {
                 mWidgetPreviewLoader,
                 mIconCache,
                 /* iconClickListener= */ view -> {},
-                /* iconLongClickListener= */ view -> false,
-                /* searchBarUIHelper= */ null);
+                /* iconLongClickListener= */ view -> false);
         mViewHolderBinder = new WidgetsListSearchHeaderViewHolderBinder(
                 LayoutInflater.from(mTestActivity), mOnHeaderClickListener, widgetsListAdapter);
     }

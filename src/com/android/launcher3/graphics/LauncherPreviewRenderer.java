@@ -23,7 +23,6 @@ import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT
 import static com.android.launcher3.model.ModelUtils.filterCurrentWorkspaceItems;
 import static com.android.launcher3.model.ModelUtils.getMissingHotseatRanks;
 import static com.android.launcher3.model.ModelUtils.sortWorkspaceItemsSpatially;
-import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.annotation.TargetApi;
 import android.app.Fragment;
@@ -32,7 +31,6 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
-import android.content.pm.ShortcutInfo;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -43,11 +41,12 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Process;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowInsets;
+import android.view.WindowManager;
 import android.widget.TextClock;
 
 import com.android.launcher3.BubbleTextView;
@@ -57,23 +56,17 @@ import com.android.launcher3.Hotseat;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherModel;
-import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceLayoutManager;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.icons.BaseIconFactory;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.LauncherIcons;
-import com.android.launcher3.model.AllAppsList;
 import com.android.launcher3.model.BgDataModel;
-import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
-import com.android.launcher3.model.LoaderResults;
-import com.android.launcher3.model.LoaderTask;
-import com.android.launcher3.model.ModelDelegate;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.model.data.FolderInfo;
@@ -100,13 +93,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 /**
  * Utility class for generating the preview of Launcher for a given InvariantDeviceProfile.
@@ -119,8 +106,6 @@ import java.util.concurrent.TimeoutException;
 @TargetApi(Build.VERSION_CODES.O)
 public class LauncherPreviewRenderer extends ContextWrapper
         implements ActivityContext, WorkspaceLayoutManager, LayoutInflater.Factory2 {
-
-    private static final String TAG = "LauncherPreviewRenderer";
 
     /**
      * Context used just for preview. It also provides a few objects (e.g. UserCache) just for
@@ -138,9 +123,15 @@ public class LauncherPreviewRenderer extends ContextWrapper
         private final ConcurrentLinkedQueue<LauncherIconsForPreview> mIconPool =
                 new ConcurrentLinkedQueue<>();
 
+        private boolean mDestroyed = false;
+
         public PreviewContext(Context base, InvariantDeviceProfile idp) {
             super(base);
             mIdp = idp;
+            mObjectMap.put(InvariantDeviceProfile.INSTANCE, idp);
+            mObjectMap.put(LauncherAppState.INSTANCE,
+                    new LauncherAppState(this, null /* iconCacheFileName */));
+
         }
 
         @Override
@@ -149,11 +140,9 @@ public class LauncherPreviewRenderer extends ContextWrapper
         }
 
         public void onDestroy() {
-            CustomWidgetManager customWidgetManager = (CustomWidgetManager) mObjectMap.get(
-                    CustomWidgetManager.INSTANCE);
-            if (customWidgetManager != null) {
-                customWidgetManager.onDestroy();
-            }
+            CustomWidgetManager.INSTANCE.get(this).onDestroy();
+            LauncherAppState.INSTANCE.get(this).onTerminate();
+            mDestroyed = true;
         }
 
         /**
@@ -162,16 +151,11 @@ public class LauncherPreviewRenderer extends ContextWrapper
          */
         public <T> T getObject(MainThreadInitializedObject<T> mainThreadInitializedObject,
                 MainThreadInitializedObject.ObjectProvider<T> provider) {
+            if (FeatureFlags.IS_STUDIO_BUILD && mDestroyed) {
+                throw new RuntimeException("Context already destroyed");
+            }
             if (!mAllowedObjects.contains(mainThreadInitializedObject)) {
                 throw new IllegalStateException("Leaking unknown objects");
-            }
-            if (mainThreadInitializedObject == LauncherAppState.INSTANCE) {
-                throw new IllegalStateException(
-                        "Should not use MainThreadInitializedObject to initialize this with "
-                                + "PreviewContext");
-            }
-            if (mainThreadInitializedObject == InvariantDeviceProfile.INSTANCE) {
-                return (T) mIdp;
             }
             if (mObjectMap.containsKey(mainThreadInitializedObject)) {
                 return (T) mObjectMap.get(mainThreadInitializedObject);
@@ -210,7 +194,6 @@ public class LauncherPreviewRenderer extends ContextWrapper
     private final Context mContext;
     private final InvariantDeviceProfile mIdp;
     private final DeviceProfile mDp;
-    private final boolean mMigrated;
     private final Rect mInsets;
     private final WorkspaceItemInfo mWorkspaceItemInfo;
     private final LayoutInflater mHomeElementInflater;
@@ -218,18 +201,26 @@ public class LauncherPreviewRenderer extends ContextWrapper
     private final Hotseat mHotseat;
     private final CellLayout mWorkspace;
 
-    public LauncherPreviewRenderer(Context context, InvariantDeviceProfile idp, boolean migrated) {
+    public LauncherPreviewRenderer(Context context, InvariantDeviceProfile idp) {
         super(context);
         mUiHandler = new Handler(Looper.getMainLooper());
         mContext = context;
         mIdp = idp;
         mDp = idp.getDeviceProfile(context).copy(context);
-        mMigrated = migrated;
 
-        // TODO: get correct insets once display cutout API is available.
-        mInsets = new Rect();
-        mInsets.left = mInsets.right = (mDp.widthPx - mDp.availableWidthPx) / 2;
-        mInsets.top = mInsets.bottom = (mDp.heightPx - mDp.availableHeightPx) / 2;
+        if (Utilities.ATLEAST_R) {
+            WindowInsets currentWindowInsets = context.getSystemService(WindowManager.class)
+                    .getCurrentWindowMetrics().getWindowInsets();
+            mInsets = new Rect(
+                    currentWindowInsets.getSystemWindowInsetLeft(),
+                    currentWindowInsets.getSystemWindowInsetTop(),
+                    currentWindowInsets.getSystemWindowInsetRight(),
+                    currentWindowInsets.getSystemWindowInsetBottom());
+        } else {
+            mInsets = new Rect();
+            mInsets.left = mInsets.right = (mDp.widthPx - mDp.availableWidthPx) / 2;
+            mInsets.top = mInsets.bottom = (mDp.heightPx - mDp.availableHeightPx) / 2;
+        }
         mDp.updateInsets(mInsets);
 
         BaseIconFactory iconFactory =
@@ -265,8 +256,9 @@ public class LauncherPreviewRenderer extends ContextWrapper
     }
 
     /** Populate preview and render it. */
-    public View getRenderedView() {
-        populate();
+    public View getRenderedView(BgDataModel dataModel,
+            Map<ComponentKey, AppWidgetProviderInfo> widgetProviderInfoMap) {
+        populate(dataModel, widgetProviderInfoMap);
         return mRootView;
     }
 
@@ -392,38 +384,17 @@ public class LauncherPreviewRenderer extends ContextWrapper
         }
     }
 
-    private void populate() {
-        WorkspaceFetcher fetcher;
-        PreviewContext previewContext = null;
-        if (mMigrated) {
-            previewContext = new PreviewContext(mContext, mIdp);
-            LauncherAppState appForPreview = new LauncherAppState(
-                    previewContext, null /* iconCacheFileName */);
-            fetcher = new WorkspaceItemsInfoFromPreviewFetcher(appForPreview);
-            MODEL_EXECUTOR.execute(fetcher);
-        } else {
-            fetcher = new WorkspaceItemsInfoFetcher();
-            LauncherAppState.getInstance(mContext).getModel().enqueueModelUpdateTask(
-                    (LauncherModel.ModelUpdateTask) fetcher);
-        }
-        WorkspaceResult workspaceResult = fetcher.get();
-        if (previewContext != null) {
-            previewContext.onDestroy();
-        }
-
-        if (workspaceResult == null) {
-            return;
-        }
-
+    private void populate(BgDataModel dataModel,
+            Map<ComponentKey, AppWidgetProviderInfo> widgetProviderInfoMap) {
         // Separate the items that are on the current screen, and the other remaining items.
         ArrayList<ItemInfo> currentWorkspaceItems = new ArrayList<>();
         ArrayList<ItemInfo> otherWorkspaceItems = new ArrayList<>();
         ArrayList<LauncherAppWidgetInfo> currentAppWidgets = new ArrayList<>();
         ArrayList<LauncherAppWidgetInfo> otherAppWidgets = new ArrayList<>();
         filterCurrentWorkspaceItems(0 /* currentScreenId */,
-                workspaceResult.mWorkspaceItems, currentWorkspaceItems,
+                dataModel.workspaceItems, currentWorkspaceItems,
                 otherWorkspaceItems);
-        filterCurrentWorkspaceItems(0 /* currentScreenId */, workspaceResult.mAppWidgets,
+        filterCurrentWorkspaceItems(0 /* currentScreenId */, dataModel.appWidgets,
                 currentAppWidgets, otherAppWidgets);
         sortWorkspaceItemsSpatially(mIdp, currentWorkspaceItems);
         for (ItemInfo itemInfo : currentWorkspaceItems) {
@@ -444,12 +415,12 @@ public class LauncherPreviewRenderer extends ContextWrapper
             switch (itemInfo.itemType) {
                 case Favorites.ITEM_TYPE_APPWIDGET:
                 case Favorites.ITEM_TYPE_CUSTOM_APPWIDGET:
-                    if (mMigrated) {
-                        inflateAndAddWidgets((LauncherAppWidgetInfo) itemInfo,
-                                workspaceResult.mWidgetProvidersMap);
+                    if (widgetProviderInfoMap != null) {
+                        inflateAndAddWidgets(
+                                (LauncherAppWidgetInfo) itemInfo, widgetProviderInfoMap);
                     } else {
                         inflateAndAddWidgets((LauncherAppWidgetInfo) itemInfo,
-                                workspaceResult.mWidgetsModel);
+                                dataModel.widgetsModel);
                     }
                     break;
                 default:
@@ -458,8 +429,10 @@ public class LauncherPreviewRenderer extends ContextWrapper
         }
         IntArray ranks = getMissingHotseatRanks(currentWorkspaceItems,
                 mDp.numShownHotseatIcons);
-        List<ItemInfo> predictions = workspaceResult.mHotseatPredictions == null
-                ? Collections.emptyList() : workspaceResult.mHotseatPredictions.items;
+        FixedContainerItems hotseatpredictions =
+                dataModel.extraItems.get(CONTAINER_HOTSEAT_PREDICTION);
+        List<ItemInfo> predictions = hotseatpredictions == null
+                ? Collections.emptyList() : hotseatpredictions.items;
         int count = Math.min(ranks.size(), predictions.size());
         for (int i = 0; i < count; i++) {
             int rank = ranks.get(i);
@@ -493,110 +466,5 @@ public class LauncherPreviewRenderer extends ContextWrapper
     private static void measureView(View view, int width, int height) {
         view.measure(makeMeasureSpec(width, EXACTLY), makeMeasureSpec(height, EXACTLY));
         view.layout(0, 0, width, height);
-    }
-
-    private static class WorkspaceItemsInfoFetcher implements LauncherModel.ModelUpdateTask,
-            WorkspaceFetcher {
-
-        private final FutureTask<WorkspaceResult> mTask = new FutureTask<>(this);
-
-        private LauncherAppState mApp;
-        private LauncherModel mModel;
-        private BgDataModel mBgDataModel;
-        private AllAppsList mAllAppsList;
-
-        @Override
-        public void init(LauncherAppState app, LauncherModel model, BgDataModel dataModel,
-                AllAppsList allAppsList, Executor uiExecutor) {
-            mApp = app;
-            mModel = model;
-            mBgDataModel = dataModel;
-            mAllAppsList = allAppsList;
-        }
-
-        @Override
-        public FutureTask<WorkspaceResult> getTask() {
-            return mTask;
-        }
-
-        @Override
-        public void run() {
-            mTask.run();
-        }
-
-        @Override
-        public WorkspaceResult call() throws Exception {
-            if (!mModel.isModelLoaded()) {
-                Log.d(TAG, "Workspace not loaded, loading now");
-                mModel.startLoaderForResults(
-                        new LoaderResults(mApp, mBgDataModel, mAllAppsList, new Callbacks[0]));
-                return null;
-            }
-
-            return new WorkspaceResult(mBgDataModel, mBgDataModel.widgetsModel, null);
-        }
-    }
-
-    private static class WorkspaceItemsInfoFromPreviewFetcher extends LoaderTask implements
-            WorkspaceFetcher {
-
-        private final FutureTask<WorkspaceResult> mTask = new FutureTask<>(this);
-
-        WorkspaceItemsInfoFromPreviewFetcher(LauncherAppState app) {
-            super(app, null, new BgDataModel(), new ModelDelegate(), null);
-        }
-
-        @Override
-        public FutureTask<WorkspaceResult> getTask() {
-            return mTask;
-        }
-
-        @Override
-        public void run() {
-            mTask.run();
-        }
-
-        @Override
-        public WorkspaceResult call() {
-            List<ShortcutInfo> allShortcuts = new ArrayList<>();
-            loadWorkspace(allShortcuts, LauncherSettings.Favorites.PREVIEW_CONTENT_URI,
-                    LauncherSettings.Favorites.SCREEN + " = 0 or "
-                            + LauncherSettings.Favorites.CONTAINER + " = "
-                            + LauncherSettings.Favorites.CONTAINER_HOTSEAT);
-            return new WorkspaceResult(mBgDataModel, null, mWidgetProvidersMap);
-        }
-    }
-
-    private interface WorkspaceFetcher extends Runnable, Callable<WorkspaceResult> {
-        FutureTask<WorkspaceResult> getTask();
-
-        default WorkspaceResult get() {
-            try {
-                return getTask().get(5, TimeUnit.SECONDS);
-            } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                Log.d(TAG, "Error fetching workspace items info", e);
-                return null;
-            }
-        }
-    }
-
-    private static class WorkspaceResult {
-        private final ArrayList<ItemInfo> mWorkspaceItems;
-        private final ArrayList<LauncherAppWidgetInfo> mAppWidgets;
-        private final FixedContainerItems mHotseatPredictions;
-        private final WidgetsModel mWidgetsModel;
-        private final Map<ComponentKey, AppWidgetProviderInfo> mWidgetProvidersMap;
-
-        private WorkspaceResult(BgDataModel dataModel,
-                WidgetsModel widgetsModel,
-                Map<ComponentKey, AppWidgetProviderInfo> widgetProviderInfoMap) {
-            synchronized (dataModel) {
-                mWorkspaceItems = dataModel.workspaceItems;
-                mAppWidgets = dataModel.appWidgets;
-                mHotseatPredictions = dataModel.extraItems.get(CONTAINER_HOTSEAT_PREDICTION);
-                mWidgetsModel = widgetsModel;
-                mWidgetProvidersMap = widgetProviderInfoMap;
-            }
-        }
     }
 }

@@ -18,8 +18,8 @@
     android:shape="rectangle">
     <solid android:color="@color/widgets_picker_surface" />
     <corners
-        android:topLeftRadius="@dimen/bg_round_rect_radius"
-        android:topRightRadius="@dimen/bg_round_rect_radius"
+        android:topLeftRadius="@dimen/default_dialog_corner_radius"
+        android:topRightRadius="@dimen/default_dialog_corner_radius"
         android:bottomLeftRadius="0dp"
         android:bottomRightRadius="0dp"
         />

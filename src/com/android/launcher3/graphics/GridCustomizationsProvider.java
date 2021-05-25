@@ -4,6 +4,7 @@ import static com.android.launcher3.Utilities.getPrefs;
 import static com.android.launcher3.util.Themes.KEY_THEMED_ICONS;
 import static com.android.launcher3.util.Themes.isThemedIconEnabled;
 
+import android.annotation.TargetApi;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.pm.PackageManager;
@@ -12,14 +13,24 @@ import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.IBinder.DeathRecipient;
+import android.os.Looper;
+import android.os.Message;
+import android.os.Messenger;
+import android.util.ArrayMap;
 import android.util.Log;
 import android.util.Xml;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile.GridOption;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.util.Executors;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -64,6 +75,11 @@ public class GridCustomizationsProvider extends ContentProvider {
     private static final String SET_ICON_THEMED = "/set_icon_themed";
     private static final String ICON_THEMED = "/icon_themed";
     private static final String BOOLEAN_VALUE = "boolean_value";
+
+    private static final String KEY_SURFACE_PACKAGE = "surface_package";
+    private static final String KEY_CALLBACK = "callback";
+
+    private final ArrayMap<IBinder, PreviewLifecycleObserver> mActivePreviews = new ArrayMap<>();
 
     @Override
     public boolean onCreate() {
@@ -177,10 +193,75 @@ public class GridCustomizationsProvider extends ContentProvider {
             return null;
         }
 
-        if (!METHOD_GET_PREVIEW.equals(method)) {
+        if (!Utilities.ATLEAST_R || !METHOD_GET_PREVIEW.equals(method)) {
             return null;
         }
+        return getPreview(extras);
+    }
 
-        return new PreviewSurfaceRenderer(getContext(), extras).render();
+    @TargetApi(Build.VERSION_CODES.R)
+    private synchronized Bundle getPreview(Bundle request) {
+        PreviewLifecycleObserver observer = null;
+        try {
+            PreviewSurfaceRenderer renderer = new PreviewSurfaceRenderer(getContext(), request);
+
+            // Destroy previous
+            destroyObserver(mActivePreviews.get(renderer.getHostToken()));
+
+            observer = new PreviewLifecycleObserver(renderer);
+            mActivePreviews.put(renderer.getHostToken(), observer);
+
+            renderer.loadAsync();
+            renderer.getHostToken().linkToDeath(observer, 0);
+
+            Bundle result = new Bundle();
+            result.putParcelable(KEY_SURFACE_PACKAGE, renderer.getSurfacePackage());
+
+            Messenger messenger = new Messenger(new Handler(Looper.getMainLooper(), observer));
+            Message msg = Message.obtain();
+            msg.replyTo = messenger;
+            result.putParcelable(KEY_CALLBACK, msg);
+            return result;
+        } catch (Exception e) {
+            Log.e(TAG, "Unable to generate preview", e);
+            if (observer != null) {
+                destroyObserver(observer);
+            }
+            return null;
+        }
+    }
+
+    private synchronized void destroyObserver(PreviewLifecycleObserver observer) {
+        if (observer == null || observer.destroyed) {
+            return;
+        }
+        observer.destroyed = true;
+        observer.renderer.getHostToken().unlinkToDeath(observer, 0);
+        Executors.MAIN_EXECUTOR.execute(observer.renderer::destroy);
+        PreviewLifecycleObserver cached = mActivePreviews.get(observer.renderer.getHostToken());
+        if (cached == observer) {
+            mActivePreviews.remove(observer.renderer.getHostToken());
+        }
+    }
+
+    private class PreviewLifecycleObserver implements Handler.Callback, DeathRecipient {
+
+        public final PreviewSurfaceRenderer renderer;
+        public boolean destroyed = false;
+
+        PreviewLifecycleObserver(PreviewSurfaceRenderer renderer) {
+            this.renderer = renderer;
+        }
+
+        @Override
+        public boolean handleMessage(Message message) {
+            destroyObserver(this);
+            return true;
+        }
+
+        @Override
+        public void binderDied() {
+            destroyObserver(this);
+        }
     }
 }
