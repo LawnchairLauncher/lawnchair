@@ -16,7 +16,6 @@
 package com.android.launcher3.taskbar;
 
 import static com.android.launcher3.LauncherState.TASKBAR;
-import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 
 import androidx.annotation.Nullable;
@@ -27,7 +26,7 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.states.StateAnimationConfig;
-import com.android.quickstep.AnimatedFloat;
+import com.android.launcher3.util.MultiValueAlpha;
 
 /**
  * StateHandler to animate Taskbar according to Launcher's state machine. Does nothing if Taskbar
@@ -37,15 +36,15 @@ public class TaskbarStateHandler implements StateManager.StateHandler<LauncherSt
 
     private final BaseQuickstepLauncher mLauncher;
 
-    // Contains Taskbar-related methods and fields we should aniamte. If null, don't do anything.
-    private @Nullable TaskbarAnimationController mAnimationController = null;
+    // Contains Taskbar-related properties we should aniamte. If null, don't do anything.
+    private @Nullable MultiValueAlpha.AlphaProperty mTaskbarAlpha = null;
 
     public TaskbarStateHandler(BaseQuickstepLauncher launcher) {
         mLauncher = launcher;
     }
 
-    public void setAnimationController(TaskbarAnimationController callbacks) {
-        mAnimationController = callbacks;
+    public void setAnimationController(MultiValueAlpha.AlphaProperty taskbarAlpha) {
+        mTaskbarAlpha = taskbarAlpha;
     }
 
     @Override
@@ -59,17 +58,15 @@ public class TaskbarStateHandler implements StateManager.StateHandler<LauncherSt
         setState(toState, animation);
     }
 
-    private void setState(LauncherState toState, PropertySetter setter) {
-        if (mAnimationController == null) {
+    /**
+     * Sets the provided state
+     */
+    public void setState(LauncherState toState, PropertySetter setter) {
+        if (mTaskbarAlpha == null) {
             return;
         }
 
         boolean isTaskbarVisible = (toState.getVisibleElements(mLauncher) & TASKBAR) != 0;
-        setter.setFloat(mAnimationController.getTaskbarVisibilityForLauncherState(),
-                AnimatedFloat.VALUE, isTaskbarVisible ? 1f : 0f, LINEAR);
-        setter.setFloat(mAnimationController.getTaskbarScaleForLauncherState(),
-                AnimatedFloat.VALUE, toState.getTaskbarScale(mLauncher), LINEAR);
-        setter.setFloat(mAnimationController.getTaskbarTranslationYForLauncherState(),
-                AnimatedFloat.VALUE, toState.getTaskbarTranslationY(mLauncher), ACCEL_DEACCEL);
+        setter.setFloat(mTaskbarAlpha, MultiValueAlpha.VALUE, isTaskbarVisible ? 1f : 0f, LINEAR);
     }
 }

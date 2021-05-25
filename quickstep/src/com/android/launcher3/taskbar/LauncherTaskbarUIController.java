@@ -15,42 +15,42 @@
  */
 package com.android.launcher3.taskbar;
 
+import static com.android.launcher3.anim.Interpolators.LINEAR;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.graphics.Rect;
-import android.graphics.RectF;
 import android.view.MotionEvent;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.BaseQuickstepLauncher;
-import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.QuickstepTransitionManager;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.anim.PendingAnimation;
-import com.android.launcher3.states.StateAnimationConfig;
+import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
+import com.android.quickstep.AnimatedFloat;
+
 
 /**
  * A data source which integrates with a Launcher instance
- * TODO: Rename to have Launcher prefix
  */
-
 public class LauncherTaskbarUIController extends TaskbarUIController {
 
     private final BaseQuickstepLauncher mLauncher;
     private final TaskbarStateHandler mTaskbarStateHandler;
-    private final TaskbarAnimationController mTaskbarAnimationController;
     private final TaskbarHotseatController mHotseatController;
 
     private final TaskbarActivityContext mContext;
     final TaskbarDragLayer mTaskbarDragLayer;
     final TaskbarView mTaskbarView;
 
+    private AnimatedFloat mTaskBarAlpha;
+    private AlphaProperty mIconAlphaForHome;
     private @Nullable Animator mAnimator;
     private boolean mIsAnimatingToLauncher;
-    private ContextualRotationNotifier mContextualRotationNotifier;
 
     public LauncherTaskbarUIController(
             BaseQuickstepLauncher launcher, TaskbarActivityContext context) {
@@ -60,20 +60,19 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
 
         mLauncher = launcher;
         mTaskbarStateHandler = mLauncher.getTaskbarStateHandler();
-        mTaskbarAnimationController = new TaskbarAnimationController(mLauncher,
-                createTaskbarAnimationControllerCallbacks());
         mHotseatController = new TaskbarHotseatController(
                 mLauncher, mTaskbarView::updateHotseatItems);
+
     }
 
     @Override
-    protected void onCreate(ContextualRotationNotifier notifier) {
-        mContextualRotationNotifier = notifier;
-        mTaskbarStateHandler.setAnimationController(mTaskbarAnimationController);
-        mTaskbarAnimationController.init();
+    protected void init(AnimatedFloat taskBarAlpha, AlphaProperty iconAlphaForLauncherState,
+            AlphaProperty iconAlphaForHome) {
+        mTaskBarAlpha = taskBarAlpha;
+        mIconAlphaForHome = iconAlphaForHome;
+        mTaskbarStateHandler.setAnimationController(iconAlphaForLauncherState);
         mHotseatController.init();
         setTaskbarViewVisible(!mLauncher.hasBeenResumed());
-        alignRealHotseatWithTaskbar();
         mLauncher.setTaskbarUIController(this);
     }
 
@@ -83,9 +82,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
             // End this first, in case it relies on properties that are about to be cleaned up.
             mAnimator.end();
         }
-        mContextualRotationNotifier = null;
         mTaskbarStateHandler.setAnimationController(null);
-        mTaskbarAnimationController.cleanup();
         mHotseatController.cleanup();
         setTaskbarViewVisible(true);
         mLauncher.getHotseat().setIconsAlpha(1f);
@@ -97,46 +94,6 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         return !mIsAnimatingToLauncher;
     }
 
-    private TaskbarAnimationControllerCallbacks createTaskbarAnimationControllerCallbacks() {
-        return new TaskbarAnimationControllerCallbacks() {
-            @Override
-            public void updateTaskbarBackgroundAlpha(float alpha) {
-                mTaskbarDragLayer.setTaskbarBackgroundAlpha(alpha);
-            }
-
-            @Override
-            public void updateTaskbarVisibilityAlpha(float alpha) {
-                mTaskbarView.setAlpha(alpha);
-                if (mContextualRotationNotifier != null) {
-                    mContextualRotationNotifier.onTaskbarVisibilityChanged(alpha == 1);
-                }
-            }
-
-            @Override
-            public void updateImeBarVisibilityAlpha(float alpha) {
-                mTaskbarDragLayer.updateImeBarVisibilityAlpha(alpha);
-            }
-
-            @Override
-            public void updateTaskbarScale(float scale) {
-                mTaskbarView.setScaleX(scale);
-                mTaskbarView.setScaleY(scale);
-            }
-
-            @Override
-            public void updateTaskbarTranslationY(float translationY) {
-                if (translationY < 0) {
-                    // Resize to accommodate the max translation we'll reach.
-                    mContext.setTaskbarWindowHeight(mContext.getDeviceProfile().taskbarSize
-                            + mLauncher.getHotseat().getTaskbarOffsetY());
-                } else {
-                    mContext.setTaskbarWindowHeight(mContext.getDeviceProfile().taskbarSize);
-                }
-                mTaskbarView.setTranslationY(translationY);
-            }
-        };
-    }
-
     /**
      * Should be called from onResume() and onPause(), and animates the Taskbar accordingly.
      */
@@ -146,7 +103,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
             mAnimator.cancel();
         }
         if (isResumed) {
-            mAnimator = createAnimToLauncher(null, duration);
+            mAnimator = createAnimToLauncher(mLauncher.getStateManager().getState(), duration);
         } else {
             mAnimator = createAnimToApp(duration);
         }
@@ -162,20 +119,19 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     /**
      * Create Taskbar animation when going from an app to Launcher.
      * @param toState If known, the state we will end up in when reaching Launcher.
+     * TODO: Move this and createAnimToApp to TaskbarStateHandler using the BACKGROUND state
      */
-    public Animator createAnimToLauncher(@Nullable LauncherState toState, long duration) {
+    public Animator createAnimToLauncher(@NonNull LauncherState toState, long duration) {
         PendingAnimation anim = new PendingAnimation(duration);
-        anim.add(mTaskbarAnimationController.createAnimToBackgroundAlpha(0, duration));
-        if (toState != null) {
-            mTaskbarStateHandler.setStateWithAnimation(toState, new StateAnimationConfig(), anim);
-        }
+        mTaskbarStateHandler.setState(toState, anim);
+
+        anim.setFloat(mTaskBarAlpha, AnimatedFloat.VALUE, 0, LINEAR);
+        mTaskbarView.alignIconsWithLauncher(mLauncher.getDeviceProfile(), anim);
 
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
                 mIsAnimatingToLauncher = true;
-                mTaskbarView.setHolesAllowedInLayout(true);
-                mTaskbarView.updateHotseatItemsVisibility();
             }
 
             @Override
@@ -190,25 +146,15 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
 
     private Animator createAnimToApp(long duration) {
         PendingAnimation anim = new PendingAnimation(duration);
-        anim.add(mTaskbarAnimationController.createAnimToBackgroundAlpha(1, duration));
+        anim.setFloat(mTaskBarAlpha, AnimatedFloat.VALUE, 1, LINEAR);
+        anim.addListener(AnimatorListeners.forEndCallback(mTaskbarView.resetIconPosition(anim)));
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
-                mTaskbarView.updateHotseatItemsVisibility();
                 setTaskbarViewVisible(true);
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mTaskbarView.setHolesAllowedInLayout(false);
             }
         });
         return anim.buildAnim();
-    }
-
-    @Override
-    protected void onImeVisible(TaskbarDragLayer containerView, boolean isVisible) {
-        mTaskbarAnimationController.animateToVisibilityForIme(isVisible ? 0 : 1);
     }
 
     /**
@@ -230,55 +176,8 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         return mContext.getDragController().isDragging();
     }
 
-    /**
-     * Pads the Hotseat to line up exactly with Taskbar's copy of the Hotseat.
-     */
-    @Override
-    public void alignRealHotseatWithTaskbar() {
-        Rect hotseatBounds = new Rect();
-        DeviceProfile grid = mLauncher.getDeviceProfile();
-        int hotseatHeight = grid.workspacePadding.bottom + grid.taskbarSize;
-        int taskbarOffset = mLauncher.getHotseat().getTaskbarOffsetY();
-        int hotseatTopDiff = hotseatHeight - grid.taskbarSize - taskbarOffset;
-        int hotseatBottomDiff = taskbarOffset;
-
-        RectF hotseatBoundsF = mTaskbarView.getHotseatBounds();
-        Utilities.scaleRectFAboutPivot(hotseatBoundsF, getTaskbarScaleOnHome(),
-                mTaskbarView.getPivotX(), mTaskbarView.getPivotY());
-        hotseatBoundsF.round(hotseatBounds);
-        mLauncher.getHotseat().setPadding(hotseatBounds.left,
-                hotseatBounds.top + hotseatTopDiff,
-                mTaskbarView.getWidth() - hotseatBounds.right,
-                mTaskbarView.getHeight() - hotseatBounds.bottom + hotseatBottomDiff);
-    }
-
-    /**
-     * Returns the ratio of the taskbar icon size on home vs in an app.
-     */
-    public float getTaskbarScaleOnHome() {
-        DeviceProfile inAppDp = mContext.getDeviceProfile();
-        DeviceProfile onHomeDp = mLauncher.getDeviceProfile();
-        return (float) onHomeDp.cellWidthPx / inAppDp.cellWidthPx;
-    }
-
     void setTaskbarViewVisible(boolean isVisible) {
-        mTaskbarView.setIconsVisibility(isVisible);
+        mIconAlphaForHome.setValue(isVisible ? 1 : 0);
         mLauncher.getHotseat().setIconsAlpha(isVisible ? 0f : 1f);
-    }
-
-    /**
-     * Contains methods that TaskbarAnimationController can call to interface with
-     * TaskbarController.
-     */
-    protected interface TaskbarAnimationControllerCallbacks {
-        void updateTaskbarBackgroundAlpha(float alpha);
-        void updateTaskbarVisibilityAlpha(float alpha);
-        void updateImeBarVisibilityAlpha(float alpha);
-        void updateTaskbarScale(float scale);
-        void updateTaskbarTranslationY(float translationY);
-    }
-
-    public interface ContextualRotationNotifier {
-        void onTaskbarVisibilityChanged(boolean showing);
     }
 }
