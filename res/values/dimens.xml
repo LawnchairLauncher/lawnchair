@@ -146,6 +146,8 @@
     <dimen name="widget_picker_education_tip_width">120dp</dimen>
     <dimen name="widget_picker_education_tip_min_margin">4dp</dimen>
 
+    <dimen name="widget_picker_view_pager_top_padding">16dp</dimen>
+
     <!-- Padding applied to shortcut previews -->
     <dimen name="shortcut_preview_padding_left">0dp</dimen>
     <dimen name="shortcut_preview_padding_right">0dp</dimen>
