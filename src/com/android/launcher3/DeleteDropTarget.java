@@ -33,6 +33,7 @@ import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.util.IntSet;
 import com.android.launcher3.views.Snackbar;
 
 public class DeleteDropTarget extends ButtonDropTarget {
@@ -131,7 +132,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
             onAccessibilityDrop(null, item);
             ModelWriter modelWriter = mLauncher.getModelWriter();
             Runnable onUndoClicked = () -> {
-                mLauncher.setPageToBindSynchronously(itemPage);
+                mLauncher.setPagesToBindSynchronously(IntSet.wrap(itemPage));
                 modelWriter.abortDelete();
                 mLauncher.getStatsLogManager().logger().log(LAUNCHER_UNDO);
             };
