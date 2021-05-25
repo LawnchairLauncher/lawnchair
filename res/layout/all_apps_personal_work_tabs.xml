@@ -21,7 +21,6 @@
     android:layout_gravity="center_horizontal"
     android:background="@drawable/all_apps_tabs_background"
     android:orientation="horizontal"
-    android:elevation="2dp"
     style="@style/TextHeadline">
 
     <Button
