@@ -38,6 +38,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.quickstep.interaction.TutorialController.TutorialType;
 
 abstract class TutorialFragment extends Fragment implements OnTouchListener {
@@ -96,7 +97,7 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
         return null;
     }
 
-    @Nullable Integer getFeedbackVideoResId() {
+    @Nullable Integer getFeedbackVideoResId(boolean forDarkMode) {
         return null;
     }
 
@@ -176,8 +177,12 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
     }
 
     boolean updateFeedbackVideo() {
-        Integer feedbackVideoResId = getFeedbackVideoResId();
-        if (feedbackVideoResId == null || getContext() == null || !updateGestureVideo()) {
+        if (getContext() == null) {
+            return false;
+        }
+        Integer feedbackVideoResId = getFeedbackVideoResId(Utilities.isDarkTheme(getContext()));
+
+        if (feedbackVideoResId == null || !updateGestureVideo()) {
             return false;
         }
         mTutorialAnimation = (AnimatedVectorDrawable) getContext().getDrawable(feedbackVideoResId);

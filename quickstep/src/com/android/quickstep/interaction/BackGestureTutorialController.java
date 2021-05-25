@@ -48,7 +48,7 @@ final class BackGestureTutorialController extends TutorialController {
     }
 
     @Override
-    protected int getMockAppTaskThumbnailResId() {
+    protected int getMockAppTaskThumbnailResId(boolean forDarkMode) {
         return R.drawable.mock_conversation;
     }
 
