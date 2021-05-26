@@ -23,6 +23,7 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_7;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALL_APPS_EDU_SHOWN;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_SCRIM_FADE;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -57,6 +58,9 @@ import com.android.quickstep.util.MultiValueUpdateListener;
  * Consumes all touches until after the animation is completed and the view is removed.
  */
 public class AllAppsEduView extends AbstractFloatingView {
+
+    private static final float HINT_PROG_SCRIM_THRESHOLD = 0.06f;
+    private static final float HINT_PROG_CONTENT_THRESHOLD = 0.08f;
 
     private Launcher mLauncher;
 
@@ -143,7 +147,9 @@ public class AllAppsEduView extends AbstractFloatingView {
 
         StateAnimationConfig config = new StateAnimationConfig();
         config.setInterpolator(ANIM_ALL_APPS_FADE, Interpolators.clampToProgress(ACCEL,
-                0, 0.08f));
+                HINT_PROG_SCRIM_THRESHOLD, HINT_PROG_CONTENT_THRESHOLD));
+        config.setInterpolator(ANIM_SCRIM_FADE,
+                Interpolators.clampToProgress(ACCEL, 0, HINT_PROG_CONTENT_THRESHOLD));
         config.duration = secondPart;
         config.userControlled = false;
         AnimatorPlaybackController stateAnimationController =
@@ -153,6 +159,8 @@ public class AllAppsEduView extends AbstractFloatingView {
         AllAppsTransitionController allAppsController = mLauncher.getAllAppsController();
         PendingAnimation allAppsAlpha = new PendingAnimation(config.duration);
         allAppsController.setAlphas(ALL_APPS, config, allAppsAlpha);
+        mLauncher.getWorkspace().getStateTransitionAnimation().setScrim(allAppsAlpha, ALL_APPS,
+                config);
         mAnimation.play(allAppsAlpha.buildAnim());
 
         ValueAnimator intro = ValueAnimator.ofFloat(0, 1f);
@@ -219,11 +227,11 @@ public class AllAppsEduView extends AbstractFloatingView {
         int accentColor = Themes.getColorAccent(launcher);
         mGradient = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
                 Themes.getAttrBoolean(launcher, R.attr.isMainColorDark)
-                        ? new int[] {0xB3FFFFFF, 0x00FFFFFF}
-                        : new int[] {ColorUtils.setAlphaComponent(accentColor, 127),
+                        ? new int[]{0xB3FFFFFF, 0x00FFFFFF}
+                        : new int[]{ColorUtils.setAlphaComponent(accentColor, 127),
                                 ColorUtils.setAlphaComponent(accentColor, 0)});
         float r = mWidthPx / 2f;
-        mGradient.setCornerRadii(new float[] {r, r, r, r, 0, 0, 0, 0});
+        mGradient.setCornerRadii(new float[]{r, r, r, r, 0, 0, 0, 0});
 
         int top = mMaxHeightPx - mCircleSizePx + mPaddingPx;
         mCircle.setBounds(mPaddingPx, top, mPaddingPx + mCircleSizePx, top + mCircleSizePx);
