@@ -19,12 +19,15 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.R;
+import com.android.launcher3.testing.TestLogging;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.systemui.shared.system.ViewTreeObserverWrapper;
@@ -127,5 +130,11 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
     protected void setTaskbarBackgroundAlpha(float alpha) {
         mTaskbarBackgroundPaint.setAlpha((int) (alpha * 255));
         invalidate();
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        TestLogging.recordMotionEvent(TestProtocol.SEQUENCE_MAIN, "Touch event", ev);
+        return super.dispatchTouchEvent(ev);
     }
 }
