@@ -15,108 +15,61 @@
  */
 package com.android.launcher3.allapps;
 
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Rect;
-import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
-import android.view.ViewConfiguration;
-import android.widget.Switch;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+
+import androidx.annotation.RequiresApi;
 
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.pm.UserCache;
-import com.android.launcher3.views.ArrowTipView;
-
-import java.lang.ref.WeakReference;
 
 /**
  * Work profile toggle switch shown at the bottom of AllApps work tab
  */
-public class WorkModeSwitch extends Switch implements Insettable {
-
-    private static final int WORK_TIP_THRESHOLD = 2;
-    public static final String KEY_WORK_TIP_COUNTER = "worked_tip_counter";
+public class WorkModeSwitch extends Button implements Insettable, View.OnClickListener {
 
     private Rect mInsets = new Rect();
-
-    private final float[] mTouch = new float[2];
-    private int mTouchSlop;
+    private boolean mWorkEnabled;
 
     public WorkModeSwitch(Context context) {
-        super(context);
-        init();
+        this(context, null, 0);
     }
 
     public WorkModeSwitch(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
+        this(context, attrs, 0);
     }
 
     public WorkModeSwitch(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
-    }
-
-    private void init() {
-        ViewConfiguration viewConfiguration = ViewConfiguration.get(getContext());
-        mTouchSlop = viewConfiguration.getScaledTouchSlop();
     }
 
     @Override
-    public void setChecked(boolean checked) { }
-
-    @Override
-    public void toggle() {
-        // don't show tip if user uses toggle
-        Utilities.getPrefs(getContext()).edit().putInt(KEY_WORK_TIP_COUNTER, -1).apply();
-        trySetQuietModeEnabledToAllProfilesAsync(isChecked());
-    }
-
-    /**
-     * Sets the enabled or disabled state of the button
-     * @param isChecked
-     */
-    public void update(boolean isChecked) {
-        super.setChecked(isChecked);
-        setCompoundDrawablesRelativeWithIntrinsicBounds(
-                isChecked ? R.drawable.ic_corp : R.drawable.ic_corp_off, 0, 0, 0);
-        setEnabled(true);
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        if (ev.getActionMasked() == MotionEvent.ACTION_DOWN) {
-            mTouch[0] = ev.getX();
-            mTouch[1] = ev.getY();
-        } else if (ev.getActionMasked() == MotionEvent.ACTION_MOVE) {
-            if (Math.abs(mTouch[0] - ev.getX()) > mTouchSlop
-                    || Math.abs(mTouch[1] - ev.getY()) > mTouchSlop) {
-                int action = ev.getAction();
-                ev.setAction(MotionEvent.ACTION_CANCEL);
-                super.onTouchEvent(ev);
-                ev.setAction(action);
-                return false;
-            }
-        }
-        return super.onTouchEvent(ev);
-    }
-
-    private void trySetQuietModeEnabledToAllProfilesAsync(boolean enabled) {
-        new SetQuietModeEnabledAsyncTask(enabled, new WeakReference<>(this)).execute();
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        setOnClickListener(this);
     }
 
     @Override
     public void setInsets(Rect insets) {
         int bottomInset = insets.bottom - mInsets.bottom;
         mInsets.set(insets);
-        setPadding(getPaddingLeft(), getPaddingTop(), getPaddingRight(),
-                getPaddingBottom() + bottomInset);
+        ViewGroup.MarginLayoutParams marginLayoutParams =
+                (ViewGroup.MarginLayoutParams) getLayoutParams();
+        if (marginLayoutParams != null) {
+            marginLayoutParams.bottomMargin = bottomInset + marginLayoutParams.bottomMargin;
+        }
     }
 
     /**
@@ -125,78 +78,44 @@ public class WorkModeSwitch extends Switch implements Insettable {
     public void setWorkTabVisible(boolean workTabVisible) {
         clearAnimation();
         if (workTabVisible) {
+            setEnabled(true);
             setVisibility(VISIBLE);
             setAlpha(0);
             animate().alpha(1).start();
-            showTipIfNeeded();
         } else {
             animate().alpha(0).withEndAction(() -> this.setVisibility(GONE)).start();
         }
     }
 
-    private static final class SetQuietModeEnabledAsyncTask
-            extends AsyncTask<Void, Void, Boolean> {
-
-        private final boolean enabled;
-        private final WeakReference<WorkModeSwitch> switchWeakReference;
-
-        SetQuietModeEnabledAsyncTask(boolean enabled,
-                                     WeakReference<WorkModeSwitch> switchWeakReference) {
-            this.enabled = enabled;
-            this.switchWeakReference = switchWeakReference;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            WorkModeSwitch workModeSwitch = switchWeakReference.get();
-            if (workModeSwitch != null) {
-                workModeSwitch.setEnabled(false);
-            }
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... voids) {
-            WorkModeSwitch workModeSwitch = switchWeakReference.get();
-            if (workModeSwitch == null || !Utilities.ATLEAST_P) {
-                return false;
-            }
-
-            Context context = workModeSwitch.getContext();
-            UserManager userManager = context.getSystemService(UserManager.class);
-            boolean showConfirm = false;
-            for (UserHandle userProfile : UserCache.INSTANCE.get(context).getUserProfiles()) {
-                if (Process.myUserHandle().equals(userProfile)) {
-                    continue;
-                }
-                showConfirm |= !userManager.requestQuietModeEnabled(enabled, userProfile);
-            }
-            return showConfirm;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean showConfirm) {
-            if (showConfirm) {
-                WorkModeSwitch workModeSwitch = switchWeakReference.get();
-                if (workModeSwitch != null) {
-                    workModeSwitch.setEnabled(true);
-                }
-            }
+    @Override
+    public void onClick(View view) {
+        if (Utilities.ATLEAST_P) {
+            setEnabled(false);
+            UI_HELPER_EXECUTOR.post(() -> setToState(!mWorkEnabled));
         }
     }
 
     /**
-     * Shows a work tip on the Nth work tab open
+     * Sets the enabled or disabled state of the button
      */
-    public void showTipIfNeeded() {
-        Context context = getContext();
-        SharedPreferences prefs = Utilities.getPrefs(context);
-        int tipCounter = prefs.getInt(KEY_WORK_TIP_COUNTER, WORK_TIP_THRESHOLD);
-        if (tipCounter < 0) return;
-        if (tipCounter == 0) {
-            new ArrowTipView(context)
-                    .show(context.getString(R.string.work_switch_tip), getTop());
+    public void updateCurrentState(boolean active) {
+        mWorkEnabled = active;
+        setEnabled(true);
+        setCompoundDrawablesRelativeWithIntrinsicBounds(
+                active ? R.drawable.ic_corp_off : R.drawable.ic_corp, 0, 0, 0);
+        setText(active ? R.string.work_apps_pause_btn_text : R.string.work_apps_enable_btn_text);
+    }
+
+    @RequiresApi(Build.VERSION_CODES.P)
+    protected Boolean setToState(boolean toState) {
+        UserManager userManager = getContext().getSystemService(UserManager.class);
+        boolean showConfirm = false;
+        for (UserHandle userProfile : UserCache.INSTANCE.get(getContext()).getUserProfiles()) {
+            if (Process.myUserHandle().equals(userProfile)) {
+                continue;
+            }
+            showConfirm |= !userManager.requestQuietModeEnabled(!toState, userProfile);
         }
-        prefs.edit().putInt(KEY_WORK_TIP_COUNTER, tipCounter - 1).apply();
+        return showConfirm;
     }
 }
