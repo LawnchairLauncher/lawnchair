@@ -275,9 +275,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
             });
         } else if (tag instanceof WorkspaceItemInfo) {
             WorkspaceItemInfo info = (WorkspaceItemInfo) tag;
-            if (info.isDisabled()) {
-                ItemClickHandler.handleDisabledItemClicked(info, this);
-            } else {
+            if (!(info.isDisabled() && ItemClickHandler.handleDisabledItemClicked(info, this))) {
                 Intent intent = new Intent(info.getIntent())
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 try {
