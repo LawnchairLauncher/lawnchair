@@ -1392,6 +1392,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             mLauncherTransitionController.getNormalController().getAnimationPlayer().end();
             mLauncherTransitionController = null;
         }
+
+        if (mRecentsView != null) {
+            mRecentsView.abortScrollerAnimation();
+        }
     }
 
     /**
@@ -1410,7 +1414,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
     private void resetStateForAnimationCancel() {
         boolean wasVisible = mWasLauncherAlreadyVisible || mGestureStarted;
-        mActivityInterface.onTransitionCancelled(wasVisible);
+        mActivityInterface.onTransitionCancelled(wasVisible, mGestureState.getEndTarget());
 
         // Leave the pending invisible flag, as it may be used by wallpaper open animation.
         if (mActivity != null) {
