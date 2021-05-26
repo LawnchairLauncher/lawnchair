@@ -48,6 +48,7 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.shadows.ShadowDeviceFlag;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
+import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LauncherModelHelper;
 import com.android.launcher3.util.ViewOnDrawExecutor;
@@ -239,8 +240,8 @@ public final class WidgetsPredicationUpdateTaskTest {
         }
 
         @Override
-        public int getPageToBindSynchronously() {
-            return 0;
+        public IntSet getPagesToBindSynchronously() {
+            return IntSet.wrap(0);
         }
 
         @Override
@@ -259,7 +260,7 @@ public final class WidgetsPredicationUpdateTaskTest {
         public void finishFirstPageBind(ViewOnDrawExecutor executor) { }
 
         @Override
-        public void finishBindingItems(int pageBoundFirst) { }
+        public void finishBindingItems(IntSet pagesBoundFirst) { }
 
         @Override
         public void preAddApps() { }
@@ -287,7 +288,7 @@ public final class WidgetsPredicationUpdateTaskTest {
         public void bindAllWidgets(List<WidgetsListBaseEntry> widgets) { }
 
         @Override
-        public void onPageBoundSynchronously(int page) { }
+        public void onPagesBoundSynchronously(IntSet pages) { }
 
         @Override
         public void executeOnNextDraw(ViewOnDrawExecutor executor) { }

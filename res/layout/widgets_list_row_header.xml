@@ -74,6 +74,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_alignParentEnd="true"
+        android:enabled="false"
         android:clickable="false"
         android:importantForAccessibility="no"
         android:button="@drawable/widgets_tray_expand_button"/>
