@@ -27,12 +27,12 @@
     <dimen name="overview_proactive_row_height">48dp</dimen>
     <dimen name="overview_proactive_row_bottom_margin">16dp</dimen>
 
-    <dimen name="overview_minimum_next_prev_size">48dp</dimen>
+    <dimen name="overview_minimum_next_prev_size">50dp</dimen>
     <dimen name="overview_task_margin">16dp</dimen>
 
     <!-- Overrideable in overlay that provides the Overview Actions. -->
     <dimen name="overview_actions_height">48dp</dimen>
-    <dimen name="overview_actions_bottom_margin_gesture">12dp</dimen>
+    <dimen name="overview_actions_bottom_margin_gesture">28dp</dimen>
     <dimen name="overview_actions_bottom_margin_three_button">8dp</dimen>
     <dimen name="overview_actions_horizontal_margin">16dp</dimen>
 
