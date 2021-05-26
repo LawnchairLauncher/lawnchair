@@ -47,8 +47,7 @@
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"ಶಿಫಾರಸು ಮಾಡಿದ ಆ್ಯಪ್: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"ನೀವು ದೂರದ ಎಡ ಅಂಚಿನಿಂದ ಸ್ವೈಪ್ ಮಾಡುತ್ತಿದ್ದೀರಿ ಎಂದು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ."</string>
     <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"ಎಡ ಅಂಚಿನಿಂದ ಸ್ಕ್ರೀನ್ ಮಧ್ಯಕ್ಕೆ ಸ್ವೈಪ್ ಮಾಡಿದ್ದೀರಿ ಎಂದು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ ಹಾಗೂ ನಿಮ್ಮ ಬೆರಳನ್ನು ಮೇಲೆತ್ತಿ."</string>
-    <string name="back_gesture_feedback_title_complete_left_edge" msgid="1381455921760094003">"ಚೆನ್ನಾಗಿದೆ! ಹಿಂತಿರುಗಲು, ಈಗ ಬಲಗಡೆಯಿಂದ ಸ್ವೈಪ್ ಮಾಡಿ"</string>
-    <string name="back_gesture_feedback_subtitle_complete_left_edge" msgid="8106594510099968430">"ಬಲ ಅಂಚಿನಿಂದ ಸ್ಕ್ರೀನ್ ಮಧ್ಯಕ್ಕೆ ಸ್ವೈಪ್ ಮಾಡಿ ಕೊನೆಯ ಸ್ಕ್ರೀನ್‌ಗೆ ಹೋಗಿ."</string>
+    <string name="back_right_gesture_intro_subtitle" msgid="8106594510099968430">"ಬಲ ಅಂಚಿನಿಂದ ಸ್ಕ್ರೀನ್ ಮಧ್ಯಕ್ಕೆ ಸ್ವೈಪ್ ಮಾಡಿ ಕೊನೆಯ ಸ್ಕ್ರೀನ್‌ಗೆ ಹೋಗಿ."</string>
     <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"ನೀವು ದೂರದ ಬಲ ಅಂಚಿನಿಂದ ಸ್ವೈಪ್ ಮಾಡುತ್ತಿದ್ದೀರಿ ಎಂದು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ."</string>
     <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"ಬಲ ಅಂಚಿನಿಂದ ಸ್ಕ್ರೀನ್ ಮಧ್ಯಕ್ಕೆ ಸ್ವೈಪ್ ಮಾಡಿದ್ದೀರಿ ಎಂದು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ ಹಾಗೂ ನಿಮ್ಮ ಬೆರಳನ್ನು ಮೇಲೆತ್ತಿ."</string>
     <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"ನೀವು ಗೋ ಬ್ಯಾಕ್ ಗೆಸ್ಚರ್ ಅನ್ನು ಪೂರ್ಣಗೊಳಿಸಿದ್ದೀರಿ. ಮುಂದೆ, ಆ್ಯಪ್‌ಗಳನ್ನು ಬದಲಾಯಿಸುವುದು ಹೇಗೆ ಎಂದು ತಿಳಿಯಿರಿ."</string>
@@ -56,7 +55,7 @@
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"ನೀವು ಸ್ಕ್ರೀನ್‌ನ ಕೆಳಭಾಗಕ್ಕೆ ಹೆಚ್ಚು ಹತ್ತಿರ ಸ್ವೈಪ್ ಮಾಡದಂತೆ ನೋಡಿಕೊಳ್ಳಿ."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"ಬ್ಯಾಕ್ ಗೆಸ್ಚರ್‌ನ ಸೂಕ್ಷ್ಮತೆ ಬದಲಾಯಿಸಲು, ಸೆಟ್ಟಿಂಗ್‌ಗಳಿಗೆ ಹೋಗಿ"</string>
     <string name="back_gesture_intro_title" msgid="5538727561353262952">"ಹಿಂದಕ್ಕೆ ಹೋಗಲು, ಎಡದಿಂದ ಸ್ವೈಪ್ ಮಾಡಿ"</string>
-    <string name="back_gesture_intro_subtitle" msgid="8139048712004626940">"ಈ ಮೊದಲು ನೀವಿದ್ದ ಕೊನೆಯ ಸ್ಕ್ರೀನ್‌ಗೆ ಹಿಂತಿರುಗಲು, ಬಲ ಅಂಚಿನಿಂದ ಸ್ಕ್ರೀನ್ ಮಧ್ಯಕ್ಕೆ ಸ್ವೈಪ್ ಮಾಡಿ."</string>
+    <string name="back_left_gesture_intro_subtitle" msgid="8139048712004626940">"ಈ ಮೊದಲು ನೀವಿದ್ದ ಕೊನೆಯ ಸ್ಕ್ರೀನ್‌ಗೆ ಹಿಂತಿರುಗಲು, ಬಲ ಅಂಚಿನಿಂದ ಸ್ಕ್ರೀನ್ ಮಧ್ಯಕ್ಕೆ ಸ್ವೈಪ್ ಮಾಡಿ."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"ಸ್ಕ್ರೀನ್‌ನ ಕೆಳಗಿನ ಅಂಚಿನಿಂದ ನೀವು ಸ್ವೈಪ್ ಮಾಡುತ್ತಿದ್ದೀರಿ ಎಂದು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"ವಿರಾಮಗೊಳಿಸದೆ ನಿಮ್ಮ ಬೆರಳನ್ನು ಸ್ಕ್ರೀನ್‌ನಿಂದ ಮೇಲೆತ್ತಿ."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"ನೀವು ನೇರವಾಗಿ ಸ್ವೈಪ್ ಮಾಡುತ್ತಿದ್ದೀರಿ ಎಂದು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ."</string>
