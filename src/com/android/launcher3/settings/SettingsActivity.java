@@ -24,9 +24,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
+import androidx.core.view.WindowCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -82,6 +84,7 @@ public class SettingsActivity extends FragmentActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_activity);
         setActionBar(findViewById(R.id.action_bar));
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
 
         if (savedInstanceState == null) {
             Intent intent = getIntent();
@@ -196,6 +199,21 @@ public class SettingsActivity extends FragmentActivity
             if (getActivity() != null && !TextUtils.isEmpty(getPreferenceScreen().getTitle())) {
                 getActivity().setTitle(getPreferenceScreen().getTitle());
             }
+        }
+
+        @Override
+        public void onViewCreated(View view, Bundle savedInstanceState) {
+            super.onViewCreated(view, savedInstanceState);
+            View listView = getListView();
+            final int bottomPadding = listView.getPaddingBottom();
+            listView.setOnApplyWindowInsetsListener((v, insets) -> {
+                v.setPadding(
+                        v.getPaddingLeft(),
+                        v.getPaddingTop(),
+                        v.getPaddingRight(),
+                        bottomPadding + insets.getSystemWindowInsetBottom());
+                return insets.consumeSystemWindowInsets();
+            });
         }
 
         @Override

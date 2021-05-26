@@ -152,6 +152,17 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
                 filterPreferences(query, mPreferenceScreen);
             }
         });
+
+        View listView = getListView();
+        final int bottomPadding = listView.getPaddingBottom();
+        listView.setOnApplyWindowInsetsListener((v, insets) -> {
+            v.setPadding(
+                    v.getPaddingLeft(),
+                    v.getPaddingTop(),
+                    v.getPaddingRight(),
+                    bottomPadding + insets.getSystemWindowInsetBottom());
+            return insets.consumeSystemWindowInsets();
+        });
     }
 
     @Override
