@@ -691,7 +691,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 floatingIconBounds.right += offsetX;
                 floatingIconBounds.bottom += offsetY;
 
-                SurfaceParams[] params = new SurfaceParams[appTargets.length];
+                ArrayList<SurfaceParams> params = new ArrayList<>();
                 for (int i = appTargets.length - 1; i >= 0; i--) {
                     RemoteAnimationTargetCompat target = appTargets[i];
                     SurfaceParams.Builder builder = new SurfaceParams.Builder(target.leash);
@@ -743,9 +743,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                                 .withWindowCrop(crop)
                                 .withAlpha(1f);
                     }
-                    params[i] = builder.build();
+                    params.add(builder.build());
                 }
-                surfaceApplier.scheduleApply(params);
 
                 if (navBarTarget != null) {
                     final SurfaceParams.Builder navBuilder =
@@ -759,8 +758,10 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                     } else {
                         navBuilder.withAlpha(mNavFadeOut.value);
                     }
-                    surfaceApplier.scheduleApply(navBuilder.build());
+                    params.add(navBuilder.build());
                 }
+
+                surfaceApplier.scheduleApply(params.toArray(new SurfaceParams[params.size()]));
             }
         });
 
@@ -790,6 +791,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 wallpaperTargets, nonAppTargets, MODE_OPENING);
         SurfaceTransactionApplier surfaceApplier = new SurfaceTransactionApplier(floatingView);
         openingTargets.addReleaseCheck(surfaceApplier);
+
+        RemoteAnimationTargetCompat navBarTarget = openingTargets.getNavBarRemoteAnimationTarget();
 
         AnimatorSet animatorSet = new AnimatorSet();
         ValueAnimator appAnimator = ValueAnimator.ofFloat(0, 1);
@@ -832,6 +835,11 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                     windowTargetBounds.height(), 0 /* delay */, APP_LAUNCH_DURATION,
                     EXAGGERATED_EASE);
 
+            final FloatProp mNavFadeOut = new FloatProp(1f, 0f, 0, ANIMATION_NAV_FADE_OUT_DURATION,
+                    NAV_FADE_OUT_INTERPOLATOR);
+            final FloatProp mNavFadeIn = new FloatProp(0f, 1f, ANIMATION_DELAY_NAV_FADE_IN,
+                    ANIMATION_NAV_FADE_IN_DURATION, NAV_FADE_IN_INTERPOLATOR);
+
             @Override
             public void onUpdate(float percent) {
                 widgetBackgroundBounds.set(mDx.value - mWidth.value / 2f,
@@ -847,7 +855,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 matrix.postScale(mAppWindowScale, mAppWindowScale, widgetBackgroundBounds.left,
                         widgetBackgroundBounds.top);
 
-                SurfaceParams[] params = new SurfaceParams[appTargets.length];
+                ArrayList<SurfaceParams> params = new ArrayList<>();
                 float floatingViewAlpha = appTargetsAreTranslucent ? 1 - mPreviewAlpha.value : 1;
                 for (int i = appTargets.length - 1; i >= 0; i--) {
                     RemoteAnimationTargetCompat target = appTargets[i];
@@ -861,9 +869,23 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                                 .withAlpha(mPreviewAlpha.value)
                                 .withCornerRadius(mWindowRadius.value / mAppWindowScale);
                     }
-                    params[i] = builder.build();
+                    params.add(builder.build());
                 }
-                surfaceApplier.scheduleApply(params);
+
+                if (navBarTarget != null) {
+                    final SurfaceParams.Builder navBuilder =
+                            new SurfaceParams.Builder(navBarTarget.leash);
+                    if (mNavFadeIn.value > mNavFadeIn.getStartValue()) {
+                        navBuilder.withMatrix(matrix)
+                                .withWindowCrop(appWindowCrop)
+                                .withAlpha(mNavFadeIn.value);
+                    } else {
+                        navBuilder.withAlpha(mNavFadeOut.value);
+                    }
+                    params.add(navBuilder.build());
+                }
+
+                surfaceApplier.scheduleApply(params.toArray(new SurfaceParams[params.size()]));
             }
         });
 

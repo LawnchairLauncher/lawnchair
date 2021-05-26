@@ -49,10 +49,10 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
     private final int mScrollbarTop;
 
     private final Point mFastScrollerOffset = new Point();
-    private final int mEstimatedWidgetListHeaderHeight;
     private boolean mTouchDownOnScroller;
     private HeaderViewDimensionsProvider mHeaderViewDimensionsProvider;
     private int mLastVisibleWidgetContentTableHeight = 0;
+    private int mWidgetHeaderHeight = 0;
     @Nullable private OnContentChangeListener mOnContentChangeListener;
 
     public WidgetsRecyclerView(Context context) {
@@ -71,9 +71,6 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
 
         ActivityContext activity = ActivityContext.lookupContext(getContext());
         DeviceProfile grid = activity.getDeviceProfile();
-        mEstimatedWidgetListHeaderHeight = grid.iconSizePx
-                + 2 * context.getResources().getDimensionPixelSize(
-                        R.dimen.widget_list_header_view_vertical_padding);
     }
 
     @Override
@@ -164,6 +161,14 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
             if (view instanceof TableLayout) {
                 // This assumes there is ever only one content shown in this recycler view.
                 mLastVisibleWidgetContentTableHeight = view.getMeasuredHeight();
+            } else if (view instanceof WidgetsListHeader
+                    && mLastVisibleWidgetContentTableHeight == 0
+                    && view.getMeasuredHeight() > 0) {
+                // This assumes all header views are of the same height.
+                RecyclerView.LayoutParams layoutParams =
+                        (RecyclerView.LayoutParams) view.getLayoutParams();
+                mWidgetHeaderHeight = view.getMeasuredHeight() + layoutParams.topMargin
+                    + layoutParams.bottomMargin;
             }
         }
 
@@ -262,7 +267,7 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
             WidgetsListBaseEntry entry = mAdapter.getItems().get(i);
             if (entry instanceof WidgetsListHeaderEntry
                     || entry instanceof WidgetsListSearchHeaderEntry) {
-                totalItemsHeight += mEstimatedWidgetListHeaderHeight;
+                totalItemsHeight += mWidgetHeaderHeight;
             } else if (entry instanceof WidgetsListContentEntry) {
                 totalItemsHeight += mLastVisibleWidgetContentTableHeight;
             } else {

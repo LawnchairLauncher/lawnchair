@@ -49,6 +49,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="16sp"
             tools:text="App name" />
@@ -74,6 +76,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_alignParentEnd="true"
+        android:enabled="false"
         android:clickable="false"
         android:importantForAccessibility="no"
         android:button="@drawable/widgets_tray_expand_button"/>
