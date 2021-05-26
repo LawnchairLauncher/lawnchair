@@ -27,7 +27,7 @@ public class TaskbarUIController {
      */
     public void alignRealHotseatWithTaskbar() { }
 
-    protected void onCreate() { }
+    protected void onCreate(LauncherTaskbarUIController.ContextualRotationNotifier notifier) { }
 
     protected void onDestroy() { }
 

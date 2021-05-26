@@ -25,7 +25,6 @@ import com.android.launcher3.views.ActivityContext;
 
 public class ImeBarView extends RelativeLayout {
 
-    private ButtonProvider mButtonProvider;
     private View mImeView;
 
     public ImeBarView(Context context) {
@@ -41,8 +40,8 @@ public class ImeBarView extends RelativeLayout {
     }
 
     public void init(ButtonProvider buttonProvider) {
-        mButtonProvider = buttonProvider;
-
+        // TODO (b/187966005), maybe need to replace ime switcher button with
+        //  RotationContextButton when device rotates
         ActivityContext context = getActivityContext();
         RelativeLayout.LayoutParams imeParams = new RelativeLayout.LayoutParams(
                 context.getDeviceProfile().iconSizePx,
@@ -56,13 +55,13 @@ public class ImeBarView extends RelativeLayout {
         downParams.addRule(ALIGN_PARENT_START);
 
         // Down Arrow
-        View downView = mButtonProvider.getDown();
+        View downView = buttonProvider.getDown();
         downView.setLayoutParams(downParams);
         downView.setRotation(-90);
         addView(downView);
 
         // IME switcher button
-        mImeView = mButtonProvider.getImeSwitcher();
+        mImeView = buttonProvider.getImeSwitcher();
         mImeView.setLayoutParams(imeParams);
         addView(mImeView);
     }
