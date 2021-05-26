@@ -82,6 +82,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
+import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
 import com.android.launcher3.statemanager.BaseState;
@@ -1213,20 +1214,22 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 && (windowRotation == ROTATION_90 || windowRotation == ROTATION_270)) {
             swipePipToHomeAnimator.setFromRotation(mTaskViewSimulator, windowRotation);
         }
+        AnimatorPlaybackController activityAnimationToHome =
+                homeAnimFactory.createActivityAnimationToHome();
         swipePipToHomeAnimator.addListener(new AnimatorListenerAdapter() {
             private boolean mHasAnimationEnded;
             @Override
             public void onAnimationStart(Animator animation) {
                 if (mHasAnimationEnded) return;
-                // Ensure Launcher ends in NORMAL state, we intentionally skip other callbacks
-                // since they are not relevant in this swipe-pip-to-home case.
-                homeAnimFactory.createActivityAnimationToHome().dispatchOnStart();
+                // Ensure Launcher ends in NORMAL state
+                activityAnimationToHome.dispatchOnStart();
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
                 if (mHasAnimationEnded) return;
                 mHasAnimationEnded = true;
+                activityAnimationToHome.getAnimationPlayer().end();
                 if (mRecentsAnimationController == null) {
                     // If the recents animation is interrupted, we still end the running
                     // animation (not canceled) so this is still called. In that case, we can
