@@ -35,7 +35,6 @@ import static com.android.launcher3.config.FeatureFlags.KEYGUARD_ANIMATION;
 import static com.android.launcher3.config.FeatureFlags.SEPARATE_RECENTS_ACTIVITY;
 import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_TRANSITIONS;
 import static com.android.launcher3.statehandlers.DepthController.DEPTH;
-import static com.android.quickstep.TaskUtils.taskIsATargetWithMode;
 import static com.android.quickstep.TaskViewUtils.findTaskViewToLaunch;
 import static com.android.systemui.shared.system.QuickStepContract.getWindowCornerRadius;
 import static com.android.systemui.shared.system.QuickStepContract.supportsRoundedCornersOnWindows;
@@ -1000,7 +999,15 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     }
 
     private boolean launcherIsATargetWithMode(RemoteAnimationTargetCompat[] targets, int mode) {
-        return taskIsATargetWithMode(targets, mLauncher.getTaskId(), mode);
+        for (RemoteAnimationTargetCompat target : targets) {
+            if (target.mode == mode && target.taskInfo != null
+                    // Compare component name instead of task-id because transitions will promote
+                    // the target up to the root task while getTaskId returns the leaf.
+                    && target.taskInfo.topActivity.equals(mLauncher.getComponentName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
