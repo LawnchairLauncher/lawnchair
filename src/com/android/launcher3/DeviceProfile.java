@@ -170,6 +170,8 @@ public class DeviceProfile {
     public int overviewTaskMarginPx;
     public int overviewTaskIconSizePx;
     public int overviewTaskThumbnailTopMarginPx;
+    public final int overviewActionsMarginThreeButtonPx;
+    public final int overviewActionsMarginGesturePx;
 
     // Widgets
     public final PointF appWidgetScale = new PointF(1.0f, 1.0f);
@@ -338,6 +340,10 @@ public class DeviceProfile {
                         R.dimen.task_thumbnail_icon_size_grid) : res.getDimensionPixelSize(
                         R.dimen.task_thumbnail_icon_size);
         overviewTaskThumbnailTopMarginPx = overviewTaskIconSizePx + overviewTaskMarginPx * 2;
+        overviewActionsMarginGesturePx = res.getDimensionPixelSize(
+                R.dimen.overview_actions_bottom_margin_gesture);
+        overviewActionsMarginThreeButtonPx = res.getDimensionPixelSize(
+                R.dimen.overview_actions_bottom_margin_three_button);
 
         // Calculate all of the remaining variables.
         extraSpace = updateAvailableDimensions(res);
