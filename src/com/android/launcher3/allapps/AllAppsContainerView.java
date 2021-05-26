@@ -134,7 +134,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     private int mHeaderColor;
 
 
-
     public AllAppsContainerView(Context context) {
         this(context, null);
     }
@@ -842,7 +841,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
      * redraws header protection
      */
     public void invalidateHeader() {
-        if (mScrimView != null) {
+        if (mScrimView != null && FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
             mScrimView.invalidate();
         }
     }
