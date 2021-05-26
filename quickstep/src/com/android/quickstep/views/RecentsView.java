@@ -1561,6 +1561,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 mRecentsAnimationController = null;
             }
         }
+        setEnableDrawingLiveTile(false);
         mLiveTileParams.setTargetSet(null);
         mLiveTileTaskViewSimulator.setDrawsBelowRecents(true);
 
