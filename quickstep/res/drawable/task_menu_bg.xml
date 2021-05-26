@@ -16,5 +16,6 @@
 -->
 
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="?attr/popupColorPrimary" />
+    <solid android:color="@android:color/transparent"/>
+    <corners android:radius="@dimen/task_menu_corner_radius"/>
 </shape>
