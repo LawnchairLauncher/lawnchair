@@ -27,6 +27,7 @@ import static com.android.launcher3.LauncherState.HINT_STATE;
 import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.WORKSPACE_PAGE_INDICATOR;
+import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.ZOOM_OUT;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
@@ -168,7 +169,7 @@ public class WorkspaceStateTransitionAnimation {
 
         propertySetter.setViewBackgroundColor(mLauncher.getScrimView(),
                 state.getWorkspaceScrimColor(mLauncher),
-                config.getInterpolator(ANIM_SCRIM_FADE, LINEAR));
+                config.getInterpolator(ANIM_SCRIM_FADE, ACCEL_2));
     }
 
     public void applyChildState(LauncherState state, CellLayout cl, int childIndex) {
