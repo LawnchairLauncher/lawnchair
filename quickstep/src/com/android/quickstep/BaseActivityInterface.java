@@ -59,6 +59,7 @@ import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.SplitScreenBounds;
+import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -212,7 +213,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         } else {
             int taskMargin = dp.overviewTaskMarginPx;
             int proactiveRowAndMargin;
-            if (dp.isVerticalBarLayout()) {
+            if (!TaskView.SHOW_PROACTIVE_ACTIONS || dp.isVerticalBarLayout()) {
                 // In Vertical Bar Layout the proactive row doesn't have its own space, it's inside
                 // the actions row.
                 proactiveRowAndMargin = 0;
@@ -223,7 +224,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             }
             calculateTaskSizeInternal(context, dp,
                     dp.overviewTaskThumbnailTopMarginPx,
-                    proactiveRowAndMargin + getOverviewActionsHeight(context) + taskMargin,
+                    proactiveRowAndMargin + getOverviewActionsHeight(context, dp),
                     res.getDimensionPixelSize(R.dimen.overview_minimum_next_prev_size) + taskMargin,
                     outRect);
         }
@@ -314,23 +315,16 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         calculateTaskSizeInternal(
                 context, dp,
                 dp.overviewTaskMarginPx,
-                getOverviewActionsHeight(context) + dp.overviewTaskMarginPx,
+                getOverviewActionsHeight(context, dp),
                 dp.overviewTaskMarginPx,
                 outRect);
     }
 
     /** Gets the space that the overview actions will take, including bottom margin. */
-    public final int getOverviewActionsHeight(Context context) {
+    private int getOverviewActionsHeight(Context context, DeviceProfile dp) {
         Resources res = context.getResources();
-        int actionsBottomMargin = 0;
-        if (getMode(context) == Mode.THREE_BUTTONS) {
-            actionsBottomMargin = res.getDimensionPixelSize(
-                    R.dimen.overview_actions_bottom_margin_three_button);
-        } else {
-            actionsBottomMargin = res.getDimensionPixelSize(
-                    R.dimen.overview_actions_bottom_margin_gesture);
-        }
-        return actionsBottomMargin
+        return OverviewActionsView.getOverviewActionsBottomMarginPx(getMode(context), dp)
+                + OverviewActionsView.getOverviewActionsTopMarginPx(getMode(context), dp)
                 + res.getDimensionPixelSize(R.dimen.overview_actions_height);
     }
 
