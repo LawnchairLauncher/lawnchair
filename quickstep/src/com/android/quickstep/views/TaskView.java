@@ -132,6 +132,12 @@ public class TaskView extends FrameLayout implements Reusable {
     @IntDef({FLAG_UPDATE_ALL, FLAG_UPDATE_ICON, FLAG_UPDATE_THUMBNAIL})
     public @interface TaskDataChanges {}
 
+    /**
+     * Should the layout account for space for a proactive action (or chip) to be added under
+     * the task.
+     */
+    public static final boolean SHOW_PROACTIVE_ACTIONS = false;
+
     /** The maximum amount that a task view can be scrimmed, dimmed or tinted. */
     public static final float MAX_PAGE_SCRIM_ALPHA = 0.4f;
 
