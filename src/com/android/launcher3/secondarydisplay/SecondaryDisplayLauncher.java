@@ -41,6 +41,7 @@ import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
+import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.ViewOnDrawExecutor;
@@ -175,8 +176,8 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
     }
 
     @Override
-    public int getPageToBindSynchronously() {
-        return 0;
+    public IntSet getPagesToBindSynchronously() {
+        return new IntSet();
     }
 
     @Override
@@ -199,7 +200,7 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
     }
 
     @Override
-    public void finishBindingItems(int pageBoundFirst) { }
+    public void finishBindingItems(IntSet pagesBoundFirst) { }
 
     @Override
     public void preAddApps() { }
@@ -229,7 +230,7 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
     public void bindAllWidgets(List<WidgetsListBaseEntry> widgets) { }
 
     @Override
-    public void onPageBoundSynchronously(int page) { }
+    public void onPagesBoundSynchronously(IntSet pages) { }
 
     @Override
     public void executeOnNextDraw(ViewOnDrawExecutor executor) {

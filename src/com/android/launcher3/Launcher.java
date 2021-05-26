@@ -105,6 +105,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.CallSuper;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.annotation.VisibleForTesting;
@@ -165,6 +166,7 @@ import com.android.launcher3.util.ActivityResultInfo;
 import com.android.launcher3.util.ActivityTracker;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
+import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
@@ -246,8 +248,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     protected static final int REQUEST_LAST = 100;
 
     // Type: int
-    private static final String RUNTIME_STATE_CURRENT_SCREEN = "launcher.current_screen";
-    // Type: int
     private static final String RUNTIME_STATE = "launcher.state";
     // Type: PendingRequestArgs
     private static final String RUNTIME_STATE_PENDING_REQUEST_ARGS = "launcher.request_args";
@@ -285,6 +285,8 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     private WidgetManagerHelper mAppWidgetManager;
     private LauncherAppWidgetHost mAppWidgetHost;
 
+    private LauncherPageRestoreHelper mPageRestoreHelper;
+
     private final int[] mTmpAddItemCellCoordinates = new int[2];
 
     @Thunk
@@ -320,8 +322,8 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
     private PopupDataProvider mPopupDataProvider;
 
-    private int mSynchronouslyBoundPage = PagedView.INVALID_PAGE;
-    private int mPageToBindSynchronously = PagedView.INVALID_PAGE;
+    private IntSet mSynchronouslyBoundPages = new IntSet();
+    private IntSet mPagesToBindSynchronously = new IntSet();
 
     // We only want to get the SharedPreferences once since it does an FS stat each time we get
     // it from the context.
@@ -456,13 +458,10 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         restoreState(savedInstanceState);
         mStateManager.reapplyState();
 
-        // We only load the page synchronously if the user rotates (or triggers a
-        // configuration change) while launcher is in the foreground
-        int currentScreen = PagedView.INVALID_PAGE;
+        mPageRestoreHelper = new LauncherPageRestoreHelper(mWorkspace);
         if (savedInstanceState != null) {
-            currentScreen = savedInstanceState.getInt(RUNTIME_STATE_CURRENT_SCREEN, currentScreen);
+            mPagesToBindSynchronously = mPageRestoreHelper.getPagesToRestore(savedInstanceState);
         }
-        mPageToBindSynchronously = currentScreen;
 
         if (!mModel.addCallbacksAndLoad(this)) {
             if (!internalStateHandled) {
@@ -1526,17 +1525,16 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     @Override
     public void onRestoreInstanceState(Bundle state) {
         super.onRestoreInstanceState(state);
-        mWorkspace.restoreInstanceStateForChild(mSynchronouslyBoundPage);
+        if (mSynchronouslyBoundPages != null) {
+            mSynchronouslyBoundPages.forEach(page -> mWorkspace.restoreInstanceStateForChild(page));
+        }
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        if (mWorkspace.getChildCount() > 0) {
-            outState.putInt(RUNTIME_STATE_CURRENT_SCREEN, mWorkspace.getNextPage());
+        mPageRestoreHelper.savePagesToRestore(outState);
 
-        }
         outState.putInt(RUNTIME_STATE, mStateManager.getState().ordinal);
-
 
         AbstractFloatingView widgets = AbstractFloatingView
                 .getOpenView(this, AbstractFloatingView.TYPE_WIDGETS_FULL_SHEET);
@@ -2016,24 +2014,24 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     }
 
     /**
-     * Sets the next page to bind synchronously on next bind.
-     * @param page
+     * Sets the next pages to bind synchronously on next bind.
+     * @param pages should not be null.
      */
-    public void setPageToBindSynchronously(int page) {
-        mPageToBindSynchronously = page;
+    public void setPagesToBindSynchronously(@NonNull IntSet pages) {
+        mPagesToBindSynchronously = pages;
     }
 
     /**
      * Implementation of the method from LauncherModel.Callbacks.
      */
     @Override
-    public int getPageToBindSynchronously() {
-        if (mPageToBindSynchronously != PagedView.INVALID_PAGE) {
-            return mPageToBindSynchronously;
-        } else  if (mWorkspace != null) {
-            return mWorkspace.getCurrentPage();
+    public IntSet getPagesToBindSynchronously() {
+        if (mPagesToBindSynchronously != null && !mPagesToBindSynchronously.isEmpty()) {
+            return mPagesToBindSynchronously;
+        } else if (mWorkspace != null) {
+            return mWorkspace.getVisiblePageIndices();
         } else {
-            return 0;
+            return new IntSet();
         }
     }
 
@@ -2468,10 +2466,10 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         return info;
     }
 
-    public void onPageBoundSynchronously(int page) {
-        mSynchronouslyBoundPage = page;
-        mWorkspace.setCurrentPage(page);
-        mPageToBindSynchronously = PagedView.INVALID_PAGE;
+    public void onPagesBoundSynchronously(IntSet pages) {
+        mSynchronouslyBoundPages = pages;
+        mWorkspace.setCurrentPage(pages.getArray().get(0));
+        mPagesToBindSynchronously = new IntSet();
     }
 
     @Override
@@ -2517,7 +2515,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
      *
      * Implementation of the method from LauncherModel.Callbacks.
      */
-    public void finishBindingItems(int pageBoundFirst) {
+    public void finishBindingItems(IntSet pagesBoundFirst) {
         Object traceToken = TraceHelper.INSTANCE.beginSection("finishBindingItems");
         mWorkspace.restoreInstanceStateForRemainingPages();
 
@@ -2532,11 +2530,13 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         ItemInstallQueue.INSTANCE.get(this)
                 .resumeModelPush(FLAG_LOADER_RUNNING);
 
+        int currentPage = pagesBoundFirst != null && !pagesBoundFirst.isEmpty()
+                ? pagesBoundFirst.getArray().get(0) : PagedView.INVALID_PAGE;
         // When undoing the removal of the last item on a page, return to that page.
         // Since we are just resetting the current page without user interaction,
         // override the previous page so we don't log the page switch.
-        mWorkspace.setCurrentPage(pageBoundFirst, pageBoundFirst /* overridePrevPage */);
-        mPageToBindSynchronously = PagedView.INVALID_PAGE;
+        mWorkspace.setCurrentPage(currentPage, currentPage /* overridePrevPage */);
+        mPagesToBindSynchronously = new IntSet();
 
         // Cache one page worth of icons
         getViewCache().setCacheSize(R.layout.folder_application,
