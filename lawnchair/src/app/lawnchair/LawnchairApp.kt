@@ -88,8 +88,7 @@ class LawnchairApp : Application() {
         }
     }
 
-    @Keep
-    fun checkRecentsComponent(): Boolean {
+    private fun checkRecentsComponent(): Boolean {
         if (!Utilities.ATLEAST_P) {
             Log.d(TAG, "API < P, disabling recents")
             return false
@@ -122,13 +121,14 @@ class LawnchairApp : Application() {
     companion object {
         @JvmStatic
         fun getContext(): Context? {
-            return LawnchairApp.getApplication()?.applicationContext
+            return sApplication?.applicationContext
         }
 
         private var sApplication: Application? = null
 
-        fun getApplication(): Application? {
-            return sApplication
+        @JvmStatic
+        fun get(context: Context): LawnchairApp {
+            return context.applicationContext as LawnchairApp
         }
     }
 }
