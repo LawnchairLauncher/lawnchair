@@ -122,6 +122,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     };
     private final int mTabsHeight;
     private final int mViewPagerTopPadding;
+    private final int mSearchAndRecommendationContainerBottomMargin;
     private final int mWidgetCellHorizontalPadding;
 
     @Nullable private WidgetsRecyclerView mCurrentWidgetsRecyclerView;
@@ -148,6 +149,10 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 ? getContext().getResources()
                     .getDimensionPixelSize(R.dimen.widget_picker_view_pager_top_padding)
                 : 0;
+        mSearchAndRecommendationContainerBottomMargin = getContext().getResources()
+                .getDimensionPixelSize(mHasWorkProfile
+                        ? R.dimen.search_and_recommended_widgets_container_small_bottom_margin
+                        : R.dimen.search_and_recommended_widgets_container_bottom_margin);
         mWidgetCellHorizontalPadding = 2 * getResources().getDimensionPixelOffset(
                 R.dimen.widget_cell_horizontal_padding);
     }
@@ -191,6 +196,11 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         mNoWidgetsView = findViewById(R.id.no_widgets_text);
         mSearchAndRecommendationViewHolder = new SearchAndRecommendationViewHolder(
                 findViewById(R.id.search_and_recommendations_container));
+        TopRoundedCornerView.LayoutParams layoutParams =
+                (TopRoundedCornerView.LayoutParams)
+                        mSearchAndRecommendationViewHolder.mContainer.getLayoutParams();
+        layoutParams.bottomMargin = mSearchAndRecommendationContainerBottomMargin;
+        mSearchAndRecommendationViewHolder.mContainer.setLayoutParams(layoutParams);
         mSearchAndRecommendationsScrollController = new SearchAndRecommendationsScrollController(
                 mHasWorkProfile,
                 mTabsHeight,
