@@ -588,11 +588,11 @@
                     android:duration="150"
                     android:propertyName="fillColor"
                     android:startOffset="350"
-                    android:valueFrom="#202124"
+                    android:valueFrom="#6e7175"
                     android:valueTo="#bac4d6"
                     android:valueType="colorType">
                     <aapt:attr name="android:interpolator">
-                        <pathInterpolator android:pathData="M 0.0,0.0 c0.333,0 0.833,0.69 1.0,1.0" />
+                        <pathInterpolator android:pathData="M 0.0,0.0 c0.333,0 0.833,0.674 1.0,1.0" />
                     </aapt:attr>
                 </objectAnimator>
             </set>
@@ -605,11 +605,11 @@
                     android:duration="150"
                     android:propertyName="fillColor"
                     android:startOffset="350"
-                    android:valueFrom="#202124"
+                    android:valueFrom="#6e7175"
                     android:valueTo="#bac4d6"
                     android:valueType="colorType">
                     <aapt:attr name="android:interpolator">
-                        <pathInterpolator android:pathData="M 0.0,0.0 c0.333,0 0.833,0.69 1.0,1.0" />
+                        <pathInterpolator android:pathData="M 0.0,0.0 c0.333,0 0.833,0.676 1.0,1.0" />
                     </aapt:attr>
                 </objectAnimator>
             </set>
@@ -622,11 +622,11 @@
                     android:duration="150"
                     android:propertyName="fillColor"
                     android:startOffset="350"
-                    android:valueFrom="#3c4043"
+                    android:valueFrom="#9a9a9a"
                     android:valueTo="#bac4d6"
                     android:valueType="colorType">
                     <aapt:attr name="android:interpolator">
-                        <pathInterpolator android:pathData="M 0.0,0.0 c0.333,0 0.833,0.69 1.0,1.0" />
+                        <pathInterpolator android:pathData="M 0.0,0.0 c0.333,0 0.833,0.584 1.0,1.0" />
                     </aapt:attr>
                 </objectAnimator>
             </set>
@@ -922,7 +922,7 @@
                     <path
                         android:name="_R_G_L_3_G_D_0_P_0"
                         android:fillAlpha="1"
-                        android:fillColor="#000000"
+                        android:fillColor="@color/fake_wallpaper_color_light_mode"
                         android:fillType="nonZero"
                         android:pathData=" M206 -446 C206,-446 206,446 206,446 C206,446 -206,446 -206,446 C-206,446 -206,-446 -206,-446 C-206,-446 206,-446 206,-446c " />
                 </group>
@@ -937,7 +937,7 @@
                         <path
                             android:name="_R_G_L_2_G_L_4_G_D_0_P_0"
                             android:fillAlpha="0"
-                            android:fillColor="#3c4043"
+                            android:fillColor="#d9d9da"
                             android:fillType="nonZero"
                             android:pathData=" M180 0 C180,0 180,0 180,0 C180,13.8 168.8,25 155,25 C155,25 -155,25 -155,25 C-168.8,25 -180,13.8 -180,0 C-180,0 -180,0 -180,0 C-180,-13.8 -168.8,-25 -155,-25 C-155,-25 155,-25 155,-25 C168.8,-25 180,-13.8 180,0c " />
                     </group>
@@ -1195,7 +1195,7 @@
                                 <path
                                     android:name="_R_G_L_1_G_L_1_G_L_2_G_D_0_P_0"
                                     android:fillAlpha="1"
-                                    android:fillColor="#202124"
+                                    android:fillColor="#6e7175"
                                     android:fillType="nonZero"
                                     android:pathData=" M206 -0.27 C206,-0.27 206,49.73 206,49.73 C206,49.73 -206,49.73 -206,49.73 C-206,49.73 -206,-0.27 -206,-0.27 C-206,-0.27 206,-0.27 206,-0.27c " />
                             </group>
@@ -1206,7 +1206,7 @@
                                 <path
                                     android:name="_R_G_L_1_G_L_1_G_L_1_G_D_0_P_0"
                                     android:fillAlpha="1"
-                                    android:fillColor="#202124"
+                                    android:fillColor="#6e7175"
                                     android:fillType="nonZero"
                                     android:pathData=" M206 -32.5 C206,-32.5 206,32.5 206,32.5 C206,42.43 197.93,50.5 188,50.5 C188,50.5 -188,50.5 -188,50.5 C-197.93,50.5 -206,42.43 -206,32.5 C-206,32.5 -206,-32.5 -206,-32.5 C-206,-42.43 -197.93,-50.5 -188,-50.5 C-188,-50.5 188,-50.5 188,-50.5 C197.93,-50.5 206,-42.43 206,-32.5c " />
                             </group>
@@ -1217,7 +1217,7 @@
                                 <path
                                     android:name="_R_G_L_1_G_L_1_G_L_0_G_D_0_P_0"
                                     android:fillAlpha="1"
-                                    android:fillColor="#3c4043"
+                                    android:fillColor="#9a9a9a"
                                     android:fillType="nonZero"
                                     android:pathData=" M190 0 C190,0 190,0 190,0 C190,10.21 181.71,18.5 171.5,18.5 C171.5,18.5 -171.5,18.5 -171.5,18.5 C-181.71,18.5 -190,10.21 -190,0 C-190,0 -190,0 -190,0 C-190,-10.21 -181.71,-18.5 -171.5,-18.5 C-171.5,-18.5 171.5,-18.5 171.5,-18.5 C181.71,-18.5 190,-10.21 190,0c " />
                             </group>
@@ -1243,7 +1243,7 @@
                     <path
                         android:name="_R_G_L_0_G_D_0_P_0"
                         android:fillAlpha="0"
-                        android:fillColor="@color/gesture_tutorial_primary_color"
+                        android:fillColor="#84ba69"
                         android:fillType="nonZero"
                         android:pathData=" M0 411 C19.33,411 35,426.67 35,446 C35,465.33 19.33,481 0,481 C-19.33,481 -35,465.33 -35,446 C-35,426.67 -19.33,411 0,411c " />
                 </group>

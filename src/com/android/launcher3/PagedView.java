@@ -479,9 +479,11 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                 if (newPos < mMinScroll && oldPos >= mMinScroll) {
                     mEdgeGlowLeft.onAbsorb((int) mScroller.getCurrVelocity());
                     mScroller.abortAnimation();
+                    onEdgeAbsorbingScroll();
                 } else if (newPos > mMaxScroll && oldPos <= mMaxScroll) {
                     mEdgeGlowRight.onAbsorb((int) mScroller.getCurrVelocity());
                     mScroller.abortAnimation();
+                    onEdgeAbsorbingScroll();
                 }
             }
 
@@ -1331,6 +1333,13 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
     protected void onNotSnappingToPageInFreeScroll() { }
+
+    /**
+     * Called when the view edges absorb part of the scroll. Subclasses can override this
+     * to provide custom behavior during animation.
+     */
+    protected void onEdgeAbsorbingScroll() {
+    }
 
     protected boolean shouldFlingForVelocity(int velocity) {
         float threshold = mAllowEasyFling ? mEasyFlingThresholdVelocity : mFlingThresholdVelocity;

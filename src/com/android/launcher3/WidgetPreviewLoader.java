@@ -385,27 +385,29 @@ public class WidgetPreviewLoader {
             previewHeight = Math.max((int)(scale * previewHeight), 1);
         }
 
-        // If a bitmap is passed in, we use it; otherwise, we create a bitmap of the right size
         final Canvas c = new Canvas();
         if (preview == null) {
+            // If no bitmap was provided, then allocate a new one with the right size.
             preview = Bitmap.createBitmap(previewWidth, previewHeight, Config.ARGB_8888);
             c.setBitmap(preview);
         } else {
-            // We use the preview bitmap height to determine where the badge will be drawn in the
-            // UI. If its larger than what we need, resize the preview bitmap so that there are
-            // no transparent pixels between the preview and the badge.
-            if (preview.getHeight() > previewHeight) {
-                preview.reconfigure(preview.getWidth(), previewHeight, preview.getConfig());
+            // If a bitmap was passed in, attempt to reconfigure the bitmap to the same dimensions
+            // as the preview.
+            try {
+                preview.reconfigure(previewWidth, previewHeight, preview.getConfig());
+            } catch (IllegalArgumentException e) {
+                // This occurs if the preview can't be reconfigured for any reason. In this case,
+                // allocate a new bitmap with the right size.
+                preview = Bitmap.createBitmap(previewWidth, previewHeight, Config.ARGB_8888);
             }
-            // Reusing bitmap. Clear it.
+
             c.setBitmap(preview);
             c.drawColor(0, PorterDuff.Mode.CLEAR);
         }
 
         // Draw the scaled preview into the final bitmap
-        int x = (preview.getWidth() - previewWidth) / 2;
         if (widgetPreviewExists) {
-            drawable.setBounds(x, 0, x + previewWidth, previewHeight);
+            drawable.setBounds(0, 0, previewWidth, previewHeight);
             drawable.draw(c);
         } else {
             RectF boxRect;
@@ -565,6 +567,7 @@ public class WidgetPreviewLoader {
         @Thunk long[] mVersions;
         @Thunk Bitmap mBitmapToRecycle;
 
+        @Nullable private Bitmap mUnusedPreviewBitmap;
         private boolean mSaveToDB = false;
 
         PreviewLoadTask(WidgetCacheKey key, WidgetItem info, int previewWidth,
@@ -625,6 +628,11 @@ public class WidgetPreviewLoader {
                 Pair<Bitmap, Boolean> pair = generatePreview(mActivity, mInfo, unusedBitmap,
                         mPreviewWidth, mPreviewHeight);
                 preview = pair.first;
+
+                if (preview != unusedBitmap) {
+                    mUnusedPreviewBitmap = unusedBitmap;
+                }
+
                 this.mSaveToDB = pair.second;
             }
             return preview;
@@ -639,6 +647,14 @@ public class WidgetPreviewLoader {
                 MODEL_EXECUTOR.post(new Runnable() {
                     @Override
                     public void run() {
+                        if (mUnusedPreviewBitmap != null) {
+                            // If we didn't end up using the bitmap, it can be added back into the
+                            // recycled set.
+                            synchronized (mUnusedBitmaps) {
+                                mUnusedBitmaps.add(mUnusedPreviewBitmap);
+                            }
+                        }
+
                         if (!isCancelled() && mSaveToDB) {
                             // If we are still using this preview, then write it to the DB and then
                             // let the normal clear mechanism recycle the bitmap
