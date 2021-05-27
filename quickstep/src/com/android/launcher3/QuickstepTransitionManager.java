@@ -35,7 +35,6 @@ import static com.android.launcher3.config.FeatureFlags.KEYGUARD_ANIMATION;
 import static com.android.launcher3.config.FeatureFlags.SEPARATE_RECENTS_ACTIVITY;
 import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_TRANSITIONS;
 import static com.android.launcher3.statehandlers.DepthController.DEPTH;
-import static com.android.quickstep.TaskUtils.taskIsATargetWithMode;
 import static com.android.quickstep.TaskViewUtils.findTaskViewToLaunch;
 import static com.android.systemui.shared.system.QuickStepContract.getWindowCornerRadius;
 import static com.android.systemui.shared.system.QuickStepContract.supportsRoundedCornersOnWindows;
@@ -583,7 +582,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
         AnimOpenProperties prop = new AnimOpenProperties(mLauncher.getResources(), mDeviceProfile,
                 windowTargetBounds, launcherIconBounds, v, dragLayerBounds[0], dragLayerBounds[1],
-                hasSplashScreen);
+                hasSplashScreen, floatingView.isDifferentFromAppIcon());
         int left = (int) (prop.cropCenterXStart - prop.cropWidthStart / 2);
         int top = (int) (prop.cropCenterYStart - prop.cropHeightStart / 2);
         int right = (int) (left + prop.cropWidthStart);
@@ -1000,7 +999,15 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     }
 
     private boolean launcherIsATargetWithMode(RemoteAnimationTargetCompat[] targets, int mode) {
-        return taskIsATargetWithMode(targets, mLauncher.getTaskId(), mode);
+        for (RemoteAnimationTargetCompat target : targets) {
+            if (target.mode == mode && target.taskInfo != null
+                    // Compare component name instead of task-id because transitions will promote
+                    // the target up to the root task while getTaskId returns the leaf.
+                    && target.taskInfo.topActivity.equals(mLauncher.getComponentName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -1327,7 +1334,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
         AnimOpenProperties(Resources r, DeviceProfile dp, Rect windowTargetBounds,
                 RectF launcherIconBounds, View view, int dragLayerLeft, int dragLayerTop,
-                boolean hasSplashScreen) {
+                boolean hasSplashScreen, boolean hasDifferentAppIcon) {
             // Scale the app icon to take up the entire screen. This simplifies the math when
             // animating the app window position / scale.
             float smallestSize = Math.min(windowTargetBounds.height(), windowTargetBounds.width());
@@ -1359,8 +1366,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                     : APP_LAUNCH_DOWN_CURVED_DURATION;
             alphaDuration = useUpwardAnimation ? APP_LAUNCH_ALPHA_DURATION
                     : APP_LAUNCH_ALPHA_DOWN_DURATION;
-
-            iconAlphaStart = hasSplashScreen ? 0 : 1f;
+            iconAlphaStart = hasSplashScreen && !hasDifferentAppIcon ? 0 : 1f;
 
             // TOOD: Share value from shell when available.
             final float windowIconSize = Utilities.pxFromSp(108, r.getDisplayMetrics());

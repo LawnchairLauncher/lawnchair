@@ -119,7 +119,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     };
 
     private final ActivityContext mActivity;
-    private Drawable mIcon;
+    private FastBitmapDrawable mIcon;
     private boolean mCenterVertically;
 
     protected final int mDisplay;
@@ -140,7 +140,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     private DotInfo mDotInfo;
     private DotRenderer mDotRenderer;
     @ViewDebug.ExportedProperty(category = "launcher", deepExport = true)
-    private DotRenderer.DrawParams mDotParams;
+    protected DotRenderer.DrawParams mDotParams;
     private Animator mDotScaleAnim;
     private boolean mForceHideDot;
 
@@ -319,7 +319,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     protected void applyIconAndLabel(ItemInfoWithIcon info) {
         boolean useTheme = mDisplay == DISPLAY_WORKSPACE || mDisplay == DISPLAY_FOLDER;
         FastBitmapDrawable iconDrawable = info.newIcon(getContext(), useTheme);
-        mDotParams.color = IconPalette.getMutedColor(info.bitmap.color, 0.54f);
+        mDotParams.color = IconPalette.getMutedColor(iconDrawable.getIconColor(), 0.54f);
 
         setIcon(iconDrawable);
         applyLabel(info);
@@ -333,16 +333,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
                     ? getContext().getString(R.string.disabled_app_label, info.contentDescription)
                     : info.contentDescription);
         }
-    }
-
-    /**
-     * Directly set the icon and label.
-     */
-    @UiThread
-    public void applyIconAndLabel(Drawable icon, CharSequence label) {
-        setIcon(icon);
-        setText(label);
-        setContentDescription(label);
     }
 
     /**
@@ -369,7 +359,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     }
 
     /** Returns the icon for this view. */
-    public Drawable getIcon() {
+    public FastBitmapDrawable getIcon() {
         return mIcon;
     }
 
@@ -704,7 +694,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     /**
      * Sets the icon for this view based on the layout direction.
      */
-    protected void setIcon(Drawable icon) {
+    protected void setIcon(FastBitmapDrawable icon) {
         if (mIsIconVisible) {
             applyCompoundDrawables(icon);
         }

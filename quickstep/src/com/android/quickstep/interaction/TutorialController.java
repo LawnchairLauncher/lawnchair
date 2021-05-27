@@ -27,12 +27,14 @@ import android.graphics.drawable.RippleDrawable;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.accessibility.AccessibilityEvent;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.CallSuper;
 import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
@@ -53,7 +55,6 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     private static final String PIXEL_TIPS_APP_PACKAGE_NAME = "com.google.android.apps.tips";
     private static final CharSequence DEFAULT_PIXEL_TIPS_APP_NAME = "Pixel Tips";
 
-    private static final int FEEDBACK_VISIBLE_MS = 5000;
     private static final int FEEDBACK_ANIMATION_MS = 250;
     private static final int RIPPLE_VISIBLE_MS = 300;
 
@@ -73,9 +74,9 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     final RippleDrawable mRippleDrawable;
     final Button mActionButton;
     final TutorialStepIndicator mTutorialStepView;
-    private final Runnable mHideFeedbackRunnable;
-    Runnable mHideFeedbackEndAction;
     private final AlertDialog mSkipTutorialDialog;
+
+    protected boolean mGestureCompleted = false;
 
     TutorialController(TutorialFragment tutorialFragment, TutorialType tutorialType) {
         mTutorialFragment = tutorialFragment;
@@ -99,12 +100,6 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         mTutorialStepView =
                 rootView.findViewById(R.id.gesture_tutorial_fragment_feedback_tutorial_step);
         mSkipTutorialDialog = createSkipTutorialDialog();
-
-        mHideFeedbackRunnable =
-                () -> mFeedbackView.animate()
-                        .translationY(-mFeedbackView.getTop() - mFeedbackView.getHeight())
-                        .setDuration(FEEDBACK_ANIMATION_MS)
-                        .withEndAction(this::hideFeedbackEndAction).start();
     }
 
     private void showSkipTutorialDialog() {
@@ -156,6 +151,25 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         return null;
     }
 
+    void showFeedback() {
+        if (mGestureCompleted) {
+            mFeedbackView.setTranslationY(0);
+            return;
+        }
+        AnimatedVectorDrawable tutorialAnimation = mTutorialFragment.getTutorialAnimation();
+        AnimatedVectorDrawable gestureAnimation = mTutorialFragment.getGestureAnimation();
+
+        if (tutorialAnimation != null && gestureAnimation != null) {
+            TextView title = mFeedbackView.findViewById(
+                    R.id.gesture_tutorial_fragment_feedback_title);
+
+            playFeedbackVideo(tutorialAnimation, gestureAnimation, () -> {
+                mFeedbackView.setTranslationY(0);
+                title.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_FOCUSED);
+            });
+        }
+    }
+
     /**
      * Show feedback reflecting a failed gesture attempt.
      *
@@ -166,97 +180,49 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     }
 
     /**
-     * Show feedback reflecting a failed gesture attempt.
-     *
-     * @param showActionButton Whether the tutorial feedback's action button should be shown.
-     **/
-    void showFeedback(int subtitleResId, boolean showActionButton) {
-        showFeedback(subtitleResId, showActionButton ? () -> {} : null, showActionButton);
-    }
-
-    /**
-     * Show feedback reflecting a failed gesture attempt.
-     **/
-    void showFeedback(int titleResId, int subtitleResId, @Nullable Runnable successEndAction) {
-        showFeedback(titleResId, subtitleResId, successEndAction, false);
-    }
-
-    /**
      * Show feedback reflecting the result of a gesture attempt.
      *
-     * @param successEndAction Non-null iff the gesture was successful; this is run after the
-     *                        feedback is shown (i.e. to go to the next step)
+     * @param isGestureSuccessful Whether the tutorial feedback's action button should be shown.
      **/
-    void showFeedback(
-            int subtitleResId, @Nullable Runnable successEndAction, boolean showActionButton) {
+    void showFeedback(int subtitleResId, boolean isGestureSuccessful) {
         showFeedback(
-                successEndAction == null
-                        ? R.string.gesture_tutorial_try_again
-                        : R.string.gesture_tutorial_nice,
+                isGestureSuccessful
+                        ? R.string.gesture_tutorial_nice : R.string.gesture_tutorial_try_again,
                 subtitleResId,
-                successEndAction,
-                showActionButton);
+                isGestureSuccessful);
     }
+
     void showFeedback(
             int titleResId,
             int subtitleResId,
-            @Nullable Runnable successEndAction,
-            boolean showActionButton) {
-        if (mHideFeedbackEndAction != null) {
-            return;
-        }
+            boolean isGestureSuccessful) {
         TextView title = mFeedbackView.findViewById(R.id.gesture_tutorial_fragment_feedback_title);
         title.setText(titleResId);
         TextView subtitle =
                 mFeedbackView.findViewById(R.id.gesture_tutorial_fragment_feedback_subtitle);
         subtitle.setText(subtitleResId);
-        if (showActionButton) {
+        if (isGestureSuccessful) {
             showActionButton();
         }
-        mHideFeedbackEndAction = successEndAction;
+        mGestureCompleted = isGestureSuccessful;
 
         AnimatedVectorDrawable tutorialAnimation = mTutorialFragment.getTutorialAnimation();
         AnimatedVectorDrawable gestureAnimation = mTutorialFragment.getGestureAnimation();
         if (tutorialAnimation != null && gestureAnimation != null) {
-            if (successEndAction == null) {
-                if (tutorialAnimation.isRunning()) {
-                    tutorialAnimation.reset();
-                }
-                tutorialAnimation.registerAnimationCallback(new Animatable2.AnimationCallback() {
-
-                    @Override
-                    public void onAnimationStart(Drawable drawable) {
-                        super.onAnimationStart(drawable);
-
-                        mGestureVideoView.setVisibility(GONE);
-                        if (gestureAnimation.isRunning()) {
-                            gestureAnimation.stop();
-                        }
-
-                        mFeedbackView.setTranslationY(
-                                -mFeedbackView.getHeight() - mFeedbackView.getTop());
-                        mFeedbackView.setVisibility(View.VISIBLE);
-                        mFeedbackView.animate()
-                                .setDuration(FEEDBACK_ANIMATION_MS)
-                                .translationY(0)
-                                .start();
-                        mFeedbackView.removeCallbacks(mHideFeedbackRunnable);
-                        mFeedbackView.postDelayed(mHideFeedbackRunnable, FEEDBACK_VISIBLE_MS);
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Drawable drawable) {
-                        super.onAnimationEnd(drawable);
-
-                        mGestureVideoView.setVisibility(View.VISIBLE);
-                        gestureAnimation.start();
-
-                        tutorialAnimation.unregisterAnimationCallback(this);
-                    }
+            if (!isGestureSuccessful) {
+                playFeedbackVideo(tutorialAnimation, gestureAnimation, () -> {
+                    mFeedbackView.setTranslationY(
+                            -mFeedbackView.getHeight() - mFeedbackView.getTop());
+                    mFeedbackView.setVisibility(View.VISIBLE);
+                    mFeedbackView.animate()
+                            .setDuration(FEEDBACK_ANIMATION_MS)
+                            .translationY(0)
+                            .start();
+                    title.postDelayed(
+                            () -> title.sendAccessibilityEvent(
+                                    AccessibilityEvent.TYPE_VIEW_FOCUSED),
+                            FEEDBACK_ANIMATION_MS);
                 });
-
-                tutorialAnimation.start();
-                mFeedbackVideoView.setVisibility(View.VISIBLE);
                 return;
             } else {
                 mTutorialFragment.releaseFeedbackVideoView();
@@ -268,15 +234,13 @@ abstract class TutorialController implements BackGestureAttemptCallback,
                 .setDuration(FEEDBACK_ANIMATION_MS)
                 .translationY(0)
                 .start();
-        mFeedbackView.removeCallbacks(mHideFeedbackRunnable);
-        if (!showActionButton) {
-            mFeedbackView.postDelayed(mHideFeedbackRunnable, FEEDBACK_VISIBLE_MS);
-        }
+        title.postDelayed(
+                () -> title.sendAccessibilityEvent(
+                        AccessibilityEvent.TYPE_VIEW_FOCUSED),
+                FEEDBACK_ANIMATION_MS);
     }
 
     void hideFeedback(boolean releaseFeedbackVideo) {
-        mFeedbackView.removeCallbacks(mHideFeedbackRunnable);
-        mHideFeedbackEndAction = null;
         mFeedbackView.clearAnimation();
         mFeedbackView.setVisibility(View.INVISIBLE);
         if (releaseFeedbackVideo) {
@@ -284,11 +248,41 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         }
     }
 
-    void hideFeedbackEndAction() {
-        if (mHideFeedbackEndAction != null) {
-            mHideFeedbackEndAction.run();
-            mHideFeedbackEndAction = null;
+    private void playFeedbackVideo(
+            @NonNull AnimatedVectorDrawable tutorialAnimation,
+            @NonNull AnimatedVectorDrawable gestureAnimation,
+            @NonNull Runnable onStartRunnable) {
+
+        if (tutorialAnimation.isRunning()) {
+            tutorialAnimation.reset();
         }
+        tutorialAnimation.registerAnimationCallback(new Animatable2.AnimationCallback() {
+
+            @Override
+            public void onAnimationStart(Drawable drawable) {
+                super.onAnimationStart(drawable);
+
+                mGestureVideoView.setVisibility(GONE);
+                if (gestureAnimation.isRunning()) {
+                    gestureAnimation.stop();
+                }
+
+                onStartRunnable.run();
+            }
+
+            @Override
+            public void onAnimationEnd(Drawable drawable) {
+                super.onAnimationEnd(drawable);
+
+                mGestureVideoView.setVisibility(View.VISIBLE);
+                gestureAnimation.start();
+
+                tutorialAnimation.unregisterAnimationCallback(this);
+            }
+        });
+
+        tutorialAnimation.start();
+        mFeedbackVideoView.setVisibility(View.VISIBLE);
     }
 
     void setRippleHotspot(float x, float y) {
@@ -317,6 +311,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         updateSubtext();
         updateDrawables();
 
+        mGestureCompleted = false;
         if (mFakeLauncherView != null) {
             mFakeLauncherView.setVisibility(View.INVISIBLE);
         }
