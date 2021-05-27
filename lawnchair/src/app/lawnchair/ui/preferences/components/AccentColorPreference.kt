@@ -28,7 +28,7 @@ import kotlinx.coroutines.launch
 @ExperimentalAnimationApi
 fun AccentColorPreference(showDivider: Boolean = true) {
     val scope = rememberCoroutineScope()
-    val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+    val sheetState = rememberBottomSheetState(ModalBottomSheetValue.Hidden)
     var accentColor by preferenceManager().accentColor.getAdapter()
     val context = LocalContext.current
     val initialNewAccentColor = if (accentColor == 0) context.systemAccentColor else accentColor
@@ -105,13 +105,12 @@ fun AccentColorPreference(showDivider: Boolean = true) {
                 }
             }
         },
-    ) { showSheet ->
-        ClickablePreference(
-            label = stringResource(id = R.string.accent_color),
-            showDivider = showDivider,
-            onClick = { scope.launch { showSheet() } }
-        )
-    }
+    )
+    ClickablePreference(
+        label = stringResource(id = R.string.accent_color),
+        showDivider = showDivider,
+        onClick = { scope.launch { sheetState.show() } }
+    )
 }
 
 @Composable
