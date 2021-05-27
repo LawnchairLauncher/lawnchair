@@ -25,7 +25,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Matrix;
-import android.net.Uri;
 import android.os.SystemClock;
 import android.os.UserManager;
 import android.provider.Settings;
@@ -33,7 +32,6 @@ import android.text.TextUtils;
 
 import androidx.annotation.VisibleForTesting;
 
-import com.android.launcher3.BuildConfig;
 import com.android.launcher3.R;
 import com.android.quickstep.util.AssistContentRequester;
 import com.android.quickstep.views.OverviewActionsView;
@@ -54,9 +52,6 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
     public static final String ACTIONS_ERROR_CODE = "niu_actions_app_error_code";
     public static final int ERROR_PERMISSIONS = 1;
     private static final String TAG = "TaskOverlayFactoryGo";
-    private static final String URI_AUTHORITY =
-            BuildConfig.APPLICATION_ID + ".overview.fileprovider";
-    private static final String FAKE_FILEPATH = "shared_images/null.png";
 
     // Empty constructor required for ResourceBasedOverride
     public TaskOverlayFactoryGo(Context context) {}
@@ -138,15 +133,6 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
                 mImageApi.shareAsDataWithExplicitIntent(/* crop */ null, intent);
             } else {
                 intent.putExtra(ACTIONS_ERROR_CODE, ERROR_PERMISSIONS);
-                // The Intent recipient expects an image URI, and omitting one or using a
-                // completely invalid URI will cause the Intent parsing to crash.
-                // So we construct a URI for a nonexistent image.
-                Uri uri = new Uri.Builder()
-                        .scheme(ContentResolver.SCHEME_CONTENT)
-                        .authority(URI_AUTHORITY)
-                        .path(FAKE_FILEPATH)
-                        .build();
-                intent.setData(uri);
                 mApplicationContext.startActivity(intent);
             }
         }
