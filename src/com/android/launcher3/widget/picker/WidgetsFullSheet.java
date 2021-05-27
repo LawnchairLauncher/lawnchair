@@ -41,6 +41,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.DeviceProfile;
@@ -677,6 +678,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
         private final int mAdapterType;
         private final WidgetsListAdapter mWidgetsListAdapter;
+        private final DefaultItemAnimator mWidgetsListItemAnimator;
 
         private WidgetsRecyclerView mWidgetsRecyclerView;
 
@@ -703,13 +705,16 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 default:
                     break;
             }
+            mWidgetsListItemAnimator = new DefaultItemAnimator();
+            // Disable change animations because it disrupts the item focus upon adapter item
+            // change.
+            mWidgetsListItemAnimator.setSupportsChangeAnimations(false);
         }
 
         void setup(WidgetsRecyclerView recyclerView) {
             mWidgetsRecyclerView = recyclerView;
             mWidgetsRecyclerView.setAdapter(mWidgetsListAdapter);
-            // Disables animation because it disrupts the item focus upon adapter item change.
-            mWidgetsRecyclerView.setItemAnimator(null);
+            mWidgetsRecyclerView.setItemAnimator(mWidgetsListItemAnimator);
             mWidgetsRecyclerView.setHeaderViewDimensionsProvider(WidgetsFullSheet.this);
             mWidgetsRecyclerView.setEdgeEffectFactory(
                     ((TopRoundedCornerView) mContent).createEdgeEffectFactory());

@@ -119,7 +119,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     };
 
     private final ActivityContext mActivity;
-    private Drawable mIcon;
+    private FastBitmapDrawable mIcon;
     private boolean mCenterVertically;
 
     protected final int mDisplay;
@@ -336,16 +336,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     }
 
     /**
-     * Directly set the icon and label.
-     */
-    @UiThread
-    public void applyIconAndLabel(Drawable icon, CharSequence label) {
-        setIcon(icon);
-        setText(label);
-        setContentDescription(label);
-    }
-
-    /**
      * Overrides the default long press timeout.
      */
     public void setLongPressTimeoutFactor(float longPressTimeoutFactor) {
@@ -369,7 +359,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     }
 
     /** Returns the icon for this view. */
-    public Drawable getIcon() {
+    public FastBitmapDrawable getIcon() {
         return mIcon;
     }
 
@@ -704,7 +694,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     /**
      * Sets the icon for this view based on the layout direction.
      */
-    protected void setIcon(Drawable icon) {
+    protected void setIcon(FastBitmapDrawable icon) {
         if (mIsIconVisible) {
             applyCompoundDrawables(icon);
         }

@@ -49,12 +49,15 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
     }
 
     @Override
-    protected int getMockAppTaskThumbnailResId() {
+    protected int getMockAppTaskThumbnailResId(boolean forDarkMode) {
         return R.drawable.mock_conversations_list;
     }
 
     @Override
     public void onBackGestureAttempted(BackGestureResult result) {
+        if (mGestureCompleted) {
+            return;
+        }
         switch (mTutorialType) {
             case OVERVIEW_NAVIGATION:
                 switch (result) {
@@ -77,7 +80,7 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
 
     @Override
     public void onNavBarGestureAttempted(NavBarGestureResult result, PointF finalVelocity) {
-        if (mHideFeedbackEndAction != null) {
+        if (mGestureCompleted) {
             return;
         }
         switch (mTutorialType) {
@@ -103,9 +106,10 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
                         animset.start();
                         mRunningWindowAnim = SwipeUpAnimationLogic.RunningWindowAnim.wrap(animset);
                         onMotionPaused(true /*arbitrary value*/);
-                        int subtitleResId = mTutorialFragment.getNumSteps() == 1
-                                ? R.string.overview_gesture_feedback_complete_without_follow_up
-                                : R.string.overview_gesture_feedback_complete_with_follow_up;
+                        int subtitleResId = mTutorialFragment.getNumSteps() > 1
+                                && mTutorialFragment.isAtFinalStep()
+                                ? R.string.overview_gesture_feedback_complete_with_follow_up
+                                : R.string.overview_gesture_feedback_complete_without_follow_up;
                         showFeedback(subtitleResId, true);
                         break;
                     case HOME_OR_OVERVIEW_NOT_STARTED_WRONG_SWIPE_DIRECTION:
