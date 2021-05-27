@@ -105,6 +105,7 @@
     <dimen name="all_apps_tip_bottom_margin">8dp</dimen>
     <!-- The size of corner radius of the arrow in the arrow toast. -->
     <dimen name="arrow_toast_corner_radius">2dp</dimen>
+    <dimen name="arrow_toast_arrow_width">10dp</dimen>
 
 <!-- Search bar in All Apps -->
     <dimen name="all_apps_header_max_elevation">3dp</dimen>
