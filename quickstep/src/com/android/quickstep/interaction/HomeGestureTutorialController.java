@@ -48,6 +48,9 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
 
     @Override
     public void onBackGestureAttempted(BackGestureResult result) {
+        if (mGestureCompleted) {
+            return;
+        }
         switch (mTutorialType) {
             case HOME_NAVIGATION:
                 switch (result) {
@@ -70,7 +73,7 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
 
     @Override
     public void onNavBarGestureAttempted(NavBarGestureResult result, PointF finalVelocity) {
-        if (mHideFeedbackEndAction != null) {
+        if (mGestureCompleted) {
             return;
         }
         switch (mTutorialType) {
@@ -80,7 +83,7 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
                         mTutorialFragment.releaseGestureVideoView();
                         animateFakeTaskViewHome(finalVelocity, null);
                         showActionButton();
-                        int subtitleResId = mTutorialFragment.getNumSteps() == 1
+                        int subtitleResId = mTutorialFragment.isAtFinalStep()
                                 ? R.string.home_gesture_feedback_complete_without_follow_up
                                 : R.string.home_gesture_feedback_complete_with_follow_up;
                         showFeedback(subtitleResId, true);
