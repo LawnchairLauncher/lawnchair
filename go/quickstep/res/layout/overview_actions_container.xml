@@ -29,10 +29,6 @@
         android:orientation="horizontal">
 
         <Space
-            android:layout_width="@dimen/go_overview_button_width"
-            android:layout_height="1dp" />
-
-        <Space
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_weight="1" />
@@ -50,9 +46,8 @@
         </LinearLayout>
 
         <Space
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1" />
+            android:layout_width="@dimen/go_overview_button_container_margin"
+            android:layout_height="1dp" />
 
         <LinearLayout
             style="@style/GoOverviewActionButtonContainer">
@@ -68,9 +63,8 @@
         </LinearLayout>
 
         <Space
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1" />
+            android:layout_width="@dimen/go_overview_button_container_margin"
+            android:layout_height="1dp" />
 
         <LinearLayout
             style="@style/GoOverviewActionButtonContainer">
@@ -89,10 +83,6 @@
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_weight="1" />
-
-        <Space
-            android:layout_width="@dimen/go_overview_button_width"
-            android:layout_height="1dp" />
 
         <!-- Will be enabled in a future version. -->
         <LinearLayout
