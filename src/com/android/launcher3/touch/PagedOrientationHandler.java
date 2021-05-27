@@ -109,16 +109,37 @@ public interface PagedOrientationHandler {
     float getSecondaryValue(float x, float y);
 
     boolean isLayoutNaturalToLauncher();
+    FloatProperty getSplitSelectTaskOffset(FloatProperty primary, FloatProperty secondary,
+            DeviceProfile deviceProfile);
+    int getDistanceToBottomOfRect(DeviceProfile dp, Rect rect);
+    List<SplitPositionOption> getSplitPositionOptions(DeviceProfile dp);
+
+    // Overview TaskMenuView methods
     float getTaskMenuX(float x, View thumbnailView, int overScroll);
     float getTaskMenuY(float y, View thumbnailView, int overScroll);
     int getTaskMenuWidth(View view);
-    void setTaskMenuLayoutOrientation(DeviceProfile deviceProfile, LinearLayout taskMenuLayout);
+    /**
+     * Sets linear layout orientation for {@link com.android.launcher3.popup.SystemShortcut} items
+     * inside task menu view.
+     */
+    void setTaskOptionsMenuLayoutOrientation(DeviceProfile deviceProfile,
+            LinearLayout taskMenuLayout);
+    /**
+     * Sets layout param attributes for {@link com.android.launcher3.popup.SystemShortcut} child
+     * views inside task menu view.
+     */
     void setLayoutParamsForTaskMenuOptionItem(LinearLayout.LayoutParams lp,
             LinearLayout viewGroup, DeviceProfile deviceProfile);
-    int getDistanceToBottomOfRect(DeviceProfile dp, Rect rect);
-    List<SplitPositionOption> getSplitPositionOptions(DeviceProfile dp);
-    FloatProperty getSplitSelectTaskOffset(FloatProperty primary, FloatProperty secondary,
-            DeviceProfile deviceProfile);
+    /**
+     * Adjusts margins for the entire task menu view itself, which comprises of both app title and
+     * shortcut options.
+     */
+    void setTaskMenuAroundTaskView(LinearLayout taskView, float margin);
+    /**
+     * Since the task menu layout is manually positioned on top of recents view, this method returns
+     * additional adjustments to the positioning based on fake land/seascape
+     */
+    PointF getAdditionalInsetForTaskMenu(float margin);
 
     // The following are only used by TaskViewTouchHandler.
     /** @return Either VERTICAL or HORIZONTAL. */

@@ -22,15 +22,17 @@
     <!-- For Launchers that want to override the default dialog corner radius -->
     <dimen name="task_corner_radius_override">-1dp</dimen>
 
+    <!--  Task Menu View  -->
+    <dimen name="task_menu_corner_radius">22dp</dimen>
     <dimen name="overview_proactive_row_height">48dp</dimen>
     <dimen name="overview_proactive_row_bottom_margin">16dp</dimen>
 
-    <dimen name="overview_minimum_next_prev_size">48dp</dimen>
+    <dimen name="overview_minimum_next_prev_size">50dp</dimen>
     <dimen name="overview_task_margin">16dp</dimen>
 
     <!-- Overrideable in overlay that provides the Overview Actions. -->
     <dimen name="overview_actions_height">48dp</dimen>
-    <dimen name="overview_actions_bottom_margin_gesture">12dp</dimen>
+    <dimen name="overview_actions_bottom_margin_gesture">28dp</dimen>
     <dimen name="overview_actions_bottom_margin_three_button">8dp</dimen>
     <dimen name="overview_actions_horizontal_margin">16dp</dimen>
 
@@ -73,6 +75,7 @@
     <!-- Total space (start + end) between the task card and the edge of the screen
          in various configurations -->
     <dimen name="task_card_menu_option_vertical_padding">8dp</dimen>
+    <dimen name="task_card_margin">8dp</dimen>
     <dimen name="task_card_menu_shadow_height">3dp</dimen>
     <dimen name="task_menu_option_start_margin">12dp</dimen>
     <!-- Copied from framework resource:

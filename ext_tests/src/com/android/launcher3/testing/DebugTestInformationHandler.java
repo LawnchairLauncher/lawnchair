@@ -109,6 +109,7 @@ public class DebugTestInformationHandler extends TestInformationHandler {
             case TestProtocol.REQUEST_VIEW_LEAK: {
                 if (sLeaks == null) sLeaks = new LinkedList();
                 sLeaks.add(new View(mContext));
+                sLeaks.add(new View(mContext));
                 return response;
             }
 
