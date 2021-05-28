@@ -1,0 +1,263 @@
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+    <target android:name="time_group">
+        <aapt:attr name="android:animation">
+            <set android:ordering="together">
+                <objectAnimator
+                    android:duration="83"
+                    android:propertyName="translateX"
+                    android:startOffset="0"
+                    android:valueFrom="0"
+                    android:valueTo="1"
+                    android:valueType="floatType" />
+            </set>
+        </aapt:attr>
+    </target>
+    <aapt:attr name="android:drawable">
+        <vector
+            android:width="412dp"
+            android:height="892dp"
+            android:viewportHeight="892"
+            android:viewportWidth="412">
+            <group android:name="_R_G">
+                <group android:name="_R_G_L_0_G">
+                    <group android:name="_R_G_L_0_G_L_4_G">
+                        <group
+                            android:name="_R_G_L_0_G_L_4_G_L_11_G"
+                            android:scaleX="0.87473"
+                            android:scaleY="0.98643"
+                            android:translateX="206"
+                            android:translateY="472.769">
+                            <path
+                                android:name="_R_G_L_0_G_L_4_G_L_11_G_D_0_P_0"
+                                android:fillAlpha="1"
+                                android:fillColor="#dadce0"
+                                android:fillType="nonZero"
+                                android:pathData=" M235.5 -407 C235.5,-407 235.5,407 235.5,407 C235.5,416.93 227.43,425 217.5,425 C217.5,425 -217.5,425 -217.5,425 C-227.43,425 -235.5,416.93 -235.5,407 C-235.5,407 -235.5,-407 -235.5,-407 C-235.5,-416.93 -227.43,-425 -217.5,-425 C-217.5,-425 217.5,-425 217.5,-425 C227.43,-425 235.5,-416.93 235.5,-407c " />
+                        </group>
+                        <group
+                            android:name="_R_G_L_0_G_L_4_G_L_10_G"
+                            android:translateX="182.5"
+                            android:translateY="831">
+                            <path
+                                android:name="_R_G_L_0_G_L_4_G_L_10_G_D_0_P_0"
+                                android:fillAlpha="1"
+                                android:fillColor="#bdc1c6"
+                                android:fillType="nonZero"
+                                android:pathData=" M158.5 -3 C158.5,-3 158.5,3 158.5,3 C158.5,7.42 154.92,11 150.5,11 C150.5,11 -150.5,11 -150.5,11 C-154.92,11 -158.5,7.42 -158.5,3 C-158.5,3 -158.5,-3 -158.5,-3 C-158.5,-7.42 -154.92,-11 -150.5,-11 C-150.5,-11 150.5,-11 150.5,-11 C154.92,-11 158.5,-7.42 158.5,-3c " />
+                        </group>
+                        <group
+                            android:name="_R_G_L_0_G_L_4_G_L_9_G"
+                            android:translateX="186"
+                            android:translateY="801">
+                            <path
+                                android:name="_R_G_L_0_G_L_4_G_L_9_G_D_0_P_0"
+                                android:fillAlpha="1"
+                                android:fillColor="#bdc1c6"
+                                android:fillType="nonZero"
+                                android:pathData=" M162 -3 C162,-3 162,3 162,3 C162,7.42 158.42,11 154,11 C154,11 -154,11 -154,11 C-158.42,11 -162,7.42 -162,3 C-162,3 -162,-3 -162,-3 C-162,-7.42 -158.42,-11 -154,-11 C-154,-11 154,-11 154,-11 C158.42,-11 162,-7.42 162,-3c " />
+                        </group>
+                        <group
+                            android:name="_R_G_L_0_G_L_4_G_L_8_G"
+                            android:translateX="119"
+                            android:translateY="755">
+                            <path
+                                android:name="_R_G_L_0_G_L_4_G_L_8_G_D_0_P_0"
+                                android:fillAlpha="1"
+                                android:fillColor="#bdc1c6"
+                                android:fillType="nonZero"
+                                android:pathData=" M95 -3 C95,-3 95,3 95,3 C95,7.42 91.42,11 87,11 C87,11 -87,11 -87,11 C-91.42,11 -95,7.42 -95,3 C-95,3 -95,-3 -95,-3 C-95,-7.42 -91.42,-11 -87,-11 C-87,-11 87,-11 87,-11 C91.42,-11 95,-7.42 95,-3c " />
+                        </group>
+                        <group
+                            android:name="_R_G_L_0_G_L_4_G_L_7_G"
+                            android:translateX="182.5"
+                            android:translateY="725">
+                            <path
+                                android:name="_R_G_L_0_G_L_4_G_L_7_G_D_0_P_0"
+                                android:fillAlpha="1"
+                                android:fillColor="#bdc1c6"
+                                android:fillType="nonZero"
+                                android:pathData=" M158.5 -3 C158.5,-3 158.5,3 158.5,3 C158.5,7.42 154.92,11 150.5,11 C150.5,11 -150.5,11 -150.5,11 C-154.92,11 -158.5,7.42 -158.5,3 C-158.5,3 -158.5,-3 -158.5,-3 C-158.5,-7.42 -154.92,-11 -150.5,-11 C-150.5,-11 150.5,-11 150.5,-11 C154.92,-11 158.5,-7.42 158.5,-3c " />
+                        </group>
+                        <group
+                            android:name="_R_G_L_0_G_L_4_G_L_6_G"
+                            android:translateX="197.5"
+                            android:translateY="695">
+                            <path
+                                android:name="_R_G_L_0_G_L_4_G_L_6_G_D_0_P_0"
+                                android:fillAlpha="1"
+                                android:fillColor="#bdc1c6"
+                                android:fillType="nonZero"
+                                android:pathData=" M173.5 -3 C173.5,-3 173.5,3 173.5,3 C173.5,7.42 169.92,11 165.5,11 C165.5,11 -165.5,11 -165.5,11 C-169.92,11 -173.5,7.42 -173.5,3 C-173.5,3 -173.5,-3 -173.5,-3 C-173.5,-7.42 -169.92,-11 -165.5,-11 C-165.5,-11 165.5,-11 165.5,-11 C169.92,-11 173.5,-7.42 173.5,-3c " />
+                        </group>
+                        <group
+                            android:name="_R_G_L_0_G_L_4_G_L_5_G"
+                            android:translateX="192"
+                            android:translateY="665">
+                            <path
+                                android:name="_R_G_L_0_G_L_4_G_L_5_G_D_0_P_0"
+                                android:fillAlpha="1"
+                                android:fillColor="#bdc1c6"
+                                android:fillType="nonZero"
+                                android:pathData=" M168 -3 C168,-3 168,3 168,3 C168,7.42 164.42,11 160,11 C160,11 -160,11 -160,11 C-164.42,11 -168,7.42 -168,3 C-168,3 -168,-3 -168,-3 C-168,-7.42 -164.42,-11 -160,-11 C-160,-11 160,-11 160,-11 C164.42,-11 168,-7.42 168,-3c " />
+                        </group>
+                        <group
+                            android:name="_R_G_L_0_G_L_4_G_L_4_G"
+                            android:translateX="105.5"
+                            android:translateY="360">
+                            <path
+                                android:name="_R_G_L_0_G_L_4_G_L_4_G_D_0_P_0"
+                                android:fillAlpha="1"
+                                android:fillColor="#bdc1c6"
+                                android:fillType="nonZero"
+                                android:pathData=" M23.5 -2 C23.5,-2 23.5,2 23.5,2 C23.5,4.21 21.71,6 19.5,6 C19.5,6 -19.5,6 -19.5,6 C-21.71,6 -23.5,4.21 -23.5,2 C-23.5,2 -23.5,-2 -23.5,-2 C-23.5,-4.21 -21.71,-6 -19.5,-6 C-19.5,-6 19.5,-6 19.5,-6 C21.71,-6 23.5,-4.21 23.5,-2c " />
+                        </group>
+                        <group
+                            android:name="_R_G_L_0_G_L_4_G_L_3_G"
+                            android:translateX="47.5"
+                            android:translateY="360">
+                            <path
+                                android:name="_R_G_L_0_G_L_4_G_L_3_G_D_0_P_0"
+                                android:fillAlpha="1"
+                                android:fillColor="#bdc1c6"
+                                android:fillType="nonZero"
+                                android:pathData=" M23.5 -2 C23.5,-2 23.5,2 23.5,2 C23.5,4.21 21.71,6 19.5,6 C19.5,6 -19.5,6 -19.5,6 C-21.71,6 -23.5,4.21 -23.5,2 C-23.5,2 -23.5,-2 -23.5,-2 C-23.5,-4.21 -21.71,-6 -19.5,-6 C-19.5,-6 19.5,-6 19.5,-6 C21.71,-6 23.5,-4.21 23.5,-2c " />
+                        </group>
+                        <group
+                            android:name="_R_G_L_0_G_L_4_G_L_2_G"
+                            android:translateX="142.5"
+                            android:translateY="328">
+                            <path
+                                android:name="_R_G_L_0_G_L_4_G_L_2_G_D_0_P_0"
+                                android:fillAlpha="1"
+                                android:fillColor="#bdc1c6"
+                                android:fillType="nonZero"
+                                android:pathData=" M118.5 -10 C118.5,-10 118.5,10 118.5,10 C118.5,14.42 114.92,18 110.5,18 C110.5,18 -110.5,18 -110.5,18 C-114.92,18 -118.5,14.42 -118.5,10 C-118.5,10 -118.5,-10 -118.5,-10 C-118.5,-14.42 -114.92,-18 -110.5,-18 C-110.5,-18 110.5,-18 110.5,-18 C114.92,-18 118.5,-14.42 118.5,-10c " />
+                        </group>
+                        <group
+                            android:name="_R_G_L_0_G_L_4_G_L_1_G"
+                            android:translateX="186"
+                            android:translateY="284">
+                            <path
+                                android:name="_R_G_L_0_G_L_4_G_L_1_G_D_0_P_0"
+                                android:fillAlpha="1"
+                                android:fillColor="#bdc1c6"
+                                android:fillType="nonZero"
+                                android:pathData=" M162 -10 C162,-10 162,10 162,10 C162,14.42 158.42,18 154,18 C154,18 -154,18 -154,18 C-158.42,18 -162,14.42 -162,10 C-162,10 -162,-10 -162,-10 C-162,-14.42 -158.42,-18 -154,-18 C-154,-18 154,-18 154,-18 C158.42,-18 162,-14.42 162,-10c " />
+                        </group>
+                        <group
+                            android:name="_R_G_L_0_G_L_4_G_L_0_G"
+                            android:translateX="155"
+                            android:translateY="240">
+                            <path
+                                android:name="_R_G_L_0_G_L_4_G_L_0_G_D_0_P_0"
+                                android:fillAlpha="1"
+                                android:fillColor="#bdc1c6"
+                                android:fillType="nonZero"
+                                android:pathData=" M131 -10 C131,-10 131,10 131,10 C131,14.42 127.42,18 123,18 C123,18 -123,18 -123,18 C-127.42,18 -131,14.42 -131,10 C-131,10 -131,-10 -131,-10 C-131,-14.42 -127.42,-18 -123,-18 C-123,-18 123,-18 123,-18 C127.42,-18 131,-14.42 131,-10c " />
+                        </group>
+                    </group>
+                    <group
+                        android:name="_R_G_L_0_G_L_3_G"
+                        android:translateX="24"
+                        android:translateY="390">
+                        <group
+                            android:name="_R_G_L_0_G_L_3_G_L_0_G"
+                            android:translateX="182"
+                            android:translateY="120">
+                            <path
+                                android:name="_R_G_L_0_G_L_3_G_L_0_G_D_0_P_0"
+                                android:fillAlpha="1"
+                                android:fillColor="#bdc1c6"
+                                android:fillType="nonZero"
+                                android:pathData=" M182 -98 C182,-98 182,98 182,98 C182,110.14 172.14,120 160,120 C160,120 -160,120 -160,120 C-172.14,120 -182,110.14 -182,98 C-182,98 -182,-98 -182,-98 C-182,-110.14 -172.14,-120 -160,-120 C-160,-120 160,-120 160,-120 C172.14,-120 182,-110.14 182,-98c " />
+                        </group>
+                    </group>
+                    <group android:name="_R_G_L_0_G_L_2_G">
+                        <group
+                            android:name="_R_G_L_0_G_L_2_G_L_2_G"
+                            android:translateX="206"
+                            android:translateY="145">
+                            <path
+                                android:name="_R_G_L_0_G_L_2_G_L_2_G_D_0_P_0"
+                                android:fillAlpha="1"
+                                android:fillColor="#e8eaed"
+                                android:fillType="nonZero"
+                                android:pathData=" M206 -95.63 C206,-95.63 206,42.37 206,42.37 C206,43.47 205.1,44.37 204,44.37 C204,44.37 -204,44.37 -204,44.37 C-205.1,44.37 -206,43.47 -206,42.37 C-206,42.37 -206,-95.63 -206,-95.63 C-206,-96.73 -205.1,-97.63 -204,-97.63 C-204,-97.63 204,-97.63 204,-97.63 C205.1,-97.63 206,-96.73 206,-95.63c " />
+                        </group>
+                        <group
+                            android:name="_R_G_L_0_G_L_2_G_L_1_G"
+                            android:translateX="206"
+                            android:translateY="145">
+                            <path
+                                android:name="_R_G_L_0_G_L_2_G_L_1_G_D_0_P_0"
+                                android:fillAlpha="1"
+                                android:fillColor="#80868b"
+                                android:fillType="nonZero"
+                                android:pathData=" M109 -14 C109,-14 109,14 109,14 C109,15.1 108.1,16 107,16 C107,16 -107,16 -107,16 C-108.1,16 -109,15.1 -109,14 C-109,14 -109,-14 -109,-14 C-109,-15.1 -108.1,-16 -107,-16 C-107,-16 107,-16 107,-16 C108.1,-16 109,-15.1 109,-14c " />
+                        </group>
+                        <group
+                            android:name="_R_G_L_0_G_L_2_G_L_0_G"
+                            android:translateX="46"
+                            android:translateY="145">
+                            <path
+                                android:name="_R_G_L_0_G_L_2_G_L_0_G_D_0_P_0"
+                                android:fillAlpha="1"
+                                android:fillColor="#80868b"
+                                android:fillType="nonZero"
+                                android:pathData=" M22 -14 C22,-14 22,14 22,14 C22,18.42 18.42,22 14,22 C14,22 -14,22 -14,22 C-18.42,22 -22,18.42 -22,14 C-22,14 -22,-14 -22,-14 C-22,-18.42 -18.42,-22 -14,-22 C-14,-22 14,-22 14,-22 C18.42,-22 22,-18.42 22,-14c " />
+                        </group>
+                    </group>
+                    <group android:name="_R_G_L_0_G_L_1_G">
+                        <group
+                            android:name="_R_G_L_0_G_L_1_G_L_2_G"
+                            android:translateX="206"
+                            android:translateY="51">
+                            <path
+                                android:name="_R_G_L_0_G_L_1_G_L_2_G_D_0_P_0"
+                                android:fillAlpha="1"
+                                android:fillColor="#6e7175"
+                                android:fillType="nonZero"
+                                android:pathData=" M206 -0.27 C206,-0.27 206,49.73 206,49.73 C206,49.73 -206,49.73 -206,49.73 C-206,49.73 -206,-0.27 -206,-0.27 C-206,-0.27 206,-0.27 206,-0.27c " />
+                        </group>
+                        <group
+                            android:name="_R_G_L_0_G_L_1_G_L_1_G"
+                            android:translateX="206"
+                            android:translateY="50.5">
+                            <path
+                                android:name="_R_G_L_0_G_L_1_G_L_1_G_D_0_P_0"
+                                android:fillAlpha="1"
+                                android:fillColor="#6e7175"
+                                android:fillType="nonZero"
+                                android:pathData=" M206 -32.5 C206,-32.5 206,32.5 206,32.5 C206,42.43 197.93,50.5 188,50.5 C188,50.5 -188,50.5 -188,50.5 C-197.93,50.5 -206,42.43 -206,32.5 C-206,32.5 -206,-32.5 -206,-32.5 C-206,-42.43 -197.93,-50.5 -188,-50.5 C-188,-50.5 188,-50.5 188,-50.5 C197.93,-50.5 206,-42.43 206,-32.5c " />
+                        </group>
+                        <group
+                            android:name="_R_G_L_0_G_L_1_G_L_0_G"
+                            android:translateX="206"
+                            android:translateY="66.5">
+                            <path
+                                android:name="_R_G_L_0_G_L_1_G_L_0_G_D_0_P_0"
+                                android:fillAlpha="1"
+                                android:fillColor="#9a9a9a"
+                                android:fillType="nonZero"
+                                android:pathData=" M190 0 C190,0 190,0 190,0 C190,10.21 181.71,18.5 171.5,18.5 C171.5,18.5 -171.5,18.5 -171.5,18.5 C-181.71,18.5 -190,10.21 -190,0 C-190,0 -190,0 -190,0 C-190,-10.21 -181.71,-18.5 -171.5,-18.5 C-171.5,-18.5 171.5,-18.5 171.5,-18.5 C181.71,-18.5 190,-10.21 190,0c " />
+                        </group>
+                    </group>
+                    <group
+                        android:name="_R_G_L_0_G_L_0_G"
+                        android:scaleY="0"
+                        android:translateX="206"
+                        android:translateY="446">
+                        <path
+                            android:name="_R_G_L_0_G_L_0_G_D_0_P_0"
+                            android:fillAlpha="1"
+                            android:fillColor="#bac4d6"
+                            android:fillType="nonZero"
+                            android:pathData=" M206.06 -430.06 C206.06,-430.06 206,431 206,431 C206,446 189.75,446 189.79,446 C189.79,446 -189.98,446 -189.98,446 C-189.94,446 -206,446 -206,431 C-206,431 -206,-430 -206,-430 C-206,-446 -189.97,-446 -190.01,-446 C-190.01,-446 188.98,-446.06 188.98,-446.06 C188.94,-446.06 206,-446 206.06,-430.06c " />
+                    </group>
+                </group>
+            </group>
+            <group android:name="time_group" />
+        </vector>
+    </aapt:attr>
+</animated-vector>
