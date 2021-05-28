@@ -152,7 +152,7 @@ public class RotationTouchHelper implements
 
         // Register for navigation mode changes
         SysUINavigationMode.Mode newMode = mSysUiNavMode.addModeChangeListener(this);
-        onNavigationModeChanged(newMode);
+        onNavModeChangedInternal(newMode, newMode.hasGestures);
         runOnDestroy(() -> mSysUiNavMode.removeModeChangeListener(this));
 
         mOrientationListener = new OrientationEventListener(mContext) {
@@ -245,13 +245,22 @@ public class RotationTouchHelper implements
 
     @Override
     public void onNavigationModeChanged(SysUINavigationMode.Mode newMode) {
+        onNavModeChangedInternal(newMode, false);
+    }
+
+    /**
+     * @param forceRegister if {@code true}, this will register {@link #mFrozenTaskListener} via
+     *                      {@link #setupOrientationSwipeHandler()}
+     */
+    private void onNavModeChangedInternal(SysUINavigationMode.Mode newMode, boolean forceRegister) {
         mDisplayController.removeChangeListener(this);
         mDisplayController.addChangeListener(this);
         onDisplayInfoChanged(mContext, mDisplayController.getInfo(), CHANGE_ALL);
 
         mOrientationTouchTransformer.setNavigationMode(newMode, mDisplayController.getInfo(),
-            mContext.getResources());
-        if (!mMode.hasGestures && newMode.hasGestures) {
+                mContext.getResources());
+
+        if (forceRegister || (!mMode.hasGestures && newMode.hasGestures)) {
             setupOrientationSwipeHandler();
         } else if (mMode.hasGestures && !newMode.hasGestures){
             destroyOrientationSwipeHandlerCallback();
