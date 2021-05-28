@@ -88,7 +88,6 @@ public class PredictionRowView extends LinearLayout implements
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        AllAppsTipView.scheduleShowIfNeeded(mLauncher);
     }
 
     public void setup(FloatingHeaderView parent, FloatingHeaderRow[] rows, boolean tabsHidden) {

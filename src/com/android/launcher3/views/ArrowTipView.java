@@ -53,11 +53,19 @@ public class ArrowTipView extends AbstractFloatingView {
 
     protected final BaseDraggingActivity mActivity;
     private final Handler mHandler = new Handler();
+    private final boolean mIsPointingUp;
+    private final int mArrowWidth;
     private Runnable mOnClosed;
 
     public ArrowTipView(Context context) {
+        this(context, false);
+    }
+
+    public ArrowTipView(Context context, boolean isPointingUp) {
         super(context, null, 0);
         mActivity = BaseDraggingActivity.fromContext(context);
+        mIsPointingUp = isPointingUp;
+        mArrowWidth = context.getResources().getDimensionPixelSize(R.dimen.arrow_toast_arrow_width);
         init(context);
     }
 
@@ -105,13 +113,17 @@ public class ArrowTipView extends AbstractFloatingView {
         View arrowView = findViewById(R.id.arrow);
         ViewGroup.LayoutParams arrowLp = arrowView.getLayoutParams();
         ShapeDrawable arrowDrawable = new ShapeDrawable(TriangleShape.create(
-                arrowLp.width, arrowLp.height, false));
+                arrowLp.width, arrowLp.height, mIsPointingUp));
         Paint arrowPaint = arrowDrawable.getPaint();
-        arrowPaint.setColor(ContextCompat.getColor(getContext(),  R.color.arrow_tip_view_bg));
+        arrowPaint.setColor(ContextCompat.getColor(getContext(), R.color.arrow_tip_view_bg));
         // The corner path effect won't be reflected in the shadow, but shouldn't be noticeable.
         arrowPaint.setPathEffect(new CornerPathEffect(
                 context.getResources().getDimension(R.dimen.arrow_toast_corner_radius)));
         arrowView.setBackground(arrowDrawable);
+        if (mIsPointingUp) {
+            removeView(arrowView);
+            addView(arrowView, 0);
+        }
 
         mIsOpen = true;
 
@@ -128,10 +140,10 @@ public class ArrowTipView extends AbstractFloatingView {
     /**
      * Show the ArrowTipView (tooltip) center, start, or end aligned.
      *
-     * @param text The text to be shown in the tooltip.
-     * @param gravity The gravity aligns the tooltip center, start, or end.
+     * @param text             The text to be shown in the tooltip.
+     * @param gravity          The gravity aligns the tooltip center, start, or end.
      * @param arrowMarginStart The margin from start to place arrow (ignored if center)
-     * @param top  The Y coordinate of the bottom of tooltip.
+     * @param top              The Y coordinate of the bottom of tooltip.
      * @return The tooltip.
      */
     public ArrowTipView show(String text, int gravity, int arrowMarginStart, int top) {
@@ -149,15 +161,15 @@ public class ArrowTipView extends AbstractFloatingView {
             arrowMarginStart = parent.getMeasuredWidth() - arrowMarginStart;
         }
         if (gravity == Gravity.END) {
-            lp.setMarginEnd(parent.getMeasuredWidth() - arrowMarginStart);
+            lp.setMarginEnd(parent.getMeasuredWidth() - arrowMarginStart - mArrowWidth);
         } else if (gravity == Gravity.START) {
-            lp.setMarginStart(arrowMarginStart);
+            lp.setMarginStart(arrowMarginStart - mArrowWidth / 2);
         }
         requestLayout();
 
         params.leftMargin = mActivity.getDeviceProfile().workspacePadding.left;
         params.rightMargin = mActivity.getDeviceProfile().workspacePadding.right;
-        post(() -> setY(top - getHeight()));
+        post(() -> setY(top - (mIsPointingUp ? 0 : getHeight())));
         setAlpha(0);
         animate()
                 .alpha(1f)
@@ -172,13 +184,14 @@ public class ArrowTipView extends AbstractFloatingView {
     /**
      * Show the ArrowTipView (tooltip) custom aligned.
      *
-     * @param text The text to be shown in the tooltip.
+     * @param text        The text to be shown in the tooltip.
      * @param arrowXCoord The X coordinate for the arrow on the tip. The arrow is usually in the
      *                    center of ArrowTipView unless the ArrowTipView goes beyond screen margin.
-     * @param yCoord The Y coordinate of the bottom of the tooltip.
+     * @param yCoord      The Y coordinate of the bottom of the tooltip.
      * @return The tool tip view.
      */
-    @Nullable public ArrowTipView showAtLocation(String text, int arrowXCoord, int yCoord) {
+    @Nullable
+    public ArrowTipView showAtLocation(String text, int arrowXCoord, int yCoord) {
         ViewGroup parent = mActivity.getDragLayer();
         @Px int parentViewWidth = parent.getWidth();
         @Px int textViewWidth = getContext().getResources()
