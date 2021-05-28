@@ -52,9 +52,10 @@ public final class WidgetsTableUtils {
      * <p>Grouping:
      * 1. Widgets and shortcuts never group together in the same row.
      * 2. The ordered widgets are grouped together in the same row until their total horizontal
-     *    spans exceed the {@code maxSpansPerRow}.
+     *    spans exceed the {@code maxSpansPerRow} - 1.
      * 3. The order shortcuts are grouped together in the same row until their total horizontal
-     *    spans exceed the {@code maxSpansPerRow}.
+     *    spans exceed the {@code maxSpansPerRow} - 1.
+     * 4. If there is only one widget in a row, its width may exceed the {@code maxSpansPerRow}.
      */
     public static List<ArrayList<WidgetItem>> groupWidgetItemsIntoTable(
             List<WidgetItem> widgetItems, final int maxSpansPerRow) {
@@ -70,10 +71,15 @@ public final class WidgetsTableUtils {
             int numOfWidgetItems = widgetItemsAtRow.size();
             int totalHorizontalSpan = widgetItemsAtRow.stream().map(item -> item.spanX)
                     .reduce(/* default= */ 0, Integer::sum);
+            int totalHorizontalSpanAfterAddingWidget = widgetItem.spanX + totalHorizontalSpan;
             if (numOfWidgetItems == 0) {
                 widgetItemsAtRow.add(widgetItem);
-            } else if (widgetItem.spanX + totalHorizontalSpan <= maxSpansPerRow
-                    && widgetItem.hasSameType(widgetItemsAtRow.get(numOfWidgetItems - 1))) {
+            } else if (
+                    // The max spans per row is reduced by 1 to ensure we don't pack too many
+                    // 1xn widgets on the same row, which may reduce the space for rendering a
+                    // widget's description.
+                    totalHorizontalSpanAfterAddingWidget <= maxSpansPerRow - 1
+                            && widgetItem.hasSameType(widgetItemsAtRow.get(numOfWidgetItems - 1))) {
                 // Group items in the same row if
                 // 1. they are with the same type, i.e. a row can only have widgets or shortcuts but
                 //    never a mix of both.
