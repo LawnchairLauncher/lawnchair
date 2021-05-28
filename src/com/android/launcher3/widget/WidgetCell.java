@@ -95,6 +95,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     protected final BaseActivity mActivity;
     private final CheckLongPressHelper mLongPressHelper;
     private final float mEnforcedCornerRadius;
+    private final int mPreviewPadding;
 
     private RemoteViews mRemoteViewsPreview;
     private NavigableAppWidgetHostView mAppWidgetHostViewPreview;
@@ -119,6 +120,8 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         setClipToPadding(false);
         setAccessibilityDelegate(mActivity.getAccessibilityDelegate());
         mEnforcedCornerRadius = RoundedCornerEnforcement.computeEnforcedRadius(context);
+        mPreviewPadding =
+                2 * getResources().getDimensionPixelSize(R.dimen.widget_preview_shortcut_padding);
     }
 
     private void setContainerWidth() {
@@ -281,7 +284,16 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             return;
         }
         if (drawable != null) {
-            setContainerSize(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+            float scale = 1f;
+            if (getWidth() > 0 && getHeight() > 0) {
+                // Scale down the preview size if it's wider than the cell.
+                float maxWidth = getWidth() - mPreviewPadding;
+                float previewWidth = drawable.getIntrinsicWidth() * mPreviewScale;
+                scale = Math.min(maxWidth / previewWidth, 1);
+            }
+            setContainerSize(
+                    Math.round(drawable.getIntrinsicWidth() * scale),
+                    Math.round(drawable.getIntrinsicHeight() * scale));
             mWidgetImage.setDrawable(drawable);
             mWidgetImage.setVisibility(View.VISIBLE);
             if (mAppWidgetHostViewPreview != null) {
@@ -330,11 +342,9 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
 
     /** Sets the widget preview image size, in number of cells, and preview scale. */
     public void setPreviewSize(int spanX, int spanY, float previewScale) {
-        int padding = 2 * getResources()
-                .getDimensionPixelSize(R.dimen.widget_preview_shortcut_padding);
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
-        mPreviewWidth = deviceProfile.cellWidthPx * spanX + padding;
-        mPreviewHeight = deviceProfile.cellHeightPx * spanY + padding;
+        mPreviewWidth = deviceProfile.cellWidthPx * spanX + mPreviewPadding;
+        mPreviewHeight = deviceProfile.cellHeightPx * spanY + mPreviewPadding;
         mPreviewScale = previewScale;
     }
 
