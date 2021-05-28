@@ -20,8 +20,10 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 
+import android.appwidget.AppWidgetHostView;
 import android.content.Context;
 import android.graphics.Point;
+import android.graphics.Rect;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
@@ -108,6 +110,47 @@ public final class LauncherAppWidgetProviderInfoTest {
 
         assertThat(info.minSpanX).isEqualTo(2);
         assertThat(info.minSpanY).isEqualTo(2);
+    }
+
+    @Test
+    public void initSpans_minResizeWidthWithCellSpacingAndWidgetInset_shouldInitializeMinSpans() {
+        InvariantDeviceProfile idp = createIDP();
+        DeviceProfile dp = idp.supportedProfiles.get(0);
+        Rect padding = new Rect();
+        AppWidgetHostView.getDefaultPaddingForWidget(mContext, null, padding);
+        int maxPadding = Math.max(Math.max(padding.left, padding.right),
+                Math.max(padding.top, padding.bottom));
+        dp.cellLayoutBorderSpacingPx = maxPadding + 1;
+        Mockito.when(dp.shouldInsetWidgets()).thenReturn(true);
+
+        LauncherAppWidgetProviderInfo info = new LauncherAppWidgetProviderInfo();
+        info.minResizeWidth = CELL_SIZE * 2 + maxPadding;
+        info.minResizeHeight = CELL_SIZE * 2 + maxPadding;
+
+        info.initSpans(mContext, idp);
+
+        assertThat(info.minSpanX).isEqualTo(2);
+        assertThat(info.minSpanY).isEqualTo(2);
+    }
+
+    @Test
+    public void initSpans_minResizeWidthWithCellSpacingAndNoWidgetInset_shouldInitializeMinSpans() {
+        InvariantDeviceProfile idp = createIDP();
+        DeviceProfile dp = idp.supportedProfiles.get(0);
+        Rect padding = new Rect();
+        AppWidgetHostView.getDefaultPaddingForWidget(mContext, null, padding);
+        int maxPadding = Math.max(Math.max(padding.left, padding.right),
+                Math.max(padding.top, padding.bottom));
+        dp.cellLayoutBorderSpacingPx = maxPadding - 1;
+        Mockito.when(dp.shouldInsetWidgets()).thenReturn(false);
+        LauncherAppWidgetProviderInfo info = new LauncherAppWidgetProviderInfo();
+        info.minResizeWidth = CELL_SIZE * 2 + maxPadding;
+        info.minResizeHeight = CELL_SIZE * 2 + maxPadding;
+
+        info.initSpans(mContext, idp);
+
+        assertThat(info.minSpanX).isEqualTo(3);
+        assertThat(info.minSpanY).isEqualTo(3);
     }
 
     private InvariantDeviceProfile createIDP() {

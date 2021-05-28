@@ -20,13 +20,20 @@
     android:layout_height="match_parent"
     android:clipChildren="false">
 
-    <ImageView
+    <RelativeLayout
         android:id="@+id/gesture_tutorial_fake_launcher_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="70dp" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/gesture_tutorial_fake_hotseat_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="70dp"/>
+
+    </RelativeLayout>
 
     <com.android.launcher3.views.ClipIconView
         android:id="@+id/gesture_tutorial_fake_icon_view"
@@ -119,8 +126,6 @@
             app:layout_constraintTop_toTopOf="@id/gesture_tutorial_fragment_action_button"
             app:layout_constraintBottom_toBottomOf="@id/gesture_tutorial_fragment_action_button"/>
 
-        <!-- android:stateListAnimator="@null" removes shadow and normal on click behavior (increase
-             of elevation and shadow) which is replaced by ripple effect in android:foreground -->
         <Button
             android:id="@+id/gesture_tutorial_fragment_action_button"
             style="@style/TextAppearance.GestureTutorial.ButtonLabel"
@@ -133,7 +138,6 @@
             android:paddingEnd="16dp"
             android:text="@string/gesture_tutorial_action_button_label_next"
             android:background="@drawable/gesture_tutorial_action_button_background"
-            android:foreground="?android:attr/selectableItemBackgroundBorderless"
             android:stateListAnimator="@null"
             android:visibility="invisible"
 

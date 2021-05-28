@@ -62,10 +62,11 @@ public class TaskbarIconController {
 
         ButtonProvider buttonProvider = new ButtonProvider(mActivity);
         mImeBarView.init(buttonProvider);
-        mTaskbarView.construct(clickListener, longClickListener, buttonProvider);
+        mTaskbarView.init(new TaskbarViewCallbacks(), clickListener, longClickListener,
+                buttonProvider);
         mTaskbarView.getLayoutParams().height = mActivity.getDeviceProfile().taskbarSize;
 
-        mDragLayer.init(new Callbacks(), mTaskbarView);
+        mDragLayer.init(new TaskbarDragLayerCallbacks(), mTaskbarView);
     }
 
     public void onDestroy() {
@@ -102,7 +103,7 @@ public class TaskbarIconController {
     /**
      * Callbacks for {@link TaskbarDragLayer} to interact with the icon controller
      */
-    public class Callbacks {
+    public class TaskbarDragLayerCallbacks {
 
         /**
          * Called to update the touchable insets
@@ -158,6 +159,18 @@ public class TaskbarIconController {
             }
             mImeBarView.setAlpha(alpha);
             mImeBarView.setVisibility(alpha == 0 ? GONE : VISIBLE);
+        }
+    }
+
+    /**
+     * Callbacks for {@link TaskbarView} to interact with the icon controller
+     */
+    public class TaskbarViewCallbacks {
+        /**
+         * Returns whether no other controller is currently handling the given View's visibility.
+         */
+        public boolean canUpdateViewVisibility(View child) {
+            return !mActivity.getDragController().isDraggingView(child);
         }
     }
 }

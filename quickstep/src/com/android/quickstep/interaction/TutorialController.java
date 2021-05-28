@@ -30,6 +30,7 @@ import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.CallSuper;
@@ -66,7 +67,8 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     final ViewGroup mFeedbackView;
     final ImageView mFeedbackVideoView;
     final ImageView mGestureVideoView;
-    final ImageView mFakeLauncherView;
+    final RelativeLayout mFakeLauncherView;
+    final ImageView mFakeHotseatView;
     final ClipIconView mFakeIconView;
     final View mFakeTaskView;
     final View mFakePreviousTaskView;
@@ -90,6 +92,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         mFeedbackVideoView = rootView.findViewById(R.id.gesture_tutorial_feedback_video);
         mGestureVideoView = rootView.findViewById(R.id.gesture_tutorial_gesture_video);
         mFakeLauncherView = rootView.findViewById(R.id.gesture_tutorial_fake_launcher_view);
+        mFakeHotseatView = rootView.findViewById(R.id.gesture_tutorial_fake_hotseat_view);
         mFakeIconView = rootView.findViewById(R.id.gesture_tutorial_fake_icon_view);
         mFakeTaskView = rootView.findViewById(R.id.gesture_tutorial_fake_task_view);
         mFakePreviousTaskView =
@@ -113,12 +116,12 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     }
 
     @DrawableRes
-    protected int getMockLauncherResId() {
+    protected int getMockHotseatResId() {
         return R.drawable.default_sandbox_mock_launcher;
     }
 
     @DrawableRes
-    protected int getMockAppTaskThumbnailResId() {
+    protected int getMockAppTaskThumbnailResId(boolean forDarkMode) {
         return R.drawable.default_sandbox_app_task_thumbnail;
     }
 
@@ -312,8 +315,8 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         updateDrawables();
 
         mGestureCompleted = false;
-        if (mFakeLauncherView != null) {
-            mFakeLauncherView.setVisibility(View.INVISIBLE);
+        if (mFakeHotseatView != null) {
+            mFakeHotseatView.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -344,10 +347,14 @@ abstract class TutorialController implements BackGestureAttemptCallback,
             mTutorialFragment.getRootView().setBackground(AppCompatResources.getDrawable(
                     mContext, getMockWallpaperResId()));
             mTutorialFragment.updateFeedbackVideo();
-            mFakeLauncherView.setImageDrawable(AppCompatResources.getDrawable(
-                    mContext, getMockLauncherResId()));
+            mFakeLauncherView.setBackgroundColor(
+                    mContext.getColor(Utilities.isDarkTheme(mContext)
+                            ? R.color.fake_wallpaper_color_dark_mode
+                            : R.color.fake_wallpaper_color_light_mode));
+            mFakeHotseatView.setImageDrawable(AppCompatResources.getDrawable(
+                    mContext, getMockHotseatResId()));
             mFakeTaskView.setBackground(AppCompatResources.getDrawable(
-                    mContext, getMockAppTaskThumbnailResId()));
+                    mContext, getMockAppTaskThumbnailResId(Utilities.isDarkTheme(mContext))));
             mFakeTaskView.animate().alpha(1).setListener(
                     AnimatorListeners.forSuccessCallback(() -> mFakeTaskView.animate().cancel()));
             mFakePreviousTaskView.setBackground(AppCompatResources.getDrawable(

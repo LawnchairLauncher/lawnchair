@@ -403,7 +403,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         }
     }
 
-    void clearPressedBackground() {
+    public void clearPressedBackground() {
         setPressed(false);
         setStayPressed(false);
     }
@@ -849,8 +849,9 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         switch (display) {
             case DISPLAY_ALL_APPS:
                 return grid.allAppsIconSizePx;
-            case DISPLAY_WORKSPACE:
             case DISPLAY_FOLDER:
+                return grid.folderChildIconSizePx;
+            case DISPLAY_WORKSPACE:
             default:
                 return grid.iconSizePx;
         }
