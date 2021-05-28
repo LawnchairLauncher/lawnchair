@@ -147,12 +147,10 @@ public class OneHandedModeInputConsumer extends DelegateInputConsumer {
     }
 
     private void onStartGestureDetected() {
-        if (mDeviceState.isOneHandedModeEnabled()) {
-            if (!mDeviceState.isOneHandedModeActive()) {
-                SystemUiProxy.INSTANCE.get(mContext).startOneHandedMode();
-            }
-        } else if (mDeviceState.isSwipeToNotificationEnabled()) {
+        if (mDeviceState.isSwipeToNotificationEnabled()) {
             SystemUiProxy.INSTANCE.get(mContext).expandNotificationPanel();
+        } else if (!mDeviceState.isOneHandedModeActive()) {
+            SystemUiProxy.INSTANCE.get(mContext).startOneHandedMode();
         }
     }
 
