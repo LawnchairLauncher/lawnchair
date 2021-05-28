@@ -30,6 +30,7 @@ import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SHE
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SHELL_SHELL_TRANSITIONS;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SHELL_SPLIT_SCREEN;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SHELL_STARTING_WINDOW;
+import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SMARTSPACE_TRANSITION_CONTROLLER;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SYSUI_PROXY;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_TRACING_ENABLED;
 
@@ -107,6 +108,7 @@ import com.android.systemui.shared.system.InputChannelCompat;
 import com.android.systemui.shared.system.InputChannelCompat.InputEventReceiver;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.InputMonitorCompat;
+import com.android.systemui.shared.system.smartspace.ISmartspaceTransitionController;
 import com.android.systemui.shared.tracing.ProtoTraceable;
 import com.android.wm.shell.onehanded.IOneHanded;
 import com.android.wm.shell.pip.IPip;
@@ -164,9 +166,13 @@ public class TouchInteractionService extends Service implements PluginListener<O
                     bundle.getBinder(KEY_EXTRA_SHELL_SHELL_TRANSITIONS));
             IStartingWindow startingWindow = IStartingWindow.Stub.asInterface(
                     bundle.getBinder(KEY_EXTRA_SHELL_STARTING_WINDOW));
+            ISmartspaceTransitionController smartspaceTransitionController =
+                    ISmartspaceTransitionController.Stub.asInterface(
+                            bundle.getBinder(KEY_EXTRA_SMARTSPACE_TRANSITION_CONTROLLER));
             MAIN_EXECUTOR.execute(() -> {
                 SystemUiProxy.INSTANCE.get(TouchInteractionService.this).setProxy(proxy, pip,
-                        splitscreen, onehanded, shellTransitions, startingWindow);
+                        splitscreen, onehanded, shellTransitions, startingWindow,
+                        smartspaceTransitionController);
                 TouchInteractionService.this.initInputMonitor();
                 preloadOverview(true /* fromInit */);
                 mDeviceState.runOnUserUnlocked(() -> {
