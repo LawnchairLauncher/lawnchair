@@ -240,7 +240,7 @@
 
 
     <!-- Icon displayed on the workspace -->
-    <style name="BaseIcon.Workspace" >
+    <style name="BaseIcon.Workspace.Shadows" parent="BaseIcon">
         <item name="android:shadowRadius">2.0</item>
         <item name="android:shadowColor">?attr/workspaceShadowColor</item>
         <item name="ambientShadowColor">?attr/workspaceAmbientShadowColor</item>
@@ -249,6 +249,10 @@
         <item name="keyShadowBlur">.5dp</item>
         <item name="keyShadowOffsetX">.5dp</item>
         <item name="keyShadowOffsetY">.5dp</item>
+    </style>
+
+    <!-- Intentionally empty so we can override -->
+    <style name="BaseIcon.Workspace" parent="BaseIcon.Workspace.Shadows">
     </style>
 
     <!-- Theme for the popup container -->
