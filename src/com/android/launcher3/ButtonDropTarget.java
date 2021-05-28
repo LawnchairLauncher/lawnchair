@@ -48,20 +48,6 @@ import com.android.launcher3.model.data.ItemInfo;
 public abstract class ButtonDropTarget extends TextView
         implements DropTarget, DragController.DragListener, OnClickListener {
 
-    private static final Property<ButtonDropTarget, Integer> TEXT_COLOR =
-            new Property<ButtonDropTarget, Integer>(Integer.TYPE, "textColor") {
-
-                @Override
-                public Integer get(ButtonDropTarget target) {
-                    return target.getTextColor();
-                }
-
-                @Override
-                public void set(ButtonDropTarget target, Integer value) {
-                    target.setTextColor(value);
-                }
-            };
-
     private static final int[] sTempCords = new int[2];
     private static final int DRAG_VIEW_DROP_DURATION = 285;
     private static final float DRAG_VIEW_HOVER_OVER_OPACITY = 0.65f;
@@ -84,14 +70,11 @@ public abstract class ButtonDropTarget extends TextView
     private final int mDrawableSize;
 
     protected CharSequence mText;
-    protected ColorStateList mOriginalTextColor;
     protected Drawable mDrawable;
     private boolean mTextVisible = true;
 
     private PopupWindow mToolTip;
     private int mToolTipLocation;
-
-    private AnimatorSet mCurrentColorAnim;
 
     public ButtonDropTarget(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -110,7 +93,6 @@ public abstract class ButtonDropTarget extends TextView
     protected void onFinishInflate() {
         super.onFinishInflate();
         mText = getText();
-        mOriginalTextColor = getTextColors();
         setContentDescription(mText);
     }
 
@@ -125,6 +107,7 @@ public abstract class ButtonDropTarget extends TextView
         // drawableLeft and drawableStart.
         mDrawable = getContext().getDrawable(resId).mutate();
         mDrawable.setBounds(0, 0, mDrawableSize, mDrawableSize);
+        mDrawable.setTintList(getTextColors());
         setCompoundDrawablesRelative(mDrawable, null, null, null);
     }
 
@@ -191,12 +174,6 @@ public abstract class ButtonDropTarget extends TextView
     @Override
     public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
         mActive = !options.isKeyboardDrag && supportsDrop(dragObject.dragInfo);
-        mDrawable.setColorFilter(null);
-        if (mCurrentColorAnim != null) {
-            mCurrentColorAnim.cancel();
-            mCurrentColorAnim = null;
-        }
-        setTextColor(mOriginalTextColor);
         setVisibility(mActive ? View.VISIBLE : View.GONE);
 
         mAccessibleDrag = options.isAccessibleDrag;
@@ -315,10 +292,6 @@ public abstract class ButtonDropTarget extends TextView
     @Override
     public void onClick(View v) {
         mLauncher.getAccessibilityDelegate().handleAccessibleDrop(this, null, null);
-    }
-
-    public int getTextColor() {
-        return getTextColors().getDefaultColor();
     }
 
     public void setTextVisible(boolean isVisible) {
