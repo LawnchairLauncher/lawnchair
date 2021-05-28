@@ -24,8 +24,10 @@ import com.android.quickstep.interaction.TutorialController.TutorialType;
 public class HomeGestureTutorialFragment extends TutorialFragment {
     @Nullable
     @Override
-    Integer getFeedbackVideoResId() {
-        return R.drawable.gesture_tutorial_motion_home;
+    Integer getFeedbackVideoResId(boolean forDarkMode) {
+        return forDarkMode
+                ? R.drawable.gesture_tutorial_motion_home_dark_mode
+                : R.drawable.gesture_tutorial_motion_home_light_mode;
     }
 
     @Nullable
