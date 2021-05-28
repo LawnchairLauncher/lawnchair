@@ -40,6 +40,8 @@ import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.RemoteTransitionCompat;
+import com.android.systemui.shared.system.smartspace.ISmartspaceCallback;
+import com.android.systemui.shared.system.smartspace.ISmartspaceTransitionController;
 import com.android.wm.shell.onehanded.IOneHanded;
 import com.android.wm.shell.pip.IPip;
 import com.android.wm.shell.pip.IPipAnimationListener;
@@ -61,6 +63,7 @@ public class SystemUiProxy implements ISystemUiProxy,
 
     private ISystemUiProxy mSystemUiProxy;
     private IPip mPip;
+    private ISmartspaceTransitionController mSmartspaceTransitionController;
     private ISplitScreen mSplitScreen;
     private IOneHanded mOneHanded;
     private IShellTransitions mShellTransitions;
@@ -74,6 +77,7 @@ public class SystemUiProxy implements ISystemUiProxy,
     private IPipAnimationListener mPendingPipAnimationListener;
     private ISplitScreenListener mPendingSplitScreenListener;
     private IStartingWindowListener mPendingStartingWindowListener;
+    private ISmartspaceCallback mPendingSmartspaceCallback;
 
     // Used to dedupe calls to SystemUI
     private int mLastShelfHeight;
@@ -125,7 +129,8 @@ public class SystemUiProxy implements ISystemUiProxy,
 
     public void setProxy(ISystemUiProxy proxy, IPip pip, ISplitScreen splitScreen,
             IOneHanded oneHanded, IShellTransitions shellTransitions,
-            IStartingWindow startingWindow) {
+            IStartingWindow startingWindow,
+            ISmartspaceTransitionController smartSpaceTransitionController) {
         unlinkToDeath();
         mSystemUiProxy = proxy;
         mPip = pip;
@@ -133,6 +138,7 @@ public class SystemUiProxy implements ISystemUiProxy,
         mOneHanded = oneHanded;
         mShellTransitions = shellTransitions;
         mStartingWindow = startingWindow;
+        mSmartspaceTransitionController = smartSpaceTransitionController;
         linkToDeath();
         // re-attach the listeners once missing due to setProxy has not been initialized yet.
         if (mPendingPipAnimationListener != null && mPip != null) {
@@ -147,10 +153,14 @@ public class SystemUiProxy implements ISystemUiProxy,
             setStartingWindowListener(mPendingStartingWindowListener);
             mPendingStartingWindowListener = null;
         }
+        if (mPendingSmartspaceCallback != null && mSmartspaceTransitionController != null) {
+            setSmartspaceCallback(mPendingSmartspaceCallback);
+            mPendingSmartspaceCallback = null;
+        }
     }
 
     public void clearProxy() {
-        setProxy(null, null, null, null, null, null);
+        setProxy(null, null, null, null, null, null, null);
     }
 
     // TODO(141886704): Find a way to remove this
@@ -640,6 +650,23 @@ public class SystemUiProxy implements ISystemUiProxy,
             }
         } else {
             mPendingStartingWindowListener = listener;
+        }
+    }
+
+
+    //
+    // SmartSpace transitions
+    //
+
+    public void setSmartspaceCallback(ISmartspaceCallback callback) {
+        if (mSmartspaceTransitionController != null) {
+            try {
+                mSmartspaceTransitionController.setSmartspace(callback);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call setStartingWindowListener", e);
+            }
+        } else {
+            mPendingSmartspaceCallback = callback;
         }
     }
 }
