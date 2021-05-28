@@ -96,12 +96,12 @@ public final class WidgetsTableUtilsTest {
         List<ArrayList<WidgetItem>> widgetItemInTable = WidgetsTableUtils.groupWidgetItemsIntoTable(
                 widgetItems, /* maxSpansPerRow= */ 5);
 
-        // Row 0: 1x1, 2x2, 2x3
-        // Row 1: 2x4
+        // Row 0: 1x1, 2x2
+        // Row 1: 2x3, 2x4
         // Row 2: 4x4
         assertThat(widgetItemInTable).hasSize(3);
-        assertThat(widgetItemInTable.get(0)).containsExactly(mWidget1x1, mWidget2x2, mWidget2x3);
-        assertThat(widgetItemInTable.get(1)).containsExactly(mWidget2x4);
+        assertThat(widgetItemInTable.get(0)).containsExactly(mWidget1x1, mWidget2x2);
+        assertThat(widgetItemInTable.get(1)).containsExactly(mWidget2x3, mWidget2x4);
         assertThat(widgetItemInTable.get(2)).containsExactly(mWidget4x4);
     }
 
@@ -114,12 +114,14 @@ public final class WidgetsTableUtilsTest {
                 widgetItems, /* maxSpansPerRow= */ 4);
 
         // Row 0: 1x1, 2x2
-        // Row 1: 2x3, 2x4
-        // Row 2: 4x4
-        assertThat(widgetItemInTable).hasSize(3);
+        // Row 1: 2x3,
+        // Row 2: 2x4,
+        // Row 3: 4x4
+        assertThat(widgetItemInTable).hasSize(4);
         assertThat(widgetItemInTable.get(0)).containsExactly(mWidget1x1, mWidget2x2);
-        assertThat(widgetItemInTable.get(1)).containsExactly(mWidget2x3, mWidget2x4);
-        assertThat(widgetItemInTable.get(2)).containsExactly(mWidget4x4);
+        assertThat(widgetItemInTable.get(1)).containsExactly(mWidget2x3);
+        assertThat(widgetItemInTable.get(2)).containsExactly(mWidget2x4);
+        assertThat(widgetItemInTable.get(3)).containsExactly(mWidget4x4);
     }
 
     @Test
@@ -131,14 +133,16 @@ public final class WidgetsTableUtilsTest {
                 widgetItems, /* maxSpansPerRow= */ 4);
 
         // Row 0: 1x1, 2x2
-        // Row 1: 2x3, 2x4
-        // Row 2: 4x4
-        // Row 3: shortcut3, shortcut1, shortcut2
-        assertThat(widgetItemInTable).hasSize(4);
+        // Row 1: 2x3,
+        // Row 2: 2x4,
+        // Row 3: 4x4
+        // Row 4: shortcut3, shortcut1, shortcut2
+        assertThat(widgetItemInTable).hasSize(5);
         assertThat(widgetItemInTable.get(0)).containsExactly(mWidget1x1, mWidget2x2);
-        assertThat(widgetItemInTable.get(1)).containsExactly(mWidget2x3, mWidget2x4);
-        assertThat(widgetItemInTable.get(2)).containsExactly(mWidget4x4);
-        assertThat(widgetItemInTable.get(3)).containsExactly(mShortcut3, mShortcut2, mShortcut1);
+        assertThat(widgetItemInTable.get(1)).containsExactly(mWidget2x3);
+        assertThat(widgetItemInTable.get(2)).containsExactly(mWidget2x4);
+        assertThat(widgetItemInTable.get(3)).containsExactly(mWidget4x4);
+        assertThat(widgetItemInTable.get(4)).containsExactly(mShortcut3, mShortcut2, mShortcut1);
     }
 
     private void initTestWidgets() {
