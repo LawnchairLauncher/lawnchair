@@ -24,7 +24,6 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.view.DragEvent;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -35,7 +34,6 @@ import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
@@ -62,7 +60,8 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
 
     private final TaskbarActivityContext mActivityContext;
 
-    // Initialized in TaskbarController constructor.
+    // Initialized in init.
+    private TaskbarIconController.TaskbarViewCallbacks mControllerCallbacks;
     private View.OnClickListener mIconClickListener;
     private View.OnLongClickListener mIconLongClickListener;
 
@@ -75,7 +74,6 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
     // Prevents dispatching touches to children if true
     private boolean mTouchEnabled = true;
 
-    private boolean mIsDraggingItem;
     // Only non-null when the corresponding Folder is open.
     private @Nullable FolderIcon mLeaveBehindFolderIcon;
 
@@ -118,8 +116,10 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
         mHotseatIconsContainer = findViewById(R.id.hotseat_icons_layout);
     }
 
-    protected void construct(OnClickListener clickListener, OnLongClickListener longClickListener,
-                ButtonProvider buttonProvider) {
+    protected void init(TaskbarIconController.TaskbarViewCallbacks callbacks,
+            OnClickListener clickListener, OnLongClickListener longClickListener,
+            ButtonProvider buttonProvider) {
+        mControllerCallbacks = callbacks;
         mIconClickListener = clickListener;
         mIconLongClickListener = longClickListener;
         mButtonProvider = buttonProvider;
@@ -225,6 +225,9 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
     }
 
     private void updateHotseatItemVisibility(View hotseatView) {
+        if (!mControllerCallbacks.canUpdateViewVisibility(hotseatView)) {
+            return;
+        }
         hotseatView.setVisibility(
                 hotseatView.getTag() != null ? VISIBLE : (mAreHolesAllowed ? INVISIBLE : GONE));
     }
@@ -347,24 +350,6 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
         mSystemButtonContainer.addView(mButtonProvider.getBack(), buttonParams);
         mSystemButtonContainer.addView(mButtonProvider.getHome(), buttonParams);
         mSystemButtonContainer.addView(mButtonProvider.getRecents(), buttonParams);
-    }
-
-    @Override
-    public boolean onDragEvent(DragEvent event) {
-        switch (event.getAction()) {
-            case DragEvent.ACTION_DRAG_STARTED:
-                mIsDraggingItem = true;
-                AbstractFloatingView.closeAllOpenViews(mActivityContext);
-                return true;
-            case DragEvent.ACTION_DRAG_ENDED:
-                mIsDraggingItem = false;
-                break;
-        }
-        return super.onDragEvent(event);
-    }
-
-    public boolean isDraggingItem() {
-        return mIsDraggingItem;
     }
 
     /**
