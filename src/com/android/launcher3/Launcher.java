@@ -1290,7 +1290,8 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         }
     }
 
-    public FolderIcon findFolderIcon(final int folderIconId) {
+    @Override
+    public @Nullable FolderIcon findFolderIcon(final int folderIconId) {
         return (FolderIcon) mWorkspace.getHomescreenIconByItemId(folderIconId);
     }
 

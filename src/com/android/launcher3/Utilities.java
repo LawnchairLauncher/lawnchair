@@ -85,6 +85,7 @@ import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.PackageManagerHelper;
+import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 
@@ -651,25 +652,26 @@ public final class Utilities {
      * @param outObj this is set to the internal data associated with {@param info},
      *               eg {@link LauncherActivityInfo} or {@link ShortcutInfo}.
      */
-    public static Drawable getFullDrawable(Launcher launcher, ItemInfo info, int width, int height,
+    public static Drawable getFullDrawable(Context context, ItemInfo info, int width, int height,
             Object[] outObj) {
-        Drawable icon = loadFullDrawableWithoutTheme(launcher, info, width, height, outObj);
+        Drawable icon = loadFullDrawableWithoutTheme(context, info, width, height, outObj);
         if (icon instanceof BitmapInfo.Extender) {
-            icon = ((BitmapInfo.Extender) icon).getThemedDrawable(launcher);
+            icon = ((BitmapInfo.Extender) icon).getThemedDrawable(context);
         }
         return icon;
     }
 
-    private static Drawable loadFullDrawableWithoutTheme(Launcher launcher, ItemInfo info,
+    private static Drawable loadFullDrawableWithoutTheme(Context context, ItemInfo info,
             int width, int height, Object[] outObj) {
-        LauncherAppState appState = LauncherAppState.getInstance(launcher);
+        ActivityContext activity = ActivityContext.lookupContext(context);
+        LauncherAppState appState = LauncherAppState.getInstance(context);
         if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
-            LauncherActivityInfo activityInfo = launcher.getSystemService(LauncherApps.class)
+            LauncherActivityInfo activityInfo = context.getSystemService(LauncherApps.class)
                     .resolveActivity(info.getIntent(), info.user);
             outObj[0] = activityInfo;
-            return activityInfo == null ? null : LauncherAppState.getInstance(launcher)
+            return activityInfo == null ? null : LauncherAppState.getInstance(context)
                     .getIconProvider().getIcon(
-                            activityInfo, launcher.getDeviceProfile().inv.fillResIconDpi);
+                            activityInfo, activity.getDeviceProfile().inv.fillResIconDpi);
         } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
             if (info instanceof PendingAddShortcutInfo) {
                 ShortcutConfigActivityInfo activityInfo =
@@ -678,18 +680,18 @@ public final class Utilities {
                 return activityInfo.getFullResIcon(appState.getIconCache());
             }
             List<ShortcutInfo> si = ShortcutKey.fromItemInfo(info)
-                    .buildRequest(launcher)
+                    .buildRequest(context)
                     .query(ShortcutRequest.ALL);
             if (si.isEmpty()) {
                 return null;
             } else {
                 outObj[0] = si.get(0);
-                return ShortcutCachingLogic.getIcon(launcher, si.get(0),
+                return ShortcutCachingLogic.getIcon(context, si.get(0),
                         appState.getInvariantDeviceProfile().fillResIconDpi);
             }
         } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
             FolderAdaptiveIcon icon = FolderAdaptiveIcon.createFolderAdaptiveIcon(
-                    launcher, info.id, new Point(width, height));
+                    activity, info.id, new Point(width, height));
             if (icon == null) {
                 return null;
             }
@@ -707,8 +709,8 @@ public final class Utilities {
      * badge. When dragged from workspace or folder, it may contain app AND/OR work profile badge
      **/
     @TargetApi(Build.VERSION_CODES.O)
-    public static Drawable getBadge(Launcher launcher, ItemInfo info, Object obj) {
-        LauncherAppState appState = LauncherAppState.getInstance(launcher);
+    public static Drawable getBadge(Context context, ItemInfo info, Object obj) {
+        LauncherAppState appState = LauncherAppState.getInstance(context);
         int iconSize = appState.getInvariantDeviceProfile().iconBitmapSize;
         if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
             boolean iconBadged = (info instanceof ItemInfoWithIcon)
@@ -728,7 +730,7 @@ public final class Utilities {
         } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
             return ((FolderAdaptiveIcon) obj).getBadge();
         } else {
-            return launcher.getPackageManager()
+            return context.getPackageManager()
                     .getUserBadgedIcon(new FixedSizeEmptyDrawable(iconSize), info.user);
         }
     }
