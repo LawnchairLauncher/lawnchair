@@ -62,10 +62,10 @@
     <device-padding
         launcher:maxEmptySpace="9999dp">
         <workspaceTopPadding
-            launcher:a="0.38"
+            launcher:a="0.40"
             launcher:c="36dp"/>
         <workspaceBottomPadding
-            launcher:a="0.62"
+            launcher:a="0.60"
             launcher:c="36dp"/>
         <hotseatBottomPadding
             launcher:a="0"
