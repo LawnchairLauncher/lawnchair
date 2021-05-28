@@ -263,7 +263,7 @@ public class CellLayout extends ViewGroup {
         mBackground.setCallback(this);
         mBackground.setAlpha(0);
 
-        mGridColor = Themes.getAttrColor(getContext(), R.attr.gridColor);
+        mGridColor = Themes.getAttrColor(getContext(), R.attr.workspaceAccentColor);
         mGridVisualizationPadding =
                 res.getDimensionPixelSize(R.dimen.grid_visualization_cell_spacing);
         mGridVisualizationRoundingRadius =
