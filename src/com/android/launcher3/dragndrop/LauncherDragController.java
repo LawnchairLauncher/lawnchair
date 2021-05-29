@@ -96,7 +96,7 @@ public class LauncherDragController extends DragController<Launcher> {
         final float scaleDps = mIsInPreDrag
                 ? res.getDimensionPixelSize(R.dimen.pre_drag_view_scale) : 0f;
         final DragView dragView = mDragObject.dragView = drawable != null
-                ? new DragView(
+                ? new LauncherDragView(
                 mActivity,
                 drawable,
                 registrationX,
@@ -104,7 +104,7 @@ public class LauncherDragController extends DragController<Launcher> {
                 initialDragViewScale,
                 dragViewScaleOnDrop,
                 scaleDps)
-                : new DragView(
+                : new LauncherDragView(
                         mActivity,
                         view,
                         view.getMeasuredWidth(),

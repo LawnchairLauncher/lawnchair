@@ -28,9 +28,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.LauncherApps;
 import android.graphics.PixelFormat;
-import android.graphics.Point;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.os.Process;
 import android.os.SystemProperties;
 import android.util.Log;
@@ -43,22 +41,14 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.DragSource;
-import com.android.launcher3.DropTarget;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.R;
-import com.android.launcher3.dragndrop.DragController;
-import com.android.launcher3.dragndrop.DragOptions;
-import com.android.launcher3.dragndrop.DragView;
-import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.model.data.FolderInfo;
-import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.taskbar.TaskbarNavButtonController.TaskbarButton;
 import com.android.launcher3.touch.ItemClickHandler;
@@ -89,10 +79,13 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
     private final LayoutInflater mLayoutInflater;
     private final TaskbarDragLayer mDragLayer;
     private final TaskbarIconController mIconController;
-    private final MyDragController mDragController;
+    private final TaskbarDragController mDragController;
 
     private final WindowManager mWindowManager;
     private WindowManager.LayoutParams mWindowLayoutParams;
+    private boolean mIsFullscreen;
+    // The size we should return to when we call setTaskbarWindowFullscreen(false)
+    private int mLastRequestedNonFullscreenHeight;
 
     private final SysUINavigationMode.Mode mNavMode;
     private final TaskbarNavButtonController mNavButtonController;
@@ -114,8 +107,8 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         mIsSafeModeEnabled = TraceHelper.allowIpcs("isSafeMode",
                 () -> getPackageManager().isSafeMode());
 
-        mOnTaskbarIconLongClickListener =
-                new TaskbarDragController(this)::startSystemDragOnLongClick;
+        mDragController = new TaskbarDragController(this);
+        mOnTaskbarIconLongClickListener = mDragController::startDragOnLongClick;
         mOnTaskbarIconClickListener = this::onTaskbarIconClicked;
 
         float taskbarIconSize = getResources().getDimension(R.dimen.taskbar_icon_size);
@@ -126,7 +119,6 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         mDragLayer = (TaskbarDragLayer) mLayoutInflater
                 .inflate(R.layout.taskbar, null, false);
         mIconController = new TaskbarIconController(this, mDragLayer);
-        mDragController = new MyDragController(this);
 
         Display display = windowContext.getDisplay();
         Context c = display.getDisplayId() == Display.DEFAULT_DISPLAY
@@ -136,9 +128,10 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
     }
 
     public void init() {
+        mLastRequestedNonFullscreenHeight = mDeviceProfile.taskbarSize;
         mWindowLayoutParams = new WindowManager.LayoutParams(
                 MATCH_PARENT,
-                mDeviceProfile.taskbarSize,
+                mLastRequestedNonFullscreenHeight,
                 TYPE_APPLICATION_OVERLAY,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT);
@@ -158,17 +151,6 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
 
         mIconController.init(mOnTaskbarIconClickListener, mOnTaskbarIconLongClickListener);
         mWindowManager.addView(mDragLayer, mWindowLayoutParams);
-    }
-
-    /**
-     * Updates the TaskbarContainer height (pass deviceProfile.taskbarSize to reset).
-     */
-    public void setTaskbarWindowHeight(int height) {
-        if (mWindowLayoutParams.height == height) {
-            return;
-        }
-        mWindowLayoutParams.height = height;
-        mWindowManager.updateViewLayout(mDragLayer, mWindowLayoutParams);
     }
 
     public boolean canShowNavButtons() {
@@ -196,7 +178,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
     }
 
     @Override
-    public DragController getDragController() {
+    public TaskbarDragController getDragController() {
         return mDragController;
     }
 
@@ -243,8 +225,30 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
     /**
      * Updates the TaskbarContainer to MATCH_PARENT vs original Taskbar size.
      */
-    protected void setTaskbarWindowFullscreen(boolean fullscreen) {
-        setTaskbarWindowHeight(fullscreen ? MATCH_PARENT : getDeviceProfile().taskbarSize);
+    public void setTaskbarWindowFullscreen(boolean fullscreen) {
+        mIsFullscreen = fullscreen;
+        setTaskbarWindowHeight(fullscreen ? MATCH_PARENT : mLastRequestedNonFullscreenHeight);
+    }
+
+    /**
+     * Updates the TaskbarContainer height (pass deviceProfile.taskbarSize to reset).
+     */
+    public void setTaskbarWindowHeight(int height) {
+        if (mWindowLayoutParams.height == height) {
+            return;
+        }
+        if (height != MATCH_PARENT) {
+            mLastRequestedNonFullscreenHeight = height;
+            if (mIsFullscreen) {
+                // We still need to be fullscreen, so defer any change to our height until we call
+                // setTaskbarWindowFullscreen(false). For example, this could happen when dragging
+                // from the gesture region, as the drag will cancel the gesture and reset launcher's
+                // state, which in turn normally would reset the taskbar window height as well.
+                return;
+            }
+        }
+        mWindowLayoutParams.height = height;
+        mWindowManager.updateViewLayout(mDragLayer, mWindowLayoutParams);
     }
 
     protected void onTaskbarIconClicked(View view) {
@@ -271,9 +275,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
             });
         } else if (tag instanceof WorkspaceItemInfo) {
             WorkspaceItemInfo info = (WorkspaceItemInfo) tag;
-            if (info.isDisabled()) {
-                ItemClickHandler.handleDisabledItemClicked(info, this);
-            } else {
+            if (!(info.isDisabled() && ItemClickHandler.handleDisabledItemClicked(info, this))) {
                 Intent intent = new Intent(info.getIntent())
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 try {
@@ -308,28 +310,5 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         }
 
         AbstractFloatingView.closeAllOpenViews(this);
-    }
-
-    private static class MyDragController extends DragController<TaskbarActivityContext> {
-        MyDragController(TaskbarActivityContext activity) {
-            super(activity);
-        }
-
-        @Override
-        protected DragView startDrag(@Nullable Drawable drawable, @Nullable View view,
-                DraggableView originalView, int dragLayerX, int dragLayerY, DragSource source,
-                ItemInfo dragInfo, Point dragOffset, Rect dragRegion, float initialDragViewScale,
-                float dragViewScaleOnDrop, DragOptions options) {
-            return null;
-        }
-
-        @Override
-        protected void exitDrag() {
-        }
-
-        @Override
-        protected DropTarget getDefaultDropTarget(int[] dropCoordinates) {
-            return null;
-        }
     }
 }

@@ -142,7 +142,7 @@ public final class FeatureFlags {
             "MULTI_DB_GRID_MIRATION_ALGO", true, "Use the multi-db grid migration algorithm");
 
     public static final BooleanFlag ENABLE_THEMED_ICONS = getDebugFlag(
-            "ENABLE_THEMED_ICONS", false, "Enable themed icons on workspace");
+            "ENABLE_THEMED_ICONS", true, "Enable themed icons on workspace");
 
     // Keep as DeviceFlag for remote disable in emergency.
     public static final BooleanFlag ENABLE_OVERVIEW_SELECTIONS = new DeviceFlag(

@@ -222,7 +222,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     }
 
     public boolean isDraggingItem() {
-        return mTaskbarView.isDraggingItem();
+        return mContext.getDragController().isDragging();
     }
 
     /**
