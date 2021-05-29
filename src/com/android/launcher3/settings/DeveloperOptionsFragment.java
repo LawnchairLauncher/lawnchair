@@ -104,6 +104,10 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
         initFlags();
         loadPluginPrefs();
         maybeAddSandboxCategory();
+
+        if (getActivity() != null) {
+            getActivity().setTitle("Developer Options");
+        }
     }
 
     private void filterPreferences(String query, PreferenceGroup pg) {
