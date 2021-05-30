@@ -64,15 +64,15 @@
     <string name="auto_adaptive_icons_label">Otomatik Uyarlanabilir Simgeler</string>
     <string name="auto_adaptive_icons_description">Tüm uyarlanabilir olmayan simgeler için.</string>
     <string name="support_and_pr">Destek &amp; Halkla İlişkiler</string>
-    <string name="workspace_dt2s">Double-Tap to Sleep</string>
-    <string name="smart_space_enable">Show At a Glance Widget</string>
-    <string name="design_and_development">Design &amp; Development</string>
-    <string name="translate">Translate</string>
-    <string name="product">Product</string>
-    <string name="hidden_apps_label">Hidden Apps</string>
-    <string name="hidden_apps_label_with_count">Hidden Apps (%1$d)</string>
+    <string name="workspace_dt2s">Ekranı Kapatmak İçin Çift Dokunun</string>
+    <string name="smart_space_enable">Bir Bakışta Widget\'ını Göster</string>
+    <string name="design_and_development">Tasarım &amp; Geliştirme</string>
+    <string name="translate">Çeviri</string>
+    <string name="product">Ürün</string>
+    <string name="hidden_apps_label">Gizlenmiş Uygulamalar</string>
+    <string name="hidden_apps_label_with_count">Gizlenmiş Uygulamalar (%1$d)</string>
     <plurals name="apps_count">
-        <item quantity="one">%1$d App</item>
-        <item quantity="other">%1$d Apps</item>
+        <item quantity="one">%1$d Uygulama</item>
+        <item quantity="other">%1$d Uygulama</item>
     </plurals>
 </resources>
