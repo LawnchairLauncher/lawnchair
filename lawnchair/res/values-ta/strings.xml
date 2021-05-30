@@ -18,11 +18,11 @@
     <string name="icon_pack">Icon Pack</string>
     <string name="settings">அமைப்புகள்</string>
     <string name="home_screen_label">முகப்புத் திரை</string>
-    <string name="home_screen_description">New Apps, Grid, Icons</string>
+    <string name="home_screen_description">புதிய செயலிகள், கட்டம், சின்னம்</string>
     <string name="general_label">பொது</string>
-    <string name="general_description">Notification Dots, Icon Pack</string>
+    <string name="general_description">இத்திலா புள்ளிகள், சின்னத் தொகுதி</string>
     <string name="home_screen_rotation_label">முகப்புத் திரைச் சுழற்சி</string>
-    <string name="home_screen_rotaton_description">When device is rotated.</string>
+    <string name="home_screen_rotaton_description">கருவி சுழற்றப்படும் போது.</string>
     <string name="auto_add_shortcuts_label">Add New Apps to Home Screen</string>
     <string name="dock_label">Dock</string>
     <string name="dock_description">Icon Count</string>
