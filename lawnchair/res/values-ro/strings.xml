@@ -64,16 +64,16 @@
     <string name="auto_adaptive_icons_label">Pictograme Adaptive automate</string>
     <string name="auto_adaptive_icons_description">Pentru toate pictogramele non-Adaptive.</string>
     <string name="support_and_pr">Asistență &amp; PR</string>
-    <string name="workspace_dt2s">Double-Tap to Sleep</string>
-    <string name="smart_space_enable">Show At a Glance Widget</string>
-    <string name="design_and_development">Design &amp; Development</string>
-    <string name="translate">Translate</string>
-    <string name="product">Product</string>
-    <string name="hidden_apps_label">Hidden Apps</string>
-    <string name="hidden_apps_label_with_count">Hidden Apps (%1$d)</string>
+    <string name="workspace_dt2s">Apăsare dublă a ecranului pentru închidere</string>
+    <string name="smart_space_enable">Afișați widget-ul At a Glance</string>
+    <string name="design_and_development">Proiectare &amp; Dezvoltare</string>
+    <string name="translate">Traduceți</string>
+    <string name="product">Produs</string>
+    <string name="hidden_apps_label">Aplicații ascunse</string>
+    <string name="hidden_apps_label_with_count">Aplicații ascunse (%1$d)</string>
     <plurals name="apps_count">
-        <item quantity="one">%1$d App</item>
-        <item quantity="few">%1$d Apps</item>
-        <item quantity="other">%1$d Apps</item>
+        <item quantity="one">%1$d Aplicație</item>
+        <item quantity="few">%1$d Aplicații</item>
+        <item quantity="other">%1$d Aplicații</item>
     </plurals>
 </resources>
