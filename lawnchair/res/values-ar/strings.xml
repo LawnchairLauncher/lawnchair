@@ -52,7 +52,7 @@
     <string name="kshitij_description">يكتب المنطق الجهوهري لميزات Lawnchair.
 عضو فخور من عصابة Spoingus.</string>
     <string name="devops">DevOps</string>
-    <string name="quickswitch_maintenance">المشرف على QuickSwitch</string>
+    <string name="quickswitch_maintenance">صيانة QuickSwitch</string>
     <string name="all_apps_search_bar_hint">البحث في التطبيقات</string>
     <string name="settings_button_text">إعدادات الصفحة الرئيسية</string>
     <string name="development">التطوير</string>
@@ -66,9 +66,9 @@
     <string name="auto_adaptive_icons_label">أيقونات متكيفة تلقائيا</string>
     <string name="auto_adaptive_icons_description">لجميع الأيقونات غير المتكيفة.</string>
     <string name="support_and_pr">دعم &amp; و PR</string>
-    <string name="workspace_dt2s">انقر نقراً مزدوجاً للنوم</string>
-    <string name="smart_space_enable">إظهار في الشريط النظري</string>
-    <string name="design_and_development">تصميم و تطوير</string>
+    <string name="workspace_dt2s">نقر مزدوج للنوم</string>
+    <string name="smart_space_enable">إظهار شريط \"في لمحة\"</string>
+    <string name="design_and_development">التصميم والتطوير</string>
     <string name="translate">ترجمة</string>
     <string name="product">منتج</string>
     <string name="hidden_apps_label">التطبيقات المخفية</string>
