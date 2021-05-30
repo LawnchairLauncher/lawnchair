@@ -49,30 +49,30 @@
     <string name="acknowledgements">Remerciements</string>
     <string name="patryk_description">Gère le projet et développe l\'interface utilisateur. Obsédé par Jetpack Compose depuis toujours.</string>
     <string name="kshitij_description">Écrit la logique de base pour les fonctionnalités de Lawnchair. Fier membre du Spoingus gang.</string>
-    <string name="devops">DevOps</string>
-    <string name="quickswitch_maintenance">QuickSwitch Maintenance</string>
+    <string name="devops">Équipe DevOps</string>
+    <string name="quickswitch_maintenance">Maintenance de QuickSwitch</string>
     <string name="all_apps_search_bar_hint">Rechercher dans les applications</string>
     <string name="settings_button_text">Paramètres de l\'écran d\'accueil</string>
-    <string name="development">Development</string>
+    <string name="development">Développeur</string>
     <string name="app_info_drop_target_label">Infos de l\'application</string>
     <string name="item_removed">Élément supprimé.</string>
     <string name="all_apps_no_search_results">Aucune application correspondant à “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
     <string name="background_opacity">Opacité de l\'arrière-plan</string>
-    <string name="background_lightness_label">Background Lightness</string>
-    <string name="adaptive_icons">Adaptive Icons</string>
-    <string name="adaptive_icon_background_description">Use 100% background lightness for white.</string>
-    <string name="auto_adaptive_icons_label">Auto Adaptive Icons</string>
-    <string name="auto_adaptive_icons_description">For all non-Adaptive icons.</string>
+    <string name="background_lightness_label">Luminosité de l\'arrière-plan</string>
+    <string name="adaptive_icons">Icônes Adaptatives</string>
+    <string name="adaptive_icon_background_description">Utilisez 100% de luminosité d\'arrière-plan pour le blanc.</string>
+    <string name="auto_adaptive_icons_label">Icônes Auto Adaptatives</string>
+    <string name="auto_adaptive_icons_description">Pour toutes les icônes non-adaptatives.</string>
     <string name="support_and_pr">Support &amp; PR</string>
-    <string name="workspace_dt2s">Double-Tap to Sleep</string>
-    <string name="smart_space_enable">Show At a Glance Widget</string>
-    <string name="design_and_development">Design &amp; Development</string>
-    <string name="translate">Translate</string>
-    <string name="product">Product</string>
-    <string name="hidden_apps_label">Hidden Apps</string>
-    <string name="hidden_apps_label_with_count">Hidden Apps (%1$d)</string>
+    <string name="workspace_dt2s">Double-Tapez pour mettre en veille</string>
+    <string name="smart_space_enable">Afficher le widget En Bref</string>
+    <string name="design_and_development">Conception &amp; Développement</string>
+    <string name="translate">Traduire</string>
+    <string name="product">Produit</string>
+    <string name="hidden_apps_label">Applications Masquées</string>
+    <string name="hidden_apps_label_with_count">Applications Masquées (%1$d)</string>
     <plurals name="apps_count">
-        <item quantity="one">%1$d App</item>
-        <item quantity="other">%1$d Apps</item>
+        <item quantity="one">Application %1$d</item>
+        <item quantity="other">Applications %1$d</item>
     </plurals>
 </resources>
