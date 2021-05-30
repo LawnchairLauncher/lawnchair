@@ -63,16 +63,16 @@
     <string name="adaptive_icon_background_description">Usa la luminosità dello sfondo al 100% per il bianco.</string>
     <string name="auto_adaptive_icons_label">Icone adattive automatiche</string>
     <string name="auto_adaptive_icons_description">Per tutte le icone non adattive.</string>
-    <string name="support_and_pr">Support &amp; PR</string>
+    <string name="support_and_pr">Supporto&amp;</string>
     <string name="workspace_dt2s">Doppio tocco per bloccare lo schermo</string>
     <string name="smart_space_enable">Mostra il widget “At a Glance”</string>
-    <string name="design_and_development">Design &amp; Development</string>
-    <string name="translate">Translate</string>
-    <string name="product">Product</string>
+    <string name="design_and_development">Disegno &amp; Sviluppo</string>
+    <string name="translate">Traduci</string>
+    <string name="product">Prodotto</string>
     <string name="hidden_apps_label">App nascoste</string>
-    <string name="hidden_apps_label_with_count">Hidden Apps (%1$d)</string>
+    <string name="hidden_apps_label_with_count">App nascosti (%1$d)</string>
     <plurals name="apps_count">
-        <item quantity="one">%1$d App</item>
-        <item quantity="other">%1$d Apps</item>
+        <item quantity="one">%1$d Applicazione</item>
+        <item quantity="other">%1$d Applicazioni</item>
     </plurals>
 </resources>
