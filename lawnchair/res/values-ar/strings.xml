@@ -24,14 +24,14 @@
     <string name="home_screen_rotation_label">تدوير الشاشة الرئيسية</string>
     <string name="home_screen_rotaton_description">عندما يتم تدوير الجهاز.</string>
     <string name="auto_add_shortcuts_label">إضافة التطبيقات الجديدة إلى الشاشة الرئيسية</string>
-    <string name="dock_label">Dock</string>
+    <string name="dock_label">المرسى</string>
     <string name="dock_description">عدد الأيقونات</string>
     <string name="app_drawer_label">قائمة التطبيقات</string>
     <string name="app_drawer_description">عدد الأعمدة، الأيقونات</string>
     <string name="folders_label">المجلدات</string>
     <string name="folders_description">عدد الصفوف والأعمدة</string>
     <string name="app_drawer_columns">أعمدة قائمة التطبيقات</string>
-    <string name="dock_icons">Dock Icons</string>
+    <string name="dock_icons">أيقونات المرسى</string>
     <string name="max_folder_columns">عدد الأعمدة الأقصى للمجلدات</string>
     <string name="max_folder_rows">عدد الصفوف الأقصى للمجلدات</string>
     <string name="home_screen_columns">أعمدة الشاشة الرئيسية</string>
@@ -39,7 +39,7 @@
     <string name="home_screen_rows">صفوف الشاشة الرئيسية</string>
     <string name="icons">الأيقونات</string>
     <string name="icon_size">حجم الأيقونات</string>
-    <string name="label_size">Label Size</string>
+    <string name="label_size">حجم التسمية</string>
     <string name="allow_empty_pages_label">السماح بالصفحات الفارغة</string>
     <string name="notification_dots">نقط الإشعارات</string>
     <string name="smartspace_preferences">التفضيلات</string>
@@ -75,10 +75,10 @@
     <string name="hidden_apps_label_with_count">التطبيقات المخفية (%1$d)</string>
     <plurals name="apps_count">
         <item quantity="zero">%1$d تطبيق</item>
-        <item quantity="one">%1$d App</item>
-        <item quantity="two">%1$d Apps</item>
-        <item quantity="few">%1$d Apps</item>
-        <item quantity="many">%1$d Apps</item>
+        <item quantity="one">تطبيق واحد</item>
+        <item quantity="two">تطبيقان</item>
+        <item quantity="few">%1$d تطبيقات</item>
+        <item quantity="many">%1$d تطبيق</item>
         <item quantity="other">%1$d تطبيقات</item>
     </plurals>
 </resources>
