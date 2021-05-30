@@ -23,7 +23,7 @@
     <string name="general_description">இத்திலா புள்ளிகள், சின்னத் தொகுதி</string>
     <string name="home_screen_rotation_label">முகப்புத் திரைச் சுழற்சி</string>
     <string name="home_screen_rotaton_description">கருவி சுழற்றப்படும் போது.</string>
-    <string name="auto_add_shortcuts_label">Add New Apps to Home Screen</string>
+    <string name="auto_add_shortcuts_label">முகப்புத் திரையில் புதிய செயலிகளை சேர்</string>
     <string name="dock_label">Dock</string>
     <string name="dock_description">Icon Count</string>
     <string name="app_drawer_label">App Drawer</string>
