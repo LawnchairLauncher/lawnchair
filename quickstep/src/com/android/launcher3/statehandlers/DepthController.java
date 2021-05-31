@@ -123,7 +123,7 @@ public class DepthController implements StateHandler<LauncherState>,
             mMaxBlurRadius = mLauncher.getResources().getInteger(R.integer.max_depth_blur_radius);
             mWallpaperManager = new WallpaperManagerCompat(mLauncher);
         }
-        if (mLauncher.getRootView() != null && mOnAttachListener == null) {
+        if (Utilities.ATLEAST_R && mLauncher.getRootView() != null && mOnAttachListener == null) {
             mOnAttachListener = new View.OnAttachStateChangeListener() {
                 @Override
                 public void onViewAttachedToWindow(View view) {
@@ -210,7 +210,7 @@ public class DepthController implements StateHandler<LauncherState>,
         // Round out the depth to dedupe frequent, non-perceptable updates
         int depthI = (int) (depth * 256);
         float depthF = depthI / 256f;
-        if (Float.compare(mDepth, depthF) == 0) {
+        if (!Utilities.ATLEAST_R || Float.compare(mDepth, depthF) == 0) {
             return;
         }
 
