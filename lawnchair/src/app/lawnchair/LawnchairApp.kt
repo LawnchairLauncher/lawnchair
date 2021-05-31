@@ -25,6 +25,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.annotation.Keep
 import app.lawnchair.util.restartLauncher
+import com.android.launcher3.LauncherAppState
 import com.android.launcher3.Utilities
 import com.android.quickstep.RecentsActivity
 
@@ -32,11 +33,15 @@ class LawnchairApp : Application() {
 
     val activityHandler = ActivityHandler()
     var mismatchedQuickstepTarget = false
-    val recentsEnabled by lazy { checkRecentsComponent() }
+    private val recentsEnabled by lazy { checkRecentsComponent() }
     val TAG = "LawnchairApp"
 
+    override fun onCreate() {
+        super.onCreate()
+        instance = this
+    }
+
     fun onLauncherAppStateCreated() {
-        sApplication = this
         registerActivityLifecycleCallbacks(activityHandler)
     }
 
@@ -120,16 +125,11 @@ class LawnchairApp : Application() {
 
     companion object {
         @JvmStatic
-        fun getContext(): Context? {
-            return sApplication?.applicationContext
-        }
-
-        private var sApplication: Application? = null
+        var instance: LawnchairApp? = null
+            private set
 
         @JvmStatic
-        fun get(context: Context): LawnchairApp {
-            return context.applicationContext as LawnchairApp
-        }
+        val isRecentsEnabled: Boolean get() = instance?.recentsEnabled == true
     }
 }
 

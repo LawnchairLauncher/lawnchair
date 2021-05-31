@@ -37,6 +37,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
+import app.lawnchair.LawnchairApp;
+
 /**
  * Manages the recent task list from the system, caching it as necessary.
  */
@@ -61,7 +63,9 @@ public class RecentTasksList extends TaskStackChangeListener {
         mKeyguardManager = keyguardManager;
         mChangeId = 1;
         mActivityManagerWrapper = activityManagerWrapper;
-        mActivityManagerWrapper.registerTaskStackListener(this);
+        if (LawnchairApp.isRecentsEnabled()) {
+            mActivityManagerWrapper.registerTaskStackListener(this);
+        }
     }
 
     /**

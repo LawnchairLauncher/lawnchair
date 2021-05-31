@@ -262,7 +262,7 @@ public class GridSizeMigrationTask {
      */
     protected void migrateScreen(int screenId) {
         // If we are migrating the first screen, do not touch the first row.
-        int startY = (FeatureFlags.topQsbOnFirstScreenEnabled(LawnchairApp.getContext()) && screenId == Workspace.FIRST_SCREEN_ID)
+        int startY = (FeatureFlags.topQsbOnFirstScreenEnabled(LawnchairApp.getInstance()) && screenId == Workspace.FIRST_SCREEN_ID)
                 ? 1 : 0;
 
         ArrayList<DbEntry> items = loadWorkspaceEntries(screenId);
