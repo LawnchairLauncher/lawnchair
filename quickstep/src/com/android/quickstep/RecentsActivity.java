@@ -40,6 +40,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.SurfaceControl.Transaction;
 import android.view.View;
+import android.window.SplashScreen;
 
 import androidx.annotation.Nullable;
 
@@ -222,9 +223,11 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
                 wrapper, RECENTS_LAUNCH_DURATION,
                 RECENTS_LAUNCH_DURATION - STATUS_BAR_TRANSITION_DURATION
                         - STATUS_BAR_TRANSITION_PRE_DELAY);
-        return new ActivityOptionsWrapper(
+        final ActivityOptionsWrapper activityOptions = new ActivityOptionsWrapper(
                 ActivityOptionsCompat.makeRemoteAnimation(adapterCompat),
                 onEndCallback);
+        activityOptions.options.setSplashscreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_ICON);
+        return activityOptions;
     }
 
     /**

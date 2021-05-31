@@ -37,6 +37,7 @@ import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.os.IBinder;
 import android.view.View;
+import android.window.SplashScreen;
 
 import androidx.annotation.Nullable;
 
@@ -435,6 +436,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
             ActivityOptionsCompat.setLauncherSourceInfo(
                     activityOptions.options, mLastTouchUpTime);
         }
+        activityOptions.options.setSplashscreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_ICON);
         addLaunchCookie(item, activityOptions.options);
         return activityOptions;
     }
