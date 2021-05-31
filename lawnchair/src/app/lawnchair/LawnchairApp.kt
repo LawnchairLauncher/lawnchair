@@ -94,7 +94,7 @@ class LawnchairApp : Application() {
     }
 
     private fun checkRecentsComponent(): Boolean {
-        if (!Utilities.ATLEAST_P) {
+        if (!Utilities.ATLEAST_R) {
             Log.d(TAG, "API < P, disabling recents")
             return false
         }
@@ -115,7 +115,7 @@ class LawnchairApp : Application() {
             Log.d(TAG, "config_recentsComponentName ($recentsComponent) is not Lawnchair, disabling recents")
             return false
         }
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.R) {
             Log.d(TAG, "Quickstep target doesn't match, disabling recents")
             mismatchedQuickstepTarget = true
             return false
