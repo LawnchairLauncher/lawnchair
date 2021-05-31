@@ -49,21 +49,15 @@
     <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"Пераканайцеся, што праводзіце пальцам з левага вугла ў цэнтр экрана, а потым адпускаеце."</string>
     <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"Пераканайцеся, што вы не праводзіце пальцам занадта далёка ад правага вугла экрана."</string>
     <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"Пераканайцеся, што праводзіце пальцам з правага вугла ў цэнтр экрана, а потым адпускаеце."</string>
-    <!-- no translation found for back_gesture_feedback_complete_with_back_right_follow_up (2100639504811809267) -->
-    <skip />
-    <!-- no translation found for back_gesture_feedback_complete_with_overview_follow_up (9176400654037014471) -->
-    <skip />
+    <string name="back_gesture_feedback_complete_with_back_right_follow_up" msgid="2100639504811809267">"Вы даведаліся, як праводзіць пальцам злева ўправа для вяртання."</string>
+    <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Вы даведаліся, як гартаць справа для вяртання. Цяпер даведайцеся, як пераключацца паміж праграмамі."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Вы навучыліся рабіць жэст вяртання."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Пераканайцеся, што вы не праводзіце пальцам занадта блізка да ніжняга краю экрана."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Каб змяніць адчувальнасць жэста вяртання, адкрыйце налады"</string>
-    <!-- no translation found for back_left_gesture_intro_title (5197184481779330065) -->
-    <skip />
-    <!-- no translation found for back_right_gesture_intro_title (7431951986971898074) -->
-    <skip />
-    <!-- no translation found for back_left_gesture_intro_subtitle (7672761376577628602) -->
-    <skip />
-    <!-- no translation found for back_right_gesture_intro_subtitle (2735828029197816509) -->
-    <skip />
+    <string name="back_left_gesture_intro_title" msgid="5197184481779330065">"Каб вярнуцца назад, правядзіце пальцам ад левага краю"</string>
+    <string name="back_right_gesture_intro_title" msgid="7431951986971898074">"Каб вярнуцца назад, правядзіце пальцам ад правага краю"</string>
+    <string name="back_left_gesture_intro_subtitle" msgid="7672761376577628602">"Каб вярнуцца на папярэдні экран, правядзіце пальцам ад левага краю ў цэнтр экрана."</string>
+    <string name="back_right_gesture_intro_subtitle" msgid="2735828029197816509">"Для вяртання на папярэдні экран таксама можна правесці ад правага краю ў цэнтр экрана. Паспрабуйце."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Пераканайцеся, што праводзіце пальцам па экране знізу ўверх."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Пераканайцеся, што не затрымліваецеся перад адпусканнем."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Пераканайцеся, што праводзіце пальцам вертыкальна."</string>
