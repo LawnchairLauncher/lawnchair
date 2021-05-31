@@ -47,16 +47,17 @@
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Aplicación predita: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"Asegúrate de pasar o dedo desde o bordo esquerdo máis afastado."</string>
     <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"Asegúrate de pasar o dedo desde o bordo esquerdo ata o medio da pantalla e avanza."</string>
-    <string name="back_gesture_feedback_title_complete_left_edge" msgid="1381455921760094003">"Excelente! Agora pasa o dedo desde a dereita para volver"</string>
-    <string name="back_gesture_feedback_subtitle_complete_left_edge" msgid="8106594510099968430">"Podes volver á última pantalla pasando o dedo desde o bordo dereito ata a metade da pantalla."</string>
     <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"Asegúrate de pasar o dedo desde o bordo dereito máis afastado."</string>
     <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"Asegúrate de pasar o dedo desde o bordo dereito ata o medio da pantalla e avanza."</string>
-    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"Completaches o xesto de volver á última pantalla. O próximo é aprender a cambiar de aplicación."</string>
+    <string name="back_gesture_feedback_complete_with_back_right_follow_up" msgid="2100639504811809267">"Aprendiches a pasar o dedo desde a esquerda para volver á pantalla anterior."</string>
+    <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Aprendiches a pasar o dedo desde a dereita para volver. Agora, aprende a cambiar de aplicación."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Completaches o xesto de volver á última pantalla."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Asegúrate de non pasar o dedo demasiado preto da parte inferior da pantalla."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Podes cambiar a sensibilidade do xesto en Configuración"</string>
-    <string name="back_gesture_intro_title" msgid="5538727561353262952">"Pasa o dedo desde a esquerda para volver"</string>
-    <string name="back_gesture_intro_subtitle" msgid="8139048712004626940">"Para volver á última pantalla, pasa o dedo desde o bordo esquerdo ata a metade da pantalla."</string>
+    <string name="back_left_gesture_intro_title" msgid="5197184481779330065">"Pasa o dedo desde a esquerda para volver"</string>
+    <string name="back_right_gesture_intro_title" msgid="7431951986971898074">"Pasar o dedo desde a dereita para volver á pantalla anterior"</string>
+    <string name="back_left_gesture_intro_subtitle" msgid="7672761376577628602">"Para volver á última pantalla, pasa o dedo desde o bordo esquerdo ata a metade da pantalla."</string>
+    <string name="back_right_gesture_intro_subtitle" msgid="2735828029197816509">"Tamén podes volver pasando o dedo desde o bordo dereito ata a metade da pantalla. Próbao agora."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Asegúrate de pasar o dedo cara arriba desde o bordo inferior da pantalla."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Asegúrate de non facer unha pausa antes de avanzar."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Asegúrate de pasar o dedo cara arriba cun movemento vertical."</string>
