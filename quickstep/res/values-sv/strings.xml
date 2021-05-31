@@ -49,22 +49,16 @@
     <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"Se till att du sveper från den vänstra kanten till mitten av skärmen och sedan släpper."</string>
     <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"Se till att du sveper ända från högerkanten."</string>
     <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"Se till att du sveper från den högra kanten till mitten av skärmen och sedan släpper."</string>
-    <!-- no translation found for back_gesture_feedback_complete_with_back_right_follow_up (2100639504811809267) -->
-    <skip />
-    <!-- no translation found for back_gesture_feedback_complete_with_overview_follow_up (9176400654037014471) -->
-    <skip />
+    <string name="back_gesture_feedback_complete_with_back_right_follow_up" msgid="2100639504811809267">"Nu kan du svepa från vänster för att gå tillbaka."</string>
+    <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Nu kan du svepa från höger för att gå tillbaka. Nu ska du få lära dig hur du byter mellan appar."</string>
     <!-- no translation found for back_gesture_feedback_complete_without_follow_up (6405649621667113830) -->
     <skip />
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Se till att du inte sveper för nära skärmens nederkant."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Öppna inställningarna om du vill ändra rörelsens känslighet"</string>
-    <!-- no translation found for back_left_gesture_intro_title (5197184481779330065) -->
-    <skip />
-    <!-- no translation found for back_right_gesture_intro_title (7431951986971898074) -->
-    <skip />
-    <!-- no translation found for back_left_gesture_intro_subtitle (7672761376577628602) -->
-    <skip />
-    <!-- no translation found for back_right_gesture_intro_subtitle (2735828029197816509) -->
-    <skip />
+    <string name="back_left_gesture_intro_title" msgid="5197184481779330065">"Återgå genom att svepa från vänster"</string>
+    <string name="back_right_gesture_intro_title" msgid="7431951986971898074">"Svep från höger för att gå tillbaka"</string>
+    <string name="back_left_gesture_intro_subtitle" msgid="7672761376577628602">"Återgå till den senaste skärmen du var på genom att svepa från skärmens vänstra kant till mitten."</string>
+    <string name="back_right_gesture_intro_subtitle" msgid="2735828029197816509">"Du kan återgå till föregående skärm genom att svepa från den högra kanten till mitten. Testa nu."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Se till att du sveper från nederkanten på skärmen."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Se till att du sveper i en jämn rörelse innan du släpper."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Se till att du sveper rakt uppåt."</string>
