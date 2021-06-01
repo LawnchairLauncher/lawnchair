@@ -15,9 +15,25 @@
      limitations under the License.
 -->
 <resources>
+    <!-- App themes -->
+    <style name="AppTheme" parent="@style/LauncherTheme">
+        <item name="overviewBackgroundColor">@color/go_overview_background_color</item>
+        <item name="overviewButtonTextColor">@color/go_overview_text_color</item>
+        <item name="overviewButtonIconColor">@color/go_overview_text_color</item>
+        <item name="overviewButtonBackgroundColor">@color/go_overview_button_color</item>
+    </style>
+
+    <style name="AppTheme.Dark" parent="@style/LauncherTheme.Dark">
+        <item name="overviewBackgroundColor">@color/go_overview_background_color_dark</item>
+        <item name="overviewButtonTextColor">@color/go_overview_text_color_dark</item>
+        <item name="overviewButtonIconColor">@color/go_overview_text_color_dark</item>
+        <item name="overviewButtonBackgroundColor">@color/go_overview_button_color_dark</item>
+    </style>
+
+    <!-- Overview -->
     <style name="GoOverviewActionButton">
-        <item name="android:tint">@color/go_overview_button_icon_color</item>
-        <item name="android:backgroundTint">@color/go_overview_button_color</item>
+        <item name="android:tint">?attr/overviewButtonIconColor</item>
+        <item name="android:backgroundTint">?attr/overviewButtonBackgroundColor</item>
         <item name="android:background">@drawable/round_rect_button</item>
         <item name="android:layout_width">@dimen/go_overview_button_width</item>
         <item name="android:layout_height">@dimen/go_overview_button_height</item>
@@ -27,7 +43,7 @@
     <style name="GoOverviewActionButtonCaption">
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textSize">14dp</item>
-        <item name="android:textColor">@color/go_overview_button_icon_color</item>
+        <item name="android:textColor">?attr/overviewButtonTextColor</item>
         <item name="android:lineHeight">20dp</item>
         <item name="android:textAlignment">center</item>
         <item name="android:importantForAccessibility">no</item>
