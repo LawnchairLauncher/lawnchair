@@ -287,10 +287,6 @@
         <item name="android:colorForeground">@color/all_apps_bg_hand_fill_dark</item>
     </style>
 
-    <style name="Widget.DeviceDefault.Button.Rounded.Colored" parent="@android:style/Widget.DeviceDefault.Button.Colored">
-        <item name="android:background">@drawable/add_item_dialog_button_background</item>
-    </style>
-
     <style name="Button.TopRounded.Bordered" parent="@android:style/Widget.Material.Button">
         <item name="android:background">@drawable/button_top_rounded_bordered_ripple</item>
         <item name="android:stateListAnimator">@null</item>
@@ -303,6 +299,11 @@
 
     <style name="Button.Rounded.Colored" parent="@android:style/Widget.Material.Button">
         <item name="android:background">@drawable/button_rounded_colored_ripple</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+
+    <style name="Button.FullRounded.Colored" parent="@android:style/Widget.Material.Button">
+        <item name="android:background">@drawable/full_rounded_colored_ripple</item>
         <item name="android:stateListAnimator">@null</item>
     </style>
 
