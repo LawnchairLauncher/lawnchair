@@ -103,6 +103,7 @@ import com.android.launcher3.util.IntSparseArrayMap;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.OverlayEdgeEffect;
 import com.android.launcher3.util.PackageUserKey;
+import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.WallpaperOffsetInterpolator;
 import com.android.launcher3.widget.LauncherAppWidgetHost;
@@ -1927,10 +1928,16 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 if (droppedOnOriginalCellDuringTransition) {
                     // Animate the item to its original position, while simultaneously exiting
                     // spring-loaded mode so the page meets the icon where it was picked up.
+                    final RunnableList callbackList = new RunnableList();
+                    final Runnable onCompleteCallback = onCompleteRunnable;
                     mLauncher.getDragController().animateDragViewToOriginalPosition(
-                            onCompleteRunnable, cell,
+                            /* onComplete= */ callbackList::executeAllAndDestroy, cell,
                             SPRING_LOADED.getTransitionDuration(mLauncher));
-                    mLauncher.getStateManager().goToState(NORMAL);
+                    mLauncher.getStateManager().goToState(NORMAL, /* delay= */ 0,
+                            onCompleteCallback == null
+                                    ? null
+                                    : forSuccessCallback(
+                                            () -> callbackList.add(onCompleteCallback)));
                     mLauncher.getDropTargetBar().onDragEnd();
                     parent.onDropChild(cell);
                     return;
