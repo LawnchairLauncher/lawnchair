@@ -76,7 +76,6 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.UserHandle;
-import android.os.VibrationEffect;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -133,7 +132,6 @@ import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.TranslateEdgeEffect;
-import com.android.launcher3.util.VibratorWrapper;
 import com.android.launcher3.util.ViewPool;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.BaseActivityInterface;
@@ -343,17 +341,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private static final int ADDITION_TASK_DURATION = 200;
     private static final float INITIAL_DISMISS_TRANSLATION_INTERPOLATION_OFFSET = 0.55f;
     private static final float ADDITIONAL_DISMISS_TRANSLATION_INTERPOLATION_OFFSET = 0.05f;
-
-    private static final int SNAP_TO_PAGE_VIBRATION_PRIMITIVE =
-            Utilities.ATLEAST_S ? VibrationEffect.Composition.PRIMITIVE_LOW_TICK : -1;
-    private static final float SNAP_TO_PAGE_VIBRATION_PRIMITIVE_SCALE = 0.4f;
-    private static final VibrationEffect SNAP_TO_PAGE_VIBRATION_FALLBACK =
-            VibrationEffect.createPredefined(VibrationEffect.EFFECT_TEXTURE_TICK);
-    private static final int EDGE_IMPACT_VIBRATION_PRIMITIVE =
-            Utilities.ATLEAST_R ? VibrationEffect.Composition.PRIMITIVE_TICK : -1;
-    private static final float EDGE_IMPACT_VIBRATION_PRIMITIVE_SCALE = 0.8f;
-    private static final VibrationEffect EDGE_IMPACT_VIBRATION_FALLBACK =
-            VibrationEffect.createPredefined(VibrationEffect.EFFECT_TICK);
 
     protected final RecentsOrientedState mOrientationState;
     protected final BaseActivityInterface<STATE_TYPE, ACTIVITY_TYPE> mSizeStrategy;
@@ -973,8 +960,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     @Override
     protected void onPageEndTransition() {
         super.onPageEndTransition();
-        VibratorWrapper.INSTANCE.get(mContext).vibrate(SNAP_TO_PAGE_VIBRATION_PRIMITIVE,
-                SNAP_TO_PAGE_VIBRATION_PRIMITIVE_SCALE, SNAP_TO_PAGE_VIBRATION_FALLBACK);
         if (isClearAllHidden()) {
             mActionsView.updateDisabledFlags(OverviewActionsView.DISABLED_SCROLLING, false);
         }
@@ -1075,13 +1060,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 mScroller.extendDuration(extraScrollDuration);
             }
         }
-    }
-
-    @Override
-    protected void onEdgeAbsorbingScroll() {
-        super.onEdgeAbsorbingScroll();
-        VibratorWrapper.INSTANCE.get(mContext).vibrate(EDGE_IMPACT_VIBRATION_PRIMITIVE,
-                EDGE_IMPACT_VIBRATION_PRIMITIVE_SCALE, EDGE_IMPACT_VIBRATION_FALLBACK);
     }
 
     @Override
