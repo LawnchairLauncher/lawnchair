@@ -105,10 +105,6 @@ public class ArrowTipView extends AbstractFloatingView {
     private void init(Context context) {
         inflate(context, R.layout.arrow_toast, this);
         setOrientation(LinearLayout.VERTICAL);
-        View dismissButton = findViewById(R.id.dismiss);
-        dismissButton.setOnClickListener(view -> {
-            handleClose(true);
-        });
 
         View arrowView = findViewById(R.id.arrow);
         ViewGroup.LayoutParams arrowLp = arrowView.getLayoutParams();
@@ -194,18 +190,18 @@ public class ArrowTipView extends AbstractFloatingView {
     public ArrowTipView showAtLocation(String text, int arrowXCoord, int yCoord) {
         ViewGroup parent = mActivity.getDragLayer();
         @Px int parentViewWidth = parent.getWidth();
-        @Px int textViewWidth = getContext().getResources()
-                .getDimensionPixelSize(R.dimen.widget_picker_education_tip_width);
+        @Px int maxTextViewWidth = getContext().getResources()
+                .getDimensionPixelSize(R.dimen.widget_picker_education_tip_max_width);
         @Px int minViewMargin = getContext().getResources()
                 .getDimensionPixelSize(R.dimen.widget_picker_education_tip_min_margin);
-        if (parentViewWidth < textViewWidth + 2 * minViewMargin) {
+        if (parentViewWidth < maxTextViewWidth + 2 * minViewMargin) {
             Log.w(TAG, "Cannot display tip on a small screen of size: " + parentViewWidth);
             return null;
         }
 
         TextView textView = findViewById(R.id.text);
         textView.setText(text);
-        textView.setWidth(textViewWidth);
+        textView.setMaxWidth(maxTextViewWidth);
         parent.addView(this);
         requestLayout();
 
