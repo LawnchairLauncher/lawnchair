@@ -50,6 +50,7 @@ class PreferenceManager private constructor(context: Context) : BasePreferenceMa
     val allowRotation = BoolPref("pref_allowRotation", true)
     val wrapAdaptiveIcons = BoolPref("prefs_wrapAdaptive", false, reloadIcons)
     val addIconToHome = BoolPref("pref_add_icon_to_home", true)
+    val enableHotseatQsb = BoolPref("pref_dockSearchBar", true, reloadGrid)
     val hotseatColumns = IdpIntPref("pref_hotseatColumns", { numHotseatIcons }, reloadGrid)
     val workspaceColumns = IdpIntPref("pref_workspaceColumns", { numColumns }, reloadGrid)
     val workspaceRows = IdpIntPref("pref_workspaceRows", { numRows }, reloadGrid)

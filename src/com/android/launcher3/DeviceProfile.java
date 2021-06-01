@@ -215,11 +215,23 @@ public class DeviceProfile {
 
         workspaceCellPaddingXPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_padding_x);
 
+        // Lawnchair prefs
+        PreferenceManager prefs = PreferenceManager.getInstance(mContext);
+
+        int hotseatTopPaddingRes;
+        int hotseatBottomPaddingRes;
+        if (prefs.getEnableHotseatQsb().get()) {
+            hotseatTopPaddingRes = R.dimen.dynamic_grid_hotseat_top_padding;
+            hotseatBottomPaddingRes = R.dimen.dynamic_grid_hotseat_bottom_padding;
+        } else {
+            hotseatTopPaddingRes = R.dimen.noqsb_hotseat_top_padding;
+            hotseatBottomPaddingRes = R.dimen.noqsb_hotseat_bottom_padding;
+        }
         hotseatBarTopPaddingPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_top_padding);
+                res.getDimensionPixelSize(hotseatTopPaddingRes);
         hotseatBarBottomPaddingPx = (isTallDevice ? 0
                 : res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_bottom_non_tall_padding))
-                + res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_bottom_padding);
+                + res.getDimensionPixelSize(hotseatBottomPaddingRes);
         hotseatBarSidePaddingEndPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_side_padding);
         // Add a bit of space between nav bar and hotseat in vertical bar layout.

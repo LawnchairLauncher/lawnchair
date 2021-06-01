@@ -15,6 +15,7 @@ import android.view.animation.Interpolator
 import android.widget.EditText
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
+import app.lawnchair.util.preferences.PreferenceManager
 import com.android.launcher3.*
 import com.android.launcher3.allapps.AllAppsContainerView
 import com.android.launcher3.allapps.AllAppsStore
@@ -31,7 +32,7 @@ import com.android.launcher3.views.ActivityContext
 import java.util.*
 import kotlin.math.round
 
-class AllAppsHotseatQsb @JvmOverloads constructor(context: Context?, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+class AllAppsHotseatQsb @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         QsbContainerView(context, attrs, defStyleAttr), Insettable, SearchUiManager, AllAppsSearchBarController.Callbacks, AllAppsStore.OnUpdateListener {
     private val mActivity: ActivityContext = ActivityContext.lookupContext(context)
     private val mFixedTranslationY: Int = resources.getDimensionPixelSize(R.dimen.search_widget_hotseat_height) / 2
@@ -42,6 +43,8 @@ class AllAppsHotseatQsb @JvmOverloads constructor(context: Context?, attrs: Attr
     private lateinit var mAppsView: AllAppsContainerView
     private lateinit var mSearchWrapperView: View
     private lateinit var mFallbackSearchView: ExtendedEditText
+
+    private val enableHotseatQsb by PreferenceManager.getInstance(context).enableHotseatQsb
 
     init {
         clipChildren = false
@@ -189,8 +192,9 @@ class AllAppsHotseatQsb @JvmOverloads constructor(context: Context?, attrs: Attr
 
     override fun setContentVisibility(visibleElements: Int, setter: PropertySetter,
                                       interpolator: Interpolator) {
+        val showHotseatMode = visibleElements and LauncherState.HOTSEAT_SEARCH_BOX != 0 && enableHotseatQsb
         val showAllAppsMode = visibleElements and LauncherState.ALL_APPS_CONTENT != 0
-        setter.setViewAlpha(mSearchWrapperView, if (showAllAppsMode) 0f else 1f, Interpolators.LINEAR)
+        setter.setViewAlpha(mSearchWrapperView, if (showHotseatMode) 1f else 0f, Interpolators.LINEAR)
         setter.setViewAlpha(mFallbackSearchView, if (showAllAppsMode) 1f else 0f, Interpolators.LINEAR)
     }
 
