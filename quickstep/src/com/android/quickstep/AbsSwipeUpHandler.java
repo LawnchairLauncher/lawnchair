@@ -394,6 +394,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         if (mStateCallback.hasStates(STATE_HANDLER_INVALIDATED)) {
             return;
         }
+        // RecentsView never updates the display rotation until swipe-up, force update
+        // RecentsOrientedState before passing to TaskViewSimulator.
+        mRecentsView.updateRecentsRotation();
         mTaskViewSimulator.setOrientationState(mRecentsView.getPagedViewOrientedState());
 
         // If we've already ended the gesture and are going home, don't prepare recents UI,
