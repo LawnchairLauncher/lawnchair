@@ -49,21 +49,15 @@
     <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"یقینی طور پر بائیں کنارے سے اسکرین کے وسط تک سوائپ کریں اور پھر اپنی انگلی اٹھا لیں۔"</string>
     <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"اس بات کو یقینی بنائیں کہ آپ دائیں کنارے سے دور سے سوائپ کریں۔"</string>
     <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"یقینی طور پر دائیں کنارے سے اسکرین کے وسط تک سوائپ کریں اور پھر اپنی انگلی اٹھا لیں۔"</string>
-    <!-- no translation found for back_gesture_feedback_complete_with_back_right_follow_up (2100639504811809267) -->
-    <skip />
-    <!-- no translation found for back_gesture_feedback_complete_with_overview_follow_up (9176400654037014471) -->
-    <skip />
+    <string name="back_gesture_feedback_complete_with_back_right_follow_up" msgid="2100639504811809267">"آپ نے واپس جانے کے لیے بائیں کنارے سے سوائپ کرنے کا طریقہ سیکھ لیا۔"</string>
+    <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"آپ نے واپس جانے کے لیے دائیں کنارے سے سوائپ کرنے کا طریقہ سیکھ لیا۔ اس کے بعد ایپس سوئچ کرنے کا طریقہ جانیں۔"</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"آپ نے واپس جائیں اشارے کو مکمل کر لیا۔"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"اس بات کو یقینی بنائیں کہ آپ اسکرین کے نچلے حصے سے زیادہ قریب سے سوائپ نہ کریں۔"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"پچھلے اشارے کی حساسیت تبدیل کرنے کے لیے ترتیبات پر جائیں"</string>
-    <!-- no translation found for back_left_gesture_intro_title (5197184481779330065) -->
-    <skip />
-    <!-- no translation found for back_right_gesture_intro_title (7431951986971898074) -->
-    <skip />
-    <!-- no translation found for back_left_gesture_intro_subtitle (7672761376577628602) -->
-    <skip />
-    <!-- no translation found for back_right_gesture_intro_subtitle (2735828029197816509) -->
-    <skip />
+    <string name="back_left_gesture_intro_title" msgid="5197184481779330065">"واپس جانے کے لیے بائیں کنارے سے سوائپ کریں"</string>
+    <string name="back_right_gesture_intro_title" msgid="7431951986971898074">"واپس جانے کے لیے دائیں کنارے سے سوائپ کریں"</string>
+    <string name="back_left_gesture_intro_subtitle" msgid="7672761376577628602">"پچھلی اسکرین جس پر آپ تھے اس پر واپس جانے کے لیے بائیں کنارے سے اسکرین کے وسط تک سوائپ کریں۔"</string>
+    <string name="back_right_gesture_intro_subtitle" msgid="2735828029197816509">"آپ دائیں کنارے سے اسکرین کے وسط تک سوائپ کر کے پچھلی اسکرین پر واپس بھی جا سکتے ہیں۔ اسے ابھی آزمائیں۔"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"اس بات کو یقینی بنائیں کہ آپ اسکرین کے نچلے کنارے سے اوپر کی طرف سوائپ کریں۔"</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"اس بات کو یقینی بنائیں کہ آپ اپنی انگلی اوپر اٹھانے سے پہلے موقوف نہ کریں۔"</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"اس بات کو یقینی بنائیں کہ آپ سیدھا اوپر کی طرف سوائپ کریں۔"</string>
