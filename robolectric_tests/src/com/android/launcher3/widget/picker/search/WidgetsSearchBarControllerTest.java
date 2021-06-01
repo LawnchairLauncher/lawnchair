@@ -19,7 +19,6 @@ package com.android.launcher3.widget.picker.search;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
@@ -131,18 +130,14 @@ public class WidgetsSearchBarControllerTest {
     public void cancelSearch_shouldInformSearchModeListenerToClearResultsAndExitSearch() {
         mCancelButton.performClick();
 
-        // 1 time explicitly from the cancel button on click listener.
-        // Another from the setText("") the cancel button on click listener causing afterTextChange.
-        verify(mSearchModeListener, times(2)).exitSearchMode();
+        verify(mSearchModeListener).exitSearchMode();
     }
 
     @Test
     public void cancelSearch_shouldCancelSearch() {
         mCancelButton.performClick();
 
-        // 1 time explicitly from the cancel button on click listener.
-        // Another from the setText("") the cancel button on click listener causing afterTextChange.
-        verify(mSearchAlgorithm, times(2)).cancel(true);
+        verify(mSearchAlgorithm).cancel(true);
         verifyNoMoreInteractions(mSearchAlgorithm);
     }
 
