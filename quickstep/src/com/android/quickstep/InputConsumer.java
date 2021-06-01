@@ -39,6 +39,7 @@ public interface InputConsumer {
     int TYPE_OVERSCROLL = 1 << 9;
     int TYPE_SYSUI_OVERLAY = 1 << 10;
     int TYPE_ONE_HANDED = 1 << 11;
+    int TYPE_TASKBAR_STASH = 1 << 12;
 
     String[] NAMES = new String[] {
            "TYPE_NO_OP",                    // 0
@@ -53,6 +54,7 @@ public interface InputConsumer {
             "TYPE_OVERSCROLL",              // 9
             "TYPE_SYSUI_OVERLAY",           // 10
             "TYPE_ONE_HANDED",              // 11
+            "TYPE_TASKBAR_STASH",           // 12
     };
 
     InputConsumer NO_OP = () -> TYPE_NO_OP;

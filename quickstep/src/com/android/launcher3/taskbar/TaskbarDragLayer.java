@@ -40,10 +40,11 @@ import com.android.systemui.shared.system.ViewTreeObserverWrapper.OnComputeInset
 public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
 
     private final Paint mTaskbarBackgroundPaint;
+    private final OnComputeInsetsListener mTaskbarInsetsComputer = this::onComputeTaskbarInsets;
 
     private TaskbarDragLayerController.TaskbarDragLayerCallbacks mControllerCallbacks;
 
-    private final OnComputeInsetsListener mTaskbarInsetsComputer = this::onComputeTaskbarInsets;
+    private float mTaskbarBackgroundOffset;
 
     public TaskbarDragLayer(@NonNull Context context) {
         this(context, null);
@@ -118,8 +119,10 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        canvas.drawRect(0, canvas.getHeight() - mControllerCallbacks.getTaskbarBackgroundHeight(),
-                canvas.getWidth(), canvas.getHeight(), mTaskbarBackgroundPaint);
+        float backgroundHeight = mControllerCallbacks.getTaskbarBackgroundHeight()
+                * (1f - mTaskbarBackgroundOffset);
+        canvas.drawRect(0, canvas.getHeight() - backgroundHeight, canvas.getWidth(),
+                canvas.getHeight(), mTaskbarBackgroundPaint);
         super.dispatchDraw(canvas);
     }
 
@@ -129,6 +132,15 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
      */
     protected void setTaskbarBackgroundAlpha(float alpha) {
         mTaskbarBackgroundPaint.setAlpha((int) (alpha * 255));
+        invalidate();
+    }
+
+    /**
+     * Sets the translation of the background color behind all the Taskbar contents.
+     * @param offset 0 is fully onscreen, 1 is fully offscreen.
+     */
+    protected void setTaskbarBackgroundOffset(float offset) {
+        mTaskbarBackgroundOffset = offset;
         invalidate();
     }
 
