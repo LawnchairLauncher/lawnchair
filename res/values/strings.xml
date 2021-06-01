@@ -99,6 +99,15 @@
     <!-- A widget category label for grouping widgets related to conversations. [CHAR_LIMIT=30] -->
     <string name="widget_category_conversations">Conversations</string>
 
+    <!-- Title of a dialog. This dialog lets a user know how they can use widgets on their phone.
+         [CHAR_LIMIT=NONE] -->
+    <string name="widget_education_header">Useful info at your fingertips</string>
+    <!-- Dialog text. This dialog lets a user know how they can use widgets on their phone.
+         [CHAR_LIMIT=NONE] -->
+    <string name="widget_education_content">To get info without opening apps, you can add widgets to your Home screen</string>
+    <!-- Text on the button that closes the education dialog about widgets. [CHAR_LIMIT=50] -->
+    <string name="widget_education_close_button">Got it</string>
+
     <!-- All Apps -->
     <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
     <string name="all_apps_search_bar_hint">Search apps</string>
