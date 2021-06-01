@@ -1,6 +1,7 @@
 package com.android.launcher3.graphics;
 
 import static com.android.launcher3.Utilities.getPrefs;
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.Themes.KEY_THEMED_ICONS;
 import static com.android.launcher3.util.Themes.isThemedIconEnabled;
 
@@ -18,7 +19,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.IBinder.DeathRecipient;
-import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
 import android.util.ArrayMap;
@@ -217,7 +217,8 @@ public class GridCustomizationsProvider extends ContentProvider {
             Bundle result = new Bundle();
             result.putParcelable(KEY_SURFACE_PACKAGE, renderer.getSurfacePackage());
 
-            Messenger messenger = new Messenger(new Handler(Looper.getMainLooper(), observer));
+            Messenger messenger =
+                    new Messenger(new Handler(UI_HELPER_EXECUTOR.getLooper(), observer));
             Message msg = Message.obtain();
             msg.replyTo = messenger;
             result.putParcelable(KEY_CALLBACK, msg);
