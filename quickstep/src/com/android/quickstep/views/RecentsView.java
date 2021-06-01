@@ -2702,19 +2702,20 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         if (LIVE_TILE.get() && mEnableDrawingLiveTile && newConfig.orientation != mOrientation) {
             switchToScreenshot(
                     () -> finishRecentsAnimation(true /* toRecents */,
-                            this::onConfigurationChangedInternal));
+                            this::updateRecentsRotation));
             mEnableDrawingLiveTile = false;
         } else {
-            onConfigurationChangedInternal();
+            updateRecentsRotation();
         }
         mOrientation = newConfig.orientation;
     }
 
-    private void onConfigurationChangedInternal() {
+    /**
+     * Updates {@link RecentsOrientedState}'s cached RecentsView rotation.
+     */
+    public void updateRecentsRotation() {
         final int rotation = mActivity.getDisplay().getRotation();
-        if (mOrientationState.setRecentsRotation(rotation)) {
-            updateOrientationHandler();
-        }
+        mOrientationState.setRecentsRotation(rotation);
     }
 
     public void setLayoutRotation(int touchRotation, int displayRotation) {
