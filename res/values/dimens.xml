@@ -149,7 +149,7 @@
     <dimen name="widget_row_padding">8dp</dimen>
     <dimen name="widget_row_divider">2dp</dimen>
 
-    <dimen name="widget_picker_education_tip_width">120dp</dimen>
+    <dimen name="widget_picker_education_tip_max_width">308dp</dimen>
     <dimen name="widget_picker_education_tip_min_margin">4dp</dimen>
 
     <dimen name="widget_picker_view_pager_top_padding">10dp</dimen>
@@ -288,6 +288,7 @@
 
 <!-- Theming related -->
     <dimen name="default_dialog_corner_radius">8dp</dimen>
+    <dimen name="dialogCornerRadius">@dimen/default_dialog_corner_radius</dimen>
 
     <!-- Onboarding bottomsheet related -->
     <dimen name="bottom_sheet_edu_padding">24dp</dimen>
