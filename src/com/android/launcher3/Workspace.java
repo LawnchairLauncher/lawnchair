@@ -429,10 +429,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         // When a accessible drag is started by the folder, we only allow rearranging withing the
         // folder.
         boolean addNewPage = !(options.isAccessibleDrag && dragObject.dragSource != this);
-
         if (addNewPage) {
             mDeferRemoveExtraEmptyScreen = false;
-            addExtraEmptyScreenOnDrag();
+            addExtraEmptyScreenOnDrag(dragObject);
 
             if (dragObject.dragInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET
                     && dragObject.dragSource != this) {
@@ -640,12 +639,19 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         return newScreen;
     }
 
-    public void addExtraEmptyScreenOnDrag() {
+    private void addExtraEmptyScreenOnDrag(DragObject dragObject) {
         boolean lastChildOnScreen = false;
         boolean childOnFinalScreen = false;
 
         if (mDragSourceInternal != null) {
-            if (mDragSourceInternal.getChildCount() == 1) {
+            // When the drag view content is a LauncherAppWidgetHostView, we should increment the
+            // drag source child count by 1 because the widget in drag has been detached from its
+            // original parent, ShortcutAndWidgetContainer, and reattached to the DragView.
+            int dragSourceChildCount =
+                    dragObject.dragView.getContentView() instanceof LauncherAppWidgetHostView
+                            ? mDragSourceInternal.getChildCount() + 1
+                            : mDragSourceInternal.getChildCount();
+            if (dragSourceChildCount == 1) {
                 lastChildOnScreen = true;
             }
             CellLayout cl = (CellLayout) mDragSourceInternal.getParent();
