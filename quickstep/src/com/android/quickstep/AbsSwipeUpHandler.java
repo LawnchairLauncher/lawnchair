@@ -741,10 +741,25 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         TaskUtils.closeSystemWindowsAsync(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
 
         if (mRecentsView != null) {
-            InteractionJankMonitorWrapper.begin(mRecentsView,
-                    InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH, 2000 /* ms timeout */);
-            InteractionJankMonitorWrapper.begin(mRecentsView,
-                    InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME);
+            mRecentsView.getViewTreeObserver().addOnDrawListener(new OnDrawListener() {
+                boolean mHandled = false;
+
+                @Override
+                public void onDraw() {
+                    if (mHandled) {
+                        return;
+                    }
+                    mHandled = true;
+
+                    InteractionJankMonitorWrapper.begin(mRecentsView,
+                            InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH, 2000 /* ms timeout */);
+                    InteractionJankMonitorWrapper.begin(mRecentsView,
+                            InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME);
+
+                    mRecentsView.post(() ->
+                            mRecentsView.getViewTreeObserver().removeOnDrawListener(this));
+                }
+            });
         }
         notifyGestureStartedAsync();
         setIsLikelyToStartNewTask(isLikelyToStartNewTask, false /* animate */);
