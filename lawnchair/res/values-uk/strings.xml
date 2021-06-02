@@ -77,4 +77,5 @@
         <item quantity="many">%1$d додатків</item>
         <item quantity="other">%1$d додатки</item>
     </plurals>
+    <string name="hotseat_qsb_label">Show Search Bar</string>
 </resources>
