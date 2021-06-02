@@ -76,4 +76,5 @@ Büszke tagja a Spoingus gang-nek.</string>
         <item quantity="one">%1$d alkalmazás</item>
         <item quantity="other">%1$d alkalmazások</item>
     </plurals>
+    <string name="hotseat_qsb_label">Show Search Bar</string>
 </resources>
