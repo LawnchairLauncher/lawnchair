@@ -75,4 +75,5 @@
         <item quantity="one">%1$d Uygulama</item>
         <item quantity="other">%1$d Uygulama</item>
     </plurals>
+    <string name="hotseat_qsb_label">Show Search Bar</string>
 </resources>
