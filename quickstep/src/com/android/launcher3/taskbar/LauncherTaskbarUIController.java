@@ -32,7 +32,6 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.states.StateAnimationConfig;
 
-
 /**
  * A data source which integrates with a Launcher instance
  * TODO: Rename to have Launcher prefix
@@ -51,6 +50,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
 
     private @Nullable Animator mAnimator;
     private boolean mIsAnimatingToLauncher;
+    private ContextualRotationNotifier mContextualRotationNotifier;
 
     public LauncherTaskbarUIController(
             BaseQuickstepLauncher launcher, TaskbarActivityContext context) {
@@ -67,7 +67,8 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     }
 
     @Override
-    protected void onCreate() {
+    protected void onCreate(ContextualRotationNotifier notifier) {
+        mContextualRotationNotifier = notifier;
         mTaskbarStateHandler.setAnimationController(mTaskbarAnimationController);
         mTaskbarAnimationController.init();
         mHotseatController.init();
@@ -82,6 +83,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
             // End this first, in case it relies on properties that are about to be cleaned up.
             mAnimator.end();
         }
+        mContextualRotationNotifier = null;
         mTaskbarStateHandler.setAnimationController(null);
         mTaskbarAnimationController.cleanup();
         mHotseatController.cleanup();
@@ -105,6 +107,9 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
             @Override
             public void updateTaskbarVisibilityAlpha(float alpha) {
                 mTaskbarView.setAlpha(alpha);
+                if (mContextualRotationNotifier != null) {
+                    mContextualRotationNotifier.onTaskbarVisibilityChanged(alpha == 1);
+                }
             }
 
             @Override
@@ -271,5 +276,9 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         void updateImeBarVisibilityAlpha(float alpha);
         void updateTaskbarScale(float scale);
         void updateTaskbarTranslationY(float translationY);
+    }
+
+    public interface ContextualRotationNotifier {
+        void onTaskbarVisibilityChanged(boolean showing);
     }
 }

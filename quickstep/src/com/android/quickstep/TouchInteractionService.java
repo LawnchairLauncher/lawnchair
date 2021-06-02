@@ -261,7 +261,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
         }
 
         @Override
-        public void onSplitScreenSecondaryBoundsChanged(Rect bounds, Rect insets)  {
+        public void onSplitScreenSecondaryBoundsChanged(Rect bounds, Rect insets) {
             WindowBounds wb = new WindowBounds(bounds, insets);
             MAIN_EXECUTOR.execute(() -> SplitScreenBounds.INSTANCE.setSecondaryWindowBounds(wb));
         }
@@ -269,8 +269,34 @@ public class TouchInteractionService extends Service implements PluginListener<O
         @Override
         public void onImeWindowStatusChanged(int displayId, IBinder token, int vis,
                 int backDisposition, boolean showImeSwitcher) {
-            MAIN_EXECUTOR.execute(() -> mTaskbarManager.updateImeStatus(
-                    displayId, vis, backDisposition, showImeSwitcher));
+            executeForTaskbarManager(() -> mTaskbarManager
+                    .updateImeStatus(displayId, vis, backDisposition, showImeSwitcher));
+        }
+
+        @Override
+        public void onRotationProposal(int rotation, boolean isValid) {
+            executeForTaskbarManager(() -> mTaskbarManager.onRotationProposal(rotation, isValid));
+        }
+
+        @Override
+        public void disable(int displayId, int state1, int state2, boolean animate) {
+            executeForTaskbarManager(() -> mTaskbarManager
+                    .disable(displayId, state1, state2, animate));
+        }
+
+        @Override
+        public void onSystemBarAttributesChanged(int displayId, int behavior) {
+            executeForTaskbarManager(() -> mTaskbarManager
+                    .onSystemBarAttributesChanged(displayId, behavior));
+        }
+
+        private void executeForTaskbarManager(final Runnable r) {
+            MAIN_EXECUTOR.execute(() -> {
+                if (mTaskbarManager == null) {
+                    return;
+                }
+                r.run();
+            });
         }
 
         public TaskbarManager getTaskbarManager() {

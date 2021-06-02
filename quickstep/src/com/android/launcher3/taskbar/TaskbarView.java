@@ -42,6 +42,7 @@ import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.taskbar.contextual.RotationContextButton;
 import com.android.launcher3.views.ActivityContext;
 
 /**
@@ -67,6 +68,7 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
 
     LinearLayout mSystemButtonContainer;
     LinearLayout mHotseatIconsContainer;
+    LinearLayout mContextualButtonContainer;
 
     // Delegate touches to the closest view if within mIconTouchSize.
     private boolean mDelegateTargeted;
@@ -79,6 +81,7 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
 
     /** Provider of buttons added to taskbar in 3 button nav */
     private ButtonProvider mButtonProvider;
+    private RotationContextButton mContextualRotationButton;
 
     private boolean mDisableRelayout;
     private boolean mAreHolesAllowed;
@@ -112,8 +115,9 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mSystemButtonContainer = findViewById(R.id.system_button_layout);
+        mSystemButtonContainer = findViewById(R.id.nav_button_layout);
         mHotseatIconsContainer = findViewById(R.id.hotseat_icons_layout);
+        mContextualButtonContainer = findViewById(R.id.contextual_button_layout);
     }
 
     protected void init(TaskbarIconController.TaskbarViewCallbacks callbacks,
@@ -132,6 +136,10 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
 
         int numHotseatIcons = mActivityContext.getDeviceProfile().numShownHotseatIcons;
         updateHotseatItems(new ItemInfo[numHotseatIcons]);
+
+        if (mActivityContext.canShowNavButtons()) {
+            createContextualRegion();
+        }
     }
 
     /**
@@ -378,6 +386,16 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
         }
     }
 
+    private void createContextualRegion() {
+        mContextualRotationButton = mButtonProvider.getContextualRotation();
+        mContextualRotationButton.setVisibility(GONE);
+        mContextualButtonContainer.addView(mContextualRotationButton);
+    }
+
+    @Nullable
+    public RotationContextButton getContextualRotationButton() {
+        return mContextualRotationButton;
+    }
     // FolderIconParent implemented methods.
 
     @Override
