@@ -1409,14 +1409,14 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                     : APP_LAUNCH_ALPHA_DOWN_DURATION;
             iconAlphaStart = hasSplashScreen && !hasDifferentAppIcon ? 0 : 1f;
 
-            // TOOD: Share value from shell when available.
-            final float windowIconSize = Utilities.pxFromSp(108, r.getDisplayMetrics());
+            final int windowIconSize = ResourceUtils.getDimenByName("starting_surface_icon_size",
+                    r, 108);
 
             cropCenterXStart = windowTargetBounds.centerX();
             cropCenterYStart = windowTargetBounds.centerY();
 
-            cropWidthStart = (int) windowIconSize;
-            cropHeightStart = (int) windowIconSize;
+            cropWidthStart = windowIconSize;
+            cropHeightStart = windowIconSize;
 
             cropWidthEnd = windowTargetBounds.width();
             cropHeightEnd = windowTargetBounds.height();
