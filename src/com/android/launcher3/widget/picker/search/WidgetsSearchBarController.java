@@ -101,10 +101,8 @@ public class WidgetsSearchBarController implements TextWatcher,
 
     @Override
     public void clearSearchResult() {
-        mSearchAlgorithm.cancel(/* interruptActiveRequests= */ true);
+        // Any existing search session will be cancelled by setting text to empty.
         mInput.setText("");
-        clearFocus();
-        mSearchModeListener.exitSearchMode();
     }
 
     /**
