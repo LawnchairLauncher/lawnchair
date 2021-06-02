@@ -1076,9 +1076,10 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
             getRotationHelper().setCurrentStateRequest(REQUEST_NONE);
         }
 
-        if (mPrevLauncherState != state && !ALL_APPS.equals(state)
+        if (ALL_APPS.equals(mPrevLauncherState) && !ALL_APPS.equals(state)
                 // Making sure mAllAppsSessionLogId is not null to avoid double logging.
                 && mAllAppsSessionLogId != null) {
+            getAppsView().getSearchUiManager().resetSearch();
             getStatsLogManager().logger().log(LAUNCHER_ALLAPPS_EXIT);
             mAllAppsSessionLogId = null;
         }
