@@ -74,4 +74,5 @@
     <plurals name="apps_count">
         <item quantity="other">%1$d Ứng dụng</item>
     </plurals>
+    <string name="hotseat_qsb_label">Show Search Bar</string>
 </resources>
