@@ -51,6 +51,7 @@ import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.taskbar.TaskbarNavButtonController.TaskbarButton;
+import com.android.launcher3.taskbar.contextual.RotationButtonController;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Themes;
@@ -88,7 +89,9 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
     private int mLastRequestedNonFullscreenHeight;
 
     private final SysUINavigationMode.Mode mNavMode;
+    private final SystemTaskbarNotificationManager mSystemTaskbarNotificationManager;
     private final TaskbarNavButtonController mNavButtonController;
+    private final RotationButtonController mRotationButtonController;
 
     private final boolean mIsSafeModeEnabled;
 
@@ -98,12 +101,43 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
     private final View.OnClickListener mOnTaskbarIconClickListener;
     private final View.OnLongClickListener mOnTaskbarIconLongClickListener;
 
+    private final TaskbarManager.SystemTaskbarNotifier mSystemTaskbarNotifier =
+            new TaskbarManager.SystemTaskbarNotifier() {
+                @Override
+                public void updateImeStatus(int displayId, int vis, int backDisposition,
+                        boolean showImeSwitcher) {
+                    /*
+                     * When in 3 button nav, sysui flags don't get called since we prevent
+                     *  sysui nav bar from instantiating at all, which is what's responsible for
+                     * sending sysui state flags over.
+                     */
+                    mIconController.updateImeStatus(displayId, vis, showImeSwitcher);
+                }
+
+                @Override
+                public void onRotationProposal(int rotation, boolean isValid) {
+                    mRotationButtonController.onRotationProposal(rotation, isValid);
+                }
+
+                @Override
+                public void disable(int displayId, int state1, int state2, boolean animate) {
+                    mRotationButtonController.onDisable2FlagChanged(state2);
+                }
+
+                @Override
+                public void onSystemBarAttributesChanged(int displayId, int behavior) {
+                    mRotationButtonController.onBehaviorChanged(displayId, behavior);
+                }
+            };
+
     public TaskbarActivityContext(Context windowContext, DeviceProfile dp,
-            TaskbarNavButtonController buttonController) {
+            TaskbarNavButtonController buttonController,
+            SystemTaskbarNotificationManager systemTaskbarNotificationManager) {
         super(windowContext, Themes.getActivityThemeRes(windowContext));
         mDeviceProfile = dp;
         mNavButtonController = buttonController;
         mNavMode = SysUINavigationMode.getMode(windowContext);
+        mSystemTaskbarNotificationManager = systemTaskbarNotificationManager;
         mIsSafeModeEnabled = TraceHelper.allowIpcs("isSafeMode",
                 () -> getPackageManager().isSafeMode());
 
@@ -118,7 +152,11 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         mLayoutInflater = LayoutInflater.from(this).cloneInContext(this);
         mDragLayer = (TaskbarDragLayer) mLayoutInflater
                 .inflate(R.layout.taskbar, null, false);
-        mIconController = new TaskbarIconController(this, mDragLayer);
+
+        mRotationButtonController = new RotationButtonController(this,
+                R.color.popup_color_primary_light, R.color.popup_color_primary_light);
+        mIconController = new TaskbarIconController(this, mDragLayer,
+                mRotationButtonController);
 
         Display display = windowContext.getDisplay();
         Context c = display.getDisplayId() == Display.DEFAULT_DISPLAY
@@ -149,8 +187,13 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                 new int[] { ITYPE_EXTRA_NAVIGATION_BAR, ITYPE_BOTTOM_TAPPABLE_ELEMENT }
         );
 
-        mIconController.init(mOnTaskbarIconClickListener, mOnTaskbarIconLongClickListener);
+        mIconController.init(mOnTaskbarIconClickListener, mOnTaskbarIconLongClickListener,
+                mNavMode);
         mWindowManager.addView(mDragLayer, mWindowLayoutParams);
+        if (mNavMode == Mode.THREE_BUTTONS) {
+            mSystemTaskbarNotificationManager
+                    .registerSystemTaskbarNotifications(mSystemTaskbarNotifier);
+        }
     }
 
     public boolean canShowNavButtons() {
@@ -189,7 +232,10 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         mUIController.onDestroy();
         mUIController = uiController;
         mIconController.setUIController(mUIController);
-        mUIController.onCreate();
+        mUIController.onCreate(mRotationButtonController::onTaskBarVisibilityChange);
+        if (mNavMode == Mode.THREE_BUTTONS) {
+            mRotationButtonController.init();
+        }
     }
 
     /**
@@ -199,6 +245,11 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         setUIController(TaskbarUIController.DEFAULT);
         mIconController.onDestroy();
         mWindowManager.removeViewImmediate(mDragLayer);
+        if (mNavMode == Mode.THREE_BUTTONS) {
+            mSystemTaskbarNotificationManager.removeSystemTaskbarNotifications(
+                    mSystemTaskbarNotifier);
+            mRotationButtonController.cleanup();
+        }
     }
 
     void onNavigationButtonClick(@TaskbarButton int buttonType) {
@@ -210,16 +261,6 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
      */
     public void setImeIsVisible(boolean isImeVisible) {
         mIconController.setImeIsVisible(isImeVisible);
-    }
-
-    /**
-     * When in 3 button nav, the above doesn't get called since we prevent sysui nav bar from
-     * instantiating at all, which is what's responsible for sending sysui state flags over.
-     *
-     * @param vis IME visibility flag
-     */
-    public void updateImeStatus(int displayId, int vis, boolean showImeSwitcher) {
-        mIconController.updateImeStatus(displayId, vis, showImeSwitcher);
     }
 
     /**
