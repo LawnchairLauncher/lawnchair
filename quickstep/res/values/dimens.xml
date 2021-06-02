@@ -45,8 +45,9 @@
 
     <!-- These speeds are in dp/s -->
     <dimen name="max_task_dismiss_drag_velocity">2.25dp</dimen>
-    <dimen name="default_task_dismiss_drag_velocity">1.75dp</dimen>
-    <dimen name="default_task_dismiss_drag_velocity_grid">0.75dp</dimen>
+    <dimen name="default_task_dismiss_drag_velocity">1.5dp</dimen>
+    <dimen name="default_task_dismiss_drag_velocity_grid">1dp</dimen>
+    <dimen name="default_task_dismiss_drag_velocity_grid_focus_task">5dp</dimen>
 
     <dimen name="recents_page_spacing">16dp</dimen>
     <dimen name="recents_clear_all_deadzone_vertical_margin">70dp</dimen>
