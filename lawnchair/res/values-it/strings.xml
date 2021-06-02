@@ -75,4 +75,5 @@
         <item quantity="one">%1$d Applicazione</item>
         <item quantity="other">%1$d Applicazioni</item>
     </plurals>
+    <string name="hotseat_qsb_label">Show Search Bar</string>
 </resources>
