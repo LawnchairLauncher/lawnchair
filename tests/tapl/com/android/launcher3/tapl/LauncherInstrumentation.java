@@ -105,7 +105,7 @@ public final class LauncherInstrumentation {
     static final Pattern EVENT_TOUCH_DOWN_TIS = getTouchEventPatternTIS("ACTION_DOWN");
     static final Pattern EVENT_TOUCH_UP_TIS = getTouchEventPatternTIS("ACTION_UP");
     private final String mLauncherPackage;
-    private final boolean mIsLauncher3;
+    private Boolean mIsLauncher3;
     private long mTestStartTime = -1;
 
     // Types for launcher containers that the user is interacting with. "Background" is a
@@ -206,7 +206,6 @@ public final class LauncherInstrumentation {
     public LauncherInstrumentation(Instrumentation instrumentation) {
         mInstrumentation = instrumentation;
         mDevice = UiDevice.getInstance(instrumentation);
-        mIsLauncher3 = "com.android.launcher3".equals(getLauncherPackageName());
 
         // Launcher should run in test harness so that custom accessibility protocol between
         // Launcher and TAPL is enabled. In-process tests enable this protocol with a direct call
@@ -1422,6 +1421,9 @@ public final class LauncherInstrumentation {
     }
 
     boolean isLauncher3() {
+        if (mIsLauncher3 == null) {
+            mIsLauncher3 = "com.android.launcher3".equals(getLauncherPackageName());
+        }
         return mIsLauncher3;
     }
 
