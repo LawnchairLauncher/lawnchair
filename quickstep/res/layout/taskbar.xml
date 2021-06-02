@@ -29,7 +29,7 @@
         android:layout_gravity="bottom" >
 
         <LinearLayout
-            android:id="@+id/system_button_layout"
+            android:id="@+id/nav_button_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/taskbar_nav_buttons_spacing"
@@ -41,6 +41,15 @@
             android:id="@+id/hotseat_icons_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:forceHasOverlappingRendering="false"
+            android:gravity="center" />
+
+        <LinearLayout
+            android:id="@+id/contextual_button_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/taskbar_nav_buttons_spacing"
+            android:paddingRight="@dimen/taskbar_nav_buttons_spacing"
             android:forceHasOverlappingRendering="false"
             android:gravity="center" />
 

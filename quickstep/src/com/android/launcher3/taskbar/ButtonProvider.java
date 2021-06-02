@@ -27,6 +27,7 @@ import android.widget.ImageView;
 
 import com.android.launcher3.R;
 import com.android.launcher3.taskbar.TaskbarNavButtonController.TaskbarButton;
+import com.android.launcher3.taskbar.contextual.RotationContextButton;
 
 /**
  * Creates Buttons for Taskbar for 3 button nav.
@@ -66,6 +67,11 @@ public class ButtonProvider {
     public View getImeSwitcher() {
         // IME Switcher Button
         return getButtonForDrawable(R.drawable.ic_ime_switcher, BUTTON_IME_SWITCH);
+    }
+
+    public RotationContextButton getContextualRotation() {
+        // Rotation suggestion button
+        return new RotationContextButton(mContext);
     }
 
     private View getButtonForDrawable(@DrawableRes int drawableId, @TaskbarButton int buttonType) {
