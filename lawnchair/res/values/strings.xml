@@ -82,5 +82,5 @@
         <item quantity="other">%1$d Apps</item>
     </plurals>
 
-    <string name="hotseat_qsb_label">Show search bar</string>
+    <string name="hotseat_qsb_label">Show Search Bar</string>
 </resources>

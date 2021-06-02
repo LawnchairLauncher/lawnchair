@@ -41,7 +41,7 @@ fun DockPreferences() {
     val prefs = preferenceManager()
     pageMeta.provide(Meta(title = stringResource(id = R.string.dock_label)))
     PreferenceLayout {
-        PreferenceGroup(isFirstChild = true) {
+        PreferenceGroup(isFirstChild = true, heading = stringResource(id = R.string.general_label)) {
             SwitchPreference(
                 adapter = prefs.enableHotseatQsb.getAdapter(),
                 label = stringResource(id = R.string.hotseat_qsb_label),
