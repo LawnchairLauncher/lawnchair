@@ -53,7 +53,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:paddingVertical="8dp"
+            android:paddingTop="8dp"
             android:text="@string/add_item_request_drag_hint"
             android:textSize="14sp"
             android:textColor="?android:attr/textColorSecondary"
@@ -70,28 +70,33 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="end"
-            android:padding="8dp"
+            android:gravity="center_vertical|end"
+            android:paddingHorizontal="24dp"
+            android:paddingVertical="8dp"
             android:orientation="horizontal">
             <Button
-                style="@style/Widget.DeviceDefault.Button.Rounded.Colored"
+                style="@style/Button.FullRounded.Colored"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="36dp"
                 android:paddingHorizontal="16dp"
-                android:onClick="onCancelClick"
-                android:text="@android:string/cancel" />
+                android:textSize="14sp"
+                android:textColor="@color/button_text"
+                android:text="@android:string/cancel"
+                android:onClick="onCancelClick"/>
 
             <Space
-                android:layout_width="4dp"
+                android:layout_width="8dp"
                 android:layout_height="wrap_content" />
 
             <Button
-                style="@style/Widget.DeviceDefault.Button.Rounded.Colored"
+                style="@style/Button.FullRounded.Colored"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="36dp"
                 android:paddingHorizontal="16dp"
-                android:onClick="onPlaceAutomaticallyClick"
-                android:text="@string/add_to_home_screen"/>
+                android:textSize="14sp"
+                android:textColor="@color/button_text"
+                android:text="@string/add_to_home_screen"
+                android:onClick="onPlaceAutomaticallyClick"/>
         </LinearLayout>
     </com.android.launcher3.widget.AddItemWidgetsBottomSheet>
 

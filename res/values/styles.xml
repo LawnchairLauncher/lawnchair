@@ -48,7 +48,7 @@
         <item name="workspaceStatusBarScrim">@drawable/workspace_bg</item>
         <item name="widgetsTheme">@style/WidgetContainerTheme</item>
         <item name="folderDotColor">?android:attr/colorPrimary</item>
-        <item name="folderFillColor">?android:attr/colorBackground</item>
+        <item name="folderFillColor">?android:attr/colorBackgroundFloating</item>
         <item name="folderIconBorderColor">?android:attr/colorPrimary</item>
         <item name="folderTextColor">?android:attr/textColorPrimary</item>
         <item name="isFolderDarkText">true</item>
@@ -71,7 +71,7 @@
     </style>
 
     <style name="LauncherTheme.DarkMainColor" parent="@style/LauncherTheme">
-        <item name="folderFillColor">#FF3C4043</item> <!-- 100% GM2 800 -->
+        <item name="folderFillColor">?android:attr/colorBackgroundFloating</item>
         <item name="folderTextColor">?attr/workspaceTextColor</item>
         <item name="isFolderDarkText">?attr/isWorkspaceDarkText</item>
         <item name="folderHintColor">@color/folder_hint_text_color_dark</item>
@@ -87,7 +87,7 @@
         <item name="isWorkspaceDarkText">true</item>
         <item name="workspaceStatusBarScrim">@null</item>
         <item name="folderDotColor">#FF464646</item>
-        <item name="folderFillColor">#CDFFFFFF</item>
+        <item name="folderFillColor">?android:attr/colorBackgroundFloating</item>
         <item name="folderIconBorderColor">#FF80868B</item>
         <item name="folderTextColor">?attr/workspaceTextColor</item>
         <item name="isFolderDarkText">true</item>
@@ -109,7 +109,7 @@
         <item name="popupColorTertiary">@color/popup_color_tertiary_dark</item>
         <item name="widgetsTheme">@style/WidgetContainerTheme.Dark</item>
         <item name="folderDotColor">?android:attr/colorPrimary</item>
-        <item name="folderFillColor">?android:attr/colorBackground</item>
+        <item name="folderFillColor">?android:attr/colorBackgroundFloating</item>
         <item name="folderIconBorderColor">?android:attr/colorPrimary</item>
         <item name="folderTextColor">?android:attr/textColorPrimary</item>
         <item name="isFolderDarkText">false</item>
@@ -123,7 +123,7 @@
     </style>
 
     <style name="LauncherTheme.Dark.DarkMainColor" parent="@style/LauncherTheme.Dark">
-        <item name="folderFillColor">#FF3C4043</item> <!-- 100% GM2 800 -->
+        <item name="folderFillColor">?android:attr/colorBackgroundFloating</item>
         <item name="folderTextColor">@android:color/white</item>
         <item name="isFolderDarkText">false</item>
         <item name="folderHintColor">@color/folder_hint_text_color_light</item>
@@ -132,7 +132,7 @@
 
     <style name="LauncherTheme.Dark.DarkText" parent="@style/LauncherTheme.Dark">
         <item name="android:colorControlHighlight">#19212121</item>
-        <item name="folderFillColor">#CDFFFFFF</item>
+        <item name="folderFillColor">?android:attr/colorBackgroundFloating</item>
         <item name="folderTextColor">?attr/workspaceTextColor</item>
         <item name="isFolderDarkText">?attr/isWorkspaceDarkText</item>
         <item name="folderHintColor">@color/folder_hint_text_color_dark</item>
@@ -240,7 +240,7 @@
 
 
     <!-- Icon displayed on the workspace -->
-    <style name="BaseIcon.Workspace" >
+    <style name="BaseIcon.Workspace.Shadows" parent="BaseIcon">
         <item name="android:shadowRadius">2.0</item>
         <item name="android:shadowColor">?attr/workspaceShadowColor</item>
         <item name="ambientShadowColor">?attr/workspaceAmbientShadowColor</item>
@@ -249,6 +249,10 @@
         <item name="keyShadowBlur">.5dp</item>
         <item name="keyShadowOffsetX">.5dp</item>
         <item name="keyShadowOffsetY">.5dp</item>
+    </style>
+
+    <!-- Intentionally empty so we can override -->
+    <style name="BaseIcon.Workspace" parent="BaseIcon.Workspace.Shadows">
     </style>
 
     <!-- Theme for the popup container -->
@@ -287,8 +291,24 @@
         <item name="android:colorForeground">@color/all_apps_bg_hand_fill_dark</item>
     </style>
 
-    <style name="Widget.DeviceDefault.Button.Rounded.Colored" parent="@android:style/Widget.DeviceDefault.Button.Colored">
-        <item name="android:background">@drawable/add_item_dialog_button_background</item>
+    <style name="Button.TopRounded.Bordered" parent="@android:style/Widget.Material.Button">
+        <item name="android:background">@drawable/button_top_rounded_bordered_ripple</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+
+    <style name="Button.BottomRounded.Colored" parent="@android:style/Widget.Material.Button">
+        <item name="android:background">@drawable/button_bottom_rounded_colored_ripple</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+
+    <style name="Button.Rounded.Colored" parent="@android:style/Widget.Material.Button">
+        <item name="android:background">@drawable/button_rounded_colored_ripple</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+
+    <style name="Button.FullRounded.Colored" parent="@android:style/Widget.Material.Button">
+        <item name="android:background">@drawable/full_rounded_colored_ripple</item>
+        <item name="android:stateListAnimator">@null</item>
     </style>
 
     <style name="AddItemActivityTheme" parent="@android:style/Theme.Translucent.NoTitleBar">
