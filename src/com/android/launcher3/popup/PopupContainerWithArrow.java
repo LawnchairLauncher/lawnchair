@@ -71,6 +71,7 @@ import com.android.launcher3.util.ShortcutUtil;
 import com.android.launcher3.views.BaseDragLayer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -94,6 +95,8 @@ public class PopupContainerWithArrow<T extends StatefulActivity<LauncherState>>
     private NotificationItemView mNotificationItemView;
     private int mNumNotifications;
     private ViewGroup mNotificationContainer;
+
+    private ViewGroup mDeepShortcutContainer;
 
     private ViewGroup mSystemShortcutContainer;
 
@@ -172,6 +175,14 @@ public class PopupContainerWithArrow<T extends StatefulActivity<LauncherState>>
         return false;
     }
 
+    @Override
+    protected void setChildColor(View view, int color, AnimatorSet animatorSetOut) {
+        super.setChildColor(view, color, animatorSetOut);
+        if (view.getId() == R.id.notification_container && mNotificationItemView != null) {
+            mNotificationItemView.updateBackgroundColor(color, animatorSetOut);
+        }
+    }
+
     /**
      * Returns true if we can show the container.
      */
@@ -218,6 +229,13 @@ public class PopupContainerWithArrow<T extends StatefulActivity<LauncherState>>
         mPopupItemDragHandler = new LauncherPopupItemDragHandler(launcher, this);
         mAccessibilityDelegate = new ShortcutMenuAccessibilityDelegate(launcher);
         launcher.getDragController().addDragListener(this);
+        addPreDrawForColorExtraction(launcher);
+    }
+
+    @Override
+    protected List<View> getChildrenForColorExtraction() {
+        return Arrays.asList(mSystemShortcutContainer, mDeepShortcutContainer,
+                mNotificationContainer);
     }
 
     @Override
@@ -262,13 +280,18 @@ public class PopupContainerWithArrow<T extends StatefulActivity<LauncherState>>
         }
         int viewsToFlip = getChildCount();
         mSystemShortcutContainer = this;
+        if (mDeepShortcutContainer == null) {
+            mDeepShortcutContainer = findViewById(R.id.deep_shortcuts_container);
+        }
         if (hasDeepShortcuts) {
+            mDeepShortcutContainer.setVisibility(View.VISIBLE);
+
             if (mNotificationItemView != null) {
                 mNotificationItemView.addGutter();
             }
 
             for (int i = shortcutCount; i > 0; i--) {
-                DeepShortcutView v = inflateAndAdd(R.layout.deep_shortcut, this);
+                DeepShortcutView v = inflateAndAdd(R.layout.deep_shortcut, mDeepShortcutContainer);
                 v.getLayoutParams().width = containerWidth;
                 mShortcuts.add(v);
             }
@@ -281,13 +304,16 @@ public class PopupContainerWithArrow<T extends StatefulActivity<LauncherState>>
                             R.layout.system_shortcut_icon_only, mSystemShortcutContainer, shortcut);
                 }
             }
-        } else if (!systemShortcuts.isEmpty()) {
-            if (mNotificationItemView != null) {
-                mNotificationItemView.addGutter();
-            }
+        } else {
+            mDeepShortcutContainer.setVisibility(View.GONE);
+            if (!systemShortcuts.isEmpty()) {
+                if (mNotificationItemView != null) {
+                    mNotificationItemView.addGutter();
+                }
 
-            for (SystemShortcut shortcut : systemShortcuts) {
-                initializeSystemShortcut(R.layout.system_shortcut, this, shortcut);
+                for (SystemShortcut shortcut : systemShortcuts) {
+                    initializeSystemShortcut(R.layout.system_shortcut, this, shortcut);
+                }
             }
         }
 
@@ -563,7 +589,7 @@ public class PopupContainerWithArrow<T extends StatefulActivity<LauncherState>>
                 mNotificationItemView = null;
                 mNotificationContainer.setVisibility(GONE);
                 updateHiddenShortcuts();
-                assignMarginsAndBackgrounds();
+                assignMarginsAndBackgrounds(PopupContainerWithArrow.this);
             } else {
                 mNotificationItemView.trimNotifications(
                         NotificationKeyData.extractKeysOnly(dotInfo.getNotificationKeys()));

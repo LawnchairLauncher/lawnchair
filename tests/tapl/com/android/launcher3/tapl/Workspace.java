@@ -179,7 +179,7 @@ public final class Workspace extends Home {
                             getHotseatAppIcon("Chrome"),
                             new Point(mLauncher.getDevice().getDisplayWidth(),
                                     mLauncher.getVisibleBounds(workspace).centerY()),
-                            "deep_shortcuts_container",
+                            "popup_container",
                             false,
                             false,
                             () -> mLauncher.expectEvent(
