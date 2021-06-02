@@ -17,8 +17,7 @@
 ** limitations under the License.
 */
 -->
-<shape android:shape="rectangle"
+<selector
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@color/surface" />
-    <corners android:radius="@dimen/widget_list_top_bottom_corner_radius"/>
-</shape>
+    <item android:color="?android:attr/colorAccent" />
+</selector>
