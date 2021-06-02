@@ -18,15 +18,15 @@
     <string name="icon_pack">Pacote de ícones</string>
     <string name="settings">Configurações</string>
     <string name="home_screen_label">Tela inicial</string>
-    <string name="home_screen_description">Novos apps, grade, ícones</string>
+    <string name="home_screen_description">Novos Apps, Grade, Ícones</string>
     <string name="general_label">Geral</string>
-    <string name="general_description">Pontos de notificação, pacote de ícones</string>
-    <string name="home_screen_rotation_label">Rotação da tela inicial</string>
+    <string name="general_description">Pontos de notificação, Pacote de ícones</string>
+    <string name="home_screen_rotation_label">Rotação da Tela Inicial</string>
     <string name="home_screen_rotaton_description">Quando o dispositivo for girado.</string>
     <string name="auto_add_shortcuts_label">Adicionar novos aplicativos à tela inicial</string>
     <string name="dock_label">Dock</string>
     <string name="dock_description">Número de ícones</string>
-    <string name="app_drawer_label">Gaveta de aplicativos</string>
+    <string name="app_drawer_label">Gaveta de Aplicativos</string>
     <string name="app_drawer_description">Número de colunas, ícones</string>
     <string name="folders_label">Pastas</string>
     <string name="folders_description">Número de linhas e colunas</string>
@@ -36,7 +36,7 @@
     <string name="max_folder_rows">Máx. linhas de pastas</string>
     <string name="home_screen_columns">Colunas da tela inicial</string>
     <string name="grid">Grade</string>
-    <string name="home_screen_rows">Linhas da tela inicial</string>
+    <string name="home_screen_rows">Linhas da Tela Inicial</string>
     <string name="icons">Ícones</string>
     <string name="icon_size">Tamanho do ícone</string>
     <string name="label_size">Tamanho do rótulo</string>
@@ -75,4 +75,5 @@
         <item quantity="one">%1$d aplicativo</item>
         <item quantity="other">%1$d aplicativos</item>
     </plurals>
+    <string name="hotseat_qsb_label">Show Search Bar</string>
 </resources>
