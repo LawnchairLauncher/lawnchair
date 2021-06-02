@@ -89,8 +89,8 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
     private static final float ACCEPT_COLOR_MULTIPLIER = 1.5f;
 
     // Expressed on a scale from 0 to 255.
-    private static final int BG_OPACITY = 160;
-    private static final int MAX_BG_OPACITY = 225;
+    private static final int BG_OPACITY = 255;
+    private static final int MAX_BG_OPACITY = 255;
     private static final int SHADOW_OPACITY = 40;
 
     private ValueAnimator mScaleAnimator;
