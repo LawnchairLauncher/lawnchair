@@ -49,21 +49,15 @@
     <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"ഇടത്തേ അരികിൽ നിന്ന് സ്‌ക്രീനിന്റെ മധ്യഭാഗത്തേക്ക് സ്വെെപ്പ് ചെയ്‌ത് വിടുക."</string>
     <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"വലത്തേയറ്റത്തെ അരികിൽ നിന്ന് സ്വെെപ്പ് ചെയ്യുന്നുണ്ടെന്ന് ഉറപ്പാക്കുക."</string>
     <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"വലത്തേ അരികിൽ നിന്ന് സ്‌ക്രീനിന്റെ മധ്യഭാഗത്തേക്ക് സ്വെെപ്പ് ചെയ്‌ത് വിടുക."</string>
-    <!-- no translation found for back_gesture_feedback_complete_with_back_right_follow_up (2100639504811809267) -->
-    <skip />
-    <!-- no translation found for back_gesture_feedback_complete_with_overview_follow_up (9176400654037014471) -->
-    <skip />
+    <string name="back_gesture_feedback_complete_with_back_right_follow_up" msgid="2100639504811809267">"മടങ്ങാൻ ഇടതുഭാഗത്ത് നിന്ന് സ്വൈപ്പ് ചെയ്യുന്ന രീതി നിങ്ങൾക്ക് മനസ്സിലായി."</string>
+    <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"മടങ്ങാൻ വലതുഭാഗത്ത് നിന്ന് സ്വൈപ്പ് ചെയ്യുന്ന രീതി മനസ്സിലായി. ഇനി, ആപ്പുകൾ മാറുന്ന രീതി അറിയുക."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"മടങ്ങുക ജെസ്ച്ചർ നിങ്ങൾ പൂർത്തിയാക്കി."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"സ്‌ക്രീനിന്റെ ഏറ്റവും അടിഭാഗത്തേക്ക് സ്വെെപ്പ് ചെയ്യുന്നില്ലെന്ന് ഉറപ്പാക്കുക."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"ബാക്ക്ജെസ്റ്ററിന്റെ സെൻസിറ്റിവിറ്റി മാറ്റാൻ ക്രമീകരണത്തിൽ പോകൂ"</string>
-    <!-- no translation found for back_left_gesture_intro_title (5197184481779330065) -->
-    <skip />
-    <!-- no translation found for back_right_gesture_intro_title (7431951986971898074) -->
-    <skip />
-    <!-- no translation found for back_left_gesture_intro_subtitle (7672761376577628602) -->
-    <skip />
-    <!-- no translation found for back_right_gesture_intro_subtitle (2735828029197816509) -->
-    <skip />
+    <string name="back_left_gesture_intro_title" msgid="5197184481779330065">"മടങ്ങാൻ ഇടതുഭാഗത്ത് നിന്ന് സ്വൈപ്പ് ചെയ്യുക"</string>
+    <string name="back_right_gesture_intro_title" msgid="7431951986971898074">"മടങ്ങാൻ വലതുഭാഗത്ത് നിന്ന് സ്വൈപ്പ് ചെയ്യുക"</string>
+    <string name="back_left_gesture_intro_subtitle" msgid="7672761376577628602">"നിങ്ങളുടെ മുമ്പത്തെ സ്ക്രീനിലേക്ക് മടങ്ങാൻ, സ്ക്രീനിന്റെ ഇടത്തേ അരികിൽ നിന്ന് നടുവിലേക്ക് സ്വൈപ്പ് ചെയ്യുക."</string>
+    <string name="back_right_gesture_intro_subtitle" msgid="2735828029197816509">"സ്ക്രീനിന്റെ വലത്തേ അരികിൽ നിന്ന് നടുവിലേക്ക് സ്വൈപ്പ് ചെയ്തും മുൻ സ്ക്രീനിലെത്താം. ഇതിന് ശ്രമിക്കൂ."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"സ്‌ക്രീനിന്റെ താഴത്തെ അരികിൽ നിന്ന് മുകളിലേക്ക് സ്വെെപ്പ് ചെയ്യുന്നുണ്ടെന്ന് ഉറപ്പാക്കുക."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"വിടുന്നതിന് മുമ്പ് നിങ്ങൾ താൽക്കാലികമായി നിർത്തുന്നില്ലെന്ന് ഉറപ്പാക്കുക."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"നേരെ മുകളിലേക്ക് സ്വെെപ്പ് ചെയ്യുന്നുണ്ടെന്ന് ഉറപ്പിക്കുക."</string>
