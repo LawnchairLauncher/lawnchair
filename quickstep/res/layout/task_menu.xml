@@ -25,15 +25,15 @@
 
     <TextView
         android:id="@+id/task_name"
-        android:background="?android:attr/textColorPrimary"
-        android:textColor="?android:attr/textColorPrimaryInverse"
+        android:background="?android:attr/colorPrimary"
+        android:textColor="?android:attr/textColorPrimary"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
         android:layout_marginBottom="2dp"
-        android:paddingTop="@dimen/task_card_menu_option_vertical_padding"
-        android:paddingBottom="@dimen/task_card_menu_option_vertical_padding"
-        android:textSize="24sp"/>
+        android:paddingTop="@dimen/task_menu_vertical_padding"
+        android:paddingBottom="@dimen/task_menu_vertical_padding"
+        android:textSize="16sp"/>
 
     <LinearLayout
         android:id="@+id/menu_option_layout"

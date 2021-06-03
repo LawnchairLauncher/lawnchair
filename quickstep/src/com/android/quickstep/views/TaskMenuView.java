@@ -234,7 +234,7 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
         Rect insets = mActivity.getDragLayer().getInsets();
         BaseDragLayer.LayoutParams params = (BaseDragLayer.LayoutParams) getLayoutParams();
         int padding = getResources()
-                .getDimensionPixelSize(R.dimen.task_card_menu_option_vertical_padding);
+                .getDimensionPixelSize(R.dimen.task_menu_vertical_padding);
         params.width = orientationHandler.getTaskMenuWidth(taskView.getThumbnail()) - (2 * padding);
         // Gravity set to Left instead of Start as sTempRect.left measures Left distance not Start
         params.gravity = Gravity.LEFT;
