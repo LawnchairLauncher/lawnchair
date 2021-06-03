@@ -204,11 +204,6 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
         enqueueModelUpdateTask(new ShortcutsChangedTask(packageName, shortcuts, user, true));
     }
 
-    public void onPackagesReload(UserHandle user) {
-        enqueueModelUpdateTask(new PackageUpdatedTask(
-                PackageUpdatedTask.OP_RELOAD, user));
-    }
-
     /**
      * Called when the icon for an app changes, outside of package event
      */

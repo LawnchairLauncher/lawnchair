@@ -52,7 +52,7 @@ fun appsList(
             profiles.forEach { appInfos += launcherApps.getActivityList(null, it) }
 
             val apps = appInfos
-                .filter { filter.shouldShowApp(it.componentName, it.user) }
+                .filter { filter.shouldShowApp(it.componentName) }
                 .map { App(context, it) }
                 .sortedWith(comparator)
             appsState.value = Optional.of(apps)
