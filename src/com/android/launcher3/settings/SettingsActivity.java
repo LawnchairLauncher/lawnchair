@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -86,8 +87,12 @@ public class SettingsActivity extends FragmentActivity
         setActionBar(findViewById(R.id.action_bar));
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
 
+        Intent intent = getIntent();
+        if (intent.hasExtra(EXTRA_FRAGMENT) || intent.hasExtra(EXTRA_FRAGMENT_ARGS)) {
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         if (savedInstanceState == null) {
-            Intent intent = getIntent();
             Bundle args = intent.getBundleExtra(EXTRA_FRAGMENT_ARGS);
             if (args == null) {
                 args = new Bundle();
@@ -162,6 +167,15 @@ public class SettingsActivity extends FragmentActivity
         Bundle args = new Bundle();
         args.putString(PreferenceFragmentCompat.ARG_PREFERENCE_ROOT, pref.getKey());
         return startPreference(getString(R.string.settings_fragment_name), args, pref.getKey());
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /**
