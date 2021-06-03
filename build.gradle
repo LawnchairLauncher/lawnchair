@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        kotlin_version = '1.4.32'
+        kotlin_version = '1.5.10'
         compose_version = '1.0.0-beta08'
         accompanist_version = '0.10.0'
     }
@@ -88,8 +88,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerVersion = "1.4.32"
-        kotlinCompilerExtensionVersion = "1.0.0-beta07"
+        kotlinCompilerExtensionVersion = "1.0.0-beta08"
     }
 
     if (keystorePropertiesFile.exists()) {
