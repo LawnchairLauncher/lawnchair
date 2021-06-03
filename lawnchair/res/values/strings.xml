@@ -53,8 +53,6 @@
     <string name="news">News</string>
     <string name="support">Support</string>
     <string name="acknowledgements">Acknowledgements</string>
-    <string name="patryk_description">Manages development and creates the UI. Obsessed with Jetpack Compose indefinitely.</string>
-    <string name="kshitij_description">Writes the core logic for Lawnchair features. Proud member of the Spoingus gang.</string>
     <string name="devops">DevOps</string>
     <string name="quickswitch_maintenance">QuickSwitch Maintenance</string>
     <string name="all_apps_search_bar_hint">Search Apps</string>
