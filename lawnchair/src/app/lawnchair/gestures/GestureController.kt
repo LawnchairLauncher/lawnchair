@@ -16,11 +16,11 @@
 
 package app.lawnchair.gestures
 
-import app.lawnchair.LawnchairLauncherQuickstep
+import app.lawnchair.LawnchairLauncher
 import app.lawnchair.gestures.handlers.SleepGestureHandler
 import app.lawnchair.util.preferences.PreferenceManager
 
-class GestureController(launcher: LawnchairLauncherQuickstep) {
+class GestureController(launcher: LawnchairLauncher) {
     private val prefs = PreferenceManager.getInstance(launcher)
     private val doubleTapHandler = SleepGestureHandler(launcher)
 

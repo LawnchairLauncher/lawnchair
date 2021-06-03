@@ -13,7 +13,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.integerResource
-import app.lawnchair.LawnchairLauncherQuickstep
+import app.lawnchair.LawnchairLauncher
 import app.lawnchair.launcher
 import app.lawnchair.ui.preferences.components.BottomSheet
 import app.lawnchair.ui.preferences.components.BottomSheetState
@@ -80,7 +80,7 @@ class ComposeFloatingView(context: Context) :
     }
 
     companion object {
-        fun show(launcher: LawnchairLauncherQuickstep, content: @Composable ComposeFloatingView.() -> Unit) {
+        fun show(launcher: LawnchairLauncher, content: @Composable ComposeFloatingView.() -> Unit) {
             val view = ComposeFloatingView(launcher)
             view.container.setContent {
                 LawnchairTheme {
@@ -104,7 +104,7 @@ fun scrimColor(): Color {
 }
 
 @OptIn(ExperimentalMaterialApi::class)
-fun LawnchairLauncherQuickstep.showBottomSheet(
+fun LawnchairLauncher.showBottomSheet(
     content: @Composable ColumnScope.(state: BottomSheetState) -> Unit
 ) {
     ComposeFloatingView.show(this) {

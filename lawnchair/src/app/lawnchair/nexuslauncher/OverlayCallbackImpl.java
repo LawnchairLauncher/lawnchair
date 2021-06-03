@@ -16,7 +16,7 @@ import com.google.android.libraries.launcherclient.LauncherClientCallbacks;
 import com.google.android.libraries.launcherclient.StaticInteger;
 
 import app.lawnchair.FeedBridge;
-import app.lawnchair.LawnchairLauncherQuickstep;
+import app.lawnchair.LawnchairLauncher;
 import app.lawnchair.util.preferences.PrefEntry;
 import app.lawnchair.util.preferences.PreferenceManager;
 
@@ -43,7 +43,7 @@ public class OverlayCallbackImpl
     boolean mFlagsChanged = false;
     private int mFlags;
 
-    public OverlayCallbackImpl(LawnchairLauncherQuickstep launcher) {
+    public OverlayCallbackImpl(LawnchairLauncher launcher) {
         PreferenceManager prefs = PreferenceManager.getInstance(launcher);
         PrefEntry<Boolean> minusOnePref = prefs.getMinusOneEnable();
 

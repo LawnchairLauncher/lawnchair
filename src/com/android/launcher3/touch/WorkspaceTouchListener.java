@@ -46,7 +46,7 @@ import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.views.OptionsPopupView;
 
-import app.lawnchair.LawnchairLauncherQuickstep;
+import app.lawnchair.LawnchairLauncher;
 
 
 /**
@@ -194,7 +194,7 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
     @Override
     public boolean onDoubleTap(MotionEvent event) {
         Context context = mWorkspace.getContext();
-        LawnchairLauncherQuickstep launcher = Launcher.fromContext(context);
+        LawnchairLauncher launcher = Launcher.fromContext(context);
         launcher.getGestureController().onDoubleTap();
         return true;
     }

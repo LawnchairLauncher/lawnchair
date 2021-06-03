@@ -38,7 +38,7 @@ import com.android.launcher3.R
 import com.android.launcher3.uioverrides.QuickstepLauncher
 import com.android.systemui.plugins.shared.LauncherOverlayManager
 
-open class LawnchairLauncherQuickstep : QuickstepLauncher(), LifecycleOwner,
+open class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
     SavedStateRegistryOwner, OnBackPressedDispatcherOwner {
 
     private val lifecycleRegistry = LifecycleRegistry(this)
@@ -130,10 +130,10 @@ open class LawnchairLauncherQuickstep : QuickstepLauncher(), LifecycleOwner,
     companion object {
         var sRestart = false
 
-        val instance get() = LauncherAppState.getInstanceNoCreate()?.launcher as? LawnchairLauncherQuickstep
+        val instance get() = LauncherAppState.getInstanceNoCreate()?.launcher as? LawnchairLauncher
     }
 }
 
-val Context.launcher: LawnchairLauncherQuickstep get() {
+val Context.launcher: LawnchairLauncher get() {
     return BaseActivity.fromContext(this)
 }

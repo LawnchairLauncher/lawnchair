@@ -19,7 +19,7 @@ package app.lawnchair.util.preferences
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import app.lawnchair.LawnchairLauncherQuickstep
+import app.lawnchair.LawnchairLauncher
 import app.lawnchair.nexuslauncher.OverlayCallbackImpl
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.states.RotationHelper
@@ -32,7 +32,7 @@ class PreferenceManager private constructor(context: Context) : BasePreferenceMa
         model.forceReload()
     }
     private val scheduleRestart = {
-        LawnchairLauncherQuickstep.instance?.scheduleRestart()
+        LawnchairLauncher.instance?.scheduleRestart()
         Unit
     }
 

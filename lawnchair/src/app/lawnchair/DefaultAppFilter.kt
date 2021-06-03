@@ -17,7 +17,6 @@
 package app.lawnchair
 
 import android.content.ComponentName
-import android.os.UserHandle
 import androidx.annotation.Keep
 import com.android.launcher3.AppFilter
 import com.android.launcher3.BuildConfig
@@ -34,7 +33,7 @@ open class DefaultAppFilter : AppFilter() {
         // Actions Services
         ComponentName.unflattenFromString("com.google.android.as/com.google.android.apps.miphone.aiai.allapps.main.MainDummyActivity"),
         // Lawnchair
-        ComponentName(BuildConfig.APPLICATION_ID, LawnchairLauncherQuickstep::class.java.name),
+        ComponentName(BuildConfig.APPLICATION_ID, LawnchairLauncher::class.java.name),
     )
 
     override fun shouldShowApp(app: ComponentName) = !defaultHideList.contains(app)

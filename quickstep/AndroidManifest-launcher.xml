@@ -46,7 +46,7 @@
         attributes and intent filters the same
         -->
         <activity
-            android:name="app.lawnchair.LawnchairLauncherQuickstep"
+            android:name="app.lawnchair.LawnchairLauncher"
             android:launchMode="singleTask"
             android:clearTaskOnLaunch="true"
             android:stateNotNeeded="true"
