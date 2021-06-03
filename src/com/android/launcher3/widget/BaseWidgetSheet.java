@@ -15,8 +15,6 @@
  */
 package com.android.launcher3.widget;
 
-import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
-
 import android.content.Context;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -62,8 +60,7 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
     }
 
     protected int getScrimColor(Context context) {
-        int alpha = context.getResources().getInteger(R.integer.extracted_color_gradient_alpha);
-        return setColorAlphaBound(context.getColor(R.color.wallpaper_popup_scrim), alpha);
+        return context.getResources().getColor(R.color.widgets_picker_scrim);
     }
 
     @Override
