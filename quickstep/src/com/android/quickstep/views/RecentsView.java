@@ -342,6 +342,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private static final float ADDITIONAL_DISMISS_TRANSLATION_INTERPOLATION_OFFSET = 0.05f;
     private static final float ANIMATION_DISMISS_PROGRESS_MIDPOINT = 0.5f;
 
+    private static final float SIGNIFICANT_MOVE_THRESHOLD_TABLET = 0.15f;
+
     protected final RecentsOrientedState mOrientationState;
     protected final BaseActivityInterface<STATE_TYPE, ACTIVITY_TYPE> mSizeStrategy;
     protected RecentsAnimationController mRecentsAnimationController;
@@ -972,6 +974,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         if (getNextPage() > 0) {
             setSwipeDownShouldLaunchApp(true);
         }
+    }
+
+    @Override
+    protected float getSignificantMoveThreshold() {
+        return mActivity.getDeviceProfile().isTablet ? SIGNIFICANT_MOVE_THRESHOLD_TABLET
+                : super.getSignificantMoveThreshold();
     }
 
     @Override
