@@ -4,22 +4,20 @@ import static android.content.pm.ApplicationInfo.FLAG_SYSTEM;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
 import com.android.systemui.plugins.shared.LauncherOverlayManager;
 import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverlay;
-
 import com.google.android.libraries.launcherclient.ISerializableScrollCallback;
 import com.google.android.libraries.launcherclient.LauncherClient;
 import com.google.android.libraries.launcherclient.LauncherClientCallbacks;
 import com.google.android.libraries.launcherclient.StaticInteger;
 
 import app.lawnchair.FeedBridge;
+import app.lawnchair.LawnchairLauncherQuickstep;
+import app.lawnchair.util.preferences.PrefEntry;
 import app.lawnchair.util.preferences.PreferenceManager;
 
 /**
@@ -45,12 +43,14 @@ public class OverlayCallbackImpl
     boolean mFlagsChanged = false;
     private int mFlags;
 
-    public OverlayCallbackImpl(Launcher launcher) {
+    public OverlayCallbackImpl(LawnchairLauncherQuickstep launcher) {
         PreferenceManager prefs = PreferenceManager.getInstance(launcher);
+        PrefEntry<Boolean> minusOnePref = prefs.getMinusOneEnable();
 
         mLauncher = launcher;
         mClient = new LauncherClient(mLauncher, this, new StaticInteger(
-                (prefs.getMinusOneEnable().get() ? 1 : 0) | 2 | 4 | 8));
+                (minusOnePref.get() ? 1 : 0) | 2 | 4 | 8));
+        minusOnePref.subscribe(launcher, (enabled) -> mLauncher.setLauncherOverlay(enabled ? this : null));
     }
 
     @Override
@@ -119,12 +119,6 @@ public class OverlayCallbackImpl
     @Override
     public void onActivityDestroyed(Activity activity) {
         mClient.mDestroyed = true;
-    }
-
-    public void onMinusOneChanged() {
-        PreferenceManager prefs = PreferenceManager.getInstance(mLauncher);
-        boolean enable = prefs.getMinusOneEnable().get();
-        mLauncher.setLauncherOverlay(enable ? this : null);
     }
 
     @Override
