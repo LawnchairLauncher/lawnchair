@@ -42,11 +42,20 @@ jobs:
         run: chmod +x gradlew
       - name: Build debug APK
         run: ./gradlew assembleLawnWithQuickstepDebug
+      - name: Sign debug APK
+        uses: r0adkll/sign-android-release@v1
+        id: sign-debug-apk
+        with:
+          releaseDirectory: build/outputs/apk/lawnWithQuickstep/debug
+          signingKeyBase64: ${{ secrets.KEYSTORE }}
+          alias: ${{ secrets.KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
           name: Debug APK
-          path: build/outputs/apk/lawnWithQuickstep/debug/**.apk
+          path: ${{ steps.sign-debug-apk.outputs.signedReleaseFile }}
   send-end-notification:
     runs-on: ubuntu-latest
     needs: build-debug-apk
