@@ -77,4 +77,6 @@ Büszke tagja a Spoingus gang-nek.</string>
         <item quantity="other">%1$d alkalmazások</item>
     </plurals>
     <string name="hotseat_qsb_label">Show Search Bar</string>
+    <string name="dt2s_admin_hint">To use Double Tap to Sleep, grant the Admin permission.</string>
+    <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
 </resources>
