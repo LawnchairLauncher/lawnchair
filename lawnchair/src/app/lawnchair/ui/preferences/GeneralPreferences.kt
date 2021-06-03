@@ -56,7 +56,10 @@ fun GeneralPreferences() {
             NavigationActionPreference(
                 label = stringResource(id = R.string.icon_pack),
                 destination = subRoute(name = GeneralRoutes.ICON_PACK),
-                showDivider = false
+                showDivider = false,
+                subtitle =
+                LocalPreferenceInteractor.current.getIconPacks()
+                    .find { it.packageName == preferenceManager().iconPackPackage.get() }?.name
             )
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
