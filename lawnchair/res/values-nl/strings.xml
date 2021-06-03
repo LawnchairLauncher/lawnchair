@@ -18,16 +18,16 @@
     <string name="icon_pack">Icoon pakket</string>
     <string name="settings">Instellingen</string>
     <string name="home_screen_label">Startscherm</string>
-    <string name="home_screen_description">Nieuwe apps, raster, iconen</string>
+    <string name="home_screen_description">Feed, At a Glance, Grid, Icons</string>
     <string name="general_label">Algemeen</string>
     <string name="general_description">Notificatie stippen, icoon pakket</string>
     <string name="home_screen_rotation_label">Startpagina rotatie</string>
     <string name="home_screen_rotaton_description">Wanneer het apparaat is gedraaid.</string>
     <string name="auto_add_shortcuts_label">Voeg nieuwe apps toe aan startscherm</string>
     <string name="dock_label">Onderste balk</string>
-    <string name="dock_description">Aantal iconen</string>
+    <string name="dock_description">Search Bar, Icon Count</string>
     <string name="app_drawer_label">App lade</string>
-    <string name="app_drawer_description">Aantal kolommen, iconen</string>
+    <string name="app_drawer_description">Hidden Apps, Column Count, Icons</string>
     <string name="folders_label">Mappen</string>
     <string name="folders_description">Aantal rijen en kolommen</string>
     <string name="app_drawer_columns">App lade kolommen</string>
@@ -47,8 +47,6 @@
     <string name="news">Nieuws</string>
     <string name="support">Ondersteuning</string>
     <string name="acknowledgements">Erkenningen</string>
-    <string name="patryk_description">Beheert de ontwikkeling en maakt de gebruikersinterface. Geobsedeerd door Jetpack Compose voor onbepaalde tijd.</string>
-    <string name="kshitij_description">Schrijft de kern van de logica voor Lawnchair functies. Trots lid van de Spoingus gang.</string>
     <string name="devops">DevOps</string>
     <string name="quickswitch_maintenance">QuickSwitch Onderhouder</string>
     <string name="all_apps_search_bar_hint">Zoek Apps</string>
@@ -75,12 +73,12 @@
         <item quantity="one">%1$d App</item>
         <item quantity="other">%1$d Apps</item>
     </plurals>
-    <string name="hotseat_qsb_label">Show Search Bar</string>
+    <string name="hotseat_qsb_label">Zoekbalk weergeven</string>
     <string name="dt2s_admin_hint_title">Admin permission required</string>
     <string name="dt2s_admin_hint">To use Double Tap to Sleep, grant the Admin permission.</string>
-    <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
-    <string name="dt2s_a11y_hint_title">Accessibility service required</string>
-    <string name="dt2s_a11y_hint">To use Double Tap to Sleep, enable the accessibility service.</string>
-    <string name="dt2s_warning_open_settings">Open Settings</string>
-    <string name="minus_one_enable">Show Feed</string>
+    <string name="dt2s_admin_warning">Dubbeltik om te slapen wordt uitgeschakeld.</string>
+    <string name="dt2s_a11y_hint_title">Toegankelijkheid service vereist</string>
+    <string name="dt2s_a11y_hint">Schakel de toegankelijkheids service in om dubbeltik om te slapen te gebruiken.</string>
+    <string name="dt2s_warning_open_settings">Open instellingen</string>
+    <string name="minus_one_enable">Toon feed</string>
 </resources>
