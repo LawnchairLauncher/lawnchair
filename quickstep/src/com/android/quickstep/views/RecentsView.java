@@ -417,6 +417,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     // TODO(b/187528071): Remove these and replace with a real scrim.
     private float mColorTint;
     private final int mTintingColor;
+    private ObjectAnimator mTintingAnimator;
 
     private int mOverScrollShift = 0;
 
@@ -3759,9 +3760,17 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * tasks to be dimmed while other elements in the recents view are left alone.
      */
     public void showForegroundScrim(boolean show) {
-        ObjectAnimator anim = ObjectAnimator.ofFloat(this, COLOR_TINT, show ? 0.5f : 0f);
-        anim.setAutoCancel(true);
-        anim.start();
+        if (!show && mColorTint == 0) {
+            if (mTintingAnimator != null) {
+                mTintingAnimator.cancel();
+                mTintingAnimator = null;
+            }
+            return;
+        }
+
+        mTintingAnimator = ObjectAnimator.ofFloat(this, COLOR_TINT, show ? 0.5f : 0f);
+        mTintingAnimator.setAutoCancel(true);
+        mTintingAnimator.start();
     }
 
     /** Tint the RecentsView and TaskViews in to simulate a scrim. */
