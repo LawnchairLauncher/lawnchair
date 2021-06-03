@@ -53,14 +53,17 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
     public static final int ERROR_PERMISSIONS = 1;
     private static final String TAG = "TaskOverlayFactoryGo";
 
-    // Empty constructor required for ResourceBasedOverride
-    public TaskOverlayFactoryGo(Context context) {}
+    private AssistContentRequester mContentRequester;
+
+    public TaskOverlayFactoryGo(Context context) {
+        mContentRequester = new AssistContentRequester(context);
+    }
 
     /**
      * Create a new overlay instance for the given View
      */
     public TaskOverlayGo createOverlay(TaskThumbnailView thumbnailView) {
-        return new TaskOverlayGo(thumbnailView);
+        return new TaskOverlayGo(thumbnailView, mContentRequester);
     }
 
     /**
@@ -72,9 +75,12 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
         private String mTaskPackageName;
         private String mWebUrl;
         private boolean mAssistPermissionsEnabled;
+        private AssistContentRequester mFactoryContentRequester;
 
-        private TaskOverlayGo(TaskThumbnailView taskThumbnailView) {
+        private TaskOverlayGo(TaskThumbnailView taskThumbnailView,
+                AssistContentRequester assistContentRequester) {
             super(taskThumbnailView);
+            mFactoryContentRequester = assistContentRequester;
         }
 
         /**
@@ -105,9 +111,7 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
             }
 
             int taskId = task.key.id;
-            AssistContentRequester contentRequester =
-                    new AssistContentRequester(mApplicationContext);
-            contentRequester.requestAssistContent(taskId, this::onAssistContentReceived);
+            mFactoryContentRequester.requestAssistContent(taskId, this::onAssistContentReceived);
         }
 
         /** Provide Assist Content to the overlay. */
