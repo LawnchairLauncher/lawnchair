@@ -75,11 +75,11 @@
         <item quantity="one">%1$d App</item>
         <item quantity="other">%1$d Apps</item>
     </plurals>
-    <string name="hotseat_qsb_label">Show Search Bar</string>
-    <string name="dt2s_admin_hint_title">Admin permission required</string>
-    <string name="dt2s_admin_hint">To use Double Tap to Sleep, grant the Admin permission.</string>
-    <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
-    <string name="dt2s_a11y_hint_title">Accessibility service required</string>
-    <string name="dt2s_a11y_hint">To use Double Tap to Sleep, enable the accessibility service.</string>
-    <string name="dt2s_warning_open_settings">Open Settings</string>
+    <string name="hotseat_qsb_label">Suchleiste anzeigen</string>
+    <string name="dt2s_admin_hint_title">Adminberechtigung erforderlich</string>
+    <string name="dt2s_admin_hint">Um doppeltes Tippen zum Schlafen zu verwenden, gewähre Adminberechtigung.</string>
+    <string name="dt2s_admin_warning">Doppeltes Tippen zum Schlafen wird deaktiviert.</string>
+    <string name="dt2s_a11y_hint_title">Bedienungshilfen erforderlich</string>
+    <string name="dt2s_a11y_hint">Aktivieren Sie den Bedienungshilfen, um doppeltes Tippen zum Schlafen zu verwenden.</string>
+    <string name="dt2s_warning_open_settings">Einstellungen öffnen</string>
 </resources>
