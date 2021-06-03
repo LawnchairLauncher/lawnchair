@@ -73,7 +73,7 @@ public class TaskbarIconController {
         mTaskbarView.getLayoutParams().height = mActivity.getDeviceProfile().taskbarSize;
 
         mDragLayer.init(new TaskbarDragLayerCallbacks(), mTaskbarView);
-        if (navMode == SysUINavigationMode.Mode.THREE_BUTTONS) {
+        if (mActivity.canShowNavButtons()) {
             mRotationButtonController.setRotationButton(mTaskbarView.getContextualRotationButton());
         }
     }
