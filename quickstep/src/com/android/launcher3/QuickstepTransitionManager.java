@@ -66,7 +66,9 @@ import android.os.Looper;
 import android.os.SystemProperties;
 import android.util.Pair;
 import android.util.Size;
+import android.view.SurfaceControl;
 import android.view.View;
+import android.view.ViewRootImpl;
 import android.view.animation.Interpolator;
 import android.view.animation.PathInterpolator;
 
@@ -98,6 +100,7 @@ import com.android.quickstep.views.FloatingWidgetView;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.ActivityCompat;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
+import com.android.systemui.shared.system.BlurUtils;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
@@ -921,12 +924,39 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 BACKGROUND_APP.getDepth(mLauncher))
                 .setDuration(APP_LAUNCH_DURATION);
         if (allowBlurringLauncher) {
-            depthController.setSurfaceToApp(RemoteAnimationProvider.findLowestOpaqueLayerTarget(
-                    appTargets, MODE_OPENING));
+            final SurfaceControl dimLayer;
+            if (BlurUtils.supportsBlursOnWindows()) {
+                // Create a temporary effect layer, that lives on top of launcher, so we can apply
+                // the blur to it. The EffectLayer will be fullscreen, which will help with caching
+                // optimizations on the SurfaceFlinger side:
+                // - Results would be able to be cached as a texture
+                // - There won't be texture allocation overhead, because EffectLayers don't have
+                //   buffers
+                ViewRootImpl viewRootImpl = mLauncher.getDragLayer().getViewRootImpl();
+                SurfaceControl parent = viewRootImpl != null
+                        ? viewRootImpl.getSurfaceControl()
+                        : null;
+                dimLayer = new SurfaceControl.Builder()
+                        .setName("Blur layer")
+                        .setParent(parent)
+                        .setOpaque(false)
+                        .setHidden(false)
+                        .setEffectLayer()
+                        .build();
+            } else {
+                dimLayer = null;
+            }
+
+            depthController.setSurface(dimLayer);
             backgroundRadiusAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    depthController.setSurfaceToApp(null);
+                    depthController.setSurface(null);
+                    if (dimLayer != null) {
+                        new SurfaceControl.Transaction()
+                                .remove(dimLayer)
+                                .apply();
+                    }
                 }
             });
         }
@@ -1379,14 +1409,14 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                     : APP_LAUNCH_ALPHA_DOWN_DURATION;
             iconAlphaStart = hasSplashScreen && !hasDifferentAppIcon ? 0 : 1f;
 
-            // TOOD: Share value from shell when available.
-            final float windowIconSize = Utilities.pxFromSp(108, r.getDisplayMetrics());
+            final int windowIconSize = ResourceUtils.getDimenByName("starting_surface_icon_size",
+                    r, 108);
 
             cropCenterXStart = windowTargetBounds.centerX();
             cropCenterYStart = windowTargetBounds.centerY();
 
-            cropWidthStart = (int) windowIconSize;
-            cropHeightStart = (int) windowIconSize;
+            cropWidthStart = windowIconSize;
+            cropHeightStart = windowIconSize;
 
             cropWidthEnd = windowTargetBounds.width();
             cropHeightEnd = windowTargetBounds.height();
