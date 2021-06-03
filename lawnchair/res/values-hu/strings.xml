@@ -76,11 +76,11 @@ Büszke tagja a Spoingus gang-nek.</string>
         <item quantity="one">%1$d alkalmazás</item>
         <item quantity="other">%1$d alkalmazások</item>
     </plurals>
-    <string name="hotseat_qsb_label">Show Search Bar</string>
-    <string name="dt2s_admin_hint_title">Admin permission required</string>
-    <string name="dt2s_admin_hint">To use Double Tap to Sleep, grant the Admin permission.</string>
-    <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
-    <string name="dt2s_a11y_hint_title">Accessibility service required</string>
-    <string name="dt2s_a11y_hint">To use Double Tap to Sleep, enable the accessibility service.</string>
-    <string name="dt2s_warning_open_settings">Open Settings</string>
+    <string name="hotseat_qsb_label">Keresési sáv megjelenítése</string>
+    <string name="dt2s_admin_hint_title">Eszközadminisztrátor engedély szükséges</string>
+    <string name="dt2s_admin_hint">A dupla koppintásos altatáshoz engedélyezze az Eszközadminisztrátor jogusultságot.</string>
+    <string name="dt2s_admin_warning">Dupla koppintásos alvás ki lesz kapcsolva.</string>
+    <string name="dt2s_a11y_hint_title">Kisegíthető-lehetőségek szolgáltatás szükséges</string>
+    <string name="dt2s_a11y_hint">A dupla koppintásos alvás bekapcsolásához kapcsolja be a szolgáltatást.</string>
+    <string name="dt2s_warning_open_settings">Beállítások megnyitása</string>
 </resources>
