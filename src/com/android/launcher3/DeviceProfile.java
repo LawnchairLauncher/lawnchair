@@ -399,8 +399,10 @@ public class DeviceProfile {
     public boolean shouldInsetWidgets() {
         Rect widgetPadding = inv.defaultWidgetPadding;
 
-        // Check all sides to ensure that the widget won't overlap into another cell.
-        return cellLayoutBorderSpacingPx > widgetPadding.left
+        // Check all sides to ensure that the widget won't overlap into another cell, or into
+        // status bar.
+        return workspaceTopPadding > widgetPadding.top
+                && cellLayoutBorderSpacingPx > widgetPadding.left
                 && cellLayoutBorderSpacingPx > widgetPadding.top
                 && cellLayoutBorderSpacingPx > widgetPadding.right
                 && cellLayoutBorderSpacingPx > widgetPadding.bottom;
