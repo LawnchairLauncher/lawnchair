@@ -19,10 +19,8 @@ package app.lawnchair.util.preferences
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import app.lawnchair.LawnchairLauncher
 import app.lawnchair.LawnchairLauncherQuickstep
 import app.lawnchair.nexuslauncher.OverlayCallbackImpl
-import com.android.launcher3.BuildConfig
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.states.RotationHelper
 import com.android.launcher3.util.MainThreadInitializedObject
@@ -34,12 +32,8 @@ class PreferenceManager private constructor(context: Context) : BasePreferenceMa
         model.forceReload()
     }
     private val scheduleRestart = {
-        if (BuildConfig.FLAVOR_recents == "withQuickstep") {
-            LawnchairLauncherQuickstep.instance?.scheduleRestart()
-            Unit
-        } else {
-            LawnchairLauncher.getLauncher(context).scheduleRestart()
-        }
+        LawnchairLauncherQuickstep.instance?.scheduleRestart()
+        Unit
     }
 
     private val reloadGrid = scheduleRestart
