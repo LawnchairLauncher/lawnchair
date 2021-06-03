@@ -71,6 +71,8 @@ import com.android.launcher3.views.SpringRelativeLayout;
 
 import java.util.ArrayList;
 
+import app.lawnchair.allapps.LawnchairAlphabeticalAppsList;
+
 /**
  * The all apps view container.
  */
@@ -632,7 +634,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
         AdapterHolder(boolean isWork) {
             mIsWork = isWork;
-            appsList = new AlphabeticalAppsList(mLauncher, mAllAppsStore, isWork);
+            appsList = new LawnchairAlphabeticalAppsList(mLauncher, mAllAppsStore, isWork);
             adapter = new AllAppsGridAdapter(mLauncher, getLayoutInflater(), appsList);
             appsList.setAdapter(adapter);
             layoutManager = adapter.getLayoutManager();

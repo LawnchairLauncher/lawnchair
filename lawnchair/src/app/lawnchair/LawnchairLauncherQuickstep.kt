@@ -18,31 +18,57 @@ package app.lawnchair
 
 import android.content.Context
 import android.content.ContextWrapper
+import android.os.Bundle
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
 import com.android.launcher3.uioverrides.QuickstepLauncher
 import com.android.systemui.plugins.shared.LauncherOverlayManager
 import app.lawnchair.nexuslauncher.OverlayCallbackImpl
 import app.lawnchair.util.restartLauncher
+import com.android.launcher3.BaseActivity
 import com.android.launcher3.LauncherAppState
 
-open class LawnchairLauncherQuickstep : QuickstepLauncher() {
-    private var paused = false
+open class LawnchairLauncherQuickstep : QuickstepLauncher(), LifecycleOwner {
+    private val lifecycleRegistry = LifecycleRegistry(this)
 
-    override fun getDefaultOverlay(): LauncherOverlayManager {
-        return OverlayCallbackImpl(this)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
     }
 
     override fun onResume() {
         super.onResume()
-
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
         restartIfPending()
-
-        paused = false
     }
 
     override fun onPause() {
         super.onPause()
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    }
 
-        paused = true
+    override fun onStop() {
+        super.onStop()
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    }
+
+    override fun getLifecycle(): Lifecycle {
+        return lifecycleRegistry
+    }
+
+    override fun getDefaultOverlay(): LauncherOverlayManager {
+        return OverlayCallbackImpl(this)
     }
 
     open fun restartIfPending() {
@@ -52,7 +78,7 @@ open class LawnchairLauncherQuickstep : QuickstepLauncher() {
     }
 
     fun scheduleRestart() {
-        if (paused) {
+        if (lifecycle.currentState !== Lifecycle.State.RESUMED) {
             sRestart = true
         } else {
             restartLauncher(this)
@@ -61,11 +87,9 @@ open class LawnchairLauncherQuickstep : QuickstepLauncher() {
 
     companion object {
         var sRestart = false
-        @JvmStatic
-        fun getLauncher(context: Context): LawnchairLauncherQuickstep {
-            return context as? LawnchairLauncherQuickstep
-                    ?: (context as ContextWrapper).baseContext as? LawnchairLauncherQuickstep
-                    ?: LauncherAppState.getInstance(context).launcher as LawnchairLauncherQuickstep
-        }
     }
+}
+
+val Context.launcher: LawnchairLauncherQuickstep get() {
+    return BaseActivity.fromContext(this)
 }

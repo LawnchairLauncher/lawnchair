@@ -18,9 +18,11 @@ package app.lawnchair
 
 import android.content.ComponentName
 import android.os.UserHandle
+import androidx.annotation.Keep
 import com.android.launcher3.AppFilter
 import com.android.launcher3.BuildConfig
 
+@Keep
 open class DefaultAppFilter : AppFilter() {
     private val defaultHideList = setOf(
         // Voice search
