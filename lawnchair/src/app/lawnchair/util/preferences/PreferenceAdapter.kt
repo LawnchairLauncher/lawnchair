@@ -25,7 +25,7 @@ import kotlin.reflect.KProperty
 class PreferenceAdapter<T>(
     private val get: () -> T,
     private val set: (T) -> Unit
-) : BasePreferenceManager.PreferenceChangeListener {
+) : PreferenceChangeListener {
     private val stateInternal = mutableStateOf(get())
     val state: State<T> get() = stateInternal
 
@@ -34,7 +34,7 @@ class PreferenceAdapter<T>(
         stateInternal.value = newValue
     }
 
-    override fun onPreferenceChange(pref: BasePreferenceManager.PrefEntry<*>) {
+    override fun onPreferenceChange() {
         stateInternal.value = get()
     }
 
@@ -52,27 +52,26 @@ fun BasePreferenceManager.IdpIntPref.getAdapter(): PreferenceAdapter<Float> {
 }
 
 @Composable
-fun <T> BasePreferenceManager.PrefEntry<T>.getAdapter(): PreferenceAdapter<T> {
+fun <T> PrefEntry<T>.getAdapter(): PreferenceAdapter<T> {
     return getAdapter(this, ::get, ::set)
 }
 
 @Composable
-fun <T> BasePreferenceManager.PrefEntry<T>.getState() = getAdapter().state
+fun <T> PrefEntry<T>.getState() = getAdapter().state
 
 @Composable
-fun <T> BasePreferenceManager.PrefEntry<T>.observeAsState(): State<T> {
+fun <T> PrefEntry<T>.observeAsState(): State<T> {
     return getAdapter().state
 }
 
 @Composable
-private fun <T> getAdapter(
-    pref: BasePreferenceManager.PrefEntry<*>,
+private fun <P, T> getAdapter(
+    pref: PrefEntry<P>,
     get: () -> T,
     set: (T) -> Unit
 ): PreferenceAdapter<T> {
-    val lifecycleOwner = LocalLifecycleOwner.current
     val adapter = remember { PreferenceAdapter(get, set) }
-    DisposableEffect(pref, lifecycleOwner) {
+    DisposableEffect(pref) {
         pref.addListener(adapter)
         onDispose { pref.removeListener(adapter) }
     }

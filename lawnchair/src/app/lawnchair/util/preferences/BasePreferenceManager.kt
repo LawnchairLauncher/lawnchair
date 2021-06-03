@@ -20,9 +20,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.Utilities
-import java.util.*
-import kotlin.collections.HashMap
-import kotlin.reflect.KProperty
+import java.util.concurrent.CopyOnWriteArraySet
 
 abstract class BasePreferenceManager(context: Context) : SharedPreferences.OnSharedPreferenceChangeListener {
     val sp: SharedPreferences = Utilities.getPrefs(context)
@@ -39,39 +37,20 @@ abstract class BasePreferenceManager(context: Context) : SharedPreferences.OnSha
         }
     }
 
-    interface PreferenceChangeListener {
-        fun onPreferenceChange(pref: PrefEntry<*>)
-    }
-
-    interface PrefEntry<T> {
-        val defaultValue: T
-
-        fun get(): T
-        fun set(newValue: T)
-
-        fun addListener(listener: PreferenceChangeListener)
-        fun removeListener(listener: PreferenceChangeListener)
-
-        operator fun getValue(thisObj: Any?, property: KProperty<*>): T = get()
-        operator fun setValue(thisObj: Any?, property: KProperty<*>, newValue: T) {
-            set(newValue)
-        }
-    }
-
     abstract inner class BasePref<T>(val key: String, private val primaryListener: ChangeListener?) : PrefEntry<T> {
         protected var loaded = false
-        private val listeners = WeakHashMap<PreferenceChangeListener, Boolean>()
+        private val listeners = CopyOnWriteArraySet<PreferenceChangeListener>()
 
         fun onSharedPreferenceChange() {
             loaded = false
             primaryListener?.invoke()
-            HashMap(listeners).forEach { (listener, _) ->
-                listener.onPreferenceChange(this)
+            listeners.forEach { listener ->
+                listener.onPreferenceChange()
             }
         }
 
         override fun addListener(listener: PreferenceChangeListener) {
-            listeners[listener] = true
+            listeners.add(listener)
         }
 
         override fun removeListener(listener: PreferenceChangeListener) {
@@ -247,5 +226,3 @@ abstract class BasePreferenceManager(context: Context) : SharedPreferences.OnSha
         }
     }
 }
-
-typealias ChangeListener = () -> Unit
