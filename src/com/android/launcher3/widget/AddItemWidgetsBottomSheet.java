@@ -23,8 +23,11 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 
 import com.android.launcher3.Insettable;
+import com.android.launcher3.R;
 import com.android.launcher3.dragndrop.AddItemActivity;
 import com.android.launcher3.views.AbstractSlideInView;
 
@@ -48,6 +51,17 @@ public class AddItemWidgetsBottomSheet extends AbstractSlideInView<AddItemActivi
         mContent = this;
         mInsets = new Rect();
         mCurrentConfiguration = new Configuration(getResources().getConfiguration());
+    }
+
+    /**
+     * Attaches to activity container and animates open the bottom sheet.
+     */
+    public void show() {
+        ViewParent parent = getParent();
+        if (parent instanceof ViewGroup) {
+            ((ViewGroup) parent).removeView(this);
+        }
+        attachToContainer();
         animateOpen();
     }
 
@@ -94,5 +108,10 @@ public class AddItemWidgetsBottomSheet extends AbstractSlideInView<AddItemActivi
             mInsets.setEmpty();
         }
         mCurrentConfiguration.updateFrom(newConfig);
+    }
+
+    @Override
+    protected int getScrimColor(Context context) {
+        return context.getResources().getColor(R.color.widgets_picker_scrim);
     }
 }
