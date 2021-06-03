@@ -81,6 +81,6 @@
     <string name="dt2s_admin_warning">Il doppio tocco per bloccare lo schermo sarà disabilitato.</string>
     <string name="dt2s_a11y_hint_title">Servizio di accessibilità richiesto</string>
     <string name="dt2s_a11y_hint">Per utilizzare doppio tocco per bloccare lo schermo, abilita il servizio di accessibilità.</string>
-    <string name="dt2s_warning_open_settings">Open Settings</string>
-    <string name="minus_one_enable">Show Feed</string>
+    <string name="dt2s_warning_open_settings">Apri Impostazioni</string>
+    <string name="minus_one_enable">Mostra la feed</string>
 </resources>
