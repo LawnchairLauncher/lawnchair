@@ -32,7 +32,7 @@
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"कुनै विजेट सार्न वा आफ्नो रोजाइका कारबाही प्रयोग गर्न डबल ट्याप गरेर छोइराख्नुहोस्।"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d चौडाइ गुणा %2$d उचाइ"</string>
-    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"विजेटलाई होम स्क्रिनमा यताउता सार्न त्यसमा टच एन्ड होल्ड गर्नुहोस्"</string>
+    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"यो विजेट होम स्क्रिनमा यताउता सार्न त्यसमा टच एन्ड होल्ड गर्नुहोस्"</string>
     <string name="add_to_home_screen" msgid="8631549138215492708">"होम स्क्रिनमा हाल्नुहोस्"</string>
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
       <item quantity="other"><xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> वटा विजेट</item>
@@ -51,6 +51,12 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"व्यक्तिगत"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"कामसम्बन्धी"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"वार्तालापहरू"</string>
+    <!-- no translation found for widget_education_header (4874760613775913787) -->
+    <skip />
+    <!-- no translation found for widget_education_content (745542879510751525) -->
+    <skip />
+    <!-- no translation found for widget_education_close_button (8676165703104836580) -->
+    <skip />
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"खोजसम्बन्धी एपहरू"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"एपहरू लोड गर्दै…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" सँग मिल्दो कुनै एप भेटिएन"</string>
@@ -121,7 +127,7 @@
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> स्थापना गर्न प्रतीक्षा गर्दै"</string>
     <string name="widgets_list" msgid="796804551140113767">"विजेटहरूको सूची"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"विजेटहरूको सूची बन्द गरियो"</string>
-    <string name="action_add_to_workspace" msgid="8902165848117513641">"गृह स्क्रिनमा थप्नुहोस्"</string>
+    <string name="action_add_to_workspace" msgid="8902165848117513641">"होम स्क्रिनमा हाल्नुहोस्"</string>
     <string name="action_move_here" msgid="2170188780612570250">"वस्तु यहाँ सार्नुहोस्"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"वस्तु गृह स्क्रिनमा थपियो"</string>
     <string name="item_removed" msgid="851119963877842327">"वस्तु हटाइयो"</string>

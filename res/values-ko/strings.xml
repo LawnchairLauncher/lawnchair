@@ -51,6 +51,9 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"개인 위젯"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"직장 위젯"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"대화"</string>
+    <string name="widget_education_header" msgid="4874760613775913787">"빠르게 유용한 정보 확인"</string>
+    <string name="widget_education_content" msgid="745542879510751525">"앱을 열지 않고 정보를 확인하려면 홈 화면에 위젯을 추가하세요."</string>
+    <string name="widget_education_close_button" msgid="8676165703104836580">"확인"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"앱 검색"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"앱 로드 중…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\'<xliff:g id="QUERY">%1$s</xliff:g>\'과(와) 일치하는 앱이 없습니다."</string>

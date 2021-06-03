@@ -51,6 +51,9 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Személyes"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Munka"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Beszélgetések"</string>
+    <string name="widget_education_header" msgid="4874760613775913787">"Hasznos információk egy koppintásnyira"</string>
+    <string name="widget_education_content" msgid="745542879510751525">"Ha az alkalmazások megnyitása nélkül szeretne információhoz jutni, felvehet modulokat a kezdőképernyőre."</string>
+    <string name="widget_education_close_button" msgid="8676165703104836580">"Értem"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Alkalmazások keresése"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Alkalmazások betöltése…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Nem található alkalmazás a(z) „<xliff:g id="QUERY">%1$s</xliff:g>” lekérdezésre"</string>
@@ -66,7 +69,7 @@
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"Munkahelyi alkalmazások listája"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Törlés"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Eltávolítás"</string>
-    <string name="app_info_drop_target_label" msgid="692894985365717661">"Alkalmazásinformáció"</string>
+    <string name="app_info_drop_target_label" msgid="692894985365717661">"Alkalmazásinfó"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Telepítés"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"Ne javasoljon alkalmazást"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"Várható kitűzése"</string>
