@@ -20,8 +20,10 @@ import android.app.Activity
 import android.app.Application
 import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import androidx.annotation.Keep
 import app.lawnchair.util.restartLauncher
@@ -34,6 +36,7 @@ class LawnchairApp : Application() {
     val activityHandler = ActivityHandler()
     var mismatchedQuickstepTarget = false
     private val recentsEnabled by lazy { checkRecentsComponent() }
+    internal var accessibilityService: LawnchairAccessibilityService? = null
     val TAG = "LawnchairApp"
 
     override fun onCreate() {
@@ -121,6 +124,18 @@ class LawnchairApp : Application() {
             return false
         }
         return true
+    }
+
+    fun performGlobalAction(action: Int): Boolean {
+        return if (accessibilityService != null) {
+            accessibilityService!!.performGlobalAction(action)
+        } else {
+            startActivity(
+                Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            )
+            false
+        }
     }
 
     companion object {

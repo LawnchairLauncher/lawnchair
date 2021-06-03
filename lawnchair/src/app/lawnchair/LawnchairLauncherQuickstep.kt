@@ -22,6 +22,7 @@ import android.os.Bundle
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
+import app.lawnchair.gestures.GestureController
 import com.android.launcher3.uioverrides.QuickstepLauncher
 import com.android.systemui.plugins.shared.LauncherOverlayManager
 import app.lawnchair.nexuslauncher.OverlayCallbackImpl
@@ -31,6 +32,7 @@ import com.android.launcher3.LauncherAppState
 
 open class LawnchairLauncherQuickstep : QuickstepLauncher(), LifecycleOwner {
     private val lifecycleRegistry = LifecycleRegistry(this)
+    val gestureController by lazy { GestureController(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
