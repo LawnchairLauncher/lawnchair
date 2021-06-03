@@ -32,7 +32,7 @@
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Double-tap &amp; hold to move a widget or use custom actions."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d wide by %2$d high"</string>
-    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"Touch &amp; hold the widget to move it around the home screen"</string>
+    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"Touch and hold the widget to move it around the home screen"</string>
     <string name="add_to_home_screen" msgid="8631549138215492708">"Add to home screen"</string>
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
       <item quantity="other"><xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> widgets</item>
@@ -51,6 +51,9 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Personal"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Work"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Conversations"</string>
+    <string name="widget_education_header" msgid="4874760613775913787">"Useful info at your fingertips"</string>
+    <string name="widget_education_content" msgid="745542879510751525">"To get info without opening apps, you can add widgets to your home screen"</string>
+    <string name="widget_education_close_button" msgid="8676165703104836580">"OK"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Search apps"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Loading apps…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"No apps found matching \'<xliff:g id="QUERY">%1$s</xliff:g>\'"</string>

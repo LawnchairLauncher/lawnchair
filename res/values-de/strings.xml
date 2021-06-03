@@ -51,6 +51,9 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Privat"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Geschäftlich"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Unterhaltungen"</string>
+    <string name="widget_education_header" msgid="4874760613775913787">"Praktische Informationen – immer zur Hand"</string>
+    <string name="widget_education_content" msgid="745542879510751525">"Wenn du Informationen erhalten möchtest, ohne Apps zu öffnen, kannst du deinem Startbildschirm Widgets hinzufügen"</string>
+    <string name="widget_education_close_button" msgid="8676165703104836580">"OK"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Apps finden"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Apps werden geladen…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Keine Apps für \"<xliff:g id="QUERY">%1$s</xliff:g>\" gefunden"</string>
