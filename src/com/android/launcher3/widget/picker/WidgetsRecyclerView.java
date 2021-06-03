@@ -154,8 +154,25 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
             return -1;
         }
 
-        View child = getChildAt(0);
-        int rowIndex = getChildPosition(child);
+        int rowIndex = -1;
+        View child = null;
+
+        LayoutManager layoutManager = getLayoutManager();
+        if (layoutManager instanceof LinearLayoutManager) {
+            // Use the LayoutManager as the source of truth for visible positions. During
+            // animations, the view group child may not correspond to the visible views that appear
+            // at the top.
+            rowIndex = ((LinearLayoutManager) layoutManager).findFirstVisibleItemPosition();
+            child = layoutManager.findViewByPosition(rowIndex);
+        }
+
+        if (child == null) {
+            // If the layout manager returns null for any reason, which can happen before layout
+            // has occurred for the position, then look at the child of this view as a ViewGroup.
+            child = getChildAt(0);
+            rowIndex = getChildPosition(child);
+        }
+
         for (int i = 0; i < getChildCount(); i++) {
             View view = getChildAt(i);
             if (view instanceof TableLayout) {
