@@ -20,6 +20,7 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import app.lawnchair.LawnchairLauncher
+import app.lawnchair.LawnchairLauncherQuickstep
 import app.lawnchair.launcher
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.LauncherAppState
@@ -34,7 +35,8 @@ class PreferenceManager private constructor(context: Context) : BasePreferenceMa
     }
     private val scheduleRestart = {
         if (BuildConfig.FLAVOR_recents == "withQuickstep") {
-            context.launcher.scheduleRestart()
+            LawnchairLauncherQuickstep.instance?.scheduleRestart()
+            Unit
         } else {
             LawnchairLauncher.getLauncher(context).scheduleRestart()
         }

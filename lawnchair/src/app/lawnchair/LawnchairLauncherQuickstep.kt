@@ -32,6 +32,7 @@ import app.lawnchair.gestures.GestureController
 import app.lawnchair.nexuslauncher.OverlayCallbackImpl
 import app.lawnchair.util.restartLauncher
 import com.android.launcher3.BaseActivity
+import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherRootView
 import com.android.launcher3.R
 import com.android.launcher3.uioverrides.QuickstepLauncher
@@ -127,6 +128,8 @@ open class LawnchairLauncherQuickstep : QuickstepLauncher(), LifecycleOwner,
 
     companion object {
         var sRestart = false
+
+        val instance get() = LauncherAppState.getInstanceNoCreate()?.launcher as? LawnchairLauncherQuickstep
     }
 }
 
