@@ -64,7 +64,7 @@
     <dimen name="quickstep_fling_threshold_speed">0.5dp</dimen>
 
     <!-- Launcher app transition -->
-    <dimen name="content_trans_y">50dp</dimen>
+    <item name="content_scale" format="float" type="dimen">0.97</item>
     <dimen name="closing_window_trans_y">115dp</dimen>
 
     <dimen name="recents_empty_message_text_size">16sp</dimen>
@@ -74,7 +74,8 @@
 
     <!-- Total space (start + end) between the task card and the edge of the screen
          in various configurations -->
-    <dimen name="task_card_menu_option_vertical_padding">8dp</dimen>
+    <dimen name="task_card_menu_option_vertical_padding">16dp</dimen>
+    <dimen name="task_menu_vertical_padding">8dp</dimen>
     <dimen name="task_card_margin">8dp</dimen>
     <dimen name="task_card_menu_shadow_height">3dp</dimen>
     <dimen name="task_menu_option_start_margin">12dp</dimen>

@@ -86,12 +86,22 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         mBackgroundState = backgroundState;
     }
 
-    public void onTransitionCancelled(boolean activityVisible) {
+    /**
+     * Called when the current gesture transition is cancelled.
+     * @param activityVisible Whether the user can see the changes we make here, so try to animate.
+     * @param endTarget If the gesture ended before we got cancelled, where we were headed.
+     */
+    public void onTransitionCancelled(boolean activityVisible,
+            @Nullable GestureState.GestureEndTarget endTarget) {
         ACTIVITY_TYPE activity = getCreatedActivity();
         if (activity == null) {
             return;
         }
         STATE_TYPE startState = activity.getStateManager().getRestState();
+        if (endTarget != null) {
+            // We were on our way to this state when we got canceled, end there instead.
+            startState = stateFromGestureEndTarget(endTarget);
+        }
         activity.getStateManager().goToState(startState, activityVisible);
     }
 

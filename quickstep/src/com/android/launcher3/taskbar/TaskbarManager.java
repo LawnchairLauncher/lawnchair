@@ -40,11 +40,14 @@ import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.TouchInteractionService;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Class to manager taskbar lifecycle
+ * Class to manage taskbar lifecycle
  */
 public class TaskbarManager implements DisplayController.DisplayInfoChangeListener,
-        SysUINavigationMode.NavigationModeChangeListener {
+        SysUINavigationMode.NavigationModeChangeListener, SystemTaskbarNotificationManager {
 
     private final Context mContext;
     private final DisplayController mDisplayController;
@@ -58,6 +61,8 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
             CHANGE_ACTIVE_SCREEN | CHANGE_DENSITY | CHANGE_SUPPORTED_BOUNDS;
 
     private boolean mUserUnlocked = false;
+
+    private List<SystemTaskbarNotifier> mSystemTaskbarNotifiers = new ArrayList<>();
 
     public TaskbarManager(TouchInteractionService service) {
         mDisplayController = DisplayController.INSTANCE.get(service);
@@ -124,13 +129,16 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
             return;
         }
         mTaskbarActivityContext = new TaskbarActivityContext(
-                mContext, dp.copy(mContext), mNavButtonController);
+                mContext, dp.copy(mContext), mNavButtonController, this);
         mTaskbarActivityContext.init();
         if (mLauncher != null) {
             mTaskbarActivityContext.setUIController(
                     new LauncherTaskbarUIController(mLauncher, mTaskbarActivityContext));
         }
     }
+
+    // TODO - I don't think this is the best place for these pass through methods,
+    //  maybe directly in TaskbarIconController?
 
     /**
      * See {@link com.android.systemui.shared.system.QuickStepContract.SystemUiStateFlags}
@@ -143,6 +151,16 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
         }
     }
 
+    public void registerSystemTaskbarNotifications(SystemTaskbarNotifier notifier) {
+        if (!mSystemTaskbarNotifiers.contains(notifier)) {
+            mSystemTaskbarNotifiers.add(notifier);
+        }
+    }
+
+    public void removeSystemTaskbarNotifications(SystemTaskbarNotifier notifier) {
+        mSystemTaskbarNotifiers.remove(notifier);
+    }
+
     /**
      * When in 3 button nav, the above doesn't get called since we prevent sysui nav bar from
      * instantiating at all, which is what's responsible for sending sysui state flags over.
@@ -153,8 +171,26 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
      */
     public void updateImeStatus(int displayId, int vis, int backDisposition,
             boolean showImeSwitcher) {
-        if (mTaskbarActivityContext != null) {
-            mTaskbarActivityContext.updateImeStatus(displayId, vis, showImeSwitcher);
+        for (SystemTaskbarNotifier notifier : mSystemTaskbarNotifiers) {
+            notifier.updateImeStatus(displayId, vis, backDisposition, showImeSwitcher);
+        }
+    }
+
+    public void onRotationProposal(int rotation, boolean isValid) {
+        for (SystemTaskbarNotifier notifier : mSystemTaskbarNotifiers) {
+            notifier.onRotationProposal(rotation, isValid);
+        }
+    }
+
+    public void disable(int displayId, int state1, int state2, boolean animate) {
+        for (SystemTaskbarNotifier notifier : mSystemTaskbarNotifiers) {
+            notifier.disable(displayId, state1, state2, animate);
+        }
+    }
+
+    public void onSystemBarAttributesChanged(int displayId, int behavior) {
+        for (SystemTaskbarNotifier notifier : mSystemTaskbarNotifiers) {
+            notifier.onSystemBarAttributesChanged(displayId, behavior);
         }
     }
 
@@ -166,4 +202,18 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
         mDisplayController.removeChangeListener(this);
         mSysUINavigationMode.removeModeChangeListener(this);
     }
+
+    public interface SystemTaskbarNotifier {
+        void updateImeStatus(int displayId, int vis, int backDisposition,
+                boolean showImeSwitcher);
+        void onRotationProposal(int rotation, boolean isValid);
+        void disable(int displayId, int state1, int state2, boolean animate);
+        void onSystemBarAttributesChanged(int displayId, int behavior);
+
+    }
+}
+
+interface SystemTaskbarNotificationManager {
+    void registerSystemTaskbarNotifications(TaskbarManager.SystemTaskbarNotifier notifier);
+    void removeSystemTaskbarNotifications(TaskbarManager.SystemTaskbarNotifier notifier);
 }

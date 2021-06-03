@@ -49,11 +49,14 @@ import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.model.WidgetItem;
+import com.android.launcher3.views.ArrowTipView;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 import com.android.launcher3.views.TopRoundedCornerView;
+import com.android.launcher3.views.WidgetsEduView;
 import com.android.launcher3.widget.BaseWidgetSheet;
 import com.android.launcher3.widget.LauncherAppWidgetHost.ProviderChangedListener;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
@@ -79,11 +82,15 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     private static final long DEFAULT_OPEN_DURATION = 267;
     private static final long FADE_IN_DURATION = 150;
     private static final long EDUCATION_TIP_DELAY_MS = 200;
+    private static final long EDUCATION_DIALOG_DELAY_MS = 500;
     private static final float VERTICAL_START_POSITION = 0.3f;
     // The widget recommendation table can easily take over the entire screen on devices with small
     // resolution or landscape on phone. This ratio defines the max percentage of content area that
     // the table can display.
     private static final float RECOMMENDATION_TABLE_HEIGHT_RATIO = 0.75f;
+
+    private static final String KEY_WIDGETS_EDUCATION_DIALOG_SEEN =
+            "launcher.widgets_education_dialog_seen";
 
     private final Rect mInsets = new Rect();
     private final boolean mHasWorkProfile;
@@ -93,6 +100,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             entry -> mCurrentUser.equals(entry.mPkgItem.user);
     private final Predicate<WidgetsListBaseEntry> mWorkWidgetsFilter =
             mPrimaryWidgetsFilter.negate();
+    @Nullable private ArrowTipView mLatestEducationalTip;
     private final OnLayoutChangeListener mLayoutChangeListenerToShowTips =
             new OnLayoutChangeListener() {
                 @Override
@@ -116,11 +124,12 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             removeOnLayoutChangeListener(mLayoutChangeListenerToShowTips);
             return;
         }
-        View viewForTip = getViewToShowEducationTip();
-        if (showEducationTipOnViewIfPossible(viewForTip) != null) {
+        mLatestEducationalTip = showEducationTipOnViewIfPossible(getViewToShowEducationTip());
+        if (mLatestEducationalTip != null) {
             removeOnLayoutChangeListener(mLayoutChangeListenerToShowTips);
         }
     };
+
     private final int mTabsHeight;
     private final int mViewPagerTopPadding;
     private final int mSearchAndRecommendationContainerBottomMargin;
@@ -221,9 +230,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         mSearchAndRecommendationViewHolder.mSearchBar.initialize(
                 mActivityContext.getPopupDataProvider(), /* searchModeListener= */ this);
 
-        if (!hasSeenEducationTip()) {
-            addOnLayoutChangeListener(mLayoutChangeListenerToShowTips);
-        }
+        setUpEducationViewsIfNeeded();
     }
 
     @Override
@@ -608,6 +615,10 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     @Override
     protected void onCloseComplete() {
         super.onCloseComplete();
+        removeCallbacks(mShowEducationTipTask);
+        if (mLatestEducationalTip != null) {
+            mLatestEducationalTip.close(false);
+        }
         AccessibilityManagerCompat.sendStateEventToTest(getContext(), NORMAL_STATE_ORDINAL);
     }
 
@@ -678,6 +689,38 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         }
 
         return null;
+    }
+
+    /** Shows education dialog for widgets. */
+    private WidgetsEduView showEducationDialog() {
+        mActivityContext.getSharedPrefs().edit()
+                .putBoolean(KEY_WIDGETS_EDUCATION_DIALOG_SEEN, true).apply();
+        return WidgetsEduView.showEducationDialog(mActivityContext);
+    }
+
+    /** Returns {@code true} if education dialog has previously been shown. */
+    protected boolean hasSeenEducationDialog() {
+        return mActivityContext.getSharedPrefs()
+                .getBoolean(KEY_WIDGETS_EDUCATION_DIALOG_SEEN, false)
+                || Utilities.IS_RUNNING_IN_TEST_HARNESS;
+    }
+
+    private void setUpEducationViewsIfNeeded() {
+        if (!hasSeenEducationDialog()) {
+            postDelayed(() -> {
+                WidgetsEduView eduDialog = showEducationDialog();
+                eduDialog.addOnCloseListener(() -> {
+                    if (!hasSeenEducationTip()) {
+                        addOnLayoutChangeListener(mLayoutChangeListenerToShowTips);
+                        // Call #requestLayout() to trigger layout change listener in order to show
+                        // arrow tip immediately if there is a widget to show it on.
+                        requestLayout();
+                    }
+                });
+            }, EDUCATION_DIALOG_DELAY_MS);
+        } else if (!hasSeenEducationTip()) {
+            addOnLayoutChangeListener(mLayoutChangeListenerToShowTips);
+        }
     }
 
     /** A holder class for holding adapters & their corresponding recycler view. */
