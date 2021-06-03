@@ -2,11 +2,13 @@ package app.lawnchair.ui.preferences.components
 
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import app.lawnchair.ui.util.portal.Portal
 import app.lawnchair.util.backHandler
 import kotlinx.coroutines.launch
@@ -27,7 +29,11 @@ fun BottomSheet(
             ModalBottomSheetLayout(
                 sheetState = modalBottomSheetState,
                 sheetContent = currentSheetContent,
-                scrimColor = scrimColor
+                scrimColor = scrimColor,
+                sheetShape = MaterialTheme.shapes.large.copy(
+                    bottomStart = CornerSize(0.dp),
+                    bottomEnd = CornerSize(0.dp)
+                )
             ) {
                 backHandler {
                     scope.launch { sheetState.onBackPressed() }
