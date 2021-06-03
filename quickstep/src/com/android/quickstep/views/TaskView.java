@@ -34,11 +34,11 @@ import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncest
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_TAP;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
-import static com.android.quickstep.util.NavigationModeFeatureFlag.LIVE_TILE;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
@@ -531,7 +531,7 @@ public class TaskView extends FrameLayout implements Reusable {
         if (getTask() == null) {
             return;
         }
-        if (LIVE_TILE.get() && isRunningTask()) {
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && isRunningTask()) {
             if (!mIsClickableAsLiveTile) {
                 return;
             }
@@ -593,6 +593,13 @@ public class TaskView extends FrameLayout implements Reusable {
             ActivityOptionsWrapper opts =  mActivity.getActivityLaunchOptions(this, null);
             if (ActivityManagerWrapper.getInstance()
                     .startActivityFromRecents(mTask.key, opts.options)) {
+                if (ENABLE_QUICKSTEP_LIVE_TILE.get() && getRecentsView().getRunningTaskId() != -1) {
+                    // Return a fresh callback in the live tile case, so that it's not accidentally
+                    // triggered by QuickstepTransitionManager.AppLaunchAnimationRunner.
+                    RunnableList callbackList = new RunnableList();
+                    getRecentsView().addSideTaskLaunchCallback(callbackList);
+                    return callbackList;
+                }
                 return opts.onEndCallback;
             } else {
                 notifyTaskLaunchFailed(TAG);
@@ -726,7 +733,7 @@ public class TaskView extends FrameLayout implements Reusable {
         if (icon != null) {
             mIconView.setDrawable(icon);
             mIconView.setOnClickListener(v -> {
-                if (LIVE_TILE.get() && isRunningTask()) {
+                if (ENABLE_QUICKSTEP_LIVE_TILE.get() && isRunningTask()) {
                     RecentsView recentsView = getRecentsView();
                     recentsView.switchToScreenshot(
                             () -> recentsView.finishRecentsAnimation(true /* toRecents */,
