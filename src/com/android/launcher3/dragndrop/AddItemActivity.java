@@ -59,6 +59,7 @@ import com.android.launcher3.pm.PinRequestHelper;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.views.AbstractSlideInView;
 import com.android.launcher3.views.BaseDragLayer;
+import com.android.launcher3.widget.AddItemWidgetsBottomSheet;
 import com.android.launcher3.widget.LauncherAppWidgetHost;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.NavigableAppWidgetHostView;
@@ -89,6 +90,7 @@ public class AddItemActivity extends BaseActivity
     private LauncherAppState mApp;
     private InvariantDeviceProfile mIdp;
     private BaseDragLayer<AddItemActivity> mDragLayer;
+    private AddItemWidgetsBottomSheet mSlideInView;
 
     private WidgetCell mWidgetCell;
 
@@ -124,8 +126,6 @@ public class AddItemActivity extends BaseActivity
         mDragLayer = findViewById(R.id.add_item_drag_layer);
         mDragLayer.recreateControllers();
         mDragLayer.setInsets(mDeviceProfile.getInsets());
-        AbstractSlideInView<AddItemActivity> slideInView = findViewById(R.id.add_item_bottom_sheet);
-        slideInView.addOnCloseListener(this);
         mWidgetCell = findViewById(R.id.widget_cell);
 
         if (mRequest.getRequestType() == PinItemRequest.REQUEST_TYPE_SHORTCUT) {
@@ -151,6 +151,9 @@ public class AddItemActivity extends BaseActivity
         TextView widgetAppName = findViewById(R.id.widget_appName);
         widgetAppName.setText(getApplicationInfo().labelRes);
 
+        mSlideInView = findViewById(R.id.add_item_bottom_sheet);
+        mSlideInView.addOnCloseListener(this);
+        mSlideInView.show();
         setupNavBarColor();
     }
 
@@ -279,7 +282,7 @@ public class AddItemActivity extends BaseActivity
      */
     public void onCancelClick(View v) {
         logCommand(LAUNCHER_ADD_EXTERNAL_ITEM_CANCELLED);
-        finish();
+        mSlideInView.close(/* animate= */ true);
     }
 
     /**
@@ -290,7 +293,7 @@ public class AddItemActivity extends BaseActivity
             ItemInstallQueue.INSTANCE.get(this).queueItem(mRequest.getShortcutInfo());
             logCommand(LAUNCHER_ADD_EXTERNAL_ITEM_PLACED_AUTOMATICALLY);
             mRequest.accept();
-            finish();
+            mSlideInView.close(/* animate= */ true);
             return;
         }
 
@@ -313,7 +316,7 @@ public class AddItemActivity extends BaseActivity
         mWidgetOptions.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
         mRequest.accept(mWidgetOptions);
         logCommand(LAUNCHER_ADD_EXTERNAL_ITEM_PLACED_AUTOMATICALLY);
-        finish();
+        mSlideInView.close(/* animate= */ true);
     }
 
     @Override
