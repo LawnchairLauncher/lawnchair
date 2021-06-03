@@ -18,16 +18,16 @@
     <string name="icon_pack">Ikoncsomag</string>
     <string name="settings">Beállítások</string>
     <string name="home_screen_label">Kezdőképernyő</string>
-    <string name="home_screen_description">Új alkalmazások, Rács, Ikonok</string>
+    <string name="home_screen_description">Feed, At a Glance, Grid, Icons</string>
     <string name="general_label">Általános</string>
     <string name="general_description">Értesítési pöttyök, Ikoncsomag</string>
     <string name="home_screen_rotation_label">Kezdőképernyő tájolása</string>
     <string name="home_screen_rotaton_description">Amikor az eszköz tájolva van.</string>
     <string name="auto_add_shortcuts_label">Új alkalmazások hozzáadása a kezdőképernyőhöz</string>
     <string name="dock_label">Dokk</string>
-    <string name="dock_description">Ikon számláló</string>
+    <string name="dock_description">Search Bar, Icon Count</string>
     <string name="app_drawer_label">Alkalmazástár</string>
-    <string name="app_drawer_description">Oszlopok száma, Ikonok</string>
+    <string name="app_drawer_description">Hidden Apps, Column Count, Icons</string>
     <string name="folders_label">Mappák</string>
     <string name="folders_description">Sorok és oszlopok száma</string>
     <string name="app_drawer_columns">Alkalmazástár oszlopjai</string>
@@ -47,9 +47,6 @@
     <string name="news">Hírek</string>
     <string name="support">Támogatás</string>
     <string name="acknowledgements">Elismerések</string>
-    <string name="patryk_description">Vezeti a projektet és a felhasználói fellületet készítette. A Jetpack Compose megszállotja.</string>
-    <string name="kshitij_description">A funkciók alapjait írja.
-Büszke tagja a Spoingus gang-nek.</string>
     <string name="devops">DevOps</string>
     <string name="quickswitch_maintenance">QuickSwitch gondozó</string>
     <string name="all_apps_search_bar_hint">Alkalmazások keresése</string>
