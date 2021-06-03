@@ -20,11 +20,10 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import app.lawnchair.LawnchairLauncher
-import app.lawnchair.LawnchairLauncherQuickstep
 import app.lawnchair.launcher
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.LauncherAppState
-import com.android.launcher3.pm.UserCache
+import com.android.launcher3.states.RotationHelper
 import com.android.launcher3.util.MainThreadInitializedObject
 
 class PreferenceManager private constructor(context: Context) : BasePreferenceManager(context) {
@@ -44,7 +43,7 @@ class PreferenceManager private constructor(context: Context) : BasePreferenceMa
 
     val hiddenAppSet = StringSetPref("hidden-app-set", setOf())
     val iconPackPackage = StringPref("pref_iconPackPackage", "", reloadIcons)
-    val allowRotation = BoolPref("pref_allowRotation", true)
+    val allowRotation = BoolPref("pref_allowRotation", RotationHelper.getAllowRotationDefaultValue())
     val wrapAdaptiveIcons = BoolPref("prefs_wrapAdaptive", false, reloadIcons)
     val addIconToHome = BoolPref("pref_add_icon_to_home", true)
     val enableHotseatQsb = BoolPref("pref_dockSearchBar", true, reloadGrid)
