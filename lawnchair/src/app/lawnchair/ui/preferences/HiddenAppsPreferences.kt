@@ -84,6 +84,6 @@ fun hiddenAppsCount(): Int = preferenceManager().hiddenAppSet.getState().value.s
 fun hiddenAppsComparator(hiddenApps: Set<String>): Comparator<App> {
     return remember {
         comparing<App, Int> { if (hiddenApps.contains(it.key.toString())) 0 else 1 }
-            .thenComparing<String> { it.info.label.toString().toLowerCase(Locale.getDefault()) }
+            .thenComparing<String> { it.info.label.toString().lowercase(Locale.getDefault()) }
     }
 }

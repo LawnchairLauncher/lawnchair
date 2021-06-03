@@ -75,5 +75,5 @@ class App(context: Context, val info: LauncherActivityInfo) {
 }
 
 private val defaultComparator = comparing<App, String> {
-    it.info.label.toString().toLowerCase(Locale.getDefault())
+    it.info.label.toString().lowercase(Locale.getDefault())
 }
