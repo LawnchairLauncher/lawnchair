@@ -24,7 +24,7 @@
     <string name="home_screen_rotation_label">Home Screen Rotation</string>
     <string name="home_screen_rotaton_description">When device is rotated.</string>
     <string name="auto_add_shortcuts_label">Add New Apps to Home Screen</string>
-    <string name="dock_label">Док-панель</string>
+    <string name="dock_label">Dock</string>
     <string name="dock_description">Icon Count</string>
     <string name="app_drawer_label">Меню приложений</string>
     <string name="app_drawer_description">Column Count, Icons</string>
@@ -78,4 +78,6 @@
         <item quantity="other">%1$d Apps</item>
     </plurals>
     <string name="hotseat_qsb_label">Show Search Bar</string>
+    <string name="dt2s_admin_hint">To use Double Tap to Sleep, grant the Admin permission.</string>
+    <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
 </resources>
