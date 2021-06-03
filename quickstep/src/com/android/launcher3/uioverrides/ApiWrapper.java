@@ -24,6 +24,7 @@ import com.android.launcher3.Utilities;
 public class ApiWrapper {
 
     public static Person[] getPersons(ShortcutInfo si) {
+        if (!Utilities.ATLEAST_Q) return Utilities.EMPTY_PERSON_ARRAY;
         Person[] persons = si.getPersons();
         return persons == null ? Utilities.EMPTY_PERSON_ARRAY : persons;
     }

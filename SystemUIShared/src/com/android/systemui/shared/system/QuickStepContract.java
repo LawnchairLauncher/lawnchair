@@ -23,6 +23,7 @@ import static android.view.WindowManagerPolicyConstants.NAV_BAR_MODE_GESTURAL;
 import android.annotation.IntDef;
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Build;
 import android.view.ViewConfiguration;
 import android.view.WindowManagerPolicyConstants;
 
@@ -235,6 +236,9 @@ public class QuickStepContract {
      * scaling, this means that we don't have to reload them on config changes.
      */
     public static float getWindowCornerRadius(Resources resources) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            return 0;
+        }
         return ScreenDecorationsUtils.getWindowCornerRadius(resources);
     }
 
@@ -242,6 +246,9 @@ public class QuickStepContract {
      * If live rounded corners are supported on windows.
      */
     public static boolean supportsRoundedCornersOnWindows(Resources resources) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            return false;
+        }
         return ScreenDecorationsUtils.supportsRoundedCornersOnWindows(resources);
     }
 }

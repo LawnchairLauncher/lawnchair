@@ -146,6 +146,7 @@ public class DepthController implements StateHandler<LauncherState>,
      * Sets if the underlying activity is started or not
      */
     public void setActivityStarted(boolean isStarted) {
+        if (!Utilities.ATLEAST_R) return;
         if (isStarted) {
             mLauncher.getDragLayer().getViewTreeObserver().addOnDrawListener(mOnDrawListener);
         } else {
