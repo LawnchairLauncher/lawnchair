@@ -32,7 +32,7 @@
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Виджетті жылжыту үшін екі рет түртіңіз де, ұстап тұрыңыз немесе арнаулы әрекеттерді пайдаланыңыз."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"Ені: %1$d, биіктігі: %2$d"</string>
-    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"Негізгі экран бойымен қозғалту үшін виджетті басып, ұстап тұрыңыз."</string>
+    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"Негізгі экранда қозғалту үшін виджетті басып, ұстап тұрыңыз."</string>
     <string name="add_to_home_screen" msgid="8631549138215492708">"Негізгі экранға қосу"</string>
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
       <item quantity="other"><xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> виджет</item>
@@ -51,6 +51,12 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Жеке виджеттер"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Жұмыс виджеттері"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Әңгімелер"</string>
+    <!-- no translation found for widget_education_header (4874760613775913787) -->
+    <skip />
+    <!-- no translation found for widget_education_content (745542879510751525) -->
+    <skip />
+    <!-- no translation found for widget_education_close_button (8676165703104836580) -->
+    <skip />
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Қолданбаларды іздеу"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Қолданбалар жүктелуде…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" сұрауына сәйкес келетін қолданбалар жоқ"</string>
