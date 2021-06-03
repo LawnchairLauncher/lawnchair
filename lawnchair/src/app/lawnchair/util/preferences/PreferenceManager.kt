@@ -21,7 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.LawnchairLauncherQuickstep
-import app.lawnchair.launcher
+import app.lawnchair.nexuslauncher.OverlayCallbackImpl
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.states.RotationHelper
@@ -41,6 +41,7 @@ class PreferenceManager private constructor(context: Context) : BasePreferenceMa
             LawnchairLauncher.getLauncher(context).scheduleRestart()
         }
     }
+
     private val reloadGrid = scheduleRestart
 
     val hiddenAppSet = StringSetPref("hidden-app-set", setOf())
@@ -60,6 +61,7 @@ class PreferenceManager private constructor(context: Context) : BasePreferenceMa
     val allAppsTextSizeFactor = FloatPref("pref_allAppsTextSizeFactor", 1F, scheduleRestart)
     val allAppsColumns = IdpIntPref("pref_allAppsColumns", { numAllAppsColumns }, reloadGrid)
     val smartSpaceEnable = BoolPref("pref_smartSpaceEnable", true, scheduleRestart)
+    val minusOneEnable = BoolPref("pref_enableMinusOne", OverlayCallbackImpl.minusOneAvailable(context))
 
     // TODO: Add the ability to manually delete empty pages.
     val allowEmptyPages = BoolPref("pref_allowEmptyPages", false)

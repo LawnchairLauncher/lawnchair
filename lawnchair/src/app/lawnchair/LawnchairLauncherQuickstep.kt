@@ -47,6 +47,7 @@ open class LawnchairLauncherQuickstep : QuickstepLauncher(), LifecycleOwner,
         super.onBackPressed()
     }
     val gestureController by lazy { GestureController(this) }
+    private val defaultOverlay by lazy { OverlayCallbackImpl(this) }
 
     override fun setupViews() {
         super.setupViews()
@@ -109,7 +110,7 @@ open class LawnchairLauncherQuickstep : QuickstepLauncher(), LifecycleOwner,
     }
 
     override fun getDefaultOverlay(): LauncherOverlayManager {
-        return OverlayCallbackImpl(this)
+        return defaultOverlay
     }
 
     open fun restartIfPending() {

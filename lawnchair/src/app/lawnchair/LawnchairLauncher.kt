@@ -27,10 +27,6 @@ import com.android.launcher3.LauncherAppState
 open class LawnchairLauncher : Launcher() {
     private var paused = false
 
-    override fun getDefaultOverlay(): LauncherOverlayManager {
-        return OverlayCallbackImpl(this)
-    }
-
     override fun onResume() {
         super.onResume()
 
