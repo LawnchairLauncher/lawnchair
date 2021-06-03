@@ -18,7 +18,8 @@
     android:id="@+id/content_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:fitsSystemWindows="true">
 
     <Toolbar
         android:id="@+id/action_bar"
