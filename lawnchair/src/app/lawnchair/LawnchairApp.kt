@@ -126,6 +126,10 @@ class LawnchairApp : Application() {
         return true
     }
 
+    fun isAccessibilityServiceBound(): Boolean {
+        return accessibilityService != null
+    }
+
     fun performGlobalAction(action: Int): Boolean {
         return if (accessibilityService != null) {
             accessibilityService!!.performGlobalAction(action)

@@ -6,6 +6,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.graphics.Color
 import app.lawnchair.ui.util.portal.Portal
 import app.lawnchair.util.backHandler
 import kotlinx.coroutines.launch
@@ -15,6 +16,7 @@ import kotlinx.coroutines.launch
 fun BottomSheet(
     sheetContent: @Composable ColumnScope.() -> Unit,
     sheetState: BottomSheetState = rememberBottomSheetState(initialValue = ModalBottomSheetValue.Hidden),
+    scrimColor: Color = ModalBottomSheetDefaults.scrimColor,
 ) {
     val currentSheetContent by rememberUpdatedState(sheetContent)
     val modalBottomSheetState = sheetState.modalBottomSheetState
@@ -24,7 +26,8 @@ fun BottomSheet(
         Portal {
             ModalBottomSheetLayout(
                 sheetState = modalBottomSheetState,
-                sheetContent = currentSheetContent
+                sheetContent = currentSheetContent,
+                scrimColor = scrimColor
             ) {
                 backHandler {
                     scope.launch { sheetState.onBackPressed() }
@@ -66,10 +69,7 @@ class BottomSheetState(
     suspend fun show() {
         try {
             isAnimatingShow = true
-            if (modalBottomSheetState == null) {
-                modalBottomSheetState = ModalBottomSheetState(initialValue, animationSpec, confirmStateChange)
-            }
-            modalBottomSheetState!!.show()
+            getModalBottomSheetState().show()
         } finally {
             isAnimatingShow = false
         }
@@ -77,6 +77,18 @@ class BottomSheetState(
 
     suspend fun hide() {
         modalBottomSheetState?.hide()
+    }
+
+    suspend fun snapTo(targetValue: ModalBottomSheetValue) {
+        getModalBottomSheetState().snapTo(targetValue)
+    }
+
+    private fun getModalBottomSheetState(): ModalBottomSheetState {
+        if (modalBottomSheetState == null) {
+            modalBottomSheetState =
+                ModalBottomSheetState(initialValue, animationSpec, confirmStateChange)
+        }
+        return modalBottomSheetState!!
     }
 
     suspend fun onBackPressed() {

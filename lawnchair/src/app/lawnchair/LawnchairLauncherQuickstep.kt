@@ -17,24 +17,45 @@
 package app.lawnchair
 
 import android.content.Context
-import android.content.ContextWrapper
 import android.os.Bundle
+import androidx.activity.OnBackPressedDispatcher
+import androidx.activity.OnBackPressedDispatcherOwner
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
+import androidx.lifecycle.ViewTreeLifecycleOwner
+import androidx.savedstate.SavedStateRegistry
+import androidx.savedstate.SavedStateRegistryController
+import androidx.savedstate.SavedStateRegistryOwner
+import androidx.savedstate.ViewTreeSavedStateRegistryOwner
 import app.lawnchair.gestures.GestureController
-import com.android.launcher3.uioverrides.QuickstepLauncher
-import com.android.systemui.plugins.shared.LauncherOverlayManager
 import app.lawnchair.nexuslauncher.OverlayCallbackImpl
 import app.lawnchair.util.restartLauncher
 import com.android.launcher3.BaseActivity
-import com.android.launcher3.LauncherAppState
+import com.android.launcher3.LauncherRootView
+import com.android.launcher3.R
+import com.android.launcher3.uioverrides.QuickstepLauncher
+import com.android.systemui.plugins.shared.LauncherOverlayManager
 
-open class LawnchairLauncherQuickstep : QuickstepLauncher(), LifecycleOwner {
+open class LawnchairLauncherQuickstep : QuickstepLauncher(), LifecycleOwner,
+    SavedStateRegistryOwner, OnBackPressedDispatcherOwner {
+
     private val lifecycleRegistry = LifecycleRegistry(this)
+    private val savedStateRegistryController = SavedStateRegistryController.create(this)
+    private val _onBackPressedDispatcher = OnBackPressedDispatcher {
+        super.onBackPressed()
+    }
     val gestureController by lazy { GestureController(this) }
 
+    override fun setupViews() {
+        super.setupViews()
+        val launcherRootView = findViewById<LauncherRootView>(R.id.launcher)
+        ViewTreeLifecycleOwner.set(launcherRootView, this)
+        ViewTreeSavedStateRegistryOwner.set(launcherRootView, this)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        savedStateRegistryController.performRestore(savedInstanceState)
         super.onCreate(savedInstanceState)
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
     }
@@ -65,8 +86,25 @@ open class LawnchairLauncherQuickstep : QuickstepLauncher(), LifecycleOwner {
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     }
 
+    override fun onBackPressed() {
+        _onBackPressedDispatcher.onBackPressed()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        savedStateRegistryController.performSave(outState)
+    }
+
     override fun getLifecycle(): Lifecycle {
         return lifecycleRegistry
+    }
+
+    override fun getSavedStateRegistry(): SavedStateRegistry {
+        return savedStateRegistryController.savedStateRegistry
+    }
+
+    override fun getOnBackPressedDispatcher(): OnBackPressedDispatcher {
+        return _onBackPressedDispatcher
     }
 
     override fun getDefaultOverlay(): LauncherOverlayManager {

@@ -24,12 +24,30 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.provider.Settings
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import app.lawnchair.gestures.GestureHandler
+import app.lawnchair.launcher
 import app.lawnchair.lawnchairApp
+import app.lawnchair.ui.preferences.components.BottomSheetState
+import app.lawnchair.views.showBottomSheet
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import com.google.accompanist.insets.navigationBarsPadding
+import kotlinx.coroutines.launch
 
-class SleepGestureHandler(context: Context) : GestureHandler() {
+class SleepGestureHandler(private val context: Context) : GestureHandler() {
 
     override fun onTrigger() {
         method?.sleep()
@@ -51,8 +69,23 @@ class SleepGestureHandler(context: Context) : GestureHandler() {
 class SleepMethodPieAccessibility(context: Context) : SleepGestureHandler.SleepMethod(context) {
     override val supported = Utilities.ATLEAST_P
 
+    @ExperimentalMaterialApi
     @TargetApi(Build.VERSION_CODES.P)
     override fun sleep() {
+        val app = context.lawnchairApp
+        if (!app.isAccessibilityServiceBound()) {
+            val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            context.launcher.showBottomSheet { state ->
+                ServiceWarningDialog(
+                    title = R.string.dt2s_a11y_hint_title,
+                    description = R.string.dt2s_a11y_hint,
+                    settingsIntent = intent,
+                    sheetState = state
+                )
+            }
+            return
+        }
         context.lawnchairApp.performGlobalAction(AccessibilityService.GLOBAL_ACTION_LOCK_SCREEN)
     }
 }
@@ -60,22 +93,69 @@ class SleepMethodPieAccessibility(context: Context) : SleepGestureHandler.SleepM
 class SleepMethodDeviceAdmin(context: Context) : SleepGestureHandler.SleepMethod(context) {
     override val supported = true
 
+    @ExperimentalMaterialApi
     override fun sleep() {
         val devicePolicyManager = context.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
-        if (devicePolicyManager.isAdminActive(ComponentName(context, SleepDeviceAdmin::class.java))) {
-            devicePolicyManager.lockNow()
-        } else {
+        if (!devicePolicyManager.isAdminActive(ComponentName(context, SleepDeviceAdmin::class.java))) {
             val intent = Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN)
             intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, ComponentName(context, SleepDeviceAdmin::class.java))
             intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, context.getString(R.string.dt2s_admin_hint))
-            context.startActivity(intent)
+            context.launcher.showBottomSheet { state ->
+                ServiceWarningDialog(
+                    title = R.string.dt2s_admin_hint_title,
+                    description = R.string.dt2s_admin_hint,
+                    settingsIntent = intent,
+                    sheetState = state
+                )
+            }
+            return
         }
+        devicePolicyManager.lockNow()
     }
 
     class SleepDeviceAdmin : DeviceAdminReceiver() {
 
         override fun onDisableRequested(context: Context, intent: Intent): CharSequence {
             return context.getString(R.string.dt2s_admin_warning)
+        }
+    }
+}
+
+@ExperimentalMaterialApi
+@Composable
+fun ServiceWarningDialog(
+    title: Int,
+    description: Int,
+    settingsIntent: Intent,
+    sheetState: BottomSheetState
+) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    Column(
+        modifier = Modifier
+            .navigationBarsPadding()
+            .padding(16.dp)
+            .fillMaxWidth()
+    ) {
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
+            Text(
+                text = stringResource(id = title),
+                style = MaterialTheme.typography.h6
+            )
+        }
+        Text(
+            modifier = Modifier.padding(top = 8.dp, bottom = 16.dp),
+            text = stringResource(id = description),
+            style = MaterialTheme.typography.body2
+        )
+        Button(
+            modifier = Modifier.align(Alignment.End),
+            onClick = {
+                context.startActivity(settingsIntent)
+                scope.launch { sheetState.hide() }
+            }
+        ) {
+            Text(text = stringResource(id = R.string.dt2s_warning_open_settings))
         }
     }
 }

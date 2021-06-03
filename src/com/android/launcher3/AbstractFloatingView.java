@@ -63,7 +63,9 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
 
             TYPE_TASK_MENU,
             TYPE_OPTIONS_POPUP,
-            TYPE_ICON_SURFACE
+            TYPE_ICON_SURFACE,
+
+            TYPE_COMPOSE_VIEW
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface FloatingViewType {}
@@ -83,16 +85,19 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     public static final int TYPE_OPTIONS_POPUP = 1 << 11;
     public static final int TYPE_ICON_SURFACE = 1 << 12;
 
+    // Custom compose popups
+    public static final int TYPE_COMPOSE_VIEW = 1 << 13;
+
     public static final int TYPE_ALL = TYPE_FOLDER | TYPE_ACTION_POPUP
             | TYPE_WIDGETS_BOTTOM_SHEET | TYPE_WIDGET_RESIZE_FRAME | TYPE_WIDGETS_FULL_SHEET
             | TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE | TYPE_TASK_MENU
             | TYPE_OPTIONS_POPUP | TYPE_SNACKBAR | TYPE_LISTENER | TYPE_ALL_APPS_EDU
-            | TYPE_ICON_SURFACE;
+            | TYPE_ICON_SURFACE | TYPE_COMPOSE_VIEW;
 
     // Type of popups which should be kept open during launcher rebind
     public static final int TYPE_REBIND_SAFE = TYPE_WIDGETS_FULL_SHEET
             | TYPE_WIDGETS_BOTTOM_SHEET | TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE
-            | TYPE_ALL_APPS_EDU | TYPE_ICON_SURFACE;
+            | TYPE_ALL_APPS_EDU | TYPE_ICON_SURFACE | TYPE_COMPOSE_VIEW;
 
     // Usually we show the back button when a floating view is open. Instead, hide for these types.
     public static final int TYPE_HIDE_BACK_BUTTON = TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE
@@ -104,7 +109,7 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     // These view all have particular operation associated with swipe down interaction.
     public static final int TYPE_STATUS_BAR_SWIPE_DOWN_DISALLOW = TYPE_WIDGETS_BOTTOM_SHEET |
             TYPE_WIDGETS_FULL_SHEET | TYPE_WIDGET_RESIZE_FRAME | TYPE_ON_BOARD_POPUP |
-            TYPE_DISCOVERY_BOUNCE | TYPE_TASK_MENU ;
+            TYPE_DISCOVERY_BOUNCE | TYPE_TASK_MENU | TYPE_COMPOSE_VIEW;
 
     protected boolean mIsOpen;
 
