@@ -76,4 +76,6 @@
         <item quantity="other">%1$d Applicazioni</item>
     </plurals>
     <string name="hotseat_qsb_label">Mostra la Barra di Ricerca</string>
+    <string name="dt2s_admin_hint">To use Double Tap to Sleep, grant the Admin permission.</string>
+    <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
 </resources>
