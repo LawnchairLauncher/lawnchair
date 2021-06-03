@@ -31,6 +31,8 @@ import androidx.annotation.NonNull;
 
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AlphaUpdateListener;
+import com.android.launcher3.taskbar.contextual.RotationButtonController;
+import com.android.quickstep.SysUINavigationMode;
 import com.android.systemui.shared.system.ViewTreeObserverWrapper.InsetsInfo;
 
 /**
@@ -45,18 +47,22 @@ public class TaskbarIconController {
 
     private final TaskbarView mTaskbarView;
     private final ImeBarView mImeBarView;
+    private final RotationButtonController mRotationButtonController;
 
     @NonNull
     private TaskbarUIController mUIController = TaskbarUIController.DEFAULT;
 
-    TaskbarIconController(TaskbarActivityContext activity, TaskbarDragLayer dragLayer) {
+    TaskbarIconController(TaskbarActivityContext activity, TaskbarDragLayer dragLayer,
+            RotationButtonController rotationButtonController) {
         mActivity = activity;
         mDragLayer = dragLayer;
         mTaskbarView = mDragLayer.findViewById(R.id.taskbar_view);
         mImeBarView = mDragLayer.findViewById(R.id.ime_bar_view);
+        mRotationButtonController = rotationButtonController;
     }
 
-    public void init(OnClickListener clickListener, OnLongClickListener longClickListener) {
+    public void init(OnClickListener clickListener, OnLongClickListener longClickListener,
+            SysUINavigationMode.Mode navMode) {
         mDragLayer.addOnLayoutChangeListener((v, a, b, c, d, e, f, g, h) ->
                 mUIController.alignRealHotseatWithTaskbar());
 
@@ -67,6 +73,9 @@ public class TaskbarIconController {
         mTaskbarView.getLayoutParams().height = mActivity.getDeviceProfile().taskbarSize;
 
         mDragLayer.init(new TaskbarDragLayerCallbacks(), mTaskbarView);
+        if (navMode == SysUINavigationMode.Mode.THREE_BUTTONS) {
+            mRotationButtonController.setRotationButton(mTaskbarView.getContextualRotationButton());
+        }
     }
 
     public void onDestroy() {
@@ -127,6 +136,12 @@ public class TaskbarIconController {
                             mTaskbarView.mSystemButtonContainer, mTempRect);
                     insetsInfo.touchableRegion.set(mTempRect);
                 }
+                if (mTaskbarView.mContextualButtonContainer.getVisibility() == VISIBLE) {
+                    mDragLayer.getDescendantRectRelativeToSelf(
+                            mTaskbarView.mContextualButtonContainer, mTempRect);
+                    insetsInfo.touchableRegion.union(mTempRect);
+                }
+
                 insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION);
             }
 
