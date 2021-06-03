@@ -972,6 +972,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         }
         if (endTarget == HOME) {
             duration = HOME_DURATION;
+            // Early detach the nav bar once the endTarget is determined as HOME
+            if (mRecentsAnimationController != null) {
+                mRecentsAnimationController.detachNavigationBarFromApp(true);
+            }
         } else if (endTarget == RECENTS) {
             if (mRecentsView != null) {
                 int nearestPage = mRecentsView.getDestinationPage();
@@ -1496,7 +1500,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         if (LIVE_TILE.get()) {
             mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED);
             if (mRecentsAnimationController != null) {
-                mRecentsAnimationController.getController().detachNavigationBarFromApp(true);
+                mRecentsAnimationController.detachNavigationBarFromApp(true);
             }
         } else if (!hasTargets() || mRecentsAnimationController == null) {
             // If there are no targets or the animation not started, then there is nothing to finish
