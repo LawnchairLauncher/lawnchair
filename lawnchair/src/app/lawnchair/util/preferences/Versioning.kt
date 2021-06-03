@@ -31,7 +31,7 @@ fun getFormattedVersionName(context: Context): String {
         .replace(".", " ")
         .split(" ")
         .joinToString(" ") {
-            it.capitalize(Locale.ROOT)
+            it.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
         }
 
     return "$versionSegment $stabilitySegment"
