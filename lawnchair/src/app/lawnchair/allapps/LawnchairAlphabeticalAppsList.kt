@@ -3,7 +3,6 @@ package app.lawnchair.allapps
 import android.content.Context
 import app.lawnchair.launcher
 import app.lawnchair.util.preferences.PreferenceManager
-import app.lawnchair.util.preferences.subscribe
 import com.android.launcher3.allapps.AllAppsStore
 import com.android.launcher3.allapps.AlphabeticalAppsList
 import com.android.launcher3.model.data.AppInfo
@@ -27,7 +26,7 @@ class LawnchairAlphabeticalAppsList(context: Context, appsStore: AllAppsStore, i
                 else -> true
             }
         }
-        hiddenApps.subscribe(context.launcher, this::onAppsUpdated)
+        hiddenApps.subscribe(context.launcher, { onAppsUpdated() })
     }
 
     override fun updateItemFilter(itemFilter: ItemInfoMatcher?) {

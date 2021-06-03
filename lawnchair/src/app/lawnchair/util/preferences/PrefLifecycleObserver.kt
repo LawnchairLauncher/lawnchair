@@ -1,13 +1,13 @@
 package app.lawnchair.util.preferences
 
+import androidx.core.util.Consumer
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 
 class PrefLifecycleObserver<T>(
     private val prefEntry: PrefEntry<T>,
-    private val onChange: () -> Unit
+    private val onChange: Consumer<T>
     ) : LifecycleObserver, PreferenceChangeListener {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
@@ -21,10 +21,6 @@ class PrefLifecycleObserver<T>(
     }
 
     override fun onPreferenceChange() {
-        onChange()
+        onChange.accept(prefEntry.get())
     }
-}
-
-fun <T> PrefEntry<T>.subscribe(lifecycleOwner: LifecycleOwner, onChange: () -> Unit) {
-    lifecycleOwner.lifecycle.addObserver(PrefLifecycleObserver(this, onChange))
 }
