@@ -83,4 +83,5 @@ Büszke tagja a Spoingus gang-nek.</string>
     <string name="dt2s_a11y_hint_title">Kisegíthető-lehetőségek szolgáltatás szükséges</string>
     <string name="dt2s_a11y_hint">A dupla koppintásos alvás bekapcsolásához kapcsolja be a szolgáltatást.</string>
     <string name="dt2s_warning_open_settings">Beállítások megnyitása</string>
+    <string name="minus_one_enable">Show Feed</string>
 </resources>
