@@ -49,21 +49,15 @@
     <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"আপনি বাঁ প্রান্ত থেকে স্ক্রিনের মাঝখান পর্যন্ত সোয়াইপ করছেন ও পরে আঙুল তুলে নিন। এটির খেয়াল রাখুন।"</string>
     <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"একদম ডান প্রান্ত থেকে সোয়াইপ করছেন কিনা ভাল করে দেখে নিন।"</string>
     <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"আপনি ডান প্রান্ত থেকে স্ক্রিনের মাঝখান পর্যন্ত সোয়াইপ করছেন ও পরে আঙুল তুলে নিন। এটি খেয়াল রাখুন।"</string>
-    <!-- no translation found for back_gesture_feedback_complete_with_back_right_follow_up (2100639504811809267) -->
-    <skip />
-    <!-- no translation found for back_gesture_feedback_complete_with_overview_follow_up (9176400654037014471) -->
-    <skip />
+    <string name="back_gesture_feedback_complete_with_back_right_follow_up" msgid="2100639504811809267">"ফিরে যেতে, কীভাবে বাঁদিক থেকে সোয়াইপ করতে হয় তা আপনি শিখেছেন।"</string>
+    <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"ফিরে যেতে, কীভাবে ডান দিক থেকে সোয়াইপ করতে হয় তা আপনি শিখেছেন। এরপর, একটি অ্যাপ থেকে অন্য অ্যাপে কীভাবে যাবেন জেনে নিন।"</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"আপনি ফিরে যাওয়ার জেসচার সম্পর্কে জেনেছেন।"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"স্ক্রিনের নিচের প্রান্তের খুব কাছে পর্যন্ত যাতে সোয়াইপ না করেন সেটি ভাল করে দেখে নিন।"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"ফিরে যাওয়ার জেসচারের সেন্সিটিভিটি পরিবর্তন করতে, সেটিংসে যান"</string>
-    <!-- no translation found for back_left_gesture_intro_title (5197184481779330065) -->
-    <skip />
-    <!-- no translation found for back_right_gesture_intro_title (7431951986971898074) -->
-    <skip />
-    <!-- no translation found for back_left_gesture_intro_subtitle (7672761376577628602) -->
-    <skip />
-    <!-- no translation found for back_right_gesture_intro_subtitle (2735828029197816509) -->
-    <skip />
+    <string name="back_left_gesture_intro_title" msgid="5197184481779330065">"ফিরে যেতে স্ক্রিনের বাঁদিক থেকে সোয়াইপ করুন"</string>
+    <string name="back_right_gesture_intro_title" msgid="7431951986971898074">"ফিরে যেতে স্ক্রিনের ডানদিক থেকে সোয়াইপ করুন"</string>
+    <string name="back_left_gesture_intro_subtitle" msgid="7672761376577628602">"শেষের যে স্ক্রিনে ছিলেন সেখানে ফিরে যেতে, বাঁদিকের প্রান্ত থেকে স্ক্রিনের মাঝখান পর্যন্ত সোয়াইপ করুন।"</string>
+    <string name="back_right_gesture_intro_subtitle" msgid="2735828029197816509">"ডানদিকের প্রান্ত থেকে মাঝখান অবধি সোয়াইপ করেও, শেষের যে স্ক্রিনে ছিলেন সেখানে ফিরে যেতে পারেন। এখনই করে দেখুন।"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"স্ক্রিনের নিচের প্রান্ত থেকে আপনি সোয়াইপ করেছেন কিনা ভাল করে দেখে নিন।"</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"আঙুল তুলে নেওয়ার আগে আপনি যাতে পজ না করেন সেটি ভাল করে দেখে নিন।"</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"আপনি উপরের দিকে সোজাসুজি সোয়াইপ করেছেন কিনা ভাল করে দেখে নিন।"</string>
