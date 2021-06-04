@@ -65,31 +65,22 @@ class LawnchairApp : Application() {
             HashSet(activities).forEach { it.finish() }
         }
 
-        override fun onActivityPaused(activity: Activity) {
-
-        }
+        override fun onActivityPaused(activity: Activity) { }
 
         override fun onActivityResumed(activity: Activity) {
             foregroundActivity = activity
         }
 
-        override fun onActivityStarted(activity: Activity) {
-
-        }
+        override fun onActivityStarted(activity: Activity) { }
 
         override fun onActivityDestroyed(activity: Activity) {
-            if (activity == foregroundActivity)
-                foregroundActivity = null
+            if (activity == foregroundActivity) foregroundActivity = null
             activities.remove(activity)
         }
 
-        override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
+        override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) { }
 
-        }
-
-        override fun onActivityStopped(activity: Activity) {
-
-        }
+        override fun onActivityStopped(activity: Activity) { }
 
         override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
             activities.add(activity)
@@ -126,9 +117,7 @@ class LawnchairApp : Application() {
         return true
     }
 
-    fun isAccessibilityServiceBound(): Boolean {
-        return accessibilityService != null
-    }
+    fun isAccessibilityServiceBound(): Boolean = accessibilityService != null
 
     fun performGlobalAction(action: Int): Boolean {
         return if (accessibilityService != null) {
