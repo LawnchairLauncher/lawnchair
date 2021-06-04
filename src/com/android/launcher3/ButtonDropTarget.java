@@ -142,11 +142,6 @@ public abstract class ButtonDropTarget extends TextView
         }
     }
 
-    private void setBackgroundDrawable(int resId) {
-        Drawable bd = AppCompatResources.getDrawable(getContext(), resId);
-        setBackground(bd);
-    }
-
     @Override
     public final void onDragEnter(DragObject d) {
         if (!mAccessibleDrag && !mTextVisible) {
@@ -172,7 +167,7 @@ public abstract class ButtonDropTarget extends TextView
         }
 
         d.dragView.setAlpha(DRAG_VIEW_HOVER_OVER_OPACITY);
-        setBackgroundDrawable(R.drawable.drop_target_frame_hover);
+        setSelected(true);
         if (d.stateAnnouncer != null) {
             d.stateAnnouncer.cancel();
         }
@@ -190,7 +185,7 @@ public abstract class ButtonDropTarget extends TextView
 
         if (!d.dragComplete) {
             d.dragView.setAlpha(1f);
-            setBackgroundDrawable(R.drawable.drop_target_frame);
+            setSelected(false);
         } else {
             d.dragView.setAlpha(DRAG_VIEW_HOVER_OVER_OPACITY);
         }
@@ -230,6 +225,7 @@ public abstract class ButtonDropTarget extends TextView
     public void onDragEnd() {
         mActive = false;
         setOnClickListener(null);
+        setSelected(false);
     }
 
     /**
