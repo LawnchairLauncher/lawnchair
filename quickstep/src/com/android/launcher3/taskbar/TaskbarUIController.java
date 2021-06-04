@@ -15,6 +15,9 @@
  */
 package com.android.launcher3.taskbar;
 
+import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
+import com.android.quickstep.AnimatedFloat;
+
 /**
  * Base class for providing different taskbar UI
  */
@@ -22,20 +25,12 @@ public class TaskbarUIController {
 
     public static final TaskbarUIController DEFAULT = new TaskbarUIController();
 
-    /**
-     * Pads the Hotseat to line up exactly with Taskbar's copy of the Hotseat.
-     */
-    public void alignRealHotseatWithTaskbar() { }
-
-    protected void onCreate(LauncherTaskbarUIController.ContextualRotationNotifier notifier) { }
+    protected void init(AnimatedFloat taskBarAlpha, AlphaProperty iconAlphaForLauncherState,
+            AlphaProperty iconAlphaForHome) { }
 
     protected void onDestroy() { }
 
     protected boolean isTaskbarTouchable() {
         return true;
-    }
-
-    protected void onImeVisible(TaskbarDragLayer container, boolean isVisible) {
-        container.updateImeBarVisibilityAlpha(isVisible ? 1 : 0);
     }
 }
