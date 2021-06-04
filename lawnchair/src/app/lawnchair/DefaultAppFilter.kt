@@ -17,12 +17,14 @@
 package app.lawnchair
 
 import android.content.ComponentName
+import android.content.Context
 import androidx.annotation.Keep
 import com.android.launcher3.AppFilter
 import com.android.launcher3.BuildConfig
 
+@Suppress("UNUSED_PARAMETER") // required by ResourceBasedOverride
 @Keep
-open class DefaultAppFilter : AppFilter() {
+open class DefaultAppFilter(context: Context) : AppFilter() {
     private val defaultHideList = setOf(
         // Voice search
         ComponentName.unflattenFromString("com.google.android.googlequicksearchbox/.VoiceSearchActivity"),
