@@ -49,21 +49,15 @@
     <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"तुम्ही स्क्रीनच्या डाव्या कडेपासून मध्यावर स्‍वाइप करून बोट उचलत आहात याची खात्री करा."</string>
     <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"तुम्ही स्क्रीनच्या अगदी उजव्या कडेपासून स्‍वाइप करत आहात याची खात्री करा."</string>
     <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"तुम्ही स्क्रीनच्या उजव्या कडेपासून मध्यावर स्‍वाइप करून बोट उचलत आहात याची खात्री करा."</string>
-    <!-- no translation found for back_gesture_feedback_complete_with_back_right_follow_up (2100639504811809267) -->
-    <skip />
-    <!-- no translation found for back_gesture_feedback_complete_with_overview_follow_up (9176400654037014471) -->
-    <skip />
+    <string name="back_gesture_feedback_complete_with_back_right_follow_up" msgid="2100639504811809267">"तुम्ही मागे जाण्यासाठी डावीकडून कसे स्‍वाइप करायचे ते जाणून घेतले."</string>
+    <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"मागे जाण्यासाठी उजवीकडून कसे स्‍वाइप करावे ते शिकलात. आता पुढे, ॲप्स कशी स्विच करायची ते जाणून घ्या."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"तुम्ही गो बॅक जेश्चर पूर्ण केले."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"तुम्ही स्क्रीनच्या तळाच्या अगदी जवळून स्‍वाइप करत नाही याची खात्री करा."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"बॅक जेश्चरची संवेदनशीलता बदलण्यासाठी, सेटिंग्ज वर जा"</string>
-    <!-- no translation found for back_left_gesture_intro_title (5197184481779330065) -->
-    <skip />
-    <!-- no translation found for back_right_gesture_intro_title (7431951986971898074) -->
-    <skip />
-    <!-- no translation found for back_left_gesture_intro_subtitle (7672761376577628602) -->
-    <skip />
-    <!-- no translation found for back_right_gesture_intro_subtitle (2735828029197816509) -->
-    <skip />
+    <string name="back_left_gesture_intro_title" msgid="5197184481779330065">"मागे जाण्यासाठी डावीकडून स्वाइप करा"</string>
+    <string name="back_right_gesture_intro_title" msgid="7431951986971898074">"मागे जाण्यासाठी उजवीकडून स्वाइप करा"</string>
+    <string name="back_left_gesture_intro_subtitle" msgid="7672761376577628602">"तुम्ही होतात त्या मागील स्क्रीनवर परत जाण्यासाठी, स्क्रीनच्या डाव्या कडेपासून मध्याभागी स्वाइप करा."</string>
+    <string name="back_right_gesture_intro_subtitle" msgid="2735828029197816509">"स्क्रीनच्या उजव्या कडेपासून मध्याभागी स्वाइप करून मागील स्क्रीनवर परतदेखील जाऊ शकता. आता करून पहा."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"तुम्ही स्क्रीनच्या तळाच्या कडेपासून वर स्वाइप करत आहात याची खात्री करा."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"तुम्ही स्क्रीनवरून बोट उचलण्यापूर्वी ते थांबवत नाही याची खात्री करा."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"तुम्ही सरळ वर स्वाइप करत आहात याची खात्री करा."</string>
