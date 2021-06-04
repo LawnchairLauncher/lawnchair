@@ -85,7 +85,7 @@ public class HotseatEduDialog extends AbstractSlideInView<Launcher> implements I
         mSampleHotseat = findViewById(R.id.sample_prediction);
 
         DeviceProfile grid = mActivityContext.getDeviceProfile();
-        Rect padding = grid.getHotseatLayoutPadding();
+        Rect padding = grid.getHotseatLayoutPadding(getContext());
 
         mSampleHotseat.getLayoutParams().height = grid.cellHeightPx;
         mSampleHotseat.setGridSize(grid.numShownHotseatIcons, 1);
