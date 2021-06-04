@@ -113,7 +113,7 @@ fun scrimColor(): Color {
 
 @OptIn(ExperimentalMaterialApi::class)
 fun LawnchairLauncher.showBottomSheet(
-    content: @Composable ColumnScope.(state: BottomSheetState) -> Unit
+    content: @Composable (state: BottomSheetState) -> Unit
 ) {
     ComposeFloatingView.show(this) {
         val state = rememberBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)

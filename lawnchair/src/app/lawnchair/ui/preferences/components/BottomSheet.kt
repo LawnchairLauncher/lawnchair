@@ -1,22 +1,27 @@
 package app.lawnchair.ui.preferences.components
 
 import androidx.compose.animation.core.AnimationSpec
-import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.layout
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import app.lawnchair.ui.util.portal.Portal
 import app.lawnchair.util.backHandler
+import com.google.accompanist.insets.LocalWindowInsets
 import kotlinx.coroutines.launch
 
 @ExperimentalMaterialApi
 @Composable
 fun BottomSheet(
-    sheetContent: @Composable ColumnScope.() -> Unit,
+    sheetContent: @Composable () -> Unit,
     sheetState: BottomSheetState = rememberBottomSheetState(initialValue = ModalBottomSheetValue.Hidden),
     scrimColor: Color = ModalBottomSheetDefaults.scrimColor,
 ) {
@@ -28,7 +33,7 @@ fun BottomSheet(
         Portal {
             ModalBottomSheetLayout(
                 sheetState = modalBottomSheetState,
-                sheetContent = currentSheetContent,
+                sheetContent = { StatusBarOffset(currentSheetContent) },
                 scrimColor = scrimColor,
                 sheetShape = MaterialTheme.shapes.large.copy(
                     bottomStart = CornerSize(0.dp),
@@ -40,9 +45,34 @@ fun BottomSheet(
                 }
             }
         }
-        if (!sheetState.isAnimatingShow && !modalBottomSheetState.isVisible) {
+        if (!sheetState.isChangingState && !modalBottomSheetState.isVisible) {
             sheetState.modalBottomSheetState = null
         }
+    }
+}
+
+@Composable
+fun StatusBarOffset(content: @Composable () -> Unit) {
+    val statusBarHeight = LocalWindowInsets.current.statusBars.top
+    val topOffset = statusBarHeight + with(LocalDensity.current) { 8.dp.roundToPx() }
+
+    Box(
+        modifier = Modifier
+            .layout { measurable, constraints ->
+                val newConstraints = Constraints(
+                    minWidth = constraints.minWidth,
+                    maxWidth = constraints.maxWidth,
+                    minHeight = constraints.minHeight,
+                    maxHeight = constraints.maxHeight - topOffset
+                )
+                val placeable = measurable.measure(newConstraints)
+
+                layout(placeable.width, placeable.height) {
+                    placeable.placeRelative(0, 0)
+                }
+            }
+    ) {
+        content()
     }
 }
 
@@ -69,24 +99,36 @@ class BottomSheetState(
     private val animationSpec: AnimationSpec<Float> = SwipeableDefaults.AnimationSpec,
     private val confirmStateChange: (ModalBottomSheetValue) -> Boolean = { true }
 ) {
-    internal var isAnimatingShow by mutableStateOf(false)
+    internal var isChangingState by mutableStateOf(false)
     internal var modalBottomSheetState by mutableStateOf<ModalBottomSheetState?>(null)
 
     suspend fun show() {
-        try {
-            isAnimatingShow = true
-            getModalBottomSheetState().show()
-        } finally {
-            isAnimatingShow = false
-        }
+        transitionState { it.show() }
     }
 
     suspend fun hide() {
-        modalBottomSheetState?.hide()
+        transitionState { it.hide() }
     }
 
     suspend fun snapTo(targetValue: ModalBottomSheetValue) {
-        getModalBottomSheetState().snapTo(targetValue)
+        transitionState {
+            it.snapTo(targetValue)
+        }
+    }
+
+    suspend fun animateTo(targetValue: ModalBottomSheetValue, anim: AnimationSpec<Float> = animationSpec) {
+        transitionState {
+            it.animateTo(targetValue, anim)
+        }
+    }
+
+    private inline fun transitionState(block: (ModalBottomSheetState) -> Unit) {
+        try {
+            isChangingState = true
+            block(getModalBottomSheetState())
+        } finally {
+            isChangingState = false
+        }
     }
 
     private fun getModalBottomSheetState(): ModalBottomSheetState {
