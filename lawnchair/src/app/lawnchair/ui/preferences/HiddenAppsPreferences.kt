@@ -63,7 +63,17 @@ fun HiddenAppsPreferences() {
         val apps = optionalApps.get()
         val toggleHiddenApp = { app: App ->
             val key = app.key.toString()
-            if (hiddenApps.contains(key)) hiddenApps -= key else hiddenApps += key
+            val newSet = apps
+                .filter { hiddenApps.contains(it.key.toString()) }
+                .map { it.key.toString() }
+                .toMutableSet()
+            val isHidden = !hiddenApps.contains(key)
+            if (isHidden) {
+                newSet.add(key)
+            } else {
+                newSet.remove(key)
+            }
+            hiddenApps = newSet
         }
         PreferenceLayoutLazyColumn {
             preferenceGroupItems(apps, isFirstChild = true) { index, app ->
