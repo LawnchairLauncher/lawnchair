@@ -43,7 +43,7 @@ import androidx.dynamicanimation.animation.SpringForce;
 import com.android.launcher3.R;
 import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.util.VibratorWrapper;
+import com.android.quickstep.util.VibratorWrapper;
 
 /** Forked from platform/frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/phone/NavigationBarEdgePanel.java. */
 public class EdgeBackGesturePanel extends View {
