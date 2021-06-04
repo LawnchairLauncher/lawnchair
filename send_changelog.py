@@ -12,6 +12,6 @@ commits = repository.iter_commits(f'{github_event_before}...{github_sha}')
 message = ''
 
 for index, commit in enumerate(commits):
-  message += f'– {commit.message}'
+  message += f'– {commit.message}. [View on GitHub](https://github.com/LawnchairLauncher/lawnchair/commit/{commit.hexsha})'
 
 requests.get(f'https://api.telegram.org/bot{telegram_ci_bot_token}/sendMessage?chat_id={telegram_ci_channel_id}&parse_mode=Markdown&text={message}')
