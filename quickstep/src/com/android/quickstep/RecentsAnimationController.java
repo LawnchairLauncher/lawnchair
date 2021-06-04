@@ -155,6 +155,14 @@ public class RecentsAnimationController {
     }
 
     /**
+     * @see RecentsAnimationControllerCompat#detachNavigationBarFromApp
+     */
+    @UiThread
+    public void detachNavigationBarFromApp(boolean moveHomeToTop) {
+        UI_HELPER_EXECUTOR.execute(() -> mController.detachNavigationBarFromApp(moveHomeToTop));
+    }
+
+    /**
      * Sets the final surface transaction on a Task. This is used by Launcher to notify the system
      * that animating Activity to PiP has completed and the associated task surface should be
      * updated accordingly. This should be called before `finish`
