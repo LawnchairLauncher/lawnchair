@@ -73,6 +73,11 @@ public final class FallbackActivityInterface extends
         // set to zero prior to this class becoming active.
     }
 
+    @Override
+    public void onOneHandedModeStateChanged(boolean activated) {
+        // Do nothing for FallbackActivityInterface
+    }
+
     /** 6 */
     @Override
     public AnimationFactory prepareRecentsUI(RecentsAnimationDeviceState deviceState,
