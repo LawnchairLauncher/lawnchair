@@ -25,14 +25,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.provider.Settings
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -137,25 +133,41 @@ fun ServiceWarningDialog(
             .padding(16.dp)
             .fillMaxWidth()
     ) {
-        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
-            Text(
-                text = stringResource(id = title),
-                style = MaterialTheme.typography.h6
-            )
-        }
         Text(
-            modifier = Modifier.padding(top = 8.dp, bottom = 16.dp),
-            text = stringResource(id = description),
-            style = MaterialTheme.typography.body2
+            text = stringResource(id = title),
+            style = MaterialTheme.typography.h6,
+            color = MaterialTheme.colors.onSurface
         )
-        Button(
-            modifier = Modifier.align(Alignment.End),
-            onClick = {
-                context.startActivity(settingsIntent)
-                scope.launch { sheetState.hide() }
-            }
+        Text(
+            modifier = Modifier.padding(top = 16.dp),
+            text = stringResource(id = description),
+            style = MaterialTheme.typography.body2,
+            color = MaterialTheme.colors.onSurface
+        )
+        Row(
+            horizontalArrangement = Arrangement.End,
+            modifier = Modifier
+                .padding(top = 20.dp)
+                .fillMaxWidth()
         ) {
-            Text(text = stringResource(id = R.string.dt2s_warning_open_settings))
+            OutlinedButton(
+                shape = MaterialTheme.shapes.small,
+                onClick = {
+                    scope.launch { sheetState.hide() }
+                }
+            ) {
+                Text(text = stringResource(id = R.string.cancel))
+            }
+            Spacer(modifier = Modifier.requiredWidth(16.dp))
+            Button(
+                shape = MaterialTheme.shapes.small,
+                onClick = {
+                    context.startActivity(settingsIntent)
+                    scope.launch { sheetState.hide() }
+                }
+            ) {
+                Text(text = stringResource(id = R.string.dt2s_warning_open_settings))
+            }
         }
     }
 }
