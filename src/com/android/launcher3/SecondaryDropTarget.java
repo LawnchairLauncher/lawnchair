@@ -45,6 +45,7 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.util.PackageManagerHelper;
+import com.android.launcher3.util.PendingRequestArgs;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 
 import java.net.URISyntaxException;
@@ -267,6 +268,8 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
         if (mCurrentAccessibilityAction == RECONFIGURE) {
             int widgetId = getReconfigurableWidgetId(view);
             if (widgetId != INVALID_APPWIDGET_ID) {
+                mLauncher.setWaitingForResult(
+                        PendingRequestArgs.forWidgetInfo(widgetId, null, info));
                 mLauncher.getAppWidgetHost().startConfigActivity(mLauncher, widgetId,
                         REQUEST_RECONFIGURE_APPWIDGET);
             }
