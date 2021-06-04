@@ -81,5 +81,5 @@
     <string name="dt2s_a11y_hint">Aktivieren Sie den Bedienungshilfen, um doppeltes Tippen zum Schlafen zu verwenden.</string>
     <string name="dt2s_warning_open_settings">Einstellungen öffnen</string>
     <string name="minus_one_enable">Feed anzeigen</string>
-    <string name="cancel">Cancel</string>
+    <string name="cancel">Abbrechen</string>
 </resources>
