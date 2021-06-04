@@ -576,6 +576,14 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         mHotseat.getQsb().setAlpha(1f - visibility);
     }
 
+    /**
+     * Called when one handed mode activated and deactivated.
+     * @param activated true if one handed mode activated, false otherwise.
+     */
+    public void onOneHandedStateChanged(boolean activated) {
+        mDragLayer.onOneHandedModeStateChanged(activated);
+    }
+
     private void initDeviceProfile(InvariantDeviceProfile idp) {
         // Load configuration-specific DeviceProfile
         mDeviceProfile = idp.getDeviceProfile(this);
