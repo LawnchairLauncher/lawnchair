@@ -51,6 +51,9 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Personal"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Treball"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Converses"</string>
+    <string name="widget_education_header" msgid="4874760613775913787">"Informació útil a l\'abast de la mà"</string>
+    <string name="widget_education_content" msgid="745542879510751525">"Per obtenir informació sense obrir les aplicacions, pots afegir widgets a la pantalla d\'inici"</string>
+    <string name="widget_education_close_button" msgid="8676165703104836580">"Entesos"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Cerca aplicacions"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"S\'estan carregant les aplicacions…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"No s\'ha trobat cap aplicació que coincideixi amb \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
@@ -152,7 +155,7 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Treball"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Perfil de treball"</string>
     <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"Les dades personals s\'oculten i se separen de les aplicacions de treball"</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"L\'administrador de TI pot veure les dades i les aplicacions de treball"</string>
+    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"L\'administrador de TI pot veure les teves dades i aplicacions de treball"</string>
     <string name="work_profile_edu_next" msgid="8783418929296503629">"Següent"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Entesos"</string>
     <string name="work_apps_paused_title" msgid="2389865654362803723">"El perfil de treball està en pausa"</string>
@@ -163,6 +166,6 @@
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Posa en pausa les aplicacions de treball"</string>
     <string name="work_apps_enable_btn_text" msgid="82111102541971856">"Activa"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filtra"</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"Posa en pausa les notificacions i les aplicacions de treball"</string>
+    <string name="work_switch_tip" msgid="808075064383839144">"Posa en pausa les aplicacions i notificacions de treball"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Error: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

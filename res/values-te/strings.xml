@@ -32,7 +32,7 @@
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"విడ్జెట్‌ను తరలించడానికి లేదా అనుకూల చర్యలను ఉపయోగించడానికి రెండుసార్లు నొక్కండి &amp; హోల్డ్ చేయి."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d వెడల్పు X %2$d ఎత్తు"</string>
-    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"విడ్జెట్‌ను మొదటి స్క్రీన్ చుట్టూ తిప్పడానికి దాన్ని తాకి, &amp; నొక్కి ఉంచండి"</string>
+    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"ఈ విడ్జెట్‌ను మొదటి స్క్రీన్‌లో కావాల్సిన చోట ఉంచడానికి, దాన్ని తాకి అలాగే నొక్కి పట్టుకోండి"</string>
     <string name="add_to_home_screen" msgid="8631549138215492708">"మొదటి స్క్రీన్‌కు జోడించు"</string>
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
       <item quantity="other"><xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> విడ్జెట్‌లు</item>
@@ -51,6 +51,12 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"వ్యక్తిగతం"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"ఆఫీస్"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"సంభాషణలు"</string>
+    <!-- no translation found for widget_education_header (4874760613775913787) -->
+    <skip />
+    <!-- no translation found for widget_education_content (745542879510751525) -->
+    <skip />
+    <!-- no translation found for widget_education_close_button (8676165703104836580) -->
+    <skip />
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"అప్లికేషన్‌లను శోధించండి"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"అప్లికేషన్‌లను లోడ్ చేస్తోంది…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\"కి సరిపోలే అప్లికేషన్‌లేవీ కనుగొనబడలేదు"</string>

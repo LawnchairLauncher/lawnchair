@@ -51,6 +51,9 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"පුද්ගලික"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"කාර්යාලය"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"සංවාද"</string>
+    <string name="widget_education_header" msgid="4874760613775913787">"ප්‍රයෝජනවත් තොරතුරු ඔබගේ ඇඟිලි තුඩු අග"</string>
+    <string name="widget_education_content" msgid="745542879510751525">"යෙදුම් විවෘත නොකර තොරතුරු ලබා ගැනීම සඳහා, ඔබට ඔබගේ මුල් තිරයට විජට් එක් කළ හැකිය"</string>
+    <string name="widget_education_close_button" msgid="8676165703104836580">"තේරුණා"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"යෙදුම් සොයන්න"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"යෙදුම් පූරණය වෙමින්…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" සමග ගැළපෙන යෙදුම් හමු නොවිණි"</string>

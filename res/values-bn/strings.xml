@@ -51,6 +51,9 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"ব্যক্তিগত"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"অফিস"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"কথোপকথন"</string>
+    <string name="widget_education_header" msgid="4874760613775913787">"সহজেই দরকারি তথ্য পান"</string>
+    <string name="widget_education_content" msgid="745542879510751525">"অ্যাপ না খুলে তথ্য পাওয়ার জন্য, আপনার হোম স্ক্রিনে উইজেট যোগ করতে পারেন"</string>
+    <string name="widget_education_close_button" msgid="8676165703104836580">"বুঝেছি"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"অ্যাপ খুঁজুন"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"অ্যাপ লোড হচ্ছে…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" এর সাথে মেলে এমন কোনো অ্যাপ পাওয়া যায়নি"</string>
