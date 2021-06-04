@@ -49,6 +49,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.Routes
 import app.lawnchair.util.pageMeta
+import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
 
 @ExperimentalAnimationApi
@@ -64,6 +65,7 @@ fun TopBar() = pageMeta.consume { state ->
             modifier = Modifier
                 .fillMaxWidth()
                 .height(topBarSize)
+                .navigationBarsPadding(bottom = false)
         ) {
             AnimatedVisibility(visible = currentRoute != Routes.PREFERENCES && currentRoute != null) {
                 Box(
