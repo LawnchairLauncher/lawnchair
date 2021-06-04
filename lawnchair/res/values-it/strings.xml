@@ -18,16 +18,16 @@
     <string name="icon_pack">Pacchetto icone</string>
     <string name="settings">Impostazioni</string>
     <string name="home_screen_label">Schermata home</string>
-    <string name="home_screen_description">Feed, At a Glance, Grid, Icons</string>
+    <string name="home_screen_description">Feed, At a Glance, Griglia, Icone</string>
     <string name="general_label">Generale</string>
     <string name="general_description">Badge di notifica, pacchetto icone</string>
     <string name="home_screen_rotation_label">Rotazione schermata home</string>
     <string name="home_screen_rotaton_description">Quando il dispositivo viene ruotato.</string>
     <string name="auto_add_shortcuts_label">Aggiungi le nuove applicazioni alla schermata home</string>
     <string name="dock_label">Dock</string>
-    <string name="dock_description">Search Bar, Icon Count</string>
+    <string name="dock_description">Barra di ricerca, numero di icone</string>
     <string name="app_drawer_label">Menu delle app</string>
-    <string name="app_drawer_description">Hidden Apps, Column Count, Icons</string>
+    <string name="app_drawer_description">Applicazioni nascoste, numero di colonne, icone</string>
     <string name="folders_label">Cartelle</string>
     <string name="folders_description">Numero di righe e colonne</string>
     <string name="app_drawer_columns">Colonne del menu delle app</string>
@@ -81,4 +81,5 @@
     <string name="dt2s_a11y_hint">Per utilizzare doppio tocco per bloccare lo schermo, abilita il servizio di accessibilità.</string>
     <string name="dt2s_warning_open_settings">Apri Impostazioni</string>
     <string name="minus_one_enable">Mostra la feed</string>
+    <string name="cancel">Cancel</string>
 </resources>
