@@ -64,6 +64,7 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
         mFolderMargin = getResources().getDimensionPixelSize(R.dimen.taskbar_folder_margin);
         mTaskbarBackgroundPaint = new Paint();
         mTaskbarBackgroundPaint.setColor(getResources().getColor(R.color.taskbar_background));
+        mTaskbarBackgroundPaint.setAlpha(0);
         recreateControllers();
     }
 
@@ -109,12 +110,6 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
         return true;
     }
 
-    public void updateImeBarVisibilityAlpha(float alpha) {
-        if (mControllerCallbacks != null) {
-            mControllerCallbacks.updateImeBarVisibilityAlpha(alpha);
-        }
-    }
-
     @Override
     public void onViewRemoved(View child) {
         super.onViewRemoved(child);
@@ -138,7 +133,6 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
         boundingBox.inset(mFolderMargin, mFolderMargin);
         return boundingBox;
     }
-
 
     /**
      * Sets the alpha of the background color behind all the Taskbar contents.

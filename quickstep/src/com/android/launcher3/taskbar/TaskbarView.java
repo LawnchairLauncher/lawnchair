@@ -15,76 +15,59 @@
  */
 package com.android.launcher3.taskbar;
 
-import static android.view.View.MeasureSpec.EXACTLY;
-import static android.view.View.MeasureSpec.makeMeasureSpec;
+import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
+import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
+import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
+import static com.android.launcher3.anim.Interpolators.LINEAR;
 
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
-import com.android.launcher3.taskbar.contextual.RotationContextButton;
+import com.android.launcher3.uioverrides.ApiWrapper;
 import com.android.launcher3.views.ActivityContext;
 
 /**
  * Hosts the Taskbar content such as Hotseat and Recent Apps. Drawn on top of other apps.
  */
-public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconParent, Insettable {
+public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconParent, Insettable {
 
-    private final int mIconTouchSize;
-    private final boolean mIsRtl;
-    private final int mTouchSlop;
-    private final RectF mTempDelegateBounds = new RectF();
-    private final RectF mDelegateSlopBounds = new RectF();
     private final int[] mTempOutLocation = new int[2];
 
+    private final Rect mIconLayoutBounds = new Rect();
+    private final int mIconTouchSize;
     private final int mItemMarginLeftRight;
+    private final int mItemPadding;
 
     private final TaskbarActivityContext mActivityContext;
 
     // Initialized in init.
-    private TaskbarIconController.TaskbarViewCallbacks mControllerCallbacks;
     private View.OnClickListener mIconClickListener;
     private View.OnLongClickListener mIconLongClickListener;
 
-    LinearLayout mSystemButtonContainer;
-    LinearLayout mHotseatIconsContainer;
-    LinearLayout mContextualButtonContainer;
-
-    // Delegate touches to the closest view if within mIconTouchSize.
-    private boolean mDelegateTargeted;
-    private View mDelegateView;
     // Prevents dispatching touches to children if true
     private boolean mTouchEnabled = true;
 
     // Only non-null when the corresponding Folder is open.
     private @Nullable FolderIcon mLeaveBehindFolderIcon;
-
-    /** Provider of buttons added to taskbar in 3 button nav */
-    private ButtonProvider mButtonProvider;
-    private RotationContextButton mContextualRotationButton;
-
-    private boolean mDisableRelayout;
-    private boolean mAreHolesAllowed;
 
     public TaskbarView(@NonNull Context context) {
         this(context, null);
@@ -106,61 +89,68 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
 
         Resources resources = getResources();
         mIconTouchSize = resources.getDimensionPixelSize(R.dimen.taskbar_icon_touch_size);
-        mItemMarginLeftRight = resources.getDimensionPixelSize(R.dimen.taskbar_icon_spacing);
 
-        mIsRtl = Utilities.isRtl(resources);
-        mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
+        int actualMargin = resources.getDimensionPixelSize(R.dimen.taskbar_icon_spacing);
+        int actualIconSize = mActivityContext.getDeviceProfile().iconSizePx;
+
+        // We layout the icons to be of mIconTouchSize in width and height
+        mItemMarginLeftRight = actualMargin - (mIconTouchSize - actualIconSize) / 2;
+        mItemPadding = (mIconTouchSize - actualIconSize) / 2;
     }
 
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        mSystemButtonContainer = findViewById(R.id.nav_button_layout);
-        mHotseatIconsContainer = findViewById(R.id.hotseat_icons_layout);
-        mContextualButtonContainer = findViewById(R.id.contextual_button_layout);
-    }
-
-    protected void init(TaskbarIconController.TaskbarViewCallbacks callbacks,
-            OnClickListener clickListener, OnLongClickListener longClickListener,
-            ButtonProvider buttonProvider) {
-        mControllerCallbacks = callbacks;
+    protected void init(OnClickListener clickListener, OnLongClickListener longClickListener) {
         mIconClickListener = clickListener;
         mIconLongClickListener = longClickListener;
-        mButtonProvider = buttonProvider;
-
-        if (mActivityContext.canShowNavButtons()) {
-            createNavButtons();
-        } else {
-            mSystemButtonContainer.setVisibility(GONE);
-        }
 
         int numHotseatIcons = mActivityContext.getDeviceProfile().numShownHotseatIcons;
         updateHotseatItems(new ItemInfo[numHotseatIcons]);
+    }
 
-        if (mActivityContext.canShowNavButtons()) {
-            createContextualRegion();
+    /**
+     * Aligns the icons in the taskbar to that of Launcher.
+     */
+    public void alignIconsWithLauncher(DeviceProfile launcherDp, PropertySetter setter) {
+        Rect hotseatPadding = launcherDp.getHotseatLayoutPadding(getContext());
+        float scaleUp = ((float) launcherDp.iconSizePx)
+                / mActivityContext.getDeviceProfile().iconSizePx;
+        int hotseatCellSize =
+                (launcherDp.availableWidthPx - hotseatPadding.left - hotseatPadding.right)
+                        / launcherDp.numShownHotseatIcons;
+
+        int offsetY = launcherDp.getTaskbarOffsetY();
+        setter.setFloat(this, VIEW_TRANSLATE_Y, -offsetY, LINEAR);
+        mActivityContext.setTaskbarWindowHeight(
+                mActivityContext.getDeviceProfile().taskbarSize + offsetY);
+
+        int count = getChildCount();
+        for (int i = 0; i < count; i++) {
+            View child = getChildAt(i);
+            if (child.getVisibility() != VISIBLE) {
+                continue;
+            }
+            setter.setFloat(child, SCALE_PROPERTY, scaleUp, LINEAR);
+
+            float childCenter = (child.getLeft() + child.getRight()) / 2;
+            float hotseatIconCenter = hotseatPadding.left + hotseatCellSize * (i)
+                    + hotseatCellSize / 2;
+            setter.setFloat(child, VIEW_TRANSLATE_X, hotseatIconCenter - childCenter, LINEAR);
         }
     }
 
     /**
-     * Enables/disables empty icons in taskbar so that the layout matches with Launcher
+     * Aligns the icons in the taskbar to that of Launcher.
+     * @return a callback to be executed at the end of the setter
      */
-    public void setHolesAllowedInLayout(boolean areHolesAllowed) {
-        if (mAreHolesAllowed != areHolesAllowed) {
-            mAreHolesAllowed = areHolesAllowed;
-            updateHotseatItemsVisibility();
-            // TODO: Add animation
+    public Runnable resetIconPosition(PropertySetter setter) {
+        int count = getChildCount();
+        for (int i = 0; i < count; i++) {
+            View child = getChildAt(i);
+            setter.setFloat(child, SCALE_PROPERTY, 1, LINEAR);
+            setter.setFloat(child, VIEW_TRANSLATE_X, 0, LINEAR);
         }
-    }
-
-    private void setHolesAllowedInLayoutNoAnimation(boolean areHolesAllowed) {
-        if (mAreHolesAllowed != areHolesAllowed) {
-            mAreHolesAllowed = areHolesAllowed;
-            updateHotseatItemsVisibility();
-            onMeasure(makeMeasureSpec(getMeasuredWidth(), EXACTLY),
-                    makeMeasureSpec(getMeasuredHeight(), EXACTLY));
-            onLayout(false, getLeft(), getTop(), getRight(), getBottom());
-        }
+        setter.setFloat(this, VIEW_TRANSLATE_Y, 0, LINEAR);
+        return () -> mActivityContext.setTaskbarWindowHeight(
+                mActivityContext.getDeviceProfile().taskbarSize);
     }
 
     /**
@@ -168,9 +158,8 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
      */
     protected void updateHotseatItems(ItemInfo[] hotseatItemInfos) {
         for (int i = 0; i < hotseatItemInfos.length; i++) {
-            ItemInfo hotseatItemInfo = hotseatItemInfos[
-                    !mIsRtl ? i : hotseatItemInfos.length - i - 1];
-            View hotseatView = mHotseatIconsContainer.getChildAt(i);
+            ItemInfo hotseatItemInfo = hotseatItemInfos[i];
+            View hotseatView = getChildAt(i);
 
             // Replace any Hotseat views with the appropriate type if it's not already that type.
             final int expectedLayoutResId;
@@ -191,7 +180,7 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
             if (hotseatView == null
                     || hotseatView.getSourceLayoutResId() != expectedLayoutResId
                     || needsReinflate) {
-                mHotseatIconsContainer.removeView(hotseatView);
+                removeView(hotseatView);
                 if (isFolder) {
                     FolderInfo folderInfo = (FolderInfo) hotseatItemInfo;
                     FolderIcon folderIcon = FolderIcon.inflateFolderAndIcon(expectedLayoutResId,
@@ -201,10 +190,9 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
                 } else {
                     hotseatView = inflate(expectedLayoutResId);
                 }
-                int iconSize = mActivityContext.getDeviceProfile().iconSizePx;
-                LayoutParams lp = new LayoutParams(iconSize, iconSize);
-                lp.setMargins(mItemMarginLeftRight, 0, mItemMarginLeftRight, 0);
-                mHotseatIconsContainer.addView(hotseatView, i, lp);
+                LayoutParams lp = new LayoutParams(mIconTouchSize, mIconTouchSize);
+                hotseatView.setPadding(mItemPadding, mItemPadding, mItemPadding, mItemPadding);
+                addView(hotseatView, i, lp);
             }
 
             // Apply the Hotseat ItemInfos, or hide the view if there is none for a given index.
@@ -222,22 +210,42 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
                 hotseatView.setOnLongClickListener(null);
                 hotseatView.setTag(null);
             }
-            updateHotseatItemVisibility(hotseatView);
+            hotseatView.setVisibility(hotseatView.getTag() != null ? VISIBLE : INVISIBLE);
         }
     }
 
-    protected void updateHotseatItemsVisibility() {
-        for (int i = mHotseatIconsContainer.getChildCount() - 1; i >= 0; i--) {
-            updateHotseatItemVisibility(mHotseatIconsContainer.getChildAt(i));
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        int count = getChildCount();
+        // Find total visible children
+        int visibleChildren = 0;
+        for (int i = 0; i < count; i++) {
+            if (getChildAt(i).getVisibility() == VISIBLE) {
+                visibleChildren++;
+            }
         }
-    }
 
-    private void updateHotseatItemVisibility(View hotseatView) {
-        if (!mControllerCallbacks.canUpdateViewVisibility(hotseatView)) {
-            return;
+        int spaceNeeded = visibleChildren * (mItemMarginLeftRight * 2 + mIconTouchSize);
+        int iconStart = (right - left - spaceNeeded) / 2;
+        int startOffset = ApiWrapper.getHotseatStartOffset(getContext());
+        if (startOffset > iconStart) {
+            int diff = startOffset - iconStart;
+            iconStart = isLayoutRtl() ? (iconStart - diff) : iconStart + diff;
         }
-        hotseatView.setVisibility(
-                hotseatView.getTag() != null ? VISIBLE : (mAreHolesAllowed ? INVISIBLE : GONE));
+        // Layout the children
+        mIconLayoutBounds.left = iconStart;
+        mIconLayoutBounds.top = (bottom - top - mIconTouchSize) / 2;
+        mIconLayoutBounds.bottom = mIconLayoutBounds.top + mIconTouchSize;
+        for (int i = 0; i < count; i++) {
+            View child = getChildAt(i);
+            if (child.getVisibility() == VISIBLE) {
+                iconStart += mItemMarginLeftRight;
+                int iconEnd = iconStart + mIconTouchSize;
+                child.layout(iconStart, mIconLayoutBounds.top, iconEnd, mIconLayoutBounds.bottom);
+                iconStart = iconEnd + mItemMarginLeftRight;
+            }
+        }
+        mIconLayoutBounds.right = iconStart;
     }
 
     @Override
@@ -248,89 +256,8 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
         return super.dispatchTouchEvent(ev);
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        boolean handled = delegateTouchIfNecessary(event);
-        return super.onTouchEvent(event) || handled;
-    }
-
     public void setTouchesEnabled(boolean touchEnabled) {
         this.mTouchEnabled = touchEnabled;
-    }
-
-    /**
-     * User touched the Taskbar background. Determine whether the touch is close enough to a view
-     * that we should forward the touches to it.
-     * @return Whether a delegate view was chosen and it handled the touch event.
-     */
-    private boolean delegateTouchIfNecessary(MotionEvent event) {
-        final float x = event.getX();
-        final float y = event.getY();
-        if (mDelegateView == null && event.getAction() == MotionEvent.ACTION_DOWN) {
-            View delegateView = findDelegateView(x, y);
-            if (delegateView != null) {
-                mDelegateTargeted = true;
-                mDelegateView = delegateView;
-                mDelegateSlopBounds.set(mTempDelegateBounds);
-                mDelegateSlopBounds.inset(-mTouchSlop, -mTouchSlop);
-            }
-        }
-
-        boolean sendToDelegate = mDelegateTargeted;
-        boolean inBounds = true;
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_MOVE:
-                inBounds = mDelegateSlopBounds.contains(x, y);
-                break;
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-                mDelegateTargeted = false;
-                break;
-        }
-
-        boolean handled = false;
-        if (sendToDelegate) {
-            if (inBounds) {
-                // Offset event coordinates to be inside the target view
-                event.setLocation(mDelegateView.getWidth() / 2f, mDelegateView.getHeight() / 2f);
-            } else {
-                // Offset event coordinates to be outside the target view (in case it does
-                // something like tracking pressed state)
-                event.setLocation(-mTouchSlop * 2, -mTouchSlop * 2);
-            }
-            handled = mDelegateView.dispatchTouchEvent(event);
-            // Cleanup if this was the last event to send to the delegate.
-            if (!mDelegateTargeted) {
-                mDelegateView = null;
-            }
-        }
-        return handled;
-    }
-
-    /**
-     * Return an item whose touch bounds contain the given coordinates,
-     * or null if no such item exists.
-     *
-     * Also sets {@link #mTempDelegateBounds} to be the touch bounds of the chosen delegate view.
-     */
-    private @Nullable View findDelegateView(float x, float y) {
-        for (int i = 0; i < getChildCount(); i++) {
-            View child = getChildAt(i);
-            if (!child.isShown() || !child.isClickable()) {
-                continue;
-            }
-            int childCenterX = child.getLeft() + child.getWidth() / 2;
-            int childCenterY = child.getTop() + child.getHeight() / 2;
-            mTempDelegateBounds.set(
-                    childCenterX - mIconTouchSize / 2f,
-                    childCenterY - mIconTouchSize / 2f,
-                    childCenterX + mIconTouchSize / 2f,
-                    childCenterY + mIconTouchSize / 2f);
-            if (mTempDelegateBounds.contains(x, y)) {
-                return child;
-            }
-        }
-        return null;
     }
 
     /**
@@ -339,63 +266,11 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
      */
     public boolean isEventOverAnyItem(MotionEvent ev) {
         getLocationOnScreen(mTempOutLocation);
-        float xInOurCoordinates = ev.getX() - mTempOutLocation[0];
-        float yInOurCoorindates = ev.getY() - mTempOutLocation[1];
-        return findDelegateView(xInOurCoordinates, yInOurCoorindates) != null;
+        int xInOurCoordinates = (int) ev.getX() - mTempOutLocation[0];
+        int yInOurCoorindates = (int) ev.getY() - mTempOutLocation[1];
+        return isShown() && mIconLayoutBounds.contains(xInOurCoordinates, yInOurCoorindates);
     }
 
-    /**
-     * Add back/home/recents buttons into a single ViewGroup that will be inserted at
-     * {@param navButtonStartIndex}
-     */
-    private void createNavButtons() {
-        LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(
-                mActivityContext.getDeviceProfile().iconSizePx,
-                mActivityContext.getDeviceProfile().iconSizePx
-        );
-        buttonParams.gravity = Gravity.CENTER;
-
-        mSystemButtonContainer.addView(mButtonProvider.getBack(), buttonParams);
-        mSystemButtonContainer.addView(mButtonProvider.getHome(), buttonParams);
-        mSystemButtonContainer.addView(mButtonProvider.getRecents(), buttonParams);
-    }
-
-    /**
-     * @return The bounding box of where the hotseat elements are relative to this TaskbarView.
-     */
-    protected RectF getHotseatBounds() {
-        RectF result;
-        mDisableRelayout = true;
-        boolean wereHolesAllowed = mAreHolesAllowed;
-        setHolesAllowedInLayoutNoAnimation(true);
-        result = new RectF(
-                mHotseatIconsContainer.getLeft(),
-                mHotseatIconsContainer.getTop(),
-                mHotseatIconsContainer.getRight(),
-                mHotseatIconsContainer.getBottom());
-        setHolesAllowedInLayoutNoAnimation(wereHolesAllowed);
-        mDisableRelayout = false;
-
-        return result;
-    }
-
-    @Override
-    public void requestLayout() {
-        if (!mDisableRelayout) {
-            super.requestLayout();
-        }
-    }
-
-    private void createContextualRegion() {
-        mContextualRotationButton = mButtonProvider.getContextualRotation();
-        mContextualRotationButton.setVisibility(GONE);
-        mContextualButtonContainer.addView(mContextualRotationButton);
-    }
-
-    @Nullable
-    public RotationContextButton getContextualRotationButton() {
-        return mContextualRotationButton;
-    }
     // FolderIconParent implemented methods.
 
     @Override
@@ -432,11 +307,8 @@ public class TaskbarView extends LinearLayout implements FolderIcon.FolderIconPa
         // Ignore, we just implement Insettable to draw behind system insets.
     }
 
-    public void setIconsVisibility(boolean isVisible) {
-        mHotseatIconsContainer.setVisibility(isVisible ? VISIBLE : INVISIBLE);
-    }
-
     public boolean areIconsVisible() {
-        return mHotseatIconsContainer.getVisibility() == VISIBLE;
+        // Consider the overall visibility
+        return getVisibility() == VISIBLE;
     }
 }
