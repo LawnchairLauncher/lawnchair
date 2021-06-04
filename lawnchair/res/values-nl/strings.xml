@@ -81,4 +81,5 @@
     <string name="dt2s_a11y_hint">Schakel de toegankelijkheids service in om dubbeltik om te slapen te gebruiken.</string>
     <string name="dt2s_warning_open_settings">Open instellingen</string>
     <string name="minus_one_enable">Toon feed</string>
+    <string name="cancel">Cancel</string>
 </resources>
