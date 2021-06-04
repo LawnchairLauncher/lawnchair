@@ -336,8 +336,7 @@ public class IconCache extends BaseIconCache {
 
     @Override
     protected String getIconSystemState(String packageName) {
-        return mIconProvider.getSystemStateForPackage(mSystemState, packageName)
-                + ",flags_asi:" + FeatureFlags.APP_SEARCH_IMPROVEMENTS.get();
+        return mIconProvider.getSystemStateForPackage(mSystemState, packageName);
     }
 
     /**
