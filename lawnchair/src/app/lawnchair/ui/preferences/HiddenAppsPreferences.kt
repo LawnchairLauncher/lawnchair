@@ -20,6 +20,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.DefaultAppFilter
@@ -52,9 +53,10 @@ fun HiddenAppsPreferences() {
             }
         }
     pageMeta.provide(Meta(title = pageTitle))
+    val context = LocalContext.current
     var hiddenApps by preferenceManager().hiddenAppSet.getAdapter()
     val optionalApps by appsList(
-        filter = remember { DefaultAppFilter() },
+        filter = remember { DefaultAppFilter(context) },
         comparator = hiddenAppsComparator(hiddenApps)
     )
     LoadingScreen(isLoading = !optionalApps.isPresent) {
