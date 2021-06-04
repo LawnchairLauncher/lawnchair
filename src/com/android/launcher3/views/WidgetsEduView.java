@@ -35,8 +35,6 @@ public class WidgetsEduView extends AbstractSlideInView<Launcher> implements Ins
 
     private static final int DEFAULT_CLOSE_DURATION = 200;
 
-    protected static final int FINAL_SCRIM_BG_COLOR = 0x88000000;
-
     private Rect mInsets = new Rect();
     private View mEduView;
 
@@ -87,7 +85,7 @@ public class WidgetsEduView extends AbstractSlideInView<Launcher> implements Ins
 
     @Override
     protected int getScrimColor(Context context) {
-        return FINAL_SCRIM_BG_COLOR;
+        return context.getResources().getColor(R.color.widgets_picker_scrim);
     }
 
     @Override
