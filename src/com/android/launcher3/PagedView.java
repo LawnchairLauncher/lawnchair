@@ -1147,6 +1147,10 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         mAllowOverScroll = enable;
     }
 
+    protected float getSignificantMoveThreshold() {
+        return SIGNIFICANT_MOVE_THRESHOLD;
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         // Skip touch handling if there are no pages to swipe
@@ -1218,6 +1222,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                     }
                     delta -= consumed;
                 }
+                delta /= mOrientationHandler.getPrimaryScale(this);
 
                 // Only scroll and update mLastMotionX if we have moved some discrete amount.  We
                 // keep the remainder because we are actually testing if we've moved from the last
@@ -1270,11 +1275,12 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
                 int velocity = (int) mOrientationHandler.getPrimaryVelocity(velocityTracker,
                     mActivePointerId);
-                int delta = (int) (primaryDirection - mDownMotionPrimary);
+                float delta = primaryDirection - mDownMotionPrimary;
+                delta /= mOrientationHandler.getPrimaryScale(this);
                 int pageOrientedSize = mOrientationHandler.getMeasuredSize(getPageAt(mCurrentPage));
 
-                boolean isSignificantMove = Math.abs(delta) > pageOrientedSize *
-                    SIGNIFICANT_MOVE_THRESHOLD;
+                boolean isSignificantMove = Math.abs(delta)
+                        > pageOrientedSize * getSignificantMoveThreshold();
 
                 mTotalMotion += Math.abs(mLastMotion + mLastMotionRemainder - primaryDirection);
                 boolean passedSlop = mAllowEasyFling || mTotalMotion > mPageSlop;
