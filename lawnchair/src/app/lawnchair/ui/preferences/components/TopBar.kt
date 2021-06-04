@@ -49,6 +49,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.Routes
 import app.lawnchair.util.pageMeta
+import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
 
 @ExperimentalAnimationApi
@@ -100,7 +101,10 @@ fun TopBarSurface(floating: Boolean, content: @Composable () -> Unit) {
     val floatingColor = MaterialTheme.colors.surface.copy(alpha = 0.9f)
     val color by animateColorAsState(if (floating) floatingColor else normalColor)
     val shadowAlpha by animateFloatAsState(if (floating) 1f else 0f)
-    Column {
+    Column(
+        modifier = Modifier
+            .navigationBarsPadding(bottom = false)
+    ) {
         Box(
             modifier = Modifier
                 .background(color)
