@@ -135,6 +135,12 @@ public class StatsLogManager implements ResourceBasedOverride {
         @UiEvent(doc = "User tapped or long pressed on widget tray icon inside launcher settings.")
         LAUNCHER_WIDGETSTRAY_BUTTON_TAP_OR_LONGPRESS(464),
 
+        @UiEvent(doc = "User expanded the list of widgets for a single app in the widget picker.")
+        LAUNCHER_WIDGETSTRAY_APP_EXPANDED(818),
+
+        @UiEvent(doc = "User searched for a widget in the widget picker.")
+        LAUNCHER_WIDGETSTRAY_SEARCHED(819),
+
         @UiEvent(doc = "A dragged item is dropped on 'Remove' button in the target bar")
         LAUNCHER_ITEM_DROPPED_ON_REMOVE(465),
 
@@ -458,7 +464,16 @@ public class StatsLogManager implements ResourceBasedOverride {
         LAUNCHER_OVERVIEW_SHARING_TAP_MORE_TO_SHARE_URL(777),
 
         @UiEvent(doc = "User taps the More button to share an image")
-        LAUNCHER_OVERVIEW_SHARING_TAP_MORE_TO_SHARE_IMAGE(778)
+        LAUNCHER_OVERVIEW_SHARING_TAP_MORE_TO_SHARE_IMAGE(778),
+
+        @UiEvent(doc = "User started resizing a widget on their home screen.")
+        LAUNCHER_WIDGET_RESIZE_STARTED(820),
+
+        @UiEvent(doc = "User finished resizing a widget on their home screen.")
+        LAUNCHER_WIDGET_RESIZE_COMPLETED(824),
+
+        @UiEvent(doc = "User reconfigured a widget on their home screen.")
+        LAUNCHER_WIDGET_RECONFIGURED(821)
         ;
 
         // ADD MORE
