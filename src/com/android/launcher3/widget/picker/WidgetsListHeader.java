@@ -60,6 +60,9 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
     @Nullable private Drawable mIconDrawable;
     private final int mIconSize;
     private final int mBottomMarginSize;
+    private final float mTopBottomCornerRadius;
+    private final float mMiddleCornerRadius;
+    private final float mJoinedCornerRadius;
 
     private ImageView mAppIcon;
     private TextView mTitle;
@@ -87,6 +90,12 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
                 grid.iconSizePx);
         mBottomMarginSize =
                 getResources().getDimensionPixelSize(R.dimen.widget_list_entry_bottom_margin);
+        mTopBottomCornerRadius =
+                getResources().getDimension(R.dimen.widget_list_top_bottom_corner_radius);
+        mMiddleCornerRadius =
+                getResources().getDimension(R.dimen.widget_list_content_corner_radius);
+        mJoinedCornerRadius =
+                getResources().getDimension(R.dimen.widget_list_content_joined_corner_radius);
     }
 
     @Override
@@ -252,6 +261,20 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
         super.setTag(info);
 
         verifyHighRes();
+    }
+
+    /** Updates the list to have a background drawable with the appropriate corner radii. */
+    @UiThread
+    public void updateListBackground(boolean isFirst, boolean isLast, boolean isExpanded) {
+        float topRadius = isFirst ? mTopBottomCornerRadius : mMiddleCornerRadius;
+        float bottomRadius = isLast
+                ? mTopBottomCornerRadius
+                : isExpanded
+                        ? mJoinedCornerRadius
+                        : mMiddleCornerRadius;
+        setBackground(
+                WidgetsListDrawables.createListBackgroundDrawable(
+                        getContext(), topRadius, bottomRadius));
     }
 
     private void setTitles(WidgetsListSearchHeaderEntry entry) {
