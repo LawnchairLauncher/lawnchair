@@ -51,6 +51,12 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Personale"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Puna"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Bisedat"</string>
+    <!-- no translation found for widget_education_header (4874760613775913787) -->
+    <skip />
+    <!-- no translation found for widget_education_content (745542879510751525) -->
+    <skip />
+    <!-- no translation found for widget_education_close_button (8676165703104836580) -->
+    <skip />
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Kërko për aplikacione"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Po ngarkon aplikacionet..."</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Nuk u gjet asnjë aplikacion që përputhet me \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
