@@ -7,19 +7,8 @@ on:
       - 11-dev
 
 jobs:
-  send-start-notification:
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    steps:
-      - name: Send start notification
-        uses: appleboy/telegram-action@v0.1.0
-        with:
-          to: ${{ secrets.TELEGRAM_CI_CHANNEL_ID }}
-          token: ${{ secrets.TELEGRAM_CI_BOT_TOKEN }}
-          message: New push to “11-dev”. Building debug APK…
   build-debug-apk:
     runs-on: ubuntu-latest
-    needs: send-start-notification
     continue-on-error: true
     steps:
       - name: Check out repository
@@ -56,7 +45,7 @@ jobs:
         with:
           name: Debug APK
           path: ${{ steps.sign-debug-apk.outputs.signedReleaseFile }}
-  send-end-notification:
+  send-apk:
     runs-on: ubuntu-latest
     needs: build-debug-apk
     steps:
@@ -66,10 +55,35 @@ jobs:
           name: Debug APK
           path: artifacts/debug-apk
       - uses: technote-space/workflow-conclusion-action@v2.1.5
-      - name: Send notification
+      - name: Send APK
         uses: appleboy/telegram-action@v0.1.0
         with:
           to: ${{ secrets.TELEGRAM_CI_CHANNEL_ID }}
           token: ${{ secrets.TELEGRAM_CI_BOT_TOKEN }}
           document: artifacts/debug-apk/**.apk
-          message: Build finished with status “${{ env.WORKFLOW_CONCLUSION }}”. Uploading APK if available…
+  send-changelog:
+    runs-on: ubuntu-latest
+    needs: send-apk
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2.3.4
+        with:
+          submodules: true
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - name: Install Python packages
+        uses: BSFishy/pip-action@v1
+        with:
+          packages: |
+            gitpython
+            requests
+      - name: Send changelog
+        run: python send_changelog.py
+        env:
+          GITHUB_EVENT_BEFORE: ${{ github.event.before }}
+          GITHUB_SHA: ${{ github.sha }} 
+          TELEGRAM_CI_BOT_TOKEN: ${{ secrets.TELEGRAM_CI_BOT_TOKEN }}
+          TELEGRAM_CI_CHANNEL_ID: ${{ secrets.TELEGRAM_CI_CHANNEL_ID }}
