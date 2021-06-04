@@ -271,7 +271,7 @@
         <item name="android:textSize">@dimen/drop_target_text_size</item>
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">end</item>
-        <item name="android:background">@drawable/drop_target_frame</item>
+        <item name="android:background">@drawable/drop_target_background</item>
     </style>
 
     <style name="DropTargetButton" parent="DropTargetButtonBase" />
