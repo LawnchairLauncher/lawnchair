@@ -6,9 +6,11 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -26,6 +28,7 @@ import com.android.launcher3.Insettable
 import com.android.launcher3.R
 import com.android.launcher3.icons.GraphicsUtils
 import com.android.launcher3.uioverrides.WallpaperColorInfo
+import com.android.launcher3.util.SystemUiController
 import com.google.accompanist.insets.ProvideWindowInsets
 import kotlinx.coroutines.launch
 
@@ -55,8 +58,13 @@ class ComposeFloatingView(context: Context) :
         handler(animate)
     }
 
+    fun setSystemUiFlags(flags: Int) {
+        launcher.systemUiController.updateUiState(SystemUiController.UI_STATE_WIDGET_BOTTOM_SHEET, flags)
+    }
+
     fun removeFromDragLayer() {
         launcher.dragLayer.removeView(this)
+        launcher.systemUiController.updateUiState(SystemUiController.UI_STATE_WIDGET_BOTTOM_SHEET, 0)
     }
 
     override fun setInsets(insets: Rect) {
@@ -125,6 +133,7 @@ fun LawnchairLauncher.showBottomSheet(
             state.show()
         }
 
+        SystemUi(setStatusBar = false)
         BottomSheet(
             sheetState = state,
             sheetContent = {
@@ -132,5 +141,25 @@ fun LawnchairLauncher.showBottomSheet(
             },
             scrimColor = scrimColor()
         )
+    }
+}
+
+@Composable
+fun ComposeFloatingView.SystemUi(setStatusBar: Boolean = true, setNavBar: Boolean = true) {
+    val useDarkIcons = MaterialTheme.colors.isLight
+
+    SideEffect {
+        var flags = 0
+        if (setStatusBar) {
+            flags = flags or (
+                    if (useDarkIcons) SystemUiController.FLAG_LIGHT_STATUS
+                    else SystemUiController.FLAG_DARK_STATUS)
+        }
+        if (setNavBar) {
+            flags = flags or (
+                    if (useDarkIcons) SystemUiController.FLAG_LIGHT_NAV
+                    else SystemUiController.FLAG_DARK_NAV)
+        }
+        setSystemUiFlags(flags)
     }
 }
