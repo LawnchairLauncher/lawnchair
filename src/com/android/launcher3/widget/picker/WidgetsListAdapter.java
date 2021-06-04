@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.widget.picker;
 
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGETSTRAY_APP_EXPANDED;
+
 import android.content.Context;
 import android.os.Process;
 import android.util.Log;
@@ -33,6 +35,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
+import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.WidgetPreviewLoader;
 import com.android.launcher3.icons.IconCache;
@@ -76,6 +79,7 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     private static final int VIEW_TYPE_WIDGETS_HEADER = R.id.view_type_widgets_header;
     private static final int VIEW_TYPE_WIDGETS_SEARCH_HEADER = R.id.view_type_widgets_search_header;
 
+    private final Launcher mLauncher;
     private final WidgetsDiffReporter mDiffReporter;
     private final SparseArray<ViewHolderBinder> mViewHolderBinders = new SparseArray<>();
     private final WidgetsListTableViewHolderBinder mWidgetsListTableViewHolderBinder;
@@ -97,6 +101,7 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     public WidgetsListAdapter(Context context, LayoutInflater layoutInflater,
             WidgetPreviewLoader widgetPreviewLoader, IconCache iconCache,
             OnClickListener iconClickListener, OnLongClickListener iconLongClickListener) {
+        mLauncher = Launcher.getLauncher(context);
         mDiffReporter = new WidgetsDiffReporter(iconCache, this);
         mWidgetsListTableViewHolderBinder = new WidgetsListTableViewHolderBinder(context,
                 layoutInflater, iconClickListener, iconLongClickListener,
@@ -271,6 +276,7 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
             // Scroll the layout manager to the header position to keep it anchored to the same
             // position.
             scrollToPositionAndMaintainOffset(getSelectedHeaderPosition());
+            mLauncher.getStatsLogManager().logger().log(LAUNCHER_WIDGETSTRAY_APP_EXPANDED);
         } else if (packageUserKey.equals(mWidgetsContentVisiblePackageUserKey)) {
             OptionalInt previouslySelectedPosition = getSelectedHeaderPosition();
 
