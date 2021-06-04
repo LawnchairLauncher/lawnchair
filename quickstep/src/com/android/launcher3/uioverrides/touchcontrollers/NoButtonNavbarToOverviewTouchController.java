@@ -51,7 +51,7 @@ import com.android.quickstep.views.RecentsView;
  * first home screen instead of to Overview.
  */
 public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouchController {
-
+    private static final float ONE_HANDED_ACTIVATED_SLOP_MULTIPLIER = 2.5f;
 
     // How much of the movement to use for translating overview after swipe and hold.
     private static final float OVERVIEW_MOVEMENT_FACTOR = 0.25f;
@@ -259,5 +259,15 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
 
     private float dpiFromPx(float pixels) {
         return Utilities.dpiFromPx(pixels, mLauncher.getResources().getDisplayMetrics().densityDpi);
+    }
+
+    @Override
+    public void onOneHandedModeStateChanged(boolean activated) {
+        if (activated) {
+            mDetector.setTouchSlopMultiplier(ONE_HANDED_ACTIVATED_SLOP_MULTIPLIER);
+        } else {
+            // Reset touch slop multiplier to default 1.0f
+            mDetector.setTouchSlopMultiplier(1f /* default */);
+        }
     }
 }

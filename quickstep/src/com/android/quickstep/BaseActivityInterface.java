@@ -114,6 +114,9 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
 
     public abstract void onAssistantVisibilityChanged(float visibility);
 
+    /** Called when one handed mode activated or deactivated. */
+    public abstract void onOneHandedModeStateChanged(boolean activated);
+
     public abstract AnimationFactory prepareRecentsUI(RecentsAnimationDeviceState deviceState,
             boolean activityVisible, Consumer<AnimatorControllerWithResistance> callback);
 
