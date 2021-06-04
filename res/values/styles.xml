@@ -154,18 +154,18 @@
     <style name="AppTheme.Dark.DarkMainColor" parent="@style/LauncherTheme.Dark.DarkMainColor" />
     <style name="AppTheme.Dark.DarkText" parent="@style/LauncherTheme.Dark.DarkText" />
 
-    <style name="HomeSettings.Theme" parent="@android:style/Theme.DeviceDefault.Settings">
+    <style name="HomeSettingsTheme" parent="@android:style/Theme.DeviceDefault.Settings">
         <item name="android:navigationBarColor">?android:colorPrimaryDark</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
-        <item name="preferenceTheme">@style/HomeSettings.PreferenceTheme</item>
+        <item name="preferenceTheme">@style/HomeSettingsPreferenceTheme</item>
     </style>
 
-    <style name="HomeSettings.PreferenceTheme" parent="@style/PreferenceThemeOverlay.v14.Material">
-        <item name="preferenceFragmentCompatStyle">@style/HomeSettings.FragmentCompatStyle</item>
+    <style name="HomeSettingsPreferenceTheme" parent="@style/PreferenceThemeOverlay.v14.Material">
+        <item name="preferenceFragmentCompatStyle">@style/HomeSettingsFragmentCompatStyle</item>
     </style>
 
-    <style name="HomeSettings.FragmentCompatStyle" parent="@style/PreferenceFragment.Material">
+    <style name="HomeSettingsFragmentCompatStyle" parent="@style/PreferenceFragment.Material">
         <item name="android:layout">@layout/home_settings</item>
     </style>
 
