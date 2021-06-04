@@ -51,6 +51,12 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"ਨਿੱਜੀ"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"ਕਾਰਜ-ਸਥਾਨ"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"ਗੱਲਾਂਬਾਤਾਂ"</string>
+    <!-- no translation found for widget_education_header (4874760613775913787) -->
+    <skip />
+    <!-- no translation found for widget_education_content (745542879510751525) -->
+    <skip />
+    <!-- no translation found for widget_education_close_button (8676165703104836580) -->
+    <skip />
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ਐਪਾਂ ਖੋਜੋ"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"ਐਪਾਂ ਨੂੰ ਲੋਡ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ..."</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" ਨਾਲ ਮੇਲ ਖਾਂਦੀਆਂ ਕੋਈ ਐਪਾਂ ਨਹੀਂ ਮਿਲੀਆਂ"</string>

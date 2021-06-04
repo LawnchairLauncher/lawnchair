@@ -51,6 +51,9 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Personal"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Trabajo"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Conversaciones"</string>
+    <string name="widget_education_header" msgid="4874760613775913787">"Información útil al alcance de la mano"</string>
+    <string name="widget_education_content" msgid="745542879510751525">"Para recibir información sin abrir aplicaciones, puedes añadir widgets a la pantalla de inicio."</string>
+    <string name="widget_education_close_button" msgid="8676165703104836580">"Entendido"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Buscar aplicaciones"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Cargando aplicaciones…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"No se han encontrado aplicaciones que contengan \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
@@ -156,8 +159,8 @@
     <string name="work_profile_edu_next" msgid="8783418929296503629">"Siguiente"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Entendido"</string>
     <string name="work_apps_paused_title" msgid="2389865654362803723">"El perfil de trabajo está en pausa"</string>
-    <string name="work_apps_paused_body" msgid="4209084728264328628">"Las aplicaciones de trabajo no pueden enviarte notificaciones, consumir tu batería ni acceder a tu ubicación"</string>
-    <string name="work_apps_paused_content_description" msgid="4473292417145736203">"El perfil de trabajo está en pausa. Las aplicaciones de trabajo no pueden enviarte notificaciones, consumir tu batería ni acceder a tu ubicación"</string>
+    <string name="work_apps_paused_body" msgid="4209084728264328628">"Las aplicaciones de trabajo no pueden enviarte notificaciones, consumir batería ni acceder a tu ubicación"</string>
+    <string name="work_apps_paused_content_description" msgid="4473292417145736203">"El perfil de trabajo está en pausa. Las aplicaciones de trabajo no pueden enviarte notificaciones, consumir batería ni acceder a tu ubicación"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Las aplicaciones de trabajo tienen una insignia y tu administrador de TI las puede ver"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Entendido"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Pausar aplicaciones de trabajo"</string>
