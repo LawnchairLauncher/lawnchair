@@ -80,7 +80,7 @@ jobs:
             gitpython
             requests
       - name: Send changelog
-        run: send_changelog.py
+        run: python send_changelog.py
         env:
           GITHUB_EVENT_BEFORE: ${{ github.event.before }}
           GITHUB_SHA: ${{ github.sha }} 
