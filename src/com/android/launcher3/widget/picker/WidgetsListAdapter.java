@@ -20,6 +20,7 @@ import android.os.Process;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ import android.widget.TableRow;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
@@ -268,36 +270,53 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
             updateVisibleEntries();
             // Scroll the layout manager to the header position to keep it anchored to the same
             // position.
-            scrollToSelectedHeaderPosition();
+            scrollToPositionAndMaintainOffset(getSelectedHeaderPosition());
         } else if (packageUserKey.equals(mWidgetsContentVisiblePackageUserKey)) {
+            OptionalInt previouslySelectedPosition = getSelectedHeaderPosition();
+
             mWidgetsContentVisiblePackageUserKey = null;
             updateVisibleEntries();
+
+            // Scroll to the header that was just collapsed so it maintains its scroll offset.
+            scrollToPositionAndMaintainOffset(previouslySelectedPosition);
         }
     }
 
-    private void scrollToSelectedHeaderPosition() {
-        OptionalInt selectedHeaderPosition =
-                IntStream.range(0, mVisibleEntries.size())
-                        .filter(index -> isHeaderForVisibleContent(mVisibleEntries.get(index)))
-                        .findFirst();
-        RecyclerView.LayoutManager layoutManager =
-                mRecyclerView == null ? null : mRecyclerView.getLayoutManager();
-        if (!selectedHeaderPosition.isPresent() || layoutManager == null) {
+    private OptionalInt getSelectedHeaderPosition() {
+        return IntStream.range(0, mVisibleEntries.size())
+                .filter(index -> isHeaderForVisibleContent(mVisibleEntries.get(index)))
+                .findFirst();
+    }
+
+    /**
+     * Scrolls to the selected header position. LinearLayoutManager scrolls the minimum distance
+     * necessary, so this will keep the selected header in place during clicks, without interrupting
+     * the animation.
+     */
+    private void scrollToPositionAndMaintainOffset(OptionalInt positionOptional) {
+        if (!positionOptional.isPresent() || mRecyclerView == null) return;
+        int position = positionOptional.getAsInt();
+
+        LinearLayoutManager layoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
+        if (layoutManager == null) return;
+
+        if (position == mVisibleEntries.size() - 2
+                && mVisibleEntries.get(mVisibleEntries.size() - 1)
+                instanceof WidgetsListContentEntry) {
+            // If the selected header is in the last position and its content is showing, then
+            // scroll to the final position so the last list of widgets will show.
+            layoutManager.scrollToPosition(mVisibleEntries.size() - 1);
             return;
         }
 
-        // Scroll to the selected header position. LinearLayoutManager scrolls the minimum distance
-        // necessary, so this will keep the selected header in place during clicks, without
-        // interrupting the animation.
-        int position = selectedHeaderPosition.getAsInt();
-        if (position == mVisibleEntries.size() - 2) {
-            // If the selected header is in the last position (-1 for the content), then scroll to
-            // the final position so the last list of widgets will show.
-            layoutManager.scrollToPosition(mVisibleEntries.size() - 1);
-        } else {
-            // Otherwise, scroll to the position of the selected header.
-            layoutManager.scrollToPosition(position);
-        }
+        // Scroll to the header view's current offset, accounting for the recycler view's padding.
+        // If the header view couldn't be found, then it will appear at the top of the list.
+        View headerView = layoutManager.findViewByPosition(position);
+        int targetHeaderViewTop =
+                headerView == null ? 0 : layoutManager.getDecoratedTop(headerView);
+        layoutManager.scrollToPositionWithOffset(
+                position,
+                targetHeaderViewTop - mRecyclerView.getPaddingTop());
     }
 
     /**
