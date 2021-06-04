@@ -12,7 +12,7 @@ commits = repository.iter_commits(f'{github_event_before}...{github_sha}')
 message = ''
 
 for index, commit in enumerate(commits):
-  commit_message = commit.message.replace('\n', '').replace('_', '\\_')
+  commit_message = commit.message.split('\n')[0].replace('_', '\\_')
   if (index != 0):
     message += '\n'
   message += f'''• [{repository.git.rev_parse(commit.hexsha, short=7)}](https://github.com/LawnchairLauncher/lawnchair/commit/{commit.hexsha}): {commit_message}'''
