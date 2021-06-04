@@ -52,15 +52,10 @@ public final class WidgetsListHeaderViewHolderBinder implements
     public void bindViewHolder(WidgetsListHeaderHolder viewHolder, WidgetsListHeaderEntry data,
             int position) {
         WidgetsListHeader widgetsListHeader = viewHolder.mWidgetsListHeader;
-        if (mWidgetsListAdapter.getItemCount() == 1) {
-            widgetsListHeader.setBackgroundResource(R.drawable.widgets_list_single_item_ripple);
-        } else if (position == 0) {
-            widgetsListHeader.setBackgroundResource(R.drawable.widgets_list_top_ripple);
-        } else if (position == mWidgetsListAdapter.getItemCount() - 1) {
-            widgetsListHeader.setBackgroundResource(R.drawable.widgets_list_bottom_ripple);
-        } else {
-            widgetsListHeader.setBackgroundResource(R.drawable.widgets_list_middle_ripple);
-        }
+        widgetsListHeader.updateListBackground(
+                /* isFirst= */ position == 0,
+                /* isLast= */ position == mWidgetsListAdapter.getItemCount() - 1,
+                /* isExpanded= */ data.isWidgetListShown());
         widgetsListHeader.applyFromItemInfoWithIcon(data);
         widgetsListHeader.setExpanded(data.isWidgetListShown());
         widgetsListHeader.setOnExpandChangeListener(isExpanded ->
