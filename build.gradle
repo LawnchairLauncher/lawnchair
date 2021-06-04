@@ -2,7 +2,7 @@ buildscript {
     ext {
         kotlin_version = '1.5.10'
         compose_version = '1.0.0-beta08'
-        accompanist_version = '0.10.0'
+        accompanist_version = '0.11.1'
     }
     repositories {
         mavenCentral()
