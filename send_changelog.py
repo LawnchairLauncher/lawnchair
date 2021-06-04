@@ -13,6 +13,6 @@ message = ''
 
 for index, commit in enumerate(commits):
   commit_message = commit.message.replace('\n', '').replace('_', '\\_')
-  message += f'''– {commit_message}. [View on GitHub](https://github.com/LawnchairLauncher/lawnchair/commit/{commit.hexsha})'''
+  message += f'''• [{repository.git.rev_parse(commit.hexsha, short=7)}](https://github.com/LawnchairLauncher/lawnchair/commit/{commit.hexsha}): {commit_message}'''
 
 requests.get(f'''https://api.telegram.org/bot{telegram_ci_bot_token}/sendMessage?chat_id={telegram_ci_channel_id}&parse_mode=Markdown&text={message}&disable_web_page_preview=true''')
