@@ -81,5 +81,5 @@
     <string name="dt2s_a11y_hint">A dupla koppintásos alvás bekapcsolásához kapcsolja be a szolgáltatást.</string>
     <string name="dt2s_warning_open_settings">Beállítások megnyitása</string>
     <string name="minus_one_enable">Show Feed</string>
-    <string name="cancel">Cancel</string>
+    <string name="minus_one_unavailable">Feed is not available</string>
 </resources>
