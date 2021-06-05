@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.uioverrides;
 
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_TAP;
+
 import android.app.ActivityOptions;
 import android.app.ActivityTaskManager;
 import android.app.PendingIntent;
@@ -26,6 +28,7 @@ import android.view.View;
 import android.widget.RemoteViews;
 
 import com.android.launcher3.Utilities;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
@@ -72,7 +75,22 @@ class QuickstepInteractionHandler implements RemoteViews.InteractionHandler {
             mLauncher.addLaunchCookie((ItemInfo) itemInfo, activityOptions.options);
         }
         options = Pair.create(options.first, activityOptions.options);
+        if (pendingIntent.isActivity()) {
+            logAppLaunch(itemInfo);
+        }
         return RemoteViews.startPendingIntent(hostView, pendingIntent, options);
+    }
+
+    /**
+     * Logs that the app was launched from the widget.
+     * @param itemInfo the widget info.
+     */
+    private void logAppLaunch(Object itemInfo) {
+        StatsLogManager.StatsLogger logger = mLauncher.getStatsLogManager().logger();
+        if (itemInfo instanceof ItemInfo) {
+            logger.withItemInfo((ItemInfo) itemInfo);
+        }
+        logger.log(LAUNCHER_APP_LAUNCH_TAP);
     }
 
     private LauncherAppWidgetHostView findHostViewAncestor(View v) {

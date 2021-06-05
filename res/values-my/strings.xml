@@ -51,6 +51,9 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"ကိုယ်ပိုင်"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"အလုပ်"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"စကားဝိုင်းများ"</string>
+    <string name="widget_education_header" msgid="4874760613775913787">"အသုံးဝင်သော အချက်အလက်များကို အလွယ်တကူ ရယူလိုက်ပါ"</string>
+    <string name="widget_education_content" msgid="745542879510751525">"အက်ပ်များကိုမဖွင့်ဘဲ အချက်အလက်များရယူရန် သင်၏ ပင်မစာမျက်နှာသို့ ဝိဂျက်များ ထည့်နိုင်သည်"</string>
+    <string name="widget_education_close_button" msgid="8676165703104836580">"ရပြီ"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ရှာဖွေမှု အက်ပ်များ"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"အက်ပ်များကို ဖွင့်နေသည်…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" နှင့်ကိုက်ညီသည့် အပ်ပ်များကို မတွေ့ပါ"</string>

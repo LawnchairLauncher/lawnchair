@@ -49,21 +49,15 @@
     <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"Assurez-vous de balayer l\'écran de l\'extrémité gauche jusqu\'au centre, puis de lever le doigt."</string>
     <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"Assurez-vous de balayer l\'écran à partir de l\'extrémité droite."</string>
     <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"Assurez-vous de balayer l\'écran de l\'extrémité droite jusqu\'au centre, puis de lever le doigt."</string>
-    <!-- no translation found for back_gesture_feedback_complete_with_back_right_follow_up (2100639504811809267) -->
-    <skip />
-    <!-- no translation found for back_gesture_feedback_complete_with_overview_follow_up (9176400654037014471) -->
-    <skip />
+    <string name="back_gesture_feedback_complete_with_back_right_follow_up" msgid="2100639504811809267">"Vous avez appris comment balayer l\'écran à partir de la gauche pour revenir en arrière."</string>
+    <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Vous avez appris à balayer de la droite pour revenir en arrière. Apprenez comment changer d\'appli."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Vous avez appris le geste de retour en arrière."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Assurez-vous de ne pas balayer trop près du bas de l\'écran."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Modifiez la sensibilité du geste de retour dans Paramètres"</string>
-    <!-- no translation found for back_left_gesture_intro_title (5197184481779330065) -->
-    <skip />
-    <!-- no translation found for back_right_gesture_intro_title (7431951986971898074) -->
-    <skip />
-    <!-- no translation found for back_left_gesture_intro_subtitle (7672761376577628602) -->
-    <skip />
-    <!-- no translation found for back_right_gesture_intro_subtitle (2735828029197816509) -->
-    <skip />
+    <string name="back_left_gesture_intro_title" msgid="5197184481779330065">"Balayez l\'écran à partir de la gauche pour revenir en arrière"</string>
+    <string name="back_right_gesture_intro_title" msgid="7431951986971898074">"Balayer l\'écran à partir de la droite pour revenir en arrière"</string>
+    <string name="back_left_gesture_intro_subtitle" msgid="7672761376577628602">"Pour revenir à l\'écran précédent, balayez l\'écran du côté gauche jusqu\'au centre."</string>
+    <string name="back_right_gesture_intro_subtitle" msgid="2735828029197816509">"Vous pouvez revenir à l\'écran précédent en balayant l\'écran du côté droit vers le centre. Essayez-le."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Assurez-vous de balayer l\'écran à partir de l\'extrémité inférieure vers le haut."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Assurez-vous de ne pas interrompre le geste avant de lever le doigt."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Assurez-vous de balayer l\'écran en ligne droite vers le haut."</string>

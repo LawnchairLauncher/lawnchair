@@ -55,6 +55,9 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"אישי"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"עבודה"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"שיחות"</string>
+    <string name="widget_education_header" msgid="4874760613775913787">"קבלת מידע שימושי בהקשה"</string>
+    <string name="widget_education_content" msgid="745542879510751525">"רוצה לקבל מידע בלי לפתוח אפליקציות? אפשר להוסיף ווידג\'טים למסך הבית"</string>
+    <string name="widget_education_close_button" msgid="8676165703104836580">"הבנתי"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"חיפוש אפליקציות"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"טעינת אפליקציות מתבצעת…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"לא נמצאו אפליקציות התואמות ל-\"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>

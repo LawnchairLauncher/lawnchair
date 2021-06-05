@@ -27,6 +27,7 @@ import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra;
 import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
@@ -109,6 +110,7 @@ public class SettingsActivityTest {
 
         onView(withText("About")).check(matches(isDisplayed()));
         onView(withText("Version")).check(matches(isDisplayed()));
+        onView(withContentDescription("Navigate up")).check(matches(isDisplayed()));
     }
 
     @Test
@@ -119,6 +121,7 @@ public class SettingsActivityTest {
 
         onView(withText("Developer Options")).check(matches(isDisplayed()));
         onView(withId(R.id.filter_box)).check(matches(isDisplayed()));
+        onView(withContentDescription("Navigate up")).check(matches(isDisplayed()));
     }
 
     @Test
@@ -133,5 +136,17 @@ public class SettingsActivityTest {
         } catch (IllegalArgumentException e) {
             assertThat(e.getMessage()).contains(fragmentClass);
         }
+    }
+
+    @Test
+    public void testSettings_backButtonFinishesActivity() {
+        Bundle fragmentArgs = new Bundle();
+        fragmentArgs.putString(ARG_PREFERENCE_ROOT, "about_screen");
+        Intent intent = new Intent(mApplicationContext, SettingsActivity.class)
+                .putExtra(EXTRA_FRAGMENT_ARGS, fragmentArgs);
+        ActivityScenario<SettingsActivity> scenario = ActivityScenario.launch(intent);
+
+        onView(withContentDescription("Navigate up")).perform(click());
+        scenario.onActivity(activity -> assertThat(activity.isFinishing()).isTrue());
     }
 }
