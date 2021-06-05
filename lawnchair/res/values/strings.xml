@@ -81,14 +81,14 @@
     </plurals>
 
     <string name="hotseat_qsb_label">Show Search Bar</string>
-    <string name="dt2s_admin_hint_title">Admin permission required</string>
-    <string name="dt2s_admin_hint">To use Double Tap to Sleep, grant the Admin permission.</string>
-    <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
-    <string name="dt2s_a11y_hint_title">Accessibility service required</string>
-    <string name="dt2s_a11y_hint">To use Double Tap to Sleep, enable the accessibility service.</string>
+    <string name="dt2s_admin_hint_title">Admin Permissions Required</string>
+    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap “Open Settings,” then tap “Activate this device admin app.”</string>
+    <string name="dt2s_admin_warning">Double-Tap to Sleep will be turned off.</string>
+    <string name="dt2s_a11y_hint_title">Turn on Accessibility Service</string>
+    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap “Open Settings,” then select “Lawnchair” and turn on “Use Lawnchair.”</string>
     <string name="dt2s_warning_open_settings">Open Settings</string>
     <string name="minus_one_enable">Show Feed</string>
-    <string name="minus_one_unavailable">Feed is not available</string>
+    <string name="minus_one_unavailable">No feed installed.</string>
     <string name="fuzzy_search_title">Fuzzy Search</string>
-    <string name="fuzzy_search_desc">Use fuzzy matching to search for apps</string>
+    <string name="fuzzy_search_desc">Approximate matching for app searches.</string>
 </resources>
