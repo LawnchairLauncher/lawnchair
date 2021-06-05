@@ -18,16 +18,16 @@
     <string name="icon_pack">شبیہیں</string>
     <string name="settings">ترتیبات</string>
     <string name="home_screen_label">حوم اسکرین</string>
-    <string name="home_screen_description">Feed, At a Glance, Grid, Icons</string>
+    <string name="home_screen_description">فیڈ، ایک جھلک، گرڈ، آئکنس</string>
     <string name="general_label">عام</string>
     <string name="general_description">نوٹیفیکیشن کے نقطے, شبیہیں</string>
     <string name="home_screen_rotation_label">حوم اسکرین کی گردش</string>
     <string name="home_screen_rotaton_description">جب آلہ گھمایا ہوا ہو.</string>
     <string name="auto_add_shortcuts_label">هوم اسکرین میں نئے ایپس شامل کریں۔</string>
     <string name="dock_label">ڈاک</string>
-    <string name="dock_description">Search Bar, Icon Count</string>
+    <string name="dock_description">سرچ بار، آئکن کی گنتی</string>
     <string name="app_drawer_label">ایپ کا ڈراز</string>
-    <string name="app_drawer_description">Hidden Apps, Column Count, Icons</string>
+    <string name="app_drawer_description">چھپے ہوئے ایپس، کالم کی گنتی، آئکنس</string>
     <string name="folders_label">فولڈرز</string>
     <string name="folders_description">قطار اور کالم کی گنتی</string>
     <string name="app_drawer_columns">ایپ درازکے کالم</string>
@@ -54,18 +54,18 @@
     <string name="development">ڈیویلپمینٹ</string>
     <string name="app_info_drop_target_label">ایپ کی معلومات</string>
     <string name="item_removed">اشیاء ہٹا دیا گیا.</string>
-    <string name="all_apps_no_search_results">No apps found matching “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
+    <string name="all_apps_no_search_results">اس سے ملتا جلتا کوئی ایپ نہیں ملا \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"۔</string>
     <string name="background_opacity">پس منظر کی دھندلاپن</string>
     <string name="background_lightness_label">پس منظر کی روشنی</string>
     <string name="adaptive_icons">انکولی شبیہیں</string>
     <string name="adaptive_icon_background_description">سفید کے لئے سو فیصد پس منظر کی روشنی استعمال کریں.</string>
     <string name="auto_adaptive_icons_label">خودکارانکولی شبیہیں</string>
     <string name="auto_adaptive_icons_description">تمام غیر انکولی شبیہیں کے لئے.</string>
-    <string name="support_and_pr">Support &amp; PR</string>
-    <string name="workspace_dt2s">Double-Tap to Sleep</string>
-    <string name="smart_space_enable">Show At a Glance Widget</string>
-    <string name="design_and_development">Design &amp; Development</string>
-    <string name="translate">Translate</string>
+    <string name="support_and_pr">اس کی حمایت کیجیئے PR &amp;</string>
+    <string name="workspace_dt2s">سلانے کے لئے دو بار دبائیں</string>
+    <string name="smart_space_enable">ایک جھلک کے وِجٹ کو دکھائیں</string>
+    <string name="design_and_development">ڈیزائن &amp; ترق</string>
+    <string name="translate">ترجمہ</string>
     <string name="product">Product</string>
     <string name="hidden_apps_label">Hidden Apps</string>
     <string name="hidden_apps_label_with_count">Hidden Apps (%1$d)</string>
