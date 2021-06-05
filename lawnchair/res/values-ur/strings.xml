@@ -15,15 +15,15 @@
   ~ limitations under the License.
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="icon_pack">شبیہیں</string>
+    <string name="icon_pack">آئکن پیک</string>
     <string name="settings">ترتیبات</string>
-    <string name="home_screen_label">حوم اسکرین</string>
+    <string name="home_screen_label">ہوم اسکرین</string>
     <string name="home_screen_description">فیڈ، ایک جھلک، گرڈ، آئکنس</string>
     <string name="general_label">عام</string>
-    <string name="general_description">نوٹیفیکیشن کے نقطے, شبیہیں</string>
-    <string name="home_screen_rotation_label">حوم اسکرین کی گردش</string>
+    <string name="general_description">نوٹیفیکیشن کے نقطے, آئکن پیک</string>
+    <string name="home_screen_rotation_label">ہوم اسکرین کی گردش</string>
     <string name="home_screen_rotaton_description">جب آلہ گھمایا ہوا ہو.</string>
-    <string name="auto_add_shortcuts_label">هوم اسکرین میں نئے ایپس شامل کریں۔</string>
+    <string name="auto_add_shortcuts_label">ہوم اسکرین میں نئے ایپس شامل کریں۔</string>
     <string name="dock_label">ڈاک</string>
     <string name="dock_description">سرچ بار، آئکن کی گنتی</string>
     <string name="app_drawer_label">ایپ کا ڈراز</string>
@@ -31,9 +31,9 @@
     <string name="folders_label">فولڈرز</string>
     <string name="folders_description">قطار اور کالم کی گنتی</string>
     <string name="app_drawer_columns">ایپ درازکے کالم</string>
-    <string name="dock_icons">ڈاک آئکن</string>
-    <string name="max_folder_columns">زیادہ سے زیادہ فولڈرکے کالم</string>
-    <string name="max_folder_rows">زیادہ سے زیادہ فولڈرکی قطار</string>
+    <string name="dock_icons">ڈاک آئکنس</string>
+    <string name="max_folder_columns">زیادہ سے زیادہ۔ فولڈر کے کالم</string>
+    <string name="max_folder_rows">زیادہ سے زیادہ۔ فولڈر کی قطاریں</string>
     <string name="home_screen_columns">ہوم اسکرین کالم</string>
     <string name="grid">گرڈ</string>
     <string name="home_screen_rows">ہوم اسکرین قطاریں</string>
@@ -66,20 +66,20 @@
     <string name="smart_space_enable">ایک جھلک کے وِجٹ کو دکھائیں</string>
     <string name="design_and_development">ڈیزائن &amp; ترق</string>
     <string name="translate">ترجمہ</string>
-    <string name="product">Product</string>
-    <string name="hidden_apps_label">Hidden Apps</string>
-    <string name="hidden_apps_label_with_count">Hidden Apps (%1$d)</string>
+    <string name="product">شے</string>
+    <string name="hidden_apps_label">چھپے ہوئے ایپس</string>
+    <string name="hidden_apps_label_with_count">چھپے ہوئے ایپس (%1$d)</string>
     <plurals name="apps_count">
         <item quantity="one">%1$d App</item>
-        <item quantity="other">%1$d Apps</item>
+        <item quantity="other">ایپس%1$d</item>
     </plurals>
-    <string name="hotseat_qsb_label">Show Search Bar</string>
-    <string name="dt2s_admin_hint_title">Admin permission required</string>
-    <string name="dt2s_admin_hint">To use Double Tap to Sleep, grant the Admin permission.</string>
-    <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
-    <string name="dt2s_a11y_hint_title">Accessibility service required</string>
-    <string name="dt2s_a11y_hint">To use Double Tap to Sleep, enable the accessibility service.</string>
-    <string name="dt2s_warning_open_settings">Open Settings</string>
-    <string name="minus_one_enable">Show Feed</string>
-    <string name="minus_one_unavailable">Feed is not available</string>
+    <string name="hotseat_qsb_label">سرچ بار کو دکھائیں</string>
+    <string name="dt2s_admin_hint_title">ایڈمن اجازت درکار ہے</string>
+    <string name="dt2s_admin_hint">دو بار دوبا کیر سولانے کے لئے، ایڈمن کی اجازت دیں۔</string>
+    <string name="dt2s_admin_warning">دو بار دوبا کر سولانا غیر فعال ہو جائے گا۔</string>
+    <string name="dt2s_a11y_hint_title">رسائی کی خدمت درکار ہے</string>
+    <string name="dt2s_a11y_hint">دو بار دوبا کر سولانے کے استعمال کے لیے قابل رسائی خدمت کو قابل بنائیں۔</string>
+    <string name="dt2s_warning_open_settings">ترتیبات کھولیں</string>
+    <string name="minus_one_enable">فیڈ دیکھائیں</string>
+    <string name="minus_one_unavailable">فیڈ دستیاب نہیں ہے</string>
 </resources>
