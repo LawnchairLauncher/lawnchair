@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2021, Lawnchair
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="icon_pack">Pachet de pictograme</string>
+    <string name="settings">Setări</string>
+    <string name="home_screen_label">Ecran principal</string>
+    <string name="home_screen_description">Feed, At a Glance, Grid, Icons</string>
+    <string name="general_label">General</string>
+    <string name="general_description">Pictograme pentru notificări, Pachet pictograme</string>
+    <string name="home_screen_rotation_label">Rotația ecranului principal</string>
+    <string name="home_screen_rotaton_description">Când dispozitivul este rotit.</string>
+    <string name="auto_add_shortcuts_label">Adaugă aplicații noi pe ecranul principal</string>
+    <string name="dock_label">Dock</string>
+    <string name="dock_description">Search Bar, Icon Count</string>
+    <string name="app_drawer_label">Sertar de aplicații</string>
+    <string name="app_drawer_description">Hidden Apps, Column Count, Icons</string>
+    <string name="folders_label">Dosare</string>
+    <string name="folders_description">Numărul de rânduri și de coloane</string>
+    <string name="app_drawer_columns">Coloane în sertarul de aplicații</string>
+    <string name="dock_icons">Pictograme pentru dock</string>
+    <string name="max_folder_columns">Număr maxim de coloane pentru dosare</string>
+    <string name="max_folder_rows">Număr maxim de rânduri pentru dosare</string>
+    <string name="home_screen_columns">Coloane pentru ecranul principal</string>
+    <string name="grid">Grilă</string>
+    <string name="home_screen_rows">Rânduri pentru ecranul principal</string>
+    <string name="icons">Pictograme</string>
+    <string name="icon_size">Mărimea pictogramelor</string>
+    <string name="label_size">Mărimea etichetei</string>
+    <string name="allow_empty_pages_label">Permiteți pagini goale</string>
+    <string name="notification_dots">Pictograme pentru notificări</string>
+    <string name="smartspace_preferences">Preferințe</string>
+    <string name="about_label">Despre</string>
+    <string name="news">Știri</string>
+    <string name="support">Asistență</string>
+    <string name="acknowledgements">Mulțumiri</string>
+    <string name="devops">DevOps</string>
+    <string name="quickswitch_maintenance">Mentenanță QuickSwitch</string>
+    <string name="all_apps_search_bar_hint">Caută aplicații</string>
+    <string name="settings_button_text">Setări pentru ecranul principal</string>
+    <string name="development">Dezvoltare</string>
+    <string name="app_info_drop_target_label">Informații despre aplicație</string>
+    <string name="item_removed">Element șters.</string>
+    <string name="all_apps_no_search_results">Nicio aplicație găsită pentru „<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
+    <string name="background_opacity">Opacitatea fundalului</string>
+    <string name="background_lightness_label">Luminozitate fundal</string>
+    <string name="adaptive_icons">Pictograme Adaptive</string>
+    <string name="adaptive_icon_background_description">Folosește 100% luminozitate de fundal pentru alb.</string>
+    <string name="auto_adaptive_icons_label">Pictograme Adaptive automate</string>
+    <string name="auto_adaptive_icons_description">Pentru toate pictogramele non-Adaptive.</string>
+    <string name="support_and_pr">Asistență &amp; PR</string>
+    <string name="workspace_dt2s">Apăsare dublă a ecranului pentru închidere</string>
+    <string name="smart_space_enable">Afișați widget-ul At a Glance</string>
+    <string name="design_and_development">Proiectare &amp; Dezvoltare</string>
+    <string name="translate">Traduceți</string>
+    <string name="product">Produs</string>
+    <string name="hidden_apps_label">Aplicații ascunse</string>
+    <string name="hidden_apps_label_with_count">Aplicații ascunse (%1$d)</string>
+    <plurals name="apps_count">
+        <item quantity="one">%1$d Aplicație</item>
+        <item quantity="few">%1$d Aplicații</item>
+        <item quantity="other">%1$d Aplicații</item>
+    </plurals>
+    <string name="hotseat_qsb_label">Show Search Bar</string>
+    <string name="dt2s_admin_hint_title">Admin permission required</string>
+    <string name="dt2s_admin_hint">To use Double Tap to Sleep, grant the Admin permission.</string>
+    <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
+    <string name="dt2s_a11y_hint_title">Accessibility service required</string>
+    <string name="dt2s_a11y_hint">To use Double Tap to Sleep, enable the accessibility service.</string>
+    <string name="dt2s_warning_open_settings">Open Settings</string>
+    <string name="minus_one_enable">Show Feed</string>
+    <string name="minus_one_unavailable">Feed is not available</string>
+</resources>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2021, Lawnchair
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="icon_pack">Тема иконица</string>
+    <string name="settings">Подешавања</string>
+    <string name="home_screen_label">Почетна страна</string>
+    <string name="home_screen_description">Feed, At a Glance, Grid, Icons</string>
+    <string name="general_label">Општа подешавања</string>
+    <string name="general_description">Симболи обавештења, Тема иконица</string>
+    <string name="home_screen_rotation_label">Ротација почетне стране</string>
+    <string name="home_screen_rotaton_description">Када је уређај у ротацији.</string>
+    <string name="auto_add_shortcuts_label">Додај нове апликације на почетну страну</string>
+    <string name="dock_label">Доњи ред</string>
+    <string name="dock_description">Search Bar, Icon Count</string>
+    <string name="app_drawer_label">Фиока апликација</string>
+    <string name="app_drawer_description">Hidden Apps, Column Count, Icons</string>
+    <string name="folders_label">Фолдери</string>
+    <string name="folders_description">Број редова и колона</string>
+    <string name="app_drawer_columns">Колоне фиоке апликација</string>
+    <string name="dock_icons">Иконице доњег реда</string>
+    <string name="max_folder_columns">Максимални број колона у фолдеру</string>
+    <string name="max_folder_rows">Максимални број редова у фолдеру</string>
+    <string name="home_screen_columns">Број колона почетне стране</string>
+    <string name="grid">Мрежа</string>
+    <string name="home_screen_rows">Редови почетне стране</string>
+    <string name="icons">Иконице</string>
+    <string name="icon_size">Величина иконица</string>
+    <string name="label_size">Величина етикете</string>
+    <string name="allow_empty_pages_label">Дозволи празне стране</string>
+    <string name="notification_dots">Симболи обавештења</string>
+    <string name="smartspace_preferences">Поставке</string>
+    <string name="about_label">Информације</string>
+    <string name="news">Новости</string>
+    <string name="support">Подршка</string>
+    <string name="acknowledgements">Захвалнице</string>
+    <string name="devops">DevOps</string>
+    <string name="quickswitch_maintenance">QuickSwitch Одржавање</string>
+    <string name="all_apps_search_bar_hint">Претражи апликације</string>
+    <string name="settings_button_text">Подешавања почетне</string>
+    <string name="development">Развој</string>
+    <string name="app_info_drop_target_label">Информације о апликацији</string>
+    <string name="item_removed">Ставка је уклоњена.</string>
+    <string name="all_apps_no_search_results">Није пронађена ниједна апликација која се подудара са “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
+    <string name="background_opacity">Прозирност позадине</string>
+    <string name="background_lightness_label">Осветљеност позадине</string>
+    <string name="adaptive_icons">Адаптивне иконице</string>
+    <string name="adaptive_icon_background_description">Користи 100% осветљења позадине за белу.</string>
+    <string name="auto_adaptive_icons_label">Ауто-адаптивне иконице</string>
+    <string name="auto_adaptive_icons_description">За све неадаптивне иконице.</string>
+    <string name="support_and_pr">Подршка &amp; Односи са јавношћу</string>
+    <string name="workspace_dt2s">Двапут додирните да бисте искључили екран</string>
+    <string name="smart_space_enable">Прикажи \'\'At a Glance\'\' widget</string>
+    <string name="design_and_development">Дизајн &amp; Развој</string>
+    <string name="translate">Преведи</string>
+    <string name="product">Proizvod</string>
+    <string name="hidden_apps_label">Сакривене апликације</string>
+    <string name="hidden_apps_label_with_count">Сакривене апликације (%1$d)</string>
+    <plurals name="apps_count">
+        <item quantity="one">%1$d Aпликација</item>
+        <item quantity="few">%1$d Aпликације</item>
+        <item quantity="other">%1$d Aпликације</item>
+    </plurals>
+    <string name="hotseat_qsb_label">Show Search Bar</string>
+    <string name="dt2s_admin_hint_title">Admin permission required</string>
+    <string name="dt2s_admin_hint">To use Double Tap to Sleep, grant the Admin permission.</string>
+    <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
+    <string name="dt2s_a11y_hint_title">Accessibility service required</string>
+    <string name="dt2s_a11y_hint">To use Double Tap to Sleep, enable the accessibility service.</string>
+    <string name="dt2s_warning_open_settings">Open Settings</string>
+    <string name="minus_one_enable">Show Feed</string>
+    <string name="minus_one_unavailable">Feed is not available</string>
+</resources>

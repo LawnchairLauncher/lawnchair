@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2021, Lawnchair
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="icon_pack">آئکن پیک</string>
+    <string name="settings">ترتیبات</string>
+    <string name="home_screen_label">ہوم اسکرین</string>
+    <string name="home_screen_description">فیڈ، ایک جھلک، گرڈ، آئکنس</string>
+    <string name="general_label">عام</string>
+    <string name="general_description">نوٹیفیکیشن کے نقطے, آئکن پیک</string>
+    <string name="home_screen_rotation_label">ہوم اسکرین کی گردش</string>
+    <string name="home_screen_rotaton_description">جب آلہ گھمایا ہوا ہو.</string>
+    <string name="auto_add_shortcuts_label">ہوم اسکرین میں نئے ایپس شامل کریں۔</string>
+    <string name="dock_label">ڈاک</string>
+    <string name="dock_description">سرچ بار، آئکن کی گنتی</string>
+    <string name="app_drawer_label">ایپ کا ڈراز</string>
+    <string name="app_drawer_description">چھپے ہوئے ایپس، کالم کی گنتی، آئکنس</string>
+    <string name="folders_label">فولڈرز</string>
+    <string name="folders_description">قطار اور کالم کی گنتی</string>
+    <string name="app_drawer_columns">ایپ درازکے کالم</string>
+    <string name="dock_icons">ڈاک آئکنس</string>
+    <string name="max_folder_columns">زیادہ سے زیادہ۔ فولڈر کے کالم</string>
+    <string name="max_folder_rows">زیادہ سے زیادہ۔ فولڈر کی قطاریں</string>
+    <string name="home_screen_columns">ہوم اسکرین کالم</string>
+    <string name="grid">گرڈ</string>
+    <string name="home_screen_rows">ہوم اسکرین قطاریں</string>
+    <string name="icons">آئکنس</string>
+    <string name="icon_size">آئکن سائز</string>
+    <string name="label_size">لیبل سائز</string>
+    <string name="allow_empty_pages_label">خالی صفحات کی اجازت دیں</string>
+    <string name="notification_dots">نوٹیفیکیشن کے نقطے</string>
+    <string name="smartspace_preferences">ترجیحات</string>
+    <string name="about_label">کے بارے میں</string>
+    <string name="news">خبریں</string>
+    <string name="support">حمایت</string>
+    <string name="acknowledgements">اعترافات</string>
+    <string name="devops">ڈیو آپس</string>
+    <string name="quickswitch_maintenance">فوری سوئچ کی بحالی</string>
+    <string name="all_apps_search_bar_hint">ایپس تلاش کریں</string>
+    <string name="settings_button_text">ھوم کے ترتیبات</string>
+    <string name="development">ڈیویلپمینٹ</string>
+    <string name="app_info_drop_target_label">ایپ کی معلومات</string>
+    <string name="item_removed">اشیاء ہٹا دیا گیا.</string>
+    <string name="all_apps_no_search_results">اس سے ملتا جلتا کوئی ایپ نہیں ملا \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"۔</string>
+    <string name="background_opacity">پس منظر کی دھندلاپن</string>
+    <string name="background_lightness_label">پس منظر کی روشنی</string>
+    <string name="adaptive_icons">انکولی آئکنس</string>
+    <string name="adaptive_icon_background_description">سفید کے لئے ٪100 پس منظر کی روشنی استعمال کریں.</string>
+    <string name="auto_adaptive_icons_label">خودکار انکولی آئکنس</string>
+    <string name="auto_adaptive_icons_description">تمام غیر انکولی آئکنس کے لئے.</string>
+    <string name="support_and_pr">اس کی حمایت کیجیئے PR &amp;</string>
+    <string name="workspace_dt2s">سلانے کے لئے دو بار دبائیں</string>
+    <string name="smart_space_enable">ایک جھلک کے وِجٹ کو دکھائیں</string>
+    <string name="design_and_development">ڈیزائن &amp; ترق</string>
+    <string name="translate">ترجمہ</string>
+    <string name="product">شے</string>
+    <string name="hidden_apps_label">چھپے ہوئے ایپس</string>
+    <string name="hidden_apps_label_with_count">چھپے ہوئے ایپس (%1$d)</string>
+    <plurals name="apps_count">
+        <item quantity="one">ایپ%1$d</item>
+        <item quantity="other">ایپس%1$d</item>
+    </plurals>
+    <string name="hotseat_qsb_label">سرچ بار کو دکھائیں</string>
+    <string name="dt2s_admin_hint_title">ایڈمن اجازت درکار ہے</string>
+    <string name="dt2s_admin_hint">دو بار دوبا کیر سولانے کے لئے، ایڈمن کی اجازت دیں۔</string>
+    <string name="dt2s_admin_warning">دو بار دوبا کر سولانا غیر فعال ہو جائے گا۔</string>
+    <string name="dt2s_a11y_hint_title">رسائی کی خدمت درکار ہے</string>
+    <string name="dt2s_a11y_hint">دو بار دوبا کر سولانے کے استعمال کے لیے قابل رسائی خدمت کو قابل بنائیں۔</string>
+    <string name="dt2s_warning_open_settings">ترتیبات کھولیں</string>
+    <string name="minus_one_enable">فیڈ دیکھائیں</string>
+    <string name="minus_one_unavailable">فیڈ دستیاب نہیں ہے</string>
+</resources>
