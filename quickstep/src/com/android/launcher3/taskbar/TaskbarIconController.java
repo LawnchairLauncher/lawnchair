@@ -15,14 +15,9 @@
  */
 package com.android.launcher3.taskbar;
 
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
-
 import static com.android.systemui.shared.system.ViewTreeObserverWrapper.InsetsInfo.TOUCHABLE_INSETS_FRAME;
 import static com.android.systemui.shared.system.ViewTreeObserverWrapper.InsetsInfo.TOUCHABLE_INSETS_REGION;
 
-import android.graphics.Rect;
-import android.inputmethodservice.InputMethodService;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -31,8 +26,6 @@ import androidx.annotation.NonNull;
 
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AlphaUpdateListener;
-import com.android.launcher3.taskbar.contextual.RotationButtonController;
-import com.android.quickstep.SysUINavigationMode;
 import com.android.systemui.shared.system.ViewTreeObserverWrapper.InsetsInfo;
 
 /**
@@ -40,42 +33,28 @@ import com.android.systemui.shared.system.ViewTreeObserverWrapper.InsetsInfo;
  */
 public class TaskbarIconController {
 
-    private final Rect mTempRect = new Rect();
-
     private final TaskbarActivityContext mActivity;
     private final TaskbarDragLayer mDragLayer;
+    private final NavbarButtonUIController mNavbarButtonUIController;
 
     private final TaskbarView mTaskbarView;
-    private final ImeBarView mImeBarView;
-    private final RotationButtonController mRotationButtonController;
 
     @NonNull
     private TaskbarUIController mUIController = TaskbarUIController.DEFAULT;
 
     TaskbarIconController(TaskbarActivityContext activity, TaskbarDragLayer dragLayer,
-            RotationButtonController rotationButtonController) {
+            NavbarButtonUIController navbarButtonUIController) {
         mActivity = activity;
         mDragLayer = dragLayer;
+        mNavbarButtonUIController = navbarButtonUIController;
         mTaskbarView = mDragLayer.findViewById(R.id.taskbar_view);
-        mImeBarView = mDragLayer.findViewById(R.id.ime_bar_view);
-        mRotationButtonController = rotationButtonController;
     }
 
-    public void init(OnClickListener clickListener, OnLongClickListener longClickListener,
-            SysUINavigationMode.Mode navMode) {
-        mDragLayer.addOnLayoutChangeListener((v, a, b, c, d, e, f, g, h) ->
-                mUIController.alignRealHotseatWithTaskbar());
-
-        ButtonProvider buttonProvider = new ButtonProvider(mActivity);
-        mImeBarView.init(buttonProvider);
-        mTaskbarView.init(new TaskbarViewCallbacks(), clickListener, longClickListener,
-                buttonProvider);
+    public void init(OnClickListener clickListener, OnLongClickListener longClickListener) {
+        mTaskbarView.init(clickListener, longClickListener);
         mTaskbarView.getLayoutParams().height = mActivity.getDeviceProfile().taskbarSize;
 
         mDragLayer.init(new TaskbarDragLayerCallbacks(), mTaskbarView);
-        if (navMode == SysUINavigationMode.Mode.THREE_BUTTONS) {
-            mRotationButtonController.setRotationButton(mTaskbarView.getContextualRotationButton());
-        }
     }
 
     public void onDestroy() {
@@ -87,26 +66,10 @@ public class TaskbarIconController {
     }
 
     /**
-     * When in 3 button nav, the above doesn't get called since we prevent sysui nav bar from
-     * instantiating at all, which is what's responsible for sending sysui state flags over.
-     *
-     * @param vis IME visibility flag
-     */
-    public void updateImeStatus(int displayId, int vis, boolean showImeSwitcher) {
-        if (displayId != mActivity.getDisplayId() || !mActivity.canShowNavButtons()) {
-            return;
-        }
-
-        mImeBarView.setImeSwitcherVisibility(showImeSwitcher);
-        setImeIsVisible((vis & InputMethodService.IME_VISIBLE) != 0);
-    }
-
-    /**
      * Should be called when the IME visibility changes, so we can hide/show Taskbar accordingly.
      */
     public void setImeIsVisible(boolean isImeVisible) {
         mTaskbarView.setTouchesEnabled(!isImeVisible);
-        mUIController.onImeVisible(mDragLayer, isImeVisible);
     }
 
     /**
@@ -122,7 +85,7 @@ public class TaskbarIconController {
             if (mDragLayer.getAlpha() < AlphaUpdateListener.ALPHA_CUTOFF_THRESHOLD) {
                 // Let touches pass through us.
                 insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION);
-            } else if (mImeBarView.getVisibility() == VISIBLE) {
+            } else if (mNavbarButtonUIController.isImeVisible()) {
                 insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_FRAME);
             } else if (!mUIController.isTaskbarTouchable()) {
                 // Let touches pass through us.
@@ -131,17 +94,8 @@ public class TaskbarIconController {
                 // Buttons are visible, take over the full taskbar area
                 insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_FRAME);
             } else {
-                if (mTaskbarView.mSystemButtonContainer.getVisibility() == VISIBLE) {
-                    mDragLayer.getDescendantRectRelativeToSelf(
-                            mTaskbarView.mSystemButtonContainer, mTempRect);
-                    insetsInfo.touchableRegion.set(mTempRect);
-                }
-                if (mTaskbarView.mContextualButtonContainer.getVisibility() == VISIBLE) {
-                    mDragLayer.getDescendantRectRelativeToSelf(
-                            mTaskbarView.mContextualButtonContainer, mTempRect);
-                    insetsInfo.touchableRegion.union(mTempRect);
-                }
-
+                mNavbarButtonUIController.addVisibleButtonsRegion(
+                        mDragLayer, insetsInfo.touchableRegion);
                 insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION);
             }
 
@@ -160,32 +114,11 @@ public class TaskbarIconController {
             // Ensure no other children present (like Folders, etc)
             for (int i = 0; i < count; i++) {
                 View v = mDragLayer.getChildAt(i);
-                if (!((v instanceof TaskbarView) || (v instanceof ImeBarView))) {
+                if (!(v instanceof TaskbarView)) {
                     return;
                 }
             }
             mActivity.setTaskbarWindowFullscreen(false);
-        }
-
-        public void updateImeBarVisibilityAlpha(float alpha) {
-            if (!mActivity.canShowNavButtons()) {
-                // TODO Remove sysui IME bar for gesture nav as well
-                return;
-            }
-            mImeBarView.setAlpha(alpha);
-            mImeBarView.setVisibility(alpha == 0 ? GONE : VISIBLE);
-        }
-    }
-
-    /**
-     * Callbacks for {@link TaskbarView} to interact with the icon controller
-     */
-    public class TaskbarViewCallbacks {
-        /**
-         * Returns whether no other controller is currently handling the given View's visibility.
-         */
-        public boolean canUpdateViewVisibility(View child) {
-            return !mActivity.getDragController().isDraggingView(child);
         }
     }
 }

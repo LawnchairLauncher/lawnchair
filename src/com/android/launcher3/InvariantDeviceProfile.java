@@ -36,7 +36,6 @@ import android.graphics.Rect;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.SparseArray;
 import android.util.TypedValue;
 import android.util.Xml;
@@ -45,7 +44,6 @@ import android.view.Display;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.IntArray;
@@ -250,17 +248,10 @@ public class InvariantDeviceProfile {
 
     private String initGrid(Context context, String gridName) {
         Info displayInfo = DisplayController.INSTANCE.get(context).getInfo();
-        // Determine if we have split display
-
-        boolean isTablet = false, isPhone = false;
-        for (WindowBounds bounds : displayInfo.supportedBounds) {
-            if (displayInfo.isTablet(bounds)) {
-                isTablet = true;
-            } else {
-                isPhone = true;
-            }
-        }
-        boolean isSplitDisplay = isPhone && isTablet && ENABLE_TWO_PANEL_HOME.get();
+        // Each screen has two profiles (portrait/landscape), so devices with four or more
+        // supported profiles implies two or more internal displays.
+        boolean isSplitDisplay =
+                displayInfo.supportedBounds.size() >= 4 && ENABLE_TWO_PANEL_HOME.get();
 
         ArrayList<DisplayOption> allOptions =
                 getPredefinedDeviceProfiles(context, gridName, isSplitDisplay);

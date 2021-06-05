@@ -44,6 +44,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.DotRenderer;
 import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.icons.IconNormalizer;
+import com.android.launcher3.uioverrides.ApiWrapper;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.WindowBounds;
@@ -54,6 +55,8 @@ import java.io.PrintWriter;
 public class DeviceProfile {
 
     private static final int DEFAULT_DOT_SIZE = 100;
+    // Ratio of empty space, qsb should take up to appear visually centered.
+    private static final float QSB_CENTER_FACTOR = .325f;
 
     public final InvariantDeviceProfile inv;
     private final Info mInfo;
@@ -156,6 +159,7 @@ public class DeviceProfile {
     // Start is the side next to the nav bar, end is the side next to the workspace
     public final int hotseatBarSidePaddingStartPx;
     public final int hotseatBarSidePaddingEndPx;
+    public final int hotseatQsbHeight;
 
     // All apps
     public int allAppsOpenVerticalTranslate;
@@ -240,6 +244,7 @@ public class DeviceProfile {
         mMetrics = context.getResources().getDisplayMetrics();
         final Resources res = context.getResources();
 
+        hotseatQsbHeight = res.getDimensionPixelSize(R.dimen.qsb_widget_height);
         isTaskbarPresent = isTablet && FeatureFlags.ENABLE_TASKBAR.get();
         if (isTaskbarPresent) {
             // Taskbar will be added later, but provides bottom insets that we should subtract
@@ -399,8 +404,10 @@ public class DeviceProfile {
     public boolean shouldInsetWidgets() {
         Rect widgetPadding = inv.defaultWidgetPadding;
 
-        // Check all sides to ensure that the widget won't overlap into another cell.
-        return cellLayoutBorderSpacingPx > widgetPadding.left
+        // Check all sides to ensure that the widget won't overlap into another cell, or into
+        // status bar.
+        return workspaceTopPadding > widgetPadding.top
+                && cellLayoutBorderSpacingPx > widgetPadding.left
                 && cellLayoutBorderSpacingPx > widgetPadding.top
                 && cellLayoutBorderSpacingPx > widgetPadding.right
                 && cellLayoutBorderSpacingPx > widgetPadding.bottom;
@@ -738,7 +745,10 @@ public class DeviceProfile {
         }
     }
 
-    public Rect getHotseatLayoutPadding() {
+    /**
+     * Returns the padding for hotseat view
+     */
+    public Rect getHotseatLayoutPadding(Context context) {
         if (isVerticalBarLayout()) {
             if (isSeascape()) {
                 mHotseatPadding.set(mInsets.left + hotseatBarSidePaddingStartPx,
@@ -746,6 +756,30 @@ public class DeviceProfile {
             } else {
                 mHotseatPadding.set(hotseatBarSidePaddingEndPx, mInsets.top,
                         mInsets.right + hotseatBarSidePaddingStartPx, mInsets.bottom);
+            }
+        } else if (isTaskbarPresent) {
+            int hotseatHeight = workspacePadding.bottom + taskbarSize;
+            int taskbarOffset = getTaskbarOffsetY();
+            int hotseatTopDiff = hotseatHeight - taskbarSize - taskbarOffset;
+
+            int startOffset = ApiWrapper.getHotseatStartOffset(context);
+            int requiredWidth = iconSizePx * numShownHotseatIcons;
+
+            Resources res = context.getResources();
+            float taskbarIconSize = res.getDimension(R.dimen.taskbar_icon_size);
+            float taskbarIconSpacing = 2 * res.getDimension(R.dimen.taskbar_icon_spacing);
+            int maxSize = (int) (requiredWidth
+                    * (taskbarIconSize + taskbarIconSpacing) / taskbarIconSize);
+            int hotseatSize = Math.min(maxSize, availableWidthPx - startOffset);
+            int sideSpacing = (availableWidthPx - hotseatSize) / 2;
+            mHotseatPadding.set(sideSpacing, hotseatTopDiff, sideSpacing, taskbarOffset);
+
+            if (startOffset > sideSpacing) {
+                int diff = Utilities.isRtl(context.getResources())
+                        ? sideSpacing - startOffset
+                        : startOffset - sideSpacing;
+                mHotseatPadding.left += diff;
+                mHotseatPadding.right -= diff;
             }
         } else {
             // We want the edges of the hotseat to line up with the edges of the workspace, but the
@@ -764,6 +798,24 @@ public class DeviceProfile {
                     hotseatBarBottomPaddingPx + mInsets.bottom + cellLayoutBottomPaddingPx);
         }
         return mHotseatPadding;
+    }
+
+    /**
+     * Returns the number of pixels the QSB is translated from the bottom of the screen.
+     */
+    public int getQsbOffsetY() {
+        int freeSpace = isTaskbarPresent
+                ? workspacePadding.bottom
+                : hotseatBarSizePx - hotseatCellHeightPx - hotseatQsbHeight;
+        return (int) (freeSpace * QSB_CENTER_FACTOR)
+                + (isTaskbarPresent ? taskbarSize : getInsets().bottom);
+    }
+
+    /**
+     * Returns the number of pixels the taskbar is translated from the bottom of the screen.
+     */
+    public int getTaskbarOffsetY() {
+        return (getQsbOffsetY() - taskbarSize) / 2;
     }
 
     /**

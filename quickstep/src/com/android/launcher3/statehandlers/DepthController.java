@@ -161,7 +161,7 @@ public class DepthController implements StateHandler<LauncherState>,
         if (mSurface != surface) {
             mSurface = surface;
             if (surface != null) {
-                setDepth(mDepth);
+                dispatchTransactionSurface(mDepth);
             }
         }
     }
@@ -175,6 +175,8 @@ public class DepthController implements StateHandler<LauncherState>,
         float toDepth = toState.getDepth(mLauncher);
         if (Float.compare(mDepth, toDepth) != 0) {
             setDepth(toDepth);
+        } else if (toState == LauncherState.OVERVIEW) {
+            dispatchTransactionSurface(mDepth);
         }
     }
 
@@ -200,26 +202,35 @@ public class DepthController implements StateHandler<LauncherState>,
         if (Float.compare(mDepth, depthF) == 0) {
             return;
         }
+        if (dispatchTransactionSurface(depthF)) {
+            mDepth = depthF;
+        }
+    }
 
+    private boolean dispatchTransactionSurface(float depth) {
         boolean supportsBlur = BlurUtils.supportsBlursOnWindows();
         if (supportsBlur && (mSurface == null || !mSurface.isValid())) {
-            return;
+            return false;
         }
-        mDepth = depthF;
         ensureDependencies();
         IBinder windowToken = mLauncher.getRootView().getWindowToken();
         if (windowToken != null) {
-            mWallpaperManager.setWallpaperZoomOut(windowToken, mDepth);
+            mWallpaperManager.setWallpaperZoomOut(windowToken, depth);
         }
 
         if (supportsBlur) {
-            boolean isOpaque = mLauncher.getScrimView().isFullyOpaque();
-            int blur = isOpaque ? 0 : (int) (mDepth * mMaxBlurRadius);
+            // We cannot mark the window as opaque in overview because there will be an app window
+            // below the launcher layer, and we need to draw it -- without blurs.
+            boolean isOverview = mLauncher.isInState(LauncherState.OVERVIEW);
+            boolean opaque = mLauncher.getScrimView().isFullyOpaque() && !isOverview;
+
+            int blur = opaque || isOverview ? 0 : (int) (depth * mMaxBlurRadius);
             new SurfaceControl.Transaction()
                     .setBackgroundBlurRadius(mSurface, blur)
-                    .setOpaque(mSurface, isOpaque)
+                    .setOpaque(mSurface, opaque)
                     .apply();
         }
+        return true;
     }
 
     @Override

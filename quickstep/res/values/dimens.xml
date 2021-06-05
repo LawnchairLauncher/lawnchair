@@ -148,11 +148,9 @@
 
     <!-- Taskbar -->
     <dimen name="taskbar_size">60dp</dimen>
-    <dimen name="taskbar_icon_size">44dp</dimen>
     <dimen name="taskbar_icon_touch_size">48dp</dimen>
     <dimen name="taskbar_icon_drag_icon_size">54dp</dimen>
-    <!-- Note that this applies to both sides of all icons, so visible space is double this. -->
-    <dimen name="taskbar_icon_spacing">8dp</dimen>
     <dimen name="taskbar_folder_margin">16dp</dimen>
     <dimen name="taskbar_nav_buttons_spacing">16dp</dimen>
+    <dimen name="taskbar_nav_buttons_size">48dp</dimen>
 </resources>

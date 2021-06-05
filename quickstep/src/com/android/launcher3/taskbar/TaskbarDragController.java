@@ -15,9 +15,6 @@
  */
 package com.android.launcher3.taskbar;
 
-import static android.view.View.INVISIBLE;
-import static android.view.View.VISIBLE;
-
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Intent;
@@ -89,7 +86,7 @@ public class TaskbarDragController extends DragController<TaskbarActivityContext
         mActivity.setTaskbarWindowFullscreen(true);
         view.post(() -> {
             startInternalDrag(btv);
-            btv.setVisibility(INVISIBLE);
+            btv.setAlpha(0);
         });
         return true;
     }
@@ -294,16 +291,9 @@ public class TaskbarDragController extends DragController<TaskbarActivityContext
         return super.isDragging() || mIsSystemDragInProgress;
     }
 
-    /**
-     * Whether we started dragging the given view and the drag is still in progress.
-     */
-    public boolean isDraggingView(View child) {
-        return isDragging() && mDragObject != null && mDragObject.originalView == child;
-    }
-
     private void maybeOnDragEnd() {
         if (!isDragging()) {
-            ((View) mDragObject.originalView).setVisibility(VISIBLE);
+            ((View) mDragObject.originalView).setAlpha(1);
         }
     }
 

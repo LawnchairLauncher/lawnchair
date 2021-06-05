@@ -77,7 +77,7 @@
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Ayarlar"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Tekrar deneyin"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Güzel!"</string>
-    <string name="gesture_tutorial_step" msgid="1279786122817620968">"Eğitici <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
+    <string name="gesture_tutorial_step" msgid="1279786122817620968">"Eğitim <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"İşlem tamam!"</string>
     <string name="allset_hint" msgid="459504134589971527">"Ana ekrana gitmek için yukarı kaydırın"</string>
     <string name="allset_description" msgid="6350320429953234580">"Telefonunuzu kullanmaya hazırsınız"</string>
@@ -85,7 +85,7 @@
     <string name="action_share" msgid="2648470652637092375">"Paylaş"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Ekran görüntüsü"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Uygulamanız veya kuruluşunuz bu işleme izin vermiyor"</string>
-    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Gezinme eğitici içeriği atlansın mı?"</string>
+    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Gezinme eğitimi atlansın mı?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Bunu daha sonra <xliff:g id="NAME">%1$s</xliff:g> uygulamasında bulabilirsiniz"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"İptal"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Atla"</string>

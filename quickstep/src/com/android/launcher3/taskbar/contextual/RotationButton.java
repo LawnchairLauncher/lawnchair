@@ -30,16 +30,24 @@ import android.view.View;
  *  * Directly use AnimatedVectorDrawable instead of KeyButtonDrawable
  */
 public interface RotationButton {
-    void setRotationButtonController(RotationButtonController rotationButtonController);
-    View getCurrentView();
-    boolean show();
-    boolean hide();
-    boolean isVisible();
-    void updateIcon(int lightIconColor, int darkIconColor);
-    void setOnClickListener(View.OnClickListener onClickListener);
-    void setOnHoverListener(View.OnHoverListener onHoverListener);
-    AnimatedVectorDrawable getImageDrawable();
-    void setDarkIntensity(float darkIntensity);
+    default void setRotationButtonController(RotationButtonController rotationButtonController) { }
+
+    default View getCurrentView() {
+        return null;
+    }
+    default void show() { }
+    default void hide() { }
+    default boolean isVisible() {
+        return false;
+    }
+
+    default void updateIcon(int lightIconColor, int darkIconColor) { }
+    default void setOnClickListener(View.OnClickListener onClickListener) { }
+    default void setOnHoverListener(View.OnHoverListener onHoverListener) { }
+    default AnimatedVectorDrawable getImageDrawable() {
+        return null;
+    }
+    default void setDarkIntensity(float darkIntensity) { }
     default boolean acceptRotationProposal() {
         return getCurrentView() != null;
     }
