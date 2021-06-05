@@ -17,5 +17,4 @@ for commit in commits:
   commit_message = commit.message.split('\n')[0].replace('_', '\\_')
   message += f'''\n• [{repository.git.rev_parse(commit.hexsha, short=7)}](https://github.com/LawnchairLauncher/lawnchair/commit/{commit.hexsha}): {commit_message}'''
 
-print(message)
-# requests.get(f'''https://api.telegram.org/bot{telegram_ci_bot_token}/sendMessage?chat_id={telegram_ci_channel_id}&parse_mode=Markdown&text={message}&disable_web_page_preview=true''')
+requests.get(f'''https://api.telegram.org/bot{telegram_ci_bot_token}/sendMessage?chat_id={telegram_ci_channel_id}&parse_mode=Markdown&text={message}&disable_web_page_preview=true''')
