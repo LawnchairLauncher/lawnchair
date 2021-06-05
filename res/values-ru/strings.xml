@@ -32,7 +32,7 @@
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Чтобы использовать специальные действия или перенести виджет, нажмите на него дважды и удерживайте."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d x %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"Ширина %1$d, высота %2$d"</string>
-    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"Нажмите на виджет и удерживайте его, чтобы переместить в нужное место на главном экране."</string>
+    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"Чтобы переместить виджет, нажмите на него и удерживайте."</string>
     <string name="add_to_home_screen" msgid="8631549138215492708">"Добавить на главный экран"</string>
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
       <item quantity="one"><xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> виджет</item>
@@ -55,6 +55,9 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Личные виджеты"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Рабочие виджеты"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Разговоры"</string>
+    <string name="widget_education_header" msgid="4874760613775913787">"Вся нужная информация перед глазами"</string>
+    <string name="widget_education_content" msgid="745542879510751525">"Чтобы не открывать приложения каждый раз, когда нужна информация, добавьте виджеты на главный экран."</string>
+    <string name="widget_education_close_button" msgid="8676165703104836580">"ОК"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Поиск приложений"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Загрузка приложений…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"По запросу \"<xliff:g id="QUERY">%1$s</xliff:g>\" ничего не найдено"</string>

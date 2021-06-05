@@ -16,6 +16,7 @@
 package com.android.launcher3.widget.picker;
 
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGETSTRAY_SEARCHED;
 import static com.android.launcher3.testing.TestProtocol.NORMAL_STATE_ORDINAL;
 
 import android.animation.Animator;
@@ -448,6 +449,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         if (mIsInSearchMode) return;
         setViewVisibilityBasedOnSearch(/*isInSearchMode= */ true);
         attachScrollbarToRecyclerView(mAdapters.get(AdapterHolder.SEARCH).mWidgetsRecyclerView);
+        mActivityContext.getStatsLogManager().logger().log(LAUNCHER_WIDGETSTRAY_SEARCHED);
     }
 
     @Override

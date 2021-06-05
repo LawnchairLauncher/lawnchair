@@ -16,6 +16,7 @@
 package com.android.launcher3.widget.picker;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -51,6 +52,9 @@ public final class WidgetsListTableViewHolderBinder
     private final OnLongClickListener mIconLongClickListener;
     private final WidgetPreviewLoader mWidgetPreviewLoader;
     private final WidgetsListAdapter mWidgetsListAdapter;
+    private final float mTopBottomCornerRadius;
+    private final float mMiddleCornerRadius;
+    private final float mJoinedCornerRadius;
     private boolean mApplyBitmapDeferred = false;
 
     public WidgetsListTableViewHolderBinder(
@@ -65,6 +69,13 @@ public final class WidgetsListTableViewHolderBinder
         mIconLongClickListener = iconLongClickListener;
         mWidgetPreviewLoader = widgetPreviewLoader;
         mWidgetsListAdapter = listAdapter;
+        Resources resources = context.getResources();
+        mTopBottomCornerRadius =
+                resources.getDimension(R.dimen.widget_list_top_bottom_corner_radius);
+        mMiddleCornerRadius =
+                resources.getDimension(R.dimen.widget_list_content_corner_radius);
+        mJoinedCornerRadius =
+                resources.getDimension(R.dimen.widget_list_content_joined_corner_radius);
     }
 
     /**
@@ -100,13 +111,14 @@ public final class WidgetsListTableViewHolderBinder
                     entry.mWidgets.size(), table.getChildCount()));
         }
 
-        if (position == mWidgetsListAdapter.getItemCount() - 1) {
-            table.setBackgroundResource(R.drawable.widgets_list_bottom_ripple);
-        } else {
-            // WidgetsListContentEntry is never shown in position 0. There must be a header above
-            // it.
-            table.setBackgroundResource(R.drawable.widgets_list_middle_ripple);
-        }
+        // The content is always joined to an expanded header above.
+        float topRadius = mJoinedCornerRadius;
+        float bottomRadius = position == mWidgetsListAdapter.getItemCount() - 1
+                ? mTopBottomCornerRadius
+                : mMiddleCornerRadius;
+        table.setBackgroundDrawable(
+                WidgetsListDrawables.createListBackgroundDrawable(
+                        holder.itemView.getContext(), topRadius, bottomRadius));
 
         List<ArrayList<WidgetItem>> widgetItemsTable =
                 WidgetsTableUtils.groupWidgetItemsIntoTable(entry.mWidgets, mMaxSpansPerRow);

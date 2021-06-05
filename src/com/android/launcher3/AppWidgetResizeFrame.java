@@ -5,6 +5,8 @@ import static android.appwidget.AppWidgetHostView.getDefaultPaddingForWidget;
 import static com.android.launcher3.LauncherAnimUtils.LAYOUT_HEIGHT;
 import static com.android.launcher3.LauncherAnimUtils.LAYOUT_WIDTH;
 import static com.android.launcher3.Utilities.ATLEAST_S;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGET_RESIZE_COMPLETED;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGET_RESIZE_STARTED;
 import static com.android.launcher3.views.BaseDragLayer.LAYOUT_X;
 import static com.android.launcher3.views.BaseDragLayer.LAYOUT_Y;
 
@@ -31,6 +33,10 @@ import android.widget.ImageView;
 
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
 import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.logging.InstanceId;
+import com.android.launcher3.logging.InstanceIdSequence;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.util.PendingRequestArgs;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 
@@ -95,6 +101,8 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
 
     private final IntRange mDeltaYRange = new IntRange();
     private final IntRange mBaselineY = new IntRange();
+
+    private final InstanceId logInstanceId = new InstanceIdSequence().newInstanceId();
 
     private boolean mLeftBorderActive;
     private boolean mRightBorderActive;
@@ -222,18 +230,33 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         mReconfigureButton = (ImageButton) findViewById(R.id.widget_reconfigure_button);
         if (info.isReconfigurable()) {
             mReconfigureButton.setVisibility(VISIBLE);
-            mReconfigureButton.setOnClickListener(view -> mLauncher
+            mReconfigureButton.setOnClickListener(view -> {
+                mLauncher.setWaitingForResult(
+                        PendingRequestArgs.forWidgetInfo(
+                                mWidgetView.getAppWidgetId(),
+                                // Widget add handler is null since we're reconfiguring an existing
+                                // widget.
+                                /* widgetHandler= */ null,
+                                (ItemInfo) mWidgetView.getTag()));
+                mLauncher
                     .getAppWidgetHost()
                     .startConfigActivity(
                             mLauncher,
                             mWidgetView.getAppWidgetId(),
-                            Launcher.REQUEST_RECONFIGURE_APPWIDGET));
+                            Launcher.REQUEST_RECONFIGURE_APPWIDGET);
+            });
         }
 
         // When we create the resize frame, we first mark all cells as unoccupied. The appropriate
         // cells (same if not resized, or different) will be marked as occupied when the resize
         // frame is dismissed.
         mCellLayout.markCellsAsUnoccupiedForView(mWidgetView);
+
+        mLauncher.getStatsLogManager()
+                .logger()
+                .withInstanceId(logInstanceId)
+                .withItemInfo((ItemInfo) mWidgetView.getTag())
+                .log(LAUNCHER_WIDGET_RESIZE_STARTED);
 
         setOnKeyListener(this);
     }
@@ -482,6 +505,11 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
 
         // We are done with resizing the widget. Save the widget size & position to LauncherModel
         resizeWidgetIfNeeded(true);
+        mLauncher.getStatsLogManager()
+                .logger()
+                .withInstanceId(logInstanceId)
+                .withItemInfo((ItemInfo) mWidgetView.getTag())
+                .log(LAUNCHER_WIDGET_RESIZE_COMPLETED);
     }
 
     private void onTouchUp() {

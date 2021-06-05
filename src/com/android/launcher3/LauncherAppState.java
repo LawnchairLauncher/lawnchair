@@ -99,8 +99,6 @@ public class LauncherAppState {
         }
         mOnTerminateCallback.add(() -> mContext.unregisterReceiver(modelChangeReceiver));
 
-        // TODO: remove listener on terminate
-        FeatureFlags.APP_SEARCH_IMPROVEMENTS.addChangeListener(context, mModel::forceReload);
         CustomWidgetManager.INSTANCE.get(mContext)
                 .setWidgetRefreshCallback(mModel::refreshAndBindWidgetsAndShortcuts);
 

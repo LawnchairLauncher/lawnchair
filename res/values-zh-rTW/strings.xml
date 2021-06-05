@@ -32,7 +32,7 @@
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"輕觸兩下並按住即可移動小工具或使用自訂操作。"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"寬度為 %1$d，高度為 %2$d"</string>
-    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"按住小工具即可將小工具移到主畫面的任一位置"</string>
+    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"按住小工具即可將它拖放到主畫面上的任何位置"</string>
     <string name="add_to_home_screen" msgid="8631549138215492708">"新增到主畫面"</string>
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
       <item quantity="other"><xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> 項小工具</item>
@@ -51,6 +51,9 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"個人"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"工作"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"對話"</string>
+    <string name="widget_education_header" msgid="4874760613775913787">"實用資訊隨手可得"</string>
+    <string name="widget_education_content" msgid="745542879510751525">"只要將小工具新增到主畫面，就可以直接查看資訊，不必開啟應用程式"</string>
+    <string name="widget_education_close_button" msgid="8676165703104836580">"我知道了"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"搜尋應用程式"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"正在載入應用程式…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"找不到與「<xliff:g id="QUERY">%1$s</xliff:g>」相符的應用程式"</string>
