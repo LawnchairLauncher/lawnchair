@@ -89,3 +89,4 @@ jobs:
           GITHUB_REPO: ${{ github.repo }}
           TELEGRAM_CI_BOT_TOKEN: ${{ secrets.TELEGRAM_CI_BOT_TOKEN }}
           TELEGRAM_CI_CHANNEL_ID: ${{ secrets.TELEGRAM_CI_CHANNEL_ID }}
+          BRANCH: 11-dev
