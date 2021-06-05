@@ -1,5 +1,6 @@
 package app.lawnchair.nexuslauncher;
 
+import static android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE;
 import static android.content.pm.ApplicationInfo.FLAG_SYSTEM;
 
 import android.app.Activity;
@@ -173,6 +174,6 @@ public class OverlayCallbackImpl
 
     public static boolean minusOneAvailable(Context context) {
         return FeedBridge.useBridge(context)
-                || ((context.getApplicationInfo().flags & FLAG_SYSTEM) == FLAG_SYSTEM);
+                || ((context.getApplicationInfo().flags & (FLAG_DEBUGGABLE | FLAG_SYSTEM)) != 0);
     }
 }

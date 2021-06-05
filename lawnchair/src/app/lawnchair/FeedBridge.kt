@@ -18,6 +18,7 @@ package app.lawnchair
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE
 import android.content.pm.ApplicationInfo.FLAG_SYSTEM
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -33,7 +34,7 @@ import com.android.launcher3.Utilities
 
 class FeedBridge(private val context: Context) {
 
-    private val shouldUseFeed = context.applicationInfo.flags and FLAG_SYSTEM == 0
+    private val shouldUseFeed = context.applicationInfo.flags and (FLAG_DEBUGGABLE or FLAG_SYSTEM) == 0
     private val prefs by lazy { PreferenceManager.getInstance(context) }
     private val bridgePackages by lazy {
         listOf(

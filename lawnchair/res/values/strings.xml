@@ -88,5 +88,6 @@
     <string name="dt2s_a11y_hint">To use Double Tap to Sleep, enable the accessibility service.</string>
     <string name="dt2s_warning_open_settings">Open Settings</string>
     <string name="minus_one_enable">Show Feed</string>
+    <string name="minus_one_unavailable">Feed is not available</string>
     <string name="cancel">Cancel</string>
 </resources>

@@ -18,8 +18,10 @@ package app.lawnchair.ui.preferences
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
+import app.lawnchair.nexuslauncher.OverlayCallbackImpl
 import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.SliderPreference
@@ -42,9 +44,12 @@ fun HomeScreenPreferences() {
     pageMeta.provide(Meta(title = stringResource(id = R.string.home_screen_label)))
     PreferenceLayout {
         PreferenceGroup(heading = "General", isFirstChild = true) {
+            val feedAvailable = OverlayCallbackImpl.minusOneAvailable(LocalContext.current)
             SwitchPreference(
                 prefs.minusOneEnable.getAdapter(),
                 label = stringResource(id = R.string.minus_one_enable),
+                description = if (feedAvailable) null else stringResource(id = R.string.minus_one_unavailable),
+                enabled = feedAvailable,
                 showDivider = true
             )
             SwitchPreference(
