@@ -81,7 +81,7 @@
     <string name="dt2s_a11y_hint">Per utilizzare doppio tocco per bloccare lo schermo, abilita il servizio di accessibilità.</string>
     <string name="dt2s_warning_open_settings">Apri Impostazioni</string>
     <string name="minus_one_enable">Mostra la feed</string>
-    <string name="minus_one_unavailable">Il feed non è disponibile</string>
+    <string name="minus_one_unavailable">Feed is not available</string>
     <string name="fuzzy_search_title">Fuzzy Search</string>
-    <string name="fuzzy_search_desc">Use fuzzy matching to search for apps</string>
+    <string name="fuzzy_search_desc">Approximate matching for app searches.</string>
 </resources>
