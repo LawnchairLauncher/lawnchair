@@ -36,3 +36,4 @@ jobs:
           GITHUB_REPO: ${{ github.repo }}
           TELEGRAM_CI_BOT_TOKEN: ${{ secrets.NOTIFY_BOT_TOKEN }}
           TELEGRAM_CI_CHANNEL_ID: ${{ secrets.NOTIFY_CHANNEL_ID }}
+          BRANCH: ${{ github.ref }}
