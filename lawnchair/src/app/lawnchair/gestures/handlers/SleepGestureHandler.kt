@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import app.lawnchair.gestures.GestureHandler
 import app.lawnchair.launcher
 import app.lawnchair.lawnchairApp
+import app.lawnchair.ui.AlertBottomSheetContent
 import app.lawnchair.ui.preferences.components.BottomSheetState
 import app.lawnchair.views.showBottomSheet
 import com.android.launcher3.R
@@ -127,29 +128,10 @@ fun ServiceWarningDialog(
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    Column(
-        modifier = Modifier
-            .navigationBarsPadding()
-            .padding(16.dp)
-            .fillMaxWidth()
-    ) {
-        Text(
-            text = stringResource(id = title),
-            style = MaterialTheme.typography.h6,
-            color = MaterialTheme.colors.onSurface
-        )
-        Text(
-            modifier = Modifier.padding(top = 16.dp),
-            text = stringResource(id = description),
-            style = MaterialTheme.typography.body2,
-            color = MaterialTheme.colors.onSurface
-        )
-        Row(
-            horizontalArrangement = Arrangement.End,
-            modifier = Modifier
-                .padding(top = 20.dp)
-                .fillMaxWidth()
-        ) {
+    AlertBottomSheetContent(
+        title = { Text(text = stringResource(id = title)) },
+        text = { Text(text = stringResource(id = description)) },
+        buttons = {
             OutlinedButton(
                 shape = MaterialTheme.shapes.small,
                 onClick = {
@@ -169,5 +151,5 @@ fun ServiceWarningDialog(
                 Text(text = stringResource(id = R.string.dt2s_warning_open_settings))
             }
         }
-    }
+    )
 }
