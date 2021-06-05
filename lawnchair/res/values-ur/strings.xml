@@ -37,18 +37,18 @@
     <string name="home_screen_columns">ہوم اسکرین کالم</string>
     <string name="grid">گرڈ</string>
     <string name="home_screen_rows">ہوم اسکرین قطاریں</string>
-    <string name="icons">شبیہیں</string>
-    <string name="icon_size">شبیہیں کا سائز</string>
+    <string name="icons">آئکنس</string>
+    <string name="icon_size">آئکن سائز</string>
     <string name="label_size">لیبل سائز</string>
     <string name="allow_empty_pages_label">خالی صفحات کی اجازت دیں</string>
     <string name="notification_dots">نوٹیفیکیشن کے نقطے</string>
     <string name="smartspace_preferences">ترجیحات</string>
     <string name="about_label">کے بارے میں</string>
     <string name="news">خبریں</string>
-    <string name="support">کی حمایت</string>
+    <string name="support">حمایت</string>
     <string name="acknowledgements">اعترافات</string>
     <string name="devops">ڈیو آپس</string>
-    <string name="quickswitch_maintenance">کوئیک سوئچ کی بحالی</string>
+    <string name="quickswitch_maintenance">فوری سوئچ کی بحالی</string>
     <string name="all_apps_search_bar_hint">ایپس تلاش کریں</string>
     <string name="settings_button_text">ھوم کے ترتیبات</string>
     <string name="development">ڈیویلپمینٹ</string>
@@ -57,10 +57,10 @@
     <string name="all_apps_no_search_results">اس سے ملتا جلتا کوئی ایپ نہیں ملا \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"۔</string>
     <string name="background_opacity">پس منظر کی دھندلاپن</string>
     <string name="background_lightness_label">پس منظر کی روشنی</string>
-    <string name="adaptive_icons">انکولی شبیہیں</string>
-    <string name="adaptive_icon_background_description">سفید کے لئے سو فیصد پس منظر کی روشنی استعمال کریں.</string>
-    <string name="auto_adaptive_icons_label">خودکارانکولی شبیہیں</string>
-    <string name="auto_adaptive_icons_description">تمام غیر انکولی شبیہیں کے لئے.</string>
+    <string name="adaptive_icons">انکولی آئکنس</string>
+    <string name="adaptive_icon_background_description">سفید کے لئے ٪100 پس منظر کی روشنی استعمال کریں.</string>
+    <string name="auto_adaptive_icons_label">خودکار انکولی آئکنس</string>
+    <string name="auto_adaptive_icons_description">تمام غیر انکولی آئکنس کے لئے.</string>
     <string name="support_and_pr">اس کی حمایت کیجیئے PR &amp;</string>
     <string name="workspace_dt2s">سلانے کے لئے دو بار دبائیں</string>
     <string name="smart_space_enable">ایک جھلک کے وِجٹ کو دکھائیں</string>
@@ -70,7 +70,7 @@
     <string name="hidden_apps_label">چھپے ہوئے ایپس</string>
     <string name="hidden_apps_label_with_count">چھپے ہوئے ایپس (%1$d)</string>
     <plurals name="apps_count">
-        <item quantity="one">%1$d App</item>
+        <item quantity="one">ایپ%1$d</item>
         <item quantity="other">ایپس%1$d</item>
     </plurals>
     <string name="hotseat_qsb_label">سرچ بار کو دکھائیں</string>
