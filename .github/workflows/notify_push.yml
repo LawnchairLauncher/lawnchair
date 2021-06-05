@@ -1,0 +1,38 @@
+name: Notify push
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - '*'
+      - '*/*'
+      - '**'
+      - '!11-dev-localization'
+
+jobs:
+  notify-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2.3.4
+        with:
+          submodules: true
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - name: Install Python packages
+        uses: BSFishy/pip-action@v1
+        with:
+          packages: |
+            gitpython
+            requests
+      - name: Send changelog
+        run: python send_changelog.py
+        env:
+          GITHUB_EVENT_BEFORE: ${{ github.event.before }}
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_REPO: ${{ github.repo }}
+          TELEGRAM_CI_BOT_TOKEN: ${{ secrets.NOTIFY_BOT_TOKEN }}
+          TELEGRAM_CI_CHANNEL_ID: ${{ secrets.NOTIFY_CHANNEL_ID }}
