@@ -614,10 +614,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
 
         if (mCurrentPreviewItems.isEmpty() && !mAnimating) return;
 
-        final int saveCount = canvas.save();
-        canvas.clipPath(mBackground.getClipPath());
         mPreviewItemManager.draw(canvas);
-        canvas.restoreToCount(saveCount);
 
         if (!mBackground.drawingDelegated()) {
             mBackground.drawBackgroundStroke(canvas);
