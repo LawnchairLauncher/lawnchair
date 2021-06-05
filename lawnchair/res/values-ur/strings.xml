@@ -24,14 +24,14 @@
     <string name="home_screen_rotation_label">حوم اسکرین کی گردش</string>
     <string name="home_screen_rotaton_description">جب آلہ گھمایا ہوا ہو.</string>
     <string name="auto_add_shortcuts_label">هوم اسکرین میں نئے ایپس شامل کریں۔</string>
-    <string name="dock_label">Dock</string>
+    <string name="dock_label">ڈاک</string>
     <string name="dock_description">Search Bar, Icon Count</string>
     <string name="app_drawer_label">ایپ کا ڈراز</string>
     <string name="app_drawer_description">Hidden Apps, Column Count, Icons</string>
     <string name="folders_label">فولڈرز</string>
     <string name="folders_description">قطار اور کالم کی گنتی</string>
     <string name="app_drawer_columns">ایپ درازکے کالم</string>
-    <string name="dock_icons">Dock Icons</string>
+    <string name="dock_icons">ڈاک آئکن</string>
     <string name="max_folder_columns">زیادہ سے زیادہ فولڈرکے کالم</string>
     <string name="max_folder_rows">زیادہ سے زیادہ فولڈرکی قطار</string>
     <string name="home_screen_columns">ہوم اسکرین کالم</string>
