@@ -82,5 +82,5 @@
     <string name="minus_one_enable">Show Feed</string>
     <string name="minus_one_unavailable">Feed is not available</string>
     <string name="fuzzy_search_title">Fuzzy Search</string>
-    <string name="fuzzy_search_desc">Use fuzzy matching to search for apps</string>
+    <string name="fuzzy_search_desc">Approximate matching for app searches.</string>
 </resources>
