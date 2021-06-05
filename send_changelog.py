@@ -11,7 +11,7 @@ telegram_ci_channel_id = os.getenv('TELEGRAM_CI_CHANNEL_ID')
 repository = git.Repo('.')
 commits_range = f'{github_event_before}...{github_sha}'
 commits = list(repository.iter_commits(commits_range))
-message = f'''🔨 [{len(commits)} new {'commit' if len(commits) == 1 else 'commits'}](https://github.com/{github_repo}/compare/{commits_range}) to `lawnchair:11-dev`:'''
+message = f'''🔨 [{len(commits)} new {'commit' if len(commits) == 1 else 'commits'}](https://github.com/{github_repo}/compare/{commits_range}) to `lawnchair:11-dev`:\n'''
 
 for commit in commits:
   commit_message = commit.message.split('\n')[0].replace('_', '\\_')
