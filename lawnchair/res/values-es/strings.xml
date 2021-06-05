@@ -71,7 +71,7 @@
     <string name="hidden_apps_label_with_count">Aplicaciones ocultas (%1$d)</string>
     <plurals name="apps_count">
         <item quantity="one">%1$d App</item>
-        <item quantity="other">%1$d Apps</item>
+        <item quantity="other">%1$d Aplicaciones</item>
     </plurals>
     <string name="hotseat_qsb_label">Show Search Bar</string>
     <string name="dt2s_admin_hint_title">Admin permission required</string>
