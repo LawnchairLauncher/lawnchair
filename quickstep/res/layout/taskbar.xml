@@ -13,12 +13,12 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
 <com.android.launcher3.taskbar.TaskbarDragLayer
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/taskbar_container"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:clipChildren="false">
 
     <com.android.launcher3.taskbar.TaskbarView
         android:id="@+id/taskbar_view"
@@ -26,39 +26,32 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:forceHasOverlappingRendering="false"
+        android:layout_gravity="bottom"
+        android:clipChildren="false" />
+
+    <FrameLayout
+        android:id="@+id/navbuttons_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom" >
 
         <LinearLayout
-            android:id="@+id/nav_button_layout"
+            android:id="@+id/start_nav_buttons"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:paddingLeft="@dimen/taskbar_nav_buttons_spacing"
             android:paddingRight="@dimen/taskbar_nav_buttons_spacing"
-            android:forceHasOverlappingRendering="false"
-            android:gravity="center" />
+            android:gravity="center_vertical"
+            android:layout_gravity="start"/>
 
-        <LinearLayout
-            android:id="@+id/hotseat_icons_layout"
+        <FrameLayout
+            android:id="@+id/end_nav_buttons"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:forceHasOverlappingRendering="false"
-            android:gravity="center" />
-
-        <LinearLayout
-            android:id="@+id/contextual_button_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:paddingLeft="@dimen/taskbar_nav_buttons_spacing"
             android:paddingRight="@dimen/taskbar_nav_buttons_spacing"
-            android:forceHasOverlappingRendering="false"
-            android:gravity="center" />
-
-    </com.android.launcher3.taskbar.TaskbarView>
-
-    <com.android.launcher3.taskbar.ImeBarView
-        android:id="@+id/ime_bar_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"/>
+            android:gravity="center_vertical"
+            android:layout_gravity="end"/>
+    </FrameLayout>
 
 </com.android.launcher3.taskbar.TaskbarDragLayer>

@@ -131,6 +131,7 @@
 
     <dimen name="widget_list_top_bottom_corner_radius">28dp</dimen>
     <dimen name="widget_list_content_corner_radius">4dp</dimen>
+    <dimen name="widget_list_content_joined_corner_radius">0dp</dimen>
 
     <dimen name="widget_list_header_view_vertical_padding">20dp</dimen>
     <dimen name="widget_list_entry_bottom_margin">2dp</dimen>
@@ -295,6 +296,10 @@
 
 <!-- Taskbar related (placeholders to compile in Launcher3 without Quickstep) -->
     <dimen name="taskbar_size">0dp</dimen>
+    <dimen name="qsb_widget_height">0dp</dimen>
+    <dimen name="taskbar_icon_size">44dp</dimen>
+    <!-- Note that this applies to both sides of all icons, so visible space is double this. -->
+    <dimen name="taskbar_icon_spacing">8dp</dimen>
 
     <!-- Size of the maximum radius for the enforced rounded rectangles. -->
     <dimen name="enforced_rounded_corner_max_radius">16dp</dimen>

@@ -83,16 +83,6 @@ public class OverviewState extends LauncherState {
     }
 
     @Override
-    public float getTaskbarScale(Launcher launcher) {
-        return 1f;
-    }
-
-    @Override
-    public float getTaskbarTranslationY(Launcher launcher) {
-        return 0f;
-    }
-
-    @Override
     public PageAlphaProvider getWorkspacePageAlphaProvider(Launcher launcher) {
         return new PageAlphaProvider(DEACCEL_2) {
             @Override

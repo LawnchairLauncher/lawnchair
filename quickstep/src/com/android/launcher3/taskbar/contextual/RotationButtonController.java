@@ -104,7 +104,7 @@ public class RotationButtonController {
 
     private final IRotationWatcher.Stub mRotationWatcher = new IRotationWatcher.Stub() {
         @Override
-        public void onRotationChanged(final int rotation) throws RemoteException {
+        public void onRotationChanged(final int rotation) {
             // We need this to be scheduled as early as possible to beat the redrawing of
             // window in response to the orientation change.
             mMainThreadHandler.postAtFrontOfQueue(() -> {
@@ -137,7 +137,7 @@ public class RotationButtonController {
 
         mAccessibilityManager = AccessibilityManager.getInstance(context);
         mTaskStackListener = new TaskStackListenerImpl();
-        mDisplayController = DisplayController.INSTANCE.getNoCreate();
+        mDisplayController = DisplayController.INSTANCE.get(context);
     }
 
     public void setRotationButton(RotationButton rotationButton) {
@@ -156,7 +156,7 @@ public class RotationButtonController {
         }
     }
 
-    public void cleanup() {
+    public void onDestroy() {
         unregisterListeners();
     }
 

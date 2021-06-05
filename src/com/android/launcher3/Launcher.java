@@ -2811,13 +2811,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         return new float[] {NO_SCALE, NO_OFFSET};
     }
 
-    /**
-     * @see LauncherState#getTaskbarScale(Launcher)
-     */
-    public float getNormalTaskbarScale() {
-        return 1f;
-    }
-
     public static Launcher getLauncher(Context context) {
         return fromContext(context);
     }
