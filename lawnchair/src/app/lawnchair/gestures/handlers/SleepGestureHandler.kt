@@ -156,7 +156,7 @@ fun ServiceWarningDialog(
                     scope.launch { sheetState.hide() }
                 }
             ) {
-                Text(text = stringResource(id = R.string.cancel))
+                Text(text = stringResource(id = android.R.string.cancel))
             }
             Spacer(modifier = Modifier.requiredWidth(16.dp))
             Button(
