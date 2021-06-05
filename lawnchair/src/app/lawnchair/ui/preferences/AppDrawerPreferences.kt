@@ -21,10 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
-import app.lawnchair.ui.preferences.components.NavigationActionPreference
-import app.lawnchair.ui.preferences.components.PreferenceGroup
-import app.lawnchair.ui.preferences.components.PreferenceLayout
-import app.lawnchair.ui.preferences.components.SliderPreference
+import app.lawnchair.ui.preferences.components.*
 import app.lawnchair.util.Meta
 import app.lawnchair.util.pageMeta
 import app.lawnchair.util.preferences.getAdapter
@@ -54,6 +51,11 @@ fun AppDrawerPreferences() {
                 label = stringResource(id = R.string.hidden_apps_label),
                 subtitle = resources.getQuantityString(R.plurals.apps_count, hiddenAppsCount(), hiddenAppsCount()),
                 destination = subRoute(name = AppDrawerRoutes.HIDDEN_APPS),
+            )
+            SwitchPreference(
+                adapter = prefs.useFuzzySearch.getAdapter(),
+                label = stringResource(id = R.string.fuzzy_search_title),
+                description = stringResource(id = R.string.fuzzy_search_desc)
             )
             SliderPreference(
                 label = stringResource(id = R.string.background_opacity),

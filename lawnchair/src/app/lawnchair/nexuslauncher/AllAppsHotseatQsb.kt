@@ -15,6 +15,7 @@ import android.view.animation.Interpolator
 import android.widget.EditText
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
+import app.lawnchair.allapps.LawnchairAppSearchAlgorithm
 import app.lawnchair.util.preferences.PreferenceManager
 import com.android.launcher3.*
 import com.android.launcher3.allapps.AllAppsContainerView
@@ -92,7 +93,7 @@ class AllAppsHotseatQsb @JvmOverloads constructor(context: Context, attrs: Attri
                 mFallbackSearchView.elevation = initialElevation + elevationScale * initialElevation
             }
         })
-        mSearchBarController.initialize(DefaultAppSearchAlgorithm(mApps.apps),
+        mSearchBarController.initialize(LawnchairAppSearchAlgorithm(context, mApps.apps),
                 mFallbackSearchView, Launcher.cast(mActivity), this)
     }
 
