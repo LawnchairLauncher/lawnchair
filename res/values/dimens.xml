@@ -131,6 +131,7 @@
 
     <dimen name="widget_list_top_bottom_corner_radius">28dp</dimen>
     <dimen name="widget_list_content_corner_radius">4dp</dimen>
+    <dimen name="widget_list_content_joined_corner_radius">0dp</dimen>
 
     <dimen name="widget_list_header_view_vertical_padding">20dp</dimen>
     <dimen name="widget_list_entry_bottom_margin">2dp</dimen>

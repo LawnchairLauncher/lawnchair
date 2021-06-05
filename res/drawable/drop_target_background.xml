@@ -13,10 +13,9 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<TableLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/widgets_table"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginHorizontal="16dp"
-    android:layout_marginBottom="@dimen/widget_list_entry_bottom_margin"/>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_selected="true"
+        android:drawable="@drawable/drop_target_frame_hover" />
+    <item android:state_selected="false"
+        android:drawable="@drawable/drop_target_frame" />
+</selector>

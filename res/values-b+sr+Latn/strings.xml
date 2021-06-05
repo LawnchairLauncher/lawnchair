@@ -53,6 +53,9 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Lično"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Posao"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Konverzacije"</string>
+    <string name="widget_education_header" msgid="4874760613775913787">"Korisne informacije nadohvat ruke"</string>
+    <string name="widget_education_content" msgid="745542879510751525">"Da biste pronašli informacije bez otvaranja aplikacija, možete da dodate vidžete na početni ekran"</string>
+    <string name="widget_education_close_button" msgid="8676165703104836580">"Važi"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Pretražite aplikacije"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Aplikacije se učitavaju…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Nije pronađena nijedna aplikacija za „<xliff:g id="QUERY">%1$s</xliff:g>“"</string>

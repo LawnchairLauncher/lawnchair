@@ -49,21 +49,15 @@
     <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"మీరు ఎడమ అంచు నుండి స్క్రీన్ మధ్యలోకి స్వైప్ చేశారని నిర్ధారించుకోని, ఆపై మీ వేలిని ఎత్తండి."</string>
     <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"మీరు చాలా-కుడి అంచు నుండి స్వైప్ చేశారని నిర్ధారించుకోండి."</string>
     <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"మీరు కుడి అంచు నుండి స్క్రీన్ మధ్యలోకి స్వైప్ చేశారని నిర్ధారించుకోని, ఆపై మీ వేలిని ఎత్తండి."</string>
-    <!-- no translation found for back_gesture_feedback_complete_with_back_right_follow_up (2100639504811809267) -->
-    <skip />
-    <!-- no translation found for back_gesture_feedback_complete_with_overview_follow_up (9176400654037014471) -->
-    <skip />
+    <string name="back_gesture_feedback_complete_with_back_right_follow_up" msgid="2100639504811809267">"వెనుకకు వెళ్లడానికి ఎడమ నుండి ఎలా స్వైప్ చేయాలో మీరు నేర్చుకున్నారు."</string>
+    <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"వెనుకకు వెళ్లడానికి కుడి నుండి స్వైప్ ఎలానో మీకు తెలుసు. తర్వాత, యాప్‌ల మధ్య ఎలా మారాలో తెలుసుకోండి."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"మీరు తిరిగి వెనక్కు వెళ్లే సంజ్ఞను పూర్తి చేశారు."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"మీరు స్క్రీన్ దిగువకు చాలా దగ్గరగా స్వైప్ చేయలేదని నిర్ధారించుకోండి."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"వెనుక సంజ్ఞ సున్నితత్వం మార్చడానికి, సెట్టింగ్‌లకు వెళ్లండి"</string>
-    <!-- no translation found for back_left_gesture_intro_title (5197184481779330065) -->
-    <skip />
-    <!-- no translation found for back_right_gesture_intro_title (7431951986971898074) -->
-    <skip />
-    <!-- no translation found for back_left_gesture_intro_subtitle (7672761376577628602) -->
-    <skip />
-    <!-- no translation found for back_right_gesture_intro_subtitle (2735828029197816509) -->
-    <skip />
+    <string name="back_left_gesture_intro_title" msgid="5197184481779330065">"వెనుకకు వెళ్లడానికి ఎడమ వైపు నుండి స్వైప్ చేయండి"</string>
+    <string name="back_right_gesture_intro_title" msgid="7431951986971898074">"వెనుకకు వెళ్లడానికి కుడి వైపు నుండి స్వైప్ చేయండి"</string>
+    <string name="back_left_gesture_intro_subtitle" msgid="7672761376577628602">"మీరు ఉన్న చివరి స్క్రీన్‌కు తిరిగి వెళ్లడానికి, ఎడమ అంచు నుండి స్క్రీన్ మధ్యలోకి స్వైప్ చేయండి."</string>
+    <string name="back_right_gesture_intro_subtitle" msgid="2735828029197816509">"కుడి అంచు నుండి స్క్రీన్ మధ్యలోకి స్వైప్ చేయడం ద్వారా మీరు చివరి స్క్రీన్‌కు తిరిగి వెళ్లవచ్చు. దీన్ని ఇప్పుడే ట్రై చేయండి."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"మీరు స్క్రీన్ దిగువ అంచు నుండి పైకి స్వైప్ చేశారని నిర్ధారించుకోండి."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"బయలుదేరే ముందు మీరు పాజ్ చేయకుండా చూసుకోండి."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"మీరు నేరుగా పైకి స్వైప్ చేశారని నిర్ధారించుకోండి."</string>
