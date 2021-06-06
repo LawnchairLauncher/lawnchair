@@ -73,7 +73,7 @@
         <item quantity="other">%1$d Apps</item>
     </plurals>
     <string name="hotseat_qsb_label">Show Search Bar</string>
-    <string name="dt2s_admin_hint_title">Admin permission required</string>
+    <string name="dt2s_admin_hint_title">관리자 권한이 필요합니다.</string>
     <string name="dt2s_admin_hint">To use Double Tap to Sleep, grant the Admin permission.</string>
     <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
     <string name="dt2s_a11y_hint_title">Accessibility service required</string>

@@ -18,16 +18,16 @@
     <string name="icon_pack">حزمة أيقونات</string>
     <string name="settings">الإعدادات</string>
     <string name="home_screen_label">الشاشة الرئيسية</string>
-    <string name="home_screen_description">Feed, At a Glance, Grid, Icons</string>
+    <string name="home_screen_description">حصاد، في لمحة، مِصبع، أيقونات</string>
     <string name="general_label">عام</string>
     <string name="general_description">نقط الإشعارات، حزمة الأيقونات</string>
     <string name="home_screen_rotation_label">تدوير الشاشة الرئيسية</string>
     <string name="home_screen_rotaton_description">عندما يتم تدوير الجهاز.</string>
     <string name="auto_add_shortcuts_label">إضافة التطبيقات الجديدة إلى الشاشة الرئيسية</string>
     <string name="dock_label">المرسى</string>
-    <string name="dock_description">Search Bar, Icon Count</string>
+    <string name="dock_description">شريط البحث، عدد الأيقونات</string>
     <string name="app_drawer_label">قائمة التطبيقات</string>
-    <string name="app_drawer_description">Hidden Apps, Column Count, Icons</string>
+    <string name="app_drawer_description">التطبيقات المخفية، عدد الأعمدة، الأيقونات</string>
     <string name="folders_label">المجلدات</string>
     <string name="folders_description">عدد الصفوف والأعمدة</string>
     <string name="app_drawer_columns">أعمدة قائمة التطبيقات</string>
@@ -77,15 +77,15 @@
         <item quantity="many">%1$d تطبيق</item>
         <item quantity="other">%1$d تطبيقات</item>
     </plurals>
-    <string name="hotseat_qsb_label">Show Search Bar</string>
+    <string name="hotseat_qsb_label">إظهار شريط البحث</string>
     <string name="dt2s_admin_hint_title">Admin permission required</string>
     <string name="dt2s_admin_hint">To use Double Tap to Sleep, grant the Admin permission.</string>
     <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
     <string name="dt2s_a11y_hint_title">Accessibility service required</string>
     <string name="dt2s_a11y_hint">To use Double Tap to Sleep, enable the accessibility service.</string>
-    <string name="dt2s_warning_open_settings">Open Settings</string>
-    <string name="minus_one_enable">Show Feed</string>
+    <string name="dt2s_warning_open_settings">افتح الإعدادات</string>
+    <string name="minus_one_enable">اِعرض الحصاد</string>
     <string name="minus_one_unavailable">Feed is not available</string>
-    <string name="fuzzy_search_title">Fuzzy Search</string>
-    <string name="fuzzy_search_desc">Approximate matching for app searches.</string>
+    <string name="fuzzy_search_title">بحث غامض</string>
+    <string name="fuzzy_search_desc">قارب التطابقات لعمليات البحث عن التطبيقات.</string>
 </resources>
