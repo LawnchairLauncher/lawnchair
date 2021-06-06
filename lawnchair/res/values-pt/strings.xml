@@ -78,10 +78,10 @@
     <string name="dt2s_admin_hint">Para usar o Duplo Toque para Dormir, dê permissões de administrador à aplicação Launchair. Toque em \"Abrir Definições,\" e depois toque em \"Ativar a aplicação de administrador deste dispositivo.\"</string>
     <string name="dt2s_admin_warning">O Duplo Toque para Dormir será desativado.</string>
     <string name="dt2s_a11y_hint_title">Active o Serviço se Acessibilidade</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap “Open Settings,” then select “Lawnchair” and turn on “Use Lawnchair.”</string>
-    <string name="dt2s_warning_open_settings">Open Settings</string>
-    <string name="minus_one_enable">Show Feed</string>
-    <string name="minus_one_unavailable">No feed installed.</string>
-    <string name="fuzzy_search_title">Fuzzy Search</string>
-    <string name="fuzzy_search_desc">Approximate matching for app searches.</string>
+    <string name="dt2s_a11y_hint">Para usar o Duplo Toque para Dormir, active o serviço de acessibilidade do Lawnchair. Toque em \"Abrir Definições,\" depois selecione \"Lawnchair\" e active \"Utilizar Lawnchair.\"</string>
+    <string name="dt2s_warning_open_settings">Abrir Definições</string>
+    <string name="minus_one_enable">Mostrar Feed</string>
+    <string name="minus_one_unavailable">Nenhum feed instalado.</string>
+    <string name="fuzzy_search_title">Pesquisa Difusa</string>
+    <string name="fuzzy_search_desc">Coincidência aproximada para pesquisa de aplicações.</string>
 </resources>
