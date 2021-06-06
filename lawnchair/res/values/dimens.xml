@@ -20,6 +20,9 @@
     <dimen name="dynamic_grid_hotseat_top_padding">0dp</dimen>
     <dimen name="dynamic_grid_hotseat_bottom_padding">72dp</dimen>
 
-    <dimen name="search_widget_top_shift">24dp</dimen>
+    <dimen name="noqsb_hotseat_top_padding">8dp</dimen>
+    <dimen name="noqsb_hotseat_bottom_padding">2dp</dimen>
+
+    <dimen name="search_widget_top_shift">16dp</dimen>
     <dimen name="search_widget_hotseat_height">56dp</dimen>
 </resources>

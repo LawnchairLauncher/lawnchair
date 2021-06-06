@@ -17,14 +17,12 @@
 package app.lawnchair.util.preferences
 
 import android.content.Context
-import android.content.SharedPreferences
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import app.lawnchair.LawnchairLauncher
-import app.lawnchair.LawnchairLauncherQuickstep
-import com.android.launcher3.BuildConfig
+import app.lawnchair.nexuslauncher.OverlayCallbackImpl
 import com.android.launcher3.LauncherAppState
-import com.android.launcher3.Utilities
+import com.android.launcher3.states.RotationHelper
 import com.android.launcher3.util.MainThreadInitializedObject
 
 class PreferenceManager private constructor(context: Context) : BasePreferenceManager(context) {
@@ -34,18 +32,18 @@ class PreferenceManager private constructor(context: Context) : BasePreferenceMa
         model.forceReload()
     }
     private val scheduleRestart = {
-        if (BuildConfig.FLAVOR_recents == "withQuickstep") {
-            LawnchairLauncherQuickstep.getLauncher(context).scheduleRestart()
-        } else {
-            LawnchairLauncher.getLauncher(context).scheduleRestart()
-        }
+        LawnchairLauncher.instance?.scheduleRestart()
+        Unit
     }
+
     private val reloadGrid = scheduleRestart
 
+    val hiddenAppSet = StringSetPref("hidden-app-set", setOf())
     val iconPackPackage = StringPref("pref_iconPackPackage", "", reloadIcons)
-    val allowRotation = BoolPref("pref_allowRotation", true)
+    val allowRotation = BoolPref("pref_allowRotation", RotationHelper.getAllowRotationDefaultValue())
     val wrapAdaptiveIcons = BoolPref("prefs_wrapAdaptive", false, reloadIcons)
     val addIconToHome = BoolPref("pref_add_icon_to_home", true)
+    val enableHotseatQsb = BoolPref("pref_dockSearchBar", true, reloadGrid)
     val hotseatColumns = IdpIntPref("pref_hotseatColumns", { numHotseatIcons }, reloadGrid)
     val workspaceColumns = IdpIntPref("pref_workspaceColumns", { numColumns }, reloadGrid)
     val workspaceRows = IdpIntPref("pref_workspaceRows", { numRows }, reloadGrid)
@@ -57,6 +55,8 @@ class PreferenceManager private constructor(context: Context) : BasePreferenceMa
     val allAppsTextSizeFactor = FloatPref("pref_allAppsTextSizeFactor", 1F, scheduleRestart)
     val allAppsColumns = IdpIntPref("pref_allAppsColumns", { numAllAppsColumns }, reloadGrid)
     val smartSpaceEnable = BoolPref("pref_smartSpaceEnable", true, scheduleRestart)
+    val minusOneEnable = BoolPref("pref_enableMinusOne", true)
+    val useFuzzySearch = BoolPref("pref_useFuzzySearch", false)
 
     // TODO: Add the ability to manually delete empty pages.
     val allowEmptyPages = BoolPref("pref_allowEmptyPages", false)

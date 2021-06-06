@@ -148,6 +148,8 @@ import com.android.systemui.shared.system.TaskStackChangeListener;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
+import app.lawnchair.LawnchairApp;
+
 /**
  * A list of recent tasks.
  */
@@ -557,8 +559,10 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         updateTaskStackListenerState();
         mModel.getThumbnailCache().getHighResLoadingState().addCallback(this);
         mActivity.addMultiWindowModeChangedListener(mMultiWindowModeChangedListener);
-        ActivityManagerWrapper.getInstance().registerTaskStackListener(mTaskStackListener);
-        mSyncTransactionApplier = new SurfaceTransactionApplier(this);
+        if (LawnchairApp.isRecentsEnabled()) {
+            ActivityManagerWrapper.getInstance().registerTaskStackListener(mTaskStackListener);
+            mSyncTransactionApplier = new SurfaceTransactionApplier(this);
+        }
         RecentsModel.INSTANCE.get(getContext()).addThumbnailChangeListener(this);
         mIdp.addOnChangeListener(this);
         mIPinnedStackAnimationListener.setActivity(mActivity);
@@ -575,8 +579,10 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         updateTaskStackListenerState();
         mModel.getThumbnailCache().getHighResLoadingState().removeCallback(this);
         mActivity.removeMultiWindowModeChangedListener(mMultiWindowModeChangedListener);
-        ActivityManagerWrapper.getInstance().unregisterTaskStackListener(mTaskStackListener);
-        mSyncTransactionApplier = null;
+        if (LawnchairApp.isRecentsEnabled()) {
+            ActivityManagerWrapper.getInstance().unregisterTaskStackListener(mTaskStackListener);
+            mSyncTransactionApplier = null;
+        }
         RecentsModel.INSTANCE.get(getContext()).removeThumbnailChangeListener(this);
         mIdp.removeOnChangeListener(this);
         SystemUiProxy.INSTANCE.get(getContext()).setPinnedStackAnimationListener(null);

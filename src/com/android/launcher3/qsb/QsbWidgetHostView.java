@@ -89,6 +89,7 @@ public class QsbWidgetHostView extends NavigableAppWidgetHostView {
                 .inflate(R.layout.qsb_default_view, parent, false);
         v.findViewById(R.id.btn_qsb_search).setOnClickListener((v2) ->
                 Launcher.getLauncher(v2.getContext()).startSearch("", false, null, true));
+        v.findViewById(R.id.qsb_background).setClipToOutline(true);
         return v;
     }
 

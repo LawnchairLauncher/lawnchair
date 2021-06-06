@@ -52,11 +52,13 @@ class PreferenceViewModel(application: Application) : AndroidViewModel(applicati
         )
 
         for (info in list) {
-            iconPacks[info.activityInfo.packageName] = IconPackInfo(
-                info.loadLabel(pm).toString(),
-                info.activityInfo.packageName,
-                info.loadIcon(pm)
-            )
+            iconPacks.getOrPut(info.activityInfo.packageName) {
+                IconPackInfo(
+                    info.loadLabel(pm).toString(),
+                    info.activityInfo.packageName,
+                    info.loadIcon(pm)
+                )
+            }
         }
 
         val iconPackList = iconPacks.values.toMutableList()

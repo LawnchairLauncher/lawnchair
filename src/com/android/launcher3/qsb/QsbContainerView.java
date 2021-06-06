@@ -184,13 +184,18 @@ public class QsbContainerView extends FrameLayout {
         public View onCreateView(
                 LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-            mWrapper = new FrameLayout(getContext());
+            mWrapper = createWrapper(getContext());
             // Only add the view when enabled
             if (isQsbEnabled()) {
                 mQsbWidgetHost.startListening();
                 mWrapper.addView(createQsb(mWrapper));
             }
             return mWrapper;
+        }
+
+        @NonNull
+        protected FrameLayout createWrapper(@NonNull Context context) {
+            return new FrameLayout(context);
         }
 
         private View createQsb(ViewGroup container) {

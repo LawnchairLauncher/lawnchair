@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2021, Lawnchair
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="icon_pack">Pack d\'icônes</string>
+    <string name="settings">Paramètres</string>
+    <string name="home_screen_label">Écran d\'accueil</string>
+    <string name="home_screen_description">Feed, At a Glance, Grid, Icons</string>
+    <string name="general_label">Général</string>
+    <string name="general_description">Badges de notification, pack d\'icônes</string>
+    <string name="home_screen_rotation_label">Rotation de l\'écran d\'accueil</string>
+    <string name="home_screen_rotaton_description">Lorsque l\'appareil est tourné.</string>
+    <string name="auto_add_shortcuts_label">Ajouter les nouvelles applications à l\'écran d\'accueil</string>
+    <string name="dock_label">Zone d\'ancrage</string>
+    <string name="dock_description">Search Bar, Icon Count</string>
+    <string name="app_drawer_label">Tiroir d\'applications</string>
+    <string name="app_drawer_description">Hidden Apps, Column Count, Icons</string>
+    <string name="folders_label">Dossiers</string>
+    <string name="folders_description">Nombre de lignes et de colonnes</string>
+    <string name="app_drawer_columns">Colonnes du tiroir d\'applications</string>
+    <string name="dock_icons">Icônes dans la zone d\'ancrage</string>
+    <string name="max_folder_columns">Nombre maximum de colonnes des dossiers</string>
+    <string name="max_folder_rows">Nombre maximum de lignes des dossiers</string>
+    <string name="home_screen_columns">Colonnes de l\'écran d\'accueil</string>
+    <string name="grid">Grille</string>
+    <string name="home_screen_rows">Lignes de l\'écran d\'accueil</string>
+    <string name="icons">Icônes</string>
+    <string name="icon_size">Taille des icônes</string>
+    <string name="label_size">Taille du libellé</string>
+    <string name="allow_empty_pages_label">Autoriser les pages vides</string>
+    <string name="notification_dots">Pastilles de notification</string>
+    <string name="smartspace_preferences">Préférences</string>
+    <string name="about_label">À propos de Lawnchair</string>
+    <string name="news">Actualités</string>
+    <string name="support">Assistance</string>
+    <string name="acknowledgements">Remerciements</string>
+    <string name="devops">Équipe DevOps</string>
+    <string name="quickswitch_maintenance">Maintenance de QuickSwitch</string>
+    <string name="all_apps_search_bar_hint">Rechercher dans les applications</string>
+    <string name="settings_button_text">Paramètres de l\'écran d\'accueil</string>
+    <string name="development">Développeur</string>
+    <string name="app_info_drop_target_label">Infos de l\'application</string>
+    <string name="item_removed">Élément supprimé.</string>
+    <string name="all_apps_no_search_results">Aucune application correspondant à “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
+    <string name="background_opacity">Opacité de l\'arrière-plan</string>
+    <string name="background_lightness_label">Luminosité de l\'arrière-plan</string>
+    <string name="adaptive_icons">Icônes Adaptatives</string>
+    <string name="adaptive_icon_background_description">Utilisez 100% de luminosité d\'arrière-plan pour le blanc.</string>
+    <string name="auto_adaptive_icons_label">Icônes Auto Adaptatives</string>
+    <string name="auto_adaptive_icons_description">Pour toutes les icônes non-adaptatives.</string>
+    <string name="support_and_pr">Support &amp; PR</string>
+    <string name="workspace_dt2s">Double-Tapez pour mettre en veille</string>
+    <string name="smart_space_enable">Afficher le widget En Bref</string>
+    <string name="design_and_development">Conception &amp; Développement</string>
+    <string name="translate">Traduire</string>
+    <string name="product">Produit</string>
+    <string name="hidden_apps_label">Applications Masquées</string>
+    <string name="hidden_apps_label_with_count">Applications Masquées (%1$d)</string>
+    <plurals name="apps_count">
+        <item quantity="one">Application %1$d</item>
+        <item quantity="other">Applications %1$d</item>
+    </plurals>
+    <string name="hotseat_qsb_label">Show Search Bar</string>
+    <string name="dt2s_admin_hint_title">Admin permission required</string>
+    <string name="dt2s_admin_hint">To use Double Tap to Sleep, grant the Admin permission.</string>
+    <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
+    <string name="dt2s_a11y_hint_title">Accessibility service required</string>
+    <string name="dt2s_a11y_hint">To use Double Tap to Sleep, enable the accessibility service.</string>
+    <string name="dt2s_warning_open_settings">Open Settings</string>
+    <string name="minus_one_enable">Show Feed</string>
+    <string name="minus_one_unavailable">Feed is not available</string>
+    <string name="fuzzy_search_title">Fuzzy Search</string>
+    <string name="fuzzy_search_desc">Approximate matching for app searches.</string>
+</resources>

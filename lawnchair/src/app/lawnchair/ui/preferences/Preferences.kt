@@ -17,28 +17,22 @@
 package app.lawnchair.ui.preferences
 
 import android.content.Context
-import android.view.Window
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import app.lawnchair.ui.preferences.about.About
 import app.lawnchair.ui.preferences.about.aboutGraph
-import app.lawnchair.ui.preferences.components.PreferenceCategoryList
-import app.lawnchair.ui.preferences.components.SystemUi
-import app.lawnchair.ui.preferences.components.TopBar
+import app.lawnchair.ui.preferences.components.*
+import app.lawnchair.ui.util.portal.ProvidePortalNode
 import app.lawnchair.util.Meta
 import app.lawnchair.util.pageMeta
 import app.lawnchair.util.preferences.getMajorVersion
@@ -61,7 +55,7 @@ sealed class PreferenceCategory(
     val route: String
 ) {
     class General(context: Context) : PreferenceCategory(
-        label = context.getString(R.string.settings),
+        label = context.getString(R.string.general_label),
         description = context.getString(R.string.general_description),
         iconResource = R.drawable.ic_general,
         route = Routes.GENERAL
@@ -122,31 +116,29 @@ val LocalPreferenceInteractor = compositionLocalOf<PreferenceInteractor> {
 
 @ExperimentalAnimationApi
 @Composable
-fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel>(), window: Window) {
+fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel>()) {
     val navController = rememberNavController()
 
-    SystemUi(window = window)
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colors.background)
-    ) {
-        CompositionLocalProvider(
-            LocalNavController provides navController,
-            LocalPreferenceInteractor provides interactor,
-        ) {
-            TopBar()
-            NavHost(navController = navController, startDestination = "preferences") {
-                composable(route = Routes.PREFERENCES) {
-                    pageMeta.provide(Meta(title = stringResource(id = R.string.settings)))
-                    PreferenceCategoryList(navController)
+    SystemUi()
+    ProvidePortalNode {
+        Surface(color = MaterialTheme.colors.background) {
+            CompositionLocalProvider(
+                LocalNavController provides navController,
+                LocalPreferenceInteractor provides interactor,
+            ) {
+                NavHost(navController = navController, startDestination = "preferences") {
+                    composable(route = Routes.PREFERENCES) {
+                        pageMeta.provide(Meta(title = stringResource(id = R.string.settings)))
+                        PreferenceCategoryList(navController)
+                    }
+                    generalGraph(route = Routes.GENERAL)
+                    homeScreenGraph(route = Routes.HOME_SCREEN)
+                    dockGraph(route = Routes.DOCK)
+                    appDrawerGraph(route = Routes.APP_DRAWER)
+                    folderGraph(route = Routes.FOLDERS)
+                    aboutGraph(route = Routes.ABOUT)
                 }
-                generalGraph(route = Routes.GENERAL)
-                homeScreenGraph(route = Routes.HOME_SCREEN)
-                dockGraph(route = Routes.DOCK)
-                appDrawerGraph(route = Routes.APP_DRAWER)
-                folderGraph(route = Routes.FOLDERS)
-                aboutGraph(route = Routes.ABOUT)
+                TopBar()
             }
         }
     }

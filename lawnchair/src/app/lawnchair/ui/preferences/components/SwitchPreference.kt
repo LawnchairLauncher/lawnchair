@@ -23,8 +23,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import app.lawnchair.ui.util.addIf
 import app.lawnchair.util.preferences.PreferenceAdapter
 
 @Composable
@@ -32,19 +34,24 @@ fun SwitchPreference(
     adapter: PreferenceAdapter<Boolean>,
     label: String,
     description: String? = null,
+    enabled: Boolean = true,
     showDivider: Boolean = true
 ) =
     // TODO: Wrap overflowing text instead of using an ellipsis.
     PreferenceTemplate(height = if (description != null) 72.dp else 52.dp, showDivider = showDivider) {
         Row(
             modifier = Modifier
-                .clickable { adapter.onChange(!adapter.state.value) }
+                .clickable(enabled) { adapter.onChange(!adapter.state.value) }
                 .fillMaxHeight()
                 .fillMaxWidth()
                 .padding(start = 16.dp, end = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Column(modifier = Modifier.weight(1f)) {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .addIf(!enabled) { alpha(ContentAlpha.disabled) }
+            ) {
                 Text(
                     text = label,
                     style = MaterialTheme.typography.subtitle1,
@@ -70,7 +77,8 @@ fun SwitchPreference(
             Switch(
                 checked = adapter.state.value,
                 onCheckedChange = adapter::onChange,
-                colors = SwitchDefaults.colors(checkedThumbColor = MaterialTheme.colors.primary)
+                enabled = enabled,
+                colors = SwitchDefaults.colors(checkedThumbColor = MaterialTheme.colors.primary),
             )
         }
     }

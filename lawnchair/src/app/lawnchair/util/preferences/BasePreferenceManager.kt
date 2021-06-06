@@ -1,12 +1,26 @@
+/*
+ * Copyright 2021, Lawnchair
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package app.lawnchair.util.preferences
 
 import android.content.Context
 import android.content.SharedPreferences
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.Utilities
-import java.lang.ClassCastException
-import java.util.*
-import kotlin.collections.HashMap
+import java.util.concurrent.CopyOnWriteArraySet
 
 abstract class BasePreferenceManager(context: Context) : SharedPreferences.OnSharedPreferenceChangeListener {
     val sp: SharedPreferences = Utilities.getPrefs(context)
@@ -23,34 +37,20 @@ abstract class BasePreferenceManager(context: Context) : SharedPreferences.OnSha
         }
     }
 
-    interface PreferenceChangeListener {
-        fun onPreferenceChange(pref: PrefEntry<*>)
-    }
-
-    interface PrefEntry<T> {
-        val defaultValue: T
-
-        fun get(): T
-        fun set(newValue: T)
-
-        fun addListener(listener: PreferenceChangeListener)
-        fun removeListener(listener: PreferenceChangeListener)
-    }
-
     abstract inner class BasePref<T>(val key: String, private val primaryListener: ChangeListener?) : PrefEntry<T> {
         protected var loaded = false
-        private val listeners = WeakHashMap<PreferenceChangeListener, Boolean>()
+        private val listeners = CopyOnWriteArraySet<PreferenceChangeListener>()
 
         fun onSharedPreferenceChange() {
             loaded = false
             primaryListener?.invoke()
-            HashMap(listeners).forEach { (listener, _) ->
-                listener.onPreferenceChange(this)
+            listeners.forEach { listener ->
+                listener.onPreferenceChange()
             }
         }
 
         override fun addListener(listener: PreferenceChangeListener) {
-            listeners[listener] = true
+            listeners.add(listener)
         }
 
         override fun removeListener(listener: PreferenceChangeListener) {
@@ -200,6 +200,29 @@ abstract class BasePreferenceManager(context: Context) : SharedPreferences.OnSha
             editSp { putFloat(key, newValue) }
         }
     }
-}
 
-typealias ChangeListener = () -> Unit
+    inner class StringSetPref(
+        key: String,
+        override val defaultValue: Set<String>,
+        primaryListener: ChangeListener? = null
+    ) : BasePref<Set<String>>(key, primaryListener) {
+        private var currentValue = setOf<String>()
+
+        init {
+            prefsMap[key] = this
+        }
+
+        override fun get(): Set<String> {
+            if (!loaded) {
+                currentValue = sp.getStringSet(key, defaultValue)!!
+                loaded = true
+            }
+            return currentValue
+        }
+
+        override fun set(newValue: Set<String>) {
+            currentValue = newValue
+            editSp { putStringSet(key, newValue) }
+        }
+    }
+}

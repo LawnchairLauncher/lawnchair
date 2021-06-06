@@ -42,6 +42,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import app.lawnchair.LawnchairApp;
+
 /**
  * Singleton class to load and manage recents model.
  */
@@ -68,7 +70,9 @@ public class RecentsModel extends TaskStackChangeListener {
         mIconCache = new TaskIconCache(context, looper);
         mThumbnailCache = new TaskThumbnailCache(context, looper);
 
-        ActivityManagerWrapper.getInstance().registerTaskStackListener(this);
+        if (LawnchairApp.isRecentsEnabled()) {
+            ActivityManagerWrapper.getInstance().registerTaskStackListener(this);
+        }
         IconProvider.registerIconChangeListener(context,
                 this::onPackageIconChanged, MAIN_EXECUTOR.getHandler());
     }

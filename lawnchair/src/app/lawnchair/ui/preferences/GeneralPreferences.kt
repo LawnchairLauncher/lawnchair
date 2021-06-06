@@ -21,15 +21,12 @@ import androidx.compose.animation.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
-import app.lawnchair.ui.preferences.components.NavigationActionPreference
-import app.lawnchair.ui.preferences.components.NotificationDotsPreference
-import app.lawnchair.ui.preferences.components.PreferenceGroup
-import app.lawnchair.ui.preferences.components.PreferenceLayout
-import app.lawnchair.ui.preferences.components.SliderPreference
-import app.lawnchair.ui.preferences.components.SwitchPreference
+import app.lawnchair.ui.preferences.components.*
 import app.lawnchair.util.Meta
 import app.lawnchair.util.pageMeta
-import app.lawnchair.util.preferences.*
+import app.lawnchair.util.preferences.getAdapter
+import app.lawnchair.util.preferences.observeAsState
+import app.lawnchair.util.preferences.preferenceManager
 import com.android.launcher3.R
 
 object GeneralRoutes {
@@ -59,7 +56,10 @@ fun GeneralPreferences() {
             NavigationActionPreference(
                 label = stringResource(id = R.string.icon_pack),
                 destination = subRoute(name = GeneralRoutes.ICON_PACK),
-                showDivider = false
+                showDivider = false,
+                subtitle =
+                LocalPreferenceInteractor.current.getIconPacks()
+                    .find { it.packageName == preferenceManager().iconPackPackage.get() }?.name
             )
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

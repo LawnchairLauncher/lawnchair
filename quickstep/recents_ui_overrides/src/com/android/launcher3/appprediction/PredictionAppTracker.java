@@ -43,6 +43,7 @@ import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.appprediction.PredictionUiStateManager.Client;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
@@ -109,6 +110,10 @@ public class PredictionAppTracker extends AppLaunchTracker
 
     @WorkerThread
     private AppPredictor createPredictor(Client client, int count) {
+        if (!Utilities.ATLEAST_Q) {
+            return null;
+        }
+
         AppPredictionManager apm = mContext.getSystemService(AppPredictionManager.class);
 
         if (apm == null) {
@@ -195,6 +200,7 @@ public class PredictionAppTracker extends AppLaunchTracker
     @UiThread
     public void onStartShortcut(String packageName, String shortcutId, UserHandle user,
                                 String container) {
+        if (!Utilities.ATLEAST_Q) return;
         // TODO: Use the full shortcut info
         AppTarget target = new AppTarget.Builder(
                 new AppTargetId("shortcut:" + shortcutId), packageName, user)
@@ -217,6 +223,7 @@ public class PredictionAppTracker extends AppLaunchTracker
     @Override
     @UiThread
     public void onStartApp(ComponentName cn, UserHandle user, String container) {
+        if (!Utilities.ATLEAST_Q) return;
         if (cn != null) {
             AppTarget target = new AppTarget.Builder(
                     new AppTargetId("app:" + cn), cn.getPackageName(), user)
@@ -237,6 +244,7 @@ public class PredictionAppTracker extends AppLaunchTracker
     @Override
     @UiThread
     public void onDismissApp(ComponentName cn, UserHandle user, String container) {
+        if (!Utilities.ATLEAST_Q) return;
         if (cn == null) return;
         AppTarget target = new AppTarget.Builder(
                 new AppTargetId("app: " + cn), cn.getPackageName(), user)

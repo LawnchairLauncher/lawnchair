@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.util.Log;
 
+import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.MainThreadInitializedObject;
@@ -84,6 +85,10 @@ public class SysUINavigationMode {
                 updateMode();
             }
         }, getPackageFilter("android", ACTION_OVERLAY_CHANGED));
+
+        if (!Utilities.ATLEAST_Q) {
+            mMode = Mode.THREE_BUTTONS;
+        }
     }
 
     /** Updates navigation mode when needed. */

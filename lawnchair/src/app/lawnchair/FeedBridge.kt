@@ -18,6 +18,7 @@ package app.lawnchair
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE
 import android.content.pm.ApplicationInfo.FLAG_SYSTEM
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -33,8 +34,8 @@ import com.android.launcher3.Utilities
 
 class FeedBridge(private val context: Context) {
 
-    private val shouldUseFeed = context.applicationInfo.flags and FLAG_SYSTEM == 0
-    private val prefs = PreferenceManager.getInstance(context)
+    private val shouldUseFeed = context.applicationInfo.flags and (FLAG_DEBUGGABLE or FLAG_SYSTEM) == 0
+    private val prefs by lazy { PreferenceManager.getInstance(context) }
     private val bridgePackages by lazy {
         listOf(
             PixelBridgeInfo("com.google.android.apps.nexuslauncher", R.integer.bridge_signature_hash),
@@ -100,19 +101,19 @@ class FeedBridge(private val context: Context) {
         }
 
         open fun isSigned(): Boolean {
-            if (BuildConfig.DEBUG)
-                return true // Skip signature checks for dev builds
-            if (Utilities.ATLEAST_P) {
-                val info = context.packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNING_CERTIFICATES)
-                val signingInfo = info.signingInfo
-                if (signingInfo.hasMultipleSigners()) return false
-                return signingInfo.signingCertificateHistory.any { it.hashCode() == signatureHash }
-            } else {
-                val info = context.packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES)
-                return if (info.signatures.any { it.hashCode() != signatureHash })
-                    false
-                else
-                    info.signatures.isNotEmpty()
+            when {
+                BuildConfig.DEBUG -> return true
+                Utilities.ATLEAST_P -> {
+                    val info =
+                        context.packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNING_CERTIFICATES)
+                    val signingInfo = info.signingInfo
+                    if (signingInfo.hasMultipleSigners()) return false
+                    return signingInfo.signingCertificateHistory.any { it.hashCode() == signatureHash }
+                }
+                else -> {
+                    val info = context.packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES)
+                    return if (info.signatures.any { it.hashCode() != signatureHash }) false else info.signatures.isNotEmpty()
+                }
             }
         }
     }

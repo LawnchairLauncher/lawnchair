@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2016 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<profiles xmlns:launcher="http://schemas.android.com/apk/res-auto" >
+
+    <!--
+    <grid-option
+        launcher:name="crazy_big"
+        launcher:numRows="2"
+        launcher:numColumns="2"
+        launcher:numAllAppsColumns="5"
+        launcher:numFolderRows="2"
+        launcher:numFolderColumns="2"
+        launcher:numHotseatIcons="2"
+        launcher:dbFile="launcher_2_by_2.db"
+        launcher:defaultLayoutId="@xml/default_workspace_2x2" >
+
+        <display-option
+            launcher:name="Pixel"
+            launcher:minWidthDps="387"
+            launcher:minHeightDps="659"
+            launcher:allAppsIconSize="54"
+            launcher:allAppsIconTextSize="13.0"
+            launcher:iconImageSize="132"
+            launcher:iconTextSize="20.0"
+            launcher:landscapeIconSize="100" />
+
+        <display-option
+            launcher:name="Pixel (Display : Small)"
+            launcher:minWidthDps="296"
+            launcher:minHeightDps="496"
+            launcher:allAppsIconSize="54"
+            launcher:allAppsIconTextSize="13.0"
+            launcher:iconImageSize="120"
+            launcher:iconTextSize="18.0"
+            launcher:landscapeIconSize="120" />
+
+        <display-option
+            launcher:name="Pixel (Display : Largest)"
+            launcher:minWidthDps="449"
+            launcher:minHeightDps="754"
+            launcher:allAppsIconSize="54"
+            launcher:allAppsIconTextSize="13.0"
+            launcher:iconImageSize="156"
+            launcher:iconTextSize="22.0"
+            launcher:landscapeIconSize="120" />
+
+    </grid-option>
+
+    <grid-option
+        launcher:name="big"
+        launcher:numRows="3"
+        launcher:numColumns="3"
+        launcher:numAllAppsColumns="5"
+        launcher:numFolderRows="2"
+        launcher:numFolderColumns="2"
+        launcher:numHotseatIcons="3"
+        launcher:dbFile="launcher_3_by_3.db"
+        launcher:defaultLayoutId="@xml/default_workspace_3x3" >
+
+        <display-option
+            launcher:name="Pixel"
+            launcher:minWidthDps="387"
+            launcher:minHeightDps="659"
+            launcher:allAppsIconSize="54"
+            launcher:allAppsIconTextSize="13.0"
+            launcher:iconImageSize="76"
+            launcher:iconTextSize="14.0"
+            launcher:landscapeIconSize="76" />
+
+        <display-option
+            launcher:name="Pixel (Display : Small)"
+            launcher:minWidthDps="296"
+            launcher:minHeightDps="496"
+            launcher:allAppsIconSize="54"
+            launcher:allAppsIconTextSize="13.0"
+            launcher:iconImageSize="68"
+            launcher:iconTextSize="12.0"
+            launcher:landscapeIconSize="68" />
+
+        <display-option
+            launcher:name="Pixel (Display : Largest)"
+            launcher:minWidthDps="449"
+            launcher:minHeightDps="754"
+            launcher:allAppsIconSize="54"
+            launcher:allAppsIconTextSize="13.0"
+            launcher:iconImageSize="88"
+            launcher:iconTextSize="16.0"
+            launcher:landscapeIconSize="88" />
+
+    </grid-option>
+    -->
+
+    <grid-option
+        launcher:name="reasonable"
+        launcher:numRows="4"
+        launcher:numColumns="4"
+        launcher:numAllAppsColumns="5"
+        launcher:numFolderRows="3"
+        launcher:numFolderColumns="4"
+        launcher:numHotseatIcons="4"
+        launcher:dbFile="launcher_4_by_4.db"
+        launcher:defaultLayoutId="@xml/default_workspace_4x4" >
+
+        <display-option
+            launcher:name="Pixel"
+            launcher:minWidthDps="387"
+            launcher:minHeightDps="659"
+            launcher:allAppsIconSize="54"
+            launcher:allAppsIconTextSize="13.0"
+            launcher:iconImageSize="60"
+            launcher:iconTextSize="12.0"
+            launcher:landscapeIconSize="60" />
+
+        <display-option
+            launcher:name="Pixel (Display : Small)"
+            launcher:minWidthDps="296"
+            launcher:minHeightDps="496"
+            launcher:allAppsIconSize="54"
+            launcher:allAppsIconTextSize="13.0"
+            launcher:iconImageSize="52"
+            launcher:iconTextSize="11.0"
+            launcher:landscapeIconSize="52"
+            launcher:canBeDefault="true" />
+
+        <display-option
+            launcher:name="Pixel (Display : Largest)"
+            launcher:minWidthDps="449"
+            launcher:minHeightDps="754"
+            launcher:allAppsIconSize="54"
+            launcher:allAppsIconTextSize="13.0"
+            launcher:iconImageSize="72"
+            launcher:iconTextSize="14.0"
+            launcher:landscapeIconSize="72" />
+
+    </grid-option>
+
+    <grid-option
+        launcher:name="normal"
+        launcher:numRows="5"
+        launcher:numColumns="5"
+        launcher:numAllAppsColumns="5"
+        launcher:numFolderRows="4"
+        launcher:numFolderColumns="4"
+        launcher:numHotseatIcons="5"
+        launcher:dbFile="launcher.db"
+        launcher:defaultLayoutId="@xml/default_workspace_5x5" >
+
+        <display-option
+            launcher:name="Pixel"
+            launcher:minWidthDps="387"
+            launcher:minHeightDps="659"
+            launcher:iconImageSize="56"
+            launcher:iconTextSize="12.0"
+            launcher:landscapeIconSize="54"
+            launcher:canBeDefault="true" />
+
+        <display-option
+            launcher:name="Pixel 2 XL (Display size set to Largest)"
+            launcher:minWidthDps="296"
+            launcher:minHeightDps="568"
+            launcher:iconImageSize="54"
+            launcher:iconTextSize="12.0"
+            launcher:landscapeIconSize="48"
+            launcher:canBeDefault="true" />
+
+        <display-option
+            launcher:name="Pixel 2 XL"
+            launcher:minWidthDps="387"
+            launcher:minHeightDps="750"
+            launcher:iconImageSize="54"
+            launcher:iconTextSize="12.0"
+            launcher:landscapeIconSize="52"
+            launcher:canBeDefault="true" />
+
+    </grid-option>
+
+</profiles>

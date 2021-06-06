@@ -130,7 +130,7 @@ public final class FeatureFlags {
             "Allow Launcher to handle nav bar gestures while Assistant is running over it");
 
     public static final BooleanFlag ENABLE_HYBRID_HOTSEAT = getDebugFlag(
-            "ENABLE_HYBRID_HOTSEAT", true, "Fill gaps in hotseat with predicted apps");
+            "ENABLE_HYBRID_HOTSEAT", Utilities.ATLEAST_R, "Fill gaps in hotseat with predicted apps");
 
     public static final BooleanFlag HOTSEAT_MIGRATE_TO_FOLDER = getDebugFlag(
             "HOTSEAT_MIGRATE_TO_FOLDER", false, "Should move hotseat items into a folder");

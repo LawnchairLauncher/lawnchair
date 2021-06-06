@@ -20,11 +20,14 @@ import android.app.Activity
 import android.app.Application
 import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import androidx.annotation.Keep
 import app.lawnchair.util.restartLauncher
+import com.android.launcher3.LauncherAppState
 import com.android.launcher3.Utilities
 import com.android.quickstep.RecentsActivity
 
@@ -32,11 +35,16 @@ class LawnchairApp : Application() {
 
     val activityHandler = ActivityHandler()
     var mismatchedQuickstepTarget = false
-    val recentsEnabled by lazy { checkRecentsComponent() }
+    private val recentsEnabled by lazy { checkRecentsComponent() }
+    internal var accessibilityService: LawnchairAccessibilityService? = null
     val TAG = "LawnchairApp"
 
+    override fun onCreate() {
+        super.onCreate()
+        instance = this
+    }
+
     fun onLauncherAppStateCreated() {
-        sApplication = this
         registerActivityLifecycleCallbacks(activityHandler)
     }
 
@@ -57,40 +65,30 @@ class LawnchairApp : Application() {
             HashSet(activities).forEach { it.finish() }
         }
 
-        override fun onActivityPaused(activity: Activity) {
-
-        }
+        override fun onActivityPaused(activity: Activity) { }
 
         override fun onActivityResumed(activity: Activity) {
             foregroundActivity = activity
         }
 
-        override fun onActivityStarted(activity: Activity) {
-
-        }
+        override fun onActivityStarted(activity: Activity) { }
 
         override fun onActivityDestroyed(activity: Activity) {
-            if (activity == foregroundActivity)
-                foregroundActivity = null
+            if (activity == foregroundActivity) foregroundActivity = null
             activities.remove(activity)
         }
 
-        override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
+        override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) { }
 
-        }
-
-        override fun onActivityStopped(activity: Activity) {
-
-        }
+        override fun onActivityStopped(activity: Activity) { }
 
         override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
             activities.add(activity)
         }
     }
 
-    @Keep
-    fun checkRecentsComponent(): Boolean {
-        if (!Utilities.ATLEAST_P) {
+    private fun checkRecentsComponent(): Boolean {
+        if (!Utilities.ATLEAST_R) {
             Log.d(TAG, "API < P, disabling recents")
             return false
         }
@@ -111,7 +109,7 @@ class LawnchairApp : Application() {
             Log.d(TAG, "config_recentsComponentName ($recentsComponent) is not Lawnchair, disabling recents")
             return false
         }
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.R) {
             Log.d(TAG, "Quickstep target doesn't match, disabling recents")
             mismatchedQuickstepTarget = true
             return false
@@ -119,17 +117,27 @@ class LawnchairApp : Application() {
         return true
     }
 
+    fun isAccessibilityServiceBound(): Boolean = accessibilityService != null
+
+    fun performGlobalAction(action: Int): Boolean {
+        return if (accessibilityService != null) {
+            accessibilityService!!.performGlobalAction(action)
+        } else {
+            startActivity(
+                Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            )
+            false
+        }
+    }
+
     companion object {
         @JvmStatic
-        fun getContext(): Context? {
-            return LawnchairApp.getApplication()?.applicationContext
-        }
+        var instance: LawnchairApp? = null
+            private set
 
-        private var sApplication: Application? = null
-
-        fun getApplication(): Application? {
-            return sApplication
-        }
+        @JvmStatic
+        val isRecentsEnabled: Boolean get() = instance?.recentsEnabled == true
     }
 }
 

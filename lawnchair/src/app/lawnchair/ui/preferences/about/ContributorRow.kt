@@ -18,6 +18,7 @@ package app.lawnchair.ui.preferences.about
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -31,7 +32,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import app.lawnchair.ui.preferences.components.PreferenceTemplate
-import com.google.accompanist.glide.GlideImage
+import com.google.accompanist.glide.rememberGlidePainter
 
 @Composable
 fun ContributorRow(name: String, description: String, photoUrl: String, url: String, showDivider: Boolean = true) {
@@ -51,21 +52,14 @@ fun ContributorRow(name: String, description: String, photoUrl: String, url: Str
                 .padding(start = 16.dp, end = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            GlideImage(
-                data = photoUrl,
+            Image(
+                painter = rememberGlidePainter(request = photoUrl, fadeIn = true),
                 contentDescription = null,
-                fadeIn = true,
                 modifier = Modifier
                     .clip(CircleShape)
                     .width(32.dp)
-                    .height(32.dp),
-                loading = {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(MaterialTheme.colors.onBackground.copy(alpha = 0.08F))
-                    )
-                }
+                    .height(32.dp)
+                    .background(MaterialTheme.colors.onBackground.copy(alpha = 0.12F)),
             )
             Spacer(modifier = Modifier.requiredWidth(16.dp))
             Column {

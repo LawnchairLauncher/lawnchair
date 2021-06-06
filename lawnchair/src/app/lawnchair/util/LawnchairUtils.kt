@@ -30,7 +30,7 @@ import java.util.concurrent.ExecutionException
 import kotlin.system.exitProcess
 
 
-fun <T, A>ensureOnMainThread(creator: (A) -> T): (A) -> T {
+fun <T, A> ensureOnMainThread(creator: (A) -> T): (A) -> T {
     return { it ->
         if (Looper.myLooper() == Looper.getMainLooper()) {
             creator(it)
@@ -47,7 +47,7 @@ fun <T, A>ensureOnMainThread(creator: (A) -> T): (A) -> T {
     }
 }
 
-fun <T>useApplicationContext(creator: (Context) -> T): (Context) -> T {
+fun <T> useApplicationContext(creator: (Context) -> T): (Context) -> T {
     return { it -> creator(it.applicationContext) }
 }
 
