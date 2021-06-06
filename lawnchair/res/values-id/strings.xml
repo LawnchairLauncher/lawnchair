@@ -33,7 +33,7 @@
     <string name="app_drawer_columns">Kolom Halaman Aplikasi</string>
     <string name="dock_icons">Ikon Dock</string>
     <string name="max_folder_columns">Maksimal Kolom Folder</string>
-    <string name="max_folder_rows">Maksimal Kolom Folder</string>
+    <string name="max_folder_rows">Maksimal Baris Folder</string>
     <string name="home_screen_columns">Kolom Tampilan Depan</string>
     <string name="grid">Kisi</string>
     <string name="home_screen_rows">Barisan Tampilan Depan</string>
@@ -65,7 +65,7 @@
     <string name="workspace_dt2s">Titik Ganda untuk Tidur</string>
     <string name="smart_space_enable">Tampilkan Widget At a Glance</string>
     <string name="design_and_development">Desain &amp; Pengembangan</string>
-    <string name="translate">Translasi</string>
+    <string name="translate">Terjemah</string>
     <string name="product">Produk</string>
     <string name="hidden_apps_label">Aplikasi Tersembunyi</string>
     <string name="hidden_apps_label_with_count">Aplikasi Tersembunyi (%1$d)</string>
@@ -74,13 +74,13 @@
     </plurals>
     <string name="hotseat_qsb_label">Tampilkan Bilah Pencarian</string>
     <string name="dt2s_admin_hint_title">Izin Admin Dibutuhkan</string>
-    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap “Open Settings,” then tap “Activate this device admin app.”</string>
-    <string name="dt2s_admin_warning">Double-Tap to Sleep will be turned off.</string>
-    <string name="dt2s_a11y_hint_title">Turn on Accessibility Service</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap “Open Settings,” then select “Lawnchair” and turn on “Use Lawnchair.”</string>
+    <string name="dt2s_admin_hint">Untuk menggunakan Ketuk Dua Kali untuk Tidur, atur Lawnchair sebagai aplikasi admin perangkat. Ketuk \"Buka Pengaturan,\" lalu ketuk \"Aktifkan aplikasi admin perangkat ini.\"</string>
+    <string name="dt2s_admin_warning">Ketuk Dua Kali untuk Tidur akan dimatikan.</string>
+    <string name="dt2s_a11y_hint_title">Aktifkan Layanan Aksesibilitas</string>
+    <string name="dt2s_a11y_hint">Untuk menggunakan Ketuk Dua Kali untuk Tidur, nyalakan layanan aksesibilitas Lawnchair. Ketuk \"Buka Pengaturan,\" lalu pilih \"Lawnchair\" dan nyalakan \"Gunakan Lawnchair.\"</string>
     <string name="dt2s_warning_open_settings">Buka Pengaturan</string>
-    <string name="minus_one_enable">Show Feed</string>
-    <string name="minus_one_unavailable">No feed installed.</string>
+    <string name="minus_one_enable">Tampilkan Feed</string>
+    <string name="minus_one_unavailable">Tidak ada feed terpasang.</string>
     <string name="fuzzy_search_title">Pencarian Fuzzy</string>
-    <string name="fuzzy_search_desc">Approximate matching for app searches.</string>
+    <string name="fuzzy_search_desc">Perkiraan pencocokan untuk pencarian aplikasi.</string>
 </resources>
