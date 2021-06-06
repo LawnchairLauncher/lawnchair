@@ -72,7 +72,7 @@
     <plurals name="apps_count">
         <item quantity="other">%1$d Ứng dụng</item>
     </plurals>
-    <string name="hotseat_qsb_label">Show Search Bar</string>
+    <string name="hotseat_qsb_label">Hiện thanh tìm kiếm</string>
     <string name="dt2s_admin_hint_title">Cần cấp quyền quản trị</string>
     <string name="dt2s_admin_hint">To use Double Tap to Sleep, grant the Admin permission.</string>
     <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
