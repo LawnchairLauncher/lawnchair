@@ -78,10 +78,10 @@
     <string name="dt2s_admin_hint">To use Double Tap to Sleep, grant the Admin permission</string>
     <string name="dt2s_admin_warning">Dubbeltik om te slapen wordt uitgeschakeld.</string>
     <string name="dt2s_a11y_hint_title">Toegankelijkheid service vereist</string>
-    <string name="dt2s_a11y_hint">Schakel de toegankelijkheids service in om dubbeltik om te slapen te gebruiken.</string>
+    <string name="dt2s_a11y_hint">Schakel de toegankelijkheids service in om dubbeltik om te slapen te gebruiken</string>
     <string name="dt2s_warning_open_settings">Open instellingen</string>
     <string name="minus_one_enable">Toon feed</string>
-    <string name="minus_one_unavailable">Feed is not available</string>
+    <string name="minus_one_unavailable">Geen feed geïnstalleerd.</string>
     <string name="fuzzy_search_title">Fuzzy zoeken</string>
     <string name="fuzzy_search_desc">Approximate matching for app searches.</string>
 </resources>
