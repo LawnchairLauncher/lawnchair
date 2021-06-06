@@ -83,5 +83,5 @@
     <string name="minus_one_enable">Toon feed</string>
     <string name="minus_one_unavailable">Geen feed geïnstalleerd.</string>
     <string name="fuzzy_search_title">Fuzzy zoeken</string>
-    <string name="fuzzy_search_desc">Approximate matching for app searches.</string>
+    <string name="fuzzy_search_desc">Geschatte overeenkomst voor app-zoekopdrachten.</string>
 </resources>
