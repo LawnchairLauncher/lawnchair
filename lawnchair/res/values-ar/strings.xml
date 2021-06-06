@@ -18,14 +18,14 @@
     <string name="icon_pack">حزمة أيقونات</string>
     <string name="settings">الإعدادات</string>
     <string name="home_screen_label">الشاشة الرئيسية</string>
-    <string name="home_screen_description">Feed, At a Glance, Grid, Icons</string>
+    <string name="home_screen_description">حصاد، في لمحة، مصبع، أيقونات</string>
     <string name="general_label">عام</string>
     <string name="general_description">نقط الإشعارات، حزمة الأيقونات</string>
     <string name="home_screen_rotation_label">تدوير الشاشة الرئيسية</string>
     <string name="home_screen_rotaton_description">عندما يتم تدوير الجهاز.</string>
     <string name="auto_add_shortcuts_label">إضافة التطبيقات الجديدة إلى الشاشة الرئيسية</string>
     <string name="dock_label">المرسى</string>
-    <string name="dock_description">Search Bar, Icon Count</string>
+    <string name="dock_description">شريط البحث، عدد الأيقونات</string>
     <string name="app_drawer_label">قائمة التطبيقات</string>
     <string name="app_drawer_description">Hidden Apps, Column Count, Icons</string>
     <string name="folders_label">المجلدات</string>
