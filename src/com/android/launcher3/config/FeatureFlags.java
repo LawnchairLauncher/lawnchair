@@ -26,8 +26,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import app.lawnchair.LawnchairApp;
-import app.lawnchair.util.preferences.PreferenceManager;
+import app.lawnchair.preferences.PreferenceManager;
 
 /**
  * Defines a set of flags used to control various launcher behaviors.

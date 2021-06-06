@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package app.lawnchair.util.preferences
+package app.lawnchair.preferences
 
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import app.lawnchair.LawnchairLauncher
-import app.lawnchair.nexuslauncher.OverlayCallbackImpl
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.states.RotationHelper
 import com.android.launcher3.util.MainThreadInitializedObject

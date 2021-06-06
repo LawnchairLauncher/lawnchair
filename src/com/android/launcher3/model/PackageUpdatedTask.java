@@ -59,7 +59,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
-import app.lawnchair.util.preferences.PreferenceManager;
+import app.lawnchair.preferences.PreferenceManager;
 
 /**
  * Handles updates due to changes in package manager (app installed/updated/removed)

@@ -28,7 +28,6 @@ import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_SCRIM_VIEW;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -55,7 +54,7 @@ import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
 import com.android.quickstep.util.LayoutUtils;
 
-import app.lawnchair.util.preferences.PreferenceManager;
+import app.lawnchair.preferences.PreferenceManager;
 
 /**
  * Scrim used for all-apps and shelf in Overview

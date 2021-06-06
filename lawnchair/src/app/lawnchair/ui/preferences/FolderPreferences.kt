@@ -25,8 +25,8 @@ import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.SliderPreference
 import app.lawnchair.util.Meta
 import app.lawnchair.util.pageMeta
-import app.lawnchair.util.preferences.getAdapter
-import app.lawnchair.util.preferences.preferenceManager
+import app.lawnchair.preferences.getAdapter
+import app.lawnchair.preferences.preferenceManager
 import com.android.launcher3.R
 
 @ExperimentalAnimationApi

@@ -63,7 +63,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import app.lawnchair.util.preferences.PreferenceManager;
+import app.lawnchair.preferences.PreferenceManager;
 
 public class InvariantDeviceProfile {
 

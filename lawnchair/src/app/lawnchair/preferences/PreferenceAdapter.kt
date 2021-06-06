@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package app.lawnchair.util.preferences
+package app.lawnchair.preferences
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import com.android.launcher3.LauncherAppState
 import kotlin.reflect.KProperty
 

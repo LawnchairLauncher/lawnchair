@@ -23,7 +23,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import app.lawnchair.util.preferences.PreferenceAdapter
+import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.util.round
 import kotlin.math.roundToInt
 

@@ -40,7 +40,7 @@ import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.preferenceGraph
 import app.lawnchair.util.Meta
 import app.lawnchair.util.pageMeta
-import app.lawnchair.util.preferences.getFormattedVersionName
+import app.lawnchair.preferences.getFormattedVersionName
 import com.android.launcher3.R
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 

@@ -16,14 +16,13 @@ import android.widget.EditText
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
 import app.lawnchair.allapps.LawnchairAppSearchAlgorithm
-import app.lawnchair.util.preferences.PreferenceManager
+import app.lawnchair.preferences.PreferenceManager
 import com.android.launcher3.*
 import com.android.launcher3.allapps.AllAppsContainerView
 import com.android.launcher3.allapps.AllAppsStore
 import com.android.launcher3.allapps.AlphabeticalAppsList
 import com.android.launcher3.allapps.SearchUiManager
 import com.android.launcher3.allapps.search.AllAppsSearchBarController
-import com.android.launcher3.allapps.search.DefaultAppSearchAlgorithm
 import com.android.launcher3.anim.Interpolators
 import com.android.launcher3.anim.PropertySetter
 import com.android.launcher3.graphics.TintedDrawableSpan

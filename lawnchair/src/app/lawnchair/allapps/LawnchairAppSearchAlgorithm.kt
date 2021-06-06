@@ -1,7 +1,7 @@
 package app.lawnchair.allapps
 
 import android.content.Context
-import app.lawnchair.util.preferences.PreferenceManager
+import app.lawnchair.preferences.PreferenceManager
 import com.android.launcher3.allapps.search.DefaultAppSearchAlgorithm
 import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.util.ComponentKey
