@@ -42,7 +42,7 @@
     <string name="label_size">লেবেলের আয়তন</string>
     <string name="allow_empty_pages_label">খালি পৃষ্ঠা থাকার অনুমতি দিন</string>
     <string name="notification_dots">নোটিফিকেশন ডট</string>
-    <string name="smartspace_preferences">পছন্দ</string>
+    <string name="smartspace_preferences">পছন্দ-সমুহ</string>
     <string name="about_label">সম্পর্কিত</string>
     <string name="news">খবর</string>
     <string name="support">সমর্থন</string>
@@ -70,18 +70,18 @@
     <string name="hidden_apps_label">লোকানো অ্যাপস</string>
     <string name="hidden_apps_label_with_count">লোকানো অ্যাপস (%1$d)</string>
     <plurals name="apps_count">
-        <item quantity="one">%1$d App</item>
+        <item quantity="one">%1$d অ্যাপ</item>
         <item quantity="other">%1$d অ্যাপস</item>
     </plurals>
     <string name="hotseat_qsb_label">সার্চ বার দেখান</string>
     <string name="dt2s_admin_hint_title">এডমিনের অনুমতি আবশ্যক</string>
     <string name="dt2s_admin_hint">স্লিপের জন্য ডাবল-ট্যাপ ব্যাবহার করার জন্য, লনচেয়ার কে ডিভাইস এডমিন হিসেবে সেট করুন। \"Open Settings\"-এ ট্যাপ করে \"Activate this device admin app.”-এ ট্যাপ করুন।</string>
-    <string name="dt2s_admin_warning">Double-Tap to Sleep will be turned off.</string>
-    <string name="dt2s_a11y_hint_title">Turn on Accessibility Service</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap “Open Settings,” then select “Lawnchair” and turn on “Use Lawnchair.”</string>
-    <string name="dt2s_warning_open_settings">Open Settings</string>
-    <string name="minus_one_enable">Show Feed</string>
-    <string name="minus_one_unavailable">No feed installed.</string>
-    <string name="fuzzy_search_title">Fuzzy Search</string>
-    <string name="fuzzy_search_desc">Approximate matching for app searches.</string>
+    <string name="dt2s_admin_warning">স্লিপের জন্য ডাবল-ট্যাপ বন্ধ হয়ে যাবে.</string>
+    <string name="dt2s_a11y_hint_title">অ্যাক্সেসিবিলিটি সার্ভিস চালু করুন</string>
+    <string name="dt2s_a11y_hint">স্লিপের জন্য ডাবল-ট্যাপ ব্যাবহার করার জন্য, লনচেয়ারের অ্যাক্সেসিবিলিটি সার্ভিস চালু করুন। \"Open Settings\"-এ ট্যাপ করে, \"Lawnchair\" সিলেক্ট করুন, তারপর \"Use Lawnchair”-এ ট্যাপ করুন।</string>
+    <string name="dt2s_warning_open_settings">সেটিংস এ যান</string>
+    <string name="minus_one_enable">ফিড দেখান</string>
+    <string name="minus_one_unavailable">ফিড ইনস্টল করা হয়নি.</string>
+    <string name="fuzzy_search_title">ফাজি সার্চ</string>
+    <string name="fuzzy_search_desc">অ্যাপ্লিকেশন সার্চের জন্য আনুমানিক মিল.</string>
 </resources>
