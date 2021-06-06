@@ -24,7 +24,7 @@
     <string name="home_screen_rotation_label">主屏幕旋转</string>
     <string name="home_screen_rotaton_description">当设备旋转时</string>
     <string name="auto_add_shortcuts_label">向主屏幕添加新应用</string>
-    <string name="dock_label">底栏</string>
+    <string name="dock_label">停靠栏</string>
     <string name="dock_description">搜索栏，图标数量</string>
     <string name="app_drawer_label">应用抽屉</string>
     <string name="app_drawer_description">隐藏应用，列数，图标数</string>
@@ -44,10 +44,10 @@
     <string name="notification_dots">通知圆点</string>
     <string name="smartspace_preferences">首选项</string>
     <string name="about_label">关于</string>
-    <string name="news">信息</string>
+    <string name="news">新闻</string>
     <string name="support">支持</string>
     <string name="acknowledgements">鸣谢</string>
-    <string name="devops">DevOps</string>
+    <string name="devops">开发维护人员</string>
     <string name="quickswitch_maintenance">QuickSwitch 维护者</string>
     <string name="all_apps_search_bar_hint">搜索应用</string>
     <string name="settings_button_text">主页设置</string>
@@ -73,14 +73,14 @@
         <item quantity="other">%1$d 个应用</item>
     </plurals>
     <string name="hotseat_qsb_label">显示搜索栏</string>
-    <string name="dt2s_admin_hint_title">Admin Permissions Required</string>
-    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap “Open Settings,” then tap “Activate this device admin app.”</string>
-    <string name="dt2s_admin_warning">Double-Tap to Sleep will be turned off.</string>
-    <string name="dt2s_a11y_hint_title">Turn on Accessibility Service</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap “Open Settings,” then select “Lawnchair” and turn on “Use Lawnchair.”</string>
-    <string name="dt2s_warning_open_settings">Open Settings</string>
-    <string name="minus_one_enable">Show Feed</string>
-    <string name="minus_one_unavailable">No feed installed.</string>
-    <string name="fuzzy_search_title">Fuzzy Search</string>
-    <string name="fuzzy_search_desc">Approximate matching for app searches.</string>
+    <string name="dt2s_admin_hint_title">管理员权限要求</string>
+    <string name="dt2s_admin_hint">若要使用双击来睡眠，请设置Lawnchair 为设备管理应用。点击\"打开设置\"，然后点击\"激活此设备管理应用\"。</string>
+    <string name="dt2s_admin_warning">双击睡眠将被关闭。</string>
+    <string name="dt2s_a11y_hint_title">开启辅助功能</string>
+    <string name="dt2s_a11y_hint">若要使用双击到睡眠，请打开 Lawnchair 无障碍服务。点击\"Open Settings\"，然后选择 \"Lawnchair \"并打开\"Use Lawnchair\"。</string>
+    <string name="dt2s_warning_open_settings">打开设置</string>
+    <string name="minus_one_enable">显示订阅</string>
+    <string name="minus_one_unavailable">未安装订阅源。</string>
+    <string name="fuzzy_search_title">模糊搜索</string>
+    <string name="fuzzy_search_desc">近似匹配应用搜索。</string>
 </resources>
