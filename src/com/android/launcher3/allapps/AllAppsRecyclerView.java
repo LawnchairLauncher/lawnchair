@@ -21,6 +21,7 @@ import static android.view.View.MeasureSpec.makeMeasureSpec;
 
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_VERTICAL_SWIPE_BEGIN;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_VERTICAL_SWIPE_END;
+import static com.android.launcher3.util.UiThreadHelper.hideKeyboardAsync;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -31,7 +32,6 @@ import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowInsets;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -41,6 +41,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.logging.StatsLogManager;
+import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 
 import java.util.ArrayList;
@@ -189,8 +190,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
             case SCROLL_STATE_DRAGGING:
                 mgr.logger().sendToInteractionJankMonitor(
                         LAUNCHER_ALLAPPS_VERTICAL_SWIPE_BEGIN, this);
-                requestFocus();
-                getWindowInsetsController().hide(WindowInsets.Type.ime());
+                hideKeyboardAsync(ActivityContext.lookupContext(getContext()),
+                        getApplicationWindowToken());
                 break;
             case SCROLL_STATE_IDLE:
                 mgr.logger().sendToInteractionJankMonitor(
