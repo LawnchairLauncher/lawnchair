@@ -82,6 +82,6 @@
     <string name="dt2s_warning_open_settings">Ayarları Aç</string>
     <string name="minus_one_enable">Akışı göster</string>
     <string name="minus_one_unavailable">Akış mevcut değil</string>
-    <string name="fuzzy_search_title">Fuzzy Search</string>
-    <string name="fuzzy_search_desc">Approximate matching for app searches.</string>
+    <string name="fuzzy_search_title">Yaklaşık Arama</string>
+    <string name="fuzzy_search_desc">Uygulama aramaları için yaklaşık eşleştirme.</string>
 </resources>
