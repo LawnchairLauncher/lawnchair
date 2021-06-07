@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package app.lawnchair.util.preferences
+package app.lawnchair.preferences
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -140,7 +140,7 @@ abstract class BasePreferenceManager(context: Context) : SharedPreferences.OnSha
 
     inner class IdpIntPref(
         key: String,
-        private val selectDefaultValue: InvariantDeviceProfile.() -> Int,
+        private val selectDefaultValue: InvariantDeviceProfile.GridOption.() -> Int,
         primaryListener: ChangeListener? = null
     ) : IntPref(key, -1, primaryListener) {
         override val defaultValue: Int
@@ -154,21 +154,21 @@ abstract class BasePreferenceManager(context: Context) : SharedPreferences.OnSha
             error("unsupported")
         }
 
-        fun defaultValue(idp: InvariantDeviceProfile): Int {
-            return selectDefaultValue(idp)
+        fun defaultValue(defaultGrid: InvariantDeviceProfile.GridOption): Int {
+            return selectDefaultValue(defaultGrid)
         }
 
-        fun get(idp: InvariantDeviceProfile): Int {
+        fun get(defaultGrid: InvariantDeviceProfile.GridOption): Int {
             val value = super.get()
             return if (value == -1) {
-                selectDefaultValue(idp)
+                selectDefaultValue(defaultGrid)
             } else {
                 value
             }
         }
 
-        fun set(newValue: Int, idp: InvariantDeviceProfile) {
-            if (newValue == selectDefaultValue(idp)) {
+        fun set(newValue: Int, defaultGrid: InvariantDeviceProfile.GridOption) {
+            if (newValue == selectDefaultValue(defaultGrid)) {
                 super.set(-1)
             } else {
                 super.set(newValue)

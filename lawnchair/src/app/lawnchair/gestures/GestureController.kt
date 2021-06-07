@@ -18,7 +18,7 @@ package app.lawnchair.gestures
 
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.gestures.handlers.SleepGestureHandler
-import app.lawnchair.util.preferences.PreferenceManager
+import app.lawnchair.preferences.PreferenceManager
 
 class GestureController(launcher: LawnchairLauncher) {
     private val prefs = PreferenceManager.getInstance(launcher)

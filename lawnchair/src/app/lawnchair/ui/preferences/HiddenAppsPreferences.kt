@@ -29,9 +29,9 @@ import app.lawnchair.util.App
 import app.lawnchair.util.Meta
 import app.lawnchair.util.appsList
 import app.lawnchair.util.pageMeta
-import app.lawnchair.util.preferences.getAdapter
-import app.lawnchair.util.preferences.getState
-import app.lawnchair.util.preferences.preferenceManager
+import app.lawnchair.preferences.getAdapter
+import app.lawnchair.preferences.getState
+import app.lawnchair.preferences.preferenceManager
 import com.android.launcher3.R
 import java.util.*
 import java.util.Comparator.comparing

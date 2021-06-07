@@ -18,12 +18,11 @@ package app.lawnchair.ui.preferences.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import app.lawnchair.util.preferences.PreferenceAdapter
+import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.util.round
 import kotlin.math.roundToInt
 
@@ -35,7 +34,15 @@ fun SliderPreference(
     steps: Int,
     showAsPercentage: Boolean = false,
     showDivider: Boolean = true
-) =
+) {
+    var adapterValue by adapter
+    var sliderValue by remember { mutableStateOf(adapterValue) }
+
+    DisposableEffect(adapterValue) {
+        sliderValue = adapterValue
+        onDispose {  }
+    }
+
     PreferenceTemplate(height = 76.dp, showDivider = showDivider) {
         Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Center) {
             Spacer(modifier = Modifier.requiredHeight(2.dp))
@@ -66,8 +73,9 @@ fun SliderPreference(
             }
             Spacer(modifier = Modifier.requiredHeight(2.dp))
             Slider(
-                value = adapter.state.value,
-                onValueChange = adapter::onChange,
+                value = sliderValue,
+                onValueChange = { newValue -> sliderValue = newValue },
+                onValueChangeFinished = { adapterValue = sliderValue },
                 valueRange = valueRange,
                 steps = steps,
                 modifier = Modifier
@@ -76,3 +84,4 @@ fun SliderPreference(
             )
         }
     }
+}

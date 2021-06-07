@@ -1,4 +1,4 @@
-package app.lawnchair.util.preferences
+package app.lawnchair.preferences
 
 interface PreferenceChangeListener {
     fun onPreferenceChange()

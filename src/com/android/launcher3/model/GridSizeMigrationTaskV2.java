@@ -91,8 +91,24 @@ public class GridSizeMigrationTaskV2 {
         mSrcReader = srcReader;
         mDestReader = destReader;
 
-        mHotseatItems = destReader.loadHotseatEntries();
-        mWorkspaceItems = destReader.loadAllWorkspaceEntries();
+        List<DbEntry> hotseatItems = destReader.loadHotseatEntries();
+        List<DbEntry> workspaceItems = destReader.loadAllWorkspaceEntries();
+
+        // only add items in the target size. other items are considered lost
+        mHotseatItems = new ArrayList<>();
+        for (int i = 0; i < hotseatItems.size(); i++) {
+            DbEntry item = hotseatItems.get(i);
+            if (item.cellX < destHotseatSize) {
+                mHotseatItems.add(item);
+            }
+        }
+        mWorkspaceItems = new ArrayList<>();
+        for (int i = 0; i < workspaceItems.size(); i++) {
+            DbEntry item = workspaceItems.get(i);
+            if (item.cellX < targetSize.x && item.cellY < targetSize.y) {
+                mWorkspaceItems.add(item);
+            }
+        }
 
         mHotseatDiff = calcDiff(mSrcReader.loadHotseatEntries(), mHotseatItems);
         mWorkspaceDiff = calcDiff(mSrcReader.loadAllWorkspaceEntries(), mWorkspaceItems);
@@ -106,11 +122,15 @@ public class GridSizeMigrationTaskV2 {
      * Check given a new IDP, if migration is necessary.
      */
     public static boolean needsToMigrate(Context context, InvariantDeviceProfile idp) {
+        return needsToMigrate(context, idp.numColumns, idp.numRows, idp.numHotseatIcons);
+    }
+
+    public static boolean needsToMigrate(Context context, int numColumns, int numRows, int numHotseatIcons) {
         SharedPreferences prefs = Utilities.getPrefs(context);
-        String gridSizeString = getPointString(idp.numColumns, idp.numRows);
+        String gridSizeString = getPointString(numColumns, numRows);
 
         return !gridSizeString.equals(prefs.getString(KEY_MIGRATION_SRC_WORKSPACE_SIZE, ""))
-                || idp.numHotseatIcons != prefs.getInt(KEY_MIGRATION_SRC_HOTSEAT_COUNT, -1);
+                || numHotseatIcons != prefs.getInt(KEY_MIGRATION_SRC_HOTSEAT_COUNT, -1);
     }
 
     /** See {@link #migrateGridIfNeeded(Context, InvariantDeviceProfile)} */

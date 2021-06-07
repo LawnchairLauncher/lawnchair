@@ -15,25 +15,25 @@
   ~ limitations under the License.
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="icon_pack">Paquete de íconos</string>
-    <string name="settings">Configuración</string>
+    <string name="icon_pack">Paquete de iconos</string>
+    <string name="settings">Ajustes</string>
     <string name="home_screen_label">Pantalla de Inicio</string>
-    <string name="home_screen_description">Feed, At a Glance, Grid, Icons</string>
+    <string name="home_screen_description">Feed, De un vistazo, Cuadrícula, iconos</string>
     <string name="general_label">General</string>
     <string name="general_description">Puntos de notificación, paquete de íconos</string>
     <string name="home_screen_rotation_label">Rotación de Pantalla de Inicio</string>
     <string name="home_screen_rotaton_description">Cuando el dispositivo es rotado.</string>
     <string name="auto_add_shortcuts_label">Añadir Nuevas Aplicaciones a la Pantalla de Inicio</string>
     <string name="dock_label">Dock</string>
-    <string name="dock_description">Search Bar, Icon Count</string>
+    <string name="dock_description">Barra de búsqueda, Número de iconos</string>
     <string name="app_drawer_label">Cajón de Aplicaciones</string>
-    <string name="app_drawer_description">Hidden Apps, Column Count, Icons</string>
+    <string name="app_drawer_description">Aplicaciones ocultas, Cantidad de columnas, Iconos</string>
     <string name="folders_label">Carpetas</string>
     <string name="folders_description">Número de Filas y Columnas</string>
     <string name="app_drawer_columns">Columnas de Cajón de Aplicaciones</string>
     <string name="dock_icons">Íconos del Dock</string>
-    <string name="max_folder_columns">Máx. Columnas de Carpetas</string>
-    <string name="max_folder_rows">Máx. Filas de Carpetas</string>
+    <string name="max_folder_columns">Columnas máx. de Carpetas</string>
+    <string name="max_folder_rows">Filas Máx. de Carpetas</string>
     <string name="home_screen_columns">Columnas de Pantalla de Inicio</string>
     <string name="grid">Cuadrícula</string>
     <string name="home_screen_rows">Filas de Pantalla de Inicio</string>
@@ -70,18 +70,18 @@
     <string name="hidden_apps_label">Aplicaciones ocultas</string>
     <string name="hidden_apps_label_with_count">Aplicaciones ocultas (%1$d)</string>
     <plurals name="apps_count">
-        <item quantity="one">%1$d App</item>
+        <item quantity="one">%1$d Aplicación</item>
         <item quantity="other">%1$d Aplicaciones</item>
     </plurals>
-    <string name="hotseat_qsb_label">Show Search Bar</string>
+    <string name="hotseat_qsb_label">Mostrar Barra de Búsqueda</string>
     <string name="dt2s_admin_hint_title">Admin permission required</string>
     <string name="dt2s_admin_hint">To use Double Tap to Sleep, grant the Admin permission.</string>
     <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
     <string name="dt2s_a11y_hint_title">Accessibility service required</string>
     <string name="dt2s_a11y_hint">To use Double Tap to Sleep, enable the accessibility service.</string>
-    <string name="dt2s_warning_open_settings">Open Settings</string>
-    <string name="minus_one_enable">Show Feed</string>
+    <string name="dt2s_warning_open_settings">Abrir Configuración</string>
+    <string name="minus_one_enable">Mostrar Feed</string>
     <string name="minus_one_unavailable">Feed is not available</string>
-    <string name="fuzzy_search_title">Fuzzy Search</string>
-    <string name="fuzzy_search_desc">Approximate matching for app searches.</string>
+    <string name="fuzzy_search_title">Búsqueda Difusa</string>
+    <string name="fuzzy_search_desc">Coincidencia aproximada para búsqueda de aplicaciones.</string>
 </resources>

@@ -44,7 +44,6 @@ import android.app.WallpaperManager;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Point;
@@ -120,8 +119,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.function.Predicate;
 
-import app.lawnchair.util.preferences.BasePreferenceManager;
-import app.lawnchair.util.preferences.PreferenceManager;
+import app.lawnchair.preferences.BasePreferenceManager;
+import app.lawnchair.preferences.PreferenceManager;
 
 /**
  * The workspace is a wide area with a wallpaper and a finite number of pages.

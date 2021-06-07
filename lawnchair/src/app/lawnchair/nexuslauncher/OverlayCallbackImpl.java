@@ -18,8 +18,8 @@ import com.google.android.libraries.launcherclient.StaticInteger;
 
 import app.lawnchair.FeedBridge;
 import app.lawnchair.LawnchairLauncher;
-import app.lawnchair.util.preferences.PrefEntry;
-import app.lawnchair.util.preferences.PreferenceManager;
+import app.lawnchair.preferences.PrefEntry;
+import app.lawnchair.preferences.PreferenceManager;
 
 /**
  * Implements {@link LauncherOverlay} and passes all the corresponding events to {@link

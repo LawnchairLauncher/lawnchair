@@ -33,7 +33,7 @@ import com.android.launcher3.icons.IconNormalizer;
 import com.android.launcher3.util.DefaultDisplay;
 import com.android.launcher3.util.WindowBounds;
 
-import app.lawnchair.util.preferences.PreferenceManager;
+import app.lawnchair.preferences.PreferenceManager;
 
 public class DeviceProfile {
 

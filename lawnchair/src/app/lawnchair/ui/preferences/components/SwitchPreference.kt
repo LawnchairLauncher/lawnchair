@@ -27,7 +27,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import app.lawnchair.ui.util.addIf
-import app.lawnchair.util.preferences.PreferenceAdapter
+import app.lawnchair.preferences.PreferenceAdapter
 
 @Composable
 fun SwitchPreference(
