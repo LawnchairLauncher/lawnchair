@@ -350,8 +350,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
     public void startHome() {
         if (LIVE_TILE.get()) {
             RecentsView recentsView = getOverviewPanel();
-            recentsView.switchToScreenshot(() -> recentsView.finishRecentsAnimation(true,
-                    this::startHomeInternal));
+            recentsView.switchToScreenshotAndFinishAnimationToRecents(this::startHomeInternal);
         } else {
             startHomeInternal();
         }
