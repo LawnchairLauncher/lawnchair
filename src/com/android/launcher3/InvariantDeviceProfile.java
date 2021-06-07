@@ -12,8 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Modifications copyright 2021, Lawnchair
  */
 
 package com.android.launcher3;
@@ -63,7 +61,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import app.lawnchair.preferences.PreferenceManager;
+import app.lawnchair.DeviceProfileOverrides;
 
 public class InvariantDeviceProfile {
 
@@ -141,8 +139,6 @@ public class InvariantDeviceProfile {
     private ConfigMonitor mConfigMonitor;
     private OverlayMonitor mOverlayMonitor;
 
-    private Context mContext;
-
     @VisibleForTesting
     public InvariantDeviceProfile() {}
 
@@ -165,12 +161,10 @@ public class InvariantDeviceProfile {
         demoModeLayoutId = p.demoModeLayoutId;
         mExtraAttrs = p.mExtraAttrs;
         mOverlayMonitor = p.mOverlayMonitor;
-        mContext = p.mContext;
     }
 
     @TargetApi(23)
     private InvariantDeviceProfile(Context context) {
-        mContext = context;
         String gridName = getCurrentGridName(context);
         String newGridName = initGrid(context, gridName);
         if (!newGridName.equals(gridName)) {
@@ -190,7 +184,6 @@ public class InvariantDeviceProfile {
      * This constructor should NOT have any monitors by design.
      */
     public InvariantDeviceProfile(Context context, String gridName) {
-        mContext = context;
         String newName = initGrid(context, gridName);
         if (newName == null || !newName.equals(gridName)) {
             throw new IllegalArgumentException("Unknown grid name");
@@ -201,7 +194,6 @@ public class InvariantDeviceProfile {
      * This constructor should NOT have any monitors by design.
      */
     public InvariantDeviceProfile(Context context, Display display) {
-        mContext = context;
         // Ensure that the main device profile is initialized
         InvariantDeviceProfile originalProfile = INSTANCE.get(context);
         String gridName = getCurrentGridName(context);
@@ -282,6 +274,7 @@ public class InvariantDeviceProfile {
         // If the partner customization apk contains any grid overrides, apply them
         // Supported overrides: numRows, numColumns, iconSize
         applyPartnerDeviceProfileOverrides(context, displayInfo.metrics);
+        DeviceProfileOverrides.getINSTANCE().get(context).apply(this, displayInfo.metrics);
 
         Point realSize = new Point(displayInfo.realSize);
         // The real size never changes. smallSide and largeSide will remain the
@@ -308,21 +301,6 @@ public class InvariantDeviceProfile {
 
         ComponentName cn = new ComponentName(context.getPackageName(), getClass().getName());
         defaultWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(context, cn, null);
-
-        // Lawnchair prefs
-        PreferenceManager prefs = PreferenceManager.getInstance(context);
-
-        // Lawnchair grid sizes
-        numHotseatIcons = prefs.getHotseatColumns().get(this);
-        numRows = prefs.getWorkspaceRows().get(this);
-        numColumns = prefs.getWorkspaceColumns().get(this);
-        numAllAppsColumns = prefs.getAllAppsColumns().get(this);
-        numFolderRows = prefs.getFolderRows().get(this);
-        numFolderColumns = prefs.getFolderColumns().get(this);
-    }
-
-    public void reInitGrid() {
-        initGrid(mContext, getCurrentGridName(mContext));
     }
 
     @Nullable
@@ -526,7 +504,7 @@ public class InvariantDeviceProfile {
 
     @VisibleForTesting
     static DisplayOption invDistWeightedInterpolate(float width, float height,
-            ArrayList<DisplayOption> points) {
+                                                    ArrayList<DisplayOption> points) {
         float weights = 0;
 
         DisplayOption p = points.get(0);
