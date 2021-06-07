@@ -18,7 +18,7 @@
     <string name="icon_pack">Pacote de Ícones</string>
     <string name="settings">Definições</string>
     <string name="home_screen_label">Ecrã Inicial</string>
-    <string name="home_screen_description">Feed, At a Glance, Grelha, Ícones</string>
+    <string name="home_screen_description">Feed, Num Relance, Grelha, Ícones</string>
     <string name="general_label">Geral</string>
     <string name="general_description">Pontos de Notificação, Pacote de Ícones</string>
     <string name="home_screen_rotation_label">Rotação de Ecrã Inicial</string>
@@ -31,9 +31,9 @@
     <string name="folders_label">Pastas</string>
     <string name="folders_description">Número de Linhas e Colunas</string>
     <string name="app_drawer_columns">Colunas da Gaveta de Aplicações</string>
-    <string name="dock_icons">Ícones da Dock</string>
-    <string name="max_folder_columns">Max. Colunas da Pasta</string>
-    <string name="max_folder_rows">Linhas Máximas da Pasta</string>
+    <string name="dock_icons">Ícones da Doca</string>
+    <string name="max_folder_columns">Max. de Colunas da Pasta</string>
+    <string name="max_folder_rows">Max. de Linhas da Pasta</string>
     <string name="home_screen_columns">Colunas do Ecrã Inicial</string>
     <string name="grid">Grelha</string>
     <string name="home_screen_rows">Linhas do Ecrã Inicial</string>
@@ -47,7 +47,7 @@
     <string name="news">Novidades</string>
     <string name="support">Suporte</string>
     <string name="acknowledgements">Agradecimentos</string>
-    <string name="devops">Operações de Desenvolvedor</string>
+    <string name="devops">DevOps</string>
     <string name="quickswitch_maintenance">Manutenção QuickSwitch</string>
     <string name="all_apps_search_bar_hint">Pesquisar Aplicações</string>
     <string name="settings_button_text">Configurações do Ecrã Inicial</string>
@@ -56,14 +56,14 @@
     <string name="item_removed">Item removido.</string>
     <string name="all_apps_no_search_results">Nenhuma Aplicação encontrada que corresponda a \"<xliff:g example="Android" id="query">%1$s</xliff:g> \".</string>
     <string name="background_opacity">Opacidade de Fundo</string>
-    <string name="background_lightness_label">Leveza do Fundo</string>
+    <string name="background_lightness_label">Luminosidade de Fundo</string>
     <string name="adaptive_icons">Ícones Adaptativos</string>
-    <string name="adaptive_icon_background_description">Utilizar 100% da leveza do fundo de branco.</string>
-    <string name="auto_adaptive_icons_label">Ícones Adaptativos automáticos</string>
-    <string name="auto_adaptive_icons_description">Para todos os Ícones não-Adaptativos.</string>
+    <string name="adaptive_icon_background_description">Utilizar 100% da luminosidade de fundo para branco.</string>
+    <string name="auto_adaptive_icons_label">Ícones Adaptativos Automáticos</string>
+    <string name="auto_adaptive_icons_description">Para todos os ícones não-Adaptativos.</string>
     <string name="support_and_pr">Suporte &amp; PR</string>
     <string name="workspace_dt2s">Duplo Toque para Adormecer</string>
-    <string name="smart_space_enable">Mostrar o Widget At a Glance</string>
+    <string name="smart_space_enable">Mostrar o Widget Num Relance</string>
     <string name="design_and_development">Design &amp; Desenvolvimento</string>
     <string name="translate">Traduzir</string>
     <string name="product">Produto</string>
@@ -75,13 +75,13 @@
     </plurals>
     <string name="hotseat_qsb_label">Mostrar Barra de Pesquisa</string>
     <string name="dt2s_admin_hint_title">Permissões de Administrador Necessárias</string>
-    <string name="dt2s_admin_hint">Para usar o Duplo Toque para Dormir, dê permissões de administrador à aplicação Launchair. Toque em \"Abrir Definições,\" e depois toque em \"Ativar a aplicação de administrador deste dispositivo.\"</string>
+    <string name="dt2s_admin_hint">Para usar o Duplo Toque para Dormir, dê permissões de administrador de dispositivo à aplicação Lawnchair. Toque em \"Abrir Definições,\" e depois toque em \"Ativar a aplicação de administrador deste dispositivo.\"</string>
     <string name="dt2s_admin_warning">O Duplo Toque para Dormir será desativado.</string>
     <string name="dt2s_a11y_hint_title">Active o Serviço se Acessibilidade</string>
-    <string name="dt2s_a11y_hint">Para usar o Duplo Toque para Dormir, active o serviço de acessibilidade do Lawnchair. Toque em \"Abrir Definições,\" depois selecione \"Lawnchair\" e active \"Utilizar Lawnchair.\"</string>
+    <string name="dt2s_a11y_hint">Para usar o Duplo Toque para Dormir, ative o serviço de acessibilidade do Lawnchair. Toque em \"Abrir Definições,\" depois selecione \"Lawnchair\" e ative \"Utilizar Lawnchair.\"</string>
     <string name="dt2s_warning_open_settings">Abrir Definições</string>
     <string name="minus_one_enable">Mostrar Feed</string>
     <string name="minus_one_unavailable">Nenhum feed instalado.</string>
-    <string name="fuzzy_search_title">Pesquisa Difusa</string>
-    <string name="fuzzy_search_desc">Coincidência aproximada para pesquisa de aplicações.</string>
+    <string name="fuzzy_search_title">Pesquisa Aproximada</string>
+    <string name="fuzzy_search_desc">Correspondência aproximada para pesquisa de aplicações.</string>
 </resources>
