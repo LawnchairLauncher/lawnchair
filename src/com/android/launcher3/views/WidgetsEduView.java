@@ -22,8 +22,8 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.View;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
@@ -36,8 +36,6 @@ public class WidgetsEduView extends AbstractSlideInView<Launcher> implements Ins
     private static final int DEFAULT_CLOSE_DURATION = 200;
 
     private Rect mInsets = new Rect();
-    private View mEduView;
-
 
     public WidgetsEduView(Context context, AttributeSet attr) {
         this(context, attr, 0);
@@ -46,7 +44,6 @@ public class WidgetsEduView extends AbstractSlideInView<Launcher> implements Ins
     public WidgetsEduView(Context context, AttributeSet attrs,
             int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mContent = this;
     }
 
     @Override
@@ -62,20 +59,16 @@ public class WidgetsEduView extends AbstractSlideInView<Launcher> implements Ins
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mEduView = findViewById(R.id.edu_view);
+        mContent = findViewById(R.id.edu_view);
         findViewById(R.id.edu_close_button)
                 .setOnClickListener(v -> close(/* animate= */ true));
     }
 
     @Override
     public void setInsets(Rect insets) {
-        int leftInset = insets.left - mInsets.left;
-        int rightInset = insets.right - mInsets.right;
-        int bottomInset = insets.bottom - mInsets.bottom;
         mInsets.set(insets);
-        setPadding(leftInset, getPaddingTop(), rightInset, 0);
-        mEduView.setPaddingRelative(mEduView.getPaddingStart(),
-                mEduView.getPaddingTop(), mEduView.getPaddingEnd(), bottomInset);
+        mContent.setPadding(mContent.getPaddingStart(),
+                mContent.getPaddingTop(), mContent.getPaddingEnd(), insets.bottom);
     }
 
     private void show() {
@@ -90,8 +83,39 @@ public class WidgetsEduView extends AbstractSlideInView<Launcher> implements Ins
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        super.onLayout(changed, l, t, r, b);
+        int width = r - l;
+        int height = b - t;
+
+        // Lay out the content as center bottom aligned.
+        int contentWidth = mContent.getMeasuredWidth();
+        int contentLeft = (width - contentWidth - mInsets.left - mInsets.right) / 2 + mInsets.left;
+        mContent.layout(contentLeft, height - mContent.getMeasuredHeight(),
+                contentLeft + contentWidth, height);
+
         setTranslationShift(mTranslationShift);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        DeviceProfile deviceProfile = mActivityContext.getDeviceProfile();
+        int widthUsed;
+        if (mInsets.bottom > 0) {
+            // Extra space between this view and mContent horizontally when the sheet is shown in
+            // portrait mode.
+            widthUsed = mInsets.left + mInsets.right;
+        } else {
+            // Extra space between this view and mContent horizontally when the sheet is shown in
+            // landscape mode.
+            Rect padding = deviceProfile.workspacePadding;
+            widthUsed = Math.max(padding.left + padding.right,
+                    2 * (mInsets.left + mInsets.right));
+        }
+
+        int heightUsed = mInsets.top + deviceProfile.edgeMarginPx;
+        measureChildWithMargins(mContent, widthMeasureSpec,
+                widthUsed, heightMeasureSpec, heightUsed);
+        setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec),
+                MeasureSpec.getSize(heightMeasureSpec));
     }
 
     private void animateOpen() {
