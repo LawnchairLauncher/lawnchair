@@ -27,7 +27,7 @@
     <string name="dock_label">Dock</string>
     <string name="dock_description">Barra de búsqueda, Número de íconos</string>
     <string name="app_drawer_label">Cajón de Aplicaciones</string>
-    <string name="app_drawer_description">Aplicaciones ocultas, Número de columnas, Iconos</string>
+    <string name="app_drawer_description">Aplicaciones ocultas, Cantidad de columnas, Íconos</string>
     <string name="folders_label">Carpetas</string>
     <string name="folders_description">Número de Filas y Columnas</string>
     <string name="app_drawer_columns">Columnas de Cajón de Aplicaciones</string>
@@ -48,7 +48,7 @@
     <string name="support">Soporte</string>
     <string name="acknowledgements">Reconocimientos</string>
     <string name="devops">Opciones de desarrollador</string>
-    <string name="quickswitch_maintenance">Interruptor rápido de mantenimiento</string>
+    <string name="quickswitch_maintenance">Mantenimiento de QuickSwitch</string>
     <string name="all_apps_search_bar_hint">Buscar Aplicaciones</string>
     <string name="settings_button_text">Configuración de Inicio</string>
     <string name="development">Desarrollo</string>
@@ -62,7 +62,7 @@
     <string name="auto_adaptive_icons_label">Iconos Auto-Adaptables</string>
     <string name="auto_adaptive_icons_description">Para todos los iconos no adaptativos.</string>
     <string name="support_and_pr">Soporte &amp; Relaciones Públicas</string>
-    <string name="workspace_dt2s">Doble-Toque para dormir</string>
+    <string name="workspace_dt2s">Doble toque para dormir</string>
     <string name="smart_space_enable">Mostrar el widget De Un Vistazo</string>
     <string name="design_and_development">Diseño &amp; Desarrollo</string>
     <string name="translate">Traducir</string>
@@ -74,11 +74,11 @@
         <item quantity="other">%1$d Aplicaciones</item>
     </plurals>
     <string name="hotseat_qsb_label">Mostrar Barra de Búsqueda</string>
-    <string name="dt2s_admin_hint_title">Admin permission required</string>
+    <string name="dt2s_admin_hint_title">Permisos de administrador requeridos</string>
     <string name="dt2s_admin_hint">To use Double Tap to Sleep, grant the Admin permission.</string>
     <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
     <string name="dt2s_a11y_hint_title">Accessibility service required</string>
-    <string name="dt2s_a11y_hint">To use Double Tap to Sleep, enable the accessibility service.</string>
+    <string name="dt2s_a11y_hint">Para usar el doble toque para dormir, activa el servicio de accesibilidad de Lawnchair. Toca en \"Abrir configuración\", luego selecciona \"Lawnchair\" y activa \"Usar Lawnchair.\"</string>
     <string name="dt2s_warning_open_settings">Abrir Configuración</string>
     <string name="minus_one_enable">Mostrar Feed</string>
     <string name="minus_one_unavailable">Feed no instalado.</string>
