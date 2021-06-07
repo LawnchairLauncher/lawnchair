@@ -85,6 +85,7 @@ public class SystemUiProxy implements ISystemUiProxy,
     private float mLastNavButtonAlpha;
     private boolean mLastNavButtonAnimate;
     private boolean mHasNavButtonAlphaBeenSet = false;
+    private Runnable mPendingSetNavButtonAlpha = null;
 
     // TODO(141886704): Find a way to remove this
     private int mLastSystemUiStateFlags;
@@ -156,6 +157,11 @@ public class SystemUiProxy implements ISystemUiProxy,
         if (mPendingSmartspaceCallback != null && mSmartspaceTransitionController != null) {
             setSmartspaceCallback(mPendingSmartspaceCallback);
             mPendingSmartspaceCallback = null;
+        }
+
+        if (mPendingSetNavButtonAlpha != null) {
+            mPendingSetNavButtonAlpha.run();
+            mPendingSetNavButtonAlpha = null;
         }
     }
 
@@ -240,14 +246,18 @@ public class SystemUiProxy implements ISystemUiProxy,
         boolean changed = Float.compare(alpha, mLastNavButtonAlpha) != 0
                 || animate != mLastNavButtonAnimate
                 || !mHasNavButtonAlphaBeenSet;
-        if (mSystemUiProxy != null && changed) {
-            mLastNavButtonAlpha = alpha;
-            mLastNavButtonAnimate = animate;
-            mHasNavButtonAlphaBeenSet = true;
-            try {
-                mSystemUiProxy.setNavBarButtonAlpha(alpha, animate);
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed call setNavBarButtonAlpha", e);
+        if (changed) {
+            if (mSystemUiProxy == null) {
+                mPendingSetNavButtonAlpha = () -> setNavBarButtonAlpha(alpha, animate);
+            } else {
+                mLastNavButtonAlpha = alpha;
+                mLastNavButtonAnimate = animate;
+                mHasNavButtonAlphaBeenSet = true;
+                try {
+                    mSystemUiProxy.setNavBarButtonAlpha(alpha, animate);
+                } catch (RemoteException e) {
+                    Log.w(TAG, "Failed call setNavBarButtonAlpha", e);
+                }
             }
         }
     }
