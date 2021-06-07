@@ -111,7 +111,7 @@
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Toegang tot meldingen vereist"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Als je meldingsstipjes wilt tonen, zet je app-meldingen aan voor <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Instellingen wijzigen"</string>
-    <string name="notification_dots_service_title" msgid="4284221181793592871">"Meldingsstipjes tonen"</string>
+    <string name="notification_dots_service_title" msgid="4284221181793592871">"Toon meldingsstipjes"</string>
     <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"App-iconen toevoegen aan startscherm"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Voor nieuwe apps"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Onbekend"</string>
@@ -159,8 +159,8 @@
     <string name="work_profile_edu_next" msgid="8783418929296503629">"Volgende"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
     <string name="work_apps_paused_title" msgid="2389865654362803723">"Werkprofiel is onderbroken"</string>
-    <string name="work_apps_paused_body" msgid="4209084728264328628">"Werk-apps kunnen je geen meldingen sturen, niet je batterij gebruiken en geen toegang krijgen tot je locatie"</string>
-    <string name="work_apps_paused_content_description" msgid="4473292417145736203">"Werkprofiel is gepauzeerd. Werk-apps kunnen je geen meldingen sturen, niet je batterij gebruiken en geen toegang krijgen tot je locatie."</string>
+    <string name="work_apps_paused_body" msgid="4209084728264328628">"Werk-apps kunnen je geen meldingen sturen, je batterij niet gebruiken en geen toegang krijgen tot je locatie"</string>
+    <string name="work_apps_paused_content_description" msgid="4473292417145736203">"Werkprofiel is gepauzeerd. Werk-apps kunnen je geen meldingen sturen, je batterij niet gebruiken en geen toegang krijgen tot je locatie."</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Werk-apps hebben badges en zijn zichtbaar voor je IT-beheerder"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"OK"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Werk-apps pauzeren"</string>
