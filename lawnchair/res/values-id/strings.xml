@@ -79,8 +79,8 @@
     <string name="dt2s_a11y_hint_title">Aktifkan Layanan Aksesibilitas</string>
     <string name="dt2s_a11y_hint">Untuk menggunakan Ketuk Dua Kali untuk Tidur, nyalakan layanan aksesibilitas Lawnchair. Ketuk \"Buka Pengaturan,\" lalu pilih \"Lawnchair\" dan nyalakan \"Gunakan Lawnchair.\"</string>
     <string name="dt2s_warning_open_settings">Buka Pengaturan</string>
-    <string name="minus_one_enable">Tampilkan Feed</string>
-    <string name="minus_one_unavailable">Tidak ada feed terpasang.</string>
+    <string name="minus_one_enable">Tampilkan Umpan</string>
+    <string name="minus_one_unavailable">Tidak ada umpan terpasang.</string>
     <string name="fuzzy_search_title">Pencarian Fuzzy</string>
     <string name="fuzzy_search_desc">Perkiraan pencocokan untuk pencarian aplikasi.</string>
 </resources>
