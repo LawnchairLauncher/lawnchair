@@ -30,7 +30,7 @@
     <string name="app_drawer_description">Κρυμμένες Εφαρμογές, Αριθμός Στηλών, Εικονίδια</string>
     <string name="folders_label">Φάκελοι</string>
     <string name="folders_description">Αριθμός Γραμμών και Στηλών</string>
-    <string name="app_drawer_columns">App Drawer Columns</string>
+    <string name="app_drawer_columns">Στήλες Συρταριού Εφαρμογών</string>
     <string name="dock_icons">Dock Icons</string>
     <string name="max_folder_columns">Max. Folder Columns</string>
     <string name="max_folder_rows">Max. Folder Rows</string>
