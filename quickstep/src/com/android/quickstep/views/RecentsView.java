@@ -3843,4 +3843,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         // The Black blending is temporary until we have the proper color token.
         return ColorUtils.blendARGB(Color.BLACK, baseColor, 0.25f);
     }
+
+    /** Get the RecentsAnimationController */
+    @Nullable
+    public RecentsAnimationController getRecentsAnimationController() {
+        return mRecentsAnimationController;
+    }
 }
