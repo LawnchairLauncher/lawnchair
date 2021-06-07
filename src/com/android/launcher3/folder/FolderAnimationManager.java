@@ -37,6 +37,7 @@ import android.view.animation.AnimationUtils;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Utilities;
@@ -80,6 +81,8 @@ public class FolderAnimationManager {
 
     private ObjectAnimator mBgColorAnimator;
 
+    private DeviceProfile mDeviceProfile;
+
     public FolderAnimationManager(Folder folder, boolean isOpening) {
         mFolder = folder;
         mContent = folder.mContent;
@@ -89,7 +92,8 @@ public class FolderAnimationManager {
         mPreviewBackground = mFolderIcon.mBackground;
 
         mContext = folder.getContext();
-        mPreviewVerifier = new FolderGridOrganizer(folder.mActivityContext.getDeviceProfile().inv);
+        mDeviceProfile = folder.mActivityContext.getDeviceProfile();
+        mPreviewVerifier = new FolderGridOrganizer(mDeviceProfile.inv);
 
         mIsOpening = isOpening;
 
@@ -211,8 +215,21 @@ public class FolderAnimationManager {
         play(a, getAnimator(mFolder.mContent, SCALE_PROPERTY, initialScale, finalScale));
         play(a, getAnimator(mFolder.mFooter, SCALE_PROPERTY, initialScale, finalScale));
         play(a, mFolderIcon.mFolderName.createTextAlphaAnimator(!mIsOpening));
+
+        // Create reveal animator for the folder background
         play(a, getShape().createRevealAnimator(
                 mFolder, startRect, endRect, finalRadius, !mIsOpening));
+
+        // Create reveal animator for the folder content (capture the top 4 icons 2x2)
+        int width = mContent.getPaddingLeft() + mDeviceProfile.folderCellLayoutBorderSpacingPx
+                + mDeviceProfile.folderCellWidthPx * 2;
+        int height = mContent.getPaddingTop() + mDeviceProfile.folderCellLayoutBorderSpacingPx
+                + mDeviceProfile.folderCellHeightPx * 2;
+        Rect startRect2 = new Rect(0, 0, width, height);
+        play(a, getShape().createRevealAnimator(
+                mFolder.getContent(), startRect2, endRect, finalRadius, !mIsOpening));
+
+
         // Fade in the folder name, as the text can overlap the icons when grid size is small.
         mFolder.mFolderName.setAlpha(mIsOpening ? 0f : 1f);
         play(a, getAnimator(mFolder.mFolderName, View.ALPHA, 0, 1),
