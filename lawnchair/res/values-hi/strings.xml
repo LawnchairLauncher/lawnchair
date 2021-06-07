@@ -22,7 +22,7 @@
     <string name="general_label">General</string>
     <string name="general_description">Notification Dots, Icon Pack</string>
     <string name="home_screen_rotation_label">Home Screen Rotation</string>
-    <string name="home_screen_rotaton_description">When device is rotated.</string>
+    <string name="home_screen_rotaton_description">जब फोन घुमाया जाता है।</string>
     <string name="auto_add_shortcuts_label">Add New Apps to Home Screen</string>
     <string name="dock_label">Dock</string>
     <string name="dock_description">Search Bar, Icon Count</string>
