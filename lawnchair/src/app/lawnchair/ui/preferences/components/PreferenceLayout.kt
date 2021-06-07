@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import app.lawnchair.util.Meta
 import app.lawnchair.util.pageMeta
 import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.insets.toPaddingValues
 
 @Composable
@@ -73,7 +74,8 @@ fun PreferenceLayoutLazyColumn(modifier: Modifier = Modifier, content: LazyListS
 }
 
 @Composable
-fun preferenceLayoutPadding() = LocalWindowInsets.current.systemBars.toPaddingValues(
+fun preferenceLayoutPadding() = rememberInsetsPaddingValues(
+    insets = LocalWindowInsets.current.systemBars,
     additionalTop = topBarSize,
     additionalBottom = 16.dp
 )
