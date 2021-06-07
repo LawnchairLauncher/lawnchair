@@ -492,6 +492,10 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
             return;
         }
         LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) getTag();
+        if (info == null) {
+            // This occurs when LauncherAppWidgetHostView is used to render a preview layout.
+            return;
+        }
         // Remove and rebind the current widget (which was inflated in the wrong
         // orientation), but don't delete it from the database
         mLauncher.removeItem(this, info, false  /* deleteFromDb */);
