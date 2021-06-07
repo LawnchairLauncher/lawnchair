@@ -91,8 +91,24 @@ public class GridSizeMigrationTaskV2 {
         mSrcReader = srcReader;
         mDestReader = destReader;
 
-        mHotseatItems = destReader.loadHotseatEntries();
-        mWorkspaceItems = destReader.loadAllWorkspaceEntries();
+        List<DbEntry> hotseatItems = destReader.loadHotseatEntries();
+        List<DbEntry> workspaceItems = destReader.loadAllWorkspaceEntries();
+
+        // only add items in the target size. other items are considered lost
+        mHotseatItems = new ArrayList<>();
+        for (int i = 0; i < hotseatItems.size(); i++) {
+            DbEntry item = hotseatItems.get(i);
+            if (item.cellX < destHotseatSize) {
+                mHotseatItems.add(item);
+            }
+        }
+        mWorkspaceItems = new ArrayList<>();
+        for (int i = 0; i < workspaceItems.size(); i++) {
+            DbEntry item = workspaceItems.get(i);
+            if (item.cellX < targetSize.x && item.cellY < targetSize.y) {
+                mWorkspaceItems.add(item);
+            }
+        }
 
         mHotseatDiff = calcDiff(mSrcReader.loadHotseatEntries(), mHotseatItems);
         mWorkspaceDiff = calcDiff(mSrcReader.loadAllWorkspaceEntries(), mWorkspaceItems);

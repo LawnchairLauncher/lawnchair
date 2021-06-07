@@ -171,8 +171,11 @@ public class LauncherProvider extends ContentProvider {
 
         final DatabaseHelper helper = src.get();
         mOpenHelper = dst.get();
+        SQLiteDatabase toDb = mOpenHelper.getWritableDatabase();
         copyTable(helper.getReadableDatabase(), Favorites.TABLE_NAME,
-                mOpenHelper.getWritableDatabase(), targetTableName, getContext());
+                toDb, targetTableName, getContext());
+        // remove old items in the db
+        copyTable(toDb, targetTableName, toDb, Favorites.TABLE_NAME, getContext());
         helper.close();
         return true;
     }
