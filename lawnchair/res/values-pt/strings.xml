@@ -39,14 +39,14 @@
     <string name="home_screen_rows">Linhas do Ecrã Inicial</string>
     <string name="icons">Ícones</string>
     <string name="icon_size">Tamanho do Ícone</string>
-    <string name="label_size">Tamanho do Rótulo</string>
+    <string name="label_size">Tamanho da Etiqueta</string>
     <string name="allow_empty_pages_label">Permitir Páginas Vazias</string>
     <string name="notification_dots">Pontos de Notificação</string>
     <string name="smartspace_preferences">Preferências</string>
     <string name="about_label">Sobre</string>
     <string name="news">Novidades</string>
     <string name="support">Suporte</string>
-    <string name="acknowledgements">Agradecimentos</string>
+    <string name="acknowledgements">Reconhecimentos</string>
     <string name="devops">DevOps</string>
     <string name="quickswitch_maintenance">Manutenção QuickSwitch</string>
     <string name="all_apps_search_bar_hint">Pesquisar Aplicações</string>
@@ -75,7 +75,7 @@
     </plurals>
     <string name="hotseat_qsb_label">Mostrar Barra de Pesquisa</string>
     <string name="dt2s_admin_hint_title">Permissões de Administrador Necessárias</string>
-    <string name="dt2s_admin_hint">Para usar o Duplo Toque para Dormir, dê permissões de administrador de dispositivo à aplicação Lawnchair. Toque em \"Abrir Definições,\" e depois toque em \"Ativar a aplicação de administrador deste dispositivo.\"</string>
+    <string name="dt2s_admin_hint">Para usar o Duplo Toque para Dormir, defina o Lawnchair como uma aplicação de administrador do dispositivo. Toque em \"Abrir Definições,\" e de seguida em \"Ativar a aplicação de administrador deste dispositivo.\"</string>
     <string name="dt2s_admin_warning">O Duplo Toque para Dormir será desativado.</string>
     <string name="dt2s_a11y_hint_title">Active o Serviço se Acessibilidade</string>
     <string name="dt2s_a11y_hint">Para usar o Duplo Toque para Dormir, ative o serviço de acessibilidade do Lawnchair. Toque em \"Abrir Definições,\" depois selecione \"Lawnchair\" e ative \"Utilizar Lawnchair.\"</string>
