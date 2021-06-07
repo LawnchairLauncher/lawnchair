@@ -57,8 +57,9 @@
             <enum name="folder" value="2" />
             <enum name="widget_section" value="3" />
             <enum name="shortcut_popup" value="4" />
-            <enum name="hero_app" value="5" />
-            <enum name="taskbar" value="6" />
+            <enum name="taskbar" value="5" />
+            <enum name="search_result_tall" value="6" />
+            <enum name="search_result_small" value="7" />
         </attr>
         <attr name="centerVertically" format="boolean" />
     </declare-styleable>
