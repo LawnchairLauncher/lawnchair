@@ -85,6 +85,17 @@ public class RemoteAnimationTargets {
         return null;
     }
 
+    /** Returns the first opening app target. */
+    public RemoteAnimationTargetCompat getFirstAppTarget() {
+        return apps.length > 0 ? apps[0] : null;
+    }
+
+    /** Returns the task id of the first opening app target, or -1 if none is found. */
+    public int getFirstAppTargetTaskId() {
+        RemoteAnimationTargetCompat target = getFirstAppTarget();
+        return target == null ? -1 : target.taskId;
+    }
+
     public boolean isAnimatingHome() {
         for (RemoteAnimationTargetCompat target : unfilteredApps) {
             if (target.activityType == RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
