@@ -58,11 +58,11 @@
     <string name="background_opacity">背景不透明度</string>
     <string name="background_lightness_label">背景亮度</string>
     <string name="adaptive_icons">自适应图标</string>
-    <string name="adaptive_icon_background_description">白色使用100%背景亮度。</string>
+    <string name="adaptive_icon_background_description">100%背景亮度即为白色。</string>
     <string name="auto_adaptive_icons_label">自适应图标</string>
     <string name="auto_adaptive_icons_description">用于所有非自适应图标。</string>
     <string name="support_and_pr">支持 &amp; PR</string>
-    <string name="workspace_dt2s">双击睡眠</string>
+    <string name="workspace_dt2s">双击锁定</string>
     <string name="smart_space_enable">显示 At a Glance 小部件</string>
     <string name="design_and_development">设计 &amp; 开发</string>
     <string name="translate">翻译</string>
@@ -73,7 +73,7 @@
         <item quantity="other">%1$d 个应用</item>
     </plurals>
     <string name="hotseat_qsb_label">显示搜索栏</string>
-    <string name="dt2s_admin_hint_title">管理员权限要求</string>
+    <string name="dt2s_admin_hint_title">需要管理员权限</string>
     <string name="dt2s_admin_hint">若要使用双击来睡眠，请设置Lawnchair 为设备管理应用。点击\"打开设置\"，然后点击\"激活此设备管理应用\"。</string>
     <string name="dt2s_admin_warning">双击睡眠将被关闭。</string>
     <string name="dt2s_a11y_hint_title">开启辅助功能</string>
