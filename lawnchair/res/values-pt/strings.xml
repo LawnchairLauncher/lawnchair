@@ -82,6 +82,6 @@
     <string name="dt2s_warning_open_settings">Abrir Configurações</string>
     <string name="minus_one_enable">Mostrar Feed</string>
     <string name="minus_one_unavailable">Feed is not available</string>
-    <string name="fuzzy_search_title">Fuzzy Search</string>
+    <string name="fuzzy_search_title">Pesquisa Aproximada</string>
     <string name="fuzzy_search_desc">Correspondência aproximada para pesquisas de apps.</string>
 </resources>
