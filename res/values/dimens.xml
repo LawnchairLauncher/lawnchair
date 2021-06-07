@@ -97,6 +97,7 @@
     <dimen name="all_apps_header_tab_height">48dp</dimen>
     <dimen name="all_apps_tabs_indicator_height">2dp</dimen>
     <dimen name="all_apps_header_top_padding">36dp</dimen>
+    <dimen name="all_apps_header_bottom_padding">16dp</dimen>
     <dimen name="all_apps_work_profile_tab_footer_top_padding">16dp</dimen>
     <dimen name="all_apps_work_profile_tab_footer_bottom_padding">20dp</dimen>
     <dimen name="all_apps_tabs_vertical_padding">6dp</dimen>
@@ -315,4 +316,7 @@
     <dimen name="grid_visualization_rounding_radius">22dp</dimen>
     <dimen name="grid_visualization_cell_spacing">6dp</dimen>
 
+<!-- Search results related parameters -->
+    <dimen name="search_row_icon_size">48dp</dimen>
+    <dimen name="search_row_small_icon_size">32dp</dimen>
 </resources>
