@@ -106,11 +106,15 @@ public class GridSizeMigrationTaskV2 {
      * Check given a new IDP, if migration is necessary.
      */
     public static boolean needsToMigrate(Context context, InvariantDeviceProfile idp) {
+        return needsToMigrate(context, idp.numColumns, idp.numRows, idp.numHotseatIcons);
+    }
+
+    public static boolean needsToMigrate(Context context, int numColumns, int numRows, int numHotseatIcons) {
         SharedPreferences prefs = Utilities.getPrefs(context);
-        String gridSizeString = getPointString(idp.numColumns, idp.numRows);
+        String gridSizeString = getPointString(numColumns, numRows);
 
         return !gridSizeString.equals(prefs.getString(KEY_MIGRATION_SRC_WORKSPACE_SIZE, ""))
-                || idp.numHotseatIcons != prefs.getInt(KEY_MIGRATION_SRC_HOTSEAT_COUNT, -1);
+                || numHotseatIcons != prefs.getInt(KEY_MIGRATION_SRC_HOTSEAT_COUNT, -1);
     }
 
     /** See {@link #migrateGridIfNeeded(Context, InvariantDeviceProfile)} */

@@ -94,6 +94,11 @@ public class InvariantDeviceProfile {
             "config_icon_mask", "string", "android");
 
     /**
+     * Original profile before preference overrides
+     */
+    public GridOption closestProfile;
+
+    /**
      * Number of icons per row and column in the workspace.
      */
     public int numRows;
@@ -243,7 +248,7 @@ public class InvariantDeviceProfile {
 
     private void initGrid(
             Context context, DefaultDisplay.Info displayInfo, DisplayOption displayOption) {
-        GridOption closestProfile = displayOption.grid;
+        closestProfile = displayOption.grid;
         numRows = closestProfile.numRows;
         numColumns = closestProfile.numColumns;
         numHotseatIcons = closestProfile.numHotseatIcons;
@@ -274,7 +279,7 @@ public class InvariantDeviceProfile {
         // If the partner customization apk contains any grid overrides, apply them
         // Supported overrides: numRows, numColumns, iconSize
         applyPartnerDeviceProfileOverrides(context, displayInfo.metrics);
-        DeviceProfileOverrides.getINSTANCE().get(context).apply(this, displayInfo.metrics);
+        DeviceProfileOverrides.getINSTANCE().get(context).apply(this, closestProfile);
 
         Point realSize = new Point(displayInfo.realSize);
         // The real size never changes. smallSide and largeSide will remain the
@@ -340,7 +345,16 @@ public class InvariantDeviceProfile {
         MAIN_EXECUTOR.execute(() -> onConfigChanged(appContext));
     }
 
+    public void onPreferencesChanged(Context context, int changeFlags) {
+        Context appContext = context.getApplicationContext();
+        MAIN_EXECUTOR.execute(() -> onConfigChanged(appContext, changeFlags));
+    }
+
     private void onConfigChanged(Context context) {
+        onConfigChanged(context, 0);
+    }
+
+    private void onConfigChanged(Context context, int changeFlags) {
         // Config changes, what shall we do?
         InvariantDeviceProfile oldProfile = new InvariantDeviceProfile(this);
 
@@ -348,7 +362,6 @@ public class InvariantDeviceProfile {
         String gridName = getCurrentGridName(context);
         initGrid(context, gridName);
 
-        int changeFlags = 0;
         if (numRows != oldProfile.numRows ||
                 numColumns != oldProfile.numColumns ||
                 numFolderColumns != oldProfile.numFolderColumns ||
@@ -578,13 +591,13 @@ public class InvariantDeviceProfile {
         public final int numRows;
         public final int numColumns;
 
-        private final int numFolderRows;
-        private final int numFolderColumns;
+        public final int numFolderRows;
+        public final int numFolderColumns;
 
-        private final int numHotseatIcons;
+        public final int numHotseatIcons;
 
         private final String dbFile;
-        private final int numAllAppsColumns;
+        public final int numAllAppsColumns;
 
         private final int defaultLayoutId;
         private final int demoModeLayoutId;

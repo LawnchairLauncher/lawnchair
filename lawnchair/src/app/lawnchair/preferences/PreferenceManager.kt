@@ -20,22 +20,30 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import app.lawnchair.LawnchairLauncher
+import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
+import com.android.launcher3.model.GridSizeMigrationTaskV2
 import com.android.launcher3.states.RotationHelper
 import com.android.launcher3.util.MainThreadInitializedObject
 
-class PreferenceManager private constructor(context: Context) : BasePreferenceManager(context) {
-    private val reloadIcons = {
-        val model = LauncherAppState.getInstance(context).model
-        model.clearIconCache()
-        model.forceReload()
+class PreferenceManager private constructor(private val context: Context) : BasePreferenceManager(context) {
+    private val idp get() = InvariantDeviceProfile.INSTANCE.get(context)
+    private val reloadIcons = { idp.onPreferencesChanged(context, InvariantDeviceProfile.CHANGE_FLAG_ICON_PARAMS) }
+    private val reloadGrid: () -> Unit = {
+        val defaultGrid = idp.closestProfile
+        val numColumns = workspaceColumns.get(defaultGrid)
+        val numRows = workspaceRows.get(defaultGrid)
+        val numHotseatIcons = hotseatColumns.get(defaultGrid)
+        if (GridSizeMigrationTaskV2.needsToMigrate(context, numColumns, numRows, numHotseatIcons)) {
+            toggleCurrentDbSlot()
+        }
+        idp.onPreferencesChanged(context, InvariantDeviceProfile.CHANGE_FLAG_GRID)
     }
+
     private val scheduleRestart = {
         LawnchairLauncher.instance?.scheduleRestart()
         Unit
     }
-
-    private val reloadGrid = scheduleRestart
 
     val hiddenAppSet = StringSetPref("hidden-app-set", setOf())
     val iconPackPackage = StringPref("pref_iconPackPackage", "", reloadIcons)
@@ -69,6 +77,15 @@ class PreferenceManager private constructor(context: Context) : BasePreferenceMa
 
     init {
         sp.registerOnSharedPreferenceChangeListener(this)
+    }
+
+    val currentDbSlot = StringPref("pref_currentDbSlot", "a")
+    private fun toggleCurrentDbSlot() {
+        if (currentDbSlot.get() == "a") {
+            currentDbSlot.set("b")
+        } else {
+            currentDbSlot.set("a")
+        }
     }
 
     companion object {

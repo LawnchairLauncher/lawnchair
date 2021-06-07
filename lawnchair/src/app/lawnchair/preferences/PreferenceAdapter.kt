@@ -18,6 +18,7 @@ package app.lawnchair.preferences
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
+import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
 import kotlin.reflect.KProperty
 
@@ -46,8 +47,13 @@ class PreferenceAdapter<T>(
 @Composable
 fun BasePreferenceManager.IdpIntPref.getAdapter(): PreferenceAdapter<Float> {
     val context = LocalContext.current
-    val idp = remember { LauncherAppState.getIDP(context) }
-    return getAdapter(this, { get(idp).toFloat() }, { newValue -> set(newValue.toInt(), idp) })
+    val idp = remember { InvariantDeviceProfile.INSTANCE.get(context) }
+    val defaultGrid = idp.closestProfile
+    return getAdapter(
+        this,
+        { get(defaultGrid).toFloat() },
+        { newValue -> set(newValue.toInt(), defaultGrid) }
+    )
 }
 
 @Composable
