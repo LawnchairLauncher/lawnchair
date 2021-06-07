@@ -18,16 +18,16 @@
     <string name="icon_pack">图标包</string>
     <string name="settings">设置</string>
     <string name="home_screen_label">主屏幕</string>
-    <string name="home_screen_description">Feed, At a Glance, Grid, 图标</string>
+    <string name="home_screen_description">动态消息、快速查看、网格、图标</string>
     <string name="general_label">通用</string>
     <string name="general_description">通知圆点，图标包</string>
     <string name="home_screen_rotation_label">主屏幕旋转</string>
     <string name="home_screen_rotaton_description">当设备旋转时</string>
     <string name="auto_add_shortcuts_label">向主屏幕添加新应用</string>
     <string name="dock_label">停靠栏</string>
-    <string name="dock_description">搜索栏，图标数量</string>
+    <string name="dock_description">搜索栏、图标数量</string>
     <string name="app_drawer_label">应用抽屉</string>
-    <string name="app_drawer_description">隐藏应用，列数，图标数</string>
+    <string name="app_drawer_description">隐藏的应用、列数、图标</string>
     <string name="folders_label">文件夹</string>
     <string name="folders_description">行和列数</string>
     <string name="app_drawer_columns">应用抽屉列数</string>
@@ -55,7 +55,7 @@
     <string name="app_info_drop_target_label">应用信息</string>
     <string name="item_removed">项目已移除。</string>
     <string name="all_apps_no_search_results">没有找到匹配 “<xliff:g example="Android" id="query">%1$s</xliff:g>” 的应用。</string>
-    <string name="background_opacity">背景透明度</string>
+    <string name="background_opacity">背景不透明度</string>
     <string name="background_lightness_label">背景亮度</string>
     <string name="adaptive_icons">自适应图标</string>
     <string name="adaptive_icon_background_description">白色使用100%背景亮度。</string>
