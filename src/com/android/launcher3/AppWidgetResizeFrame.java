@@ -30,6 +30,7 @@ import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.InstanceIdSequence;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.PendingRequestArgs;
+import com.android.launcher3.views.ArrowTipView;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.util.WidgetSizes;
@@ -42,6 +43,8 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     private static final float DIMMED_HANDLE_ALPHA = 0f;
     private static final float RESIZE_THRESHOLD = 0.66f;
 
+    private static final String KEY_RECONFIGURABLE_WIDGET_EDUCATION_TIP_SEEN =
+            "launcher.reconfigurable_widget_education_tip_seen";
     private static final Rect sTmpRect = new Rect();
 
     private static final int HANDLE_COUNT = 4;
@@ -238,6 +241,15 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
                             mWidgetView.getAppWidgetId(),
                             Launcher.REQUEST_RECONFIGURE_APPWIDGET);
             });
+            if (!hasSeenReconfigurableWidgetEducationTip()) {
+                post(() -> {
+                    if (showReconfigurableWidgetEducationTip() != null) {
+                        mLauncher.getSharedPrefs().edit()
+                                .putBoolean(KEY_RECONFIGURABLE_WIDGET_EDUCATION_TIP_SEEN,
+                                        true).apply();
+                    }
+                });
+            }
         }
 
         // When we create the resize frame, we first mark all cells as unoccupied. The appropriate
@@ -678,5 +690,22 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
                 || keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN
                 || keyCode == KeyEvent.KEYCODE_MOVE_HOME || keyCode == KeyEvent.KEYCODE_MOVE_END
                 || keyCode == KeyEvent.KEYCODE_PAGE_UP || keyCode == KeyEvent.KEYCODE_PAGE_DOWN);
+    }
+
+    private ArrowTipView showReconfigurableWidgetEducationTip() {
+        int[] coords = new int[2];
+        mReconfigureButton.getLocationOnScreen(coords);
+        int tipTopMargin = mLauncher.getResources()
+                .getDimensionPixelSize(R.dimen.widget_reconfigure_tip_top_margin);
+        return new ArrowTipView(mLauncher, /* isPointingUp= */ true).showAtLocation(
+                getContext().getString(R.string.reconfigurable_widget_education_tip),
+                /* arrowXCoord= */ coords[0] + mReconfigureButton.getWidth() / 2,
+                /* yCoord= */ coords[1] + mReconfigureButton.getHeight() + tipTopMargin);
+    }
+
+    private boolean hasSeenReconfigurableWidgetEducationTip() {
+        return mLauncher.getSharedPrefs()
+                .getBoolean(KEY_RECONFIGURABLE_WIDGET_EDUCATION_TIP_SEEN, false)
+                || Utilities.IS_RUNNING_IN_TEST_HARNESS;
     }
 }
