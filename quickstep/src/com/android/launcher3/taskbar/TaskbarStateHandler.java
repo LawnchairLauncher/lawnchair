@@ -27,6 +27,8 @@ import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.util.MultiValueAlpha;
+import com.android.quickstep.AnimatedFloat;
+import com.android.quickstep.SystemUiProxy;
 
 /**
  * StateHandler to animate Taskbar according to Launcher's state machine. Does nothing if Taskbar
@@ -39,12 +41,17 @@ public class TaskbarStateHandler implements StateManager.StateHandler<LauncherSt
     // Contains Taskbar-related properties we should aniamte. If null, don't do anything.
     private @Nullable MultiValueAlpha.AlphaProperty mTaskbarAlpha = null;
 
+    private AnimatedFloat mNavbarButtonAlpha = new AnimatedFloat(this::updateNavbarButtonAlpha);
+
     public TaskbarStateHandler(BaseQuickstepLauncher launcher) {
         mLauncher = launcher;
     }
 
     public void setAnimationController(MultiValueAlpha.AlphaProperty taskbarAlpha) {
         mTaskbarAlpha = taskbarAlpha;
+        // Reapply state.
+        setState(mLauncher.getStateManager().getState());
+        updateNavbarButtonAlpha();
     }
 
     @Override
@@ -68,5 +75,14 @@ public class TaskbarStateHandler implements StateManager.StateHandler<LauncherSt
 
         boolean isTaskbarVisible = (toState.getVisibleElements(mLauncher) & TASKBAR) != 0;
         setter.setFloat(mTaskbarAlpha, MultiValueAlpha.VALUE, isTaskbarVisible ? 1f : 0f, LINEAR);
+        // Make the nav bar visible in states that taskbar isn't visible.
+        // TODO: We should draw our own handle instead of showing the nav bar.
+        float navbarButtonAlpha = isTaskbarVisible ? 0f : 1f;
+        setter.setFloat(mNavbarButtonAlpha, AnimatedFloat.VALUE, navbarButtonAlpha, LINEAR);
+    }
+
+
+    private void updateNavbarButtonAlpha() {
+        SystemUiProxy.INSTANCE.get(mLauncher).setNavBarButtonAlpha(mNavbarButtonAlpha.value, false);
     }
 }
