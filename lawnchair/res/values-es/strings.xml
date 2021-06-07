@@ -76,7 +76,7 @@
     <string name="hotseat_qsb_label">Mostrar Barra de Búsqueda</string>
     <string name="dt2s_admin_hint_title">Permisos de administrador requeridos</string>
     <string name="dt2s_admin_hint">To use Double Tap to Sleep, grant the Admin permission.</string>
-    <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
+    <string name="dt2s_admin_warning">Se desactivará el doble toque para dormir.</string>
     <string name="dt2s_a11y_hint_title">Accessibility service required</string>
     <string name="dt2s_a11y_hint">Para usar el doble toque para dormir, activa el servicio de accesibilidad de Lawnchair. Toca en \"Abrir configuración\", luego selecciona \"Lawnchair\" y activa \"Usar Lawnchair.\"</string>
     <string name="dt2s_warning_open_settings">Abrir Configuración</string>
