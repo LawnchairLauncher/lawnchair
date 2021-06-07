@@ -21,13 +21,13 @@
     <string name="home_screen_description">Umpan Berita,</string>
     <string name="general_label">Umum</string>
     <string name="general_description">Titik Notifikasi, Paket Ikon</string>
-    <string name="home_screen_rotation_label">Rotasi Tampilan Depan</string>
+    <string name="home_screen_rotation_label">Rotasi Layar Beranda</string>
     <string name="home_screen_rotaton_description">Ketika perangkat dirotasi</string>
-    <string name="auto_add_shortcuts_label">tambahkan applikasi baru ke layar beranda</string>
+    <string name="auto_add_shortcuts_label">Tambahkan aplikasi baru ke layar beranda</string>
     <string name="dock_label">Dock</string>
     <string name="dock_description">bilah pencarian, Jumlah Ikon</string>
     <string name="app_drawer_label">Halaman Aplikasi</string>
-    <string name="app_drawer_description">Aplikasi sembunyi</string>
+    <string name="app_drawer_description">Aplikasi Tersembunyi, Jumlah Kolom, Ikon</string>
     <string name="folders_label">Map</string>
     <string name="folders_description">Jumlah Baris dan Kolom</string>
     <string name="app_drawer_columns">Kolom Halaman Aplikasi</string>
@@ -47,7 +47,7 @@
     <string name="news">Berita</string>
     <string name="support">Dukungan</string>
     <string name="acknowledgements">Pengakuan</string>
-    <string name="devops">Kontak Developer</string>
+    <string name="devops">Opsi Developer</string>
     <string name="quickswitch_maintenance">Pemeliharaan QuickSwitch</string>
     <string name="all_apps_search_bar_hint">Cari Aplikasi</string>
     <string name="settings_button_text">Pengaturan Umum</string>
