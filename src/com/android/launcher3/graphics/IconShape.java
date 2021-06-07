@@ -156,19 +156,43 @@ public abstract class IconShape {
         }
     }
 
-    public static final class Circle extends SimpleRectShape {
+    public static final class Circle extends PathShape {
 
-        @Override
-        public void drawShape(Canvas canvas, float offsetX, float offsetY, float radius, Paint p) {
-            canvas.drawCircle(radius + offsetX, radius + offsetY, radius, p);
+        private final float[] mTempRadii = new float[8];
+
+        protected AnimatorUpdateListener newUpdateListener(Rect startRect, Rect endRect,
+                float endRadius, Path outPath) {
+            float r1 = getStartRadius(startRect);
+
+            float[] startValues = new float[] {
+                    startRect.left, startRect.top, startRect.right, startRect.bottom, r1, r1};
+            float[] endValues = new float[] {
+                    endRect.left, endRect.top, endRect.right, endRect.bottom, endRadius, endRadius};
+
+            FloatArrayEvaluator evaluator = new FloatArrayEvaluator(new float[6]);
+
+            return (anim) -> {
+                float progress = (Float) anim.getAnimatedValue();
+                float[] values = evaluator.evaluate(progress, startValues, endValues);
+                outPath.addRoundRect(
+                        values[0], values[1], values[2], values[3],
+                        getRadiiArray(values[4], values[5]), Path.Direction.CW);
+            };
         }
+
+        private float[] getRadiiArray(float r1, float r2) {
+            mTempRadii[0] = mTempRadii [1] = mTempRadii[2] = mTempRadii[3] =
+                    mTempRadii[6] = mTempRadii[7] = r1;
+            mTempRadii[4] = mTempRadii[5] = r2;
+            return mTempRadii;
+        }
+
 
         @Override
         public void addToPath(Path path, float offsetX, float offsetY, float radius) {
             path.addCircle(radius + offsetX, radius + offsetY, radius, Path.Direction.CW);
         }
 
-        @Override
         protected float getStartRadius(Rect startRect) {
             return startRect.width() / 2f;
         }
