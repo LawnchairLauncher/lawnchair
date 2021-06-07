@@ -51,6 +51,9 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"ကိုယ်ပိုင်"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"အလုပ်"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"စကားဝိုင်းများ"</string>
+    <string name="widget_education_header" msgid="4874760613775913787">"အသုံးဝင်သော အချက်အလက်များကို အလွယ်တကူ ရယူလိုက်ပါ"</string>
+    <string name="widget_education_content" msgid="745542879510751525">"အက်ပ်များကိုမဖွင့်ဘဲ အချက်အလက်များရယူရန် သင်၏ ပင်မစာမျက်နှာသို့ ဝိဂျက်များ ထည့်နိုင်သည်"</string>
+    <string name="widget_education_close_button" msgid="8676165703104836580">"ရပြီ"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ရှာဖွေမှု အက်ပ်များ"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"အက်ပ်များကို ဖွင့်နေသည်…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" နှင့်ကိုက်ညီသည့် အပ်ပ်များကို မတွေ့ပါ"</string>
@@ -154,7 +157,7 @@
     <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"ကိုယ်ပိုင်ဒေတာများသည် သီးသန့်ဖြစ်ပြီး အလုပ်အက်ပ်များမှ ဖျောက်ထားသည်"</string>
     <string name="work_profile_edu_work_apps" msgid="237051938268703058">"အလုပ်သုံးအက်ပ်နှင့် ဒေတာများကို သင်၏ IT စီမံခန့်ခွဲသူက မြင်ရပါသည်"</string>
     <string name="work_profile_edu_next" msgid="8783418929296503629">"ရှေ့သို့"</string>
-    <string name="work_profile_edu_accept" msgid="6069788082535149071">"Ok"</string>
+    <string name="work_profile_edu_accept" msgid="6069788082535149071">"ရပါပြီ"</string>
     <string name="work_apps_paused_title" msgid="2389865654362803723">"အလုပ်ပရိုဖိုင် ခဏရပ်ထားသည်"</string>
     <string name="work_apps_paused_body" msgid="4209084728264328628">"အလုပ်သုံးအက်ပ်များက အကြောင်းကြားချက်များ ပို့ခြင်း၊ သင့်ဘက်ထရီ သုံးခြင်း (သို့) သင့်တည်နေရာ သုံးခြင်းတို့ မပြုလုပ်နိုင်ပါ"</string>
     <string name="work_apps_paused_content_description" msgid="4473292417145736203">"အလုပ်ပရိုဖိုင် ခဏရပ်ထားသည်။ အလုပ်သုံးအက်ပ်များက အကြောင်းကြားချက်များ ပို့ခြင်း၊ သင့်ဘက်ထရီ သုံးခြင်း (သို့) သင့်တည်နေရာ သုံးခြင်းတို့ မပြုလုပ်နိုင်ပါ"</string>

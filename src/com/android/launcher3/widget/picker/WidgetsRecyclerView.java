@@ -49,10 +49,10 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
     private final int mScrollbarTop;
 
     private final Point mFastScrollerOffset = new Point();
-    private final int mEstimatedWidgetListHeaderHeight;
     private boolean mTouchDownOnScroller;
     private HeaderViewDimensionsProvider mHeaderViewDimensionsProvider;
     private int mLastVisibleWidgetContentTableHeight = 0;
+    private int mWidgetHeaderHeight = 0;
     @Nullable private OnContentChangeListener mOnContentChangeListener;
 
     public WidgetsRecyclerView(Context context) {
@@ -71,9 +71,6 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
 
         ActivityContext activity = ActivityContext.lookupContext(getContext());
         DeviceProfile grid = activity.getDeviceProfile();
-        mEstimatedWidgetListHeaderHeight = grid.iconSizePx
-                + 2 * context.getResources().getDimensionPixelSize(
-                        R.dimen.widget_list_header_view_vertical_padding);
     }
 
     @Override
@@ -157,13 +154,38 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
             return -1;
         }
 
-        View child = getChildAt(0);
-        int rowIndex = getChildPosition(child);
+        int rowIndex = -1;
+        View child = null;
+
+        LayoutManager layoutManager = getLayoutManager();
+        if (layoutManager instanceof LinearLayoutManager) {
+            // Use the LayoutManager as the source of truth for visible positions. During
+            // animations, the view group child may not correspond to the visible views that appear
+            // at the top.
+            rowIndex = ((LinearLayoutManager) layoutManager).findFirstVisibleItemPosition();
+            child = layoutManager.findViewByPosition(rowIndex);
+        }
+
+        if (child == null) {
+            // If the layout manager returns null for any reason, which can happen before layout
+            // has occurred for the position, then look at the child of this view as a ViewGroup.
+            child = getChildAt(0);
+            rowIndex = getChildPosition(child);
+        }
+
         for (int i = 0; i < getChildCount(); i++) {
             View view = getChildAt(i);
             if (view instanceof TableLayout) {
                 // This assumes there is ever only one content shown in this recycler view.
                 mLastVisibleWidgetContentTableHeight = view.getMeasuredHeight();
+            } else if (view instanceof WidgetsListHeader
+                    && mLastVisibleWidgetContentTableHeight == 0
+                    && view.getMeasuredHeight() > 0) {
+                // This assumes all header views are of the same height.
+                RecyclerView.LayoutParams layoutParams =
+                        (RecyclerView.LayoutParams) view.getLayoutParams();
+                mWidgetHeaderHeight = view.getMeasuredHeight() + layoutParams.topMargin
+                    + layoutParams.bottomMargin;
             }
         }
 
@@ -262,7 +284,7 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
             WidgetsListBaseEntry entry = mAdapter.getItems().get(i);
             if (entry instanceof WidgetsListHeaderEntry
                     || entry instanceof WidgetsListSearchHeaderEntry) {
-                totalItemsHeight += mEstimatedWidgetListHeaderHeight;
+                totalItemsHeight += mWidgetHeaderHeight;
             } else if (entry instanceof WidgetsListContentEntry) {
                 totalItemsHeight += mLastVisibleWidgetContentTableHeight;
             } else {

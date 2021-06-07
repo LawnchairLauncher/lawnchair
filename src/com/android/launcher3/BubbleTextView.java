@@ -80,8 +80,9 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     private static final int DISPLAY_WORKSPACE = 0;
     private static final int DISPLAY_ALL_APPS = 1;
     private static final int DISPLAY_FOLDER = 2;
-    private static final int DISPLAY_HERO_APP = 5;
-    protected static final int DISPLAY_TASKBAR = 6;
+    protected static final int DISPLAY_TASKBAR = 5;
+    private static final int DISPLAY_SEARCH_RESULT = 6;
+    private static final int DISPLAY_SEARCH_RESULT_SMALL = 7;
 
     private static final int[] STATE_PRESSED = new int[]{android.R.attr.state_pressed};
     private static final float HIGHLIGHT_SCALE = 1.16f;
@@ -119,7 +120,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     };
 
     private final ActivityContext mActivity;
-    private Drawable mIcon;
+    private FastBitmapDrawable mIcon;
     private boolean mCenterVertically;
 
     protected final int mDisplay;
@@ -140,7 +141,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     private DotInfo mDotInfo;
     private DotRenderer mDotRenderer;
     @ViewDebug.ExportedProperty(category = "launcher", deepExport = true)
-    private DotRenderer.DrawParams mDotParams;
+    protected DotRenderer.DrawParams mDotParams;
     private Animator mDotScaleAnim;
     private boolean mForceHideDot;
 
@@ -187,8 +188,11 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
             setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.folderChildTextSizePx);
             setCompoundDrawablePadding(grid.folderChildDrawablePaddingPx);
             defaultIconSize = grid.folderChildIconSizePx;
-        } else if (mDisplay == DISPLAY_HERO_APP) {
-            defaultIconSize = grid.allAppsIconSizePx;
+        } else if (mDisplay == DISPLAY_SEARCH_RESULT) {
+            defaultIconSize = getResources().getDimensionPixelSize(R.dimen.search_row_icon_size);
+        } else if (mDisplay == DISPLAY_SEARCH_RESULT_SMALL) {
+            defaultIconSize = getResources().getDimensionPixelSize(
+                    R.dimen.search_row_small_icon_size);
         } else if (mDisplay == DISPLAY_TASKBAR) {
             defaultIconSize = grid.iconSizePx;
         } else {
@@ -319,7 +323,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     protected void applyIconAndLabel(ItemInfoWithIcon info) {
         boolean useTheme = mDisplay == DISPLAY_WORKSPACE || mDisplay == DISPLAY_FOLDER;
         FastBitmapDrawable iconDrawable = info.newIcon(getContext(), useTheme);
-        mDotParams.color = IconPalette.getMutedColor(info.bitmap.color, 0.54f);
+        mDotParams.color = IconPalette.getMutedColor(iconDrawable.getIconColor(), 0.54f);
 
         setIcon(iconDrawable);
         applyLabel(info);
@@ -333,16 +337,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
                     ? getContext().getString(R.string.disabled_app_label, info.contentDescription)
                     : info.contentDescription);
         }
-    }
-
-    /**
-     * Directly set the icon and label.
-     */
-    @UiThread
-    public void applyIconAndLabel(Drawable icon, CharSequence label) {
-        setIcon(icon);
-        setText(label);
-        setContentDescription(label);
     }
 
     /**
@@ -369,7 +363,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     }
 
     /** Returns the icon for this view. */
-    public Drawable getIcon() {
+    public FastBitmapDrawable getIcon() {
         return mIcon;
     }
 
@@ -704,7 +698,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     /**
      * Sets the icon for this view based on the layout direction.
      */
-    protected void setIcon(Drawable icon) {
+    protected void setIcon(FastBitmapDrawable icon) {
         if (mIsIconVisible) {
             applyCompoundDrawables(icon);
         }

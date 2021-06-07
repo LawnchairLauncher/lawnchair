@@ -111,10 +111,6 @@ public final class FeatureFlags {
             "FOLDER_NAME_MAJORITY_RANKING", true,
             "Suggests folder names based on majority based ranking.");
 
-    public static final BooleanFlag APP_SEARCH_IMPROVEMENTS = new DeviceFlag(
-            "APP_SEARCH_IMPROVEMENTS", true,
-            "Adds localized title and keyword search and ranking");
-
     public static final BooleanFlag ENABLE_PREDICTION_DISMISS = getDebugFlag(
             "ENABLE_PREDICTION_DISMISS", true, "Allow option to dimiss apps from predicted list");
 
@@ -142,7 +138,7 @@ public final class FeatureFlags {
             "MULTI_DB_GRID_MIRATION_ALGO", true, "Use the multi-db grid migration algorithm");
 
     public static final BooleanFlag ENABLE_THEMED_ICONS = getDebugFlag(
-            "ENABLE_THEMED_ICONS", false, "Enable themed icons on workspace");
+            "ENABLE_THEMED_ICONS", true, "Enable themed icons on workspace");
 
     // Keep as DeviceFlag for remote disable in emergency.
     public static final BooleanFlag ENABLE_OVERVIEW_SELECTIONS = new DeviceFlag(
@@ -238,7 +234,7 @@ public final class FeatureFlags {
             "Sends a notification whenever launcher encounters an uncaught exception.");
 
     public static final BooleanFlag PROTOTYPE_APP_CLOSE = getDebugFlag(
-            "PROTOTYPE_APP_CLOSE", true, "Enables new app close");
+            "PROTOTYPE_APP_CLOSE", false, "Enables new app close");
 
     public static final BooleanFlag ENABLE_WALLPAPER_SCRIM = getDebugFlag(
             "ENABLE_WALLPAPER_SCRIM", false,

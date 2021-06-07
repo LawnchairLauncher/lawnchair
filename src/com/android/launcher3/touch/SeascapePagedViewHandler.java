@@ -26,11 +26,13 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.view.Surface;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
+import com.android.launcher3.views.BaseDragLayer;
 
 import java.util.Collections;
 import java.util.List;
@@ -86,6 +88,17 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
     @Override
     public float getTaskMenuY(float y, View thumbnailView, int overScroll) {
         return y + thumbnailView.getMeasuredHeight() + overScroll;
+    }
+
+    @Override
+    public void setTaskMenuAroundTaskView(LinearLayout taskView, float margin) {
+        BaseDragLayer.LayoutParams lp = (BaseDragLayer.LayoutParams) taskView.getLayoutParams();
+        lp.bottomMargin += margin;
+    }
+
+    @Override
+    public PointF getAdditionalInsetForTaskMenu(float margin) {
+        return new PointF(-margin, margin);
     }
 
     @Override

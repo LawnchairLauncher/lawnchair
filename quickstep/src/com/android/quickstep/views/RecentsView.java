@@ -177,6 +177,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         TaskThumbnailCache.HighResLoadingState.HighResLoadingStateChangedCallback,
         TaskVisualsChangeListener, SplitScreenBounds.OnChangeListener {
 
+    // TODO(b/184899234): We use this timeout to wait a fixed period after switching to the
+    // screenshot when dismissing the current live task to ensure the app can try and get stopped.
+    private static final int REMOVE_TASK_WAIT_FOR_APP_STOP_MS = 100;
+
     public static final FloatProperty<RecentsView> CONTENT_ALPHA =
             new FloatProperty<RecentsView>("contentAlpha") {
                 @Override
@@ -410,6 +414,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     // TODO(b/187528071): Remove these and replace with a real scrim.
     private float mColorTint;
     private final int mTintingColor;
+    private ObjectAnimator mTintingAnimator;
 
     private int mOverScrollShift = 0;
 
@@ -1561,6 +1566,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 mRecentsAnimationController = null;
             }
         }
+        setEnableDrawingLiveTile(false);
         mLiveTileParams.setTargetSet(null);
         mLiveTileTaskViewSimulator.setDrawsBelowRecents(true);
 
@@ -2353,8 +2359,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 if (success) {
                     if (shouldRemoveTask) {
                         if (taskView.getTask() != null) {
-                            UI_HELPER_EXECUTOR.execute(() -> ActivityManagerWrapper.getInstance()
-                                    .removeTask(taskView.getTask().key.id));
+                            switchToScreenshotAndFinishAnimationToRecents(() -> {
+                                UI_HELPER_EXECUTOR.getHandler().postDelayed(() ->
+                                        ActivityManagerWrapper.getInstance().removeTask(
+                                                taskView.getTask().key.id),
+                                        REMOVE_TASK_WAIT_FOR_APP_STOP_MS);
+                            });
                             mActivity.getStatsLogManager().logger()
                                     .withItemInfo(taskView.getItemInfo())
                                     .log(LAUNCHER_TASK_DISMISS_SWIPE_UP);
@@ -2458,10 +2468,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mPendingAnimation.addEndListener(isSuccess -> {
             if (isSuccess) {
                 // Remove all the task views now
-                UI_HELPER_EXECUTOR.execute(
-                        ActivityManagerWrapper.getInstance()::removeAllRecentTasks);
-                removeTasksViewsAndClearAllButton();
-                startHome();
+                switchToScreenshotAndFinishAnimationToRecents(() -> {
+                    UI_HELPER_EXECUTOR.getHandler().postDelayed(
+                            ActivityManagerWrapper.getInstance()::removeAllRecentTasks,
+                            REMOVE_TASK_WAIT_FOR_APP_STOP_MS);
+                    removeTasksViewsAndClearAllButton();
+                    startHome();
+                });
             }
             mPendingAnimation = null;
         });
@@ -2616,21 +2629,20 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         if (LIVE_TILE.get() && mEnableDrawingLiveTile && newConfig.orientation != mOrientation) {
-            switchToScreenshot(
-                    () -> finishRecentsAnimation(true /* toRecents */,
-                            this::onConfigurationChangedInternal));
+            switchToScreenshotAndFinishAnimationToRecents(this::updateRecentsRotation);
             mEnableDrawingLiveTile = false;
         } else {
-            onConfigurationChangedInternal();
+            updateRecentsRotation();
         }
         mOrientation = newConfig.orientation;
     }
 
-    private void onConfigurationChangedInternal() {
+    /**
+     * Updates {@link RecentsOrientedState}'s cached RecentsView rotation.
+     */
+    public void updateRecentsRotation() {
         final int rotation = mActivity.getDisplay().getRotation();
-        if (mOrientationState.setRecentsRotation(rotation)) {
-            updateOrientationHandler();
-        }
+        mOrientationState.setRecentsRotation(rotation);
     }
 
     public void setLayoutRotation(int touchRotation, int displayRotation) {
@@ -3610,6 +3622,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
     }
 
+    public void switchToScreenshotAndFinishAnimationToRecents(Runnable onFinishRunnable) {
+        switchToScreenshot(() -> finishRecentsAnimation(true /* toRecents */, onFinishRunnable));
+    }
+
     /**
      * Switch the current running task view to static snapshot mode,
      * capturing the snapshot at the same time.
@@ -3691,9 +3707,17 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * tasks to be dimmed while other elements in the recents view are left alone.
      */
     public void showForegroundScrim(boolean show) {
-        ObjectAnimator anim = ObjectAnimator.ofFloat(this, COLOR_TINT, show ? 0.5f : 0f);
-        anim.setAutoCancel(true);
-        anim.start();
+        if (!show && mColorTint == 0) {
+            if (mTintingAnimator != null) {
+                mTintingAnimator.cancel();
+                mTintingAnimator = null;
+            }
+            return;
+        }
+
+        mTintingAnimator = ObjectAnimator.ofFloat(this, COLOR_TINT, show ? 0.5f : 0f);
+        mTintingAnimator.setAutoCancel(true);
+        mTintingAnimator.start();
     }
 
     /** Tint the RecentsView and TaskViews in to simulate a scrim. */

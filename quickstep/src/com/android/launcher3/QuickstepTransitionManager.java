@@ -23,11 +23,14 @@ import static com.android.launcher3.BaseActivity.INVISIBLE_ALL;
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_APP_TRANSITIONS;
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_PENDING_FLAGS;
 import static com.android.launcher3.BaseActivity.PENDING_INVISIBLE_BY_WALLPAPER_ANIMATION;
+import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
+import static com.android.launcher3.LauncherAnimUtils.VIEW_BACKGROUND_COLOR;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE;
+import static com.android.launcher3.anim.Interpolators.DEACCEL_1_5;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_1_7;
 import static com.android.launcher3.anim.Interpolators.EXAGGERATED_EASE;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
@@ -50,10 +53,12 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.CancellationSignal;
 import android.os.Handler;
@@ -61,12 +66,15 @@ import android.os.Looper;
 import android.os.SystemProperties;
 import android.util.Pair;
 import android.util.Size;
+import android.view.SurfaceControl;
 import android.view.View;
+import android.view.ViewRootImpl;
 import android.view.animation.Interpolator;
 import android.view.animation.PathInterpolator;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.graphics.ColorUtils;
 
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.anim.AnimationSuccessListener;
@@ -75,10 +83,11 @@ import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.util.ActivityOptionsWrapper;
-import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.util.RunnableList;
+import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.FloatingIconView;
+import com.android.launcher3.views.ScrimView;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.quickstep.RemoteAnimationTargets;
 import com.android.quickstep.SystemUiProxy;
@@ -91,6 +100,7 @@ import com.android.quickstep.views.FloatingWidgetView;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.ActivityCompat;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
+import com.android.systemui.shared.system.BlurUtils;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
@@ -160,7 +170,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     private static final int CLOSING_TRANSITION_DURATION_MS = 250;
 
     public static final int CONTENT_ALPHA_DURATION = 217;
-    protected static final int CONTENT_TRANSLATION_DURATION = 350;
+    protected static final int CONTENT_SCALE_DURATION = 350;
+    protected static final int CONTENT_SCRIM_DURATION = 350;
 
     private static final int MAX_NUM_TASKS = 5;
 
@@ -173,9 +184,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     private final AlphaProperty mDragLayerAlpha;
 
     final Handler mHandler;
-    private final boolean mIsRtl;
 
-    private final float mContentTransY;
+    private final float mContentScale;
     private final float mClosingWindowTransY;
     private final float mMaxShadowRadius;
 
@@ -212,11 +222,10 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         mDragLayer = mLauncher.getDragLayer();
         mDragLayerAlpha = mDragLayer.getAlphaProperty(ALPHA_INDEX_TRANSITIONS);
         mHandler = new Handler(Looper.getMainLooper());
-        mIsRtl = Utilities.isRtl(mLauncher.getResources());
         mDeviceProfile = mLauncher.getDeviceProfile();
 
         Resources res = mLauncher.getResources();
-        mContentTransY = res.getDimensionPixelSize(R.dimen.content_trans_y);
+        mContentScale = res.getFloat(R.dimen.content_scale);
         mClosingWindowTransY = res.getDimensionPixelSize(R.dimen.closing_window_trans_y);
         mMaxShadowRadius = res.getDimensionPixelSize(R.dimen.max_shadow_radius);
 
@@ -335,8 +344,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 windowTargetBounds, areAllTargetsTranslucent(appTargets), rotationChange));
         if (launcherClosing) {
             Pair<AnimatorSet, Runnable> launcherContentAnimator =
-                    getLauncherContentAnimator(true /* isAppOpening */,
-                            new float[] {0, -mContentTransY});
+                    getLauncherContentAnimator(true /* isAppOpening */);
             anim.play(launcherContentAnimator.first);
             anim.addListener(new AnimatorListenerAdapter() {
                 @Override
@@ -436,10 +444,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
      *
      * @param isAppOpening True when this is called when an app is opening.
      *                     False when this is called when an app is closing.
-     * @param trans Array that contains the start and end translation values for the content.
      */
-    private Pair<AnimatorSet, Runnable> getLauncherContentAnimator(boolean isAppOpening,
-            float[] trans) {
+    private Pair<AnimatorSet, Runnable> getLauncherContentAnimator(boolean isAppOpening) {
         AnimatorSet launcherAnimator = new AnimatorSet();
         Runnable endListener;
 
@@ -447,13 +453,17 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 ? new float[] {1, 0}
                 : new float[] {0, 1};
 
+        float[] scales = isAppOpening
+                ? new float[] {1, mContentScale}
+                : new float[] {mContentScale, 1};
+
         if (mLauncher.isInState(ALL_APPS)) {
             // All Apps in portrait mode is full screen, so we only animate AllAppsContainerView.
             final View appsView = mLauncher.getAppsView();
             final float startAlpha = appsView.getAlpha();
-            final float startY = appsView.getTranslationY();
+            final float startScale = SCALE_PROPERTY.get(appsView);
             appsView.setAlpha(alphas[0]);
-            appsView.setTranslationY(trans[0]);
+            SCALE_PROPERTY.set(appsView, scales[0]);
 
             ObjectAnimator alpha = ObjectAnimator.ofFloat(appsView, View.ALPHA, alphas);
             alpha.setDuration(CONTENT_ALPHA_DURATION);
@@ -465,30 +475,22 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                     appsView.setLayerType(View.LAYER_TYPE_NONE, null);
                 }
             });
-            ObjectAnimator transY = ObjectAnimator.ofFloat(appsView, View.TRANSLATION_Y, trans);
-            transY.setInterpolator(AGGRESSIVE_EASE);
-            transY.setDuration(CONTENT_TRANSLATION_DURATION);
+            ObjectAnimator scale = ObjectAnimator.ofFloat(appsView, SCALE_PROPERTY, scales);
+            scale.setInterpolator(AGGRESSIVE_EASE);
+            scale.setDuration(CONTENT_SCALE_DURATION);
 
             launcherAnimator.play(alpha);
-            launcherAnimator.play(transY);
+            launcherAnimator.play(scale);
 
             endListener = () -> {
                 appsView.setAlpha(startAlpha);
-                appsView.setTranslationY(startY);
+                SCALE_PROPERTY.set(appsView, startScale);
                 appsView.setLayerType(View.LAYER_TYPE_NONE, null);
             };
         } else if (mLauncher.isInState(OVERVIEW)) {
-            endListener = composeViewContentAnimator(launcherAnimator, alphas, trans);
+            endListener = composeViewContentAnimator(launcherAnimator, alphas, scales);
         } else {
-            mDragLayerAlpha.setValue(alphas[0]);
-            ObjectAnimator alpha =
-                    ObjectAnimator.ofFloat(mDragLayerAlpha, MultiValueAlpha.VALUE, alphas);
-            alpha.setDuration(CONTENT_ALPHA_DURATION);
-            alpha.setInterpolator(LINEAR);
-            launcherAnimator.play(alpha);
-
             List<View> viewsToAnimate = new ArrayList<>();
-
             Workspace workspace = mLauncher.getWorkspace();
             workspace.forEachVisiblePage(
                     view -> viewsToAnimate.add(((CellLayout) view).getShortcutsAndWidgets()));
@@ -499,18 +501,38 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
             viewsToAnimate.forEach(view -> {
                 view.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-                launcherAnimator.play(ObjectAnimator.ofFloat(view, View.TRANSLATION_Y, trans));
+
+                ObjectAnimator scaleAnim = ObjectAnimator.ofFloat(view, SCALE_PROPERTY, scales)
+                        .setDuration(CONTENT_SCALE_DURATION);
+                scaleAnim.setInterpolator(DEACCEL_1_5);
+                launcherAnimator.play(scaleAnim);
             });
+
+            int scrimColor = Themes.getAttrColor(mLauncher, R.attr.overviewScrimColor);
+            int scrimColorTrans = ColorUtils.setAlphaComponent(scrimColor, 0);
+            int[] colors = isAppOpening
+                    ? new int[] {scrimColorTrans, scrimColor}
+                    : new int[] {scrimColor, scrimColorTrans};
+            ScrimView scrimView = mLauncher.getScrimView();
+            if (scrimView.getBackground() instanceof ColorDrawable) {
+                scrimView.setBackgroundColor(colors[0]);
+
+                ObjectAnimator scrim = ObjectAnimator.ofArgb(scrimView, VIEW_BACKGROUND_COLOR,
+                        colors);
+                scrim.setDuration(CONTENT_SCRIM_DURATION);
+                scrim.setInterpolator(DEACCEL_1_5);
+                launcherAnimator.play(scrim);
+            }
 
             // Pause page indicator animations as they lead to layer trashing.
             mLauncher.getWorkspace().getPageIndicator().pauseAnimations();
 
             endListener = () -> {
                 viewsToAnimate.forEach(view -> {
-                    view.setTranslationY(0);
+                    SCALE_PROPERTY.set(view, 1f);
                     view.setLayerType(View.LAYER_TYPE_NONE, null);
                 });
-                mDragLayerAlpha.setValue(1f);
+                scrimView.setBackgroundColor(Color.TRANSPARENT);
                 mLauncher.getWorkspace().getPageIndicator().skipAnimationsToEnd();
             };
         }
@@ -522,11 +544,11 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
      *
      * @param anim the animator set to add to
      * @param alphas the alphas to animate to over time
-     * @param trans the translation Y values to animator to over time
+     * @param scales the scale values to animator to over time
      * @return listener to run when the animation ends
      */
     protected Runnable composeViewContentAnimator(@NonNull AnimatorSet anim,
-            float[] alphas, float[] trans) {
+            float[] alphas, float[] scales) {
         RecentsView overview = mLauncher.getOverviewPanel();
         ObjectAnimator alpha = ObjectAnimator.ofFloat(overview,
                 RecentsView.CONTENT_ALPHA, alphas);
@@ -535,14 +557,14 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         anim.play(alpha);
         overview.setFreezeViewVisibility(true);
 
-        ObjectAnimator transY = ObjectAnimator.ofFloat(overview, View.TRANSLATION_Y, trans);
-        transY.setInterpolator(AGGRESSIVE_EASE);
-        transY.setDuration(CONTENT_TRANSLATION_DURATION);
-        anim.play(transY);
+        ObjectAnimator scaleAnim = ObjectAnimator.ofFloat(overview, SCALE_PROPERTY, scales);
+        scaleAnim.setInterpolator(AGGRESSIVE_EASE);
+        scaleAnim.setDuration(CONTENT_SCALE_DURATION);
+        anim.play(scaleAnim);
 
         return () -> {
             overview.setFreezeViewVisibility(false);
-            overview.setTranslationY(0);
+            SCALE_PROPERTY.set(overview, 1f);
             mLauncher.getStateManager().reapplyState();
         };
     }
@@ -583,7 +605,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
         AnimOpenProperties prop = new AnimOpenProperties(mLauncher.getResources(), mDeviceProfile,
                 windowTargetBounds, launcherIconBounds, v, dragLayerBounds[0], dragLayerBounds[1],
-                hasSplashScreen);
+                hasSplashScreen, floatingView.isDifferentFromAppIcon());
         int left = (int) (prop.cropCenterXStart - prop.cropWidthStart / 2);
         int top = (int) (prop.cropCenterYStart - prop.cropHeightStart / 2);
         int right = (int) (left + prop.cropWidthStart);
@@ -902,12 +924,39 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 BACKGROUND_APP.getDepth(mLauncher))
                 .setDuration(APP_LAUNCH_DURATION);
         if (allowBlurringLauncher) {
-            depthController.setSurfaceToApp(RemoteAnimationProvider.findLowestOpaqueLayerTarget(
-                    appTargets, MODE_OPENING));
+            final SurfaceControl dimLayer;
+            if (BlurUtils.supportsBlursOnWindows()) {
+                // Create a temporary effect layer, that lives on top of launcher, so we can apply
+                // the blur to it. The EffectLayer will be fullscreen, which will help with caching
+                // optimizations on the SurfaceFlinger side:
+                // - Results would be able to be cached as a texture
+                // - There won't be texture allocation overhead, because EffectLayers don't have
+                //   buffers
+                ViewRootImpl viewRootImpl = mLauncher.getDragLayer().getViewRootImpl();
+                SurfaceControl parent = viewRootImpl != null
+                        ? viewRootImpl.getSurfaceControl()
+                        : null;
+                dimLayer = new SurfaceControl.Builder()
+                        .setName("Blur layer")
+                        .setParent(parent)
+                        .setOpaque(false)
+                        .setHidden(false)
+                        .setEffectLayer()
+                        .build();
+            } else {
+                dimLayer = null;
+            }
+
+            depthController.setSurface(dimLayer);
             backgroundRadiusAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    depthController.setSurfaceToApp(null);
+                    depthController.setSurface(null);
+                    if (dimLayer != null) {
+                        new SurfaceControl.Transaction()
+                                .remove(dimLayer)
+                                .apply();
+                    }
                 }
             });
         }
@@ -1223,8 +1272,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
                     if (mLauncher.isInState(LauncherState.ALL_APPS)) {
                         Pair<AnimatorSet, Runnable> contentAnimator =
-                                getLauncherContentAnimator(false /* isAppOpening */,
-                                        new float[] {-mContentTransY, 0});
+                                getLauncherContentAnimator(false /* isAppOpening */);
                         contentAnimator.first.setStartDelay(LAUNCHER_RESUME_START_DELAY);
                         anim.play(contentAnimator.first);
                         anim.addListener(new AnimatorListenerAdapter() {
@@ -1327,7 +1375,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
         AnimOpenProperties(Resources r, DeviceProfile dp, Rect windowTargetBounds,
                 RectF launcherIconBounds, View view, int dragLayerLeft, int dragLayerTop,
-                boolean hasSplashScreen) {
+                boolean hasSplashScreen, boolean hasDifferentAppIcon) {
             // Scale the app icon to take up the entire screen. This simplifies the math when
             // animating the app window position / scale.
             float smallestSize = Math.min(windowTargetBounds.height(), windowTargetBounds.width());
@@ -1359,17 +1407,16 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                     : APP_LAUNCH_DOWN_CURVED_DURATION;
             alphaDuration = useUpwardAnimation ? APP_LAUNCH_ALPHA_DURATION
                     : APP_LAUNCH_ALPHA_DOWN_DURATION;
+            iconAlphaStart = hasSplashScreen && !hasDifferentAppIcon ? 0 : 1f;
 
-            iconAlphaStart = hasSplashScreen ? 0 : 1f;
-
-            // TOOD: Share value from shell when available.
-            final float windowIconSize = Utilities.pxFromSp(108, r.getDisplayMetrics());
+            final int windowIconSize = ResourceUtils.getDimenByName("starting_surface_icon_size",
+                    r, 108);
 
             cropCenterXStart = windowTargetBounds.centerX();
             cropCenterYStart = windowTargetBounds.centerY();
 
-            cropWidthStart = (int) windowIconSize;
-            cropHeightStart = (int) windowIconSize;
+            cropWidthStart = windowIconSize;
+            cropHeightStart = windowIconSize;
 
             cropWidthEnd = windowTargetBounds.width();
             cropHeightEnd = windowTargetBounds.height();

@@ -32,7 +32,7 @@
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Виджетті жылжыту үшін екі рет түртіңіз де, ұстап тұрыңыз немесе арнаулы әрекеттерді пайдаланыңыз."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"Ені: %1$d, биіктігі: %2$d"</string>
-    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"Негізгі экран бойымен қозғалту үшін виджетті басып, ұстап тұрыңыз."</string>
+    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"Негізгі экранда қозғалту үшін виджетті басып, ұстап тұрыңыз."</string>
     <string name="add_to_home_screen" msgid="8631549138215492708">"Негізгі экранға қосу"</string>
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
       <item quantity="other"><xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> виджет</item>
@@ -51,6 +51,9 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Жеке виджеттер"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Жұмыс виджеттері"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Әңгімелер"</string>
+    <string name="widget_education_header" msgid="4874760613775913787">"Саусақпен түртсеңіз болғаны – пайдалы ақпарат көз алдыңызда"</string>
+    <string name="widget_education_content" msgid="745542879510751525">"Қолданбаларды ашпай-ақ ақпарат алу үшін негізгі экранға тиісті виджеттерді қосыңыз."</string>
+    <string name="widget_education_close_button" msgid="8676165703104836580">"Түсінікті"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Қолданбаларды іздеу"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Қолданбалар жүктелуде…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" сұрауына сәйкес келетін қолданбалар жоқ"</string>
@@ -152,7 +155,7 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Жұмыс"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Жұмыс профилі"</string>
     <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"Жеке деректер бөлек орналасқан және жұмыс қолданбаларынан жасырылған"</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"Әкімшіңіз жұмыс қолданбалары мен деректерді көре алады"</string>
+    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"Әкімшіңіз жұмыс қолданбалары мен деректерін көре алады"</string>
     <string name="work_profile_edu_next" msgid="8783418929296503629">"Келесі"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Түсінікті"</string>
     <string name="work_apps_paused_title" msgid="2389865654362803723">"Жұмыс профилі кідіртілді"</string>
@@ -163,6 +166,6 @@
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Жұмыс қолданбаларын тоқтата тұру"</string>
     <string name="work_apps_enable_btn_text" msgid="82111102541971856">"Қосу"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Сүзгі"</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"Жұмыс қолданбалары мен хабарландыруларды кідірту"</string>
+    <string name="work_switch_tip" msgid="808075064383839144">"Жұмыс қолданбалары мен хабарландыруларын кідірту"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Қате шықты: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

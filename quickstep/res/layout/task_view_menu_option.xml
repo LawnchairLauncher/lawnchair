@@ -21,7 +21,7 @@
     android:orientation="vertical"
     android:paddingTop="@dimen/task_card_menu_option_vertical_padding"
     android:paddingBottom="@dimen/task_card_menu_option_vertical_padding"
-    android:background="?android:attr/selectableItemBackground"
+    android:background="?android:attr/colorPrimary"
     android:theme="@style/PopupItem" >
 
     <View
@@ -30,7 +30,7 @@
       android:layout_height="@dimen/system_shortcut_icon_size"
       android:layout_marginStart="@dimen/task_menu_option_start_margin"
       android:layout_gravity="center_horizontal"
-      android:backgroundTint="?android:attr/textColorTertiary"/>
+      android:backgroundTint="?android:attr/textColorPrimary"/>
 
     <TextView
         style="@style/BaseIcon"
@@ -38,9 +38,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/task_menu_option_start_margin"
-        android:textSize="12sp"
+        android:textSize="14sp"
         android:textColor="?android:attr/textColorPrimary"
-        android:fontFamily="sans-serif"
         android:focusable="false" />
 
 </LinearLayout>

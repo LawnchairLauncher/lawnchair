@@ -51,6 +51,9 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"વ્યક્તિગત"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"ઑફિસ"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"વાતચીતો"</string>
+    <string name="widget_education_header" msgid="4874760613775913787">"ઉપયોગી માહિતી તમારી આંગળીના ટેરવે"</string>
+    <string name="widget_education_content" msgid="745542879510751525">"ઍપને ખોલ્યા વિના માહિતી મેળવવા માટે, તમે તમારી હોમ સ્ક્રીન પર વિજેટ ઉમેરી શકો છો"</string>
+    <string name="widget_education_close_button" msgid="8676165703104836580">"સમજાઈ ગયું"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"શોધ ઍપ્લિકેશનો"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"ઍપ્લિકેશનો લોડ કરી રહ્યું છે…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\"થી મેળ ખાતી કોઈ ઍપ્લિકેશનો મળી નથી"</string>
@@ -97,8 +100,7 @@
     <string name="folder_name_format_exact" msgid="8626242716117004803">"ફોલ્ડર: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> આઇટમ"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"ફોલ્ડર: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> કે વધુ આઇટમ"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"વૉલપેપર"</string>
-    <!-- no translation found for styles_wallpaper_button_text (8216961355289236794) -->
-    <skip />
+    <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"વૉલપેપર અને શૈલી"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"હોમ સેટિંગ"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"તમારા વ્યવસ્થાપક દ્વારા અક્ષમ કરેલ"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"હોમ સ્ક્રીનને ફેરવવાની મંજૂરી આપો"</string>

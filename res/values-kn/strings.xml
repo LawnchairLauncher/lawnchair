@@ -51,6 +51,9 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"ವೈಯಕ್ತಿಕ"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"ಕೆಲಸ"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"ಸಂವಾದಗಳು"</string>
+    <string name="widget_education_header" msgid="4874760613775913787">"ನಿಮ್ಮ ಬೆರಳ ತುದಿಯಲ್ಲಿ ಉಪಯುಕ್ತ ಮಾಹಿತಿ"</string>
+    <string name="widget_education_content" msgid="745542879510751525">"ಆ್ಯಪ್‌ಗಳನ್ನು ತೆರೆಯದೆಯೇ ಮಾಹಿತಿಯನ್ನು ಪಡೆಯಲು, ನಿಮ್ಮ ಹೋಮ್ ಸ್ಕ್ರೀನ್‌ನಲ್ಲಿ ನೀವು ವಿಜೆಟ್‌ಗಳನ್ನು ಸೇರಿಸಬಹುದು"</string>
+    <string name="widget_education_close_button" msgid="8676165703104836580">"ಅರ್ಥವಾಯಿತು"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ಅಪ್ಲಿಕೇಶನ್‌ಗಳನ್ನು ಹುಡುಕಿ"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"ಅಪ್ಲಿಕೇಶನ್‌ಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ..."</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" ಹೊಂದಿಕೆಯ ಯಾವುದೇ ಅಪ್ಲಿಕೇಶನ್‌ಗಳು ಕಂಡುಬಂದಿಲ್ಲ"</string>

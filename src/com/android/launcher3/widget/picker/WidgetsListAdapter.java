@@ -15,21 +15,27 @@
  */
 package com.android.launcher3.widget.picker;
 
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGETSTRAY_APP_EXPANDED;
+
 import android.content.Context;
 import android.os.Process;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.TableRow;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
+import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.WidgetPreviewLoader;
 import com.android.launcher3.icons.IconCache;
@@ -48,8 +54,10 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.OptionalInt;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Recycler view adapter for the widget tray.
@@ -71,6 +79,7 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     private static final int VIEW_TYPE_WIDGETS_HEADER = R.id.view_type_widgets_header;
     private static final int VIEW_TYPE_WIDGETS_SEARCH_HEADER = R.id.view_type_widgets_search_header;
 
+    private final Launcher mLauncher;
     private final WidgetsDiffReporter mDiffReporter;
     private final SparseArray<ViewHolderBinder> mViewHolderBinders = new SparseArray<>();
     private final WidgetsListTableViewHolderBinder mWidgetsListTableViewHolderBinder;
@@ -87,10 +96,12 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
                     || new PackageUserKey(entry.mPkgItem.packageName, entry.mPkgItem.user)
                             .equals(mWidgetsContentVisiblePackageUserKey);
     @Nullable private Predicate<WidgetsListBaseEntry> mFilter = null;
+    @Nullable private RecyclerView mRecyclerView;
 
     public WidgetsListAdapter(Context context, LayoutInflater layoutInflater,
             WidgetPreviewLoader widgetPreviewLoader, IconCache iconCache,
             OnClickListener iconClickListener, OnLongClickListener iconLongClickListener) {
+        mLauncher = Launcher.getLauncher(context);
         mDiffReporter = new WidgetsDiffReporter(iconCache, this);
         mWidgetsListTableViewHolderBinder = new WidgetsListTableViewHolderBinder(context,
                 layoutInflater, iconClickListener, iconLongClickListener,
@@ -104,6 +115,16 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
                 VIEW_TYPE_WIDGETS_SEARCH_HEADER,
                 new WidgetsListSearchHeaderViewHolderBinder(
                         layoutInflater, /*onHeaderClickListener=*/ this, /* listAdapter= */ this));
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        mRecyclerView = recyclerView;
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+        mRecyclerView = null;
     }
 
     public void setFilter(Predicate<WidgetsListBaseEntry> filter) {
@@ -168,12 +189,10 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
         mAllEntries.forEach(entry -> {
             if (entry instanceof WidgetsListHeaderEntry) {
                 ((WidgetsListHeaderEntry) entry).setIsWidgetListShown(
-                        new PackageUserKey(entry.mPkgItem.packageName, entry.mPkgItem.user)
-                                .equals(mWidgetsContentVisiblePackageUserKey));
+                        isHeaderForVisibleContent(entry));
             } else if (entry instanceof WidgetsListSearchHeaderEntry) {
                 ((WidgetsListSearchHeaderEntry) entry).setIsWidgetListShown(
-                        new PackageUserKey(entry.mPkgItem.packageName, entry.mPkgItem.user)
-                                .equals(mWidgetsContentVisiblePackageUserKey));
+                        isHeaderForVisibleContent(entry));
             }
         });
         List<WidgetsListBaseEntry> newVisibleEntries = mAllEntries.stream()
@@ -181,6 +200,13 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
                         && mHeaderAndSelectedContentFilter.test(entry))
                 .collect(Collectors.toList());
         mDiffReporter.process(mVisibleEntries, newVisibleEntries, mRowComparator);
+    }
+
+    private boolean isHeaderForVisibleContent(WidgetsListBaseEntry entry) {
+        return (entry instanceof WidgetsListHeaderEntry
+                || entry instanceof WidgetsListSearchHeaderEntry)
+                && new PackageUserKey(entry.mPkgItem.packageName, entry.mPkgItem.user)
+                .equals(mWidgetsContentVisiblePackageUserKey);
     }
 
     /**
@@ -247,10 +273,56 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
         if (showWidgets) {
             mWidgetsContentVisiblePackageUserKey = packageUserKey;
             updateVisibleEntries();
+            // Scroll the layout manager to the header position to keep it anchored to the same
+            // position.
+            scrollToPositionAndMaintainOffset(getSelectedHeaderPosition());
+            mLauncher.getStatsLogManager().logger().log(LAUNCHER_WIDGETSTRAY_APP_EXPANDED);
         } else if (packageUserKey.equals(mWidgetsContentVisiblePackageUserKey)) {
+            OptionalInt previouslySelectedPosition = getSelectedHeaderPosition();
+
             mWidgetsContentVisiblePackageUserKey = null;
             updateVisibleEntries();
+
+            // Scroll to the header that was just collapsed so it maintains its scroll offset.
+            scrollToPositionAndMaintainOffset(previouslySelectedPosition);
         }
+    }
+
+    private OptionalInt getSelectedHeaderPosition() {
+        return IntStream.range(0, mVisibleEntries.size())
+                .filter(index -> isHeaderForVisibleContent(mVisibleEntries.get(index)))
+                .findFirst();
+    }
+
+    /**
+     * Scrolls to the selected header position. LinearLayoutManager scrolls the minimum distance
+     * necessary, so this will keep the selected header in place during clicks, without interrupting
+     * the animation.
+     */
+    private void scrollToPositionAndMaintainOffset(OptionalInt positionOptional) {
+        if (!positionOptional.isPresent() || mRecyclerView == null) return;
+        int position = positionOptional.getAsInt();
+
+        LinearLayoutManager layoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
+        if (layoutManager == null) return;
+
+        if (position == mVisibleEntries.size() - 2
+                && mVisibleEntries.get(mVisibleEntries.size() - 1)
+                instanceof WidgetsListContentEntry) {
+            // If the selected header is in the last position and its content is showing, then
+            // scroll to the final position so the last list of widgets will show.
+            layoutManager.scrollToPosition(mVisibleEntries.size() - 1);
+            return;
+        }
+
+        // Scroll to the header view's current offset, accounting for the recycler view's padding.
+        // If the header view couldn't be found, then it will appear at the top of the list.
+        View headerView = layoutManager.findViewByPosition(position);
+        int targetHeaderViewTop =
+                headerView == null ? 0 : layoutManager.getDecoratedTop(headerView);
+        layoutManager.scrollToPositionWithOffset(
+                position,
+                targetHeaderViewTop - mRecyclerView.getPaddingTop());
     }
 
     /**

@@ -336,12 +336,20 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
         if (mOverlayEnabled != overlayEnabled) {
             mOverlayEnabled = overlayEnabled;
 
-            if (mOverlayEnabled) {
-                getTaskOverlay().initOverlay(mTask, mThumbnailData, mPreviewPositionHelper.mMatrix,
-                        mPreviewPositionHelper.mIsOrientationChanged);
-            } else {
-                getTaskOverlay().reset();
-            }
+            refreshOverlay();
+        }
+    }
+
+    /**
+     * Potentially re-init the task overlay. Be cautious when calling this as the overlay may
+     * do processing on initialization.
+     */
+    private void refreshOverlay() {
+        if (mOverlayEnabled) {
+            getTaskOverlay().initOverlay(mTask, mThumbnailData, mPreviewPositionHelper.mMatrix,
+                    mPreviewPositionHelper.mIsOrientationChanged);
+        } else {
+            getTaskOverlay().reset();
         }
     }
 
@@ -382,6 +390,8 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         updateThumbnailMatrix();
+
+        refreshOverlay();
     }
 
     private ColorFilter getColorFilter(float dimAmount) {

@@ -32,7 +32,7 @@
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Naciśnij dwukrotnie i przytrzymaj, aby przenieść widżet lub użyć działań niestandardowych."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"Szerokość %1$d, wysokość %2$d"</string>
-    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"Kliknij i przytrzymaj widżet, by poruszać nim po ekranie głównym."</string>
+    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"Kliknij i przytrzymaj widżet, by poruszać nim po ekranie głównym"</string>
     <string name="add_to_home_screen" msgid="8631549138215492708">"Dodaj do ekranu głównego"</string>
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
       <item quantity="few"><xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> widżety</item>
@@ -55,6 +55,9 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Osobiste"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Służbowe"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Rozmowy"</string>
+    <string name="widget_education_header" msgid="4874760613775913787">"Użyteczne informacje w zasięgu ręki"</string>
+    <string name="widget_education_content" msgid="745542879510751525">"Aby uzyskać informacje bez otwierania aplikacji, możesz dodać widżety do ekranu głównego"</string>
+    <string name="widget_education_close_button" msgid="8676165703104836580">"OK"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Wyszukaj aplikacje"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Ładuję aplikacje…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Nie znaleziono aplikacji pasujących do zapytania „<xliff:g id="QUERY">%1$s</xliff:g>”"</string>
@@ -169,6 +172,6 @@
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Wstrzymaj aplikacje służbowe"</string>
     <string name="work_apps_enable_btn_text" msgid="82111102541971856">"Włącz"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filtruj"</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"Wstrzymaj aplikacje służbowe i powiadomienia"</string>
+    <string name="work_switch_tip" msgid="808075064383839144">"Wstrzymaj służbowe aplikacje i powiadomienia"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Niepowodzenie: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

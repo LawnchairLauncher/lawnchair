@@ -20,18 +20,20 @@
     android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
     android:background="@drawable/task_menu_bg"
-    android:paddingBottom="@dimen/task_card_menu_shadow_height"
     android:orientation="vertical"
     android:visibility="invisible">
 
     <TextView
         android:id="@+id/task_name"
+        android:background="?android:attr/colorPrimary"
+        android:textColor="?android:attr/textColorPrimary"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:textSize="12sp"/>
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_marginBottom="2dp"
+        android:paddingTop="@dimen/task_menu_vertical_padding"
+        android:paddingBottom="@dimen/task_menu_vertical_padding"
+        android:textSize="16sp"/>
 
     <LinearLayout
         android:id="@+id/menu_option_layout"
@@ -39,6 +41,6 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:divider="@drawable/all_apps_divider"
-        android:showDividers="beginning" />
+        android:showDividers="middle" />
 
 </com.android.quickstep.views.TaskMenuView>

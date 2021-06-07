@@ -22,15 +22,17 @@
     <!-- For Launchers that want to override the default dialog corner radius -->
     <dimen name="task_corner_radius_override">-1dp</dimen>
 
+    <!--  Task Menu View  -->
+    <dimen name="task_menu_corner_radius">22dp</dimen>
     <dimen name="overview_proactive_row_height">48dp</dimen>
     <dimen name="overview_proactive_row_bottom_margin">16dp</dimen>
 
-    <dimen name="overview_minimum_next_prev_size">48dp</dimen>
+    <dimen name="overview_minimum_next_prev_size">50dp</dimen>
     <dimen name="overview_task_margin">16dp</dimen>
 
     <!-- Overrideable in overlay that provides the Overview Actions. -->
     <dimen name="overview_actions_height">48dp</dimen>
-    <dimen name="overview_actions_bottom_margin_gesture">12dp</dimen>
+    <dimen name="overview_actions_bottom_margin_gesture">28dp</dimen>
     <dimen name="overview_actions_bottom_margin_three_button">8dp</dimen>
     <dimen name="overview_actions_horizontal_margin">16dp</dimen>
 
@@ -43,8 +45,9 @@
 
     <!-- These speeds are in dp/s -->
     <dimen name="max_task_dismiss_drag_velocity">2.25dp</dimen>
-    <dimen name="default_task_dismiss_drag_velocity">1.75dp</dimen>
-    <dimen name="default_task_dismiss_drag_velocity_grid">0.75dp</dimen>
+    <dimen name="default_task_dismiss_drag_velocity">1.5dp</dimen>
+    <dimen name="default_task_dismiss_drag_velocity_grid">1dp</dimen>
+    <dimen name="default_task_dismiss_drag_velocity_grid_focus_task">5dp</dimen>
 
     <dimen name="recents_page_spacing">16dp</dimen>
     <dimen name="recents_clear_all_deadzone_vertical_margin">70dp</dimen>
@@ -62,7 +65,7 @@
     <dimen name="quickstep_fling_threshold_speed">0.5dp</dimen>
 
     <!-- Launcher app transition -->
-    <dimen name="content_trans_y">50dp</dimen>
+    <item name="content_scale" format="float" type="dimen">0.97</item>
     <dimen name="closing_window_trans_y">115dp</dimen>
 
     <dimen name="recents_empty_message_text_size">16sp</dimen>
@@ -72,7 +75,9 @@
 
     <!-- Total space (start + end) between the task card and the edge of the screen
          in various configurations -->
-    <dimen name="task_card_menu_option_vertical_padding">8dp</dimen>
+    <dimen name="task_card_menu_option_vertical_padding">16dp</dimen>
+    <dimen name="task_menu_vertical_padding">8dp</dimen>
+    <dimen name="task_card_margin">8dp</dimen>
     <dimen name="task_card_menu_shadow_height">3dp</dimen>
     <dimen name="task_menu_option_start_margin">12dp</dimen>
     <!-- Copied from framework resource:

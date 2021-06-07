@@ -51,6 +51,9 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"വ്യക്തിപരം"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"ജോലി"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"സംഭാഷണങ്ങൾ"</string>
+    <string name="widget_education_header" msgid="4874760613775913787">"ഉപകാരപ്രദമായ വിവരങ്ങൾ നിങ്ങളുടെ വിരൽത്തുമ്പിൽ"</string>
+    <string name="widget_education_content" msgid="745542879510751525">"ആപ്പുകൾ തുറക്കാതെ വിവരങ്ങൾ ലഭിക്കാൻ, നിങ്ങൾക്ക് ഹോം സ്ക്രീനിലേക്ക് വിജറ്റുകൾ ചേർക്കാം"</string>
+    <string name="widget_education_close_button" msgid="8676165703104836580">"മനസ്സിലായി"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ആപ്പുകൾ തിരയുക"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"ആപ്പുകൾ ലോഡുചെയ്യുന്നു..."</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" എന്നതുമായി പൊരുത്തപ്പെടുന്ന ആപ്പുകളൊന്നും കണ്ടെത്തിയില്ല"</string>

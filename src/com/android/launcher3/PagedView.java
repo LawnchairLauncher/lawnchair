@@ -250,6 +250,15 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         forceFinishScroller(true);
     }
 
+    /**
+     *  Immediately finishes any overscroll effect and jumps to the end of the scroller animation.
+     */
+    public void abortScrollerAnimation() {
+        mEdgeGlowLeft.finish();
+        mEdgeGlowRight.finish();
+        abortScrollerAnimation(true);
+    }
+
     private void abortScrollerAnimation(boolean resetNextPage) {
         mScroller.abortAnimation();
         // We need to clean up the next page here to avoid computeScrollHelper from

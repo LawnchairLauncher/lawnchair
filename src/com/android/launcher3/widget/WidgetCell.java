@@ -21,6 +21,7 @@ import static com.android.launcher3.Utilities.ATLEAST_S;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.CancellationSignal;
@@ -95,6 +96,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     protected final BaseActivity mActivity;
     private final CheckLongPressHelper mLongPressHelper;
     private final float mEnforcedCornerRadius;
+    private final int mPreviewPadding;
 
     private RemoteViews mRemoteViewsPreview;
     private NavigableAppWidgetHostView mAppWidgetHostViewPreview;
@@ -119,6 +121,8 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         setClipToPadding(false);
         setAccessibilityDelegate(mActivity.getAccessibilityDelegate());
         mEnforcedCornerRadius = RoundedCornerEnforcement.computeEnforcedRadius(context);
+        mPreviewPadding =
+                2 * getResources().getDimensionPixelSize(R.dimen.widget_preview_shortcut_padding);
     }
 
     private void setContainerWidth() {
@@ -210,12 +214,8 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
                     return false;
                 }
             };
-            mAppWidgetHostViewPreview.setAppWidget(/* appWidgetId= */ -1, item.widgetInfo);
-            Rect padding = new Rect();
-            mAppWidgetHostViewPreview.getWidgetInset(mActivity.getDeviceProfile(), padding);
-            mAppWidgetHostViewPreview.setPadding(padding.left, padding.top, padding.right,
-                    padding.bottom);
-            mAppWidgetHostViewPreview.updateAppWidget(/* remoteViews= */ mRemoteViewsPreview);
+            setAppWidgetHostViewPreview(mAppWidgetHostViewPreview, item.widgetInfo,
+                    mRemoteViewsPreview);
             return;
         }
 
@@ -231,14 +231,29 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             // rendering a preview layout for work profile apps yet. For non-work profile layout, a
             // proper solution is to use RemoteViews(PackageName, LayoutId).
             launcherAppWidgetProviderInfo.initialLayout = item.widgetInfo.previewLayout;
-            mAppWidgetHostViewPreview.setAppWidget(/* appWidgetId= */ -1,
-                    launcherAppWidgetProviderInfo);
-            Rect padding = new Rect();
-            mAppWidgetHostViewPreview.getWidgetInset(mActivity.getDeviceProfile(), padding);
-            mAppWidgetHostViewPreview.setPadding(padding.left, padding.top, padding.right,
-                    padding.bottom);
-            mAppWidgetHostViewPreview.updateAppWidget(/* remoteViews= */ null);
+            setAppWidgetHostViewPreview(mAppWidgetHostViewPreview,
+                    launcherAppWidgetProviderInfo, /* remoteViews= */ null);
         }
+    }
+
+    private void setAppWidgetHostViewPreview(
+            NavigableAppWidgetHostView appWidgetHostViewPreview,
+            LauncherAppWidgetProviderInfo providerInfo,
+            @Nullable RemoteViews remoteViews) {
+        appWidgetHostViewPreview.setAppWidget(/* appWidgetId= */ -1, providerInfo);
+        Rect padding;
+        DeviceProfile deviceProfile = mActivity.getDeviceProfile();
+        if (deviceProfile.shouldInsetWidgets()) {
+            padding = new Rect();
+            appWidgetHostViewPreview.getWidgetInset(deviceProfile, padding);
+        } else {
+            padding = deviceProfile.inv.defaultWidgetPadding;
+        }
+        appWidgetHostViewPreview.setPadding(padding.left, padding.top, padding.right,
+                padding.bottom);
+        mPreviewWidth += padding.left + padding.right;
+        mPreviewHeight += padding.top + padding.bottom;
+        appWidgetHostViewPreview.updateAppWidget(remoteViews);
     }
 
     public WidgetImageView getWidgetView() {
@@ -281,7 +296,16 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             return;
         }
         if (drawable != null) {
-            setContainerSize(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+            float scale = 1f;
+            if (getWidth() > 0 && getHeight() > 0) {
+                // Scale down the preview size if it's wider than the cell.
+                float maxWidth = getWidth() - mPreviewPadding;
+                float previewWidth = drawable.getIntrinsicWidth() * mPreviewScale;
+                scale = Math.min(maxWidth / previewWidth, 1);
+            }
+            setContainerSize(
+                    Math.round(drawable.getIntrinsicWidth() * scale),
+                    Math.round(drawable.getIntrinsicHeight() * scale));
             mWidgetImage.setDrawable(drawable);
             mWidgetImage.setVisibility(View.VISIBLE);
             if (mAppWidgetHostViewPreview != null) {
@@ -330,11 +354,12 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
 
     /** Sets the widget preview image size, in number of cells, and preview scale. */
     public void setPreviewSize(int spanX, int spanY, float previewScale) {
-        int padding = 2 * getResources()
-                .getDimensionPixelSize(R.dimen.widget_preview_shortcut_padding);
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
-        mPreviewWidth = deviceProfile.cellWidthPx * spanX + padding;
-        mPreviewHeight = deviceProfile.cellHeightPx * spanY + padding;
+        Point cellSize = deviceProfile.getCellSize();
+        mPreviewWidth = cellSize.x * spanX + mPreviewPadding
+                + deviceProfile.cellLayoutBorderSpacingPx * (spanX - 1);
+        mPreviewHeight = cellSize.y * spanY + mPreviewPadding
+                + deviceProfile.cellLayoutBorderSpacingPx * (spanY - 1);
         mPreviewScale = previewScale;
     }
 

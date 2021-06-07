@@ -561,7 +561,7 @@ public class RecentsAnimationDeviceState implements
             return false;
         }
 
-        if (mIsOneHandedModeEnabled || mIsSwipeToNotificationEnabled) {
+        if (mIsOneHandedModeEnabled) {
             final Info displayInfo = mDisplayController.getInfo();
             return (mRotationTouchHelper.touchInOneHandedModeRegion(ev)
                 && displayInfo.rotation != Surface.ROTATION_90
