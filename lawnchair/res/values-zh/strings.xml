@@ -18,7 +18,7 @@
     <string name="icon_pack">图标包</string>
     <string name="settings">设置</string>
     <string name="home_screen_label">主屏幕</string>
-    <string name="home_screen_description">动态消息、快速查看、网格、图标</string>
+    <string name="home_screen_description">订阅、At a Glance、网格、图标</string>
     <string name="general_label">通用</string>
     <string name="general_description">通知圆点，图标包</string>
     <string name="home_screen_rotation_label">主屏幕旋转</string>
