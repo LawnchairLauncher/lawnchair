@@ -26,13 +26,13 @@ import android.os.Process;
 
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.AppWidgetResizeFrame;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
+import com.android.launcher3.widget.util.WidgetSizes;
 
 /**
  * Represents a widget (either instantiated or about to be) in the Launcher.
@@ -196,7 +196,7 @@ public class LauncherAppWidgetInfo extends ItemInfo {
      */
     public void onBindAppWidget(Launcher launcher, AppWidgetHostView hostView) {
         if (!mHasNotifiedInitialWidgetSizeChanged) {
-            AppWidgetResizeFrame.updateWidgetSizeRanges(hostView, launcher, spanX, spanY);
+            WidgetSizes.updateWidgetSizeRanges(hostView, launcher, spanX, spanY);
             mHasNotifiedInitialWidgetSizeChanged = true;
         }
     }
