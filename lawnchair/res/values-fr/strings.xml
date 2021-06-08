@@ -43,7 +43,7 @@
     <string name="allow_empty_pages_label">Autoriser les pages vides</string>
     <string name="notification_dots">Pastilles de notification</string>
     <string name="smartspace_preferences">Préférences</string>
-    <string name="about_label">À propos de Lawnchair</string>
+    <string name="about_label">À propos</string>
     <string name="news">Actualités</string>
     <string name="support">Assistance</string>
     <string name="acknowledgements">Remerciements</string>
