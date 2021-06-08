@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.widget;
 
-import static com.android.launcher3.AppWidgetResizeFrame.getWidgetSizeOptions;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_TRAY;
 
 import android.appwidget.AppWidgetHostView;
@@ -24,6 +23,7 @@ import android.os.Bundle;
 
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.PendingAddItemInfo;
+import com.android.launcher3.widget.util.WidgetSizes;
 
 /**
  * Meta data used for late binding of {@link LauncherAppWidgetProviderInfo}.
@@ -61,6 +61,6 @@ public class PendingAddWidgetInfo extends PendingAddItemInfo {
     }
 
     public Bundle getDefaultSizeOptions(Context context) {
-        return getWidgetSizeOptions(context, componentName, spanX, spanY);
+        return WidgetSizes.getWidgetSizeOptions(context, componentName, spanX, spanY);
     }
 }
