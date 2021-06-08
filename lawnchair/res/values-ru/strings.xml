@@ -86,9 +86,9 @@
     <string name="minus_one_unavailable">Лента новостей не установлена.</string>
     <string name="fuzzy_search_title">Поиск по сходству</string>
     <string name="fuzzy_search_desc">Поиск приложений по похожему запросу (напр. Машина - Машинка).</string>
-    <string name="theme_label">Theme</string>
-    <string name="theme_light">Light</string>
-    <string name="theme_dark">Dark</string>
-    <string name="theme_system_default">System default</string>
+    <string name="theme_label">Тема</string>
+    <string name="theme_light">Светлая</string>
+    <string name="theme_dark">Тёмная</string>
+    <string name="theme_system_default">По умолчанию (как в системе)</string>
     <string name="theme_follow_wallpaper">Follow wallpaper</string>
 </resources>
