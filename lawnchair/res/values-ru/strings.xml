@@ -89,6 +89,6 @@
     <string name="theme_label">Тема</string>
     <string name="theme_light">Светлая</string>
     <string name="theme_dark">Тёмная</string>
-    <string name="theme_system_default">По умолчанию (как в системе)</string>
-    <string name="theme_follow_wallpaper">Follow wallpaper</string>
+    <string name="theme_system_default">На основе системной темы</string>
+    <string name="theme_follow_wallpaper">На основе цвета обоев</string>
 </resources>
