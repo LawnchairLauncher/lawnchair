@@ -18,11 +18,11 @@
     <string name="icon_pack">Ikoncsomag</string>
     <string name="settings">Beállítások</string>
     <string name="home_screen_label">Kezdőképernyő</string>
-    <string name="home_screen_description">Feed, At a Glance, Grid, Icons</string>
+    <string name="home_screen_description">Hírfolyam, \"Egy pillanat alatt\", rács, ikonok</string>
     <string name="general_label">Általános</string>
     <string name="general_description">Értesítési pöttyök, Ikoncsomag</string>
     <string name="home_screen_rotation_label">Kezdőképernyő tájolása</string>
-    <string name="home_screen_rotaton_description">Amikor az eszköz tájolva van.</string>
+    <string name="home_screen_rotaton_description">Amikor az eszköz elforgatva van.</string>
     <string name="auto_add_shortcuts_label">Új alkalmazások hozzáadása a kezdőképernyőhöz</string>
     <string name="dock_label">Dokk</string>
     <string name="dock_description">Kereső sáv, ikonok száma</string>
@@ -82,8 +82,8 @@
     <string name="dt2s_warning_open_settings">Beállítások megnyitása</string>
     <string name="minus_one_enable">Hírfolyam megjelenítése</string>
     <string name="minus_one_unavailable">Feed is not available</string>
-    <string name="fuzzy_search_title">Fuzzy Search</string>
-    <string name="fuzzy_search_desc">Approximate matching for app searches.</string>
+    <string name="fuzzy_search_title">Homályos \"fuzzy\" keresés</string>
+    <string name="fuzzy_search_desc">Hozzávetőleges egyezés az alkalmazások kereséséhez.</string>
     <string name="theme_label">Téma</string>
     <string name="theme_light">Világos</string>
     <string name="theme_dark">Sötét</string>
