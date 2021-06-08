@@ -18,16 +18,16 @@
     <string name="icon_pack">Pack d\'icônes</string>
     <string name="settings">Paramètres</string>
     <string name="home_screen_label">Écran d\'accueil</string>
-    <string name="home_screen_description">Feed, At a Glance, Grid, Icons</string>
+    <string name="home_screen_description">Feed, Coup d\'oeil, Grille, Icônes</string>
     <string name="general_label">Général</string>
     <string name="general_description">Badges de notification, pack d\'icônes</string>
     <string name="home_screen_rotation_label">Rotation de l\'écran d\'accueil</string>
     <string name="home_screen_rotaton_description">Lorsque l\'appareil est tourné.</string>
     <string name="auto_add_shortcuts_label">Ajouter les nouvelles applications à l\'écran d\'accueil</string>
     <string name="dock_label">Zone d\'ancrage</string>
-    <string name="dock_description">Search Bar, Icon Count</string>
+    <string name="dock_description">Barre de recherche, Nombre d\'icônes</string>
     <string name="app_drawer_label">Tiroir d\'applications</string>
-    <string name="app_drawer_description">Hidden Apps, Column Count, Icons</string>
+    <string name="app_drawer_description">Applications cachées, Nombre de colonnes, Icônes</string>
     <string name="folders_label">Dossiers</string>
     <string name="folders_description">Nombre de lignes et de colonnes</string>
     <string name="app_drawer_columns">Colonnes du tiroir d\'applications</string>
@@ -73,13 +73,13 @@
         <item quantity="one">Application %1$d</item>
         <item quantity="other">Applications %1$d</item>
     </plurals>
-    <string name="hotseat_qsb_label">Show Search Bar</string>
+    <string name="hotseat_qsb_label">Afficher la barre de recherche</string>
     <string name="dt2s_admin_hint_title">Admin permission required</string>
     <string name="dt2s_admin_hint">To use Double Tap to Sleep, grant the Admin permission.</string>
     <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
     <string name="dt2s_a11y_hint_title">Accessibility service required</string>
     <string name="dt2s_a11y_hint">To use Double Tap to Sleep, enable the accessibility service.</string>
-    <string name="dt2s_warning_open_settings">Open Settings</string>
+    <string name="dt2s_warning_open_settings">Ouvrir les paramètres</string>
     <string name="minus_one_enable">Show Feed</string>
     <string name="minus_one_unavailable">Feed is not available</string>
     <string name="fuzzy_search_title">Fuzzy Search</string>
