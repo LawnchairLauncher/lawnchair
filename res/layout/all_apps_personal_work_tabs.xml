@@ -31,7 +31,7 @@
         android:background="@drawable/personal_work_tabs_ripple"
         android:text="@string/all_apps_personal_tab"
         android:textColor="@color/all_apps_tab_text"
-        android:textSize="16sp" />
+        android:textSize="14sp" />
 
     <Button
         android:id="@+id/tab_work"
@@ -41,5 +41,5 @@
         android:background="@drawable/personal_work_tabs_ripple"
         android:text="@string/all_apps_work_tab"
         android:textColor="@color/all_apps_tab_text"
-        android:textSize="16sp" />
+        android:textSize="14sp" />
 </com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip>
