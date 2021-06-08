@@ -18,6 +18,7 @@ package app.lawnchair.ui.preferences
 
 import android.os.Build
 import androidx.compose.animation.*
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
@@ -33,6 +34,7 @@ object GeneralRoutes {
     const val ICON_PACK = "iconPack"
 }
 
+@ExperimentalMaterialApi
 @ExperimentalAnimationApi
 fun NavGraphBuilder.generalGraph(route: String) {
     preferenceGraph(route, { GeneralPreferences() }) { subRoute ->
@@ -40,6 +42,7 @@ fun NavGraphBuilder.generalGraph(route: String) {
     }
 }
 
+@ExperimentalMaterialApi
 @ExperimentalAnimationApi
 @Composable
 fun GeneralPreferences() {
