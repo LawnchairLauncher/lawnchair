@@ -15,10 +15,10 @@
   ~ limitations under the License.
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="icon_pack">Иконки</string>
-    <string name="settings">Settings</string>
-    <string name="home_screen_label">Главный экран</string>
-    <string name="home_screen_description">Новости, виджет \"At a Glance\", иконки</string>
+    <string name="icon_pack">Набор иконок</string>
+    <string name="settings">Настройки</string>
+    <string name="home_screen_label">Домашний экран</string>
+    <string name="home_screen_description">Новости, Виджет \"Самое главное\", Иконки</string>
     <string name="general_label">Общие</string>
     <string name="general_description">Значки уведомлений, пакет иконок</string>
     <string name="home_screen_rotation_label">Поворот гл. экрана</string>
