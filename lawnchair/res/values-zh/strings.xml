@@ -83,9 +83,9 @@
     <string name="minus_one_unavailable">Feed is not available</string>
     <string name="fuzzy_search_title">模糊搜尋</string>
     <string name="fuzzy_search_desc">找尋名稱相似的應用程式</string>
-    <string name="theme_label">Theme</string>
-    <string name="theme_light">Light</string>
-    <string name="theme_dark">Dark</string>
-    <string name="theme_system_default">System default</string>
-    <string name="theme_follow_wallpaper">Follow wallpaper</string>
+    <string name="theme_label">主題</string>
+    <string name="theme_light">淺色</string>
+    <string name="theme_dark">深色</string>
+    <string name="theme_system_default">系統預設</string>
+    <string name="theme_follow_wallpaper">跟隨桌布</string>
 </resources>
