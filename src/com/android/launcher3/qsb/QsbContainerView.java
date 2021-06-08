@@ -20,8 +20,6 @@ import static android.appwidget.AppWidgetManager.ACTION_APPWIDGET_BIND;
 import static android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_ID;
 import static android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_PROVIDER;
 
-import static com.android.launcher3.AppWidgetResizeFrame.getWidgetSizeOptions;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.SearchManager;
@@ -49,6 +47,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.FragmentWithPreview;
+import com.android.launcher3.widget.util.WidgetSizes;
 
 /**
  * A frame layout which contains a QSB. This internally uses fragment to bind the view, which
@@ -292,7 +291,8 @@ public class QsbContainerView extends FrameLayout {
 
         protected Bundle createBindOptions() {
             InvariantDeviceProfile idp = LauncherAppState.getIDP(getContext());
-            return getWidgetSizeOptions(getContext(), mWidgetInfo.provider, idp.numColumns, 1);
+            return WidgetSizes.getWidgetSizeOptions(getContext(), mWidgetInfo.provider,
+                    idp.numColumns, 1);
         }
 
         protected View getDefaultView(ViewGroup container, boolean showSetupIcon) {
