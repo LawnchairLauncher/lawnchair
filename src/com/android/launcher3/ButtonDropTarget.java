@@ -36,8 +36,6 @@ import android.view.accessibility.AccessibilityEvent;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import androidx.appcompat.content.res.AppCompatResources;
-
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
@@ -238,11 +236,8 @@ public abstract class ButtonDropTarget extends TextView
             return;
         }
         final DragLayer dragLayer = mLauncher.getDragLayer();
-        final Rect from = new Rect();
-        dragLayer.getViewRectRelativeToSelf(d.dragView, from);
-
         final Rect to = getIconRect(d);
-        final float scale = (float) to.width() / from.width();
+        final float scale = (float) to.width() / d.dragView.getMeasuredWidth();
         d.dragView.detachContentView(/* reattachToPreviousParent= */ true);
         mDropTargetBar.deferOnDragEnd();
 
@@ -252,9 +247,9 @@ public abstract class ButtonDropTarget extends TextView
             mLauncher.getStateManager().goToState(NORMAL);
         };
 
-        dragLayer.animateView(d.dragView, from, to, scale, 1f, 1f, 0.1f, 0.1f,
+        dragLayer.animateView(d.dragView, to, scale, 0.1f, 0.1f,
                 DRAG_VIEW_DROP_DURATION,
-                Interpolators.DEACCEL_2, Interpolators.LINEAR, onAnimationEndRunnable,
+                Interpolators.DEACCEL_2, onAnimationEndRunnable,
                 DragLayer.ANIMATION_END_DISAPPEAR, null);
     }
 

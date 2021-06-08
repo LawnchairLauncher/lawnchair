@@ -430,18 +430,20 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
     }
 
     public void getViewRectRelativeToSelf(View v, Rect r) {
+        int[] loc = getViewLocationRelativeToSelf(v);
+        r.set(loc[0], loc[1], loc[0] + v.getMeasuredWidth(), loc[1] + v.getMeasuredHeight());
+    }
+
+    protected int[] getViewLocationRelativeToSelf(View v) {
         int[] loc = new int[2];
         getLocationInWindow(loc);
         int x = loc[0];
         int y = loc[1];
 
         v.getLocationInWindow(loc);
-        int vX = loc[0];
-        int vY = loc[1];
-
-        int left = vX - x;
-        int top = vY - y;
-        r.set(left, top, left + v.getMeasuredWidth(), top + v.getMeasuredHeight());
+        loc[0] -= x;
+        loc[1] -= y;
+        return loc;
     }
 
     @Override

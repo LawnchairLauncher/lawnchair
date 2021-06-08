@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import static androidx.annotation.VisibleForTesting.PROTECTED;
+
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.LauncherState.ALL_APPS;
@@ -2684,9 +2685,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     public void animateWidgetDrop(ItemInfo info, CellLayout cellLayout, final DragView dragView,
             final Runnable onCompleteRunnable, int animationType, final View finalView,
             boolean external) {
-        Rect from = new Rect();
-        mLauncher.getDragLayer().getViewRectRelativeToSelf(dragView, from);
-
         int[] finalPos = new int[2];
         float scaleXY[] = new float[2];
         boolean scalePreview = !(info instanceof PendingAddShortcutInfo);
@@ -2730,8 +2728,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                     }
                 }
             };
-            dragLayer.animateViewIntoPosition(dragView, from.left, from.top, finalPos[0],
-                    finalPos[1], 1, 1, 1, scaleXY[0], scaleXY[1], onComplete, endStyle,
+            dragLayer.animateViewIntoPosition(dragView, finalPos[0],
+                    finalPos[1], 1, scaleXY[0], scaleXY[1], onComplete, endStyle,
                     duration, this);
         }
     }
