@@ -1353,6 +1353,7 @@ public class TaskView extends FrameLayout implements Reusable {
         mCurrentFullscreenParams.setProgress(
                 mFullscreenProgress,
                 getRecentsView().getScaleX(),
+                getScaleX(),
                 getWidth(), mActivity.getDeviceProfile(),
                 previewPositionHelper);
     }
@@ -1494,8 +1495,8 @@ public class TaskView extends FrameLayout implements Reusable {
         /**
          * Sets the progress in range [0, 1]
          */
-        public void setProgress(float fullscreenProgress, float parentScale, int previewWidth,
-                DeviceProfile dp, PreviewPositionHelper pph) {
+        public void setProgress(float fullscreenProgress, float parentScale, float taskViewScale,
+                int previewWidth, DeviceProfile dp, PreviewPositionHelper pph) {
             RectF insets = pph.getInsetsToDrawInFullscreen();
 
             float currentInsetsLeft = insets.left * fullscreenProgress;
@@ -1506,7 +1507,7 @@ public class TaskView extends FrameLayout implements Reusable {
 
             mCurrentDrawnCornerRadius =
                     Utilities.mapRange(fullscreenProgress, mCornerRadius, fullscreenCornerRadius)
-                            / parentScale;
+                            / parentScale / taskViewScale;
 
             // We scaled the thumbnail to fit the content (excluding insets) within task view width.
             // Now that we are drawing left/right insets again, we need to scale down to fit them.
