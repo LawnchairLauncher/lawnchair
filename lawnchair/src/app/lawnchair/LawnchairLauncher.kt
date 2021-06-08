@@ -30,6 +30,7 @@ import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.ViewTreeSavedStateRegistryOwner
 import app.lawnchair.gestures.GestureController
 import app.lawnchair.nexuslauncher.OverlayCallbackImpl
+import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.util.restartLauncher
 import com.android.launcher3.BaseActivity
 import com.android.launcher3.LauncherAppState
@@ -49,6 +50,11 @@ open class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
     val gestureController by lazy { GestureController(this) }
     private val defaultOverlay by lazy { OverlayCallbackImpl(this) }
 
+    private fun subscribePreferences() {
+        val preferenceManager = PreferenceManager.getInstance(this)
+        preferenceManager.launcherTheme.subscribe(this) { updateTheme() }
+    }
+
     override fun setupViews() {
         super.setupViews()
         val launcherRootView = findViewById<LauncherRootView>(R.id.launcher)
@@ -60,6 +66,7 @@ open class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         savedStateRegistryController.performRestore(savedInstanceState)
         super.onCreate(savedInstanceState)
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
+        subscribePreferences()
     }
 
     override fun onStart() {

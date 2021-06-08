@@ -20,8 +20,14 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import app.lawnchair.preferences.observeAsState
+import app.lawnchair.preferences.preferenceManager
+import app.lawnchair.ui.preferences.components.ThemeChoice
+import com.android.launcher3.Utilities
+import com.android.launcher3.uioverrides.WallpaperColorInfo
 
 private val DarkColorPalette = darkColors(
     primary = Blue600,
@@ -36,7 +42,7 @@ private val LightColorPalette = lightColors(
 
 @Composable
 fun LawnchairTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean = isSelectedThemeDark(),
     content: @Composable () -> Unit
 ) {
     val colors = if (darkTheme) {
@@ -51,4 +57,34 @@ fun LawnchairTheme(
         shapes = Shapes,
         content = content
     )
+}
+
+@Composable
+fun isSelectedThemeDark(): Boolean {
+    val themeChoice by preferenceManager().launcherTheme.observeAsState()
+    return when (themeChoice) {
+        ThemeChoice.light -> false
+        ThemeChoice.dark -> true
+        else -> isAutoThemeDark()
+    }
+}
+
+@Composable
+fun isAutoThemeDark(): Boolean {
+    return when {
+        Utilities.ATLEAST_Q -> isSystemInDarkTheme()
+        else -> isWallpaperDark()
+    }
+}
+
+@Composable
+fun isWallpaperDark(): Boolean {
+    val wallpaperColorInfo = WallpaperColorInfo.INSTANCE[LocalContext.current]
+    var isDark by remember { mutableStateOf(wallpaperColorInfo.isDark) }
+    DisposableEffect(wallpaperColorInfo) {
+        val listener = WallpaperColorInfo.OnChangeListener { isDark = it.isDark }
+        wallpaperColorInfo.addOnChangeListener(listener)
+        onDispose { wallpaperColorInfo.removeOnChangeListener(listener) }
+    }
+    return isDark
 }

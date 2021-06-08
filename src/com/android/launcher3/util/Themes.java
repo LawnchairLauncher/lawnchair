@@ -30,6 +30,8 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
 
+import app.lawnchair.preferences.PreferenceManager;
+
 /**
  * Various utility methods associated with theming.
  */
@@ -37,13 +39,27 @@ public class Themes {
 
     public static int getActivityThemeRes(Context context) {
         WallpaperColorInfo wallpaperColorInfo = WallpaperColorInfo.INSTANCE.get(context);
+
+        PreferenceManager preferenceManager = PreferenceManager.getInstance(context);
+        String themeChoice = preferenceManager.getLauncherTheme().get();
+
         boolean darkTheme;
-        if (Utilities.ATLEAST_Q) {
-            Configuration configuration = context.getResources().getConfiguration();
-            int nightMode = configuration.uiMode & Configuration.UI_MODE_NIGHT_MASK;
-            darkTheme = nightMode == Configuration.UI_MODE_NIGHT_YES;
-        } else {
-            darkTheme = wallpaperColorInfo.isDark();
+        switch(themeChoice) {
+            case "light":
+                darkTheme = false;
+                break;
+            case "dark":
+                darkTheme = true;
+                break;
+            default:
+                if (Utilities.ATLEAST_Q) {
+                    Configuration configuration = context.getResources().getConfiguration();
+                    int nightMode = configuration.uiMode & Configuration.UI_MODE_NIGHT_MASK;
+                    darkTheme = nightMode == Configuration.UI_MODE_NIGHT_YES;
+                } else {
+                    darkTheme = wallpaperColorInfo.isDark();
+                }
+                break;
         }
 
         if (darkTheme) {

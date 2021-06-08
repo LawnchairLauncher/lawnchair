@@ -21,9 +21,9 @@ import kotlinx.coroutines.launch
 @ExperimentalMaterialApi
 @Composable
 fun BottomSheet(
-    sheetContent: @Composable () -> Unit,
     sheetState: BottomSheetState = rememberBottomSheetState(initialValue = ModalBottomSheetValue.Hidden),
     scrimColor: Color = ModalBottomSheetDefaults.scrimColor,
+    sheetContent: @Composable () -> Unit,
 ) {
     val currentSheetContent by rememberUpdatedState(sheetContent)
     val modalBottomSheetState = sheetState.modalBottomSheetState

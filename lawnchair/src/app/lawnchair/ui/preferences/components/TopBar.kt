@@ -16,6 +16,7 @@
 
 package app.lawnchair.ui.preferences.components
 
+import androidx.compose.animation.Animatable
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateColorAsState
@@ -33,6 +34,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.ArrowForward
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -99,7 +101,10 @@ val shadowColors = listOf(Color(0, 0, 0, 31), Color.Transparent)
 @Composable
 fun TopBarSurface(floating: Boolean, content: @Composable () -> Unit) {
     val (normalColor, floatingColor) = topBarColors()
-    val color by animateColorAsState(if (floating) floatingColor else normalColor)
+    val color = remember(key1 = normalColor) { Animatable(normalColor) }
+    LaunchedEffect(floating) {
+        color.animateTo(if (floating) floatingColor else normalColor)
+    }
     val shadowAlpha by animateFloatAsState(if (floating) 1f else 0f)
     Column(
         modifier = Modifier
@@ -107,7 +112,7 @@ fun TopBarSurface(floating: Boolean, content: @Composable () -> Unit) {
     ) {
         Box(
             modifier = Modifier
-                .background(color)
+                .background(color.value)
                 .statusBarsPadding()
                 .pointerInput(remember { MutableInteractionSource() }) {
                     // consume touch
