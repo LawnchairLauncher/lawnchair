@@ -49,6 +49,7 @@ public class AnimatorControllerWithResistance {
 
     private enum RecentsResistanceParams {
         FROM_APP(0.75f, 0.5f, 1f),
+        FROM_APP_TABLET(0.9f, 0.75f, 1f),
         FROM_OVERVIEW(1f, 0.75f, 0.5f);
 
         RecentsResistanceParams(float scaleStartResist, float scaleMaxResist,
@@ -228,7 +229,7 @@ public class AnimatorControllerWithResistance {
 
         // These are not required, or can have a default value that is generally correct.
         @Nullable public PendingAnimation resistAnim = null;
-        public RecentsResistanceParams resistanceParams = RecentsResistanceParams.FROM_APP;
+        public RecentsResistanceParams resistanceParams;
         public float startScale = 1f;
         public float startTranslation = 0f;
 
@@ -242,6 +243,11 @@ public class AnimatorControllerWithResistance {
             this.scaleProperty = scaleProperty;
             this.translationTarget = translationTarget;
             this.translationProperty = translationProperty;
+            if (dp.isTablet) {
+                resistanceParams = RecentsResistanceParams.FROM_APP_TABLET;
+            } else {
+                resistanceParams = RecentsResistanceParams.FROM_APP;
+            }
         }
 
         private RecentsParams setResistAnim(PendingAnimation resistAnim) {
