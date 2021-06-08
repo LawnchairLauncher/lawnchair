@@ -84,4 +84,9 @@
     <string name="minus_one_unavailable">Akış mevcut değil</string>
     <string name="fuzzy_search_title">Yaklaşık Arama</string>
     <string name="fuzzy_search_desc">Uygulama aramaları için yaklaşık eşleştirme.</string>
+    <string name="theme_label">Theme</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_system_default">System default</string>
+    <string name="theme_follow_wallpaper">Follow wallpaper</string>
 </resources>
