@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.util;
 
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_KEYBOARD_CLOSED;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import android.annotation.SuppressLint;
@@ -27,6 +28,7 @@ import android.view.View;
 import android.view.WindowInsets;
 import android.view.inputmethod.InputMethodManager;
 
+import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.views.ActivityContext;
 
@@ -57,6 +59,8 @@ public class UiThreadHelper {
 
         Message.obtain(HANDLER.get(root.getContext()),
                 MSG_HIDE_KEYBOARD, token).sendToTarget();
+        Launcher.cast(activityContext).getStatsLogManager().logger().log(
+                LAUNCHER_ALLAPPS_KEYBOARD_CLOSED);
     }
 
     public static void setOrientationAsync(Activity activity, int orientation) {

@@ -172,6 +172,6 @@
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Wstrzymaj aplikacje służbowe"</string>
     <string name="work_apps_enable_btn_text" msgid="82111102541971856">"Włącz"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filtruj"</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"Wstrzymaj aplikacje służbowe i powiadomienia"</string>
+    <string name="work_switch_tip" msgid="808075064383839144">"Wstrzymaj służbowe aplikacje i powiadomienia"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Niepowodzenie: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

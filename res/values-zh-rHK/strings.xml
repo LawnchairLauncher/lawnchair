@@ -32,7 +32,7 @@
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"㩒兩下之後㩒住，就可以郁小工具或者用自訂操作。"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d 闊，%2$d 高"</string>
-    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"按住小工具即可將其移至主畫面上任何位置"</string>
+    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"按住小工具即可隨意在主畫面上移動"</string>
     <string name="add_to_home_screen" msgid="8631549138215492708">"新增至主畫面"</string>
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
       <item quantity="other"><xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> 個小工具</item>

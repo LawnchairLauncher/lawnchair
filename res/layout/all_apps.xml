@@ -36,6 +36,7 @@
         android:layout_below="@id/search_container_all_apps"
         android:clipToPadding="false"
         android:paddingTop="@dimen/all_apps_header_top_padding"
+        android:paddingBottom="@dimen/all_apps_header_bottom_padding"
         android:orientation="vertical" >
 
         <include layout="@layout/floating_header_content" />
