@@ -44,7 +44,9 @@ public class TaskbarNavButtonController {
             BUTTON_BACK,
             BUTTON_HOME,
             BUTTON_RECENTS,
-            BUTTON_IME_SWITCH
+            BUTTON_IME_SWITCH,
+            BUTTON_A11Y,
+            BUTTON_A11Y_LONG_CLICK
     })
 
     public @interface TaskbarButton {}
@@ -53,6 +55,8 @@ public class TaskbarNavButtonController {
     static final int BUTTON_HOME = BUTTON_BACK << 1;
     static final int BUTTON_RECENTS = BUTTON_HOME << 1;
     static final int BUTTON_IME_SWITCH = BUTTON_RECENTS << 1;
+    static final int BUTTON_A11Y = BUTTON_IME_SWITCH << 1;
+    static final int BUTTON_A11Y_LONG_CLICK = BUTTON_A11Y << 1;
 
     private final TouchInteractionService mService;
 
@@ -73,6 +77,12 @@ public class TaskbarNavButtonController {
                 break;
             case BUTTON_IME_SWITCH:
                 showIMESwitcher();
+                break;
+            case BUTTON_A11Y:
+                notifyImeClick(false /* longClick */);
+                break;
+            case BUTTON_A11Y_LONG_CLICK:
+                notifyImeClick(true /* longClick */);
                 break;
         }
     }
@@ -96,5 +106,14 @@ public class TaskbarNavButtonController {
         mService.getSystemService(InputMethodManager.class)
                 .showInputMethodPickerFromSystem(true /* showAuxiliarySubtypes */,
                         DEFAULT_DISPLAY);
+    }
+
+    private void notifyImeClick(boolean longClick) {
+        SystemUiProxy systemUiProxy = SystemUiProxy.INSTANCE.getNoCreate();
+        if (longClick) {
+            systemUiProxy.notifyAccessibilityButtonLongClicked();
+        } else {
+            systemUiProxy.notifyAccessibilityButtonClicked(mService.getDisplayId());
+        }
     }
 }
