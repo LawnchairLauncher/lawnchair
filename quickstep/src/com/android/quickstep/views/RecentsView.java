@@ -1358,7 +1358,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 mOrientationHandler);
         int taskWidth = mTempRect.width();
         int taskHeight = mTempRect.height();
-        if (mRunningTaskId != -1) {
+        if (mFocusedTaskId != -1) {
             int boxLength = Math.max(taskWidth, taskHeight);
             if (mFocusedTaskRatio > 1) {
                 taskWidth = boxLength;
