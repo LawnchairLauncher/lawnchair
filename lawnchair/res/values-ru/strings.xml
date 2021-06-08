@@ -78,12 +78,12 @@
     <string name="hotseat_qsb_label">Показать строку поиска</string>
     <string name="dt2s_admin_hint_title">Необходимы права администратора</string>
     <string name="dt2s_admin_hint">To use Double Tap to Sleep, grant the Admin permission.</string>
-    <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
-    <string name="dt2s_a11y_hint_title">Accessibility service required</string>
-    <string name="dt2s_a11y_hint">To use Double Tap to Sleep, enable the accessibility service.</string>
+    <string name="dt2s_admin_warning">Двойной тап для блокировки будет отключен.</string>
+    <string name="dt2s_a11y_hint_title">Требуются спец. возможности</string>
+    <string name="dt2s_a11y_hint">Для отключения экрана по двойному тапу, включите спец. возможности. Нажмите \"Открыть настройки\", выберите \"Lawnchair\" и включите \"Использовать Lawnchair.\"</string>
     <string name="dt2s_warning_open_settings">Открыть настройки</string>
-    <string name="minus_one_enable">Показать новости</string>
-    <string name="minus_one_unavailable">Feed is not available</string>
-    <string name="fuzzy_search_title">Не точный поиск</string>
-    <string name="fuzzy_search_desc">Примерное соответствие для поиска приложений.</string>
+    <string name="minus_one_enable">Показать ленту новостей</string>
+    <string name="minus_one_unavailable">Лента новостей не установлена.</string>
+    <string name="fuzzy_search_title">Поиск по сходству</string>
+    <string name="fuzzy_search_desc">Поиск приложений по похожему запросу (напр. Машина - Машинка).</string>
 </resources>
