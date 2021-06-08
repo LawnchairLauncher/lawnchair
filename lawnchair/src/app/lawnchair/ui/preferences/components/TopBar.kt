@@ -26,6 +26,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
+import androidx.compose.material.LocalElevationOverlay
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -97,8 +98,7 @@ val shadowColors = listOf(Color(0, 0, 0, 31), Color.Transparent)
 
 @Composable
 fun TopBarSurface(floating: Boolean, content: @Composable () -> Unit) {
-    val normalColor = MaterialTheme.colors.background.copy(alpha = 0.9f)
-    val floatingColor = MaterialTheme.colors.surface.copy(alpha = 0.9f)
+    val (normalColor, floatingColor) = topBarColors()
     val color by animateColorAsState(if (floating) floatingColor else normalColor)
     val shadowAlpha by animateFloatAsState(if (floating) 1f else 0f)
     Column(
@@ -123,6 +123,14 @@ fun TopBarSurface(floating: Boolean, content: @Composable () -> Unit) {
                 .background(Brush.verticalGradient(shadowColors))
         )
     }
+}
+
+@Composable
+fun topBarColors(): Pair<Color, Color> {
+    val elevationOverlay = LocalElevationOverlay.current
+    val surfaceColor = MaterialTheme.colors.surface
+    val floatingColor = elevationOverlay?.apply(surfaceColor, 4.dp) ?: surfaceColor
+    return Pair(surfaceColor.copy(alpha = 0.9f), floatingColor.copy(alpha = 0.9f))
 }
 
 @Composable

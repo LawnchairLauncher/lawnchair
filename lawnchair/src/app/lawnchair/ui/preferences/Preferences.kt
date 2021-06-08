@@ -121,7 +121,7 @@ fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel
 
     SystemUi()
     ProvidePortalNode {
-        Surface(color = MaterialTheme.colors.background) {
+        Surface(color = MaterialTheme.colors.surface) {
             CompositionLocalProvider(
                 LocalNavController provides navController,
                 LocalPreferenceInteractor provides interactor,
