@@ -83,9 +83,9 @@
     <string name="minus_one_unavailable">Tidak ada umpan terpasang.</string>
     <string name="fuzzy_search_title">Pencarian Fuzzy</string>
     <string name="fuzzy_search_desc">Perkiraan pencocokan untuk pencarian aplikasi.</string>
-    <string name="theme_label">Theme</string>
-    <string name="theme_light">Light</string>
-    <string name="theme_dark">Dark</string>
-    <string name="theme_system_default">System default</string>
-    <string name="theme_follow_wallpaper">Follow wallpaper</string>
+    <string name="theme_label">Tema</string>
+    <string name="theme_light">Terang</string>
+    <string name="theme_dark">Gelap</string>
+    <string name="theme_system_default">Standar sistem</string>
+    <string name="theme_follow_wallpaper">Ikuti wallpaper</string>
 </resources>
