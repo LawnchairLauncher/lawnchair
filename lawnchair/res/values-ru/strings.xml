@@ -49,19 +49,19 @@
     <string name="acknowledgements">Лицензии</string>
     <string name="devops">DevOps-инженер</string>
     <string name="quickswitch_maintenance">Поддержка QuickSwitch</string>
-    <string name="all_apps_search_bar_hint">Search Apps</string>
+    <string name="all_apps_search_bar_hint">Поиск по приложениям</string>
     <string name="settings_button_text">Главный экран</string>
-    <string name="development">Разработка</string>
+    <string name="development">Разработчик</string>
     <string name="app_info_drop_target_label">О приложении</string>
     <string name="item_removed">Элемент удален.</string>
-    <string name="all_apps_no_search_results">По запросу “<xliff:g example="Android" id="query">%1$s</xliff:g>” приложений не найдено.</string>
+    <string name="all_apps_no_search_results">Не найдено приложений по запросу<xliff:g example="Android" id="query">%1$s</xliff:g>.</string>
     <string name="background_opacity">Прозрачность фона</string>
-    <string name="background_lightness_label">Прозрачность фона</string>
+    <string name="background_lightness_label">Яркость фона</string>
     <string name="adaptive_icons">Адаптивные иконки</string>
-    <string name="adaptive_icon_background_description">Использовать 100% фоновой яркости для белого.</string>
-    <string name="auto_adaptive_icons_label">Авто-Адаптивные иконки</string>
-    <string name="auto_adaptive_icons_description">Для всех не адаптивных иконок.</string>
-    <string name="support_and_pr">Поддержка &amp; Реклама</string>
+    <string name="adaptive_icon_background_description">Белый фон при 100% яркости.</string>
+    <string name="auto_adaptive_icons_label">Создавать адаптивные иконки</string>
+    <string name="auto_adaptive_icons_description">Для всех неадаптивных иконок.</string>
+    <string name="support_and_pr">Поддержка и Реклама</string>
     <string name="workspace_dt2s">Двойной тап для блокировки</string>
     <string name="smart_space_enable">Показать виджет \"At a Glance\"</string>
     <string name="design_and_development">Дизайн &amp; Разработка</string>
