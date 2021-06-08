@@ -18,7 +18,7 @@
     <string name="icon_pack">Pack d\'icônes</string>
     <string name="settings">Paramètres</string>
     <string name="home_screen_label">Écran d\'accueil</string>
-    <string name="home_screen_description">Feed, Coup d\'oeil, Grille, Icônes</string>
+    <string name="home_screen_description">Fil, Coup d\'œil, Grille, Icônes</string>
     <string name="general_label">Général</string>
     <string name="general_description">Badges de notification, pack d\'icônes</string>
     <string name="home_screen_rotation_label">Rotation de l\'écran d\'accueil</string>
@@ -84,9 +84,9 @@
     <string name="minus_one_unavailable">Feed is not available</string>
     <string name="fuzzy_search_title">Recheche approximative</string>
     <string name="fuzzy_search_desc">Correspondance approximative pour les recherches d\'applications.</string>
-    <string name="theme_label">Theme</string>
-    <string name="theme_light">Light</string>
-    <string name="theme_dark">Dark</string>
-    <string name="theme_system_default">System default</string>
-    <string name="theme_follow_wallpaper">Follow wallpaper</string>
+    <string name="theme_label">Thème</string>
+    <string name="theme_light">Clair</string>
+    <string name="theme_dark">Sombre</string>
+    <string name="theme_system_default">Par défaut du système</string>
+    <string name="theme_follow_wallpaper">Suivant le fond d\'écran</string>
 </resources>
