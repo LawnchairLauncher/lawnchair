@@ -15,6 +15,7 @@
  */
 package com.android.quickstep.fallback;
 
+import static com.android.launcher3.anim.Interpolators.INSTANT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_MODAL;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SCALE;
@@ -93,7 +94,7 @@ public class FallbackRecentsStateController implements StateHandler<RecentsState
                 config.getInterpolator(ANIM_OVERVIEW_MODAL, LINEAR));
         setter.setFloat(mRecentsView, FULLSCREEN_PROGRESS, state.isFullScreen() ? 1 : 0, LINEAR);
         setter.setFloat(mRecentsView, RECENTS_GRID_PROGRESS,
-                state.displayOverviewTasksAsGrid(mActivity.getDeviceProfile()) ? 1f : 0f, LINEAR);
+                state.displayOverviewTasksAsGrid(mActivity.getDeviceProfile()) ? 1f : 0f, INSTANT);
 
         setter.setViewBackgroundColor(mActivity.getScrimView(), state.getScrimColor(mActivity),
                 config.getInterpolator(ANIM_SCRIM_FADE, LINEAR));
