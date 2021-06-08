@@ -30,6 +30,7 @@ import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
+import android.window.SplashScreen;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
@@ -165,6 +166,9 @@ public interface TaskShortcutFactory {
             dismissTaskMenuView(mTarget);
 
             ActivityOptions options = mFactory.makeLaunchOptions(mTarget);
+            if (options != null) {
+                options.setSplashscreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_ICON);
+            }
             if (options != null
                     && ActivityManagerWrapper.getInstance().startActivityFromRecents(taskId,
                             options)) {
