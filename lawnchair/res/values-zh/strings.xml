@@ -20,7 +20,7 @@
     <string name="home_screen_label">主屏幕</string>
     <string name="home_screen_description">Feed，一目了然，网格，图标</string>
     <string name="general_label">通用</string>
-    <string name="general_description">通知圆点，图标包</string>
+    <string name="general_description">通知圆点、图标包</string>
     <string name="home_screen_rotation_label">主屏幕旋转</string>
     <string name="home_screen_rotaton_description">当设备旋转时</string>
     <string name="auto_add_shortcuts_label">向主屏幕添加新应用</string>
