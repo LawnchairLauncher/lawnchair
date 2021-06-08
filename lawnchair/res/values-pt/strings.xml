@@ -84,9 +84,9 @@
     <string name="minus_one_unavailable">Nenhum feed instalado.</string>
     <string name="fuzzy_search_title">Pesquisa Aproximada</string>
     <string name="fuzzy_search_desc">Correspondência aproximada para pesquisa de aplicações.</string>
-    <string name="theme_label">Theme</string>
-    <string name="theme_light">Light</string>
-    <string name="theme_dark">Dark</string>
-    <string name="theme_system_default">System default</string>
-    <string name="theme_follow_wallpaper">Follow wallpaper</string>
+    <string name="theme_label">Tema</string>
+    <string name="theme_light">Luz</string>
+    <string name="theme_dark">Escuro</string>
+    <string name="theme_system_default">Predefinição do sistema</string>
+    <string name="theme_follow_wallpaper">Seguir o papel de parede</string>
 </resources>
