@@ -256,8 +256,8 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
 
         float fullScreenProgress = Utilities.boundToRange(this.fullScreenProgress.value, 0, 1);
         mCurrentFullscreenParams.setProgress(
-                fullScreenProgress, recentsViewScale.value, mTaskRect.width(), mDp,
-                mPositionHelper);
+                fullScreenProgress, recentsViewScale.value, /*taskViewScale=*/1f, mTaskRect.width(),
+                mDp, mPositionHelper);
 
         // Apply thumbnail matrix
         RectF insets = mCurrentFullscreenParams.mCurrentDrawnInsets;
