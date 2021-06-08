@@ -22,7 +22,7 @@
     <string name="general_label">Общие</string>
     <string name="general_description">Значки уведомлений, Набор иконок</string>
     <string name="home_screen_rotation_label">Поворачивать домашний экран</string>
-    <string name="home_screen_rotaton_description">Когда устройство повернуто.</string>
+    <string name="home_screen_rotaton_description">При повороте устройства.</string>
     <string name="auto_add_shortcuts_label">Добавлять новые приложения на домашний экран</string>
     <string name="dock_label">Док-панель</string>
     <string name="dock_description">Строка поиска, Количество значков</string>
@@ -61,11 +61,11 @@
     <string name="adaptive_icon_background_description">Белый фон при 100% яркости.</string>
     <string name="auto_adaptive_icons_label">Создавать адаптивные иконки</string>
     <string name="auto_adaptive_icons_description">Для всех неадаптивных иконок.</string>
-    <string name="support_and_pr">Поддержка и Реклама</string>
+    <string name="support_and_pr">Поддержка и PR</string>
     <string name="workspace_dt2s">Двойной тап для блокировки</string>
-    <string name="smart_space_enable">Показать виджет \"At a Glance\"</string>
-    <string name="design_and_development">Дизайн &amp; Разработка</string>
-    <string name="translate">Перевести</string>
+    <string name="smart_space_enable">Показать виджет \"Самое главное\"</string>
+    <string name="design_and_development">Дизайн и Разработка</string>
+    <string name="translate">Помочь с переводом</string>
     <string name="product">Продукт</string>
     <string name="hidden_apps_label">Скрытые приложения</string>
     <string name="hidden_apps_label_with_count">Скрытые приложения (%1$d)</string>
@@ -76,7 +76,7 @@
         <item quantity="other">%1$d Приложения</item>
     </plurals>
     <string name="hotseat_qsb_label">Показать строку поиска</string>
-    <string name="dt2s_admin_hint_title">Admin permission required</string>
+    <string name="dt2s_admin_hint_title">Необходимы права администратора</string>
     <string name="dt2s_admin_hint">To use Double Tap to Sleep, grant the Admin permission.</string>
     <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
     <string name="dt2s_a11y_hint_title">Accessibility service required</string>
