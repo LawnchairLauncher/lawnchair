@@ -32,12 +32,43 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo
 
     public static final String CLS_CUSTOM_WIDGET_PREFIX = "#custom-widget-";
 
+    /**
+     * The desired number of cells that this widget occupies horizontally in
+     * {@link com.android.launcher3.CellLayout}.
+     */
     public int spanX;
+
+    /**
+     * The desired number of cells that this widget occupies vertically in
+     * {@link com.android.launcher3.CellLayout}.
+     */
     public int spanY;
+
+    /**
+     * The minimum number of cells that this widget can occupy horizontally in
+     * {@link com.android.launcher3.CellLayout}.
+     */
     public int minSpanX;
+
+    /**
+     * The minimum number of cells that this widget can occupy vertically in
+     * {@link com.android.launcher3.CellLayout}.
+     */
     public int minSpanY;
+
+    /**
+     * The maximum number of cells that this widget can occupy horizontally in
+     * {@link com.android.launcher3.CellLayout}.
+     */
     public int maxSpanX;
+
+    /**
+     * The maximum number of cells that this widget can occupy vertically in
+     * {@link com.android.launcher3.CellLayout}.
+     */
     public int maxSpanY;
+
+    private boolean mIsMinSizeFulfilled;
 
     public static LauncherAppWidgetProviderInfo fromProviderInfo(Context context,
             AppWidgetProviderInfo info) {
@@ -133,8 +164,20 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo
         this.minSpanY = minSpanY;
         this.maxSpanX = maxSpanX;
         this.maxSpanY = maxSpanY;
-        this.spanX = spanX;
-        this.spanY = spanY;
+        this.mIsMinSizeFulfilled = Math.min(spanX, minSpanX) <= idp.numColumns
+            && Math.min(spanY, minSpanY) <= idp.numRows;
+        // Ensures the default span X and span Y will not exceed the current grid size.
+        this.spanX = Math.min(spanX, idp.numColumns);
+        this.spanY = Math.min(spanY, idp.numRows);
+    }
+
+    /**
+     * Returns {@code true} if the widget's minimum size requirement can be fulfilled in the device
+     * grid setting, {@link InvariantDeviceProfile}, that was passed in
+     * {@link #initSpans(Context, InvariantDeviceProfile)}.
+     */
+    public boolean isMinSizeFulfilled() {
+        return mIsMinSizeFulfilled;
     }
 
     private int getSpanX(Rect widgetPadding, int widgetWidth, int cellSpacing, float cellWidth) {

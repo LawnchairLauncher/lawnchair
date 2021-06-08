@@ -40,6 +40,8 @@ import org.robolectric.RuntimeEnvironment;
 public final class LauncherAppWidgetProviderInfoTest {
 
     private static final int CELL_SIZE = 50;
+    private static final int NUM_OF_COLS = 4;
+    private static final int NUM_OF_ROWS = 5;
 
     private Context mContext;
 
@@ -73,6 +75,33 @@ public final class LauncherAppWidgetProviderInfoTest {
 
         assertThat(info.spanX).isEqualTo(2);
         assertThat(info.spanY).isEqualTo(2);
+    }
+
+    @Test
+    public void
+            initSpans_minWidthLargerThanGridColumns_shouldInitializeSpansToAtMostTheGridColumns() {
+        LauncherAppWidgetProviderInfo info = new LauncherAppWidgetProviderInfo();
+        info.minWidth = CELL_SIZE * (NUM_OF_COLS + 1);
+        info.minHeight = 20;
+        InvariantDeviceProfile idp = createIDP();
+
+        info.initSpans(mContext, idp);
+
+        assertThat(info.spanX).isEqualTo(NUM_OF_COLS);
+        assertThat(info.spanY).isEqualTo(1);
+    }
+
+    @Test
+    public void initSpans_minHeightLargerThanGridRows_shouldInitializeSpansToAtMostTheGridRows() {
+        LauncherAppWidgetProviderInfo info = new LauncherAppWidgetProviderInfo();
+        info.minWidth = 20;
+        info.minHeight = 50 * (NUM_OF_ROWS + 1);
+        InvariantDeviceProfile idp = createIDP();
+
+        info.initSpans(mContext, idp);
+
+        assertThat(info.spanX).isEqualTo(1);
+        assertThat(info.spanY).isEqualTo(NUM_OF_ROWS);
     }
 
     @Test
@@ -153,6 +182,49 @@ public final class LauncherAppWidgetProviderInfoTest {
         assertThat(info.minSpanY).isEqualTo(3);
     }
 
+    @Test
+    public void isMinSizeFulfilled_minWidthAndHeightWithinGridSize_shouldReturnTrue() {
+        LauncherAppWidgetProviderInfo info = new LauncherAppWidgetProviderInfo();
+        info.minWidth = 80;
+        info.minHeight = 80;
+        info.minResizeWidth = 50;
+        info.minResizeHeight = 50;
+        InvariantDeviceProfile idp = createIDP();
+
+        info.initSpans(mContext, idp);
+
+        assertThat(info.isMinSizeFulfilled()).isTrue();
+    }
+
+    @Test
+    public void
+            isMinSizeFulfilled_minWidthAndMinResizeWidthExceededGridColumns_shouldReturnFalse() {
+        LauncherAppWidgetProviderInfo info = new LauncherAppWidgetProviderInfo();
+        info.minWidth = CELL_SIZE * (NUM_OF_COLS + 2);
+        info.minHeight = 80;
+        info.minResizeWidth = CELL_SIZE * (NUM_OF_COLS + 1);
+        info.minResizeHeight = 50;
+        InvariantDeviceProfile idp = createIDP();
+
+        info.initSpans(mContext, idp);
+
+        assertThat(info.isMinSizeFulfilled()).isFalse();
+    }
+
+    @Test
+    public void isMinSizeFulfilled_minHeightAndMinResizeHeightExceededGridRows_shouldReturnFalse() {
+        LauncherAppWidgetProviderInfo info = new LauncherAppWidgetProviderInfo();
+        info.minWidth = 80;
+        info.minHeight = CELL_SIZE * (NUM_OF_ROWS + 2);
+        info.minResizeWidth = 50;
+        info.minResizeHeight = CELL_SIZE * (NUM_OF_ROWS + 1);
+        InvariantDeviceProfile idp = createIDP();
+
+        info.initSpans(mContext, idp);
+
+        assertThat(info.isMinSizeFulfilled()).isFalse();
+    }
+
     private InvariantDeviceProfile createIDP() {
         DeviceProfile profile = Mockito.mock(DeviceProfile.class);
         doAnswer(i -> {
@@ -163,6 +235,8 @@ public final class LauncherAppWidgetProviderInfoTest {
 
         InvariantDeviceProfile idp = new InvariantDeviceProfile();
         idp.supportedProfiles.add(profile);
+        idp.numColumns = NUM_OF_COLS;
+        idp.numRows = NUM_OF_ROWS;
         return idp;
     }
 
