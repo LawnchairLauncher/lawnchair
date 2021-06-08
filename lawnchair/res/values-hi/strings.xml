@@ -84,4 +84,9 @@
     <string name="minus_one_unavailable">No feed installed.</string>
     <string name="fuzzy_search_title">Fuzzy Search</string>
     <string name="fuzzy_search_desc">Approximate matching for app searches.</string>
+    <string name="theme_label">Theme</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_system_default">System default</string>
+    <string name="theme_follow_wallpaper">Follow wallpaper</string>
 </resources>
