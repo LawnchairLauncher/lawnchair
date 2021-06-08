@@ -49,11 +49,11 @@
     <string name="acknowledgements">ஒப்புதல்</string>
     <string name="devops">DevOps</string>
     <string name="quickswitch_maintenance">QuickSwitch Maintenance</string>
-    <string name="all_apps_search_bar_hint">Search Apps</string>
-    <string name="settings_button_text">Home Settings</string>
+    <string name="all_apps_search_bar_hint">செயலிகளை தேட</string>
+    <string name="settings_button_text">முகப்பின் அமைப்புகள்</string>
     <string name="development">Development</string>
-    <string name="app_info_drop_target_label">App Info</string>
-    <string name="item_removed">Item removed.</string>
+    <string name="app_info_drop_target_label">செயலியின் தகவல்கள்</string>
+    <string name="item_removed">பொருள் நீக்கப்பட்டது.</string>
     <string name="all_apps_no_search_results">No apps found matching “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
     <string name="background_opacity">Background Opacity</string>
     <string name="background_lightness_label">Background Lightness</string>
@@ -62,16 +62,16 @@
     <string name="auto_adaptive_icons_label">Auto Adaptive Icons</string>
     <string name="auto_adaptive_icons_description">For all non-Adaptive icons.</string>
     <string name="support_and_pr">Support &amp; PR</string>
-    <string name="workspace_dt2s">Double-Tap to Sleep</string>
+    <string name="workspace_dt2s">தூங்க இரு முறை தட்டவும்</string>
     <string name="smart_space_enable">Show At a Glance Widget</string>
     <string name="design_and_development">Design &amp; Development</string>
     <string name="translate">மொழிபெயர்</string>
     <string name="product">Product</string>
-    <string name="hidden_apps_label">Hidden Apps</string>
-    <string name="hidden_apps_label_with_count">Hidden Apps (%1$d)</string>
+    <string name="hidden_apps_label">மறைக்கப்பட்ட செயலிகள்</string>
+    <string name="hidden_apps_label_with_count">மறைக்கப்பட்ட செயலிகள்(%1$d)</string>
     <plurals name="apps_count">
-        <item quantity="one">%1$d App</item>
-        <item quantity="other">%1$d Apps</item>
+        <item quantity="one">%1$dசெயலி</item>
+        <item quantity="other">%1$dசெயலிகள்</item>
     </plurals>
     <string name="hotseat_qsb_label">Show Search Bar</string>
     <string name="dt2s_admin_hint_title">Admin permission required</string>
@@ -79,7 +79,7 @@
     <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
     <string name="dt2s_a11y_hint_title">Accessibility service required</string>
     <string name="dt2s_a11y_hint">To use Double Tap to Sleep, enable the accessibility service.</string>
-    <string name="dt2s_warning_open_settings">Open Settings</string>
+    <string name="dt2s_warning_open_settings">அமைப்புகளை திறக்க</string>
     <string name="minus_one_enable">Show Feed</string>
     <string name="minus_one_unavailable">Feed is not available</string>
     <string name="fuzzy_search_title">Fuzzy Search</string>
