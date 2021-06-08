@@ -1472,7 +1472,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         boolean shouldMoveToDefaultScreen = alreadyOnHome && isInState(NORMAL)
                 && AbstractFloatingView.getTopOpenView(this) == null;
         boolean isActionMain = Intent.ACTION_MAIN.equals(intent.getAction());
-        boolean internalStateHandled = ACTIVITY_TRACKER.handleNewIntent(this, intent);
+        boolean internalStateHandled = ACTIVITY_TRACKER.handleNewIntent(this);
         hideKeyboard();
         if (isActionMain) {
             if (!internalStateHandled) {

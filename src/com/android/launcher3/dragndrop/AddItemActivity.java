@@ -213,7 +213,7 @@ public class AddItemActivity extends BaseActivity
                         .addCategory(Intent.CATEGORY_HOME)
                         .setPackage(getPackageName())
                         .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        Launcher.ACTIVITY_TRACKER.runCallbackWhenActivityExists(listener, homeIntent);
+        Launcher.ACTIVITY_TRACKER.registerCallback(listener);
         startActivity(homeIntent,
                 ActivityOptions.makeCustomAnimation(this, 0, android.R.anim.fade_out)
                         .toBundle());
