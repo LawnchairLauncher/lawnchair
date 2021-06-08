@@ -24,6 +24,9 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.Px;
+
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.logging.InstanceId;
@@ -692,15 +695,19 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
                 || keyCode == KeyEvent.KEYCODE_PAGE_UP || keyCode == KeyEvent.KEYCODE_PAGE_DOWN);
     }
 
-    private ArrowTipView showReconfigurableWidgetEducationTip() {
-        int[] coords = new int[2];
-        mReconfigureButton.getLocationOnScreen(coords);
-        int tipTopMargin = mLauncher.getResources()
+    @Nullable private ArrowTipView showReconfigurableWidgetEducationTip() {
+        Rect rect = new Rect();
+        if (!mReconfigureButton.getGlobalVisibleRect(rect)) {
+            return null;
+        }
+        @Px int tipMargin = mLauncher.getResources()
                 .getDimensionPixelSize(R.dimen.widget_reconfigure_tip_top_margin);
-        return new ArrowTipView(mLauncher, /* isPointingUp= */ true).showAtLocation(
-                getContext().getString(R.string.reconfigurable_widget_education_tip),
-                /* arrowXCoord= */ coords[0] + mReconfigureButton.getWidth() / 2,
-                /* yCoord= */ coords[1] + mReconfigureButton.getHeight() + tipTopMargin);
+        return new ArrowTipView(mLauncher, /* isPointingUp= */ true)
+                .showAroundRect(
+                        getContext().getString(R.string.reconfigurable_widget_education_tip),
+                        /* arrowXCoord= */ rect.left + mReconfigureButton.getWidth() / 2,
+                        /* rect= */ rect,
+                        /* margin= */ tipMargin);
     }
 
     private boolean hasSeenReconfigurableWidgetEducationTip() {
