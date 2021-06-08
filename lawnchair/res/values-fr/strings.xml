@@ -82,7 +82,7 @@
     <string name="dt2s_warning_open_settings">Ouvrir les paramètres</string>
     <string name="minus_one_enable">Afficher le Feed</string>
     <string name="minus_one_unavailable">Feed is not available</string>
-    <string name="fuzzy_search_title">Recheche approximative</string>
+    <string name="fuzzy_search_title">Recherche approximative</string>
     <string name="fuzzy_search_desc">Correspondance approximative pour les recherches d\'applications.</string>
     <string name="theme_label">Thème</string>
     <string name="theme_light">Clair</string>
