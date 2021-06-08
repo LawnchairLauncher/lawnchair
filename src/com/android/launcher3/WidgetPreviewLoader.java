@@ -27,10 +27,10 @@ import android.os.AsyncTask;
 import android.os.CancellationSignal;
 import android.os.Process;
 import android.os.UserHandle;
-import android.util.ArrayMap;
 import android.util.Log;
 import android.util.LongSparseArray;
 import android.util.Pair;
+import android.util.Size;
 
 import androidx.annotation.Nullable;
 
@@ -50,6 +50,7 @@ import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.WidgetCell;
 import com.android.launcher3.widget.WidgetManagerHelper;
+import com.android.launcher3.widget.util.WidgetSizes;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -78,9 +79,6 @@ public class WidgetPreviewLoader {
     private final IconCache mIconCache;
     private final UserCache mUserCache;
     private final CacheDb mDb;
-
-    private final UserHandle mMyUser = Process.myUserHandle();
-    private final ArrayMap<UserHandle, Bitmap> mUserBadges = new ArrayMap<>();
 
     public WidgetPreviewLoader(Context context, IconCache iconCache) {
         mContext = context;
@@ -366,9 +364,9 @@ public class WidgetPreviewLoader {
             previewHeight = drawable.getIntrinsicHeight();
         } else {
             DeviceProfile dp = launcher.getDeviceProfile();
-            int tileSize = Math.min(dp.cellWidthPx, dp.cellHeightPx);
-            previewWidth = tileSize * spanX;
-            previewHeight = tileSize * spanY;
+            Size widgetSize = WidgetSizes.getWidgetSizePx(dp, spanX, spanY);
+            previewWidth = widgetSize.getWidth();
+            previewHeight = widgetSize.getHeight();
         }
 
         // Scale to fit width only - let the widget preview be clipped in the
