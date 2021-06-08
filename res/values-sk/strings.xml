@@ -165,7 +165,7 @@
     <string name="work_profile_edu_next" msgid="8783418929296503629">"Ďalej"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Dobre"</string>
     <string name="work_apps_paused_title" msgid="2389865654362803723">"Pracovný profil je pozastavený"</string>
-    <string name="work_apps_paused_body" msgid="4209084728264328628">"Pracovné aplikácie nemôžu posielať upozornenia, používať batériu ani polohu"</string>
+    <string name="work_apps_paused_body" msgid="4209084728264328628">"Pracovné aplikácie vám nemôžu posielať upozornenia, používať vašu batériu ani vašu polohu"</string>
     <string name="work_apps_paused_content_description" msgid="4473292417145736203">"Pracovný profil je pozastavený. Pracovné aplikácie nemôžu posielať upozornenia, používať batériu ani polohu."</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Pracovné aplikácie majú odznak a zobrazujú sa správcovi IT"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Dobre"</string>

@@ -177,6 +177,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         TaskThumbnailCache.HighResLoadingState.HighResLoadingStateChangedCallback,
         TaskVisualsChangeListener, SplitScreenBounds.OnChangeListener {
 
+    // TODO(b/184899234): We use this timeout to wait a fixed period after switching to the
+    // screenshot when dismissing the current live task to ensure the app can try and get stopped.
+    private static final int REMOVE_TASK_WAIT_FOR_APP_STOP_MS = 100;
+
     public static final FloatProperty<RecentsView> CONTENT_ALPHA =
             new FloatProperty<RecentsView>("contentAlpha") {
                 @Override
@@ -2355,8 +2359,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 if (success) {
                     if (shouldRemoveTask) {
                         if (taskView.getTask() != null) {
-                            UI_HELPER_EXECUTOR.execute(() -> ActivityManagerWrapper.getInstance()
-                                    .removeTask(taskView.getTask().key.id));
+                            switchToScreenshotAndFinishAnimationToRecents(() -> {
+                                UI_HELPER_EXECUTOR.getHandler().postDelayed(() ->
+                                        ActivityManagerWrapper.getInstance().removeTask(
+                                                taskView.getTask().key.id),
+                                        REMOVE_TASK_WAIT_FOR_APP_STOP_MS);
+                            });
                             mActivity.getStatsLogManager().logger()
                                     .withItemInfo(taskView.getItemInfo())
                                     .log(LAUNCHER_TASK_DISMISS_SWIPE_UP);
@@ -2460,10 +2468,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mPendingAnimation.addEndListener(isSuccess -> {
             if (isSuccess) {
                 // Remove all the task views now
-                UI_HELPER_EXECUTOR.execute(
-                        ActivityManagerWrapper.getInstance()::removeAllRecentTasks);
-                removeTasksViewsAndClearAllButton();
-                startHome();
+                switchToScreenshotAndFinishAnimationToRecents(() -> {
+                    UI_HELPER_EXECUTOR.getHandler().postDelayed(
+                            ActivityManagerWrapper.getInstance()::removeAllRecentTasks,
+                            REMOVE_TASK_WAIT_FOR_APP_STOP_MS);
+                    removeTasksViewsAndClearAllButton();
+                    startHome();
+                });
             }
             mPendingAnimation = null;
         });
@@ -2618,9 +2629,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         if (LIVE_TILE.get() && mEnableDrawingLiveTile && newConfig.orientation != mOrientation) {
-            switchToScreenshot(
-                    () -> finishRecentsAnimation(true /* toRecents */,
-                            this::updateRecentsRotation));
+            switchToScreenshotAndFinishAnimationToRecents(this::updateRecentsRotation);
             mEnableDrawingLiveTile = false;
         } else {
             updateRecentsRotation();
@@ -3611,6 +3620,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             // mFullscreenProgress.
             requestLayout();
         }
+    }
+
+    public void switchToScreenshotAndFinishAnimationToRecents(Runnable onFinishRunnable) {
+        switchToScreenshot(() -> finishRecentsAnimation(true /* toRecents */, onFinishRunnable));
     }
 
     /**
