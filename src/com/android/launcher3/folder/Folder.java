@@ -41,6 +41,7 @@ import android.graphics.Insets;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.text.InputType;
@@ -67,6 +68,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.ColorUtils;
 
 import com.android.launcher3.AbstractFloatingView;
@@ -250,6 +252,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     // so that we can cancel it when starting mColorChangeAnimator.
     private ObjectAnimator mOpenAnimationColorChangeAnimator;
 
+    private GradientDrawable mBackground;
+
     /**
      * Used to inflate the Workspace from XML.
      *
@@ -268,6 +272,12 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         // name is complete, we have something to focus on, thus hiding the cursor and giving
         // reliable behavior when clicking the text field (since it will always gain focus on click).
         setFocusableInTouchMode(true);
+
+    }
+
+    @Override
+    public Drawable getBackground() {
+        return mBackground;
     }
 
     @Override
@@ -275,6 +285,9 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         super.onFinishInflate();
         final DeviceProfile dp = mActivityContext.getDeviceProfile();
         final int paddingLeftRight = dp.folderContentPaddingLeftRight;
+
+        mBackground = (GradientDrawable) ResourcesCompat.getDrawable(getResources(),
+                R.drawable.round_rect_folder, getContext().getTheme());
 
         mContent = findViewById(R.id.folder_content);
         mContent.setPadding(paddingLeftRight, dp.folderContentPaddingTop, paddingLeftRight, 0);
@@ -1213,6 +1226,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         lp.x = left;
         lp.y = top;
 
+        mBackground.setBounds(0, 0, width, height);
+
         if (mColorExtractor != null) {
             mColorExtractor.removeLocations();
             mColorExtractor.setListener(mColorListener);
@@ -1714,14 +1729,16 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    protected void dispatchDraw(Canvas canvas) {
         if (mClipPath != null) {
             int count = canvas.save();
             canvas.clipPath(mClipPath);
-            super.draw(canvas);
+            mBackground.draw(canvas);
             canvas.restoreToCount(count);
+            super.dispatchDraw(canvas);
         } else {
-            super.draw(canvas);
+            mBackground.draw(canvas);
+            super.dispatchDraw(canvas);
         }
     }
 

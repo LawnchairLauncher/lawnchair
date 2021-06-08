@@ -202,11 +202,16 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
         mDiffReporter.process(mVisibleEntries, newVisibleEntries, mRowComparator);
     }
 
+    /** Returns whether {@code entry} matches {@link #mWidgetsContentVisiblePackageUserKey}. */
     private boolean isHeaderForVisibleContent(WidgetsListBaseEntry entry) {
+        return isHeaderForPackageUserKey(entry, mWidgetsContentVisiblePackageUserKey);
+    }
+
+    /** Returns whether {@code entry} matches {@code key}. */
+    private boolean isHeaderForPackageUserKey(WidgetsListBaseEntry entry, PackageUserKey key) {
         return (entry instanceof WidgetsListHeaderEntry
                 || entry instanceof WidgetsListSearchHeaderEntry)
-                && new PackageUserKey(entry.mPkgItem.packageName, entry.mPkgItem.user)
-                .equals(mWidgetsContentVisiblePackageUserKey);
+                && new PackageUserKey(entry.mPkgItem.packageName, entry.mPkgItem.user).equals(key);
     }
 
     /**
@@ -270,36 +275,68 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
 
     @Override
     public void onHeaderClicked(boolean showWidgets, PackageUserKey packageUserKey) {
+        // Ignore invalid clicks, such as collapsing a package that isn't currently expanded.
+        if (!showWidgets && !packageUserKey.equals(mWidgetsContentVisiblePackageUserKey)) return;
+
         if (showWidgets) {
             mWidgetsContentVisiblePackageUserKey = packageUserKey;
-            updateVisibleEntries();
-            // Scroll the layout manager to the header position to keep it anchored to the same
-            // position.
-            scrollToPositionAndMaintainOffset(getSelectedHeaderPosition());
             mLauncher.getStatsLogManager().logger().log(LAUNCHER_WIDGETSTRAY_APP_EXPANDED);
-        } else if (packageUserKey.equals(mWidgetsContentVisiblePackageUserKey)) {
-            OptionalInt previouslySelectedPosition = getSelectedHeaderPosition();
-
+        } else {
             mWidgetsContentVisiblePackageUserKey = null;
-            updateVisibleEntries();
-
-            // Scroll to the header that was just collapsed so it maintains its scroll offset.
-            scrollToPositionAndMaintainOffset(previouslySelectedPosition);
         }
+
+        // Get the current top of the header with the matching key before adjusting the visible
+        // entries.
+        OptionalInt topForPackageUserKey =
+                getOffsetForPosition(getPositionForPackageUserKey(packageUserKey));
+
+        updateVisibleEntries();
+
+        // Get the position for the clicked header after adjusting the visible entries. The
+        // position may have changed if another header had previously been expanded.
+        OptionalInt positionForPackageUserKey = getPositionForPackageUserKey(packageUserKey);
+        scrollToPositionAndMaintainOffset(positionForPackageUserKey, topForPackageUserKey);
     }
 
-    private OptionalInt getSelectedHeaderPosition() {
+    /**
+     * Returns the position of {@code key} in {@link #mVisibleEntries}, or  empty if it's not
+     * present.
+     */
+    private OptionalInt getPositionForPackageUserKey(PackageUserKey key) {
         return IntStream.range(0, mVisibleEntries.size())
-                .filter(index -> isHeaderForVisibleContent(mVisibleEntries.get(index)))
+                .filter(index -> isHeaderForPackageUserKey(mVisibleEntries.get(index), key))
                 .findFirst();
     }
 
     /**
-     * Scrolls to the selected header position. LinearLayoutManager scrolls the minimum distance
-     * necessary, so this will keep the selected header in place during clicks, without interrupting
-     * the animation.
+     * Returns the top of {@code positionOptional} in the recycler view, or empty if its view
+     * can't be found for any reason, including the position not being currently visible. The
+     * returned value does not include the top padding of the recycler view.
      */
-    private void scrollToPositionAndMaintainOffset(OptionalInt positionOptional) {
+    private OptionalInt getOffsetForPosition(OptionalInt positionOptional) {
+        if (!positionOptional.isPresent() || mRecyclerView == null) return OptionalInt.empty();
+
+        RecyclerView.LayoutManager layoutManager = mRecyclerView.getLayoutManager();
+        if (layoutManager == null) return OptionalInt.empty();
+
+        View view = layoutManager.findViewByPosition(positionOptional.getAsInt());
+        if (view == null) return OptionalInt.empty();
+
+        return OptionalInt.of(layoutManager.getDecoratedTop(view));
+    }
+
+    /**
+     * Scrolls to the selected header position with the provided offset. LinearLayoutManager
+     * scrolls the minimum distance necessary, so this will keep the selected header in place during
+     * clicks, without interrupting the animation.
+     *
+     * @param positionOptional The position too scroll to. No scrolling will be done if empty.
+     * @param offsetOptional The offset from the top to maintain. If empty, then the list will
+     *                       scroll to the top of the position.
+     */
+    private void scrollToPositionAndMaintainOffset(
+            OptionalInt positionOptional,
+            OptionalInt offsetOptional) {
         if (!positionOptional.isPresent() || mRecyclerView == null) return;
         int position = positionOptional.getAsInt();
 
@@ -317,12 +354,9 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
 
         // Scroll to the header view's current offset, accounting for the recycler view's padding.
         // If the header view couldn't be found, then it will appear at the top of the list.
-        View headerView = layoutManager.findViewByPosition(position);
-        int targetHeaderViewTop =
-                headerView == null ? 0 : layoutManager.getDecoratedTop(headerView);
         layoutManager.scrollToPositionWithOffset(
                 position,
-                targetHeaderViewTop - mRecyclerView.getPaddingTop());
+                offsetOptional.orElse(0) - mRecyclerView.getPaddingTop());
     }
 
     /**
