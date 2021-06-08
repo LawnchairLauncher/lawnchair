@@ -21,12 +21,12 @@ import static com.android.launcher3.Utilities.ATLEAST_S;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.CancellationSignal;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.Size;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -48,6 +48,7 @@ import com.android.launcher3.WidgetPreviewLoader;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.RoundDrawableWrapper;
 import com.android.launcher3.model.WidgetItem;
+import com.android.launcher3.widget.util.WidgetSizes;
 
 /**
  * Represents the individual cell of the widget inside the widget tray. The preview is drawn
@@ -96,7 +97,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     protected final BaseActivity mActivity;
     private final CheckLongPressHelper mLongPressHelper;
     private final float mEnforcedCornerRadius;
-    private final int mPreviewPadding;
+    private final int mShortcutPreviewPadding;
 
     private RemoteViews mRemoteViewsPreview;
     private NavigableAppWidgetHostView mAppWidgetHostViewPreview;
@@ -114,14 +115,14 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
 
         mActivity = BaseActivity.fromContext(context);
         mLongPressHelper = new CheckLongPressHelper(this);
-
         mLongPressHelper.setLongPressTimeoutFactor(1);
+
         setContainerWidth();
         setWillNotDraw(false);
         setClipToPadding(false);
         setAccessibilityDelegate(mActivity.getAccessibilityDelegate());
         mEnforcedCornerRadius = RoundedCornerEnforcement.computeEnforcedRadius(context);
-        mPreviewPadding =
+        mShortcutPreviewPadding =
                 2 * getResources().getDimensionPixelSize(R.dimen.widget_preview_shortcut_padding);
     }
 
@@ -200,6 +201,8 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         mWidgetPreviewLoader = loader;
         if (item.activityInfo != null) {
             setTag(new PendingAddShortcutInfo(item.activityInfo));
+            mPreviewWidth += mShortcutPreviewPadding;
+            mPreviewHeight += mShortcutPreviewPadding;
         } else {
             setTag(new PendingAddWidgetInfo(item.widgetInfo));
         }
@@ -251,8 +254,6 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         }
         appWidgetHostViewPreview.setPadding(padding.left, padding.top, padding.right,
                 padding.bottom);
-        mPreviewWidth += padding.left + padding.right;
-        mPreviewHeight += padding.top + padding.bottom;
         appWidgetHostViewPreview.updateAppWidget(remoteViews);
     }
 
@@ -299,7 +300,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             float scale = 1f;
             if (getWidth() > 0 && getHeight() > 0) {
                 // Scale down the preview size if it's wider than the cell.
-                float maxWidth = getWidth() - mPreviewPadding;
+                float maxWidth = getWidth();
                 float previewWidth = drawable.getIntrinsicWidth() * mPreviewScale;
                 scale = Math.min(maxWidth / previewWidth, 1);
             }
@@ -355,11 +356,9 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     /** Sets the widget preview image size, in number of cells, and preview scale. */
     public void setPreviewSize(int spanX, int spanY, float previewScale) {
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
-        Point cellSize = deviceProfile.getCellSize();
-        mPreviewWidth = cellSize.x * spanX + mPreviewPadding
-                + deviceProfile.cellLayoutBorderSpacingPx * (spanX - 1);
-        mPreviewHeight = cellSize.y * spanY + mPreviewPadding
-                + deviceProfile.cellLayoutBorderSpacingPx * (spanY - 1);
+        Size widgetSize = WidgetSizes.getWidgetSizePx(deviceProfile, spanX, spanY);
+        mPreviewWidth = widgetSize.getWidth();
+        mPreviewHeight = widgetSize.getHeight();
         mPreviewScale = previewScale;
     }
 
