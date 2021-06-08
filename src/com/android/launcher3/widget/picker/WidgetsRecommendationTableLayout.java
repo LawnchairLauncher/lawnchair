@@ -18,6 +18,7 @@ package com.android.launcher3.widget.picker;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.Size;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +34,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.widget.WidgetCell;
+import com.android.launcher3.widget.util.WidgetSizes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +46,6 @@ public final class WidgetsRecommendationTableLayout extends TableLayout {
     private static final float MAX_DOWN_SCALE_RATIO = 0.5f;
     private final float mWidgetsRecommendationTableVerticalPadding;
     private final float mWidgetCellTextViewsHeight;
-    private final float mWidgetPreviewPadding;
 
     private float mRecommendationTableMaxHeight = Float.MAX_VALUE;
     @Nullable private OnLongClickListener mWidgetCellOnLongClickListener;
@@ -61,8 +62,6 @@ public final class WidgetsRecommendationTableLayout extends TableLayout {
         mWidgetsRecommendationTableVerticalPadding = 2 * getResources()
                 .getDimensionPixelSize(R.dimen.widget_cell_vertical_padding);
         mWidgetCellTextViewsHeight = 4 * getResources().getDimension(R.dimen.widget_cell_font_size);
-        mWidgetPreviewPadding = 2 * getResources()
-                .getDimensionPixelSize(R.dimen.widget_preview_shortcut_padding);
     }
 
     /** Sets a {@link android.view.View.OnLongClickListener} for all widget cells in this table. */
@@ -149,8 +148,10 @@ public final class WidgetsRecommendationTableLayout extends TableLayout {
             List<WidgetItem> widgetItems = recommendedWidgetsInTable.get(i);
             float rowHeight = 0;
             for (int j = 0; j < widgetItems.size(); j++) {
-                float previewHeight = widgetItems.get(j).spanY * deviceProfile.cellHeightPx
-                        * previewScale + mWidgetPreviewPadding;
+                WidgetItem widgetItem = widgetItems.get(j);
+                Size widgetSize = WidgetSizes.getWidgetSizePx(
+                        deviceProfile, widgetItem.spanX, widgetItem.spanY);
+                float previewHeight = widgetSize.getHeight() * previewScale;
                 rowHeight = Math.max(rowHeight, previewHeight + mWidgetCellTextViewsHeight);
             }
             totalHeight += rowHeight;
