@@ -254,13 +254,11 @@ public class WidgetsModel {
                 }
 
                 // Ensure that all widgets we show can be added on a workspace of this size
-                int minSpanX = Math.min(item.widgetInfo.spanX, item.widgetInfo.minSpanX);
-                int minSpanY = Math.min(item.widgetInfo.spanY, item.widgetInfo.minSpanY);
-                if (minSpanX > mIdp.numColumns || minSpanY > mIdp.numRows) {
+                if (!item.widgetInfo.isMinSizeFulfilled()) {
                     if (DEBUG) {
                         Log.d(TAG, String.format(
-                                "Widget %s : (%d X %d) can't fit on this device",
-                                item.componentName, minSpanX, minSpanY));
+                                "Widget %s : can't fit on this device with a grid size: %dx%d",
+                                item.componentName, mIdp.numColumns, mIdp.numRows));
                     }
                     return false;
                 }
