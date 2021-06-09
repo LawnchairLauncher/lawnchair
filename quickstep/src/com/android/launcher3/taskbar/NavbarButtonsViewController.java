@@ -21,6 +21,7 @@ import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_BA
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_HOME;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_IME_SWITCH;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_RECENTS;
+import static com.android.launcher3.taskbar.TaskbarViewController.ALPHA_INDEX_IME;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_CLICKABLE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_LONG_CLICKABLE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IME_SHOWING;
@@ -48,7 +49,6 @@ import com.android.launcher3.taskbar.TaskbarNavButtonController.TaskbarButton;
 import com.android.launcher3.taskbar.contextual.RotationButton;
 import com.android.launcher3.taskbar.contextual.RotationButtonController;
 import com.android.launcher3.util.MultiValueAlpha;
-import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.quickstep.AnimatedFloat;
 
 import java.util.ArrayList;
@@ -57,7 +57,7 @@ import java.util.function.IntPredicate;
 /**
  * Controller for managing nav bar buttons in taskbar
  */
-public class NavbarButtonUIController {
+public class NavbarButtonsViewController {
 
     private final Rect mTempRect = new Rect();
 
@@ -74,48 +74,53 @@ public class NavbarButtonUIController {
     private int mState;
 
     private final TaskbarActivityContext mContext;
-    private View a11yButton;
+    private final FrameLayout mNavButtonsView;
+    private final ViewGroup mStartContainer;
+    private final ViewGroup mEndContainer;
+
+    // Initialized in init.
+    private TaskbarControllers mControllers;
+    private View mA11yButton;
     private int mSysuiStateFlags;
 
-    public NavbarButtonUIController(TaskbarActivityContext context) {
+    public NavbarButtonsViewController(TaskbarActivityContext context, FrameLayout navButtonsView) {
         mContext = context;
+        mNavButtonsView = navButtonsView;
+        mStartContainer = mNavButtonsView.findViewById(R.id.start_nav_buttons);
+        mEndContainer = mNavButtonsView.findViewById(R.id.end_nav_buttons);
     }
 
     /**
      * Initializes the controller
      */
-    public void init(TaskbarDragLayer dragLayer,
-            TaskbarNavButtonController navButtonController,
-            RotationButtonController rotationButtonController,
-            AnimatedFloat taskbarBackgroundAlpha, AlphaProperty taskbarIconAlpha) {
-        FrameLayout buttonController = dragLayer.findViewById(R.id.navbuttons_view);
-        buttonController.getLayoutParams().height = mContext.getDeviceProfile().taskbarSize;
+    public void init(TaskbarControllers controllers) {
+        mControllers = controllers;
+        mNavButtonsView.getLayoutParams().height = mContext.getDeviceProfile().taskbarSize;
 
         mA11yLongClickListener = view -> {
-            navButtonController.onButtonClick(BUTTON_A11Y_LONG_CLICK);
+            mControllers.navButtonController.onButtonClick(BUTTON_A11Y_LONG_CLICK);
             return true;
         };
 
         if (mContext.canShowNavButtons()) {
-            ViewGroup startContainer = buttonController.findViewById(R.id.start_nav_buttons);
-            ViewGroup endContainer = buttonController.findViewById(R.id.end_nav_buttons);
-
-            initButtons(startContainer, endContainer, navButtonController);
+            initButtons(mStartContainer, mEndContainer, mControllers.navButtonController);
 
             // Animate taskbar background when IME shows
-            mPropertyHolders.add(new StatePropertyHolder(taskbarBackgroundAlpha,
+            mPropertyHolders.add(new StatePropertyHolder(
+                    mControllers.taskbarDragLayerController.getNavbarBackgroundAlpha(),
                     flags -> (flags & FLAG_IME_VISIBLE) == 0,
                     AnimatedFloat.VALUE, 0, 1));
             mPropertyHolders.add(new StatePropertyHolder(
-                    taskbarIconAlpha, flags -> (flags & FLAG_IME_VISIBLE) == 0,
-                    MultiValueAlpha.VALUE, 1, 0));
+                    mControllers.taskbarViewController.getTaskbarIconAlpha()
+                            .getProperty(ALPHA_INDEX_IME),
+                    flags -> (flags & FLAG_IME_VISIBLE) == 0, MultiValueAlpha.VALUE, 1, 0));
 
             // Rotation button
-            RotationButton rotationButton = new RotationButtonImpl(addButton(endContainer));
+            RotationButton rotationButton = new RotationButtonImpl(addButton(mEndContainer));
             rotationButton.hide();
-            rotationButtonController.setRotationButton(rotationButton);
+            mControllers.rotationButtonController.setRotationButton(rotationButton);
         } else {
-            rotationButtonController.setRotationButton(new RotationButton() { });
+            mControllers.rotationButtonController.setRotationButton(new RotationButton() {});
         }
 
         applyState();
@@ -151,12 +156,12 @@ public class NavbarButtonUIController {
                         && ((flags & FLAG_A11Y_VISIBLE) == 0)));
 
         // A11y button
-        a11yButton = addButton(R.drawable.ic_sysbar_accessibility_button, BUTTON_A11Y,
+        mA11yButton = addButton(R.drawable.ic_sysbar_accessibility_button, BUTTON_A11Y,
                 endContainer, navButtonController);
-        mPropertyHolders.add(new StatePropertyHolder(a11yButton,
+        mPropertyHolders.add(new StatePropertyHolder(mA11yButton,
                 flags -> (flags & FLAG_A11Y_VISIBLE) != 0
                         && (flags & FLAG_ROTATION_BUTTON_VISIBLE) == 0));
-        a11yButton.setOnLongClickListener(mA11yLongClickListener);
+        mA11yButton.setOnLongClickListener(mA11yLongClickListener);
     }
 
     public void updateStateForSysuiFlags(int systemUiStateFlags, boolean forceUpdate) {
@@ -174,7 +179,7 @@ public class NavbarButtonUIController {
         updateStateForFlag(FLAG_IME_VISIBLE, isImeVisible);
         updateStateForFlag(FLAG_SWITCHER_SUPPORTED, isImeSwitcherShowing);
         updateStateForFlag(FLAG_A11Y_VISIBLE, a11yVisible);
-        a11yButton.setLongClickable(a11yLongClickable);
+        mA11yButton.setLongClickable(a11yLongClickable);
         applyState();
     }
 
