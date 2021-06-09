@@ -15,7 +15,7 @@ commits_range = f'{github_event_before}...{github_sha}'
 commits = list(repository.iter_commits(commits_range))
 
 overview_link = f'https://github.com/{github_repo}/compare/{commits_range}'
-overview_link_tag = f'''<a href="{overview_link}">{len(commits)} new {'commit' if len(commits) == 1 else 'commits'}</a>'''
+overview_link_tag = f'''<a href="{overview_link}">{len(commits)} new commit{'s' and len(commits) > 1}</a>'''
 message = f'''<b>🔨 {overview_link_tag} to <code>lawnchair:{branch}</code>:</b>\n'''
 
 for commit in commits:
@@ -32,4 +32,5 @@ data = {
   'disable_web_page_preview': 'true',
   'disable_notification': 'true'
 }
+
 r = requests.post(f'https://api.telegram.org/bot{telegram_ci_bot_token}/sendMessage', data)
