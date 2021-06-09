@@ -17,6 +17,7 @@
 package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE_IN_OUT;
+import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
 import static com.android.launcher3.anim.Interpolators.INSTANT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_FADE;
@@ -113,9 +114,9 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
                 mRecentsView, getTaskModalnessProperty(),
                 toState.getOverviewModalness(),
                 config.getInterpolator(ANIM_OVERVIEW_MODAL, LINEAR));
-        setter.setFloat(mRecentsView, RECENTS_GRID_PROGRESS,
-                toState.displayOverviewTasksAsGrid(mLauncher.getDeviceProfile()) ? 1f : 0f,
-                INSTANT);
+        boolean showAsGrid = toState.displayOverviewTasksAsGrid(mLauncher.getDeviceProfile());
+        setter.setFloat(mRecentsView, RECENTS_GRID_PROGRESS, showAsGrid ? 1f : 0f,
+                showAsGrid ? INSTANT : FINAL_FRAME);
     }
 
     abstract FloatProperty getTaskModalnessProperty();
