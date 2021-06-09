@@ -41,6 +41,7 @@ import android.widget.AdapterView;
 import android.widget.Advanceable;
 import android.widget.RemoteViews;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
@@ -262,6 +263,10 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
 
         mIsAttachedToWindow = true;
         checkIfAutoAdvance();
+
+        if (mLastLocationRegistered != null) {
+            mColorExtractor.addLocation(List.of(mLastLocationRegistered));
+        }
     }
 
     @Override
@@ -366,13 +371,27 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
         if (mTempRectF.isEmpty()) {
             return;
         }
-        if (!mTempRectF.equals(mLastLocationRegistered)) {
+        if (!isSameLocation(mTempRectF, mLastLocationRegistered, /* epsilon= */ 1e-6f)) {
             if (mLastLocationRegistered != null) {
                 mColorExtractor.removeLocations();
             }
             mLastLocationRegistered = new RectF(mTempRectF);
             mColorExtractor.addLocation(List.of(mLastLocationRegistered));
         }
+    }
+
+    // Compare two location rectangles. Locations are always in the [0;1] range.
+    private static boolean isSameLocation(@NonNull RectF rect1, @Nullable RectF rect2,
+            float epsilon) {
+        if (rect2 == null) return false;
+        return isSameCoordinate(rect1.left, rect2.left, epsilon)
+                && isSameCoordinate(rect1.right, rect2.right, epsilon)
+                && isSameCoordinate(rect1.top, rect2.top, epsilon)
+                && isSameCoordinate(rect1.bottom, rect2.bottom, epsilon);
+    }
+
+    private static boolean isSameCoordinate(float c1, float c2, float epsilon) {
+        return Math.abs(c1 - c2) < epsilon;
     }
 
     @Override
@@ -391,14 +410,6 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
     protected void onWindowVisibilityChanged(int visibility) {
         super.onWindowVisibilityChanged(visibility);
         maybeRegisterAutoAdvance();
-
-        if (visibility == View.VISIBLE) {
-            if (mLastLocationRegistered != null) {
-                mColorExtractor.addLocation(List.of(mLastLocationRegistered));
-            }
-        } else {
-            mColorExtractor.removeLocations();
-        }
     }
 
     private void checkIfAutoAdvance() {
@@ -481,6 +492,10 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
             return;
         }
         LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) getTag();
+        if (info == null) {
+            // This occurs when LauncherAppWidgetHostView is used to render a preview layout.
+            return;
+        }
         // Remove and rebind the current widget (which was inflated in the wrong
         // orientation), but don't delete it from the database
         mLauncher.removeItem(this, info, false  /* deleteFromDb */);
