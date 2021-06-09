@@ -263,6 +263,14 @@ public final class TaskViewUtils {
                         finalParams.applySurfaceParams(navBuilder.build());
                     }
                 });
+            } else if (inLiveTileMode) {
+                // There is no transition animation for app launch from recent in live tile mode so
+                // we have to trigger the navigation bar animation from system here.
+                final RecentsAnimationController controller =
+                        recentsView.getRecentsAnimationController();
+                if (controller != null) {
+                    controller.animateNavigationBarToApp(RECENTS_LAUNCH_DURATION);
+                }
             }
             topMostSimulator = tsv;
         }
