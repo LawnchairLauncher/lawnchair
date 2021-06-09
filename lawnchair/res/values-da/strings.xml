@@ -20,8 +20,8 @@
     <string name="home_screen_label">Startskærm</string>
     <string name="home_screen_description">Feed, At a Glance, Grid, Icons</string>
     <string name="general_label">Generelt</string>
-    <string name="general_description">Notification Dots, Icon Pack</string>
-    <string name="home_screen_rotation_label">Home Screen Rotation</string>
+    <string name="general_description">Notifikationsprikker, Ikon pakke</string>
+    <string name="home_screen_rotation_label">Startskærms rotation</string>
     <string name="home_screen_rotaton_description">When device is rotated.</string>
     <string name="auto_add_shortcuts_label">Add New Apps to Home Screen</string>
     <string name="dock_label">Dock</string>
