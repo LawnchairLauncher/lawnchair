@@ -15,22 +15,23 @@ commits_range = f'{github_event_before}...{github_sha}'
 commits = list(repository.iter_commits(commits_range))
 
 overview_link = f'https://github.com/{github_repo}/compare/{commits_range}'
-overview_link_tag = f'''<a href="{overview_link}">{len(commits)} new commit{'s' and len(commits) > 1}</a>'''
+overview_link_tag = f'''<a href="{overview_link}">{len(commits)} new commit{'s' if len(commits) > 1 else ''}</a>'''
 message = f'''<b>🔨 {overview_link_tag} to <code>lawnchair:{branch}</code>:</b>\n'''
 
 for commit in commits:
-  commit_message = commit.message.split('\n')[0]
-  commit_link = f'https://github.com/{github_repo}/commit/{commit.hexsha}'
-  commit_link_tag = f'<a href="{commit_link}">{repository.git.rev_parse(commit.hexsha, short=7)}</a>'
-  encoded_message = html.escape(commit_message)
-  message += f'\n• {commit_link_tag}: {encoded_message}'
+    commit_message = commit.message.split('\n')[0]
+    commit_link = f'https://github.com/{github_repo}/commit/{commit.hexsha}'
+    commit_link_tag = f'<a href="{commit_link}">{repository.git.rev_parse(commit.hexsha, short=7)}</a>'
+    encoded_message = html.escape(commit_message)
+    message += f'\n• {commit_link_tag}: {encoded_message}'
 
 data = {
-  'chat_id': telegram_ci_channel_id,
-  'parse_mode': 'HTML',
-  'text': message,
-  'disable_web_page_preview': 'true',
-  'disable_notification': 'true'
+    'chat_id': telegram_ci_channel_id,
+    'parse_mode': 'HTML',
+    'text': message,
+    'disable_web_page_preview': 'true',
+    'disable_notification': 'true'
 }
 
-r = requests.post(f'https://api.telegram.org/bot{telegram_ci_bot_token}/sendMessage', data)
+r = requests.post(
+    f'https://api.telegram.org/bot{telegram_ci_bot_token}/sendMessage', data)
