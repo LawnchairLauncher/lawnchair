@@ -19,7 +19,7 @@
 
 <resources>
     <!-- Launcher theme -->
-    <style name="BaseLauncherTheme" parent="@android:style/Theme.DeviceDefault.Light">
+    <style name="BaseLauncherTheme" parent="@android:style/Theme.Material.Light">
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:colorEdgeEffect">#FF757575</item>
         <item name="android:windowActionBar">false</item>
@@ -163,7 +163,7 @@
     </style>
 
     <!-- Theme for the widget container. Overridden on API 26. -->
-    <style name="WidgetContainerTheme" parent="@android:style/Theme.DeviceDefault.Settings">
+    <style name="WidgetContainerTheme" parent="@android:style/Theme.Material.Settings">
         <item name="android:colorEdgeEffect">?android:attr/textColorSecondaryInverse</item>
         <item name="android:textColorPrimary">?android:attr/textColorPrimaryInverse</item>
         <item name="android:textColorSecondary">?android:attr/textColorSecondaryInverse</item>
@@ -171,7 +171,7 @@
 
     <style name="WidgetContainerTheme.Dark" />
 
-    <style name="FastScrollerPopup" parent="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle">
+    <style name="FastScrollerPopup" parent="@android:style/TextAppearance.Material.DialogWindowTitle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:minWidth">@dimen/fastscroll_popup_width</item>
         <item name="android:layout_height">@dimen/fastscroll_popup_height</item>
@@ -195,7 +195,7 @@
     </style>
 
 
-    <style name="BaseIconUnBounded" parent="@android:style/TextAppearance.DeviceDefault">
+    <style name="BaseIconUnBounded" parent="@android:style/TextAppearance.Material">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_gravity">center</item>
@@ -229,7 +229,7 @@
     </style>
 
     <!-- Drop targets -->
-    <style name="DropTargetButtonBase" parent="@android:style/TextAppearance.DeviceDefault">
+    <style name="DropTargetButtonBase" parent="@android:style/TextAppearance.Material">
         <item name="android:drawablePadding">7.5dp</item>
         <item name="android:paddingLeft">16dp</item>
         <item name="android:paddingRight">16dp</item>
@@ -245,10 +245,10 @@
 
     <style name="DropTargetButton" parent="DropTargetButtonBase" />
 
-    <style name="TextHeadline" parent="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle" />
-    <style name="PrimaryHeadline" parent="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle"/>
+    <style name="TextHeadline" parent="@android:style/TextAppearance.Material.DialogWindowTitle" />
+    <style name="PrimaryHeadline" parent="@android:style/TextAppearance.Material.DialogWindowTitle"/>
 
-    <style name="TextTitle" parent="@android:style/TextAppearance.DeviceDefault" />
+    <style name="TextTitle" parent="@android:style/TextAppearance.Material" />
 
     <style name="AllAppsEmptySearchBackground">
         <item name="android:colorPrimary">#E0E0E0</item>
