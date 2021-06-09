@@ -87,6 +87,6 @@
     <string name="theme_label">Theme</string>
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>
-    <string name="theme_system_default">System default</string>
+    <string name="theme_system_default">System Default</string>
     <string name="theme_follow_wallpaper">Follow wallpaper</string>
 </resources>
