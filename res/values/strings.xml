@@ -389,26 +389,23 @@
     <string name="work_profile_edu_accept">Got it</string>
 
     <!--- heading shown when user opens work apps tab while work apps are paused -->
-    <string name="work_apps_paused_title">Work profile is paused</string>
+    <string name="work_apps_paused_title">Work apps are off</string>
     <!--- body shown when user opens work apps tab while work apps are paused -->
-    <string name="work_apps_paused_body">Work apps can’t send you notifications, use your battery, or access your location</string>
+    <string name="work_apps_paused_body">Your work apps can’t send you notifications, use your battery, or access your location</string>
     <!-- content description for paused work apps list -->
-    <string name="work_apps_paused_content_description">Work profile is paused. Work apps can’t send you notifications, use your battery, or access your location</string>
+    <string name="work_apps_paused_content_description">Work apps are off. Your work apps can’t send you notifications, use your battery, or access your location</string>
     <!-- string shown in educational banner about work profile -->
     <string name="work_apps_paused_edu_banner">Work apps are badged and visible to your IT admin</string>
     <!-- button string shown to dismiss work tab education -->
     <string name="work_apps_paused_edu_accept">Got it</string>
 
     <!-- button string shown pause work profile -->
-    <string name="work_apps_pause_btn_text">Pause work apps</string>
+    <string name="work_apps_pause_btn_text">Turn off work apps</string>
     <!-- button string shown enable work profile -->
-    <string name="work_apps_enable_btn_text">Turn on</string>
+    <string name="work_apps_enable_btn_text">Turn on work apps</string>
 
     <!-- A hint shown in launcher settings develop options filter box -->
     <string name="developer_options_filter_hint">Filter</string>
-
-    <!-- A tip shown pointing at work toggle -->
-    <string name="work_switch_tip">Pause work apps and notifications</string>
 
     <!-- Failed action error message: e.g. Failed: Pause -->
     <string name="remote_action_failed">Failed: <xliff:g id="what" example="Pause">%1$s</xliff:g></string>
