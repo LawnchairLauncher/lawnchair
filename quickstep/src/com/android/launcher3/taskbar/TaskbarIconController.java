@@ -15,15 +15,16 @@
  */
 package com.android.launcher3.taskbar;
 
+import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
 import static com.android.systemui.shared.system.ViewTreeObserverWrapper.InsetsInfo.TOUCHABLE_INSETS_FRAME;
 import static com.android.systemui.shared.system.ViewTreeObserverWrapper.InsetsInfo.TOUCHABLE_INSETS_REGION;
 
-import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 
 import androidx.annotation.NonNull;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AlphaUpdateListener;
 import com.android.systemui.shared.system.ViewTreeObserverWrapper.InsetsInfo;
@@ -110,15 +111,9 @@ public class TaskbarIconController {
         }
 
         public void onDragLayerViewRemoved() {
-            int count = mDragLayer.getChildCount();
-            // Ensure no other children present (like Folders, etc)
-            for (int i = 0; i < count; i++) {
-                View v = mDragLayer.getChildAt(i);
-                if (!(v instanceof TaskbarView)) {
-                    return;
-                }
+            if (AbstractFloatingView.getOpenView(mActivity, TYPE_ALL) == null) {
+                mActivity.setTaskbarWindowFullscreen(false);
             }
-            mActivity.setTaskbarWindowFullscreen(false);
         }
     }
 }
