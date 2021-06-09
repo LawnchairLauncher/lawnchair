@@ -84,8 +84,8 @@
     <string name="fuzzy_search_title">模糊搜索</string>
     <string name="fuzzy_search_desc">搜索应用时显示近似结果</string>
     <string name="theme_label">主题</string>
-    <string name="theme_light">Light</string>
-    <string name="theme_dark">暗色</string>
+    <string name="theme_light">浅色</string>
+    <string name="theme_dark">深色</string>
     <string name="theme_system_default">系统默认</string>
-    <string name="theme_follow_wallpaper">Follow wallpaper</string>
+    <string name="theme_follow_wallpaper">跟随壁纸</string>
 </resources>
