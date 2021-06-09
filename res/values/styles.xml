@@ -316,5 +316,6 @@
     <style name="AddItemActivityTheme" parent="@android:style/Theme.Translucent.NoTitleBar">
         <item name="widgetsTheme">@style/WidgetContainerTheme</item>
         <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
     </style>
 </resources>
