@@ -219,7 +219,10 @@ class AllAppsHotseatQsb @JvmOverloads constructor(context: Context, attrs: Attri
 
         override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
             super.onLayout(changed, left, top, right, bottom)
-            translationX = (-negativeMargin).toFloat()
+            translationX = when (layoutDirection) {
+                LAYOUT_DIRECTION_RTL -> negativeMargin
+                else -> -negativeMargin
+            }.toFloat()
         }
 
         override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
