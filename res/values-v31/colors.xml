@@ -42,6 +42,16 @@
 
     <color name="folder_dot_color">@android:color/system_accent2_50</color>
 
+    <color name="home_settings_header_accent">@android:color/system_accent1_600</color>
+    <color name="home_settings_header_collapsed">@android:color/system_neutral1_100</color>
+    <color name="home_settings_header_expanded">@android:color/system_neutral1_50</color>
+
+    <color name="home_settings_state_on_color">@android:color/system_accent1_100</color>
+    <color name="home_settings_state_off_color">@android:color/system_accent2_100</color>
+    <color name="home_settings_thumb_off_color">@android:color/system_neutral2_100</color>
+    <color name="home_settings_track_on_color">@android:color/system_accent1_600</color>
+    <color name="home_settings_track_off_color">@android:color/system_neutral2_600</color>
+
     <color name="workspace_accent_color_light">@android:color/system_accent1_100</color>
     <color name="workspace_accent_color_dark">@android:color/system_accent2_600</color>
 </resources>
