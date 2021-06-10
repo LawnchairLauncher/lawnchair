@@ -86,11 +86,12 @@
     <string name="theme_label">Theme</string>
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>
-    <string name="theme_system_default">System default</string>
-    <string name="theme_follow_wallpaper">Follow wallpaper</string>
+    <string name="theme_system_default">Follow System</string>
+    <string name="theme_follow_wallpaper">Match Wallpaper</string>
     <string name="quickstep_label">最新の</string>
     <string name="clear_all_as_action_label">下部に「すべてクリア」を表示</string>
     <string name="window_corner_radius_label">Corner radius</string>
     <string name="override_window_corner_radius_label">Custom corner radius</string>
     <string name="override_window_corner_radius_description">If the default doesn\'t match your screen</string>
+    <string name="system_icons">System Icons</string>
 </resources>
