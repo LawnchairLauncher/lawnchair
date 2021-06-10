@@ -66,7 +66,7 @@
     <string name="smart_space_enable">显示 At a Glance 小部件</string>
     <string name="design_and_development">设计 &amp; 开发</string>
     <string name="translate">翻译</string>
-    <string name="product">主要开发</string>
+    <string name="product">产品</string>
     <string name="hidden_apps_label">隐藏的应用</string>
     <string name="hidden_apps_label_with_count">隐藏的应用 (%1$d)</string>
     <plurals name="apps_count">
@@ -79,8 +79,8 @@
     <string name="dt2s_a11y_hint_title">启用无障碍服务</string>
     <string name="dt2s_a11y_hint">若要使用双击息屏，请为Lawnchair 启用无障碍服务。点击\"打开设置\"，然后选择 \"Lawnchair \"并打开\"使用Lawnchair\"。</string>
     <string name="dt2s_warning_open_settings">打开设置</string>
-    <string name="minus_one_enable">显示 Google Feed</string>
-    <string name="minus_one_unavailable">未安装 Feed</string>
+    <string name="minus_one_enable">显示订阅</string>
+    <string name="minus_one_unavailable">未安装订阅源。</string>
     <string name="fuzzy_search_title">模糊搜索</string>
     <string name="fuzzy_search_desc">搜索应用时显示近似结果</string>
     <string name="theme_label">主题</string>
