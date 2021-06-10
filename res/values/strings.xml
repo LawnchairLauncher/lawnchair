@@ -108,6 +108,10 @@
     <!-- Text on the button that closes the education dialog about widgets. [CHAR_LIMIT=50] -->
     <string name="widget_education_close_button">Got it</string>
 
+    <!-- Spoken text for screen readers. This text is for an icon that lets the user change a
+         widget's settings. [CHAR_LIMIT=50] -->
+    <string name="widget_reconfigure_button_content_description">Change widget settings</string>
+
     <!-- All Apps -->
     <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
     <string name="all_apps_search_bar_hint">Search apps</string>
