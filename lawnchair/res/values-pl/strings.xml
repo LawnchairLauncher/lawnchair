@@ -93,4 +93,7 @@
     <string name="theme_follow_wallpaper">Zgodny z tapetą</string>
     <string name="quickstep_label">Ostatnie aplikacje</string>
     <string name="clear_all_as_action_label">Pokazuj \"Wyczyść wszystkie\" na dole</string>
+    <string name="window_corner_radius_label">Corner radius</string>
+    <string name="override_window_corner_radius_label">Custom corner radius</string>
+    <string name="override_window_corner_radius_description">If the default doesn\'t match your screen</string>
 </resources>
