@@ -24,12 +24,16 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.Px;
+
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.InstanceIdSequence;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.PendingRequestArgs;
+import com.android.launcher3.views.ArrowTipView;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.util.WidgetSizes;
@@ -42,6 +46,8 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     private static final float DIMMED_HANDLE_ALPHA = 0f;
     private static final float RESIZE_THRESHOLD = 0.66f;
 
+    private static final String KEY_RECONFIGURABLE_WIDGET_EDUCATION_TIP_SEEN =
+            "launcher.reconfigurable_widget_education_tip_seen";
     private static final Rect sTmpRect = new Rect();
 
     private static final int HANDLE_COUNT = 4;
@@ -238,6 +244,15 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
                             mWidgetView.getAppWidgetId(),
                             Launcher.REQUEST_RECONFIGURE_APPWIDGET);
             });
+            if (!hasSeenReconfigurableWidgetEducationTip()) {
+                post(() -> {
+                    if (showReconfigurableWidgetEducationTip() != null) {
+                        mLauncher.getSharedPrefs().edit()
+                                .putBoolean(KEY_RECONFIGURABLE_WIDGET_EDUCATION_TIP_SEEN,
+                                        true).apply();
+                    }
+                });
+            }
         }
 
         // When we create the resize frame, we first mark all cells as unoccupied. The appropriate
@@ -678,5 +693,26 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
                 || keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN
                 || keyCode == KeyEvent.KEYCODE_MOVE_HOME || keyCode == KeyEvent.KEYCODE_MOVE_END
                 || keyCode == KeyEvent.KEYCODE_PAGE_UP || keyCode == KeyEvent.KEYCODE_PAGE_DOWN);
+    }
+
+    @Nullable private ArrowTipView showReconfigurableWidgetEducationTip() {
+        Rect rect = new Rect();
+        if (!mReconfigureButton.getGlobalVisibleRect(rect)) {
+            return null;
+        }
+        @Px int tipMargin = mLauncher.getResources()
+                .getDimensionPixelSize(R.dimen.widget_reconfigure_tip_top_margin);
+        return new ArrowTipView(mLauncher, /* isPointingUp= */ true)
+                .showAroundRect(
+                        getContext().getString(R.string.reconfigurable_widget_education_tip),
+                        /* arrowXCoord= */ rect.left + mReconfigureButton.getWidth() / 2,
+                        /* rect= */ rect,
+                        /* margin= */ tipMargin);
+    }
+
+    private boolean hasSeenReconfigurableWidgetEducationTip() {
+        return mLauncher.getSharedPrefs()
+                .getBoolean(KEY_RECONFIGURABLE_WIDGET_EDUCATION_TIP_SEEN, false)
+                || Utilities.IS_RUNNING_IN_TEST_HARNESS;
     }
 }

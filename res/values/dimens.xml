@@ -61,6 +61,7 @@
     <dimen name="widget_reconfigure_button_padding">6dp</dimen>
     <dimen name="widget_reconfigure_button_margin">32dp</dimen>
     <dimen name="widget_reconfigure_button_size">36dp</dimen>
+    <dimen name="widget_reconfigure_tip_top_margin">16dp</dimen>
 
 <!-- Fast scroll -->
     <dimen name="fastscroll_track_min_width">6dp</dimen>
