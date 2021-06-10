@@ -23,7 +23,7 @@
     <string name="general_description">Значки Сповіщень, Набір Значків</string>
     <string name="home_screen_rotation_label">Обертання Головного Екрану</string>
     <string name="home_screen_rotaton_description">При обертанні пристрою.</string>
-    <string name="auto_add_shortcuts_label">Додавання нових програм на головний екран</string>
+    <string name="auto_add_shortcuts_label">Додавання Нових Програм на Головний Екран</string>
     <string name="dock_label">Док-панель</string>
     <string name="dock_description">Панель Пошуку, Кількість Значків</string>
     <string name="app_drawer_label">Меню додатків</string>
