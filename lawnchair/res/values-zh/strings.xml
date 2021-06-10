@@ -88,4 +88,6 @@
     <string name="theme_dark">深色</string>
     <string name="theme_system_default">系统默认</string>
     <string name="theme_follow_wallpaper">跟随壁纸</string>
+    <string name="quickstep_label">Recents</string>
+    <string name="clear_all_as_action_label">Show “Clear all” at bottom</string>
 </resources>
