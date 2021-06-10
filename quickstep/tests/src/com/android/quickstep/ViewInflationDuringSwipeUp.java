@@ -43,6 +43,7 @@ import android.view.ViewConfiguration;
 import android.widget.RemoteViews;
 
 import androidx.test.filters.LargeTest;
+import androidx.test.filters.Suppress;
 import androidx.test.runner.AndroidJUnit4;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.UiDevice;
@@ -133,6 +134,7 @@ public class ViewInflationDuringSwipeUp extends AbstractQuickStepTest {
 
     @Test
     @NavigationModeSwitch(mode = ZERO_BUTTON)
+    @Suppress // until b/190729479 is fixed
     public void testSwipeUpFromApp_widget_update() {
         String stubText = "Some random stub text";
 
@@ -145,6 +147,7 @@ public class ViewInflationDuringSwipeUp extends AbstractQuickStepTest {
 
     @Test
     @NavigationModeSwitch(mode = ZERO_BUTTON)
+    @Suppress // until b/190729479 is fixed
     public void testSwipeUp_with_list_widgets() {
         SimpleViewsFactory viewFactory = new SimpleViewsFactory();
         viewFactory.viewCount = 1;
