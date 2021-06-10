@@ -34,7 +34,6 @@ import app.lawnchair.util.Meta
 import app.lawnchair.util.pageMeta
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
-import com.google.accompanist.insets.toPaddingValues
 
 @Composable
 fun PreferenceLayout(

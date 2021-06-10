@@ -40,7 +40,6 @@ fun <T, A> ensureOnMainThread(creator: (A) -> T): (A) -> T {
             } catch (e: ExecutionException) {
                 throw RuntimeException(e)
             }
-
         }
     }
 }

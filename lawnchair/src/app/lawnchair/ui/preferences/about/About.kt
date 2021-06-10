@@ -34,13 +34,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
+import app.lawnchair.preferences.getFormattedVersionName
 import app.lawnchair.ui.preferences.components.ClickablePreference
 import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.preferenceGraph
 import app.lawnchair.util.Meta
 import app.lawnchair.util.pageMeta
-import app.lawnchair.preferences.getFormattedVersionName
 import com.android.launcher3.R
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 

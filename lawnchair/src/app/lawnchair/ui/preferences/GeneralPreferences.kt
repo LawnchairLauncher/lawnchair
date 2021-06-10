@@ -22,12 +22,12 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
-import app.lawnchair.ui.preferences.components.*
-import app.lawnchair.util.Meta
-import app.lawnchair.util.pageMeta
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.observeAsState
 import app.lawnchair.preferences.preferenceManager
+import app.lawnchair.ui.preferences.components.*
+import app.lawnchair.util.Meta
+import app.lawnchair.util.pageMeta
 import com.android.launcher3.R
 
 object GeneralRoutes {

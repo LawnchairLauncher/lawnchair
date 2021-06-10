@@ -39,7 +39,7 @@ fun SliderPreference(
 
     DisposableEffect(adapterValue) {
         sliderValue = adapterValue
-        onDispose {  }
+        onDispose { }
     }
 
     PreferenceTemplate(height = 76.dp, showDivider = showDivider) {

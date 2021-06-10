@@ -20,14 +20,14 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
+import app.lawnchair.preferences.getAdapter
+import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.SliderPreference
 import app.lawnchair.ui.preferences.components.SwitchPreference
 import app.lawnchair.util.Meta
 import app.lawnchair.util.pageMeta
-import app.lawnchair.preferences.getAdapter
-import app.lawnchair.preferences.preferenceManager
 import com.android.launcher3.R
 
 @ExperimentalAnimationApi

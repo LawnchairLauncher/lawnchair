@@ -31,12 +31,14 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import app.lawnchair.preferences.getMajorVersion
 import app.lawnchair.ui.preferences.about.aboutGraph
-import app.lawnchair.ui.preferences.components.*
+import app.lawnchair.ui.preferences.components.PreferenceCategoryList
+import app.lawnchair.ui.preferences.components.SystemUi
+import app.lawnchair.ui.preferences.components.TopBar
 import app.lawnchair.ui.util.portal.ProvidePortalNode
 import app.lawnchair.util.Meta
 import app.lawnchair.util.pageMeta
-import app.lawnchair.preferences.getMajorVersion
 import com.android.launcher3.R
 
 object Routes {
@@ -91,7 +93,7 @@ sealed class PreferenceCategory(
         route = Routes.FOLDERS
     )
 
-    class Quickstep(context: Context): PreferenceCategory(
+    class Quickstep(context: Context) : PreferenceCategory(
         label = context.getString(R.string.quickstep_label),
         iconResource = R.drawable.ic_quickstep,
         route = Routes.QUICKSTEP
