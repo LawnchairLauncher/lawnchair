@@ -91,4 +91,6 @@
     <string name="theme_dark">Темна</string>
     <string name="theme_system_default">За замовчуванням</string>
     <string name="theme_follow_wallpaper">Слідкувати за шпалерами</string>
+    <string name="quickstep_label">Recents</string>
+    <string name="clear_all_as_action_label">Show “Clear all” at bottom</string>
 </resources>
