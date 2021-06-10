@@ -15,18 +15,9 @@
  */
 package com.android.launcher3.model;
 
-<<<<<<< TARGET BRANCH (878601 Block recent work profile apps content capture)
-import static android.os.Process.myUserHandle;
-=======
 import static android.app.PendingIntent.FLAG_IMMUTABLE;
 import static android.app.PendingIntent.FLAG_ONE_SHOT;
 import static android.os.Process.myUserHandle;
-
-import static com.android.launcher3.pm.InstallSessionHelper.getUserHandle;
-
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.mapping;
->>>>>>> SOURCE BRANCH (578578 Set FLAG_IMMUTABLE flag on FirstScreenBroadcast PendingInten)
 
 import android.app.PendingIntent;
 import android.content.Context;
