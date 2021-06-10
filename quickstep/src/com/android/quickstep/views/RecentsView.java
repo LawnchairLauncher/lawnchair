@@ -2198,7 +2198,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 .setDampingRatio(rp.getFloat(R.dimen.dismiss_task_trans_y_damping_ratio))
                 .setStiffness(rp.getFloat(R.dimen.dismiss_task_trans_y_stiffness));
         FloatProperty<TaskView> dismissingTaskViewTranslate =
-                taskView.getSecondaryDissmissTranslationProperty();;
+                taskView.getSecondaryDissmissTranslationProperty();
         // TODO(b/186800707) translate entire grid size distance
         int translateDistance = mOrientationHandler.getSecondaryDimension(taskView);
         int positiveNegativeFactor = mOrientationHandler.getSecondaryTranslationDirectionFactor();
@@ -2231,7 +2231,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         anim.add(ObjectAnimator.ofFloat(taskView, dismissingTaskViewTranslate,
                 positiveNegativeFactor * translateDistance * 2).setDuration(duration), LINEAR, sp);
 
-        if (LIVE_TILE.get() && taskView.isRunningTask()) {
+        if (LIVE_TILE.get() && mEnableDrawingLiveTile && taskView.isRunningTask()) {
             anim.addOnFrameCallback(() -> {
                 mLiveTileTaskViewSimulator.taskSecondaryTranslation.value =
                         mOrientationHandler.getSecondaryValue(
@@ -2311,6 +2311,15 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     anim.setFloat(child, translationProperty, scrollDiff, clampToProgress(LINEAR,
                             Utilities.boundToRange(INITIAL_DISMISS_TRANSLATION_INTERPOLATION_OFFSET
                                     + additionalDismissDuration, 0f, 1f), 1));
+                    if (LIVE_TILE.get() && mEnableDrawingLiveTile && child instanceof TaskView
+                            && ((TaskView) child).isRunningTask()) {
+                        anim.addOnFrameCallback(() -> {
+                            mLiveTileTaskViewSimulator.taskPrimaryTranslation.value =
+                                    mOrientationHandler.getPrimaryValue(child.getTranslationX(),
+                                            child.getTranslationY());
+                            redrawLiveTile();
+                        });
+                    }
                     needsCurveUpdates = true;
                 }
             } else if (child instanceof TaskView) {
@@ -2391,6 +2400,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                         startHome();
                     } else {
                         snapToPageImmediately(pageToSnapTo);
+                        dispatchScrollChanged();
                         // Grid got messed up, reapply.
                         updateGridProperties(true);
                         if (showAsGrid() && getFocusedTaskView() == null
