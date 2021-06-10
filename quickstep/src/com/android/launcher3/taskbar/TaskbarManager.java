@@ -21,11 +21,9 @@ import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
 import static com.android.launcher3.util.DisplayController.CHANGE_ACTIVE_SCREEN;
 import static com.android.launcher3.util.DisplayController.CHANGE_DENSITY;
 import static com.android.launcher3.util.DisplayController.CHANGE_SUPPORTED_BOUNDS;
-import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IME_SHOWING;
 
 import android.content.Context;
 import android.hardware.display.DisplayManager;
-import android.inputmethodservice.InputMethodService;
 import android.view.Display;
 
 import androidx.annotation.Nullable;
@@ -53,6 +51,11 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
 
     private TaskbarActivityContext mTaskbarActivityContext;
     private BaseQuickstepLauncher mLauncher;
+    /**
+     * Cache a copy here so we can initialize state whenever taskbar is recreated, since
+     * this class does not get re-initialized w/ new taskbars.
+     */
+    private int mSysuiStateFlags;
 
     private static final int CHANGE_FLAGS =
             CHANGE_ACTIVE_SCREEN | CHANGE_DENSITY | CHANGE_SUPPORTED_BOUNDS;
@@ -130,6 +133,7 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
             mTaskbarActivityContext.setUIController(
                     new LauncherTaskbarUIController(mLauncher, mTaskbarActivityContext));
         }
+        onSysuiFlagsChangedInternal(mSysuiStateFlags, true /* forceUpdate */);
     }
 
     /**
@@ -137,24 +141,13 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
      * @param systemUiStateFlags The latest SystemUiStateFlags
      */
     public void onSystemUiFlagsChanged(int systemUiStateFlags) {
-        boolean isImeVisible = (systemUiStateFlags & SYSUI_STATE_IME_SHOWING) != 0;
-        if (mTaskbarActivityContext != null) {
-            mTaskbarActivityContext.setImeIsVisible(isImeVisible);
-        }
+        onSysuiFlagsChangedInternal(systemUiStateFlags, false /* forceUpdate */);
     }
 
-    /**
-     * When in 3 button nav, the above doesn't get called since we prevent sysui nav bar from
-     * instantiating at all, which is what's responsible for sending sysui state flags over.
-     *
-     * @param vis IME visibility flag
-     * @param backDisposition Used to determine back button behavior for software keyboard
-     *                        See BACK_DISPOSITION_* constants in {@link InputMethodService}
-     */
-    public void updateImeStatus(int displayId, int vis, int backDisposition,
-            boolean showImeSwitcher) {
+    private void onSysuiFlagsChangedInternal(int systemUiStateFlags, boolean forceUpdate) {
+        mSysuiStateFlags = systemUiStateFlags;
         if (mTaskbarActivityContext != null) {
-            mTaskbarActivityContext.updateImeStatus(displayId, vis, showImeSwitcher);
+            mTaskbarActivityContext.updateSysuiStateFlags(systemUiStateFlags, forceUpdate);
         }
     }
 

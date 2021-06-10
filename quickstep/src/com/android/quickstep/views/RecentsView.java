@@ -373,6 +373,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     protected final Rect mTempRect = new Rect();
     protected final RectF mTempRectF = new RectF();
     private final PointF mTempPointF = new PointF();
+    private final Matrix mTempMatrix = new Matrix();
     private final float[] mTempFloat = new float[1];
     private final List<OnScrollChangedListener> mScrollListeners = new ArrayList<>();
 
@@ -502,7 +503,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private Task mTmpRunningTask;
     protected int mFocusedTaskId = -1;
 
-    private boolean mRunningTaskIconScaledDown = false;
+    private boolean mTaskIconScaledDown = false;
 
     private boolean mOverviewStateEnabled;
     private boolean mHandleTaskStackChanges;
@@ -1191,6 +1192,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             TaskView taskView = getTaskViewAt(i);
             if (mIgnoreResetTaskId != taskView.getTaskId()) {
                 taskView.resetViewTransforms();
+                taskView.setIconScaleAndDim(mTaskIconScaledDown ? 0 : 1);
                 taskView.setStableAlpha(mContentAlpha);
                 taskView.setFullscreenProgress(mFullscreenProgress);
                 taskView.setModalness(mTaskModalness);
@@ -1207,11 +1209,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
         if (mRunningTaskTileHidden) {
             setRunningTaskHidden(mRunningTaskTileHidden);
-        }
-
-        // Force apply the scale.
-        if (mIgnoreResetTaskId != mRunningTaskId) {
-            applyRunningTaskIconScale();
         }
 
         updateCurveProperties();
@@ -1361,12 +1358,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         for (int i = 0; i < taskCount; i++) {
             TaskView taskView = getTaskViewAt(i);
             taskView.updateTaskSize();
-            taskView.getPrimaryFullscreenTranslationProperty().set(taskView,
-                    accumulatedTranslationX);
-            taskView.getSecondaryFullscreenTranslationProperty().set(taskView, 0f);
+            taskView.getPrimaryNonGridTranslationProperty().set(taskView, accumulatedTranslationX);
+            taskView.getSecondaryNonGridTranslationProperty().set(taskView, 0f);
             // Compensate space caused by TaskView scaling.
             float widthDiff =
-                    taskView.getLayoutParams().width * (1 - taskView.getFullscreenScale());
+                    taskView.getLayoutParams().width * (1 - taskView.getNonGridScale());
             accumulatedTranslationX += mIsRtl ? widthDiff : -widthDiff;
         }
 
@@ -1665,7 +1661,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         setEnableFreeScroll(false);
         setEnableDrawingLiveTile(false);
         setRunningTaskHidden(true);
-        setRunningTaskIconScaledDown(true);
+        setTaskIconScaledDown(true);
     }
 
     /**
@@ -1674,9 +1670,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      */
     public void onSwipeUpAnimationSuccess() {
         Log.d("b/186444448", "onSwipeUpAnimationSuccess");
-        if (getRunningTaskView() != null) {
-            animateUpRunningTaskIconScale();
-        }
+        animateUpTaskIconScale();
         setSwipeDownShouldLaunchApp(true);
     }
 
@@ -1760,7 +1754,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             setRunningTaskViewShowScreenshot(true);
         }
         setRunningTaskHidden(false);
-        animateUpRunningTaskIconScale();
+        animateUpTaskIconScale();
         animateActionsViewIn();
 
         mCurrentGestureEndTarget = null;
@@ -1824,7 +1818,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
         if (mRunningTaskId != -1) {
             // Reset the state on the old running task view
-            setRunningTaskIconScaledDown(false);
+            setTaskIconScaledDown(false);
             setRunningTaskViewShowScreenshot(true);
             setRunningTaskHidden(false);
         }
@@ -1855,21 +1849,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
     }
 
-    public void setRunningTaskIconScaledDown(boolean isScaledDown) {
-        if (mRunningTaskIconScaledDown != isScaledDown) {
-            mRunningTaskIconScaledDown = isScaledDown;
-            applyRunningTaskIconScale();
-        }
-    }
-
-    public boolean isTaskIconScaledDown(TaskView taskView) {
-        return mRunningTaskIconScaledDown && getRunningTaskView() == taskView;
-    }
-
-    private void applyRunningTaskIconScale() {
-        TaskView firstTask = getRunningTaskView();
-        if (firstTask != null) {
-            firstTask.setIconScaleAndDim(mRunningTaskIconScaledDown ? 0 : 1);
+    public void setTaskIconScaledDown(boolean isScaledDown) {
+        if (mTaskIconScaledDown != isScaledDown) {
+            mTaskIconScaledDown = isScaledDown;
+            int taskCount = getTaskViewCount();
+            for (int i = 0; i < taskCount; i++) {
+                getTaskViewAt(i).setIconScaleAndDim(mTaskIconScaledDown ? 0 : 1);
+            }
         }
     }
 
@@ -1880,14 +1866,14 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         anim.start();
     }
 
-    public void animateUpRunningTaskIconScale() {
-        mRunningTaskIconScaledDown = false;
-        TaskView firstTask = getRunningTaskView();
-        Log.d("b/186444448", "animateUpRunningTaskIconScale: firstTask="
-                + (firstTask != null ? "t:" + firstTask.getTask() : null));
-        if (firstTask != null) {
-            firstTask.setIconScaleAnimStartProgress(0f);
-            firstTask.animateIconScaleAndDimIntoView();
+    public void animateUpTaskIconScale() {
+        mTaskIconScaledDown = false;
+        Log.d("b/186444448", "animateUpRunningTaskIconScale");
+        int taskCount = getTaskViewCount();
+        for (int i = 0; i < taskCount; i++) {
+            TaskView taskView = getTaskViewAt(i);
+            taskView.setIconScaleAnimStartProgress(0f);
+            taskView.animateIconScaleAndDimIntoView();
         }
     }
 
@@ -2029,20 +2015,18 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         // We need to maintain snapped task's page scroll invariant between quick switch and
         // overview, so we sure snapped task's grid translation is 0, and add a non-fullscreen
         // translationX that is the same as snapped task's full scroll adjustment.
-        float snappedTaskFullscreenScrollAdjustment = 0;
+        float snappedTaskNonGridScrollAdjustment = 0;
         float snappedTaskGridTranslationX = 0;
         if (snappedTaskView != null) {
-            snappedTaskFullscreenScrollAdjustment = snappedTaskView.getScrollAdjustment(
+            snappedTaskNonGridScrollAdjustment = snappedTaskView.getScrollAdjustment(
                     /*fullscreenEnabled=*/true, /*gridEnabled=*/false);
             snappedTaskGridTranslationX = gridTranslations[snappedPage - mTaskViewStartIndex];
         }
 
         for (int i = 0; i < taskCount; i++) {
             TaskView taskView = getTaskViewAt(i);
-            taskView.setGridTranslationX(gridTranslations[i] - snappedTaskGridTranslationX);
-            taskView.getPrimaryNonFullscreenTranslationProperty().set(taskView,
-                    snappedTaskFullscreenScrollAdjustment);
-            taskView.getSecondaryNonFullscreenTranslationProperty().set(taskView, 0f);
+            taskView.setGridTranslationX(gridTranslations[i] - snappedTaskGridTranslationX
+                    + snappedTaskNonGridScrollAdjustment);
         }
 
         // Use the accumulated translation of the row containing the last task.
@@ -2077,7 +2061,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
         float clearAllTotalTranslationX =
                 clearAllAccumulatedTranslation + clearAllShorterRowCompensation
-                        + clearAllShortTotalCompensation + snappedTaskFullscreenScrollAdjustment;
+                        + clearAllShortTotalCompensation + snappedTaskNonGridScrollAdjustment;
         if (focusedTaskIndex < taskCount) {
             // Shift by focused task's width and spacing if a task is focused.
             clearAllTotalTranslationX +=
@@ -2892,6 +2876,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             outRect.offset(taskView.getPersistentTranslationX(),
                     taskView.getPersistentTranslationY());
             outRect.top += mActivity.getDeviceProfile().overviewTaskThumbnailTopMarginPx;
+
+            mTempMatrix.reset();
+            float persistentScale = taskView.getPersistentScale();
+            mTempMatrix.postScale(persistentScale, persistentScale,
+                    mIsRtl ? outRect.right : outRect.left, outRect.top);
+            mTempMatrix.mapRect(outRect);
         }
         outRect.offset(mOrientationHandler.getPrimaryValue(-midPointScroll, 0),
                 mOrientationHandler.getSecondaryValue(-midPointScroll, 0));
@@ -3920,5 +3910,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         int baseColor = Themes.getAttrColor(context, R.attr.overviewScrimColor);
         // The Black blending is temporary until we have the proper color token.
         return ColorUtils.blendARGB(Color.BLACK, baseColor, 0.25f);
+    }
+
+    /** Get the RecentsAnimationController */
+    @Nullable
+    public RecentsAnimationController getRecentsAnimationController() {
+        return mRecentsAnimationController;
     }
 }

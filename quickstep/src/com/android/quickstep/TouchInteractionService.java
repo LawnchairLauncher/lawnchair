@@ -267,13 +267,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
         }
 
         @Override
-        public void onImeWindowStatusChanged(int displayId, IBinder token, int vis,
-                int backDisposition, boolean showImeSwitcher) {
-            executeForTaskbarManager(() -> mTaskbarManager
-                    .updateImeStatus(displayId, vis, backDisposition, showImeSwitcher));
-        }
-
-        @Override
         public void onRotationProposal(int rotation, boolean isValid) {
             executeForTaskbarManager(() -> mTaskbarManager.onRotationProposal(rotation, isValid));
         }
