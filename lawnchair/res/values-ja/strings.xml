@@ -88,6 +88,6 @@
     <string name="theme_dark">Dark</string>
     <string name="theme_system_default">System default</string>
     <string name="theme_follow_wallpaper">Follow wallpaper</string>
-    <string name="quickstep_label">Recents</string>
-    <string name="clear_all_as_action_label">Show “Clear all” at bottom</string>
+    <string name="quickstep_label">最新の</string>
+    <string name="clear_all_as_action_label">下部に「すべてクリア」を表示</string>
 </resources>
