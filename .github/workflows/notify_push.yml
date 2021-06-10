@@ -32,8 +32,6 @@ jobs:
         run: python send_changelog.py
         env:
           GITHUB_EVENT_BEFORE: ${{ github.event.before }}
-          GITHUB_SHA: ${{ github.sha }}
-          GITHUB_REPO: ${{ github.repository }}
           TELEGRAM_CI_BOT_TOKEN: ${{ secrets.NOTIFY_BOT_TOKEN }}
           TELEGRAM_CI_CHANNEL_ID: ${{ secrets.NOTIFY_CHANNEL_ID }}
           BRANCH: ${{ github.ref }}
