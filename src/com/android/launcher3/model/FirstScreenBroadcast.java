@@ -17,12 +17,6 @@ package com.android.launcher3.model;
 
 import static android.app.PendingIntent.FLAG_IMMUTABLE;
 import static android.app.PendingIntent.FLAG_ONE_SHOT;
-import static android.os.Process.myUserHandle;
-
-import static com.android.launcher3.pm.InstallSessionHelper.getUserHandle;
-
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.mapping;
 
 import android.app.PendingIntent;
 import android.content.Context;
