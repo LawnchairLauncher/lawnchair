@@ -87,11 +87,12 @@
     <string name="theme_label">Tema</string>
     <string name="theme_light">Chiaro</string>
     <string name="theme_dark">Scuro</string>
-    <string name="theme_system_default">Predefinito di sistema</string>
-    <string name="theme_follow_wallpaper">Segui sfondo</string>
-    <string name="quickstep_label">Recents</string>
+    <string name="theme_system_default">Segui il sistema</string>
+    <string name="theme_follow_wallpaper">Abbina allo sfondo</string>
+    <string name="quickstep_label">Recenti</string>
     <string name="clear_all_as_action_label">Mostra “Chiudi tutte” in basso</string>
     <string name="window_corner_radius_label">Corner radius</string>
     <string name="override_window_corner_radius_label">Custom corner radius</string>
-    <string name="override_window_corner_radius_description">If the default doesn\'t match your screen</string>
+    <string name="override_window_corner_radius_description">Se il valore predefinito non corrisponde a quello del tuo schermo</string>
+    <string name="system_icons">Icone di sistema</string>
 </resources>
