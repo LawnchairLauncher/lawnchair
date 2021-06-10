@@ -16,9 +16,12 @@
 package com.android.launcher3.taskbar;
 
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.taskbar.TaskbarViewController.ALPHA_INDEX_HOME;
+import static com.android.launcher3.taskbar.TaskbarViewController.ALPHA_INDEX_LAUNCHER_STATE;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.graphics.Rect;
 import android.view.MotionEvent;
 
 import androidx.annotation.NonNull;
@@ -30,6 +33,7 @@ import com.android.launcher3.QuickstepTransitionManager;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.quickstep.AnimatedFloat;
 
@@ -47,7 +51,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     final TaskbarDragLayer mTaskbarDragLayer;
     final TaskbarView mTaskbarView;
 
-    private AnimatedFloat mTaskBarAlpha;
+    private AnimatedFloat mTaskbarBackgroundAlpha;
     private AlphaProperty mIconAlphaForHome;
     private @Nullable Animator mAnimator;
     private boolean mIsAnimatingToLauncher;
@@ -66,11 +70,14 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     }
 
     @Override
-    protected void init(AnimatedFloat taskBarAlpha, AlphaProperty iconAlphaForLauncherState,
-            AlphaProperty iconAlphaForHome) {
-        mTaskBarAlpha = taskBarAlpha;
-        mIconAlphaForHome = iconAlphaForHome;
-        mTaskbarStateHandler.setAnimationController(iconAlphaForLauncherState);
+    protected void init(TaskbarControllers taskbarControllers) {
+        mTaskbarBackgroundAlpha = taskbarControllers.taskbarDragLayerController
+                .getTaskbarBackgroundAlpha();
+        MultiValueAlpha taskbarIconAlpha = taskbarControllers.taskbarViewController
+                .getTaskbarIconAlpha();
+        mIconAlphaForHome = taskbarIconAlpha.getProperty(ALPHA_INDEX_HOME);
+        mTaskbarStateHandler.setAnimationController(taskbarIconAlpha.getProperty(
+                ALPHA_INDEX_LAUNCHER_STATE));
         mHotseatController.init();
         setTaskbarViewVisible(!mLauncher.hasBeenResumed());
         mLauncher.setTaskbarUIController(this);
@@ -92,6 +99,18 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     @Override
     protected boolean isTaskbarTouchable() {
         return !mIsAnimatingToLauncher;
+    }
+
+    @Override
+    protected void updateContentInsets(Rect outContentInsets) {
+        // TaskbarDragLayer provides insets to other apps based on contentInsets. These
+        // insets should stay consistent even if we expand TaskbarDragLayer's bounds, e.g.
+        // to show a floating view like Folder. Thus, we set the contentInsets to be where
+        // mTaskbarView is, since its position never changes and insets rather than overlays.
+        outContentInsets.left = mTaskbarView.getLeft();
+        outContentInsets.top = mTaskbarView.getTop();
+        outContentInsets.right = mTaskbarDragLayer.getWidth() - mTaskbarView.getRight();
+        outContentInsets.bottom = mTaskbarDragLayer.getHeight() - mTaskbarView.getBottom();
     }
 
     /**
@@ -125,7 +144,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         PendingAnimation anim = new PendingAnimation(duration);
         mTaskbarStateHandler.setState(toState, anim);
 
-        anim.setFloat(mTaskBarAlpha, AnimatedFloat.VALUE, 0, LINEAR);
+        anim.setFloat(mTaskbarBackgroundAlpha, AnimatedFloat.VALUE, 0, LINEAR);
         mTaskbarView.alignIconsWithLauncher(mLauncher.getDeviceProfile(), anim);
 
         anim.addListener(new AnimatorListenerAdapter() {
@@ -146,7 +165,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
 
     private Animator createAnimToApp(long duration) {
         PendingAnimation anim = new PendingAnimation(duration);
-        anim.setFloat(mTaskBarAlpha, AnimatedFloat.VALUE, 1, LINEAR);
+        anim.setFloat(mTaskbarBackgroundAlpha, AnimatedFloat.VALUE, 1, LINEAR);
         anim.addListener(AnimatorListeners.forEndCallback(mTaskbarView.resetIconPosition(anim)));
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
