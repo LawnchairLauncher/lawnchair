@@ -120,22 +120,36 @@ open class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         return defaultOverlay
     }
 
-    open fun restartIfPending() {
-        if (sRestart) {
-            lawnchairApp.restart(false)
+    private fun restartIfPending() {
+        when {
+            sRestartFlags and FLAG_RESTART != 0 -> lawnchairApp.restart(false)
+            sRestartFlags and FLAG_RECREATE != 0 -> {
+                sRestartFlags = 0
+                recreate()
+            }
         }
+    }
+
+    private fun scheduleFlag(flag: Int) {
+        sRestartFlags = sRestartFlags or flag
+        if (lifecycle.currentState === Lifecycle.State.RESUMED) {
+            restartIfPending()
+        }
+    }
+
+    fun scheduleRecreate() {
+        scheduleFlag(FLAG_RECREATE)
     }
 
     fun scheduleRestart() {
-        if (lifecycle.currentState !== Lifecycle.State.RESUMED) {
-            sRestart = true
-        } else {
-            restartLauncher(this)
-        }
+        scheduleFlag(FLAG_RESTART)
     }
 
     companion object {
-        var sRestart = false
+        private const val FLAG_RECREATE = 1 shl 0
+        private const val FLAG_RESTART = 1 shl 1
+
+        var sRestartFlags = 0
 
         val instance get() = LauncherAppState.getInstanceNoCreate()?.launcher as? LawnchairLauncher
     }

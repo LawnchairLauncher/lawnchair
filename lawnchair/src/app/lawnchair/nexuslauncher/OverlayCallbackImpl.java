@@ -32,8 +32,6 @@ public class OverlayCallbackImpl
         implements LauncherOverlay, LauncherClientCallbacks, LauncherOverlayManager,
         ISerializableScrollCallback {
 
-    // TODO: migrate to PreferenceManager
-    final static String ENABLE_MINUS_ONE = "pref_enableMinusOne";
     final static String PREF_PERSIST_FLAGS = "pref_persistent_flags";
 
     private final Launcher mLauncher;
@@ -51,7 +49,6 @@ public class OverlayCallbackImpl
         mLauncher = launcher;
         mClient = new LauncherClient(mLauncher, this, new StaticInteger(
                 (minusOnePref.get() ? 1 : 0) | 2 | 4 | 8));
-        minusOnePref.subscribe(launcher, false, (enabled) -> mLauncher.setLauncherOverlay(enabled ? this : null));
     }
 
     @Override
