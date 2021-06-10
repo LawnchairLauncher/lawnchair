@@ -68,6 +68,7 @@ class FolderPreviewItemAnim {
             int duration, final Runnable onCompleteRunnable) {
         mItemManager = itemManager;
         mParams = params;
+        mParams.index = index1;
 
         mItemManager.computePreviewItemDrawingParams(index1, items1, sTmpParams);
         finalState = new float[] {sTmpParams.scale, sTmpParams.transX, sTmpParams.transY};
