@@ -85,7 +85,6 @@ import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.Interpolator;
-import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.annotation.Nullable;
@@ -271,7 +270,8 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     private final float mFastFlingVelocity;
     private final RecentsModel mModel;
     private final int mTaskTopMargin;
-    private Button mClearAllButton;
+    private final ClearAllButton mClearAllButton;
+    private final Rect mClearAllButtonDeadZoneRect = new Rect();
     private final Rect mTaskViewDeadZoneRect = new Rect();
 
     private final ScrollState mScrollState = new ScrollState();
@@ -444,6 +444,9 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         mModel = RecentsModel.INSTANCE.get(context);
         mIdp = InvariantDeviceProfile.INSTANCE.get(context);
 
+        mClearAllButton = (ClearAllButton) LayoutInflater.from(context)
+                .inflate(R.layout.overview_clear_all_button, this, false);
+        mClearAllButton.setOnClickListener(this::dismissAllTasks);
         mTaskViewPool = new ViewPool<>(context, this, R.layout.task, 20 /* max size */,
                 10 /* initial size */);
 
@@ -549,8 +552,6 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     public void init(OverviewActionsView actionsView) {
         mActionsView = actionsView;
         mActionsView.updateHiddenFlags(HIDDEN_NO_TASKS, getTaskViewCount() == 0);
-        mClearAllButton = (Button) mActionsView.findViewById(R.id.clear_all);
-        mClearAllButton.setOnClickListener(this::dismissAllTasks);
     }
 
     @Override
@@ -625,7 +626,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     }
 
     private void updateTaskStartIndex(View affectingView) {
-        if (!(affectingView instanceof TaskView)) {
+        if (!(affectingView instanceof TaskView) && !(affectingView instanceof ClearAllButton)) {
             int childCount = getChildCount();
 
             mTaskViewStartIndex = 0;
@@ -679,7 +680,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
      * button fully visible, center page is Clear All button.
      */
     public boolean isClearAllHidden() {
-        return true;
+        return mClearAllButton.getAlpha() != 1f;
     }
 
     @Override
@@ -737,8 +738,11 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                         mTouchDownToStartHome = true;
                     } else {
                         updateDeadZoneRects();
+                        final boolean clearAllButtonDeadZoneConsumed =
+                                mClearAllButton.getAlpha() == 1
+                                        && mClearAllButtonDeadZoneRect.contains(x, y);
                         final boolean cameFromNavBar = (ev.getEdgeFlags() & EDGE_NAV_BAR) != 0;
-                        if (!cameFromNavBar
+                        if (!clearAllButtonDeadZoneConsumed && !cameFromNavBar
                                 && !mTaskViewDeadZoneRect.contains(x + getScrollX(), y)) {
                             mTouchDownToStartHome = true;
                         }
@@ -785,11 +789,17 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
 
         final int requiredTaskCount = tasks.size();
         if (getTaskViewCount() != requiredTaskCount) {
+            if (indexOfChild(mClearAllButton) != -1) {
+                removeView(mClearAllButton);
+            }
             for (int i = getTaskViewCount(); i < requiredTaskCount; i++) {
                 addView(mTaskViewPool.getView());
             }
             while (getTaskViewCount() > requiredTaskCount) {
                 removeView(getChildAt(getChildCount() - 1));
+            }
+            if (requiredTaskCount > 0) {
+                addView(mClearAllButton);
             }
         }
 
@@ -830,10 +840,16 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         for (int i = getTaskViewCount() - 1; i >= 0; i--) {
             removeView(getTaskViewAt(i));
         }
+        if (indexOfChild(mClearAllButton) != -1) {
+            removeView(mClearAllButton);
+        }
     }
 
     public int getTaskViewCount() {
         int taskViewCount = getChildCount() - mTaskViewStartIndex;
+        if (indexOfChild(mClearAllButton) != -1) {
+            taskViewCount--;
+        }
         return taskViewCount;
     }
 
@@ -1189,6 +1205,9 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             // Add an empty view for now until the task plan is loaded and applied
             final TaskView taskView = mTaskViewPool.getView();
             addView(taskView, mTaskViewStartIndex);
+            if (wasEmpty) {
+                addView(mClearAllButton);
+            }
             // The temporary running task is only used for the duration between the start of the
             // gesture and the task list is loaded and applied
             mTmpRunningTask = Task.from(new TaskKey(runningTaskInfo), runningTaskInfo, false);
@@ -1525,6 +1544,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                     removeViewInLayout(taskView);
 
                     if (getTaskViewCount() == 0) {
+                        removeViewInLayout(mClearAllButton);
                         startHome();
                     } else {
                         snapToPageImmediately(pageToSnapTo);
@@ -1663,6 +1683,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                 child.setStableAlpha(alpha);
             }
         }
+        mClearAllButton.setContentAlpha(mContentAlpha);
         int alphaInt = Math.round(alpha * 255);
         mEmptyMessagePaint.setAlpha(alphaInt);
         mEmptyIcon.setAlpha(alphaInt);
@@ -1725,6 +1746,10 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         setLayoutDirection(mIsRtl
                 ? View.LAYOUT_DIRECTION_RTL
                 : View.LAYOUT_DIRECTION_LTR);
+        mClearAllButton.setLayoutDirection(mIsRtl
+                ? View.LAYOUT_DIRECTION_LTR
+                : View.LAYOUT_DIRECTION_RTL);
+        mClearAllButton.setRotation(mOrientationHandler.getDegreesRotated());
         mActivity.getDragLayer().recreateControllers();
         boolean isInLandscape = mOrientationState.getTouchRotation() != ROTATION_0
                 || mOrientationState.getRecentsActivityRotation() != ROTATION_0;
@@ -1944,6 +1969,15 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     }
 
     private void updateDeadZoneRects() {
+        // Get the deadzone rect surrounding the clear all button to not dismiss overview to home
+        mClearAllButtonDeadZoneRect.setEmpty();
+        if (mClearAllButton.getWidth() > 0) {
+            int verticalMargin = getResources()
+                    .getDimensionPixelSize(R.dimen.recents_clear_all_deadzone_vertical_margin);
+            mClearAllButton.getHitRect(mClearAllButtonDeadZoneRect);
+            mClearAllButtonDeadZoneRect.inset(-getPaddingRight() / 2, -verticalMargin);
+        }
+
         // Get the deadzone rect between the task views
         mTaskViewDeadZoneRect.setEmpty();
         int count = getTaskViewCount();
@@ -2274,6 +2308,10 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             return getScrollForPage(indexOfChild(getTaskViewAt(getTaskViewCount() - 1)) + 1);
         }
         return super.computeMaxScroll();
+    }
+
+    public ClearAllButton getClearAllButton() {
+        return mClearAllButton;
     }
 
     @Override
