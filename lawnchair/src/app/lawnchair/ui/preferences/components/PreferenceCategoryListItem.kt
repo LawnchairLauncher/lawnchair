@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun PreferenceCategoryListItem(
     label: String,
-    description: String,
+    description: String?,
     @DrawableRes iconResource: Int,
     onClick: () -> Unit
 ) {
@@ -56,16 +56,17 @@ fun PreferenceCategoryListItem(
                 style = MaterialTheme.typography.subtitle1,
                 color = MaterialTheme.colors.onBackground
             )
-            CompositionLocalProvider(
-                LocalContentAlpha provides ContentAlpha.medium,
-                LocalContentColor provides MaterialTheme.colors.onBackground
-            ) {
-                Text(
-                    text = description,
-                    style = MaterialTheme.typography.body2,
-                )
+            if (description != null) {
+                CompositionLocalProvider(
+                    LocalContentAlpha provides ContentAlpha.medium,
+                    LocalContentColor provides MaterialTheme.colors.onBackground
+                ) {
+                    Text(
+                        text = description,
+                        style = MaterialTheme.typography.body2,
+                    )
+                }
             }
-
         }
     }
 }

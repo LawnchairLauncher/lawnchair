@@ -47,11 +47,12 @@ object Routes {
     const val DOCK: String = "dock"
     const val APP_DRAWER: String = "appDrawer"
     const val FOLDERS: String = "folders"
+    const val QUICKSTEP: String = "quickstep"
 }
 
 sealed class PreferenceCategory(
     val label: String,
-    val description: String,
+    val description: String? = null,
     @DrawableRes val iconResource: Int,
     val route: String
 ) {
@@ -90,6 +91,12 @@ sealed class PreferenceCategory(
         route = Routes.FOLDERS
     )
 
+    class Quickstep(context: Context): PreferenceCategory(
+        label = context.getString(R.string.quickstep_label),
+        iconResource = R.drawable.ic_quickstep,
+        route = Routes.QUICKSTEP
+    )
+
     class About(context: Context) : PreferenceCategory(
         label = context.getString(R.string.about_label),
         description = "${context.getString(R.string.derived_app_name)} ${getMajorVersion(context)}",
@@ -104,6 +111,7 @@ fun getPreferenceCategories(context: Context) = listOf(
     PreferenceCategory.Dock(context),
     PreferenceCategory.AppDrawer(context),
     PreferenceCategory.Folders(context),
+    PreferenceCategory.Quickstep(context),
     PreferenceCategory.About(context)
 )
 
@@ -138,6 +146,7 @@ fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel
                     dockGraph(route = Routes.DOCK)
                     appDrawerGraph(route = Routes.APP_DRAWER)
                     folderGraph(route = Routes.FOLDERS)
+                    quickstepGraph(route = Routes.QUICKSTEP)
                     aboutGraph(route = Routes.ABOUT)
                 }
                 TopBar()

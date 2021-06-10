@@ -1,0 +1,37 @@
+<!--
+  ~     This file is part of Lawnchair Launcher.
+  ~
+  ~     Lawnchair Launcher is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     Lawnchair Launcher is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="32dp"
+    android:height="32dp"
+    android:viewportWidth="32"
+    android:viewportHeight="32">
+    <path
+        android:pathData="M16,16m-16,0a16,16 0,1 1,32 0a16,16 0,1 1,-32 0"
+        android:fillColor="#3F51B5"/>
+    <path
+        android:pathData="M12,9L20,9A1,1 0,0 1,21 10L21,22A1,1 0,0 1,20 23L12,23A1,1 0,0 1,11 22L11,10A1,1 0,0 1,12 9z"
+        android:strokeWidth="2"
+        android:fillColor="#00000000"
+        android:strokeColor="#ffffff"/>
+    <path
+        android:pathData="M24,11V11C25.1046,11 26,11.8954 26,13V20C26,21.1046 25.1046,22 24,22V22V11Z"
+        android:fillColor="#ffffff"/>
+    <path
+        android:pathData="M8,11V11C6.8954,11 6,11.8954 6,13V20C6,21.1046 6.8954,22 8,22V22V11Z"
+        android:fillColor="#ffffff"/>
+</vector>

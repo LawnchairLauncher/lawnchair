@@ -552,6 +552,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     public void init(OverviewActionsView actionsView) {
         mActionsView = actionsView;
         mActionsView.updateHiddenFlags(HIDDEN_NO_TASKS, getTaskViewCount() == 0);
+        mActionsView.setClearAllClickListener(this::dismissAllTasks);
     }
 
     @Override

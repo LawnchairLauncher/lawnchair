@@ -43,6 +43,9 @@ import com.android.quickstep.util.LayoutUtils;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+import app.lawnchair.preferences.PrefEntry;
+import app.lawnchair.preferences.PreferenceManager;
+
 /**
  * View for showing action buttons in Overview
  */
@@ -94,6 +97,9 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
     protected T mCallbacks;
 
+    private View mClearAllButton;
+    private PrefEntry<Boolean> mClearAllPref;
+
     public OverviewActionsView(Context context) {
         this(context, null);
     }
@@ -118,6 +124,19 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
             share.setVisibility(VISIBLE);
             findViewById(R.id.share_space).setVisibility(VISIBLE);
         }
+        mClearAllButton = findViewById(R.id.action_clear_all);
+        View clearAllSpace = findViewById(R.id.clear_all_space);
+
+        PreferenceManager prefs = PreferenceManager.getInstance(getContext());
+        prefs.getClearAllAsAction().subscribe(this, true, enabled -> {
+            if (enabled) {
+                mClearAllButton.setVisibility(View.VISIBLE);
+                clearAllSpace.setVisibility(View.VISIBLE);
+            } else {
+                mClearAllButton.setVisibility(View.GONE);
+                clearAllSpace.setVisibility(View.GONE);
+            }
+        });
     }
 
     /**
@@ -219,5 +238,9 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         LayoutParams params = (LayoutParams) getLayoutParams();
         params.setMargins(
                 params.leftMargin, params.topMargin, params.rightMargin, bottomMargin);
+    }
+
+    public void setClearAllClickListener(OnClickListener clearAllClickListener) {
+        mClearAllButton.setOnClickListener(clearAllClickListener);
     }
 }

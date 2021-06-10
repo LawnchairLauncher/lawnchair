@@ -75,6 +75,7 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val ignoreFeedWhitelist = BoolPref("pref_ignoreFeedWhitelist", false)
     val workspaceDt2s = BoolPref("pref_doubleTap2Sleep", true)
     val launcherTheme = StringPref("pref_launcherTheme", "system")
+    val clearAllAsAction = BoolPref("pref_clearAllAsAction", false)
 
     init {
         sp.registerOnSharedPreferenceChangeListener(this)
