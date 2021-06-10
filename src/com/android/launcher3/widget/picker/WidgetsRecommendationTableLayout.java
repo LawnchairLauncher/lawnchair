@@ -45,6 +45,7 @@ public final class WidgetsRecommendationTableLayout extends TableLayout {
     private static final float DOWN_SCALE_RATIO = 0.9f;
     private static final float MAX_DOWN_SCALE_RATIO = 0.5f;
     private final float mWidgetsRecommendationTableVerticalPadding;
+    private final float mWidgetCellVerticalPadding;
     private final float mWidgetCellTextViewsHeight;
 
     private float mRecommendationTableMaxHeight = Float.MAX_VALUE;
@@ -60,6 +61,8 @@ public final class WidgetsRecommendationTableLayout extends TableLayout {
         super(context, attrs);
         // There are 1 row for title, 1 row for dimension and 2 rows for description.
         mWidgetsRecommendationTableVerticalPadding = 2 * getResources()
+                .getDimensionPixelSize(R.dimen.recommended_widgets_table_vertical_padding);
+        mWidgetCellVerticalPadding = 2 * getResources()
                 .getDimensionPixelSize(R.dimen.widget_cell_vertical_padding);
         mWidgetCellTextViewsHeight = 4 * getResources().getDimension(R.dimen.widget_cell_font_size);
     }
@@ -152,7 +155,8 @@ public final class WidgetsRecommendationTableLayout extends TableLayout {
                 Size widgetSize = WidgetSizes.getWidgetSizePx(
                         deviceProfile, widgetItem.spanX, widgetItem.spanY);
                 float previewHeight = widgetSize.getHeight() * previewScale;
-                rowHeight = Math.max(rowHeight, previewHeight + mWidgetCellTextViewsHeight);
+                rowHeight = Math.max(rowHeight,
+                        previewHeight + mWidgetCellTextViewsHeight + mWidgetCellVerticalPadding);
             }
             totalHeight += rowHeight;
         }
