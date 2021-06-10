@@ -54,6 +54,8 @@ import com.android.quickstep.util.NavBarPosition;
 import com.android.quickstep.util.TriggerSwipeUpTouchTracker;
 import com.android.systemui.shared.system.QuickStepContract;
 
+import app.lawnchair.util.LawnchairUtilsKt;
+
 /** Utility class to handle Home and Assistant gestures. */
 public class NavBarGestureHandler implements OnTouchListener,
         TriggerSwipeUpTouchTracker.OnSwipeUpListener {
@@ -120,7 +122,7 @@ public class NavBarGestureHandler implements OnTouchListener,
         mAssistantGestureDetector = new GestureDetector(context, new AssistantGestureListener());
         int assistantWidth = resources.getDimensionPixelSize(R.dimen.gestures_assistant_width);
         final float assistantHeight = Math.max(mBottomGestureHeight,
-                QuickStepContract.getWindowCornerRadius(resources));
+                LawnchairUtilsKt.getWindowCornerRadius(context));
         mAssistantLeftRegion.bottom = mAssistantRightRegion.bottom = mDisplaySize.y;
         mAssistantLeftRegion.top = mAssistantRightRegion.top = mDisplaySize.y - assistantHeight;
         mAssistantLeftRegion.left = 0;

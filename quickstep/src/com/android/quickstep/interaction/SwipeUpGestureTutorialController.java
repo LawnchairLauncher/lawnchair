@@ -59,6 +59,8 @@ import com.android.quickstep.util.TransformParams;
 import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
 
+import app.lawnchair.util.LawnchairUtilsKt;
+
 @TargetApi(Build.VERSION_CODES.R)
 abstract class SwipeUpGestureTutorialController extends TutorialController {
     private final ViewSwipeUpAnimation mViewSwipeUpAnimation;
@@ -85,7 +87,7 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
         dp.updateInsets(new Rect(insets.left, insets.top, insets.right, insets.bottom));
         mViewSwipeUpAnimation.initDp(dp);
 
-        mFakeTaskViewRadius = QuickStepContract.getWindowCornerRadius(mContext.getResources());
+        mFakeTaskViewRadius = LawnchairUtilsKt.getWindowCornerRadius(mContext);
         mFakeTaskView.setClipToOutline(true);
         mFakeTaskView.setOutlineProvider(new ViewOutlineProvider() {
             @Override

@@ -21,14 +21,12 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Looper
-
+import app.lawnchair.preferences.PreferenceManager
 import com.android.launcher3.util.Executors.MAIN_EXECUTOR
-
+import com.android.systemui.shared.system.QuickStepContract
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
-
 import kotlin.system.exitProcess
-
 
 fun <T, A> ensureOnMainThread(creator: (A) -> T): (A) -> T {
     return { it ->
@@ -79,4 +77,19 @@ fun restartLauncher(context: Context, intent: Intent?) {
 
 fun killLauncher() {
     exitProcess(0)
+}
+
+fun getWindowCornerRadius(context: Context): Float {
+    val prefs = PreferenceManager.getInstance(context)
+    if (prefs.overrideWindowCornerRadius.get()) {
+        return prefs.windowCornerRadius.get()
+    }
+    return QuickStepContract.getWindowCornerRadius(context.resources)
+}
+
+fun supportsRoundedCornersOnWindows(context: Context): Boolean {
+    if (PreferenceManager.getInstance(context).overrideWindowCornerRadius.get()) {
+        return true
+    }
+    return QuickStepContract.supportsRoundedCornersOnWindows(context.resources)
 }

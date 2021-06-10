@@ -81,6 +81,8 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val workspaceDt2s = BoolPref("pref_doubleTap2Sleep", true)
     val launcherTheme = StringPref("pref_launcherTheme", "system")
     val clearAllAsAction = BoolPref("pref_clearAllAsAction", false)
+    val overrideWindowCornerRadius = BoolPref("pref_overrideWindowCornerRadius", false, recreate)
+    val windowCornerRadius = FloatPref("pref_windowCornerRadius", 1f, recreate)
 
     init {
         sp.registerOnSharedPreferenceChangeListener(this)

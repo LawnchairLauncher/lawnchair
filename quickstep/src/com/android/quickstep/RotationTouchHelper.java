@@ -38,6 +38,8 @@ import com.android.systemui.shared.system.TaskStackChangeListener;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+import app.lawnchair.util.LawnchairUtilsKt;
+
 public class RotationTouchHelper implements
         SysUINavigationMode.NavigationModeChangeListener,
         DefaultDisplay.DisplayInfoChangeListener {
@@ -128,7 +130,7 @@ public class RotationTouchHelper implements
         mDisplayId = mDefaultDisplay.getInfo().id;
 
         mOrientationTouchTransformer = new OrientationTouchTransformer(resources, mMode,
-                () -> QuickStepContract.getWindowCornerRadius(resources));
+                () -> LawnchairUtilsKt.getWindowCornerRadius(context));
 
         // Register for navigation mode changes
         onNavigationModeChanged(mSysUiNavMode.addModeChangeListener(this));

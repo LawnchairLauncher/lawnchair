@@ -35,8 +35,8 @@ import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_TRANSITIONS;
 import static com.android.launcher3.statehandlers.DepthController.DEPTH;
 import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATION;
 import static com.android.quickstep.TaskUtils.taskIsATargetWithMode;
-import static com.android.systemui.shared.system.QuickStepContract.getWindowCornerRadius;
-import static com.android.systemui.shared.system.QuickStepContract.supportsRoundedCornersOnWindows;
+import static app.lawnchair.util.LawnchairUtilsKt.getWindowCornerRadius;
+import static app.lawnchair.util.LawnchairUtilsKt.supportsRoundedCornersOnWindows;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
@@ -89,6 +89,8 @@ import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
 import com.android.systemui.shared.system.WindowManagerWrapper;
+
+import app.lawnchair.util.LawnchairUtilsKt;
 
 /**
  * {@link LauncherAppTransitionManager} with Quickstep-specific app transitions for launching from
@@ -522,10 +524,10 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
             endCrop = windowTargetBounds.height();
         }
 
-        final float initialWindowRadius = supportsRoundedCornersOnWindows(mLauncher.getResources())
+        final float initialWindowRadius = supportsRoundedCornersOnWindows(mLauncher)
                 ? startCrop / 2f : 0f;
         final float windowRadius = mDeviceProfile.isMultiWindowMode
-                ? 0 : getWindowCornerRadius(mLauncher.getResources());
+                ? 0 : getWindowCornerRadius(mLauncher);
         appAnimator.addUpdateListener(new MultiValueUpdateListener() {
             FloatProp mDx = new FloatProp(0, dX, 0, xDuration, AGGRESSIVE_EASE);
             FloatProp mDy = new FloatProp(0, dY, 0, yDuration, AGGRESSIVE_EASE);
@@ -715,7 +717,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         ValueAnimator unlockAnimator = ValueAnimator.ofFloat(0, 1);
         unlockAnimator.setDuration(CLOSING_TRANSITION_DURATION_MS);
         float cornerRadius = mDeviceProfile.isMultiWindowMode ? 0 :
-                QuickStepContract.getWindowCornerRadius(mLauncher.getResources());
+                LawnchairUtilsKt.getWindowCornerRadius(mLauncher);
         unlockAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
@@ -745,7 +747,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         ValueAnimator closingAnimator = ValueAnimator.ofFloat(0, 1);
         int duration = CLOSING_TRANSITION_DURATION_MS;
         float windowCornerRadius = mDeviceProfile.isMultiWindowMode
-                ? 0 : getWindowCornerRadius(mLauncher.getResources());
+                ? 0 : getWindowCornerRadius(mLauncher);
         closingAnimator.setDuration(duration);
         closingAnimator.addUpdateListener(new MultiValueUpdateListener() {
             FloatProp mDy = new FloatProp(0, mClosingWindowTransY, 0, duration, DEACCEL_1_7);

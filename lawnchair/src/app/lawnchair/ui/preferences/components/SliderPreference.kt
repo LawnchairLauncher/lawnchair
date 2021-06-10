@@ -63,9 +63,9 @@ fun SliderPreference(
                 ) {
                     Text(
                         text = if (showAsPercentage) {
-                            "${(adapter.state.value * 100).roundToInt()}%"
+                            "${(sliderValue * 100).roundToInt()}%"
                         } else {
-                            "${adapter.state.value.roundToInt()}"
+                            "${sliderValue.roundToInt()}"
                         }
                     )
                 }

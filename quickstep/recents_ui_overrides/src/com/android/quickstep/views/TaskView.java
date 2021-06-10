@@ -104,6 +104,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
+import app.lawnchair.util.LawnchairUtilsKt;
+
 /**
  * A task in the Recents view.
  */
@@ -1089,7 +1091,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
         public FullscreenDrawParams(Context context) {
             mCornerRadius = TaskCornerRadius.get(context);
-            mWindowCornerRadius = QuickStepContract.getWindowCornerRadius(context.getResources());
+            mWindowCornerRadius = LawnchairUtilsKt.getWindowCornerRadius(context);
 
             mCurrentDrawnCornerRadius = mCornerRadius;
         }
