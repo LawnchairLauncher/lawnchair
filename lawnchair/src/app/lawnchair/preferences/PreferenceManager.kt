@@ -45,8 +45,8 @@ class PreferenceManager private constructor(private val context: Context) : Base
         Unit
     }
 
-    private val scheduleRecreate = {
-        LawnchairLauncher.instance?.scheduleRecreate()
+    private val recreate = {
+        LawnchairLauncher.instance?.recreateIfNotScheduled()
         Unit
     }
 
@@ -61,13 +61,13 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val workspaceRows = IdpIntPref("pref_workspaceRows", { numRows }, reloadGrid)
     val folderColumns = IdpIntPref("pref_folderColumns", { numFolderColumns }, reloadGrid)
     val folderRows = IdpIntPref("pref_folderRows", { numFolderRows }, reloadGrid)
-    val iconSizeFactor = FloatPref("pref_iconSizeFactor", 1F, scheduleRestart)
-    val textSizeFactor = FloatPref("pref_textSizeFactor", 1F, scheduleRestart)
-    val allAppsIconSizeFactor = FloatPref("pref_allAppsIconSizeFactor", 1F, scheduleRestart)
-    val allAppsTextSizeFactor = FloatPref("pref_allAppsTextSizeFactor", 1F, scheduleRestart)
+    val iconSizeFactor = FloatPref("pref_iconSizeFactor", 1F, reloadIcons)
+    val textSizeFactor = FloatPref("pref_textSizeFactor", 1F, reloadGrid)
+    val allAppsIconSizeFactor = FloatPref("pref_allAppsIconSizeFactor", 1F, reloadIcons)
+    val allAppsTextSizeFactor = FloatPref("pref_allAppsTextSizeFactor", 1F, reloadGrid)
     val allAppsColumns = IdpIntPref("pref_allAppsColumns", { numAllAppsColumns }, reloadGrid)
     val smartSpaceEnable = BoolPref("pref_smartSpaceEnable", true, scheduleRestart)
-    val minusOneEnable = BoolPref("pref_enableMinusOne", true, scheduleRecreate)
+    val minusOneEnable = BoolPref("pref_enableMinusOne", true, recreate)
     val useFuzzySearch = BoolPref("pref_useFuzzySearch", false)
 
     // TODO: Add the ability to manually delete empty pages.

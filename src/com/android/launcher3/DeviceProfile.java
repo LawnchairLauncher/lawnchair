@@ -260,6 +260,7 @@ public class DeviceProfile {
             updateAvailableDimensions(res);
         }
         updateWorkspacePadding();
+
         // This is done last, after iconSizePx is calculated above.
         mDotRendererWorkSpace = new DotRenderer(iconSizePx, IconShape.getShapePath(),
                 IconShape.DEFAULT_PATH_SIZE);
@@ -384,16 +385,14 @@ public class DeviceProfile {
         cellWidthPx = iconSizePx + iconDrawablePaddingPx;
 
         // All apps
+        allAppsIconSizePx = ResourceUtils.pxFromDp(inv.allAppsIconSize, mInfo.metrics);
+        allAppsIconTextSizePx = Utilities.pxFromSp(inv.allAppsIconTextSize, mInfo.metrics);
         if (allAppsHasDifferentNumColumns()) {
-            allAppsIconSizePx = ResourceUtils.pxFromDp(inv.allAppsIconSize, mInfo.metrics);
-            allAppsIconTextSizePx = Utilities.pxFromSp(inv.allAppsIconTextSize, mInfo.metrics);
             allAppsIconDrawablePaddingPx = iconDrawablePaddingOriginalPx;
             // We use 4 below to ensure labels are closer to their corresponding icon.
             allAppsCellHeightPx = Math.round(allAppsIconSizePx + allAppsIconTextSizePx
                     + (4 * allAppsIconDrawablePaddingPx));
         } else {
-            allAppsIconSizePx = iconSizePx;
-            allAppsIconTextSizePx = iconTextSizePx;
             allAppsIconDrawablePaddingPx = iconDrawablePaddingPx;
             allAppsCellHeightPx = getCellSize().y;
         }
@@ -422,15 +421,6 @@ public class DeviceProfile {
             workspaceSpringLoadShrinkFactor =
                     res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f;
         }
-
-        // Lawnchair prefs
-        PreferenceManager prefs = PreferenceManager.getInstance(mContext);
-
-        // Lawnchair icon and text sizes
-        iconSizePx *= prefs.getIconSizeFactor().get();
-        iconTextSizePx *= prefs.getTextSizeFactor().get();
-        allAppsIconSizePx *= prefs.getAllAppsIconSizeFactor().get();
-        allAppsIconTextSizePx *= prefs.getAllAppsTextSizeFactor().get();
 
         // Folder icon
         folderIconSizePx = IconNormalizer.getNormalizedCircleSize(iconSizePx);
@@ -575,10 +565,10 @@ public class DeviceProfile {
             float hotseatCellWidth = (float) widthPx / inv.numHotseatIcons;
             int hotseatAdjustment = Math.round((workspaceCellWidth - hotseatCellWidth) / 2);
             mHotseatPadding.set(
-                    /*hotseatAdjustment + */ workspacePadding.left + cellLayoutPaddingLeftRightPx
+                    hotseatAdjustment + workspacePadding.left + cellLayoutPaddingLeftRightPx
                             + mInsets.left,
                     hotseatBarTopPaddingPx,
-                    /* hotseatAdjustment + */ workspacePadding.right + cellLayoutPaddingLeftRightPx
+                    hotseatAdjustment + workspacePadding.right + cellLayoutPaddingLeftRightPx
                             + mInsets.right,
                     hotseatBarBottomPaddingPx + mInsets.bottom + cellLayoutBottomPaddingPx);
         }

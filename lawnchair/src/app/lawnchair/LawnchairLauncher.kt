@@ -145,6 +145,12 @@ open class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         scheduleFlag(FLAG_RESTART)
     }
 
+    fun recreateIfNotScheduled() {
+        if (sRestartFlags != 0) {
+            recreate()
+        }
+    }
+
     companion object {
         private const val FLAG_RECREATE = 1 shl 0
         private const val FLAG_RESTART = 1 shl 1
