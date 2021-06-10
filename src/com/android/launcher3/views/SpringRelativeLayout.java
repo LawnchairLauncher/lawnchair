@@ -93,7 +93,7 @@ public class SpringRelativeLayout extends RelativeLayout {
         invalidate();
     }
 
-    protected void onRelease() {
+    public void onRelease() {
         mEdgeGlowBottom.onRelease();
     }
 
