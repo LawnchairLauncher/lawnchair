@@ -29,7 +29,6 @@ import android.content.Intent;
 import android.content.pm.LauncherApps;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
-import android.inputmethodservice.InputMethodService;
 import android.os.Process;
 import android.os.SystemProperties;
 import android.util.Log;
@@ -51,7 +50,6 @@ import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
-import com.android.launcher3.taskbar.TaskbarNavButtonController.TaskbarButton;
 import com.android.launcher3.taskbar.contextual.RotationButtonController;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.MultiValueAlpha;
@@ -231,30 +229,12 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         mWindowManager.removeViewImmediate(mDragLayer);
     }
 
-    void onNavigationButtonClick(@TaskbarButton int buttonType) {
-        mNavButtonController.onButtonClick(buttonType);
-    }
-
-    /**
-     * Should be called when the IME visibility changes, so we can hide/show Taskbar accordingly.
-     */
-    public void setImeIsVisible(boolean isImeVisible) {
-        mIconController.setImeIsVisible(isImeVisible);
-        mNavbarButtonUIController.setImeIsVisible(isImeVisible);
-    }
-
-    /**
-     * When in 3 button nav, the above doesn't get called since we prevent sysui nav bar from
-     * instantiating at all, which is what's responsible for sending sysui state flags over.
-     *
-     * @param vis IME visibility flag
-     */
-    public void updateImeStatus(int displayId, int vis, boolean showImeSwitcher) {
-        if (displayId != getDisplayId() || !canShowNavButtons()) {
+    public void updateSysuiStateFlags(int systemUiStateFlags, boolean forceUpdate) {
+        if (!canShowNavButtons()) {
             return;
         }
-        mNavbarButtonUIController.setImeSwitcherVisible(showImeSwitcher);
-        setImeIsVisible((vis & InputMethodService.IME_VISIBLE) != 0);
+        mNavbarButtonUIController.updateStateForSysuiFlags(systemUiStateFlags, forceUpdate);
+        mIconController.setImeIsVisible(mNavbarButtonUIController.isImeVisible());
     }
 
     public void onRotationProposal(int rotation, boolean isValid) {

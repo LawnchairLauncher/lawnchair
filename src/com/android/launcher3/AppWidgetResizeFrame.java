@@ -4,7 +4,6 @@ import static android.appwidget.AppWidgetHostView.getDefaultPaddingForWidget;
 
 import static com.android.launcher3.LauncherAnimUtils.LAYOUT_HEIGHT;
 import static com.android.launcher3.LauncherAnimUtils.LAYOUT_WIDTH;
-import static com.android.launcher3.Utilities.ATLEAST_S;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGET_RESIZE_COMPLETED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGET_RESIZE_STARTED;
 import static com.android.launcher3.views.BaseDragLayer.LAYOUT_X;
@@ -13,18 +12,12 @@ import static com.android.launcher3.views.BaseDragLayer.LAYOUT_Y;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
-import android.appwidget.AppWidgetHostView;
-import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
-import android.content.ComponentName;
 import android.content.Context;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.os.Bundle;
 import android.util.AttributeSet;
-import android.util.SizeF;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -39,10 +32,10 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.PendingRequestArgs;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
+import com.android.launcher3.widget.util.WidgetSizes;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class AppWidgetResizeFrame extends AbstractFloatingView implements View.OnKeyListener {
     private static final int SNAP_DURATION = 150;
@@ -415,88 +408,10 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
             mRunningHInc += hSpanDelta;
 
             if (!onDismiss) {
-                updateWidgetSizeRanges(mWidgetView, mLauncher, spanX, spanY);
+                WidgetSizes.updateWidgetSizeRanges(mWidgetView, mLauncher, spanX, spanY);
             }
         }
         mWidgetView.requestLayout();
-    }
-
-    public static void updateWidgetSizeRanges(
-            AppWidgetHostView widgetView, Context context, int spanX, int spanY) {
-        List<SizeF> sizes = getWidgetSizes(context, spanX, spanY);
-        if (ATLEAST_S) {
-            widgetView.updateAppWidgetSize(new Bundle(), sizes);
-        } else {
-            Rect bounds = getMinMaxSizes(sizes);
-            widgetView.updateAppWidgetSize(new Bundle(), bounds.left, bounds.top, bounds.right,
-                    bounds.bottom);
-        }
-    }
-
-    /** Returns the list of sizes for a widget of given span, in dp. */
-    public static ArrayList<SizeF> getWidgetSizes(Context context, int spanX, int spanY) {
-        ArrayList<SizeF> sizes = new ArrayList<>(2);
-        final float density = context.getResources().getDisplayMetrics().density;
-        Point cellSize = new Point();
-
-        for (DeviceProfile profile : LauncherAppState.getIDP(context).supportedProfiles) {
-            final float hBorderSpacing = (spanX - 1) * profile.cellLayoutBorderSpacingPx;
-            final float vBorderSpacing = (spanY - 1) * profile.cellLayoutBorderSpacingPx;
-            profile.getCellSize(cellSize);
-            sizes.add(new SizeF(
-                    ((spanX * cellSize.x) + hBorderSpacing) / density,
-                    ((spanY * cellSize.y) + vBorderSpacing) / density));
-        }
-        return sizes;
-    }
-
-    /**
-     * Returns the bundle to be used as the default options for a widget with provided size
-     */
-    public static Bundle getWidgetSizeOptions(
-            Context context, ComponentName provider, int spanX, int spanY) {
-        ArrayList<SizeF> sizes = getWidgetSizes(context, spanX, spanY);
-        Rect padding = getDefaultPaddingForWidget(context, provider, null);
-        float density = context.getResources().getDisplayMetrics().density;
-        float xPaddingDips = (padding.left + padding.right) / density;
-        float yPaddingDips = (padding.top + padding.bottom) / density;
-
-        ArrayList<SizeF> paddedSizes = sizes.stream()
-                .map(size -> new SizeF(
-                        Math.max(0.f, size.getWidth() - xPaddingDips),
-                        Math.max(0.f, size.getHeight() - yPaddingDips)))
-                .collect(Collectors.toCollection(ArrayList::new));
-
-        Rect rect = AppWidgetResizeFrame.getMinMaxSizes(paddedSizes);
-        Bundle options = new Bundle();
-        options.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, rect.left);
-        options.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, rect.top);
-        options.putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, rect.right);
-        options.putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, rect.bottom);
-        options.putParcelableArrayList(AppWidgetManager.OPTION_APPWIDGET_SIZES, paddedSizes);
-        return options;
-    }
-
-    /**
-     * Returns the min and max widths and heights given a list of sizes, in dp.
-     *
-     * @param sizes List of sizes to get the min/max from.
-     * @return A rectangle with the left (resp. top) is used for the min width (resp. height) and
-     * the right (resp. bottom) for the max. The returned rectangle is set with 0s if the list is
-     * empty.
-     */
-    private static Rect getMinMaxSizes(List<SizeF> sizes) {
-        if (sizes.isEmpty()) {
-            return new Rect();
-        } else {
-            SizeF first = sizes.get(0);
-            Rect result = new Rect((int) first.getWidth(), (int) first.getHeight(),
-                    (int) first.getWidth(), (int) first.getHeight());
-            for (int i = 1; i < sizes.size(); i++) {
-                result.union((int) sizes.get(i).getWidth(), (int) sizes.get(i).getHeight());
-            }
-            return result;
-        }
     }
 
     @Override

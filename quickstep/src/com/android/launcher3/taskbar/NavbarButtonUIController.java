@@ -15,10 +15,16 @@
  */
 package com.android.launcher3.taskbar;
 
+import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_A11Y;
+import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_A11Y_LONG_CLICK;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_BACK;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_HOME;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_IME_SWITCH;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_RECENTS;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_CLICKABLE;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_LONG_CLICKABLE;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IME_SHOWING;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IME_SWITCHER_SHOWING;
 
 import android.animation.ObjectAnimator;
 import android.annotation.DrawableRes;
@@ -58,14 +64,18 @@ public class NavbarButtonUIController {
     private static final int FLAG_SWITCHER_SUPPORTED = 1 << 0;
     private static final int FLAG_IME_VISIBLE = 1 << 1;
     private static final int FLAG_ROTATION_BUTTON_VISIBLE = 1 << 2;
+    private static final int FLAG_A11Y_VISIBLE = 1 << 3;
 
     private static final int MASK_IME_SWITCHER_VISIBLE = FLAG_SWITCHER_SUPPORTED | FLAG_IME_VISIBLE;
 
+    private View.OnLongClickListener mA11yLongClickListener;
     private final ArrayList<StatePropertyHolder> mPropertyHolders = new ArrayList<>();
     private final ArrayList<View> mAllButtons = new ArrayList<>();
     private int mState;
 
     private final TaskbarActivityContext mContext;
+    private View a11yButton;
+    private int mSysuiStateFlags;
 
     public NavbarButtonUIController(TaskbarActivityContext context) {
         mContext = context;
@@ -80,6 +90,11 @@ public class NavbarButtonUIController {
             AnimatedFloat taskbarBackgroundAlpha, AlphaProperty taskbarIconAlpha) {
         FrameLayout buttonController = dragLayer.findViewById(R.id.navbuttons_view);
         buttonController.getLayoutParams().height = mContext.getDeviceProfile().taskbarSize;
+
+        mA11yLongClickListener = view -> {
+            navButtonController.onButtonClick(BUTTON_A11Y_LONG_CLICK);
+            return true;
+        };
 
         if (mContext.canShowNavButtons()) {
             ViewGroup startContainer = buttonController.findViewById(R.id.start_nav_buttons);
@@ -132,18 +147,34 @@ public class NavbarButtonUIController {
                 endContainer, navButtonController);
         mPropertyHolders.add(new StatePropertyHolder(imeSwitcherButton,
                 flags -> ((flags & MASK_IME_SWITCHER_VISIBLE) == MASK_IME_SWITCHER_VISIBLE)
-                        && ((flags & FLAG_ROTATION_BUTTON_VISIBLE) == 0)));
+                        && ((flags & FLAG_ROTATION_BUTTON_VISIBLE) == 0)
+                        && ((flags & FLAG_A11Y_VISIBLE) == 0)));
+
+        // A11y button
+        a11yButton = addButton(R.drawable.ic_sysbar_accessibility_button, BUTTON_A11Y,
+                endContainer, navButtonController);
+        mPropertyHolders.add(new StatePropertyHolder(a11yButton,
+                flags -> (flags & FLAG_A11Y_VISIBLE) != 0
+                        && (flags & FLAG_ROTATION_BUTTON_VISIBLE) == 0));
+        a11yButton.setOnLongClickListener(mA11yLongClickListener);
     }
 
-    /**
-     * Should be called when the IME visibility changes, so we can hide/show Taskbar accordingly.
-     */
-    public void setImeIsVisible(boolean isImeVisible) {
-        if (isImeVisible) {
-            mState |= FLAG_IME_VISIBLE;
-        } else {
-            mState &= ~FLAG_IME_VISIBLE;
+    public void updateStateForSysuiFlags(int systemUiStateFlags, boolean forceUpdate) {
+        boolean isImeVisible = (systemUiStateFlags & SYSUI_STATE_IME_SHOWING) != 0;
+        boolean isImeSwitcherShowing = (systemUiStateFlags & SYSUI_STATE_IME_SWITCHER_SHOWING) != 0;
+        boolean a11yVisible = (systemUiStateFlags & SYSUI_STATE_A11Y_BUTTON_CLICKABLE) != 0;
+        boolean a11yLongClickable =
+                (systemUiStateFlags & SYSUI_STATE_A11Y_BUTTON_LONG_CLICKABLE) != 0;
+
+        if (!forceUpdate && systemUiStateFlags == mSysuiStateFlags) {
+            return;
         }
+        mSysuiStateFlags = systemUiStateFlags;
+
+        updateStateForFlag(FLAG_IME_VISIBLE, isImeVisible);
+        updateStateForFlag(FLAG_SWITCHER_SUPPORTED, isImeSwitcherShowing);
+        updateStateForFlag(FLAG_A11Y_VISIBLE, a11yVisible);
+        a11yButton.setLongClickable(a11yLongClickable);
         applyState();
     }
 
@@ -169,15 +200,14 @@ public class NavbarButtonUIController {
     }
 
     /**
-     * Sets if ime switcher is visible or not when ime is visible
+     * Does not call {@link #applyState()}. Don't forget to!
      */
-    public void setImeSwitcherVisible(boolean imeSwitcherVisible) {
-        if (imeSwitcherVisible) {
-            mState |= FLAG_SWITCHER_SUPPORTED;
+    private void updateStateForFlag(int flag, boolean enabled) {
+        if (enabled) {
+            mState |= flag;
         } else {
-            mState &= ~FLAG_SWITCHER_SUPPORTED;
+            mState &= ~flag;
         }
-        applyState();
     }
 
     private void applyState() {

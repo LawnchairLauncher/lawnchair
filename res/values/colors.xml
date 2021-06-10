@@ -59,6 +59,8 @@
     <color name="folder_hint_text_color_light">#FFF</color>
     <color name="folder_hint_text_color_dark">#FF000000</color>
 
+    <color name="folder_dot_color">?attr/colorPrimary</color>
+
     <color name="text_color_primary_dark">#FFFFFFFF</color>
     <color name="text_color_secondary_dark">#FFFFFFFF</color>
     <color name="text_color_tertiary_dark">#CCFFFFFF</color>
