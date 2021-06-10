@@ -207,16 +207,18 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
         if (view == null || !ViewCompat.isLaidOut(view)) {
             return null;
         }
-
-        mActivityContext.getSharedPrefs().edit()
-                .putBoolean(KEY_WIDGETS_EDUCATION_TIP_SEEN, true).apply();
         int[] coords = new int[2];
         view.getLocationOnScreen(coords);
-        ArrowTipView arrowTipView = new ArrowTipView(mActivityContext);
-        return arrowTipView.showAtLocation(
-                getContext().getString(R.string.long_press_widget_to_add),
-                /* arrowXCoord= */coords[0] + view.getWidth() / 2,
-                /* yCoord= */coords[1]);
+        ArrowTipView arrowTipView =
+                new ArrowTipView(mActivityContext,  /* isPointingUp= */ false).showAtLocation(
+                        getContext().getString(R.string.long_press_widget_to_add),
+                        /* arrowXCoord= */coords[0] + view.getWidth() / 2,
+                        /* yCoord= */coords[1]);
+        if (arrowTipView != null) {
+            mActivityContext.getSharedPrefs().edit()
+                    .putBoolean(KEY_WIDGETS_EDUCATION_TIP_SEEN, true).apply();
+        }
+        return arrowTipView;
     }
 
     /** Returns {@code true} if tip has previously been shown on any of {@link BaseWidgetSheet}. */
