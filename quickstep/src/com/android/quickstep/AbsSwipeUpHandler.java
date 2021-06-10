@@ -117,6 +117,7 @@ import com.android.systemui.shared.system.LatencyTrackerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.TaskInfoCompat;
 import com.android.systemui.shared.system.TaskStackChangeListener;
+import com.android.systemui.shared.system.TaskStackChangeListeners;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
@@ -1083,7 +1084,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 // Since this is an edge case, just cancel and relaunch with default activity
                 // options (since we don't know if there's an associated app icon to launch from)
                 endRunningWindowAnim(true /* cancel */);
-                ActivityManagerWrapper.getInstance().unregisterTaskStackListener(
+                TaskStackChangeListeners.getInstance().unregisterTaskStackListener(
                         mActivityRestartListener);
                 ActivityManagerWrapper.getInstance().startActivityFromRecents(task.taskId, null);
             }
@@ -1098,7 +1099,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         // If we are transitioning to launcher, then listen for the activity to be restarted while
         // the transition is in progress
         if (mGestureState.getEndTarget().isLauncher) {
-            ActivityManagerWrapper.getInstance().registerTaskStackListener(
+            TaskStackChangeListeners.getInstance().registerTaskStackListener(
                     mActivityRestartListener);
 
             mParallelRunningAnim = mActivityInterface.getParallelAnimationToLauncher(
@@ -1117,7 +1118,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                     ? runningTaskTarget.taskInfo.launchCookies
                     : new ArrayList<>();
             boolean isTranslucent = runningTaskTarget != null && runningTaskTarget.isTranslucent;
-            boolean appCanEnterPip = runningTaskTarget != null
+            boolean appCanEnterPip = !mDeviceState.isPipActive()
+                    && runningTaskTarget != null
                     && runningTaskTarget.taskInfo.pictureInPictureParams != null
                     && TaskInfoCompat.isAutoEnterPipEnabled(
                             runningTaskTarget.taskInfo.pictureInPictureParams);
@@ -1400,7 +1402,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         }
 
         mActivityInitListener.unregister();
-        ActivityManagerWrapper.getInstance().unregisterTaskStackListener(mActivityRestartListener);
+        TaskStackChangeListeners.getInstance().unregisterTaskStackListener(
+                mActivityRestartListener);
         mTaskSnapshot = null;
     }
 

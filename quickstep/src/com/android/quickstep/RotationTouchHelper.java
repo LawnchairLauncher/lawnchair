@@ -38,6 +38,7 @@ import com.android.quickstep.util.RecentsOrientedState;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.TaskStackChangeListener;
+import com.android.systemui.shared.system.TaskStackChangeListeners;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -178,14 +179,14 @@ public class RotationTouchHelper implements
     }
 
     private void setupOrientationSwipeHandler() {
-        ActivityManagerWrapper.getInstance().registerTaskStackListener(mFrozenTaskListener);
-        mOnDestroyFrozenTaskRunnable = () -> ActivityManagerWrapper.getInstance()
+        TaskStackChangeListeners.getInstance().registerTaskStackListener(mFrozenTaskListener);
+        mOnDestroyFrozenTaskRunnable = () -> TaskStackChangeListeners.getInstance()
                 .unregisterTaskStackListener(mFrozenTaskListener);
         runOnDestroy(mOnDestroyFrozenTaskRunnable);
     }
 
     private void destroyOrientationSwipeHandlerCallback() {
-        ActivityManagerWrapper.getInstance().unregisterTaskStackListener(mFrozenTaskListener);
+        TaskStackChangeListeners.getInstance().unregisterTaskStackListener(mFrozenTaskListener);
         mOnDestroyActions.remove(mOnDestroyFrozenTaskRunnable);
     }
 
