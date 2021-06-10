@@ -26,7 +26,7 @@ class LawnchairAlphabeticalAppsList(context: Context, appsStore: AllAppsStore, i
                 else -> true
             }
         }
-        hiddenApps.subscribe(context.launcher, { onAppsUpdated() })
+        hiddenApps.subscribe(context.launcher, false) { onAppsUpdated() }
     }
 
     override fun updateItemFilter(itemFilter: ItemInfoMatcher?) {

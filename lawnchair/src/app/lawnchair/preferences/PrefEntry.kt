@@ -15,8 +15,8 @@ interface PrefEntry<T> {
     fun addListener(listener: PreferenceChangeListener)
     fun removeListener(listener: PreferenceChangeListener)
 
-    fun subscribe(lifecycleOwner: LifecycleOwner, onChange: Consumer<T>) {
-        lifecycleOwner.lifecycle.addObserver(PrefLifecycleObserver(this, onChange))
+    fun subscribe(lifecycleOwner: LifecycleOwner, fireOnAttach: Boolean = true, onChange: Consumer<T>) {
+        lifecycleOwner.lifecycle.addObserver(PrefLifecycleObserver(this, fireOnAttach, onChange))
     }
 
     operator fun getValue(thisObj: Any?, property: KProperty<*>): T = get()

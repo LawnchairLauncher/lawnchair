@@ -51,7 +51,7 @@ public class OverlayCallbackImpl
         mLauncher = launcher;
         mClient = new LauncherClient(mLauncher, this, new StaticInteger(
                 (minusOnePref.get() ? 1 : 0) | 2 | 4 | 8));
-        minusOnePref.subscribe(launcher, (enabled) -> mLauncher.setLauncherOverlay(enabled ? this : null));
+        minusOnePref.subscribe(launcher, false, (enabled) -> mLauncher.setLauncherOverlay(enabled ? this : null));
     }
 
     @Override
