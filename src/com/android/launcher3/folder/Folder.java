@@ -743,7 +743,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         }
 
         mContent.completePendingPageChanges();
-        mContent.snapToPageImmediately(pageNo);
+        mContent.setCurrentPage(pageNo);
 
         // This is set to true in close(), but isn't reset to false until onDropCompleted(). This
         // leads to an inconsistent state if you drag out of the folder and drag back in without
