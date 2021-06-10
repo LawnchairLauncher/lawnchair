@@ -15,19 +15,19 @@
   ~ limitations under the License.
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="icon_pack">Набір значків</string>
+    <string name="icon_pack">Набір Значків</string>
     <string name="settings">Налаштування</string>
-    <string name="home_screen_label">Домашній екран</string>
-    <string name="home_screen_description">Feed, At a Glance, Grid, Icons</string>
+    <string name="home_screen_label">Домашній Екран</string>
+    <string name="home_screen_description">Стрічка, «At a Glance», Сітка, Значки</string>
     <string name="general_label">Загальні</string>
-    <string name="general_description">Значки сповіщень, набір значків</string>
-    <string name="home_screen_rotation_label">Обертання головного екрану</string>
-    <string name="home_screen_rotaton_description">Коли пристрій обертається.</string>
+    <string name="general_description">Значки Сповіщень, Набір Значків</string>
+    <string name="home_screen_rotation_label">Обертання Головного Екрану</string>
+    <string name="home_screen_rotaton_description">При обертанні пристрою.</string>
     <string name="auto_add_shortcuts_label">Додавання нових програм на головний екран</string>
     <string name="dock_label">Док-панель</string>
-    <string name="dock_description">Search Bar, Icon Count</string>
+    <string name="dock_description">Панель Пошуку, Кількість Значків</string>
     <string name="app_drawer_label">Меню додатків</string>
-    <string name="app_drawer_description">Hidden Apps, Column Count, Icons</string>
+    <string name="app_drawer_description">Приховані Програми, Кількість Стовпців, Значки</string>
     <string name="folders_label">Теки</string>
     <string name="folders_description">Кількість рядків та стовпців</string>
     <string name="app_drawer_columns">Кількість стовпців меню додатків</string>
@@ -75,20 +75,20 @@
         <item quantity="many">%1$d додатків</item>
         <item quantity="other">%1$d додатки</item>
     </plurals>
-    <string name="hotseat_qsb_label">Show Search Bar</string>
+    <string name="hotseat_qsb_label">Показувати Рядок Пошуку</string>
     <string name="dt2s_admin_hint_title">Admin permission required</string>
     <string name="dt2s_admin_hint">To use Double Tap to Sleep, grant the Admin permission.</string>
     <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
     <string name="dt2s_a11y_hint_title">Accessibility service required</string>
     <string name="dt2s_a11y_hint">To use Double Tap to Sleep, enable the accessibility service.</string>
-    <string name="dt2s_warning_open_settings">Open Settings</string>
-    <string name="minus_one_enable">Show Feed</string>
+    <string name="dt2s_warning_open_settings">Відкрити Налаштування</string>
+    <string name="minus_one_enable">Показати Стрічку</string>
     <string name="minus_one_unavailable">Feed is not available</string>
-    <string name="fuzzy_search_title">Fuzzy Search</string>
-    <string name="fuzzy_search_desc">Approximate matching for app searches.</string>
-    <string name="theme_label">Theme</string>
-    <string name="theme_light">Light</string>
-    <string name="theme_dark">Dark</string>
-    <string name="theme_system_default">System default</string>
-    <string name="theme_follow_wallpaper">Follow wallpaper</string>
+    <string name="fuzzy_search_title">Приблизний Пошук</string>
+    <string name="fuzzy_search_desc">Приблизна відповідність для пошуку додатків.</string>
+    <string name="theme_label">Тема</string>
+    <string name="theme_light">Світла</string>
+    <string name="theme_dark">Темна</string>
+    <string name="theme_system_default">За замовчуванням</string>
+    <string name="theme_follow_wallpaper">Слідкувати за шпалерами</string>
 </resources>
