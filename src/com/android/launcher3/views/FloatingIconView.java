@@ -376,6 +376,7 @@ public class FloatingIconView extends FrameLayout implements
             if (mIconLoadResult.isIconLoaded) {
                 setIcon(mIconLoadResult.drawable, mIconLoadResult.badge,
                         mIconLoadResult.btvDrawable, mIconLoadResult.iconOffset);
+                setVisibility(VISIBLE);
                 setIconAndDotVisible(originalView, false);
             } else {
                 mIconLoadResult.onIconLoaded = () -> {
