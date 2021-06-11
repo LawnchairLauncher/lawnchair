@@ -16,34 +16,6 @@
 LOCAL_PATH := $(call my-dir)
 
 #
-# Build rule for Tapl library.
-#
-include $(CLEAR_VARS)
-LOCAL_STATIC_JAVA_LIBRARIES := \
-	androidx.annotation_annotation \
-	androidx.test.runner \
-	androidx.test.rules \
-	androidx.preference_preference \
-	androidx.test.uiautomator_uiautomator
-
-ifneq (,$(wildcard frameworks/base))
-else
-    LOCAL_STATIC_JAVA_LIBRARIES += SystemUISharedLib
-
-    LOCAL_SRC_FILES := $(call all-java-files-under, tapl) \
-        ../src/com/android/launcher3/ResourceUtils.java \
-        ../src/com/android/launcher3/testing/TestProtocol.java
-endif
-
-LOCAL_MODULE := ub-launcher-aosp-tapl
-LOCAL_LICENSE_KINDS := SPDX-license-identifier-Apache-2.0
-LOCAL_LICENSE_CONDITIONS := notice
-LOCAL_NOTICE_FILE := $(LOCAL_PATH)/../NOTICE
-LOCAL_SDK_VERSION := system_current
-
-include $(BUILD_STATIC_JAVA_LIBRARY)
-
-#
 # Build rule for Launcher3Tests
 #
 include $(CLEAR_VARS)
@@ -56,14 +28,8 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
     mockito-target-minus-junit4 \
     launcher_log_protos_lite
 
-ifneq (,$(wildcard frameworks/base))
-    LOCAL_PRIVATE_PLATFORM_APIS := true
-    LOCAL_STATIC_JAVA_LIBRARIES += launcher-aosp-tapl
-else
-    LOCAL_SDK_VERSION := system_28
-    LOCAL_MIN_SDK_VERSION := 21
-    LOCAL_STATIC_JAVA_LIBRARIES += ub-launcher-aosp-tapl
-endif
+LOCAL_PRIVATE_PLATFORM_APIS := true
+LOCAL_STATIC_JAVA_LIBRARIES += launcher-aosp-tapl
 
 LOCAL_SRC_FILES := \
 	$(call all-java-files-under, src) \
