@@ -18,6 +18,7 @@ package com.android.launcher3.notification;
 
 import static com.android.launcher3.touch.SingleAxisSwipeDetector.HORIZONTAL;
 
+import android.animation.AnimatorSet;
 import android.app.Notification;
 import android.content.Context;
 import android.graphics.Color;
@@ -90,6 +91,15 @@ public class NotificationItemView {
                 outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), radius);
             }
         });
+    }
+
+    /**
+     * Animates the background color to a new color.
+     * @param color The color to change to.
+     * @param animatorSetOut The AnimatorSet where we add the color animator to.
+     */
+    public void updateBackgroundColor(int color, AnimatorSet animatorSetOut) {
+        mMainView.updateBackgroundColor(color, animatorSetOut);
     }
 
     public void addGutter() {
