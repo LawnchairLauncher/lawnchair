@@ -68,13 +68,14 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         final BaseDraggingActivity activity = BaseActivity.fromContext(taskView.getContext());
         for (TaskShortcutFactory menuOption : MENU_OPTIONS) {
             SystemShortcut shortcut = menuOption.getShortcut(activity, taskView);
-            if (menuOption == TaskShortcutFactory.SPLIT_SCREEN &&
-                    FeatureFlags.ENABLE_SPLIT_SELECT.get()) {
-                addSplitOptions(shortcuts, activity, taskView, deviceProfile);
+            if (shortcut == null) {
                 continue;
             }
 
-            if (shortcut != null) {
+            if (menuOption == TaskShortcutFactory.SPLIT_SCREEN &&
+                    FeatureFlags.ENABLE_SPLIT_SELECT.get()) {
+                addSplitOptions(shortcuts, activity, taskView, deviceProfile);
+            } else {
                 shortcuts.add(shortcut);
             }
         }
