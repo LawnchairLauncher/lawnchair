@@ -89,7 +89,7 @@
     <string name="theme_label">Тема</string>
     <string name="theme_light">Светлая</string>
     <string name="theme_dark">Тёмная</string>
-    <string name="theme_system_default">Как в системе</string>
+    <string name="theme_system_default">На основе системной</string>
     <string name="theme_follow_wallpaper">На основе обоев</string>
     <string name="quickstep_label">Recents</string>
     <string name="clear_all_as_action_label">Показывать снизу \"Очистить все\"</string>
