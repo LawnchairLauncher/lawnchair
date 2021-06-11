@@ -38,6 +38,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -52,12 +53,10 @@ import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.taskbar.contextual.RotationButtonController;
 import com.android.launcher3.touch.ItemClickHandler;
-import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.views.ActivityContext;
-import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.systemui.shared.recents.model.Task;
@@ -77,16 +76,10 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
 
     private static final String WINDOW_TITLE = "Taskbar";
 
-    private static final int ALPHA_INDEX_HOME = 0;
-    private static final int ALPHA_INDEX_LAUNCHER_STATE = 1;
-    private static final int ALPHA_INDEX_IME = 2;
-
     private final DeviceProfile mDeviceProfile;
     private final LayoutInflater mLayoutInflater;
     private final TaskbarDragLayer mDragLayer;
-    private final TaskbarIconController mIconController;
-    private final TaskbarDragController mDragController;
-    private final NavbarButtonUIController mNavbarButtonUIController;
+    private final TaskbarControllers mControllers;
 
     private final WindowManager mWindowManager;
     private WindowManager.LayoutParams mWindowLayoutParams;
@@ -95,35 +88,17 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
     private int mLastRequestedNonFullscreenHeight;
 
     private final SysUINavigationMode.Mode mNavMode;
-    private final TaskbarNavButtonController mNavButtonController;
-    private final RotationButtonController mRotationButtonController;
 
     private final boolean mIsSafeModeEnabled;
-
-    @NonNull
-    private TaskbarUIController mUIController = TaskbarUIController.DEFAULT;
-
-    private final View.OnClickListener mOnTaskbarIconClickListener;
-    private final View.OnLongClickListener mOnTaskbarIconLongClickListener;
-
-    // Alpha property for task bar
-    private final AnimatedFloat mBgTaskbar = new AnimatedFloat(this::updateBackgroundAlpha);
-    private final AnimatedFloat mBgNavbar = new AnimatedFloat(this::updateBackgroundAlpha);
-
-    private final MultiValueAlpha mTaskbarIconAlpha;
 
     public TaskbarActivityContext(Context windowContext, DeviceProfile dp,
             TaskbarNavButtonController buttonController) {
         super(windowContext, Themes.getActivityThemeRes(windowContext));
         mDeviceProfile = dp;
-        mNavButtonController = buttonController;
+
         mNavMode = SysUINavigationMode.getMode(windowContext);
         mIsSafeModeEnabled = TraceHelper.allowIpcs("isSafeMode",
                 () -> getPackageManager().isSafeMode());
-
-        mDragController = new TaskbarDragController(this);
-        mOnTaskbarIconLongClickListener = mDragController::startDragOnLongClick;
-        mOnTaskbarIconClickListener = this::onTaskbarIconClicked;
 
         float taskbarIconSize = getResources().getDimension(R.dimen.taskbar_icon_size);
         mDeviceProfile.updateIconSize(1, getResources());
@@ -131,21 +106,28 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         mDeviceProfile.updateIconSize(iconScale, getResources());
 
         mLayoutInflater = LayoutInflater.from(this).cloneInContext(this);
-        mDragLayer = (TaskbarDragLayer) mLayoutInflater
-                .inflate(R.layout.taskbar, null, false);
-        mRotationButtonController = new RotationButtonController(this,
-                R.color.popup_color_primary_light, R.color.popup_color_primary_light);
-        mNavbarButtonUIController = new NavbarButtonUIController(this);
-        mIconController = new TaskbarIconController(this, mDragLayer, mNavbarButtonUIController);
+
+        // Inflate views.
+        mDragLayer = (TaskbarDragLayer) mLayoutInflater.inflate(
+                R.layout.taskbar, null, false);
+        TaskbarView taskbarView = mDragLayer.findViewById(R.id.taskbar_view);
+        FrameLayout navButtonsView = mDragLayer.findViewById(R.id.navbuttons_view);
+
+        // Construct controllers.
+        mControllers = new TaskbarControllers(this,
+                new TaskbarDragController(this),
+                buttonController,
+                new NavbarButtonsViewController(this, navButtonsView),
+                new RotationButtonController(this, R.color.popup_color_primary_light,
+                        R.color.popup_color_primary_light),
+                new TaskbarDragLayerController(this, mDragLayer),
+                new TaskbarViewController(this, taskbarView));
 
         Display display = windowContext.getDisplay();
         Context c = display.getDisplayId() == Display.DEFAULT_DISPLAY
                 ? windowContext.getApplicationContext()
                 : windowContext.getApplicationContext().createDisplayContext(display);
         mWindowManager = c.getSystemService(WindowManager.class);
-
-        mTaskbarIconAlpha = new MultiValueAlpha(mDragLayer.findViewById(R.id.taskbar_view), 3);
-        mTaskbarIconAlpha.setUpdateVisibility(true);
     }
 
     public void init() {
@@ -170,13 +152,10 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                 new int[] { ITYPE_EXTRA_NAVIGATION_BAR, ITYPE_BOTTOM_TAPPABLE_ELEMENT }
         );
 
-        mIconController.init(mOnTaskbarIconClickListener, mOnTaskbarIconLongClickListener);
-        mNavbarButtonUIController.init(mDragLayer, mNavButtonController, mRotationButtonController,
-                mBgNavbar, mTaskbarIconAlpha.getProperty(ALPHA_INDEX_IME));
+        // Initialize controllers after all are constructed.
+        mControllers.init();
+
         mWindowManager.addView(mDragLayer, mWindowLayoutParams);
-        if (canShowNavButtons()) {
-            mRotationButtonController.init();
-        }
     }
 
     public boolean canShowNavButtons() {
@@ -200,23 +179,21 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
 
     @Override
     public Rect getFolderBoundingBox() {
-        return mDragLayer.getFolderBoundingBox();
+        return mControllers.taskbarDragLayerController.getFolderBoundingBox();
     }
 
     @Override
     public TaskbarDragController getDragController() {
-        return mDragController;
+        return mControllers.taskbarDragController;
     }
 
     /**
      * Sets a new data-source for this taskbar instance
      */
     public void setUIController(@NonNull TaskbarUIController uiController) {
-        mUIController.onDestroy();
-        mUIController = uiController;
-        mIconController.setUIController(mUIController);
-        mUIController.init(mBgTaskbar, mTaskbarIconAlpha.getProperty(ALPHA_INDEX_LAUNCHER_STATE),
-                mTaskbarIconAlpha.getProperty(ALPHA_INDEX_HOME));
+        mControllers.uiController.onDestroy();
+        mControllers.uiController = uiController;
+        mControllers.uiController.init(mControllers);
     }
 
     /**
@@ -224,8 +201,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
      */
     public void onDestroy() {
         setUIController(TaskbarUIController.DEFAULT);
-        mIconController.onDestroy();
-        mRotationButtonController.onDestroy();
+        mControllers.onDestroy();
         mWindowManager.removeViewImmediate(mDragLayer);
     }
 
@@ -233,23 +209,25 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         if (!canShowNavButtons()) {
             return;
         }
-        mNavbarButtonUIController.updateStateForSysuiFlags(systemUiStateFlags, forceUpdate);
-        mIconController.setImeIsVisible(mNavbarButtonUIController.isImeVisible());
+        mControllers.navbarButtonsViewController.updateStateForSysuiFlags(
+                systemUiStateFlags, forceUpdate);
+        mControllers.taskbarViewController.setImeIsVisible(
+                mControllers.navbarButtonsViewController.isImeVisible());
     }
 
     public void onRotationProposal(int rotation, boolean isValid) {
-        mRotationButtonController.onRotationProposal(rotation, isValid);
+        mControllers.rotationButtonController.onRotationProposal(rotation, isValid);
     }
 
     public void disable(int displayId, int state1, int state2, boolean animate) {
         if (displayId != getDisplayId()) {
             return;
         }
-        mRotationButtonController.onDisable2FlagChanged(state2);
+        mControllers.rotationButtonController.onDisable2FlagChanged(state2);
     }
 
     public void onSystemBarAttributesChanged(int displayId, int behavior) {
-        mRotationButtonController.onBehaviorChanged(displayId, behavior);
+        mControllers.rotationButtonController.onBehaviorChanged(displayId, behavior);
     }
 
     /**
@@ -296,8 +274,8 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                 folder.animateOpen();
 
                 folder.iterateOverItems((itemInfo, itemView) -> {
-                    itemView.setOnClickListener(mOnTaskbarIconClickListener);
-                    itemView.setOnLongClickListener(mOnTaskbarIconLongClickListener);
+                    mControllers.taskbarViewController
+                            .setClickAndLongClickListenersForIcon(itemView);
                     // To play haptic when dragging, like other Taskbar items do.
                     itemView.setHapticFeedbackEnabled(true);
                     return false;
@@ -343,9 +321,4 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
 
         AbstractFloatingView.closeAllOpenViews(this);
     }
-
-    private void updateBackgroundAlpha() {
-        mDragLayer.setTaskbarBackgroundAlpha(Math.max(mBgNavbar.value, mBgTaskbar.value));
-    }
-
 }

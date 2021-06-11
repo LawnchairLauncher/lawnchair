@@ -60,6 +60,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     private final TaskbarActivityContext mActivityContext;
 
     // Initialized in init.
+    private TaskbarViewController.TaskbarViewCallbacks mControllerCallbacks;
     private View.OnClickListener mIconClickListener;
     private View.OnLongClickListener mIconLongClickListener;
 
@@ -98,9 +99,10 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         mItemPadding = (mIconTouchSize - actualIconSize) / 2;
     }
 
-    protected void init(OnClickListener clickListener, OnLongClickListener longClickListener) {
-        mIconClickListener = clickListener;
-        mIconLongClickListener = longClickListener;
+    protected void init(TaskbarViewController.TaskbarViewCallbacks callbacks) {
+        mControllerCallbacks = callbacks;
+        mIconClickListener = mControllerCallbacks.getOnClickListener();
+        mIconLongClickListener = mControllerCallbacks.getOnLongClickListener();
 
         int numHotseatIcons = mActivityContext.getDeviceProfile().numShownHotseatIcons;
         updateHotseatItems(new ItemInfo[numHotseatIcons]);
@@ -200,11 +202,9 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
                     && hotseatItemInfo instanceof WorkspaceItemInfo) {
                 ((BubbleTextView) hotseatView).applyFromWorkspaceItem(
                         (WorkspaceItemInfo) hotseatItemInfo);
-                hotseatView.setOnClickListener(mIconClickListener);
-                hotseatView.setOnLongClickListener(mIconLongClickListener);
+                setClickAndLongClickListenersForIcon(hotseatView);
             } else if (isFolder) {
-                hotseatView.setOnClickListener(mIconClickListener);
-                hotseatView.setOnLongClickListener(mIconLongClickListener);
+                setClickAndLongClickListenersForIcon(hotseatView);
             } else {
                 hotseatView.setOnClickListener(null);
                 hotseatView.setOnLongClickListener(null);
@@ -212,6 +212,14 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
             }
             hotseatView.setVisibility(hotseatView.getTag() != null ? VISIBLE : INVISIBLE);
         }
+    }
+
+    /**
+     * Sets OnClickListener and OnLongClickListener for the given view.
+     */
+    public void setClickAndLongClickListenersForIcon(View icon) {
+        icon.setOnClickListener(mIconClickListener);
+        icon.setOnLongClickListener(mIconLongClickListener);
     }
 
     @Override
