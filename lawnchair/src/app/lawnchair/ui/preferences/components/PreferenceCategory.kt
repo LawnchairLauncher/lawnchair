@@ -27,17 +27,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import app.lawnchair.ui.preferences.LocalNavController
 
 @Composable
-fun PreferenceCategoryListItem(
+fun PreferenceCategory(
     label: String,
-    description: String?,
+    description: String? = null,
     @DrawableRes iconResource: Int,
-    onClick: () -> Unit
+    route: String
 ) {
+    val navController = LocalNavController.current
     Row(
         modifier = Modifier
-            .clickable(onClick = onClick)
+            .clickable(onClick = { navController.navigate(route) })
             .height(72.dp)
             .padding(start = 16.dp, end = 16.dp)
             .fillMaxWidth(),
