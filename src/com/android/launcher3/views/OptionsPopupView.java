@@ -146,13 +146,25 @@ public class OptionsPopupView extends ArrowPopup
             view.setOnLongClickListener(popup);
             popup.mItemMap.put(view, item);
         }
+
+        popup.addPreDrawForColorExtraction(launcher);
         popup.show();
         return popup;
     }
 
+    @Override
+    protected List<View> getChildrenForColorExtraction() {
+        int childCount = getChildCount();
+        ArrayList<View> children = new ArrayList<>(childCount);
+        for (int i = 0; i < childCount; ++i) {
+            children.add(getChildAt(i));
+        }
+        return children;
+    }
+
     @VisibleForTesting
     public static ArrowPopup getOptionsPopup(Launcher launcher) {
-        return launcher.findViewById(R.id.deep_shortcuts_container);
+        return launcher.findViewById(R.id.popup_container);
     }
 
     public static void showDefaultOptions(Launcher launcher, float x, float y) {
