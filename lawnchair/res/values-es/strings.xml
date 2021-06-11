@@ -88,11 +88,11 @@
     <string name="theme_light">Claro</string>
     <string name="theme_dark">Oscuro</string>
     <string name="theme_system_default">Predeterminado del Sistema</string>
-    <string name="theme_follow_wallpaper">Match Wallpaper</string>
+    <string name="theme_follow_wallpaper">Seguir Fondo</string>
     <string name="quickstep_label">Recientes</string>
     <string name="clear_all_as_action_label">Mostrar \"Borrar todo\" en la parte inferior</string>
     <string name="window_corner_radius_label">Corner radius</string>
     <string name="override_window_corner_radius_label">Custom corner radius</string>
     <string name="override_window_corner_radius_description">If the default doesn\'t match your screen</string>
-    <string name="system_icons">System Icons</string>
+    <string name="system_icons">Iconos del sistema</string>
 </resources>
