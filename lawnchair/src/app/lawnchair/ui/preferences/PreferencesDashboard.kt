@@ -3,6 +3,7 @@ package app.lawnchair.ui.preferences
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import app.lawnchair.LawnchairApp
 import app.lawnchair.preferences.getMajorVersion
 import app.lawnchair.ui.preferences.components.PreferenceCategory
 import com.android.launcher3.R
@@ -44,11 +45,13 @@ fun PreferencesDashboard() {
         route = Routes.FOLDERS
     )
 
-    PreferenceCategory(
-        label = stringResource(R.string.quickstep_label),
-        iconResource = R.drawable.ic_quickstep,
-        route = Routes.QUICKSTEP
-    )
+    if (LawnchairApp.isRecentsEnabled) {
+        PreferenceCategory(
+            label = stringResource(R.string.quickstep_label),
+            iconResource = R.drawable.ic_quickstep,
+            route = Routes.QUICKSTEP
+        )
+    }
 
     val context = LocalContext.current
     PreferenceCategory(

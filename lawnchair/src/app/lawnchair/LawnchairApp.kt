@@ -25,9 +25,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
-import androidx.annotation.Keep
 import app.lawnchair.util.restartLauncher
-import com.android.launcher3.LauncherAppState
 import com.android.launcher3.Utilities
 import com.android.quickstep.RecentsActivity
 
