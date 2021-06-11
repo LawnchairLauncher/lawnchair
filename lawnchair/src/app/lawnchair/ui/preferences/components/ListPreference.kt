@@ -89,13 +89,15 @@ fun <T> ListPreference(
             LazyColumn {
                 items(entries) { item ->
                     Row(
+                        verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
+                            .height(52.dp)
                             .fillMaxSize()
                             .clickable {
                                 adapter.onChange(item.value)
                                 scope.launch { sheetState.hide() }
                             }
-                            .padding(16.dp)
+                            .padding(horizontal = 16.dp)
                     ) {
                         RadioButton(
                             modifier = Modifier.padding(end = 16.dp),

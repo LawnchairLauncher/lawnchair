@@ -18,18 +18,15 @@ fun AlertBottomSheetContent(
     text: @Composable (() -> Unit)? = null,
     content: @Composable (() -> Unit)? = null
 ) {
-    val contentPadding = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+    val contentPadding = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp)
+
     Column(
         modifier = Modifier
             .navigationBarsPadding()
-            .padding(
-                top = 16.dp,
-                bottom = 16.dp,
-            )
             .fillMaxWidth()
     ) {
         if (title != null) {
-            Box(modifier = Modifier.then(contentPadding)) {
+            Box(modifier = contentPadding) {
                 CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
                     val textStyle = MaterialTheme.typography.h6
                     ProvideTextStyle(textStyle, title)
@@ -37,21 +34,20 @@ fun AlertBottomSheetContent(
             }
         }
         if (text != null) {
-            Box(modifier = Modifier.then(contentPadding)) {
+            Box(modifier = contentPadding) {
                 val textStyle = MaterialTheme.typography.body2
                 ProvideTextStyle(textStyle, text)
             }
         }
         if (content != null) {
-            Box(modifier = Modifier.padding(bottom = 16.dp)) {
+            Box(modifier = Modifier.padding(top = 16.dp)) {
                 content()
             }
         }
         Row(
             horizontalArrangement = Arrangement.End,
             modifier = Modifier
-                .padding(top = 4.dp)
-                .then(contentPadding)
+                .padding(16.dp)
                 .fillMaxWidth()
         ) {
             buttons()
