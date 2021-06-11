@@ -18,7 +18,7 @@ overview_link = f'https://github.com/{github_repository}/compare/{commits_range}
 overview_link_tag = f'''<a href="{overview_link}">{len(commits)} new commit{'s' if len(commits) > 1 else ''}</a>'''
 message = f'''<b>🔨 {overview_link_tag} to <code>lawnchair:{branch}</code>:</b>\n'''
 
-for commit in commits:
+for commit in reversed(commits):
     commit_message = commit.message.split('\n')[0]
     commit_link = f'https://github.com/{github_repository}/commit/{commit.hexsha}'
     commit_link_tag = f'<a href="{commit_link}">{repository.git.rev_parse(commit.hexsha, short=7)}</a>'
