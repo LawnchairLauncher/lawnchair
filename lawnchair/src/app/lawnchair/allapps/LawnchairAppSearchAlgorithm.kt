@@ -18,7 +18,8 @@ class LawnchairAppSearchAlgorithm(context: Context, apps: MutableList<AppInfo>) 
 
         // Run a fuzzy search on all available titles using the Winkler-Jaro algorithm
         val result = ArrayList<ComponentKey>()
-        val matches = FuzzySearch.extractSorted(query.toLowerCase(Locale.getDefault()), mApps,
+        val matches = FuzzySearch.extractSorted(
+            query.lowercase(Locale.getDefault()), mApps,
             { it.title.toString() }, WeightedRatio(), 65)
         for (match in matches) {
             result.add(match.referent.toComponentKey())
