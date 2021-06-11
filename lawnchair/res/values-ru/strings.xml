@@ -89,11 +89,11 @@
     <string name="theme_label">Тема</string>
     <string name="theme_light">Светлая</string>
     <string name="theme_dark">Тёмная</string>
-    <string name="theme_system_default">Follow System</string>
-    <string name="theme_follow_wallpaper">Match Wallpaper</string>
+    <string name="theme_system_default">Как в системе</string>
+    <string name="theme_follow_wallpaper">На основе обоев</string>
     <string name="quickstep_label">Recents</string>
-    <string name="clear_all_as_action_label">Show “Clear all” at bottom</string>
-    <string name="window_corner_radius_label">Corner radius</string>
+    <string name="clear_all_as_action_label">Показывать снизу \"Очистить все\"</string>
+    <string name="window_corner_radius_label">Скругление углов</string>
     <string name="override_window_corner_radius_label">Custom corner radius</string>
     <string name="override_window_corner_radius_description">If the default doesn\'t match your screen</string>
     <string name="system_icons">System Icons</string>
