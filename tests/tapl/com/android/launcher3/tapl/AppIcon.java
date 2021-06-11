@@ -47,7 +47,7 @@ public final class AppIcon extends Launchable {
     public AppIconMenu openMenu() {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
             return new AppIconMenu(mLauncher, mLauncher.clickAndGet(
-                    mObject, "deep_shortcuts_container", LONG_CLICK_EVENT));
+                    mObject, "popup_container", LONG_CLICK_EVENT));
         }
     }
 
@@ -58,7 +58,7 @@ public final class AppIcon extends Launchable {
 
     @Override
     protected String getLongPressIndicator() {
-        return "deep_shortcuts_container";
+        return "popup_container";
     }
 
     @Override
