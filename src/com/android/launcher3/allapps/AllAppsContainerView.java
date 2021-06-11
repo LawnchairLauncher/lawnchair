@@ -669,30 +669,10 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     }
 
     public void onPull(float deltaDistance, float displacement) {
-        absorbPullDeltaDistance(PULL_MULTIPLIER * deltaDistance,
-                PULL_MULTIPLIER * displacement);
-        // ideally, this should be done using EdgeEffect.onPush to create squish effect.
-        // However, until such method is available, launcher to simulate the onPush method.
-        mHeader.setTranslationY(-.5f * mHeaderTop * deltaDistance);
-        getRecyclerViewContainer().setTranslationY(-mHeaderTop * deltaDistance);
-    }
-
-    public void onRelease() {
-        ValueAnimator anim1 = ValueAnimator.ofFloat(1f, 0f);
-        final float floatingHeaderHeight = getFloatingHeaderView().getTranslationY();
-        final float recyclerViewHeight = getRecyclerViewContainer().getTranslationY();
-        anim1.setDuration(200);
-        anim1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                getFloatingHeaderView().setTranslationY(
-                        ((float) valueAnimator.getAnimatedValue()) * floatingHeaderHeight);
-                getRecyclerViewContainer().setTranslationY(
-                        ((float) valueAnimator.getAnimatedValue()) * recyclerViewHeight);
-            }
-        });
-        anim1.start();
-        super.onRelease();
+        absorbPullDeltaDistance(PULL_MULTIPLIER * deltaDistance, PULL_MULTIPLIER * displacement);
+        // Current motion spec is to actually push and not pull
+        // on this surface. However, until EdgeEffect.onPush (b/190612804) is
+        // implemented at view level, we will simply pull
     }
 
     @Override
