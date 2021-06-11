@@ -105,8 +105,17 @@
     <!-- Dialog text. This dialog lets a user know how they can use widgets on their phone.
          [CHAR_LIMIT=NONE] -->
     <string name="widget_education_content">To get info without opening apps, you can add widgets to your Home screen</string>
+
+    <!-- Text on an educational tip on widget informing users that they can change widget settings.
+         [CHAR_LIMIT=NONE] -->
+    <string name="reconfigurable_widget_education_tip">Tap to change widget settings</string>
+
     <!-- Text on the button that closes the education dialog about widgets. [CHAR_LIMIT=50] -->
     <string name="widget_education_close_button">Got it</string>
+
+    <!-- Spoken text for screen readers. This text is for an icon that lets the user change a
+         widget's settings. [CHAR_LIMIT=50] -->
+    <string name="widget_reconfigure_button_content_description">Change widget settings</string>
 
     <!-- All Apps -->
     <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
