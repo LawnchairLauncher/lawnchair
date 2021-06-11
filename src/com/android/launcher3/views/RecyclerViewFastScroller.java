@@ -28,6 +28,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Property;
 import android.view.MotionEvent;
@@ -37,6 +38,7 @@ import android.view.WindowInsets;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.BaseRecyclerView;
@@ -342,16 +344,21 @@ public class RecyclerViewFastScroller extends View {
             // swiping very close to the thumb area (not just within it's bound)
             // will also prevent back gesture
             SYSTEM_GESTURE_EXCLUSION_RECT.get(0).offset(mThumbDrawOffset.x, mThumbDrawOffset.y);
-            SYSTEM_GESTURE_EXCLUSION_RECT.get(0).left = SYSTEM_GESTURE_EXCLUSION_RECT.get(0).right
-                    - mSystemGestureInsets.right;
+            if (Utilities.ATLEAST_Q) {
+                SYSTEM_GESTURE_EXCLUSION_RECT.get(0).left =
+                        SYSTEM_GESTURE_EXCLUSION_RECT.get(0).right - mSystemGestureInsets.right;
+            }
             setSystemGestureExclusionRects(SYSTEM_GESTURE_EXCLUSION_RECT);
         }
         canvas.restoreToCount(saveCount);
     }
 
     @Override
+    @RequiresApi(Build.VERSION_CODES.Q)
     public WindowInsets onApplyWindowInsets(WindowInsets insets) {
-        mSystemGestureInsets = insets.getSystemGestureInsets();
+        if (Utilities.ATLEAST_Q) {
+            mSystemGestureInsets = insets.getSystemGestureInsets();
+        }
         return super.onApplyWindowInsets(insets);
     }
 
