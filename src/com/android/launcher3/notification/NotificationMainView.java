@@ -20,10 +20,13 @@ import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelo
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_NOTIFICATION_DISMISSED;
 
 import android.animation.Animator;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.RippleDrawable;
 import android.os.Build;
@@ -78,6 +81,9 @@ public class NotificationMainView extends FrameLayout implements SingleAxisSwipe
 
     private SingleAxisSwipeDetector mSwipeDetector;
 
+    private final ColorDrawable mColorDrawable;
+    private final RippleDrawable mRippleDrawable;
+
     public NotificationMainView(Context context) {
         this(context, null, 0);
     }
@@ -90,6 +96,10 @@ public class NotificationMainView extends FrameLayout implements SingleAxisSwipe
         super(context, attrs, defStyle);
 
         mContentTranslateAnimator = ObjectAnimator.ofFloat(this, CONTENT_TRANSLATION, 0);
+        mColorDrawable = new ColorDrawable(Color.TRANSPARENT);
+        mRippleDrawable = new RippleDrawable(ColorStateList.valueOf(
+                Themes.getAttrColor(getContext(), android.R.attr.colorControlHighlight)),
+                mColorDrawable, null);
     }
 
     @Override
@@ -105,16 +115,29 @@ public class NotificationMainView extends FrameLayout implements SingleAxisSwipe
         updateBackgroundColor(colorBackground.getColor());
     }
 
-    public void updateBackgroundColor(int color) {
+    private void updateBackgroundColor(int color) {
         mBackgroundColor = color;
-        RippleDrawable rippleBackground = new RippleDrawable(ColorStateList.valueOf(
-                Themes.getAttrColor(getContext(), android.R.attr.colorControlHighlight)),
-                new ColorDrawable(color), null);
-        mTextAndBackground.setBackground(rippleBackground);
+        mColorDrawable.setColor(color);
+        mTextAndBackground.setBackground(mRippleDrawable);
         if (mNotificationInfo != null) {
             mIconView.setBackground(mNotificationInfo.getIconForBackground(getContext(),
                     mBackgroundColor));
         }
+    }
+
+    /**
+     * Animates the background color to a new color.
+     * @param color The color to change to.
+     * @param animatorSetOut The AnimatorSet where we add the color animator to.
+     */
+    public void updateBackgroundColor(int color, AnimatorSet animatorSetOut) {
+        int oldColor = mBackgroundColor;
+        ValueAnimator colors = ValueAnimator.ofArgb(oldColor, color);
+        colors.addUpdateListener(valueAnimator -> {
+            int newColor = (int) valueAnimator.getAnimatedValue();
+            updateBackgroundColor(newColor);
+        });
+        animatorSetOut.play(colors);
     }
 
     public void setSwipeDetector(SingleAxisSwipeDetector swipeDetector) {
