@@ -87,7 +87,7 @@
     <string name="theme_label">Temas</string>
     <string name="theme_light">Claro</string>
     <string name="theme_dark">Oscuro</string>
-    <string name="theme_system_default">Follow System</string>
+    <string name="theme_system_default">Predeterminado del Sistema</string>
     <string name="theme_follow_wallpaper">Match Wallpaper</string>
     <string name="quickstep_label">Recientes</string>
     <string name="clear_all_as_action_label">Mostrar \"Borrar todo\" en la parte inferior</string>
