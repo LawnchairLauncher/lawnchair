@@ -70,7 +70,7 @@
     <string name="hidden_apps_label">छिपे हुए ऐप्स</string>
     <string name="hidden_apps_label_with_count">छिपे हुए ऐप्स</string>
     <plurals name="apps_count">
-        <item quantity="one">%1$d App</item>
+        <item quantity="one">%1$d एप्लिकेशन</item>
         <item quantity="other">ऐप्स</item>
     </plurals>
     <string name="hotseat_qsb_label">खोज बार दिखाएँ</string>
