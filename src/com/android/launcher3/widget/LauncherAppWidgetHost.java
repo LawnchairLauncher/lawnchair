@@ -25,15 +25,20 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.util.SparseArray;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.BaseActivity;
+import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.model.WidgetsModel;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.widget.custom.CustomWidgetManager;
@@ -292,8 +297,13 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
         activity.startActivityForResult(intent, requestCode);
     }
 
-
-    public void startConfigActivity(BaseActivity activity, int widgetId, int requestCode) {
+    /**
+     * Launches an app widget's configuration activity.
+     * @param activity The activity from which to launch the configuration activity
+     * @param widgetId The id of the bound app widget to be configured
+     * @param requestCode An optional request code to be returned with the result
+     */
+    public void startConfigActivity(BaseDraggingActivity activity, int widgetId, int requestCode) {
         if (WidgetsModel.GO_DISABLE_WIDGETS) {
             sendActionCancelled(activity, requestCode);
             return;
@@ -301,11 +311,25 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
 
         try {
             TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "start: startConfigActivity");
-            startAppWidgetConfigureActivityForResult(activity, widgetId, 0, requestCode, null);
+            startAppWidgetConfigureActivityForResult(activity, widgetId, 0, requestCode,
+                    getConfigurationActivityOptions(activity, widgetId));
         } catch (ActivityNotFoundException | SecurityException e) {
             Toast.makeText(activity, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
             sendActionCancelled(activity, requestCode);
         }
+    }
+
+    /**
+     * Returns an {@link android.app.ActivityOptions} bundle from the {code activity} for launching
+     * the configuration of the {@code widgetId} app widget, or null of options cannot be produced.
+     */
+    @Nullable
+    private Bundle getConfigurationActivityOptions(BaseDraggingActivity activity, int widgetId) {
+        LauncherAppWidgetHostView view = mViews.get(widgetId);
+        if (view == null) return null;
+        Object tag = view.getTag();
+        if (!(tag instanceof ItemInfo)) return null;
+        return activity.getActivityLaunchOptions(view, (ItemInfo) tag).toBundle();
     }
 
     private void sendActionCancelled(final BaseActivity activity, final int requestCode) {
