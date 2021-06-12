@@ -18,7 +18,6 @@ package com.android.launcher3.taskbar;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -37,11 +36,9 @@ import com.android.systemui.shared.system.ViewTreeObserverWrapper.OnComputeInset
  */
 public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
 
-    private final int mFolderMargin;
     private final Paint mTaskbarBackgroundPaint;
 
-    private TaskbarIconController.TaskbarDragLayerCallbacks mControllerCallbacks;
-    private TaskbarView mTaskbarView;
+    private TaskbarDragLayerController.TaskbarDragLayerCallbacks mControllerCallbacks;
 
     private final OnComputeInsetsListener mTaskbarInsetsComputer = this::onComputeTaskbarInsets;
 
@@ -61,10 +58,13 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
     public TaskbarDragLayer(@NonNull Context context, @Nullable AttributeSet attrs,
             int defStyleAttr, int defStyleRes) {
         super(context, attrs, 1 /* alphaChannelCount */);
-        mFolderMargin = getResources().getDimensionPixelSize(R.dimen.taskbar_folder_margin);
         mTaskbarBackgroundPaint = new Paint();
         mTaskbarBackgroundPaint.setColor(getResources().getColor(R.color.taskbar_background));
         mTaskbarBackgroundPaint.setAlpha(0);
+    }
+
+    public void init(TaskbarDragLayerController.TaskbarDragLayerCallbacks callbacks) {
+        mControllerCallbacks = callbacks;
         recreateControllers();
     }
 
@@ -73,15 +73,10 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
         mControllers = new TouchController[] {mActivity.getDragController()};
     }
 
-    public void init(TaskbarIconController.TaskbarDragLayerCallbacks callbacks,
-            TaskbarView taskbarView) {
-        mControllerCallbacks = callbacks;
-        mTaskbarView = taskbarView;
-    }
-
     private void onComputeTaskbarInsets(InsetsInfo insetsInfo) {
         if (mControllerCallbacks != null) {
             mControllerCallbacks.updateInsetsTouchability(insetsInfo);
+            mControllerCallbacks.updateContentInsets(insetsInfo.contentInsets);
         }
     }
 
@@ -120,18 +115,9 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        canvas.drawRect(0, canvas.getHeight() - mTaskbarView.getHeight(), canvas.getWidth(),
-                canvas.getHeight(), mTaskbarBackgroundPaint);
+        canvas.drawRect(0, canvas.getHeight() - mControllerCallbacks.getTaskbarBackgroundHeight(),
+                canvas.getWidth(), canvas.getHeight(), mTaskbarBackgroundPaint);
         super.dispatchDraw(canvas);
-    }
-
-    /**
-     * @return Bounds (in our coordinates) where an opened Folder can display.
-     */
-    protected Rect getFolderBoundingBox() {
-        Rect boundingBox = new Rect(0, 0, getWidth(), getHeight() - mTaskbarView.getHeight());
-        boundingBox.inset(mFolderMargin, mFolderMargin);
-        return boundingBox;
     }
 
     /**

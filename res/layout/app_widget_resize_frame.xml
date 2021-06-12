@@ -83,7 +83,8 @@
             android:layout_marginEnd="@dimen/widget_reconfigure_button_margin"
             android:src="@drawable/widget_reconfigure_button_frame"
             android:background="?android:attr/selectableItemBackground"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:contentDescription="@string/widget_reconfigure_button_content_description" />
 
     </FrameLayout>
 </com.android.launcher3.AppWidgetResizeFrame>

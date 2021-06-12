@@ -25,35 +25,48 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
+import android.graphics.RectF;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Pair;
+import android.util.SparseIntArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.InsettableFrameLayout;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.Workspace;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BaseDragLayer;
+import com.android.launcher3.widget.LocalColorExtractor;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * A container for shortcuts to deep links and notifications associated with an app.
@@ -75,6 +88,10 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
     private static final int CLOSE_FADE_DURATION = 50;
     private static final int CLOSE_CHILD_FADE_START_DELAY = 0;
     private static final int CLOSE_CHILD_FADE_DURATION = 140;
+
+    // Index used to get background color when using local wallpaper color extraction,
+    private static final int DARK_COLOR_EXTRACTION_INDEX = android.R.color.system_neutral2_800;
+    private static final int LIGHT_COLOR_EXTRACTION_INDEX = android.R.color.system_accent2_50;
 
     private final Rect mTempRect = new Rect();
 
@@ -104,8 +121,17 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
 
     private Runnable mOnCloseCallback = () -> { };
 
+    // The rect string of the view that the arrow is attached to, in screen reference frame.
+    protected String mArrowColorRectString;
+    private int mArrowColor;
+    protected final HashMap<String, View> mViewForRect = new HashMap<>();
+
+    @Nullable protected LocalColorExtractor mColorExtractor;
+
     private final float mElevation;
     private final int mBackgroundColor;
+
+    private final String mIterateChildrenTag;
 
     public ArrowPopup(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -115,6 +141,7 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
         mIsRtl = Utilities.isRtl(getResources());
 
         mBackgroundColor = Themes.getAttrColor(context, R.attr.popupColorPrimary);
+        mArrowColor = mBackgroundColor;
         mElevation = getResources().getDimension(R.dimen.deep_shortcuts_elevation);
 
         // Initialize arrow view
@@ -139,6 +166,14 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
         mRoundedBottom.setColor(mBackgroundColor);
         mRoundedBottom.setCornerRadii(new float[] { smallerRadius, smallerRadius, smallerRadius,
                 smallerRadius, mOutlineRadius, mOutlineRadius, mOutlineRadius, mOutlineRadius});
+
+        mIterateChildrenTag = getContext().getString(R.string.popup_container_iterate_children);
+
+        boolean isAboveAnotherSurface = getTopOpenViewWithType(mLauncher, TYPE_FOLDER) != null
+                || mLauncher.getStateManager().getState() == LauncherState.ALL_APPS;
+        if (!isAboveAnotherSurface && Utilities.ATLEAST_S) {
+            setupColorExtraction();
+        }
     }
 
     public ArrowPopup(Context context, AttributeSet attrs) {
@@ -184,11 +219,11 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
     /**
      * Set the margins and radius of backgrounds after views are properly ordered.
      */
-    protected void assignMarginsAndBackgrounds() {
-        int count = getChildCount();
+    public void assignMarginsAndBackgrounds(ViewGroup viewGroup) {
+        int count = viewGroup.getChildCount();
         int totalVisibleShortcuts = 0;
         for (int i = 0; i < count; i++) {
-            View view = getChildAt(i);
+            View view = viewGroup.getChildAt(i);
             if (view.getVisibility() == VISIBLE && view instanceof DeepShortcutView) {
                 totalVisibleShortcuts++;
             }
@@ -197,8 +232,7 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
         int numVisibleShortcut = 0;
         View lastView = null;
         for (int i = 0; i < count; i++) {
-            View view = getChildAt(i);
-            boolean isShortcut = view instanceof DeepShortcutView;
+            View view = viewGroup.getChildAt(i);
             if (view.getVisibility() == VISIBLE) {
                 if (lastView != null) {
                     MarginLayoutParams mlp = (MarginLayoutParams) lastView.getLayoutParams();
@@ -208,7 +242,12 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
                 MarginLayoutParams mlp = (MarginLayoutParams) lastView.getLayoutParams();
                 mlp.bottomMargin = 0;
 
-                if (isShortcut) {
+                if (view instanceof ViewGroup && mIterateChildrenTag.equals(view.getTag())) {
+                    assignMarginsAndBackgrounds((ViewGroup) view);
+                    continue;
+                }
+
+                if (view instanceof DeepShortcutView) {
                     if (totalVisibleShortcuts == 1) {
                         view.setBackgroundResource(R.drawable.single_item_primary);
                     } else if (totalVisibleShortcuts > 1) {
@@ -227,6 +266,118 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
         measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
     }
 
+
+    @TargetApi(Build.VERSION_CODES.S)
+    private int getExtractedColor(SparseIntArray colors) {
+        int index = Utilities.isDarkTheme(getContext())
+                ? DARK_COLOR_EXTRACTION_INDEX
+                : LIGHT_COLOR_EXTRACTION_INDEX;
+        return colors.get(index, mBackgroundColor);
+    }
+
+    @TargetApi(Build.VERSION_CODES.S)
+    private void setupColorExtraction() {
+        Workspace workspace = mLauncher.findViewById(R.id.workspace);
+        if (workspace == null) {
+            return;
+        }
+
+        mColorExtractor = LocalColorExtractor.newInstance(mLauncher);
+        mColorExtractor.setListener((rect, extractedColors) -> {
+            String rectString = rect.toShortString();
+            View v = mViewForRect.get(rectString);
+            AnimatorSet colors = new AnimatorSet();
+            if (v != null) {
+                int newColor = getExtractedColor(extractedColors);
+                setChildColor(v, newColor, colors);
+                int numChildren = v instanceof ViewGroup ? ((ViewGroup) v).getChildCount() : 0;
+                for (int i = 0; i < numChildren; ++i) {
+                    View childView = ((ViewGroup) v).getChildAt(i);
+                    setChildColor(childView, newColor, colors);
+
+                }
+                if (rectString.equals(mArrowColorRectString)) {
+                    mArrowColor = newColor;
+                    updateArrowColor();
+                }
+            }
+            colors.setDuration(150);
+            v.post(colors::start);
+        });
+    }
+
+    protected void addPreDrawForColorExtraction(Launcher launcher) {
+        getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                getViewTreeObserver().removeOnPreDrawListener(this);
+                initColorExtractionLocations(launcher);
+                return true;
+            }
+        });
+    }
+
+    /**
+     * Returns list of child views that will receive local color extraction treatment.
+     * Note: Order should match the view hierarchy.
+     */
+    protected List<View> getChildrenForColorExtraction() {
+        return Collections.emptyList();
+    }
+
+    private void initColorExtractionLocations(Launcher launcher) {
+        if (mColorExtractor == null) {
+            return;
+        }
+        ArrayList<RectF> locations = new ArrayList<>();
+
+        boolean firstVisibleChild = true;
+        // Order matters here, since we need the arrow to match the color of its adjacent view.
+        for (View view : getChildrenForColorExtraction()) {
+            if (view != null && view.getVisibility() == VISIBLE) {
+                RectF rf = new RectF();
+                mColorExtractor.getExtractedRectForView(launcher,
+                        launcher.getWorkspace().getCurrentPage(), view, rf);
+                if (!rf.isEmpty()) {
+                    locations.add(rf);
+                    String rectString = rf.toShortString();
+                    mViewForRect.put(rectString, view);
+                    if (mIsAboveIcon) {
+                        mArrowColorRectString = rectString;
+                    } else {
+                        if (firstVisibleChild) {
+                            mArrowColorRectString = rectString;
+                        }
+                    }
+
+                    if (firstVisibleChild) {
+                        firstVisibleChild = false;
+                    }
+
+                }
+            }
+        }
+        if (!locations.isEmpty()) {
+            mColorExtractor.addLocation(locations);
+        }
+    }
+
+    /**
+     * Sets the background color of the child.
+     */
+    protected void setChildColor(View view, int color, AnimatorSet animatorSetOut) {
+        Drawable bg = view.getBackground();
+        if (bg instanceof GradientDrawable) {
+            GradientDrawable gd = (GradientDrawable) bg.mutate();
+            int oldColor = ((GradientDrawable) bg).getColor().getDefaultColor();
+            animatorSetOut.play(ObjectAnimator.ofArgb(gd, "color", oldColor, color));
+        } else if (bg instanceof ColorDrawable) {
+            ColorDrawable cd = (ColorDrawable) bg.mutate();
+            int oldColor = ((ColorDrawable) bg).getColor();
+            animatorSetOut.play(ObjectAnimator.ofArgb(cd, "color", oldColor, color));
+        }
+    }
+
     /**
      * Shows the popup at the desired location, optionally reversing the children.
      * @param viewsToFlip number of views from the top to to flip in case of reverse order
@@ -238,7 +389,7 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
             reverseOrder(viewsToFlip);
         }
         onInflationComplete(reverseOrder);
-        assignMarginsAndBackgrounds();
+        assignMarginsAndBackgrounds(this);
         if (shouldAddArrow()) {
             addArrow();
         }
@@ -251,7 +402,7 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
     protected void show() {
         setupForDisplay();
         onInflationComplete(false);
-        assignMarginsAndBackgrounds();
+        assignMarginsAndBackgrounds(this);
         if (shouldAddArrow()) {
             addArrow();
         }
@@ -297,18 +448,24 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
             // so we centered it instead. In that case we don't want to showDefaultOptions the arrow.
             mArrow.setVisibility(INVISIBLE);
         } else {
+            updateArrowColor();
+        }
+
+        mArrow.setPivotX(mArrowWidth / 2.0f);
+        mArrow.setPivotY(mIsAboveIcon ? mArrowHeight : 0);
+    }
+
+    private void updateArrowColor() {
+        if (!Gravity.isVertical(mGravity)) {
             mArrow.setBackground(new RoundedArrowDrawable(
                     mArrowWidth, mArrowHeight, mArrowPointRadius,
                     mOutlineRadius, getMeasuredWidth(), getMeasuredHeight(),
                     mArrowOffsetHorizontal, -mArrowOffsetVertical,
                     !mIsAboveIcon, mIsLeftAligned,
-                    mBackgroundColor));
+                    mArrowColor));
             // TODO: Remove elevation when arrow is above as it casts a shadow on the container
             mArrow.setElevation(mIsAboveIcon ? mElevation : 0);
         }
-
-        mArrow.setPivotX(mArrowWidth / 2.0f);
-        mArrow.setPivotY(mIsAboveIcon ? mArrowHeight : 0);
     }
 
     /**
@@ -506,7 +663,7 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
     private AnimatorSet getOpenCloseAnimator(boolean isOpening, int totalDuration,
             int fadeStartDelay, int fadeDuration, int childFadeStartDelay,
             int childFadeDuration, Interpolator interpolator) {
-        final AnimatorSet openAnim = new AnimatorSet();
+        final AnimatorSet animatorSet = new AnimatorSet();
         float[] alphaValues = isOpening ? new float[] {0, 1} : new float[] {1, 0};
         float[] scaleValues = isOpening ? new float[] {0.5f, 1} : new float[] {1, 0.5f};
 
@@ -519,32 +676,41 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
             mArrow.setAlpha(alpha);
             setAlpha(alpha);
         });
-        openAnim.play(fade);
+        animatorSet.play(fade);
 
         setPivotX(mIsLeftAligned ? 0 : getMeasuredWidth());
         setPivotY(mIsAboveIcon ? getMeasuredHeight() : 0);
         Animator scale = ObjectAnimator.ofFloat(this, View.SCALE_Y, scaleValues);
         scale.setDuration(totalDuration);
         scale.setInterpolator(interpolator);
-        openAnim.play(scale);
+        animatorSet.play(scale);
 
-        for (int i = getChildCount() - 1; i >= 0; --i) {
-            View view = getChildAt(i);
+        fadeInChildViews(this, alphaValues, childFadeStartDelay, childFadeDuration, animatorSet);
+
+        return animatorSet;
+    }
+
+    private void fadeInChildViews(ViewGroup group, float[] alphaValues, long startDelay,
+            long duration, AnimatorSet out) {
+        for (int i = group.getChildCount() - 1; i >= 0; --i) {
+            View view = group.getChildAt(i);
             if (view.getVisibility() == VISIBLE && view instanceof ViewGroup) {
+                if (mIterateChildrenTag.equals(view.getTag())) {
+                    fadeInChildViews((ViewGroup) view, alphaValues, startDelay, duration, out);
+                    continue;
+                }
                 for (int j = ((ViewGroup) view).getChildCount() - 1; j >= 0; --j) {
                     View childView = ((ViewGroup) view).getChildAt(j);
-
                     childView.setAlpha(alphaValues[0]);
                     ValueAnimator childFade = ObjectAnimator.ofFloat(childView, ALPHA, alphaValues);
-                    childFade.setStartDelay(childFadeStartDelay);
-                    childFade.setDuration(childFadeDuration);
+                    childFade.setStartDelay(startDelay);
+                    childFade.setDuration(duration);
                     childFade.setInterpolator(LINEAR);
 
-                    openAnim.play(childFade);
+                    out.play(childFade);
                 }
             }
         }
-        return openAnim;
     }
 
 
@@ -593,6 +759,12 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
         getPopupContainer().removeView(this);
         getPopupContainer().removeView(mArrow);
         mOnCloseCallback.run();
+        mArrowColorRectString = null;
+        mViewForRect.clear();
+        if (mColorExtractor != null) {
+            mColorExtractor.removeLocations();
+            mColorExtractor.setListener(null);
+        }
     }
 
     /**
