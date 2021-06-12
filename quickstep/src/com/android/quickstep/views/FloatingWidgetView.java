@@ -34,10 +34,12 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.FloatingView;
 import com.android.launcher3.views.ListenerView;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.RoundedCornerEnforcement;
+import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 /** A view that mimics an App Widget through a launch animation. */
 @TargetApi(Build.VERSION_CODES.S)
@@ -148,7 +150,7 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener,
 
     private void init(DragLayer dragLayer, LauncherAppWidgetHostView originalView,
             RectF widgetBackgroundPosition, Size windowSize, float windowCornerRadius,
-            boolean appTargetIsTranslucent) {
+            boolean appTargetIsTranslucent, int fallbackBackgroundColor) {
         mAppWidgetView = originalView;
         mAppWidgetView.beginDeferringUpdates();
         mBackgroundPosition = widgetBackgroundPosition;
@@ -163,7 +165,8 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener,
         getRelativePosition(mAppWidgetBackgroundView, dragLayer, mBackgroundPosition);
         getRelativePosition(mAppWidgetBackgroundView, mAppWidgetView, mBackgroundOffset);
         if (!mAppTargetIsTranslucent) {
-            mBackgroundView.init(mAppWidgetView, mAppWidgetBackgroundView, windowCornerRadius);
+            mBackgroundView.init(mAppWidgetView, mAppWidgetBackgroundView, windowCornerRadius,
+                    fallbackBackgroundColor);
             // Layout call before GhostView creation so that the overlaid view isn't clipped
             layout(0, 0, windowSize.getWidth(), windowSize.getHeight());
             mForegroundOverlayView = GhostView.addGhost(mAppWidgetView, this);
@@ -274,7 +277,8 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener,
      */
     public static FloatingWidgetView getFloatingWidgetView(Launcher launcher,
             LauncherAppWidgetHostView originalView, RectF widgetBackgroundPosition,
-            Size windowSize, float windowCornerRadius, boolean appTargetsAreTranslucent) {
+            Size windowSize, float windowCornerRadius, boolean appTargetsAreTranslucent,
+            int fallbackBackgroundColor) {
         final DragLayer dragLayer = launcher.getDragLayer();
         ViewGroup parent = (ViewGroup) dragLayer.getParent();
         FloatingWidgetView floatingView =
@@ -282,9 +286,20 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener,
         floatingView.recycle();
 
         floatingView.init(dragLayer, originalView, widgetBackgroundPosition, windowSize,
-                windowCornerRadius, appTargetsAreTranslucent);
+                windowCornerRadius, appTargetsAreTranslucent, fallbackBackgroundColor);
         parent.addView(floatingView);
         return floatingView;
+    }
+
+    /**
+     * Extract a background color from a target's task description, or fall back to the given
+     * context's theme background color.
+     */
+    public static int getDefaultBackgroundColor(
+            Context context, RemoteAnimationTargetCompat target) {
+        return (target != null && target.taskInfo.taskDescription != null)
+                ? target.taskInfo.taskDescription.getBackgroundColor()
+                : Themes.getColorBackground(context);
     }
 
     private static void getRelativePosition(View descendant, View ancestor, RectF position) {
