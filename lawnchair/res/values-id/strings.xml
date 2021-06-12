@@ -15,17 +15,17 @@
   ~ limitations under the License.
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="icon_pack">Pak Ikon</string>
+    <string name="icon_pack">Paket Ikon</string>
     <string name="settings">Pengaturan</string>
     <string name="home_screen_label">Tampilan Depan</string>
     <string name="home_screen_description">Umpan Berita,</string>
     <string name="general_label">Umum</string>
     <string name="general_description">Titik Notifikasi, Paket Ikon</string>
     <string name="home_screen_rotation_label">Rotasi Layar Beranda</string>
-    <string name="home_screen_rotaton_description">Ketika perangkat dirotasi</string>
+    <string name="home_screen_rotaton_description">Ketika perangkat dirotasi.</string>
     <string name="auto_add_shortcuts_label">Tambahkan aplikasi baru ke layar beranda</string>
     <string name="dock_label">Dock</string>
-    <string name="dock_description">bilah pencarian, Jumlah Ikon</string>
+    <string name="dock_description">Bilah pencarian, Jumlah Ikon</string>
     <string name="app_drawer_label">Halaman Aplikasi</string>
     <string name="app_drawer_description">Aplikasi Tersembunyi, Jumlah Kolom, Ikon</string>
     <string name="folders_label">Map</string>
