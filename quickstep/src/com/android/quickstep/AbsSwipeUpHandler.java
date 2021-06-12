@@ -1072,7 +1072,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
     protected abstract HomeAnimationFactory createHomeAnimationFactory(
             ArrayList<IBinder> launchCookies, long duration, boolean isTargetTranslucent,
-            RemoteAnimationTargetCompat runningTaskTarget);
+            boolean appCanEnterPip, RemoteAnimationTargetCompat runningTaskTarget);
 
     private final TaskStackChangeListener mActivityRestartListener = new TaskStackChangeListener() {
         @Override
@@ -1117,13 +1117,14 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                     ? runningTaskTarget.taskInfo.launchCookies
                     : new ArrayList<>();
             boolean isTranslucent = runningTaskTarget != null && runningTaskTarget.isTranslucent;
-            HomeAnimationFactory homeAnimFactory =
-                    createHomeAnimationFactory(cookies, duration, isTranslucent, runningTaskTarget);
-            mIsSwipingPipToHome = homeAnimFactory.supportSwipePipToHome()
-                    && runningTaskTarget != null
+            boolean appCanEnterPip = runningTaskTarget != null
                     && runningTaskTarget.taskInfo.pictureInPictureParams != null
                     && TaskInfoCompat.isAutoEnterPipEnabled(
                             runningTaskTarget.taskInfo.pictureInPictureParams);
+            HomeAnimationFactory homeAnimFactory =
+                    createHomeAnimationFactory(cookies, duration, isTranslucent, appCanEnterPip,
+                            runningTaskTarget);
+            mIsSwipingPipToHome = homeAnimFactory.supportSwipePipToHome() && appCanEnterPip;
             if (mIsSwipingPipToHome) {
                 mSwipePipToHomeAnimator = getSwipePipToHomeAnimator(
                         homeAnimFactory, runningTaskTarget, start);
