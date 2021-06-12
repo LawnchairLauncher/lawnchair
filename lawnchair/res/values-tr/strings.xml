@@ -87,12 +87,12 @@
     <string name="theme_label">Tema</string>
     <string name="theme_light">Aydınlık</string>
     <string name="theme_dark">Karanlık</string>
-    <string name="theme_system_default">Follow System</string>
-    <string name="theme_follow_wallpaper">Match Wallpaper</string>
+    <string name="theme_system_default">Sistemi takip et</string>
+    <string name="theme_follow_wallpaper">Duvar kağıdı ile eşleştir</string>
     <string name="quickstep_label">En Son Uygulamalar</string>
     <string name="clear_all_as_action_label">Altta \"Tümünü kapat\" \'ı göster</string>
     <string name="window_corner_radius_label">Köşe yarıçapı</string>
     <string name="override_window_corner_radius_label">Özel köşe yarıçapı</string>
     <string name="override_window_corner_radius_description">Varsayılan olan ekranınıza uymuyorsa</string>
-    <string name="system_icons">System Icons</string>
+    <string name="system_icons">Sistem Simgeleri</string>
 </resources>
