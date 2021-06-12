@@ -1926,6 +1926,11 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                     CellLayout layout = (CellLayout) cell.getParent().getParent();
                     layout.markCellsAsOccupiedForView(cell);
                 }
+            } else {
+                // When drag is cancelled, reattach content view back to its original parent.
+                if (mDragInfo.cell instanceof LauncherAppWidgetHostView) {
+                    d.dragView.detachContentView(/* reattachToPreviousParent= */ true);
+                }
             }
 
             final CellLayout parent = (CellLayout) cell.getParent().getParent();
