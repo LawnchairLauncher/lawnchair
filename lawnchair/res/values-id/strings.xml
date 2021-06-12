@@ -62,7 +62,7 @@
     <string name="auto_adaptive_icons_label">Ikon Adaptif Otomatis</string>
     <string name="auto_adaptive_icons_description">Untuk semua Ikon Non-Adaptif.</string>
     <string name="support_and_pr">Bantuan &amp; PR</string>
-    <string name="workspace_dt2s">Titik Ganda untuk Tidur</string>
+    <string name="workspace_dt2s">Ketuk Ganda untuk Tidur</string>
     <string name="smart_space_enable">Tampilkan Widget At a Glance</string>
     <string name="design_and_development">Desain &amp; Pengembangan</string>
     <string name="translate">Terjemah</string>
@@ -93,5 +93,5 @@
     <string name="window_corner_radius_label">Radius sudut</string>
     <string name="override_window_corner_radius_label">Radius sudut kustom</string>
     <string name="override_window_corner_radius_description">Jika default tidak cocok dengan layar Anda</string>
-    <string name="system_icons">Ikon dasar</string>
+    <string name="system_icons">Ikon sistem</string>
 </resources>
