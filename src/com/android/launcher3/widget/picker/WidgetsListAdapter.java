@@ -298,6 +298,12 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
         scrollToPositionAndMaintainOffset(positionForPackageUserKey, topForPackageUserKey);
     }
 
+    /** Returns the position of the currently expanded header, or empty if it's not present. */
+    public OptionalInt getSelectedHeaderPosition() {
+        if (mWidgetsContentVisiblePackageUserKey == null) return OptionalInt.empty();
+        return getPositionForPackageUserKey(mWidgetsContentVisiblePackageUserKey);
+    }
+
     /**
      * Returns the position of {@code key} in {@link #mVisibleEntries}, or  empty if it's not
      * present.
