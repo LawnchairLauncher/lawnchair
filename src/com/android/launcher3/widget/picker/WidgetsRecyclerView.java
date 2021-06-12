@@ -53,6 +53,7 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
     private HeaderViewDimensionsProvider mHeaderViewDimensionsProvider;
     private int mLastVisibleWidgetContentTableHeight = 0;
     private int mWidgetHeaderHeight = 0;
+    private final int mCollapsedHeaderBottomMarginSize;
     @Nullable private OnContentChangeListener mOnContentChangeListener;
 
     public WidgetsRecyclerView(Context context) {
@@ -71,6 +72,10 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
 
         ActivityContext activity = ActivityContext.lookupContext(getContext());
         DeviceProfile grid = activity.getDeviceProfile();
+
+        // The bottom margin used when the header is not expanded.
+        mCollapsedHeaderBottomMarginSize =
+                getResources().getDimensionPixelSize(R.dimen.widget_list_entry_bottom_margin);
     }
 
     @Override
@@ -182,10 +187,7 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
                     && mLastVisibleWidgetContentTableHeight == 0
                     && view.getMeasuredHeight() > 0) {
                 // This assumes all header views are of the same height.
-                RecyclerView.LayoutParams layoutParams =
-                        (RecyclerView.LayoutParams) view.getLayoutParams();
-                mWidgetHeaderHeight = view.getMeasuredHeight() + layoutParams.topMargin
-                    + layoutParams.bottomMargin;
+                mWidgetHeaderHeight = view.getMeasuredHeight();
             }
         }
 
@@ -279,12 +281,17 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
         if (untilIndex > mAdapter.getItems().size()) {
             untilIndex = mAdapter.getItems().size();
         }
+        int expandedHeaderPosition = mAdapter.getSelectedHeaderPosition().orElse(-1);
         int totalItemsHeight = 0;
         for (int i = 0; i < untilIndex; i++) {
             WidgetsListBaseEntry entry = mAdapter.getItems().get(i);
             if (entry instanceof WidgetsListHeaderEntry
                     || entry instanceof WidgetsListSearchHeaderEntry) {
                 totalItemsHeight += mWidgetHeaderHeight;
+                if (expandedHeaderPosition != i) {
+                    // If the header is collapsed, include the bottom margin it will use.
+                    totalItemsHeight += mCollapsedHeaderBottomMarginSize;
+                }
             } else if (entry instanceof WidgetsListContentEntry) {
                 totalItemsHeight += mLastVisibleWidgetContentTableHeight;
             } else {
