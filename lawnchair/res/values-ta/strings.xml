@@ -54,10 +54,10 @@
     <string name="development">மேம்பாடு</string>
     <string name="app_info_drop_target_label">செயலியின் தகவல்கள்</string>
     <string name="item_removed">பொருள் நீக்கப்பட்டது.</string>
-    <string name="all_apps_no_search_results">No apps found matching “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
-    <string name="background_opacity">Background Opacity</string>
+    <string name="all_apps_no_search_results">எந்த செயலியும் பொருந்தவில்லை “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
+    <string name="background_opacity">பின்னணி ஒளிபுகாமை</string>
     <string name="background_lightness_label">Background Lightness</string>
-    <string name="adaptive_icons">Adaptive Icons</string>
+    <string name="adaptive_icons">தகவமைப்பு சின்னங்கள்</string>
     <string name="adaptive_icon_background_description">Use 100% background lightness for white.</string>
     <string name="auto_adaptive_icons_label">Auto Adaptive Icons</string>
     <string name="auto_adaptive_icons_description">For all non-Adaptive icons.</string>
