@@ -95,6 +95,8 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.TaskInfoCompat;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 
+import app.lawnchair.util.CompatibilityKt;
+
 /**
  * Handles the navigation gestures when Launcher is the default home activity.
  * TODO: Merge this with BaseSwipeUpHandler
@@ -1138,7 +1140,12 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             mRecentsAnimationController.finish(true /* toRecents */, this::startNewTaskInternal);
         } else {
-            startNewTaskInternal();
+            if (CompatibilityKt.isOnePlusStock()) {
+                reset();
+                mRecentsAnimationController.finish(true, this::startNewTaskInternal);
+            } else {
+                startNewTaskInternal();
+            }
         }
     }
 
