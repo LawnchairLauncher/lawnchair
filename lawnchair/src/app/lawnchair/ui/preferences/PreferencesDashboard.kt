@@ -6,6 +6,7 @@ import androidx.compose.ui.res.stringResource
 import app.lawnchair.LawnchairApp
 import app.lawnchair.preferences.getMajorVersion
 import app.lawnchair.ui.preferences.components.PreferenceCategory
+import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
 
 @Composable
@@ -45,7 +46,7 @@ fun PreferencesDashboard() {
         route = Routes.FOLDERS
     )
 
-    if (LawnchairApp.isRecentsEnabled) {
+    if (LawnchairApp.isRecentsEnabled || BuildConfig.DEBUG) {
         PreferenceCategory(
             label = stringResource(R.string.quickstep_label),
             iconResource = R.drawable.ic_quickstep,
