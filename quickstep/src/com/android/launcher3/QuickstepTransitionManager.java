@@ -213,8 +213,9 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         }
     };
 
+    // Pairs of window starting type and starting window background color for starting tasks
     // Will never be larger than MAX_NUM_TASKS
-    private LinkedHashMap<Integer, Integer> mTypeForTaskId;
+    private LinkedHashMap<Integer, Pair<Integer, Integer>> mTaskStartParams;
 
     public QuickstepTransitionManager(Context context) {
         mLauncher = Launcher.cast(Launcher.getLauncher(context));
@@ -231,9 +232,9 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         mLauncher.addOnDeviceProfileChangeListener(this);
 
         if (supportsSSplashScreen()) {
-            mTypeForTaskId = new LinkedHashMap<Integer, Integer>(MAX_NUM_TASKS) {
+            mTaskStartParams = new LinkedHashMap<Integer, Pair<Integer, Integer>>(MAX_NUM_TASKS) {
                 @Override
-                protected boolean removeEldestEntry(Entry<Integer, Integer> entry) {
+                protected boolean removeEldestEntry(Entry<Integer, Pair<Integer, Integer>> entry) {
                     return size() > MAX_NUM_TASKS;
                 }
             };
@@ -419,15 +420,6 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         return bounds;
     }
 
-    private int getOpeningTaskId(RemoteAnimationTargetCompat[] appTargets) {
-        for (RemoteAnimationTargetCompat target : appTargets) {
-            if (target.mode == MODE_OPENING) {
-                return target.taskId;
-            }
-        }
-        return -1;
-    }
-
     public void setRemoteAnimationProvider(final RemoteAnimationProvider animationProvider,
             CancellationSignal cancellationSignal) {
         mRemoteAnimationProvider = animationProvider;
@@ -594,10 +586,12 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
         final boolean hasSplashScreen;
         if (supportsSSplashScreen()) {
-            int taskId = getOpeningTaskId(appTargets);
-            int type = mTypeForTaskId.getOrDefault(taskId, STARTING_WINDOW_TYPE_NONE);
-            mTypeForTaskId.remove(taskId);
-            hasSplashScreen = type == STARTING_WINDOW_TYPE_SPLASH_SCREEN;
+            int taskId = openingTargets.getFirstAppTargetTaskId();
+            Pair<Integer, Integer> defaultParams = Pair.create(STARTING_WINDOW_TYPE_NONE, 0);
+            Pair<Integer, Integer> taskParams =
+                    mTaskStartParams.getOrDefault(taskId, defaultParams);
+            mTaskStartParams.remove(taskId);
+            hasSplashScreen = taskParams.first == STARTING_WINDOW_TYPE_SPLASH_SCREEN;
         } else {
             hasSplashScreen = false;
         }
@@ -798,18 +792,30 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         final RectF widgetBackgroundBounds = new RectF();
         final Rect appWindowCrop = new Rect();
         final Matrix matrix = new Matrix();
+        RemoteAnimationTargets openingTargets = new RemoteAnimationTargets(appTargets,
+                wallpaperTargets, nonAppTargets, MODE_OPENING);
+
+        RemoteAnimationTargetCompat openingTarget = openingTargets.getFirstAppTarget();
+        int fallbackBackgroundColor = 0;
+        if (openingTarget != null && supportsSSplashScreen()) {
+            fallbackBackgroundColor = mTaskStartParams.containsKey(openingTarget.taskId)
+                    ? mTaskStartParams.get(openingTarget.taskId).second : 0;
+            mTaskStartParams.remove(openingTarget.taskId);
+        }
+        if (fallbackBackgroundColor == 0) {
+            fallbackBackgroundColor =
+                    FloatingWidgetView.getDefaultBackgroundColor(mLauncher, openingTarget);
+        }
 
         final float finalWindowRadius = mDeviceProfile.isMultiWindowMode
                 ? 0 : getWindowCornerRadius(mLauncher.getResources());
         final FloatingWidgetView floatingView = FloatingWidgetView.getFloatingWidgetView(mLauncher,
                 v, widgetBackgroundBounds,
                 new Size(windowTargetBounds.width(), windowTargetBounds.height()),
-                finalWindowRadius, appTargetsAreTranslucent);
+                finalWindowRadius, appTargetsAreTranslucent, fallbackBackgroundColor);
         final float initialWindowRadius = supportsRoundedCornersOnWindows(mLauncher.getResources())
                 ? floatingView.getInitialCornerRadius() : 0;
 
-        RemoteAnimationTargets openingTargets = new RemoteAnimationTargets(appTargets,
-                wallpaperTargets, nonAppTargets, MODE_OPENING);
         SurfaceTransactionApplier surfaceApplier = new SurfaceTransactionApplier(floatingView);
         openingTargets.addReleaseCheck(surfaceApplier);
 
@@ -1441,8 +1447,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         }
 
         @Override
-        public void onTaskLaunching(int taskId, int supportedType) {
-            mTransitionManager.mTypeForTaskId.put(taskId, supportedType);
+        public void onTaskLaunching(int taskId, int supportedType, int color) {
+            mTransitionManager.mTaskStartParams.put(taskId, Pair.create(supportedType, color));
         }
     }
 }
