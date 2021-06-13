@@ -39,6 +39,7 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.KeyguardManagerCompat;
 import com.android.systemui.shared.system.TaskStackChangeListener;
+import com.android.systemui.shared.system.TaskStackChangeListeners;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +76,7 @@ public class RecentsModel extends TaskStackChangeListener implements IconChangeL
         mIconCache = new TaskIconCache(context, RECENTS_MODEL_EXECUTOR, iconProvider);
         mThumbnailCache = new TaskThumbnailCache(context, RECENTS_MODEL_EXECUTOR);
 
-        ActivityManagerWrapper.getInstance().registerTaskStackListener(this);
+        TaskStackChangeListeners.getInstance().registerTaskStackListener(this);
         iconProvider.registerIconChangeListener(this, MAIN_EXECUTOR.getHandler());
     }
 

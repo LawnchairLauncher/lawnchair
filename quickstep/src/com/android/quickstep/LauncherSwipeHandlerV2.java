@@ -88,7 +88,7 @@ public class LauncherSwipeHandlerV2 extends
 
     @Override
     protected HomeAnimationFactory createHomeAnimationFactory(ArrayList<IBinder> launchCookies,
-            long duration, boolean isTargetTranslucent,
+            long duration, boolean isTargetTranslucent, boolean appCanEnterPip,
             RemoteAnimationTargetCompat runningTaskTarget) {
         if (mActivity == null) {
             mStateCallback.addChangeListener(STATE_LAUNCHER_PRESENT | STATE_HANDLER_INVALIDATED,
@@ -108,7 +108,7 @@ public class LauncherSwipeHandlerV2 extends
         mActivity.getRootView().setForceHideBackArrow(true);
         mActivity.setHintUserWillBeActive();
 
-        if (!canUseWorkspaceView) {
+        if (!canUseWorkspaceView || appCanEnterPip) {
             return new LauncherHomeAnimationFactory();
         }
         if (workspaceView instanceof LauncherAppWidgetHostView) {
