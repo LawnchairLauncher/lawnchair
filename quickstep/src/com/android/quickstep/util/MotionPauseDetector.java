@@ -121,7 +121,7 @@ public class MotionPauseDetector {
         mForcePauseTimeout.setAlarm(mMakePauseHarderToTrigger
                 ? HARDER_TRIGGER_TIMEOUT
                 : FORCE_PAUSE_TIMEOUT);
-        float newVelocity = mVelocityProvider.addMotionEvent(ev, pointerIndex);
+        float newVelocity = mVelocityProvider.addMotionEvent(ev, ev.getPointerId(pointerIndex));
         if (mPreviousVelocity != null) {
             checkMotionPaused(newVelocity, mPreviousVelocity, ev.getEventTime());
         }
