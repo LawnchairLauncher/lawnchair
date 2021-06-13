@@ -170,7 +170,8 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
             Integer introTileStringResId = mTutorialController.getIntroductionTitle();
             Integer introSubtitleResId = mTutorialController.getIntroductionSubtitle();
             if (introTileStringResId != null && introSubtitleResId != null) {
-                mTutorialController.showFeedback(introTileStringResId, introSubtitleResId, false);
+                mTutorialController.showFeedback(
+                        introTileStringResId, introSubtitleResId, false, true);
                 mIntroductionShown = true;
             }
         }
@@ -252,7 +253,7 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
     @Override
     public void onResume() {
         super.onResume();
-        if (mFragmentStopped) {
+        if (mFragmentStopped && mTutorialController != null) {
             mTutorialController.showFeedback();
             mFragmentStopped = false;
         } else {
