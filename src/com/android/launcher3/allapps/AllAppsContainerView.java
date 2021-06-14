@@ -228,7 +228,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     }
 
     private void resetWorkProfile() {
-        mWorkModeSwitch.update(!mAllAppsStore.hasModelFlag(FLAG_QUIET_MODE_ENABLED));
+        mWorkModeSwitch.updateCurrentState(!mAllAppsStore.hasModelFlag(FLAG_QUIET_MODE_ENABLED));
         mAH[AdapterHolder.WORK].setupOverlay();
         mAH[AdapterHolder.WORK].applyPadding();
     }
@@ -482,7 +482,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     private void setupWorkToggle() {
         if (Utilities.ATLEAST_P) {
             mWorkModeSwitch = (WorkModeSwitch) mLauncher.getLayoutInflater().inflate(
-                    R.layout.work_mode_switch, this, false);
+                    R.layout.work_mode_fab, this, false);
             this.addView(mWorkModeSwitch);
             mWorkModeSwitch.setInsets(mInsets);
             mWorkModeSwitch.post(this::resetWorkProfile);
