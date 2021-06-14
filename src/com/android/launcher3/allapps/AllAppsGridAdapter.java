@@ -41,10 +41,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.R;
-import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.util.PackageManagerHelper;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -72,7 +72,8 @@ public class AllAppsGridAdapter extends
     public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_ALL_APPS_DIVIDER;
     public static final int VIEW_TYPE_MASK_ICON = VIEW_TYPE_ICON;
 
-    private final SearchAdapterProvider mSearchAdapterProvider;
+
+    private final BaseAdapterProvider[] mAdapterProviders;
 
     /**
      * ViewHolder for each icon.
@@ -242,9 +243,12 @@ public class AllAppsGridAdapter extends
             int totalSpans = mGridLayoutMgr.getSpanCount();
             if (isIconViewType(viewType)) {
                 return totalSpans / mAppsPerRow;
-            } else if (mSearchAdapterProvider.isSearchView(viewType)) {
-                return totalSpans / mSearchAdapterProvider.getItemsPerRow(viewType, mAppsPerRow);
             } else {
+                BaseAdapterProvider adapterProvider = getAdapterProvider(viewType);
+                if (adapterProvider != null) {
+                    return totalSpans / adapterProvider.getItemsPerRow(viewType, mAppsPerRow);
+                }
+
                 // Section breaks span the full width
                 return totalSpans;
             }
@@ -270,7 +274,7 @@ public class AllAppsGridAdapter extends
     private Intent mMarketSearchIntent;
 
     public AllAppsGridAdapter(BaseDraggingActivity launcher, LayoutInflater inflater,
-            AlphabeticalAppsList apps, SearchAdapterProvider searchAdapterProvider) {
+            AlphabeticalAppsList apps, BaseAdapterProvider[] adapterProviders) {
         Resources res = launcher.getResources();
         mLauncher = launcher;
         mApps = apps;
@@ -282,16 +286,18 @@ public class AllAppsGridAdapter extends
 
         mOnIconClickListener = launcher.getItemOnClickListener();
 
-        mSearchAdapterProvider = searchAdapterProvider;
+        mAdapterProviders = adapterProviders;
         setAppsPerRow(mLauncher.getDeviceProfile().numShownAllAppsColumns);
     }
 
     public void setAppsPerRow(int appsPerRow) {
         mAppsPerRow = appsPerRow;
         int totalSpans = mAppsPerRow;
-        for (int itemPerRow : mSearchAdapterProvider.getSupportedItemsPerRowArray()) {
-            if (totalSpans % itemPerRow != 0) {
-                totalSpans *= itemPerRow;
+        for (BaseAdapterProvider adapterProvider : mAdapterProviders) {
+            for (int itemPerRow : adapterProvider.getSupportedItemsPerRowArray()) {
+                if (totalSpans % itemPerRow != 0) {
+                    totalSpans *= itemPerRow;
+                }
             }
         }
         mGridLayoutMgr.setSpanCount(totalSpans);
@@ -363,9 +369,9 @@ public class AllAppsGridAdapter extends
                 return new ViewHolder(mLayoutInflater.inflate(
                         R.layout.all_apps_divider, parent, false));
             default:
-                if (mSearchAdapterProvider.isSearchView(viewType)) {
-                    return mSearchAdapterProvider.onCreateViewHolder(mLayoutInflater, parent,
-                            viewType);
+                BaseAdapterProvider adapterProvider = getAdapterProvider(viewType);
+                if (adapterProvider != null) {
+                    return adapterProvider.onCreateViewHolder(mLayoutInflater, parent, viewType);
                 }
                 throw new RuntimeException("Unexpected view type");
         }
@@ -399,7 +405,10 @@ public class AllAppsGridAdapter extends
                 // nothing to do
                 break;
             default:
-                mSearchAdapterProvider.onBindView(holder, position);
+                BaseAdapterProvider adapterProvider = getAdapterProvider(holder.getItemViewType());
+                if (adapterProvider != null) {
+                    adapterProvider.onBindView(holder, position);
+                }
         }
     }
 
@@ -423,5 +432,12 @@ public class AllAppsGridAdapter extends
     public int getItemViewType(int position) {
         AdapterItem item = mApps.getAdapterItems().get(position);
         return item.viewType;
+    }
+
+    @Nullable
+    private BaseAdapterProvider getAdapterProvider(int viewType) {
+        return Arrays.stream(mAdapterProviders).filter(
+                adapterProvider -> adapterProvider.isViewSupported(viewType)).findFirst().orElse(
+                null);
     }
 }
