@@ -66,7 +66,7 @@
     <string name="smart_space_enable">Show At a Glance Widget</string>
     <string name="design_and_development">Design &amp; Development</string>
     <string name="translate">மொழிபெயர்</string>
-    <string name="product">Product</string>
+    <string name="product">தயாரிப்பு</string>
     <string name="hidden_apps_label">மறைக்கப்பட்ட செயலிகள்</string>
     <string name="hidden_apps_label_with_count">மறைக்கப்பட்ட செயலிகள்(%1$d)</string>
     <plurals name="apps_count">
