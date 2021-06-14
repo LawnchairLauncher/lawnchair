@@ -344,7 +344,7 @@ public class RecyclerViewFastScroller extends View {
             // swiping very close to the thumb area (not just within it's bound)
             // will also prevent back gesture
             SYSTEM_GESTURE_EXCLUSION_RECT.get(0).offset(mThumbDrawOffset.x, mThumbDrawOffset.y);
-            if (Utilities.ATLEAST_Q) {
+            if (Utilities.ATLEAST_Q && mSystemGestureInsets != null) {
                 SYSTEM_GESTURE_EXCLUSION_RECT.get(0).left =
                         SYSTEM_GESTURE_EXCLUSION_RECT.get(0).right - mSystemGestureInsets.right;
             }
