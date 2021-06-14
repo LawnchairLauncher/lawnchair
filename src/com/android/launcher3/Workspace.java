@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import static androidx.annotation.VisibleForTesting.PROTECTED;
+
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.LauncherState.ALL_APPS;
@@ -315,18 +316,34 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         // Increase our bottom insets so we don't overlap with the taskbar.
         mInsets.bottom += grid.nonOverlappingTaskbarInset;
 
-        if (isTwoPanelEnabled()) {
+        if (grid.isTwoPanels) {
             setPageSpacing(0); // we have two pages and we don't want any spacing
-        } else if (mWorkspaceFadeInAdjacentScreens) {
-            // In landscape mode the page spacing is set to the default.
-            setPageSpacing(grid.edgeMarginPx);
+
+            // Add left widget panel if it isn't already there
+            if (!mWorkspaceScreens.containsKey(LEFT_PANEL_ID)) {
+                int newCurrentPage = mCurrentPage + 1;
+                bindAndInitLeftPanel();
+                setCurrentPage(newCurrentPage);
+            }
         } else {
-            // In portrait, we want the pages spaced such that there is no
-            // overhang of the previous / next page into the current page viewport.
-            // We assume symmetrical padding in portrait mode.
-            int maxInsets = Math.max(insets.left, insets.right);
-            int maxPadding = Math.max(grid.edgeMarginPx, padding.left + 1);
-            setPageSpacing(Math.max(maxInsets, maxPadding));
+            if (mWorkspaceFadeInAdjacentScreens) {
+                // In landscape mode the page spacing is set to the default.
+                setPageSpacing(grid.edgeMarginPx);
+            } else {
+                // In portrait, we want the pages spaced such that there is no
+                // overhang of the previous / next page into the current page viewport.
+                // We assume symmetrical padding in portrait mode.
+                int maxInsets = Math.max(insets.left, insets.right);
+                int maxPadding = Math.max(grid.edgeMarginPx, padding.left + 1);
+                setPageSpacing(Math.max(maxInsets, maxPadding));
+            }
+
+            // Remove left widget panel if it is present
+            if (mWorkspaceScreens.containsKey(LEFT_PANEL_ID)) {
+                int newCurrentPage = mCurrentPage - 1;
+                removeLeftPanel();
+                setCurrentPage(newCurrentPage);
+            }
         }
 
         int paddingLeftRight = grid.cellLayoutPaddingLeftRightPx;
@@ -557,7 +574,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             return;
         }
         // Add the first page
-        CellLayout firstPage = insertNewWorkspaceScreen(Workspace.FIRST_SCREEN_ID, 0);
+        CellLayout firstPage = insertNewWorkspaceScreen(Workspace.FIRST_SCREEN_ID, getChildCount());
         // Always add a QSB on the first screen.
         if (qsb == null) {
             // In transposed layout, we add the QSB in the Grid. As workspace does not touch the
@@ -574,6 +591,19 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         if (!firstPage.addViewToCellLayout(qsb, 0, R.id.search_container_workspace, lp, true)) {
             Log.e(TAG, "Failed to add to item at (0, 0) to CellLayout");
         }
+    }
+
+    /**
+     * Initializes and binds the left panel
+     */
+    public void bindAndInitLeftPanel() {
+        if (!FeatureFlags.QSB_ON_FIRST_SCREEN || !isTwoPanelEnabled()
+                || mWorkspaceScreens.containsKey(Workspace.LEFT_PANEL_ID)) {
+            return;
+        }
+
+        insertNewWorkspaceScreen(Workspace.LEFT_PANEL_ID, getChildCount());
+        mLauncher.getModelWriter().setLeftPanelShown(true);
     }
 
     public void removeAllWorkspaceScreens() {
@@ -597,6 +627,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         mLauncher.mHandler.removeCallbacksAndMessages(DeferredWidgetRefresh.class);
 
         // Ensure that the first page is always present
+        bindAndInitLeftPanel();
         bindAndInitFirstWorkspaceScreen(qsb);
 
         // Re-enable the layout transitions
@@ -615,6 +646,18 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     public void insertNewWorkspaceScreen(int screenId) {
         insertNewWorkspaceScreen(screenId, getChildCount());
+    }
+
+    private void removeLeftPanel() {
+        if (!mWorkspaceScreens.containsKey(LEFT_PANEL_ID)) {
+            return;
+        }
+        mLauncher.getModelWriter().setLeftPanelShown(false);
+        CellLayout leftPanel = mWorkspaceScreens.get(LEFT_PANEL_ID);
+        mWorkspaceScreens.remove(LEFT_PANEL_ID);
+        removeView(leftPanel);
+        mScreenOrder.removeValue(LEFT_PANEL_ID);
+        updatePageScrollValues();
     }
 
     public CellLayout insertNewWorkspaceScreen(int screenId, int insertIndex) {
