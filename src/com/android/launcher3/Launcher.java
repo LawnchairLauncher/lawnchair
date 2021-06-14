@@ -1180,6 +1180,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         // Until the workspace is bound, ensure that we keep the wallpaper offset locked to the
         // default state, otherwise we will update to the wrong offsets in RTL
         mWorkspace.lockWallpaperToDefaultPage();
+        mWorkspace.bindAndInitLeftPanel();
         mWorkspace.bindAndInitFirstWorkspaceScreen(null /* recycled qsb */);
         mDragController.addDragListener(mWorkspace);
 
@@ -2091,11 +2092,16 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
     @Override
     public void bindScreens(IntArray orderedScreenIds) {
-        // Make sure the first screen is always at the start.
+        // Make sure the first screen is at the start if there's no widget panel,
+        // or on the second place if the first is the widget panel
+        boolean isLeftPanelShown =
+                mWorkspace.mWorkspaceScreens.containsKey(Workspace.LEFT_PANEL_ID);
+        int firstScreenPosition = isLeftPanelShown && orderedScreenIds.size() > 1 ? 1 : 0;
+
         if (FeatureFlags.QSB_ON_FIRST_SCREEN &&
-                orderedScreenIds.indexOf(Workspace.FIRST_SCREEN_ID) != 0) {
+                orderedScreenIds.indexOf(Workspace.FIRST_SCREEN_ID) != firstScreenPosition) {
             orderedScreenIds.removeValue(Workspace.FIRST_SCREEN_ID);
-            orderedScreenIds.add(0, Workspace.FIRST_SCREEN_ID);
+            orderedScreenIds.add(firstScreenPosition, Workspace.FIRST_SCREEN_ID);
         } else if (!FeatureFlags.QSB_ON_FIRST_SCREEN && orderedScreenIds.isEmpty()) {
             // If there are no screens, we need to have an empty screen
             mWorkspace.addExtraEmptyScreen();
@@ -2112,10 +2118,17 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         int count = orderedScreenIds.size();
         for (int i = 0; i < count; i++) {
             int screenId = orderedScreenIds.get(i);
-            if (!FeatureFlags.QSB_ON_FIRST_SCREEN || screenId != Workspace.FIRST_SCREEN_ID) {
+            if (FeatureFlags.QSB_ON_FIRST_SCREEN && screenId == Workspace.FIRST_SCREEN_ID) {
                 // No need to bind the first screen, as its always bound.
-                mWorkspace.insertNewWorkspaceScreenBeforeEmptyScreen(screenId);
+                continue;
             }
+
+            if (screenId == Workspace.LEFT_PANEL_ID) {
+                // No need to bind the left panel, as its always bound.
+                continue;
+            }
+
+            mWorkspace.insertNewWorkspaceScreenBeforeEmptyScreen(screenId);
         }
     }
 
@@ -2187,6 +2200,11 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
             // Short circuit if we are loading dock items for a configuration which has no dock
             if (item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT &&
                     mHotseat == null) {
+                continue;
+            }
+
+            // Skip if the item is on the left widget panel but the panel is not shown
+            if (item.screenId == Workspace.LEFT_PANEL_ID && !getDeviceProfile().isTwoPanels) {
                 continue;
             }
 
