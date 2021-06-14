@@ -2357,7 +2357,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             public void accept(Boolean success) {
                 if (LIVE_TILE.get() && mEnableDrawingLiveTile && taskView.isRunningTask()
                         && success) {
-                    finishRecentsAnimation(true /* toHome */, () -> onEnd(success));
+                    finishRecentsAnimation(true /* toRecents */, false /* shouldPip */,
+                            () -> onEnd(success));
                 } else {
                     onEnd(success);
                 }
@@ -2368,7 +2369,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 if (success) {
                     if (shouldRemoveTask) {
                         if (taskView.getTask() != null) {
-                            switchToScreenshotAndFinishAnimationToRecents(() -> {
+                            finishRecentsAnimation(true /* toRecents */, false /* shouldPip */,
+                                    () -> {
                                 UI_HELPER_EXECUTOR.getHandler().postDelayed(() ->
                                         ActivityManagerWrapper.getInstance().removeTask(
                                                 taskView.getTask().key.id),
@@ -2478,7 +2480,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mPendingAnimation.addEndListener(isSuccess -> {
             if (isSuccess) {
                 // Remove all the task views now
-                switchToScreenshotAndFinishAnimationToRecents(() -> {
+                finishRecentsAnimation(true /* toRecents */, false /* shouldPip */, () -> {
                     UI_HELPER_EXECUTOR.getHandler().postDelayed(
                             ActivityManagerWrapper.getInstance()::removeAllRecentTasks,
                             REMOVE_TASK_WAIT_FOR_APP_STOP_MS);
@@ -2639,7 +2641,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         if (LIVE_TILE.get() && mEnableDrawingLiveTile && newConfig.orientation != mOrientation) {
-            switchToScreenshotAndFinishAnimationToRecents(this::updateRecentsRotation);
+            switchToScreenshot(
+                    () -> finishRecentsAnimation(true /* toRecents */, false /* showPip */,
+                            this::updateRecentsRotation));
             mEnableDrawingLiveTile = false;
         } else {
             updateRecentsRotation();
@@ -3630,10 +3634,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             // mFullscreenProgress.
             requestLayout();
         }
-    }
-
-    public void switchToScreenshotAndFinishAnimationToRecents(Runnable onFinishRunnable) {
-        switchToScreenshot(() -> finishRecentsAnimation(true /* toRecents */, onFinishRunnable));
     }
 
     /**
