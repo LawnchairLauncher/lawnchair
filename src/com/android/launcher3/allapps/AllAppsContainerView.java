@@ -50,7 +50,6 @@ import androidx.annotation.StringRes;
 import androidx.annotation.VisibleForTesting;
 import androidx.core.graphics.ColorUtils;
 import androidx.core.os.BuildCompat;
-import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -127,6 +126,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     private Rect mInsets = new Rect();
 
     private SearchAdapterProvider mSearchAdapterProvider;
+    private WorkAdapterProvider mWorkAdapterProvider;
     private final int mScrimColor;
     private final int mHeaderProtectionColor;
     private final float mHeaderThreshold;
@@ -159,6 +159,11 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         Selection.setSelection(mSearchQueryBuilder, 0);
 
         mAH = new AdapterHolder[2];
+        mWorkAdapterProvider = new WorkAdapterProvider(mLauncher, () -> {
+            if (mAH[AdapterHolder.WORK] != null) {
+                mAH[AdapterHolder.WORK].appsList.updateAdapterItems();
+            }
+        });
         mAH[AdapterHolder.MAIN] = new AdapterHolder(false /* isWork */);
         mAH[AdapterHolder.WORK] = new AdapterHolder(true /* isWork */);
 
@@ -228,8 +233,9 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     }
 
     private void resetWorkProfile() {
-        mWorkModeSwitch.updateCurrentState(!mAllAppsStore.hasModelFlag(FLAG_QUIET_MODE_ENABLED));
-        mAH[AdapterHolder.WORK].setupOverlay();
+        boolean isEnabled = !mAllAppsStore.hasModelFlag(FLAG_QUIET_MODE_ENABLED);
+        mWorkModeSwitch.updateCurrentState(isEnabled);
+        mWorkAdapterProvider.updateCurrentState(isEnabled);
         mAH[AdapterHolder.WORK].applyPadding();
     }
 
@@ -392,7 +398,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             mAH[i].padding.bottom = insets.bottom;
             mAH[i].padding.left = mAH[i].padding.right = leftRightPadding;
             mAH[i].applyPadding();
-            mAH[i].setupOverlay();
         }
 
         ViewGroup.MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
@@ -538,6 +543,9 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             mWorkModeSwitch.setWorkTabVisible(currentActivePage == AdapterHolder.WORK
                     && mAllAppsStore.hasModelFlag(
                     FLAG_HAS_SHORTCUT_PERMISSION | FLAG_QUIET_MODE_CHANGE_PERMISSION));
+        }
+        if (mSearchUiManager != null && mSearchUiManager.getEditText() != null) {
+            mSearchUiManager.getEditText().hideKeyboard();
         }
     }
 
@@ -719,9 +727,15 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
         AdapterHolder(boolean isWork) {
             mIsWork = isWork;
-            appsList = new AlphabeticalAppsList(mLauncher, mAllAppsStore, isWork);
+            appsList = new AlphabeticalAppsList(mLauncher, mAllAppsStore,
+                    isWork ? mWorkAdapterProvider : null);
+
+            BaseAdapterProvider[] adapterProviders =
+                    isWork ? new BaseAdapterProvider[]{mSearchAdapterProvider, mWorkAdapterProvider}
+                            : new BaseAdapterProvider[]{mSearchAdapterProvider};
+
             adapter = new AllAppsGridAdapter(mLauncher, getLayoutInflater(), appsList,
-                    mSearchAdapterProvider);
+                    adapterProviders);
             appsList.setAdapter(adapter);
             layoutManager = adapter.getLayoutManager();
         }
@@ -743,36 +757,9 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             adapter.setIconFocusListener(focusedItemDecorator.getFocusListener());
             applyVerticalFadingEdgeEnabled(verticalFadingEdge);
             applyPadding();
-            setupOverlay();
             if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
                 recyclerView.addItemDecoration(mSearchAdapterProvider.getDecorator());
             }
-        }
-
-        void setupOverlay() {
-            if (!mIsWork || recyclerView == null) return;
-            boolean workDisabled = mAllAppsStore.hasModelFlag(FLAG_QUIET_MODE_ENABLED);
-            if (mWorkDisabled == workDisabled) return;
-            recyclerView.setContentDescription(workDisabled ? mLauncher.getString(
-                    R.string.work_apps_paused_content_description) : null);
-            View overlayView = getOverlayView();
-            recyclerView.setItemAnimator(new DefaultItemAnimator());
-            if (workDisabled) {
-                overlayView.setAlpha(0);
-                recyclerView.addAutoSizedOverlay(overlayView);
-                overlayView.animate().alpha(1).withEndAction(
-                        () -> {
-                            appsList.updateItemFilter((info, cn) -> false);
-                            recyclerView.setItemAnimator(null);
-                        }).start();
-            } else if (mInfoMatcher != null) {
-                appsList.updateItemFilter(mInfoMatcher);
-                overlayView.animate().alpha(0).withEndAction(() -> {
-                    recyclerView.setItemAnimator(null);
-                    recyclerView.clearAutoSizedOverlays();
-                }).start();
-            }
-            mWorkDisabled = workDisabled;
         }
 
         void applyPadding() {
