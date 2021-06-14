@@ -87,12 +87,12 @@
     <string name="theme_label">Téma</string>
     <string name="theme_light">Világos</string>
     <string name="theme_dark">Sötét</string>
-    <string name="theme_system_default">Follow System</string>
-    <string name="theme_follow_wallpaper">Match Wallpaper</string>
-    <string name="quickstep_label">Recents</string>
-    <string name="clear_all_as_action_label">Show “Clear all” at bottom</string>
-    <string name="window_corner_radius_label">Corner radius</string>
-    <string name="override_window_corner_radius_label">Custom corner radius</string>
-    <string name="override_window_corner_radius_description">If the default doesn\'t match your screen</string>
-    <string name="system_icons">System Icons</string>
+    <string name="theme_system_default">Rendszer szerinti téma követése</string>
+    <string name="theme_follow_wallpaper">Háttérkép szerinti téma</string>
+    <string name="quickstep_label">Legutóbbi</string>
+    <string name="clear_all_as_action_label">\"Minden törlése\" mutatása alul</string>
+    <string name="window_corner_radius_label">Sarok sugár</string>
+    <string name="override_window_corner_radius_label">Egyedi sarok sugár</string>
+    <string name="override_window_corner_radius_description">Amennyiben az alapértelmezett nem egyezik a képernyőjével</string>
+    <string name="system_icons">Rendszerikonok</string>
 </resources>
