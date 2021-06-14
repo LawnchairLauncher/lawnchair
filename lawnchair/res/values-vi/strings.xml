@@ -83,15 +83,15 @@
     <string name="minus_one_unavailable">Feed is not available</string>
     <string name="fuzzy_search_title">Tìm kiếm Mờ</string>
     <string name="fuzzy_search_desc">Cho kết quả tìm kiếm ứng dụng xấp xỉ khớp.</string>
-    <string name="theme_label">Theme</string>
-    <string name="theme_light">Light</string>
-    <string name="theme_dark">Dark</string>
-    <string name="theme_system_default">Follow System</string>
-    <string name="theme_follow_wallpaper">Match Wallpaper</string>
-    <string name="quickstep_label">Recents</string>
-    <string name="clear_all_as_action_label">Show “Clear all” at bottom</string>
-    <string name="window_corner_radius_label">Corner radius</string>
-    <string name="override_window_corner_radius_label">Custom corner radius</string>
-    <string name="override_window_corner_radius_description">If the default doesn\'t match your screen</string>
-    <string name="system_icons">System Icons</string>
+    <string name="theme_label">Chủ đề</string>
+    <string name="theme_light">Sáng</string>
+    <string name="theme_dark">Tối</string>
+    <string name="theme_system_default">Theo hệ thống</string>
+    <string name="theme_follow_wallpaper">Theo hình nền</string>
+    <string name="quickstep_label">Gần đây</string>
+    <string name="clear_all_as_action_label">Hiện \"Xoá tất cả\" ở dưới</string>
+    <string name="window_corner_radius_label">Bán kính góc</string>
+    <string name="override_window_corner_radius_label">Bán kính góc tùy chỉnh</string>
+    <string name="override_window_corner_radius_description">Nếu tùy chỉnh mặc định không tương xứng màn hình của bạn</string>
+    <string name="system_icons">Biểu tượng Hệ thống</string>
 </resources>
