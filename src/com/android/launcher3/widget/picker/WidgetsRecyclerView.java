@@ -23,7 +23,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TableLayout;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -83,29 +82,15 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
         super.onFinishInflate();
         // create a layout manager with Launcher's context so that scroll position
         // can be preserved during screen rotation.
-        setLayoutManager(new LinearLayoutManager(getContext()));
+        WidgetsListLayoutManager layoutManager = new WidgetsListLayoutManager(getContext());
+        layoutManager.setOnContentChangeListener(mOnContentChangeListener);
+        setLayoutManager(layoutManager);
     }
 
     @Override
     public void setAdapter(Adapter adapter) {
         super.setAdapter(adapter);
         mAdapter = (WidgetsListAdapter) adapter;
-    }
-
-    @Override
-    public void onChildAttachedToWindow(@NonNull View child) {
-        super.onChildAttachedToWindow(child);
-        if (mOnContentChangeListener != null) {
-            mOnContentChangeListener.onContentChanged();
-        }
-    }
-
-    @Override
-    public void onChildDetachedFromWindow(@NonNull View child) {
-        super.onChildDetachedFromWindow(child);
-        if (mOnContentChangeListener != null) {
-            mOnContentChangeListener.onContentChanged();
-        }
     }
 
     /**
@@ -268,6 +253,10 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
 
     public void setOnContentChangeListener(@Nullable OnContentChangeListener listener) {
         mOnContentChangeListener = listener;
+        WidgetsListLayoutManager layoutManager = (WidgetsListLayoutManager) getLayoutManager();
+        if (layoutManager != null) {
+            layoutManager.setOnContentChangeListener(listener);
+        }
     }
 
     /**
