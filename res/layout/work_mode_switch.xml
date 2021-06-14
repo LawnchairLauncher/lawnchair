@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2017 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2017 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,8 +12,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher3.allapps.WorkModeSwitch
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.launcher3.allapps.WorkModeSwitch xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     style="@style/PrimaryHeadline"
@@ -35,5 +33,4 @@
     android:paddingBottom="@dimen/work_profile_footer_padding"
     android:paddingLeft="@dimen/work_profile_footer_padding"
     android:paddingRight="@dimen/work_profile_footer_padding"
-    android:paddingTop="@dimen/work_profile_footer_padding"
-/>
+    android:paddingTop="@dimen/work_profile_footer_padding" />
